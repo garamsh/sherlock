@@ -12,5 +12,3 @@ What the system is made of and why it is shaped this way. Workers read this befo
 - Describe structure with lists of paths and short sentences. No diagrams.
 - Record *why* in ADRs, *what* in the overview. Never record *how* — that is the code's job.
 - A PR that changes module boundaries updates `overview.md`; a PR that changes a decision adds an ADR. Same PR, always.
-
-_Filled in during bootstrap (`docs/ai/BOOTSTRAP.md`)._

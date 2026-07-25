@@ -19,6 +19,11 @@ const (
 	defaultAddr        = ":8080"
 	defaultImage       = "alpine:3.21"
 	defaultExecTimeout = 30 * time.Second
+
+	defaultModelProvider = "mock"
+	defaultModelBaseURL  = "https://api.openai.com/v1"
+	defaultModelName     = "gpt-4o-mini"
+	defaultModelKeyEnv   = "OPENAI_API_KEY"
 )
 
 // Config is the platform's resolved settings, parsed once at the command
@@ -32,13 +37,24 @@ type Config struct {
 	Image string `mapstructure:"image"`
 	// ExecTimeout bounds every sandbox_exec command.
 	ExecTimeout time.Duration `mapstructure:"exec-timeout"`
-	// Model is reserved for future model provider settings; the scripted
-	// mock model needs no configuration.
+	// Model selects the chat model provider (ADR 0005).
 	Model ModelConfig `mapstructure:"model"`
 }
 
-// ModelConfig is a placeholder until a real model provider lands.
-type ModelConfig struct{}
+// ModelConfig selects the chat model provider. The API key itself never
+// appears here: APIKeyEnv names the environment variable holding it
+// (ADR 0004).
+type ModelConfig struct {
+	// Provider selects the implementation: "mock" (scripted) or "openai".
+	Provider string `mapstructure:"provider"`
+	// BaseURL is the provider's API root; any OpenAI-compatible endpoint
+	// (Ollama, vLLM, …) works through the same field.
+	BaseURL string `mapstructure:"base-url"`
+	// Model is the model name passed to the provider.
+	Model string `mapstructure:"model"`
+	// APIKeyEnv names the environment variable holding the API key.
+	APIKeyEnv string `mapstructure:"api-key-env"`
+}
 
 // addConfigFlags registers the shared settings as flags on fs. viper
 // resolves the effective value, so these defaults are the fallback layer.
@@ -59,6 +75,10 @@ func resolveConfig(cmd *cobra.Command) (Config, error) {
 	v.SetDefault("data-root", environment.DefaultRoot)
 	v.SetDefault("image", defaultImage)
 	v.SetDefault("exec-timeout", defaultExecTimeout)
+	v.SetDefault("model.provider", defaultModelProvider)
+	v.SetDefault("model.base-url", defaultModelBaseURL)
+	v.SetDefault("model.model", defaultModelName)
+	v.SetDefault("model.api-key-env", defaultModelKeyEnv)
 	v.SetEnvPrefix("GAGENT")
 	v.SetEnvKeyReplacer(strings.NewReplacer("-", "_", ".", "_"))
 	v.AutomaticEnv()

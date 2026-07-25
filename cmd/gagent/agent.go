@@ -14,8 +14,8 @@ import (
 )
 
 // newAgentCommand returns the "gagent agent" subcommand: it runs a single
-// turn of one environment's agent with the scripted mock model, printing
-// outbound messages and the final response to stdout.
+// turn of one environment's agent with the configured model provider,
+// printing outbound messages and the final response to stdout.
 func newAgentCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "agent",
@@ -55,9 +55,13 @@ func runAgentTurn(ctx context.Context, cfg Config, envID, msg string) error {
 		logger.Error("docker runtime unavailable", "op", "startup", "error", err)
 		return err
 	}
+	newModel, err := newModelFunc(cfg.Model)
+	if err != nil {
+		return err
+	}
 	factory := &gateway.Factory{
 		Root:        cfg.DataRoot,
-		NewModel:    mockModel,
+		NewModel:    newModel,
 		Sandbox:     docker,
 		Image:       cfg.Image,
 		ExecTimeout: cfg.ExecTimeout,

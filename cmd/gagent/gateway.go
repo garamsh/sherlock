@@ -43,9 +43,13 @@ func serveGateway(ctx context.Context, cfg Config) error {
 		logger.Error("docker runtime unavailable", "op", "startup", "error", err)
 		return err
 	}
+	newModel, err := newModelFunc(cfg.Model)
+	if err != nil {
+		return err
+	}
 	router := gateway.NewRouter(&gateway.Factory{
 		Root:        cfg.DataRoot,
-		NewModel:    mockModel,
+		NewModel:    newModel,
 		Sandbox:     docker,
 		Image:       cfg.Image,
 		ExecTimeout: cfg.ExecTimeout,

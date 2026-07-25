@@ -55,7 +55,10 @@ Settings resolve in order: **flags > environment variables > config file > defau
 | `data-root` | `--data-root` | `data/envs` |
 | `image` | `--image` | `alpine:3.21` |
 | `exec-timeout` | `--exec-timeout` | `30s` |
-| `model` | — | reserved for a future model provider |
+| `model.provider` | — | `mock` (scripted, offline) or `openai` |
+| `model.base-url` | — | `https://api.openai.com/v1` (any OpenAI-compatible endpoint, e.g. Ollama/vLLM) |
+| `model.model` | — | `gpt-4o-mini` |
+| `model.api-key-env` | — | `OPENAI_API_KEY` (name of the env var holding the key — the key itself never goes in the config file) |
 
 Example `gagent.yaml`:
 
@@ -64,9 +67,14 @@ addr: ":9090"
 data-root: /var/lib/gagent/envs
 image: alpine:3.21
 exec-timeout: 45s
+model:
+  provider: openai
+  base-url: http://localhost:11434/v1   # Ollama, for example
+  model: llama3.2
+  api-key-env: OLLAMA_API_KEY
 ```
 
-The binary wires the scripted mock model (no LLM provider yet), which answers each environment's first message with a canned reply; `sandbox_exec` needs a Docker daemon. To work on the codebase you need Go and GNU Make, and the standard checks are:
+With the default `mock` provider the binary wires the scripted mock model, which answers each environment's first message with a canned reply. With `provider: openai` it runs against a real chat model; a missing API key env var fails at startup. `sandbox_exec` needs a Docker daemon. To work on the codebase you need Go and GNU Make, and the standard checks are:
 
 ```sh
 make ci      # lint + format check + test + build (same as CI)

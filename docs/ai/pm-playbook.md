@@ -8,7 +8,7 @@ Check, in order:
 
 1. **Scope** — every changed line traces to the task or issue. Flag unrelated edits.
 2. **Conventions** — the diff follows `docs/convention/`. Cite the violated file and section in review comments.
-3. **Architecture** — structural changes are reflected in `docs/architecture/`.
+3. **Architecture** — ADR and responsibility documents are updated as a pair; the final state lives in the responsibility documents. A PR updating only one of the two is rejected.
 4. **Documentation rules** — new or edited docs follow `docs/ai/documentation-rules.md`.
 5. **Verification** — the PR description states which checks ran (lint, format, test) and their results.
 

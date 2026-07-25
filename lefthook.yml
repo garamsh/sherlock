@@ -4,7 +4,6 @@ pre-commit:
       run: make lint
     format:
       run: make format
-      stage_fixed: true
 
 pre-push:
   commands:

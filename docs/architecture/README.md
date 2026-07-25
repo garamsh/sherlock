@@ -31,7 +31,7 @@ Current architecture of the system and the decisions behind it. This file is the
 
 | Path | Responsibility | Topic file |
 |---|---|---|
-| `cmd/gateway/main.go` | Construct concrete implementations and wire them; nothing else. | — |
+| `cmd/gagent/` | CLI entry point (`gagent gateway`, `gagent agent`): resolve config and wire concrete implementations; nothing else. | — |
 | `internal/gateway/` | Accept normalized inbound messages, route them to environments, and publish the monitoring event stream. | `gateway.md` |
 | `internal/agent/` | Run the reasoning loop (frame, recall, act, writeback) for one rolling session per environment. | `agent.md` |
 | `internal/tool/` | Define the Tool contract (name, input schema, output schema) and the registry every tool joins. | — |

@@ -14,6 +14,7 @@ Governs the environment model: what an environment is, its topology, and its tru
 - Boundary policy — egress, CPU/memory quotas, mount scope, lifecycle — is injected from outside at environment creation. The agent cannot change it.
 - Direct network egress for the agent UID is blocked; the only outbound path is the egress tool (see `security.md`).
 - Each environment owns `data/envs/<env-id>/` (workspace + `memory.db`). The directory is the isolation unit: teardown, migration, and backup are directory operations.
+- MVP container boundary: the environment container mounts only `workspace/` (never `memory.db`), has no network egress, and gets its CPU/memory quotas from an injected policy. UID separation is not yet enforced (see open questions).
 - The pod/sidecar topology is a documented hardening option for high-value deployments; the trust-domain model is unchanged.
 
 ## Rejected alternatives

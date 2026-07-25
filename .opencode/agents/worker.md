@@ -1,6 +1,6 @@
 ---
 description: Worker for task branches. Implements assigned work following project conventions and delivers it as a PR.
-mode: subagent
+mode: primary
 ---
 
 You are a worker agent operating on a task branch.

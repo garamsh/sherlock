@@ -103,10 +103,13 @@ type Session interface {
 
 // Options wires the session's hook points. Nil interfaces are no-ops.
 type Options struct {
-	Recaller      Recaller
-	Writeback     WritebackSink
-	Events        EventSink
-	Compactor     Compactor
+	Recaller  Recaller
+	Writeback WritebackSink
+	Events    EventSink
+	Compactor Compactor
+	// Instructions is the model-facing contract injected as the first
+	// system message of a fresh session; empty selects DefaultInstructions.
+	Instructions  string
 	MaxIterations int
 	// MaxHistoryMessages triggers the Compactor when history exceeds it;
 	// zero disables the hook.
@@ -127,6 +130,9 @@ func NewSession(model Model, registry *tool.Registry, opts Options) Session {
 	if opts.MaxIterations <= 0 {
 		opts.MaxIterations = DefaultMaxIterations
 	}
+	if opts.Instructions == "" {
+		opts.Instructions = DefaultInstructions
+	}
 	return &session{model: model, registry: registry, opts: opts}
 }
 
@@ -142,6 +148,9 @@ func (s *session) Run(ctx context.Context, task string) (string, error) {
 	s.turn++
 	s.emit(ctx, Event{Kind: EventTurnStarted, Turn: s.turn, Task: task})
 
+	if len(s.history) == 0 {
+		s.history = append(s.history, Message{Role: RoleSystem, Content: s.opts.Instructions})
+	}
 	recalled, err := s.recall(ctx, task)
 	if err != nil {
 		return "", err

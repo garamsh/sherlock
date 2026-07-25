@@ -118,24 +118,26 @@ func TestSessionRun_ScriptedMultiTurnScenario(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "The echo said hi.", final)
 
-	// Frame and recall anchored the turn.
+	// Frame and recall anchored the turn, behind the injected instructions.
 	require.Equal(t, []string{"what did the echo say?"}, recaller.tasks)
 	history := s.History()
-	require.Len(t, history, 5)
+	require.Len(t, history, 6)
 	assert.Equal(t, agent.RoleSystem, history[0].Role)
-	assert.Contains(t, history[0].Content, "## Current task\nwhat did the echo say?")
-	assert.Contains(t, history[0].Content, "- [m1] (2d): user drinks tea")
-	assert.Equal(t, agent.RoleUser, history[1].Role)
-	assert.Equal(t, agent.RoleAssistant, history[2].Role)
-	require.Len(t, history[2].ToolCalls, 1)
-	assert.Equal(t, "echo", history[2].ToolCalls[0].Name)
-	assert.NotEmpty(t, history[2].ToolCalls[0].ID, "scripted model assigns tool-call IDs")
+	assert.Equal(t, agent.DefaultInstructions, history[0].Content)
+	assert.Equal(t, agent.RoleSystem, history[1].Role)
+	assert.Contains(t, history[1].Content, "## Current task\nwhat did the echo say?")
+	assert.Contains(t, history[1].Content, "- [m1] (2d): user drinks tea")
+	assert.Equal(t, agent.RoleUser, history[2].Role)
+	assert.Equal(t, agent.RoleAssistant, history[3].Role)
+	require.Len(t, history[3].ToolCalls, 1)
+	assert.Equal(t, "echo", history[3].ToolCalls[0].Name)
+	assert.NotEmpty(t, history[3].ToolCalls[0].ID, "scripted model assigns tool-call IDs")
 
 	// The tool result was incorporated before the final response.
-	assert.Equal(t, agent.RoleTool, history[3].Role)
-	assert.Equal(t, `{"echo":"hi"}`, history[3].Content)
-	assert.Equal(t, history[2].ToolCalls[0].ID, history[3].ToolCallID)
-	assert.Equal(t, agent.RoleAssistant, history[4].Role)
+	assert.Equal(t, agent.RoleTool, history[4].Role)
+	assert.Equal(t, `{"echo":"hi"}`, history[4].Content)
+	assert.Equal(t, history[3].ToolCalls[0].ID, history[4].ToolCallID)
+	assert.Equal(t, agent.RoleAssistant, history[5].Role)
 
 	// Every model response's memory block reached the writeback sink.
 	require.Equal(t, [][]agent.WritebackOp{
@@ -185,7 +187,7 @@ func TestSessionRun_RollingSession(t *testing.T) {
 	assert.Equal(t, "second", second)
 
 	// One rolling session: history accumulates, turn numbers increment.
-	assert.Len(t, s.History(), 6)
+	assert.Len(t, s.History(), 7)
 	assert.Equal(t, 1, events.events[0].Turn)
 	last := events.events[len(events.events)-1]
 	assert.Equal(t, agent.EventTurnFinished, last.Kind)
@@ -200,7 +202,7 @@ func TestSessionRun_NoRecallStatesAbsence(t *testing.T) {
 
 	_, err := s.Run(context.Background(), "anything")
 	require.NoError(t, err)
-	assert.Contains(t, s.History()[0].Content, "No relevant memories.")
+	assert.Contains(t, s.History()[1].Content, "No relevant memories.")
 }
 
 func TestSessionRun_MalformedWriteback(t *testing.T) {
@@ -229,7 +231,7 @@ func TestSessionRun_UnknownToolFeedsErrorBack(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "recovered", final)
 
-	toolMsg := s.History()[3]
+	toolMsg := s.History()[4]
 	assert.Equal(t, agent.RoleTool, toolMsg.Role)
 	assert.Contains(t, toolMsg.Content, "tool not found")
 	toolEvent := events.events[2]
@@ -299,4 +301,60 @@ func TestSessionRun_ModelErrorPropagates(t *testing.T) {
 	_, err := s.Run(context.Background(), "task")
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "provider down")
+}
+
+// captureModel records the messages of every Chat call so tests can assert
+// what the session sent the model.
+type captureModel struct {
+	calls [][]agent.Message
+}
+
+func (m *captureModel) Chat(_ context.Context, messages []agent.Message, _ []tool.Descriptor) (agent.Response, error) {
+	m.calls = append(m.calls, append([]agent.Message(nil), messages...))
+	return agent.Response{Content: "done"}, nil
+}
+
+func TestSessionRun_InstructionsAreFirstSystemMessage(t *testing.T) {
+	model := &captureModel{}
+	s := agent.NewSession(model, tool.NewRegistry(), agent.Options{})
+
+	_, err := s.Run(context.Background(), "task")
+	require.NoError(t, err)
+
+	messages := model.calls[0]
+	require.GreaterOrEqual(t, len(messages), 3)
+	assert.Equal(t, agent.RoleSystem, messages[0].Role)
+	assert.Equal(t, agent.DefaultInstructions, messages[0].Content)
+	assert.Equal(t, agent.RoleSystem, messages[1].Role, "frame context follows the instructions")
+	assert.Equal(t, agent.RoleUser, messages[2].Role)
+}
+
+func TestSessionRun_InstructionsOverride(t *testing.T) {
+	model := &captureModel{}
+	s := agent.NewSession(model, tool.NewRegistry(), agent.Options{Instructions: "custom contract"})
+
+	_, err := s.Run(context.Background(), "task")
+	require.NoError(t, err)
+
+	assert.Equal(t, "custom contract", model.calls[0][0].Content)
+}
+
+func TestSessionRun_InstructionsInjectedOnce(t *testing.T) {
+	model := &captureModel{}
+	s := agent.NewSession(model, tool.NewRegistry(), agent.Options{})
+
+	_, err := s.Run(context.Background(), "task one")
+	require.NoError(t, err)
+	_, err = s.Run(context.Background(), "task two")
+	require.NoError(t, err)
+
+	second := model.calls[1]
+	var injections int
+	for _, msg := range second {
+		if msg.Content == agent.DefaultInstructions {
+			injections++
+		}
+	}
+	assert.Equal(t, 1, injections, "instructions are injected once, on the first turn")
+	require.Len(t, model.calls, 2)
 }

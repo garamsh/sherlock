@@ -16,7 +16,7 @@ Current architecture of the system and the decisions behind it. This file is the
 
 ## Index
 
-- `overview.md` — module list by responsibility (planned structure; no code yet)
+- `overview.md` — module list by responsibility (partially implemented)
 - `environment.md` — environment model: body, topology, trust domains
 - `memory.md` — long-term memory: store, search, lifecycle
 - `security.md` — trust domains, secret custody, egress

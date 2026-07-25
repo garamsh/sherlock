@@ -2,7 +2,7 @@
 
 Governs what the system is made of: the module list and the entry point to the topic files. Current truth per responsibility lives in the topic files; decision history lives in `adr/`.
 
-> Status: planned — no source code exists yet. This is the structure the first code PRs create.
+> Status: partial — `internal/tool/` and `internal/environment/` exist; the remaining modules are planned.
 
 ## System shape
 
@@ -16,6 +16,7 @@ Three components only — Gateway, Agent, Tool (PLAN §2). Everything else is a 
 | `internal/gateway/` | Accept normalized inbound messages, route them to environments, and publish the monitoring event stream. | `gateway.md` |
 | `internal/agent/` | Run the reasoning loop (frame, recall, act, writeback) for one rolling session per environment. | `agent.md` |
 | `internal/tool/` | Define the Tool contract (name, input schema, output schema) and the registry every tool joins. | — |
+| `internal/environment/` | Own the environment data layout: create-on-first-use and teardown of `data/envs/<env-id>/`. | `environment.md` |
 | `internal/memory/` | Own one environment's long-term memory: the `memory.db` store, hybrid search, and the five memory operations. | `memory.md` |
 | `internal/sandbox/` | Execute agent-supplied commands inside the agent's own environment (`sandbox_exec`). | `environment.md` |
 | `internal/files/` | Read and write files inside the environment's workspace. | `environment.md` |

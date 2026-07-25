@@ -14,7 +14,19 @@ Developers who want to build and operate autonomous agents on a minimal, explici
 
 ## Running
 
-The project is in early development; there is no runnable service yet. To work on the codebase you need Go and GNU Make, and the standard checks are:
+The gateway serves HTTP message ingress and an SSE monitoring stream:
+
+```sh
+go run ./cmd/gateway -addr :8080 -data-root data/envs
+```
+
+- `POST /envs/{env-id}/messages` with `{"content":"..."}` — queues a message for the environment (created on first use) and returns `202` with a message ID.
+- `GET /envs/{env-id}/events` — server-sent events stream of the environment's agent loop (turn started, tool call, writeback, turn finished).
+- Agent replies (`message_send`) land as JSON files in `data/envs/<env-id>/outbox/`.
+
+**Warning: the gateway has no authentication.** Run it on trusted networks only — an exposed gateway is a remote shell into the environment.
+
+The binary wires the scripted mock model (no LLM provider yet), which answers each environment's first message with a canned reply; `sandbox_exec` needs a Docker daemon. To work on the codebase you need Go and GNU Make, and the standard checks are:
 
 ```sh
 make ci      # lint + format check + test + build (same as CI)

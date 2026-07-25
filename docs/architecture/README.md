@@ -16,10 +16,28 @@ Current architecture of the system and the decisions behind it. This file is the
 
 ## Index
 
-- `overview.md` — module list by responsibility (partially implemented)
+### Responsibility documents
+
 - `environment.md` — environment model: body, topology, trust domains
 - `memory.md` — long-term memory: store, search, lifecycle
 - `security.md` — trust domains, secret custody, egress
 - `gateway.md` — ingress, routing, outbound, monitoring
 - `agent.md` — reasoning loop, tool use, model access
 - `adr/0001`–`0009` — initial design decision log (see topic files for current truth)
+
+### Modules
+
+> Status: partial — `internal/tool/` and `internal/environment/` exist; the rest are planned.
+
+| Path | Responsibility | Topic file |
+|---|---|---|
+| `cmd/gateway/main.go` | Construct concrete implementations and wire them; nothing else. | — |
+| `internal/gateway/` | Accept normalized inbound messages, route them to environments, and publish the monitoring event stream. | `gateway.md` |
+| `internal/agent/` | Run the reasoning loop (frame, recall, act, writeback) for one rolling session per environment. | `agent.md` |
+| `internal/tool/` | Define the Tool contract (name, input schema, output schema) and the registry every tool joins. | — |
+| `internal/environment/` | Own the environment data layout: create-on-first-use and teardown of `data/envs/<env-id>/`. | `environment.md` |
+| `internal/memory/` | Own one environment's long-term memory: the `memory.db` store, hybrid search, and the five memory operations. | `memory.md` |
+| `internal/sandbox/` | Execute agent-supplied commands inside the agent's own environment (`sandbox_exec`). | `environment.md` |
+| `internal/files/` | Read and write files inside the environment's workspace. | `environment.md` |
+| `internal/message/` | Deliver agent-decided outbound messages to channels and peers (`message_send`). | `gateway.md` |
+| `tests/` | End-to-end scenarios wiring multiple modules together. | — |

@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"strconv"
-	"time"
 
 	"github.com/garamsh/gagent/internal/agent"
 	"github.com/garamsh/gagent/internal/memory"
@@ -15,16 +14,11 @@ import (
 const DefaultAddImportance = 0.5
 
 // Writeback adapts the agent loop's memory writeback (ADR 0008 step 4) to
-// the memory service. Deletes go through the store because the service
-// exposes no per-ID delete; archiving keeps the platform rule that
-// nothing is hard-deleted.
+// the memory service. Deletes go through the service so the archive
+// invariant (nothing is hard-deleted) stays owned by the memory package.
 type Writeback struct {
-	// Svc applies add and update operations.
+	// Svc applies add, update, and delete operations.
 	Svc memory.Service
-	// Store archives deleted memories by ID.
-	Store memory.Store
-	// Now supplies the archive timestamp; nil uses time.Now.
-	Now func() time.Time
 }
 
 // Apply implements agent.WritebackSink.
@@ -66,11 +60,7 @@ func (w Writeback) applyOne(ctx context.Context, op agent.WritebackOp) error {
 		if err != nil {
 			return err
 		}
-		now := time.Now
-		if w.Now != nil {
-			now = w.Now
-		}
-		return w.Store.Archive(ctx, id, 0, now())
+		return w.Svc.Delete(ctx, id)
 	default:
 		return fmt.Errorf("unknown writeback op %q", op.Kind)
 	}

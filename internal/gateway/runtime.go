@@ -99,7 +99,7 @@ func (f *Factory) New(_ context.Context, envID string, events agent.EventSink) (
 
 	session := agent.NewSession(f.NewModel(envID), registry, agent.Options{
 		Recaller:  Recall{Svc: memSvc},
-		Writeback: Writeback{Svc: memSvc, Store: store},
+		Writeback: Writeback{Svc: memSvc},
 		Events:    events,
 	})
 	return &Runtime{

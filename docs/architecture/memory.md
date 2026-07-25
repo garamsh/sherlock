@@ -28,6 +28,7 @@ Governs long-term memory: the store, the search, and the lifecycle. Rationale: A
 ### Maintenance
 
 - **Updates supersede, never overwrite** — the old row records `superseded_by` and `valid_to` and moves to the archive.
+- **Delete retires, never erases** — the writeback `delete` op goes through `memory.Service.Delete`: the row moves to the archive with `valid_to` set and `superseded_by` left empty (retirement, not supersession). Delete is not idempotent; a missing or already-archived ID is `ErrNotFound`.
 - **Capacity** — the active index is capped; eviction score is the same weighted function as ranking; evicted entries move to the archive.
 - **Consolidation** — on store-size threshold or environment shutdown, episodic clusters are compressed into semantic parent memories (originals archived).
 - **Context overflow** — when the conversation window fills, the oldest turns are summarized and stored as episodic memory.

@@ -2,6 +2,7 @@ package memory_test
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"path/filepath"
@@ -142,6 +143,56 @@ func TestTool_UpdateSupersedesAndExcludesOldFromSearch(t *testing.T) {
 	}
 
 	_, err = svc.Update(context.Background(), memory.UpdateInput{ID: oldID, Content: "again"})
+	require.ErrorIs(t, err, memory.ErrNotFound)
+}
+
+func TestDelete_ArchivesAndExcludesFromSearch(t *testing.T) {
+	svc := newService(t)
+	id := storeViaTool(t, svc, "temporary zebra note", "episodic", 0.5)
+	keep := storeViaTool(t, svc, "durable zebra fact", "semantic", 0.5)
+
+	require.NoError(t, svc.Delete(context.Background(), id))
+
+	results := searchViaTool(t, svc, "zebra")
+	require.NotEmpty(t, results, "the surviving memory proves search still matches")
+	for _, r := range results {
+		assert.NotEqual(t, float64(id), r["id"], "deleted row must not be searchable")
+		assert.Equal(t, float64(keep), r["id"])
+	}
+}
+
+func TestDelete_RecordsValidToWithoutSupersession(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "memory.db")
+	st, err := sqlite.Open(path)
+	require.NoError(t, err)
+	svc := memory.NewService(st, memory.NewHashingEmbedder(), memory.NewConcatSummarizer(),
+		memory.WithClock(func() time.Time { return now }))
+	t.Cleanup(func() { assert.NoError(t, svc.Close()) })
+
+	id := storeViaTool(t, svc, "temporary note", "episodic", 0.5)
+	require.NoError(t, svc.Delete(context.Background(), id))
+
+	db, err := sql.Open("sqlite", path)
+	require.NoError(t, err)
+	defer db.Close()
+	var supersededBy sql.NullInt64
+	var validTo int64
+	require.NoError(t, db.QueryRow(
+		`SELECT superseded_by, valid_to FROM memories_archive WHERE id = ?`, id,
+	).Scan(&supersededBy, &validTo))
+	assert.False(t, supersededBy.Valid, "delete retires; it does not supersede")
+	assert.Equal(t, now.Unix(), validTo)
+}
+
+func TestDelete_MissingOrAlreadyArchivedReturnsErrNotFound(t *testing.T) {
+	svc := newService(t)
+	id := storeViaTool(t, svc, "note", "episodic", 0.5)
+
+	require.NoError(t, svc.Delete(context.Background(), id))
+	err := svc.Delete(context.Background(), id)
+	require.ErrorIs(t, err, memory.ErrNotFound, "delete is not idempotent")
+
+	err = svc.Delete(context.Background(), 999)
 	require.ErrorIs(t, err, memory.ErrNotFound)
 }
 

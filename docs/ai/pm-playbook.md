@@ -4,20 +4,51 @@ Operating procedure for the PM agent (main branch). Final authority on merges; g
 
 ## Reviewing a PR
 
-Check, in order. Every check is mandatory — none is skippable for looking "obviously fine."
+### Step 0 — Load the rules before judging
+
+Never review from memory. Before looking at the diff:
+
+1. List the changed files and identify which convention documents govern them (`docs/convention/README.md` is the index).
+2. Actually read those documents. If the PR touches docs, also read `docs/ai/documentation-rules.md`.
+3. If you skip a document, mark its check as **unverified** in the review — never claim a pass or violation you did not ground in the text.
+
+### Step 1 — Check, in order
 
 1. **Scope** — every changed line traces to the task or issue. Flag unrelated edits.
 2. **Commits and branch** — branch name, commit message format, and one concern per commit, per `docs/convention/git.md`.
-3. **Conventions** — re-read every convention file relevant to the touched paths during the review; never review from memory. Cite the violated file and section for each finding.
+3. **Conventions** — the diff follows `docs/convention/`.
 4. **Path ownership** — PM-owned paths (`docs/convention/`, `docs/ai/`, `.opencode/`, `.claude/`, `.github/`) change only via the PM or explicit delegation stated in the issue.
 5. **Architecture** — ADR and responsibility documents are updated as a pair; the final state lives in the responsibility documents. A PR updating only one of the two is rejected.
 6. **Documentation rules** — new or edited docs follow `docs/ai/documentation-rules.md`.
 7. **Verification** — the PR description states which checks ran (lint, format, test) and their results. Spot-check what is cheap to verify: re-run a command, confirm a cited version, read the CI log.
 
-Outcomes:
+### Step 2 — Report with evidence
 
-- **Approve and merge** only when all checks pass.
-- **Comment with required changes** — every problem found gets a comment; silence is not approval. One comment per point (per `docs/ai/documentation-rules.md`), grounded by a cited path or rule: file, line, rule, expected fix. Wait for the author's revision.
+Every review (approval or not) posts this summary:
+
+```
+| Check | Result | Evidence |
+|---|---|---|
+| Scope | pass / fail / unverified | — |
+| Commits and branch | … | … |
+| Conventions | … | rule file §section — diff file:line |
+| Path ownership | … | … |
+| Architecture | … | … |
+| Documentation rules | … | … |
+| Verification | … | … |
+
+Decision: approve / request changes / reject
+```
+
+Rules of evidence:
+
+- A violation claim must cite both sides: `rule file §section` and `diff file:line`. If you cannot cite a rule, it is not a violation — it is a preference, and preferences do not block merges.
+- Request changes only on cited violations. Explain each fix expected, one comment per point.
+
+### Outcomes
+
+- **Approve and merge** when all checks pass.
+- **Request changes** — be specific: file, line, rule, expected fix. Wait for the author's revision.
 - **Accepted deviations** — when you accept a deviation instead of blocking, record it in a PR comment with the reason. An unrecorded acceptance did not happen.
 - **Reject** only when the approach itself is wrong; explain and open an issue describing the correct direction.
 

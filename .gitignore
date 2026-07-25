@@ -14,11 +14,19 @@ Thumbs.db
 # Logs
 *.log
 
-# Common build outputs and dependencies (extend per stack during bootstrap)
-node_modules/
-dist/
-build/
-__pycache__/
-*.pyc
-.venv/
-target/
+# Go (github/gitignore Go.gitignore)
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+coverage.*
+*.coverprofile
+profile.cov
+go.work
+go.work.sum
+
+# Environment data (docs/architecture/environment.md)
+data/

@@ -14,8 +14,8 @@ import (
 )
 
 func TestWriteback_AddStoresNewMemory(t *testing.T) {
-	svc, store := newMemoryService(t)
-	wb := gateway.Writeback{Svc: svc, Store: store}
+	svc, _ := newMemoryService(t)
+	wb := gateway.Writeback{Svc: svc}
 
 	err := wb.Apply(context.Background(), []agent.WritebackOp{
 		{Kind: agent.OpAdd, Content: "user prefers dark mode", Type: "semantic"},
@@ -30,8 +30,8 @@ func TestWriteback_AddStoresNewMemory(t *testing.T) {
 }
 
 func TestWriteback_AddWithoutTypeDefaultsToEpisodic(t *testing.T) {
-	svc, store := newMemoryService(t)
-	wb := gateway.Writeback{Svc: svc, Store: store}
+	svc, _ := newMemoryService(t)
+	wb := gateway.Writeback{Svc: svc}
 
 	err := wb.Apply(context.Background(), []agent.WritebackOp{
 		{Kind: agent.OpAdd, Content: "asked about the weather"},
@@ -55,7 +55,7 @@ func TestWriteback_UpdateSupersedesMemory(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	wb := gateway.Writeback{Svc: svc, Store: store}
+	wb := gateway.Writeback{Svc: svc}
 	err = wb.Apply(ctx, []agent.WritebackOp{
 		{Kind: agent.OpUpdate, ID: strconv.FormatInt(stored.ID, 10), Content: "new fact"},
 	})
@@ -80,7 +80,7 @@ func TestWriteback_DeleteArchivesMemory(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	wb := gateway.Writeback{Svc: svc, Store: store}
+	wb := gateway.Writeback{Svc: svc}
 	err = wb.Apply(ctx, []agent.WritebackOp{
 		{Kind: agent.OpDelete, ID: strconv.FormatInt(stored.ID, 10)},
 	})
@@ -91,8 +91,8 @@ func TestWriteback_DeleteArchivesMemory(t *testing.T) {
 }
 
 func TestWriteback_KeepIsANoOp(t *testing.T) {
-	svc, store := newMemoryService(t)
-	wb := gateway.Writeback{Svc: svc, Store: store}
+	svc, _ := newMemoryService(t)
+	wb := gateway.Writeback{Svc: svc}
 
 	err := wb.Apply(context.Background(), []agent.WritebackOp{
 		{Kind: agent.OpKeep, ID: "42"},
@@ -101,8 +101,8 @@ func TestWriteback_KeepIsANoOp(t *testing.T) {
 }
 
 func TestWriteback_InvalidIDFails(t *testing.T) {
-	svc, store := newMemoryService(t)
-	wb := gateway.Writeback{Svc: svc, Store: store}
+	svc, _ := newMemoryService(t)
+	wb := gateway.Writeback{Svc: svc}
 
 	err := wb.Apply(context.Background(), []agent.WritebackOp{
 		{Kind: agent.OpDelete, ID: "not-a-number"},
@@ -111,8 +111,8 @@ func TestWriteback_InvalidIDFails(t *testing.T) {
 }
 
 func TestWriteback_UnknownKindFails(t *testing.T) {
-	svc, store := newMemoryService(t)
-	wb := gateway.Writeback{Svc: svc, Store: store}
+	svc, _ := newMemoryService(t)
+	wb := gateway.Writeback{Svc: svc}
 
 	err := wb.Apply(context.Background(), []agent.WritebackOp{
 		{Kind: agent.OpKind("explode"), ID: "1"},

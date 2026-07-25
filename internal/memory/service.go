@@ -47,8 +47,9 @@ type Summarizer interface {
 	Summarize(ctx context.Context, contents []string) (string, error)
 }
 
-// Service is the memory tool's behavior contract: the five operations
-// plus the runtime queries (Recall, Similar) the agent loop needs.
+// Service is the memory domain's behavior contract: the tool's five
+// operations, the per-ID Delete the writeback adapter needs, and the
+// runtime queries (Recall, Similar) the agent loop needs.
 type Service interface {
 	// Store embeds and inserts a new memory, evicting lowest-score-first
 	// when the active index exceeds capacity.
@@ -59,6 +60,10 @@ type Service interface {
 	// Update supersedes a memory: a new row is inserted and the old row
 	// is archived with superseded_by/valid_to set. Never overwrites.
 	Update(ctx context.Context, in UpdateInput) (UpdateResult, error)
+	// Delete archives one active memory by ID, recording valid_to while
+	// superseded_by stays 0 (retirement, not supersession). A missing or
+	// already-archived ID returns ErrNotFound.
+	Delete(ctx context.Context, id int64) error
 	// Compress summarizes a set of episodic memories into one semantic
 	// parent and archives the originals.
 	Compress(ctx context.Context, ids []int64) (CompressResult, error)

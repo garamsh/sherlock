@@ -14,10 +14,18 @@ Developers who want to build and operate autonomous agents on a minimal, explici
 
 ## Running
 
-The gateway serves HTTP message ingress and an SSE monitoring stream:
+One CLI binary, `gagent`, runs the platform. Build or run it from source:
 
 ```sh
-go run ./cmd/gateway -addr :8080 -data-root data/envs
+go run ./cmd/gagent <subcommand>   # or: go build -o gagent ./cmd/gagent
+```
+
+### gagent gateway
+
+Serves HTTP message ingress and an SSE monitoring stream:
+
+```sh
+gagent gateway
 ```
 
 - `POST /envs/{env-id}/messages` with `{"content":"..."}` — queues a message for the environment (created on first use) and returns `202` with a message ID.
@@ -25,6 +33,38 @@ go run ./cmd/gateway -addr :8080 -data-root data/envs
 - Agent replies (`message_send`) land as JSON files in `data/envs/<env-id>/outbox/`.
 
 **Warning: the gateway has no authentication.** Run it on trusted networks only — an exposed gateway is a remote shell into the environment.
+
+### gagent agent
+
+Runs one turn of an agent directly and prints the result:
+
+```sh
+gagent agent --env my-env --message "hello"
+```
+
+- `--message` is required; `--env` defaults to `default`.
+- Outbound `message_send` content and the final response print to stdout (logs go to stderr).
+
+### Configuration
+
+Settings resolve in order: **flags > environment variables > config file > defaults**. Environment variables use the `GAGENT_` prefix (`GAGENT_DATA_ROOT`, `GAGENT_EXEC_TIMEOUT`, …). The config file is `gagent.yaml`, searched in the working directory first, then `~/.gagent/`.
+
+| Key | Flag | Default |
+|---|---|---|
+| `addr` | `--addr` | `:8080` (used by `gateway` only) |
+| `data-root` | `--data-root` | `data/envs` |
+| `image` | `--image` | `alpine:3.21` |
+| `exec-timeout` | `--exec-timeout` | `30s` |
+| `model` | — | reserved for a future model provider |
+
+Example `gagent.yaml`:
+
+```yaml
+addr: ":9090"
+data-root: /var/lib/gagent/envs
+image: alpine:3.21
+exec-timeout: 45s
+```
 
 The binary wires the scripted mock model (no LLM provider yet), which answers each environment's first message with a canned reply; `sandbox_exec` needs a Docker daemon. To work on the codebase you need Go and GNU Make, and the standard checks are:
 

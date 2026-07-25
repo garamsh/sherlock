@@ -27,7 +27,7 @@ Current architecture of the system and the decisions behind it. This file is the
 
 ### Modules
 
-> Status: partial — `internal/agent/`, `internal/tool/`, `internal/environment/`, `internal/sandbox/`, `internal/files/`, `internal/message/`, and `internal/memory/` exist; the rest are planned.
+> Status: all listed modules exist.
 
 | Path | Responsibility | Topic file |
 |---|---|---|

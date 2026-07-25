@@ -4,11 +4,14 @@ What the system is made of and why it is shaped this way. Workers read this befo
 
 ## Contents
 
-- `overview.md` — module list: each module with a one-sentence responsibility
-- `adr/` — architecture decision records, one file per decision
+- `overview.md` — module list and entry point
+- Topic files (`environment.md`, `memory.md`, `security.md`, `gateway.md`, `agent.md`) — current truth per responsibility
+- `adr/` — decision records, immutable once merged
 
 ## Rules
 
 - Describe structure with lists of paths and short sentences. No diagrams.
-- Record *why* in ADRs, *what* in the overview. Never record *how* — that is the code's job.
-- A PR that changes module boundaries updates `overview.md`; a PR that changes a decision adds an ADR. Same PR, always.
+- Topic files hold current truth: what exists, the rules, rejected alternatives, open questions. ADRs hold the decision context at the time. Never record *how* — that is the code's job.
+- A PR that changes a decision updates the topic file **and** adds a superseding ADR in the same PR. One without the other is rejected.
+- ADRs are never edited after merge.
+- Reading order for workers: `overview.md`, then the topic file for each module being touched. ADRs are optional background.

@@ -15,7 +15,11 @@ Rules every agent follows when writing code. The PM owns these files; workers re
 
 ## Stack-specific
 
-`stack-*.md` files apply only when the project uses that stack. The bootstrap process keeps the relevant ones and deletes the rest.
+| File | Governs |
+|---|---|
+| `stack-go.md` | Go layout, naming, errors, testing, tooling |
+
+This is a Go project; `stack-go.md` is the only stack file. It takes precedence over the stack-neutral files on conflict.
 
 ## Precedence
 

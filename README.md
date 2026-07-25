@@ -1,26 +1,27 @@
-# Harness — AI Agent Project Template
+# gagent
 
-A GitHub template repository for projects developed by AI agents (opencode, Claude Code). Multiple agents work in parallel on separate branches under two roles: a PM agent on `main` that reviews, merges, and supervises — and worker agents that implement tasks following written conventions.
+gagent is an autonomous agent platform written in Go. It runs AI agents that can reason over multi-turn conversations, call tools, execute code, and manage their own long-term memory.
 
-## Usage
+## Principles
 
-1. Create a new repository with **Use this template**.
-2. Start a PM agent on `main`. It executes `docs/ai/BOOTSTRAP.md`: selects stack conventions, sets up CI plumbing, writes this README as a project introduction, and opens the bootstrap PR.
+- **Three components only: Gateway / Agent / Tool.** The Gateway normalizes external channels (web, API, messengers, CLI) into a single entry point. The Agent runs the reasoning loop and decides which tools to call. Every capability — memory, sandboxed execution, external service connectors — is a Tool behind one common interface. No extra layers.
+- **The agent owns its execution environment.** Each agent runs in its own container with full authority inside it; the orchestration layer manages the boundary (network egress, mounts, resource quotas, lifecycle).
+- **Memory is agent-managed, not just stored.** Memory is RAG-based, and the agent actively maintains it: storing, updating, compressing, and forgetting — like human memory rather than a plain store/search index.
 
-This file is replaced during bootstrap; do not edit it to describe your project.
+## Who it is for
 
-## Structure
+Developers who want to build and operate autonomous agents on a minimal, explicit architecture — without framework lock-in or hidden subsystems.
 
-- `AGENTS.md` — role matrix and rules every agent follows
-- `docs/ai/` — agent-only procedures (bootstrap, PM playbook, worker guide, documentation rules)
-- `docs/convention/` — code conventions; stack files are pruned during bootstrap
-- `docs/architecture/` — structure overview and ADRs
-- `.opencode/agents/`, `.claude/agents/` — tool-specific agent adapters
-- `.github/` — PR and issue templates, CODEOWNERS
+## Running
 
-## GitHub settings not covered by the template
+The project is in early development; there is no runnable service yet. To work on the codebase you need Go and GNU Make, and the standard checks are:
 
-Templates do not carry repository settings. After creation, configure manually:
+```sh
+make ci      # lint + format check + test + build (same as CI)
+```
 
-- **Settings → General → Template repository**: leave unchecked for the new project (that checkbox is for this template repo itself).
-- **Branch protection on `main`**: require pull requests, require review before merge, block direct pushes — this mechanically enforces the PM role.
+Individual targets: `make lint`, `make format`, `make test`, `make build`.
+
+## Development
+
+This repository is developed by AI agents under written conventions — see `AGENTS.md` for the role model and `docs/convention/` for the rules all code follows. Internal structure and design decisions live in `docs/architecture/`.

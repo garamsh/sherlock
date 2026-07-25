@@ -19,7 +19,7 @@ Rules every agent follows when writing code. The PM owns these files; workers re
 |---|---|
 | `stack-go.md` | Go layout, naming, errors, testing, tooling |
 
-This is a Go project; `stack-go.md` is the only stack file. It takes precedence over the stack-neutral files on conflict.
+This is a Go project; `stack-go.md` is the only stack file.
 
 ## Precedence
 

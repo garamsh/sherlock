@@ -24,4 +24,6 @@ Individual targets: `make lint`, `make format`, `make test`, `make build`.
 
 ## Development
 
+Run `make hooks` once after cloning to install the lefthook git hooks (pre-commit lint/format, pre-push test).
+
 This repository is developed by AI agents under written conventions — see `AGENTS.md` for the role model and `docs/convention/` for the rules all code follows. Internal structure and design decisions live in `docs/architecture/`.

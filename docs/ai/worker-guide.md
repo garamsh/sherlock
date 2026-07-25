@@ -30,5 +30,5 @@ Operating procedure for worker agents (task branches). You implement assigned wo
 
 ## Limits
 
-- Never modify `docs/convention/`, `docs/ai/`, `.opencode/`, `.claude/`, or `.github/`.
+- Never modify `docs/convention/`, `docs/ai/`, `.opencode/`, `.claude/`, or `.github/`. Exception: PM-owned paths may be modified only when the assigned issue explicitly delegates them.
 - Never create, edit, close issues, or merge PRs.

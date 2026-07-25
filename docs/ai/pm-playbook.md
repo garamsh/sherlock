@@ -27,6 +27,7 @@ Outcomes:
 - After exploring the project, open issues for gaps you find (missing conventions, structural drift, uncovered risks).
 - When PR feedback reveals a recurring problem, edit or create an issue so the fix is tracked once, not repeated per-PR.
 - Issues state the goal and acceptance criteria, not the implementation.
+- An issue whose scope touches PM-owned paths (`docs/convention/`, `docs/ai/`, `.opencode/`, `.claude/`, `.github/`) is executed by the PM, unless the issue body explicitly delegates those paths to the worker.
 
 ## Coordinating concurrent work
 

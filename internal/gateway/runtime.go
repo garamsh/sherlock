@@ -49,6 +49,9 @@ type Factory struct {
 	Policy sandbox.Policy
 	// ExecTimeout bounds every sandbox_exec command.
 	ExecTimeout time.Duration
+	// Sink, when non-nil, receives outbound messages instead of the default
+	// file outbox (the one-shot agent CLI prints them to stdout).
+	Sink message.Sink
 }
 
 var _ RuntimeFactory = (*Factory)(nil)
@@ -77,12 +80,17 @@ func (f *Factory) New(_ context.Context, envID string, events agent.EventSink) (
 		Policy:    f.Policy,
 	}, f.ExecTimeout)
 
+	sink := f.Sink
+	if sink == nil {
+		sink = NewOutbox(env.Dir())
+	}
+
 	registry := tool.NewRegistry()
 	for _, t := range []tool.Tool{
 		memory.NewTool(memSvc),
 		files.NewTool(fs),
 		exec,
-		message.NewSendTool(NewOutbox(env.Dir())),
+		message.NewSendTool(sink),
 	} {
 		if err := registry.Register(t); err != nil {
 			return nil, errors.Join(err, store.Close())

@@ -1,6 +1,6 @@
 # BOOTSTRAP.md — Project Initialization
 
-> Status: **INCOMPLETE** — the PM agent changes this to `COMPLETE (YYYY-MM-DD)` after finishing all steps.
+> Status: **COMPLETE (2026-07-25)**
 
 Executed once by the PM agent on `main` after the project is created from the template. All changes land in a single bootstrap PR.
 

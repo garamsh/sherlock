@@ -12,7 +12,7 @@ Executed once by the PM agent on `main` after the project is created from the te
 4. **Extend .gitignore.** Augment the template's base `.gitignore` with the stack's template from the `github/gitignore` collection (e.g. `Node.gitignore`, `Python.gitignore`). Verify the current template content via web fetch — do not write it from memory.
 4. **Set up CI plumbing.** Create the `Makefile` and `lefthook.yml` described in `docs/convention/ci.md` with the project's real commands. Add a CI workflow if the project will run automated checks.
 5. **Fill in CODEOWNERS.** Replace `@pm` in `.github/CODEOWNERS` with the GitHub user or team acting as PM.
-6. **Initialize architecture docs.** Create `docs/architecture/overview.md` with the initial structure: a short module list with one-sentence responsibilities. No diagrams.
+6. **Initialize architecture docs.** Create initial responsibility documents under `docs/architecture/` (one per major domain or concern, following the skeleton in `docs/architecture/README.md`), record any initial design decisions as ADRs, and fill in the index in `docs/architecture/README.md`.
 7. **Write the root README.md.** Introduce the project: what it is, who it is for, how to run it. Do not describe internal structure or modules — that belongs to `docs/architecture/`.
 8. **Refresh the convention index.** Update `docs/convention/README.md` so the file list matches reality.
 9. **Open one PR** titled `chore: bootstrap project conventions` containing all of the above, and merge it.

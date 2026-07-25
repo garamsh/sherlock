@@ -16,6 +16,7 @@ Each environment owns its memory as one file: `memory.db` (SQLite, pure-Go drive
 - Keyword search: SQLite FTS5.
 - Ranking: one hybrid scoring function combining vector and FTS5 scores, per PLAN §3. Re-ranking is out of scope.
 - `compress` summarizes detail memories into a parent memory and moves originals to an archive table — never immediate deletion.
+- Each memory carries the metadata of PLAN §3 plus a type field (`episodic` | `semantic`); the lifecycle that transitions between types is defined in ADR 0008.
 - The agent is the sole decision-maker for store/compress/forget; no separate memory-manager component exists.
 - A store interface hides SQLite so a remote/shared store can replace it per environment later without tool or agent changes.
 

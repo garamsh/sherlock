@@ -10,6 +10,7 @@ Governs the agent: the reasoning loop, tool use, and model access. Rationale: AD
 - Memory decisions (store, update, compress, forget) are the agent's own, made inside the reasoning loop via the memory tool and the writeback block. No separate memory-manager component exists.
 - Outbound replies are the agent's decision through the `message_send` tool; default reply conventions live in the agent's instructions.
 - All LLM access goes through narrow interfaces owned by the consumer: a model interface (agent loop) and an embedder interface (memory). MVP ships deterministic local implementations — a scripted mock model and a hashing-based embedder — so the full pipeline runs offline.
+- The loop, session, `Model` interface, lifecycle hook interfaces (`Recaller`, `WritebackSink`, `Compactor`, `EventSink`), and the scripted mock model live in `internal/agent/`. The writeback block is a trailing ` ```memory ` fenced JSON block carrying `keep` / `update` / `delete` / `add` operations; malformed blocks are typed errors.
 
 ## Open questions
 

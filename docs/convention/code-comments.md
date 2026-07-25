@@ -10,6 +10,10 @@ When you do comment, write the shortest version that conveys the essential point
 
 Long comments drift out of sync with the code they explain; short ones age well. If a comment needs more than 2–3 sentences, refactor the code first — extract the explanation into a doc comment on a named function or type where readers can find it.
 
+## Voice
+
+Write comments in declarative or imperative mood, stating facts: `returns the cached token`, `retries once on timeout`. Never narrate ("this will now…"), apologize ("unfortunately we have to…"), or justify the author's choices ("I chose this because…") — rationale belongs in the commit message or an ADR.
+
 ## Inline vs doc comments
 
 **Inline** (inside function bodies) — earn their place when they flag a non-obvious invariant, an ordering constraint, or an external constraint a future reader would otherwise re-derive incorrectly.

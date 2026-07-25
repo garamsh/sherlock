@@ -55,13 +55,14 @@ pre-commit:
       run: make lint
     format:
       run: make format
-      stage_fixed: true
 
 pre-push:
   commands:
     test:
       run: make test
 ```
+
+Add `stage_fixed: true` to a hook command only when its target modifies files (e.g. a `format-fix` target running `gofmt -w .`). On a check-only target it is a no-op — leave it out.
 
 Hooks give fast feedback before code leaves the machine. CI becomes a second line of defense, not the only one.
 

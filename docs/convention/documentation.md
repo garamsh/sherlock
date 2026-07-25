@@ -1,6 +1,6 @@
-# Documentation Rules
+# Documentation Conventions
 
-Applies to every file under `docs/` and to GitHub artifacts (issues, PRs, comments). Violations are grounds for PR rejection.
+What makes documentation valid in this project. Applies to every file under `docs/` and to GitHub artifacts (issues, PRs, comments). Violations are grounds for PR rejection. For review artifacts specifically, `review.md` adds stricter rules.
 
 ## Keep it maintainable
 

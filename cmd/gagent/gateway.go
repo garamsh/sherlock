@@ -28,13 +28,17 @@ func newGatewayCommand() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			return serveGateway(cmd.Context(), cfg)
+			persona, err := resolvePersona(cmd)
+			if err != nil {
+				return err
+			}
+			return serveGateway(cmd.Context(), cfg, persona)
 		},
 	}
 }
 
 // serveGateway runs the HTTP gateway until an interrupt or SIGTERM.
-func serveGateway(ctx context.Context, cfg Config) error {
+func serveGateway(ctx context.Context, cfg Config, persona string) error {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	slog.SetDefault(logger)
 
@@ -54,6 +58,7 @@ func serveGateway(ctx context.Context, cfg Config) error {
 	router := gateway.NewRouter(&gateway.Factory{
 		Root:        cfg.DataRoot,
 		NewModel:    newModel,
+		Persona:     persona,
 		Sandbox:     docker,
 		Image:       cfg.Image,
 		ExecTimeout: cfg.ExecTimeout,

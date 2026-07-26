@@ -107,9 +107,10 @@ type Options struct {
 	Writeback WritebackSink
 	Events    EventSink
 	Compactor Compactor
-	// Instructions is the model-facing contract injected as the first
-	// system message of a fresh session; empty selects DefaultInstructions.
-	Instructions  string
+	// Persona is the identity/behavior half of the session instructions;
+	// empty selects the embedded DefaultPersona. The platform Contract is
+	// always appended (see ComposeInstructions).
+	Persona       string
 	MaxIterations int
 	// MaxHistoryMessages triggers the Compactor when history exceeds it;
 	// zero disables the hook.
@@ -120,8 +121,11 @@ type session struct {
 	model    Model
 	registry *tool.Registry
 	opts     Options
-	history  []Message
-	turn     int
+	// instructions is the composed persona + contract, injected once as the
+	// first system message of a fresh session.
+	instructions string
+	history      []Message
+	turn         int
 }
 
 // NewSession returns a rolling session that drives the reasoning loop
@@ -130,10 +134,12 @@ func NewSession(model Model, registry *tool.Registry, opts Options) Session {
 	if opts.MaxIterations <= 0 {
 		opts.MaxIterations = DefaultMaxIterations
 	}
-	if opts.Instructions == "" {
-		opts.Instructions = DefaultInstructions
+	return &session{
+		model:        model,
+		registry:     registry,
+		opts:         opts,
+		instructions: ComposeInstructions(opts.Persona),
 	}
-	return &session{model: model, registry: registry, opts: opts}
 }
 
 // History returns a copy of the conversation so far.
@@ -149,7 +155,7 @@ func (s *session) Run(ctx context.Context, task string) (string, error) {
 	s.emit(ctx, Event{Kind: EventTurnStarted, Turn: s.turn, Task: task})
 
 	if len(s.history) == 0 {
-		s.history = append(s.history, Message{Role: RoleSystem, Content: s.opts.Instructions})
+		s.history = append(s.history, Message{Role: RoleSystem, Content: s.instructions})
 	}
 	recalled, err := s.recall(ctx, task)
 	if err != nil {

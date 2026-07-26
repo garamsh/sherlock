@@ -47,7 +47,7 @@ gagent agent --env my-env --message "hello"
 
 ### Configuration
 
-Settings resolve in order: **flags > environment variables > config file > defaults**. Environment variables use the `GAGENT_` prefix (`GAGENT_DATA_ROOT`, `GAGENT_EXEC_TIMEOUT`, …). The config file is `gagent.yaml`, searched in the working directory first, then `~/.gagent/`.
+Settings resolve in order: **flags > environment variables > config file > defaults**. Environment variables use the `GAGENT_` prefix (`GAGENT_DATA_ROOT`, `GAGENT_EXEC_TIMEOUT`, …). The config file resolves in order: `--config <path>`, then `./gagent.yaml`, then the XDG config path (`~/.config/gagent/config.yaml` on Linux). A missing file is an error only when `--config` names it explicitly.
 
 | Key | Flag | Default |
 |---|---|---|
@@ -60,6 +60,24 @@ Settings resolve in order: **flags > environment variables > config file > defau
 | `model.model` | — | `gpt-4o-mini` |
 | `model.api-key-env` | — | `OPENAI_API_KEY` (name of the env var holding the key — the key itself never goes in the config file) |
 | `mcp.servers` | — | `[]` (external MCP servers; see below) |
+
+### Agent persona
+
+The agent's instructions are composed of two parts: a **persona** (identity and behavior guidance) you own, and a **platform contract** (tool use, memory writeback format, reply conventions) the platform always appends — a custom persona can never disable the memory loop.
+
+The persona is a Markdown file, resolved in order: `--agent-prompt <path>`, then the embedded default (`internal/agent/AGENT.md`). There is no config key for it, and a missing or unreadable file fails at startup. Changes apply on restart; the file is not hot-reloaded.
+
+```sh
+gagent agent --agent-prompt ./PERSONA.md --message "hello"
+```
+
+A persona file describes who the agent is and how it behaves — not the protocol. Example:
+
+```markdown
+You are Nimbus, an autonomous site-reliability agent running one continuous
+session per environment. You prefer small, reversible changes and explain
+every destructive action before taking it.
+```
 
 ### External tools (MCP)
 

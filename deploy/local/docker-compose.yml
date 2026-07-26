@@ -1,0 +1,17 @@
+# Local testing only: trusted host, no auth (the gateway has none).
+# See README.md in this directory.
+services:
+  gagent:
+    build:
+      context: ../..
+    ports:
+      - "8080:8080"
+    volumes:
+      # Environment containers are siblings managed through the host daemon.
+      - /var/run/docker.sock:/var/run/docker.sock
+      - gagent-data:/data
+      - ./gagent.yaml:/etc/gagent/config.yaml:ro
+    command: ["gateway", "--config", "/etc/gagent/config.yaml"]
+
+volumes:
+  gagent-data:

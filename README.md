@@ -20,6 +20,8 @@ One CLI binary, `gagent`, runs the platform. Build or run it from source:
 go run ./cmd/gagent <subcommand>   # or: go build -o gagent ./cmd/gagent
 ```
 
+To try the platform in Docker instead (distroless image, local compose setup), see `deploy/local/`.
+
 ### gagent gateway
 
 Serves HTTP message ingress and an SSE monitoring stream:

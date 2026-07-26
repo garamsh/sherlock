@@ -16,6 +16,7 @@ Governs the environment model: what an environment is, its topology, and its tru
 - Each environment owns `data/envs/<env-id>/` (workspace + `memory.db`). The directory is the isolation unit: teardown, migration, and backup are directory operations.
 - MVP container boundary: the environment container mounts only `workspace/` (never `memory.db`), has no network egress, and gets its CPU/memory quotas from an injected policy. UID separation is not yet enforced (see open questions).
 - The pod/sidecar topology is a documented hardening option for high-value deployments; the trust-domain model is unchanged.
+- The platform itself ships as a distroless nonroot image built from the repo-root `Dockerfile` — the platform image, distinct from the environment image (the agent's body), whose definition remains an open question below.
 
 ## Rejected alternatives
 

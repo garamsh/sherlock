@@ -1,0 +1,10 @@
+.git
+.github
+.claude
+.opencode
+docs/
+data/
+bin/
+deploy/
+Dockerfile
+.dockerignore

@@ -4,7 +4,7 @@ What makes a PR review valid, and how authors respond. Applies to every review a
 
 ## Submitting a review
 
-- **Reviews are formal.** Decisions are submitted as approve / request changes / comment via the review mechanism — never as bare comments. Review states gate merges; comments do not. When the platform rejects a formal review (e.g. the PR author and reviewer share an account), post the evidence summary as a comment marked as the review — the summary is what matters.
+- **Reviews are formal.** Decisions are submitted as approve / request changes / comment via the review mechanism — never as bare comments. Review states gate merges; comments do not.
 - **Every review body carries the evidence table**, approval included:
 
 ```
@@ -33,6 +33,13 @@ Decision: approve / request changes / reject
 
 - Tag every requested change **blocker** or **nit**.
 - A nit never blocks a merge. A blocker always states the expected fix direction — "wrong" without "do this instead" is noise.
+
+## Single-account setups
+
+When the PM and authors share one GitHub account, GitHub rejects `approve` on one's own PR (comment and request-changes still work). In that setup:
+
+- **The merge is the approval.** Post the evidence table as a `comment` review, then merge immediately.
+- Request-changes reviews work normally — use them as usual.
 
 ## Responding to a review (author)
 

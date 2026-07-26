@@ -17,3 +17,10 @@ jobs:
         with:
           go-version: '1.26'
       - run: make ci
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      # Build-only smoke check of the platform image; nothing is pushed.
+      - run: docker build --build-arg REVISION="$GITHUB_SHA" -t gagent .

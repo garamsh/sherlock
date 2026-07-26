@@ -1,0 +1,6 @@
+# Sample config for the local Docker deployment (deploy/local/README.md).
+# The mock provider is scripted and needs no API key, so this runs offline.
+addr: ":8080"
+data-root: /data
+model:
+  provider: mock

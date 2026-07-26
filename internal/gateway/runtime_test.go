@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -13,9 +14,11 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/garamsh/gagent/internal/agent"
+	"github.com/garamsh/gagent/internal/files"
 	"github.com/garamsh/gagent/internal/gateway"
 	"github.com/garamsh/gagent/internal/message"
 	"github.com/garamsh/gagent/internal/sandbox"
+	"github.com/garamsh/gagent/internal/tool"
 )
 
 // stubSandbox substitutes the Docker daemon; the scripted model below
@@ -110,4 +113,62 @@ func TestFactory_NilSinkWritesOutbox(t *testing.T) {
 	entries, err := os.ReadDir(filepath.Join(root, "env-1", gateway.OutboxDir))
 	require.NoError(t, err)
 	assert.Len(t, entries, 1)
+}
+
+// stubTool is a static extra tool for registry wiring tests.
+type stubTool struct {
+	name   string
+	called atomic.Bool
+}
+
+func (t *stubTool) Name() string                  { return t.name }
+func (t *stubTool) InputSchema() json.RawMessage  { return nil }
+func (t *stubTool) OutputSchema() json.RawMessage { return nil }
+func (t *stubTool) Call(context.Context, json.RawMessage) (json.RawMessage, error) {
+	t.called.Store(true)
+	return json.RawMessage(`{"ok":true}`), nil
+}
+
+// extraToolModel scripts one turn calling the extra tool, then a final
+// response.
+func extraToolModel(_ string) agent.Model {
+	return agent.NewScriptedModel(
+		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{
+			Name:  "extra_tool",
+			Input: json.RawMessage(`{}`),
+		}}},
+		agent.ScriptedStep{Content: "Done."},
+	)
+}
+
+func TestFactory_ExtraToolsJoinTheRegistry(t *testing.T) {
+	extra := &stubTool{name: "extra_tool"}
+	factory := &gateway.Factory{
+		Root:     t.TempDir(),
+		NewModel: extraToolModel,
+		Sandbox:  stubSandbox{},
+		Image:    "stub",
+		Tools:    []tool.Tool{extra},
+	}
+	rt, err := factory.New(context.Background(), "env-1", nil)
+	require.NoError(t, err)
+	defer func() {
+		assert.NoError(t, rt.Close(context.Background()))
+	}()
+
+	_, err = rt.Session.Run(context.Background(), "hi")
+	require.NoError(t, err)
+	assert.True(t, extra.called.Load())
+}
+
+func TestFactory_ExtraToolNameCollisionFails(t *testing.T) {
+	factory := &gateway.Factory{
+		Root:     t.TempDir(),
+		NewModel: extraToolModel,
+		Sandbox:  stubSandbox{},
+		Image:    "stub",
+		Tools:    []tool.Tool{&stubTool{name: files.ToolName}},
+	}
+	_, err := factory.New(context.Background(), "env-1", nil)
+	require.ErrorIs(t, err, tool.ErrDuplicateTool)
 }

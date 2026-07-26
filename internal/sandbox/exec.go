@@ -29,6 +29,9 @@ const execOutputSchema = `{
 	"additionalProperties": false
 }`
 
+// ExecToolName is the registered name of the sandbox_exec tool.
+const ExecToolName = "sandbox_exec"
+
 // ExecTool is the sandbox_exec tool: it runs agent-supplied shell commands
 // inside the environment's container. The container is created lazily on
 // the first call and lives until Destroy. ExecTool is safe for concurrent
@@ -49,7 +52,7 @@ func NewExecTool(rt Runtime, cfg Config, timeout time.Duration) *ExecTool {
 }
 
 // Name returns the tool name.
-func (t *ExecTool) Name() string { return "sandbox_exec" }
+func (t *ExecTool) Name() string { return ExecToolName }
 
 // InputSchema returns the JSON Schema for the tool input.
 func (t *ExecTool) InputSchema() json.RawMessage { return json.RawMessage(execInputSchema) }

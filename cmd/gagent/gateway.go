@@ -47,12 +47,17 @@ func serveGateway(ctx context.Context, cfg Config) error {
 	if err != nil {
 		return err
 	}
+	mcpTools, closeMCP, err := startMCPServers(ctx, cfg.MCP.Servers, logger)
+	if err != nil {
+		return err
+	}
 	router := gateway.NewRouter(&gateway.Factory{
 		Root:        cfg.DataRoot,
 		NewModel:    newModel,
 		Sandbox:     docker,
 		Image:       cfg.Image,
 		ExecTimeout: cfg.ExecTimeout,
+		Tools:       mcpTools,
 	}, logger)
 
 	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)
@@ -81,6 +86,10 @@ func serveGateway(ctx context.Context, cfg Config) error {
 	}
 	if err := router.Close(); err != nil {
 		logger.Error("router shutdown failed", "op", "shutdown", "error", err)
+		return err
+	}
+	if err := closeMCP(); err != nil {
+		logger.Error("mcp shutdown failed", "op", "shutdown", "error", err)
 		return err
 	}
 	return nil

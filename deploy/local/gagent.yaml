@@ -1,6 +1,7 @@
 # Sample config for the local Docker deployment (deploy/local/README.md).
 # The mock provider is scripted and needs no API key, so this runs offline.
+# The data root comes from GAGENT_DATA_ROOT, which the compose file sets to
+# the host-bind data directory (GAGENT_DATA_DIR).
 addr: ":8080"
-data-root: /data
 model:
   provider: mock

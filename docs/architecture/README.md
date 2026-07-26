@@ -34,7 +34,7 @@ Current architecture of the system and the decisions behind it. This file is the
 | `cmd/gagent/` | CLI entry point (`gagent gateway`, `gagent agent`): resolve config and wire concrete implementations; nothing else. | — |
 | `internal/gateway/` | Accept normalized inbound messages, route them to environments, and publish the monitoring event stream. | `gateway.md` |
 | `internal/agent/` | Run the reasoning loop (frame, recall, act, writeback) for one rolling session per environment. | `agent.md` |
-| `internal/tool/` | Define the Tool contract (name, input schema, output schema) and the registry every tool joins. | — |
+| `internal/tool/` | Define the Tool contract (name, description, input schema, output schema) and the registry every tool joins. | — |
 | `internal/tool/mcp/` | Adapt external MCP servers (stdio) into the registry: subprocess lifecycle, tool discovery, call forwarding. | `security.md` |
 | `internal/environment/` | Own the environment data layout: create-on-first-use and teardown of `data/envs/<env-id>/`. | `environment.md` |
 | `internal/memory/` | Own one environment's long-term memory: the `memory.db` store, hybrid search, and the five memory operations. | `memory.md` |

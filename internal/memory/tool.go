@@ -12,6 +12,10 @@ import (
 // ToolName is the registered name of the memory tool.
 const ToolName = "memory"
 
+// toolDescription is the one-sentence summary advertised to model providers,
+// matching the memory responsibility in docs/architecture/memory.md.
+const toolDescription = "Store, search, update, compress, and forget entries in the environment's long-term memory."
+
 // inputSchema validates agent input per operation (secret-holding trust
 // domain: structured, schema-validated input only). The oneOf sits under
 // if/then because the OpenAI function-calling API rejects top-level oneOf
@@ -147,6 +151,9 @@ func NewTool(svc Service) tool.Tool { return &memoryTool{svc: svc} }
 
 // Name implements tool.Tool.
 func (t *memoryTool) Name() string { return ToolName }
+
+// Description implements tool.Tool.
+func (t *memoryTool) Description() string { return toolDescription }
 
 // InputSchema implements tool.Tool.
 func (t *memoryTool) InputSchema() json.RawMessage { return inputSchema }

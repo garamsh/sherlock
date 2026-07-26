@@ -17,6 +17,7 @@ import (
 type stubTool string
 
 func (t stubTool) Name() string                  { return string(t) }
+func (t stubTool) Description() string           { return "" }
 func (t stubTool) InputSchema() json.RawMessage  { return nil }
 func (t stubTool) OutputSchema() json.RawMessage { return nil }
 func (t stubTool) Call(context.Context, json.RawMessage) (json.RawMessage, error) {

@@ -50,8 +50,9 @@ type chatFunction struct {
 type chatTool struct {
 	Type     string `json:"type"`
 	Function struct {
-		Name       string          `json:"name"`
-		Parameters json.RawMessage `json:"parameters"`
+		Name        string          `json:"name"`
+		Description string          `json:"description,omitempty"`
+		Parameters  json.RawMessage `json:"parameters"`
 	} `json:"function"`
 }
 
@@ -145,8 +146,8 @@ func toWireMessages(messages []agent.Message) []chatMessage {
 	return out
 }
 
-// toWireTools exposes each descriptor's input schema as the function's
-// parameters document.
+// toWireTools exposes each descriptor's name, description, and input
+// schema as the function's parameters document.
 func toWireTools(tools []tool.Descriptor) []chatTool {
 	if len(tools) == 0 {
 		return nil
@@ -155,6 +156,7 @@ func toWireTools(tools []tool.Descriptor) []chatTool {
 	for i, d := range tools {
 		out[i].Type = "function"
 		out[i].Function.Name = d.Name
+		out[i].Function.Description = d.Description
 		out[i].Function.Parameters = d.InputSchema
 	}
 	return out

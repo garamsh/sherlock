@@ -18,10 +18,12 @@ var (
 	ErrInvalidTool = errors.New("invalid tool")
 )
 
-// Descriptor is the model-facing view of a registered tool: its name and
-// JSON Schema documents, JSON-serializable so it can be handed to a model.
+// Descriptor is the model-facing view of a registered tool: its name,
+// description, and JSON Schema documents, JSON-serializable so it can be
+// handed to a model.
 type Descriptor struct {
 	Name         string          `json:"name"`
+	Description  string          `json:"description"`
 	InputSchema  json.RawMessage `json:"input_schema"`
 	OutputSchema json.RawMessage `json:"output_schema"`
 }
@@ -72,6 +74,7 @@ func (r *Registry) List() []Descriptor {
 	for _, t := range r.tools {
 		out = append(out, Descriptor{
 			Name:         t.Name(),
+			Description:  t.Description(),
 			InputSchema:  t.InputSchema(),
 			OutputSchema: t.OutputSchema(),
 		})

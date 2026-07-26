@@ -14,14 +14,16 @@ import (
 
 // stubTool is a minimal Tool implementation for exercising the contract.
 type stubTool struct {
-	name      string
-	inSchema  json.RawMessage
-	outSchema json.RawMessage
-	called    bool
-	callErr   error
+	name        string
+	description string
+	inSchema    json.RawMessage
+	outSchema   json.RawMessage
+	called      bool
+	callErr     error
 }
 
 func (s *stubTool) Name() string                 { return s.name }
+func (s *stubTool) Description() string          { return s.description }
 func (s *stubTool) InputSchema() json.RawMessage { return s.inSchema }
 func (s *stubTool) OutputSchema() json.RawMessage {
 	return s.outSchema

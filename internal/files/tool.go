@@ -26,6 +26,10 @@ const filesOutputSchema = `{
 // ToolName is the registered name of the files tool.
 const ToolName = "files"
 
+// toolDescription is the one-sentence summary advertised to model
+// providers, matching the files responsibility in docs/architecture.
+const toolDescription = "Read, write, and list files inside the environment's workspace."
+
 // Tool is the files tool: it reads, writes, and lists files inside the
 // environment workspace.
 type Tool struct {
@@ -39,6 +43,9 @@ func NewTool(fs *FS) *Tool {
 
 // Name returns the tool name.
 func (t *Tool) Name() string { return ToolName }
+
+// Description returns the one-sentence tool summary.
+func (t *Tool) Description() string { return toolDescription }
 
 // InputSchema returns the JSON Schema for the tool input.
 func (t *Tool) InputSchema() json.RawMessage { return json.RawMessage(filesInputSchema) }

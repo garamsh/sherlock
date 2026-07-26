@@ -35,8 +35,9 @@ type chatRequest struct {
 	Tools []struct {
 		Type     string `json:"type"`
 		Function struct {
-			Name       string          `json:"name"`
-			Parameters json.RawMessage `json:"parameters"`
+			Name        string          `json:"name"`
+			Description string          `json:"description"`
+			Parameters  json.RawMessage `json:"parameters"`
 		} `json:"function"`
 	} `json:"tools"`
 }
@@ -94,7 +95,11 @@ func TestChat_FinalResponsePreservesWritebackBlock(t *testing.T) {
 		{Role: agent.RoleSystem, Content: "instructions"},
 		{Role: agent.RoleUser, Content: "hello"},
 	}, []tool.Descriptor{
-		{Name: "echo", InputSchema: json.RawMessage(`{"type":"object","properties":{"text":{"type":"string"}}}`)},
+		{
+			Name:        "echo",
+			Description: "echo the text back",
+			InputSchema: json.RawMessage(`{"type":"object","properties":{"text":{"type":"string"}}}`),
+		},
 	})
 	require.NoError(t, err)
 
@@ -107,6 +112,7 @@ func TestChat_FinalResponsePreservesWritebackBlock(t *testing.T) {
 	require.Len(t, fake.request.Tools, 1)
 	assert.Equal(t, "function", fake.request.Tools[0].Type)
 	assert.Equal(t, "echo", fake.request.Tools[0].Function.Name)
+	assert.Equal(t, "echo the text back", fake.request.Tools[0].Function.Description)
 	assert.JSONEq(t,
 		`{"type":"object","properties":{"text":{"type":"string"}}}`,
 		string(fake.request.Tools[0].Function.Parameters))

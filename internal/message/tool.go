@@ -29,6 +29,10 @@ const sendOutputSchema = `{
 // SendToolName is the registered name of the message_send tool.
 const SendToolName = "message_send"
 
+// sendToolDescription is the one-sentence summary advertised to model
+// providers, matching the message responsibility in docs/architecture.
+const sendToolDescription = "Queue an outbound message for delivery to a channel and target."
+
 // SendTool is the message_send tool: it validates the outbound message and
 // hands it to the outbound sink. Delivery itself is the sink's concern.
 type SendTool struct {
@@ -42,6 +46,9 @@ func NewSendTool(sink Sink) *SendTool {
 
 // Name returns the tool name.
 func (t *SendTool) Name() string { return SendToolName }
+
+// Description returns the one-sentence tool summary.
+func (t *SendTool) Description() string { return sendToolDescription }
 
 // InputSchema returns the JSON Schema for the tool input.
 func (t *SendTool) InputSchema() json.RawMessage { return json.RawMessage(sendInputSchema) }

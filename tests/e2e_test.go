@@ -97,31 +97,14 @@ func seedMemory(t *testing.T, envDir, content string) int64 {
 }
 
 // TestEndToEnd_MVPScenario proves the PLAN §5.7 flow across the real wired
-// system: HTTP ingress, memory recall, code execution in a real container,
-// and writeback to memory.
+// system in-process: HTTP ingress, memory recall, code execution in a real
+// container, and writeback to memory.
 func TestEndToEnd_MVPScenario(t *testing.T) {
 	cli := requireDockerClient(t)
 	rt, err := sandbox.NewDockerRuntime()
 	require.NoError(t, err)
 
-	// The data root lives under $HOME rather than the default temp dir
-	// because Docker Desktop VMs cannot bind-mount /tmp (same constraint
-	// as the sandbox tests). The env ID is unique to this test.
-	home, err := os.UserHomeDir()
-	require.NoError(t, err)
-	root, err := os.MkdirTemp(home, "gagent-e2e-test-")
-	require.NoError(t, err)
-	t.Cleanup(func() { assert.NoError(t, os.RemoveAll(root)) })
-
-	// Remove leftovers from previous failed runs.
-	containerName := "gagent-env-" + e2eEnvID
-	_ = cli.ContainerRemove(context.Background(), containerName, container.RemoveOptions{Force: true})
-
-	// Seed: a memory about a prior task exists, stored through the
-	// memory tool.
-	env, err := environment.Open(root, e2eEnvID)
-	require.NoError(t, err)
-	seedID := seedMemory(t, env.Dir(), e2eSeed)
+	root, envDir, seedID := setupMVPScenario(t, cli, e2eEnvID)
 
 	factory := &gateway.Factory{
 		Root:        root,
@@ -136,11 +119,49 @@ func TestEndToEnd_MVPScenario(t *testing.T) {
 	srv := httptest.NewServer(gateway.NewHandler(router, logger))
 	t.Cleanup(srv.Close)
 
+	runMVPScenario(t, srv.URL, root, e2eEnvID)
+
+	// Router shutdown destroys the environment container.
+	require.NoError(t, router.Close())
+	_, err = cli.ContainerInspect(context.Background(), "gagent-env-"+e2eEnvID)
+	assert.True(t, errdefs.IsNotFound(err),
+		"environment container must be removed on shutdown, got: %v", err)
+
+	assertMVPRecallAndWriteback(t, envDir, seedID)
+}
+
+// setupMVPScenario prepares the data root for one §5.7 run: a temp root
+// under $HOME (Docker Desktop VMs cannot bind-mount /tmp, same constraint
+// as the sandbox tests), no leftover container from previous failed runs,
+// and the seed memory planted through the memory tool. It returns the
+// root, the environment's data dir, and the seed memory ID.
+func setupMVPScenario(t *testing.T, cli *client.Client, envID string) (root, envDir string, seedID int64) {
+	t.Helper()
+	home, err := os.UserHomeDir()
+	require.NoError(t, err)
+	root, err = os.MkdirTemp(home, "gagent-e2e-test-")
+	require.NoError(t, err)
+	t.Cleanup(func() { assert.NoError(t, os.RemoveAll(root)) })
+
+	_ = cli.ContainerRemove(context.Background(), "gagent-env-"+envID, container.RemoveOptions{Force: true})
+
+	env, err := environment.Open(root, envID)
+	require.NoError(t, err)
+	seedID = seedMemory(t, env.Dir(), e2eSeed)
+	return root, env.Dir(), seedID
+}
+
+// runMVPScenario drives the PLAN §5.7 message flow against a serving
+// gateway: HTTP ingress, the full turn lifecycle on the monitoring stream,
+// sandbox execution in the real container, and the reply in the outbox.
+func runMVPScenario(t *testing.T, baseURL, root, envID string) {
+	t.Helper()
+
 	// Subscribe to the monitoring stream before the message so no event
 	// is missed.
-	events := subscribeSSE(t, srv.URL+"/envs/"+e2eEnvID+"/events")
+	events := subscribeSSE(t, baseURL+"/envs/"+envID+"/events")
 
-	resp := postJSON(t, srv.URL+"/envs/"+e2eEnvID+"/messages",
+	resp := postJSON(t, baseURL+"/envs/"+envID+"/messages",
 		`{"content":`+strconvQuote(e2eQuestion)+`}`)
 	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
 	resp.Body.Close()
@@ -177,21 +198,20 @@ func TestEndToEnd_MVPScenario(t *testing.T) {
 
 	// Reply: message_send output landed in the environment outbox.
 	require.Eventually(t, func() bool {
-		return len(outboxMessages(t, root, e2eEnvID)) == 1
+		return len(outboxMessages(t, root, envID)) == 1
 	}, 5*time.Second, 10*time.Millisecond)
-	replies := outboxMessages(t, root, e2eEnvID)
+	replies := outboxMessages(t, root, envID)
 	require.Len(t, replies, 1)
 	assert.Equal(t, "The sandbox computed 42.", replies[0].Content)
+}
 
-	// Router shutdown destroys the environment container.
-	require.NoError(t, router.Close())
-	_, err = cli.ContainerInspect(context.Background(), containerName)
-	assert.True(t, errdefs.IsNotFound(err),
-		"environment container must be removed on shutdown, got: %v", err)
-
-	// Recall and writeback are asserted on the environment's memory
-	// store, reopened after shutdown.
-	store, err := sqlite.Open(filepath.Join(env.Dir(), gateway.MemoryDBFile))
+// assertMVPRecallAndWriteback asserts the memory side of the §5.7 scenario
+// on the environment's memory store, reopened after shutdown: the seeded
+// memory was recalled this turn and the computed result was written back
+// as a new episodic memory, queryable via the memory tool's search.
+func assertMVPRecallAndWriteback(t *testing.T, envDir string, seedID int64) {
+	t.Helper()
+	store, err := sqlite.Open(filepath.Join(envDir, gateway.MemoryDBFile))
 	require.NoError(t, err)
 	t.Cleanup(func() { store.Close() })
 	svc := memory.NewService(store, memory.NewHashingEmbedder(), memory.NewConcatSummarizer())

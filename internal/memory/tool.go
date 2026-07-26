@@ -13,62 +13,68 @@ import (
 const ToolName = "memory"
 
 // inputSchema validates agent input per operation (secret-holding trust
-// domain: structured, schema-validated input only).
+// domain: structured, schema-validated input only). The oneOf sits under
+// if/then because the OpenAI function-calling API rejects top-level oneOf
+// and requires type object at the root.
 var inputSchema = json.RawMessage(`{
 	"$schema": "https://json-schema.org/draft/2020-12/schema",
-	"oneOf": [
-		{
-			"type": "object",
-			"properties": {
-				"op": {"const": "store"},
-				"content": {"type": "string", "minLength": 1},
-				"type": {"enum": ["episodic", "semantic"]},
-				"importance_score": {"type": "number", "minimum": 0, "maximum": 1},
-				"source": {"type": "string", "minLength": 1}
+	"type": "object",
+	"if": true,
+	"then": {
+		"oneOf": [
+			{
+				"type": "object",
+				"properties": {
+					"op": {"const": "store"},
+					"content": {"type": "string", "minLength": 1},
+					"type": {"enum": ["episodic", "semantic"]},
+					"importance_score": {"type": "number", "minimum": 0, "maximum": 1},
+					"source": {"type": "string", "minLength": 1}
+				},
+				"required": ["op", "content", "type", "importance_score", "source"],
+				"additionalProperties": false
 			},
-			"required": ["op", "content", "type", "importance_score", "source"],
-			"additionalProperties": false
-		},
-		{
-			"type": "object",
-			"properties": {
-				"op": {"const": "search"},
-				"query": {"type": "string", "minLength": 1},
-				"limit": {"type": "integer", "minimum": 1}
+			{
+				"type": "object",
+				"properties": {
+					"op": {"const": "search"},
+					"query": {"type": "string", "minLength": 1},
+					"limit": {"type": "integer", "minimum": 1}
+				},
+				"required": ["op", "query"],
+				"additionalProperties": false
 			},
-			"required": ["op", "query"],
-			"additionalProperties": false
-		},
-		{
-			"type": "object",
-			"properties": {
-				"op": {"const": "update"},
-				"id": {"type": "integer", "minimum": 1},
-				"content": {"type": "string", "minLength": 1},
-				"importance_score": {"type": "number", "minimum": 0, "maximum": 1}
+			{
+				"type": "object",
+				"properties": {
+					"op": {"const": "update"},
+					"id": {"type": "integer", "minimum": 1},
+					"content": {"type": "string", "minLength": 1},
+					"importance_score": {"type": "number", "minimum": 0, "maximum": 1}
+				},
+				"required": ["op", "id", "content"],
+				"additionalProperties": false
 			},
-			"required": ["op", "id", "content"],
-			"additionalProperties": false
-		},
-		{
-			"type": "object",
-			"properties": {
-				"op": {"const": "compress"},
-				"ids": {"type": "array", "items": {"type": "integer", "minimum": 1}, "minItems": 1}
+			{
+				"type": "object",
+				"properties": {
+					"op": {"const": "compress"},
+					"ids": {"type": "array", "items": {"type": "integer", "minimum": 1}, "minItems": 1}
+				},
+				"required": ["op", "ids"],
+				"additionalProperties": false
 			},
-			"required": ["op", "ids"],
-			"additionalProperties": false
-		},
-		{
-			"type": "object",
-			"properties": {
-				"op": {"const": "forget"},
-				"threshold": {"type": "number", "exclusiveMinimum": 0}
-			},
-			"required": ["op"],
-			"additionalProperties": false
-		}
-	]
+			{
+				"type": "object",
+				"properties": {
+					"op": {"const": "forget"},
+					"threshold": {"type": "number", "exclusiveMinimum": 0}
+				},
+				"required": ["op"],
+				"additionalProperties": false
+			}
+		]
+	}
 }`)
 
 var outputSchema = json.RawMessage(`{

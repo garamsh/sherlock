@@ -14,12 +14,8 @@ const filesInputSchema = `{
 		"content": {"type": "string"}
 	},
 	"required": ["operation", "path"],
-	"allOf": [
-		{
-			"if": {"properties": {"operation": {"const": "write"}}, "required": ["operation"]},
-			"then": {"required": ["content"]}
-		}
-	],
+	"if": {"properties": {"operation": {"const": "write"}}, "required": ["operation"]},
+	"then": {"required": ["content"]},
 	"additionalProperties": false
 }`
 

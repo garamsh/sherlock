@@ -16,6 +16,7 @@ import (
 	"github.com/garamsh/gagent/internal/agent"
 	"github.com/garamsh/gagent/internal/files"
 	"github.com/garamsh/gagent/internal/gateway"
+	"github.com/garamsh/gagent/internal/memory"
 	"github.com/garamsh/gagent/internal/message"
 	"github.com/garamsh/gagent/internal/sandbox"
 	"github.com/garamsh/gagent/internal/tool"
@@ -171,4 +172,32 @@ func TestFactory_ExtraToolNameCollisionFails(t *testing.T) {
 	}
 	_, err := factory.New(context.Background(), "env-1", nil)
 	require.ErrorIs(t, err, tool.ErrDuplicateTool)
+}
+
+// openAITopLevelForbidden lists the keywords the OpenAI function-calling
+// API rejects at the top level of a tool's parameters schema (issue #49).
+var openAITopLevelForbidden = []string{"allOf", "anyOf", "oneOf", "not", "enum", "const"}
+
+func TestBuiltinTools_InputSchemasSatisfyOpenAISubset(t *testing.T) {
+	// Nil dependencies suffice: InputSchema is a static document on every
+	// built-in tool.
+	builtins := []tool.Tool{
+		memory.NewTool(nil),
+		files.NewTool(nil),
+		sandbox.NewExecTool(nil, sandbox.Config{}, 0),
+		message.NewSendTool(nil),
+	}
+	for _, tl := range builtins {
+		t.Run(tl.Name(), func(t *testing.T) {
+			var schema map[string]json.RawMessage
+			require.NoError(t, json.Unmarshal(tl.InputSchema(), &schema))
+			require.Contains(t, schema, "type")
+			assert.JSONEq(t, `"object"`, string(schema["type"]),
+				"the API requires top-level type object")
+			for _, keyword := range openAITopLevelForbidden {
+				assert.NotContains(t, schema, keyword,
+					"the API rejects top-level %q", keyword)
+			}
+		})
+	}
 }

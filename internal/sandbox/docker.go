@@ -3,6 +3,7 @@ package sandbox
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"time"
@@ -32,6 +33,8 @@ func NewDockerRuntime() (*DockerRuntime, error) {
 
 // Create starts a container with the workspace as its only bind mount, no
 // network access, and the injected CPU/memory policy, then returns its ID.
+// If the container fails to start, Create removes it before returning the
+// error so a retry does not collide with the leaked name.
 func (r *DockerRuntime) Create(ctx context.Context, cfg Config) (string, error) {
 	if err := cfg.validate(); err != nil {
 		return "", err
@@ -59,6 +62,12 @@ func (r *DockerRuntime) Create(ctx context.Context, cfg Config) (string, error) 
 		return "", fmt.Errorf("create container for env %q: %w", cfg.EnvID, err)
 	}
 	if err := r.cli.ContainerStart(ctx, resp.ID, container.StartOptions{}); err != nil {
+		// The container already exists; remove it so the failed Create
+		// leaves nothing behind. WithoutCancel keeps the cleanup alive
+		// when the caller's context caused the start failure.
+		if rmErr := r.cli.ContainerRemove(context.WithoutCancel(ctx), resp.ID, container.RemoveOptions{Force: true}); rmErr != nil {
+			err = errors.Join(err, fmt.Errorf("remove container after failed start: %w", rmErr))
+		}
 		return "", fmt.Errorf("start container for env %q: %w", cfg.EnvID, err)
 	}
 	return resp.ID, nil

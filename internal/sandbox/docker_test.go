@@ -8,12 +8,17 @@ import (
 	"time"
 
 	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/errdefs"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 // testImage is the stock base image used for environment containers.
 const testImage = "alpine:3.21"
+
+// startFailImage has no tail binary, so ContainerCreate succeeds but
+// ContainerStart always fails with "executable file not found".
+const startFailImage = "hello-world"
 
 // requireDocker gates daemon-dependent tests on the GAGENT_DOCKER_TESTS
 // environment variable so CI and machines without Docker skip cleanly. With
@@ -111,6 +116,29 @@ func TestDockerRuntime_ExecTimeout(t *testing.T) {
 	require.NoError(t, err)
 	assert.True(t, res.TimedOut)
 	assert.Equal(t, -1, res.ExitCode)
+}
+
+func TestDockerRuntime_CreateStartFailureLeavesNoContainer(t *testing.T) {
+	rt := requireDocker(t)
+	home, err := os.UserHomeDir()
+	require.NoError(t, err)
+	workspace, err := os.MkdirTemp(home, "gagent-sandbox-test-")
+	require.NoError(t, err)
+	t.Cleanup(func() { assert.NoError(t, os.RemoveAll(workspace)) })
+	envID := "test-" + t.Name()
+	// Remove leftovers from previous failed runs.
+	_ = rt.cli.ContainerRemove(context.Background(), containerName(envID), container.RemoveOptions{Force: true})
+
+	_, err = rt.Create(context.Background(), Config{
+		EnvID:     envID,
+		Workspace: workspace,
+		Image:     startFailImage,
+	})
+
+	require.Error(t, err)
+	_, inspectErr := rt.cli.ContainerInspect(context.Background(), containerName(envID))
+	assert.True(t, errdefs.IsNotFound(inspectErr),
+		"a failed Create must not leak the container, inspect returned: %v", inspectErr)
 }
 
 func TestDockerRuntime_DestroyUnknownContainer(t *testing.T) {

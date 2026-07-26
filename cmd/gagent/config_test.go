@@ -60,6 +60,38 @@ func TestResolveConfig_ModelSection(t *testing.T) {
 	assert.Equal(t, "OLLAMA_KEY", cfg.Model.APIKeyEnv)
 }
 
+func TestResolveConfig_MCPSection(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	contents := "mcp:\n" +
+		"  servers:\n" +
+		"    - name: time\n" +
+		"      command: /usr/local/bin/time-mcp\n" +
+		"      args: [\"--tz\", \"UTC\"]\n" +
+		"      env: [SOME_TOKEN]\n" +
+		"      timeout: 10s\n" +
+		"    - name: bare\n" +
+		"      command: /bin/bare-mcp\n"
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o644))
+
+	cfg, err := resolveConfig(newTestCommand(t))
+	require.NoError(t, err)
+
+	assert.Equal(t, []MCPServerConfig{
+		{
+			Name:    "time",
+			Command: "/usr/local/bin/time-mcp",
+			Args:    []string{"--tz", "UTC"},
+			Env:     []string{"SOME_TOKEN"},
+			Timeout: 10 * time.Second,
+		},
+		{
+			Name:    "bare",
+			Command: "/bin/bare-mcp",
+		},
+	}, cfg.MCP.Servers)
+}
+
 func TestResolveConfig_ConfigFile(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)

@@ -27,6 +27,9 @@ const filesOutputSchema = `{
 	"type": "object"
 }`
 
+// ToolName is the registered name of the files tool.
+const ToolName = "files"
+
 // Tool is the files tool: it reads, writes, and lists files inside the
 // environment workspace.
 type Tool struct {
@@ -39,7 +42,7 @@ func NewTool(fs *FS) *Tool {
 }
 
 // Name returns the tool name.
-func (t *Tool) Name() string { return "files" }
+func (t *Tool) Name() string { return ToolName }
 
 // InputSchema returns the JSON Schema for the tool input.
 func (t *Tool) InputSchema() json.RawMessage { return json.RawMessage(filesInputSchema) }

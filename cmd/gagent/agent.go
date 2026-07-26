@@ -59,6 +59,15 @@ func runAgentTurn(ctx context.Context, cfg Config, envID, msg string) error {
 	if err != nil {
 		return err
 	}
+	mcpTools, closeMCP, err := startMCPServers(ctx, cfg.MCP.Servers, logger)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err := closeMCP(); err != nil {
+			logger.Error("mcp shutdown failed", "op", "shutdown", "error", err)
+		}
+	}()
 	factory := &gateway.Factory{
 		Root:        cfg.DataRoot,
 		NewModel:    newModel,
@@ -66,6 +75,7 @@ func runAgentTurn(ctx context.Context, cfg Config, envID, msg string) error {
 		Image:       cfg.Image,
 		ExecTimeout: cfg.ExecTimeout,
 		Sink:        stdoutSink{},
+		Tools:       mcpTools,
 	}
 	rt, err := factory.New(ctx, envID, nil)
 	if err != nil {

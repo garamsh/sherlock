@@ -52,9 +52,20 @@ type Factory struct {
 	// Sink, when non-nil, receives outbound messages instead of the default
 	// file outbox (the one-shot agent CLI prints them to stdout).
 	Sink message.Sink
+	// Tools holds extra tools (e.g. MCP tools discovered at startup)
+	// registered into every environment's registry alongside the built-ins.
+	// A name collision fails environment creation with tool.ErrDuplicateTool.
+	Tools []tool.Tool
 }
 
 var _ RuntimeFactory = (*Factory)(nil)
+
+// BuiltinToolNames returns the names of the tools every environment registry
+// starts with, so startup wiring can reserve them before adding external
+// tools.
+func BuiltinToolNames() []string {
+	return []string{memory.ToolName, files.ToolName, sandbox.ExecToolName, message.SendToolName}
+}
 
 // New implements RuntimeFactory: it opens (creating on first use) the
 // environment directory, memory store, and tool set, then wires the
@@ -86,12 +97,13 @@ func (f *Factory) New(_ context.Context, envID string, events agent.EventSink) (
 	}
 
 	registry := tool.NewRegistry()
-	for _, t := range []tool.Tool{
+	builtins := []tool.Tool{
 		memory.NewTool(memSvc),
 		files.NewTool(fs),
 		exec,
 		message.NewSendTool(sink),
-	} {
+	}
+	for _, t := range append(builtins, f.Tools...) {
 		if err := registry.Register(t); err != nil {
 			return nil, errors.Join(err, store.Close())
 		}

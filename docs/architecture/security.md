@@ -9,6 +9,8 @@ Governs the security model: trust domains, secret custody, and egress. Rationale
 - Every tool belongs to one of two domains, decided at design review:
   - **Code-executing tools** (shell, files) run with no reachable secrets.
   - **Secret-holding tools** (memory, message, external connectors) never execute agent-supplied code and accept only schema-validated structured input.
+- MCP server processes (`internal/tool/mcp/`) are operator-installed trusted code: the platform starts them, and the operator vouches for the binary the way they vouch for the platform itself.
+- MCP server processes inherit no platform environment except the variables the server config's `env` allowlist names — scrubbed by default, so platform secrets never leak into server processes.
 - No separate security layer exists; each tool enforces its own domain's policy.
 
 ### Secrets

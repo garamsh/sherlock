@@ -18,7 +18,7 @@ Governs the gateway: message ingress, routing, outbound delivery, and monitoring
 - `POST /envs/{env-id}/messages` accepts a message, assigns an ID, enqueues it, and returns `202` with the ID. An unknown env-id creates the environment at enqueue time, so creation errors (e.g. an invalid ID) surface to the sender as `400`.
 - `GET /envs/{env-id}/events` streams the environment's loop events (turn started, tool call, writeback, turn finished) as server-sent events. Subscribing works with zero publishers and publishing works with zero subscribers; a subscriber that falls behind drops events rather than slowing the run.
 - The MVP outbound sink writes each `message_send` message as a JSON file under `data/envs/<env-id>/outbox/`. Real channel adapters replace the sink behind the same interface later.
-- The binary wires the scripted mock model (ADR 0005) with a canned reply script — a placeholder until a real model lands; a run that exhausts the script fails, is logged, and the queue continues.
+- The binary wires the scripted mock model (ADR 0005) with a canned script that drives the full loop — compute in the sandbox via `sandbox_exec`, reply via `message_send`, write the result back as an episodic memory — a placeholder until a real model lands; a run that exhausts the script fails, is logged, and the queue continues.
 
 ## Rejected alternatives
 

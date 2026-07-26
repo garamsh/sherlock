@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -123,7 +124,7 @@ func TestSessionRun_ScriptedMultiTurnScenario(t *testing.T) {
 	history := s.History()
 	require.Len(t, history, 6)
 	assert.Equal(t, agent.RoleSystem, history[0].Role)
-	assert.Equal(t, agent.DefaultInstructions, history[0].Content)
+	assert.Equal(t, agent.ComposeInstructions(""), history[0].Content)
 	assert.Equal(t, agent.RoleSystem, history[1].Role)
 	assert.Contains(t, history[1].Content, "## Current task\nwhat did the echo say?")
 	assert.Contains(t, history[1].Content, "- [m1] (2d): user drinks tea")
@@ -324,19 +325,21 @@ func TestSessionRun_InstructionsAreFirstSystemMessage(t *testing.T) {
 	messages := model.calls[0]
 	require.GreaterOrEqual(t, len(messages), 3)
 	assert.Equal(t, agent.RoleSystem, messages[0].Role)
-	assert.Equal(t, agent.DefaultInstructions, messages[0].Content)
+	assert.Equal(t, agent.ComposeInstructions(""), messages[0].Content)
 	assert.Equal(t, agent.RoleSystem, messages[1].Role, "frame context follows the instructions")
 	assert.Equal(t, agent.RoleUser, messages[2].Role)
 }
 
-func TestSessionRun_InstructionsOverride(t *testing.T) {
+func TestSessionRun_CustomPersonaKeepsContract(t *testing.T) {
 	model := &captureModel{}
-	s := agent.NewSession(model, tool.NewRegistry(), agent.Options{Instructions: "custom contract"})
+	s := agent.NewSession(model, tool.NewRegistry(), agent.Options{Persona: "You are a test persona."})
 
 	_, err := s.Run(context.Background(), "task")
 	require.NoError(t, err)
 
-	assert.Equal(t, "custom contract", model.calls[0][0].Content)
+	instructions := model.calls[0][0].Content
+	assert.True(t, strings.HasPrefix(instructions, "You are a test persona."), "persona leads the instructions")
+	assert.Contains(t, instructions, agent.Contract, "platform contract survives a custom persona")
 }
 
 func TestSessionRun_InstructionsInjectedOnce(t *testing.T) {
@@ -351,7 +354,7 @@ func TestSessionRun_InstructionsInjectedOnce(t *testing.T) {
 	second := model.calls[1]
 	var injections int
 	for _, msg := range second {
-		if msg.Content == agent.DefaultInstructions {
+		if msg.Content == agent.ComposeInstructions("") {
 			injections++
 		}
 	}

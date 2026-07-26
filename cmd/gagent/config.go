@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
@@ -83,6 +84,7 @@ type ModelConfig struct {
 // addConfigFlags registers the shared settings as flags on fs. viper
 // resolves the effective value, so these defaults are the fallback layer.
 func addConfigFlags(fs *pflag.FlagSet) {
+	fs.String("config", "", "config file path (default: ./gagent.yaml, then XDG config dir)")
 	fs.String("addr", defaultAddr, "HTTP listen address (gateway only)")
 	fs.String("data-root", environment.DefaultRoot, "parent directory of all environment data")
 	fs.String("image", defaultImage, "environment container image")
@@ -90,9 +92,11 @@ func addConfigFlags(fs *pflag.FlagSet) {
 }
 
 // resolveConfig builds the effective Config for cmd using viper's built-in
-// precedence: flags > GAGENT_* environment variables > gagent.yaml >
-// defaults. The config file is searched in the working directory, then
-// ~/.gagent/; a missing file is not an error.
+// precedence: flags > GAGENT_* environment variables > config file >
+// defaults. The config file resolves via --config <path>, then
+// ./gagent.yaml, then os.UserConfigDir()/gagent/config.yaml (XDG;
+// ~/.config/gagent/config.yaml on Linux). A missing file is an error only
+// when --config named it explicitly.
 func resolveConfig(cmd *cobra.Command) (Config, error) {
 	v := viper.New()
 	v.SetDefault("addr", defaultAddr)
@@ -109,20 +113,44 @@ func resolveConfig(cmd *cobra.Command) (Config, error) {
 	if err := v.BindPFlags(cmd.Flags()); err != nil {
 		return Config{}, err
 	}
-	v.SetConfigName("gagent")
-	v.AddConfigPath(".")
-	if home, err := os.UserHomeDir(); err == nil {
-		v.AddConfigPath(filepath.Join(home, ".gagent"))
+	configFile, err := cmd.Flags().GetString("config")
+	if err != nil {
+		return Config{}, err
 	}
-	if err := v.ReadInConfig(); err != nil {
-		var notFound viper.ConfigFileNotFoundError
-		if !errors.As(err, &notFound) {
-			return Config{}, err
-		}
+	if err := readConfigFile(v, configFile); err != nil {
+		return Config{}, err
 	}
 	var cfg Config
 	if err := v.Unmarshal(&cfg); err != nil {
 		return Config{}, err
 	}
 	return cfg, nil
+}
+
+// readConfigFile loads the config file into v following the resolution
+// order: an explicit --config path, then ./gagent.yaml, then
+// os.UserConfigDir()/gagent/config.yaml (XDG; ~/.config/gagent/config.yaml
+// on Linux). A missing file is an error only for the explicit flag path.
+func readConfigFile(v *viper.Viper, flagPath string) error {
+	if flagPath != "" {
+		v.SetConfigFile(flagPath)
+		return v.ReadInConfig()
+	}
+	v.SetConfigName("gagent")
+	v.AddConfigPath(".")
+	var notFound viper.ConfigFileNotFoundError
+	if err := v.ReadInConfig(); !errors.As(err, &notFound) {
+		return err
+	}
+	// The XDG default names the file config.yaml inside a gagent directory;
+	// viper matches one base name per search, so it is addressed directly.
+	configDir, err := os.UserConfigDir()
+	if err != nil {
+		return nil
+	}
+	v.SetConfigFile(filepath.Join(configDir, "gagent", "config.yaml"))
+	if err := v.ReadInConfig(); err != nil && !errors.Is(err, fs.ErrNotExist) {
+		return err
+	}
+	return nil
 }

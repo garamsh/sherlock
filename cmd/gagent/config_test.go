@@ -17,8 +17,9 @@ import (
 // so resolveConfig can be exercised without running a subcommand.
 func newTestCommand(t *testing.T) *cobra.Command {
 	t.Helper()
-	// Isolate the test from a real ~/.gagent/gagent.yaml.
+	// Isolate the test from a real XDG/home gagent config.
 	t.Setenv("HOME", t.TempDir())
+	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
 	cmd := &cobra.Command{Use: "test"}
 	addConfigFlags(cmd.Flags())
 	return cmd
@@ -138,20 +139,65 @@ func TestResolveConfig_FlagOverridesEnv(t *testing.T) {
 	assert.Equal(t, time.Minute, cfg.ExecTimeout)
 }
 
-func TestResolveConfig_HomeConfigFile(t *testing.T) {
+func TestResolveConfig_XDGConfigFile(t *testing.T) {
 	t.Chdir(t.TempDir())
-	home := t.TempDir()
-	t.Setenv("HOME", home)
-	require.NoError(t, os.MkdirAll(filepath.Join(home, ".gagent"), 0o755))
-	require.NoError(t, os.WriteFile(filepath.Join(home, ".gagent", "gagent.yaml"),
-		[]byte("data-root: /from-home\n"), 0o644))
+	xdg := t.TempDir()
+	t.Setenv("XDG_CONFIG_HOME", xdg)
+	require.NoError(t, os.MkdirAll(filepath.Join(xdg, "gagent"), 0o755))
+	require.NoError(t, os.WriteFile(filepath.Join(xdg, "gagent", "config.yaml"),
+		[]byte("data-root: /from-xdg\n"), 0o644))
 
 	cmd := &cobra.Command{Use: "test"}
 	addConfigFlags(cmd.Flags())
 	cfg, err := resolveConfig(cmd)
 	require.NoError(t, err)
 
-	assert.Equal(t, "/from-home", cfg.DataRoot)
+	assert.Equal(t, "/from-xdg", cfg.DataRoot)
+}
+
+func TestResolveConfig_CwdBeatsXDG(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	xdg := t.TempDir()
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
+		[]byte("data-root: /from-cwd\n"), 0o644))
+	require.NoError(t, os.MkdirAll(filepath.Join(xdg, "gagent"), 0o755))
+	require.NoError(t, os.WriteFile(filepath.Join(xdg, "gagent", "config.yaml"),
+		[]byte("data-root: /from-xdg\nimage: debian:13\n"), 0o644))
+	cmd := newTestCommand(t)
+	t.Setenv("XDG_CONFIG_HOME", xdg)
+
+	cfg, err := resolveConfig(cmd)
+	require.NoError(t, err)
+
+	assert.Equal(t, "/from-cwd", cfg.DataRoot)
+	assert.Equal(t, defaultImage, cfg.Image, "XDG file is skipped once the cwd file is found")
+}
+
+func TestResolveConfig_ConfigFlag(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	// A cwd file exists but the flag path wins; the flag path is arbitrary.
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
+		[]byte("data-root: /from-cwd\n"), 0o644))
+	custom := filepath.Join(t.TempDir(), "custom.yaml")
+	require.NoError(t, os.WriteFile(custom, []byte("data-root: /from-flag\n"), 0o644))
+
+	cmd := newTestCommand(t)
+	require.NoError(t, cmd.Flags().Set("config", custom))
+	cfg, err := resolveConfig(cmd)
+	require.NoError(t, err)
+
+	assert.Equal(t, "/from-flag", cfg.DataRoot)
+}
+
+func TestResolveConfig_ConfigFlagMissingFileFails(t *testing.T) {
+	t.Chdir(t.TempDir())
+	cmd := newTestCommand(t)
+	require.NoError(t, cmd.Flags().Set("config", filepath.Join(t.TempDir(), "nope.yaml")))
+
+	_, err := resolveConfig(cmd)
+	assert.Error(t, err, "an explicit --config path must exist")
 }
 
 func TestResolveConfig_InvalidConfigFileFails(t *testing.T) {

@@ -5,17 +5,17 @@ import (
 	"strings"
 )
 
-// DefaultPersona is the built-in persona: the AGENT.md file embedded into the
-// binary, used when Options.Persona is empty. The persona is a file like any
+// DefaultEgo is the built-in ego: the EGO.md file embedded into the
+// binary, used when Options.Ego is empty. The ego is a file like any
 // other — the default is not a special string constant.
 //
-//go:embed AGENT.md
-var DefaultPersona string
+//go:embed EGO.md
+var DefaultEgo string
 
 // Contract is the platform-owned protocol appended to every session's
 // instructions: tool use, the memory writeback format, and reply
-// conventions. It is versioned with the code and never overridable by a
-// persona file, so a custom prompt cannot break the memory loop.
+// conventions. It is versioned with the code and never overridable by an
+// ego file, so a custom prompt cannot break the memory loop.
 const Contract = `## Tools
 You act through the tools provided with each request. Call a tool when the task needs it:
 - memory: search and read your long-term memory directly.
@@ -34,11 +34,11 @@ Use an empty object {} when nothing changed. The block is stripped before your c
 ## Replies
 Your visible content is everything before the memory block. Keep it concise and factual.`
 
-// ComposeInstructions returns the session instructions: the persona followed
-// by the platform Contract. An empty persona selects DefaultPersona.
-func ComposeInstructions(persona string) string {
-	if persona == "" {
-		persona = DefaultPersona
+// ComposeInstructions returns the session instructions: the ego followed
+// by the platform Contract. An empty ego selects DefaultEgo.
+func ComposeInstructions(ego string) string {
+	if ego == "" {
+		ego = DefaultEgo
 	}
-	return strings.TrimSpace(persona) + "\n\n" + Contract
+	return strings.TrimSpace(ego) + "\n\n" + Contract
 }

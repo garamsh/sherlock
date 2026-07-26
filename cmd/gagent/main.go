@@ -24,8 +24,8 @@ func newRootCommand() *cobra.Command {
 		Short: "Run the gagent platform: HTTP gateway or one-shot agent turns",
 	}
 	addConfigFlags(root.PersistentFlags())
-	root.PersistentFlags().String("agent-prompt", "",
-		"persona file for the agent's instructions (default: embedded AGENT.md)")
+	root.PersistentFlags().String("ego-file", "",
+		"ego file for the agent's instructions (default: embedded EGO.md)")
 	root.AddCommand(newGatewayCommand(), newAgentCommand())
 	return root
 }

@@ -25,7 +25,7 @@ func newAgentCommand() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			persona, err := resolvePersona(cmd)
+			ego, err := resolveEgo(cmd)
 			if err != nil {
 				return err
 			}
@@ -37,7 +37,7 @@ func newAgentCommand() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			return runAgentTurn(cmd.Context(), cfg, envID, msg, persona)
+			return runAgentTurn(cmd.Context(), cfg, envID, msg, ego)
 		},
 	}
 	cmd.Flags().String("env", "default", "environment ID to run the turn in")
@@ -49,7 +49,7 @@ func newAgentCommand() *cobra.Command {
 
 // runAgentTurn builds the environment runtime (same wiring as the gateway,
 // with a stdout sink in place of the file outbox) and runs one turn.
-func runAgentTurn(ctx context.Context, cfg Config, envID, msg, persona string) error {
+func runAgentTurn(ctx context.Context, cfg Config, envID, msg, ego string) error {
 	// Logs go to stderr so stdout carries only the agent's output.
 	logger := slog.New(slog.NewJSONHandler(os.Stderr, nil))
 	slog.SetDefault(logger)
@@ -75,7 +75,7 @@ func runAgentTurn(ctx context.Context, cfg Config, envID, msg, persona string) e
 	factory := &gateway.Factory{
 		Root:        cfg.DataRoot,
 		NewModel:    newModel,
-		Persona:     persona,
+		Ego:         ego,
 		Sandbox:     docker,
 		Image:       cfg.Image,
 		ExecTimeout: cfg.ExecTimeout,

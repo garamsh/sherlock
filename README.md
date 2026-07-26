@@ -119,7 +119,7 @@ mcp:
       command: /usr/local/bin/time-mcp
 ```
 
-With the default `mock` provider the binary wires the scripted mock model, which answers each environment's first message with a canned reply. With `provider: openai` it runs against a real chat model; a missing API key env var fails at startup. `sandbox_exec` needs a Docker daemon. To work on the codebase you need Go and GNU Make, and the standard checks are:
+With the default `mock` provider the binary wires the scripted mock model, which answers each environment's first message with a canned run of the full loop: it computes in the sandbox via `sandbox_exec`, replies via `message_send`, and writes the result back to memory. With `provider: openai` it runs against a real chat model; a missing API key env var fails at startup. `sandbox_exec` (and therefore the mock script) needs a Docker daemon. To work on the codebase you need Go and GNU Make, and the standard checks are:
 
 ```sh
 make ci      # lint + format check + test + build (same as CI)

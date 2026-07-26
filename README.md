@@ -61,17 +61,17 @@ Settings resolve in order: **flags > environment variables > config file > defau
 | `model.api-key-env` | — | `OPENAI_API_KEY` (name of the env var holding the key — the key itself never goes in the config file) |
 | `mcp.servers` | — | `[]` (external MCP servers; see below) |
 
-### Agent persona
+### Agent ego
 
-The agent's instructions are composed of two parts: a **persona** (identity and behavior guidance) you own, and a **platform contract** (tool use, memory writeback format, reply conventions) the platform always appends — a custom persona can never disable the memory loop.
+The agent's instructions are composed of two parts: an **ego** (identity and behavior guidance) you own, and a **platform contract** (tool use, memory writeback format, reply conventions) the platform always appends — a custom ego can never disable the memory loop.
 
-The persona is a Markdown file, resolved in order: `--agent-prompt <path>`, then the embedded default (`internal/agent/AGENT.md`). There is no config key for it, and a missing or unreadable file fails at startup. Changes apply on restart; the file is not hot-reloaded.
+The ego is a Markdown file, resolved in order: `--ego-file <path>`, then the embedded default (`internal/agent/EGO.md`). There is no config key for it, and a missing or unreadable file fails at startup. Changes apply on restart; the file is not hot-reloaded.
 
 ```sh
-gagent agent --agent-prompt ./PERSONA.md --message "hello"
+gagent agent --ego-file ./EGO.md --message "hello"
 ```
 
-A persona file describes who the agent is and how it behaves — not the protocol. Example:
+An ego file describes who the agent is and how it behaves — not the protocol. Example:
 
 ```markdown
 You are Nimbus, an autonomous site-reliability agent running one continuous

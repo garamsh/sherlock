@@ -107,10 +107,10 @@ type Options struct {
 	Writeback WritebackSink
 	Events    EventSink
 	Compactor Compactor
-	// Persona is the identity/behavior half of the session instructions;
-	// empty selects the embedded DefaultPersona. The platform Contract is
+	// Ego is the identity/behavior half of the session instructions;
+	// empty selects the embedded DefaultEgo. The platform Contract is
 	// always appended (see ComposeInstructions).
-	Persona       string
+	Ego           string
 	MaxIterations int
 	// MaxHistoryMessages triggers the Compactor when history exceeds it;
 	// zero disables the hook.
@@ -121,7 +121,7 @@ type session struct {
 	model    Model
 	registry *tool.Registry
 	opts     Options
-	// instructions is the composed persona + contract, injected once as the
+	// instructions is the composed ego + contract, injected once as the
 	// first system message of a fresh session.
 	instructions string
 	history      []Message
@@ -138,7 +138,7 @@ func NewSession(model Model, registry *tool.Registry, opts Options) Session {
 		model:        model,
 		registry:     registry,
 		opts:         opts,
-		instructions: ComposeInstructions(opts.Persona),
+		instructions: ComposeInstructions(opts.Ego),
 	}
 }
 

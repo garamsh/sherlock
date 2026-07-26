@@ -41,10 +41,10 @@ type Factory struct {
 	Root string
 	// NewModel returns the chat model for one environment's session.
 	NewModel func(envID string) agent.Model
-	// Persona is the session persona for every environment; empty selects
+	// Ego is the session ego for every environment; empty selects
 	// the agent package's embedded default (the platform contract is
 	// appended regardless).
-	Persona string
+	Ego string
 	// Sandbox runs environment containers for the sandbox_exec tool.
 	Sandbox sandbox.Runtime
 	// Image is the environment container image reference.
@@ -117,7 +117,7 @@ func (f *Factory) New(_ context.Context, envID string, events agent.EventSink) (
 		Recaller:  Recall{Svc: memSvc},
 		Writeback: Writeback{Svc: memSvc},
 		Events:    events,
-		Persona:   f.Persona,
+		Ego:       f.Ego,
 	})
 	return &Runtime{
 		Session: session,

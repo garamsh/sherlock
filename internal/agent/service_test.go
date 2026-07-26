@@ -330,16 +330,16 @@ func TestSessionRun_InstructionsAreFirstSystemMessage(t *testing.T) {
 	assert.Equal(t, agent.RoleUser, messages[2].Role)
 }
 
-func TestSessionRun_CustomPersonaKeepsContract(t *testing.T) {
+func TestSessionRun_CustomEgoKeepsContract(t *testing.T) {
 	model := &captureModel{}
-	s := agent.NewSession(model, tool.NewRegistry(), agent.Options{Persona: "You are a test persona."})
+	s := agent.NewSession(model, tool.NewRegistry(), agent.Options{Ego: "You are a test ego."})
 
 	_, err := s.Run(context.Background(), "task")
 	require.NoError(t, err)
 
 	instructions := model.calls[0][0].Content
-	assert.True(t, strings.HasPrefix(instructions, "You are a test persona."), "persona leads the instructions")
-	assert.Contains(t, instructions, agent.Contract, "platform contract survives a custom persona")
+	assert.True(t, strings.HasPrefix(instructions, "You are a test ego."), "ego leads the instructions")
+	assert.Contains(t, instructions, agent.Contract, "platform contract survives a custom ego")
 }
 
 func TestSessionRun_InstructionsInjectedOnce(t *testing.T) {

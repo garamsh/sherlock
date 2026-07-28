@@ -304,6 +304,26 @@ func TestSessionRun_ModelErrorPropagates(t *testing.T) {
 	assert.Contains(t, err.Error(), "provider down")
 }
 
+func TestSessionRun_FailureEmitsTerminalEvent(t *testing.T) {
+	model := agent.NewScriptedModel(
+		agent.ScriptedStep{Err: errors.New("provider down")},
+	)
+	events := &fakeEvents{}
+	s := agent.NewSession(model, tool.NewRegistry(), agent.Options{Events: events})
+
+	_, err := s.Run(context.Background(), "task")
+	require.Error(t, err)
+
+	// A failed turn still terminates visibly on the monitoring stream.
+	require.Equal(t, []agent.EventKind{
+		agent.EventTurnStarted,
+		agent.EventTurnFailed,
+	}, events.kinds())
+	terminal := events.events[len(events.events)-1]
+	assert.Equal(t, 1, terminal.Turn)
+	assert.Contains(t, terminal.Error, "provider down")
+}
+
 // captureModel records the messages of every Chat call so tests can assert
 // what the session sent the model.
 type captureModel struct {

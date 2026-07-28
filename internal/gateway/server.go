@@ -98,6 +98,7 @@ type eventPayload struct {
 	ToolResult string              `json:"tool_result,omitempty"`
 	ToolFailed bool                `json:"tool_failed,omitempty"`
 	Response   string              `json:"response,omitempty"`
+	Error      string              `json:"error,omitempty"`
 }
 
 // events streams the environment's loop events as server-sent events.
@@ -139,6 +140,7 @@ func (h *handler) events(w http.ResponseWriter, r *http.Request) {
 				ToolResult: e.ToolResult,
 				ToolFailed: e.ToolFailed,
 				Response:   e.Response,
+				Error:      e.Error,
 			})
 			if err != nil {
 				h.logger.Error("encode event failed", "op", "events", "env_id", envID, "error", err)

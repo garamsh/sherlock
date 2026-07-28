@@ -59,11 +59,15 @@ const (
 	EventToolCall EventKind = "tool_call"
 	// EventTurnFinished fires once per Run with the final response.
 	EventTurnFinished EventKind = "turn_finished"
+	// EventTurnFailed fires once per Run that returns an error, so the
+	// monitoring stream always ends a turn with a terminal event.
+	EventTurnFailed EventKind = "turn_failed"
 )
 
 // Event is one structured loop event for the gateway monitoring stream.
 // Which fields are set depends on Kind: Task on turn_started, Ops on
-// writeback, the Tool* fields on tool_call, Response on turn_finished.
+// writeback, the Tool* fields on tool_call, Response on turn_finished,
+// Error on turn_failed.
 type Event struct {
 	Kind       EventKind
 	Turn       int
@@ -74,6 +78,7 @@ type Event struct {
 	ToolResult string
 	ToolFailed bool
 	Response   string
+	Error      string
 }
 
 // EventSink receives loop events in emission order. Nil means events are
@@ -149,10 +154,17 @@ func (s *session) History() []Message {
 
 // Run executes one turn of the memory lifecycle: frame the task, recall
 // memories into context, act (model ↔ tools until a final response), and
-// write back memory operations from every model response.
-func (s *session) Run(ctx context.Context, task string) (string, error) {
+// write back memory operations from every model response. Every turn ends
+// with exactly one terminal event: turn_finished on success, turn_failed
+// on error.
+func (s *session) Run(ctx context.Context, task string) (response string, err error) {
 	s.turn++
 	s.emit(ctx, Event{Kind: EventTurnStarted, Turn: s.turn, Task: task})
+	defer func() {
+		if err != nil {
+			s.emit(ctx, Event{Kind: EventTurnFailed, Turn: s.turn, Error: err.Error()})
+		}
+	}()
 
 	if len(s.history) == 0 {
 		s.history = append(s.history, Message{Role: RoleSystem, Content: s.instructions})

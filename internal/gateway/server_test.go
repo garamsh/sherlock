@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -163,6 +164,54 @@ func TestServer_EventsStreamsTurnEvents(t *testing.T) {
 	require.NotNil(t, sink)
 	mu.Unlock()
 }
+
+func TestServer_EventsStreamsTurnFailed(t *testing.T) {
+	srv := newTestServer(t, func(_ string, events agent.EventSink) (*gateway.Runtime, error) {
+		return &gateway.Runtime{
+			Session: &failingSession{events: events},
+			Close:   func(context.Context) error { return nil },
+		}, nil
+	})
+
+	received := sseListener(t, srv.URL+"/envs/env-1/events")
+
+	resp := postMessage(t, srv.URL+"/envs/env-1/messages", `{"content":"hello"}`)
+	resp.Body.Close()
+	require.Equal(t, http.StatusAccepted, resp.StatusCode)
+
+	// A failed run ends the subscriber's view of the turn: turn_failed is
+	// the terminal event and carries the error.
+	var kinds []string
+	var terminal map[string]any
+	deadline := time.After(5 * time.Second)
+	for len(kinds) < 2 {
+		select {
+		case e := <-received:
+			assert.Equal(t, "env-1", e["env"])
+			kinds = append(kinds, e["kind"].(string))
+			terminal = e
+		case <-deadline:
+			t.Fatalf("timed out waiting for events, got %v", kinds)
+		}
+	}
+	assert.Equal(t, []string{string(agent.EventTurnStarted), string(agent.EventTurnFailed)}, kinds)
+	assert.Contains(t, terminal["error"], "model chat")
+}
+
+// failingSession publishes turn_started and turn_failed per run,
+// mimicking the real session's event contract for a failed run.
+type failingSession struct {
+	events agent.EventSink
+}
+
+func (s *failingSession) Run(ctx context.Context, task string) (string, error) {
+	s.events.Emit(ctx, agent.Event{Kind: agent.EventTurnStarted, Turn: 1, Task: task})
+	err := errors.New("model chat: provider down")
+	s.events.Emit(ctx, agent.Event{Kind: agent.EventTurnFailed, Turn: 1, Error: err.Error()})
+	return "", err
+}
+
+func (s *failingSession) History() []agent.Message { return nil }
 
 // emittingSession publishes one turn_started and one turn_finished event
 // per run, mimicking the real session's event contract.

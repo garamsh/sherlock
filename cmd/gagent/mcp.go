@@ -75,6 +75,9 @@ type namedTool string
 // Name returns the reserved name.
 func (t namedTool) Name() string { return string(t) }
 
+// Description returns no description; the tool is never advertised.
+func (t namedTool) Description() string { return "" }
+
 // InputSchema returns no schema; the tool is never invoked.
 func (t namedTool) InputSchema() json.RawMessage { return nil }
 

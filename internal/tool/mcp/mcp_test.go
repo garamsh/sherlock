@@ -56,6 +56,7 @@ func TestStart_DiscoversToolsWithSchemas(t *testing.T) {
 	assert.ElementsMatch(t, []string{"echo", "fail", "sleep", "getenv", "die"}, names)
 
 	echo := lookup(t, srv, "echo")
+	assert.Equal(t, "echo the text back", echo.Description(), "the adapter forwards the server's description")
 	assert.JSONEq(t, `{
 		"type": "object",
 		"properties": {"text": {"type": "string"}},

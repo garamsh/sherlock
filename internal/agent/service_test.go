@@ -73,6 +73,7 @@ func newEchoTool(t *testing.T) *mocks.MockTool {
 	t.Helper()
 	echo := mocks.NewMockTool(t)
 	echo.EXPECT().Name().Return("echo")
+	echo.EXPECT().Description().Return("echo the text back")
 	echo.EXPECT().InputSchema().Return(json.RawMessage(nil))
 	echo.EXPECT().OutputSchema().Return(json.RawMessage(nil))
 	echo.EXPECT().Call(mock.Anything, json.RawMessage(`{"text":"hi"}`)).

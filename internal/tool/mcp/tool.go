@@ -15,6 +15,7 @@ import (
 type mcpTool struct {
 	server       *Server
 	name         string
+	description  string
 	inputSchema  json.RawMessage
 	outputSchema json.RawMessage
 	timeout      time.Duration
@@ -25,6 +26,7 @@ func newTool(s *Server, t *mcpsdk.Tool, timeout time.Duration) *mcpTool {
 	return &mcpTool{
 		server:       s,
 		name:         t.Name,
+		description:  t.Description,
 		inputSchema:  marshalSchema(t.InputSchema),
 		outputSchema: marshalSchema(t.OutputSchema),
 		timeout:      timeout,
@@ -48,6 +50,9 @@ func marshalSchema(schema any) json.RawMessage {
 
 // Name returns the MCP tool name.
 func (t *mcpTool) Name() string { return t.name }
+
+// Description returns the description the server declared for the tool.
+func (t *mcpTool) Description() string { return t.description }
 
 // InputSchema returns the schema the server declared for the tool input.
 func (t *mcpTool) InputSchema() json.RawMessage { return t.inputSchema }

@@ -106,6 +106,50 @@ func (_c *MockTool_Call_Call) RunAndReturn(run func(ctx context.Context, input j
 	return _c
 }
 
+// Description provides a mock function for the type MockTool
+func (_mock *MockTool) Description() string {
+	ret := _mock.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for Description")
+	}
+
+	var r0 string
+	if returnFunc, ok := ret.Get(0).(func() string); ok {
+		r0 = returnFunc()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+	return r0
+}
+
+// MockTool_Description_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Description'
+type MockTool_Description_Call struct {
+	*mock.Call
+}
+
+// Description is a helper method to define mock.On call
+func (_e *MockTool_Expecter) Description() *MockTool_Description_Call {
+	return &MockTool_Description_Call{Call: _e.mock.On("Description")}
+}
+
+func (_c *MockTool_Description_Call) Run(run func()) *MockTool_Description_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockTool_Description_Call) Return(s string) *MockTool_Description_Call {
+	_c.Call.Return(s)
+	return _c
+}
+
+func (_c *MockTool_Description_Call) RunAndReturn(run func() string) *MockTool_Description_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // InputSchema provides a mock function for the type MockTool
 func (_mock *MockTool) InputSchema() json.RawMessage {
 	ret := _mock.Called()

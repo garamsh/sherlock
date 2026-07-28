@@ -23,6 +23,9 @@ var (
 type Tool interface {
 	// Name returns the unique tool name used for registration and lookup.
 	Name() string
+	// Description returns a one-sentence human/model-readable summary of
+	// what the tool does; it is advertised to model providers.
+	Description() string
 	// InputSchema returns the JSON Schema document describing valid input.
 	InputSchema() json.RawMessage
 	// OutputSchema returns the JSON Schema document describing the result.

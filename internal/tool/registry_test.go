@@ -63,14 +63,16 @@ func TestRegistry_LookupMissing(t *testing.T) {
 func TestRegistry_List(t *testing.T) {
 	reg := tool.NewRegistry()
 	require.NoError(t, reg.Register(&stubTool{
-		name:      "beta",
-		inSchema:  json.RawMessage(`{"type":"object"}`),
-		outSchema: json.RawMessage(`{"type":"string"}`),
+		name:        "beta",
+		description: "runs commands",
+		inSchema:    json.RawMessage(`{"type":"object"}`),
+		outSchema:   json.RawMessage(`{"type":"string"}`),
 	}))
 	require.NoError(t, reg.Register(&stubTool{
-		name:      "alpha",
-		inSchema:  json.RawMessage(`{"type":"string"}`),
-		outSchema: json.RawMessage(`{"type":"object"}`),
+		name:        "alpha",
+		description: "reads files",
+		inSchema:    json.RawMessage(`{"type":"string"}`),
+		outSchema:   json.RawMessage(`{"type":"object"}`),
 	}))
 
 	list := reg.List()
@@ -78,6 +80,8 @@ func TestRegistry_List(t *testing.T) {
 	require.Len(t, list, 2)
 	assert.Equal(t, "alpha", list[0].Name, "descriptors are sorted by name")
 	assert.Equal(t, "beta", list[1].Name)
+	assert.Equal(t, "reads files", list[0].Description, "the descriptor carries the tool's description")
+	assert.Equal(t, "runs commands", list[1].Description)
 	assert.JSONEq(t, `{"type":"string"}`, string(list[0].InputSchema))
 	assert.JSONEq(t, `{"type":"object"}`, string(list[0].OutputSchema))
 }

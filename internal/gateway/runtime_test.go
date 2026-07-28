@@ -123,6 +123,7 @@ type stubTool struct {
 }
 
 func (t *stubTool) Name() string                  { return t.name }
+func (t *stubTool) Description() string           { return "" }
 func (t *stubTool) InputSchema() json.RawMessage  { return nil }
 func (t *stubTool) OutputSchema() json.RawMessage { return nil }
 func (t *stubTool) Call(context.Context, json.RawMessage) (json.RawMessage, error) {
@@ -177,6 +178,25 @@ func TestFactory_ExtraToolNameCollisionFails(t *testing.T) {
 // openAITopLevelForbidden lists the keywords the OpenAI function-calling
 // API rejects at the top level of a tool's parameters schema (issue #49).
 var openAITopLevelForbidden = []string{"allOf", "anyOf", "oneOf", "not", "enum", "const"}
+
+func TestBuiltinTools_DescriptionsAreNonEmpty(t *testing.T) {
+	// Nil dependencies suffice: Description is a static document on every
+	// built-in tool.
+	builtins := []tool.Tool{
+		memory.NewTool(nil),
+		files.NewTool(nil),
+		sandbox.NewExecTool(nil, sandbox.Config{}, 0),
+		message.NewSendTool(nil),
+	}
+	registry := tool.NewRegistry()
+	for _, tl := range builtins {
+		require.NoError(t, registry.Register(tl))
+	}
+
+	for _, d := range registry.List() {
+		assert.NotEmpty(t, d.Description, "tool %q must advertise a description", d.Name)
+	}
+}
 
 func TestBuiltinTools_InputSchemasSatisfyOpenAISubset(t *testing.T) {
 	// Nil dependencies suffice: InputSchema is a static document on every

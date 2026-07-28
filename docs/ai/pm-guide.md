@@ -53,6 +53,10 @@ Submit the review per `docs/convention/review.md`: formal review state, evidence
 - Issues state the goal and acceptance criteria, not the implementation.
 - An issue whose scope touches PM-owned paths (`docs/convention/`, `docs/ai/`, `.opencode/`, `.claude/`, `.github/`) is executed by the PM, unless the issue body explicitly delegates those paths to the worker.
 
+## Dispatching workers
+
+Assign implementation work by running a worker in an orca worktree, not by editing source yourself. Open the issue first and wait for a human to confirm it; only then create the worktree and dispatch. Launch a role-bound agent into the worktree in autonomous mode and watch its terminal to completion. Full procedure: `orca-dispatch.md`. Roles must be bound with the tool's own `--agent <role>` flag — orca's `--agent` selects only the tool.
+
 ## Branch hygiene
 
 - After merging a PR, delete the remote head branch (unnecessary if the repo has *Automatically delete head branches* enabled).

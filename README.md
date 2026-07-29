@@ -63,6 +63,7 @@ Settings resolve in order: **flags > environment variables > config file > defau
 | `model.base-url` | — | `https://api.openai.com/v1` (any OpenAI-compatible endpoint, e.g. Ollama/vLLM) |
 | `model.model` | — | `gpt-4o-mini` |
 | `model.api-key-env` | — | `OPENAI_API_KEY` (name of the env var holding the key — the key itself never goes in the config file) |
+| `model.timeout` | — | `60s` (one chat-completions request; raise for slow local endpoints like CPU-served Ollama/vLLM) |
 | `mcp.servers` | — | `[]` (external MCP servers; see below) |
 
 ### Agent ego

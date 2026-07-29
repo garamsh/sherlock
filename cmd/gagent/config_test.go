@@ -42,6 +42,7 @@ func TestResolveConfig_Defaults(t *testing.T) {
 		BaseURL:   defaultModelBaseURL,
 		Model:     defaultModelName,
 		APIKeyEnv: defaultModelKeyEnv,
+		Timeout:   defaultModelTimeout,
 	}, cfg.Model)
 }
 
@@ -52,7 +53,8 @@ func TestResolveConfig_ModelSection(t *testing.T) {
 		"  provider: openai\n" +
 		"  base-url: http://localhost:11434/v1\n" +
 		"  model: llama3.2\n" +
-		"  api-key-env: OLLAMA_KEY\n"
+		"  api-key-env: OLLAMA_KEY\n" +
+		"  timeout: 120s\n"
 	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o644))
 
 	cfg, err := resolveConfig(newTestCommand(t))
@@ -62,6 +64,21 @@ func TestResolveConfig_ModelSection(t *testing.T) {
 	assert.Equal(t, "http://localhost:11434/v1", cfg.Model.BaseURL)
 	assert.Equal(t, "llama3.2", cfg.Model.Model)
 	assert.Equal(t, "OLLAMA_KEY", cfg.Model.APIKeyEnv)
+	assert.Equal(t, 120*time.Second, cfg.Model.Timeout)
+}
+
+func TestResolveConfig_ModelTimeoutEnvOverridesFile(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
+		[]byte("model:\n  timeout: 30s\n"), 0o644))
+	t.Setenv("GAGENT_MODEL_TIMEOUT", "5m")
+
+	cfg, err := resolveConfig(newTestCommand(t))
+	require.NoError(t, err)
+
+	assert.Equal(t, 5*time.Minute, cfg.Model.Timeout,
+		"GAGENT_MODEL_TIMEOUT must override the config-file value")
 }
 
 func TestResolveConfig_MCPSection(t *testing.T) {

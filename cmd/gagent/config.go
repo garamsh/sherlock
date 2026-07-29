@@ -30,6 +30,10 @@ const (
 	defaultModelBaseURL  = "https://api.openai.com/v1"
 	defaultModelName     = "gpt-4o-mini"
 	defaultModelKeyEnv   = "OPENAI_API_KEY"
+	// defaultModelTimeout bounds one chat-completions request. It mirrors
+	// internal/agent/openai.DefaultTimeout so the default behaviour is
+	// identical whether the key is set or not.
+	defaultModelTimeout = 60 * time.Second
 )
 
 // nanoCPUsPerCPU is Docker's CPU quota unit: 1e9 nano-CPUs is one CPU.
@@ -99,6 +103,9 @@ type ModelConfig struct {
 	Model string `mapstructure:"model"`
 	// APIKeyEnv names the environment variable holding the API key.
 	APIKeyEnv string `mapstructure:"api-key-env"`
+	// Timeout bounds one chat-completions request; <= 0 leaves the
+	// provider's default in place.
+	Timeout time.Duration `mapstructure:"timeout"`
 }
 
 // addConfigFlags registers the shared settings as flags on fs. viper
@@ -151,6 +158,7 @@ func resolveConfig(cmd *cobra.Command) (Config, error) {
 	v.SetDefault("model.base-url", defaultModelBaseURL)
 	v.SetDefault("model.model", defaultModelName)
 	v.SetDefault("model.api-key-env", defaultModelKeyEnv)
+	v.SetDefault("model.timeout", defaultModelTimeout)
 	v.SetEnvPrefix("GAGENT")
 	v.SetEnvKeyReplacer(strings.NewReplacer("-", "_", ".", "_"))
 	v.AutomaticEnv()

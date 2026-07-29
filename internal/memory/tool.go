@@ -17,65 +17,70 @@ const ToolName = "memory"
 const toolDescription = "Store, search, update, compress, and forget entries in the environment's long-term memory."
 
 // inputSchema validates agent input per operation (secret-holding trust
-// domain: structured, schema-validated input only). The oneOf sits under
-// if/then because the OpenAI function-calling API rejects top-level oneOf
-// and requires type object at the root.
+// domain: structured, schema-validated input only). The root declares every
+// property flat because models generate arguments from the advertised
+// properties. Per-operation requirements sit in the nested if/then blocks,
+// wrapped in one if/then because the OpenAI function-calling API rejects
+// top-level allOf and requires type object at the root.
 var inputSchema = json.RawMessage(`{
 	"$schema": "https://json-schema.org/draft/2020-12/schema",
 	"type": "object",
+	"properties": {
+		"op": {"type": "string", "enum": ["store", "search", "update", "compress", "forget"]},
+		"content": {"type": "string", "minLength": 1},
+		"type": {"type": "string", "enum": ["episodic", "semantic"]},
+		"importance_score": {"type": "number", "minimum": 0, "maximum": 1},
+		"source": {"type": "string", "minLength": 1},
+		"query": {"type": "string", "minLength": 1},
+		"limit": {"type": "integer", "minimum": 1},
+		"id": {"type": "integer", "minimum": 1},
+		"ids": {"type": "array", "items": {"type": "integer", "minimum": 1}, "minItems": 1},
+		"threshold": {"type": "number", "exclusiveMinimum": 0}
+	},
+	"required": ["op"],
+	"additionalProperties": false,
 	"if": true,
 	"then": {
-		"oneOf": [
+		"allOf": [
 			{
-				"type": "object",
-				"properties": {
-					"op": {"const": "store"},
-					"content": {"type": "string", "minLength": 1},
-					"type": {"enum": ["episodic", "semantic"]},
-					"importance_score": {"type": "number", "minimum": 0, "maximum": 1},
-					"source": {"type": "string", "minLength": 1}
-				},
-				"required": ["op", "content", "type", "importance_score", "source"],
-				"additionalProperties": false
+				"if": {"properties": {"op": {"const": "store"}}, "required": ["op"]},
+				"then": {
+					"properties": {"op": {}, "content": {}, "type": {}, "importance_score": {}, "source": {}},
+					"required": ["op", "content", "type", "importance_score", "source"],
+					"additionalProperties": false
+				}
 			},
 			{
-				"type": "object",
-				"properties": {
-					"op": {"const": "search"},
-					"query": {"type": "string", "minLength": 1},
-					"limit": {"type": "integer", "minimum": 1}
-				},
-				"required": ["op", "query"],
-				"additionalProperties": false
+				"if": {"properties": {"op": {"const": "search"}}, "required": ["op"]},
+				"then": {
+					"properties": {"op": {}, "query": {}, "limit": {}},
+					"required": ["op", "query"],
+					"additionalProperties": false
+				}
 			},
 			{
-				"type": "object",
-				"properties": {
-					"op": {"const": "update"},
-					"id": {"type": "integer", "minimum": 1},
-					"content": {"type": "string", "minLength": 1},
-					"importance_score": {"type": "number", "minimum": 0, "maximum": 1}
-				},
-				"required": ["op", "id", "content"],
-				"additionalProperties": false
+				"if": {"properties": {"op": {"const": "update"}}, "required": ["op"]},
+				"then": {
+					"properties": {"op": {}, "id": {}, "content": {}, "importance_score": {}},
+					"required": ["op", "id", "content"],
+					"additionalProperties": false
+				}
 			},
 			{
-				"type": "object",
-				"properties": {
-					"op": {"const": "compress"},
-					"ids": {"type": "array", "items": {"type": "integer", "minimum": 1}, "minItems": 1}
-				},
-				"required": ["op", "ids"],
-				"additionalProperties": false
+				"if": {"properties": {"op": {"const": "compress"}}, "required": ["op"]},
+				"then": {
+					"properties": {"op": {}, "ids": {}},
+					"required": ["op", "ids"],
+					"additionalProperties": false
+				}
 			},
 			{
-				"type": "object",
-				"properties": {
-					"op": {"const": "forget"},
-					"threshold": {"type": "number", "exclusiveMinimum": 0}
-				},
-				"required": ["op"],
-				"additionalProperties": false
+				"if": {"properties": {"op": {"const": "forget"}}, "required": ["op"]},
+				"then": {
+					"properties": {"op": {}, "threshold": {}},
+					"required": ["op"],
+					"additionalProperties": false
+				}
 			}
 		]
 	}

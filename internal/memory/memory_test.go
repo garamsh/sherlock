@@ -335,6 +335,11 @@ func TestTool_RejectsInvalidInput(t *testing.T) {
 		{"update missing id", `{"op":"update","content":"x"}`},
 		{"compress empty ids", `{"op":"compress","ids":[]}`},
 		{"unexpected field", `{"op":"forget","query":"x"}`},
+		{"undeclared field", `{"op":"forget","nonsense":"x"}`},
+		{"search carries store fields", `{"op":"search","query":"x","content":"y"}`},
+		{"store carries search fields", `{"op":"store","content":"x","type":"episodic","importance_score":0.5,"source":"test","limit":3}`},
+		{"update carries compress fields", `{"op":"update","id":1,"content":"x","ids":[1]}`},
+		{"compress carries threshold", `{"op":"compress","ids":[1],"threshold":0.5}`},
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -342,6 +347,27 @@ func TestTool_RejectsInvalidInput(t *testing.T) {
 			require.ErrorIs(t, err, tool.ErrValidation)
 		})
 	}
+}
+
+// Models generate tool arguments from the advertised root properties, so every
+// field and every operation name must be visible there, not only in conditionals.
+func TestTool_InputSchemaAdvertisesEveryFieldAtRoot(t *testing.T) {
+	var schema struct {
+		Properties map[string]struct {
+			Enum []string `json:"enum"`
+		} `json:"properties"`
+	}
+	require.NoError(t, json.Unmarshal(memory.NewTool(nil).InputSchema(), &schema))
+
+	for _, field := range []string{
+		"op", "content", "type", "importance_score", "source",
+		"query", "limit", "id", "ids", "threshold",
+	} {
+		assert.Contains(t, schema.Properties, field)
+	}
+	assert.Equal(t,
+		[]string{"store", "search", "update", "compress", "forget"},
+		schema.Properties["op"].Enum)
 }
 
 func TestService_RejectsInvalidInput(t *testing.T) {

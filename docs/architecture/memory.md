@@ -31,7 +31,7 @@ Governs long-term memory: the store, the search, and the lifecycle. Rationale: A
 - **Delete retires, never erases** — the writeback `delete` op goes through `memory.Service.Delete`: the row moves to the archive with `valid_to` set and `superseded_by` left empty (retirement, not supersession). Delete is not idempotent; a missing or already-archived ID is `ErrNotFound`.
 - **Capacity** — the active index is capped; eviction score is the same weighted function as ranking; evicted entries move to the archive.
 - **Consolidation** — on store-size threshold or environment shutdown, episodic clusters are compressed into semantic parent memories (originals archived).
-- **Context overflow** — when the conversation window fills, the oldest turns are summarized and stored as episodic memory.
+- **Context overflow** — `internal/gateway/` wires a message-count cap on every rolling session; crossing it summarizes the oldest history into an episodic memory and retains the newest context.
 - One active session per environment.
 
 ## Open questions

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -17,6 +18,7 @@ import (
 	"github.com/garamsh/gagent/internal/files"
 	"github.com/garamsh/gagent/internal/gateway"
 	"github.com/garamsh/gagent/internal/memory"
+	"github.com/garamsh/gagent/internal/memory/sqlite"
 	"github.com/garamsh/gagent/internal/message"
 	"github.com/garamsh/gagent/internal/sandbox"
 	"github.com/garamsh/gagent/internal/tool"
@@ -114,6 +116,55 @@ func TestFactory_NilSinkWritesOutbox(t *testing.T) {
 	entries, err := os.ReadDir(filepath.Join(root, "env-1", gateway.OutboxDir))
 	require.NoError(t, err)
 	assert.Len(t, entries, 1)
+}
+
+func compactionModel(_ string) agent.Model {
+	return agent.NewScriptedModel(
+		agent.ScriptedStep{Content: "First reply.\n```memory\n{}\n```"},
+		agent.ScriptedStep{Content: "Second reply.\n```memory\n{}\n```"},
+	)
+}
+
+func TestFactory_HistoryOverflowCompactsIntoSearchableEpisodicMemory(t *testing.T) {
+	root := t.TempDir()
+	factory := &gateway.Factory{
+		Root:               root,
+		NewModel:           compactionModel,
+		Sandbox:            stubSandbox{},
+		Image:              "stub",
+		Sink:               &recordingSink{},
+		MaxHistoryMessages: 4,
+	}
+	rt, err := factory.New(context.Background(), "env-1", nil)
+	require.NoError(t, err)
+
+	first, err := rt.Session.Run(context.Background(), "first overflowing task")
+	require.NoError(t, err)
+	second, err := rt.Session.Run(context.Background(), "second task continues")
+	require.NoError(t, err)
+	assert.Equal(t, "First reply.", first)
+	assert.Contains(t, second, "Second reply.")
+	assert.LessOrEqual(t, len(rt.Session.History()), factory.MaxHistoryMessages+1)
+
+	require.NoError(t, rt.Close(context.Background()))
+	store, err := sqlite.Open(filepath.Join(root, "env-1", gateway.MemoryDBFile))
+	require.NoError(t, err)
+	defer func() {
+		assert.NoError(t, store.Close())
+	}()
+	svc := memory.NewService(store, memory.NewHashingEmbedder(), memory.NewConcatSummarizer())
+	found, err := svc.Search(context.Background(), "first overflowing task", 10)
+	require.NoError(t, err)
+	var overflow memory.ScoredMemory
+	for _, candidate := range found {
+		if candidate.Source == "context-overflow" && strings.Contains(candidate.Content, "first overflowing task") {
+			overflow = candidate
+			break
+		}
+	}
+	require.NotZero(t, overflow.ID)
+	assert.Equal(t, memory.TypeEpisodic, overflow.Type)
+	assert.Contains(t, overflow.Content, "first overflowing task")
 }
 
 // stubTool is a static extra tool for registry wiring tests.

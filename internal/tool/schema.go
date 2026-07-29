@@ -8,6 +8,10 @@ import (
 	"github.com/santhosh-tekuri/jsonschema/v6"
 )
 
+// schemaResourceURI names the compiled schema resource. It is absolute and
+// cwd-independent so validation errors never embed a host filesystem path.
+const schemaResourceURI = "https://gagent.local/schema/tool-input.json"
+
 // validate checks input against a JSON Schema document. An empty schema
 // accepts any input.
 func validate(schema json.RawMessage, input json.RawMessage) error {
@@ -19,10 +23,10 @@ func validate(schema json.RawMessage, input json.RawMessage) error {
 		return fmt.Errorf("parse schema: %w", err)
 	}
 	c := jsonschema.NewCompiler()
-	if err := c.AddResource("schema.json", doc); err != nil {
+	if err := c.AddResource(schemaResourceURI, doc); err != nil {
 		return fmt.Errorf("load schema: %w", err)
 	}
-	compiled, err := c.Compile("schema.json")
+	compiled, err := c.Compile(schemaResourceURI)
 	if err != nil {
 		return fmt.Errorf("compile schema: %w", err)
 	}

@@ -1,6 +1,8 @@
 package gateway
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -197,4 +199,15 @@ func (h *handler) logRequests(next http.Handler) http.Handler {
 			"status", sw.status,
 			"duration_ms", time.Since(start).Milliseconds())
 	})
+}
+
+// newID returns a random identifier with the given prefix
+// (e.g. "trace-9f2c..."), used for trace IDs and (in service.go) message
+// IDs.
+func newID(prefix string) (string, error) {
+	var b [16]byte
+	if _, err := rand.Read(b[:]); err != nil {
+		return "", fmt.Errorf("generate %s id: %w", prefix, err)
+	}
+	return prefix + "-" + hex.EncodeToString(b[:]), nil
 }

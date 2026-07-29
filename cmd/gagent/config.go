@@ -64,30 +64,6 @@ type Config struct {
 	Policy sandbox.Policy `mapstructure:"-"`
 	// Model selects the chat model provider (ADR 0005).
 	Model ModelConfig `mapstructure:"model"`
-	// MCP lists the external MCP servers whose tools join every
-	// environment's registry (issue #34).
-	MCP MCPConfig `mapstructure:"mcp"`
-}
-
-// MCPConfig lists the external MCP servers started at platform boot.
-type MCPConfig struct {
-	// Servers are the configured stdio MCP servers.
-	Servers []MCPServerConfig `mapstructure:"servers"`
-}
-
-// MCPServerConfig describes one stdio MCP server subprocess.
-type MCPServerConfig struct {
-	// Name labels the server in logs and errors.
-	Name string `mapstructure:"name"`
-	// Command is the executable to run.
-	Command string `mapstructure:"command"`
-	// Args are the command arguments.
-	Args []string `mapstructure:"args"`
-	// Env allowlists platform environment variable names forwarded to the
-	// server process; everything else is scrubbed (ADR 0004 spirit).
-	Env []string `mapstructure:"env"`
-	// Timeout bounds one tools/call; <= 0 uses mcp.DefaultCallTimeout.
-	Timeout time.Duration `mapstructure:"timeout"`
 }
 
 // ModelConfig selects the chat model provider. The API key itself never

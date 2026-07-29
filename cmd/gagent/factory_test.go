@@ -23,7 +23,7 @@ func TestNewFactory_CarriesResolvedConfig(t *testing.T) {
 	cfg, err := resolveConfig(newTestCommand(t))
 	require.NoError(t, err)
 
-	factory := newFactory(cfg, nil, nil, "", nil, nil)
+	factory := newFactory(cfg, nil, nil, "", nil)
 
 	assert.Equal(t, "debian:13", factory.Image)
 	assert.Equal(t, 45*time.Second, factory.ExecTimeout)
@@ -36,7 +36,7 @@ func TestNewFactory_DefaultsBoundEveryContainer(t *testing.T) {
 	cfg, err := resolveConfig(newTestCommand(t))
 	require.NoError(t, err)
 
-	factory := newFactory(cfg, nil, nil, "", nil, nil)
+	factory := newFactory(cfg, nil, nil, "", nil)
 
 	assert.Positive(t, factory.Policy.NanoCPUs, "an unconfigured container must not get unlimited CPU")
 	assert.Positive(t, factory.Policy.MemoryBytes, "an unconfigured container must not get unlimited memory")

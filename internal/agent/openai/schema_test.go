@@ -53,7 +53,7 @@ func TestSanitizeToolParameters_DropsForbiddenTopLevelKeywords(t *testing.T) {
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			got := sanitizeToolParameters("mcp_tool", json.RawMessage(tc.raw))
+			got := sanitizeToolParameters("external_tool", json.RawMessage(tc.raw))
 			var doc map[string]json.RawMessage
 			require.NoError(t, json.Unmarshal(got, &doc))
 			assert.NotContains(t, doc, tc.keyword, "the forbidden keyword must be dropped")
@@ -77,7 +77,7 @@ func TestSanitizeToolParameters_CoercesNonObjectRoot(t *testing.T) {
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			got := sanitizeToolParameters("mcp_tool", json.RawMessage(tc.raw))
+			got := sanitizeToolParameters("external_tool", json.RawMessage(tc.raw))
 			var doc map[string]json.RawMessage
 			require.NoError(t, json.Unmarshal(got, &doc))
 			assert.JSONEq(t, `"object"`, string(doc["type"]))
@@ -92,7 +92,7 @@ func TestSanitizeToolParameters_DropsMultipleForbiddenKeywords(t *testing.T) {
 		"oneOf": [{"type":"string"}],
 		"anyOf": [{"type":"number"}]
 	}`)
-	got := sanitizeToolParameters("mcp_tool", raw)
+	got := sanitizeToolParameters("external_tool", raw)
 	var doc map[string]json.RawMessage
 	require.NoError(t, json.Unmarshal(got, &doc))
 	for _, kw := range OpenAITopLevelForbidden {
@@ -114,7 +114,7 @@ func TestSanitizeToolParameters_PreservesNestedKeywords(t *testing.T) {
 			"choice":{"oneOf":[{"type":"string"},{"type":"number"}]}
 		}
 	}`)
-	got := sanitizeToolParameters("mcp_tool", raw)
+	got := sanitizeToolParameters("external_tool", raw)
 	var doc map[string]json.RawMessage
 	require.NoError(t, json.Unmarshal(got, &doc))
 	assert.NotContains(t, doc, "oneOf", "top-level oneOf must not appear")

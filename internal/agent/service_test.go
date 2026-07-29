@@ -274,6 +274,140 @@ func TestSessionRun_LoopExhausted(t *testing.T) {
 	assert.True(t, errors.Is(err, agent.ErrLoopExhausted))
 }
 
+// failingTool always fails, returning the next scripted error message (the
+// last one repeats), and counts how often it was actually executed.
+type failingTool struct {
+	errs  []string
+	calls int
+}
+
+func (t *failingTool) Name() string                  { return "flaky" }
+func (t *failingTool) Description() string           { return "always fails" }
+func (t *failingTool) InputSchema() json.RawMessage  { return nil }
+func (t *failingTool) OutputSchema() json.RawMessage { return nil }
+
+func (t *failingTool) Call(_ context.Context, _ json.RawMessage) (json.RawMessage, error) {
+	msg := t.errs[len(t.errs)-1]
+	if t.calls < len(t.errs) {
+		msg = t.errs[t.calls]
+	}
+	t.calls++
+	return nil, errors.New(msg)
+}
+
+// stubbornModel re-issues one failing tool call until a tool result tells it
+// the call was not executed, then answers.
+type stubbornModel struct {
+	call agent.ToolCall
+}
+
+func (m *stubbornModel) Chat(_ context.Context, messages []agent.Message, _ []tool.Descriptor) (agent.Response, error) {
+	last := messages[len(messages)-1]
+	if last.Role == agent.RoleTool && strings.Contains(last.Content, "Not executed") {
+		return agent.Response{Content: "changing approach\n```memory\n{}\n```"}, nil
+	}
+	return agent.Response{
+		Content:   "retrying\n```memory\n{}\n```",
+		ToolCalls: []agent.ToolCall{m.call},
+	}, nil
+}
+
+func TestSessionRun_RepeatedFailingCallShortCircuits(t *testing.T) {
+	flaky := &failingTool{errs: []string{"boom"}}
+	model := &stubbornModel{call: agent.ToolCall{Name: "flaky", Input: json.RawMessage(`{"n":1}`)}}
+	events := &fakeEvents{}
+	s := agent.NewSession(model, registryWith(t, flaky), agent.Options{Events: events})
+
+	final, err := s.Run(context.Background(), "task")
+	require.NoError(t, err)
+	assert.Equal(t, "changing approach", final, "the turn reaches a final response instead of exhausting the loop")
+	assert.Equal(t, 2, flaky.calls, "the identical failing call is executed twice, then short-circuited")
+
+	// The short-circuited attempt is fed back as a failed tool result and
+	// stays visible on the monitoring stream.
+	toolMsg := s.History()[len(s.History())-2]
+	assert.Equal(t, agent.RoleTool, toolMsg.Role)
+	assert.Contains(t, toolMsg.Content, "you already made this exact call")
+	assert.Contains(t, toolMsg.Content, "boom")
+	var toolEvents []agent.Event
+	for _, e := range events.events {
+		if e.Kind == agent.EventToolCall {
+			toolEvents = append(toolEvents, e)
+		}
+	}
+	require.Len(t, toolEvents, 3)
+	last := toolEvents[2]
+	assert.True(t, last.ToolFailed)
+	assert.Contains(t, last.ToolResult, "you already made this exact call")
+	assert.JSONEq(t, `{"n":1}`, string(last.ToolInput))
+}
+
+func TestSessionRun_RepeatDetectionIsExactMatch(t *testing.T) {
+	tests := []struct {
+		name  string
+		errs  []string
+		calls []agent.ToolCall
+	}{
+		{
+			name: "same name different input",
+			errs: []string{"boom"},
+			calls: []agent.ToolCall{
+				{Name: "flaky", Input: json.RawMessage(`{"n":1}`)},
+				{Name: "flaky", Input: json.RawMessage(`{"n":1}`)},
+				{Name: "flaky", Input: json.RawMessage(`{"n":2}`)},
+			},
+		},
+		{
+			name: "same call different error",
+			errs: []string{"boom one", "boom two", "boom three"},
+			calls: []agent.ToolCall{
+				{Name: "flaky", Input: json.RawMessage(`{"n":1}`)},
+				{Name: "flaky", Input: json.RawMessage(`{"n":1}`)},
+				{Name: "flaky", Input: json.RawMessage(`{"n":1}`)},
+			},
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			steps := make([]agent.ScriptedStep, 0, len(tc.calls)+1)
+			for _, call := range tc.calls {
+				steps = append(steps, agent.ScriptedStep{
+					Content:   "calling\n```memory\n{}\n```",
+					ToolCalls: []agent.ToolCall{call},
+				})
+			}
+			steps = append(steps, agent.ScriptedStep{Content: "done\n```memory\n{}\n```"})
+			flaky := &failingTool{errs: tc.errs}
+			s := agent.NewSession(agent.NewScriptedModel(steps...), registryWith(t, flaky), agent.Options{})
+
+			final, err := s.Run(context.Background(), "task")
+			require.NoError(t, err)
+			assert.Equal(t, "done", final)
+			assert.Equal(t, len(tc.calls), flaky.calls, "every call differing in name, input or error executes")
+			for _, msg := range s.History() {
+				assert.NotContains(t, msg.Content, "Not executed", "no call was short-circuited")
+			}
+		})
+	}
+}
+
+func TestSessionRun_RepeatBookkeepingResetsPerTurn(t *testing.T) {
+	flaky := &failingTool{errs: []string{"boom"}}
+	call := agent.ToolCall{Name: "flaky", Input: json.RawMessage(`{"n":1}`)}
+	step := agent.ScriptedStep{Content: "calling\n```memory\n{}\n```", ToolCalls: []agent.ToolCall{call}}
+	final := agent.ScriptedStep{Content: "done\n```memory\n{}\n```"}
+	s := agent.NewSession(agent.NewScriptedModel(step, step, final, step, step, final), registryWith(t, flaky), agent.Options{})
+
+	_, err := s.Run(context.Background(), "task one")
+	require.NoError(t, err)
+	require.Equal(t, 2, flaky.calls)
+
+	_, err = s.Run(context.Background(), "task two")
+	require.NoError(t, err)
+	assert.Equal(t, 4, flaky.calls, "the second turn starts with empty repeat bookkeeping")
+}
+
 func TestSessionRun_CompactorHook(t *testing.T) {
 	model := agent.NewScriptedModel(
 		agent.ScriptedStep{Content: "one\n```memory\n{}\n```"},

@@ -80,3 +80,48 @@ func TestParseWriteback_Malformed(t *testing.T) {
 		})
 	}
 }
+
+// TestParseWriteback_TypeErrorStripsInternalFieldName is issue #77's
+// regression: a type mismatch must surface a model-friendly message
+// without leaking the unexported Go struct field name.
+func TestParseWriteback_TypeErrorStripsInternalFieldName(t *testing.T) {
+	cases := []struct {
+		name      string
+		body      string
+		wantSub   string
+		wantNotIn []string
+	}{
+		{
+			name:      "numeric keep id",
+			body:      "\n```memory\n" + `{"keep":[1]}` + "\n```",
+			wantNotIn: []string{"Go struct field", "writebackJSON"},
+		},
+		{
+			name:      "boolean content",
+			body:      "\n```memory\n" + `{"add":[{"content":true,"type":"semantic"}]}` + "\n```",
+			wantNotIn: []string{"Go struct field", "writebackJSON"},
+		},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			_, _, err := agent.ParseWriteback(tc.body)
+			require.Error(t, err)
+			msg := err.Error()
+			assert.Contains(t, msg, tc.wantSub)
+			for _, bad := range tc.wantNotIn {
+				assert.NotContains(t, msg, bad,
+					"internal Go field name %q must not leak", bad)
+			}
+		})
+	}
+}
+
+// TestParseWriteback_SyntaxErrorPreserved keeps syntax errors informative
+// (no "Go struct field" in the message in the first place).
+func TestParseWriteback_SyntaxErrorPreserved(t *testing.T) {
+	body := "\n```memory\n" + `{"keep":[1,` + "\n```"
+	_, _, err := agent.ParseWriteback(body)
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "invalid JSON")
+	assert.NotContains(t, err.Error(), "Go struct field")
+}

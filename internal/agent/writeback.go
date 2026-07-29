@@ -65,7 +65,7 @@ func ParseWriteback(content string) (string, []WritebackOp, error) {
 	}
 	var block writebackJSON
 	if err := json.Unmarshal([]byte(strings.TrimSpace(rest[:end])), &block); err != nil {
-		return "", nil, &WritebackError{Err: fmt.Errorf("invalid JSON: %w", err)}
+		return "", nil, &WritebackError{Err: fmt.Errorf("invalid JSON: %s", jsonErrorMessage(err))}
 	}
 	ops, err := block.ops()
 	if err != nil {
@@ -101,4 +101,16 @@ func (b *writebackJSON) ops() ([]WritebackOp, error) {
 		ops = append(ops, WritebackOp{Kind: OpAdd, Content: a.Content, Type: a.Type})
 	}
 	return ops, nil
+}
+
+// jsonErrorMessage returns a model-facing message for a JSON unmarshal
+// failure. It strips the standard library's "Go struct field ..." suffix,
+// which leaks unexported Go type names that are not part of the wire
+// contract. The leading "invalid JSON: " prefix is added by the caller.
+func jsonErrorMessage(err error) string {
+	msg := err.Error()
+	if i := strings.Index(msg, "Go struct field"); i >= 0 {
+		msg = strings.TrimSpace(msg[:i])
+	}
+	return msg
 }

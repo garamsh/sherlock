@@ -11,6 +11,19 @@ import (
 	"github.com/garamsh/gagent/internal/agent"
 )
 
+// ErrRouterClosed is returned when a message is enqueued on a closed
+// router.
+var ErrRouterClosed = errors.New("gateway: router closed")
+
+// Inbound is one accepted message: it has been assigned an ID and waits
+// for (or is in) its environment's serialized run.
+type Inbound struct {
+	ID       string
+	EnvID    string
+	Content  string
+	QueuedAt time.Time
+}
+
 // DefaultQueueCapacity bounds each environment's followup queue. Enqueue
 // blocks when the queue is full, giving senders natural backpressure.
 const DefaultQueueCapacity = 64

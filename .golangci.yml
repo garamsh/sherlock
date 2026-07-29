@@ -1,0 +1,19 @@
+# Minimal golangci-lint configuration.
+#
+# Activates the curated "standard" linter set, explicitly turns on
+# staticcheck (already part of standard; listed here so its presence is
+# self-documenting), and disables errcheck because its findings on idiomatic
+# `defer x.Close()` / `t.Cleanup(func(){ x.Close() })` patterns are noise
+# in Go. Catching genuine unhandled errors is still the job of code review.
+#
+# Pinned version: v2.12.2 — verified against
+# https://github.com/golangci/golangci-lint/releases/latest before adoption
+# (docs/convention/ci.md §"Verify an action before adopting").
+version: "2"
+
+linters:
+  default: standard
+  enable:
+    - staticcheck
+  disable:
+    - errcheck

@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/docker/docker/errdefs"
+	"github.com/containerd/errdefs"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

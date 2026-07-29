@@ -1,7 +1,10 @@
 .PHONY: lint format format-fix test build generate ci hooks
 
 lint:
-	@if [ -f go.mod ]; then go vet ./...; else echo "no go.mod yet; skipping go vet"; fi
+	@if [ -f go.mod ]; then \
+		go vet ./...; \
+		golangci-lint run ./...; \
+	else echo "no go.mod yet; skipping go vet"; fi
 
 format:
 	@test -z "$$(gofmt -l .)" || { gofmt -l .; exit 1; }

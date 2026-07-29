@@ -64,7 +64,6 @@ Settings resolve in order: **flags > environment variables > config file > defau
 | `model.model` | — | `gpt-4o-mini` |
 | `model.api-key-env` | — | `OPENAI_API_KEY` (name of the env var holding the key — the key itself never goes in the config file) |
 | `model.timeout` | — | `60s` (one chat-completions request; raise for slow local endpoints like CPU-served Ollama/vLLM) |
-| `mcp.servers` | — | `[]` (external MCP servers; see below) |
 
 ### Agent ego
 
@@ -84,25 +83,9 @@ session per environment. You prefer small, reversible changes and explain
 every destructive action before taking it.
 ```
 
-### External tools (MCP)
+### Adding tools
 
-External tools are loaded through the [Model Context Protocol](https://modelcontextprotocol.io): each configured server starts as a subprocess at boot (stdio transport), its tools are discovered and registered alongside the built-ins, and calls are forwarded. Adding a tool never requires recompiling the platform.
-
-```yaml
-mcp:
-  servers:
-    - name: time                     # label used in logs and errors (required)
-      command: /usr/local/bin/time-mcp  # executable (required)
-      args: ["--tz", "UTC"]          # optional argv
-      env: [SOME_TOKEN]              # platform env var names forwarded to the server
-      timeout: 10s                   # per tool call; default 30s
-```
-
-Behavior notes:
-
-- The server process environment is scrubbed: only the `env`-allowlisted variables are passed through, so platform secrets never leak into server processes.
-- A tool name colliding with a built-in (`memory`, `files`, `sandbox_exec`, `message_send`) or another MCP tool fails startup — nothing is silently overridden.
-- A server that fails to start is logged and skipped; the rest still load. A server that dies mid-run fails its tool calls with a typed error; other servers are unaffected. Dead servers are not restarted automatically.
+Tools are Go code under `internal/<domain>/`. Each one implements `tool.Tool` (`Name`, `Description`, `InputSchema`, `OutputSchema`, `Call`) and is registered into every environment's registry by `internal/gateway/runtime.go`. To add a tool, write a new package, register it in `Factory.New`, and ship it in a normal PR — the platform rebuilds on every release. See ADR 0010.
 
 Example `gagent.yaml`:
 
@@ -118,10 +101,6 @@ model:
   base-url: http://localhost:11434/v1   # Ollama, for example
   model: llama3.2
   api-key-env: OLLAMA_API_KEY
-mcp:
-  servers:
-    - name: time
-      command: /usr/local/bin/time-mcp
 ```
 
 With the default `mock` provider the binary wires the scripted mock model, which answers each environment's first message with a canned run of the full loop: it computes in the sandbox via `sandbox_exec`, replies via `message_send`, and writes the result back to memory. With `provider: openai` it runs against a real chat model; a missing API key env var fails at startup. `sandbox_exec` (and therefore the mock script) needs a Docker daemon. To work on the codebase you need Go and GNU Make, and the standard checks are:

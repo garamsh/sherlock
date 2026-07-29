@@ -11,6 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/garamsh/gagent/internal/environment"
+	"github.com/garamsh/gagent/internal/sandbox"
 )
 
 // newTestCommand returns a bare command carrying the shared config flags,
@@ -34,6 +35,8 @@ func TestResolveConfig_Defaults(t *testing.T) {
 	assert.Equal(t, environment.DefaultRoot, cfg.DataRoot)
 	assert.Equal(t, defaultImage, cfg.Image)
 	assert.Equal(t, defaultExecTimeout, cfg.ExecTimeout)
+	assert.Equal(t, sandbox.Policy{NanoCPUs: 1_000_000_000, MemoryBytes: 512 * 1024 * 1024}, cfg.Policy,
+		"an unconfigured deployment must still be bounded")
 	assert.Equal(t, ModelConfig{
 		Provider:  defaultModelProvider,
 		BaseURL:   defaultModelBaseURL,
@@ -198,6 +201,54 @@ func TestResolveConfig_ConfigFlagMissingFileFails(t *testing.T) {
 
 	_, err := resolveConfig(cmd)
 	assert.Error(t, err, "an explicit --config path must exist")
+}
+
+func TestResolveConfig_QuotaSection(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
+		[]byte("cpu-limit: 1.5\nmemory-limit: 256m\n"), 0o644))
+
+	cfg, err := resolveConfig(newTestCommand(t))
+	require.NoError(t, err)
+
+	assert.Equal(t, sandbox.Policy{NanoCPUs: 1_500_000_000, MemoryBytes: 256 * 1024 * 1024}, cfg.Policy)
+}
+
+func TestResolveConfig_QuotaFlagOverridesEnv(t *testing.T) {
+	t.Chdir(t.TempDir())
+	t.Setenv("GAGENT_CPU_LIMIT", "4")
+	t.Setenv("GAGENT_MEMORY_LIMIT", "1g")
+	cmd := newTestCommand(t)
+	require.NoError(t, cmd.Flags().Set("cpu-limit", "2"))
+
+	cfg, err := resolveConfig(cmd)
+	require.NoError(t, err)
+
+	assert.Equal(t, sandbox.Policy{NanoCPUs: 2_000_000_000, MemoryBytes: 1024 * 1024 * 1024}, cfg.Policy)
+}
+
+func TestResolveConfig_InvalidQuotaFails(t *testing.T) {
+	tests := []struct {
+		name     string
+		contents string
+	}{
+		{name: "zero cpu is unlimited", contents: "cpu-limit: 0\n"},
+		{name: "negative cpu", contents: "cpu-limit: -1\n"},
+		{name: "unparsable memory", contents: "memory-limit: plenty\n"},
+		{name: "memory below the docker floor", contents: "memory-limit: 1m\n"},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			dir := t.TempDir()
+			t.Chdir(dir)
+			require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(tc.contents), 0o644))
+
+			_, err := resolveConfig(newTestCommand(t))
+
+			assert.Error(t, err)
+		})
+	}
 }
 
 func TestResolveConfig_InvalidConfigFileFails(t *testing.T) {

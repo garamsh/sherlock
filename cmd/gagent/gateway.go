@@ -55,15 +55,7 @@ func serveGateway(ctx context.Context, cfg Config, ego string) error {
 	if err != nil {
 		return err
 	}
-	router := gateway.NewRouter(&gateway.Factory{
-		Root:        cfg.DataRoot,
-		NewModel:    newModel,
-		Ego:         ego,
-		Sandbox:     docker,
-		Image:       cfg.Image,
-		ExecTimeout: cfg.ExecTimeout,
-		Tools:       mcpTools,
-	}, logger)
+	router := gateway.NewRouter(newFactory(cfg, docker, newModel, ego, mcpTools, nil), logger)
 
 	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)
 	defer stop()

@@ -57,6 +57,8 @@ Settings resolve in order: **flags > environment variables > config file > defau
 | `data-root` | `--data-root` | `data/envs` |
 | `image` | `--image` | `alpine:3.21` |
 | `exec-timeout` | `--exec-timeout` | `30s` |
+| `cpu-limit` | `--cpu-limit` | `1` (CPU quota per environment container, in CPUs; must be positive) |
+| `memory-limit` | `--memory-limit` | `512m` (memory quota per environment container; at least `6m`, Docker's floor) |
 | `model.provider` | — | `mock` (scripted, offline) or `openai` |
 | `model.base-url` | — | `https://api.openai.com/v1` (any OpenAI-compatible endpoint, e.g. Ollama/vLLM) |
 | `model.model` | — | `gpt-4o-mini` |
@@ -108,6 +110,8 @@ addr: ":9090"
 data-root: /var/lib/gagent/envs
 image: alpine:3.21
 exec-timeout: 45s
+cpu-limit: 1.5
+memory-limit: 1g
 model:
   provider: openai
   base-url: http://localhost:11434/v1   # Ollama, for example

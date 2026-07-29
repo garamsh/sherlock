@@ -8,7 +8,6 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/garamsh/gagent/internal/gateway"
 	"github.com/garamsh/gagent/internal/message"
 	"github.com/garamsh/gagent/internal/sandbox"
 )
@@ -72,16 +71,7 @@ func runAgentTurn(ctx context.Context, cfg Config, envID, msg, ego string) error
 			logger.Error("mcp shutdown failed", "op", "shutdown", "error", err)
 		}
 	}()
-	factory := &gateway.Factory{
-		Root:        cfg.DataRoot,
-		NewModel:    newModel,
-		Ego:         ego,
-		Sandbox:     docker,
-		Image:       cfg.Image,
-		ExecTimeout: cfg.ExecTimeout,
-		Sink:        stdoutSink{},
-		Tools:       mcpTools,
-	}
+	factory := newFactory(cfg, docker, newModel, ego, mcpTools, stdoutSink{})
 	rt, err := factory.New(ctx, envID, nil)
 	if err != nil {
 		return err

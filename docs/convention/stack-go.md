@@ -10,14 +10,12 @@
 - 2. Module / Package Boundary
 - 3. Naming
 - 4. Error Handling
-- 5. Logging & Observability
+- 5. Logging
 - 6. Comments & Docs
 - 7. Testing
 - 8. Imports & Dependencies
 - 9. Verification Commands
 - 10. Hierarchy (stack-specific MUST/NEVER)
-- 11. Ecosystem versions (verify live)
-- 12. Sources (URL index)
 
 ## 0. Folder & file naming — strict
 
@@ -245,22 +243,15 @@ name and make it the package.
   decide to log).
 - Wrap at boundaries (network, IO, external calls), not on every line.
 
-## 5. Logging & Observability
+## 5. Logging
 
-- Stdlib `log/slog` (Go 1.21+). Prefer it over `log` and third-party
-  loggers for new code.
-- Levels: `Debug`, `Info`, `Warn`, `Error`.
-- Required fields for HTTP / RPC handlers: `trace_id` (from
-  OpenTelemetry's request context — falls back to a
-  locally-generated UUID if no span exists) and `user_id`
-  / `account_id` when the principal is known. The older
-  `request_id` field still appears in many log pipelines but is
-  really a stand-in for `trace_id`; new code emits the latter.
-- Emit the operation name and key parameters as well.
-- **Never** log secrets, passwords, tokens, full request bodies that
+- Stdlib `log/slog` (Go 1.21+). Levels: `Debug`, `Info`, `Warn`, `Error`.
+- Required fields for HTTP / RPC handlers: `trace_id` (locally-generated
+  UUID when no OpenTelemetry span exists) and `user_id` / `account_id`
+  when the principal is known.
+- Emit the operation name and key parameters.
+- **Never** log secrets, passwords, tokens, or full request bodies that
   may contain PII.
-- Metrics: `prometheus/client_golang`. Define the registry once.
-- Tracing: OpenTelemetry (`go.opentelemetry.io/otel`).
 
 ## 6. Comments & Docs
 
@@ -373,19 +364,3 @@ Stack-specific MUST/NEVER:
 - No circular imports (`go build` fails on them).
 - `go.mod` versioning — unlisted modules refuse to build.
 - Mocks cannot substitute test code at runtime (`go test`).
-
-## 11. Ecosystem versions (verify live)
-
-Stack conventions above are stable; library versions change. Pick libraries via `code-plan` live tech discovery (`go list -m -versions`; `go.dev`) at PLAN time.
-
-## 12. Sources (URL index)
-
-- Go standard library: <https://pkg.go.dev/std>
-- Effective Go: <https://go.dev/doc/effective_go>
-- Go Code Review Comments: <https://github.com/golang/go/wiki/CodeReviewComments>
-- Standard Go Project Layout: <https://github.com/golang-standards/project-layout>
-- spf13/cobra (CLI conventions): <https://github.com/spf13/cobra>
-- testify (test framework): <https://github.com/stretchr/testify>
-- mockery v3 (mock generator): <https://github.com/vektra/mockery>
-- pgx/v5 (Postgres driver): <https://github.com/jackc/pgx>
-- go-kit (canonical example of package naming): <https://github.com/go-kit/kit>

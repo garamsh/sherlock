@@ -245,7 +245,7 @@ func (t *memoryTool) Call(ctx context.Context, input json.RawMessage) (json.RawM
 		if err != nil {
 			return nil, err
 		}
-		return marshal(updateOutput{ID: res.ID, SupersededID: res.SupersededID})
+		return marshal(updateOutput(res))
 	case "compress":
 		res, err := t.svc.Compress(ctx, in.IDs)
 		if err != nil {

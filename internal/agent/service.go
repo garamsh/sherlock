@@ -131,6 +131,17 @@ type session struct {
 	instructions string
 	history      []Message
 	turn         int
+	// failures records this turn's failed tool calls, keyed by name and
+	// input bytes; it resets on every Run.
+	failures map[string]failedCall
+}
+
+// failedCall is one tool call that failed in the current turn: the error
+// text it produced, and whether the identical call has since failed with
+// the identical error again.
+type failedCall struct {
+	err      string
+	repeated bool
 }
 
 // NewSession returns a rolling session that drives the reasoning loop
@@ -159,6 +170,7 @@ func (s *session) History() []Message {
 // on error.
 func (s *session) Run(ctx context.Context, task string) (response string, err error) {
 	s.turn++
+	s.failures = make(map[string]failedCall)
 	s.emit(ctx, Event{Kind: EventTurnStarted, Turn: s.turn, Task: task})
 	defer func() {
 		if err != nil {
@@ -211,20 +223,20 @@ func (s *session) Run(ctx context.Context, task string) (response string, err er
 
 // execute runs one tool call through the registry and feeds the result back
 // into history. Tool failures become tool messages so the model can recover.
+// A call that already failed twice this turn with the identical error is not
+// executed again: the model gets a synthetic result telling it to change
+// approach, so a stall cannot consume the whole iteration budget.
 func (s *session) execute(ctx context.Context, call ToolCall) {
 	event := Event{Kind: EventToolCall, Turn: s.turn, ToolName: call.Name, ToolInput: call.Input}
 	var result string
-	t, err := s.registry.Lookup(call.Name)
-	if err != nil {
-		result = err.Error()
+	key := call.Name + "\x00" + string(call.Input)
+	if known, ok := s.failures[key]; ok && known.repeated {
+		result = repeatedCallNotice(call.Name, known.err)
 		event.ToolFailed = true
 	} else {
-		out, err := tool.Invoke(ctx, t, call.Input)
-		if err != nil {
-			result = err.Error()
-			event.ToolFailed = true
-		} else {
-			result = string(out)
+		result, event.ToolFailed = s.invoke(ctx, call)
+		if event.ToolFailed {
+			s.failures[key] = failedCall{err: result, repeated: ok && known.err == result}
 		}
 	}
 	event.ToolResult = result
@@ -235,6 +247,28 @@ func (s *session) execute(ctx context.Context, call ToolCall) {
 		Content:    result,
 	})
 	s.emit(ctx, event)
+}
+
+// invoke resolves and runs one tool call, returning the result or the error
+// text together with whether the call failed.
+func (s *session) invoke(ctx context.Context, call ToolCall) (string, bool) {
+	t, err := s.registry.Lookup(call.Name)
+	if err != nil {
+		return err.Error(), true
+	}
+	out, err := tool.Invoke(ctx, t, call.Input)
+	if err != nil {
+		return err.Error(), true
+	}
+	return string(out), false
+}
+
+// repeatedCallNotice is the synthetic result substituted for a tool call
+// already known to fail identically in this turn.
+func repeatedCallNotice(name, err string) string {
+	return fmt.Sprintf("Not executed: you already made this exact call to %q in this turn "+
+		"and it failed identically every time: %s. Repeating it will not change the outcome — "+
+		"change your approach or finish the turn with what you have.", name, err)
 }
 
 func (s *session) recall(ctx context.Context, task string) ([]RecalledMemory, error) {

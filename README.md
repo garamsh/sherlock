@@ -31,7 +31,7 @@ gagent gateway
 ```
 
 - `POST /envs/{env-id}/messages` with `{"content":"..."}` — queues a message for the environment (created on first use) and returns `202` with a message ID.
-- `GET /envs/{env-id}/events` — server-sent events stream of the environment's agent loop (turn started, tool call, writeback, turn finished).
+- `GET /envs/{env-id}/events` — server-sent events stream of the environment's agent loop (turn started, tool call, writeback, turn finished). Every run ends with exactly one terminal event — `turn_finished` on success, `turn_failed` with the error on failure.
 - Agent replies (`message_send`) land as JSON files in `data/envs/<env-id>/outbox/`.
 
 **Warning: the gateway has no authentication.** Run it on trusted networks only — an exposed gateway is a remote shell into the environment.

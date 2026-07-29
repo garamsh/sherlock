@@ -27,6 +27,7 @@ func newModelFunc(cfg ModelConfig) (func(envID string) agent.Model, error) {
 			BaseURL: cfg.BaseURL,
 			Model:   cfg.Model,
 			APIKey:  key,
+			Timeout: cfg.Timeout,
 		})
 		if err != nil {
 			return nil, err

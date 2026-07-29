@@ -45,6 +45,12 @@ type Factory struct {
 	// the agent package's embedded default (the platform contract is
 	// appended regardless).
 	Ego string
+	// MaxHistoryMessages overrides DefaultMaxHistoryMessages for every
+	// environment session. A negative value disables context compaction.
+	MaxHistoryMessages int
+	// Summarizer overrides the deterministic context summarizer. Nil uses
+	// memory.NewConcatSummarizer.
+	Summarizer memory.Summarizer
 	// Sandbox runs environment containers for the sandbox_exec tool.
 	Sandbox sandbox.Runtime
 	// Image is the environment container image reference.
@@ -73,7 +79,7 @@ func BuiltinToolNames() []string {
 
 // New implements RuntimeFactory: it opens (creating on first use) the
 // environment directory, memory store, and tool set, then wires the
-// session's recall, writeback, and event hooks.
+// session's recall, writeback, event, and context-compaction hooks.
 func (f *Factory) New(_ context.Context, envID string, events agent.EventSink) (*Runtime, error) {
 	env, err := environment.Open(f.Root, envID)
 	if err != nil {
@@ -83,7 +89,18 @@ func (f *Factory) New(_ context.Context, envID string, events agent.EventSink) (
 	if err != nil {
 		return nil, err
 	}
-	memSvc := memory.NewService(store, memory.NewHashingEmbedder(), memory.NewConcatSummarizer())
+	summarizer := f.Summarizer
+	if summarizer == nil {
+		summarizer = memory.NewConcatSummarizer()
+	}
+	maxHistoryMessages := f.MaxHistoryMessages
+	if maxHistoryMessages == 0 {
+		maxHistoryMessages = DefaultMaxHistoryMessages
+	}
+	if maxHistoryMessages < 0 {
+		maxHistoryMessages = 0
+	}
+	memSvc := memory.NewService(store, memory.NewHashingEmbedder(), summarizer)
 	fs, err := files.Open(env.Workspace())
 	if err != nil {
 		return nil, errors.Join(err, store.Close())
@@ -114,10 +131,12 @@ func (f *Factory) New(_ context.Context, envID string, events agent.EventSink) (
 	}
 
 	session := agent.NewSession(f.NewModel(envID), registry, agent.Options{
-		Recaller:  Recall{Svc: memSvc},
-		Writeback: Writeback{Svc: memSvc},
-		Events:    events,
-		Ego:       f.Ego,
+		Recaller:           Recall{Svc: memSvc},
+		Writeback:          Writeback{Svc: memSvc},
+		Events:             events,
+		Compactor:          Compactor{Svc: memSvc, Summarizer: summarizer, MaxHistoryMessages: maxHistoryMessages},
+		Ego:                f.Ego,
+		MaxHistoryMessages: maxHistoryMessages,
 	})
 	return &Runtime{
 		Session: session,

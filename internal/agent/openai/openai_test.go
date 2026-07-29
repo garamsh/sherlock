@@ -211,6 +211,43 @@ func TestNew_MissingSettingsFailFast(t *testing.T) {
 	}
 }
 
+// TestChat_MCPStyleToolParametersAreSanitized reproduces issue #55: an
+// external tool (e.g. discovered from an MCP server) registers a schema
+// that the OpenAI function-calling API rejects (top-level oneOf). The
+// provider must sanitize the schema in toWireTools so the model call does
+// not crash with HTTP 400 invalid_function_parameters.
+func TestChat_MCPStyleToolParametersAreSanitized(t *testing.T) {
+	fake, server := newFakeProvider(t,
+		`{"choices":[{"message":{"content":"ok"},"finish_reason":"stop"}]}`)
+	defer server.Close()
+	model := newTestModel(t, server)
+
+	// MCP-style: top-level oneOf, no top-level type. The API rejects both.
+	mcpSchema := json.RawMessage(`{
+		"oneOf": [
+			{"type":"object","properties":{"a":{"type":"string"}},"required":["a"]},
+			{"type":"object","properties":{"b":{"type":"integer"}},"required":["b"]}
+		]
+	}`)
+	_, err := model.Chat(t.Context(),
+		[]agent.Message{{Role: agent.RoleUser, Content: "hi"}},
+		[]tool.Descriptor{
+			{Name: "mcp_tool", Description: "an mcp tool", InputSchema: mcpSchema},
+		})
+	require.NoError(t, err)
+
+	require.Len(t, fake.request.Tools, 1)
+	params := fake.request.Tools[0].Function.Parameters
+
+	var doc map[string]json.RawMessage
+	require.NoError(t, json.Unmarshal(params, &doc))
+	for _, kw := range openai.OpenAITopLevelForbidden {
+		assert.NotContains(t, doc, kw, "the provider must drop top-level %q before the API sees it", kw)
+	}
+	assert.JSONEq(t, `"object"`, string(doc["type"]),
+		"the sanitized parameters must declare top-level type object")
+}
+
 // jsonString renders s as a JSON string literal for embedding in replies.
 func jsonString(s string) string {
 	out, _ := json.Marshal(s)

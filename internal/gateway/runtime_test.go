@@ -3,6 +3,9 @@ package gateway_test
 import (
 	"context"
 	"encoding/json"
+	"io"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"strings"
@@ -15,6 +18,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/garamsh/gagent/internal/agent"
+	"github.com/garamsh/gagent/internal/agent/openai"
 	"github.com/garamsh/gagent/internal/files"
 	"github.com/garamsh/gagent/internal/gateway"
 	"github.com/garamsh/gagent/internal/memory"
@@ -228,7 +232,9 @@ func TestFactory_ExtraToolNameCollisionFails(t *testing.T) {
 
 // openAITopLevelForbidden lists the keywords the OpenAI function-calling
 // API rejects at the top level of a tool's parameters schema (issue #49).
-var openAITopLevelForbidden = []string{"allOf", "anyOf", "oneOf", "not", "enum", "const"}
+// The canonical list lives in internal/agent/openai; this alias is kept for
+// readability inside the test.
+var openAITopLevelForbidden = openai.OpenAITopLevelForbidden
 
 func TestBuiltinTools_DescriptionsAreNonEmpty(t *testing.T) {
 	// Nil dependencies suffice: Description is a static document on every
@@ -271,4 +277,102 @@ func TestBuiltinTools_InputSchemasSatisfyOpenAISubset(t *testing.T) {
 			}
 		})
 	}
+}
+
+// schemaStubTool is a static tool carrying an arbitrary InputSchema — the
+// kind of descriptor an MCP server might hand back at discovery time.
+type schemaStubTool struct {
+	name        string
+	description string
+	schema      json.RawMessage
+}
+
+func (t *schemaStubTool) Name() string                  { return t.name }
+func (t *schemaStubTool) Description() string           { return t.description }
+func (t *schemaStubTool) InputSchema() json.RawMessage  { return t.schema }
+func (t *schemaStubTool) OutputSchema() json.RawMessage { return nil }
+func (t *schemaStubTool) Call(context.Context, json.RawMessage) (json.RawMessage, error) {
+	return json.RawMessage(`{"ok":true}`), nil
+}
+
+// TestFactory_MCPStyleToolIsSanitizedForOpenAI is the MCP-discovered
+// companion to TestBuiltinTools_InputSchemasSatisfyOpenAISubset: a tool
+// registered through Factory.Tools whose schema uses a top-level keyword
+// the OpenAI function-calling API rejects must reach the wire in the
+// sanitized form, not the original. Issue #55.
+func TestFactory_MCPStyleToolIsSanitizedForOpenAI(t *testing.T) {
+	var captured struct {
+		sync.Mutex
+		body []byte
+	}
+	fake := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		body, err := io.ReadAll(r.Body)
+		if err == nil {
+			captured.Lock()
+			captured.body = body
+			captured.Unlock()
+		}
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"choices":[{"message":{"content":"ok"},"finish_reason":"stop"}]}`))
+	}))
+	defer fake.Close()
+
+	model, err := openai.New(openai.Config{
+		BaseURL: fake.URL + "/v1",
+		Model:   "test-model",
+		APIKey:  "sk-test",
+	})
+	require.NoError(t, err)
+
+	// Top-level oneOf with no top-level type: the API rejects both.
+	mcpSchema := json.RawMessage(`{
+		"oneOf": [
+			{"type":"object","properties":{"a":{"type":"string"}},"required":["a"]},
+			{"type":"object","properties":{"b":{"type":"integer"}},"required":["b"]}
+		]
+	}`)
+	extra := &schemaStubTool{
+		name:        "mcp_tool",
+		description: "an mcp tool with a top-level oneOf",
+		schema:      mcpSchema,
+	}
+
+	factory := &gateway.Factory{
+		Root:     t.TempDir(),
+		NewModel: func(string) agent.Model { return model },
+		Sandbox:  stubSandbox{},
+		Image:    "stub",
+		Tools:    []tool.Tool{extra},
+	}
+	rt, err := factory.New(context.Background(), "env-1", nil)
+	require.NoError(t, err)
+	defer func() { assert.NoError(t, rt.Close(context.Background())) }()
+
+	_, err = rt.Session.Run(context.Background(), "hi")
+	require.NoError(t, err, "the session must not fail on an MCP-style schema")
+
+	captured.Lock()
+	body := captured.body
+	captured.Unlock()
+	require.NotEmpty(t, body, "the openai provider must have been called")
+
+	var req struct {
+		Tools []struct {
+			Function struct {
+				Name       string          `json:"name"`
+				Parameters json.RawMessage `json:"parameters"`
+			} `json:"function"`
+		} `json:"tools"`
+	}
+	require.NoError(t, json.Unmarshal(body, &req))
+	require.NotEmpty(t, req.Tools)
+	var params map[string]json.RawMessage
+	require.NoError(t, json.Unmarshal(req.Tools[0].Function.Parameters, &params))
+	for _, keyword := range openAITopLevelForbidden {
+		assert.NotContains(t, params, keyword,
+			"the provider must drop top-level %q before the API sees it", keyword)
+	}
+	require.Contains(t, params, "type")
+	assert.JSONEq(t, `"object"`, string(params["type"]),
+		"the sanitized parameters must declare top-level type object")
 }

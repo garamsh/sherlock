@@ -1,10 +1,15 @@
-package tool
+package tool_test
 
 import (
+	"context"
 	"encoding/json"
 	"os"
-	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"github.com/garamsh/gagent/internal/tool"
 )
 
 const personSchema = `{
@@ -13,38 +18,40 @@ const personSchema = `{
 	"required": ["name"]
 }`
 
-func TestValidate_EmptySchemaAcceptsAnyInput(t *testing.T) {
-	if err := validate(nil, json.RawMessage(`{"anything": 1}`)); err != nil {
-		t.Fatalf("expected empty schema to accept input, got %v", err)
-	}
+func TestInvoke_EmptySchemaAcceptsAnyInput(t *testing.T) {
+	stub := &stubTool{name: "person"}
+
+	_, err := tool.Invoke(context.Background(), stub, json.RawMessage(`{"anything": 1}`))
+
+	require.NoError(t, err)
 }
 
-func TestValidate_ValidInputPasses(t *testing.T) {
-	if err := validate(json.RawMessage(personSchema), json.RawMessage(`{"name": "ada"}`)); err != nil {
-		t.Fatalf("expected valid input to pass, got %v", err)
-	}
+func TestInvoke_SchemaValidInputPasses(t *testing.T) {
+	stub := &stubTool{name: "person", inSchema: json.RawMessage(personSchema)}
+
+	_, err := tool.Invoke(context.Background(), stub, json.RawMessage(`{"name": "ada"}`))
+
+	require.NoError(t, err)
 }
 
-func TestValidate_InvalidInputFails(t *testing.T) {
-	if err := validate(json.RawMessage(personSchema), json.RawMessage(`{"name": 42}`)); err == nil {
-		t.Fatal("expected invalid input to fail validation")
-	}
+func TestInvoke_SchemaInvalidInputFails(t *testing.T) {
+	stub := &stubTool{name: "person", inSchema: json.RawMessage(personSchema)}
+
+	_, err := tool.Invoke(context.Background(), stub, json.RawMessage(`{"name": 42}`))
+
+	require.Error(t, err)
+	assert.ErrorIs(t, err, tool.ErrValidation)
 }
 
-func TestValidate_ErrorOmitsHostFilesystemPath(t *testing.T) {
-	err := validate(json.RawMessage(personSchema), json.RawMessage(`{"name": 42}`))
-	if err == nil {
-		t.Fatal("expected invalid input to fail validation")
-	}
+func TestInvoke_ValidationErrorOmitsHostFilesystemPath(t *testing.T) {
+	cwd, err := os.Getwd()
+	require.NoError(t, err)
+	stub := &stubTool{name: "person", inSchema: json.RawMessage(personSchema)}
+
+	_, err = tool.Invoke(context.Background(), stub, json.RawMessage(`{"name": 42}`))
+
+	require.Error(t, err)
 	msg := err.Error()
-	if strings.Contains(msg, "file://") {
-		t.Errorf("validation error leaks a file URL: %q", msg)
-	}
-	cwd, cwdErr := os.Getwd()
-	if cwdErr != nil {
-		t.Fatalf("get working directory: %v", cwdErr)
-	}
-	if strings.Contains(msg, cwd) {
-		t.Errorf("validation error leaks the working directory %q: %q", cwd, msg)
-	}
+	assert.NotContains(t, msg, "file://", "validation error must not leak a file URL")
+	assert.NotContains(t, msg, cwd, "validation error must not leak the working directory")
 }

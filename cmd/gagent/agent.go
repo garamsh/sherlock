@@ -62,16 +62,7 @@ func runAgentTurn(ctx context.Context, cfg Config, envID, msg, ego string) error
 	if err != nil {
 		return err
 	}
-	mcpTools, closeMCP, err := startMCPServers(ctx, cfg.MCP.Servers, logger)
-	if err != nil {
-		return err
-	}
-	defer func() {
-		if err := closeMCP(); err != nil {
-			logger.Error("mcp shutdown failed", "op", "shutdown", "error", err)
-		}
-	}()
-	factory := newFactory(cfg, docker, newModel, ego, mcpTools, stdoutSink{})
+	factory := newFactory(cfg, docker, newModel, ego, stdoutSink{})
 	rt, err := factory.New(ctx, envID, nil)
 	if err != nil {
 		return err

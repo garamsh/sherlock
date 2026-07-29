@@ -148,9 +148,9 @@ func toWireMessages(messages []agent.Message) []chatMessage {
 
 // toWireTools exposes each descriptor's name, description, and input
 // schema as the function's parameters document. Each schema is sanitized
-// to the OpenAI function-calling top-level subset first, so external
-// tools (e.g. MCP-discovered) whose schemas violate the constraint do not
-// break the provider's model call (issue #55).
+// to the OpenAI function-calling top-level subset first, so tools whose
+// schemas violate the constraint do not break the provider's model call
+// (issue #55).
 func toWireTools(tools []tool.Descriptor) []chatTool {
 	if len(tools) == 0 {
 		return nil

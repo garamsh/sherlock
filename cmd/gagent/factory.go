@@ -5,7 +5,6 @@ import (
 	"github.com/garamsh/gagent/internal/gateway"
 	"github.com/garamsh/gagent/internal/message"
 	"github.com/garamsh/gagent/internal/sandbox"
-	"github.com/garamsh/gagent/internal/tool"
 )
 
 // newFactory builds the environment runtime factory both entry points use,
@@ -16,7 +15,6 @@ func newFactory(
 	docker sandbox.Runtime,
 	newModel func(envID string) agent.Model,
 	ego string,
-	tools []tool.Tool,
 	sink message.Sink,
 ) *gateway.Factory {
 	return &gateway.Factory{
@@ -28,6 +26,5 @@ func newFactory(
 		Policy:      cfg.Policy,
 		ExecTimeout: cfg.ExecTimeout,
 		Sink:        sink,
-		Tools:       tools,
 	}
 }

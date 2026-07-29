@@ -211,19 +211,19 @@ func TestNew_MissingSettingsFailFast(t *testing.T) {
 	}
 }
 
-// TestChat_MCPStyleToolParametersAreSanitized reproduces issue #55: an
-// external tool (e.g. discovered from an MCP server) registers a schema
-// that the OpenAI function-calling API rejects (top-level oneOf). The
-// provider must sanitize the schema in toWireTools so the model call does
-// not crash with HTTP 400 invalid_function_parameters.
-func TestChat_MCPStyleToolParametersAreSanitized(t *testing.T) {
+// TestChat_OutOfSubsetToolParametersAreSanitized reproduces issue #55:
+// an external tool registers a schema that the OpenAI function-calling
+// API rejects (top-level oneOf). The provider must sanitize the schema
+// in toWireTools so the model call does not crash with HTTP 400
+// invalid_function_parameters.
+func TestChat_OutOfSubsetToolParametersAreSanitized(t *testing.T) {
 	fake, server := newFakeProvider(t,
 		`{"choices":[{"message":{"content":"ok"},"finish_reason":"stop"}]}`)
 	defer server.Close()
 	model := newTestModel(t, server)
 
-	// MCP-style: top-level oneOf, no top-level type. The API rejects both.
-	mcpSchema := json.RawMessage(`{
+	// Out-of-subset: top-level oneOf, no top-level type. The API rejects both.
+	outOfSubsetSchema := json.RawMessage(`{
 		"oneOf": [
 			{"type":"object","properties":{"a":{"type":"string"}},"required":["a"]},
 			{"type":"object","properties":{"b":{"type":"integer"}},"required":["b"]}
@@ -232,7 +232,7 @@ func TestChat_MCPStyleToolParametersAreSanitized(t *testing.T) {
 	_, err := model.Chat(t.Context(),
 		[]agent.Message{{Role: agent.RoleUser, Content: "hi"}},
 		[]tool.Descriptor{
-			{Name: "mcp_tool", Description: "an mcp tool", InputSchema: mcpSchema},
+			{Name: "external_tool", Description: "an external tool", InputSchema: outOfSubsetSchema},
 		})
 	require.NoError(t, err)
 

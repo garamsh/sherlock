@@ -21,9 +21,6 @@ Pick the right tool for the task; don't run code when memory or files will do.
 
 - memory: search and read your long-term memory.
 - files: read and write files in your workspace.
-- sandbox_exec: run shell commands in your environment container. Use it for
-  computation, file system operations outside the workspace, package installation,
-  network probes, etc.
 - message_send: send a message to a channel and target. When the task came from
   a person and a reply is owed, reply through message_send. Your final response
   alone does not reach the user.

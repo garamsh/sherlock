@@ -8,7 +8,6 @@ import (
 	"strings"
 	"sync"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -20,19 +19,8 @@ import (
 	"github.com/garamsh/gagent/internal/memory"
 	"github.com/garamsh/gagent/internal/memory/sqlite"
 	"github.com/garamsh/gagent/internal/message"
-	"github.com/garamsh/gagent/internal/sandbox"
 	"github.com/garamsh/gagent/internal/tool"
 )
-
-// stubSandbox substitutes the Docker daemon; the scripted model below
-// never calls sandbox_exec, so containers are never created.
-type stubSandbox struct{}
-
-func (stubSandbox) Create(context.Context, sandbox.Config) (string, error) { return "stub", nil }
-func (stubSandbox) Exec(context.Context, string, []string, time.Duration) (sandbox.Result, error) {
-	return sandbox.Result{ExitCode: 0}, nil
-}
-func (stubSandbox) Destroy(context.Context, string) error { return nil }
 
 // recordingSink captures outbound messages.
 type recordingSink struct {
@@ -72,8 +60,6 @@ func TestFactory_CustomSinkReceivesOutboundMessages(t *testing.T) {
 	factory := &gateway.Factory{
 		Root:     root,
 		NewModel: replyModel,
-		Sandbox:  stubSandbox{},
-		Image:    "stub",
 		Sink:     sink,
 	}
 	rt, err := factory.New(context.Background(), "env-1", nil)
@@ -101,8 +87,6 @@ func TestFactory_NilSinkWritesOutbox(t *testing.T) {
 	factory := &gateway.Factory{
 		Root:     root,
 		NewModel: replyModel,
-		Sandbox:  stubSandbox{},
-		Image:    "stub",
 	}
 	rt, err := factory.New(context.Background(), "env-1", nil)
 	require.NoError(t, err)
@@ -130,8 +114,6 @@ func TestFactory_HistoryOverflowCompactsIntoSearchableEpisodicMemory(t *testing.
 	factory := &gateway.Factory{
 		Root:               root,
 		NewModel:           compactionModel,
-		Sandbox:            stubSandbox{},
-		Image:              "stub",
 		Sink:               &recordingSink{},
 		MaxHistoryMessages: 4,
 	}
@@ -179,7 +161,6 @@ func TestBuiltinTools_DescriptionsAreNonEmpty(t *testing.T) {
 	builtins := []tool.Tool{
 		memory.NewTool(nil),
 		files.NewTool(nil),
-		sandbox.NewExecTool(nil, sandbox.Config{}, 0),
 		message.NewSendTool(nil),
 	}
 	registry := tool.NewRegistry()
@@ -198,7 +179,6 @@ func TestBuiltinTools_InputSchemasSatisfyOpenAISubset(t *testing.T) {
 	builtins := []tool.Tool{
 		memory.NewTool(nil),
 		files.NewTool(nil),
-		sandbox.NewExecTool(nil, sandbox.Config{}, 0),
 		message.NewSendTool(nil),
 	}
 	for _, tl := range builtins {

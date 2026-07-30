@@ -9,7 +9,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/garamsh/gagent/internal/message"
-	"github.com/garamsh/gagent/internal/sandbox"
 )
 
 // newAgentCommand returns the "gagent agent" subcommand: it runs a single
@@ -48,21 +47,19 @@ func newAgentCommand() *cobra.Command {
 
 // runAgentTurn builds the environment runtime (same wiring as the gateway,
 // with a stdout sink in place of the file outbox) and runs one turn.
+//
+// After ADR 0011 the platform no longer talks to a Docker daemon: the
+// factory wires memory, files, and message_send only.
 func runAgentTurn(ctx context.Context, cfg Config, envID, msg, ego string) error {
 	// Logs go to stderr so stdout carries only the agent's output.
 	logger := slog.New(slog.NewJSONHandler(os.Stderr, nil))
 	slog.SetDefault(logger)
 
-	docker, err := sandbox.NewDockerRuntime()
-	if err != nil {
-		logger.Error("docker runtime unavailable", "op", "startup", "error", err)
-		return err
-	}
 	newModel, err := newModelFunc(cfg.Model)
 	if err != nil {
 		return err
 	}
-	factory := newFactory(cfg, docker, newModel, ego, stdoutSink{})
+	factory := newFactory(cfg, newModel, ego, stdoutSink{})
 	rt, err := factory.New(ctx, envID, nil)
 	if err != nil {
 		return err

@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"context"
 	"net"
 	"net/http"
 	"os"
@@ -11,30 +10,28 @@ import (
 	"testing"
 	"time"
 
-	"github.com/containerd/errdefs"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-// binaryEnvID is this scenario's own environment ID; the matching
-// container name is gagent-env-e2e-bin.
+// binaryEnvID is this scenario's own environment ID.
 const binaryEnvID = "e2e-bin"
 
-// TestEndToEnd_BinaryMVPScenario drives the PLAN §5.7 scenario against the
+// TestEndToEnd_BinaryMVPScenario drives the canned MVP scenario against the
 // built gagent binary served as a subprocess — the e2e layer of
-// docs/convention/testing.md: real binary, real HTTP, real Docker daemon,
-// nothing mocked beyond the scripted mock model provider.
+// docs/convention/testing.md: real binary, real HTTP, nothing mocked beyond
+// the scripted mock model provider.
+//
+// After ADR 0011 the platform no longer talks to a Docker daemon; the
+// binary test no longer requires one, and the cleanup assertions on the
+// environment container are gone.
 func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
-	cli := requireDockerClient(t)
 	binary := buildGagentBinary(t)
-	root, envDir, seedID := setupMVPScenario(t, cli, binaryEnvID)
-
+	root := t.TempDir()
 	cmd, baseURL, exited := startGatewayBinary(t, binary, root)
 
 	runMVPScenario(t, baseURL, root, binaryEnvID)
 
-	// SIGTERM triggers the binary's graceful shutdown, which destroys the
-	// environment container before exiting.
+	// SIGTERM triggers the binary's graceful shutdown.
 	require.NoError(t, cmd.Process.Signal(syscall.SIGTERM))
 	select {
 	case err := <-exited:
@@ -42,11 +39,10 @@ func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
 	case <-time.After(15 * time.Second):
 		t.Fatal("gateway did not exit on SIGTERM")
 	}
-	_, err := cli.ContainerInspect(context.Background(), "gagent-env-"+binaryEnvID)
-	assert.True(t, errdefs.IsNotFound(err),
-		"environment container must be removed on shutdown, got: %v", err)
 
-	assertMVPRecallAndWriteback(t, envDir, seedID)
+	// After the binary exits, the canned memory write is still queryable
+	// from the environment's memory store on disk.
+	assertMemoryStore(t, filepath.Join(root, binaryEnvID))
 }
 
 // buildGagentBinary compiles the gagent CLI into a temp path and returns

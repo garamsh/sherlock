@@ -2,29 +2,27 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
 
-	"github.com/docker/go-units"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 
 	"github.com/garamsh/gagent/internal/environment"
-	"github.com/garamsh/gagent/internal/sandbox"
 )
 
 // Default settings, overridable by config file, environment, or flags.
+//
+// After ADR 0011 the platform binary no longer talks to a Docker daemon;
+// the four sandbox-related keys (image, exec-timeout, cpu-limit,
+// memory-limit) are dropped — they had no effect once the platform stopped
+// spawning environment containers.
 const (
-	defaultAddr        = ":8080"
-	defaultImage       = "alpine:3.21"
-	defaultExecTimeout = 30 * time.Second
-	defaultCPULimit    = 1.0
-	defaultMemoryLimit = "512m"
+	defaultAddr = ":8080"
 
 	defaultModelProvider = "mock"
 	defaultModelBaseURL  = "https://api.openai.com/v1"
@@ -36,12 +34,6 @@ const (
 	defaultModelTimeout = 60 * time.Second
 )
 
-// nanoCPUsPerCPU is Docker's CPU quota unit: 1e9 nano-CPUs is one CPU.
-const nanoCPUsPerCPU = 1e9
-
-// minMemoryLimitBytes is Docker's floor for a container memory limit.
-const minMemoryLimitBytes = 6 * 1024 * 1024
-
 // Config is the platform's resolved settings, parsed once at the command
 // boundary (docs/convention/runtime-safety.md) and passed down typed.
 type Config struct {
@@ -49,19 +41,6 @@ type Config struct {
 	Addr string `mapstructure:"addr"`
 	// DataRoot is the parent directory of all environment data.
 	DataRoot string `mapstructure:"data-root"`
-	// Image is the environment container image reference.
-	Image string `mapstructure:"image"`
-	// ExecTimeout bounds every sandbox_exec command.
-	ExecTimeout time.Duration `mapstructure:"exec-timeout"`
-	// CPULimit is the environment container's CPU quota in CPUs (1.5 is
-	// one and a half CPUs). It must be positive.
-	CPULimit float64 `mapstructure:"cpu-limit"`
-	// MemoryLimit is the environment container's memory quota as a size
-	// string ("512m", "2g").
-	MemoryLimit string `mapstructure:"memory-limit"`
-	// Policy is the boundary policy injected at environment creation,
-	// parsed from CPULimit and MemoryLimit by resolveConfig.
-	Policy sandbox.Policy `mapstructure:"-"`
 	// Model selects the chat model provider (ADR 0005).
 	Model ModelConfig `mapstructure:"model"`
 }
@@ -90,30 +69,6 @@ func addConfigFlags(fs *pflag.FlagSet) {
 	fs.String("config", "", "config file path (default: ./gagent.yaml, then XDG config dir)")
 	fs.String("addr", defaultAddr, "HTTP listen address (gateway only)")
 	fs.String("data-root", environment.DefaultRoot, "parent directory of all environment data")
-	fs.String("image", defaultImage, "environment container image")
-	fs.Duration("exec-timeout", defaultExecTimeout, "timeout for one sandbox_exec command")
-	fs.Float64("cpu-limit", defaultCPULimit, "CPU quota for one environment container, in CPUs")
-	fs.String("memory-limit", defaultMemoryLimit, "memory quota for one environment container (512m, 2g)")
-}
-
-// sandboxPolicy parses the configured quotas into the boundary policy
-// injected at environment creation. Both limits are mandatory: an
-// unbounded environment container is not a supported configuration.
-func sandboxPolicy(cpuLimit float64, memoryLimit string) (sandbox.Policy, error) {
-	if cpuLimit <= 0 {
-		return sandbox.Policy{}, fmt.Errorf("cpu-limit must be positive, got %v", cpuLimit)
-	}
-	memoryBytes, err := units.RAMInBytes(memoryLimit)
-	if err != nil {
-		return sandbox.Policy{}, fmt.Errorf("parse memory-limit %q: %w", memoryLimit, err)
-	}
-	if memoryBytes < minMemoryLimitBytes {
-		return sandbox.Policy{}, fmt.Errorf("memory-limit must be at least %d bytes, got %d", minMemoryLimitBytes, memoryBytes)
-	}
-	return sandbox.Policy{
-		NanoCPUs:    int64(cpuLimit * nanoCPUsPerCPU),
-		MemoryBytes: memoryBytes,
-	}, nil
 }
 
 // resolveConfig builds the effective Config for cmd using viper's built-in
@@ -126,10 +81,6 @@ func resolveConfig(cmd *cobra.Command) (Config, error) {
 	v := viper.New()
 	v.SetDefault("addr", defaultAddr)
 	v.SetDefault("data-root", environment.DefaultRoot)
-	v.SetDefault("image", defaultImage)
-	v.SetDefault("exec-timeout", defaultExecTimeout)
-	v.SetDefault("cpu-limit", defaultCPULimit)
-	v.SetDefault("memory-limit", defaultMemoryLimit)
 	v.SetDefault("model.provider", defaultModelProvider)
 	v.SetDefault("model.base-url", defaultModelBaseURL)
 	v.SetDefault("model.model", defaultModelName)
@@ -152,11 +103,6 @@ func resolveConfig(cmd *cobra.Command) (Config, error) {
 	if err := v.Unmarshal(&cfg); err != nil {
 		return Config{}, err
 	}
-	policy, err := sandboxPolicy(cfg.CPULimit, cfg.MemoryLimit)
-	if err != nil {
-		return Config{}, err
-	}
-	cfg.Policy = policy
 	return cfg, nil
 }
 

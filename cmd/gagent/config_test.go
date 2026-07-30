@@ -11,7 +11,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/garamsh/gagent/internal/environment"
-	"github.com/garamsh/gagent/internal/sandbox"
 )
 
 // newTestCommand returns a bare command carrying the shared config flags,
@@ -33,10 +32,6 @@ func TestResolveConfig_Defaults(t *testing.T) {
 
 	assert.Equal(t, defaultAddr, cfg.Addr)
 	assert.Equal(t, environment.DefaultRoot, cfg.DataRoot)
-	assert.Equal(t, defaultImage, cfg.Image)
-	assert.Equal(t, defaultExecTimeout, cfg.ExecTimeout)
-	assert.Equal(t, sandbox.Policy{NanoCPUs: 1_000_000_000, MemoryBytes: 512 * 1024 * 1024}, cfg.Policy,
-		"an unconfigured deployment must still be bounded")
 	assert.Equal(t, ModelConfig{
 		Provider:  defaultModelProvider,
 		BaseURL:   defaultModelBaseURL,
@@ -85,9 +80,7 @@ func TestResolveConfig_ConfigFile(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
 	contents := "addr: \":9090\"\n" +
-		"data-root: /from-file\n" +
-		"image: debian:13\n" +
-		"exec-timeout: 45s\n"
+		"data-root: /from-file\n"
 	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o644))
 
 	cfg, err := resolveConfig(newTestCommand(t))
@@ -95,22 +88,19 @@ func TestResolveConfig_ConfigFile(t *testing.T) {
 
 	assert.Equal(t, ":9090", cfg.Addr)
 	assert.Equal(t, "/from-file", cfg.DataRoot)
-	assert.Equal(t, "debian:13", cfg.Image)
-	assert.Equal(t, 45*time.Second, cfg.ExecTimeout)
 }
 
 func TestResolveConfig_EnvOverridesFile(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
 	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
-		[]byte("data-root: /from-file\nimage: debian:13\n"), 0o644))
+		[]byte("data-root: /from-file\n"), 0o644))
 	t.Setenv("GAGENT_DATA_ROOT", "/from-env")
 
 	cfg, err := resolveConfig(newTestCommand(t))
 	require.NoError(t, err)
 
 	assert.Equal(t, "/from-env", cfg.DataRoot)
-	assert.Equal(t, "debian:13", cfg.Image)
 }
 
 func TestResolveConfig_FlagOverridesEnv(t *testing.T) {
@@ -118,13 +108,11 @@ func TestResolveConfig_FlagOverridesEnv(t *testing.T) {
 	t.Setenv("GAGENT_DATA_ROOT", "/from-env")
 	cmd := newTestCommand(t)
 	require.NoError(t, cmd.Flags().Set("data-root", "/from-flag"))
-	require.NoError(t, cmd.Flags().Set("exec-timeout", "1m"))
 
 	cfg, err := resolveConfig(cmd)
 	require.NoError(t, err)
 
 	assert.Equal(t, "/from-flag", cfg.DataRoot)
-	assert.Equal(t, time.Minute, cfg.ExecTimeout)
 }
 
 func TestResolveConfig_XDGConfigFile(t *testing.T) {
@@ -151,7 +139,7 @@ func TestResolveConfig_CwdBeatsXDG(t *testing.T) {
 		[]byte("data-root: /from-cwd\n"), 0o644))
 	require.NoError(t, os.MkdirAll(filepath.Join(xdg, "gagent"), 0o755))
 	require.NoError(t, os.WriteFile(filepath.Join(xdg, "gagent", "config.yaml"),
-		[]byte("data-root: /from-xdg\nimage: debian:13\n"), 0o644))
+		[]byte("data-root: /from-xdg\n"), 0o644))
 	cmd := newTestCommand(t)
 	t.Setenv("XDG_CONFIG_HOME", xdg)
 
@@ -159,7 +147,6 @@ func TestResolveConfig_CwdBeatsXDG(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Equal(t, "/from-cwd", cfg.DataRoot)
-	assert.Equal(t, defaultImage, cfg.Image, "XDG file is skipped once the cwd file is found")
 }
 
 func TestResolveConfig_ConfigFlag(t *testing.T) {
@@ -186,54 +173,6 @@ func TestResolveConfig_ConfigFlagMissingFileFails(t *testing.T) {
 
 	_, err := resolveConfig(cmd)
 	assert.Error(t, err, "an explicit --config path must exist")
-}
-
-func TestResolveConfig_QuotaSection(t *testing.T) {
-	dir := t.TempDir()
-	t.Chdir(dir)
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
-		[]byte("cpu-limit: 1.5\nmemory-limit: 256m\n"), 0o644))
-
-	cfg, err := resolveConfig(newTestCommand(t))
-	require.NoError(t, err)
-
-	assert.Equal(t, sandbox.Policy{NanoCPUs: 1_500_000_000, MemoryBytes: 256 * 1024 * 1024}, cfg.Policy)
-}
-
-func TestResolveConfig_QuotaFlagOverridesEnv(t *testing.T) {
-	t.Chdir(t.TempDir())
-	t.Setenv("GAGENT_CPU_LIMIT", "4")
-	t.Setenv("GAGENT_MEMORY_LIMIT", "1g")
-	cmd := newTestCommand(t)
-	require.NoError(t, cmd.Flags().Set("cpu-limit", "2"))
-
-	cfg, err := resolveConfig(cmd)
-	require.NoError(t, err)
-
-	assert.Equal(t, sandbox.Policy{NanoCPUs: 2_000_000_000, MemoryBytes: 1024 * 1024 * 1024}, cfg.Policy)
-}
-
-func TestResolveConfig_InvalidQuotaFails(t *testing.T) {
-	tests := []struct {
-		name     string
-		contents string
-	}{
-		{name: "zero cpu is unlimited", contents: "cpu-limit: 0\n"},
-		{name: "negative cpu", contents: "cpu-limit: -1\n"},
-		{name: "unparsable memory", contents: "memory-limit: plenty\n"},
-		{name: "memory below the docker floor", contents: "memory-limit: 1m\n"},
-	}
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
-			dir := t.TempDir()
-			t.Chdir(dir)
-			require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(tc.contents), 0o644))
-
-			_, err := resolveConfig(newTestCommand(t))
-
-			assert.Error(t, err)
-		})
-	}
 }
 
 func TestResolveConfig_InvalidConfigFileFails(t *testing.T) {

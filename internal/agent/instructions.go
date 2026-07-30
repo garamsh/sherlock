@@ -24,6 +24,11 @@ Pick the right tool for the task; don't run code when memory or files will do.
 - message_send: send a message to a channel and target. When the task came from
   a person and a reply is owed, reply through message_send. Your final response
   alone does not reach the user.
+- shell_exec: run a shell command on the workspace. Use this when the typed tools
+  are too narrow — running the project's tests, computing with awk/jq, listing
+  files matching a pattern. The command is a single string passed to sh -c; pass
+  the full shell line, not pre-split arguments
+  (e.g. ` + "`command: 'find . -name \"*.go\" -size +100k'`" + `).
 
 ## Memory: tool call vs writeback
 The memory tool's ` + "`store`" + ` op and the writeback ` + "`add`" + ` op both create a memory, but

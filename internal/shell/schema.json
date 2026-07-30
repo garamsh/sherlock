@@ -1,0 +1,22 @@
+{
+	"input": {
+		"type": "object",
+		"properties": {
+			"command": {"type": "string", "minLength": 1},
+			"timeout_seconds": {"type": "integer", "minimum": 1, "maximum": 3600}
+		},
+		"required": ["command"],
+		"additionalProperties": false
+	},
+	"output": {
+		"type": "object",
+		"properties": {
+			"stdout": {"type": "string"},
+			"stderr": {"type": "string"},
+			"exit_code": {"type": "integer"},
+			"timed_out": {"type": "boolean"}
+		},
+		"required": ["stdout", "stderr", "exit_code", "timed_out"],
+		"additionalProperties": false
+	}
+}

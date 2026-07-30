@@ -18,11 +18,15 @@ import (
 // Default settings, overridable by config file, environment, or flags.
 //
 // After ADR 0011 the platform binary no longer talks to a Docker daemon;
-// the four sandbox-related keys (image, exec-timeout, cpu-limit,
-// memory-limit) are dropped — they had no effect once the platform stopped
-// spawning environment containers.
+// the three per-container keys (image, cpu-limit, memory-limit) are
+// dropped — they had no effect once the platform stopped spawning
+// environment containers. ADR 0012 restores `exec-timeout` as the
+// per-shell-call ceiling; CPU and memory limits are applied via
+// setrlimit in the sub-process and are not configurable from the CLI.
 const (
 	defaultAddr = ":8080"
+
+	defaultExecTimeout = 30 * time.Second
 
 	defaultModelProvider = "mock"
 	defaultModelBaseURL  = "https://api.openai.com/v1"
@@ -41,6 +45,8 @@ type Config struct {
 	Addr string `mapstructure:"addr"`
 	// DataRoot is the parent directory of all environment data.
 	DataRoot string `mapstructure:"data-root"`
+	// ExecTimeout caps one shell_exec sub-process run (ADR 0012).
+	ExecTimeout time.Duration `mapstructure:"exec-timeout"`
 	// Model selects the chat model provider (ADR 0005).
 	Model ModelConfig `mapstructure:"model"`
 }
@@ -69,6 +75,7 @@ func addConfigFlags(fs *pflag.FlagSet) {
 	fs.String("config", "", "config file path (default: ./gagent.yaml, then XDG config dir)")
 	fs.String("addr", defaultAddr, "HTTP listen address (gateway only)")
 	fs.String("data-root", environment.DefaultRoot, "parent directory of all environment data")
+	fs.Duration("exec-timeout", defaultExecTimeout, "per-call ceiling for shell_exec sub-processes (ADR 0012)")
 }
 
 // resolveConfig builds the effective Config for cmd using viper's built-in
@@ -81,6 +88,7 @@ func resolveConfig(cmd *cobra.Command) (Config, error) {
 	v := viper.New()
 	v.SetDefault("addr", defaultAddr)
 	v.SetDefault("data-root", environment.DefaultRoot)
+	v.SetDefault("exec-timeout", defaultExecTimeout)
 	v.SetDefault("model.provider", defaultModelProvider)
 	v.SetDefault("model.base-url", defaultModelBaseURL)
 	v.SetDefault("model.model", defaultModelName)

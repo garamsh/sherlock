@@ -4,8 +4,8 @@ gagent is an autonomous agent platform written in Go. It runs AI agents that can
 
 ## Principles
 
-- **Three components only: Gateway / Agent / Tool.** The Gateway normalizes external channels (web, API, messengers, CLI) into a single entry point. The Agent runs the reasoning loop and decides which tools to call. Every capability — memory, files, outbound messaging, future additions — is a Tool behind one common interface. No extra layers. Adding a tool is a normal Go change (ADR 0010).
-- **The agent owns its execution environment.** Each agent runs in its own directory (`data/envs/<env-id>/` containing `workspace/` + `memory.db`) inside the platform's container; the orchestration layer manages the boundary (network egress, mounts, lifecycle). No generic shell — there is no `sandbox_exec` tool (ADR 0011).
+- **Three components only: Gateway / Agent / Tool.** The Gateway normalizes external channels (web, API, messengers, CLI) into a single entry point. The Agent runs the reasoning loop and decides which tools to call. Every capability — memory, files, outbound messaging, and shell access for workspace operations — is a Tool behind one common interface. No extra layers. Adding a tool is a normal Go change (ADR 0010).
+- **The agent owns its execution environment.** Each agent runs in its own directory (`data/envs/<env-id>/` containing `workspace/` + `memory.db`) inside the platform's container; the orchestration layer manages the boundary (network egress, mounts, lifecycle). The `shell_exec` tool runs agent-supplied commands as sub-processes dropped to the agent UID; the rest of the platform keeps its trust-domain separation (ADR 0006, ADR 0012).
 - **Memory is agent-managed, not just stored.** Memory is RAG-based, and the agent actively maintains it: storing, updating, compressing, and forgetting — like human memory rather than a plain store/search index.
 
 ## Who it is for
@@ -55,6 +55,7 @@ Settings resolve in order: **flags > environment variables > config file > defau
 |---|---|---|
 | `addr` | `--addr` | `:8080` (used by `gateway` only) |
 | `data-root` | `--data-root` | `data/envs` |
+| `exec-timeout` | `--exec-timeout` | `30s` (per-call ceiling for `shell_exec` sub-processes; ADR 0012) |
 | `model.provider` | — | `mock` (scripted, offline) or `openai` |
 | `model.base-url` | — | `https://api.openai.com/v1` (any OpenAI-compatible endpoint, e.g. Ollama/vLLM) |
 | `model.model` | — | `gpt-4o-mini` |
@@ -95,7 +96,7 @@ model:
   api-key-env: OLLAMA_API_KEY
 ```
 
-With the default `mock` provider the binary wires the scripted mock model, which answers each environment's first message with a canned run of the full loop: it stores an episodic memory, replies via `message_send`, and writes the result back as a new episodic memory. With `provider: openai` it runs against a real chat model; a missing API key env var fails at startup. To work on the codebase you need Go and GNU Make, and the standard checks are:
+With the default `mock` provider the binary wires the scripted mock model, which answers each environment's first message with a canned run of the full loop: it stores an episodic memory, runs the answer through `shell_exec`, replies via `message_send`, and writes the result back as a new episodic memory. With `provider: openai` it runs against a real chat model; a missing API key env var fails at startup. To work on the codebase you need Go and GNU Make, and the standard checks are:
 
 ```sh
 make ci      # lint + format check + test + build (same as CI)

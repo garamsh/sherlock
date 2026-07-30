@@ -32,6 +32,7 @@ func TestResolveConfig_Defaults(t *testing.T) {
 
 	assert.Equal(t, defaultAddr, cfg.Addr)
 	assert.Equal(t, environment.DefaultRoot, cfg.DataRoot)
+	assert.Equal(t, defaultExecTimeout, cfg.ExecTimeout)
 	assert.Equal(t, ModelConfig{
 		Provider:  defaultModelProvider,
 		BaseURL:   defaultModelBaseURL,
@@ -80,7 +81,8 @@ func TestResolveConfig_ConfigFile(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
 	contents := "addr: \":9090\"\n" +
-		"data-root: /from-file\n"
+		"data-root: /from-file\n" +
+		"exec-timeout: 5s\n"
 	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o644))
 
 	cfg, err := resolveConfig(newTestCommand(t))
@@ -88,6 +90,8 @@ func TestResolveConfig_ConfigFile(t *testing.T) {
 
 	assert.Equal(t, ":9090", cfg.Addr)
 	assert.Equal(t, "/from-file", cfg.DataRoot)
+	assert.Equal(t, 5*time.Second, cfg.ExecTimeout,
+		"exec-timeout resolves from the config file")
 }
 
 func TestResolveConfig_EnvOverridesFile(t *testing.T) {

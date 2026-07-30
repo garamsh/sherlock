@@ -29,7 +29,7 @@ curl -N localhost:8080/envs/demo/events &                # SSE event stream
 curl -X POST localhost:8080/envs/demo/messages -d '{"content":"hello"}'   # returns 202
 ```
 
-The sample `gagent.yaml` uses the mock model provider, so the agent replies without any API key. The mock script drives a canned run of the full loop (store → `message_send` → write back); the SSE stream shows the resulting tool calls. Agent replies land in `$GAGENT_DATA_DIR/demo/outbox/`.
+The sample `gagent.yaml` uses the mock model provider, so the agent replies without any API key. The mock script drives a canned run of the full loop (store → `shell_exec` → `message_send` → write back); the SSE stream shows the resulting tool calls. Agent replies land in `$GAGENT_DATA_DIR/demo/outbox/`.
 
 ## Cleanup
 

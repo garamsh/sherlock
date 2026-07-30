@@ -10,6 +10,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -21,15 +22,17 @@ const binaryEnvID = "e2e-bin"
 // docs/convention/testing.md: real binary, real HTTP, nothing mocked beyond
 // the scripted mock model provider.
 //
-// After ADR 0011 the platform no longer talks to a Docker daemon; the
-// binary test no longer requires one, and the cleanup assertions on the
-// environment container are gone.
+// After ADR 0012 the canned script calls shell_exec, which the real binary
+// runs through ProcessExecutor. When the binary is not running as root
+// (the common CI case) shell_exec returns agent_uid unavailable; the test
+// asserts that failure mode rather than skipping the scenario, so the
+// binary wiring is exercised end-to-end either way.
 func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
 	binary := buildGagentBinary(t)
 	root := t.TempDir()
 	cmd, baseURL, exited := startGatewayBinary(t, binary, root)
 
-	runMVPScenario(t, baseURL, root, binaryEnvID)
+	runBinaryMVPScenario(t, baseURL, root, binaryEnvID)
 
 	// SIGTERM triggers the binary's graceful shutdown.
 	require.NoError(t, cmd.Process.Signal(syscall.SIGTERM))
@@ -43,6 +46,60 @@ func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
 	// After the binary exits, the canned memory write is still queryable
 	// from the environment's memory store on disk.
 	assertMemoryStore(t, filepath.Join(root, binaryEnvID))
+}
+
+// runBinaryMVPScenario is the binary test's variant of runMVPScenario.
+// It exercises the same canned loop but tolerates the shell_exec call
+// failing with agent_uid unavailable when the binary cannot drop to the
+// agent UID (typical CI environment without setuid-root). The in-process
+// variant in e2e_test.go uses a fake executor so shell_exec always
+// succeeds there.
+func runBinaryMVPScenario(t *testing.T, baseURL, root, envID string) {
+	t.Helper()
+
+	events := subscribeSSE(t, baseURL+"/envs/"+envID+"/events")
+
+	resp := postJSON(t, baseURL+"/envs/"+envID+"/messages",
+		`{"content":`+strconvQuote(e2eQuestion)+`}`)
+	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
+	resp.Body.Close()
+
+	got := collectEvents(t, events, 9)
+	var kinds []string
+	for _, e := range got {
+		kinds = append(kinds, e["kind"].(string))
+	}
+	assert.Equal(t, []string{
+		"turn_started",
+		"writeback", "tool_call",
+		"writeback", "tool_call",
+		"writeback", "tool_call",
+		"writeback", "turn_finished",
+	}, kinds)
+	assert.Equal(t, e2eQuestion, got[0]["task"])
+
+	assert.Equal(t, "memory", got[2]["tool_name"])
+	assert.NotContains(t, got[2], "tool_failed")
+	assert.Equal(t, "shell_exec", got[4]["tool_name"])
+	// shell_exec fails when the binary cannot drop privileges; assert
+	// the failure mode is the documented agent_uid unavailable rather
+	// than masking it.
+	if failed, _ := got[4]["tool_failed"].(bool); failed {
+		result, _ := got[4]["tool_result"].(string)
+		assert.Contains(t, result, "agent_uid unavailable",
+			"shell_exec failure mode in the binary test must surface as agent_uid unavailable")
+	}
+	assert.Equal(t, "message_send", got[6]["tool_name"])
+	assert.NotContains(t, got[6], "tool_failed")
+
+	require.Eventually(t, func() bool {
+		return len(outboxMessages(t, root, envID)) == 1
+	}, 5*time.Second, 10*time.Millisecond)
+	replies := outboxMessages(t, root, envID)
+	require.Len(t, replies, 1)
+	assert.Equal(t, "42", replies[0].Content)
+	assert.Equal(t, "http", replies[0].Channel)
+	assert.Equal(t, "sender", replies[0].Target)
 }
 
 // buildGagentBinary compiles the gagent CLI into a temp path and returns

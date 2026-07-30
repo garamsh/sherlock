@@ -23,7 +23,7 @@ Current architecture of the system and the decisions behind it. This file is the
 - `security.md` — trust domains, secret custody, egress
 - `gateway.md` — ingress, routing, outbound, monitoring
 - `agent.md` — reasoning loop, tool use, model access
-- `adr/0001`–`0010` — design decision log (see topic files for current truth)
+- `adr/0001`–`0011` — design decision log (see topic files for current truth)
 
 ### Modules
 
@@ -37,7 +37,6 @@ Current architecture of the system and the decisions behind it. This file is the
 | `internal/tool/` | Define the Tool contract (name, description, input schema, output schema) and the registry every tool joins. | — |
 | `internal/environment/` | Own the environment data layout: create-on-first-use and teardown of `data/envs/<env-id>/`. | `environment.md` |
 | `internal/memory/` | Own one environment's long-term memory: the `memory.db` store, hybrid search, and the five memory operations. | `memory.md` |
-| `internal/sandbox/` | Execute agent-supplied commands inside the agent's own environment (`sandbox_exec`). | `environment.md` |
 | `internal/files/` | Read and write files inside the environment's workspace. | `environment.md` |
 | `internal/message/` | Deliver agent-decided outbound messages to channels and peers (`message_send`). | `gateway.md` |
 | `tests/` | End-to-end scenarios wiring multiple modules together. | — |

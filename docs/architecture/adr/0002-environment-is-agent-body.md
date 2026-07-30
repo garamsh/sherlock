@@ -11,10 +11,9 @@ PLAN §4 describes the agent running "on" a Docker container and a `sandbox_exec
 
 The environment **is** the agent's body. Code the agent runs shares fate with the agent — there is no separate sandbox container tier.
 
-- `sandbox_exec` means "execute a command inside my own environment". Its `create`/`exec`/`destroy` operations map to the environment lifecycle, not to child containers.
-- Policy (egress, CPU/memory quotas, mount scope, lifecycle) is injected from outside at environment creation. The agent can call `exec` but cannot change policy.
+- Policy (egress, CPU/memory quotas, mount scope, lifecycle) is injected from outside at environment creation. The agent cannot change it.
 - "Total authority" is refined: the agent has total authority within its user domain. Platform assets (memory store, tool runtime, secrets) are outside that domain but may still live inside the same container — the mechanism is defined in ADR 0006.
-- Self-destruction is bounded by construction: agent code cannot reach outside its user domain (ADR 0006), and secrets never materialize inside it (ADR 0004).
+- Self-destruction is bounded by construction: agent code cannot reach outside its user domain (ADR 0006), and secrets never materialize inside it (ADR 0004). The generic shell tool (`sandbox_exec`) that ADR 0002 mentioned as "execute in my own environment" was removed in ADR 0011; file-system destruction within `workspace/` is the only remaining form of self-destruction.
 
 ## Consequences
 

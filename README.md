@@ -1,11 +1,11 @@
 # gagent
 
-gagent is an autonomous agent platform written in Go. It runs AI agents that can reason over multi-turn conversations, call tools, execute code, and manage their own long-term memory.
+gagent is an autonomous agent platform written in Go. It runs AI agents that can reason over multi-turn conversations, call tools, and manage their own long-term memory.
 
 ## Principles
 
-- **Three components only: Gateway / Agent / Tool.** The Gateway normalizes external channels (web, API, messengers, CLI) into a single entry point. The Agent runs the reasoning loop and decides which tools to call. Every capability — memory, sandboxed execution, future additions — is a Tool behind one common interface. No extra layers. Adding a tool is a normal Go change (ADR 0010).
-- **The agent owns its execution environment.** Each agent runs in its own container with full authority inside it; the orchestration layer manages the boundary (network egress, mounts, resource quotas, lifecycle).
+- **Three components only: Gateway / Agent / Tool.** The Gateway normalizes external channels (web, API, messengers, CLI) into a single entry point. The Agent runs the reasoning loop and decides which tools to call. Every capability — memory, files, outbound messaging, future additions — is a Tool behind one common interface. No extra layers. Adding a tool is a normal Go change (ADR 0010).
+- **The agent owns its execution environment.** Each agent runs in its own directory (`data/envs/<env-id>/` containing `workspace/` + `memory.db`) inside the platform's container; the orchestration layer manages the boundary (network egress, mounts, lifecycle). No generic shell — there is no `sandbox_exec` tool (ADR 0011).
 - **Memory is agent-managed, not just stored.** Memory is RAG-based, and the agent actively maintains it: storing, updating, compressing, and forgetting — like human memory rather than a plain store/search index.
 
 ## Who it is for
@@ -49,16 +49,12 @@ gagent agent --env my-env --message "hello"
 
 ### Configuration
 
-Settings resolve in order: **flags > environment variables > config file > defaults**. Environment variables use the `GAGENT_` prefix (`GAGENT_DATA_ROOT`, `GAGENT_EXEC_TIMEOUT`, …). The config file resolves in order: `--config <path>`, then `./gagent.yaml`, then the XDG config path (`~/.config/gagent/config.yaml` on Linux). A missing file is an error only when `--config` names it explicitly.
+Settings resolve in order: **flags > environment variables > config file > defaults**. Environment variables use the `GAGENT_` prefix (`GAGENT_DATA_ROOT`, …). The config file resolves in order: `--config <path>`, then `./gagent.yaml`, then the XDG config path (`~/.config/gagent/config.yaml` on Linux). A missing file is an error only when `--config` names it explicitly.
 
 | Key | Flag | Default |
 |---|---|---|
 | `addr` | `--addr` | `:8080` (used by `gateway` only) |
 | `data-root` | `--data-root` | `data/envs` |
-| `image` | `--image` | `alpine:3.21` |
-| `exec-timeout` | `--exec-timeout` | `30s` |
-| `cpu-limit` | `--cpu-limit` | `1` (CPU quota per environment container, in CPUs; must be positive) |
-| `memory-limit` | `--memory-limit` | `512m` (memory quota per environment container; at least `6m`, Docker's floor) |
 | `model.provider` | — | `mock` (scripted, offline) or `openai` |
 | `model.base-url` | — | `https://api.openai.com/v1` (any OpenAI-compatible endpoint, e.g. Ollama/vLLM) |
 | `model.model` | — | `gpt-4o-mini` |
@@ -92,10 +88,6 @@ Example `gagent.yaml`:
 ```yaml
 addr: ":9090"
 data-root: /var/lib/gagent/envs
-image: alpine:3.21
-exec-timeout: 45s
-cpu-limit: 1.5
-memory-limit: 1g
 model:
   provider: openai
   base-url: http://localhost:11434/v1   # Ollama, for example
@@ -103,7 +95,7 @@ model:
   api-key-env: OLLAMA_API_KEY
 ```
 
-With the default `mock` provider the binary wires the scripted mock model, which answers each environment's first message with a canned run of the full loop: it computes in the sandbox via `sandbox_exec`, replies via `message_send`, and writes the result back to memory. With `provider: openai` it runs against a real chat model; a missing API key env var fails at startup. `sandbox_exec` (and therefore the mock script) needs a Docker daemon. To work on the codebase you need Go and GNU Make, and the standard checks are:
+With the default `mock` provider the binary wires the scripted mock model, which answers each environment's first message with a canned run of the full loop: it stores an episodic memory, replies via `message_send`, and writes the result back as a new episodic memory. With `provider: openai` it runs against a real chat model; a missing API key env var fails at startup. To work on the codebase you need Go and GNU Make, and the standard checks are:
 
 ```sh
 make ci      # lint + format check + test + build (same as CI)

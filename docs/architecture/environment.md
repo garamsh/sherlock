@@ -4,7 +4,7 @@ Governs the environment model: what an environment is, its topology, and its tru
 
 ## Current decisions
 
-- The environment is the agent's body. Code the agent runs shares fate with the agent; there is no separate sandbox tier. `sandbox_exec` means "execute inside my own environment."
+- The environment is the agent's body. The agent has full authority inside it; the orchestration layer manages the boundary (network, mounts, resources, lifecycle). There is no separate sandbox tier — the platform does not spawn an inner container for the agent to run commands in (ADR 0011).
 - One container per environment, subdivided into trust domains by Unix UIDs:
   - **Agent UID** — runs all agent-supplied code; unprivileged, always.
   - **Memory UID** — owns `memory.db`.
@@ -12,11 +12,9 @@ Governs the environment model: what an environment is, its topology, and its tru
 - Enforcement is kernel DAC (file ownership and modes), not filters. Agent code touching another UID's assets gets `EACCES`.
 - A tool runtime (supervisor) manages processes and drops privileges before executing agent-supplied code.
 - Boundary policy — egress, CPU/memory quotas, mount scope, lifecycle — is injected from outside at environment creation. The agent cannot change it.
-- Direct network egress is blocked at the container level: `internal/sandbox/docker.go:54` sets `NetworkMode("none")`, so no outbound path of any kind is reachable from inside an environment container today. The intended outbound path is the egress tool described in `security.md` — **not yet shipped; deferred per the open questions in `security.md`**. The wording "the only outbound path is the egress tool" is the *intended* state, not the *current* one.
+- Direct network egress is blocked at the container level: the deployment image sets `NetworkMode("none")`, so no outbound path of any kind is reachable from inside an environment container today. The intended outbound path is the egress tool described in `security.md` — **not yet shipped; deferred per the open questions in `security.md`**. The wording "the only outbound path is the egress tool" is the *intended* state, not the *current* one.
 - Each environment owns `data/envs/<env-id>/` (workspace + `memory.db`). The directory is the isolation unit: teardown, migration, and backup are directory operations.
-- MVP container boundary: the environment container mounts only `workspace/` (never `memory.db`), has no network egress, and gets its CPU/memory quotas from a policy resolved at startup and injected at creation (`cpu-limit` / `memory-limit`; see the README config table). Quotas default to bounded values and cannot be disabled — an out-of-range quota fails startup, so no environment container runs unlimited. UID separation is not yet enforced (see open questions).
-- The pod/sidecar topology is a documented hardening option for high-value deployments; the trust-domain model is unchanged.
-- The platform itself ships as a distroless nonroot image built from the repo-root `Dockerfile` — the platform image, distinct from the environment image (the agent's body), whose definition remains an open question below.
+- The platform itself ships as a distroless nonroot image built from the repo-root `Dockerfile` — the platform image, distinct from the environment image (the agent's body), whose definition remains an open question below. With `sandbox_exec` removed (ADR 0011), the platform no longer talks to a Docker daemon at runtime; the deployment image is the only Docker involvement.
 
 ## Rejected alternatives
 

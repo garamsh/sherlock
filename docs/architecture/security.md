@@ -7,8 +7,9 @@ Governs the security model: trust domains, secret custody, and egress. Rationale
 ### Trust domains
 
 - Every tool belongs to one of two domains, decided at design review:
-  - **Code-executing tools** (`sandbox_exec`, `files`) run with no reachable secrets.
+  - **Code-executing tools** (`files`) run with no reachable secrets.
   - **Secret-holding tools** (`memory`, `message_send`) never execute agent-supplied code and accept only schema-validated structured input.
+- `sandbox_exec` (a generic shell) is removed per ADR 0011 — the only agent-facing capabilities are now `memory`, `files`, and `message_send`, all typed and narrow. The "secret exposure through a shell tool" risk that ADR 0007 flagged is now eliminated by absence rather than mitigated by trust-domain review.
 - No external tool source exists. The set of tools is the set of Go packages under `internal/<domain>/`; adding a tool means adding Go code (ADR 0010).
 - No separate security layer exists; each tool enforces its own domain's policy.
 

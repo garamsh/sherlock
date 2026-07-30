@@ -13,7 +13,7 @@ One Go module at the repository root. The three components map to packages, not 
 
 - Gateway → `cmd/gateway/main.go` (thin entrypoint) + `internal/gateway/`
 - Agent → `internal/agent/`
-- Tool → `internal/tool/` (shared contract and registry) with one package per tool implementation (`internal/memory/`, `internal/sandbox/`, `internal/files/`)
+- Tool → `internal/tool/` (shared contract and registry) with one package per tool implementation (`internal/memory/`, `internal/files/`, `internal/message/`)
 
 ## Consequences
 

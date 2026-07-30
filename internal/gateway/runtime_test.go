@@ -19,6 +19,7 @@ import (
 	"github.com/garamsh/gagent/internal/memory"
 	"github.com/garamsh/gagent/internal/memory/sqlite"
 	"github.com/garamsh/gagent/internal/message"
+	"github.com/garamsh/gagent/internal/shell"
 	"github.com/garamsh/gagent/internal/tool"
 )
 
@@ -162,6 +163,7 @@ func TestBuiltinTools_DescriptionsAreNonEmpty(t *testing.T) {
 		memory.NewTool(nil),
 		files.NewTool(nil),
 		message.NewSendTool(nil),
+		shell.NewTool(nil),
 	}
 	registry := tool.NewRegistry()
 	for _, tl := range builtins {
@@ -180,6 +182,7 @@ func TestBuiltinTools_InputSchemasSatisfyOpenAISubset(t *testing.T) {
 		memory.NewTool(nil),
 		files.NewTool(nil),
 		message.NewSendTool(nil),
+		shell.NewTool(nil),
 	}
 	for _, tl := range builtins {
 		t.Run(tl.Name(), func(t *testing.T) {
@@ -194,4 +197,31 @@ func TestBuiltinTools_InputSchemasSatisfyOpenAISubset(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestFactory_BuiltinToolNames(t *testing.T) {
+	// The four built-in tools are the public contract surface (ADR 0012).
+	// A regression in any one of them is a contract change; this test
+	// names them so the contract review gates the change.
+	factory := &gateway.Factory{
+		Root:     t.TempDir(),
+		NewModel: replyModel,
+		NewShellExecutor: func() shell.Executor {
+			return shell.NewProcessExecutor(shell.DefaultAgentUID, 5*1e9)
+		},
+	}
+	rt, err := factory.New(context.Background(), "env-1", nil)
+	require.NoError(t, err)
+	defer func() {
+		assert.NoError(t, rt.Close(context.Background()))
+	}()
+
+	names := make([]string, 0)
+	for _, d := range rt.Registry.List() {
+		names = append(names, d.Name)
+	}
+	assert.Equal(t,
+		[]string{"files", "memory", "message_send", "shell_exec"},
+		names,
+		"the four built-in tools join the registry in name-sorted order")
 }

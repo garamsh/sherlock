@@ -19,6 +19,7 @@ import (
 	"github.com/garamsh/gagent/internal/gateway"
 	"github.com/garamsh/gagent/internal/memory"
 	"github.com/garamsh/gagent/internal/memory/sqlite"
+	"github.com/garamsh/gagent/internal/shell"
 	"github.com/garamsh/gagent/internal/tool"
 )
 
@@ -26,21 +27,42 @@ import (
 const e2eEnvID = "e2e"
 
 // e2eQuestion is the inbound message that drives the canned MVP scenario:
-// the mock model stores the question in long-term memory, replies with the
-// answer via message_send, and ends the turn. After ADR 0011 there is no
-// shell to compute in — the canned answer is fixed at 42.
+// the mock model stores the question in long-term memory, runs the answer
+// through shell_exec, replies with the answer via message_send, and ends
+// the turn. After ADR 0012 the canned script exercises the four built-in
+// tools (memory, shell_exec, message_send) — the shell_exec call does the
+// "compute the answer" step the typed tools cannot.
 const e2eQuestion = "what is 6 * 7?"
 
+// cannedShellExecutor is a fake shell.Executor for the e2e scenario. The
+// canned script asks for `echo 42`; we return that canned output so the
+// test exercises the full tool wiring without requiring root for the real
+// fork+exec path.
+type cannedShellExecutor struct{}
+
+func (cannedShellExecutor) Run(_ context.Context, _ shell.Request) (shell.Result, error) {
+	return shell.Result{Stdout: "42\n", ExitCode: 0}, nil
+}
+
 // mvpScript drives the canned MVP scenario through the scripted mock model:
-// store the question in memory, reply to the sender, then close the turn.
-// After ADR 0011 the canned script no longer calls sandbox_exec: the
-// agent has no shell, so the loop shape collapses to memory + message_send.
+// store the question in memory, compute the answer via shell_exec, reply to
+// the sender, then close the turn with a writeback block.
+//
+// After ADR 0012 the canned script exercises the four built-in tools; the
+// shell_exec call is intercepted by the canned executor so the test does
+// not require root for the real fork+exec path.
 func mvpScript() *agent.ScriptedModel {
 	return agent.NewScriptedModel(
 		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{
 			Name: "memory",
 			Input: json.RawMessage(
 				`{"op":"store","content":"user asked: 6 * 7","type":"episodic","importance_score":0.5,"source":"mock"}`,
+			),
+		}}},
+		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{
+			Name: "shell_exec",
+			Input: json.RawMessage(
+				`{"command":"echo 42"}`,
 			),
 		}}},
 		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{
@@ -54,8 +76,9 @@ func mvpScript() *agent.ScriptedModel {
 }
 
 // TestEndToEnd_MVPScenario drives the canned MVP scenario across the real
-// wired system in-process: HTTP ingress, memory store, and reply through
-// the file outbox sink — no Docker daemon required (ADR 0011).
+// wired system in-process: HTTP ingress, memory store, shell_exec (via the
+// canned executor), and reply through the file outbox sink. No Docker
+// daemon and no real fork+exec required.
 func TestEndToEnd_MVPScenario(t *testing.T) {
 	root := t.TempDir()
 	envID := e2eEnvID
@@ -64,6 +87,9 @@ func TestEndToEnd_MVPScenario(t *testing.T) {
 		Root: root,
 		NewModel: func(string) agent.Model {
 			return mvpScript()
+		},
+		NewShellExecutor: func() shell.Executor {
+			return cannedShellExecutor{}
 		},
 	}
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
@@ -95,25 +121,31 @@ func runMVPScenario(t *testing.T, baseURL, root, envID string) {
 	resp.Body.Close()
 
 	// Monitoring: the full turn lifecycle was published, in order: one
-	// turn with two tool calls (memory, message_send) and an empty-ops
-	// writeback between every model response.
-	got := collectEvents(t, events, 7)
+	// turn with three tool calls (memory, shell_exec, message_send) and
+	// an empty-ops writeback between every model response.
+	got := collectEvents(t, events, 9)
 	var kinds []string
 	for _, e := range got {
 		kinds = append(kinds, e["kind"].(string))
 	}
 	assert.Equal(t, []string{
-		"turn_started", "writeback", "tool_call", "writeback", "tool_call", "writeback", "turn_finished",
+		"turn_started",
+		"writeback", "tool_call",
+		"writeback", "tool_call",
+		"writeback", "tool_call",
+		"writeback", "turn_finished",
 	}, kinds)
 	assert.Equal(t, e2eQuestion, got[0]["task"])
 
-	// The agent stored the question via the memory tool, then replied
-	// via message_send. The empty final writeback satisfies the contract
-	// when no new memories are added this turn.
+	// The agent stored the question, computed via shell_exec, then
+	// replied via message_send. The empty final writeback satisfies the
+	// contract when no new memories are added this turn.
 	assert.Equal(t, "memory", got[2]["tool_name"])
 	assert.NotContains(t, got[2], "tool_failed")
-	assert.Equal(t, "message_send", got[4]["tool_name"])
+	assert.Equal(t, "shell_exec", got[4]["tool_name"])
 	assert.NotContains(t, got[4], "tool_failed")
+	assert.Equal(t, "message_send", got[6]["tool_name"])
+	assert.NotContains(t, got[6], "tool_failed")
 
 	// Reply: message_send output landed in the environment outbox.
 	require.Eventually(t, func() bool {

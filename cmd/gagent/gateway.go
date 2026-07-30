@@ -38,8 +38,9 @@ func newGatewayCommand() *cobra.Command {
 
 // serveGateway runs the HTTP gateway until an interrupt or SIGTERM.
 //
-// After ADR 0011 the platform no longer starts a Docker runtime; the
-// factory wires memory, files, and message_send only.
+// The factory wires the four built-in tools (memory, files, message_send,
+// shell_exec) per ADR 0012; the shell_exec executor runs agent-supplied
+// commands as sub-processes dropped to the agent UID.
 func serveGateway(ctx context.Context, cfg Config, ego string) error {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	slog.SetDefault(logger)

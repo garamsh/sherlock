@@ -48,7 +48,7 @@ func TestContract_ExampleMemoryBlock(t *testing.T) {
 
 // TestContract_ToolSelectionGuidance asserts each tool carries a
 // selection sentence ("use this for X") so the model can pick the right
-// tool on the first attempt (issue #96; proposal #94).
+// tool on the first attempt (issue #96; proposal #94; ADR 0012).
 func TestContract_ToolSelectionGuidance(t *testing.T) {
 	cases := []struct {
 		tool     string
@@ -57,11 +57,23 @@ func TestContract_ToolSelectionGuidance(t *testing.T) {
 		{"memory", "search and read your long-term memory"},
 		{"files", "read and write files in your workspace"},
 		{"message_send", "reply through message_send"},
+		{"shell_exec", "run a shell command on the workspace"},
 	}
 	for _, tc := range cases {
 		assert.Contains(t, agent.Contract, tc.fragment,
 			"%s tool has selection guidance", tc.tool)
 	}
+}
+
+// TestContract_ShellExecSingleStringCommand pins the QA #103 follow-on
+// for ADR 0012: the shell_exec `command` field is a single string
+// passed to sh -c, and the contract makes this explicit so the model
+// does not pass pre-split argument arrays.
+func TestContract_ShellExecSingleStringCommand(t *testing.T) {
+	assert.Contains(t, agent.Contract, "single string",
+		"the contract describes command as a single string")
+	assert.Contains(t, agent.Contract, "sh -c",
+		"the contract names the shell it is passed to")
 }
 
 // TestContract_FailureRecoverySentence asserts the contract tells the

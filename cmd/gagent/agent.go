@@ -48,8 +48,9 @@ func newAgentCommand() *cobra.Command {
 // runAgentTurn builds the environment runtime (same wiring as the gateway,
 // with a stdout sink in place of the file outbox) and runs one turn.
 //
-// After ADR 0011 the platform no longer talks to a Docker daemon: the
-// factory wires memory, files, and message_send only.
+// The factory wires the four built-in tools (memory, files, message_send,
+// shell_exec) per ADR 0012; the shell_exec executor runs agent-supplied
+// commands as sub-processes dropped to the agent UID.
 func runAgentTurn(ctx context.Context, cfg Config, envID, msg, ego string) error {
 	// Logs go to stderr so stdout carries only the agent's output.
 	logger := slog.New(slog.NewJSONHandler(os.Stderr, nil))

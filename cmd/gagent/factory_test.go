@@ -25,4 +25,8 @@ func TestNewFactory_CarriesResolvedConfig(t *testing.T) {
 	assert.Equal(t, cfg.DataRoot, factory.Root,
 		"the resolved data root must reach the environment factory")
 	assert.NotNil(t, factory.NewModel, "the factory must carry the model builder")
+	assert.Equal(t, cfg.ExecTimeout, factory.ShellExecTimeout,
+		"the resolved exec-timeout must reach the environment factory")
+	assert.NotNil(t, factory.NewShellExecutor,
+		"the factory must carry a shell-exec executor closure")
 }

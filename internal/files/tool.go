@@ -6,23 +6,6 @@ import (
 	"fmt"
 )
 
-const filesInputSchema = `{
-	"type": "object",
-	"properties": {
-		"operation": {"type": "string", "enum": ["read", "write", "list"]},
-		"path": {"type": "string", "minLength": 1},
-		"content": {"type": "string"}
-	},
-	"required": ["operation", "path"],
-	"if": {"properties": {"operation": {"const": "write"}}, "required": ["operation"]},
-	"then": {"required": ["content"]},
-	"additionalProperties": false
-}`
-
-const filesOutputSchema = `{
-	"type": "object"
-}`
-
 // ToolName is the registered name of the files tool.
 const ToolName = "files"
 
@@ -48,10 +31,10 @@ func (t *Tool) Name() string { return ToolName }
 func (t *Tool) Description() string { return toolDescription }
 
 // InputSchema returns the JSON Schema for the tool input.
-func (t *Tool) InputSchema() json.RawMessage { return json.RawMessage(filesInputSchema) }
+func (t *Tool) InputSchema() json.RawMessage { return InputSchema() }
 
 // OutputSchema returns the JSON Schema for the tool result.
-func (t *Tool) OutputSchema() json.RawMessage { return json.RawMessage(filesOutputSchema) }
+func (t *Tool) OutputSchema() json.RawMessage { return OutputSchema() }
 
 // Call dispatches the requested operation against the workspace. Input has
 // already passed schema validation at the contract boundary.

@@ -6,26 +6,6 @@ import (
 	"fmt"
 )
 
-const sendInputSchema = `{
-	"type": "object",
-	"properties": {
-		"channel": {"type": "string", "minLength": 1},
-		"target": {"type": "string", "minLength": 1},
-		"content": {"type": "string", "minLength": 1}
-	},
-	"required": ["channel", "target", "content"],
-	"additionalProperties": false
-}`
-
-const sendOutputSchema = `{
-	"type": "object",
-	"properties": {
-		"status": {"type": "string", "enum": ["queued"]}
-	},
-	"required": ["status"],
-	"additionalProperties": false
-}`
-
 // SendToolName is the registered name of the message_send tool.
 const SendToolName = "message_send"
 
@@ -51,10 +31,10 @@ func (t *SendTool) Name() string { return SendToolName }
 func (t *SendTool) Description() string { return sendToolDescription }
 
 // InputSchema returns the JSON Schema for the tool input.
-func (t *SendTool) InputSchema() json.RawMessage { return json.RawMessage(sendInputSchema) }
+func (t *SendTool) InputSchema() json.RawMessage { return InputSchema() }
 
 // OutputSchema returns the JSON Schema for the tool result.
-func (t *SendTool) OutputSchema() json.RawMessage { return json.RawMessage(sendOutputSchema) }
+func (t *SendTool) OutputSchema() json.RawMessage { return OutputSchema() }
 
 // Call hands the message to the sink and reports it as queued. Input has
 // already passed schema validation at the contract boundary.

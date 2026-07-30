@@ -16,134 +16,6 @@ const ToolName = "memory"
 // matching the memory responsibility in docs/architecture/memory.md.
 const toolDescription = "Store, search, update, compress, and forget entries in the environment's long-term memory."
 
-// inputSchema validates agent input per operation (secret-holding trust
-// domain: structured, schema-validated input only). The root declares every
-// property flat because models generate arguments from the advertised
-// properties. Per-operation requirements sit in the nested if/then blocks,
-// wrapped in one if/then because the OpenAI function-calling API rejects
-// top-level allOf and requires type object at the root.
-var inputSchema = json.RawMessage(`{
-	"$schema": "https://json-schema.org/draft/2020-12/schema",
-	"type": "object",
-	"properties": {
-		"op": {"type": "string", "enum": ["store", "search", "update", "compress", "forget"]},
-		"content": {"type": "string", "minLength": 1},
-		"type": {"type": "string", "enum": ["episodic", "semantic"]},
-		"importance_score": {"type": "number", "minimum": 0, "maximum": 1},
-		"source": {"type": "string", "minLength": 1},
-		"query": {"type": "string", "minLength": 1},
-		"limit": {"type": "integer", "minimum": 1},
-		"id": {"type": "integer", "minimum": 1},
-		"ids": {"type": "array", "items": {"type": "integer", "minimum": 1}, "minItems": 1},
-		"threshold": {"type": "number", "exclusiveMinimum": 0}
-	},
-	"required": ["op"],
-	"additionalProperties": false,
-	"if": true,
-	"then": {
-		"allOf": [
-			{
-				"if": {"properties": {"op": {"const": "store"}}, "required": ["op"]},
-				"then": {
-					"properties": {"op": {}, "content": {}, "type": {}, "importance_score": {}, "source": {}},
-					"required": ["op", "content", "type", "importance_score", "source"],
-					"additionalProperties": false
-				}
-			},
-			{
-				"if": {"properties": {"op": {"const": "search"}}, "required": ["op"]},
-				"then": {
-					"properties": {"op": {}, "query": {}, "limit": {}},
-					"required": ["op", "query"],
-					"additionalProperties": false
-				}
-			},
-			{
-				"if": {"properties": {"op": {"const": "update"}}, "required": ["op"]},
-				"then": {
-					"properties": {"op": {}, "id": {}, "content": {}, "importance_score": {}},
-					"required": ["op", "id", "content"],
-					"additionalProperties": false
-				}
-			},
-			{
-				"if": {"properties": {"op": {"const": "compress"}}, "required": ["op"]},
-				"then": {
-					"properties": {"op": {}, "ids": {}},
-					"required": ["op", "ids"],
-					"additionalProperties": false
-				}
-			},
-			{
-				"if": {"properties": {"op": {"const": "forget"}}, "required": ["op"]},
-				"then": {
-					"properties": {"op": {}, "threshold": {}},
-					"required": ["op"],
-					"additionalProperties": false
-				}
-			}
-		]
-	}
-}`)
-
-var outputSchema = json.RawMessage(`{
-	"$schema": "https://json-schema.org/draft/2020-12/schema",
-	"oneOf": [
-		{
-			"type": "object",
-			"properties": {
-				"id": {"type": "integer"},
-				"evicted_ids": {"type": "array", "items": {"type": "integer"}}
-			},
-			"required": ["id", "evicted_ids"]
-		},
-		{
-			"type": "object",
-			"properties": {
-				"results": {
-					"type": "array",
-					"items": {
-						"type": "object",
-						"properties": {
-							"id": {"type": "integer"},
-							"content": {"type": "string"},
-							"type": {"enum": ["episodic", "semantic"]},
-							"importance_score": {"type": "number"},
-							"score": {"type": "number"},
-							"timestamp": {"type": "string"}
-						},
-						"required": ["id", "content", "type", "importance_score", "score", "timestamp"]
-					}
-				}
-			},
-			"required": ["results"]
-		},
-		{
-			"type": "object",
-			"properties": {
-				"id": {"type": "integer"},
-				"superseded_id": {"type": "integer"}
-			},
-			"required": ["id", "superseded_id"]
-		},
-		{
-			"type": "object",
-			"properties": {
-				"parent_id": {"type": "integer"},
-				"archived_ids": {"type": "array", "items": {"type": "integer"}}
-			},
-			"required": ["parent_id", "archived_ids"]
-		},
-		{
-			"type": "object",
-			"properties": {
-				"archived_ids": {"type": "array", "items": {"type": "integer"}}
-			},
-			"required": ["archived_ids"]
-		}
-	]
-}`)
-
 type memoryTool struct {
 	svc Service
 }
@@ -161,10 +33,10 @@ func (t *memoryTool) Name() string { return ToolName }
 func (t *memoryTool) Description() string { return toolDescription }
 
 // InputSchema implements tool.Tool.
-func (t *memoryTool) InputSchema() json.RawMessage { return inputSchema }
+func (t *memoryTool) InputSchema() json.RawMessage { return InputSchema() }
 
 // OutputSchema implements tool.Tool.
-func (t *memoryTool) OutputSchema() json.RawMessage { return outputSchema }
+func (t *memoryTool) OutputSchema() json.RawMessage { return OutputSchema() }
 
 type callInput struct {
 	Op              string   `json:"op"`

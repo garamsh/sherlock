@@ -23,19 +23,8 @@ import (
 	"github.com/garamsh/gagent/internal/agent"
 	"github.com/garamsh/gagent/internal/gateway"
 	"github.com/garamsh/gagent/internal/message"
-	"github.com/garamsh/gagent/internal/sandbox"
 	"github.com/garamsh/gagent/internal/tool"
 )
-
-// fakeRuntime substitutes the Docker daemon: the scripted scenario never
-// calls sandbox_exec, so containers are never created.
-type fakeRuntime struct{}
-
-func (fakeRuntime) Create(context.Context, sandbox.Config) (string, error) { return "fake", nil }
-func (fakeRuntime) Exec(context.Context, string, []string, time.Duration) (sandbox.Result, error) {
-	return sandbox.Result{ExitCode: 0}, nil
-}
-func (fakeRuntime) Destroy(context.Context, string) error { return nil }
 
 // gatedModel wraps the scripted mock model: its first Chat call blocks
 // until release closes, so the test can hold a run open while a second
@@ -97,9 +86,6 @@ func TestGateway_EndToEnd(t *testing.T) {
 			}
 			return replyScript("reply-other")
 		},
-		Sandbox:     fakeRuntime{},
-		Image:       "fake-image",
-		ExecTimeout: time.Second,
 	}
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
 	router := gateway.NewRouter(factory, logger)

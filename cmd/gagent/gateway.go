@@ -13,7 +13,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/garamsh/gagent/internal/gateway"
-	"github.com/garamsh/gagent/internal/sandbox"
 )
 
 // newGatewayCommand returns the "gagent gateway" subcommand: HTTP message
@@ -38,20 +37,18 @@ func newGatewayCommand() *cobra.Command {
 }
 
 // serveGateway runs the HTTP gateway until an interrupt or SIGTERM.
+//
+// After ADR 0011 the platform no longer starts a Docker runtime; the
+// factory wires memory, files, and message_send only.
 func serveGateway(ctx context.Context, cfg Config, ego string) error {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	slog.SetDefault(logger)
 
-	docker, err := sandbox.NewDockerRuntime()
-	if err != nil {
-		logger.Error("docker runtime unavailable", "op", "startup", "error", err)
-		return err
-	}
 	newModel, err := newModelFunc(cfg.Model)
 	if err != nil {
 		return err
 	}
-	router := gateway.NewRouter(newFactory(cfg, docker, newModel, ego, nil), logger)
+	router := gateway.NewRouter(newFactory(cfg, newModel, ego, nil), logger)
 
 	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)
 	defer stop()

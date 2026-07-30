@@ -55,7 +55,6 @@ func TestContract_ToolSelectionGuidance(t *testing.T) {
 	}{
 		{"memory", "search and read your long-term memory"},
 		{"files", "read and write files in your workspace"},
-		{"sandbox_exec", "run shell commands in your environment container"},
 		{"message_send", "reply through message_send"},
 	}
 	for _, tc := range cases {

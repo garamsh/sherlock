@@ -207,15 +207,82 @@ func TestSessionRun_NoRecallStatesAbsence(t *testing.T) {
 	assert.Contains(t, s.History()[1].Content, "No relevant memories.")
 }
 
-func TestSessionRun_MalformedWriteback(t *testing.T) {
+// TestSessionRun_LenientWritebackParse is issue #93's regression. A model
+// response whose ```memory block is unparseable (unterminated fence or
+// invalid JSON) must not fail the turn: the visible reply still reaches
+// the user, the memory update is dropped for that turn only, and the
+// session records the parse miss on the event stream as
+// EventWritebackError.
+func TestSessionRun_LenientWritebackParse(t *testing.T) {
+	tests := []struct {
+		name           string
+		content        string
+		wantWarnSubstr string
+	}{
+		{"unterminated fence", "still useful\n```memory\n{}", "unterminated"},
+		{"invalid JSON", "still useful\n```memory\nnot json\n```", "invalid JSON"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			model := agent.NewScriptedModel(agent.ScriptedStep{Content: tt.content})
+			events := &fakeEvents{}
+			writeback := &fakeWriteback{}
+			s := agent.NewSession(model, tool.NewRegistry(), agent.Options{
+				Events:    events,
+				Writeback: writeback,
+			})
+
+			final, err := s.Run(context.Background(), "task")
+			require.NoError(t, err, "parse failure is non-fatal (issue #93)")
+			assert.Equal(t, "still useful", final, "visible reply reaches the user")
+
+			// The writeback sink receives no operations for this turn.
+			assert.Empty(t, writeback.batches,
+				"the memory update for this turn is dropped")
+
+			// The monitoring stream records the parse miss.
+			var sawParseWarn agent.Event
+			for _, e := range events.events {
+				if e.Kind == agent.EventWritebackError {
+					sawParseWarn = e
+					break
+				}
+			}
+			require.NotZero(t, sawParseWarn, "EventWritebackError captures the parse miss")
+			assert.Contains(t, sawParseWarn.Error, tt.wantWarnSubstr,
+				"EventWritebackError carries the parse failure message")
+			assert.Contains(t, sawParseWarn.Error, agent.ErrMalformedWriteback.Error())
+
+			// The turn still ends with turn_finished — never turn_failed.
+			for _, e := range events.events {
+				assert.NotEqual(t, agent.EventTurnFailed, e.Kind,
+					"the turn still ends with turn_finished, not turn_failed")
+			}
+			terminal := events.events[len(events.events)-1]
+			assert.Equal(t, agent.EventTurnFinished, terminal.Kind)
+			assert.Equal(t, "still useful", terminal.Response)
+		})
+	}
+}
+
+// TestSessionRun_StrictWritebackSchema is the contract-strict sibling
+// to TestSessionRun_LenientWritebackParse: a writeback whose JSON parses
+// but violates the operation schema still fails the turn, so the model
+// learns the contract (issue #93).
+func TestSessionRun_StrictWritebackSchema(t *testing.T) {
 	model := agent.NewScriptedModel(
-		agent.ScriptedStep{Content: "broken\n```memory\nnot json\n```"},
+		agent.ScriptedStep{Content: "broken\n```memory\n{\"keep\":[\"\"]}\n```"},
 	)
-	s := agent.NewSession(model, tool.NewRegistry(), agent.Options{})
+	events := &fakeEvents{}
+	s := agent.NewSession(model, tool.NewRegistry(), agent.Options{Events: events})
 
 	_, err := s.Run(context.Background(), "task")
 	require.Error(t, err)
 	assert.True(t, errors.Is(err, agent.ErrMalformedWriteback))
+
+	terminal := events.events[len(events.events)-1]
+	assert.Equal(t, agent.EventTurnFailed, terminal.Kind,
+		"schema violations still terminate the turn")
 }
 
 func TestSessionRun_UnknownToolFeedsErrorBack(t *testing.T) {

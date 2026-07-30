@@ -4,11 +4,17 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"strings"
 )
 
-// ErrMalformedWriteback marks a model response whose memory block fence is
-// unterminated or whose JSON does not match the writeback schema.
+// ErrMalformedWriteback marks a model response whose memory block fails
+// the writeback contract: a JSON parse error or a schema violation. It is
+// surfaced as a fatal error only for schema violations (the model emitted
+// a contract the platform refuses to apply). JSON parse failures — the
+// fence was malformed or the JSON inside was unparseable — are recorded
+// as warnings, not fatal errors, so a single bad writeback does not
+// abort an otherwise-successful turn (issue #93).
 var ErrMalformedWriteback = errors.New("malformed memory writeback block")
 
 // writebackFence opens the structured memory block that ends every model
@@ -48,30 +54,49 @@ type writebackJSON struct {
 }
 
 // ParseWriteback splits a model response into its visible content and the
-// memory operations of its trailing writeback block. A response without a
-// block yields no operations. A present but malformed block — unterminated
-// fence, invalid JSON, or operations missing required fields — is a typed
-// *WritebackError.
-func ParseWriteback(content string) (string, []WritebackOp, error) {
+// memory operations of its trailing writeback block.
+//
+// Failure modes:
+//
+//   - No fence present: returns the whole content as visible with no
+//     operations.
+//   - Fence present but unterminated, or the JSON inside is invalid: the
+//     visible content is returned with no operations; a *WritebackError
+//     is returned as warn and the failure is logged at WARN level. The
+//     visible reply still reaches the user; the memory update for this
+//     turn is dropped (issue #93).
+//   - Fence present, JSON parses, but block.ops() rejects the operations
+//     (e.g. keep with empty id): a *WritebackError is returned as the
+//     fatal err. The platform refuses to apply a contract-violating
+//     writeback; the model is expected to learn the schema.
+//
+// Parse-failure warnings and schema-violation errors share the
+// *WritebackError type so a single errors.Is(err, ErrMalformedWriteback)
+// catches both — but only schema-violation errors are returned as err.
+func ParseWriteback(content string) (visible string, ops []WritebackOp, warn error, err error) {
 	idx := strings.Index(content, writebackFence)
 	if idx < 0 {
-		return content, nil, nil
+		return content, nil, nil, nil
 	}
-	visible := strings.TrimSpace(content[:idx])
+	visible = strings.TrimSpace(content[:idx])
 	rest := content[idx+len(writebackFence):]
 	end := strings.Index(rest, "```")
 	if end < 0 {
-		return "", nil, &WritebackError{Err: errors.New("unterminated ```memory fence")}
+		parseWarn := &WritebackError{Err: errors.New("unterminated ```memory fence")}
+		slog.Warn("agent: writeback dropped", "op", "parse_writeback", "reason", parseWarn.Error())
+		return visible, nil, parseWarn, nil
 	}
 	var block writebackJSON
-	if err := json.Unmarshal([]byte(strings.TrimSpace(rest[:end])), &block); err != nil {
-		return "", nil, &WritebackError{Err: fmt.Errorf("invalid JSON: %s", jsonErrorMessage(err))}
+	if jsonErr := json.Unmarshal([]byte(strings.TrimSpace(rest[:end])), &block); jsonErr != nil {
+		parseWarn := &WritebackError{Err: fmt.Errorf("invalid JSON: %s", jsonErrorMessage(jsonErr))}
+		slog.Warn("agent: writeback dropped", "op", "parse_writeback", "reason", parseWarn.Error())
+		return visible, nil, parseWarn, nil
 	}
-	ops, err := block.ops()
+	ops, err = block.ops()
 	if err != nil {
-		return "", nil, err
+		return "", nil, nil, err
 	}
-	return visible, ops, nil
+	return visible, ops, nil, nil
 }
 
 func (b *writebackJSON) ops() ([]WritebackOp, error) {

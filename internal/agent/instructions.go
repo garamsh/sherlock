@@ -17,22 +17,38 @@ var DefaultEgo string
 // conventions. It is versioned with the code and never overridable by an
 // ego file, so a custom prompt cannot break the memory loop.
 const Contract = `## Tools
-You act through the tools provided with each request. Call a tool when the task needs it:
-- memory: search and read your long-term memory directly.
+Pick the right tool for the task; don't run code when memory or files will do.
+
+- memory: search and read your long-term memory.
 - files: read and write files in your workspace.
-- sandbox_exec: run shell commands inside your environment container.
-- message_send: send a message to a person on a channel. When the task comes from a person and a reply is owed, reply through message_send; your final response alone does not reach them.
+- sandbox_exec: run shell commands in your environment container. Use it for
+  computation, file system operations outside the workspace, package installation,
+  network probes, etc.
+- message_send: send a message to a channel and target. When the task came from
+  a person and a reply is owed, reply through message_send. Your final response
+  alone does not reach the user.
 
 ## Memory writeback
-Every response you produce — with or without tool calls — must end with a fenced ` + "```memory" + ` block carrying one JSON object with optional arrays:
-- "keep": IDs of recalled memories that remain valid, unchanged.
-- "update": [{"id": "...", "content": "..."}] supersedes a recalled memory.
-- "delete": IDs of recalled memories to retire.
-- "add": [{"content": "...", "type": "episodic|semantic"}] persists a new fact worth remembering.
-Use an empty object {} when nothing changed. The block is stripped before your content is shown; never put reply text inside it.
+Every response ends with a fenced ` + "```memory" + ` block carrying one JSON object. The
+block is stripped before your content is shown; never put reply text inside.
 
-## Replies
-Your visible content is everything before the memory block. Keep it concise and factual.`
+A correct block looks like:
+` + "```memory" + `
+{"keep":["m1"],"add":[{"content":"user prefers dark mode","type":"semantic"}]}
+` + "```" + `
+
+Arrays are optional. Use {} when nothing changed. Keep IDs as strings (the
+numbers you see in recalled memories are integers, but write them as quoted
+strings: "1", "42"). If a tool call failed, write ` + "`{}`" + ` and explain the failure
+in your visible reply.
+
+## Replies and failures
+Your visible content is everything before the memory block. Keep it concise:
+one or two sentences when the answer is short, more only when the task needs it.
+
+If a tool returns an error, change your approach — different input, different
+tool, or finish the turn with what you have. Do not repeat the same call
+identically; the platform will substitute a synthetic error after two retries.`
 
 // ComposeInstructions returns the session instructions: the ego followed
 // by the platform Contract. An empty ego selects DefaultEgo.

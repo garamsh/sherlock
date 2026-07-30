@@ -55,6 +55,12 @@ const (
 	// EventWriteback fires after each model response's memory block is
 	// parsed and handed to the sink.
 	EventWriteback EventKind = "writeback"
+	// EventWritebackError fires when a model response carried a memory
+	// block the parser could not turn into operations (unterminated
+	// fence or invalid JSON). The turn itself continues; the warning
+	// records what the model missed so subscribers can detect it. Issue
+	// #93.
+	EventWritebackError EventKind = "writeback_error"
 	// EventToolCall fires after each tool execution.
 	EventToolCall EventKind = "tool_call"
 	// EventTurnFinished fires once per Run with the final response.
@@ -67,7 +73,7 @@ const (
 // Event is one structured loop event for the gateway monitoring stream.
 // Which fields are set depends on Kind: Task on turn_started, Ops on
 // writeback, the Tool* fields on tool_call, Response on turn_finished,
-// Error on turn_failed.
+// Error on turn_failed and writeback_error.
 type Event struct {
 	Kind       EventKind
 	Turn       int
@@ -198,11 +204,16 @@ func (s *session) Run(ctx context.Context, task string) (response string, err er
 		if err != nil {
 			return "", fmt.Errorf("model chat: %w", err)
 		}
-		content, ops, err := ParseWriteback(resp.Content)
+		content, ops, parseWarn, err := ParseWriteback(resp.Content)
 		if err != nil {
 			return "", err
 		}
-		if err := s.applyWriteback(ctx, ops); err != nil {
+		if parseWarn != nil {
+			// A malformed writeback is a parse miss, not a fatal turn
+			// error (issue #93): the visible reply still reaches the
+			// user, the memory update for this turn is dropped.
+			s.emit(ctx, Event{Kind: EventWritebackError, Turn: s.turn, Error: parseWarn.Error()})
+		} else if err := s.applyWriteback(ctx, ops); err != nil {
 			return "", err
 		}
 		s.history = append(s.history, Message{

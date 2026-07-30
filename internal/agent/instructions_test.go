@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/garamsh/gagent/internal/agent"
 )
@@ -76,6 +77,41 @@ func TestContract_FailureRecoverySentence(t *testing.T) {
 	assert.Contains(t, agent.Contract,
 		"the platform will substitute a synthetic error after two retries",
 		"the contract references the platform's repeat short-circuit")
+}
+
+// TestContract_StoreVsWritebackAddDistinction pins the QA #103 fix: the
+// contract now distinguishes the memory tool's `store` op (which requires
+// importance_score and source) from the writeback `add` op (which
+// auto-fills them). The model confuses the two without the explicit
+// contrast, so the contract must keep the two interfaces side by side.
+func TestContract_StoreVsWritebackAddDistinction(t *testing.T) {
+	contract := agent.Contract
+	assert.Contains(t, contract, "## Memory: tool call vs writeback",
+		"the contract carries a tool-call vs writeback section header")
+	assert.Contains(t, contract, "op: store",
+		"the contract shows the store op shape")
+	assert.Contains(t, contract, "importance_score",
+		"the contract mentions importance_score")
+	assert.Contains(t, contract, "source",
+		"the contract mentions source")
+	assert.Contains(t, contract, "auto-filled",
+		"the contract names the writeback auto-fill behaviour")
+	assert.Contains(t, contract, "`add`",
+		"the contract references the writeback add op")
+	// The store op and the writeback add op must appear in the same
+	// section so the model sees the contrast in one place.
+	storeIdx := strings.Index(contract, "op: store")
+	addIdx := strings.Index(contract, "`add`")
+	require.Greater(t, storeIdx, -1, "store op reference missing")
+	require.Greater(t, addIdx, -1, "add op reference missing")
+	toolSection := strings.Index(contract, "## Memory: tool call vs writeback")
+	writebackSection := strings.Index(contract, "## Memory writeback")
+	assert.Greater(t, storeIdx, toolSection)
+	assert.Less(t, storeIdx, writebackSection,
+		"the store add contrast lives before the writeback section header")
+	assert.Greater(t, addIdx, toolSection)
+	assert.Less(t, addIdx, writebackSection,
+		"the writeback add reference lives in the same contrast section")
 }
 
 // TestDefaultEgo_BehaviorGuidance pins the identity + behavior lines the

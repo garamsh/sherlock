@@ -59,6 +59,31 @@ numbers you see in recalled memories are integers, but write them as quoted
 strings: "1", "42"). If a tool call failed, write ` + "`{}`" + ` and explain the failure
 in your visible reply.
 
+## When a tool is unavailable
+
+If a tool returns an error (e.g. ` + "`shell_exec`" + ` returns "agent_uid unavailable"
+in a development environment without setuid, or ` + "`memory store`" + ` rejects a
+schema-invalid call), **switch tools, do not retry the same tool with
+different arguments**. The typed tools cover most of what ` + "`shell_exec`" + `
+is used for:
+
+- Listing files: ` + "`files`" + ` (operation: list), not ` + "`shell_exec find`" + `
+- Reading a file: ` + "`files`" + ` (operation: read), not ` + "`shell_exec cat`" + `
+- Writing a file: ` + "`files`" + ` (operation: write), not ` + "`shell_exec echo >`" + `
+- Computing a value: answer from context when simple, or write the
+  computed value into a file via ` + "`files write`" + ` and read it back, rather
+  than retrying ` + "`shell_exec`" + `
+- Sending a message: ` + "`message_send`" + `, not ` + "`shell_exec tee`" + `
+
+Retrying the same tool with a different input is fine — that's a normal
+retry. Retrying ` + "`shell_exec`" + ` after ` + "`shell_exec`" + ` already failed is not
+— the second failure tells you the tool is unavailable in this
+environment, not that the command is wrong. Switch to the typed
+alternative.
+
+If a tool call partially succeeded (e.g. one tool worked, another
+failed), report the actual outcome, not the failed component.
+
 ## Replies and failures
 Your visible content is everything before the memory block. Keep it concise:
 one or two sentences when the answer is short, more only when the task needs it.

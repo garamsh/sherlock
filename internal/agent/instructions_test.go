@@ -142,3 +142,41 @@ func TestDefaultEgo_BehaviorGuidance(t *testing.T) {
 		"ask for confirmation before",
 		"behavior line asks for confirmation before destructive ops")
 }
+
+// TestContract_ToolUnavailableFallbackSection pins the new "When a tool
+// is unavailable" section (issue #113, QA #108 follow-up). The four
+// previously-failing scenarios in QA #108 share a single cause: when
+// shell_exec returns an error, the model kept retrying different shell
+// commands instead of switching to typed tools. The contract must carry
+// the typed-tool alternative map and the "do not retry shell_exec after
+// shell_exec has already failed" rule.
+func TestContract_ToolUnavailableFallbackSection(t *testing.T) {
+	contract := agent.Contract
+	assert.Contains(t, contract, "## When a tool is unavailable",
+		"the contract carries the new fallback section header")
+	// The five typed-tool alternatives must each be named.
+	for _, frag := range []string{
+		"`files` (operation: list)",
+		"`files` (operation: read)",
+		"`files` (operation: write)",
+		"`message_send`",
+		"answer from context when simple",
+	} {
+		assert.Contains(t, contract, frag,
+			"fallback map carries %q", frag)
+	}
+	// The no-retry rule must be present.
+	assert.Contains(t, contract,
+		"Retrying `shell_exec` after `shell_exec` already failed is not",
+		"the contract tells the model not to retry shell_exec after a failure")
+	// The section must sit between "Memory writeback" and "Replies and
+	// failures" so the model reads it in order.
+	mwIdx := strings.Index(contract, "## Memory writeback")
+	rfIdx := strings.Index(contract, "## Replies and failures")
+	tuIdx := strings.Index(contract, "## When a tool is unavailable")
+	require.Greater(t, mwIdx, -1, "Memory writeback section missing")
+	require.Greater(t, rfIdx, -1, "Replies and failures section missing")
+	require.Greater(t, tuIdx, -1, "When a tool is unavailable section missing")
+	assert.Greater(t, tuIdx, mwIdx, "fallback section comes after Memory writeback")
+	assert.Less(t, tuIdx, rfIdx, "fallback section comes before Replies and failures")
+}

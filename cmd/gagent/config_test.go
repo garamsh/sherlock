@@ -179,6 +179,54 @@ func TestResolveConfig_ConfigFlagMissingFileFails(t *testing.T) {
 	assert.Error(t, err, "an explicit --config path must exist")
 }
 
+func TestResolveConfig_ToolsSection(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	contents := "tools:\n" +
+		"  - name: wordcount\n" +
+		"    description: Count words in a text.\n" +
+		"    input_schema: schemas/wordcount.input.json\n" +
+		"    output_schema: schemas/wordcount.output.json\n" +
+		"    exec:\n" +
+		"      command: [python3, tools/wordcount.py]\n" +
+		"      stdin_format: json\n" +
+		"      stdout_format: json\n" +
+		"      timeout_seconds: 30\n" +
+		"      env: [PYTHONUNBUFFERED=1]\n" +
+		"      workdir: /srv/tools\n"
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o644))
+
+	cfg, err := resolveConfig(newTestCommand(t))
+	require.NoError(t, err)
+
+	require.Len(t, cfg.Tools, 1)
+	assert.Equal(t, ToolConfig{
+		Name:         "wordcount",
+		Description:  "Count words in a text.",
+		InputSchema:  "schemas/wordcount.input.json",
+		OutputSchema: "schemas/wordcount.output.json",
+		Exec: ExecConfig{
+			Command:        []string{"python3", "tools/wordcount.py"},
+			StdinFormat:    "json",
+			StdoutFormat:   "json",
+			TimeoutSeconds: 30,
+			Env:            []string{"PYTHONUNBUFFERED=1"},
+			Workdir:        "/srv/tools",
+		},
+	}, cfg.Tools[0])
+	// timeout_seconds is an int; the gateway converts it to
+	// time.Duration at registration (30s, not 30ns).
+	assert.Equal(t, 30*time.Second, time.Duration(cfg.Tools[0].Exec.TimeoutSeconds)*time.Second)
+}
+
+func TestResolveConfig_NoToolsSection(t *testing.T) {
+	t.Chdir(t.TempDir())
+	cfg, err := resolveConfig(newTestCommand(t))
+	require.NoError(t, err)
+
+	assert.Empty(t, cfg.Tools, "a missing tools: section yields an empty slice")
+}
+
 func TestResolveConfig_InvalidConfigFileFails(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)

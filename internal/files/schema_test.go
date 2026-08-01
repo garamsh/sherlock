@@ -2,6 +2,7 @@ package files_test
 
 import (
 	_ "embed"
+	"reflect"
 	"testing"
 
 	"github.com/garamsh/gagent/internal/files"
@@ -25,4 +26,13 @@ func TestToolSchema_AccessorsReturnEmbeddedBytes(t *testing.T) {
 	if len(files.OutputSchema()) == 0 {
 		t.Fatal("files.OutputSchema returned empty bytes")
 	}
+}
+
+// TestSchema_MatchesStructTags is the build-time schema/struct drift
+// guard: the input schema's properties/required must match CallInput's
+// json tags. The output schema is an unconstrained object, so the
+// Read/Write/ListOutput structs have no schema shape to check against.
+func TestSchema_MatchesStructTags(t *testing.T) {
+	input, _ := tooltest.SubSchemas(t, schemaFile)
+	tooltest.CheckStructShape(t, input, reflect.TypeOf(files.CallInput{}))
 }

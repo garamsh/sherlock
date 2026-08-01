@@ -4,8 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"time"
+
+	"github.com/garamsh/gagent/internal/tool"
 )
 
 // ToolName is the registered name of the shell_exec tool.
@@ -51,10 +52,13 @@ func (t *Tool) InputSchema() json.RawMessage { return InputSchema() }
 // OutputSchema returns the JSON Schema for the tool output.
 func (t *Tool) OutputSchema() json.RawMessage { return OutputSchema() }
 
-// callInput mirrors schema.json's input shape. Only the fields the
-// runtime honours are decoded; the schema's additionalProperties:false
-// gate means anything else was rejected at the boundary.
-type callInput struct {
+// CallInput is the canonical typed form of schema.json's input shape;
+// the schema/struct consistency test keeps them in lockstep. Only the
+// fields the runtime honours are decoded; the schema's
+// additionalProperties:false gate means anything else was rejected at
+// the boundary. Result, the output type, is already exported from
+// process.go.
+type CallInput struct {
 	Command        string `json:"command"`
 	TimeoutSeconds int    `json:"timeout_seconds"`
 }
@@ -62,23 +66,19 @@ type callInput struct {
 // Call dispatches the command to the executor and marshals the result.
 // Input has already passed schema validation at the contract boundary.
 func (t *Tool) Call(ctx context.Context, input json.RawMessage) (json.RawMessage, error) {
-	var args callInput
-	if err := json.Unmarshal(input, &args); err != nil {
-		return nil, fmt.Errorf("decode input: %w", err)
-	}
+	return tool.CallTyped(ctx, t.doCall, input)
+}
+
+func (t *Tool) doCall(ctx context.Context, args CallInput) (Result, error) {
 	if args.Command == "" {
-		return nil, errors.New("command is required")
+		return Result{}, errors.New("command is required")
 	}
 	timeout := t.defaultTimeout
 	if args.TimeoutSeconds > 0 {
 		timeout = time.Duration(args.TimeoutSeconds) * time.Second
 	}
-	res, err := t.exec.Run(ctx, Request{
+	return t.exec.Run(ctx, Request{
 		Command: args.Command,
 		Timeout: timeout,
 	})
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(res)
 }

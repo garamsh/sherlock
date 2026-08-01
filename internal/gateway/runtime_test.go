@@ -225,3 +225,88 @@ func TestFactory_BuiltinToolNames(t *testing.T) {
 		names,
 		"the four built-in tools join the registry in name-sorted order")
 }
+
+// writeScriptToolSchemas writes a minimal input/output JSON Schema pair
+// into dir and returns their paths. The input schema satisfies the
+// OpenAI function-calling subset (top-level type object, no forbidden
+// keywords).
+func writeScriptToolSchemas(t *testing.T, dir string) (input, output string) {
+	t.Helper()
+	input = filepath.Join(dir, "input.json")
+	output = filepath.Join(dir, "output.json")
+	require.NoError(t, os.WriteFile(input, []byte(
+		`{"type":"object","properties":{"text":{"type":"string"}},"required":["text"]}`), 0o644))
+	require.NoError(t, os.WriteFile(output, []byte(
+		`{"type":"object","properties":{"count":{"type":"integer"}}}`), 0o644))
+	return input, output
+}
+
+func TestFactory_ScriptToolFromConfig(t *testing.T) {
+	root := t.TempDir()
+	input, output := writeScriptToolSchemas(t, t.TempDir())
+	factory := &gateway.Factory{
+		Root:     root,
+		NewModel: replyModel,
+		Tools: []gateway.ScriptTool{{
+			Name:         "wordcount",
+			Description:  "Count words in a text.",
+			InputSchema:  input,
+			OutputSchema: output,
+			Exec: gateway.ScriptToolExec{
+				Command:        []string{"python3", "tools/wordcount.py"},
+				StdinFormat:    "json",
+				StdoutFormat:   "json",
+				TimeoutSeconds: 30,
+			},
+		}},
+	}
+	rt, err := factory.New(context.Background(), "env-1", nil)
+	require.NoError(t, err)
+	defer func() {
+		assert.NoError(t, rt.Close(context.Background()))
+	}()
+
+	names := make([]string, 0)
+	var scriptToolSchema json.RawMessage
+	for _, d := range rt.Registry.List() {
+		names = append(names, d.Name)
+		if d.Name == "wordcount" {
+			scriptToolSchema = d.InputSchema
+		}
+	}
+	assert.Equal(t,
+		[]string{"files", "memory", "message_send", "wordcount"},
+		names,
+		"the script tool joins the built-ins in name-sorted order")
+
+	// The script tool's schema satisfies the same OpenAI subset the
+	// built-ins are held to.
+	var schema map[string]json.RawMessage
+	require.NoError(t, json.Unmarshal(scriptToolSchema, &schema))
+	require.Contains(t, schema, "type")
+	assert.JSONEq(t, `"object"`, string(schema["type"]),
+		"the API requires top-level type object")
+	for _, keyword := range openAITopLevelForbidden {
+		assert.NotContains(t, schema, keyword,
+			"the API rejects top-level %q", keyword)
+	}
+}
+
+func TestFactory_ScriptToolNameCollisionFailsStartup(t *testing.T) {
+	input, output := writeScriptToolSchemas(t, t.TempDir())
+	factory := &gateway.Factory{
+		Root:     t.TempDir(),
+		NewModel: replyModel,
+		Tools: []gateway.ScriptTool{{
+			Name:         "memory",
+			Description:  "Collides with the built-in memory tool.",
+			InputSchema:  input,
+			OutputSchema: output,
+			Exec:         gateway.ScriptToolExec{Command: []string{"true"}},
+		}},
+	}
+
+	_, err := factory.New(context.Background(), "env-1", nil)
+	assert.ErrorIs(t, err, tool.ErrDuplicateTool,
+		"a script tool named after a built-in fails startup")
+}

@@ -3,6 +3,7 @@ package gateway
 import (
 	"context"
 	"errors"
+	"os"
 	"path/filepath"
 	"time"
 
@@ -14,6 +15,7 @@ import (
 	"github.com/garamsh/gagent/internal/message"
 	"github.com/garamsh/gagent/internal/shell"
 	"github.com/garamsh/gagent/internal/tool"
+	"github.com/garamsh/gagent/internal/tool/script"
 )
 
 // MemoryDBFile is the memory database filename inside the environment
@@ -40,7 +42,8 @@ type Runtime struct {
 
 // Factory assembles an environment runtime from the platform modules:
 // environment layout, SQLite memory, and the four built-in tools
-// (memory, files, message_send, shell_exec) wired into one registry.
+// (memory, files, message_send, shell_exec) wired into one registry,
+// plus any script tools the platform config declares.
 // The model is supplied per environment through NewModel so each rolling
 // session gets its own model instance.
 //
@@ -73,9 +76,69 @@ type Factory struct {
 	// NewShellExecutor constructs the Executor that backs the shell_exec
 	// tool. Nil leaves shell_exec unregistered.
 	NewShellExecutor func() shell.Executor
+	// Tools lists the script tools from the platform config, registered
+	// alongside the built-ins. A name colliding with a built-in fails
+	// startup with tool.ErrDuplicateTool.
+	Tools []ScriptTool
 }
 
 var _ RuntimeFactory = (*Factory)(nil)
+
+// ScriptTool is one entry of the platform config's tools: section, as
+// the gateway sees it: the schema file paths and exec settings a
+// script.ToolScript is built from. Adding a script tool is a config
+// change, not a code change.
+type ScriptTool struct {
+	// Name is the tool name; it must not collide with a built-in.
+	Name string
+	// Description is the one-sentence tool summary shown to the model.
+	Description string
+	// InputSchema is the path to the input JSON Schema file.
+	InputSchema string
+	// OutputSchema is the path to the output JSON Schema file.
+	OutputSchema string
+	// Exec describes how to run the tool.
+	Exec ScriptToolExec
+}
+
+// ScriptToolExec mirrors script.ExecSpec with the timeout still in
+// seconds; Factory.New converts it to time.Duration when building the
+// spec.
+type ScriptToolExec struct {
+	Command        []string
+	StdinFormat    string
+	StdoutFormat   string
+	TimeoutSeconds int
+	Env            []string
+	Workdir        string
+}
+
+// spec builds the script.Spec for one configured script tool, reading
+// its JSON Schema documents from disk.
+func (t ScriptTool) spec() (script.Spec, error) {
+	inputSchema, err := os.ReadFile(t.InputSchema)
+	if err != nil {
+		return script.Spec{}, err
+	}
+	outputSchema, err := os.ReadFile(t.OutputSchema)
+	if err != nil {
+		return script.Spec{}, err
+	}
+	return script.Spec{
+		Name:         t.Name,
+		Description:  t.Description,
+		InputSchema:  inputSchema,
+		OutputSchema: outputSchema,
+		Exec: script.ExecSpec{
+			Command:      t.Exec.Command,
+			StdinFormat:  t.Exec.StdinFormat,
+			StdoutFormat: t.Exec.StdoutFormat,
+			Timeout:      time.Duration(t.Exec.TimeoutSeconds) * time.Second,
+			Env:          t.Exec.Env,
+			Workdir:      t.Exec.Workdir,
+		},
+	}, nil
+}
 
 // New implements RuntimeFactory: it opens (creating on first use) the
 // environment directory, memory store, and tool set, then wires the
@@ -129,6 +192,15 @@ func (f *Factory) New(_ context.Context, envID string, events agent.EventSink) (
 	if f.NewShellExecutor != nil {
 		shellTool := shell.NewTool(f.NewShellExecutor()).WithDefaultTimeout(shellTimeout)
 		if err := registry.Register(shellTool); err != nil {
+			return nil, errors.Join(err, store.Close())
+		}
+	}
+	for _, st := range f.Tools {
+		spec, err := st.spec()
+		if err != nil {
+			return nil, errors.Join(err, store.Close())
+		}
+		if err := registry.Register(script.New(spec)); err != nil {
 			return nil, errors.Join(err, store.Close())
 		}
 	}

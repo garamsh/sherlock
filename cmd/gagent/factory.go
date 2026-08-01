@@ -31,5 +31,30 @@ func newFactory(
 		NewShellExecutor: func() shell.Executor {
 			return shell.NewProcessExecutor(shell.DefaultAgentUID, cfg.ExecTimeout)
 		},
+		Tools: scriptTools(cfg.Tools),
 	}
+}
+
+// scriptTools carries the config's tools: section into the gateway's
+// ScriptTool shape; the gateway reads the schema files and builds each
+// script.Spec at registration.
+func scriptTools(tools []ToolConfig) []gateway.ScriptTool {
+	out := make([]gateway.ScriptTool, 0, len(tools))
+	for _, tc := range tools {
+		out = append(out, gateway.ScriptTool{
+			Name:         tc.Name,
+			Description:  tc.Description,
+			InputSchema:  tc.InputSchema,
+			OutputSchema: tc.OutputSchema,
+			Exec: gateway.ScriptToolExec{
+				Command:        tc.Exec.Command,
+				StdinFormat:    tc.Exec.StdinFormat,
+				StdoutFormat:   tc.Exec.StdoutFormat,
+				TimeoutSeconds: tc.Exec.TimeoutSeconds,
+				Env:            tc.Exec.Env,
+				Workdir:        tc.Exec.Workdir,
+			},
+		})
+	}
+	return out
 }

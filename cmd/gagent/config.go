@@ -49,6 +49,47 @@ type Config struct {
 	ExecTimeout time.Duration `mapstructure:"exec-timeout"`
 	// Model selects the chat model provider (ADR 0005).
 	Model ModelConfig `mapstructure:"model"`
+	// Tools lists the script tools registered alongside the built-ins.
+	Tools []ToolConfig `mapstructure:"tools"`
+}
+
+// ToolConfig is one entry of the config file's tools: section — a
+// script tool the platform registers into every environment's registry
+// via script.New. InputSchema and OutputSchema are file paths; the
+// gateway reads the JSON Schema documents from disk at registration.
+type ToolConfig struct {
+	// Name is the tool name; it must not collide with a built-in.
+	Name string `mapstructure:"name"`
+	// Description is the one-sentence tool summary shown to the model.
+	Description string `mapstructure:"description"`
+	// InputSchema is the path to the input JSON Schema file.
+	InputSchema string `mapstructure:"input_schema"`
+	// OutputSchema is the path to the output JSON Schema file.
+	OutputSchema string `mapstructure:"output_schema"`
+	// Exec describes how to run the tool.
+	Exec ExecConfig `mapstructure:"exec"`
+}
+
+// ExecConfig describes how to run a script tool. TimeoutSeconds is an
+// explicit integer: a plain unmarshal of a YAML integer into
+// time.Duration would yield nanoseconds, so the gateway converts it to
+// time.Duration at registration.
+type ExecConfig struct {
+	// Command is the argv array (first element is the executable).
+	Command []string `mapstructure:"command"`
+	// StdinFormat selects how input is fed to the process ("json").
+	StdinFormat string `mapstructure:"stdin_format"`
+	// StdoutFormat selects how stdout is interpreted ("json" validates
+	// and returns a JSON document; anything else is returned as-is).
+	StdoutFormat string `mapstructure:"stdout_format"`
+	// TimeoutSeconds caps one tool run; <= 0 selects the script
+	// package's default.
+	TimeoutSeconds int `mapstructure:"timeout_seconds"`
+	// Env is extra KEY=VALUE pairs appended to the process environment.
+	Env []string `mapstructure:"env"`
+	// Workdir is the process working directory; empty inherits the
+	// platform's.
+	Workdir string `mapstructure:"workdir"`
 }
 
 // ModelConfig selects the chat model provider. The API key itself never

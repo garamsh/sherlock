@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
+	"github.com/garamsh/gagent/internal/tool"
 )
 
 // ToolName is the registered name of the files tool.
@@ -36,17 +38,39 @@ func (t *Tool) InputSchema() json.RawMessage { return InputSchema() }
 // OutputSchema returns the JSON Schema for the tool result.
 func (t *Tool) OutputSchema() json.RawMessage { return OutputSchema() }
 
+// CallInput is the canonical typed form of the files tool's input
+// schema; the schema/struct consistency test keeps them in lockstep.
+type CallInput struct {
+	Operation string `json:"operation"`
+	Path      string `json:"path"`
+	Content   string `json:"content"`
+}
+
+// ReadOutput is the result of the read operation.
+type ReadOutput struct {
+	Content string `json:"content"`
+}
+
+// WriteOutput is the result of the write operation.
+type WriteOutput struct {
+	BytesWritten int `json:"bytes_written"`
+}
+
+// ListOutput is the result of the list operation.
+type ListOutput struct {
+	Entries []Entry `json:"entries"`
+}
+
 // Call dispatches the requested operation against the workspace. Input has
 // already passed schema validation at the contract boundary.
-func (t *Tool) Call(_ context.Context, input json.RawMessage) (json.RawMessage, error) {
-	var args struct {
-		Operation string `json:"operation"`
-		Path      string `json:"path"`
-		Content   string `json:"content"`
-	}
-	if err := json.Unmarshal(input, &args); err != nil {
-		return nil, fmt.Errorf("decode input: %w", err)
-	}
+func (t *Tool) Call(ctx context.Context, input json.RawMessage) (json.RawMessage, error) {
+	return tool.CallTyped(ctx, t.doCall, input)
+}
+
+// doCall routes the decoded input to the operation it names. The result
+// type varies per operation, so the output is any; the output schema is
+// an unconstrained object.
+func (t *Tool) doCall(_ context.Context, args CallInput) (any, error) {
 	switch args.Operation {
 	case "read":
 		return t.read(args.Path)
@@ -60,31 +84,25 @@ func (t *Tool) Call(_ context.Context, input json.RawMessage) (json.RawMessage, 
 	}
 }
 
-func (t *Tool) read(path string) (json.RawMessage, error) {
+func (t *Tool) read(path string) (ReadOutput, error) {
 	content, err := t.fs.Read(path)
 	if err != nil {
-		return nil, err
+		return ReadOutput{}, err
 	}
-	return json.Marshal(struct {
-		Content string `json:"content"`
-	}{Content: string(content)})
+	return ReadOutput{Content: string(content)}, nil
 }
 
-func (t *Tool) write(path, content string) (json.RawMessage, error) {
+func (t *Tool) write(path, content string) (WriteOutput, error) {
 	if err := t.fs.Write(path, []byte(content)); err != nil {
-		return nil, err
+		return WriteOutput{}, err
 	}
-	return json.Marshal(struct {
-		BytesWritten int `json:"bytes_written"`
-	}{BytesWritten: len(content)})
+	return WriteOutput{BytesWritten: len(content)}, nil
 }
 
-func (t *Tool) list(path string) (json.RawMessage, error) {
+func (t *Tool) list(path string) (ListOutput, error) {
 	entries, err := t.fs.List(path)
 	if err != nil {
-		return nil, err
+		return ListOutput{}, err
 	}
-	return json.Marshal(struct {
-		Entries []Entry `json:"entries"`
-	}{Entries: entries})
+	return ListOutput{Entries: entries}, nil
 }

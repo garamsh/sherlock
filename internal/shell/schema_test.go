@@ -2,6 +2,7 @@ package shell_test
 
 import (
 	_ "embed"
+	"reflect"
 	"testing"
 
 	"github.com/garamsh/gagent/internal/shell"
@@ -25,4 +26,13 @@ func TestToolSchema_AccessorsReturnEmbeddedBytes(t *testing.T) {
 	if len(shell.OutputSchema()) == 0 {
 		t.Fatal("shell.OutputSchema returned empty bytes")
 	}
+}
+
+// TestSchema_MatchesStructTags is the build-time schema/struct drift
+// guard: the input schema's properties/required must match CallInput's
+// json tags, and the output schema must match Result's.
+func TestSchema_MatchesStructTags(t *testing.T) {
+	input, output := tooltest.SubSchemas(t, schemaFile)
+	tooltest.CheckStructShape(t, input, reflect.TypeOf(shell.CallInput{}))
+	tooltest.CheckStructShape(t, output, reflect.TypeOf(shell.Result{}))
 }

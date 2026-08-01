@@ -2,6 +2,8 @@
 // tool's schema test. Each tool embeds its JSON Schema under
 // internal/<domain>/schema.json and calls CheckSchema from its package's
 // test file so a malformed file fails the build, not the deployment.
+// CheckStructShape adds the schema/struct drift guard: the schema's
+// properties and required sets must match the typed struct's json tags.
 package tooltest
 
 import (

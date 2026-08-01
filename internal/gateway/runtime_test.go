@@ -310,3 +310,64 @@ func TestFactory_ScriptToolNameCollisionFailsStartup(t *testing.T) {
 	assert.ErrorIs(t, err, tool.ErrDuplicateTool,
 		"a script tool named after a built-in fails startup")
 }
+
+func TestFactory_ScriptToolSchemaDocument(t *testing.T) {
+	dir := t.TempDir()
+	combined := filepath.Join(dir, "combined.json")
+	require.NoError(t, os.WriteFile(combined, []byte(
+		`{"input":{"type":"object","properties":{"url":{"type":"string"}},"required":["url"]},`+
+			`"output":{"type":"object","properties":{"title":{"type":"string"}}}}`), 0o644))
+	plain := filepath.Join(dir, "plain.json")
+	require.NoError(t, os.WriteFile(plain, []byte(
+		`{"type":"object","properties":{"text":{"type":"string"}}}`), 0o644))
+
+	tests := []struct {
+		name       string
+		schemaPath string
+		wantInput  string
+		wantOutput string
+	}{
+		{
+			name:       "combined document returns the named half",
+			schemaPath: combined,
+			wantInput:  `{"type":"object","properties":{"url":{"type":"string"}},"required":["url"]}`,
+			wantOutput: `{"type":"object","properties":{"title":{"type":"string"}}}`,
+		},
+		{
+			name:       "plain document passes through as-is",
+			schemaPath: plain,
+			wantInput:  `{"type":"object","properties":{"text":{"type":"string"}}}`,
+			wantOutput: `{"type":"object","properties":{"text":{"type":"string"}}}`,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			factory := &gateway.Factory{
+				Root:     t.TempDir(),
+				NewModel: replyModel,
+				Tools: []gateway.ScriptTool{{
+					Name:         "fetch",
+					Description:  "Fetch a page.",
+					InputSchema:  tt.schemaPath,
+					OutputSchema: tt.schemaPath,
+					Exec:         gateway.ScriptToolExec{Command: []string{"true"}},
+				}},
+			}
+			rt, err := factory.New(context.Background(), "env-1", nil)
+			require.NoError(t, err)
+			defer func() {
+				assert.NoError(t, rt.Close(context.Background()))
+			}()
+
+			var inputSchema, outputSchema json.RawMessage
+			for _, d := range rt.Registry.List() {
+				if d.Name == "fetch" {
+					inputSchema = d.InputSchema
+					outputSchema = d.OutputSchema
+				}
+			}
+			assert.JSONEq(t, tt.wantInput, string(inputSchema))
+			assert.JSONEq(t, tt.wantOutput, string(outputSchema))
+		})
+	}
+}

@@ -2,6 +2,7 @@ package gateway
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"os"
 	"path/filepath"
@@ -116,11 +117,11 @@ type ScriptToolExec struct {
 // spec builds the script.Spec for one configured script tool, reading
 // its JSON Schema documents from disk.
 func (t ScriptTool) spec() (script.Spec, error) {
-	inputSchema, err := os.ReadFile(t.InputSchema)
+	inputSchema, err := readSchema(t.InputSchema, "input")
 	if err != nil {
 		return script.Spec{}, err
 	}
-	outputSchema, err := os.ReadFile(t.OutputSchema)
+	outputSchema, err := readSchema(t.OutputSchema, "output")
 	if err != nil {
 		return script.Spec{}, err
 	}
@@ -138,6 +139,31 @@ func (t ScriptTool) spec() (script.Spec, error) {
 			Workdir:      t.Exec.Workdir,
 		},
 	}, nil
+}
+
+// readSchema reads a JSON Schema document from path. Some script tools
+// ship one combined document of the form {"input": ..., "output": ...};
+// when the document has that shape, readSchema returns the named half.
+// Any other document is returned as-is.
+func readSchema(path, half string) (json.RawMessage, error) {
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	var doc map[string]json.RawMessage
+	if err := json.Unmarshal(raw, &doc); err != nil {
+		return raw, nil
+	}
+	if _, ok := doc["input"]; !ok {
+		return raw, nil
+	}
+	if _, ok := doc["output"]; !ok {
+		return raw, nil
+	}
+	if schema, ok := doc[half]; ok {
+		return schema, nil
+	}
+	return raw, nil
 }
 
 // New implements RuntimeFactory: it opens (creating on first use) the

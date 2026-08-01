@@ -1,0 +1,18 @@
+# Example platform config. Registers the Playwright script tool from
+# tools/playwright/ (see tools/playwright/README.md) alongside the
+# built-in tools. The mock provider is scripted and needs no API key.
+# Schema and command paths are relative to the working directory; run
+# the platform from the repository root.
+addr: ":8080"
+model:
+  provider: mock
+tools:
+  - name: playwright
+    description: "Browser automation via Playwright"
+    input_schema: tools/playwright/schema.json
+    output_schema: tools/playwright/schema.json
+    exec:
+      command: ["python3", "tools/playwright/browser_test.py"]
+      stdin_format: "json"
+      stdout_format: "json"
+      timeout_seconds: 30

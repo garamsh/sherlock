@@ -12,7 +12,8 @@ Structural economy in code: how many shapes one concept may have, when a layer e
 
 - A new layer (package, struct pair, indirection) must transform data or cross a process/machine boundary. A layer that only copies fields is removed.
 - Before adding a layer, ask: what breaks if the consumer uses the inner type directly? If the answer is "nothing", the layer does not exist.
-- This project has three components — Gateway / Agent / Tool (`docs/architecture/`). Every capability is a tool behind one contract; no fourth layer is introduced to organize them.
+- Every capability is a tool behind one contract; no organizing layer is introduced above or beside that contract.
+- Before adding a capability, ask first whether it is expressible behind the existing tool contract. A new subsystem is the last resort, not the default.
 
 ## No dead generality
 
@@ -23,7 +24,3 @@ Structural economy in code: how many shapes one concept may have, when a layer e
 
 - `runtime-safety.md` owns where validation happens (once, at the boundary). This file owns the consequence: do not add compensating checks, wrappers, or fallback layers around a weak boundary — strengthen the boundary instead.
 - A fallback path is justified only when the underlying failure is real and expected (e.g. an optional capability absent at runtime) and is documented as such at the fallback site.
-
-## Priority
-
-When this file conflicts with another convention, the more specific rule wins; report the conflict in the PR description (`README.md` §Precedence) instead of resolving it silently.

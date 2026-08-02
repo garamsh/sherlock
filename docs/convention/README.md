@@ -15,7 +15,6 @@ Rules every agent follows when writing code. The PM owns these files; workers re
 | `simplicity.md` | Structural economy: shapes, layers, abstractions, dead code |
 | `review.md` | What makes a review valid; how authors respond |
 | `documentation.md` | What makes documentation valid |
-| `planning.md` | PLAN.md structure for non-trivial work |
 
 ## Stack-specific
 

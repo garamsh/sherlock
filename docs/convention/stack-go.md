@@ -2,7 +2,7 @@
 
 > Defaults for Go projects. Defaults, not laws — if a project's
 > existing code clearly diverges, follow the code and note the
-> divergence in the plan's deviations log.
+> divergence in the PR description.
 
 ## Contents
 - 0. Folder & file naming — strict

@@ -126,6 +126,30 @@ func TestContract_StoreVsWritebackAddDistinction(t *testing.T) {
 		"the writeback add reference lives in the same contrast section")
 }
 
+// TestContract_ReplyMatchesWritebackSideEffect pins the QA #108 scenario-1
+// fix (issue #112): the model stored "Count of .go files ... is 0" via the
+// writeback while its visible reply claimed it was unable to count. The
+// contract must require the visible reply to match the writeback side
+// effect and forbid storing unverified facts.
+func TestContract_ReplyMatchesWritebackSideEffect(t *testing.T) {
+	contract := agent.Contract
+	assert.Contains(t, contract,
+		"Your visible reply must match the writeback side effect",
+		"the contract requires the reply to match the writeback side effect")
+	assert.Contains(t, contract,
+		"a failed tool call\nproduces no result to store",
+		"the contract forbids storing results of failed tool calls")
+	// The rule lives in the Memory writeback section so the model reads it
+	// next to the add-op format it constrains.
+	mwIdx := strings.Index(contract, "## Memory writeback")
+	tuIdx := strings.Index(contract, "## When a tool is unavailable")
+	ruleIdx := strings.Index(contract, "Your visible reply must match the writeback side effect")
+	require.Greater(t, mwIdx, -1, "Memory writeback section missing")
+	require.Greater(t, ruleIdx, -1, "reply/side-effect rule missing")
+	assert.Greater(t, ruleIdx, mwIdx, "the rule comes after the Memory writeback header")
+	assert.Less(t, ruleIdx, tuIdx, "the rule stays inside the Memory writeback section")
+}
+
 // TestDefaultEgo_BehaviorGuidance pins the identity + behavior lines the
 // expanded EGO.md carries (issue #96; proposal #94).
 func TestDefaultEgo_BehaviorGuidance(t *testing.T) {

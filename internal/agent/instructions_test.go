@@ -138,22 +138,34 @@ func TestContract_RecordOnlyObtainedFacts(t *testing.T) {
 // contract answers "when the user asks to remember" explicitly — do not
 // call the memory tool, write the fact in the writeback block's add
 // array. Without this the model reaches for the only memory-named tool
-// and loops searches until act-loop exhaustion (ADR 0015).
+// and loops searches until act-loop exhaustion (ADR 0015). The #164
+// follow-up adds the store-vs-mention distinction: mentioning a fact in
+// the visible reply is not storing it, so a reply promising "I will
+// remember" without an add op is a broken turn.
 func TestContract_RememberRequestsUseWriteback(t *testing.T) {
 	contract := agent.Contract
-	assert.Contains(t, contract,
-		"When the user asks you to remember something, do not call the memory tool",
-		"the remember-request rule is present")
-	assert.Contains(t, contract, "add array",
+	rIdx := strings.Index(contract, "When the user asks you to remember something")
+	require.Greater(t, rIdx, -1, "the remember-request rule is missing")
+	rule := contract[rIdx:]
+	if nl := strings.Index(rule, "\n"); nl >= 0 {
+		rule = rule[:nl]
+	}
+	assert.Contains(t, rule, "do not call the memory tool",
+		"the remember-request rule steers away from the memory tool")
+	assert.Contains(t, rule, "add array",
 		"the rule points at the writeback add array")
+	assert.Contains(t, rule, "not storing it",
+		"the rule carries the #164 store-vs-mention distinction")
+	assert.Contains(t, rule, "the only act of remembering",
+		"the rule names the add array as the sole act of remembering")
+	assert.Contains(t, rule, "broken turn",
+		"the rule calls a store-claiming reply without an add a broken turn")
 	// The rule lives in the Memory writeback section so the model reads it
 	// next to the block format it invokes.
 	mwIdx := strings.Index(contract, "## Memory writeback")
 	tuIdx := strings.Index(contract, "## When a tool is unavailable")
-	rIdx := strings.Index(contract, "When the user asks you to remember something")
 	require.Greater(t, mwIdx, -1, "Memory writeback section missing")
 	require.Greater(t, tuIdx, -1, "When a tool is unavailable section missing")
-	require.Greater(t, rIdx, -1, "the remember-request rule is missing")
 	assert.Greater(t, rIdx, mwIdx, "the rule comes after the Memory writeback header")
 	assert.Less(t, rIdx, tuIdx, "the rule stays inside the Memory writeback section")
 }

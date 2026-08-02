@@ -34,7 +34,7 @@ gagent gateway
 - `GET /envs/{env-id}/events` — server-sent events stream of the environment's agent loop (turn started, tool call, writeback, turn finished). Every run ends with exactly one terminal event — `turn_finished` on success, `turn_failed` with the error on failure.
 - Agent replies (`message_send`) land as JSON files in `data/envs/<env-id>/outbox/`.
 
-**Warning: the gateway has no authentication.** Run it on trusted networks only — an exposed gateway is a remote shell into the environment.
+**Warning: an unauthenticated gateway is a remote shell into the environment.** The gateway authenticates callers with mTLS when the `tls:` config section is set (server certificate/key plus a client CA — callers must present a certificate from that CA; ADR 0017). Without `tls:` the gateway serves loopback binds only, and a non-loopback `--addr` fails startup. Certificate issuance and CA operation are operator scope; rotation is a restart with new files.
 
 ### gagent agent
 
@@ -53,7 +53,7 @@ Settings resolve in order: **flags > environment variables > config file > defau
 
 | Key | Flag | Default |
 |---|---|---|
-| `addr` | `--addr` | `:8080` (used by `gateway` only) |
+| `addr` | `--addr` | `127.0.0.1:8080` (used by `gateway` only; loopback-only unless `tls:` is set) |
 | `data-root` | `--data-root` | `data/envs` |
 | `exec-timeout` | `--exec-timeout` | `30s` (per-call ceiling for `shell_exec` sub-processes; ADR 0012) |
 | `model.provider` | — | `mock` (scripted, offline) or `openai` |
@@ -66,6 +66,9 @@ Settings resolve in order: **flags > environment variables > config file > defau
 | `embedder.model` | — | `text-embedding-3-small` |
 | `embedder.api-key-env` | — | `OPENAI_API_KEY` (same env-var indirection as the chat model) |
 | `embedder.timeout` | — | `60s` (one embeddings request) |
+| `tls.cert` | — | unset (gateway server certificate, PEM; all three `tls:` keys together enable mTLS) |
+| `tls.key` | — | unset (server certificate's private key, PEM) |
+| `tls.client-ca` | — | unset (CA bundle, PEM, that client certificates are verified against) |
 
 The `tools:` section registers script tools — operator-supplied executables the platform runs as subprocesses with JSON on stdin/stdout — alongside the built-ins; see `gagent.yaml` for a working example and `tools/playwright/README.md` for the format. An invalid entry (built-in name collision, unreadable schema, empty command) fails platform startup with an error naming the tool.
 

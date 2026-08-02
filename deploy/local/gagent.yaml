@@ -2,6 +2,12 @@
 # The mock provider is scripted and needs no API key, so this runs offline.
 # The data root comes from GAGENT_DATA_ROOT, which the compose file sets to
 # the host-bind data directory (GAGENT_DATA_DIR).
+# The container publishes the port beyond its own loopback, so the gateway
+# requires mTLS (ADR 0017): throwaway certs live in ./tls (see README.md).
 addr: ":8080"
+tls:
+  cert: /etc/gagent/tls/server.pem
+  key: /etc/gagent/tls/server-key.pem
+  client-ca: /etc/gagent/tls/ca.pem
 model:
   provider: mock

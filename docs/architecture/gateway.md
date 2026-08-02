@@ -18,7 +18,8 @@ Governs the gateway: message ingress, routing, outbound delivery, and monitoring
 - `POST /envs/{env-id}/messages` accepts a message, assigns an ID, enqueues it, and returns `202` with the ID. An unknown env-id creates the environment at enqueue time, so creation errors (e.g. an invalid ID) surface to the sender as `400`.
 - `GET /envs/{env-id}/events` streams the environment's loop events (turn started, tool call, writeback, turn finished, turn failed) as server-sent events. Subscribing works with zero publishers and publishing works with zero subscribers; a subscriber that falls behind drops events rather than slowing the run.
 - The MVP outbound sink writes each `message_send` message as a JSON file under `data/envs/<env-id>/outbox/`. Real channel adapters replace the sink behind the same interface later.
-- The binary wires the scripted mock model (ADR 0005) with a canned script that drives the full loop — store an episodic memory, reply via `message_send`, write the result back as a new episodic memory — a placeholder until a real model lands; a run that exhausts the script fails, is logged, and the queue continues. After ADR 0011 the canned script no longer touches a sandbox_exec tool.
+- The chat model is selected by the `model` config section: the scripted mock (default) or any OpenAI-compatible provider (see `agent.md`). The mock's canned script exercises the four built-in tools offline — a memory store, a `shell_exec` call, a `message_send` reply, and a writeback block; a run that exhausts the script fails, is logged, and the queue continues.
+- Script tools join every environment's registry from the platform config's `tools:` section (ADR 0013): each entry names an operator-supplied executable the gateway runs as a subprocess with JSON on stdin/stdout, alongside the four built-ins.
 
 ## Rejected alternatives
 
@@ -30,3 +31,4 @@ Governs the gateway: message ingress, routing, outbound delivery, and monitoring
 - Authentication model — deferred.
 - Mid-run steering / interruption — deferred.
 - Channel adapters beyond the first HTTP/API adapter — deferred.
+- Script-tool config validation at startup (built-in collision, unreadable schema must fail startup, not the first message) — in progress, issue #124.

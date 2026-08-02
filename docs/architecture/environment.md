@@ -1,28 +1,28 @@
 # Environment
 
-Governs the environment model: what an environment is, its topology, and its trust boundaries. Rationale: ADR 0002, ADR 0006.
+Governs the environment model: what an environment is, its topology, and its trust boundaries. Rationale: ADR 0002, ADR 0006, ADR 0012.
 
 ## Current decisions
 
 - The environment is the agent's body. The agent has full authority inside it; the orchestration layer manages the boundary (network, mounts, resources, lifecycle). There is no separate sandbox tier — the platform does not spawn an inner container for the agent to run commands in (ADR 0011).
-- One container per environment, subdivided into trust domains by Unix UIDs:
+- One container per environment, subdivided into trust domains by Unix UIDs (target design, ADR 0006):
   - **Agent UID** — runs all agent-supplied code; unprivileged, always.
   - **Memory UID** — owns `memory.db`.
   - **Runtime UID** — owns tool runtime configuration.
-- Enforcement is kernel DAC (file ownership and modes), not filters. Agent code touching another UID's assets gets `EACCES`.
+- Enforcement is kernel DAC (file ownership and modes), not filters. Agent code touching another UID's assets gets `EACCES`. Current state: only the `shell_exec` sub-process drops to the agent UID, and only when the platform binary runs setuid-root — otherwise the tool reports `agent_uid unavailable` (ADR 0012). `memory.db` is still opened by the platform process; memory/runtime UID separation is not yet enforced.
 - A tool runtime (supervisor) manages processes and drops privileges before executing agent-supplied code.
-- Boundary policy — egress, CPU/memory quotas, mount scope, lifecycle — is injected from outside at environment creation. The agent cannot change it.
-- Direct network egress is blocked at the container level: the deployment image sets `NetworkMode("none")`, so no outbound path of any kind is reachable from inside an environment container today. The intended outbound path is the egress tool described in `security.md` — **not yet shipped; deferred per the open questions in `security.md`**. The wording "the only outbound path is the egress tool" is the *intended* state, not the *current* one.
+- Boundary policy — egress, CPU/memory quotas, mount scope, lifecycle — is injected from outside at environment creation (target design). Current state: no container or namespace isolates `shell_exec` children; they inherit the platform's network and filesystem view except where the agent UID's DAC denies access. Network isolation for the agent UID is deployment hardening, deferred.
 - Each environment owns `data/envs/<env-id>/` (workspace + `memory.db`). The directory is the isolation unit: teardown, migration, and backup are directory operations.
-- The platform itself ships as a distroless nonroot image built from the repo-root `Dockerfile` — the platform image, distinct from the environment image (the agent's body), whose definition remains an open question below. With `sandbox_exec` removed (ADR 0011), the platform no longer talks to a Docker daemon at runtime; the deployment image is the only Docker involvement.
+- The platform itself ships as a distroless nonroot image built from the repo-root `Dockerfile` — the platform image, distinct from the environment image (the agent's body), whose definition remains an open question below. The platform does not talk to a Docker daemon at runtime (ADR 0011); the deployment image is the only Docker involvement. Because the image runs nonroot, `shell_exec` reports `agent_uid unavailable` under it unless the deployment adds privilege.
 
 ## Rejected alternatives
 
-- **Two-tier sandbox (PLAN §4 original reading)** — superseded by the body model (ADR 0002).
+- **Two-tier sandbox (the founding brief's original reading)** — superseded by the body model (ADR 0002).
 - **Container-in-container (DinD)** — requires a privileged outer container, which would then also hold the secrets; weakens the host boundary for no gain over sibling or UID separation.
 - **Flat single-UID container** — no structural protection for platform assets inside the environment.
 
 ## Open questions
 
-- UID separation mechanics (setuid supervisor): target design per ADR 0006; the MVP runs without it.
+- Memory/runtime UID separation (setuid supervisor beyond the `shell_exec` path): target design per ADR 0006; only the shell sub-process drops privileges today.
 - Environment image definition and hygiene checklist (no setuid binaries, minimal capabilities): required by ADR 0006, not yet written.
+- Network isolation for the agent UID (namespace or deployment-level policy) — deferred; see the boundary-policy decision above.

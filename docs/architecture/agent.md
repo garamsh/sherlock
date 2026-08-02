@@ -18,4 +18,3 @@ Governs the agent: the reasoning loop, tool use, and model access. Rationale: AD
 ## Open questions
 
 - Non-OpenAI chat providers (Anthropic, …) and a real embedder provider — deferred; interfaces are stable.
-- Mid-run steering of the loop — deferred.

@@ -2,7 +2,7 @@
 
 > Defaults for Go projects. Defaults, not laws — if a project's
 > existing code clearly diverges, follow the code and note the
-> divergence in PLAN.md §8.
+> divergence in the plan's deviations log.
 
 ## Contents
 - 0. Folder & file naming — strict
@@ -322,8 +322,6 @@ interface declared in the **producer's** top level).
 >   Mockery v3 generates interface mocks at boundaries.
 > - E2E: built binary (`go build`) against real services via
 >   `go-testcontainers` for Postgres / Redis / MongoDB / etc.
->
-> See `references/testing-principles.md` for the full guidance.
 
 ## 8. Imports & Dependencies
 

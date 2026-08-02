@@ -60,7 +60,11 @@ func runAgentTurn(ctx context.Context, cfg Config, envID, msg, ego string) error
 	if err != nil {
 		return err
 	}
-	factory, err := newFactory(cfg, newModel, ego, stdoutSink{})
+	embedder, err := newEmbedderFunc(cfg.Embedder)
+	if err != nil {
+		return err
+	}
+	factory, err := newFactory(cfg, newModel, embedder, ego, stdoutSink{})
 	if err != nil {
 		return err
 	}

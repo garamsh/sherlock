@@ -15,7 +15,7 @@ Governs long-term memory: the store, the search, and the lifecycle. Rationale: A
 ### Search
 
 - Hybrid: brute-force cosine over stored embeddings plus SQLite FTS5, combined by one ranking function weighted by relevance, recency, importance, and access.
-- MVP uses a deterministic local embedder; a real embedding model plugs into the same interface.
+- The `embedder` config section selects the embedder behind `memory.Embedder`: `hashing` (default, deterministic, fully offline) or `openai` — an OpenAI-compatible embeddings provider (`internal/memory/openai/`) reading base URL, model, and timeout from config and the API key from the environment variable named by `api-key-env`, never from the config file (ADR 0004). A missing key fails platform startup when the real provider is selected.
 
 ### Lifecycle (every turn)
 
@@ -38,5 +38,4 @@ Governs long-term memory: the store, the search, and the lifecycle. Rationale: A
 
 - Snapshot/backup of `memory.db` outside the environment — default post-MVP.
 - Cross-environment shared memory — default deferred.
-- Real embedding provider — deferred.
 - Benchmark-based evaluation harness — deferred; retrieval and writeback events are logged meanwhile.

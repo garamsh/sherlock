@@ -69,6 +69,9 @@ type Factory struct {
 	// Summarizer overrides the deterministic context summarizer. Nil uses
 	// memory.NewConcatSummarizer.
 	Summarizer memory.Summarizer
+	// Embedder overrides the memory embedder. Nil uses
+	// memory.NewHashingEmbedder, the deterministic offline default.
+	Embedder memory.Embedder
 	// Sink, when non-nil, receives outbound messages instead of the default
 	// file outbox (the one-shot agent CLI prints them to stdout).
 	Sink message.Sink
@@ -235,7 +238,11 @@ func (f *Factory) New(_ context.Context, envID string, events agent.EventSink) (
 	if maxHistoryMessages < 0 {
 		maxHistoryMessages = 0
 	}
-	memSvc := memory.NewService(store, memory.NewHashingEmbedder(), summarizer)
+	embedder := f.Embedder
+	if embedder == nil {
+		embedder = memory.NewHashingEmbedder()
+	}
+	memSvc := memory.NewService(store, embedder, summarizer)
 	fs, err := files.Open(env.Workspace())
 	if err != nil {
 		return nil, errors.Join(err, store.Close())

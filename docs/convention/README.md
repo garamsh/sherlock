@@ -12,6 +12,7 @@ Rules every agent follows when writing code. The PM owns these files; workers re
 | `ci.md` | Local/CI parity, workflows, security |
 | `git.md` | Branches, commits, PR titles, merging |
 | `style.md` | Naming and pattern consistency in code |
+| `simplicity.md` | Structural economy: shape count, layer justification, dead code |
 | `review.md` | What makes a review valid; how authors respond |
 | `documentation.md` | What makes documentation valid |
 | `planning.md` | PLAN.md structure for non-trivial work |

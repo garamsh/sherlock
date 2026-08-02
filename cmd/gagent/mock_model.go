@@ -11,12 +11,8 @@ import (
 // message_send — search long-term memory, compute the answer with the
 // shell, reply to the sender through message_send, then end the turn with
 // a writeback block. It exhausts after one message per environment; a
-// real model replaces it without interface changes.
-//
-// After ADR 0015 the memory tool is search-only: the canned script calls
-// memory search, the shell_exec call computes the answer (echo 42), the
-// message_send sends it, and the writeback records the question as an
-// episodic memory — the writeback is the single write path.
+// real model replaces it without interface changes. The writeback is
+// the single write path: the memory tool is search-only (ADR 0015).
 func mockModel(_ string) agent.Model {
 	return agent.NewScriptedModel(
 		agent.ScriptedStep{

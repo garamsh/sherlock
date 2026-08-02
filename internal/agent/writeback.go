@@ -21,8 +21,12 @@ var ErrMalformedWriteback = errors.New("malformed memory writeback block")
 // response (ADR 0008 step 4).
 const writebackFence = "```memory"
 
-// WritebackError reports a memory block that could not be parsed. It
-// matches ErrMalformedWriteback via errors.Is.
+// WritebackError reports a memory block that could not be applied. It
+// matches ErrMalformedWriteback via errors.Is. Parse failures — an
+// unterminated fence or invalid JSON — are returned as warnings: the
+// visible reply still reaches the user and the turn's memory update is
+// dropped (issue #93). Schema violations (e.g. keep with empty id) are
+// fatal: the platform refuses to apply a contract-violating writeback.
 type WritebackError struct {
 	Err error
 }
@@ -53,26 +57,11 @@ type writebackJSON struct {
 	} `json:"add"`
 }
 
-// ParseWriteback splits a model response into its visible content and the
-// memory operations of its trailing writeback block.
-//
-// Failure modes:
-//
-//   - No fence present: returns the whole content as visible with no
-//     operations.
-//   - Fence present but unterminated, or the JSON inside is invalid: the
-//     visible content is returned with no operations; a *WritebackError
-//     is returned as warn and the failure is logged at WARN level. The
-//     visible reply still reaches the user; the memory update for this
-//     turn is dropped (issue #93).
-//   - Fence present, JSON parses, but block.ops() rejects the operations
-//     (e.g. keep with empty id): a *WritebackError is returned as the
-//     fatal err. The platform refuses to apply a contract-violating
-//     writeback; the model is expected to learn the schema.
-//
-// Parse-failure warnings and schema-violation errors share the
-// *WritebackError type so a single errors.Is(err, ErrMalformedWriteback)
-// catches both — but only schema-violation errors are returned as err.
+// ParseWriteback splits a model response into its visible content and
+// the memory operations of its trailing writeback block. With no fence
+// it returns the whole content with no operations. Failures are reported
+// as *WritebackError: parse failures as warn, schema violations as the
+// fatal err.
 func ParseWriteback(content string) (visible string, ops []WritebackOp, warn error, err error) {
 	idx := strings.Index(content, writebackFence)
 	if idx < 0 {

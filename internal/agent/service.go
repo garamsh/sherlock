@@ -34,8 +34,8 @@ type RecalledMemory struct {
 	Age     string
 }
 
-// Recaller is the recall hook point of the memory lifecycle (ADR 0008). The
-// memory runtime satisfies it; until then a fake or nil (no recall) is fine.
+// Recaller is the recall hook point of the memory lifecycle (ADR 0008).
+// The gateway wires the memory runtime's adapter; nil means no recall.
 type Recaller interface {
 	Recall(ctx context.Context, task string) ([]RecalledMemory, error)
 }
@@ -95,8 +95,8 @@ type EventSink interface {
 
 // Compactor is the context-overflow hook point (ADR 0008): when history
 // grows past Options.MaxHistoryMessages, the session asks the compactor to
-// shrink it. The memory runtime lands the real implementation; nil keeps
-// history unbounded.
+// shrink it. The gateway wires the implementation; nil keeps history
+// unbounded.
 type Compactor interface {
 	Compact(ctx context.Context, history []Message) ([]Message, error)
 }

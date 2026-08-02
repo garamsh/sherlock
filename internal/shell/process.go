@@ -52,9 +52,9 @@ type Request struct {
 	NoNetwork bool
 }
 
-// Result is the captured outcome of one command. ExitCode is the wait
-// status reported by the kernel; on a non-error exit it is 0 even if the
-// command itself returned a non-zero status.
+// Result is the captured outcome of one command. ExitCode is the
+// command's exit status; a non-zero exit is a normal outcome, not an
+// error.
 type Result struct {
 	Stdout   string `json:"stdout"`
 	Stderr   string `json:"stderr"`

@@ -1,9 +1,3 @@
-// Package tooltest holds shared conformance helpers used by every built-in
-// tool's schema test. Each tool embeds its JSON Schema under
-// internal/<domain>/schema.json and calls CheckSchema from its package's
-// test file so a malformed file fails the build, not the deployment.
-// CheckStructShape adds the schema/struct drift guard: the schema's
-// properties and required sets must match the typed struct's json tags.
 package tooltest
 
 import (
@@ -26,9 +20,11 @@ const schemaResourceURI = "https://gagent.local/schema/tooltest.json"
 // the four build-time errors the issue calls out: non-UTF-8 input,
 // invalid JSON, invalid JSON Schema document, and a `required` array
 // referencing a property that does not exist in the data instance being
-// validated. The check recurses into nested schemas (if/then/else/allOf/
-// oneOf/anyOf/items/properties) so a missing-property typo anywhere in
-// the document is caught.
+// validated. A `required` entry refers to the enclosing data instance:
+// combinators (if/then/else/allOf/oneOf/anyOf/not/dependentSchemas)
+// inherit the parent's properties, while `properties` and
+// `items.properties` open a new scope. The check recurses into nested
+// schemas so a missing-property typo anywhere in the document is caught.
 //
 // The name parameter is the tool name; it appears in failure messages so
 // the failing schema is identifiable without reading the file.
@@ -77,16 +73,10 @@ func compileSchema(schema []byte) error {
 	return nil
 }
 
-// checkRequiredReferences walks every schema object and asserts each
-// name in `required` refers to a property declared in the data instance
-// being validated. Per JSON Schema, a `required` inside `if`/`then`/
-// `else`/`allOf`/`oneOf`/`anyOf`/`not`/`dependentSchemas` describes the
-// same data instance as the surrounding schema, so the lookup walks up
-// to the nearest enclosing `properties` map. A new scope is opened by
-// `properties` (the local data shape) and `items.properties` (each item
-// of an array); `additionalProperties` does not introduce properties.
-// Missing references are a silent wire-format rot the runtime would
-// only surface as a confusing validation error during a model call.
+// checkRequiredReferences asserts each name in `required` refers to a
+// property of the enclosing data instance, recursing into nested schemas.
+// Missing references are silent wire-format rot the runtime would only
+// surface as a confusing validation error during a model call.
 func checkRequiredReferences(schema []byte) error {
 	var doc map[string]json.RawMessage
 	if err := json.Unmarshal(schema, &doc); err != nil {

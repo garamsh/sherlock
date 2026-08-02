@@ -17,13 +17,6 @@ import (
 )
 
 // Default settings, overridable by config file, environment, or flags.
-//
-// After ADR 0011 the platform binary no longer talks to a Docker daemon;
-// the three per-container keys (image, cpu-limit, memory-limit) are
-// dropped — they had no effect once the platform stopped spawning
-// environment containers. ADR 0012 restores `exec-timeout` as the
-// per-shell-call ceiling; CPU and memory limits are applied via
-// setrlimit in the sub-process and are not configurable from the CLI.
 const (
 	defaultAddr = ":8080"
 

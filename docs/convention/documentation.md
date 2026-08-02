@@ -9,6 +9,13 @@ What makes documentation valid in this project. Applies to every file under `doc
 - **One file, one responsibility.** Split files by topic, not by length. A long file is fine while every section serves its single topic; such files keep a Contents list at the top.
 - **Lists and tables over prose.** A rule scannable in 5 seconds beats a paragraph.
 
+## Keep it self-contained
+
+- Each document explains its own scope standing alone. State the fact directly instead of pointing at another document that states it; a reader should not need a second document open to understand this one.
+- Reference another document only when the reference is the content: an index listing its entries, a decision pair (responsibility document ↔ its ADRs), or a scope-boundary marker ("X is governed by Y, not this file").
+- If a fact belongs to another document's scope, omit it rather than copying it or pointing at it — the reader finds it in the document that owns it.
+- Prefer fewer documents. Extend the document that owns the topic instead of creating a new one; a new document needs its own responsibility, not merely new content.
+
 ## Keep it current
 
 - A PR that changes structure, workflow, or conventions updates the affected docs in the same PR. Stale docs are worse than missing docs.

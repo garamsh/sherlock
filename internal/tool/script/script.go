@@ -73,7 +73,7 @@ func (t *ToolScript) OutputSchema() json.RawMessage { return t.spec.OutputSchema
 // JSON document; otherwise it is returned as-is.
 func (t *ToolScript) Call(ctx context.Context, input json.RawMessage) (json.RawMessage, error) {
 	if len(t.spec.Exec.Command) == 0 {
-		return nil, fmt.Errorf("tool %q: exec.command is required", t.spec.Name)
+		return nil, fmt.Errorf("exec.command is required")
 	}
 	timeout := t.spec.Exec.Timeout
 	if timeout <= 0 {
@@ -88,15 +88,15 @@ func (t *ToolScript) Call(ctx context.Context, input json.RawMessage) (json.RawM
 		Env:     t.spec.Exec.Env,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("tool %q: %w", t.spec.Name, err)
+		return nil, err
 	}
 	if res.ExitCode != 0 {
-		return nil, fmt.Errorf("tool %q: exit code %d: %s", t.spec.Name, res.ExitCode, res.Stderr)
+		return nil, fmt.Errorf("exit code %d: %s", res.ExitCode, res.Stderr)
 	}
 	if t.spec.Exec.StdoutFormat == "json" {
 		var out json.RawMessage
 		if err := json.Unmarshal([]byte(res.Stdout), &out); err != nil {
-			return nil, fmt.Errorf("tool %q: invalid JSON output: %w", t.spec.Name, err)
+			return nil, fmt.Errorf("invalid JSON output: %w", err)
 		}
 		return out, nil
 	}

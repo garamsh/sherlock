@@ -345,6 +345,19 @@ func TestTool_InputSchemaAdvertisesEveryFieldAtRoot(t *testing.T) {
 		"ADR 0015: the memory tool exposes only the search op")
 }
 
+// TestTool_DescriptionStatesReadOnly pins the #160 model-facing fix: the
+// advertised description tells the model the tool is read-only and that
+// recording happens in the writeback block, so a "remember X" request
+// does not loop searches (ADR 0015).
+func TestTool_DescriptionStatesReadOnly(t *testing.T) {
+	desc := memory.NewTool(nil).Description()
+
+	assert.Contains(t, desc, "Search", "the description names the search capability")
+	assert.Contains(t, desc, "Read-only", "the description states the tool cannot store")
+	assert.Contains(t, desc, "writeback block",
+		"the description points recording at the writeback block")
+}
+
 func TestService_RejectsInvalidInput(t *testing.T) {
 	svc := newService(t)
 

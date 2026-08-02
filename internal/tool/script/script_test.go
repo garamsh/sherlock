@@ -103,7 +103,7 @@ func TestToolScript_Call_RequiresCommand(t *testing.T) {
 	_, err := ts.Call(context.Background(), json.RawMessage(`{}`))
 
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), `tool "noop": exec.command is required`)
+	assert.Equal(t, "exec.command is required", err.Error())
 }
 
 func TestToolScript_Call_RawStdout(t *testing.T) {
@@ -132,7 +132,7 @@ func TestToolScript_Call_InvalidJSONOutput(t *testing.T) {
 	_, err := ts.Call(context.Background(), json.RawMessage(`{}`))
 
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), `tool "bad": invalid JSON output`)
+	assert.Contains(t, err.Error(), "invalid JSON output")
 }
 
 func TestToolScript_Call_Workdir(t *testing.T) {
@@ -215,7 +215,7 @@ func TestToolScript_Call_StderrInError(t *testing.T) {
 	_, err := ts.Call(context.Background(), json.RawMessage(`{}`))
 
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), `tool "fail"`)
+	assert.Contains(t, err.Error(), "exit code 1")
 	assert.Contains(t, err.Error(), "oops", "stderr is included in the error message")
 }
 
@@ -230,4 +230,19 @@ func TestToolScript_Call_AgentUIDUnavailable(t *testing.T) {
 	require.ErrorIs(t, err, shell.ErrAgentUIDUnavailable,
 		"ADR 0014: no silent platform-UID run — the call fails closed")
 	assert.Contains(t, err.Error(), "agent_uid unavailable")
+}
+
+// TestToolScript_Invoke_SingleToolNamePrefix pins the #159 fix: the
+// adapter leaves the tool-name prefix to the contract boundary, so a
+// failing call surfaces it exactly once — the shell_exec shape.
+func TestToolScript_Invoke_SingleToolNamePrefix(t *testing.T) {
+	ts := script.New(script.Spec{
+		Name: "wordcount",
+		Exec: script.ExecSpec{Command: []string{"wordcount"}},
+	}, unavailableExecutor{})
+
+	_, err := tool.Invoke(context.Background(), ts, json.RawMessage(`{"text":"hi"}`))
+
+	require.ErrorIs(t, err, tool.ErrExecution)
+	assert.Equal(t, `tool "wordcount": shell: agent_uid unavailable`, err.Error())
 }

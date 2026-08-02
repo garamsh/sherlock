@@ -38,18 +38,15 @@ func invoke(t *testing.T, svc memory.Service, input string) json.RawMessage {
 	return out
 }
 
-func storeViaTool(t *testing.T, svc memory.Service, content, typ string, importance float64) int64 {
+func storeMemory(t *testing.T, svc memory.Service, content, typ string, importance float64) int64 {
 	t.Helper()
-	body, err := json.Marshal(map[string]any{
-		"op": "store", "content": content, "type": typ,
-		"importance_score": importance, "source": "test",
+	res, err := svc.Store(context.Background(), memory.StoreInput{
+		Content:         content,
+		Type:            memory.Type(typ),
+		ImportanceScore: importance,
+		Source:          "test",
 	})
 	require.NoError(t, err)
-	out := invoke(t, svc, string(body))
-	var res struct {
-		ID int64 `json:"id"`
-	}
-	require.NoError(t, json.Unmarshal(out, &res))
 	require.Positive(t, res.ID)
 	return res.ID
 }
@@ -66,10 +63,10 @@ func searchViaTool(t *testing.T, svc memory.Service, query string) []map[string]
 	return res.Results
 }
 
-func TestTool_StoreAndSearch(t *testing.T) {
+func TestTool_SearchReturnsStoredMemories(t *testing.T) {
 	svc := newService(t)
-	catID := storeViaTool(t, svc, "the cat sat on the mat", "episodic", 0.5)
-	storeViaTool(t, svc, "quantum entanglement lecture notes", "semantic", 0.5)
+	catID := storeMemory(t, svc, "the cat sat on the mat", "episodic", 0.5)
+	storeMemory(t, svc, "quantum entanglement lecture notes", "semantic", 0.5)
 
 	results := searchViaTool(t, svc, "cat")
 	require.NotEmpty(t, results)
@@ -88,7 +85,7 @@ func TestTool_SearchEmptyStoreReturnsEmptyResults(t *testing.T) {
 
 func TestSearch_RecordsAccess(t *testing.T) {
 	svc := newService(t)
-	storeViaTool(t, svc, "the cat sat on the mat", "episodic", 0.5)
+	storeMemory(t, svc, "the cat sat on the mat", "episodic", 0.5)
 
 	first, err := svc.Search(context.Background(), "cat", 0)
 	require.NoError(t, err)
@@ -104,7 +101,7 @@ func TestSearch_RecordsAccess(t *testing.T) {
 
 func TestSimilar_DoesNotRecordAccess(t *testing.T) {
 	svc := newService(t)
-	storeViaTool(t, svc, "the cat sat on the mat", "episodic", 0.5)
+	storeMemory(t, svc, "the cat sat on the mat", "episodic", 0.5)
 
 	for range 2 {
 		results, err := svc.Similar(context.Background(), "cat mat", 0)
@@ -118,20 +115,15 @@ func TestSimilar_DoesNotRecordAccess(t *testing.T) {
 	assert.Zero(t, results[0].AccessCount)
 }
 
-func TestTool_UpdateSupersedesAndExcludesOldFromSearch(t *testing.T) {
+func TestUpdate_SupersedesAndExcludesOldFromSearch(t *testing.T) {
 	svc := newService(t)
-	oldID := storeViaTool(t, svc, "release is on monday", "episodic", 0.7)
+	oldID := storeMemory(t, svc, "release is on monday", "episodic", 0.7)
 
-	body, err := json.Marshal(map[string]any{
-		"op": "update", "id": oldID, "content": "release is on tuesday",
+	res, err := svc.Update(context.Background(), memory.UpdateInput{
+		ID:      oldID,
+		Content: "release is on tuesday",
 	})
 	require.NoError(t, err)
-	out := invoke(t, svc, string(body))
-	var res struct {
-		ID           int64 `json:"id"`
-		SupersededID int64 `json:"superseded_id"`
-	}
-	require.NoError(t, json.Unmarshal(out, &res))
 	assert.Equal(t, oldID, res.SupersededID)
 	assert.NotEqual(t, oldID, res.ID)
 
@@ -148,8 +140,8 @@ func TestTool_UpdateSupersedesAndExcludesOldFromSearch(t *testing.T) {
 
 func TestDelete_ArchivesAndExcludesFromSearch(t *testing.T) {
 	svc := newService(t)
-	id := storeViaTool(t, svc, "temporary zebra note", "episodic", 0.5)
-	keep := storeViaTool(t, svc, "durable zebra fact", "semantic", 0.5)
+	id := storeMemory(t, svc, "temporary zebra note", "episodic", 0.5)
+	keep := storeMemory(t, svc, "durable zebra fact", "semantic", 0.5)
 
 	require.NoError(t, svc.Delete(context.Background(), id))
 
@@ -169,7 +161,7 @@ func TestDelete_RecordsValidToWithoutSupersession(t *testing.T) {
 		memory.WithClock(func() time.Time { return now }))
 	t.Cleanup(func() { assert.NoError(t, svc.Close()) })
 
-	id := storeViaTool(t, svc, "temporary note", "episodic", 0.5)
+	id := storeMemory(t, svc, "temporary note", "episodic", 0.5)
 	require.NoError(t, svc.Delete(context.Background(), id))
 
 	db, err := sql.Open("sqlite", path)
@@ -186,7 +178,7 @@ func TestDelete_RecordsValidToWithoutSupersession(t *testing.T) {
 
 func TestDelete_MissingOrAlreadyArchivedReturnsErrNotFound(t *testing.T) {
 	svc := newService(t)
-	id := storeViaTool(t, svc, "note", "episodic", 0.5)
+	id := storeMemory(t, svc, "note", "episodic", 0.5)
 
 	require.NoError(t, svc.Delete(context.Background(), id))
 	err := svc.Delete(context.Background(), id)
@@ -198,7 +190,7 @@ func TestDelete_MissingOrAlreadyArchivedReturnsErrNotFound(t *testing.T) {
 
 func TestUpdate_InheritsImportanceWhenOmitted(t *testing.T) {
 	svc := newService(t)
-	oldID := storeViaTool(t, svc, "release is on monday", "episodic", 0.7)
+	oldID := storeMemory(t, svc, "release is on monday", "episodic", 0.7)
 
 	res, err := svc.Update(context.Background(), memory.UpdateInput{ID: oldID, Content: "release is on tuesday"})
 	require.NoError(t, err)
@@ -210,20 +202,14 @@ func TestUpdate_InheritsImportanceWhenOmitted(t *testing.T) {
 	assert.InDelta(t, 0.7, results[0].ImportanceScore, 1e-9)
 }
 
-func TestTool_Compress(t *testing.T) {
+func TestCompress_SummarizesEpisodicIntoSemanticParent(t *testing.T) {
 	svc := newService(t)
-	id1 := storeViaTool(t, svc, "deployed v1 to staging", "episodic", 0.4)
-	id2 := storeViaTool(t, svc, "staging deploy failed on migration", "episodic", 0.8)
-	keep := storeViaTool(t, svc, "unrelated fact about cats", "episodic", 0.3)
+	id1 := storeMemory(t, svc, "deployed v1 to staging", "episodic", 0.4)
+	id2 := storeMemory(t, svc, "staging deploy failed on migration", "episodic", 0.8)
+	keep := storeMemory(t, svc, "unrelated fact about cats", "episodic", 0.3)
 
-	body, err := json.Marshal(map[string]any{"op": "compress", "ids": []int64{id1, id2}})
+	res, err := svc.Compress(context.Background(), []int64{id1, id2})
 	require.NoError(t, err)
-	out := invoke(t, svc, string(body))
-	var res struct {
-		ParentID    int64   `json:"parent_id"`
-		ArchivedIDs []int64 `json:"archived_ids"`
-	}
-	require.NoError(t, json.Unmarshal(out, &res))
 	assert.ElementsMatch(t, []int64{id1, id2}, res.ArchivedIDs)
 
 	results := searchViaTool(t, svc, "staging deploy")
@@ -248,27 +234,24 @@ func TestTool_Compress(t *testing.T) {
 
 func TestCompress_RejectsSemanticInput(t *testing.T) {
 	svc := newService(t)
-	id := storeViaTool(t, svc, "durable knowledge", "semantic", 0.9)
+	id := storeMemory(t, svc, "durable knowledge", "semantic", 0.9)
 
 	_, err := svc.Compress(context.Background(), []int64{id})
 	require.ErrorIs(t, err, memory.ErrNotEpisodic)
 }
 
-func TestTool_Forget(t *testing.T) {
+func TestForget_ArchivesBelowThreshold(t *testing.T) {
 	clock := now
 	svc := newService(t, memory.WithClock(func() time.Time { return clock }))
-	oldID := storeViaTool(t, svc, "stale trivia", "episodic", 0)
+	oldID := storeMemory(t, svc, "stale trivia", "episodic", 0)
 
 	clock = now.Add(30 * 24 * time.Hour)
-	freshID := storeViaTool(t, svc, "fresh important fact", "semantic", 0.9)
+	freshID := storeMemory(t, svc, "fresh important fact", "semantic", 0.9)
 
-	out := invoke(t, svc, `{"op":"forget","threshold":0.5}`)
-	var res struct {
-		ArchivedIDs []int64 `json:"archived_ids"`
-	}
-	require.NoError(t, json.Unmarshal(out, &res))
-	assert.Contains(t, res.ArchivedIDs, oldID)
-	assert.NotContains(t, res.ArchivedIDs, freshID)
+	archived, err := svc.Forget(context.Background(), 0.5)
+	require.NoError(t, err)
+	assert.Contains(t, archived, oldID)
+	assert.NotContains(t, archived, freshID)
 
 	results := searchViaTool(t, svc, "stale trivia")
 	for _, r := range results {
@@ -307,7 +290,7 @@ func TestStore_EvictsLowestScoreBeyondCapacity(t *testing.T) {
 func TestRecall_TrimsToTokenBudget(t *testing.T) {
 	svc := newService(t)
 	for range 5 {
-		storeViaTool(t, svc, "a fairly long memory about cats and mats and sitting", "episodic", 0.5)
+		storeMemory(t, svc, "a fairly long memory about cats and mats and sitting", "episodic", 0.5)
 	}
 
 	results, err := svc.Recall(context.Background(), "cats", 10)
@@ -328,18 +311,14 @@ func TestTool_RejectsInvalidInput(t *testing.T) {
 		input string
 	}{
 		{"unknown op", `{"op":"explode"}`},
-		{"store missing content", `{"op":"store","type":"episodic","importance_score":0.5,"source":"test"}`},
-		{"store bad type", `{"op":"store","content":"x","type":"bogus","importance_score":0.5,"source":"test"}`},
-		{"store importance out of range", `{"op":"store","content":"x","type":"episodic","importance_score":1.5,"source":"test"}`},
+		{"store op removed", `{"op":"store","content":"x","type":"episodic","importance_score":0.5,"source":"test"}`},
+		{"update op removed", `{"op":"update","id":1,"content":"x"}`},
+		{"compress op removed", `{"op":"compress","ids":[1]}`},
+		{"forget op removed", `{"op":"forget","threshold":0.5}`},
 		{"search missing query", `{"op":"search"}`},
-		{"update missing id", `{"op":"update","content":"x"}`},
-		{"compress empty ids", `{"op":"compress","ids":[]}`},
-		{"unexpected field", `{"op":"forget","query":"x"}`},
-		{"undeclared field", `{"op":"forget","nonsense":"x"}`},
-		{"search carries store fields", `{"op":"search","query":"x","content":"y"}`},
-		{"store carries search fields", `{"op":"store","content":"x","type":"episodic","importance_score":0.5,"source":"test","limit":3}`},
-		{"update carries compress fields", `{"op":"update","id":1,"content":"x","ids":[1]}`},
-		{"compress carries threshold", `{"op":"compress","ids":[1],"threshold":0.5}`},
+		{"search limit below minimum", `{"op":"search","query":"x","limit":0}`},
+		{"unexpected field", `{"op":"search","query":"x","content":"y"}`},
+		{"undeclared field", `{"op":"search","query":"x","nonsense":"y"}`},
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -359,15 +338,11 @@ func TestTool_InputSchemaAdvertisesEveryFieldAtRoot(t *testing.T) {
 	}
 	require.NoError(t, json.Unmarshal(memory.NewTool(nil).InputSchema(), &schema))
 
-	for _, field := range []string{
-		"op", "content", "type", "importance_score", "source",
-		"query", "limit", "id", "ids", "threshold",
-	} {
+	for _, field := range []string{"op", "query", "limit"} {
 		assert.Contains(t, schema.Properties, field)
 	}
-	assert.Equal(t,
-		[]string{"store", "search", "update", "compress", "forget"},
-		schema.Properties["op"].Enum)
+	assert.Equal(t, []string{"search"}, schema.Properties["op"].Enum,
+		"ADR 0015: the memory tool exposes only the search op")
 }
 
 func TestService_RejectsInvalidInput(t *testing.T) {
@@ -388,12 +363,79 @@ func TestService_RejectsInvalidInput(t *testing.T) {
 }
 
 func TestTool_ExecutionErrorWrapsServiceFailure(t *testing.T) {
-	svc := newService(t)
-	_, err := tool.Invoke(context.Background(), memory.NewTool(svc),
-		json.RawMessage(`{"op":"update","id":999,"content":"x"}`))
+	st, err := sqlite.Open(filepath.Join(t.TempDir(), "memory.db"))
+	require.NoError(t, err)
+	svc := memory.NewService(st, memory.NewHashingEmbedder(), memory.NewConcatSummarizer())
+	require.NoError(t, svc.Close(), "a closed store fails every search")
+
+	_, err = tool.Invoke(context.Background(), memory.NewTool(svc),
+		json.RawMessage(`{"op":"search","query":"x"}`))
 	require.Error(t, err)
 	assert.True(t, errors.Is(err, tool.ErrExecution))
-	assert.True(t, errors.Is(err, memory.ErrNotFound))
+}
+
+// TestConsolidate_CompressesEpisodicCluster pins the ADR 0015 platform
+// trigger: once at least ConsolidationMinCluster episodic memories are
+// active, Consolidate compresses them into one semantic parent and
+// archives the originals.
+func TestConsolidate_CompressesEpisodicCluster(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "memory.db")
+	st, err := sqlite.Open(path)
+	require.NoError(t, err)
+	svc := memory.NewService(st, memory.NewHashingEmbedder(), memory.NewConcatSummarizer(),
+		memory.WithClock(func() time.Time { return now }))
+	t.Cleanup(func() { assert.NoError(t, svc.Close()) })
+
+	id1 := storeMemory(t, svc, "deployed v1 to staging", "episodic", 0.4)
+	id2 := storeMemory(t, svc, "staging deploy failed on migration", "episodic", 0.8)
+	keep := storeMemory(t, svc, "durable knowledge about cats", "semantic", 0.9)
+
+	res, err := svc.Consolidate(context.Background())
+	require.NoError(t, err)
+	require.Positive(t, res.ParentID)
+	assert.ElementsMatch(t, []int64{id1, id2}, res.ArchivedIDs)
+
+	results, err := svc.Search(context.Background(), "staging deploy", 10)
+	require.NoError(t, err)
+	ids := make([]int64, 0, len(results))
+	for _, r := range results {
+		ids = append(ids, r.ID)
+	}
+	assert.Contains(t, ids, res.ParentID, "the semantic parent is searchable")
+	assert.NotContains(t, ids, id1, "archived originals leave the active index")
+	assert.NotContains(t, ids, id2, "archived originals leave the active index")
+
+	cats, err := svc.Search(context.Background(), "durable knowledge cats", 10)
+	require.NoError(t, err)
+	require.NotEmpty(t, cats)
+	assert.Equal(t, keep, cats[0].ID, "semantic memories are not consolidated")
+
+	db, err := sql.Open("sqlite", path)
+	require.NoError(t, err)
+	defer db.Close()
+	for _, id := range []int64{id1, id2} {
+		var supersededBy int64
+		require.NoError(t, db.QueryRow(
+			`SELECT superseded_by FROM memories_archive WHERE id = ?`, id,
+		).Scan(&supersededBy))
+		assert.Equal(t, res.ParentID, supersededBy,
+			"the archived original points at its semantic parent")
+	}
+}
+
+func TestConsolidate_BelowClusterIsNoOp(t *testing.T) {
+	svc := newService(t)
+	id := storeMemory(t, svc, "lone episodic note", "episodic", 0.5)
+
+	res, err := svc.Consolidate(context.Background())
+	require.NoError(t, err)
+	assert.Zero(t, res.ParentID)
+	assert.Empty(t, res.ArchivedIDs)
+
+	results, err := svc.Search(context.Background(), "lone episodic", 10)
+	require.NoError(t, err)
+	require.Len(t, results, 1)
+	assert.Equal(t, id, results[0].ID, "the single episodic memory stays active")
 }
 
 func TestHashingEmbedder_IsDeterministicAndNormalized(t *testing.T) {

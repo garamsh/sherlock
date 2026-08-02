@@ -47,9 +47,10 @@ type Summarizer interface {
 	Summarize(ctx context.Context, contents []string) (string, error)
 }
 
-// Service is the memory domain's behavior contract: the tool's five
-// operations, the per-ID Delete the writeback adapter needs, and the
-// runtime queries (Recall, Similar) the agent loop needs.
+// Service is the memory domain's behavior contract: the write operations
+// behind the writeback block (Store, Update, Delete), platform maintenance
+// (Compress, Forget, Consolidate), and the runtime queries (Search, Recall,
+// Similar) the agent loop and the search-only memory tool need (ADR 0015).
 type Service interface {
 	// Store embeds and inserts a new memory, evicting lowest-score-first
 	// when the active index exceeds capacity.
@@ -70,6 +71,10 @@ type Service interface {
 	// Forget archives active memories whose lifecycle score falls below
 	// threshold. A non-positive threshold uses DefaultForgetThreshold.
 	Forget(ctx context.Context, threshold float64) ([]int64, error)
+	// Consolidate compresses the active episodic cluster into one semantic
+	// parent once it reaches ConsolidationMinCluster; the platform calls it
+	// on environment shutdown (ADR 0015).
+	Consolidate(ctx context.Context) (CompressResult, error)
 	// Recall is the agent loop's search entry point: hybrid search on the
 	// task statement, trimmed to a token budget, access recorded.
 	Recall(ctx context.Context, task string, tokenBudget int) ([]ScoredMemory, error)

@@ -91,117 +91,47 @@ func TestContract_FailureRecoverySentence(t *testing.T) {
 		"the contract references the platform's repeat short-circuit")
 }
 
-// TestContract_StoreVsWritebackAddDistinction pins the QA #103 fix: the
-// contract now distinguishes the memory tool's `store` op (which requires
-// importance_score and source) from the writeback `add` op (which
-// auto-fills them). The model confuses the two without the explicit
-// contrast, so the contract must keep the two interfaces side by side.
-func TestContract_StoreVsWritebackAddDistinction(t *testing.T) {
+// TestContract_MemoryToolIsSearchOnly pins ADR 0015: the contract no
+// longer carries the tool-call vs writeback section, because the memory
+// tool's write ops are gone and the writeback block is the single write
+// path. The writeback add op keeps its auto-filled fields, so the contract
+// never asks the model for importance_score or source.
+func TestContract_MemoryToolIsSearchOnly(t *testing.T) {
 	contract := agent.Contract
-	assert.Contains(t, contract, "## Memory: tool call vs writeback",
-		"the contract carries a tool-call vs writeback section header")
-	assert.Contains(t, contract, "op: store",
-		"the contract shows the store op shape")
-	assert.Contains(t, contract, "importance_score",
-		"the contract mentions importance_score")
-	assert.Contains(t, contract, "source",
-		"the contract mentions source")
-	assert.Contains(t, contract, "auto-filled",
-		"the contract names the writeback auto-fill behaviour")
-	assert.Contains(t, contract, "`add`",
-		"the contract references the writeback add op")
-	// The store op and the writeback add op must appear in the same
-	// section so the model sees the contrast in one place.
-	storeIdx := strings.Index(contract, "op: store")
-	addIdx := strings.Index(contract, "`add`")
-	require.Greater(t, storeIdx, -1, "store op reference missing")
-	require.Greater(t, addIdx, -1, "add op reference missing")
-	toolSection := strings.Index(contract, "## Memory: tool call vs writeback")
-	writebackSection := strings.Index(contract, "## Memory writeback")
-	assert.Greater(t, storeIdx, toolSection)
-	assert.Less(t, storeIdx, writebackSection,
-		"the store add contrast lives before the writeback section header")
-	assert.Greater(t, addIdx, toolSection)
-	assert.Less(t, addIdx, writebackSection,
-		"the writeback add reference lives in the same contrast section")
+	assert.NotContains(t, contract, "## Memory: tool call vs writeback",
+		"the tool-call vs writeback section is deleted")
+	assert.NotContains(t, contract, "op: store",
+		"the contract no longer teaches a memory store op")
+	assert.NotContains(t, contract, "importance_score",
+		"the contract never asks the model for importance_score")
 }
 
-// TestContract_ReplyMatchesWritebackSideEffect pins the QA #108 scenario-1
-// fix (issue #112): the model stored "Count of .go files ... is 0" via the
-// writeback while its visible reply claimed it was unable to count. The
-// contract must require the visible reply to match the writeback side
-// effect and forbid storing unverified facts.
-func TestContract_ReplyMatchesWritebackSideEffect(t *testing.T) {
+// TestContract_RecordOnlyObtainedFacts pins the ADR 0015 contract
+// collapse: the #137/#144 no-fabrication rules shrink to one line —
+// record only facts actually obtained this turn. The single line forbids
+// placeholders from failed tool calls and requires the visible reply to
+// match the writeback side effect.
+func TestContract_RecordOnlyObtainedFacts(t *testing.T) {
 	contract := agent.Contract
-	assert.Contains(t, contract,
-		"Your visible reply must match the writeback side effect",
-		"the contract requires the reply to match the writeback side effect")
-	assert.Contains(t, contract,
-		"a failed tool call\nproduces no result to store",
-		"the contract forbids storing results of failed tool calls")
+	const rule = "Record only facts you actually obtained this turn"
+	idx := strings.Index(contract, rule)
+	require.Greater(t, idx, -1, "the record-only-obtained-facts rule is missing")
+	line := contract[idx:]
+	if nl := strings.Index(line, "\n"); nl >= 0 {
+		line = line[:nl]
+	}
+	assert.Contains(t, line, "placeholder",
+		"the one-line rule forbids placeholders from failed tool calls")
+	assert.Contains(t, line, "visible reply",
+		"the one-line rule ties the visible reply to the writeback side effect")
 	// The rule lives in the Memory writeback section so the model reads it
 	// next to the add-op format it constrains.
 	mwIdx := strings.Index(contract, "## Memory writeback")
 	tuIdx := strings.Index(contract, "## When a tool is unavailable")
-	ruleIdx := strings.Index(contract, "Your visible reply must match the writeback side effect")
-	require.Greater(t, mwIdx, -1, "Memory writeback section missing")
-	require.Greater(t, ruleIdx, -1, "reply/side-effect rule missing")
-	assert.Greater(t, ruleIdx, mwIdx, "the rule comes after the Memory writeback header")
-	assert.Less(t, ruleIdx, tuIdx, "the rule stays inside the Memory writeback section")
-}
-
-// TestContract_FailedToolCallProducesNoResultArtifact pins the QA #142
-// fix: the #137 clause covered only the writeback `add`, and gpt-4o-mini
-// rationalized storing a placeholder ("hostname") after shell_exec failed
-// — via the writeback, via files write, and in the visible reply. The
-// contract must forbid a result-shaped artifact from a failed tool call in
-// EVERY output channel and must define the tool-unavailable fallback as
-// switching to a tool that can actually obtain the fact, never fabricating
-// one.
-func TestContract_FailedToolCallProducesNoResultArtifact(t *testing.T) {
-	contract := agent.Contract
-	assert.Contains(t, contract,
-		"A failed tool call produces no result-shaped artifact in any tool",
-		"the no-result-artifact rule is present")
-	// The rule names every channel the QA #142 run abused: the writeback
-	// add op, files write, message_send, and the visible reply.
-	ruleIdx := strings.Index(contract,
-		"A failed tool call produces no result-shaped artifact in any tool")
-	require.Greater(t, ruleIdx, -1, "no-result-artifact rule missing")
-	ruleEnd := ruleIdx + 1200
-	if ruleEnd > len(contract) {
-		ruleEnd = len(contract)
-	}
-	ruleBlock := contract[ruleIdx:ruleEnd]
-	for _, frag := range []string{
-		"writeback `add`",
-		"`files write`",
-		"`message_send`",
-		"visible reply",
-		"placeholder",
-	} {
-		assert.Contains(t, ruleBlock, frag,
-			"the no-result-artifact rule names %q", frag)
-	}
-	// The rule lives in the Memory writeback section so the model reads
-	// it next to the add-op format it constrains.
-	mwIdx := strings.Index(contract, "## Memory writeback")
-	tuIdx := strings.Index(contract, "## When a tool is unavailable")
 	require.Greater(t, mwIdx, -1, "Memory writeback section missing")
 	require.Greater(t, tuIdx, -1, "When a tool is unavailable section missing")
-	assert.Greater(t, ruleIdx, mwIdx, "the rule comes after the Memory writeback header")
-	assert.Less(t, ruleIdx, tuIdx, "the rule stays inside the Memory writeback section")
-	// The fallback section defines switching tools as obtaining the fact
-	// with another tool, never fabricating one.
-	assert.Contains(t, contract,
-		"switching to a tool that can actually obtain the",
-		"the fallback is defined as obtaining the fact with another tool")
-	assert.Contains(t, contract,
-		"Never fabricate the fact",
-		"the contract forbids fabricating a fact to store")
-	fabIdx := strings.Index(contract, "Never fabricate the fact")
-	assert.Greater(t, fabIdx, tuIdx,
-		"the no-fabrication rule lives in the tool-unavailable section")
+	assert.Greater(t, idx, mwIdx, "the rule comes after the Memory writeback header")
+	assert.Less(t, idx, tuIdx, "the rule stays inside the Memory writeback section")
 }
 
 // TestDefaultEgo_BehaviorGuidance pins the identity + behavior lines the

@@ -6,7 +6,7 @@ gagent is an autonomous agent platform written in Go. It runs AI agents that can
 
 - **Three components only: Gateway / Agent / Tool.** The Gateway normalizes external channels (web, API, messengers, CLI) into a single entry point. The Agent runs the reasoning loop and decides which tools to call. Every capability — memory, files, outbound messaging, and shell access for workspace operations — is a Tool behind one common interface. No extra layers. A tool is either a Go built-in or a script tool registered from the config's `tools:` section (ADR 0010, ADR 0013).
 - **The agent owns its execution environment.** Each agent runs in its own directory (`data/envs/<env-id>/` containing `workspace/` + `memory.db`) inside the platform's container; the orchestration layer manages the boundary (network egress, mounts, lifecycle). The `shell_exec` tool runs agent-supplied commands as sub-processes dropped to the agent UID; the rest of the platform keeps its trust-domain separation (ADR 0006, ADR 0012).
-- **Memory is agent-managed, not just stored.** Memory is RAG-based, and the agent actively maintains it: storing, updating, compressing, and forgetting — like human memory rather than a plain store/search index.
+- **Memory is agent-managed, not just stored.** Memory is RAG-based, and the agent actively curates it through a per-turn writeback — keeping, correcting, and retracting — while the platform consolidates and evicts on thresholds (ADR 0015), like human memory rather than a plain store/search index.
 
 ## Who it is for
 
@@ -106,7 +106,7 @@ model:
   api-key-env: OLLAMA_API_KEY
 ```
 
-With the default `mock` provider the binary wires the scripted mock model, which answers each environment's first message with a canned run of the full loop: it stores an episodic memory, runs the answer through `shell_exec`, replies via `message_send`, and writes the result back as a new episodic memory. With `provider: openai` it runs against a real chat model; a missing API key env var fails at startup. To work on the codebase you need Go and GNU Make, and the standard checks are:
+With the default `mock` provider the binary wires the scripted mock model, which answers each environment's first message with a canned run of the full loop: it searches long-term memory, runs the answer through `shell_exec`, replies via `message_send`, and writes the outcome back as a new episodic memory. With `provider: openai` it runs against a real chat model; a missing API key env var fails at startup. To work on the codebase you need Go and GNU Make, and the standard checks are:
 
 ```sh
 make ci      # lint + format check + test + build (same as CI)

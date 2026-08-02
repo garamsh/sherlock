@@ -27,11 +27,10 @@ import (
 const e2eEnvID = "e2e"
 
 // e2eQuestion is the inbound message that drives the canned MVP scenario:
-// the mock model stores the question in long-term memory, runs the answer
-// through shell_exec, replies with the answer via message_send, and ends
-// the turn. After ADR 0012 the canned script exercises the four built-in
-// tools (memory, shell_exec, message_send) — the shell_exec call does the
-// "compute the answer" step the typed tools cannot.
+// the mock model searches long-term memory, runs the answer through
+// shell_exec, replies with the answer via message_send, and ends the turn
+// with a writeback block recording the question (ADR 0015: the writeback
+// is the single write path).
 const e2eQuestion = "what is 6 * 7?"
 
 // cannedShellExecutor is a fake shell.Executor for the e2e scenario. The
@@ -45,18 +44,19 @@ func (cannedShellExecutor) Run(_ context.Context, _ shell.Request) (shell.Result
 }
 
 // mvpScript drives the canned MVP scenario through the scripted mock model:
-// store the question in memory, compute the answer via shell_exec, reply to
-// the sender, then close the turn with a writeback block.
+// search memory for prior context, compute the answer via shell_exec, reply
+// to the sender, then close the turn with a writeback block recording the
+// question.
 //
-// After ADR 0012 the canned script exercises the four built-in tools; the
-// shell_exec call is intercepted by the canned executor so the test does
-// not require root for the real fork+exec path.
+// The canned script exercises the four built-in tools; the shell_exec call
+// is intercepted by the canned executor so the test does not require root
+// for the real fork+exec path.
 func mvpScript() *agent.ScriptedModel {
 	return agent.NewScriptedModel(
 		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{
 			Name: "memory",
 			Input: json.RawMessage(
-				`{"op":"store","content":"user asked: 6 * 7","type":"episodic","importance_score":0.5,"source":"mock"}`,
+				`{"op":"search","query":"6 * 7"}`,
 			),
 		}}},
 		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{
@@ -71,7 +71,9 @@ func mvpScript() *agent.ScriptedModel {
 				`{"channel":"http","target":"sender","content":"42"}`,
 			),
 		}}},
-		agent.ScriptedStep{Content: "Replied via message_send and stored the result."},
+		agent.ScriptedStep{Content: "Replied via message_send and stored the result.\n" +
+			"```memory\n" +
+			`{"add":[{"content":"user asked: 6 * 7","type":"episodic"}]}` + "\n```"},
 	)
 }
 
@@ -121,8 +123,8 @@ func runMVPScenario(t *testing.T, baseURL, root, envID string) {
 	resp.Body.Close()
 
 	// Monitoring: the full turn lifecycle was published, in order: one
-	// turn with three tool calls (memory, shell_exec, message_send) and
-	// an empty-ops writeback between every model response.
+	// turn with three tool calls (memory, shell_exec, message_send) and a
+	// writeback after every model response.
 	got := collectEvents(t, events, 9)
 	var kinds []string
 	for _, e := range got {
@@ -137,9 +139,9 @@ func runMVPScenario(t *testing.T, baseURL, root, envID string) {
 	}, kinds)
 	assert.Equal(t, e2eQuestion, got[0]["task"])
 
-	// The agent stored the question, computed via shell_exec, then
-	// replied via message_send. The empty final writeback satisfies the
-	// contract when no new memories are added this turn.
+	// The agent searched memory, computed via shell_exec, then replied via
+	// message_send. The final writeback records the question as an
+	// episodic memory (ADR 0015: the writeback is the single write path).
 	assert.Equal(t, "memory", got[2]["tool_name"])
 	assert.NotContains(t, got[2], "tool_failed")
 	assert.Equal(t, "shell_exec", got[4]["tool_name"])
@@ -159,8 +161,7 @@ func runMVPScenario(t *testing.T, baseURL, root, envID string) {
 }
 
 // assertMemoryStore opens the environment's memory store and confirms the
-// memory tool call landed an episodic memory containing the recorded
-// question.
+// writeback landed an episodic memory containing the recorded question.
 func assertMemoryStore(t *testing.T, envDir string) {
 	t.Helper()
 	store, err := sqlite.Open(filepath.Join(envDir, gateway.MemoryDBFile))
@@ -185,9 +186,9 @@ func assertMemoryStore(t *testing.T, envDir string) {
 		if strings.Contains(h.Content, "user asked: 6 * 7") {
 			recorded = true
 			assert.Equal(t, "episodic", h.Type,
-				"the canned scenario stores the question as an episodic memory")
+				"the canned scenario records the question as an episodic memory")
 		}
 	}
 	assert.True(t, recorded,
-		"memory tool call must have stored an episodic memory of the question, got: %s", found)
+		"the writeback must have stored an episodic memory of the question, got: %s", found)
 }

@@ -12,7 +12,6 @@ The agent has total authority inside its user domain (ADR 0002), including a she
 Secret values never materialize in the code-execution domain. Exposure is prevented by absence, not by filtering.
 
 - **Secret references**: the environment carries placeholder values only, e.g. `GITHUB_TOKEN=secret://github-token`. Programs use them exactly like real values.
-- **Scrubbed child environments**: child processes spawned by code-executing tools start from a minimal base (`PATH`, `HOME`, `LANG`) and never inherit the platform process's variables implicitly; operator-configured entries (script `exec.env`) are the only additions.
 - **Bound resolution**: the egress tool is the only component that resolves references, and only for requests matching a policy binding of (secret, destination host, header position). References in request bodies or to unbound destinations are never substituted.
 - **Response redaction**: the egress tool holds the real values and redacts any occurrence of them in response payloads, closing reflection (echo) leaks on bound destinations.
 - **High-sensitivity secrets** are not exposed even as bound references; a structured tool performs the whole operation outside the domain and returns a summary.

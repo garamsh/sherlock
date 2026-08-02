@@ -49,6 +49,8 @@ Time → inject a clock. Network → substitute. Filesystem → tmpdir. Random �
 
 ## Placement
 
-- Unit: co-located with source (`foo.ts` ↔ `foo.test.ts`).
-- Integration: co-located with the boundary, or `tests/integration/`.
-- E2E: top-level `e2e/` or `test/`. **Never inside `src/`.**
+- Unit: co-located with the source it tests.
+- Integration: co-located with the boundary it exercises, or in a dedicated integration directory.
+- E2E: a dedicated top-level directory, outside the application source tree.
+
+Concrete directory and file names follow the project's stack convention file — the stack file owns placement specifics.

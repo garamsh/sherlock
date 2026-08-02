@@ -18,7 +18,9 @@ import (
 
 // Default settings, overridable by config file, environment, or flags.
 const (
-	defaultAddr = ":8080"
+	// defaultAddr binds loopback only: without a tls: section the
+	// gateway refuses non-loopback binds (ADR 0017).
+	defaultAddr = "127.0.0.1:8080"
 
 	defaultExecTimeout = 30 * time.Second
 
@@ -59,6 +61,23 @@ type Config struct {
 	// gateway.ScriptTool is the config's unmarshal target directly: one
 	// concept, one shape (docs/convention/simplicity.md).
 	Tools []gateway.ScriptTool `mapstructure:"tools"`
+	// TLS carries the gateway's mTLS material (ADR 0017). When unset,
+	// the gateway serves loopback binds only.
+	TLS TLSConfig `mapstructure:"tls"`
+}
+
+// TLSConfig selects the gateway's mTLS material (ADR 0017): the server
+// certificate/key pair and the client CA the gateway verifies callers
+// against. All three paths are set together or the section is rejected;
+// an empty section means plain HTTP on loopback binds only.
+type TLSConfig struct {
+	// Cert is the path to the gateway's server certificate (PEM).
+	Cert string `mapstructure:"cert"`
+	// Key is the path to the server certificate's private key (PEM).
+	Key string `mapstructure:"key"`
+	// ClientCA is the path to the CA certificate bundle (PEM) client
+	// certificates are verified against.
+	ClientCA string `mapstructure:"client-ca"`
 }
 
 // ModelConfig selects a model provider: the chat model under the model:

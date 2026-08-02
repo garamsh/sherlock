@@ -1,4 +1,4 @@
-# Local testing only: trusted host, no auth (the gateway has none).
+# Local testing only: trusted host, throwaway mTLS certs in ./tls.
 # Requires GAGENT_DATA_DIR; see README.md in this directory.
 services:
   gagent:
@@ -13,4 +13,5 @@ services:
       # so environment paths are valid from either side.
       - "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}:${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}"
       - ./gagent.yaml:/etc/gagent/config.yaml:ro
+      - ./tls:/etc/gagent/tls:ro
     command: ["gateway", "--config", "/etc/gagent/config.yaml"]

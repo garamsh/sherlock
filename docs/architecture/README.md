@@ -25,7 +25,7 @@ The system is three components — Gateway / Agent / Tool. Every capability is a
 - `security.md` — trust domains, secret custody, egress
 - `gateway.md` — ingress, routing, outbound, monitoring
 - `agent.md` — reasoning loop, tool use, model access
-- `adr/0001`–`0013` — design decision log (see topic files for current truth)
+- `adr/0001`–`0014` — design decision log (see topic files for current truth)
 
 ### Modules
 

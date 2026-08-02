@@ -40,5 +40,5 @@ Governs the security model: trust domains, secret custody, and egress. Rationale
 ## Open questions
 
 - Egress proxy implementation timing (TLS termination, CA provisioning) — MVP ships tool-routed access; raw egress proxy follows.
-- Gateway authentication — deferred; trusted networks only (see `gateway.md`).
+- Gateway authentication — deferred; the gateway serves trusted networks only.
 - Privilege drop for script tools — they currently run as the platform UID (ADR 0013); dropping them to the agent UID like `shell_exec` is deferred until a use case needs it.

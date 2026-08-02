@@ -9,7 +9,7 @@ Governs the gateway: message ingress, routing, outbound delivery, and monitoring
   - **Outbound** — a `message_send` tool (channel, target, content) carries every reply. The agent decides when and to whom to respond; the sender, another person, and another agent are all the same kind of target.
   - **Monitoring** — a read-only subscription event stream (turn started, tool calls, memory writeback, turn finished or failed). Every run ends with exactly one terminal event — `turn_finished` on success, `turn_failed` with the error on failure — so subscribers can always finalize their view of a turn. Never part of the message path; typically no subscribers.
 - Execution is serialized per environment. Messages arriving mid-run queue as followups; steering and interruption are deferred. Each environment's queue is bounded; a full queue applies backpressure to the sender instead of dropping messages.
-- Sessions are rolling, one per environment (see `agent.md`, `memory.md`).
+- Sessions are rolling, one per environment.
 - Adding a channel means adding one adapter; the rest of the system does not change.
 - No authentication in this phase. The gateway serves trusted networks only and must not be exposed — an unauthenticated gateway is a remote shell into the environment.
 
@@ -18,7 +18,7 @@ Governs the gateway: message ingress, routing, outbound delivery, and monitoring
 - `POST /envs/{env-id}/messages` accepts a message, assigns an ID, enqueues it, and returns `202` with the ID. An unknown env-id creates the environment at enqueue time, so creation errors (e.g. an invalid ID) surface to the sender as `400`.
 - `GET /envs/{env-id}/events` streams the environment's loop events (turn started, tool call, writeback, turn finished, turn failed) as server-sent events. Subscribing works with zero publishers and publishing works with zero subscribers; a subscriber that falls behind drops events rather than slowing the run.
 - The MVP outbound sink writes each `message_send` message as a JSON file under `data/envs/<env-id>/outbox/`. Real channel adapters replace the sink behind the same interface later.
-- The chat model is selected by the `model` config section: the scripted mock (default) or any OpenAI-compatible provider (see `agent.md`). The mock's canned script exercises the four built-in tools offline — a memory store, a `shell_exec` call, a `message_send` reply, and a writeback block; a run that exhausts the script fails, is logged, and the queue continues.
+- The chat model is selected by the `model` config section: the scripted mock (default) or any OpenAI-compatible provider. The mock's canned script exercises the four built-in tools offline — a memory store, a `shell_exec` call, a `message_send` reply, and a writeback block; a run that exhausts the script fails, is logged, and the queue continues.
 - Script tools join every environment's registry from the platform config's `tools:` section (ADR 0013): each entry names an operator-supplied executable the gateway runs as a subprocess with JSON on stdin/stdout, alongside the four built-ins.
 
 ## Rejected alternatives

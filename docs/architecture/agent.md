@@ -5,7 +5,7 @@ Governs the agent: the reasoning loop, tool use, and model access. Rationale: AD
 ## Current decisions
 
 - The agent runs one continuous rolling session per environment — a person model, not a task-runner model. No automatic resets.
-- Context is organized around the current task. Each turn follows the memory lifecycle: frame, recall, act, writeback (see `memory.md`).
+- Context is organized around the current task. Each turn follows the memory lifecycle: frame, recall, act, writeback.
 - The reasoning loop is model call → tool-call decision → execution → result incorporation → repeat. The agent reads the registry's tool schemas and decides on its own when to call which tool.
 - A tool call that already failed twice in the same turn with the identical error — exact match on name, input bytes and error text — is not executed a third time. The execution step is substituted with a synthetic result telling the model the call failed identically and that it must change approach or finish; the call still emits a failed `tool_call` event. The bookkeeping is per-turn, and the iteration cap remains the backstop.
 - Memory decisions (store, update, compress, forget) are the agent's own, made inside the reasoning loop via the memory tool and the writeback block. No separate memory-manager component exists.
@@ -18,4 +18,4 @@ Governs the agent: the reasoning loop, tool use, and model access. Rationale: AD
 ## Open questions
 
 - Non-OpenAI chat providers (Anthropic, …) and a real embedder provider — deferred; interfaces are stable.
-- Mid-run steering of the loop — deferred (see `gateway.md`).
+- Mid-run steering of the loop — deferred.

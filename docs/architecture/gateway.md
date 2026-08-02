@@ -1,6 +1,6 @@
 # Gateway
 
-Governs the gateway: message ingress, routing, outbound delivery, and monitoring. Rationale: ADR 0009.
+Governs the gateway: message ingress, routing, outbound delivery, and monitoring. Rationale: ADR 0009, ADR 0017.
 
 ## Current decisions
 
@@ -11,7 +11,7 @@ Governs the gateway: message ingress, routing, outbound delivery, and monitoring
 - Execution is serialized per environment. Messages arriving mid-run queue as followups; steering and interruption are deferred. Each environment's queue is bounded; a full queue applies backpressure to the sender instead of dropping messages.
 - Sessions are rolling, one per environment.
 - Adding a channel means adding one adapter; the rest of the system does not change.
-- No authentication in this phase. The gateway serves trusted networks only and must not be exposed — an unauthenticated gateway is a remote shell into the environment.
+- Callers authenticate with mTLS, terminated in the platform binary (ADR 0017): a `tls:` config section carries the server certificate/key and the client CA path, and the gateway requires and verifies client certificates against it. Without `tls:` the gateway serves loopback binds only; a non-loopback bind without TLS fails startup. An authenticated caller has full access in this phase. Certificate issuance and CA operation are operator/orchestration-layer scope.
 
 ### HTTP adapter (first channel)
 
@@ -28,6 +28,6 @@ Governs the gateway: message ingress, routing, outbound delivery, and monitoring
 
 ## Open questions
 
-- Authentication model — deferred.
+- Per-env authorization (ACLs over caller identity) — deferred until an orchestration use case demands it.
 - Mid-run steering / interruption — deferred.
 - Channel adapters beyond the first HTTP/API adapter — deferred.

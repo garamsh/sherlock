@@ -112,6 +112,32 @@ func TestProcessExecutor_RunsInWorkspace(t *testing.T) {
 	assert.Equal(t, "in-workspace", res.Stdout)
 }
 
+func TestProcessExecutor_ScrubsPlatformEnv(t *testing.T) {
+	requireRoot(t)
+	t.Setenv("GAGENT_TEST_PLATFORM_SECRET", "hunter2")
+	exec := shell.NewProcessExecutor(shell.DefaultAgentUID, 5*time.Second)
+
+	res, err := exec.Run(context.Background(), shell.Request{Command: "env"})
+
+	require.NoError(t, err)
+	assert.NotContains(t, res.Stdout, "GAGENT_TEST_PLATFORM_SECRET",
+		"platform variables must not reach shell_exec children (ADR 0004)")
+	assert.Contains(t, res.Stdout, "PATH=", "the minimal basics still reach the child")
+}
+
+func TestProcessExecutor_RequestEnvAppliesOnTop(t *testing.T) {
+	requireRoot(t)
+	exec := shell.NewProcessExecutor(shell.DefaultAgentUID, 5*time.Second)
+
+	res, err := exec.Run(context.Background(), shell.Request{
+		Command: "printf %s \"$GAGENT_TEST_REQUEST_VAR\"",
+		Env:     []string{"GAGENT_TEST_REQUEST_VAR=from-request"},
+	})
+
+	require.NoError(t, err)
+	assert.Equal(t, "from-request", res.Stdout)
+}
+
 func TestTool_InvalidInputRejectedAtBoundary(t *testing.T) {
 	exec := &fakeExecutor{}
 	toolImpl := shell.NewTool(exec)

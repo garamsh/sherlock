@@ -16,6 +16,7 @@ Governs the security model: trust domains, secret custody, and egress. Rationale
 ### Secrets
 
 - Secret values never materialize in the code-execution domain. Exposure is prevented by absence, not filtering.
+- Child processes spawned by code-executing tools (`shell_exec`, script tools) start from a minimal scrubbed environment — `PATH`, `HOME`, `LANG` only. The platform process's variables (provider API keys and the like) are never inherited implicitly; a script tool's operator-configured `exec.env` entries are the explicit channel for additional variables.
 - The environment carries placeholder references only, e.g. `GITHUB_TOKEN=secret://github-token`, injected as ordinary environment variables.
 - References resolve only at the egress tool, only for requests matching a (secret, destination host, header position) binding. References in request bodies or to unbound destinations are never substituted.
 - The egress tool redacts any occurrence of real values in response payloads, closing reflection leaks.

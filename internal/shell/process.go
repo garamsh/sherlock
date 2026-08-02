@@ -32,7 +32,8 @@ type Executor interface {
 
 // Request is one command invocation. Timeout <= 0 selects the Executor's
 // default. Workdir == "" leaves the child's cwd to the platform default.
-// Env, when non-nil, replaces the inherited environment.
+// The child starts from the scrubbed environment in tool.ChildEnv; Env
+// entries apply on top of it.
 type Request struct {
 	Command string
 	Timeout time.Duration

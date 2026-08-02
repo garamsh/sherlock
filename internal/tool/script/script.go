@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"os"
 	"os/exec"
 	"time"
 
@@ -80,7 +79,7 @@ func (t *ToolScript) Call(ctx context.Context, input json.RawMessage) (json.RawM
 	if t.spec.Exec.Workdir != "" {
 		cmd.Dir = t.spec.Exec.Workdir
 	}
-	cmd.Env = append(os.Environ(), t.spec.Exec.Env...)
+	cmd.Env = append(tool.ChildEnv(), t.spec.Exec.Env...)
 	cmd.Stdin = bytes.NewReader(input)
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout

@@ -19,8 +19,8 @@ import (
 )
 
 // rlimits are the resource limits ProcessExecutor applies to the child.
-// They are not configurable from the CLI in this iteration (ADR 0012) but
-// are kept as struct fields so a future flag can override them.
+// They are not configurable from the CLI (ADR 0012) but are kept as
+// struct fields so a flag can override them.
 type rlimits struct {
 	CPU          time.Duration
 	AddressSpace int64

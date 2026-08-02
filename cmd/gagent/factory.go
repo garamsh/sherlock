@@ -9,18 +9,11 @@ import (
 )
 
 // newFactory builds the environment runtime factory both entry points
-// use, so the resolved config reaches every environment the same way. A
-// nil sink selects the default file outbox.
-//
-// After ADR 0012 the platform binary wires the four built-in tools:
-// memory, files, message_send, and shell_exec. The shell_exec tool runs
-// agent-supplied commands as sub-processes dropped to the agent UID per
-// ADR 0006; the closure here constructs that executor from the resolved
-// config.
-//
-// The config's tools: section is validated here — the one validation
-// point both entry points share — so an invalid script tool fails
-// platform startup instead of the first message (ADR 0013).
+// use, so the resolved config reaches every environment the same way; a
+// nil sink selects the default file outbox. The config's tools: section
+// is validated here — the one validation point both entry points share —
+// so an invalid script tool fails platform startup instead of the first
+// message (ADR 0013).
 func newFactory(
 	cfg Config,
 	newModel func(envID string) agent.Model,

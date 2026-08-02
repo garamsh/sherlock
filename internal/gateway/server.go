@@ -23,8 +23,8 @@ const maxMessageBody = 1 << 20 // 1 MiB
 //	POST /envs/{envID}/messages — fire-and-forget ingress; 202 + message ID
 //	GET  /envs/{envID}/events   — SSE monitoring stream of loop events
 //
-// There is no authentication in this phase: the gateway serves trusted
-// networks only and must not be exposed (docs/architecture/gateway.md).
+// The gateway has no authentication: it serves trusted networks only
+// and must not be exposed (docs/architecture/gateway.md).
 func NewHandler(router *Router, logger *slog.Logger) http.Handler {
 	h := &handler{router: router, logger: logger}
 	mux := http.NewServeMux()
@@ -182,8 +182,8 @@ func (w *statusWriter) Flush() {
 }
 
 // logRequests logs one line per request with a locally generated
-// trace_id (no tracing backend in this phase; stack-go §5). Message
-// content is never logged.
+// trace_id (no tracing backend; stack-go §5). Message content is never
+// logged.
 func (h *handler) logRequests(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		traceID, err := newID("trace")

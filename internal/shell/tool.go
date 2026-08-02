@@ -32,7 +32,7 @@ func NewTool(exec Executor) *Tool {
 }
 
 // WithDefaultTimeout overrides the tool's default per-call timeout. A
-// value <= 0 keeps the package default (30s).
+// value <= 0 keeps the currently configured timeout.
 func (t *Tool) WithDefaultTimeout(d time.Duration) *Tool {
 	if d > 0 {
 		t.defaultTimeout = d

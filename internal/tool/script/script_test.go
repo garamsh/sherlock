@@ -114,6 +114,23 @@ func TestToolScript_Call_Env(t *testing.T) {
 	assert.Equal(t, "hello-env", string(out))
 }
 
+func TestToolScript_Call_ScrubsPlatformEnv(t *testing.T) {
+	t.Setenv("GAGENT_TEST_PLATFORM_SECRET", "hunter2")
+	ts := script.New(script.Spec{
+		Name: "env",
+		Exec: script.ExecSpec{
+			Command: []string{"env"},
+		},
+	})
+
+	out, err := ts.Call(context.Background(), json.RawMessage(`{}`))
+
+	require.NoError(t, err)
+	assert.NotContains(t, string(out), "GAGENT_TEST_PLATFORM_SECRET",
+		"platform variables must not reach script tool children (ADR 0004)")
+	assert.Contains(t, string(out), "PATH=", "the minimal basics still reach the child")
+}
+
 func TestToolScript_Call_Timeout(t *testing.T) {
 	ts := script.New(script.Spec{
 		Name: "slow",

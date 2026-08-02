@@ -141,7 +141,10 @@ func TestContract_RecordOnlyObtainedFacts(t *testing.T) {
 // and loops searches until act-loop exhaustion (ADR 0015). The #164
 // follow-up adds the store-vs-mention distinction: mentioning a fact in
 // the visible reply is not storing it, so a reply promising "I will
-// remember" without an add op is a broken turn.
+// remember" without an add op is a broken turn. The #164 residual adds
+// the store-vs-file distinction: writing the fact to a workspace file is
+// not remembering either — the writeback add array is where remembering
+// lives.
 func TestContract_RememberRequestsUseWriteback(t *testing.T) {
 	contract := agent.Contract
 	rIdx := strings.Index(contract, "When the user asks you to remember something")
@@ -160,6 +163,10 @@ func TestContract_RememberRequestsUseWriteback(t *testing.T) {
 		"the rule names the add array as the sole act of remembering")
 	assert.Contains(t, rule, "broken turn",
 		"the rule calls a store-claiming reply without an add a broken turn")
+	assert.Contains(t, rule, "Writing the fact to a workspace file is not remembering either",
+		"the rule carries the #164 store-vs-file distinction")
+	assert.Contains(t, rule, "where remembering lives",
+		"the rule pins the writeback add array as the home of remembering")
 	// The rule lives in the Memory writeback section so the model reads it
 	// next to the block format it invokes.
 	mwIdx := strings.Index(contract, "## Memory writeback")

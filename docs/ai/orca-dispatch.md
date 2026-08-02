@@ -59,16 +59,19 @@ Keep `<prompt>` free of single quotes (the whole command is already single-quote
 3. Create the worktree in orca, linked to the confirmed issue and based on `main`:
    `orca worktree create --repo name:<repo> --name <slug> --base-branch main --issue <N> --json`.
    Pass `--repo` explicitly (`name:<repo>` or `id:<id>`); do not pass orca's `--agent` here (it selects the tool, not the role — see §Binding the role). Read the worktree path from the result.
-4. Dispatch the worker headless in one command (§Running unattended) and capture the handle. Keep the prompt short — name the issue and point to the guides; the worker reads the issue itself:
-   `orca terminal create --worktree path:<worktree-path> --command "claude --agent worker --permission-mode bypassPermissions -p 'Work GitHub issue #<N> as the worker: run gh issue view <N>, implement it per docs/ai/worker-guide.md and docs/convention/, then commit, push, and open a PR with gh. You are already on the correct branch and worktree.'" --json`.
+4. Launch through a wrapper script, not an inline command. `terminal create --command` passes through a shell, and an inline command with quotes, parentheses, or backticks arrives mangled — the classic dispatch that never starts. A single-token `--command` survives every layer:
+   - write `/tmp/opencode/dispatch-<N>-prompt.txt` with the prompt (keep it short — name the issue and point to the guides; the worker reads the issue itself), then
+   - write `/tmp/opencode/dispatch-<N>.sh`:
+     `#!/bin/sh` / `cd <worktree-path>` / `exec opencode run --agent worker --auto "$(cat /tmp/opencode/dispatch-<N>-prompt.txt)"`
+   - `orca terminal create --worktree path:<worktree-path> --command "sh /tmp/opencode/dispatch-<N>.sh" --json` — capture the handle.
 5. Verify the dispatch by reading the terminal (§Watching a worker): the agent is working, not idling at an empty prompt. "Worktree created" is not "work started."
 
 The worker reads the issue, works on its branch, opens a PR, and exits; it does not create another branch or worktree.
 
-Two fallbacks, in order, when step 4 fails:
+Fallbacks, in order, when step 4 fails:
 
 - **Orca-native one-shot**: `orca worktree create --name <task> --no-parent --agent <id> --prompt "<brief>" --json` in step 3 launches the tool with the brief in the worktree's first terminal (`result.startupTerminal.handle` is the agent handle). The brief must be self-contained — task, constraints, paths. Remember this agent is role-less unless the tool was configured otherwise; use it only when role binding does not matter.
-- **Detached spawn**: when `terminal create --command` quoting mangles the launch (parentheses, backticks), spawn the tool detached in the worktree instead of through an orca terminal — e.g. Python `subprocess.Popen(..., start_new_session=True)` with stdout to a log file. Poll the log and `gh pr list` for completion. Proven reliable for opencode.
+- **Detached spawn** (last resort): when orca terminal tracking itself is unusable, spawn the tool detached in the worktree — e.g. Python `subprocess.Popen(..., start_new_session=True)` with stdout to a log file — and poll the log and `gh pr list`. The worker is then invisible to the Orca app: the worktree shows no agent and its status never updates, so it looks idle. Remove the worktree the moment the PR merges; never leave a detached-spawn worktree behind.
 
 ## Watching a worker
 
@@ -85,7 +88,7 @@ Two fallbacks, in order, when step 4 fails:
 
 ## After the PR
 
-Review and merge per `pm-guide.md`. Branch hygiene extends to orca: after merging, remove the worktree with `orca worktree rm --worktree path:<worktree-path>`. Never remove a worktree whose worker is still running or whose PR is open (`pm-guide.md` §Branch hygiene).
+Review and merge per `pm-guide.md`. Branch hygiene extends to orca: after merging, remove the worktree with `orca worktree rm --worktree path:<worktree-path>` and delete the task branch. Never remove a worktree whose worker is still running or whose PR is open (`pm-guide.md` §Branch hygiene). A worktree listed as in-progress whose terminal shows an exited process is a stale dispatch, not active work — remove it.
 
 ## Parallel work
 

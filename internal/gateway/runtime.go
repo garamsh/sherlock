@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"time"
@@ -78,40 +79,85 @@ type Factory struct {
 	// tool. Nil leaves shell_exec unregistered.
 	NewShellExecutor func() shell.Executor
 	// Tools lists the script tools from the platform config, registered
-	// alongside the built-ins. A name colliding with a built-in fails
-	// startup with tool.ErrDuplicateTool.
+	// alongside the built-ins. Platform entry points validate the section
+	// at startup through ValidateTools: a name colliding with a built-in
+	// fails startup with tool.ErrDuplicateTool.
 	Tools []ScriptTool
 }
 
 var _ RuntimeFactory = (*Factory)(nil)
 
-// ScriptTool is one entry of the platform config's tools: section, as
-// the gateway sees it: the schema file paths and exec settings a
-// script.ToolScript is built from. Adding a script tool is a config
-// change, not a code change.
+// ScriptTool is one entry of the platform config's tools: section — the
+// single shape a script tool has from the config file to the gateway
+// (docs/convention/simplicity.md: one concept, one shape). The
+// mapstructure tags are how viper decodes the entry; spec reads the
+// schema files and builds the script.Spec at registration. Adding a
+// script tool is a config change, not a code change.
 type ScriptTool struct {
 	// Name is the tool name; it must not collide with a built-in.
-	Name string
+	Name string `mapstructure:"name"`
 	// Description is the one-sentence tool summary shown to the model.
-	Description string
+	Description string `mapstructure:"description"`
 	// InputSchema is the path to the input JSON Schema file.
-	InputSchema string
+	InputSchema string `mapstructure:"input_schema"`
 	// OutputSchema is the path to the output JSON Schema file.
-	OutputSchema string
+	OutputSchema string `mapstructure:"output_schema"`
 	// Exec describes how to run the tool.
-	Exec ScriptToolExec
+	Exec ScriptToolExec `mapstructure:"exec"`
 }
 
-// ScriptToolExec mirrors script.ExecSpec with the timeout still in
-// seconds; Factory.New converts it to time.Duration when building the
-// spec.
+// ScriptToolExec describes how to run a script tool with the timeout
+// still in seconds; spec converts it to time.Duration when building the
+// script.Spec. TimeoutSeconds is an explicit integer: unmarshalling a
+// config integer straight into time.Duration would yield nanoseconds.
 type ScriptToolExec struct {
-	Command        []string
-	StdinFormat    string
-	StdoutFormat   string
-	TimeoutSeconds int
-	Env            []string
-	Workdir        string
+	// Command is the argv array (first element is the executable).
+	Command []string `mapstructure:"command"`
+	// StdinFormat selects how input is fed to the process ("json").
+	StdinFormat string `mapstructure:"stdin_format"`
+	// StdoutFormat selects how stdout is interpreted ("json" validates
+	// and returns a JSON document; anything else is returned as-is).
+	StdoutFormat string `mapstructure:"stdout_format"`
+	// TimeoutSeconds caps one tool run; <= 0 selects the script
+	// package's default.
+	TimeoutSeconds int `mapstructure:"timeout_seconds"`
+	// Env is extra KEY=VALUE pairs appended to the process environment.
+	Env []string `mapstructure:"env"`
+	// Workdir is the process working directory; empty inherits the
+	// platform's.
+	Workdir string `mapstructure:"workdir"`
+}
+
+// ValidateTools checks the platform config's tools: section the way New
+// would, without opening any environment: names must not collide with a
+// built-in or with each other, both schema files must be readable, and
+// the exec command must be non-empty. Platform entry points call it at
+// startup — the boundary for platform config
+// (docs/convention/runtime-safety.md §Boundaries) — so an invalid tools:
+// entry fails fast with an error naming the offending tool instead of
+// surfacing on the first message.
+func (f *Factory) ValidateTools() error {
+	builtins := make(map[string]struct{}, len(tool.BuiltinToolNames()))
+	for _, name := range tool.BuiltinToolNames() {
+		builtins[name] = struct{}{}
+	}
+	seen := make(map[string]struct{}, len(f.Tools))
+	for _, t := range f.Tools {
+		if _, ok := builtins[t.Name]; ok {
+			return fmt.Errorf("script tool %q collides with a built-in: %w", t.Name, tool.ErrDuplicateTool)
+		}
+		if _, ok := seen[t.Name]; ok {
+			return fmt.Errorf("script tool %q is declared twice: %w", t.Name, tool.ErrDuplicateTool)
+		}
+		seen[t.Name] = struct{}{}
+		if len(t.Exec.Command) == 0 {
+			return fmt.Errorf("script tool %q: exec.command is required", t.Name)
+		}
+		if _, err := t.spec(); err != nil {
+			return fmt.Errorf("script tool %q: %w", t.Name, err)
+		}
+	}
+	return nil
 }
 
 // spec builds the script.Spec for one configured script tool, reading

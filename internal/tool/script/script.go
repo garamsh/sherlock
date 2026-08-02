@@ -20,23 +20,23 @@ const DefaultTimeout = 30 * time.Second
 // and the execution command. The platform registers the tool from the
 // spec; the spec itself is the contract.
 type Spec struct {
-	Name         string          `yaml:"name"`
-	Description  string          `yaml:"description"`
-	InputSchema  json.RawMessage `yaml:"input_schema"`
-	OutputSchema json.RawMessage `yaml:"output_schema"`
-	Exec         ExecSpec        `yaml:"exec"`
+	Name         string
+	Description  string
+	InputSchema  json.RawMessage
+	OutputSchema json.RawMessage
+	Exec         ExecSpec
 }
 
 // ExecSpec describes how to run the tool: the argv array (first element is
 // the executable, the rest are arguments), the stdin/stdout formats, the
 // per-call timeout, and an optional environment and working directory.
 type ExecSpec struct {
-	Command      []string      `yaml:"command"`
-	StdinFormat  string        `yaml:"stdin_format"`
-	StdoutFormat string        `yaml:"stdout_format"`
-	Timeout      time.Duration `yaml:"timeout_seconds"`
-	Env          []string      `yaml:"env,omitempty"`
-	Workdir      string        `yaml:"workdir,omitempty"`
+	Command      []string
+	StdinFormat  string
+	StdoutFormat string
+	Timeout      time.Duration
+	Env          []string
+	Workdir      string
 }
 
 // ToolScript is the universal adapter: it runs any executable with JSON

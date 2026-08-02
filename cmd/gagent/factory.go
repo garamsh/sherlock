@@ -16,13 +16,17 @@ import (
 // agent-supplied commands as sub-processes dropped to the agent UID per
 // ADR 0006; the closure here constructs that executor from the resolved
 // config.
+//
+// The config's tools: section is validated here — the one validation
+// point both entry points share — so an invalid script tool fails
+// platform startup instead of the first message (ADR 0013).
 func newFactory(
 	cfg Config,
 	newModel func(envID string) agent.Model,
 	ego string,
 	sink message.Sink,
-) *gateway.Factory {
-	return &gateway.Factory{
+) (*gateway.Factory, error) {
+	factory := &gateway.Factory{
 		Root:             cfg.DataRoot,
 		NewModel:         newModel,
 		Ego:              ego,
@@ -31,30 +35,10 @@ func newFactory(
 		NewShellExecutor: func() shell.Executor {
 			return shell.NewProcessExecutor(shell.DefaultAgentUID, cfg.ExecTimeout)
 		},
-		Tools: scriptTools(cfg.Tools),
+		Tools: cfg.Tools,
 	}
-}
-
-// scriptTools carries the config's tools: section into the gateway's
-// ScriptTool shape; the gateway reads the schema files and builds each
-// script.Spec at registration.
-func scriptTools(tools []ToolConfig) []gateway.ScriptTool {
-	out := make([]gateway.ScriptTool, 0, len(tools))
-	for _, tc := range tools {
-		out = append(out, gateway.ScriptTool{
-			Name:         tc.Name,
-			Description:  tc.Description,
-			InputSchema:  tc.InputSchema,
-			OutputSchema: tc.OutputSchema,
-			Exec: gateway.ScriptToolExec{
-				Command:        tc.Exec.Command,
-				StdinFormat:    tc.Exec.StdinFormat,
-				StdoutFormat:   tc.Exec.StdoutFormat,
-				TimeoutSeconds: tc.Exec.TimeoutSeconds,
-				Env:            tc.Exec.Env,
-				Workdir:        tc.Exec.Workdir,
-			},
-		})
+	if err := factory.ValidateTools(); err != nil {
+		return nil, err
 	}
-	return out
+	return factory, nil
 }

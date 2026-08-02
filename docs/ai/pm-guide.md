@@ -55,7 +55,7 @@ Submit the review per `docs/convention/review.md`: formal review state, evidence
 
 ## Dispatching workers
 
-Assign implementation work by running a worker in an orca worktree, not by editing source yourself. Open the issue first and wait for a human to confirm it; only then create the worktree and dispatch. Launch a role-bound agent into the worktree in autonomous mode and watch its terminal to completion. Full procedure: `orca-dispatch.md`. Roles must be bound with the tool's own `--agent <role>` flag — orca's `--agent` selects only the tool.
+Assign implementation work by running a worker in an orca worktree, not by editing source yourself. Open the issue first and wait for a human to confirm it; only then create the worktree and dispatch. Launch a role-bound agent into the worktree in autonomous mode and watch its terminal to completion. A dispatch is verified by reading the worker's terminal, not by the create call succeeding. Full procedure: `orca-dispatch.md`. Roles must be bound with the tool's own `--agent <role>` flag — orca's `--agent` selects only the tool.
 
 ## Branch hygiene
 

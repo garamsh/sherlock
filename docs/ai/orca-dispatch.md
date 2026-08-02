@@ -76,6 +76,7 @@ Work is iterative: worker completes → PM reviews → PM comments on the issue 
 - PM sweep on every wake: `orca orchestration check --json` (unread Run mail) + `orca worktree ps --json` (stuck or in-review worktrees).
 - Worker-side status reporting (card updates, `worker_done`): `worker-guide.md` §Reporting status.
 - After the worker's PR is merged: `orca worktree rm --worktree path:<worktree-path>` and delete the task branch. A worktree listed as in-progress whose terminal shows an exited process is a stale dispatch, not active work — remove it.
+- A QA dispatch has no PR: remove its worktree as soon as the report lands on the issue. Every dispatch — worker or QA — ends with worktree removal; verify none are left (`orca worktree list`) after each completed dispatch.
 
 ## Anti-patterns
 

@@ -4,7 +4,7 @@ Browser-automation tool for the platform: a Python script run through the univer
 
 ## Files
 
-- `browser_test.py` — the tool. Reads a JSON job on stdin, drives a headless Chromium, prints a JSON result on stdout.
+- `browser_tool.py` — the tool. Reads a JSON job on stdin, drives a headless Chromium, prints a JSON result on stdout.
 - `schema.json` — the input and output JSON Schemas, side by side under the `input` and `output` keys (same format as the built-in Go tools).
 
 ## Install
@@ -19,7 +19,7 @@ The script runs without Playwright installed: it answers `{"ok": false, ..., "er
 ## Run standalone
 
 ```
-echo '{"url": "https://example.com", "action": "screenshot"}' | python3 browser_test.py
+echo '{"url": "https://example.com", "action": "screenshot"}' | python3 browser_tool.py
 ```
 
 Input and output shapes are defined in `schema.json`. The four actions:
@@ -42,7 +42,7 @@ tools:
     input_schema: tools/playwright/schema.json
     output_schema: tools/playwright/schema.json
     exec:
-      command: ["python3", "tools/playwright/browser_test.py"]
+      command: ["python3", "tools/playwright/browser_tool.py"]
       stdin_format: "json"
       stdout_format: "json"
       timeout_seconds: 30

@@ -12,7 +12,7 @@ tools:
     input_schema: tools/playwright/schema.json
     output_schema: tools/playwright/schema.json
     exec:
-      command: ["python3", "tools/playwright/browser_test.py"]
+      command: ["python3", "tools/playwright/browser_tool.py"]
       stdin_format: "json"
       stdout_format: "json"
       timeout_seconds: 30

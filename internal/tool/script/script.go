@@ -1,13 +1,12 @@
 package script
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
-	"os/exec"
 	"time"
 
+	"github.com/garamsh/gagent/internal/shell"
 	"github.com/garamsh/gagent/internal/tool"
 )
 
@@ -39,15 +38,23 @@ type ExecSpec struct {
 }
 
 // ToolScript is the universal adapter: it runs any executable with JSON
-// input on stdin and returns JSON output on stdout.
+// input on stdin and returns JSON output on stdout. Execution goes
+// through the shell.Executor, which drops the child to the agent UID
+// (ADR 0014); the child's network is not namespaced — a script tool is
+// an operator-sanctioned egress channel. When the platform cannot drop
+// privileges, Call fails with the executor's agent_uid unavailable error
+// instead of silently running as the platform UID.
 type ToolScript struct {
 	spec Spec
+	exec shell.Executor
 }
 
 var _ tool.Tool = (*ToolScript)(nil)
 
-// New returns a ToolScript for the given spec.
-func New(spec Spec) *ToolScript { return &ToolScript{spec: spec} }
+// New returns a ToolScript for the given spec, executing through exec.
+func New(spec Spec, exec shell.Executor) *ToolScript {
+	return &ToolScript{spec: spec, exec: exec}
+}
 
 // Name returns the tool name from the spec.
 func (t *ToolScript) Name() string { return t.spec.Name }
@@ -72,28 +79,26 @@ func (t *ToolScript) Call(ctx context.Context, input json.RawMessage) (json.RawM
 	if timeout <= 0 {
 		timeout = DefaultTimeout
 	}
-	ctx, cancel := context.WithTimeout(ctx, timeout)
-	defer cancel()
-
-	cmd := exec.CommandContext(ctx, t.spec.Exec.Command[0], t.spec.Exec.Command[1:]...)
-	if t.spec.Exec.Workdir != "" {
-		cmd.Dir = t.spec.Exec.Workdir
+	res, err := t.exec.Run(ctx, shell.Request{
+		Command: t.spec.Exec.Command[0],
+		Args:    t.spec.Exec.Command[1:],
+		Stdin:   input,
+		Timeout: timeout,
+		Workdir: t.spec.Exec.Workdir,
+		Env:     t.spec.Exec.Env,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("tool %q: %w", t.spec.Name, err)
 	}
-	cmd.Env = append(tool.ChildEnv(), t.spec.Exec.Env...)
-	cmd.Stdin = bytes.NewReader(input)
-	var stdout, stderr bytes.Buffer
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
-
-	if err := cmd.Run(); err != nil {
-		return nil, fmt.Errorf("tool %q: %w: %s", t.spec.Name, err, stderr.String())
+	if res.ExitCode != 0 {
+		return nil, fmt.Errorf("tool %q: exit code %d: %s", t.spec.Name, res.ExitCode, res.Stderr)
 	}
 	if t.spec.Exec.StdoutFormat == "json" {
 		var out json.RawMessage
-		if err := json.Unmarshal(stdout.Bytes(), &out); err != nil {
+		if err := json.Unmarshal([]byte(res.Stdout), &out); err != nil {
 			return nil, fmt.Errorf("tool %q: invalid JSON output: %w", t.spec.Name, err)
 		}
 		return out, nil
 	}
-	return stdout.Bytes(), nil
+	return []byte(res.Stdout), nil
 }

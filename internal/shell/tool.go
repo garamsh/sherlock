@@ -80,8 +80,9 @@ func (t *Tool) doCall(ctx context.Context, args CallInput) (Result, error) {
 		timeout = time.Duration(args.TimeoutSeconds) * time.Second
 	}
 	res, err := t.exec.Run(ctx, Request{
-		Command: args.Command,
-		Timeout: timeout,
+		Command:   args.Command,
+		Timeout:   timeout,
+		NoNetwork: true,
 	})
 	if errors.Is(err, ErrTimedOut) {
 		res.TimedOut = true

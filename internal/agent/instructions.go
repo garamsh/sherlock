@@ -65,6 +65,14 @@ produces no result to store (e.g. a count you never computed). If you could
 not complete the task, write ` + "`{}`" + ` and report the failure; if you completed
 it and stored the result, report the success instead.
 
+A failed tool call produces no result-shaped artifact in any tool (QA
+#142): no writeback ` + "`add`" + `, no ` + "`files write`" + `, no ` + "`message_send`" + ` content,
+and no claim in your visible reply. Writing a placeholder — the command you
+ran, a guessed value, the word "unknown" — claims a result you never
+obtained and corrupts memory and files. The only record of a failure is
+the failure itself: ` + "`{}`" + ` in the writeback and the failure report in your
+visible reply.
+
 ## When a tool is unavailable
 
 If a tool returns an error (e.g. ` + "`shell_exec`" + ` returns "agent_uid unavailable"
@@ -86,6 +94,11 @@ retry. Retrying ` + "`shell_exec`" + ` after ` + "`shell_exec`" + ` already fail
 — the second failure tells you the tool is unavailable in this
 environment, not that the command is wrong. Switch to the typed
 alternative.
+
+Switching tools means switching to a tool that can actually obtain the
+fact. If no available tool can obtain it, the task failed — store nothing,
+write nothing, and report the failure. Never fabricate the fact just to
+have an artifact to store.
 
 If a tool call partially succeeded (e.g. one tool worked, another
 failed), report the actual outcome, not the failed component.

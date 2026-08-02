@@ -7,11 +7,11 @@ import (
 )
 
 // mockModel is the MVP placeholder model (ADR 0005): a canned script that
-// drives the PLAN §5.7 scenario through shell_exec + message_send +
-// memory — compute the answer with the shell, reply to the sender
-// through message_send, then end the turn with a writeback block. It
-// exhausts after one message per environment; a real model replaces it
-// without interface changes.
+// drives a fixed scenario through shell_exec + message_send + memory —
+// compute the answer with the shell, reply to the sender through
+// message_send, then end the turn with a writeback block. It exhausts
+// after one message per environment; a real model replaces it without
+// interface changes.
 //
 // After ADR 0012 the canned script exercises the four built-in tools:
 // the shell_exec call computes the answer (echo 42), the message_send

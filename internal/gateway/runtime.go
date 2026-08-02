@@ -226,6 +226,24 @@ func readSchema(path, half string) (json.RawMessage, error) {
 	return raw, nil
 }
 
+// secureMemoryDB enforces the memory-UID trust domain (ADR 0006): a
+// privileged platform (euid 0) chowns memory.db to shell.DefaultMemoryUID
+// with mode 0600, so agent-UID children get EACCES from the kernel while
+// the memory service keeps opening the file as the platform process. An
+// unprivileged platform owns the file itself and skips the chown.
+func secureMemoryDB(path string) error {
+	if os.Geteuid() != 0 {
+		return nil
+	}
+	if err := os.Chown(path, shell.DefaultMemoryUID, -1); err != nil {
+		return fmt.Errorf("chown %q to memory uid: %w", path, err)
+	}
+	if err := os.Chmod(path, 0o600); err != nil {
+		return fmt.Errorf("chmod %q: %w", path, err)
+	}
+	return nil
+}
+
 // New implements RuntimeFactory: it opens (creating on first use) the
 // environment directory, memory store, and tool set, then wires the
 // session's recall, writeback, event, and context-compaction hooks.
@@ -234,9 +252,13 @@ func (f *Factory) New(_ context.Context, envID string, events agent.EventSink) (
 	if err != nil {
 		return nil, err
 	}
-	store, err := sqlite.Open(filepath.Join(env.Dir(), MemoryDBFile))
+	dbPath := filepath.Join(env.Dir(), MemoryDBFile)
+	store, err := sqlite.Open(dbPath)
 	if err != nil {
 		return nil, err
+	}
+	if err := secureMemoryDB(dbPath); err != nil {
+		return nil, errors.Join(err, store.Close())
 	}
 	summarizer := f.Summarizer
 	if summarizer == nil {

@@ -12,6 +12,12 @@ import (
 // privilege to switch UID, for ProcessExecutor to use it.
 const DefaultAgentUID = 1001
 
+// DefaultMemoryUID is the UID that owns the environment's memory.db in a
+// privileged deployment (ADR 0006): the platform chowns the file to it at
+// environment creation, so agent-UID children get EACCES from the kernel
+// and memory access goes only through the memory service.
+const DefaultMemoryUID = 1002
+
 // ErrAgentUIDUnavailable is returned by ProcessExecutor.Run when the
 // current effective user cannot drop to AgentUID (typically: not running
 // as root or setuid-root). Per ADR 0012 the agent falls back to the three

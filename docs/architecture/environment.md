@@ -9,7 +9,7 @@ Governs the environment model: what an environment is, its topology, and its tru
   - **Agent UID** — runs all agent-supplied code; unprivileged, always.
   - **Memory UID** — owns `memory.db`.
   - **Runtime UID** — owns tool runtime configuration.
-- Enforcement is kernel DAC (file ownership and modes), not filters. Agent code touching another UID's assets gets `EACCES`. Current state: `shell_exec` and script-tool child processes drop to the agent UID through the same executor, and only when the platform binary runs setuid-root — otherwise they report `agent_uid unavailable` (ADR 0012, ADR 0014). `memory.db` is still opened by the platform process; memory/runtime UID separation is not yet enforced.
+- Enforcement is kernel DAC (file ownership and modes), not filters. Agent code touching another UID's assets gets `EACCES`. Current state: `shell_exec` and script-tool child processes drop to the agent UID through the same executor, and only when the platform binary runs setuid-root — otherwise they report `agent_uid unavailable` (ADR 0012, ADR 0014). A privileged platform (euid 0) chowns `memory.db` to the memory UID with mode 0600 at environment creation, so agent-UID children get `EACCES`; unprivileged platforms skip the chown and own the file themselves. The memory service still opens the file as the platform process (root bypasses DAC); runtime UID separation is not yet enforced.
 - A tool runtime (supervisor) manages processes and drops privileges before executing agent-supplied code.
 - Boundary policy — egress, CPU/memory quotas, mount scope, lifecycle — is injected from outside at environment creation (target design). Current state: no container isolates the platform; `shell_exec` children run in a fresh empty network namespace (no loopback, no interfaces) on top of the agent-UID drop, while script tools keep network access as operator-sanctioned egress channels (ADR 0014, `security.md`). Resource caps on shell children are applied via rlimits.
 - Each environment owns `data/envs/<env-id>/` (workspace + `memory.db`). The directory is the isolation unit: teardown, migration, and backup are directory operations.
@@ -23,5 +23,5 @@ Governs the environment model: what an environment is, its topology, and its tru
 
 ## Open questions
 
-- Memory/runtime UID separation (setuid supervisor beyond the tool child processes): target design per ADR 0006; only `shell_exec` and script-tool children drop privileges today.
+- Runtime UID separation (tool runtime configuration custody) and workspace ownership by the agent UID: target design per ADR 0006; `memory.db` ownership is the one platform-asset domain enforced today.
 - Environment image definition and hygiene checklist (no setuid binaries, minimal capabilities): required by ADR 0006, not yet written.

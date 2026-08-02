@@ -83,6 +83,30 @@ func TestInvoke_InvalidInput(t *testing.T) {
 	}
 }
 
+func TestInvoke_ValidationErrorRestatesToolDescription(t *testing.T) {
+	stub := &stubTool{
+		name:        "exec",
+		description: "run a shell command on the workspace",
+		inSchema:    json.RawMessage(objectSchema),
+	}
+
+	_, err := tool.Invoke(context.Background(), stub, json.RawMessage(`{}`))
+
+	require.ErrorIs(t, err, tool.ErrValidation)
+	assert.ErrorContains(t, err, "run a shell command on the workspace",
+		"the rejection restates the tool's contract so the model can correct course (issue #160)")
+}
+
+func TestInvoke_ValidationErrorOmitsEmptyDescription(t *testing.T) {
+	stub := &stubTool{name: "exec", inSchema: json.RawMessage(objectSchema)}
+
+	_, err := tool.Invoke(context.Background(), stub, json.RawMessage(`{}`))
+
+	require.ErrorIs(t, err, tool.ErrValidation)
+	assert.NotContains(t, err.Error(), "tool description",
+		"a tool without a description keeps the bare validation error")
+}
+
 func TestInvoke_ToolError(t *testing.T) {
 	stub := &stubTool{
 		name:     "exec",

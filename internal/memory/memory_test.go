@@ -328,6 +328,32 @@ func TestTool_RejectsInvalidInput(t *testing.T) {
 	}
 }
 
+// TestTool_WriteShapedCallRejectsWithRedirect pins the #160 residual fix:
+// a writeback payload issued as a memory tool call still fails validation,
+// but the error the model reads restates that the tool is read-only and
+// points recording at the writeback block, so the model redirects instead
+// of retrying argument variants and finishing with an empty writeback.
+func TestTool_WriteShapedCallRejectsWithRedirect(t *testing.T) {
+	tl := memory.NewTool(newService(t))
+
+	tests := []struct {
+		name  string
+		input string
+	}{
+		{"add op with content", `{"op":"add","content":"the backup completed at 09:00","type":"episodic"}`},
+		{"add op with query variant", `{"op":"add","query":"the backup completed at 09:00","type":"episodic"}`},
+		{"writeback block as input", `{"keep":[],"add":[{"content":"x","type":"episodic"}]}`},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			_, err := tool.Invoke(context.Background(), tl, json.RawMessage(tc.input))
+			require.ErrorIs(t, err, tool.ErrValidation)
+			assert.ErrorContains(t, err, "Read-only")
+			assert.ErrorContains(t, err, "writeback block")
+		})
+	}
+}
+
 // Models generate tool arguments from the advertised root properties, so every
 // field and every operation name must be visible there, not only in conditionals.
 func TestTool_InputSchemaAdvertisesEveryFieldAtRoot(t *testing.T) {

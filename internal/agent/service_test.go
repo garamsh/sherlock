@@ -475,6 +475,139 @@ func TestSessionRun_RepeatBookkeepingResetsPerTurn(t *testing.T) {
 	assert.Equal(t, 4, flaky.calls, "the second turn starts with empty repeat bookkeeping")
 }
 
+// countingTool always succeeds and records how often it was executed.
+type countingTool struct {
+	name  string
+	calls int
+}
+
+func (t *countingTool) Name() string                  { return t.name }
+func (t *countingTool) Description() string           { return "counts executions" }
+func (t *countingTool) InputSchema() json.RawMessage  { return nil }
+func (t *countingTool) OutputSchema() json.RawMessage { return nil }
+
+func (t *countingTool) Call(_ context.Context, _ json.RawMessage) (json.RawMessage, error) {
+	t.calls++
+	return json.RawMessage(`{"ok":true}`), nil
+}
+
+// searchSteps scripts one successful search call per model response, with a
+// varying query so the identical-call guard never matches (issue #160).
+func searchSteps(queries ...string) []agent.ScriptedStep {
+	steps := make([]agent.ScriptedStep, 0, len(queries))
+	for _, q := range queries {
+		input, _ := json.Marshal(map[string]string{"query": q})
+		steps = append(steps, agent.ScriptedStep{
+			Content:   "searching\n```memory\n{}\n```",
+			ToolCalls: []agent.ToolCall{{Name: "search", Input: input}},
+		})
+	}
+	return steps
+}
+
+func TestSessionRun_ToolBudgetShortCircuits(t *testing.T) {
+	search := &countingTool{name: "search"}
+	events := &fakeEvents{}
+	steps := append(searchSteps("q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8"),
+		agent.ScriptedStep{Content: "done\n```memory\n{}\n```"})
+	s := agent.NewSession(agent.NewScriptedModel(steps...), registryWith(t, search), agent.Options{Events: events})
+
+	final, err := s.Run(context.Background(), "task")
+	require.NoError(t, err)
+	assert.Equal(t, "done", final, "the turn reaches a final response instead of exhausting the loop")
+	assert.Equal(t, 6, search.calls, "calls past the per-tool budget are not executed")
+
+	// The blocked calls are fed back as failed tool results and stay
+	// visible on the monitoring stream.
+	var toolEvents []agent.Event
+	for _, e := range events.events {
+		if e.Kind == agent.EventToolCall {
+			toolEvents = append(toolEvents, e)
+		}
+	}
+	require.Len(t, toolEvents, 8)
+	for _, e := range toolEvents[:6] {
+		assert.False(t, e.ToolFailed, "calls within the budget execute")
+	}
+	for _, e := range toolEvents[6:] {
+		assert.True(t, e.ToolFailed)
+		assert.Contains(t, e.ToolResult, "Not executed")
+		assert.Contains(t, e.ToolResult, `exhausted for this turn`)
+	}
+}
+
+func TestSessionRun_ToolBudgetIsPerTool(t *testing.T) {
+	search := &countingTool{name: "search"}
+	files := &countingTool{name: "files"}
+	steps := append(searchSteps("q1", "q2", "q3", "q4", "q5", "q6", "q7"),
+		agent.ScriptedStep{
+			Content:   "reading\n```memory\n{}\n```",
+			ToolCalls: []agent.ToolCall{{Name: "files", Input: json.RawMessage(`{"op":"read"}`)}},
+		},
+		agent.ScriptedStep{Content: "done\n```memory\n{}\n```"})
+	s := agent.NewSession(agent.NewScriptedModel(steps...), registryWith(t, search, files), agent.Options{})
+
+	final, err := s.Run(context.Background(), "task")
+	require.NoError(t, err)
+	assert.Equal(t, "done", final)
+	assert.Equal(t, 6, search.calls, "the search budget is spent")
+	assert.Equal(t, 1, files.calls, "a different tool is unaffected by the exhausted budget")
+}
+
+func TestSessionRun_ToolBudgetResetsPerTurn(t *testing.T) {
+	search := &countingTool{name: "search"}
+	steps := append(searchSteps("q1", "q2", "q3", "q4", "q5", "q6", "q7"),
+		agent.ScriptedStep{Content: "one\n```memory\n{}\n```"})
+	steps = append(steps, searchSteps("r1", "r2", "r3", "r4", "r5", "r6")...)
+	steps = append(steps, agent.ScriptedStep{Content: "two\n```memory\n{}\n```"})
+	s := agent.NewSession(agent.NewScriptedModel(steps...), registryWith(t, search), agent.Options{})
+
+	_, err := s.Run(context.Background(), "task one")
+	require.NoError(t, err)
+	require.Equal(t, 6, search.calls)
+
+	_, err = s.Run(context.Background(), "task two")
+	require.NoError(t, err)
+	assert.Equal(t, 12, search.calls, "the second turn starts with a fresh per-tool budget")
+}
+
+// TestSessionRun_RepeatedGuardPrecedesBudget is issue #160's companion to
+// TestSessionRun_ToolBudgetShortCircuits: within the budget, the
+// identical-call guard still fires with its own notice; the budget notice
+// only appears once the call count passes it.
+func TestSessionRun_RepeatedGuardPrecedesBudget(t *testing.T) {
+	flaky := &failingTool{errs: []string{"boom"}}
+	call := agent.ToolCall{Name: "flaky", Input: json.RawMessage(`{"n":1}`)}
+	steps := make([]agent.ScriptedStep, 0, 9)
+	for range 8 {
+		steps = append(steps, agent.ScriptedStep{
+			Content:   "retrying\n```memory\n{}\n```",
+			ToolCalls: []agent.ToolCall{call},
+		})
+	}
+	steps = append(steps, agent.ScriptedStep{Content: "done\n```memory\n{}\n```"})
+	s := agent.NewSession(agent.NewScriptedModel(steps...), registryWith(t, flaky), agent.Options{})
+
+	final, err := s.Run(context.Background(), "task")
+	require.NoError(t, err)
+	assert.Equal(t, "done", final)
+	assert.Equal(t, 2, flaky.calls, "the identical failing call is executed twice, then short-circuited")
+
+	var notices []string
+	for _, msg := range s.History() {
+		if msg.Role == agent.RoleTool {
+			notices = append(notices, msg.Content)
+		}
+	}
+	require.Len(t, notices, 8)
+	assert.Contains(t, notices[2], "you already made this exact call",
+		"the third identical call hits the repeat guard, not the budget")
+	assert.Contains(t, notices[5], "you already made this exact call",
+		"the repeat guard still fires at the budget boundary")
+	assert.Contains(t, notices[6], "exhausted for this turn",
+		"the budget notice appears only past the budget")
+}
+
 func TestSessionRun_CompactorHook(t *testing.T) {
 	model := agent.NewScriptedModel(
 		agent.ScriptedStep{Content: "one\n```memory\n{}\n```"},

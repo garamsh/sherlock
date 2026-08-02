@@ -16,8 +16,8 @@ import (
 )
 
 // fakeExecutor is the test double for the Executor interface. It records
-// the last request and returns the canned result, so the Tool adapter can
-// be exercised end-to-end without a real fork+exec.
+// the last request and returns the canned result and error, so the Tool
+// adapter can be exercised end-to-end without a real fork+exec.
 type fakeExecutor struct {
 	req    shell.Request
 	result shell.Result
@@ -26,10 +26,7 @@ type fakeExecutor struct {
 
 func (f *fakeExecutor) Run(_ context.Context, req shell.Request) (shell.Result, error) {
 	f.req = req
-	if f.err != nil {
-		return shell.Result{}, f.err
-	}
-	return f.result, nil
+	return f.result, f.err
 }
 
 // requireRoot skips the test when the current effective user cannot drop
@@ -154,6 +151,22 @@ func TestTool_DispatchesToExecutorAndMarshalsResult(t *testing.T) {
 	assert.Equal(t, 5*time.Second, exec.req.Timeout,
 		"timeout_seconds overrides the tool default")
 	assert.JSONEq(t, `{"stdout":"hi\n","stderr":"","exit_code":0,"timed_out":false}`, string(out))
+}
+
+func TestTool_TimeoutSurfacesTimedOutResult(t *testing.T) {
+	exec := &fakeExecutor{
+		result: shell.Result{Stdout: "partial output\n", TimedOut: true},
+		err:    shell.ErrTimedOut,
+	}
+	toolImpl := shell.NewTool(exec)
+
+	out, err := tool.Invoke(context.Background(), toolImpl,
+		json.RawMessage(`{"command":"sleep 60","timeout_seconds":2}`))
+
+	require.NoError(t, err, "a timeout is a normal outcome per ADR 0012, not a tool failure")
+	assert.JSONEq(t,
+		`{"stdout":"partial output\n","stderr":"","exit_code":0,"timed_out":true}`,
+		string(out))
 }
 
 func TestTool_ExecutorErrorSurfacesAsExecutionError(t *testing.T) {

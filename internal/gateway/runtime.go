@@ -53,7 +53,10 @@ type Runtime struct {
 // ADR 0012 restores the shell_exec tool: an agent-supplied command runs
 // as a sub-process dropped to the agent UID via NewShellExecutor. A nil
 // NewShellExecutor leaves shell_exec out of the registry — the agent
-// then has the three typed tools only.
+// then has the three typed tools only. ADR 0014 routes script tools
+// through the same executor: they drop to the agent UID too, and with
+// no executor wired their calls fail closed with agent_uid unavailable
+// instead of running as the platform UID.
 type Factory struct {
 	// Root is the parent directory of all environment data
 	// (environment.DefaultRoot by default).
@@ -80,7 +83,10 @@ type Factory struct {
 	// value selects DefaultShellExecTimeout.
 	ShellExecTimeout time.Duration
 	// NewShellExecutor constructs the Executor that backs the shell_exec
-	// tool. Nil leaves shell_exec unregistered.
+	// tool and every script tool (ADR 0014: script tools drop to the
+	// agent UID through the same executor). Nil leaves shell_exec
+	// unregistered; script tools still register but their calls fail
+	// closed with agent_uid unavailable.
 	NewShellExecutor func() shell.Executor
 	// Tools lists the script tools from the platform config, registered
 	// alongside the built-ins. Platform entry points validate the section
@@ -275,12 +281,16 @@ func (f *Factory) New(_ context.Context, envID string, events agent.EventSink) (
 			return nil, errors.Join(err, store.Close())
 		}
 	}
+	scriptExec := shell.UnavailableExecutor()
+	if f.NewShellExecutor != nil {
+		scriptExec = f.NewShellExecutor()
+	}
 	for _, st := range f.Tools {
 		spec, err := st.spec()
 		if err != nil {
 			return nil, errors.Join(err, store.Close())
 		}
-		if err := registry.Register(script.New(spec)); err != nil {
+		if err := registry.Register(script.New(spec, scriptExec)); err != nil {
 			return nil, errors.Join(err, store.Close())
 		}
 	}

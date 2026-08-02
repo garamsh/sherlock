@@ -89,8 +89,13 @@ func (e *ProcessExecutor) Run(ctx context.Context, req Request) (Result, error) 
 	runCtx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 
-	cmd := exec.CommandContext(runCtx, "sh", "-c", req.Command)
-	cmd.SysProcAttr = &syscall.SysProcAttr{
+	var cmd *exec.Cmd
+	if req.Args != nil {
+		cmd = exec.CommandContext(runCtx, req.Command, req.Args...)
+	} else {
+		cmd = exec.CommandContext(runCtx, "sh", "-c", req.Command)
+	}
+	attr := &syscall.SysProcAttr{
 		Setpgid:   true,
 		Pdeathsig: syscall.SIGKILL,
 		// Setuid clears effective + permitted capabilities in the child
@@ -99,6 +104,16 @@ func (e *ProcessExecutor) Run(ctx context.Context, req Request) (Result, error) 
 		// before exec), but the child is no longer root so its caps
 		// are inert.
 		Credential: &syscall.Credential{Uid: uint32(e.AgentUID), Gid: uint32(e.AgentUID)},
+	}
+	if req.NoNetwork {
+		// unshare runs in the child before the credential drop, while
+		// CAP_SYS_ADMIN is still held: the child lands in a fresh,
+		// empty network namespace (ADR 0014).
+		attr.Unshareflags = syscall.CLONE_NEWNET
+	}
+	cmd.SysProcAttr = attr
+	if req.Stdin != nil {
+		cmd.Stdin = bytes.NewReader(req.Stdin)
 	}
 	if req.Workdir != "" {
 		cmd.Dir = req.Workdir

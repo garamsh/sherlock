@@ -35,10 +35,21 @@ type Executor interface {
 // The child starts from the scrubbed environment in tool.ChildEnv; Env
 // entries apply on top of it.
 type Request struct {
+	// Command is the program to run. With no Args it is interpreted by
+	// `sh -c`; with Args it is the executable and the Args reach it
+	// verbatim (the script-tool argv form, ADR 0013).
 	Command string
+	Args    []string
+	// Stdin, when non-nil, is fed to the child's standard input.
+	Stdin   []byte
 	Timeout time.Duration
 	Workdir string
 	Env     []string
+	// NoNetwork runs the child in a fresh, empty network namespace
+	// (CLONE_NEWNET before the UID drop, ADR 0014): no loopback, no
+	// interfaces. shell_exec sets it; script tools leave it false —
+	// their network is the operator-sanctioned egress channel.
+	NoNetwork bool
 }
 
 // Result is the captured outcome of one command. ExitCode is the wait
@@ -50,3 +61,16 @@ type Result struct {
 	ExitCode int    `json:"exit_code"`
 	TimedOut bool   `json:"timed_out"`
 }
+
+// unavailableExecutor reports ErrAgentUIDUnavailable on every Run.
+type unavailableExecutor struct{}
+
+func (unavailableExecutor) Run(context.Context, Request) (Result, error) {
+	return Result{}, ErrAgentUIDUnavailable
+}
+
+// UnavailableExecutor returns an Executor whose Run always fails with
+// ErrAgentUIDUnavailable. It backs script tools when the platform wires
+// no executor: registration still succeeds but calls fail closed instead
+// of silently running as the platform UID (ADR 0014).
+func UnavailableExecutor() Executor { return unavailableExecutor{} }

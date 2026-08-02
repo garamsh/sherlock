@@ -41,8 +41,8 @@ The system is three components — Gateway / Agent / Tool. Every capability is a
 | `internal/memory/` | Own one environment's long-term memory: the `memory.db` store, hybrid search, and the five memory operations. | `memory.md` |
 | `internal/files/` | Read and write files inside the environment's workspace. | `environment.md` |
 | `internal/message/` | Deliver agent-decided outbound messages to channels and peers (`message_send`). | `gateway.md` |
-| `internal/shell/` | Run agent-supplied commands as sub-processes dropped to the agent UID (`shell_exec`). | `security.md` |
-| `internal/tool/script/` | Universal subprocess adapter: run any executable as a tool (ADR 0013). | `gateway.md` |
+| `internal/shell/` | Run tool child processes as sub-processes dropped to the agent UID — `shell_exec` in a fresh network namespace, script tools with network access (ADR 0014). | `security.md` |
+| `internal/tool/script/` | Universal subprocess adapter: run any executable as a tool through the shell executor (ADR 0013, ADR 0014). | `gateway.md` |
 | `internal/tool/tooltest/` | Build-time schema/struct conformance guards shared by tool tests. | — |
 | `internal/tool/mocks/` | Generated mocks of the tool contract for consumer tests. | — |
 | `tools/playwright/` | Example script tool (browser automation) registered via the config's `tools:` section. | `gateway.md` |

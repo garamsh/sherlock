@@ -138,6 +138,13 @@ func TestProcessExecutor_RequestEnvAppliesOnTop(t *testing.T) {
 	assert.Equal(t, "from-request", res.Stdout)
 }
 
+func TestUnavailableExecutor_AlwaysReportsAgentUIDUnavailable(t *testing.T) {
+	_, err := shell.UnavailableExecutor().Run(context.Background(),
+		shell.Request{Command: "echo hi"})
+
+	require.ErrorIs(t, err, shell.ErrAgentUIDUnavailable)
+}
+
 func TestTool_InvalidInputRejectedAtBoundary(t *testing.T) {
 	exec := &fakeExecutor{}
 	toolImpl := shell.NewTool(exec)
@@ -176,6 +183,8 @@ func TestTool_DispatchesToExecutorAndMarshalsResult(t *testing.T) {
 	assert.Equal(t, "echo hi", exec.req.Command, "command passes through unchanged")
 	assert.Equal(t, 5*time.Second, exec.req.Timeout,
 		"timeout_seconds overrides the tool default")
+	assert.True(t, exec.req.NoNetwork,
+		"shell_exec children always run in a fresh network namespace (ADR 0014)")
 	assert.JSONEq(t, `{"stdout":"hi\n","stderr":"","exit_code":0,"timed_out":false}`, string(out))
 }
 

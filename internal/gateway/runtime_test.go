@@ -370,6 +370,96 @@ func TestFactory_ScriptToolFromConfig(t *testing.T) {
 	}
 }
 
+// recordingExecutor is the test double for shell.Executor: it captures
+// the last request and returns the canned result, so the script-tool
+// wiring is exercised without a real fork+exec.
+type recordingExecutor struct {
+	req    shell.Request
+	result shell.Result
+	err    error
+}
+
+func (e *recordingExecutor) Run(_ context.Context, req shell.Request) (shell.Result, error) {
+	e.req = req
+	return e.result, e.err
+}
+
+// TestFactory_ScriptToolRunsThroughShellExecutor verifies the ADR 0014
+// wiring: the script tool's argv, stdin, and timeout reach the platform
+// executor, and the child keeps network access (no namespace).
+func TestFactory_ScriptToolRunsThroughShellExecutor(t *testing.T) {
+	input, output := writeScriptToolSchemas(t, t.TempDir())
+	exec := &recordingExecutor{result: shell.Result{Stdout: `{"count":2}`}}
+	factory := &gateway.Factory{
+		Root:     t.TempDir(),
+		NewModel: replyModel,
+		NewShellExecutor: func() shell.Executor {
+			return exec
+		},
+		Tools: []gateway.ScriptTool{{
+			Name:         "wordcount",
+			Description:  "Count words in a text.",
+			InputSchema:  input,
+			OutputSchema: output,
+			Exec: gateway.ScriptToolExec{
+				Command:        []string{"python3", "tools/wordcount.py"},
+				StdinFormat:    "json",
+				StdoutFormat:   "json",
+				TimeoutSeconds: 30,
+			},
+		}},
+	}
+	rt, err := factory.New(context.Background(), "env-1", nil)
+	require.NoError(t, err)
+	defer func() {
+		assert.NoError(t, rt.Close(context.Background()))
+	}()
+
+	st, err := rt.Registry.Lookup("wordcount")
+	require.NoError(t, err)
+	out, err := tool.Invoke(context.Background(), st, json.RawMessage(`{"text":"hello world"}`))
+
+	require.NoError(t, err)
+	assert.JSONEq(t, `{"count":2}`, string(out))
+	assert.Equal(t, "python3", exec.req.Command)
+	assert.Equal(t, []string{"tools/wordcount.py"}, exec.req.Args)
+	assert.JSONEq(t, `{"text":"hello world"}`, string(exec.req.Stdin),
+		"the tool input reaches the child on stdin")
+	assert.False(t, exec.req.NoNetwork,
+		"a script tool is an operator-sanctioned egress channel (ADR 0014)")
+}
+
+// TestFactory_ScriptToolWithoutExecutorFailsClosed verifies the ADR 0014
+// failure contract: with no executor wired the script tool still
+// registers, but calls report agent_uid unavailable instead of running
+// as the platform UID.
+func TestFactory_ScriptToolWithoutExecutorFailsClosed(t *testing.T) {
+	input, output := writeScriptToolSchemas(t, t.TempDir())
+	factory := &gateway.Factory{
+		Root:     t.TempDir(),
+		NewModel: replyModel,
+		Tools: []gateway.ScriptTool{{
+			Name:         "wordcount",
+			Description:  "Count words in a text.",
+			InputSchema:  input,
+			OutputSchema: output,
+			Exec:         gateway.ScriptToolExec{Command: []string{"python3", "tools/wordcount.py"}},
+		}},
+	}
+	rt, err := factory.New(context.Background(), "env-1", nil)
+	require.NoError(t, err)
+	defer func() {
+		assert.NoError(t, rt.Close(context.Background()))
+	}()
+
+	st, err := rt.Registry.Lookup("wordcount")
+	require.NoError(t, err)
+	_, err = tool.Invoke(context.Background(), st, json.RawMessage(`{"text":"hi"}`))
+
+	require.ErrorIs(t, err, shell.ErrAgentUIDUnavailable)
+	assert.Contains(t, err.Error(), "agent_uid unavailable")
+}
+
 func TestFactory_ScriptToolNameCollisionFailsStartup(t *testing.T) {
 	input, output := writeScriptToolSchemas(t, t.TempDir())
 	factory := &gateway.Factory{

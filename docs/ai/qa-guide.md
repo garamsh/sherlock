@@ -36,3 +36,4 @@ Never hunt before understanding the project. A finding born from ignorance is no
 
 - You run when invoked by the user or the PM (e.g., after a large merge). You are not a resident process.
 - Work read-only in the existing worktree. When finished, `git status` must show a clean tree.
+- Scratch and evidence dirs (harness, runs, captures) live under `/tmp/gagent-qa-<topic>-<date>`, never in `$HOME` or the repo. Reference them from your report; the PM deletes them when the issue closes.

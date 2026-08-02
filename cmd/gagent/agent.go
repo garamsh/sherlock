@@ -46,7 +46,8 @@ func newAgentCommand() *cobra.Command {
 }
 
 // runAgentTurn builds the environment runtime (same wiring as the gateway,
-// with a stdout sink in place of the file outbox) and runs one turn.
+// with a stdout sink in place of the file outbox), captures the message as
+// a user-turn memory (ADR 0016), and runs one turn.
 //
 // The factory wires the four built-in tools (memory, files, message_send,
 // shell_exec) per ADR 0012; the shell_exec executor runs agent-supplied
@@ -78,6 +79,9 @@ func runAgentTurn(ctx context.Context, cfg Config, envID, msg, ego string) error
 		}
 	}()
 
+	if err := rt.Capture(ctx, msg); err != nil {
+		return err
+	}
 	response, err := rt.Session.Run(ctx, msg)
 	if err != nil {
 		return err

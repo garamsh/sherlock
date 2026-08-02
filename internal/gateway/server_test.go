@@ -42,7 +42,7 @@ func postMessage(t *testing.T, url, body string) *http.Response {
 
 func TestServer_PostMessageReturns202WithID(t *testing.T) {
 	srv := newTestServer(t, func(string, agent.EventSink) (*gateway.Runtime, error) {
-		return &gateway.Runtime{Session: &fakeSession{}, Close: func(context.Context) error { return nil }}, nil
+		return &gateway.Runtime{Session: &fakeSession{}, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
 	})
 
 	resp := postMessage(t, srv.URL+"/envs/env-1/messages", `{"content":"hello"}`)
@@ -65,7 +65,7 @@ func TestServer_PostMessageRejectsBadRequests(t *testing.T) {
 		if envID == "bad" {
 			return nil, fmt.Errorf("%w: %q", environment.ErrInvalidID, envID)
 		}
-		return &gateway.Runtime{Session: &fakeSession{}, Close: func(context.Context) error { return nil }}, nil
+		return &gateway.Runtime{Session: &fakeSession{}, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
 	})
 
 	tests := []struct {
@@ -90,7 +90,7 @@ func TestServer_PostMessageRejectsBadRequests(t *testing.T) {
 
 func TestServer_MethodNotAllowed(t *testing.T) {
 	srv := newTestServer(t, func(string, agent.EventSink) (*gateway.Runtime, error) {
-		return &gateway.Runtime{Session: &fakeSession{}, Close: func(context.Context) error { return nil }}, nil
+		return &gateway.Runtime{Session: &fakeSession{}, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
 	})
 	resp, err := http.Get(srv.URL + "/envs/env-1/messages")
 	require.NoError(t, err)
@@ -137,7 +137,7 @@ func TestServer_EventsStreamsTurnEvents(t *testing.T) {
 		sink = events
 		mu.Unlock()
 		session := &emittingSession{events: events}
-		return &gateway.Runtime{Session: session, Close: func(context.Context) error { return nil }}, nil
+		return &gateway.Runtime{Session: session, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
 	})
 
 	received := sseListener(t, srv.URL+"/envs/env-1/events")
@@ -169,6 +169,7 @@ func TestServer_EventsStreamsTurnFailed(t *testing.T) {
 	srv := newTestServer(t, func(_ string, events agent.EventSink) (*gateway.Runtime, error) {
 		return &gateway.Runtime{
 			Session: &failingSession{events: events},
+			Capture: noopCapture,
 			Close:   func(context.Context) error { return nil },
 		}, nil
 	})

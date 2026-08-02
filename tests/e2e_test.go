@@ -161,7 +161,11 @@ func runMVPScenario(t *testing.T, baseURL, root, envID string) {
 }
 
 // assertMemoryStore opens the environment's memory store and confirms the
-// writeback landed an episodic memory containing the recorded question.
+// recorded question is still queryable after shutdown. ADR 0016 captures
+// the inbound message as a second episodic memory, so shutdown
+// consolidation (ADR 0015) compresses the captured turn and the writeback
+// add into one semantic parent; the assertion matches that parent, which
+// carries both contents.
 func assertMemoryStore(t *testing.T, envDir string) {
 	t.Helper()
 	store, err := sqlite.Open(filepath.Join(envDir, gateway.MemoryDBFile))
@@ -185,10 +189,12 @@ func assertMemoryStore(t *testing.T, envDir string) {
 	for _, h := range hits.Results {
 		if strings.Contains(h.Content, "user asked: 6 * 7") {
 			recorded = true
-			assert.Equal(t, "episodic", h.Type,
-				"the canned scenario records the question as an episodic memory")
+			assert.Equal(t, "semantic", h.Type,
+				"shutdown consolidation compresses the captured turn and the writeback add into one semantic parent")
+			assert.Contains(t, h.Content, e2eQuestion,
+				"the auto-captured user turn survives inside the consolidated parent")
 		}
 	}
 	assert.True(t, recorded,
-		"the writeback must have stored an episodic memory of the question, got: %s", found)
+		"the recorded question must stay queryable after shutdown, got: %s", found)
 }

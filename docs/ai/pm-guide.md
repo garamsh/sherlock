@@ -55,7 +55,7 @@ Submit the review per `docs/convention/review.md`: formal review state, evidence
 
 ## Dispatching workers
 
-Assign implementation work by running a worker in an orca worktree, not by editing source yourself. Open the issue first and wait for a human to confirm it; only then create the worktree and dispatch. Launch a role-bound agent into the worktree in autonomous mode and watch its terminal to completion. A dispatch is verified by reading the worker's terminal, not by the create call succeeding. Full procedure: `orca-dispatch.md`. Roles must be bound with the tool's own `--agent <role>` flag — orca's `--agent` selects only the tool.
+Assign implementation work by running a worker in an orca worktree, not by editing source yourself. Open the issue first and wait for a human to confirm it; only then create the worktree and dispatch. Watch the worker's terminal to completion. Full procedure — dispatch modes, role binding, recovery, follow-up rounds: `orca-dispatch.md`.
 
 ## Branch hygiene
 
@@ -67,6 +67,7 @@ Assign implementation work by running a worker in an orca worktree, not by editi
 
 - Scope tasks and issues so concurrently active workers touch disjoint modules. If two tasks must overlap, sequence them — do not run them in parallel.
 - When reviewing, check for collisions with other open PRs before merging.
+- On every wake, sweep before anything else: open PRs awaiting your review, unread orchestration mail (`orca orchestration check --json`), and stuck worktrees (`orca worktree ps --json`). Work continues through follow-up rounds — after reviewing, leave direction as an issue/PR comment and re-dispatch the same worker.
 
 ## Maintaining conventions
 

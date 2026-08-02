@@ -150,6 +150,60 @@ func TestContract_ReplyMatchesWritebackSideEffect(t *testing.T) {
 	assert.Less(t, ruleIdx, tuIdx, "the rule stays inside the Memory writeback section")
 }
 
+// TestContract_FailedToolCallProducesNoResultArtifact pins the QA #142
+// fix: the #137 clause covered only the writeback `add`, and gpt-4o-mini
+// rationalized storing a placeholder ("hostname") after shell_exec failed
+// — via the writeback, via files write, and in the visible reply. The
+// contract must forbid a result-shaped artifact from a failed tool call in
+// EVERY output channel and must define the tool-unavailable fallback as
+// switching to a tool that can actually obtain the fact, never fabricating
+// one.
+func TestContract_FailedToolCallProducesNoResultArtifact(t *testing.T) {
+	contract := agent.Contract
+	assert.Contains(t, contract,
+		"A failed tool call produces no result-shaped artifact in any tool",
+		"the no-result-artifact rule is present")
+	// The rule names every channel the QA #142 run abused: the writeback
+	// add op, files write, message_send, and the visible reply.
+	ruleIdx := strings.Index(contract,
+		"A failed tool call produces no result-shaped artifact in any tool")
+	require.Greater(t, ruleIdx, -1, "no-result-artifact rule missing")
+	ruleEnd := ruleIdx + 1200
+	if ruleEnd > len(contract) {
+		ruleEnd = len(contract)
+	}
+	ruleBlock := contract[ruleIdx:ruleEnd]
+	for _, frag := range []string{
+		"writeback `add`",
+		"`files write`",
+		"`message_send`",
+		"visible reply",
+		"placeholder",
+	} {
+		assert.Contains(t, ruleBlock, frag,
+			"the no-result-artifact rule names %q", frag)
+	}
+	// The rule lives in the Memory writeback section so the model reads
+	// it next to the add-op format it constrains.
+	mwIdx := strings.Index(contract, "## Memory writeback")
+	tuIdx := strings.Index(contract, "## When a tool is unavailable")
+	require.Greater(t, mwIdx, -1, "Memory writeback section missing")
+	require.Greater(t, tuIdx, -1, "When a tool is unavailable section missing")
+	assert.Greater(t, ruleIdx, mwIdx, "the rule comes after the Memory writeback header")
+	assert.Less(t, ruleIdx, tuIdx, "the rule stays inside the Memory writeback section")
+	// The fallback section defines switching tools as obtaining the fact
+	// with another tool, never fabricating one.
+	assert.Contains(t, contract,
+		"switching to a tool that can actually obtain the",
+		"the fallback is defined as obtaining the fact with another tool")
+	assert.Contains(t, contract,
+		"Never fabricate the fact",
+		"the contract forbids fabricating a fact to store")
+	fabIdx := strings.Index(contract, "Never fabricate the fact")
+	assert.Greater(t, fabIdx, tuIdx,
+		"the no-fabrication rule lives in the tool-unavailable section")
+}
+
 // TestDefaultEgo_BehaviorGuidance pins the identity + behavior lines the
 // expanded EGO.md carries (issue #96; proposal #94).
 func TestDefaultEgo_BehaviorGuidance(t *testing.T) {

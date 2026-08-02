@@ -35,5 +35,5 @@ Follow the response rules in `docs/convention/review.md`: address or rebut every
 
 ## Limits
 
-- Never modify `docs/convention/`, `docs/ai/`, `.opencode/`, `.claude/`, or `.github/`. Exception: PM-owned paths may be modified only when the assigned issue explicitly delegates them. Creating `.opencode/PLAN.md` for a materialized plan (`docs/convention/planning.md`) does not require delegation.
+- Never modify `docs/convention/`, `docs/ai/`, `.opencode/`, `.claude/`, or `.github/`. Exception: PM-owned paths may be modified only when the assigned issue explicitly delegates them. Creating `.opencode/PLAN.md` for a materialized plan does not require delegation.
 - Never create, edit, close issues, or merge PRs.

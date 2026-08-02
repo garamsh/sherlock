@@ -32,6 +32,10 @@ Governs the security model: trust domains, secret custody, and egress. Rationale
 
 - Command risk classification and output secret scanning are adopted as defense-in-depth layers. They are not boundaries: boundaries are structural only (file ownership, secret absence, network policy).
 
+### Gateway authentication
+
+- Callers authenticate with mTLS terminated in the platform binary (ADR 0017); the platform holds only public caller material (the client CA) plus its own server key outside the agent's execution domain — no shared caller secret enters any config. Authorization is flat in this phase; per-env ACLs are deferred.
+
 ## Rejected alternatives
 
 - **In-body secret substitution (shell wrapper, FUSE, LD_PRELOAD)** — the agent is root-adjacent in its domain; any secret materialized for use is materialized for theft.
@@ -41,4 +45,3 @@ Governs the security model: trust domains, secret custody, and egress. Rationale
 ## Open questions
 
 - Egress proxy implementation timing (TLS termination, CA provisioning) — MVP ships tool-routed access; raw egress proxy follows.
-- Gateway authentication — deferred.

@@ -37,6 +37,10 @@ type Runtime struct {
 	// Registry is the session's tool registry, exposed for tests and
 	// observability. Production callers go through Session.Run.
 	Registry *tool.Registry
+	// Capture stores one inbound message verbatim as an episodic
+	// user-turn memory (ADR 0016). The ingress path calls it at accept
+	// time, before the message is queued.
+	Capture func(ctx context.Context, content string) error
 	// Close releases the runtime's resources. Called once on router
 	// shutdown; memory consolidation (ADR 0015) runs before the store
 	// closes.
@@ -306,6 +310,7 @@ func (f *Factory) New(_ context.Context, envID string, events agent.EventSink) (
 	return &Runtime{
 		Session:  session,
 		Registry: registry,
+		Capture:  Capture{Svc: memSvc}.Capture,
 		Close: func(ctx context.Context) error {
 			_, err := memSvc.Consolidate(ctx)
 			return errors.Join(err, memSvc.Close())

@@ -134,47 +134,36 @@ func TestContract_RecordOnlyObtainedFacts(t *testing.T) {
 	assert.Less(t, idx, tuIdx, "the rule stays inside the Memory writeback section")
 }
 
-// TestContract_RememberRequestsUseWriteback pins the #160 fix: the
-// contract answers "when the user asks to remember" explicitly — do not
-// call the memory tool, write the fact in the writeback block's add
-// array. Without this the model reaches for the only memory-named tool
-// and loops searches until act-loop exhaustion (ADR 0015). The #164
-// follow-up adds the store-vs-mention distinction: mentioning a fact in
-// the visible reply is not storing it, so a reply promising "I will
-// remember" without an add op is a broken turn. The #164 residual adds
-// the store-vs-file distinction: writing the fact to a workspace file is
-// not remembering either — the writeback add array is where remembering
-// lives.
-func TestContract_RememberRequestsUseWriteback(t *testing.T) {
+// TestContract_AutoCaptureStatement pins the ADR 0016 contract collapse:
+// the platform remembers every user message automatically, so the
+// remember-request rule and its #164 store-vs-mention / store-vs-file
+// clauses shrink to one line — the writeback block carries distilled
+// facts, not transcripts.
+func TestContract_AutoCaptureStatement(t *testing.T) {
 	contract := agent.Contract
-	rIdx := strings.Index(contract, "When the user asks you to remember something")
-	require.Greater(t, rIdx, -1, "the remember-request rule is missing")
-	rule := contract[rIdx:]
-	if nl := strings.Index(rule, "\n"); nl >= 0 {
-		rule = rule[:nl]
+	const rule = "Every user message is remembered automatically by the platform"
+	idx := strings.Index(contract, rule)
+	require.Greater(t, idx, -1, "the auto-capture statement is missing")
+	line := contract[idx:]
+	if nl := strings.Index(line, "\n"); nl >= 0 {
+		line = line[:nl]
 	}
-	assert.Contains(t, rule, "do not call the memory tool",
-		"the remember-request rule steers away from the memory tool")
-	assert.Contains(t, rule, "add array",
-		"the rule points at the writeback add array")
-	assert.Contains(t, rule, "not storing it",
-		"the rule carries the #164 store-vs-mention distinction")
-	assert.Contains(t, rule, "the only act of remembering",
-		"the rule names the add array as the sole act of remembering")
-	assert.Contains(t, rule, "broken turn",
-		"the rule calls a store-claiming reply without an add a broken turn")
-	assert.Contains(t, rule, "Writing the fact to a workspace file is not remembering either",
-		"the rule carries the #164 store-vs-file distinction")
-	assert.Contains(t, rule, "where remembering lives",
-		"the rule pins the writeback add array as the home of remembering")
-	// The rule lives in the Memory writeback section so the model reads it
-	// next to the block format it invokes.
+	assert.Contains(t, line, "distilled facts, not transcripts",
+		"the one-line statement scopes the writeback to distilled facts")
+	assert.NotContains(t, contract, "When the user asks you to remember something",
+		"the remember-request rule is gone — capture is platform-owned")
+	assert.NotContains(t, contract, "the only act of remembering",
+		"the store-vs-mention clause is gone")
+	assert.NotContains(t, contract, "Writing the fact to a workspace file is not remembering",
+		"the store-vs-file clause is gone")
+	// The statement lives in the Memory writeback section so the model
+	// reads it next to the block format it constrains.
 	mwIdx := strings.Index(contract, "## Memory writeback")
 	tuIdx := strings.Index(contract, "## When a tool is unavailable")
 	require.Greater(t, mwIdx, -1, "Memory writeback section missing")
 	require.Greater(t, tuIdx, -1, "When a tool is unavailable section missing")
-	assert.Greater(t, rIdx, mwIdx, "the rule comes after the Memory writeback header")
-	assert.Less(t, rIdx, tuIdx, "the rule stays inside the Memory writeback section")
+	assert.Greater(t, idx, mwIdx, "the statement comes after the Memory writeback header")
+	assert.Less(t, idx, tuIdx, "the statement stays inside the Memory writeback section")
 }
 
 // TestContract_MemoryToolReadOnly pins the #160 contract half of the

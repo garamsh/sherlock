@@ -5,6 +5,7 @@ package tests
 import (
 	"bufio"
 	"context"
+	"database/sql"
 	"encoding/json"
 	"io"
 	"log/slog"
@@ -19,9 +20,12 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	_ "modernc.org/sqlite"
 
 	"github.com/garamsh/gagent/internal/agent"
 	"github.com/garamsh/gagent/internal/gateway"
+	"github.com/garamsh/gagent/internal/memory"
+	"github.com/garamsh/gagent/internal/memory/sqlite"
 	"github.com/garamsh/gagent/internal/message"
 	"github.com/garamsh/gagent/internal/tool"
 )
@@ -154,6 +158,139 @@ func TestGateway_EndToEnd(t *testing.T) {
 	require.Eventually(t, func() bool {
 		return len(outboxMessages(t, root, "env-2")) == 1
 	}, 5*time.Second, 10*time.Millisecond)
+}
+
+// capturedTurns returns the active user-turn captures in the
+// environment's memory store.
+func capturedTurns(t *testing.T, root, envID string) []memory.Memory {
+	t.Helper()
+	store, err := sqlite.Open(filepath.Join(root, envID, gateway.MemoryDBFile))
+	require.NoError(t, err)
+	defer func() {
+		assert.NoError(t, store.Close())
+	}()
+	active, err := store.Active(context.Background())
+	require.NoError(t, err)
+	var turns []memory.Memory
+	for _, m := range active {
+		if m.Source == gateway.SourceUserTurn {
+			turns = append(turns, m)
+		}
+	}
+	return turns
+}
+
+// capturedTurnContents returns the content of every durable user-turn
+// capture in the environment's memory store, active or archived. Shutdown
+// consolidation (ADR 0015) may archive captures into a compressed parent,
+// but nothing is ever hard-deleted — a restart must neither lose nor
+// duplicate them.
+func capturedTurnContents(t *testing.T, root, envID string) []string {
+	t.Helper()
+	db, err := sql.Open("sqlite", filepath.Join(root, envID, gateway.MemoryDBFile))
+	require.NoError(t, err)
+	defer func() {
+		assert.NoError(t, db.Close())
+	}()
+	rows, err := db.Query(
+		`SELECT content FROM memories_active WHERE source = ?
+		 UNION ALL SELECT content FROM memories_archive WHERE source = ?`,
+		gateway.SourceUserTurn, gateway.SourceUserTurn)
+	require.NoError(t, err)
+	defer func() {
+		assert.NoError(t, rows.Close())
+	}()
+	var contents []string
+	for rows.Next() {
+		var content string
+		require.NoError(t, rows.Scan(&content))
+		contents = append(contents, content)
+	}
+	require.NoError(t, rows.Err())
+	return contents
+}
+
+// TestGateway_InboundMessageCapturedBeforeRunCompletes pins the ADR 0016
+// accept-time capture: the inbound message lands in memory.db as an
+// episodic user-turn memory with low importance while its run is still
+// blocked in the model.
+func TestGateway_InboundMessageCapturedBeforeRunCompletes(t *testing.T) {
+	root := t.TempDir()
+	release := make(chan struct{})
+	gated := &gatedModel{inner: replyScript("reply"), release: release, started: make(chan struct{})}
+
+	factory := &gateway.Factory{
+		Root:     root,
+		NewModel: func(string) agent.Model { return gated },
+	}
+	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
+	router := gateway.NewRouter(factory, logger)
+	t.Cleanup(func() {
+		close(release)
+		router.Close()
+	})
+	srv := httptest.NewServer(gateway.NewHandler(router, logger))
+	t.Cleanup(srv.Close)
+
+	resp := postJSON(t, srv.URL+"/envs/env-1/messages", `{"content":"the wifi password is hunter2"}`)
+	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
+	resp.Body.Close()
+	select {
+	case <-gated.started:
+	case <-time.After(5 * time.Second):
+		t.Fatal("run did not start")
+	}
+
+	// The run is still blocked, yet the capture is already durable.
+	turns := capturedTurns(t, root, "env-1")
+	require.Len(t, turns, 1)
+	assert.Equal(t, "the wifi password is hunter2", turns[0].Content,
+		"the message is stored verbatim")
+	assert.Equal(t, memory.TypeEpisodic, turns[0].Type)
+	assert.Less(t, turns[0].ImportanceScore, gateway.DefaultAddImportance,
+		"raw turns rank below curated writeback facts")
+}
+
+// TestGateway_RestartBetweenEnqueueAndRunKeepsCapture pins the ADR 0016
+// crash-safety guarantee: closing the gateway between enqueue and run
+// neither loses nor duplicates the capture. The queued message itself is
+// gone after the restart (the queue is in-memory, ADR 0009
+// fire-and-forget ingress), but its capture is already durable.
+func TestGateway_RestartBetweenEnqueueAndRunKeepsCapture(t *testing.T) {
+	root := t.TempDir()
+	release := make(chan struct{})
+	gated := &gatedModel{inner: replyScript("reply-1"), release: release, started: make(chan struct{})}
+
+	factory := &gateway.Factory{
+		Root:     root,
+		NewModel: func(string) agent.Model { return gated },
+	}
+	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
+	router := gateway.NewRouter(factory, logger)
+	srv := httptest.NewServer(gateway.NewHandler(router, logger))
+
+	resp := postJSON(t, srv.URL+"/envs/env-1/messages", `{"content":"first"}`)
+	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
+	resp.Body.Close()
+	select {
+	case <-gated.started:
+	case <-time.After(5 * time.Second):
+		t.Fatal("first run did not start")
+	}
+	// The second message is accepted and queued behind the blocked run.
+	resp = postJSON(t, srv.URL+"/envs/env-1/messages", `{"content":"second"}`)
+	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
+	resp.Body.Close()
+
+	// Simulated restart: the gateway closes mid-run, before the queued
+	// message's run starts.
+	close(release)
+	srv.Close()
+	require.NoError(t, router.Close())
+
+	contents := capturedTurnContents(t, root, "env-1")
+	assert.ElementsMatch(t, []string{"first", "second"}, contents,
+		"each accepted message is captured exactly once, none lost, none duplicated")
 }
 
 func postJSON(t *testing.T, url, body string) *http.Response {

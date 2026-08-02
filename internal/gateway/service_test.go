@@ -81,10 +81,14 @@ func newTestLogger() *slog.Logger {
 	return slog.New(slog.DiscardHandler)
 }
 
+// noopCapture is the no-op inbound-message capture for runtimes whose
+// tests do not exercise ADR 0016 capture.
+func noopCapture(context.Context, string) error { return nil }
+
 func TestRouter_EnqueueAssignsIDAndRunsMessage(t *testing.T) {
 	session := &fakeSession{}
 	factory := &fakeFactory{newFn: func(string, agent.EventSink) (*gateway.Runtime, error) {
-		return &gateway.Runtime{Session: session, Close: func(context.Context) error { return nil }}, nil
+		return &gateway.Runtime{Session: session, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
 	}}
 	router := gateway.NewRouter(factory, newTestLogger())
 	defer router.Close()
@@ -103,7 +107,7 @@ func TestRouter_SerializesRunsFIFO(t *testing.T) {
 	gate := make(chan struct{})
 	session := &fakeSession{gate: gate}
 	factory := &fakeFactory{newFn: func(string, agent.EventSink) (*gateway.Runtime, error) {
-		return &gateway.Runtime{Session: session, Close: func(context.Context) error { return nil }}, nil
+		return &gateway.Runtime{Session: session, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
 	}}
 	router := gateway.NewRouter(factory, newTestLogger())
 	defer router.Close()
@@ -130,7 +134,7 @@ func TestRouter_SerializesRunsFIFO(t *testing.T) {
 func TestRouter_CreatesEnvironmentOnce(t *testing.T) {
 	session := &fakeSession{}
 	factory := &fakeFactory{newFn: func(string, agent.EventSink) (*gateway.Runtime, error) {
-		return &gateway.Runtime{Session: session, Close: func(context.Context) error { return nil }}, nil
+		return &gateway.Runtime{Session: session, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
 	}}
 	router := gateway.NewRouter(factory, newTestLogger())
 	defer router.Close()
@@ -155,7 +159,7 @@ func TestRouter_FactoryErrorSurfaces(t *testing.T) {
 
 func TestRouter_EnqueueAfterCloseFails(t *testing.T) {
 	factory := &fakeFactory{newFn: func(string, agent.EventSink) (*gateway.Runtime, error) {
-		return &gateway.Runtime{Session: &fakeSession{}, Close: func(context.Context) error { return nil }}, nil
+		return &gateway.Runtime{Session: &fakeSession{}, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
 	}}
 	router := gateway.NewRouter(factory, newTestLogger())
 	require.NoError(t, router.Close())
@@ -170,6 +174,7 @@ func TestRouter_CloseReleasesRuntimes(t *testing.T) {
 	factory := &fakeFactory{newFn: func(envID string, _ agent.EventSink) (*gateway.Runtime, error) {
 		return &gateway.Runtime{
 			Session: &fakeSession{},
+			Capture: noopCapture,
 			Close: func(context.Context) error {
 				mu.Lock()
 				closed = append(closed, envID)
@@ -193,7 +198,7 @@ func TestRouter_CloseReleasesRuntimes(t *testing.T) {
 func TestRouter_FailedRunDoesNotBlockQueue(t *testing.T) {
 	session := &fakeSession{err: errors.New("boom")}
 	factory := &fakeFactory{newFn: func(string, agent.EventSink) (*gateway.Runtime, error) {
-		return &gateway.Runtime{Session: session, Close: func(context.Context) error { return nil }}, nil
+		return &gateway.Runtime{Session: session, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
 	}}
 	router := gateway.NewRouter(factory, newTestLogger())
 	defer router.Close()
@@ -212,7 +217,7 @@ func TestRouter_FailedRunDoesNotBlockQueue(t *testing.T) {
 
 func TestRouter_EventsDoesNotCreateEnvironment(t *testing.T) {
 	factory := &fakeFactory{newFn: func(string, agent.EventSink) (*gateway.Runtime, error) {
-		return &gateway.Runtime{Session: &fakeSession{}, Close: func(context.Context) error { return nil }}, nil
+		return &gateway.Runtime{Session: &fakeSession{}, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
 	}}
 	router := gateway.NewRouter(factory, newTestLogger())
 	defer router.Close()
@@ -221,4 +226,65 @@ func TestRouter_EventsDoesNotCreateEnvironment(t *testing.T) {
 	require.NotNil(t, broker)
 	assert.Same(t, broker, router.Events("env-1"))
 	assert.Empty(t, factory.createdEnvs())
+}
+
+// TestRouter_EnqueueCapturesInboundMessage pins the ADR 0016 capture
+// step: every accepted message is captured exactly once, at accept time,
+// before its run starts.
+func TestRouter_EnqueueCapturesInboundMessage(t *testing.T) {
+	gate := make(chan struct{})
+	session := &fakeSession{gate: gate}
+	var mu sync.Mutex
+	var captured []string
+	factory := &fakeFactory{newFn: func(string, agent.EventSink) (*gateway.Runtime, error) {
+		return &gateway.Runtime{
+			Session: session,
+			Capture: func(_ context.Context, content string) error {
+				mu.Lock()
+				captured = append(captured, content)
+				mu.Unlock()
+				return nil
+			},
+			Close: func(context.Context) error { return nil },
+		}, nil
+	}}
+	router := gateway.NewRouter(factory, newTestLogger())
+	defer func() {
+		close(gate)
+		router.Close()
+	}()
+
+	_, err := router.Enqueue(context.Background(), "env-1", "first")
+	require.NoError(t, err)
+	_, err = router.Enqueue(context.Background(), "env-1", "second")
+	require.NoError(t, err)
+
+	// The first run is still blocked and the second message has not run,
+	// yet both captures already happened — capture precedes the run.
+	mu.Lock()
+	defer mu.Unlock()
+	assert.Equal(t, []string{"first", "second"}, captured)
+}
+
+// TestRouter_CaptureFailureRejectsEnqueue pins the failure contract of
+// the ADR 0016 capture step: a message whose capture fails is not
+// accepted and never runs, so no accepted message goes uncaptured.
+func TestRouter_CaptureFailureRejectsEnqueue(t *testing.T) {
+	session := &fakeSession{}
+	captureErr := errors.New("store unavailable")
+	factory := &fakeFactory{newFn: func(string, agent.EventSink) (*gateway.Runtime, error) {
+		return &gateway.Runtime{
+			Session: session,
+			Capture: func(context.Context, string) error {
+				return captureErr
+			},
+			Close: func(context.Context) error { return nil },
+		}, nil
+	}}
+	router := gateway.NewRouter(factory, newTestLogger())
+	defer router.Close()
+
+	_, err := router.Enqueue(context.Background(), "env-1", "hi")
+	assert.ErrorIs(t, err, captureErr)
+	assert.Empty(t, session.startedTasks(), "a rejected message never runs")
 }

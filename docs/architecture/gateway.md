@@ -5,7 +5,7 @@ Governs the gateway: message ingress, routing, outbound delivery, and monitoring
 ## Current decisions
 
 - The gateway separates three flows:
-  - **Ingress** — asynchronous and fire-and-forget. Channel adapters normalize inbound messages; the gateway assigns an ID, enqueues for the target environment, and acknowledges. No synchronous response couples a sender to a run.
+  - **Ingress** — asynchronous and fire-and-forget. Channel adapters normalize inbound messages; the gateway assigns an ID, captures the message verbatim as an episodic `user-turn` memory at accept time (ADR 0016 — the capture commits before the ack, so a failed run or a restart before the run starts never loses or duplicates it; a capture failure rejects the message), enqueues for the target environment, and acknowledges. No synchronous response couples a sender to a run.
   - **Outbound** — a `message_send` tool (channel, target, content) carries every reply. The agent decides when and to whom to respond; the sender, another person, and another agent are all the same kind of target.
   - **Monitoring** — a read-only subscription event stream (turn started, tool calls, memory writeback, turn finished or failed). Every run ends with exactly one terminal event — `turn_finished` on success, `turn_failed` with the error on failure — so subscribers can always finalize their view of a turn. Never part of the message path; typically no subscribers.
 - Execution is serialized per environment. Messages arriving mid-run queue as followups; steering and interruption are deferred. Each environment's queue is bounded; a full queue applies backpressure to the sender instead of dropping messages.

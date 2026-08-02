@@ -74,6 +74,12 @@ func NewRouter(factory RuntimeFactory, logger *slog.Logger) *Router {
 // creating the environment on first use. It returns the assigned ID once
 // the message is queued; there is no synchronous agent response. A full
 // queue blocks the caller (honoring ctx) until a run drains a slot.
+//
+// The message is captured as an episodic user-turn memory (ADR 0016)
+// before it is queued: the capture commits to the environment's memory
+// store at accept time, so a failed run or a gateway restart before the
+// run starts never loses it, and each accepted message is captured
+// exactly once. A capture failure rejects the message.
 func (r *Router) Enqueue(ctx context.Context, envID, content string) (string, error) {
 	q, err := r.env(envID)
 	if err != nil {
@@ -81,6 +87,9 @@ func (r *Router) Enqueue(ctx context.Context, envID, content string) (string, er
 	}
 	id, err := newID("msg")
 	if err != nil {
+		return "", err
+	}
+	if err := q.runtime.Capture(ctx, content); err != nil {
 		return "", err
 	}
 	msg := Inbound{ID: id, EnvID: envID, Content: content, QueuedAt: time.Now()}

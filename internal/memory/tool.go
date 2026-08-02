@@ -12,9 +12,11 @@ import (
 // ToolName is the registered name of the memory tool.
 const ToolName = "memory"
 
-// toolDescription is the one-sentence summary advertised to model providers,
-// matching the memory responsibility in docs/architecture/memory.md.
-const toolDescription = "Search the environment's long-term memory."
+// toolDescription is the summary advertised to model providers. It states
+// the tool is read-only and points recording at the writeback block so a
+// "remember X" request does not loop searches (issue #160); the read-only
+// responsibility is pinned in docs/architecture/memory.md (ADR 0015).
+const toolDescription = "Search the environment's long-term memory. Read-only: to record a fact, write it in the memory writeback block at the end of your reply, not through this tool."
 
 type memoryTool struct {
 	svc Service

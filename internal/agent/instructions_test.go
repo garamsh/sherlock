@@ -134,6 +134,47 @@ func TestContract_RecordOnlyObtainedFacts(t *testing.T) {
 	assert.Less(t, idx, tuIdx, "the rule stays inside the Memory writeback section")
 }
 
+// TestContract_RememberRequestsUseWriteback pins the #160 fix: the
+// contract answers "when the user asks to remember" explicitly — do not
+// call the memory tool, write the fact in the writeback block's add
+// array. Without this the model reaches for the only memory-named tool
+// and loops searches until act-loop exhaustion (ADR 0015).
+func TestContract_RememberRequestsUseWriteback(t *testing.T) {
+	contract := agent.Contract
+	assert.Contains(t, contract,
+		"When the user asks you to remember something, do not call the memory tool",
+		"the remember-request rule is present")
+	assert.Contains(t, contract, "add array",
+		"the rule points at the writeback add array")
+	// The rule lives in the Memory writeback section so the model reads it
+	// next to the block format it invokes.
+	mwIdx := strings.Index(contract, "## Memory writeback")
+	tuIdx := strings.Index(contract, "## When a tool is unavailable")
+	rIdx := strings.Index(contract, "When the user asks you to remember something")
+	require.Greater(t, mwIdx, -1, "Memory writeback section missing")
+	require.Greater(t, tuIdx, -1, "When a tool is unavailable section missing")
+	require.Greater(t, rIdx, -1, "the remember-request rule is missing")
+	assert.Greater(t, rIdx, mwIdx, "the rule comes after the Memory writeback header")
+	assert.Less(t, rIdx, tuIdx, "the rule stays inside the Memory writeback section")
+}
+
+// TestContract_MemoryToolReadOnly pins the #160 contract half of the
+// model-facing fix: the memory tool's selection guidance states the tool
+// is read-only and that recording happens in the writeback block.
+func TestContract_MemoryToolReadOnly(t *testing.T) {
+	contract := agent.Contract
+	idx := strings.Index(contract, "- memory: search and read your long-term memory.")
+	require.Greater(t, idx, -1, "the memory tool selection line is missing")
+	entry := contract[idx:]
+	if nl := strings.Index(entry, "\n- "); nl >= 0 {
+		entry = entry[:nl]
+	}
+	assert.Contains(t, entry, "read-only",
+		"the selection entry states the tool is read-only")
+	assert.Contains(t, entry, "writeback block",
+		"the selection entry points recording at the writeback block")
+}
+
 // TestDefaultEgo_BehaviorGuidance pins the identity + behavior lines the
 // expanded EGO.md carries (issue #96; proposal #94).
 func TestDefaultEgo_BehaviorGuidance(t *testing.T) {

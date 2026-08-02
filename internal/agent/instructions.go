@@ -19,7 +19,8 @@ var DefaultEgo string
 const Contract = `## Tools
 Pick the right tool for the task; don't run code when memory or files will do.
 
-- memory: search and read your long-term memory.
+- memory: search and read your long-term memory. The tool is read-only —
+  recording happens in the writeback block, never through a memory tool call.
 - files: read and write files in your workspace.
 - message_send: send a message to a channel and target. When the task came from
   a person and a reply is owed, reply through message_send. Your final response
@@ -45,6 +46,8 @@ strings: "1", "42"). If a tool call failed, write ` + "`{}`" + ` and explain the
 in your visible reply.
 
 Record only facts you actually obtained this turn: a failed tool call produces no result to store, never a placeholder, and your visible reply must match the writeback side effect.
+
+When the user asks you to remember something, do not call the memory tool — it cannot store. Write the fact in the add array of the writeback block instead.
 
 ## When a tool is unavailable
 

@@ -37,6 +37,15 @@ const (
 	// internal/agent/openai.DefaultTimeout so the default behaviour is
 	// identical whether the key is set or not.
 	defaultModelTimeout = 60 * time.Second
+
+	defaultEmbedderProvider = "hashing"
+	defaultEmbedderBaseURL  = "https://api.openai.com/v1"
+	defaultEmbedderModel    = "text-embedding-3-small"
+	defaultEmbedderKeyEnv   = "OPENAI_API_KEY"
+	// defaultEmbedderTimeout bounds one embeddings request. It mirrors
+	// internal/memory/openai.DefaultTimeout so the default behaviour is
+	// identical whether the key is set or not.
+	defaultEmbedderTimeout = 60 * time.Second
 )
 
 // Config is the platform's resolved settings, parsed once at the command
@@ -50,15 +59,19 @@ type Config struct {
 	ExecTimeout time.Duration `mapstructure:"exec-timeout"`
 	// Model selects the chat model provider (ADR 0005).
 	Model ModelConfig `mapstructure:"model"`
+	// Embedder selects the memory embedder provider (ADR 0005); the
+	// hashing default keeps the platform fully offline.
+	Embedder ModelConfig `mapstructure:"embedder"`
 	// Tools lists the script tools registered alongside the built-ins.
 	// gateway.ScriptTool is the config's unmarshal target directly: one
 	// concept, one shape (docs/convention/simplicity.md).
 	Tools []gateway.ScriptTool `mapstructure:"tools"`
 }
 
-// ModelConfig selects the chat model provider. The API key itself never
-// appears here: APIKeyEnv names the environment variable holding it
-// (ADR 0004).
+// ModelConfig selects a model provider: the chat model under the model:
+// section, the memory embedder under the embedder: section. The API key
+// itself never appears here: APIKeyEnv names the environment variable
+// holding it (ADR 0004).
 type ModelConfig struct {
 	// Provider selects the implementation: "mock" (scripted) or "openai".
 	Provider string `mapstructure:"provider"`
@@ -99,6 +112,11 @@ func resolveConfig(cmd *cobra.Command) (Config, error) {
 	v.SetDefault("model.model", defaultModelName)
 	v.SetDefault("model.api-key-env", defaultModelKeyEnv)
 	v.SetDefault("model.timeout", defaultModelTimeout)
+	v.SetDefault("embedder.provider", defaultEmbedderProvider)
+	v.SetDefault("embedder.base-url", defaultEmbedderBaseURL)
+	v.SetDefault("embedder.model", defaultEmbedderModel)
+	v.SetDefault("embedder.api-key-env", defaultEmbedderKeyEnv)
+	v.SetDefault("embedder.timeout", defaultEmbedderTimeout)
 	v.SetEnvPrefix("GAGENT")
 	v.SetEnvKeyReplacer(strings.NewReplacer("-", "_", ".", "_"))
 	v.AutomaticEnv()

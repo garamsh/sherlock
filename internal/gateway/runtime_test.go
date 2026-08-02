@@ -103,6 +103,42 @@ func TestFactory_NilSinkWritesOutbox(t *testing.T) {
 	assert.Len(t, entries, 1)
 }
 
+// stubEmbedder returns a distinctive short vector so tests can tell it
+// apart from the 256-dimensional hashing default.
+type stubEmbedder struct{}
+
+// Embed implements memory.Embedder.
+func (stubEmbedder) Embed(context.Context, string) ([]float32, error) {
+	return []float32{1, 0, 0}, nil
+}
+
+func TestFactory_ConfiguredEmbedderReachesMemoryService(t *testing.T) {
+	root := t.TempDir()
+	factory := &gateway.Factory{
+		Root:     root,
+		NewModel: replyModel,
+		Sink:     &recordingSink{},
+		Embedder: stubEmbedder{},
+	}
+	rt, err := factory.New(context.Background(), "env-1", nil)
+	require.NoError(t, err)
+
+	_, err = rt.Session.Run(context.Background(), "hi")
+	require.NoError(t, err)
+	require.NoError(t, rt.Close(context.Background()))
+
+	store, err := sqlite.Open(filepath.Join(root, "env-1", gateway.MemoryDBFile))
+	require.NoError(t, err)
+	defer func() {
+		assert.NoError(t, store.Close())
+	}()
+	active, err := store.Active(context.Background())
+	require.NoError(t, err)
+	require.Len(t, active, 1, "the scripted turn writes back exactly one memory")
+	assert.Equal(t, []float32{1, 0, 0}, active[0].Embedding,
+		"the configured embedder, not the hashing default, embedded the memory")
+}
+
 func compactionModel(_ string) agent.Model {
 	return agent.NewScriptedModel(
 		agent.ScriptedStep{Content: "First reply.\n```memory\n{}\n```"},

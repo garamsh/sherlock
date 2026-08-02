@@ -49,7 +49,11 @@ func serveGateway(ctx context.Context, cfg Config, ego string) error {
 	if err != nil {
 		return err
 	}
-	factory, err := newFactory(cfg, newModel, ego, nil)
+	embedder, err := newEmbedderFunc(cfg.Embedder)
+	if err != nil {
+		return err
+	}
+	factory, err := newFactory(cfg, newModel, embedder, ego, nil)
 	if err != nil {
 		return err
 	}

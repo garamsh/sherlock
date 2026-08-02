@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/garamsh/gagent/internal/agent"
 	"github.com/garamsh/gagent/internal/gateway"
+	"github.com/garamsh/gagent/internal/memory"
 	"github.com/garamsh/gagent/internal/message"
 	"github.com/garamsh/gagent/internal/shell"
 )
@@ -23,12 +24,14 @@ import (
 func newFactory(
 	cfg Config,
 	newModel func(envID string) agent.Model,
+	embedder memory.Embedder,
 	ego string,
 	sink message.Sink,
 ) (*gateway.Factory, error) {
 	factory := &gateway.Factory{
 		Root:             cfg.DataRoot,
 		NewModel:         newModel,
+		Embedder:         embedder,
 		Ego:              ego,
 		Sink:             sink,
 		ShellExecTimeout: cfg.ExecTimeout,

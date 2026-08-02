@@ -533,7 +533,34 @@ func TestSessionRun_ToolBudgetShortCircuits(t *testing.T) {
 		assert.True(t, e.ToolFailed)
 		assert.Contains(t, e.ToolResult, "Not executed")
 		assert.Contains(t, e.ToolResult, `exhausted for this turn`)
+		assert.Contains(t, e.ToolResult, "(tool description: counts executions)",
+			"the notice restates the tool's contract so an exhausted model is steered at the decision point (issue #164)")
 	}
+}
+
+// TestSessionRun_ToolBudgetNoticeOmitsEmptyDescription pins the fallback: a
+// tool without a description (here an unregistered name, which the budget
+// still counts) keeps the bare exhaustion notice.
+func TestSessionRun_ToolBudgetNoticeOmitsEmptyDescription(t *testing.T) {
+	events := &fakeEvents{}
+	steps := append(searchSteps("q1", "q2", "q3", "q4", "q5", "q6", "q7"),
+		agent.ScriptedStep{Content: "done\n```memory\n{}\n```"})
+	s := agent.NewSession(agent.NewScriptedModel(steps...), tool.NewRegistry(), agent.Options{Events: events})
+
+	_, err := s.Run(context.Background(), "task")
+	require.NoError(t, err)
+
+	var last *agent.Event
+	for i := range events.events {
+		if events.events[i].Kind == agent.EventToolCall {
+			last = &events.events[i]
+		}
+	}
+	require.NotNil(t, last)
+	assert.True(t, last.ToolFailed)
+	assert.Contains(t, last.ToolResult, "exhausted for this turn")
+	assert.NotContains(t, last.ToolResult, "tool description",
+		"a tool without a description keeps the bare budget notice")
 }
 
 func TestSessionRun_ToolBudgetIsPerTool(t *testing.T) {

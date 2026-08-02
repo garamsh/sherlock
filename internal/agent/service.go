@@ -256,7 +256,11 @@ func (s *session) execute(ctx context.Context, call ToolCall) {
 	known, ok := s.failures[key]
 	switch {
 	case s.toolCalls[call.Name] > maxToolCallsPerTurn:
-		result = toolBudgetNotice(call.Name)
+		description := ""
+		if registered, err := s.registry.Lookup(call.Name); err == nil {
+			description = registered.Description()
+		}
+		result = toolBudgetNotice(call.Name, description)
 		event.ToolFailed = true
 	case ok && known.repeated:
 		result = repeatedCallNotice(call.Name, known.err)
@@ -300,11 +304,18 @@ func repeatedCallNotice(name, err string) string {
 }
 
 // toolBudgetNotice is the synthetic result substituted for a tool call past
-// this turn's per-tool call budget.
-func toolBudgetNotice(name string) string {
-	return fmt.Sprintf("Not executed: you have reached this turn's budget of %d calls to %q. "+
+// this turn's per-tool call budget. It restates the tool's advertised
+// description so an exhausted model is steered by the tool's own contract at
+// the decision point (issue #164: an exhausted memory budget must redirect
+// to the writeback block, which the description already states).
+func toolBudgetNotice(name, description string) string {
+	notice := fmt.Sprintf("Not executed: you have reached this turn's budget of %d calls to %q. "+
 		"The tool is exhausted for this turn — proceed with the results you already have "+
 		"or finish the turn.", maxToolCallsPerTurn, name)
+	if description != "" {
+		notice += fmt.Sprintf(" (tool description: %s)", description)
+	}
+	return notice
 }
 
 func (s *session) recall(ctx context.Context, task string) ([]RecalledMemory, error) {

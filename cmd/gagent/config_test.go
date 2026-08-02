@@ -256,6 +256,47 @@ func TestResolveConfig_NoToolsSection(t *testing.T) {
 	assert.Empty(t, cfg.Tools, "a missing tools: section yields an empty slice")
 }
 
+func TestResolveConfig_TLSSection(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	contents := "tls:\n" +
+		"  cert: /srv/tls/server.pem\n" +
+		"  key: /srv/tls/server-key.pem\n" +
+		"  client-ca: /srv/tls/ca.pem\n"
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o644))
+
+	cfg, err := resolveConfig(newTestCommand(t))
+	require.NoError(t, err)
+
+	assert.Equal(t, TLSConfig{
+		Cert:     "/srv/tls/server.pem",
+		Key:      "/srv/tls/server-key.pem",
+		ClientCA: "/srv/tls/ca.pem",
+	}, cfg.TLS)
+}
+
+func TestResolveConfig_TLSSectionEnvOverridesFile(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
+		[]byte("tls:\n  cert: /from-file.pem\n"), 0o644))
+	t.Setenv("GAGENT_TLS_CERT", "/from-env.pem")
+
+	cfg, err := resolveConfig(newTestCommand(t))
+	require.NoError(t, err)
+
+	assert.Equal(t, "/from-env.pem", cfg.TLS.Cert,
+		"GAGENT_TLS_CERT must override the config-file value")
+}
+
+func TestResolveConfig_NoTLSSection(t *testing.T) {
+	t.Chdir(t.TempDir())
+	cfg, err := resolveConfig(newTestCommand(t))
+	require.NoError(t, err)
+
+	assert.Equal(t, TLSConfig{}, cfg.TLS, "a missing tls: section yields the zero value")
+}
+
 func TestResolveConfig_InvalidConfigFileFails(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)

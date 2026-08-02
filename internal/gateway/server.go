@@ -23,8 +23,8 @@ const maxMessageBody = 1 << 20 // 1 MiB
 //	POST /envs/{envID}/messages — fire-and-forget ingress; 202 + message ID
 //	GET  /envs/{envID}/events   — SSE monitoring stream of loop events
 //
-// The gateway has no authentication: it serves trusted networks only
-// and must not be exposed (docs/architecture/gateway.md).
+// Callers authenticate at the TLS layer (mTLS, ADR 0017); the handler
+// itself is unchanged by it.
 func NewHandler(router *Router, logger *slog.Logger) http.Handler {
 	h := &handler{router: router, logger: logger}
 	mux := http.NewServeMux()
@@ -182,8 +182,9 @@ func (w *statusWriter) Flush() {
 }
 
 // logRequests logs one line per request with a locally generated
-// trace_id (no tracing backend; stack-go §5). Message content is never
-// logged.
+// trace_id (no tracing backend; stack-go §5). Over mTLS the verified
+// caller identity joins the line as caller_id (ADR 0017). Message
+// content is never logged.
 func (h *handler) logRequests(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		traceID, err := newID("trace")
@@ -193,12 +194,43 @@ func (h *handler) logRequests(next http.Handler) http.Handler {
 		sw := &statusWriter{ResponseWriter: w, status: http.StatusOK}
 		start := time.Now()
 		next.ServeHTTP(sw, r)
-		h.logger.Info("http request",
+		attrs := []any{
 			"trace_id", traceID,
-			"op", r.Method+" "+r.URL.Path,
+			"op", r.Method + " " + r.URL.Path,
 			"status", sw.status,
-			"duration_ms", time.Since(start).Milliseconds())
+			"duration_ms", time.Since(start).Milliseconds(),
+		}
+		if caller := callerID(r); caller != "" {
+			attrs = append(attrs, "caller_id", caller)
+		}
+		h.logger.Info("http request", attrs...)
 	})
+}
+
+// callerID names the authenticated caller: the verified peer
+// certificate's CN, or its first SAN when the CN is empty (ADR 0017).
+// Plain HTTP requests have no caller identity and return "".
+func callerID(r *http.Request) string {
+	if r.TLS == nil || len(r.TLS.PeerCertificates) == 0 {
+		return ""
+	}
+	cert := r.TLS.PeerCertificates[0]
+	if cert.Subject.CommonName != "" {
+		return cert.Subject.CommonName
+	}
+	if len(cert.DNSNames) > 0 {
+		return cert.DNSNames[0]
+	}
+	if len(cert.EmailAddresses) > 0 {
+		return cert.EmailAddresses[0]
+	}
+	if len(cert.IPAddresses) > 0 {
+		return cert.IPAddresses[0].String()
+	}
+	if len(cert.URIs) > 0 {
+		return cert.URIs[0].String()
+	}
+	return ""
 }
 
 // newID returns a random identifier with the given prefix

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
@@ -16,12 +17,13 @@ import (
 )
 
 // newGatewayCommand returns the "gagent gateway" subcommand: HTTP message
-// ingress, the SSE monitoring stream, and graceful shutdown. It has no
-// authentication and must only be exposed on trusted networks.
+// ingress, the SSE monitoring stream, and graceful shutdown. Callers
+// authenticate with mTLS when the tls: config section is set (ADR 0017);
+// without it the gateway serves loopback binds only.
 func newGatewayCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "gateway",
-		Short: "Serve the HTTP gateway (trusted networks only)",
+		Short: "Serve the HTTP gateway",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			cfg, err := resolveConfig(cmd)
 			if err != nil {
@@ -45,6 +47,14 @@ func serveGateway(ctx context.Context, cfg Config, ego string) error {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	slog.SetDefault(logger)
 
+	tlsConfig, err := serverTLSConfig(cfg.TLS)
+	if err != nil {
+		return err
+	}
+	if tlsConfig == nil && !isLoopbackAddr(cfg.Addr) {
+		return fmt.Errorf("addr %q is not a loopback bind: serving beyond localhost requires the tls: config section (ADR 0017)", cfg.Addr)
+	}
+
 	newModel, err := newModelFunc(cfg.Model)
 	if err != nil {
 		return err
@@ -65,6 +75,7 @@ func serveGateway(ctx context.Context, cfg Config, ego string) error {
 	srv := &http.Server{
 		Addr:              cfg.Addr,
 		Handler:           gateway.NewHandler(router, logger),
+		TLSConfig:         tlsConfig,
 		ReadHeaderTimeout: 10 * time.Second,
 	}
 	go func() {
@@ -76,12 +87,22 @@ func serveGateway(ctx context.Context, cfg Config, ego string) error {
 		}
 	}()
 
-	logger.Info("gateway listening",
-		"op", "startup", "addr", cfg.Addr, "data_root", cfg.DataRoot,
-		"warning", "no authentication: trusted networks only")
-	if err := srv.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
-		logger.Error("http server failed", "op", "serve", "error", err)
-		return err
+	if tlsConfig != nil {
+		logger.Info("gateway listening",
+			"op", "startup", "addr", cfg.Addr, "data_root", cfg.DataRoot,
+			"auth", "mtls")
+		if err := srv.ListenAndServeTLS("", ""); !errors.Is(err, http.ErrServerClosed) {
+			logger.Error("https server failed", "op", "serve", "error", err)
+			return err
+		}
+	} else {
+		logger.Info("gateway listening",
+			"op", "startup", "addr", cfg.Addr, "data_root", cfg.DataRoot,
+			"warning", "no authentication: loopback binds only")
+		if err := srv.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
+			logger.Error("http server failed", "op", "serve", "error", err)
+			return err
+		}
 	}
 	if err := router.Close(); err != nil {
 		logger.Error("router shutdown failed", "op", "shutdown", "error", err)

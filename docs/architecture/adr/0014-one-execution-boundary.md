@@ -1,7 +1,8 @@
 # ADR 0014: One execution boundary — shell network isolation, script tools in the agent UID
 
-> Status: proposed
+> Status: accepted
 > Date: 2026-08-02
+> Supersedes: ADR 0013's "script tools run as the platform UID" decision (the rest of ADR 0013 stands).
 
 ## Context
 

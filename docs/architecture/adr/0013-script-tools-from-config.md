@@ -1,6 +1,6 @@
 # ADR 0013: Script tools registered from the platform config
 
-> Status: accepted
+> Status: accepted (the platform-UID execution decision is superseded by ADR 0014)
 > Date: 2026-08-02
 > Amends: ADR 0010's scope (see Consequences).
 

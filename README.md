@@ -4,7 +4,7 @@ gagent is an autonomous agent platform written in Go. It runs AI agents that can
 
 ## Principles
 
-- **Three components only: Gateway / Agent / Tool.** The Gateway normalizes external channels (web, API, messengers, CLI) into a single entry point. The Agent runs the reasoning loop and decides which tools to call. Every capability — memory, files, outbound messaging, and shell access for workspace operations — is a Tool behind one common interface. No extra layers. Adding a tool is a normal Go change (ADR 0010).
+- **Three components only: Gateway / Agent / Tool.** The Gateway normalizes external channels (web, API, messengers, CLI) into a single entry point. The Agent runs the reasoning loop and decides which tools to call. Every capability — memory, files, outbound messaging, and shell access for workspace operations — is a Tool behind one common interface. No extra layers. A tool is either a Go built-in or a script tool registered from the config's `tools:` section (ADR 0010, ADR 0013).
 - **The agent owns its execution environment.** Each agent runs in its own directory (`data/envs/<env-id>/` containing `workspace/` + `memory.db`) inside the platform's container; the orchestration layer manages the boundary (network egress, mounts, lifecycle). The `shell_exec` tool runs agent-supplied commands as sub-processes dropped to the agent UID; the rest of the platform keeps its trust-domain separation (ADR 0006, ADR 0012).
 - **Memory is agent-managed, not just stored.** Memory is RAG-based, and the agent actively maintains it: storing, updating, compressing, and forgetting — like human memory rather than a plain store/search index.
 
@@ -61,6 +61,13 @@ Settings resolve in order: **flags > environment variables > config file > defau
 | `model.model` | — | `gpt-4o-mini` |
 | `model.api-key-env` | — | `OPENAI_API_KEY` (name of the env var holding the key — the key itself never goes in the config file) |
 | `model.timeout` | — | `60s` (one chat-completions request; raise for slow local endpoints like CPU-served Ollama/vLLM) |
+| `embedder.provider` | — | `hashing` (default, offline) or `openai` (any OpenAI-compatible embeddings endpoint) |
+| `embedder.base-url` | — | `https://api.openai.com/v1` |
+| `embedder.model` | — | `text-embedding-3-small` |
+| `embedder.api-key-env` | — | `OPENAI_API_KEY` (same env-var indirection as the chat model) |
+| `embedder.timeout` | — | `60s` (one embeddings request) |
+
+The `tools:` section registers script tools — operator-supplied executables the platform runs as subprocesses with JSON on stdin/stdout — alongside the built-ins; see `gagent.yaml` for a working example and `tools/playwright/README.md` for the format. An invalid entry (built-in name collision, unreadable schema, empty command) fails platform startup with an error naming the tool.
 
 ### Agent ego
 
@@ -82,7 +89,10 @@ every destructive action before taking it.
 
 ### Adding tools
 
-Tools are Go code under `internal/<domain>/`. Each one implements `tool.Tool` (`Name`, `Description`, `InputSchema`, `OutputSchema`, `Call`) and is registered into every environment's registry by `internal/gateway/runtime.go`. To add a tool, write a new package, register it in `Factory.New`, and ship it in a normal PR — the platform rebuilds on every release. See ADR 0010.
+Two paths, per ADR 0013:
+
+- **Script tool (config only)** — write an executable that reads a JSON job on stdin and writes a JSON result on stdout, add a `tools:` entry pointing at it and its schemas. No Go changes; `tools/playwright/README.md` walks through one.
+- **Go built-in** — write a package under `internal/<domain>/` implementing `tool.Tool` (`Name`, `Description`, `InputSchema`, `OutputSchema`, `Call`) and register it in `internal/gateway/runtime.go`'s factory, in a normal PR.
 
 Example `gagent.yaml`:
 

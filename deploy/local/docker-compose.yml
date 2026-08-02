@@ -1,22 +1,16 @@
 # Local testing only: trusted host, no auth (the gateway has none).
-# Requires DOCKER_GID and GAGENT_DATA_DIR; see README.md in this directory.
+# Requires GAGENT_DATA_DIR; see README.md in this directory.
 services:
   gagent:
     build:
       context: ../..
     ports:
       - "8080:8080"
-    # The image runs as nonroot (uid 65532); the socket's group grants
-    # daemon access.
-    group_add:
-      - "${DOCKER_GID:?export DOCKER_GID per README.md}"
     environment:
       GAGENT_DATA_ROOT: "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}"
     volumes:
-      # Environment containers are siblings managed through the host daemon.
-      - ${DOCKER_SOCK:-/var/run/docker.sock}:/var/run/docker.sock
-      # The daemon resolves sibling bind sources on the host, so the data
-      # root must sit at the same absolute path on host and container.
+      # The data root sits at the same absolute path on host and container
+      # so environment paths are valid from either side.
       - "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}:${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}"
       - ./gagent.yaml:/etc/gagent/config.yaml:ro
     command: ["gateway", "--config", "/etc/gagent/config.yaml"]

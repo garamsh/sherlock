@@ -65,6 +65,8 @@ type CallInput struct {
 
 // Call dispatches the command to the executor and marshals the result.
 // Input has already passed schema validation at the contract boundary.
+// A timeout is a normal outcome, not a tool failure: per ADR 0012 the
+// model receives the structured result with timed_out: true.
 func (t *Tool) Call(ctx context.Context, input json.RawMessage) (json.RawMessage, error) {
 	return tool.CallTyped(ctx, t.doCall, input)
 }
@@ -77,8 +79,13 @@ func (t *Tool) doCall(ctx context.Context, args CallInput) (Result, error) {
 	if args.TimeoutSeconds > 0 {
 		timeout = time.Duration(args.TimeoutSeconds) * time.Second
 	}
-	return t.exec.Run(ctx, Request{
+	res, err := t.exec.Run(ctx, Request{
 		Command: args.Command,
 		Timeout: timeout,
 	})
+	if errors.Is(err, ErrTimedOut) {
+		res.TimedOut = true
+		return res, nil
+	}
+	return res, err
 }

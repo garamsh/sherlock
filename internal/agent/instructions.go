@@ -59,6 +59,12 @@ numbers you see in recalled memories are integers, but write them as quoted
 strings: "1", "42"). If a tool call failed, write ` + "`{}`" + ` and explain the failure
 in your visible reply.
 
+Your visible reply must match the writeback side effect (QA #108). Never
+` + "`add`" + ` a fact you did not actually obtain this turn — a failed tool call
+produces no result to store (e.g. a count you never computed). If you could
+not complete the task, write ` + "`{}`" + ` and report the failure; if you completed
+it and stored the result, report the success instead.
+
 ## When a tool is unavailable
 
 If a tool returns an error (e.g. ` + "`shell_exec`" + ` returns "agent_uid unavailable"

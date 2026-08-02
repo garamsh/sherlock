@@ -49,7 +49,11 @@ func serveGateway(ctx context.Context, cfg Config, ego string) error {
 	if err != nil {
 		return err
 	}
-	router := gateway.NewRouter(newFactory(cfg, newModel, ego, nil), logger)
+	factory, err := newFactory(cfg, newModel, ego, nil)
+	if err != nil {
+		return err
+	}
+	router := gateway.NewRouter(factory, logger)
 
 	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)
 	defer stop()

@@ -11,6 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/garamsh/gagent/internal/environment"
+	"github.com/garamsh/gagent/internal/gateway"
 )
 
 // newTestCommand returns a bare command carrying the shared config flags,
@@ -200,12 +201,12 @@ func TestResolveConfig_ToolsSection(t *testing.T) {
 	require.NoError(t, err)
 
 	require.Len(t, cfg.Tools, 1)
-	assert.Equal(t, ToolConfig{
+	assert.Equal(t, gateway.ScriptTool{
 		Name:         "wordcount",
 		Description:  "Count words in a text.",
 		InputSchema:  "schemas/wordcount.input.json",
 		OutputSchema: "schemas/wordcount.output.json",
-		Exec: ExecConfig{
+		Exec: gateway.ScriptToolExec{
 			Command:        []string{"python3", "tools/wordcount.py"},
 			StdinFormat:    "json",
 			StdoutFormat:   "json",

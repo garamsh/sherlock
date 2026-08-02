@@ -123,6 +123,15 @@ func buildGagentBinary(t *testing.T) string {
 // is still running.
 func startGatewayBinary(t *testing.T, binary, root string) (*exec.Cmd, string, <-chan error) {
 	t.Helper()
+	configPath := filepath.Join(t.TempDir(), "gagent.yaml")
+	require.NoError(t, os.WriteFile(configPath, nil, 0o600))
+	return startGatewayWithConfig(t, binary, root, configPath)
+}
+
+// startGatewayWithConfig is startGatewayBinary with a caller-supplied
+// config file.
+func startGatewayWithConfig(t *testing.T, binary, root, configPath string) (*exec.Cmd, string, <-chan error) {
+	t.Helper()
 
 	listen, err := net.Listen("tcp", "127.0.0.1:0")
 	require.NoError(t, err)
@@ -130,8 +139,6 @@ func startGatewayBinary(t *testing.T, binary, root string) (*exec.Cmd, string, <
 	require.NoError(t, listen.Close())
 
 	aux := t.TempDir()
-	configPath := filepath.Join(aux, "gagent.yaml")
-	require.NoError(t, os.WriteFile(configPath, nil, 0o600))
 	logPath := filepath.Join(aux, "gateway.log")
 	logFile, err := os.Create(logPath)
 	require.NoError(t, err)
@@ -171,4 +178,63 @@ func startGatewayBinary(t *testing.T, binary, root string) (*exec.Cmd, string, <
 		}
 		time.Sleep(20 * time.Millisecond)
 	}
+}
+
+// TestEndToEnd_ScriptToolCollisionFailsStartup runs both entry points
+// with a tools: entry named after the built-in memory tool (issue #124):
+// each must exit non-zero at startup with an error naming the tool,
+// instead of serving and surfacing the error on the first message.
+func TestEndToEnd_ScriptToolCollisionFailsStartup(t *testing.T) {
+	binary := buildGagentBinary(t)
+	root := t.TempDir()
+	configPath := writeScriptToolsConfig(t, "memory")
+
+	gatewayCmd := exec.Command(binary, "gateway",
+		"--config", configPath, "--addr", "127.0.0.1:0", "--data-root", root)
+	out, err := gatewayCmd.CombinedOutput()
+	require.Error(t, err, "gagent gateway must fail startup on a colliding tools: entry")
+	assert.Contains(t, string(out), `"memory"`,
+		"the startup error must name the offending tool")
+
+	agentCmd := exec.Command(binary, "agent",
+		"--config", configPath, "--data-root", root, "--message", "hi")
+	out, err = agentCmd.CombinedOutput()
+	require.Error(t, err, "gagent agent must fail startup on a colliding tools: entry")
+	assert.Contains(t, string(out), `"memory"`,
+		"the startup error must name the offending tool")
+}
+
+// TestEndToEnd_ValidScriptToolStartsAndServes is the regression half of
+// issue #124: a valid tools: entry must not stop the gateway from
+// starting and serving.
+func TestEndToEnd_ValidScriptToolStartsAndServes(t *testing.T) {
+	binary := buildGagentBinary(t)
+	root := t.TempDir()
+	configPath := writeScriptToolsConfig(t, "wordcount")
+
+	_, baseURL, _ := startGatewayWithConfig(t, binary, root, configPath)
+
+	resp, err := http.Get(baseURL + "/")
+	require.NoError(t, err)
+	resp.Body.Close()
+}
+
+// writeScriptToolsConfig writes a gagent.yaml with one tools: entry of
+// the given name plus the schema files it references, and returns the
+// config path.
+func writeScriptToolsConfig(t *testing.T, name string) string {
+	t.Helper()
+	dir := t.TempDir()
+	schema := filepath.Join(dir, "schema.json")
+	require.NoError(t, os.WriteFile(schema, []byte(`{"type":"object"}`), 0o600))
+	configPath := filepath.Join(dir, "gagent.yaml")
+	contents := "tools:\n" +
+		"  - name: " + name + "\n" +
+		"    description: A script tool.\n" +
+		"    input_schema: " + schema + "\n" +
+		"    output_schema: " + schema + "\n" +
+		"    exec:\n" +
+		"      command: [true]\n"
+	require.NoError(t, os.WriteFile(configPath, []byte(contents), 0o600))
+	return configPath
 }

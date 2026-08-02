@@ -311,6 +311,73 @@ func TestFactory_ScriptToolNameCollisionFailsStartup(t *testing.T) {
 		"a script tool named after a built-in fails startup")
 }
 
+func TestFactory_ValidateTools(t *testing.T) {
+	input, output := writeScriptToolSchemas(t, t.TempDir())
+	valid := gateway.ScriptTool{
+		Name:         "wordcount",
+		Description:  "Count words in a text.",
+		InputSchema:  input,
+		OutputSchema: output,
+		Exec:         gateway.ScriptToolExec{Command: []string{"true"}},
+	}
+	colliding := valid
+	colliding.Name = "memory"
+	missingSchema := valid
+	missingSchema.Name = "noschema"
+	missingSchema.InputSchema = filepath.Join(t.TempDir(), "missing.json")
+	emptyCommand := valid
+	emptyCommand.Name = "nocommand"
+	emptyCommand.Exec = gateway.ScriptToolExec{}
+
+	tests := []struct {
+		name    string
+		tools   []gateway.ScriptTool
+		wantErr string
+		wantDup bool
+	}{
+		{name: "no tools is valid", tools: nil},
+		{name: "valid script tool passes", tools: []gateway.ScriptTool{valid}},
+		{
+			name:    "collision with a built-in fails",
+			tools:   []gateway.ScriptTool{colliding},
+			wantErr: `"memory"`,
+			wantDup: true,
+		},
+		{
+			name:    "duplicate script-tool names fail",
+			tools:   []gateway.ScriptTool{valid, valid},
+			wantErr: `"wordcount"`,
+			wantDup: true,
+		},
+		{
+			name:    "missing schema file fails",
+			tools:   []gateway.ScriptTool{missingSchema},
+			wantErr: `"noschema"`,
+		},
+		{
+			name:    "empty exec command fails",
+			tools:   []gateway.ScriptTool{emptyCommand},
+			wantErr: `"nocommand"`,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			factory := &gateway.Factory{Root: t.TempDir(), NewModel: replyModel, Tools: tt.tools}
+			err := factory.ValidateTools()
+			if tt.wantErr == "" {
+				assert.NoError(t, err)
+				return
+			}
+			require.Error(t, err)
+			assert.Contains(t, err.Error(), tt.wantErr,
+				"the error must name the offending tool")
+			if tt.wantDup {
+				assert.ErrorIs(t, err, tool.ErrDuplicateTool)
+			}
+		})
+	}
+}
+
 func TestFactory_ScriptToolSchemaDocument(t *testing.T) {
 	dir := t.TempDir()
 	combined := filepath.Join(dir, "combined.json")

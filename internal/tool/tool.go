@@ -35,15 +35,23 @@ type Tool interface {
 }
 
 // ValidationError reports input that failed schema validation at the
-// contract boundary. It matches ErrValidation via errors.Is.
+// contract boundary. It matches ErrValidation via errors.Is. Description
+// restates the tool's advertised summary inside the error text so a model
+// reading the rejection is steered back to the tool's real contract
+// (issue #160: write-shaped memory calls must redirect to the writeback
+// block, not invite argument variants).
 type ValidationError struct {
-	Tool string
-	Err  error
+	Tool        string
+	Description string
+	Err         error
 }
 
 // Error returns a human-readable description of the validation failure.
 func (e *ValidationError) Error() string {
-	return fmt.Sprintf("tool %q: %v", e.Tool, e.Err)
+	if e.Description == "" {
+		return fmt.Sprintf("tool %q: %v", e.Tool, e.Err)
+	}
+	return fmt.Sprintf("tool %q: %v (tool description: %s)", e.Tool, e.Err, e.Description)
 }
 
 // Unwrap returns the underlying validation failure.
@@ -76,7 +84,7 @@ func (e *ExecutionError) Is(target error) bool { return target == ErrExecution }
 // from the tool body are returned as *ExecutionError.
 func Invoke(ctx context.Context, t Tool, input json.RawMessage) (json.RawMessage, error) {
 	if err := validate(t.InputSchema(), input); err != nil {
-		return nil, &ValidationError{Tool: t.Name(), Err: err}
+		return nil, &ValidationError{Tool: t.Name(), Description: t.Description(), Err: err}
 	}
 	out, err := t.Call(ctx, input)
 	if err != nil {

@@ -38,7 +38,8 @@ type Runtime struct {
 	// observability. Production callers go through Session.Run.
 	Registry *tool.Registry
 	// Close releases the runtime's resources. Called once on router
-	// shutdown.
+	// shutdown; memory consolidation (ADR 0015) runs before the store
+	// closes.
 	Close func(ctx context.Context) error
 }
 
@@ -296,7 +297,8 @@ func (f *Factory) New(_ context.Context, envID string, events agent.EventSink) (
 		Session:  session,
 		Registry: registry,
 		Close: func(ctx context.Context) error {
-			return memSvc.Close()
+			_, err := memSvc.Consolidate(ctx)
+			return errors.Join(err, memSvc.Close())
 		},
 	}, nil
 }

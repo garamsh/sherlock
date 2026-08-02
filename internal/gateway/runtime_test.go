@@ -139,6 +139,48 @@ func TestFactory_ConfiguredEmbedderReachesMemoryService(t *testing.T) {
 		"the configured embedder, not the hashing default, embedded the memory")
 }
 
+// consolidateModel scripts one turn whose writeback adds two episodic
+// memories, reaching the consolidation cluster threshold.
+func consolidateModel(_ string) agent.Model {
+	return agent.NewScriptedModel(
+		agent.ScriptedStep{Content: "Done.\n```memory\n" +
+			`{"add":[{"content":"deployed v1 to staging","type":"episodic"},` +
+			`{"content":"staging deploy failed on migration","type":"episodic"}]}` + "\n```"},
+	)
+}
+
+// TestRuntime_CloseConsolidatesEpisodicCluster pins the ADR 0015 shutdown
+// trigger: closing the runtime compresses the active episodic cluster
+// into one semantic parent and archives the originals.
+func TestRuntime_CloseConsolidatesEpisodicCluster(t *testing.T) {
+	root := t.TempDir()
+	factory := &gateway.Factory{
+		Root:     root,
+		NewModel: consolidateModel,
+		Sink:     &recordingSink{},
+	}
+	rt, err := factory.New(context.Background(), "env-1", nil)
+	require.NoError(t, err)
+
+	_, err = rt.Session.Run(context.Background(), "deploy work")
+	require.NoError(t, err)
+	require.NoError(t, rt.Close(context.Background()))
+
+	store, err := sqlite.Open(filepath.Join(root, "env-1", gateway.MemoryDBFile))
+	require.NoError(t, err)
+	defer func() {
+		assert.NoError(t, store.Close())
+	}()
+	active, err := store.Active(context.Background())
+	require.NoError(t, err)
+	require.Len(t, active, 1,
+		"the two episodic originals are archived; only the semantic parent stays active")
+	assert.Equal(t, memory.TypeSemantic, active[0].Type)
+	assert.Equal(t, memory.CompressSource, active[0].Source)
+	assert.Contains(t, active[0].Content, "deployed v1 to staging")
+	assert.Contains(t, active[0].Content, "staging deploy failed on migration")
+}
+
 func compactionModel(_ string) agent.Model {
 	return agent.NewScriptedModel(
 		agent.ScriptedStep{Content: "First reply.\n```memory\n{}\n```"},

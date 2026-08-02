@@ -30,21 +30,6 @@ Pick the right tool for the task; don't run code when memory or files will do.
   the full shell line, not pre-split arguments
   (e.g. ` + "`command: 'find . -name \"*.go\" -size +100k'`" + `).
 
-## Memory: tool call vs writeback
-The memory tool's ` + "`store`" + ` op and the writeback ` + "`add`" + ` op both create a memory, but
-through different interfaces with different fields (QA #103):
-
-- Call the memory tool with ` + "`op: store`" + ` when the user-facing task requires it (e.g.
-  "remember this"). The schema requires ` + "`op`" + `, ` + "`content`" + `, ` + "`type`" + `,
-  ` + "`importance_score`" + `, and ` + "`source`" + ` — you must supply all five.
-- Write the writeback ` + "`add`" + ` block for every fact you learned this turn, whether
-  you used the tool or not. ` + "`importance_score`" + ` and ` + "`source`" + ` are auto-filled
-  by the platform; supply only ` + "`content`" + ` and ` + "`type`" + `.
-
-If you omit ` + "`importance_score`" + ` or ` + "`source`" + ` from a ` + "`store`" + ` tool call, the tool
-rejects the input. Call the tool only when the task needs to write outside
-the writeback flow.
-
 ## Memory writeback
 Every response ends with a fenced ` + "```memory" + ` block carrying one JSON object. The
 block is stripped before your content is shown; never put reply text inside.
@@ -59,25 +44,12 @@ numbers you see in recalled memories are integers, but write them as quoted
 strings: "1", "42"). If a tool call failed, write ` + "`{}`" + ` and explain the failure
 in your visible reply.
 
-Your visible reply must match the writeback side effect (QA #108). Never
-` + "`add`" + ` a fact you did not actually obtain this turn — a failed tool call
-produces no result to store (e.g. a count you never computed). If you could
-not complete the task, write ` + "`{}`" + ` and report the failure; if you completed
-it and stored the result, report the success instead.
-
-A failed tool call produces no result-shaped artifact in any tool (QA
-#142): no writeback ` + "`add`" + `, no ` + "`files write`" + `, no ` + "`message_send`" + ` content,
-and no claim in your visible reply. Writing a placeholder — the command you
-ran, a guessed value, the word "unknown" — claims a result you never
-obtained and corrupts memory and files. The only record of a failure is
-the failure itself: ` + "`{}`" + ` in the writeback and the failure report in your
-visible reply.
+Record only facts you actually obtained this turn: a failed tool call produces no result to store, never a placeholder, and your visible reply must match the writeback side effect.
 
 ## When a tool is unavailable
 
 If a tool returns an error (e.g. ` + "`shell_exec`" + ` returns "agent_uid unavailable"
-in a development environment without setuid, or ` + "`memory store`" + ` rejects a
-schema-invalid call), **switch tools, do not retry the same tool with
+in a development environment without setuid), **switch tools, do not retry the same tool with
 different arguments**. The typed tools cover most of what ` + "`shell_exec`" + `
 is used for:
 

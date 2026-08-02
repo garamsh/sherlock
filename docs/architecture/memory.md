@@ -1,13 +1,13 @@
 # Memory
 
-Governs long-term memory: the store, the search, and the lifecycle. Rationale: ADR 0003, ADR 0008, ADR 0015 (including the surveyed prior art).
+Governs long-term memory: the store, the search, and the lifecycle. Rationale: ADR 0003, ADR 0008, ADR 0015, ADR 0016 (including the surveyed prior art).
 
 ## Current decisions
 
 ### Store
 
 - Each environment owns `memory.db` (SQLite, pure-Go driver) in its data directory, owned by the memory UID. Agent code cannot open the file; access goes only through the memory service.
-- Writes flow through one path — the writeback block (`keep` / `update` / `delete` / `add`, ADR 0015). The `memory` tool is read-only (`search`). Consolidation and eviction are platform-owned and threshold-triggered, not model-invoked ops; the model consolidates deliberately through the writeback itself (`delete` the parts, `add` the summary).
+- The platform stores every inbound user message as an episodic memory — verbatim, source `user-turn`, low default importance — with no model involvement (ADR 0016). Curated writes flow through one path — the writeback block (`keep` / `update` / `delete` / `add`, ADR 0015) — which carries distilled facts, not transcripts. The `memory` tool is read-only (`search`). Consolidation and eviction are platform-owned and threshold-triggered, not model-invoked ops.
 - Each memory carries: content, embedding, type (`episodic` | `semantic`), `importance_score`, `access_count`, `last_accessed`, `timestamp`, `source`, `superseded_by`, `valid_to`.
 - The schema has an active (searchable) table and an archive table. Nothing is hard-deleted by the platform.
 - A store interface hides SQLite so a remote or shared store can replace it per environment later.

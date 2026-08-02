@@ -2,6 +2,8 @@
 
 Current architecture of the system and the decisions behind it. This file is the index; workers read it before touching code, the PM keeps it honest.
 
+The system is three components — Gateway / Agent / Tool. Every capability is a tool behind one contract (`internal/tool/`); no fourth organizing layer exists (ADR 0001, ADR 0010, ADR 0013; code-level structural rules live in `docs/convention/simplicity.md`).
+
 ## Structure
 
 - **Responsibility documents** (one `.md` per domain or concern, e.g. `memory.md`, `gateway.md`) — the single source of truth for how the system is shaped *now*. To know the current state, read only these.
@@ -23,7 +25,7 @@ Current architecture of the system and the decisions behind it. This file is the
 - `security.md` — trust domains, secret custody, egress
 - `gateway.md` — ingress, routing, outbound, monitoring
 - `agent.md` — reasoning loop, tool use, model access
-- `adr/0001`–`0012` — design decision log (see topic files for current truth)
+- `adr/0001`–`0013` — design decision log (see topic files for current truth)
 
 ### Modules
 
@@ -39,4 +41,9 @@ Current architecture of the system and the decisions behind it. This file is the
 | `internal/memory/` | Own one environment's long-term memory: the `memory.db` store, hybrid search, and the five memory operations. | `memory.md` |
 | `internal/files/` | Read and write files inside the environment's workspace. | `environment.md` |
 | `internal/message/` | Deliver agent-decided outbound messages to channels and peers (`message_send`). | `gateway.md` |
+| `internal/shell/` | Run agent-supplied commands as sub-processes dropped to the agent UID (`shell_exec`). | `security.md` |
+| `internal/tool/script/` | Universal subprocess adapter: run any executable as a tool (ADR 0013). | `gateway.md` |
+| `internal/tool/tooltest/` | Build-time schema/struct conformance guards shared by tool tests. | — |
+| `internal/tool/mocks/` | Generated mocks of the tool contract for consumer tests. | — |
+| `tools/playwright/` | Example script tool (browser automation) registered via the config's `tools:` section. | `gateway.md` |
 | `tests/` | End-to-end scenarios wiring multiple modules together. | — |

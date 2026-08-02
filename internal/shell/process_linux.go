@@ -7,6 +7,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"os"
 	"os/exec"
 	"syscall"
@@ -113,8 +114,8 @@ func (e *ProcessExecutor) Run(ctx context.Context, req Request) (Result, error) 
 	}
 
 	// Apply resource limits to the now-running child via prlimit(2).
-	// Ignore individual rlimit failures — the run still produces a
-	// result; we just lack the cap on that one resource.
+	// Individual rlimit failures are logged at WARN — the run still
+	// produces a result; we just lack the cap on that one resource.
 	e.applyRLimits(cmd.Process.Pid)
 
 	err := cmd.Wait()
@@ -146,28 +147,40 @@ func (e *ProcessExecutor) Run(ctx context.Context, req Request) (Result, error) 
 }
 
 // applyRLimits applies the configured resource caps to the given PID via
-// prlimit(2). A per-resource failure is logged via the kernel and
-// ignored: the child still runs, just without that one cap. Setting both
-// Cur and Max to the same value produces a hard cap rather than a soft
-// one with a higher hard ceiling.
+// prlimit(2). A per-resource failure is logged at WARN and ignored: the
+// child still runs, just without that one cap. Setting both Cur and Max
+// to the same value produces a hard cap rather than a soft one with a
+// higher hard ceiling.
 func (e *ProcessExecutor) applyRLimits(pid int) {
-	_ = unix.Prlimit(pid, unix.RLIMIT_CPU, cpuLimit(e.RLimits.CPU), nil)
-	_ = unix.Prlimit(pid, unix.RLIMIT_AS, &unix.Rlimit{
-		Cur: uint64(e.RLimits.AddressSpace),
-		Max: uint64(e.RLimits.AddressSpace),
-	}, nil)
-	_ = unix.Prlimit(pid, unix.RLIMIT_FSIZE, &unix.Rlimit{
-		Cur: uint64(e.RLimits.FileSize),
-		Max: uint64(e.RLimits.FileSize),
-	}, nil)
-	_ = unix.Prlimit(pid, unix.RLIMIT_NOFILE, &unix.Rlimit{
-		Cur: e.RLimits.OpenFiles,
-		Max: e.RLimits.OpenFiles,
-	}, nil)
-	_ = unix.Prlimit(pid, unix.RLIMIT_NPROC, &unix.Rlimit{
-		Cur: e.RLimits.Processes,
-		Max: e.RLimits.Processes,
-	}, nil)
+	limits := []struct {
+		name     string
+		resource int
+		rlim     *unix.Rlimit
+	}{
+		{"RLIMIT_CPU", unix.RLIMIT_CPU, cpuLimit(e.RLimits.CPU)},
+		{"RLIMIT_AS", unix.RLIMIT_AS, &unix.Rlimit{
+			Cur: uint64(e.RLimits.AddressSpace),
+			Max: uint64(e.RLimits.AddressSpace),
+		}},
+		{"RLIMIT_FSIZE", unix.RLIMIT_FSIZE, &unix.Rlimit{
+			Cur: uint64(e.RLimits.FileSize),
+			Max: uint64(e.RLimits.FileSize),
+		}},
+		{"RLIMIT_NOFILE", unix.RLIMIT_NOFILE, &unix.Rlimit{
+			Cur: e.RLimits.OpenFiles,
+			Max: e.RLimits.OpenFiles,
+		}},
+		{"RLIMIT_NPROC", unix.RLIMIT_NPROC, &unix.Rlimit{
+			Cur: e.RLimits.Processes,
+			Max: e.RLimits.Processes,
+		}},
+	}
+	for _, l := range limits {
+		if err := unix.Prlimit(pid, l.resource, l.rlim, nil); err != nil {
+			slog.Warn("shell: rlimit not applied",
+				"resource", l.name, "pid", pid, "error", err)
+		}
+	}
 }
 
 // cpuLimit converts a duration into the seconds unit the kernel expects

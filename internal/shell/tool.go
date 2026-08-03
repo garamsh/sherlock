@@ -15,13 +15,14 @@ const ToolName = "shell_exec"
 // toolDescription is the one-sentence summary advertised to model
 // providers, matching the shell_exec responsibility in
 // docs/architecture/agent.md (ADR 0012).
-const toolDescription = "Run a shell command in the agent's environment and return its captured output."
+const toolDescription = "Run a shell command in the agent's environment and return its captured output. The working directory is the environment's workspace, so relative paths resolve against the same tree the files tool writes to."
 
 // Tool is the shell_exec tool adapter: it validates input, delegates to an
 // Executor, and marshals the result into the tool.Tool contract.
 type Tool struct {
 	exec           Executor
 	defaultTimeout time.Duration
+	workdir        string
 }
 
 // NewTool returns a shell_exec tool backed by exec. The defaultTimeout is
@@ -37,6 +38,15 @@ func (t *Tool) WithDefaultTimeout(d time.Duration) *Tool {
 	if d > 0 {
 		t.defaultTimeout = d
 	}
+	return t
+}
+
+// WithWorkdir sets the child's working directory, so relative paths in
+// commands resolve against it. The gateway passes the environment's
+// workspace — the same tree the files tool writes to. Empty leaves the
+// cwd to the platform default.
+func (t *Tool) WithWorkdir(dir string) *Tool {
+	t.workdir = dir
 	return t
 }
 
@@ -82,6 +92,7 @@ func (t *Tool) doCall(ctx context.Context, args CallInput) (Result, error) {
 	res, err := t.exec.Run(ctx, Request{
 		Command:   args.Command,
 		Timeout:   timeout,
+		Workdir:   t.workdir,
 		NoNetwork: true,
 	})
 	if errors.Is(err, ErrTimedOut) {

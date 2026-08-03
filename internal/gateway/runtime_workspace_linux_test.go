@@ -89,6 +89,45 @@ func TestFactory_PrivilegedWorkspaceOwnedByAgentUID(t *testing.T) {
 		"an agent-UID child modifies and deletes a files-tool-created file: %s", res.Stderr)
 }
 
+// TestFactory_ShellExecRunsInWorkspace pins the issue-#192 contract: a
+// script written through the files tool runs via shell_exec with a
+// workspace-relative path — the two workspace tools share one tree.
+func TestFactory_ShellExecRunsInWorkspace(t *testing.T) {
+	if os.Geteuid() != 0 {
+		t.Skip("shell_exec requires root; run with `sudo -E go test ./internal/gateway/...` to exercise it")
+	}
+	root := t.TempDir()
+	// t.TempDir is 0700; the agent-UID child must traverse down to the
+	// workspace.
+	require.NoError(t, os.Chmod(root, 0o755))
+	factory := &gateway.Factory{
+		Root:     root,
+		NewModel: replyModel,
+		NewShellExecutor: func() shell.Executor {
+			return shell.NewProcessExecutor(shell.DefaultAgentUID, 5*time.Second)
+		},
+	}
+	rt, err := factory.New(context.Background(), "env-1", nil)
+	require.NoError(t, err)
+	defer func() {
+		assert.NoError(t, rt.Close(context.Background()))
+	}()
+
+	writeViaFilesTool(t, rt, "hello.sh", "echo from-workspace")
+
+	shellTool, err := rt.Registry.Lookup(shell.ToolName)
+	require.NoError(t, err)
+	out, err := tool.Invoke(context.Background(), shellTool,
+		json.RawMessage(`{"command":"sh hello.sh"}`))
+	require.NoError(t, err)
+
+	var res shell.Result
+	require.NoError(t, json.Unmarshal(out, &res))
+	assert.Zero(t, res.ExitCode, res.Stderr)
+	assert.Equal(t, "from-workspace\n", res.Stdout,
+		"a relative path resolves against the environment workspace, not the platform cwd")
+}
+
 // TestFactory_UnprivilegedSkipsWorkspaceChown pins the dev contract: an
 // unprivileged platform attempts no chown and keeps owning the workspace
 // and files-tool writes itself.

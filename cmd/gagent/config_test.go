@@ -256,6 +256,19 @@ func TestResolveConfig_NoToolsSection(t *testing.T) {
 	assert.Empty(t, cfg.Tools, "a missing tools: section yields an empty slice")
 }
 
+func TestResolveConfig_ConsoleSection(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	contents := "console:\n" +
+		"  url: https://console.internal:9443/messages\n"
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o644))
+
+	cfg, err := resolveConfig(newTestCommand(t))
+	require.NoError(t, err)
+
+	assert.Equal(t, ConsoleConfig{URL: "https://console.internal:9443/messages"}, cfg.Console)
+}
+
 func TestResolveConfig_TLSSection(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)

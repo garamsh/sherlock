@@ -83,6 +83,11 @@ type Factory struct {
 	// Sink, when non-nil, receives outbound messages instead of the default
 	// file outbox (the one-shot agent CLI prints them to stdout).
 	Sink message.Sink
+	// NewSink, when non-nil and Sink is nil, builds each environment's
+	// outbound sink around the default file outbox (the console sink uses
+	// the outbox as its delivery-failure fallback). Nil selects the file
+	// outbox itself.
+	NewSink func(envID string, fallback *Outbox) message.Sink
 	// ShellExecTimeout caps one shell_exec sub-process run. A non-positive
 	// value selects DefaultShellExecTimeout.
 	ShellExecTimeout time.Duration
@@ -301,7 +306,11 @@ func (f *Factory) New(_ context.Context, envID string, events agent.EventSink) (
 
 	sink := f.Sink
 	if sink == nil {
-		sink = NewOutbox(env.Dir())
+		outbox := NewOutbox(env.Dir())
+		sink = outbox
+		if f.NewSink != nil {
+			sink = f.NewSink(envID, outbox)
+		}
 	}
 
 	shellTimeout := f.ShellExecTimeout

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log/slog"
+
 	"github.com/garamsh/gagent/internal/agent"
 	"github.com/garamsh/gagent/internal/gateway"
 	"github.com/garamsh/gagent/internal/memory"
@@ -10,7 +12,9 @@ import (
 
 // newFactory builds the environment runtime factory both entry points
 // use, so the resolved config reaches every environment the same way; a
-// nil sink selects the default file outbox. The config's tools: section
+// nil sink selects the per-environment sink consoleSinkFor resolves —
+// the console sink when console.url is set, else the default file
+// outbox. The config's tools: section
 // is validated here — the one validation point both entry points share —
 // so an invalid script tool fails platform startup instead of the first
 // message (ADR 0013).
@@ -21,12 +25,17 @@ func newFactory(
 	ego string,
 	sink message.Sink,
 ) (*gateway.Factory, error) {
+	newSink, err := consoleSinkFor(cfg, slog.Default())
+	if err != nil {
+		return nil, err
+	}
 	factory := &gateway.Factory{
 		Root:             cfg.DataRoot,
 		NewModel:         newModel,
 		Embedder:         embedder,
 		Ego:              ego,
 		Sink:             sink,
+		NewSink:          newSink,
 		ShellExecTimeout: cfg.ExecTimeout,
 		NewShellExecutor: func() shell.Executor {
 			return shell.NewProcessExecutor(shell.DefaultAgentUID, cfg.ExecTimeout)

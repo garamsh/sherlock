@@ -103,6 +103,35 @@ func TestFactory_NilSinkWritesOutbox(t *testing.T) {
 	assert.Len(t, entries, 1)
 }
 
+func TestFactory_NewSinkBuildsPerEnvironmentSink(t *testing.T) {
+	root := t.TempDir()
+	sink := &recordingSink{}
+	var gotEnvID string
+	var gotFallback *gateway.Outbox
+	factory := &gateway.Factory{
+		Root:     root,
+		NewModel: replyModel,
+		NewSink: func(envID string, fallback *gateway.Outbox) message.Sink {
+			gotEnvID = envID
+			gotFallback = fallback
+			return sink
+		},
+	}
+	rt, err := factory.New(context.Background(), "env-1", nil)
+	require.NoError(t, err)
+	defer func() {
+		assert.NoError(t, rt.Close(context.Background()))
+	}()
+
+	_, err = rt.Session.Run(context.Background(), "hi")
+	require.NoError(t, err)
+
+	require.Len(t, sink.messages(), 1)
+	assert.Equal(t, "env-1", gotEnvID)
+	assert.Equal(t, filepath.Join(root, "env-1", gateway.OutboxDir), gotFallback.Dir(),
+		"the per-environment sink receives the default file outbox as its fallback")
+}
+
 // stubEmbedder returns a distinctive short vector so tests can tell it
 // apart from the 256-dimensional hashing default.
 type stubEmbedder struct{}

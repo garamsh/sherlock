@@ -69,6 +69,7 @@ Settings resolve in order: **flags > environment variables > config file > defau
 | `tls.cert` | — | unset (gateway server certificate, PEM; all three `tls:` keys together enable mTLS) |
 | `tls.key` | — | unset (server certificate's private key, PEM) |
 | `tls.client-ca` | — | unset (CA bundle, PEM, that client certificates are verified against) |
+| `console.url` | — | unset (console endpoint every `message_send` is POSTed to over mTLS, reusing the `tls:` material; unset keeps the file outbox, which is also the delivery-failure fallback) |
 
 The `tools:` section registers script tools — operator-supplied executables the platform runs as subprocesses with JSON on stdin/stdout — alongside the built-ins; see `gagent.yaml` for a working example and `tools/playwright/README.md` for the format. An invalid entry (built-in name collision, unreadable schema, empty command) fails platform startup with an error naming the tool.
 

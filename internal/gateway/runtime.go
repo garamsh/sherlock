@@ -244,6 +244,21 @@ func secureMemoryDB(path string) error {
 	return nil
 }
 
+// secureWorkspace hands the workspace directory to the agent-UID trust
+// domain (ADR 0006): a privileged platform (euid 0) chowns it to
+// shell.DefaultAgentUID so files written by the files tool (which drops
+// to the same UID) and by shell children share one owner. An
+// unprivileged platform owns the directory itself and skips the chown.
+func secureWorkspace(path string) error {
+	if os.Geteuid() != 0 {
+		return nil
+	}
+	if err := os.Chown(path, shell.DefaultAgentUID, -1); err != nil {
+		return fmt.Errorf("chown %q to agent uid: %w", path, err)
+	}
+	return nil
+}
+
 // New implements RuntimeFactory: it opens (creating on first use) the
 // environment directory, memory store, and tool set, then wires the
 // session's recall, writeback, event, and context-compaction hooks.
@@ -275,8 +290,11 @@ func (f *Factory) New(_ context.Context, envID string, events agent.EventSink) (
 	if embedder == nil {
 		embedder = memory.NewHashingEmbedder()
 	}
+	if err := secureWorkspace(env.Workspace()); err != nil {
+		return nil, errors.Join(err, store.Close())
+	}
 	memSvc := memory.NewService(store, embedder, summarizer)
-	fs, err := files.Open(env.Workspace())
+	fs, err := files.Open(env.Workspace(), shell.DefaultAgentUID)
 	if err != nil {
 		return nil, errors.Join(err, store.Close())
 	}

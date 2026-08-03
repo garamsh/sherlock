@@ -8,7 +8,7 @@ Governs the gateway: message ingress, routing, outbound delivery, and monitoring
   - **Ingress** — asynchronous and fire-and-forget. Channel adapters normalize inbound messages; the gateway assigns an ID, captures the message verbatim as an episodic `user-turn` memory at accept time (ADR 0016 — the capture commits before the ack, so a failed run or a restart before the run starts never loses or duplicates it; a capture failure rejects the message), enqueues for the target environment, and acknowledges. No synchronous response couples a sender to a run.
   - **Outbound** — a `message_send` tool (channel, target, content) carries every reply. The agent decides when and to whom to respond; the sender, another person, and another agent are all the same kind of target.
   - **Monitoring** — a read-only subscription event stream (turn started, tool calls, memory writeback, turn finished or failed). Every run ends with exactly one terminal event — `turn_finished` on success, `turn_failed` with the error on failure — so subscribers can always finalize their view of a turn. Never part of the message path; typically no subscribers.
-- Execution is serialized per environment. Messages arriving mid-run queue as followups; steering and interruption are deferred. Each environment's queue is bounded; a full queue applies backpressure to the sender instead of dropping messages.
+- Execution is serialized per environment. Messages arriving mid-run queue as followups; each queued message is exactly one turn of the rolling session, drained FIFO — there is no forced stop, suspend, or steering (ADR 0019). Each environment's queue is bounded; a full queue applies backpressure to the sender instead of dropping messages.
 - Sessions are rolling, one per environment.
 - Adding a channel means adding one adapter; the rest of the system does not change.
 - Callers authenticate with mTLS, terminated in the platform binary (ADR 0017): a `tls:` config section carries the server certificate/key and the client CA path, and the gateway requires and verifies client certificates against it. Without `tls:` the gateway serves loopback binds only; a non-loopback bind without TLS fails startup. An authenticated caller has full access in this phase. Certificate issuance and CA operation are operator/orchestration-layer scope.
@@ -28,6 +28,4 @@ Governs the gateway: message ingress, routing, outbound delivery, and monitoring
 
 ## Open questions
 
-- Per-env authorization (ACLs over caller identity) — deferred until an orchestration use case demands it.
-- Mid-run steering / interruption — deferred.
 - Channel adapters beyond the first HTTP/API adapter — deferred.

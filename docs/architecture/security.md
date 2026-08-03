@@ -31,7 +31,7 @@ Governs the security model: trust domains, secret custody, and egress. Rationale
 
 ### Gateway authentication
 
-- Callers authenticate with mTLS terminated in the platform binary (ADR 0017); the platform holds only public caller material (the client CA) plus its own server key outside the agent's execution domain — no shared caller secret enters any config. Authorization is flat in this phase; per-env ACLs are deferred.
+- Callers authenticate with mTLS terminated in the platform binary (ADR 0017); the platform holds only public caller material (the client CA) plus its own server key outside the agent's execution domain — no shared caller secret enters any config. Authorization is flat: there are no per-env ACLs in the platform — granting agents their capabilities is the orchestration layer's concern (ADR 0019).
 - Runtime material is owner-only (ADR 0006's runtime-UID domain in practical form): the gateway TLS server key and the platform config must be mode 0600 so agent-UID children cannot read them. The gateway fails startup on a group/other-readable server key, naming the path and the 0600 requirement, instead of mutating operator-provided files.
 
 ## Rejected alternatives

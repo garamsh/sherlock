@@ -27,7 +27,7 @@ func newAgentCommand() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			envID, err := cmd.Flags().GetString("env")
+			agentID, err := cmd.Flags().GetString("env")
 			if err != nil {
 				return err
 			}
@@ -35,7 +35,7 @@ func newAgentCommand() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			return runAgentTurn(cmd.Context(), cfg, envID, msg, ego)
+			return runAgentTurn(cmd.Context(), cfg, agentID, msg, ego)
 		},
 	}
 	cmd.Flags().String("env", "default", "environment ID to run the turn in")
@@ -52,7 +52,7 @@ func newAgentCommand() *cobra.Command {
 // The factory wires the four built-in tools (memory, files, message_send,
 // shell_exec) per ADR 0012; the shell_exec executor runs agent-supplied
 // commands as sub-processes dropped to the agent UID.
-func runAgentTurn(ctx context.Context, cfg Config, envID, msg, ego string) error {
+func runAgentTurn(ctx context.Context, cfg Config, agentID, msg, ego string) error {
 	// Logs go to stderr so stdout carries only the agent's output.
 	logger := slog.New(slog.NewJSONHandler(os.Stderr, nil))
 	slog.SetDefault(logger)
@@ -69,7 +69,7 @@ func runAgentTurn(ctx context.Context, cfg Config, envID, msg, ego string) error
 	if err != nil {
 		return err
 	}
-	rt, err := factory.New(ctx, envID, nil)
+	rt, err := factory.New(ctx, agentID, nil)
 	if err != nil {
 		return err
 	}

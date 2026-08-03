@@ -23,14 +23,14 @@ import (
 type fakeFactory struct {
 	mu      sync.Mutex
 	created []string
-	newFn   func(envID string, events agent.EventSink) (*gateway.Runtime, error)
+	newFn   func(agentID string, events agent.EventSink) (*gateway.Runtime, error)
 }
 
-func (f *fakeFactory) New(_ context.Context, envID string, events agent.EventSink) (*gateway.Runtime, error) {
+func (f *fakeFactory) New(_ context.Context, agentID string, events agent.EventSink) (*gateway.Runtime, error) {
 	f.mu.Lock()
-	f.created = append(f.created, envID)
+	f.created = append(f.created, agentID)
 	f.mu.Unlock()
-	return f.newFn(envID, events)
+	return f.newFn(agentID, events)
 }
 
 func (f *fakeFactory) createdEnvs() []string {
@@ -153,8 +153,8 @@ func TestRouter_CreatesEnvironmentOnce(t *testing.T) {
 }
 
 func TestRouter_FactoryErrorSurfaces(t *testing.T) {
-	factory := &fakeFactory{newFn: func(envID string, _ agent.EventSink) (*gateway.Runtime, error) {
-		return nil, fmt.Errorf("%w: %q", environment.ErrInvalidID, envID)
+	factory := &fakeFactory{newFn: func(agentID string, _ agent.EventSink) (*gateway.Runtime, error) {
+		return nil, fmt.Errorf("%w: %q", environment.ErrInvalidID, agentID)
 	}}
 	router := gateway.NewRouter(factory, newTestLogger())
 	defer router.Close()
@@ -177,21 +177,21 @@ func TestRouter_EnqueueAfterCloseFails(t *testing.T) {
 func TestRouter_CloseReleasesRuntimes(t *testing.T) {
 	var mu sync.Mutex
 	var closed []string
-	factory := &fakeFactory{newFn: func(envID string, _ agent.EventSink) (*gateway.Runtime, error) {
+	factory := &fakeFactory{newFn: func(agentID string, _ agent.EventSink) (*gateway.Runtime, error) {
 		return &gateway.Runtime{
 			Session: &fakeSession{},
 			Capture: noopCapture,
 			Close: func(context.Context) error {
 				mu.Lock()
-				closed = append(closed, envID)
+				closed = append(closed, agentID)
 				mu.Unlock()
 				return nil
 			},
 		}, nil
 	}}
 	router := gateway.NewRouter(factory, newTestLogger())
-	for _, envID := range []string{"env-1", "env-2"} {
-		_, err := router.Enqueue(context.Background(), envID, "", "hi")
+	for _, agentID := range []string{"env-1", "env-2"} {
+		_, err := router.Enqueue(context.Background(), agentID, "", "hi")
 		require.NoError(t, err)
 	}
 

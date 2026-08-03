@@ -22,9 +22,9 @@ import (
 )
 
 // newTestServer wires a router over a fake factory into an httptest
-// server. The returned session receives the events sink of env "env-1"
+// server. The returned session receives the events sink of agent "env-1"
 // through emit.
-func newTestServer(t *testing.T, newFn func(envID string, events agent.EventSink) (*gateway.Runtime, error)) *httptest.Server {
+func newTestServer(t *testing.T, newFn func(agentID string, events agent.EventSink) (*gateway.Runtime, error)) *httptest.Server {
 	t.Helper()
 	router := gateway.NewRouter(&fakeFactory{newFn: newFn}, newTestLogger())
 	t.Cleanup(func() { router.Close() })
@@ -45,25 +45,25 @@ func TestServer_PostMessageReturns202WithID(t *testing.T) {
 		return &gateway.Runtime{Session: &fakeSession{}, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
 	})
 
-	resp := postMessage(t, srv.URL+"/envs/env-1/messages", `{"content":"hello"}`)
+	resp := postMessage(t, srv.URL+"/agents/env-1/messages", `{"content":"hello"}`)
 	defer resp.Body.Close()
 	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
 
 	var ack struct {
-		ID     string `json:"id"`
-		Env    string `json:"env"`
-		Status string `json:"status"`
+		ID      string `json:"id"`
+		AgentID string `json:"agent_id"`
+		Status  string `json:"status"`
 	}
 	require.NoError(t, json.NewDecoder(resp.Body).Decode(&ack))
 	assert.NotEmpty(t, ack.ID)
-	assert.Equal(t, "env-1", ack.Env)
+	assert.Equal(t, "env-1", ack.AgentID)
 	assert.Equal(t, "queued", ack.Status)
 }
 
 func TestServer_PostMessageRejectsBadRequests(t *testing.T) {
-	srv := newTestServer(t, func(envID string, _ agent.EventSink) (*gateway.Runtime, error) {
-		if envID == "bad" {
-			return nil, fmt.Errorf("%w: %q", environment.ErrInvalidID, envID)
+	srv := newTestServer(t, func(agentID string, _ agent.EventSink) (*gateway.Runtime, error) {
+		if agentID == "bad" {
+			return nil, fmt.Errorf("%w: %q", environment.ErrInvalidID, agentID)
 		}
 		return &gateway.Runtime{Session: &fakeSession{}, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
 	})
@@ -74,10 +74,10 @@ func TestServer_PostMessageRejectsBadRequests(t *testing.T) {
 		body   string
 		status int
 	}{
-		{"invalid JSON", "/envs/env-1/messages", `{"content":`, http.StatusBadRequest},
-		{"empty content", "/envs/env-1/messages", `{"content":""}`, http.StatusBadRequest},
-		{"unknown field", "/envs/env-1/messages", `{"content":"hi","extra":1}`, http.StatusBadRequest},
-		{"invalid env id", "/envs/bad/messages", `{"content":"hi"}`, http.StatusBadRequest},
+		{"invalid JSON", "/agents/env-1/messages", `{"content":`, http.StatusBadRequest},
+		{"empty content", "/agents/env-1/messages", `{"content":""}`, http.StatusBadRequest},
+		{"unknown field", "/agents/env-1/messages", `{"content":"hi","extra":1}`, http.StatusBadRequest},
+		{"invalid agent id", "/agents/bad/messages", `{"content":"hi"}`, http.StatusBadRequest},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -97,7 +97,7 @@ func TestServer_PostMessagePlainHTTPHasNoSender(t *testing.T) {
 		return &gateway.Runtime{Session: session, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
 	})
 
-	resp := postMessage(t, srv.URL+"/envs/env-1/messages", `{"content":"hello"}`)
+	resp := postMessage(t, srv.URL+"/agents/env-1/messages", `{"content":"hello"}`)
 	defer resp.Body.Close()
 	require.Equal(t, http.StatusAccepted, resp.StatusCode)
 
@@ -111,10 +111,27 @@ func TestServer_MethodNotAllowed(t *testing.T) {
 	srv := newTestServer(t, func(string, agent.EventSink) (*gateway.Runtime, error) {
 		return &gateway.Runtime{Session: &fakeSession{}, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
 	})
-	resp, err := http.Get(srv.URL + "/envs/env-1/messages")
+	resp, err := http.Get(srv.URL + "/agents/env-1/messages")
 	require.NoError(t, err)
 	defer resp.Body.Close()
 	assert.Equal(t, http.StatusMethodNotAllowed, resp.StatusCode)
+}
+
+// TestServer_LegacyEnvPathsAreGone pins ADR 0021: the API is
+// agent-addressed; the old /envs/ paths serve nothing.
+func TestServer_LegacyEnvPathsAreGone(t *testing.T) {
+	srv := newTestServer(t, func(string, agent.EventSink) (*gateway.Runtime, error) {
+		return &gateway.Runtime{Session: &fakeSession{}, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
+	})
+
+	resp := postMessage(t, srv.URL+"/envs/env-1/messages", `{"content":"hello"}`)
+	defer resp.Body.Close()
+	assert.Equal(t, http.StatusNotFound, resp.StatusCode)
+
+	resp, err := http.Get(srv.URL + "/envs/env-1/events")
+	require.NoError(t, err)
+	defer resp.Body.Close()
+	assert.Equal(t, http.StatusNotFound, resp.StatusCode)
 }
 
 // sseListener subscribes to the event stream and decodes every event into
@@ -159,9 +176,9 @@ func TestServer_EventsStreamsTurnEvents(t *testing.T) {
 		return &gateway.Runtime{Session: session, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
 	})
 
-	received := sseListener(t, srv.URL+"/envs/env-1/events")
+	received := sseListener(t, srv.URL+"/agents/env-1/events")
 
-	resp := postMessage(t, srv.URL+"/envs/env-1/messages", `{"content":"hello"}`)
+	resp := postMessage(t, srv.URL+"/agents/env-1/messages", `{"content":"hello"}`)
 	require.Equal(t, http.StatusAccepted, resp.StatusCode)
 	var ack struct {
 		ID string `json:"id"`
@@ -177,7 +194,7 @@ func TestServer_EventsStreamsTurnEvents(t *testing.T) {
 	for len(kinds) < 2 {
 		select {
 		case e := <-received:
-			assert.Equal(t, "env-1", e["env"])
+			assert.Equal(t, "env-1", e["agent_id"])
 			kinds = append(kinds, e["kind"].(string))
 			terminal = e
 		case <-deadline:
@@ -202,9 +219,9 @@ func TestServer_EventsStreamsTurnFailed(t *testing.T) {
 		}, nil
 	})
 
-	received := sseListener(t, srv.URL+"/envs/env-1/events")
+	received := sseListener(t, srv.URL+"/agents/env-1/events")
 
-	resp := postMessage(t, srv.URL+"/envs/env-1/messages", `{"content":"hello"}`)
+	resp := postMessage(t, srv.URL+"/agents/env-1/messages", `{"content":"hello"}`)
 	resp.Body.Close()
 	require.Equal(t, http.StatusAccepted, resp.StatusCode)
 
@@ -216,7 +233,7 @@ func TestServer_EventsStreamsTurnFailed(t *testing.T) {
 	for len(kinds) < 2 {
 		select {
 		case e := <-received:
-			assert.Equal(t, "env-1", e["env"])
+			assert.Equal(t, "env-1", e["agent_id"])
 			kinds = append(kinds, e["kind"].(string))
 			terminal = e
 		case <-deadline:

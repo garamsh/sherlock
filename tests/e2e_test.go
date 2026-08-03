@@ -23,8 +23,8 @@ import (
 	"github.com/garamsh/gagent/internal/tool"
 )
 
-// e2eEnvID is this scenario's own environment ID.
-const e2eEnvID = "e2e"
+// e2eAgentID is this scenario's own agent ID.
+const e2eAgentID = "e2e"
 
 // e2eQuestion is the inbound message that drives the canned MVP scenario:
 // the mock model searches long-term memory, runs the answer through
@@ -83,7 +83,7 @@ func mvpScript() *agent.ScriptedModel {
 // daemon and no real fork+exec required.
 func TestEndToEnd_MVPScenario(t *testing.T) {
 	root := t.TempDir()
-	envID := e2eEnvID
+	agentID := e2eAgentID
 
 	factory := &gateway.Factory{
 		Root: root,
@@ -100,24 +100,24 @@ func TestEndToEnd_MVPScenario(t *testing.T) {
 	srv := httptest.NewServer(gateway.NewHandler(router, logger))
 	t.Cleanup(srv.Close)
 
-	runMVPScenario(t, srv.URL, root, envID)
+	runMVPScenario(t, srv.URL, root, agentID)
 
 	// Close drains the router and persists the environment store.
 	require.NoError(t, router.Close())
-	assertMemoryStore(t, filepath.Join(root, envID))
+	assertMemoryStore(t, filepath.Join(root, agentID))
 }
 
 // runMVPScenario drives the canned MVP message flow against a serving
 // gateway: HTTP ingress, the full turn lifecycle on the monitoring stream,
 // and the reply in the outbox.
-func runMVPScenario(t *testing.T, baseURL, root, envID string) {
+func runMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	t.Helper()
 
 	// Subscribe to the monitoring stream before the message so no event
 	// is missed.
-	events := subscribeSSE(t, baseURL+"/envs/"+envID+"/events")
+	events := subscribeSSE(t, baseURL+"/agents/"+agentID+"/events")
 
-	resp := postJSON(t, baseURL+"/envs/"+envID+"/messages",
+	resp := postJSON(t, baseURL+"/agents/"+agentID+"/messages",
 		`{"content":`+strconvQuote(e2eQuestion)+`}`)
 	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
 	resp.Body.Close()
@@ -152,9 +152,9 @@ func runMVPScenario(t *testing.T, baseURL, root, envID string) {
 
 	// Reply: message_send output landed in the environment outbox.
 	require.Eventually(t, func() bool {
-		return len(outboxMessages(t, root, envID)) == 1
+		return len(outboxMessages(t, root, agentID)) == 1
 	}, 5*time.Second, 10*time.Millisecond)
-	replies := outboxMessages(t, root, envID)
+	replies := outboxMessages(t, root, agentID)
 	require.Len(t, replies, 1)
 	assert.Equal(t, "42", replies[0].Content)
 	assert.Equal(t, "http", replies[0].Channel)

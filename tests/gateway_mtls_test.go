@@ -26,8 +26,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// mtlsEnvID is this scenario's own environment ID.
-const mtlsEnvID = "e2e-mtls"
+// mtlsAgentID is this scenario's own agent ID.
+const mtlsAgentID = "e2e-mtls"
 
 // e2eCA is a throwaway in-process certificate authority (issue #173:
 // tests generate certs in-process; no fixtures committed).
@@ -226,8 +226,8 @@ func TestGatewayMTLS_AuthenticatesCallers(t *testing.T) {
 	_, err = mtlsClient(t, ca.pem, foreignCert, foreignKey).Get(baseURL + "/")
 	require.Error(t, err, "a client certified by a foreign CA must be rejected at the handshake")
 
-	events := subscribeSSEClient(t, client, baseURL+"/envs/"+mtlsEnvID+"/events")
-	resp, err := client.Post(baseURL+"/envs/"+mtlsEnvID+"/messages",
+	events := subscribeSSEClient(t, client, baseURL+"/agents/"+mtlsAgentID+"/events")
+	resp, err := client.Post(baseURL+"/agents/"+mtlsAgentID+"/messages",
 		"application/json", strings.NewReader(`{"content":"hello"}`))
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusAccepted, resp.StatusCode)

@@ -84,8 +84,8 @@ func TestGateway_EndToEnd(t *testing.T) {
 
 	factory := &gateway.Factory{
 		Root: root,
-		NewModel: func(envID string) agent.Model {
-			if envID == "env-1" {
+		NewModel: func(agentID string) agent.Model {
+			if agentID == "env-1" {
 				return gated
 			}
 			return replyScript("reply-other")
@@ -99,10 +99,10 @@ func TestGateway_EndToEnd(t *testing.T) {
 
 	// Subscribe to the monitoring stream before any message so no event
 	// is missed.
-	events := subscribeSSE(t, srv.URL+"/envs/env-1/events")
+	events := subscribeSSE(t, srv.URL+"/agents/env-1/events")
 
 	// First message: accepted and its run starts (blocking in the model).
-	resp := postJSON(t, srv.URL+"/envs/env-1/messages", `{"content":"first"}`)
+	resp := postJSON(t, srv.URL+"/agents/env-1/messages", `{"content":"first"}`)
 	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
 	resp.Body.Close()
 	select {
@@ -112,7 +112,7 @@ func TestGateway_EndToEnd(t *testing.T) {
 	}
 
 	// Second message mid-run: queued as a followup, not run yet.
-	resp = postJSON(t, srv.URL+"/envs/env-1/messages", `{"content":"second"}`)
+	resp = postJSON(t, srv.URL+"/agents/env-1/messages", `{"content":"second"}`)
 	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
 	resp.Body.Close()
 	assert.Empty(t, outboxMessages(t, root, "env-1"))
@@ -155,7 +155,7 @@ func TestGateway_EndToEnd(t *testing.T) {
 	}, kinds)
 
 	// An environment with no subscribers runs and delivers normally.
-	resp = postJSON(t, srv.URL+"/envs/env-2/messages", `{"content":"quiet"}`)
+	resp = postJSON(t, srv.URL+"/agents/env-2/messages", `{"content":"quiet"}`)
 	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
 	resp.Body.Close()
 	require.Eventually(t, func() bool {
@@ -165,9 +165,9 @@ func TestGateway_EndToEnd(t *testing.T) {
 
 // capturedTurns returns the active user-turn captures in the
 // environment's memory store.
-func capturedTurns(t *testing.T, root, envID string) []memory.Memory {
+func capturedTurns(t *testing.T, root, agentID string) []memory.Memory {
 	t.Helper()
-	store, err := sqlite.Open(filepath.Join(root, envID, gateway.MemoryDBFile))
+	store, err := sqlite.Open(filepath.Join(root, agentID, gateway.MemoryDBFile))
 	require.NoError(t, err)
 	defer func() {
 		assert.NoError(t, store.Close())
@@ -188,9 +188,9 @@ func capturedTurns(t *testing.T, root, envID string) []memory.Memory {
 // consolidation (ADR 0015) may archive captures into a compressed parent,
 // but nothing is ever hard-deleted — a restart must neither lose nor
 // duplicate them.
-func capturedTurnContents(t *testing.T, root, envID string) []string {
+func capturedTurnContents(t *testing.T, root, agentID string) []string {
 	t.Helper()
-	db, err := sql.Open("sqlite", filepath.Join(root, envID, gateway.MemoryDBFile))
+	db, err := sql.Open("sqlite", filepath.Join(root, agentID, gateway.MemoryDBFile))
 	require.NoError(t, err)
 	defer func() {
 		assert.NoError(t, db.Close())
@@ -235,7 +235,7 @@ func TestGateway_InboundMessageCapturedBeforeRunCompletes(t *testing.T) {
 	srv := httptest.NewServer(gateway.NewHandler(router, logger))
 	t.Cleanup(srv.Close)
 
-	resp := postJSON(t, srv.URL+"/envs/env-1/messages", `{"content":"the wifi password is hunter2"}`)
+	resp := postJSON(t, srv.URL+"/agents/env-1/messages", `{"content":"the wifi password is hunter2"}`)
 	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
 	resp.Body.Close()
 	select {
@@ -272,7 +272,7 @@ func TestGateway_RestartBetweenEnqueueAndRunKeepsCapture(t *testing.T) {
 	router := gateway.NewRouter(factory, logger)
 	srv := httptest.NewServer(gateway.NewHandler(router, logger))
 
-	resp := postJSON(t, srv.URL+"/envs/env-1/messages", `{"content":"first"}`)
+	resp := postJSON(t, srv.URL+"/agents/env-1/messages", `{"content":"first"}`)
 	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
 	resp.Body.Close()
 	select {
@@ -281,7 +281,7 @@ func TestGateway_RestartBetweenEnqueueAndRunKeepsCapture(t *testing.T) {
 		t.Fatal("first run did not start")
 	}
 	// The second message is accepted and queued behind the blocked run.
-	resp = postJSON(t, srv.URL+"/envs/env-1/messages", `{"content":"second"}`)
+	resp = postJSON(t, srv.URL+"/agents/env-1/messages", `{"content":"second"}`)
 	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
 	resp.Body.Close()
 
@@ -355,15 +355,15 @@ func collectEvents(t *testing.T, events chan map[string]any, n int) []map[string
 }
 
 // outboxMessages reads the environment's outbox in delivery order.
-func outboxMessages(t *testing.T, root, envID string) []message.Message {
+func outboxMessages(t *testing.T, root, agentID string) []message.Message {
 	t.Helper()
-	entries, err := os.ReadDir(filepath.Join(root, envID, gateway.OutboxDir))
+	entries, err := os.ReadDir(filepath.Join(root, agentID, gateway.OutboxDir))
 	if err != nil {
 		return nil
 	}
 	var out []message.Message
 	for _, e := range entries {
-		raw, err := os.ReadFile(filepath.Join(root, envID, gateway.OutboxDir, e.Name()))
+		raw, err := os.ReadFile(filepath.Join(root, agentID, gateway.OutboxDir, e.Name()))
 		require.NoError(t, err)
 		var msg message.Message
 		require.NoError(t, json.Unmarshal(raw, &msg))

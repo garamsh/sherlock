@@ -44,9 +44,9 @@ install -d -m 0777 "$GAGENT_DATA_DIR"
 docker compose build
 docker compose up -d
 curl -N --cacert tls/ca.pem --cert tls/client.pem --key tls/client-key.pem \
-  https://localhost:8080/envs/demo/events &                # SSE event stream
+  https://localhost:8080/agents/demo/events &              # SSE event stream
 curl --cacert tls/ca.pem --cert tls/client.pem --key tls/client-key.pem \
-  -X POST https://localhost:8080/envs/demo/messages -d '{"content":"hello"}'   # returns 202
+  -X POST https://localhost:8080/agents/demo/messages -d '{"content":"hello"}'   # returns 202
 ```
 
 A client without a certificate — or with one from a different CA — is rejected at the TLS handshake.

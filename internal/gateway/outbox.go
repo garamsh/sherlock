@@ -17,7 +17,7 @@ import (
 const OutboxDir = "outbox"
 
 // Outbox is the MVP message.Sink (ADR 0009): it "delivers" every outbound
-// message by appending a JSON file to data/envs/<env-id>/outbox/. Real
+// message by appending a JSON file to data/envs/<agent-id>/outbox/. Real
 // channel adapters replace it without touching the tool or the agent.
 // Outbox is safe for concurrent use.
 type Outbox struct {

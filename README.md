@@ -5,7 +5,7 @@ gagent is an autonomous agent platform written in Go. It runs AI agents that can
 ## Principles
 
 - **Three components only: Gateway / Agent / Tool.** The Gateway normalizes external channels (web, API, messengers, CLI) into a single entry point. The Agent runs the reasoning loop and decides which tools to call. Every capability — memory, files, outbound messaging, and shell access for workspace operations — is a Tool behind one common interface. No extra layers. A tool is either a Go built-in or a script tool registered from the config's `tools:` section (ADR 0010, ADR 0013).
-- **The agent owns its execution environment.** Each agent runs in its own directory (`data/envs/<env-id>/` containing `workspace/` + `memory.db`) inside the platform's container; the orchestration layer manages the boundary (network egress, mounts, lifecycle). The `shell_exec` tool runs agent-supplied commands as sub-processes dropped to the agent UID; the rest of the platform keeps its trust-domain separation (ADR 0006, ADR 0012).
+- **The agent owns its execution environment.** Each agent runs in its own directory (`data/envs/<agent-id>/` containing `workspace/` + `memory.db`) inside the platform's container; the orchestration layer manages the boundary (network egress, mounts, lifecycle). The `shell_exec` tool runs agent-supplied commands as sub-processes dropped to the agent UID; the rest of the platform keeps its trust-domain separation (ADR 0006, ADR 0012).
 - **Memory is agent-managed, not just stored.** Memory is RAG-based, and the agent actively curates it through a per-turn writeback — keeping, correcting, and retracting — while the platform consolidates and evicts on thresholds (ADR 0015), like human memory rather than a plain store/search index.
 
 ## Who it is for
@@ -30,9 +30,9 @@ Serves HTTP message ingress and an SSE monitoring stream:
 gagent gateway
 ```
 
-- `POST /envs/{env-id}/messages` with `{"content":"..."}` — queues a message for the environment (created on first use) and returns `202` with a message ID.
-- `GET /envs/{env-id}/events` — server-sent events stream of the environment's agent loop (turn started, tool call, writeback, turn finished). Every run ends with exactly one terminal event — `turn_finished` on success, `turn_failed` with the error on failure.
-- Agent replies (`message_send`) land as JSON files in `data/envs/<env-id>/outbox/`.
+- `POST /agents/{agent-id}/messages` with `{"content":"..."}` — queues a message for the agent (its environment is created on first use) and returns `202` with a message ID.
+- `GET /agents/{agent-id}/events` — server-sent events stream of the agent's loop (turn started, tool call, writeback, turn finished). Every run ends with exactly one terminal event — `turn_finished` on success, `turn_failed` with the error on failure.
+- Agent replies (`message_send`) land as JSON files in `data/envs/<agent-id>/outbox/`.
 
 **Warning: an unauthenticated gateway is a remote shell into the environment.** The gateway authenticates callers with mTLS when the `tls:` config section is set (server certificate/key plus a client CA — callers must present a certificate from that CA; ADR 0017). Without `tls:` the gateway serves loopback binds only, and a non-loopback `--addr` fails startup. Certificate issuance and CA operation are operator scope; rotation is a restart with new files.
 

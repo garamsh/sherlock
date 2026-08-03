@@ -12,7 +12,7 @@ import (
 // mock keeps the scripted placeholder; openai builds a real client. A
 // missing or empty API key environment variable fails fast here, at
 // startup, instead of mid-turn.
-func newModelFunc(cfg ModelConfig) (func(envID string) agent.Model, error) {
+func newModelFunc(cfg ModelConfig) (func(agentID string) agent.Model, error) {
 	switch cfg.Provider {
 	case "mock":
 		return mockModel, nil

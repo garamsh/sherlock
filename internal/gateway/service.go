@@ -16,11 +16,11 @@ import (
 var ErrRouterClosed = errors.New("gateway: router closed")
 
 // Inbound is one accepted message: it has been assigned an ID and waits
-// for (or is in) its environment's serialized run. Sender is the
+// for (or is in) its agent's serialized run. Sender is the
 // caller's identity; empty means the channel provided none.
 type Inbound struct {
 	ID       string
-	EnvID    string
+	AgentID  string
 	Sender   string
 	Content  string
 	QueuedAt time.Time
@@ -30,11 +30,11 @@ type Inbound struct {
 // blocks when the queue is full, giving senders natural backpressure.
 const DefaultQueueCapacity = 64
 
-// RuntimeFactory builds one environment's runtime on first use. The
-// events sink is the environment's monitoring stream and outlives any
+// RuntimeFactory builds one agent's runtime on first use. The
+// events sink is the agent's monitoring stream and outlives any
 // single runtime.
 type RuntimeFactory interface {
-	New(ctx context.Context, envID string, events agent.EventSink) (*Runtime, error)
+	New(ctx context.Context, agentID string, events agent.EventSink) (*Runtime, error)
 }
 
 // Router is the gateway's core: it routes inbound messages to per
@@ -85,8 +85,8 @@ func NewRouter(factory RuntimeFactory, logger *slog.Logger) *Router {
 // store at accept time, so a failed run or a gateway restart before the
 // run starts never loses it, and each accepted message is captured
 // exactly once. A capture failure rejects the message.
-func (r *Router) Enqueue(ctx context.Context, envID, sender, content string) (string, error) {
-	q, err := r.env(envID)
+func (r *Router) Enqueue(ctx context.Context, agentID, sender, content string) (string, error) {
+	q, err := r.env(agentID)
 	if err != nil {
 		return "", err
 	}
@@ -97,11 +97,11 @@ func (r *Router) Enqueue(ctx context.Context, envID, sender, content string) (st
 	if err := q.runtime.Capture(ctx, content); err != nil {
 		return "", err
 	}
-	msg := Inbound{ID: id, EnvID: envID, Sender: sender, Content: content, QueuedAt: time.Now()}
+	msg := Inbound{ID: id, AgentID: agentID, Sender: sender, Content: content, QueuedAt: time.Now()}
 	select {
 	case q.inbox <- msg:
 		r.logger.Info("message enqueued",
-			"op", "enqueue", "env_id", envID, "message_id", id)
+			"op", "enqueue", "agent_id", agentID, "message_id", id)
 		return id, nil
 	case <-ctx.Done():
 		return "", ctx.Err()
@@ -110,12 +110,12 @@ func (r *Router) Enqueue(ctx context.Context, envID, sender, content string) (st
 	}
 }
 
-// Events returns the environment's monitoring stream, creating it on
+// Events returns the agent's monitoring stream, creating it on
 // first use. Subscribing never creates the environment itself.
-func (r *Router) Events(envID string) *Broker {
+func (r *Router) Events(agentID string) *Broker {
 	r.mu.Lock()
 	defer r.mu.Unlock()
-	return r.lockedBroker(envID)
+	return r.lockedBroker(agentID)
 }
 
 // Close stops accepting messages, cancels in-flight runs, waits for the
@@ -142,7 +142,7 @@ func (r *Router) Close() error {
 	var errs []error
 	for _, q := range envs {
 		if err := q.runtime.Close(context.Background()); err != nil {
-			errs = append(errs, fmt.Errorf("close env %q: %w", q.envID, err))
+			errs = append(errs, fmt.Errorf("close agent %q: %w", q.agentID, err))
 		}
 	}
 	for _, b := range brokers {
@@ -151,42 +151,42 @@ func (r *Router) Close() error {
 	return errors.Join(errs...)
 }
 
-// env returns the environment's queue, creating the runtime and runner on
+// env returns the agent's queue, creating the runtime and runner on
 // first use. Creation is synchronous so factory errors (e.g. an invalid
-// env ID) surface to the sender instead of after the ack.
-func (r *Router) env(envID string) (*envQueue, error) {
+// agent ID) surface to the sender instead of after the ack.
+func (r *Router) env(agentID string) (*envQueue, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	if r.closed {
 		return nil, ErrRouterClosed
 	}
-	if q, ok := r.envs[envID]; ok {
+	if q, ok := r.envs[agentID]; ok {
 		return q, nil
 	}
-	sink := &batchEvents{inner: r.lockedBroker(envID)}
-	rt, err := r.factory.New(r.ctx, envID, sink)
+	sink := &batchEvents{inner: r.lockedBroker(agentID)}
+	rt, err := r.factory.New(r.ctx, agentID, sink)
 	if err != nil {
-		return nil, fmt.Errorf("create environment %q: %w", envID, err)
+		return nil, fmt.Errorf("create environment %q: %w", agentID, err)
 	}
 	q := &envQueue{
-		envID:   envID,
+		agentID: agentID,
 		runtime: rt,
 		inbox:   make(chan Inbound, DefaultQueueCapacity),
 		events:  sink,
 	}
-	r.envs[envID] = q
+	r.envs[agentID] = q
 	r.wg.Add(1)
 	go r.run(q)
 	return q, nil
 }
 
-// lockedBroker returns the env's broker, creating it on first use. The
+// lockedBroker returns the agent's broker, creating it on first use. The
 // caller must hold r.mu.
-func (r *Router) lockedBroker(envID string) *Broker {
-	if b, ok := r.brokers[envID]; ok {
+func (r *Router) lockedBroker(agentID string) *Broker {
+	if b, ok := r.brokers[agentID]; ok {
 		return b
 	}
 	b := NewBroker()
-	r.brokers[envID] = b
+	r.brokers[agentID] = b
 	return b
 }

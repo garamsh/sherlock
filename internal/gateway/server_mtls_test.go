@@ -178,7 +178,7 @@ func TestServer_PostMessageSenderIsCallerIdentity(t *testing.T) {
 	transport := srv.Client().Transport.(*http.Transport).Clone()
 	transport.TLSClientConfig.Certificates = []tls.Certificate{cert}
 	client := &http.Client{Transport: transport}
-	resp, err := client.Post(srv.URL+"/envs/env-1/messages", "application/json",
+	resp, err := client.Post(srv.URL+"/agents/env-1/messages", "application/json",
 		strings.NewReader(`{"content":"hello"}`))
 	require.NoError(t, err)
 	defer resp.Body.Close()

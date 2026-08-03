@@ -20,16 +20,16 @@ const maxMessageBody = 1 << 20 // 1 MiB
 
 // NewHandler returns the gateway's HTTP adapter (ADR 0009):
 //
-//	POST /envs/{envID}/messages — fire-and-forget ingress; 202 + message ID
-//	GET  /envs/{envID}/events   — SSE monitoring stream of loop events
+//	POST /agents/{agentID}/messages — fire-and-forget ingress; 202 + message ID
+//	GET  /agents/{agentID}/events   — SSE monitoring stream of loop events
 //
 // Callers authenticate at the TLS layer (mTLS, ADR 0017); the handler
 // itself is unchanged by it.
 func NewHandler(router *Router, logger *slog.Logger) http.Handler {
 	h := &handler{router: router, logger: logger}
 	mux := http.NewServeMux()
-	mux.HandleFunc("POST /envs/{envID}/messages", h.postMessage)
-	mux.HandleFunc("GET /envs/{envID}/events", h.events)
+	mux.HandleFunc("POST /agents/{agentID}/messages", h.postMessage)
+	mux.HandleFunc("GET /agents/{agentID}/events", h.events)
 	return h.logRequests(mux)
 }
 
@@ -48,9 +48,9 @@ type postMessageRequest struct {
 
 // postMessageResponse acknowledges a queued message.
 type postMessageResponse struct {
-	ID     string `json:"id"`
-	Env    string `json:"env"`
-	Status string `json:"status"`
+	ID      string `json:"id"`
+	AgentID string `json:"agent_id"`
+	Status  string `json:"status"`
 }
 
 // problem is the error body shape for the ingress endpoint.
@@ -59,7 +59,7 @@ type problem struct {
 }
 
 func (h *handler) postMessage(w http.ResponseWriter, r *http.Request) {
-	envID := r.PathValue("envID")
+	agentID := r.PathValue("agentID")
 	var req postMessageRequest
 	dec := json.NewDecoder(http.MaxBytesReader(w, r.Body, maxMessageBody))
 	dec.DisallowUnknownFields()
@@ -71,7 +71,7 @@ func (h *handler) postMessage(w http.ResponseWriter, r *http.Request) {
 		writeProblem(w, http.StatusBadRequest, "content is required")
 		return
 	}
-	id, err := h.router.Enqueue(r.Context(), envID, callerID(r), req.Content)
+	id, err := h.router.Enqueue(r.Context(), agentID, callerID(r), req.Content)
 	if err != nil {
 		switch {
 		case errors.Is(err, environment.ErrInvalidID):
@@ -79,20 +79,20 @@ func (h *handler) postMessage(w http.ResponseWriter, r *http.Request) {
 		case errors.Is(err, ErrRouterClosed):
 			writeProblem(w, http.StatusServiceUnavailable, err.Error())
 		default:
-			h.logger.Error("enqueue failed", "op", "enqueue", "env_id", envID, "error", err)
+			h.logger.Error("enqueue failed", "op", "enqueue", "agent_id", agentID, "error", err)
 			writeProblem(w, http.StatusInternalServerError, "enqueue failed")
 		}
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusAccepted)
-	_ = json.NewEncoder(w).Encode(postMessageResponse{ID: id, Env: envID, Status: "queued"})
+	_ = json.NewEncoder(w).Encode(postMessageResponse{ID: id, AgentID: agentID, Status: "queued"})
 }
 
 // eventPayload is the wire form of one loop event on the SSE stream.
 // Which fields are set depends on Kind (see agent.Event).
 type eventPayload struct {
-	Env        string              `json:"env"`
+	AgentID    string              `json:"agent_id"`
 	Kind       agent.EventKind     `json:"kind"`
 	Turn       int                 `json:"turn"`
 	Task       string              `json:"task,omitempty"`
@@ -111,7 +111,7 @@ type eventPayload struct {
 // subscribers; the stream ends when the client disconnects or the router
 // closes.
 func (h *handler) events(w http.ResponseWriter, r *http.Request) {
-	envID := r.PathValue("envID")
+	agentID := r.PathValue("agentID")
 	flusher, ok := w.(http.Flusher)
 	if !ok {
 		writeProblem(w, http.StatusInternalServerError, "streaming unsupported")
@@ -123,7 +123,7 @@ func (h *handler) events(w http.ResponseWriter, r *http.Request) {
 
 	// Subscribe before the first flush: once the client has received the
 	// response headers, its subscription is guaranteed active.
-	ch, cancel := h.router.Events(envID).Subscribe()
+	ch, cancel := h.router.Events(agentID).Subscribe()
 	defer cancel()
 	flusher.Flush()
 	for {
@@ -135,7 +135,7 @@ func (h *handler) events(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			data, err := json.Marshal(eventPayload{
-				Env:        envID,
+				AgentID:    agentID,
 				Kind:       e.Kind,
 				Turn:       e.Turn,
 				Task:       e.Task,
@@ -149,7 +149,7 @@ func (h *handler) events(w http.ResponseWriter, r *http.Request) {
 				MessageIDs: e.MessageIDs,
 			})
 			if err != nil {
-				h.logger.Error("encode event failed", "op", "events", "env_id", envID, "error", err)
+				h.logger.Error("encode event failed", "op", "events", "agent_id", agentID, "error", err)
 				continue
 			}
 			if _, err := fmt.Fprintf(w, "data: %s\n\n", data); err != nil {

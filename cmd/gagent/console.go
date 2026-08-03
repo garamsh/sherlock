@@ -23,7 +23,7 @@ const defaultConsoleTimeout = 10 * time.Second
 // the platform certificate is the client identity and the same private
 // CA verifies the console. A console: section without tls: disables the
 // console sink with a WARN instead of failing startup.
-func consoleSinkFor(cfg Config, logger *slog.Logger) (func(envID string, fallback *gateway.Outbox) message.Sink, error) {
+func consoleSinkFor(cfg Config, logger *slog.Logger) (func(agentID string, fallback *gateway.Outbox) message.Sink, error) {
 	if cfg.Console.URL == "" {
 		return nil, nil
 	}
@@ -52,7 +52,7 @@ func consoleSinkFor(cfg Config, logger *slog.Logger) (func(envID string, fallbac
 		}},
 		Timeout: defaultConsoleTimeout,
 	}
-	return func(envID string, fallback *gateway.Outbox) message.Sink {
-		return gateway.NewConsoleSink(envID, cfg.Console.URL, client, fallback, logger)
+	return func(agentID string, fallback *gateway.Outbox) message.Sink {
+		return gateway.NewConsoleSink(agentID, cfg.Console.URL, client, fallback, logger)
 	}, nil
 }

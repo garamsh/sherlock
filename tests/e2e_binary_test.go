@@ -14,8 +14,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// binaryEnvID is this scenario's own environment ID.
-const binaryEnvID = "e2e-bin"
+// binaryAgentID is this scenario's own agent ID.
+const binaryAgentID = "e2e-bin"
 
 // TestEndToEnd_BinaryMVPScenario drives the canned MVP scenario against the
 // built gagent binary served as a subprocess — the e2e layer of
@@ -32,7 +32,7 @@ func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
 	root := t.TempDir()
 	cmd, baseURL, exited := startGatewayBinary(t, binary, root)
 
-	runBinaryMVPScenario(t, baseURL, root, binaryEnvID)
+	runBinaryMVPScenario(t, baseURL, root, binaryAgentID)
 
 	// SIGTERM triggers the binary's graceful shutdown.
 	require.NoError(t, cmd.Process.Signal(syscall.SIGTERM))
@@ -45,7 +45,7 @@ func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
 
 	// After the binary exits, the canned memory write is still queryable
 	// from the environment's memory store on disk.
-	assertMemoryStore(t, filepath.Join(root, binaryEnvID))
+	assertMemoryStore(t, filepath.Join(root, binaryAgentID))
 }
 
 // runBinaryMVPScenario is the binary test's variant of runMVPScenario.
@@ -54,12 +54,12 @@ func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
 // agent UID (typical CI environment without setuid-root). The in-process
 // variant in e2e_test.go uses a fake executor so shell_exec always
 // succeeds there.
-func runBinaryMVPScenario(t *testing.T, baseURL, root, envID string) {
+func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	t.Helper()
 
-	events := subscribeSSE(t, baseURL+"/envs/"+envID+"/events")
+	events := subscribeSSE(t, baseURL+"/agents/"+agentID+"/events")
 
-	resp := postJSON(t, baseURL+"/envs/"+envID+"/messages",
+	resp := postJSON(t, baseURL+"/agents/"+agentID+"/messages",
 		`{"content":`+strconvQuote(e2eQuestion)+`}`)
 	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
 	resp.Body.Close()
@@ -94,9 +94,9 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, envID string) {
 	assert.NotContains(t, got[6], "tool_failed")
 
 	require.Eventually(t, func() bool {
-		return len(outboxMessages(t, root, envID)) == 1
+		return len(outboxMessages(t, root, agentID)) == 1
 	}, 5*time.Second, 10*time.Millisecond)
-	replies := outboxMessages(t, root, envID)
+	replies := outboxMessages(t, root, agentID)
 	require.Len(t, replies, 1)
 	assert.Equal(t, "42", replies[0].Content)
 	assert.Equal(t, "http", replies[0].Channel)

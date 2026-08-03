@@ -20,7 +20,7 @@ import (
 // message (ADR 0013).
 func newFactory(
 	cfg Config,
-	newModel func(envID string) agent.Model,
+	newModel func(agentID string) agent.Model,
 	embedder memory.Embedder,
 	ego string,
 	sink message.Sink,

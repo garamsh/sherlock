@@ -106,13 +106,13 @@ func TestFactory_NilSinkWritesOutbox(t *testing.T) {
 func TestFactory_NewSinkBuildsPerEnvironmentSink(t *testing.T) {
 	root := t.TempDir()
 	sink := &recordingSink{}
-	var gotEnvID string
+	var gotAgentID string
 	var gotFallback *gateway.Outbox
 	factory := &gateway.Factory{
 		Root:     root,
 		NewModel: replyModel,
-		NewSink: func(envID string, fallback *gateway.Outbox) message.Sink {
-			gotEnvID = envID
+		NewSink: func(agentID string, fallback *gateway.Outbox) message.Sink {
+			gotAgentID = agentID
 			gotFallback = fallback
 			return sink
 		},
@@ -127,7 +127,7 @@ func TestFactory_NewSinkBuildsPerEnvironmentSink(t *testing.T) {
 	require.NoError(t, err)
 
 	require.Len(t, sink.messages(), 1)
-	assert.Equal(t, "env-1", gotEnvID)
+	assert.Equal(t, "env-1", gotAgentID)
 	assert.Equal(t, filepath.Join(root, "env-1", gateway.OutboxDir), gotFallback.Dir(),
 		"the per-environment sink receives the default file outbox as its fallback")
 }

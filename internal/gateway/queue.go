@@ -18,7 +18,7 @@ const MaxDrainBatch = 8
 // followups in FIFO order and exactly one runner goroutine drains it, so
 // there is never more than one active run per environment (ADR 0009).
 type envQueue struct {
-	envID   string
+	agentID string
 	runtime *Runtime
 	inbox   chan Inbound
 	events  *batchEvents
@@ -30,7 +30,7 @@ type envQueue struct {
 // queue continues with the next drain.
 func (r *Router) run(q *envQueue) {
 	defer r.wg.Done()
-	logger := r.logger.With("env_id", q.envID)
+	logger := r.logger.With("agent_id", q.agentID)
 	for {
 		select {
 		case <-r.ctx.Done():

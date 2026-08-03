@@ -65,8 +65,8 @@ type Factory struct {
 	// Root is the parent directory of all environment data
 	// (environment.DefaultRoot by default).
 	Root string
-	// NewModel returns the chat model for one environment's session.
-	NewModel func(envID string) agent.Model
+	// NewModel returns the chat model for one agent's session.
+	NewModel func(agentID string) agent.Model
 	// Ego is the session ego for every environment; empty selects
 	// the agent package's embedded default (the platform contract is
 	// appended regardless).
@@ -83,11 +83,11 @@ type Factory struct {
 	// Sink, when non-nil, receives outbound messages instead of the default
 	// file outbox (the one-shot agent CLI prints them to stdout).
 	Sink message.Sink
-	// NewSink, when non-nil and Sink is nil, builds each environment's
+	// NewSink, when non-nil and Sink is nil, builds each agent's
 	// outbound sink around the default file outbox (the console sink uses
 	// the outbox as its delivery-failure fallback). Nil selects the file
 	// outbox itself.
-	NewSink func(envID string, fallback *Outbox) message.Sink
+	NewSink func(agentID string, fallback *Outbox) message.Sink
 	// ShellExecTimeout caps one shell_exec sub-process run. A non-positive
 	// value selects DefaultShellExecTimeout.
 	ShellExecTimeout time.Duration
@@ -267,8 +267,8 @@ func secureWorkspace(path string) error {
 // New implements RuntimeFactory: it opens (creating on first use) the
 // environment directory, memory store, and tool set, then wires the
 // session's recall, writeback, event, and context-compaction hooks.
-func (f *Factory) New(_ context.Context, envID string, events agent.EventSink) (*Runtime, error) {
-	env, err := environment.Open(f.Root, envID)
+func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink) (*Runtime, error) {
+	env, err := environment.Open(f.Root, agentID)
 	if err != nil {
 		return nil, err
 	}
@@ -309,7 +309,7 @@ func (f *Factory) New(_ context.Context, envID string, events agent.EventSink) (
 		outbox := NewOutbox(env.Dir())
 		sink = outbox
 		if f.NewSink != nil {
-			sink = f.NewSink(envID, outbox)
+			sink = f.NewSink(agentID, outbox)
 		}
 	}
 
@@ -348,7 +348,7 @@ func (f *Factory) New(_ context.Context, envID string, events agent.EventSink) (
 		}
 	}
 
-	session := agent.NewSession(f.NewModel(envID), registry, agent.Options{
+	session := agent.NewSession(f.NewModel(agentID), registry, agent.Options{
 		Recaller:           Recall{Svc: memSvc},
 		Writeback:          Writeback{Svc: memSvc},
 		Events:             events,

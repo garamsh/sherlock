@@ -94,6 +94,22 @@ func TestServerTLSConfig_PartialSectionFails(t *testing.T) {
 	}
 }
 
+func TestServerTLSConfig_KeyPermissions(t *testing.T) {
+	dir := t.TempDir()
+	certPEM, keyPEM := writeSelfSignedCert(t, dir)
+	cfg := TLSConfig{Cert: certPEM, Key: keyPEM, ClientCA: certPEM}
+
+	require.NoError(t, os.Chmod(keyPEM, 0o644))
+	_, err := serverTLSConfig(cfg)
+	require.Error(t, err, "a group/other-readable server key must fail startup")
+	assert.Contains(t, err.Error(), keyPEM)
+	assert.Contains(t, err.Error(), "0600")
+
+	require.NoError(t, os.Chmod(keyPEM, 0o600))
+	_, err = serverTLSConfig(cfg)
+	assert.NoError(t, err, "a 0600 server key passes")
+}
+
 func TestServerTLSConfig_UnreadableFilesFail(t *testing.T) {
 	dir := t.TempDir()
 	missing := filepath.Join(dir, "missing.pem")

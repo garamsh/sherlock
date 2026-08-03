@@ -31,6 +31,9 @@ func serverTLSConfig(cfg TLSConfig) (*tls.Config, error) {
 	if len(missing) > 0 {
 		return nil, fmt.Errorf("tls: section is incomplete: missing %s", strings.Join(missing, ", "))
 	}
+	if err := checkServerKeyMode(cfg.Key); err != nil {
+		return nil, err
+	}
 	cert, err := tls.LoadX509KeyPair(cfg.Cert, cfg.Key)
 	if err != nil {
 		return nil, fmt.Errorf("tls: load server certificate: %w", err)
@@ -48,6 +51,21 @@ func serverTLSConfig(cfg TLSConfig) (*tls.Config, error) {
 		ClientCAs:    pool,
 		ClientAuth:   tls.RequireAndVerifyClientCert,
 	}, nil
+}
+
+// checkServerKeyMode rejects a server key readable by group or other: the
+// key is runtime material in the runtime UID's domain (ADR 0006) and must
+// stay owner-only so agent-UID children cannot read it. The platform
+// validates and fails instead of chowning an operator-provided file.
+func checkServerKeyMode(path string) error {
+	info, err := os.Stat(path)
+	if err != nil {
+		return fmt.Errorf("tls: stat server key: %w", err)
+	}
+	if perm := info.Mode().Perm(); perm&0o077 != 0 {
+		return fmt.Errorf("tls: server key %q is group- or other-accessible (mode %04o); it must be mode 0600 (owner-only)", path, perm)
+	}
+	return nil
 }
 
 // isLoopbackAddr reports whether addr binds loopback only. The wildcard

@@ -183,6 +183,24 @@ func TestContract_MemoryToolReadOnly(t *testing.T) {
 		"the selection entry points recording at the writeback block")
 }
 
+// TestContract_MultiMessageTurn pins ADR 0020: the contract tells the
+// model a turn may carry several messages (each with ID and sender,
+// replies addressed per message via message_send) and that a later
+// message may retract an earlier one — the supersede mechanism.
+func TestContract_MultiMessageTurn(t *testing.T) {
+	contract := agent.Contract
+	assert.Contains(t, contract, "A turn may carry several messages",
+		"the multi-message statement is present")
+	assert.Contains(t, contract, "an ID and a sender",
+		"each message arrives with an ID and a sender")
+	assert.Contains(t, contract, "address replies per message through message_send",
+		"replies are addressed per message")
+	assert.Contains(t, contract, "retract an earlier one",
+		"the retraction statement is present")
+	assert.Contains(t, contract, "do not start the retracted work",
+		"a retracted request is never started")
+}
+
 // TestDefaultEgo_BehaviorGuidance pins the identity + behavior lines the
 // expanded EGO.md carries (issue #96; proposal #94).
 func TestDefaultEgo_BehaviorGuidance(t *testing.T) {

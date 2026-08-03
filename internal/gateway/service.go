@@ -16,10 +16,12 @@ import (
 var ErrRouterClosed = errors.New("gateway: router closed")
 
 // Inbound is one accepted message: it has been assigned an ID and waits
-// for (or is in) its environment's serialized run.
+// for (or is in) its environment's serialized run. Sender is the
+// caller's identity; empty means the channel provided none.
 type Inbound struct {
 	ID       string
 	EnvID    string
+	Sender   string
 	Content  string
 	QueuedAt time.Time
 }
@@ -74,13 +76,16 @@ func NewRouter(factory RuntimeFactory, logger *slog.Logger) *Router {
 // creating the environment on first use. It returns the assigned ID once
 // the message is queued; there is no synchronous agent response. A full
 // queue blocks the caller (honoring ctx) until a run drains a slot.
+// The sender is recorded on the envelope so the agent can address replies
+// per message (ADR 0020); an empty sender means the channel provided
+// none.
 //
 // The message is captured as an episodic user-turn memory (ADR 0016)
 // before it is queued: the capture commits to the environment's memory
 // store at accept time, so a failed run or a gateway restart before the
 // run starts never loses it, and each accepted message is captured
 // exactly once. A capture failure rejects the message.
-func (r *Router) Enqueue(ctx context.Context, envID, content string) (string, error) {
+func (r *Router) Enqueue(ctx context.Context, envID, sender, content string) (string, error) {
 	q, err := r.env(envID)
 	if err != nil {
 		return "", err
@@ -92,7 +97,7 @@ func (r *Router) Enqueue(ctx context.Context, envID, content string) (string, er
 	if err := q.runtime.Capture(ctx, content); err != nil {
 		return "", err
 	}
-	msg := Inbound{ID: id, EnvID: envID, Content: content, QueuedAt: time.Now()}
+	msg := Inbound{ID: id, EnvID: envID, Sender: sender, Content: content, QueuedAt: time.Now()}
 	select {
 	case q.inbox <- msg:
 		r.logger.Info("message enqueued",
@@ -158,7 +163,8 @@ func (r *Router) env(envID string) (*envQueue, error) {
 	if q, ok := r.envs[envID]; ok {
 		return q, nil
 	}
-	rt, err := r.factory.New(r.ctx, envID, r.lockedBroker(envID))
+	sink := &batchEvents{inner: r.lockedBroker(envID)}
+	rt, err := r.factory.New(r.ctx, envID, sink)
 	if err != nil {
 		return nil, fmt.Errorf("create environment %q: %w", envID, err)
 	}
@@ -166,6 +172,7 @@ func (r *Router) env(envID string) (*envQueue, error) {
 		envID:   envID,
 		runtime: rt,
 		inbox:   make(chan Inbound, DefaultQueueCapacity),
+		events:  sink,
 	}
 	r.envs[envID] = q
 	r.wg.Add(1)

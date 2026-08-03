@@ -91,6 +91,10 @@ type Event struct {
 	ToolFailed bool
 	Response   string
 	Error      string
+	// MessageIDs names the inbound messages the turn drained; the
+	// gateway stamps it on terminal events (ADR 0020). The session
+	// never sets it.
+	MessageIDs []string
 }
 
 // EventSink receives loop events in emission order. Nil means events are

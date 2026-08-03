@@ -145,7 +145,10 @@ func TestGateway_EndToEnd(t *testing.T) {
 			startedTasks = append(startedTasks, e["task"].(string))
 		}
 	}
-	assert.Equal(t, []string{"first", "second"}, startedTasks)
+	require.Len(t, startedTasks, 2)
+	assert.Contains(t, startedTasks[0], "] unknown: first",
+		"the turn input renders the message with its ID and sender (ADR 0020)")
+	assert.Contains(t, startedTasks[1], "] unknown: second")
 	assert.Equal(t, []string{
 		"turn_started", "writeback", "tool_call", "writeback", "turn_finished",
 		"turn_started", "writeback", "tool_call", "writeback", "turn_finished",

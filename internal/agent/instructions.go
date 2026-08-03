@@ -31,6 +31,11 @@ Pick the right tool for the task; don't run code when memory or files will do.
   the full shell line, not pre-split arguments
   (e.g. ` + "`command: 'find . -name \"*.go\" -size +100k'`" + `).
 
+## Turns and messages
+A turn may carry several messages; each arrives with an ID and a sender —
+address replies per message through message_send. A later message may
+retract an earlier one; when it does, do not start the retracted work.
+
 ## Memory writeback
 Every response ends with a fenced ` + "```memory" + ` block carrying one JSON object. The
 block is stripped before your content is shown; never put reply text inside.

@@ -76,7 +76,8 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, envID string) {
 		"writeback", "tool_call",
 		"writeback", "turn_finished",
 	}, kinds)
-	assert.Equal(t, e2eQuestion, got[0]["task"])
+	assert.Contains(t, got[0]["task"], "] unknown: "+e2eQuestion,
+		"the turn input renders the message with its ID and sender (ADR 0020)")
 
 	assert.Equal(t, "memory", got[2]["tool_name"])
 	assert.NotContains(t, got[2], "tool_failed")

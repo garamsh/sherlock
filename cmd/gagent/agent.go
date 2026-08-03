@@ -27,7 +27,7 @@ func newAgentCommand() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			agentID, err := cmd.Flags().GetString("env")
+			agentID, err := cmd.Flags().GetString("agent-id")
 			if err != nil {
 				return err
 			}
@@ -38,7 +38,7 @@ func newAgentCommand() *cobra.Command {
 			return runAgentTurn(cmd.Context(), cfg, agentID, msg, ego)
 		},
 	}
-	cmd.Flags().String("env", "default", "environment ID to run the turn in")
+	cmd.Flags().String("agent-id", "default", "agent ID to run the turn as")
 	cmd.Flags().String("message", "", "message for the agent (required)")
 	// Cannot fail: the flag is defined just above.
 	_ = cmd.MarkFlagRequired("message")

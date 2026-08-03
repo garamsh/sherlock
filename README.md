@@ -41,10 +41,10 @@ gagent gateway
 Runs one turn of an agent directly and prints the result:
 
 ```sh
-gagent agent --env my-env --message "hello"
+gagent agent --agent-id my-agent --message "hello"
 ```
 
-- `--message` is required; `--env` defaults to `default`.
+- `--message` is required; `--agent-id` defaults to `default`.
 - Outbound `message_send` content and the final response print to stdout (logs go to stderr).
 
 ### Configuration

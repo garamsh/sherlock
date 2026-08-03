@@ -14,7 +14,7 @@ import (
 
 func newFilesTool(t *testing.T) *files.Tool {
 	t.Helper()
-	fs, err := files.Open(t.TempDir())
+	fs, err := files.Open(t.TempDir(), 0)
 	require.NoError(t, err)
 	return files.NewTool(fs)
 }

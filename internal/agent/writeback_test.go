@@ -39,10 +39,10 @@ func TestParseWriteback_Operations(t *testing.T) {
 			},
 		},
 		{
-			name:    "empty block yields no operations",
+			name:    "empty block yields empty non-nil operations",
 			content: "done\n```memory\n{}\n```",
 			visible: "done",
-			ops:     nil,
+			ops:     []agent.WritebackOp{},
 		},
 		{
 			name:    "visible content is trimmed",

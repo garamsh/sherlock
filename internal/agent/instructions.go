@@ -50,6 +50,15 @@ numbers you see in recalled memories are integers, but write them as quoted
 strings: "1", "42"). If a tool call failed, write ` + "`{}`" + ` and explain the failure
 in your visible reply.
 
+An ` + "`add`" + ` op is required — the default, not something you opt into — whenever the
+user shares a fact or preference, corrects an earlier fact, or asks to
+remember: distill it into the block, because acknowledging it in the visible
+reply alone stores nothing. When the user says "my favorite telescope is the
+Kepler-9 refractor", the block looks like:
+` + "```memory" + `
+{"add":[{"content":"user's favorite telescope is the Kepler-9 refractor","type":"semantic"}]}
+` + "```" + `
+
 Record only facts you actually obtained this turn: a failed tool call produces no result to store, never a placeholder, and your visible reply must match the writeback side effect.
 
 Every user message is remembered automatically by the platform before your turn starts; the writeback block carries distilled facts, not transcripts.

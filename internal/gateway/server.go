@@ -90,13 +90,15 @@ func (h *handler) postMessage(w http.ResponseWriter, r *http.Request) {
 }
 
 // eventPayload is the wire form of one loop event on the SSE stream.
-// Which fields are set depends on Kind (see agent.Event).
+// Which fields are set depends on Kind (see agent.Event). Ops is always
+// serialized: on a writeback event, `[]` means the model sent an empty
+// memory block while `null` means it sent none (issue #193).
 type eventPayload struct {
 	AgentID    string              `json:"agent_id"`
 	Kind       agent.EventKind     `json:"kind"`
 	Turn       int                 `json:"turn"`
 	Task       string              `json:"task,omitempty"`
-	Ops        []agent.WritebackOp `json:"ops,omitempty"`
+	Ops        []agent.WritebackOp `json:"ops"`
 	ToolName   string              `json:"tool_name,omitempty"`
 	ToolInput  json.RawMessage     `json:"tool_input,omitempty"`
 	ToolResult string              `json:"tool_result,omitempty"`

@@ -13,7 +13,7 @@ Governs the environment model: what an environment is, its topology, and its tru
 - A tool runtime (supervisor) manages processes and drops privileges before executing agent-supplied code.
 - Boundary policy — egress, CPU/memory quotas, mount scope, lifecycle — is injected from outside at environment creation (target design). Current state: no container isolates the platform; `shell_exec` children run in a fresh empty network namespace (no loopback, no interfaces) on top of the agent-UID drop, while script tools keep network access as operator-sanctioned egress channels (ADR 0014, `security.md`). Resource caps on shell children are applied via rlimits.
 - Each environment owns `data/envs/<env-id>/` (workspace + `memory.db`). The directory is the isolation unit: teardown, migration, and backup are directory operations. The data dir root stays platform-owned; only `workspace/` (agent UID) and `memory.db` (memory UID) change hands in a privileged deployment.
-- The platform itself ships as a distroless nonroot image built from the repo-root `Dockerfile` — the platform image, distinct from the environment image (the agent's body), whose definition remains an open question below. The platform does not talk to a Docker daemon at runtime (ADR 0011); the deployment image is the only Docker involvement. Because the image runs nonroot, `shell_exec` reports `agent_uid unavailable` under it unless the deployment adds privilege.
+- The platform itself ships as a distroless nonroot image built from the repo-root `Dockerfile` — the only image in the system. The environment (the agent's body) is a directory, not an image (ADR 0011), so no separate environment-image definition or hygiene checklist exists; image hygiene concerns land on the platform image, which already satisfies them (static binary, no shell, no setuid binaries, nonroot). The platform does not talk to a Docker daemon at runtime; the deployment image is the only Docker involvement. Because the image runs nonroot, `shell_exec` reports `agent_uid unavailable` under it unless the deployment adds privilege.
 
 ## Rejected alternatives
 
@@ -24,4 +24,3 @@ Governs the environment model: what an environment is, its topology, and its tru
 ## Open questions
 
 - Runtime UID separation (tool runtime configuration custody): target design per ADR 0006. The runtime material is enforced via modes today — TLS server key and platform config at 0600, with a startup check on the key; `workspace/` and `memory.db` are the two UID domains enforced today.
-- Environment image definition and hygiene checklist (no setuid binaries, minimal capabilities): required by ADR 0006, not yet written.

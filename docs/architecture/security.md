@@ -1,6 +1,6 @@
 # Security
 
-Governs the security model: trust domains, secret custody, and egress. Rationale: ADR 0004, ADR 0007, ADR 0012, ADR 0013, ADR 0014.
+Governs the security model: trust domains, secret custody, and egress. Rationale: ADR 0004, ADR 0007, ADR 0012, ADR 0013, ADR 0014, ADR 0018.
 
 ## Current decisions
 
@@ -17,16 +17,13 @@ Governs the security model: trust domains, secret custody, and egress. Rationale
 
 - Secret values never materialize in the code-execution domain. Exposure is prevented by absence, not filtering.
 - Child processes spawned by code-executing tools (`shell_exec`, script tools) start from a minimal scrubbed environment — `PATH`, `HOME`, `LANG` only. The platform process's variables (provider API keys and the like) are never inherited implicitly; a script tool's operator-configured `exec.env` entries are the explicit channel for additional variables.
-- The environment carries placeholder references only, e.g. `GITHUB_TOKEN=secret://github-token`, injected as ordinary environment variables.
-- References resolve only at the egress tool, only for requests matching a (secret, destination host, header position) binding. References in request bodies or to unbound destinations are never substituted.
-- The egress tool redacts any occurrence of real values in response payloads, closing reflection leaks.
-- High-sensitivity secrets skip references entirely; a structured tool performs the operation outside the domain and returns a summary.
+- An external API that needs a secret is reached through an operator-registered script tool: the secret enters the trusted tool process via `exec.env`, and the agent sees only the tool's structured output (ADR 0018). High-sensitivity operations stay outside the domain the same way — a trusted tool performs the operation and returns a summary.
 - Tool output schemas never include credential fields, and secrets are never placed into the agent's conversation context.
 - Capability misuse is bounded by the credential's own scope (fine-grained, minimal permissions).
 
 ### Egress
 
-- External access is tool-routed by principle. Raw egress from the agent UID exists only through the egress tool, which enforces the domain allowlist and secret-reference bindings.
+- External access is tool-routed by design; no dedicated egress proxy exists (ADR 0018). The outbound paths are `message_send` and operator-registered script tools — and nothing else: `shell_exec` children run in a fresh empty network namespace. Destination allowlists and response redaction land inside the tool that needs them, when a use case needs them.
 
 ### Guard models
 
@@ -44,4 +41,4 @@ Governs the security model: trust domains, secret custody, and egress. Rationale
 
 ## Open questions
 
-- Egress proxy implementation timing (TLS termination, CA provisioning) — MVP ships tool-routed access; raw egress proxy follows.
+- Runtime UID separation (tool runtime configuration custody) — target design per ADR 0006.

@@ -64,6 +64,18 @@ type Config struct {
 	// TLS carries the gateway's mTLS material (ADR 0017). When unset,
 	// the gateway serves loopback binds only.
 	TLS TLSConfig `mapstructure:"tls"`
+	// Console selects the console sink: with URL set, every message_send
+	// is POSTed to the console endpoint over mTLS (docs/architecture/
+	// gateway.md). The file outbox stays the default and the
+	// delivery-failure fallback.
+	Console ConsoleConfig `mapstructure:"console"`
+}
+
+// ConsoleConfig selects the console sink. An empty URL keeps the file
+// outbox as the outbound sink.
+type ConsoleConfig struct {
+	// URL is the console endpoint outbound messages are POSTed to.
+	URL string `mapstructure:"url"`
 }
 
 // TLSConfig selects the gateway's mTLS material (ADR 0017): the server

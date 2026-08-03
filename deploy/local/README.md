@@ -29,10 +29,10 @@ openssl req -newkey rsa:2048 -nodes -subj "/CN=local-tester" \
   -keyout tls/client-key.pem -out tls/client.csr
 openssl x509 -req -days 1 -CA tls/ca.pem -CAkey tls/ca-key.pem \
   -in tls/client.csr -out tls/client.pem
-chmod 0644 tls/*
+chmod 0600 tls/*key*
 ```
 
-The files are valid for one day; regenerate them when they expire. The compose file mounts `./tls` read-only at `/etc/gagent/tls`, where the sample `gagent.yaml`'s `tls:` section points.
+The files are valid for one day; regenerate them when they expire. The compose file mounts `./tls` read-only at `/etc/gagent/tls`, where the sample `gagent.yaml`'s `tls:` section points. The server key must stay mode 0600 owner-only — the gateway refuses a group/other-readable key at startup. On Linux hosts the container reads the mount as uid 65532, so chown the server key to that uid if startup reports a permission error.
 
 ## Run
 

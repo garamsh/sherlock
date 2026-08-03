@@ -39,7 +39,9 @@ type handler struct {
 }
 
 // postMessageRequest is the ingress body: the message content only. The
-// gateway assigns the ID.
+// gateway assigns the ID. The envelope's sender (ADR 0020) is the
+// verified mTLS caller identity (ADR 0017); plain-HTTP loopback requests
+// carry no sender.
 type postMessageRequest struct {
 	Content string `json:"content"`
 }
@@ -69,7 +71,7 @@ func (h *handler) postMessage(w http.ResponseWriter, r *http.Request) {
 		writeProblem(w, http.StatusBadRequest, "content is required")
 		return
 	}
-	id, err := h.router.Enqueue(r.Context(), envID, req.Content)
+	id, err := h.router.Enqueue(r.Context(), envID, callerID(r), req.Content)
 	if err != nil {
 		switch {
 		case errors.Is(err, environment.ErrInvalidID):
@@ -101,6 +103,7 @@ type eventPayload struct {
 	ToolFailed bool                `json:"tool_failed,omitempty"`
 	Response   string              `json:"response,omitempty"`
 	Error      string              `json:"error,omitempty"`
+	MessageIDs []string            `json:"message_ids,omitempty"`
 }
 
 // events streams the environment's loop events as server-sent events.
@@ -143,6 +146,7 @@ func (h *handler) events(w http.ResponseWriter, r *http.Request) {
 				ToolFailed: e.ToolFailed,
 				Response:   e.Response,
 				Error:      e.Error,
+				MessageIDs: e.MessageIDs,
 			})
 			if err != nil {
 				h.logger.Error("encode event failed", "op", "events", "env_id", envID, "error", err)

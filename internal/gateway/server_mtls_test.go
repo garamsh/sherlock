@@ -2,6 +2,7 @@ package gateway_test
 
 import (
 	"bytes"
+	"context"
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
@@ -14,12 +15,14 @@ import (
 	"math/big"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/garamsh/gagent/internal/agent"
 	"github.com/garamsh/gagent/internal/gateway"
 )
 
@@ -150,4 +153,40 @@ func TestServer_RequestLogHasNoCallerOverPlainHTTP(t *testing.T) {
 	require.NoError(t, json.Unmarshal(bytes.TrimSpace(buf.Bytes()), &entry))
 	assert.NotContains(t, entry, "caller_id",
 		"plain HTTP carries no caller identity")
+}
+
+// TestServer_PostMessageSenderIsCallerIdentity pins the sender source
+// (ADR 0020): over mTLS the envelope's sender is the verified caller
+// identity, and the turn renders it next to the message ID.
+func TestServer_PostMessageSenderIsCallerIdentity(t *testing.T) {
+	ca := newMTLSCA(t)
+	cert := ca.issue(t, 4, "orchestrator", nil)
+
+	session := &fakeSession{}
+	router := gateway.NewRouter(&fakeFactory{newFn: func(string, agent.EventSink) (*gateway.Runtime, error) {
+		return &gateway.Runtime{Session: session, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
+	}}, slog.New(slog.DiscardHandler))
+	t.Cleanup(func() { router.Close() })
+	srv := httptest.NewUnstartedServer(gateway.NewHandler(router, slog.New(slog.DiscardHandler)))
+	srv.TLS = &tls.Config{
+		ClientAuth: tls.RequireAndVerifyClientCert,
+		ClientCAs:  ca.pool(),
+	}
+	srv.StartTLS()
+	t.Cleanup(srv.Close)
+
+	transport := srv.Client().Transport.(*http.Transport).Clone()
+	transport.TLSClientConfig.Certificates = []tls.Certificate{cert}
+	client := &http.Client{Transport: transport}
+	resp, err := client.Post(srv.URL+"/envs/env-1/messages", "application/json",
+		strings.NewReader(`{"content":"hello"}`))
+	require.NoError(t, err)
+	defer resp.Body.Close()
+	require.Equal(t, http.StatusAccepted, resp.StatusCode)
+
+	require.Eventually(t, func() bool {
+		return len(session.startedTasks()) == 1
+	}, 5*time.Second, time.Millisecond)
+	assert.Contains(t, session.startedTasks()[0], "] orchestrator: hello",
+		"the turn input renders the verified caller identity as the sender")
 }

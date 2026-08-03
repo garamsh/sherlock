@@ -15,7 +15,7 @@ Governs the gateway: message ingress, routing, outbound delivery, and monitoring
 
 ### HTTP adapter (first channel)
 
-- `POST /envs/{env-id}/messages` accepts a message, assigns an ID, enqueues it, and returns `202` with the ID. An unknown env-id creates the environment at enqueue time, so creation errors (e.g. an invalid ID) surface to the sender as `400`.
+- `POST /envs/{env-id}/messages` accepts a message, assigns an ID, enqueues it, and returns `202` with the ID. An unknown env-id creates the environment at enqueue time, so creation errors (e.g. an invalid ID) surface to the sender as `400`. The envelope's sender (ADR 0020) is the verified mTLS caller identity; a plain-HTTP loopback request carries no sender.
 - `GET /envs/{env-id}/events` streams the environment's loop events (turn started, tool call, writeback, turn finished, turn failed) as server-sent events. Subscribing works with zero publishers and publishing works with zero subscribers; a subscriber that falls behind drops events rather than slowing the run.
 - The MVP outbound sink writes each `message_send` message as a JSON file under `data/envs/<env-id>/outbox/`. Real channel adapters replace the sink behind the same interface later.
 - The chat model is selected by the `model` config section: the scripted mock (default) or any OpenAI-compatible provider. The mock's canned script exercises the four built-in tools offline — a memory search, a `shell_exec` call, a `message_send` reply, and a writeback block; a run that exhausts the script fails, is logged, and the queue continues.

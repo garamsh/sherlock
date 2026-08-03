@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -93,14 +94,15 @@ func TestRouter_EnqueueAssignsIDAndRunsMessage(t *testing.T) {
 	router := gateway.NewRouter(factory, newTestLogger())
 	defer router.Close()
 
-	id, err := router.Enqueue(context.Background(), "env-1", "hello")
+	id, err := router.Enqueue(context.Background(), "env-1", "alice", "hello")
 	require.NoError(t, err)
 	assert.NotEmpty(t, id)
 
 	require.Eventually(t, func() bool {
 		return len(session.startedTasks()) == 1
 	}, 5*time.Second, time.Millisecond)
-	assert.Equal(t, []string{"hello"}, session.startedTasks())
+	assert.Equal(t, "["+id+"] alice: hello", session.startedTasks()[0],
+		"the turn input renders the message with its ID and sender (ADR 0020)")
 }
 
 func TestRouter_SerializesRunsFIFO(t *testing.T) {
@@ -112,9 +114,7 @@ func TestRouter_SerializesRunsFIFO(t *testing.T) {
 	router := gateway.NewRouter(factory, newTestLogger())
 	defer router.Close()
 
-	_, err := router.Enqueue(context.Background(), "env-1", "first")
-	require.NoError(t, err)
-	_, err = router.Enqueue(context.Background(), "env-1", "second")
+	_, err := router.Enqueue(context.Background(), "env-1", "", "first")
 	require.NoError(t, err)
 
 	// The first run starts and blocks; the second must not begin
@@ -122,13 +122,19 @@ func TestRouter_SerializesRunsFIFO(t *testing.T) {
 	require.Eventually(t, func() bool {
 		return len(session.startedTasks()) == 1
 	}, 5*time.Second, time.Millisecond)
-	assert.Equal(t, []string{"first"}, session.startedTasks())
+	assert.Contains(t, session.startedTasks()[0], "first")
+
+	_, err = router.Enqueue(context.Background(), "env-1", "", "second")
+	require.NoError(t, err)
+	time.Sleep(50 * time.Millisecond)
+	assert.Len(t, session.startedTasks(), 1,
+		"the queued followup waits for the active run")
 
 	close(gate)
 	require.Eventually(t, func() bool {
 		return len(session.startedTasks()) == 2
 	}, 5*time.Second, time.Millisecond)
-	assert.Equal(t, []string{"first", "second"}, session.startedTasks())
+	assert.Contains(t, session.startedTasks()[1], "second")
 }
 
 func TestRouter_CreatesEnvironmentOnce(t *testing.T) {
@@ -140,7 +146,7 @@ func TestRouter_CreatesEnvironmentOnce(t *testing.T) {
 	defer router.Close()
 
 	for range 3 {
-		_, err := router.Enqueue(context.Background(), "env-1", "hi")
+		_, err := router.Enqueue(context.Background(), "env-1", "", "hi")
 		require.NoError(t, err)
 	}
 	assert.Equal(t, []string{"env-1"}, factory.createdEnvs())
@@ -153,7 +159,7 @@ func TestRouter_FactoryErrorSurfaces(t *testing.T) {
 	router := gateway.NewRouter(factory, newTestLogger())
 	defer router.Close()
 
-	_, err := router.Enqueue(context.Background(), "bad", "hi")
+	_, err := router.Enqueue(context.Background(), "bad", "", "hi")
 	assert.ErrorIs(t, err, environment.ErrInvalidID)
 }
 
@@ -164,7 +170,7 @@ func TestRouter_EnqueueAfterCloseFails(t *testing.T) {
 	router := gateway.NewRouter(factory, newTestLogger())
 	require.NoError(t, router.Close())
 
-	_, err := router.Enqueue(context.Background(), "env-1", "hi")
+	_, err := router.Enqueue(context.Background(), "env-1", "", "hi")
 	assert.ErrorIs(t, err, gateway.ErrRouterClosed)
 }
 
@@ -185,7 +191,7 @@ func TestRouter_CloseReleasesRuntimes(t *testing.T) {
 	}}
 	router := gateway.NewRouter(factory, newTestLogger())
 	for _, envID := range []string{"env-1", "env-2"} {
-		_, err := router.Enqueue(context.Background(), envID, "hi")
+		_, err := router.Enqueue(context.Background(), envID, "", "hi")
 		require.NoError(t, err)
 	}
 
@@ -203,16 +209,17 @@ func TestRouter_FailedRunDoesNotBlockQueue(t *testing.T) {
 	router := gateway.NewRouter(factory, newTestLogger())
 	defer router.Close()
 
-	_, err := router.Enqueue(context.Background(), "env-1", "first")
+	_, err := router.Enqueue(context.Background(), "env-1", "", "first")
 	require.NoError(t, err)
-	_, err = router.Enqueue(context.Background(), "env-1", "second")
+	_, err = router.Enqueue(context.Background(), "env-1", "", "second")
 	require.NoError(t, err)
 
-	// Both messages run even though every turn fails.
+	// Both messages are processed even though every turn fails; whether
+	// they share one drained turn or run back-to-back is the runner's call.
 	require.Eventually(t, func() bool {
-		return len(session.startedTasks()) == 2
+		joined := strings.Join(session.startedTasks(), "\n")
+		return strings.Contains(joined, "first") && strings.Contains(joined, "second")
 	}, 5*time.Second, time.Millisecond)
-	assert.Equal(t, []string{"first", "second"}, session.startedTasks())
 }
 
 func TestRouter_EventsDoesNotCreateEnvironment(t *testing.T) {
@@ -254,9 +261,9 @@ func TestRouter_EnqueueCapturesInboundMessage(t *testing.T) {
 		router.Close()
 	}()
 
-	_, err := router.Enqueue(context.Background(), "env-1", "first")
+	_, err := router.Enqueue(context.Background(), "env-1", "", "first")
 	require.NoError(t, err)
-	_, err = router.Enqueue(context.Background(), "env-1", "second")
+	_, err = router.Enqueue(context.Background(), "env-1", "", "second")
 	require.NoError(t, err)
 
 	// The first run is still blocked and the second message has not run,
@@ -284,7 +291,7 @@ func TestRouter_CaptureFailureRejectsEnqueue(t *testing.T) {
 	router := gateway.NewRouter(factory, newTestLogger())
 	defer router.Close()
 
-	_, err := router.Enqueue(context.Background(), "env-1", "hi")
+	_, err := router.Enqueue(context.Background(), "env-1", "", "hi")
 	assert.ErrorIs(t, err, captureErr)
 	assert.Empty(t, session.startedTasks(), "a rejected message never runs")
 }

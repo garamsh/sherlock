@@ -137,7 +137,8 @@ func runMVPScenario(t *testing.T, baseURL, root, envID string) {
 		"writeback", "tool_call",
 		"writeback", "turn_finished",
 	}, kinds)
-	assert.Equal(t, e2eQuestion, got[0]["task"])
+	assert.Contains(t, got[0]["task"], "] unknown: "+e2eQuestion,
+		"the turn input renders the message with its ID and sender (ADR 0020)")
 
 	// The agent searched memory, computed via shell_exec, then replied via
 	// message_send. The final writeback records the question as an

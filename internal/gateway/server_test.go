@@ -88,6 +88,25 @@ func TestServer_PostMessageRejectsBadRequests(t *testing.T) {
 	}
 }
 
+// TestServer_PostMessagePlainHTTPHasNoSender pins the sender source
+// (ADR 0020): over plain HTTP there is no caller identity, so the
+// envelope's sender is empty and the turn renders it as "unknown".
+func TestServer_PostMessagePlainHTTPHasNoSender(t *testing.T) {
+	session := &fakeSession{}
+	srv := newTestServer(t, func(string, agent.EventSink) (*gateway.Runtime, error) {
+		return &gateway.Runtime{Session: session, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
+	})
+
+	resp := postMessage(t, srv.URL+"/envs/env-1/messages", `{"content":"hello"}`)
+	defer resp.Body.Close()
+	require.Equal(t, http.StatusAccepted, resp.StatusCode)
+
+	require.Eventually(t, func() bool {
+		return len(session.startedTasks()) == 1
+	}, 5*time.Second, time.Millisecond)
+	assert.Contains(t, session.startedTasks()[0], "unknown: hello")
+}
+
 func TestServer_MethodNotAllowed(t *testing.T) {
 	srv := newTestServer(t, func(string, agent.EventSink) (*gateway.Runtime, error) {
 		return &gateway.Runtime{Session: &fakeSession{}, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
@@ -143,22 +162,31 @@ func TestServer_EventsStreamsTurnEvents(t *testing.T) {
 	received := sseListener(t, srv.URL+"/envs/env-1/events")
 
 	resp := postMessage(t, srv.URL+"/envs/env-1/messages", `{"content":"hello"}`)
-	resp.Body.Close()
 	require.Equal(t, http.StatusAccepted, resp.StatusCode)
+	var ack struct {
+		ID string `json:"id"`
+	}
+	require.NoError(t, json.NewDecoder(resp.Body).Decode(&ack))
+	resp.Body.Close()
 
-	// The subscriber sees the loop events the session emitted.
+	// The subscriber sees the loop events the session emitted; the
+	// terminal event references the drained message IDs (ADR 0020).
 	var kinds []string
+	var terminal map[string]any
 	deadline := time.After(5 * time.Second)
 	for len(kinds) < 2 {
 		select {
 		case e := <-received:
 			assert.Equal(t, "env-1", e["env"])
 			kinds = append(kinds, e["kind"].(string))
+			terminal = e
 		case <-deadline:
 			t.Fatalf("timed out waiting for events, got %v", kinds)
 		}
 	}
 	assert.Equal(t, []string{string(agent.EventTurnStarted), string(agent.EventTurnFinished)}, kinds)
+	assert.Equal(t, []any{ack.ID}, terminal["message_ids"],
+		"the terminal event references the drained batch's message IDs")
 
 	mu.Lock()
 	require.NotNil(t, sink)

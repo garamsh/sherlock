@@ -244,6 +244,73 @@ func TestServer_EventsStreamsTurnFailed(t *testing.T) {
 	assert.Contains(t, terminal["error"], "model chat")
 }
 
+// TestServer_EventsWritebackOpsDistinguishable pins the issue #193
+// observability fix: the writeback event always carries an ops field, so
+// an empty memory block (`[]`) is distinguishable from a missing block
+// (`null`) in the monitoring stream.
+func TestServer_EventsWritebackOpsDistinguishable(t *testing.T) {
+	srv := newTestServer(t, func(_ string, events agent.EventSink) (*gateway.Runtime, error) {
+		return &gateway.Runtime{
+			Session: &writebackSession{events: events},
+			Capture: noopCapture,
+			Close:   func(context.Context) error { return nil },
+		}, nil
+	})
+
+	received := sseListener(t, srv.URL+"/agents/env-1/events")
+
+	resp := postMessage(t, srv.URL+"/agents/env-1/messages", `{"content":"hello"}`)
+	resp.Body.Close()
+	require.Equal(t, http.StatusAccepted, resp.StatusCode)
+
+	empty, missing := readWritebackEvents(t, received)
+	assert.Equal(t, []any{}, empty["ops"],
+		"an empty memory block serializes as an empty ops array")
+	assert.Nil(t, missing["ops"],
+		"a missing memory block serializes as null")
+}
+
+// readWritebackEvents drains events until the empty-block and
+// missing-block writeback events have both arrived.
+func readWritebackEvents(t *testing.T, received <-chan map[string]any) (empty, missing map[string]any) {
+	t.Helper()
+	deadline := time.After(5 * time.Second)
+	for empty == nil || missing == nil {
+		select {
+		case e := <-received:
+			if e["kind"] != string(agent.EventWriteback) {
+				continue
+			}
+			ops, present := e["ops"]
+			require.True(t, present, "the writeback event always carries ops")
+			if ops == nil {
+				missing = e
+			} else {
+				empty = e
+			}
+		case <-deadline:
+			t.Fatal("timed out waiting for both writeback events")
+		}
+	}
+	return empty, missing
+}
+
+// writebackSession emits the two writeback shapes a real session
+// produces: an empty parsed block and a missing block.
+type writebackSession struct {
+	events agent.EventSink
+}
+
+func (s *writebackSession) Run(ctx context.Context, task string) (string, error) {
+	s.events.Emit(ctx, agent.Event{Kind: agent.EventTurnStarted, Turn: 1, Task: task})
+	s.events.Emit(ctx, agent.Event{Kind: agent.EventWriteback, Turn: 1, Ops: []agent.WritebackOp{}})
+	s.events.Emit(ctx, agent.Event{Kind: agent.EventWriteback, Turn: 1})
+	s.events.Emit(ctx, agent.Event{Kind: agent.EventTurnFinished, Turn: 1, Response: "done"})
+	return "done", nil
+}
+
+func (s *writebackSession) History() []agent.Message { return nil }
+
 // failingSession publishes turn_started and turn_failed per run,
 // mimicking the real session's event contract for a failed run.
 type failingSession struct {

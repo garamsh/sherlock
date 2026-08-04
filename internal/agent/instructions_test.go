@@ -46,6 +46,39 @@ func TestContract_ExampleMemoryBlock(t *testing.T) {
 		"the example JSON follows its introduction")
 }
 
+// TestContract_AddRequiredForSharedFacts pins the issue #193 contract
+// fix: gpt-4o-mini ended every response with an empty ```memory block
+// because the contract made add an opt-in. The contract must state when
+// an add is required — a shared fact or preference, a correction, or a
+// remember request — and show one example block for a stated fact.
+func TestContract_AddRequiredForSharedFacts(t *testing.T) {
+	contract := agent.Contract
+	const rule = "An `add` op is required"
+	idx := strings.Index(contract, rule)
+	require.Greater(t, idx, -1, "the add-required rule is missing")
+	for _, trigger := range []string{
+		"shares a fact or preference",
+		"corrects an earlier fact",
+		"asks to\nremember",
+	} {
+		assert.Contains(t, contract, trigger,
+			"the add-required rule covers %q", trigger)
+	}
+	const example = `{"add":[{"content":"user's favorite telescope is the Kepler-9 refractor","type":"semantic"}]}`
+	assert.Contains(t, contract, example,
+		"a one-example block shows the add for a stated fact")
+	assert.Greater(t, strings.Index(contract, example), idx,
+		"the example block follows the rule")
+	// The rule lives in the Memory writeback section so the model reads
+	// it next to the block format it constrains.
+	mwIdx := strings.Index(contract, "## Memory writeback")
+	tuIdx := strings.Index(contract, "## When a tool is unavailable")
+	require.Greater(t, mwIdx, -1, "Memory writeback section missing")
+	require.Greater(t, tuIdx, -1, "When a tool is unavailable section missing")
+	assert.Greater(t, idx, mwIdx, "the rule comes after the Memory writeback header")
+	assert.Less(t, idx, tuIdx, "the rule stays inside the Memory writeback section")
+}
+
 // TestContract_ToolSelectionGuidance asserts each tool carries a
 // selection sentence ("use this for X") so the model can pick the right
 // tool on the first attempt (issue #96; proposal #94; ADR 0012).

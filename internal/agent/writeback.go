@@ -59,9 +59,11 @@ type writebackJSON struct {
 
 // ParseWriteback splits a model response into its visible content and
 // the memory operations of its trailing writeback block. With no fence
-// it returns the whole content with no operations. Failures are reported
-// as *WritebackError: parse failures as warn, schema violations as the
-// fatal err.
+// it returns the whole content with no operations; a present but empty
+// block returns a non-nil, empty ops slice so the event stream can tell
+// an empty writeback from a missing one (issue #193). Failures are
+// reported as *WritebackError: parse failures as warn, schema violations
+// as the fatal err.
 func ParseWriteback(content string) (visible string, ops []WritebackOp, warn error, err error) {
 	idx := strings.Index(content, writebackFence)
 	if idx < 0 {
@@ -84,6 +86,9 @@ func ParseWriteback(content string) (visible string, ops []WritebackOp, warn err
 	ops, err = block.ops()
 	if err != nil {
 		return "", nil, nil, err
+	}
+	if ops == nil {
+		ops = []WritebackOp{}
 	}
 	return visible, ops, nil, nil
 }

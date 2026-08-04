@@ -10,6 +10,8 @@ import (
 	"log/slog"
 	"os"
 	"os/exec"
+	"strconv"
+	"strings"
 	"syscall"
 	"time"
 
@@ -65,8 +67,58 @@ func NewProcessExecutor(agentUID int, defaultTimeout time.Duration) *ProcessExec
 	}
 }
 
+// probeNetns reports whether the current process holds the privileges
+// the shell executor needs to drop a child into a fresh network
+// namespace (CAP_SYS_ADMIN, capabilities(7)). shell_exec sets NoNetwork
+// on every request (ADR 0014); without the capability, fork fails with
+// EPERM and the user sees a raw fork/exec error instead of the
+// documented agent_uid unavailable contract.
+//
+// The variable is package-level so tests can substitute a deterministic
+// result. Production callers use defaultProbeNetns.
+var probeNetns = defaultProbeNetns
+
+// defaultProbeNetns reads /proc/self/status and reports whether
+// CAP_SYS_ADMIN is in the process's effective capability set. An
+// unreadable or missing CapEff line defaults to true: a wrong "yes"
+// degrades to the previous raw-EPERM behaviour, never to a
+// false-positive unavailability report.
+func defaultProbeNetns() bool {
+	data, err := os.ReadFile("/proc/self/status")
+	if err != nil {
+		return true
+	}
+	return parseCapEff(string(data))
+}
+
+// parseCapEff parses the CapEff line out of a /proc/self/status body
+// and reports whether CAP_SYS_ADMIN is present in the mask. It is
+// factored out of defaultProbeNetns so the parsing logic can be
+// unit-tested with synthetic input. The conservative "default to true"
+// on missing or malformed input matches defaultProbeNetns: a wrong
+// "yes" degrades to the previous raw-EPERM behaviour, never to a
+// false-positive unavailability report.
+func parseCapEff(status string) bool {
+	for _, line := range strings.Split(status, "\n") {
+		if !strings.HasPrefix(line, "CapEff:") {
+			continue
+		}
+		fields := strings.Fields(line)
+		if len(fields) < 2 {
+			return true
+		}
+		mask, err := strconv.ParseUint(fields[1], 16, 64)
+		if err != nil {
+			return true
+		}
+		return mask&(1<<unix.CAP_SYS_ADMIN) != 0
+	}
+	return true
+}
+
 // Run executes one command and returns its captured output. If the
-// caller cannot drop to AgentUID (no root / no setuid-root), Run returns
+// caller cannot drop to AgentUID (no root / no setuid-root, or root
+// without CAP_SYS_ADMIN for the netns drop), Run returns
 // ErrAgentUIDUnavailable and a zero Result. On timeout the child is
 // SIGKILLed and the returned error is ErrTimedOut with TimedOut set.
 //
@@ -76,6 +128,11 @@ func NewProcessExecutor(agentUID int, defaultTimeout time.Duration) *ProcessExec
 // advisory cap on top of the UID-based trust boundary.
 func (e *ProcessExecutor) Run(ctx context.Context, req Request) (Result, error) {
 	if os.Geteuid() != 0 {
+		return Result{}, ErrAgentUIDUnavailable
+	}
+	if req.NoNetwork && !probeNetns() {
+		slog.Warn("shell: netns capability missing; reporting agent_uid unavailable",
+			"agent_uid", e.AgentUID, "want_cap", "CAP_SYS_ADMIN")
 		return Result{}, ErrAgentUIDUnavailable
 	}
 	timeout := req.Timeout

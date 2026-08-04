@@ -329,7 +329,9 @@ func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink)
 		}
 	}
 	if f.NewShellExecutor != nil {
-		shellTool := shell.NewTool(f.NewShellExecutor()).WithDefaultTimeout(shellTimeout)
+		shellTool := shell.NewTool(f.NewShellExecutor()).
+			WithDefaultTimeout(shellTimeout).
+			WithWorkdir(env.Workspace())
 		if err := registry.Register(shellTool); err != nil {
 			return nil, errors.Join(err, store.Close())
 		}

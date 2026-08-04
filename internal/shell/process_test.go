@@ -188,6 +188,18 @@ func TestTool_DispatchesToExecutorAndMarshalsResult(t *testing.T) {
 	assert.JSONEq(t, `{"stdout":"hi\n","stderr":"","exit_code":0,"timed_out":false}`, string(out))
 }
 
+func TestTool_PassesWorkspaceWorkdirToExecutor(t *testing.T) {
+	exec := &fakeExecutor{}
+	toolImpl := shell.NewTool(exec).WithWorkdir("/env/workspace")
+
+	_, err := tool.Invoke(context.Background(), toolImpl,
+		json.RawMessage(`{"command":"ls"}`))
+
+	require.NoError(t, err)
+	assert.Equal(t, "/env/workspace", exec.req.Workdir,
+		"the tool runs every command in the wired working directory")
+}
+
 func TestTool_TimeoutSurfacesTimedOutResult(t *testing.T) {
 	exec := &fakeExecutor{
 		result: shell.Result{Stdout: "partial output\n", TimedOut: true},

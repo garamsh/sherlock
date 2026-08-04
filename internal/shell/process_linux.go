@@ -10,6 +10,8 @@ import (
 	"log/slog"
 	"os"
 	"os/exec"
+	"strconv"
+	"strings"
 	"syscall"
 	"time"
 
@@ -51,18 +53,31 @@ type ProcessExecutor struct {
 	AgentUID       int
 	DefaultTimeout time.Duration
 	RLimits        rlimits
+	// netNS is true when this process can create a fresh network
+	// namespace (euid 0 with CAP_SYS_ADMIN effective). A root container
+	// without CAP_SYS_ADMIN is not, and the netns unshare in Start
+	// would surface as a raw fork/exec EPERM. NewProcessExecutor
+	// detects it once at construction; tests set it directly.
+	netNS bool
 }
 
 // NewProcessExecutor returns a ProcessExecutor configured with the given
 // agent UID and default per-call timeout. It does not validate
 // privilege — Run reports ErrAgentUIDUnavailable when the caller cannot
-// drop to AgentUID.
+// drop to AgentUID, including when it cannot create the fresh network
+// namespace required for NoNetwork.
 func NewProcessExecutor(agentUID int, defaultTimeout time.Duration) *ProcessExecutor {
-	return &ProcessExecutor{
+	exec := &ProcessExecutor{
 		AgentUID:       agentUID,
 		DefaultTimeout: defaultTimeout,
 		RLimits:        DefaultRlimits(),
+		netNS:          netNSCapable(),
 	}
+	if !exec.netNS && os.Geteuid() == 0 {
+		slog.Warn("shell: CAP_SYS_ADMIN missing; shell_exec will report agent_uid unavailable",
+			"reason", "unshare(CLONE_NEWNET) requires CAP_SYS_ADMIN")
+	}
+	return exec
 }
 
 // Run executes one command and returns its captured output. If the
@@ -76,6 +91,9 @@ func NewProcessExecutor(agentUID int, defaultTimeout time.Duration) *ProcessExec
 // advisory cap on top of the UID-based trust boundary.
 func (e *ProcessExecutor) Run(ctx context.Context, req Request) (Result, error) {
 	if os.Geteuid() != 0 {
+		return Result{}, ErrAgentUIDUnavailable
+	}
+	if req.NoNetwork && !e.netNS {
 		return Result{}, ErrAgentUIDUnavailable
 	}
 	timeout := req.Timeout
@@ -213,4 +231,53 @@ func cpuLimit(d time.Duration) *unix.Rlimit {
 		seconds = 1
 	}
 	return &unix.Rlimit{Cur: seconds, Max: seconds}
+}
+
+// capSysAdmin is the bit position of CAP_SYS_ADMIN in the effective
+// capability mask reported by /proc/self/status (capabilities(7)).
+const capSysAdmin = 21
+
+// netNSCapable reports whether this process can create a fresh network
+// namespace: euid 0 with CAP_SYS_ADMIN in the effective set, the
+// requirement of unshare(CLONE_NEWNET) (capabilities(7)). A read failure
+// (e.g. non-Linux /proc shape) is treated as capable so the existing
+// fork/exec error path still surfaces; the netns check is an opt-in
+// refinement, not a load-bearing gate.
+func netNSCapable() bool {
+	if os.Geteuid() != 0 {
+		return false
+	}
+	eff, err := readEffectiveCaps()
+	if err != nil {
+		return true
+	}
+	return eff&(1<<capSysAdmin) != 0
+}
+
+// readEffectiveCaps parses the CapEff line of /proc/self/status and
+// returns the mask as a uint64.
+func readEffectiveCaps() (uint64, error) {
+	data, err := os.ReadFile("/proc/self/status")
+	if err != nil {
+		return 0, err
+	}
+	return parseCapEff(string(data))
+}
+
+// parseCapEff returns the CapEff mask from a /proc/self/status blob.
+// Empty when the line is absent.
+func parseCapEff(status string) (uint64, error) {
+	for _, line := range strings.Split(status, "\n") {
+		const prefix = "CapEff:"
+		if !strings.HasPrefix(line, prefix) {
+			continue
+		}
+		hex := strings.TrimSpace(line[len(prefix):])
+		// capabilities(7) reports the mask as 0x<hex>; tolerate plain
+		// hex too.
+		hex = strings.TrimPrefix(hex, "0x")
+		hex = strings.TrimPrefix(hex, "0X")
+		return strconv.ParseUint(hex, 16, 64)
+	}
+	return 0, errors.New("CapEff line not found")
 }

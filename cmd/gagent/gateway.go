@@ -63,7 +63,11 @@ func serveGateway(ctx context.Context, cfg Config, ego string) error {
 	if err != nil {
 		return err
 	}
-	factory, err := newFactory(cfg, newModel, embedder, ego, nil)
+	summarizer, err := newSummarizerFunc(cfg.Model)
+	if err != nil {
+		return err
+	}
+	factory, err := newFactory(cfg, newModel, embedder, summarizer, ego, nil)
 	if err != nil {
 		return err
 	}

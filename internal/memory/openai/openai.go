@@ -14,11 +14,13 @@ import (
 	"github.com/garamsh/gagent/internal/memory"
 )
 
-// DefaultTimeout bounds one embeddings request when Config.Timeout is
-// zero.
+// DefaultTimeout bounds one request when Config.Timeout is zero. It
+// applies to both the embeddings and chat-completions clients wired by
+// this package.
 const DefaultTimeout = 60 * time.Second
 
-// maxErrorBody caps how much of an error response body is kept in APIError.
+// maxErrorBody caps how much of an error response body is kept in
+// APIError. Shared between the embeddings and chat-completions clients.
 const maxErrorBody = 512
 
 // Config carries the provider settings, already parsed at the command
@@ -27,12 +29,57 @@ const maxErrorBody = 512
 type Config struct {
 	// BaseURL is the provider's API root, e.g. https://api.openai.com/v1.
 	BaseURL string
-	// Model is the embedding model name sent with every request.
+	// Model is the model name sent with every request.
 	Model string
 	// APIKey authenticates requests as a Bearer token.
 	APIKey string
 	// Timeout bounds one request; zero selects DefaultTimeout.
 	Timeout time.Duration
+}
+
+// validateConfig rejects incomplete settings so a misconfigured provider
+// fails at startup instead of at first call.
+func validateConfig(cfg Config) error {
+	var missing []string
+	if cfg.BaseURL == "" {
+		missing = append(missing, "base URL")
+	}
+	if cfg.Model == "" {
+		missing = append(missing, "model name")
+	}
+	if cfg.APIKey == "" {
+		missing = append(missing, "API key")
+	}
+	if len(missing) > 0 {
+		return fmt.Errorf("openai provider: missing %s", strings.Join(missing, ", "))
+	}
+	return nil
+}
+
+// APIError reports a non-2xx response from the provider.
+type APIError struct {
+	StatusCode int
+	Body       string
+}
+
+// Error returns a human-readable description of the provider failure.
+func (e *APIError) Error() string {
+	return fmt.Sprintf("openai provider: HTTP %d: %s", e.StatusCode, e.Body)
+}
+
+// errNoChoices marks a chat-completions response without any choice to
+// map.
+var errNoChoices = errors.New("openai provider: response has no choices")
+
+// errNoData marks an embeddings response without any embedding to map.
+var errNoData = errors.New("openai embedder: response has no data")
+
+// newHTTPClient returns a client honoring cfg.Timeout.
+func newHTTPClient(timeout time.Duration) *http.Client {
+	if timeout <= 0 {
+		timeout = DefaultTimeout
+	}
+	return &http.Client{Timeout: timeout}
 }
 
 // Embedder is an OpenAI-compatible embeddings client implementing
@@ -50,43 +97,16 @@ var _ memory.Embedder = (*Embedder)(nil)
 // New returns an Embedder for cfg, rejecting incomplete settings so a
 // misconfigured provider fails at startup instead of mid-search.
 func New(cfg Config) (*Embedder, error) {
-	var missing []string
-	if cfg.BaseURL == "" {
-		missing = append(missing, "base URL")
-	}
-	if cfg.Model == "" {
-		missing = append(missing, "model name")
-	}
-	if cfg.APIKey == "" {
-		missing = append(missing, "API key")
-	}
-	if len(missing) > 0 {
-		return nil, fmt.Errorf("openai embedder: missing %s", strings.Join(missing, ", "))
-	}
-	if cfg.Timeout <= 0 {
-		cfg.Timeout = DefaultTimeout
+	if err := validateConfig(cfg); err != nil {
+		return nil, err
 	}
 	return &Embedder{
 		endpoint: strings.TrimSuffix(cfg.BaseURL, "/") + "/embeddings",
 		model:    cfg.Model,
 		apiKey:   cfg.APIKey,
-		http:     &http.Client{Timeout: cfg.Timeout},
+		http:     newHTTPClient(cfg.Timeout),
 	}, nil
 }
-
-// APIError reports a non-2xx response from the provider.
-type APIError struct {
-	StatusCode int
-	Body       string
-}
-
-// Error returns a human-readable description of the provider failure.
-func (e *APIError) Error() string {
-	return fmt.Sprintf("openai embedder: HTTP %d: %s", e.StatusCode, e.Body)
-}
-
-// errNoData marks a provider response without any embedding to map.
-var errNoData = errors.New("openai embedder: response has no data")
 
 // embedRequest is the embeddings request body.
 type embedRequest struct {

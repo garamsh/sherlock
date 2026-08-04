@@ -25,7 +25,7 @@ func TestNewFactory_CarriesResolvedConfig(t *testing.T) {
 	cfg, err := resolveConfig(newTestCommand(t))
 	require.NoError(t, err)
 
-	factory, err := newFactory(cfg, newStubModel(), memory.NewHashingEmbedder(), "", nil)
+	factory, err := newFactory(cfg, newStubModel(), memory.NewHashingEmbedder(), memory.NewConcatSummarizer(), "", nil)
 	require.NoError(t, err)
 
 	assert.Equal(t, cfg.DataRoot, factory.Root,
@@ -33,6 +33,8 @@ func TestNewFactory_CarriesResolvedConfig(t *testing.T) {
 	assert.NotNil(t, factory.NewModel, "the factory must carry the model builder")
 	assert.NotNil(t, factory.Embedder,
 		"the resolved embedder must reach the environment factory")
+	assert.NotNil(t, factory.Summarizer,
+		"the resolved summarizer must reach the environment factory")
 	assert.Equal(t, cfg.ExecTimeout, factory.ShellExecTimeout,
 		"the resolved exec-timeout must reach the environment factory")
 	assert.NotNil(t, factory.NewShellExecutor,
@@ -47,7 +49,7 @@ func TestNewFactory_CarriesScriptTools(t *testing.T) {
 	cfg, err := resolveConfig(cmd)
 	require.NoError(t, err)
 
-	factory, err := newFactory(cfg, newStubModel(), memory.NewHashingEmbedder(), "", nil)
+	factory, err := newFactory(cfg, newStubModel(), memory.NewHashingEmbedder(), memory.NewConcatSummarizer(), "", nil)
 	require.NoError(t, err)
 
 	require.Len(t, factory.Tools, 1)
@@ -77,7 +79,7 @@ func TestNewFactory_InvalidScriptToolFailsStartup(t *testing.T) {
 	cfg, err := resolveConfig(cmd)
 	require.NoError(t, err)
 
-	_, err = newFactory(cfg, newStubModel(), memory.NewHashingEmbedder(), "", nil)
+	_, err = newFactory(cfg, newStubModel(), memory.NewHashingEmbedder(), memory.NewConcatSummarizer(), "", nil)
 	require.ErrorIs(t, err, tool.ErrDuplicateTool,
 		"a script tool named after a built-in must fail startup")
 	assert.Contains(t, err.Error(), `"memory"`,

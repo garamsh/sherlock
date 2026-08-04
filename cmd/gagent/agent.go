@@ -65,7 +65,11 @@ func runAgentTurn(ctx context.Context, cfg Config, agentID, msg, ego string) err
 	if err != nil {
 		return err
 	}
-	factory, err := newFactory(cfg, newModel, embedder, ego, stdoutSink{})
+	summarizer, err := newSummarizerFunc(cfg.Model)
+	if err != nil {
+		return err
+	}
+	factory, err := newFactory(cfg, newModel, embedder, summarizer, ego, stdoutSink{})
 	if err != nil {
 		return err
 	}

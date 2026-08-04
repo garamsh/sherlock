@@ -22,6 +22,7 @@ func newFactory(
 	cfg Config,
 	newModel func(agentID string) agent.Model,
 	embedder memory.Embedder,
+	summarizer memory.Summarizer,
 	ego string,
 	sink message.Sink,
 ) (*gateway.Factory, error) {
@@ -33,6 +34,7 @@ func newFactory(
 		Root:             cfg.DataRoot,
 		NewModel:         newModel,
 		Embedder:         embedder,
+		Summarizer:       summarizer,
 		Ego:              ego,
 		Sink:             sink,
 		NewSink:          newSink,

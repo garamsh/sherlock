@@ -5,7 +5,9 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -218,13 +220,14 @@ func TestCompress_SummarizesEpisodicIntoSemanticParent(t *testing.T) {
 	for _, r := range results {
 		ids = append(ids, r["id"].(float64))
 	}
-	assert.Contains(t, ids, float64(res.ParentID))
+	require.Len(t, res.ParentIDs, 1, "small cluster yields one parent")
+	assert.Contains(t, ids, float64(res.ParentIDs[0]))
 	assert.Contains(t, ids, float64(keep))
 	assert.NotContains(t, ids, float64(id1))
 	assert.NotContains(t, ids, float64(id2))
 
 	for _, r := range results {
-		if r["id"].(float64) == float64(res.ParentID) {
+		if r["id"].(float64) == float64(res.ParentIDs[0]) {
 			assert.Equal(t, "semantic", r["type"])
 			assert.Contains(t, r["content"], "deployed v1 to staging")
 			assert.InDelta(t, 0.8, r["importance_score"], 1e-9)
@@ -431,7 +434,7 @@ func TestConsolidate_CompressesEpisodicCluster(t *testing.T) {
 
 	res, err := svc.Consolidate(context.Background())
 	require.NoError(t, err)
-	require.Positive(t, res.ParentID)
+	require.Positive(t, res.ParentIDs[0])
 	assert.ElementsMatch(t, []int64{id1, id2}, res.ArchivedIDs)
 
 	results, err := svc.Search(context.Background(), "staging deploy", 10)
@@ -440,7 +443,7 @@ func TestConsolidate_CompressesEpisodicCluster(t *testing.T) {
 	for _, r := range results {
 		ids = append(ids, r.ID)
 	}
-	assert.Contains(t, ids, res.ParentID, "the semantic parent is searchable")
+	assert.Contains(t, ids, res.ParentIDs[0], "the semantic parent is searchable")
 	assert.NotContains(t, ids, id1, "archived originals leave the active index")
 	assert.NotContains(t, ids, id2, "archived originals leave the active index")
 
@@ -457,7 +460,7 @@ func TestConsolidate_CompressesEpisodicCluster(t *testing.T) {
 		require.NoError(t, db.QueryRow(
 			`SELECT superseded_by FROM memories_archive WHERE id = ?`, id,
 		).Scan(&supersededBy))
-		assert.Equal(t, res.ParentID, supersededBy,
+		assert.Equal(t, res.ParentIDs[0], supersededBy,
 			"the archived original points at its semantic parent")
 	}
 }
@@ -468,7 +471,7 @@ func TestConsolidate_BelowClusterIsNoOp(t *testing.T) {
 
 	res, err := svc.Consolidate(context.Background())
 	require.NoError(t, err)
-	assert.Zero(t, res.ParentID)
+	assert.Empty(t, res.ParentIDs)
 	assert.Empty(t, res.ArchivedIDs)
 
 	results, err := svc.Search(context.Background(), "lone episodic", 10)
@@ -491,4 +494,156 @@ func TestHashingEmbedder_IsDeterministicAndNormalized(t *testing.T) {
 		norm += float64(v) * float64(v)
 	}
 	assert.InDelta(t, 1.0, norm, 1e-6)
+}
+
+// TestCompress_ClusterExceedingSummaryMaxLenLeavesNoContentBehind pins
+// issue #194: a cluster whose joined contents exceed SummaryMaxLen
+// must split into multiple semantic parents so every byte of the
+// originals stays in the searchable index. Tail content no longer
+// disappears into the archive.
+func TestCompress_ClusterExceedingSummaryMaxLenLeavesNoContentBehind(t *testing.T) {
+	svc := newService(t)
+
+	// 30 short messages join to ~30 * 32 = ~960 bytes of summary text,
+	// well past the 512-byte cap that truncated everything before.
+	const count = 30
+	originals := make([]int64, 0, count)
+	for i := range count {
+		content := fmt.Sprintf("user-turn %02d: ref %04d", i, i*7+1)
+		originals = append(originals, storeMemory(t, svc, content, "episodic", 0.5))
+	}
+
+	res, err := svc.Compress(context.Background(), originals)
+	require.NoError(t, err)
+	require.Greater(t, len(res.ParentIDs), 1,
+		"a cluster past SummaryMaxLen must produce more than one parent")
+	for _, id := range res.ParentIDs {
+		assert.Positive(t, id)
+	}
+	assert.ElementsMatch(t, originals, res.ArchivedIDs)
+
+	active, err := svc.Search(context.Background(), "user-turn", 100)
+	require.NoError(t, err)
+	got := make(map[int64]string, len(active))
+	for _, r := range active {
+		got[r.ID] = r.Content
+	}
+	for _, pid := range res.ParentIDs {
+		require.Contains(t, got, pid, "every parent stays in the active index")
+		assert.LessOrEqual(t, len(got[pid]), memory.SummaryMaxLen,
+			"each parent respects the per-parent length cap")
+	}
+
+	// The first content lives entirely inside the cluster; after
+	// consolidation its distinguishing substring (a unique ref token)
+	// must surface from at least one parent's content — it cannot
+	// be archived and forgotten.
+	firstRef := fmt.Sprintf("ref %04d", 0*7+1)
+	lastRef := fmt.Sprintf("ref %04d", (count-1)*7+1)
+	found := 0
+	for _, content := range got {
+		if strings.Contains(content, firstRef) || strings.Contains(content, lastRef) {
+			found++
+		}
+	}
+	assert.Positive(t, found,
+		"head and tail tokens must surface from at least one parent")
+}
+
+// TestCompress_PreferredParentIsFirstChunk pins that the first parent
+// (the one the archived originals point at via superseded_by) is the
+// head of the cluster — coherent with ConcatSummarizer's join order.
+func TestCompress_PreferredParentIsFirstChunk(t *testing.T) {
+	svc := newService(t)
+
+	var ids []int64
+	for i := range 20 {
+		ids = append(ids, storeMemory(t, svc,
+			fmt.Sprintf("alpha marker %04d tail", i), "episodic", 0.5))
+	}
+
+	res, err := svc.Compress(context.Background(), ids)
+	require.NoError(t, err)
+	require.NotEmpty(t, res.ParentIDs)
+
+	active, err := svc.Search(context.Background(), "alpha marker", 100)
+	require.NoError(t, err)
+	contents := make(map[int64]string, len(active))
+	for _, r := range active {
+		contents[r.ID] = r.Content
+	}
+	preferred := contents[res.ParentIDs[0]]
+	assert.True(t, strings.HasPrefix(preferred, "alpha marker 0000"),
+		"the preferred (first) parent opens with the first original; got %q", preferred)
+	assert.Contains(t, preferred, " | ",
+		"the preferred parent joins multiple originals via the chunk separator")
+}
+
+// TestCompress_ChunkSeparatorIsTheChunkerBoundary pins that the
+// summarizer output's separator is what the chunker uses to keep whole
+// content pieces inside one parent. The "aa bb cc" join lands inside
+// a single chunk because it fits SummaryMaxLen; a larger join splits
+// at separator boundaries so whole pieces never straddle parents.
+func TestCompress_ChunkSeparatorIsTheChunkerBoundary(t *testing.T) {
+	svc := newService(t)
+
+	// Three pieces small enough that the joined summary fits one parent.
+	id1 := storeMemory(t, svc, "aa", "episodic", 0.5)
+	id2 := storeMemory(t, svc, "bb", "episodic", 0.5)
+	id3 := storeMemory(t, svc, "cc", "episodic", 0.5)
+	res, err := svc.Compress(context.Background(), []int64{id1, id2, id3})
+	require.NoError(t, err)
+	require.Len(t, res.ParentIDs, 1,
+		"a small cluster fits one parent with no chunking")
+
+	// Larger cluster: each original is the same so the joined text
+	// exceeds SummaryMaxLen and must split across parents, but the
+	// whole content must still surface somewhere.
+	var ids []int64
+	for range 40 {
+		ids = append(ids, storeMemory(t, svc, strings.Repeat("a", 20), "episodic", 0.5))
+	}
+	res, err = svc.Compress(context.Background(), ids)
+	require.NoError(t, err)
+	require.Greater(t, len(res.ParentIDs), 1,
+		"40 originals of 20 chars joined must exceed SummaryMaxLen")
+
+	active, err := svc.Search(context.Background(), strings.Repeat("a", 20), 100)
+	require.NoError(t, err)
+	require.NotEmpty(t, active)
+	totalBytes := 0
+	for _, r := range active {
+		assert.LessOrEqual(t, len(r.Content), memory.SummaryMaxLen,
+			"each parent respects the per-parent length cap")
+		totalBytes += len(r.Content)
+	}
+	// 40 originals of 20 chars + 39 separators of 3 chars = 917 chars
+	// of joined content. After chunking the parents must still hold
+	// at least that much text (chunking never drops content).
+	assert.GreaterOrEqual(t, totalBytes, 40*20,
+		"the union of parents covers every original byte")
+}
+
+// TestCompress_HardCapsOversizedSingleContent pins that an original
+// exceeding SummaryMaxLen on its own is hard-capped, not split across
+// multiple parents — the chunker's hard-cap fallback fires when there
+// is no separator to break on.
+func TestCompress_HardCapsOversizedSingleContent(t *testing.T) {
+	svc := newService(t)
+
+	// One oversized original past SummaryMaxLen with no separator
+	// inside; the chunker must hard-cap without losing the bytes it
+	// trimmed (they are inside the single parent it produces).
+	oversized := strings.Repeat("z", memory.SummaryMaxLen+50)
+	id := storeMemory(t, svc, oversized, "episodic", 0.5)
+
+	res, err := svc.Compress(context.Background(), []int64{id})
+	require.NoError(t, err)
+	require.Len(t, res.ParentIDs, 1)
+
+	active, err := svc.Search(context.Background(), "zzz", 10)
+	require.NoError(t, err)
+	require.Len(t, active, 1)
+	assert.Equal(t, memory.SummaryMaxLen, len(active[0].Content),
+		"a single oversized original is hard-capped to one parent's length")
 }

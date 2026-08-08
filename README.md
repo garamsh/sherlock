@@ -47,6 +47,18 @@ gagent agent --agent-id my-agent --message "hello"
 - `--message` is required; `--agent-id` defaults to `default`.
 - Outbound `message_send` content and the final response print to stdout (logs go to stderr).
 
+### gagent sidecar
+
+Serves the agent's computer (ADR 0018) — the `files` and `shell_exec` tools plus the script tools its config declares — over the tool wire protocol (`GET /tools`, `POST /tools/{name}/call`):
+
+```sh
+gagent sidecar
+```
+
+- The sidecar owns the workspace directory (`workspace` key, created on first use) and the shell executor: privileged runs chown the workspace to the agent UID and drop child processes to it; unprivileged runs report `agent_uid unavailable` (fail-closed).
+- The listener is pod-local and carries no authentication in this phase; the default bind is loopback-only.
+- Its config file resolves in order: `--config <path>`, then `./sidecar.yaml`, then the XDG config path (`~/.config/gagent/sidecar.yaml` on Linux). Keys: `addr` (default `127.0.0.1:8081`), `workspace` (default `data/workspace`), `exec-timeout`, and `tools:` — the script-tool section, whose home moves here from the platform config (the platform config's `tools:` keeps working until the agent rewire lands).
+
 ### Configuration
 
 Settings resolve in order: **flags > environment variables > config file > defaults**. Environment variables use the `GAGENT_` prefix (`GAGENT_DATA_ROOT`, …). The config file resolves in order: `--config <path>`, then `./gagent.yaml`, then the XDG config path (`~/.config/gagent/config.yaml` on Linux). A missing file is an error only when `--config` names it explicitly.
@@ -71,7 +83,7 @@ Settings resolve in order: **flags > environment variables > config file > defau
 | `tls.client-ca` | — | unset (CA bundle, PEM, that client certificates are verified against) |
 | `console.url` | — | unset (console endpoint every `message_send` is POSTed to over mTLS, reusing the `tls:` material; unset keeps the file outbox, which is also the delivery-failure fallback) |
 
-The `tools:` section registers script tools — operator-supplied executables the platform runs as subprocesses with JSON on stdin/stdout — alongside the built-ins; see `gagent.yaml` for a working example and `tools/playwright/README.md` for the format. An invalid entry (built-in name collision, unreadable schema, empty command) fails platform startup with an error naming the tool.
+The `tools:` section registers script tools — operator-supplied executables the platform runs as subprocesses with JSON on stdin/stdout — alongside the built-ins; see `gagent.yaml` for a working example and `tools/playwright/README.md` for the format. An invalid entry (built-in name collision, unreadable schema, empty command) fails startup with an error naming the tool. In the pod topology the section belongs to the sidecar's config; the platform config still accepts it while the single-binary wiring exists.
 
 ### Agent ego
 

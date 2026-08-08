@@ -21,6 +21,7 @@ import (
 	"github.com/garamsh/gagent/internal/message"
 	"github.com/garamsh/gagent/internal/shell"
 	"github.com/garamsh/gagent/internal/tool"
+	"github.com/garamsh/gagent/internal/tool/script"
 )
 
 // recordingSink captures outbound messages.
@@ -354,12 +355,12 @@ func TestFactory_ScriptToolFromConfig(t *testing.T) {
 	factory := &gateway.Factory{
 		Root:     root,
 		NewModel: replyModel,
-		Tools: []gateway.ScriptTool{{
+		Tools: []script.Config{{
 			Name:         "wordcount",
 			Description:  "Count words in a text.",
 			InputSchema:  input,
 			OutputSchema: output,
-			Exec: gateway.ScriptToolExec{
+			Exec: script.ExecConfig{
 				Command:        []string{"python3", "tools/wordcount.py"},
 				StdinFormat:    "json",
 				StdoutFormat:   "json",
@@ -425,12 +426,12 @@ func TestFactory_ScriptToolRunsThroughShellExecutor(t *testing.T) {
 		NewShellExecutor: func() shell.Executor {
 			return exec
 		},
-		Tools: []gateway.ScriptTool{{
+		Tools: []script.Config{{
 			Name:         "wordcount",
 			Description:  "Count words in a text.",
 			InputSchema:  input,
 			OutputSchema: output,
-			Exec: gateway.ScriptToolExec{
+			Exec: script.ExecConfig{
 				Command:        []string{"python3", "tools/wordcount.py"},
 				StdinFormat:    "json",
 				StdoutFormat:   "json",
@@ -467,12 +468,12 @@ func TestFactory_ScriptToolWithoutExecutorFailsClosed(t *testing.T) {
 	factory := &gateway.Factory{
 		Root:     t.TempDir(),
 		NewModel: replyModel,
-		Tools: []gateway.ScriptTool{{
+		Tools: []script.Config{{
 			Name:         "wordcount",
 			Description:  "Count words in a text.",
 			InputSchema:  input,
 			OutputSchema: output,
-			Exec:         gateway.ScriptToolExec{Command: []string{"python3", "tools/wordcount.py"}},
+			Exec:         script.ExecConfig{Command: []string{"python3", "tools/wordcount.py"}},
 		}},
 	}
 	rt, err := factory.New(context.Background(), "env-1", nil)
@@ -494,144 +495,16 @@ func TestFactory_ScriptToolNameCollisionFailsStartup(t *testing.T) {
 	factory := &gateway.Factory{
 		Root:     t.TempDir(),
 		NewModel: replyModel,
-		Tools: []gateway.ScriptTool{{
+		Tools: []script.Config{{
 			Name:         "memory",
 			Description:  "Collides with the built-in memory tool.",
 			InputSchema:  input,
 			OutputSchema: output,
-			Exec:         gateway.ScriptToolExec{Command: []string{"true"}},
+			Exec:         script.ExecConfig{Command: []string{"true"}},
 		}},
 	}
 
 	_, err := factory.New(context.Background(), "env-1", nil)
 	assert.ErrorIs(t, err, tool.ErrDuplicateTool,
 		"a script tool named after a built-in fails startup")
-}
-
-func TestFactory_ValidateTools(t *testing.T) {
-	input, output := writeScriptToolSchemas(t, t.TempDir())
-	valid := gateway.ScriptTool{
-		Name:         "wordcount",
-		Description:  "Count words in a text.",
-		InputSchema:  input,
-		OutputSchema: output,
-		Exec:         gateway.ScriptToolExec{Command: []string{"true"}},
-	}
-	colliding := valid
-	colliding.Name = "memory"
-	missingSchema := valid
-	missingSchema.Name = "noschema"
-	missingSchema.InputSchema = filepath.Join(t.TempDir(), "missing.json")
-	emptyCommand := valid
-	emptyCommand.Name = "nocommand"
-	emptyCommand.Exec = gateway.ScriptToolExec{}
-
-	tests := []struct {
-		name    string
-		tools   []gateway.ScriptTool
-		wantErr string
-		wantDup bool
-	}{
-		{name: "no tools is valid", tools: nil},
-		{name: "valid script tool passes", tools: []gateway.ScriptTool{valid}},
-		{
-			name:    "collision with a built-in fails",
-			tools:   []gateway.ScriptTool{colliding},
-			wantErr: `"memory"`,
-			wantDup: true,
-		},
-		{
-			name:    "duplicate script-tool names fail",
-			tools:   []gateway.ScriptTool{valid, valid},
-			wantErr: `"wordcount"`,
-			wantDup: true,
-		},
-		{
-			name:    "missing schema file fails",
-			tools:   []gateway.ScriptTool{missingSchema},
-			wantErr: `"noschema"`,
-		},
-		{
-			name:    "empty exec command fails",
-			tools:   []gateway.ScriptTool{emptyCommand},
-			wantErr: `"nocommand"`,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			factory := &gateway.Factory{Root: t.TempDir(), NewModel: replyModel, Tools: tt.tools}
-			err := factory.ValidateTools()
-			if tt.wantErr == "" {
-				assert.NoError(t, err)
-				return
-			}
-			require.Error(t, err)
-			assert.Contains(t, err.Error(), tt.wantErr,
-				"the error must name the offending tool")
-			if tt.wantDup {
-				assert.ErrorIs(t, err, tool.ErrDuplicateTool)
-			}
-		})
-	}
-}
-
-func TestFactory_ScriptToolSchemaDocument(t *testing.T) {
-	dir := t.TempDir()
-	combined := filepath.Join(dir, "combined.json")
-	require.NoError(t, os.WriteFile(combined, []byte(
-		`{"input":{"type":"object","properties":{"url":{"type":"string"}},"required":["url"]},`+
-			`"output":{"type":"object","properties":{"title":{"type":"string"}}}}`), 0o644))
-	plain := filepath.Join(dir, "plain.json")
-	require.NoError(t, os.WriteFile(plain, []byte(
-		`{"type":"object","properties":{"text":{"type":"string"}}}`), 0o644))
-
-	tests := []struct {
-		name       string
-		schemaPath string
-		wantInput  string
-		wantOutput string
-	}{
-		{
-			name:       "combined document returns the named half",
-			schemaPath: combined,
-			wantInput:  `{"type":"object","properties":{"url":{"type":"string"}},"required":["url"]}`,
-			wantOutput: `{"type":"object","properties":{"title":{"type":"string"}}}`,
-		},
-		{
-			name:       "plain document passes through as-is",
-			schemaPath: plain,
-			wantInput:  `{"type":"object","properties":{"text":{"type":"string"}}}`,
-			wantOutput: `{"type":"object","properties":{"text":{"type":"string"}}}`,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			factory := &gateway.Factory{
-				Root:     t.TempDir(),
-				NewModel: replyModel,
-				Tools: []gateway.ScriptTool{{
-					Name:         "fetch",
-					Description:  "Fetch a page.",
-					InputSchema:  tt.schemaPath,
-					OutputSchema: tt.schemaPath,
-					Exec:         gateway.ScriptToolExec{Command: []string{"true"}},
-				}},
-			}
-			rt, err := factory.New(context.Background(), "env-1", nil)
-			require.NoError(t, err)
-			defer func() {
-				assert.NoError(t, rt.Close(context.Background()))
-			}()
-
-			var inputSchema, outputSchema json.RawMessage
-			for _, d := range rt.Registry.List() {
-				if d.Name == "fetch" {
-					inputSchema = d.InputSchema
-					outputSchema = d.OutputSchema
-				}
-			}
-			assert.JSONEq(t, tt.wantInput, string(inputSchema))
-			assert.JSONEq(t, tt.wantOutput, string(outputSchema))
-		})
-	}
 }

@@ -9,9 +9,9 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/garamsh/gagent/internal/agent"
-	"github.com/garamsh/gagent/internal/gateway"
 	"github.com/garamsh/gagent/internal/memory"
 	"github.com/garamsh/gagent/internal/tool"
+	"github.com/garamsh/gagent/internal/tool/script"
 )
 
 // newStubModel returns a no-op model function suitable for tests that only
@@ -53,12 +53,12 @@ func TestNewFactory_CarriesScriptTools(t *testing.T) {
 	require.NoError(t, err)
 
 	require.Len(t, factory.Tools, 1)
-	assert.Equal(t, gateway.ScriptTool{
+	assert.Equal(t, script.Config{
 		Name:         "wordcount",
 		Description:  "Count words in a text.",
 		InputSchema:  inputSchema,
 		OutputSchema: outputSchema,
-		Exec: gateway.ScriptToolExec{
+		Exec: script.ExecConfig{
 			Command:        []string{"python3", "tools/wordcount.py"},
 			StdinFormat:    "json",
 			StdoutFormat:   "json",

@@ -4,8 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -136,4 +138,60 @@ func TestRemoteTool_UnknownTool(t *testing.T) {
 
 	require.Error(t, err)
 	assert.ErrorIs(t, err, tool.ErrToolNotFound)
+}
+
+// hangingServer accepts connections and never responds, so only the
+// client's own deadline ends the request.
+func hangingServer(t *testing.T) *httptest.Server {
+	t.Helper()
+	release := make(chan struct{})
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		select {
+		case <-r.Context().Done():
+		case <-release:
+		}
+	}))
+	t.Cleanup(func() {
+		close(release)
+		srv.Close()
+	})
+	return srv
+}
+
+// TestRemoteTool_HangingServerFailsWithinDeadline pins the per-call
+// deadline (issue #211): a server that never responds yields a typed
+// execution error — not a validation error — within the call timeout,
+// so a turn can never hang indefinitely.
+func TestRemoteTool_HangingServerFailsWithinDeadline(t *testing.T) {
+	srv := hangingServer(t)
+	remote := tool.NewRemoteTool(
+		tool.Descriptor{Name: "exec"}, srv.URL, tool.WithCallTimeout(100*time.Millisecond))
+
+	start := time.Now()
+	_, err := remote.Call(context.Background(), json.RawMessage(`{}`))
+
+	require.Error(t, err)
+	assert.Less(t, time.Since(start), 5*time.Second,
+		"the call returns within the deadline, not when the server gives up")
+	assert.ErrorIs(t, err, tool.ErrExecution,
+		"a timeout is an execution failure, not a validation failure")
+	assert.NotErrorIs(t, err, tool.ErrValidation)
+	assert.ErrorContains(t, err, "timed out",
+		"the model reads the deadline expiry as the failure cause")
+}
+
+// TestDiscover_HangingServerFailsWithinDeadline pins the same deadline
+// on the listing path, so startup discovery cannot hang either. The
+// caller's shorter context deadline bounds this test; the client's own
+// DefaultCallTimeout bounds production callers.
+func TestDiscover_HangingServerFailsWithinDeadline(t *testing.T) {
+	srv := hangingServer(t)
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+	defer cancel()
+
+	start := time.Now()
+	_, err := tool.Discover(ctx, srv.URL)
+
+	require.Error(t, err)
+	assert.Less(t, time.Since(start), 5*time.Second)
 }

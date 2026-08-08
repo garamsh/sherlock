@@ -29,6 +29,11 @@ type Runtime struct {
 	// shutdown; memory consolidation (ADR 0011) runs before the store
 	// closes.
 	Close func(ctx context.Context) error
+	// ConsolidateIfDue is the threshold consolidation trigger (ADR 0011):
+	// the runner evaluates it after a completed turn, off the turn path;
+	// a failure logs at WARN and never fails a turn. Nil means no
+	// threshold trigger (test runtimes).
+	ConsolidateIfDue func(ctx context.Context) error
 }
 
 // Factory assembles the one agent's runtime from the agent-container
@@ -126,6 +131,10 @@ func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink)
 		Session:  session,
 		Registry: registry,
 		Capture:  Capture{Svc: memSvc}.Capture,
+		ConsolidateIfDue: func(ctx context.Context) error {
+			_, err := memSvc.ConsolidateIfDue(ctx)
+			return err
+		},
 		Close: func(ctx context.Context) error {
 			_, err := memSvc.Consolidate(ctx)
 			return errors.Join(err, memSvc.Close())

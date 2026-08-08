@@ -353,6 +353,35 @@ func TestConsolidate_CompressesEpisodicCluster(t *testing.T) {
 	}
 }
 
+// TestConsolidateIfDue_TriggersOnlyAtThreshold pins the threshold
+// trigger (ADR 0006, ADR 0011): below ConsolidationThreshold active
+// episodic memories nothing runs; at the threshold the cluster
+// compresses into semantic parents.
+func TestConsolidateIfDue_TriggersOnlyAtThreshold(t *testing.T) {
+	svc := newService(t)
+	for range memory.ConsolidationThreshold - 1 {
+		storeMemory(t, svc, "episodic note", "episodic", 0.5)
+	}
+
+	res, err := svc.ConsolidateIfDue(context.Background())
+	require.NoError(t, err)
+	assert.Empty(t, res.ArchivedIDs, "below the threshold nothing consolidates")
+
+	storeMemory(t, svc, "episodic note", "episodic", 0.5)
+	res, err = svc.ConsolidateIfDue(context.Background())
+	require.NoError(t, err)
+	require.Len(t, res.ArchivedIDs, memory.ConsolidationThreshold,
+		"at the threshold the whole episodic cluster compresses")
+	assert.NotEmpty(t, res.ParentIDs)
+
+	active, err := svc.Search(context.Background(), "episodic note", 10)
+	require.NoError(t, err)
+	for _, m := range active {
+		assert.Equal(t, memory.TypeSemantic, m.Type,
+			"only the semantic parents stay active")
+	}
+}
+
 func TestConsolidate_BelowClusterIsNoOp(t *testing.T) {
 	svc := newService(t)
 	id := storeMemory(t, svc, "lone episodic note", "episodic", 0.5)

@@ -12,12 +12,6 @@ import (
 // privilege to switch UID, for ProcessExecutor to use it.
 const DefaultAgentUID = 1001
 
-// DefaultMemoryUID is the UID that owns the environment's memory.db in a
-// privileged deployment (ADR 0008, ADR 0010): the platform chowns the file to it at
-// environment creation, so agent-UID children get EACCES from the kernel
-// and memory access goes only through the memory service.
-const DefaultMemoryUID = 1002
-
 // ErrAgentUIDUnavailable is returned by ProcessExecutor.Run when the
 // current effective user cannot drop to AgentUID (typically: not running
 // as root or setuid-root). Per ADR 0008 the agent falls back to the three
@@ -67,16 +61,3 @@ type Result struct {
 	ExitCode int    `json:"exit_code"`
 	TimedOut bool   `json:"timed_out"`
 }
-
-// unavailableExecutor reports ErrAgentUIDUnavailable on every Run.
-type unavailableExecutor struct{}
-
-func (unavailableExecutor) Run(context.Context, Request) (Result, error) {
-	return Result{}, ErrAgentUIDUnavailable
-}
-
-// UnavailableExecutor returns an Executor whose Run always fails with
-// ErrAgentUIDUnavailable. It backs script tools when the platform wires
-// no executor: registration still succeeds but calls fail closed instead
-// of silently running as the platform UID (ADR 0010).
-func UnavailableExecutor() Executor { return unavailableExecutor{} }

@@ -47,9 +47,12 @@ type Recaller interface {
 }
 
 // WritebackSink receives the memory operations parsed from every model
-// response. The memory runtime satisfies it; nil means ops are discarded.
+// response. Apply returns the existing memories most similar to the
+// turn's add/update ops — the write-time coherence step (ADR 0006 step
+// 5) — or nil when there is nothing to show; nil sink means ops are
+// discarded.
 type WritebackSink interface {
-	Apply(ctx context.Context, ops []WritebackOp) error
+	Apply(ctx context.Context, ops []WritebackOp) ([]RecalledMemory, error)
 }
 
 // EventKind identifies a loop lifecycle event.
@@ -222,19 +225,26 @@ func (s *session) Run(ctx context.Context, task string) (response string, err er
 		if err != nil {
 			return "", err
 		}
+		var notes []RecalledMemory
 		if parseWarn != nil {
 			// A malformed writeback is a parse miss, not a fatal turn
 			// error (issue #93): the visible reply still reaches the
 			// user, the memory update for this turn is dropped.
 			s.emit(ctx, Event{Kind: EventWritebackError, Turn: s.turn, Error: parseWarn.Error()})
-		} else if err := s.applyWriteback(ctx, ops); err != nil {
-			return "", err
+		} else {
+			var err error
+			if notes, err = s.applyWriteback(ctx, ops); err != nil {
+				return "", err
+			}
 		}
 		s.history = append(s.history, Message{
 			Role:      RoleAssistant,
 			Content:   content,
 			ToolCalls: resp.ToolCalls,
 		})
+		if len(notes) > 0 {
+			s.history = append(s.history, Message{Role: RoleSystem, Content: coherenceNote(notes)})
+		}
 		if len(resp.ToolCalls) == 0 {
 			s.emit(ctx, Event{Kind: EventTurnFinished, Turn: s.turn, Response: content})
 			return content, nil
@@ -333,14 +343,31 @@ func (s *session) recall(ctx context.Context, task string) ([]RecalledMemory, er
 	return recalled, nil
 }
 
-func (s *session) applyWriteback(ctx context.Context, ops []WritebackOp) error {
+// applyWriteback applies the parsed ops and returns the write-time
+// coherence set (ADR 0006 step 5): the existing memories most similar to
+// the turn's add/update ops. The note joins the history after the
+// assistant message, so the next model call — the same turn when it
+// continues, otherwise the next turn — judges them.
+func (s *session) applyWriteback(ctx context.Context, ops []WritebackOp) ([]RecalledMemory, error) {
+	var notes []RecalledMemory
 	if s.opts.Writeback != nil {
-		if err := s.opts.Writeback.Apply(ctx, ops); err != nil {
-			return fmt.Errorf("writeback: %w", err)
+		var err error
+		if notes, err = s.opts.Writeback.Apply(ctx, ops); err != nil {
+			return nil, fmt.Errorf("writeback: %w", err)
 		}
 	}
 	s.emit(ctx, Event{Kind: EventWriteback, Turn: s.turn, Ops: ops})
-	return nil
+	return notes, nil
+}
+
+// coherenceNote renders the write-time coherence set for the model.
+func coherenceNote(similar []RecalledMemory) string {
+	out := "## Memory coherence\nThese existing memories are similar to what you just stored. " +
+		"If any contradict or are superseded by it, correct them with update/delete in your next memory block:\n"
+	for _, m := range similar {
+		out += fmt.Sprintf("- [%s] (%s): %s\n", m.ID, m.Age, m.Content)
+	}
+	return out
 }
 
 func (s *session) compact(ctx context.Context) error {

@@ -15,7 +15,7 @@ Memory and context are separate stores connected by an automatic loop. Context i
 2. **Recall** — the runtime retrieves memories using the task statement as the hybrid-search query (ADR 0002): a variable number of raw entries within a token budget, each shown with its ID and age. When nothing relevant exists, the absence is stated explicitly.
 3. **Act** — the agent executes with the composed context. Accessed memories have `access_count` and `last_accessed` updated automatically.
 4. **Writeback** — every model response ends with a structured memory block: for each recalled memory `keep` / `update` / `delete`, plus `add` for new facts worth persisting.
-5. **Write-time coherence** — when the writeback contains `add` or `update`, the runtime retrieves the most similar existing memories and presents them for judgment in the same step, so related memories are updated together instead of drifting into contradiction.
+5. **Write-time coherence** — when the writeback contains `add` or `update`, the runtime retrieves the most similar existing memories and presents them for judgment as a system note the next model call reads (the same turn when it continues, otherwise the next turn's context), so related memories are updated together instead of drifting into contradiction.
 
 Update and eviction semantics:
 

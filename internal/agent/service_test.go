@@ -29,14 +29,86 @@ func (f *fakeRecaller) Recall(_ context.Context, task string) ([]agent.RecalledM
 	return f.memories, f.err
 }
 
-// fakeWriteback records every batch of parsed memory operations.
+// fakeWriteback records every batch of parsed memory operations and
+// returns the canned coherence set.
 type fakeWriteback struct {
 	batches [][]agent.WritebackOp
+	similar []agent.RecalledMemory
 }
 
-func (f *fakeWriteback) Apply(_ context.Context, ops []agent.WritebackOp) error {
+func (f *fakeWriteback) Apply(_ context.Context, ops []agent.WritebackOp) ([]agent.RecalledMemory, error) {
 	f.batches = append(f.batches, ops)
-	return nil
+	return f.similar, nil
+}
+
+// recordingModel captures the messages each Chat call sees.
+type recordingModel struct {
+	steps []agent.ScriptedStep
+	seen  [][]agent.Message
+}
+
+func (m *recordingModel) Chat(_ context.Context, msgs []agent.Message, _ []tool.Descriptor) (agent.Response, error) {
+	m.seen = append(m.seen, append([]agent.Message(nil), msgs...))
+	if len(m.steps) == 0 {
+		return agent.Response{Content: "done.\n```memory\n{}\n```"}, nil
+	}
+	step := m.steps[0]
+	m.steps = m.steps[1:]
+	return agent.Response{Content: step.Content, ToolCalls: step.ToolCalls}, nil
+}
+
+// TestSession_WriteTimeCoherencePresentedToModel pins ADR 0006 step 5:
+// the memories similar to a writeback add join the history as a system
+// note, and the next model call reads them for judgment.
+func TestSession_WriteTimeCoherencePresentedToModel(t *testing.T) {
+	model := &recordingModel{steps: []agent.ScriptedStep{
+		{Content: "Noted.\n```memory\n{\"add\":[{\"content\":\"user's favorite telescope is the Orion XT8\",\"type\":\"semantic\"}]}\n```"},
+		{Content: "Corrected the old one.\n```memory\n{}\n```"},
+	}}
+	writeback := &fakeWriteback{similar: []agent.RecalledMemory{
+		{ID: "7", Content: "user's favorite telescope is the Kepler-9 refractor", Age: "3d"},
+	}}
+
+	s := agent.NewSession(model, tool.NewRegistry(), agent.Options{Writeback: writeback})
+	_, err := s.Run(context.Background(), "my favorite telescope is the Orion XT8")
+	require.NoError(t, err)
+
+	var note string
+	for _, m := range s.History() {
+		if m.Role == agent.RoleSystem && strings.Contains(m.Content, "## Memory coherence") {
+			note = m.Content
+		}
+	}
+	require.NotEmpty(t, note, "the coherence note joins the history")
+	assert.Contains(t, note, "Kepler-9 refractor")
+	assert.Contains(t, note, "[7]")
+
+	// The next turn's model call sees the note in its context.
+	_, err = s.Run(context.Background(), "anything else?")
+	require.NoError(t, err)
+	require.Len(t, model.seen, 2)
+	var seenByModel bool
+	for _, m := range model.seen[1] {
+		if strings.Contains(m.Content, "## Memory coherence") {
+			seenByModel = true
+		}
+	}
+	assert.True(t, seenByModel, "the model reads the coherence note at its next call")
+}
+
+// TestSession_NoCoherenceNoteWithoutSimilar pins the quiet path: nothing
+// similar returned, no note in the history.
+func TestSession_NoCoherenceNoteWithoutSimilar(t *testing.T) {
+	model := &recordingModel{steps: []agent.ScriptedStep{
+		{Content: "Done.\n```memory\n{}\n```"},
+	}}
+	s := agent.NewSession(model, tool.NewRegistry(), agent.Options{Writeback: &fakeWriteback{}})
+
+	_, err := s.Run(context.Background(), "hello")
+	require.NoError(t, err)
+	for _, m := range s.History() {
+		assert.NotContains(t, m.Content, "## Memory coherence")
+	}
 }
 
 // fakeEvents records the emitted events in order.

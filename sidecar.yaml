@@ -1,0 +1,19 @@
+# Example sidecar config. Registers the Playwright script tool from
+# tools/playwright/ (see tools/playwright/README.md) alongside the
+# built-in files and shell_exec tools.
+# Schema and command paths are relative to the working directory; run
+# the sidecar from the repository root.
+# The contract listener is unauthenticated in this phase and serves
+# loopback binds only; a non-loopback addr fails startup.
+addr: "127.0.0.1:8081"
+workspace: data/workspace
+tools:
+  - name: playwright
+    description: "Browser automation via Playwright"
+    input_schema: tools/playwright/schema.json
+    output_schema: tools/playwright/schema.json
+    exec:
+      command: ["python3", "tools/playwright/browser_tool.py"]
+      stdin_format: "json"
+      stdout_format: "json"
+      timeout_seconds: 30

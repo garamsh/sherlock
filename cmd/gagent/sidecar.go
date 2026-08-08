@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
@@ -102,6 +103,11 @@ func resolveSidecarConfig(cmd *cobra.Command) (SidecarConfig, error) {
 
 // serveSidecar runs the contract listener until an interrupt or SIGTERM.
 //
+// The listener is unauthenticated in this phase, so it serves loopback
+// binds only — the same fail-closed posture as the gateway (ADR 0013):
+// an unauthenticated contract listener is a remote shell into the
+// computer, and a non-loopback addr fails startup.
+//
 // The tools: section is validated before anything is served, so an
 // invalid entry fails startup with an error naming the tool (ADR 0009).
 // The workspace is chowned to the agent UID when privileged, and every
@@ -110,6 +116,10 @@ func resolveSidecarConfig(cmd *cobra.Command) (SidecarConfig, error) {
 func serveSidecar(ctx context.Context, cfg SidecarConfig) error {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	slog.SetDefault(logger)
+
+	if !isLoopbackAddr(cfg.Addr) {
+		return fmt.Errorf("addr %q is not a loopback bind: the contract listener is unauthenticated and serves loopback only until contract authentication exists (docs/architecture/security.md)", cfg.Addr)
+	}
 
 	if err := script.ValidateConfigs(cfg.Tools); err != nil {
 		return err

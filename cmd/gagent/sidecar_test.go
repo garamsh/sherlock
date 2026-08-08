@@ -212,6 +212,26 @@ func TestServeSidecar_ContractEndToEnd(t *testing.T) {
 	}
 }
 
+// TestServeSidecar_NonLoopbackAddrFailsStartup pins the fail-closed
+// posture: the contract listener is unauthenticated in this phase, so a
+// non-loopback bind is a remote shell into the computer and fails
+// startup (ADR 0013).
+func TestServeSidecar_NonLoopbackAddrFailsStartup(t *testing.T) {
+	dir := t.TempDir()
+	cfg := SidecarConfig{
+		Addr:        "0.0.0.0:8081",
+		Workspace:   filepath.Join(dir, "workspace"),
+		ExecTimeout: 5 * time.Second,
+	}
+
+	err := serveSidecar(context.Background(), cfg)
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "loopback",
+		"the startup error must state the loopback-only requirement")
+	assert.Contains(t, err.Error(), "unauthenticated",
+		"the startup error must state the reason")
+}
+
 func TestServeSidecar_InvalidToolFailsStartup(t *testing.T) {
 	dir := t.TempDir()
 	schema := filepath.Join(dir, "schema.json")

@@ -97,6 +97,25 @@ func TestEndToEnd_SidecarInvalidToolFailsStartup(t *testing.T) {
 		"the startup error must name the offending tool")
 }
 
+// TestEndToEnd_SidecarNonLoopbackFailsStartup runs the sidecar with a
+// non-loopback --addr: startup must fail with an error stating the
+// loopback-only requirement — an unauthenticated contract listener is a
+// remote shell into the computer (ADR 0013, issue #209).
+func TestEndToEnd_SidecarNonLoopbackFailsStartup(t *testing.T) {
+	binary := buildGagentBinary(t)
+	configPath := emptyConfig(t, "sidecar.yaml")
+
+	for _, addr := range []string{"0.0.0.0:8081", ":8081"} {
+		cmd := exec.Command(binary, "sidecar",
+			"--config", configPath, "--addr", addr,
+			"--workspace", filepath.Join(t.TempDir(), "workspace"))
+		out, err := cmd.CombinedOutput()
+		require.Error(t, err, "addr %q must fail startup", addr)
+		assert.Contains(t, string(out), "loopback")
+		assert.Contains(t, string(out), "unauthenticated")
+	}
+}
+
 // writeSidecarConfig writes a sidecar.yaml with one tools: entry of the
 // given name (run through cat, echoing the JSON input back) plus the
 // schema file it references, and returns the config path.

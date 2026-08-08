@@ -58,7 +58,7 @@ func TestResolveConfig_ModelSection(t *testing.T) {
 		"  model: llama3.2\n" +
 		"  api-key-env: OLLAMA_KEY\n" +
 		"  timeout: 120s\n"
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o644))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o600))
 
 	cfg, err := resolveConfig(newTestCommand(t))
 	require.NoError(t, err)
@@ -79,7 +79,7 @@ func TestResolveConfig_EmbedderSection(t *testing.T) {
 		"  model: nomic-embed-text\n" +
 		"  api-key-env: OLLAMA_KEY\n" +
 		"  timeout: 120s\n"
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o644))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o600))
 
 	cfg, err := resolveConfig(newTestCommand(t))
 	require.NoError(t, err)
@@ -95,7 +95,7 @@ func TestResolveConfig_ModelTimeoutEnvOverridesFile(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
 	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
-		[]byte("model:\n  timeout: 30s\n"), 0o644))
+		[]byte("model:\n  timeout: 30s\n"), 0o600))
 	t.Setenv("GAGENT_MODEL_TIMEOUT", "5m")
 
 	cfg, err := resolveConfig(newTestCommand(t))
@@ -111,7 +111,7 @@ func TestResolveConfig_ConfigFile(t *testing.T) {
 	contents := "addr: \":9090\"\n" +
 		"memory-path: /from-file/memory.db\n" +
 		"tool-servers: [http://127.0.0.1:9081, http://127.0.0.1:9082]\n"
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o644))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o600))
 
 	cfg, err := resolveConfig(newTestCommand(t))
 	require.NoError(t, err)
@@ -126,7 +126,7 @@ func TestResolveConfig_EnvOverridesFile(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
 	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
-		[]byte("memory-path: /from-file/memory.db\n"), 0o644))
+		[]byte("memory-path: /from-file/memory.db\n"), 0o600))
 	t.Setenv("GAGENT_MEMORY_PATH", "/from-env/memory.db")
 
 	cfg, err := resolveConfig(newTestCommand(t))
@@ -164,7 +164,7 @@ func TestResolveConfig_XDGConfigFile(t *testing.T) {
 	t.Setenv("XDG_CONFIG_HOME", xdg)
 	require.NoError(t, os.MkdirAll(filepath.Join(xdg, "gagent"), 0o755))
 	require.NoError(t, os.WriteFile(filepath.Join(xdg, "gagent", "config.yaml"),
-		[]byte("memory-path: /from-xdg/memory.db\n"), 0o644))
+		[]byte("memory-path: /from-xdg/memory.db\n"), 0o600))
 
 	cmd := &cobra.Command{Use: "test"}
 	addConfigFlags(cmd.Flags())
@@ -180,10 +180,10 @@ func TestResolveConfig_CwdBeatsXDG(t *testing.T) {
 	t.Chdir(dir)
 	xdg := t.TempDir()
 	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
-		[]byte("memory-path: /from-cwd/memory.db\n"), 0o644))
+		[]byte("memory-path: /from-cwd/memory.db\n"), 0o600))
 	require.NoError(t, os.MkdirAll(filepath.Join(xdg, "gagent"), 0o755))
 	require.NoError(t, os.WriteFile(filepath.Join(xdg, "gagent", "config.yaml"),
-		[]byte("memory-path: /from-xdg/memory.db\n"), 0o644))
+		[]byte("memory-path: /from-xdg/memory.db\n"), 0o600))
 	cmd := newTestCommand(t)
 	t.Setenv("XDG_CONFIG_HOME", xdg)
 
@@ -198,9 +198,9 @@ func TestResolveConfig_ConfigFlag(t *testing.T) {
 	t.Chdir(dir)
 	// A cwd file exists but the flag path wins; the flag path is arbitrary.
 	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
-		[]byte("memory-path: /from-cwd/memory.db\n"), 0o644))
+		[]byte("memory-path: /from-cwd/memory.db\n"), 0o600))
 	custom := filepath.Join(t.TempDir(), "custom.yaml")
-	require.NoError(t, os.WriteFile(custom, []byte("memory-path: /from-flag/memory.db\n"), 0o644))
+	require.NoError(t, os.WriteFile(custom, []byte("memory-path: /from-flag/memory.db\n"), 0o600))
 
 	cmd := newTestCommand(t)
 	require.NoError(t, cmd.Flags().Set("config", custom))
@@ -224,7 +224,7 @@ func TestResolveConfig_ConsoleSection(t *testing.T) {
 	t.Chdir(dir)
 	contents := "console:\n" +
 		"  url: https://console.internal:9443/messages\n"
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o644))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o600))
 
 	cfg, err := resolveConfig(newTestCommand(t))
 	require.NoError(t, err)
@@ -239,7 +239,7 @@ func TestResolveConfig_TLSSection(t *testing.T) {
 		"  cert: /srv/tls/server.pem\n" +
 		"  key: /srv/tls/server-key.pem\n" +
 		"  client-ca: /srv/tls/ca.pem\n"
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o644))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o600))
 
 	cfg, err := resolveConfig(newTestCommand(t))
 	require.NoError(t, err)
@@ -255,7 +255,7 @@ func TestResolveConfig_TLSSectionEnvOverridesFile(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
 	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
-		[]byte("tls:\n  cert: /from-file.pem\n"), 0o644))
+		[]byte("tls:\n  cert: /from-file.pem\n"), 0o600))
 	t.Setenv("GAGENT_TLS_CERT", "/from-env.pem")
 
 	cfg, err := resolveConfig(newTestCommand(t))
@@ -304,11 +304,33 @@ func TestResolveConfig_NoTLSSection(t *testing.T) {
 	assert.Equal(t, TLSConfig{}, cfg.TLS, "a missing tls: section yields the zero value")
 }
 
+// TestResolveConfig_ConfigFileMustBeOwnerOnly pins the security.md
+// custody promise: a group/other-readable config file fails startup;
+// 0600 and 0400 pass.
+func TestResolveConfig_ConfigFileMustBeOwnerOnly(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	path := filepath.Join(dir, "gagent.yaml")
+	require.NoError(t, os.WriteFile(path, []byte("addr: 127.0.0.1:9090\n"), 0o600))
+
+	_, err := resolveConfig(newTestCommand(t))
+	require.NoError(t, err, "0600 passes")
+
+	require.NoError(t, os.Chmod(path, 0o400))
+	_, err = resolveConfig(newTestCommand(t))
+	require.NoError(t, err, "0400 passes: the check is owner-only, not exactly 0600")
+
+	require.NoError(t, os.Chmod(path, 0o644))
+	_, err = resolveConfig(newTestCommand(t))
+	require.Error(t, err, "a group/other-readable config file must fail startup")
+	assert.Contains(t, err.Error(), "owner-only")
+}
+
 func TestResolveConfig_InvalidConfigFileFails(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
 	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
-		[]byte("addr: [unclosed\n"), 0o644))
+		[]byte("addr: [unclosed\n"), 0o600))
 
 	_, err := resolveConfig(newTestCommand(t))
 	assert.Error(t, err)

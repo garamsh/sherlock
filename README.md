@@ -20,12 +20,13 @@ One CLI binary, `gagent`, runs both processes of an agent pod (ADR 0018): the si
 go run ./cmd/gagent <subcommand>   # or: go build -o gagent ./cmd/gagent
 ```
 
-The agent discovers its computer tools from the sidecar at startup, so start the sidecar first. With the default mock model this runs fully offline:
+The agent discovers its computer tools from the sidecar at startup, so start the sidecar first. With the default mock model this runs fully offline. The repository-root example configs are picked up automatically and must be owner-only first:
 
 ```sh
-gagent sidecar &                          # serves the computer on 127.0.0.1:8081
-gagent agent --message "hello"            # runs one turn and exits
-gagent agent                              # or: serve the agent's gateway
+chmod 0600 gagent.yaml sidecar.yaml     # config files must be owner-only
+gagent sidecar &                        # serves the computer on 127.0.0.1:8081
+gagent agent --message "hello"          # runs one turn and exits
+gagent agent                            # or: serve the agent's gateway
 ```
 
 To try the platform in Docker instead (distroless image, local compose setup), see `deploy/local/`.
@@ -60,7 +61,7 @@ gagent sidecar
 
 ### Configuration
 
-Settings resolve in order: **flags > environment variables > config file > defaults**. Environment variables use the `GAGENT_` prefix (`GAGENT_MEMORY_PATH`, `GAGENT_TOOL_SERVERS`, …). The agent's config file resolves in order: `--config <path>`, then `./gagent.yaml`, then the XDG config path (`~/.config/gagent/config.yaml` on Linux); the sidecar's resolves the same way with `sidecar.yaml`. A missing file is an error only when `--config` names it explicitly.
+Settings resolve in order: **flags > environment variables > config file > defaults**. Environment variables use the `GAGENT_` prefix (`GAGENT_MEMORY_PATH`, `GAGENT_TOOL_SERVERS`, …). The agent's config file resolves in order: `--config <path>`, then `./gagent.yaml`, then the XDG config path (`~/.config/gagent/config.yaml` on Linux); the sidecar's resolves the same way with `sidecar.yaml`. A missing file is an error only when `--config` names it explicitly. A loaded config file must be owner-only (`0600` or `0400`); a group/other-readable file fails startup (docs/architecture/security.md).
 
 Agent keys (`gagent agent`; see `gagent.yaml` for an example):
 

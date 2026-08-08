@@ -108,6 +108,10 @@ func TestServerTLSConfig_KeyPermissions(t *testing.T) {
 	require.NoError(t, os.Chmod(keyPEM, 0o600))
 	_, err = serverTLSConfig(cfg)
 	assert.NoError(t, err, "a 0600 server key passes")
+
+	require.NoError(t, os.Chmod(keyPEM, 0o400))
+	_, err = serverTLSConfig(cfg)
+	assert.NoError(t, err, "a 0400 server key passes: the check is owner-only, not exactly 0600")
 }
 
 func TestServerTLSConfig_UnreadableFilesFail(t *testing.T) {

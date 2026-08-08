@@ -61,7 +61,7 @@ func TestResolveSidecarConfig_ConfigFile(t *testing.T) {
 		"    exec:\n" +
 		"      command: [python3, tools/wordcount.py]\n" +
 		"      stdout_format: json\n"
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "sidecar.yaml"), []byte(contents), 0o644))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "sidecar.yaml"), []byte(contents), 0o600))
 
 	cfg, err := resolveSidecarConfig(newTestSidecarCommand(t))
 	require.NoError(t, err)
@@ -79,7 +79,7 @@ func TestResolveSidecarConfig_EnvOverridesFile(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
 	require.NoError(t, os.WriteFile(filepath.Join(dir, "sidecar.yaml"),
-		[]byte("workspace: /from-file\n"), 0o644))
+		[]byte("workspace: /from-file\n"), 0o600))
 	t.Setenv("GAGENT_WORKSPACE", "/from-env")
 
 	cfg, err := resolveSidecarConfig(newTestSidecarCommand(t))
@@ -105,7 +105,7 @@ func TestResolveSidecarConfig_XDGConfigFile(t *testing.T) {
 	xdg := t.TempDir()
 	require.NoError(t, os.MkdirAll(filepath.Join(xdg, "gagent"), 0o755))
 	require.NoError(t, os.WriteFile(filepath.Join(xdg, "gagent", "sidecar.yaml"),
-		[]byte("workspace: /from-xdg\n"), 0o644))
+		[]byte("workspace: /from-xdg\n"), 0o600))
 	cmd := newTestSidecarCommand(t)
 	t.Setenv("XDG_CONFIG_HOME", xdg)
 
@@ -120,9 +120,9 @@ func TestResolveSidecarConfig_ConfigFlag(t *testing.T) {
 	t.Chdir(dir)
 	// A cwd sidecar.yaml exists but the flag path wins.
 	require.NoError(t, os.WriteFile(filepath.Join(dir, "sidecar.yaml"),
-		[]byte("workspace: /from-cwd\n"), 0o644))
+		[]byte("workspace: /from-cwd\n"), 0o600))
 	custom := filepath.Join(t.TempDir(), "custom.yaml")
-	require.NoError(t, os.WriteFile(custom, []byte("workspace: /from-flag\n"), 0o644))
+	require.NoError(t, os.WriteFile(custom, []byte("workspace: /from-flag\n"), 0o600))
 
 	cmd := newTestSidecarCommand(t)
 	require.NoError(t, cmd.Flags().Set("config", custom))
@@ -141,7 +141,7 @@ func TestResolveSidecarConfig_ConfigFlag(t *testing.T) {
 func TestServeSidecar_ContractEndToEnd(t *testing.T) {
 	dir := t.TempDir()
 	schema := filepath.Join(dir, "schema.json")
-	require.NoError(t, os.WriteFile(schema, []byte(`{"type":"object"}`), 0o644))
+	require.NoError(t, os.WriteFile(schema, []byte(`{"type":"object"}`), 0o600))
 
 	listen, err := net.Listen("tcp", "127.0.0.1:0")
 	require.NoError(t, err)
@@ -240,7 +240,7 @@ func TestServeSidecar_NonLoopbackAddrFailsStartup(t *testing.T) {
 func TestServeSidecar_InvalidToolFailsStartup(t *testing.T) {
 	dir := t.TempDir()
 	schema := filepath.Join(dir, "schema.json")
-	require.NoError(t, os.WriteFile(schema, []byte(`{"type":"object"}`), 0o644))
+	require.NoError(t, os.WriteFile(schema, []byte(`{"type":"object"}`), 0o600))
 	cfg := SidecarConfig{
 		Addr:        "127.0.0.1:0",
 		Workspace:   filepath.Join(dir, "workspace"),

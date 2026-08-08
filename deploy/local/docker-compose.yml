@@ -1,17 +1,31 @@
 # Local testing only: trusted host, throwaway mTLS certs in ./tls.
 # Requires GAGENT_DATA_DIR; see README.md in this directory.
+# Two services, one pod shape (ADR 0018): the agent serves its gateway;
+# the sidecar shares the agent's network namespace so the unauthenticated
+# contract listener stays on loopback (#209).
 services:
-  gagent:
+  agent:
     build:
       context: ../..
     ports:
       - "8080:8080"
     environment:
-      GAGENT_DATA_ROOT: "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}"
+      # The memory file sits at the same absolute path on host and
+      # container so it is valid from either side.
+      GAGENT_MEMORY_PATH: "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}/memory.db"
     volumes:
-      # The data root sits at the same absolute path on host and container
-      # so environment paths are valid from either side.
       - "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}:${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}"
       - ./gagent.yaml:/etc/gagent/config.yaml:ro
       - ./tls:/etc/gagent/tls:ro
-    command: ["gateway", "--config", "/etc/gagent/config.yaml"]
+    command: ["agent", "--config", "/etc/gagent/config.yaml", "--agent-id", "demo"]
+  sidecar:
+    build:
+      context: ../..
+    network_mode: service:agent
+    depends_on:
+      - agent
+    environment:
+      GAGENT_WORKSPACE: "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}/workspace"
+    volumes:
+      - "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}:${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}"
+    command: ["sidecar"]

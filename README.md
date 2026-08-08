@@ -4,8 +4,8 @@ gagent is an autonomous agent platform written in Go. It runs AI agents that can
 
 ## Principles
 
-- **Three components only: Gateway / Agent / Tool.** The Gateway normalizes external channels (web, API, messengers, CLI) into a single entry point. The Agent runs the reasoning loop and decides which tools to call. Every capability — memory, files, outbound messaging, and shell access for workspace operations — is a Tool behind one common interface. No extra layers. A tool is either a Go built-in or a script tool registered from the config's `tools:` section (ADR 0018, ADR 0009).
-- **The agent owns its execution environment.** Each agent runs in its own directory (`data/envs/<agent-id>/` containing `workspace/` + `memory.db`) inside the platform's container; the orchestration layer manages the boundary (network egress, mounts, lifecycle). The `shell_exec` tool runs agent-supplied commands as sub-processes dropped to the agent UID; the rest of the platform keeps its trust-domain separation (ADR 0008, ADR 0010).
+- **Two processes per agent: self and computer.** The agent process holds the gateway (message ingress and the monitoring stream), the reasoning loop, long-term memory, and the mouth (outbound messaging). The sidecar process is the agent's computer: the workspace, process execution, and the tool servers that expose its capabilities. A tool is a contract with the outside — defined where its implementation lives and discovered by the agent at runtime; a tool is either served by the sidecar (a Go built-in or a script tool from the sidecar config's `tools:` section) or by any other tool server the agent is configured to reach (ADR 0018, ADR 0009).
+- **The sidecar enforces permissions at the action site.** Agent-influenced execution — `shell_exec` commands and script tools — runs as sub-processes dropped to the agent UID inside the sidecar, and workspace ownership is kernel-enforced; the agent process executes no code at all (ADR 0008, ADR 0010). The orchestration layer manages the pod boundary (network egress, mounts, lifecycle).
 - **Memory is agent-managed, not just stored.** Memory is RAG-based, and the agent actively curates it through a per-turn writeback — keeping, correcting, and retracting — while the platform consolidates and evicts on thresholds (ADR 0011), like human memory rather than a plain store/search index.
 
 ## Who it is for
@@ -14,38 +14,37 @@ Developers who want to build and operate autonomous agents on a minimal, explici
 
 ## Running
 
-One CLI binary, `gagent`, runs the platform. Build or run it from source:
+One CLI binary, `gagent`, runs both processes of an agent pod (ADR 0018): the sidecar (the agent's computer) and the agent (its self). Build or run it from source:
 
 ```sh
 go run ./cmd/gagent <subcommand>   # or: go build -o gagent ./cmd/gagent
 ```
 
-To try the platform in Docker instead (distroless image, local compose setup), see `deploy/local/`.
-
-### gagent gateway
-
-Serves HTTP message ingress and an SSE monitoring stream:
+The agent discovers its computer tools from the sidecar at startup, so start the sidecar first. With the default mock model this runs fully offline:
 
 ```sh
-gagent gateway
+gagent sidecar &                          # serves the computer on 127.0.0.1:8081
+gagent agent --message "hello"            # runs one turn and exits
+gagent agent                              # or: serve the agent's gateway
 ```
 
-- `POST /agents/{agent-id}/messages` with `{"content":"..."}` — queues a message for the agent (its environment is created on first use) and returns `202` with a message ID.
-- `GET /agents/{agent-id}/events` — server-sent events stream of the agent's loop (turn started, tool call, writeback, turn finished). Every run ends with exactly one terminal event — `turn_finished` on success, `turn_failed` with the error on failure.
-- Agent replies (`message_send`) land as JSON files in `data/envs/<agent-id>/outbox/`.
-
-**Warning: an unauthenticated gateway is a remote shell into the environment.** The gateway authenticates callers with mTLS when the `tls:` config section is set (server certificate/key plus a client CA — callers must present a certificate from that CA; ADR 0013). Without `tls:` the gateway serves loopback binds only, and a non-loopback `--addr` fails startup. Certificate issuance and CA operation are operator scope; rotation is a restart with new files.
+To try the platform in Docker instead (distroless image, local compose setup), see `deploy/local/`.
 
 ### gagent agent
 
-Runs one turn of an agent directly and prints the result:
+Runs the agent's self: the rolling session, memory, the mouth, and the HTTP gateway for the one agent this process serves (`--agent-id`, default `default`). Without `--message` it serves until interrupted:
+
+- `POST /agents/{agent-id}/messages` with `{"content":"..."}` — queues a message for the agent and returns `202` with a message ID. A path naming any other agent ID gets 404: one process serves one agent.
+- `GET /agents/{agent-id}/events` — server-sent events stream of the agent's loop (turn started, tool call, writeback, turn finished). Every run ends with exactly one terminal event — `turn_finished` on success, `turn_failed` with the error on failure.
+- Agent replies (`message_send`) land as JSON files in `outbox/` next to the `memory-path` file.
+
+With `--message` the agent runs one turn against the same discovered tool set and exits; outbound `message_send` content and the final response print to stdout (logs go to stderr):
 
 ```sh
 gagent agent --agent-id my-agent --message "hello"
 ```
 
-- `--message` is required; `--agent-id` defaults to `default`.
-- Outbound `message_send` content and the final response print to stdout (logs go to stderr).
+**Warning: an unauthenticated gateway is a remote shell into the environment.** The gateway authenticates callers with mTLS when the `tls:` config section is set (server certificate/key plus a client CA — callers must present a certificate from that CA; ADR 0013). Without `tls:` the gateway serves loopback binds only, and a non-loopback `--addr` fails startup. Certificate issuance and CA operation are operator scope; rotation is a restart with new files.
 
 ### gagent sidecar
 
@@ -56,18 +55,20 @@ gagent sidecar
 ```
 
 - The sidecar owns the workspace directory (`workspace` key, created on first use) and the shell executor: privileged runs chown the workspace to the agent UID and drop child processes to it; unprivileged runs report `agent_uid unavailable` (fail-closed).
-- The listener is pod-local and carries no authentication in this phase; the default bind is loopback-only.
-- Its config file resolves in order: `--config <path>`, then `./sidecar.yaml`, then the XDG config path (`~/.config/gagent/sidecar.yaml` on Linux). Keys: `addr` (default `127.0.0.1:8081`), `workspace` (default `data/workspace`), `exec-timeout`, and `tools:` — the script-tool section, whose home moves here from the platform config (the platform config's `tools:` keeps working until the agent rewire lands).
+- The listener carries no authentication in this phase, so it serves loopback binds only — a non-loopback `--addr` fails startup (ADR 0013, same posture as the gateway).
+- Its config file resolves in order: `--config <path>`, then `./sidecar.yaml`, then the XDG config path (`~/.config/gagent/sidecar.yaml` on Linux). Keys: `addr` (default `127.0.0.1:8081`), `workspace` (default `data/workspace`), `exec-timeout`, and `tools:` — the script-tool section (see `sidecar.yaml` for a working example and `tools/playwright/README.md` for the format). An invalid entry (built-in name collision, unreadable schema, empty command) fails startup with an error naming the tool.
 
 ### Configuration
 
-Settings resolve in order: **flags > environment variables > config file > defaults**. Environment variables use the `GAGENT_` prefix (`GAGENT_DATA_ROOT`, …). The config file resolves in order: `--config <path>`, then `./gagent.yaml`, then the XDG config path (`~/.config/gagent/config.yaml` on Linux). A missing file is an error only when `--config` names it explicitly.
+Settings resolve in order: **flags > environment variables > config file > defaults**. Environment variables use the `GAGENT_` prefix (`GAGENT_MEMORY_PATH`, `GAGENT_TOOL_SERVERS`, …). The agent's config file resolves in order: `--config <path>`, then `./gagent.yaml`, then the XDG config path (`~/.config/gagent/config.yaml` on Linux); the sidecar's resolves the same way with `sidecar.yaml`. A missing file is an error only when `--config` names it explicitly.
+
+Agent keys (`gagent agent`; see `gagent.yaml` for an example):
 
 | Key | Flag | Default |
 |---|---|---|
-| `addr` | `--addr` | `127.0.0.1:8080` (used by `gateway` only; loopback-only unless `tls:` is set) |
-| `data-root` | `--data-root` | `data/envs` |
-| `exec-timeout` | `--exec-timeout` | `30s` (per-call ceiling for `shell_exec` sub-processes; ADR 0008) |
+| `addr` | `--addr` | `127.0.0.1:8080` (gateway listen address; loopback-only unless `tls:` is set) |
+| `memory-path` | `--memory-path` | `data/memory.db` (the agent's SQLite memory file, created on first use) |
+| `tool-servers` | `--tool-servers` | `http://127.0.0.1:8081` (contract endpoints the agent discovers its computer tools from at startup, with bounded retries; a server that stays unreachable fails startup) |
 | `model.provider` | — | `mock` (scripted, offline) or `openai` |
 | `model.base-url` | — | `https://api.openai.com/v1` (any OpenAI-compatible endpoint, e.g. Ollama/vLLM) |
 | `model.model` | — | `gpt-4o-mini` |
@@ -83,7 +84,14 @@ Settings resolve in order: **flags > environment variables > config file > defau
 | `tls.client-ca` | — | unset (CA bundle, PEM, that client certificates are verified against) |
 | `console.url` | — | unset (console endpoint every `message_send` is POSTed to over mTLS, reusing the `tls:` material; unset keeps the file outbox, which is also the delivery-failure fallback) |
 
-The `tools:` section registers script tools — operator-supplied executables the platform runs as subprocesses with JSON on stdin/stdout — alongside the built-ins; see `gagent.yaml` for a working example and `tools/playwright/README.md` for the format. An invalid entry (built-in name collision, unreadable schema, empty command) fails startup with an error naming the tool. In the pod topology the section belongs to the sidecar's config; the platform config still accepts it while the single-binary wiring exists.
+Sidecar keys (`gagent sidecar`; see `sidecar.yaml` for an example):
+
+| Key | Flag | Default |
+|---|---|---|
+| `addr` | `--addr` | `127.0.0.1:8081` (contract listen address; loopback-only) |
+| `workspace` | `--workspace` | `data/workspace` (workspace directory, created on first use) |
+| `exec-timeout` | `--exec-timeout` | `30s` (per-call ceiling for `shell_exec` sub-processes; ADR 0008) |
+| `tools:` | — | empty (script tools — operator-supplied executables run as subprocesses with JSON on stdin/stdout) |
 
 ### Agent ego
 
@@ -107,22 +115,12 @@ every destructive action before taking it.
 
 Two paths, per ADR 0009:
 
-- **Script tool (config only)** — write an executable that reads a JSON job on stdin and writes a JSON result on stdout, add a `tools:` entry pointing at it and its schemas. No Go changes; `tools/playwright/README.md` walks through one.
-- **Go built-in** — write a package under `internal/<domain>/` implementing `tool.Tool` (`Name`, `Description`, `InputSchema`, `OutputSchema`, `Call`) and register it in `internal/gateway/runtime.go`'s factory, in a normal PR.
+- **Script tool (config only)** — write an executable that reads a JSON job on stdin and writes a JSON result on stdout, add a `tools:` entry to the sidecar config pointing at it and its schemas. No Go changes; `tools/playwright/README.md` walks through one.
+- **Go tool server** — write a package implementing `tool.Tool` (`Name`, `Description`, `InputSchema`, `OutputSchema`, `Call`) and serve its registry over the contract with `tool.NewHandler`, the way `gagent sidecar` does; any reachable endpoint the agent's `tool-servers` lists is discovered. A Go built-in that belongs on the computer registers in the sidecar's registry (`cmd/gagent/sidecar.go`) in a normal PR.
 
-Example `gagent.yaml`:
+Example configs in the repository root: `gagent.yaml` (agent) and `sidecar.yaml` (sidecar, with the Playwright script tool registered).
 
-```yaml
-addr: ":9090"
-data-root: /var/lib/gagent/envs
-model:
-  provider: openai
-  base-url: http://localhost:11434/v1   # Ollama, for example
-  model: llama3.2
-  api-key-env: OLLAMA_API_KEY
-```
-
-With the default `mock` provider the binary wires the scripted mock model, which answers each environment's first message with a canned run of the full loop: it searches long-term memory, runs the answer through `shell_exec`, replies via `message_send`, and writes the outcome back as a new episodic memory. With `provider: openai` it runs against a real chat model; a missing API key env var fails at startup. To work on the codebase you need Go and GNU Make, and the standard checks are:
+With the default `mock` provider the agent wires the scripted mock model, which answers the first message with a canned run of the full loop: it computes through a discovered `shell_exec`, replies via `message_send`, and writes the outcome back as a new episodic memory. With `provider: openai` it runs against a real chat model; a missing API key env var fails at startup. To work on the codebase you need Go and GNU Make, and the standard checks are:
 
 ```sh
 make ci      # lint + format check + test + build (same as CI)

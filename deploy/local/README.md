@@ -1,6 +1,6 @@
 # Local deployment (testing only)
 
-Run the gagent platform in Docker. **Local testing only, on a trusted host.** The published port reaches beyond the container's loopback, so the gateway requires mTLS (ADR 0013): it serves HTTPS and verifies client certificates against a throwaway CA you generate below.
+Run the gagent platform in Docker — two services per the pod shape (ADR 0018): the `agent` service serves the gateway, and the `sidecar` service shares the agent's network namespace (`network_mode: service:agent`) so the unauthenticated contract listener stays on loopback. **Local testing only, on a trusted host.** The published port reaches beyond the container's loopback, so the gateway requires mTLS (ADR 0013): it serves HTTPS and verifies client certificates against a throwaway CA you generate below.
 
 ## Requirements
 
@@ -8,7 +8,7 @@ One variable must be exported before `docker compose up`:
 
 | Variable | Value | Why |
 |---|---|---|
-| `GAGENT_DATA_DIR` | absolute host path for environment data | bind-mounted into the container at the same absolute path, so the platform sees one data root either way |
+| `GAGENT_DATA_DIR` | absolute host path for agent data | bind-mounted into both containers at the same absolute path; holds `memory.db`, `outbox/`, and `workspace/` |
 
 - `GAGENT_DATA_DIR`: any absolute host path writable by uid 65532 (the image runs as nonroot); on Docker Desktop it must sit under a shared path (the project directory works).
 
@@ -51,7 +51,7 @@ curl --cacert tls/ca.pem --cert tls/client.pem --key tls/client-key.pem \
 
 A client without a certificate — or with one from a different CA — is rejected at the TLS handshake.
 
-The sample `gagent.yaml` uses the mock model provider, so the agent replies without any API key. The mock script drives a canned run of the full loop (store → `shell_exec` → `message_send` → write back); the SSE stream shows the resulting tool calls. Because the image runs as nonroot, the `shell_exec` call reports `agent_uid unavailable` and the mock's fallback path answers instead — that is the intended contract (see `docs/architecture/environment.md`). Agent replies land in `$GAGENT_DATA_DIR/demo/outbox/`.
+The sample `gagent.yaml` uses the mock model provider, so the agent replies without any API key. The mock script drives a canned run of the full loop (discovered `shell_exec` → `message_send` → write back); the SSE stream shows the resulting tool calls. The agent discovers the sidecar's tools at startup over the shared network namespace's loopback. Because the image runs as nonroot, the sidecar's `shell_exec` call reports `agent_uid unavailable` — the intended fail-closed contract (see `docs/architecture/environment.md`) — and the scripted run continues to the reply regardless. Agent replies land in `$GAGENT_DATA_DIR/outbox/`.
 
 ## Cleanup
 
@@ -59,4 +59,4 @@ The sample `gagent.yaml` uses the mock model provider, so the agent replies with
 docker compose down
 ```
 
-Environment data persists in `$GAGENT_DATA_DIR`; files are owned by uid 65532.
+Agent data persists in `$GAGENT_DATA_DIR` (`memory.db`, `outbox/`, `workspace/`); files are owned by uid 65532.

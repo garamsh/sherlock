@@ -82,7 +82,11 @@ func TestProcessExecutor_AgentUIDUnavailable(t *testing.T) {
 	if os.Geteuid() == 0 {
 		t.Skip("this case is only meaningful when the supervisor cannot drop privileges")
 	}
-	exec := shell.NewProcessExecutor(shell.DefaultAgentUID, 5*time.Second)
+	// The AgentUID must differ from both 0 and the process euid — any
+	// fixed value could equal the test host's UID (the CI runner runs as
+	// 1001, DefaultAgentUID itself) and turn the fail-closed case into
+	// the legitimate single-account path.
+	exec := shell.NewProcessExecutor(os.Geteuid()+1, 5*time.Second)
 
 	_, err := exec.Run(context.Background(), shell.Request{Command: "echo hi"})
 

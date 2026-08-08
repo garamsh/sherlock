@@ -117,6 +117,10 @@ func (t *ToolScript) Call(ctx context.Context, input json.RawMessage) (json.RawM
 		Timeout: timeout,
 		Workdir: t.spec.Exec.Workdir,
 		Env:     env,
+		// A script tool is operator-sanctioned code (ADR 0010): no
+		// adversarial resource caps — its bound is the per-call
+		// timeout and the deployment's container/pod limits.
+		Trusted: true,
 	})
 	if err != nil {
 		return nil, err

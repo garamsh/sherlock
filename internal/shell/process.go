@@ -56,6 +56,13 @@ type Request struct {
 	// it false — their network is the operator-sanctioned egress
 	// channel.
 	NoNetwork bool
+	// Trusted names the child's trust class (ADR 0010): resource caps
+	// bind untrusted code — agent-supplied shell_exec commands carry
+	// the executor's rlimits — while operator-sanctioned script tools
+	// run without them, bounded by their per-call timeout and the
+	// deployment's container/pod limits. The script adapter sets it;
+	// the shell tool leaves it false.
+	Trusted bool
 }
 
 // Result is the captured outcome of one command. ExitCode is the

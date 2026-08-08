@@ -3,7 +3,6 @@ package gateway
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log/slog"
 	"sync"
 	"time"
@@ -11,84 +10,101 @@ import (
 	"github.com/garamsh/gagent/internal/agent"
 )
 
-// ErrRouterClosed is returned when a message is enqueued on a closed
-// router.
-var ErrRouterClosed = errors.New("gateway: router closed")
+// ErrQueueClosed is returned when a message is enqueued on a closed
+// queue.
+var ErrQueueClosed = errors.New("gateway: queue closed")
 
 // Inbound is one accepted message: it has been assigned an ID and waits
-// for (or is in) its agent's serialized run. Sender is the
-// caller's identity; empty means the channel provided none.
+// for (or is in) the agent's serialized run. Sender is the caller's
+// identity; empty means the channel provided none.
 type Inbound struct {
 	ID       string
-	AgentID  string
 	Sender   string
 	Content  string
 	QueuedAt time.Time
 }
 
-// DefaultQueueCapacity bounds each environment's followup queue. Enqueue
-// blocks when the queue is full, giving senders natural backpressure.
+// DefaultQueueCapacity bounds the followup queue. Enqueue blocks when
+// the queue is full, giving senders natural backpressure.
 const DefaultQueueCapacity = 64
 
-// RuntimeFactory builds one agent's runtime on first use. The
-// events sink is the agent's monitoring stream and outlives any
-// single runtime.
+// RuntimeFactory builds the agent's runtime. The events sink is the
+// agent's monitoring stream and outlives any single runtime.
 type RuntimeFactory interface {
 	New(ctx context.Context, agentID string, events agent.EventSink) (*Runtime, error)
 }
 
-// Router is the gateway's core: it routes inbound messages to per
-// environment queues so each environment runs one turn at a time
-// (ADR 0009). Environments are created on first use. Router is safe for
-// concurrent use; Close shuts every environment down.
-type Router struct {
-	factory RuntimeFactory
+// Queue is the gateway's core: it serializes the one agent's runs so the
+// agent runs one turn at a time (ADR 0009, ADR 0018 — one agent per
+// process). Queue is safe for concurrent use; Close shuts the runner and
+// the runtime down.
+type Queue struct {
+	agentID string
+	runtime *Runtime
+	broker  *Broker
+	inbox   chan Inbound
 	logger  *slog.Logger
 
 	ctx    context.Context
 	cancel context.CancelFunc
-	wg     sync.WaitGroup
+	done   chan struct{}
 
-	mu      sync.Mutex
-	envs    map[string]*envQueue
-	brokers map[string]*Broker
-	closed  bool
+	once   sync.Once
+	closed chan struct{}
 }
 
-// NewRouter returns a router that builds environments through factory.
-// A nil logger discards log output.
-func NewRouter(factory RuntimeFactory, logger *slog.Logger) *Router {
+// NewQueue builds the agent's runtime through factory and starts the
+// runner. A factory error fails startup: the runtime is created eagerly
+// so a misconfiguration surfaces before the gateway serves. A nil logger
+// discards log output.
+func NewQueue(factory RuntimeFactory, agentID string, logger *slog.Logger) (*Queue, error) {
 	if logger == nil {
 		logger = slog.Default()
 	}
 	ctx, cancel := context.WithCancel(context.Background())
-	return &Router{
-		factory: factory,
+	broker := NewBroker()
+	events := &batchEvents{inner: broker}
+	rt, err := factory.New(ctx, agentID, events)
+	if err != nil {
+		cancel()
+		broker.Close()
+		return nil, err
+	}
+	q := &Queue{
+		agentID: agentID,
+		runtime: rt,
+		broker:  broker,
+		inbox:   make(chan Inbound, DefaultQueueCapacity),
 		logger:  logger,
 		ctx:     ctx,
 		cancel:  cancel,
-		envs:    make(map[string]*envQueue),
-		brokers: make(map[string]*Broker),
+		done:    make(chan struct{}),
+		closed:  make(chan struct{}),
 	}
+	go q.run(events)
+	return q, nil
 }
 
-// Enqueue assigns the message an ID and queues it for the environment,
-// creating the environment on first use. It returns the assigned ID once
-// the message is queued; there is no synchronous agent response. A full
-// queue blocks the caller (honoring ctx) until a run drains a slot.
-// The sender is recorded on the envelope so the agent can address replies
-// per message (ADR 0020); an empty sender means the channel provided
-// none.
+// AgentID returns the ID of the agent this process serves.
+func (q *Queue) AgentID() string { return q.agentID }
+
+// Enqueue assigns the message an ID and queues it for the agent. It
+// returns the assigned ID once the message is queued; there is no
+// synchronous agent response. A full queue blocks the caller (honoring
+// ctx) until a run drains a slot. The sender is recorded on the envelope
+// so the agent can address replies per message (ADR 0020); an empty
+// sender means the channel provided none.
 //
 // The message is captured as an episodic user-turn memory (ADR 0016)
-// before it is queued: the capture commits to the environment's memory
-// store at accept time, so a failed run or a gateway restart before the
-// run starts never loses it, and each accepted message is captured
-// exactly once. A capture failure rejects the message.
-func (r *Router) Enqueue(ctx context.Context, agentID, sender, content string) (string, error) {
-	q, err := r.env(agentID)
-	if err != nil {
-		return "", err
+// before it is queued: the capture commits to the memory store at accept
+// time, so a failed run or a restart before the run starts never loses
+// it, and each accepted message is captured exactly once. A capture
+// failure rejects the message.
+func (q *Queue) Enqueue(ctx context.Context, sender, content string) (string, error) {
+	select {
+	case <-q.closed:
+		return "", ErrQueueClosed
+	default:
 	}
 	id, err := newID("msg")
 	if err != nil {
@@ -97,96 +113,33 @@ func (r *Router) Enqueue(ctx context.Context, agentID, sender, content string) (
 	if err := q.runtime.Capture(ctx, content); err != nil {
 		return "", err
 	}
-	msg := Inbound{ID: id, AgentID: agentID, Sender: sender, Content: content, QueuedAt: time.Now()}
+	msg := Inbound{ID: id, Sender: sender, Content: content, QueuedAt: time.Now()}
 	select {
 	case q.inbox <- msg:
-		r.logger.Info("message enqueued",
-			"op", "enqueue", "agent_id", agentID, "message_id", id)
+		q.logger.Info("message enqueued",
+			"op", "enqueue", "agent_id", q.agentID, "message_id", id)
 		return id, nil
 	case <-ctx.Done():
 		return "", ctx.Err()
-	case <-r.ctx.Done():
-		return "", ErrRouterClosed
+	case <-q.ctx.Done():
+		return "", ErrQueueClosed
 	}
 }
 
-// Events returns the agent's monitoring stream, creating it on
-// first use. Subscribing never creates the environment itself.
-func (r *Router) Events(agentID string) *Broker {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	return r.lockedBroker(agentID)
-}
+// Events returns the agent's monitoring stream.
+func (q *Queue) Events() *Broker { return q.broker }
 
-// Close stops accepting messages, cancels in-flight runs, waits for the
-// runners to exit, and releases every environment runtime and stream.
-func (r *Router) Close() error {
-	r.mu.Lock()
-	if r.closed {
-		r.mu.Unlock()
-		return nil
-	}
-	r.closed = true
-	r.cancel()
-	envs := make([]*envQueue, 0, len(r.envs))
-	for _, q := range r.envs {
-		envs = append(envs, q)
-	}
-	brokers := make([]*Broker, 0, len(r.brokers))
-	for _, b := range r.brokers {
-		brokers = append(brokers, b)
-	}
-	r.mu.Unlock()
-
-	r.wg.Wait()
-	var errs []error
-	for _, q := range envs {
-		if err := q.runtime.Close(context.Background()); err != nil {
-			errs = append(errs, fmt.Errorf("close agent %q: %w", q.agentID, err))
-		}
-	}
-	for _, b := range brokers {
-		b.Close()
-	}
-	return errors.Join(errs...)
-}
-
-// env returns the agent's queue, creating the runtime and runner on
-// first use. Creation is synchronous so factory errors (e.g. an invalid
-// agent ID) surface to the sender instead of after the ack.
-func (r *Router) env(agentID string) (*envQueue, error) {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	if r.closed {
-		return nil, ErrRouterClosed
-	}
-	if q, ok := r.envs[agentID]; ok {
-		return q, nil
-	}
-	sink := &batchEvents{inner: r.lockedBroker(agentID)}
-	rt, err := r.factory.New(r.ctx, agentID, sink)
-	if err != nil {
-		return nil, fmt.Errorf("create environment %q: %w", agentID, err)
-	}
-	q := &envQueue{
-		agentID: agentID,
-		runtime: rt,
-		inbox:   make(chan Inbound, DefaultQueueCapacity),
-		events:  sink,
-	}
-	r.envs[agentID] = q
-	r.wg.Add(1)
-	go r.run(q)
-	return q, nil
-}
-
-// lockedBroker returns the agent's broker, creating it on first use. The
-// caller must hold r.mu.
-func (r *Router) lockedBroker(agentID string) *Broker {
-	if b, ok := r.brokers[agentID]; ok {
-		return b
-	}
-	b := NewBroker()
-	r.brokers[agentID] = b
-	return b
+// Close stops accepting messages, cancels an in-flight run, waits for
+// the runner to exit, and releases the runtime and the stream. Close is
+// idempotent.
+func (q *Queue) Close() error {
+	var err error
+	q.once.Do(func() {
+		close(q.closed)
+		q.cancel()
+		<-q.done
+		err = q.runtime.Close(context.Background())
+		q.broker.Close()
+	})
+	return err
 }

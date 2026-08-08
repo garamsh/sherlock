@@ -3,8 +3,6 @@ package memory_test
 import (
 	"context"
 	"database/sql"
-	"encoding/json"
-	"errors"
 	"fmt"
 	"path/filepath"
 	"strings"
@@ -16,7 +14,6 @@ import (
 
 	"github.com/garamsh/gagent/internal/memory"
 	"github.com/garamsh/gagent/internal/memory/sqlite"
-	"github.com/garamsh/gagent/internal/tool"
 )
 
 var now = time.Date(2026, 7, 25, 12, 0, 0, 0, time.UTC)
@@ -33,13 +30,6 @@ func newService(t *testing.T, opts ...memory.Option) memory.Service {
 	return svc
 }
 
-func invoke(t *testing.T, svc memory.Service, input string) json.RawMessage {
-	t.Helper()
-	out, err := tool.Invoke(context.Background(), memory.NewTool(svc), json.RawMessage(input))
-	require.NoError(t, err)
-	return out
-}
-
 func storeMemory(t *testing.T, svc memory.Service, content, typ string, importance float64) int64 {
 	t.Helper()
 	res, err := svc.Store(context.Background(), memory.StoreInput{
@@ -53,36 +43,28 @@ func storeMemory(t *testing.T, svc memory.Service, content, typ string, importan
 	return res.ID
 }
 
-func searchViaTool(t *testing.T, svc memory.Service, query string) []map[string]any {
+func search(t *testing.T, svc memory.Service, query string) []memory.ScoredMemory {
 	t.Helper()
-	body, err := json.Marshal(map[string]any{"op": "search", "query": query})
+	results, err := svc.Search(context.Background(), query, 0)
 	require.NoError(t, err)
-	out := invoke(t, svc, string(body))
-	var res struct {
-		Results []map[string]any `json:"results"`
-	}
-	require.NoError(t, json.Unmarshal(out, &res))
-	return res.Results
+	return results
 }
 
-func TestTool_SearchReturnsStoredMemories(t *testing.T) {
+func TestSearch_ReturnsStoredMemories(t *testing.T) {
 	svc := newService(t)
 	catID := storeMemory(t, svc, "the cat sat on the mat", "episodic", 0.5)
 	storeMemory(t, svc, "quantum entanglement lecture notes", "semantic", 0.5)
 
-	results := searchViaTool(t, svc, "cat")
+	results := search(t, svc, "cat")
 	require.NotEmpty(t, results)
-	assert.Equal(t, float64(catID), results[0]["id"])
-	assert.Equal(t, "the cat sat on the mat", results[0]["content"])
-	assert.Equal(t, "episodic", results[0]["type"])
-	assert.Contains(t, results[0], "score")
-	assert.Contains(t, results[0], "timestamp")
+	assert.Equal(t, catID, results[0].ID)
+	assert.Equal(t, "the cat sat on the mat", results[0].Content)
+	assert.Equal(t, memory.TypeEpisodic, results[0].Type)
 }
 
-func TestTool_SearchEmptyStoreReturnsEmptyResults(t *testing.T) {
+func TestSearch_EmptyStoreReturnsEmptyResults(t *testing.T) {
 	svc := newService(t)
-	out := invoke(t, svc, `{"op":"search","query":"anything"}`)
-	assert.JSONEq(t, `{"results":[]}`, string(out))
+	assert.Empty(t, search(t, svc, "anything"))
 }
 
 func TestSearch_RecordsAccess(t *testing.T) {
@@ -129,11 +111,11 @@ func TestUpdate_SupersedesAndExcludesOldFromSearch(t *testing.T) {
 	assert.Equal(t, oldID, res.SupersededID)
 	assert.NotEqual(t, oldID, res.ID)
 
-	results := searchViaTool(t, svc, "release monday")
+	results := search(t, svc, "release monday")
 	require.NotEmpty(t, results)
 	for _, r := range results {
-		assert.NotEqual(t, float64(oldID), r["id"], "archived row must not be searchable")
-		assert.NotContains(t, r["content"], "monday")
+		assert.NotEqual(t, oldID, r.ID, "archived row must not be searchable")
+		assert.NotContains(t, r.Content, "monday")
 	}
 
 	_, err = svc.Update(context.Background(), memory.UpdateInput{ID: oldID, Content: "again"})
@@ -147,11 +129,11 @@ func TestDelete_ArchivesAndExcludesFromSearch(t *testing.T) {
 
 	require.NoError(t, svc.Delete(context.Background(), id))
 
-	results := searchViaTool(t, svc, "zebra")
+	results := search(t, svc, "zebra")
 	require.NotEmpty(t, results, "the surviving memory proves search still matches")
 	for _, r := range results {
-		assert.NotEqual(t, float64(id), r["id"], "deleted row must not be searchable")
-		assert.Equal(t, float64(keep), r["id"])
+		assert.NotEqual(t, id, r.ID, "deleted row must not be searchable")
+		assert.Equal(t, keep, r.ID)
 	}
 }
 
@@ -214,23 +196,23 @@ func TestCompress_SummarizesEpisodicIntoSemanticParent(t *testing.T) {
 	require.NoError(t, err)
 	assert.ElementsMatch(t, []int64{id1, id2}, res.ArchivedIDs)
 
-	results := searchViaTool(t, svc, "staging deploy")
+	results := search(t, svc, "staging deploy")
 	require.NotEmpty(t, results)
-	ids := make([]float64, 0, len(results))
+	ids := make([]int64, 0, len(results))
 	for _, r := range results {
-		ids = append(ids, r["id"].(float64))
+		ids = append(ids, r.ID)
 	}
 	require.Len(t, res.ParentIDs, 1, "small cluster yields one parent")
-	assert.Contains(t, ids, float64(res.ParentIDs[0]))
-	assert.Contains(t, ids, float64(keep))
-	assert.NotContains(t, ids, float64(id1))
-	assert.NotContains(t, ids, float64(id2))
+	assert.Contains(t, ids, res.ParentIDs[0])
+	assert.Contains(t, ids, keep)
+	assert.NotContains(t, ids, id1)
+	assert.NotContains(t, ids, id2)
 
 	for _, r := range results {
-		if r["id"].(float64) == float64(res.ParentIDs[0]) {
-			assert.Equal(t, "semantic", r["type"])
-			assert.Contains(t, r["content"], "deployed v1 to staging")
-			assert.InDelta(t, 0.8, r["importance_score"], 1e-9)
+		if r.ID == res.ParentIDs[0] {
+			assert.Equal(t, memory.TypeSemantic, r.Type)
+			assert.Contains(t, r.Content, "deployed v1 to staging")
+			assert.InDelta(t, 0.8, r.ImportanceScore, 1e-9)
 		}
 	}
 }
@@ -256,9 +238,9 @@ func TestForget_ArchivesBelowThreshold(t *testing.T) {
 	assert.Contains(t, archived, oldID)
 	assert.NotContains(t, archived, freshID)
 
-	results := searchViaTool(t, svc, "stale trivia")
+	results := search(t, svc, "stale trivia")
 	for _, r := range results {
-		assert.NotEqual(t, float64(oldID), r["id"])
+		assert.NotEqual(t, oldID, r.ID)
 	}
 }
 
@@ -305,88 +287,6 @@ func TestRecall_TrimsToTokenBudget(t *testing.T) {
 	assert.Len(t, all, 5)
 }
 
-func TestTool_RejectsInvalidInput(t *testing.T) {
-	svc := newService(t)
-	tl := memory.NewTool(svc)
-
-	tests := []struct {
-		name  string
-		input string
-	}{
-		{"unknown op", `{"op":"explode"}`},
-		{"store op removed", `{"op":"store","content":"x","type":"episodic","importance_score":0.5,"source":"test"}`},
-		{"update op removed", `{"op":"update","id":1,"content":"x"}`},
-		{"compress op removed", `{"op":"compress","ids":[1]}`},
-		{"forget op removed", `{"op":"forget","threshold":0.5}`},
-		{"search missing query", `{"op":"search"}`},
-		{"search limit below minimum", `{"op":"search","query":"x","limit":0}`},
-		{"unexpected field", `{"op":"search","query":"x","content":"y"}`},
-		{"undeclared field", `{"op":"search","query":"x","nonsense":"y"}`},
-	}
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
-			_, err := tool.Invoke(context.Background(), tl, json.RawMessage(tc.input))
-			require.ErrorIs(t, err, tool.ErrValidation)
-		})
-	}
-}
-
-// TestTool_WriteShapedCallRejectsWithRedirect pins the #160 residual fix:
-// a writeback payload issued as a memory tool call still fails validation,
-// but the error the model reads restates that the tool is read-only and
-// points recording at the writeback block, so the model redirects instead
-// of retrying argument variants and finishing with an empty writeback.
-func TestTool_WriteShapedCallRejectsWithRedirect(t *testing.T) {
-	tl := memory.NewTool(newService(t))
-
-	tests := []struct {
-		name  string
-		input string
-	}{
-		{"add op with content", `{"op":"add","content":"the backup completed at 09:00","type":"episodic"}`},
-		{"add op with query variant", `{"op":"add","query":"the backup completed at 09:00","type":"episodic"}`},
-		{"writeback block as input", `{"keep":[],"add":[{"content":"x","type":"episodic"}]}`},
-	}
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
-			_, err := tool.Invoke(context.Background(), tl, json.RawMessage(tc.input))
-			require.ErrorIs(t, err, tool.ErrValidation)
-			assert.ErrorContains(t, err, "Read-only")
-			assert.ErrorContains(t, err, "writeback block")
-		})
-	}
-}
-
-// Models generate tool arguments from the advertised root properties, so every
-// field and every operation name must be visible there, not only in conditionals.
-func TestTool_InputSchemaAdvertisesEveryFieldAtRoot(t *testing.T) {
-	var schema struct {
-		Properties map[string]struct {
-			Enum []string `json:"enum"`
-		} `json:"properties"`
-	}
-	require.NoError(t, json.Unmarshal(memory.NewTool(nil).InputSchema(), &schema))
-
-	for _, field := range []string{"op", "query", "limit"} {
-		assert.Contains(t, schema.Properties, field)
-	}
-	assert.Equal(t, []string{"search"}, schema.Properties["op"].Enum,
-		"ADR 0015: the memory tool exposes only the search op")
-}
-
-// TestTool_DescriptionStatesReadOnly pins the #160 model-facing fix: the
-// advertised description tells the model the tool is read-only and that
-// recording happens in the writeback block, so a "remember X" request
-// does not loop searches (ADR 0015).
-func TestTool_DescriptionStatesReadOnly(t *testing.T) {
-	desc := memory.NewTool(nil).Description()
-
-	assert.Contains(t, desc, "Search", "the description names the search capability")
-	assert.Contains(t, desc, "Read-only", "the description states the tool cannot store")
-	assert.Contains(t, desc, "writeback block",
-		"the description points recording at the writeback block")
-}
-
 func TestService_RejectsInvalidInput(t *testing.T) {
 	svc := newService(t)
 
@@ -402,18 +302,6 @@ func TestService_RejectsInvalidInput(t *testing.T) {
 
 	_, err = svc.Compress(context.Background(), nil)
 	require.ErrorIs(t, err, memory.ErrInvalidInput)
-}
-
-func TestTool_ExecutionErrorWrapsServiceFailure(t *testing.T) {
-	st, err := sqlite.Open(filepath.Join(t.TempDir(), "memory.db"))
-	require.NoError(t, err)
-	svc := memory.NewService(st, memory.NewHashingEmbedder(), memory.NewConcatSummarizer())
-	require.NoError(t, svc.Close(), "a closed store fails every search")
-
-	_, err = tool.Invoke(context.Background(), memory.NewTool(svc),
-		json.RawMessage(`{"op":"search","query":"x"}`))
-	require.Error(t, err)
-	assert.True(t, errors.Is(err, tool.ErrExecution))
 }
 
 // TestConsolidate_CompressesEpisodicCluster pins the ADR 0015 platform

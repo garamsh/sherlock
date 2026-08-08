@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -17,18 +16,17 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/garamsh/gagent/internal/agent"
-	"github.com/garamsh/gagent/internal/environment"
 	"github.com/garamsh/gagent/internal/gateway"
 )
 
-// newTestServer wires a router over a fake factory into an httptest
-// server. The returned session receives the events sink of agent "env-1"
-// through emit.
+// newTestServer wires the one agent's queue over a fake factory into an
+// httptest server. The queue serves agent "env-1".
 func newTestServer(t *testing.T, newFn func(agentID string, events agent.EventSink) (*gateway.Runtime, error)) *httptest.Server {
 	t.Helper()
-	router := gateway.NewRouter(&fakeFactory{newFn: newFn}, newTestLogger())
-	t.Cleanup(func() { router.Close() })
-	srv := httptest.NewServer(gateway.NewHandler(router, newTestLogger()))
+	q, err := gateway.NewQueue(&fakeFactory{newFn: newFn}, "env-1", newTestLogger())
+	require.NoError(t, err)
+	t.Cleanup(func() { q.Close() })
+	srv := httptest.NewServer(gateway.NewHandler(q, newTestLogger()))
 	t.Cleanup(srv.Close)
 	return srv
 }
@@ -61,10 +59,7 @@ func TestServer_PostMessageReturns202WithID(t *testing.T) {
 }
 
 func TestServer_PostMessageRejectsBadRequests(t *testing.T) {
-	srv := newTestServer(t, func(agentID string, _ agent.EventSink) (*gateway.Runtime, error) {
-		if agentID == "bad" {
-			return nil, fmt.Errorf("%w: %q", environment.ErrInvalidID, agentID)
-		}
+	srv := newTestServer(t, func(string, agent.EventSink) (*gateway.Runtime, error) {
 		return &gateway.Runtime{Session: &fakeSession{}, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
 	})
 
@@ -77,7 +72,6 @@ func TestServer_PostMessageRejectsBadRequests(t *testing.T) {
 		{"invalid JSON", "/agents/env-1/messages", `{"content":`, http.StatusBadRequest},
 		{"empty content", "/agents/env-1/messages", `{"content":""}`, http.StatusBadRequest},
 		{"unknown field", "/agents/env-1/messages", `{"content":"hi","extra":1}`, http.StatusBadRequest},
-		{"invalid agent id", "/agents/bad/messages", `{"content":"hi"}`, http.StatusBadRequest},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -105,6 +99,24 @@ func TestServer_PostMessagePlainHTTPHasNoSender(t *testing.T) {
 		return len(session.startedTasks()) == 1
 	}, 5*time.Second, time.Millisecond)
 	assert.Contains(t, session.startedTasks()[0], "unknown: hello")
+}
+
+// TestServer_MismatchedAgentIDGets404 pins one-agent-per-process
+// (ADR 0018): the HTTP paths keep the /agents/{agent-id}/ shape, but a
+// request naming any other agent ID gets 404.
+func TestServer_MismatchedAgentIDGets404(t *testing.T) {
+	srv := newTestServer(t, func(string, agent.EventSink) (*gateway.Runtime, error) {
+		return &gateway.Runtime{Session: &fakeSession{}, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
+	})
+
+	resp := postMessage(t, srv.URL+"/agents/someone-else/messages", `{"content":"hello"}`)
+	defer resp.Body.Close()
+	assert.Equal(t, http.StatusNotFound, resp.StatusCode)
+
+	resp, err := http.Get(srv.URL + "/agents/someone-else/events")
+	require.NoError(t, err)
+	defer resp.Body.Close()
+	assert.Equal(t, http.StatusNotFound, resp.StatusCode)
 }
 
 func TestServer_MethodNotAllowed(t *testing.T) {

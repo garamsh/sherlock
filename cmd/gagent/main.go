@@ -1,9 +1,10 @@
-// Command gagent is the platform's single CLI entry point: "gagent gateway"
-// serves the HTTP gateway, "gagent agent" runs one agent turn directly
-// (docs/architecture/gateway.md), and "gagent sidecar" serves the agent's
+// Command gagent is the CLI entry point for one agent pod (ADR 0018):
+// "gagent agent" runs the agent's self — the HTTP gateway, the rolling
+// session, memory, and the mouth — discovering its computer tools from
+// the configured tool servers, and "gagent sidecar" serves the agent's
 // computer — workspace, shell_exec, and script tools — over the tool
-// contract (ADR 0018). Settings come from flags, GAGENT_* environment
-// variables, and gagent.yaml through viper.
+// contract. Settings come from flags, GAGENT_* environment variables,
+// and gagent.yaml through viper.
 package main
 
 import (
@@ -23,11 +24,11 @@ func main() {
 func newRootCommand() *cobra.Command {
 	root := &cobra.Command{
 		Use:   "gagent",
-		Short: "Run the gagent platform: HTTP gateway, one-shot agent turns, or the sidecar tool server",
+		Short: "Run one agent pod: the agent process or its sidecar tool server",
 	}
 	addConfigFlags(root.PersistentFlags())
 	root.PersistentFlags().String("ego-file", "",
 		"ego file for the agent's instructions (default: embedded EGO.md)")
-	root.AddCommand(newGatewayCommand(), newAgentCommand(), newSidecarCommand())
+	root.AddCommand(newAgentCommand(), newSidecarCommand())
 	return root
 }

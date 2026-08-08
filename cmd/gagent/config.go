@@ -11,9 +11,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
-
-	"github.com/garamsh/gagent/internal/environment"
-	"github.com/garamsh/gagent/internal/tool/script"
 )
 
 // Default settings, overridable by config file, environment, or flags.
@@ -22,7 +19,11 @@ const (
 	// gateway refuses non-loopback binds (ADR 0017).
 	defaultAddr = "127.0.0.1:8080"
 
-	defaultExecTimeout = 30 * time.Second
+	// defaultMemoryPath is the agent's SQLite memory file.
+	defaultMemoryPath = "data/memory.db"
+
+	// defaultToolServer is the sidecar's contract endpoint (ADR 0018).
+	defaultToolServer = "http://127.0.0.1:8081"
 
 	defaultModelProvider = "mock"
 	defaultModelBaseURL  = "https://api.openai.com/v1"
@@ -43,24 +44,24 @@ const (
 	defaultEmbedderTimeout = 60 * time.Second
 )
 
-// Config is the platform's resolved settings, parsed once at the command
+// Config is the agent's resolved settings, parsed once at the command
 // boundary (docs/convention/runtime-safety.md) and passed down typed.
 type Config struct {
 	// Addr is the gateway's HTTP listen address.
 	Addr string `mapstructure:"addr"`
-	// DataRoot is the parent directory of all environment data.
-	DataRoot string `mapstructure:"data-root"`
-	// ExecTimeout caps one shell_exec sub-process run (ADR 0012).
-	ExecTimeout time.Duration `mapstructure:"exec-timeout"`
+	// MemoryPath is the agent's SQLite memory file (ADR 0018: the
+	// environment directory pairing is gone; the file is configured
+	// directly).
+	MemoryPath string `mapstructure:"memory-path"`
+	// ToolServers lists the contract endpoints the agent discovers its
+	// computer tools from at startup (ADR 0018); the default is the
+	// pod-local sidecar.
+	ToolServers []string `mapstructure:"tool-servers"`
 	// Model selects the chat model provider (ADR 0005).
 	Model ModelConfig `mapstructure:"model"`
 	// Embedder selects the memory embedder provider (ADR 0005); the
 	// hashing default keeps the platform fully offline.
 	Embedder ModelConfig `mapstructure:"embedder"`
-	// Tools lists the script tools registered alongside the built-ins.
-	// script.Config is the config's unmarshal target directly: one
-	// concept, one shape (docs/convention/simplicity.md).
-	Tools []script.Config `mapstructure:"tools"`
 	// TLS carries the gateway's mTLS material (ADR 0017). When unset,
 	// the gateway serves loopback binds only.
 	TLS TLSConfig `mapstructure:"tls"`
@@ -111,13 +112,11 @@ type ModelConfig struct {
 	Timeout time.Duration `mapstructure:"timeout"`
 }
 
-// addConfigFlags registers the shared settings as flags on fs. viper
-// resolves the effective value, so these defaults are the fallback layer.
+// addConfigFlags registers the settings shared by every subcommand as
+// flags on fs. viper resolves the effective value, so these defaults are
+// the fallback layer.
 func addConfigFlags(fs *pflag.FlagSet) {
 	fs.String("config", "", "config file path (default: ./gagent.yaml, ./sidecar.yaml for the sidecar, then the XDG config dir)")
-	fs.String("addr", defaultAddr, "HTTP listen address (gateway only)")
-	fs.String("data-root", environment.DefaultRoot, "parent directory of all environment data")
-	fs.Duration("exec-timeout", defaultExecTimeout, "per-call ceiling for shell_exec sub-processes (ADR 0012)")
 }
 
 // resolveConfig builds the effective Config for cmd using viper's built-in
@@ -129,8 +128,8 @@ func addConfigFlags(fs *pflag.FlagSet) {
 func resolveConfig(cmd *cobra.Command) (Config, error) {
 	v := newConfigViper()
 	v.SetDefault("addr", defaultAddr)
-	v.SetDefault("data-root", environment.DefaultRoot)
-	v.SetDefault("exec-timeout", defaultExecTimeout)
+	v.SetDefault("memory-path", defaultMemoryPath)
+	v.SetDefault("tool-servers", []string{defaultToolServer})
 	v.SetDefault("model.provider", defaultModelProvider)
 	v.SetDefault("model.base-url", defaultModelBaseURL)
 	v.SetDefault("model.model", defaultModelName)

@@ -21,7 +21,7 @@ const SourceUserTurn = "user-turn"
 // time — before the message is queued and its run starts — so a failed
 // run or a gateway restart mid-queue never loses the capture.
 type Capture struct {
-	// Svc is the environment's memory service.
+	// Svc is the agent's memory service.
 	Svc memory.Service
 }
 

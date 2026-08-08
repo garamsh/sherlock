@@ -14,33 +14,23 @@ import (
 // overflow stays queued for the next turn.
 const MaxDrainBatch = 8
 
-// envQueue serializes one environment's runs: the inbox holds accepted
-// followups in FIFO order and exactly one runner goroutine drains it, so
-// there is never more than one active run per environment (ADR 0009).
-type envQueue struct {
-	agentID string
-	runtime *Runtime
-	inbox   chan Inbound
-	events  *batchEvents
-}
-
-// run is the environment's runner loop. A turn drains the queue: the
-// first message plus everything waiting behind it, up to MaxDrainBatch,
+// run is the agent's runner loop. A turn drains the queue: the first
+// message plus everything waiting behind it, up to MaxDrainBatch,
 // rendered as one turn input (ADR 0020). A failed turn is logged and the
 // queue continues with the next drain.
-func (r *Router) run(q *envQueue) {
-	defer r.wg.Done()
-	logger := r.logger.With("agent_id", q.agentID)
+func (q *Queue) run(events *batchEvents) {
+	defer close(q.done)
+	logger := q.logger.With("agent_id", q.agentID)
 	for {
 		select {
-		case <-r.ctx.Done():
+		case <-q.ctx.Done():
 			return
 		case msg := <-q.inbox:
 			batch := drain(q.inbox, msg)
 			ids := messageIDs(batch)
-			q.events.setBatch(ids)
-			_, err := q.runtime.Session.Run(r.ctx, renderBatch(batch))
-			q.events.setBatch(nil)
+			events.setBatch(ids)
+			_, err := q.runtime.Session.Run(q.ctx, renderBatch(batch))
+			events.setBatch(nil)
 			if err != nil {
 				logger.Error("run failed",
 					"op", "run", "message_ids", ids, "error", err)
@@ -92,9 +82,9 @@ func messageIDs(batch []Inbound) []string {
 	return ids
 }
 
-// batchEvents is the environment's event sink: it stamps terminal events
-// with the message IDs of the batch the turn drained (ADR 0020) and
-// forwards everything to the monitoring stream.
+// batchEvents is the agent's event sink: it stamps terminal events with
+// the message IDs of the batch the turn drained (ADR 0020) and forwards
+// everything to the monitoring stream.
 type batchEvents struct {
 	inner agent.EventSink
 

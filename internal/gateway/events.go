@@ -11,7 +11,7 @@ import (
 // may accumulate before the broker starts dropping events for it.
 const SubscriberBuffer = 32
 
-// Broker is one environment's monitoring stream (ADR 0009): it receives
+// Broker is the agent's monitoring stream (ADR 0009): it receives loop
 // loop events as the session's agent.EventSink and fans them out to
 // subscribers. Publishing never blocks the run — a subscriber with a full
 // buffer drops events — and zero subscribers is the normal case. Broker

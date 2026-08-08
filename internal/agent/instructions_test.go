@@ -87,7 +87,6 @@ func TestContract_ToolSelectionGuidance(t *testing.T) {
 		tool     string
 		fragment string
 	}{
-		{"memory", "search and read your long-term memory"},
 		{"files", "read and write files in your workspace"},
 		{"message_send", "reply through message_send"},
 		{"shell_exec", "run a shell command on the workspace"},
@@ -124,15 +123,15 @@ func TestContract_FailureRecoverySentence(t *testing.T) {
 		"the contract references the platform's repeat short-circuit")
 }
 
-// TestContract_MemoryToolIsSearchOnly pins ADR 0015: the contract no
-// longer carries the tool-call vs writeback section, because the memory
-// tool's write ops are gone and the writeback block is the single write
-// path. The writeback add op keeps its auto-filled fields, so the contract
-// never asks the model for importance_score or source.
-func TestContract_MemoryToolIsSearchOnly(t *testing.T) {
+// TestContract_MemoryIsNeverATool pins ADR 0018: the contract advertises
+// no memory tool — recall injection covers reads and the writeback block
+// is the single write path. The writeback add op keeps its auto-filled
+// fields, so the contract never asks the model for importance_score or
+// source.
+func TestContract_MemoryIsNeverATool(t *testing.T) {
 	contract := agent.Contract
-	assert.NotContains(t, contract, "## Memory: tool call vs writeback",
-		"the tool-call vs writeback section is deleted")
+	assert.NotContains(t, contract, "- memory:",
+		"the contract advertises no memory tool")
 	assert.NotContains(t, contract, "op: store",
 		"the contract no longer teaches a memory store op")
 	assert.NotContains(t, contract, "importance_score",
@@ -197,23 +196,6 @@ func TestContract_AutoCaptureStatement(t *testing.T) {
 	require.Greater(t, tuIdx, -1, "When a tool is unavailable section missing")
 	assert.Greater(t, idx, mwIdx, "the statement comes after the Memory writeback header")
 	assert.Less(t, idx, tuIdx, "the statement stays inside the Memory writeback section")
-}
-
-// TestContract_MemoryToolReadOnly pins the #160 contract half of the
-// model-facing fix: the memory tool's selection guidance states the tool
-// is read-only and that recording happens in the writeback block.
-func TestContract_MemoryToolReadOnly(t *testing.T) {
-	contract := agent.Contract
-	idx := strings.Index(contract, "- memory: search and read your long-term memory.")
-	require.Greater(t, idx, -1, "the memory tool selection line is missing")
-	entry := contract[idx:]
-	if nl := strings.Index(entry, "\n- "); nl >= 0 {
-		entry = entry[:nl]
-	}
-	assert.Contains(t, entry, "read-only",
-		"the selection entry states the tool is read-only")
-	assert.Contains(t, entry, "writeback block",
-		"the selection entry points recording at the writeback block")
 }
 
 // TestContract_MultiMessageTurn pins ADR 0020: the contract tells the

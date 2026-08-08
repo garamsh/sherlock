@@ -1,6 +1,6 @@
 # Playwright script tool
 
-Browser-automation tool for the platform: a Python script run through the universal script adapter (`internal/tool/script`), registered via the config's `tools:` section.
+Browser-automation tool for the sidecar: a Python script run through the universal script adapter (`internal/tool/script`), registered via the sidecar config's `tools:` section.
 
 ## Files
 
@@ -31,9 +31,9 @@ Input and output shapes are defined in `schema.json`. The four actions:
 
 `timeout_seconds` (1–300, default 30) caps navigation and each Playwright operation. Every result carries all four output keys (`ok`, `screenshot_path`, `extracted_text`, `error`); failures return `ok: false` with the exception message in `error` and exit zero, so the adapter surfaces the structured error instead of a process failure.
 
-## Register with the platform
+## Register with the sidecar
 
-The repository-root `gagent.yaml` registers the tool:
+The repository-root `sidecar.yaml` registers the tool:
 
 ```yaml
 tools:
@@ -48,12 +48,12 @@ tools:
       timeout_seconds: 30
 ```
 
-Schema and command paths are relative to the platform's working directory, so run the platform from the repository root. The tool then appears in every environment's registry alongside the built-ins.
+Schema and command paths are relative to the sidecar's working directory, so run the sidecar from the repository root. The agent then discovers the tool over the contract alongside the sidecar's built-ins.
 
 ## Add another script tool
 
 1. Write an executable script that reads a JSON document on stdin and writes a JSON document on stdout.
 2. Add a `schema.json` next to it with the input and output schemas.
-3. Add an entry to the `tools:` section of `gagent.yaml` pointing at the script and schemas.
+3. Add an entry to the `tools:` section of `sidecar.yaml` pointing at the script and schemas.
 
-No Go changes are needed: the adapter (`internal/tool/script`) runs any command, and the gateway registers every `tools:` entry into each environment.
+No Go changes are needed: the adapter (`internal/tool/script`) runs any command, and the sidecar serves every `tools:` entry over the contract for the agent to discover.

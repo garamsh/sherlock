@@ -92,9 +92,10 @@ func requestLogLines(t *testing.T, ca *mtlsCA, certs ...tls.Certificate) []map[s
 	t.Helper()
 	var buf bytes.Buffer
 	logger := slog.New(slog.NewJSONHandler(&buf, nil))
-	router := gateway.NewRouter(&fakeFactory{}, logger)
-	t.Cleanup(func() { router.Close() })
-	srv := httptest.NewUnstartedServer(gateway.NewHandler(router, logger))
+	q, err := gateway.NewQueue(&fakeFactory{}, "env-1", logger)
+	require.NoError(t, err)
+	t.Cleanup(func() { q.Close() })
+	srv := httptest.NewUnstartedServer(gateway.NewHandler(q, logger))
 	srv.TLS = &tls.Config{
 		ClientAuth: tls.RequireAndVerifyClientCert,
 		ClientCAs:  ca.pool(),
@@ -140,9 +141,10 @@ func TestServer_RequestLogCarriesCallerIdentity(t *testing.T) {
 func TestServer_RequestLogHasNoCallerOverPlainHTTP(t *testing.T) {
 	var buf bytes.Buffer
 	logger := slog.New(slog.NewJSONHandler(&buf, nil))
-	router := gateway.NewRouter(&fakeFactory{}, logger)
-	t.Cleanup(func() { router.Close() })
-	srv := httptest.NewServer(gateway.NewHandler(router, logger))
+	q, err := gateway.NewQueue(&fakeFactory{}, "env-1", logger)
+	require.NoError(t, err)
+	t.Cleanup(func() { q.Close() })
+	srv := httptest.NewServer(gateway.NewHandler(q, logger))
 	t.Cleanup(srv.Close)
 
 	resp, err := http.Get(srv.URL + "/")
@@ -163,11 +165,12 @@ func TestServer_PostMessageSenderIsCallerIdentity(t *testing.T) {
 	cert := ca.issue(t, 4, "orchestrator", nil)
 
 	session := &fakeSession{}
-	router := gateway.NewRouter(&fakeFactory{newFn: func(string, agent.EventSink) (*gateway.Runtime, error) {
+	q, err := gateway.NewQueue(&fakeFactory{newFn: func(string, agent.EventSink) (*gateway.Runtime, error) {
 		return &gateway.Runtime{Session: session, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
-	}}, slog.New(slog.DiscardHandler))
-	t.Cleanup(func() { router.Close() })
-	srv := httptest.NewUnstartedServer(gateway.NewHandler(router, slog.New(slog.DiscardHandler)))
+	}}, "env-1", slog.New(slog.DiscardHandler))
+	require.NoError(t, err)
+	t.Cleanup(func() { q.Close() })
+	srv := httptest.NewUnstartedServer(gateway.NewHandler(q, slog.New(slog.DiscardHandler)))
 	srv.TLS = &tls.Config{
 		ClientAuth: tls.RequireAndVerifyClientCert,
 		ClientCAs:  ca.pool(),

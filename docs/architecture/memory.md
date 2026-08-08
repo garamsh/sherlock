@@ -10,12 +10,12 @@ Governs long-term memory: the store, the search, and the lifecycle. Rationale: A
 
 ## Current state (as implemented)
 
-- **Store** — `memory.db` per environment under `data/envs/<id>/`, owned by the memory UID when the platform is privileged; active and archive tables; the platform never hard-deletes.
+- **Store** — one `memory.db` per agent at the configured `memory-path`; active and archive tables; the platform never hard-deletes. The memory-UID custody is gone: no untrusted code runs in the agent container (ADR 0018).
 - **Search** — hybrid brute-force cosine over embeddings plus SQLite FTS5, combined by one ranking function weighted by relevance, recency, importance, and access. The embedder sits behind `memory.Embedder`: `hashing` (deterministic, offline) or an OpenAI-compatible provider with the key read from a named environment variable.
 - **Lifecycle (every turn)** — frame; recall (task-anchored hybrid search, budgeted injection with IDs and ages, explicit emptiness); act (access bookkeeping); writeback (`keep` / `update` / `delete` / `add` — the single write path, ADR 0011); write-time coherence (similar memories surfaced on add/update).
 - **Maintenance** — updates supersede (never overwrite); deletes retire to the archive; capacity eviction uses the ranking score; consolidation on threshold or shutdown compresses episodic clusters into chunked semantic parents (content-preserving; model-assisted with a deterministic fallback); context overflow summarizes oldest history into an episodic memory.
 - **Auto-capture** — every inbound message is stored verbatim as an episodic `user-turn` memory with no model involvement (ADR 0012).
-- The read-only `memory` search tool still exists in the in-process registry; the target drops it — recall injection covers the need (ADR 0018).
+- Memory is never a tool: the model touches memory only through the lifecycle — recall injection covers reads, the writeback block is the single write path (ADR 0011, ADR 0018).
 
 ## Open questions
 

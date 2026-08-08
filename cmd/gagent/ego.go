@@ -10,7 +10,7 @@ import (
 // resolveEgo reads the ego file named by --ego-file. The empty
 // flag returns an empty ego, which selects the agent package's embedded
 // default; a named file that is missing or unreadable fails at startup,
-// before any environment or model work begins.
+// before any discovery or model work begins.
 func resolveEgo(cmd *cobra.Command) (string, error) {
 	path, err := cmd.Flags().GetString("ego-file")
 	if err != nil {

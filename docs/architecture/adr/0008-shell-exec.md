@@ -9,7 +9,7 @@ The agent needs a general-purpose shell for real workloads: "run the project's t
 
 ## Decision
 
-A `shell_exec` tool runs the agent-supplied command as a sub-process dropped to the unprivileged agent UID. In the pod topology (ADR 0018) it runs in the sidecar — the agent's computer; today it runs as a sub-process of the single platform binary.
+A `shell_exec` tool runs the agent-supplied command as a sub-process dropped to the unprivileged agent UID. It runs in the sidecar — the agent's computer (ADR 0018).
 
 Mechanism:
 

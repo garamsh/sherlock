@@ -2,7 +2,7 @@
 
 Current architecture of the system and the decisions behind it. This file is the index; workers read it before touching code, the PM keeps it honest.
 
-One pod per agent, two containers (ADR 0018): the agent container is the agent's self (gateway, reasoning loop, memory, mouth); the sidecar container is the agent's computer (workspace, execution, tool servers, permission enforcement). A tool is a contract with the outside — defined where its implementation lives and discovered by the agent at runtime. The two binaries exist today (`gagent agent`, `gagent sidecar`); deployment manifests and images follow.
+One pod per agent, two containers (ADR 0018): the agent container is the agent's self (gateway, reasoning loop, memory, mouth); the sidecar container is the agent's computer (workspace, execution, tool servers, permission enforcement). A tool is a contract with the outside — defined where its implementation lives and discovered by the agent at runtime. The code ships one binary with two subcommands (`gagent agent`, `gagent sidecar`); deployment artifacts live at the repo-root `Dockerfile` (agent/sidecar targets), `deploy/local/`, and `deploy/k8s/`.
 
 ## Structure
 
@@ -56,7 +56,7 @@ One pod per agent, two containers (ADR 0018): the agent container is the agent's
 | `internal/gateway/` | Accept normalized inbound messages, serialize the one agent's runs through a single queue, and publish the monitoring event stream. | `gateway.md` |
 | `internal/agent/` | Run the reasoning loop (frame, recall, act, writeback) for the agent's one rolling session. | `agent.md` |
 | `internal/tool/` | Define the Tool contract (name, description, input schema, output schema), the registry every tool joins, and the wire protocol that serves a registry over HTTP and calls it back (ADR 0018). | — |
-| `internal/memory/` | Own the agent's long-term memory: the `memory.db` store, hybrid search, and the five memory operations. | `memory.md` |
+| `internal/memory/` | Own the agent's long-term memory: the `memory.db` store, hybrid search, and the memory service behind the lifecycle hooks. | `memory.md` |
 | `internal/files/` | Read and write files inside the sidecar's workspace. | `environment.md` |
 | `internal/message/` | Deliver agent-decided outbound messages to channels and peers (`message_send`). | `gateway.md` |
 | `internal/shell/` | Run tool child processes as sub-processes dropped to the agent UID — `shell_exec` in a fresh network namespace, script tools with network access (ADR 0010). | `security.md` |

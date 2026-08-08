@@ -202,6 +202,101 @@ func TestEndToEnd_SidecarSingleAccountMode(t *testing.T) {
 	}
 }
 
+// TestEndToEnd_SidecarSingleAccountSecretCustody pins the ADR 0003
+// custody story for single-account mode (issue #223): an operator
+// secret reaches the script-tool child through env passthrough — the
+// config file carries no value — and the sidecar marks itself
+// non-dumpable, so a same-account reader cannot pull the secret back
+// out of /proc/<pid>/environ. Verified on a uid-1000 host with
+// ptrace_scope=0 and no sudo.
+func TestEndToEnd_SidecarSingleAccountSecretCustody(t *testing.T) {
+	if os.Geteuid() == 0 {
+		t.Skip("single-account custody is only meaningful without root")
+	}
+	binary := buildGagentBinary(t)
+	workspace := filepath.Join(t.TempDir(), "workspace")
+
+	// The config declares the passthrough by name only — the value
+	// lives solely in the sidecar's environment.
+	dir := t.TempDir()
+	schema := filepath.Join(dir, "schema.json")
+	require.NoError(t, os.WriteFile(schema, []byte(`{"type":"object"}`), 0o600))
+	configPath := filepath.Join(dir, "sidecar.yaml")
+	contents := "tools:\n" +
+		"  - name: print-token\n" +
+		"    description: Print the custody test token.\n" +
+		"    input_schema: " + schema + "\n" +
+		"    output_schema: " + schema + "\n" +
+		"    exec:\n" +
+		`      command: ["sh", "-c", "printf %s \"$CUSTODY_TEST_TOKEN\""]
+` +
+		"      env: [CUSTODY_TEST_TOKEN]\n"
+	require.NoError(t, os.WriteFile(configPath, []byte(contents), 0o600))
+
+	listen, err := net.Listen("tcp", "127.0.0.1:0")
+	require.NoError(t, err)
+	addr := listen.Addr().String()
+	require.NoError(t, listen.Close())
+
+	logPath := filepath.Join(t.TempDir(), "sidecar.log")
+	logFile, err := os.Create(logPath)
+	require.NoError(t, err)
+	t.Cleanup(func() { logFile.Close() })
+
+	cmd := exec.Command(binary, "sidecar",
+		"--config", configPath, "--addr", addr, "--workspace", workspace,
+		"--exec-uid", fmt.Sprint(os.Geteuid()))
+	cmd.Env = append(os.Environ(), "CUSTODY_TEST_TOKEN=s3cret-custody")
+	cmd.Stdout = logFile
+	cmd.Stderr = logFile
+	require.NoError(t, cmd.Start())
+	exited := make(chan error, 1)
+	go func() { exited <- cmd.Wait() }()
+	t.Cleanup(func() {
+		if cmd.ProcessState == nil {
+			_ = cmd.Process.Kill()
+			<-exited
+		}
+	})
+
+	baseURL := "http://" + addr
+	var descs []tool.Descriptor
+	require.Eventually(t, func() bool {
+		descs, err = tool.Discover(context.Background(), baseURL)
+		return err == nil
+	}, 10*time.Second, 20*time.Millisecond, "the sidecar must serve the contract\nlogs:\n%s", readLogs(logPath))
+	require.Len(t, descs, 3)
+	byName := make(map[string]tool.Descriptor, len(descs))
+	for _, d := range descs {
+		byName[d.Name] = d
+	}
+
+	// The passthrough secret reaches the tool child's env.
+	printToken := tool.NewRemoteTool(byName["print-token"], baseURL)
+	out, err := tool.Invoke(context.Background(), printToken, json.RawMessage(`{}`))
+	require.NoError(t, err)
+	assert.Equal(t, "s3cret-custody", string(out))
+	raw, err := os.ReadFile(configPath)
+	require.NoError(t, err)
+	assert.NotContains(t, string(raw), "s3cret",
+		"the config file carries the passthrough by name only, never the value")
+
+	// The sidecar is non-dumpable: a same-account reader cannot pull
+	// its exec-time environment (the secret) out of /proc.
+	_, err = os.ReadFile(fmt.Sprintf("/proc/%d/environ", cmd.Process.Pid))
+	require.Error(t, err, "a non-dumpable sidecar's environ must be unreadable to same-account processes")
+	assert.True(t, os.IsPermission(err),
+		"the read fails with EACCES, got: %v", err)
+
+	require.NoError(t, cmd.Process.Signal(syscall.SIGTERM))
+	select {
+	case err := <-exited:
+		require.NoError(t, err, "sidecar must exit cleanly on SIGTERM")
+	case <-time.After(15 * time.Second):
+		t.Fatal("sidecar did not exit on SIGTERM")
+	}
+}
+
 // readLogs returns a log file's contents for test failure messages.
 func readLogs(path string) string {
 	logs, _ := os.ReadFile(path)

@@ -168,6 +168,45 @@ func TestToolScript_Call_Env(t *testing.T) {
 	assert.Equal(t, "hello-env", string(out))
 }
 
+// TestToolScript_Call_EnvPassthroughResolvesAtSpawn pins the ADR 0003
+// custody channel: a bare KEY entry resolves its value from the
+// sidecar's process environment at spawn — the secret never appears in
+// the tool's spec (the config file's content).
+func TestToolScript_Call_EnvPassthroughResolvesAtSpawn(t *testing.T) {
+	t.Setenv("TOOL_SCRIPT_TEST_TOKEN", "s3cret-token")
+	ts := script.New(script.Spec{
+		Name: "passthrough",
+		Exec: script.ExecSpec{
+			Command: []string{"sh", "-c", `printf %s "$TOOL_SCRIPT_TEST_TOKEN"`},
+			Env:     []string{"TOOL_SCRIPT_TEST_TOKEN"},
+		},
+	}, directExecutor{})
+
+	out, err := ts.Call(context.Background(), json.RawMessage(`{}`))
+
+	require.NoError(t, err)
+	assert.Equal(t, "s3cret-token", string(out),
+		"the passthrough value reaches the tool child's env")
+}
+
+// TestToolScript_Call_EnvPassthroughUnsetFailsCall pins the spawn-time
+// failure mode: a bare KEY whose variable is not set fails the call,
+// naming the key.
+func TestToolScript_Call_EnvPassthroughUnsetFailsCall(t *testing.T) {
+	ts := script.New(script.Spec{
+		Name: "passthrough",
+		Exec: script.ExecSpec{
+			Command: []string{"true"},
+			Env:     []string{"TOOL_SCRIPT_DEFINITELY_UNSET"},
+		},
+	}, directExecutor{})
+
+	_, err := ts.Call(context.Background(), json.RawMessage(`{}`))
+
+	require.Error(t, err)
+	assert.ErrorContains(t, err, "TOOL_SCRIPT_DEFINITELY_UNSET")
+}
+
 func TestToolScript_Call_ScrubsPlatformEnv(t *testing.T) {
 	t.Setenv("GAGENT_TEST_PLATFORM_SECRET", "hunter2")
 	ts := script.New(script.Spec{

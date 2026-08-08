@@ -11,7 +11,7 @@ The agent runs code (its own commands, tool executables). Any secret value prese
 
 Secret values never materialize in the code-execution domain. Exposure is prevented by absence, not by filtering.
 
-- **Explicit channels only**: a secret reaches a trusted tool process through operator-declared configuration (a sidecar tool definition's env entries), never through implicit inheritance — child processes start from a minimal scrubbed environment.
+- **Explicit channels only**: a secret reaches a trusted tool process through operator-declared configuration (a sidecar tool definition's env entries), never through implicit inheritance — child processes start from a minimal scrubbed environment. The env entry has two forms: a `KEY=VALUE` literal, and a bare `KEY` passthrough that resolves from the sidecar's process environment at spawn — the form for secrets, which then never sit in the config file. In single-account mode (ADR 0008) the config file is readable to same-account children, so secrets must use the passthrough form there, and the sidecar marks itself non-dumpable so its `/proc/<pid>/environ` (the exec-time environment, unaffected by later unsetenv) is unreadable to them.
 - **High-sensitivity operations stay outside the domain**: a trusted tool performs the whole operation and returns a summary.
 - **Tool output schemas never include credential fields**, and secrets must not be placed into the agent's conversation context — container design cannot fix a secret the model has already seen.
 - Capability misuse (using a credential in an unintended way) is bounded by the credential's own scope (fine-grained, minimal permissions), not by the platform.

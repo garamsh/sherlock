@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/garamsh/gagent/internal/tool"
@@ -44,7 +45,10 @@ type ExecConfig struct {
 	// TimeoutSeconds caps one tool run; <= 0 selects the package's
 	// DefaultTimeout.
 	TimeoutSeconds int `mapstructure:"timeout_seconds"`
-	// Env is extra KEY=VALUE pairs appended to the process environment.
+	// Env holds extra environment entries: KEY=VALUE literals, or a bare
+	// KEY resolved from the sidecar's process environment at spawn (the
+	// passthrough form for secrets that must not sit in this file,
+	// ADR 0003). A bare KEY whose variable is unset fails validation.
 	Env []string `mapstructure:"env"`
 	// Workdir is the process working directory; empty inherits the
 	// server's.
@@ -74,6 +78,14 @@ func ValidateConfigs(cfgs []Config) error {
 		seen[c.Name] = struct{}{}
 		if len(c.Exec.Command) == 0 {
 			return fmt.Errorf("script tool %q: exec.command is required", c.Name)
+		}
+		for _, e := range c.Exec.Env {
+			if strings.Contains(e, "=") {
+				continue
+			}
+			if _, ok := os.LookupEnv(e); !ok {
+				return fmt.Errorf("script tool %q: env passthrough %q is not set in the environment", c.Name, e)
+			}
 		}
 		if _, err := c.Spec(); err != nil {
 			return fmt.Errorf("script tool %q: %w", c.Name, err)

@@ -81,7 +81,7 @@ func TestContract_AddRequiredForSharedFacts(t *testing.T) {
 
 // TestContract_ToolSelectionGuidance asserts each tool carries a
 // selection sentence ("use this for X") so the model can pick the right
-// tool on the first attempt (issue #96; proposal #94; ADR 0012).
+// tool on the first attempt (issue #96; proposal #94; ADR 0008).
 func TestContract_ToolSelectionGuidance(t *testing.T) {
 	cases := []struct {
 		tool     string
@@ -98,7 +98,7 @@ func TestContract_ToolSelectionGuidance(t *testing.T) {
 }
 
 // TestContract_ShellExecSingleStringCommand pins the QA #103 follow-on
-// for ADR 0012: the shell_exec `command` field is a single string
+// for ADR 0008: the shell_exec `command` field is a single string
 // passed to sh -c, and the contract makes this explicit so the model
 // does not pass pre-split argument arrays.
 func TestContract_ShellExecSingleStringCommand(t *testing.T) {
@@ -138,7 +138,7 @@ func TestContract_MemoryIsNeverATool(t *testing.T) {
 		"the contract never asks the model for importance_score")
 }
 
-// TestContract_RecordOnlyObtainedFacts pins the ADR 0015 contract
+// TestContract_RecordOnlyObtainedFacts pins the ADR 0011 contract
 // collapse: the #137/#144 no-fabrication rules shrink to one line —
 // record only facts actually obtained this turn. The single line forbids
 // placeholders from failed tool calls and requires the visible reply to
@@ -166,7 +166,7 @@ func TestContract_RecordOnlyObtainedFacts(t *testing.T) {
 	assert.Less(t, idx, tuIdx, "the rule stays inside the Memory writeback section")
 }
 
-// TestContract_AutoCaptureStatement pins the ADR 0016 contract collapse:
+// TestContract_AutoCaptureStatement pins the ADR 0012 contract collapse:
 // the platform remembers every user message automatically, so the
 // remember-request rule and its #164 store-vs-mention / store-vs-file
 // clauses shrink to one line — the writeback block carries distilled
@@ -198,7 +198,7 @@ func TestContract_AutoCaptureStatement(t *testing.T) {
 	assert.Less(t, idx, tuIdx, "the statement stays inside the Memory writeback section")
 }
 
-// TestContract_MultiMessageTurn pins ADR 0020: the contract tells the
+// TestContract_MultiMessageTurn pins ADR 0016: the contract tells the
 // model a turn may carry several messages (each with ID and sender,
 // replies addressed per message via message_send) and that a later
 // message may retract an earlier one — the supersede mechanism.

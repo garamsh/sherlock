@@ -180,7 +180,7 @@ func consolidateModel(_ string) agent.Model {
 	)
 }
 
-// TestRuntime_CloseConsolidatesEpisodicCluster pins the ADR 0015 shutdown
+// TestRuntime_CloseConsolidatesEpisodicCluster pins the ADR 0011 shutdown
 // trigger: closing the runtime compresses the active episodic cluster
 // into one semantic parent and archives the originals.
 func TestRuntime_CloseConsolidatesEpisodicCluster(t *testing.T) {

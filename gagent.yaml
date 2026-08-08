@@ -4,7 +4,7 @@
 # Schema and command paths are relative to the working directory; run
 # the platform from the repository root.
 # addr binds loopback: a non-loopback bind requires a tls: section
-# (ADR 0017); see README.md's config table.
+# (ADR 0013); see README.md's config table.
 addr: "127.0.0.1:8080"
 model:
   provider: mock

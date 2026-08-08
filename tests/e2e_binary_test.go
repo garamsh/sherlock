@@ -80,7 +80,7 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 		"writeback", "turn_finished",
 	}, kinds)
 	assert.Contains(t, got[0]["task"], "] unknown: "+e2eQuestion,
-		"the turn input renders the message with its ID and sender (ADR 0020)")
+		"the turn input renders the message with its ID and sender (ADR 0016)")
 
 	assert.Equal(t, "shell_exec", got[2]["tool_name"])
 	// shell_exec fails when the sidecar cannot drop privileges; assert

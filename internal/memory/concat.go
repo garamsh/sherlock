@@ -14,7 +14,7 @@ import (
 // Summarizer interface and is subject to the same chunking.
 const SummaryMaxLen = 512
 
-// ConcatSummarizer is the deterministic MVP summarizer (ADR 0005): it
+// ConcatSummarizer is the deterministic MVP summarizer (ADR 0004): it
 // joins the originals' contents and returns the full text without
 // truncation. The chunking that keeps every byte searchable lives in
 // service.Compress; this summarizer only knows how to flatten inputs.

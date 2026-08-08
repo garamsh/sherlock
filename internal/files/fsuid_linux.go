@@ -12,7 +12,7 @@ import (
 )
 
 // withFSUID runs fn with the calling thread's filesystem UID set to uid,
-// so files fn creates are owned by the agent UID (ADR 0006) while the
+// so files fn creates are owned by the agent UID (ADR 0008, ADR 0010) while the
 // process keeps its real and effective UIDs. The drop applies only to a
 // privileged caller (euid 0); otherwise fn runs under the current UID,
 // which is the unprivileged platform's own. fsuid is per-thread, so the

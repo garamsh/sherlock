@@ -6,7 +6,7 @@ import (
 	"github.com/garamsh/gagent/internal/agent"
 )
 
-// mockModel is the MVP placeholder model (ADR 0005): a canned script that
+// mockModel is the MVP placeholder model (ADR 0004): a canned script that
 // drives a fixed scenario through a discovered computer tool +
 // message_send — compute the answer with shell_exec served by the
 // sidecar, reply to the sender through message_send, then end the turn

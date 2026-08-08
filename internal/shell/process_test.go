@@ -121,7 +121,7 @@ func TestProcessExecutor_ScrubsPlatformEnv(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.NotContains(t, res.Stdout, "GAGENT_TEST_PLATFORM_SECRET",
-		"platform variables must not reach shell_exec children (ADR 0004)")
+		"platform variables must not reach shell_exec children (ADR 0003)")
 	assert.Contains(t, res.Stdout, "PATH=", "the minimal basics still reach the child")
 }
 
@@ -184,7 +184,7 @@ func TestTool_DispatchesToExecutorAndMarshalsResult(t *testing.T) {
 	assert.Equal(t, 5*time.Second, exec.req.Timeout,
 		"timeout_seconds overrides the tool default")
 	assert.True(t, exec.req.NoNetwork,
-		"shell_exec children always run in a fresh network namespace (ADR 0014)")
+		"shell_exec children always run in a fresh network namespace (ADR 0010)")
 	assert.JSONEq(t, `{"stdout":"hi\n","stderr":"","exit_code":0,"timed_out":false}`, string(out))
 }
 
@@ -210,7 +210,7 @@ func TestTool_TimeoutSurfacesTimedOutResult(t *testing.T) {
 	out, err := tool.Invoke(context.Background(), toolImpl,
 		json.RawMessage(`{"command":"sleep 60","timeout_seconds":2}`))
 
-	require.NoError(t, err, "a timeout is a normal outcome per ADR 0012, not a tool failure")
+	require.NoError(t, err, "a timeout is a normal outcome per ADR 0008, not a tool failure")
 	assert.JSONEq(t,
 		`{"stdout":"partial output\n","stderr":"","exit_code":0,"timed_out":true}`,
 		string(out))

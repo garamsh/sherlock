@@ -152,7 +152,7 @@ func TestGateway_EndToEnd(t *testing.T) {
 	}
 	require.Len(t, startedTasks, 2)
 	assert.Contains(t, startedTasks[0], "] unknown: first",
-		"the turn input renders the message with its ID and sender (ADR 0020)")
+		"the turn input renders the message with its ID and sender (ADR 0016)")
 	assert.Contains(t, startedTasks[1], "] unknown: second")
 	assert.Equal(t, []string{
 		"turn_started", "writeback", "tool_call", "writeback", "turn_finished",
@@ -187,7 +187,7 @@ func capturedTurns(t *testing.T, root string) []memory.Memory {
 
 // capturedTurnContents returns the content of every durable user-turn
 // capture in the agent's memory store, active or archived. Shutdown
-// consolidation (ADR 0015) may archive captures into a compressed parent,
+// consolidation (ADR 0011) may archive captures into a compressed parent,
 // but nothing is ever hard-deleted — a restart must neither lose nor
 // duplicate them.
 func capturedTurnContents(t *testing.T, root string) []string {
@@ -215,7 +215,7 @@ func capturedTurnContents(t *testing.T, root string) []string {
 	return contents
 }
 
-// TestGateway_InboundMessageCapturedBeforeRunCompletes pins the ADR 0016
+// TestGateway_InboundMessageCapturedBeforeRunCompletes pins the ADR 0012
 // accept-time capture: the inbound message lands in memory.db as an
 // episodic user-turn memory with low importance while its run is still
 // blocked in the model.
@@ -252,10 +252,10 @@ func TestGateway_InboundMessageCapturedBeforeRunCompletes(t *testing.T) {
 		"raw turns rank below curated writeback facts")
 }
 
-// TestGateway_RestartBetweenEnqueueAndRunKeepsCapture pins the ADR 0016
+// TestGateway_RestartBetweenEnqueueAndRunKeepsCapture pins the ADR 0012
 // crash-safety guarantee: closing the agent between enqueue and run
 // neither loses nor duplicates the capture. The queued message itself is
-// gone after the restart (the queue is in-memory, ADR 0009
+// gone after the restart (the queue is in-memory, ADR 0007
 // fire-and-forget ingress), but its capture is already durable.
 func TestGateway_RestartBetweenEnqueueAndRunKeepsCapture(t *testing.T) {
 	root := t.TempDir()

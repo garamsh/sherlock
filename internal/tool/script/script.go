@@ -40,7 +40,7 @@ type ExecSpec struct {
 // ToolScript is the universal adapter: it runs any executable with JSON
 // input on stdin and returns JSON output on stdout. Execution goes
 // through the shell.Executor, which drops the child to the agent UID
-// (ADR 0014); the child's network is not namespaced — a script tool is
+// (ADR 0010); the child's network is not namespaced — a script tool is
 // an operator-sanctioned egress channel. When the platform cannot drop
 // privileges, Call fails with the executor's agent_uid unavailable error
 // instead of silently running as the platform UID.

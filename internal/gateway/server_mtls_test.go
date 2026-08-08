@@ -158,7 +158,7 @@ func TestServer_RequestLogHasNoCallerOverPlainHTTP(t *testing.T) {
 }
 
 // TestServer_PostMessageSenderIsCallerIdentity pins the sender source
-// (ADR 0020): over mTLS the envelope's sender is the verified caller
+// (ADR 0016): over mTLS the envelope's sender is the verified caller
 // identity, and the turn renders it next to the message ID.
 func TestServer_PostMessageSenderIsCallerIdentity(t *testing.T) {
 	ca := newMTLSCA(t)

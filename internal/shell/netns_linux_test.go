@@ -51,7 +51,7 @@ func probeBinary(t *testing.T) string {
 // TestProcessExecutor_NoNetworkBlocksLoopback runs the same probe child
 // with and without NoNetwork: in a fresh, empty network namespace the
 // dial to the host loopback listener fails; without the namespace it
-// succeeds (ADR 0014 — shell_exec children have no network at all).
+// succeeds (ADR 0010 — shell_exec children have no network at all).
 func TestProcessExecutor_NoNetworkBlocksLoopback(t *testing.T) {
 	requireRoot(t)
 	ln, err := net.Listen("tcp", "127.0.0.1:0")

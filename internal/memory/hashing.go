@@ -11,7 +11,7 @@ import (
 // EmbeddingDim is the dimension of vectors the hashing embedder produces.
 const EmbeddingDim = 256
 
-// HashingEmbedder is the deterministic local embedder (ADR 0005): each
+// HashingEmbedder is the deterministic local embedder (ADR 0004): each
 // token is hashed into a signed slot of a fixed-size vector, which is
 // then L2-normalized. It runs offline and needs no external API; a real
 // embedding model plugs into the same Embedder interface.

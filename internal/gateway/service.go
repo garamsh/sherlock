@@ -35,7 +35,7 @@ type RuntimeFactory interface {
 }
 
 // Queue is the gateway's core: it serializes the one agent's runs so the
-// agent runs one turn at a time (ADR 0009, ADR 0018 — one agent per
+// agent runs one turn at a time (ADR 0007, ADR 0018 — one agent per
 // process). Queue is safe for concurrent use; Close shuts the runner and
 // the runtime down.
 type Queue struct {
@@ -92,10 +92,10 @@ func (q *Queue) AgentID() string { return q.agentID }
 // returns the assigned ID once the message is queued; there is no
 // synchronous agent response. A full queue blocks the caller (honoring
 // ctx) until a run drains a slot. The sender is recorded on the envelope
-// so the agent can address replies per message (ADR 0020); an empty
+// so the agent can address replies per message (ADR 0016); an empty
 // sender means the channel provided none.
 //
-// The message is captured as an episodic user-turn memory (ADR 0016)
+// The message is captured as an episodic user-turn memory (ADR 0012)
 // before it is queued: the capture commits to the memory store at accept
 // time, so a failed run or a restart before the run starts never loses
 // it, and each accepted message is captured exactly once. A capture

@@ -17,7 +17,7 @@ const DefaultMaxIterations = 16
 // cutting pathological loops (issue #160) well short of the iteration cap.
 const maxToolCallsPerTurn = 6
 
-// Model is the agent's narrow view of a chat model (ADR 0005): it receives
+// Model is the agent's narrow view of a chat model (ADR 0004): it receives
 // the conversation plus the registered tool schemas and returns either a
 // final response or tool-call requests. Every response content ends with
 // the structured memory block parsed by ParseWriteback.
@@ -40,7 +40,7 @@ type RecalledMemory struct {
 	Age     string
 }
 
-// Recaller is the recall hook point of the memory lifecycle (ADR 0008).
+// Recaller is the recall hook point of the memory lifecycle (ADR 0006).
 // The gateway wires the memory runtime's adapter; nil means no recall.
 type Recaller interface {
 	Recall(ctx context.Context, task string) ([]RecalledMemory, error)
@@ -92,7 +92,7 @@ type Event struct {
 	Response   string
 	Error      string
 	// MessageIDs names the inbound messages the turn drained; the
-	// gateway stamps it on terminal events (ADR 0020). The session
+	// gateway stamps it on terminal events (ADR 0016). The session
 	// never sets it.
 	MessageIDs []string
 }
@@ -103,7 +103,7 @@ type EventSink interface {
 	Emit(ctx context.Context, e Event)
 }
 
-// Compactor is the context-overflow hook point (ADR 0008): when history
+// Compactor is the context-overflow hook point (ADR 0006): when history
 // grows past Options.MaxHistoryMessages, the session asks the compactor to
 // shrink it. The gateway wires the implementation; nil keeps history
 // unbounded.
@@ -111,7 +111,7 @@ type Compactor interface {
 	Compact(ctx context.Context, history []Message) ([]Message, error)
 }
 
-// Session is one rolling conversation per environment (ADR 0008): it holds
+// Session is one rolling conversation per environment (ADR 0006): it holds
 // the history and runs one turn per call to Run.
 type Session interface {
 	// Run executes one turn of the memory lifecycle — frame, recall, act,
@@ -364,7 +364,7 @@ func (s *session) emit(ctx context.Context, e Event) {
 
 // frameContext composes the per-turn system block: the task statement
 // (frame) followed by the recalled memories, with an explicit statement
-// when recall came back empty (ADR 0008 step 2).
+// when recall came back empty (ADR 0006 step 2).
 func frameContext(task string, recalled []RecalledMemory) string {
 	out := "## Current task\n" + task + "\n\n## Recalled memories\n"
 	if len(recalled) == 0 {

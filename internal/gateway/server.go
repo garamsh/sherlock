@@ -17,14 +17,14 @@ import (
 // memory through the ingress endpoint.
 const maxMessageBody = 1 << 20 // 1 MiB
 
-// NewHandler returns the gateway's HTTP adapter (ADR 0009):
+// NewHandler returns the gateway's HTTP adapter (ADR 0007):
 //
 //	POST /agents/{agentID}/messages — fire-and-forget ingress; 202 + message ID
 //	GET  /agents/{agentID}/events   — SSE monitoring stream of loop events
 //
 // One process serves one agent (ADR 0018): a path whose agentID is not
 // the queue's gets 404. Callers authenticate at the TLS layer (mTLS,
-// ADR 0017); the handler itself is unchanged by it.
+// ADR 0013); the handler itself is unchanged by it.
 func NewHandler(q *Queue, logger *slog.Logger) http.Handler {
 	h := &handler{queue: q, logger: logger}
 	mux := http.NewServeMux()
@@ -49,8 +49,8 @@ func (h *handler) serveAgent(w http.ResponseWriter, r *http.Request) bool {
 }
 
 // postMessageRequest is the ingress body: the message content only. The
-// gateway assigns the ID. The envelope's sender (ADR 0020) is the
-// verified mTLS caller identity (ADR 0017); plain-HTTP loopback requests
+// gateway assigns the ID. The envelope's sender (ADR 0016) is the
+// verified mTLS caller identity (ADR 0013); plain-HTTP loopback requests
 // carry no sender.
 type postMessageRequest struct {
 	Content string `json:"content"`
@@ -202,7 +202,7 @@ func (w *statusWriter) Flush() {
 
 // logRequests logs one line per request with a locally generated
 // trace_id (no tracing backend; stack-go §5). Over mTLS the verified
-// caller identity joins the line as caller_id (ADR 0017). Message
+// caller identity joins the line as caller_id (ADR 0013). Message
 // content is never logged.
 func (h *handler) logRequests(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -227,7 +227,7 @@ func (h *handler) logRequests(next http.Handler) http.Handler {
 }
 
 // callerID names the authenticated caller: the verified peer
-// certificate's CN, or its first SAN when the CN is empty (ADR 0017).
+// certificate's CN, or its first SAN when the CN is empty (ADR 0013).
 // Plain HTTP requests have no caller identity and return "".
 func callerID(r *http.Request) string {
 	if r.TLS == nil || len(r.TLS.PeerCertificates) == 0 {

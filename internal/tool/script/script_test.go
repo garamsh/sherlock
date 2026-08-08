@@ -181,7 +181,7 @@ func TestToolScript_Call_ScrubsPlatformEnv(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.NotContains(t, string(out), "GAGENT_TEST_PLATFORM_SECRET",
-		"platform variables must not reach script tool children (ADR 0004)")
+		"platform variables must not reach script tool children (ADR 0003)")
 	assert.Contains(t, string(out), "PATH=", "the minimal basics still reach the child")
 }
 
@@ -228,7 +228,7 @@ func TestToolScript_Call_AgentUIDUnavailable(t *testing.T) {
 	_, err := ts.Call(context.Background(), json.RawMessage(`{"text":"hi"}`))
 
 	require.ErrorIs(t, err, shell.ErrAgentUIDUnavailable,
-		"ADR 0014: no silent platform-UID run — the call fails closed")
+		"ADR 0010: no silent platform-UID run — the call fails closed")
 	assert.Contains(t, err.Error(), "agent_uid unavailable")
 }
 

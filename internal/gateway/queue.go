@@ -10,13 +10,13 @@ import (
 	"github.com/garamsh/gagent/internal/agent"
 )
 
-// MaxDrainBatch bounds how many queued messages one turn takes (ADR 0020);
+// MaxDrainBatch bounds how many queued messages one turn takes (ADR 0016);
 // overflow stays queued for the next turn.
 const MaxDrainBatch = 8
 
 // run is the agent's runner loop. A turn drains the queue: the first
 // message plus everything waiting behind it, up to MaxDrainBatch,
-// rendered as one turn input (ADR 0020). A failed turn is logged and the
+// rendered as one turn input (ADR 0016). A failed turn is logged and the
 // queue continues with the next drain.
 func (q *Queue) run(events *batchEvents) {
 	defer close(q.done)
@@ -57,7 +57,7 @@ func drain(inbox <-chan Inbound, msg Inbound) []Inbound {
 }
 
 // renderBatch renders one drained batch as the turn's input: one line
-// per message carrying its ID, sender, and content (ADR 0020). A message
+// per message carrying its ID, sender, and content (ADR 0016). A message
 // without a sender renders as "unknown".
 func renderBatch(batch []Inbound) string {
 	var b strings.Builder
@@ -83,7 +83,7 @@ func messageIDs(batch []Inbound) []string {
 }
 
 // batchEvents is the agent's event sink: it stamps terminal events with
-// the message IDs of the batch the turn drained (ADR 0020) and forwards
+// the message IDs of the batch the turn drained (ADR 0016) and forwards
 // everything to the monitoring stream.
 type batchEvents struct {
 	inner agent.EventSink

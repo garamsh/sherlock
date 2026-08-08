@@ -10,7 +10,7 @@ import (
 )
 
 // Recall adapts the memory service to the agent loop's recall hook
-// (ADR 0008 step 2): the task statement is the hybrid-search query and
+// (ADR 0006 step 2): the task statement is the hybrid-search query and
 // results are trimmed to the token budget.
 type Recall struct {
 	// Svc is the agent's memory service.

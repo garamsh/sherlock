@@ -4,9 +4,9 @@ gagent is an autonomous agent platform written in Go. It runs AI agents that can
 
 ## Principles
 
-- **Three components only: Gateway / Agent / Tool.** The Gateway normalizes external channels (web, API, messengers, CLI) into a single entry point. The Agent runs the reasoning loop and decides which tools to call. Every capability — memory, files, outbound messaging, and shell access for workspace operations — is a Tool behind one common interface. No extra layers. A tool is either a Go built-in or a script tool registered from the config's `tools:` section (ADR 0010, ADR 0013).
-- **The agent owns its execution environment.** Each agent runs in its own directory (`data/envs/<agent-id>/` containing `workspace/` + `memory.db`) inside the platform's container; the orchestration layer manages the boundary (network egress, mounts, lifecycle). The `shell_exec` tool runs agent-supplied commands as sub-processes dropped to the agent UID; the rest of the platform keeps its trust-domain separation (ADR 0006, ADR 0012).
-- **Memory is agent-managed, not just stored.** Memory is RAG-based, and the agent actively curates it through a per-turn writeback — keeping, correcting, and retracting — while the platform consolidates and evicts on thresholds (ADR 0015), like human memory rather than a plain store/search index.
+- **Three components only: Gateway / Agent / Tool.** The Gateway normalizes external channels (web, API, messengers, CLI) into a single entry point. The Agent runs the reasoning loop and decides which tools to call. Every capability — memory, files, outbound messaging, and shell access for workspace operations — is a Tool behind one common interface. No extra layers. A tool is either a Go built-in or a script tool registered from the config's `tools:` section (ADR 0018, ADR 0009).
+- **The agent owns its execution environment.** Each agent runs in its own directory (`data/envs/<agent-id>/` containing `workspace/` + `memory.db`) inside the platform's container; the orchestration layer manages the boundary (network egress, mounts, lifecycle). The `shell_exec` tool runs agent-supplied commands as sub-processes dropped to the agent UID; the rest of the platform keeps its trust-domain separation (ADR 0008, ADR 0010).
+- **Memory is agent-managed, not just stored.** Memory is RAG-based, and the agent actively curates it through a per-turn writeback — keeping, correcting, and retracting — while the platform consolidates and evicts on thresholds (ADR 0011), like human memory rather than a plain store/search index.
 
 ## Who it is for
 
@@ -34,7 +34,7 @@ gagent gateway
 - `GET /agents/{agent-id}/events` — server-sent events stream of the agent's loop (turn started, tool call, writeback, turn finished). Every run ends with exactly one terminal event — `turn_finished` on success, `turn_failed` with the error on failure.
 - Agent replies (`message_send`) land as JSON files in `data/envs/<agent-id>/outbox/`.
 
-**Warning: an unauthenticated gateway is a remote shell into the environment.** The gateway authenticates callers with mTLS when the `tls:` config section is set (server certificate/key plus a client CA — callers must present a certificate from that CA; ADR 0017). Without `tls:` the gateway serves loopback binds only, and a non-loopback `--addr` fails startup. Certificate issuance and CA operation are operator scope; rotation is a restart with new files.
+**Warning: an unauthenticated gateway is a remote shell into the environment.** The gateway authenticates callers with mTLS when the `tls:` config section is set (server certificate/key plus a client CA — callers must present a certificate from that CA; ADR 0013). Without `tls:` the gateway serves loopback binds only, and a non-loopback `--addr` fails startup. Certificate issuance and CA operation are operator scope; rotation is a restart with new files.
 
 ### gagent agent
 
@@ -67,7 +67,7 @@ Settings resolve in order: **flags > environment variables > config file > defau
 |---|---|---|
 | `addr` | `--addr` | `127.0.0.1:8080` (used by `gateway` only; loopback-only unless `tls:` is set) |
 | `data-root` | `--data-root` | `data/envs` |
-| `exec-timeout` | `--exec-timeout` | `30s` (per-call ceiling for `shell_exec` sub-processes; ADR 0012) |
+| `exec-timeout` | `--exec-timeout` | `30s` (per-call ceiling for `shell_exec` sub-processes; ADR 0008) |
 | `model.provider` | — | `mock` (scripted, offline) or `openai` |
 | `model.base-url` | — | `https://api.openai.com/v1` (any OpenAI-compatible endpoint, e.g. Ollama/vLLM) |
 | `model.model` | — | `gpt-4o-mini` |
@@ -105,7 +105,7 @@ every destructive action before taking it.
 
 ### Adding tools
 
-Two paths, per ADR 0013:
+Two paths, per ADR 0009:
 
 - **Script tool (config only)** — write an executable that reads a JSON job on stdin and writes a JSON result on stdout, add a `tools:` entry pointing at it and its schemas. No Go changes; `tools/playwright/README.md` walks through one.
 - **Go built-in** — write a package under `internal/<domain>/` implementing `tool.Tool` (`Name`, `Description`, `InputSchema`, `OutputSchema`, `Call`) and register it in `internal/gateway/runtime.go`'s factory, in a normal PR.

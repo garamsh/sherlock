@@ -26,7 +26,7 @@ type Runtime struct {
 	// time, before the message is queued.
 	Capture func(ctx context.Context, content string) error
 	// Close releases the runtime's resources. Called once on queue
-	// shutdown; memory consolidation (ADR 0015) runs before the store
+	// shutdown; memory consolidation (ADR 0011) runs before the store
 	// closes.
 	Close func(ctx context.Context) error
 }

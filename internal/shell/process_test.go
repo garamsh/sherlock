@@ -6,6 +6,8 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"os/exec"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -101,6 +103,72 @@ func requireUnprivileged(t *testing.T) {
 	if os.Geteuid() == 0 {
 		t.Skip("single-account mode is only meaningful without root")
 	}
+}
+
+// TestProcessExecutor_UntrustedChildCarriesDefaultCaps pins the ADR 0010
+// trust-class rule on the untrusted path: an agent-supplied shell_exec
+// child runs under the executor's resource caps.
+func TestProcessExecutor_UntrustedChildCarriesDefaultCaps(t *testing.T) {
+	requireUnprivileged(t)
+	exec := shell.NewProcessExecutor(os.Geteuid(), 5*time.Second)
+
+	res, err := exec.Run(context.Background(), shell.Request{Command: "ulimit -v"})
+	require.NoError(t, err)
+	assert.Equal(t, "524288\n", res.Stdout,
+		"the untrusted child carries the 512MiB address-space cap")
+}
+
+// TestProcessExecutor_TrustedChildRunsWithoutCaps pins the other half:
+// an operator-sanctioned (script-tool) child runs without the
+// adversarial caps — its bound is the per-call timeout.
+func TestProcessExecutor_TrustedChildRunsWithoutCaps(t *testing.T) {
+	requireUnprivileged(t)
+	exec := shell.NewProcessExecutor(os.Geteuid(), 5*time.Second)
+
+	res, err := exec.Run(context.Background(), shell.Request{Command: "ulimit -v", Trusted: true})
+	require.NoError(t, err)
+	assert.Equal(t, "unlimited\n", res.Stdout,
+		"the trusted child carries no address-space cap")
+}
+
+// buildGoHelper compiles a trivial Go binary for the trust-class
+// acceptance case: on this Go version the runtime alone reserves more
+// virtual address space than the 512MiB cap, so any Go binary stands in
+// for the QA scenario's `gh`.
+func buildGoHelper(t *testing.T) string {
+	t.Helper()
+	dir := t.TempDir()
+	main := filepath.Join(dir, "main.go")
+	require.NoError(t, os.WriteFile(main,
+		[]byte("package main\n\nfunc main() { println(\"helper-ok\") }\n"), 0o644))
+	out := filepath.Join(dir, "helper")
+	cmd := exec.Command("go", "build", "-o", out, main)
+	cmd.Env = os.Environ()
+	if err := cmd.Run(); err != nil {
+		t.Skipf("go toolchain unavailable for the helper build: %v", err)
+	}
+	return out
+}
+
+// TestProcessExecutor_TrustedGoBinaryRuns is the issue #225 acceptance
+// case: a Go binary dies under the untrusted caps and runs as a trusted
+// (script-tool-class) child.
+func TestProcessExecutor_TrustedGoBinaryRuns(t *testing.T) {
+	requireUnprivileged(t)
+	helper := buildGoHelper(t)
+	exec := shell.NewProcessExecutor(os.Geteuid(), 5*time.Second)
+
+	res, err := exec.Run(context.Background(), shell.Request{Command: helper})
+	require.NoError(t, err)
+	assert.NotZero(t, res.ExitCode,
+		"the Go runtime cannot start under the untrusted 512MiB address-space cap")
+	assert.Contains(t, res.Stderr, "failed to reserve page summary memory")
+
+	res, err = exec.Run(context.Background(), shell.Request{Command: helper, Trusted: true})
+	require.NoError(t, err)
+	assert.Equal(t, 0, res.ExitCode, "stderr: %s", res.Stderr)
+	assert.Equal(t, "helper-ok\n", res.Stderr,
+		"the Go helper runs to completion as a trusted child")
 }
 
 // TestProcessExecutor_SingleAccountRunsAsOwnUID pins the single-account

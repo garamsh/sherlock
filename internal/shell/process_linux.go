@@ -178,10 +178,14 @@ func (e *ProcessExecutor) Run(ctx context.Context, req Request) (Result, error) 
 		return Result{}, fmt.Errorf("shell: start: %w", err)
 	}
 
-	// Apply resource limits to the now-running child via prlimit(2).
-	// Individual rlimit failures are logged at WARN — the run still
-	// produces a result; we just lack the cap on that one resource.
-	e.applyRLimits(cmd.Process.Pid)
+	// Resource caps bind untrusted code only (ADR 0010): a trusted
+	// (operator-sanctioned) child is bounded by its per-call timeout
+	// and the deployment's container/pod limits. Apply caps to the
+	// now-running child via prlimit(2); individual failures are logged
+	// at WARN — the run still produces a result, just without that cap.
+	if !req.Trusted {
+		e.applyRLimits(cmd.Process.Pid)
+	}
 
 	err := cmd.Wait()
 

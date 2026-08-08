@@ -168,6 +168,33 @@ func TestToolScript_Call_Env(t *testing.T) {
 	assert.Equal(t, "hello-env", string(out))
 }
 
+// trustRecordingExecutor captures the last request so the adapter's
+// trust-class wiring is asserted without a real fork+exec.
+type trustRecordingExecutor struct{ req shell.Request }
+
+func (e *trustRecordingExecutor) Run(_ context.Context, req shell.Request) (shell.Result, error) {
+	e.req = req
+	return shell.Result{Stdout: `{"ok":true}`}, nil
+}
+
+// TestToolScript_Call_MarksChildTrusted pins the ADR 0010 trust-class
+// wiring: the script adapter's child is operator-sanctioned code, so
+// the request names the trusted class and the executor skips the
+// adversarial resource caps.
+func TestToolScript_Call_MarksChildTrusted(t *testing.T) {
+	rec := &trustRecordingExecutor{}
+	ts := script.New(script.Spec{
+		Name: "trusted",
+		Exec: script.ExecSpec{Command: []string{"true"}},
+	}, rec)
+
+	_, err := ts.Call(context.Background(), json.RawMessage(`{}`))
+
+	require.NoError(t, err)
+	assert.True(t, rec.req.Trusted,
+		"a script tool's child is the trusted trust class (ADR 0010)")
+}
+
 // TestToolScript_Call_EnvPassthroughResolvesAtSpawn pins the ADR 0003
 // custody channel: a bare KEY entry resolves its value from the
 // sidecar's process environment at spawn — the secret never appears in

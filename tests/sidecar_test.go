@@ -202,6 +202,122 @@ func TestEndToEnd_SidecarSingleAccountMode(t *testing.T) {
 	}
 }
 
+// TestEndToEnd_SidecarScriptToolRunsGoBinary is the issue #225
+// acceptance case at the wire: a Go-compiled binary — whose runtime
+// reserves more virtual address space than the shell's adversarial
+// 512MiB cap — works as a script tool, because script tools run in the
+// trusted class (ADR 0010), bounded by the per-call timeout rather
+// than the shell rlimits.
+func TestEndToEnd_SidecarScriptToolRunsGoBinary(t *testing.T) {
+	if os.Geteuid() == 0 {
+		t.Skip("the trusted-class executor path is exercised unprivileged here")
+	}
+	binary := buildGagentBinary(t)
+	helper := buildGoScriptHelper(t)
+	workspace := filepath.Join(t.TempDir(), "workspace")
+
+	dir := t.TempDir()
+	schema := filepath.Join(dir, "schema.json")
+	require.NoError(t, os.WriteFile(schema, []byte(`{"type":"object"}`), 0o600))
+	configPath := filepath.Join(dir, "sidecar.yaml")
+	contents := "tools:\n" +
+		"  - name: go-helper\n" +
+		"    description: A Go-compiled script tool.\n" +
+		"    input_schema: " + schema + "\n" +
+		"    output_schema: " + schema + "\n" +
+		"    exec:\n" +
+		"      command: [" + helper + "]\n"
+	require.NoError(t, os.WriteFile(configPath, []byte(contents), 0o600))
+
+	cmd, baseURL, exited := startSidecarWith(t, binary, configPath, workspace,
+		"--exec-uid", fmt.Sprint(os.Geteuid()))
+	defer stopSidecar(t, cmd, exited)
+
+	descs, err := tool.Discover(context.Background(), baseURL)
+	require.NoError(t, err)
+	var goHelper tool.Descriptor
+	for _, d := range descs {
+		if d.Name == "go-helper" {
+			goHelper = d
+		}
+	}
+	require.NotNil(t, goHelper)
+
+	out, err := tool.Invoke(context.Background(),
+		tool.NewRemoteTool(goHelper, baseURL), json.RawMessage(`{}`))
+	require.NoError(t, err, "the Go binary must run as a script tool, not die under the shell rlimits")
+	assert.Equal(t, "go-helper-ok", string(out))
+}
+
+// buildGoScriptHelper compiles a trivial Go binary for the
+// script-tool acceptance case.
+func buildGoScriptHelper(t *testing.T) string {
+	t.Helper()
+	dir := t.TempDir()
+	main := filepath.Join(dir, "main.go")
+	require.NoError(t, os.WriteFile(main, []byte(
+		"package main\n\nimport \"fmt\"\n\nfunc main() { fmt.Print(\"go-helper-ok\") }\n"), 0o644))
+	out := filepath.Join(dir, "helper")
+	cmd := exec.Command("go", "build", "-o", out, main)
+	cmd.Env = os.Environ()
+	if err := cmd.Run(); err != nil {
+		t.Skipf("go toolchain unavailable for the helper build: %v", err)
+	}
+	return out
+}
+
+// startSidecarWith is startSidecarBinary with extra arguments (e.g.
+// --exec-uid) appended.
+func startSidecarWith(t *testing.T, binary, configPath, workspace string, extraArgs ...string) (*exec.Cmd, string, <-chan error) {
+	t.Helper()
+
+	listen, err := net.Listen("tcp", "127.0.0.1:0")
+	require.NoError(t, err)
+	addr := listen.Addr().String()
+	require.NoError(t, listen.Close())
+
+	logPath := filepath.Join(t.TempDir(), "sidecar.log")
+	logFile, err := os.Create(logPath)
+	require.NoError(t, err)
+	t.Cleanup(func() { logFile.Close() })
+
+	args := append([]string{"sidecar", "--config", configPath, "--addr", addr, "--workspace", workspace}, extraArgs...)
+	cmd := exec.Command(binary, args...)
+	cmd.Stdout = logFile
+	cmd.Stderr = logFile
+	require.NoError(t, cmd.Start())
+	exited := make(chan error, 1)
+	go func() { exited <- cmd.Wait() }()
+	t.Cleanup(func() {
+		if cmd.ProcessState == nil {
+			_ = cmd.Process.Kill()
+			<-exited
+		}
+	})
+
+	baseURL := "http://" + addr
+	require.Eventually(t, func() bool {
+		_, err := tool.Discover(context.Background(), baseURL)
+		return err == nil
+	}, 10*time.Second, 20*time.Millisecond, "the sidecar must serve the contract\nlogs:\n%s", readLogs(logPath))
+	return cmd, baseURL, exited
+}
+
+// stopSidecar SIGTERMs the sidecar and requires a clean exit.
+func stopSidecar(t *testing.T, cmd *exec.Cmd, exited <-chan error) {
+	t.Helper()
+	if cmd.ProcessState != nil {
+		return
+	}
+	require.NoError(t, cmd.Process.Signal(syscall.SIGTERM))
+	select {
+	case err := <-exited:
+		require.NoError(t, err, "sidecar must exit cleanly on SIGTERM")
+	case <-time.After(15 * time.Second):
+		t.Fatal("sidecar did not exit on SIGTERM")
+	}
+}
+
 // TestEndToEnd_SidecarSingleAccountSecretCustody pins the ADR 0003
 // custody story for single-account mode (issue #223): an operator
 // secret reaches the script-tool child through env passthrough — the

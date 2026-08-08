@@ -14,7 +14,7 @@ Governs the environment model: what an environment is, its topology, and its tru
 
 ## Current state
 
-The pod split is two processes today. `gagent sidecar` serves one workspace (config key, created on first use), `shell_exec`, and the script tools declared in its own config over the tool contract. UID trust domains apply only when the sidecar runs privileged: the workspace is chowned to the agent UID and the files tool drops its filesystem UID to it, while `shell_exec` and script-tool children drop to the agent UID, the shell additionally in a fresh empty network namespace. A sidecar that cannot drop privileges reports `agent_uid unavailable`.
+The pod split is two processes today. `gagent sidecar` serves one workspace (config key, created on first use), `shell_exec`, and the script tools declared in its own config over the tool contract. UID trust domains apply only when the sidecar runs privileged: the workspace is chowned to the agent UID and the files tool drops its filesystem UID to it, while `shell_exec` and script-tool children drop to the agent UID, the shell additionally in a fresh empty network namespace. A sidecar that cannot drop privileges reports `agent_uid unavailable`. The shipped images make this concrete: the agent image is distroless static (no untrusted code runs there), and the sidecar image is a minimal glibc base with no setuid binaries, run with exactly CAP_SETUID/SETGID/CHOWN/SYS_ADMIN so the drop operates (`deploy/local/`, `deploy/k8s/`).
 
 `gagent agent` holds no environment layout: the `data/envs/<id>/` pairing is gone, the agent configures only its memory file (`memory-path`), and every computer capability reaches it as a discovered remote tool over the contract.
 

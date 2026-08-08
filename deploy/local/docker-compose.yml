@@ -7,6 +7,7 @@ services:
   agent:
     build:
       context: ../..
+      target: agent
     ports:
       - "8080:8080"
     environment:
@@ -21,9 +22,15 @@ services:
   sidecar:
     build:
       context: ../..
+      target: sidecar
     network_mode: service:agent
     depends_on:
       - agent
+    # The executor's privilege drop, made real (ADR 0008, ADR 0010):
+    # SETUID/SETGID for the child credential drop, CHOWN for the
+    # workspace hand-off, SYS_ADMIN for the netns unshare. Nothing else.
+    cap_drop: ["ALL"]
+    cap_add: ["SETUID", "SETGID", "CHOWN", "SYS_ADMIN"]
     environment:
       GAGENT_WORKSPACE: "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}/workspace"
     volumes:

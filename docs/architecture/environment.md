@@ -1,26 +1,22 @@
 # Environment
 
-Governs the environment model: what an environment is, its topology, and its trust boundaries. Rationale: ADR 0002, ADR 0006, ADR 0012.
+Governs the environment model: what an environment is, its topology, and its trust boundaries. Rationale: ADR 0018, ADR 0008, ADR 0010.
 
 ## Current decisions
 
-- The environment is the agent's body. The agent has full authority inside it; the orchestration layer manages the boundary (network, mounts, resources, lifecycle). There is no separate sandbox tier — the platform does not spawn an inner container for the agent to run commands in (ADR 0011).
-- One container per environment, subdivided into trust domains by Unix UIDs (target design, ADR 0006):
-  - **Agent UID** — runs all agent-supplied code; unprivileged, always.
-  - **Memory UID** — owns `memory.db`.
-  - **Runtime UID** — owns tool runtime configuration.
-- Enforcement is kernel DAC (file ownership and modes), not filters. Agent code touching another UID's assets gets `EACCES`. Current state: `shell_exec` and script-tool child processes drop to the agent UID through the same executor, and only when the platform binary runs setuid-root — otherwise they report `agent_uid unavailable` (ADR 0012, ADR 0014). A privileged platform (euid 0) chowns `memory.db` to the memory UID with mode 0600 at environment creation, so agent-UID children get `EACCES`; unprivileged platforms skip the chown and own the file themselves. The memory service still opens the file as the platform process (root bypasses DAC). The runtime UID's domain is enforced via modes on the runtime material itself: the gateway TLS server key and the platform config must be mode 0600 owner-only — platform-owned and unreadable by agent-UID children — and the gateway refuses a group/other-readable server key at startup rather than chowning operator-provided files. Full UID custody of tool runtime configuration remains target design. The workspace is the agent UID's domain: a privileged platform chowns `workspace/` to the agent UID at environment creation, and the files tool drops its filesystem UID (`setfsuid`, Linux-only, privileged only) to the agent UID for workspace operations, so files-tool writes and shell-created files share one owner. Unprivileged platforms do neither and keep current behavior.
-- A tool runtime (supervisor) manages processes and drops privileges before executing agent-supplied code.
-- Boundary policy — egress, CPU/memory quotas, mount scope, lifecycle — is injected from outside at environment creation (target design). Current state: no container isolates the platform; `shell_exec` children run in a fresh empty network namespace (no loopback, no interfaces) on top of the agent-UID drop, while script tools keep network access as operator-sanctioned egress channels (ADR 0014, `security.md`). Resource caps on shell children are applied via rlimits.
-- Each environment owns `data/envs/<env-id>/` (workspace + `memory.db`). The directory is the isolation unit: teardown, migration, and backup are directory operations. The data dir root stays platform-owned; only `workspace/` (agent UID) and `memory.db` (memory UID) change hands in a privileged deployment.
-- The platform itself ships as a distroless nonroot image built from the repo-root `Dockerfile` — the only image in the system. The environment (the agent's body) is a directory, not an image (ADR 0011), so no separate environment-image definition or hygiene checklist exists; image hygiene concerns land on the platform image, which already satisfies them (static binary, no shell, no setuid binaries, nonroot). The platform does not talk to a Docker daemon at runtime; the deployment image is the only Docker involvement. Because the image runs nonroot, `shell_exec` reports `agent_uid unavailable` under it unless the deployment adds privilege.
+- The environment is the agent's computer: a dedicated sidecar container in the agent's pod. One pod per agent; one sidecar per agent to start (ADR 0018).
+- The sidecar composes two things: a dedicated environment — the workspace (a persistent volume) and process execution — and an I/O layer, the tool servers that expose the computer's capabilities.
+- The computer is configured from outside, like a real computer: adding a capability (browser automation, GitHub tooling) means installing it on the computer and declaring its tool. The agent changes nothing; it discovers the new capability at runtime.
+- Permission enforcement lives at the computer — the action site. Agent-influenced execution runs under an unprivileged UID, and workspace and data ownership is kernel-enforced (DAC), not filtered (ADR 0008, ADR 0010 relocated into the sidecar). A platform that cannot drop privileges reports unavailability instead of silently upgrading.
+- Egress control is a pod network-layer concern; the in-process network-namespace mechanism is retired.
+- Self-destruction is bounded by construction: executed code lives on the computer, and the agent's self (a separate container) is unreachable from it. A broken computer is recreated.
+- A shared sidecar serving several agents — one computer with several user accounts — is a later step, not the starting shape.
 
-## Rejected alternatives
+## Current state
 
-- **Two-tier sandbox (the founding brief's original reading)** — superseded by the body model (ADR 0002).
-- **Container-in-container (DinD)** — requires a privileged outer container, which would then also hold the secrets; weakens the host boundary for no gain over sibling or UID separation.
-- **Flat single-UID container** — no structural protection for platform assets inside the environment.
+The platform is a single binary in a single container hosting `data/envs/<agent-id>/` (`workspace/` + `memory.db`); the directory is the isolation unit (teardown, migration, backup are directory operations). UID trust domains apply only when the binary runs privileged (setuid-root): `workspace/` is chowned to the agent UID and the files tool drops its filesystem UID to it, while `shell_exec` and script-tool children drop to the agent UID, the shell additionally in a fresh empty network namespace. The shipped distroless nonroot image cannot drop privileges, so those paths report `agent_uid unavailable` under it. The migration to the pod topology (ADR 0018) is tracked separately.
 
 ## Open questions
 
-- Runtime UID separation (tool runtime configuration custody): target design per ADR 0006. The runtime material is enforced via modes today — TLS server key and platform config at 0600, with a startup check on the key; `workspace/` and `memory.db` are the two UID domains enforced today.
+- The agent↔sidecar transport (pod-local socket vs HTTP) — decided with the contract protocol work.
+- The sidecar configuration format (base image plus tool and policy declaration) — the script-tool shape is the seed.

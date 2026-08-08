@@ -1,9 +1,9 @@
 # ADR NNNN: <short decision title>
 
-> Status: proposed | accepted | superseded by ADR-XXXX
+> Status: proposed | accepted
 > Date: YYYY-MM-DD
 
-Append-only: once merged, the body below is frozen. Only the status field and typos may change. A revised decision is a new ADR that supersedes this one.
+A record states one current decision and is kept current: update the body when the decision evolves; delete the record when the decision stops carrying meaning. Numbering stays continuous — a deletion or insertion renumbers the log, and references in other records are updated in the same PR. History lives in git, not in the log.
 
 ## Context
 

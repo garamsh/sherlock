@@ -1,31 +1,21 @@
 # Gateway
 
-Governs the gateway: message ingress, routing, outbound delivery, and monitoring. Rationale: ADR 0009, ADR 0017.
+Governs the gateway: message ingress, outbound delivery, and monitoring. Rationale: ADR 0018, ADR 0007, ADR 0013, ADR 0016.
 
 ## Current decisions
 
-- The gateway separates three flows:
-  - **Ingress** — asynchronous and fire-and-forget. Channel adapters normalize inbound messages; the gateway assigns an ID, captures the message verbatim as an episodic `user-turn` memory at accept time (ADR 0016 — the capture commits before the ack, so a failed run or a restart before the run starts never loses or duplicates it; a capture failure rejects the message), enqueues for the target environment, and acknowledges. No synchronous response couples a sender to a run.
-  - **Outbound** — a `message_send` tool (channel, target, content) carries every reply. The agent decides when and to whom to respond; the sender, another person, and another agent are all the same kind of target.
-  - **Monitoring** — a read-only subscription event stream (turn started, tool calls, memory writeback, turn finished or failed). Every run ends with exactly one terminal event — `turn_finished` on success, `turn_failed` with the error on failure — so subscribers can always finalize their view of a turn. Never part of the message path; typically no subscribers.
-- Execution is serialized per environment. Messages arriving mid-run queue as followups; when a turn starts it **drains the queue** — every queued message up to a small bound (8), each rendered with its ID and sender, becomes one turn's input with exactly one terminal event (ADR 0020). Overflow stays queued for the next turn. There is no forced stop, suspend, or steering (ADR 0019), and no cancel verb: a sender retracts a request by sending another message, which FIFO order and same-batch coalescing deliver before the work starts. Each environment's queue is bounded; a full queue applies backpressure to the sender instead of dropping messages.
-- Sessions are rolling, one per environment.
-- Adding a channel means adding one adapter; the rest of the system does not change.
-- Callers authenticate with mTLS, terminated in the platform binary (ADR 0017): a `tls:` config section carries the server certificate/key and the client CA path, and the gateway requires and verifies client certificates against it. Without `tls:` the gateway serves loopback binds only; a non-loopback bind without TLS fails startup. An authenticated caller has full access in this phase. Certificate issuance and CA operation are operator/orchestration-layer scope.
+- The gateway is the agent's ears and eyes; it lives in the agent container and serves that one agent (ADR 0018). It has no relationship with the sidecar.
+- Routing senders to agent pods is the orchestration layer's concern (ADR 0015); the gateway terminates mTLS and nothing more.
+- Three flows, unchanged in shape:
+  - **Ingress** — asynchronous and fire-and-forget: accept, capture the message verbatim as an episodic `user-turn` memory (ADR 0012), enqueue, acknowledge. No synchronous response couples a sender to a turn.
+  - **Outbound** — the mouth: `message_send` lives agent-side as the agent's own speech; delivery targets a console endpoint over mTLS with a file-outbox fallback, so a message is never silently lost.
+  - **Monitoring** — a read-only event stream; every turn ends with exactly one terminal event (`turn_finished` or `turn_failed`). Never part of the message path.
+- One queue per agent; a turn drains the queue (bound 8, sender envelopes, supersede-as-cancellation — ADR 0016). No forced stop, suspend, or steering (ADR 0015).
 
-### HTTP adapter (first channel)
+## Current state
 
-- `POST /agents/{agent-id}/messages` accepts a message, assigns an ID, enqueues it, and returns `202` with the ID. The agent ID is the agent's identity (ADR 0021); an unknown agent ID creates the agent's environment at enqueue time, so creation errors (e.g. an invalid ID) surface to the sender as `400`. The envelope's sender (ADR 0020) is the verified mTLS caller identity; a plain-HTTP loopback request carries no sender.
-- `GET /agents/{agent-id}/events` streams the agent's loop events (turn started, tool call, writeback, turn finished, turn failed) as server-sent events. Subscribing works with zero publishers and publishing works with zero subscribers; a subscriber that falls behind drops events rather than slowing the run.
-- The console is the universal message exchange and the platform's single outbound address: with a `console:` config section (`url`), every `message_send` is POSTed to the console endpoint over mTLS — the platform's `tls:` certificate is its client identity and the same private CA verifies the console. The payload is `{agent_id, channel, target, content}`: agent_id is the agent's identity (ADR 0021) — the console reads it as the sending agent's ID — and channel/target are the routing labels the agent chose. Routing to users, other agents, or any cluster is the console's concern. The file outbox (`data/envs/<id>/outbox/`, one JSON file per message) stays the dev default when `console.url` is unset and the fallback on delivery failure — a non-2xx or unreachable console lands the message in the outbox with a WARN, so messages are never silently lost. A `console:` section without `tls:` disables the console sink with a WARN at startup. Real channel adapters remain console-side, behind the same sink interface.
-- The chat model is selected by the `model` config section: the scripted mock (default) or any OpenAI-compatible provider. The mock's canned script exercises the four built-in tools offline — a memory search, a `shell_exec` call, a `message_send` reply, and a writeback block; a run that exhausts the script fails, is logged, and the queue continues.
-- Script tools join every environment's registry from the platform config's `tools:` section (ADR 0013): each entry names an operator-supplied executable the gateway runs as a subprocess dropped to the agent UID (ADR 0014) with JSON on stdin/stdout, alongside the four built-ins. `gateway.ScriptTool` is the section's single shape from config file to registry. The entry points validate the section at startup via `Factory.ValidateTools` — a built-in or duplicate name collision, an unreadable schema, or an empty exec command fails startup with an error naming the tool, never the first message.
-
-## Rejected alternatives
-
-- **Synchronous request-response messaging** — couples sender latency to agent run time and breaks multi-sender input.
-- **Streaming in the message path** — live output is a monitoring concern; the message model stays minimal.
+One gateway binary hosts every environment in a single container: `POST /agents/{agent-id}/messages` returns 202 with an ID (an unknown agent ID creates the environment at enqueue time; the sender envelope is the verified mTLS caller identity) and `GET /agents/{agent-id}/events` streams the agent's loop events as SSE. Callers authenticate with mTLS when a `tls:` config section is set; without it the gateway serves loopback only. Outbound delivery POSTs every `message_send` to the configured console endpoint over mTLS, falling back to the per-environment file outbox (`data/envs/<id>/outbox/`) on failure. The pod split — one gateway per agent pod — is pending with the ADR 0018 migration.
 
 ## Open questions
 
-- Channel adapters beyond the first HTTP/API adapter — deferred.
+- Channel adapters beyond HTTP — console-side, deferred.

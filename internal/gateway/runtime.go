@@ -2,7 +2,6 @@ package gateway
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -101,134 +100,19 @@ type Factory struct {
 	// alongside the built-ins. Platform entry points validate the section
 	// at startup through ValidateTools: a name colliding with a built-in
 	// fails startup with tool.ErrDuplicateTool.
-	Tools []ScriptTool
+	Tools []script.Config
 }
 
 var _ RuntimeFactory = (*Factory)(nil)
 
-// ScriptTool is one entry of the platform config's tools: section — the
-// single shape a script tool has from the config file to the gateway
-// (docs/convention/simplicity.md: one concept, one shape). The
-// mapstructure tags are how viper decodes the entry; spec reads the
-// schema files and builds the script.Spec at registration. Adding a
-// script tool is a config change, not a code change.
-type ScriptTool struct {
-	// Name is the tool name; it must not collide with a built-in.
-	Name string `mapstructure:"name"`
-	// Description is the one-sentence tool summary shown to the model.
-	Description string `mapstructure:"description"`
-	// InputSchema is the path to the input JSON Schema file.
-	InputSchema string `mapstructure:"input_schema"`
-	// OutputSchema is the path to the output JSON Schema file.
-	OutputSchema string `mapstructure:"output_schema"`
-	// Exec describes how to run the tool.
-	Exec ScriptToolExec `mapstructure:"exec"`
-}
-
-// ScriptToolExec describes how to run a script tool with the timeout
-// still in seconds; spec converts it to time.Duration when building the
-// script.Spec. TimeoutSeconds is an explicit integer: unmarshalling a
-// config integer straight into time.Duration would yield nanoseconds.
-type ScriptToolExec struct {
-	// Command is the argv array (first element is the executable).
-	Command []string `mapstructure:"command"`
-	// StdinFormat selects how input is fed to the process ("json").
-	StdinFormat string `mapstructure:"stdin_format"`
-	// StdoutFormat selects how stdout is interpreted ("json" validates
-	// and returns a JSON document; anything else is returned as-is).
-	StdoutFormat string `mapstructure:"stdout_format"`
-	// TimeoutSeconds caps one tool run; <= 0 selects the script
-	// package's default.
-	TimeoutSeconds int `mapstructure:"timeout_seconds"`
-	// Env is extra KEY=VALUE pairs appended to the process environment.
-	Env []string `mapstructure:"env"`
-	// Workdir is the process working directory; empty inherits the
-	// platform's.
-	Workdir string `mapstructure:"workdir"`
-}
-
 // ValidateTools checks the platform config's tools: section the way New
-// would, without opening any environment: names must not collide with a
-// built-in or with each other, both schema files must be readable, and
-// the exec command must be non-empty. Platform entry points call it at
-// startup — the boundary for platform config
+// would, without opening any environment. Platform entry points call it
+// at startup — the boundary for platform config
 // (docs/convention/runtime-safety.md §Boundaries) — so an invalid tools:
 // entry fails fast with an error naming the offending tool instead of
 // surfacing on the first message.
 func (f *Factory) ValidateTools() error {
-	builtins := make(map[string]struct{}, len(tool.BuiltinToolNames()))
-	for _, name := range tool.BuiltinToolNames() {
-		builtins[name] = struct{}{}
-	}
-	seen := make(map[string]struct{}, len(f.Tools))
-	for _, t := range f.Tools {
-		if _, ok := builtins[t.Name]; ok {
-			return fmt.Errorf("script tool %q collides with a built-in: %w", t.Name, tool.ErrDuplicateTool)
-		}
-		if _, ok := seen[t.Name]; ok {
-			return fmt.Errorf("script tool %q is declared twice: %w", t.Name, tool.ErrDuplicateTool)
-		}
-		seen[t.Name] = struct{}{}
-		if len(t.Exec.Command) == 0 {
-			return fmt.Errorf("script tool %q: exec.command is required", t.Name)
-		}
-		if _, err := t.spec(); err != nil {
-			return fmt.Errorf("script tool %q: %w", t.Name, err)
-		}
-	}
-	return nil
-}
-
-// spec builds the script.Spec for one configured script tool, reading
-// its JSON Schema documents from disk.
-func (t ScriptTool) spec() (script.Spec, error) {
-	inputSchema, err := readSchema(t.InputSchema, "input")
-	if err != nil {
-		return script.Spec{}, err
-	}
-	outputSchema, err := readSchema(t.OutputSchema, "output")
-	if err != nil {
-		return script.Spec{}, err
-	}
-	return script.Spec{
-		Name:         t.Name,
-		Description:  t.Description,
-		InputSchema:  inputSchema,
-		OutputSchema: outputSchema,
-		Exec: script.ExecSpec{
-			Command:      t.Exec.Command,
-			StdinFormat:  t.Exec.StdinFormat,
-			StdoutFormat: t.Exec.StdoutFormat,
-			Timeout:      time.Duration(t.Exec.TimeoutSeconds) * time.Second,
-			Env:          t.Exec.Env,
-			Workdir:      t.Exec.Workdir,
-		},
-	}, nil
-}
-
-// readSchema reads a JSON Schema document from path. Some script tools
-// ship one combined document of the form {"input": ..., "output": ...};
-// when the document has that shape, readSchema returns the named half.
-// Any other document is returned as-is.
-func readSchema(path, half string) (json.RawMessage, error) {
-	raw, err := os.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-	var doc map[string]json.RawMessage
-	if err := json.Unmarshal(raw, &doc); err != nil {
-		return raw, nil
-	}
-	if _, ok := doc["input"]; !ok {
-		return raw, nil
-	}
-	if _, ok := doc["output"]; !ok {
-		return raw, nil
-	}
-	if schema, ok := doc[half]; ok {
-		return schema, nil
-	}
-	return raw, nil
+	return script.ValidateConfigs(f.Tools)
 }
 
 // secureMemoryDB enforces the memory-UID trust domain (ADR 0006): a
@@ -245,21 +129,6 @@ func secureMemoryDB(path string) error {
 	}
 	if err := os.Chmod(path, 0o600); err != nil {
 		return fmt.Errorf("chmod %q: %w", path, err)
-	}
-	return nil
-}
-
-// secureWorkspace hands the workspace directory to the agent-UID trust
-// domain (ADR 0006): a privileged platform (euid 0) chowns it to
-// shell.DefaultAgentUID so files written by the files tool (which drops
-// to the same UID) and by shell children share one owner. An
-// unprivileged platform owns the directory itself and skips the chown.
-func secureWorkspace(path string) error {
-	if os.Geteuid() != 0 {
-		return nil
-	}
-	if err := os.Chown(path, shell.DefaultAgentUID, -1); err != nil {
-		return fmt.Errorf("chown %q to agent uid: %w", path, err)
 	}
 	return nil
 }
@@ -295,7 +164,7 @@ func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink)
 	if embedder == nil {
 		embedder = memory.NewHashingEmbedder()
 	}
-	if err := secureWorkspace(env.Workspace()); err != nil {
+	if err := files.SecureWorkspace(env.Workspace(), shell.DefaultAgentUID); err != nil {
 		return nil, errors.Join(err, store.Close())
 	}
 	memSvc := memory.NewService(store, embedder, summarizer)
@@ -341,7 +210,7 @@ func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink)
 		scriptExec = f.NewShellExecutor()
 	}
 	for _, st := range f.Tools {
-		spec, err := st.spec()
+		spec, err := st.Spec()
 		if err != nil {
 			return nil, errors.Join(err, store.Close())
 		}

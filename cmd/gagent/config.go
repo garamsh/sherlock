@@ -13,7 +13,7 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/garamsh/gagent/internal/environment"
-	"github.com/garamsh/gagent/internal/gateway"
+	"github.com/garamsh/gagent/internal/tool/script"
 )
 
 // Default settings, overridable by config file, environment, or flags.
@@ -58,9 +58,9 @@ type Config struct {
 	// hashing default keeps the platform fully offline.
 	Embedder ModelConfig `mapstructure:"embedder"`
 	// Tools lists the script tools registered alongside the built-ins.
-	// gateway.ScriptTool is the config's unmarshal target directly: one
+	// script.Config is the config's unmarshal target directly: one
 	// concept, one shape (docs/convention/simplicity.md).
-	Tools []gateway.ScriptTool `mapstructure:"tools"`
+	Tools []script.Config `mapstructure:"tools"`
 	// TLS carries the gateway's mTLS material (ADR 0017). When unset,
 	// the gateway serves loopback binds only.
 	TLS TLSConfig `mapstructure:"tls"`

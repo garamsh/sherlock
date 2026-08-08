@@ -304,7 +304,7 @@ func TestService_RejectsInvalidInput(t *testing.T) {
 	require.ErrorIs(t, err, memory.ErrInvalidInput)
 }
 
-// TestConsolidate_CompressesEpisodicCluster pins the ADR 0015 platform
+// TestConsolidate_CompressesEpisodicCluster pins the ADR 0011 platform
 // trigger: once at least ConsolidationMinCluster episodic memories are
 // active, Consolidate compresses them into one semantic parent and
 // archives the originals.

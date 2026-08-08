@@ -7,20 +7,20 @@ import (
 )
 
 // DefaultAgentUID is the unprivileged UID the agent's shell runs under
-// after the platform drops privileges (ADR 0006). The platform binary
+// after the platform drops privileges (ADR 0008, ADR 0010). The platform binary
 // must be installed setuid-root, or run under a supervisor with the
 // privilege to switch UID, for ProcessExecutor to use it.
 const DefaultAgentUID = 1001
 
 // DefaultMemoryUID is the UID that owns the environment's memory.db in a
-// privileged deployment (ADR 0006): the platform chowns the file to it at
+// privileged deployment (ADR 0008, ADR 0010): the platform chowns the file to it at
 // environment creation, so agent-UID children get EACCES from the kernel
 // and memory access goes only through the memory service.
 const DefaultMemoryUID = 1002
 
 // ErrAgentUIDUnavailable is returned by ProcessExecutor.Run when the
 // current effective user cannot drop to AgentUID (typically: not running
-// as root or setuid-root). Per ADR 0012 the agent falls back to the three
+// as root or setuid-root). Per ADR 0008 the agent falls back to the three
 // typed tools in this case.
 var ErrAgentUIDUnavailable = errors.New("shell: agent_uid unavailable")
 
@@ -43,7 +43,7 @@ type Executor interface {
 type Request struct {
 	// Command is the program to run. With no Args it is interpreted by
 	// `sh -c`; with Args it is the executable and the Args reach it
-	// verbatim (the script-tool argv form, ADR 0013).
+	// verbatim (the script-tool argv form, ADR 0009).
 	Command string
 	Args    []string
 	// Stdin, when non-nil, is fed to the child's standard input.
@@ -52,7 +52,7 @@ type Request struct {
 	Workdir string
 	Env     []string
 	// NoNetwork runs the child in a fresh, empty network namespace
-	// (CLONE_NEWNET before the UID drop, ADR 0014): no loopback, no
+	// (CLONE_NEWNET before the UID drop, ADR 0010): no loopback, no
 	// interfaces. shell_exec sets it; script tools leave it false —
 	// their network is the operator-sanctioned egress channel.
 	NoNetwork bool
@@ -78,5 +78,5 @@ func (unavailableExecutor) Run(context.Context, Request) (Result, error) {
 // UnavailableExecutor returns an Executor whose Run always fails with
 // ErrAgentUIDUnavailable. It backs script tools when the platform wires
 // no executor: registration still succeeds but calls fail closed instead
-// of silently running as the platform UID (ADR 0014).
+// of silently running as the platform UID (ADR 0010).
 func UnavailableExecutor() Executor { return unavailableExecutor{} }

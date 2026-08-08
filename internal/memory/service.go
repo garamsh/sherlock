@@ -14,7 +14,7 @@ const (
 	DefaultSearchLimit = 10
 )
 
-// Store hides the persistence engine (ADR 0003 escape hatch). It owns
+// Store hides the persistence engine (ADR 0002 escape hatch). It owns
 // rows and indexes only; all scoring lives in the service so retrieval,
 // eviction, and forget share one ranking function.
 type Store interface {
@@ -37,7 +37,7 @@ type Store interface {
 	Close() error
 }
 
-// Embedder converts text to an embedding vector (ADR 0005).
+// Embedder converts text to an embedding vector (ADR 0004).
 type Embedder interface {
 	Embed(ctx context.Context, text string) ([]float32, error)
 }
@@ -50,7 +50,7 @@ type Summarizer interface {
 // Service is the memory domain's behavior contract: the write operations
 // behind the writeback block (Store, Update, Delete), platform maintenance
 // (Compress, Forget, Consolidate), and the runtime queries (Search, Recall,
-// Similar) the agent loop and the search-only memory tool need (ADR 0015).
+// Similar) the agent loop needs (ADR 0011).
 type Service interface {
 	// Store embeds and inserts a new memory, evicting lowest-score-first
 	// when the active index exceeds capacity.
@@ -73,7 +73,7 @@ type Service interface {
 	Forget(ctx context.Context, threshold float64) ([]int64, error)
 	// Consolidate compresses the active episodic cluster into one semantic
 	// parent once it reaches ConsolidationMinCluster; the platform calls it
-	// on environment shutdown (ADR 0015).
+	// on environment shutdown (ADR 0011).
 	Consolidate(ctx context.Context) (CompressResult, error)
 	// Recall is the agent loop's search entry point: hybrid search on the
 	// task statement, trimmed to a token budget, access recorded.
@@ -140,7 +140,7 @@ func validateNew(content string, typ Type, importance float64) error {
 	return nil
 }
 
-// recordAccess marks returned memories as accessed (ADR 0008, Act step).
+// recordAccess marks returned memories as accessed (ADR 0006, Act step).
 func (s *service) recordAccess(ctx context.Context, results []ScoredMemory) error {
 	if len(results) == 0 {
 		return nil

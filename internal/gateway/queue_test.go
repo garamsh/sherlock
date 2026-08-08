@@ -66,7 +66,7 @@ func newBatchQueue(t *testing.T, session *gatedBatchSession) *gateway.Queue {
 	return q
 }
 
-// TestQueue_DrainsQueuedMessagesIntoOneTurn pins ADR 0020: messages
+// TestQueue_DrainsQueuedMessagesIntoOneTurn pins ADR 0016: messages
 // queued during an active run are processed in one subsequent turn that
 // renders each with its ID and sender.
 func TestQueue_DrainsQueuedMessagesIntoOneTurn(t *testing.T) {
@@ -110,7 +110,7 @@ func TestQueue_DrainsQueuedMessagesIntoOneTurn(t *testing.T) {
 		"the first turn's message is not re-drained")
 }
 
-// TestQueue_DrainIsBounded pins the ADR 0020 bound: a turn never takes
+// TestQueue_DrainIsBounded pins the ADR 0016 bound: a turn never takes
 // more than MaxDrainBatch messages; the overflow drains next turn.
 func TestQueue_DrainIsBounded(t *testing.T) {
 	gate := make(chan struct{})
@@ -141,7 +141,7 @@ func TestQueue_DrainIsBounded(t *testing.T) {
 		"the overflow drains in the next turn")
 }
 
-// TestQueue_TerminalEventReferencesBatchIDs pins ADR 0020: each drain
+// TestQueue_TerminalEventReferencesBatchIDs pins ADR 0016: each drain
 // ends with exactly one terminal event, and that event references the
 // batch's message IDs.
 func TestQueue_TerminalEventReferencesBatchIDs(t *testing.T) {

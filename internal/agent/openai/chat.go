@@ -121,7 +121,7 @@ func (m *Model) Chat(ctx context.Context, messages []agent.Message, tools []tool
 }
 
 // toWireMessages maps agent roles one-to-one; they already use the API's
-// vocabulary (ADR 0005 kept the interface provider-shaped).
+// vocabulary (ADR 0004 kept the interface provider-shaped).
 func toWireMessages(messages []agent.Message) []chatMessage {
 	out := make([]chatMessage, len(messages))
 	for i, msg := range messages {

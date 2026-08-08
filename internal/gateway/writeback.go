@@ -13,7 +13,7 @@ import (
 // additions, which carry no score of their own.
 const DefaultAddImportance = 0.5
 
-// Writeback adapts the agent loop's memory writeback (ADR 0008 step 4) to
+// Writeback adapts the agent loop's memory writeback (ADR 0006 step 4) to
 // the memory service. Deletes go through the service so the archive
 // invariant (nothing is hard-deleted) stays owned by the memory package.
 type Writeback struct {

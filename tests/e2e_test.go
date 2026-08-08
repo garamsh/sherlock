@@ -152,7 +152,7 @@ func runMVPScenario(t *testing.T, baseURL, root, agentID string) {
 		"writeback", "turn_finished",
 	}, kinds)
 	assert.Contains(t, got[0]["task"], "] unknown: "+e2eQuestion,
-		"the turn input renders the message with its ID and sender (ADR 0020)")
+		"the turn input renders the message with its ID and sender (ADR 0016)")
 
 	// The agent computed via a discovered shell_exec, then replied via
 	// message_send. The final writeback records the question as an
@@ -174,9 +174,9 @@ func runMVPScenario(t *testing.T, baseURL, root, agentID string) {
 }
 
 // assertMemoryStore opens the agent's memory store and confirms the
-// recorded question is still queryable after shutdown. ADR 0016 captures
+// recorded question is still queryable after shutdown. ADR 0012 captures
 // the inbound message as a second episodic memory, so shutdown
-// consolidation (ADR 0015) compresses the captured turn and the writeback
+// consolidation (ADR 0011) compresses the captured turn and the writeback
 // add into one semantic parent; the assertion matches that parent, which
 // carries both contents.
 func assertMemoryStore(t *testing.T, root string) {

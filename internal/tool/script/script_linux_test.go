@@ -20,7 +20,7 @@ import (
 
 // TestToolScript_Call_RunsAsAgentUID exercises the real executor: the
 // script tool's child runs under the agent UID, not the platform UID
-// (ADR 0014). Requires root for the privilege drop.
+// (ADR 0010). Requires root for the privilege drop.
 func TestToolScript_Call_RunsAsAgentUID(t *testing.T) {
 	if os.Geteuid() != 0 {
 		t.Skip("the privilege drop requires root; run with `sudo -E go test ./internal/tool/script/...`")

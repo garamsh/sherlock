@@ -10,7 +10,7 @@ import (
 
 // ScriptedStep is one canned model reply: either tool-call requests or a
 // final response whose Content should end with the memory writeback block,
-// mirroring the real model contract (ADR 0005).
+// mirroring the real model contract (ADR 0004).
 type ScriptedStep struct {
 	// Content is the raw response text, including the ```memory block.
 	Content string
@@ -21,7 +21,7 @@ type ScriptedStep struct {
 	Err error
 }
 
-// ScriptedModel is the deterministic mock model (ADR 0005): each Chat call
+// ScriptedModel is the deterministic mock model (ADR 0004): each Chat call
 // consumes the next scripted step in order, so tests script exact
 // multi-turn scenarios. Exhausting the script is an error, never a silent
 // fallback. Safe for sequential use by one session.

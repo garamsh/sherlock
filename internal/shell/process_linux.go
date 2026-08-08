@@ -21,7 +21,7 @@ import (
 )
 
 // rlimits are the resource limits ProcessExecutor applies to the child.
-// They are not configurable from the CLI (ADR 0012) but are kept as
+// They are not configurable from the CLI (ADR 0008) but are kept as
 // struct fields so a flag can override them.
 type rlimits struct {
 	CPU          time.Duration
@@ -45,7 +45,7 @@ func DefaultRlimits() rlimits {
 }
 
 // ProcessExecutor runs commands via fork+exec+setuid, dropping privileges
-// to AgentUID and applying resource limits per ADR 0006 and ADR 0012. It
+// to AgentUID and applying resource limits per ADR 0008 and ADR 0010. It
 // is the production Executor implementation.
 //
 // The zero value is not usable; use NewProcessExecutor.
@@ -126,7 +126,7 @@ func (e *ProcessExecutor) Run(ctx context.Context, req Request) (Result, error) 
 	if req.NoNetwork {
 		// unshare runs in the child before the credential drop, while
 		// CAP_SYS_ADMIN is still held: the child lands in a fresh,
-		// empty network namespace (ADR 0014).
+		// empty network namespace (ADR 0010).
 		attr.Unshareflags = syscall.CLONE_NEWNET
 	}
 	cmd.SysProcAttr = attr

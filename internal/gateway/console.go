@@ -12,7 +12,7 @@ import (
 )
 
 // consolePayload is the console sink's wire format (docs/architecture/
-// gateway.md): agent_id is the agent's identity (ADR 0021), which the
+// gateway.md): agent_id is the agent's identity (ADR 0017), which the
 // console reads as the sending agent's ID; channel and target are the
 // routing labels the agent chose. A distinct shape is justified at the
 // wire boundary (docs/convention/simplicity.md).
@@ -35,7 +35,7 @@ func (e *ConsoleStatusError) Error() string {
 	return fmt.Sprintf("console responded with status %d", e.StatusCode)
 }
 
-// ConsoleSink is the production message.Sink (ADR 0009): it delivers every
+// ConsoleSink is the production message.Sink (ADR 0007): it delivers every
 // outbound message to the console endpoint with an HTTP POST. Delivery
 // failure — transport error or non-2xx — falls back to the file outbox
 // with a WARN log, so a message is never silently lost. The mTLS client

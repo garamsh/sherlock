@@ -1,6 +1,6 @@
 # Local deployment (testing only)
 
-Run the gagent platform in Docker. **Local testing only, on a trusted host.** The published port reaches beyond the container's loopback, so the gateway requires mTLS (ADR 0017): it serves HTTPS and verifies client certificates against a throwaway CA you generate below.
+Run the gagent platform in Docker. **Local testing only, on a trusted host.** The published port reaches beyond the container's loopback, so the gateway requires mTLS (ADR 0013): it serves HTTPS and verifies client certificates against a throwaway CA you generate below.
 
 ## Requirements
 

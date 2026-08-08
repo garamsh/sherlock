@@ -83,7 +83,7 @@ func TestServer_PostMessageRejectsBadRequests(t *testing.T) {
 }
 
 // TestServer_PostMessagePlainHTTPHasNoSender pins the sender source
-// (ADR 0020): over plain HTTP there is no caller identity, so the
+// (ADR 0016): over plain HTTP there is no caller identity, so the
 // envelope's sender is empty and the turn renders it as "unknown".
 func TestServer_PostMessagePlainHTTPHasNoSender(t *testing.T) {
 	session := &fakeSession{}
@@ -129,7 +129,7 @@ func TestServer_MethodNotAllowed(t *testing.T) {
 	assert.Equal(t, http.StatusMethodNotAllowed, resp.StatusCode)
 }
 
-// TestServer_LegacyEnvPathsAreGone pins ADR 0021: the API is
+// TestServer_LegacyEnvPathsAreGone pins ADR 0017: the API is
 // agent-addressed; the old /envs/ paths serve nothing.
 func TestServer_LegacyEnvPathsAreGone(t *testing.T) {
 	srv := newTestServer(t, func(string, agent.EventSink) (*gateway.Runtime, error) {
@@ -199,7 +199,7 @@ func TestServer_EventsStreamsTurnEvents(t *testing.T) {
 	resp.Body.Close()
 
 	// The subscriber sees the loop events the session emitted; the
-	// terminal event references the drained message IDs (ADR 0020).
+	// terminal event references the drained message IDs (ADR 0016).
 	var kinds []string
 	var terminal map[string]any
 	deadline := time.After(5 * time.Second)

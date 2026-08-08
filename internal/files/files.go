@@ -21,7 +21,7 @@ type Entry struct {
 // FS is a filesystem rooted at a workspace directory. All operations
 // resolve relative paths against the root and reject paths that escape it.
 // Confinement is lexical: symbolic links inside the workspace are followed
-// without further checks (ADR 0007 — convenience confinement, not a trust
+// without further checks (ADR 0005 — convenience confinement, not a trust
 // boundary).
 type FS struct {
 	root  string
@@ -31,7 +31,7 @@ type FS struct {
 // Open returns an FS rooted at root, creating the directory on first use.
 // A positive fsuid drops filesystem operations to that UID (Linux
 // setfsuid, privileged callers only) so files the tool creates share the
-// agent UID's ownership (ADR 0006); fsuid <= 0 or an unprivileged caller
+// agent UID's ownership (ADR 0008, ADR 0010); fsuid <= 0 or an unprivileged caller
 // keeps the current UID.
 func Open(root string, fsuid int) (*FS, error) {
 	abs, err := filepath.Abs(root)
@@ -50,7 +50,7 @@ func Open(root string, fsuid int) (*FS, error) {
 func (f *FS) Root() string { return f.root }
 
 // SecureWorkspace hands the workspace directory to the given trust-domain
-// UID (ADR 0006): a privileged server (euid 0) chowns it to uid so files
+// UID (ADR 0008, ADR 0010): a privileged server (euid 0) chowns it to uid so files
 // written by the files tool (which drops to the same UID) and by shell
 // children share one owner. An unprivileged server owns the directory
 // itself and skips the chown.

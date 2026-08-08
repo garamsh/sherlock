@@ -123,7 +123,7 @@ func runAgentTurn(ctx context.Context, cfg Config, agentID, msg, ego string) err
 
 // serveAgent runs the agent's HTTP gateway until an interrupt or SIGTERM.
 // Callers authenticate with mTLS when the tls: config section is set
-// (ADR 0017); without it the gateway serves loopback binds only.
+// (ADR 0013); without it the gateway serves loopback binds only.
 func serveAgent(ctx context.Context, cfg Config, agentID, ego string) error {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	slog.SetDefault(logger)
@@ -133,7 +133,7 @@ func serveAgent(ctx context.Context, cfg Config, agentID, ego string) error {
 		return err
 	}
 	if tlsConfig == nil && !isLoopbackAddr(cfg.Addr) {
-		return fmt.Errorf("addr %q is not a loopback bind: serving beyond localhost requires the tls: config section (ADR 0017)", cfg.Addr)
+		return fmt.Errorf("addr %q is not a loopback bind: serving beyond localhost requires the tls: config section (ADR 0013)", cfg.Addr)
 	}
 
 	factory, err := newAgentFactory(ctx, cfg, ego, nil, logger)

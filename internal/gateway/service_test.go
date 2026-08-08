@@ -74,7 +74,7 @@ func newTestLogger() *slog.Logger {
 }
 
 // noopCapture is the no-op inbound-message capture for runtimes whose
-// tests do not exercise ADR 0016 capture.
+// tests do not exercise ADR 0012 capture.
 func noopCapture(context.Context, string) error { return nil }
 
 // newTestQueue starts a queue over a fake factory building stub runtimes
@@ -102,7 +102,7 @@ func TestQueue_EnqueueAssignsIDAndRunsMessage(t *testing.T) {
 		return len(session.startedTasks()) == 1
 	}, 5*time.Second, time.Millisecond)
 	assert.Equal(t, "["+id+"] alice: hello", session.startedTasks()[0],
-		"the turn input renders the message with its ID and sender (ADR 0020)")
+		"the turn input renders the message with its ID and sender (ADR 0016)")
 }
 
 func TestQueue_SerializesRunsFIFO(t *testing.T) {
@@ -191,7 +191,7 @@ func TestQueue_FailedRunDoesNotBlockQueue(t *testing.T) {
 	}, 5*time.Second, time.Millisecond)
 }
 
-// TestQueue_EnqueueCapturesInboundMessage pins the ADR 0016 capture
+// TestQueue_EnqueueCapturesInboundMessage pins the ADR 0012 capture
 // step: every accepted message is captured exactly once, at accept time,
 // before its run starts.
 func TestQueue_EnqueueCapturesInboundMessage(t *testing.T) {
@@ -231,7 +231,7 @@ func TestQueue_EnqueueCapturesInboundMessage(t *testing.T) {
 }
 
 // TestQueue_CaptureFailureRejectsEnqueue pins the failure contract of
-// the ADR 0016 capture step: a message whose capture fails is not
+// the ADR 0012 capture step: a message whose capture fails is not
 // accepted and never runs, so no accepted message goes uncaptured.
 func TestQueue_CaptureFailureRejectsEnqueue(t *testing.T) {
 	session := &fakeSession{}

@@ -67,7 +67,7 @@ func (f *fakeCompactor) Compact(_ context.Context, history []agent.Message) ([]a
 }
 
 // newEchoTool returns a mock tool (mockery) that echoes its input text.
-// The scenario documents the scripted mock model contract (ADR 0005): each
+// The scenario documents the scripted mock model contract (ADR 0004): each
 // Chat call consumes exactly one scripted step, in order.
 func newEchoTool(t *testing.T) *mocks.MockTool {
 	t.Helper()

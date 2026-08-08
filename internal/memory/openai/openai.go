@@ -25,7 +25,7 @@ const maxErrorBody = 512
 
 // Config carries the provider settings, already parsed at the command
 // boundary. APIKey holds the secret value resolved from the environment —
-// never a config-file literal (ADR 0004).
+// never a config-file literal (ADR 0003).
 type Config struct {
 	// BaseURL is the provider's API root, e.g. https://api.openai.com/v1.
 	BaseURL string

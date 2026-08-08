@@ -16,7 +16,7 @@ import (
 // Default settings, overridable by config file, environment, or flags.
 const (
 	// defaultAddr binds loopback only: without a tls: section the
-	// gateway refuses non-loopback binds (ADR 0017).
+	// gateway refuses non-loopback binds (ADR 0013).
 	defaultAddr = "127.0.0.1:8080"
 
 	// defaultMemoryPath is the agent's SQLite memory file.
@@ -57,12 +57,12 @@ type Config struct {
 	// computer tools from at startup (ADR 0018); the default is the
 	// pod-local sidecar.
 	ToolServers []string `mapstructure:"tool-servers"`
-	// Model selects the chat model provider (ADR 0005).
+	// Model selects the chat model provider (ADR 0004).
 	Model ModelConfig `mapstructure:"model"`
-	// Embedder selects the memory embedder provider (ADR 0005); the
+	// Embedder selects the memory embedder provider (ADR 0004); the
 	// hashing default keeps the platform fully offline.
 	Embedder ModelConfig `mapstructure:"embedder"`
-	// TLS carries the gateway's mTLS material (ADR 0017). When unset,
+	// TLS carries the gateway's mTLS material (ADR 0013). When unset,
 	// the gateway serves loopback binds only.
 	TLS TLSConfig `mapstructure:"tls"`
 	// Console selects the console sink: with URL set, every message_send
@@ -79,7 +79,7 @@ type ConsoleConfig struct {
 	URL string `mapstructure:"url"`
 }
 
-// TLSConfig selects the gateway's mTLS material (ADR 0017): the server
+// TLSConfig selects the gateway's mTLS material (ADR 0013): the server
 // certificate/key pair and the client CA the gateway verifies callers
 // against. All three paths are set together or the section is rejected;
 // an empty section means plain HTTP on loopback binds only.
@@ -96,7 +96,7 @@ type TLSConfig struct {
 // ModelConfig selects a model provider: the chat model under the model:
 // section, the memory embedder under the embedder: section. The API key
 // itself never appears here: APIKeyEnv names the environment variable
-// holding it (ADR 0004).
+// holding it (ADR 0003).
 type ModelConfig struct {
 	// Provider selects the implementation: "mock" (scripted) or "openai".
 	Provider string `mapstructure:"provider"`

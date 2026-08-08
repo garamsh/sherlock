@@ -52,7 +52,7 @@ const (
 )
 
 // WritebackOp is one parsed operation from the memory block that ends every
-// model response (ADR 0008). ID is set for keep/update/delete; Content for
+// model response (ADR 0006). ID is set for keep/update/delete; Content for
 // update/add; Type for add.
 type WritebackOp struct {
 	Kind    OpKind `json:"kind"`

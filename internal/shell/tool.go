@@ -14,7 +14,7 @@ const ToolName = "shell_exec"
 
 // toolDescription is the one-sentence summary advertised to model
 // providers, matching the shell_exec responsibility in
-// docs/architecture/agent.md (ADR 0012).
+// docs/architecture/agent.md (ADR 0008).
 const toolDescription = "Run a shell command in the agent's environment and return its captured output. The working directory is the environment's workspace, so relative paths resolve against the same tree the files tool writes to."
 
 // Tool is the shell_exec tool adapter: it validates input, delegates to an
@@ -75,7 +75,7 @@ type CallInput struct {
 
 // Call dispatches the command to the executor and marshals the result.
 // Input has already passed schema validation at the contract boundary.
-// A timeout is a normal outcome, not a tool failure: per ADR 0012 the
+// A timeout is a normal outcome, not a tool failure: per ADR 0008 the
 // model receives the structured result with timed_out: true.
 func (t *Tool) Call(ctx context.Context, input json.RawMessage) (json.RawMessage, error) {
 	return tool.CallTyped(ctx, t.doCall, input)

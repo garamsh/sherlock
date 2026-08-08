@@ -16,7 +16,7 @@ import (
 )
 
 // TestFS_PrivilegedWritesAsAgentUID pins the agent-UID workspace domain
-// (ADR 0006): a privileged files tool drops its filesystem UID, so a file
+// (ADR 0008, ADR 0010): a privileged files tool drops its filesystem UID, so a file
 // it writes is owned by the agent UID like a shell-created file.
 func TestFS_PrivilegedWritesAsAgentUID(t *testing.T) {
 	if os.Geteuid() != 0 {

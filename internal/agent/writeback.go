@@ -18,7 +18,7 @@ import (
 var ErrMalformedWriteback = errors.New("malformed memory writeback block")
 
 // writebackFence opens the structured memory block that ends every model
-// response (ADR 0008 step 4).
+// response (ADR 0006 step 4).
 const writebackFence = "```memory"
 
 // WritebackError reports a memory block that could not be applied. It

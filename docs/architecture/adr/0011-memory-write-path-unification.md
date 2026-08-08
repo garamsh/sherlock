@@ -13,7 +13,7 @@ The model decides content; the platform runs the mechanics.
 
 - The writeback block is the single write path: `keep` / `update` / `delete` / `add` over recalled IDs plus new facts.
 - The model's memory surface is read-only search — and in the pod topology memory stops being a tool at all (ADR 0018): recall injection covers the need.
-- Maintenance is platform-owned and threshold-triggered: eviction archives by score threshold; consolidation runs on store-size threshold or shutdown, never as a model-invoked op.
+- Maintenance is platform-owned and threshold-triggered: eviction archives by score threshold; consolidation runs on store-size threshold (evaluated after a completed turn, never mid-turn) or shutdown, never as a model-invoked op.
 - The model can still consolidate deliberately through the writeback itself: `delete` the parts, `add` the summary. No dedicated op is needed.
 
 ## Consequences

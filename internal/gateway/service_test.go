@@ -191,6 +191,72 @@ func TestQueue_FailedRunDoesNotBlockQueue(t *testing.T) {
 	}, 5*time.Second, time.Millisecond)
 }
 
+// TestQueue_ConsolidationRunsAfterTurn pins the ADR 0011 threshold
+// trigger wiring: after a completed turn the runner evaluates
+// ConsolidateIfDue, off the turn path.
+func TestQueue_ConsolidationRunsAfterTurn(t *testing.T) {
+	session := &fakeSession{}
+	var mu sync.Mutex
+	var calls int
+	factory := &fakeFactory{newFn: func(string, agent.EventSink) (*gateway.Runtime, error) {
+		return &gateway.Runtime{
+			Session: session,
+			Capture: noopCapture,
+			ConsolidateIfDue: func(context.Context) error {
+				mu.Lock()
+				calls++
+				mu.Unlock()
+				return nil
+			},
+			Close: func(context.Context) error { return nil },
+		}, nil
+	}}
+	q, err := gateway.NewQueue(factory, "env-1", newTestLogger())
+	require.NoError(t, err)
+	defer func() { q.Close() }()
+
+	_, err = q.Enqueue(context.Background(), "", "hi")
+	require.NoError(t, err)
+	require.Eventually(t, func() bool {
+		return len(session.startedTasks()) == 1
+	}, 5*time.Second, time.Millisecond)
+	require.Eventually(t, func() bool {
+		mu.Lock()
+		defer mu.Unlock()
+		return calls == 1
+	}, 5*time.Second, time.Millisecond, "the trigger fires once, after the turn")
+}
+
+// TestQueue_ConsolidationFailureDoesNotFailTurn pins the failure
+// contract: a consolidation error logs at WARN and the queue keeps
+// processing turns.
+func TestQueue_ConsolidationFailureDoesNotFailTurn(t *testing.T) {
+	session := &fakeSession{}
+	factory := &fakeFactory{newFn: func(string, agent.EventSink) (*gateway.Runtime, error) {
+		return &gateway.Runtime{
+			Session:          session,
+			Capture:          noopCapture,
+			ConsolidateIfDue: func(context.Context) error { return errors.New("store locked") },
+			Close:            func(context.Context) error { return nil },
+		}, nil
+	}}
+	q, err := gateway.NewQueue(factory, "env-1", newTestLogger())
+	require.NoError(t, err)
+	defer func() { q.Close() }()
+
+	_, err = q.Enqueue(context.Background(), "", "first")
+	require.NoError(t, err)
+	_, err = q.Enqueue(context.Background(), "", "second")
+	require.NoError(t, err)
+	// Both messages are processed despite the failing trigger; whether
+	// they share one drained turn or run back-to-back is the runner's call.
+	require.Eventually(t, func() bool {
+		joined := strings.Join(session.startedTasks(), "\n")
+		return strings.Contains(joined, "first") && strings.Contains(joined, "second")
+	}, 5*time.Second, time.Millisecond,
+		"both messages are processed despite the failing trigger")
+}
+
 // TestQueue_EnqueueCapturesInboundMessage pins the ADR 0012 capture
 // step: every accepted message is captured exactly once, at accept time,
 // before its run starts.

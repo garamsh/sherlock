@@ -3,6 +3,7 @@ package gateway_test
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -132,6 +133,63 @@ func TestFactory_NewSinkBuildsAgentSink(t *testing.T) {
 	assert.Equal(t, "env-1", gotAgentID)
 	assert.Equal(t, filepath.Join(root, gateway.OutboxDir), gotFallback.Dir(),
 		"the agent sink receives the default file outbox as its fallback")
+}
+
+// TestQueue_ThresholdConsolidationRunsAfterTurn is the ADR 0011
+// acceptance case with a real store: seeded past ConsolidationThreshold,
+// one completed turn consolidates the episodic cluster — no shutdown.
+func TestQueue_ThresholdConsolidationRunsAfterTurn(t *testing.T) {
+	root := t.TempDir()
+
+	// Seed the store past the threshold, then close it; the runtime
+	// opens the same file.
+	seed, err := sqlite.Open(memoryPath(root))
+	require.NoError(t, err)
+	seedSvc := memory.NewService(seed, memory.NewHashingEmbedder(), memory.NewConcatSummarizer())
+	for i := range memory.ConsolidationThreshold {
+		_, err := seedSvc.Store(context.Background(), memory.StoreInput{
+			Content:         fmt.Sprintf("episodic note %d", i),
+			Type:            memory.TypeEpisodic,
+			ImportanceScore: 0.5,
+			Source:          "test",
+		})
+		require.NoError(t, err)
+	}
+	require.NoError(t, seedSvc.Close())
+
+	factory := &gateway.Factory{
+		MemoryPath: memoryPath(root),
+		NewModel:   replyModel,
+		Sink:       &recordingSink{},
+	}
+	rt, err := factory.New(context.Background(), "env-1", nil)
+	require.NoError(t, err)
+
+	_, err = rt.Session.Run(context.Background(), "one turn")
+	require.NoError(t, err)
+	require.NoError(t, rt.ConsolidateIfDue(context.Background()),
+		"the after-turn trigger runs against the real store")
+
+	store, err := sqlite.Open(memoryPath(root))
+	require.NoError(t, err)
+	defer func() {
+		assert.NoError(t, store.Close())
+	}()
+	active, err := store.Active(context.Background())
+	require.NoError(t, err)
+	var episodic, semantic int
+	for _, m := range active {
+		switch m.Type {
+		case memory.TypeEpisodic:
+			episodic++
+		case memory.TypeSemantic:
+			semantic++
+		}
+	}
+	assert.Zero(t, episodic, "the whole episodic cluster archived")
+	assert.Positive(t, semantic, "the cluster compressed into semantic parents")
+
+	require.NoError(t, rt.Close(context.Background()))
 }
 
 // stubEmbedder returns a distinctive short vector so tests can tell it

@@ -73,8 +73,12 @@ type Service interface {
 	Forget(ctx context.Context, threshold float64) ([]int64, error)
 	// Consolidate compresses the active episodic cluster into one semantic
 	// parent once it reaches ConsolidationMinCluster; the platform calls it
-	// on environment shutdown (ADR 0011).
+	// on shutdown (ADR 0011).
 	Consolidate(ctx context.Context) (CompressResult, error)
+	// ConsolidateIfDue is the threshold trigger: it consolidates when the
+	// active episodic count has crossed ConsolidationThreshold, and is a
+	// no-op below it. The gateway evaluates it after a completed turn.
+	ConsolidateIfDue(ctx context.Context) (CompressResult, error)
 	// Recall is the agent loop's search entry point: hybrid search on the
 	// task statement, trimmed to a token budget, access recorded.
 	Recall(ctx context.Context, task string, tokenBudget int) ([]ScoredMemory, error)

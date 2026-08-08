@@ -5,18 +5,17 @@
 
 ## Context
 
-`docs/PLAN.md` §6 fixes the language as Go and the working language as English. PLAN §5.1 names a top-level structure of `gateway/`, `agent/`, `tools/`, while `docs/convention/stack-go.md` mandates Layout A (`cmd/<binary>` + `internal/<domain>`) with a banned-name list. The two must be reconciled without adding layers beyond Gateway / Agent / Tool.
+`docs/PLAN.md` §6 fixes the language as Go and the working language as English. PLAN §5.1 names a top-level structure of `gateway/`, `agent/`, `tools/`, while `docs/convention/stack-go.md` mandates Layout A (`cmd/<binary>` + `internal/<domain>`) with a banned-name list. The two must be reconciled without adding layers.
 
 ## Decision
 
-One Go module at the repository root. The three components map to packages, not top-level folders:
+One Go module at the repository root. Components map to packages, not top-level folders:
 
-- Gateway → `cmd/gateway/main.go` (thin entrypoint) + `internal/gateway/`
-- Agent → `internal/agent/`
-- Tool → `internal/tool/` (shared contract and registry) with one package per tool implementation (`internal/memory/`, `internal/files/`, `internal/message/`)
+- Binaries live under `cmd/` — today `cmd/gagent/` (gateway and one-shot agent runs); the pod topology (ADR 0018) splits the shipped binaries into agent and sidecar under the same rule.
+- The reasoning loop → `internal/agent/`; ingress and monitoring → `internal/gateway/`; the tool contract → `internal/tool/`, with one package per tool implementation (`internal/memory/`, `internal/files/`, `internal/message/`, `internal/shell/`).
+- End-to-end tests that wire multiple domains live in `tests/` at the module root, per stack-go.md §7.
 
 ## Consequences
 
-- The logical 3-component architecture of PLAN §2 is preserved; PLAN §5.1's folder names are interpreted as component names, following stack-go.md (conventions take precedence).
 - Tool implementations are ordinary domain packages that import the `internal/tool/` contract; no plugin system or extra layer is introduced.
-- End-to-end tests that wire multiple domains live in `tests/` at the module root, per stack-go.md §7.
+- Conventions take precedence over PLAN folder names (stack-go.md).

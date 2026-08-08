@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"os"
+	"strings"
 	"time"
 
 	"github.com/garamsh/gagent/internal/shell"
@@ -33,8 +35,13 @@ type ExecSpec struct {
 	StdinFormat  string
 	StdoutFormat string
 	Timeout      time.Duration
-	Env          []string
-	Workdir      string
+	// Env holds KEY=VALUE entries appended to the child's scrubbed
+	// environment, plus bare KEY passthrough entries: a bare KEY
+	// resolves its value from the sidecar's own process environment at
+	// spawn (ADR 0003's explicit channel — the secret never sits in
+	// the config file).
+	Env     []string
+	Workdir string
 }
 
 // ToolScript is the universal adapter: it runs any executable with JSON
@@ -54,6 +61,26 @@ var _ tool.Tool = (*ToolScript)(nil)
 // New returns a ToolScript for the given spec, executing through exec.
 func New(spec Spec, exec shell.Executor) *ToolScript {
 	return &ToolScript{spec: spec, exec: exec}
+}
+
+// resolveEnv builds the child's environment additions: KEY=VALUE entries
+// pass through unchanged; a bare KEY resolves its value from the
+// sidecar's process environment at spawn. An unset passthrough variable
+// fails the call, naming the key.
+func resolveEnv(entries []string) ([]string, error) {
+	out := make([]string, 0, len(entries))
+	for _, e := range entries {
+		if strings.Contains(e, "=") {
+			out = append(out, e)
+			continue
+		}
+		value, ok := os.LookupEnv(e)
+		if !ok {
+			return nil, fmt.Errorf("env passthrough %q is not set in the sidecar environment", e)
+		}
+		out = append(out, e+"="+value)
+	}
+	return out, nil
 }
 
 // Name returns the tool name from the spec.
@@ -79,13 +106,17 @@ func (t *ToolScript) Call(ctx context.Context, input json.RawMessage) (json.RawM
 	if timeout <= 0 {
 		timeout = DefaultTimeout
 	}
+	env, err := resolveEnv(t.spec.Exec.Env)
+	if err != nil {
+		return nil, err
+	}
 	res, err := t.exec.Run(ctx, shell.Request{
 		Command: t.spec.Exec.Command[0],
 		Args:    t.spec.Exec.Command[1:],
 		Stdin:   input,
 		Timeout: timeout,
 		Workdir: t.spec.Exec.Workdir,
-		Env:     t.spec.Exec.Env,
+		Env:     env,
 	})
 	if err != nil {
 		return nil, err

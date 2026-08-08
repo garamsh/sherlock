@@ -165,7 +165,11 @@ func (e *ProcessExecutor) Run(ctx context.Context, req Request) (Result, error) 
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 
-	if err := cmd.Start(); err != nil {
+	start := cmd.Start
+	if req.NoNetwork && euid != 0 {
+		start = func() error { return startUsernsChild(cmd) }
+	}
+	if err := start(); err != nil {
 		if req.NoNetwork && euid != 0 && errors.Is(err, syscall.EPERM) {
 			// User namespaces are disabled on this host; fail closed
 			// with the documented unavailability (ADR 0010).

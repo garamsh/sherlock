@@ -92,6 +92,33 @@ func TestValidateConfigs(t *testing.T) {
 	}
 }
 
+// TestValidateConfigs_EnvPassthrough pins the startup boundary for the
+// ADR 0003 custody channel: a bare KEY entry whose variable is unset
+// fails validation naming the tool and the key; a set variable passes,
+// and KEY=VALUE literals are unchanged.
+func TestValidateConfigs_EnvPassthrough(t *testing.T) {
+	input, output := writeConfigSchemas(t, t.TempDir())
+	cfg := script.Config{
+		Name:         "gh-tool",
+		Description:  "GitHub tooling.",
+		InputSchema:  input,
+		OutputSchema: output,
+		Exec: script.ExecConfig{
+			Command: []string{"true"},
+			Env:     []string{"GH_TOKEN", "PLAIN=literal"},
+		},
+	}
+
+	err := script.ValidateConfigs([]script.Config{cfg})
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), `"gh-tool"`, "the error names the tool")
+	assert.Contains(t, err.Error(), "GH_TOKEN", "the error names the unset key")
+
+	t.Setenv("GH_TOKEN", "s3cret")
+	assert.NoError(t, script.ValidateConfigs([]script.Config{cfg}),
+		"a set passthrough variable and a literal both pass")
+}
+
 func TestConfig_SpecSchemaDocument(t *testing.T) {
 	dir := t.TempDir()
 	combined := filepath.Join(dir, "combined.json")

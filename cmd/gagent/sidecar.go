@@ -131,6 +131,15 @@ func serveSidecar(ctx context.Context, cfg SidecarConfig) error {
 		return fmt.Errorf("addr %q is not a loopback bind: the contract listener is unauthenticated and serves loopback only until contract authentication exists (docs/architecture/security.md)", cfg.Addr)
 	}
 
+	// Single-account custody (ADR 0003): when exec-uid is the sidecar's
+	// own account, tool children share it, so the sidecar's /proc
+	// environ would be readable to them — close that channel.
+	if cfg.ExecUID == os.Geteuid() {
+		if err := shell.ProtectEnviron(); err != nil {
+			return err
+		}
+	}
+
 	if err := script.ValidateConfigs(cfg.Tools); err != nil {
 		return err
 	}

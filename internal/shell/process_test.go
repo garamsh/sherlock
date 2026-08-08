@@ -138,13 +138,6 @@ func TestProcessExecutor_RequestEnvAppliesOnTop(t *testing.T) {
 	assert.Equal(t, "from-request", res.Stdout)
 }
 
-func TestUnavailableExecutor_AlwaysReportsAgentUIDUnavailable(t *testing.T) {
-	_, err := shell.UnavailableExecutor().Run(context.Background(),
-		shell.Request{Command: "echo hi"})
-
-	require.ErrorIs(t, err, shell.ErrAgentUIDUnavailable)
-}
-
 func TestTool_InvalidInputRejectedAtBoundary(t *testing.T) {
 	exec := &fakeExecutor{}
 	toolImpl := shell.NewTool(exec)

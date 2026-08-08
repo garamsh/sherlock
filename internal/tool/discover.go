@@ -9,11 +9,20 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"time"
 )
+
+// DefaultCallTimeout bounds one contract request — a Discover listing or
+// a remote tool Call — so a server that accepts the connection but never
+// responds cannot stall a turn indefinitely (the client-side counterpart
+// of the shell executor's exec-timeout).
+const DefaultCallTimeout = 30 * time.Second
 
 // Discover lists the descriptors of the registry served at baseURL (see
 // NewHandler), so its tools can join a local registry as remote tools.
 func Discover(ctx context.Context, baseURL string) ([]Descriptor, error) {
+	ctx, cancel := context.WithTimeout(ctx, DefaultCallTimeout)
+	defer cancel()
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet,
 		strings.TrimSuffix(baseURL, "/")+"/tools", nil)
 	if err != nil {
@@ -37,14 +46,37 @@ func Discover(ctx context.Context, baseURL string) ([]Descriptor, error) {
 // NewRemoteTool returns a Tool backed by the registry served at baseURL
 // (see NewHandler): Call forwards the input over the wire and reconstructs
 // the server's typed errors, so a remote tool joins a local registry like
-// any other tool.
-func NewRemoteTool(desc Descriptor, baseURL string) Tool {
-	return &remoteTool{desc: desc, baseURL: strings.TrimSuffix(baseURL, "/")}
+// any other tool. Every call carries a bounded deadline —
+// DefaultCallTimeout unless WithCallTimeout overrides it.
+func NewRemoteTool(desc Descriptor, baseURL string, opts ...RemoteOption) Tool {
+	t := &remoteTool{
+		desc:    desc,
+		baseURL: strings.TrimSuffix(baseURL, "/"),
+		timeout: DefaultCallTimeout,
+	}
+	for _, opt := range opts {
+		opt(t)
+	}
+	return t
+}
+
+// RemoteOption customizes a remote tool.
+type RemoteOption func(*remoteTool)
+
+// WithCallTimeout overrides DefaultCallTimeout for the tool's calls. A
+// non-positive value keeps the default.
+func WithCallTimeout(d time.Duration) RemoteOption {
+	return func(t *remoteTool) {
+		if d > 0 {
+			t.timeout = d
+		}
+	}
 }
 
 type remoteTool struct {
 	desc    Descriptor
 	baseURL string
+	timeout time.Duration
 }
 
 func (t *remoteTool) Name() string                 { return t.desc.Name }
@@ -55,6 +87,8 @@ func (t *remoteTool) OutputSchema() json.RawMessage {
 }
 
 func (t *remoteTool) Call(ctx context.Context, input json.RawMessage) (json.RawMessage, error) {
+	ctx, cancel := context.WithTimeout(ctx, t.timeout)
+	defer cancel()
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost,
 		t.baseURL+"/tools/"+t.desc.Name+"/call", bytes.NewReader(input))
 	if err != nil {
@@ -63,7 +97,7 @@ func (t *remoteTool) Call(ctx context.Context, input json.RawMessage) (json.RawM
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("call %q: %w", t.desc.Name, err)
+		return nil, t.callError(err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
@@ -71,9 +105,22 @@ func (t *remoteTool) Call(ctx context.Context, input json.RawMessage) (json.RawM
 	}
 	out, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("call %q: read output: %w", t.desc.Name, err)
+		return nil, t.callError(fmt.Errorf("read output: %w", err))
 	}
 	return json.RawMessage(out), nil
+}
+
+// callError wraps a transport failure: an expired per-call deadline is a
+// typed execution failure the model can read and recover from, never a
+// validation failure; anything else stays an ordinary wrapped error.
+func (t *remoteTool) callError(err error) error {
+	if errors.Is(err, context.DeadlineExceeded) {
+		return &ExecutionError{
+			Tool: t.desc.Name,
+			Err:  fmt.Errorf("call timed out after %s", t.timeout),
+		}
+	}
+	return fmt.Errorf("call %q: %w", t.desc.Name, err)
 }
 
 // decodeWireError reconstructs the typed error a wireError envelope carries,

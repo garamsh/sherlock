@@ -14,9 +14,11 @@ Governs the environment model: what an environment is, its topology, and its tru
 
 ## Current state
 
-The platform is a single binary in a single container hosting `data/envs/<agent-id>/` (`workspace/` + `memory.db`); the directory is the isolation unit (teardown, migration, backup are directory operations). UID trust domains apply only when the binary runs privileged (setuid-root): `workspace/` is chowned to the agent UID and the files tool drops its filesystem UID to it, while `shell_exec` and script-tool children drop to the agent UID, the shell additionally in a fresh empty network namespace. The shipped distroless nonroot image cannot drop privileges, so those paths report `agent_uid unavailable` under it. The migration to the pod topology (ADR 0018) is tracked separately.
+The platform is a single binary in a single container hosting `data/envs/<agent-id>/` (`workspace/` + `memory.db`); the directory is the isolation unit (teardown, migration, backup are directory operations). UID trust domains apply only when the binary runs privileged (setuid-root): `workspace/` is chowned to the agent UID and the files tool drops its filesystem UID to it, while `shell_exec` and script-tool children drop to the agent UID, the shell additionally in a fresh empty network namespace. The shipped distroless nonroot image cannot drop privileges, so those paths report `agent_uid unavailable` under it.
+
+The first migration step exists alongside it: `gagent sidecar` serves one workspace (config key, created on first use), `shell_exec`, and the script tools declared in its own config over the tool contract, with the same UID trust-domain behavior. The agent still consumes the in-process tools; rewiring it to the contract client is the next step.
 
 ## Open questions
 
-- The agent↔sidecar transport (pod-local socket vs HTTP) — decided with the contract protocol work.
+- The agent↔sidecar authentication (pod-local listener today) — with the contract protocol work.
 - The sidecar configuration format (base image plus tool and policy declaration) — the script-tool shape is the seed.

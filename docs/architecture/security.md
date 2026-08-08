@@ -17,7 +17,7 @@ Governs the security model: trust domains, secret custody, and egress. Rationale
 
 ## Current state
 
-One container today. UID trust domains apply only when the platform binary runs privileged (setuid-root): `memory.db` is chowned to the memory UID with mode 0600, `workspace/` to the agent UID, and `shell_exec` and script-tool children drop to the agent UID — the shell additionally in a fresh empty network namespace, while script tools keep network as operator-sanctioned egress. The shipped distroless nonroot image cannot drop privileges, so those paths report `agent_uid unavailable` under it. The gateway enforces mTLS per ADR 0013, and its TLS key and the platform config must be 0600 owner-only — the gateway refuses a group/other-readable key at startup. Child processes start from a minimal scrubbed environment; a script tool's `exec.env` entries are the explicit channel for additional variables. The two-container split is pending with the ADR 0018 migration.
+One container today. UID trust domains apply only when the platform binary runs privileged (setuid-root): `memory.db` is chowned to the memory UID with mode 0600, `workspace/` to the agent UID, and `shell_exec` and script-tool children drop to the agent UID — the shell additionally in a fresh empty network namespace, while script tools keep network as operator-sanctioned egress. The shipped distroless nonroot image cannot drop privileges, so those paths report `agent_uid unavailable` under it. The gateway enforces mTLS per ADR 0013, and its TLS key and the platform config must be 0600 owner-only — the gateway refuses a group/other-readable key at startup. Child processes start from a minimal scrubbed environment; a script tool's `exec.env` entries are the explicit channel for additional variables. `gagent sidecar` serves the computer over the tool contract with the same UID trust-domain behavior; its listener is pod-local and unauthenticated in this phase, so a non-loopback bind exposes an unauthenticated tool server. The two-container split is pending with the ADR 0018 migration.
 
 ## Rejected alternatives
 
@@ -27,5 +27,5 @@ One container today. UID trust domains apply only when the platform binary runs 
 
 ## Open questions
 
-- Authentication between the agent container and its sidecar (how the sidecar knows the caller is its pod's agent) — decided with the contract protocol.
+- Authentication between the agent container and its sidecar (how the sidecar knows the caller is its pod's agent) — the contract listener ships pod-local and unauthenticated until this is decided.
 - The shared-sidecar account model — with the multi-tenancy work.

@@ -54,7 +54,7 @@ One pod per agent, two containers (ADR 0018): the agent container is the agent's
 
 | Path | Responsibility | Topic file |
 |---|---|---|
-| `cmd/gagent/` | CLI entry point (`gagent gateway`, `gagent agent`): resolve config and wire concrete implementations; nothing else. | — |
+| `cmd/gagent/` | CLI entry point (`gagent gateway`, `gagent agent`, `gagent sidecar`): resolve config and wire concrete implementations; nothing else. | — |
 | `internal/gateway/` | Accept normalized inbound messages, route them to environments, and publish the monitoring event stream. | `gateway.md` |
 | `internal/agent/` | Run the reasoning loop (frame, recall, act, writeback) for one rolling session per environment. | `agent.md` |
 | `internal/tool/` | Define the Tool contract (name, description, input schema, output schema), the registry every tool joins, and the wire protocol that serves a registry over HTTP and calls it back (ADR 0018). | — |
@@ -63,7 +63,7 @@ One pod per agent, two containers (ADR 0018): the agent container is the agent's
 | `internal/files/` | Read and write files inside the environment's workspace. | `environment.md` |
 | `internal/message/` | Deliver agent-decided outbound messages to channels and peers (`message_send`). | `gateway.md` |
 | `internal/shell/` | Run tool child processes as sub-processes dropped to the agent UID — `shell_exec` in a fresh network namespace, script tools with network access (ADR 0010). | `security.md` |
-| `internal/tool/script/` | Universal subprocess adapter: run any executable as a tool through the shell executor (ADR 0010). | `gateway.md` |
+| `internal/tool/script/` | Universal subprocess adapter: run any executable as a tool through the shell executor (ADR 0010); owns the script-tool config declaration shape (ADR 0009). | `gateway.md` |
 | `internal/tool/tooltest/` | Build-time schema/struct conformance guards shared by tool tests. | — |
 | `internal/tool/mocks/` | Generated mocks of the tool contract for consumer tests. | — |
 | `tools/playwright/` | Example script tool (browser automation) registered via the config's `tools:` section. | `gateway.md` |

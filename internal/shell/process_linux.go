@@ -48,6 +48,10 @@ func DefaultRlimits() rlimits {
 // to AgentUID and applying resource limits per ADR 0008 and ADR 0010. It
 // is the production Executor implementation.
 //
+// When AgentUID equals the process's euid the deployment declares a
+// single-account computer (ADR 0008): no UID switch is needed and no
+// privilege is required — children run as the sidecar's own account.
+//
 // The zero value is not usable; use NewProcessExecutor.
 type ProcessExecutor struct {
 	AgentUID       int
@@ -81,19 +85,22 @@ func NewProcessExecutor(agentUID int, defaultTimeout time.Duration) *ProcessExec
 }
 
 // Run executes one command and returns its captured output. If the
-// caller cannot drop to AgentUID (no root / no setuid-root), Run returns
-// ErrAgentUIDUnavailable and a zero Result. On timeout the child is
-// SIGKILLed and the returned error is ErrTimedOut with TimedOut set.
+// caller cannot run the child as AgentUID — AgentUID differs from the
+// euid and the process is not root — Run returns ErrAgentUIDUnavailable
+// and a zero Result (no implicit fallback to the current UID, ADR 0010).
+// On timeout the child is SIGKILLed and the returned error is ErrTimedOut
+// with TimedOut set.
 //
 // Resource limits are applied via prlimit(2) targeting the child PID
 // immediately after Start. There is a tiny race window between fork and
 // prlimit in which the child could exceed its limits — acceptable for an
 // advisory cap on top of the UID-based trust boundary.
 func (e *ProcessExecutor) Run(ctx context.Context, req Request) (Result, error) {
-	if os.Geteuid() != 0 {
+	euid := os.Geteuid()
+	if euid != 0 && euid != e.AgentUID {
 		return Result{}, ErrAgentUIDUnavailable
 	}
-	if req.NoNetwork && !e.netNS {
+	if req.NoNetwork && euid == 0 && !e.netNS {
 		return Result{}, ErrAgentUIDUnavailable
 	}
 	timeout := req.Timeout
@@ -116,18 +123,31 @@ func (e *ProcessExecutor) Run(ctx context.Context, req Request) (Result, error) 
 	attr := &syscall.SysProcAttr{
 		Setpgid:   true,
 		Pdeathsig: syscall.SIGKILL,
-		// Setuid clears effective + permitted capabilities in the child
-		// per capabilities(7); the bounding/inheritable sets are not
-		// modified here (Go 1.26 has no SysProcAttr hook to clear them
-		// before exec), but the child is no longer root so its caps
-		// are inert.
-		Credential: &syscall.Credential{Uid: uint32(e.AgentUID), Gid: uint32(e.AgentUID)},
 	}
-	if req.NoNetwork {
+	if euid == 0 {
+		// Setuid clears effective + permitted capabilities in the
+		// child per capabilities(7); the bounding/inheritable sets are
+		// not modified here (Go 1.26 has no SysProcAttr hook to clear
+		// them before exec), but the child is no longer root so its
+		// caps are inert. Single-account mode (euid != 0) needs no
+		// Credential: the child inherits the process's own account.
+		attr.Credential = &syscall.Credential{Uid: uint32(e.AgentUID), Gid: uint32(e.AgentUID)}
+	}
+	if req.NoNetwork && euid == 0 {
 		// unshare runs in the child before the credential drop, while
 		// CAP_SYS_ADMIN is still held: the child lands in a fresh,
 		// empty network namespace (ADR 0010).
 		attr.Unshareflags = syscall.CLONE_NEWNET
+	}
+	if req.NoNetwork && euid != 0 {
+		// Unprivileged network isolation (ADR 0010): a user namespace
+		// with the current UID/GID mapped to themselves is creatable
+		// without privileges and owns the fresh, empty network
+		// namespace cloned with it.
+		attr.Cloneflags = syscall.CLONE_NEWUSER | syscall.CLONE_NEWNET
+		attr.UidMappings = []syscall.SysProcIDMap{{ContainerID: euid, HostID: euid, Size: 1}}
+		attr.GidMappings = []syscall.SysProcIDMap{{ContainerID: os.Getegid(), HostID: os.Getegid(), Size: 1}}
+		attr.GidMappingsEnableSetgroups = false
 	}
 	cmd.SysProcAttr = attr
 	if req.Stdin != nil {
@@ -146,6 +166,11 @@ func (e *ProcessExecutor) Run(ctx context.Context, req Request) (Result, error) 
 	cmd.Stderr = &stderr
 
 	if err := cmd.Start(); err != nil {
+		if req.NoNetwork && euid != 0 && errors.Is(err, syscall.EPERM) {
+			// User namespaces are disabled on this host; fail closed
+			// with the documented unavailability (ADR 0010).
+			return Result{}, ErrAgentUIDUnavailable
+		}
 		return Result{}, fmt.Errorf("shell: start: %w", err)
 	}
 
@@ -187,6 +212,11 @@ func (e *ProcessExecutor) Run(ctx context.Context, req Request) (Result, error) 
 // child still runs, just without that one cap. Setting both Cur and Max
 // to the same value produces a hard cap rather than a soft one with a
 // higher hard ceiling.
+//
+// RLIMIT_NPROC is skipped in single-account mode: it counts every
+// process of the real UID, so on a shared account the host's own
+// processes would starve the child — the cap is only meaningful when the
+// child owns a dedicated UID (the privileged drop).
 func (e *ProcessExecutor) applyRLimits(pid int) {
 	limits := []struct {
 		name     string
@@ -206,10 +236,16 @@ func (e *ProcessExecutor) applyRLimits(pid int) {
 			Cur: e.RLimits.OpenFiles,
 			Max: e.RLimits.OpenFiles,
 		}},
-		{"RLIMIT_NPROC", unix.RLIMIT_NPROC, &unix.Rlimit{
+	}
+	if os.Geteuid() == 0 {
+		limits = append(limits, struct {
+			name     string
+			resource int
+			rlim     *unix.Rlimit
+		}{"RLIMIT_NPROC", unix.RLIMIT_NPROC, &unix.Rlimit{
 			Cur: e.RLimits.Processes,
 			Max: e.RLimits.Processes,
-		}},
+		}})
 	}
 	for _, l := range limits {
 		if err := unix.Prlimit(pid, l.resource, l.rlim, nil); err != nil {

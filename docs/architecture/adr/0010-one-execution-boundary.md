@@ -11,13 +11,13 @@ Two tool paths execute agent-influenced code: `shell_exec` (agent-supplied comma
 
 All agent-influenced code runs under the unprivileged agent UID; only operator-sanctioned tools reach the network.
 
-- `shell_exec` children have no network — today a fresh, empty network namespace; in the pod topology the pod network layer is the mechanism (ADR 0018).
+- `shell_exec` children have no network. Privileged path: a fresh, empty network namespace (unshare before the UID drop). Unprivileged path (single-account mode): a user namespace with the sidecar's UID mapped to itself owns the fresh, empty network namespace cloned with it — no capability required; a host without unprivileged user namespaces fails closed. In the pod topology the pod network layer is an additional mechanism (ADR 0018).
 - Script tools drop to the agent UID through the same executor. Their network is not namespaced: a script tool is an operator-sanctioned egress channel — the operator chooses a tool's reach by choosing the tool.
-- When the platform cannot drop privileges, both paths report `agent_uid unavailable`; neither silently upgrades. A silent privilege upgrade is worse than an unavailable tool.
+- When the platform can run the child as the configured account neither way, both paths report `agent_uid unavailable`; neither silently upgrades. A silent privilege upgrade is worse than an unavailable tool.
 
 ## Consequences
 
-- One trust domain for agent-influenced execution: agent UID, kernel DAC, no ambiguity about which UID a tool runs as.
+- One trust domain for agent-influenced execution: the configured exec account, kernel DAC, no ambiguity about which account a tool runs as. In single-account mode that domain is the sidecar's own account — an explicit operator declaration, never an implicit fallback.
 - In the pod topology this boundary lives inside the sidecar, the agent's computer (ADR 0018).
 - The Playwright example keeps working under the agent UID: browser automation needs no privilege, and its network use is the operator-sanctioned egress channel.
 

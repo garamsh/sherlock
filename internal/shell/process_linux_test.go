@@ -27,8 +27,16 @@ func TestApplyRLimits_LogsFailures(t *testing.T) {
 	exec.applyRLimits(-1)
 
 	out := buf.String()
-	for _, name := range []string{"RLIMIT_CPU", "RLIMIT_AS", "RLIMIT_FSIZE", "RLIMIT_NOFILE", "RLIMIT_NPROC"} {
+	for _, name := range []string{"RLIMIT_CPU", "RLIMIT_AS", "RLIMIT_FSIZE", "RLIMIT_NOFILE"} {
 		assert.Contains(t, out, name, "failed cap must be logged with its resource name")
+	}
+	// RLIMIT_NPROC applies only to the privileged drop; it is skipped in
+	// single-account mode, where it would starve the child of the shared
+	// account's own process budget.
+	if os.Geteuid() == 0 {
+		assert.Contains(t, out, "RLIMIT_NPROC")
+	} else {
+		assert.NotContains(t, out, "RLIMIT_NPROC")
 	}
 }
 

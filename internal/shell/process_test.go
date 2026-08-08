@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"testing"
 	"time"
@@ -85,7 +86,33 @@ func TestProcessExecutor_AgentUIDUnavailable(t *testing.T) {
 
 	_, err := exec.Run(context.Background(), shell.Request{Command: "echo hi"})
 
-	require.ErrorIs(t, err, shell.ErrAgentUIDUnavailable)
+	require.ErrorIs(t, err, shell.ErrAgentUIDUnavailable,
+		"exec-uid different from the euid without privilege fails closed — no implicit fallback to the current UID")
+}
+
+// requireUnprivileged skips the single-account tests when running as
+// root: the mode exists for hosts that cannot drop privileges.
+func requireUnprivileged(t *testing.T) {
+	t.Helper()
+	if os.Geteuid() == 0 {
+		t.Skip("single-account mode is only meaningful without root")
+	}
+}
+
+// TestProcessExecutor_SingleAccountRunsAsOwnUID pins the single-account
+// mode (ADR 0008): with AgentUID equal to the process euid, an
+// unprivileged executor runs children as its own account — no privilege
+// required, no agent_uid unavailable.
+func TestProcessExecutor_SingleAccountRunsAsOwnUID(t *testing.T) {
+	requireUnprivileged(t)
+	exec := shell.NewProcessExecutor(os.Geteuid(), 5*time.Second)
+
+	res, err := exec.Run(context.Background(), shell.Request{Command: "echo -n $(id -u):$(id -g)"})
+	require.NoError(t, err)
+	assert.Equal(t,
+		fmt.Sprintf("%d:%d", os.Geteuid(), os.Getegid()), res.Stdout,
+		"the child runs as the sidecar's own account in single-account mode")
+	assert.Equal(t, 0, res.ExitCode)
 }
 
 func TestProcessExecutor_DefaultTimeoutRejectsZero(t *testing.T) {

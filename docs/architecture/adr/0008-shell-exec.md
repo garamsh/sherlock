@@ -14,10 +14,10 @@ A `shell_exec` tool runs the agent-supplied command as a sub-process dropped to 
 Mechanism:
 
 - The executor forks, sets the child to the agent UID, drops Linux capabilities, applies resource limits, and execs the command.
-- The child has no network access — today via a fresh, empty network namespace; in the pod topology via the pod network layer (ADR 0010).
-- The child cannot reach the agent's memory or the platform's runtime material — a different container in the pod topology, a different UID today; kernel DAC either way.
+- The child has no network access — via a fresh, empty network namespace (a privileged unshare, or an unprivileged user+network namespace in single-account mode, ADR 0010); in the pod topology additionally via the pod network layer.
+- The child cannot reach the agent's memory or the platform's runtime material — a different container in the pod topology, a different UID in the privileged drop; kernel DAC either way. In single-account mode this one axis intentionally does not hold — the child shares the sidecar's account; the remaining axes (no network, scrubbed environment, resource limits) are unchanged.
 - The child has a configurable timeout; on expiry it is SIGKILLed and the result carries `timed_out: true`.
-- When the platform cannot drop privileges, the tool reports `agent_uid unavailable` instead of silently upgrading.
+- When the platform can run the child as the configured account neither way, the tool reports `agent_uid unavailable` instead of silently upgrading.
 
 Threat model (honest):
 
@@ -33,7 +33,7 @@ What the shell is NOT:
 
 - The shell is the only tool that runs arbitrary commands; the others remain typed and narrow.
 - The `internal/shell/` package holds the executor; the Executor interface is the only thing the tool calls, so added hardening (chroot, seccomp, more rlimits) is a swap, not a rewrite.
-- A privileged platform (setuid-root binary, or a supervisor with UID-switch privilege) is required for the drop; unprivileged deployments report unavailability.
+- Two deployment modes run real workloads. The privileged drop: a sidecar with UID-switch privilege (setuid-root binary, supervisor, or container capabilities) runs children as the configured `exec-uid`. The single-account computer: `exec-uid` set to the sidecar's own UID needs no privilege at all — the operator declares the account explicitly; there is no implicit fallback to the current UID. An unprivileged sidecar with any other `exec-uid` reports `agent_uid unavailable`.
 
 ## Rejected alternatives
 

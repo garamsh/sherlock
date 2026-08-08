@@ -47,6 +47,11 @@ type SidecarConfig struct {
 	Workspace string `mapstructure:"workspace"`
 	// ExecTimeout caps one shell_exec sub-process run.
 	ExecTimeout time.Duration `mapstructure:"exec-timeout"`
+	// ExecUID is the account tool children run as (ADR 0008). When it
+	// differs from the sidecar's euid the privilege to switch is
+	// required exactly as before; when it equals the euid the deployment
+	// declares a single-account computer and no privilege is needed.
+	ExecUID int `mapstructure:"exec-uid"`
 	// Tools lists the script tools the sidecar serves alongside files
 	// and shell_exec.
 	Tools []script.Config `mapstructure:"tools"`
@@ -71,6 +76,8 @@ func newSidecarCommand() *cobra.Command {
 	cmd.Flags().String("addr", defaultSidecarAddr, "HTTP listen address for the tool contract")
 	cmd.Flags().String("workspace", defaultSidecarWorkspace, "workspace directory (created on first use)")
 	cmd.Flags().Duration("exec-timeout", defaultExecTimeout, "per-call ceiling for shell_exec sub-processes")
+	cmd.Flags().Int("exec-uid", shell.DefaultAgentUID,
+		"account tool children run as; set to the sidecar's own UID for single-account mode (no privilege required)")
 	return cmd
 }
 
@@ -84,6 +91,7 @@ func resolveSidecarConfig(cmd *cobra.Command) (SidecarConfig, error) {
 	v.SetDefault("addr", defaultSidecarAddr)
 	v.SetDefault("workspace", defaultSidecarWorkspace)
 	v.SetDefault("exec-timeout", defaultExecTimeout)
+	v.SetDefault("exec-uid", shell.DefaultAgentUID)
 	if err := v.BindPFlags(cmd.Flags()); err != nil {
 		return SidecarConfig{}, err
 	}
@@ -110,9 +118,11 @@ func resolveSidecarConfig(cmd *cobra.Command) (SidecarConfig, error) {
 //
 // The tools: section is validated before anything is served, so an
 // invalid entry fails startup with an error naming the tool (ADR 0009).
-// The workspace is chowned to the agent UID when privileged, and every
-// child process drops to it; an unprivileged sidecar reports agent_uid
-// unavailable instead of silently upgrading (ADR 0008, ADR 0010).
+// The workspace is chowned to exec-uid when privileged, and every child
+// process drops to it; when exec-uid equals the sidecar's own UID the
+// run is a single-account computer and needs no privilege, and with any
+// other unprivileged exec-uid the sidecar reports agent_uid unavailable
+// instead of silently upgrading (ADR 0008, ADR 0010).
 func serveSidecar(ctx context.Context, cfg SidecarConfig) error {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	slog.SetDefault(logger)
@@ -124,15 +134,15 @@ func serveSidecar(ctx context.Context, cfg SidecarConfig) error {
 	if err := script.ValidateConfigs(cfg.Tools); err != nil {
 		return err
 	}
-	workspace, err := files.Open(cfg.Workspace, shell.DefaultAgentUID)
+	workspace, err := files.Open(cfg.Workspace, cfg.ExecUID)
 	if err != nil {
 		return err
 	}
-	if err := files.SecureWorkspace(workspace.Root(), shell.DefaultAgentUID); err != nil {
+	if err := files.SecureWorkspace(workspace.Root(), cfg.ExecUID); err != nil {
 		return err
 	}
 
-	executor := shell.NewProcessExecutor(shell.DefaultAgentUID, cfg.ExecTimeout)
+	executor := shell.NewProcessExecutor(cfg.ExecUID, cfg.ExecTimeout)
 	registry := tool.NewRegistry()
 	tools := []tool.Tool{
 		files.NewTool(workspace),

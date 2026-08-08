@@ -3,6 +3,7 @@ package tests
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net"
 	"net/http"
 	"os"
@@ -114,6 +115,97 @@ func TestEndToEnd_SidecarNonLoopbackFailsStartup(t *testing.T) {
 		assert.Contains(t, string(out), "loopback")
 		assert.Contains(t, string(out), "unauthenticated")
 	}
+}
+
+// TestEndToEnd_SidecarSingleAccountMode runs the sidecar as the test's
+// own unprivileged user with --exec-uid set to that UID (ADR 0008's
+// single-account mode): shell_exec and the script tool run for real —
+// no agent_uid unavailable — and the shell_exec child stays
+// network-isolated through the unprivileged user+network namespace.
+// Verified on a uid-1000 host without sudo.
+func TestEndToEnd_SidecarSingleAccountMode(t *testing.T) {
+	if os.Geteuid() == 0 {
+		t.Skip("single-account mode is only meaningful without root")
+	}
+	if _, err := exec.LookPath("python3"); err != nil {
+		t.Skip("python3 not on PATH; the network probe needs it")
+	}
+	binary := buildGagentBinary(t)
+	workspace := filepath.Join(t.TempDir(), "workspace")
+	configPath := writeSidecarConfig(t, "echo")
+
+	listen, err := net.Listen("tcp", "127.0.0.1:0")
+	require.NoError(t, err)
+	addr := listen.Addr().String()
+	require.NoError(t, listen.Close())
+
+	aux := t.TempDir()
+	logPath := filepath.Join(aux, "sidecar.log")
+	logFile, err := os.Create(logPath)
+	require.NoError(t, err)
+	t.Cleanup(func() { logFile.Close() })
+
+	cmd := exec.Command(binary, "sidecar",
+		"--config", configPath, "--addr", addr, "--workspace", workspace,
+		"--exec-uid", fmt.Sprint(os.Geteuid()))
+	cmd.Stdout = logFile
+	cmd.Stderr = logFile
+	require.NoError(t, cmd.Start())
+	exited := make(chan error, 1)
+	go func() { exited <- cmd.Wait() }()
+	t.Cleanup(func() {
+		if cmd.ProcessState == nil {
+			_ = cmd.Process.Kill()
+			<-exited
+		}
+	})
+
+	baseURL := "http://" + addr
+	var descs []tool.Descriptor
+	require.Eventually(t, func() bool {
+		descs, err = tool.Discover(context.Background(), baseURL)
+		return err == nil
+	}, 10*time.Second, 20*time.Millisecond, "the sidecar must serve the contract\nlogs:\n%s", readLogs(logPath))
+	byName := make(map[string]tool.Descriptor, len(descs))
+	for _, d := range descs {
+		byName[d.Name] = d
+	}
+
+	// shell_exec runs for real as the sidecar's own account.
+	shellTool := tool.NewRemoteTool(byName["shell_exec"], baseURL)
+	out, err := tool.Invoke(context.Background(), shellTool,
+		json.RawMessage(`{"command":"echo -n $(id -u):$(id -g)"}`))
+	require.NoError(t, err, "single-account shell_exec must not report agent_uid unavailable\nlogs:\n%s", readLogs(logPath))
+	assert.Contains(t, string(out), fmt.Sprintf(`"stdout":"%d:%d"`, os.Geteuid(), os.Getegid()))
+
+	// The shell_exec child stays network-isolated: it sees only the
+	// loopback interface.
+	out, err = tool.Invoke(context.Background(), shellTool,
+		json.RawMessage(`{"command":"python3 -c \"import socket; print(socket.if_nameindex())\""}`))
+	require.NoError(t, err)
+	assert.Contains(t, string(out), `[(1, 'lo')]`)
+
+	// The script tool runs and keeps network access (ADR 0010's
+	// operator-sanctioned egress channel).
+	echoTool := tool.NewRemoteTool(byName["echo"], baseURL)
+	out, err = tool.Invoke(context.Background(), echoTool, json.RawMessage(`{"ping":"pong"}`))
+	require.NoError(t, err)
+	assert.JSONEq(t, `{"ping":"pong"}`, string(out),
+		"cat echoes the tool input back on stdout in single-account mode")
+
+	require.NoError(t, cmd.Process.Signal(syscall.SIGTERM))
+	select {
+	case err := <-exited:
+		require.NoError(t, err, "sidecar must exit cleanly on SIGTERM")
+	case <-time.After(15 * time.Second):
+		t.Fatal("sidecar did not exit on SIGTERM")
+	}
+}
+
+// readLogs returns a log file's contents for test failure messages.
+func readLogs(path string) string {
+	logs, _ := os.ReadFile(path)
+	return string(logs)
 }
 
 // writeSidecarConfig writes a sidecar.yaml with one tools: entry of the

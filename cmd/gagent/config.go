@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -178,25 +179,61 @@ func newConfigViper() *viper.Viper {
 // readConfigFile loads the config file into v following the resolution
 // order: an explicit --config path, then ./<cwdName>.yaml, then
 // os.UserConfigDir()/gagent/<xdgName> (XDG; ~/.config/gagent/ on Linux).
-// A missing file is an error only for the explicit flag path.
+// A missing file is an error only for the explicit flag path. A loaded
+// file must be owner-only (docs/architecture/security.md).
 func readConfigFile(v *viper.Viper, flagPath, cwdName, xdgName string) error {
+	loaded, err := loadConfigFile(v, flagPath, cwdName, xdgName)
+	if err != nil {
+		return err
+	}
+	if loaded != "" {
+		if err := checkConfigFileMode(loaded); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// loadConfigFile reads the config file into v and returns the path it
+// actually loaded, or "" when no file exists (viper's ConfigFileUsed
+// reports attempted paths too, so it cannot answer this).
+func loadConfigFile(v *viper.Viper, flagPath, cwdName, xdgName string) (string, error) {
 	if flagPath != "" {
 		v.SetConfigFile(flagPath)
-		return v.ReadInConfig()
+		return flagPath, v.ReadInConfig()
 	}
 	v.SetConfigName(cwdName)
 	v.AddConfigPath(".")
 	var notFound viper.ConfigFileNotFoundError
 	if err := v.ReadInConfig(); !errors.As(err, &notFound) {
-		return err
+		return v.ConfigFileUsed(), err
 	}
 	configDir, err := os.UserConfigDir()
 	if err != nil {
-		return nil
+		return "", nil
 	}
-	v.SetConfigFile(filepath.Join(configDir, "gagent", xdgName))
-	if err := v.ReadInConfig(); err != nil && !errors.Is(err, fs.ErrNotExist) {
-		return err
+	path := filepath.Join(configDir, "gagent", xdgName)
+	v.SetConfigFile(path)
+	if err := v.ReadInConfig(); err != nil {
+		if errors.Is(err, fs.ErrNotExist) {
+			return "", nil
+		}
+		return "", err
+	}
+	return path, nil
+}
+
+// checkConfigFileMode rejects a config file readable by group or other:
+// the file is operator material (tool definitions, TLS paths) and must
+// be owner-only — 0600 or 0400 pass, 0644 fails. The platform validates
+// and fails instead of chowning an operator-provided file.
+func checkConfigFileMode(path string) error {
+	info, err := os.Stat(path)
+	if err != nil {
+		return fmt.Errorf("config: stat config file: %w", err)
+	}
+	if perm := info.Mode().Perm(); perm&0o077 != 0 {
+		return fmt.Errorf("config: config file %q is group- or other-accessible (mode %04o); it must be owner-only (e.g. 0600 or 0400)", path, perm)
 	}
 	return nil
 }

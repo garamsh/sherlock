@@ -8,7 +8,7 @@ Governs the environment model: what an environment is, its topology, and its tru
 - The sidecar composes two things: a dedicated environment — the workspace (a persistent volume) and process execution — and an I/O layer, the tool servers that expose the computer's capabilities.
 - The computer is configured from outside, like a real computer: adding a capability (browser automation, GitHub tooling) means installing it on the computer and declaring its tool. The agent changes nothing; it discovers the new capability at runtime.
 - Permission enforcement lives at the computer — the action site. Agent-influenced execution runs under an unprivileged UID, and workspace and data ownership is kernel-enforced (DAC), not filtered (ADR 0008, ADR 0010 relocated into the sidecar). A platform that cannot drop privileges reports unavailability instead of silently upgrading.
-- Egress control is a pod network-layer concern; the in-process network-namespace mechanism is retired.
+- Egress control lives at two layers: the in-process network namespace is the in-computer boundary (`shell_exec` children get a fresh, empty netns; ADR 0010), and the pod network layer (NetworkPolicy) is the additional deployment-level boundary.
 - Self-destruction is bounded by construction: executed code lives on the computer, and the agent's self (a separate container) is unreachable from it. A broken computer is recreated.
 - A shared sidecar serving several agents — one computer with several user accounts — is a later step, not the starting shape.
 

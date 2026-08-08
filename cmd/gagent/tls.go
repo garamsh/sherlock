@@ -63,7 +63,7 @@ func checkServerKeyMode(path string) error {
 		return fmt.Errorf("tls: stat server key: %w", err)
 	}
 	if perm := info.Mode().Perm(); perm&0o077 != 0 {
-		return fmt.Errorf("tls: server key %q is group- or other-accessible (mode %04o); it must be mode 0600 (owner-only)", path, perm)
+		return fmt.Errorf("tls: server key %q is group- or other-accessible (mode %04o); it must be owner-only (e.g. 0600 or 0400)", path, perm)
 	}
 	return nil
 }

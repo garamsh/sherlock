@@ -265,6 +265,37 @@ func TestResolveConfig_TLSSectionEnvOverridesFile(t *testing.T) {
 		"GAGENT_TLS_CERT must override the config-file value")
 }
 
+// TestResolveConfig_TLSSectionEnvOnly pins issue #228: the GAGENT_TLS_*
+// variables resolve with no config file at all — the env layer reaches
+// Unmarshal for keys that have neither a flag nor a real default.
+func TestResolveConfig_TLSSectionEnvOnly(t *testing.T) {
+	t.Chdir(t.TempDir())
+	t.Setenv("GAGENT_TLS_CERT", "/from-env/server.pem")
+	t.Setenv("GAGENT_TLS_KEY", "/from-env/server-key.pem")
+	t.Setenv("GAGENT_TLS_CLIENT_CA", "/from-env/ca.pem")
+
+	cfg, err := resolveConfig(newTestCommand(t))
+	require.NoError(t, err)
+
+	assert.Equal(t, TLSConfig{
+		Cert:     "/from-env/server.pem",
+		Key:      "/from-env/server-key.pem",
+		ClientCA: "/from-env/ca.pem",
+	}, cfg.TLS, "env-only tls.* enables mTLS without a config file")
+}
+
+// TestResolveConfig_ConsoleURLEnvOnly pins the same env-only path for
+// the console sink (issue #228).
+func TestResolveConfig_ConsoleURLEnvOnly(t *testing.T) {
+	t.Chdir(t.TempDir())
+	t.Setenv("GAGENT_CONSOLE_URL", "https://console.internal:9443/messages")
+
+	cfg, err := resolveConfig(newTestCommand(t))
+	require.NoError(t, err)
+
+	assert.Equal(t, ConsoleConfig{URL: "https://console.internal:9443/messages"}, cfg.Console)
+}
+
 func TestResolveConfig_NoTLSSection(t *testing.T) {
 	t.Chdir(t.TempDir())
 	cfg, err := resolveConfig(newTestCommand(t))

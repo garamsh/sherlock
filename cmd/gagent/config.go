@@ -140,6 +140,13 @@ func resolveConfig(cmd *cobra.Command) (Config, error) {
 	v.SetDefault("embedder.model", defaultEmbedderModel)
 	v.SetDefault("embedder.api-key-env", defaultEmbedderKeyEnv)
 	v.SetDefault("embedder.timeout", defaultEmbedderTimeout)
+	// Keys with neither a flag nor a default still get an empty default,
+	// so the env layer (GAGENT_TLS_CERT, …) reaches Unmarshal when the
+	// key is absent from the config file (issue #228).
+	v.SetDefault("tls.cert", "")
+	v.SetDefault("tls.key", "")
+	v.SetDefault("tls.client-ca", "")
+	v.SetDefault("console.url", "")
 	if err := v.BindPFlags(cmd.Flags()); err != nil {
 		return Config{}, err
 	}

@@ -57,7 +57,7 @@ One pod per agent, two containers (ADR 0018): the agent container is the agent's
 | `cmd/gagent/` | CLI entry point (`gagent gateway`, `gagent agent`): resolve config and wire concrete implementations; nothing else. | — |
 | `internal/gateway/` | Accept normalized inbound messages, route them to environments, and publish the monitoring event stream. | `gateway.md` |
 | `internal/agent/` | Run the reasoning loop (frame, recall, act, writeback) for one rolling session per environment. | `agent.md` |
-| `internal/tool/` | Define the Tool contract (name, description, input schema, output schema) and the registry every tool joins. | — |
+| `internal/tool/` | Define the Tool contract (name, description, input schema, output schema), the registry every tool joins, and the wire protocol that serves a registry over HTTP and calls it back (ADR 0018). | — |
 | `internal/environment/` | Own the environment data layout: create-on-first-use and teardown of `data/envs/<env-id>/`. | `environment.md` |
 | `internal/memory/` | Own one environment's long-term memory: the `memory.db` store, hybrid search, and the five memory operations. | `memory.md` |
 | `internal/files/` | Read and write files inside the environment's workspace. | `environment.md` |

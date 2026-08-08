@@ -50,7 +50,7 @@ func (s *gatedBatchSession) startedTasks() []string {
 	return append([]string(nil), s.tasks...)
 }
 
-func newBatchRouter(t *testing.T, session *gatedBatchSession) *gateway.Router {
+func newBatchQueue(t *testing.T, session *gatedBatchSession) *gateway.Queue {
 	t.Helper()
 	factory := &fakeFactory{newFn: func(_ string, sink agent.EventSink) (*gateway.Runtime, error) {
 		session.events = sink
@@ -60,20 +60,21 @@ func newBatchRouter(t *testing.T, session *gatedBatchSession) *gateway.Router {
 			Close:   func(context.Context) error { return nil },
 		}, nil
 	}}
-	router := gateway.NewRouter(factory, newTestLogger())
-	t.Cleanup(func() { router.Close() })
-	return router
+	q, err := gateway.NewQueue(factory, "env-1", newTestLogger())
+	require.NoError(t, err)
+	t.Cleanup(func() { q.Close() })
+	return q
 }
 
-// TestRouter_DrainsQueuedMessagesIntoOneTurn pins ADR 0020: messages
+// TestQueue_DrainsQueuedMessagesIntoOneTurn pins ADR 0020: messages
 // queued during an active run are processed in one subsequent turn that
 // renders each with its ID and sender.
-func TestRouter_DrainsQueuedMessagesIntoOneTurn(t *testing.T) {
+func TestQueue_DrainsQueuedMessagesIntoOneTurn(t *testing.T) {
 	gate := make(chan struct{})
 	session := &gatedBatchSession{gate: gate}
-	router := newBatchRouter(t, session)
+	q := newBatchQueue(t, session)
 
-	firstID, err := router.Enqueue(context.Background(), "env-1", "alice", "first")
+	firstID, err := q.Enqueue(context.Background(), "alice", "first")
 	require.NoError(t, err)
 	require.Eventually(t, func() bool {
 		return len(session.startedTasks()) == 1
@@ -86,7 +87,7 @@ func TestRouter_DrainsQueuedMessagesIntoOneTurn(t *testing.T) {
 		{"carol", "third"},
 		{"dave", "fourth"},
 	} {
-		id, err := router.Enqueue(context.Background(), "env-1", m.sender, m.content)
+		id, err := q.Enqueue(context.Background(), m.sender, m.content)
 		require.NoError(t, err)
 		ids = append(ids, id)
 	}
@@ -109,14 +110,14 @@ func TestRouter_DrainsQueuedMessagesIntoOneTurn(t *testing.T) {
 		"the first turn's message is not re-drained")
 }
 
-// TestRouter_DrainIsBounded pins the ADR 0020 bound: a turn never takes
+// TestQueue_DrainIsBounded pins the ADR 0020 bound: a turn never takes
 // more than MaxDrainBatch messages; the overflow drains next turn.
-func TestRouter_DrainIsBounded(t *testing.T) {
+func TestQueue_DrainIsBounded(t *testing.T) {
 	gate := make(chan struct{})
 	session := &gatedBatchSession{gate: gate}
-	router := newBatchRouter(t, session)
+	q := newBatchQueue(t, session)
 
-	_, err := router.Enqueue(context.Background(), "env-1", "", "blocking")
+	_, err := q.Enqueue(context.Background(), "", "blocking")
 	require.NoError(t, err)
 	require.Eventually(t, func() bool {
 		return len(session.startedTasks()) == 1
@@ -124,7 +125,7 @@ func TestRouter_DrainIsBounded(t *testing.T) {
 
 	queued := gateway.MaxDrainBatch + 2
 	for range queued {
-		_, err := router.Enqueue(context.Background(), "env-1", "", "queued")
+		_, err := q.Enqueue(context.Background(), "", "queued")
 		require.NoError(t, err)
 	}
 
@@ -140,18 +141,18 @@ func TestRouter_DrainIsBounded(t *testing.T) {
 		"the overflow drains in the next turn")
 }
 
-// TestRouter_TerminalEventReferencesBatchIDs pins ADR 0020: each drain
+// TestQueue_TerminalEventReferencesBatchIDs pins ADR 0020: each drain
 // ends with exactly one terminal event, and that event references the
 // batch's message IDs.
-func TestRouter_TerminalEventReferencesBatchIDs(t *testing.T) {
+func TestQueue_TerminalEventReferencesBatchIDs(t *testing.T) {
 	gate := make(chan struct{})
 	session := &gatedBatchSession{gate: gate}
-	router := newBatchRouter(t, session)
+	q := newBatchQueue(t, session)
 
-	stream, cancel := router.Events("env-1").Subscribe()
+	stream, cancel := q.Events().Subscribe()
 	defer cancel()
 
-	firstID, err := router.Enqueue(context.Background(), "env-1", "alice", "first")
+	firstID, err := q.Enqueue(context.Background(), "alice", "first")
 	require.NoError(t, err)
 	require.Eventually(t, func() bool {
 		return len(session.startedTasks()) == 1
@@ -159,7 +160,7 @@ func TestRouter_TerminalEventReferencesBatchIDs(t *testing.T) {
 
 	var batchIDs []string
 	for _, content := range []string{"second", "third"} {
-		id, err := router.Enqueue(context.Background(), "env-1", "bob", content)
+		id, err := q.Enqueue(context.Background(), "bob", content)
 		require.NoError(t, err)
 		batchIDs = append(batchIDs, id)
 	}

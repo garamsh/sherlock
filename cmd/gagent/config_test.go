@@ -9,13 +9,11 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/garamsh/gagent/internal/environment"
-	"github.com/garamsh/gagent/internal/tool/script"
 )
 
-// newTestCommand returns a bare command carrying the shared config flags,
-// so resolveConfig can be exercised without running a subcommand.
+// newTestCommand returns a bare command carrying the shared config flags
+// plus the agent subcommand's flags, so resolveConfig can be exercised
+// without running a subcommand.
 func newTestCommand(t *testing.T) *cobra.Command {
 	t.Helper()
 	// Isolate the test from a real XDG/home gagent config.
@@ -23,6 +21,7 @@ func newTestCommand(t *testing.T) *cobra.Command {
 	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
 	cmd := &cobra.Command{Use: "test"}
 	addConfigFlags(cmd.Flags())
+	addAgentFlags(cmd.Flags())
 	return cmd
 }
 
@@ -32,8 +31,8 @@ func TestResolveConfig_Defaults(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Equal(t, defaultAddr, cfg.Addr)
-	assert.Equal(t, environment.DefaultRoot, cfg.DataRoot)
-	assert.Equal(t, defaultExecTimeout, cfg.ExecTimeout)
+	assert.Equal(t, defaultMemoryPath, cfg.MemoryPath)
+	assert.Equal(t, []string{defaultToolServer}, cfg.ToolServers)
 	assert.Equal(t, ModelConfig{
 		Provider:  defaultModelProvider,
 		BaseURL:   defaultModelBaseURL,
@@ -110,42 +109,53 @@ func TestResolveConfig_ConfigFile(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
 	contents := "addr: \":9090\"\n" +
-		"data-root: /from-file\n" +
-		"exec-timeout: 5s\n"
+		"memory-path: /from-file/memory.db\n" +
+		"tool-servers: [http://127.0.0.1:9081, http://127.0.0.1:9082]\n"
 	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o644))
 
 	cfg, err := resolveConfig(newTestCommand(t))
 	require.NoError(t, err)
 
 	assert.Equal(t, ":9090", cfg.Addr)
-	assert.Equal(t, "/from-file", cfg.DataRoot)
-	assert.Equal(t, 5*time.Second, cfg.ExecTimeout,
-		"exec-timeout resolves from the config file")
+	assert.Equal(t, "/from-file/memory.db", cfg.MemoryPath)
+	assert.Equal(t, []string{"http://127.0.0.1:9081", "http://127.0.0.1:9082"}, cfg.ToolServers,
+		"tool-servers resolves from the config file")
 }
 
 func TestResolveConfig_EnvOverridesFile(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
 	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
-		[]byte("data-root: /from-file\n"), 0o644))
-	t.Setenv("GAGENT_DATA_ROOT", "/from-env")
+		[]byte("memory-path: /from-file/memory.db\n"), 0o644))
+	t.Setenv("GAGENT_MEMORY_PATH", "/from-env/memory.db")
 
 	cfg, err := resolveConfig(newTestCommand(t))
 	require.NoError(t, err)
 
-	assert.Equal(t, "/from-env", cfg.DataRoot)
+	assert.Equal(t, "/from-env/memory.db", cfg.MemoryPath)
 }
 
 func TestResolveConfig_FlagOverridesEnv(t *testing.T) {
 	t.Chdir(t.TempDir())
-	t.Setenv("GAGENT_DATA_ROOT", "/from-env")
+	t.Setenv("GAGENT_MEMORY_PATH", "/from-env/memory.db")
 	cmd := newTestCommand(t)
-	require.NoError(t, cmd.Flags().Set("data-root", "/from-flag"))
+	require.NoError(t, cmd.Flags().Set("memory-path", "/from-flag/memory.db"))
 
 	cfg, err := resolveConfig(cmd)
 	require.NoError(t, err)
 
-	assert.Equal(t, "/from-flag", cfg.DataRoot)
+	assert.Equal(t, "/from-flag/memory.db", cfg.MemoryPath)
+}
+
+func TestResolveConfig_ToolServersFlag(t *testing.T) {
+	t.Chdir(t.TempDir())
+	cmd := newTestCommand(t)
+	require.NoError(t, cmd.Flags().Set("tool-servers", "http://a:1,http://b:2"))
+
+	cfg, err := resolveConfig(cmd)
+	require.NoError(t, err)
+
+	assert.Equal(t, []string{"http://a:1", "http://b:2"}, cfg.ToolServers)
 }
 
 func TestResolveConfig_XDGConfigFile(t *testing.T) {
@@ -154,14 +164,15 @@ func TestResolveConfig_XDGConfigFile(t *testing.T) {
 	t.Setenv("XDG_CONFIG_HOME", xdg)
 	require.NoError(t, os.MkdirAll(filepath.Join(xdg, "gagent"), 0o755))
 	require.NoError(t, os.WriteFile(filepath.Join(xdg, "gagent", "config.yaml"),
-		[]byte("data-root: /from-xdg\n"), 0o644))
+		[]byte("memory-path: /from-xdg/memory.db\n"), 0o644))
 
 	cmd := &cobra.Command{Use: "test"}
 	addConfigFlags(cmd.Flags())
+	addAgentFlags(cmd.Flags())
 	cfg, err := resolveConfig(cmd)
 	require.NoError(t, err)
 
-	assert.Equal(t, "/from-xdg", cfg.DataRoot)
+	assert.Equal(t, "/from-xdg/memory.db", cfg.MemoryPath)
 }
 
 func TestResolveConfig_CwdBeatsXDG(t *testing.T) {
@@ -169,17 +180,17 @@ func TestResolveConfig_CwdBeatsXDG(t *testing.T) {
 	t.Chdir(dir)
 	xdg := t.TempDir()
 	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
-		[]byte("data-root: /from-cwd\n"), 0o644))
+		[]byte("memory-path: /from-cwd/memory.db\n"), 0o644))
 	require.NoError(t, os.MkdirAll(filepath.Join(xdg, "gagent"), 0o755))
 	require.NoError(t, os.WriteFile(filepath.Join(xdg, "gagent", "config.yaml"),
-		[]byte("data-root: /from-xdg\n"), 0o644))
+		[]byte("memory-path: /from-xdg/memory.db\n"), 0o644))
 	cmd := newTestCommand(t)
 	t.Setenv("XDG_CONFIG_HOME", xdg)
 
 	cfg, err := resolveConfig(cmd)
 	require.NoError(t, err)
 
-	assert.Equal(t, "/from-cwd", cfg.DataRoot)
+	assert.Equal(t, "/from-cwd/memory.db", cfg.MemoryPath)
 }
 
 func TestResolveConfig_ConfigFlag(t *testing.T) {
@@ -187,16 +198,16 @@ func TestResolveConfig_ConfigFlag(t *testing.T) {
 	t.Chdir(dir)
 	// A cwd file exists but the flag path wins; the flag path is arbitrary.
 	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
-		[]byte("data-root: /from-cwd\n"), 0o644))
+		[]byte("memory-path: /from-cwd/memory.db\n"), 0o644))
 	custom := filepath.Join(t.TempDir(), "custom.yaml")
-	require.NoError(t, os.WriteFile(custom, []byte("data-root: /from-flag\n"), 0o644))
+	require.NoError(t, os.WriteFile(custom, []byte("memory-path: /from-flag/memory.db\n"), 0o644))
 
 	cmd := newTestCommand(t)
 	require.NoError(t, cmd.Flags().Set("config", custom))
 	cfg, err := resolveConfig(cmd)
 	require.NoError(t, err)
 
-	assert.Equal(t, "/from-flag", cfg.DataRoot)
+	assert.Equal(t, "/from-flag/memory.db", cfg.MemoryPath)
 }
 
 func TestResolveConfig_ConfigFlagMissingFileFails(t *testing.T) {
@@ -206,54 +217,6 @@ func TestResolveConfig_ConfigFlagMissingFileFails(t *testing.T) {
 
 	_, err := resolveConfig(cmd)
 	assert.Error(t, err, "an explicit --config path must exist")
-}
-
-func TestResolveConfig_ToolsSection(t *testing.T) {
-	dir := t.TempDir()
-	t.Chdir(dir)
-	contents := "tools:\n" +
-		"  - name: wordcount\n" +
-		"    description: Count words in a text.\n" +
-		"    input_schema: schemas/wordcount.input.json\n" +
-		"    output_schema: schemas/wordcount.output.json\n" +
-		"    exec:\n" +
-		"      command: [python3, tools/wordcount.py]\n" +
-		"      stdin_format: json\n" +
-		"      stdout_format: json\n" +
-		"      timeout_seconds: 30\n" +
-		"      env: [PYTHONUNBUFFERED=1]\n" +
-		"      workdir: /srv/tools\n"
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o644))
-
-	cfg, err := resolveConfig(newTestCommand(t))
-	require.NoError(t, err)
-
-	require.Len(t, cfg.Tools, 1)
-	assert.Equal(t, script.Config{
-		Name:         "wordcount",
-		Description:  "Count words in a text.",
-		InputSchema:  "schemas/wordcount.input.json",
-		OutputSchema: "schemas/wordcount.output.json",
-		Exec: script.ExecConfig{
-			Command:        []string{"python3", "tools/wordcount.py"},
-			StdinFormat:    "json",
-			StdoutFormat:   "json",
-			TimeoutSeconds: 30,
-			Env:            []string{"PYTHONUNBUFFERED=1"},
-			Workdir:        "/srv/tools",
-		},
-	}, cfg.Tools[0])
-	// timeout_seconds is an int; the gateway converts it to
-	// time.Duration at registration (30s, not 30ns).
-	assert.Equal(t, 30*time.Second, time.Duration(cfg.Tools[0].Exec.TimeoutSeconds)*time.Second)
-}
-
-func TestResolveConfig_NoToolsSection(t *testing.T) {
-	t.Chdir(t.TempDir())
-	cfg, err := resolveConfig(newTestCommand(t))
-	require.NoError(t, err)
-
-	assert.Empty(t, cfg.Tools, "a missing tools: section yields an empty slice")
 }
 
 func TestResolveConfig_ConsoleSection(t *testing.T) {

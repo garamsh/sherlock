@@ -12,13 +12,13 @@ import (
 	"github.com/garamsh/gagent/internal/message"
 )
 
-// OutboxDir is the subdirectory of the environment directory that holds
+// OutboxDir is the subdirectory next to the memory file that holds
 // delivered outbound messages.
 const OutboxDir = "outbox"
 
 // Outbox is the MVP message.Sink (ADR 0009): it "delivers" every outbound
-// message by appending a JSON file to data/envs/<agent-id>/outbox/. Real
-// channel adapters replace it without touching the tool or the agent.
+// message by appending a JSON file to <memory dir>/outbox/. Real channel
+// adapters replace it without touching the tool or the agent.
 // Outbox is safe for concurrent use.
 type Outbox struct {
 	dir string
@@ -27,9 +27,9 @@ type Outbox struct {
 	seq int
 }
 
-// NewOutbox returns a sink writing to <envDir>/outbox/.
-func NewOutbox(envDir string) *Outbox {
-	return &Outbox{dir: filepath.Join(envDir, OutboxDir)}
+// NewOutbox returns a sink writing to <dir>/outbox/.
+func NewOutbox(dir string) *Outbox {
+	return &Outbox{dir: filepath.Join(dir, OutboxDir)}
 }
 
 // Dir returns the directory the outbox writes to.

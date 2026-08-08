@@ -2,7 +2,7 @@
 
 Current architecture of the system and the decisions behind it. This file is the index; workers read it before touching code, the PM keeps it honest.
 
-One pod per agent, two containers (ADR 0018): the agent container is the agent's self (gateway, reasoning loop, memory, mouth); the sidecar container is the agent's computer (workspace, execution, tool servers, permission enforcement). A tool is a contract with the outside — defined where its implementation lives and discovered by the agent at runtime. The code has not yet migrated; the responsibility documents carry the current state alongside the target.
+One pod per agent, two containers (ADR 0018): the agent container is the agent's self (gateway, reasoning loop, memory, mouth); the sidecar container is the agent's computer (workspace, execution, tool servers, permission enforcement). A tool is a contract with the outside — defined where its implementation lives and discovered by the agent at runtime. The two binaries exist today (`gagent agent`, `gagent sidecar`); deployment manifests and images follow.
 
 ## Structure
 
@@ -50,21 +50,18 @@ One pod per agent, two containers (ADR 0018): the agent container is the agent's
 
 ### Modules
 
-> Status: the table reflects the code as it exists today. The ADR 0018 migration re-wires these packages into the agent and sidecar binaries.
-
 | Path | Responsibility | Topic file |
 |---|---|---|
-| `cmd/gagent/` | CLI entry point (`gagent gateway`, `gagent agent`, `gagent sidecar`): resolve config and wire concrete implementations; nothing else. | — |
-| `internal/gateway/` | Accept normalized inbound messages, route them to environments, and publish the monitoring event stream. | `gateway.md` |
-| `internal/agent/` | Run the reasoning loop (frame, recall, act, writeback) for one rolling session per environment. | `agent.md` |
+| `cmd/gagent/` | CLI entry point (`gagent agent`, `gagent sidecar`): resolve config and wire concrete implementations; nothing else. | — |
+| `internal/gateway/` | Accept normalized inbound messages, serialize the one agent's runs through a single queue, and publish the monitoring event stream. | `gateway.md` |
+| `internal/agent/` | Run the reasoning loop (frame, recall, act, writeback) for the agent's one rolling session. | `agent.md` |
 | `internal/tool/` | Define the Tool contract (name, description, input schema, output schema), the registry every tool joins, and the wire protocol that serves a registry over HTTP and calls it back (ADR 0018). | — |
-| `internal/environment/` | Own the environment data layout: create-on-first-use and teardown of `data/envs/<env-id>/`. | `environment.md` |
-| `internal/memory/` | Own one environment's long-term memory: the `memory.db` store, hybrid search, and the five memory operations. | `memory.md` |
-| `internal/files/` | Read and write files inside the environment's workspace. | `environment.md` |
+| `internal/memory/` | Own the agent's long-term memory: the `memory.db` store, hybrid search, and the five memory operations. | `memory.md` |
+| `internal/files/` | Read and write files inside the sidecar's workspace. | `environment.md` |
 | `internal/message/` | Deliver agent-decided outbound messages to channels and peers (`message_send`). | `gateway.md` |
 | `internal/shell/` | Run tool child processes as sub-processes dropped to the agent UID — `shell_exec` in a fresh network namespace, script tools with network access (ADR 0010). | `security.md` |
 | `internal/tool/script/` | Universal subprocess adapter: run any executable as a tool through the shell executor (ADR 0010); owns the script-tool config declaration shape (ADR 0009). | `gateway.md` |
 | `internal/tool/tooltest/` | Build-time schema/struct conformance guards shared by tool tests. | — |
 | `internal/tool/mocks/` | Generated mocks of the tool contract for consumer tests. | — |
-| `tools/playwright/` | Example script tool (browser automation) registered via the config's `tools:` section. | `gateway.md` |
+| `tools/playwright/` | Example script tool (browser automation) registered via the sidecar config's `tools:` section. | `gateway.md` |
 | `tests/` | End-to-end scenarios wiring multiple modules together. | — |

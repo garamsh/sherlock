@@ -13,7 +13,7 @@ import (
 // (ADR 0008 step 2): the task statement is the hybrid-search query and
 // results are trimmed to the token budget.
 type Recall struct {
-	// Svc is the environment's memory service.
+	// Svc is the agent's memory service.
 	Svc memory.Service
 	// Budget bounds the tokens injected per turn; zero uses the memory
 	// package default.

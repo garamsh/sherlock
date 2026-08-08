@@ -28,6 +28,9 @@ const (
 	// defaultSidecarWorkspace is the sidecar's default workspace
 	// directory; a pod deployment mounts the workspace volume there.
 	defaultSidecarWorkspace = "data/workspace"
+
+	// defaultExecTimeout caps one shell_exec sub-process run.
+	defaultExecTimeout = 30 * time.Second
 )
 
 // SidecarConfig is the sidecar's resolved settings, parsed once at the
@@ -66,6 +69,7 @@ func newSidecarCommand() *cobra.Command {
 	}
 	cmd.Flags().String("addr", defaultSidecarAddr, "HTTP listen address for the tool contract")
 	cmd.Flags().String("workspace", defaultSidecarWorkspace, "workspace directory (created on first use)")
+	cmd.Flags().Duration("exec-timeout", defaultExecTimeout, "per-call ceiling for shell_exec sub-processes")
 	return cmd
 }
 
@@ -78,6 +82,7 @@ func resolveSidecarConfig(cmd *cobra.Command) (SidecarConfig, error) {
 	v := newConfigViper()
 	v.SetDefault("addr", defaultSidecarAddr)
 	v.SetDefault("workspace", defaultSidecarWorkspace)
+	v.SetDefault("exec-timeout", defaultExecTimeout)
 	if err := v.BindPFlags(cmd.Flags()); err != nil {
 		return SidecarConfig{}, err
 	}

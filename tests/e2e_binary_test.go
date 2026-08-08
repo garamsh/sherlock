@@ -17,43 +17,47 @@ import (
 // binaryAgentID is this scenario's own agent ID.
 const binaryAgentID = "e2e-bin"
 
-// TestEndToEnd_BinaryMVPScenario drives the canned MVP scenario against the
-// built gagent binary served as a subprocess — the e2e layer of
-// docs/convention/testing.md: real binary, real HTTP, nothing mocked beyond
-// the scripted mock model provider.
+// TestEndToEnd_BinaryMVPScenario drives the canned MVP scenario against
+// the built gagent binary run as two processes — the sidecar serving the
+// computer over the tool contract and the agent discovering it at
+// startup (ADR 0018). This is the e2e layer of
+// docs/convention/testing.md: real binaries, real HTTP, nothing mocked
+// beyond the scripted mock model provider.
 //
-// After ADR 0012 the canned script calls shell_exec, which the real binary
-// runs through ProcessExecutor. When the binary is not running as root
-// (the common CI case) shell_exec returns agent_uid unavailable; the test
-// asserts that failure mode rather than skipping the scenario, so the
-// binary wiring is exercised end-to-end either way.
+// When the sidecar cannot drop to the agent UID (the common CI case)
+// shell_exec returns agent_uid unavailable; the test asserts that
+// failure mode rather than skipping the scenario, so the wiring is
+// exercised end-to-end either way.
 func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
 	binary := buildGagentBinary(t)
 	root := t.TempDir()
-	cmd, baseURL, exited := startGatewayBinary(t, binary, root)
+
+	_, sidecarURL, _ := startSidecarBinary(t, binary,
+		filepath.Join(t.TempDir(), "workspace"), emptyConfig(t, "sidecar.yaml"))
+	cmd, baseURL, exited := startAgentBinary(t, binary, root, sidecarURL)
 
 	runBinaryMVPScenario(t, baseURL, root, binaryAgentID)
 
-	// SIGTERM triggers the binary's graceful shutdown.
+	// SIGTERM triggers the agent's graceful shutdown.
 	require.NoError(t, cmd.Process.Signal(syscall.SIGTERM))
 	select {
 	case err := <-exited:
-		require.NoError(t, err, "gateway must exit cleanly on SIGTERM")
+		require.NoError(t, err, "agent must exit cleanly on SIGTERM")
 	case <-time.After(15 * time.Second):
-		t.Fatal("gateway did not exit on SIGTERM")
+		t.Fatal("agent did not exit on SIGTERM")
 	}
 
-	// After the binary exits, the canned memory write is still queryable
-	// from the environment's memory store on disk.
-	assertMemoryStore(t, filepath.Join(root, binaryAgentID))
+	// After the agent exits, the canned memory write is still queryable
+	// from the memory store on disk.
+	assertMemoryStore(t, root)
 }
 
 // runBinaryMVPScenario is the binary test's variant of runMVPScenario.
 // It exercises the same canned loop but tolerates the shell_exec call
-// failing with agent_uid unavailable when the binary cannot drop to the
+// failing with agent_uid unavailable when the sidecar cannot drop to the
 // agent UID (typical CI environment without setuid-root). The in-process
-// variant in e2e_test.go uses a fake executor so shell_exec always
-// succeeds there.
+// variant in e2e_test.go serves a canned computer tool so shell_exec
+// always succeeds there.
 func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	t.Helper()
 
@@ -64,7 +68,7 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
 	resp.Body.Close()
 
-	got := collectEvents(t, events, 9)
+	got := collectEvents(t, events, 7)
 	var kinds []string
 	for _, e := range got {
 		kinds = append(kinds, e["kind"].(string))
@@ -73,34 +77,81 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 		"turn_started",
 		"writeback", "tool_call",
 		"writeback", "tool_call",
-		"writeback", "tool_call",
 		"writeback", "turn_finished",
 	}, kinds)
 	assert.Contains(t, got[0]["task"], "] unknown: "+e2eQuestion,
 		"the turn input renders the message with its ID and sender (ADR 0020)")
 
-	assert.Equal(t, "memory", got[2]["tool_name"])
-	assert.NotContains(t, got[2], "tool_failed")
-	assert.Equal(t, "shell_exec", got[4]["tool_name"])
-	// shell_exec fails when the binary cannot drop privileges; assert
+	assert.Equal(t, "shell_exec", got[2]["tool_name"])
+	// shell_exec fails when the sidecar cannot drop privileges; assert
 	// the failure mode is the documented agent_uid unavailable rather
 	// than masking it.
-	if failed, _ := got[4]["tool_failed"].(bool); failed {
-		result, _ := got[4]["tool_result"].(string)
+	if failed, _ := got[2]["tool_failed"].(bool); failed {
+		result, _ := got[2]["tool_result"].(string)
 		assert.Contains(t, result, "agent_uid unavailable",
 			"shell_exec failure mode in the binary test must surface as agent_uid unavailable")
 	}
-	assert.Equal(t, "message_send", got[6]["tool_name"])
-	assert.NotContains(t, got[6], "tool_failed")
+	assert.Equal(t, "message_send", got[4]["tool_name"])
+	assert.NotContains(t, got[4], "tool_failed")
 
 	require.Eventually(t, func() bool {
-		return len(outboxMessages(t, root, agentID)) == 1
+		return len(outboxMessages(t, root)) == 1
 	}, 5*time.Second, 10*time.Millisecond)
-	replies := outboxMessages(t, root, agentID)
+	replies := outboxMessages(t, root)
 	require.Len(t, replies, 1)
 	assert.Equal(t, "42", replies[0].Content)
 	assert.Equal(t, "http", replies[0].Channel)
 	assert.Equal(t, "sender", replies[0].Target)
+}
+
+// TestEndToEnd_OneShotAgentTurnAgainstSidecar runs "gagent agent
+// --message" against a running sidecar: the one-shot mode discovers the
+// same tool set, runs the full canned turn — discovered shell_exec,
+// message_send, writeback — prints the reply to stdout, and exits.
+func TestEndToEnd_OneShotAgentTurnAgainstSidecar(t *testing.T) {
+	binary := buildGagentBinary(t)
+	root := t.TempDir()
+
+	_, sidecarURL, _ := startSidecarBinary(t, binary,
+		filepath.Join(t.TempDir(), "workspace"), emptyConfig(t, "sidecar.yaml"))
+
+	cmd := exec.Command(binary, "agent",
+		"--config", emptyConfig(t, "gagent.yaml"),
+		"--agent-id", binaryAgentID,
+		"--memory-path", filepath.Join(root, "memory.db"),
+		"--tool-servers", sidecarURL,
+		"--message", e2eQuestion)
+	out, err := cmd.CombinedOutput()
+	require.NoError(t, err, "one-shot agent turn must exit cleanly: %s", out)
+	assert.Contains(t, string(out), "[http -> sender] 42",
+		"message_send output prints to stdout")
+	assert.Contains(t, string(out), "Replied via message_send",
+		"the final response prints to stdout")
+}
+
+// TestEndToEnd_UnreachableToolServerFailsStartup pins the ADR 0018
+// discovery contract: a configured tool server that never comes up fails
+// agent startup with an error naming it, after bounded retries.
+func TestEndToEnd_UnreachableToolServerFailsStartup(t *testing.T) {
+	binary := buildGagentBinary(t)
+	root := t.TempDir()
+
+	// A listener that closes immediately leaves a port nothing serves.
+	listen, err := net.Listen("tcp", "127.0.0.1:0")
+	require.NoError(t, err)
+	dead := "http://" + listen.Addr().String()
+	require.NoError(t, listen.Close())
+
+	cmd := exec.Command(binary, "agent",
+		"--config", emptyConfig(t, "gagent.yaml"),
+		"--agent-id", binaryAgentID,
+		"--memory-path", filepath.Join(root, "memory.db"),
+		"--tool-servers", dead,
+		"--message", "hi")
+	out, err := cmd.CombinedOutput()
+	require.Error(t, err, "an unreachable tool server must fail startup")
+	assert.Contains(t, string(out), dead,
+		"the startup error must name the unreachable server")
 }
 
 // buildGagentBinary compiles the gagent CLI into a temp path and returns
@@ -115,23 +166,23 @@ func buildGagentBinary(t *testing.T) string {
 	return path
 }
 
-// startGatewayBinary starts "gagent gateway" as a subprocess on a free
-// loopback port with root as the data root and the default mock model
-// provider, waits until it serves HTTP, and returns the process handle,
-// the base URL, and a channel receiving the process's exit result. An
-// explicit empty config file keeps the run hermetic against ./gagent.yaml
-// and XDG config files on the host. Test cleanup kills the process if it
-// is still running.
-func startGatewayBinary(t *testing.T, binary, root string) (*exec.Cmd, string, <-chan error) {
+// emptyConfig writes an empty config file — it keeps a binary run
+// hermetic against ./gagent.yaml, ./sidecar.yaml, and XDG config files
+// on the host — and returns its path.
+func emptyConfig(t *testing.T, name string) string {
 	t.Helper()
-	configPath := filepath.Join(t.TempDir(), "gagent.yaml")
+	configPath := filepath.Join(t.TempDir(), name)
 	require.NoError(t, os.WriteFile(configPath, nil, 0o600))
-	return startGatewayWithConfig(t, binary, root, configPath)
+	return configPath
 }
 
-// startGatewayWithConfig is startGatewayBinary with a caller-supplied
-// config file.
-func startGatewayWithConfig(t *testing.T, binary, root, configPath string) (*exec.Cmd, string, <-chan error) {
+// startAgentBinary starts "gagent agent" as a subprocess on a free
+// loopback port, discovering toolServers, with root holding the memory
+// file and the outbox, and the default mock model provider. It waits
+// until the agent serves HTTP and returns the process handle, the base
+// URL, and a channel receiving the process's exit result. Test cleanup
+// kills the process if it is still running.
+func startAgentBinary(t *testing.T, binary, root, toolServers string) (*exec.Cmd, string, <-chan error) {
 	t.Helper()
 
 	listen, err := net.Listen("tcp", "127.0.0.1:0")
@@ -140,13 +191,17 @@ func startGatewayWithConfig(t *testing.T, binary, root, configPath string) (*exe
 	require.NoError(t, listen.Close())
 
 	aux := t.TempDir()
-	logPath := filepath.Join(aux, "gateway.log")
+	logPath := filepath.Join(aux, "agent.log")
 	logFile, err := os.Create(logPath)
 	require.NoError(t, err)
 	t.Cleanup(func() { logFile.Close() })
 
-	cmd := exec.Command(binary, "gateway",
-		"--config", configPath, "--addr", addr, "--data-root", root)
+	cmd := exec.Command(binary, "agent",
+		"--config", emptyConfig(t, "gagent.yaml"),
+		"--addr", addr,
+		"--agent-id", binaryAgentID,
+		"--memory-path", filepath.Join(root, "memory.db"),
+		"--tool-servers", toolServers)
 	cmd.Stdout = logFile
 	cmd.Stderr = logFile
 	require.NoError(t, cmd.Start())
@@ -160,12 +215,12 @@ func startGatewayWithConfig(t *testing.T, binary, root, configPath string) (*exe
 	})
 
 	baseURL := "http://" + addr
-	deadline := time.Now().Add(10 * time.Second)
+	deadline := time.Now().Add(15 * time.Second)
 	for {
 		select {
 		case err := <-exited:
 			logs, _ := os.ReadFile(logPath)
-			t.Fatalf("gateway exited before serving: %v\nlogs:\n%s", err, logs)
+			t.Fatalf("agent exited before serving: %v\nlogs:\n%s", err, logs)
 		default:
 		}
 		resp, err := http.Get(baseURL + "/")
@@ -175,67 +230,8 @@ func startGatewayWithConfig(t *testing.T, binary, root, configPath string) (*exe
 		}
 		if time.Now().After(deadline) {
 			logs, _ := os.ReadFile(logPath)
-			t.Fatalf("gateway did not serve within 10s\nlogs:\n%s", logs)
+			t.Fatalf("agent did not serve within 15s\nlogs:\n%s", logs)
 		}
 		time.Sleep(20 * time.Millisecond)
 	}
-}
-
-// TestEndToEnd_ScriptToolCollisionFailsStartup runs both entry points
-// with a tools: entry named after the built-in memory tool (issue #124):
-// each must exit non-zero at startup with an error naming the tool,
-// instead of serving and surfacing the error on the first message.
-func TestEndToEnd_ScriptToolCollisionFailsStartup(t *testing.T) {
-	binary := buildGagentBinary(t)
-	root := t.TempDir()
-	configPath := writeScriptToolsConfig(t, "memory")
-
-	gatewayCmd := exec.Command(binary, "gateway",
-		"--config", configPath, "--addr", "127.0.0.1:0", "--data-root", root)
-	out, err := gatewayCmd.CombinedOutput()
-	require.Error(t, err, "gagent gateway must fail startup on a colliding tools: entry")
-	assert.Contains(t, string(out), `"memory"`,
-		"the startup error must name the offending tool")
-
-	agentCmd := exec.Command(binary, "agent",
-		"--config", configPath, "--data-root", root, "--message", "hi")
-	out, err = agentCmd.CombinedOutput()
-	require.Error(t, err, "gagent agent must fail startup on a colliding tools: entry")
-	assert.Contains(t, string(out), `"memory"`,
-		"the startup error must name the offending tool")
-}
-
-// TestEndToEnd_ValidScriptToolStartsAndServes is the regression half of
-// issue #124: a valid tools: entry must not stop the gateway from
-// starting and serving.
-func TestEndToEnd_ValidScriptToolStartsAndServes(t *testing.T) {
-	binary := buildGagentBinary(t)
-	root := t.TempDir()
-	configPath := writeScriptToolsConfig(t, "wordcount")
-
-	_, baseURL, _ := startGatewayWithConfig(t, binary, root, configPath)
-
-	resp, err := http.Get(baseURL + "/")
-	require.NoError(t, err)
-	resp.Body.Close()
-}
-
-// writeScriptToolsConfig writes a gagent.yaml with one tools: entry of
-// the given name plus the schema files it references, and returns the
-// config path.
-func writeScriptToolsConfig(t *testing.T, name string) string {
-	t.Helper()
-	dir := t.TempDir()
-	schema := filepath.Join(dir, "schema.json")
-	require.NoError(t, os.WriteFile(schema, []byte(`{"type":"object"}`), 0o600))
-	configPath := filepath.Join(dir, "gagent.yaml")
-	contents := "tools:\n" +
-		"  - name: " + name + "\n" +
-		"    description: A script tool.\n" +
-		"    input_schema: " + schema + "\n" +
-		"    output_schema: " + schema + "\n" +
-		"    exec:\n" +
-		"      command: [true]\n"
-	require.NoError(t, os.WriteFile(configPath, []byte(contents), 0o600))
-	return configPath
 }

@@ -135,7 +135,6 @@ func TestCheckSchema_AcceptsEveryBuiltinDocument(t *testing.T) {
 		name string
 		file string
 	}{
-		{"memory", "internal/memory/schema.json"},
 		{"files", "internal/files/schema.json"},
 		{"message", "internal/message/schema.json"},
 		{"shell", "internal/shell/schema.json"},

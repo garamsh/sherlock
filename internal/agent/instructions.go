@@ -17,10 +17,8 @@ var DefaultEgo string
 // conventions. It is versioned with the code and never overridable by an
 // ego file, so a custom prompt cannot break the memory loop.
 const Contract = `## Tools
-Pick the right tool for the task; don't run code when memory or files will do.
+Pick the right tool for the task; don't run code when files will do.
 
-- memory: search and read your long-term memory. The tool is read-only —
-  recording happens in the writeback block, never through a memory tool call.
 - files: read and write files in your workspace.
 - message_send: send a message to a channel and target. When the task came from
   a person and a reply is owed, reply through message_send. Your final response

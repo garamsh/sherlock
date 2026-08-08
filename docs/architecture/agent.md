@@ -16,10 +16,11 @@ Governs the agent: the reasoning loop, memory, tool use, and model access. Ratio
 
 ## Current state (the loop as implemented)
 
-- One rolling session per environment; each turn follows the memory lifecycle: frame, recall, act, writeback.
+- One rolling session per agent process; each turn follows the memory lifecycle: frame, recall, act, writeback.
 - Two per-turn guards keep a stalled model from consuming the iteration budget: an identical-failed-call guard (same name, input, and error three times) and a per-tool call budget (six per turn); each substitutes a synthetic result and emits a failed `tool_call` event, and the iteration cap remains the backstop.
-- Four built-in tools register in-process — `memory` (read-only search), `files`, `message_send`, `shell_exec` — plus config-registered script tools. Schemas double as function-calling parameter documents and must stay inside the OpenAI top-level subset; a runtime test guards the constraint.
-- All LLM access goes through consumer-owned interfaces (model, embedder); the scripted mock model and hashing embedder keep the full pipeline runnable offline.
+- No built-in tools: the registry holds the mouth (`message_send`, in-process) plus every tool discovered at startup from the configured `tool-servers:` endpoints (default the pod-local sidecar). Startup discovery retries with a bound — a sidecar may still be starting — and a server that stays unreachable fails startup with an error naming it; a server disappearing mid-run surfaces as ordinary tool execution errors. Tool schemas double as function-calling parameter documents and must stay inside the OpenAI top-level subset; a runtime test guards the constraint.
+- Memory is a layer, never a tool: the read-only memory search tool is gone; recall injection covers reads and the writeback block is the single write path (ADR 0011, ADR 0018).
+- All LLM access goes through consumer-owned interfaces (model, embedder); the scripted mock model and hashing embedder keep the full pipeline runnable offline (the mock exercises a discovered tool, `message_send`, and a writeback block).
 - Instructions compose an operator-owned ego file (`--ego-file`, flag-only) with the platform contract (`agent.Contract`), which is never overridable, so a custom prompt cannot break the memory loop.
 
 ## Open questions

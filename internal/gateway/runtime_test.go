@@ -14,14 +14,11 @@ import (
 
 	"github.com/garamsh/gagent/internal/agent"
 	"github.com/garamsh/gagent/internal/agent/openai"
-	"github.com/garamsh/gagent/internal/files"
 	"github.com/garamsh/gagent/internal/gateway"
 	"github.com/garamsh/gagent/internal/memory"
 	"github.com/garamsh/gagent/internal/memory/sqlite"
 	"github.com/garamsh/gagent/internal/message"
-	"github.com/garamsh/gagent/internal/shell"
 	"github.com/garamsh/gagent/internal/tool"
-	"github.com/garamsh/gagent/internal/tool/script"
 )
 
 // recordingSink captures outbound messages.
@@ -56,13 +53,17 @@ func replyModel(_ string) agent.Model {
 	)
 }
 
+// memoryPath returns the memory file path inside root the test factories
+// use; the outbox lands in root/outbox beside it.
+func memoryPath(root string) string { return filepath.Join(root, "memory.db") }
+
 func TestFactory_CustomSinkReceivesOutboundMessages(t *testing.T) {
 	root := t.TempDir()
 	sink := &recordingSink{}
 	factory := &gateway.Factory{
-		Root:     root,
-		NewModel: replyModel,
-		Sink:     sink,
+		MemoryPath: memoryPath(root),
+		NewModel:   replyModel,
+		Sink:       sink,
 	}
 	rt, err := factory.New(context.Background(), "env-1", nil)
 	require.NoError(t, err)
@@ -80,15 +81,15 @@ func TestFactory_CustomSinkReceivesOutboundMessages(t *testing.T) {
 		Content: "Message received.",
 	}, sink.messages()[0])
 	// The custom sink replaces the default file outbox entirely.
-	_, err = os.Stat(filepath.Join(root, "env-1", gateway.OutboxDir))
+	_, err = os.Stat(filepath.Join(root, gateway.OutboxDir))
 	assert.ErrorIs(t, err, os.ErrNotExist)
 }
 
 func TestFactory_NilSinkWritesOutbox(t *testing.T) {
 	root := t.TempDir()
 	factory := &gateway.Factory{
-		Root:     root,
-		NewModel: replyModel,
+		MemoryPath: memoryPath(root),
+		NewModel:   replyModel,
 	}
 	rt, err := factory.New(context.Background(), "env-1", nil)
 	require.NoError(t, err)
@@ -99,19 +100,19 @@ func TestFactory_NilSinkWritesOutbox(t *testing.T) {
 	_, err = rt.Session.Run(context.Background(), "hi")
 	require.NoError(t, err)
 
-	entries, err := os.ReadDir(filepath.Join(root, "env-1", gateway.OutboxDir))
+	entries, err := os.ReadDir(filepath.Join(root, gateway.OutboxDir))
 	require.NoError(t, err)
 	assert.Len(t, entries, 1)
 }
 
-func TestFactory_NewSinkBuildsPerEnvironmentSink(t *testing.T) {
+func TestFactory_NewSinkBuildsAgentSink(t *testing.T) {
 	root := t.TempDir()
 	sink := &recordingSink{}
 	var gotAgentID string
 	var gotFallback *gateway.Outbox
 	factory := &gateway.Factory{
-		Root:     root,
-		NewModel: replyModel,
+		MemoryPath: memoryPath(root),
+		NewModel:   replyModel,
 		NewSink: func(agentID string, fallback *gateway.Outbox) message.Sink {
 			gotAgentID = agentID
 			gotFallback = fallback
@@ -129,8 +130,8 @@ func TestFactory_NewSinkBuildsPerEnvironmentSink(t *testing.T) {
 
 	require.Len(t, sink.messages(), 1)
 	assert.Equal(t, "env-1", gotAgentID)
-	assert.Equal(t, filepath.Join(root, "env-1", gateway.OutboxDir), gotFallback.Dir(),
-		"the per-environment sink receives the default file outbox as its fallback")
+	assert.Equal(t, filepath.Join(root, gateway.OutboxDir), gotFallback.Dir(),
+		"the agent sink receives the default file outbox as its fallback")
 }
 
 // stubEmbedder returns a distinctive short vector so tests can tell it
@@ -145,10 +146,10 @@ func (stubEmbedder) Embed(context.Context, string) ([]float32, error) {
 func TestFactory_ConfiguredEmbedderReachesMemoryService(t *testing.T) {
 	root := t.TempDir()
 	factory := &gateway.Factory{
-		Root:     root,
-		NewModel: replyModel,
-		Sink:     &recordingSink{},
-		Embedder: stubEmbedder{},
+		MemoryPath: memoryPath(root),
+		NewModel:   replyModel,
+		Sink:       &recordingSink{},
+		Embedder:   stubEmbedder{},
 	}
 	rt, err := factory.New(context.Background(), "env-1", nil)
 	require.NoError(t, err)
@@ -157,7 +158,7 @@ func TestFactory_ConfiguredEmbedderReachesMemoryService(t *testing.T) {
 	require.NoError(t, err)
 	require.NoError(t, rt.Close(context.Background()))
 
-	store, err := sqlite.Open(filepath.Join(root, "env-1", gateway.MemoryDBFile))
+	store, err := sqlite.Open(memoryPath(root))
 	require.NoError(t, err)
 	defer func() {
 		assert.NoError(t, store.Close())
@@ -185,9 +186,9 @@ func consolidateModel(_ string) agent.Model {
 func TestRuntime_CloseConsolidatesEpisodicCluster(t *testing.T) {
 	root := t.TempDir()
 	factory := &gateway.Factory{
-		Root:     root,
-		NewModel: consolidateModel,
-		Sink:     &recordingSink{},
+		MemoryPath: memoryPath(root),
+		NewModel:   consolidateModel,
+		Sink:       &recordingSink{},
 	}
 	rt, err := factory.New(context.Background(), "env-1", nil)
 	require.NoError(t, err)
@@ -196,7 +197,7 @@ func TestRuntime_CloseConsolidatesEpisodicCluster(t *testing.T) {
 	require.NoError(t, err)
 	require.NoError(t, rt.Close(context.Background()))
 
-	store, err := sqlite.Open(filepath.Join(root, "env-1", gateway.MemoryDBFile))
+	store, err := sqlite.Open(memoryPath(root))
 	require.NoError(t, err)
 	defer func() {
 		assert.NoError(t, store.Close())
@@ -221,7 +222,7 @@ func compactionModel(_ string) agent.Model {
 func TestFactory_HistoryOverflowCompactsIntoSearchableEpisodicMemory(t *testing.T) {
 	root := t.TempDir()
 	factory := &gateway.Factory{
-		Root:               root,
+		MemoryPath:         memoryPath(root),
 		NewModel:           compactionModel,
 		Sink:               &recordingSink{},
 		MaxHistoryMessages: 4,
@@ -238,7 +239,7 @@ func TestFactory_HistoryOverflowCompactsIntoSearchableEpisodicMemory(t *testing.
 	assert.LessOrEqual(t, len(rt.Session.History()), factory.MaxHistoryMessages+1)
 
 	require.NoError(t, rt.Close(context.Background()))
-	store, err := sqlite.Open(filepath.Join(root, "env-1", gateway.MemoryDBFile))
+	store, err := sqlite.Open(memoryPath(root))
 	require.NoError(t, err)
 	defer func() {
 		assert.NoError(t, store.Close())
@@ -258,65 +259,28 @@ func TestFactory_HistoryOverflowCompactsIntoSearchableEpisodicMemory(t *testing.
 	assert.Contains(t, overflow.Content, "first overflowing task")
 }
 
-// openAITopLevelForbidden lists the keywords the OpenAI function-calling
-// API rejects at the top level of a tool's parameters schema (issue #49).
-// The canonical list lives in internal/agent/openai; this alias is kept for
-// readability inside the test.
-var openAITopLevelForbidden = openai.OpenAITopLevelForbidden
+// stubTool is a minimal discovered-tool stand-in: a static descriptor
+// whose Call never runs in these tests.
+type stubTool struct{ name string }
 
-func TestBuiltinTools_DescriptionsAreNonEmpty(t *testing.T) {
-	// Nil dependencies suffice: Description is a static document on every
-	// built-in tool.
-	builtins := []tool.Tool{
-		memory.NewTool(nil),
-		files.NewTool(nil),
-		message.NewSendTool(nil),
-		shell.NewTool(nil),
-	}
-	registry := tool.NewRegistry()
-	for _, tl := range builtins {
-		require.NoError(t, registry.Register(tl))
-	}
-
-	for _, d := range registry.List() {
-		assert.NotEmpty(t, d.Description, "tool %q must advertise a description", d.Name)
-	}
+func (t stubTool) Name() string                 { return t.name }
+func (t stubTool) Description() string          { return "a discovered tool" }
+func (t stubTool) InputSchema() json.RawMessage { return json.RawMessage(`{"type":"object"}`) }
+func (t stubTool) OutputSchema() json.RawMessage {
+	return json.RawMessage(`{"type":"object"}`)
+}
+func (t stubTool) Call(context.Context, json.RawMessage) (json.RawMessage, error) {
+	return json.RawMessage(`{}`), nil
 }
 
-func TestBuiltinTools_InputSchemasSatisfyOpenAISubset(t *testing.T) {
-	// Nil dependencies suffice: InputSchema is a static document on every
-	// built-in tool.
-	builtins := []tool.Tool{
-		memory.NewTool(nil),
-		files.NewTool(nil),
-		message.NewSendTool(nil),
-		shell.NewTool(nil),
-	}
-	for _, tl := range builtins {
-		t.Run(tl.Name(), func(t *testing.T) {
-			var schema map[string]json.RawMessage
-			require.NoError(t, json.Unmarshal(tl.InputSchema(), &schema))
-			require.Contains(t, schema, "type")
-			assert.JSONEq(t, `"object"`, string(schema["type"]),
-				"the API requires top-level type object")
-			for _, keyword := range openAITopLevelForbidden {
-				assert.NotContains(t, schema, keyword,
-					"the API rejects top-level %q", keyword)
-			}
-		})
-	}
-}
-
-func TestFactory_BuiltinToolNames(t *testing.T) {
-	// The four built-in tools are the public contract surface (ADR 0012).
-	// A regression in any one of them is a contract change; this test
-	// names them so the contract review gates the change.
+// TestFactory_RegistryHoldsMouthPlusDiscoveredTools pins ADR 0018: the
+// agent's registry carries no built-in computer tools — message_send (the
+// mouth, in-process) plus every discovered remote tool.
+func TestFactory_RegistryHoldsMouthPlusDiscoveredTools(t *testing.T) {
 	factory := &gateway.Factory{
-		Root:     t.TempDir(),
-		NewModel: replyModel,
-		NewShellExecutor: func() shell.Executor {
-			return shell.NewProcessExecutor(shell.DefaultAgentUID, 5*1e9)
-		},
+		MemoryPath: memoryPath(t.TempDir()),
+		NewModel:   replyModel,
+		Tools:      []tool.Tool{stubTool{name: "shell_exec"}, stubTool{name: "files"}},
 	}
 	rt, err := factory.New(context.Background(), "env-1", nil)
 	require.NoError(t, err)
@@ -328,183 +292,34 @@ func TestFactory_BuiltinToolNames(t *testing.T) {
 	for _, d := range rt.Registry.List() {
 		names = append(names, d.Name)
 	}
-	assert.Equal(t,
-		[]string{"files", "memory", "message_send", "shell_exec"},
-		names,
-		"the four built-in tools join the registry in name-sorted order")
+	assert.Equal(t, []string{"files", "message_send", "shell_exec"}, names,
+		"the mouth plus the discovered tools join the registry in name-sorted order")
 }
 
-// writeScriptToolSchemas writes a minimal input/output JSON Schema pair
-// into dir and returns their paths. The input schema satisfies the
-// OpenAI function-calling subset (top-level type object, no forbidden
-// keywords).
-func writeScriptToolSchemas(t *testing.T, dir string) (input, output string) {
-	t.Helper()
-	input = filepath.Join(dir, "input.json")
-	output = filepath.Join(dir, "output.json")
-	require.NoError(t, os.WriteFile(input, []byte(
-		`{"type":"object","properties":{"text":{"type":"string"}},"required":["text"]}`), 0o644))
-	require.NoError(t, os.WriteFile(output, []byte(
-		`{"type":"object","properties":{"count":{"type":"integer"}}}`), 0o644))
-	return input, output
-}
-
-func TestFactory_ScriptToolFromConfig(t *testing.T) {
-	root := t.TempDir()
-	input, output := writeScriptToolSchemas(t, t.TempDir())
+// TestFactory_DiscoveredToolCollidingWithMouthFailsStartup pins the
+// registry boundary: a tool server advertising message_send collides
+// with the in-process mouth and fails startup instead of shadowing it.
+func TestFactory_DiscoveredToolCollidingWithMouthFailsStartup(t *testing.T) {
 	factory := &gateway.Factory{
-		Root:     root,
-		NewModel: replyModel,
-		Tools: []script.Config{{
-			Name:         "wordcount",
-			Description:  "Count words in a text.",
-			InputSchema:  input,
-			OutputSchema: output,
-			Exec: script.ExecConfig{
-				Command:        []string{"python3", "tools/wordcount.py"},
-				StdinFormat:    "json",
-				StdoutFormat:   "json",
-				TimeoutSeconds: 30,
-			},
-		}},
+		MemoryPath: memoryPath(t.TempDir()),
+		NewModel:   replyModel,
+		Tools:      []tool.Tool{stubTool{name: "message_send"}},
 	}
-	rt, err := factory.New(context.Background(), "env-1", nil)
-	require.NoError(t, err)
-	defer func() {
-		assert.NoError(t, rt.Close(context.Background()))
-	}()
+	_, err := factory.New(context.Background(), "env-1", nil)
+	assert.ErrorIs(t, err, tool.ErrDuplicateTool)
+}
 
-	names := make([]string, 0)
-	var scriptToolSchema json.RawMessage
-	for _, d := range rt.Registry.List() {
-		names = append(names, d.Name)
-		if d.Name == "wordcount" {
-			scriptToolSchema = d.InputSchema
-		}
-	}
-	assert.Equal(t,
-		[]string{"files", "memory", "message_send", "wordcount"},
-		names,
-		"the script tool joins the built-ins in name-sorted order")
+func TestMessageSendTool_DescriptionAndSchemaSatisfyOpenAISubset(t *testing.T) {
+	tl := message.NewSendTool(nil)
+	assert.NotEmpty(t, tl.Description(), "the mouth must advertise a description")
 
-	// The script tool's schema satisfies the same OpenAI subset the
-	// built-ins are held to.
 	var schema map[string]json.RawMessage
-	require.NoError(t, json.Unmarshal(scriptToolSchema, &schema))
+	require.NoError(t, json.Unmarshal(tl.InputSchema(), &schema))
 	require.Contains(t, schema, "type")
 	assert.JSONEq(t, `"object"`, string(schema["type"]),
 		"the API requires top-level type object")
-	for _, keyword := range openAITopLevelForbidden {
+	for _, keyword := range openai.OpenAITopLevelForbidden {
 		assert.NotContains(t, schema, keyword,
 			"the API rejects top-level %q", keyword)
 	}
-}
-
-// recordingExecutor is the test double for shell.Executor: it captures
-// the last request and returns the canned result, so the script-tool
-// wiring is exercised without a real fork+exec.
-type recordingExecutor struct {
-	req    shell.Request
-	result shell.Result
-	err    error
-}
-
-func (e *recordingExecutor) Run(_ context.Context, req shell.Request) (shell.Result, error) {
-	e.req = req
-	return e.result, e.err
-}
-
-// TestFactory_ScriptToolRunsThroughShellExecutor verifies the ADR 0014
-// wiring: the script tool's argv, stdin, and timeout reach the platform
-// executor, and the child keeps network access (no namespace).
-func TestFactory_ScriptToolRunsThroughShellExecutor(t *testing.T) {
-	input, output := writeScriptToolSchemas(t, t.TempDir())
-	exec := &recordingExecutor{result: shell.Result{Stdout: `{"count":2}`}}
-	factory := &gateway.Factory{
-		Root:     t.TempDir(),
-		NewModel: replyModel,
-		NewShellExecutor: func() shell.Executor {
-			return exec
-		},
-		Tools: []script.Config{{
-			Name:         "wordcount",
-			Description:  "Count words in a text.",
-			InputSchema:  input,
-			OutputSchema: output,
-			Exec: script.ExecConfig{
-				Command:        []string{"python3", "tools/wordcount.py"},
-				StdinFormat:    "json",
-				StdoutFormat:   "json",
-				TimeoutSeconds: 30,
-			},
-		}},
-	}
-	rt, err := factory.New(context.Background(), "env-1", nil)
-	require.NoError(t, err)
-	defer func() {
-		assert.NoError(t, rt.Close(context.Background()))
-	}()
-
-	st, err := rt.Registry.Lookup("wordcount")
-	require.NoError(t, err)
-	out, err := tool.Invoke(context.Background(), st, json.RawMessage(`{"text":"hello world"}`))
-
-	require.NoError(t, err)
-	assert.JSONEq(t, `{"count":2}`, string(out))
-	assert.Equal(t, "python3", exec.req.Command)
-	assert.Equal(t, []string{"tools/wordcount.py"}, exec.req.Args)
-	assert.JSONEq(t, `{"text":"hello world"}`, string(exec.req.Stdin),
-		"the tool input reaches the child on stdin")
-	assert.False(t, exec.req.NoNetwork,
-		"a script tool is an operator-sanctioned egress channel (ADR 0014)")
-}
-
-// TestFactory_ScriptToolWithoutExecutorFailsClosed verifies the ADR 0014
-// failure contract: with no executor wired the script tool still
-// registers, but calls report agent_uid unavailable instead of running
-// as the platform UID.
-func TestFactory_ScriptToolWithoutExecutorFailsClosed(t *testing.T) {
-	input, output := writeScriptToolSchemas(t, t.TempDir())
-	factory := &gateway.Factory{
-		Root:     t.TempDir(),
-		NewModel: replyModel,
-		Tools: []script.Config{{
-			Name:         "wordcount",
-			Description:  "Count words in a text.",
-			InputSchema:  input,
-			OutputSchema: output,
-			Exec:         script.ExecConfig{Command: []string{"python3", "tools/wordcount.py"}},
-		}},
-	}
-	rt, err := factory.New(context.Background(), "env-1", nil)
-	require.NoError(t, err)
-	defer func() {
-		assert.NoError(t, rt.Close(context.Background()))
-	}()
-
-	st, err := rt.Registry.Lookup("wordcount")
-	require.NoError(t, err)
-	_, err = tool.Invoke(context.Background(), st, json.RawMessage(`{"text":"hi"}`))
-
-	require.ErrorIs(t, err, shell.ErrAgentUIDUnavailable)
-	assert.Contains(t, err.Error(), "agent_uid unavailable")
-}
-
-func TestFactory_ScriptToolNameCollisionFailsStartup(t *testing.T) {
-	input, output := writeScriptToolSchemas(t, t.TempDir())
-	factory := &gateway.Factory{
-		Root:     t.TempDir(),
-		NewModel: replyModel,
-		Tools: []script.Config{{
-			Name:         "memory",
-			Description:  "Collides with the built-in memory tool.",
-			InputSchema:  input,
-			OutputSchema: output,
-			Exec:         script.ExecConfig{Command: []string{"true"}},
-		}},
-	}
-
-	_, err := factory.New(context.Background(), "env-1", nil)
-	assert.ErrorIs(t, err, tool.ErrDuplicateTool,
-		"a script tool named after a built-in fails startup")
 }

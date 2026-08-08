@@ -17,7 +17,7 @@ import (
 // dir, plus the store itself for row-level assertions.
 func openCaptureService(t *testing.T, dir string) (memory.Service, memory.Store) {
 	t.Helper()
-	store, err := sqlite.Open(filepath.Join(dir, gateway.MemoryDBFile))
+	store, err := sqlite.Open(filepath.Join(dir, "memory.db"))
 	require.NoError(t, err)
 	svc := memory.NewService(store, memory.NewHashingEmbedder(), memory.NewConcatSummarizer())
 	t.Cleanup(func() {

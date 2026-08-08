@@ -14,9 +14,9 @@ Governs the environment model: what an environment is, its topology, and its tru
 
 ## Current state
 
-The platform is a single binary in a single container hosting `data/envs/<agent-id>/` (`workspace/` + `memory.db`); the directory is the isolation unit (teardown, migration, backup are directory operations). UID trust domains apply only when the binary runs privileged (setuid-root): `workspace/` is chowned to the agent UID and the files tool drops its filesystem UID to it, while `shell_exec` and script-tool children drop to the agent UID, the shell additionally in a fresh empty network namespace. The shipped distroless nonroot image cannot drop privileges, so those paths report `agent_uid unavailable` under it.
+The pod split is two processes today. `gagent sidecar` serves one workspace (config key, created on first use), `shell_exec`, and the script tools declared in its own config over the tool contract. UID trust domains apply only when the sidecar runs privileged: the workspace is chowned to the agent UID and the files tool drops its filesystem UID to it, while `shell_exec` and script-tool children drop to the agent UID, the shell additionally in a fresh empty network namespace. A sidecar that cannot drop privileges reports `agent_uid unavailable`.
 
-The first migration step exists alongside it: `gagent sidecar` serves one workspace (config key, created on first use), `shell_exec`, and the script tools declared in its own config over the tool contract, with the same UID trust-domain behavior. The agent still consumes the in-process tools; rewiring it to the contract client is the next step.
+`gagent agent` holds no environment layout: the `data/envs/<id>/` pairing is gone, the agent configures only its memory file (`memory-path`), and every computer capability reaches it as a discovered remote tool over the contract.
 
 ## Open questions
 

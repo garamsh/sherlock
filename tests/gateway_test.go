@@ -77,24 +77,29 @@ func strconvQuote(s string) string {
 	return string(q)
 }
 
+// newGatewayQueue starts the one agent's queue over a real factory: the
+// memory file and the file outbox live under root.
+func newGatewayQueue(t *testing.T, root string, newModel func(string) agent.Model) *gateway.Queue {
+	t.Helper()
+	factory := &gateway.Factory{
+		MemoryPath: filepath.Join(root, "memory.db"),
+		NewModel:   newModel,
+	}
+	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
+	q, err := gateway.NewQueue(factory, "env-1", logger)
+	require.NoError(t, err)
+	return q
+}
+
 func TestGateway_EndToEnd(t *testing.T) {
 	root := t.TempDir()
 	release := make(chan struct{})
 	gated := &gatedModel{inner: replyScript("reply-1", "reply-2"), release: release, started: make(chan struct{})}
 
-	factory := &gateway.Factory{
-		Root: root,
-		NewModel: func(agentID string) agent.Model {
-			if agentID == "env-1" {
-				return gated
-			}
-			return replyScript("reply-other")
-		},
-	}
+	q := newGatewayQueue(t, root, func(string) agent.Model { return gated })
+	t.Cleanup(func() { q.Close() })
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
-	router := gateway.NewRouter(factory, logger)
-	t.Cleanup(func() { router.Close() })
-	srv := httptest.NewServer(gateway.NewHandler(router, logger))
+	srv := httptest.NewServer(gateway.NewHandler(q, logger))
 	t.Cleanup(srv.Close)
 
 	// Subscribe to the monitoring stream before any message so no event
@@ -115,23 +120,23 @@ func TestGateway_EndToEnd(t *testing.T) {
 	resp = postJSON(t, srv.URL+"/agents/env-1/messages", `{"content":"second"}`)
 	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
 	resp.Body.Close()
-	assert.Empty(t, outboxMessages(t, root, "env-1"))
+	assert.Empty(t, outboxMessages(t, root))
 
 	close(release)
 
 	// Both runs complete and deliver their replies to the outbox, in
 	// order.
 	require.Eventually(t, func() bool {
-		return len(outboxMessages(t, root, "env-1")) == 2
+		return len(outboxMessages(t, root)) == 2
 	}, 5*time.Second, 10*time.Millisecond)
-	replies := outboxMessages(t, root, "env-1")
+	replies := outboxMessages(t, root)
 	require.Len(t, replies, 2)
 	assert.Equal(t, "reply-1", replies[0].Content)
 	assert.Equal(t, "reply-2", replies[1].Content)
 	assert.Equal(t, message.Message{Channel: "http", Target: "sender", Content: "reply-1"}, replies[0])
 
-	// The writeback block landed in the environment's memory store.
-	_, err := os.Stat(filepath.Join(root, "env-1", gateway.MemoryDBFile))
+	// The writeback block landed in the agent's memory store.
+	_, err := os.Stat(filepath.Join(root, "memory.db"))
 	require.NoError(t, err)
 
 	// The SSE subscriber observed the loop events of both turns, in
@@ -154,20 +159,17 @@ func TestGateway_EndToEnd(t *testing.T) {
 		"turn_started", "writeback", "tool_call", "writeback", "turn_finished",
 	}, kinds)
 
-	// An environment with no subscribers runs and delivers normally.
+	// One agent per process: a message naming another agent ID gets 404.
 	resp = postJSON(t, srv.URL+"/agents/env-2/messages", `{"content":"quiet"}`)
-	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
+	assert.Equal(t, http.StatusNotFound, resp.StatusCode)
 	resp.Body.Close()
-	require.Eventually(t, func() bool {
-		return len(outboxMessages(t, root, "env-2")) == 1
-	}, 5*time.Second, 10*time.Millisecond)
 }
 
-// capturedTurns returns the active user-turn captures in the
-// environment's memory store.
-func capturedTurns(t *testing.T, root, agentID string) []memory.Memory {
+// capturedTurns returns the active user-turn captures in the agent's
+// memory store.
+func capturedTurns(t *testing.T, root string) []memory.Memory {
 	t.Helper()
-	store, err := sqlite.Open(filepath.Join(root, agentID, gateway.MemoryDBFile))
+	store, err := sqlite.Open(filepath.Join(root, "memory.db"))
 	require.NoError(t, err)
 	defer func() {
 		assert.NoError(t, store.Close())
@@ -184,13 +186,13 @@ func capturedTurns(t *testing.T, root, agentID string) []memory.Memory {
 }
 
 // capturedTurnContents returns the content of every durable user-turn
-// capture in the environment's memory store, active or archived. Shutdown
+// capture in the agent's memory store, active or archived. Shutdown
 // consolidation (ADR 0015) may archive captures into a compressed parent,
 // but nothing is ever hard-deleted — a restart must neither lose nor
 // duplicate them.
-func capturedTurnContents(t *testing.T, root, agentID string) []string {
+func capturedTurnContents(t *testing.T, root string) []string {
 	t.Helper()
-	db, err := sql.Open("sqlite", filepath.Join(root, agentID, gateway.MemoryDBFile))
+	db, err := sql.Open("sqlite", filepath.Join(root, "memory.db"))
 	require.NoError(t, err)
 	defer func() {
 		assert.NoError(t, db.Close())
@@ -222,17 +224,13 @@ func TestGateway_InboundMessageCapturedBeforeRunCompletes(t *testing.T) {
 	release := make(chan struct{})
 	gated := &gatedModel{inner: replyScript("reply"), release: release, started: make(chan struct{})}
 
-	factory := &gateway.Factory{
-		Root:     root,
-		NewModel: func(string) agent.Model { return gated },
-	}
-	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
-	router := gateway.NewRouter(factory, logger)
+	q := newGatewayQueue(t, root, func(string) agent.Model { return gated })
 	t.Cleanup(func() {
 		close(release)
-		router.Close()
+		q.Close()
 	})
-	srv := httptest.NewServer(gateway.NewHandler(router, logger))
+	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
+	srv := httptest.NewServer(gateway.NewHandler(q, logger))
 	t.Cleanup(srv.Close)
 
 	resp := postJSON(t, srv.URL+"/agents/env-1/messages", `{"content":"the wifi password is hunter2"}`)
@@ -245,7 +243,7 @@ func TestGateway_InboundMessageCapturedBeforeRunCompletes(t *testing.T) {
 	}
 
 	// The run is still blocked, yet the capture is already durable.
-	turns := capturedTurns(t, root, "env-1")
+	turns := capturedTurns(t, root)
 	require.Len(t, turns, 1)
 	assert.Equal(t, "the wifi password is hunter2", turns[0].Content,
 		"the message is stored verbatim")
@@ -255,7 +253,7 @@ func TestGateway_InboundMessageCapturedBeforeRunCompletes(t *testing.T) {
 }
 
 // TestGateway_RestartBetweenEnqueueAndRunKeepsCapture pins the ADR 0016
-// crash-safety guarantee: closing the gateway between enqueue and run
+// crash-safety guarantee: closing the agent between enqueue and run
 // neither loses nor duplicates the capture. The queued message itself is
 // gone after the restart (the queue is in-memory, ADR 0009
 // fire-and-forget ingress), but its capture is already durable.
@@ -264,13 +262,9 @@ func TestGateway_RestartBetweenEnqueueAndRunKeepsCapture(t *testing.T) {
 	release := make(chan struct{})
 	gated := &gatedModel{inner: replyScript("reply-1"), release: release, started: make(chan struct{})}
 
-	factory := &gateway.Factory{
-		Root:     root,
-		NewModel: func(string) agent.Model { return gated },
-	}
+	q := newGatewayQueue(t, root, func(string) agent.Model { return gated })
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
-	router := gateway.NewRouter(factory, logger)
-	srv := httptest.NewServer(gateway.NewHandler(router, logger))
+	srv := httptest.NewServer(gateway.NewHandler(q, logger))
 
 	resp := postJSON(t, srv.URL+"/agents/env-1/messages", `{"content":"first"}`)
 	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
@@ -285,13 +279,13 @@ func TestGateway_RestartBetweenEnqueueAndRunKeepsCapture(t *testing.T) {
 	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
 	resp.Body.Close()
 
-	// Simulated restart: the gateway closes mid-run, before the queued
+	// Simulated restart: the agent closes mid-run, before the queued
 	// message's run starts.
 	close(release)
 	srv.Close()
-	require.NoError(t, router.Close())
+	require.NoError(t, q.Close())
 
-	contents := capturedTurnContents(t, root, "env-1")
+	contents := capturedTurnContents(t, root)
 	assert.ElementsMatch(t, []string{"first", "second"}, contents,
 		"each accepted message is captured exactly once, none lost, none duplicated")
 }
@@ -354,16 +348,17 @@ func collectEvents(t *testing.T, events chan map[string]any, n int) []map[string
 	return out
 }
 
-// outboxMessages reads the environment's outbox in delivery order.
-func outboxMessages(t *testing.T, root, agentID string) []message.Message {
+// outboxMessages reads the agent's outbox (root/outbox) in delivery
+// order.
+func outboxMessages(t *testing.T, root string) []message.Message {
 	t.Helper()
-	entries, err := os.ReadDir(filepath.Join(root, agentID, gateway.OutboxDir))
+	entries, err := os.ReadDir(filepath.Join(root, gateway.OutboxDir))
 	if err != nil {
 		return nil
 	}
 	var out []message.Message
 	for _, e := range entries {
-		raw, err := os.ReadFile(filepath.Join(root, agentID, gateway.OutboxDir, e.Name()))
+		raw, err := os.ReadFile(filepath.Join(root, gateway.OutboxDir, e.Name()))
 		require.NoError(t, err)
 		var msg message.Message
 		require.NoError(t, json.Unmarshal(raw, &msg))

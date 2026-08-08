@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/garamsh/gagent/internal/agent"
-	"github.com/garamsh/gagent/internal/environment"
 )
 
 // maxMessageBody caps inbound message bodies so a sender cannot exhaust
@@ -23,10 +22,11 @@ const maxMessageBody = 1 << 20 // 1 MiB
 //	POST /agents/{agentID}/messages — fire-and-forget ingress; 202 + message ID
 //	GET  /agents/{agentID}/events   — SSE monitoring stream of loop events
 //
-// Callers authenticate at the TLS layer (mTLS, ADR 0017); the handler
-// itself is unchanged by it.
-func NewHandler(router *Router, logger *slog.Logger) http.Handler {
-	h := &handler{router: router, logger: logger}
+// One process serves one agent (ADR 0018): a path whose agentID is not
+// the queue's gets 404. Callers authenticate at the TLS layer (mTLS,
+// ADR 0017); the handler itself is unchanged by it.
+func NewHandler(q *Queue, logger *slog.Logger) http.Handler {
+	h := &handler{queue: q, logger: logger}
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /agents/{agentID}/messages", h.postMessage)
 	mux.HandleFunc("GET /agents/{agentID}/events", h.events)
@@ -34,8 +34,18 @@ func NewHandler(router *Router, logger *slog.Logger) http.Handler {
 }
 
 type handler struct {
-	router *Router
+	queue  *Queue
 	logger *slog.Logger
+}
+
+// serveAgent reports whether the request addresses this process's agent;
+// a mismatched ID gets a 404 problem body.
+func (h *handler) serveAgent(w http.ResponseWriter, r *http.Request) bool {
+	if r.PathValue("agentID") == h.queue.AgentID() {
+		return true
+	}
+	writeProblem(w, http.StatusNotFound, "unknown agent "+r.PathValue("agentID"))
+	return false
 }
 
 // postMessageRequest is the ingress body: the message content only. The
@@ -59,6 +69,9 @@ type problem struct {
 }
 
 func (h *handler) postMessage(w http.ResponseWriter, r *http.Request) {
+	if !h.serveAgent(w, r) {
+		return
+	}
 	agentID := r.PathValue("agentID")
 	var req postMessageRequest
 	dec := json.NewDecoder(http.MaxBytesReader(w, r.Body, maxMessageBody))
@@ -71,17 +84,14 @@ func (h *handler) postMessage(w http.ResponseWriter, r *http.Request) {
 		writeProblem(w, http.StatusBadRequest, "content is required")
 		return
 	}
-	id, err := h.router.Enqueue(r.Context(), agentID, callerID(r), req.Content)
+	id, err := h.queue.Enqueue(r.Context(), callerID(r), req.Content)
 	if err != nil {
-		switch {
-		case errors.Is(err, environment.ErrInvalidID):
-			writeProblem(w, http.StatusBadRequest, err.Error())
-		case errors.Is(err, ErrRouterClosed):
+		if errors.Is(err, ErrQueueClosed) {
 			writeProblem(w, http.StatusServiceUnavailable, err.Error())
-		default:
-			h.logger.Error("enqueue failed", "op", "enqueue", "agent_id", agentID, "error", err)
-			writeProblem(w, http.StatusInternalServerError, "enqueue failed")
+			return
 		}
+		h.logger.Error("enqueue failed", "op", "enqueue", "agent_id", agentID, "error", err)
+		writeProblem(w, http.StatusInternalServerError, "enqueue failed")
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -108,11 +118,14 @@ type eventPayload struct {
 	MessageIDs []string            `json:"message_ids,omitempty"`
 }
 
-// events streams the environment's loop events as server-sent events.
+// events streams the agent's loop events as server-sent events.
 // Subscribing works with zero publishers and publishing works with zero
-// subscribers; the stream ends when the client disconnects or the router
+// subscribers; the stream ends when the client disconnects or the queue
 // closes.
 func (h *handler) events(w http.ResponseWriter, r *http.Request) {
+	if !h.serveAgent(w, r) {
+		return
+	}
 	agentID := r.PathValue("agentID")
 	flusher, ok := w.(http.Flusher)
 	if !ok {
@@ -125,7 +138,7 @@ func (h *handler) events(w http.ResponseWriter, r *http.Request) {
 
 	// Subscribe before the first flush: once the client has received the
 	// response headers, its subscription is guaranteed active.
-	ch, cancel := h.router.Events(agentID).Subscribe()
+	ch, cancel := h.queue.Events().Subscribe()
 	defer cancel()
 	flusher.Flush()
 	for {

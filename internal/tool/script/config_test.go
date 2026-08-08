@@ -36,7 +36,7 @@ func TestValidateConfigs(t *testing.T) {
 		Exec:         script.ExecConfig{Command: []string{"true"}},
 	}
 	colliding := valid
-	colliding.Name = "memory"
+	colliding.Name = "files"
 	missingSchema := valid
 	missingSchema.Name = "noschema"
 	missingSchema.InputSchema = filepath.Join(t.TempDir(), "missing.json")
@@ -55,7 +55,7 @@ func TestValidateConfigs(t *testing.T) {
 		{
 			name:    "collision with a built-in fails",
 			tools:   []script.Config{colliding},
-			wantErr: `"memory"`,
+			wantErr: `"files"`,
 			wantDup: true,
 		},
 		{

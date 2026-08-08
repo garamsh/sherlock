@@ -16,7 +16,7 @@ import (
 // defaultConsoleTimeout bounds one console delivery POST.
 const defaultConsoleTimeout = 10 * time.Second
 
-// consoleSinkFor resolves the per-environment sink constructor from the
+// consoleSinkFor resolves the agent's sink constructor from the
 // console: config section (docs/architecture/gateway.md): nil when the
 // section is unset or unusable — the file outbox stays the default and
 // the fallback. The console POST reuses the platform's tls: material:

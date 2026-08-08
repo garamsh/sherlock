@@ -106,10 +106,11 @@ func mtlsClient(t *testing.T, caPEM []byte, certPath, keyPath string) *http.Clie
 	return &http.Client{Transport: &http.Transport{TLSClientConfig: cfg}}
 }
 
-// startGatewayMTLS starts "gagent gateway" over mTLS on a free loopback
-// port, waits until the probe client is served, and returns the process
-// handle, the base URL, the exit channel, and the gateway log path.
-func startGatewayMTLS(t *testing.T, binary, root, configPath string, probe *http.Client) (*exec.Cmd, string, <-chan error, string) {
+// startAgentMTLS starts "gagent agent" over mTLS on a free loopback
+// port, discovering toolServers, waits until the probe client is served,
+// and returns the process handle, the base URL, the exit channel, and
+// the agent log path.
+func startAgentMTLS(t *testing.T, binary, root, configPath, toolServers string, probe *http.Client) (*exec.Cmd, string, <-chan error, string) {
 	t.Helper()
 	listen, err := net.Listen("tcp", "127.0.0.1:0")
 	require.NoError(t, err)
@@ -117,13 +118,16 @@ func startGatewayMTLS(t *testing.T, binary, root, configPath string, probe *http
 	require.NoError(t, listen.Close())
 
 	aux := t.TempDir()
-	logPath := filepath.Join(aux, "gateway.log")
+	logPath := filepath.Join(aux, "agent.log")
 	logFile, err := os.Create(logPath)
 	require.NoError(t, err)
 	t.Cleanup(func() { logFile.Close() })
 
-	cmd := exec.Command(binary, "gateway",
-		"--config", configPath, "--addr", addr, "--data-root", root)
+	cmd := exec.Command(binary, "agent",
+		"--config", configPath, "--addr", addr,
+		"--agent-id", mtlsAgentID,
+		"--memory-path", filepath.Join(root, "memory.db"),
+		"--tool-servers", toolServers)
 	cmd.Stdout = logFile
 	cmd.Stderr = logFile
 	require.NoError(t, cmd.Start())
@@ -142,7 +146,7 @@ func startGatewayMTLS(t *testing.T, binary, root, configPath string, probe *http
 		select {
 		case err := <-exited:
 			logs, _ := os.ReadFile(logPath)
-			t.Fatalf("gateway exited before serving: %v\nlogs:\n%s", err, logs)
+			t.Fatalf("agent exited before serving: %v\nlogs:\n%s", err, logs)
 		default:
 		}
 		resp, err := probe.Get(baseURL + "/")
@@ -152,7 +156,7 @@ func startGatewayMTLS(t *testing.T, binary, root, configPath string, probe *http
 		}
 		if time.Now().After(deadline) {
 			logs, _ := os.ReadFile(logPath)
-			t.Fatalf("gateway did not serve within 10s\nlogs:\n%s", logs)
+			t.Fatalf("agent did not serve within 10s\nlogs:\n%s", logs)
 		}
 		time.Sleep(20 * time.Millisecond)
 	}
@@ -189,7 +193,7 @@ func subscribeSSEClient(t *testing.T, client *http.Client, url string) chan map[
 	return out
 }
 
-// TestGatewayMTLS_AuthenticatesCallers runs the built gateway with a
+// TestGatewayMTLS_AuthenticatesCallers runs the built agent with a
 // tls: section (ADR 0017): a client without a certificate and a client
 // certified by a foreign CA are rejected at the handshake, while a
 // client certified by the configured CA gets 202 on POST and the SSE
@@ -217,8 +221,10 @@ func TestGatewayMTLS_AuthenticatesCallers(t *testing.T) {
 			"  key: "+serverKey+"\n"+
 			"  client-ca: "+caPath+"\n"), 0o600))
 
+	_, sidecarURL, _ := startSidecarBinary(t, binary,
+		filepath.Join(t.TempDir(), "workspace"), emptyConfig(t, "sidecar.yaml"))
 	client := mtlsClient(t, ca.pem, clientCert, clientKey)
-	_, baseURL, _, logPath := startGatewayMTLS(t, binary, root, configPath, client)
+	_, baseURL, _, logPath := startAgentMTLS(t, binary, root, configPath, sidecarURL, client)
 
 	_, err := mtlsClient(t, ca.pem, "", "").Get(baseURL + "/")
 	require.Error(t, err, "a client without a certificate must be rejected at the handshake")
@@ -233,7 +239,7 @@ func TestGatewayMTLS_AuthenticatesCallers(t *testing.T) {
 	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
 	resp.Body.Close()
 
-	got := collectEvents(t, events, 9)
+	got := collectEvents(t, events, 7)
 	assert.Equal(t, "turn_started", got[0]["kind"])
 	assert.Equal(t, "turn_finished", got[len(got)-1]["kind"])
 
@@ -252,19 +258,19 @@ func TestGatewayMTLS_AuthenticatesCallers(t *testing.T) {
 		"the request log must carry the caller identity next to trace_id")
 }
 
-// TestGateway_NonLoopbackWithoutTLSFailsStartup runs the built gateway
-// with a non-loopback --addr and no tls: section: startup must fail
-// with a clear error instead of serving an unauthenticated port
-// (ADR 0017).
-func TestGateway_NonLoopbackWithoutTLSFailsStartup(t *testing.T) {
+// TestAgent_NonLoopbackWithoutTLSFailsStartup runs the built agent with
+// a non-loopback --addr and no tls: section: startup must fail with a
+// clear error instead of serving an unauthenticated port (ADR 0017).
+func TestAgent_NonLoopbackWithoutTLSFailsStartup(t *testing.T) {
 	binary := buildGagentBinary(t)
 	root := t.TempDir()
 	configPath := filepath.Join(t.TempDir(), "gagent.yaml")
 	require.NoError(t, os.WriteFile(configPath, nil, 0o600))
 
 	for _, addr := range []string{"0.0.0.0:18080", ":18080"} {
-		cmd := exec.Command(binary, "gateway",
-			"--config", configPath, "--addr", addr, "--data-root", root)
+		cmd := exec.Command(binary, "agent",
+			"--config", configPath, "--addr", addr,
+			"--memory-path", filepath.Join(root, "memory.db"))
 		out, err := cmd.CombinedOutput()
 		require.Error(t, err, "addr %q without tls: must fail startup", addr)
 		assert.Contains(t, string(out), "loopback")

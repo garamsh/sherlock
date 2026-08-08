@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"testing"
 	"time"
@@ -103,4 +104,90 @@ func TestProcessExecutor_LoopbackDownInNamespace(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "lo\n0x8\n", res.Stdout,
 		"the namespace is empty but for a down loopback")
+}
+
+// pythonProbe returns a python3 one-liner connecting to addr and exiting
+// 0 on success, 1 on failure. The single-account tests probe with python
+// rather than the Go test binary: the executor's RLIMIT_AS cap is sized
+// for shell commands, not a Go runtime.
+func pythonProbe(addr string) string {
+	host, port, _ := net.SplitHostPort(addr)
+	return fmt.Sprintf(
+		`python3 -c "import socket,sys; s=socket.socket(); sys.exit(0 if s.connect_ex(('%s',%s))==0 else 1)"`,
+		host, port)
+}
+
+// requirePython3 skips when the child cannot find python3 on the
+// scrubbed PATH.
+func requirePython3(t *testing.T) {
+	t.Helper()
+	if _, err := exec.LookPath("python3"); err != nil {
+		t.Skip("python3 not on PATH; the single-account netns probe needs it")
+	}
+}
+
+// TestProcessExecutor_SingleAccountNoNetworkBlocksLoopback pins the
+// unprivileged isolation path (ADR 0010): in single-account mode the
+// shell child is network-isolated through a user+network namespace —
+// no privileges required — while a child without NoNetwork keeps the
+// host network (the script-tool contract).
+func TestProcessExecutor_SingleAccountNoNetworkBlocksLoopback(t *testing.T) {
+	requireUnprivileged(t)
+	requirePython3(t)
+	ln, err := net.Listen("tcp", "127.0.0.1:0")
+	require.NoError(t, err)
+	defer ln.Close()
+	go func() {
+		for {
+			conn, err := ln.Accept()
+			if err != nil {
+				return
+			}
+			conn.Close()
+		}
+	}()
+
+	exec := shell.NewProcessExecutor(os.Geteuid(), 5*time.Second)
+
+	res, err := exec.Run(context.Background(), shell.Request{
+		Command:   pythonProbe(ln.Addr().String()),
+		NoNetwork: true,
+	})
+	if err != nil {
+		require.ErrorIs(t, err, shell.ErrAgentUIDUnavailable,
+			"a host without unprivileged user namespaces fails closed")
+		t.Skip("unprivileged user namespaces are disabled on this host")
+	}
+	require.NoError(t, err)
+	assert.NotZero(t, res.ExitCode,
+		"the child in the userns-owned netns must not reach the host loopback")
+
+	res, err = exec.Run(context.Background(), shell.Request{Command: pythonProbe(ln.Addr().String())})
+	require.NoError(t, err)
+	assert.Zero(t, res.ExitCode,
+		"the same child without the namespace keeps network access (the script-tool contract)")
+}
+
+// TestProcessExecutor_SingleAccountLoopbackDownInNamespace observes the
+// unprivileged namespace directly: it holds only the loopback
+// interface. (socket.if_nameindex is the check — /sys/class/net is not
+// netns-filtered from an unprivileged userns.)
+func TestProcessExecutor_SingleAccountLoopbackDownInNamespace(t *testing.T) {
+	requireUnprivileged(t)
+	requirePython3(t)
+	exec := shell.NewProcessExecutor(os.Geteuid(), 5*time.Second)
+
+	res, err := exec.Run(context.Background(), shell.Request{
+		Command:   `python3 -c "import socket; print(socket.if_nameindex())"`,
+		NoNetwork: true,
+	})
+	if err != nil {
+		require.ErrorIs(t, err, shell.ErrAgentUIDUnavailable,
+			"a host without unprivileged user namespaces fails closed")
+		t.Skip("unprivileged user namespaces are disabled on this host")
+	}
+
+	require.NoError(t, err)
+	assert.Equal(t, "[(1, 'lo')]\n", res.Stdout,
+		"the namespace is empty but for the loopback interface")
 }

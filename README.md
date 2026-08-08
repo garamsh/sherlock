@@ -54,7 +54,7 @@ Serves the agent's computer (ADR 0018) — the `files` and `shell_exec` tools pl
 gagent sidecar
 ```
 
-- The sidecar owns the workspace directory (`workspace` key, created on first use) and the shell executor: privileged runs chown the workspace to the agent UID and drop child processes to it; unprivileged runs report `agent_uid unavailable` (fail-closed).
+- The sidecar owns the workspace directory (`workspace` key, created on first use) and the shell executor: children run as `exec-uid` — privileged runs chown the workspace to it and drop children to it; `exec-uid` set to the sidecar's own UID is single-account mode and needs no privilege (the shell stays network-isolated through an unprivileged user+network namespace); any other unprivileged `exec-uid` reports `agent_uid unavailable` (fail-closed).
 - The listener carries no authentication in this phase, so it serves loopback binds only — a non-loopback `--addr` fails startup (ADR 0013, same posture as the gateway).
 - Its config file resolves in order: `--config <path>`, then `./sidecar.yaml`, then the XDG config path (`~/.config/gagent/sidecar.yaml` on Linux). Keys: `addr` (default `127.0.0.1:8081`), `workspace` (default `data/workspace`), `exec-timeout`, and `tools:` — the script-tool section (see `sidecar.yaml` for a working example and `tools/playwright/README.md` for the format). An invalid entry (built-in name collision, unreadable schema, empty command) fails startup with an error naming the tool.
 
@@ -91,6 +91,7 @@ Sidecar keys (`gagent sidecar`; see `sidecar.yaml` for an example):
 | `addr` | `--addr` | `127.0.0.1:8081` (contract listen address; loopback-only) |
 | `workspace` | `--workspace` | `data/workspace` (workspace directory, created on first use) |
 | `exec-timeout` | `--exec-timeout` | `30s` (per-call ceiling for `shell_exec` sub-processes; ADR 0008) |
+| `exec-uid` | `--exec-uid` | `1001` (account tool children run as; set to the sidecar's own UID for single-account mode) |
 | `tools:` | — | empty (script tools — operator-supplied executables run as subprocesses with JSON on stdin/stdout) |
 
 ### Agent ego

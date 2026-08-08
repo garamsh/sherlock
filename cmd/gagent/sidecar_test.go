@@ -13,6 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/garamsh/gagent/internal/shell"
 	"github.com/garamsh/gagent/internal/tool"
 	"github.com/garamsh/gagent/internal/tool/script"
 )
@@ -40,6 +41,8 @@ func TestResolveSidecarConfig_Defaults(t *testing.T) {
 	assert.Equal(t, defaultSidecarAddr, cfg.Addr)
 	assert.Equal(t, defaultSidecarWorkspace, cfg.Workspace)
 	assert.Equal(t, defaultExecTimeout, cfg.ExecTimeout)
+	assert.Equal(t, shell.DefaultAgentUID, cfg.ExecUID,
+		"the default exec-uid preserves the privileged-drop behavior")
 	assert.Empty(t, cfg.Tools)
 }
 
@@ -49,6 +52,7 @@ func TestResolveSidecarConfig_ConfigFile(t *testing.T) {
 	contents := "addr: \"127.0.0.1:9091\"\n" +
 		"workspace: /srv/workspace\n" +
 		"exec-timeout: 5s\n" +
+		"exec-uid: 1000\n" +
 		"tools:\n" +
 		"  - name: wordcount\n" +
 		"    description: Count words in a text.\n" +
@@ -65,6 +69,7 @@ func TestResolveSidecarConfig_ConfigFile(t *testing.T) {
 	assert.Equal(t, "127.0.0.1:9091", cfg.Addr)
 	assert.Equal(t, "/srv/workspace", cfg.Workspace)
 	assert.Equal(t, 5*time.Second, cfg.ExecTimeout)
+	assert.Equal(t, 1000, cfg.ExecUID)
 	require.Len(t, cfg.Tools, 1)
 	assert.Equal(t, "wordcount", cfg.Tools[0].Name)
 	assert.Equal(t, []string{"python3", "tools/wordcount.py"}, cfg.Tools[0].Exec.Command)

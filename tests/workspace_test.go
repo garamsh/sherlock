@@ -85,27 +85,6 @@ func TestEndToEnd_WorkspaceNonLoopbackFailsStartup(t *testing.T) {
 	}
 }
 
-// stopWorkspace SIGTERMs the workspace and requires a clean exit.
-func stopWorkspace(t *testing.T, cmd *exec.Cmd, exited <-chan error) {
-	t.Helper()
-	if cmd.ProcessState != nil {
-		return
-	}
-	require.NoError(t, cmd.Process.Signal(syscall.SIGTERM))
-	select {
-	case err := <-exited:
-		require.NoError(t, err, "workspace must exit cleanly on SIGTERM")
-	case <-time.After(15 * time.Second):
-		t.Fatal("workspace did not exit on SIGTERM")
-	}
-}
-
-// readLogs returns a log file's contents for test failure messages.
-func readLogs(path string) string {
-	logs, _ := os.ReadFile(path)
-	return string(logs)
-}
-
 // startWorkspaceBinary starts "gagent workspace" as a subprocess on a
 // free loopback port with workspace as the workspace directory, waits
 // until it serves gRPC, and returns the process handle, the gRPC

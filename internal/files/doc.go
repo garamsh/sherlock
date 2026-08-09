@@ -4,4 +4,3 @@
 // the workspace root; per ADR 0005 this confinement is convenience,
 // not a trust boundary.
 package files
-

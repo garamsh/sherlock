@@ -23,7 +23,7 @@ const (
 	// defaultMemoryPath is the agent's SQLite memory file.
 	defaultMemoryPath = "data/memory.db"
 
-	// defaultToolServer is the sidecar's contract endpoint (ADR 0018).
+	// defaultToolServer is the workspace's contract endpoint (ADR 0018).
 	defaultToolServer = "http://127.0.0.1:8081"
 
 	defaultModelProvider = "mock"
@@ -55,8 +55,8 @@ type Config struct {
 	// directly).
 	MemoryPath string `mapstructure:"memory-path"`
 	// ToolServers lists the contract endpoints the agent discovers its
-	// computer tools from at startup (ADR 0018); the default is the
-	// pod-local sidecar.
+	// workspace tools from at startup (ADR 0018); the default is the
+	// pod-local workspace.
 	ToolServers []string `mapstructure:"tool-servers"`
 	// Model selects the chat model provider (ADR 0004).
 	Model ModelConfig `mapstructure:"model"`
@@ -117,7 +117,7 @@ type ModelConfig struct {
 // flags on fs. viper resolves the effective value, so these defaults are
 // the fallback layer.
 func addConfigFlags(fs *pflag.FlagSet) {
-	fs.String("config", "", "config file path (default: ./gagent.yaml, ./sidecar.yaml for the sidecar, then the XDG config dir)")
+	fs.String("config", "", "config file path (default: ./gagent.yaml, ./workspace.yaml for the workspace, then the XDG config dir)")
 }
 
 // resolveConfig builds the effective Config for cmd using viper's built-in

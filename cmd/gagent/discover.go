@@ -10,7 +10,7 @@ import (
 )
 
 // Discovery bounds (ADR 0018): the agent lists each configured tool
-// server at startup with bounded retries — a sidecar may still be
+// server at startup with bounded retries — a workspace may still be
 // starting when the agent comes up.
 const (
 	discoverAttempts = 5

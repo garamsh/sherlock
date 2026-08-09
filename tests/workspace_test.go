@@ -19,18 +19,18 @@ import (
 	"github.com/garamsh/gagent/internal/tool"
 )
 
-// TestEndToEnd_SidecarServesContract drives "gagent sidecar" as a
+// TestEndToEnd_WorkspaceServesContract drives "gagent workspace" as a
 // subprocess — real binary, real HTTP, nothing mocked: the contract
 // client discovers files, shell_exec, and the configured script tool and
 // calls them over the wire (issue #204). When the binary cannot drop to
 // the agent UID (the common CI case) shell_exec and the script tool
 // report agent_uid unavailable; the test asserts that failure mode
 // rather than skipping, so the wiring is exercised either way.
-func TestEndToEnd_SidecarServesContract(t *testing.T) {
+func TestEndToEnd_WorkspaceServesContract(t *testing.T) {
 	binary := buildGagentBinary(t)
 	workspace := filepath.Join(t.TempDir(), "workspace")
-	configPath := writeSidecarConfig(t, "echo")
-	cmd, baseURL, exited := startSidecarBinary(t, binary, workspace, configPath)
+	configPath := writeWorkspaceConfig(t, "echo")
+	cmd, baseURL, exited := startWorkspaceBinary(t, binary, workspace, configPath)
 
 	descs, err := tool.Discover(context.Background(), baseURL)
 	require.NoError(t, err)
@@ -41,19 +41,19 @@ func TestEndToEnd_SidecarServesContract(t *testing.T) {
 		byName[d.Name] = d
 	}
 	assert.Equal(t, []string{"echo", "files", "shell_exec"}, names,
-		"the sidecar serves the two native tools plus the configured script tool")
+		"the workspace serves the two native tools plus the configured script tool")
 
 	filesTool := tool.NewRemoteTool(byName["files"], baseURL)
 	_, err = tool.Invoke(context.Background(), filesTool,
-		json.RawMessage(`{"operation":"write","path":"sub/hello.txt","content":"hi sidecar"}`))
+		json.RawMessage(`{"operation":"write","path":"sub/hello.txt","content":"hi workspace"}`))
 	require.NoError(t, err)
 	out, err := tool.Invoke(context.Background(), filesTool,
 		json.RawMessage(`{"operation":"read","path":"sub/hello.txt"}`))
 	require.NoError(t, err)
-	assert.JSONEq(t, `{"content":"hi sidecar"}`, string(out))
+	assert.JSONEq(t, `{"content":"hi workspace"}`, string(out))
 	content, err := os.ReadFile(filepath.Join(workspace, "sub", "hello.txt"))
-	require.NoError(t, err, "the write lands in the sidecar's workspace directory")
-	assert.Equal(t, "hi sidecar", string(content))
+	require.NoError(t, err, "the write lands in the workspace's workspace directory")
+	assert.Equal(t, "hi workspace", string(content))
 
 	_, err = tool.Invoke(context.Background(), filesTool,
 		json.RawMessage(`{"operation":"read","path":"../escape"}`))
@@ -66,7 +66,7 @@ func TestEndToEnd_SidecarServesContract(t *testing.T) {
 	if err != nil {
 		assert.ErrorIs(t, err, tool.ErrExecution)
 		assert.Contains(t, err.Error(), "agent_uid unavailable",
-			"an unprivileged sidecar fails script-tool calls closed")
+			"an unprivileged workspace fails script-tool calls closed")
 	} else {
 		assert.JSONEq(t, `{"ping":"pong"}`, string(out),
 			"cat echoes the tool input back on stdout")
@@ -76,38 +76,38 @@ func TestEndToEnd_SidecarServesContract(t *testing.T) {
 	require.NoError(t, cmd.Process.Signal(syscall.SIGTERM))
 	select {
 	case err := <-exited:
-		require.NoError(t, err, "sidecar must exit cleanly on SIGTERM")
+		require.NoError(t, err, "workspace must exit cleanly on SIGTERM")
 	case <-time.After(15 * time.Second):
-		t.Fatal("sidecar did not exit on SIGTERM")
+		t.Fatal("workspace did not exit on SIGTERM")
 	}
 }
 
-// TestEndToEnd_SidecarInvalidToolFailsStartup runs the sidecar with a
-// tools: entry named after the built-in files tool: it must exit
+// TestEndToEnd_WorkspaceInvalidToolFailsStartup runs the workspace with
+// a tools: entry named after the built-in files tool: it must exit
 // non-zero at startup with an error naming the tool (issue #204).
-func TestEndToEnd_SidecarInvalidToolFailsStartup(t *testing.T) {
+func TestEndToEnd_WorkspaceInvalidToolFailsStartup(t *testing.T) {
 	binary := buildGagentBinary(t)
-	configPath := writeSidecarConfig(t, "files")
+	configPath := writeWorkspaceConfig(t, "files")
 
-	cmd := exec.Command(binary, "sidecar",
+	cmd := exec.Command(binary, "workspace",
 		"--config", configPath, "--addr", "127.0.0.1:0",
 		"--workspace", filepath.Join(t.TempDir(), "workspace"))
 	out, err := cmd.CombinedOutput()
-	require.Error(t, err, "gagent sidecar must fail startup on a colliding tools: entry")
+	require.Error(t, err, "gagent workspace must fail startup on a colliding tools: entry")
 	assert.Contains(t, string(out), `"files"`,
 		"the startup error must name the offending tool")
 }
 
-// TestEndToEnd_SidecarNonLoopbackFailsStartup runs the sidecar with a
-// non-loopback --addr: startup must fail with an error stating the
+// TestEndToEnd_WorkspaceNonLoopbackFailsStartup runs the workspace with
+// a non-loopback --addr: startup must fail with an error stating the
 // loopback-only requirement — an unauthenticated contract listener is a
-// remote shell into the computer (ADR 0013, issue #209).
-func TestEndToEnd_SidecarNonLoopbackFailsStartup(t *testing.T) {
+// remote shell into the workspace (ADR 0013, issue #209).
+func TestEndToEnd_WorkspaceNonLoopbackFailsStartup(t *testing.T) {
 	binary := buildGagentBinary(t)
-	configPath := emptyConfig(t, "sidecar.yaml")
+	configPath := emptyConfig(t, "workspace.yaml")
 
 	for _, addr := range []string{"0.0.0.0:8081", ":8081"} {
-		cmd := exec.Command(binary, "sidecar",
+		cmd := exec.Command(binary, "workspace",
 			"--config", configPath, "--addr", addr,
 			"--workspace", filepath.Join(t.TempDir(), "workspace"))
 		out, err := cmd.CombinedOutput()
@@ -117,13 +117,13 @@ func TestEndToEnd_SidecarNonLoopbackFailsStartup(t *testing.T) {
 	}
 }
 
-// TestEndToEnd_SidecarSingleAccountMode runs the sidecar as the test's
-// own unprivileged user with --exec-uid set to that UID (ADR 0008's
-// single-account mode): shell_exec and the script tool run for real —
-// no agent_uid unavailable — and the shell_exec child stays
+// TestEndToEnd_WorkspaceSingleAccountMode runs the workspace as the
+// test's own unprivileged user with --exec-uid set to that UID
+// (ADR 0008's single-account mode): shell_exec and the script tool run
+// for real — no agent_uid unavailable — and the shell_exec child stays
 // network-isolated through the unprivileged user+network namespace.
 // Verified on a uid-1000 host without sudo.
-func TestEndToEnd_SidecarSingleAccountMode(t *testing.T) {
+func TestEndToEnd_WorkspaceSingleAccountMode(t *testing.T) {
 	if os.Geteuid() == 0 {
 		t.Skip("single-account mode is only meaningful without root")
 	}
@@ -132,7 +132,7 @@ func TestEndToEnd_SidecarSingleAccountMode(t *testing.T) {
 	}
 	binary := buildGagentBinary(t)
 	workspace := filepath.Join(t.TempDir(), "workspace")
-	configPath := writeSidecarConfig(t, "echo")
+	configPath := writeWorkspaceConfig(t, "echo")
 
 	listen, err := net.Listen("tcp", "127.0.0.1:0")
 	require.NoError(t, err)
@@ -140,12 +140,12 @@ func TestEndToEnd_SidecarSingleAccountMode(t *testing.T) {
 	require.NoError(t, listen.Close())
 
 	aux := t.TempDir()
-	logPath := filepath.Join(aux, "sidecar.log")
+	logPath := filepath.Join(aux, "workspace.log")
 	logFile, err := os.Create(logPath)
 	require.NoError(t, err)
 	t.Cleanup(func() { logFile.Close() })
 
-	cmd := exec.Command(binary, "sidecar",
+	cmd := exec.Command(binary, "workspace",
 		"--config", configPath, "--addr", addr, "--workspace", workspace,
 		"--exec-uid", fmt.Sprint(os.Geteuid()))
 	cmd.Stdout = logFile
@@ -165,13 +165,13 @@ func TestEndToEnd_SidecarSingleAccountMode(t *testing.T) {
 	require.Eventually(t, func() bool {
 		descs, err = tool.Discover(context.Background(), baseURL)
 		return err == nil
-	}, 10*time.Second, 20*time.Millisecond, "the sidecar must serve the contract\nlogs:\n%s", readLogs(logPath))
+	}, 10*time.Second, 20*time.Millisecond, "the workspace must serve the contract\nlogs:\n%s", readLogs(logPath))
 	byName := make(map[string]tool.Descriptor, len(descs))
 	for _, d := range descs {
 		byName[d.Name] = d
 	}
 
-	// shell_exec runs for real as the sidecar's own account.
+	// shell_exec runs for real as the workspace's own account.
 	shellTool := tool.NewRemoteTool(byName["shell_exec"], baseURL)
 	out, err := tool.Invoke(context.Background(), shellTool,
 		json.RawMessage(`{"command":"echo -n $(id -u):$(id -g)"}`))
@@ -196,19 +196,19 @@ func TestEndToEnd_SidecarSingleAccountMode(t *testing.T) {
 	require.NoError(t, cmd.Process.Signal(syscall.SIGTERM))
 	select {
 	case err := <-exited:
-		require.NoError(t, err, "sidecar must exit cleanly on SIGTERM")
+		require.NoError(t, err, "workspace must exit cleanly on SIGTERM")
 	case <-time.After(15 * time.Second):
-		t.Fatal("sidecar did not exit on SIGTERM")
+		t.Fatal("workspace did not exit on SIGTERM")
 	}
 }
 
-// TestEndToEnd_SidecarScriptToolRunsGoBinary is the issue #225
+// TestEndToEnd_WorkspaceScriptToolRunsGoBinary is the issue #225
 // acceptance case at the wire: a Go-compiled binary — whose runtime
 // reserves more virtual address space than the shell's adversarial
 // 512MiB cap — works as a script tool, because script tools run in the
 // trusted class (ADR 0010), bounded by the per-call timeout rather
 // than the shell rlimits.
-func TestEndToEnd_SidecarScriptToolRunsGoBinary(t *testing.T) {
+func TestEndToEnd_WorkspaceScriptToolRunsGoBinary(t *testing.T) {
 	if os.Geteuid() == 0 {
 		t.Skip("the trusted-class executor path is exercised unprivileged here")
 	}
@@ -219,7 +219,7 @@ func TestEndToEnd_SidecarScriptToolRunsGoBinary(t *testing.T) {
 	dir := t.TempDir()
 	schema := filepath.Join(dir, "schema.json")
 	require.NoError(t, os.WriteFile(schema, []byte(`{"type":"object"}`), 0o600))
-	configPath := filepath.Join(dir, "sidecar.yaml")
+	configPath := filepath.Join(dir, "workspace.yaml")
 	contents := "tools:\n" +
 		"  - name: go-helper\n" +
 		"    description: A Go-compiled script tool.\n" +
@@ -229,9 +229,9 @@ func TestEndToEnd_SidecarScriptToolRunsGoBinary(t *testing.T) {
 		"      command: [" + helper + "]\n"
 	require.NoError(t, os.WriteFile(configPath, []byte(contents), 0o600))
 
-	cmd, baseURL, exited := startSidecarWith(t, binary, configPath, workspace,
+	cmd, baseURL, exited := startWorkspaceWith(t, binary, configPath, workspace,
 		"--exec-uid", fmt.Sprint(os.Geteuid()))
-	defer stopSidecar(t, cmd, exited)
+	defer stopWorkspace(t, cmd, exited)
 
 	descs, err := tool.Discover(context.Background(), baseURL)
 	require.NoError(t, err)
@@ -266,9 +266,9 @@ func buildGoScriptHelper(t *testing.T) string {
 	return out
 }
 
-// startSidecarWith is startSidecarBinary with extra arguments (e.g.
+// startWorkspaceWith is startWorkspaceBinary with extra arguments (e.g.
 // --exec-uid) appended.
-func startSidecarWith(t *testing.T, binary, configPath, workspace string, extraArgs ...string) (*exec.Cmd, string, <-chan error) {
+func startWorkspaceWith(t *testing.T, binary, configPath, workspace string, extraArgs ...string) (*exec.Cmd, string, <-chan error) {
 	t.Helper()
 
 	listen, err := net.Listen("tcp", "127.0.0.1:0")
@@ -276,12 +276,12 @@ func startSidecarWith(t *testing.T, binary, configPath, workspace string, extraA
 	addr := listen.Addr().String()
 	require.NoError(t, listen.Close())
 
-	logPath := filepath.Join(t.TempDir(), "sidecar.log")
+	logPath := filepath.Join(t.TempDir(), "workspace.log")
 	logFile, err := os.Create(logPath)
 	require.NoError(t, err)
 	t.Cleanup(func() { logFile.Close() })
 
-	args := append([]string{"sidecar", "--config", configPath, "--addr", addr, "--workspace", workspace}, extraArgs...)
+	args := append([]string{"workspace", "--config", configPath, "--addr", addr, "--workspace", workspace}, extraArgs...)
 	cmd := exec.Command(binary, args...)
 	cmd.Stdout = logFile
 	cmd.Stderr = logFile
@@ -299,12 +299,12 @@ func startSidecarWith(t *testing.T, binary, configPath, workspace string, extraA
 	require.Eventually(t, func() bool {
 		_, err := tool.Discover(context.Background(), baseURL)
 		return err == nil
-	}, 10*time.Second, 20*time.Millisecond, "the sidecar must serve the contract\nlogs:\n%s", readLogs(logPath))
+	}, 10*time.Second, 20*time.Millisecond, "the workspace must serve the contract\nlogs:\n%s", readLogs(logPath))
 	return cmd, baseURL, exited
 }
 
-// stopSidecar SIGTERMs the sidecar and requires a clean exit.
-func stopSidecar(t *testing.T, cmd *exec.Cmd, exited <-chan error) {
+// stopWorkspace SIGTERMs the workspace and requires a clean exit.
+func stopWorkspace(t *testing.T, cmd *exec.Cmd, exited <-chan error) {
 	t.Helper()
 	if cmd.ProcessState != nil {
 		return
@@ -312,20 +312,20 @@ func stopSidecar(t *testing.T, cmd *exec.Cmd, exited <-chan error) {
 	require.NoError(t, cmd.Process.Signal(syscall.SIGTERM))
 	select {
 	case err := <-exited:
-		require.NoError(t, err, "sidecar must exit cleanly on SIGTERM")
+		require.NoError(t, err, "workspace must exit cleanly on SIGTERM")
 	case <-time.After(15 * time.Second):
-		t.Fatal("sidecar did not exit on SIGTERM")
+		t.Fatal("workspace did not exit on SIGTERM")
 	}
 }
 
-// TestEndToEnd_SidecarSingleAccountSecretCustody pins the ADR 0003
+// TestEndToEnd_WorkspaceSingleAccountSecretCustody pins the ADR 0003
 // custody story for single-account mode (issue #223): an operator
 // secret reaches the script-tool child through env passthrough — the
-// config file carries no value — and the sidecar marks itself
+// config file carries no value — and the workspace marks itself
 // non-dumpable, so a same-account reader cannot pull the secret back
 // out of /proc/<pid>/environ. Verified on a uid-1000 host with
 // ptrace_scope=0 and no sudo.
-func TestEndToEnd_SidecarSingleAccountSecretCustody(t *testing.T) {
+func TestEndToEnd_WorkspaceSingleAccountSecretCustody(t *testing.T) {
 	if os.Geteuid() == 0 {
 		t.Skip("single-account custody is only meaningful without root")
 	}
@@ -333,11 +333,11 @@ func TestEndToEnd_SidecarSingleAccountSecretCustody(t *testing.T) {
 	workspace := filepath.Join(t.TempDir(), "workspace")
 
 	// The config declares the passthrough by name only — the value
-	// lives solely in the sidecar's environment.
+	// lives solely in the workspace's environment.
 	dir := t.TempDir()
 	schema := filepath.Join(dir, "schema.json")
 	require.NoError(t, os.WriteFile(schema, []byte(`{"type":"object"}`), 0o600))
-	configPath := filepath.Join(dir, "sidecar.yaml")
+	configPath := filepath.Join(dir, "workspace.yaml")
 	contents := "tools:\n" +
 		"  - name: print-token\n" +
 		"    description: Print the custody test token.\n" +
@@ -354,12 +354,12 @@ func TestEndToEnd_SidecarSingleAccountSecretCustody(t *testing.T) {
 	addr := listen.Addr().String()
 	require.NoError(t, listen.Close())
 
-	logPath := filepath.Join(t.TempDir(), "sidecar.log")
+	logPath := filepath.Join(t.TempDir(), "workspace.log")
 	logFile, err := os.Create(logPath)
 	require.NoError(t, err)
 	t.Cleanup(func() { logFile.Close() })
 
-	cmd := exec.Command(binary, "sidecar",
+	cmd := exec.Command(binary, "workspace",
 		"--config", configPath, "--addr", addr, "--workspace", workspace,
 		"--exec-uid", fmt.Sprint(os.Geteuid()))
 	cmd.Env = append(os.Environ(), "CUSTODY_TEST_TOKEN=s3cret-custody")
@@ -380,7 +380,7 @@ func TestEndToEnd_SidecarSingleAccountSecretCustody(t *testing.T) {
 	require.Eventually(t, func() bool {
 		descs, err = tool.Discover(context.Background(), baseURL)
 		return err == nil
-	}, 10*time.Second, 20*time.Millisecond, "the sidecar must serve the contract\nlogs:\n%s", readLogs(logPath))
+	}, 10*time.Second, 20*time.Millisecond, "the workspace must serve the contract\nlogs:\n%s", readLogs(logPath))
 	require.Len(t, descs, 3)
 	byName := make(map[string]tool.Descriptor, len(descs))
 	for _, d := range descs {
@@ -397,19 +397,19 @@ func TestEndToEnd_SidecarSingleAccountSecretCustody(t *testing.T) {
 	assert.NotContains(t, string(raw), "s3cret",
 		"the config file carries the passthrough by name only, never the value")
 
-	// The sidecar is non-dumpable: a same-account reader cannot pull
+	// The workspace is non-dumpable: a same-account reader cannot pull
 	// its exec-time environment (the secret) out of /proc.
 	_, err = os.ReadFile(fmt.Sprintf("/proc/%d/environ", cmd.Process.Pid))
-	require.Error(t, err, "a non-dumpable sidecar's environ must be unreadable to same-account processes")
+	require.Error(t, err, "a non-dumpable workspace's environ must be unreadable to same-account processes")
 	assert.True(t, os.IsPermission(err),
 		"the read fails with EACCES, got: %v", err)
 
 	require.NoError(t, cmd.Process.Signal(syscall.SIGTERM))
 	select {
 	case err := <-exited:
-		require.NoError(t, err, "sidecar must exit cleanly on SIGTERM")
+		require.NoError(t, err, "workspace must exit cleanly on SIGTERM")
 	case <-time.After(15 * time.Second):
-		t.Fatal("sidecar did not exit on SIGTERM")
+		t.Fatal("workspace did not exit on SIGTERM")
 	}
 }
 
@@ -419,15 +419,15 @@ func readLogs(path string) string {
 	return string(logs)
 }
 
-// writeSidecarConfig writes a sidecar.yaml with one tools: entry of the
-// given name (run through cat, echoing the JSON input back) plus the
-// schema file it references, and returns the config path.
-func writeSidecarConfig(t *testing.T, name string) string {
+// writeWorkspaceConfig writes a workspace.yaml with one tools: entry
+// of the given name (run through cat, echoing the JSON input back)
+// plus the schema file it references, and returns the config path.
+func writeWorkspaceConfig(t *testing.T, name string) string {
 	t.Helper()
 	dir := t.TempDir()
 	schema := filepath.Join(dir, "schema.json")
 	require.NoError(t, os.WriteFile(schema, []byte(`{"type":"object"}`), 0o600))
-	configPath := filepath.Join(dir, "sidecar.yaml")
+	configPath := filepath.Join(dir, "workspace.yaml")
 	contents := "tools:\n" +
 		"  - name: " + name + "\n" +
 		"    description: A script tool.\n" +
@@ -440,12 +440,12 @@ func writeSidecarConfig(t *testing.T, name string) string {
 	return configPath
 }
 
-// startSidecarBinary starts "gagent sidecar" as a subprocess on a free
-// loopback port with workspace as the workspace directory, waits until
-// it serves the contract, and returns the process handle, the base URL,
-// and a channel receiving the process's exit result. Test cleanup kills
-// the process if it is still running.
-func startSidecarBinary(t *testing.T, binary, workspace, configPath string) (*exec.Cmd, string, <-chan error) {
+// startWorkspaceBinary starts "gagent workspace" as a subprocess on a
+// free loopback port with workspace as the workspace directory, waits
+// until it serves the contract, and returns the process handle, the
+// base URL, and a channel receiving the process's exit result. Test
+// cleanup kills the process if it is still running.
+func startWorkspaceBinary(t *testing.T, binary, workspace, configPath string) (*exec.Cmd, string, <-chan error) {
 	t.Helper()
 
 	listen, err := net.Listen("tcp", "127.0.0.1:0")
@@ -454,12 +454,12 @@ func startSidecarBinary(t *testing.T, binary, workspace, configPath string) (*ex
 	require.NoError(t, listen.Close())
 
 	aux := t.TempDir()
-	logPath := filepath.Join(aux, "sidecar.log")
+	logPath := filepath.Join(aux, "workspace.log")
 	logFile, err := os.Create(logPath)
 	require.NoError(t, err)
 	t.Cleanup(func() { logFile.Close() })
 
-	cmd := exec.Command(binary, "sidecar",
+	cmd := exec.Command(binary, "workspace",
 		"--config", configPath, "--addr", addr, "--workspace", workspace)
 	cmd.Stdout = logFile
 	cmd.Stderr = logFile
@@ -479,7 +479,7 @@ func startSidecarBinary(t *testing.T, binary, workspace, configPath string) (*ex
 		select {
 		case err := <-exited:
 			logs, _ := os.ReadFile(logPath)
-			t.Fatalf("sidecar exited before serving: %v\nlogs:\n%s", err, logs)
+			t.Fatalf("workspace exited before serving: %v\nlogs:\n%s", err, logs)
 		default:
 		}
 		resp, err := http.Get(baseURL + "/tools")
@@ -489,7 +489,7 @@ func startSidecarBinary(t *testing.T, binary, workspace, configPath string) (*ex
 		}
 		if time.Now().After(deadline) {
 			logs, _ := os.ReadFile(logPath)
-			t.Fatalf("sidecar did not serve within 10s\nlogs:\n%s", logs)
+			t.Fatalf("workspace did not serve within 10s\nlogs:\n%s", logs)
 		}
 		time.Sleep(20 * time.Millisecond)
 	}

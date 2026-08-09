@@ -40,6 +40,7 @@ func TestResolveWorkspaceConfig_Defaults(t *testing.T) {
 
 	assert.Equal(t, defaultWorkspaceAddr, cfg.Addr)
 	assert.Equal(t, defaultWorkspace, cfg.Workspace)
+	assert.Equal(t, defaultExecUID, cfg.ExecUID)
 }
 
 func TestResolveWorkspaceConfig_ConfigFile(t *testing.T) {

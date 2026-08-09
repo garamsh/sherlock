@@ -106,3 +106,15 @@ func TestFS_ReadMissingFile(t *testing.T) {
 	require.Error(t, err)
 	assert.NotErrorIs(t, err, files.ErrOutsideWorkspace)
 }
+
+// TestSecureWorkspace_UnprivilegedServerSkipsChown pins the
+// single-account posture: a server that is not root owns the workspace
+// directory itself, so the chown to the exec UID is a no-op. The
+// privileged path needs euid 0 and is exercised by deployments, not
+// unit tests.
+func TestSecureWorkspace_UnprivilegedServerSkipsChown(t *testing.T) {
+	if os.Geteuid() == 0 {
+		t.Skip("test asserts the unprivileged no-op path")
+	}
+	require.NoError(t, files.SecureWorkspace(t.TempDir(), 1001))
+}

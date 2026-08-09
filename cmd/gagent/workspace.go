@@ -35,6 +35,12 @@ type WorkspaceConfig struct {
 	Addr string `mapstructure:"addr"`
 	// Workspace is the workspace directory, created on first use.
 	Workspace string `mapstructure:"workspace"`
+	// ExecUID is the UID the agent's shell_exec children run as
+	// (ADR 0008). A privileged workspace chowns the workspace
+	// directory to it, so files written through the gRPC contract and
+	// by exec'd children share one owner; an unprivileged workspace
+	// owns the directory itself.
+	ExecUID int `mapstructure:"exec-uid"`
 }
 
 // newWorkspaceCommand returns the "gagent workspace" subcommand: it
@@ -55,6 +61,7 @@ func newWorkspaceCommand() *cobra.Command {
 	}
 	cmd.Flags().String("addr", defaultWorkspaceAddr, "gRPC listen address for the workspace contract")
 	cmd.Flags().String("workspace", defaultWorkspace, "workspace directory (created on first use)")
+	cmd.Flags().Int("exec-uid", defaultExecUID, "UID of the agent's exec children; a privileged workspace chowns the workspace directory to it")
 	return cmd
 }
 
@@ -67,6 +74,7 @@ func resolveWorkspaceConfig(cmd *cobra.Command) (WorkspaceConfig, error) {
 	v := newConfigViper()
 	v.SetDefault("addr", defaultWorkspaceAddr)
 	v.SetDefault("workspace", defaultWorkspace)
+	v.SetDefault("exec-uid", defaultExecUID)
 	if err := v.BindPFlags(cmd.Flags()); err != nil {
 		return WorkspaceConfig{}, err
 	}
@@ -95,8 +103,10 @@ func resolveWorkspaceConfig(cmd *cobra.Command) (WorkspaceConfig, error) {
 // The workspace is the data plane (ADR 0018): it owns the workspace
 // directory and serves Read/Write/List over gRPC. It hosts no tools,
 // no process executor, and no plugin loader — those moved to the
-// agent. The workspace spawns no children, so it needs no privilege
-// drop: its filesystem backend owns the directory directly.
+// agent. The workspace chowns its root to the exec UID when
+// privileged, so files written through the gRPC contract and by the
+// agent's exec'd children share one owner; the workspace itself still
+// runs no children.
 func serveWorkspace(ctx context.Context, cfg WorkspaceConfig) error {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	slog.SetDefault(logger)
@@ -107,6 +117,9 @@ func serveWorkspace(ctx context.Context, cfg WorkspaceConfig) error {
 
 	workspaceFS, err := files.Open(cfg.Workspace)
 	if err != nil {
+		return err
+	}
+	if err := files.SecureWorkspace(workspaceFS.Root(), cfg.ExecUID); err != nil {
 		return err
 	}
 

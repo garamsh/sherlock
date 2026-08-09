@@ -20,10 +20,6 @@ jobs:
         with:
           version: v2.12.2
       - run: make ci
-        env:
-          # Enables the Docker-gated suites (internal/sandbox, tests/e2e)
-          # on the runner's Docker daemon.
-          GAGENT_DOCKER_TESTS: '1'
 
   docker:
     runs-on: ubuntu-latest

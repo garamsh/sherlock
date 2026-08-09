@@ -19,15 +19,15 @@ var DefaultEgo string
 const Contract = `## Tools
 Pick the right tool for the task; don't run code when files will do.
 
-- files: read and write files in your workspace.
+- files: read, write, and list files in your workspace (the workspace is the
+  agent's data plane; the files tool is the only way the agent touches it).
 - message_send: send a message to a channel and target. When the task came from
   a person and a reply is owed, reply through message_send. Your final response
   alone does not reach the user.
-- shell_exec: run a shell command on the workspace. Use this when the typed tools
-  are too narrow — running the project's tests, computing with awk/jq, listing
-  files matching a pattern. The command is a single string passed to sh -c; pass
-  the full shell line, not pre-split arguments
-  (e.g. ` + "`command: 'find . -name \"*.go\" -size +100k'`" + `).
+- Additional tools the agent hosts as Go packages under tools/ (playwright,
+  …) extend this list at compile time. Process exec is not a tool — the
+  agent execs natively when a tool or the loop needs to run a command; you
+  never invoke it directly.
 
 ## Turns and messages
 A turn may carry several messages; each arrives with an ID and a sender —
@@ -63,24 +63,20 @@ Every user message is remembered automatically by the platform before your turn 
 
 ## When a tool is unavailable
 
-If a tool returns an error (e.g. ` + "`shell_exec`" + ` returns "agent_uid unavailable"
-in a development environment without setuid), **switch tools, do not retry the same tool with
-different arguments**. The typed tools cover most of what ` + "`shell_exec`" + `
-is used for:
+If a tool returns an error, **switch tools, do not retry the same tool with
+different arguments**. The typed tools cover most cases:
 
-- Listing files: ` + "`files`" + ` (operation: list), not ` + "`shell_exec find`" + `
-- Reading a file: ` + "`files`" + ` (operation: read), not ` + "`shell_exec cat`" + `
-- Writing a file: ` + "`files`" + ` (operation: write), not ` + "`shell_exec echo >`" + `
+- Listing files: ` + "`files`" + ` (operation: list).
+- Reading a file: ` + "`files`" + ` (operation: read).
+- Writing a file: ` + "`files`" + ` (operation: write).
 - Computing a value: answer from context when simple, or write the
-  computed value into a file via ` + "`files write`" + ` and read it back, rather
-  than retrying ` + "`shell_exec`" + `
-- Sending a message: ` + "`message_send`" + `, not ` + "`shell_exec tee`" + `
+  computed value into a file via ` + "`files write`" + ` and read it back.
+- Sending a message: ` + "`message_send`" + `.
 
 Retrying the same tool with a different input is fine — that's a normal
-retry. Retrying ` + "`shell_exec`" + ` after ` + "`shell_exec`" + ` already failed is not
-— the second failure tells you the tool is unavailable in this
-environment, not that the command is wrong. Switch to the typed
-alternative.
+retry. Retrying a tool after it has already failed is not — the second
+failure tells you the tool is unavailable in this environment, not that
+the input is wrong. Switch to the typed alternative.
 
 Switching tools means switching to a tool that can actually obtain the
 fact. If no available tool can obtain it, the task failed — store nothing,

@@ -1,4 +1,4 @@
-# Example sidecar workspace config. The sidecar serves the filesystem-only
+# Example workspace config. The workspace serves the filesystem-only
 # gRPC data plane (Read/Write/List) — it does not host tools or run
 # processes (ADR 0018). Tools are agent-side Go packages the agent
 # imports at compile time.
@@ -6,4 +6,4 @@
 # loopback binds only; a non-loopback addr fails startup.
 addr: "127.0.0.1:8081"
 workspace: data/workspace
-# exec-uid: 1001  # default; set to the sidecar's own UID for single-account mode (no privilege required)
+# exec-uid: 1001  # default; set to the workspace's own UID for single-account mode (no privilege required)

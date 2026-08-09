@@ -18,13 +18,13 @@ import (
 const binaryAgentID = "e2e-bin"
 
 // TestEndToEnd_BinaryMVPScenario drives the canned MVP scenario against
-// the built gagent binary run as two processes — the sidecar serving the
-// computer over the tool contract and the agent discovering it at
+// the built gagent binary run as two processes — the workspace serving
+// the workspace over the tool contract and the agent discovering it at
 // startup (ADR 0018). This is the e2e layer of
 // docs/convention/testing.md: real binaries, real HTTP, nothing mocked
 // beyond the scripted mock model provider.
 //
-// When the sidecar cannot drop to the agent UID (the common CI case)
+// When the workspace cannot drop to the agent UID (the common CI case)
 // shell_exec returns agent_uid unavailable; the test asserts that
 // failure mode rather than skipping the scenario, so the wiring is
 // exercised end-to-end either way.
@@ -32,9 +32,9 @@ func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
 	binary := buildGagentBinary(t)
 	root := t.TempDir()
 
-	_, sidecarURL, _ := startSidecarBinary(t, binary,
-		filepath.Join(t.TempDir(), "workspace"), emptyConfig(t, "sidecar.yaml"))
-	cmd, baseURL, exited := startAgentBinary(t, binary, root, sidecarURL)
+	_, workspaceURL, _ := startWorkspaceBinary(t, binary,
+		filepath.Join(t.TempDir(), "workspace"), emptyConfig(t, "workspace.yaml"))
+	cmd, baseURL, exited := startAgentBinary(t, binary, root, workspaceURL)
 
 	runBinaryMVPScenario(t, baseURL, root, binaryAgentID)
 
@@ -54,10 +54,10 @@ func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
 
 // runBinaryMVPScenario is the binary test's variant of runMVPScenario.
 // It exercises the same canned loop but tolerates the shell_exec call
-// failing with agent_uid unavailable when the sidecar cannot drop to the
-// agent UID (typical CI environment without setuid-root). The in-process
-// variant in e2e_test.go serves a canned computer tool so shell_exec
-// always succeeds there.
+// failing with agent_uid unavailable when the workspace cannot drop to
+// the agent UID (typical CI environment without setuid-root). The
+// in-process variant in e2e_test.go serves a canned computer tool so
+// shell_exec always succeeds there.
 func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	t.Helper()
 
@@ -83,7 +83,7 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 		"the turn input renders the message with its ID and sender (ADR 0016)")
 
 	assert.Equal(t, "shell_exec", got[2]["tool_name"])
-	// shell_exec fails when the sidecar cannot drop privileges; assert
+	// shell_exec fails when the workspace cannot drop privileges; assert
 	// the failure mode is the documented agent_uid unavailable rather
 	// than masking it.
 	if failed, _ := got[2]["tool_failed"].(bool); failed {
@@ -104,22 +104,22 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	assert.Equal(t, "sender", replies[0].Target)
 }
 
-// TestEndToEnd_OneShotAgentTurnAgainstSidecar runs "gagent agent
-// --message" against a running sidecar: the one-shot mode discovers the
-// same tool set, runs the full canned turn — discovered shell_exec,
+// TestEndToEnd_OneShotAgentTurnAgainstWorkspace runs "gagent agent
+// --message" against a running workspace: the one-shot mode discovers
+// the same tool set, runs the full canned turn — discovered shell_exec,
 // message_send, writeback — prints the reply to stdout, and exits.
-func TestEndToEnd_OneShotAgentTurnAgainstSidecar(t *testing.T) {
+func TestEndToEnd_OneShotAgentTurnAgainstWorkspace(t *testing.T) {
 	binary := buildGagentBinary(t)
 	root := t.TempDir()
 
-	_, sidecarURL, _ := startSidecarBinary(t, binary,
-		filepath.Join(t.TempDir(), "workspace"), emptyConfig(t, "sidecar.yaml"))
+	_, workspaceURL, _ := startWorkspaceBinary(t, binary,
+		filepath.Join(t.TempDir(), "workspace"), emptyConfig(t, "workspace.yaml"))
 
 	cmd := exec.Command(binary, "agent",
 		"--config", emptyConfig(t, "gagent.yaml"),
 		"--agent-id", binaryAgentID,
 		"--memory-path", filepath.Join(root, "memory.db"),
-		"--tool-servers", sidecarURL,
+		"--tool-servers", workspaceURL,
 		"--message", e2eQuestion)
 	out, err := cmd.CombinedOutput()
 	require.NoError(t, err, "one-shot agent turn must exit cleanly: %s", out)
@@ -167,8 +167,8 @@ func buildGagentBinary(t *testing.T) string {
 }
 
 // emptyConfig writes an empty config file — it keeps a binary run
-// hermetic against ./gagent.yaml, ./sidecar.yaml, and XDG config files
-// on the host — and returns its path.
+// hermetic against ./gagent.yaml, ./workspace.yaml, and XDG config
+// files on the host — and returns its path.
 func emptyConfig(t *testing.T, name string) string {
 	t.Helper()
 	configPath := filepath.Join(t.TempDir(), name)

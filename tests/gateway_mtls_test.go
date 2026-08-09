@@ -221,10 +221,10 @@ func TestGatewayMTLS_AuthenticatesCallers(t *testing.T) {
 			"  key: "+serverKey+"\n"+
 			"  client-ca: "+caPath+"\n"), 0o600))
 
-	_, sidecarURL, _ := startSidecarBinary(t, binary,
-		filepath.Join(t.TempDir(), "workspace"), emptyConfig(t, "sidecar.yaml"))
+	_, workspaceURL, _ := startWorkspaceBinary(t, binary,
+		filepath.Join(t.TempDir(), "workspace"), emptyConfig(t, "workspace.yaml"))
 	client := mtlsClient(t, ca.pem, clientCert, clientKey)
-	_, baseURL, _, logPath := startAgentMTLS(t, binary, root, configPath, sidecarURL, client)
+	_, baseURL, _, logPath := startAgentMTLS(t, binary, root, configPath, workspaceURL, client)
 
 	_, err := mtlsClient(t, ca.pem, "", "").Get(baseURL + "/")
 	require.Error(t, err, "a client without a certificate must be rejected at the handshake")

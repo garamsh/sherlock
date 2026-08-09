@@ -50,21 +50,6 @@ func Open(root string, fsuid int) (*FS, error) {
 // Root returns the absolute workspace root.
 func (f *FS) Root() string { return f.root }
 
-// SecureWorkspace hands the workspace directory to the given trust-domain
-// UID (ADR 0008, ADR 0010): a privileged server (euid 0) chowns it to
-// uid so files written through the gRPC contract (which drop to the
-// same UID) share one owner. An unprivileged server owns the directory
-// itself and skips the chown.
-func SecureWorkspace(path string, uid int) error {
-	if os.Geteuid() != 0 {
-		return nil
-	}
-	if err := os.Chown(path, uid, -1); err != nil {
-		return fmt.Errorf("chown %q to uid %d: %w", path, uid, err)
-	}
-	return nil
-}
-
 // Read returns the content of the file at path.
 func (f *FS) Read(path string) ([]byte, error) {
 	resolved, err := f.resolve(path)

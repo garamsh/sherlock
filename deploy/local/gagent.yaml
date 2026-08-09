@@ -1,9 +1,9 @@
 # Sample agent config for the local Docker deployment (deploy/local/README.md).
 # The mock provider is scripted and needs no API key, so this runs offline.
 # The memory path comes from GAGENT_MEMORY_PATH, which the compose file sets
-# to the host-bind data directory (GAGENT_DATA_DIR); the tool server is the
-# sidecar sharing this container's network namespace, so the default
-# loopback tool-servers endpoint reaches it.
+# to the host-bind data directory (GAGENT_DATA_DIR); the workspace is the
+# filesystem-only gRPC data plane sharing this container's network
+# namespace, so the default loopback workspace-addr reaches it.
 # The container publishes the port beyond its own loopback, so the gateway
 # requires mTLS (ADR 0013): throwaway certs live in ./tls (see README.md).
 addr: ":8080"

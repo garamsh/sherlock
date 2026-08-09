@@ -51,7 +51,7 @@ curl --cacert tls/ca.pem --cert tls/client.pem --key tls/client-key.pem \
 
 A client without a certificate — or with one from a different CA — is rejected at the TLS handshake.
 
-The sample `gagent.yaml` uses the mock model provider, so the agent replies without any API key. The mock script drives a canned run of the full loop (`message_send` → write back); the SSE stream shows the resulting tool calls. The agent imports the tools it hosts at compile time (`tools/files`, `tools/playwright`); the workspace serves the filesystem-only gRPC data plane, and the agent's files tool calls it over the shared network namespace's loopback. The workspace container runs with exactly the capabilities it needs (SETUID, SETGID, CHOWN, SYS_ADMIN — see `docker-compose.yml`), so the workspace chown is real. Agent replies land in `$GAGENT_DATA_DIR/outbox/`; memory persists in `$GAGENT_DATA_DIR/memory.db` across restarts.
+The sample `gagent.yaml` uses the mock model provider, so the agent replies without any API key. The mock script drives a canned run of the full loop (`message_send` → write back); the SSE stream shows the resulting tool calls. The agent imports the tools it hosts at compile time (`tools/files`, `tools/playwright`); the workspace serves the filesystem-only gRPC data plane, and the agent's files tool calls it over the shared network namespace's loopback. The workspace container runs with all capabilities dropped — it spawns no children and chowns nothing (see `docker-compose.yml`). Agent replies land in `$GAGENT_DATA_DIR/outbox/`; memory persists in `$GAGENT_DATA_DIR/memory.db` across restarts.
 
 ## Cleanup
 

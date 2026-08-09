@@ -18,6 +18,9 @@ test:
 build:
 	@if [ -f go.mod ]; then go build ./...; else echo "no go.mod yet; skipping go build"; fi
 
+generate:
+	mockery
+
 ci: lint format test build
 
 proto:

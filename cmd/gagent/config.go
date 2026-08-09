@@ -23,8 +23,11 @@ const (
 	// defaultMemoryPath is the agent's SQLite memory file.
 	defaultMemoryPath = "data/memory.db"
 
-	// defaultToolServer is the workspace's contract endpoint (ADR 0018).
-	defaultToolServer = "http://127.0.0.1:8081"
+	// defaultWorkspaceAddr is the gRPC endpoint of the agent's
+	// workspace (ADR 0018): the agent dials it to construct the files
+	// tool through internal/workspace/client. Plain host:port, no
+	// scheme — the workspace listener is unauthenticated in this phase.
+	defaultWorkspaceAddr = "127.0.0.1:8081"
 
 	defaultModelProvider = "mock"
 	defaultModelBaseURL  = "https://api.openai.com/v1"
@@ -54,10 +57,11 @@ type Config struct {
 	// environment directory pairing is gone; the file is configured
 	// directly).
 	MemoryPath string `mapstructure:"memory-path"`
-	// ToolServers lists the contract endpoints the agent discovers its
-	// workspace tools from at startup (ADR 0018); the default is the
-	// pod-local workspace.
-	ToolServers []string `mapstructure:"tool-servers"`
+	// WorkspaceAddr is the gRPC endpoint of the agent's workspace —
+	// the data plane the agent's files tool calls into at compile
+	// time. The agent imports tools from tools/ and constructs them
+	// with the workspace client this address dials (ADR 0018).
+	WorkspaceAddr string `mapstructure:"workspace-addr"`
 	// Model selects the chat model provider (ADR 0004).
 	Model ModelConfig `mapstructure:"model"`
 	// Embedder selects the memory embedder provider (ADR 0004); the
@@ -130,7 +134,7 @@ func resolveConfig(cmd *cobra.Command) (Config, error) {
 	v := newConfigViper()
 	v.SetDefault("addr", defaultAddr)
 	v.SetDefault("memory-path", defaultMemoryPath)
-	v.SetDefault("tool-servers", []string{defaultToolServer})
+	v.SetDefault("workspace-addr", defaultWorkspaceAddr)
 	v.SetDefault("model.provider", defaultModelProvider)
 	v.SetDefault("model.base-url", defaultModelBaseURL)
 	v.SetDefault("model.model", defaultModelName)

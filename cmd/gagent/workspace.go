@@ -19,12 +19,6 @@ import (
 
 // Workspace defaults, overridable by config file, environment, or flags.
 const (
-	// defaultWorkspaceAddr binds loopback only: the gRPC listener is
-	// pod-local and carries no mTLS in this phase (see the
-	// agent↔workspace authentication open question in
-	// docs/architecture/security.md).
-	defaultWorkspaceAddr = "127.0.0.1:8081"
-
 	// defaultWorkspace is the workspace's default directory; a pod
 	// deployment mounts the workspace volume there.
 	defaultWorkspace = "data/workspace"

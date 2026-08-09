@@ -32,7 +32,7 @@ func TestResolveConfig_Defaults(t *testing.T) {
 
 	assert.Equal(t, defaultAddr, cfg.Addr)
 	assert.Equal(t, defaultMemoryPath, cfg.MemoryPath)
-	assert.Equal(t, []string{defaultToolServer}, cfg.ToolServers)
+	assert.Equal(t, defaultWorkspaceAddr, cfg.WorkspaceAddr)
 	assert.Equal(t, ModelConfig{
 		Provider:  defaultModelProvider,
 		BaseURL:   defaultModelBaseURL,
@@ -110,7 +110,7 @@ func TestResolveConfig_ConfigFile(t *testing.T) {
 	t.Chdir(dir)
 	contents := "addr: \":9090\"\n" +
 		"memory-path: /from-file/memory.db\n" +
-		"tool-servers: [http://127.0.0.1:9081, http://127.0.0.1:9082]\n"
+		"workspace-addr: 127.0.0.1:9081\n"
 	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o600))
 
 	cfg, err := resolveConfig(newTestCommand(t))
@@ -118,8 +118,8 @@ func TestResolveConfig_ConfigFile(t *testing.T) {
 
 	assert.Equal(t, ":9090", cfg.Addr)
 	assert.Equal(t, "/from-file/memory.db", cfg.MemoryPath)
-	assert.Equal(t, []string{"http://127.0.0.1:9081", "http://127.0.0.1:9082"}, cfg.ToolServers,
-		"tool-servers resolves from the config file")
+	assert.Equal(t, "127.0.0.1:9081", cfg.WorkspaceAddr,
+		"workspace-addr resolves from the config file")
 }
 
 func TestResolveConfig_EnvOverridesFile(t *testing.T) {
@@ -147,15 +147,16 @@ func TestResolveConfig_FlagOverridesEnv(t *testing.T) {
 	assert.Equal(t, "/from-flag/memory.db", cfg.MemoryPath)
 }
 
-func TestResolveConfig_ToolServersFlag(t *testing.T) {
+func TestResolveConfig_WorkspaceAddrFlag(t *testing.T) {
 	t.Chdir(t.TempDir())
 	cmd := newTestCommand(t)
-	require.NoError(t, cmd.Flags().Set("tool-servers", "http://a:1,http://b:2"))
+	require.NoError(t, cmd.Flags().Set("workspace-addr", "127.0.0.1:9999"))
 
 	cfg, err := resolveConfig(cmd)
 	require.NoError(t, err)
 
-	assert.Equal(t, []string{"http://a:1", "http://b:2"}, cfg.ToolServers)
+	assert.Equal(t, "127.0.0.1:9999", cfg.WorkspaceAddr,
+		"--workspace-addr overrides the config-file and default values")
 }
 
 func TestResolveConfig_XDGConfigFile(t *testing.T) {

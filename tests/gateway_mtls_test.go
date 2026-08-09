@@ -107,10 +107,10 @@ func mtlsClient(t *testing.T, caPEM []byte, certPath, keyPath string) *http.Clie
 }
 
 // startAgentMTLS starts "gagent agent" over mTLS on a free loopback
-// port, discovering toolServers, waits until the probe client is served,
-// and returns the process handle, the base URL, the exit channel, and
-// the agent log path.
-func startAgentMTLS(t *testing.T, binary, root, configPath, toolServers string, probe *http.Client) (*exec.Cmd, string, <-chan error, string) {
+// port, dialing workspaceAddr as the agent's workspace gRPC endpoint,
+// waits until the probe client is served, and returns the process
+// handle, the base URL, the exit channel, and the agent log path.
+func startAgentMTLS(t *testing.T, binary, root, configPath, workspaceAddr string, probe *http.Client) (*exec.Cmd, string, <-chan error, string) {
 	t.Helper()
 	listen, err := net.Listen("tcp", "127.0.0.1:0")
 	require.NoError(t, err)
@@ -127,7 +127,7 @@ func startAgentMTLS(t *testing.T, binary, root, configPath, toolServers string, 
 		"--config", configPath, "--addr", addr,
 		"--agent-id", mtlsAgentID,
 		"--memory-path", filepath.Join(root, "memory.db"),
-		"--tool-servers", toolServers)
+		"--workspace-addr", workspaceAddr)
 	cmd.Stdout = logFile
 	cmd.Stderr = logFile
 	require.NoError(t, cmd.Start())
@@ -239,7 +239,7 @@ func TestGatewayMTLS_AuthenticatesCallers(t *testing.T) {
 	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
 	resp.Body.Close()
 
-	got := collectEvents(t, events, 7)
+	got := collectEvents(t, events, 5)
 	assert.Equal(t, "turn_started", got[0]["kind"])
 	assert.Equal(t, "turn_finished", got[len(got)-1]["kind"])
 

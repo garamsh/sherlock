@@ -1,4 +1,4 @@
-package tool_test
+package shell
 
 import (
 	"maps"
@@ -7,14 +7,12 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-
-	"github.com/garamsh/gagent/internal/tool"
 )
 
 func TestChildEnv_ExcludesPlatformVariables(t *testing.T) {
 	t.Setenv("GAGENT_TEST_PLATFORM_SECRET", "hunter2")
 
-	env := tool.ChildEnv()
+	env := childEnv()
 
 	for _, entry := range env {
 		assert.False(t, strings.HasPrefix(entry, "GAGENT_TEST_PLATFORM_SECRET="),
@@ -23,7 +21,7 @@ func TestChildEnv_ExcludesPlatformVariables(t *testing.T) {
 }
 
 func TestChildEnv_MinimalBasics(t *testing.T) {
-	env := tool.ChildEnv()
+	env := childEnv()
 
 	keys := make(map[string]string, len(env))
 	for _, entry := range env {

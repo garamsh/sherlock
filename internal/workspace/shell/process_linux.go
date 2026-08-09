@@ -16,8 +16,6 @@ import (
 	"time"
 
 	"golang.org/x/sys/unix"
-
-	"github.com/garamsh/gagent/internal/tool"
 )
 
 // rlimits are the resource limits ProcessExecutor applies to the child.
@@ -156,7 +154,7 @@ func (e *ProcessExecutor) Run(ctx context.Context, req Request) (Result, error) 
 	if req.Workdir != "" {
 		cmd.Dir = req.Workdir
 	}
-	cmd.Env = tool.ChildEnv()
+	cmd.Env = childEnv()
 	if req.Env != nil {
 		cmd.Env = append(cmd.Env, req.Env...)
 	}

@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/shell"
+	"github.com/garamsh/gagent/internal/workspace/shell"
 )
 
 // fakeExecutor is the test double for the Executor interface. It records
@@ -35,7 +35,7 @@ func (f *fakeExecutor) Run(_ context.Context, req shell.Request) (shell.Result, 
 func requireRoot(t *testing.T) {
 	t.Helper()
 	if os.Geteuid() != 0 {
-		t.Skip("setuid path requires root; run with `sudo -E go test ./internal/shell/...` to exercise fork+exec")
+		t.Skip("setuid path requires root; run with `sudo -E go test ./internal/workspace/shell/...` to exercise fork+exec")
 	}
 }
 

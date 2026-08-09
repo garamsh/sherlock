@@ -15,7 +15,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/shell"
+	"github.com/garamsh/gagent/internal/workspace/shell"
 )
 
 // TestNetnsProbeHelper is the child process the netns test execs: it

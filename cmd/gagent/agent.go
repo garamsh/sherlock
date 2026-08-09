@@ -16,10 +16,12 @@ import (
 
 	"github.com/garamsh/gagent/internal/gateway"
 	"github.com/garamsh/gagent/internal/message"
+	"github.com/garamsh/gagent/internal/shell"
 	"github.com/garamsh/gagent/internal/tool"
 	"github.com/garamsh/gagent/internal/workspace/client"
 	"github.com/garamsh/gagent/tools/files"
 	"github.com/garamsh/gagent/tools/playwright"
+	shellexec "github.com/garamsh/gagent/tools/shell_exec"
 )
 
 // newAgentCommand returns the "gagent agent" subcommand: it runs the
@@ -67,6 +69,12 @@ func addAgentFlags(fs *pflag.FlagSet) {
 	fs.String("memory-path", defaultMemoryPath, "SQLite memory file (created on first use)")
 	fs.String("workspace-addr", defaultWorkspaceAddr,
 		"gRPC endpoint of the agent's workspace (the data plane the files tool calls)")
+	fs.Int("exec-uid", defaultExecUID,
+		"UID shell_exec children run as (single-account mode: must equal the agent's own UID)")
+	fs.Duration("exec-timeout", defaultExecTimeout,
+		"per-call timeout ceiling for shell_exec commands")
+	fs.String("workspace-path", defaultWorkspacePath,
+		"shared workspace directory shell_exec children work in")
 	fs.String("ego-file", "",
 		"ego file for the agent's instructions (default: embedded EGO.md)")
 }
@@ -77,6 +85,14 @@ func addAgentFlags(fs *pflag.FlagSet) {
 // are agent-side Go packages (ADR 0018); the agent constructs them
 // here with the workspace client the workspace-addr flag dials.
 func newAgentFactory(ctx context.Context, cfg Config, ego string, sink message.Sink, logger *slog.Logger) (*gateway.Factory, error) {
+	// Single-account custody (ADR 0003): when exec-uid is the agent's
+	// own account, exec children share it, so the agent's /proc
+	// environ would be readable to them — close that channel.
+	if cfg.ExecUID == os.Geteuid() {
+		if err := shell.ProtectEnviron(); err != nil {
+			return nil, err
+		}
+	}
 	newModel, err := newModelFunc(cfg.Model)
 	if err != nil {
 		return nil, err
@@ -89,7 +105,7 @@ func newAgentFactory(ctx context.Context, cfg Config, ego string, sink message.S
 	if err != nil {
 		return nil, err
 	}
-	tools, err := buildTools(ctx, cfg.WorkspaceAddr, logger)
+	tools, err := buildTools(ctx, cfg, logger)
 	if err != nil {
 		return nil, err
 	}
@@ -98,13 +114,13 @@ func newAgentFactory(ctx context.Context, cfg Config, ego string, sink message.S
 
 // buildTools dials the workspace gRPC client and constructs the
 // compile-time tools the agent hosts (ADR 0018): files (the workspace
-// client) and playwright. The agent loop never imports
-// internal/workspace directly — it goes through tools, the boundary
-// the issue specified.
-func buildTools(ctx context.Context, workspaceAddr string, logger *slog.Logger) ([]tool.Tool, error) {
-	ws, closeFn, err := client.New(ctx, workspaceAddr)
+// client), playwright, and shell_exec over the agent's native executor
+// (ADR 0008). The agent loop never imports internal/workspace directly
+// — it goes through tools, the boundary the issue specified.
+func buildTools(ctx context.Context, cfg Config, logger *slog.Logger) ([]tool.Tool, error) {
+	ws, closeFn, err := client.New(ctx, cfg.WorkspaceAddr)
 	if err != nil {
-		return nil, fmt.Errorf("dial workspace %q: %w", workspaceAddr, err)
+		return nil, fmt.Errorf("dial workspace %q: %w", cfg.WorkspaceAddr, err)
 	}
 	// The agent process owns the connection: register its close with
 	// a release hook on the runtime once we have one. For now, log
@@ -122,9 +138,11 @@ func buildTools(ctx context.Context, workspaceAddr string, logger *slog.Logger) 
 	// Pin the closeFn for the process lifetime; the agent reuses one
 	// connection across the lifetime of a turn.
 	processClosers = append(processClosers, closeFn)
+	executor := shell.NewProcessExecutor(cfg.ExecUID, cfg.ExecTimeout)
 	return []tool.Tool{
 		files.New(ws),
 		playwright.New(),
+		shellexec.New(executor, cfg.WorkspacePath, cfg.ExecTimeout),
 	}, nil
 }
 

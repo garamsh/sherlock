@@ -7,3 +7,6 @@ model:
   provider: mock
 # memory-path: data/memory.db            # default; the agent's SQLite memory file
 # workspace-addr: "127.0.0.1:8081"        # default; gRPC endpoint of the agent's workspace
+# exec-uid: 1001                          # default; UID shell_exec children run as (single-account mode: the agent's own UID)
+# exec-timeout: 30s                       # default; per-call ceiling for shell_exec commands
+# workspace-path: data/workspace          # default; shared directory shell_exec children work in

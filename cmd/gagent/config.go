@@ -29,6 +29,19 @@ const (
 	// scheme — the workspace listener is unauthenticated in this phase.
 	defaultWorkspaceAddr = "127.0.0.1:8081"
 
+	// defaultExecUID is the account the agent's shell_exec children
+	// drop to (ADR 0008); it mirrors shell.DefaultAgentUID.
+	defaultExecUID = 1001
+
+	// defaultExecTimeout is the per-call ceiling for shell_exec
+	// commands.
+	defaultExecTimeout = 30 * time.Second
+
+	// defaultWorkspacePath is the shared workspace directory shell_exec
+	// children work in; it matches the workspace's own default so both
+	// processes see the same tree at the same path.
+	defaultWorkspacePath = "data/workspace"
+
 	defaultModelProvider = "mock"
 	defaultModelBaseURL  = "https://api.openai.com/v1"
 	defaultModelName     = "gpt-4o-mini"
@@ -62,6 +75,18 @@ type Config struct {
 	// time. The agent imports tools from tools/ and constructs them
 	// with the workspace client this address dials (ADR 0018).
 	WorkspaceAddr string `mapstructure:"workspace-addr"`
+	// ExecUID is the UID the agent's shell_exec children run as
+	// (ADR 0008): a privileged agent drops to it; an unprivileged agent
+	// runs children only when it equals the process's own UID
+	// (single-account mode) and otherwise fails closed with
+	// agent_uid unavailable.
+	ExecUID int `mapstructure:"exec-uid"`
+	// ExecTimeout is the per-call ceiling for shell_exec commands.
+	ExecTimeout time.Duration `mapstructure:"exec-timeout"`
+	// WorkspacePath names the shared workspace directory shell_exec
+	// children chdir into — the same directory the workspace serves
+	// over gRPC, at the same path in both processes.
+	WorkspacePath string `mapstructure:"workspace-path"`
 	// Model selects the chat model provider (ADR 0004).
 	Model ModelConfig `mapstructure:"model"`
 	// Embedder selects the memory embedder provider (ADR 0004); the
@@ -135,6 +160,9 @@ func resolveConfig(cmd *cobra.Command) (Config, error) {
 	v.SetDefault("addr", defaultAddr)
 	v.SetDefault("memory-path", defaultMemoryPath)
 	v.SetDefault("workspace-addr", defaultWorkspaceAddr)
+	v.SetDefault("exec-uid", defaultExecUID)
+	v.SetDefault("exec-timeout", defaultExecTimeout)
+	v.SetDefault("workspace-path", defaultWorkspacePath)
 	v.SetDefault("model.provider", defaultModelProvider)
 	v.SetDefault("model.base-url", defaultModelBaseURL)
 	v.SetDefault("model.model", defaultModelName)

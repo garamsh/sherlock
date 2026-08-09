@@ -2,7 +2,7 @@
 
 Current architecture of the system and the decisions behind it. This file is the index; workers read it before touching code, the PM keeps it honest.
 
-One pod per agent, two containers (ADR 0018): the agent container is the agent's self (gateway, reasoning loop, memory, mouth); the sidecar container is the agent's computer (workspace, execution, tool servers, permission enforcement). A tool is a contract with the outside — defined where its implementation lives and discovered by the agent at runtime. The code ships one binary with two subcommands (`gagent agent`, `gagent sidecar`); deployment artifacts live at the repo-root `Dockerfile` (agent/sidecar targets) and `deploy/local/`.
+One pod per agent, two containers (ADR 0018): the agent container is the agent's self (gateway, reasoning loop, memory, mouth, native process exec, tools); the sidecar container is the agent's workspace — the filesystem-only gRPC data plane. A tool is an agent-side Go package the agent imports at compile time; the plugin concept is dropped. The code ships one binary with two subcommands (`gagent agent`, `gagent sidecar`); deployment artifacts live at the repo-root `Dockerfile` (agent/sidecar targets) and `deploy/local/`.
 
 ## Structure
 
@@ -21,7 +21,7 @@ One pod per agent, two containers (ADR 0018): the agent container is the agent's
 
 ### Responsibility documents
 
-- `environment.md` — the environment is the agent's computer: topology, workspace, execution, permissions
+- `environment.md` — the environment splits into workspace (filesystem-only gRPC, the data plane) and tools (agent-side Go packages): topology, execution, permissions
 - `agent.md` — the agent is the self: reasoning loop, organs, tool discovery, model access
 - `memory.md` — long-term memory: the agent's organ — store, search, lifecycle
 - `gateway.md` — the agent's ears and eyes: ingress, outbound, monitoring
@@ -46,7 +46,7 @@ One pod per agent, two containers (ADR 0018): the agent container is the agent's
 - `0015` — scope boundaries: authorization above the platform, no mid-run intervention
 - `0016` — the turn drains the queue
 - `0017` — the identity is the agent ID
-- `0018` — the agent is the self; the sidecar is the computer (pod-per-agent)
+- `0018` — the agent is the self; the workspace is the data plane (pod-per-agent)
 
 ### Modules
 
@@ -58,6 +58,7 @@ One pod per agent, two containers (ADR 0018): the agent container is the agent's
 | `internal/tool/` | Define the Tool contract (name, description, input schema, output schema), the registry every tool joins, and the wire protocol that serves a registry over HTTP and calls it back (ADR 0018). | — |
 | `internal/memory/` | Own the agent's long-term memory: the `memory.db` store, hybrid search, and the memory service behind the lifecycle hooks. | `memory.md` |
 | `internal/files/` | Read and write files inside the sidecar's workspace. | `environment.md` |
+| `internal/workspace/` | The filesystem-only gRPC data plane: proto, generated stubs, server wrapping `internal/files.FS` for Read/Write/List (ADR 0018). No tool hosting, no process exec. | `environment.md` |
 | `internal/message/` | Deliver agent-decided outbound messages to channels and peers (`message_send`). | `gateway.md` |
 | `internal/shell/` | Run tool child processes as sub-processes dropped to the agent UID — `shell_exec` in a fresh network namespace, script tools with network access (ADR 0010). | `security.md` |
 | `internal/tool/script/` | Universal subprocess adapter: run any executable as a tool through the shell executor (ADR 0010); owns the script-tool config declaration shape (ADR 0009). | `gateway.md` |

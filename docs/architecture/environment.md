@@ -4,21 +4,22 @@ Governs the environment model: what an environment is, its topology, and its tru
 
 ## Current decisions
 
-- The environment is the agent's computer: a dedicated sidecar container in the agent's pod. One pod per agent; one sidecar per agent to start (ADR 0018).
-- The sidecar composes two things: a dedicated environment — the workspace (a persistent volume) and process execution — and an I/O layer, the tool servers that expose the computer's capabilities.
-- The computer is configured from outside, like a real computer: adding a capability (browser automation, GitHub tooling) means installing it on the computer and declaring its tool. The agent changes nothing; it discovers the new capability at runtime.
-- Permission enforcement lives at the computer — the action site. Agent-influenced execution runs under an unprivileged UID, and workspace and data ownership is kernel-enforced (DAC), not filtered (ADR 0008, ADR 0010 relocated into the sidecar). A platform that cannot drop privileges reports unavailability instead of silently upgrading.
-- Egress control lives at two layers: the in-process network namespace is the in-computer boundary (`shell_exec` children get a fresh, empty netns; ADR 0010), and the pod network layer is the additional deployment-level boundary — the infrastructure layer's mechanism, not an artifact this repo ships.
-- Self-destruction is bounded by construction: executed code lives on the computer, and the agent's self (a separate container) is unreachable from it. A broken computer is recreated.
-- A shared sidecar serving several agents — one computer with several user accounts — is a later step, not the starting shape.
+- The environment is split into two layers: the workspace (the agent's data plane) and the tools (the agent's capabilities). The workspace is a dedicated sidecar container in the agent's pod; the tools are agent-side Go packages. One pod per agent; one workspace per agent to start (ADR 0018).
+- The sidecar serves only the filesystem-only gRPC workspace contract — Read, Write, List. It holds no tool servers, no process executor, and no `tools:` config: it is a pure data plane. Process exec is the agent's native capability (`os/exec`), not a workspace call; the plugin concept is dropped — tools are Go packages the agent imports at compile time.
+- The workspace is configured from outside, like a real working volume: the workspace directory is created on first use and the agent learns its location from the sidecar config. Adding a tool is a Go-package change in the agent build, not a sidecar config change.
+- Permission enforcement lives at the data plane — the action site for files. Agent-influenced file writes run under an unprivileged UID, and workspace ownership is kernel-enforced (DAC), not filtered (ADR 0008, ADR 0010 relocated into the sidecar). A platform that cannot drop privileges reports unavailability instead of silently upgrading.
+- Process exec inherits the agent process's UID — operator scope governs the trust posture of the agent process itself.
+- Egress control lives at two layers: the pod network layer is the additional deployment-level boundary (the infrastructure layer's mechanism, not an artifact this repo ships), and the agent's process-level controls are the in-process boundary for any network-isolated children the agent may launch.
+- Self-destruction is bounded by construction: files live on the workspace, and the agent's self (a separate container) is unreachable from it. A broken workspace is recreated.
+- A shared workspace serving several agents — one volume with several user accounts — is a later step, not the starting shape.
 
 ## Current state
 
-The pod split is two processes today. `gagent sidecar` serves one workspace (config key, created on first use), `shell_exec`, and the script tools declared in its own config over the tool contract. Children run as the configured `exec-uid` (default 1001): a privileged sidecar switches to it — the workspace is chowned and the files tool drops its filesystem UID, `shell_exec` and script-tool children drop to it, the shell additionally in a fresh empty network namespace. With `exec-uid` equal to the sidecar's own UID the run is a single-account computer: no privilege is needed and the shell's network isolation comes from an unprivileged user+network namespace. Any other unprivileged `exec-uid` fails closed with `agent_uid unavailable`. The shipped images make this concrete: the agent image is distroless static (no untrusted code runs there), and the sidecar image is a minimal glibc base with no setuid binaries, run with exactly CAP_SETUID/SETGID/CHOWN/SYS_ADMIN so the drop operates (`deploy/local/`).
+The pod split is two processes today. `gagent sidecar` serves one workspace (config key, created on first use) over the workspace gRPC contract — Read, Write, List. It owns no tools, no exec backend, and no script-tool runtime. Workspace writes drop to the configured `exec-uid` (default 1001): a privileged sidecar switches to it and the workspace is chowned to it; with `exec-uid` equal to the sidecar's own UID the run is single-account — no privilege is needed. Any other unprivileged `exec-uid` fails closed with `agent_uid unavailable`. The shipped images make this concrete: the agent image hosts the reasoning loop, gateway, memory, native process exec, and tools (Go packages); the sidecar image hosts the workspace gRPC server with no setuid binaries, run with exactly CAP_SETUID/SETGID/CHOWN/SYS_ADMIN so the workspace chown operates (`deploy/local/`).
 
-`gagent agent` holds no environment layout: the `data/envs/<id>/` pairing is gone, the agent configures only its memory file (`memory-path`), and every computer capability reaches it as a discovered remote tool over the contract.
+`gagent agent` holds the reasoning loop, gateway, memory, native process exec, and the tools the agent imports. The `data/envs/<id>/` pairing is gone; the agent configures only its memory file (`memory-path`) and uses the workspace gRPC client for files. Tools that need files use the same client.
 
 ## Open questions
 
-- The agent↔sidecar authentication (pod-local listener today) — with the contract protocol work.
-- The sidecar configuration format (base image plus tool and policy declaration) — the script-tool shape is the seed.
+- The agent↔sidecar authentication (pod-local workspace listener today) — with the contract protocol work.
+- The tool move from the sidecar's built-in tool set into `tools/` as agent-side packages — a follow-up refactor that builds on this record.

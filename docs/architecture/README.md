@@ -55,7 +55,7 @@ One pod per agent, two containers (ADR 0018): the agent container is the agent's
 | `cmd/gagent/` | CLI entry point (`gagent agent`, `gagent workspace`): resolve config and wire concrete implementations; nothing else. | — |
 | `internal/gateway/` | Accept normalized inbound messages, serialize the one agent's runs through a single queue, and publish the monitoring event stream. | `gateway.md` |
 | `internal/agent/` | Run the reasoning loop (frame, recall, act, writeback) for the agent's one rolling session. | `agent.md` |
-| `internal/tool/` | Define the Tool contract (name, description, input schema, output schema), the registry every tool joins, and the wire protocol that serves a registry over HTTP. Tools join the registry in-process; the wire protocol is for cross-process use when a tool's host needs to expose it remotely. | — |
+| `internal/tool/` | Define the Tool contract (name, description, input schema, output schema) and the registry every tool joins. Tools join the registry in-process. | — |
 | `internal/memory/` | Own the agent's long-term memory: the `memory.db` store, hybrid search, and the memory service behind the lifecycle hooks. | `memory.md` |
 | `internal/files/` | The workspace's filesystem backend: an FS rooted at the workspace directory, with the lexical confinement the gRPC server enforces. | `environment.md` |
 | `internal/workspace/` | The filesystem-only gRPC data plane: proto, generated stubs, server wrapping `internal/files.FS` for Read/Write/List (ADR 0018). No tool hosting, no process exec. | `environment.md` |

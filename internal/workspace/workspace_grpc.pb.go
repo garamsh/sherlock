@@ -22,21 +22,24 @@ const (
 	Workspace_Read_FullMethodName  = "/workspace.Workspace/Read"
 	Workspace_Write_FullMethodName = "/workspace.Workspace/Write"
 	Workspace_List_FullMethodName  = "/workspace.Workspace/List"
+	Workspace_Exec_FullMethodName  = "/workspace.Workspace/Exec"
 )
 
 // WorkspaceClient is the client API for Workspace service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
-// Workspace is the filesystem-only data plane the agent uses to read,
-// write, and list files in its working environment (ADR 0018). It exposes
-// no process execution and no tool hosting: process exec is the agent's
-// native capability, and tools are agent-side Go packages the agent
-// imports at compile time. The plugin concept is dropped.
+// Workspace is the data plane the agent uses for its working environment
+// (ADR 0018): it serves the filesystem (Read, Write, List) and runs
+// agent-influenced processes (Exec) in the workspace directory. It
+// exposes no tool hosting: tools are agent-side Go packages the agent
+// imports at compile time, and tools are the only callers of this
+// contract. The plugin concept is dropped.
 type WorkspaceClient interface {
 	Read(ctx context.Context, in *ReadRequest, opts ...grpc.CallOption) (*ReadResponse, error)
 	Write(ctx context.Context, in *WriteRequest, opts ...grpc.CallOption) (*WriteResponse, error)
 	List(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListResponse, error)
+	Exec(ctx context.Context, in *ExecRequest, opts ...grpc.CallOption) (*ExecResponse, error)
 }
 
 type workspaceClient struct {
@@ -77,19 +80,31 @@ func (c *workspaceClient) List(ctx context.Context, in *ListRequest, opts ...grp
 	return out, nil
 }
 
+func (c *workspaceClient) Exec(ctx context.Context, in *ExecRequest, opts ...grpc.CallOption) (*ExecResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ExecResponse)
+	err := c.cc.Invoke(ctx, Workspace_Exec_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // WorkspaceServer is the server API for Workspace service.
 // All implementations must embed UnimplementedWorkspaceServer
 // for forward compatibility.
 //
-// Workspace is the filesystem-only data plane the agent uses to read,
-// write, and list files in its working environment (ADR 0018). It exposes
-// no process execution and no tool hosting: process exec is the agent's
-// native capability, and tools are agent-side Go packages the agent
-// imports at compile time. The plugin concept is dropped.
+// Workspace is the data plane the agent uses for its working environment
+// (ADR 0018): it serves the filesystem (Read, Write, List) and runs
+// agent-influenced processes (Exec) in the workspace directory. It
+// exposes no tool hosting: tools are agent-side Go packages the agent
+// imports at compile time, and tools are the only callers of this
+// contract. The plugin concept is dropped.
 type WorkspaceServer interface {
 	Read(context.Context, *ReadRequest) (*ReadResponse, error)
 	Write(context.Context, *WriteRequest) (*WriteResponse, error)
 	List(context.Context, *ListRequest) (*ListResponse, error)
+	Exec(context.Context, *ExecRequest) (*ExecResponse, error)
 	mustEmbedUnimplementedWorkspaceServer()
 }
 
@@ -108,6 +123,9 @@ func (UnimplementedWorkspaceServer) Write(context.Context, *WriteRequest) (*Writ
 }
 func (UnimplementedWorkspaceServer) List(context.Context, *ListRequest) (*ListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method List not implemented")
+}
+func (UnimplementedWorkspaceServer) Exec(context.Context, *ExecRequest) (*ExecResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Exec not implemented")
 }
 func (UnimplementedWorkspaceServer) mustEmbedUnimplementedWorkspaceServer() {}
 func (UnimplementedWorkspaceServer) testEmbeddedByValue()                   {}
@@ -184,6 +202,24 @@ func _Workspace_List_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Workspace_Exec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ExecRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WorkspaceServer).Exec(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Workspace_Exec_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WorkspaceServer).Exec(ctx, req.(*ExecRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Workspace_ServiceDesc is the grpc.ServiceDesc for Workspace service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -202,6 +238,10 @@ var Workspace_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "List",
 			Handler:    _Workspace_List_Handler,
+		},
+		{
+			MethodName: "Exec",
+			Handler:    _Workspace_Exec_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

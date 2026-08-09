@@ -3,15 +3,17 @@ syntax = "proto3";
 package workspace;
 option go_package = "github.com/garamsh/gagent/internal/workspace;workspace";
 
-// Workspace is the filesystem-only data plane the agent uses to read,
-// write, and list files in its working environment (ADR 0018). It exposes
-// no process execution and no tool hosting: process exec is the agent's
-// native capability, and tools are agent-side Go packages the agent
-// imports at compile time. The plugin concept is dropped.
+// Workspace is the data plane the agent uses for its working environment
+// (ADR 0018): it serves the filesystem (Read, Write, List) and runs
+// agent-influenced processes (Exec) in the workspace directory. It
+// exposes no tool hosting: tools are agent-side Go packages the agent
+// imports at compile time, and tools are the only callers of this
+// contract. The plugin concept is dropped.
 service Workspace {
   rpc Read(ReadRequest) returns (ReadResponse);
   rpc Write(WriteRequest) returns (WriteResponse);
   rpc List(ListRequest) returns (ListResponse);
+  rpc Exec(ExecRequest) returns (ExecResponse);
 }
 message ReadRequest { string path = 1; }
 message ReadResponse { bytes content = 1; }
@@ -20,3 +22,5 @@ message WriteResponse {}
 message ListRequest { string path = 1; }
 message Entry { string name = 1; bool dir = 2; }
 message ListResponse { repeated Entry entries = 1; }
+message ExecRequest { string command = 1; repeated string args = 2; bytes stdin = 3; int64 timeout_nanos = 4; string workdir = 5; repeated string env = 6; bool no_network = 7; bool trusted = 8; }
+message ExecResponse { string stdout = 1; string stderr = 2; int32 exit_code = 3; bool timed_out = 4; }

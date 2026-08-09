@@ -337,6 +337,174 @@ func (x *ListResponse) GetEntries() []*Entry {
 	return nil
 }
 
+type ExecRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Command       string                 `protobuf:"bytes,1,opt,name=command,proto3" json:"command,omitempty"`
+	Args          []string               `protobuf:"bytes,2,rep,name=args,proto3" json:"args,omitempty"`
+	Stdin         []byte                 `protobuf:"bytes,3,opt,name=stdin,proto3" json:"stdin,omitempty"`
+	TimeoutNanos  int64                  `protobuf:"varint,4,opt,name=timeout_nanos,json=timeoutNanos,proto3" json:"timeout_nanos,omitempty"`
+	Workdir       string                 `protobuf:"bytes,5,opt,name=workdir,proto3" json:"workdir,omitempty"`
+	Env           []string               `protobuf:"bytes,6,rep,name=env,proto3" json:"env,omitempty"`
+	NoNetwork     bool                   `protobuf:"varint,7,opt,name=no_network,json=noNetwork,proto3" json:"no_network,omitempty"`
+	Trusted       bool                   `protobuf:"varint,8,opt,name=trusted,proto3" json:"trusted,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ExecRequest) Reset() {
+	*x = ExecRequest{}
+	mi := &file_internal_workspace_workspace_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ExecRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ExecRequest) ProtoMessage() {}
+
+func (x *ExecRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_workspace_workspace_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ExecRequest.ProtoReflect.Descriptor instead.
+func (*ExecRequest) Descriptor() ([]byte, []int) {
+	return file_internal_workspace_workspace_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *ExecRequest) GetCommand() string {
+	if x != nil {
+		return x.Command
+	}
+	return ""
+}
+
+func (x *ExecRequest) GetArgs() []string {
+	if x != nil {
+		return x.Args
+	}
+	return nil
+}
+
+func (x *ExecRequest) GetStdin() []byte {
+	if x != nil {
+		return x.Stdin
+	}
+	return nil
+}
+
+func (x *ExecRequest) GetTimeoutNanos() int64 {
+	if x != nil {
+		return x.TimeoutNanos
+	}
+	return 0
+}
+
+func (x *ExecRequest) GetWorkdir() string {
+	if x != nil {
+		return x.Workdir
+	}
+	return ""
+}
+
+func (x *ExecRequest) GetEnv() []string {
+	if x != nil {
+		return x.Env
+	}
+	return nil
+}
+
+func (x *ExecRequest) GetNoNetwork() bool {
+	if x != nil {
+		return x.NoNetwork
+	}
+	return false
+}
+
+func (x *ExecRequest) GetTrusted() bool {
+	if x != nil {
+		return x.Trusted
+	}
+	return false
+}
+
+type ExecResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Stdout        string                 `protobuf:"bytes,1,opt,name=stdout,proto3" json:"stdout,omitempty"`
+	Stderr        string                 `protobuf:"bytes,2,opt,name=stderr,proto3" json:"stderr,omitempty"`
+	ExitCode      int32                  `protobuf:"varint,3,opt,name=exit_code,json=exitCode,proto3" json:"exit_code,omitempty"`
+	TimedOut      bool                   `protobuf:"varint,4,opt,name=timed_out,json=timedOut,proto3" json:"timed_out,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ExecResponse) Reset() {
+	*x = ExecResponse{}
+	mi := &file_internal_workspace_workspace_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ExecResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ExecResponse) ProtoMessage() {}
+
+func (x *ExecResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_workspace_workspace_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ExecResponse.ProtoReflect.Descriptor instead.
+func (*ExecResponse) Descriptor() ([]byte, []int) {
+	return file_internal_workspace_workspace_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *ExecResponse) GetStdout() string {
+	if x != nil {
+		return x.Stdout
+	}
+	return ""
+}
+
+func (x *ExecResponse) GetStderr() string {
+	if x != nil {
+		return x.Stderr
+	}
+	return ""
+}
+
+func (x *ExecResponse) GetExitCode() int32 {
+	if x != nil {
+		return x.ExitCode
+	}
+	return 0
+}
+
+func (x *ExecResponse) GetTimedOut() bool {
+	if x != nil {
+		return x.TimedOut
+	}
+	return false
+}
+
 var File_internal_workspace_workspace_proto protoreflect.FileDescriptor
 
 const file_internal_workspace_workspace_proto_rawDesc = "" +
@@ -356,11 +524,27 @@ const file_internal_workspace_workspace_proto_rawDesc = "" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x10\n" +
 	"\x03dir\x18\x02 \x01(\bR\x03dir\":\n" +
 	"\fListResponse\x12*\n" +
-	"\aentries\x18\x01 \x03(\v2\x10.workspace.EntryR\aentries2\xb9\x01\n" +
+	"\aentries\x18\x01 \x03(\v2\x10.workspace.EntryR\aentries\"\xdb\x01\n" +
+	"\vExecRequest\x12\x18\n" +
+	"\acommand\x18\x01 \x01(\tR\acommand\x12\x12\n" +
+	"\x04args\x18\x02 \x03(\tR\x04args\x12\x14\n" +
+	"\x05stdin\x18\x03 \x01(\fR\x05stdin\x12#\n" +
+	"\rtimeout_nanos\x18\x04 \x01(\x03R\ftimeoutNanos\x12\x18\n" +
+	"\aworkdir\x18\x05 \x01(\tR\aworkdir\x12\x10\n" +
+	"\x03env\x18\x06 \x03(\tR\x03env\x12\x1d\n" +
+	"\n" +
+	"no_network\x18\a \x01(\bR\tnoNetwork\x12\x18\n" +
+	"\atrusted\x18\b \x01(\bR\atrusted\"x\n" +
+	"\fExecResponse\x12\x16\n" +
+	"\x06stdout\x18\x01 \x01(\tR\x06stdout\x12\x16\n" +
+	"\x06stderr\x18\x02 \x01(\tR\x06stderr\x12\x1b\n" +
+	"\texit_code\x18\x03 \x01(\x05R\bexitCode\x12\x1b\n" +
+	"\ttimed_out\x18\x04 \x01(\bR\btimedOut2\xf2\x01\n" +
 	"\tWorkspace\x127\n" +
 	"\x04Read\x12\x16.workspace.ReadRequest\x1a\x17.workspace.ReadResponse\x12:\n" +
 	"\x05Write\x12\x17.workspace.WriteRequest\x1a\x18.workspace.WriteResponse\x127\n" +
-	"\x04List\x12\x16.workspace.ListRequest\x1a\x17.workspace.ListResponseB8Z6github.com/garamsh/gagent/internal/workspace;workspaceb\x06proto3"
+	"\x04List\x12\x16.workspace.ListRequest\x1a\x17.workspace.ListResponse\x127\n" +
+	"\x04Exec\x12\x16.workspace.ExecRequest\x1a\x17.workspace.ExecResponseB8Z6github.com/garamsh/gagent/internal/workspace;workspaceb\x06proto3"
 
 var (
 	file_internal_workspace_workspace_proto_rawDescOnce sync.Once
@@ -374,7 +558,7 @@ func file_internal_workspace_workspace_proto_rawDescGZIP() []byte {
 	return file_internal_workspace_workspace_proto_rawDescData
 }
 
-var file_internal_workspace_workspace_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_internal_workspace_workspace_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_internal_workspace_workspace_proto_goTypes = []any{
 	(*ReadRequest)(nil),   // 0: workspace.ReadRequest
 	(*ReadResponse)(nil),  // 1: workspace.ReadResponse
@@ -383,17 +567,21 @@ var file_internal_workspace_workspace_proto_goTypes = []any{
 	(*ListRequest)(nil),   // 4: workspace.ListRequest
 	(*Entry)(nil),         // 5: workspace.Entry
 	(*ListResponse)(nil),  // 6: workspace.ListResponse
+	(*ExecRequest)(nil),   // 7: workspace.ExecRequest
+	(*ExecResponse)(nil),  // 8: workspace.ExecResponse
 }
 var file_internal_workspace_workspace_proto_depIdxs = []int32{
 	5, // 0: workspace.ListResponse.entries:type_name -> workspace.Entry
 	0, // 1: workspace.Workspace.Read:input_type -> workspace.ReadRequest
 	2, // 2: workspace.Workspace.Write:input_type -> workspace.WriteRequest
 	4, // 3: workspace.Workspace.List:input_type -> workspace.ListRequest
-	1, // 4: workspace.Workspace.Read:output_type -> workspace.ReadResponse
-	3, // 5: workspace.Workspace.Write:output_type -> workspace.WriteResponse
-	6, // 6: workspace.Workspace.List:output_type -> workspace.ListResponse
-	4, // [4:7] is the sub-list for method output_type
-	1, // [1:4] is the sub-list for method input_type
+	7, // 4: workspace.Workspace.Exec:input_type -> workspace.ExecRequest
+	1, // 5: workspace.Workspace.Read:output_type -> workspace.ReadResponse
+	3, // 6: workspace.Workspace.Write:output_type -> workspace.WriteResponse
+	6, // 7: workspace.Workspace.List:output_type -> workspace.ListResponse
+	8, // 8: workspace.Workspace.Exec:output_type -> workspace.ExecResponse
+	5, // [5:9] is the sub-list for method output_type
+	1, // [1:5] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
 	1, // [1:1] is the sub-list for extension extendee
 	0, // [0:1] is the sub-list for field type_name
@@ -410,7 +598,7 @@ func file_internal_workspace_workspace_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_internal_workspace_workspace_proto_rawDesc), len(file_internal_workspace_workspace_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

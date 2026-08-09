@@ -6,4 +6,4 @@ addr: "127.0.0.1:8080"
 model:
   provider: mock
 # memory-path: data/memory.db            # default; the agent's SQLite memory file
-# tool-servers: ["http://127.0.0.1:8081"] # default; the pod-local sidecar
+# tool-servers: ["http://127.0.0.1:8081"] # default; tool-contract endpoints the agent discovers remote tools from

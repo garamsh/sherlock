@@ -14,11 +14,11 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/garamsh/gagent/internal/computer"
 	"github.com/garamsh/gagent/internal/files"
 	"github.com/garamsh/gagent/internal/shell"
 	"github.com/garamsh/gagent/internal/tool"
 	"github.com/garamsh/gagent/internal/tool/script"
+	"github.com/garamsh/gagent/internal/workspace"
 	"google.golang.org/grpc"
 )
 
@@ -146,21 +146,21 @@ func serveSidecar(ctx context.Context, cfg SidecarConfig) error {
 	if err := script.ValidateConfigs(cfg.Tools); err != nil {
 		return err
 	}
-	workspace, err := files.Open(cfg.Workspace, cfg.ExecUID)
+	workspaceFS, err := files.Open(cfg.Workspace, cfg.ExecUID)
 	if err != nil {
 		return err
 	}
-	if err := files.SecureWorkspace(workspace.Root(), cfg.ExecUID); err != nil {
+	if err := files.SecureWorkspace(workspaceFS.Root(), cfg.ExecUID); err != nil {
 		return err
 	}
 
 	executor := shell.NewProcessExecutor(cfg.ExecUID, cfg.ExecTimeout)
 	registry := tool.NewRegistry()
 	tools := []tool.Tool{
-		files.NewTool(workspace),
+		files.NewTool(workspaceFS),
 		shell.NewTool(executor).
 			WithDefaultTimeout(cfg.ExecTimeout).
-			WithWorkdir(workspace.Root()),
+			WithWorkdir(workspaceFS.Root()),
 	}
 	for _, c := range cfg.Tools {
 		spec, err := c.Spec()
@@ -183,10 +183,10 @@ func serveSidecar(ctx context.Context, cfg SidecarConfig) error {
 		return err
 	}
 	grpcServer := grpc.NewServer()
-	computer.RegisterComputerServer(grpcServer, &computer.Server{FS: workspace, Executor: executor})
+	workspace.RegisterWorkspaceServer(grpcServer, &workspace.Server{FS: workspaceFS})
 	go func() {
 		if err := grpcServer.Serve(grpcListener); err != nil {
-			logger.Error("computer server failed", "error", err)
+			logger.Error("workspace server failed", "error", err)
 		}
 	}()
 
@@ -206,7 +206,7 @@ func serveSidecar(ctx context.Context, cfg SidecarConfig) error {
 	}()
 
 	logger.Info("sidecar listening",
-		"op", "startup", "addr", cfg.Addr, "workspace", workspace.Root(),
+		"op", "startup", "addr", cfg.Addr, "workspace", workspaceFS.Root(),
 		"tools", len(registry.List()),
 		"warning", "no authentication: pod-local listener")
 	if err := srv.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {

@@ -4,16 +4,19 @@ import (
 	"context"
 	_ "embed"
 	"encoding/json"
+	"errors"
 	"reflect"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"google.golang.org/grpc"
 
-	"github.com/garamsh/gagent/internal/shell"
 	"github.com/garamsh/gagent/internal/tool"
 	"github.com/garamsh/gagent/internal/tool/tooltest"
+	"github.com/garamsh/gagent/internal/workspace"
+	"github.com/garamsh/gagent/internal/workspace/shell"
 	shellexec "github.com/garamsh/gagent/tools/shell_exec"
 )
 
@@ -45,26 +48,28 @@ func TestSchema_MatchesStructTags(t *testing.T) {
 	tooltest.CheckStructShape(t, output, reflect.TypeOf(shell.Result{}))
 }
 
-// fakeExecutor is the in-memory shell.Executor the tool's logic is
-// tested against: it records the request and replays a canned result.
-// The unit under test is the tool's input-to-request translation, not
-// the executor's fork+exec implementation (that lives in
-// internal/shell and is covered there).
-type fakeExecutor struct {
-	req     shell.Request
-	result  shell.Result
-	err     error
-	timeout time.Duration
+// fakeWorkspace is the in-memory workspace client the tool's logic is
+// tested against: it records the Exec request and replays a canned
+// response. The unit under test is the tool's input-to-request
+// translation, not the executor's fork+exec implementation (that lives
+// in internal/workspace/shell and is covered there).
+type fakeWorkspace struct {
+	workspace.WorkspaceClient
+	req  *workspace.ExecRequest
+	resp *workspace.ExecResponse
+	err  error
 }
 
-func (f *fakeExecutor) Run(_ context.Context, req shell.Request) (shell.Result, error) {
+func (f *fakeWorkspace) Exec(_ context.Context, req *workspace.ExecRequest, _ ...grpc.CallOption) (*workspace.ExecResponse, error) {
 	f.req = req
-	f.timeout = req.Timeout
-	return f.result, f.err
+	if f.err != nil {
+		return nil, f.err
+	}
+	return f.resp, nil
 }
 
 func TestShellExecTool_InvalidInputRejectedAtBoundary(t *testing.T) {
-	execTool := shellexec.New(&fakeExecutor{}, "/workspace", 30*time.Second)
+	execTool := shellexec.New(&fakeWorkspace{})
 
 	tests := []struct {
 		name  string
@@ -85,44 +90,52 @@ func TestShellExecTool_InvalidInputRejectedAtBoundary(t *testing.T) {
 	}
 }
 
-func TestShellExecTool_RunsInSharedWorkspaceDirectory(t *testing.T) {
-	exec := &fakeExecutor{result: shell.Result{Stdout: "ok\n", ExitCode: 0}}
-	execTool := shellexec.New(exec, "/workspace", 30*time.Second)
+func TestShellExecTool_CallsWorkspaceExecRPC(t *testing.T) {
+	ws := &fakeWorkspace{resp: &workspace.ExecResponse{Stdout: "ok\n"}}
+	execTool := shellexec.New(ws)
 
 	out, err := tool.Invoke(context.Background(), execTool,
 		json.RawMessage(`{"command":"ls"}`))
 	require.NoError(t, err)
 	assert.JSONEq(t, `{"stdout":"ok\n","stderr":"","exit_code":0,"timed_out":false}`, string(out))
 
-	assert.Equal(t, "ls", exec.req.Command)
-	assert.Equal(t, "/workspace", exec.req.Workdir,
-		"the child chdirs into the shared workspace directory")
-	assert.True(t, exec.req.NoNetwork,
+	assert.Equal(t, "ls", ws.req.GetCommand())
+	assert.True(t, ws.req.GetNoNetwork(),
 		"shell_exec children run in a fresh, empty network namespace (ADR 0010)")
-	assert.Equal(t, 30*time.Second, exec.timeout,
-		"the configured default bounds the call when timeout_seconds is absent")
+	assert.Zero(t, ws.req.GetTimeoutNanos(),
+		"no timeout in the input leaves the ceiling to the workspace's exec-timeout")
+	assert.Empty(t, ws.req.GetWorkdir(),
+		"no workdir crosses the wire: exec children work in the workspace directory")
 }
 
-func TestShellExecTool_TimeoutSecondsOverridesDefault(t *testing.T) {
-	exec := &fakeExecutor{}
-	execTool := shellexec.New(exec, "/workspace", 30*time.Second)
+func TestShellExecTool_TimeoutSecondsOverridesWorkspaceDefault(t *testing.T) {
+	ws := &fakeWorkspace{resp: &workspace.ExecResponse{}}
+	execTool := shellexec.New(ws)
 
 	_, err := tool.Invoke(context.Background(), execTool,
 		json.RawMessage(`{"command":"sleep 1","timeout_seconds":5}`))
 	require.NoError(t, err)
-	assert.Equal(t, 5*time.Second, exec.timeout)
+	assert.Equal(t, int64(5*time.Second), ws.req.GetTimeoutNanos())
 }
 
 func TestShellExecTool_TimeoutIsAResultNotAFailure(t *testing.T) {
-	exec := &fakeExecutor{
-		result: shell.Result{Stdout: "partial", TimedOut: true},
-		err:    shell.ErrTimedOut,
-	}
-	execTool := shellexec.New(exec, "/workspace", 30*time.Second)
+	ws := &fakeWorkspace{resp: &workspace.ExecResponse{Stdout: "partial", TimedOut: true}}
+	execTool := shellexec.New(ws)
 
 	out, err := tool.Invoke(context.Background(), execTool,
 		json.RawMessage(`{"command":"sleep 60"}`))
 	require.NoError(t, err,
 		"a timed-out command is a normal outcome per ADR 0008, not a tool failure")
 	assert.JSONEq(t, `{"stdout":"partial","stderr":"","exit_code":0,"timed_out":true}`, string(out))
+}
+
+func TestShellExecTool_ExecFailureIsAToolError(t *testing.T) {
+	ws := &fakeWorkspace{err: errors.New("shell: agent_uid unavailable")}
+	execTool := shellexec.New(ws)
+
+	_, err := tool.Invoke(context.Background(), execTool,
+		json.RawMessage(`{"command":"true"}`))
+	require.Error(t, err,
+		"a workspace-side failure — e.g. the fail-closed privilege drop — is a tool error")
+	assert.Contains(t, err.Error(), "agent_uid unavailable")
 }

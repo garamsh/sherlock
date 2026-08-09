@@ -10,18 +10,12 @@ services:
       target: agent
     ports:
       - "8080:8080"
-    # The agent runs as root so shell_exec children drop to the exec
-    # UID (ADR 0008); CAP_SYS_ADMIN puts them in a fresh, empty
-    # network namespace (ADR 0010).
-    cap_add: ["SYS_ADMIN"]
+    # The agent executes nothing — the workspace owns process exec
+    # (ADR 0018) — so the agent needs no capabilities at all.
     environment:
       # The memory file sits at the same absolute path on host and
-      # container so it is valid from either side. The workspace path
-      # is the shared directory shell_exec children work in — the same
-      # path the workspace container serves.
+      # container so it is valid from either side.
       GAGENT_MEMORY_PATH: "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}/memory.db"
-      GAGENT_WORKSPACE_PATH: "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}/workspace"
-      GAGENT_EXEC_UID: "1001"
     volumes:
       - "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}:${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}"
       - ./gagent.yaml:/etc/gagent/config.yaml:ro
@@ -34,10 +28,12 @@ services:
     network_mode: service:agent
     depends_on:
       - agent
-    # The workspace spawns no children; CAP_CHOWN alone is kept so it
-    # can hand the workspace directory to the agent's exec UID (ADR 0008).
+    # The executor's privilege drop, made real (ADR 0008, ADR 0010):
+    # SETUID/SETGID for the child credential drop, CHOWN for the
+    # workspace-directory handover, SYS_ADMIN for the netns unshare.
+    # Nothing else.
     cap_drop: ["ALL"]
-    cap_add: ["CHOWN"]
+    cap_add: ["SETUID", "SETGID", "CHOWN", "SYS_ADMIN"]
     environment:
       GAGENT_WORKSPACE: "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}/workspace"
       GAGENT_EXEC_UID: "1001"

@@ -1,13 +1,12 @@
-package tool
+package shell
 
 import "os"
 
-// ChildEnv returns the minimal environment for a child process spawned by
-// a code-executing tool: PATH, HOME, and LANG only. The platform's own
+// childEnv returns the minimal environment for a child process the
+// executor spawns: PATH, HOME, and LANG only. The platform's own
 // variables (provider API keys and the like) are never inherited
-// implicitly (ADR 0003); operator-configured entries such as a script
-// tool's exec.env are applied on top by the caller.
-func ChildEnv() []string {
+// implicitly (ADR 0003); the request's Env entries apply on top.
+func childEnv() []string {
 	path := os.Getenv("PATH")
 	if path == "" {
 		path = "/usr/local/bin:/usr/bin:/bin"

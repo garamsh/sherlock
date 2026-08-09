@@ -84,7 +84,7 @@ func TestParseCapEff(t *testing.T) {
 // result; the euid check is bypassed by running as root.
 func TestProcessExecutor_RootWithoutCapSysAdminReportsAgentUIDUnavailable(t *testing.T) {
 	if os.Geteuid() != 0 {
-		t.Skip("this case needs root; run with `sudo -E go test ./internal/shell/...`")
+		t.Skip("this case needs root; run with `sudo -E go test ./internal/workspace/shell/...`")
 	}
 	exec := NewProcessExecutor(DefaultAgentUID, 5*time.Second)
 	exec.netNS = false

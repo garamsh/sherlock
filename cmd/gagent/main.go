@@ -2,7 +2,7 @@
 // "gagent agent" runs the agent's self — the HTTP gateway, the rolling
 // session, memory, the mouth, and the tools the agent imports at
 // compile time — and "gagent workspace" serves the agent's workspace,
-// the filesystem-only gRPC data plane. Settings come from flags,
+// the gRPC data plane (files and exec). Settings come from flags,
 // GAGENT_* environment variables, and gagent.yaml through viper.
 package main
 

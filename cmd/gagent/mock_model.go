@@ -10,7 +10,7 @@ import (
 
 // mockModel is the MVP placeholder model (ADR 0004): a canned script
 // that drives a fixed scenario through the agent's own tools —
-// shell_exec to compute the answer in the shared workspace directory,
+// shell_exec to compute the answer through the workspace's Exec RPC,
 // message_send for the mouth, then a writeback block to record the
 // question. It exhausts after one message; a real model replaces it
 // without interface changes. The writeback is the single write path:

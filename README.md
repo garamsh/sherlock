@@ -55,7 +55,7 @@ Serves the agent's workspace (ADR 0018) — a filesystem-only gRPC data plane ov
 gagent workspace
 ```
 
-- The workspace owns the workspace directory (`workspace` key, created on first use). A privileged workspace chowns it to the configured `exec-uid`; an unprivileged workspace runs as its own account.
+- The workspace owns the workspace directory (`workspace` key, created on first use) under its own account; it spawns no children, so it needs no privilege drop and no extra capabilities.
 - The listener carries no authentication in this phase, so it serves loopback binds only — a non-loopback `--addr` fails startup (ADR 0013, same posture as the gateway).
 - Its config file resolves in order: `--config <path>`, then `./workspace.yaml`, then the XDG config path (`~/.config/gagent/workspace.yaml` on Linux). Keys: `addr` (default `127.0.0.1:8081`), `workspace` (default `data/workspace`). There is no `tools:` config — the workspace is the data plane only.
 

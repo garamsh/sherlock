@@ -95,9 +95,8 @@ func resolveWorkspaceConfig(cmd *cobra.Command) (WorkspaceConfig, error) {
 // The workspace is the data plane (ADR 0018): it owns the workspace
 // directory and serves Read/Write/List over gRPC. It hosts no tools,
 // no process executor, and no plugin loader — those moved to the
-// agent. The workspace chowns its root to the same UID the
-// files-tool writes drop to, so files created through the gRPC
-// contract and through agent-influenced execution share one owner.
+// agent. The workspace spawns no children, so it needs no privilege
+// drop: its filesystem backend owns the directory directly.
 func serveWorkspace(ctx context.Context, cfg WorkspaceConfig) error {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	slog.SetDefault(logger)
@@ -108,9 +107,6 @@ func serveWorkspace(ctx context.Context, cfg WorkspaceConfig) error {
 
 	workspaceFS, err := files.Open(cfg.Workspace, 0)
 	if err != nil {
-		return err
-	}
-	if err := files.SecureWorkspace(workspaceFS.Root(), os.Geteuid()); err != nil {
 		return err
 	}
 

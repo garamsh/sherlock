@@ -40,33 +40,26 @@ CMD ["agent"]
 # workspace through gRPC; the workspace hosts no tools, no process
 # executor, no plugin loader (ADR 0018).
 #
-# Minimal glibc base with the privilege drop made real: a privileged
-# workspace chowns its data directory to the configured exec-uid at
-# startup. Tools that exec children do so in the agent, with
-# capabilities the executor manages; the workspace's job is just the
-# data plane.
+# Minimal glibc base. The workspace spawns no children and chowns
+# nothing: its filesystem backend owns the data directory directly,
+# so no privilege drop and no extra user exist here.
 FROM debian:12-slim AS workspace
 ARG REVISION=unknown
 LABEL org.opencontainers.image.title="gagent-workspace" \
       org.opencontainers.image.source="https://github.com/garamsh/gagent" \
       org.opencontainers.image.revision="${REVISION}"
 
-# The unprivileged UID workspace ownership drops to (ADR 0008).
-# useradd comes from the passwd package, which ships setuid helpers, so
-# the hygiene strip runs after it (security.md: no setuid/setgid binaries
-# at all — the privilege drop is the executor's job, not a suid helper's).
-RUN useradd --system --uid 1001 --no-create-home agent \
-    && find / -xdev -type f -perm /6000 -exec chmod a-s {} +
+# Hygiene strip (security.md: no setuid/setgid binaries at all).
+RUN find / -xdev -type f -perm /6000 -exec chmod a-s {} +
 
 COPY --from=build /out/gagent /gagent
 # Scratch space for the default workspace (data/workspace); mount the
 # workspace volume here.
 COPY --from=build /out/data /data
 
-# Root with the four capabilities above: the workspace chowns its
-# directory to the agent UID (UID 1001, created as `agent` above) on
-# privileged runs; on single-account runs the workspace runs as its
-# own UID and the chown is a no-op.
+# The workspace needs no Linux capabilities — no child credential drop,
+# no chown, no unshare. Deployments run it with all capabilities dropped
+# (deploy/local/docker-compose.yml).
 USER root
 ENTRYPOINT ["/gagent"]
 CMD ["workspace"]

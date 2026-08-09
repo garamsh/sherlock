@@ -41,6 +41,7 @@ func TestResolveWorkspaceConfig_Defaults(t *testing.T) {
 	assert.Equal(t, defaultWorkspaceAddr, cfg.Addr)
 	assert.Equal(t, defaultWorkspace, cfg.Workspace)
 	assert.Equal(t, defaultExecUID, cfg.ExecUID)
+	assert.Equal(t, defaultExecTimeout, cfg.ExecTimeout)
 }
 
 func TestResolveWorkspaceConfig_ConfigFile(t *testing.T) {
@@ -126,6 +127,10 @@ func TestServeWorkspace_ContractEndToEnd(t *testing.T) {
 	cfg := WorkspaceConfig{
 		Addr:      addr,
 		Workspace: filepath.Join(t.TempDir(), "workspace"),
+		// Single-account mode: exec children run as the test process's
+		// own UID, so no privilege is needed.
+		ExecUID:     os.Geteuid(),
+		ExecTimeout: 30 * time.Second,
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -164,6 +169,14 @@ func TestServeWorkspace_ContractEndToEnd(t *testing.T) {
 	require.Len(t, listResp.Entries, 1)
 	assert.Equal(t, "sub", listResp.Entries[0].Name)
 	assert.True(t, listResp.Entries[0].Dir)
+
+	// Exec crosses the same wire: the command runs in the workspace
+	// directory and sees the files the contract serves (ADR 0018).
+	execResp, err := client.Exec(ctxRPC, &workspace.ExecRequest{Command: "ls"})
+	require.NoError(t, err)
+	assert.Zero(t, execResp.GetExitCode())
+	assert.Contains(t, execResp.GetStdout(), "sub",
+		"exec children work in the workspace directory by default")
 }
 
 // TestServeWorkspace_NonLoopbackAddrFailsStartup pins the fail-closed

@@ -59,9 +59,9 @@ One pod per agent, two containers (ADR 0018): the agent container is the agent's
 | `internal/memory/` | Own the agent's long-term memory: the `memory.db` store, hybrid search, and the memory service behind the lifecycle hooks. | `memory.md` |
 | `internal/files/` | The workspace's filesystem backend: an FS rooted at the workspace directory, with the lexical confinement the gRPC server enforces. | `environment.md` |
 | `internal/workspace/` | The filesystem-only gRPC data plane: proto, generated stubs, server wrapping `internal/files.FS` for Read/Write/List (ADR 0018). No tool hosting, no process exec. | `environment.md` |
-| `internal/workspace/client/` | The typed workspace gRPC client wrapper tools import: one helper (`client.New(ctx, addr)`) that dials the listener and returns the typed `WorkspaceClient`. Tools use the gRPC client; the agent does not. | `environment.md` |
+| `internal/workspace/client/` | The typed workspace gRPC client wrapper — the boundary tools import: one helper (`client.New(ctx, addr)`) that dials the listener and returns the typed `WorkspaceClient`. The agent dials it once at startup to construct the tools; tools own the wire from there (ADR 0018). | `environment.md` |
 | `internal/message/` | Deliver agent-decided outbound messages to channels and peers (`message_send`). | `gateway.md` |
-| `internal/shell/` | The agent's process-execution boundary (ADR 0018): a production `Executor` (`fork+exec+setuid`) plus the typed `Request` / `Result` shape. Tools and the agent's own code paths that need to exec import this package and call `Executor.Run` directly — the model never sees exec as a tool. | `security.md` |
+| `internal/shell/` | The agent's process-execution boundary (ADR 0018): a production `Executor` (`fork+exec+setuid`) plus the typed `Request` / `Result` shape. ADR 0018 designates it the agent's native exec backend; no production code path imports it yet (wire-it-or-remove-it tracked in #264). | `security.md` |
 | `internal/tool/tooltest/` | Build-time schema/struct conformance guards shared by tool tests. | — |
 | `internal/tool/mocks/` | Generated mocks of the tool contract for consumer tests. | — |
 | `tools/files/` | The agent's files tool: a `tool.Tool` that reads, writes, and lists files through the workspace gRPC client. Imported at compile time by the agent. | `environment.md` |

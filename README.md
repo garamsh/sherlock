@@ -5,7 +5,7 @@ gagent is an autonomous agent platform written in Go. It runs AI agents that can
 ## Principles
 
 - **Two processes per agent: self and workspace.** The agent process holds the gateway (message ingress and the monitoring stream), the reasoning loop, long-term memory, the mouth (outbound messaging), and the tools (Go packages the agent imports at compile time). The workspace process is the agent's data plane: a filesystem-only gRPC server (Read, Write, List). Tools are agent-side Go packages — the plugin concept is dropped (ADR 0018).
-- **The workspace enforces permissions at the action site.** Agent-influenced file writes run under the workspace's own UID, and workspace ownership is kernel-enforced (ADR 0008, ADR 0010). Native process exec is the agent's own capability (ADR 0018) and lands with its first real caller; operator scope governs the trust posture of the agent process itself. The orchestration layer manages the pod boundary (network egress, mounts, lifecycle).
+- **The workspace enforces permissions at the action site.** Agent-influenced file writes run under the workspace's own UID, and workspace ownership is kernel-enforced (ADR 0008, ADR 0010). Native process exec is the agent's own capability (ADR 0018), surfaced to the model as the `shell_exec` tool: children drop to the configured exec UID and run in the shared workspace directory — the same real directory the workspace serves — so exec'd programs see the files the tools see. The orchestration layer manages the pod boundary (network egress, mounts, lifecycle).
 - **Memory is agent-managed, not just stored.** Memory is RAG-based, and the agent actively curates it through a per-turn writeback — keeping, correcting, and retracting — while the platform consolidates and evicts on thresholds (ADR 0011), like human memory rather than a plain store/search index.
 
 ## Who it is for
@@ -29,7 +29,7 @@ gagent agent --message "hello"            # runs one turn and exits
 gagent agent                             # or: serve the agent's gateway
 ```
 
-To try the platform in Docker instead (agent image distroless, workspace image debian-slim, local compose setup), see `deploy/local/`.
+To try the platform in Docker instead (agent and workspace images debian-slim, local compose setup), see `deploy/local/`.
 
 ### gagent agent
 
@@ -55,9 +55,9 @@ Serves the agent's workspace (ADR 0018) — a filesystem-only gRPC data plane ov
 gagent workspace
 ```
 
-- The workspace owns the workspace directory (`workspace` key, created on first use) under its own account; it spawns no children, so it needs no privilege drop and no extra capabilities.
+- The workspace owns the workspace directory (`workspace` key, created on first use) under its own account; it spawns no children. When privileged it chowns the directory to the agent's exec UID (`exec-uid` key), so files written through the gRPC contract and by the agent's exec'd children share one owner.
 - The listener carries no authentication in this phase, so it serves loopback binds only — a non-loopback `--addr` fails startup (ADR 0013, same posture as the gateway).
-- Its config file resolves in order: `--config <path>`, then `./workspace.yaml`, then the XDG config path (`~/.config/gagent/workspace.yaml` on Linux). Keys: `addr` (default `127.0.0.1:8081`), `workspace` (default `data/workspace`). There is no `tools:` config — the workspace is the data plane only.
+- Its config file resolves in order: `--config <path>`, then `./workspace.yaml`, then the XDG config path (`~/.config/gagent/workspace.yaml` on Linux). Keys: `addr` (default `127.0.0.1:8081`), `workspace` (default `data/workspace`), `exec-uid` (default `1001`). There is no `tools:` config — the workspace is the data plane only.
 
 ### Configuration
 
@@ -70,6 +70,9 @@ Agent keys (`gagent agent`; see `gagent.yaml` for an example):
 | `addr` | `--addr` | `127.0.0.1:8080` (gateway listen address; loopback-only unless `tls:` is set) |
 | `memory-path` | `--memory-path` | `data/memory.db` (the agent's SQLite memory file, created on first use) |
 | `workspace-addr` | `--workspace-addr` | `127.0.0.1:8081` (gRPC endpoint of the agent's workspace; the agent dials it once at startup and passes the client to the tools it imports) |
+| `exec-uid` | `--exec-uid` | `1001` (UID `shell_exec` children run as; single-account mode: set to the agent's own UID — any other unprivileged value fails closed with `agent_uid unavailable`) |
+| `exec-timeout` | `--exec-timeout` | `30s` (per-call ceiling for `shell_exec` commands) |
+| `workspace-path` | `--workspace-path` | `data/workspace` (shared directory `shell_exec` children work in — the same directory the workspace serves, at the same path) |
 | `model.provider` | — | `mock` (scripted, offline) or `openai` |
 | `model.base-url` | — | `https://api.openai.com/v1` (any OpenAI-compatible endpoint, e.g. Ollama/vLLM) |
 | `model.model` | — | `gpt-4o-mini` |
@@ -91,6 +94,7 @@ Workspace keys (`gagent workspace`; see `workspace.yaml` for an example):
 |---|---|---|
 | `addr` | `--addr` | `127.0.0.1:8081` (workspace gRPC listen address; loopback-only) |
 | `workspace` | `--workspace` | `data/workspace` (workspace directory, created on first use) |
+| `exec-uid` | `--exec-uid` | `1001` (the agent's exec UID; a privileged workspace chowns the workspace directory to it) |
 
 ### Agent ego
 
@@ -118,7 +122,7 @@ Tools are agent-side Go packages the agent imports at compile time (ADR 0018). T
 
 Example configs in the repository root: `gagent.yaml` (agent) and `workspace.yaml` (workspace).
 
-With the default `mock` provider the agent wires the scripted mock model, which answers the first message with a canned run of the full loop: it replies via `message_send` and writes the outcome back as a new episodic memory. The script covers the first message per process; a later message fails its turn with `script exhausted` (a `turn_failed` event) — the mock is a wiring demo, not a conversation partner. With `provider: openai` it runs against a real chat model; a missing API key env var fails at startup. To work on the codebase you need Go and GNU Make, and the standard checks are:
+With the default `mock` provider the agent wires the scripted mock model, which answers the first message with a canned run of the full loop: it computes through `shell_exec` in the shared workspace directory, replies via `message_send`, and writes the outcome back as a new episodic memory. The script covers the first message per process; a later message fails its turn with `script exhausted` (a `turn_failed` event) — the mock is a wiring demo, not a conversation partner. With `provider: openai` it runs against a real chat model; a missing API key env var fails at startup. To work on the codebase you need Go and GNU Make, and the standard checks are:
 
 ```sh
 make ci      # lint + format check + test + build (same as CI)

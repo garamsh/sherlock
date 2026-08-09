@@ -61,8 +61,10 @@ One pod per agent, two containers (ADR 0018): the agent container is the agent's
 | `internal/workspace/` | The filesystem-only gRPC data plane: proto, generated stubs, server wrapping `internal/files.FS` for Read/Write/List (ADR 0018). No tool hosting, no process exec. | `environment.md` |
 | `internal/workspace/client/` | The typed workspace gRPC client wrapper — the boundary tools import: one helper (`client.New(ctx, addr)`) that dials the listener and returns the typed `WorkspaceClient`. The agent dials it once at startup to construct the tools; tools own the wire from there (ADR 0018). | `environment.md` |
 | `internal/message/` | Deliver agent-decided outbound messages to channels and peers (`message_send`). | `gateway.md` |
+| `internal/shell/` | The agent's native exec backend (ADR 0008): fork+exec+setuid dropped to the exec UID, rlimits, scrubbed child environment, per-request network isolation, fail-closed `agent_uid unavailable`. | `environment.md` |
 | `internal/tool/tooltest/` | Build-time schema/struct conformance guards shared by tool tests. | — |
 | `internal/tool/mocks/` | Generated mocks of the tool contract for consumer tests. | — |
 | `tools/files/` | The agent's files tool: a `tool.Tool` that reads, writes, and lists files through the workspace gRPC client. Imported at compile time by the agent. | `environment.md` |
 | `tools/playwright/` | The agent's browser-automation tool: a Go package the agent imports at compile time. No subprocess wrapping, no script adapter (ADR 0018). | `environment.md` |
+| `tools/shell_exec/` | The agent's shell_exec tool: a `tool.Tool` over the native executor (`internal/shell`); commands run in the shared workspace directory (ADR 0008). Imported at compile time by the agent. | `environment.md` |
 | `tests/` | End-to-end scenarios wiring multiple modules together. | — |

@@ -52,16 +52,15 @@ type Request struct {
 	// NoNetwork runs the child in a fresh, empty network namespace
 	// (CLONE_NEWNET before the UID drop, or CLONE_NEWUSER|CLONE_NEWNET
 	// with a self UID mapping in single-account mode, ADR 0010): no
-	// loopback, no interfaces. shell_exec sets it; script tools leave
-	// it false — their network is the operator-sanctioned egress
-	// channel.
+	// loopback, no interfaces. Tools that need a network-isolated
+	// child set it; tools whose network is the operator-sanctioned
+	// egress channel leave it false.
 	NoNetwork bool
 	// Trusted names the child's trust class (ADR 0010): resource caps
-	// bind untrusted code — agent-supplied shell_exec commands carry
-	// the executor's rlimits — while operator-sanctioned script tools
-	// run without them, bounded by their per-call timeout and the
-	// deployment's container/pod limits. The script adapter sets it;
-	// the shell tool leaves it false.
+	// bind untrusted code — agent-supplied commands carry the
+	// executor's rlimits — while operator-sanctioned children run
+	// without them, bounded by their per-call timeout and the
+	// deployment's container/pod limits.
 	Trusted bool
 }
 

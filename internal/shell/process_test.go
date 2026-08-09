@@ -2,8 +2,6 @@ package shell_test
 
 import (
 	"context"
-	"encoding/json"
-	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -15,12 +13,11 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/garamsh/gagent/internal/shell"
-	"github.com/garamsh/gagent/internal/tool"
 )
 
 // fakeExecutor is the test double for the Executor interface. It records
-// the last request and returns the canned result and error, so the Tool
-// adapter can be exercised end-to-end without a real fork+exec.
+// the last request and returns the canned result and error so callers
+// can assert on the Request shape without a real fork+exec.
 type fakeExecutor struct {
 	req    shell.Request
 	result shell.Result
@@ -240,85 +237,16 @@ func TestProcessExecutor_RequestEnvAppliesOnTop(t *testing.T) {
 	assert.Equal(t, "from-request", res.Stdout)
 }
 
-func TestTool_InvalidInputRejectedAtBoundary(t *testing.T) {
+// TestFakeExecutor_NoNetworkPassesThrough pins that the executor
+// honours the NoNetwork flag on the Request: tools that want a fresh,
+// empty network namespace for an untrusted child set it, and the
+// resulting namespace holds only loopback (ADR 0010). The Tool adapter
+// is gone (ADR 0018) but the executor's contract is what future tools
+// and the agent's own internal exec paths depend on.
+func TestFakeExecutor_NoNetworkPassesThrough(t *testing.T) {
 	exec := &fakeExecutor{}
-	toolImpl := shell.NewTool(exec)
-
-	tests := []struct {
-		name  string
-		input string
-	}{
-		{name: "missing command", input: `{}`},
-		{name: "empty command", input: `{"command":""}`},
-		{name: "wrong field type", input: `{"command":42}`},
-		{name: "additional field", input: `{"command":"ls","mode":"fast"}`},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			_, err := tool.Invoke(context.Background(), toolImpl, json.RawMessage(tt.input))
-			require.Error(t, err)
-			assert.ErrorIs(t, err, tool.ErrValidation)
-			assert.Empty(t, exec.req.Command, "the executor must not run on invalid input")
-		})
-	}
-}
-
-func TestTool_DispatchesToExecutorAndMarshalsResult(t *testing.T) {
-	exec := &fakeExecutor{result: shell.Result{
-		Stdout:   "hi\n",
-		Stderr:   "",
-		ExitCode: 0,
-	}}
-	toolImpl := shell.NewTool(exec).WithDefaultTimeout(5 * time.Second)
-
-	out, err := tool.Invoke(context.Background(), toolImpl,
-		json.RawMessage(`{"command":"echo hi","timeout_seconds":5}`))
+	_, err := exec.Run(context.Background(), shell.Request{Command: "echo", NoNetwork: true})
 	require.NoError(t, err)
-
-	assert.Equal(t, "echo hi", exec.req.Command, "command passes through unchanged")
-	assert.Equal(t, 5*time.Second, exec.req.Timeout,
-		"timeout_seconds overrides the tool default")
 	assert.True(t, exec.req.NoNetwork,
-		"shell_exec children always run in a fresh network namespace (ADR 0010)")
-	assert.JSONEq(t, `{"stdout":"hi\n","stderr":"","exit_code":0,"timed_out":false}`, string(out))
-}
-
-func TestTool_PassesWorkspaceWorkdirToExecutor(t *testing.T) {
-	exec := &fakeExecutor{}
-	toolImpl := shell.NewTool(exec).WithWorkdir("/env/workspace")
-
-	_, err := tool.Invoke(context.Background(), toolImpl,
-		json.RawMessage(`{"command":"ls"}`))
-
-	require.NoError(t, err)
-	assert.Equal(t, "/env/workspace", exec.req.Workdir,
-		"the tool runs every command in the wired working directory")
-}
-
-func TestTool_TimeoutSurfacesTimedOutResult(t *testing.T) {
-	exec := &fakeExecutor{
-		result: shell.Result{Stdout: "partial output\n", TimedOut: true},
-		err:    shell.ErrTimedOut,
-	}
-	toolImpl := shell.NewTool(exec)
-
-	out, err := tool.Invoke(context.Background(), toolImpl,
-		json.RawMessage(`{"command":"sleep 60","timeout_seconds":2}`))
-
-	require.NoError(t, err, "a timeout is a normal outcome per ADR 0008, not a tool failure")
-	assert.JSONEq(t,
-		`{"stdout":"partial output\n","stderr":"","exit_code":0,"timed_out":true}`,
-		string(out))
-}
-
-func TestTool_ExecutorErrorSurfacesAsExecutionError(t *testing.T) {
-	exec := &fakeExecutor{err: errors.New("boom")}
-	toolImpl := shell.NewTool(exec)
-
-	_, err := tool.Invoke(context.Background(), toolImpl,
-		json.RawMessage(`{"command":"echo hi"}`))
-
-	require.Error(t, err)
-	assert.ErrorIs(t, err, tool.ErrExecution)
-	assert.ErrorContains(t, err, "boom")
+		"the executor carries the caller's NoNetwork flag")
 }

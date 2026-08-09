@@ -14,12 +14,11 @@ import (
 // processes cannot read its /proc/<pid>/environ or attach to it
 // (single-account secret custody, ADR 0003): /proc/pid/environ shows the
 // exec-time environment regardless of any later os.Unsetenv, so
-// dumpability is the mechanism — a secret the sidecar carries in its
-// environment never reaches a same-account shell_exec child through
-// /proc. The executor compensates for the one side effect: a
-// non-dumpable process cannot write the uid/gid maps a user-namespace
-// child needs, so the userns spawn lifts the flag for the fork (see
-// startUsernsChild).
+// dumpability is the mechanism — a secret the agent carries in its
+// environment never reaches a same-account child through /proc. The
+// executor compensates for the one side effect: a non-dumpable process
+// cannot write the uid/gid maps a user-namespace child needs, so the
+// userns spawn lifts the flag for the fork (see startUsernsChild).
 func ProtectEnviron() error {
 	if err := unix.Prctl(unix.PR_SET_DUMPABLE, 0, 0, 0, 0); err != nil {
 		return fmt.Errorf("prctl(PR_SET_DUMPABLE, 0): %w", err)

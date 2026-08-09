@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"syscall"
 	"testing"
 	"time"
@@ -20,15 +21,24 @@ const binaryAgentID = "e2e-bin"
 // TestEndToEnd_BinaryMVPScenario drives the canned MVP scenario
 // against the built gagent binary run as two processes — the workspace
 // serving the filesystem gRPC contract and the agent importing tools
-// at compile time (ADR 0018). The mock model uses the tools the agent
-// hosts (no shell_exec): message_send plus a writeback block.
+// at compile time (ADR 0018). The mock model computes through
+// shell_exec in the shared workspace directory, replies through
+// message_send, and closes with a writeback block.
 func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
 	binary := buildGagentBinary(t)
 	root := t.TempDir()
 
+	// The shared workspace directory: the workspace serves it over
+	// gRPC and the agent's shell_exec children chdir into it, so the
+	// marker file is visible to both.
+	workspaceDir := filepath.Join(t.TempDir(), "workspace")
+	require.NoError(t, os.MkdirAll(workspaceDir, 0o755))
+	require.NoError(t, os.WriteFile(
+		filepath.Join(workspaceDir, "marker.txt"), []byte("from the workspace\n"), 0o644))
+
 	_, workspaceAddr, _ := startWorkspaceBinary(t, binary,
-		filepath.Join(t.TempDir(), "workspace"), emptyConfig(t, "workspace.yaml"))
-	cmd, baseURL, exited := startAgentBinary(t, binary, root, workspaceAddr)
+		workspaceDir, emptyConfig(t, "workspace.yaml"))
+	cmd, baseURL, exited := startAgentBinary(t, binary, root, workspaceAddr, workspaceDir)
 
 	runBinaryMVPScenario(t, baseURL, root, binaryAgentID)
 
@@ -47,9 +57,9 @@ func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
 }
 
 // runBinaryMVPScenario is the binary test's variant of
-// runMVPScenario. The canned loop drives the agent through
-// message_send (the only tool the mock model invokes) and a writeback
-// block.
+// runMVPScenario. The canned loop drives the agent through shell_exec
+// (computing in the shared workspace directory), message_send, and a
+// writeback block.
 func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	t.Helper()
 
@@ -60,8 +70,9 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
 	resp.Body.Close()
 
-	// Two-step scenario now: message_send, then the final writeback.
-	got := collectEvents(t, events, 5)
+	// Three-step scenario: shell_exec, message_send, then the final
+	// writeback — a writeback event follows every model response.
+	got := collectEvents(t, events, 7)
 	var kinds []string
 	for _, e := range got {
 		kinds = append(kinds, e["kind"].(string))
@@ -69,13 +80,21 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	assert.Equal(t, []string{
 		"turn_started",
 		"writeback", "tool_call",
+		"writeback", "tool_call",
 		"writeback", "turn_finished",
 	}, kinds)
 	assert.Contains(t, got[0]["task"], "] unknown: "+e2eQuestion,
 		"the turn input renders the message with its ID and sender (ADR 0016)")
 
-	assert.Equal(t, "message_send", got[2]["tool_name"])
+	assert.Equal(t, "shell_exec", got[2]["tool_name"])
 	assert.NotContains(t, got[2], "tool_failed")
+	assert.Contains(t, got[2]["tool_result"], "marker.txt",
+		"the exec'd command sees the files the workspace serves")
+	assert.Contains(t, got[2]["tool_result"], "42",
+		"the canned run computes through the shell")
+
+	assert.Equal(t, "message_send", got[4]["tool_name"])
+	assert.NotContains(t, got[4], "tool_failed")
 
 	require.Eventually(t, func() bool {
 		return len(outboxMessages(t, root)) == 1
@@ -89,8 +108,9 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 
 // TestEndToEnd_OneShotAgentTurnAgainstWorkspace runs "gagent agent
 // --message" against a running workspace: the one-shot mode uses the
-// same compile-time tool set, runs the canned turn — message_send
-// plus a writeback block — prints the reply to stdout, and exits.
+// same compile-time tool set, runs the canned turn — shell_exec,
+// message_send, plus a writeback block — prints the reply to stdout,
+// and exits.
 func TestEndToEnd_OneShotAgentTurnAgainstWorkspace(t *testing.T) {
 	binary := buildGagentBinary(t)
 	root := t.TempDir()
@@ -98,11 +118,15 @@ func TestEndToEnd_OneShotAgentTurnAgainstWorkspace(t *testing.T) {
 	_, workspaceAddr, _ := startWorkspaceBinary(t, binary,
 		filepath.Join(t.TempDir(), "workspace"), emptyConfig(t, "workspace.yaml"))
 
+	execWorkspace := filepath.Join(t.TempDir(), "exec-workspace")
+	require.NoError(t, os.MkdirAll(execWorkspace, 0o755))
 	cmd := exec.Command(binary, "agent",
 		"--config", emptyConfig(t, "gagent.yaml"),
 		"--agent-id", binaryAgentID,
 		"--memory-path", filepath.Join(root, "memory.db"),
 		"--workspace-addr", workspaceAddr,
+		"--exec-uid", strconv.Itoa(os.Geteuid()),
+		"--workspace-path", execWorkspace,
 		"--message", e2eQuestion)
 	out, err := cmd.CombinedOutput()
 	require.NoError(t, err, "one-shot agent turn must exit cleanly: %s", out)
@@ -137,11 +161,13 @@ func emptyConfig(t *testing.T, name string) string {
 // startAgentBinary starts "gagent agent" as a subprocess on a free
 // loopback port, dialing workspaceAddr as the agent's workspace gRPC
 // endpoint, with root holding the memory file and the outbox, and the
-// default mock model provider. It waits until the agent serves HTTP
-// and returns the process handle, the base URL, and a channel
-// receiving the process's exit result. Test cleanup kills the process
-// if it is still running.
-func startAgentBinary(t *testing.T, binary, root, workspaceAddr string) (*exec.Cmd, string, <-chan error) {
+// default mock model provider. The agent runs in single-account mode:
+// exec-uid is the test process's own UID, and workspacePath is the
+// shared directory shell_exec children chdir into. It waits until the
+// agent serves HTTP and returns the process handle, the base URL, and
+// a channel receiving the process's exit result. Test cleanup kills
+// the process if it is still running.
+func startAgentBinary(t *testing.T, binary, root, workspaceAddr, workspacePath string) (*exec.Cmd, string, <-chan error) {
 	t.Helper()
 
 	listen, err := net.Listen("tcp", "127.0.0.1:0")
@@ -160,7 +186,9 @@ func startAgentBinary(t *testing.T, binary, root, workspaceAddr string) (*exec.C
 		"--addr", addr,
 		"--agent-id", binaryAgentID,
 		"--memory-path", filepath.Join(root, "memory.db"),
-		"--workspace-addr", workspaceAddr)
+		"--workspace-addr", workspaceAddr,
+		"--exec-uid", strconv.Itoa(os.Geteuid()),
+		"--workspace-path", workspacePath)
 	cmd.Stdout = logFile
 	cmd.Stderr = logFile
 	require.NoError(t, cmd.Start())

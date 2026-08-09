@@ -105,7 +105,8 @@ func WithClock(clock func() time.Time) Option {
 	return func(s *service) { s.clock = clock }
 }
 
-// WithCapacity overrides DefaultCapacity.
+// WithCapacity overrides DefaultCapacity (tests; production keeps the
+// default).
 func WithCapacity(capacity int) Option {
 	return func(s *service) { s.capacity = capacity }
 }

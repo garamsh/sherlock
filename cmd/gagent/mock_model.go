@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 
 	"github.com/garamsh/gagent/internal/agent"
+	"github.com/garamsh/gagent/internal/message"
+	"github.com/garamsh/gagent/internal/shell"
 )
 
 // mockModel is the MVP placeholder model (ADR 0004): a canned script that
@@ -17,7 +19,7 @@ func mockModel(_ string) agent.Model {
 	return agent.NewScriptedModel(
 		agent.ScriptedStep{
 			ToolCalls: []agent.ToolCall{{
-				Name: "shell_exec",
+				Name: shell.ToolName,
 				Input: json.RawMessage(
 					`{"command":"echo 42"}`,
 				),
@@ -25,7 +27,7 @@ func mockModel(_ string) agent.Model {
 		},
 		agent.ScriptedStep{
 			ToolCalls: []agent.ToolCall{{
-				Name: "message_send",
+				Name: message.SendToolName,
 				Input: json.RawMessage(
 					`{"channel":"http","target":"sender","content":"42"}`,
 				),

@@ -22,7 +22,7 @@ func newModelFunc(cfg ModelConfig) (func(agentID string) agent.Model, error) {
 			return nil, fmt.Errorf("model provider %q: environment variable %s is not set or is empty",
 				cfg.Provider, cfg.APIKeyEnv)
 		}
-		// One stateless client shared by every environment's session.
+		// One stateless client for the agent's session.
 		model, err := openai.New(openai.Config{
 			BaseURL: cfg.BaseURL,
 			Model:   cfg.Model,

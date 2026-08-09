@@ -1,6 +1,6 @@
 # Platform images (ADR 0018): one build stage, two targets.
-#   docker build --target agent     — the agent's self (gateway, loop, tools, native exec)
-#   docker build --target workspace — the agent's data plane (filesystem gRPC)
+#   docker build --target agent     — the agent's self (gateway, loop, tools)
+#   docker build --target workspace — the agent's data plane (filesystem + exec gRPC)
 
 FROM golang:1.26 AS build
 WORKDIR /src
@@ -15,59 +15,59 @@ COPY . .
 RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/gagent ./cmd/gagent \
     && mkdir -p /out/data
 
-# Agent image: the agent's self — gateway, rolling session, memory,
-# mouth, the compile-time tools, and the native exec backend
-# (internal/shell, ADR 0008). shell_exec children are `sh -c`
-# sub-processes dropped to the exec UID, so the image needs a shell
-# and runs privileged enough to setuid (root by default; an
-# unprivileged agent runs single-account mode with exec-uid == its own
-# UID).
-FROM debian:12-slim AS agent
+# Agent image: the agent executes nothing — the workspace owns process
+# exec (ADR 0018) — so the agent runs no untrusted code and distroless
+# static stays correct. Serves the gateway, the rolling session, memory,
+# the mouth, and the tools the agent imports at compile time.
+FROM gcr.io/distroless/static-debian12:nonroot AS agent
 ARG REVISION=unknown
 LABEL org.opencontainers.image.title="gagent-agent" \
       org.opencontainers.image.source="https://github.com/garamsh/gagent" \
       org.opencontainers.image.revision="${REVISION}"
 
-# Hygiene strip (security.md: no setuid/setgid binaries at all).
-RUN find / -xdev -type f -perm /6000 -exec chmod a-s {} +
-
 COPY --from=build /out/gagent /gagent
-# Scratch space for the default data directory (memory, outbox); mount
-# the memory volume here.
-COPY --from=build /out/data /data
+# Writable data directory for the nonroot user (uid 65532); mount the
+# memory volume here.
+COPY --from=build --chown=65532:65532 /out/data /data
 
+USER nonroot
 # Config comes from GAGENT_* env vars or a mounted config file
 # (`--config <path>`); no config is baked in.
 ENTRYPOINT ["/gagent"]
 CMD ["agent"]
 
-# Workspace image: the agent's data plane — serves the filesystem-only
-# gRPC contract over loopback. Tools live in the agent and reach the
-# workspace through gRPC; the workspace hosts no tools, no process
-# executor, no plugin loader (ADR 0018).
+# Workspace image: the agent's data plane — serves the gRPC contract
+# (Read/Write/List/Exec) over loopback. Tools live in the agent and
+# reach the workspace through gRPC; the workspace hosts no tools and no
+# plugin loader (ADR 0018).
 #
-# Minimal glibc base. The workspace spawns no children: its filesystem
-# backend owns the data directory directly, so no privilege drop and no
-# extra user exist here. When run privileged it chowns the workspace
-# directory to the agent's exec UID (ADR 0008) — that needs CAP_CHOWN.
+# Minimal glibc base with a shell (Exec children are `sh -c`
+# sub-processes) and the privilege drop made real: a privileged
+# workspace chowns its data directory to the configured exec-uid at
+# startup and drops Exec children to it (ADR 0008).
 FROM debian:12-slim AS workspace
 ARG REVISION=unknown
 LABEL org.opencontainers.image.title="gagent-workspace" \
       org.opencontainers.image.source="https://github.com/garamsh/gagent" \
       org.opencontainers.image.revision="${REVISION}"
 
-# Hygiene strip (security.md: no setuid/setgid binaries at all).
-RUN find / -xdev -type f -perm /6000 -exec chmod a-s {} +
+# The unprivileged UID exec children drop to (ADR 0008). useradd comes
+# from the passwd package, which ships setuid helpers, so the hygiene
+# strip runs after it (security.md: no setuid/setgid binaries at all —
+# the privilege drop is the executor's job, not a suid helper's).
+RUN useradd --system --uid 1001 --no-create-home agent \
+    && find / -xdev -type f -perm /6000 -exec chmod a-s {} +
 
 COPY --from=build /out/gagent /gagent
 # Scratch space for the default workspace (data/workspace); mount the
 # workspace volume here.
 COPY --from=build /out/data /data
 
-# The workspace needs no Linux capabilities beyond CAP_CHOWN for the
-# privileged workspace-directory handover — no child credential drop,
-# no unshare. Deployments drop everything else
-# (deploy/local/docker-compose.yml).
+# Root with four capabilities (deploy/local/docker-compose.yml):
+# SETUID/SETGID for the child credential drop, CHOWN for the workspace
+# directory handover, SYS_ADMIN for the netns unshare (ADR 0010). On
+# single-account runs the workspace runs as its own UID and the drop is
+# a no-op.
 USER root
 ENTRYPOINT ["/gagent"]
 CMD ["workspace"]

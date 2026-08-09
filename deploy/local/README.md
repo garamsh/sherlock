@@ -10,7 +10,7 @@ One variable must be exported before `docker compose up`:
 |---|---|---|
 | `GAGENT_DATA_DIR` | absolute host path for agent data | bind-mounted into both containers at the same absolute path; holds `memory.db`, `outbox/`, and `workspace/` |
 
-- `GAGENT_DATA_DIR`: any absolute host path; the agent container runs as root (its shell_exec children drop to uid 1001) and the workspace container chowns `workspace/` to the same uid, so the path must allow both. On Docker Desktop it must sit under a shared path (the project directory works).
+- `GAGENT_DATA_DIR`: any absolute host path; the workspace container runs its Exec children as uid 1001 (and chowns `workspace/` to the same uid), so the path must allow both containers. On Docker Desktop it must sit under a shared path (the project directory works).
 
 ## Certificates
 
@@ -51,7 +51,7 @@ curl --cacert tls/ca.pem --cert tls/client.pem --key tls/client-key.pem \
 
 A client without a certificate — or with one from a different CA — is rejected at the TLS handshake.
 
-The sample `gagent.yaml` uses the mock model provider, so the agent replies without any API key. The mock script drives a canned run of the full loop (`shell_exec` → `message_send` → write back); the SSE stream shows the resulting tool calls. The agent imports the tools it hosts at compile time (`tools/files`, `tools/playwright`, `tools/shell_exec`); the workspace serves the filesystem-only gRPC data plane, and the agent's files tool calls it over the shared network namespace's loopback. The agent's shell_exec children run in the shared workspace directory (`$GAGENT_DATA_DIR/workspace`, the same path in both containers) dropped to uid 1001 in a fresh network namespace; the workspace container drops all capabilities except CAP_CHOWN so it can hand that directory to the same uid (see `docker-compose.yml`). Agent replies land in `$GAGENT_DATA_DIR/outbox/`; memory persists in `$GAGENT_DATA_DIR/memory.db` across restarts.
+The sample `gagent.yaml` uses the mock model provider, so the agent replies without any API key. The mock script drives a canned run of the full loop (`shell_exec` → `message_send` → write back); the SSE stream shows the resulting tool calls. The agent imports the tools it hosts at compile time (`tools/files`, `tools/playwright`, `tools/shell_exec`) and they call the workspace over the shared network namespace's loopback; the workspace serves the gRPC data plane — files and exec — so the agent itself executes nothing. shell_exec crosses the Exec RPC: the workspace runs the command in its own directory (`$GAGENT_DATA_DIR/workspace`), dropped to uid 1001 in a fresh network namespace, with exactly the capabilities the executor needs (SETUID, SETGID, CHOWN, SYS_ADMIN — see `docker-compose.yml`). Agent replies land in `$GAGENT_DATA_DIR/outbox/`; memory persists in `$GAGENT_DATA_DIR/memory.db` across restarts.
 
 ## Cleanup
 

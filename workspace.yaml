@@ -1,9 +1,11 @@
-# Example workspace config. The workspace serves the filesystem-only
-# gRPC data plane (Read/Write/List) — it does not host tools or run
-# processes (ADR 0018). Tools are agent-side Go packages the agent
-# imports at compile time.
+# Example workspace config. The workspace is the computer (ADR 0018):
+# it serves the filesystem (Read/Write/List) and runs agent-influenced
+# processes (Exec) in the workspace directory. It does not host tools —
+# tools are agent-side Go packages the agent imports at compile time,
+# and the agent's shell_exec tool calls the Exec RPC.
 # The workspace listener is unauthenticated in this phase and serves
 # loopback binds only; a non-loopback addr fails startup.
 addr: "127.0.0.1:8081"
 workspace: data/workspace
-# exec-uid: 1001    # default; a privileged workspace chowns the workspace directory to the agent's exec UID
+# exec-uid: 1001      # default; UID exec children run as (single-account mode: the workspace's own UID)
+# exec-timeout: 30s   # default; per-call ceiling for Exec commands

@@ -1,6 +1,6 @@
 # Local deployment (testing only)
 
-Run the gagent platform in Docker — two services per the pod shape (ADR 0018): the `agent` service serves the gateway, and the `sidecar` service shares the agent's network namespace (`network_mode: service:agent`) so the unauthenticated contract listener stays on loopback. **Local testing only, on a trusted host.** The published port reaches beyond the container's loopback, so the gateway requires mTLS (ADR 0013): it serves HTTPS and verifies client certificates against a throwaway CA you generate below.
+Run the gagent platform in Docker — two services per the pod shape (ADR 0018): the `agent` service serves the gateway, and the `workspace` service shares the agent's network namespace (`network_mode: service:agent`) so the unauthenticated gRPC listener stays on loopback. **Local testing only, on a trusted host.** The published port reaches beyond the container's loopback, so the gateway requires mTLS (ADR 0013): it serves HTTPS and verifies client certificates against a throwaway CA you generate below.
 
 ## Requirements
 
@@ -51,7 +51,7 @@ curl --cacert tls/ca.pem --cert tls/client.pem --key tls/client-key.pem \
 
 A client without a certificate — or with one from a different CA — is rejected at the TLS handshake.
 
-The sample `gagent.yaml` uses the mock model provider, so the agent replies without any API key. The mock script drives a canned run of the full loop (discovered `shell_exec` → `message_send` → write back); the SSE stream shows the resulting tool calls. The agent discovers the sidecar's tools at startup over the shared network namespace's loopback. The sidecar container runs with exactly the capabilities the executor needs (SETUID, SETGID, CHOWN, SYS_ADMIN — see `docker-compose.yml`), so the privilege drop is real: `shell_exec` succeeds and runs as the agent UID inside the sidecar (see `docs/architecture/environment.md`). Agent replies land in `$GAGENT_DATA_DIR/outbox/`; memory persists in `$GAGENT_DATA_DIR/memory.db` across restarts.
+The sample `gagent.yaml` uses the mock model provider, so the agent replies without any API key. The mock script drives a canned run of the full loop (`message_send` → write back); the SSE stream shows the resulting tool calls. The agent imports the tools it hosts at compile time (`tools/files`, `tools/playwright`); the workspace serves the filesystem-only gRPC data plane, and the agent's files tool calls it over the shared network namespace's loopback. The workspace container runs with exactly the capabilities it needs (SETUID, SETGID, CHOWN, SYS_ADMIN — see `docker-compose.yml`), so the workspace chown is real. Agent replies land in `$GAGENT_DATA_DIR/outbox/`; memory persists in `$GAGENT_DATA_DIR/memory.db` across restarts.
 
 ## Cleanup
 

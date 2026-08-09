@@ -8,18 +8,17 @@ import (
 
 // DefaultAgentUID is the default account the agent's shell runs under
 // after the platform drops privileges (ADR 0008, ADR 0010). A privileged
-// sidecar switches to it; an unprivileged sidecar runs children only when
-// the configured exec-uid equals its own euid (single-account mode) — the
-// platform binary must otherwise be installed setuid-root, or run under a
-// supervisor with the privilege to switch UID.
+// agent switches to it; an unprivileged agent runs children only when
+// the configured exec-uid equals its own euid (single-account mode) —
+// the platform binary must otherwise be installed setuid-root, or run
+// under a supervisor with the privilege to switch UID.
 const DefaultAgentUID = 1001
 
 // ErrAgentUIDUnavailable is returned by ProcessExecutor.Run when the
 // child cannot run as AgentUID: AgentUID differs from the euid and the
 // process lacks the privilege to switch (typically: not running as root
 // or setuid-root), or the host cannot provide the network isolation the
-// request needs. Per ADR 0008 the agent falls back to the three typed
-// tools in this case.
+// request needs.
 var ErrAgentUIDUnavailable = errors.New("shell: agent_uid unavailable")
 
 // ErrTimedOut is returned by ProcessExecutor.Run when the request

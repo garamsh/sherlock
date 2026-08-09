@@ -331,14 +331,17 @@ func (t stubTool) Call(context.Context, json.RawMessage) (json.RawMessage, error
 	return json.RawMessage(`{}`), nil
 }
 
-// TestFactory_RegistryHoldsMouthPlusDiscoveredTools pins ADR 0018: the
-// agent's registry carries no built-in computer tools — message_send (the
-// mouth, in-process) plus every discovered remote tool.
-func TestFactory_RegistryHoldsMouthPlusDiscoveredTools(t *testing.T) {
+// TestFactory_RegistryHoldsMouthPlusImportedTools pins ADR 0018: the
+// agent's registry carries the in-process mouth (message_send) plus
+// every tool the agent imports at compile time. There is no
+// runtime discovery and no built-in computer — the agent imports
+// tools as Go packages under tools/ and the factory accepts the
+// constructed list.
+func TestFactory_RegistryHoldsMouthPlusImportedTools(t *testing.T) {
 	factory := &gateway.Factory{
 		MemoryPath: memoryPath(t.TempDir()),
 		NewModel:   replyModel,
-		Tools:      []tool.Tool{stubTool{name: "shell_exec"}, stubTool{name: "files"}},
+		Tools:      []tool.Tool{stubTool{name: "playwright"}, stubTool{name: "files"}},
 	}
 	rt, err := factory.New(context.Background(), "env-1", nil)
 	require.NoError(t, err)
@@ -350,8 +353,8 @@ func TestFactory_RegistryHoldsMouthPlusDiscoveredTools(t *testing.T) {
 	for _, d := range rt.Registry.List() {
 		names = append(names, d.Name)
 	}
-	assert.Equal(t, []string{"files", "message_send", "shell_exec"}, names,
-		"the mouth plus the discovered tools join the registry in name-sorted order")
+	assert.Equal(t, []string{"files", "message_send", "playwright"}, names,
+		"the mouth plus the imported tools join the registry in name-sorted order")
 }
 
 // TestFactory_DiscoveredToolCollidingWithMouthFailsStartup pins the

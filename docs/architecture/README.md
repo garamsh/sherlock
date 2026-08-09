@@ -2,7 +2,7 @@
 
 Current architecture of the system and the decisions behind it. This file is the index; workers read it before touching code, the PM keeps it honest.
 
-One pod per agent, two containers (ADR 0018): the agent container is the agent's self (gateway, reasoning loop, memory, mouth, native process exec, tools); the sidecar container is the agent's workspace — the filesystem-only gRPC data plane. A tool is an agent-side Go package the agent imports at compile time; the plugin concept is dropped. The code ships one binary with two subcommands (`gagent agent`, `gagent sidecar`); deployment artifacts live at the repo-root `Dockerfile` (agent/sidecar targets) and `deploy/local/`.
+One pod per agent, two containers (ADR 0018): the agent container is the agent's self (gateway, reasoning loop, memory, mouth, native process exec, tools); the sidecar container is the agent's workspace — the filesystem-only gRPC data plane. Tools are agent-side Go packages the agent imports at compile time; the plugin concept is dropped. The code ships one binary with two subcommands (`gagent agent`, `gagent workspace`); deployment artifacts live at the repo-root `Dockerfile` (agent/workspace targets) and `deploy/local/`.
 
 ## Structure
 
@@ -21,8 +21,8 @@ One pod per agent, two containers (ADR 0018): the agent container is the agent's
 
 ### Responsibility documents
 
-- `environment.md` — the environment splits into workspace (filesystem-only gRPC, the data plane) and tools (agent-side Go packages): topology, execution, permissions
-- `agent.md` — the agent is the self: reasoning loop, organs, tool discovery, model access
+- `environment.md` — the environment splits into workspace (filesystem-only gRPC, the data plane) and tools (agent-side Go packages imported at compile time): topology, execution, permissions
+- `agent.md` — the agent is the self: reasoning loop, organs, compile-time tool imports, model access, native process exec
 - `memory.md` — long-term memory: the agent's organ — store, search, lifecycle
 - `gateway.md` — the agent's ears and eyes: ingress, outbound, monitoring
 - `security.md` — trust domains, secret custody, egress
@@ -52,17 +52,18 @@ One pod per agent, two containers (ADR 0018): the agent container is the agent's
 
 | Path | Responsibility | Topic file |
 |---|---|---|
-| `cmd/gagent/` | CLI entry point (`gagent agent`, `gagent sidecar`): resolve config and wire concrete implementations; nothing else. | — |
+| `cmd/gagent/` | CLI entry point (`gagent agent`, `gagent workspace`): resolve config and wire concrete implementations; nothing else. | — |
 | `internal/gateway/` | Accept normalized inbound messages, serialize the one agent's runs through a single queue, and publish the monitoring event stream. | `gateway.md` |
 | `internal/agent/` | Run the reasoning loop (frame, recall, act, writeback) for the agent's one rolling session. | `agent.md` |
-| `internal/tool/` | Define the Tool contract (name, description, input schema, output schema), the registry every tool joins, and the wire protocol that serves a registry over HTTP and calls it back (ADR 0018). | — |
+| `internal/tool/` | Define the Tool contract (name, description, input schema, output schema), the registry every tool joins, and the wire protocol that serves a registry over HTTP. Tools join the registry in-process; the wire protocol is for cross-process use when a tool's host needs to expose it remotely. | — |
 | `internal/memory/` | Own the agent's long-term memory: the `memory.db` store, hybrid search, and the memory service behind the lifecycle hooks. | `memory.md` |
-| `internal/files/` | Read and write files inside the sidecar's workspace. | `environment.md` |
+| `internal/files/` | The workspace's filesystem backend: an FS rooted at the workspace directory, with the lexical confinement the gRPC server enforces. | `environment.md` |
 | `internal/workspace/` | The filesystem-only gRPC data plane: proto, generated stubs, server wrapping `internal/files.FS` for Read/Write/List (ADR 0018). No tool hosting, no process exec. | `environment.md` |
+| `internal/workspace/client/` | The typed workspace gRPC client wrapper tools import: one helper (`client.New(ctx, addr)`) that dials the listener and returns the typed `WorkspaceClient`. Tools use the gRPC client; the agent does not. | `environment.md` |
 | `internal/message/` | Deliver agent-decided outbound messages to channels and peers (`message_send`). | `gateway.md` |
-| `internal/shell/` | Run tool child processes as sub-processes dropped to the agent UID — `shell_exec` in a fresh network namespace, script tools with network access (ADR 0010). | `security.md` |
-| `internal/tool/script/` | Universal subprocess adapter: run any executable as a tool through the shell executor (ADR 0010); owns the script-tool config declaration shape (ADR 0009). | `gateway.md` |
+| `internal/shell/` | The agent's process-execution boundary (ADR 0018): a production `Executor` (`fork+exec+setuid`) plus the typed `Request` / `Result` shape. Tools and the agent's own code paths that need to exec import this package and call `Executor.Run` directly — the model never sees exec as a tool. | `security.md` |
 | `internal/tool/tooltest/` | Build-time schema/struct conformance guards shared by tool tests. | — |
 | `internal/tool/mocks/` | Generated mocks of the tool contract for consumer tests. | — |
-| `tools/playwright/` | Example script tool (browser automation) registered via the sidecar config's `tools:` section. | `gateway.md` |
+| `tools/files/` | The agent's files tool: a `tool.Tool` that reads, writes, and lists files through the workspace gRPC client. Imported at compile time by the agent. | `environment.md` |
+| `tools/playwright/` | The agent's browser-automation tool: a Go package the agent imports at compile time. No subprocess wrapping, no script adapter (ADR 0018). | `environment.md` |
 | `tests/` | End-to-end scenarios wiring multiple modules together. | — |

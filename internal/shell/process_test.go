@@ -103,8 +103,8 @@ func requireUnprivileged(t *testing.T) {
 }
 
 // TestProcessExecutor_UntrustedChildCarriesDefaultCaps pins the ADR 0010
-// trust-class rule on the untrusted path: an agent-supplied shell_exec
-// child runs under the executor's resource caps.
+// trust-class rule on the untrusted path: an agent-supplied command
+// runs under the executor's resource caps.
 func TestProcessExecutor_UntrustedChildCarriesDefaultCaps(t *testing.T) {
 	requireUnprivileged(t)
 	exec := shell.NewProcessExecutor(os.Geteuid(), 5*time.Second)
@@ -183,7 +183,7 @@ func TestProcessExecutor_SingleAccountRunsAsOwnUID(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t,
 		fmt.Sprintf("%d:%d", os.Geteuid(), os.Getegid()), res.Stdout,
-		"the child runs as the sidecar's own account in single-account mode")
+		"the child runs as the agent's own account in single-account mode")
 	assert.Equal(t, 0, res.ExitCode)
 }
 
@@ -220,7 +220,7 @@ func TestProcessExecutor_ScrubsPlatformEnv(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.NotContains(t, res.Stdout, "GAGENT_TEST_PLATFORM_SECRET",
-		"platform variables must not reach shell_exec children (ADR 0003)")
+		"platform variables must not reach child processes (ADR 0003)")
 	assert.Contains(t, res.Stdout, "PATH=", "the minimal basics still reach the child")
 }
 

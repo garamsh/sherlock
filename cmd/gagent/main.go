@@ -1,9 +1,8 @@
 // Command gagent is the CLI entry point for one agent pod (ADR 0018):
 // "gagent agent" runs the agent's self — the HTTP gateway, the rolling
-// session, memory, and the mouth — discovering its workspace tools from
-// the configured tool servers, and "gagent workspace" serves the agent's
-// workspace — the filesystem-only gRPC data plane, shell_exec, and
-// script tools — over the tool contract. Settings come from flags,
+// session, memory, the mouth, and the tools the agent imports at
+// compile time — and "gagent workspace" serves the agent's workspace,
+// the filesystem-only gRPC data plane. Settings come from flags,
 // GAGENT_* environment variables, and gagent.yaml through viper.
 package main
 

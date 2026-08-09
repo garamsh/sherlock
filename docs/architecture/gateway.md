@@ -14,7 +14,7 @@ Governs the gateway: message ingress, outbound delivery, and monitoring. Rationa
 
 ## Current state
 
-`gagent agent` runs one agent per process: the agent ID is fixed at startup (`--agent-id`), the HTTP paths keep the `/agents/{agent-id}/` shape, and a request naming any other ID gets 404. `POST /agents/{agent-id}/messages` returns 202 with an ID (the sender envelope is the verified mTLS caller identity) and `GET /agents/{agent-id}/events` streams the agent's loop events as SSE. Callers authenticate with mTLS when a `tls:` config section is set; without it the gateway serves loopback only. Outbound delivery POSTs every `message_send` to the configured console endpoint over mTLS, falling back to the file outbox (`outbox/` next to the configured `memory-path`) on failure. `gagent agent --message` runs one turn against the same discovered tool set instead of serving.
+`gagent agent` runs one agent per process: the agent ID is fixed at startup (`--agent-id`), the HTTP paths keep the `/agents/{agent-id}/` shape, and a request naming any other ID gets 404. `POST /agents/{agent-id}/messages` returns 202 with an ID (the sender envelope is the verified mTLS caller identity) and `GET /agents/{agent-id}/events` streams the agent's loop events as SSE. Callers authenticate with mTLS when a `tls:` config section is set; without it the gateway serves loopback only. Outbound delivery POSTs every `message_send` to the configured console endpoint over mTLS, falling back to the file outbox (`outbox/` next to the configured `memory-path`) on failure. `gagent agent --message` runs one turn against the same compile-time tool set instead of serving.
 
 ## Open questions
 

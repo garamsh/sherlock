@@ -49,8 +49,8 @@ func DefaultRlimits() rlimits {
 // is the production Executor implementation.
 //
 // When AgentUID equals the process's euid the deployment declares a
-// single-account computer (ADR 0008): no UID switch is needed and no
-// privilege is required — children run as the sidecar's own account.
+// single-account run (ADR 0008): no UID switch is needed and no
+// privilege is required — children run as the agent's own account.
 //
 // The zero value is not usable; use NewProcessExecutor.
 type ProcessExecutor struct {
@@ -78,7 +78,7 @@ func NewProcessExecutor(agentUID int, defaultTimeout time.Duration) *ProcessExec
 		netNS:          netNSCapable(),
 	}
 	if !exec.netNS && os.Geteuid() == 0 {
-		slog.Warn("shell: CAP_SYS_ADMIN missing; shell_exec will report agent_uid unavailable",
+		slog.Warn("shell: CAP_SYS_ADMIN missing; netns-isolated children will report agent_uid unavailable",
 			"reason", "unshare(CLONE_NEWNET) requires CAP_SYS_ADMIN")
 	}
 	return exec

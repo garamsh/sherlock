@@ -1,8 +1,8 @@
 # Local testing only: trusted host, throwaway mTLS certs in ./tls.
 # Requires GAGENT_DATA_DIR; see README.md in this directory.
 # Two services, one pod shape (ADR 0018): the agent serves its gateway;
-# the sidecar shares the agent's network namespace so the unauthenticated
-# contract listener stays on loopback (#209).
+# the workspace shares the agent's network namespace so the
+# unauthenticated gRPC listener stays on loopback (#209).
 services:
   agent:
     build:
@@ -19,10 +19,10 @@ services:
       - ./gagent.yaml:/etc/gagent/config.yaml:ro
       - ./tls:/etc/gagent/tls:ro
     command: ["agent", "--config", "/etc/gagent/config.yaml", "--agent-id", "demo"]
-  sidecar:
+  workspace:
     build:
       context: ../..
-      target: sidecar
+      target: workspace
     network_mode: service:agent
     depends_on:
       - agent
@@ -35,4 +35,4 @@ services:
       GAGENT_WORKSPACE: "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}/workspace"
     volumes:
       - "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}:${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}"
-    command: ["sidecar"]
+    command: ["workspace"]

@@ -28,4 +28,4 @@ jobs:
       # Build-only smoke check of both platform images (ADR 0018);
       # nothing is pushed.
       - run: docker build --target agent --build-arg REVISION="$GITHUB_SHA" -t gagent-agent .
-      - run: docker build --target sidecar --build-arg REVISION="$GITHUB_SHA" -t gagent-sidecar .
+      - run: docker build --target workspace --build-arg REVISION="$GITHUB_SHA" -t gagent-workspace .

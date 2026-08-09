@@ -87,9 +87,8 @@ func TestContract_ToolSelectionGuidance(t *testing.T) {
 		tool     string
 		fragment string
 	}{
-		{"files", "read and write files in your workspace"},
+		{"files", "read, write, and list files in your workspace"},
 		{"message_send", "reply through message_send"},
-		{"shell_exec", "run a shell command on the workspace"},
 	}
 	for _, tc := range cases {
 		assert.Contains(t, agent.Contract, tc.fragment,
@@ -97,15 +96,15 @@ func TestContract_ToolSelectionGuidance(t *testing.T) {
 	}
 }
 
-// TestContract_ShellExecSingleStringCommand pins the QA #103 follow-on
-// for ADR 0008: the shell_exec `command` field is a single string
-// passed to sh -c, and the contract makes this explicit so the model
-// does not pass pre-split argument arrays.
-func TestContract_ShellExecSingleStringCommand(t *testing.T) {
-	assert.Contains(t, agent.Contract, "single string",
-		"the contract describes command as a single string")
-	assert.Contains(t, agent.Contract, "sh -c",
-		"the contract names the shell it is passed to")
+// TestContract_ProcessExecNotATool pins ADR 0018: process exec is the
+// agent's native capability, not a tool the model invokes. The
+// contract names it once so the model does not request it.
+func TestContract_ProcessExecNotATool(t *testing.T) {
+	contract := agent.Contract
+	assert.Contains(t, contract, "Process exec is not a tool",
+		"the contract tells the model process exec is not a tool")
+	assert.NotContains(t, contract, "shell_exec:",
+		"the contract does not advertise a shell_exec tool")
 }
 
 // TestContract_FailureRecoverySentence asserts the contract tells the
@@ -236,29 +235,28 @@ func TestDefaultEgo_BehaviorGuidance(t *testing.T) {
 // TestContract_ToolUnavailableFallbackSection pins the new "When a tool
 // is unavailable" section (issue #113, QA #108 follow-up). The four
 // previously-failing scenarios in QA #108 share a single cause: when
-// shell_exec returns an error, the model kept retrying different shell
-// commands instead of switching to typed tools. The contract must carry
-// the typed-tool alternative map and the "do not retry shell_exec after
-// shell_exec has already failed" rule.
+// shell_exec returned an error, the model kept retrying different
+// shell commands instead of switching to typed tools. With shell_exec
+// gone, the contract carries the typed-tool alternative map and the
+// "do not retry the same tool after it has already failed" rule.
 func TestContract_ToolUnavailableFallbackSection(t *testing.T) {
 	contract := agent.Contract
 	assert.Contains(t, contract, "## When a tool is unavailable",
-		"the contract carries the new fallback section header")
-	// The five typed-tool alternatives must each be named.
+		"the contract carries the fallback section header")
+	// The four typed-tool alternatives must each be named.
 	for _, frag := range []string{
 		"`files` (operation: list)",
 		"`files` (operation: read)",
 		"`files` (operation: write)",
 		"`message_send`",
-		"answer from context when simple",
 	} {
 		assert.Contains(t, contract, frag,
 			"fallback map carries %q", frag)
 	}
 	// The no-retry rule must be present.
 	assert.Contains(t, contract,
-		"Retrying `shell_exec` after `shell_exec` already failed is not",
-		"the contract tells the model not to retry shell_exec after a failure")
+		"Retrying a tool after it has already failed is not",
+		"the contract tells the model not to retry a tool after a failure")
 	// The section must sit between "Memory writeback" and "Replies and
 	// failures" so the model reads it in order.
 	mwIdx := strings.Index(contract, "## Memory writeback")

@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"net"
 	"os"
 	"path/filepath"
@@ -13,9 +12,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/shell"
-	"github.com/garamsh/gagent/internal/tool"
-	"github.com/garamsh/gagent/internal/tool/script"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+
+	"github.com/garamsh/gagent/internal/workspace"
 )
 
 // newTestWorkspaceCommand returns the workspace command with the shared
@@ -40,27 +40,13 @@ func TestResolveWorkspaceConfig_Defaults(t *testing.T) {
 
 	assert.Equal(t, defaultWorkspaceAddr, cfg.Addr)
 	assert.Equal(t, defaultWorkspace, cfg.Workspace)
-	assert.Equal(t, defaultExecTimeout, cfg.ExecTimeout)
-	assert.Equal(t, shell.DefaultAgentUID, cfg.ExecUID,
-		"the default exec-uid preserves the privileged-drop behavior")
-	assert.Empty(t, cfg.Tools)
 }
 
 func TestResolveWorkspaceConfig_ConfigFile(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
 	contents := "addr: \"127.0.0.1:9091\"\n" +
-		"workspace: /srv/workspace\n" +
-		"exec-timeout: 5s\n" +
-		"exec-uid: 1000\n" +
-		"tools:\n" +
-		"  - name: wordcount\n" +
-		"    description: Count words in a text.\n" +
-		"    input_schema: schemas/wordcount.input.json\n" +
-		"    output_schema: schemas/wordcount.output.json\n" +
-		"    exec:\n" +
-		"      command: [python3, tools/wordcount.py]\n" +
-		"      stdout_format: json\n"
+		"workspace: /srv/workspace\n"
 	require.NoError(t, os.WriteFile(filepath.Join(dir, "workspace.yaml"), []byte(contents), 0o600))
 
 	cfg, err := resolveWorkspaceConfig(newTestWorkspaceCommand(t))
@@ -68,11 +54,6 @@ func TestResolveWorkspaceConfig_ConfigFile(t *testing.T) {
 
 	assert.Equal(t, "127.0.0.1:9091", cfg.Addr)
 	assert.Equal(t, "/srv/workspace", cfg.Workspace)
-	assert.Equal(t, 5*time.Second, cfg.ExecTimeout)
-	assert.Equal(t, 1000, cfg.ExecUID)
-	require.Len(t, cfg.Tools, 1)
-	assert.Equal(t, "wordcount", cfg.Tools[0].Name)
-	assert.Equal(t, []string{"python3", "tools/wordcount.py"}, cfg.Tools[0].Exec.Command)
 }
 
 func TestResolveWorkspaceConfig_EnvOverridesFile(t *testing.T) {
@@ -133,100 +114,63 @@ func TestResolveWorkspaceConfig_ConfigFlag(t *testing.T) {
 }
 
 // TestServeWorkspace_ContractEndToEnd runs the workspace in-process and
-// drives it through the contract client: the registry lists files,
-// shell_exec, and the configured script tool, and the files tool
-// round-trips a write/read while rejecting a path that escapes the
-// workspace. Unprivileged runs report agent_uid unavailable from
-// shell_exec, the documented fail-closed mode.
+// drives it through the gRPC contract: the workspace exposes
+// Read/Write/List and rejects a path that escapes the workspace (ADR 0018).
 func TestServeWorkspace_ContractEndToEnd(t *testing.T) {
-	dir := t.TempDir()
-	schema := filepath.Join(dir, "schema.json")
-	require.NoError(t, os.WriteFile(schema, []byte(`{"type":"object"}`), 0o600))
-
 	listen, err := net.Listen("tcp", "127.0.0.1:0")
 	require.NoError(t, err)
 	addr := listen.Addr().String()
 	require.NoError(t, listen.Close())
 
 	cfg := WorkspaceConfig{
-		Addr:        addr,
-		Workspace:   filepath.Join(dir, "workspace"),
-		ExecTimeout: 5 * time.Second,
-		Tools: []script.Config{{
-			Name:         "echo",
-			Description:  "Echo the JSON input back.",
-			InputSchema:  schema,
-			OutputSchema: schema,
-			Exec:         script.ExecConfig{Command: []string{"cat"}},
-		}},
+		Addr:      addr,
+		Workspace: filepath.Join(t.TempDir(), "workspace"),
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
 	done := make(chan error, 1)
 	go func() { done <- serveWorkspace(ctx, cfg) }()
-	baseURL := "http://" + addr
-	require.Eventually(t, func() bool {
-		_, err := tool.Discover(context.Background(), baseURL)
-		return err == nil
-	}, 10*time.Second, 20*time.Millisecond, "the workspace must serve the contract")
+	t.Cleanup(func() {
+		cancel()
+		select {
+		case <-done:
+		case <-time.After(15 * time.Second):
+			t.Fatal("workspace did not shut down on context cancellation")
+		}
+	})
 
-	descs, err := tool.Discover(context.Background(), baseURL)
+	client, closeConn := dialWorkspace(t, addr)
+	t.Cleanup(closeConn)
+
+	ctxRPC, cancelRPC := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancelRPC()
+
+	_, err = client.Write(ctxRPC, &workspace.WriteRequest{Path: "sub/hello.txt", Content: []byte("hi")})
 	require.NoError(t, err)
-	names := make([]string, 0, len(descs))
-	byName := make(map[string]tool.Descriptor, len(descs))
-	for _, d := range descs {
-		names = append(names, d.Name)
-		byName[d.Name] = d
-	}
-	assert.Equal(t, []string{"echo", "files", "shell_exec"}, names)
-
-	filesTool := tool.NewRemoteTool(byName["files"], baseURL)
-	_, err = tool.Invoke(context.Background(), filesTool,
-		json.RawMessage(`{"operation":"write","path":"sub/hello.txt","content":"hi"}`))
+	resp, err := client.Read(ctxRPC, &workspace.ReadRequest{Path: "sub/hello.txt"})
 	require.NoError(t, err)
-	out, err := tool.Invoke(context.Background(), filesTool,
-		json.RawMessage(`{"operation":"read","path":"sub/hello.txt"}`))
+	assert.Equal(t, []byte("hi"), resp.Content)
+
+	// Confinement holds: a traversal is rejected (ADR 0005 — convenience
+	// confinement, not a trust boundary, but enforced everywhere).
+	_, err = client.Read(ctxRPC, &workspace.ReadRequest{Path: "../escape"})
+	require.Error(t, err, "an out-of-workspace path must be rejected")
+
+	listResp, err := client.List(ctxRPC, &workspace.ListRequest{Path: "."})
 	require.NoError(t, err)
-	assert.JSONEq(t, `{"content":"hi"}`, string(out))
-
-	_, err = tool.Invoke(context.Background(), filesTool,
-		json.RawMessage(`{"operation":"read","path":"../escape"}`))
-	require.Error(t, err)
-	assert.ErrorIs(t, err, tool.ErrExecution)
-	assert.Contains(t, err.Error(), "path escapes workspace",
-		"workspace confinement holds across the wire")
-
-	shellTool := tool.NewRemoteTool(byName["shell_exec"], baseURL)
-	out, err = tool.Invoke(context.Background(), shellTool,
-		json.RawMessage(`{"command":"echo hi"}`))
-	if err != nil {
-		// The wire carries the error kind, not the sentinel identity.
-		assert.ErrorIs(t, err, tool.ErrExecution)
-		assert.Contains(t, err.Error(), "agent_uid unavailable",
-			"an unprivileged workspace fails shell_exec closed")
-	} else {
-		assert.Contains(t, string(out), "hi")
-	}
-
-	cancel()
-	select {
-	case err := <-done:
-		require.NoError(t, err, "context cancellation must shut the workspace down cleanly")
-	case <-time.After(15 * time.Second):
-		t.Fatal("workspace did not shut down on context cancellation")
-	}
+	require.Len(t, listResp.Entries, 1)
+	assert.Equal(t, "sub", listResp.Entries[0].Name)
+	assert.True(t, listResp.Entries[0].Dir)
 }
 
 // TestServeWorkspace_NonLoopbackAddrFailsStartup pins the fail-closed
-// posture: the contract listener is unauthenticated in this phase, so a
+// posture: the gRPC listener is unauthenticated in this phase, so a
 // non-loopback bind is a remote shell into the workspace and fails
 // startup (ADR 0013).
 func TestServeWorkspace_NonLoopbackAddrFailsStartup(t *testing.T) {
-	dir := t.TempDir()
 	cfg := WorkspaceConfig{
-		Addr:        "0.0.0.0:8081",
-		Workspace:   filepath.Join(dir, "workspace"),
-		ExecTimeout: 5 * time.Second,
+		Addr:      "0.0.0.0:8081",
+		Workspace: filepath.Join(t.TempDir(), "workspace"),
 	}
 
 	err := serveWorkspace(context.Background(), cfg)
@@ -237,26 +181,13 @@ func TestServeWorkspace_NonLoopbackAddrFailsStartup(t *testing.T) {
 		"the startup error must state the reason")
 }
 
-func TestServeWorkspace_InvalidToolFailsStartup(t *testing.T) {
-	dir := t.TempDir()
-	schema := filepath.Join(dir, "schema.json")
-	require.NoError(t, os.WriteFile(schema, []byte(`{"type":"object"}`), 0o600))
-	cfg := WorkspaceConfig{
-		Addr:        "127.0.0.1:0",
-		Workspace:   filepath.Join(dir, "workspace"),
-		ExecTimeout: 5 * time.Second,
-		Tools: []script.Config{{
-			Name:         "files",
-			Description:  "Collides with the built-in files tool.",
-			InputSchema:  schema,
-			OutputSchema: schema,
-			Exec:         script.ExecConfig{Command: []string{"true"}},
-		}},
-	}
-
-	err := serveWorkspace(context.Background(), cfg)
-	require.ErrorIs(t, err, tool.ErrDuplicateTool,
-		"a script tool named after a served built-in must fail startup")
-	assert.Contains(t, err.Error(), `"files"`,
-		"the startup error must name the offending tool")
+// dialWorkspace builds a workspace gRPC client connected to addr. The
+// listener is loopback-only and unauthenticated, so a plaintext
+// connection is correct. The returned close function closes the
+// underlying connection.
+func dialWorkspace(t *testing.T, addr string) (workspace.WorkspaceClient, func()) {
+	t.Helper()
+	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	require.NoError(t, err)
+	return workspace.NewWorkspaceClient(conn), func() { _ = conn.Close() }
 }

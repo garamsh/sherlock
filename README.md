@@ -4,8 +4,8 @@ gagent is an autonomous agent platform written in Go. It runs AI agents that can
 
 ## Principles
 
-- **Two processes per agent: self and workspace.** The agent process holds the gateway (message ingress and the monitoring stream), the reasoning loop, long-term memory, the mouth (outbound messaging), native process exec (`os/exec`), and the tools (Go packages the agent imports at compile time). The sidecar process is the agent's workspace: a filesystem-only gRPC data plane (Read, Write, List). Tools are agent-side Go packages — the plugin concept is dropped (ADR 0018).
-- **The sidecar enforces permissions at the action site.** Agent-influenced file writes drop to the configured UID inside the sidecar, and workspace ownership is kernel-enforced (ADR 0008, ADR 0010). The agent process owns native process exec; operator scope governs the trust posture of the agent process itself. The orchestration layer manages the pod boundary (network egress, mounts, lifecycle).
+- **Two processes per agent: self and workspace.** The agent process holds the gateway (message ingress and the monitoring stream), the reasoning loop, long-term memory, the mouth (outbound messaging), native process exec (`os/exec`), and the tools (Go packages the agent imports at compile time). The workspace process is the agent's data plane: a filesystem-only gRPC server (Read, Write, List). Tools are agent-side Go packages — the plugin concept is dropped (ADR 0018).
+- **The workspace enforces permissions at the action site.** Agent-influenced file writes run under the workspace's own UID, and workspace ownership is kernel-enforced (ADR 0008, ADR 0010). The agent process owns native process exec; operator scope governs the trust posture of the agent process itself. The orchestration layer manages the pod boundary (network egress, mounts, lifecycle).
 - **Memory is agent-managed, not just stored.** Memory is RAG-based, and the agent actively curates it through a per-turn writeback — keeping, correcting, and retracting — while the platform consolidates and evicts on thresholds (ADR 0011), like human memory rather than a plain store/search index.
 
 ## Who it is for
@@ -14,22 +14,22 @@ Developers who want to build and operate autonomous agents on a minimal, explici
 
 ## Running
 
-One CLI binary, `gagent`, runs both processes of an agent pod (ADR 0018): the sidecar (the agent's workspace) and the agent (its self). Build or run it from source:
+One CLI binary, `gagent`, runs both processes of an agent pod (ADR 0018): the workspace and the agent. Build or run it from source:
 
 ```sh
 go run ./cmd/gagent <subcommand>   # or: go build -o gagent ./cmd/gagent
 ```
 
-The agent reaches the sidecar's workspace over the gRPC data plane, so start the sidecar first. With the default mock model this runs fully offline. The repository-root example configs are picked up automatically and must be owner-only first:
+The agent reaches the workspace over the gRPC data plane, so start the workspace first. With the default mock model this runs fully offline. The repository-root example configs are picked up automatically and must be owner-only first:
 
 ```sh
-chmod 0600 gagent.yaml sidecar.yaml     # config files must be owner-only
-gagent sidecar &                        # serves the workspace on 127.0.0.1:8081
-gagent agent --message "hello"          # runs one turn and exits
-gagent agent                            # or: serve the agent's gateway
+chmod 0600 gagent.yaml workspace.yaml     # config files must be owner-only
+gagent workspace &                        # serves the workspace on 127.0.0.1:8081
+gagent agent --message "hello"            # runs one turn and exits
+gagent agent                             # or: serve the agent's gateway
 ```
 
-To try the platform in Docker instead (agent image distroless, sidecar image debian-slim, local compose setup), see `deploy/local/`.
+To try the platform in Docker instead (agent image distroless, workspace image debian-slim, local compose setup), see `deploy/local/`.
 
 ### gagent agent
 
@@ -39,29 +39,29 @@ Runs the agent's self: the rolling session, memory, the mouth, and the HTTP gate
 - `GET /agents/{agent-id}/events` — server-sent events stream of the agent's loop (turn started, tool call, writeback, turn finished). Every run ends with exactly one terminal event — `turn_finished` on success, `turn_failed` with the error on failure.
 - Agent replies (`message_send`) land as JSON files in `outbox/` next to the `memory-path` file.
 
-With `--message` the agent runs one turn against the same discovered tool set and exits; outbound `message_send` content and the final response print to stdout (logs go to stderr):
+With `--message` the agent runs one turn against the same compile-time tool set and exits; outbound `message_send` content and the final response print to stdout (logs go to stderr):
 
 ```sh
 gagent agent --agent-id my-agent --message "hello"
 ```
 
-**Warning: an unauthenticated gateway is a remote shell into the environment.** The gateway authenticates callers with mTLS when the `tls:` config section is set (server certificate/key plus a client CA — callers must present a certificate from that CA; ADR 0013). Without `tls:` the gateway serves loopback binds only, and a non-loopback `--addr` fails startup. Certificate issuance and CA operation are operator scope; rotation is a restart with new files.
+**Warning: an unauthenticated gateway is a remote shell into the agent.** The gateway authenticates callers with mTLS when the `tls:` config section is set (server certificate/key plus a client CA — callers must present a certificate from that CA; ADR 0013). Without `tls:` the gateway serves loopback binds only, and a non-loopback `--addr` fails startup. Certificate issuance and CA operation are operator scope; rotation is a restart with new files.
 
-### gagent sidecar
+### gagent workspace
 
-Serves the agent's workspace (ADR 0018) — a filesystem-only gRPC data plane over loopback. The sidecar owns the workspace directory and the trust-domain UID drop for file writes; it holds no tools, no process executor, and no script-tool runtime.
+Serves the agent's workspace (ADR 0018) — a filesystem-only gRPC data plane over loopback. The workspace owns the workspace directory; it holds no tools, no process executor, and no plugin loader. The agent reaches it through the workspace gRPC client it dials from `--workspace-addr`.
 
 ```sh
-gagent sidecar
+gagent workspace
 ```
 
-- The sidecar owns the workspace directory (`workspace` key, created on first use). File writes drop to `exec-uid` — privileged runs chown the workspace to it; `exec-uid` set to the sidecar's own UID is single-account mode and needs no privilege; any other unprivileged `exec-uid` reports `agent_uid unavailable` (fail-closed).
+- The workspace owns the workspace directory (`workspace` key, created on first use). A privileged workspace chowns it to the configured `exec-uid`; an unprivileged workspace runs as its own account.
 - The listener carries no authentication in this phase, so it serves loopback binds only — a non-loopback `--addr` fails startup (ADR 0013, same posture as the gateway).
-- Its config file resolves in order: `--config <path>`, then `./sidecar.yaml`, then the XDG config path (`~/.config/gagent/sidecar.yaml` on Linux). Keys: `addr` (default `127.0.0.1:8081`), `workspace` (default `data/workspace`), and `exec-uid`. The tool-hosting keys (`exec-timeout`, `tools:`) are still accepted for now and will be removed when the sidecar's built-in tool set moves into the agent (follow-up refactor).
+- Its config file resolves in order: `--config <path>`, then `./workspace.yaml`, then the XDG config path (`~/.config/gagent/workspace.yaml` on Linux). Keys: `addr` (default `127.0.0.1:8081`), `workspace` (default `data/workspace`). There is no `tools:` config — the workspace is the data plane only.
 
 ### Configuration
 
-Settings resolve in order: **flags > environment variables > config file > defaults**. Environment variables use the `GAGENT_` prefix (`GAGENT_MEMORY_PATH`, `GAGENT_TOOL_SERVERS`, …). The agent's config file resolves in order: `--config <path>`, then `./gagent.yaml`, then the XDG config path (`~/.config/gagent/config.yaml` on Linux); the sidecar's resolves the same way with `sidecar.yaml`. A missing file is an error only when `--config` names it explicitly. A loaded config file must be owner-only (`0600` or `0400`); a group/other-readable file fails startup (docs/architecture/security.md).
+Settings resolve in order: **flags > environment variables > config file > defaults**. Environment variables use the `GAGENT_` prefix (`GAGENT_MEMORY_PATH`, `GAGENT_WORKSPACE_ADDR`, …). The agent's config file resolves in order: `--config <path>`, then `./gagent.yaml`, then the XDG config path (`~/.config/gagent/config.yaml` on Linux); the workspace's resolves the same way with `workspace.yaml`. A missing file is an error only when `--config` names it explicitly. A loaded config file must be owner-only (`0600` or `0400`); a group/other-readable file fails startup (docs/architecture/security.md).
 
 Agent keys (`gagent agent`; see `gagent.yaml` for an example):
 
@@ -69,7 +69,7 @@ Agent keys (`gagent agent`; see `gagent.yaml` for an example):
 |---|---|---|
 | `addr` | `--addr` | `127.0.0.1:8080` (gateway listen address; loopback-only unless `tls:` is set) |
 | `memory-path` | `--memory-path` | `data/memory.db` (the agent's SQLite memory file, created on first use) |
-| `tool-servers` | `--tool-servers` | `http://127.0.0.1:8081` (tool-contract endpoints the agent discovers remote tools from at startup; with bounded retries. A server that stays unreachable fails startup. Tools that live in the agent are imported at compile time and are not listed here.) |
+| `workspace-addr` | `--workspace-addr` | `127.0.0.1:8081` (gRPC endpoint of the agent's workspace; the agent dials it once at startup and passes the client to the tools it imports) |
 | `model.provider` | — | `mock` (scripted, offline) or `openai` |
 | `model.base-url` | — | `https://api.openai.com/v1` (any OpenAI-compatible endpoint, e.g. Ollama/vLLM) |
 | `model.model` | — | `gpt-4o-mini` |
@@ -85,15 +85,12 @@ Agent keys (`gagent agent`; see `gagent.yaml` for an example):
 | `tls.client-ca` | — | unset (CA bundle, PEM, that client certificates are verified against) |
 | `console.url` | — | unset (console endpoint every `message_send` is POSTed to over mTLS, reusing the `tls:` material; unset keeps the file outbox, which is also the delivery-failure fallback) |
 
-Sidecar keys (`gagent sidecar`; see `sidecar.yaml` for an example):
+Workspace keys (`gagent workspace`; see `workspace.yaml` for an example):
 
 | Key | Flag | Default |
 |---|---|---|
 | `addr` | `--addr` | `127.0.0.1:8081` (workspace gRPC listen address; loopback-only) |
 | `workspace` | `--workspace` | `data/workspace` (workspace directory, created on first use) |
-| `exec-uid` | `--exec-uid` | `1001` (account file writes run as; set to the sidecar's own UID for single-account mode) |
-| `exec-timeout` | `--exec-timeout` | `30s` (still accepted; removed when the sidecar stops hosting `shell_exec`) |
-| `tools:` | — | empty (still accepted for the tool-hosting HTTP listener; removed when the built-in tool set moves into the agent) |
 
 ### Agent ego
 
@@ -117,11 +114,11 @@ every destructive action before taking it.
 
 Tools are agent-side Go packages the agent imports at compile time (ADR 0018). To add a tool:
 
-- write a Go package implementing `tool.Tool` (`Name`, `Description`, `InputSchema`, `OutputSchema`, `Call`), and wire it into the agent's registry in `cmd/gagent/agent.go` (or a `tools/` package the agent imports). A tool that needs files uses the workspace gRPC client; a tool that needs an external API calls it directly. There is no runtime plugin loader and no `tools:` sidecar config section — the follow-up refactor moves the sidecar's built-in tool set into the agent and drops the script-tool mechanism.
+- write a Go package implementing `tool.Tool` (`Name`, `Description`, `InputSchema`, `OutputSchema`, `Call`), and wire it into the agent's registry in `cmd/gagent/agent.go` (or a `tools/` package the agent imports). A tool that needs files uses the workspace gRPC client (via `internal/workspace/client`); a tool that needs an external API calls it directly. There is no runtime plugin loader and no `tools:` workspace config — the workspace is the data plane only.
 
-Example configs in the repository root: `gagent.yaml` (agent) and `sidecar.yaml` (sidecar workspace).
+Example configs in the repository root: `gagent.yaml` (agent) and `workspace.yaml` (workspace).
 
-With the default `mock` provider the agent wires the scripted mock model, which answers the first message with a canned run of the full loop: it computes through a discovered tool, replies via `message_send`, and writes the outcome back as a new episodic memory. The script covers the first message per process; a later message fails its turn with `script exhausted` (a `turn_failed` event) — the mock is a wiring demo, not a conversation partner. With `provider: openai` it runs against a real chat model; a missing API key env var fails at startup. To work on the codebase you need Go and GNU Make, and the standard checks are:
+With the default `mock` provider the agent wires the scripted mock model, which answers the first message with a canned run of the full loop: it replies via `message_send` and writes the outcome back as a new episodic memory. The script covers the first message per process; a later message fails its turn with `script exhausted` (a `turn_failed` event) — the mock is a wiring demo, not a conversation partner. With `provider: openai` it runs against a real chat model; a missing API key env var fails at startup. To work on the codebase you need Go and GNU Make, and the standard checks are:
 
 ```sh
 make ci      # lint + format check + test + build (same as CI)

@@ -16,14 +16,18 @@ import (
 
 	"github.com/garamsh/gagent/internal/gateway"
 	"github.com/garamsh/gagent/internal/message"
+	"github.com/garamsh/gagent/internal/tool"
+	"github.com/garamsh/gagent/internal/workspace/client"
+	"github.com/garamsh/gagent/tools/files"
+	"github.com/garamsh/gagent/tools/playwright"
 )
 
 // newAgentCommand returns the "gagent agent" subcommand: it runs the
-// agent's self (ADR 0018) — the gateway, the rolling session, memory, and
-// the mouth — with every computer capability discovered from the
-// configured tool servers. With --message it runs one turn against the
-// same discovered tool set and exits; without it the agent serves its
-// HTTP gateway until an interrupt or SIGTERM.
+// agent's self (ADR 0018) — the gateway, the rolling session, memory,
+// the mouth, and the tools the agent imports at compile time. With
+// --message it runs one turn against the same tool set and exits;
+// without it the agent serves its HTTP gateway until an interrupt or
+// SIGTERM.
 func newAgentCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "agent",
@@ -61,12 +65,15 @@ func addAgentFlags(fs *pflag.FlagSet) {
 	fs.String("message", "", "run one turn with this message and exit instead of serving")
 	fs.String("addr", defaultAddr, "HTTP listen address")
 	fs.String("memory-path", defaultMemoryPath, "SQLite memory file (created on first use)")
-	fs.StringSlice("tool-servers", []string{defaultToolServer},
-		"contract endpoints to discover computer tools from")
+	fs.String("workspace-addr", defaultWorkspaceAddr,
+		"gRPC endpoint of the agent's workspace (the data plane the files tool calls)")
 }
 
-// newAgentFactory resolves the model providers, discovers the configured
-// tool servers, and builds the runtime factory both agent modes share.
+// newAgentFactory resolves the model providers, dials the workspace
+// gRPC client, and builds the runtime factory both agent modes share.
+// The tool set is the compile-time registry the agent imports: tools
+// are agent-side Go packages (ADR 0018); the agent constructs them
+// here with the workspace client the workspace-addr flag dials.
 func newAgentFactory(ctx context.Context, cfg Config, ego string, sink message.Sink, logger *slog.Logger) (*gateway.Factory, error) {
 	newModel, err := newModelFunc(cfg.Model)
 	if err != nil {
@@ -80,12 +87,49 @@ func newAgentFactory(ctx context.Context, cfg Config, ego string, sink message.S
 	if err != nil {
 		return nil, err
 	}
-	tools, err := discoverTools(ctx, cfg.ToolServers, logger)
+	tools, err := buildTools(ctx, cfg.WorkspaceAddr, logger)
 	if err != nil {
 		return nil, err
 	}
 	return newFactory(cfg, newModel, embedder, summarizer, ego, sink, tools)
 }
+
+// buildTools dials the workspace gRPC client and constructs the
+// compile-time tools the agent hosts (ADR 0018): files (the workspace
+// client) and playwright. The agent loop never imports
+// internal/workspace directly — it goes through tools, the boundary
+// the issue specified.
+func buildTools(ctx context.Context, workspaceAddr string, logger *slog.Logger) ([]tool.Tool, error) {
+	ws, closeFn, err := client.New(ctx, workspaceAddr)
+	if err != nil {
+		return nil, fmt.Errorf("dial workspace %q: %w", workspaceAddr, err)
+	}
+	// The agent process owns the connection: register its close with
+	// a release hook on the runtime once we have one. For now, log
+	// on shutdown so a leaked dial surfaces during tests.
+	if logger != nil {
+		original := closeFn
+		closeFn = func() error {
+			err := original()
+			if err != nil {
+				logger.Warn("workspace client close failed", "error", err)
+			}
+			return err
+		}
+	}
+	// Pin the closeFn for the process lifetime; the agent reuses one
+	// connection across the lifetime of a turn.
+	processClosers = append(processClosers, closeFn)
+	return []tool.Tool{
+		files.New(ws),
+		playwright.New(),
+	}, nil
+}
+
+// processClosers are the resources that survive a single turn but
+// outlive any one runtime: the workspace gRPC connection. They run at
+// process exit.
+var processClosers []func() error
 
 // runAgentTurn builds the agent runtime with a stdout sink in place of
 // the file outbox, captures the message as a user-turn memory (ADR 0012),
@@ -107,6 +151,9 @@ func runAgentTurn(ctx context.Context, cfg Config, agentID, msg, ego string) err
 	defer func() {
 		if err := rt.Close(context.Background()); err != nil {
 			logger.Error("runtime close failed", "op", "shutdown", "error", err)
+		}
+		for _, close := range processClosers {
+			_ = close()
 		}
 	}()
 
@@ -144,6 +191,11 @@ func serveAgent(ctx context.Context, cfg Config, agentID, ego string) error {
 	if err != nil {
 		return err
 	}
+	defer func() {
+		for _, close := range processClosers {
+			_ = close()
+		}
+	}()
 
 	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)
 	defer stop()
@@ -166,7 +218,8 @@ func serveAgent(ctx context.Context, cfg Config, agentID, ego string) error {
 	if tlsConfig != nil {
 		logger.Info("agent listening",
 			"op", "startup", "addr", cfg.Addr, "agent_id", agentID,
-			"memory_path", cfg.MemoryPath, "auth", "mtls")
+			"memory_path", cfg.MemoryPath, "workspace_addr", cfg.WorkspaceAddr,
+			"auth", "mtls")
 		if err := srv.ListenAndServeTLS("", ""); !errors.Is(err, http.ErrServerClosed) {
 			logger.Error("https server failed", "op", "serve", "error", err)
 			return err
@@ -174,7 +227,7 @@ func serveAgent(ctx context.Context, cfg Config, agentID, ego string) error {
 	} else {
 		logger.Info("agent listening",
 			"op", "startup", "addr", cfg.Addr, "agent_id", agentID,
-			"memory_path", cfg.MemoryPath,
+			"memory_path", cfg.MemoryPath, "workspace_addr", cfg.WorkspaceAddr,
 			"warning", "no authentication: loopback binds only")
 		if err := srv.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
 			logger.Error("http server failed", "op", "serve", "error", err)

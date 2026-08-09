@@ -38,10 +38,10 @@ type Runtime struct {
 
 // Factory assembles the one agent's runtime from the agent-container
 // modules (ADR 0018): the SQLite memory store at MemoryPath, the mouth
-// (message_send, in-process), and every tool discovered from the
-// configured tool servers. The agent holds no built-in computer tools —
-// files, shell_exec, and script tools live in the sidecar and join the
-// registry as remote tools through the tool contract.
+// (message_send, in-process), and every tool the agent imports at
+// compile time. Tools are agent-side Go packages (tools/files,
+// tools/playwright, …); the factory accepts the constructed list —
+// there is no runtime plugin loader.
 type Factory struct {
 	// MemoryPath is the agent's SQLite memory file, created on first
 	// use.
@@ -68,8 +68,8 @@ type Factory struct {
 	// outbox as its delivery-failure fallback). Nil selects the file
 	// outbox itself.
 	NewSink func(agentID string, fallback *Outbox) message.Sink
-	// Tools lists the discovered remote tools registered alongside
-	// message_send. A name colliding with message_send fails New with
+	// Tools lists the imported tools registered alongside message_send.
+	// A name colliding with message_send fails New with
 	// tool.ErrDuplicateTool.
 	Tools []tool.Tool
 }

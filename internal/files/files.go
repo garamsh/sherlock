@@ -28,11 +28,12 @@ type FS struct {
 	fsuid int
 }
 
-// Open returns an FS rooted at root, creating the directory on first use.
-// A positive fsuid drops filesystem operations to that UID (Linux
-// setfsuid, privileged callers only) so files the tool creates share the
-// agent UID's ownership (ADR 0008, ADR 0010); fsuid <= 0 or an unprivileged caller
-// keeps the current UID.
+// Open returns an FS rooted at root, creating the directory on first
+// use. A positive fsuid drops filesystem operations to that UID (Linux
+// setfsuid, privileged callers only) so files created through the
+// workspace gRPC server share the agent UID's ownership (ADR 0008,
+// ADR 0010); fsuid <= 0 or an unprivileged caller keeps the current
+// UID.
 func Open(root string, fsuid int) (*FS, error) {
 	abs, err := filepath.Abs(root)
 	if err != nil {
@@ -50,9 +51,9 @@ func Open(root string, fsuid int) (*FS, error) {
 func (f *FS) Root() string { return f.root }
 
 // SecureWorkspace hands the workspace directory to the given trust-domain
-// UID (ADR 0008, ADR 0010): a privileged server (euid 0) chowns it to uid so files
-// written by the files tool (which drops to the same UID) and by shell
-// children share one owner. An unprivileged server owns the directory
+// UID (ADR 0008, ADR 0010): a privileged server (euid 0) chowns it to
+// uid so files written through the gRPC contract (which drop to the
+// same UID) share one owner. An unprivileged server owns the directory
 // itself and skips the chown.
 func SecureWorkspace(path string, uid int) error {
 	if os.Geteuid() != 0 {

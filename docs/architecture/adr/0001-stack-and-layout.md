@@ -11,7 +11,7 @@
 
 One Go module at the repository root. Components map to packages, not top-level folders:
 
-- Binaries live under `cmd/` — `cmd/gagent/` is one binary whose subcommands are the two pod processes (ADR 0018): `agent` and `sidecar`.
+- Binaries live under `cmd/` — `cmd/gagent/` is one binary whose subcommands are the two pod processes (ADR 0018): `agent` and `workspace`.
 - The reasoning loop → `internal/agent/`; ingress and monitoring → `internal/gateway/`; the tool contract → `internal/tool/`, with one package per tool implementation (`internal/memory/`, `internal/files/`, `internal/message/`, `internal/shell/`).
 - End-to-end tests that wire multiple domains live in `tests/` at the module root, per stack-go.md §7.
 

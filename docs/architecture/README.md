@@ -36,9 +36,9 @@ One pod per agent, two containers (ADR 0018): the agent container is the agent's
 - `0005` — tools own security; guard models are layers, not boundaries
 - `0006` — memory lifecycle: recall, act, writeback
 - `0007` — gateway I/O: asynchronous ingress, tool-based outbound, separate monitoring
-- `0008` — `shell_exec`: sub-process in the unprivileged UID
-- `0009` — script tools: the tool definition shape
-- `0010` — one execution boundary: agent-influenced code in the unprivileged UID
+- `0008` — agent-influenced sub-processes run dropped to the unprivileged UID
+- `0009` — the tool definition shape: descriptor plus Go implementation, compile-time import
+- `0010` — one execution boundary: agent-influenced effects under the unprivileged UID
 - `0011` — memory write-path unification: the writeback is the single write path
 - `0012` — platform auto-capture of inbound messages
 - `0013` — gateway authentication via mTLS

@@ -1,29 +1,29 @@
-# ADR 0010: One execution boundary — agent-influenced code in the unprivileged UID
+# ADR 0010: One execution boundary — agent-influenced effects under the unprivileged UID
 
 > Status: accepted
 > Date: 2026-08-02
 
 ## Context
 
-Two tool paths execute agent-influenced code: `shell_exec` (agent-supplied commands, ADR 0008) and script tools (operator-supplied executables whose stdin is agent-controlled JSON, ADR 0009). They must share one trust boundary, not drift into per-path privileges.
+Two paths carry agent-influenced effects: file writes through the workspace data plane (ADR 0018) and sub-processes spawned by the agent's native executor (ADR 0008). They must share one trust boundary, not drift into per-path privileges.
 
 ## Decision
 
-All agent-influenced code runs under the unprivileged agent UID; only operator-sanctioned tools reach the network.
+All agent-influenced effects land under the unprivileged UID; only operator-sanctioned tools reach the network.
 
-- `shell_exec` children have no network. Privileged path: a fresh, empty network namespace (unshare before the UID drop). Unprivileged path (single-account mode): a user namespace with the sidecar's UID mapped to itself owns the fresh, empty network namespace cloned with it — no capability required; a host without unprivileged user namespaces fails closed. In the pod topology the pod network layer is an additional mechanism (ADR 0018).
-- Script tools drop to the agent UID through the same executor. Their network is not namespaced: a script tool is an operator-sanctioned egress channel — the operator chooses a tool's reach by choosing the tool.
-- Resource caps bind untrusted code only. `shell_exec` children — agent-supplied, untrusted commands — carry the executor's rlimits (CPU, address space, file size, open files, NPROC in the privileged drop). Script-tool children are operator-chosen, config-reviewed executables and run without them: their bound is the per-call timeout and the deployment's container/pod resource policy (the orchestration layer owns that policy, ADR 0015/ADR 0018), not in-process rlimits. The trust class is explicit in the executor's request — the shell tool is untrusted, the script adapter is trusted — never inferred from the network axis.
-- When the platform can run the child as the configured account neither way, both paths report `agent_uid unavailable`; neither silently upgrades. A silent privilege upgrade is worse than an unavailable tool.
+- **File writes** run under the sidecar's own UID with kernel-enforced ownership (DAC), not filters — the data plane is the action site for files (ADR 0018).
+- **Executor children** carry the UID drop, scrubbed environment, and resource limits of ADR 0008. Network isolation is per-request (`NoNetwork`): a fresh, empty network namespace (a privileged unshare, or a user namespace with the agent's UID mapped to itself in single-account mode — no capability required; a host without unprivileged user namespaces fails closed). In the pod topology the pod network layer is an additional mechanism (ADR 0018).
+- **Resource caps bind untrusted code only.** Agent-influenced, untrusted children carry the executor's rlimits (CPU, address space, file size, open files, NPROC in the privileged drop). Operator-chosen tool packages run without them: their bound is the deployment's container/pod resource policy (the orchestration layer owns that policy, ADR 0015/ADR 0018), not in-process rlimits. The trust class is explicit in the executor's request, never inferred from the network axis.
+- When the platform cannot run a child as the configured account, the executor reports `agent_uid unavailable`; it never silently upgrades. A silent privilege upgrade is worse than an unavailable capability.
 
 ## Consequences
 
-- One trust domain for agent-influenced execution: the configured exec account, kernel DAC, no ambiguity about which account a tool runs as. In single-account mode that domain is the sidecar's own account — an explicit operator declaration, never an implicit fallback.
-- In the pod topology this boundary lives inside the sidecar, the agent's computer (ADR 0018).
-- The Playwright example keeps working under the agent UID: browser automation needs no privilege, and its network use is the operator-sanctioned egress channel.
+- One trust domain for agent-influenced effects: the configured account, kernel DAC, no ambiguity about which account an effect lands under. In single-account mode that domain is the process's own account — an explicit operator declaration, never an implicit fallback.
+- In the pod topology the file side of this boundary lives inside the sidecar and the exec side in the agent container (ADR 0018).
+- The Playwright example keeps working: browser automation is an operator-sanctioned egress channel — the operator chooses a tool's reach by choosing the tool.
 
 ## Rejected alternatives
 
-- **Network-namespace script tools too** — breaks the flagship use case (browser automation *is* network egress); the tool is the sanctioned channel, unlike the generic shell.
+- **Network-isolating operator-sanctioned tools too** — breaks the flagship use case (browser automation *is* network egress); the tool is the sanctioned channel, unlike agent-influenced exec.
 - **Per-tool `uid` option in the config** — an option nobody needs yet (`simplicity.md` §No speculative or dead generality); it arrives with its first use case.
 - **Silent privileged fallback** — a privilege upgrade the operator never sees; the hard-fail contract is the honest one.

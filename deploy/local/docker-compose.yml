@@ -10,10 +10,18 @@ services:
       target: agent
     ports:
       - "8080:8080"
+    # The agent runs as root so shell_exec children drop to the exec
+    # UID (ADR 0008); CAP_SYS_ADMIN puts them in a fresh, empty
+    # network namespace (ADR 0010).
+    cap_add: ["SYS_ADMIN"]
     environment:
       # The memory file sits at the same absolute path on host and
-      # container so it is valid from either side.
+      # container so it is valid from either side. The workspace path
+      # is the shared directory shell_exec children work in — the same
+      # path the workspace container serves.
       GAGENT_MEMORY_PATH: "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}/memory.db"
+      GAGENT_WORKSPACE_PATH: "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}/workspace"
+      GAGENT_EXEC_UID: "1001"
     volumes:
       - "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}:${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}"
       - ./gagent.yaml:/etc/gagent/config.yaml:ro
@@ -26,11 +34,13 @@ services:
     network_mode: service:agent
     depends_on:
       - agent
-    # The workspace spawns no children and chowns nothing, so it needs
-    # no capabilities at all — everything is dropped.
+    # The workspace spawns no children; CAP_CHOWN alone is kept so it
+    # can hand the workspace directory to the agent's exec UID (ADR 0008).
     cap_drop: ["ALL"]
+    cap_add: ["CHOWN"]
     environment:
       GAGENT_WORKSPACE: "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}/workspace"
+      GAGENT_EXEC_UID: "1001"
     volumes:
       - "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}:${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}"
     command: ["workspace"]

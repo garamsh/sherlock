@@ -33,6 +33,9 @@ func TestResolveConfig_Defaults(t *testing.T) {
 	assert.Equal(t, defaultAddr, cfg.Addr)
 	assert.Equal(t, defaultMemoryPath, cfg.MemoryPath)
 	assert.Equal(t, defaultWorkspaceAddr, cfg.WorkspaceAddr)
+	assert.Equal(t, defaultExecUID, cfg.ExecUID)
+	assert.Equal(t, defaultExecTimeout, cfg.ExecTimeout)
+	assert.Equal(t, defaultWorkspacePath, cfg.WorkspacePath)
 	assert.Equal(t, ModelConfig{
 		Provider:  defaultModelProvider,
 		BaseURL:   defaultModelBaseURL,

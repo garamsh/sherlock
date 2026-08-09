@@ -6,3 +6,4 @@
 # loopback binds only; a non-loopback addr fails startup.
 addr: "127.0.0.1:8081"
 workspace: data/workspace
+# exec-uid: 1001    # default; a privileged workspace chowns the workspace directory to the agent's exec UID

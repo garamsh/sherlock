@@ -5,11 +5,13 @@
 
 ## Context
 
-The agent needs general-purpose exec for real workloads: "run the project's test suite and report which tests fail", "find all files larger than a size and list them", "compute a value with awk / jq / sed instead of inline in the model", "run a one-off pipeline on a workspace file". Typed tools cover typed needs; native exec covers the rest. Process exec is the agent's own capability — not a tool, not a workspace call (ADR 0018) — so the trust boundary for agent-influenced sub-processes is decided here, once.
+The agent needs general-purpose exec for real workloads: "run the project's test suite and report which tests fail", "find all files larger than a size and list them", "compute a value with awk / jq / sed instead of inline in the model", "run a one-off pipeline on a workspace file". Typed tools cover typed needs; native exec covers the rest. Process exec is the agent's own capability — a native executor, not a workspace call (ADR 0018) — so the trust boundary for agent-influenced sub-processes is decided here, once.
 
 ## Decision
 
 When the agent's native executor (`internal/shell`, ADR 0018) spawns a child for agent-influenced work, the child runs dropped to the unprivileged agent UID. The file side of the same boundary stands inside the sidecar: workspace writes run under the sidecar's own UID, kernel-enforced (ADR 0018).
+
+The capability is native; the model-facing surface is a tool: `shell_exec` in `tools/shell_exec/` wraps the executor in the `tool.Tool` contract, so the model reaches exec through the same tool-call channel as every other capability. Exec children chdir into the shared workspace directory — the real directory the workspace serves over gRPC, at the same path in both processes — so an exec'd program sees the same files the files tool sees.
 
 Mechanism:
 
@@ -26,13 +28,14 @@ Threat model (honest):
 
 What native exec is NOT:
 
-- Not a tool — the model never sees exec as a tool call; the agent's own code paths invoke the executor directly (ADR 0018).
+- Not a workspace call — the executor runs in the agent process; the workspace contract stays filesystem-only (ADR 0018).
 - Not a general-purpose programming environment exposed to the model — typed tools first; exec is for what the typed surface does not cover.
 
 ## Consequences
 
-- The `internal/shell/` package holds the executor; the Executor interface is the only thing callers use, so added hardening (chroot, seccomp, more rlimits) is a swap, not a rewrite.
+- The `internal/shell/` package holds the executor; the Executor interface is the only thing callers use, so added hardening (chroot, seccomp, more rlimits) is a swap, not a rewrite. `tools/shell_exec/` is the only model-facing caller in the current build.
 - Two deployment modes run real workloads. The privileged drop: an agent process with UID-switch privilege (setuid-root binary, supervisor, or container capabilities) runs children as the configured agent UID. The single-account mode: the agent UID set to the process's own UID needs no privilege at all — the operator declares the account explicitly; there is no implicit fallback to the current UID. An unprivileged process with any other agent UID reports `agent_uid unavailable`.
+- Exec children share the workspace directory's ownership story: a privileged workspace chowns the workspace directory to the exec UID, so files written by tools through the gRPC contract and by exec'd children share one owner.
 
 ## Rejected alternatives
 

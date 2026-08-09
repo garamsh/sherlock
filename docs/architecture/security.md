@@ -5,8 +5,8 @@ Governs the security model: trust domains, secret custody, and egress. Rationale
 ## Current decisions
 
 - Two containers, two trust postures (ADR 0018):
-  - **Agent container** — holds the secrets (model and channel credentials) and the memory store. Its tools are its own Go packages; the one untrusted-code path is `shell_exec`, whose children drop to the unprivileged exec UID with a scrubbed environment, rlimits, and a fresh network namespace (ADR 0008, ADR 0010).
-  - **Sidecar (the workspace)** — serves the filesystem-only gRPC data plane. It enforces the agent's permissions at the action site with Linux users and modes; its service account holds only what its tools need.
+  - **Agent container** — holds the secrets (model and channel credentials) and the memory store. Its tools are its own Go packages; it executes nothing — the untrusted-code path lives in the workspace.
+  - **Sidecar (the workspace)** — serves the gRPC data plane (files and exec) and owns the one untrusted-code path: Exec children drop to the unprivileged exec UID with a scrubbed environment, rlimits, and a fresh network namespace (ADR 0008, ADR 0010). It enforces the agent's permissions at the action site with Linux users and modes.
 - Secrets never materialize in the execution domain; exposure is prevented by absence, not filtering (ADR 0003). Tool output schemas never include credential fields, and secrets never enter the conversation context.
 - Each tool's implementation enforces its own domain's policy; no separate security layer exists (ADR 0005). Guard models are defense-in-depth, never a boundary.
 - Image hygiene stays a security property: minimal images, no unneeded setuid binaries, dropped capabilities.
@@ -17,9 +17,9 @@ Governs the security model: trust domains, secret custody, and egress. Rationale
 
 ## Current state
 
-Two processes per agent today. The agent process (`gagent agent`) holds the secrets and the memory store, and its gateway enforces mTLS per ADR 0013 — the TLS key and both config files must be owner-only, and the gateway refuses a group/other-readable key or config file at startup. Its untrusted-code path is `shell_exec` over the native executor (`internal/shell`): children run dropped to the configured exec UID in the shared workspace directory, with a scrubbed environment, trust-class rlimits, a per-call timeout, and a fresh, empty network namespace (privileged unshare, or unprivileged userns+netns in single-account mode); a drop the platform cannot perform fails closed with `agent_uid unavailable` (ADR 0008, ADR 0010). In single-account mode the agent marks itself non-dumpable, so a same-account child cannot read its `/proc/<pid>/environ` (ADR 0003). The sidecar (`gagent workspace`) is the data plane: it spawns no children, and when privileged it chowns the workspace directory to the exec UID so tool writes and exec'd children share one owner.
+Two processes per agent today. The agent process (`gagent agent`) holds the secrets and the memory store, and its gateway enforces mTLS per ADR 0013 — the TLS key and both config files must be owner-only, and the gateway refuses a group/other-readable key or config file at startup. It executes nothing. The sidecar (`gagent workspace`) is the data plane and owns the untrusted-code path: Exec children run through its executor (`internal/workspace/shell`) dropped to the configured exec UID in the workspace directory, with a scrubbed environment, trust-class rlimits, a per-call timeout, and a fresh, empty network namespace (privileged unshare, or unprivileged userns+netns in single-account mode); a drop the platform cannot perform fails closed with `agent_uid unavailable` (ADR 0008, ADR 0010). In single-account mode the workspace marks itself non-dumpable, so a same-account child cannot read its `/proc/<pid>/environ` (ADR 0003). When privileged the workspace chowns the workspace directory to the exec UID, so tool writes and exec'd children share one owner.
 
-The sidecar's gRPC listener is unauthenticated in this phase, so it serves loopback binds only — the same fail-closed posture as the gateway (ADR 0013): an unauthenticated gRPC listener is a remote shell into the workspace, and a non-loopback addr fails startup.
+The sidecar's gRPC listener is unauthenticated in this phase, so it serves loopback binds only — the same fail-closed posture as the gateway (ADR 0013): an unauthenticated gRPC listener carrying Exec is a remote shell into the workspace, and a non-loopback addr fails startup.
 
 ## Rejected alternatives
 

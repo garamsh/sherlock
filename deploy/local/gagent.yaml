@@ -4,6 +4,8 @@
 # to the host-bind data directory (GAGENT_DATA_DIR); the workspace is the
 # filesystem-only gRPC data plane sharing this container's network
 # namespace, so the default loopback workspace-addr reaches it.
+# GAGENT_EXEC_UID and GAGENT_WORKSPACE_PATH (also compose-set) point
+# shell_exec at the shared workspace directory as uid 1001.
 # The container publishes the port beyond its own loopback, so the gateway
 # requires mTLS (ADR 0013): throwaway certs live in ./tls (see README.md).
 addr: ":8080"

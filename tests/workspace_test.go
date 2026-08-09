@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"syscall"
 	"testing"
 	"time"
@@ -86,10 +87,11 @@ func TestEndToEnd_WorkspaceNonLoopbackFailsStartup(t *testing.T) {
 }
 
 // startWorkspaceBinary starts "gagent workspace" as a subprocess on a
-// free loopback port with workspace as the workspace directory, waits
-// until it serves gRPC, and returns the process handle, the gRPC
-// address, and a channel receiving the process's exit result. Test
-// cleanup kills the process if it is still running.
+// free loopback port with workspace as the workspace directory and
+// exec-uid set to the test process's own UID (single-account mode,
+// ADR 0008), waits until it serves gRPC, and returns the process
+// handle, the gRPC address, and a channel receiving the process's exit
+// result. Test cleanup kills the process if it is still running.
 func startWorkspaceBinary(t *testing.T, binary, workspaceDir, configPath string) (*exec.Cmd, string, <-chan error) {
 	t.Helper()
 
@@ -104,8 +106,11 @@ func startWorkspaceBinary(t *testing.T, binary, workspaceDir, configPath string)
 	require.NoError(t, err)
 	t.Cleanup(func() { logFile.Close() })
 
+	// Single-account mode: exec children run as the test process's own
+	// UID, so the workspace needs no privilege to serve Exec.
 	cmd := exec.Command(binary, "workspace",
-		"--config", configPath, "--addr", addr, "--workspace", workspaceDir)
+		"--config", configPath, "--addr", addr, "--workspace", workspaceDir,
+		"--exec-uid", strconv.Itoa(os.Geteuid()))
 	cmd.Stdout = logFile
 	cmd.Stderr = logFile
 	require.NoError(t, cmd.Start())

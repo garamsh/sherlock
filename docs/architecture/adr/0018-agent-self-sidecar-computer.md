@@ -31,7 +31,7 @@ One pod per agent, holding two containers.
 - Caller authorization stays in the orchestration layer (ADR 0015); capability permissions are enforced at the sidecar, the action site.
 - The gateway serves its own pod's agent only; routing senders to agent pods is the orchestration layer's concern. Turn-drains-queue semantics (ADR 0016) are unchanged per agent.
 - The deployment grows from one binary plus a directory tree to a pod with two containers and two volumes (memory, workspace). Existing packages mostly survive, re-wired: `internal/agent` and `internal/memory` into the agent binary; `internal/shell` and `internal/files` into the sidecar; `internal/tool` into the contract definition plus its client and server.
-- The code migration and the deployment artifacts have landed: the repo-root `Dockerfile` (agent/sidecar targets), `deploy/local/`, and `deploy/k8s/`.
+- The code migration and the deployment artifacts have landed: the repo-root `Dockerfile` (agent/sidecar targets) and `deploy/local/`. Pod manifests and cluster policy are the infrastructure layer's concern, not shipped by this repo.
 
 ## Rejected alternatives
 

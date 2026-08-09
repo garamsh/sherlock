@@ -105,7 +105,7 @@ func serveWorkspace(ctx context.Context, cfg WorkspaceConfig) error {
 		return fmt.Errorf("addr %q is not a loopback bind: the gRPC listener is unauthenticated and serves loopback only until contract authentication exists (docs/architecture/security.md)", cfg.Addr)
 	}
 
-	workspaceFS, err := files.Open(cfg.Workspace, 0)
+	workspaceFS, err := files.Open(cfg.Workspace)
 	if err != nil {
 		return err
 	}

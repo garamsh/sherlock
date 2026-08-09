@@ -23,7 +23,7 @@ import (
 func newTestWorkspace(t *testing.T) (workspace.WorkspaceClient, *files.FS, func()) {
 	t.Helper()
 	root := t.TempDir()
-	fs, err := files.Open(root, 0)
+	fs, err := files.Open(root)
 	require.NoError(t, err)
 
 	listen, err := net.Listen("tcp", "127.0.0.1:0")

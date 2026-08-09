@@ -4,8 +4,8 @@ gagent is an autonomous agent platform written in Go. It runs AI agents that can
 
 ## Principles
 
-- **Two processes per agent: self and workspace.** The agent process holds the gateway (message ingress and the monitoring stream), the reasoning loop, long-term memory, the mouth (outbound messaging), native process exec (`os/exec`), and the tools (Go packages the agent imports at compile time). The workspace process is the agent's data plane: a filesystem-only gRPC server (Read, Write, List). Tools are agent-side Go packages — the plugin concept is dropped (ADR 0018).
-- **The workspace enforces permissions at the action site.** Agent-influenced file writes run under the workspace's own UID, and workspace ownership is kernel-enforced (ADR 0008, ADR 0010). The agent process owns native process exec; operator scope governs the trust posture of the agent process itself. The orchestration layer manages the pod boundary (network egress, mounts, lifecycle).
+- **Two processes per agent: self and workspace.** The agent process holds the gateway (message ingress and the monitoring stream), the reasoning loop, long-term memory, the mouth (outbound messaging), and the tools (Go packages the agent imports at compile time). The workspace process is the agent's data plane: a filesystem-only gRPC server (Read, Write, List). Tools are agent-side Go packages — the plugin concept is dropped (ADR 0018).
+- **The workspace enforces permissions at the action site.** Agent-influenced file writes run under the workspace's own UID, and workspace ownership is kernel-enforced (ADR 0008, ADR 0010). Native process exec is the agent's own capability (ADR 0018) and lands with its first real caller; operator scope governs the trust posture of the agent process itself. The orchestration layer manages the pod boundary (network egress, mounts, lifecycle).
 - **Memory is agent-managed, not just stored.** Memory is RAG-based, and the agent actively curates it through a per-turn writeback — keeping, correcting, and retracting — while the platform consolidates and evicts on thresholds (ADR 0011), like human memory rather than a plain store/search index.
 
 ## Who it is for

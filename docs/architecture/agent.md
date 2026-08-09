@@ -10,7 +10,7 @@ Governs the agent: the reasoning loop, memory, tool use, and model access. Ratio
   - **Memory** — the long-term organ; a layer, never a tool (governed by `memory.md`).
   - **Mouth** — outbound messaging; the agent's own speech to channels and peers.
   - **Hands** — the tool registry; the agent imports tool packages at compile time and constructs them at startup with the workspace gRPC client. There is no runtime discovery, no plugin loader, no remote tool registry (ADR 0018).
-- The agent executes code in its own process when a tool or the loop needs to run a command — process exec is the agent's native capability (`internal/shell`), not a tool the model invokes. The model never sees `shell_exec`.
+- Process exec is the agent's native capability, not a tool the model invokes (ADR 0018). No tool in the current build execs, so the exec backend lands with its first real caller. The model never sees `shell_exec`.
 - Tools are imported, not registered: `cmd/gagent/agent.go` adds the tool packages it needs (today: `tools/files`, `tools/playwright`) and the constructed `tool.Tool` values join the runtime registry. Adding a capability is a Go-package change in the agent's build; removing it is a Go-import removal. There is no sidecar config involved.
 - The reasoning loop itself is unchanged by the pivot — what changes is where tools come from. The loop as implemented today is restated below.
 

@@ -2,7 +2,7 @@
 
 Current architecture of the system and the decisions behind it. This file is the index; workers read it before touching code, the PM keeps it honest.
 
-One pod per agent, two containers (ADR 0018): the agent container is the agent's self (gateway, reasoning loop, memory, mouth); the sidecar container is the agent's computer (workspace, execution, tool servers, permission enforcement). A tool is a contract with the outside — defined where its implementation lives and discovered by the agent at runtime. The code ships one binary with two subcommands (`gagent agent`, `gagent sidecar`); deployment artifacts live at the repo-root `Dockerfile` (agent/sidecar targets), `deploy/local/`, and `deploy/k8s/`.
+One pod per agent, two containers (ADR 0018): the agent container is the agent's self (gateway, reasoning loop, memory, mouth); the sidecar container is the agent's computer (workspace, execution, tool servers, permission enforcement). A tool is a contract with the outside — defined where its implementation lives and discovered by the agent at runtime. The code ships one binary with two subcommands (`gagent agent`, `gagent sidecar`); deployment artifacts live at the repo-root `Dockerfile` (agent/sidecar targets) and `deploy/local/`.
 
 ## Structure
 

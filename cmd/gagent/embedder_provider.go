@@ -9,7 +9,7 @@ import (
 )
 
 // newEmbedderFunc resolves the embedder config into the memory embedder
-// every environment's memory service shares: hashing keeps the
+// the agent's memory service uses: hashing keeps the
 // deterministic offline default; openai builds a real client. A missing
 // or empty API key environment variable fails fast here, at startup,
 // instead of mid-search.
@@ -23,7 +23,7 @@ func newEmbedderFunc(cfg ModelConfig) (memory.Embedder, error) {
 			return nil, fmt.Errorf("embedder provider %q: environment variable %s is not set or is empty",
 				cfg.Provider, cfg.APIKeyEnv)
 		}
-		// One stateless client shared by every environment's memory service.
+		// One stateless client for the agent's memory service.
 		return openai.New(openai.Config{
 			BaseURL: cfg.BaseURL,
 			Model:   cfg.Model,

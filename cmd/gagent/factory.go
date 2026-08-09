@@ -11,10 +11,11 @@ import (
 )
 
 // newFactory builds the agent runtime factory both agent modes use, so
-// the resolved config reaches the agent the same way; a nil sink selects
-// the sink consoleSinkFor resolves — the console sink when console.url is
-// set, else the default file outbox. tools are the discovered remote
-// tools joining the registry alongside message_send.
+// the resolved config reaches the agent the same way. consoleSinkFor
+// resolves the console sink from the config (nil without console.url);
+// the factory's own nil-sink case selects the default file outbox, and
+// tools are the discovered remote tools joining the registry alongside
+// message_send.
 func newFactory(
 	cfg Config,
 	newModel func(agentID string) agent.Model,

@@ -9,7 +9,7 @@ import (
 )
 
 // newSummarizerFunc resolves the chat-model config into the memory
-// Summarizer every environment's memory service shares: the mock
+// Summarizer the agent's memory service uses: the mock
 // provider has no model to ask, so it falls back to the deterministic
 // concat summarizer; the openai provider builds a chat-completions
 // summarizer wrapped in the threshold composite that picks the model

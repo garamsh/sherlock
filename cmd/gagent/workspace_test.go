@@ -139,6 +139,8 @@ func TestServeWorkspace_ContractEndToEnd(t *testing.T) {
 		}
 	})
 
+	waitForWorkspaceListener(t, addr)
+
 	client, closeConn := dialWorkspace(t, addr)
 	t.Cleanup(closeConn)
 
@@ -179,6 +181,27 @@ func TestServeWorkspace_NonLoopbackAddrFailsStartup(t *testing.T) {
 		"the startup error must state the loopback-only requirement")
 	assert.Contains(t, err.Error(), "unauthenticated",
 		"the startup error must state the reason")
+}
+
+// waitForWorkspaceListener polls until the workspace's listener accepts
+// TCP connections, so the gRPC client never dials a server whose
+// net.Listen has not run yet — grpc.NewClient is lazy and the first RPC
+// would otherwise fail fast with connection refused (issue #270). Once
+// the kernel accepts a probe connection the gRPC server is serving.
+func waitForWorkspaceListener(t *testing.T, addr string) {
+	t.Helper()
+	deadline := time.Now().Add(5 * time.Second)
+	for {
+		conn, err := net.DialTimeout("tcp", addr, 100*time.Millisecond)
+		if err == nil {
+			_ = conn.Close()
+			return
+		}
+		if time.Now().After(deadline) {
+			t.Fatalf("workspace listener at %s did not accept connections within 5s: %v", addr, err)
+		}
+		time.Sleep(10 * time.Millisecond)
+	}
 }
 
 // dialWorkspace builds a workspace gRPC client connected to addr. The

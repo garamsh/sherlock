@@ -29,7 +29,7 @@ gagent agent --message "hello"          # runs one turn and exits
 gagent agent                            # or: serve the agent's gateway
 ```
 
-To try the platform in Docker instead (distroless image, local compose setup), see `deploy/local/`.
+To try the platform in Docker instead (agent image distroless, sidecar image debian-slim, local compose setup), see `deploy/local/`.
 
 ### gagent agent
 
@@ -57,7 +57,7 @@ gagent sidecar
 
 - The sidecar owns the workspace directory (`workspace` key, created on first use) and the shell executor: children run as `exec-uid` — privileged runs chown the workspace to it and drop children to it; `exec-uid` set to the sidecar's own UID is single-account mode and needs no privilege (the shell stays network-isolated through an unprivileged user+network namespace); any other unprivileged `exec-uid` reports `agent_uid unavailable` (fail-closed).
 - The listener carries no authentication in this phase, so it serves loopback binds only — a non-loopback `--addr` fails startup (ADR 0013, same posture as the gateway).
-- Its config file resolves in order: `--config <path>`, then `./sidecar.yaml`, then the XDG config path (`~/.config/gagent/sidecar.yaml` on Linux). Keys: `addr` (default `127.0.0.1:8081`), `workspace` (default `data/workspace`), `exec-timeout`, and `tools:` — the script-tool section (see `sidecar.yaml` for a working example and `tools/playwright/README.md` for the format). An invalid entry (built-in name collision, unreadable schema, empty command) fails startup with an error naming the tool.
+- Its config file resolves in order: `--config <path>`, then `./sidecar.yaml`, then the XDG config path (`~/.config/gagent/sidecar.yaml` on Linux). Keys: `addr` (default `127.0.0.1:8081`), `workspace` (default `data/workspace`), `exec-timeout`, `exec-uid`, and `tools:` — the script-tool section (see `sidecar.yaml` for a working example and `tools/playwright/README.md` for the format). An invalid entry (built-in name collision, unreadable schema, empty command) fails startup with an error naming the tool.
 
 ### Configuration
 
@@ -122,7 +122,7 @@ Two paths, per ADR 0009:
 
 Example configs in the repository root: `gagent.yaml` (agent) and `sidecar.yaml` (sidecar, with the Playwright script tool registered).
 
-With the default `mock` provider the agent wires the scripted mock model, which answers the first message with a canned run of the full loop: it computes through a discovered `shell_exec`, replies via `message_send`, and writes the outcome back as a new episodic memory. With `provider: openai` it runs against a real chat model; a missing API key env var fails at startup. To work on the codebase you need Go and GNU Make, and the standard checks are:
+With the default `mock` provider the agent wires the scripted mock model, which answers the first message with a canned run of the full loop: it computes through a discovered `shell_exec`, replies via `message_send`, and writes the outcome back as a new episodic memory. The script covers the first message per process; a later message fails its turn with `script exhausted` (a `turn_failed` event) — the mock is a wiring demo, not a conversation partner. With `provider: openai` it runs against a real chat model; a missing API key env var fails at startup. To work on the codebase you need Go and GNU Make, and the standard checks are:
 
 ```sh
 make ci      # lint + format check + test + build (same as CI)
@@ -132,6 +132,10 @@ Individual targets: `make lint`, `make format`, `make test`, `make build`.
 
 ## Development
 
-Run `make hooks` once after cloning to install the lefthook git hooks (pre-commit lint/format, pre-push test).
+Beyond Go and GNU Make, the toolchain is:
+
+- **golangci-lint** — `make lint` (`go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.12.2`; the version is pinned in `ci.yml` and `.golangci.yml`).
+- **mockery** — `make generate` regenerates the mocks under `internal/tool/mocks/` (config `.mockery.yml`).
+- **lefthook** — `make hooks` installs the git hooks once after cloning (pre-commit lint/format, pre-push test).
 
 This repository is developed by AI agents under written conventions — see `AGENTS.md` for the role model and `docs/convention/` for the rules all code follows. Internal structure and design decisions live in `docs/architecture/`.

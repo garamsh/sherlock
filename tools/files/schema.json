@@ -1,0 +1,17 @@
+{
+	"input": {
+		"type": "object",
+		"properties": {
+			"operation": {"type": "string", "enum": ["read", "write", "list"]},
+			"path": {"type": "string", "minLength": 1},
+			"content": {"type": "string"}
+		},
+		"required": ["operation", "path"],
+		"if": {"properties": {"operation": {"const": "write"}}, "required": ["operation"]},
+		"then": {"required": ["content"]},
+		"additionalProperties": false
+	},
+	"output": {
+		"type": "object"
+	}
+}

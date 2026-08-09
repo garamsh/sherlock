@@ -24,27 +24,22 @@ type Entry struct {
 // without further checks (ADR 0005 — convenience confinement, not a trust
 // boundary).
 type FS struct {
-	root  string
-	fsuid int
+	root string
 }
 
 // Open returns an FS rooted at root, creating the directory on first
-// use. A positive fsuid drops filesystem operations to that UID (Linux
-// setfsuid, privileged callers only) so files created through the
-// workspace gRPC server share the agent UID's ownership (ADR 0008,
-// ADR 0010); fsuid <= 0 or an unprivileged caller keeps the current
-// UID.
-func Open(root string, fsuid int) (*FS, error) {
+// use. Files the FS creates are owned by the workspace process's own
+// account (ADR 0018: the workspace runs no children, so no privilege
+// drop exists).
+func Open(root string) (*FS, error) {
 	abs, err := filepath.Abs(root)
 	if err != nil {
 		return nil, fmt.Errorf("resolve workspace root %q: %w", root, err)
 	}
-	if err := withFSUID(fsuid, func() error {
-		return os.MkdirAll(abs, 0o755)
-	}); err != nil {
+	if err := os.MkdirAll(abs, 0o755); err != nil {
 		return nil, fmt.Errorf("create workspace root %q: %w", abs, err)
 	}
-	return &FS{root: abs, fsuid: fsuid}, nil
+	return &FS{root: abs}, nil
 }
 
 // Root returns the absolute workspace root.
@@ -56,11 +51,7 @@ func (f *FS) Read(path string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	var content []byte
-	err = withFSUID(f.fsuid, func() error {
-		content, err = os.ReadFile(resolved)
-		return err
-	})
+	content, err := os.ReadFile(resolved)
 	if err != nil {
 		return nil, fmt.Errorf("read %q: %w", path, err)
 	}
@@ -74,15 +65,13 @@ func (f *FS) Write(path string, content []byte) error {
 	if err != nil {
 		return err
 	}
-	return withFSUID(f.fsuid, func() error {
-		if err := os.MkdirAll(filepath.Dir(resolved), 0o755); err != nil {
-			return fmt.Errorf("create parent of %q: %w", path, err)
-		}
-		if err := os.WriteFile(resolved, content, 0o644); err != nil {
-			return fmt.Errorf("write %q: %w", path, err)
-		}
-		return nil
-	})
+	if err := os.MkdirAll(filepath.Dir(resolved), 0o755); err != nil {
+		return fmt.Errorf("create parent of %q: %w", path, err)
+	}
+	if err := os.WriteFile(resolved, content, 0o644); err != nil {
+		return fmt.Errorf("write %q: %w", path, err)
+	}
+	return nil
 }
 
 // List returns the entries of the directory at path.
@@ -91,11 +80,7 @@ func (f *FS) List(path string) ([]Entry, error) {
 	if err != nil {
 		return nil, err
 	}
-	var dirents []os.DirEntry
-	err = withFSUID(f.fsuid, func() error {
-		dirents, err = os.ReadDir(resolved)
-		return err
-	})
+	dirents, err := os.ReadDir(resolved)
 	if err != nil {
 		return nil, fmt.Errorf("list %q: %w", path, err)
 	}

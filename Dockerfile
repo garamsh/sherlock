@@ -17,7 +17,7 @@ RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/gagent ./cmd/gagen
 
 # Agent image: runs no untrusted code, so distroless static stays correct
 # (ADR 0018). Serves the gateway, the rolling session, memory, the mouth,
-# native process exec, and the tools the agent imports at compile time.
+# and the tools the agent imports at compile time.
 FROM gcr.io/distroless/static-debian12:nonroot AS agent
 ARG REVISION=unknown
 LABEL org.opencontainers.image.title="gagent-agent" \

@@ -67,6 +67,8 @@ func addAgentFlags(fs *pflag.FlagSet) {
 	fs.String("memory-path", defaultMemoryPath, "SQLite memory file (created on first use)")
 	fs.String("workspace-addr", defaultWorkspaceAddr,
 		"gRPC endpoint of the agent's workspace (the data plane the files tool calls)")
+	fs.String("ego-file", "",
+		"ego file for the agent's instructions (default: embedded EGO.md)")
 }
 
 // newAgentFactory resolves the model providers, dials the workspace

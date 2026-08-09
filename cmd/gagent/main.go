@@ -26,8 +26,6 @@ func newRootCommand() *cobra.Command {
 		Short: "Run one agent pod: the agent process or its workspace data plane",
 	}
 	addConfigFlags(root.PersistentFlags())
-	root.PersistentFlags().String("ego-file", "",
-		"ego file for the agent's instructions (default: embedded EGO.md)")
 	root.AddCommand(newAgentCommand(), newWorkspaceCommand())
 	return root
 }

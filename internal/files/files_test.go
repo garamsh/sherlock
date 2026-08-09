@@ -25,7 +25,7 @@ func TestFS_TraversalRejected(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			fs, err := files.Open(t.TempDir(), 0)
+			fs, err := files.Open(t.TempDir())
 			require.NoError(t, err)
 
 			_, readErr := fs.Read(tt.path)
@@ -45,7 +45,7 @@ func TestFS_TraversalDoesNotTouchOutsideFiles(t *testing.T) {
 	outside := filepath.Join(filepath.Dir(root), "outside-marker.txt")
 	require.NoError(t, os.WriteFile(outside, []byte("untouched"), 0o644))
 
-	fs, err := files.Open(root, 0)
+	fs, err := files.Open(root)
 	require.NoError(t, err)
 	err = fs.Write("../outside-marker.txt", []byte("overwritten"))
 
@@ -67,7 +67,7 @@ func TestFS_AllowedPaths(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			fs, err := files.Open(t.TempDir(), 0)
+			fs, err := files.Open(t.TempDir())
 			require.NoError(t, err)
 
 			require.NoError(t, fs.Write(tt.path, []byte("data")))
@@ -79,7 +79,7 @@ func TestFS_AllowedPaths(t *testing.T) {
 }
 
 func TestFS_WriteReadListRoundtrip(t *testing.T) {
-	fs, err := files.Open(t.TempDir(), 0)
+	fs, err := files.Open(t.TempDir())
 	require.NoError(t, err)
 
 	require.NoError(t, fs.Write("notes/todo.txt", []byte("buy milk")))
@@ -98,7 +98,7 @@ func TestFS_WriteReadListRoundtrip(t *testing.T) {
 }
 
 func TestFS_ReadMissingFile(t *testing.T) {
-	fs, err := files.Open(t.TempDir(), 0)
+	fs, err := files.Open(t.TempDir())
 	require.NoError(t, err)
 
 	_, err = fs.Read("nope.txt")

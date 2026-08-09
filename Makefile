@@ -1,4 +1,4 @@
-.PHONY: lint format format-fix test build generate ci hooks
+.PHONY: lint format format-fix test build generate proto ci hooks
 
 lint:
 	@if [ -f go.mod ]; then \
@@ -20,8 +20,9 @@ build:
 
 ci: lint format test build
 
-generate:
-	@mockery
+proto:
+	protoc --go_out=. --go-grpc_out=. --go_opt=paths=source_relative --go-grpc_opt=paths=source_relative internal/computer/computer.proto
+
 
 hooks:
 	@lefthook install

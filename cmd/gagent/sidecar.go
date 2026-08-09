@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -13,10 +14,12 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/garamsh/gagent/internal/computer"
 	"github.com/garamsh/gagent/internal/files"
 	"github.com/garamsh/gagent/internal/shell"
 	"github.com/garamsh/gagent/internal/tool"
 	"github.com/garamsh/gagent/internal/tool/script"
+	"google.golang.org/grpc"
 )
 
 // Sidecar defaults, overridable by config file, environment, or flags.
@@ -175,6 +178,18 @@ func serveSidecar(ctx context.Context, cfg SidecarConfig) error {
 	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
+	grpcListener, err := net.Listen("tcp", "127.0.0.1:9090")
+	if err != nil {
+		return err
+	}
+	grpcServer := grpc.NewServer()
+	computer.RegisterComputerServer(grpcServer, &computer.Server{FS: workspace, Executor: executor})
+	go func() {
+		if err := grpcServer.Serve(grpcListener); err != nil {
+			logger.Error("computer server failed", "error", err)
+		}
+	}()
+
 	srv := &http.Server{
 		Addr:              cfg.Addr,
 		Handler:           tool.NewHandler(registry),
@@ -184,6 +199,7 @@ func serveSidecar(ctx context.Context, cfg SidecarConfig) error {
 		<-ctx.Done()
 		shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
+		grpcServer.GracefulStop()
 		if err := srv.Shutdown(shutdownCtx); err != nil {
 			logger.Error("http shutdown failed", "op", "shutdown", "error", err)
 		}

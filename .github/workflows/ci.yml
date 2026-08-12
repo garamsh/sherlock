@@ -19,6 +19,16 @@ jobs:
       - uses: golangci/golangci-lint-action@v9
         with:
           version: v2.12.2
+      - uses: bufbuild/buf-action@v1
+        with:
+          setup_only: true
+          version: "1.72.0"
+      - name: Generate proto stubs and verify drift
+        run: |
+          make proto
+          git diff --exit-code
+      - name: Lint proto files
+        run: buf lint
       - run: make ci
 
   docker:

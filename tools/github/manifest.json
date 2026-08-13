@@ -22,25 +22,7 @@
 			"message": {"type": "string", "minLength": 1}
 		},
 		"required": ["operation", "owner", "repo"],
-		"additionalProperties": false,
-		"oneOf": [
-			{
-				"properties": {"operation": {"const": "push"}},
-				"required": ["operation", "branch", "sha"]
-			},
-			{
-				"properties": {"operation": {"const": "open_issue"}},
-				"required": ["operation", "title"]
-			},
-			{
-				"properties": {"operation": {"const": "open_pull_request"}},
-				"required": ["operation", "head", "base", "title"]
-			},
-			{
-				"properties": {"operation": {"const": "comment"}},
-				"required": ["operation", "number", "message"]
-			}
-		]
+		"additionalProperties": false
 	},
 	"output_schema": {
 		"type": "object",

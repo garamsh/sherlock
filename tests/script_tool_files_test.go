@@ -170,3 +170,38 @@ func TestScriptTool_Files_InputRejected(t *testing.T) {
 	require.Error(t, err)
 	assert.ErrorIs(t, err, tool.ErrValidation)
 }
+
+// TestScriptTool_Files_WriteRequiresContent covers the runtime check
+// that replaced the previous top-level oneOf (issue #313): the
+// strict-mode subset does not accept oneOf, so the conditional
+// requirement that write needs non-empty content moved into the
+// script. The registry's schema validation no longer rejects this
+// case (content is now optional at the schema level); the runtime
+// returns an execution error and the workspace never sees the call.
+func TestScriptTool_Files_WriteRequiresContent(t *testing.T) {
+	root := t.TempDir()
+	hash := installTool(t, root, "files")
+	addr, fs, _, stop := startFakeWorkspace(t)
+	defer stop()
+	t.Setenv("GAGENT_WORKSPACE_ADDR", addr)
+
+	reg, err := tool.NewRegistry(tool.RegistryOptions{
+		Dir:      root,
+		Pins:     tool.ManifestPins{"files": hash},
+		Required: []string{"files"},
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() { reg.Close() })
+
+	// Empty content: the runtime check in dispatch returns an
+	// error before gRPC is called.
+	_, err = reg.Call(context.Background(), "files",
+		json.RawMessage(`{"operation":"write","path":"new.txt","content":""}`))
+	require.Error(t, err)
+	assert.ErrorIs(t, err, tool.ErrExecution)
+
+	// The workspace must not have seen the call: the directory
+	// listing should not contain new.txt.
+	_, listErr := fs.List(".")
+	require.NoError(t, listErr)
+}

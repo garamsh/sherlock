@@ -82,6 +82,12 @@ func dispatch(ctx context.Context, ws workspace.WorkspaceClient, in callInput) (
 		}
 		return callOutput{Content: string(resp.GetContent())}, nil
 	case "write":
+		// The input schema cannot carry this conditional under the
+		// strict-mode subset (oneOf is rejected at the top level,
+		// issue #313); the runtime enforces it instead.
+		if in.Content == "" {
+			return callOutput{}, errors.New("content is required for write")
+		}
 		if _, err := ws.Write(ctx, &workspace.WriteRequest{Path: in.Path, Content: []byte(in.Content)}); err != nil {
 			return callOutput{}, grpcError("write", err)
 		}

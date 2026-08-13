@@ -100,7 +100,7 @@ func TestChat_FinalResponsePreservesWritebackBlock(t *testing.T) {
 		{
 			Name:        "echo",
 			Description: "echo the text back",
-			InputSchema: json.RawMessage(`{"type":"object","properties":{"text":{"type":"string"}}}`),
+			InputSchema: json.RawMessage(`{"type":"object","properties":{"text":{"type":"string"}},"required":["text"]}`),
 		},
 	})
 	require.NoError(t, err)
@@ -116,7 +116,7 @@ func TestChat_FinalResponsePreservesWritebackBlock(t *testing.T) {
 	assert.Equal(t, "echo", fake.request.Tools[0].Function.Name)
 	assert.Equal(t, "echo the text back", fake.request.Tools[0].Function.Description)
 	assert.JSONEq(t,
-		`{"type":"object","properties":{"text":{"type":"string"}}}`,
+		`{"type":"object","properties":{"text":{"type":"string"}},"required":["text"]}`,
 		string(fake.request.Tools[0].Function.Parameters))
 
 	// The content comes back verbatim, writeback block included, for the

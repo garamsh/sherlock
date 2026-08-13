@@ -8,16 +8,17 @@ import (
 )
 
 // newFactory builds the agent runtime factory both agent modes use, so
-// the resolved config reaches the agent the same way. The tool client
-// is the platform protocol client; the agent no longer compiles any
-// tool-shaped code (ADR 0018 §Decision).
+// the resolved config reaches the agent the same way. The tool
+// registry is the script-tool runtime the agent loads at startup; the
+// agent no longer compiles any tool-shaped code (ADR 0018 §Decision,
+// ADR 0009 §Decision).
 func newFactory(
 	cfg Config,
 	newModel func(agentID string) agent.Model,
 	embedder memory.Embedder,
 	summarizer memory.Summarizer,
 	ego string,
-	tools *tool.Client,
+	tools *tool.Registry,
 ) (*gateway.Factory, error) {
 	return &gateway.Factory{
 		MemoryPath: cfg.MemoryPath,

@@ -166,3 +166,13 @@ func TestScriptTool_GitHub_InputRejected(t *testing.T) {
 	require.Error(t, err)
 	assert.ErrorIs(t, err, tool.ErrValidation)
 }
+
+// githubCall records one GitHub API request received by the fake
+// server. The integration test asserts the right method, path, and
+// bearer header.
+type githubCall struct {
+	Method string
+	Path   string
+	Auth   string
+	Body   string
+}

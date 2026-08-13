@@ -1,0 +1,52 @@
+{
+	"name": "files",
+	"description": "Read, write, and list files inside the agent's workspace.",
+	"command": "files",
+	"env": [
+		"GAGENT_WORKSPACE_ADDR"
+	],
+	"input_schema": {
+		"type": "object",
+		"properties": {
+			"operation": {"type": "string", "enum": ["read", "write", "list"]},
+			"path": {"type": "string", "minLength": 1},
+			"content": {"type": "string"}
+		},
+		"required": ["operation", "path"],
+		"oneOf": [
+			{
+				"properties": {"operation": {"const": "write"}},
+				"required": ["operation", "content"]
+			},
+			{
+				"properties": {"operation": {"const": "read"}},
+				"required": ["operation"]
+			},
+			{
+				"properties": {"operation": {"const": "list"}},
+				"required": ["operation"]
+			}
+		],
+		"additionalProperties": false
+	},
+	"output_schema": {
+		"type": "object",
+		"properties": {
+			"content": {"type": "string"},
+			"bytes_written": {"type": "integer"},
+			"entries": {
+				"type": "array",
+				"items": {
+					"type": "object",
+					"properties": {
+						"name": {"type": "string"},
+						"dir": {"type": "boolean"}
+					},
+					"required": ["name", "dir"],
+					"additionalProperties": false
+				}
+			}
+		},
+		"additionalProperties": false
+	}
+}

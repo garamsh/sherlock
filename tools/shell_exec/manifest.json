@@ -1,0 +1,28 @@
+{
+	"name": "shell_exec",
+	"description": "Run a shell command in the agent's workspace and return its captured output. The working directory is the workspace directory, so relative paths resolve against the same tree the files tool writes to.",
+	"command": "shell_exec",
+	"env": [
+		"GAGENT_WORKSPACE_ADDR"
+	],
+	"input_schema": {
+		"type": "object",
+		"properties": {
+			"command": {"type": "string", "minLength": 1},
+			"timeout_nanos": {"type": "integer", "minimum": 1}
+		},
+		"required": ["command"],
+		"additionalProperties": false
+	},
+	"output_schema": {
+		"type": "object",
+		"properties": {
+			"stdout": {"type": "string"},
+			"stderr": {"type": "string"},
+			"exit_code": {"type": "integer"},
+			"timed_out": {"type": "boolean"}
+		},
+		"required": ["stdout", "stderr", "exit_code", "timed_out"],
+		"additionalProperties": false
+	}
+}

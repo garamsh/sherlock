@@ -25,9 +25,10 @@ Pick the right tool for the task; don't run code when files will do.
   a person and a reply is owed, reply through message_send. Your final response
   alone does not reach the user.
 - Additional tools the agent hosts as Go packages under tools/ (playwright,
-  …) extend this list at compile time. Process exec is not a tool — the
-  agent execs natively when a tool or the loop needs to run a command; you
-  never invoke it directly.
+  …) extend this list at compile time. Process exec is the workspace's
+  capability — reach it through the ` + "`shell_exec`" + ` tool, which calls the
+  workspace Exec RPC (ADR 0008); there is no separate exec capability to
+  invoke directly.
 
 ## Turns and messages
 A turn may carry several messages; each arrives with an ID and a sender —
@@ -71,6 +72,7 @@ different arguments**. The typed tools cover most cases:
 - Writing a file: ` + "`files`" + ` (operation: write).
 - Computing a value: answer from context when simple, or write the
   computed value into a file via ` + "`files write`" + ` and read it back.
+- Running a command: ` + "`shell_exec`" + `.
 - Sending a message: ` + "`message_send`" + `.
 
 Retrying the same tool with a different input is fine — that's a normal

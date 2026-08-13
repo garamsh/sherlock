@@ -1,0 +1,49 @@
+{
+	"input": {
+		"type": "object",
+		"properties": {
+			"operation": {"type": "string", "enum": ["push", "open_issue", "open_pull_request", "comment"]},
+			"owner": {"type": "string", "minLength": 1},
+			"repo": {"type": "string", "minLength": 1},
+			"branch": {"type": "string", "minLength": 1},
+			"sha": {"type": "string", "minLength": 1},
+			"title": {"type": "string", "minLength": 1},
+			"body": {"type": "string"},
+			"labels": {"type": "array", "items": {"type": "string"}},
+			"head": {"type": "string", "minLength": 1},
+			"base": {"type": "string", "minLength": 1},
+			"number": {"type": "integer", "minimum": 1},
+			"message": {"type": "string", "minLength": 1}
+		},
+		"required": ["operation", "owner", "repo"],
+		"additionalProperties": false,
+		"allOf": [
+			{
+				"if": {"properties": {"operation": {"const": "push"}}, "required": ["operation"]},
+				"then": {"required": ["branch", "sha"]}
+			},
+			{
+				"if": {"properties": {"operation": {"const": "open_issue"}}, "required": ["operation"]},
+				"then": {"required": ["title"]}
+			},
+			{
+				"if": {"properties": {"operation": {"const": "open_pull_request"}}, "required": ["operation"]},
+				"then": {"required": ["head", "base", "title"]}
+			},
+			{
+				"if": {"properties": {"operation": {"const": "comment"}}, "required": ["operation"]},
+				"then": {"required": ["number", "message"]}
+			}
+		]
+	},
+	"output": {
+		"type": "object",
+		"properties": {
+			"status": {"type": "string"},
+			"url": {"type": "string"},
+			"number": {"type": "integer"},
+			"id": {"type": "integer"}
+		},
+		"additionalProperties": false
+	}
+}

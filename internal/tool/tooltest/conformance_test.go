@@ -136,6 +136,7 @@ func TestCheckSchema_AcceptsEveryBuiltinDocument(t *testing.T) {
 		file string
 	}{
 		{"files", "cmd/files/schema.json"},
+		{"github", "cmd/github/schema.json"},
 		{"message", "internal/message/schema.json"},
 		{"playwright", "tools/playwright/schema.json"},
 		{"shell_exec", "cmd/shell_exec/schema.json"},

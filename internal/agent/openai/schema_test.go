@@ -44,7 +44,6 @@ func TestSanitizeToolParameters_DropsForbiddenTopLevelKeywords(t *testing.T) {
 		raw     string
 		keyword string
 	}{
-		{"oneOf", `{"oneOf":[{"type":"object"},{"type":"string"}]}`, "oneOf"},
 		{"allOf", `{"allOf":[{"type":"object"}]}`, "allOf"},
 		{"anyOf", `{"anyOf":[{"type":"object"}]}`, "anyOf"},
 		{"not", `{"not":{"type":"string"}}`, "not"},
@@ -96,18 +95,16 @@ func TestSanitizeToolParameters_DropsMultipleForbiddenKeywords(t *testing.T) {
 	var doc map[string]json.RawMessage
 	require.NoError(t, json.Unmarshal(got, &doc))
 	for _, kw := range OpenAITopLevelForbidden {
-		if kw == "not" || kw == "enum" || kw == "const" {
-			continue
-		}
 		assert.NotContains(t, doc, kw, "%q should be dropped", kw)
 	}
 	assert.JSONEq(t, `"object"`, string(doc["type"]))
+	assert.Contains(t, doc, "oneOf", "top-level oneOf is supported in strict mode and must be preserved")
 }
 
 func TestSanitizeToolParameters_PreservesNestedKeywords(t *testing.T) {
 	quietLogger(t)
-	// The API only forbids forbidden keywords at the top level; nested ones
-	// (e.g. inside properties) stay put.
+	// The sanitizer only acts on top-level keywords; nested ones (e.g.
+	// inside properties) stay put.
 	raw := json.RawMessage(`{
 		"type":"object",
 		"properties":{
@@ -117,7 +114,6 @@ func TestSanitizeToolParameters_PreservesNestedKeywords(t *testing.T) {
 	got := sanitizeToolParameters("external_tool", raw)
 	var doc map[string]json.RawMessage
 	require.NoError(t, json.Unmarshal(got, &doc))
-	assert.NotContains(t, doc, "oneOf", "top-level oneOf must not appear")
 	var props map[string]json.RawMessage
 	require.NoError(t, json.Unmarshal(doc["properties"], &props))
 	assert.Contains(t, props, "choice", "nested properties.choice must survive")
@@ -125,4 +121,24 @@ func TestSanitizeToolParameters_PreservesNestedKeywords(t *testing.T) {
 	require.NoError(t, json.Unmarshal(props["choice"], &choice))
 	assert.Contains(t, choice, "oneOf", "nested oneOf must be preserved")
 	assert.JSONEq(t, `"object"`, string(doc["type"]))
+}
+
+// TestSanitizeToolParameters_PreservesTopLevelOneOf asserts the strict
+// subset keeps oneOf at the top level so per-operation branches (issue
+// #297) survive sanitization.
+func TestSanitizeToolParameters_PreservesTopLevelOneOf(t *testing.T) {
+	quietLogger(t)
+	raw := json.RawMessage(`{
+		"type":"object",
+		"properties":{"operation":{"type":"string"}},
+		"required":["operation"],
+		"oneOf":[
+			{"properties":{"operation":{"const":"a"}},"required":["operation"]},
+			{"properties":{"operation":{"const":"b"}},"required":["operation"]}
+		]
+	}`)
+	got := sanitizeToolParameters("gh", raw)
+	var doc map[string]json.RawMessage
+	require.NoError(t, json.Unmarshal(got, &doc))
+	assert.Contains(t, doc, "oneOf", "top-level oneOf must survive sanitization")
 }

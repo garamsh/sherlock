@@ -106,7 +106,37 @@ type callResult struct {
 }
 
 // callError wraps a JSON-RPC error returned by a tool server, with the
-// method that produced it so the caller can route the error.
+// method that produced it so the caller can route the error. When the
+// tool supplied an Error.Data payload, the surfaced error includes it
+// after the message so the model sees the underlying reason (issue
+// #303: tool's high-level message alone hides the gRPC detail).
 func (e *responseError) callError(method string) error {
+	if data := stringifyData(e.Data); data != "" {
+		return fmt.Errorf("tool server %s: %s (code %d): %s", method, e.Message, e.Code, data)
+	}
 	return fmt.Errorf("tool server %s: %s (code %d)", method, e.Message, e.Code)
+}
+
+// stringifyData renders the JSON-RPC Error.Data payload as a string for
+// inclusion in the surfaced error. A nil or empty payload yields an
+// empty string. Strings and JSON-encoded objects/arrays are returned
+// as-is; non-JSON values fall through with their fmt %v rendering.
+func stringifyData(data any) string {
+	if data == nil {
+		return ""
+	}
+	switch v := data.(type) {
+	case string:
+		return v
+	case json.RawMessage:
+		if len(v) == 0 {
+			return ""
+		}
+		return string(v)
+	}
+	out, err := json.Marshal(data)
+	if err != nil {
+		return fmt.Sprintf("%v", data)
+	}
+	return string(out)
 }

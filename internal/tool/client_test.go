@@ -60,8 +60,9 @@ func moduleRoot() string {
 // writeTesttoolConfig writes a config file under t.TempDir for the
 // testtool binary to read. name and description go into the descriptor;
 // inputSchema and outputSchema gate the tool's call surface; behaviour
-// is "echo" (return the input as the output) or "fixed" (return the
-// fixedOutput payload).
+// is "echo" (return the input as the output), "fixed" (return the
+// fixedOutput payload), or "error" (send a JSON-RPC error with the
+// configured message and data payload).
 type testtoolConfig struct {
 	Name         string          `json:"name"`
 	Description  string          `json:"description"`
@@ -69,6 +70,8 @@ type testtoolConfig struct {
 	OutputSchema json.RawMessage `json:"outputSchema"`
 	Behaviour    string          `json:"behaviour"`
 	Fixed        json.RawMessage `json:"fixedOutput,omitempty"`
+	ErrorMsg     string          `json:"errorMessage,omitempty"`
+	ErrorData    json.RawMessage `json:"errorData,omitempty"`
 }
 
 func writeTesttoolConfig(t *testing.T, cfg testtoolConfig) string {
@@ -354,4 +357,32 @@ func TestClient_DescriptorNameMismatchFailsClosed(t *testing.T) {
 	require.Error(t, err)
 	assert.True(t, strings.Contains(err.Error(), "does not match") || strings.Contains(err.Error(), "descriptor name"),
 		"a spec whose descriptor name does not match fails startup")
+}
+
+// TestClient_SurfacesToolErrorDataPayload asserts the platform client
+// propagates the JSON-RPC error's data payload into the surfaced
+// execution error. Issue #303: files and shell_exec write the
+// underlying gRPC detail (status code, gRPC message) into the data
+// payload so the agent sees the cause, not just the high-level message.
+func TestClient_SurfacesToolErrorDataPayload(t *testing.T) {
+	cfg := testtoolConfig{
+		Name:         "list",
+		Description:  "list files",
+		InputSchema:  json.RawMessage(`{"type":"object"}`),
+		OutputSchema: json.RawMessage(`{"type":"object"}`),
+		Behaviour:    "error",
+		ErrorMsg:     "list failed",
+		ErrorData:    json.RawMessage(`{"operation":"list","grpc_code":"InvalidArgument","error":"path escapes workspace: /"}`),
+	}
+	client := newClientWithTools(t, tool.Options{}, cfg)
+
+	_, err := client.Call(context.Background(), "list", json.RawMessage(`{}`))
+	require.Error(t, err)
+	assert.ErrorIs(t, err, tool.ErrExecution)
+	assert.Contains(t, err.Error(), "list failed",
+		"the surfaced error retains the high-level message")
+	assert.Contains(t, err.Error(), "path escapes workspace",
+		"the surfaced error carries the underlying gRPC reason from Error.Data (issue #303)")
+	assert.Contains(t, err.Error(), "InvalidArgument",
+		"the surfaced error carries the gRPC status code from Error.Data (issue #303)")
 }

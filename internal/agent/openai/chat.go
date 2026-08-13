@@ -17,9 +17,10 @@ const maxErrorBody = 512
 
 // chatRequest is the chat-completions request body.
 type chatRequest struct {
-	Model    string        `json:"model"`
-	Messages []chatMessage `json:"messages"`
-	Tools    []chatTool    `json:"tools,omitempty"`
+	Model             string        `json:"model"`
+	Messages          []chatMessage `json:"messages"`
+	Tools             []chatTool    `json:"tools,omitempty"`
+	ParallelToolCalls bool          `json:"parallel_tool_calls"`
 }
 
 // chatMessage is the wire shape of one conversation entry. The OpenAI API
@@ -53,6 +54,7 @@ type chatTool struct {
 		Name        string          `json:"name"`
 		Description string          `json:"description,omitempty"`
 		Parameters  json.RawMessage `json:"parameters"`
+		Strict      bool            `json:"strict"`
 	} `json:"function"`
 }
 
@@ -71,11 +73,17 @@ type chatResponse struct {
 // Chat maps the conversation and tool descriptors to a chat-completions
 // request and maps the first choice back to an agent.Response. Tool calls
 // win over content when both are present.
+//
+// parallel_tool_calls is forced to false: ADR 0018 requires strict-mode
+// constrained decoding (advertised as Strict: true on each tool), and the
+// OpenAI chat-completions API flags strict mode as incompatible with
+// parallel tool calls. Issue #298.
 func (m *Model) Chat(ctx context.Context, messages []agent.Message, tools []tool.Descriptor) (agent.Response, error) {
 	body, err := json.Marshal(chatRequest{
-		Model:    m.model,
-		Messages: toWireMessages(messages),
-		Tools:    toWireTools(tools),
+		Model:             m.model,
+		Messages:          toWireMessages(messages),
+		Tools:             toWireTools(tools),
+		ParallelToolCalls: false,
 	})
 	if err != nil {
 		return agent.Response{}, fmt.Errorf("encode request: %w", err)
@@ -147,10 +155,11 @@ func toWireMessages(messages []agent.Message) []chatMessage {
 }
 
 // toWireTools exposes each descriptor's name, description, and input
-// schema as the function's parameters document. Each schema is sanitized
-// to the OpenAI function-calling top-level subset first, so tools whose
-// schemas violate the constraint do not break the provider's model call
-// (issue #55).
+// schema as the function's parameters document. Strict mode is on so the
+// chat-completions API applies constrained decoding to every tool call
+// (ADR 0018). Each schema is sanitized to the strict-compatible subset
+// first, so tools whose schemas violate the constraint do not break the
+// provider's model call (issue #55). Issue #298.
 func toWireTools(tools []tool.Descriptor) []chatTool {
 	if len(tools) == 0 {
 		return nil
@@ -160,6 +169,7 @@ func toWireTools(tools []tool.Descriptor) []chatTool {
 		out[i].Type = "function"
 		out[i].Function.Name = d.Name
 		out[i].Function.Description = d.Description
+		out[i].Function.Strict = true
 		out[i].Function.Parameters = sanitizeToolParameters(d.Name, d.InputSchema)
 	}
 	return out

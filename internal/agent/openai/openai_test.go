@@ -17,8 +17,9 @@ import (
 
 // chatRequest mirrors the provider's request body for assertions.
 type chatRequest struct {
-	Model    string `json:"model"`
-	Messages []struct {
+	Model             string `json:"model"`
+	ParallelToolCalls bool   `json:"parallel_tool_calls"`
+	Messages          []struct {
 		Role       string `json:"role"`
 		Content    string `json:"content"`
 		Name       string `json:"name,omitempty"`
@@ -38,6 +39,7 @@ type chatRequest struct {
 			Name        string          `json:"name"`
 			Description string          `json:"description"`
 			Parameters  json.RawMessage `json:"parameters"`
+			Strict      bool            `json:"strict"`
 		} `json:"function"`
 	} `json:"tools"`
 }
@@ -213,18 +215,19 @@ func TestNew_MissingSettingsFailFast(t *testing.T) {
 
 // TestChat_OutOfSubsetToolParametersAreSanitized reproduces issue #55:
 // an external tool registers a schema that the OpenAI function-calling
-// API rejects (top-level oneOf). The provider must sanitize the schema
-// in toWireTools so the model call does not crash with HTTP 400
-// invalid_function_parameters.
+// strict-mode API rejects (top-level allOf). The provider must sanitize
+// the schema in toWireTools so the model call does not crash with HTTP
+// 400 invalid_function_parameters. oneOf is now preserved (issue #297).
 func TestChat_OutOfSubsetToolParametersAreSanitized(t *testing.T) {
 	fake, server := newFakeProvider(t,
 		`{"choices":[{"message":{"content":"ok"},"finish_reason":"stop"}]}`)
 	defer server.Close()
 	model := newTestModel(t, server)
 
-	// Out-of-subset: top-level oneOf, no top-level type. The API rejects both.
+	// Out-of-subset: top-level allOf, no top-level type. The strict-mode
+	// API rejects both.
 	outOfSubsetSchema := json.RawMessage(`{
-		"oneOf": [
+		"allOf": [
 			{"type":"object","properties":{"a":{"type":"string"}},"required":["a"]},
 			{"type":"object","properties":{"b":{"type":"integer"}},"required":["b"]}
 		]
@@ -252,4 +255,29 @@ func TestChat_OutOfSubsetToolParametersAreSanitized(t *testing.T) {
 func jsonString(s string) string {
 	out, _ := json.Marshal(s)
 	return string(out)
+}
+
+// TestChat_RequestBodyAdvertisesStrictModeAndDisablesParallelCalls pins
+// the constraints ADR 0018 §Tool contract imposes on the openai provider
+// at the wire level: each tool carries strict:true so the API applies
+// constrained decoding, and the request body sets parallel_tool_calls to
+// false because the strict-mode API rejects parallel calls. Issue #298.
+func TestChat_RequestBodyAdvertisesStrictModeAndDisablesParallelCalls(t *testing.T) {
+	fake, server := newFakeProvider(t,
+		`{"choices":[{"message":{"content":"ok"},"finish_reason":"stop"}]}`)
+	defer server.Close()
+	model := newTestModel(t, server)
+
+	_, err := model.Chat(t.Context(),
+		[]agent.Message{{Role: agent.RoleUser, Content: "hi"}},
+		[]tool.Descriptor{
+			{Name: "github", Description: "github", InputSchema: json.RawMessage(`{"type":"object","properties":{"operation":{"type":"string"}},"required":["operation"]}`)},
+		})
+	require.NoError(t, err)
+
+	assert.False(t, fake.request.ParallelToolCalls,
+		"the request body must carry parallel_tool_calls: false (issue #298)")
+	require.Len(t, fake.request.Tools, 1)
+	assert.True(t, fake.request.Tools[0].Function.Strict,
+		"every tool definition must carry strict: true (issue #298)")
 }

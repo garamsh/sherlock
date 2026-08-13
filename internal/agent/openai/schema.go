@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"log/slog"
+	"sort"
 )
 
 // OpenAITopLevelForbidden lists every JSON Schema keyword the OpenAI
@@ -50,9 +51,13 @@ func SanitizeToolParameters(name string, raw json.RawMessage) json.RawMessage {
 // sanitizeToolParameters reduces a tool's input schema to the subset the
 // OpenAI function-calling API accepts. Schemas already inside the subset
 // are returned unchanged. Out-of-subset schemas are reduced: the root is
-// forced to "object" and any of OpenAITopLevelForbidden at the top level
-// are dropped. Each transformation is logged once at warn level so
-// operators can spot upstream tools whose schemas violate the constraint.
+// forced to "object", any of OpenAITopLevelForbidden at the top level are
+// dropped, and every property in `properties` is enforced to also appear
+// in `required` (a missing entry is promoted to required and its type is
+// rewritten to `["<original>", "null"]` so the model can emit null when
+// there is no value to send). Each transformation is logged once at warn
+// level so operators can spot upstream tools whose schemas violate the
+// constraint.
 //
 // The original schema is preserved on the tool: runtime validation in
 // internal/tool still uses t.InputSchema(), so the model's reduced view does
@@ -89,6 +94,9 @@ func sanitizeToolParameters(name string, raw json.RawMessage) json.RawMessage {
 				"keyword", kw)
 		}
 	}
+	if promoteRequiredSuperset(name, doc) {
+		changed = true
+	}
 	if !changed {
 		return raw
 	}
@@ -104,4 +112,94 @@ func sanitizeToolParameters(name string, raw json.RawMessage) json.RawMessage {
 		return emptyObjectParameters
 	}
 	return out
+}
+
+// promoteRequiredSuperset enforces the strict-mode rule that every key in
+// `properties` must also appear in `required`. For each property missing
+// from `required`, the key is appended and its `type` is rewritten to
+// `["<original>", "null"]` so the model can emit null when there is no
+// value to send. Returns true when any property was promoted.
+//
+// The original required list's order is preserved; new entries are
+// appended in sorted key order so the rewritten schema is deterministic
+// across runs (Go map iteration is randomized).
+func promoteRequiredSuperset(name string, doc map[string]json.RawMessage) bool {
+	propsRaw, ok := doc["properties"]
+	if !ok {
+		return false
+	}
+	var props map[string]json.RawMessage
+	if err := json.Unmarshal(propsRaw, &props); err != nil || len(props) == 0 {
+		return false
+	}
+
+	var requiredList []string
+	if reqRaw, ok := doc["required"]; ok {
+		_ = json.Unmarshal(reqRaw, &requiredList)
+	}
+	requiredSet := make(map[string]bool, len(requiredList))
+	for _, r := range requiredList {
+		requiredSet[r] = true
+	}
+
+	var missing []string
+	for k := range props {
+		if !requiredSet[k] {
+			missing = append(missing, k)
+		}
+	}
+	if len(missing) == 0 {
+		return false
+	}
+	sort.Strings(missing)
+
+	promoted := false
+	for _, k := range missing {
+		requiredList = append(requiredList, k)
+		requiredSet[k] = true
+		if updated, ok := rewritePropertyTypeAsNullable(props[k]); ok {
+			props[k] = updated
+		}
+		promoted = true
+		slog.Warn("openai provider: tool schema property promoted to required",
+			"op", "sanitize_tool_parameters",
+			"tool", name,
+			"property", k)
+	}
+
+	if promoted {
+		if updated, err := json.Marshal(requiredList); err == nil {
+			doc["required"] = updated
+		}
+		if updated, err := json.Marshal(props); err == nil {
+			doc["properties"] = updated
+		}
+	}
+	return promoted
+}
+
+// rewritePropertyTypeAsNullable rewrites a property's `type` field from
+// a single-type string (`"string"`) to `["<original>", "null"]`, leaving
+// array forms (already nullable), properties without a type, and
+// unparseable properties unchanged. Returns the rewritten raw and true
+// when a rewrite happened.
+func rewritePropertyTypeAsNullable(propRaw json.RawMessage) (json.RawMessage, bool) {
+	var prop map[string]json.RawMessage
+	if err := json.Unmarshal(propRaw, &prop); err != nil {
+		return propRaw, false
+	}
+	typeRaw, ok := prop["type"]
+	if !ok {
+		return propRaw, false
+	}
+	trimmed := bytes.TrimSpace(typeRaw)
+	if len(trimmed) == 0 || trimmed[0] != '[' {
+		prop["type"] = json.RawMessage(`[` + string(typeRaw) + `, "null"]`)
+		updated, err := json.Marshal(prop)
+		if err != nil {
+			return propRaw, false
+		}
+		return updated, true
+	}
+	return propRaw, false
 }

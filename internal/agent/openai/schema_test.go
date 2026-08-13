@@ -26,7 +26,7 @@ func TestSanitizeToolParameters_EmptyAndInsideSubsetPassThrough(t *testing.T) {
 	}{
 		{"nil", nil},
 		{"empty", json.RawMessage("")},
-		{"already_object", json.RawMessage(`{"type":"object","properties":{"text":{"type":"string"}}}`)},
+		{"already_object", json.RawMessage(`{"type":"object","properties":{"text":{"type":"string"}},"required":["text"]}`)},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -170,4 +170,48 @@ func TestSanitizeToolParameters_DropsTopLevelOneOf(t *testing.T) {
 	assert.JSONEq(t, `"object"`, string(doc["type"]))
 	assert.Contains(t, doc, "properties", "the unconditional structural fields must survive sanitization")
 	assert.Contains(t, doc, "required", "the unconditional required list must survive sanitization")
+}
+
+// TestSanitizeToolParameters_PromotesMissingRequiredToNullable pins the
+// strict-mode required ⊇ properties rule for issue #317: the
+// chat-completions strict-mode API rejects a parameters document whose
+// `properties` lists keys absent from `required`. For every missing
+// key, the sanitizer must promote the key into `required` and rewrite
+// its `type` from a single primitive (`"string"`) to `["<original>",
+// "null"]` so the model can emit null when there is no value to send.
+// The first-party `files` and `github` manifests violate the rule; the
+// rewrite is the boundary posture (runtime-safety.md §Boundaries).
+func TestSanitizeToolParameters_PromotesMissingRequiredToNullable(t *testing.T) {
+	quietLogger(t)
+	raw := json.RawMessage(`{
+		"type":"object",
+		"properties":{
+			"operation":{"type":"string"},
+			"path":{"type":"string"},
+			"content":{"type":"string"}
+		},
+		"required":["operation","path"],
+		"additionalProperties":false
+	}`)
+	got := sanitizeToolParameters("files", raw)
+	var doc map[string]json.RawMessage
+	require.NoError(t, json.Unmarshal(got, &doc))
+
+	var requiredList []string
+	require.NoError(t, json.Unmarshal(doc["required"], &requiredList),
+		"the rewritten schema must still carry a required list")
+	assert.ElementsMatch(t, []string{"operation", "path", "content"}, requiredList,
+		"every key in properties must appear in required (issue #317)")
+
+	var props map[string]json.RawMessage
+	require.NoError(t, json.Unmarshal(doc["properties"], &props))
+	var content map[string]json.RawMessage
+	require.NoError(t, json.Unmarshal(props["content"], &content))
+	assert.JSONEq(t, `["string", "null"]`, string(content["type"]),
+		"the promoted property's type must become [<original>, 'null']")
+
+	var operation map[string]json.RawMessage
+	require.NoError(t, json.Unmarshal(props["operation"], &operation))
+	assert.JSONEq(t, `"string"`, string(operation["type"]),
+		"properties already in required must not be touched")
 }

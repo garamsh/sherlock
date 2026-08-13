@@ -114,9 +114,9 @@ every destructive action before taking it.
 
 ### Adding tools
 
-Tools are agent-side Go packages the agent imports at compile time (ADR 0018). To add a tool:
+Tools are independent servers behind the platform protocol (ADR 0018, ADR 0009). The agent binary does not import them; the platform's protocol client (`internal/tool`) discovers them at startup. To add a tool:
 
-- write a Go package implementing `tool.Tool` (`Name`, `Description`, `InputSchema`, `OutputSchema`, `Call`), and wire it into the agent's registry in `cmd/gagent/agent.go` (or a `tools/` package the agent imports). A tool that needs files uses the workspace gRPC client (via `internal/workspace/client`); a tool that needs an external API calls it directly. There is no runtime plugin loader and no `tools:` workspace config — the workspace is the data plane only.
+- write a binary that speaks the platform protocol (JSON-RPC 2.0 over stdin/stdout, `tools/list` and `tools/call`); first-party tools ship under `cmd/<tool>/` and are installed alongside the agent binary. A tool that needs files uses the workspace gRPC client (via `internal/workspace/client`); a tool that needs an external API calls it directly. The default config installs `message_send` (the mouth) and `shell_exec`; both binaries live in the same directory as the agent. Override the default with a `tools:` section in `gagent.yaml` listing every tool you want installed. The platform validates the required tool set at startup and refuses to load a tool whose descriptor hash drifts from the pin.
 
 Example configs in the repository root: `gagent.yaml` (agent) and `workspace.yaml` (workspace).
 

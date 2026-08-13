@@ -1,9 +1,7 @@
 package tool_test
 
 import (
-	"context"
 	"encoding/json"
-	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -12,46 +10,42 @@ import (
 	"github.com/garamsh/gagent/internal/tool"
 )
 
-const personSchema = `{
-	"type": "object",
-	"properties": {"name": {"type": "string"}},
-	"required": ["name"]
-}`
-
-func TestInvoke_EmptySchemaAcceptsAnyInput(t *testing.T) {
-	stub := &stubTool{name: "person"}
-
-	_, err := tool.Invoke(context.Background(), stub, json.RawMessage(`{"anything": 1}`))
-
-	require.NoError(t, err)
+func TestValidateSchema_EmptySchemaAcceptsAnyInput(t *testing.T) {
+	require.NoError(t, tool.ValidatePublic(json.RawMessage(nil), json.RawMessage(`{"anything":1}`)))
 }
 
-func TestInvoke_SchemaValidInputPasses(t *testing.T) {
-	stub := &stubTool{name: "person", inSchema: json.RawMessage(personSchema)}
-
-	_, err := tool.Invoke(context.Background(), stub, json.RawMessage(`{"name": "ada"}`))
-
-	require.NoError(t, err)
+func TestValidateSchema_MatchingInputPasses(t *testing.T) {
+	schema := json.RawMessage(`{
+		"type":"object",
+		"properties":{"name":{"type":"string"}},
+		"required":["name"]
+	}`)
+	require.NoError(t, tool.ValidatePublic(schema, json.RawMessage(`{"name":"ada"}`)))
 }
 
-func TestInvoke_SchemaInvalidInputFails(t *testing.T) {
-	stub := &stubTool{name: "person", inSchema: json.RawMessage(personSchema)}
-
-	_, err := tool.Invoke(context.Background(), stub, json.RawMessage(`{"name": 42}`))
-
+func TestValidateSchema_MismatchedInputFails(t *testing.T) {
+	schema := json.RawMessage(`{
+		"type":"object",
+		"properties":{"name":{"type":"string"}},
+		"required":["name"]
+	}`)
+	err := tool.ValidatePublic(schema, json.RawMessage(`{"name":42}`))
 	require.Error(t, err)
-	assert.ErrorIs(t, err, tool.ErrValidation)
+	assert.Contains(t, err.Error(), "input does not match schema")
 }
 
-func TestInvoke_ValidationErrorOmitsHostFilesystemPath(t *testing.T) {
-	cwd, err := os.Getwd()
-	require.NoError(t, err)
-	stub := &stubTool{name: "person", inSchema: json.RawMessage(personSchema)}
-
-	_, err = tool.Invoke(context.Background(), stub, json.RawMessage(`{"name": 42}`))
-
+func TestValidateSchemaDocument_RejectsInvalidDocument(t *testing.T) {
+	// `type` must be a string or array of strings; an integer is
+	// not a valid JSON Schema "type" value.
+	err := tool.ValidateSchemaDocumentPublic(json.RawMessage(`{"type":42}`))
 	require.Error(t, err)
-	msg := err.Error()
-	assert.NotContains(t, msg, "file://", "validation error must not leak a file URL")
-	assert.NotContains(t, msg, cwd, "validation error must not leak the working directory")
+	assert.Contains(t, err.Error(), "schema does not parse")
+}
+
+func TestValidateSchemaDocument_AcceptsValidDocument(t *testing.T) {
+	err := tool.ValidateSchemaDocumentPublic(json.RawMessage(`{
+		"type":"object",
+		"properties":{"x":{"type":"integer"}}
+	}`))
+	require.NoError(t, err)
 }

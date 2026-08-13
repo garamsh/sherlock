@@ -4,12 +4,10 @@ import (
 	"encoding/json"
 
 	"github.com/garamsh/gagent/internal/agent"
-	"github.com/garamsh/gagent/internal/message"
-	shellexec "github.com/garamsh/gagent/tools/shell_exec"
 )
 
 // mockModel is the MVP placeholder model (ADR 0004): a canned script
-// that drives a fixed scenario through the agent's own tools —
+// that drives a fixed scenario through the agent's installed tools —
 // shell_exec to compute the answer through the workspace's Exec RPC,
 // message_send for the mouth, then a writeback block to record the
 // question. It exhausts after one message; a real model replaces it
@@ -19,7 +17,7 @@ func mockModel(_ string) agent.Model {
 	return agent.NewScriptedModel(
 		agent.ScriptedStep{
 			ToolCalls: []agent.ToolCall{{
-				Name: shellexec.ToolName,
+				Name: "shell_exec",
 				Input: json.RawMessage(
 					`{"command":"ls; echo $((6 * 7))"}`,
 				),
@@ -27,7 +25,7 @@ func mockModel(_ string) agent.Model {
 		},
 		agent.ScriptedStep{
 			ToolCalls: []agent.ToolCall{{
-				Name: message.SendToolName,
+				Name: "message_send",
 				Input: json.RawMessage(
 					`{"channel":"http","target":"sender","content":"42"}`,
 				),

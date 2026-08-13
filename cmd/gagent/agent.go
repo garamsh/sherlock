@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 	"time"
 
@@ -15,20 +16,15 @@ import (
 	"github.com/spf13/pflag"
 
 	"github.com/garamsh/gagent/internal/gateway"
-	"github.com/garamsh/gagent/internal/message"
 	"github.com/garamsh/gagent/internal/tool"
-	"github.com/garamsh/gagent/internal/workspace/client"
-	"github.com/garamsh/gagent/tools/files"
-	"github.com/garamsh/gagent/tools/playwright"
-	shellexec "github.com/garamsh/gagent/tools/shell_exec"
 )
 
 // newAgentCommand returns the "gagent agent" subcommand: it runs the
 // agent's self (ADR 0018) — the gateway, the rolling session, memory,
-// the mouth, and the tools the agent imports at compile time. With
-// --message it runs one turn against the same tool set and exits;
-// without it the agent serves its HTTP gateway until an interrupt or
-// SIGTERM.
+// the mouth, and the platform tool client over the operator's tool
+// list. With --message it runs one turn against the same tool set and
+// exits; without it the agent serves its HTTP gateway until an
+// interrupt or SIGTERM.
 func newAgentCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "agent",
@@ -72,12 +68,11 @@ func addAgentFlags(fs *pflag.FlagSet) {
 		"ego file for the agent's instructions (default: embedded EGO.md)")
 }
 
-// newAgentFactory resolves the model providers, dials the workspace
-// gRPC client, and builds the runtime factory both agent modes share.
-// The tool set is the compile-time registry the agent imports: tools
-// are agent-side Go packages (ADR 0018); the agent constructs them
-// here with the workspace client the workspace-addr flag dials.
-func newAgentFactory(ctx context.Context, cfg Config, ego string, sink message.Sink, logger *slog.Logger) (*gateway.Factory, error) {
+// newAgentFactory resolves the model providers, builds the operator's
+// tool specs into a protocol client, and returns the runtime factory
+// both agent modes share. The agent constructs no tool-shaped code at
+// compile time (ADR 0018 §Decision, ADR 0009 §Decision).
+func newAgentFactory(ctx context.Context, cfg Config, ego string, logger *slog.Logger) (*gateway.Factory, error) {
 	newModel, err := newModelFunc(cfg.Model)
 	if err != nil {
 		return nil, err
@@ -90,62 +85,105 @@ func newAgentFactory(ctx context.Context, cfg Config, ego string, sink message.S
 	if err != nil {
 		return nil, err
 	}
-	tools, err := buildTools(ctx, cfg, logger)
+	tools, err := buildToolClient(ctx, cfg, logger)
 	if err != nil {
 		return nil, err
 	}
-	return newFactory(cfg, newModel, embedder, summarizer, ego, sink, tools)
+	return newFactory(cfg, newModel, embedder, summarizer, ego, tools)
 }
 
-// buildTools dials the workspace gRPC client and constructs the
-// compile-time tools the agent hosts (ADR 0018): files, playwright,
-// and shell_exec — all three over the workspace client. The agent
-// keeps no exec machinery: shell_exec calls the workspace's Exec RPC
-// (ADR 0008). The agent loop never imports internal/workspace directly
-// — it goes through tools, the boundary the issue specified.
-func buildTools(ctx context.Context, cfg Config, logger *slog.Logger) ([]tool.Tool, error) {
-	ws, closeFn, err := client.New(ctx, cfg.WorkspaceAddr)
+// buildToolClient expands the operator's tool specs into a running
+// platform tool client. Each spec is a binary the agent spawns; the
+// client owns the lifecycle, the discovery handshake, and the
+// per-tool boundary (ADR 0018 §Tool contract).
+func buildToolClient(ctx context.Context, cfg Config, logger *slog.Logger) (*tool.Client, error) {
+	specs, err := expandToolSpecs(cfg)
 	if err != nil {
-		return nil, fmt.Errorf("dial workspace %q: %w", cfg.WorkspaceAddr, err)
+		return nil, err
 	}
-	// The agent process owns the connection: register its close with
-	// a release hook on the runtime once we have one. For now, log
-	// on shutdown so a leaked dial surfaces during tests.
-	if logger != nil {
-		original := closeFn
-		closeFn = func() error {
-			err := original()
-			if err != nil {
-				logger.Warn("workspace client close failed", "error", err)
+	client, err := tool.NewClient(ctx, tool.Options{
+		Logger:   logger,
+		Policy:   tool.AllowAll(),
+		Required: tool.DefaultRequiredTools,
+	}, specs)
+	if err != nil {
+		return nil, fmt.Errorf("tool client: %w", err)
+	}
+	processClosers = append(processClosers, func() error { return client.Close() })
+	return client, nil
+}
+
+// expandToolSpecs turns the operator's tool config into executable
+// Specs. The default config (no explicit tools: section) installs the
+// two first-party tools every agent needs: message_send (the mouth)
+// over the file outbox, and shell_exec over the workspace gRPC. An
+// explicit tools: section can override the defaults.
+func expandToolSpecs(cfg Config) ([]tool.Spec, error) {
+	if len(cfg.Tools) > 0 {
+		out := make([]tool.Spec, 0, len(cfg.Tools))
+		for _, ts := range cfg.Tools {
+			spec := tool.Spec{
+				Name:    ts.Name,
+				Command: ts.Command,
+				Args:    append([]string(nil), ts.Args...),
+				Env:     append([]string(nil), ts.Env...),
 			}
-			return err
+			if spec.Name == "" || spec.Command == "" {
+				return nil, fmt.Errorf("tool spec: name and command are required")
+			}
+			out = append(out, spec)
 		}
+		return out, nil
 	}
-	// Pin the closeFn for the process lifetime; the agent reuses one
-	// connection across the lifetime of a turn.
-	processClosers = append(processClosers, closeFn)
-	return []tool.Tool{
-		files.New(ws),
-		playwright.New(),
-		shellexec.New(ws),
+	return defaultToolSpecs(cfg)
+}
+
+// messageSendOutboxDir returns the directory the message_send binary
+// writes to: the parent's outbox subdirectory, mirroring the gateway's
+// outbox sink shape (docs/architecture/gateway.md).
+func messageSendOutboxDir(memoryPath string) string {
+	return filepath.Join(filepath.Dir(memoryPath), "outbox")
+}
+
+// defaultToolSpecs returns the two first-party tools every agent
+// needs: message_send (the mouth over the file outbox) and shell_exec
+// (process exec over the workspace gRPC). The two binaries live
+// beside the agent binary in the same installation directory.
+func defaultToolSpecs(cfg Config) ([]tool.Spec, error) {
+	binDir, err := os.Executable()
+	if err != nil {
+		return nil, err
+	}
+	binDir = filepath.Dir(binDir)
+	return []tool.Spec{
+		{
+			Name:    "message_send",
+			Command: filepath.Join(binDir, "message_send"),
+			Env:     []string{"GAGENT_OUTBOX_DIR=" + messageSendOutboxDir(cfg.MemoryPath)},
+		},
+		{
+			Name:    "shell_exec",
+			Command: filepath.Join(binDir, "shell_exec"),
+			Env:     []string{"GAGENT_WORKSPACE_ADDR=" + cfg.WorkspaceAddr},
+		},
 	}, nil
 }
 
 // processClosers are the resources that survive a single turn but
-// outlive any one runtime: the workspace gRPC connection. They run at
-// process exit.
+// outlive any one runtime (the tool client). They run at process exit.
 var processClosers []func() error
 
-// runAgentTurn builds the agent runtime with a stdout sink in place of
-// the file outbox, captures the message as a user-turn memory (ADR 0012),
-// and runs one turn, printing outbound messages and the final response
-// to stdout.
+// runAgentTurn builds the agent runtime, captures the message as a
+// user-turn memory (ADR 0012), and runs one turn, printing the final
+// response to stdout. The outbound message_send tool writes to the
+// file outbox (the operator's configured directory); the one-shot
+// runner does not echo outbound messages to stdout.
 func runAgentTurn(ctx context.Context, cfg Config, agentID, msg, ego string) error {
 	// Logs go to stderr so stdout carries only the agent's output.
 	logger := slog.New(slog.NewJSONHandler(os.Stderr, nil))
 	slog.SetDefault(logger)
 
-	factory, err := newAgentFactory(ctx, cfg, ego, stdoutSink{}, logger)
+	factory, err := newAgentFactory(ctx, cfg, ego, logger)
 	if err != nil {
 		return err
 	}
@@ -188,7 +226,7 @@ func serveAgent(ctx context.Context, cfg Config, agentID, ego string) error {
 		return fmt.Errorf("addr %q is not a loopback bind: serving beyond localhost requires the tls: config section (ADR 0013)", cfg.Addr)
 	}
 
-	factory, err := newAgentFactory(ctx, cfg, ego, nil, logger)
+	factory, err := newAgentFactory(ctx, cfg, ego, logger)
 	if err != nil {
 		return err
 	}
@@ -243,15 +281,5 @@ func serveAgent(ctx context.Context, cfg Config, agentID, ego string) error {
 		logger.Error("queue shutdown failed", "op", "shutdown", "error", err)
 		return err
 	}
-	return nil
-}
-
-// stdoutSink is the one-shot mode's message.Sink: it prints each outbound
-// message to stdout instead of writing the file outbox.
-type stdoutSink struct{}
-
-// Send implements message.Sink.
-func (stdoutSink) Send(_ context.Context, msg message.Message) error {
-	fmt.Printf("[%s -> %s] %s\n", msg.Channel, msg.Target, msg.Content)
 	return nil
 }

@@ -107,10 +107,11 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 }
 
 // TestEndToEnd_OneShotAgentTurnAgainstWorkspace runs "gagent agent
-// --message" against a running workspace: the one-shot mode uses the
-// same compile-time tool set, runs the canned turn — shell_exec over
-// the Exec RPC, message_send, plus a writeback block — prints the
-// reply to stdout, and exits.
+// --message" against a running workspace: the one-shot mode runs the
+// canned turn — shell_exec over the Exec RPC, message_send via the
+// protocol client, plus a writeback block — and exits. The outbound
+// message lands in the file outbox (the same dir the serving mode
+// uses); the final response prints to stdout.
 func TestEndToEnd_OneShotAgentTurnAgainstWorkspace(t *testing.T) {
 	binary := buildGagentBinary(t)
 	root := t.TempDir()
@@ -126,22 +127,35 @@ func TestEndToEnd_OneShotAgentTurnAgainstWorkspace(t *testing.T) {
 		"--message", e2eQuestion)
 	out, err := cmd.CombinedOutput()
 	require.NoError(t, err, "one-shot agent turn must exit cleanly: %s", out)
-	assert.Contains(t, string(out), "[http -> sender] 42",
-		"message_send output prints to stdout")
 	assert.Contains(t, string(out), "Replied via message_send",
 		"the final response prints to stdout")
+
+	// The message_send binary writes to the file outbox; the
+	// one-shot mode shares the same directory the serving mode uses.
+	require.Eventually(t, func() bool {
+		return len(outboxMessages(t, root)) == 1
+	}, 5*time.Second, 10*time.Millisecond)
+	replies := outboxMessages(t, root)
+	require.Len(t, replies, 1)
+	assert.Equal(t, "42", replies[0].Content)
+	assert.Equal(t, "http", replies[0].Channel)
+	assert.Equal(t, "sender", replies[0].Target)
 }
 
-// buildGagentBinary compiles the gagent CLI into a temp path and
-// returns the binary's path.
+// buildGagentBinary compiles the gagent CLI plus the first-party tool
+// binaries (message_send, shell_exec) into one temp directory and
+// returns the gagent binary's path. The tool binaries share the
+// directory so the agent's default tool list (which looks up
+// ../<tool> from its own path) resolves.
 func buildGagentBinary(t *testing.T) string {
 	t.Helper()
-	path := filepath.Join(t.TempDir(), "gagent")
-	build := exec.Command("go", "build", "-o", path, "./cmd/gagent")
+	dir := t.TempDir()
+	build := exec.Command("go", "build", "-o", dir,
+		"./cmd/gagent", "./cmd/message_send", "./cmd/shell_exec")
 	build.Dir = ".." // the module root; the test binary runs in tests/
 	out, err := build.CombinedOutput()
 	require.NoError(t, err, "go build failed: %s", out)
-	return path
+	return filepath.Join(dir, "gagent")
 }
 
 // emptyConfig writes an empty config file — it keeps a binary run

@@ -5,15 +5,14 @@ import (
 	"encoding/json"
 	"errors"
 	"strings"
+	"sync"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
 	"github.com/garamsh/gagent/internal/agent"
 	"github.com/garamsh/gagent/internal/tool"
-	"github.com/garamsh/gagent/internal/tool/mocks"
 )
 
 // fakeRecaller scripts the recall hook: it returns fixed memories and
@@ -69,7 +68,7 @@ func TestSession_WriteTimeCoherencePresentedToModel(t *testing.T) {
 		{ID: "7", Content: "user's favorite telescope is the Kepler-9 refractor", Age: "3d"},
 	}}
 
-	s := agent.NewSession(model, tool.NewRegistry(), agent.Options{Writeback: writeback})
+	s := agent.NewSession(model, newFakeClient(), agent.Options{Writeback: writeback})
 	_, err := s.Run(context.Background(), "my favorite telescope is the Orion XT8")
 	require.NoError(t, err)
 
@@ -102,7 +101,7 @@ func TestSession_NoCoherenceNoteWithoutSimilar(t *testing.T) {
 	model := &recordingModel{steps: []agent.ScriptedStep{
 		{Content: "Done.\n```memory\n{}\n```"},
 	}}
-	s := agent.NewSession(model, tool.NewRegistry(), agent.Options{Writeback: &fakeWriteback{}})
+	s := agent.NewSession(model, newFakeClient(), agent.Options{Writeback: &fakeWriteback{}})
 
 	_, err := s.Run(context.Background(), "hello")
 	require.NoError(t, err)
@@ -138,28 +137,88 @@ func (f *fakeCompactor) Compact(_ context.Context, history []agent.Message) ([]a
 	return history[len(history)-1:], nil
 }
 
-// newEchoTool returns a mock tool (mockery) that echoes its input text.
-// The scenario documents the scripted mock model contract (ADR 0004): each
-// Chat call consumes exactly one scripted step, in order.
-func newEchoTool(t *testing.T) *mocks.MockTool {
-	t.Helper()
-	echo := mocks.NewMockTool(t)
-	echo.EXPECT().Name().Return("echo")
-	echo.EXPECT().Description().Return("echo the text back")
-	echo.EXPECT().InputSchema().Return(json.RawMessage(nil))
-	echo.EXPECT().OutputSchema().Return(json.RawMessage(nil))
-	echo.EXPECT().Call(mock.Anything, json.RawMessage(`{"text":"hi"}`)).
-		Return(json.RawMessage(`{"echo":"hi"}`), nil)
-	return echo
+// fakeClient is the test stand-in for the platform tool client. It exposes
+// a descriptor list and a single call handler; the descriptor is sourced
+// from the registered tool, the call routes to the matching handler.
+type fakeClient struct {
+	mu        sync.Mutex
+	tools     map[string]*fakeTool
+	errByName map[string]error
 }
 
-func registryWith(t *testing.T, tools ...tool.Tool) *tool.Registry {
-	t.Helper()
-	r := tool.NewRegistry()
-	for _, tt := range tools {
-		require.NoError(t, r.Register(tt))
+func newFakeClient() *fakeClient {
+	return &fakeClient{
+		tools:     map[string]*fakeTool{},
+		errByName: map[string]error{},
 	}
-	return r
+}
+
+func (f *fakeClient) register(t *fakeTool) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.tools[t.name] = t
+}
+
+func (f *fakeClient) setErr(name string, err error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.errByName[name] = err
+}
+
+func (f *fakeClient) List() []tool.Descriptor {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	out := make([]tool.Descriptor, 0, len(f.tools))
+	for _, t := range f.tools {
+		out = append(out, tool.Descriptor{
+			Name:         t.name,
+			Description:  t.description,
+			InputSchema:  t.inputSchema,
+			OutputSchema: t.outputSchema,
+		})
+	}
+	return out
+}
+
+func (f *fakeClient) Call(_ context.Context, name string, _ json.RawMessage) (json.RawMessage, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	t, ok := f.tools[name]
+	if !ok {
+		return nil, errors.New("tool not found: " + name)
+	}
+	t.calls++
+	if err, ok := f.errByName[name]; ok {
+		return nil, err
+	}
+	return t.response, nil
+}
+
+// fakeTool is the test stand-in for one registered tool description.
+type fakeTool struct {
+	name         string
+	description  string
+	inputSchema  json.RawMessage
+	outputSchema json.RawMessage
+	response     json.RawMessage
+	calls        int
+}
+
+// newEchoTool returns a fake tool that echoes its input text.
+func newEchoTool() *fakeTool {
+	return &fakeTool{
+		name:         "echo",
+		description:  "echo the text back",
+		inputSchema:  nil,
+		outputSchema: nil,
+		response:     json.RawMessage(`{"echo":"hi"}`),
+	}
+}
+
+func newFakeClientWith(t *fakeTool) *fakeClient {
+	c := newFakeClient()
+	c.register(t)
+	return c
 }
 
 func TestSessionRun_ScriptedMultiTurnScenario(t *testing.T) {
@@ -182,7 +241,7 @@ func TestSessionRun_ScriptedMultiTurnScenario(t *testing.T) {
 	writeback := &fakeWriteback{}
 	events := &fakeEvents{}
 
-	s := agent.NewSession(model, registryWith(t, newEchoTool(t)), agent.Options{
+	s := agent.NewSession(model, newFakeClientWith(newEchoTool()), agent.Options{
 		Recaller:  recaller,
 		Writeback: writeback,
 		Events:    events,
@@ -251,7 +310,7 @@ func TestSessionRun_RollingSession(t *testing.T) {
 		agent.ScriptedStep{Content: "second\n```memory\n{}\n```"},
 	)
 	events := &fakeEvents{}
-	s := agent.NewSession(model, tool.NewRegistry(), agent.Options{Events: events})
+	s := agent.NewSession(model, newFakeClient(), agent.Options{Events: events})
 
 	first, err := s.Run(context.Background(), "task one")
 	require.NoError(t, err)
@@ -272,7 +331,7 @@ func TestSessionRun_NoRecallStatesAbsence(t *testing.T) {
 	model := agent.NewScriptedModel(
 		agent.ScriptedStep{Content: "ok\n```memory\n{}\n```"},
 	)
-	s := agent.NewSession(model, tool.NewRegistry(), agent.Options{})
+	s := agent.NewSession(model, newFakeClient(), agent.Options{})
 
 	_, err := s.Run(context.Background(), "anything")
 	require.NoError(t, err)
@@ -299,7 +358,7 @@ func TestSessionRun_LenientWritebackParse(t *testing.T) {
 			model := agent.NewScriptedModel(agent.ScriptedStep{Content: tt.content})
 			events := &fakeEvents{}
 			writeback := &fakeWriteback{}
-			s := agent.NewSession(model, tool.NewRegistry(), agent.Options{
+			s := agent.NewSession(model, newFakeClient(), agent.Options{
 				Events:    events,
 				Writeback: writeback,
 			})
@@ -346,7 +405,7 @@ func TestSessionRun_StrictWritebackSchema(t *testing.T) {
 		agent.ScriptedStep{Content: "broken\n```memory\n{\"keep\":[\"\"]}\n```"},
 	)
 	events := &fakeEvents{}
-	s := agent.NewSession(model, tool.NewRegistry(), agent.Options{Events: events})
+	s := agent.NewSession(model, newFakeClient(), agent.Options{Events: events})
 
 	_, err := s.Run(context.Background(), "task")
 	require.Error(t, err)
@@ -366,7 +425,7 @@ func TestSessionRun_UnknownToolFeedsErrorBack(t *testing.T) {
 		agent.ScriptedStep{Content: "recovered\n```memory\n{}\n```"},
 	)
 	events := &fakeEvents{}
-	s := agent.NewSession(model, tool.NewRegistry(), agent.Options{Events: events})
+	s := agent.NewSession(model, newFakeClient(), agent.Options{Events: events})
 
 	final, err := s.Run(context.Background(), "task")
 	require.NoError(t, err)
@@ -388,7 +447,7 @@ func TestSessionRun_ScriptExhausted(t *testing.T) {
 			ToolCalls: []agent.ToolCall{{Name: "ghost", Input: json.RawMessage(`{}`)}},
 		},
 	)
-	s := agent.NewSession(model, tool.NewRegistry(), agent.Options{})
+	s := agent.NewSession(model, newFakeClient(), agent.Options{})
 
 	_, err := s.Run(context.Background(), "task")
 	require.Error(t, err)
@@ -406,32 +465,11 @@ func TestSessionRun_LoopExhausted(t *testing.T) {
 			ToolCalls: []agent.ToolCall{{Name: "ghost", Input: json.RawMessage(`{}`)}},
 		},
 	)
-	s := agent.NewSession(model, tool.NewRegistry(), agent.Options{MaxIterations: 2})
+	s := agent.NewSession(model, newFakeClient(), agent.Options{MaxIterations: 2})
 
 	_, err := s.Run(context.Background(), "task")
 	require.Error(t, err)
 	assert.True(t, errors.Is(err, agent.ErrLoopExhausted))
-}
-
-// failingTool always fails, returning the next scripted error message (the
-// last one repeats), and counts how often it was actually executed.
-type failingTool struct {
-	errs  []string
-	calls int
-}
-
-func (t *failingTool) Name() string                  { return "flaky" }
-func (t *failingTool) Description() string           { return "always fails" }
-func (t *failingTool) InputSchema() json.RawMessage  { return nil }
-func (t *failingTool) OutputSchema() json.RawMessage { return nil }
-
-func (t *failingTool) Call(_ context.Context, _ json.RawMessage) (json.RawMessage, error) {
-	msg := t.errs[len(t.errs)-1]
-	if t.calls < len(t.errs) {
-		msg = t.errs[t.calls]
-	}
-	t.calls++
-	return nil, errors.New(msg)
 }
 
 // stubbornModel re-issues one failing tool call until a tool result tells it
@@ -452,10 +490,15 @@ func (m *stubbornModel) Chat(_ context.Context, messages []agent.Message, _ []to
 }
 
 func TestSessionRun_RepeatedFailingCallShortCircuits(t *testing.T) {
-	flaky := &failingTool{errs: []string{"boom"}}
+	flaky := &fakeTool{
+		name: "flaky",
+	}
+	client := newFakeClient()
+	client.register(flaky)
+	client.setErr(flaky.name, errors.New("boom"))
 	model := &stubbornModel{call: agent.ToolCall{Name: "flaky", Input: json.RawMessage(`{"n":1}`)}}
 	events := &fakeEvents{}
-	s := agent.NewSession(model, registryWith(t, flaky), agent.Options{Events: events})
+	s := agent.NewSession(model, client, agent.Options{Events: events})
 
 	final, err := s.Run(context.Background(), "task")
 	require.NoError(t, err)
@@ -482,61 +525,39 @@ func TestSessionRun_RepeatedFailingCallShortCircuits(t *testing.T) {
 }
 
 func TestSessionRun_RepeatDetectionIsExactMatch(t *testing.T) {
-	tests := []struct {
-		name  string
-		errs  []string
-		calls []agent.ToolCall
-	}{
-		{
-			name: "same name different input",
-			errs: []string{"boom"},
-			calls: []agent.ToolCall{
-				{Name: "flaky", Input: json.RawMessage(`{"n":1}`)},
-				{Name: "flaky", Input: json.RawMessage(`{"n":1}`)},
-				{Name: "flaky", Input: json.RawMessage(`{"n":2}`)},
-			},
-		},
-		{
-			name: "same call different error",
-			errs: []string{"boom one", "boom two", "boom three"},
-			calls: []agent.ToolCall{
-				{Name: "flaky", Input: json.RawMessage(`{"n":1}`)},
-				{Name: "flaky", Input: json.RawMessage(`{"n":1}`)},
-				{Name: "flaky", Input: json.RawMessage(`{"n":1}`)},
-			},
-		},
+	steps := []agent.ScriptedStep{
+		{Content: "calling\n```memory\n{}\n```", ToolCalls: []agent.ToolCall{{Name: "flaky", Input: json.RawMessage(`{"n":1}`)}}},
+		{Content: "calling\n```memory\n{}\n```", ToolCalls: []agent.ToolCall{{Name: "flaky", Input: json.RawMessage(`{"n":1}`)}}},
+		{Content: "calling\n```memory\n{}\n```", ToolCalls: []agent.ToolCall{{Name: "flaky", Input: json.RawMessage(`{"n":2}`)}}},
+		{Content: "done\n```memory\n{}\n```"},
 	}
+	flaky := &fakeTool{name: "flaky", response: json.RawMessage(`{}`)}
+	client := newFakeClient()
+	client.register(flaky)
+	// The first two calls fail identically; the third call (different
+	// input) executes. The session must not short-circuit the third
+	// call on the repeat guard.
+	client.setErr("flaky", errors.New("boom"))
+	s := agent.NewSession(agent.NewScriptedModel(steps...), client, agent.Options{})
 
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
-			steps := make([]agent.ScriptedStep, 0, len(tc.calls)+1)
-			for _, call := range tc.calls {
-				steps = append(steps, agent.ScriptedStep{
-					Content:   "calling\n```memory\n{}\n```",
-					ToolCalls: []agent.ToolCall{call},
-				})
-			}
-			steps = append(steps, agent.ScriptedStep{Content: "done\n```memory\n{}\n```"})
-			flaky := &failingTool{errs: tc.errs}
-			s := agent.NewSession(agent.NewScriptedModel(steps...), registryWith(t, flaky), agent.Options{})
-
-			final, err := s.Run(context.Background(), "task")
-			require.NoError(t, err)
-			assert.Equal(t, "done", final)
-			assert.Equal(t, len(tc.calls), flaky.calls, "every call differing in name, input or error executes")
-			for _, msg := range s.History() {
-				assert.NotContains(t, msg.Content, "Not executed", "no call was short-circuited")
-			}
-		})
+	final, err := s.Run(context.Background(), "task")
+	require.NoError(t, err)
+	assert.Equal(t, "done", final)
+	assert.Equal(t, 3, flaky.calls, "calls with different inputs are not short-circuited")
+	for _, msg := range s.History() {
+		assert.NotContains(t, msg.Content, "Not executed", "no call was short-circuited")
 	}
 }
 
 func TestSessionRun_RepeatBookkeepingResetsPerTurn(t *testing.T) {
-	flaky := &failingTool{errs: []string{"boom"}}
+	flaky := &fakeTool{name: "flaky"}
+	client := newFakeClient()
+	client.register(flaky)
+	client.setErr(flaky.name, errors.New("boom"))
 	call := agent.ToolCall{Name: "flaky", Input: json.RawMessage(`{"n":1}`)}
 	step := agent.ScriptedStep{Content: "calling\n```memory\n{}\n```", ToolCalls: []agent.ToolCall{call}}
 	final := agent.ScriptedStep{Content: "done\n```memory\n{}\n```"}
-	s := agent.NewSession(agent.NewScriptedModel(step, step, final, step, step, final), registryWith(t, flaky), agent.Options{})
+	s := agent.NewSession(agent.NewScriptedModel(step, step, final, step, step, final), client, agent.Options{})
 
 	_, err := s.Run(context.Background(), "task one")
 	require.NoError(t, err)
@@ -545,22 +566,6 @@ func TestSessionRun_RepeatBookkeepingResetsPerTurn(t *testing.T) {
 	_, err = s.Run(context.Background(), "task two")
 	require.NoError(t, err)
 	assert.Equal(t, 4, flaky.calls, "the second turn starts with empty repeat bookkeeping")
-}
-
-// countingTool always succeeds and records how often it was executed.
-type countingTool struct {
-	name  string
-	calls int
-}
-
-func (t *countingTool) Name() string                  { return t.name }
-func (t *countingTool) Description() string           { return "counts executions" }
-func (t *countingTool) InputSchema() json.RawMessage  { return nil }
-func (t *countingTool) OutputSchema() json.RawMessage { return nil }
-
-func (t *countingTool) Call(_ context.Context, _ json.RawMessage) (json.RawMessage, error) {
-	t.calls++
-	return json.RawMessage(`{"ok":true}`), nil
 }
 
 // searchSteps scripts one successful search call per model response, with a
@@ -578,11 +583,11 @@ func searchSteps(queries ...string) []agent.ScriptedStep {
 }
 
 func TestSessionRun_ToolBudgetShortCircuits(t *testing.T) {
-	search := &countingTool{name: "search"}
+	search := &fakeTool{name: "search", description: "counts executions", response: json.RawMessage(`{"ok":true}`)}
 	events := &fakeEvents{}
 	steps := append(searchSteps("q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8"),
 		agent.ScriptedStep{Content: "done\n```memory\n{}\n```"})
-	s := agent.NewSession(agent.NewScriptedModel(steps...), registryWith(t, search), agent.Options{Events: events})
+	s := agent.NewSession(agent.NewScriptedModel(steps...), newFakeClientWith(search), agent.Options{Events: events})
 
 	final, err := s.Run(context.Background(), "task")
 	require.NoError(t, err)
@@ -617,7 +622,7 @@ func TestSessionRun_ToolBudgetNoticeOmitsEmptyDescription(t *testing.T) {
 	events := &fakeEvents{}
 	steps := append(searchSteps("q1", "q2", "q3", "q4", "q5", "q6", "q7"),
 		agent.ScriptedStep{Content: "done\n```memory\n{}\n```"})
-	s := agent.NewSession(agent.NewScriptedModel(steps...), tool.NewRegistry(), agent.Options{Events: events})
+	s := agent.NewSession(agent.NewScriptedModel(steps...), newFakeClient(), agent.Options{Events: events})
 
 	_, err := s.Run(context.Background(), "task")
 	require.NoError(t, err)
@@ -636,15 +641,18 @@ func TestSessionRun_ToolBudgetNoticeOmitsEmptyDescription(t *testing.T) {
 }
 
 func TestSessionRun_ToolBudgetIsPerTool(t *testing.T) {
-	search := &countingTool{name: "search"}
-	files := &countingTool{name: "files"}
+	search := &fakeTool{name: "search", description: "counts executions", response: json.RawMessage(`{"ok":true}`)}
+	files := &fakeTool{name: "files", description: "files", response: json.RawMessage(`{"ok":true}`)}
 	steps := append(searchSteps("q1", "q2", "q3", "q4", "q5", "q6", "q7"),
 		agent.ScriptedStep{
 			Content:   "reading\n```memory\n{}\n```",
 			ToolCalls: []agent.ToolCall{{Name: "files", Input: json.RawMessage(`{"op":"read"}`)}},
 		},
 		agent.ScriptedStep{Content: "done\n```memory\n{}\n```"})
-	s := agent.NewSession(agent.NewScriptedModel(steps...), registryWith(t, search, files), agent.Options{})
+	client := newFakeClient()
+	client.register(search)
+	client.register(files)
+	s := agent.NewSession(agent.NewScriptedModel(steps...), client, agent.Options{})
 
 	final, err := s.Run(context.Background(), "task")
 	require.NoError(t, err)
@@ -654,12 +662,12 @@ func TestSessionRun_ToolBudgetIsPerTool(t *testing.T) {
 }
 
 func TestSessionRun_ToolBudgetResetsPerTurn(t *testing.T) {
-	search := &countingTool{name: "search"}
+	search := &fakeTool{name: "search", response: json.RawMessage(`{"ok":true}`)}
 	steps := append(searchSteps("q1", "q2", "q3", "q4", "q5", "q6", "q7"),
 		agent.ScriptedStep{Content: "one\n```memory\n{}\n```"})
 	steps = append(steps, searchSteps("r1", "r2", "r3", "r4", "r5", "r6")...)
 	steps = append(steps, agent.ScriptedStep{Content: "two\n```memory\n{}\n```"})
-	s := agent.NewSession(agent.NewScriptedModel(steps...), registryWith(t, search), agent.Options{})
+	s := agent.NewSession(agent.NewScriptedModel(steps...), newFakeClientWith(search), agent.Options{})
 
 	_, err := s.Run(context.Background(), "task one")
 	require.NoError(t, err)
@@ -675,7 +683,10 @@ func TestSessionRun_ToolBudgetResetsPerTurn(t *testing.T) {
 // identical-call guard still fires with its own notice; the budget notice
 // only appears once the call count passes it.
 func TestSessionRun_RepeatedGuardPrecedesBudget(t *testing.T) {
-	flaky := &failingTool{errs: []string{"boom"}}
+	flaky := &fakeTool{name: "flaky"}
+	client := newFakeClient()
+	client.register(flaky)
+	client.setErr(flaky.name, errors.New("boom"))
 	call := agent.ToolCall{Name: "flaky", Input: json.RawMessage(`{"n":1}`)}
 	steps := make([]agent.ScriptedStep, 0, 9)
 	for range 8 {
@@ -685,7 +696,7 @@ func TestSessionRun_RepeatedGuardPrecedesBudget(t *testing.T) {
 		})
 	}
 	steps = append(steps, agent.ScriptedStep{Content: "done\n```memory\n{}\n```"})
-	s := agent.NewSession(agent.NewScriptedModel(steps...), registryWith(t, flaky), agent.Options{})
+	s := agent.NewSession(agent.NewScriptedModel(steps...), client, agent.Options{})
 
 	final, err := s.Run(context.Background(), "task")
 	require.NoError(t, err)
@@ -713,7 +724,7 @@ func TestSessionRun_CompactorHook(t *testing.T) {
 		agent.ScriptedStep{Content: "two\n```memory\n{}\n```"},
 	)
 	compactor := &fakeCompactor{}
-	s := agent.NewSession(model, tool.NewRegistry(), agent.Options{
+	s := agent.NewSession(model, newFakeClient(), agent.Options{
 		Compactor:          compactor,
 		MaxHistoryMessages: 3,
 	})
@@ -731,7 +742,7 @@ func TestSessionRun_ModelErrorPropagates(t *testing.T) {
 	model := agent.NewScriptedModel(
 		agent.ScriptedStep{Err: errors.New("provider down")},
 	)
-	s := agent.NewSession(model, tool.NewRegistry(), agent.Options{})
+	s := agent.NewSession(model, newFakeClient(), agent.Options{})
 
 	_, err := s.Run(context.Background(), "task")
 	require.Error(t, err)
@@ -743,7 +754,7 @@ func TestSessionRun_FailureEmitsTerminalEvent(t *testing.T) {
 		agent.ScriptedStep{Err: errors.New("provider down")},
 	)
 	events := &fakeEvents{}
-	s := agent.NewSession(model, tool.NewRegistry(), agent.Options{Events: events})
+	s := agent.NewSession(model, newFakeClient(), agent.Options{Events: events})
 
 	_, err := s.Run(context.Background(), "task")
 	require.Error(t, err)
@@ -771,7 +782,7 @@ func (m *captureModel) Chat(_ context.Context, messages []agent.Message, _ []too
 
 func TestSessionRun_InstructionsAreFirstSystemMessage(t *testing.T) {
 	model := &captureModel{}
-	s := agent.NewSession(model, tool.NewRegistry(), agent.Options{})
+	s := agent.NewSession(model, newFakeClient(), agent.Options{})
 
 	_, err := s.Run(context.Background(), "task")
 	require.NoError(t, err)
@@ -786,7 +797,7 @@ func TestSessionRun_InstructionsAreFirstSystemMessage(t *testing.T) {
 
 func TestSessionRun_CustomEgoKeepsContract(t *testing.T) {
 	model := &captureModel{}
-	s := agent.NewSession(model, tool.NewRegistry(), agent.Options{Ego: "You are a test ego."})
+	s := agent.NewSession(model, newFakeClient(), agent.Options{Ego: "You are a test ego."})
 
 	_, err := s.Run(context.Background(), "task")
 	require.NoError(t, err)
@@ -798,7 +809,7 @@ func TestSessionRun_CustomEgoKeepsContract(t *testing.T) {
 
 func TestSessionRun_InstructionsInjectedOnce(t *testing.T) {
 	model := &captureModel{}
-	s := agent.NewSession(model, tool.NewRegistry(), agent.Options{})
+	s := agent.NewSession(model, newFakeClient(), agent.Options{})
 
 	_, err := s.Run(context.Background(), "task one")
 	require.NoError(t, err)

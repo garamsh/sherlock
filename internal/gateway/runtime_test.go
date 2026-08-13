@@ -3,9 +3,11 @@ package gateway_test
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"sync"
 	"testing"
@@ -64,7 +66,7 @@ func TestFactory_CustomSinkReceivesOutboundMessages(t *testing.T) {
 	factory := &gateway.Factory{
 		MemoryPath: memoryPath(root),
 		NewModel:   replyModel,
-		Sink:       sink,
+		Tools:      mouthClientSink(sink),
 	}
 	rt, err := factory.New(context.Background(), "env-1", nil)
 	require.NoError(t, err)
@@ -88,9 +90,11 @@ func TestFactory_CustomSinkReceivesOutboundMessages(t *testing.T) {
 
 func TestFactory_NilSinkWritesOutbox(t *testing.T) {
 	root := t.TempDir()
+	outbox := gateway.NewOutbox(filepath.Dir(memoryPath(root)))
 	factory := &gateway.Factory{
 		MemoryPath: memoryPath(root),
 		NewModel:   replyModel,
+		Tools:      mouthClientSink(outbox),
 	}
 	rt, err := factory.New(context.Background(), "env-1", nil)
 	require.NoError(t, err)
@@ -106,19 +110,17 @@ func TestFactory_NilSinkWritesOutbox(t *testing.T) {
 	assert.Len(t, entries, 1)
 }
 
-func TestFactory_NewSinkBuildsAgentSink(t *testing.T) {
+// TestFactory_OutboxConstruction pins the migration: the runtime no
+// longer takes a sink. The platform tool client absorbs the message
+// delivery path; tests that want to capture outbound messages wire
+// the message_send tool directly to their sink.
+func TestFactory_OutboxConstruction(t *testing.T) {
 	root := t.TempDir()
 	sink := &recordingSink{}
-	var gotAgentID string
-	var gotFallback *gateway.Outbox
 	factory := &gateway.Factory{
 		MemoryPath: memoryPath(root),
 		NewModel:   replyModel,
-		NewSink: func(agentID string, fallback *gateway.Outbox) message.Sink {
-			gotAgentID = agentID
-			gotFallback = fallback
-			return sink
-		},
+		Tools:      mouthClientSink(sink),
 	}
 	rt, err := factory.New(context.Background(), "env-1", nil)
 	require.NoError(t, err)
@@ -130,9 +132,11 @@ func TestFactory_NewSinkBuildsAgentSink(t *testing.T) {
 	require.NoError(t, err)
 
 	require.Len(t, sink.messages(), 1)
-	assert.Equal(t, "env-1", gotAgentID)
-	assert.Equal(t, filepath.Join(root, gateway.OutboxDir), gotFallback.Dir(),
-		"the agent sink receives the default file outbox as its fallback")
+	assert.Equal(t, message.Message{
+		Channel: "test",
+		Target:  "sender",
+		Content: "Message received.",
+	}, sink.messages()[0])
 }
 
 // TestQueue_ThresholdConsolidationRunsAfterTurn is the ADR 0011
@@ -157,10 +161,12 @@ func TestQueue_ThresholdConsolidationRunsAfterTurn(t *testing.T) {
 	}
 	require.NoError(t, seedSvc.Close())
 
+	sink := &recordingSink{}
 	factory := &gateway.Factory{
 		MemoryPath: memoryPath(root),
 		NewModel:   replyModel,
-		Sink:       &recordingSink{},
+
+		Tools: mouthClientSink(sink),
 	}
 	rt, err := factory.New(context.Background(), "env-1", nil)
 	require.NoError(t, err)
@@ -203,11 +209,13 @@ func (stubEmbedder) Embed(context.Context, string) ([]float32, error) {
 
 func TestFactory_ConfiguredEmbedderReachesMemoryService(t *testing.T) {
 	root := t.TempDir()
+	sink := &recordingSink{}
 	factory := &gateway.Factory{
 		MemoryPath: memoryPath(root),
 		NewModel:   replyModel,
-		Sink:       &recordingSink{},
-		Embedder:   stubEmbedder{},
+
+		Embedder: stubEmbedder{},
+		Tools:    mouthClientSink(sink),
 	}
 	rt, err := factory.New(context.Background(), "env-1", nil)
 	require.NoError(t, err)
@@ -243,10 +251,12 @@ func consolidateModel(_ string) agent.Model {
 // into one semantic parent and archives the originals.
 func TestRuntime_CloseConsolidatesEpisodicCluster(t *testing.T) {
 	root := t.TempDir()
+	sink := &recordingSink{}
 	factory := &gateway.Factory{
 		MemoryPath: memoryPath(root),
 		NewModel:   consolidateModel,
-		Sink:       &recordingSink{},
+
+		Tools: mouthClientSink(sink),
 	}
 	rt, err := factory.New(context.Background(), "env-1", nil)
 	require.NoError(t, err)
@@ -279,10 +289,12 @@ func compactionModel(_ string) agent.Model {
 
 func TestFactory_HistoryOverflowCompactsIntoSearchableEpisodicMemory(t *testing.T) {
 	root := t.TempDir()
+	sink := &recordingSink{}
 	factory := &gateway.Factory{
-		MemoryPath:         memoryPath(root),
-		NewModel:           compactionModel,
-		Sink:               &recordingSink{},
+		MemoryPath: memoryPath(root),
+		NewModel:   compactionModel,
+
+		Tools:              mouthClientSink(sink),
 		MaxHistoryMessages: 4,
 	}
 	rt, err := factory.New(context.Background(), "env-1", nil)
@@ -317,31 +329,79 @@ func TestFactory_HistoryOverflowCompactsIntoSearchableEpisodicMemory(t *testing.
 	assert.Contains(t, overflow.Content, "first overflowing task")
 }
 
-// stubTool is a minimal discovered-tool stand-in: a static descriptor
-// whose Call never runs in these tests.
-type stubTool struct{ name string }
-
-func (t stubTool) Name() string                 { return t.name }
-func (t stubTool) Description() string          { return "a discovered tool" }
-func (t stubTool) InputSchema() json.RawMessage { return json.RawMessage(`{"type":"object"}`) }
-func (t stubTool) OutputSchema() json.RawMessage {
-	return json.RawMessage(`{"type":"object"}`)
-}
-func (t stubTool) Call(context.Context, json.RawMessage) (json.RawMessage, error) {
-	return json.RawMessage(`{}`), nil
+// stubClient is a minimal platform-tool-client stand-in for tests
+// that don't exercise the protocol: a static descriptor list and a
+// single call handler. The shape matches the agent.ToolClient interface
+// the runtime accepts.
+type stubClient struct {
+	descriptors []tool.Descriptor
+	err         error
 }
 
-// TestFactory_RegistryHoldsMouthPlusImportedTools pins ADR 0018: the
-// agent's registry carries the in-process mouth (message_send) plus
-// every tool the agent imports at compile time. There is no
-// runtime discovery and no built-in computer — the agent imports
-// tools as Go packages under tools/ and the factory accepts the
-// constructed list.
-func TestFactory_RegistryHoldsMouthPlusImportedTools(t *testing.T) {
+func (s stubClient) List() []tool.Descriptor {
+	out := make([]tool.Descriptor, len(s.descriptors))
+	copy(out, s.descriptors)
+	sort.Slice(out, func(i, j int) bool { return out[i].Name < out[j].Name })
+	return out
+}
+func (s stubClient) Call(_ context.Context, _ string, _ json.RawMessage) (json.RawMessage, error) {
+	return json.RawMessage(`{}`), s.err
+}
+
+// mouthClient is a stubClient that forwards message_send calls to a
+// message.Sink. It mirrors the message_send tool's contract (in/out
+// schemas) so the test factories exercise the structural shape —
+// descriptor fetched over the wire — without spawning the binary.
+type mouthClient struct {
+	descriptors []tool.Descriptor
+	sink        message.Sink
+}
+
+func (m mouthClient) List() []tool.Descriptor {
+	out := append([]tool.Descriptor(nil), m.descriptors...)
+	sort.Slice(out, func(i, j int) bool { return out[i].Name < out[j].Name })
+	return out
+}
+
+func (m mouthClient) Call(_ context.Context, name string, input json.RawMessage) (json.RawMessage, error) {
+	if name != "message_send" {
+		return nil, errors.New("mouthClient: unknown tool " + name)
+	}
+	var msg message.Message
+	if err := json.Unmarshal(input, &msg); err != nil {
+		return nil, err
+	}
+	if err := m.sink.Send(context.Background(), msg); err != nil {
+		return nil, err
+	}
+	return json.RawMessage(`{"status":"queued"}`), nil
+}
+
+// mouthClientSink wires the gateway's default sink into a mouthClient so
+// the test factories can use the file outbox as the message_send delivery
+// endpoint without spawning the binary.
+func mouthClientSink(sink message.Sink) agent.ToolClient {
+	return mouthClient{
+		descriptors: []tool.Descriptor{
+			{Name: "message_send", Description: "Queue an outbound message for delivery to a channel and target."},
+		},
+		sink: sink,
+	}
+}
+
+// TestFactory_ToolClientDescriptorsReachSession pins the structural
+// move (ADR 0018 §Decision): the agent's runtime surfaces the
+// descriptors the platform tool client fetched, never an in-process
+// map the agent compiled itself.
+func TestFactory_ToolClientDescriptorsReachSession(t *testing.T) {
+	client := stubClient{descriptors: []tool.Descriptor{
+		{Name: "playwright", Description: "browser automation"},
+		{Name: "files", Description: "read/write files"},
+	}}
 	factory := &gateway.Factory{
 		MemoryPath: memoryPath(t.TempDir()),
 		NewModel:   replyModel,
-		Tools:      []tool.Tool{stubTool{name: "playwright"}, stubTool{name: "files"}},
+		Tools:      client,
 	}
 	rt, err := factory.New(context.Background(), "env-1", nil)
 	require.NoError(t, err)
@@ -350,32 +410,35 @@ func TestFactory_RegistryHoldsMouthPlusImportedTools(t *testing.T) {
 	}()
 
 	names := make([]string, 0)
-	for _, d := range rt.Registry.List() {
+	for _, d := range rt.Tools.List() {
 		names = append(names, d.Name)
 	}
-	assert.Equal(t, []string{"files", "message_send", "playwright"}, names,
-		"the mouth plus the imported tools join the registry in name-sorted order")
+	assert.Equal(t, []string{"files", "playwright"}, names,
+		"the tool client surfaces only what the operator installed; the agent carries no compile-time list")
 }
 
-// TestFactory_DiscoveredToolCollidingWithMouthFailsStartup pins the
-// registry boundary: a tool server advertising message_send collides
-// with the in-process mouth and fails startup instead of shadowing it.
-func TestFactory_DiscoveredToolCollidingWithMouthFailsStartup(t *testing.T) {
+// TestFactory_NilToolClientIsFatal pins the failure mode: an agent
+// runtime with no tool client configured calls into the no-tool stub
+// and every tool call fails closed.
+func TestFactory_NilToolClientIsFatal(t *testing.T) {
 	factory := &gateway.Factory{
 		MemoryPath: memoryPath(t.TempDir()),
 		NewModel:   replyModel,
-		Tools:      []tool.Tool{stubTool{name: "message_send"}},
 	}
-	_, err := factory.New(context.Background(), "env-1", nil)
-	assert.ErrorIs(t, err, tool.ErrDuplicateTool)
+	rt, err := factory.New(context.Background(), "env-1", nil)
+	require.NoError(t, err)
+	defer func() {
+		assert.NoError(t, rt.Close(context.Background()))
+	}()
+
+	_, err = rt.Tools.Call(context.Background(), "any", json.RawMessage(`{}`))
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "no tool client configured")
 }
 
 func TestMessageSendTool_DescriptionAndSchemaSatisfyOpenAISubset(t *testing.T) {
-	tl := message.NewSendTool(nil)
-	assert.NotEmpty(t, tl.Description(), "the mouth must advertise a description")
-
 	var schema map[string]json.RawMessage
-	require.NoError(t, json.Unmarshal(tl.InputSchema(), &schema))
+	require.NoError(t, json.Unmarshal(message.InputSchema(), &schema))
 	require.Contains(t, schema, "type")
 	assert.JSONEq(t, `"object"`, string(schema["type"]),
 		"the API requires top-level type object")

@@ -138,6 +138,7 @@ func TestCheckSchema_AcceptsEveryBuiltinDocument(t *testing.T) {
 		{"files", "tools/files/schema.json"},
 		{"message", "internal/message/schema.json"},
 		{"playwright", "tools/playwright/schema.json"},
+		{"shell_exec", "cmd/shell_exec/schema.json"},
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			tooltest.CheckSchema(t, c.name, mustRead(t, c.file))

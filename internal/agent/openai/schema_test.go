@@ -46,9 +46,15 @@ func TestSanitizeToolParameters_DropsForbiddenTopLevelKeywords(t *testing.T) {
 	}{
 		{"allOf", `{"allOf":[{"type":"object"}]}`, "allOf"},
 		{"anyOf", `{"anyOf":[{"type":"object"}]}`, "anyOf"},
+		{"oneOf", `{"oneOf":[{"type":"string"}]}`, "oneOf"},
 		{"not", `{"not":{"type":"string"}}`, "not"},
 		{"enum", `{"enum":["a","b"]}`, "enum"},
 		{"const", `{"const":"x"}`, "const"},
+		{"if", `{"if":{"type":"string"}}`, "if"},
+		{"then", `{"then":{"type":"string"}}`, "then"},
+		{"else", `{"else":{"type":"string"}}`, "else"},
+		{"$ref", `{"$ref":"#/definitions/x"}`, "$ref"},
+		{"dependentSchemas", `{"dependentSchemas":{"x":["y"]}}`, "dependentSchemas"},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -60,6 +66,21 @@ func TestSanitizeToolParameters_DropsForbiddenTopLevelKeywords(t *testing.T) {
 			assert.JSONEq(t, `"object"`, string(doc["type"]))
 		})
 	}
+}
+
+// TestSanitizeToolParameters_ForbiddenListMatchesExporter pins the
+// contract between sanitizeSuite and the exported list: every keyword
+// listed in OpenAITopLevelForbidden is reachable through the
+// sanitizer's drop loop, so future edits to either side stay in sync.
+// Issues #313, #314.
+func TestSanitizeToolParameters_ForbiddenListMatchesExporter(t *testing.T) {
+	quietLogger(t)
+	expected := []string{
+		"allOf", "anyOf", "oneOf", "not", "enum", "const",
+		"if", "then", "else", "$ref", "dependentSchemas",
+	}
+	assert.Equal(t, expected, OpenAITopLevelForbidden,
+		"the forbidden-keyword list must include every entry covered by the suite")
 }
 
 func TestSanitizeToolParameters_CoercesNonObjectRoot(t *testing.T) {
@@ -89,7 +110,9 @@ func TestSanitizeToolParameters_DropsMultipleForbiddenKeywords(t *testing.T) {
 	raw := json.RawMessage(`{
 		"allOf": [{"type":"object"}],
 		"oneOf": [{"type":"string"}],
-		"anyOf": [{"type":"number"}]
+		"anyOf": [{"type":"number"}],
+		"if": {"type":"string"},
+		"$ref": "#/definitions/x"
 	}`)
 	got := sanitizeToolParameters("external_tool", raw)
 	var doc map[string]json.RawMessage
@@ -98,7 +121,6 @@ func TestSanitizeToolParameters_DropsMultipleForbiddenKeywords(t *testing.T) {
 		assert.NotContains(t, doc, kw, "%q should be dropped", kw)
 	}
 	assert.JSONEq(t, `"object"`, string(doc["type"]))
-	assert.Contains(t, doc, "oneOf", "top-level oneOf is supported in strict mode and must be preserved")
 }
 
 func TestSanitizeToolParameters_PreservesNestedKeywords(t *testing.T) {
@@ -123,10 +145,13 @@ func TestSanitizeToolParameters_PreservesNestedKeywords(t *testing.T) {
 	assert.JSONEq(t, `"object"`, string(doc["type"]))
 }
 
-// TestSanitizeToolParameters_PreservesTopLevelOneOf asserts the strict
-// subset keeps oneOf at the top level so per-operation branches (issue
-// #297) survive sanitization.
-func TestSanitizeToolParameters_PreservesTopLevelOneOf(t *testing.T) {
+// TestSanitizeToolParameters_DropsTopLevelOneOf pins the strict-mode
+// posture for issue #313: the chat-completions strict-mode API rejects
+// top-level oneOf, so the sanitizer must drop the keyword and keep the
+// unconditional type/required/properties the API does accept. The
+// previous TestSanitizeToolParameters_PreservesTopLevelOneOf enshrined
+// the wrong assumption (#314) and was replaced by this one.
+func TestSanitizeToolParameters_DropsTopLevelOneOf(t *testing.T) {
 	quietLogger(t)
 	raw := json.RawMessage(`{
 		"type":"object",
@@ -140,5 +165,9 @@ func TestSanitizeToolParameters_PreservesTopLevelOneOf(t *testing.T) {
 	got := sanitizeToolParameters("gh", raw)
 	var doc map[string]json.RawMessage
 	require.NoError(t, json.Unmarshal(got, &doc))
-	assert.Contains(t, doc, "oneOf", "top-level oneOf must survive sanitization")
+	assert.NotContains(t, doc, "oneOf",
+		"top-level oneOf is rejected by the strict-mode API (issue #313) and must be dropped")
+	assert.JSONEq(t, `"object"`, string(doc["type"]))
+	assert.Contains(t, doc, "properties", "the unconditional structural fields must survive sanitization")
+	assert.Contains(t, doc, "required", "the unconditional required list must survive sanitization")
 }

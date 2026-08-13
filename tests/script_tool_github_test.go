@@ -144,6 +144,34 @@ func TestScriptTool_GitHub_MissingToken(t *testing.T) {
 	assert.ErrorIs(t, err, tool.ErrExecution)
 }
 
+// TestScriptTool_GitHub_PushRequiresBranchAndSha covers the runtime
+// check that replaced the previous top-level oneOf (issue #313): the
+// strict-mode subset does not accept oneOf, so the conditional
+// requirements per operation moved into the script's run(). The
+// registry's schema validation no longer rejects the missing
+// branch/sha; the runtime returns an execution error before the
+// GitHub request is issued.
+func TestScriptTool_GitHub_PushRequiresBranchAndSha(t *testing.T) {
+	root := t.TempDir()
+	hash := installTool(t, root, "github")
+	t.Setenv("GH_TOKEN", "fake-test-token")
+
+	reg, err := tool.NewRegistry(tool.RegistryOptions{
+		Dir:      root,
+		Pins:     tool.ManifestPins{"github": hash},
+		Required: []string{"github"},
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() { reg.Close() })
+
+	// Missing branch and sha: the runtime check in run() returns
+	// an error before the GitHub request is made.
+	_, err = reg.Call(context.Background(), "github",
+		json.RawMessage(`{"operation":"push","owner":"example","repo":"widget"}`))
+	require.Error(t, err)
+	assert.ErrorIs(t, err, tool.ErrExecution)
+}
+
 // TestScriptTool_GitHub_InputRejected pins the boundary: an unknown
 // operation is rejected before the script runs.
 func TestScriptTool_GitHub_InputRejected(t *testing.T) {
@@ -159,10 +187,11 @@ func TestScriptTool_GitHub_InputRejected(t *testing.T) {
 	require.NoError(t, err)
 	t.Cleanup(func() { reg.Close() })
 
-	// Push requires branch and sha; the oneOf branch rejects the
-	// missing fields before the script runs.
+	// Missing owner / repo: those remain unconditional in the
+	// schema's required list, so the registry still rejects before
+	// the script runs.
 	_, err = reg.Call(context.Background(), "github",
-		json.RawMessage(`{"operation":"push","owner":"example","repo":"widget"}`))
+		json.RawMessage(`{"operation":"push"}`))
 	require.Error(t, err)
 	assert.ErrorIs(t, err, tool.ErrValidation)
 }

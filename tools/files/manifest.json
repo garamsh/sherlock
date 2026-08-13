@@ -13,20 +13,6 @@
 			"content": {"type": "string"}
 		},
 		"required": ["operation", "path"],
-		"oneOf": [
-			{
-				"properties": {"operation": {"const": "write"}},
-				"required": ["operation", "content"]
-			},
-			{
-				"properties": {"operation": {"const": "read"}},
-				"required": ["operation"]
-			},
-			{
-				"properties": {"operation": {"const": "list"}},
-				"required": ["operation"]
-			}
-		],
 		"additionalProperties": false
 	},
 	"output_schema": {

@@ -217,7 +217,9 @@ func TestNew_MissingSettingsFailFast(t *testing.T) {
 // an external tool registers a schema that the OpenAI function-calling
 // strict-mode API rejects (top-level allOf). The provider must sanitize
 // the schema in toWireTools so the model call does not crash with HTTP
-// 400 invalid_function_parameters. oneOf is now preserved (issue #297).
+// 400 invalid_function_parameters. The strict-mode subset also rejects
+// top-level oneOf (issue #313); the sanitizer drops every keyword in
+// OpenAITopLevelForbidden so the API never sees any of them.
 func TestChat_OutOfSubsetToolParametersAreSanitized(t *testing.T) {
 	fake, server := newFakeProvider(t,
 		`{"choices":[{"message":{"content":"ok"},"finish_reason":"stop"}]}`)

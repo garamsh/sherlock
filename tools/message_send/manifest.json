@@ -1,0 +1,26 @@
+{
+	"name": "message_send",
+	"description": "Queue an outbound message for delivery to a channel and target.",
+	"command": "message_send",
+	"env": [
+		"GAGENT_OUTBOX_DIR"
+	],
+	"input_schema": {
+		"type": "object",
+		"properties": {
+			"channel": {"type": "string", "minLength": 1},
+			"target": {"type": "string", "minLength": 1},
+			"content": {"type": "string", "minLength": 1}
+		},
+		"required": ["channel", "target", "content"],
+		"additionalProperties": false
+	},
+	"output_schema": {
+		"type": "object",
+		"properties": {
+			"status": {"type": "string", "enum": ["queued"]}
+		},
+		"required": ["status"],
+		"additionalProperties": false
+	}
+}

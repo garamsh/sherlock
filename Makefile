@@ -1,4 +1,4 @@
-.PHONY: lint format format-fix test build generate proto ci hooks
+.PHONY: lint format format-fix test build build-tools generate proto ci hooks
 
 lint:
 	@if [ -f go.mod ]; then \
@@ -17,6 +17,11 @@ test:
 
 build:
 	@if [ -f go.mod ]; then go build ./...; else echo "no go.mod yet; skipping go build"; fi
+
+build-tools:
+	@for tool in files shell_exec message_send github; do \
+		go build -o tools/$$tool/$$tool ./tools/$$tool/; \
+	done
 
 generate:
 	mockery

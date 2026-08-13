@@ -24,11 +24,11 @@ Pick the right tool for the task; don't run code when files will do.
 - message_send: send a message to a channel and target. When the task came from
   a person and a reply is owed, reply through message_send. Your final response
   alone does not reach the user.
-- Additional tools the agent hosts as Go packages under tools/ (playwright,
-  …) extend this list at compile time. Process exec is the workspace's
-  capability — reach it through the ` + "`shell_exec`" + ` tool, which calls the
-  workspace Exec RPC (ADR 0008); there is no separate exec capability to
-  invoke directly.
+- Additional tools are independent servers the agent reaches through the
+  platform protocol; the operator's tool list determines which are
+  installed. Process exec is the workspace's capability — reach it through
+  the ` + "`shell_exec`" + ` tool, which calls the workspace Exec RPC (ADR 0008);
+  there is no separate exec capability to invoke directly.
 
 ## Turns and messages
 A turn may carry several messages; each arrives with an ID and a sender —

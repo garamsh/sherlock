@@ -17,22 +17,30 @@
 		},
 		"required": ["operation", "owner", "repo"],
 		"additionalProperties": false,
-		"allOf": [
+		"oneOf": [
 			{
-				"if": {"properties": {"operation": {"const": "push"}}, "required": ["operation"]},
-				"then": {"required": ["branch", "sha"]}
+				"properties": {
+					"operation": {"const": "push"}
+				},
+				"required": ["operation", "branch", "sha"]
 			},
 			{
-				"if": {"properties": {"operation": {"const": "open_issue"}}, "required": ["operation"]},
-				"then": {"required": ["title"]}
+				"properties": {
+					"operation": {"const": "open_issue"}
+				},
+				"required": ["operation", "title"]
 			},
 			{
-				"if": {"properties": {"operation": {"const": "open_pull_request"}}, "required": ["operation"]},
-				"then": {"required": ["head", "base", "title"]}
+				"properties": {
+					"operation": {"const": "open_pull_request"}
+				},
+				"required": ["operation", "head", "base", "title"]
 			},
 			{
-				"if": {"properties": {"operation": {"const": "comment"}}, "required": ["operation"]},
-				"then": {"required": ["number", "message"]}
+				"properties": {
+					"operation": {"const": "comment"}
+				},
+				"required": ["operation", "number", "message"]
 			}
 		]
 	},

@@ -1,7 +1,7 @@
 # ADR 0018: The agent is the self; the workspace is the data plane — pod-per-agent, and tools are independent servers behind a platform protocol
 
 > Status: accepted
-> Date: 2026-08-09 (revised in place 2026-08-13)
+> Date: 2026-08-09 (revised in place 2026-08-13; 2026-08-14)
 
 ## Context
 
@@ -39,17 +39,17 @@ A tool is an **independent server** behind one platform-owned protocol. The plat
 
 | Concern | Owner |
 |---|---|
-| Wire protocol (descriptor fetch, call, error shape) | Platform |
+| Contract shape (manifest schema and the call protocol) | Platform |
 | Installation list (which tools are present) | Operator (config) |
-| Trust posture (boundary validation, permissions, secret scoping, drift pinning) | Platform |
-| Self-description (name, description, input/output schema, usage instructions) | Tool |
+| Boundary validation (manifest parse, input/output schema check, drift pin) | Platform |
+| Self-description (name, description, input/output schema, executable) | Tool author (manifest) |
 | Input validation, output conformance | Tool (primary); Platform (boundary re-validation) |
 | Behavior — external API calls, local compute, workspace calls, anything else | Tool |
 | Domain security policy | Tool (ADR 0005) |
 
-The platform exposes one protocol client — discovery fetches the tool's descriptor and schema from the tool itself; the platform pins the descriptor hash and refuses drift at startup. The tool's self-description is untrusted input; the platform validates every fetched descriptor at the boundary and quarantines any tool whose schema fails to parse or whose output violates its declared output schema. Strict schema enforcement at the model API layer (constrained decoding when the provider supports it, `parallel_tool_calls: false` because strict is incompatible with parallel calls) prevents the model from emitting arguments the schema rejects.
+The platform owns the call contract — manifest format and the single stdio invocation shape — and the boundary posture (validation, drift pin, required-tool check). The tool author owns the contract surface (the manifest) and the implementation. The platform discovers the tool by reading the manifest at startup, pins a hash of the manifest, and refuses to load a tool whose hash drifts from the pin. The tool's self-description is untrusted input at the boundary; the platform validates every fetched descriptor at the boundary and quarantines any tool whose schema fails to parse or whose output violates its declared output schema. Strict schema enforcement at the model API layer (constrained decoding when the provider supports it, `parallel_tool_calls: false` because strict is incompatible with parallel calls) prevents the model from emitting arguments the schema rejects.
 
-There is no compile-time tool registry, no runtime plugin loader, and no remote tool registry. A capability is added by installing a tool server, declared in the operator's tool list, and (for first-party tools we ship) checked in as a Go binary in this repository. The platform's `internal/tool` package is the protocol client: descriptor discovery, call dispatch, schema validation, permission policy, and drift pinning.
+There is no compile-time tool registry, no runtime plugin loader, no wire protocol, and no remote tool registry. A capability is added by dropping a `tools/<name>/` directory containing a `manifest.json` and an executable. The platform's `internal/tool` package is the manifest loader, the stdio runner, the registry, and the drift pinner.
 
 ### Workspace contract (unchanged)
 
@@ -58,8 +58,8 @@ There is no compile-time tool registry, no runtime plugin loader, and no remote 
 
 ### What tools look like in this repository
 
-- **First-party tools** we ship (`files`, `shell_exec`, `message_send`, `playwright`, and any new tool the architecture implies, including operator-sanctioned external APIs like `github`) are Go binaries that live under this repository, expose the platform protocol, and are installed via the operator's tool list. They are not imported by the agent binary; they are spawned (stdio) or reached (HTTP) by the platform's client.
-- **Third-party tools** follow the same protocol and install the same way; nothing in their treatment distinguishes them structurally from first-party tools.
+- **First-party tools** we ship (`files`, `shell_exec`, `message_send`, `github`, and any new tool the architecture implies) live as `tools/<name>/` directories under this repository: each contains `manifest.json` and an executable that implements the manifest's contract. The language is the tool author's choice. The platform's stdio runner spawns the executable on demand.
+- **Third-party tools** follow the same shape; nothing in the platform's treatment distinguishes them structurally from first-party tools.
 
 ### Required tools
 
@@ -96,11 +96,13 @@ The tool contract is explicitly not:
 
 ## Rejected alternatives
 
-- **Keep tools-as-packages (the previous shape).** The contract docs describe an external wire protocol; the code is an in-process interface; nothing matches. Contribution still requires a rebuild. Rejected by the contribution-friction and contract-drift pressure above.
-- **Schema-only tools (declarative descriptors with no behavior).** A descriptor alone cannot carry behavior; thin API proxies are the only class that fits. Shell exec, browser automation, delivery-with-fallback, and any future behavior-bearing tool cannot live in such a shape. Rejected for missing the general case.
-- **Custom REST contract on top of the existing `ListTools`/`Call` ADR-0018-vestige.** We would design and document our own protocol that no one else speaks; every contributor learns our bespoke API; zero ecosystem. Rejected for the same reason ADR 0014 rejected an egress proxy.
+- **Keep tools-as-packages (the original shape).** The contract docs described an external wire protocol; the code was an in-process interface; nothing matched. Contribution still required a rebuild. Rejected by the contribution-friction and contract-drift pressure above.
+- **Tools as protocol servers (the previous revised shape).** MCP-style tools made the tool author write transport code (JSON-RPC framing, request IDs, capabilities, error codes) on top of their domain logic. The transport cost was borne by every contributor, and the platform's protocol client grew a corresponding protocol stack. The owner's preferred shape is the manifest: the contract is declarative, the transport is owned by the platform. The previous PRs (#280, #290, #292, #293, #294, #295, #306, #307, #308) are superseded by this revision once the corresponding code lands.
+- **Schema-only tools (declarative descriptors with no behavior).** A descriptor alone cannot carry behavior; thin API proxies are the only class that fits. The script form keeps the descriptor in the manifest and the behavior in the executable; the two halves stay separate.
 - **gRPC for the tool contract.** Protobuf gives strong typing on the wire but produces two schema systems (proto and the JSON Schema the model needs), adds a protoc toolchain to every contributor, and offers none of its strengths (streaming, binary efficiency) for small JSON tool calls. Rejected: it is the wrong layer — gRPC is correctly placed at the workspace data plane.
+- **HTTP/REST for the tool contract.** The contract would be a custom HTTP shape (`POST /tools/<name>/call`); the model still needs JSON Schema. Two transports for one contract. The stdio shape (one JSON exchange per invocation) is simpler.
 - **Treating the platform as a generic tool executor (OpenAPI-style declarative binding).** A platform that interprets declarative bindings becomes a workflow engine with embedded auth, response mapping, pagination, and error mapping; the executor becomes a DSL. Secrets then live in the platform to be forwarded, which violates ADR 0003's and ADR 0014's structural answer (a secret is a stolen secret). Rejected for restoring the same complexity the architecture removed.
+- **A permissions policy at the platform level.** The tool runs with the operator's process privileges; the operator is the gate, by directory placement. A platform-level policy is a layer the operator already enforces. Rejected by the owner; not in the shape.
 - **Keep exec agent-native** — the agent container then carries the shell, the privilege drop, and the untrusted-code surface, and exec'd programs see workspace files only through a shared-mount path-equality trick; the workspace owning exec resolves file visibility natively (ADR 0008). The remote-shell exposure of the Exec RPC is real and is why the listener stays loopback-only until contract authentication exists (ADR 0013).
 - **Let the agent import `internal/workspace` directly** — collapses the boundary: tools own the wire to the workspace. The agent constructs nothing tool-shaped; the agent binary never calls the workspace gRPC client itself.
-- **Runtime tool self-registration by any user.** Would put arbitrary code next to platform secrets. Operator-installed, by config, is the only shape that preserves the trust posture.
+- **Runtime tool self-registration by any user.** Would put arbitrary code next to platform secrets. Operator-installed, by directory placement, is the only shape that preserves the trust posture.

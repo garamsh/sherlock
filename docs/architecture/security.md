@@ -5,10 +5,10 @@ Governs the security model: trust domains, secret custody, and egress. Rationale
 ## Current decisions
 
 - Two containers, two trust postures (ADR 0018):
-  - **Agent container** — holds the secrets (model and channel credentials) and the memory store. Its tool client is the protocol implementation that reaches independent tool servers; the agent executes nothing and hosts no tool behavior — the untrusted-code path lives in the workspace.
+  - **Agent container** — holds the secrets (model and channel credentials) and the memory store. Its tool client is the manifest loader and the stdio runner; the agent executes nothing and hosts no tool behavior — the untrusted-code path lives in the workspace.
   - **Sidecar (the workspace)** — serves the gRPC data plane (files and exec) and owns the one untrusted-code path: Exec children drop to the unprivileged exec UID with a scrubbed environment, rlimits, and a fresh network namespace (ADR 0008, ADR 0010). It enforces the agent's permissions at the action site with Linux users and modes.
-- Tools are independent servers behind the platform protocol (ADR 0018, ADR 0009). The platform owns the protocol, the installation list, the boundary validation, the permission policy, and the per-tool secret scoping. Tools own their description, validation, behavior, and domain security policy (ADR 0005).
-- **Tool trust posture.** Tools installed in the operator's list run as separate processes spawned or reached by the platform's tool client. They execute in the secret-holding trust domain — the platform never runs arbitrary tool code in the agent's address space — and the tool's process environment carries only the secrets the operator scoped to that tool. **Free contribution, operator installation**: any user may publish a tool, but only the operator decides which tools are installed and which env vars each receives. Self-registration is not a supported shape.
+- Tools are scripts with manifests under the operator's `tools/` directory (ADR 0018, ADR 0009). The platform owns the manifest format, the stdio call protocol, the boundary validation, the per-tool secret scoping, and the drift pin. Tools own their description, validation, behavior, and domain security policy (ADR 0005).
+- **Tool trust posture.** Tools installed by the operator run as separate processes spawned by the platform's stdio runner. They execute in the operator's trust domain — the platform never runs arbitrary tool code in the agent's address space — and the tool's process environment carries only the secrets the operator scoped to that tool (the manifest's `env` field). **Free contribution, operator installation**: any user may publish a tool, but only the operator chooses which tool directories are present. Self-registration is not a supported shape.
 - **Boundary posture on tool inputs and outputs.** The tool's self-description is untrusted input at the boundary. The platform re-validates fetched descriptors, refuses to load a tool whose schema fails to parse or whose descriptor hash drifts from the pinned value, and quarantines any tool whose output violates its declared output schema. Strict schema enforcement at the model API layer (constrained decoding when the provider supports it) prevents the model from emitting arguments the schema rejects.
 - Secrets never materialize in the execution domain; exposure is prevented by absence, not filtering (ADR 0003). Tool output schemas never include credential fields, and secrets never enter the conversation context.
 - Each tool's implementation enforces its own domain's policy; no separate security layer exists (ADR 0005). Guard models are defense-in-depth, never a boundary.
@@ -24,14 +24,15 @@ Two processes per agent today. The agent process (`gagent agent`) holds the secr
 
 The sidecar's gRPC listener is unauthenticated in this phase, so it serves loopback binds only — the same fail-closed posture as the gateway (ADR 0013): an unauthenticated gRPC listener carrying Exec is a remote shell into the workspace, and a non-loopback addr fails startup.
 
-The agent's tool client (`internal/tool`) implements the platform protocol: descriptor discovery, call dispatch, schema validation, permission policy, drift pinning. Required tools (the mouth, the workspace-coupling tools) are validated at startup; a missing required tool fails closed.
+The agent's tool client (`internal/tool`) implements the platform contract: manifest loading, the stdio call protocol, schema validation, drift pinning. Required tools (the mouth, the workspace-coupling tools) are validated at startup; a missing required tool fails closed. The platform does not mediate permissions at the tool level — the operator is the gate, by directory placement.
 
 ## Rejected alternatives
 
 - **Filters or guard models as the boundary** — probabilistic and bypassable by obfuscation; boundaries are structural only.
 - **In-body secret substitution (shell wrapper, FUSE, LD_PRELOAD)** — a materialized secret is a stolen secret.
 - **Shared sidecar from the start** — multi-tenant execution security before the dedicated baseline exists.
-- **A runtime plugin loader for tools (any user self-registers tools at runtime).** Would put arbitrary code next to platform secrets. The contribution shape is "free to publish, operator-installed by config" — that is the only shape that preserves the trust posture while letting any user contribute tools.
+- **A runtime plugin loader for tools (any user self-registers tools at runtime).** Would put arbitrary code next to platform secrets. The contribution shape is "free to publish, operator-installed by directory placement" — that is the only shape that preserves the trust posture while letting any user contribute tools.
+- **A permissions policy at the platform level.** The tool runs with the operator's process privileges; the operator is the gate. A platform-level policy adds a layer the operator already enforces by directory placement. Rejected by the owner; not in the shape.
 - **Platform as secret dispatcher for tool credentials.** Rejected: a materialized secret is a stolen secret (ADR 0003, ADR 0014). Per-tool env scoping is operator config; the platform forwards.
 
 ## Open questions

@@ -20,7 +20,7 @@ func mockModel(_ string) agent.Model {
 			ToolCalls: []agent.ToolCall{{
 				Name: "files",
 				Input: json.RawMessage(
-					`{"operation":"read","path":"marker.txt"}`,
+					`{"operation":"read","path":"marker.txt","content":null}`,
 				),
 			}},
 		},
@@ -28,7 +28,7 @@ func mockModel(_ string) agent.Model {
 			ToolCalls: []agent.ToolCall{{
 				Name: "shell_exec",
 				Input: json.RawMessage(
-					`{"command":"ls; echo $((6 * 7))"}`,
+					`{"command":"ls; echo $((6 * 7))","timeout_nanos":null}`,
 				),
 			}},
 		},

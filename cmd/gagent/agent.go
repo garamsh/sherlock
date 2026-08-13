@@ -16,6 +16,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
+	"github.com/garamsh/gagent/internal/agent/openai"
 	"github.com/garamsh/gagent/internal/gateway"
 	"github.com/garamsh/gagent/internal/message"
 	"github.com/garamsh/gagent/internal/tool"
@@ -123,6 +124,10 @@ func buildToolRegistry(cfg Config, logger *slog.Logger) (*tool.Registry, error) 
 		Logger:   logger,
 		Dir:      dir,
 		Required: tool.DefaultRequiredTools,
+		// The runtime validates inputs and outputs against the
+		// sanitizer's view, so the model-facing surface and the
+		// runtime's gate are the same shape (issue #319).
+		Sanitize: openai.SanitizeToolParameters,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("tool registry: %w", err)

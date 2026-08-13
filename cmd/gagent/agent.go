@@ -72,32 +72,39 @@ func addAgentFlags(fs *pflag.FlagSet) {
 
 // newAgentFactory resolves the model providers, builds the operator's
 // tool specs into a protocol client, and returns the runtime factory
-// both agent modes share. The agent constructs no tool-shaped code at
-// compile time (ADR 0018 §Decision, ADR 0009 §Decision).
-func newAgentFactory(ctx context.Context, cfg Config, ego string, logger *slog.Logger) (*gateway.Factory, error) {
+// and the tool client both agent modes share. The agent constructs no
+// tool-shaped code at compile time (ADR 0018 §Decision, ADR 0009
+// §Decision); the caller closes the returned client at the right
+// moment in each mode.
+func newAgentFactory(ctx context.Context, cfg Config, ego string, logger *slog.Logger) (*gateway.Factory, *tool.Client, error) {
 	newModel, err := newModelFunc(cfg.Model)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	embedder, err := newEmbedderFunc(cfg.Embedder)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	summarizer, err := newSummarizerFunc(cfg.Model)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	tools, err := buildToolClient(ctx, cfg, logger)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return newFactory(cfg, newModel, embedder, summarizer, ego, tools)
+	factory, err := newFactory(cfg, newModel, embedder, summarizer, ego, tools)
+	if err != nil {
+		return nil, nil, err
+	}
+	return factory, tools, nil
 }
 
 // buildToolClient expands the operator's tool specs into a running
 // platform tool client. Each spec is a binary the agent spawns; the
 // client owns the lifecycle, the discovery handshake, and the
-// per-tool boundary (ADR 0018 §Tool contract).
+// per-tool boundary (ADR 0018 §Tool contract). The caller closes the
+// returned client.
 func buildToolClient(ctx context.Context, cfg Config, logger *slog.Logger) (*tool.Client, error) {
 	specs, err := expandToolSpecs(cfg)
 	if err != nil {
@@ -111,7 +118,6 @@ func buildToolClient(ctx context.Context, cfg Config, logger *slog.Logger) (*too
 	if err != nil {
 		return nil, fmt.Errorf("tool client: %w", err)
 	}
-	processClosers = append(processClosers, func() error { return client.Close() })
 	return client, nil
 }
 
@@ -192,10 +198,6 @@ func defaultToolSpecs(cfg Config) ([]tool.Spec, error) {
 	}, nil
 }
 
-// processClosers are the resources that survive a single turn but
-// outlive any one runtime (the tool client). They run at process exit.
-var processClosers []func() error
-
 // runAgentTurn builds the agent runtime, captures the message as a
 // user-turn memory (ADR 0012), and runs one turn. One-shot mode echoes
 // outbound messages to stdout (in addition to the file outbox the
@@ -209,7 +211,7 @@ func runAgentTurn(ctx context.Context, cfg Config, agentID, msg, ego string) err
 	outboxDir := messageSendOutboxDir(cfg.MemoryPath)
 	before := outboxSnapshot(outboxDir)
 
-	factory, err := newAgentFactory(ctx, cfg, ego, logger)
+	factory, client, err := newAgentFactory(ctx, cfg, ego, logger)
 	if err != nil {
 		return err
 	}
@@ -221,8 +223,8 @@ func runAgentTurn(ctx context.Context, cfg Config, agentID, msg, ego string) err
 		if err := rt.Close(context.Background()); err != nil {
 			logger.Error("runtime close failed", "op", "shutdown", "error", err)
 		}
-		for _, close := range processClosers {
-			_ = close()
+		if err := client.Close(); err != nil {
+			logger.Error("tool client close failed", "op", "shutdown", "error", err)
 		}
 	}()
 
@@ -292,7 +294,7 @@ func serveAgent(ctx context.Context, cfg Config, agentID, ego string) error {
 		return fmt.Errorf("addr %q is not a loopback bind: serving beyond localhost requires the tls: config section (ADR 0013)", cfg.Addr)
 	}
 
-	factory, err := newAgentFactory(ctx, cfg, ego, logger)
+	factory, client, err := newAgentFactory(ctx, cfg, ego, logger)
 	if err != nil {
 		return err
 	}
@@ -301,8 +303,8 @@ func serveAgent(ctx context.Context, cfg Config, agentID, ego string) error {
 		return err
 	}
 	defer func() {
-		for _, close := range processClosers {
-			_ = close()
+		if err := client.Close(); err != nil {
+			logger.Error("tool client close failed", "op", "shutdown", "error", err)
 		}
 	}()
 

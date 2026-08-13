@@ -7,10 +7,13 @@ import (
 )
 
 // OpenAITopLevelForbidden lists the JSON Schema keywords the OpenAI
-// chat-completions API rejects at the top level of a tool's parameters
-// document. The API also requires top-level type "object" (enforced
-// separately inside sanitizeToolParameters). Issue #54/#55.
-var OpenAITopLevelForbidden = []string{"allOf", "anyOf", "oneOf", "not", "enum", "const"}
+// chat-completions strict-mode API rejects at the top level of a tool's
+// parameters document. allOf, anyOf, not, enum, and const are
+// unsupported; oneOf is supported in strict mode and is therefore
+// preserved. The API also requires top-level type "object" (enforced
+// separately inside sanitizeToolParameters). Issue #54/#55; updated for
+// strict mode in #298.
+var OpenAITopLevelForbidden = []string{"allOf", "anyOf", "not", "enum", "const"}
 
 // emptyObjectParameters is the fallback parameters document when a tool's
 // schema is unusable: not parseable as an object, or root-typed as something

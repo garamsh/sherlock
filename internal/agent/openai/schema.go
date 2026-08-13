@@ -21,6 +21,14 @@ var OpenAITopLevelForbidden = []string{"allOf", "anyOf", "not", "enum", "const"}
 // consistent shape.
 var emptyObjectParameters = json.RawMessage(`{"type":"object"}`)
 
+// SanitizeToolParameters is the exported wrapper of sanitizeToolParameters.
+// The script-tool runner's descriptors flow through the same OpenAI
+// sanitizer before reaching the model, so callers that have a manifest's
+// input_schema can hand it here without duplicating the function.
+func SanitizeToolParameters(name string, raw json.RawMessage) json.RawMessage {
+	return sanitizeToolParameters(name, raw)
+}
+
 // sanitizeToolParameters reduces a tool's input schema to the subset the
 // OpenAI function-calling API accepts. Schemas already inside the subset
 // are returned unchanged. Out-of-subset schemas are reduced: the root is

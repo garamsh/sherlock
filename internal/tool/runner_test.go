@@ -191,6 +191,30 @@ func TestRunner_EmptyCommandFailsClosed(t *testing.T) {
 	assert.Contains(t, err.Error(), "command is empty")
 }
 
+// TestRunner_ExitBeforeReadingStdin pins the structural fix: a tool
+// that exits before reading stdin causes the runner's stdin write to
+// fail with EPIPE. The runner must not propagate that failure — the
+// exit status (or the output on stdout) is the real signal. The
+// test loop runs the script many times to cover the race between
+// the runner's write and the script's exit.
+func TestRunner_ExitBeforeReadingStdin(t *testing.T) {
+	script := tinyScript(t, `echo '{"ok":1}'
+exit 0`)
+	manifest := tool.Manifest{
+		Name:         "fast",
+		Description:  "fast",
+		Command:      script,
+		InputSchema:  json.RawMessage(`{"type":"object"}`),
+		OutputSchema: json.RawMessage(`{"type":"object"}`),
+	}
+	runner := tool.NewRunner(manifest, t.TempDir())
+	for i := 0; i < 50; i++ {
+		out, _, err := runner.Run(context.Background(), json.RawMessage(`{"x":1}`))
+		require.NoError(t, err, "iteration %d: EPIPE from a fast-exiting script must not fail the runner", i)
+		assert.JSONEq(t, `{"ok":1}`, string(out))
+	}
+}
+
 // TestReadErrorObject_DetectsErrorField pins the failure case where
 // the tool communicates the failure as a JSON object on stdout. The
 // runner returns the raw response; the caller (registry) calls

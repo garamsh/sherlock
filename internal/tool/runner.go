@@ -58,19 +58,18 @@ func (r *Runner) Run(ctx context.Context, input json.RawMessage) (json.RawMessag
 		return nil, "", fmt.Errorf("spawn: %w", err)
 	}
 
-	// Write the input as one JSON line, then close stdin so the
-	// tool sees EOF and knows the request is complete. A broken-pipe
-	// error here means the tool exited before reading the input —
-	// the exit status is the real signal, so the write error is
-	// surfaced only when the tool also exited successfully.
-	if err := writeJSONLine(stdin, input); err != nil && !errors.Is(err, io.ErrClosedPipe) {
-		_ = killAndWait(cmd)
-		return nil, "", fmt.Errorf("write input: %w", err)
-	}
-	if err := stdin.Close(); err != nil && !errors.Is(err, io.ErrClosedPipe) {
-		_ = killAndWait(cmd)
-		return nil, "", fmt.Errorf("close stdin: %w", err)
-	}
+	// Write the input in a goroutine. The platform's contract is
+	// best-effort: a tool that exits before reading stdin (EPIPE on
+	// the write) is not a runner failure — the exit status is the
+	// real signal. Closing stdin from the same goroutine means the
+	// tool sees EOF on its reader regardless of whether the write
+	// itself completed.
+	writeDone := make(chan struct{})
+	go func() {
+		defer close(writeDone)
+		_ = writeJSONLine(stdin, input)
+		_ = stdin.Close()
+	}()
 
 	// Capture stderr in the background so a tool that prints
 	// diagnostics before exiting does not block on a full pipe.
@@ -90,6 +89,8 @@ func (r *Runner) Run(ctx context.Context, input json.RawMessage) (json.RawMessag
 	// status, not the protocol. The platform surfaces the exit
 	// status to the caller.
 	waitErr := cmd.Wait()
+	<-writeDone
+
 	if waitErr != nil {
 		return nil, stderrBuf.String(), waitErr
 	}
@@ -167,17 +168,6 @@ func readAll(r io.Reader, buf *bytes.Buffer) func() {
 		close(done)
 	}()
 	return func() { <-done }
-}
-
-// killAndWait terminates the process and reaps it. Used on the error
-// paths where the child is still running and the platform must not
-// leak it.
-func killAndWait(cmd *exec.Cmd) error {
-	if cmd.Process == nil {
-		return nil
-	}
-	_ = cmd.Process.Kill()
-	return cmd.Wait()
 }
 
 // resolveCommand resolves the manifest's command path against the

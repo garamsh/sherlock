@@ -13,6 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/garamsh/gagent/internal/agent/openai"
 	"github.com/garamsh/gagent/internal/tool"
 )
 
@@ -204,4 +205,52 @@ type githubCall struct {
 	Path   string
 	Auth   string
 	Body   string
+}
+
+// TestScriptTool_GitHub_NullBodyAccepted pins the boundary fix from
+// issue #319: the sanitizer promotes `body` into the required list
+// with a nullable type (strict-mode rejects optional; required+nullable
+// is the shape it accepts). The runtime's schema validation must
+// therefore accept `body: null` for open_issue instead of rejecting
+// the model's null at the boundary.
+func TestScriptTool_GitHub_NullBodyAccepted(t *testing.T) {
+	root := t.TempDir()
+	hash := installTool(t, root, "github")
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		switch {
+		case r.Method == http.MethodPost && r.URL.Path == "/repos/example/widget/issues":
+			_, _ = w.Write([]byte(`{"html_url":"https://github.com/example/widget/issues/43","number":43}`))
+		default:
+			http.Error(w, `{"message":"unexpected request"}`, http.StatusInternalServerError)
+		}
+	}))
+	t.Cleanup(server.Close)
+
+	t.Setenv("GH_TOKEN", "fake-test-token")
+	t.Setenv("GITHUB_API_BASE", server.URL)
+
+	reg, err := tool.NewRegistry(tool.RegistryOptions{
+		Dir:      root,
+		Pins:     tool.ManifestPins{"github": hash},
+		Required: []string{"github"},
+		Sanitize: openai.SanitizeToolParameters,
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() { reg.Close() })
+
+	// Strict-mode requires every property (nullable) for every
+	// operation; null fields the open_issue call doesn't need
+	// appear alongside the null body the test specifically
+	// exercises.
+	out, err := reg.Call(context.Background(), "github", json.RawMessage(
+		`{"operation":"open_issue","owner":"example","repo":"widget","title":"a bug",`+
+			`"body":null,"branch":null,"sha":null,"labels":null,`+
+			`"head":null,"base":null,"number":null,"message":null}`))
+	require.NoError(t, err, "null body must pass schema validation and reach the GitHub request")
+	var body map[string]any
+	require.NoError(t, json.Unmarshal(out, &body))
+	assert.Equal(t, "opened", body["status"])
+	assert.EqualValues(t, 43, body["number"])
 }

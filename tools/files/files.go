@@ -34,9 +34,9 @@ type entry struct {
 }
 
 type callOutput struct {
-	Content      string  `json:"content,omitempty"`
-	BytesWritten int     `json:"bytes_written,omitempty"`
-	Entries      []entry `json:"entries,omitempty"`
+	Content      string  `json:"content"`
+	BytesWritten int     `json:"bytes_written"`
+	Entries      []entry `json:"entries"`
 }
 
 func main() {
@@ -80,7 +80,15 @@ func dispatch(ctx context.Context, ws workspace.WorkspaceClient, in callInput) (
 		if err != nil {
 			return callOutput{}, grpcError("read", err)
 		}
-		return callOutput{Content: string(resp.GetContent())}, nil
+		// BytesWritten and Entries are not produced by read. Emit
+		// zero/empty so the runtime's sanitized output schema
+		// (which requires every property, nullable) accepts the
+		// response and the manifest's stricter form accepts it too
+		// (issue #319).
+		return callOutput{
+			Content: string(resp.GetContent()),
+			Entries: []entry{},
+		}, nil
 	case "write":
 		// The input schema cannot carry this conditional under the
 		// strict-mode subset (oneOf is rejected at the top level,
@@ -91,7 +99,10 @@ func dispatch(ctx context.Context, ws workspace.WorkspaceClient, in callInput) (
 		if _, err := ws.Write(ctx, &workspace.WriteRequest{Path: in.Path, Content: []byte(in.Content)}); err != nil {
 			return callOutput{}, grpcError("write", err)
 		}
-		return callOutput{BytesWritten: len(in.Content)}, nil
+		return callOutput{
+			BytesWritten: len(in.Content),
+			Entries:      []entry{},
+		}, nil
 	case "list":
 		resp, err := ws.List(ctx, &workspace.ListRequest{Path: in.Path})
 		if err != nil {

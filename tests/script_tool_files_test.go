@@ -14,6 +14,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
+	"github.com/garamsh/gagent/internal/agent/openai"
 	"github.com/garamsh/gagent/internal/tool"
 	"github.com/garamsh/gagent/internal/workspace"
 	"github.com/garamsh/gagent/internal/workspace/files"
@@ -204,4 +205,36 @@ func TestScriptTool_Files_WriteRequiresContent(t *testing.T) {
 	// listing should not contain new.txt.
 	_, listErr := fs.List(".")
 	require.NoError(t, listErr)
+}
+
+// TestScriptTool_Files_NullContentAccepted pins the boundary fix from
+// issue #319: the sanitizer marks `content` as required + nullable
+// (the strict-mode API only accepts required+nullable, never optional),
+// so the runtime's schema validation must accept `content: null`. The
+// script's own dispatch check (issue #313) then rejects the empty
+// content, surfacing ErrExecution — proving the schema validation
+// passed and the rejection came from the script body, not the runtime.
+func TestScriptTool_Files_NullContentAccepted(t *testing.T) {
+	root := t.TempDir()
+	hash := installTool(t, root, "files")
+	addr, _, _, stop := startFakeWorkspace(t)
+	defer stop()
+	t.Setenv("GAGENT_WORKSPACE_ADDR", addr)
+
+	reg, err := tool.NewRegistry(tool.RegistryOptions{
+		Dir:      root,
+		Pins:     tool.ManifestPins{"files": hash},
+		Required: []string{"files"},
+		Sanitize: openai.SanitizeToolParameters,
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() { reg.Close() })
+
+	_, err = reg.Call(context.Background(), "files",
+		json.RawMessage(`{"operation":"write","path":"new.txt","content":null}`))
+	require.Error(t, err)
+	assert.ErrorIs(t, err, tool.ErrExecution,
+		"null content must pass schema validation and reach the script's dispatch check")
+	assert.NotErrorIs(t, err, tool.ErrValidation,
+		"the sanitizer's nullable type rewrite means null content must not be rejected at the boundary")
 }

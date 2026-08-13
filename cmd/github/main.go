@@ -256,15 +256,21 @@ func doPush(args callInput) (callOutput, error) {
 
 // doOpenIssue creates an issue.
 func doOpenIssue(args callInput) (callOutput, error) {
-	body, err := json.Marshal(map[string]any{
-		"title":  args.Title,
-		"body":   args.Body,
-		"labels": args.Labels,
-	})
+	// GitHub's REST API rejects a null labels array with
+	// "nil is not an array" (issue #299): only add the key when the
+	// caller supplied labels.
+	body := map[string]any{
+		"title": args.Title,
+		"body":  args.Body,
+	}
+	if args.Labels != nil {
+		body["labels"] = args.Labels
+	}
+	marshaled, err := json.Marshal(body)
 	if err != nil {
 		return callOutput{}, err
 	}
-	out, err := githubRequest(http.MethodPost, args.Owner, args.Repo, "/issues", body)
+	out, err := githubRequest(http.MethodPost, args.Owner, args.Repo, "/issues", marshaled)
 	if err != nil {
 		return callOutput{}, err
 	}

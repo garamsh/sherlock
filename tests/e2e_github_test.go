@@ -227,6 +227,49 @@ func TestEndToEnd_GitHubBinarySpawnsProtocolServer(t *testing.T) {
 				"the binary forwards the GH_TOKEN as a bearer header")
 		})
 	}
+
+	// Issue #299: when the model does not supply labels, the binary must
+	// omit the "labels" key from the issue body. GitHub's REST API
+	// rejects "labels": null with "nil is not an array".
+	t.Run("open_issue_no_labels_omits_field", func(t *testing.T) {
+		id := len(calls) + 100
+		req := map[string]any{
+			"jsonrpc": "2.0", "id": id, "method": "tools/call",
+			"params": map[string]any{
+				"name": "github",
+				"arguments": map[string]any{
+					"operation": "open_issue",
+					"owner":     "example",
+					"repo":      "widget",
+					"title":     "found a bug",
+					"body":      "details",
+				},
+			},
+		}
+		require.NoError(t, enc.Encode(req))
+		var callResp struct {
+			Result struct {
+				Content []struct {
+					Type string `json:"type"`
+					Text string `json:"text"`
+				} `json:"content"`
+			} `json:"result"`
+		}
+		require.NoError(t, dec.Decode(&callResp))
+		require.Eventually(t, func() bool {
+			mu.Lock()
+			defer mu.Unlock()
+			return len(calls) > 0 && calls[len(calls)-1].Path == "/repos/example/widget/issues" && calls[len(calls)-1].Body != "" && len(calls)-1 == id-100
+		}, 2*time.Second, 10*time.Millisecond)
+		mu.Lock()
+		last := calls[len(calls)-1]
+		mu.Unlock()
+		var sent map[string]any
+		require.NoError(t, json.Unmarshal([]byte(last.Body), &sent))
+		_, present := sent["labels"]
+		assert.False(t, present,
+			"the binary must omit the labels key when args.Labels is nil (issue #299)")
+	})
 }
 
 // TestEndToEnd_GitHubBinaryRejectsStartupWithoutToken asserts the

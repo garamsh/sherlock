@@ -89,6 +89,7 @@ func TestContract_ToolSelectionGuidance(t *testing.T) {
 	}{
 		{"files", "read, write, and list files in your workspace"},
 		{"message_send", "reply through message_send"},
+		{"shell_exec", "Running a command"},
 	}
 	for _, tc := range cases {
 		assert.Contains(t, agent.Contract, tc.fragment,
@@ -96,15 +97,40 @@ func TestContract_ToolSelectionGuidance(t *testing.T) {
 	}
 }
 
-// TestContract_ProcessExecNotATool pins ADR 0018: process exec is the
-// agent's native capability, not a tool the model invokes. The
-// contract names it once so the model does not request it.
-func TestContract_ProcessExecNotATool(t *testing.T) {
+// TestContract_ShellExecIsATool pins issue #279: process exec is the
+// workspace's capability, surfaced to the model as the `shell_exec`
+// tool (ADR 0008, ADR 0018). The stale "not a tool / never invoke"
+// wording is gone; the contract names `shell_exec` in the switch-tools
+// fallback map (alongside `files` and `message_send`) and points at
+// the workspace Exec RPC so the model knows exec lives behind that
+// wire, not as a native capability in the agent process.
+func TestContract_ShellExecIsATool(t *testing.T) {
 	contract := agent.Contract
-	assert.Contains(t, contract, "Process exec is not a tool",
-		"the contract tells the model process exec is not a tool")
-	assert.NotContains(t, contract, "shell_exec:",
-		"the contract does not advertise a shell_exec tool")
+	assert.NotContains(t, contract, "Process exec is not a tool",
+		"the contract no longer says process exec is not a tool")
+	assert.NotContains(t, contract, "execs natively",
+		"the contract no longer claims the agent execs natively")
+	assert.NotContains(t, contract, "never invoke it directly",
+		"the contract no longer tells the model never to invoke exec")
+	assert.Contains(t, contract, "shell_exec",
+		"the contract names the shell_exec tool")
+	assert.Contains(t, contract, "workspace Exec RPC",
+		"the contract traces shell_exec to the workspace Exec RPC (ADR 0008)")
+	// The switch-tools fallback map covers shell_exec alongside files
+	// and message_send so the model has typed guidance for "Running a
+	// command" when shell_exec itself fails.
+	tuIdx := strings.Index(contract, "## When a tool is unavailable")
+	rfIdx := strings.Index(contract, "## Replies and failures")
+	require.Greater(t, tuIdx, -1, "When a tool is unavailable section missing")
+	require.Greater(t, rfIdx, -1, "Replies and failures section missing")
+	frag := "Running a command"
+	idx := strings.Index(contract, frag)
+	require.Greater(t, idx, -1,
+		"shell_exec has no selection guidance in the fallback map")
+	assert.Greater(t, idx, tuIdx,
+		"shell_exec selection guidance lives in the fallback section")
+	assert.Less(t, idx, rfIdx,
+		"shell_exec selection guidance stays before Replies and failures")
 }
 
 // TestContract_FailureRecoverySentence asserts the contract tells the

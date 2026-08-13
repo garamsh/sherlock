@@ -128,6 +128,10 @@ func startAgentMTLS(t *testing.T, binary, root, configPath, workspaceAddr string
 		"--agent-id", mtlsAgentID,
 		"--memory-path", filepath.Join(root, "memory.db"),
 		"--workspace-addr", workspaceAddr)
+	// The default tool list registers the github binary; it requires
+	// GH_TOKEN at startup. The mTLS scenario does not call github,
+	// but the binary is spawned at startup.
+	cmd.Env = append(os.Environ(), "GH_TOKEN=fake-test-token")
 	cmd.Stdout = logFile
 	cmd.Stderr = logFile
 	require.NoError(t, cmd.Start())

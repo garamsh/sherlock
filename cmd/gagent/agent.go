@@ -147,11 +147,19 @@ func messageSendOutboxDir(memoryPath string) string {
 	return filepath.Join(filepath.Dir(memoryPath), "outbox")
 }
 
-// defaultToolSpecs returns the three first-party tools every agent
+// defaultToolSpecs returns the four first-party tools every agent
 // needs: files (read/write/list over the workspace gRPC), shell_exec
-// (process exec over the workspace gRPC), and message_send (the mouth
-// over the file outbox). The three binaries live beside the agent
-// binary in the same installation directory.
+// (process exec over the workspace gRPC), message_send (the mouth
+// over the file outbox), and github (push, open_issue,
+// open_pull_request, comment against api.github.com). The four
+// binaries live beside the agent binary in the same installation
+// directory.
+//
+// The github tool reads GH_TOKEN from its own process environment
+// (ADR 0003, ADR 0014): the agent passes the token via the per-tool
+// env contract, the binary rejects startup when it is missing, and
+// the token never crosses into shell_exec children (ADR 0008 scrubs
+// the env for them).
 func defaultToolSpecs(cfg Config) ([]tool.Spec, error) {
 	binDir, err := os.Executable()
 	if err != nil {
@@ -159,6 +167,7 @@ func defaultToolSpecs(cfg Config) ([]tool.Spec, error) {
 	}
 	binDir = filepath.Dir(binDir)
 	workspaceEnv := []string{"GAGENT_WORKSPACE_ADDR=" + cfg.WorkspaceAddr}
+	githubEnv := []string{"GH_TOKEN=" + os.Getenv("GH_TOKEN")}
 	return []tool.Spec{
 		{
 			Name:    "files",
@@ -174,6 +183,11 @@ func defaultToolSpecs(cfg Config) ([]tool.Spec, error) {
 			Name:    "message_send",
 			Command: filepath.Join(binDir, "message_send"),
 			Env:     []string{"GAGENT_OUTBOX_DIR=" + messageSendOutboxDir(cfg.MemoryPath)},
+		},
+		{
+			Name:    "github",
+			Command: filepath.Join(binDir, "github"),
+			Env:     githubEnv,
 		},
 	}, nil
 }

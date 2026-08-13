@@ -134,6 +134,9 @@ func TestEndToEnd_OneShotAgentTurnAgainstWorkspace(t *testing.T) {
 		"--memory-path", filepath.Join(root, "memory.db"),
 		"--workspace-addr", workspaceAddr,
 		"--message", e2eQuestion)
+	// The default tool list registers the github binary; it requires
+	// GH_TOKEN at startup (cmd/github/main.go rejects otherwise).
+	cmd.Env = append(os.Environ(), "GH_TOKEN=fake-test-token")
 	out, err := cmd.CombinedOutput()
 	require.NoError(t, err, "one-shot agent turn must exit cleanly: %s", out)
 	assert.Contains(t, string(out), "Replied via message_send",
@@ -154,16 +157,17 @@ func TestEndToEnd_OneShotAgentTurnAgainstWorkspace(t *testing.T) {
 }
 
 // buildGagentBinary compiles the gagent CLI plus the first-party tool
-// binaries (files, shell_exec, message_send) into one temp directory
-// and returns the gagent binary's path. The tool binaries share the
-// directory so the agent's default tool list (which looks up
-// ../<tool> from its own path) resolves.
+// binaries (files, shell_exec, message_send, github) into one temp
+// directory and returns the gagent binary's path. The tool binaries
+// share the directory so the agent's default tool list (which looks
+// up ../<tool> from its own path) resolves.
 func buildGagentBinary(t *testing.T) string {
 	t.Helper()
 	dir := t.TempDir()
 	build := exec.Command("go", "build", "-o", dir,
 		"./cmd/gagent",
-		"./cmd/files", "./cmd/shell_exec", "./cmd/message_send")
+		"./cmd/files", "./cmd/shell_exec", "./cmd/message_send",
+		"./cmd/github")
 	build.Dir = ".." // the module root; the test binary runs in tests/
 	out, err := build.CombinedOutput()
 	require.NoError(t, err, "go build failed: %s", out)
@@ -209,6 +213,12 @@ func startAgentBinary(t *testing.T, binary, root, workspaceAddr string) (*exec.C
 		"--agent-id", binaryAgentID,
 		"--memory-path", filepath.Join(root, "memory.db"),
 		"--workspace-addr", workspaceAddr)
+	// The default tool list registers the github binary; it requires
+	// GH_TOKEN at startup, so the agent's spawned subprocesses need a
+	// token in their env. The fake token is never used by these tests
+	// (the canned scenario does not call github), but the agent still
+	// spawns the github binary at startup.
+	cmd.Env = append(os.Environ(), "GH_TOKEN=fake-test-token")
 	cmd.Stdout = logFile
 	cmd.Stderr = logFile
 	require.NoError(t, cmd.Start())

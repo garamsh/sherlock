@@ -59,9 +59,10 @@ type Config struct {
 	MemoryPath string `mapstructure:"memory-path"`
 	// WorkspaceAddr is the gRPC endpoint of the agent's workspace —
 	// the data plane the agent's tools call into. The agent has no
-	// compile-time tool registry; the operator's tool list (Tools)
-	// installs the binaries that reach this address (ADR 0018); it is
-	// the agent's only workspace-related setting — the workspace owns
+	// compile-time tool registry; the script-tool runtime reads
+	// tools/<name>/manifest.json files from disk and spawns them as
+	// one-shot stdio processes (ADR 0009, ADR 0018); this is the
+	// agent's only workspace-related setting — the workspace owns
 	// exec, so exec-uid and exec-timeout are workspace keys.
 	WorkspaceAddr string `mapstructure:"workspace-addr"`
 	// Model selects the chat model provider (ADR 0004).
@@ -77,28 +78,6 @@ type Config struct {
 	// gateway.md). The file outbox stays the default and the
 	// delivery-failure fallback.
 	Console ConsoleConfig `mapstructure:"console"`
-	// Tools is the operator's tool list (ADR 0018 §Decision). An empty
-	// list falls back to the default first-party set (message_send
-	// over the file outbox, shell_exec over the workspace gRPC).
-	Tools []ToolSpec `mapstructure:"tools"`
-}
-
-// ToolSpec is one tool the operator installed (ADR 0018 §Decision).
-// The agent spawns one binary per spec and reaches it through the
-// platform protocol client over stdin/stdout.
-type ToolSpec struct {
-	// Name is the logical name the platform exposes to the model and
-	// the required-tool check matches against. It must equal the name
-	// the server reports in its descriptor; a mismatch fails startup.
-	Name string `mapstructure:"name"`
-	// Command is the path to the binary the platform spawns.
-	Command string `mapstructure:"command"`
-	// Args are the command arguments in argv order.
-	Args []string `mapstructure:"args"`
-	// Env are extra KEY=VALUE pairs the platform adds to the spawned
-	// process's environment. Per-tool secret scoping (ADR 0003,
-	// ADR 0018) lives here; the platform never materializes a secret.
-	Env []string `mapstructure:"env"`
 }
 
 // ConsoleConfig selects the console sink. An empty URL keeps the file

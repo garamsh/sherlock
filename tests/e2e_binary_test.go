@@ -134,9 +134,16 @@ func TestEndToEnd_OneShotAgentTurnAgainstWorkspace(t *testing.T) {
 		"--memory-path", filepath.Join(root, "memory.db"),
 		"--workspace-addr", workspaceAddr,
 		"--message", e2eQuestion)
-	// The default tool list registers the github binary; it requires
-	// GH_TOKEN at startup (cmd/github/main.go rejects otherwise).
-	cmd.Env = append(os.Environ(), "GH_TOKEN=fake-test-token")
+	// The script-tool registry reads ./tools by default; the in-tree
+	// location `make build-tools` populates in place, so point the env
+	// at the repo root's tools/ dir explicitly. The github manifest
+	// also requires GH_TOKEN at startup, even though this scenario
+	// never invokes github.
+	toolsDir := toolsDirForTest(t)
+	cmd.Env = append(os.Environ(),
+		"GAGENT_TOOLS_DIR="+toolsDir,
+		"GH_TOKEN=fake-test-token",
+	)
 	out, err := cmd.CombinedOutput()
 	require.NoError(t, err, "one-shot agent turn must exit cleanly: %s", out)
 	assert.Contains(t, string(out), "Replied via message_send",
@@ -156,21 +163,31 @@ func TestEndToEnd_OneShotAgentTurnAgainstWorkspace(t *testing.T) {
 	assert.Equal(t, "sender", replies[0].Target)
 }
 
-// buildGagentBinary compiles the gagent CLI plus the first-party tool
-// binaries (files, shell_exec, message_send, github) into one temp
-// directory and returns the gagent binary's path. The tool binaries
-// share the directory so the agent's default tool list (which looks
-// up ../<tool> from its own path) resolves.
+// buildGagentBinary compiles the gagent CLI binary into a temp
+// directory and builds each first-party tool into the module's
+// tools/<name>/<name> so the script-tool registry can resolve it
+// through GAGENT_TOOLS_DIR. The four tools are built in place (the
+// same shape `make build-tools` produces), and the agent binary is
+// the only thing copied to the tempdir; the test sets GAGENT_TOOLS_DIR
+// to the module root's tools/ dir so the run doesn't depend on
+// `go install`.
 func buildGagentBinary(t *testing.T) string {
 	t.Helper()
 	dir := t.TempDir()
-	build := exec.Command("go", "build", "-o", dir,
-		"./cmd/gagent",
-		"./cmd/files", "./cmd/shell_exec", "./cmd/message_send",
-		"./cmd/github")
+	build := exec.Command("go", "build", "-o", filepath.Join(dir, "gagent"), "./cmd/gagent")
 	build.Dir = ".." // the module root; the test binary runs in tests/
 	out, err := build.CombinedOutput()
 	require.NoError(t, err, "go build failed: %s", out)
+
+	toolsDir := toolsDirForTest(t)
+	for _, tool := range []string{"files", "shell_exec", "message_send", "github"} {
+		toolBuild := exec.Command("go", "build", "-o",
+			filepath.Join(toolsDir, tool, tool), "./tools/"+tool)
+		toolBuild.Dir = ".." // the module root
+		if toolOut, err := toolBuild.CombinedOutput(); err != nil {
+			t.Fatalf("build %s: %v\n%s", tool, err, toolOut)
+		}
+	}
 	return filepath.Join(dir, "gagent")
 }
 
@@ -213,12 +230,14 @@ func startAgentBinary(t *testing.T, binary, root, workspaceAddr string) (*exec.C
 		"--agent-id", binaryAgentID,
 		"--memory-path", filepath.Join(root, "memory.db"),
 		"--workspace-addr", workspaceAddr)
-	// The default tool list registers the github binary; it requires
-	// GH_TOKEN at startup, so the agent's spawned subprocesses need a
-	// token in their env. The fake token is never used by these tests
-	// (the canned scenario does not call github), but the agent still
-	// spawns the github binary at startup.
-	cmd.Env = append(os.Environ(), "GH_TOKEN=fake-test-token")
+	// The script-tool registry reads ./tools; the in-tree location
+	// `make build-tools` populates in place, so point the env at the
+	// repo root's tools/ dir explicitly.
+	toolsDir := toolsDirForTest(t)
+	cmd.Env = append(os.Environ(),
+		"GAGENT_TOOLS_DIR="+toolsDir,
+		"GH_TOKEN=fake-test-token",
+	)
 	cmd.Stdout = logFile
 	cmd.Stderr = logFile
 	require.NoError(t, cmd.Start())
@@ -250,5 +269,25 @@ func startAgentBinary(t *testing.T, binary, root, workspaceAddr string) (*exec.C
 			t.Fatalf("agent did not serve within 15s\nlogs:\n%s", logs)
 		}
 		time.Sleep(20 * time.Millisecond)
+	}
+}
+
+// toolsDirForTest returns the absolute path to the module-root tools/
+// directory so subprocess-driven test runs find the built-in
+// manifests regardless of cwd. The test process chdir's around, so
+// resolving from the test binary's location is the only reliable way.
+func toolsDirForTest(t *testing.T) string {
+	t.Helper()
+	wd, err := os.Getwd()
+	require.NoError(t, err)
+	for {
+		if _, err := os.Stat(filepath.Join(wd, "go.mod")); err == nil {
+			return filepath.Join(wd, "tools")
+		}
+		parent := filepath.Dir(wd)
+		if parent == wd {
+			t.Fatalf("could not locate module root from %s", wd)
+		}
+		wd = parent
 	}
 }

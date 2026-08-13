@@ -11,18 +11,11 @@ addr: "127.0.0.1:8080"
 # workspace-addr: "127.0.0.1:8081"        # default; gRPC endpoint of the agent's workspace
 model:
   provider: mock
-# tools:                                 # default: files + shell_exec + message_send + github from the same bin dir
-#   - name: files
-#     command: ./files
-#     env: ["GAGENT_WORKSPACE_ADDR=127.0.0.1:8081"]
-#   - name: shell_exec
-#     command: ./shell_exec
-#     env: ["GAGENT_WORKSPACE_ADDR=127.0.0.1:8081"]
-#   - name: message_send
-#     command: ./message_send
-#     env: ["GAGENT_OUTBOX_DIR=./data/outbox"]
-#   - name: github
-#     command: ./github
-#     env: ["GH_TOKEN=ghp_replace_me"]    # operator-scoped token; never reaches shell_exec children
-# The github binary rejects startup without GH_TOKEN; remove the github
-# entry above (or set tools:) to run without it.
+# Tools: the agent reads ./tools/<name>/manifest.json at startup
+# (ADR 0009 §Decision). The four first-party tools (files, shell_exec,
+# message_send, github) ship in place under tools/; a `make build-tools`
+# compile keeps the binaries current. Override the directory with
+# GAGENT_TOOLS_DIR, or drop a custom tool into ./tools/<name>/ with
+# its own manifest.json and binary. The github tool rejects startup
+# without GH_TOKEN, so either set GH_TOKEN in the agent's env or
+# remove tools/github/ to run without it.

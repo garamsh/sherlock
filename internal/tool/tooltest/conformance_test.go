@@ -1,6 +1,7 @@
 package tooltest_test
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"strings"
@@ -130,20 +131,49 @@ func TestCheck_ThenInheritsParentProperties(t *testing.T) {
 // TestCheckSchema_AcceptsEveryBuiltinDocument drives each shipped
 // schema through the t.Fatalf-style helper and confirms the test
 // passes; this is the gate the issue calls out as the build-time guard.
+//
+// The tools became script-tool manifests in Phase 3 (#311); the
+// conformance check now extracts the input_schema and output_schema
+// from each manifest.json so the same gate covers the new shape.
 func TestCheckSchema_AcceptsEveryBuiltinDocument(t *testing.T) {
 	for _, c := range []struct {
-		name string
-		file string
+		name   string
+		source string
 	}{
-		{"files", "cmd/files/schema.json"},
-		{"github", "cmd/github/schema.json"},
+		{"files", "tools/files/manifest.json"},
+		{"github", "tools/github/manifest.json"},
 		{"message", "internal/message/schema.json"},
-		{"shell_exec", "cmd/shell_exec/schema.json"},
+		{"shell_exec", "tools/shell_exec/manifest.json"},
 	} {
 		t.Run(c.name, func(t *testing.T) {
-			tooltest.CheckSchema(t, c.name, mustRead(t, c.file))
+			schema := mustRead(t, c.source)
+			if strings.HasSuffix(c.source, "manifest.json") {
+				input, output := extractManifestSchemas(t, schema)
+				tooltest.CheckSchema(t, c.name+"-input", input)
+				tooltest.CheckSchema(t, c.name+"-output", output)
+				return
+			}
+			input, output := tooltest.SubSchemas(t, schema)
+			tooltest.CheckSchema(t, c.name+"-input", input)
+			tooltest.CheckSchema(t, c.name+"-output", output)
 		})
 	}
+}
+
+// extractManifestSchemas splits a script-tool manifest.json into the
+// input_schema and output_schema documents the conformance check
+// runs against. Manifests are the source of truth on disk; per-doc
+// schemas let the same suite check both halves of each tool.
+func extractManifestSchemas(t *testing.T, raw []byte) (input, output []byte) {
+	t.Helper()
+	var doc struct {
+		InputSchema  json.RawMessage `json:"input_schema"`
+		OutputSchema json.RawMessage `json:"output_schema"`
+	}
+	if err := json.Unmarshal(raw, &doc); err != nil {
+		t.Fatalf("decode manifest: %v", err)
+	}
+	return doc.InputSchema, doc.OutputSchema
 }
 
 func mustRead(t *testing.T, path string) []byte {

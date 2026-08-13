@@ -3,6 +3,7 @@ package tool
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log/slog"
 	"os"
@@ -20,6 +21,61 @@ import (
 // DefaultToolsDir is the operator's tools directory when the agent's
 // config does not override it.
 const DefaultToolsDir = "./tools"
+
+// DefaultRequiredTools is the set of tool names the platform requires
+// at startup (ADR 0009 §Decision, invariant 5). A missing required tool
+// fails closed. The script-tool runtime owns the invariant; the script
+// registry uses it.
+var DefaultRequiredTools = []string{"message_send"}
+
+// ValidationError reports input that failed schema validation at the
+// contract boundary. It matches ErrValidation via errors.Is. The
+// description restates the tool's advertised summary so a model reading
+// the rejection is steered back to the tool's real contract.
+type ValidationError struct {
+	Tool        string
+	Description string
+	Err         error
+}
+
+// Error returns a human-readable description of the validation failure.
+func (e *ValidationError) Error() string {
+	if e.Description == "" {
+		return fmt.Sprintf("tool %q: %v", e.Tool, e.Err)
+	}
+	return fmt.Sprintf("tool %q: %v (tool description: %s)", e.Tool, e.Err, e.Description)
+}
+
+// Unwrap returns the underlying validation failure.
+func (e *ValidationError) Unwrap() error { return e.Err }
+
+// Is reports whether target is ErrValidation.
+func (e *ValidationError) Is(target error) bool { return target == ErrValidation }
+
+// ExecutionError reports a failure inside the tool body after the input
+// passed validation. It matches ErrExecution via errors.Is.
+type ExecutionError struct {
+	Tool string
+	Err  error
+}
+
+// Error returns a human-readable description of the execution failure.
+func (e *ExecutionError) Error() string {
+	return fmt.Sprintf("tool %q: %v", e.Tool, e.Err)
+}
+
+// Unwrap returns the underlying execution failure.
+func (e *ExecutionError) Unwrap() error { return e.Err }
+
+// Is reports whether target is ErrExecution.
+func (e *ExecutionError) Is(target error) bool { return target == ErrExecution }
+
+// Sentinel errors at the boundary. Validation fires before the tool
+// body; execution fires after.
+var (
+	ErrValidation = errors.New("tool input validation failed")
+	ErrExecution  = errors.New("tool execution failed")
+)
 
 // Registry is the platform's tool registry. It walks the operator's
 // tools directory at startup, loads each manifest, validates the

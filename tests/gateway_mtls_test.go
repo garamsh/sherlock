@@ -128,10 +128,16 @@ func startAgentMTLS(t *testing.T, binary, root, configPath, workspaceAddr string
 		"--agent-id", mtlsAgentID,
 		"--memory-path", filepath.Join(root, "memory.db"),
 		"--workspace-addr", workspaceAddr)
-	// The default tool list registers the github binary; it requires
-	// GH_TOKEN at startup. The mTLS scenario does not call github,
-	// but the binary is spawned at startup.
-	cmd.Env = append(os.Environ(), "GH_TOKEN=fake-test-token")
+	// The script-tool registry reads ./tools by default; the in-tree
+	// location `make build-tools` populates in place, so point the env
+	// at the repo root's tools/ dir explicitly. The github manifest
+	// also requires GH_TOKEN at startup, even though this scenario
+	// never invokes github.
+	toolsDir := toolsDirForTest(t)
+	cmd.Env = append(os.Environ(),
+		"GAGENT_TOOLS_DIR="+toolsDir,
+		"GH_TOKEN=fake-test-token",
+	)
 	cmd.Stdout = logFile
 	cmd.Stderr = logFile
 	require.NoError(t, cmd.Start())

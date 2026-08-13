@@ -70,13 +70,12 @@ func addAgentFlags(fs *pflag.FlagSet) {
 		"ego file for the agent's instructions (default: embedded EGO.md)")
 }
 
-// newAgentFactory resolves the model providers, builds the operator's
-// tool specs into a protocol client, and returns the runtime factory
-// and the tool client both agent modes share. The agent constructs no
-// tool-shaped code at compile time (ADR 0018 §Decision, ADR 0009
-// §Decision); the caller closes the returned client at the right
-// moment in each mode.
-func newAgentFactory(ctx context.Context, cfg Config, ego string, logger *slog.Logger) (*gateway.Factory, *tool.Client, error) {
+// newAgentFactory resolves the model providers, loads the operator's
+// tool manifests, and returns the runtime factory and the tool
+// registry both agent modes share. The agent constructs no tool-shaped
+// code at compile time (ADR 0018 §Decision, ADR 0009 §Decision); the
+// script-tool registry (Phase 2) is the lifecycle owner for tool calls.
+func newAgentFactory(ctx context.Context, cfg Config, ego string, logger *slog.Logger) (*gateway.Factory, *tool.Registry, error) {
 	newModel, err := newModelFunc(cfg.Model)
 	if err != nil {
 		return nil, nil, err
@@ -89,120 +88,89 @@ func newAgentFactory(ctx context.Context, cfg Config, ego string, logger *slog.L
 	if err != nil {
 		return nil, nil, err
 	}
-	tools, err := buildToolClient(ctx, cfg, logger)
+	registry, err := buildToolRegistry(cfg, logger)
 	if err != nil {
 		return nil, nil, err
 	}
-	factory, err := newFactory(cfg, newModel, embedder, summarizer, ego, tools)
+	factory, err := newFactory(cfg, newModel, embedder, summarizer, ego, registry)
 	if err != nil {
 		return nil, nil, err
 	}
-	return factory, tools, nil
+	return factory, registry, nil
 }
 
-// buildToolClient expands the operator's tool specs into a running
-// platform tool client. Each spec is a binary the agent spawns; the
-// client owns the lifecycle, the discovery handshake, and the
-// per-tool boundary (ADR 0018 §Tool contract). The caller closes the
-// returned client.
-func buildToolClient(ctx context.Context, cfg Config, logger *slog.Logger) (*tool.Client, error) {
-	specs, err := expandToolSpecs(cfg)
-	if err != nil {
+// buildToolRegistry loads the operator's tools directory through the
+// script-tool registry (ADR 0009 §Decision). The directory defaults to
+// ./tools; an operator can override it through the env or the tools-dir
+// config key. Each tool's manifest pins a SHA-256 of the canonical
+// bytes the registry refuses to load on drift; the registry's
+// required-tool check fails closed on a missing required name.
+//
+// The script-tool runner inherits the agent's environment when it
+// spawns each tool (internal/tool/runner.go). The agent's tools read
+// these variables from their own env (per-tool contracts: github
+// reads GH_TOKEN, files/shell_exec dial GAGENT_WORKSPACE_ADDR,
+// message_send writes to GAGENT_OUTBOX_DIR). The agent sets them
+// here so the runtime's spawn inherits the resolved values; failure
+// to set any required key is the operator's misconfiguration, not a
+// tool startup error.
+func buildToolRegistry(cfg Config, logger *slog.Logger) (*tool.Registry, error) {
+	dir := toolDir(cfg)
+	if err := setToolEnv(cfg); err != nil {
 		return nil, err
 	}
-	client, err := tool.NewClient(ctx, tool.Options{
+	registry, err := tool.NewRegistry(tool.RegistryOptions{
 		Logger:   logger,
-		Policy:   tool.AllowAll(),
+		Dir:      dir,
 		Required: tool.DefaultRequiredTools,
-	}, specs)
+	})
 	if err != nil {
-		return nil, fmt.Errorf("tool client: %w", err)
+		return nil, fmt.Errorf("tool registry: %w", err)
 	}
-	return client, nil
+	return registry, nil
 }
 
-// expandToolSpecs turns the operator's tool config into executable
-// Specs. The default config (no explicit tools: section) installs the
-// two first-party tools every agent needs: message_send (the mouth)
-// over the file outbox, and shell_exec over the workspace gRPC. An
-// explicit tools: section can override the defaults.
-func expandToolSpecs(cfg Config) ([]tool.Spec, error) {
-	if len(cfg.Tools) > 0 {
-		out := make([]tool.Spec, 0, len(cfg.Tools))
-		for _, ts := range cfg.Tools {
-			spec := tool.Spec{
-				Name:    ts.Name,
-				Command: ts.Command,
-				Args:    append([]string(nil), ts.Args...),
-				Env:     append([]string(nil), ts.Env...),
-			}
-			if spec.Name == "" || spec.Command == "" {
-				return nil, fmt.Errorf("tool spec: name and command are required")
-			}
-			out = append(out, spec)
-		}
-		return out, nil
+// setToolEnv wires the operator's resolved config into the env the
+// script-tool runner inherits on every spawn (ADR 0009 §Decision:
+// "the runner inherits the agent's env"). GAGENT_WORKSPACE_ADDR and
+// GAGENT_OUTBOX_DIR come from the config; GH_TOKEN must already be
+// present in the agent's env because the agent does not materialize
+// secrets (ADR 0003, ADR 0014).
+func setToolEnv(cfg Config) error {
+	if err := os.Setenv("GAGENT_WORKSPACE_ADDR", cfg.WorkspaceAddr); err != nil {
+		return fmt.Errorf("set GAGENT_WORKSPACE_ADDR: %w", err)
 	}
-	return defaultToolSpecs(cfg)
+	outbox := messageSendOutboxDir(cfg.MemoryPath)
+	if err := os.Setenv("GAGENT_OUTBOX_DIR", outbox); err != nil {
+		return fmt.Errorf("set GAGENT_OUTBOX_DIR: %w", err)
+	}
+	return nil
 }
 
-// messageSendOutboxDir returns the directory the message_send binary
+// toolDir is the directory the registry reads manifests from. The
+// default is ./tools (the in-tree location `make build-tools` populates
+// in place); an operator can override via the GAGENT_TOOLS_DIR env or a
+// future config key.
+func toolDir(cfg Config) string {
+	if dir := os.Getenv("GAGENT_TOOLS_DIR"); dir != "" {
+		return dir
+	}
+	return tool.DefaultToolsDir
+}
+
+// messageSendOutboxDir returns the directory the message_send manifest
 // writes to: the parent's outbox subdirectory, mirroring the gateway's
 // outbox sink shape (docs/architecture/gateway.md).
 func messageSendOutboxDir(memoryPath string) string {
 	return filepath.Join(filepath.Dir(memoryPath), "outbox")
 }
 
-// defaultToolSpecs returns the four first-party tools every agent
-// needs: files (read/write/list over the workspace gRPC), shell_exec
-// (process exec over the workspace gRPC), message_send (the mouth
-// over the file outbox), and github (push, open_issue,
-// open_pull_request, comment against api.github.com). The four
-// binaries live beside the agent binary in the same installation
-// directory.
-//
-// The github tool reads GH_TOKEN from its own process environment
-// (ADR 0003, ADR 0014): the agent passes the token via the per-tool
-// env contract, the binary rejects startup when it is missing, and
-// the token never crosses into shell_exec children (ADR 0008 scrubs
-// the env for them).
-func defaultToolSpecs(cfg Config) ([]tool.Spec, error) {
-	binDir, err := os.Executable()
-	if err != nil {
-		return nil, err
-	}
-	binDir = filepath.Dir(binDir)
-	workspaceEnv := []string{"GAGENT_WORKSPACE_ADDR=" + cfg.WorkspaceAddr}
-	githubEnv := []string{"GH_TOKEN=" + os.Getenv("GH_TOKEN")}
-	return []tool.Spec{
-		{
-			Name:    "files",
-			Command: filepath.Join(binDir, "files"),
-			Env:     workspaceEnv,
-		},
-		{
-			Name:    "shell_exec",
-			Command: filepath.Join(binDir, "shell_exec"),
-			Env:     workspaceEnv,
-		},
-		{
-			Name:    "message_send",
-			Command: filepath.Join(binDir, "message_send"),
-			Env:     []string{"GAGENT_OUTBOX_DIR=" + messageSendOutboxDir(cfg.MemoryPath)},
-		},
-		{
-			Name:    "github",
-			Command: filepath.Join(binDir, "github"),
-			Env:     githubEnv,
-		},
-	}, nil
-}
-
 // runAgentTurn builds the agent runtime, captures the message as a
 // user-turn memory (ADR 0012), and runs one turn. One-shot mode echoes
 // outbound messages to stdout (in addition to the file outbox the
-// message_send binary writes) so a CLI invocation prints the agent's
-// reply without an outbox watcher. The serving mode stays outbox-only.
+// message_send manifest runs writes to) so a CLI invocation prints the
+// agent's reply without an outbox watcher. The serving mode stays
+// outbox-only.
 func runAgentTurn(ctx context.Context, cfg Config, agentID, msg, ego string) error {
 	// Logs go to stderr so stdout carries only the agent's output.
 	logger := slog.New(slog.NewJSONHandler(os.Stderr, nil))
@@ -211,7 +179,7 @@ func runAgentTurn(ctx context.Context, cfg Config, agentID, msg, ego string) err
 	outboxDir := messageSendOutboxDir(cfg.MemoryPath)
 	before := outboxSnapshot(outboxDir)
 
-	factory, client, err := newAgentFactory(ctx, cfg, ego, logger)
+	factory, registry, err := newAgentFactory(ctx, cfg, ego, logger)
 	if err != nil {
 		return err
 	}
@@ -223,8 +191,8 @@ func runAgentTurn(ctx context.Context, cfg Config, agentID, msg, ego string) err
 		if err := rt.Close(context.Background()); err != nil {
 			logger.Error("runtime close failed", "op", "shutdown", "error", err)
 		}
-		if err := client.Close(); err != nil {
-			logger.Error("tool client close failed", "op", "shutdown", "error", err)
+		if err := registry.Close(); err != nil {
+			logger.Error("tool registry close failed", "op", "shutdown", "error", err)
 		}
 	}()
 
@@ -294,7 +262,7 @@ func serveAgent(ctx context.Context, cfg Config, agentID, ego string) error {
 		return fmt.Errorf("addr %q is not a loopback bind: serving beyond localhost requires the tls: config section (ADR 0013)", cfg.Addr)
 	}
 
-	factory, client, err := newAgentFactory(ctx, cfg, ego, logger)
+	factory, registry, err := newAgentFactory(ctx, cfg, ego, logger)
 	if err != nil {
 		return err
 	}
@@ -303,8 +271,8 @@ func serveAgent(ctx context.Context, cfg Config, agentID, ego string) error {
 		return err
 	}
 	defer func() {
-		if err := client.Close(); err != nil {
-			logger.Error("tool client close failed", "op", "shutdown", "error", err)
+		if err := registry.Close(); err != nil {
+			logger.Error("tool registry close failed", "op", "shutdown", "error", err)
 		}
 	}()
 
@@ -330,6 +298,7 @@ func serveAgent(ctx context.Context, cfg Config, agentID, ego string) error {
 		logger.Info("agent listening",
 			"op", "startup", "addr", cfg.Addr, "agent_id", agentID,
 			"memory_path", cfg.MemoryPath, "workspace_addr", cfg.WorkspaceAddr,
+			"tools_dir", toolDir(cfg),
 			"auth", "mtls")
 		if err := srv.ListenAndServeTLS("", ""); !errors.Is(err, http.ErrServerClosed) {
 			logger.Error("https server failed", "op", "serve", "error", err)
@@ -339,6 +308,7 @@ func serveAgent(ctx context.Context, cfg Config, agentID, ego string) error {
 		logger.Info("agent listening",
 			"op", "startup", "addr", cfg.Addr, "agent_id", agentID,
 			"memory_path", cfg.MemoryPath, "workspace_addr", cfg.WorkspaceAddr,
+			"tools_dir", toolDir(cfg),
 			"warning", "no authentication: loopback binds only")
 		if err := srv.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
 			logger.Error("http server failed", "op", "serve", "error", err)

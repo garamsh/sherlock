@@ -13,8 +13,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/garamsh/gagent/internal/files"
 	"github.com/garamsh/gagent/internal/workspace"
+	"github.com/garamsh/gagent/internal/workspace/files"
 	"github.com/garamsh/gagent/internal/workspace/shell"
 	"google.golang.org/grpc"
 )

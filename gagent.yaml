@@ -6,10 +6,11 @@
 # (ADR 0018) — so exec-uid and exec-timeout are workspace keys; the
 # agent only needs the workspace's address.
 addr: "127.0.0.1:8080"
-model:
-  provider: mock
+# agent-id: default                     # default; CLI flag is the supported path today (override at startup)
 # memory-path: data/memory.db            # default; the agent's SQLite memory file
 # workspace-addr: "127.0.0.1:8081"        # default; gRPC endpoint of the agent's workspace
+model:
+  provider: mock
 # tools:                                 # default: files + shell_exec + message_send + github from the same bin dir
 #   - name: files
 #     command: ./files

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log/slog"
@@ -16,6 +17,7 @@ import (
 	"github.com/spf13/pflag"
 
 	"github.com/garamsh/gagent/internal/gateway"
+	"github.com/garamsh/gagent/internal/message"
 	"github.com/garamsh/gagent/internal/tool"
 )
 
@@ -145,26 +147,33 @@ func messageSendOutboxDir(memoryPath string) string {
 	return filepath.Join(filepath.Dir(memoryPath), "outbox")
 }
 
-// defaultToolSpecs returns the two first-party tools every agent
-// needs: message_send (the mouth over the file outbox) and shell_exec
-// (process exec over the workspace gRPC). The two binaries live
-// beside the agent binary in the same installation directory.
+// defaultToolSpecs returns the three first-party tools every agent
+// needs: files (read/write/list over the workspace gRPC), shell_exec
+// (process exec over the workspace gRPC), and message_send (the mouth
+// over the file outbox). The three binaries live beside the agent
+// binary in the same installation directory.
 func defaultToolSpecs(cfg Config) ([]tool.Spec, error) {
 	binDir, err := os.Executable()
 	if err != nil {
 		return nil, err
 	}
 	binDir = filepath.Dir(binDir)
+	workspaceEnv := []string{"GAGENT_WORKSPACE_ADDR=" + cfg.WorkspaceAddr}
 	return []tool.Spec{
 		{
-			Name:    "message_send",
-			Command: filepath.Join(binDir, "message_send"),
-			Env:     []string{"GAGENT_OUTBOX_DIR=" + messageSendOutboxDir(cfg.MemoryPath)},
+			Name:    "files",
+			Command: filepath.Join(binDir, "files"),
+			Env:     workspaceEnv,
 		},
 		{
 			Name:    "shell_exec",
 			Command: filepath.Join(binDir, "shell_exec"),
-			Env:     []string{"GAGENT_WORKSPACE_ADDR=" + cfg.WorkspaceAddr},
+			Env:     workspaceEnv,
+		},
+		{
+			Name:    "message_send",
+			Command: filepath.Join(binDir, "message_send"),
+			Env:     []string{"GAGENT_OUTBOX_DIR=" + messageSendOutboxDir(cfg.MemoryPath)},
 		},
 	}, nil
 }
@@ -174,14 +183,17 @@ func defaultToolSpecs(cfg Config) ([]tool.Spec, error) {
 var processClosers []func() error
 
 // runAgentTurn builds the agent runtime, captures the message as a
-// user-turn memory (ADR 0012), and runs one turn, printing the final
-// response to stdout. The outbound message_send tool writes to the
-// file outbox (the operator's configured directory); the one-shot
-// runner does not echo outbound messages to stdout.
+// user-turn memory (ADR 0012), and runs one turn. One-shot mode echoes
+// outbound messages to stdout (in addition to the file outbox the
+// message_send binary writes) so a CLI invocation prints the agent's
+// reply without an outbox watcher. The serving mode stays outbox-only.
 func runAgentTurn(ctx context.Context, cfg Config, agentID, msg, ego string) error {
 	// Logs go to stderr so stdout carries only the agent's output.
 	logger := slog.New(slog.NewJSONHandler(os.Stderr, nil))
 	slog.SetDefault(logger)
+
+	outboxDir := messageSendOutboxDir(cfg.MemoryPath)
+	before := outboxSnapshot(outboxDir)
 
 	factory, err := newAgentFactory(ctx, cfg, ego, logger)
 	if err != nil {
@@ -208,7 +220,47 @@ func runAgentTurn(ctx context.Context, cfg Config, agentID, msg, ego string) err
 		return err
 	}
 	fmt.Println(response)
+	echoOutboxToStdout(outboxDir, before)
 	return nil
+}
+
+// outboxSnapshot returns the names of the files currently in the
+// outbox; the one-shot runner uses it to know which new messages the
+// turn produced.
+func outboxSnapshot(dir string) map[string]struct{} {
+	out := map[string]struct{}{}
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return out
+	}
+	for _, e := range entries {
+		out[e.Name()] = struct{}{}
+	}
+	return out
+}
+
+// echoOutboxToStdout prints any outbox messages written during this
+// turn, in name order so the run replays the delivery order. The
+// file outbox is the durable record; stdout is the CLI echo.
+func echoOutboxToStdout(dir string, before map[string]struct{}) {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return
+	}
+	for _, e := range entries {
+		if _, seen := before[e.Name()]; seen {
+			continue
+		}
+		body, err := os.ReadFile(filepath.Join(dir, e.Name()))
+		if err != nil {
+			continue
+		}
+		var msg message.Message
+		if err := json.Unmarshal(body, &msg); err != nil {
+			continue
+		}
+		fmt.Printf("[%s -> %s] %s\n", msg.Channel, msg.Target, msg.Content)
+	}
 }
 
 // serveAgent runs the agent's HTTP gateway until an interrupt or SIGTERM.

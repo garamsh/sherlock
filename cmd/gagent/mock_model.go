@@ -8,13 +8,22 @@ import (
 
 // mockModel is the MVP placeholder model (ADR 0004): a canned script
 // that drives a fixed scenario through the agent's installed tools —
-// shell_exec to compute the answer through the workspace's Exec RPC,
-// message_send for the mouth, then a writeback block to record the
-// question. It exhausts after one message; a real model replaces it
-// without interface changes. The writeback is the single write path:
-// memory is a layer, never a tool (ADR 0011, ADR 0018).
+// files to read the workspace marker, shell_exec to compute the
+// answer through the workspace's Exec RPC, message_send for the mouth,
+// then a writeback block to record the question. It exhausts after
+// one message; a real model replaces it without interface changes.
+// The writeback is the single write path: memory is a layer, never a
+// tool (ADR 0011, ADR 0018).
 func mockModel(_ string) agent.Model {
 	return agent.NewScriptedModel(
+		agent.ScriptedStep{
+			ToolCalls: []agent.ToolCall{{
+				Name: "files",
+				Input: json.RawMessage(
+					`{"operation":"read","path":"marker.txt"}`,
+				),
+			}},
+		},
 		agent.ScriptedStep{
 			ToolCalls: []agent.ToolCall{{
 				Name: "shell_exec",

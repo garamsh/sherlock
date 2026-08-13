@@ -4,7 +4,7 @@ gagent is an autonomous agent platform written in Go. It runs AI agents that can
 
 ## Principles
 
-- **Two processes per agent: self and workspace.** The agent process holds the gateway (message ingress and the monitoring stream), the reasoning loop, long-term memory, the mouth (outbound messaging), and the tools (Go packages the agent imports at compile time). The workspace process is the computer: a gRPC server for the filesystem (Read, Write, List) and process execution (Exec) in the workspace directory. Tools are agent-side Go packages — the plugin concept is dropped (ADR 0018).
+- **Two processes per agent: self and workspace.** The agent process holds the gateway (message ingress and the monitoring stream), the reasoning loop, long-term memory, the mouth (outbound messaging), and the platform tool client (`internal/tool`) that discovers and calls independent tool servers through the platform protocol (ADR 0018, ADR 0009). The workspace process is the computer: a gRPC server for the filesystem (Read, Write, List) and process execution (Exec) in the workspace directory. Tools are independent servers behind one platform-owned protocol; the agent binary hosts no tool behavior.
 - **The workspace enforces permissions at the action site.** Agent-influenced file writes run under the workspace's own UID, and workspace ownership is kernel-enforced (ADR 0008, ADR 0010). Process exec is the workspace's capability (ADR 0018), surfaced to the model as the `shell_exec` tool: the tool calls the workspace's Exec RPC, and children drop to the configured exec UID and run in the workspace directory, so exec'd programs see the files the tools see. The agent executes nothing. The orchestration layer manages the pod boundary (network egress, mounts, lifecycle).
 - **Memory is agent-managed, not just stored.** Memory is RAG-based, and the agent actively curates it through a per-turn writeback — keeping, correcting, and retracting — while the platform consolidates and evicts on thresholds (ADR 0011), like human memory rather than a plain store/search index.
 
@@ -39,7 +39,7 @@ Runs the agent's self: the rolling session, memory, the mouth, and the HTTP gate
 - `GET /agents/{agent-id}/events` — server-sent events stream of the agent's loop (turn started, tool call, writeback, turn finished). Every run ends with exactly one terminal event — `turn_finished` on success, `turn_failed` with the error on failure.
 - Agent replies (`message_send`) land as JSON files in `outbox/` next to the `memory-path` file.
 
-With `--message` the agent runs one turn against the same compile-time tool set and exits; outbound `message_send` content and the final response print to stdout (logs go to stderr):
+With `--message` the agent runs one turn against the same operator-installed tool list and exits; outbound `message_send` content and the final response print to stdout (logs go to stderr):
 
 ```sh
 gagent agent --agent-id my-agent --message "hello"
@@ -69,7 +69,7 @@ Agent keys (`gagent agent`; see `gagent.yaml` for an example):
 |---|---|---|
 | `addr` | `--addr` | `127.0.0.1:8080` (gateway listen address; loopback-only unless `tls:` is set) |
 | `memory-path` | `--memory-path` | `data/memory.db` (the agent's SQLite memory file, created on first use) |
-| `workspace-addr` | `--workspace-addr` | `127.0.0.1:8081` (gRPC endpoint of the agent's workspace; the agent dials it once at startup and passes the client to the tools it imports — the agent's only workspace setting) |
+| `workspace-addr` | `--workspace-addr` | `127.0.0.1:8081` (gRPC endpoint of the agent's workspace; the agent dials it once at startup and passes the client to the tools that need files or exec — the agent's only workspace setting) |
 | `model.provider` | — | `mock` (scripted, offline) or `openai` |
 | `model.base-url` | — | `https://api.openai.com/v1` (any OpenAI-compatible endpoint, e.g. Ollama/vLLM) |
 | `model.model` | — | `gpt-4o-mini` |
@@ -133,7 +133,7 @@ Individual targets: `make lint`, `make format`, `make test`, `make build`.
 Beyond Go and GNU Make, the toolchain is:
 
 - **golangci-lint** — `make lint` (`go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.12.2`; the version is pinned in `ci.yml` and `.golangci.yml`).
-- **mockery** — `make generate` regenerates the mocks under `internal/tool/mocks/` (config `.mockery.yml`).
+- **buf** — `make proto` regenerates the workspace gRPC stubs (`buf.yaml` + `buf.gen.yaml`); the CLI version is pinned in `.github/workflows/ci.yml` (1.72.0).
 - **lefthook** — `make hooks` installs the git hooks once after cloning (pre-commit lint/format, pre-push test).
 
 This repository is developed by AI agents under written conventions — see `AGENTS.md` for the role model and `docs/convention/` for the rules all code follows. Internal structure and design decisions live in `docs/architecture/`.

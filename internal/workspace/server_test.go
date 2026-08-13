@@ -13,8 +13,8 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 
-	"github.com/garamsh/gagent/internal/files"
 	"github.com/garamsh/gagent/internal/workspace"
+	"github.com/garamsh/gagent/internal/workspace/files"
 	"github.com/garamsh/gagent/internal/workspace/shell"
 )
 

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/garamsh/gagent/internal/files"
+	"github.com/garamsh/gagent/internal/workspace/files"
 	"github.com/garamsh/gagent/internal/workspace/shell"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

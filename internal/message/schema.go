@@ -37,3 +37,10 @@ func InputSchema() json.RawMessage { return schema.Input }
 
 // OutputSchema returns the JSON Schema for the message_send tool's output.
 func OutputSchema() json.RawMessage { return schema.Output }
+
+// CallOutput is the structured result the message_send tool returns. The
+// schema/struct consistency test keeps the JSON Schema and the Go type
+// in lockstep.
+type CallOutput struct {
+	Status string `json:"status"`
+}

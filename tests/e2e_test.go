@@ -3,6 +3,7 @@ package tests
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
 	"log/slog"
 	"net/http"
@@ -20,6 +21,7 @@ import (
 	"github.com/garamsh/gagent/internal/memory"
 	"github.com/garamsh/gagent/internal/memory/sqlite"
 	"github.com/garamsh/gagent/internal/message"
+	"github.com/garamsh/gagent/internal/tool"
 )
 
 // e2eAgentID is this scenario's own agent ID.
@@ -40,7 +42,7 @@ const e2eQuestion = "what is 6 * 7?"
 func mvpScript() *agent.ScriptedModel {
 	return agent.NewScriptedModel(
 		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{
-			Name: message.SendToolName,
+			Name: "message_send",
 			Input: json.RawMessage(
 				`{"channel":"http","target":"sender","content":"42"}`,
 			),
@@ -53,20 +55,34 @@ func mvpScript() *agent.ScriptedModel {
 
 // TestEndToEnd_MVPScenario drives the canned MVP scenario across the
 // real wired system in-process: HTTP ingress, memory store, the
-// in-process registry (message_send only — the canned scenario does
-// not exercise the files tool), and the reply through the file
-// outbox sink. No Docker daemon, no real gRPC, no fork+exec required.
+// message_send tool client (the canned scenario does not exercise
+// other tools), and the reply through the file outbox sink. No Docker
+// daemon, no real gRPC, no fork+exec required.
 func TestEndToEnd_MVPScenario(t *testing.T) {
 	root := t.TempDir()
 	agentID := e2eAgentID
 
+	outbox := gateway.NewOutbox(root)
 	factory := &gateway.Factory{
 		MemoryPath: filepath.Join(root, "memory.db"),
 		NewModel: func(string) agent.Model {
 			return mvpScript()
 		},
-		// The canned scenario exercises message_send only; the
-		// factory adds it in-process (see gateway.Factory.New).
+		Tools: stubClient_{descriptors: []tool.Descriptor{
+			{Name: "message_send", Description: "queue an outbound message"},
+		}, callFn: func(_ context.Context, name string, input json.RawMessage) (json.RawMessage, error) {
+			if name != "message_send" {
+				return nil, errors.New("unknown tool " + name)
+			}
+			var msg message.Message
+			if err := json.Unmarshal(input, &msg); err != nil {
+				return nil, err
+			}
+			if err := outbox.Send(context.Background(), msg); err != nil {
+				return nil, err
+			}
+			return json.RawMessage(`{"status":"queued"}`), nil
+		}},
 	}
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
 	q, err := gateway.NewQueue(factory, agentID, logger)
@@ -80,6 +96,22 @@ func TestEndToEnd_MVPScenario(t *testing.T) {
 	// Close drains the queue and persists the memory store.
 	require.NoError(t, q.Close())
 	assertMemoryStore(t, root)
+}
+
+// stubClient_ is a minimal platform-tool-client stand-in for tests
+// that don't exercise the protocol.
+type stubClient_ struct {
+	descriptors []tool.Descriptor
+	callFn      func(ctx context.Context, name string, input json.RawMessage) (json.RawMessage, error)
+}
+
+func (s stubClient_) List() []tool.Descriptor {
+	out := make([]tool.Descriptor, len(s.descriptors))
+	copy(out, s.descriptors)
+	return out
+}
+func (s stubClient_) Call(ctx context.Context, name string, input json.RawMessage) (json.RawMessage, error) {
+	return s.callFn(ctx, name, input)
 }
 
 // runMVPScenario drives the canned MVP message flow against a serving

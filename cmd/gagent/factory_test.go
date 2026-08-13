@@ -21,7 +21,7 @@ func TestNewFactory_CarriesResolvedConfig(t *testing.T) {
 	cfg, err := resolveConfig(newTestCommand(t))
 	require.NoError(t, err)
 
-	factory, err := newFactory(cfg, newStubModel(), memory.NewHashingEmbedder(), memory.NewConcatSummarizer(), "", nil, nil)
+	factory, err := newFactory(cfg, newStubModel(), memory.NewHashingEmbedder(), memory.NewConcatSummarizer(), "", nil)
 	require.NoError(t, err)
 
 	assert.Equal(t, cfg.MemoryPath, factory.MemoryPath,

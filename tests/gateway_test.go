@@ -7,6 +7,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"io"
 	"log/slog"
 	"net/http"
@@ -78,12 +79,31 @@ func strconvQuote(s string) string {
 }
 
 // newGatewayQueue starts the one agent's queue over a real factory: the
-// memory file and the file outbox live under root.
+// memory file and the file outbox live under root. The factory holds
+// a mouthClient that forwards message_send to the same file outbox the
+// gateway writes to, so the test exercises the platform protocol
+// client surface end-to-end.
 func newGatewayQueue(t *testing.T, root string, newModel func(string) agent.Model) *gateway.Queue {
 	t.Helper()
+	outbox := gateway.NewOutbox(root)
 	factory := &gateway.Factory{
 		MemoryPath: filepath.Join(root, "memory.db"),
 		NewModel:   newModel,
+		Tools: stubClient_{descriptors: []tool.Descriptor{
+			{Name: "message_send", Description: "queue an outbound message"},
+		}, callFn: func(_ context.Context, name string, input json.RawMessage) (json.RawMessage, error) {
+			if name != "message_send" {
+				return nil, errors.New("unknown tool " + name)
+			}
+			var msg message.Message
+			if err := json.Unmarshal(input, &msg); err != nil {
+				return nil, err
+			}
+			if err := outbox.Send(context.Background(), msg); err != nil {
+				return nil, err
+			}
+			return json.RawMessage(`{"status":"queued"}`), nil
+		}},
 	}
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
 	q, err := gateway.NewQueue(factory, "env-1", logger)

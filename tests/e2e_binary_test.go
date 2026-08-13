@@ -57,9 +57,9 @@ func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
 }
 
 // runBinaryMVPScenario is the binary test's variant of
-// runMVPScenario. The canned loop drives the agent through shell_exec
-// (computing through the workspace's Exec RPC), message_send, and a
-// writeback block.
+// runMVPScenario. The canned loop drives the agent through files
+// (reading the workspace marker), shell_exec (computing through the
+// workspace's Exec RPC), message_send, and a writeback block.
 func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	t.Helper()
 
@@ -70,9 +70,9 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
 	resp.Body.Close()
 
-	// Three-step scenario: shell_exec, message_send, then the final
-	// writeback — a writeback event follows every model response.
-	got := collectEvents(t, events, 7)
+	// Four-step scenario: files, shell_exec, message_send, then the
+	// final writeback — a writeback event follows every model response.
+	got := collectEvents(t, events, 9)
 	var kinds []string
 	for _, e := range got {
 		kinds = append(kinds, e["kind"].(string))
@@ -81,20 +81,29 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 		"turn_started",
 		"writeback", "tool_call",
 		"writeback", "tool_call",
+		"writeback", "tool_call",
 		"writeback", "turn_finished",
 	}, kinds)
 	assert.Contains(t, got[0]["task"], "] unknown: "+e2eQuestion,
 		"the turn input renders the message with its ID and sender (ADR 0016)")
 
-	assert.Equal(t, "shell_exec", got[2]["tool_name"])
+	// Files tool: read the marker file the test placed in the
+	// workspace; the response crosses the workspace gRPC client and
+	// returns the file's contents.
+	assert.Equal(t, "files", got[2]["tool_name"])
 	assert.NotContains(t, got[2], "tool_failed")
-	assert.Contains(t, got[2]["tool_result"], "marker.txt",
+	assert.Contains(t, got[2]["tool_result"], "from the workspace",
+		"the files tool reads the marker file end-to-end through the workspace gRPC client")
+
+	assert.Equal(t, "shell_exec", got[4]["tool_name"])
+	assert.NotContains(t, got[4], "tool_failed")
+	assert.Contains(t, got[4]["tool_result"], "marker.txt",
 		"the exec'd command crosses the Exec RPC and sees the workspace's files natively")
-	assert.Contains(t, got[2]["tool_result"], "42",
+	assert.Contains(t, got[4]["tool_result"], "42",
 		"the canned run computes through the shell")
 
-	assert.Equal(t, "message_send", got[4]["tool_name"])
-	assert.NotContains(t, got[4], "tool_failed")
+	assert.Equal(t, "message_send", got[6]["tool_name"])
+	assert.NotContains(t, got[6], "tool_failed")
 
 	require.Eventually(t, func() bool {
 		return len(outboxMessages(t, root)) == 1
@@ -107,10 +116,11 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 }
 
 // TestEndToEnd_OneShotAgentTurnAgainstWorkspace runs "gagent agent
-// --message" against a running workspace: the one-shot mode uses the
-// same compile-time tool set, runs the canned turn — shell_exec over
-// the Exec RPC, message_send, plus a writeback block — prints the
-// reply to stdout, and exits.
+// --message" against a running workspace: the one-shot mode runs the
+// canned turn — files, shell_exec, message_send via the protocol
+// client, plus a writeback block — and exits. The outbound message
+// lands in the file outbox (the same dir the serving mode uses); the
+// one-shot runner echoes it to stdout after the turn lands.
 func TestEndToEnd_OneShotAgentTurnAgainstWorkspace(t *testing.T) {
 	binary := buildGagentBinary(t)
 	root := t.TempDir()
@@ -126,22 +136,38 @@ func TestEndToEnd_OneShotAgentTurnAgainstWorkspace(t *testing.T) {
 		"--message", e2eQuestion)
 	out, err := cmd.CombinedOutput()
 	require.NoError(t, err, "one-shot agent turn must exit cleanly: %s", out)
-	assert.Contains(t, string(out), "[http -> sender] 42",
-		"message_send output prints to stdout")
 	assert.Contains(t, string(out), "Replied via message_send",
 		"the final response prints to stdout")
+	assert.Contains(t, string(out), "[http -> sender] 42",
+		"one-shot mode echoes outbound messages to stdout after the turn lands")
+
+	// The message_send binary writes to the file outbox; the
+	// one-shot mode shares the same directory the serving mode uses.
+	require.Eventually(t, func() bool {
+		return len(outboxMessages(t, root)) == 1
+	}, 5*time.Second, 10*time.Millisecond)
+	replies := outboxMessages(t, root)
+	require.Len(t, replies, 1)
+	assert.Equal(t, "42", replies[0].Content)
+	assert.Equal(t, "http", replies[0].Channel)
+	assert.Equal(t, "sender", replies[0].Target)
 }
 
-// buildGagentBinary compiles the gagent CLI into a temp path and
-// returns the binary's path.
+// buildGagentBinary compiles the gagent CLI plus the first-party tool
+// binaries (files, shell_exec, message_send) into one temp directory
+// and returns the gagent binary's path. The tool binaries share the
+// directory so the agent's default tool list (which looks up
+// ../<tool> from its own path) resolves.
 func buildGagentBinary(t *testing.T) string {
 	t.Helper()
-	path := filepath.Join(t.TempDir(), "gagent")
-	build := exec.Command("go", "build", "-o", path, "./cmd/gagent")
+	dir := t.TempDir()
+	build := exec.Command("go", "build", "-o", dir,
+		"./cmd/gagent",
+		"./cmd/files", "./cmd/shell_exec", "./cmd/message_send")
 	build.Dir = ".." // the module root; the test binary runs in tests/
 	out, err := build.CombinedOutput()
 	require.NoError(t, err, "go build failed: %s", out)
-	return path
+	return filepath.Join(dir, "gagent")
 }
 
 // emptyConfig writes an empty config file — it keeps a binary run

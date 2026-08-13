@@ -2,6 +2,7 @@ package gateway
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"os"
 	"path/filepath"
@@ -18,9 +19,9 @@ import (
 // session holds (the memory store).
 type Runtime struct {
 	Session agent.Session
-	// Registry is the session's tool registry, exposed for tests and
-	// observability. Production callers go through Session.Run.
-	Registry *tool.Registry
+	// Tools is the platform tool client the session drives; nil means
+	// an empty tool surface (tests).
+	Tools agent.ToolClient
 	// Capture stores one inbound message verbatim as an episodic
 	// user-turn memory (ADR 0012). The ingress path calls it at accept
 	// time, before the message is queued.
@@ -37,11 +38,11 @@ type Runtime struct {
 }
 
 // Factory assembles the one agent's runtime from the agent-container
-// modules (ADR 0018): the SQLite memory store at MemoryPath, the mouth
-// (message_send, in-process), and every tool the agent imports at
-// compile time. Tools are agent-side Go packages (tools/files,
-// tools/playwright, …); the factory accepts the constructed list —
-// there is no runtime plugin loader.
+// modules (ADR 0018): the SQLite memory store at MemoryPath, the
+// platform tool client (the per-operator tool list), and the rolling
+// session. The runtime no longer wires an outbound sink: the
+// message_send binary the platform client spawns writes directly to
+// the operator-configured outbox dir.
 type Factory struct {
 	// MemoryPath is the agent's SQLite memory file, created on first
 	// use.
@@ -60,22 +61,13 @@ type Factory struct {
 	// Embedder overrides the memory embedder. Nil uses
 	// memory.NewHashingEmbedder, the deterministic offline default.
 	Embedder memory.Embedder
-	// Sink, when non-nil, receives outbound messages instead of the
-	// default file outbox (the one-shot agent CLI prints them to stdout).
-	Sink message.Sink
-	// NewSink, when non-nil and Sink is nil, builds the agent's outbound
-	// sink around the default file outbox (the console sink uses the
-	// outbox as its delivery-failure fallback). Nil selects the file
-	// outbox itself.
-	NewSink func(agentID string, fallback *Outbox) message.Sink
-	// Tools lists the imported tools registered alongside message_send.
-	// A name colliding with message_send fails New with
-	// tool.ErrDuplicateTool.
-	Tools []tool.Tool
+	// Tools is the platform tool client. Nil means the agent runs
+	// without tools (tests).
+	Tools agent.ToolClient
 }
 
 // New builds the agent runtime: it opens (creating on first use) the
-// memory store and tool set, then wires the session's recall, writeback,
+// memory store and the session, then wires the session's recall, writeback,
 // event, and context-compaction hooks.
 func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink) (*Runtime, error) {
 	if err := os.MkdirAll(filepath.Dir(f.MemoryPath), 0o755); err != nil {
@@ -102,24 +94,12 @@ func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink)
 	}
 	memSvc := memory.NewService(store, embedder, summarizer)
 
-	sink := f.Sink
-	if sink == nil {
-		outbox := NewOutbox(filepath.Dir(f.MemoryPath))
-		sink = outbox
-		if f.NewSink != nil {
-			sink = f.NewSink(agentID, outbox)
-		}
+	tools := f.Tools
+	if tools == nil {
+		tools = nullClient{}
 	}
 
-	registry := tool.NewRegistry()
-	tools := append([]tool.Tool{message.NewSendTool(sink)}, f.Tools...)
-	for _, t := range tools {
-		if err := registry.Register(t); err != nil {
-			return nil, errors.Join(err, store.Close())
-		}
-	}
-
-	session := agent.NewSession(f.NewModel(agentID), registry, agent.Options{
+	session := agent.NewSession(f.NewModel(agentID), tools, agent.Options{
 		Recaller:           Recall{Svc: memSvc},
 		Writeback:          Writeback{Svc: memSvc},
 		Events:             events,
@@ -128,16 +108,32 @@ func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink)
 		MaxHistoryMessages: maxHistoryMessages,
 	})
 	return &Runtime{
-		Session:  session,
-		Registry: registry,
-		Capture:  Capture{Svc: memSvc}.Capture,
+		Session: session,
+		Tools:   tools,
+		Capture: Capture{Svc: memSvc}.Capture,
 		ConsolidateIfDue: func(ctx context.Context) error {
 			_, err := memSvc.ConsolidateIfDue(ctx)
 			return err
 		},
 		Close: func(ctx context.Context) error {
 			_, err := memSvc.Consolidate(ctx)
-			return errors.Join(err, memSvc.Close())
+			return err
 		},
 	}, nil
 }
+
+// nullClient is the no-tool tool client used by test runtimes that
+// only exercise the reasoning loop. List returns an empty slice; Call
+// always fails with an unknown-tool error.
+type nullClient struct{}
+
+// List implements agent.ToolClient.
+func (nullClient) List() []tool.Descriptor { return nil }
+
+// Call implements agent.ToolClient.
+func (nullClient) Call(_ context.Context, name string, _ json.RawMessage) (json.RawMessage, error) {
+	return nil, errors.New("agent: no tool client configured: " + name)
+}
+
+// keep the message package import live for the test wiring helpers.
+var _ = message.Sink(nil)

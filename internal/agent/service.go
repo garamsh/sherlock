@@ -25,6 +25,18 @@ type Model interface {
 	Chat(ctx context.Context, messages []Message, tools []tool.Descriptor) (Response, error)
 }
 
+// ToolClient is the platform's tool client surface the session consumes
+// (ADR 0018 §Tool contract). Production uses *tool.Client; tests may
+// substitute any implementation that exposes the same listing and call
+// surface.
+type ToolClient interface {
+	// List returns the descriptors (sorted by name) the model sees.
+	List() []tool.Descriptor
+	// Call dispatches one tool call. Validation, permission policy,
+	// and output quarantine are the client's responsibility.
+	Call(ctx context.Context, name string, input json.RawMessage) (json.RawMessage, error)
+}
+
 // Response is one model reply: visible content plus optional tool calls.
 // Content includes the trailing memory block; the session strips it.
 type Response struct {
@@ -142,9 +154,9 @@ type Options struct {
 }
 
 type session struct {
-	model    Model
-	registry *tool.Registry
-	opts     Options
+	model Model
+	tools ToolClient
+	opts  Options
 	// instructions is the composed ego + contract, injected once as the
 	// first system message of a fresh session.
 	instructions string
@@ -167,14 +179,16 @@ type failedCall struct {
 }
 
 // NewSession returns a rolling session that drives the reasoning loop
-// against model, executing tool calls through registry.
-func NewSession(model Model, registry *tool.Registry, opts Options) Session {
+// against model, dispatching tool calls through the protocol client
+// tools. The session has no compile-time tool registry; the client
+// owns the tool list and the boundary (ADR 0018 §Decision).
+func NewSession(model Model, tools ToolClient, opts Options) Session {
 	if opts.MaxIterations <= 0 {
 		opts.MaxIterations = DefaultMaxIterations
 	}
 	return &session{
 		model:        model,
-		registry:     registry,
+		tools:        tools,
 		opts:         opts,
 		instructions: ComposeInstructions(opts.Ego),
 	}
@@ -217,7 +231,7 @@ func (s *session) Run(ctx context.Context, task string) (response string, err er
 		if err := s.compact(ctx); err != nil {
 			return "", err
 		}
-		resp, err := s.model.Chat(ctx, s.history, s.registry.List())
+		resp, err := s.model.Chat(ctx, s.history, s.tools.List())
 		if err != nil {
 			return "", fmt.Errorf("model chat: %w", err)
 		}
@@ -256,12 +270,12 @@ func (s *session) Run(ctx context.Context, task string) (response string, err er
 	return "", fmt.Errorf("%w (%d)", ErrLoopExhausted, s.opts.MaxIterations)
 }
 
-// execute runs one tool call through the registry and feeds the result back
-// into history. Tool failures become tool messages so the model can recover.
-// Two per-turn guards substitute a synthetic result instead of executing, so
-// a stall cannot consume the whole iteration budget: a call past the
-// per-tool call budget, and a call that already failed twice this turn with
-// the identical error.
+// execute runs one tool call through the protocol client and feeds the
+// result back into history. Tool failures become tool messages so the
+// model can recover. Two per-turn guards substitute a synthetic result
+// instead of executing, so a stall cannot consume the whole iteration
+// budget: a call past the per-tool call budget, and a call that already
+// failed twice this turn with the identical error.
 func (s *session) execute(ctx context.Context, call ToolCall) {
 	event := Event{Kind: EventToolCall, Turn: s.turn, ToolName: call.Name, ToolInput: call.Input}
 	var result string
@@ -270,10 +284,7 @@ func (s *session) execute(ctx context.Context, call ToolCall) {
 	known, ok := s.failures[key]
 	switch {
 	case s.toolCalls[call.Name] > maxToolCallsPerTurn:
-		description := ""
-		if registered, err := s.registry.Lookup(call.Name); err == nil {
-			description = registered.Description()
-		}
+		description := descriptorDescription(s.tools.List(), call.Name)
 		result = toolBudgetNotice(call.Name, description)
 		event.ToolFailed = true
 	case ok && known.repeated:
@@ -295,18 +306,26 @@ func (s *session) execute(ctx context.Context, call ToolCall) {
 	s.emit(ctx, event)
 }
 
-// invoke resolves and runs one tool call, returning the result or the error
-// text together with whether the call failed.
+// invoke dispatches one tool call through the protocol client, returning
+// the result or the error text together with whether the call failed.
 func (s *session) invoke(ctx context.Context, call ToolCall) (string, bool) {
-	t, err := s.registry.Lookup(call.Name)
-	if err != nil {
-		return err.Error(), true
-	}
-	out, err := tool.Invoke(ctx, t, call.Input)
+	out, err := s.tools.Call(ctx, call.Name, call.Input)
 	if err != nil {
 		return err.Error(), true
 	}
 	return string(out), false
+}
+
+// descriptorDescription finds the named descriptor in descriptors and
+// returns its description. The empty string is returned when the tool
+// is not installed; the budget notice consumes it.
+func descriptorDescription(descriptors []tool.Descriptor, name string) string {
+	for _, d := range descriptors {
+		if d.Name == name {
+			return d.Description
+		}
+	}
+	return ""
 }
 
 // repeatedCallNotice is the synthetic result substituted for a tool call

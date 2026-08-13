@@ -28,10 +28,13 @@ type config struct {
 	// Behaviour selects what the call handler returns. "echo" mirrors
 	// the input object as the output (the test case for round-tripping).
 	// "fixed" takes the OutputSchema-shaped payload from FixedOutput.
-	// "reverse" calls Error on the input — used to exercise the
-	// error paths.
+	// "error" sends a JSON-RPC error with both the high-level message
+	// and a JSON-object Error.Data payload — the shape files and
+	// shell_exec emit under issue #303.
 	Behaviour string          `json:"behaviour"`
 	Fixed     json.RawMessage `json:"fixedOutput,omitempty"`
+	ErrorMsg  string          `json:"errorMessage,omitempty"`
+	ErrorData json.RawMessage `json:"errorData,omitempty"`
 }
 
 func main() {
@@ -112,6 +115,9 @@ func handleCall(enc *json.Encoder, id uint64, cfg config, params json.RawMessage
 		body = p.Arguments
 	case "fixed":
 		body = cfg.Fixed
+	case "error":
+		writeError(enc, id, -32603, cfg.ErrorMsg, string(cfg.ErrorData))
+		return
 	default:
 		writeError(enc, id, -32603, "unknown behaviour", cfg.Behaviour)
 		return

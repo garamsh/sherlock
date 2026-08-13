@@ -20,7 +20,9 @@ import (
 	"sync"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/status"
 
 	"github.com/garamsh/gagent/internal/workspace"
 )
@@ -169,20 +171,20 @@ func handleCall(enc *json.Encoder, id uint64, ws workspace.WorkspaceClient, para
 	case "read":
 		out, err := ws.Read(context.Background(), &workspace.ReadRequest{Path: args.Path})
 		if err != nil {
-			writeError(enc, id, -32603, "read failed", err.Error())
+			writeGRPCError(enc, id, "read failed", err)
 			return
 		}
 		body = readOutput{Content: string(out.Content)}
 	case "write":
 		if _, err := ws.Write(context.Background(), &workspace.WriteRequest{Path: args.Path, Content: []byte(args.Content)}); err != nil {
-			writeError(enc, id, -32603, "write failed", err.Error())
+			writeGRPCError(enc, id, "write failed", err)
 			return
 		}
 		body = writeOutput{BytesWritten: len(args.Content)}
 	case "list":
 		out, err := ws.List(context.Background(), &workspace.ListRequest{Path: args.Path})
 		if err != nil {
-			writeError(enc, id, -32603, "list failed", err.Error())
+			writeGRPCError(enc, id, "list failed", err)
 			return
 		}
 		entries := make([]entry, 0, len(out.Entries))
@@ -217,4 +219,29 @@ func writeError(enc *json.Encoder, id uint64, code int, msg, data string) {
 		ID      uint64          `json:"id"`
 		Error   json.RawMessage `json:"error"`
 	}{"2.0", id, raw})
+}
+
+// writeGRPCError reports a JSON-RPC -32603 (InternalError) for a non-OK
+// workspace gRPC call. The data payload carries both the high-level
+// operation name (the JSON-RPC message) and the underlying gRPC code and
+// message so the platform client can show the model the actual reason
+// (issue #303: "list failed" alone hides "path escapes workspace"). The
+// data is a JSON object so structured consumers can pull the fields
+// apart; plain consumers see the stringified object verbatim.
+func writeGRPCError(enc *json.Encoder, id uint64, msg string, err error) {
+	st, _ := status.FromError(err)
+	code := codes.Unknown
+	msgText := err.Error()
+	if st != nil {
+		code = st.Code()
+		if m := st.Message(); m != "" {
+			msgText = m
+		}
+	}
+	data, _ := json.Marshal(map[string]any{
+		"operation": msg,
+		"grpc_code": code.String(),
+		"error":     msgText,
+	})
+	writeError(enc, id, -32603, msg, string(data))
 }

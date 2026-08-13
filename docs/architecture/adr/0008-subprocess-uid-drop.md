@@ -1,7 +1,7 @@
 # ADR 0008: Agent-influenced sub-processes run dropped to the unprivileged UID
 
 > Status: accepted
-> Date: 2026-07-30
+> Date: 2026-07-30 (revised in place 2026-08-13)
 
 ## Context
 
@@ -11,7 +11,7 @@ The agent needs general-purpose exec for real workloads: "run the project's test
 
 When the workspace's executor (`internal/workspace/shell`, ADR 0018) spawns a child for agent-influenced work, the child runs dropped to the unprivileged exec UID. The file side of the same boundary stands in the same process: workspace writes and exec'd children share the workspace directory's ownership story.
 
-The model-facing surface is a tool: `shell_exec` in `tools/shell_exec/` wraps the workspace's Exec RPC in the `tool.Tool` contract, so the model reaches exec through the same tool-call channel as every other capability. The agent itself executes nothing — the tool calls the workspace over the gRPC client. Exec children work in the workspace directory by default, so an exec'd program sees the same files the files tool sees natively — the workspace execs children in its own directory and no shared-mount trick is needed.
+The model-facing surface is a tool: `shell_exec` is an independent tool server (ADR 0018, ADR 0009) that wraps the workspace's Exec RPC. The model reaches exec through the same tool-call channel as every other capability. The agent itself executes nothing — the tool calls the workspace over the gRPC client. Exec children work in the workspace directory by default, so an exec'd program sees the same files the files tool sees natively — the workspace execs children in its own directory and no shared-mount trick is needed.
 
 Mechanism:
 
@@ -33,7 +33,7 @@ What exec is NOT:
 
 ## Consequences
 
-- The `internal/workspace/shell/` package holds the executor; the Executor interface is the only thing the workspace server uses, so added hardening (chroot, seccomp, more rlimits) is a swap, not a rewrite. `tools/shell_exec/` is the only model-facing caller in the current build, and it knows only the workspace gRPC client.
+- The `internal/workspace/shell/` package holds the executor; the Executor interface is the only thing the workspace server uses, so added hardening (chroot, seccomp, more rlimits) is a swap, not a rewrite. `shell_exec` is an independent tool server (ADR 0018) that calls the workspace's Exec RPC; it knows only the workspace gRPC client.
 - Two deployment modes run real workloads. The privileged drop: a workspace process with UID-switch privilege (setuid-root binary, supervisor, or container capabilities) runs children as the configured exec UID. The single-account mode: the exec UID set to the process's own UID needs no privilege at all — the operator declares the account explicitly; there is no implicit fallback to the current UID. An unprivileged process with any other exec UID reports `agent_uid unavailable`.
 - Exec children share the workspace directory's ownership story: a privileged workspace chowns the workspace directory to the exec UID, so files written by tools through the gRPC contract and by exec'd children share one owner.
 - The unauthenticated Exec listener is a remote shell into the workspace, so the loopback-only fail-closed posture (ADR 0013) is what stands until contract authentication exists.

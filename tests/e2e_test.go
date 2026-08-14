@@ -132,13 +132,13 @@ func runMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	// Monitoring: the full turn lifecycle was published, in order: one
 	// turn with one tool call (message_send) and a writeback after
 	// every model response.
-	got := collectEvents(t, events, 5)
+	got := collectEvents(t, events, 6)
 	var kinds []string
 	for _, e := range got {
 		kinds = append(kinds, e["kind"].(string))
 	}
 	assert.Equal(t, []string{
-		"turn_started",
+		"turn_started", "recall",
 		"writeback", "tool_call",
 		"writeback", "turn_finished",
 	}, kinds)
@@ -148,8 +148,8 @@ func runMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	// The agent replied via message_send. The final writeback
 	// records the question as an episodic memory (ADR 0011: the
 	// writeback is the single write path).
-	assert.Equal(t, "message_send", got[2]["tool_name"])
-	assert.NotContains(t, got[2], "tool_failed")
+	assert.Equal(t, "message_send", got[3]["tool_name"])
+	assert.NotContains(t, got[3], "tool_failed")
 
 	// Reply: message_send output landed in the agent's outbox.
 	require.Eventually(t, func() bool {

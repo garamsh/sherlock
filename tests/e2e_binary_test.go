@@ -72,13 +72,13 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 
 	// Four-step scenario: files, shell_exec, message_send, then the
 	// final writeback — a writeback event follows every model response.
-	got := collectEvents(t, events, 9)
+	got := collectEvents(t, events, 10)
 	var kinds []string
 	for _, e := range got {
 		kinds = append(kinds, e["kind"].(string))
 	}
 	assert.Equal(t, []string{
-		"turn_started",
+		"turn_started", "recall",
 		"writeback", "tool_call",
 		"writeback", "tool_call",
 		"writeback", "tool_call",
@@ -90,20 +90,20 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	// Files tool: read the marker file the test placed in the
 	// workspace; the response crosses the workspace gRPC client and
 	// returns the file's contents.
-	assert.Equal(t, "files", got[2]["tool_name"])
-	assert.NotContains(t, got[2], "tool_failed")
-	assert.Contains(t, got[2]["tool_result"], "from the workspace",
+	assert.Equal(t, "files", got[3]["tool_name"])
+	assert.NotContains(t, got[3], "tool_failed")
+	assert.Contains(t, got[3]["tool_result"], "from the workspace",
 		"the files tool reads the marker file end-to-end through the workspace gRPC client")
 
-	assert.Equal(t, "shell_exec", got[4]["tool_name"])
-	assert.NotContains(t, got[4], "tool_failed")
-	assert.Contains(t, got[4]["tool_result"], "marker.txt",
+	assert.Equal(t, "shell_exec", got[5]["tool_name"])
+	assert.NotContains(t, got[5], "tool_failed")
+	assert.Contains(t, got[5]["tool_result"], "marker.txt",
 		"the exec'd command crosses the Exec RPC and sees the workspace's files natively")
-	assert.Contains(t, got[4]["tool_result"], "42",
+	assert.Contains(t, got[5]["tool_result"], "42",
 		"the canned run computes through the shell")
 
-	assert.Equal(t, "message_send", got[6]["tool_name"])
-	assert.NotContains(t, got[6], "tool_failed")
+	assert.Equal(t, "message_send", got[7]["tool_name"])
+	assert.NotContains(t, got[7], "tool_failed")
 
 	require.Eventually(t, func() bool {
 		return len(outboxMessages(t, root)) == 1

@@ -115,7 +115,11 @@ type eventPayload struct {
 	ToolFailed bool                `json:"tool_failed,omitempty"`
 	Response   string              `json:"response,omitempty"`
 	Error      string              `json:"error,omitempty"`
-	MessageIDs []string            `json:"message_ids,omitempty"`
+	// RecalledIDs and RecalledCount carry the recall event's injected
+	// memories (issue #325).
+	RecalledIDs   []string `json:"recalled_ids,omitempty"`
+	RecalledCount int      `json:"recalled_count,omitempty"`
+	MessageIDs    []string `json:"message_ids,omitempty"`
 }
 
 // events streams the agent's loop events as server-sent events.
@@ -150,18 +154,20 @@ func (h *handler) events(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			data, err := json.Marshal(eventPayload{
-				AgentID:    agentID,
-				Kind:       e.Kind,
-				Turn:       e.Turn,
-				Task:       e.Task,
-				Ops:        e.Ops,
-				ToolName:   e.ToolName,
-				ToolInput:  e.ToolInput,
-				ToolResult: e.ToolResult,
-				ToolFailed: e.ToolFailed,
-				Response:   e.Response,
-				Error:      e.Error,
-				MessageIDs: e.MessageIDs,
+				AgentID:       agentID,
+				Kind:          e.Kind,
+				Turn:          e.Turn,
+				Task:          e.Task,
+				Ops:           e.Ops,
+				ToolName:      e.ToolName,
+				ToolInput:     e.ToolInput,
+				ToolResult:    e.ToolResult,
+				ToolFailed:    e.ToolFailed,
+				Response:      e.Response,
+				Error:         e.Error,
+				RecalledIDs:   e.RecalledIDs,
+				RecalledCount: e.RecalledCount,
+				MessageIDs:    e.MessageIDs,
 			})
 			if err != nil {
 				h.logger.Error("encode event failed", "op", "events", "agent_id", agentID, "error", err)

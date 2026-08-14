@@ -73,6 +73,11 @@ type EventKind string
 const (
 	// EventTurnStarted fires once per Run, before frame and recall.
 	EventTurnStarted EventKind = "turn_started"
+	// EventRecall fires once per Run after the recall step, carrying the
+	// injected memory IDs and their count, so subscribers see what
+	// memory entered the context each turn (issue #325). Sessions
+	// without a Recaller emit nothing.
+	EventRecall EventKind = "recall"
 	// EventWriteback fires after each model response's memory block is
 	// parsed and handed to the sink.
 	EventWriteback EventKind = "writeback"
@@ -92,9 +97,10 @@ const (
 )
 
 // Event is one structured loop event for the gateway monitoring stream.
-// Which fields are set depends on Kind: Task on turn_started, Ops on
-// writeback, the Tool* fields on tool_call, Response on turn_finished,
-// Error on turn_failed and writeback_error.
+// Which fields are set depends on Kind: Task on turn_started,
+// RecalledIDs and RecalledCount on recall, Ops on writeback, the Tool*
+// fields on tool_call, Response on turn_finished, Error on turn_failed
+// and writeback_error.
 type Event struct {
 	Kind       EventKind
 	Turn       int
@@ -106,6 +112,10 @@ type Event struct {
 	ToolFailed bool
 	Response   string
 	Error      string
+	// RecalledIDs names the memories the recall step injected this turn;
+	// RecalledCount is their number.
+	RecalledIDs   []string
+	RecalledCount int
 	// MessageIDs names the inbound messages the turn drained; the
 	// gateway stamps it on terminal events (ADR 0015). The session
 	// never sets it.
@@ -359,6 +369,11 @@ func (s *session) recall(ctx context.Context, task string) ([]RecalledMemory, er
 	if err != nil {
 		return nil, fmt.Errorf("recall: %w", err)
 	}
+	var ids []string
+	for _, m := range recalled {
+		ids = append(ids, m.ID)
+	}
+	s.emit(ctx, Event{Kind: EventRecall, Turn: s.turn, RecalledIDs: ids, RecalledCount: len(ids)})
 	return recalled, nil
 }
 

@@ -106,8 +106,11 @@ func TestWriteback_AddSurfacesSimilarMemories(t *testing.T) {
 	require.NoError(t, err)
 
 	wb := gateway.Writeback{Svc: svc}
+	// The add stays below SupersessionSimilarity on purpose: the
+	// coherence note is the backstop for pairs the insert-time
+	// supersession does not catch (ADR 0006).
 	notes, err := wb.Apply(ctx, []agent.WritebackOp{
-		{Kind: agent.OpAdd, Content: "user's favorite telescope is the Orion XT8 dobsonian", Type: "semantic"},
+		{Kind: agent.OpAdd, Content: "user's favorite telescope is now the Orion XT8 dobsonian, bought last week", Type: "semantic"},
 	})
 	require.NoError(t, err)
 

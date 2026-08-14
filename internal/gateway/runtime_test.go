@@ -153,7 +153,7 @@ func TestQueue_ThresholdConsolidationRunsAfterTurn(t *testing.T) {
 	seedSvc := memory.NewService(seed, memory.NewHashingEmbedder(), memory.NewConcatSummarizer())
 	for i := range memory.ConsolidationThreshold {
 		_, err := seedSvc.Store(context.Background(), memory.StoreInput{
-			Content:         fmt.Sprintf("episodic note %d w%d x%d y%d", i, i, i, i),
+			Content:         fmt.Sprintf("episodic note %d w%d x%d y%d z%d q%d", i, i, i, i, i, i),
 			Type:            memory.TypeEpisodic,
 			ImportanceScore: 0.5,
 			Source:          "test",

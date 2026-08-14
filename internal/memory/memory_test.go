@@ -265,6 +265,50 @@ func TestStore_SupersedesHighlySimilarPredecessor(t *testing.T) {
 	assert.Equal(t, now.Unix(), validTo)
 }
 
+// TestStore_CorrectionRestatementSupersedes pins issue #324: a
+// correction-shaped restatement ("X … was replaced by Y") adds enough
+// narrative tokens to dilute the hashing embedder's cosine to ~0.67,
+// below the pre-calibration threshold, so two contradictory versions of
+// one fact stayed active. With SupersessionSimilarity calibrated to the
+// hashing embedder's distribution the correction supersedes in place.
+func TestStore_CorrectionRestatementSupersedes(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "memory.db")
+	st, err := sqlite.Open(path)
+	require.NoError(t, err)
+	svc := memory.NewService(st, memory.NewHashingEmbedder(), memory.NewConcatSummarizer(),
+		memory.WithClock(func() time.Time { return now }))
+	t.Cleanup(func() { assert.NoError(t, svc.Close()) })
+
+	oldID := storeMemory(t, svc,
+		"A main.go file with a greeting program has been created in the agent-test project.",
+		"episodic", 0.5)
+	res, err := svc.Store(context.Background(), memory.StoreInput{
+		Content: "the greeting program in the agent-test project is now main.py, " +
+			"a Python file — the Go main.go version was replaced",
+		Type:            memory.TypeEpisodic,
+		ImportanceScore: 0.5,
+		Source:          "test",
+	})
+	require.NoError(t, err)
+	assert.Equal(t, oldID, res.SupersededID,
+		"the correction restatement supersedes its predecessor at hashing-embedder similarity")
+	assert.NotEqual(t, oldID, res.ID)
+
+	results := search(t, svc, "greeting program agent-test")
+	require.Len(t, results, 1, "only the corrected version stays active")
+	assert.Equal(t, res.ID, results[0].ID)
+
+	db, err := sql.Open("sqlite", path)
+	require.NoError(t, err)
+	defer db.Close()
+	var supersededBy int64
+	require.NoError(t, db.QueryRow(
+		`SELECT superseded_by FROM memories_archive WHERE id = ?`, oldID,
+	).Scan(&supersededBy))
+	assert.Equal(t, res.ID, supersededBy,
+		"the archived predecessor points at the correction")
+}
+
 // TestStore_DissimilarInsertKeepsBoth pins the other side of the
 // supersession threshold: an add with no highly similar active memory
 // inserts a fresh row and supersedes nothing.
@@ -342,9 +386,15 @@ func TestStore_EvictsLowestScoreBeyondCapacity(t *testing.T) {
 		memory.WithCapacity(3))
 
 	var ids []int64
+	contents := []string{
+		"memory number zero apple banana",
+		"memory number one cherry durian",
+		"memory number two elderberry fig",
+		"memory number three grape hazelnut",
+	}
 	for i, importance := range []float64{0.1, 0.9, 0.5, 0.7} {
 		res, err := svc.Store(context.Background(), memory.StoreInput{
-			Content:         "memory number " + string(rune('a'+i)),
+			Content:         contents[i],
 			Type:            memory.TypeEpisodic,
 			ImportanceScore: importance,
 			Source:          "test",
@@ -369,11 +419,11 @@ func TestRecall_TrimsToTokenBudget(t *testing.T) {
 	// Distinct sentences: near-duplicates would supersede on insert
 	// (ADR 0006) instead of accumulating for the budget to trim.
 	for _, content := range []string{
-		"a fairly long memory about cats knocking vases off shelves",
-		"a fairly long memory about cats sleeping through thunderstorms",
-		"a fairly long memory about cats learning to open door handles",
-		"a fairly long memory about cats riding the city trams at dawn",
-		"a fairly long memory about cats adopting the warehouse office",
+		"a fairly long memory about cats knocking vases off shelves loudly",
+		"a fairly long memory about cats sleeping through thunderstorms nightly",
+		"a fairly long memory about cats learning to open door handles quietly",
+		"a fairly long memory about cats riding the city trams at dawn yesterday",
+		"a fairly long memory about cats adopting the warehouse office suddenly",
 	} {
 		storeMemory(t, svc, content, "episodic", 0.5)
 	}
@@ -462,14 +512,15 @@ func TestConsolidateIfDue_TriggersOnlyAtThreshold(t *testing.T) {
 	// Each note carries unique tokens so inserts stay below the
 	// supersession similarity (ADR 0006) and the cluster accumulates.
 	for i := range memory.ConsolidationThreshold - 1 {
-		storeMemory(t, svc, fmt.Sprintf("episodic note %d w%d x%d y%d", i, i, i, i), "episodic", 0.5)
+		storeMemory(t, svc, fmt.Sprintf("episodic note %d w%d x%d y%d z%d q%d", i, i, i, i, i, i), "episodic", 0.5)
 	}
 
 	res, err := svc.ConsolidateIfDue(context.Background())
 	require.NoError(t, err)
 	assert.Empty(t, res.ArchivedIDs, "below the threshold nothing consolidates")
 
-	storeMemory(t, svc, fmt.Sprintf("episodic note %d w%d x%d y%d",
+	storeMemory(t, svc, fmt.Sprintf("episodic note %d w%d x%d y%d z%d q%d",
+		memory.ConsolidationThreshold-1, memory.ConsolidationThreshold-1,
 		memory.ConsolidationThreshold-1, memory.ConsolidationThreshold-1,
 		memory.ConsolidationThreshold-1, memory.ConsolidationThreshold-1), "episodic", 0.5)
 	res, err = svc.ConsolidateIfDue(context.Background())
@@ -582,7 +633,7 @@ func TestCompress_PreferredParentIsFirstChunk(t *testing.T) {
 	var ids []int64
 	for i := range 20 {
 		ids = append(ids, storeMemory(t, svc,
-			fmt.Sprintf("alpha marker %04d tail token-%02d", i, i), "episodic", 0.5))
+			fmt.Sprintf("alpha marker %04d tail token-%02d extra%02d uniq%02d", i, i, i, i), "episodic", 0.5))
 	}
 
 	res, err := svc.Compress(context.Background(), ids)

@@ -287,18 +287,19 @@ func TestSessionRun_ScriptedMultiTurnScenario(t *testing.T) {
 	// Events fired in order within the turn.
 	require.Equal(t, []agent.EventKind{
 		agent.EventTurnStarted,
+		agent.EventRecall,
 		agent.EventWriteback,
 		agent.EventToolCall,
 		agent.EventWriteback,
 		agent.EventTurnFinished,
 	}, events.kinds())
 	assert.Equal(t, "what did the echo say?", events.events[0].Task)
-	toolEvent := events.events[2]
+	toolEvent := events.events[3]
 	assert.Equal(t, "echo", toolEvent.ToolName)
 	assert.JSONEq(t, `{"text":"hi"}`, string(toolEvent.ToolInput))
 	assert.Equal(t, `{"echo":"hi"}`, toolEvent.ToolResult)
 	assert.False(t, toolEvent.ToolFailed)
-	assert.Equal(t, "The echo said hi.", events.events[4].Response)
+	assert.Equal(t, "The echo said hi.", events.events[5].Response)
 	for _, e := range events.events {
 		assert.Equal(t, 1, e.Turn)
 	}
@@ -336,6 +337,39 @@ func TestSessionRun_NoRecallStatesAbsence(t *testing.T) {
 	_, err := s.Run(context.Background(), "anything")
 	require.NoError(t, err)
 	assert.Contains(t, s.History()[1].Content, "No relevant memories.")
+}
+
+// TestSessionRun_RecallEventEmitted pins issue #325: a turn whose recall
+// returns memories emits exactly one recall event carrying the injected
+// IDs and their count, so the monitoring stream shows what memory
+// entered the context.
+func TestSessionRun_RecallEventEmitted(t *testing.T) {
+	model := agent.NewScriptedModel(
+		agent.ScriptedStep{Content: "done\n```memory\n{}\n```"},
+	)
+	recaller := &fakeRecaller{memories: []agent.RecalledMemory{
+		{ID: "m1", Content: "user drinks tea", Age: "2d"},
+		{ID: "m2", Content: "user lives in Lisbon", Age: "5d"},
+	}}
+	events := &fakeEvents{}
+	s := agent.NewSession(model, newFakeClient(), agent.Options{
+		Recaller: recaller,
+		Events:   events,
+	})
+
+	_, err := s.Run(context.Background(), "what does the user drink?")
+	require.NoError(t, err)
+
+	var recallEvents []agent.Event
+	for _, e := range events.events {
+		if e.Kind == agent.EventRecall {
+			recallEvents = append(recallEvents, e)
+		}
+	}
+	require.Len(t, recallEvents, 1, "exactly one recall event per turn")
+	assert.Equal(t, []string{"m1", "m2"}, recallEvents[0].RecalledIDs)
+	assert.Equal(t, 2, recallEvents[0].RecalledCount)
+	assert.Equal(t, 1, recallEvents[0].Turn)
 }
 
 // TestSessionRun_LenientWritebackParse is issue #93's regression. A model

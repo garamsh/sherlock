@@ -167,7 +167,7 @@ func TestGateway_EndToEnd(t *testing.T) {
 
 	// The SSE subscriber observed the loop events of both turns, in
 	// order: turn 1 fully finishes before turn 2 starts.
-	got := collectEvents(t, events, 10)
+	got := collectEvents(t, events, 12)
 	var kinds []string
 	var startedTasks []string
 	for _, e := range got {
@@ -181,8 +181,8 @@ func TestGateway_EndToEnd(t *testing.T) {
 		"the turn input renders the message with its ID and sender (ADR 0015)")
 	assert.Contains(t, startedTasks[1], "] unknown: second")
 	assert.Equal(t, []string{
-		"turn_started", "writeback", "tool_call", "writeback", "turn_finished",
-		"turn_started", "writeback", "tool_call", "writeback", "turn_finished",
+		"turn_started", "recall", "writeback", "tool_call", "writeback", "turn_finished",
+		"turn_started", "recall", "writeback", "tool_call", "writeback", "turn_finished",
 	}, kinds)
 
 	// One agent per process: a message naming another agent ID gets 404.

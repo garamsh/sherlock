@@ -99,7 +99,7 @@ func TestContract_ToolSelectionGuidance(t *testing.T) {
 
 // TestContract_ShellExecIsATool pins issue #279: process exec is the
 // workspace's capability, surfaced to the model as the `shell_exec`
-// tool (ADR 0008, ADR 0018). The stale "not a tool / never invoke"
+// tool (ADR 0008, ADR 0017). The stale "not a tool / never invoke"
 // wording is gone; the contract names `shell_exec` in the switch-tools
 // fallback map (alongside `files` and `message_send`) and points at
 // the workspace Exec RPC so the model knows exec lives behind that
@@ -148,7 +148,7 @@ func TestContract_FailureRecoverySentence(t *testing.T) {
 		"the contract references the platform's repeat short-circuit")
 }
 
-// TestContract_MemoryIsNeverATool pins ADR 0018: the contract advertises
+// TestContract_MemoryIsNeverATool pins ADR 0017: the contract advertises
 // no memory tool — recall injection covers reads and the writeback block
 // is the single write path. The writeback add op keeps its auto-filled
 // fields, so the contract never asks the model for importance_score or
@@ -191,39 +191,22 @@ func TestContract_RecordOnlyObtainedFacts(t *testing.T) {
 	assert.Less(t, idx, tuIdx, "the rule stays inside the Memory writeback section")
 }
 
-// TestContract_AutoCaptureStatement pins the ADR 0012 contract collapse:
-// the platform remembers every user message automatically, so the
-// remember-request rule and its #164 store-vs-mention / store-vs-file
-// clauses shrink to one line — the writeback block carries distilled
-// facts, not transcripts.
-func TestContract_AutoCaptureStatement(t *testing.T) {
+// TestContract_WritebackIsTheOnlyWritePath pins the ADR 0006
+// curation-only model: the contract never claims the platform remembers
+// user messages automatically — the writeback block is the single write
+// path, and a fact the model does not distill into the block is gone.
+func TestContract_WritebackIsTheOnlyWritePath(t *testing.T) {
 	contract := agent.Contract
-	const rule = "Every user message is remembered automatically by the platform"
-	idx := strings.Index(contract, rule)
-	require.Greater(t, idx, -1, "the auto-capture statement is missing")
-	line := contract[idx:]
-	if nl := strings.Index(line, "\n"); nl >= 0 {
-		line = line[:nl]
-	}
-	assert.Contains(t, line, "distilled facts, not transcripts",
-		"the one-line statement scopes the writeback to distilled facts")
-	assert.NotContains(t, contract, "When the user asks you to remember something",
-		"the remember-request rule is gone — capture is platform-owned")
-	assert.NotContains(t, contract, "the only act of remembering",
-		"the store-vs-mention clause is gone")
-	assert.NotContains(t, contract, "Writing the fact to a workspace file is not remembering",
-		"the store-vs-file clause is gone")
-	// The statement lives in the Memory writeback section so the model
-	// reads it next to the block format it constrains.
-	mwIdx := strings.Index(contract, "## Memory writeback")
-	tuIdx := strings.Index(contract, "## When a tool is unavailable")
-	require.Greater(t, mwIdx, -1, "Memory writeback section missing")
-	require.Greater(t, tuIdx, -1, "When a tool is unavailable section missing")
-	assert.Greater(t, idx, mwIdx, "the statement comes after the Memory writeback header")
-	assert.Less(t, idx, tuIdx, "the statement stays inside the Memory writeback section")
+	assert.NotContains(t, contract, "remembered automatically",
+		"no platform auto-capture: only the writeback block writes to memory")
+	assert.NotContains(t, contract, "distilled facts, not transcripts",
+		"the auto-capture scoping line is gone with the capture path")
+	assert.Contains(t, contract,
+		"acknowledging it in the visible\nreply alone stores nothing",
+		"the add-required rule carries the curation burden")
 }
 
-// TestContract_MultiMessageTurn pins ADR 0016: the contract tells the
+// TestContract_MultiMessageTurn pins ADR 0015: the contract tells the
 // model a turn may carry several messages (each with ID and sender,
 // replies addressed per message via message_send) and that a later
 // message may retract an earlier one — the supersede mechanism.

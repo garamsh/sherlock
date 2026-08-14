@@ -20,7 +20,7 @@ const binaryAgentID = "e2e-bin"
 // TestEndToEnd_BinaryMVPScenario drives the canned MVP scenario
 // against the built gagent binary run as two processes — the workspace
 // serving the gRPC contract (files and exec) and the agent importing
-// tools at compile time (ADR 0018). The mock model computes through
+// tools at compile time (ADR 0017). The mock model computes through
 // shell_exec, which crosses the wire to the workspace's Exec RPC and
 // runs in the workspace directory, replies through message_send, and
 // closes with a writeback block.
@@ -85,7 +85,7 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 		"writeback", "turn_finished",
 	}, kinds)
 	assert.Contains(t, got[0]["task"], "] unknown: "+e2eQuestion,
-		"the turn input renders the message with its ID and sender (ADR 0016)")
+		"the turn input renders the message with its ID and sender (ADR 0015)")
 
 	// Files tool: read the marker file the test placed in the
 	// workspace; the response crosses the workspace gRPC client and

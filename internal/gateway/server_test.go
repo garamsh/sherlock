@@ -40,7 +40,7 @@ func postMessage(t *testing.T, url, body string) *http.Response {
 
 func TestServer_PostMessageReturns202WithID(t *testing.T) {
 	srv := newTestServer(t, func(string, agent.EventSink) (*gateway.Runtime, error) {
-		return &gateway.Runtime{Session: &fakeSession{}, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
+		return &gateway.Runtime{Session: &fakeSession{}, Close: func(context.Context) error { return nil }}, nil
 	})
 
 	resp := postMessage(t, srv.URL+"/agents/env-1/messages", `{"content":"hello"}`)
@@ -60,7 +60,7 @@ func TestServer_PostMessageReturns202WithID(t *testing.T) {
 
 func TestServer_PostMessageRejectsBadRequests(t *testing.T) {
 	srv := newTestServer(t, func(string, agent.EventSink) (*gateway.Runtime, error) {
-		return &gateway.Runtime{Session: &fakeSession{}, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
+		return &gateway.Runtime{Session: &fakeSession{}, Close: func(context.Context) error { return nil }}, nil
 	})
 
 	tests := []struct {
@@ -83,12 +83,12 @@ func TestServer_PostMessageRejectsBadRequests(t *testing.T) {
 }
 
 // TestServer_PostMessagePlainHTTPHasNoSender pins the sender source
-// (ADR 0016): over plain HTTP there is no caller identity, so the
+// (ADR 0015): over plain HTTP there is no caller identity, so the
 // envelope's sender is empty and the turn renders it as "unknown".
 func TestServer_PostMessagePlainHTTPHasNoSender(t *testing.T) {
 	session := &fakeSession{}
 	srv := newTestServer(t, func(string, agent.EventSink) (*gateway.Runtime, error) {
-		return &gateway.Runtime{Session: session, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
+		return &gateway.Runtime{Session: session, Close: func(context.Context) error { return nil }}, nil
 	})
 
 	resp := postMessage(t, srv.URL+"/agents/env-1/messages", `{"content":"hello"}`)
@@ -102,11 +102,11 @@ func TestServer_PostMessagePlainHTTPHasNoSender(t *testing.T) {
 }
 
 // TestServer_MismatchedAgentIDGets404 pins one-agent-per-process
-// (ADR 0018): the HTTP paths keep the /agents/{agent-id}/ shape, but a
+// (ADR 0017): the HTTP paths keep the /agents/{agent-id}/ shape, but a
 // request naming any other agent ID gets 404.
 func TestServer_MismatchedAgentIDGets404(t *testing.T) {
 	srv := newTestServer(t, func(string, agent.EventSink) (*gateway.Runtime, error) {
-		return &gateway.Runtime{Session: &fakeSession{}, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
+		return &gateway.Runtime{Session: &fakeSession{}, Close: func(context.Context) error { return nil }}, nil
 	})
 
 	resp := postMessage(t, srv.URL+"/agents/someone-else/messages", `{"content":"hello"}`)
@@ -121,7 +121,7 @@ func TestServer_MismatchedAgentIDGets404(t *testing.T) {
 
 func TestServer_MethodNotAllowed(t *testing.T) {
 	srv := newTestServer(t, func(string, agent.EventSink) (*gateway.Runtime, error) {
-		return &gateway.Runtime{Session: &fakeSession{}, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
+		return &gateway.Runtime{Session: &fakeSession{}, Close: func(context.Context) error { return nil }}, nil
 	})
 	resp, err := http.Get(srv.URL + "/agents/env-1/messages")
 	require.NoError(t, err)
@@ -129,11 +129,11 @@ func TestServer_MethodNotAllowed(t *testing.T) {
 	assert.Equal(t, http.StatusMethodNotAllowed, resp.StatusCode)
 }
 
-// TestServer_LegacyEnvPathsAreGone pins ADR 0017: the API is
+// TestServer_LegacyEnvPathsAreGone pins ADR 0016: the API is
 // agent-addressed; the old /envs/ paths serve nothing.
 func TestServer_LegacyEnvPathsAreGone(t *testing.T) {
 	srv := newTestServer(t, func(string, agent.EventSink) (*gateway.Runtime, error) {
-		return &gateway.Runtime{Session: &fakeSession{}, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
+		return &gateway.Runtime{Session: &fakeSession{}, Close: func(context.Context) error { return nil }}, nil
 	})
 
 	resp := postMessage(t, srv.URL+"/envs/env-1/messages", `{"content":"hello"}`)
@@ -185,7 +185,7 @@ func TestServer_EventsStreamsTurnEvents(t *testing.T) {
 		sink = events
 		mu.Unlock()
 		session := &emittingSession{events: events}
-		return &gateway.Runtime{Session: session, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
+		return &gateway.Runtime{Session: session, Close: func(context.Context) error { return nil }}, nil
 	})
 
 	received := sseListener(t, srv.URL+"/agents/env-1/events")
@@ -199,7 +199,7 @@ func TestServer_EventsStreamsTurnEvents(t *testing.T) {
 	resp.Body.Close()
 
 	// The subscriber sees the loop events the session emitted; the
-	// terminal event references the drained message IDs (ADR 0016).
+	// terminal event references the drained message IDs (ADR 0015).
 	var kinds []string
 	var terminal map[string]any
 	deadline := time.After(5 * time.Second)
@@ -226,7 +226,6 @@ func TestServer_EventsStreamsTurnFailed(t *testing.T) {
 	srv := newTestServer(t, func(_ string, events agent.EventSink) (*gateway.Runtime, error) {
 		return &gateway.Runtime{
 			Session: &failingSession{events: events},
-			Capture: noopCapture,
 			Close:   func(context.Context) error { return nil },
 		}, nil
 	})
@@ -264,7 +263,6 @@ func TestServer_EventsWritebackOpsDistinguishable(t *testing.T) {
 	srv := newTestServer(t, func(_ string, events agent.EventSink) (*gateway.Runtime, error) {
 		return &gateway.Runtime{
 			Session: &writebackSession{events: events},
-			Capture: noopCapture,
 			Close:   func(context.Context) error { return nil },
 		}, nil
 	})

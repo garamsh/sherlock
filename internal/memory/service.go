@@ -49,11 +49,12 @@ type Summarizer interface {
 
 // Service is the memory domain's behavior contract: the write operations
 // behind the writeback block (Store, Update, Delete), platform maintenance
-// (Compress, Forget, Consolidate), and the runtime queries (Search, Recall,
-// Similar) the agent loop needs (ADR 0011).
+// (Compress, Forget, Consolidate, Retain), and the runtime queries (Search,
+// Recall, Similar) the agent loop needs (ADR 0011).
 type Service interface {
-	// Store embeds and inserts a new memory, evicting lowest-score-first
-	// when the active index exceeds capacity.
+	// Store embeds and inserts a new memory, superseding a highly similar
+	// active predecessor (ADR 0006) and evicting lowest-score-first when
+	// the active index exceeds capacity.
 	Store(ctx context.Context, in StoreInput) (StoreResult, error)
 	// Search runs hybrid search and records access on the returned
 	// memories. A non-positive limit falls back to DefaultSearchLimit.
@@ -79,6 +80,11 @@ type Service interface {
 	// active episodic count has crossed ConsolidationThreshold, and is a
 	// no-op below it. The gateway evaluates it after a completed turn.
 	ConsolidateIfDue(ctx context.Context) (CompressResult, error)
+	// Retain is the tiered retention pass (ADR 0006): it archives active
+	// memories whose salience tier has expired and keeps the rest. The
+	// gateway evaluates it after a completed turn, alongside
+	// ConsolidateIfDue.
+	Retain(ctx context.Context) ([]int64, error)
 	// Recall is the agent loop's search entry point: hybrid search on the
 	// task statement, trimmed to a token budget, access recorded.
 	Recall(ctx context.Context, task string, tokenBudget int) ([]ScoredMemory, error)

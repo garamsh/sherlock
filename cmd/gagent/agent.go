@@ -23,7 +23,7 @@ import (
 )
 
 // newAgentCommand returns the "gagent agent" subcommand: it runs the
-// agent's self (ADR 0018) — the gateway, the rolling session, memory,
+// agent's self (ADR 0017) — the gateway, the rolling session, memory,
 // the mouth, and the platform tool client over the operator's tool
 // list. With --message it runs one turn against the same tool set and
 // exits; without it the agent serves its HTTP gateway until an
@@ -74,7 +74,7 @@ func addAgentFlags(fs *pflag.FlagSet) {
 // newAgentFactory resolves the model providers, loads the operator's
 // tool manifests, and returns the runtime factory and the tool
 // registry both agent modes share. The agent constructs no tool-shaped
-// code at compile time (ADR 0018 §Decision, ADR 0009 §Decision); the
+// code at compile time (ADR 0017 §Decision, ADR 0009 §Decision); the
 // script-tool registry (Phase 2) is the lifecycle owner for tool calls.
 func newAgentFactory(ctx context.Context, cfg Config, ego string, logger *slog.Logger) (*gateway.Factory, *tool.Registry, error) {
 	newModel, err := newModelFunc(cfg.Model)
@@ -140,7 +140,7 @@ func buildToolRegistry(cfg Config, logger *slog.Logger) (*tool.Registry, error) 
 // "the runner inherits the agent's env"). GAGENT_WORKSPACE_ADDR and
 // GAGENT_OUTBOX_DIR come from the config; GH_TOKEN must already be
 // present in the agent's env because the agent does not materialize
-// secrets (ADR 0003, ADR 0014).
+// secrets (ADR 0003, ADR 0013).
 func setToolEnv(cfg Config) error {
 	if err := os.Setenv("GAGENT_WORKSPACE_ADDR", cfg.WorkspaceAddr); err != nil {
 		return fmt.Errorf("set GAGENT_WORKSPACE_ADDR: %w", err)
@@ -170,9 +170,8 @@ func messageSendOutboxDir(memoryPath string) string {
 	return filepath.Join(filepath.Dir(memoryPath), "outbox")
 }
 
-// runAgentTurn builds the agent runtime, captures the message as a
-// user-turn memory (ADR 0012), and runs one turn. One-shot mode echoes
-// outbound messages to stdout (in addition to the file outbox the
+// runAgentTurn builds the agent runtime and runs one turn. One-shot mode
+// echoes outbound messages to stdout (in addition to the file outbox the
 // message_send manifest runs writes to) so a CLI invocation prints the
 // agent's reply without an outbox watcher. The serving mode stays
 // outbox-only.
@@ -201,9 +200,6 @@ func runAgentTurn(ctx context.Context, cfg Config, agentID, msg, ego string) err
 		}
 	}()
 
-	if err := rt.Capture(ctx, msg); err != nil {
-		return err
-	}
 	response, err := rt.Session.Run(ctx, msg)
 	if err != nil {
 		return err
@@ -254,7 +250,7 @@ func echoOutboxToStdout(dir string, before map[string]struct{}) {
 
 // serveAgent runs the agent's HTTP gateway until an interrupt or SIGTERM.
 // Callers authenticate with mTLS when the tls: config section is set
-// (ADR 0013); without it the gateway serves loopback binds only.
+// (ADR 0012); without it the gateway serves loopback binds only.
 func serveAgent(ctx context.Context, cfg Config, agentID, ego string) error {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	slog.SetDefault(logger)
@@ -264,7 +260,7 @@ func serveAgent(ctx context.Context, cfg Config, agentID, ego string) error {
 		return err
 	}
 	if tlsConfig == nil && !isLoopbackAddr(cfg.Addr) {
-		return fmt.Errorf("addr %q is not a loopback bind: serving beyond localhost requires the tls: config section (ADR 0013)", cfg.Addr)
+		return fmt.Errorf("addr %q is not a loopback bind: serving beyond localhost requires the tls: config section (ADR 0012)", cfg.Addr)
 	}
 
 	factory, registry, err := newAgentFactory(ctx, cfg, ego, logger)

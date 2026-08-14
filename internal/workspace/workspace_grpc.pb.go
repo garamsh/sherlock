@@ -30,7 +30,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
 // Workspace is the data plane the agent uses for its working environment
-// (ADR 0018): it serves the filesystem (Read, Write, List) and runs
+// (ADR 0017): it serves the filesystem (Read, Write, List) and runs
 // agent-influenced processes (Exec) in the workspace directory. It
 // exposes no tool hosting: tools are agent-side Go packages the agent
 // imports at compile time, and tools are the only callers of this
@@ -95,7 +95,7 @@ func (c *workspaceClient) Exec(ctx context.Context, in *ExecRequest, opts ...grp
 // for forward compatibility.
 //
 // Workspace is the data plane the agent uses for its working environment
-// (ADR 0018): it serves the filesystem (Read, Write, List) and runs
+// (ADR 0017): it serves the filesystem (Read, Write, List) and runs
 // agent-influenced processes (Exec) in the workspace directory. It
 // exposes no tool hosting: tools are agent-side Go packages the agent
 // imports at compile time, and tools are the only callers of this

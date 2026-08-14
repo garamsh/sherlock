@@ -146,13 +146,14 @@ func TestQueue_ThresholdConsolidationRunsAfterTurn(t *testing.T) {
 	root := t.TempDir()
 
 	// Seed the store past the threshold, then close it; the runtime
-	// opens the same file.
+	// opens the same file. Each note carries unique tokens so inserts
+	// stay below the supersession similarity (ADR 0006).
 	seed, err := sqlite.Open(memoryPath(root))
 	require.NoError(t, err)
 	seedSvc := memory.NewService(seed, memory.NewHashingEmbedder(), memory.NewConcatSummarizer())
 	for i := range memory.ConsolidationThreshold {
 		_, err := seedSvc.Store(context.Background(), memory.StoreInput{
-			Content:         fmt.Sprintf("episodic note %d", i),
+			Content:         fmt.Sprintf("episodic note %d w%d x%d y%d", i, i, i, i),
 			Type:            memory.TypeEpisodic,
 			ImportanceScore: 0.5,
 			Source:          "test",
@@ -390,7 +391,7 @@ func mouthClientSink(sink message.Sink) agent.ToolClient {
 }
 
 // TestFactory_ToolClientDescriptorsReachSession pins the structural
-// move (ADR 0018 §Decision): the agent's runtime surfaces the
+// move (ADR 0017 §Decision): the agent's runtime surfaces the
 // descriptors the platform tool client fetched, never an in-process
 // map the agent compiled itself.
 func TestFactory_ToolClientDescriptorsReachSession(t *testing.T) {

@@ -17,14 +17,14 @@ import (
 // Default settings, overridable by config file, environment, or flags.
 const (
 	// defaultAddr binds loopback only: without a tls: section the
-	// gateway refuses non-loopback binds (ADR 0013).
+	// gateway refuses non-loopback binds (ADR 0012).
 	defaultAddr = "127.0.0.1:8080"
 
 	// defaultMemoryPath is the agent's SQLite memory file.
 	defaultMemoryPath = "data/memory.db"
 
 	// defaultWorkspaceAddr is the gRPC endpoint of the agent's
-	// workspace (ADR 0018): the agent dials it to construct the tools
+	// workspace (ADR 0017): the agent dials it to construct the tools
 	// through internal/workspace/client. Plain host:port, no
 	// scheme — the workspace listener is unauthenticated in this phase.
 	defaultWorkspaceAddr = "127.0.0.1:8081"
@@ -53,7 +53,7 @@ const (
 type Config struct {
 	// Addr is the gateway's HTTP listen address.
 	Addr string `mapstructure:"addr"`
-	// MemoryPath is the agent's SQLite memory file (ADR 0018: the
+	// MemoryPath is the agent's SQLite memory file (ADR 0017: the
 	// environment directory pairing is gone; the file is configured
 	// directly).
 	MemoryPath string `mapstructure:"memory-path"`
@@ -61,7 +61,7 @@ type Config struct {
 	// the data plane the agent's tools call into. The agent has no
 	// compile-time tool registry; the script-tool runtime reads
 	// tools/<name>/manifest.json files from disk and spawns them as
-	// one-shot stdio processes (ADR 0009, ADR 0018); this is the
+	// one-shot stdio processes (ADR 0009, ADR 0017); this is the
 	// agent's only workspace-related setting — the workspace owns
 	// exec, so exec-uid and exec-timeout are workspace keys.
 	WorkspaceAddr string `mapstructure:"workspace-addr"`
@@ -70,7 +70,7 @@ type Config struct {
 	// Embedder selects the memory embedder provider (ADR 0004); the
 	// hashing default keeps the platform fully offline.
 	Embedder ModelConfig `mapstructure:"embedder"`
-	// TLS carries the gateway's mTLS material (ADR 0013). When unset,
+	// TLS carries the gateway's mTLS material (ADR 0012). When unset,
 	// the gateway serves loopback binds only.
 	TLS TLSConfig `mapstructure:"tls"`
 	// Console selects the console sink: with URL set, every message_send
@@ -87,7 +87,7 @@ type ConsoleConfig struct {
 	URL string `mapstructure:"url"`
 }
 
-// TLSConfig selects the gateway's mTLS material (ADR 0013): the server
+// TLSConfig selects the gateway's mTLS material (ADR 0012): the server
 // certificate/key pair and the client CA the gateway verifies callers
 // against. All three paths are set together or the section is rejected;
 // an empty section means plain HTTP on loopback binds only.

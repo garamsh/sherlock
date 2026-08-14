@@ -14,14 +14,20 @@ type StoreInput struct {
 	Source          string
 }
 
-// StoreResult reports the new memory and any entries evicted to keep the
-// active index within capacity.
+// StoreResult reports the new memory, the active predecessor it
+// superseded (0 when none), and any entries evicted to keep the active
+// index within capacity.
 type StoreResult struct {
-	ID         int64
-	EvictedIDs []int64
+	ID           int64
+	SupersededID int64
+	EvictedIDs   []int64
 }
 
-// Store implements the store operation.
+// Store implements the store operation, with supersession on insert
+// (ADR 0006): when the new memory's most similar active predecessor has
+// an embedding cosine of at least SupersessionSimilarity, the new row
+// takes over and the predecessor archives with superseded_by/valid_to
+// set — the newest version of a fact is the version that lives.
 func (s *service) Store(ctx context.Context, in StoreInput) (StoreResult, error) {
 	if err := validateNew(in.Content, in.Type, in.ImportanceScore); err != nil {
 		return StoreResult{}, err
@@ -30,22 +36,36 @@ func (s *service) Store(ctx context.Context, in StoreInput) (StoreResult, error)
 	if err != nil {
 		return StoreResult{}, fmt.Errorf("embed: %w", err)
 	}
+	matches, err := s.Similar(ctx, in.Content, 1)
+	if err != nil {
+		return StoreResult{}, fmt.Errorf("supersession lookup: %w", err)
+	}
+	var superseded int64
+	if len(matches) > 0 && cosine(emb, matches[0].Embedding) >= SupersessionSimilarity {
+		superseded = matches[0].ID
+	}
+	now := s.clock()
 	id, err := s.store.Insert(ctx, Memory{
 		Content:         in.Content,
 		Embedding:       emb,
 		Type:            in.Type,
 		ImportanceScore: in.ImportanceScore,
-		Timestamp:       s.clock(),
+		Timestamp:       now,
 		Source:          in.Source,
 	})
 	if err != nil {
 		return StoreResult{}, fmt.Errorf("insert: %w", err)
 	}
+	if superseded > 0 {
+		if err := s.store.Archive(ctx, superseded, id, now); err != nil {
+			return StoreResult{}, fmt.Errorf("archive superseded %d: %w", superseded, err)
+		}
+	}
 	evicted, err := s.enforceCapacity(ctx)
 	if err != nil {
 		return StoreResult{}, err
 	}
-	return StoreResult{ID: id, EvictedIDs: evicted}, nil
+	return StoreResult{ID: id, SupersededID: superseded, EvictedIDs: evicted}, nil
 }
 
 // enforceCapacity evicts lowest-score-first to the archive until the

@@ -23,7 +23,7 @@ import (
 // TestEndToEnd_WorkspaceServesContract drives "gagent workspace" as a
 // subprocess — real binary, real gRPC, nothing mocked: the agent's
 // tools (or a test driver) dial the workspace gRPC and call
-// Read/Write/List (ADR 0018).
+// Read/Write/List (ADR 0017).
 func TestEndToEnd_WorkspaceServesContract(t *testing.T) {
 	binary := buildGagentBinary(t)
 	workspaceDir := filepath.Join(t.TempDir(), "workspace")
@@ -70,7 +70,7 @@ func TestEndToEnd_WorkspaceServesContract(t *testing.T) {
 // TestEndToEnd_WorkspaceNonLoopbackFailsStartup runs the workspace with
 // a non-loopback --addr: startup must fail with an error stating the
 // loopback-only requirement — an unauthenticated gRPC listener is a
-// remote shell into the workspace (ADR 0013, issue #209).
+// remote shell into the workspace (ADR 0012, issue #209).
 func TestEndToEnd_WorkspaceNonLoopbackFailsStartup(t *testing.T) {
 	binary := buildGagentBinary(t)
 	configPath := emptyConfig(t, "workspace.yaml")

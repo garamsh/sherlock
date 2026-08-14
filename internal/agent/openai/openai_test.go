@@ -260,7 +260,7 @@ func jsonString(s string) string {
 }
 
 // TestChat_RequestBodyAdvertisesStrictModeAndDisablesParallelCalls pins
-// the constraints ADR 0018 §Tool contract imposes on the openai provider
+// the constraints ADR 0017 §Tool contract imposes on the openai provider
 // at the wire level: each tool carries strict:true so the API applies
 // constrained decoding, and the request body sets parallel_tool_calls to
 // false because the strict-mode API rejects parallel calls. Issue #298.

@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-// serverTLSConfig resolves the gateway's TLS setup (ADR 0013): a nil
+// serverTLSConfig resolves the gateway's TLS setup (ADR 0012): a nil
 // config means plain HTTP, a non-nil config serves HTTPS with client
 // certificates required and verified against the client CA. A partial
 // tls: section is a startup error naming the missing paths.
@@ -54,7 +54,7 @@ func serverTLSConfig(cfg TLSConfig) (*tls.Config, error) {
 }
 
 // checkServerKeyMode rejects a server key readable by group or other: the
-// key is runtime material in the runtime UID's domain (ADR 0018) and must
+// key is runtime material in the runtime UID's domain (ADR 0017) and must
 // stay owner-only so agent-UID children cannot read it. The platform
 // validates and fails instead of chowning an operator-provided file.
 func checkServerKeyMode(path string) error {

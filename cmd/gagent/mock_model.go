@@ -13,7 +13,7 @@ import (
 // then a writeback block to record the question. It exhausts after
 // one message; a real model replaces it without interface changes.
 // The writeback is the single write path: memory is a layer, never a
-// tool (ADR 0011, ADR 0018).
+// tool (ADR 0011, ADR 0017).
 func mockModel(_ string) agent.Model {
 	return agent.NewScriptedModel(
 		agent.ScriptedStep{

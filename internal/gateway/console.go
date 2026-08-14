@@ -12,7 +12,7 @@ import (
 )
 
 // consolePayload is the console sink's wire format (docs/architecture/
-// gateway.md): agent_id is the agent's identity (ADR 0017), which the
+// gateway.md): agent_id is the agent's identity (ADR 0016), which the
 // console reads as the sending agent's ID; channel and target are the
 // routing labels the agent chose. A distinct shape is justified at the
 // wire boundary (docs/convention/simplicity.md).

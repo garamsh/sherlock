@@ -158,7 +158,7 @@ func TestServer_RequestLogHasNoCallerOverPlainHTTP(t *testing.T) {
 }
 
 // TestServer_PostMessageSenderIsCallerIdentity pins the sender source
-// (ADR 0016): over mTLS the envelope's sender is the verified caller
+// (ADR 0015): over mTLS the envelope's sender is the verified caller
 // identity, and the turn renders it next to the message ID.
 func TestServer_PostMessageSenderIsCallerIdentity(t *testing.T) {
 	ca := newMTLSCA(t)
@@ -166,7 +166,7 @@ func TestServer_PostMessageSenderIsCallerIdentity(t *testing.T) {
 
 	session := &fakeSession{}
 	q, err := gateway.NewQueue(&fakeFactory{newFn: func(string, agent.EventSink) (*gateway.Runtime, error) {
-		return &gateway.Runtime{Session: session, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
+		return &gateway.Runtime{Session: session, Close: func(context.Context) error { return nil }}, nil
 	}}, "env-1", slog.New(slog.DiscardHandler))
 	require.NoError(t, err)
 	t.Cleanup(func() { q.Close() })

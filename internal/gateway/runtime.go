@@ -22,10 +22,6 @@ type Runtime struct {
 	// Tools is the platform tool client the session drives; nil means
 	// an empty tool surface (tests).
 	Tools agent.ToolClient
-	// Capture stores one inbound message verbatim as an episodic
-	// user-turn memory (ADR 0012). The ingress path calls it at accept
-	// time, before the message is queued.
-	Capture func(ctx context.Context, content string) error
 	// Close releases the runtime's resources. Called once on queue
 	// shutdown; memory consolidation (ADR 0011) runs before the store
 	// closes.
@@ -35,10 +31,15 @@ type Runtime struct {
 	// a failure logs at WARN and never fails a turn. Nil means no
 	// threshold trigger (test runtimes).
 	ConsolidateIfDue func(ctx context.Context) error
+	// Retain is the tiered retention pass (ADR 0006): the runner
+	// evaluates it after a completed turn, alongside ConsolidateIfDue;
+	// a failure logs at WARN and never fails a turn. Nil means no
+	// retention pass (test runtimes).
+	Retain func(ctx context.Context) error
 }
 
 // Factory assembles the one agent's runtime from the agent-container
-// modules (ADR 0018): the SQLite memory store at MemoryPath, the
+// modules (ADR 0017): the SQLite memory store at MemoryPath, the
 // platform tool client (the per-operator tool list), and the rolling
 // session. The runtime no longer wires an outbound sink: the
 // message_send binary the platform client spawns writes directly to
@@ -110,9 +111,12 @@ func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink)
 	return &Runtime{
 		Session: session,
 		Tools:   tools,
-		Capture: Capture{Svc: memSvc}.Capture,
 		ConsolidateIfDue: func(ctx context.Context) error {
 			_, err := memSvc.ConsolidateIfDue(ctx)
+			return err
+		},
+		Retain: func(ctx context.Context) error {
+			_, err := memSvc.Retain(ctx)
 			return err
 		},
 		Close: func(ctx context.Context) error {

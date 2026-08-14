@@ -1,11 +1,11 @@
-# ADR 0014: External egress is tool-routed — no dedicated egress proxy
+# ADR 0013: External egress is tool-routed — no dedicated egress proxy
 
 > Status: accepted
 > Date: 2026-08-03 (revised in place 2026-08-13)
 
 ## Context
 
-An early design carried a deferred "egress tool/proxy": a component meant to be the only outbound path from the execution domain — terminating TLS, resolving secret references at bound destinations, and redacting responses. Later decisions absorbed its purposes. The execution boundary record (ADR 0010) network-isolates executor children on request, closing the raw-egress hole the proxy was meant to guard. The tool-shape record (ADR 0009, ADR 0018) makes tool servers — independent processes the operator installs via the platform protocol — the only operator-sanctioned egress channels that keep network by operator choice. Scrubbed child environments plus per-tool env scoping give an explicit, operator-chosen path for secrets into trusted tools; the agent sees only structured tool output.
+An early design carried a deferred "egress tool/proxy": a component meant to be the only outbound path from the execution domain — terminating TLS, resolving secret references at bound destinations, and redacting responses. Later decisions absorbed its purposes. The execution boundary record (ADR 0010) network-isolates executor children on request, closing the raw-egress hole the proxy was meant to guard. The tool-shape record (ADR 0009, ADR 0017) makes tool servers — independent processes the operator installs via the platform protocol — the only operator-sanctioned egress channels that keep network by operator choice. Scrubbed child environments plus per-tool env scoping give an explicit, operator-chosen path for secrets into trusted tools; the agent sees only structured tool output.
 
 ## Decision
 

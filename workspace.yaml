@@ -1,4 +1,4 @@
-# Example workspace config. The workspace is the computer (ADR 0018):
+# Example workspace config. The workspace is the computer (ADR 0017):
 # it serves the filesystem (Read/Write/List) and runs agent-influenced
 # processes (Exec) in the workspace directory. It does not host tools —
 # tools are agent-side Go packages the agent imports at compile time,

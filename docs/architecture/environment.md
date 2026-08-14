@@ -1,11 +1,11 @@
 # Environment
 
-Governs the environment model: what an environment is, its topology, and its trust boundaries. Rationale: ADR 0018, ADR 0008, ADR 0009, ADR 0010.
+Governs the environment model: what an environment is, its topology, and its trust boundaries. Rationale: ADR 0017, ADR 0008, ADR 0009, ADR 0010.
 
 ## Current decisions
 
-- The environment is split into two layers: the workspace (the agent's data plane) and the tools (the agent's capabilities). The workspace is a dedicated sidecar container in the agent's pod; the tools are scripts the operator installs under `tools/<name>/` and the platform runs over stdio (ADR 0018, ADR 0009). One pod per agent; one workspace per agent to start.
-- The sidecar is the computer: it serves the gRPC workspace contract — Read, Write, List, Exec — over a loopback listener. It holds no tool servers and no `tools:` config; its executor (`internal/workspace/shell`) runs agent-influenced processes in the workspace directory (ADR 0008). The agent executes nothing; the model reaches exec through the `shell_exec` script, which calls the workspace's Exec RPC (ADR 0018).
+- The environment is split into two layers: the workspace (the agent's data plane) and the tools (the agent's capabilities). The workspace is a dedicated sidecar container in the agent's pod; the tools are scripts the operator installs under `tools/<name>/` and the platform runs over stdio (ADR 0017, ADR 0009). One pod per agent; one workspace per agent to start.
+- The sidecar is the computer: it serves the gRPC workspace contract — Read, Write, List, Exec — over a loopback listener. It holds no tool servers and no `tools:` config; its executor (`internal/workspace/shell`) runs agent-influenced processes in the workspace directory (ADR 0008). The agent executes nothing; the model reaches exec through the `shell_exec` script, which calls the workspace's Exec RPC (ADR 0017).
 - Tools are scripts with manifests (ADR 0009). The platform specifies only the contract shape and the call protocol; the tool owns its description, validation, behavior, and domain security. Adding a capability is dropping a `tools/<name>/` directory: a `manifest.json` and an executable. No Go import, no protocol implementation, no sidecar config change.
 - The workspace is configured from outside, like a real working volume: the workspace directory is created on first use, the listener bind address is operator-supplied, and the agent learns the listener's address from its own config (`--workspace-addr`, default `127.0.0.1:8081`).
 - The workspace directory is the workspace's own real directory: the workspace serves the typed file API over it and execs children in it, so exec'd programs see workspace files natively — no shared mount and no path-equality trick. The agent holds no workspace-path setting; it only dials the workspace's address.

@@ -1,4 +1,4 @@
-# ADR 0013: Gateway authentication via mTLS
+# ADR 0012: Gateway authentication via mTLS
 
 > Status: accepted
 > Date: 2026-08-02
@@ -20,7 +20,7 @@ The gateway authenticates callers with mTLS, terminated in the agent container i
 ## Consequences
 
 - A platform holds only public caller material (the client CA) plus its own server key, which lives outside the execution domain — no shared caller secret enters any config.
-- Caller identity (client-certificate CN/SAN) exists at the TLS layer and lands in request logs as trace context. Authorization stays flat: an authenticated caller has full access; scope boundaries are settled in ADR 0015.
+- Caller identity (client-certificate CN/SAN) exists at the TLS layer and lands in request logs as trace context. Authorization stays flat: an authenticated caller has full access; scope boundaries are settled in ADR 0014.
 - SSE connections authenticate once at handshake; the call model is unchanged for clients.
 
 ## Rejected alternatives

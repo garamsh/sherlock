@@ -1,4 +1,4 @@
-# ADR 0017: The identity is the agent ID — agent-addressed API
+# ADR 0016: The identity is the agent ID — agent-addressed API
 
 > Status: accepted
 > Date: 2026-08-03
@@ -9,7 +9,7 @@ The platform's identity concept was named env-id. The surrounding system — the
 
 ## Decision
 
-The agent's identity is the agent ID. The HTTP API is agent-addressed — `/agents/{agent-id}/messages` and `/agents/{agent-id}/events` — and outbound message payloads carry `agent_id`. "Environment" remains the name of what the agent owns — in the pod topology (ADR 0018) the sidecar and its workspace. One agent per environment, as always.
+The agent's identity is the agent ID. The HTTP API is agent-addressed — `/agents/{agent-id}/messages` and `/agents/{agent-id}/events` — and outbound message payloads carry `agent_id`. "Environment" remains the name of what the agent owns — in the pod topology (ADR 0017) the sidecar and its workspace. One agent per environment, as always.
 
 ## Consequences
 

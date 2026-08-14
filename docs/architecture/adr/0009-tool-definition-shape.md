@@ -5,7 +5,7 @@
 
 ## Context
 
-Capabilities must join the agent without a platform-owned plugin mechanism: browser automation, a GitHub client, a one-off utility. ADR 0018 settled where tools live: independent units the platform reaches through one binding contract. This record states what a tool is in that shape.
+Capabilities must join the agent without a platform-owned plugin mechanism: browser automation, a GitHub client, a one-off utility. ADR 0017 settled where tools live: independent units the platform reaches through one binding contract. This record states what a tool is in that shape.
 
 The previous revision made tools independent servers behind a platform protocol (HTTP or stdio JSON-RPC). That shape had two properties the owner rejected: it forced the tool author to write transport code (the protocol itself), and the model-facing JSON Schema was only one of several protocol artefacts the author had to understand. The structural answer is to make the tool author write the *contract* — a JSON Schema — and let the platform own the *transport*. The shape follows opencode's `custom-tools` model: a typed function declaration (zod schema in opencode, JSON Schema in gagent) plus an executable that implements it.
 

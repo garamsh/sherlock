@@ -2,7 +2,7 @@
 
 Current architecture of the system and the decisions behind it. This file is the index; workers read it before touching code, the PM keeps it honest.
 
-One pod per agent, two containers (ADR 0018): the agent container is the agent's self (gateway, reasoning loop, memory, mouth, tool client); the sidecar container is the agent's workspace — the computer: the gRPC data plane serving files and process execution. Tools are scripts the operator installs under `tools/<name>/` with a `manifest.json` and an executable; the platform owns the manifest format, the stdio call protocol, the boundary validation, and the drift pin. The code ships one binary with two subcommands (`gagent agent`, `gagent workspace`); first-party and third-party tools ship the same way, as `tools/<name>/` directories. Deployment artifacts live at the repo-root `Dockerfile` (agent/workspace targets) and `deploy/local/`.
+One pod per agent, two containers (ADR 0017): the agent container is the agent's self (gateway, reasoning loop, memory, mouth, tool client); the sidecar container is the agent's workspace — the computer: the gRPC data plane serving files and process execution. Tools are scripts the operator installs under `tools/<name>/` with a `manifest.json` and an executable; the platform owns the manifest format, the stdio call protocol, the boundary validation, and the drift pin. The code ships one binary with two subcommands (`gagent agent`, `gagent workspace`); first-party and third-party tools ship the same way, as `tools/<name>/` directories. Deployment artifacts live at the repo-root `Dockerfile` (agent/workspace targets) and `deploy/local/`.
 
 ## Structure
 
@@ -40,13 +40,12 @@ One pod per agent, two containers (ADR 0018): the agent container is the agent's
 - `0009` — the tool definition shape: a script with a manifest
 - `0010` — one execution boundary: agent-influenced effects under the unprivileged UID
 - `0011` — memory write-path unification: the writeback is the single write path
-- `0012` — platform auto-capture of inbound messages
-- `0013` — gateway authentication via mTLS
-- `0014` — external egress is tool-routed
-- `0015` — scope boundaries: authorization above the platform, no mid-run intervention
-- `0016` — the turn drains the queue
-- `0017` — the identity is the agent ID
-- `0018` — the agent is the self; the workspace is the data plane; tools are scripts with manifests (pod-per-agent)
+- `0012` — gateway authentication via mTLS
+- `0013` — external egress is tool-routed
+- `0014` — scope boundaries: authorization above the platform, no mid-run intervention
+- `0015` — the turn drains the queue
+- `0016` — the identity is the agent ID
+- `0017` — the agent is the self; the workspace is the data plane; tools are scripts with manifests (pod-per-agent)
 
 ### Modules
 
@@ -55,10 +54,10 @@ One pod per agent, two containers (ADR 0018): the agent container is the agent's
 | `cmd/gagent/` | CLI entry point (`gagent agent`, `gagent workspace`): resolve config and wire concrete implementations; nothing else. | — |
 | `internal/gateway/` | Accept normalized inbound messages, serialize the one agent's runs through a single queue, and publish the monitoring event stream. | `gateway.md` |
 | `internal/agent/` | Run the reasoning loop (frame, recall, act, writeback) for the agent's one rolling session. | `agent.md` |
-| `internal/tool/` | The platform tool client: read manifests from the operator's `tools/` directory, spawn the executable, validate inputs and outputs against the manifest's JSON Schemas, and pin manifest hashes to refuse drift at startup (ADR 0018, ADR 0009). | `agent.md`, `environment.md` |
+| `internal/tool/` | The platform tool client: read manifests from the operator's `tools/` directory, spawn the executable, validate inputs and outputs against the manifest's JSON Schemas, and pin manifest hashes to refuse drift at startup (ADR 0017, ADR 0009). | `agent.md`, `environment.md` |
 | `internal/tool/tooltest/` | Manifest conformance guards shared by tool tests. | — |
 | `internal/memory/` | Own the agent's long-term memory: the `memory.db` store, hybrid search, and the memory service behind the lifecycle hooks. | `memory.md` |
-| `internal/workspace/` | The gRPC data plane: proto, generated stubs, server wrapping the workspace filesystem backend for Read/Write/List and `internal/workspace/shell.Executor` for Exec (ADR 0018). No tool hosting. | `environment.md` |
+| `internal/workspace/` | The gRPC data plane: proto, generated stubs, server wrapping the workspace filesystem backend for Read/Write/List and `internal/workspace/shell.Executor` for Exec (ADR 0017). No tool hosting. | `environment.md` |
 | `internal/workspace/shell/` | The workspace's exec backend behind the Exec RPC (ADR 0008): fork+exec+setuid dropped to the exec UID, rlimits, scrubbed child environment, per-request network isolation, fail-closed `agent_uid unavailable`. | `environment.md` |
 | `internal/workspace/client/` | The typed workspace gRPC client wrapper — the boundary tools that need files or exec import: one helper (`client.New(ctx, addr)`) that dials the listener and returns the typed `WorkspaceClient`. Tools own the wire to the workspace. | `environment.md` |
 | `internal/workspace/files/` | The workspace's filesystem backend: an FS rooted at the workspace directory, with the lexical confinement the gRPC server enforces (single-consumer of the sidecar; lives here per the layout rules). | `environment.md` |

@@ -9,7 +9,7 @@ The founding plan requires long-term memory with hybrid vector+keyword search an
 
 ## Decision
 
-Each agent owns its memory as one file: `memory.db` (SQLite, pure-Go driver), stored with the agent's own data — in the pod topology (ADR 0018) the agent container's volume; the file is configured directly as the agent's `memory-path` (default `data/memory.db`).
+Each agent owns its memory as one file: `memory.db` (SQLite, pure-Go driver), stored with the agent's own data — in the pod topology (ADR 0017) the agent container's volume; the file is configured directly as the agent's `memory-path` (default `data/memory.db`).
 
 - Vector search: embeddings stored in a table, cosine similarity computed in memory (brute force). A deterministic local embedder is the default so the pipeline runs with no external API; a real embedding model plugs in behind the same interface.
 - Keyword search: SQLite FTS5.
@@ -25,5 +25,5 @@ Each agent owns its memory as one file: `memory.db` (SQLite, pure-Go driver), st
 
 - Backup, migration, and isolation are file operations on one agent's data.
 - No external service dependency for memory in single-agent deployments.
-- Memory survives agent misbehavior by construction: no executed code runs beside it in the agent container (ADR 0018).
+- Memory survives agent misbehavior by construction: no executed code runs beside it in the agent container (ADR 0017).
 - Brute-force vector search caps comfortable memory volume at tens of thousands of entries per agent; the store interface is the escape hatch.

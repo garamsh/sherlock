@@ -1,9 +1,9 @@
 # Example agent config. The mock provider is scripted and needs no API
 # key, so the agent runs fully offline against a local workspace.
 # addr binds loopback: a non-loopback bind requires a tls: section
-# (ADR 0013); see README.md's config table.
+# (ADR 0012); see README.md's config table.
 # The agent executes nothing itself — the workspace owns process exec
-# (ADR 0018) — so exec-uid and exec-timeout are workspace keys; the
+# (ADR 0017) — so exec-uid and exec-timeout are workspace keys; the
 # agent only needs the workspace's address.
 addr: "127.0.0.1:8080"
 # agent-id: default                     # default; CLI flag is the supported path today (override at startup)

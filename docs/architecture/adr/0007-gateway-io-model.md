@@ -13,10 +13,10 @@ The gateway separates three flows: ingress, outbound, and monitoring.
 
 - **Ingress is asynchronous.** Channel adapters normalize inbound messages; the gateway accepts each message, assigns an ID, enqueues it for the agent, and acknowledges. No synchronous response couples a sender to a turn.
 - **One rolling session per agent.** No automatic reset and no per-task sessions; context growth drains into long-term memory per ADR 0006.
-- **Execution is serialized per agent.** Messages arriving mid-run are queued as followups. There is no mid-run steering or interruption (ADR 0015).
+- **Execution is serialized per agent.** Messages arriving mid-run are queued as followups. There is no mid-run steering or interruption (ADR 0014).
 - **Outbound is a tool.** A `message_send` tool (channel, target, content) carries every reply — the agent's mouth. The agent decides when and to whom to respond; answering the sender, another person, or another agent is the same operation.
 - **Monitoring is a separate subscription stream.** Agent events (turn started, tool calls, memory writeback, turn finished) are published on a read-only stream that clients subscribe to only when they want live visibility. It is never part of the message path and typically has no subscribers.
-- **Callers authenticate with mTLS** (ADR 0013).
+- **Callers authenticate with mTLS** (ADR 0012).
 
 ## Consequences
 

@@ -11,8 +11,8 @@ Security enforcement needs a home consistent with the component model. Two candi
 
 Each tool owns and enforces the security policy of its own domain. No separate security layer exists.
 
-- **Trust-domain invariant**: a tool that executes agent-influenced code runs with no reachable secrets; a tool that holds secrets never executes agent-influenced code and accepts only schema-validated structured input. In the pod topology (ADR 0018) the two domains land on the two containers: the secret-free workspace data plane in the sidecar, secrets and the tools that hold them in the agent container.
-- **External access is tool-routed by principle.** Services are reached through tool calls; raw network egress from executed code exists only through operator-sanctioned tools (ADR 0003, ADR 0014).
+- **Trust-domain invariant**: a tool that executes agent-influenced code runs with no reachable secrets; a tool that holds secrets never executes agent-influenced code and accepts only schema-validated structured input. In the pod topology (ADR 0017) the two domains land on the two containers: the secret-free workspace data plane in the sidecar, secrets and the tools that hold them in the agent container.
+- **External access is tool-routed by principle.** Services are reached through tool calls; raw network egress from executed code exists only through operator-sanctioned tools (ADR 0003, ADR 0013).
 - **Guard models are adopted as defense-in-depth**: command risk classification before execution, secret scanning of tool outputs. They catch accidents and provide audit value. They are documented as *not* a security boundary — model judgment is probabilistic and bypassable by obfuscation; boundaries are structural only (file ownership, secret absence, network policy).
 - **Light confinement inside the execution domain**: the file tool is rooted at the workspace with path-traversal validation, separating working data from the tool runtime itself. This is convenience, not a trust boundary.
 

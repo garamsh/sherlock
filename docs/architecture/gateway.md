@@ -1,16 +1,16 @@
 # Gateway
 
-Governs the gateway: message ingress, outbound delivery, and monitoring. Rationale: ADR 0018, ADR 0007, ADR 0013, ADR 0016.
+Governs the gateway: message ingress, outbound delivery, and monitoring. Rationale: ADR 0017, ADR 0007, ADR 0012, ADR 0015.
 
 ## Current decisions
 
-- The gateway is the agent's ears and eyes; it lives in the agent container and serves that one agent (ADR 0018). It has no relationship with the sidecar.
-- Routing senders to agent pods is the orchestration layer's concern (ADR 0015); the gateway terminates mTLS and nothing more.
+- The gateway is the agent's ears and eyes; it lives in the agent container and serves that one agent (ADR 0017). It has no relationship with the sidecar.
+- Routing senders to agent pods is the orchestration layer's concern (ADR 0014); the gateway terminates mTLS and nothing more.
 - Three flows, unchanged in shape:
-  - **Ingress** — asynchronous and fire-and-forget: accept, capture the message verbatim as an episodic `user-turn` memory (ADR 0012), enqueue, acknowledge. No synchronous response couples a sender to a turn.
+  - **Ingress** — asynchronous and fire-and-forget: accept, enqueue, acknowledge. No synchronous response couples a sender to a turn. Inbound messages are not stored as searchable memories; the writeback is the only write path (ADR 0006, ADR 0011).
   - **Outbound** — the mouth: `message_send` lives agent-side as the agent's own speech; delivery targets a console endpoint over mTLS with a file-outbox fallback, so a message is never silently lost.
   - **Monitoring** — a read-only event stream; every turn ends with exactly one terminal event (`turn_finished` or `turn_failed`). Never part of the message path.
-- One queue per agent; a turn drains the queue (bound 8, sender envelopes, supersede-as-cancellation — ADR 0016). No forced stop, suspend, or steering (ADR 0015).
+- One queue per agent; a turn drains the queue (bound 8, sender envelopes, supersede-as-cancellation — ADR 0015). No forced stop, suspend, or steering (ADR 0014).
 
 ## Current state
 

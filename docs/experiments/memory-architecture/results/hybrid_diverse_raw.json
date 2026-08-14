@@ -1,0 +1,984 @@
+[
+  {
+    "name": "H1",
+    "results_by_query": {
+      "p-mgr": [
+        "RetrievalResult(turn_id='Otto6.00', role='user', content='Otto is my manager.', score=2.3746629080100883, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='reflect-6', role='reflection', content=\"[reflection of 5 items] user: My manager is Otto. | user: Otto's been here six years. | user: Maria joined last month as a junior engineer. | user: Maria is on the platform team, not metrics. | user: Otto is the one who wrote the original deploy pipeline.\", score=2.194389223624194, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-191', role='reflection', content='[reflection of 3 items] user: I live in the Mission District. | user: My apartment is on 24th and Mission. | user: Dolores Park is my favorite weekend spot.', score=2.1556774307038276, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-198', role='reflection', content='[reflection of 6 items] user: I think Radiohead is the best band ever. | user: I enjoy live music more than recorded. | reflection: [reflection of 5 items] reflection: [reflection of 6 items]  | user: Maria is my mentee. | user: Tom is my college roommate. | user: Lin is my former coworker.', score=2.149764116243285, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-177', role='reflection', content='[reflection of 3 items] user: My sister is Anna. | user: Anna lives in Seattle. | user: Anna is a therapist.', score=2.1097476179977384, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "p-junior": [
+        "RetrievalResult(turn_id='reflect-6', role='reflection', content=\"[reflection of 5 items] user: My manager is Otto. | user: Otto's been here six years. | user: Maria joined last month as a junior engineer. | user: Maria is on the platform team, not metrics. | user: Otto is the one who wrote the original deploy pipeline.\", score=2.3349738382456886, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-191', role='reflection', content='[reflection of 3 items] user: I live in the Mission District. | user: My apartment is on 24th and Mission. | user: Dolores Park is my favorite weekend spot.', score=2.1772132659897814, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-154', role='reflection', content='[reflection of 3 items] user: I usually get the New Orleans iced coffee. | user: The Sightglass on 7th is for meetings. | user: I prefer the local roaster over chains.', score=2.1377174778558117, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-118', role='reflection', content='[reflection of 2 items] user: The meeting room is named Aurora. | user: I sit at the back-left, facing the window.', score=2.1208164151503888, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-62', role='reflection', content=\"[reflection of 5 items] user: I sleep in on Saturdays. | user: I do a long run on Sundays. | user: I visit the farmer's market on Saturdays. | user: I cook on Sunday evenings. | user: I call my parents on Sundays.\", score=2.110014003322582, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "p-maria-team": [
+        "RetrievalResult(turn_id='P-team-roster.03', role='user', content='Maria is on the platform team, not metrics.', score=2.3001700110365455, metadata={'salience': 0.6, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='reflect-6', role='reflection', content=\"[reflection of 5 items] user: My manager is Otto. | user: Otto's been here six years. | user: Maria joined last month as a junior engineer. | user: Maria is on the platform team, not metrics. | user: Otto is the one who wrote the original deploy pipeline.\", score=2.26510569473969, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-62', role='reflection', content=\"[reflection of 5 items] user: I sleep in on Saturdays. | user: I do a long run on Sundays. | user: I visit the farmer's market on Saturdays. | user: I cook on Sunday evenings. | user: I call my parents on Sundays.\", score=2.1429755815027205, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-213', role='reflection', content=\"[reflection of 3 items] user: Brenda is a chef. | user: Brenda cooks for our team dinners. | user: Brenda's restaurant is in North Beach.\", score=2.115327623572695, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-191', role='reflection', content='[reflection of 3 items] user: I live in the Mission District. | user: My apartment is on 24th and Mission. | user: Dolores Park is my favorite weekend spot.', score=2.098586526342401, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "p-quote-otto": [
+        "RetrievalResult(turn_id='reflect-13', role='reflection', content=\"[reflection of 3 items] user: Otto said the deploy pipeline was 'too clever by half.' | user: Maria said she preferred pytest over unittest. | user: I told Maria that the test coverage was 70%.\", score=2.4048928836160455, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-6', role='reflection', content=\"[reflection of 5 items] user: My manager is Otto. | user: Otto's been here six years. | user: Maria joined last month as a junior engineer. | user: Maria is on the platform team, not metrics. | user: Otto is the one who wrote the original deploy pipeline.\", score=2.1033280918394857, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-109', role='reflection', content='[reflection of 4 items] reflection: [reflection of 4 items] reflection: [reflection of 6 items]  | user: If the queries are slow, look at the slow query log. | user: If the database CPU is fine, check the application logs. | user: If the application logs are clean, restart the service.', score=2.080080918117671, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-27', role='reflection', content='[reflection of 6 items] user: I told them both my deadline is Wednesday. | user: On March 5, 2024, we shipped the launch. | user: There was a 2-hour outage that day. | user: Otto was on call. | user: I stayed late until 11pm. | user: The launch was the audit log service.', score=2.0786799929230173, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-97', role='reflection', content='[reflection of 6 items] user: Now I would never go back. | user: To deploy a service: bump the version in Makefile. | user: Then run make deploy. | user: Then run the smoke test. | user: Then merge the PR. | user: Then tag the release.', score=2.0719067865903553, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "p-quote-pytest": [
+        "RetrievalResult(turn_id='reflect-13', role='reflection', content=\"[reflection of 3 items] user: Otto said the deploy pipeline was 'too clever by half.' | user: Maria said she preferred pytest over unittest. | user: I told Maria that the test coverage was 70%.\", score=2.1235153862899407, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-214', role='reflection', content='[reflection of 2 items] user: I prefer non-fiction. | user: I dislike most fiction.', score=1.9999965926929384, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-221', role='reflection', content='[reflection of 2 items] user: I prefer park runs over street runs. | user: I went to Japan last spring.', score=1.9754965755643026, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-69', role='reflection', content='[reflection of 2 items] user: I usually meal prep with Otto and Maria. | user: I prefer Python over Go for new services.', score=1.9740242755205715, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-148', role='reflection', content='[reflection of 6 items] user: I prefer savory over sweet. | user: I dislike cilantro. | user: I love spicy food despite my earlier statement. | user: I think Mexican is the best cuisine. | user: I prefer Italian over Mexican. | user: The Blue Bottle on Mission is my go-to.', score=1.9719202147319732, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "p-promise": [
+        "RetrievalResult(turn_id='P-who-said-what.07', role='user', content='Maria promised to write the migration plan by Friday.', score=2.4596375941324102, metadata={'salience': 0.6, 'kind': 'commitment'})",
+        "RetrievalResult(turn_id='reflect-20', role='reflection', content=\"[reflection of 5 items] user: Otto suggested we use feature flags. | user: Maria said feature flags were overkill for the prototype. | user: Otto's been pushing for the feature flags; Maria's been skep | user: Maria promised to write the migration plan by Friday. | user: Otto said he'd review it on Monday.\", score=2.2030614641798874, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-118', role='reflection', content='[reflection of 2 items] user: The meeting room is named Aurora. | user: I sit at the back-left, facing the window.', score=2.0815940595062945, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-114', role='reflection', content='[reflection of 4 items] reflection: [reflection of 4 items] reflection: [reflection of 4 items]  | user: I increased it to 50 last month. | user: Maria sits two desks away from me, by the window. | user: The coffee machine is in the kitchen, second door on the rig', score=2.0646748219931768, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-141', role='reflection', content='[reflection of 6 items] reflection: [reflection of 6 items] user: When a service is slow: check  | user: Then fix the underlying issue. | user: Then write a regression test. | user: My mom visited last weekend. | user: We went to the art museum. | user: She loved the Monet exhibition.', score=2.0631318178383813, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "e-when-launch": [
+        "RetrievalResult(turn_id='E-launch-day.00', role='user', content='On March 5, 2024, we shipped the launch.', score=2.3742213425171053, metadata={'salience': 0.9, 'kind': 'event'})",
+        "RetrievalResult(turn_id='reflect-27', role='reflection', content='[reflection of 6 items] user: I told them both my deadline is Wednesday. | user: On March 5, 2024, we shipped the launch. | user: There was a 2-hour outage that day. | user: Otto was on call. | user: I stayed late until 11pm. | user: The launch was the audit log service.', score=2.157603129379056, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-118', role='reflection', content='[reflection of 2 items] user: The meeting room is named Aurora. | user: I sit at the back-left, facing the window.', score=2.1550556910439336, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-130', role='reflection', content=\"[reflection of 6 items] user: We worked together at the previous company. | user: We both joined the current company the same year. | user: Otto has been my manager for three years. | user: We had a rough patch in 2022; I almost quit. | user: Otto and I rebuilt trust after that. | user: I trust Otto's judgment on architecture.\", score=2.116852388226272, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='E-launch-day.04', role='user', content='The launch was the audit log service.', score=2.114912718830039, metadata={'salience': 0.7, 'kind': 'event'})"
+      ],
+      "e-outage": [
+        "RetrievalResult(turn_id='E-launch-day.07', role='user', content='The outage was a database connection leak.', score=2.1745577036091546, metadata={'salience': 0.7, 'kind': 'event-cause'})",
+        "RetrievalResult(turn_id='reflect-27', role='reflection', content='[reflection of 6 items] user: I told them both my deadline is Wednesday. | user: On March 5, 2024, we shipped the launch. | user: There was a 2-hour outage that day. | user: Otto was on call. | user: I stayed late until 11pm. | user: The launch was the audit log service.', score=2.1734689260674056, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-34', role='reflection', content='[reflection of 4 items] user: The outage was a database connection leak. | user: We fixed it by adding a connection pool size limit. | user: Postmortem was published on March 7. | user: I ran the Bay to Breakers in 2023.', score=2.15852901388583, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-118', role='reflection', content='[reflection of 2 items] user: The meeting room is named Aurora. | user: I sit at the back-left, facing the window.', score=2.1207485849786747, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-13', role='reflection', content=\"[reflection of 3 items] user: Otto said the deploy pipeline was 'too clever by half.' | user: Maria said she preferred pytest over unittest. | user: I told Maria that the test coverage was 70%.\", score=2.1184284062571197, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "e-run-time": [
+        "RetrievalResult(turn_id='reflect-34', role='reflection', content='[reflection of 4 items] user: The outage was a database connection leak. | user: We fixed it by adding a connection pool size limit. | user: Postmortem was published on March 7. | user: I ran the Bay to Breakers in 2023.', score=2.167379734278347, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='E-run.00', role='user', content='I ran the Bay to Breakers in 2023.', score=2.1324056352233005, metadata={'salience': 0.7, 'kind': 'event'})",
+        "RetrievalResult(turn_id='reflect-215', role='reflection', content=\"[reflection of 4 items] user: Brenda is one of my favorite people. | user: My wedding anniversary was last month. | user: We went to Brenda's restaurant. | user: Jordan and I have been together for 8 years.\", score=2.130788960493495, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-237', role='reflection', content='[reflection of 2 items] user: We had a great time catching up. | user: I invest in index funds.', score=2.1162657220156453, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-191', role='reflection', content='[reflection of 3 items] user: I live in the Mission District. | user: My apartment is on 24th and Mission. | user: Dolores Park is my favorite weekend spot.', score=2.0910665279526026, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "e-run-injury": [
+        "RetrievalResult(turn_id='reflect-55', role='reflection', content='[reflection of 5 items] user: I bike to work three days a week. | user: I take the train the other two. | user: I do my best thinking in the morning. | user: I leave work at 6. | user: I run in the evenings on weekdays.', score=2.243524845940793, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-118', role='reflection', content='[reflection of 2 items] user: The meeting room is named Aurora. | user: I sit at the back-left, facing the window.', score=2.2347319183421037, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-188', role='reflection', content='[reflection of 4 items] user: It was a great bonding experience. | user: I check production metrics every morning at 9am. | user: I look at the dashboard first. | user: Then I check Slack for any alerts.', score=2.19773956910043, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-206', role='reflection', content='[reflection of 4 items] reflection: [reflection of 6 items] user: I feel excited when I learn so | user: I feel content when I read at night. | user: I have a strong network in the Bay Area tech scene. | user: I met Otto at a previous job.', score=2.1798752683783538, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-41', role='reflection', content=\"[reflection of 5 items] user: I finished in 2 hours 14 minutes. | user: Otto came in 2:30. | user: Brenda is Otto's wife. | user: I hurt my knee at mile 8. | user: Maria crewed for me at the aid station.\", score=2.1778070131492817, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "r-wake": [
+        "RetrievalResult(turn_id='reflect-48', role='reflection', content='[reflection of 2 items] user: I want to run again next year. | user: I wake up at 7am on weekdays.', score=2.2511040957644286, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-237', role='reflection', content='[reflection of 2 items] user: We had a great time catching up. | user: I invest in index funds.', score=2.215421903631533, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-189', role='reflection', content='[reflection of 3 items] user: Then I review the PR queue. | user: Then I have a 1:1 with Otto. | user: I do code reviews in the afternoon.', score=2.124523841293291, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-206', role='reflection', content='[reflection of 4 items] reflection: [reflection of 6 items] user: I feel excited when I learn so | user: I feel content when I read at night. | user: I have a strong network in the Bay Area tech scene. | user: I met Otto at a previous job.', score=2.092691432429947, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='R-morning.00', role='user', content='I wake up at 7am on weekdays.', score=2.0873257595308794, metadata={'salience': 0.6, 'kind': 'routine'})"
+      ],
+      "r-bike": [
+        "RetrievalResult(turn_id='reflect-55', role='reflection', content='[reflection of 5 items] user: I bike to work three days a week. | user: I take the train the other two. | user: I do my best thinking in the morning. | user: I leave work at 6. | user: I run in the evenings on weekdays.', score=2.259824570500015, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-203', role='reflection', content='[reflection of 6 items] user: I feel excited when I learn something new. | user: I feel drained after long meetings. | user: I feel grateful for my team. | user: I feel lonely when I work from home too long. | user: I feel energized by good design. | user: I feel frustrated when meetings run over.', score=2.209917970343349, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-200', role='reflection', content='[reflection of 6 items] user: Jess is my book club friend. | user: Mom is my mom. | user: Dad passed away when I was 20. | user: I feel calm when I cook. | user: I feel proud when I run a long distance. | user: I feel anxious before code reviews.', score=2.1644710349336886, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='R-morning.03', role='user', content='I bike to work three days a week.', score=2.1557345691615346, metadata={'salience': 0.6, 'kind': 'routine'})",
+        "RetrievalResult(turn_id='reflect-194', role='reflection', content='[reflection of 6 items] user: I was with him when he passed. | user: I felt at peace. | user: He taught me to play chess. | user: I miss him. | user: I keep his chess set on my desk. | user: I think about him when I play.', score=2.155437442059632, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "r-sunday": [
+        "RetrievalResult(turn_id='reflect-62', role='reflection', content=\"[reflection of 5 items] user: I sleep in on Saturdays. | user: I do a long run on Sundays. | user: I visit the farmer's market on Saturdays. | user: I cook on Sunday evenings. | user: I call my parents on Sundays.\", score=2.3445120851519428, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='R-weekend.01', role='user', content='I do a long run on Sundays.', score=2.267239237076029, metadata={'salience': 0.6, 'kind': 'routine'})",
+        "RetrievalResult(turn_id='reflect-189', role='reflection', content='[reflection of 3 items] user: Then I review the PR queue. | user: Then I have a 1:1 with Otto. | user: I do code reviews in the afternoon.', score=2.1477476295902522, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-55', role='reflection', content='[reflection of 5 items] user: I bike to work three days a week. | user: I take the train the other two. | user: I do my best thinking in the morning. | user: I leave work at 6. | user: I run in the evenings on weekdays.', score=2.1338834024700977, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-48', role='reflection', content='[reflection of 2 items] user: I want to run again next year. | user: I wake up at 7am on weekdays.', score=2.1065914645292168, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "o-python": [
+        "RetrievalResult(turn_id='O-tech.00', role='user', content='I prefer Python over Go for new services.', score=2.336564056094021, metadata={'salience': 0.7, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='reflect-69', role='reflection', content='[reflection of 2 items] user: I usually meal prep with Otto and Maria. | user: I prefer Python over Go for new services.', score=2.303567901373848, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-154', role='reflection', content='[reflection of 3 items] user: I usually get the New Orleans iced coffee. | user: The Sightglass on 7th is for meetings. | user: I prefer the local roaster over chains.', score=2.14158312792021, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-138', role='reflection', content=\"[reflection of 3 items] user: Maria and I have a great working relationship. | user: We compromise: TDD for new code, test-after for bug fixes. | user: Maria's been a great sounding board for architectural decisi\", score=2.140189786648571, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-221', role='reflection', content='[reflection of 2 items] user: I prefer park runs over street runs. | user: I went to Japan last spring.', score=2.1115609811032092, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "o-rust": [
+        "RetrievalResult(turn_id='reflect-76', role='reflection', content='[reflection of 5 items] user: I think Rust is best for hot paths. | user: I dislike Java. | user: I think Clojure is overrated. | user: I believe most code reviews should be async. | user: I think pair programming is overrated for routine work.', score=2.3338248394466854, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-239', role='reflection', content=\"[reflection of 5 items] user: I don't believe in stock picking. | user: I think crypto is too volatile. | user: I prefer real estate over stocks. | user: I think dollar-cost averaging is the best strategy. | user: I don't day-trade.\", score=2.266351772088199, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='O-tech.01', role='user', content='I think Rust is best for hot paths.', score=2.250714574831691, metadata={'salience': 0.6, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='reflect-181', role='reflection', content='[reflection of 4 items] user: I used to think microservices were the answer to everything. | user: Now I think monoliths are underrated. | user: I used to think TDD was essential. | user: Now I think test-after is fine for bug fixes.', score=2.210547370837738, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-146', role='reflection', content=\"[reflection of 6 items] user: I miss her already. | user: I prefer coffee over tea. | user: I don't like spicy food. | user: I think sushi is overrated. | user: I love pizza. | user: I think breakfast is the most important meal.\", score=2.192022487373544, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "o-pair-now": [
+        "RetrievalResult(turn_id='reflect-76', role='reflection', content='[reflection of 5 items] user: I think Rust is best for hot paths. | user: I dislike Java. | user: I think Clojure is overrated. | user: I believe most code reviews should be async. | user: I think pair programming is overrated for routine work.', score=2.2896653435428753, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-83', role='reflection', content=\"[reflection of 4 items] user: I believe in writing tests first. | user: I believe most meetings are unnecessary. | user: I used to think pair programming was essential. | user: Now I think it's only useful for unfamiliar code.\", score=2.2508097861075362, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-146', role='reflection', content=\"[reflection of 6 items] user: I miss her already. | user: I prefer coffee over tea. | user: I don't like spicy food. | user: I think sushi is overrated. | user: I love pizza. | user: I think breakfast is the most important meal.\", score=2.176271195955858, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-181', role='reflection', content='[reflection of 4 items] user: I used to think microservices were the answer to everything. | user: Now I think monoliths are underrated. | user: I used to think TDD was essential. | user: Now I think test-after is fine for bug fixes.', score=2.174527753990657, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-239', role='reflection', content=\"[reflection of 5 items] user: I don't believe in stock picking. | user: I think crypto is too volatile. | user: I prefer real estate over stocks. | user: I think dollar-cost averaging is the best strategy. | user: I don't day-trade.\", score=2.1540454766035775, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "o-editor": [
+        "RetrievalResult(turn_id='reflect-90', role='reflection', content='[reflection of 3 items] user: Now I think TypeScript is fine. | user: Now I use VS Code. | user: Now I prefer FastAPI.', score=2.3292924896490907, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-166', role='reflection', content='[reflection of 6 items] user: Now I love it. | user: I felt intimidated by the senior engineers at first. | user: Now they feel like peers. | user: I felt proud when I shipped my first feature. | user: I felt embarrassed when I broke production once. | user: I buried myself in postmortems for a month after that.', score=2.1948501668246503, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-181', role='reflection', content=\"[reflection of 5 items] user: Now I think test-after is fine for bug fixes. | reflection: [reflection of 4 items] user: I used to think microservices  | user: Now I prefer GCP for most things. | user: Now I think it's just OK. | user: The team offsite was in Lake Tahoe.\", score=2.1429539273769467, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-181', role='reflection', content='[reflection of 4 items] user: I used to think microservices were the answer to everything. | user: Now I think monoliths are underrated. | user: I used to think TDD was essential. | user: Now I think test-after is fine for bug fixes.', score=2.1249383820901158, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-189', role='reflection', content='[reflection of 3 items] user: Then I review the PR queue. | user: Then I have a 1:1 with Otto. | user: I do code reviews in the afternoon.', score=2.108120597027189, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "pr-deploy-step": [
+        "RetrievalResult(turn_id='Pr-deploy.00', role='user', content='To deploy a service: bump the version in Makefile.', score=2.27194820861273, metadata={'salience': 0.7, 'kind': 'procedure'})",
+        "RetrievalResult(turn_id='reflect-97', role='reflection', content='[reflection of 6 items] user: Now I would never go back. | user: To deploy a service: bump the version in Makefile. | user: Then run make deploy. | user: Then run the smoke test. | user: Then merge the PR. | user: Then tag the release.', score=2.2295008383869948, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-139', role='reflection', content=\"[reflection of 5 items] user: I gave Otto a book on debugging. | reflection: [reflection of 3 items] user: We resolved it by writing a po | user: Otto said the book was the best one he's read. | user: Brenda and Otto have been married for ten years. | user: When a service is slow: check the CPU first.\", score=2.1878178051938915, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-139', role='reflection', content='[reflection of 6 items] user: When a service is slow: check the CPU first. | reflection: [reflection of 5 items] user: I gave Otto a book on debuggin | user: Then check the database. | user: Then check the application logs. | user: If nothing is obvious, do a binary search by disabling featu | user: Once you find the cause, write a one-line diagnosis.', score=2.187079877903981, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-197', role='reflection', content='[reflection of 6 items] user: He was 89. | user: He was a teacher. | user: I hope to be like him. | user: To debug a flaky test: run it 100 times. | user: If it fails, look at the failure first. | user: Check the test setup.', score=2.151103412849385, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "pr-failure": [
+        "RetrievalResult(turn_id='reflect-103', role='reflection', content='[reflection of 4 items] reflection: [reflection of 6 items] user: Now I would never go back. | u | user: If the smoke test fails, roll back via git revert. | user: If the rollback also fails, escalate to Otto. | user: If the metrics service is slow, check the database connectio', score=2.2792391855221106, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Pr-deploy.05', role='user', content='If the smoke test fails, roll back via git revert.', score=2.1751646072736506, metadata={'salience': 0.6, 'kind': 'procedure'})",
+        "RetrievalResult(turn_id='reflect-55', role='reflection', content='[reflection of 5 items] user: I bike to work three days a week. | user: I take the train the other two. | user: I do my best thinking in the morning. | user: I leave work at 6. | user: I run in the evenings on weekdays.', score=2.165432187838131, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-189', role='reflection', content='[reflection of 3 items] user: Then I review the PR queue. | user: Then I have a 1:1 with Otto. | user: I do code reviews in the afternoon.', score=2.144984082067471, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Pr-deploy.02', role='user', content='Then run the smoke test.', score=2.143841235014457, metadata={'salience': 0.7, 'kind': 'procedure'})"
+      ],
+      "pr-slow-metrics": [
+        "RetrievalResult(turn_id='Pr-fix.00', role='user', content='If the metrics service is slow, check the database connection pool size.', score=2.385607460049965, metadata={'salience': 0.7, 'kind': 'procedure'})",
+        "RetrievalResult(turn_id='reflect-103', role='reflection', content='[reflection of 4 items] reflection: [reflection of 6 items] user: Now I would never go back. | u | user: If the smoke test fails, roll back via git revert. | user: If the rollback also fails, escalate to Otto. | user: If the metrics service is slow, check the database connectio', score=2.3812729740496774, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-109', role='reflection', content='[reflection of 4 items] reflection: [reflection of 4 items] reflection: [reflection of 6 items]  | user: If the queries are slow, look at the slow query log. | user: If the database CPU is fine, check the application logs. | user: If the application logs are clean, restart the service.', score=2.317402001934978, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Pr-debug-flow.00', role='user', content='When a service is slow: check the CPU first.', score=2.3133415122686487, metadata={'salience': 0.7, 'kind': 'procedure'})",
+        "RetrievalResult(turn_id='reflect-139', role='reflection', content='[reflection of 6 items] user: When a service is slow: check the CPU first. | reflection: [reflection of 5 items] user: I gave Otto a book on debuggin | user: Then check the database. | user: Then check the application logs. | user: If nothing is obvious, do a binary search by disabling featu | user: Once you find the cause, write a one-line diagnosis.', score=2.25456567882673, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "sp-otto": [
+        "RetrievalResult(turn_id='reflect-130', role='reflection', content=\"[reflection of 6 items] user: We worked together at the previous company. | user: We both joined the current company the same year. | user: Otto has been my manager for three years. | user: We had a rough patch in 2022; I almost quit. | user: Otto and I rebuilt trust after that. | user: I trust Otto's judgment on architecture.\", score=2.0645701984021607, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-243', role='reflection', content=\"[reflection of 6 items] reflection: [reflection of 4 items] reflection: [reflection of 5 items]  | user: I feel more grounded overall. | user: Otto started at the company in 2019. | user: Otto was previously at Stripe. | user: Otto's been in engineering for 15 years. | user: Otto has a CS degree from Stanford.\", score=2.061773712634298, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-247', role='reflection', content='[reflection of 2 items] user: Otto mentors junior engineers. | reflection: [reflection of 3 items] user: Otto has a CS degree from Stan', score=2.0490866143450903, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-6', role='reflection', content=\"[reflection of 5 items] user: My manager is Otto. | user: Otto's been here six years. | user: Maria joined last month as a junior engineer. | user: Maria is on the platform team, not metrics. | user: Otto is the one who wrote the original deploy pipeline.\", score=2.04458789440195, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-141', role='reflection', content=\"[reflection of 3 items] user: We resolved it by writing a postmortem together. | user: Otto's birthday was last week. | user: I gave Otto a book on debugging.\", score=2.041144296929846, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "sp-meeting": [
+        "RetrievalResult(turn_id='reflect-118', role='reflection', content='[reflection of 2 items] user: The meeting room is named Aurora. | user: I sit at the back-left, facing the window.', score=2.4844675125068987, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-109', role='reflection', content='[reflection of 4 items] reflection: [reflection of 4 items] reflection: [reflection of 6 items]  | user: If the queries are slow, look at the slow query log. | user: If the database CPU is fine, check the application logs. | user: If the application logs are clean, restart the service.', score=2.1440048157549163, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-154', role='reflection', content='[reflection of 3 items] user: I usually get the New Orleans iced coffee. | user: The Sightglass on 7th is for meetings. | user: I prefer the local roaster over chains.', score=2.1294924187686766, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-6', role='reflection', content=\"[reflection of 5 items] user: My manager is Otto. | user: Otto's been here six years. | user: Maria joined last month as a junior engineer. | user: Maria is on the platform team, not metrics. | user: Otto is the one who wrote the original deploy pipeline.\", score=2.122636410915449, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-114', role='reflection', content='[reflection of 4 items] reflection: [reflection of 4 items] reflection: [reflection of 4 items]  | user: I increased it to 50 last month. | user: Maria sits two desks away from me, by the window. | user: The coffee machine is in the kitchen, second door on the rig', score=2.1195198582229606, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "em-burnout": [
+        "RetrievalResult(turn_id='reflect-203', role='reflection', content='[reflection of 6 items] user: I feel excited when I learn something new. | user: I feel drained after long meetings. | user: I feel grateful for my team. | user: I feel lonely when I work from home too long. | user: I feel energized by good design. | user: I feel frustrated when meetings run over.', score=2.3360159593963665, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-200', role='reflection', content='[reflection of 6 items] user: Jess is my book club friend. | user: Mom is my mom. | user: Dad passed away when I was 20. | user: I feel calm when I cook. | user: I feel proud when I run a long distance. | user: I feel anxious before code reviews.', score=2.2984634574120038, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Em-feel.01', role='user', content='I was burned out in Q3.', score=2.2211979600866165, metadata={'salience': 0.7, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='reflect-206', role='reflection', content='[reflection of 4 items] reflection: [reflection of 6 items] user: I feel excited when I learn so | user: I feel content when I read at night. | user: I have a strong network in the Bay Area tech scene. | user: I met Otto at a previous job.', score=2.2151363376804833, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-120', role='reflection', content='[reflection of 5 items] user: I felt great after the launch. | user: I was burned out in Q3. | user: I took a week off in October. | user: I came back refreshed. | user: The outage stressed me out.', score=2.2040562412421942, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "em-promotion": [
+        "RetrievalResult(turn_id='Em-feel.08', role='user', content='I got the promotion in December.', score=2.1744542054924376, metadata={'salience': 0.7, 'kind': 'event'})",
+        "RetrievalResult(turn_id='reflect-216', role='reflection', content='[reflection of 3 items] user: We got married in 2021. | user: Otto was the best man. | user: Sam flew in for the wedding.', score=2.05913639567131, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-237', role='reflection', content='[reflection of 2 items] user: We had a great time catching up. | user: I invest in index funds.', score=2.052906019166593, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-126', role='reflection', content='[reflection of 6 items] user: Otto noticed the burnout. | user: I felt appreciated after the postmortem. | user: I was anxious about the promotion. | user: I got the promotion in December. | user: I felt relieved. | user: Otto and I have known each other for six years.', score=2.0322226032941724, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-234', role='reflection', content='[reflection of 3 items] reflection: [reflection of 6 items] user: Heat butter in a pan over medi | user: Tom lives in Austin. | user: Tom is a professor.', score=2.0305963779530836, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "re-otto": [
+        "RetrievalResult(turn_id='Re-otto.00', role='user', content='Otto and I have known each other for six years.', score=2.201017106380374, metadata={'salience': 0.7, 'kind': 'relationship'})",
+        "RetrievalResult(turn_id='reflect-126', role='reflection', content='[reflection of 6 items] user: Otto noticed the burnout. | user: I felt appreciated after the postmortem. | user: I was anxious about the promotion. | user: I got the promotion in December. | user: I felt relieved. | user: Otto and I have known each other for six years.', score=2.193167604514811, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-203', role='reflection', content='[reflection of 6 items] user: I feel excited when I learn something new. | user: I feel drained after long meetings. | user: I feel grateful for my team. | user: I feel lonely when I work from home too long. | user: I feel energized by good design. | user: I feel frustrated when meetings run over.', score=2.1610759936329758, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-189', role='reflection', content='[reflection of 3 items] user: Then I review the PR queue. | user: Then I have a 1:1 with Otto. | user: I do code reviews in the afternoon.', score=2.14829170559919, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-206', role='reflection', content='[reflection of 4 items] reflection: [reflection of 6 items] user: I feel excited when I learn so | user: I feel content when I read at night. | user: I have a strong network in the Bay Area tech scene. | user: I met Otto at a previous job.', score=2.143556372875015, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "re-trust": [
+        "RetrievalResult(turn_id='reflect-130', role='reflection', content=\"[reflection of 6 items] user: We worked together at the previous company. | user: We both joined the current company the same year. | user: Otto has been my manager for three years. | user: We had a rough patch in 2022; I almost quit. | user: Otto and I rebuilt trust after that. | user: I trust Otto's judgment on architecture.\", score=2.116475848416716, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-189', role='reflection', content='[reflection of 3 items] user: Then I review the PR queue. | user: Then I have a 1:1 with Otto. | user: I do code reviews in the afternoon.', score=2.105221280459498, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-243', role='reflection', content=\"[reflection of 6 items] reflection: [reflection of 4 items] reflection: [reflection of 5 items]  | user: I feel more grounded overall. | user: Otto started at the company in 2019. | user: Otto was previously at Stripe. | user: Otto's been in engineering for 15 years. | user: Otto has a CS degree from Stanford.\", score=2.0946400539684458, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-163', role='reflection', content='[reflection of 4 items] user: Drain and toss with sauce. | user: Add pasta water if too dry. | user: Finish with parmesan and pepper. | user: I was frustrated with the codebase when I joined.', score=2.0876378201440096, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-216', role='reflection', content='[reflection of 3 items] user: We got married in 2021. | user: Otto was the best man. | user: Sam flew in for the wedding.', score=2.086977739209066, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "re-maria-tenure": [
+        "RetrievalResult(turn_id='reflect-136', role='reflection', content=\"[reflection of 4 items] user: Otto's been a great mentor. | user: Maria and I worked together at the previous startup. | user: Maria joined the current company a year after me. | user: I mentored Maria when she joined.\", score=2.224566449128103, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-20', role='reflection', content=\"[reflection of 5 items] user: Otto suggested we use feature flags. | user: Maria said feature flags were overkill for the prototype. | user: Otto's been pushing for the feature flags; Maria's been skep | user: Maria promised to write the migration plan by Friday. | user: Otto said he'd review it on Monday.\", score=2.143111189456337, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-130', role='reflection', content=\"[reflection of 6 items] user: We worked together at the previous company. | user: We both joined the current company the same year. | user: Otto has been my manager for three years. | user: We had a rough patch in 2022; I almost quit. | user: Otto and I rebuilt trust after that. | user: I trust Otto's judgment on architecture.\", score=2.105713078624963, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-114', role='reflection', content='[reflection of 4 items] reflection: [reflection of 4 items] reflection: [reflection of 4 items]  | user: I increased it to 50 last month. | user: Maria sits two desks away from me, by the window. | user: The coffee machine is in the kitchen, second door on the rig', score=2.102886978393426, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-197', role='reflection', content='[reflection of 6 items] user: He was 89. | user: He was a teacher. | user: I hope to be like him. | user: To debug a flaky test: run it 100 times. | user: If it fails, look at the failure first. | user: Check the test setup.', score=2.0952565522271396, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "re-arg": [
+        "RetrievalResult(turn_id='reflect-136', role='reflection', content=\"[reflection of 4 items] user: Otto's been a great mentor. | user: Maria and I worked together at the previous startup. | user: Maria joined the current company a year after me. | user: I mentored Maria when she joined.\", score=2.1893173696218033, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-69', role='reflection', content='[reflection of 2 items] user: I usually meal prep with Otto and Maria. | user: I prefer Python over Go for new services.', score=2.184054234218543, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-126', role='reflection', content='[reflection of 6 items] user: Otto noticed the burnout. | user: I felt appreciated after the postmortem. | user: I was anxious about the promotion. | user: I got the promotion in December. | user: I felt relieved. | user: Otto and I have known each other for six years.', score=2.1295767110884176, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-163', role='reflection', content='[reflection of 4 items] user: Drain and toss with sauce. | user: Add pasta water if too dry. | user: Finish with parmesan and pepper. | user: I was frustrated with the codebase when I joined.', score=2.1145701801494936, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-138', role='reflection', content=\"[reflection of 3 items] user: Maria and I have a great working relationship. | user: We compromise: TDD for new code, test-after for bug fixes. | user: Maria's been a great sounding board for architectural decisi\", score=2.1136441389544864, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "otto-bd-gift": [
+        "RetrievalResult(turn_id='reflect-126', role='reflection', content='[reflection of 6 items] user: Otto noticed the burnout. | user: I felt appreciated after the postmortem. | user: I was anxious about the promotion. | user: I got the promotion in December. | user: I felt relieved. | user: Otto and I have known each other for six years.', score=2.148705412386976, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-141', role='reflection', content=\"[reflection of 3 items] user: We resolved it by writing a postmortem together. | user: Otto's birthday was last week. | user: I gave Otto a book on debugging.\", score=2.1451836681097127, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-130', role='reflection', content=\"[reflection of 6 items] user: We worked together at the previous company. | user: We both joined the current company the same year. | user: Otto has been my manager for three years. | user: We had a rough patch in 2022; I almost quit. | user: Otto and I rebuilt trust after that. | user: I trust Otto's judgment on architecture.\", score=2.1343659408553513, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-69', role='reflection', content='[reflection of 2 items] user: I usually meal prep with Otto and Maria. | user: I prefer Python over Go for new services.', score=2.132260390409451, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-41', role='reflection', content=\"[reflection of 5 items] user: I finished in 2 hours 14 minutes. | user: Otto came in 2:30. | user: Brenda is Otto's wife. | user: I hurt my knee at mile 8. | user: Maria crewed for me at the aid station.\", score=2.118483917551981, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "pr-debug-first": [
+        "RetrievalResult(turn_id='Pr-debug-flow.00', role='user', content='When a service is slow: check the CPU first.', score=2.500127243122329, metadata={'salience': 0.7, 'kind': 'procedure'})",
+        "RetrievalResult(turn_id='reflect-139', role='reflection', content='[reflection of 6 items] user: When a service is slow: check the CPU first. | reflection: [reflection of 5 items] user: I gave Otto a book on debuggin | user: Then check the database. | user: Then check the application logs. | user: If nothing is obvious, do a binary search by disabling featu | user: Once you find the cause, write a one-line diagnosis.', score=2.319639151776024, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-139', role='reflection', content=\"[reflection of 5 items] user: I gave Otto a book on debugging. | reflection: [reflection of 3 items] user: We resolved it by writing a po | user: Otto said the book was the best one he's read. | user: Brenda and Otto have been married for ten years. | user: When a service is slow: check the CPU first.\", score=2.2678181733295486, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-141', role='reflection', content='[reflection of 6 items] reflection: [reflection of 6 items] user: When a service is slow: check  | user: Then fix the underlying issue. | user: Then write a regression test. | user: My mom visited last weekend. | user: We went to the art museum. | user: She loved the Monet exhibition.', score=2.232302059974366, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-103', role='reflection', content='[reflection of 4 items] reflection: [reflection of 6 items] user: Now I would never go back. | u | user: If the smoke test fails, roll back via git revert. | user: If the rollback also fails, escalate to Otto. | user: If the metrics service is slow, check the database connectio', score=2.214038365272437, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "e-mom-age": [
+        "RetrievalResult(turn_id='P-roles.09', role='user', content='Mom is my mom.', score=2.5639231157408773, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='reflect-144', role='reflection', content='[reflection of 3 items] user: Mom is 67. | user: Mom lives in Portland. | user: Mom calls me every Sunday.', score=2.3082310305403597, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-198', role='reflection', content='[reflection of 6 items] user: I think Radiohead is the best band ever. | user: I enjoy live music more than recorded. | reflection: [reflection of 5 items] reflection: [reflection of 6 items]  | user: Maria is my mentee. | user: Tom is my college roommate. | user: Lin is my former coworker.', score=2.193181457924754, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-200', role='reflection', content='[reflection of 6 items] user: Jess is my book club friend. | user: Mom is my mom. | user: Dad passed away when I was 20. | user: I feel calm when I cook. | user: I feel proud when I run a long distance. | user: I feel anxious before code reviews.', score=2.1841275935304987, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='E-mom-visit.00', role='user', content='My mom visited last weekend.', score=2.180207701485662, metadata={'salience': 0.7, 'kind': 'event'})"
+      ],
+      "e-mom-loc": [
+        "RetrievalResult(turn_id='P-roles.09', role='user', content='Mom is my mom.', score=2.3193139693415734, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='reflect-144', role='reflection', content='[reflection of 3 items] user: Mom is 67. | user: Mom lives in Portland. | user: Mom calls me every Sunday.', score=2.1958581640771335, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='E-mom-visit.00', role='user', content='My mom visited last weekend.', score=2.13285353105096, metadata={'salience': 0.7, 'kind': 'event'})",
+        "RetrievalResult(turn_id='reflect-191', role='reflection', content='[reflection of 3 items] user: I live in the Mission District. | user: My apartment is on 24th and Mission. | user: Dolores Park is my favorite weekend spot.', score=2.119392273654621, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-192', role='reflection', content='[reflection of 2 items] user: I live in a rent-controlled apartment. | user: My grandfather died last year.', score=2.111770716939689, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "o-spice": [
+        "RetrievalResult(turn_id='reflect-146', role='reflection', content=\"[reflection of 6 items] user: I miss her already. | user: I prefer coffee over tea. | user: I don't like spicy food. | user: I think sushi is overrated. | user: I love pizza. | user: I think breakfast is the most important meal.\", score=2.233919356483063, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-166', role='reflection', content='[reflection of 6 items] user: Now I love it. | user: I felt intimidated by the senior engineers at first. | user: Now they feel like peers. | user: I felt proud when I shipped my first feature. | user: I felt embarrassed when I broke production once. | user: I buried myself in postmortems for a month after that.', score=2.162767295994308, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-148', role='reflection', content='[reflection of 6 items] user: I prefer savory over sweet. | user: I dislike cilantro. | user: I love spicy food despite my earlier statement. | user: I think Mexican is the best cuisine. | user: I prefer Italian over Mexican. | user: The Blue Bottle on Mission is my go-to.', score=2.1585603432315446, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-55', role='reflection', content='[reflection of 5 items] user: I bike to work three days a week. | user: I take the train the other two. | user: I do my best thinking in the morning. | user: I leave work at 6. | user: I run in the evenings on weekdays.', score=2.143246106513162, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-189', role='reflection', content='[reflection of 3 items] user: Then I review the PR queue. | user: Then I have a 1:1 with Otto. | user: I do code reviews in the afternoon.', score=2.103017332867013, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "o-italian": [
+        "RetrievalResult(turn_id='reflect-148', role='reflection', content='[reflection of 6 items] user: I prefer savory over sweet. | user: I dislike cilantro. | user: I love spicy food despite my earlier statement. | user: I think Mexican is the best cuisine. | user: I prefer Italian over Mexican. | user: The Blue Bottle on Mission is my go-to.', score=2.188675750254063, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-90', role='reflection', content='[reflection of 3 items] user: Now I think TypeScript is fine. | user: Now I use VS Code. | user: Now I prefer FastAPI.', score=2.1508707547826664, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-214', role='reflection', content='[reflection of 2 items] user: I prefer non-fiction. | user: I dislike most fiction.', score=2.1401156449715497, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-146', role='reflection', content=\"[reflection of 6 items] user: I miss her already. | user: I prefer coffee over tea. | user: I don't like spicy food. | user: I think sushi is overrated. | user: I love pizza. | user: I think breakfast is the most important meal.\", score=2.125390039121184, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-200', role='reflection', content='[reflection of 6 items] user: Add a regression test once fixed. | user: I prefer jazz over classical. | user: I think hip-hop is the most innovative genre. | user: I dislike most pop music. | user: I love instrumental music when working. | user: I think lyrics are distracting.', score=2.1208882778948523, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "sp-go-to": [
+        "RetrievalResult(turn_id='reflect-191', role='reflection', content='[reflection of 3 items] user: I live in the Mission District. | user: My apartment is on 24th and Mission. | user: Dolores Park is my favorite weekend spot.', score=2.1219451537314504, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-198', role='reflection', content='[reflection of 6 items] user: I think Radiohead is the best band ever. | user: I enjoy live music more than recorded. | reflection: [reflection of 5 items] reflection: [reflection of 6 items]  | user: Maria is my mentee. | user: Tom is my college roommate. | user: Lin is my former coworker.', score=2.116882203141342, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-148', role='reflection', content='[reflection of 6 items] user: I prefer savory over sweet. | user: I dislike cilantro. | user: I love spicy food despite my earlier statement. | user: I think Mexican is the best cuisine. | user: I prefer Italian over Mexican. | user: The Blue Bottle on Mission is my go-to.', score=2.11336255730624, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Sp-cafe.00', role='user', content='The Blue Bottle on Mission is my go-to.', score=2.111838753950258, metadata={'salience': 0.6, 'kind': 'spatial'})",
+        "RetrievalResult(turn_id='reflect-215', role='reflection', content=\"[reflection of 4 items] user: Brenda is one of my favorite people. | user: My wedding anniversary was last month. | user: We went to Brenda's restaurant. | user: Jordan and I have been together for 8 years.\", score=2.0966336473216955, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "re-bff": [
+        "RetrievalResult(turn_id='P-roles.02', role='user', content='Sam is my best friend.', score=2.4368310117174117, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='reflect-198', role='reflection', content='[reflection of 6 items] user: I think Radiohead is the best band ever. | user: I enjoy live music more than recorded. | reflection: [reflection of 5 items] reflection: [reflection of 6 items]  | user: Maria is my mentee. | user: Tom is my college roommate. | user: Lin is my former coworker.', score=2.161735857090189, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-191', role='reflection', content='[reflection of 3 items] user: I live in the Mission District. | user: My apartment is on 24th and Mission. | user: Dolores Park is my favorite weekend spot.', score=2.1294151181316314, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-158', role='reflection', content='[reflection of 4 items] user: I prefer independent coffee shops. | user: My best friend is Sam. | user: Sam and I have known each other since college. | user: Sam lives in Brooklyn now.', score=2.126156210533521, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-6', role='reflection', content=\"[reflection of 5 items] user: My manager is Otto. | user: Otto's been here six years. | user: Maria joined last month as a junior engineer. | user: Maria is on the platform team, not metrics. | user: Otto is the one who wrote the original deploy pipeline.\", score=2.1120876869983882, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "re-bff-pronouns": [
+        "RetrievalResult(turn_id='reflect-159', role='reflection', content='[reflection of 4 items] user: Sam is a designer. | user: I miss our video calls. | user: Sam is non-binary. | user: Sam uses they/them pronouns.', score=2.1888853718965047, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-158', role='reflection', content='[reflection of 4 items] user: I prefer independent coffee shops. | user: My best friend is Sam. | user: Sam and I have known each other since college. | user: Sam lives in Brooklyn now.', score=2.095632808893128, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-216', role='reflection', content='[reflection of 3 items] user: We got married in 2021. | user: Otto was the best man. | user: Sam flew in for the wedding.', score=2.021509952795036, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-213', role='reflection', content='[reflection of 3 items] user: Sam flew in for the wedding. | reflection: [reflection of 3 items] user: We got married in 2021. | user | user: I felt so happy that day.', score=1.993276083255347, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-48', role='reflection', content='[reflection of 2 items] user: I want to run again next year. | user: I wake up at 7am on weekdays.', score=1.991277062113223, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "pr-pasta": [
+        "RetrievalResult(turn_id='reflect-161', role='reflection', content='[reflection of 5 items] user: To make pasta: boil water. | user: Add salt to the water. | user: Add the pasta when boiling. | user: Cook for 8 minutes for al dente. | user: Reserve a cup of pasta water.', score=2.3027717795086975, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-62', role='reflection', content=\"[reflection of 5 items] user: I sleep in on Saturdays. | user: I do a long run on Sundays. | user: I visit the farmer's market on Saturdays. | user: I cook on Sunday evenings. | user: I call my parents on Sundays.\", score=2.113222169865449, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-203', role='reflection', content='[reflection of 6 items] user: I feel excited when I learn something new. | user: I feel drained after long meetings. | user: I feel grateful for my team. | user: I feel lonely when I work from home too long. | user: I feel energized by good design. | user: I feel frustrated when meetings run over.', score=2.101914399534255, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-181', role='reflection', content='[reflection of 4 items] user: I used to think microservices were the answer to everything. | user: Now I think monoliths are underrated. | user: I used to think TDD was essential. | user: Now I think test-after is fine for bug fixes.', score=2.096921456268648, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-83', role='reflection', content=\"[reflection of 4 items] user: I believe in writing tests first. | user: I believe most meetings are unnecessary. | user: I used to think pair programming was essential. | user: Now I think it's only useful for unfamiliar code.\", score=2.082930010156895, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "em-belong": [
+        "RetrievalResult(turn_id='reflect-203', role='reflection', content='[reflection of 6 items] user: I feel excited when I learn something new. | user: I feel drained after long meetings. | user: I feel grateful for my team. | user: I feel lonely when I work from home too long. | user: I feel energized by good design. | user: I feel frustrated when meetings run over.', score=2.238074720887935, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-166', role='reflection', content='[reflection of 6 items] user: Now I love it. | user: I felt intimidated by the senior engineers at first. | user: Now they feel like peers. | user: I felt proud when I shipped my first feature. | user: I felt embarrassed when I broke production once. | user: I buried myself in postmortems for a month after that.', score=2.2141171585860584, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-126', role='reflection', content='[reflection of 6 items] user: Otto noticed the burnout. | user: I felt appreciated after the postmortem. | user: I was anxious about the promotion. | user: I got the promotion in December. | user: I felt relieved. | user: Otto and I have known each other for six years.', score=2.196973029720824, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-90', role='reflection', content='[reflection of 3 items] user: Now I think TypeScript is fine. | user: Now I use VS Code. | user: Now I prefer FastAPI.', score=2.1891804665837764, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-55', role='reflection', content='[reflection of 5 items] user: I bike to work three days a week. | user: I take the train the other two. | user: I do my best thinking in the morning. | user: I leave work at 6. | user: I run in the evenings on weekdays.', score=2.180135266093241, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "p-partner": [
+        "RetrievalResult(turn_id='P-roles.03', role='user', content='Jordan is my partner.', score=2.3788773638230722, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='reflect-6', role='reflection', content=\"[reflection of 5 items] user: My manager is Otto. | user: Otto's been here six years. | user: Maria joined last month as a junior engineer. | user: Maria is on the platform team, not metrics. | user: Otto is the one who wrote the original deploy pipeline.\", score=2.1594611247634905, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-191', role='reflection', content='[reflection of 3 items] user: I live in the Mission District. | user: My apartment is on 24th and Mission. | user: Dolores Park is my favorite weekend spot.', score=2.1521513761337214, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-198', role='reflection', content='[reflection of 6 items] user: I think Radiohead is the best band ever. | user: I enjoy live music more than recorded. | reflection: [reflection of 5 items] reflection: [reflection of 6 items]  | user: Maria is my mentee. | user: Tom is my college roommate. | user: Lin is my former coworker.', score=2.146310979111745, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-177', role='reflection', content='[reflection of 3 items] user: My sister is Anna. | user: Anna lives in Seattle. | user: Anna is a therapist.', score=2.106941157685642, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "p-sister": [
+        "RetrievalResult(turn_id='P-roles.04', role='user', content='Anna is my sister.', score=2.37887736165166, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='reflect-177', role='reflection', content='[reflection of 3 items] user: My sister is Anna. | user: Anna lives in Seattle. | user: Anna is a therapist.', score=2.2040856447549886, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-191', role='reflection', content='[reflection of 3 items] user: I live in the Mission District. | user: My apartment is on 24th and Mission. | user: Dolores Park is my favorite weekend spot.', score=2.152151350385979, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-198', role='reflection', content='[reflection of 6 items] user: I think Radiohead is the best band ever. | user: I enjoy live music more than recorded. | reflection: [reflection of 5 items] reflection: [reflection of 6 items]  | user: Maria is my mentee. | user: Tom is my college roommate. | user: Lin is my former coworker.', score=2.1463109533639795, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-6', role='reflection', content=\"[reflection of 5 items] user: My manager is Otto. | user: Otto's been here six years. | user: Maria joined last month as a junior engineer. | user: Maria is on the platform team, not metrics. | user: Otto is the one who wrote the original deploy pipeline.\", score=2.132658285644893, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "o-monolith": [
+        "RetrievalResult(turn_id='reflect-181', role='reflection', content='[reflection of 4 items] user: I used to think microservices were the answer to everything. | user: Now I think monoliths are underrated. | user: I used to think TDD was essential. | user: Now I think test-after is fine for bug fixes.', score=2.292974634418944, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-90', role='reflection', content='[reflection of 3 items] user: Now I think TypeScript is fine. | user: Now I use VS Code. | user: Now I prefer FastAPI.', score=2.2532229793671488, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-181', role='reflection', content=\"[reflection of 5 items] user: Now I think test-after is fine for bug fixes. | reflection: [reflection of 4 items] user: I used to think microservices  | user: Now I prefer GCP for most things. | user: Now I think it's just OK. | user: The team offsite was in Lake Tahoe.\", score=2.2269992208332043, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='O-tech-historical.01', role='user', content='Now I think monoliths are underrated.', score=2.1887057500954628, metadata={'salience': 0.6, 'kind': 'opinion-correction'})",
+        "RetrievalResult(turn_id='reflect-83', role='reflection', content=\"[reflection of 4 items] user: I believe in writing tests first. | user: I believe most meetings are unnecessary. | user: I used to think pair programming was essential. | user: Now I think it's only useful for unfamiliar code.\", score=2.1607186590108007, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "e-offsite-loc": [
+        "RetrievalResult(turn_id='E-team-offsite.00', role='user', content='The team offsite was in Lake Tahoe.', score=2.3142430986944182, metadata={'salience': 0.6, 'kind': 'event'})",
+        "RetrievalResult(turn_id='reflect-27', role='reflection', content='[reflection of 6 items] user: I told them both my deadline is Wednesday. | user: On March 5, 2024, we shipped the launch. | user: There was a 2-hour outage that day. | user: Otto was on call. | user: I stayed late until 11pm. | user: The launch was the audit log service.', score=2.108667251748914, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-13', role='reflection', content=\"[reflection of 3 items] user: Otto said the deploy pipeline was 'too clever by half.' | user: Maria said she preferred pytest over unittest. | user: I told Maria that the test coverage was 70%.\", score=2.1041031022054884, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-118', role='reflection', content='[reflection of 2 items] user: The meeting room is named Aurora. | user: I sit at the back-left, facing the window.', score=2.101985461046355, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-181', role='reflection', content=\"[reflection of 5 items] user: Now I think test-after is fine for bug fixes. | reflection: [reflection of 4 items] user: I used to think microservices  | user: Now I prefer GCP for most things. | user: Now I think it's just OK. | user: The team offsite was in Lake Tahoe.\", score=2.08104724931967, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "r-morning": [
+        "RetrievalResult(turn_id='reflect-188', role='reflection', content='[reflection of 4 items] user: It was a great bonding experience. | user: I check production metrics every morning at 9am. | user: I look at the dashboard first. | user: Then I check Slack for any alerts.', score=2.247283009430675, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='R-product.00', role='user', content='I check production metrics every morning at 9am.', score=2.177862269432163, metadata={'salience': 0.6, 'kind': 'routine'})",
+        "RetrievalResult(turn_id='reflect-55', role='reflection', content='[reflection of 5 items] user: I bike to work three days a week. | user: I take the train the other two. | user: I do my best thinking in the morning. | user: I leave work at 6. | user: I run in the evenings on weekdays.', score=2.134573380698621, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-200', role='reflection', content='[reflection of 6 items] user: Add a regression test once fixed. | user: I prefer jazz over classical. | user: I think hip-hop is the most innovative genre. | user: I dislike most pop music. | user: I love instrumental music when working. | user: I think lyrics are distracting.', score=2.121053332734453, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-146', role='reflection', content=\"[reflection of 6 items] user: I miss her already. | user: I prefer coffee over tea. | user: I don't like spicy food. | user: I think sushi is overrated. | user: I love pizza. | user: I think breakfast is the most important meal.\", score=2.104795606191362, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "sp-neighborhood": [
+        "RetrievalResult(turn_id='reflect-55', role='reflection', content='[reflection of 5 items] user: I bike to work three days a week. | user: I take the train the other two. | user: I do my best thinking in the morning. | user: I leave work at 6. | user: I run in the evenings on weekdays.', score=2.2041161172157913, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-189', role='reflection', content='[reflection of 3 items] user: Then I review the PR queue. | user: Then I have a 1:1 with Otto. | user: I do code reviews in the afternoon.', score=2.1710941389721174, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-192', role='reflection', content='[reflection of 2 items] user: I live in a rent-controlled apartment. | user: My grandfather died last year.', score=2.165040400510778, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-62', role='reflection', content=\"[reflection of 5 items] user: I sleep in on Saturdays. | user: I do a long run on Sundays. | user: I visit the farmer's market on Saturdays. | user: I cook on Sunday evenings. | user: I call my parents on Sundays.\", score=2.1415626673658723, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-120', role='reflection', content='[reflection of 5 items] user: I felt great after the launch. | user: I was burned out in Q3. | user: I took a week off in October. | user: I came back refreshed. | user: The outage stressed me out.', score=2.130570702468433, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "em-grandpa": [
+        "RetrievalResult(turn_id='Em-loss.00', role='user', content='My grandfather died last year.', score=2.2293310147290453, metadata={'salience': 0.8, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='reflect-192', role='reflection', content='[reflection of 2 items] user: I live in a rent-controlled apartment. | user: My grandfather died last year.', score=2.1104135109792113, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-41', role='reflection', content=\"[reflection of 5 items] user: I finished in 2 hours 14 minutes. | user: Otto came in 2:30. | user: Brenda is Otto's wife. | user: I hurt my knee at mile 8. | user: Maria crewed for me at the aid station.\", score=2.028230919643926, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-191', role='reflection', content='[reflection of 3 items] user: I live in the Mission District. | user: My apartment is on 24th and Mission. | user: Dolores Park is my favorite weekend spot.', score=2.024304947653153, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-215', role='reflection', content=\"[reflection of 4 items] user: Brenda is one of my favorite people. | user: My wedding anniversary was last month. | user: We went to Brenda's restaurant. | user: Jordan and I have been together for 8 years.\", score=2.007011511612464, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "pr-flaky": [
+        "RetrievalResult(turn_id='reflect-197', role='reflection', content='[reflection of 6 items] user: He was 89. | user: He was a teacher. | user: I hope to be like him. | user: To debug a flaky test: run it 100 times. | user: If it fails, look at the failure first. | user: Check the test setup.', score=2.1679111576819046, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-206', role='reflection', content='[reflection of 4 items] reflection: [reflection of 6 items] user: I feel excited when I learn so | user: I feel content when I read at night. | user: I have a strong network in the Bay Area tech scene. | user: I met Otto at a previous job.', score=2.160265526098653, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-200', role='reflection', content='[reflection of 5 items] reflection: [reflection of 6 items] user: Add a regression test once fix | user: I like ambient music for coding. | user: I dislike country music. | user: I think Radiohead is the best band ever. | user: I enjoy live music more than recorded.', score=2.15894831328538, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-200', role='reflection', content='[reflection of 6 items] user: Add a regression test once fixed. | user: I prefer jazz over classical. | user: I think hip-hop is the most innovative genre. | user: I dislike most pop music. | user: I love instrumental music when working. | user: I think lyrics are distracting.', score=2.1346346325425607, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Pr-fix-debug.00', role='user', content='To debug a flaky test: run it 100 times.', score=2.129127135971875, metadata={'salience': 0.6, 'kind': 'procedure'})"
+      ],
+      "o-coding": [
+        "RetrievalResult(turn_id='reflect-200', role='reflection', content='[reflection of 5 items] reflection: [reflection of 6 items] user: Add a regression test once fix | user: I like ambient music for coding. | user: I dislike country music. | user: I think Radiohead is the best band ever. | user: I enjoy live music more than recorded.', score=2.2518304131227036, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-200', role='reflection', content='[reflection of 6 items] user: Add a regression test once fixed. | user: I prefer jazz over classical. | user: I think hip-hop is the most innovative genre. | user: I dislike most pop music. | user: I love instrumental music when working. | user: I think lyrics are distracting.', score=2.20417940564036, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-203', role='reflection', content='[reflection of 6 items] user: I feel excited when I learn something new. | user: I feel drained after long meetings. | user: I feel grateful for my team. | user: I feel lonely when I work from home too long. | user: I feel energized by good design. | user: I feel frustrated when meetings run over.', score=2.1443910276895397, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-200', role='reflection', content='[reflection of 6 items] user: Jess is my book club friend. | user: Mom is my mom. | user: Dad passed away when I was 20. | user: I feel calm when I cook. | user: I feel proud when I run a long distance. | user: I feel anxious before code reviews.', score=2.13033467682014, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-206', role='reflection', content='[reflection of 4 items] reflection: [reflection of 6 items] user: I feel excited when I learn so | user: I feel content when I read at night. | user: I have a strong network in the Bay Area tech scene. | user: I met Otto at a previous job.', score=2.114813043167635, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "p-circle": [
+        "RetrievalResult(turn_id='reflect-191', role='reflection', content='[reflection of 3 items] user: I live in the Mission District. | user: My apartment is on 24th and Mission. | user: Dolores Park is my favorite weekend spot.', score=2.201039404927018, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-177', role='reflection', content='[reflection of 3 items] user: My sister is Anna. | user: Anna lives in Seattle. | user: Anna is a therapist.', score=2.1626815334865683, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-198', role='reflection', content='[reflection of 6 items] user: I think Radiohead is the best band ever. | user: I enjoy live music more than recorded. | reflection: [reflection of 5 items] reflection: [reflection of 6 items]  | user: Maria is my mentee. | user: Tom is my college roommate. | user: Lin is my former coworker.', score=2.136789872139645, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-6', role='reflection', content=\"[reflection of 5 items] user: My manager is Otto. | user: Otto's been here six years. | user: Maria joined last month as a junior engineer. | user: Maria is on the platform team, not metrics. | user: Otto is the one who wrote the original deploy pipeline.\", score=2.1274088366017976, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-213', role='reflection', content=\"[reflection of 3 items] user: Brenda is a chef. | user: Brenda cooks for our team dinners. | user: Brenda's restaurant is in North Beach.\", score=2.1102791732432467, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "em-cooking": [
+        "RetrievalResult(turn_id='reflect-203', role='reflection', content='[reflection of 6 items] user: I feel excited when I learn something new. | user: I feel drained after long meetings. | user: I feel grateful for my team. | user: I feel lonely when I work from home too long. | user: I feel energized by good design. | user: I feel frustrated when meetings run over.', score=2.3755115738554267, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-200', role='reflection', content='[reflection of 6 items] user: Jess is my book club friend. | user: Mom is my mom. | user: Dad passed away when I was 20. | user: I feel calm when I cook. | user: I feel proud when I run a long distance. | user: I feel anxious before code reviews.', score=2.3500612427712735, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-206', role='reflection', content='[reflection of 4 items] reflection: [reflection of 6 items] user: I feel excited when I learn so | user: I feel content when I read at night. | user: I have a strong network in the Bay Area tech scene. | user: I met Otto at a previous job.', score=2.2535457299293773, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-166', role='reflection', content='[reflection of 6 items] user: Now I love it. | user: I felt intimidated by the senior engineers at first. | user: Now they feel like peers. | user: I felt proud when I shipped my first feature. | user: I felt embarrassed when I broke production once. | user: I buried myself in postmortems for a month after that.', score=2.1954230995230604, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-171', role='reflection', content=\"[reflection of 6 items] user: I felt vindicated when we hit our SLA target. | user: I feel grateful for Otto's mentorship. | user: I feel like I belong here now. | user: I'm Lisa. | user: My partner is Jordan. | user: Jordan is an architect.\", score=2.190750163373213, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "r-referral": [
+        "RetrievalResult(turn_id='Otto6.00', role='user', content='Otto is my manager.', score=2.0627454374701935, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='reflect-215', role='reflection', content=\"[reflection of 4 items] user: Brenda is one of my favorite people. | user: My wedding anniversary was last month. | user: We went to Brenda's restaurant. | user: Jordan and I have been together for 8 years.\", score=2.0307414476315246, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-6', role='reflection', content=\"[reflection of 5 items] user: My manager is Otto. | user: Otto's been here six years. | user: Maria joined last month as a junior engineer. | user: Maria is on the platform team, not metrics. | user: Otto is the one who wrote the original deploy pipeline.\", score=2.0269419721314703, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-181', role='reflection', content='[reflection of 4 items] user: I used to think microservices were the answer to everything. | user: Now I think monoliths are underrated. | user: I used to think TDD was essential. | user: Now I think test-after is fine for bug fixes.', score=2.0259255661264564, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-194', role='reflection', content='[reflection of 6 items] user: I was with him when he passed. | user: I felt at peace. | user: He taught me to play chess. | user: I miss him. | user: I keep his chess set on my desk. | user: I think about him when I play.', score=2.0108885366004445, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "re-brenda-prof": [
+        "RetrievalResult(turn_id='reflect-213', role='reflection', content=\"[reflection of 3 items] user: Brenda is a chef. | user: Brenda cooks for our team dinners. | user: Brenda's restaurant is in North Beach.\", score=2.438452389867967, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-215', role='reflection', content=\"[reflection of 4 items] user: Brenda is one of my favorite people. | user: My wedding anniversary was last month. | user: We went to Brenda's restaurant. | user: Jordan and I have been together for 8 years.\", score=2.187022372873249, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Otto6.01', role='user', content=\"Otto's wife Brenda is a chef.\", score=2.170382193007525, metadata={'salience': 0.6, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='reflect-41', role='reflection', content=\"[reflection of 5 items] user: I finished in 2 hours 14 minutes. | user: Otto came in 2:30. | user: Brenda is Otto's wife. | user: I hurt my knee at mile 8. | user: Maria crewed for me at the aid station.\", score=2.1303302826062867, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-198', role='reflection', content='[reflection of 6 items] user: I think Radiohead is the best band ever. | user: I enjoy live music more than recorded. | reflection: [reflection of 5 items] reflection: [reflection of 6 items]  | user: Maria is my mentee. | user: Tom is my college roommate. | user: Lin is my former coworker.', score=2.090052680198275, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "e-anniversary": [
+        "RetrievalResult(turn_id='E-anniversary.00', role='user', content='My wedding anniversary was last month.', score=2.430085718603375, metadata={'salience': 0.7, 'kind': 'event'})",
+        "RetrievalResult(turn_id='reflect-215', role='reflection', content=\"[reflection of 4 items] user: Brenda is one of my favorite people. | user: My wedding anniversary was last month. | user: We went to Brenda's restaurant. | user: Jordan and I have been together for 8 years.\", score=2.1954096870761557, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-200', role='reflection', content='[reflection of 6 items] user: Jess is my book club friend. | user: Mom is my mom. | user: Dad passed away when I was 20. | user: I feel calm when I cook. | user: I feel proud when I run a long distance. | user: I feel anxious before code reviews.', score=2.1093266757161673, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-27', role='reflection', content='[reflection of 6 items] user: I told them both my deadline is Wednesday. | user: On March 5, 2024, we shipped the launch. | user: There was a 2-hour outage that day. | user: Otto was on call. | user: I stayed late until 11pm. | user: The launch was the audit log service.', score=2.0757604962317626, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-194', role='reflection', content='[reflection of 6 items] user: I was with him when he passed. | user: I felt at peace. | user: He taught me to play chess. | user: I miss him. | user: I keep his chess set on my desk. | user: I think about him when I play.', score=2.0653221272371116, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "p-roles": [
+        "RetrievalResult(turn_id='reflect-191', role='reflection', content='[reflection of 3 items] user: I live in the Mission District. | user: My apartment is on 24th and Mission. | user: Dolores Park is my favorite weekend spot.', score=2.069690604600909, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-192', role='reflection', content='[reflection of 2 items] user: I live in a rent-controlled apartment. | user: My grandfather died last year.', score=2.0544559773894835, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-41', role='reflection', content=\"[reflection of 5 items] user: I finished in 2 hours 14 minutes. | user: Otto came in 2:30. | user: Brenda is Otto's wife. | user: I hurt my knee at mile 8. | user: Maria crewed for me at the aid station.\", score=2.0459516173350405, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-177', role='reflection', content='[reflection of 3 items] user: My sister is Anna. | user: Anna lives in Seattle. | user: Anna is a therapist.', score=2.0233033495472195, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-6', role='reflection', content=\"[reflection of 5 items] user: My manager is Otto. | user: Otto's been here six years. | user: Maria joined last month as a junior engineer. | user: Maria is on the platform team, not metrics. | user: Otto is the one who wrote the original deploy pipeline.\", score=2.0194171702091146, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "r-dishes": [
+        "RetrievalResult(turn_id='E-launch-day.00', role='user', content='On March 5, 2024, we shipped the launch.', score=2.1505831997569316, metadata={'salience': 0.9, 'kind': 'event'})",
+        "RetrievalResult(turn_id='reflect-55', role='reflection', content='[reflection of 5 items] user: I bike to work three days a week. | user: I take the train the other two. | user: I do my best thinking in the morning. | user: I leave work at 6. | user: I run in the evenings on weekdays.', score=2.1388402976744563, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-154', role='reflection', content='[reflection of 3 items] user: I usually get the New Orleans iced coffee. | user: The Sightglass on 7th is for meetings. | user: I prefer the local roaster over chains.', score=2.1347366062591564, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-62', role='reflection', content=\"[reflection of 5 items] user: I sleep in on Saturdays. | user: I do a long run on Sundays. | user: I visit the farmer's market on Saturdays. | user: I cook on Sunday evenings. | user: I call my parents on Sundays.\", score=2.1201481435745433, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-118', role='reflection', content='[reflection of 2 items] user: The meeting room is named Aurora. | user: I sit at the back-left, facing the window.', score=2.105163410090344, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "o-genre": [
+        "RetrievalResult(turn_id='reflect-214', role='reflection', content='[reflection of 2 items] user: I prefer non-fiction. | user: I dislike most fiction.', score=2.328966298514962, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-216', role='reflection', content='[reflection of 4 items] user: I think sci-fi is the best fiction genre. | user: I dislike romance novels. | user: I love biographies. | user: I read mostly non-fiction business books.', score=2.2408415779103414, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-200', role='reflection', content='[reflection of 6 items] user: Add a regression test once fixed. | user: I prefer jazz over classical. | user: I think hip-hop is the most innovative genre. | user: I dislike most pop music. | user: I love instrumental music when working. | user: I think lyrics are distracting.', score=2.14555065279564, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-148', role='reflection', content='[reflection of 6 items] user: I prefer savory over sweet. | user: I dislike cilantro. | user: I love spicy food despite my earlier statement. | user: I think Mexican is the best cuisine. | user: I prefer Italian over Mexican. | user: The Blue Bottle on Mission is my go-to.', score=2.1099443607679453, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-146', role='reflection', content=\"[reflection of 6 items] user: I miss her already. | user: I prefer coffee over tea. | user: I don't like spicy food. | user: I think sushi is overrated. | user: I love pizza. | user: I think breakfast is the most important meal.\", score=2.102029285015654, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "sp-long-run": [
+        "RetrievalResult(turn_id='reflect-220', role='reflection', content='[reflection of 4 items] reflection: [reflection of 4 items] user: I think sci-fi is the best fic | user: I run in Golden Gate Park. | user: I run along the Embarcadero. | user: I run at Lake Merced for long runs.', score=2.3150970059654385, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-221', role='reflection', content='[reflection of 2 items] user: I prefer park runs over street runs. | user: I went to Japan last spring.', score=2.2260084099963415, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='R-weekend.01', role='user', content='I do a long run on Sundays.', score=2.1739603244084127, metadata={'salience': 0.6, 'kind': 'routine'})",
+        "RetrievalResult(turn_id='reflect-203', role='reflection', content='[reflection of 6 items] user: I feel excited when I learn something new. | user: I feel drained after long meetings. | user: I feel grateful for my team. | user: I feel lonely when I work from home too long. | user: I feel energized by good design. | user: I feel frustrated when meetings run over.', score=2.1734708192711714, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-62', role='reflection', content=\"[reflection of 5 items] user: I sleep in on Saturdays. | user: I do a long run on Sundays. | user: I visit the farmer's market on Saturdays. | user: I cook on Sunday evenings. | user: I call my parents on Sundays.\", score=2.154630220722, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "e-japan-city": [
+        "RetrievalResult(turn_id='reflect-221', role='reflection', content='[reflection of 5 items] reflection: [reflection of 2 items] user: I prefer park runs over street | user: I went to Tokyo, Kyoto, and Osaka. | user: I loved Kyoto the most. | user: I ate ramen in Tokyo. | user: I visited Fushimi Inari shrine.', score=2.2033658324685788, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-240', role='reflection', content=\"[reflection of 5 items] reflection: [reflection of 5 items] user: I don't believe in stock picki | user: I think bonds are important for retirement. | user: I don't invest in individual stocks. | user: I started therapy last year. | user: I see a therapist weekly.\", score=2.192923934537686, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-146', role='reflection', content=\"[reflection of 6 items] user: I miss her already. | user: I prefer coffee over tea. | user: I don't like spicy food. | user: I think sushi is overrated. | user: I love pizza. | user: I think breakfast is the most important meal.\", score=2.1811482891492933, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-166', role='reflection', content='[reflection of 6 items] user: Now I love it. | user: I felt intimidated by the senior engineers at first. | user: Now they feel like peers. | user: I felt proud when I shipped my first feature. | user: I felt embarrassed when I broke production once. | user: I buried myself in postmortems for a month after that.', score=2.179291463652414, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-83', role='reflection', content=\"[reflection of 4 items] user: I believe in writing tests first. | user: I believe most meetings are unnecessary. | user: I used to think pair programming was essential. | user: Now I think it's only useful for unfamiliar code.\", score=2.1698997632893033, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "pr-eggs": [
+        "RetrievalResult(turn_id='reflect-232', role='reflection', content='[reflection of 6 items] user: Heat butter in a pan over medium-low heat. | user: Pour in the eggs. | user: Stir constantly with a spatula. | user: Remove from heat when still slightly wet. | user: The residual heat finishes them. | user: Season with pepper and serve.', score=2.2460257502233305, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-55', role='reflection', content='[reflection of 5 items] user: I bike to work three days a week. | user: I take the train the other two. | user: I do my best thinking in the morning. | user: I leave work at 6. | user: I run in the evenings on weekdays.', score=2.1636551999211586, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-189', role='reflection', content='[reflection of 3 items] user: Then I review the PR queue. | user: Then I have a 1:1 with Otto. | user: I do code reviews in the afternoon.', score=2.124470336490977, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-203', role='reflection', content='[reflection of 6 items] user: I feel excited when I learn something new. | user: I feel drained after long meetings. | user: I feel grateful for my team. | user: I feel lonely when I work from home too long. | user: I feel energized by good design. | user: I feel frustrated when meetings run over.', score=2.1213601205176804, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-200', role='reflection', content='[reflection of 6 items] user: Jess is my book club friend. | user: Mom is my mom. | user: Dad passed away when I was 20. | user: I feel calm when I cook. | user: I feel proud when I run a long distance. | user: I feel anxious before code reviews.', score=2.1112823335409026, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "re-tom-loc": [
+        "RetrievalResult(turn_id='reflect-234', role='reflection', content='[reflection of 3 items] reflection: [reflection of 6 items] user: Heat butter in a pan over medi | user: Tom lives in Austin. | user: Tom is a professor.', score=2.065101837401539, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-192', role='reflection', content='[reflection of 2 items] user: I live in a rent-controlled apartment. | user: My grandfather died last year.', score=2.0377032542259546, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-198', role='reflection', content='[reflection of 6 items] user: I think Radiohead is the best band ever. | user: I enjoy live music more than recorded. | reflection: [reflection of 5 items] reflection: [reflection of 6 items]  | user: Maria is my mentee. | user: Tom is my college roommate. | user: Lin is my former coworker.', score=2.0073736959726953, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-191', role='reflection', content='[reflection of 3 items] user: I live in the Mission District. | user: My apartment is on 24th and Mission. | user: Dolores Park is my favorite weekend spot.', score=1.9994835975030487, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-200', role='reflection', content='[reflection of 5 items] reflection: [reflection of 6 items] user: Add a regression test once fix | user: I like ambient music for coding. | user: I dislike country music. | user: I think Radiohead is the best band ever. | user: I enjoy live music more than recorded.', score=1.9650616215030683, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "o-strategy": [
+        "RetrievalResult(turn_id='reflect-215', role='reflection', content=\"[reflection of 4 items] user: Brenda is one of my favorite people. | user: My wedding anniversary was last month. | user: We went to Brenda's restaurant. | user: Jordan and I have been together for 8 years.\", score=2.081325575036823, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-41', role='reflection', content=\"[reflection of 5 items] user: I finished in 2 hours 14 minutes. | user: Otto came in 2:30. | user: Brenda is Otto's wife. | user: I hurt my knee at mile 8. | user: Maria crewed for me at the aid station.\", score=2.0579553098810064, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-20', role='reflection', content=\"[reflection of 5 items] user: Otto suggested we use feature flags. | user: Maria said feature flags were overkill for the prototype. | user: Otto's been pushing for the feature flags; Maria's been skep | user: Maria promised to write the migration plan by Friday. | user: Otto said he'd review it on Monday.\", score=2.049089419150161, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-6', role='reflection', content=\"[reflection of 5 items] user: My manager is Otto. | user: Otto's been here six years. | user: Maria joined last month as a junior engineer. | user: Maria is on the platform team, not metrics. | user: Otto is the one who wrote the original deploy pipeline.\", score=2.044577961084458, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-136', role='reflection', content=\"[reflection of 4 items] user: Otto's been a great mentor. | user: Maria and I worked together at the previous startup. | user: Maria joined the current company a year after me. | user: I mentored Maria when she joined.\", score=2.041321724202314, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "em-therapy": [
+        "RetrievalResult(turn_id='Em-therapy.03', role='user', content='Therapy has helped me manage anxiety.', score=2.3706034404101493, metadata={'salience': 0.6, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='reflect-240', role='reflection', content=\"[reflection of 4 items] reflection: [reflection of 5 items] reflection: [reflection of 5 items]  | user: Therapy has helped me manage anxiety. | user: I've been sleeping better. | user: I have tools for when I feel overwhelmed.\", score=2.131661161613302, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-194', role='reflection', content='[reflection of 6 items] user: I was with him when he passed. | user: I felt at peace. | user: He taught me to play chess. | user: I miss him. | user: I keep his chess set on my desk. | user: I think about him when I play.', score=1.9819902523618904, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-144', role='reflection', content='[reflection of 3 items] user: Mom is 67. | user: Mom lives in Portland. | user: Mom calls me every Sunday.', score=1.981322866533325, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-247', role='reflection', content='[reflection of 2 items] user: Otto mentors junior engineers. | reflection: [reflection of 3 items] user: Otto has a CS degree from Stan', score=1.9728567483876813, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "p-otto-prev": [
+        "RetrievalResult(turn_id='reflect-130', role='reflection', content=\"[reflection of 6 items] user: We worked together at the previous company. | user: We both joined the current company the same year. | user: Otto has been my manager for three years. | user: We had a rough patch in 2022; I almost quit. | user: Otto and I rebuilt trust after that. | user: I trust Otto's judgment on architecture.\", score=2.0415543109971104, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-243', role='reflection', content=\"[reflection of 6 items] reflection: [reflection of 4 items] reflection: [reflection of 5 items]  | user: I feel more grounded overall. | user: Otto started at the company in 2019. | user: Otto was previously at Stripe. | user: Otto's been in engineering for 15 years. | user: Otto has a CS degree from Stanford.\", score=2.03726924993072, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-55', role='reflection', content='[reflection of 5 items] user: I bike to work three days a week. | user: I take the train the other two. | user: I do my best thinking in the morning. | user: I leave work at 6. | user: I run in the evenings on weekdays.', score=2.0281511388556397, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-247', role='reflection', content='[reflection of 2 items] user: Otto mentors junior engineers. | reflection: [reflection of 3 items] user: Otto has a CS degree from Stan', score=2.026596765290119, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-6', role='reflection', content=\"[reflection of 5 items] user: My manager is Otto. | user: Otto's been here six years. | user: Maria joined last month as a junior engineer. | user: Maria is on the platform team, not metrics. | user: Otto is the one who wrote the original deploy pipeline.\", score=2.02273285886101, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "p-otto-pet": [
+        "RetrievalResult(turn_id='reflect-247', role='reflection', content='[reflection of 2 items] user: Otto mentors junior engineers. | reflection: [reflection of 3 items] user: Otto has a CS degree from Stan', score=2.176016061292631, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-243', role='reflection', content=\"[reflection of 6 items] reflection: [reflection of 4 items] reflection: [reflection of 5 items]  | user: I feel more grounded overall. | user: Otto started at the company in 2019. | user: Otto was previously at Stripe. | user: Otto's been in engineering for 15 years. | user: Otto has a CS degree from Stanford.\", score=2.165026102423442, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-244', role='reflection', content='[reflection of 3 items] user: Otto has a CS degree from Stanford. | reflection: [reflection of 6 items] reflection: [reflection of 4 items]  | user: Otto mentors junior engineers.', score=2.1576520077445895, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-139', role='reflection', content=\"[reflection of 5 items] user: I gave Otto a book on debugging. | reflection: [reflection of 3 items] user: We resolved it by writing a po | user: Otto said the book was the best one he's read. | user: Brenda and Otto have been married for ten years. | user: When a service is slow: check the CPU first.\", score=2.1569234337215266, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-246', role='reflection', content='[reflection of 2 items] reflection: [reflection of 3 items] user: Otto has a CS degree from Stan | reflection: [reflection of 2 items] user: Otto mentors junior engineers.', score=2.1536574299057607, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "p-otto-prev-job": [
+        "RetrievalResult(turn_id='reflect-247', role='reflection', content='[reflection of 2 items] user: Otto mentors junior engineers. | reflection: [reflection of 3 items] user: Otto has a CS degree from Stan', score=2.1028393161162566, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-243', role='reflection', content=\"[reflection of 6 items] reflection: [reflection of 4 items] reflection: [reflection of 5 items]  | user: I feel more grounded overall. | user: Otto started at the company in 2019. | user: Otto was previously at Stripe. | user: Otto's been in engineering for 15 years. | user: Otto has a CS degree from Stanford.\", score=2.095159162918455, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-244', role='reflection', content='[reflection of 3 items] user: Otto has a CS degree from Stanford. | reflection: [reflection of 6 items] reflection: [reflection of 4 items]  | user: Otto mentors junior engineers.', score=2.053331273274542, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-246', role='reflection', content='[reflection of 2 items] reflection: [reflection of 3 items] user: Otto has a CS degree from Stan | reflection: [reflection of 2 items] user: Otto mentors junior engineers.', score=2.0509541687772854, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-130', role='reflection', content=\"[reflection of 6 items] user: We worked together at the previous company. | user: We both joined the current company the same year. | user: Otto has been my manager for three years. | user: We had a rough patch in 2022; I almost quit. | user: Otto and I rebuilt trust after that. | user: I trust Otto's judgment on architecture.\", score=2.035366415208842, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "p-otto-relationship": [
+        "RetrievalResult(turn_id='reflect-6', role='reflection', content=\"[reflection of 5 items] user: My manager is Otto. | user: Otto's been here six years. | user: Maria joined last month as a junior engineer. | user: Maria is on the platform team, not metrics. | user: Otto is the one who wrote the original deploy pipeline.\", score=2.2178611434777453, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-181', role='reflection', content='[reflection of 4 items] user: I used to think microservices were the answer to everything. | user: Now I think monoliths are underrated. | user: I used to think TDD was essential. | user: Now I think test-after is fine for bug fixes.', score=2.104103274828716, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Otto6.00', role='user', content='Otto is my manager.', score=2.089172416674608, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='reflect-213', role='reflection', content=\"[reflection of 3 items] user: Brenda is a chef. | user: Brenda cooks for our team dinners. | user: Brenda's restaurant is in North Beach.\", score=2.0591557480525955, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-20', role='reflection', content=\"[reflection of 5 items] user: Otto suggested we use feature flags. | user: Maria said feature flags were overkill for the prototype. | user: Otto's been pushing for the feature flags; Maria's been skep | user: Maria promised to write the migration plan by Friday. | user: Otto said he'd review it on Monday.\", score=2.050768973407911, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "p-otto-degree": [
+        "RetrievalResult(turn_id='Re-otto.06', role='user', content=\"I trust Otto's judgment on architecture.\", score=2.2035002166542697, metadata={'salience': 0.7, 'kind': 'relationship'})",
+        "RetrievalResult(turn_id='Re-otto.07', role='user', content=\"Otto's been a great mentor.\", score=2.2031326544651284, metadata={'salience': 0.7, 'kind': 'relationship'})",
+        "RetrievalResult(turn_id='reflect-20', role='reflection', content=\"[reflection of 5 items] user: Otto suggested we use feature flags. | user: Maria said feature flags were overkill for the prototype. | user: Otto's been pushing for the feature flags; Maria's been skep | user: Maria promised to write the migration plan by Friday. | user: Otto said he'd review it on Monday.\", score=2.169920764820707, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-141', role='reflection', content=\"[reflection of 3 items] user: We resolved it by writing a postmortem together. | user: Otto's birthday was last week. | user: I gave Otto a book on debugging.\", score=2.1591840588235063, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-243', role='reflection', content=\"[reflection of 6 items] reflection: [reflection of 4 items] reflection: [reflection of 5 items]  | user: I feel more grounded overall. | user: Otto started at the company in 2019. | user: Otto was previously at Stripe. | user: Otto's been in engineering for 15 years. | user: Otto has a CS degree from Stanford.\", score=2.121067327676407, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "p-otto-pipeline": [
+        "RetrievalResult(turn_id='reflect-243', role='reflection', content=\"[reflection of 6 items] reflection: [reflection of 4 items] reflection: [reflection of 5 items]  | user: I feel more grounded overall. | user: Otto started at the company in 2019. | user: Otto was previously at Stripe. | user: Otto's been in engineering for 15 years. | user: Otto has a CS degree from Stanford.\", score=2.1727792250697626, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-247', role='reflection', content='[reflection of 2 items] user: Otto mentors junior engineers. | reflection: [reflection of 3 items] user: Otto has a CS degree from Stan', score=2.1499971054433695, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-130', role='reflection', content=\"[reflection of 6 items] user: We worked together at the previous company. | user: We both joined the current company the same year. | user: Otto has been my manager for three years. | user: We had a rough patch in 2022; I almost quit. | user: Otto and I rebuilt trust after that. | user: I trust Otto's judgment on architecture.\", score=2.148893739810914, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-6', role='reflection', content=\"[reflection of 5 items] user: My manager is Otto. | user: Otto's been here six years. | user: Maria joined last month as a junior engineer. | user: Maria is on the platform team, not metrics. | user: Otto is the one who wrote the original deploy pipeline.\", score=2.143095382015941, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-141', role='reflection', content=\"[reflection of 3 items] user: We resolved it by writing a postmortem together. | user: Otto's birthday was last week. | user: I gave Otto a book on debugging.\", score=2.1393633251671123, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ]
+    },
+    "item_count": 221,
+    "query_ms": 5.049081336926012
+  },
+  {
+    "name": "H2",
+    "error": "raised"
+  },
+  {
+    "name": "H3",
+    "error": "raised"
+  },
+  {
+    "name": "H4",
+    "error": "raised"
+  },
+  {
+    "name": "H5",
+    "results_by_query": {
+      "p-mgr": [
+        "RetrievalResult(turn_id='Otto6.00', role='user', content='Otto is my manager.', score=1.1539568090661945, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Otto5.00', role='user', content='Otto is my manager.', score=1.1539567853149566, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Otto4.00', role='user', content='Otto is my manager.', score=1.1539567608830688, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Otto3.00', role='user', content='Otto is my manager.', score=1.1539567377143127, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Otto2.00', role='user', content='Otto is my manager.', score=1.1539567217209559, metadata={'salience': 0.7, 'kind': 'identity'})"
+      ],
+      "p-junior": [
+        "RetrievalResult(turn_id='P-team-roster.03', role='user', content='Maria is on the platform team, not metrics.', score=0.9577704437762435, metadata={'salience': 0.6, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='reflect-5', role='reflection', content=\"[reflection of 5 items] user: My manager is Otto. | user: Otto's been here six years. | user: Maria joined last month as a junior engineer. | user: Maria is on the platform team, not metrics. | user: Otto is the one who wrote the original deploy pipeline.\", score=0.9285086941981445, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='R-network.08', role='user', content='I mentor junior engineers outside my team.', score=0.8959231836322414, metadata={'salience': 0.5, 'kind': 'routine'})",
+        "RetrievalResult(turn_id='Sp-cafe.02', role='user', content='The Sightglass on 7th is for meetings.', score=0.8847176064918385, metadata={'salience': 0.5, 'kind': 'spatial'})",
+        "RetrievalResult(turn_id='Sp-cafe.00', role='user', content='The Blue Bottle on Mission is my go-to.', score=0.8766930893189113, metadata={'salience': 0.6, 'kind': 'spatial'})"
+      ],
+      "p-maria-team": [
+        "RetrievalResult(turn_id='P-team-roster.03', role='user', content='Maria is on the platform team, not metrics.', score=1.1960430453203441, metadata={'salience': 0.6, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='P-roles.01', role='user', content='Maria is my mentee.', score=0.9287017173147318, metadata={'salience': 0.6, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='P-friends.03', role='user', content='Maria is my mentee.', score=0.9287015769224836, metadata={'salience': 0.6, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='reflect-5', role='reflection', content=\"[reflection of 5 items] user: My manager is Otto. | user: Otto's been here six years. | user: Maria joined last month as a junior engineer. | user: Maria is on the platform team, not metrics. | user: Otto is the one who wrote the original deploy pipeline.\", score=0.858543421585967, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Sp-around.01', role='user', content='My apartment is on 24th and Mission.', score=0.8145669256685106, metadata={'salience': 0.5, 'kind': 'spatial'})"
+      ],
+      "p-quote-otto": [
+        "RetrievalResult(turn_id='P-who-said-what.00', role='user', content=\"Otto said the deploy pipeline was 'too clever by half.'\", score=1.2497705007057294, metadata={'salience': 0.5, 'kind': 'quote'})",
+        "RetrievalResult(turn_id='P-team-roster.04', role='user', content='Otto is the one who wrote the original deploy pipeline.', score=0.9616177017265806, metadata={'salience': 0.7, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='Otto6.02', role='user', content='Otto wrote the deploy pipeline.', score=0.9183898073257328, metadata={'salience': 0.6, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='Otto5.02', role='user', content='Otto wrote the deploy pipeline.', score=0.9183897791721782, metadata={'salience': 0.6, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='Otto4.02', role='user', content='Otto wrote the deploy pipeline.', score=0.9183897512172028, metadata={'salience': 0.6, 'kind': 'fact'})"
+      ],
+      "p-quote-pytest": [
+        "RetrievalResult(turn_id='P-who-said-what.01', role='user', content='Maria said she preferred pytest over unittest.', score=0.9989641151733976, metadata={'salience': 0.5, 'kind': 'quote'})",
+        "RetrievalResult(turn_id='O-music.00', role='user', content='I prefer jazz over classical.', score=0.6721882913787736, metadata={'salience': 0.5, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='O-food.09', role='user', content='I prefer Italian over Mexican.', score=0.6721880434798312, metadata={'salience': 0.5, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='O-food.05', role='user', content='I prefer savory over sweet.', score=0.672188031778366, metadata={'salience': 0.5, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='O-food.00', role='user', content='I prefer coffee over tea.', score=0.6721880235897403, metadata={'salience': 0.5, 'kind': 'opinion'})"
+      ],
+      "p-promise": [
+        "RetrievalResult(turn_id='P-who-said-what.07', role='user', content='Maria promised to write the migration plan by Friday.', score=1.3608571852799787, metadata={'salience': 0.6, 'kind': 'commitment'})",
+        "RetrievalResult(turn_id='reflect-21', role='reflection', content=\"[reflection of 8 items] user: Maria promised to write the migration plan by Friday. | user: Otto said he'd review it on Monday. | user: I told them both my deadline is Wednesday. | user: On March 5, 2024, we shipped the launch. | user: There was a 2-hour outage that day. | user: Otto was on call. | user: I stayed late until 11pm. | user: The launch was the audit log service.\", score=0.7836151874701979, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Pr-deploy.06', role='user', content='Then write the postmortem.', score=0.782688993519986, metadata={'salience': 0.5, 'kind': 'procedure'})",
+        "RetrievalResult(turn_id='E-mom-visit.01', role='user', content='We went to the art museum.', score=0.7752345368057432, metadata={'salience': 0.5, 'kind': 'event'})",
+        "RetrievalResult(turn_id='P-team-roster.04', role='user', content='Otto is the one who wrote the original deploy pipeline.', score=0.7409564657210473, metadata={'salience': 0.7, 'kind': 'fact'})"
+      ],
+      "e-when-launch": [
+        "RetrievalResult(turn_id='E-launch-day.00', role='user', content='On March 5, 2024, we shipped the launch.', score=0.9070870767234727, metadata={'salience': 0.9, 'kind': 'event'})",
+        "RetrievalResult(turn_id='E-launch-day.04', role='user', content='The launch was the audit log service.', score=0.860418056726001, metadata={'salience': 0.7, 'kind': 'event'})",
+        "RetrievalResult(turn_id='Em-feel.00', role='user', content='I felt great after the launch.', score=0.8154994943654263, metadata={'salience': 0.6, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='Pr-cook.02', role='user', content='Add the pasta when boiling.', score=0.8091626706942081, metadata={'salience': 0.5, 'kind': 'procedure'})",
+        "RetrievalResult(turn_id='Re-otto.02', role='user', content='We both joined the current company the same year.', score=0.8001493749682067, metadata={'salience': 0.5, 'kind': 'relationship'})"
+      ],
+      "e-outage": [
+        "RetrievalResult(turn_id='E-launch-day.07', role='user', content='The outage was a database connection leak.', score=0.9796131870625011, metadata={'salience': 0.7, 'kind': 'event-cause'})",
+        "RetrievalResult(turn_id='Em-feel.04', role='user', content='The outage stressed me out.', score=0.8836202033575453, metadata={'salience': 0.5, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='E-launch-day.04', role='user', content='The launch was the audit log service.', score=0.8655059445940628, metadata={'salience': 0.7, 'kind': 'event'})",
+        "RetrievalResult(turn_id='E-anniversary.04', role='user', content='Otto was the best man.', score=0.8371218138045743, metadata={'salience': 0.5, 'kind': 'relationship'})",
+        "RetrievalResult(turn_id='E-launch-day.01', role='user', content='There was a 2-hour outage that day.', score=0.8274764549914962, metadata={'salience': 0.7, 'kind': 'event'})"
+      ],
+      "e-run-time": [
+        "RetrievalResult(turn_id='E-run.00', role='user', content='I ran the Bay to Breakers in 2023.', score=0.9322278958903116, metadata={'salience': 0.7, 'kind': 'event'})",
+        "RetrievalResult(turn_id='E-anniversary.00', role='user', content='My wedding anniversary was last month.', score=0.7652621109427085, metadata={'salience': 0.7, 'kind': 'event'})",
+        "RetrievalResult(turn_id='O-tech-historical.02', role='user', content='I used to think TDD was essential.', score=0.7537602750520778, metadata={'salience': 0.5, 'kind': 'opinion-historical'})",
+        "RetrievalResult(turn_id='O-evolved.00', role='user', content='I used to think pair programming was essential.', score=0.7373706252699093, metadata={'salience': 0.5, 'kind': 'opinion-historical'})",
+        "RetrievalResult(turn_id='Re-old-friend.06', role='user', content='We had a great time catching up.', score=0.7360554359100917, metadata={'salience': 0.5, 'kind': 'emotion'})"
+      ],
+      "e-run-injury": [
+        "RetrievalResult(turn_id='E-run.05', role='user', content='I hurt my knee at mile 8.', score=0.8877042748805158, metadata={'salience': 0.5, 'kind': 'event-personal'})",
+        "RetrievalResult(turn_id='R-product.01', role='user', content='I look at the dashboard first.', score=0.8521005848202228, metadata={'salience': 0.5, 'kind': 'routine'})",
+        "RetrievalResult(turn_id='Sp-office.08', role='user', content='I sit at the back-left, facing the window.', score=0.8435521548184162, metadata={'salience': 0.5, 'kind': 'spatial'})",
+        "RetrievalResult(turn_id='reflect-34', role='reflection', content=\"[reflection of 5 items] user: Brenda is Otto's wife. | user: I hurt my knee at mile 8. | user: Maria crewed for me at the aid station. | user: I want to run again next year. | user: I wake up at 7am on weekdays.\", score=0.8074634149245301, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Em-loss.02', role='user', content='I felt at peace.', score=0.792749152462533, metadata={'salience': 0.6, 'kind': 'emotion'})"
+      ],
+      "r-wake": [
+        "RetrievalResult(turn_id='R-morning.00', role='user', content='I wake up at 7am on weekdays.', score=0.9932086334403237, metadata={'salience': 0.6, 'kind': 'routine'})",
+        "RetrievalResult(turn_id='Re-old-friend.06', role='user', content='We had a great time catching up.', score=0.8892108537303416, metadata={'salience': 0.5, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='O-music.03', role='user', content='I love instrumental music when working.', score=0.746918036028094, metadata={'salience': 0.5, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='R-product.05', role='user', content='I do code reviews in the afternoon.', score=0.7418587131808367, metadata={'salience': 0.5, 'kind': 'routine'})",
+        "RetrievalResult(turn_id='R-weekend.01', role='user', content='I do a long run on Sundays.', score=0.7418583971782058, metadata={'salience': 0.6, 'kind': 'routine'})"
+      ],
+      "r-bike": [
+        "RetrievalResult(turn_id='R-morning.03', role='user', content='I bike to work three days a week.', score=1.0559059926554653, metadata={'salience': 0.6, 'kind': 'routine'})",
+        "RetrievalResult(turn_id='Em-hobby.06', role='user', content='I feel lonely when I work from home too long.', score=0.9594489944816419, metadata={'salience': 0.5, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='reflect-40', role='reflection', content='[reflection of 5 items] user: I bike to work three days a week. | user: I take the train the other two. | user: I do my best thinking in the morning. | user: I leave work at 6. | user: I run in the evenings on weekdays.', score=0.8579805039093794, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='O-music.03', role='user', content='I love instrumental music when working.', score=0.8548873181301128, metadata={'salience': 0.5, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='R-weekend.01', role='user', content='I do a long run on Sundays.', score=0.8479746638068955, metadata={'salience': 0.6, 'kind': 'routine'})"
+      ],
+      "r-sunday": [
+        "RetrievalResult(turn_id='R-weekend.01', role='user', content='I do a long run on Sundays.', score=1.1697204950675117, metadata={'salience': 0.6, 'kind': 'routine'})",
+        "RetrievalResult(turn_id='reflect-46', role='reflection', content=\"[reflection of 5 items] user: I sleep in on Saturdays. | user: I do a long run on Sundays. | user: I visit the farmer's market on Saturdays. | user: I cook on Sunday evenings. | user: I call my parents on Sundays.\", score=0.9487295276536918, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='R-product.05', role='user', content='I do code reviews in the afternoon.', score=0.9426073811520375, metadata={'salience': 0.5, 'kind': 'routine'})",
+        "RetrievalResult(turn_id='R-weekend.04', role='user', content='I call my parents on Sundays.', score=0.9222169458054732, metadata={'salience': 0.5, 'kind': 'routine'})",
+        "RetrievalResult(turn_id='R-morning.05', role='user', content='I do my best thinking in the morning.', score=0.8515208285206743, metadata={'salience': 0.5, 'kind': 'self-knowledge'})"
+      ],
+      "o-python": [
+        "RetrievalResult(turn_id='O-tech.00', role='user', content='I prefer Python over Go for new services.', score=1.1415534224968322, metadata={'salience': 0.7, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='O-tech-historical.07', role='user', content='Now I prefer GCP for most things.', score=0.8534378552008595, metadata={'salience': 0.5, 'kind': 'opinion-correction'})",
+        "RetrievalResult(turn_id='O-tech-historical.05', role='user', content='Now I prefer Postgres for most things.', score=0.853437852384104, metadata={'salience': 0.5, 'kind': 'opinion-correction'})",
+        "RetrievalResult(turn_id='reflect-52', role='reflection', content='[reflection of 5 items] user: I usually meal prep with Otto and Maria. | user: I prefer Python over Go for new services. | user: I think Rust is best for hot paths. | user: I dislike Java. | user: I think Clojure is overrated.', score=0.8364863263675129, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='O-books.01', role='user', content='I prefer non-fiction.', score=0.8068399405861229, metadata={'salience': 0.5, 'kind': 'opinion'})"
+      ],
+      "o-rust": [
+        "RetrievalResult(turn_id='O-tech.01', role='user', content='I think Rust is best for hot paths.', score=1.1511874111914526, metadata={'salience': 0.6, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='O-food.08', role='user', content='I think Mexican is the best cuisine.', score=1.0071244350924238, metadata={'salience': 0.5, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='O-music.08', role='user', content='I think Radiohead is the best band ever.', score=0.9743715848985244, metadata={'salience': 0.5, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='O-invest.04', role='user', content='I think dollar-cost averaging is the best strategy.', score=0.9472420618400894, metadata={'salience': 0.5, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='O-books.03', role='user', content='I think sci-fi is the best fiction genre.', score=0.9472418912413945, metadata={'salience': 0.5, 'kind': 'opinion'})"
+      ],
+      "o-pair-now": [
+        "RetrievalResult(turn_id='O-tech.06', role='user', content='I think pair programming is overrated for routine work.', score=1.055084684429692, metadata={'salience': 0.5, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='O-evolved.00', role='user', content='I used to think pair programming was essential.', score=0.992532772594588, metadata={'salience': 0.5, 'kind': 'opinion-historical'})",
+        "RetrievalResult(turn_id='reflect-59', role='reflection', content=\"[reflection of 6 items] user: I believe most code reviews should be async. | user: I think pair programming is overrated for routine work. | user: I believe in writing tests first. | user: I believe most meetings are unnecessary. | user: I used to think pair programming was essential. | user: Now I think it's only useful for unfamiliar code.\", score=0.9036809401928818, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='O-food.02', role='user', content='I think sushi is overrated.', score=0.8758251906272158, metadata={'salience': 0.5, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='O-tech.04', role='user', content='I think Clojure is overrated.', score=0.8758250596844168, metadata={'salience': 0.5, 'kind': 'opinion'})"
+      ],
+      "o-editor": [
+        "RetrievalResult(turn_id='O-evolved.05', role='user', content='Now I use VS Code.', score=1.067116925193478, metadata={'salience': 0.5, 'kind': 'opinion-correction'})",
+        "RetrievalResult(turn_id='reflect-65', role='reflection', content='[reflection of 5 items] user: Now I think TypeScript is fine. | user: Now I use VS Code. | user: Now I prefer FastAPI. | user: Now I would never go back. | user: To deploy a service: bump the version in Makefile.', score=0.8839155589901025, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Em-team.01', role='user', content='Now I love it.', score=0.8787097277647298, metadata={'salience': 0.6, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='O-evolved.07', role='user', content='Now I prefer FastAPI.', score=0.8787095315888542, metadata={'salience': 0.5, 'kind': 'opinion-correction'})",
+        "RetrievalResult(turn_id='Em-team.09', role='user', content='I feel like I belong here now.', score=0.8546066363075127, metadata={'salience': 0.6, 'kind': 'emotion'})"
+      ],
+      "pr-deploy-step": [
+        "RetrievalResult(turn_id='Pr-deploy.00', role='user', content='To deploy a service: bump the version in Makefile.', score=1.0691422874078433, metadata={'salience': 0.7, 'kind': 'procedure'})",
+        "RetrievalResult(turn_id='Pr-debug-flow.00', role='user', content='When a service is slow: check the CPU first.', score=0.9655975813396652, metadata={'salience': 0.7, 'kind': 'procedure'})",
+        "RetrievalResult(turn_id='Pr-fix.04', role='user', content='If the application logs are clean, restart the service.', score=0.8424980061788084, metadata={'salience': 0.5, 'kind': 'procedure'})",
+        "RetrievalResult(turn_id='Otto3.02', role='user', content='Otto is the author of the deploy pipeline.', score=0.8296022193851375, metadata={'salience': 0.6, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='E-launch-day.04', role='user', content='The launch was the audit log service.', score=0.8230905046915825, metadata={'salience': 0.7, 'kind': 'event'})"
+      ],
+      "pr-failure": [
+        "RetrievalResult(turn_id='Pr-deploy.05', role='user', content='If the smoke test fails, roll back via git revert.', score=1.083574203886075, metadata={'salience': 0.6, 'kind': 'procedure'})",
+        "RetrievalResult(turn_id='Pr-deploy.02', role='user', content='Then run the smoke test.', score=0.9569590435745052, metadata={'salience': 0.7, 'kind': 'procedure'})",
+        "RetrievalResult(turn_id='R-product.05', role='user', content='I do code reviews in the afternoon.', score=0.8822337011965049, metadata={'salience': 0.5, 'kind': 'routine'})",
+        "RetrievalResult(turn_id='reflect-73', role='reflection', content='[reflection of 7 items] user: Then run make deploy. | user: Then run the smoke test. | user: Then merge the PR. | user: Then tag the release. | user: If the smoke test fails, roll back via git revert. | user: Then write the postmortem. | user: If the rollback also fails, escalate to Otto.', score=0.8592431663870066, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='R-morning.05', role='user', content='I do my best thinking in the morning.', score=0.857546391965756, metadata={'salience': 0.5, 'kind': 'self-knowledge'})"
+      ],
+      "pr-slow-metrics": [
+        "RetrievalResult(turn_id='Pr-fix.00', role='user', content='If the metrics service is slow, check the database connection pool size.', score=1.1811862904784256, metadata={'salience': 0.7, 'kind': 'procedure'})",
+        "RetrievalResult(turn_id='Pr-debug-flow.00', role='user', content='When a service is slow: check the CPU first.', score=1.1132427939093015, metadata={'salience': 0.7, 'kind': 'procedure'})",
+        "RetrievalResult(turn_id='reflect-79', role='reflection', content='[reflection of 5 items] user: If the metrics service is slow, check the database connectio | user: If the queries are slow, look at the slow query log. | user: If the slow query log is clean, check the database CPU. | user: If the database CPU is fine, check the application logs. | user: If the application logs are clean, restart the service.', score=1.096551658088363, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Pr-fix.02', role='user', content='If the slow query log is clean, check the database CPU.', score=1.0288410766050293, metadata={'salience': 0.5, 'kind': 'procedure'})",
+        "RetrievalResult(turn_id='Pr-fix.03', role='user', content='If the database CPU is fine, check the application logs.', score=0.9566459109130114, metadata={'salience': 0.5, 'kind': 'procedure'})"
+      ],
+      "sp-otto": [
+        "RetrievalResult(turn_id='Sp-office.00', role='user', content='Otto sits at the back-right corner.', score=0.7395933510545785, metadata={'salience': 0.6, 'kind': 'spatial'})",
+        "RetrievalResult(turn_id='Re-otto.06', role='user', content=\"I trust Otto's judgment on architecture.\", score=0.7172778111362168, metadata={'salience': 0.7, 'kind': 'relationship'})",
+        "RetrievalResult(turn_id='Re-otto.05', role='user', content='Otto and I rebuilt trust after that.', score=0.7172778099699357, metadata={'salience': 0.6, 'kind': 'relationship'})",
+        "RetrievalResult(turn_id='reflect-370', role='reflection', content=\"[reflection of 6 items] user: Otto started at the company in 2019. | user: Otto was previously at Stripe. | user: Otto's been in engineering for 15 years. | user: Otto has a CS degree from Stanford. | user: Otto's wife is Brenda. | user: Otto mentors junior engineers.\", score=0.7151906225449616, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-394', role='reflection', content=\"[reflection of 4 items] user: Otto has a Stanford CS degree. | user: Otto is my manager. | user: Otto's wife Brenda is a chef. | user: Otto wrote the deploy pipeline.\", score=0.7016386921606226, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "sp-meeting": [
+        "RetrievalResult(turn_id='Sp-office.04', role='user', content='The meeting room is named Aurora.', score=1.4396051436762423, metadata={'salience': 0.5, 'kind': 'spatial'})",
+        "RetrievalResult(turn_id='reflect-85', role='reflection', content='[reflection of 5 items] user: I increased it to 50 last month. | user: Otto sits at the back-right corner. | user: Maria sits two desks away from me, by the window. | user: The coffee machine is in the kitchen, second door on the rig | user: The meeting room is named Aurora.', score=0.9823396564976067, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Sp-office.02', role='user', content='The coffee machine is in the kitchen, second door on the right.', score=0.8599643064184097, metadata={'salience': 0.5, 'kind': 'spatial'})",
+        "RetrievalResult(turn_id='Otto3.02', role='user', content='Otto is the author of the deploy pipeline.', score=0.8265543489877387, metadata={'salience': 0.6, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='reflect-79', role='reflection', content='[reflection of 5 items] user: If the metrics service is slow, check the database connectio | user: If the queries are slow, look at the slow query log. | user: If the slow query log is clean, check the database CPU. | user: If the database CPU is fine, check the application logs. | user: If the application logs are clean, restart the service.', score=0.825702155645616, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "em-burnout": [
+        "RetrievalResult(turn_id='Em-feel.01', role='user', content='I was burned out in Q3.', score=0.97213605837768, metadata={'salience': 0.7, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='Em-hobby.00', role='user', content='I feel calm when I cook.', score=0.9514596560712357, metadata={'salience': 0.5, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='Em-therapy.05', role='user', content='I have tools for when I feel overwhelmed.', score=0.9037978640820941, metadata={'salience': 0.5, 'kind': 'self-knowledge'})",
+        "RetrievalResult(turn_id='Em-hobby.09', role='user', content='I feel content when I read at night.', score=0.9037975191234706, metadata={'salience': 0.5, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='Em-hobby.03', role='user', content='I feel excited when I learn something new.', score=0.903797498185893, metadata={'salience': 0.6, 'kind': 'emotion'})"
+      ],
+      "em-promotion": [
+        "RetrievalResult(turn_id='Em-feel.08', role='user', content='I got the promotion in December.', score=0.9748257439257428, metadata={'salience': 0.7, 'kind': 'event'})",
+        "RetrievalResult(turn_id='Re-old-friend.01', role='user', content='Tom lives in Austin.', score=0.7293729141983827, metadata={'salience': 0.5, 'kind': 'spatial'})",
+        "RetrievalResult(turn_id='Pr-recipe.04', role='user', content='Pour in the eggs.', score=0.7293728810807911, metadata={'salience': 0.5, 'kind': 'procedure'})",
+        "RetrievalResult(turn_id='E-team-offsite.01', role='user', content='It was in September.', score=0.7293724302711206, metadata={'salience': 0.5, 'kind': 'event'})",
+        "RetrievalResult(turn_id='P-names.06', role='user', content='Anna lives in Seattle.', score=0.7293723937110604, metadata={'salience': 0.5, 'kind': 'spatial'})"
+      ],
+      "re-otto": [
+        "RetrievalResult(turn_id='Re-otto.00', role='user', content='Otto and I have known each other for six years.', score=1.001930010715438, metadata={'salience': 0.7, 'kind': 'relationship'})",
+        "RetrievalResult(turn_id='Re-best-friend.01', role='user', content='Sam and I have known each other since college.', score=0.9163153918768878, metadata={'salience': 0.6, 'kind': 'relationship'})",
+        "RetrievalResult(turn_id='R-product.04', role='user', content='Then I have a 1:1 with Otto.', score=0.8394428856156775, metadata={'salience': 0.5, 'kind': 'routine'})",
+        "RetrievalResult(turn_id='Em-therapy.05', role='user', content='I have tools for when I feel overwhelmed.', score=0.8262323042304298, metadata={'salience': 0.5, 'kind': 'self-knowledge'})",
+        "RetrievalResult(turn_id='Em-hobby.01', role='user', content='I feel proud when I run a long distance.', score=0.8215692739454667, metadata={'salience': 0.5, 'kind': 'emotion'})"
+      ],
+      "re-trust": [
+        "RetrievalResult(turn_id='Otto-birthday.07', role='user', content='We had a rough patch in 2022.', score=0.8544849402783533, metadata={'salience': 0.5, 'kind': 'relationship'})",
+        "RetrievalResult(turn_id='E-run.02', role='user', content='Otto came in 2:30.', score=0.8301369004617358, metadata={'salience': 0.5, 'kind': 'event'})",
+        "RetrievalResult(turn_id='R-product.04', role='user', content='Then I have a 1:1 with Otto.', score=0.8262559981304994, metadata={'salience': 0.5, 'kind': 'routine'})",
+        "RetrievalResult(turn_id='Re-otto.04', role='user', content='We had a rough patch in 2022; I almost quit.', score=0.7965827754074184, metadata={'salience': 0.5, 'kind': 'relationship'})",
+        "RetrievalResult(turn_id='R-weekend.09', role='user', content='I usually meal prep with Otto and Maria.', score=0.7925965891109545, metadata={'salience': 0.5, 'kind': 'routine'})"
+      ],
+      "re-maria-tenure": [
+        "RetrievalResult(turn_id='E-run.06', role='user', content='Maria crewed for me at the aid station.', score=0.897168461969033, metadata={'salience': 0.5, 'kind': 'event'})",
+        "RetrievalResult(turn_id='Re-maria.01', role='user', content='Maria joined the current company a year after me.', score=0.8968240264736227, metadata={'salience': 0.5, 'kind': 'relationship'})",
+        "RetrievalResult(turn_id='Otto-bio.01', role='user', content='Otto started at the company in 2019.', score=0.8233858961476053, metadata={'salience': 0.5, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='Re-otto.01', role='user', content='We worked together at the previous company.', score=0.8233850839721789, metadata={'salience': 0.6, 'kind': 'relationship'})",
+        "RetrievalResult(turn_id='P-who-said-what.07', role='user', content='Maria promised to write the migration plan by Friday.', score=0.810894310539326, metadata={'salience': 0.6, 'kind': 'commitment'})"
+      ],
+      "re-arg": [
+        "RetrievalResult(turn_id='Re-maria.03', role='user', content='Maria and I have a great working relationship.', score=0.8310334194430387, metadata={'salience': 0.6, 'kind': 'relationship'})",
+        "RetrievalResult(turn_id='R-weekend.09', role='user', content='I usually meal prep with Otto and Maria.', score=0.8310333495650951, metadata={'salience': 0.5, 'kind': 'routine'})",
+        "RetrievalResult(turn_id='Re-maria.00', role='user', content='Maria and I worked together at the previous startup.', score=0.8121010854955621, metadata={'salience': 0.6, 'kind': 'relationship'})",
+        "RetrievalResult(turn_id='Em-loss.06', role='user', content='I think about him when I play.', score=0.8067867588038733, metadata={'salience': 0.5, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='reflect-113', role='reflection', content='[reflection of 5 items] user: Maria and I worked together at the previous startup. | user: Maria joined the current company a year after me. | user: I mentored Maria when she joined. | user: Maria and I have a great working relationship. | user: We compromise: TDD for new code, test-after for bug fixes.', score=0.7775887726640569, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "otto-bd-gift": [
+        "RetrievalResult(turn_id='Em-team.08', role='user', content=\"I feel grateful for Otto's mentorship.\", score=0.8193313102686273, metadata={'salience': 0.6, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='Otto-birthday.00', role='user', content=\"Otto's birthday was last week.\", score=0.7821290030431398, metadata={'salience': 0.6, 'kind': 'event'})",
+        "RetrievalResult(turn_id='Otto-bio.03', role='user', content=\"Otto's been in engineering for 15 years.\", score=0.7727642943404206, metadata={'salience': 0.5, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='Re-otto.00', role='user', content='Otto and I have known each other for six years.', score=0.7671709748104139, metadata={'salience': 0.7, 'kind': 'relationship'})",
+        "RetrievalResult(turn_id='Em-therapy.05', role='user', content='I have tools for when I feel overwhelmed.', score=0.756679780826761, metadata={'salience': 0.5, 'kind': 'self-knowledge'})"
+      ],
+      "pr-debug-first": [
+        "RetrievalResult(turn_id='Pr-debug-flow.00', role='user', content='When a service is slow: check the CPU first.', score=1.3000750116657827, metadata={'salience': 0.7, 'kind': 'procedure'})",
+        "RetrievalResult(turn_id='Pr-fix.00', role='user', content='If the metrics service is slow, check the database connection pool size.', score=0.9652811635825833, metadata={'salience': 0.7, 'kind': 'procedure'})",
+        "RetrievalResult(turn_id='reflect-79', role='reflection', content='[reflection of 5 items] user: If the metrics service is slow, check the database connectio | user: If the queries are slow, look at the slow query log. | user: If the slow query log is clean, check the database CPU. | user: If the database CPU is fine, check the application logs. | user: If the application logs are clean, restart the service.', score=0.9019913158838604, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-127', role='reflection', content=\"[reflection of 8 items] user: Otto said the book was the best one he's read. | user: Otto has been my manager for three years. | user: We had a rough patch in 2022. | user: Otto's wife is Brenda. | user: Brenda and Otto have been married for ten years. | user: When a service is slow: check the CPU first. | user: Then check the memory. | user: Then check the network.\", score=0.88868018983505, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Pr-fix.02', role='user', content='If the slow query log is clean, check the database CPU.', score=0.8857681369419979, metadata={'salience': 0.5, 'kind': 'procedure'})"
+      ],
+      "e-mom-age": [
+        "RetrievalResult(turn_id='P-roles.09', role='user', content='Mom is my mom.', score=1.1914774296235078, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='P-friends.08', role='user', content='Mom is my mom.', score=1.191477277830968, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='E-mom-visit.04', role='user', content='Mom is 67.', score=0.9810304198488489, metadata={'salience': 0.5, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='reflect-308', role='reflection', content=\"[reflection of 7 items] user: Jordan is my partner. | user: Anna is my sister. | user: Brenda is Otto's wife. | user: Tom is my college roommate. | user: Lin is my former coworker. | user: Jess is my book club friend. | user: Mom is my mom.\", score=0.9486026938495823, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='E-mom-visit.00', role='user', content='My mom visited last weekend.', score=0.8848678060261135, metadata={'salience': 0.7, 'kind': 'event'})"
+      ],
+      "e-mom-loc": [
+        "RetrievalResult(turn_id='P-roles.09', role='user', content='Mom is my mom.', score=1.022779567061492, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='P-friends.08', role='user', content='Mom is my mom.', score=1.0227794152689744, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='E-mom-visit.00', role='user', content='My mom visited last weekend.', score=0.8678244136660422, metadata={'salience': 0.7, 'kind': 'event'})",
+        "RetrievalResult(turn_id='E-mom-visit.04', role='user', content='Mom is 67.', score=0.7644584754655356, metadata={'salience': 0.5, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='reflect-308', role='reflection', content=\"[reflection of 7 items] user: Jordan is my partner. | user: Anna is my sister. | user: Brenda is Otto's wife. | user: Tom is my college roommate. | user: Lin is my former coworker. | user: Jess is my book club friend. | user: Mom is my mom.\", score=0.7619779332247882, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "o-spice": [
+        "RetrievalResult(turn_id='O-food.01', role='user', content=\"I don't like spicy food.\", score=1.2060751171985968, metadata={'salience': 0.5, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='O-food.07', role='user', content='I love spicy food despite my earlier statement.', score=1.0009938258751367, metadata={'salience': 0.6, 'kind': 'opinion-correction'})",
+        "RetrievalResult(turn_id='Em-team.09', role='user', content='I feel like I belong here now.', score=0.8496888220014704, metadata={'salience': 0.6, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='reflect-151', role='reflection', content=\"[reflection of 8 items] user: I miss her already. | user: I prefer coffee over tea. | user: I don't like spicy food. | user: I think sushi is overrated. | user: I love pizza. | user: I think breakfast is the most important meal. | user: I prefer savory over sweet. | user: I dislike cilantro.\", score=0.808420366437016, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='O-books.05', role='user', content='I love biographies.', score=0.804437465022245, metadata={'salience': 0.5, 'kind': 'opinion'})"
+      ],
+      "o-italian": [
+        "RetrievalResult(turn_id='O-books.01', role='user', content='I prefer non-fiction.', score=0.8798596159540346, metadata={'salience': 0.5, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='O-evolved.07', role='user', content='Now I prefer FastAPI.', score=0.879859002794086, metadata={'salience': 0.5, 'kind': 'opinion-correction'})",
+        "RetrievalResult(turn_id='O-music.00', role='user', content='I prefer jazz over classical.', score=0.8397561593127738, metadata={'salience': 0.5, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='Sp-cafe.08', role='user', content='I prefer independent coffee shops.', score=0.8397559248103266, metadata={'salience': 0.5, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='O-food.09', role='user', content='I prefer Italian over Mexican.', score=0.83975591141497, metadata={'salience': 0.5, 'kind': 'opinion'})"
+      ],
+      "sp-go-to": [
+        "RetrievalResult(turn_id='Sp-cafe.00', role='user', content='The Blue Bottle on Mission is my go-to.', score=1.0123095008214313, metadata={'salience': 0.6, 'kind': 'spatial'})",
+        "RetrievalResult(turn_id='E-trip.09', role='user', content='I want to go back.', score=0.8798304084691557, metadata={'salience': 0.5, 'kind': 'intent'})",
+        "RetrievalResult(turn_id='reflect-308', role='reflection', content=\"[reflection of 7 items] user: Jordan is my partner. | user: Anna is my sister. | user: Brenda is Otto's wife. | user: Tom is my college roommate. | user: Lin is my former coworker. | user: Jess is my book club friend. | user: Mom is my mom.\", score=0.8509471766995321, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Otto6.00', role='user', content='Otto is my manager.', score=0.8437998189006974, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Otto5.00', role='user', content='Otto is my manager.', score=0.8437997951495873, metadata={'salience': 0.7, 'kind': 'identity'})"
+      ],
+      "re-bff": [
+        "RetrievalResult(turn_id='P-roles.02', role='user', content='Sam is my best friend.', score=1.2275541412874216, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='P-friends.00', role='user', content='Sam is my best friend.', score=1.227553986229324, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Re-best-friend.00', role='user', content='My best friend is Sam.', score=1.2275537182634024, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='R-network.01', role='user', content='Sam is my oldest friend.', score=1.0306572364293194, metadata={'salience': 0.5, 'kind': 'relationship'})",
+        "RetrievalResult(turn_id='P-roles.08', role='user', content='Jess is my book club friend.', score=0.9844213248125946, metadata={'salience': 0.5, 'kind': 'identity'})"
+      ],
+      "re-bff-pronouns": [
+        "RetrievalResult(turn_id='Re-best-friend.08', role='user', content='Sam uses they/them pronouns.', score=0.9106480380625357, metadata={'salience': 0.5, 'kind': 'person-trait'})",
+        "RetrievalResult(turn_id='reflect-170', role='reflection', content='[reflection of 5 items] user: Sam is a designer. | user: I miss our video calls. | user: Sam is non-binary. | user: Sam uses they/them pronouns. | user: To make pasta: boil water.', score=0.722540657095669, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Re-best-friend.07', role='user', content='Sam is non-binary.', score=0.7084909586871944, metadata={'salience': 0.5, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Re-best-friend.03', role='user', content='Sam is a designer.', score=0.7084909549108183, metadata={'salience': 0.5, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Pr-fix-debug.05', role='user', content='Use mocked clocks if needed.', score=0.7013384682634357, metadata={'salience': 0.5, 'kind': 'procedure'})"
+      ],
+      "pr-pasta": [
+        "RetrievalResult(turn_id='Pr-cook.03', role='user', content='Cook for 8 minutes for al dente.', score=1.0652686647783243, metadata={'salience': 0.5, 'kind': 'procedure'})",
+        "RetrievalResult(turn_id='R-weekend.01', role='user', content='I do a long run on Sundays.', score=0.8445664789903263, metadata={'salience': 0.6, 'kind': 'routine'})",
+        "RetrievalResult(turn_id='reflect-178', role='reflection', content='[reflection of 7 items] user: Add salt to the water. | user: Add the pasta when boiling. | user: Cook for 8 minutes for al dente. | user: Reserve a cup of pasta water. | user: Drain and toss with sauce. | user: Add pasta water if too dry. | user: Finish with parmesan and pepper.', score=0.8264791235516573, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Pr-cook.00', role='user', content='To make pasta: boil water.', score=0.8078467103434628, metadata={'salience': 0.5, 'kind': 'procedure'})",
+        "RetrievalResult(turn_id='Sp-running.04', role='user', content='I run at Lake Merced for long runs.', score=0.8005824851450594, metadata={'salience': 0.5, 'kind': 'spatial'})"
+      ],
+      "em-belong": [
+        "RetrievalResult(turn_id='Em-hobby.05', role='user', content='I feel grateful for my team.', score=0.9171666078823981, metadata={'salience': 0.6, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='Em-team.09', role='user', content='I feel like I belong here now.', score=0.9134832457480007, metadata={'salience': 0.6, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='Em-team.03', role='user', content='Now they feel like peers.', score=0.9058233174863008, metadata={'salience': 0.5, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='Em-feel.07', role='user', content='I was anxious about the promotion.', score=0.8917018314728218, metadata={'salience': 0.6, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='Em-therapy.09', role='user', content='I feel more grounded overall.', score=0.8564291018610046, metadata={'salience': 0.6, 'kind': 'emotion'})"
+      ],
+      "p-partner": [
+        "RetrievalResult(turn_id='P-roles.03', role='user', content='Jordan is my partner.', score=1.169906411891505, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='P-names.01', role='user', content='My partner is Jordan.', score=1.1699060508851202, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='reflect-308', role='reflection', content=\"[reflection of 7 items] user: Jordan is my partner. | user: Anna is my sister. | user: Brenda is Otto's wife. | user: Tom is my college roommate. | user: Lin is my former coworker. | user: Jess is my book club friend. | user: Mom is my mom.\", score=0.9425985876933118, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Otto6.00', role='user', content='Otto is my manager.', score=0.8903591372128317, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Otto5.00', role='user', content='Otto is my manager.', score=0.8903591134617408, metadata={'salience': 0.7, 'kind': 'identity'})"
+      ],
+      "p-sister": [
+        "RetrievalResult(turn_id='P-roles.04', role='user', content='Anna is my sister.', score=1.1671608406940246, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='P-friends.01', role='user', content='Anna is my sister.', score=1.1671606815173323, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='P-names.05', role='user', content='My sister is Anna.', score=1.1671604855196038, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='reflect-308', role='reflection', content=\"[reflection of 7 items] user: Jordan is my partner. | user: Anna is my sister. | user: Brenda is Otto's wife. | user: Tom is my college roommate. | user: Lin is my former coworker. | user: Jess is my book club friend. | user: Mom is my mom.\", score=0.9449927677350412, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Otto6.00', role='user', content='Otto is my manager.', score=0.8936403682664043, metadata={'salience': 0.7, 'kind': 'identity'})"
+      ],
+      "o-monolith": [
+        "RetrievalResult(turn_id='O-tech-historical.01', role='user', content='Now I think monoliths are underrated.', score=1.0941104456157618, metadata={'salience': 0.6, 'kind': 'opinion-correction'})",
+        "RetrievalResult(turn_id='Em-loss.06', role='user', content='I think about him when I play.', score=0.9373864422725735, metadata={'salience': 0.5, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='O-tech-historical.09', role='user', content=\"Now I think it's just OK.\", score=0.910553561956786, metadata={'salience': 0.5, 'kind': 'opinion-correction'})",
+        "RetrievalResult(turn_id='O-evolved.03', role='user', content='Now I think TypeScript is fine.', score=0.9027381352696527, metadata={'salience': 0.5, 'kind': 'opinion-correction'})",
+        "RetrievalResult(turn_id='reflect-206', role='reflection', content=\"[reflection of 5 items] user: Now I think test-after is fine for bug fixes. | user: Now I prefer Postgres for most things. | user: Now I prefer GCP for most things. | user: Now I think it's just OK. | user: The team offsite was in Lake Tahoe.\", score=0.8317635356519211, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "e-offsite-loc": [
+        "RetrievalResult(turn_id='E-team-offsite.00', role='user', content='The team offsite was in Lake Tahoe.', score=1.2123602427153375, metadata={'salience': 0.6, 'kind': 'event'})",
+        "RetrievalResult(turn_id='E-launch-day.04', role='user', content='The launch was the audit log service.', score=0.8350002458829544, metadata={'salience': 0.7, 'kind': 'event'})",
+        "RetrievalResult(turn_id='P-team-roster.03', role='user', content='Maria is on the platform team, not metrics.', score=0.8195912713241211, metadata={'salience': 0.6, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='E-anniversary.04', role='user', content='Otto was the best man.', score=0.8101327483572041, metadata={'salience': 0.5, 'kind': 'relationship'})",
+        "RetrievalResult(turn_id='Em-feel.07', role='user', content='I was anxious about the promotion.', score=0.7831102661622747, metadata={'salience': 0.6, 'kind': 'emotion'})"
+      ],
+      "r-morning": [
+        "RetrievalResult(turn_id='R-product.00', role='user', content='I check production metrics every morning at 9am.', score=1.0810678068046022, metadata={'salience': 0.6, 'kind': 'routine'})",
+        "RetrievalResult(turn_id='R-morning.05', role='user', content='I do my best thinking in the morning.', score=0.9225547656925859, metadata={'salience': 0.5, 'kind': 'self-knowledge'})",
+        "RetrievalResult(turn_id='reflect-218', role='reflection', content='[reflection of 7 items] user: It was a great bonding experience. | user: I check production metrics every morning at 9am. | user: I look at the dashboard first. | user: Then I check Slack for any alerts. | user: Then I review the PR queue. | user: Then I have a 1:1 with Otto. | user: I do code reviews in the afternoon.', score=0.8192336020569233, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='O-music.03', role='user', content='I love instrumental music when working.', score=0.7837359599786712, metadata={'salience': 0.5, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='R-product.05', role='user', content='I do code reviews in the afternoon.', score=0.7743679573161604, metadata={'salience': 0.5, 'kind': 'routine'})"
+      ],
+      "sp-neighborhood": [
+        "RetrievalResult(turn_id='Sp-around.00', role='user', content='I live in the Mission District.', score=1.0048506190387083, metadata={'salience': 0.6, 'kind': 'spatial'})",
+        "RetrievalResult(turn_id='R-product.05', role='user', content='I do code reviews in the afternoon.', score=0.9551102701568588, metadata={'salience': 0.5, 'kind': 'routine'})",
+        "RetrievalResult(turn_id='Sp-around.08', role='user', content='I live in a rent-controlled apartment.', score=0.9400696238449435, metadata={'salience': 0.5, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='R-morning.05', role='user', content='I do my best thinking in the morning.', score=0.9257160452026743, metadata={'salience': 0.5, 'kind': 'self-knowledge'})",
+        "RetrievalResult(turn_id='O-music.09', role='user', content='I enjoy live music more than recorded.', score=0.8991685098280374, metadata={'salience': 0.5, 'kind': 'opinion'})"
+      ],
+      "em-grandpa": [
+        "RetrievalResult(turn_id='Em-loss.00', role='user', content='My grandfather died last year.', score=0.8715210825116102, metadata={'salience': 0.8, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='E-mom-visit.06', role='user', content='Mom calls me every Sunday.', score=0.6857387189268526, metadata={'salience': 0.5, 'kind': 'relationship'})",
+        "RetrievalResult(turn_id='Em-feel.04', role='user', content='The outage stressed me out.', score=0.6857386398893998, metadata={'salience': 0.5, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='Em-therapy.03', role='user', content='Therapy has helped me manage anxiety.', score=0.6695557485493984, metadata={'salience': 0.6, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='Em-loss.03', role='user', content='He taught me to play chess.', score=0.6695552557584634, metadata={'salience': 0.5, 'kind': 'relationship'})"
+      ],
+      "pr-flaky": [
+        "RetrievalResult(turn_id='Pr-fix-debug.00', role='user', content='To debug a flaky test: run it 100 times.', score=1.0364145764844073, metadata={'salience': 0.6, 'kind': 'procedure'})",
+        "RetrievalResult(turn_id='R-weekend.01', role='user', content='I do a long run on Sundays.', score=0.8665307249272052, metadata={'salience': 0.6, 'kind': 'routine'})",
+        "RetrievalResult(turn_id='Em-hobby.01', role='user', content='I feel proud when I run a long distance.', score=0.8078998413288356, metadata={'salience': 0.5, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='Pr-debug-flow.08', role='user', content='Then write a regression test.', score=0.8056028562715065, metadata={'salience': 0.5, 'kind': 'procedure'})",
+        "RetrievalResult(turn_id='Em-hobby.09', role='user', content='I feel content when I read at night.', score=0.7862217620144701, metadata={'salience': 0.5, 'kind': 'emotion'})"
+      ],
+      "o-coding": [
+        "RetrievalResult(turn_id='O-music.06', role='user', content='I like ambient music for coding.', score=1.0510520727576889, metadata={'salience': 0.5, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='O-music.03', role='user', content='I love instrumental music when working.', score=1.004610676376445, metadata={'salience': 0.5, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='reflect-251', role='reflection', content='[reflection of 7 items] user: Add a regression test once fixed. | user: I prefer jazz over classical. | user: I think hip-hop is the most innovative genre. | user: I dislike most pop music. | user: I love instrumental music when working. | user: I think lyrics are distracting. | user: I like ambient music for coding.', score=0.8787923804105922, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='O-music.07', role='user', content='I dislike country music.', score=0.8437360828949441, metadata={'salience': 0.5, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='O-music.09', role='user', content='I enjoy live music more than recorded.', score=0.8312674161493373, metadata={'salience': 0.5, 'kind': 'opinion'})"
+      ],
+      "p-circle": [
+        "RetrievalResult(turn_id='reflect-308', role='reflection', content=\"[reflection of 7 items] user: Jordan is my partner. | user: Anna is my sister. | user: Brenda is Otto's wife. | user: Tom is my college roommate. | user: Lin is my former coworker. | user: Jess is my book club friend. | user: Mom is my mom.\", score=0.8778491091243885, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Otto6.00', role='user', content='Otto is my manager.', score=0.8701529874492155, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Otto5.00', role='user', content='Otto is my manager.', score=0.8701529636981602, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Otto4.00', role='user', content='Otto is my manager.', score=0.8701529392664601, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Otto3.00', role='user', content='Otto is my manager.', score=0.870152916097882, metadata={'salience': 0.7, 'kind': 'identity'})"
+      ],
+      "em-cooking": [
+        "RetrievalResult(turn_id='Em-hobby.00', role='user', content='I feel calm when I cook.', score=1.21070537212057, metadata={'salience': 0.5, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='Em-therapy.05', role='user', content='I have tools for when I feel overwhelmed.', score=0.9642708124792458, metadata={'salience': 0.5, 'kind': 'self-knowledge'})",
+        "RetrievalResult(turn_id='Em-hobby.09', role='user', content='I feel content when I read at night.', score=0.9642704675221465, metadata={'salience': 0.5, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='Em-hobby.03', role='user', content='I feel excited when I learn something new.', score=0.9642704465846614, metadata={'salience': 0.6, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='reflect-278', role='reflection', content='[reflection of 8 items] user: I feel excited when I learn something new. | user: I feel drained after long meetings. | user: I feel grateful for my team. | user: I feel lonely when I work from home too long. | user: I feel energized by good design. | user: I feel frustrated when meetings run over. | user: I feel content when I read at night. | user: I have a strong network in the Bay Area tech scene.', score=0.9568369221528024, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "r-referral": [
+        "RetrievalResult(turn_id='Otto6.00', role='user', content='Otto is my manager.', score=0.8207963555327735, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Otto5.00', role='user', content='Otto is my manager.', score=0.8207963317817263, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Otto4.00', role='user', content='Otto is my manager.', score=0.8207963073500344, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Otto3.00', role='user', content='Otto is my manager.', score=0.8207962841814641, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Otto2.00', role='user', content='Otto is my manager.', score=0.8207962681882357, metadata={'salience': 0.7, 'kind': 'identity'})"
+      ],
+      "re-brenda-prof": [
+        "RetrievalResult(turn_id='Otto5.01', role='user', content=\"Otto's wife is Brenda.\", score=1.1807402220248264, metadata={'salience': 0.6, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Otto3.01', role='user', content=\"Otto's wife is Brenda.\", score=1.1807401744771782, metadata={'salience': 0.6, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Otto2.01', role='user', content=\"Otto's wife is Brenda.\", score=1.1807401547312901, metadata={'salience': 0.6, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Otto-bio.05', role='user', content=\"Otto's wife is Brenda.\", score=1.1807401362607655, metadata={'salience': 0.6, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='P-roles.05', role='user', content=\"Brenda is Otto's wife.\", score=1.1807398539237468, metadata={'salience': 0.6, 'kind': 'identity'})"
+      ],
+      "e-anniversary": [
+        "RetrievalResult(turn_id='E-anniversary.00', role='user', content='My wedding anniversary was last month.', score=1.2274784440208228, metadata={'salience': 0.7, 'kind': 'event'})",
+        "RetrievalResult(turn_id='P-friends.09', role='user', content='Dad passed away when I was 20.', score=0.8013500650613511, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Em-loss.01', role='user', content='I was with him when he passed.', score=0.8013499324042985, metadata={'salience': 0.7, 'kind': 'event'})",
+        "RetrievalResult(turn_id='reflect-294', role='reflection', content=\"[reflection of 6 items] user: Brenda is one of my favorite people. | user: My wedding anniversary was last month. | user: We went to Brenda's restaurant. | user: Jordan and I have been together for 8 years. | user: We got married in 2021. | user: Otto was the best man.\", score=0.7655970977614097, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Em-team.00', role='user', content='I was frustrated with the codebase when I joined.', score=0.7403928453896579, metadata={'salience': 0.5, 'kind': 'emotion'})"
+      ],
+      "p-roles": [
+        "RetrievalResult(turn_id='Otto-birthday.06', role='user', content='Otto has been my manager for three years.', score=0.7795758964454543, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Re-otto.03', role='user', content='Otto has been my manager for three years.', score=0.7795758658998925, metadata={'salience': 0.7, 'kind': 'relationship'})",
+        "RetrievalResult(turn_id='R-morning.05', role='user', content='I do my best thinking in the morning.', score=0.7516578254392297, metadata={'salience': 0.5, 'kind': 'self-knowledge'})",
+        "RetrievalResult(turn_id='P-team-roster.04', role='user', content='Otto is the one who wrote the original deploy pipeline.', score=0.7145301719099644, metadata={'salience': 0.7, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='E-run.01', role='user', content='I finished in 2 hours 14 minutes.', score=0.706273830177707, metadata={'salience': 0.6, 'kind': 'event'})"
+      ],
+      "r-dishes": [
+        "RetrievalResult(turn_id='R-morning.08', role='user', content='I run in the evenings on weekdays.', score=0.8917519707399676, metadata={'salience': 0.5, 'kind': 'routine'})",
+        "RetrievalResult(turn_id='P-team-roster.04', role='user', content='Otto is the one who wrote the original deploy pipeline.', score=0.7939339712842597, metadata={'salience': 0.7, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='R-morning.00', role='user', content='I wake up at 7am on weekdays.', score=0.7830098898385864, metadata={'salience': 0.6, 'kind': 'routine'})",
+        "RetrievalResult(turn_id='Sp-office.02', role='user', content='The coffee machine is in the kitchen, second door on the right.', score=0.7816299704596315, metadata={'salience': 0.5, 'kind': 'spatial'})",
+        "RetrievalResult(turn_id='Sp-cafe.02', role='user', content='The Sightglass on 7th is for meetings.', score=0.7341322050837631, metadata={'salience': 0.5, 'kind': 'spatial'})"
+      ],
+      "o-genre": [
+        "RetrievalResult(turn_id='O-books.01', role='user', content='I prefer non-fiction.', score=1.0756231238527532, metadata={'salience': 0.5, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='reflect-315', role='reflection', content='[reflection of 6 items] user: I prefer non-fiction. | user: I dislike most fiction. | user: I think sci-fi is the best fiction genre. | user: I dislike romance novels. | user: I love biographies. | user: I read mostly non-fiction business books.', score=0.9136871138481735, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='O-books.03', role='user', content='I think sci-fi is the best fiction genre.', score=0.9133363117103224, metadata={'salience': 0.5, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='O-books.02', role='user', content='I dislike most fiction.', score=0.876651684344121, metadata={'salience': 0.5, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='O-evolved.07', role='user', content='Now I prefer FastAPI.', score=0.8431799032529925, metadata={'salience': 0.5, 'kind': 'opinion-correction'})"
+      ],
+      "sp-long-run": [
+        "RetrievalResult(turn_id='Sp-running.04', role='user', content='I run at Lake Merced for long runs.', score=1.1637667996680294, metadata={'salience': 0.5, 'kind': 'spatial'})",
+        "RetrievalResult(turn_id='R-weekend.01', role='user', content='I do a long run on Sundays.', score=1.0660862880134814, metadata={'salience': 0.6, 'kind': 'routine'})",
+        "RetrievalResult(turn_id='reflect-320', role='reflection', content='[reflection of 4 items] user: I run in Dolores Park. | user: I run in Golden Gate Park. | user: I run along the Embarcadero. | user: I run at Lake Merced for long runs.', score=0.9920053638416957, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Em-hobby.01', role='user', content='I feel proud when I run a long distance.', score=0.9063272599555517, metadata={'salience': 0.5, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='Sp-running.06', role='user', content='I prefer park runs over street runs.', score=0.8980190029986238, metadata={'salience': 0.5, 'kind': 'opinion'})"
+      ],
+      "e-japan-city": [
+        "RetrievalResult(turn_id='E-trip.02', role='user', content='I loved Kyoto the most.', score=0.9642495682614896, metadata={'salience': 0.6, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='O-books.02', role='user', content='I dislike most fiction.', score=0.847477637652348, metadata={'salience': 0.5, 'kind': 'opinion'})",
+        "RetrievalResult(turn_id='Sp-running.01', role='user', content='I run in Golden Gate Park.', score=0.8194601140987116, metadata={'salience': 0.5, 'kind': 'spatial'})",
+        "RetrievalResult(turn_id='reflect-325', role='reflection', content='[reflection of 4 items] user: I prefer park runs over street runs. | user: I went to Japan last spring. | user: I went to Tokyo, Kyoto, and Osaka. | user: I loved Kyoto the most.', score=0.8189996730266601, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='E-trip.09', role='user', content='I want to go back.', score=0.8120892962477232, metadata={'salience': 0.5, 'kind': 'intent'})"
+      ],
+      "pr-eggs": [
+        "RetrievalResult(turn_id='Pr-recipe.06', role='user', content='Remove from heat when still slightly wet.', score=1.0152769590698056, metadata={'salience': 0.5, 'kind': 'procedure'})",
+        "RetrievalResult(turn_id='Pr-recipe.00', role='user', content='To make scrambled eggs: crack two eggs into a bowl.', score=0.8215623508869909, metadata={'salience': 0.5, 'kind': 'procedure'})",
+        "RetrievalResult(turn_id='Em-hobby.06', role='user', content='I feel lonely when I work from home too long.', score=0.809035741994111, metadata={'salience': 0.5, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='Pr-recipe.04', role='user', content='Pour in the eggs.', score=0.8038655614126967, metadata={'salience': 0.5, 'kind': 'procedure'})",
+        "RetrievalResult(turn_id='R-product.05', role='user', content='I do code reviews in the afternoon.', score=0.8036904518066907, metadata={'salience': 0.5, 'kind': 'routine'})"
+      ],
+      "re-tom-loc": [
+        "RetrievalResult(turn_id='Re-old-friend.02', role='user', content='Tom is a professor.', score=0.7471677761468591, metadata={'salience': 0.5, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Re-old-friend.01', role='user', content='Tom lives in Austin.', score=0.7471677714680678, metadata={'salience': 0.5, 'kind': 'spatial'})",
+        "RetrievalResult(turn_id='Re-old-friend.00', role='user', content='Tom is my college roommate.', score=0.721072979912347, metadata={'salience': 0.5, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='P-roles.06', role='user', content='Tom is my college roommate.', score=0.7210728268135862, metadata={'salience': 0.5, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='P-friends.05', role='user', content='Tom is my college roommate.', score=0.7210726719678733, metadata={'salience': 0.5, 'kind': 'identity'})"
+      ],
+      "o-strategy": [
+        "RetrievalResult(turn_id='P-roles.01', role='user', content='Maria is my mentee.', score=0.823992072848727, metadata={'salience': 0.6, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='P-friends.03', role='user', content='Maria is my mentee.', score=0.8239919324577829, metadata={'salience': 0.6, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='P-who-said-what.06', role='user', content=\"Otto's been pushing for the feature flags; Maria's been skeptical.\", score=0.784485040223025, metadata={'salience': 0.6, 'kind': 'social'})",
+        "RetrievalResult(turn_id='E-team-offsite.03', role='user', content='I led the strategy session.', score=0.7761359566546939, metadata={'salience': 0.5, 'kind': 'event'})",
+        "RetrievalResult(turn_id='R-weekend.02', role='user', content=\"I visit the farmer's market on Saturdays.\", score=0.7406878931069157, metadata={'salience': 0.5, 'kind': 'routine'})"
+      ],
+      "em-therapy": [
+        "RetrievalResult(turn_id='Em-therapy.03', role='user', content='Therapy has helped me manage anxiety.', score=1.2682802015948564, metadata={'salience': 0.6, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='Em-loss.03', role='user', content='He taught me to play chess.', score=0.770985458519661, metadata={'salience': 0.5, 'kind': 'relationship'})",
+        "RetrievalResult(turn_id='reflect-363', role='reflection', content=\"[reflection of 5 items] user: Therapy has helped me manage anxiety. | user: I've been sleeping better. | user: I have tools for when I feel overwhelmed. | user: I feel more grounded overall. | user: Otto is my manager.\", score=0.7480427817808873, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Em-therapy.00', role='user', content='I started therapy last year.', score=0.7215628790814184, metadata={'salience': 0.6, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='E-mom-visit.06', role='user', content='Mom calls me every Sunday.', score=0.6968500625823987, metadata={'salience': 0.5, 'kind': 'relationship'})"
+      ],
+      "p-otto-prev": [
+        "RetrievalResult(turn_id='O-food.07', role='user', content='I love spicy food despite my earlier statement.', score=0.7121255817961873, metadata={'salience': 0.6, 'kind': 'opinion-correction'})",
+        "RetrievalResult(turn_id='Em-hobby.02', role='user', content='I feel anxious before code reviews.', score=0.7088492406886802, metadata={'salience': 0.5, 'kind': 'emotion'})",
+        "RetrievalResult(turn_id='R-morning.07', role='user', content='I leave work at 6.', score=0.702233106126311, metadata={'salience': 0.5, 'kind': 'routine'})",
+        "RetrievalResult(turn_id='Re-otto.06', role='user', content=\"I trust Otto's judgment on architecture.\", score=0.6921042401044812, metadata={'salience': 0.7, 'kind': 'relationship'})",
+        "RetrievalResult(turn_id='Re-otto.05', role='user', content='Otto and I rebuilt trust after that.', score=0.6921042389382082, metadata={'salience': 0.6, 'kind': 'relationship'})"
+      ],
+      "p-otto-pet": [
+        "RetrievalResult(turn_id='reflect-378', role='reflection', content=\"[reflection of 3 items] user: Otto is my manager. | user: Otto's wife is Brenda. | user: Otto is the author of the deploy pipeline.\", score=0.7548282507714572, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Otto-birthday.09', role='user', content='Brenda and Otto have been married for ten years.', score=0.7530816708885162, metadata={'salience': 0.5, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='R-product.04', role='user', content='Then I have a 1:1 with Otto.', score=0.7400942346920811, metadata={'salience': 0.5, 'kind': 'routine'})",
+        "RetrievalResult(turn_id='Re-otto.00', role='user', content='Otto and I have known each other for six years.', score=0.7400939766119441, metadata={'salience': 0.7, 'kind': 'relationship'})",
+        "RetrievalResult(turn_id='reflect-389', role='reflection', content=\"[reflection of 2 items] user: Otto's wife is Brenda. | user: Otto wrote the deploy pipeline.\", score=0.7321004535567694, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "p-otto-prev-job": [
+        "RetrievalResult(turn_id='Otto4.09', role='user', content='Otto has a CS degree from Stanford.', score=0.7775547474789635, metadata={'salience': 0.5, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='Otto3.09', role='user', content='Otto has a CS degree from Stanford.', score=0.7775547232392066, metadata={'salience': 0.5, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='Otto-bio.04', role='user', content='Otto has a CS degree from Stanford.', score=0.7775546697240213, metadata={'salience': 0.5, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='reflect-370', role='reflection', content=\"[reflection of 6 items] user: Otto started at the company in 2019. | user: Otto was previously at Stripe. | user: Otto's been in engineering for 15 years. | user: Otto has a CS degree from Stanford. | user: Otto's wife is Brenda. | user: Otto mentors junior engineers.\", score=0.7373328080631086, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Pr-recipe.06', role='user', content='Remove from heat when still slightly wet.', score=0.7336307198770146, metadata={'salience': 0.5, 'kind': 'procedure'})"
+      ],
+      "p-otto-relationship": [
+        "RetrievalResult(turn_id='P-team-roster.04', role='user', content='Otto is the one who wrote the original deploy pipeline.', score=0.8967019766333668, metadata={'salience': 0.7, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='Otto6.00', role='user', content='Otto is my manager.', score=0.8765706166077891, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Otto5.00', role='user', content='Otto is my manager.', score=0.876570592856798, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Otto4.00', role='user', content='Otto is my manager.', score=0.8765705684251637, metadata={'salience': 0.7, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Otto3.00', role='user', content='Otto is my manager.', score=0.8765705452566481, metadata={'salience': 0.7, 'kind': 'identity'})"
+      ],
+      "p-otto-degree": [
+        "RetrievalResult(turn_id='Otto5.01', role='user', content=\"Otto's wife is Brenda.\", score=1.0484136299604627, metadata={'salience': 0.6, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Otto3.01', role='user', content=\"Otto's wife is Brenda.\", score=1.0484135824129268, metadata={'salience': 0.6, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Otto2.01', role='user', content=\"Otto's wife is Brenda.\", score=1.0484135626670856, metadata={'salience': 0.6, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='Otto-bio.05', role='user', content=\"Otto's wife is Brenda.\", score=1.0484135441966045, metadata={'salience': 0.6, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='P-roles.05', role='user', content=\"Brenda is Otto's wife.\", score=1.0484132618602529, metadata={'salience': 0.6, 'kind': 'identity'})"
+      ],
+      "p-otto-pipeline": [
+        "RetrievalResult(turn_id='reflect-370', role='reflection', content=\"[reflection of 6 items] user: Otto started at the company in 2019. | user: Otto was previously at Stripe. | user: Otto's been in engineering for 15 years. | user: Otto has a CS degree from Stanford. | user: Otto's wife is Brenda. | user: Otto mentors junior engineers.\", score=0.7345352883358715, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='Re-otto.06', role='user', content=\"I trust Otto's judgment on architecture.\", score=0.7301729926988856, metadata={'salience': 0.7, 'kind': 'relationship'})",
+        "RetrievalResult(turn_id='Re-otto.05', role='user', content='Otto and I rebuilt trust after that.', score=0.7301729915326134, metadata={'salience': 0.6, 'kind': 'relationship'})",
+        "RetrievalResult(turn_id='reflect-394', role='reflection', content=\"[reflection of 4 items] user: Otto has a Stanford CS degree. | user: Otto is my manager. | user: Otto's wife Brenda is a chef. | user: Otto wrote the deploy pipeline.\", score=0.7195595268260052, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-383', role='reflection', content=\"[reflection of 4 items] user: Otto has a CS degree from Stanford. | user: Otto is my manager. | user: Otto's wife Brenda is a chef. | user: Otto wrote the deploy pipeline.\", score=0.7176907933631378, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ]
+    },
+    "item_count": 499,
+    "query_ms": 19.89852238161599
+  },
+  {
+    "name": "H6",
+    "error": "raised"
+  }
+]

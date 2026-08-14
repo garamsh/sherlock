@@ -1,0 +1,172 @@
+[
+  {
+    "name": "H1",
+    "results_by_query": {
+      "fav-name": [
+        "RetrievalResult(turn_id='reflect-19', role='reflection', content='[reflection of 3 items] user: I prefer Django for web. | user: Postgres is at 10.0.0.4. | user: On-call is weekly rotation.', score=1.9857488585215815, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-58', role='reflection', content='[reflection of 4 items] user: I changed teams to platform-infra. | user: I prefer Go for new services. | user: We adopted ArgoCD for deploys. | reflection: [reflection of 3 items] user: I changed teams to platform-in', score=1.9581235462162863, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-62', role='reflection', content='[reflection of 4 items] reflection: [reflection of 3 items] user: I changed teams to platform-in | reflection: [reflection of 4 items] user: I changed teams to platform-in | user: Half decade in. Title: Senior Engineer. | user: We migrated to Rust for hot paths.', score=1.9470358047501122, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-56', role='reflection', content='[reflection of 3 items] user: I changed teams to platform-infra. | user: I prefer Go for new services. | user: We adopted ArgoCD for deploys.', score=1.942874338859682, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-26', role='reflection', content='[reflection of 6 items] user: Reviews are required for merges. | user: I commit to main after review. | user: Project kickoff: the audit log service. Goals: trace every A | user: Stack: Postgres + Python + Kafka. | user: We use OpenTelemetry. | user: I prefer keeping configs in env vars.', score=1.9277773559139517, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "long-name": [
+        "RetrievalResult(turn_id='reflect-19', role='reflection', content='[reflection of 3 items] user: I prefer Django for web. | user: Postgres is at 10.0.0.4. | user: On-call is weekly rotation.', score=1.985748850128041, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-58', role='reflection', content='[reflection of 4 items] user: I changed teams to platform-infra. | user: I prefer Go for new services. | user: We adopted ArgoCD for deploys. | reflection: [reflection of 3 items] user: I changed teams to platform-in', score=1.9581235378227448, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-62', role='reflection', content='[reflection of 4 items] reflection: [reflection of 3 items] user: I changed teams to platform-in | reflection: [reflection of 4 items] user: I changed teams to platform-in | user: Half decade in. Title: Senior Engineer. | user: We migrated to Rust for hot paths.', score=1.94703579635657, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-56', role='reflection', content='[reflection of 3 items] user: I changed teams to platform-infra. | user: I prefer Go for new services. | user: We adopted ArgoCD for deploys.', score=1.9428743304661407, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-26', role='reflection', content='[reflection of 6 items] user: Reviews are required for merges. | user: I commit to main after review. | user: Project kickoff: the audit log service. Goals: trace every A | user: Stack: Postgres + Python + Kafka. | user: We use OpenTelemetry. | user: I prefer keeping configs in env vars.', score=1.9277773475204112, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "long-bike": [
+        "RetrievalResult(turn_id='reflect-6', role='reflection', content=\"[reflection of 5 items] user: Hi, I work on the metrics service. Today I joined the team. | user: I'm Lisa. | user: The metrics service tracks API latency. | user: I use Python. | user: I prefer spaces for indentation.\", score=2.0948033107970763, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-58', role='reflection', content='[reflection of 4 items] user: I changed teams to platform-infra. | user: I prefer Go for new services. | user: We adopted ArgoCD for deploys. | reflection: [reflection of 3 items] user: I changed teams to platform-in', score=2.0302881649560853, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-56', role='reflection', content='[reflection of 3 items] user: I changed teams to platform-infra. | user: I prefer Go for new services. | user: We adopted ArgoCD for deploys.', score=2.028141551272264, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='first-day.01', role='user', content=\"I'm Lisa.\", score=2.0156945031841076, metadata={'salience': 0.8, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='reflect-33', role='reflection', content='[reflection of 5 items] user: I always run migrations before deploys. | user: Postgres has a 30-day retention. | user: Code reviews need at least one approval. | user: I write tests first. | user: Production is on AWS.', score=1.998110314629795, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "long-drink": [
+        "RetrievalResult(turn_id='reflect-6', role='reflection', content=\"[reflection of 5 items] user: Hi, I work on the metrics service. Today I joined the team. | user: I'm Lisa. | user: The metrics service tracks API latency. | user: I use Python. | user: I prefer spaces for indentation.\", score=2.094803302409122, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-58', role='reflection', content='[reflection of 4 items] user: I changed teams to platform-infra. | user: I prefer Go for new services. | user: We adopted ArgoCD for deploys. | reflection: [reflection of 3 items] user: I changed teams to platform-in', score=2.030288156568129, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-56', role='reflection', content='[reflection of 3 items] user: I changed teams to platform-infra. | user: I prefer Go for new services. | user: We adopted ArgoCD for deploys.', score=2.0281415428843084, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='first-day.01', role='user', content=\"I'm Lisa.\", score=2.0156944957281473, metadata={'salience': 0.8, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='reflect-19', role='reflection', content='[reflection of 3 items] user: I prefer Django for web. | user: Postgres is at 10.0.0.4. | user: On-call is weekly rotation.', score=2.006945124543918, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "long-team": [
+        "RetrievalResult(turn_id='reflect-6', role='reflection', content=\"[reflection of 5 items] user: Hi, I work on the metrics service. Today I joined the team. | user: I'm Lisa. | user: The metrics service tracks API latency. | user: I use Python. | user: I prefer spaces for indentation.\", score=2.26520322161162, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-19', role='reflection', content='[reflection of 3 items] user: I prefer Django for web. | user: Postgres is at 10.0.0.4. | user: On-call is weekly rotation.', score=2.1021725958826667, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-12', role='reflection', content='[reflection of 2 items] reflection: [reflection of 5 items] user: Hi, I work on the metrics serv | user: We use Postgres for production.', score=2.099263470408403, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='year-7.00', role='user', content='I lead the platform team now.', score=2.0804003523961057, metadata={'salience': 0.7, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='reflect-33', role='reflection', content='[reflection of 5 items] user: I always run migrations before deploys. | user: Postgres has a 30-day retention. | user: Code reviews need at least one approval. | user: I write tests first. | user: Production is on AWS.', score=2.0760687584628825, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "long-lang": [
+        "RetrievalResult(turn_id='reflect-56', role='reflection', content='[reflection of 3 items] user: I changed teams to platform-infra. | user: I prefer Go for new services. | user: We adopted ArgoCD for deploys.', score=2.336456359712173, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-58', role='reflection', content='[reflection of 4 items] user: I changed teams to platform-infra. | user: I prefer Go for new services. | user: We adopted ArgoCD for deploys. | reflection: [reflection of 3 items] user: I changed teams to platform-in', score=2.227322653248127, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-6', role='reflection', content=\"[reflection of 5 items] user: Hi, I work on the metrics service. Today I joined the team. | user: I'm Lisa. | user: The metrics service tracks API latency. | user: I use Python. | user: I prefer spaces for indentation.\", score=2.1282550309552883, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-19', role='reflection', content='[reflection of 3 items] user: I prefer Django for web. | user: Postgres is at 10.0.0.4. | user: On-call is weekly rotation.', score=2.0893310381959127, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-26', role='reflection', content='[reflection of 6 items] user: Reviews are required for merges. | user: I commit to main after review. | user: Project kickoff: the audit log service. Goals: trace every A | user: Stack: Postgres + Python + Kafka. | user: We use OpenTelemetry. | user: I prefer keeping configs in env vars.', score=2.0541497837669995, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "long-data": [
+        "RetrievalResult(turn_id='first-day.05', role='user', content='The team is on Slack.', score=2.2096241182259293, metadata={'salience': 0.4, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='two-weeks.00', role='user', content='I joined the platform team; the metrics service is my main project.', score=2.2009494763565325, metadata={'salience': 0.7, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='reflect-6', role='reflection', content=\"[reflection of 5 items] user: Hi, I work on the metrics service. Today I joined the team. | user: I'm Lisa. | user: The metrics service tracks API latency. | user: I use Python. | user: I prefer spaces for indentation.\", score=2.1720285603593465, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-19', role='reflection', content='[reflection of 3 items] user: I prefer Django for web. | user: Postgres is at 10.0.0.4. | user: On-call is weekly rotation.', score=2.1709420656965475, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-12', role='reflection', content='[reflection of 2 items] reflection: [reflection of 5 items] user: Hi, I work on the metrics serv | user: We use Postgres for production.', score=2.0863739974767324, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "long-service": [
+        "RetrievalResult(turn_id='reflect-6', role='reflection', content=\"[reflection of 5 items] user: Hi, I work on the metrics service. Today I joined the team. | user: I'm Lisa. | user: The metrics service tracks API latency. | user: I use Python. | user: I prefer spaces for indentation.\", score=2.242876254200252, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-12', role='reflection', content='[reflection of 2 items] reflection: [reflection of 5 items] user: Hi, I work on the metrics serv | user: We use Postgres for production.', score=2.095533456220539, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-33', role='reflection', content='[reflection of 5 items] user: I always run migrations before deploys. | user: Postgres has a 30-day retention. | user: Code reviews need at least one approval. | user: I write tests first. | user: Production is on AWS.', score=2.095205225606168, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-19', role='reflection', content='[reflection of 3 items] user: I prefer Django for web. | user: Postgres is at 10.0.0.4. | user: On-call is weekly rotation.', score=2.0541135154111103, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-26', role='reflection', content='[reflection of 6 items] user: Reviews are required for merges. | user: I commit to main after review. | user: Project kickoff: the audit log service. Goals: trace every A | user: Stack: Postgres + Python + Kafka. | user: We use OpenTelemetry. | user: I prefer keeping configs in env vars.', score=2.0084699553861, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "long-title": [
+        "RetrievalResult(turn_id='reflect-62', role='reflection', content='[reflection of 4 items] reflection: [reflection of 3 items] user: I changed teams to platform-in | reflection: [reflection of 4 items] user: I changed teams to platform-in | user: Half decade in. Title: Senior Engineer. | user: We migrated to Rust for hot paths.', score=2.0044180243080594, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='year-10.01', role='user', content='Title: Director of Engineering.', score=2.0017764916663725, metadata={'salience': 0.7, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='reflect-19', role='reflection', content='[reflection of 3 items] user: I prefer Django for web. | user: Postgres is at 10.0.0.4. | user: On-call is weekly rotation.', score=1.9857487832960241, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-75', role='reflection', content='[reflection of 4 items] reflection: [reflection of 4 items] user: We use Azure now. | user: I le | user: We use Kafka for event streaming. | user: Ten years. Time flies. | user: Title: Director of Engineering.', score=1.9690503944495577, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-58', role='reflection', content='[reflection of 4 items] user: I changed teams to platform-infra. | user: I prefer Go for new services. | user: We adopted ArgoCD for deploys. | reflection: [reflection of 3 items] user: I changed teams to platform-in', score=1.958123470990717, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "long-team-now": [
+        "RetrievalResult(turn_id='reflect-6', role='reflection', content=\"[reflection of 5 items] user: Hi, I work on the metrics service. Today I joined the team. | user: I'm Lisa. | user: The metrics service tracks API latency. | user: I use Python. | user: I prefer spaces for indentation.\", score=2.2652031635453707, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-19', role='reflection', content='[reflection of 3 items] user: I prefer Django for web. | user: Postgres is at 10.0.0.4. | user: On-call is weekly rotation.', score=2.102172537816416, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-12', role='reflection', content='[reflection of 2 items] reflection: [reflection of 5 items] user: Hi, I work on the metrics serv | user: We use Postgres for production.', score=2.0992634123421534, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='year-7.00', role='user', content='I lead the platform team now.', score=2.080400297745504, metadata={'salience': 0.7, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='reflect-33', role='reflection', content='[reflection of 5 items] user: I always run migrations before deploys. | user: Postgres has a 30-day retention. | user: Code reviews need at least one approval. | user: I write tests first. | user: Production is on AWS.', score=2.0760687003966307, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ]
+    },
+    "item_count": 78,
+    "query_ms": 2.010572099685669
+  },
+  {
+    "name": "H2",
+    "error": "raised"
+  },
+  {
+    "name": "H3",
+    "error": "raised"
+  },
+  {
+    "name": "H4",
+    "error": "raised"
+  },
+  {
+    "name": "H5",
+    "results_by_query": {
+      "fav-name": [
+        "RetrievalResult(turn_id='two-weeks.03', role='user', content='I prefer Django for web.', score=0.7236067147405688, metadata={'salience': 0.5, 'kind': 'preference'})",
+        "RetrievalResult(turn_id='two-weeks.00', role='user', content='I joined the platform team; the metrics service is my main project.', score=0.6961305376319415, metadata={'salience': 0.7, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='reflect-10', role='reflection', content='[reflection of 4 items] user: We use Postgres for production. | user: I joined the platform team; the metrics service is my main p | user: I prefer Django for web. | user: Postgres is at 10.0.0.4.', score=0.6546210793333781, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='year-3.00', role='user', content='I changed teams to platform-infra.', score=0.6020619972078559, metadata={'salience': 0.7, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='first-day.02', role='user', content='The metrics service tracks API latency.', score=0.6020619887604027, metadata={'salience': 0.7, 'kind': 'fact'})"
+      ],
+      "long-name": [
+        "RetrievalResult(turn_id='two-weeks.03', role='user', content='I prefer Django for web.', score=0.7236067025629297, metadata={'salience': 0.5, 'kind': 'preference'})",
+        "RetrievalResult(turn_id='two-weeks.00', role='user', content='I joined the platform team; the metrics service is my main project.', score=0.6961305254543025, metadata={'salience': 0.7, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='reflect-10', role='reflection', content='[reflection of 4 items] user: We use Postgres for production. | user: I joined the platform team; the metrics service is my main p | user: I prefer Django for web. | user: Postgres is at 10.0.0.4.', score=0.654621067155739, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='year-3.00', role='user', content='I changed teams to platform-infra.', score=0.6020619850302166, metadata={'salience': 0.7, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='first-day.02', role='user', content='The metrics service tracks API latency.', score=0.6020619765827636, metadata={'salience': 0.7, 'kind': 'fact'})"
+      ],
+      "long-bike": [
+        "RetrievalResult(turn_id='year-10.02', role='user', content='I prefer Go.', score=0.7120173783503795, metadata={'salience': 0.5, 'kind': 'preference'})",
+        "RetrievalResult(turn_id='first-day.03', role='user', content='I use Python.', score=0.7120173623083417, metadata={'salience': 0.6, 'kind': 'preference'})",
+        "RetrievalResult(turn_id='first-day.01', role='user', content=\"I'm Lisa.\", score=0.7120173621592308, metadata={'salience': 0.8, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='reflect-5', role='reflection', content=\"[reflection of 5 items] user: Hi, I work on the metrics service. Today I joined the team. | user: I'm Lisa. | user: The metrics service tracks API latency. | user: I use Python. | user: I prefer spaces for indentation.\", score=0.6914086992412058, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='year-10.05', role='user', content='I prefer pair programming.', score=0.6836124238456736, metadata={'salience': 0.5, 'kind': 'preference'})"
+      ],
+      "long-drink": [
+        "RetrievalResult(turn_id='two-weeks.03', role='user', content='I prefer Django for web.', score=0.7786733329885624, metadata={'salience': 0.5, 'kind': 'preference'})",
+        "RetrievalResult(turn_id='year-10.02', role='user', content='I prefer Go.', score=0.7154282090519484, metadata={'salience': 0.5, 'kind': 'preference'})",
+        "RetrievalResult(turn_id='first-day.03', role='user', content='I use Python.', score=0.7154281930099109, metadata={'salience': 0.6, 'kind': 'preference'})",
+        "RetrievalResult(turn_id='first-day.01', role='user', content=\"I'm Lisa.\", score=0.7154281928608001, metadata={'salience': 0.8, 'kind': 'identity'})",
+        "RetrievalResult(turn_id='reflect-5', role='reflection', content=\"[reflection of 5 items] user: Hi, I work on the metrics service. Today I joined the team. | user: I'm Lisa. | user: The metrics service tracks API latency. | user: I use Python. | user: I prefer spaces for indentation.\", score=0.6945575299868257, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "long-team": [
+        "RetrievalResult(turn_id='first-day.00', role='user', content='Hi, I work on the metrics service. Today I joined the team.', score=1.011687622797526, metadata={'salience': 0.6, 'kind': 'intro'})",
+        "RetrievalResult(turn_id='year-7.00', role='user', content='I lead the platform team now.', score=0.8790343951152162, metadata={'salience': 0.7, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='reflect-5', role='reflection', content=\"[reflection of 5 items] user: Hi, I work on the metrics service. Today I joined the team. | user: I'm Lisa. | user: The metrics service tracks API latency. | user: I use Python. | user: I prefer spaces for indentation.\", score=0.8652745633828677, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='two-weeks.00', role='user', content='I joined the platform team; the metrics service is my main project.', score=0.7963184416331973, metadata={'salience': 0.7, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='month-2.09', role='user', content='Production is on AWS.', score=0.7863941885270431, metadata={'salience': 0.5, 'kind': 'fact'})"
+      ],
+      "long-lang": [
+        "RetrievalResult(turn_id='year-7.02', role='user', content='I prefer Go for new services.', score=1.215581650036541, metadata={'salience': 0.5, 'kind': 'preference'})",
+        "RetrievalResult(turn_id='year-3.01', role='user', content='I prefer Go for new services.', score=1.215581645448305, metadata={'salience': 0.6, 'kind': 'preference'})",
+        "RetrievalResult(turn_id='two-weeks.03', role='user', content='I prefer Django for web.', score=0.9936563831616492, metadata={'salience': 0.5, 'kind': 'preference'})",
+        "RetrievalResult(turn_id='reflect-49', role='reflection', content='[reflection of 2 items] user: I prefer Go for new services. | user: We use Kafka for event streaming.', score=0.9425369040216935, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-38', role='reflection', content='[reflection of 3 items] user: I changed teams to platform-infra. | user: I prefer Go for new services. | user: We adopted ArgoCD for deploys.', score=0.933598926393248, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "long-data": [
+        "RetrievalResult(turn_id='two-weeks.00', role='user', content='I joined the platform team; the metrics service is my main project.', score=1.0008436079981544, metadata={'salience': 0.7, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='first-day.00', role='user', content='Hi, I work on the metrics service. Today I joined the team.', score=0.9885829165176803, metadata={'salience': 0.6, 'kind': 'intro'})",
+        "RetrievalResult(turn_id='month-2.09', role='user', content='Production is on AWS.', score=0.9584307966216081, metadata={'salience': 0.5, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='month-6.04', role='user', content='Otto joined the team.', score=0.9458581120418165, metadata={'salience': 0.6, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='two-weeks.07', role='user', content='On-call is weekly rotation.', score=0.9100329506622098, metadata={'salience': 0.5, 'kind': 'fact'})"
+      ],
+      "long-service": [
+        "RetrievalResult(turn_id='first-day.00', role='user', content='Hi, I work on the metrics service. Today I joined the team.', score=0.9473342324295149, metadata={'salience': 0.6, 'kind': 'intro'})",
+        "RetrievalResult(turn_id='month-2.07', role='user', content='I write tests first.', score=0.8861668531652992, metadata={'salience': 0.5, 'kind': 'preference'})",
+        "RetrievalResult(turn_id='reflect-5', role='reflection', content=\"[reflection of 5 items] user: Hi, I work on the metrics service. Today I joined the team. | user: I'm Lisa. | user: The metrics service tracks API latency. | user: I use Python. | user: I prefer spaces for indentation.\", score=0.8459409796564035, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='two-weeks.03', role='user', content='I prefer Django for web.', score=0.7176788698196587, metadata={'salience': 0.5, 'kind': 'preference'})",
+        "RetrievalResult(turn_id='first-day.04', role='user', content='I prefer spaces for indentation.', score=0.7176788691617065, metadata={'salience': 0.5, 'kind': 'preference'})"
+      ],
+      "long-title": [
+        "RetrievalResult(turn_id='year-10.01', role='user', content='Title: Director of Engineering.', score=0.80472337812883, metadata={'salience': 0.7, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='year-5.00', role='user', content='Half decade in. Title: Senior Engineer.', score=0.7488055593225873, metadata={'salience': 0.7, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='two-weeks.03', role='user', content='I prefer Django for web.', score=0.7236066126166709, metadata={'salience': 0.5, 'kind': 'preference'})",
+        "RetrievalResult(turn_id='two-weeks.00', role='user', content='I joined the platform team; the metrics service is my main project.', score=0.6553890667819077, metadata={'salience': 0.7, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='reflect-10', role='reflection', content='[reflection of 4 items] user: We use Postgres for production. | user: I joined the platform team; the metrics service is my main p | user: I prefer Django for web. | user: Postgres is at 10.0.0.4.', score=0.6354153118087652, metadata={'salience': 0.6, 'kind': 'reflection'})"
+      ],
+      "long-team-now": [
+        "RetrievalResult(turn_id='first-day.00', role='user', content='Hi, I work on the metrics service. Today I joined the team.', score=1.0116875597367814, metadata={'salience': 0.6, 'kind': 'intro'})",
+        "RetrievalResult(turn_id='year-7.00', role='user', content='I lead the platform team now.', score=0.87903433205447, metadata={'salience': 0.7, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='reflect-5', role='reflection', content=\"[reflection of 5 items] user: Hi, I work on the metrics service. Today I joined the team. | user: I'm Lisa. | user: The metrics service tracks API latency. | user: I use Python. | user: I prefer spaces for indentation.\", score=0.8652745003221232, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='two-weeks.00', role='user', content='I joined the platform team; the metrics service is my main project.', score=0.7963183785724527, metadata={'salience': 0.7, 'kind': 'fact'})",
+        "RetrievalResult(turn_id='month-2.09', role='user', content='Production is on AWS.', score=0.786394125466298, metadata={'salience': 0.5, 'kind': 'fact'})"
+      ]
+    },
+    "item_count": 90,
+    "query_ms": 3.1016249030828478
+  },
+  {
+    "name": "H6",
+    "error": "raised"
+  }
+]

@@ -1,73 +1,157 @@
 # Memory architecture experiment
 
-The experiment that produced the evidence for ADR 0006's curation-only, salience-tiered memory model (revision of 2026-08-14). Report, harness, and raw results are all in this directory; `python3 runner.py` (or any of the other runners) reproduces the numbers offline.
+One question, answered with numbers: **what memory architecture should a years-long agent use?** This document is self-contained — it explains the method, every architecture tested, every result, and what was adopted. The harness that produced the numbers is in `harness/` and reproduces everything offline.
 
-## Question
+## The question
 
-Which memory architecture should a long-running agent use, when the agent is expected to live for years and accumulate memory continuously? The constraint from the owner: the structure must be intuitive and self-working — the structure itself does the work, not rules bolted on — and strong on the numbers.
+gagent's agent lives for years and talks to its owner continuously. It needs long-term memory that:
 
-## Method
+- remembers what matters and recalls it correctly,
+- keeps the newest version of a fact, not a pile of stale copies,
+- does not drown in years of noise,
+- stays fast and small.
 
-- 32 candidate architectures implemented as small Python classes behind one `Memory` interface (`harness/architectures.py`). Each candidate encodes one structural idea.
-- Four workloads (`harness/workload_spec.py`, `harness/diverse_workload.py`, plus generated scale workloads):
-  - small — 5 sessions + 1000 noise turns
-  - long-horizon — 9 sessions spanning a simulated 10-year agent life + 5000 noise
-  - diverse — 35 sessions across 8 cognitive categories (person, event, routine, opinion, procedure, spatial, emotion, relationship) + 5000 noise
-  - large-scale — 10,000 real items + 50,000 noise
-- Metrics per workload: recall@5, precision@5, time-aware top-1, noise rejection, anti-pollution, dedup ratio, content accuracy, recall per KB (density), query latency, storage size, supersession accuracy, stale-recall rate, lines of code.
-- Embeddings are simulated with deterministic bag-of-words hashing so the experiment runs offline; the structure comparison is unaffected.
+The owner's design constraint: the structure must be **simple and self-working** — the structure itself does the work, not rules accumulated on top of it.
 
-## Architecture map
+## The method
 
-| Tier | IDs | Structural idea |
+Thirty-two candidate architectures were implemented as small Python classes behind one interface (`harness/architectures.py`, each ~30–100 lines). Every candidate encodes exactly one structural idea, so the numbers isolate the idea's value.
+
+**Workloads** (four, ordered by difficulty):
+
+| Workload | Content | Purpose |
 |---|---|---|
-| Baseline | A0–A2 | no memory; uniform auto-capture; verbatim log |
-| Retrieval | B1–B3 | keyword-only; semantic-only; hybrid RAG (the pre-experiment baseline) |
-| Time | C3 | flat Ebbinghaus decay |
-| Curation | D2 | store only what the model wrote back |
-| Cognitive | E1–E4 | working-memory tier + LTM; + reconsolidation; + salience; + procedural |
-| Storage | F1–F5 | salience-scaled Ebbinghaus; supersession; compression; tiered retention; combined |
-| Research | G1–G9 | Generative Agents scoring (Park et al. 2023); MemoryBank Ebbinghaus; MemGPT hierarchy; reflection; cognitive index; decade-stable hybrid; recursive retrieval (2-hop, 3-hop); spreading activation (Collins & Loftus) |
-| Hybrids | H1–H6 | explicit combinations of the proven mechanisms |
-| Structural paradigms | M1–M6 | Hopfield associative memory; Kanerva sparse distributed memory; HNSW graph; LSH tables; working-memory + LRU; log-structured merge |
+| small | 5 sessions + 1,000 noise turns | smoke test |
+| long-horizon | 9 sessions across a simulated 10-year life + 5,000 noise | does memory survive a decade |
+| diverse | 35 sessions across 8 memory categories + 5,000 noise | does it handle the variety of human memory |
+| large-scale | 10,000 real items + 50,000 noise | does accuracy and speed hold at scale |
 
-## Results
+**Metrics**: recall@5 (did the right memory appear in the top 5), precision@5 (how much of the top 5 is right), content accuracy, anti-pollution (does noise crowd out curated memory after 1,000 junk turns), supersession accuracy (does the newest version of a fact win), stale recall (how often an outdated fact is returned), storage size, recall per KB (memory density), query latency.
+
+**A note on realism**: embeddings are simulated with deterministic word-hashing so the experiment runs offline. That makes absolute numbers approximate but keeps the architecture-to-architecture comparison faithful — the same similarity engine serves every candidate.
+
+## The architectures, in plain terms
+
+**Baselines (what not to do)**
+
+- **A0 No memory** — nothing is stored; every turn starts blank.
+- **A1 Auto-capture uniform** — every turn stored at the same low weight; the newest few are returned. This was gagent's pre-experiment behavior (ADR 0012).
+- **A2 Full-text log** — everything verbatim; last-N return.
+
+**Classic retrieval**
+
+- **B1 Keyword-only** — TF-IDF cosine over words. No semantics.
+- **B2 Semantic-only** — embedding cosine only.
+- **B3 Hybrid RAG** — keyword + semantic blended with a relevance/recency/importance/access score. The pre-experiment gagent model.
+- **C3 Ebbinghaus decay** — B3 plus a flat time-decay on importance.
+
+**Curation and cognition**
+
+- **D2 Curation-only** — store only what the model explicitly writes back. Nothing else enters.
+- **E1 Two-tier** — a working memory (recent 7 items) plus a long-term store.
+- **E2 + reconsolidation** — retrieving a memory strengthens it (like recall reinforcing a human memory).
+- **E3 + salience tier** — every memory carries a high/mid/low tier.
+- **E4 + procedural** — a separate table for "how-to" patterns (instructions and corrections).
+
+**Storage discipline (the F series)**
+
+- **F1 Salience-scaled decay** — curation + Ebbinghaus decay whose half-life grows with salience: important things fade slowly, trivia fades fast.
+- **F2 Supersession** — a new memory that closely matches an old one replaces it; the latest version of a fact is the one that lives.
+- **F3 Compression** — every N items collapse into one summary item.
+- **F4 Tiered retention** — high-salience kept forever, mid kept ~100 turns, low dropped promptly.
+- **F5 Combined** — supersession + tiered retention together.
+
+**Research-inspired (the G series)** — each maps to a published system or theory:
+
+- **G1 Generative Agents** (Park et al. 2023) — score = importance + recency + relevance, with an LLM assigning importance at write time.
+- **G2 MemoryBank** (Zhong et al. 2023) — Ebbinghaus forgetting where each retrieval rehearses and re-strengthens the memory.
+- **G3 MemGPT-style** — a summary tier plus raw pages; retrieval hits summaries first.
+- **G4 Reflection** (Park et al. 2023) — every 8 inserts, the system writes a higher-level summary of the recent items; summaries are retrievable like any memory.
+- **G5 Cognitive index** (HippoRAG-inspired) — a small high-salience index plus a long-tail store.
+- **G6 Decade-stable** — G1's scoring + salience-scaled decay + tiered retention + supersession, combined.
+- **G7/G8 Recursive retrieval** — after the first retrieval, extract the top results' concepts and retrieve again (2 or 3 hops).
+- **G9 Spreading activation** (Collins & Loftus 1975) — items form a co-occurrence graph; retrieval activates initial hits and lets activation propagate along edges.
+
+**Explicit hybrids (the H series)** — direct combinations of proven mechanisms (G6+G4, G6+G7, G4+G7, F5+G4, an episodic/semantic split, and a triple hybrid of all three).
+
+**Pure structures (the M series)** — architectures whose structure alone is the mechanism, with no scoring formula at all:
+
+- **M1 Hopfield associative memory** (Hopfield 1982) — retrieval is energy minimization over stored patterns.
+- **M2 Kanerva sparse distributed memory** (Kanerva 1988) — items are sparse binary vectors into a fixed matrix; similar contents activate overlapping addresses.
+- **M3 HNSW** (Malkov & Yashunin 2018) — a hierarchical small-world graph; retrieval is a greedy walk.
+- **M4 LSH** (Indyk & Motwani 1998) — many hash tables; items colliding in many tables are similar.
+- **M5 Working memory + LRU** — two lists; the recent tier and a least-recently-used long-term tier order themselves.
+- **M6 LSM** — append-only levels with periodic compaction keeping the strongest items (the storage-engine pattern).
+
+## The results
 
 ### Small workload (1k items)
 
-Winner on density and recall: F5 (combined supersession + tiered retention). R@5 0.80, 91.7 recall/KB, 138 items. Auto-capture baselines (A1, A2) score 0.00 recall — the noise drowns everything.
+| arch | R@5 | Anti-pollution | Items | Recall/KB |
+|---|---|---|---|---|
+| A1 auto-capture | 0.00 | 0.0 | 1,052 | 0.0 |
+| B3 hybrid RAG | 0.44 | 0.0 | 1,052 | 0.01 |
+| D2 curation-only | 0.69 | 1.0 | 22 | 0.49 |
+| **F5 combined** | **0.80** | 1.0 | 138 | **0.92** |
 
-### Long-horizon workload (10-year life)
+Auto-capture fails completely: with 1,000 noise turns in the store, the right memory is never found.
 
-Winner: G6 (decade-stable: Generative Agents scoring + salience-scaled Ebbinghaus + tiered retention + supersession). R@5 0.90, 292.6 recall/KB, 63 items. F5 regresses here (0.70) because uniform half-life cannot discriminate a 10-year-old preference from yesterday's chatter.
+### Long-horizon workload (a 10-year agent life)
 
-### Diverse workload (8 cognitive categories)
+| arch | R@5 | Items | Recall/KB |
+|---|---|---|---|
+| B3 hybrid | 0.80 | 5,090 | 3.2 |
+| D2 curation | 0.90 | 90 | 204.8 |
+| F5 combined | 0.70 | 63 | 227.6 |
+| G1 Generative Agents | 0.90 | 90 | 204.8 |
+| **G6 decade-stable** | **0.90** | **63** | **292.6** |
 
-Winner on recall and precision: G4 (reflection — periodic summaries). R@5 0.87, P@5 0.39, accuracy 1.00. Winner on density: F5 (91.7 recall/KB). Recursive retrieval (G7–G9) matches single-hop (0.79) — multi-hop needs a connected corpus, and independent sessions are not one.
+The 10-year workload separates uniform decay from salience-scaled decay: F5 drops from 0.80 to 0.70 because it cannot tell a 10-year-old preference from yesterday's chatter; G6 holds at 0.90 because its half-life grows with salience.
+
+### Diverse workload (8 memory categories)
+
+| arch | R@5 | P@5 | Accuracy | Recall/KB |
+|---|---|---|---|---|
+| F5 combined | 0.62 | 0.15 | 0.99 | 91.7 |
+| **G4 reflection** | **0.87** | **0.39** | **1.00** | 31.7 |
+| G7–G9 recursive | 0.79 | 0.24 | 0.99 | 32.6 |
+
+Reflection wins on raw recall and precision — combining memories into summaries finds more of the right things. Recursive retrieval matches single-hop: multi-hop needs a connected corpus, and independent sessions give it no path to walk.
 
 ### Large-scale workload (60k items)
 
-Winners on density with stable recall: F5 (159.5 recall/KB, 79 items) and G6 (139.6, 79 items). The pure-structure paradigms (M-series) hold up: LSM (M6) at 63.0 recall/KB with 150 items, working-memory+LRU (M5) at 53.3 with 207 items — both with no scoring formula at all. The triple hybrid H6 collapses (0.00) — three mechanisms interacting destructively, confirming that piling mechanisms on is the opposite of the goal.
+| arch | R@5 | Items | Query ms | Recall/KB |
+|---|---|---|---|---|
+| B3 hybrid | 0.30 | 5,021 | 103,794 | 1.2 |
+| D2 curation | 0.60 | 36 | 760 | 341.3 |
+| **F5 combined** | 0.62 | **79** | 1.8 | **159.5** |
+| G6 decade-stable | 0.54 | 79 | 1.6 | 139.6 |
+| M5 WM+LRU | 0.54 | 207 | 0.7 | 53.3 |
+| M6 LSM | 0.46 | 150 | 0.4 | 63.0 |
+| H6 triple hybrid | 0.00 | 436 | 0.0 | 0.0 |
 
-## Conclusions
+At scale, only the disciplined stores stay fast and small. The pure structures (M5, M6) prove that a structure with no scoring formula at all can work — but F5's two rules beat them on density. The triple hybrid H6's collapse to 0.00 is the experiment's clearest warning: mechanisms piled together interact destructively.
 
-1. **Auto-capture is the root failure.** Every auto-capture architecture loses on every workload. This measurement is what retired ADR 0012.
-2. **Curation-only is the floor.** Storing only model-written content is the precondition for every other win.
-3. **Salience tier + salience-scaled decay + tiered retention + supersession** is the minimal set that holds recall across all four workloads while keeping the store two orders of magnitude smaller than the naive baselines.
-4. **More mechanisms do not compose for free.** The single-combination hybrids (H1–H5) are middling; the triple hybrid (H6) breaks. The adopted model is the smallest mechanism set with the full evidence base.
-5. **Recursive retrieval is real but conditional.** It helps when the corpus is connected (a codebase, a long conversation); the experiment's fragmented sessions gave it nothing to traverse.
+## What the numbers establish
 
-## Adopted
+1. **Auto-capture is the root failure.** Every auto-capture architecture loses on every workload. This is the measurement that retired ADR 0012.
+2. **Curation-only is the floor.** Storing only what the model writes is the precondition for every other win.
+3. **The minimal winning set is four rules**: curation-only storage, a salience tier on every memory, salience-scaled decay with tiered retention, and supersession on insert. Together they hold recall across all four workloads with a store two orders of magnitude smaller than the naive baselines.
+4. **More mechanisms do not compose for free.** Single-combination hybrids are middling; the triple hybrid breaks. Simple is not a preference here — it is what the data supports.
+5. **Recursive retrieval is real but conditional.** It pays off in connected corpora (a codebase, one long conversation), not in fragmented sessions.
 
-ADR 0006 (2026-08-14 revision) records the model this evidence selected: curation-only storage, platform-derived salience, salience-scaled Ebbinghaus recency, tiered retention, supersession on insert. The implementation landed in #322.
+## What was adopted
 
-## Harness
+ADR 0006 (revised 2026-08-14) records the selected model: curation-only storage, platform-derived salience, salience-scaled Ebbinghaus recency, tiered retention, supersession on insert. The implementation is #322; the behavioral verification and its two follow-up fixes (supersession threshold calibration, recall-event observability) are QA pass #7 and #326.
 
-- `harness/interface.py` — the `Memory` ABC every candidate implements
-- `harness/architectures.py` — the 32 implementations
-- `harness/workload_spec.py`, `harness/diverse_workload.py` — the workloads
-- `harness/metrics.py` — the metric functions
-- `harness/runner.py`, `scale_runner.py`, `long_horizon_runner.py`, `diverse_runner.py`, `hybrid_runner.py`, `large_runner.py` — the six runners
-- `results/` — every table and raw JSON from every round
+## Reproducing
 
-Reproduce: `cd harness && python3 ../harness/runner.py` (or any other runner) from this directory's parent; output lands in `results/`.
+```
+cd docs/experiments/memory-architecture
+python3 harness/runner.py               # small workload
+python3 harness/long_horizon_runner.py  # 10-year workload
+python3 harness/diverse_runner.py       # 8-category workload
+python3 harness/large_runner.py         # 60k-item workload
+```
+
+Each runner rewrites its table under `results/`. The full result tables from the recorded runs are in `results/` (direct, scale, long-horizon, diverse, hybrid, large-scale), with raw JSON beside each.

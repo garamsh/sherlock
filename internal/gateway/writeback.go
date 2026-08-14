@@ -10,9 +10,20 @@ import (
 	"github.com/garamsh/gagent/internal/memory"
 )
 
-// DefaultAddImportance is the importance score assigned to writeback
-// additions, which carry no score of their own.
-const DefaultAddImportance = 0.5
+// Salience is platform-derived from the writeback op kind, never
+// model-written (ADR 0006): a correction ranks highest, an added semantic
+// fact high, an added episodic observation mid.
+const (
+	// SalienceUpdate floors the salience of a memory an update op
+	// corrects: the revision keeps the old memory's salience, raised to
+	// at least this value.
+	SalienceUpdate = 0.8
+	// SalienceAddSemantic is the salience of an added semantic fact.
+	SalienceAddSemantic = 0.7
+	// SalienceAddEpisodic is the salience of an added episodic
+	// observation.
+	SalienceAddEpisodic = 0.5
+)
 
 // coherenceNoteBudget bounds how many similar memories one writeback
 // surfaces for judgment (ADR 0006 step 5); small like the recall budget,
@@ -83,10 +94,14 @@ func (w Writeback) applyOne(ctx context.Context, op agent.WritebackOp) (int64, e
 		if typ == "" {
 			typ = memory.TypeEpisodic
 		}
+		salience := SalienceAddEpisodic
+		if typ == memory.TypeSemantic {
+			salience = SalienceAddSemantic
+		}
 		res, err := w.Svc.Store(ctx, memory.StoreInput{
 			Content:         op.Content,
 			Type:            typ,
-			ImportanceScore: DefaultAddImportance,
+			ImportanceScore: salience,
 			Source:          "agent",
 		})
 		return res.ID, err
@@ -95,7 +110,8 @@ func (w Writeback) applyOne(ctx context.Context, op agent.WritebackOp) (int64, e
 		if err != nil {
 			return 0, err
 		}
-		res, err := w.Svc.Update(ctx, memory.UpdateInput{ID: id, Content: op.Content})
+		floor := SalienceUpdate
+		res, err := w.Svc.Update(ctx, memory.UpdateInput{ID: id, Content: op.Content, ImportanceScore: &floor})
 		return res.ID, err
 	case agent.OpDelete:
 		id, err := parseMemoryID(op.ID)

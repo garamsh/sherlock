@@ -6,23 +6,30 @@ import (
 )
 
 // All ranking weights, budgets, and thresholds live here — the one place
-// for tunables per docs/architecture/memory.md.
+// for tunables per docs/architecture/memory.md and ADR 0006.
 const (
 	// WeightVector and WeightFTS blend embedding cosine with keyword
 	// match into one relevance score.
 	WeightVector = 0.7
 	WeightFTS    = 0.3
 
-	// Ranking weights for relevance, recency, importance, and access.
-	WeightRelevance  = 1.0
-	WeightRecency    = 0.5
-	WeightImportance = 1.0
-	WeightAccess     = 0.25
-
-	// RecencyHalfLife is the age at which the recency term halves.
+	// RecencyHalfLife is the base half-life of the recency term; the
+	// effective half-life scales with salience (ADR 0006).
 	RecencyHalfLife = 24 * time.Hour
-	// AccessScale is the access_count at which the access term saturates.
-	AccessScale = 10.0
+
+	// SupersessionSimilarity is the embedding cosine at or above which a
+	// newly stored memory supersedes its most similar active predecessor
+	// (ADR 0006).
+	SupersessionSimilarity = 0.7
+
+	// Retention tiers (ADR 0006): salience at or above
+	// RetentionKeepSalience keeps a memory indefinitely; salience below
+	// RetentionDropSalience drops the memory to the archive at the next
+	// retention pass; between the two the memory lives for
+	// RetentionWindow from its timestamp.
+	RetentionKeepSalience = 0.6
+	RetentionDropSalience = 0.3
+	RetentionWindow       = 7 * 24 * time.Hour
 
 	// DefaultForgetThreshold is the lifecycle score below which Forget
 	// archives a memory when the caller passes no threshold.
@@ -39,17 +46,16 @@ func relevance(cosine, ftsNorm float64) float64 {
 	return WeightVector*cosine + WeightFTS*ftsNorm
 }
 
-// score is the single ranking function: relevance, recency, importance,
-// and access, weighted. Lifecycle decisions (eviction, forget) call it
-// with rel 0 — the same function, without a query.
+// score is the single ranking function (ADR 0006): salience + relevance +
+// recency, where recency is an Ebbinghaus decay whose half-life scales
+// with salience — high-salience memories fade slowly, low-salience fast.
+// Lifecycle decisions (eviction, forget) call it with rel 0 — the same
+// function, without a query.
 func score(m Memory, rel float64, now time.Time) float64 {
 	age := max(now.Sub(m.Timestamp), 0)
-	recency := math.Exp(-math.Ln2 * age.Hours() / RecencyHalfLife.Hours())
-	access := min(math.Log1p(float64(m.AccessCount))/math.Log1p(AccessScale), 1)
-	return WeightRelevance*rel +
-		WeightRecency*recency +
-		WeightImportance*m.ImportanceScore +
-		WeightAccess*access
+	halfLife := RecencyHalfLife.Hours() * (1 + m.ImportanceScore)
+	recency := math.Exp(-math.Ln2 * age.Hours() / halfLife)
+	return m.ImportanceScore + rel + recency
 }
 
 // cosine returns the cosine similarity of two vectors, 0 when either has

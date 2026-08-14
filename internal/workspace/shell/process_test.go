@@ -241,7 +241,7 @@ func TestProcessExecutor_RequestEnvAppliesOnTop(t *testing.T) {
 // honours the NoNetwork flag on the Request: tools that want a fresh,
 // empty network namespace for an untrusted child set it, and the
 // resulting namespace holds only loopback (ADR 0010). The Tool adapter
-// is gone (ADR 0018) but the executor's contract is what future tools
+// is gone (ADR 0017) but the executor's contract is what future tools
 // and the agent's own internal exec paths depend on.
 func TestFakeExecutor_NoNetworkPassesThrough(t *testing.T) {
 	exec := &fakeExecutor{}

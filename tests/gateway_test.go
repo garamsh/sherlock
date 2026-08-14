@@ -25,8 +25,6 @@ import (
 
 	"github.com/garamsh/gagent/internal/agent"
 	"github.com/garamsh/gagent/internal/gateway"
-	"github.com/garamsh/gagent/internal/memory"
-	"github.com/garamsh/gagent/internal/memory/sqlite"
 	"github.com/garamsh/gagent/internal/message"
 	"github.com/garamsh/gagent/internal/tool"
 )
@@ -159,6 +157,14 @@ func TestGateway_EndToEnd(t *testing.T) {
 	_, err := os.Stat(filepath.Join(root, "memory.db"))
 	require.NoError(t, err)
 
+	// Curation-only storage (ADR 0006): nothing is captured at accept
+	// time — the raw inbound messages never enter memory, active or
+	// archived; only the writeback add does.
+	assert.NotContains(t, allMemoryContents(t, root), "first",
+		"the first inbound message is never auto-stored")
+	assert.NotContains(t, allMemoryContents(t, root), "second",
+		"the second inbound message is never auto-stored")
+
 	// The SSE subscriber observed the loop events of both turns, in
 	// order: turn 1 fully finishes before turn 2 starts.
 	got := collectEvents(t, events, 10)
@@ -172,7 +178,7 @@ func TestGateway_EndToEnd(t *testing.T) {
 	}
 	require.Len(t, startedTasks, 2)
 	assert.Contains(t, startedTasks[0], "] unknown: first",
-		"the turn input renders the message with its ID and sender (ADR 0016)")
+		"the turn input renders the message with its ID and sender (ADR 0015)")
 	assert.Contains(t, startedTasks[1], "] unknown: second")
 	assert.Equal(t, []string{
 		"turn_started", "writeback", "tool_call", "writeback", "turn_finished",
@@ -185,32 +191,9 @@ func TestGateway_EndToEnd(t *testing.T) {
 	resp.Body.Close()
 }
 
-// capturedTurns returns the active user-turn captures in the agent's
-// memory store.
-func capturedTurns(t *testing.T, root string) []memory.Memory {
-	t.Helper()
-	store, err := sqlite.Open(filepath.Join(root, "memory.db"))
-	require.NoError(t, err)
-	defer func() {
-		assert.NoError(t, store.Close())
-	}()
-	active, err := store.Active(context.Background())
-	require.NoError(t, err)
-	var turns []memory.Memory
-	for _, m := range active {
-		if m.Source == gateway.SourceUserTurn {
-			turns = append(turns, m)
-		}
-	}
-	return turns
-}
-
-// capturedTurnContents returns the content of every durable user-turn
-// capture in the agent's memory store, active or archived. Shutdown
-// consolidation (ADR 0011) may archive captures into a compressed parent,
-// but nothing is ever hard-deleted — a restart must neither lose nor
-// duplicate them.
-func capturedTurnContents(t *testing.T, root string) []string {
+// allMemoryContents returns the content of every memory in the agent's
+// store, active or archived — the platform never hard-deletes.
+func allMemoryContents(t *testing.T, root string) []string {
 	t.Helper()
 	db, err := sql.Open("sqlite", filepath.Join(root, "memory.db"))
 	require.NoError(t, err)
@@ -218,9 +201,8 @@ func capturedTurnContents(t *testing.T, root string) []string {
 		assert.NoError(t, db.Close())
 	}()
 	rows, err := db.Query(
-		`SELECT content FROM memories_active WHERE source = ?
-		 UNION ALL SELECT content FROM memories_archive WHERE source = ?`,
-		gateway.SourceUserTurn, gateway.SourceUserTurn)
+		`SELECT content FROM memories_active
+		 UNION ALL SELECT content FROM memories_archive`)
 	require.NoError(t, err)
 	defer func() {
 		assert.NoError(t, rows.Close())
@@ -233,81 +215,6 @@ func capturedTurnContents(t *testing.T, root string) []string {
 	}
 	require.NoError(t, rows.Err())
 	return contents
-}
-
-// TestGateway_InboundMessageCapturedBeforeRunCompletes pins the ADR 0012
-// accept-time capture: the inbound message lands in memory.db as an
-// episodic user-turn memory with low importance while its run is still
-// blocked in the model.
-func TestGateway_InboundMessageCapturedBeforeRunCompletes(t *testing.T) {
-	root := t.TempDir()
-	release := make(chan struct{})
-	gated := &gatedModel{inner: replyScript("reply"), release: release, started: make(chan struct{})}
-
-	q := newGatewayQueue(t, root, func(string) agent.Model { return gated })
-	t.Cleanup(func() {
-		close(release)
-		q.Close()
-	})
-	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
-	srv := httptest.NewServer(gateway.NewHandler(q, logger))
-	t.Cleanup(srv.Close)
-
-	resp := postJSON(t, srv.URL+"/agents/env-1/messages", `{"content":"the wifi password is hunter2"}`)
-	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
-	resp.Body.Close()
-	select {
-	case <-gated.started:
-	case <-time.After(5 * time.Second):
-		t.Fatal("run did not start")
-	}
-
-	// The run is still blocked, yet the capture is already durable.
-	turns := capturedTurns(t, root)
-	require.Len(t, turns, 1)
-	assert.Equal(t, "the wifi password is hunter2", turns[0].Content,
-		"the message is stored verbatim")
-	assert.Equal(t, memory.TypeEpisodic, turns[0].Type)
-	assert.Less(t, turns[0].ImportanceScore, gateway.DefaultAddImportance,
-		"raw turns rank below curated writeback facts")
-}
-
-// TestGateway_RestartBetweenEnqueueAndRunKeepsCapture pins the ADR 0012
-// crash-safety guarantee: closing the agent between enqueue and run
-// neither loses nor duplicates the capture. The queued message itself is
-// gone after the restart (the queue is in-memory, ADR 0007
-// fire-and-forget ingress), but its capture is already durable.
-func TestGateway_RestartBetweenEnqueueAndRunKeepsCapture(t *testing.T) {
-	root := t.TempDir()
-	release := make(chan struct{})
-	gated := &gatedModel{inner: replyScript("reply-1"), release: release, started: make(chan struct{})}
-
-	q := newGatewayQueue(t, root, func(string) agent.Model { return gated })
-	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
-	srv := httptest.NewServer(gateway.NewHandler(q, logger))
-
-	resp := postJSON(t, srv.URL+"/agents/env-1/messages", `{"content":"first"}`)
-	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
-	resp.Body.Close()
-	select {
-	case <-gated.started:
-	case <-time.After(5 * time.Second):
-		t.Fatal("first run did not start")
-	}
-	// The second message is accepted and queued behind the blocked run.
-	resp = postJSON(t, srv.URL+"/agents/env-1/messages", `{"content":"second"}`)
-	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
-	resp.Body.Close()
-
-	// Simulated restart: the agent closes mid-run, before the queued
-	// message's run starts.
-	close(release)
-	srv.Close()
-	require.NoError(t, q.Close())
-
-	contents := capturedTurnContents(t, root)
-	assert.ElementsMatch(t, []string{"first", "second"}, contents,
-		"each accepted message is captured exactly once, none lost, none duplicated")
 }
 
 func postJSON(t *testing.T, url, body string) *http.Response {

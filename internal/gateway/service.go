@@ -35,7 +35,7 @@ type RuntimeFactory interface {
 }
 
 // Queue is the gateway's core: it serializes the one agent's runs so the
-// agent runs one turn at a time (ADR 0007, ADR 0018 — one agent per
+// agent runs one turn at a time (ADR 0007, ADR 0017 — one agent per
 // process). Queue is safe for concurrent use; Close shuts the runner and
 // the runtime down.
 type Queue struct {
@@ -92,14 +92,10 @@ func (q *Queue) AgentID() string { return q.agentID }
 // returns the assigned ID once the message is queued; there is no
 // synchronous agent response. A full queue blocks the caller (honoring
 // ctx) until a run drains a slot. The sender is recorded on the envelope
-// so the agent can address replies per message (ADR 0016); an empty
-// sender means the channel provided none.
-//
-// The message is captured as an episodic user-turn memory (ADR 0012)
-// before it is queued: the capture commits to the memory store at accept
-// time, so a failed run or a restart before the run starts never loses
-// it, and each accepted message is captured exactly once. A capture
-// failure rejects the message.
+// so the agent can address replies per message (ADR 0015); an empty
+// sender means the channel provided none. Nothing is written to memory
+// at accept time: the writeback block is the single write path
+// (ADR 0006, ADR 0011).
 func (q *Queue) Enqueue(ctx context.Context, sender, content string) (string, error) {
 	select {
 	case <-q.closed:
@@ -108,9 +104,6 @@ func (q *Queue) Enqueue(ctx context.Context, sender, content string) (string, er
 	}
 	id, err := newID("msg")
 	if err != nil {
-		return "", err
-	}
-	if err := q.runtime.Capture(ctx, content); err != nil {
 		return "", err
 	}
 	msg := Inbound{ID: id, Sender: sender, Content: content, QueuedAt: time.Now()}

@@ -25,7 +25,7 @@ type fakeFactory struct {
 
 func (f *fakeFactory) New(_ context.Context, agentID string, events agent.EventSink) (*gateway.Runtime, error) {
 	if f.newFn == nil {
-		return &gateway.Runtime{Session: &fakeSession{}, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
+		return &gateway.Runtime{Session: &fakeSession{}, Close: func(context.Context) error { return nil }}, nil
 	}
 	return f.newFn(agentID, events)
 }
@@ -73,16 +73,12 @@ func newTestLogger() *slog.Logger {
 	return slog.New(slog.DiscardHandler)
 }
 
-// noopCapture is the no-op inbound-message capture for runtimes whose
-// tests do not exercise ADR 0012 capture.
-func noopCapture(context.Context, string) error { return nil }
-
 // newTestQueue starts a queue over a fake factory building stub runtimes
 // around session; the queue closes with the test.
 func newTestQueue(t *testing.T, session *fakeSession) *gateway.Queue {
 	t.Helper()
 	factory := &fakeFactory{newFn: func(string, agent.EventSink) (*gateway.Runtime, error) {
-		return &gateway.Runtime{Session: session, Capture: noopCapture, Close: func(context.Context) error { return nil }}, nil
+		return &gateway.Runtime{Session: session, Close: func(context.Context) error { return nil }}, nil
 	}}
 	q, err := gateway.NewQueue(factory, "env-1", newTestLogger())
 	require.NoError(t, err)
@@ -102,7 +98,7 @@ func TestQueue_EnqueueAssignsIDAndRunsMessage(t *testing.T) {
 		return len(session.startedTasks()) == 1
 	}, 5*time.Second, time.Millisecond)
 	assert.Equal(t, "["+id+"] alice: hello", session.startedTasks()[0],
-		"the turn input renders the message with its ID and sender (ADR 0016)")
+		"the turn input renders the message with its ID and sender (ADR 0015)")
 }
 
 func TestQueue_SerializesRunsFIFO(t *testing.T) {
@@ -156,7 +152,6 @@ func TestQueue_CloseReleasesRuntime(t *testing.T) {
 	factory := &fakeFactory{newFn: func(string, agent.EventSink) (*gateway.Runtime, error) {
 		return &gateway.Runtime{
 			Session: &fakeSession{},
-			Capture: noopCapture,
 			Close: func(context.Context) error {
 				mu.Lock()
 				closed = true
@@ -201,7 +196,6 @@ func TestQueue_ConsolidationRunsAfterTurn(t *testing.T) {
 	factory := &fakeFactory{newFn: func(string, agent.EventSink) (*gateway.Runtime, error) {
 		return &gateway.Runtime{
 			Session: session,
-			Capture: noopCapture,
 			ConsolidateIfDue: func(context.Context) error {
 				mu.Lock()
 				calls++
@@ -235,7 +229,6 @@ func TestQueue_ConsolidationFailureDoesNotFailTurn(t *testing.T) {
 	factory := &fakeFactory{newFn: func(string, agent.EventSink) (*gateway.Runtime, error) {
 		return &gateway.Runtime{
 			Session:          session,
-			Capture:          noopCapture,
 			ConsolidateIfDue: func(context.Context) error { return errors.New("store locked") },
 			Close:            func(context.Context) error { return nil },
 		}, nil
@@ -257,56 +250,21 @@ func TestQueue_ConsolidationFailureDoesNotFailTurn(t *testing.T) {
 		"both messages are processed despite the failing trigger")
 }
 
-// TestQueue_EnqueueCapturesInboundMessage pins the ADR 0012 capture
-// step: every accepted message is captured exactly once, at accept time,
-// before its run starts.
-func TestQueue_EnqueueCapturesInboundMessage(t *testing.T) {
-	gate := make(chan struct{})
-	session := &fakeSession{gate: gate}
+// TestQueue_RetentionRunsAfterTurn pins the ADR 0006 retention wiring:
+// after a completed turn the runner evaluates the Retain pass alongside
+// ConsolidateIfDue, off the turn path.
+func TestQueue_RetentionRunsAfterTurn(t *testing.T) {
+	session := &fakeSession{}
 	var mu sync.Mutex
-	var captured []string
+	var calls int
 	factory := &fakeFactory{newFn: func(string, agent.EventSink) (*gateway.Runtime, error) {
 		return &gateway.Runtime{
 			Session: session,
-			Capture: func(_ context.Context, content string) error {
+			Retain: func(context.Context) error {
 				mu.Lock()
-				captured = append(captured, content)
+				calls++
 				mu.Unlock()
 				return nil
-			},
-			Close: func(context.Context) error { return nil },
-		}, nil
-	}}
-	q, err := gateway.NewQueue(factory, "env-1", newTestLogger())
-	require.NoError(t, err)
-	defer func() {
-		close(gate)
-		q.Close()
-	}()
-
-	_, err = q.Enqueue(context.Background(), "", "first")
-	require.NoError(t, err)
-	_, err = q.Enqueue(context.Background(), "", "second")
-	require.NoError(t, err)
-
-	// The first run is still blocked and the second message has not run,
-	// yet both captures already happened — capture precedes the run.
-	mu.Lock()
-	defer mu.Unlock()
-	assert.Equal(t, []string{"first", "second"}, captured)
-}
-
-// TestQueue_CaptureFailureRejectsEnqueue pins the failure contract of
-// the ADR 0012 capture step: a message whose capture fails is not
-// accepted and never runs, so no accepted message goes uncaptured.
-func TestQueue_CaptureFailureRejectsEnqueue(t *testing.T) {
-	session := &fakeSession{}
-	captureErr := errors.New("store unavailable")
-	factory := &fakeFactory{newFn: func(string, agent.EventSink) (*gateway.Runtime, error) {
-		return &gateway.Runtime{
-			Session: session,
-			Capture: func(context.Context, string) error {
-				return captureErr
 			},
 			Close: func(context.Context) error { return nil },
 		}, nil
@@ -316,6 +274,13 @@ func TestQueue_CaptureFailureRejectsEnqueue(t *testing.T) {
 	defer func() { q.Close() }()
 
 	_, err = q.Enqueue(context.Background(), "", "hi")
-	assert.ErrorIs(t, err, captureErr)
-	assert.Empty(t, session.startedTasks(), "a rejected message never runs")
+	require.NoError(t, err)
+	require.Eventually(t, func() bool {
+		return len(session.startedTasks()) == 1
+	}, 5*time.Second, time.Millisecond)
+	require.Eventually(t, func() bool {
+		mu.Lock()
+		defer mu.Unlock()
+		return calls == 1
+	}, 5*time.Second, time.Millisecond, "the retention pass fires once, after the turn")
 }

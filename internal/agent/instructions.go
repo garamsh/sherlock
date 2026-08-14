@@ -60,8 +60,6 @@ Kepler-9 refractor", the block looks like:
 
 Record only facts you actually obtained this turn: a failed tool call produces no result to store, never a placeholder, and your visible reply must match the writeback side effect.
 
-Every user message is remembered automatically by the platform before your turn starts; the writeback block carries distilled facts, not transcripts.
-
 ## When a tool is unavailable
 
 If a tool returns an error, **switch tools, do not retry the same tool with

@@ -74,7 +74,7 @@ type chatResponse struct {
 // request and maps the first choice back to an agent.Response. Tool calls
 // win over content when both are present.
 //
-// parallel_tool_calls is forced to false: ADR 0018 requires strict-mode
+// parallel_tool_calls is forced to false: ADR 0017 requires strict-mode
 // constrained decoding (advertised as Strict: true on each tool), and the
 // OpenAI chat-completions API flags strict mode as incompatible with
 // parallel tool calls. Issue #298.
@@ -157,7 +157,7 @@ func toWireMessages(messages []agent.Message) []chatMessage {
 // toWireTools exposes each descriptor's name, description, and input
 // schema as the function's parameters document. Strict mode is on so the
 // chat-completions API applies constrained decoding to every tool call
-// (ADR 0018). Each schema is sanitized to the strict-compatible subset
+// (ADR 0017). Each schema is sanitized to the strict-compatible subset
 // first, so tools whose schemas violate the constraint do not break the
 // provider's model call (issue #55). Issue #298.
 func toWireTools(tools []tool.Descriptor) []chatTool {

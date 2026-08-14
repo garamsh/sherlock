@@ -26,7 +26,7 @@ type Model interface {
 }
 
 // ToolClient is the platform's tool client surface the session consumes
-// (ADR 0018 §Tool contract). Production uses *tool.Client; tests may
+// (ADR 0017 §Tool contract). Production uses *tool.Client; tests may
 // substitute any implementation that exposes the same listing and call
 // surface.
 type ToolClient interface {
@@ -107,7 +107,7 @@ type Event struct {
 	Response   string
 	Error      string
 	// MessageIDs names the inbound messages the turn drained; the
-	// gateway stamps it on terminal events (ADR 0016). The session
+	// gateway stamps it on terminal events (ADR 0015). The session
 	// never sets it.
 	MessageIDs []string
 }
@@ -181,7 +181,7 @@ type failedCall struct {
 // NewSession returns a rolling session that drives the reasoning loop
 // against model, dispatching tool calls through the protocol client
 // tools. The session has no compile-time tool registry; the client
-// owns the tool list and the boundary (ADR 0018 §Decision).
+// owns the tool list and the boundary (ADR 0017 §Decision).
 func NewSession(model Model, tools ToolClient, opts Options) Session {
 	if opts.MaxIterations <= 0 {
 		opts.MaxIterations = DefaultMaxIterations

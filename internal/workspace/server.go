@@ -13,7 +13,7 @@ import (
 
 // Server is the gRPC workspace backend: Read, Write, and List against
 // the workspace filesystem, and Exec through the workspace's executor
-// (ADR 0018) — the workspace is the computer: it serves the files and
+// (ADR 0017) — the workspace is the computer: it serves the files and
 // runs the agent-influenced processes. It exposes no tool hosting:
 // tools are agent-side Go packages the agent imports at compile time.
 // The plugin concept is dropped.

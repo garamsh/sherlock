@@ -6,7 +6,9 @@ import (
 )
 
 // UpdateInput carries a superseding revision of a memory. A nil
-// ImportanceScore inherits the old memory's value.
+// ImportanceScore inherits the old memory's value; a non-nil value
+// raises it to at least that score — a correction never lowers salience
+// (ADR 0006).
 type UpdateInput struct {
 	ID              int64
 	Content         string
@@ -27,7 +29,7 @@ func (s *service) Update(ctx context.Context, in UpdateInput) (UpdateResult, err
 	}
 	importance := old.ImportanceScore
 	if in.ImportanceScore != nil {
-		importance = *in.ImportanceScore
+		importance = max(old.ImportanceScore, *in.ImportanceScore)
 	}
 	if err := validateNew(in.Content, old.Type, importance); err != nil {
 		return UpdateResult{}, err

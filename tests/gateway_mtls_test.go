@@ -204,7 +204,7 @@ func subscribeSSEClient(t *testing.T, client *http.Client, url string) chan map[
 }
 
 // TestGatewayMTLS_AuthenticatesCallers runs the built agent with a
-// tls: section (ADR 0013): a client without a certificate and a client
+// tls: section (ADR 0012): a client without a certificate and a client
 // certified by a foreign CA are rejected at the handshake, while a
 // client certified by the configured CA gets 202 on POST and the SSE
 // stream — with the caller identity in the request log.
@@ -270,7 +270,7 @@ func TestGatewayMTLS_AuthenticatesCallers(t *testing.T) {
 
 // TestAgent_NonLoopbackWithoutTLSFailsStartup runs the built agent with
 // a non-loopback --addr and no tls: section: startup must fail with a
-// clear error instead of serving an unauthenticated port (ADR 0013).
+// clear error instead of serving an unauthenticated port (ADR 0012).
 func TestAgent_NonLoopbackWithoutTLSFailsStartup(t *testing.T) {
 	binary := buildGagentBinary(t)
 	root := t.TempDir()

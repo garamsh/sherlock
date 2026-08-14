@@ -47,7 +47,7 @@ func validate(schema json.RawMessage, input json.RawMessage) error {
 
 // validateSchemaDocument checks that the schema itself is a valid JSON
 // Schema document (compile-clean). The platform re-validates every
-// fetched descriptor at the boundary (ADR 0018 §Tool contract) before
+// fetched descriptor at the boundary (ADR 0017 §Tool contract) before
 // trusting the schema for input validation.
 func validateSchemaDocument(schema json.RawMessage) error {
 	_, err := compileSchema(schema)

@@ -36,7 +36,7 @@ const e2eQuestion = "what is 6 * 7?"
 // mvpScript drives the canned MVP scenario through the scripted mock
 // model: reply to the sender through message_send, then close the
 // turn with a writeback block recording the question. The mock no
-// longer calls shell_exec (ADR 0018): process exec is the agent's
+// longer calls shell_exec (ADR 0017): process exec is the agent's
 // native capability, and the canned scenario exercises the tools that
 // exist — message_send only.
 func mvpScript() *agent.ScriptedModel {
@@ -143,7 +143,7 @@ func runMVPScenario(t *testing.T, baseURL, root, agentID string) {
 		"writeback", "turn_finished",
 	}, kinds)
 	assert.Contains(t, got[0]["task"], "] unknown: "+e2eQuestion,
-		"the turn input renders the message with its ID and sender (ADR 0016)")
+		"the turn input renders the message with its ID and sender (ADR 0015)")
 
 	// The agent replied via message_send. The final writeback
 	// records the question as an episodic memory (ADR 0011: the
@@ -163,11 +163,10 @@ func runMVPScenario(t *testing.T, baseURL, root, agentID string) {
 }
 
 // assertMemoryStore opens the agent's memory store and confirms the
-// recorded question is still queryable after shutdown. ADR 0012 captures
-// the inbound message as a second episodic memory, so shutdown
-// consolidation (ADR 0011) compresses the captured turn and the writeback
-// add into one semantic parent; the assertion matches that parent, which
-// carries both contents.
+// writeback add is still queryable after shutdown. With curation-only
+// storage (ADR 0006) nothing is auto-stored before the turn, so the
+// writeback's episodic add is the only memory — below
+// ConsolidationMinCluster it survives shutdown uncompressed.
 func assertMemoryStore(t *testing.T, root string) {
 	t.Helper()
 	store, err := sqlite.Open(filepath.Join(root, "memory.db"))
@@ -182,10 +181,8 @@ func assertMemoryStore(t *testing.T, root string) {
 	for _, h := range found {
 		if strings.Contains(h.Content, "user asked: 6 * 7") {
 			recorded = true
-			assert.Equal(t, memory.TypeSemantic, h.Type,
-				"shutdown consolidation compresses the captured turn and the writeback add into one semantic parent")
-			assert.Contains(t, h.Content, e2eQuestion,
-				"the auto-captured user turn survives inside the consolidated parent")
+			assert.Equal(t, memory.TypeEpisodic, h.Type,
+				"the writeback add is the only memory; a lone episodic memory is not consolidated")
 		}
 	}
 	assert.True(t, recorded,

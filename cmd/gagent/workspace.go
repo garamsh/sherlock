@@ -35,7 +35,7 @@ const (
 
 // WorkspaceConfig is the workspace's resolved settings, parsed once at
 // the command boundary (docs/convention/runtime-safety.md) and passed
-// down typed. The workspace is the agent's data plane (ADR 0018): it
+// down typed. The workspace is the agent's data plane (ADR 0017): it
 // owns the workspace directory and serves the gRPC contract — Read,
 // Write, List, Exec — and nothing else. No tools, no plugin loader.
 type WorkspaceConfig struct {
@@ -56,7 +56,7 @@ type WorkspaceConfig struct {
 }
 
 // newWorkspaceCommand returns the "gagent workspace" subcommand: it
-// serves the workspace's gRPC contract (ADR 0018) — the filesystem and
+// serves the workspace's gRPC contract (ADR 0017) — the filesystem and
 // process execution. The local addr flag shadows the shared one — the
 // workspace's default listener is 8081, not the gateway's 8080.
 func newWorkspaceCommand() *cobra.Command {
@@ -112,11 +112,11 @@ func resolveWorkspaceConfig(cmd *cobra.Command) (WorkspaceConfig, error) {
 // or SIGTERM.
 //
 // The listener is unauthenticated in this phase, so it serves loopback
-// binds only — the same fail-closed posture as the gateway (ADR 0013):
+// binds only — the same fail-closed posture as the gateway (ADR 0012):
 // an unauthenticated listener is a remote shell into the workspace,
 // and a non-loopback addr fails startup.
 //
-// The workspace is the data plane (ADR 0018): it owns the workspace
+// The workspace is the data plane (ADR 0017): it owns the workspace
 // directory, serves Read/Write/List over gRPC, and runs Exec children
 // through its own executor — the agent executes nothing itself. The
 // workspace chowns its root to the exec UID when privileged, so files

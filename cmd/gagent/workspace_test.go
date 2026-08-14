@@ -117,7 +117,7 @@ func TestResolveWorkspaceConfig_ConfigFlag(t *testing.T) {
 
 // TestServeWorkspace_ContractEndToEnd runs the workspace in-process and
 // drives it through the gRPC contract: the workspace exposes
-// Read/Write/List and rejects a path that escapes the workspace (ADR 0018).
+// Read/Write/List and rejects a path that escapes the workspace (ADR 0017).
 func TestServeWorkspace_ContractEndToEnd(t *testing.T) {
 	listen, err := net.Listen("tcp", "127.0.0.1:0")
 	require.NoError(t, err)
@@ -171,7 +171,7 @@ func TestServeWorkspace_ContractEndToEnd(t *testing.T) {
 	assert.True(t, listResp.Entries[0].Dir)
 
 	// Exec crosses the same wire: the command runs in the workspace
-	// directory and sees the files the contract serves (ADR 0018).
+	// directory and sees the files the contract serves (ADR 0017).
 	execResp, err := client.Exec(ctxRPC, &workspace.ExecRequest{Command: "ls"})
 	require.NoError(t, err)
 	assert.Zero(t, execResp.GetExitCode())
@@ -182,7 +182,7 @@ func TestServeWorkspace_ContractEndToEnd(t *testing.T) {
 // TestServeWorkspace_NonLoopbackAddrFailsStartup pins the fail-closed
 // posture: the gRPC listener is unauthenticated in this phase, so a
 // non-loopback bind is a remote shell into the workspace and fails
-// startup (ADR 0013).
+// startup (ADR 0012).
 func TestServeWorkspace_NonLoopbackAddrFailsStartup(t *testing.T) {
 	cfg := WorkspaceConfig{
 		Addr:      "0.0.0.0:8081",

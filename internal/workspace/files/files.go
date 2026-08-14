@@ -29,7 +29,7 @@ type FS struct {
 
 // Open returns an FS rooted at root, creating the directory on first
 // use. Files the FS creates are owned by the workspace process's own
-// account (ADR 0018: the workspace runs no children, so no privilege
+// account (ADR 0017: the workspace runs no children, so no privilege
 // drop exists).
 func Open(root string) (*FS, error) {
 	abs, err := filepath.Abs(root)

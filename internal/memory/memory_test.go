@@ -225,6 +225,98 @@ func TestCompress_RejectsSemanticInput(t *testing.T) {
 	require.ErrorIs(t, err, memory.ErrNotEpisodic)
 }
 
+// TestStore_SupersedesHighlySimilarPredecessor pins ADR 0006
+// supersession on insert: an add whose embedding cosine with the most
+// similar active memory reaches SupersessionSimilarity takes over — the
+// predecessor archives with superseded_by/valid_to set, never
+// hard-deleted.
+func TestStore_SupersedesHighlySimilarPredecessor(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "memory.db")
+	st, err := sqlite.Open(path)
+	require.NoError(t, err)
+	svc := memory.NewService(st, memory.NewHashingEmbedder(), memory.NewConcatSummarizer(),
+		memory.WithClock(func() time.Time { return now }))
+	t.Cleanup(func() { assert.NoError(t, svc.Close()) })
+
+	oldID := storeMemory(t, svc, "the release train leaves on monday", "semantic", 0.7)
+	res, err := svc.Store(context.Background(), memory.StoreInput{
+		Content:         "the release train leaves on monday",
+		Type:            memory.TypeSemantic,
+		ImportanceScore: 0.7,
+		Source:          "test",
+	})
+	require.NoError(t, err)
+	assert.Equal(t, oldID, res.SupersededID, "the near-duplicate supersedes in place")
+	assert.NotEqual(t, oldID, res.ID)
+
+	results := search(t, svc, "release train")
+	require.Len(t, results, 1, "only the newest version stays active")
+	assert.Equal(t, res.ID, results[0].ID)
+
+	db, err := sql.Open("sqlite", path)
+	require.NoError(t, err)
+	defer db.Close()
+	var supersededBy int64
+	var validTo int64
+	require.NoError(t, db.QueryRow(
+		`SELECT superseded_by, valid_to FROM memories_archive WHERE id = ?`, oldID,
+	).Scan(&supersededBy, &validTo))
+	assert.Equal(t, res.ID, supersededBy, "the archived predecessor points at its replacement")
+	assert.Equal(t, now.Unix(), validTo)
+}
+
+// TestStore_DissimilarInsertKeepsBoth pins the other side of the
+// supersession threshold: an add with no highly similar active memory
+// inserts a fresh row and supersedes nothing.
+func TestStore_DissimilarInsertKeepsBoth(t *testing.T) {
+	svc := newService(t)
+	oldID := storeMemory(t, svc, "the release train leaves on monday", "semantic", 0.7)
+
+	res, err := svc.Store(context.Background(), memory.StoreInput{
+		Content:         "quantum entanglement lecture notes",
+		Type:            memory.TypeSemantic,
+		ImportanceScore: 0.7,
+		Source:          "test",
+	})
+	require.NoError(t, err)
+	assert.Zero(t, res.SupersededID, "a dissimilar add supersedes nothing")
+
+	results := search(t, svc, "release train")
+	require.NotEmpty(t, results)
+	assert.Equal(t, oldID, results[0].ID, "the predecessor stays active")
+}
+
+// TestRetain_TiersBySalience pins the ADR 0006 tiered retention pass:
+// high salience keeps indefinitely, mid salience lives for
+// RetentionWindow, low salience drops to the archive at the next pass.
+func TestRetain_TiersBySalience(t *testing.T) {
+	clock := now
+	svc := newService(t, memory.WithClock(func() time.Time { return clock }))
+	high := storeMemory(t, svc, "durable high-salience fact", "semantic", 0.8)
+	mid := storeMemory(t, svc, "mid-salience episodic observation", "episodic", 0.5)
+	low := storeMemory(t, svc, "low-salience chatter", "episodic", 0.1)
+
+	clock = now.Add(memory.RetentionWindow - time.Hour)
+	archived, err := svc.Retain(context.Background())
+	require.NoError(t, err)
+	assert.ElementsMatch(t, []int64{low}, archived,
+		"within the window only low-salience memories drop")
+
+	clock = now.Add(memory.RetentionWindow + time.Hour)
+	archived, err = svc.Retain(context.Background())
+	require.NoError(t, err)
+	assert.ElementsMatch(t, []int64{mid}, archived,
+		"past the window the mid tier drops; the high tier never does")
+
+	results := search(t, svc, "salience")
+	require.Len(t, results, 1)
+	assert.Equal(t, high, results[0].ID, "only the high-salience memory stays active")
+
+	err = svc.Delete(context.Background(), low)
+	assert.ErrorIs(t, err, memory.ErrNotFound,
+		"the dropped memory sits in the archive, not the active index")
+}
+
 func TestForget_ArchivesBelowThreshold(t *testing.T) {
 	clock := now
 	svc := newService(t, memory.WithClock(func() time.Time { return clock }))
@@ -274,8 +366,16 @@ func TestStore_EvictsLowestScoreBeyondCapacity(t *testing.T) {
 
 func TestRecall_TrimsToTokenBudget(t *testing.T) {
 	svc := newService(t)
-	for range 5 {
-		storeMemory(t, svc, "a fairly long memory about cats and mats and sitting", "episodic", 0.5)
+	// Distinct sentences: near-duplicates would supersede on insert
+	// (ADR 0006) instead of accumulating for the budget to trim.
+	for _, content := range []string{
+		"a fairly long memory about cats knocking vases off shelves",
+		"a fairly long memory about cats sleeping through thunderstorms",
+		"a fairly long memory about cats learning to open door handles",
+		"a fairly long memory about cats riding the city trams at dawn",
+		"a fairly long memory about cats adopting the warehouse office",
+	} {
+		storeMemory(t, svc, content, "episodic", 0.5)
 	}
 
 	results, err := svc.Recall(context.Background(), "cats", 10)
@@ -359,15 +459,19 @@ func TestConsolidate_CompressesEpisodicCluster(t *testing.T) {
 // compresses into semantic parents.
 func TestConsolidateIfDue_TriggersOnlyAtThreshold(t *testing.T) {
 	svc := newService(t)
-	for range memory.ConsolidationThreshold - 1 {
-		storeMemory(t, svc, "episodic note", "episodic", 0.5)
+	// Each note carries unique tokens so inserts stay below the
+	// supersession similarity (ADR 0006) and the cluster accumulates.
+	for i := range memory.ConsolidationThreshold - 1 {
+		storeMemory(t, svc, fmt.Sprintf("episodic note %d w%d x%d y%d", i, i, i, i), "episodic", 0.5)
 	}
 
 	res, err := svc.ConsolidateIfDue(context.Background())
 	require.NoError(t, err)
 	assert.Empty(t, res.ArchivedIDs, "below the threshold nothing consolidates")
 
-	storeMemory(t, svc, "episodic note", "episodic", 0.5)
+	storeMemory(t, svc, fmt.Sprintf("episodic note %d w%d x%d y%d",
+		memory.ConsolidationThreshold-1, memory.ConsolidationThreshold-1,
+		memory.ConsolidationThreshold-1, memory.ConsolidationThreshold-1), "episodic", 0.5)
 	res, err = svc.ConsolidateIfDue(context.Background())
 	require.NoError(t, err)
 	require.Len(t, res.ArchivedIDs, memory.ConsolidationThreshold,
@@ -422,11 +526,13 @@ func TestCompress_ClusterExceedingSummaryMaxLenLeavesNoContentBehind(t *testing.
 	svc := newService(t)
 
 	// 30 short messages join to ~30 * 32 = ~960 bytes of summary text,
-	// well past the 512-byte cap that truncated everything before.
+	// well past the 512-byte cap that truncated everything before. Each
+	// carries a unique token so inserts stay below the supersession
+	// similarity (ADR 0006) and the whole cluster accumulates.
 	const count = 30
 	originals := make([]int64, 0, count)
 	for i := range count {
-		content := fmt.Sprintf("user-turn %02d: ref %04d", i, i*7+1)
+		content := fmt.Sprintf("user-turn %02d: ref %04d token-%02d", i, i*7+1, i)
 		originals = append(originals, storeMemory(t, svc, content, "episodic", 0.5))
 	}
 
@@ -476,7 +582,7 @@ func TestCompress_PreferredParentIsFirstChunk(t *testing.T) {
 	var ids []int64
 	for i := range 20 {
 		ids = append(ids, storeMemory(t, svc,
-			fmt.Sprintf("alpha marker %04d tail", i), "episodic", 0.5))
+			fmt.Sprintf("alpha marker %04d tail token-%02d", i, i), "episodic", 0.5))
 	}
 
 	res, err := svc.Compress(context.Background(), ids)
@@ -513,12 +619,14 @@ func TestCompress_ChunkSeparatorIsTheChunkerBoundary(t *testing.T) {
 	require.Len(t, res.ParentIDs, 1,
 		"a small cluster fits one parent with no chunking")
 
-	// Larger cluster: each original is the same so the joined text
-	// exceeds SummaryMaxLen and must split across parents, but the
-	// whole content must still surface somewhere.
+	// Larger cluster: each original carries the same 20-char run plus a
+	// unique tag (identical originals would supersede on insert, ADR
+	// 0006), so the joined text exceeds SummaryMaxLen and must split
+	// across parents, but the whole content must still surface somewhere.
 	var ids []int64
-	for range 40 {
-		ids = append(ids, storeMemory(t, svc, strings.Repeat("a", 20), "episodic", 0.5))
+	for i := range 40 {
+		ids = append(ids, storeMemory(t, svc,
+			fmt.Sprintf("%s %02d", strings.Repeat("a", 20), i), "episodic", 0.5))
 	}
 	res, err = svc.Compress(context.Background(), ids)
 	require.NoError(t, err)

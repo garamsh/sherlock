@@ -4,4 +4,5 @@ Structured experiments that produced evidence for architectural decisions. Each 
 
 ## Index
 
-- `memory-architecture/` — the memory-model experiment behind ADR 0006's 2026-08-14 revision: 32 candidate architectures, four workloads, five rounds. Report, harness, and raw results included.
+- `memory-architecture/` — the memory-store experiment behind ADR 0006's 2026-08-14 revision: 32 candidate store/retrieval architectures, four workloads, five rounds. Report, harness, and raw results included.
+- `memory-cycle/` — the memory-cycle experiment: write path, read path, and store policy tested as one system. Established that the voluntary writeback is the root failure (0.00 context-recall) and that structured output is the minimal structural fix.

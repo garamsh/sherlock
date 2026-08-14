@@ -1,0 +1,65 @@
+[
+  {
+    "system": "N1-voluntary-writeback",
+    "context_recall": 0.0,
+    "store_items": 0.0,
+    "extra_calls_per_turn": 0.0,
+    "injected_tokens_per_turn": 0.0
+  },
+  {
+    "system": "N2-structured-writeback",
+    "context_recall": 0.6666666666666666,
+    "store_items": 15.333333333333334,
+    "extra_calls_per_turn": 0.0,
+    "injected_tokens_per_turn": 32.25
+  },
+  {
+    "system": "N2s-structured-lazy",
+    "context_recall": 0.3888888888888889,
+    "store_items": 10.666666666666666,
+    "extra_calls_per_turn": 0.0,
+    "injected_tokens_per_turn": 28.833333333333332
+  },
+  {
+    "system": "N3-platform-extraction",
+    "context_recall": 0.16666666666666666,
+    "store_items": 9.0,
+    "extra_calls_per_turn": 0.0,
+    "injected_tokens_per_turn": 30.5
+  },
+  {
+    "system": "N4-rolling-narrative",
+    "context_recall": 0.6666666666666666,
+    "store_items": 0.0,
+    "extra_calls_per_turn": 1.0,
+    "injected_tokens_per_turn": 75.96666666666667
+  },
+  {
+    "system": "N5-log-ondemand",
+    "context_recall": 0.6111111111111112,
+    "store_items": 19.0,
+    "extra_calls_per_turn": 0.0,
+    "injected_tokens_per_turn": 16.083333333333336
+  },
+  {
+    "system": "N6-forced-notes",
+    "context_recall": 0.6666666666666666,
+    "store_items": 17.0,
+    "extra_calls_per_turn": 1.0,
+    "injected_tokens_per_turn": 32.733333333333334
+  },
+  {
+    "system": "N7-full-context",
+    "context_recall": 0.8333333333333334,
+    "store_items": 0.0,
+    "extra_calls_per_turn": 0.0,
+    "injected_tokens_per_turn": 59.75
+  },
+  {
+    "system": "N8-structured-coreblock",
+    "context_recall": 0.6666666666666666,
+    "store_items": 15.333333333333334,
+    "extra_calls_per_turn": 0.0,
+    "injected_tokens_per_turn": 55.63333333333334
+  }
+]

@@ -303,3 +303,48 @@ class DeciderNeighborsWide(DeciderNeighbors):
 
     def context_rows(self, text):
         return self.store.rank(text, self.WIDE_K, floor=self.WIDE_FLOOR)
+
+
+REWRITE_SYS = (
+    "You maintain an assistant's memory. You are shown the latest message and "
+    "the memories the store holds about it.\n"
+    'Reply with JSON: {"memories": ["<memory>", ...]}\n'
+    "Return what that set of memories should be now: keep what is still true, "
+    "reword what the message corrects, add what is new, leave out only what "
+    "the message makes false. Two things that can both be true stay. Return "
+    "the set unchanged when the message says nothing about it."
+)
+
+
+class NeighbourhoodRewrite(Structure):
+    """B10: the decider returns the new state of what it was shown."""
+    NAME = "B10-neighbourhood-rewrite"
+    BLURB = "decider returns the new state of the neighbourhood it was shown"
+    EXTRA_CALLS = 1.0
+    K = 10
+    FLOOR = 0.3
+
+    def __init__(self, rnd, model=None):
+        self.store = Store()
+        self.calls = 0
+        self.model = model
+
+    def turn(self, text, is_fact):
+        self.store.tick()
+        shown = self.store.rank(text, self.K, floor=self.FLOOR)
+        listing = [r.content for r in shown]
+        kw = {"model": self.model} if self.model else {}
+        out = decider(REWRITE_SYS,
+                      f"Latest message: {text}\nMemories: {listing}", **kw)
+        self.calls += 1
+        returned = parse_json(out).get("memories")
+        if not isinstance(returned, list):
+            return
+        kept = {r.strip() for r in returned if isinstance(r, str) and r.strip()}
+        for row in shown:
+            if row.content in kept:
+                kept.discard(row.content)
+            else:
+                row.dead = True
+        for content in kept:
+            self.store.add(content)

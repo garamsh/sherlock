@@ -31,3 +31,9 @@ go.work.sum
 
 # Environment data (docs/architecture/environment.md)
 data/
+
+# Python (experiment harnesses under docs/experiments/)
+__pycache__/
+*.pyc
+.embed_cache.json
+.chat_cache.json

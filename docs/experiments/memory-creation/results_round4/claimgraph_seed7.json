@@ -1,0 +1,38 @@
+{
+  "seed": 7,
+  "row": {
+    "system": "B8-claim-graph",
+    "blurb": "claims with a typed 'corrects' link; retrieval hides corrected claims",
+    "extra_calls": 1.0,
+    "decider_calls": 488,
+    "items": 85,
+    "elapsed_s": 27.0,
+    "latest_wins": 0.3,
+    "control_survival": 0.175,
+    "coexist_preserved": 0.375,
+    "stale_present": 0.1,
+    "net": 0.2833,
+    "control_never_written": 0.8,
+    "control_retired": 0.025,
+    "control_not_ranked": 0.0,
+    "coexist_never_written": 0.3929,
+    "coexist_retired": 0.25,
+    "coexist_not_ranked": 0.0,
+    "outcomes": {
+      "corrected:recalled": 33,
+      "corrected:never_written": 62,
+      "corrected:retired": 5,
+      "control:recalled": 7,
+      "control:never_written": 32,
+      "control:retired": 1,
+      "coexist:retired": 7,
+      "coexist:recalled": 10,
+      "coexist:never_written": 11
+    }
+  },
+  "api_calls": {
+    "embed": 7,
+    "chat": 26,
+    "chat_cached": 462
+  }
+}

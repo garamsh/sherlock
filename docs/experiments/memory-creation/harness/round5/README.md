@@ -8,6 +8,7 @@ What round 5 changes in the memory-creation dataset and scoring, and what it hol
 - Eight coexist families, 64 coexist probes and 144 coexist statements per seed. Every subject carries every family and every family draws a fixed number of values, so each family is an eighth of the coexist column under any seed.
 - No coexist family names or answers a topic in the corrected and control set. Round 4's spoken-`languages` family sat beside a `language` category holding programming languages; it is gone.
 - `score()` reports the preserved fraction per coexist family beside `coexist_preserved`, and the runner writes it into the result JSON.
+- A value is credited only where a row states it as a whole word. Round 4 credits any substring, so "standardized on Python" credits `Zed` and "allergic to shellfish" credits `fish`; the same rule reads the absent values behind `stale_present`.
 
 ## Why
 
@@ -19,19 +20,23 @@ Three bullets in the experiment record's Limits section describe one defect in t
 
 At 64 probes one probe is 1.6% of the column and one family 12.5%, and the sampling error the record computes for `net` falls from ±0.083 to ±0.047 (`harness/round4/precision.py` holds the formula and the counts it assumes).
 
+A fourth bullet is answered by the match rule: a value credited on a substring is credited from rows that state nothing, which cost 2 credits under B9 and 3 each under B14 and B17 on seed 7. That is inside round 4's interval and outside the one round 5 aims at.
+
 ## What stays fixed
 
-- `harness/round4/` is untouched. Round 5 imports its `api.py`, `structures.py`, `structures_a.py` and `structures_b.py`, and takes the persons, categories, chatter, probe shape and metric definitions from its `dataset.py` and `scoring.py`.
+- `harness/round4/` is untouched. Round 5 imports its `api.py`, `structures.py`, `structures_a.py` and `structures_b.py`, and takes the persons, categories, chatter and probe shape from its `dataset.py`. Round 4 keeps its own scorer, because its committed results were measured under it.
+- The metrics are round 4's, computed the same way and reported under the same names. Only the match underneath them changed, so a round-5 number is comparable to a round-4 number except where a substring credit was the difference. `dataset_check.py` scores one store through both rounds' scorers and fails on any metric that differs, so the copy cannot drift unnoticed.
+- That comparison covers the aggregation, not the match: the store it scores holds every fact turn, where the two rules almost always reach the same verdict. `MATCH_CASES` covers the match. Neither stands in for the other.
 - The corrected, control and distractor assignments are round 4's for the same seed, so the coexist set is the only difference between the two datasets. `dataset_check.py` asserts this.
 - The store grows rather than shrinks: 645 turns and 504 fact turns per seed against round 4's 488 and 388. `n_distractor` stays at 120 and the coexist statements are added to the stream, not traded against it.
 
 ## Files
 
 - `dataset.py` — the turn stream and the probes.
-- `scoring.py` — round 4's metrics plus `coexist_by_family`.
+- `scoring.py` — round 4's metrics on the word-boundary match, plus `coexist_by_family`.
 - `runner.py` — runs the named structures and writes `results_round5/<structure>_seed<seed>.json`.
-- `dataset_check.py` — the invariants above, on seeds 7, 11 and 23.
-- `round4.py` — loads round 4's modules by path, because both rounds name a module `dataset` and a module `scoring`.
+- `dataset_check.py` — the invariants above, the match rule, the value vocabulary, and the metrics against round 4's scorer, on seeds 7, 11 and 23.
+- `round4.py` — loads round 4's `dataset.py` and `scoring.py` by path, because both rounds name a module `dataset` and a module `scoring`.
 
 ## Running
 
@@ -42,4 +47,4 @@ python3 harness/round5/runner.py DeciderNeighbors
 SEED=11 python3 harness/round5/runner.py DeciderNeighbors
 ```
 
-The check makes no API call and prints the composition of each seed. The runner needs `OPENAI_API_KEY`; embeddings and decider replies cache beside round 4's `api.py`, as round 4's runners do.
+The check makes no API call; it prints each seed's composition and the vocabulary collisions the boundary rule neutralises. The runner needs `OPENAI_API_KEY`; embeddings and decider replies cache beside round 4's `api.py`, as round 4's runners do.

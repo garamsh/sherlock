@@ -1,6 +1,6 @@
 # Local testing only: trusted host, throwaway mTLS certs in ./tls.
 # Requires GAGENT_DATA_DIR; see README.md in this directory.
-# Two services, one pod shape (ADR 0018): the agent serves its gateway;
+# Two services, one pod shape (ADR 0017): the agent serves its gateway;
 # the workspace shares the agent's network namespace so the
 # unauthenticated gRPC listener stays on loopback (#209).
 services:
@@ -11,7 +11,7 @@ services:
     ports:
       - "8080:8080"
     # The agent executes nothing — the workspace owns process exec
-    # (ADR 0018) — so the agent needs no capabilities at all.
+    # (ADR 0017) — so the agent needs no capabilities at all.
     environment:
       # The memory file sits at the same absolute path on host and
       # container so it is valid from either side.

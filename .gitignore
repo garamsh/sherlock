@@ -32,6 +32,14 @@ go.work.sum
 # Environment data (docs/architecture/environment.md)
 data/
 
+# Tool binaries built by ./tests during the suite
+/tools/*/[a-z_]*
+!/tools/*/*.go
+!/tools/*/*.md
+!/tools/*/*.yaml
+!/tools/*/*.yml
+!/tools/*/*.json
+
 # Python (experiment harnesses under docs/experiments/)
 __pycache__/
 *.pyc

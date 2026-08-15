@@ -1,0 +1,38 @@
+{
+  "seed": 7,
+  "row": {
+    "system": "B10-neighbourhood-rewrite",
+    "blurb": "decider returns the new state of the neighbourhood it was shown",
+    "extra_calls": 1.0,
+    "decider_calls": 488,
+    "items": 294,
+    "elapsed_s": 591.5,
+    "latest_wins": 0.71,
+    "control_survival": 0.925,
+    "coexist_preserved": 0.7083,
+    "stale_present": 0.2,
+    "net": 0.7811,
+    "control_never_written": 0.0,
+    "control_retired": 0.05,
+    "control_not_ranked": 0.025,
+    "coexist_never_written": 0.0,
+    "coexist_retired": 0.2857,
+    "coexist_not_ranked": 0.0,
+    "outcomes": {
+      "corrected:recalled": 87,
+      "corrected:not_ranked": 8,
+      "corrected:retired": 4,
+      "corrected:never_written": 1,
+      "control:recalled": 37,
+      "control:retired": 2,
+      "control:not_ranked": 1,
+      "coexist:retired": 8,
+      "coexist:recalled": 20
+    }
+  },
+  "api_calls": {
+    "embed": 29,
+    "chat": 420,
+    "chat_cached": 68
+  }
+}

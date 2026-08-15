@@ -43,6 +43,7 @@ The highest-accuracy setting is the one that supersedes nothing. Tracked as issu
 |---|---|---|---|---|---|---|---|---|
 | B9 decider-neighbours, wide | 10 retrieved candidates; facts to store and ids to retire | 0.76 | 0.98 | 0.85 | 0.86 | — | 0.00 | 298 |
 | B3 decider-neighbours | 5 retrieved candidates; facts to store and ids to retire | 0.71 | 0.97 | 0.85 | 0.84 | 0.85 | 0.00 | 300 |
+| B10 neighbourhood rewrite | 10 retrieved candidates; the new state of that set | 0.71 | 0.93 | 0.71 | 0.78 | — | 0.05 | 294 |
 | B2 decider-window | the 10 most recent memories; same output | 0.01 | 0.95 | 0.97 | 0.64 | 0.67 | 0.00 | 379 |
 | B4 key-upsert | nothing; a topic key and value, same key replaces | 0.24 | 0.93 | 0.53 | 0.56 | 0.62 | 0.05 | 354 |
 | B5 key-upsert, key hints | related existing keys; a topic key and value | 0.75 | 0.45 | 0.33 | 0.51 | 0.54 | 0.55 | 178 |
@@ -57,6 +58,7 @@ B1 and B7 write from the main response at the cycle experiment's assumed 80% com
 - **The shipped mechanism is last.** It retires half of the never-corrected facts and 61% of the coexisting ones.
 - **A topic key relocates the failure.** Without hints the decider coins fresh keys and corrections stop landing; with hints the same-key collapse merges facts that are not the same fact. Key collision is the similarity threshold under another name.
 - **Append-only does not help.** B6 deletes nothing and still loses 65% of control facts, because read-time latest-per-key hides the colliding rows.
+- **The protocol's silent case decides its safety.** B10 removes the vocabulary entirely — the decider is shown a neighbourhood and returns what it should now be, so deletion is omission and no verb or id is needed. It loses to B9 on every family, and its diagnosis is unambiguous: nothing went unwritten, and 29% of coexisting facts were retired by being left out of a reply. B9's `retire` list is not ceremony; it makes silence mean "leave it alone". Every structure measured here that made silence mean "remove" — a threshold firing on similarity, a key collision, an omitted line — destroys data, and every one that made silence mean "no change" does not.
 
 Structures ruled out on the earlier dataset, none of which round 4 re-tests: journal with batched distillation and sleep-consolidation both lose the timing; pure decay without a rehearsal channel empties the store; an always-in-context anchor block pins stale facts; a view rebuilt from a log window forgets everything older than the window; deterministic platform extraction catches too little.
 
@@ -77,7 +79,8 @@ The row reached the decider 82% of the time and was retired in 89% of those. The
 
 - The decider is shown the store's retrieval for the incoming turn, and owns what is stored and what is retired.
 - Threshold supersession is removed from the store, not retuned. The platform retains, ranks and forgets.
-- Key-addressed replacement, claim links, append-only read-time resolution, and a main-model-written field are rejected.
+- Key-addressed replacement, claim links, append-only read-time resolution, a main-model-written field, and neighbourhood rewrite are rejected.
+- The write protocol keeps an explicit retire list. Silence must mean no change.
 - Structured output on the write path (from `memory-cycle/`) is unchanged and remains the precondition.
 
 ## Limits
@@ -85,7 +88,7 @@ The row reached the decider 82% of the time and was retired in 89% of those. The
 - The turn stream is scripted. Only a behavioural QA pass measures the agent.
 - One decider model, temperature 0. Nine judgment misses in 100 corrections leaves little headroom to attribute to model choice.
 - Embeddings are truncated to 512 dimensions; every structure uses the same embedder.
-- B9 and the claim graph ran on one seed. The claim graph is unranked: its decider stored 85 of roughly 290 facts, so the structure was never exercised.
+- B9, B10 and the claim graph ran on one seed. The claim graph is unranked: its decider stored 85 of roughly 290 facts, so the structure was never exercised.
 - Coexist is the smallest probe family at 12.
 
 ## Reproducing
@@ -97,6 +100,7 @@ python3 harness/round4/runner.py
 SEED=11 python3 harness/round4/runner.py
 python3 harness/round4/gap_diagnosis.py
 python3 harness/round4/single_runner.py DeciderNeighborsWide
+python3 harness/round4/single_runner.py NeighbourhoodRewrite
 ```
 
 `OPENAI_API_KEY` required. Results land in `results_round4/`; embeddings and decider replies are cached beside the harness, so a re-run costs nothing after the first. The rounds 1–3 runners are `harness/creation_runner.py`, `harness/real_runner.py` and `harness/real_new_runner.py`.

@@ -18,24 +18,24 @@ Rounds 1–3 of this experiment used a dataset in which every planted topic was 
 
 ## No similarity threshold can decide supersession
 
-ADR 0006 supersedes on embedding cosine; `internal/memory/ranking.go` uses 0.6. 250 pairs per family:
+ADR 0006 supersedes on embedding cosine; `internal/memory/ranking.go` uses 0.6. 250 pairs per family, measured at the round's 512 dimensions and again at the embedder's native 1536:
 
-| pair family | must supersede? | median cosine |
-|---|---|---|
-| correction | yes | 0.630 |
-| coexist | no | 0.789 |
-| cross-subject | no | 0.642 |
-| unrelated | no | 0.212 |
+| pair family | must supersede? | median (512) | IQR (512) | median (1536) | IQR (1536) |
+|---|---|---|---|---|---|
+| correction | yes | 0.630 | 0.121 | 0.624 | 0.120 |
+| coexist | no | 0.789 | 0.060 | 0.791 | 0.033 |
+| cross-subject | no | 0.642 | 0.165 | 0.616 | 0.166 |
+| unrelated | no | 0.212 | 0.098 | 0.183 | 0.089 |
 
-Facts that must both survive score higher than real corrections; every coexist pair exceeds 0.70. Sweeping every threshold:
+Facts that must both survive score higher than real corrections, at both dimensions. Every coexist pair exceeds 0.70: the family's minimum is 0.704 at 512 and 0.718 at 1536. Correction and coexist share the range 0.704–0.826 at 512 and 0.718–0.814 at 1536, and a coexist pair scores at least as high as a correction pair in 95.5% of the 62,500 cross pairs at 512, 97.9% at 1536. Sweeping every threshold:
 
-| threshold | correct retirements | wrong retirements |
-|---|---|---|
-| 0.60 (shipped) | 162 | 399 |
-| 0.70 (ADR 0006) | 52 | 328 |
-| 0.91 (highest accuracy) | 0 | 0 |
+| threshold | correct retirements (512) | wrong retirements (512) | correct (1536) | wrong (1536) |
+|---|---|---|---|---|
+| 0.60 (shipped) | 162 | 399 | 154 | 389 |
+| 0.70 (ADR 0006) | 52 | 328 | 37 | 305 |
+| 0.91 (highest accuracy) | 0 | 0 | 0 | 0 |
 
-The highest-accuracy setting is the one that supersedes nothing. Tracked as issue #334.
+The highest-accuracy setting is the one that supersedes nothing, at both dimensions, at the same 0.75 accuracy. Truncation is not what produces the overlap. Going to full dimension moves the correction median down 0.006 and the coexist median up 0.002, so the inversion the conclusion rests on is 0.008 wider; the coexist family's IQR narrows from 0.060 to 0.033 and its minimum rises further above 0.70. Tracked as issue #334.
 
 ## The structures
 
@@ -130,7 +130,7 @@ The ordering inside the top group is not resolved at this round's precision (§W
 
 - The turn stream is scripted. Only a behavioural QA pass measures the agent.
 - One decider model, temperature 0. Nine judgment misses in 100 corrections leaves little headroom to attribute to model choice.
-- Embeddings are truncated to 512 dimensions; every structure uses the same embedder.
+- Every structure ran on embeddings truncated to 512 dimensions, with the same embedder. The threshold result was re-measured at the native 1536 and does not depend on the truncation; the structure scores were not re-run at full dimension.
 - B9, B10, B11, B15, B16, B17, B18 and the claim graph ran on one seed. B14, B12, and the structures in the first table ran on two. B14's two seeds agree with each other and are both example-inflated; agreement across seeds does not detect a leak that is in the instruction rather than the data.
 - **The coexist set does not vary with the seed.** `harness/round4/dataset.py` builds it from `PERSONS[:4]` and a module-level `COEXIST` constant, so the 12 coexist probes and the 28 fact turns behind them are identical under every seed. Replication redraws the corrected, control and distractor assignments around a fixed coexist set; it never draws a second one. B14's coexist 1.00 "on two seeds" is one measurement reported twice, which is the mechanical reason seed agreement could not detect the example leak.
 - The coexist probe set is 28 values in three families, and one family is 12 of them, so a single example can move the column by 0.43. One probe is 8.3% of the column, against 1% for a corrected probe, because `net` weights the three families equally. A larger and flatter coexist set, redrawn per seed, would make the metric harder to move this way.
@@ -159,6 +159,7 @@ python3 harness/round4/coexist_families.py
 python3 harness/round4/call_schedule.py
 python3 harness/round4/precision.py
 python3 harness/round4/offer_width.py
+EMBED_DIMS=1536 python3 harness/round4/separability.py
 ```
 
-`OPENAI_API_KEY` required. Results land in `results_round4/`; embeddings and decider replies are cached beside the harness, so a re-run costs nothing after the first. The rounds 1–3 runners are `harness/creation_runner.py`, `harness/real_runner.py` and `harness/real_new_runner.py`.
+`OPENAI_API_KEY` required. Results land in `results_round4/`; embeddings and decider replies are cached beside the harness, so a re-run costs nothing after the first. `EMBED_DIMS` defaults to 512 and caches each dimension separately, so the first run at another dimension re-embeds and writes its own result files. The rounds 1–3 runners are `harness/creation_runner.py`, `harness/real_runner.py` and `harness/real_new_runner.py`.

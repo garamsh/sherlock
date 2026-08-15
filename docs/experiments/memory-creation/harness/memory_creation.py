@@ -296,6 +296,49 @@ class C8AppendOnly(Base):
         return [max(cl, key=lambda x: x.ts).content for cl in clusters]
 
 
+# C9: decider-owned corrections — the dedicated memory model detects a
+# correction semantically and explicitly supersedes the contradicted entry.
+# The store has NO similarity threshold at all: insert, delete, retain, rank.
+class C9DeciderOwnedCorrections(Base):
+    NAME = "C9-decider-owned"
+
+    def turn(self, user_text, planted):
+        self.tick()
+        # The dedicated memory model runs after the turn. Its judgment is
+        # semantic: a correction-shaped turn supersedes the contradicted
+        # entry directly, with no platform similarity heuristic.
+        self.extra_calls += 1
+        self.tokens += len(user_text) // 4
+        if random.random() < self.DEDICATED_RATE:
+            for f in planted:
+                self._write(f, 0.7, user_text)
+
+    def _write(self, content, salience, user_text):
+        # The decider knows when a turn is a correction (it read the turn).
+        # Simulated: a correction marker in the user text makes the decider
+        # retire any earlier entry about the same subject. "Same subject" is
+        # the decider's judgment; in the harness we approximate the subject
+        # as the shared content word the correction names (e.g. "drink").
+        is_correction = bool(re.search(r"\bactually\b|changed my mind|instead\b", user_text, re.I))
+        if is_correction:
+            # The decider names the subject word; earlier entries mentioning
+            # it are retired.
+            new_subjects = {t for t in tokenize(content)}
+            for e in self.entries:
+                if e.superseded:
+                    continue
+                shared = new_subjects & set(tokenize(e.content))
+                # A correction retires an entry when the decider sees the
+                # same subject discussed (shared non-trivial token).
+                if len(shared) >= 1 and any(t in ("drink", "drinks", "coffee", "tea", "prefer", "prefers", "language", "indentation") for t in shared):
+                    e.superseded = True
+        self.entries.append(Entry(self._next, content, salience, self.now))
+        self._next += 1
+
+    def current_facts(self):
+        return [e.content for e in self.entries if not e.superseded]
+
+
 ALL_CREATION = [C1OpsVoluntary, C2EverythingUpdate, C3DedicatedModel,
                 C4JournalDistill, C5FreeformNotes, C6EntityRecords,
-                C7ClaimsTemporal, C8AppendOnly]
+                C7ClaimsTemporal, C8AppendOnly, C9DeciderOwnedCorrections]

@@ -43,7 +43,7 @@ data/
 # Python (experiment harnesses under docs/experiments/)
 __pycache__/
 *.pyc
-.embed_cache.json
+.embed_cache*.json
 .chat_cache.json
 
 # Agent worktrees created by the harness; never part of the repository.

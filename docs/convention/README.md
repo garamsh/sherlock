@@ -1,6 +1,6 @@
 # Conventions Index
 
-Rules every agent follows when writing code. The PM owns these files; workers read and apply them.
+Rules every agent follows when writing code, tests, commits, and documents. The PM owns these files; workers read and apply them.
 
 ## Stack-neutral
 
@@ -9,7 +9,7 @@ Rules every agent follows when writing code. The PM owns these files; workers re
 | `code-comments.md` | When and how to comment code |
 | `runtime-safety.md` | Types, boundaries, error handling |
 | `testing.md` | Test layers, mocking, placement |
-| `ci.md` | Local/CI parity, workflows, security |
+| `ci.md` | Local/CI parity, pipeline authoring, security |
 | `git.md` | Branches, commits, PR titles, merging |
 | `style.md` | Naming and pattern consistency in code |
 | `simplicity.md` | Structural economy: shapes, layers, abstractions, dead code |

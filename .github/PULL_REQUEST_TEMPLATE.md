@@ -12,8 +12,8 @@
 
 ## Conventions consulted
 
-<!-- The docs/convention/ files you actually read and applied. Only list documents you read. -->
+<!-- The docs/convention/ files you actually read and applied. -->
 
 ## Convention concerns
 
-<!-- Optional. Disagreements or gaps found in docs/convention/. The PM decides; do not work around a convention silently. -->
+<!-- Disagreements or gaps found in docs/convention/. The PM decides; do not work around a convention silently. Write N/A with a reason when there are none. -->

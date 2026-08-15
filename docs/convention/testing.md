@@ -1,7 +1,9 @@
 # Testing Principles
 
+Test layers, mocking, and placement — what each layer proves, what to mock, and where tests live.
+
 ## Contents
-- Three layers — unit / integration / e2e
+- Three layers — different goals, different scopes
 - Behavior over implementation
 - Mocking strategy
 - Coverage and naming
@@ -9,12 +11,12 @@
 
 ## Three layers — different goals, different scopes
 
-The Test client column lists concrete tools by stack as orientation; if your stack isn't listed, see the relevant stack convention reference for the current in-process client.
+The concrete in-process client per stack is owned by the project's stack convention file; the Test client column states only the shape each layer requires.
 
 | Layer | Scope | Mocks | Test client | External systems |
 |---|---|---|---|---|
 | **Unit** | single function/class in isolation | replace at module boundaries (DB, HTTP, queue, time, FS) | direct call | none |
-| **Integration** | modules cooperating | external systems mocked or substituted; SUT is real | in-process client (`httpx.AsyncClient`+`ASGITransport` / `supertest`+`INestApplication` / `httptest.NewServer` / route fetcher) | mocked |
+| **Integration** | modules cooperating | external systems mocked or substituted; SUT is real | in-process client | mocked |
 | **E2E** | built binary against real infra | nothing | real client | **real** (testcontainers OK) |
 
 The app is *not yet a built binary* in integration. **No testcontainers in integration** — real Postgres for an integration test is e2e.
@@ -42,9 +44,7 @@ Time → inject a clock. Network → substitute. Filesystem → tmpdir. Random �
 ## Coverage and naming
 
 - Target meaningful branches, not 100%.
-- Names read like a spec:
-  - Go: `TestFunction_Scenario`
-  - Jest/Vitest: `describe(...) > it(...)`
+- Names read like a spec. Concrete test-name forms follow the project's stack convention file.
 - A failing test name should tell you what broke without opening the file.
 
 ## Placement

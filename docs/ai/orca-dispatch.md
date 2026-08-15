@@ -1,6 +1,10 @@
 # Orca Dispatch Guide
 
-How the PM dispatches workers into orca worktrees. Orca gives each task an isolated worktree, a persistent terminal the PM can watch, and a link to its issue. Applies only when the environment provides the orca CLI. On Linux the executable may be `orca-ide` — bare `orca` can resolve to the GNOME screen reader; check `which orca` first.
+How the PM dispatches workers into orca worktrees. Orca gives each task an isolated worktree, a persistent terminal the PM can watch, and a link to its issue. Applies only when the environment provides the orca CLI.
+
+Resolve the executable once and reuse it: `$ORCA_CLI_COMMAND` if set, else `$ORCA_AGENT_TEAMS_SHIM_BIN` if set, else `orca` inside an Orca-managed terminal, else `orca-ide` on Linux. Bare `orca` outside an Orca terminal on Linux is the GNOME screen reader. Both `orca` and the `orca-ide` on `PATH` can be app launchers that exit on the single-instance lock rather than running the command; the shim in `$ORCA_AGENT_TEAMS_SHIM_BIN` is the CLI.
+
+Orca serves its own version-matched command reference. Read it before dispatching, because the grammar changes between releases: `<orca> skills get orchestration`.
 
 ## Contents
 
@@ -53,8 +57,9 @@ orca orchestration check --wait --types worker_done,escalation,question --timeou
 ```
 
 - The readiness wait before `dispatch --inject` is mandatory. Dispatching before the TUI is idle silently drops the injected preamble — the worker then sits at an empty prompt while the dispatch claims `input_accepted`.
-- Prefer this low-level sequence over one-shot `worker-start`: worker-start was observed racing agent readiness (opencode) and losing the injected input. If you use worker-start anyway, verify input arrival with `worker-read` immediately.
+- Orca's own guide prefers one-shot `worker-start`. This project uses the low-level sequence instead because worker-start was observed racing agent readiness (opencode) and losing the injected input. Re-test it when Orca updates; if you use it, verify input arrival with `worker-read` immediately.
 - `check --wait` timing out is a checkpoint, not a failure — coding tasks routinely run 15–60 minutes; keep waiting.
+- Every settled dispatch ends in one of three states before the PM waits again: reused for the next task with `worker-start --task <next> --terminal <handle>`, kept for debugging with `worker-retain --dispatch <id>`, or `worker-release --dispatch <id>`. Released workers stay readable through `worker-read`. Leaving a settled dispatch unaccounted for strands its terminal.
 
 ## Recovery
 
@@ -75,7 +80,7 @@ Work is iterative: worker completes → PM reviews → PM comments on the issue 
 
 - PM sweep on every wake: `orca orchestration check --json` (unread Run mail) + `orca worktree ps --json` (stuck or in-review worktrees).
 - Worker-side status reporting (card updates, `worker_done`): `worker-guide.md` §Reporting status.
-- After the worker's PR is merged: `orca worktree rm --worktree path:<worktree-path>` and delete the task branch. A worktree listed as in-progress whose terminal shows an exited process is a stale dispatch, not active work — remove it.
+- After the worker's PR is merged: release the dispatch (see §Supervised mode), then `orca worktree rm --worktree path:<worktree-path>` and delete the task branch. A worktree listed as in-progress whose terminal shows an exited process is a stale dispatch, not active work — remove it.
 - A QA dispatch has no PR: remove its worktree as soon as the report lands on the issue. Every dispatch — worker or QA — ends with worktree removal; verify none are left (`orca worktree list`) after each completed dispatch.
 
 ## Anti-patterns

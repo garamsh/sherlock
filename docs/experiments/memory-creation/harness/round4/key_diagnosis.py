@@ -17,7 +17,9 @@ from api import embed_batch, flush
 from dataset import build, COEXIST
 from structures import KeyUpsertValueHints
 
-RESULTS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results")
+# Results land beside the report, not beside the caller's shell.
+RESULTS = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                       "..", "..", "results_round4")
 
 
 def main():

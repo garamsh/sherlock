@@ -1,5 +1,7 @@
 # Runtime Safety
 
+How types, boundaries, and error handling keep runtime errors out of production code.
+
 ## Contents
 - Core principle
 - Type system

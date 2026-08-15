@@ -8,7 +8,7 @@
 #
 # Pinned version: v2.12.2 — verified against
 # https://github.com/golangci/golangci-lint/releases/latest before adoption
-# (docs/convention/ci.md §"Verify an action before adopting").
+# (docs/convention/ci.md §"Verify a pinned dependency before adopting it").
 version: "2"
 
 linters:

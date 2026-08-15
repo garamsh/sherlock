@@ -6,7 +6,7 @@ What makes documentation valid in this project. Applies to every file under `doc
 
 - **No ASCII art or text diagrams.** Boxes, arrows, and trees drawn with characters break on every edit. Express structure as bulleted lists of paths with one-sentence descriptions, or link to the code.
 - **No implementation detail.** Code is the source of truth for how things work; docs record what exists and why. Do not transcribe function signatures, line-level behavior, or config dumps — they rot.
-- **One file, one responsibility.** Split files by topic, not by length. A long file is fine while every section serves its single topic; such files keep a Contents list at the top.
+- **One file, one responsibility.** Split files by topic, not by length. A file that outgrows a single topic does not get a Contents list as a remedy — it gets split by responsibility, with each piece serving one topic.
 - **Lists and tables over prose.** A rule scannable in 5 seconds beats a paragraph.
 
 ## Keep it self-contained
@@ -21,6 +21,7 @@ What makes documentation valid in this project. Applies to every file under `doc
 - A PR that changes structure, workflow, or conventions updates the affected docs in the same PR. Stale docs are worse than missing docs.
 - Delete docs that no longer describe anything real. Do not archive.
 - Every claim in a doc must be verifiable in the repo. If you cannot point at it, remove it.
+- Update an existing document when the topic is already covered there; do not create a parallel document for a new facet of the same topic. Total document volume is a managed cost — a new file earns its place by adding a topic no existing file owns.
 
 ## GitHub artifacts
 

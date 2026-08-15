@@ -1,0 +1,36 @@
+{
+  "seed": 11,
+  "row": {
+    "system": "B12-key-upsert-value-hints",
+    "blurb": "key-upsert, offering each related key with its current value",
+    "extra_calls": 1.0,
+    "decider_calls": 488,
+    "items": 286,
+    "elapsed_s": 350.5,
+    "latest_wins": 0.85,
+    "control_survival": 0.875,
+    "coexist_preserved": 0.4444,
+    "stale_present": 0.11,
+    "net": 0.7231,
+    "control_never_written": 0.0,
+    "control_retired": 0.075,
+    "control_not_ranked": 0.05,
+    "coexist_never_written": 0.0,
+    "coexist_retired": 0.5714,
+    "coexist_not_ranked": 0.0,
+    "outcomes": {
+      "corrected:recalled": 94,
+      "corrected:not_ranked": 6,
+      "control:recalled": 35,
+      "control:not_ranked": 2,
+      "control:retired": 3,
+      "coexist:recalled": 12,
+      "coexist:retired": 16
+    }
+  },
+  "api_calls": {
+    "embed": 29,
+    "chat": 411,
+    "chat_cached": 77
+  }
+}

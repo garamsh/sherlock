@@ -1,0 +1,38 @@
+{
+  "seed": 7,
+  "row": {
+    "system": "B11-rewrite-scoped",
+    "blurb": "B10, told the shown set spans subjects and only false lines may go",
+    "extra_calls": 1.0,
+    "decider_calls": 488,
+    "items": 246,
+    "elapsed_s": 587.0,
+    "latest_wins": 0.7,
+    "control_survival": 0.8,
+    "coexist_preserved": 0.4028,
+    "stale_present": 0.16,
+    "net": 0.6343,
+    "control_never_written": 0.025,
+    "control_retired": 0.175,
+    "control_not_ranked": 0.0,
+    "coexist_never_written": 0.0,
+    "coexist_retired": 0.6071,
+    "coexist_not_ranked": 0.0,
+    "outcomes": {
+      "corrected:recalled": 83,
+      "corrected:retired": 10,
+      "corrected:not_ranked": 5,
+      "corrected:never_written": 2,
+      "control:recalled": 32,
+      "control:retired": 7,
+      "control:never_written": 1,
+      "coexist:retired": 17,
+      "coexist:recalled": 11
+    }
+  },
+  "api_calls": {
+    "embed": 19,
+    "chat": 430,
+    "chat_cached": 58
+  }
+}

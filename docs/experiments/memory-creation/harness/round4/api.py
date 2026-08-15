@@ -10,13 +10,23 @@ from operator import mul as _mul
 
 API_KEY = os.environ.get("OPENAI_API_KEY", "")
 HERE = os.path.dirname(os.path.abspath(__file__))
-EMBED_CACHE = os.path.join(HERE, ".embed_cache.json")
-CHAT_CACHE = os.path.join(HERE, ".chat_cache.json")
 
 EMBED_MODEL = "text-embedding-3-small"
 DECIDER_MODEL = "gpt-4o-mini"
-# Truncated output dimensions; every structure uses the same embedder.
-EMBED_DIMS = 512
+# Output dimensions; every structure uses the same embedder. 512 truncates the
+# model's native 1536, and is what every committed round-4 result was measured at.
+DEFAULT_EMBED_DIMS = 512
+EMBED_DIMS = int(os.environ.get("EMBED_DIMS", DEFAULT_EMBED_DIMS))
+
+
+def dims_suffix() -> str:
+    """File-name suffix marking a non-default dimension; empty at the default."""
+    return "" if EMBED_DIMS == DEFAULT_EMBED_DIMS else f"_dims{EMBED_DIMS}"
+
+
+# The cache is keyed on text, so each dimension needs its own file.
+EMBED_CACHE = os.path.join(HERE, f".embed_cache{dims_suffix()}.json")
+CHAT_CACHE = os.path.join(HERE, ".chat_cache.json")
 
 _lock = threading.Lock()
 API_CALLS = {"embed": 0, "chat": 0, "chat_cached": 0}

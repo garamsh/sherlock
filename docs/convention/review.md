@@ -39,6 +39,10 @@ When the PM and authors share one GitHub account, GitHub rejects `approve` on on
 - **The merge is the approval.** Post the evidence table as a `comment` review, then merge immediately.
 - Request-changes reviews work normally — use them as usual.
 
+## Accepted deviations
+
+When a reviewer accepts a deviation instead of blocking on it, the review records it with the reason. An unrecorded acceptance did not happen.
+
 ## Responding to a review (author)
 
 - Address every blocker, or rebut it by citing a rule or path that supports your approach. Silent ignoring is not allowed.

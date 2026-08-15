@@ -22,6 +22,8 @@ One decision-maker merges; many workers implement; QA hunts for problems but fix
 
 A session is bound to one role at launch with the tool's own `--agent <role>` flag; the role cannot be switched mid-session. Role adapters live in `.claude/agents/` and `.opencode/agents/`.
 
+PM-owned paths are `docs/convention/`, `docs/ai/`, `.claude/`, `.opencode/` and `.github/`. Workers and QA do not modify them. A worker may modify one only when the assigned issue explicitly delegates that path.
+
 Detailed procedures: `docs/ai/pm-guide.md`, `docs/ai/worker-guide.md`, `docs/ai/qa-guide.md`. The PM dispatches workers into orca worktrees per `docs/ai/orca-dispatch.md`.
 
 ## Rules that apply to every agent

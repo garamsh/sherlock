@@ -60,8 +60,8 @@ The highest-accuracy setting is the one that supersedes nothing, at both dimensi
 
 B1 and B7 write from the main response at the cycle experiment's assumed 80% compliance. The two seeds agree on the ranking except B1 and B6, which swap at the bottom.
 
-- **What the decider is shown is the structure.** B2 and B3 differ only in that. Showing the store's retrieval instead of the recent writes moves corrections from 0.01 to 0.71; widening the offer reaches 0.76. B2's 0.60 in the earlier rounds measured a fifteen-item store, not the structure.
-- **The candidate set is safe to widen; a threshold is not.** Retirement of control facts stays at 0.00 across B3 and B9. Offering more spends prompt tokens; no setting deletes data.
+- **What the decider is shown is the structure.** B2 and B3 differ only in that. Showing the store's retrieval instead of the recent writes moves corrections from 0.01 to 0.71 — a gap far outside anything this round's precision could blur. Widening the offer beyond that is a smaller move than the round can order (§What the net column can and cannot separate); what it demonstrably does is a count, taking the contradicted rows that never reached the decider from 11 of 100 to 2. B2's 0.60 in the earlier rounds measured a fifteen-item store, not the structure.
+- **The candidate set is safe to widen; a threshold is not.** Retirement of control facts stays at 0.00 across B3 and B9. No setting deletes data — but the offer stops paying at 10, and §The offer is wide enough, and wider does not pay has the cost curve.
 - **The shipped mechanism is last.** It retires half of the never-corrected facts and 61% of the coexisting ones.
 - **A topic key works, once the decider can see what a key holds.** The first two key structures were wrong about the hint, not about the idea. B4 offers no hints, so the decider coins fresh keys and corrections never land (0.24). B5 offers key *names*, so it reuses a key without knowing whether it holds the same fact, and destroys 55% of the control facts. Offering each key with its current value (B12) drops control retirement to 0.00 and lifts net from 0.51 to 0.77. The residual was five keys holding several simultaneously-true facts — `otto.language` taking Korean, then English, then German, each write replacing the last — and telling the decider to coin a narrower key in that case (B14) reaches coexist 1.00 and net 0.91, the best measured, destroying nothing.
 - **Append-only does not help.** B6 deletes nothing and still loses 65% of control facts, because read-time latest-per-key hides the colliding rows.
@@ -75,7 +75,7 @@ B1 and B7 write from the main response at the cycle experiment's assumed 80% com
 | instrument | 8 | 8 | 8 | 4 |
 | languages | 12 | 12 | 4 | 5 |
 
-  Allergy survives under every instruction; instrument survives when the example is nearby and halves when it is not; languages survives only when the example names it. So B14's 1.00 decomposes into 8 values from a family that is robust on its own, 8 that generalise from a near example, and **12 — 43% of the coexist probe set — that survive only because the prompt names them**. Score the same structure with an example that points outside the data and coexist is 0.64, which puts its honest net at 0.81, below B9's 0.86.
+  Allergy survives under every instruction; instrument survives when the example is nearby and halves when it is not; languages survives only when the example names it. So B14's 1.00 decomposes into 8 values from a family that is robust on its own, 8 that generalise from a near example, and **12 — 43% of the coexist probe set — that survive only because the prompt names them**. Score the same structure with an example that points outside the data and coexist is 0.64, which puts its honest net at 0.81 — no longer ahead of B9's 0.86, though the two are not separable either (§What the net column can and cannot separate). What the example costs is a count: 12 of 28 coexist values.
 - **Key-upsert's silent case is unsafe where B9's is safe.** In B9 an unmentioned memory is left alone, so a coexist family the decider never thinks about survives by default. In a key-addressed store the default is one key per topic, so a family the decider does not recognise as multi-answer is swallowed — `maria.languages` holding three `speaks-X` rows with two dropped, `otto.hobbies` swallowing cello and drums. A plural stem does not save it. The structure needs a per-family signal that nothing in it currently carries.
 - **The key definition is worth keeping on its own.** B17 posts the round's best correction number — latest-wins 0.87 against B14's 0.75, keys reused 87 against 80, coined 8 against 14, stale 0.09 against 0.22 — and every value-named key is gone (no `alma.tea`, no `kofi.pets.turtle`). Its remaining eight misses are genuine topic ambiguity, such as "Maria moved to fish" read as a diet. It also settles B15: empty writes are 8 of 388 here against B15's 49, so B15's write collapse came from the offer size, not from the key definition the two share.
 - **The protocol's silent case decides its safety.** B10 removes the vocabulary entirely: the decider returns what the shown set should now be, so deletion is omission. Classifying all 106 of its removals shows what that costs — 4% are paraphrase churn, the rest are collateral, a fact about another subject or another true value dropped from the reply. Stating the scope explicitly (B11) makes it worse, not better: 0.63. B14 keeps the same one-field output and does not have the problem, because a key that is not written is not touched. Whether the vocabulary is small matters less than whether silence means "no change"; a threshold firing on similarity, a key collision and an omitted line are the same failure.
@@ -130,20 +130,38 @@ The row is at rank 1 for 56 of the 95 and within rank 5 for 84; rank 15 is the d
 
 **K stays at 10.** Going 5 → 10 costs 203 extra candidate rows per correction recovered; going 10 → 20 costs 1,599, and buys 2 corrections of 100 — 0.02 on latest-wins and 0.007 on `net`, an order of magnitude below what any affordable run can resolve. Against that, B16 is this round's measured evidence that loading more into one reply degrades it, and a 3% degradation on the 93 corrections already reaching the decider would be four times the gain in the opposite direction. The retrieval half is closed to 98% and the residual is judgment.
 
-### The residual moves more with phrasing than with structure
+### What the corrected column is measuring
 
-Every correction template in the dataset announces the change — `switched`, `migrated`, `now`, `these days`, `instead`. Restating each correction in the stored sentence's own form instead, with only the value swapped, and holding the offer fixed at what the announced turn retrieved:
+Every correction template in the dataset announces the change — `switched`, `migrated`, `now`, `these days`, `instead`. Four phrasings of each correction, judged with the offer held fixed at what the announced turn retrieved, on the 93 whose offer carried the contradicted row:
 
-| correction phrasing | retired, of the 93 whose offer carried the row |
-|---|---|
-| announced (`Alma has switched to tea lately.`) | 77 — 0.83 |
-| restated (`Alma drinks tea every morning.`) | 86 — 0.92 |
+| arm | marker | phrasing | retired | mean cosine to the row it contradicts |
+|---|---|---|---|---|
+| A | yes | the announced correction the dataset writes | 77 — 0.83 | 0.641 |
+| B | no | the stored sentence carrying the new value | 86 — 0.92 | 0.800 |
+| C | yes | B with a temporal marker prepended | 89 — 0.96 | 0.743 |
+| D | no | the category's other initial template | 66 — 0.71 | 0.673 |
 
-Paired on the same turns: 75 retired under both, 11 kept only when announced, 2 the reverse, 5 kept under both (McNemar exact p = 0.023). **The corrected column is not inflated by lexical announcement.** An unannounced restatement is judged at least as well, so a deployment where users restate rather than announce is not measured optimistically here.
+**The decider is not following the marker.** C and B share a base sentence and differ only by the prepended phrase: 3 discordant pairs, exact p = 0.25. The prepend also lowers surface similarity while raising the rate.
 
-Two cautions on reading it further. The restated form drops the marker and gains maximal surface overlap with the row it contradicts at the same time — mean rank of that row moves from 2.53 to 1.21, and rank 1 from 56 turns to 81 — so which of the two changes did the work is open, and the arm judged better is also the arm that looks most like what it contradicts. And the effect is concentrated rather than uniform: `manager`, whose values are people's names, carries 3 of the 11 flips, while `testing` stays at 1 of 3 in both arms on `{p} now relies on {v}.`, which is topic ambiguity that rephrasing does not touch.
+**It is not matching surface either.** Similarity would order the arms B > C > D > A. The measurement gives C > B > A > D, and D sits at higher mean cosine than A while retiring eleven fewer (p = 0.019). Across all 372 outcomes the correlation with cosine is 0.29, and the quantile bands are a floor rather than a slope — everything above 0.61 lands between 0.79 and 0.95.
 
-What is established is the size. **Retire rate moves 0.09 with the phrasing of the incoming turn, which is larger than every difference between the structures in the top group.** It also settles the retrieval tail from the other side: both rows unreachable at K=10 are reached at rank 1 under the restated form, so the tail is corrections that share no surface with what they contradict rather than a limit of the retriever.
+What separates the arms is whether the incoming sentence is unambiguously an answer to the same question. Per category, D collapses in exactly the places where it is not:
+
+| category | n | A | B | C | D |
+|---|---|---|---|---|---|
+| gym | 5 | 5 | 5 | 5 | **1** |
+| pet | 6 | 5 | 5 | 5 | **1** |
+| testing | 7 | 5 | 5 | 6 | **3** |
+| manager | 5 | 2 | 5 | 5 | 1 |
+| eight others | 32 | 32 | 32 | 32 | 32 |
+
+A person can do two sports, keep two pets and run two kinds of test. "Nina has a turtle at home." beside a stored "Nina keeps a cat." is a fact that can coexist, and keeping the stored row is the decider judging correctly rather than failing. **In those three categories — 18 of the 93 — the announcement is what makes the item a correction at all.** Strip it and the ground truth goes with it.
+
+So the corrected column measures the decider on the 75 items whose topic is single-valued, and on the other 18 it measures whether the template said `instead`. That is a property of the dataset, not of any structure, and it applies to every row of the table equally.
+
+It also supplies the mechanism behind the key structures' correction scores. A key forces the stored fact and the incoming one through a single address, which manufactures "the same question" whatever the phrasing — which is why the question-shaped key posts the round's best correction number without changing anything about what the decider is shown.
+
+Two smaller results fall out. The span across the four arms is 0.25, from D's 0.71 to C's 0.96, so **phrasing moves the corrected column further than any difference between the structures in the top group.** And both rows unreachable at K=10 are reached at rank 1 under arm B, confirming that the retrieval tail is corrections sharing no surface with what they contradict rather than a limit of the retriever.
 
 ## One decider call per turn, and what a cheaper schedule would buy
 
@@ -161,7 +179,7 @@ The ordering inside the top group is not resolved at this round's precision (§W
 
 - Threshold supersession is removed from the store, not retuned. The platform retains, ranks and forgets.
 - **The decider is shown the store's retrieval for the incoming turn and returns what to store and what to retire** (B9, net 0.86). It is adopted for the property the key structures cannot match: an unmentioned memory is left alone, so facts the decider never considers survive. Widening the candidate offer deletes nothing at any setting, but it stops paying at 10: the retrieval half of its residual is closed to 98%, and what remains is judgment.
-- **Key-addressed replacement is not adopted.** Scored without an example pointing at the probe set it reaches 0.81, and its losses are coexisting facts silently swallowed by a single key. It is the better structure on corrections and should be revisited if the multi-answer case is carried by something the decider returns rather than a key shape it has to infer.
+- **Key-addressed replacement is not adopted.** Scored without an example pointing at the probe set it reaches 0.81, and its losses are coexisting facts silently swallowed by a single key. The key-addressed family holds the round's two best correction numbers — B17 at 0.87 and B18 at 0.85, against B9's 0.76 — though B14 itself is not among them at 0.75, so what carries corrections is the key *definition* rather than the replacement rule. The shape should be revisited if the multi-answer case is carried by something the decider returns rather than a key it has to infer.
 - **The question-shaped key definition is worth keeping on its evidence.** Its correction gain is example-independent — latest-wins 0.87 and 0.85 across two unrelated examples, no value-named keys, no write suppression — and it is the round's best correction result. It is an improvement to the write vocabulary, not to the store shape.
 - Claim links, append-only read-time resolution, a main-model-written field, and neighbourhood rewrite are rejected.
 - The write protocol keeps an explicit retire list. Silence must mean no change.
@@ -170,7 +188,8 @@ The ordering inside the top group is not resolved at this round's precision (§W
 ## Limits
 
 - The turn stream is scripted. Only a behavioural QA pass measures the agent.
-- One decider model, temperature 0. The 16 judgment misses in 100 corrections under B9 are the whole headroom, and nothing here separates what a different model would do from what a different phrasing does — §The residual moves more with phrasing than with structure shows the second is worth 0.09 on its own.
+- One decider model, temperature 0. The 16 judgment misses in 100 corrections under B9 are the whole headroom, and nothing here separates what a different model would do from what a different phrasing does — §What the corrected column is measuring puts the second at 0.25 across four phrasings of the same corrections.
+- 18 of the 93 judgeable corrections are in categories where a person can hold two values at once, so they are corrections only because the template announces them (§What the corrected column is measuring). Every structure is scored on the same 18, so the ranking is not distorted, but the corrected column is not purely a measure of judgment.
 - Every structure ran on embeddings truncated to 512 dimensions, with the same embedder. The threshold result was re-measured at the native 1536 and does not depend on the truncation; the structure scores were not re-run at full dimension.
 - **A probe value is credited on a substring match.** `harness/round4/scoring.py` tests `value in row.lower()`, so `Zed` is credited by "Vera has since standardized on Python.", `fish` by "Maria is allergic to shellfish." — a coexist statement scoring a corrected `shell` probe — and `tea` by "team" and by "instead". Counting the credits that hold only as a substring, replayed on seed 7: B9 2, B14 3, B17 3, all in the corrected family, some crediting the new value and some holding the old one present. It is systematic rather than random and it favours structures that write more rows, but at ±0.083 on `net` it moves nothing in this document, so round 4 is not rescored (#371). Round 5 credits a value only where a row states it as a whole word, and fails its dataset check if a value it adds sits inside another value or inside the fixed sentence vocabulary.
 - B9, B10, B11, B15, B16, B17, B18 and the claim graph ran on one seed. B14, B12, and the structures in the first table ran on two. B14's two seeds agree with each other and are both example-inflated; agreement across seeds does not detect a leak that is in the instruction rather than the data.
@@ -179,7 +198,6 @@ The ordering inside the top group is not resolved at this round's precision (§W
 - **The coexist column is also the noisiest, on data that does not change.** B12 scores coexist 0.61 on seed 7 and 0.44 on seed 11 against the identical coexist set, so 0.167 of that column is the surrounding store rather than the probes. A fixed, small, high-variance measurement carries a third of `net`.
 - **The measured seed movement agrees with the computed interval.** B12 moves 0.049 on net between its two seeds and B14 moves 0.005, both inside what §What the net column can and cannot separate allows. The two lines of evidence — sampling error computed from the probe counts, and movement observed between seeds — give the same answer about what the ranking can carry.
 - A structure's first score measures the attempt, not the idea: B5 to B12 to B14 is one structure whose two diagnosed defects were in what the decider was shown. The claim graph is unranked: its decider stored 85 of roughly 290 facts, so the structure was never exercised.
-- Coexist is the smallest probe family at 12.
 
 ## Reproducing
 

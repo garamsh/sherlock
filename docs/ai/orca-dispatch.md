@@ -24,22 +24,32 @@ All agent processes are launched through the orca CLI. No `nohup`, detached spaw
 
 ## Binding the role
 
-Orca's `--agent <id>` selects the *tool* (`claude`, `opencode`, `codex`, `cursor`, `claude-teams`), not the project role. In the modes below the role travels in the brief: "Work GitHub issue #N as the worker — follow `docs/ai/worker-guide.md` and `docs/convention/`." A worker that reports the wrong role — or none — was not briefed correctly; fix the brief, not the worktree.
+Orca's `--agent <id>` selects the *tool* (`claude`, `opencode`, `codex`, `cursor`, `claude-teams`), not the project role. The role is bound at launch with the tool's own `--agent <role>` flag, which both `claude` and `opencode` accept and which cannot be switched mid-session (`AGENTS.md`). Orca can only pass it through `terminal create --command`:
+
+```bash
+orca terminal create --worktree <selector> --title <task> --command "claude --agent worker" --json
+```
+
+- Same worktree: `--worktree active`, one fresh agent terminal per worker.
+- New worktree: `worktree create` cannot carry the flag, so create the worktree without an agent, then add the agent terminal with the command above.
+- The brief still states the issue and the constraints, but it does not carry the role. A worker that reports the wrong role was launched without the flag; relaunch it, do not re-brief it.
 
 ## Lightweight mode (verified)
 
 For independent tasks where the PR is the completion signal.
 
 ```bash
-orca worktree create --name <task> --no-parent \
-  --agent <id> --prompt "<self-contained brief>" --json
-# capture agentTerminalHandle (or startupTerminal.handle)
+orca worktree create --name <task> --no-parent --setup run --json
+orca terminal create --worktree id:<newFullWorktreeId> --title <task> \
+  --command "<tool> --agent worker" --json
 orca terminal wait --terminal <handle> --for tui-idle --timeout-ms 60000 --json
+orca terminal send --terminal <handle> --text "<self-contained brief>" --enter --json
 orca terminal read --terminal <handle> --json
 ```
 
-- Always pass `--agent` and `--prompt` together — an agent without a prompt idles forever.
-- The brief is self-contained: issue number, role instructions, constraints. The worker reads the issue itself; keep the brief short.
+- The two-step form is required, not a preference: `worktree create --agent` launches the tool with no role flag (see §Binding the role).
+- Close the fallback shell `worktree create` leaves, once `terminal list` confirms it is unused.
+- The brief is self-contained: issue number and constraints. The worker reads the issue itself; keep the brief short. The role comes from the flag, not the brief.
 - **A dispatch is not done until `terminal read` shows the agent working.** "Worktree created" is not "work started."
 
 ## Supervised mode (verified)
@@ -49,7 +59,9 @@ For work the PM must track to completion. Uses orca orchestration: a Run inbox w
 ```bash
 orca orchestration run-create --objective "<objective>" --json
 orca orchestration task-create --spec "<self-contained spec>" --json
-orca worktree create --name <task> --no-parent --agent <id> --json
+orca worktree create --name <task> --no-parent --setup run --json
+orca terminal create --worktree id:<newFullWorktreeId> --title <task> \
+  --command "<tool> --agent worker" --json
 orca terminal wait --terminal <handle> --for tui-idle --timeout-ms 60000 --json
 orca orchestration dispatch --task <task_id> --to <handle> --inject --json
 # completion arrives in the Run inbox:
@@ -88,7 +100,8 @@ Work is iterative: worker completes → PM reviews → PM comments on the issue 
 ## Anti-patterns
 
 - Detached/background agent spawns outside Orca (see §Never bypass Orca tracking).
-- Bare `worktree create` then `terminal create --command <agent>` — leaves a fallback shell and invites lost input; use `--agent`.
+- Launching a worker without the tool's `--agent <role>` flag — it runs unbound and reports the wrong role (see §Binding the role).
+- Leaving the fallback shell that bare `worktree create` opens: close it once `terminal list` confirms it is an unused shell.
 - `terminal send` or `dispatch --inject` before the TUI is idle — input is lost silently.
 - Retrying a failed dispatch by creating a new worktree instead of re-injecting into the existing one.
 

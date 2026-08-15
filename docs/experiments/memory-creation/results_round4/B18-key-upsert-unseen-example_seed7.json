@@ -1,0 +1,36 @@
+{
+  "seed": 7,
+  "row": {
+    "system": "B18-key-upsert-unseen-example",
+    "blurb": "B17, with the narrowing example naming a family the probes never see",
+    "extra_calls": 1.0,
+    "decider_calls": 488,
+    "items": 288,
+    "elapsed_s": 2501.3,
+    "latest_wins": 0.85,
+    "control_survival": 0.95,
+    "coexist_preserved": 0.6389,
+    "stale_present": 0.11,
+    "net": 0.813,
+    "control_never_written": 0.0,
+    "control_retired": 0.025,
+    "control_not_ranked": 0.025,
+    "coexist_never_written": 0.0,
+    "coexist_retired": 0.3929,
+    "coexist_not_ranked": 0.0,
+    "outcomes": {
+      "corrected:recalled": 93,
+      "corrected:not_ranked": 7,
+      "control:recalled": 38,
+      "control:retired": 1,
+      "control:not_ranked": 1,
+      "coexist:retired": 11,
+      "coexist:recalled": 17
+    }
+  },
+  "api_calls": {
+    "embed": 3,
+    "chat": 411,
+    "chat_cached": 77
+  }
+}

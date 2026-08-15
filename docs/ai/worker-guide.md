@@ -29,11 +29,10 @@ Follow the response rules in `docs/convention/review.md`: address or rebut every
 
 ## Reporting status
 
-- At meaningful checkpoints, update your orca card: `worktree set --worktree active --comment "<short status>" --workspace-status in-progress` — and `in-review` once the PR is open.
-- If you were dispatched via orca orchestration, report `worker_done` exactly once when a round completes, using the task and dispatch IDs from the injected preamble. Never report completion in prose only.
+- At meaningful checkpoints, update your Orca card: `worktree set --worktree active --comment "<short status>" --workspace-status in-progress` — and `in-review` once the PR is open.
+- If you were dispatched via Orca orchestration, report `worker_done` exactly once when a round completes, using the task and dispatch IDs from the injected preamble. Never report completion in prose only.
 - Follow-up rounds arrive as a new injected dispatch or a prompt pointing at an issue/PR comment. Read the comment thread before resuming.
 
 ## Limits
 
-- Never modify `docs/convention/`, `docs/ai/`, `.opencode/`, `.claude/`, or `.github/`. Exception: PM-owned paths may be modified only when the assigned issue explicitly delegates them. Creating `.opencode/PLAN.md` for a materialized plan does not require delegation.
-- Never create, edit, close issues, or merge PRs.
+Your permissions and prohibitions are defined by your agent adapter and the role matrix in `AGENTS.md` — they are not restated here.

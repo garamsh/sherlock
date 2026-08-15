@@ -1,0 +1,210 @@
+{
+  "seed": 7,
+  "turns": 488,
+  "label_counts": {
+    "chatter": 100,
+    "initial": 140,
+    "distractor": 120,
+    "correction": 100,
+    "coexist": 28
+  },
+  "structures": {
+    "B9-decider-neighbors-wide": {
+      "calls": 488,
+      "items": 298,
+      "census": {
+        "chatter": {
+          "turns": 100,
+          "stored": 1,
+          "retired": 0,
+          "no_op": 99,
+          "rows_written": 1,
+          "rows_retired": 0
+        },
+        "initial": {
+          "turns": 140,
+          "stored": 139,
+          "retired": 3,
+          "no_op": 1,
+          "rows_written": 139,
+          "rows_retired": 3
+        },
+        "distractor": {
+          "turns": 120,
+          "stored": 120,
+          "retired": 3,
+          "no_op": 0,
+          "rows_written": 120,
+          "rows_retired": 3
+        },
+        "correction": {
+          "turns": 100,
+          "stored": 100,
+          "retired": 80,
+          "no_op": 0,
+          "rows_written": 100,
+          "rows_retired": 80
+        },
+        "coexist": {
+          "turns": 28,
+          "stored": 28,
+          "retired": 4,
+          "no_op": 0,
+          "rows_written": 28,
+          "rows_retired": 4
+        }
+      },
+      "no_op_calls": 100,
+      "no_op_fraction": 0.2049,
+      "stores_on_chatter": 1,
+      "retires_on_chatter": 0,
+      "score": {
+        "latest_wins": 0.76,
+        "control_survival": 0.975,
+        "coexist_preserved": 0.8472,
+        "stale_present": 0.18,
+        "net": 0.8607,
+        "control_never_written": 0.0,
+        "control_retired": 0.0,
+        "control_not_ranked": 0.025,
+        "coexist_never_written": 0.0,
+        "coexist_retired": 0.1429,
+        "coexist_not_ranked": 0.0,
+        "outcomes": {
+          "corrected:recalled": 92,
+          "corrected:not_ranked": 5,
+          "corrected:retired": 3,
+          "control:recalled": 39,
+          "control:not_ranked": 1,
+          "coexist:retired": 4,
+          "coexist:recalled": 24
+        }
+      },
+      "skipped_writes": {
+        "rows_removed": [
+          "The office coffee machine is broken."
+        ],
+        "probes_changed": {}
+      },
+      "gate": {
+        "calls": 388,
+        "calls_saved": 100,
+        "saved_fraction": 0.2049,
+        "cache_misses": 81,
+        "covered": false
+      }
+    },
+    "B14-key-upsert-plural": {
+      "calls": 488,
+      "items": 312,
+      "census": {
+        "chatter": {
+          "turns": 100,
+          "stored": 8,
+          "retired": 0,
+          "no_op": 92,
+          "rows_written": 8,
+          "rows_retired": 0
+        },
+        "initial": {
+          "turns": 140,
+          "stored": 135,
+          "retired": 0,
+          "no_op": 5,
+          "rows_written": 135,
+          "rows_retired": 0
+        },
+        "distractor": {
+          "turns": 120,
+          "stored": 120,
+          "retired": 0,
+          "no_op": 0,
+          "rows_written": 120,
+          "rows_retired": 0
+        },
+        "correction": {
+          "turns": 100,
+          "stored": 100,
+          "retired": 82,
+          "no_op": 0,
+          "rows_written": 103,
+          "rows_retired": 82
+        },
+        "coexist": {
+          "turns": 28,
+          "stored": 28,
+          "retired": 0,
+          "no_op": 0,
+          "rows_written": 28,
+          "rows_retired": 0
+        }
+      },
+      "no_op_calls": 97,
+      "no_op_fraction": 0.1988,
+      "stores_on_chatter": 8,
+      "retires_on_chatter": 0,
+      "score": {
+        "latest_wins": 0.75,
+        "control_survival": 0.975,
+        "coexist_preserved": 1.0,
+        "stale_present": 0.22,
+        "net": 0.9083,
+        "control_never_written": 0.0,
+        "control_retired": 0.0,
+        "control_not_ranked": 0.025,
+        "coexist_never_written": 0.0,
+        "coexist_retired": 0.0,
+        "coexist_not_ranked": 0.0,
+        "outcomes": {
+          "corrected:recalled": 93,
+          "corrected:not_ranked": 7,
+          "control:recalled": 39,
+          "control:not_ranked": 1,
+          "coexist:recalled": 28
+        }
+      },
+      "skipped_writes": {
+        "rows_removed": [
+          "The build is green again.",
+          "The latest meeting was long and resulted in no decisions.",
+          "Standup is moved to 10.",
+          "The staging environment is flaky.",
+          "Someone left a laptop in the room.",
+          "The office coffee machine is broken.",
+          "The assistant will be out Friday afternoon.",
+          "The documentation needs a refresh."
+        ],
+        "probes_changed": {}
+      },
+      "gate": {
+        "calls": 388,
+        "calls_saved": 100,
+        "saved_fraction": 0.2049,
+        "cache_misses": 0,
+        "covered": true,
+        "items": 304,
+        "score": {
+          "latest_wins": 0.75,
+          "control_survival": 0.975,
+          "coexist_preserved": 1.0,
+          "stale_present": 0.22,
+          "net": 0.9083,
+          "control_never_written": 0.0,
+          "control_retired": 0.0,
+          "control_not_ranked": 0.025,
+          "coexist_never_written": 0.0,
+          "coexist_retired": 0.0,
+          "coexist_not_ranked": 0.0,
+          "outcomes": {
+            "corrected:recalled": 93,
+            "corrected:not_ranked": 7,
+            "control:recalled": 39,
+            "control:not_ranked": 1,
+            "coexist:recalled": 28
+          }
+        },
+        "probes_changed": {}
+      }
+    }
+  }
+}

@@ -156,6 +156,7 @@ python3 harness/round4/key_diagnosis.py
 python3 harness/round4/b9_diagnosis.py
 python3 harness/round4/b16_writes.py
 python3 harness/round4/coexist_families.py
+python3 harness/round4/call_schedule.py
 python3 harness/round4/precision.py
 python3 harness/round4/offer_width.py
 ```

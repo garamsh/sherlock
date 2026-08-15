@@ -1,0 +1,677 @@
+{
+  "seed": 7,
+  "structures": {
+    "B9": {
+      "structure": "B9-decider-neighbors-wide",
+      "fact_turns": 388,
+      "rows_written": 388,
+      "facts_planted": 268,
+      "never_written": 1,
+      "turn_stored_nothing": 1,
+      "turn_stored_a_reworded_fact": 0,
+      "kinds": {
+        "corrected-old:written": 99,
+        "corrected-new:written": 100,
+        "corrected-old:never_written": 1,
+        "control:written": 40,
+        "coexist:written": 28
+      },
+      "misses": [
+        {
+          "subject": "Bruno",
+          "value": "bash",
+          "kind": "corrected-old",
+          "turns": [
+            "Bruno uses bash."
+          ],
+          "stored": []
+        }
+      ]
+    },
+    "B16": {
+      "structure": "B16-decider-verdicts",
+      "fact_turns": 388,
+      "rows_written": 268,
+      "facts_planted": 268,
+      "never_written": 69,
+      "turn_stored_nothing": 68,
+      "turn_stored_a_reworded_fact": 1,
+      "kinds": {
+        "corrected-old:written": 66,
+        "corrected-new:written": 84,
+        "corrected-old:never_written": 34,
+        "corrected-new:never_written": 16,
+        "control:written": 27,
+        "control:never_written": 13,
+        "coexist:written": 22,
+        "coexist:never_written": 6
+      },
+      "misses": [
+        {
+          "subject": "Maria",
+          "value": "Zipkin",
+          "kind": "corrected-old",
+          "turns": [
+            "Maria's team traces with Zipkin."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Maria",
+          "value": "Honeycomb",
+          "kind": "corrected-new",
+          "turns": [
+            "Maria's team moved tracing to Honeycomb."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Bruno",
+          "value": "IntelliJ",
+          "kind": "corrected-old",
+          "turns": [
+            "Bruno writes code in IntelliJ."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Milo",
+          "value": "macOS",
+          "kind": "corrected-old",
+          "turns": [
+            "Milo works on macOS."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Sena",
+          "value": "Karin",
+          "kind": "corrected-new",
+          "turns": [
+            "Sena was moved under Karin."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Sena",
+          "value": "property-based tests",
+          "kind": "corrected-old",
+          "turns": [
+            "Sena's test suite is built on property-based tests."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Vera",
+          "value": "VS Code",
+          "kind": "corrected-old",
+          "turns": [
+            "Vera writes code in VS Code."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Otto",
+          "value": "Honeycomb",
+          "kind": "corrected-old",
+          "turns": [
+            "Otto's team traces with Honeycomb."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Otto",
+          "value": "end-to-end tests",
+          "kind": "corrected-old",
+          "turns": [
+            "Otto writes end-to-end tests."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Bruno",
+          "value": "GMT",
+          "kind": "corrected-old",
+          "turns": [
+            "Bruno is based in GMT."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Bruno",
+          "value": "CET",
+          "kind": "corrected-new",
+          "turns": [
+            "Bruno relocated and now works from CET."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Kofi",
+          "value": "car",
+          "kind": "corrected-old",
+          "turns": [
+            "Kofi takes the car to the office."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Kofi",
+          "value": "snapshot tests",
+          "kind": "corrected-new",
+          "turns": [
+            "Kofi now relies on snapshot tests."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Sam",
+          "value": "iTerm2",
+          "kind": "corrected-old",
+          "turns": [
+            "Sam uses iTerm2 as a terminal."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Otto",
+          "value": "iTerm2",
+          "kind": "corrected-old",
+          "turns": [
+            "Otto's terminal is iTerm2."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Raj",
+          "value": "KST",
+          "kind": "corrected-old",
+          "turns": [
+            "Raj works from KST."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Tariq",
+          "value": "Azure",
+          "kind": "corrected-old",
+          "turns": [
+            "Tariq deploys on Azure."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Raj",
+          "value": "fish",
+          "kind": "corrected-old",
+          "turns": [
+            "Raj's shell is fish."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Raj",
+          "value": "zsh",
+          "kind": "corrected-new",
+          "turns": [
+            "Raj moved to zsh."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Chen",
+          "value": "PST",
+          "kind": "corrected-new",
+          "turns": [
+            "Chen relocated and now works from PST."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Ida",
+          "value": "VS Code",
+          "kind": "corrected-old",
+          "turns": [
+            "Ida's editor is VS Code."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Milo",
+          "value": "bash",
+          "kind": "corrected-old",
+          "turns": [
+            "Milo's shell is bash."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Yuki",
+          "value": "Notion",
+          "kind": "corrected-old",
+          "turns": [
+            "Yuki writes notes in Notion."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Milo",
+          "value": "two spaces",
+          "kind": "corrected-new",
+          "turns": [
+            "Milo reformatted everything to two spaces."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Maria",
+          "value": "coffee",
+          "kind": "corrected-old",
+          "turns": [
+            "Maria drinks coffee every morning."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Maria",
+          "value": "matcha",
+          "kind": "corrected-new",
+          "turns": [
+            "Maria has switched to matcha lately."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Chen",
+          "value": "Obsidian",
+          "kind": "corrected-old",
+          "turns": [
+            "Chen writes notes in Obsidian."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Yuki",
+          "value": "Go",
+          "kind": "corrected-old",
+          "turns": [
+            "Yuki prefers Go for new services.",
+            "These days Yuki goes for coffee instead."
+          ],
+          "stored": [
+            "Yuki's morning ritual is coffee instead."
+          ]
+        },
+        {
+          "subject": "Yuki",
+          "value": "Python",
+          "kind": "corrected-new",
+          "turns": [
+            "Yuki has since standardized on Python."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Vera",
+          "value": "running",
+          "kind": "corrected-new",
+          "turns": [
+            "Vera dropped that and does running now."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Sena",
+          "value": "swimming",
+          "kind": "corrected-old",
+          "turns": [
+            "Sena does swimming after work."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Bruno",
+          "value": "bash",
+          "kind": "corrected-old",
+          "turns": [
+            "Bruno uses bash."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Sam",
+          "value": "Ubuntu",
+          "kind": "corrected-old",
+          "turns": [
+            "Sam's machine runs Ubuntu."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Sam",
+          "value": "Arch",
+          "kind": "corrected-new",
+          "turns": [
+            "Sam reinstalled onto Arch."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Nina",
+          "value": "Karin",
+          "kind": "corrected-old",
+          "turns": [
+            "Nina's manager is Karin."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Yuki",
+          "value": "KST",
+          "kind": "corrected-old",
+          "turns": [
+            "Yuki works from KST."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Maria",
+          "value": "Fedora",
+          "kind": "corrected-old",
+          "turns": [
+            "Maria's machine runs Fedora."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Milo",
+          "value": "GitHub Actions",
+          "kind": "corrected-old",
+          "turns": [
+            "Milo runs CI on GitHub Actions."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Milo",
+          "value": "GitLab CI",
+          "kind": "corrected-new",
+          "turns": [
+            "Milo rebuilt the pipelines on GitLab CI."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Tariq",
+          "value": "Kitty",
+          "kind": "corrected-old",
+          "turns": [
+            "Tariq uses Kitty as a terminal."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Alma",
+          "value": "Datadog",
+          "kind": "corrected-new",
+          "turns": [
+            "Alma's team moved tracing to Datadog."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Ida",
+          "value": "techno",
+          "kind": "corrected-old",
+          "turns": [
+            "Ida codes to techno."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Milo",
+          "value": "SQLite",
+          "kind": "corrected-old",
+          "turns": [
+            "Milo's team runs SQLite in production."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Milo",
+          "value": "Postgres",
+          "kind": "corrected-new",
+          "turns": [
+            "Milo's team migrated production to Postgres."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Milo",
+          "value": "JST",
+          "kind": "corrected-old",
+          "turns": [
+            "Milo is based in JST."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Tariq",
+          "value": "snapshot tests",
+          "kind": "corrected-old",
+          "turns": [
+            "Tariq's test suite is built on snapshot tests."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Tariq",
+          "value": "end-to-end tests",
+          "kind": "corrected-new",
+          "turns": [
+            "Tariq converted the suite to end-to-end tests."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Kofi",
+          "value": "Karin",
+          "kind": "corrected-old",
+          "turns": [
+            "Kofi reports to Karin."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Yuki",
+          "value": "bash",
+          "kind": "corrected-old",
+          "turns": [
+            "Yuki uses bash."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Yuki",
+          "value": "zsh",
+          "kind": "corrected-new",
+          "turns": [
+            "Yuki switched the shell to zsh."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Kofi",
+          "value": "JST",
+          "kind": "control",
+          "turns": [
+            "Kofi is based in JST."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Nina",
+          "value": "GitLab CI",
+          "kind": "control",
+          "turns": [
+            "Nina's pipelines live in GitLab CI."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Lisa",
+          "value": "Notion",
+          "kind": "control",
+          "turns": [
+            "Lisa keeps notes in Notion."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Tariq",
+          "value": "four spaces",
+          "kind": "control",
+          "turns": [
+            "Tariq indents with four spaces."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Ida",
+          "value": "Zipkin",
+          "kind": "control",
+          "turns": [
+            "Ida's team traces with Zipkin."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Sam",
+          "value": "Python",
+          "kind": "control",
+          "turns": [
+            "For new work Sam reaches for Python."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Raj",
+          "value": "eight spaces",
+          "kind": "control",
+          "turns": [
+            "Raj formats code using eight spaces."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Ida",
+          "value": "car",
+          "kind": "control",
+          "turns": [
+            "Ida takes the car to the office."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Tariq",
+          "value": "Felix",
+          "kind": "control",
+          "turns": [
+            "Tariq reports to Felix."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Milo",
+          "value": "VS Code",
+          "kind": "control",
+          "turns": [
+            "Milo's editor is VS Code."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Vera",
+          "value": "car",
+          "kind": "control",
+          "turns": [
+            "Vera takes the car to the office."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Nina",
+          "value": "Phoenix",
+          "kind": "control",
+          "turns": [
+            "Nina builds with Phoenix."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Kofi",
+          "value": "GitHub Actions",
+          "kind": "control",
+          "turns": [
+            "Kofi runs CI on GitHub Actions."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Otto",
+          "value": "Korean",
+          "kind": "coexist",
+          "turns": [
+            "Otto speaks Korean."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Otto",
+          "value": "German",
+          "kind": "coexist",
+          "turns": [
+            "Otto speaks German."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Otto",
+          "value": "the drums",
+          "kind": "coexist",
+          "turns": [
+            "Otto plays the drums."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Maria",
+          "value": "peanuts",
+          "kind": "coexist",
+          "turns": [
+            "Maria is allergic to peanuts."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Sam",
+          "value": "English",
+          "kind": "coexist",
+          "turns": [
+            "Sam speaks English."
+          ],
+          "stored": []
+        },
+        {
+          "subject": "Sam",
+          "value": "the cello",
+          "kind": "coexist",
+          "turns": [
+            "Sam plays the cello."
+          ],
+          "stored": []
+        }
+      ]
+    }
+  }
+}

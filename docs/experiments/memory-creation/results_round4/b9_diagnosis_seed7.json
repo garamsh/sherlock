@@ -1,0 +1,397 @@
+{
+  "seed": 7,
+  "structure": "B9-decider-neighbors-wide",
+  "rows_retired_total": 90,
+  "coexist_facts_planted": 28,
+  "coexist_rows_retired": 4,
+  "coexist_values_lost": 4,
+  "correction_gap": {
+    "offered_and_retired": 77,
+    "no_live_row_for_old": 5,
+    "not_offered": 2,
+    "offered_and_kept": 16
+  },
+  "offered_and_kept_with_empty_retire_list": 14,
+  "coexist_lost": [
+    {
+      "subject": "Maria",
+      "value": "the drums",
+      "family": "instrument",
+      "row": "Maria plays the drums.",
+      "turn": "Maria plays the cello.",
+      "stored_same_turn": [
+        "Maria plays the cello."
+      ],
+      "survivor": false,
+      "turn_names_subject": true,
+      "turn_states_a_sibling": true
+    },
+    {
+      "subject": "Lisa",
+      "value": "the drums",
+      "family": "instrument",
+      "row": "Lisa plays the drums.",
+      "turn": "Lisa plays the cello.",
+      "stored_same_turn": [
+        "Lisa plays the cello."
+      ],
+      "survivor": false,
+      "turn_names_subject": true,
+      "turn_states_a_sibling": true
+    },
+    {
+      "subject": "Lisa",
+      "value": "Korean",
+      "family": "languages",
+      "row": "Lisa speaks Korean.",
+      "turn": "Lisa speaks German.",
+      "stored_same_turn": [
+        "Lisa speaks German."
+      ],
+      "survivor": false,
+      "turn_names_subject": true,
+      "turn_states_a_sibling": true
+    },
+    {
+      "subject": "Otto",
+      "value": "the drums",
+      "family": "instrument",
+      "row": "Otto plays the drums.",
+      "turn": "Otto plays the cello.",
+      "stored_same_turn": [
+        "Otto plays the cello."
+      ],
+      "survivor": false,
+      "turn_names_subject": true,
+      "turn_states_a_sibling": true
+    }
+  ],
+  "not_offered_detail": [
+    {
+      "turn": "Sam now reports into Tomas.",
+      "subject": "Sam",
+      "old_value": "Karin",
+      "contradicted": [
+        {
+          "content": "Sam's manager is Karin.",
+          "cosine": 0.412,
+          "rank": 15
+        }
+      ],
+      "offer_size": 10
+    },
+    {
+      "turn": "Yuki has since standardized on Python.",
+      "subject": "Yuki",
+      "old_value": "Go",
+      "contradicted": [
+        {
+          "content": "Yuki prefers Go for new services.",
+          "cosine": 0.499,
+          "rank": 14
+        }
+      ],
+      "offer_size": 10
+    }
+  ],
+  "offered_and_kept_detail": [
+    {
+      "turn": "Tariq runs Alacritty now.",
+      "subject": "Tariq",
+      "old_value": "Kitty",
+      "survivors": [
+        {
+          "content": "Tariq uses Kitty as a terminal.",
+          "offered": true,
+          "cosine": 0.574,
+          "rank": 9
+        }
+      ],
+      "retire_list_empty": true,
+      "retired_this_turn": [],
+      "stored_this_turn": [
+        "Tariq runs Alacritty now."
+      ]
+    },
+    {
+      "turn": "Alma now reports into Priya.",
+      "subject": "Alma",
+      "old_value": "Felix",
+      "survivors": [
+        {
+          "content": "Alma's manager is Felix.",
+          "offered": true,
+          "cosine": 0.526,
+          "rank": 7
+        }
+      ],
+      "retire_list_empty": true,
+      "retired_this_turn": [],
+      "stored_this_turn": [
+        "Alma now reports into Priya."
+      ]
+    },
+    {
+      "turn": "Bruno now reports into Felix.",
+      "subject": "Bruno",
+      "old_value": "Priya",
+      "survivors": [
+        {
+          "content": "Bruno's manager is Priya.",
+          "offered": true,
+          "cosine": 0.495,
+          "rank": 8
+        }
+      ],
+      "retire_list_empty": true,
+      "retired_this_turn": [],
+      "stored_this_turn": [
+        "Bruno now reports into Felix."
+      ]
+    },
+    {
+      "turn": "Vera has switched to tabs.",
+      "subject": "Vera",
+      "old_value": "four spaces",
+      "survivors": [
+        {
+          "content": "Vera formats code using four spaces.",
+          "offered": true,
+          "cosine": 0.598,
+          "rank": 3
+        }
+      ],
+      "retire_list_empty": true,
+      "retired_this_turn": [],
+      "stored_this_turn": [
+        "Vera has switched to tabs."
+      ]
+    },
+    {
+      "turn": "Kofi adopted a turtle recently.",
+      "subject": "Kofi",
+      "old_value": "a rabbit",
+      "survivors": [
+        {
+          "content": "Kofi keeps a rabbit.",
+          "offered": true,
+          "cosine": 0.701,
+          "rank": 1
+        }
+      ],
+      "retire_list_empty": true,
+      "retired_this_turn": [],
+      "stored_this_turn": [
+        "Kofi adopted a turtle recently."
+      ]
+    },
+    {
+      "turn": "These days Kofi goes for tea instead.",
+      "subject": "Kofi",
+      "old_value": "chai",
+      "survivors": [
+        {
+          "content": "Kofi drinks chai every morning.",
+          "offered": true,
+          "cosine": 0.689,
+          "rank": 2
+        }
+      ],
+      "retire_list_empty": true,
+      "retired_this_turn": [],
+      "stored_this_turn": [
+        "Kofi goes for tea these days."
+      ]
+    },
+    {
+      "turn": "Lisa defaults to Python on anything new now.",
+      "subject": "Lisa",
+      "old_value": "TypeScript",
+      "survivors": [
+        {
+          "content": "Lisa prefers TypeScript for new services.",
+          "offered": true,
+          "cosine": 0.374,
+          "rank": 10
+        }
+      ],
+      "retire_list_empty": true,
+      "retired_this_turn": [],
+      "stored_this_turn": [
+        "Lisa defaults to Python on anything new now."
+      ]
+    },
+    {
+      "turn": "Maria moved to fish.",
+      "subject": "Maria",
+      "old_value": "bash",
+      "survivors": [
+        {
+          "content": "Maria uses bash.",
+          "offered": true,
+          "cosine": 0.571,
+          "rank": 5
+        }
+      ],
+      "retire_list_empty": true,
+      "retired_this_turn": [],
+      "stored_this_turn": [
+        "Maria moved to fish."
+      ]
+    },
+    {
+      "turn": "Maria has switched to matcha lately.",
+      "subject": "Maria",
+      "old_value": "coffee",
+      "survivors": [
+        {
+          "content": "Maria drinks coffee every morning.",
+          "offered": true,
+          "cosine": 0.536,
+          "rank": 5
+        }
+      ],
+      "retire_list_empty": true,
+      "retired_this_turn": [],
+      "stored_this_turn": [
+        "Maria has switched to matcha lately."
+      ]
+    },
+    {
+      "turn": "Vera moved over to Zed recently.",
+      "subject": "Vera",
+      "old_value": "VS Code",
+      "survivors": [
+        {
+          "content": "Vera writes code in VS Code.",
+          "offered": true,
+          "cosine": 0.436,
+          "rank": 9
+        }
+      ],
+      "retire_list_empty": true,
+      "retired_this_turn": [],
+      "stored_this_turn": [
+        "Vera moved over to Zed recently."
+      ]
+    },
+    {
+      "turn": "Bruno now edits everything in Neovim.",
+      "subject": "Bruno",
+      "old_value": "IntelliJ",
+      "survivors": [
+        {
+          "content": "Bruno writes code in IntelliJ.",
+          "offered": true,
+          "cosine": 0.629,
+          "rank": 2
+        }
+      ],
+      "retire_list_empty": true,
+      "retired_this_turn": [],
+      "stored_this_turn": [
+        "Bruno now edits everything in Neovim."
+      ]
+    },
+    {
+      "turn": "Nina now reports into Diane.",
+      "subject": "Nina",
+      "old_value": "Karin",
+      "survivors": [
+        {
+          "content": "Nina's manager is Karin.",
+          "offered": true,
+          "cosine": 0.562,
+          "rank": 4
+        }
+      ],
+      "retire_list_empty": false,
+      "retired_this_turn": [
+        {
+          "id": 307,
+          "content": "Ida now reports into Diane."
+        }
+      ],
+      "stored_this_turn": [
+        "Nina now reports into Diane."
+      ]
+    },
+    {
+      "turn": "Otto now relies on mutation testing.",
+      "subject": "Otto",
+      "old_value": "end-to-end tests",
+      "survivors": [
+        {
+          "content": "Otto writes end-to-end tests.",
+          "offered": true,
+          "cosine": 0.648,
+          "rank": 1
+        }
+      ],
+      "retire_list_empty": true,
+      "retired_this_turn": [],
+      "stored_this_turn": [
+        "Otto now relies on mutation testing."
+      ]
+    },
+    {
+      "turn": "Alma's team moved tracing to Datadog.",
+      "subject": "Alma",
+      "old_value": "Jaeger",
+      "survivors": [
+        {
+          "content": "Alma traces with Jaeger.",
+          "offered": true,
+          "cosine": 0.612,
+          "rank": 4
+        }
+      ],
+      "retire_list_empty": true,
+      "retired_this_turn": [],
+      "stored_this_turn": [
+        "Alma's team moved tracing to Datadog."
+      ]
+    },
+    {
+      "turn": "Kofi now relies on snapshot tests.",
+      "subject": "Kofi",
+      "old_value": "property-based tests",
+      "survivors": [
+        {
+          "content": "Kofi writes property-based tests.",
+          "offered": true,
+          "cosine": 0.732,
+          "rank": 1
+        }
+      ],
+      "retire_list_empty": true,
+      "retired_this_turn": [],
+      "stored_this_turn": [
+        "Kofi now relies on snapshot tests."
+      ]
+    },
+    {
+      "turn": "Bruno moved on to jazz.",
+      "subject": "Bruno",
+      "old_value": "techno",
+      "survivors": [
+        {
+          "content": "Bruno codes to techno.",
+          "offered": true,
+          "cosine": 0.48,
+          "rank": 7
+        }
+      ],
+      "retire_list_empty": false,
+      "retired_this_turn": [
+        {
+          "id": 365,
+          "content": "Bruno moved to fish."
+        }
+      ],
+      "stored_this_turn": [
+        "Bruno moved on to jazz."
+      ]
+    }
+  ]
+}

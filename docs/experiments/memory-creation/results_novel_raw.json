@@ -1,0 +1,73 @@
+{
+  "new_structures": [
+    {
+      "system": "S1-sleep-consolidation",
+      "recall": 0.9,
+      "latest_wins_net": 0.0,
+      "stale_present": 0.9,
+      "items": 375,
+      "decider_calls": 200,
+      "elapsed_s": 227.24707856400073
+    },
+    {
+      "system": "S2-claim-graph",
+      "recall": 0.9,
+      "latest_wins_net": 0.6,
+      "stale_present": 0.3,
+      "items": 25,
+      "decider_calls": 1000,
+      "elapsed_s": 70.31549780499972
+    },
+    {
+      "system": "S3-attention-sink",
+      "recall": 0.7,
+      "latest_wins_net": -0.3,
+      "stale_present": 1.0,
+      "items": 40,
+      "decider_calls": 0,
+      "elapsed_s": 0.000389144000109809
+    },
+    {
+      "system": "S4-confidence-decay",
+      "recall": 0.0,
+      "latest_wins_net": 0.0,
+      "stale_present": 0.0,
+      "items": 0,
+      "decider_calls": 0,
+      "elapsed_s": 0.0008625149994259118
+    },
+    {
+      "system": "S5-materialized-view",
+      "recall": 0.1,
+      "latest_wins_net": 0.1,
+      "stale_present": 0.0,
+      "items": 5,
+      "decider_calls": 100,
+      "elapsed_s": 104.02623499399942
+    }
+  ],
+  "decider_models": [
+    {
+      "decider": "gpt-4o-mini",
+      "recall": 1.0,
+      "latest_wins_net": 0.6,
+      "stale_present": 0.4,
+      "items": 14,
+      "decider_calls": 1000,
+      "elapsed_s": 46.71943664599985
+    },
+    {
+      "decider": "gpt-4o",
+      "recall": 0.4,
+      "latest_wins_net": 0.2,
+      "stale_present": 0.2,
+      "items": 6,
+      "decider_calls": 1000,
+      "elapsed_s": 48.18588864599951
+    }
+  ],
+  "api_calls": {
+    "embed": 39,
+    "chat": 510
+  }
+}

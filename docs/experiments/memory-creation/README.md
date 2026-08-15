@@ -58,7 +58,29 @@ Compliance inputs are the same measured or marked rates as the cycle experiment:
 | Memory decider | Decides what is worth keeping; **detects corrections semantically and retires the contradicted entry** | dedicated narrow call (1.00 recall, 1.00 latest-wins) > main-model field (0.96, 0.00) |
 | Platform | Store policy: retention, decay — never the content decision, never the correction detection | threshold-based supersession removed in C9 |
 
-## Adopted direction
+## Novel structures and model diversity
+
+A third run tested five structures that relocate where the intelligence lives, plus a decider-model comparison, all on the 1,000-turn dataset with real embeddings:
+
+| system | recall | latest-wins (net) | stale-present | items | decider calls |
+|---|---|---|---|---|---|
+| S1 sleep-consolidation (journal + periodic consolidation) | 0.90 | 0.00 | 0.90 | 375 | 200 |
+| **S2 claim-graph (typed links: corrects/supports)** | 0.90 | **0.60** | 0.30 | 25 | 1,000 |
+| S3 attention-sink (top-K anchors always in context) | 0.70 | -0.30 | 1.00 | 40 | 0 |
+| S4 confidence-decay (no delete; decay alone) | 0.00 | 0.00 | 0.00 | 0 | 0 |
+| S5 materialized-view (log is truth; view rebuilt) | 0.10 | 0.10 | 0.00 | 5 | 100 |
+| decider = gpt-4o-mini | 1.00 | 0.60 | 0.40 | 14 | 1,000 |
+| decider = gpt-4o | 0.40 | 0.20 | 0.20 | 6 | 1,000 |
+
+What this run establishes:
+
+1. **The claim-graph matches the dedicated decider on corrections with a different structure** (S2 latest-wins 0.60, recall 0.90): the link itself ("corrects") carries the correction, so retrieval can suppress the superseded claim. Two structurally different answers to the same problem now have equal evidence.
+2. **A bigger decider is not a better decider.** gpt-4o was more conservative about what counts as durable (6 items stored vs 14) and scored lower on recall (0.40 vs 1.00). The residual correction gap is not a model-size problem; it is a judgment-policy problem.
+3. **Pure decay without reinforcement loses everything** (S4: 0 items) — forgetting needs a rehearsal channel, not just a decay rate.
+4. **Anchors pin stale facts forever** (S3: stale-present 1.00) — an always-in-context block must be rewritable, or corrections never win.
+5. **The rebuild-view window forgets the past** (S5: recall 0.10) — a view rebuilt from the recent log segment loses everything older than the segment.
+
+## ## Adopted direction
 
 The candidate ranking and the real-infrastructure run support the decider-separated shape, shape-enforced:
 

@@ -1,0 +1,3361 @@
+{
+  "seed": 7,
+  "structure": "B9-decider-neighbors-wide",
+  "live_chat_calls": 100,
+  "live_embed_batches": 1,
+  "judgment": {
+    "offer": "held fixed at what the marked turn retrieved",
+    "marked": {
+      "n": 93,
+      "retired": 77,
+      "retired_any": 77,
+      "rate": 0.828
+    },
+    "unmarked": {
+      "n": 93,
+      "retired": 86,
+      "retired_any": 86,
+      "rate": 0.9247
+    },
+    "paired_outcomes": {
+      "marked_retired_unmarked_retired": 75,
+      "marked_kept_unmarked_retired": 11,
+      "marked_kept_unmarked_kept": 5,
+      "marked_retired_unmarked_kept": 2
+    }
+  },
+  "retrieval": {
+    "corrections": 100,
+    "no_live_row_for_old": 5,
+    "marked_offered": 93,
+    "unmarked_offered": 95,
+    "marked_rank_1": 56,
+    "unmarked_rank_1": 81,
+    "mean_marked_rank": 2.53,
+    "mean_unmarked_rank": 1.21
+  },
+  "by_category": {
+    "ci": {
+      "n": 4,
+      "marked": 4,
+      "unmarked": 4,
+      "delta": 0
+    },
+    "cloud": {
+      "n": 3,
+      "marked": 3,
+      "unmarked": 3,
+      "delta": 0
+    },
+    "commute": {
+      "n": 3,
+      "marked": 3,
+      "unmarked": 3,
+      "delta": 0
+    },
+    "database": {
+      "n": 6,
+      "marked": 6,
+      "unmarked": 6,
+      "delta": 0
+    },
+    "drink": {
+      "n": 6,
+      "marked": 4,
+      "unmarked": 5,
+      "delta": 1
+    },
+    "editor": {
+      "n": 3,
+      "marked": 1,
+      "unmarked": 2,
+      "delta": 1
+    },
+    "framework": {
+      "n": 1,
+      "marked": 1,
+      "unmarked": 1,
+      "delta": 0
+    },
+    "gym": {
+      "n": 5,
+      "marked": 5,
+      "unmarked": 5,
+      "delta": 0
+    },
+    "indent": {
+      "n": 7,
+      "marked": 6,
+      "unmarked": 7,
+      "delta": 1
+    },
+    "language": {
+      "n": 5,
+      "marked": 4,
+      "unmarked": 5,
+      "delta": 1
+    },
+    "manager": {
+      "n": 5,
+      "marked": 2,
+      "unmarked": 5,
+      "delta": 3
+    },
+    "music": {
+      "n": 3,
+      "marked": 2,
+      "unmarked": 2,
+      "delta": 0
+    },
+    "notes": {
+      "n": 4,
+      "marked": 4,
+      "unmarked": 4,
+      "delta": 0
+    },
+    "os": {
+      "n": 4,
+      "marked": 4,
+      "unmarked": 4,
+      "delta": 0
+    },
+    "pet": {
+      "n": 6,
+      "marked": 5,
+      "unmarked": 5,
+      "delta": 0
+    },
+    "shell": {
+      "n": 4,
+      "marked": 3,
+      "unmarked": 3,
+      "delta": 0
+    },
+    "terminal": {
+      "n": 5,
+      "marked": 4,
+      "unmarked": 5,
+      "delta": 1
+    },
+    "testing": {
+      "n": 7,
+      "marked": 5,
+      "unmarked": 5,
+      "delta": 0
+    },
+    "timezone": {
+      "n": 7,
+      "marked": 7,
+      "unmarked": 7,
+      "delta": 0
+    },
+    "tracing": {
+      "n": 5,
+      "marked": 4,
+      "unmarked": 5,
+      "delta": 1
+    }
+  },
+  "by_correction_template": {
+    "These days {p} goes for {v} instead.": {
+      "n": 4,
+      "marked": 3,
+      "unmarked": 3,
+      "delta": 0
+    },
+    "{p} adopted {v} for the web tier.": {
+      "n": 1,
+      "marked": 1,
+      "unmarked": 1,
+      "delta": 0
+    },
+    "{p} adopted {v} recently.": {
+      "n": 2,
+      "marked": 1,
+      "unmarked": 2,
+      "delta": 1
+    },
+    "{p} converted the suite to {v}.": {
+      "n": 4,
+      "marked": 4,
+      "unmarked": 4,
+      "delta": 0
+    },
+    "{p} defaults to {v} on anything new now.": {
+      "n": 5,
+      "marked": 4,
+      "unmarked": 5,
+      "delta": 1
+    },
+    "{p} dropped that and does {v} now.": {
+      "n": 2,
+      "marked": 2,
+      "unmarked": 2,
+      "delta": 0
+    },
+    "{p} gets in by {v} these days.": {
+      "n": 2,
+      "marked": 2,
+      "unmarked": 2,
+      "delta": 0
+    },
+    "{p} has switched to {v} lately.": {
+      "n": 2,
+      "marked": 1,
+      "unmarked": 2,
+      "delta": 1
+    },
+    "{p} has switched to {v}.": {
+      "n": 4,
+      "marked": 3,
+      "unmarked": 4,
+      "delta": 1
+    },
+    "{p} keeps everything in {v} now.": {
+      "n": 2,
+      "marked": 2,
+      "unmarked": 2,
+      "delta": 0
+    },
+    "{p} migrated the deployment to {v}.": {
+      "n": 1,
+      "marked": 1,
+      "unmarked": 1,
+      "delta": 0
+    },
+    "{p} migrated the notes to {v}.": {
+      "n": 2,
+      "marked": 2,
+      "unmarked": 2,
+      "delta": 0
+    },
+    "{p} moved CI to {v}.": {
+      "n": 1,
+      "marked": 1,
+      "unmarked": 1,
+      "delta": 0
+    },
+    "{p} moved on to {v}.": {
+      "n": 1,
+      "marked": 0,
+      "unmarked": 1,
+      "delta": 1
+    },
+    "{p} moved over to {v} recently.": {
+      "n": 1,
+      "marked": 0,
+      "unmarked": 0,
+      "delta": 0
+    },
+    "{p} moved the prod database to {v}.": {
+      "n": 2,
+      "marked": 2,
+      "unmarked": 2,
+      "delta": 0
+    },
+    "{p} moved to {v}.": {
+      "n": 2,
+      "marked": 1,
+      "unmarked": 1,
+      "delta": 0
+    },
+    "{p} now edits everything in {v}.": {
+      "n": 2,
+      "marked": 1,
+      "unmarked": 2,
+      "delta": 1
+    },
+    "{p} now has {v} instead.": {
+      "n": 4,
+      "marked": 4,
+      "unmarked": 3,
+      "delta": -1
+    },
+    "{p} now relies on {v}.": {
+      "n": 3,
+      "marked": 1,
+      "unmarked": 1,
+      "delta": 0
+    },
+    "{p} now reports into {v}.": {
+      "n": 5,
+      "marked": 2,
+      "unmarked": 5,
+      "delta": 3
+    },
+    "{p} plays {v} these days instead.": {
+      "n": 2,
+      "marked": 2,
+      "unmarked": 1,
+      "delta": -1
+    },
+    "{p} rebuilt the pipelines on {v}.": {
+      "n": 3,
+      "marked": 3,
+      "unmarked": 3,
+      "delta": 0
+    },
+    "{p} reformatted everything to {v}.": {
+      "n": 3,
+      "marked": 3,
+      "unmarked": 3,
+      "delta": 0
+    },
+    "{p} reinstalled onto {v}.": {
+      "n": 2,
+      "marked": 2,
+      "unmarked": 2,
+      "delta": 0
+    },
+    "{p} relocated and now works from {v}.": {
+      "n": 5,
+      "marked": 5,
+      "unmarked": 5,
+      "delta": 0
+    },
+    "{p} replaced the terminal with {v}.": {
+      "n": 2,
+      "marked": 2,
+      "unmarked": 2,
+      "delta": 0
+    },
+    "{p} replaced the tracing stack with {v}.": {
+      "n": 1,
+      "marked": 1,
+      "unmarked": 1,
+      "delta": 0
+    },
+    "{p} runs everything on {v} now.": {
+      "n": 2,
+      "marked": 2,
+      "unmarked": 2,
+      "delta": 0
+    },
+    "{p} runs {v} now.": {
+      "n": 3,
+      "marked": 2,
+      "unmarked": 3,
+      "delta": 1
+    },
+    "{p} switched the commute to {v}.": {
+      "n": 1,
+      "marked": 1,
+      "unmarked": 1,
+      "delta": 0
+    },
+    "{p} switched the laptop to {v}.": {
+      "n": 2,
+      "marked": 2,
+      "unmarked": 2,
+      "delta": 0
+    },
+    "{p} switched the shell to {v}.": {
+      "n": 2,
+      "marked": 2,
+      "unmarked": 2,
+      "delta": 0
+    },
+    "{p} took up {v} instead.": {
+      "n": 3,
+      "marked": 3,
+      "unmarked": 3,
+      "delta": 0
+    },
+    "{p}'s hours moved to {v}.": {
+      "n": 2,
+      "marked": 2,
+      "unmarked": 2,
+      "delta": 0
+    },
+    "{p}'s team migrated production to {v}.": {
+      "n": 4,
+      "marked": 4,
+      "unmarked": 4,
+      "delta": 0
+    },
+    "{p}'s team moved tracing to {v}.": {
+      "n": 4,
+      "marked": 3,
+      "unmarked": 4,
+      "delta": 1
+    }
+  },
+  "trials": [
+    {
+      "category": "database",
+      "subject": "Lisa",
+      "old_value": "Postgres",
+      "new_value": "MySQL",
+      "marked": "Lisa's team migrated production to MySQL.",
+      "unmarked": "Production for Lisa is MySQL.",
+      "marked_template": "{p}'s team migrated production to {v}.",
+      "unmarked_template": "Production for {p} is {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        276
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.664268,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        276
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.868245,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Production for Lisa is MySQL.\"],\"retire\":[276]}",
+      "unmarked_reply": "{\"store\":[\"Production for Lisa is MySQL.\"],\"retire\":[276]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "database",
+      "subject": "Milo",
+      "old_value": "SQLite",
+      "new_value": "Postgres",
+      "marked": "Milo's team migrated production to Postgres.",
+      "unmarked": "Milo's team runs Postgres in production.",
+      "marked_template": "{p}'s team migrated production to {v}.",
+      "unmarked_template": "{p}'s team runs {v} in production.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        126
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.728892,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        126
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.819344,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Milo's team migrated production to Postgres.\"],\"retire\":[126]}",
+      "unmarked_reply": "{\"store\":[\"Milo's team runs Postgres in production.\"],\"retire\":[126]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "music",
+      "subject": "Lisa",
+      "old_value": "techno",
+      "new_value": "classical",
+      "marked": "Lisa plays classical these days instead.",
+      "unmarked": "Lisa listens to classical while working.",
+      "marked_template": "{p} plays {v} these days instead.",
+      "unmarked_template": "{p} listens to {v} while working.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        87
+      ],
+      "marked_rank": 5,
+      "marked_cosine": 0.516957,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        87
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.733635,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Lisa listens to classical these days instead.\"],\"retire\":[87]}",
+      "unmarked_reply": "{\"store\": [\"Lisa listens to classical while working.\"], \"retire\": [87]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "language",
+      "subject": "Nina",
+      "old_value": "Rust",
+      "new_value": "Elixir",
+      "marked": "Nina defaults to Elixir on anything new now.",
+      "unmarked": "For new work Nina reaches for Elixir.",
+      "marked_template": "{p} defaults to {v} on anything new now.",
+      "unmarked_template": "For new work {p} reaches for {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        33
+      ],
+      "marked_rank": 6,
+      "marked_cosine": 0.500793,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        33
+      ],
+      "unmarked_rank": 2,
+      "unmarked_cosine": 0.676367,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Nina defaults to Elixir on anything new now.\"],\"retire\":[33]}",
+      "unmarked_reply": "{\"store\":[\"Nina reaches for Elixir for new work.\"],\"retire\":[33]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "indent",
+      "subject": "Yuki",
+      "old_value": "four spaces",
+      "new_value": "tabs",
+      "marked": "Yuki reformatted everything to tabs.",
+      "unmarked": "Yuki formats code using tabs.",
+      "marked_template": "{p} reformatted everything to {v}.",
+      "unmarked_template": "{p} formats code using {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        98
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.655177,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        98
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.869327,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Yuki reformatted everything to tabs.\"],\"retire\":[98]}",
+      "unmarked_reply": "{\"store\":[\"Yuki formats code using tabs.\"],\"retire\":[98]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "gym",
+      "subject": "Sena",
+      "old_value": "swimming",
+      "new_value": "yoga",
+      "marked": "Sena took up yoga instead.",
+      "unmarked": "Sena does yoga after work.",
+      "marked_template": "{p} took up {v} instead.",
+      "unmarked_template": "{p} does {v} after work.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        113
+      ],
+      "marked_rank": 2,
+      "marked_cosine": 0.644217,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        113
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.802747,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\": [\"Sena took up yoga instead.\"], \"retire\": [113]}",
+      "unmarked_reply": "{\"store\":[\"Sena does yoga after work.\"],\"retire\":[113]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "timezone",
+      "subject": "Raj",
+      "old_value": "KST",
+      "new_value": "PST",
+      "marked": "Raj's hours moved to PST.",
+      "unmarked": "Raj works from PST.",
+      "marked_template": "{p}'s hours moved to {v}.",
+      "unmarked_template": "{p} works from {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        221
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.688324,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        221
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.802422,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Raj works from PST.\"],\"retire\":[221]}",
+      "unmarked_reply": "{\"store\":[\"Raj works from PST.\"],\"retire\":[221]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "language",
+      "subject": "Vera",
+      "old_value": "Go",
+      "new_value": "Python",
+      "marked": "Vera has since standardized on Python.",
+      "unmarked": "Vera prefers Python for new services.",
+      "marked_template": "{p} has since standardized on {v}.",
+      "unmarked_template": "{p} prefers {v} for new services.",
+      "live_rows_holding_old": 0,
+      "offered_old_ids": [],
+      "marked_rank": null,
+      "marked_cosine": null,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [],
+      "unmarked_rank": null,
+      "unmarked_cosine": null,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\": [\"Vera has since standardized on Python.\"], \"retire\": []}",
+      "unmarked_reply": "{\"store\":[\"Vera prefers Python for new services.\"],\"retire\":[]}",
+      "judgeable": false,
+      "marked_retired": false,
+      "marked_retired_any": false,
+      "unmarked_retired": false,
+      "unmarked_retired_any": false
+    },
+    {
+      "category": "ci",
+      "subject": "Yuki",
+      "old_value": "Jenkins",
+      "new_value": "GitHub Actions",
+      "marked": "Yuki rebuilt the pipelines on GitHub Actions.",
+      "unmarked": "Yuki runs CI on GitHub Actions.",
+      "marked_template": "{p} rebuilt the pipelines on {v}.",
+      "unmarked_template": "{p} runs CI on {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        158
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.651621,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        158
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.802565,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Yuki rebuilt the pipelines on GitHub Actions.\"],\"retire\":[158]}",
+      "unmarked_reply": "{\"store\":[\"Yuki runs CI on GitHub Actions.\"],\"retire\":[158]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "drink",
+      "subject": "Tariq",
+      "old_value": "chai",
+      "new_value": "tea",
+      "marked": "These days Tariq goes for tea instead.",
+      "unmarked": "Tariq's morning ritual is tea.",
+      "marked_template": "These days {p} goes for {v} instead.",
+      "unmarked_template": "{p}'s morning ritual is {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        214
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.725806,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        214
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.918753,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\": [\"Tariq goes for tea these days.\"], \"retire\": [214]}",
+      "unmarked_reply": "{\"store\": [], \"retire\": [214]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "pet",
+      "subject": "Nina",
+      "old_value": "a cat",
+      "new_value": "a turtle",
+      "marked": "Nina now has a turtle instead.",
+      "unmarked": "Nina keeps a turtle.",
+      "marked_template": "{p} now has {v} instead.",
+      "unmarked_template": "{p} keeps {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        18
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.620782,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        18
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.788615,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Nina now has a turtle instead.\"],\"retire\":[18]}",
+      "unmarked_reply": "{\"store\":[\"Nina keeps a turtle.\"],\"retire\":[18]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "framework",
+      "subject": "Kofi",
+      "old_value": "Phoenix",
+      "new_value": "Django",
+      "marked": "Kofi adopted Django for the web tier.",
+      "unmarked": "Kofi's web stack is Django.",
+      "marked_template": "{p} adopted {v} for the web tier.",
+      "unmarked_template": "{p}'s web stack is {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        20
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.679176,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        20
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.846183,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Kofi adopted Django for the web tier.\"],\"retire\":[20]}",
+      "unmarked_reply": "{\"store\":[\"Kofi's web stack is Django.\"],\"retire\":[20]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "manager",
+      "subject": "Sam",
+      "old_value": "Karin",
+      "new_value": "Tomas",
+      "marked": "Sam now reports into Tomas.",
+      "unmarked": "Sam's manager is Tomas.",
+      "marked_template": "{p} now reports into {v}.",
+      "unmarked_template": "{p}'s manager is {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [],
+      "marked_rank": 15,
+      "marked_cosine": 0.412193,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        115
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.727703,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Sam now reports into Tomas.\"],\"retire\":[]}",
+      "unmarked_reply": "{\"store\":[\"Sam's manager is Tomas.\"],\"retire\":[]}",
+      "judgeable": false,
+      "marked_retired": false,
+      "marked_retired_any": false,
+      "unmarked_retired": false,
+      "unmarked_retired_any": false
+    },
+    {
+      "category": "terminal",
+      "subject": "Tariq",
+      "old_value": "Kitty",
+      "new_value": "Alacritty",
+      "marked": "Tariq runs Alacritty now.",
+      "unmarked": "Tariq uses Alacritty as a terminal.",
+      "marked_template": "{p} runs {v} now.",
+      "unmarked_template": "{p} uses {v} as a terminal.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        212
+      ],
+      "marked_rank": 9,
+      "marked_cosine": 0.57356,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        212
+      ],
+      "unmarked_rank": 2,
+      "unmarked_cosine": 0.749431,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Tariq runs Alacritty now.\"],\"retire\":[]}",
+      "unmarked_reply": "{\"store\":[\"Tariq uses Alacritty as a terminal.\"],\"retire\":[212]}",
+      "judgeable": true,
+      "marked_retired": false,
+      "marked_retired_any": false,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "drink",
+      "subject": "Alma",
+      "old_value": "coffee",
+      "new_value": "tea",
+      "marked": "Alma has switched to tea lately.",
+      "unmarked": "Alma drinks tea every morning.",
+      "marked_template": "{p} has switched to {v} lately.",
+      "unmarked_template": "{p} drinks {v} every morning.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        30
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.667912,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        30
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.859913,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Alma has switched to tea lately.\"],\"retire\":[30]}",
+      "unmarked_reply": "{\"store\":[\"Alma drinks tea every morning.\"],\"retire\":[30]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "os",
+      "subject": "Maria",
+      "old_value": "Fedora",
+      "new_value": "Ubuntu",
+      "marked": "Maria switched the laptop to Ubuntu.",
+      "unmarked": "Maria's machine runs Ubuntu.",
+      "marked_template": "{p} switched the laptop to {v}.",
+      "unmarked_template": "{p}'s machine runs {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        101
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.578931,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        101
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.895089,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\": [\"Maria switched the laptop to Ubuntu.\"], \"retire\": [101]}",
+      "unmarked_reply": "{\"store\":[\"Maria's machine runs Ubuntu.\"],\"retire\":[101]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "timezone",
+      "subject": "Yuki",
+      "old_value": "KST",
+      "new_value": "GMT",
+      "marked": "Yuki relocated and now works from GMT.",
+      "unmarked": "Yuki works from GMT.",
+      "marked_template": "{p} relocated and now works from {v}.",
+      "unmarked_template": "{p} works from {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        83
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.778306,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        83
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.829487,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\": [\"Yuki works from GMT.\"], \"retire\": [83]}",
+      "unmarked_reply": "{\"store\":[\"Yuki works from GMT.\"],\"retire\":[83]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "commute",
+      "subject": "Raj",
+      "old_value": "car",
+      "new_value": "bus",
+      "marked": "Raj gets in by bus these days.",
+      "unmarked": "Raj takes the bus to the office.",
+      "marked_template": "{p} gets in by {v} these days.",
+      "unmarked_template": "{p} takes the {v} to the office.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        103
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.629822,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        103
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.825724,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Raj gets in by bus these days.\"],\"retire\":[103]}",
+      "unmarked_reply": "{\"store\":[\"Raj takes the bus to the office.\"],\"retire\":[103]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "manager",
+      "subject": "Ida",
+      "old_value": "Tomas",
+      "new_value": "Diane",
+      "marked": "Ida now reports into Diane.",
+      "unmarked": "Ida's manager is Diane.",
+      "marked_template": "{p} now reports into {v}.",
+      "unmarked_template": "{p}'s manager is {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        105
+      ],
+      "marked_rank": 3,
+      "marked_cosine": 0.517188,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        105
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.742267,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\": [\"Ida now reports into Diane.\"], \"retire\": [105]}",
+      "unmarked_reply": "{\"store\":[\"Ida's manager is Diane.\"],\"retire\":[105]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "manager",
+      "subject": "Alma",
+      "old_value": "Felix",
+      "new_value": "Priya",
+      "marked": "Alma now reports into Priya.",
+      "unmarked": "Alma's manager is Priya.",
+      "marked_template": "{p} now reports into {v}.",
+      "unmarked_template": "{p}'s manager is {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        206
+      ],
+      "marked_rank": 7,
+      "marked_cosine": 0.526003,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        206
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.751703,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Alma now reports into Priya.\"],\"retire\":[]}",
+      "unmarked_reply": "{\"store\":[\"Alma's manager is Priya.\"],\"retire\":[206]}",
+      "judgeable": true,
+      "marked_retired": false,
+      "marked_retired_any": false,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "indent",
+      "subject": "Bruno",
+      "old_value": "four spaces",
+      "new_value": "mixed indentation",
+      "marked": "Bruno reformatted everything to mixed indentation.",
+      "unmarked": "Bruno formats code using mixed indentation.",
+      "marked_template": "{p} reformatted everything to {v}.",
+      "unmarked_template": "{p} formats code using {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        69
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.742639,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        69
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.868405,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Bruno formats code using mixed indentation.\"],\"retire\":[69]}",
+      "unmarked_reply": "{\"store\":[\"Bruno formats code using mixed indentation.\"],\"retire\":[69]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "framework",
+      "subject": "Sena",
+      "old_value": "Phoenix",
+      "new_value": "Rails",
+      "marked": "Sena adopted Rails for the web tier.",
+      "unmarked": "Sena builds with Rails.",
+      "marked_template": "{p} adopted {v} for the web tier.",
+      "unmarked_template": "{p} builds with {v}.",
+      "live_rows_holding_old": 0,
+      "offered_old_ids": [],
+      "marked_rank": null,
+      "marked_cosine": null,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [],
+      "unmarked_rank": null,
+      "unmarked_cosine": null,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Sena adopted Rails for the web tier.\"],\"retire\":[]}",
+      "unmarked_reply": "{\"store\":[\"Sena builds with Rails.\"],\"retire\":[]}",
+      "judgeable": false,
+      "marked_retired": false,
+      "marked_retired_any": false,
+      "unmarked_retired": false,
+      "unmarked_retired_any": false
+    },
+    {
+      "category": "notes",
+      "subject": "Chen",
+      "old_value": "Obsidian",
+      "new_value": "Notion",
+      "marked": "Chen migrated the notes to Notion.",
+      "unmarked": "Chen writes notes in Notion.",
+      "marked_template": "{p} migrated the notes to {v}.",
+      "unmarked_template": "{p} writes notes in {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        241
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.6891,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        241
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.815083,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Chen writes notes in Notion.\"],\"retire\":[241]}",
+      "unmarked_reply": "{\"store\":[\"Chen writes notes in Notion.\"],\"retire\":[241]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "os",
+      "subject": "Yuki",
+      "old_value": "macOS",
+      "new_value": "Ubuntu",
+      "marked": "Yuki switched the laptop to Ubuntu.",
+      "unmarked": "Yuki's machine runs Ubuntu.",
+      "marked_template": "{p} switched the laptop to {v}.",
+      "unmarked_template": "{p}'s machine runs {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        15
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.68823,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        15
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.83566,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Yuki switched the laptop to Ubuntu.\"],\"retire\":[15]}",
+      "unmarked_reply": "{\"store\":[\"Yuki's machine runs Ubuntu.\"],\"retire\":[15]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "language",
+      "subject": "Bruno",
+      "old_value": "Python",
+      "new_value": "Rust",
+      "marked": "Bruno defaults to Rust on anything new now.",
+      "unmarked": "Bruno prefers Rust for new services.",
+      "marked_template": "{p} defaults to {v} on anything new now.",
+      "unmarked_template": "{p} prefers {v} for new services.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        239
+      ],
+      "marked_rank": 3,
+      "marked_cosine": 0.592447,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        239
+      ],
+      "unmarked_rank": 2,
+      "unmarked_cosine": 0.772021,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Bruno defaults to Rust on anything new now.\"],\"retire\":[239]}",
+      "unmarked_reply": "{\"store\":[\"Bruno prefers Rust for new services.\"],\"retire\":[239]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "manager",
+      "subject": "Bruno",
+      "old_value": "Priya",
+      "new_value": "Felix",
+      "marked": "Bruno now reports into Felix.",
+      "unmarked": "Bruno's manager is Felix.",
+      "marked_template": "{p} now reports into {v}.",
+      "unmarked_template": "{p}'s manager is {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        13
+      ],
+      "marked_rank": 8,
+      "marked_cosine": 0.495191,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        13
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.787283,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\": [\"Bruno now reports into Felix.\"], \"retire\": []}",
+      "unmarked_reply": "{\"store\": [\"Bruno's manager is Felix.\"], \"retire\": [13]}",
+      "judgeable": true,
+      "marked_retired": false,
+      "marked_retired_any": false,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "commute",
+      "subject": "Kofi",
+      "old_value": "car",
+      "new_value": "bike",
+      "marked": "Kofi switched the commute to bike.",
+      "unmarked": "Kofi takes the bike to the office.",
+      "marked_template": "{p} switched the commute to {v}.",
+      "unmarked_template": "{p} takes the {v} to the office.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        104
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.61153,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        104
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.85821,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Kofi switched the commute to bike.\"],\"retire\":[104]}",
+      "unmarked_reply": "{\"store\":[\"Kofi takes the bike to the office.\"],\"retire\":[104]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "tracing",
+      "subject": "Vera",
+      "old_value": "Zipkin",
+      "new_value": "Honeycomb",
+      "marked": "Vera's team moved tracing to Honeycomb.",
+      "unmarked": "Tracing for Vera runs on Honeycomb.",
+      "marked_template": "{p}'s team moved tracing to {v}.",
+      "unmarked_template": "Tracing for {p} runs on {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        237
+      ],
+      "marked_rank": 3,
+      "marked_cosine": 0.63029,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        237
+      ],
+      "unmarked_rank": 4,
+      "unmarked_cosine": 0.4774,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Vera's team traces with Honeycomb.\"],\"retire\":[237]}",
+      "unmarked_reply": "{\"store\":[\"Vera's team traces with Honeycomb.\"],\"retire\":[237]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "timezone",
+      "subject": "Bruno",
+      "old_value": "GMT",
+      "new_value": "CET",
+      "marked": "Bruno relocated and now works from CET.",
+      "unmarked": "Bruno is based in CET.",
+      "marked_template": "{p} relocated and now works from {v}.",
+      "unmarked_template": "{p} is based in {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        227
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.743989,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        227
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.876211,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Bruno relocated and now works from CET.\"],\"retire\":[227]}",
+      "unmarked_reply": "{\"store\":[\"Bruno is based in CET.\"],\"retire\":[227]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "shell",
+      "subject": "Raj",
+      "old_value": "fish",
+      "new_value": "zsh",
+      "marked": "Raj moved to zsh.",
+      "unmarked": "Raj's shell is zsh.",
+      "marked_template": "{p} moved to {v}.",
+      "unmarked_template": "{p}'s shell is {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        207
+      ],
+      "marked_rank": 6,
+      "marked_cosine": 0.546717,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        207
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.749345,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Raj moved to zsh.\"],\"retire\":[207]}",
+      "unmarked_reply": "{\"store\":[\"Raj's shell is zsh.\"],\"retire\":[207]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "indent",
+      "subject": "Vera",
+      "old_value": "four spaces",
+      "new_value": "tabs",
+      "marked": "Vera has switched to tabs.",
+      "unmarked": "Vera formats code using tabs.",
+      "marked_template": "{p} has switched to {v}.",
+      "unmarked_template": "{p} formats code using {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        213
+      ],
+      "marked_rank": 3,
+      "marked_cosine": 0.597972,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        213
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.851059,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\": [\"Vera has switched to tabs.\"], \"retire\": []}",
+      "unmarked_reply": "{\"store\":[\"Vera formats code using tabs.\"],\"retire\":[213]}",
+      "judgeable": true,
+      "marked_retired": false,
+      "marked_retired_any": false,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "os",
+      "subject": "Sam",
+      "old_value": "Ubuntu",
+      "new_value": "Arch",
+      "marked": "Sam reinstalled onto Arch.",
+      "unmarked": "Sam's machine runs Arch.",
+      "marked_template": "{p} reinstalled onto {v}.",
+      "unmarked_template": "{p}'s machine runs {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        11
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.590779,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        11
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.799367,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\": [\"Sam's machine runs Arch.\"], \"retire\": [11]}",
+      "unmarked_reply": "{\"store\":[\"Sam's machine runs Arch.\"],\"retire\":[11]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "testing",
+      "subject": "Maria",
+      "old_value": "end-to-end tests",
+      "new_value": "table-driven tests",
+      "marked": "Maria converted the suite to table-driven tests.",
+      "unmarked": "Maria's test suite is built on table-driven tests.",
+      "marked_template": "{p} converted the suite to {v}.",
+      "unmarked_template": "{p}'s test suite is built on {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        163
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.740067,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        163
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.883411,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Maria's test suite is built on table-driven tests.\"],\"retire\":[163]}",
+      "unmarked_reply": "{\"store\":[\"Maria's test suite is built on table-driven tests.\"],\"retire\":[163]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "gym",
+      "subject": "Maria",
+      "old_value": "running",
+      "new_value": "rowing",
+      "marked": "Maria took up rowing instead.",
+      "unmarked": "Maria keeps fit with rowing.",
+      "marked_template": "{p} took up {v} instead.",
+      "unmarked_template": "{p} keeps fit with {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        32
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.616167,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        32
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.856038,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Maria took up rowing instead.\"],\"retire\":[32]}",
+      "unmarked_reply": "{\"store\":[\"Maria keeps fit with rowing.\"],\"retire\":[32]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "notes",
+      "subject": "Yuki",
+      "old_value": "Notion",
+      "new_value": "Apple Notes",
+      "marked": "Yuki keeps everything in Apple Notes now.",
+      "unmarked": "Yuki writes notes in Apple Notes.",
+      "marked_template": "{p} keeps everything in {v} now.",
+      "unmarked_template": "{p} writes notes in {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        225
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.780918,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        225
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.868064,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Yuki keeps everything in Apple Notes now.\"],\"retire\":[225]}",
+      "unmarked_reply": "{\"store\":[\"Yuki writes notes in Apple Notes.\"],\"retire\":[225]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "indent",
+      "subject": "Lisa",
+      "old_value": "four spaces",
+      "new_value": "eight spaces",
+      "marked": "Lisa has switched to eight spaces.",
+      "unmarked": "Lisa formats code using eight spaces.",
+      "marked_template": "{p} has switched to {v}.",
+      "unmarked_template": "{p} formats code using {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        74
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.59286,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        74
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.939815,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Lisa formats code using eight spaces.\"],\"retire\":[74]}",
+      "unmarked_reply": "{\"store\":[\"Lisa formats code using eight spaces.\"],\"retire\":[74]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "timezone",
+      "subject": "Milo",
+      "old_value": "JST",
+      "new_value": "GMT",
+      "marked": "Milo's hours moved to GMT.",
+      "unmarked": "Milo is based in GMT.",
+      "marked_template": "{p}'s hours moved to {v}.",
+      "unmarked_template": "{p} is based in {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        164
+      ],
+      "marked_rank": 6,
+      "marked_cosine": 0.558832,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        164
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.685553,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Milo's hours moved to GMT.\"],\"retire\":[164]}",
+      "unmarked_reply": "{\"store\":[\"Milo is based in GMT.\"],\"retire\":[164]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "pet",
+      "subject": "Kofi",
+      "old_value": "a rabbit",
+      "new_value": "a turtle",
+      "marked": "Kofi adopted a turtle recently.",
+      "unmarked": "Kofi keeps a turtle.",
+      "marked_template": "{p} adopted {v} recently.",
+      "unmarked_template": "{p} keeps {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        250
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.700918,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        250
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.830247,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Kofi adopted a turtle recently.\"],\"retire\":[]}",
+      "unmarked_reply": "{\"store\":[\"Kofi keeps a turtle.\"],\"retire\":[250]}",
+      "judgeable": true,
+      "marked_retired": false,
+      "marked_retired_any": false,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "drink",
+      "subject": "Kofi",
+      "old_value": "chai",
+      "new_value": "tea",
+      "marked": "These days Kofi goes for tea instead.",
+      "unmarked": "Kofi drinks tea every morning.",
+      "marked_template": "These days {p} goes for {v} instead.",
+      "unmarked_template": "{p} drinks {v} every morning.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        48
+      ],
+      "marked_rank": 2,
+      "marked_cosine": 0.689197,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        48
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.88845,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\": [\"Kofi goes for tea these days.\"], \"retire\": []}",
+      "unmarked_reply": "{\"store\": [\"Kofi drinks tea every morning.\"], \"retire\": []}",
+      "judgeable": true,
+      "marked_retired": false,
+      "marked_retired_any": false,
+      "unmarked_retired": false,
+      "unmarked_retired_any": false
+    },
+    {
+      "category": "language",
+      "subject": "Lisa",
+      "old_value": "TypeScript",
+      "new_value": "Python",
+      "marked": "Lisa defaults to Python on anything new now.",
+      "unmarked": "Lisa prefers Python for new services.",
+      "marked_template": "{p} defaults to {v} on anything new now.",
+      "unmarked_template": "{p} prefers {v} for new services.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        56
+      ],
+      "marked_rank": 10,
+      "marked_cosine": 0.374285,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        56
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.6664,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Lisa defaults to Python on anything new now.\"],\"retire\":[]}",
+      "unmarked_reply": "{\"store\":[\"Lisa prefers Python for new services.\"],\"retire\":[56]}",
+      "judgeable": true,
+      "marked_retired": false,
+      "marked_retired_any": false,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "gym",
+      "subject": "Vera",
+      "old_value": "rowing",
+      "new_value": "running",
+      "marked": "Vera dropped that and does running now.",
+      "unmarked": "Vera does running after work.",
+      "marked_template": "{p} dropped that and does {v} now.",
+      "unmarked_template": "{p} does {v} after work.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        75
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.630376,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        75
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.789699,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Vera does running now.\"],\"retire\":[75]}",
+      "unmarked_reply": "{\"store\":[\"Vera does running after work.\"],\"retire\":[75]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "terminal",
+      "subject": "Kofi",
+      "old_value": "iTerm2",
+      "new_value": "Kitty",
+      "marked": "Kofi replaced the terminal with Kitty.",
+      "unmarked": "Kofi uses Kitty as a terminal.",
+      "marked_template": "{p} replaced the terminal with {v}.",
+      "unmarked_template": "{p} uses {v} as a terminal.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        215
+      ],
+      "marked_rank": 2,
+      "marked_cosine": 0.642254,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        215
+      ],
+      "unmarked_rank": 2,
+      "unmarked_cosine": 0.711311,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Kofi replaced the terminal with Kitty.\"],\"retire\":[215]}",
+      "unmarked_reply": "{\"store\":[\"Kofi uses Kitty as a terminal.\"],\"retire\":[215]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "shell",
+      "subject": "Maria",
+      "old_value": "bash",
+      "new_value": "fish",
+      "marked": "Maria moved to fish.",
+      "unmarked": "Maria uses fish.",
+      "marked_template": "{p} moved to {v}.",
+      "unmarked_template": "{p} uses {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        273
+      ],
+      "marked_rank": 5,
+      "marked_cosine": 0.570711,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        273
+      ],
+      "unmarked_rank": 2,
+      "unmarked_cosine": 0.680102,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\": [\"Maria moved to fish.\"], \"retire\": []}",
+      "unmarked_reply": "{\"store\": [], \"retire\": []}",
+      "judgeable": true,
+      "marked_retired": false,
+      "marked_retired_any": false,
+      "unmarked_retired": false,
+      "unmarked_retired_any": false
+    },
+    {
+      "category": "pet",
+      "subject": "Sam",
+      "old_value": "a parrot",
+      "new_value": "a dog",
+      "marked": "Sam now has a dog instead.",
+      "unmarked": "Sam keeps a dog.",
+      "marked_template": "{p} now has {v} instead.",
+      "unmarked_template": "{p} keeps {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        230
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.568783,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        230
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.738789,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Sam now has a dog instead.\"],\"retire\":[230]}",
+      "unmarked_reply": "{\"store\":[\"Sam keeps a dog.\"],\"retire\":[230]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "language",
+      "subject": "Ida",
+      "old_value": "Elixir",
+      "new_value": "Go",
+      "marked": "Ida defaults to Go on anything new now.",
+      "unmarked": "Ida prefers Go for new services.",
+      "marked_template": "{p} defaults to {v} on anything new now.",
+      "unmarked_template": "{p} prefers {v} for new services.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        252
+      ],
+      "marked_rank": 3,
+      "marked_cosine": 0.538992,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        252
+      ],
+      "unmarked_rank": 2,
+      "unmarked_cosine": 0.676733,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Ida defaults to Go on anything new now.\"],\"retire\":[252]}",
+      "unmarked_reply": "{\"store\":[\"Ida prefers Go for new services.\"],\"retire\":[252]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "database",
+      "subject": "Ida",
+      "old_value": "CockroachDB",
+      "new_value": "SQLite",
+      "marked": "Ida moved the prod database to SQLite.",
+      "unmarked": "Ida's team runs SQLite in production.",
+      "marked_template": "{p} moved the prod database to {v}.",
+      "unmarked_template": "{p}'s team runs {v} in production.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        119
+      ],
+      "marked_rank": 3,
+      "marked_cosine": 0.555391,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        119
+      ],
+      "unmarked_rank": 2,
+      "unmarked_cosine": 0.728833,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Ida moved the prod database to SQLite.\"],\"retire\":[119]}",
+      "unmarked_reply": "{\"store\":[\"Ida's team runs SQLite in production.\"],\"retire\":[119]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "language",
+      "subject": "Otto",
+      "old_value": "Python",
+      "new_value": "Go",
+      "marked": "Otto defaults to Go on anything new now.",
+      "unmarked": "For new work Otto reaches for Go.",
+      "marked_template": "{p} defaults to {v} on anything new now.",
+      "unmarked_template": "For new work {p} reaches for {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        178
+      ],
+      "marked_rank": 2,
+      "marked_cosine": 0.571716,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        178
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.686592,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Otto defaults to Go on anything new now.\"],\"retire\":[178]}",
+      "unmarked_reply": "{\"store\":[\"Otto reaches for Go for new work.\"],\"retire\":[178]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "indent",
+      "subject": "Alma",
+      "old_value": "tabs",
+      "new_value": "four spaces",
+      "marked": "Alma has switched to four spaces.",
+      "unmarked": "Alma indents with four spaces.",
+      "marked_template": "{p} has switched to {v}.",
+      "unmarked_template": "{p} indents with {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        70
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.636578,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        70
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.823993,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Alma has switched to four spaces.\"],\"retire\":[70]}",
+      "unmarked_reply": "{\"store\":[\"Alma indents with four spaces.\"],\"retire\":[70]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "testing",
+      "subject": "Sena",
+      "old_value": "property-based tests",
+      "new_value": "mutation testing",
+      "marked": "Sena converted the suite to mutation testing.",
+      "unmarked": "Sena's test suite is built on mutation testing.",
+      "marked_template": "{p} converted the suite to {v}.",
+      "unmarked_template": "{p}'s test suite is built on {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        256
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.689553,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        256
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.773805,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Sena converted the suite to mutation testing.\"],\"retire\":[256]}",
+      "unmarked_reply": "{\"store\":[\"Sena's test suite is built on mutation testing.\"],\"retire\":[256]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "music",
+      "subject": "Ida",
+      "old_value": "techno",
+      "new_value": "ambient",
+      "marked": "Ida plays ambient these days instead.",
+      "unmarked": "Ida codes to ambient.",
+      "marked_template": "{p} plays {v} these days instead.",
+      "unmarked_template": "{p} codes to {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        197
+      ],
+      "marked_rank": 3,
+      "marked_cosine": 0.501657,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        197
+      ],
+      "unmarked_rank": 2,
+      "unmarked_cosine": 0.710561,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Ida plays ambient these days instead.\"],\"retire\":[197]}",
+      "unmarked_reply": "{\"store\": [\"Ida codes to ambient.\"], \"retire\": [\"197\"]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": false,
+      "unmarked_retired_any": false
+    },
+    {
+      "category": "database",
+      "subject": "Raj",
+      "old_value": "MongoDB",
+      "new_value": "SQLite",
+      "marked": "Raj's team migrated production to SQLite.",
+      "unmarked": "Production for Raj is SQLite.",
+      "marked_template": "{p}'s team migrated production to {v}.",
+      "unmarked_template": "Production for {p} is {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        40
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.689361,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        40
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.804406,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Raj's team migrated production to SQLite.\"],\"retire\":[40]}",
+      "unmarked_reply": "{\"store\":[\"Production for Raj is SQLite.\"],\"retire\":[40]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "shell",
+      "subject": "Milo",
+      "old_value": "bash",
+      "new_value": "zsh",
+      "marked": "Milo switched the shell to zsh.",
+      "unmarked": "Milo's shell is zsh.",
+      "marked_template": "{p} switched the shell to {v}.",
+      "unmarked_template": "{p}'s shell is {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        88
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.76096,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        88
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.900567,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Milo switched the shell to zsh.\"],\"retire\":[88]}",
+      "unmarked_reply": "{\"store\":[\"Milo's shell is zsh.\"],\"retire\":[88]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "drink",
+      "subject": "Maria",
+      "old_value": "coffee",
+      "new_value": "matcha",
+      "marked": "Maria has switched to matcha lately.",
+      "unmarked": "Maria drinks matcha every morning.",
+      "marked_template": "{p} has switched to {v} lately.",
+      "unmarked_template": "{p} drinks {v} every morning.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        278
+      ],
+      "marked_rank": 5,
+      "marked_cosine": 0.535865,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        278
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.829904,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Maria has switched to matcha lately.\"],\"retire\":[]}",
+      "unmarked_reply": "{\"store\":[\"Maria drinks matcha every morning.\"],\"retire\":[278]}",
+      "judgeable": true,
+      "marked_retired": false,
+      "marked_retired_any": false,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "terminal",
+      "subject": "Alma",
+      "old_value": "Alacritty",
+      "new_value": "GNOME Terminal",
+      "marked": "Alma runs GNOME Terminal now.",
+      "unmarked": "Alma uses GNOME Terminal as a terminal.",
+      "marked_template": "{p} runs {v} now.",
+      "unmarked_template": "{p} uses {v} as a terminal.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        118
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.779443,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        118
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.818104,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Alma runs GNOME Terminal now.\"],\"retire\":[118]}",
+      "unmarked_reply": "{\"store\":[\"Alma uses GNOME Terminal as a terminal.\"],\"retire\":[118]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "os",
+      "subject": "Milo",
+      "old_value": "macOS",
+      "new_value": "Ubuntu",
+      "marked": "Milo reinstalled onto Ubuntu.",
+      "unmarked": "Milo works on Ubuntu.",
+      "marked_template": "{p} reinstalled onto {v}.",
+      "unmarked_template": "{p} works on {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        116
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.647382,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        116
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.800052,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Milo reinstalled onto Ubuntu.\"],\"retire\":[116]}",
+      "unmarked_reply": "{\"store\":[\"Milo works on Ubuntu.\"],\"retire\":[116]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "pet",
+      "subject": "Alma",
+      "old_value": "a rabbit",
+      "new_value": "a parrot",
+      "marked": "Alma now has a parrot instead.",
+      "unmarked": "Alma has a parrot at home.",
+      "marked_template": "{p} now has {v} instead.",
+      "unmarked_template": "{p} has {v} at home.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        168
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.666676,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        168
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.75007,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Alma now has a parrot instead.\"],\"retire\":[168]}",
+      "unmarked_reply": "{\"store\":[\"Alma has a parrot at home.\"],\"retire\":[168]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "tracing",
+      "subject": "Maria",
+      "old_value": "Zipkin",
+      "new_value": "Honeycomb",
+      "marked": "Maria's team moved tracing to Honeycomb.",
+      "unmarked": "Maria's team traces with Honeycomb.",
+      "marked_template": "{p}'s team moved tracing to {v}.",
+      "unmarked_template": "{p}'s team traces with {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        228
+      ],
+      "marked_rank": 5,
+      "marked_cosine": 0.608389,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        228
+      ],
+      "unmarked_rank": 5,
+      "unmarked_cosine": 0.720067,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Maria's team traces with Honeycomb.\"],\"retire\":[228]}",
+      "unmarked_reply": "{\"store\":[\"Maria's team traces with Honeycomb.\"],\"retire\":[228]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "editor",
+      "subject": "Vera",
+      "old_value": "VS Code",
+      "new_value": "Zed",
+      "marked": "Vera moved over to Zed recently.",
+      "unmarked": "Vera writes code in Zed.",
+      "marked_template": "{p} moved over to {v} recently.",
+      "unmarked_template": "{p} writes code in {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        177
+      ],
+      "marked_rank": 9,
+      "marked_cosine": 0.436096,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        177
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.777723,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\": [\"Vera moved over to Zed recently.\"], \"retire\": []}",
+      "unmarked_reply": "{\"store\":[\"Vera writes code in Zed.\"],\"retire\":[]}",
+      "judgeable": true,
+      "marked_retired": false,
+      "marked_retired_any": false,
+      "unmarked_retired": false,
+      "unmarked_retired_any": false
+    },
+    {
+      "category": "terminal",
+      "subject": "Maria",
+      "old_value": "Kitty",
+      "new_value": "Alacritty",
+      "marked": "Maria runs Alacritty now.",
+      "unmarked": "Maria uses Alacritty as a terminal.",
+      "marked_template": "{p} runs {v} now.",
+      "unmarked_template": "{p} uses {v} as a terminal.",
+      "live_rows_holding_old": 0,
+      "offered_old_ids": [],
+      "marked_rank": null,
+      "marked_cosine": null,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [],
+      "unmarked_rank": null,
+      "unmarked_cosine": null,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Maria runs Alacritty now.\"],\"retire\":[302]}",
+      "unmarked_reply": "{\"store\":[\"Maria uses Alacritty as a terminal.\"],\"retire\":[]}",
+      "judgeable": false,
+      "marked_retired": false,
+      "marked_retired_any": false,
+      "unmarked_retired": false,
+      "unmarked_retired_any": false
+    },
+    {
+      "category": "tracing",
+      "subject": "Otto",
+      "old_value": "Honeycomb",
+      "new_value": "Jaeger",
+      "marked": "Otto replaced the tracing stack with Jaeger.",
+      "unmarked": "Otto's team traces with Jaeger.",
+      "marked_template": "{p} replaced the tracing stack with {v}.",
+      "unmarked_template": "{p}'s team traces with {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        199
+      ],
+      "marked_rank": 3,
+      "marked_cosine": 0.554807,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        199
+      ],
+      "unmarked_rank": 2,
+      "unmarked_cosine": 0.733465,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\": [\"Otto's team traces with Jaeger.\"], \"retire\": [199]}",
+      "unmarked_reply": "{\"store\":[\"Otto's team traces with Jaeger.\"],\"retire\":[199]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "pet",
+      "subject": "Tariq",
+      "old_value": "a dog",
+      "new_value": "a cat",
+      "marked": "Tariq adopted a cat recently.",
+      "unmarked": "Tariq has a cat at home.",
+      "marked_template": "{p} adopted {v} recently.",
+      "unmarked_template": "{p} has {v} at home.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        73
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.745459,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        73
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.894875,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Tariq adopted a cat recently.\"],\"retire\":[73]}",
+      "unmarked_reply": "{\"store\":[\"Tariq has a cat at home.\"],\"retire\":[73]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "manager",
+      "subject": "Kofi",
+      "old_value": "Karin",
+      "new_value": "Tomas",
+      "marked": "Kofi now reports into Tomas.",
+      "unmarked": "Kofi reports to Tomas.",
+      "marked_template": "{p} now reports into {v}.",
+      "unmarked_template": "{p} reports to {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        280
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.730045,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        280
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.794019,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Kofi now reports into Tomas.\"],\"retire\":[280]}",
+      "unmarked_reply": "{\"store\":[\"Kofi reports to Tomas.\"],\"retire\":[280]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "indent",
+      "subject": "Sena",
+      "old_value": "eight spaces",
+      "new_value": "two spaces",
+      "marked": "Sena has switched to two spaces.",
+      "unmarked": "Sena indents with two spaces.",
+      "marked_template": "{p} has switched to {v}.",
+      "unmarked_template": "{p} indents with {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        201
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.756069,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        201
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.934534,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Sena has switched to two spaces.\"],\"retire\":[201]}",
+      "unmarked_reply": "{\"store\":[\"Sena indents with two spaces.\"],\"retire\":[201]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "cloud",
+      "subject": "Chen",
+      "old_value": "Azure",
+      "new_value": "Hetzner",
+      "marked": "Chen runs everything on Hetzner now.",
+      "unmarked": "Chen's infrastructure sits on Hetzner.",
+      "marked_template": "{p} runs everything on {v} now.",
+      "unmarked_template": "{p}'s infrastructure sits on {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        21
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.592339,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        21
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.767198,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\": [\"Chen runs everything on Hetzner now.\"], \"retire\": [21]}",
+      "unmarked_reply": "{\"store\":[\"Chen's infrastructure sits on Hetzner.\"],\"retire\":[21]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "editor",
+      "subject": "Bruno",
+      "old_value": "IntelliJ",
+      "new_value": "Neovim",
+      "marked": "Bruno now edits everything in Neovim.",
+      "unmarked": "Bruno writes code in Neovim.",
+      "marked_template": "{p} now edits everything in {v}.",
+      "unmarked_template": "{p} writes code in {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        284
+      ],
+      "marked_rank": 2,
+      "marked_cosine": 0.628718,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        284
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.757434,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Bruno now edits everything in Neovim.\"],\"retire\":[]}",
+      "unmarked_reply": "{\"store\":[\"Bruno writes code in Neovim.\"],\"retire\":[284]}",
+      "judgeable": true,
+      "marked_retired": false,
+      "marked_retired_any": false,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "testing",
+      "subject": "Yuki",
+      "old_value": "table-driven tests",
+      "new_value": "property-based tests",
+      "marked": "Yuki converted the suite to property-based tests.",
+      "unmarked": "Yuki's test suite is built on property-based tests.",
+      "marked_template": "{p} converted the suite to {v}.",
+      "unmarked_template": "{p}'s test suite is built on {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        145
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.764417,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        145
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.835111,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Yuki converted the suite to property-based tests.\"],\"retire\":[145]}",
+      "unmarked_reply": "{\"store\":[\"Yuki's test suite is built on property-based tests.\"],\"retire\":[145]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "drink",
+      "subject": "Sena",
+      "old_value": "espresso",
+      "new_value": "tea",
+      "marked": "These days Sena goes for tea instead.",
+      "unmarked": "Sena's morning ritual is tea.",
+      "marked_template": "These days {p} goes for {v} instead.",
+      "unmarked_template": "{p}'s morning ritual is {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        99
+      ],
+      "marked_rank": 3,
+      "marked_cosine": 0.610157,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        99
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.857586,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Sena goes for tea these days.\"],\"retire\":[99]}",
+      "unmarked_reply": "{\"store\":[\"Sena's morning ritual is tea.\"],\"retire\":[99,294]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "pet",
+      "subject": "Chen",
+      "old_value": "a cat",
+      "new_value": "a parrot",
+      "marked": "Chen now has a parrot instead.",
+      "unmarked": "Chen keeps a parrot.",
+      "marked_template": "{p} now has {v} instead.",
+      "unmarked_template": "{p} keeps {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        268
+      ],
+      "marked_rank": 2,
+      "marked_cosine": 0.627001,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        268
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.784623,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\": [\"Chen now has a parrot instead.\"], \"retire\": [268]}",
+      "unmarked_reply": "{\"store\":[\"Chen keeps a parrot.\"],\"retire\":[344]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": false,
+      "unmarked_retired_any": false
+    },
+    {
+      "category": "ci",
+      "subject": "Sam",
+      "old_value": "Jenkins",
+      "new_value": "GitHub Actions",
+      "marked": "Sam moved CI to GitHub Actions.",
+      "unmarked": "Sam runs CI on GitHub Actions.",
+      "marked_template": "{p} moved CI to {v}.",
+      "unmarked_template": "{p} runs CI on {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        169
+      ],
+      "marked_rank": 4,
+      "marked_cosine": 0.587775,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        169
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.813066,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Sam runs CI on GitHub Actions.\"],\"retire\":[169]}",
+      "unmarked_reply": "{\"store\":[\"Sam runs CI on GitHub Actions.\"],\"retire\":[169]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "shell",
+      "subject": "Yuki",
+      "old_value": "bash",
+      "new_value": "zsh",
+      "marked": "Yuki switched the shell to zsh.",
+      "unmarked": "Yuki uses zsh.",
+      "marked_template": "{p} switched the shell to {v}.",
+      "unmarked_template": "{p} uses {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        193
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.790866,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        193
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.882952,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Yuki switched the shell to zsh.\"],\"retire\":[193]}",
+      "unmarked_reply": "{\"store\":[\"Yuki uses zsh.\"],\"retire\":[193]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "manager",
+      "subject": "Nina",
+      "old_value": "Karin",
+      "new_value": "Diane",
+      "marked": "Nina now reports into Diane.",
+      "unmarked": "Nina's manager is Diane.",
+      "marked_template": "{p} now reports into {v}.",
+      "unmarked_template": "{p}'s manager is {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        186
+      ],
+      "marked_rank": 4,
+      "marked_cosine": 0.562038,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        186
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.818141,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Nina now reports into Diane.\"],\"retire\":[307]}",
+      "unmarked_reply": "{\"store\":[\"Nina's manager is Diane.\"],\"retire\":[186]}",
+      "judgeable": true,
+      "marked_retired": false,
+      "marked_retired_any": false,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "notes",
+      "subject": "Maria",
+      "old_value": "Logseq",
+      "new_value": "plain text files",
+      "marked": "Maria migrated the notes to plain text files.",
+      "unmarked": "Maria keeps notes in plain text files.",
+      "marked_template": "{p} migrated the notes to {v}.",
+      "unmarked_template": "{p} keeps notes in {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        94
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.646472,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        94
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.787306,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Maria migrated the notes to plain text files.\"],\"retire\":[94]}",
+      "unmarked_reply": "{\"store\":[\"Maria keeps notes in plain text files.\"],\"retire\":[94]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "ci",
+      "subject": "Milo",
+      "old_value": "GitHub Actions",
+      "new_value": "GitLab CI",
+      "marked": "Milo rebuilt the pipelines on GitLab CI.",
+      "unmarked": "Milo runs CI on GitLab CI.",
+      "marked_template": "{p} rebuilt the pipelines on {v}.",
+      "unmarked_template": "{p} runs CI on {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        58
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.70531,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        58
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.847002,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Milo rebuilt the pipelines on GitLab CI.\"],\"retire\":[58]}",
+      "unmarked_reply": "{\"store\":[\"Milo runs CI on GitLab CI.\"],\"retire\":[58]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "timezone",
+      "subject": "Nina",
+      "old_value": "CET",
+      "new_value": "JST",
+      "marked": "Nina relocated and now works from JST.",
+      "unmarked": "Nina works from JST.",
+      "marked_template": "{p} relocated and now works from {v}.",
+      "unmarked_template": "{p} works from {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        22
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.709953,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        22
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.801019,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Nina relocated and now works from JST.\"],\"retire\":[22]}",
+      "unmarked_reply": "{\"store\":[\"Nina works from JST.\"],\"retire\":[22]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "gym",
+      "subject": "Lisa",
+      "old_value": "running",
+      "new_value": "swimming",
+      "marked": "Lisa took up swimming instead.",
+      "unmarked": "Lisa keeps fit with swimming.",
+      "marked_template": "{p} took up {v} instead.",
+      "unmarked_template": "{p} keeps fit with {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        28
+      ],
+      "marked_rank": 3,
+      "marked_cosine": 0.563538,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        28
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.825163,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\": [\"Lisa took up swimming instead.\"], \"retire\": [28]}",
+      "unmarked_reply": "{\"store\":[\"Lisa keeps fit with swimming.\"],\"retire\":[28]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "editor",
+      "subject": "Ida",
+      "old_value": "VS Code",
+      "new_value": "Emacs",
+      "marked": "Ida now edits everything in Emacs.",
+      "unmarked": "Ida's editor is Emacs.",
+      "marked_template": "{p} now edits everything in {v}.",
+      "unmarked_template": "{p}'s editor is {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        229
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.647384,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        229
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.786952,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Ida now edits everything in Emacs.\"],\"retire\":[229]}",
+      "unmarked_reply": "{\"store\":[\"Ida's editor is Emacs.\"],\"retire\":[229]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "shell",
+      "subject": "Bruno",
+      "old_value": "bash",
+      "new_value": "fish",
+      "marked": "Bruno moved to fish.",
+      "unmarked": "Bruno uses fish.",
+      "marked_template": "{p} moved to {v}.",
+      "unmarked_template": "{p} uses {v}.",
+      "live_rows_holding_old": 0,
+      "offered_old_ids": [],
+      "marked_rank": null,
+      "marked_cosine": null,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [],
+      "unmarked_rank": null,
+      "unmarked_cosine": null,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Bruno moved to fish.\"],\"retire\":[]}",
+      "unmarked_reply": "{\"store\": [\"Bruno uses fish.\"], \"retire\": []}",
+      "judgeable": false,
+      "marked_retired": false,
+      "marked_retired_any": false,
+      "unmarked_retired": false,
+      "unmarked_retired_any": false
+    },
+    {
+      "category": "tracing",
+      "subject": "Lisa",
+      "old_value": "Zipkin",
+      "new_value": "Datadog",
+      "marked": "Lisa's team moved tracing to Datadog.",
+      "unmarked": "Lisa's team traces with Datadog.",
+      "marked_template": "{p}'s team moved tracing to {v}.",
+      "unmarked_template": "{p}'s team traces with {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        49
+      ],
+      "marked_rank": 2,
+      "marked_cosine": 0.624063,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        49
+      ],
+      "unmarked_rank": 2,
+      "unmarked_cosine": 0.699587,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Lisa's team moved tracing to Datadog.\"],\"retire\":[49]}",
+      "unmarked_reply": "{\"store\":[\"Lisa's team traces with Datadog.\"],\"retire\":[49]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "terminal",
+      "subject": "Sam",
+      "old_value": "iTerm2",
+      "new_value": "WezTerm",
+      "marked": "Sam replaced the terminal with WezTerm.",
+      "unmarked": "Sam uses WezTerm as a terminal.",
+      "marked_template": "{p} replaced the terminal with {v}.",
+      "unmarked_template": "{p} uses {v} as a terminal.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        86
+      ],
+      "marked_rank": 2,
+      "marked_cosine": 0.639873,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        86
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.807404,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Sam replaced the terminal with WezTerm.\"],\"retire\":[86]}",
+      "unmarked_reply": "{\"store\":[\"Sam uses WezTerm as a terminal.\"],\"retire\":[86]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "manager",
+      "subject": "Sena",
+      "old_value": "Priya",
+      "new_value": "Karin",
+      "marked": "Sena was moved under Karin.",
+      "unmarked": "Sena reports to Karin.",
+      "marked_template": "{p} was moved under {v}.",
+      "unmarked_template": "{p} reports to {v}.",
+      "live_rows_holding_old": 0,
+      "offered_old_ids": [],
+      "marked_rank": null,
+      "marked_cosine": null,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [],
+      "unmarked_rank": null,
+      "unmarked_cosine": null,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\": [\"Sena was moved under Karin.\"], \"retire\": []}",
+      "unmarked_reply": "{\"store\": [\"Sena reports to Karin.\"], \"retire\": []}",
+      "judgeable": false,
+      "marked_retired": false,
+      "marked_retired_any": false,
+      "unmarked_retired": false,
+      "unmarked_retired_any": false
+    },
+    {
+      "category": "testing",
+      "subject": "Otto",
+      "old_value": "end-to-end tests",
+      "new_value": "mutation testing",
+      "marked": "Otto now relies on mutation testing.",
+      "unmarked": "Otto writes mutation testing.",
+      "marked_template": "{p} now relies on {v}.",
+      "unmarked_template": "{p} writes {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        4
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.648306,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        4
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.733911,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\": [\"Otto now relies on mutation testing.\"], \"retire\": []}",
+      "unmarked_reply": "{\"store\":[\"Otto writes mutation testing.\"],\"retire\":[]}",
+      "judgeable": true,
+      "marked_retired": false,
+      "marked_retired_any": false,
+      "unmarked_retired": false,
+      "unmarked_retired_any": false
+    },
+    {
+      "category": "notes",
+      "subject": "Vera",
+      "old_value": "Notion",
+      "new_value": "Obsidian",
+      "marked": "Vera keeps everything in Obsidian now.",
+      "unmarked": "Vera keeps notes in Obsidian.",
+      "marked_template": "{p} keeps everything in {v} now.",
+      "unmarked_template": "{p} keeps notes in {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        46
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.675148,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        46
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.840859,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Vera keeps everything in Obsidian now.\"],\"retire\":[46]}",
+      "unmarked_reply": "{\"store\":[\"Vera keeps notes in Obsidian.\"],\"retire\":[46]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "commute",
+      "subject": "Nina",
+      "old_value": "car",
+      "new_value": "scooter",
+      "marked": "Nina gets in by scooter these days.",
+      "unmarked": "Nina commutes by scooter.",
+      "marked_template": "{p} gets in by {v} these days.",
+      "unmarked_template": "{p} commutes by {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        286
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.726133,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        286
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.882271,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Nina gets in by scooter these days.\"],\"retire\":[286]}",
+      "unmarked_reply": "{\"store\":[\"Nina commutes by scooter.\"],\"retire\":[286]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "timezone",
+      "subject": "Chen",
+      "old_value": "KST",
+      "new_value": "PST",
+      "marked": "Chen relocated and now works from PST.",
+      "unmarked": "Chen works from PST.",
+      "marked_template": "{p} relocated and now works from {v}.",
+      "unmarked_template": "{p} works from {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        171
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.755471,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        171
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.802346,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Chen works from PST.\"],\"retire\":[171]}",
+      "unmarked_reply": "{\"store\":[\"Chen works from PST.\"],\"retire\":[171]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "database",
+      "subject": "Nina",
+      "old_value": "MySQL",
+      "new_value": "Postgres",
+      "marked": "Nina's team migrated production to Postgres.",
+      "unmarked": "Production for Nina is Postgres.",
+      "marked_template": "{p}'s team migrated production to {v}.",
+      "unmarked_template": "Production for {p} is {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        244
+      ],
+      "marked_rank": 2,
+      "marked_cosine": 0.699067,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        244
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.892985,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Nina's team migrated production to Postgres.\"],\"retire\":[244]}",
+      "unmarked_reply": "{\"store\":[\"Production for Nina is Postgres.\"],\"retire\":[244]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "testing",
+      "subject": "Tariq",
+      "old_value": "snapshot tests",
+      "new_value": "end-to-end tests",
+      "marked": "Tariq converted the suite to end-to-end tests.",
+      "unmarked": "Tariq's test suite is built on end-to-end tests.",
+      "marked_template": "{p} converted the suite to {v}.",
+      "unmarked_template": "{p}'s test suite is built on {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        172
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.753795,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        172
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.841617,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Tariq converted the suite to end-to-end tests.\"],\"retire\":[172]}",
+      "unmarked_reply": "{\"store\":[\"Tariq's test suite is built on end-to-end tests.\"],\"retire\":[172]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "terminal",
+      "subject": "Otto",
+      "old_value": "iTerm2",
+      "new_value": "WezTerm",
+      "marked": "Otto runs WezTerm now.",
+      "unmarked": "Otto's terminal is WezTerm.",
+      "marked_template": "{p} runs {v} now.",
+      "unmarked_template": "{p}'s terminal is {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        91
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.636124,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        91
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.859855,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Otto runs WezTerm now.\"],\"retire\":[91]}",
+      "unmarked_reply": "{\"store\":[\"Otto's terminal is WezTerm.\"],\"retire\":[91]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "timezone",
+      "subject": "Sena",
+      "old_value": "GMT",
+      "new_value": "CET",
+      "marked": "Sena relocated and now works from CET.",
+      "unmarked": "Sena works from CET.",
+      "marked_template": "{p} relocated and now works from {v}.",
+      "unmarked_template": "{p} works from {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        142
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.78226,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        142
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.862846,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Sena relocated and now works from CET.\"],\"retire\":[142]}",
+      "unmarked_reply": "{\"store\":[\"Sena works from CET.\"],\"retire\":[142]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "tracing",
+      "subject": "Alma",
+      "old_value": "Jaeger",
+      "new_value": "Datadog",
+      "marked": "Alma's team moved tracing to Datadog.",
+      "unmarked": "Tracing for Alma runs on Datadog.",
+      "marked_template": "{p}'s team moved tracing to {v}.",
+      "unmarked_template": "Tracing for {p} runs on {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        270
+      ],
+      "marked_rank": 4,
+      "marked_cosine": 0.611539,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        270
+      ],
+      "unmarked_rank": 3,
+      "unmarked_cosine": 0.61737,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Alma's team moved tracing to Datadog.\"],\"retire\":[]}",
+      "unmarked_reply": "{\"store\":[\"Alma traces with Datadog.\"],\"retire\":[270]}",
+      "judgeable": true,
+      "marked_retired": false,
+      "marked_retired_any": false,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "language",
+      "subject": "Yuki",
+      "old_value": "Go",
+      "new_value": "Python",
+      "marked": "Yuki has since standardized on Python.",
+      "unmarked": "Yuki prefers Python for new services.",
+      "marked_template": "{p} has since standardized on {v}.",
+      "unmarked_template": "{p} prefers {v} for new services.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [],
+      "marked_rank": 14,
+      "marked_cosine": 0.498976,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        269
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.69849,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Yuki has since standardized on Python.\"],\"retire\":[]}",
+      "unmarked_reply": "{\"store\":[\"Yuki prefers Python for new services.\"],\"retire\":[]}",
+      "judgeable": false,
+      "marked_retired": false,
+      "marked_retired_any": false,
+      "unmarked_retired": false,
+      "unmarked_retired_any": false
+    },
+    {
+      "category": "cloud",
+      "subject": "Tariq",
+      "old_value": "Azure",
+      "new_value": "Hetzner",
+      "marked": "Tariq migrated the deployment to Hetzner.",
+      "unmarked": "Tariq deploys on Hetzner.",
+      "marked_template": "{p} migrated the deployment to {v}.",
+      "unmarked_template": "{p} deploys on {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        261
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.669132,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        261
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.727335,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Tariq migrated the deployment to Hetzner.\"],\"retire\":[261]}",
+      "unmarked_reply": "{\"store\":[\"Tariq deploys on Hetzner.\"],\"retire\":[261]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "testing",
+      "subject": "Kofi",
+      "old_value": "property-based tests",
+      "new_value": "snapshot tests",
+      "marked": "Kofi now relies on snapshot tests.",
+      "unmarked": "Kofi writes snapshot tests.",
+      "marked_template": "{p} now relies on {v}.",
+      "unmarked_template": "{p} writes {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        208
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.73168,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        208
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.793644,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Kofi now relies on snapshot tests.\"],\"retire\":[]}",
+      "unmarked_reply": "{\"store\":[\"Kofi writes snapshot tests.\"],\"retire\":[]}",
+      "judgeable": true,
+      "marked_retired": false,
+      "marked_retired_any": false,
+      "unmarked_retired": false,
+      "unmarked_retired_any": false
+    },
+    {
+      "category": "database",
+      "subject": "Sam",
+      "old_value": "Postgres",
+      "new_value": "SQLite",
+      "marked": "Sam moved the prod database to SQLite.",
+      "unmarked": "Sam's team runs SQLite in production.",
+      "marked_template": "{p} moved the prod database to {v}.",
+      "unmarked_template": "{p}'s team runs {v} in production.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        81
+      ],
+      "marked_rank": 5,
+      "marked_cosine": 0.569493,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        81
+      ],
+      "unmarked_rank": 2,
+      "unmarked_cosine": 0.800713,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Sam moved the prod database to SQLite.\"],\"retire\":[81]}",
+      "unmarked_reply": "{\"store\":[\"Sam's team runs SQLite in production.\"],\"retire\":[81]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "indent",
+      "subject": "Milo",
+      "old_value": "mixed indentation",
+      "new_value": "two spaces",
+      "marked": "Milo reformatted everything to two spaces.",
+      "unmarked": "Milo formats code using two spaces.",
+      "marked_template": "{p} reformatted everything to {v}.",
+      "unmarked_template": "{p} formats code using {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        170
+      ],
+      "marked_rank": 2,
+      "marked_cosine": 0.59675,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        170
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.87283,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\": [\"Milo reformatted everything to two spaces.\"], \"retire\": [170]}",
+      "unmarked_reply": "{\"store\":[\"Milo formats code using two spaces.\"],\"retire\":[170]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "gym",
+      "subject": "Milo",
+      "old_value": "yoga",
+      "new_value": "swimming",
+      "marked": "Milo dropped that and does swimming now.",
+      "unmarked": "Milo does swimming after work.",
+      "marked_template": "{p} dropped that and does {v} now.",
+      "unmarked_template": "{p} does {v} after work.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        31
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.627993,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        31
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.798659,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\": [\"Milo does swimming now.\"], \"retire\": [31]}",
+      "unmarked_reply": "{\"store\":[\"Milo does swimming after work.\"],\"retire\":[31]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "drink",
+      "subject": "Yuki",
+      "old_value": "tea",
+      "new_value": "coffee",
+      "marked": "These days Yuki goes for coffee instead.",
+      "unmarked": "Yuki's morning ritual is coffee.",
+      "marked_template": "These days {p} goes for {v} instead.",
+      "unmarked_template": "{p}'s morning ritual is {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        246
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.646675,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        246
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.866276,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Yuki goes for coffee these days.\"],\"retire\":[246]}",
+      "unmarked_reply": "{\"store\":[\"Yuki's morning ritual is coffee.\"],\"retire\":[246]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "testing",
+      "subject": "Sam",
+      "old_value": "end-to-end tests",
+      "new_value": "property-based tests",
+      "marked": "Sam now relies on property-based tests.",
+      "unmarked": "Sam's test suite is built on property-based tests.",
+      "marked_template": "{p} now relies on {v}.",
+      "unmarked_template": "{p}'s test suite is built on {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        96
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.732851,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        96
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.838186,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Sam now relies on property-based tests.\"],\"retire\":[96]}",
+      "unmarked_reply": "{\"store\":[\"Sam's test suite is built on property-based tests.\"],\"retire\":[96]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "cloud",
+      "subject": "Yuki",
+      "old_value": "Fly.io",
+      "new_value": "AWS",
+      "marked": "Yuki runs everything on AWS now.",
+      "unmarked": "Yuki's infrastructure sits on AWS.",
+      "marked_template": "{p} runs everything on {v} now.",
+      "unmarked_template": "{p}'s infrastructure sits on {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        55
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.664111,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        55
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.763151,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\": [\"Yuki runs everything on AWS now.\"], \"retire\": [55]}",
+      "unmarked_reply": "{\"store\":[\"Yuki's infrastructure sits on AWS.\"],\"retire\":[55]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "ci",
+      "subject": "Raj",
+      "old_value": "GitHub Actions",
+      "new_value": "Jenkins",
+      "marked": "Raj rebuilt the pipelines on Jenkins.",
+      "unmarked": "Raj's pipelines live in Jenkins.",
+      "marked_template": "{p} rebuilt the pipelines on {v}.",
+      "unmarked_template": "{p}'s pipelines live in {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        147
+      ],
+      "marked_rank": 1,
+      "marked_cosine": 0.746291,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        147
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.838635,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\": [\"Raj rebuilt the pipelines on Jenkins.\"], \"retire\": [147]}",
+      "unmarked_reply": "{\"store\":[\"Raj's pipelines live in Jenkins.\"],\"retire\":[147]}",
+      "judgeable": true,
+      "marked_retired": true,
+      "marked_retired_any": true,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    },
+    {
+      "category": "music",
+      "subject": "Bruno",
+      "old_value": "techno",
+      "new_value": "jazz",
+      "marked": "Bruno moved on to jazz.",
+      "unmarked": "Bruno codes to jazz.",
+      "marked_template": "{p} moved on to {v}.",
+      "unmarked_template": "{p} codes to {v}.",
+      "live_rows_holding_old": 1,
+      "offered_old_ids": [
+        16
+      ],
+      "marked_rank": 7,
+      "marked_cosine": 0.479781,
+      "marked_offer_size": 10,
+      "unmarked_offered_old_ids": [
+        16
+      ],
+      "unmarked_rank": 1,
+      "unmarked_cosine": 0.769278,
+      "unmarked_offer_size": 10,
+      "marked_reply": "{\"store\":[\"Bruno moved on to jazz.\"],\"retire\":[365]}",
+      "unmarked_reply": "{\"store\":[\"Bruno codes to jazz.\"],\"retire\":[16]}",
+      "judgeable": true,
+      "marked_retired": false,
+      "marked_retired_any": false,
+      "unmarked_retired": true,
+      "unmarked_retired_any": true
+    }
+  ]
+}

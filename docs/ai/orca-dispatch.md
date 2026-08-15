@@ -67,7 +67,7 @@ orca orchestration check --wait --types worker_done,escalation,question --timeou
 
 - **Idle worker after dispatch**: `worker-read --dispatch <id>` / `terminal read`. Preamble missing → re-run `dispatch --task <id> --to <handle> --inject` (after a tui-idle wait). Do not create a second worktree or terminal.
 - **Manual prompt instead of inject**: a worker prompted by plain `terminal send` cannot settle the dispatch — its `worker_done` is rejected (`dispatch_capability_invalid`). The report still lands in the Run inbox, but the task stays unsettled. If you must prompt manually, treat the work as lightweight-mode and close the task with `task-update`.
-- **Stale handle**: reacquire with `terminal list --worktree <selector>`. One handle at a time; never dual-send.
+- **Stale handle**: reacquire with `terminal list --worktree id:<repoId>::<path>`. One handle at a time; never dual-send.
 
 ## Follow-up rounds
 
@@ -82,7 +82,7 @@ Work is iterative: worker completes → PM reviews → PM comments on the issue 
 
 - PM sweep on every wake: `orca orchestration check --json` (unread Run mail) + `orca worktree ps --json` (stuck or in-review worktrees).
 - Worker-side status reporting (card updates, `worker_done`): `worker-guide.md` §Reporting status.
-- After the worker's PR is merged: release the dispatch (see §Supervised mode), then `orca worktree rm --worktree path:<worktree-path>` and delete the task branch. A worktree listed as in-progress whose terminal shows an exited process is a stale dispatch, not active work — remove it.
+- After the worker's PR is merged: release the dispatch (see §Supervised mode), then `worktree rm --worktree id:<repoId>::<path> --force --json` and delete the task branch. A worktree listed as in-progress whose terminal shows an exited process is a stale dispatch, not active work — remove it.
 - A QA dispatch has no PR: remove its worktree as soon as the report lands on the issue. Every dispatch — worker or QA — ends with worktree removal; verify none are left (`orca worktree list`) after each completed dispatch.
 
 ## Anti-patterns

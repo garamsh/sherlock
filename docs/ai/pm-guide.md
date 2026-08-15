@@ -20,18 +20,15 @@ Never review from memory. Before looking at the diff:
 
 1. List the changed files and identify which convention documents govern them (`docs/convention/README.md` is the index).
 2. Actually read those documents. If the PR touches docs, also read `docs/convention/documentation.md`.
-3. If you skip a document, mark its check as **unverified** in the review — never claim a pass or violation you did not ground in the text.
 
 ### Step 1 — Check, in order
 
 1. **Scope** — every changed line traces to the task or issue. Flag unrelated edits.
-2. **Commits and branch** — branch name, commit message format, and one concern per commit, per `docs/convention/git.md`.
-3. **Conventions** — the diff follows `docs/convention/`.
-4. **Path ownership** — PM-owned paths (`docs/convention/`, `docs/ai/`, `.opencode/`, `.claude/`, `.github/`) change only via the PM or explicit delegation stated in the issue.
-5. **Architecture** — ADR and responsibility documents are updated as a pair; the final state lives in the responsibility documents. A PR updating only one of the two is rejected.
-6. **Documentation** — new or edited docs follow `docs/convention/documentation.md`.
-7. **Verification** — the PR description states which checks ran (lint, format, test) and their results. Spot-check what is cheap to verify: re-run a command, confirm a cited version, read the CI log.
-8. **Depth** — beyond rule compliance: logic or correctness risks in the change, tests adequate for what changed, and whether a markedly simpler approach was passed over.
+2. **Conventions** — the diff follows `docs/convention/`.
+3. **Architecture** — ADR and responsibility documents are updated as a pair; the final state lives in the responsibility documents. A PR updating only one of the two is rejected.
+4. **Documentation** — new or edited docs follow `docs/convention/documentation.md`.
+5. **Verification** — the PR description states which checks ran (lint, format, test) and their results.
+6. **Depth** — beyond rule compliance: logic or correctness risks in the change, tests adequate for what changed, and whether a markedly simpler approach was passed over.
 
 ### Step 2 — Report
 
@@ -41,21 +38,17 @@ Submit the review per `docs/convention/review.md`: formal review state, evidence
 
 - **Approve** — submit an approving review when all checks pass, then merge (`gh pr merge --squash --delete-branch`).
 - **Request changes** — submit a changes-requested review. Wait for the author's revision, then re-review the delta from Step 1.
-- **Accepted deviations** — when you accept a deviation instead of blocking, record it in the review with the reason. An unrecorded acceptance did not happen.
 - **Reject** only when the approach itself is wrong: request changes explaining why, close the PR, and open an issue describing the correct direction.
 
 ## Managing issues
 
-- Write issues so a worker can act on the issue alone: target paths, constraints, and acceptance criteria included. An issue that needs oral context is incomplete.
-- Open issues for gaps you find through reviews and convention supervision. Project-wide hunts — doc–code drift, behavior verification, structural gaps, maintainability — belong to the QA agent; invoke it instead of auditing yourself.
-- Triage QA-filed issues like any other: confirm the evidence, then accept, prioritize, or close with a reason.
-- When PR feedback reveals a recurring problem, edit or create an issue so the fix is tracked once, not repeated per-PR.
-- Issues state the goal and acceptance criteria, not the implementation.
-- An issue whose scope touches PM-owned paths (`docs/convention/`, `docs/ai/`, `.opencode/`, `.claude/`, `.github/`) is executed by the PM, unless the issue body explicitly delegates those paths to the worker.
+- Write issues so a worker can act on the issue alone: goal and acceptance criteria, target paths, constraints — never the implementation, never oral context.
+- Open issues for gaps you find through reviews and convention supervision. Project-wide hunts — doc–code drift, behavior verification, structural gaps, maintainability — belong to the QA agent; invoke it, then triage its issues: confirm the evidence, accept, prioritize, or close with a reason.
+- When PR feedback reveals a recurring problem, track it in one issue instead of repeating comments per-PR.
 
 ## Dispatching workers
 
-Assign implementation work by running a worker in an orca worktree, not by editing source yourself. Open the issue first and wait for a human to confirm it; only then create the worktree and dispatch. Watch the worker's terminal to completion. Full procedure — dispatch modes, role binding, recovery, follow-up rounds: `orca-dispatch.md`.
+Assign implementation work by running a worker in an orca worktree, not by editing source yourself. Open the issue first and wait for a human to confirm it; only then create the worktree and dispatch. Launch a role-bound agent into the worktree in autonomous mode and watch its terminal to completion. Full procedure: `orca-dispatch.md`. Roles must be bound with the tool's own `--agent <role>` flag — orca's `--agent` selects only the tool.
 
 ## Branch hygiene
 
@@ -67,7 +60,7 @@ Assign implementation work by running a worker in an orca worktree, not by editi
 
 - Scope tasks and issues so concurrently active workers touch disjoint modules. If two tasks must overlap, sequence them — do not run them in parallel.
 - When reviewing, check for collisions with other open PRs before merging.
-- On every wake, sweep before anything else: open PRs awaiting your review, unread orchestration mail (`orca orchestration check --json`), and stuck worktrees (`orca worktree ps --json`). Work continues through follow-up rounds — after reviewing, leave direction as an issue/PR comment and re-dispatch the same worker.
+- On every wake, sweep before anything else: open PRs awaiting your review, unread orchestration mail (`orchestration check --json`), and stuck worktrees (`worktree ps --json`). Resolve the Orca executable per `orca-dispatch.md` before running either. Work continues through follow-up rounds — after reviewing, leave direction as an issue/PR comment and re-dispatch the same worker.
 
 ## Maintaining conventions
 

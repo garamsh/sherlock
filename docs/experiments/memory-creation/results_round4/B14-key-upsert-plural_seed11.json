@@ -1,0 +1,34 @@
+{
+  "seed": 11,
+  "row": {
+    "system": "B14-key-upsert-plural",
+    "blurb": "B12, told to coin a narrower key when both facts can be true",
+    "extra_calls": 1.0,
+    "decider_calls": 488,
+    "items": 309,
+    "elapsed_s": 1728.6,
+    "latest_wins": 0.79,
+    "control_survival": 0.95,
+    "coexist_preserved": 1.0,
+    "stale_present": 0.18,
+    "net": 0.9133,
+    "control_never_written": 0.0,
+    "control_retired": 0.0,
+    "control_not_ranked": 0.05,
+    "coexist_never_written": 0.0,
+    "coexist_retired": 0.0,
+    "coexist_not_ranked": 0.0,
+    "outcomes": {
+      "corrected:recalled": 93,
+      "corrected:not_ranked": 7,
+      "control:recalled": 38,
+      "control:not_ranked": 2,
+      "coexist:recalled": 28
+    }
+  },
+  "api_calls": {
+    "embed": 37,
+    "chat": 392,
+    "chat_cached": 96
+  }
+}

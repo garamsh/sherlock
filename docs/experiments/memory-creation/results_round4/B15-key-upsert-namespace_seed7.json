@@ -1,0 +1,37 @@
+{
+  "seed": 7,
+  "row": {
+    "system": "B15-key-upsert-namespace",
+    "blurb": "key-upsert, offering every key held about the subjects in play",
+    "extra_calls": 1.0,
+    "decider_calls": 488,
+    "items": 258,
+    "elapsed_s": 1537.4,
+    "latest_wins": 0.77,
+    "control_survival": 0.85,
+    "coexist_preserved": 0.9444,
+    "stale_present": 0.11,
+    "net": 0.8548,
+    "control_never_written": 0.15,
+    "control_retired": 0.0,
+    "control_not_ranked": 0.0,
+    "coexist_never_written": 0.0714,
+    "coexist_retired": 0.0,
+    "coexist_not_ranked": 0.0,
+    "outcomes": {
+      "corrected:recalled": 84,
+      "corrected:never_written": 6,
+      "corrected:not_ranked": 8,
+      "corrected:retired": 2,
+      "control:recalled": 34,
+      "control:never_written": 6,
+      "coexist:recalled": 26,
+      "coexist:never_written": 2
+    }
+  },
+  "api_calls": {
+    "embed": 6,
+    "chat": 407,
+    "chat_cached": 81
+  }
+}

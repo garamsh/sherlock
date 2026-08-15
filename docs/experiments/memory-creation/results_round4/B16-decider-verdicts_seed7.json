@@ -1,0 +1,39 @@
+{
+  "seed": 7,
+  "row": {
+    "system": "B16-decider-verdicts",
+    "blurb": "B9's 10 candidates; a verdict per candidate instead of a retire list",
+    "extra_calls": 1.0,
+    "decider_calls": 488,
+    "items": 174,
+    "elapsed_s": 3460.1,
+    "latest_wins": 0.69,
+    "control_survival": 0.6,
+    "coexist_preserved": 0.375,
+    "stale_present": 0.07,
+    "net": 0.555,
+    "control_never_written": 0.325,
+    "control_retired": 0.075,
+    "control_not_ranked": 0.0,
+    "coexist_never_written": 0.2143,
+    "coexist_retired": 0.4286,
+    "coexist_not_ranked": 0.0,
+    "outcomes": {
+      "corrected:recalled": 75,
+      "corrected:never_written": 16,
+      "corrected:not_ranked": 3,
+      "corrected:retired": 6,
+      "control:recalled": 24,
+      "control:never_written": 13,
+      "control:retired": 3,
+      "coexist:retired": 12,
+      "coexist:recalled": 10,
+      "coexist:never_written": 6
+    }
+  },
+  "api_calls": {
+    "embed": 20,
+    "chat": 406,
+    "chat_cached": 82
+  }
+}

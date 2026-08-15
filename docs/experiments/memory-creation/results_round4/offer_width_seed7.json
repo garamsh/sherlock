@@ -1,0 +1,1002 @@
+{
+  "seed": 7,
+  "structure": "B9-decider-neighbors-wide",
+  "turns": 488,
+  "correction_turns": 100,
+  "no_live_row_for_old": 5,
+  "corrections_with_a_live_row": 95,
+  "k_sweep": [
+    {
+      "k": 5,
+      "floor": 0.3,
+      "offered": 84,
+      "not_offered": 11,
+      "missed": [
+        {
+          "turn": "Nina defaults to Elixir on anything new now.",
+          "old_value": "Rust",
+          "rank": 6,
+          "cosine": 0.500793,
+          "reason": "beyond k"
+        },
+        {
+          "turn": "Raj moved to zsh.",
+          "old_value": "fish",
+          "rank": 6,
+          "cosine": 0.546717,
+          "reason": "beyond k"
+        },
+        {
+          "turn": "Milo's hours moved to GMT.",
+          "old_value": "JST",
+          "rank": 6,
+          "cosine": 0.558832,
+          "reason": "beyond k"
+        },
+        {
+          "turn": "Alma now reports into Priya.",
+          "old_value": "Felix",
+          "rank": 7,
+          "cosine": 0.526003,
+          "reason": "beyond k"
+        },
+        {
+          "turn": "Bruno moved on to jazz.",
+          "old_value": "techno",
+          "rank": 7,
+          "cosine": 0.479781,
+          "reason": "beyond k"
+        },
+        {
+          "turn": "Bruno now reports into Felix.",
+          "old_value": "Priya",
+          "rank": 8,
+          "cosine": 0.495191,
+          "reason": "beyond k"
+        },
+        {
+          "turn": "Tariq runs Alacritty now.",
+          "old_value": "Kitty",
+          "rank": 9,
+          "cosine": 0.57356,
+          "reason": "beyond k"
+        },
+        {
+          "turn": "Vera moved over to Zed recently.",
+          "old_value": "VS Code",
+          "rank": 9,
+          "cosine": 0.436096,
+          "reason": "beyond k"
+        },
+        {
+          "turn": "Lisa defaults to Python on anything new now.",
+          "old_value": "TypeScript",
+          "rank": 10,
+          "cosine": 0.374285,
+          "reason": "beyond k"
+        },
+        {
+          "turn": "Yuki has since standardized on Python.",
+          "old_value": "Go",
+          "rank": 14,
+          "cosine": 0.498976,
+          "reason": "beyond k"
+        },
+        {
+          "turn": "Sam now reports into Tomas.",
+          "old_value": "Karin",
+          "rank": 15,
+          "cosine": 0.412193,
+          "reason": "beyond k"
+        }
+      ],
+      "candidates_mean": 4.4,
+      "candidates_max": 5,
+      "candidates_total": 2147
+    },
+    {
+      "k": 10,
+      "floor": 0.3,
+      "offered": 93,
+      "not_offered": 2,
+      "missed": [
+        {
+          "turn": "Yuki has since standardized on Python.",
+          "old_value": "Go",
+          "rank": 14,
+          "cosine": 0.498976,
+          "reason": "beyond k"
+        },
+        {
+          "turn": "Sam now reports into Tomas.",
+          "old_value": "Karin",
+          "rank": 15,
+          "cosine": 0.412193,
+          "reason": "beyond k"
+        }
+      ],
+      "candidates_mean": 8.15,
+      "candidates_max": 10,
+      "candidates_total": 3976
+    },
+    {
+      "k": 20,
+      "floor": 0.3,
+      "offered": 95,
+      "not_offered": 0,
+      "missed": [],
+      "candidates_mean": 14.7,
+      "candidates_max": 20,
+      "candidates_total": 7174
+    },
+    {
+      "k": 40,
+      "floor": 0.3,
+      "offered": 95,
+      "not_offered": 0,
+      "missed": [],
+      "candidates_mean": 23.38,
+      "candidates_max": 40,
+      "candidates_total": 11410
+    },
+    {
+      "k": null,
+      "floor": 0.3,
+      "offered": 95,
+      "not_offered": 0,
+      "missed": [],
+      "candidates_mean": 29.1,
+      "candidates_max": 124,
+      "candidates_total": 14199
+    }
+  ],
+  "floor_sweep": [
+    {
+      "k": 10,
+      "floor": 0.0,
+      "offered": 93,
+      "not_offered": 2,
+      "candidates_mean": 9.89,
+      "candidates_max": 10,
+      "candidates_total": 4825
+    },
+    {
+      "k": 10,
+      "floor": 0.2,
+      "offered": 93,
+      "not_offered": 2,
+      "candidates_mean": 9.73,
+      "candidates_max": 10,
+      "candidates_total": 4749
+    },
+    {
+      "k": 10,
+      "floor": 0.3,
+      "offered": 93,
+      "not_offered": 2,
+      "candidates_mean": 8.15,
+      "candidates_max": 10,
+      "candidates_total": 3976
+    },
+    {
+      "k": 10,
+      "floor": 0.4,
+      "offered": 92,
+      "not_offered": 3,
+      "candidates_mean": 6.68,
+      "candidates_max": 10,
+      "candidates_total": 3260
+    },
+    {
+      "k": 10,
+      "floor": 0.5,
+      "offered": 89,
+      "not_offered": 6,
+      "candidates_mean": 4.39,
+      "candidates_max": 10,
+      "candidates_total": 2143
+    },
+    {
+      "k": 10,
+      "floor": 0.6,
+      "offered": 63,
+      "not_offered": 32,
+      "candidates_mean": 1.29,
+      "candidates_max": 9,
+      "candidates_total": 630
+    }
+  ],
+  "missed_at_base_rank_distribution": {
+    "14": 1,
+    "15": 1
+  },
+  "per_correction_turn": [
+    {
+      "turn": "Lisa's team migrated production to MySQL.",
+      "subject": "Lisa",
+      "old_value": "Postgres",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.664268
+    },
+    {
+      "turn": "Milo's team migrated production to Postgres.",
+      "subject": "Milo",
+      "old_value": "SQLite",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.728892
+    },
+    {
+      "turn": "Lisa plays classical these days instead.",
+      "subject": "Lisa",
+      "old_value": "techno",
+      "live_rows_holding_it": 1,
+      "rank": 5,
+      "cosine": 0.516957
+    },
+    {
+      "turn": "Nina defaults to Elixir on anything new now.",
+      "subject": "Nina",
+      "old_value": "Rust",
+      "live_rows_holding_it": 1,
+      "rank": 6,
+      "cosine": 0.500793
+    },
+    {
+      "turn": "Yuki reformatted everything to tabs.",
+      "subject": "Yuki",
+      "old_value": "four spaces",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.655177
+    },
+    {
+      "turn": "Sena took up yoga instead.",
+      "subject": "Sena",
+      "old_value": "swimming",
+      "live_rows_holding_it": 1,
+      "rank": 2,
+      "cosine": 0.644217
+    },
+    {
+      "turn": "Raj's hours moved to PST.",
+      "subject": "Raj",
+      "old_value": "KST",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.688324
+    },
+    {
+      "turn": "Yuki rebuilt the pipelines on GitHub Actions.",
+      "subject": "Yuki",
+      "old_value": "Jenkins",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.651621
+    },
+    {
+      "turn": "These days Tariq goes for tea instead.",
+      "subject": "Tariq",
+      "old_value": "chai",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.725806
+    },
+    {
+      "turn": "Nina now has a turtle instead.",
+      "subject": "Nina",
+      "old_value": "a cat",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.620782
+    },
+    {
+      "turn": "Kofi adopted Django for the web tier.",
+      "subject": "Kofi",
+      "old_value": "Phoenix",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.679176
+    },
+    {
+      "turn": "Sam now reports into Tomas.",
+      "subject": "Sam",
+      "old_value": "Karin",
+      "live_rows_holding_it": 1,
+      "rank": 15,
+      "cosine": 0.412193
+    },
+    {
+      "turn": "Tariq runs Alacritty now.",
+      "subject": "Tariq",
+      "old_value": "Kitty",
+      "live_rows_holding_it": 1,
+      "rank": 9,
+      "cosine": 0.57356
+    },
+    {
+      "turn": "Alma has switched to tea lately.",
+      "subject": "Alma",
+      "old_value": "coffee",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.667912
+    },
+    {
+      "turn": "Maria switched the laptop to Ubuntu.",
+      "subject": "Maria",
+      "old_value": "Fedora",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.578931
+    },
+    {
+      "turn": "Yuki relocated and now works from GMT.",
+      "subject": "Yuki",
+      "old_value": "KST",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.778306
+    },
+    {
+      "turn": "Raj gets in by bus these days.",
+      "subject": "Raj",
+      "old_value": "car",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.629822
+    },
+    {
+      "turn": "Ida now reports into Diane.",
+      "subject": "Ida",
+      "old_value": "Tomas",
+      "live_rows_holding_it": 1,
+      "rank": 3,
+      "cosine": 0.517188
+    },
+    {
+      "turn": "Alma now reports into Priya.",
+      "subject": "Alma",
+      "old_value": "Felix",
+      "live_rows_holding_it": 1,
+      "rank": 7,
+      "cosine": 0.526003
+    },
+    {
+      "turn": "Bruno reformatted everything to mixed indentation.",
+      "subject": "Bruno",
+      "old_value": "four spaces",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.742639
+    },
+    {
+      "turn": "Chen migrated the notes to Notion.",
+      "subject": "Chen",
+      "old_value": "Obsidian",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.6891
+    },
+    {
+      "turn": "Yuki switched the laptop to Ubuntu.",
+      "subject": "Yuki",
+      "old_value": "macOS",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.68823
+    },
+    {
+      "turn": "Bruno defaults to Rust on anything new now.",
+      "subject": "Bruno",
+      "old_value": "Python",
+      "live_rows_holding_it": 1,
+      "rank": 3,
+      "cosine": 0.592447
+    },
+    {
+      "turn": "Bruno now reports into Felix.",
+      "subject": "Bruno",
+      "old_value": "Priya",
+      "live_rows_holding_it": 1,
+      "rank": 8,
+      "cosine": 0.495191
+    },
+    {
+      "turn": "Kofi switched the commute to bike.",
+      "subject": "Kofi",
+      "old_value": "car",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.61153
+    },
+    {
+      "turn": "Vera's team moved tracing to Honeycomb.",
+      "subject": "Vera",
+      "old_value": "Zipkin",
+      "live_rows_holding_it": 1,
+      "rank": 3,
+      "cosine": 0.63029
+    },
+    {
+      "turn": "Bruno relocated and now works from CET.",
+      "subject": "Bruno",
+      "old_value": "GMT",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.743989
+    },
+    {
+      "turn": "Raj moved to zsh.",
+      "subject": "Raj",
+      "old_value": "fish",
+      "live_rows_holding_it": 1,
+      "rank": 6,
+      "cosine": 0.546717
+    },
+    {
+      "turn": "Vera has switched to tabs.",
+      "subject": "Vera",
+      "old_value": "four spaces",
+      "live_rows_holding_it": 1,
+      "rank": 3,
+      "cosine": 0.597972
+    },
+    {
+      "turn": "Sam reinstalled onto Arch.",
+      "subject": "Sam",
+      "old_value": "Ubuntu",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.590779
+    },
+    {
+      "turn": "Maria converted the suite to table-driven tests.",
+      "subject": "Maria",
+      "old_value": "end-to-end tests",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.740067
+    },
+    {
+      "turn": "Maria took up rowing instead.",
+      "subject": "Maria",
+      "old_value": "running",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.616167
+    },
+    {
+      "turn": "Yuki keeps everything in Apple Notes now.",
+      "subject": "Yuki",
+      "old_value": "Notion",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.780918
+    },
+    {
+      "turn": "Lisa has switched to eight spaces.",
+      "subject": "Lisa",
+      "old_value": "four spaces",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.59286
+    },
+    {
+      "turn": "Milo's hours moved to GMT.",
+      "subject": "Milo",
+      "old_value": "JST",
+      "live_rows_holding_it": 1,
+      "rank": 6,
+      "cosine": 0.558832
+    },
+    {
+      "turn": "Kofi adopted a turtle recently.",
+      "subject": "Kofi",
+      "old_value": "a rabbit",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.700918
+    },
+    {
+      "turn": "These days Kofi goes for tea instead.",
+      "subject": "Kofi",
+      "old_value": "chai",
+      "live_rows_holding_it": 1,
+      "rank": 2,
+      "cosine": 0.689197
+    },
+    {
+      "turn": "Lisa defaults to Python on anything new now.",
+      "subject": "Lisa",
+      "old_value": "TypeScript",
+      "live_rows_holding_it": 1,
+      "rank": 10,
+      "cosine": 0.374285
+    },
+    {
+      "turn": "Vera dropped that and does running now.",
+      "subject": "Vera",
+      "old_value": "rowing",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.630376
+    },
+    {
+      "turn": "Kofi replaced the terminal with Kitty.",
+      "subject": "Kofi",
+      "old_value": "iTerm2",
+      "live_rows_holding_it": 1,
+      "rank": 2,
+      "cosine": 0.642254
+    },
+    {
+      "turn": "Maria moved to fish.",
+      "subject": "Maria",
+      "old_value": "bash",
+      "live_rows_holding_it": 1,
+      "rank": 5,
+      "cosine": 0.570711
+    },
+    {
+      "turn": "Sam now has a dog instead.",
+      "subject": "Sam",
+      "old_value": "a parrot",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.568783
+    },
+    {
+      "turn": "Ida defaults to Go on anything new now.",
+      "subject": "Ida",
+      "old_value": "Elixir",
+      "live_rows_holding_it": 1,
+      "rank": 3,
+      "cosine": 0.538992
+    },
+    {
+      "turn": "Ida moved the prod database to SQLite.",
+      "subject": "Ida",
+      "old_value": "CockroachDB",
+      "live_rows_holding_it": 1,
+      "rank": 3,
+      "cosine": 0.555391
+    },
+    {
+      "turn": "Otto defaults to Go on anything new now.",
+      "subject": "Otto",
+      "old_value": "Python",
+      "live_rows_holding_it": 1,
+      "rank": 2,
+      "cosine": 0.571716
+    },
+    {
+      "turn": "Alma has switched to four spaces.",
+      "subject": "Alma",
+      "old_value": "tabs",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.636578
+    },
+    {
+      "turn": "Sena converted the suite to mutation testing.",
+      "subject": "Sena",
+      "old_value": "property-based tests",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.689553
+    },
+    {
+      "turn": "Ida plays ambient these days instead.",
+      "subject": "Ida",
+      "old_value": "techno",
+      "live_rows_holding_it": 1,
+      "rank": 3,
+      "cosine": 0.501657
+    },
+    {
+      "turn": "Raj's team migrated production to SQLite.",
+      "subject": "Raj",
+      "old_value": "MongoDB",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.689361
+    },
+    {
+      "turn": "Milo switched the shell to zsh.",
+      "subject": "Milo",
+      "old_value": "bash",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.76096
+    },
+    {
+      "turn": "Maria has switched to matcha lately.",
+      "subject": "Maria",
+      "old_value": "coffee",
+      "live_rows_holding_it": 1,
+      "rank": 5,
+      "cosine": 0.535865
+    },
+    {
+      "turn": "Alma runs GNOME Terminal now.",
+      "subject": "Alma",
+      "old_value": "Alacritty",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.779443
+    },
+    {
+      "turn": "Milo reinstalled onto Ubuntu.",
+      "subject": "Milo",
+      "old_value": "macOS",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.647382
+    },
+    {
+      "turn": "Alma now has a parrot instead.",
+      "subject": "Alma",
+      "old_value": "a rabbit",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.666676
+    },
+    {
+      "turn": "Maria's team moved tracing to Honeycomb.",
+      "subject": "Maria",
+      "old_value": "Zipkin",
+      "live_rows_holding_it": 1,
+      "rank": 5,
+      "cosine": 0.608389
+    },
+    {
+      "turn": "Vera moved over to Zed recently.",
+      "subject": "Vera",
+      "old_value": "VS Code",
+      "live_rows_holding_it": 1,
+      "rank": 9,
+      "cosine": 0.436096
+    },
+    {
+      "turn": "Otto replaced the tracing stack with Jaeger.",
+      "subject": "Otto",
+      "old_value": "Honeycomb",
+      "live_rows_holding_it": 1,
+      "rank": 3,
+      "cosine": 0.554807
+    },
+    {
+      "turn": "Tariq adopted a cat recently.",
+      "subject": "Tariq",
+      "old_value": "a dog",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.745459
+    },
+    {
+      "turn": "Kofi now reports into Tomas.",
+      "subject": "Kofi",
+      "old_value": "Karin",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.730045
+    },
+    {
+      "turn": "Sena has switched to two spaces.",
+      "subject": "Sena",
+      "old_value": "eight spaces",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.756069
+    },
+    {
+      "turn": "Chen runs everything on Hetzner now.",
+      "subject": "Chen",
+      "old_value": "Azure",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.592339
+    },
+    {
+      "turn": "Bruno now edits everything in Neovim.",
+      "subject": "Bruno",
+      "old_value": "IntelliJ",
+      "live_rows_holding_it": 1,
+      "rank": 2,
+      "cosine": 0.628718
+    },
+    {
+      "turn": "Yuki converted the suite to property-based tests.",
+      "subject": "Yuki",
+      "old_value": "table-driven tests",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.764417
+    },
+    {
+      "turn": "These days Sena goes for tea instead.",
+      "subject": "Sena",
+      "old_value": "espresso",
+      "live_rows_holding_it": 1,
+      "rank": 3,
+      "cosine": 0.610157
+    },
+    {
+      "turn": "Chen now has a parrot instead.",
+      "subject": "Chen",
+      "old_value": "a cat",
+      "live_rows_holding_it": 1,
+      "rank": 2,
+      "cosine": 0.627001
+    },
+    {
+      "turn": "Sam moved CI to GitHub Actions.",
+      "subject": "Sam",
+      "old_value": "Jenkins",
+      "live_rows_holding_it": 1,
+      "rank": 4,
+      "cosine": 0.587775
+    },
+    {
+      "turn": "Yuki switched the shell to zsh.",
+      "subject": "Yuki",
+      "old_value": "bash",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.790866
+    },
+    {
+      "turn": "Nina now reports into Diane.",
+      "subject": "Nina",
+      "old_value": "Karin",
+      "live_rows_holding_it": 1,
+      "rank": 4,
+      "cosine": 0.562038
+    },
+    {
+      "turn": "Maria migrated the notes to plain text files.",
+      "subject": "Maria",
+      "old_value": "Logseq",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.646472
+    },
+    {
+      "turn": "Milo rebuilt the pipelines on GitLab CI.",
+      "subject": "Milo",
+      "old_value": "GitHub Actions",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.70531
+    },
+    {
+      "turn": "Nina relocated and now works from JST.",
+      "subject": "Nina",
+      "old_value": "CET",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.709953
+    },
+    {
+      "turn": "Lisa took up swimming instead.",
+      "subject": "Lisa",
+      "old_value": "running",
+      "live_rows_holding_it": 1,
+      "rank": 3,
+      "cosine": 0.563538
+    },
+    {
+      "turn": "Ida now edits everything in Emacs.",
+      "subject": "Ida",
+      "old_value": "VS Code",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.647384
+    },
+    {
+      "turn": "Lisa's team moved tracing to Datadog.",
+      "subject": "Lisa",
+      "old_value": "Zipkin",
+      "live_rows_holding_it": 1,
+      "rank": 2,
+      "cosine": 0.624063
+    },
+    {
+      "turn": "Sam replaced the terminal with WezTerm.",
+      "subject": "Sam",
+      "old_value": "iTerm2",
+      "live_rows_holding_it": 1,
+      "rank": 2,
+      "cosine": 0.639873
+    },
+    {
+      "turn": "Otto now relies on mutation testing.",
+      "subject": "Otto",
+      "old_value": "end-to-end tests",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.648306
+    },
+    {
+      "turn": "Vera keeps everything in Obsidian now.",
+      "subject": "Vera",
+      "old_value": "Notion",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.675148
+    },
+    {
+      "turn": "Nina gets in by scooter these days.",
+      "subject": "Nina",
+      "old_value": "car",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.726133
+    },
+    {
+      "turn": "Chen relocated and now works from PST.",
+      "subject": "Chen",
+      "old_value": "KST",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.755471
+    },
+    {
+      "turn": "Nina's team migrated production to Postgres.",
+      "subject": "Nina",
+      "old_value": "MySQL",
+      "live_rows_holding_it": 1,
+      "rank": 2,
+      "cosine": 0.699067
+    },
+    {
+      "turn": "Tariq converted the suite to end-to-end tests.",
+      "subject": "Tariq",
+      "old_value": "snapshot tests",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.753795
+    },
+    {
+      "turn": "Otto runs WezTerm now.",
+      "subject": "Otto",
+      "old_value": "iTerm2",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.636124
+    },
+    {
+      "turn": "Sena relocated and now works from CET.",
+      "subject": "Sena",
+      "old_value": "GMT",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.78226
+    },
+    {
+      "turn": "Alma's team moved tracing to Datadog.",
+      "subject": "Alma",
+      "old_value": "Jaeger",
+      "live_rows_holding_it": 1,
+      "rank": 4,
+      "cosine": 0.611539
+    },
+    {
+      "turn": "Yuki has since standardized on Python.",
+      "subject": "Yuki",
+      "old_value": "Go",
+      "live_rows_holding_it": 1,
+      "rank": 14,
+      "cosine": 0.498976
+    },
+    {
+      "turn": "Tariq migrated the deployment to Hetzner.",
+      "subject": "Tariq",
+      "old_value": "Azure",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.669132
+    },
+    {
+      "turn": "Kofi now relies on snapshot tests.",
+      "subject": "Kofi",
+      "old_value": "property-based tests",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.73168
+    },
+    {
+      "turn": "Sam moved the prod database to SQLite.",
+      "subject": "Sam",
+      "old_value": "Postgres",
+      "live_rows_holding_it": 1,
+      "rank": 5,
+      "cosine": 0.569493
+    },
+    {
+      "turn": "Milo reformatted everything to two spaces.",
+      "subject": "Milo",
+      "old_value": "mixed indentation",
+      "live_rows_holding_it": 1,
+      "rank": 2,
+      "cosine": 0.59675
+    },
+    {
+      "turn": "Milo dropped that and does swimming now.",
+      "subject": "Milo",
+      "old_value": "yoga",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.627993
+    },
+    {
+      "turn": "These days Yuki goes for coffee instead.",
+      "subject": "Yuki",
+      "old_value": "tea",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.646675
+    },
+    {
+      "turn": "Sam now relies on property-based tests.",
+      "subject": "Sam",
+      "old_value": "end-to-end tests",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.732851
+    },
+    {
+      "turn": "Yuki runs everything on AWS now.",
+      "subject": "Yuki",
+      "old_value": "Fly.io",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.664111
+    },
+    {
+      "turn": "Raj rebuilt the pipelines on Jenkins.",
+      "subject": "Raj",
+      "old_value": "GitHub Actions",
+      "live_rows_holding_it": 1,
+      "rank": 1,
+      "cosine": 0.746291
+    },
+    {
+      "turn": "Bruno moved on to jazz.",
+      "subject": "Bruno",
+      "old_value": "techno",
+      "live_rows_holding_it": 1,
+      "rank": 7,
+      "cosine": 0.479781
+    }
+  ],
+  "no_live_row_detail": [
+    {
+      "turn": "Vera has since standardized on Python.",
+      "subject": "Vera",
+      "old_value": "Go"
+    },
+    {
+      "turn": "Sena adopted Rails for the web tier.",
+      "subject": "Sena",
+      "old_value": "Phoenix"
+    },
+    {
+      "turn": "Maria runs Alacritty now.",
+      "subject": "Maria",
+      "old_value": "Kitty"
+    },
+    {
+      "turn": "Bruno moved to fish.",
+      "subject": "Bruno",
+      "old_value": "bash"
+    },
+    {
+      "turn": "Sena was moved under Karin.",
+      "subject": "Sena",
+      "old_value": "Priya"
+    }
+  ]
+}

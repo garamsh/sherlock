@@ -136,4 +136,4 @@ Beyond Go and GNU Make, the toolchain is:
 - **buf** — `make proto` regenerates the workspace gRPC stubs (`buf.yaml` + `buf.gen.yaml`); the CLI version is pinned in `.github/workflows/ci.yml` (1.72.0).
 - **lefthook** — `make hooks` installs the git hooks once after cloning (pre-commit lint/format, pre-push test).
 
-This repository is developed by AI agents under written conventions — see `AGENTS.md` for the role model and `docs/convention/` for the rules all code follows. Internal structure and design decisions live in `docs/architecture/`.
+This repository is developed by AI agents under written conventions — see `AGENTS.md` for what a contributor is held to and `docs/convention/` for the rules all code follows. Internal structure and design decisions live in `docs/architecture/`.

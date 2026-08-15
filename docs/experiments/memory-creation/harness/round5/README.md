@@ -25,7 +25,8 @@ A fourth bullet is answered by the match rule: a value credited on a substring i
 ## What stays fixed
 
 - `harness/round4/` is untouched. Round 5 imports its `api.py`, `structures.py`, `structures_a.py` and `structures_b.py`, and takes the persons, categories, chatter and probe shape from its `dataset.py`. Round 4 keeps its own scorer, because its committed results were measured under it.
-- The metrics are round 4's, computed the same way and reported under the same names. Only the match underneath them changed, so a round-5 number is comparable to a round-4 number except where a substring credit was the difference.
+- The metrics are round 4's, computed the same way and reported under the same names. Only the match underneath them changed, so a round-5 number is comparable to a round-4 number except where a substring credit was the difference. `dataset_check.py` scores one store through both rounds' scorers and fails on any metric that differs, so the copy cannot drift unnoticed.
+- That comparison covers the aggregation, not the match: the store it scores holds every fact turn, where the two rules almost always reach the same verdict. `MATCH_CASES` covers the match. Neither stands in for the other.
 - The corrected, control and distractor assignments are round 4's for the same seed, so the coexist set is the only difference between the two datasets. `dataset_check.py` asserts this.
 - The store grows rather than shrinks: 645 turns and 504 fact turns per seed against round 4's 488 and 388. `n_distractor` stays at 120 and the coexist statements are added to the stream, not traded against it.
 
@@ -34,8 +35,8 @@ A fourth bullet is answered by the match rule: a value credited on a substring i
 - `dataset.py` — the turn stream and the probes.
 - `scoring.py` — round 4's metrics on the word-boundary match, plus `coexist_by_family`.
 - `runner.py` — runs the named structures and writes `results_round5/<structure>_seed<seed>.json`.
-- `dataset_check.py` — the invariants above, the match rule, and the value vocabulary, on seeds 7, 11 and 23.
-- `round4.py` — loads round 4's `dataset.py` by path, because both rounds name a module `dataset`.
+- `dataset_check.py` — the invariants above, the match rule, the value vocabulary, and the metrics against round 4's scorer, on seeds 7, 11 and 23.
+- `round4.py` — loads round 4's `dataset.py` and `scoring.py` by path, because both rounds name a module `dataset` and a module `scoring`.
 
 ## Running
 

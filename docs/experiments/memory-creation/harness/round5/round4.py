@@ -1,7 +1,7 @@
-"""Round 4's unchanged dataset module, loaded by path.
+"""Round 4's unchanged modules, loaded by path.
 
-Both rounds name a module `dataset`, so an ordinary import inside round 5
-resolves to round 5's own file.
+Both rounds name a module `dataset` and a module `scoring`, so an ordinary
+import inside round 5 resolves to round 5's own file.
 """
 from __future__ import annotations
 import importlib.util
@@ -19,3 +19,4 @@ def _load(name):
 
 
 dataset = _load("dataset")
+scoring = _load("scoring")

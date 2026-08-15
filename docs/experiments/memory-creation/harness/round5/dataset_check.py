@@ -6,12 +6,16 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from dataset import CATEGORIES, CHATTER, COEXIST, PERSONS, build
-from round4 import dataset as r4
-from scoring import states
+from round4 import dataset as r4, scoring as r4_scoring
+from scoring import score, states
 
 SEEDS = (7, 11, 23)
 MIN_FAMILIES, MIN_PROBES, MAX_FAMILY_SHARE = 8, 60, 0.15
 NEEDLE_KINDS = ("coexist value", "category value", "person")
+# Round 5 copies round 4's aggregation. These are the metrics that copy produces;
+# the outcome counts under them answer to the match rule, which is not shared.
+METRICS = ("latest_wins", "control_survival", "coexist_preserved",
+           "stale_present", "net")
 
 TEMPLATES = {family: tmpl for family, _, _, _, tmpl in COEXIST}
 
@@ -117,6 +121,46 @@ def check_vocabulary(failures):
         print(f"  {needle!r} inside {len(texts)}, e.g. {texts[0][0]!r}{mark}")
 
 
+class _Row:
+    def __init__(self, content):
+        self.content, self.dead = content, False
+
+
+class _Store:
+    def __init__(self, rows):
+        self.rows = rows
+
+
+class _EveryFact:
+    """A store holding every fact turn, live, and recalling all of them.
+
+    Both scorers read the same rows, so a metric that differs between them is
+    the aggregation differing rather than the store or the ranking.
+    """
+
+    def __init__(self, turns):
+        self.store = _Store([_Row(t) for t, is_fact in turns if is_fact])
+
+    def recall(self, question):
+        return self.store.rows
+
+
+def check_aggregation(turns, probes, seed, failures):
+    """Score one store through both rounds' scorers and compare the metrics.
+
+    Only this direction runs: round 5's `score()` reads a coexist probe's
+    family, which a round-4 probe does not carry.
+    """
+    inst = _EveryFact(turns)
+    theirs, ours = r4_scoring.score(inst, probes), score(inst, probes)
+    differing = [m for m in METRICS if ours.get(m) != theirs.get(m)]
+    for m in differing:
+        failures.append(f"seed {seed}: {m} is {ours.get(m)} against "
+                        f"round 4's {theirs.get(m)}")
+    print(f"  aggregation: {len(METRICS) - len(differing)} of {len(METRICS)} "
+          f"metrics equal to round 4's scorer, net {ours['net']}")
+
+
 def check_seed(seed, failures):
     turns, probes = build(seed=seed)
     texts = coexist_texts(probes)
@@ -147,6 +191,8 @@ def check_seed(seed, failures):
         failures.append(f"seed {seed}: {len(coexist)} coexist probes")
     if share > MAX_FAMILY_SHARE:
         failures.append(f"seed {seed}: one family holds {share:.1%} of the probes")
+
+    check_aggregation(turns, probes, seed, failures)
 
     r4_turns, r4_probes = r4.build(seed=seed)
     if facts_outside(turns, texts) != facts_outside(r4_turns, round4_coexist_texts()):

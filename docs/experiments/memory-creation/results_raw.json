@@ -1,0 +1,66 @@
+[
+  {
+    "system": "C1-ops-voluntary",
+    "checkpoint_recall": 0.0,
+    "correction_latest": 0.0,
+    "store_items": 0.0,
+    "extra_calls_per_turn": 0.0,
+    "loc": 16
+  },
+  {
+    "system": "C2-everything-update",
+    "checkpoint_recall": 0.7916666666666667,
+    "correction_latest": 0.0,
+    "store_items": 16.75,
+    "extra_calls_per_turn": 0.0,
+    "loc": 28
+  },
+  {
+    "system": "C3-dedicated-model",
+    "checkpoint_recall": 0.8333333333333334,
+    "correction_latest": 0.0,
+    "store_items": 17.0,
+    "extra_calls_per_turn": 1.0,
+    "loc": 23
+  },
+  {
+    "system": "C4-journal-distill",
+    "checkpoint_recall": 0.29166666666666663,
+    "correction_latest": 0.0,
+    "store_items": 23.75,
+    "extra_calls_per_turn": 0.2,
+    "loc": 31
+  },
+  {
+    "system": "C5-freeform-notes",
+    "checkpoint_recall": 0.7916666666666667,
+    "correction_latest": 0.0,
+    "store_items": 15.0,
+    "extra_calls_per_turn": 0.0,
+    "loc": 19
+  },
+  {
+    "system": "C6-entity-records",
+    "checkpoint_recall": 0.7916666666666667,
+    "correction_latest": 0.0,
+    "store_items": 17.5,
+    "extra_calls_per_turn": 0.0,
+    "loc": 31
+  },
+  {
+    "system": "C7-claims-temporal",
+    "checkpoint_recall": 0.7916666666666667,
+    "correction_latest": 0.0,
+    "store_items": 17.5,
+    "extra_calls_per_turn": 0.0,
+    "loc": 27
+  },
+  {
+    "system": "C8-append-only",
+    "checkpoint_recall": 0.7916666666666667,
+    "correction_latest": 0.0,
+    "store_items": 17.5,
+    "extra_calls_per_turn": 0.0,
+    "loc": 26
+  }
+]

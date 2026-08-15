@@ -1,0 +1,255 @@
+{
+  "seed": 7,
+  "families": [
+    {
+      "family": "allergy",
+      "values": 8,
+      "preserved": {
+        "B14": 8,
+        "B17": 8,
+        "B18": 8
+      }
+    },
+    {
+      "family": "instrument",
+      "values": 8,
+      "preserved": {
+        "B14": 8,
+        "B17": 8,
+        "B18": 4
+      }
+    },
+    {
+      "family": "languages",
+      "values": 12,
+      "preserved": {
+        "B14": 12,
+        "B17": 4,
+        "B18": 5
+      }
+    }
+  ],
+  "structures": {
+    "B14": {
+      "structure": "B14-key-upsert-plural",
+      "items": 312,
+      "coexist_preserved": 1.0,
+      "planted": {
+        "allergy": 8,
+        "instrument": 8,
+        "languages": 12
+      },
+      "preserved": {
+        "allergy": 8,
+        "instrument": 8,
+        "languages": 12
+      },
+      "misses": []
+    },
+    "B17": {
+      "structure": "B17-key-upsert-question-key",
+      "items": 288,
+      "coexist_preserved": 0.7778,
+      "planted": {
+        "allergy": 8,
+        "instrument": 8,
+        "languages": 12
+      },
+      "preserved": {
+        "allergy": 8,
+        "instrument": 8,
+        "languages": 4
+      },
+      "misses": [
+        {
+          "subject": "Lisa",
+          "value": "Korean",
+          "family": "languages",
+          "outcome": "retired",
+          "keys": [
+            "lisa.language"
+          ]
+        },
+        {
+          "subject": "Lisa",
+          "value": "German",
+          "family": "languages",
+          "outcome": "retired",
+          "keys": [
+            "lisa.language"
+          ]
+        },
+        {
+          "subject": "Otto",
+          "value": "Korean",
+          "family": "languages",
+          "outcome": "retired",
+          "keys": [
+            "otto.language"
+          ]
+        },
+        {
+          "subject": "Otto",
+          "value": "German",
+          "family": "languages",
+          "outcome": "retired",
+          "keys": [
+            "otto.language"
+          ]
+        },
+        {
+          "subject": "Maria",
+          "value": "Korean",
+          "family": "languages",
+          "outcome": "retired",
+          "keys": [
+            "maria.language"
+          ]
+        },
+        {
+          "subject": "Maria",
+          "value": "English",
+          "family": "languages",
+          "outcome": "retired",
+          "keys": [
+            "maria.language"
+          ]
+        },
+        {
+          "subject": "Sam",
+          "value": "Korean",
+          "family": "languages",
+          "outcome": "retired",
+          "keys": [
+            "sam.language"
+          ]
+        },
+        {
+          "subject": "Sam",
+          "value": "German",
+          "family": "languages",
+          "outcome": "retired",
+          "keys": [
+            "sam.language"
+          ]
+        }
+      ]
+    },
+    "B18": {
+      "structure": "B18-key-upsert-unseen-example",
+      "items": 288,
+      "coexist_preserved": 0.6389,
+      "planted": {
+        "allergy": 8,
+        "instrument": 8,
+        "languages": 12
+      },
+      "preserved": {
+        "allergy": 8,
+        "instrument": 4,
+        "languages": 5
+      },
+      "misses": [
+        {
+          "subject": "Lisa",
+          "value": "Korean",
+          "family": "languages",
+          "outcome": "retired",
+          "keys": [
+            "lisa.language"
+          ]
+        },
+        {
+          "subject": "Lisa",
+          "value": "German",
+          "family": "languages",
+          "outcome": "retired",
+          "keys": [
+            "lisa.language"
+          ]
+        },
+        {
+          "subject": "Lisa",
+          "value": "the drums",
+          "family": "instrument",
+          "outcome": "retired",
+          "keys": [
+            "lisa.hobbies"
+          ]
+        },
+        {
+          "subject": "Otto",
+          "value": "German",
+          "family": "languages",
+          "outcome": "retired",
+          "keys": [
+            "otto.languages"
+          ]
+        },
+        {
+          "subject": "Otto",
+          "value": "the drums",
+          "family": "instrument",
+          "outcome": "retired",
+          "keys": [
+            "otto.hobbies"
+          ]
+        },
+        {
+          "subject": "Maria",
+          "value": "Korean",
+          "family": "languages",
+          "outcome": "retired",
+          "keys": [
+            "maria.languages"
+          ]
+        },
+        {
+          "subject": "Maria",
+          "value": "English",
+          "family": "languages",
+          "outcome": "retired",
+          "keys": [
+            "maria.languages"
+          ]
+        },
+        {
+          "subject": "Maria",
+          "value": "the drums",
+          "family": "instrument",
+          "outcome": "retired",
+          "keys": [
+            "maria.hobbies"
+          ]
+        },
+        {
+          "subject": "Sam",
+          "value": "Korean",
+          "family": "languages",
+          "outcome": "retired",
+          "keys": [
+            "sam.languages"
+          ]
+        },
+        {
+          "subject": "Sam",
+          "value": "German",
+          "family": "languages",
+          "outcome": "retired",
+          "keys": [
+            "sam.languages"
+          ]
+        },
+        {
+          "subject": "Sam",
+          "value": "the cello",
+          "family": "instrument",
+          "outcome": "retired",
+          "keys": [
+            "sam.hobbies"
+          ]
+        }
+      ]
+    }
+  }
+}

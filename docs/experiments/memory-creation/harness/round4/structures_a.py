@@ -181,3 +181,51 @@ class KeyUpsertQuestionKey(KeyUpsertPluralAware):
                       f"Latest message: {text}\nExisting keys: {pairs}", **kw)
         self.calls += 1
         return parse_json(out).get("writes", []) or []
+
+
+# ---------------------------------------------------------------------------
+# B18 — the narrowing example names a family the probes never measure
+# ---------------------------------------------------------------------------
+#
+# B17 showed the example is the mechanism: its example named `allergies`, which
+# survived 9/9, and `languages`, which it stopped naming, collapsed to 4/12.
+# But `instrument` is named nowhere in B17's prompt and survived 8/8, so the
+# split does generalise some of the time and the B17 result cannot say how far.
+#
+# It also cannot settle B14's coexist 1.00, because every example tried so far
+# names a family the probe set measures. Naming all three would raise the score
+# by teaching to the test.
+#
+# B18 changes exactly one thing in B17: the example names `passports`, a
+# multi-answer family that appears nowhere in `dataset.py` — not in COEXIST,
+# not in CATEGORIES, not in CHATTER — so no probe can be answered by recalling
+# it. Coexist then measures whether the decider carries the split across to
+# families it was not shown. Everything else, including the subject name in the
+# example and the single-answer negatives, is B17 byte for byte.
+
+B18_HINTS = B17_HINTS.replace(
+    '"maria.allergies.peanuts" beside "maria.allergies.shellfish"',
+    '"maria.passports.brazilian" beside "maria.passports.irish"',
+)
+
+
+class KeyUpsertUnseenExample(KeyUpsertQuestionKey):
+    """B18: B17 with the narrowing example moved off the probe set.
+
+    Reads two ways, both of them results. Coexist near 1.00 means the structure
+    generalises the plural split and B14's 1.00 is sound, which makes B17/B18's
+    0.87 latest-wins the leader. Coexist collapsing means B14's 1.00 was an
+    artifact of an example that happened to name the largest coexist family,
+    and a key-addressed store needs a per-family signal it does not have.
+    """
+    NAME = "B18-key-upsert-unseen-example"
+    BLURB = "B17, with the narrowing example naming a family the probes never see"
+
+    def _writes(self, text):
+        near = self.store.rank(text, RECALL_K, floor=CANDIDATE_FLOOR)
+        pairs = {r.key: r.content for r in near if r.key}
+        kw = {"model": self.model} if self.model else {}
+        out = decider(KEY_SYS_QUESTION + B18_HINTS,
+                      f"Latest message: {text}\nExisting keys: {pairs}", **kw)
+        self.calls += 1
+        return parse_json(out).get("writes", []) or []

@@ -153,6 +153,9 @@ python3 harness/round4/single_runner.py KeyUpsertPluralAware
 SEED=11 python3 harness/round4/single_runner.py KeyUpsertPluralAware
 python3 harness/round4/rewrite_diagnosis.py
 python3 harness/round4/key_diagnosis.py
+python3 harness/round4/b9_diagnosis.py
+python3 harness/round4/b16_writes.py
+python3 harness/round4/coexist_families.py
 python3 harness/round4/precision.py
 ```
 

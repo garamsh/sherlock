@@ -348,3 +348,72 @@ class NeighbourhoodRewrite(Structure):
                 row.dead = True
         for content in kept:
             self.store.add(content)
+
+
+class RewriteScoped(NeighbourhoodRewrite):
+    """B11: B10 told that the shown set spans unrelated subjects."""
+    NAME = "B11-rewrite-scoped"
+    BLURB = "B10, told the shown set spans subjects and only false lines may go"
+    SYS = (
+        "You maintain an assistant's memory. You are shown the latest message "
+        "and memories retrieved by similarity. They are NOT all about the same "
+        "person or topic: a memory about someone else, or another fact that is "
+        "also true, is often in the list.\n"
+        'Reply with JSON: {"memories": ["<memory>", ...]}\n'
+        "Return every memory shown, copied exactly, except one the latest "
+        "message makes false. Reword only a memory the message corrects. Append "
+        "any new fact the message states. A memory about a different subject is "
+        "never made false by this message."
+    )
+
+    def turn(self, text, is_fact):
+        self.store.tick()
+        shown = self.store.rank(text, self.K, floor=self.FLOOR)
+        listing = [r.content for r in shown]
+        kw = {"model": self.model} if self.model else {}
+        out = decider(self.SYS, f"Latest message: {text}\nMemories: {listing}", **kw)
+        self.calls += 1
+        returned = parse_json(out).get("memories")
+        if not isinstance(returned, list):
+            return
+        kept = {r.strip() for r in returned if isinstance(r, str) and r.strip()}
+        for row in shown:
+            if row.content in kept:
+                kept.discard(row.content)
+            else:
+                row.dead = True
+        for content in kept:
+            self.store.add(content)
+
+
+class KeyUpsertValueHints(KeyUpsertNeighbours):
+    """B12: B5 offering each related key with the value it holds."""
+    NAME = "B12-key-upsert-value-hints"
+    BLURB = "key-upsert, offering each related key with its current value"
+    EXTRA = (
+        "\nKeys already in the store are shown with the value they hold. "
+        "Reuse a key only when the message is about that same fact; the "
+        "value tells you whether it is. Otherwise coin a new key."
+    )
+
+    def _writes(self, text):
+        near = self.store.rank(text, RECALL_K, floor=CANDIDATE_FLOOR)
+        pairs = {r.key: r.content for r in near if r.key}
+        kw = {"model": self.model} if self.model else {}
+        out = decider(KEY_SYS + self.EXTRA,
+                      f"Latest message: {text}\nExisting keys: {pairs}", **kw)
+        self.calls += 1
+        return parse_json(out).get("writes", []) or []
+
+
+class KeyUpsertPluralAware(KeyUpsertValueHints):
+    """B14: B12 told to coin a narrower key when both facts can be true."""
+    NAME = "B14-key-upsert-plural"
+    BLURB = "B12, told to coin a narrower key when both facts can be true"
+    EXTRA = (
+        "\nKeys already in the store are shown with the value they hold. "
+        "Reuse a key only when the new fact makes that value false. When "
+        "both can be true at once, coin a narrower key instead: write "
+        '"otto.language.korean" rather than reusing "otto.language". '
+        "Otherwise coin a new key."
+    )

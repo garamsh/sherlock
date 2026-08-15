@@ -1,0 +1,886 @@
+{
+  "seed": 7,
+  "removed": 106,
+  "kinds": {
+    "replaced_by_a_related_line": 20,
+    "dropped_with_no_replacement": 12,
+    "replaced_by_a_paraphrase": 4,
+    "dropped_on_a_correction_turn": 70
+  },
+  "examples": {
+    "replaced_by_a_related_line": {
+      "turn": "Otto is allergic to peanuts.",
+      "dropped": "Sam is allergic to peanuts.",
+      "closest_added": "Otto is allergic to peanuts.",
+      "similarity": 0.634
+    },
+    "dropped_with_no_replacement": {
+      "turn": "Sam uses iTerm2 as a terminal.",
+      "dropped": "Maria uses Kitty as a terminal.",
+      "closest_added": "Sam uses iTerm2 as a terminal.",
+      "similarity": 0.495
+    },
+    "replaced_by_a_paraphrase": {
+      "turn": "Otto speaks English.",
+      "dropped": "Otto speaks German.",
+      "closest_added": "Otto speaks English.",
+      "similarity": 0.902
+    },
+    "dropped_on_a_correction_turn": {
+      "turn": "Lisa's team migrated production to MySQL.",
+      "dropped": "Lisa's team runs Postgres in production.",
+      "closest_added": "Lisa's team migrated production to MySQL.",
+      "similarity": 0.729
+    }
+  },
+  "drops": [
+    {
+      "turn": "Otto is allergic to peanuts.",
+      "dropped": "Sam is allergic to peanuts.",
+      "added": [
+        "Otto is allergic to peanuts."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Maria keeps fit with running.",
+      "dropped": "Lisa keeps fit with running.",
+      "added": [
+        "Maria keeps fit with running."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Lisa formats code using four spaces.",
+      "dropped": "Bruno formats code using four spaces.",
+      "added": [
+        "Lisa formats code using four spaces."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Maria plays the cello.",
+      "dropped": "Maria plays the drums.",
+      "added": [
+        "Maria plays the cello."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Sam uses iTerm2 as a terminal.",
+      "dropped": "Maria uses Kitty as a terminal.",
+      "added": [
+        "Sam uses iTerm2 as a terminal."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Yuki codes to jazz.",
+      "dropped": "Bruno codes to techno.",
+      "added": [
+        "Yuki codes to jazz."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Kofi takes the car to the office.",
+      "dropped": "Raj takes the car to the office.",
+      "added": [
+        "Kofi takes the car to the office."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Kofi runs CI on GitHub Actions.",
+      "dropped": "Milo runs CI on GitHub Actions.",
+      "added": [
+        "Kofi runs CI on GitHub Actions."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Sena does swimming after work.",
+      "dropped": "Sam does swimming after work.",
+      "added": [
+        "Sena does swimming after work."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Sena builds with Phoenix.",
+      "dropped": "Sena's morning ritual is espresso.",
+      "added": [
+        "Sena builds with Phoenix."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Vera deploys on AWS.",
+      "dropped": "Vera prefers Go for new services.",
+      "added": [
+        "Vera deploys on AWS."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Lisa writes mutation testing.",
+      "dropped": "Chen's test suite is built on property-based tests.",
+      "added": [
+        "Lisa writes mutation testing."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Yuki reports to Priya.",
+      "dropped": "Sena reports to Priya.",
+      "added": [
+        "Yuki reports to Priya."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Nina's shell is fish.",
+      "dropped": "Nina does running after work.",
+      "added": [
+        "Nina's shell is fish."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Nina writes code in Zed.",
+      "dropped": "Otto writes code in Zed.",
+      "added": [
+        "Nina writes code in Zed."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Sam plays the cello.",
+      "dropped": "Sam's test suite is built on end-to-end tests.",
+      "added": [
+        "Sam plays the cello."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Raj's pipelines live in GitHub Actions.",
+      "dropped": "Bruno's pipelines live in Buildkite.",
+      "added": [
+        "Raj's pipelines live in GitHub Actions."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Nina builds with Phoenix.",
+      "dropped": "Sena builds with Phoenix.",
+      "added": [
+        "Nina builds with Phoenix."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Chen runs CI on GitLab CI.",
+      "dropped": "Chen's infrastructure sits on Azure.",
+      "added": [
+        "Chen runs CI on GitLab CI."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Otto speaks English.",
+      "dropped": "Otto speaks German.",
+      "added": [
+        "Otto speaks English."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Lisa speaks German.",
+      "dropped": "Lisa speaks Korean.",
+      "added": [
+        "Lisa speaks German."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Kofi keeps fit with swimming.",
+      "dropped": "Yuki keeps fit with swimming.",
+      "added": [
+        "Kofi keeps fit with swimming."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Otto plays the cello.",
+      "dropped": "Otto plays the drums.",
+      "added": [
+        "Otto plays the cello."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Maria is allergic to shellfish.",
+      "dropped": "Lisa is allergic to shellfish.",
+      "added": [
+        "Maria is allergic to shellfish."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Ida runs CI on Buildkite.",
+      "dropped": "Lisa runs CI on Buildkite.",
+      "added": [
+        "Ida runs CI on Buildkite."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Alma writes code in IntelliJ.",
+      "dropped": "Nina writes code in Zed.",
+      "added": [
+        "Alma writes code in IntelliJ."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Nina indents with tabs.",
+      "dropped": "Lisa formats code using four spaces.",
+      "added": [
+        "Nina indents with tabs."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Bruno does swimming after work.",
+      "dropped": "Sena does swimming after work.",
+      "added": [
+        "Bruno does swimming after work."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "For new work Sam reaches for Python.",
+      "dropped": "Otto reaches for Python for new work.",
+      "added": [
+        "Sam reaches for Python for new work."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Lisa speaks English.",
+      "dropped": "Lisa speaks German.",
+      "added": [
+        "Lisa speaks English."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Tariq deploys on Azure.",
+      "dropped": "Tariq's pipelines live in Buildkite.",
+      "added": [
+        "Tariq deploys on Azure."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Kofi works on Arch.",
+      "dropped": "Ida works on Arch.",
+      "added": [
+        "Kofi works on Arch."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Sam plays the drums.",
+      "dropped": "Sam plays the cello.",
+      "added": [
+        "Sam plays the drums."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "The staging environment is flaky.",
+      "dropped": "Sam's team runs Postgres in production.",
+      "added": [
+        "The staging environment is flaky."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Lisa's team migrated production to MySQL.",
+      "dropped": "Lisa's team runs Postgres in production.",
+      "added": [
+        "Lisa's team migrated production to MySQL."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Milo's team migrated production to Postgres.",
+      "dropped": "Milo's team runs SQLite in production.",
+      "added": [
+        "Milo's team runs Postgres in production."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Lisa plays classical these days instead.",
+      "dropped": "Lisa listens to techno while working.",
+      "added": [
+        "Lisa listens to classical while working."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Nina defaults to Elixir on anything new now.",
+      "dropped": "For new work, Nina reaches for Rust.",
+      "added": [
+        "Nina defaults to Elixir on anything new now."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Yuki reformatted everything to tabs.",
+      "dropped": "Yuki formats code using four spaces.",
+      "added": [
+        "Yuki reformatted everything to tabs."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Raj's hours moved to PST.",
+      "dropped": "Raj works from KST.",
+      "added": [
+        "Raj works from PST."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Yuki rebuilt the pipelines on GitHub Actions.",
+      "dropped": "Yuki runs CI on Jenkins.",
+      "added": [
+        "Yuki rebuilt the pipelines on GitHub Actions."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Nina now has a turtle instead.",
+      "dropped": "Nina keeps a cat.",
+      "added": [
+        "Nina has a turtle instead of a cat."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Kofi adopted Django for the web tier.",
+      "dropped": "Kofi's web stack is Phoenix.",
+      "added": [
+        "Kofi's web stack is Django."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Tariq runs Alacritty now.",
+      "dropped": "Tariq uses Kitty as a terminal.",
+      "added": [
+        "Tariq runs Alacritty now."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Alma has switched to tea lately.",
+      "dropped": "Alma drinks coffee every morning.",
+      "added": [
+        "Alma drinks tea lately."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Maria switched the laptop to Ubuntu.",
+      "dropped": "Maria's machine runs Fedora.",
+      "added": [
+        "Maria switched the laptop to Ubuntu."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Yuki relocated and now works from GMT.",
+      "dropped": "Yuki works from KST.",
+      "added": [
+        "Yuki works from GMT."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Ida now reports into Diane.",
+      "dropped": "Ida's manager is Tomas.",
+      "added": [
+        "Ida's manager is Diane."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Chen migrated the notes to Notion.",
+      "dropped": "Chen writes notes in Obsidian.",
+      "added": [
+        "Chen migrated the notes to Notion."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Yuki switched the laptop to Ubuntu.",
+      "dropped": "Yuki's machine runs macOS.",
+      "added": [
+        "Yuki switched the laptop to Ubuntu."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Bruno defaults to Rust on anything new now.",
+      "dropped": "Bruno prefers Python for new services.",
+      "added": [
+        "Bruno defaults to Rust on anything new now."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Kofi switched the commute to bike.",
+      "dropped": "Kofi takes the car to the office.",
+      "added": [
+        "Kofi switched the commute to bike."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Vera's team moved tracing to Honeycomb.",
+      "dropped": "Vera's team traces with Zipkin.",
+      "added": [
+        "Vera's team traces with Honeycomb."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Bruno relocated and now works from CET.",
+      "dropped": "Bruno is based in GMT.",
+      "added": [
+        "Bruno works from CET."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Raj moved to zsh.",
+      "dropped": "Raj's shell is fish.",
+      "added": [
+        "Raj's shell is zsh."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Vera has switched to tabs.",
+      "dropped": "Vera formats code using four spaces.",
+      "added": [
+        "Vera formats code using tabs."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Sam reinstalled onto Arch.",
+      "dropped": "Sam's machine runs Ubuntu.",
+      "added": [
+        "Sam's machine runs Arch."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Maria converted the suite to table-driven tests.",
+      "dropped": "Maria's test suite is built on end-to-end tests.",
+      "added": [
+        "Maria's test suite is built on table-driven tests."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Maria took up rowing instead.",
+      "dropped": "Maria keeps fit with running.",
+      "added": [
+        "Maria took up rowing instead."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Yuki keeps everything in Apple Notes now.",
+      "dropped": "Yuki writes notes in Notion.",
+      "added": [
+        "Yuki keeps everything in Apple Notes now."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Milo's hours moved to GMT.",
+      "dropped": "Milo is based in JST.",
+      "added": [
+        "Milo is based in GMT."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "These days Kofi goes for tea instead.",
+      "dropped": "Tariq goes for tea these days instead.",
+      "added": [
+        "Kofi goes for tea these days instead."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Vera dropped that and does running now.",
+      "dropped": "Vera rows after work.",
+      "added": [
+        "Vera runs after work."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Sam now has a dog instead.",
+      "dropped": "Sam keeps a parrot.",
+      "added": [
+        "Sam has a dog instead."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Ida moved the prod database to SQLite.",
+      "dropped": "Ida's team runs CockroachDB in production.",
+      "added": [
+        "Ida's team runs SQLite in production."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Alma has switched to four spaces.",
+      "dropped": "Alma indents with tabs.",
+      "added": [
+        "Alma indents with four spaces."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Sena converted the suite to mutation testing.",
+      "dropped": "Lisa writes mutation testing.",
+      "added": [
+        "Sena's test suite is built on mutation testing."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Sena converted the suite to mutation testing.",
+      "dropped": "Sena's test suite is built on property-based tests.",
+      "added": [
+        "Sena's test suite is built on mutation testing."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Ida plays ambient these days instead.",
+      "dropped": "Ida codes to techno.",
+      "added": [
+        "Ida plays ambient these days instead."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Raj's team migrated production to SQLite.",
+      "dropped": "Raj is using MongoDB in production.",
+      "added": [
+        "Raj migrated production to SQLite."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Milo switched the shell to zsh.",
+      "dropped": "Milo's shell is bash.",
+      "added": [
+        "Milo's shell is zsh."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Maria has switched to matcha lately.",
+      "dropped": "Maria drinks coffee every morning.",
+      "added": [
+        "Maria has switched to matcha lately."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Alma runs GNOME Terminal now.",
+      "dropped": "Alma uses Alacritty as a terminal.",
+      "added": [
+        "Alma runs GNOME Terminal now."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Alma now has a parrot instead.",
+      "dropped": "Alma has a rabbit at home.",
+      "added": [
+        "Alma has a parrot at home."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Maria's team moved tracing to Honeycomb.",
+      "dropped": "Maria's team traces with Zipkin.",
+      "added": [
+        "Maria's team traces with Honeycomb."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Maria runs Alacritty now.",
+      "dropped": "Tariq runs Alacritty now.",
+      "added": [
+        "Maria runs Alacritty now."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Otto replaced the tracing stack with Jaeger.",
+      "dropped": "Otto's team traces with Honeycomb.",
+      "added": [
+        "Otto's team traces with Jaeger."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Kofi now reports into Tomas.",
+      "dropped": "Kofi reports to Karin.",
+      "added": [
+        "Kofi reports to Tomas."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Sena has switched to two spaces.",
+      "dropped": "Sena indents with eight spaces.",
+      "added": [
+        "Sena indents with two spaces."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Bruno now edits everything in Neovim.",
+      "dropped": "Bruno writes code in IntelliJ.",
+      "added": [
+        "Bruno writes code in Neovim."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Yuki converted the suite to property-based tests.",
+      "dropped": "Yuki's test suite is built on table-driven tests.",
+      "added": [
+        "Yuki converted the suite to property-based tests."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "These days Sena goes for tea instead.",
+      "dropped": "Kofi goes for tea these days instead.",
+      "added": [
+        "Sena goes for tea these days instead."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Sam moved CI to GitHub Actions.",
+      "dropped": "Sam runs CI on Jenkins.",
+      "added": [
+        "Sam runs CI on GitHub Actions."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Yuki switched the shell to zsh.",
+      "dropped": "Yuki uses bash.",
+      "added": [
+        "Yuki switched the shell to zsh."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Nina now reports into Diane.",
+      "dropped": "Nina's manager is Karin.",
+      "added": [
+        "Nina's manager is Diane."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Maria migrated the notes to plain text files.",
+      "dropped": "Maria keeps notes in Logseq.",
+      "added": [
+        "Maria keeps notes in plain text files."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Nina relocated and now works from JST.",
+      "dropped": "Nina works from CET.",
+      "added": [
+        "Nina works from JST."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Ida now edits everything in Emacs.",
+      "dropped": "Ida's editor is VS Code.",
+      "added": [
+        "Ida now edits everything in Emacs."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Lisa's team moved tracing to Datadog.",
+      "dropped": "Lisa's team traces with Zipkin.",
+      "added": [
+        "Lisa's team traces with Datadog."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Sam replaced the terminal with WezTerm.",
+      "dropped": "Sam uses iTerm2 as a terminal.",
+      "added": [
+        "Sam replaced the terminal with WezTerm."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Sena was moved under Karin.",
+      "dropped": "Sam's manager is Karin.",
+      "added": [
+        "Sena was moved under Karin."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Vera keeps everything in Obsidian now.",
+      "dropped": "Vera keeps notes in Notion.",
+      "added": [
+        "Vera keeps everything in Obsidian now."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Nina gets in by scooter these days.",
+      "dropped": "Nina commutes by car.",
+      "added": [
+        "Nina commutes by scooter these days."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Chen relocated and now works from PST.",
+      "dropped": "Chen works from KST.",
+      "added": [
+        "Chen works from PST."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Nina's team migrated production to Postgres.",
+      "dropped": "Nina runs MySQL in production.",
+      "added": [
+        "Nina's team migrated production to Postgres."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Nina's team migrated production to Postgres.",
+      "dropped": "Lisa's team migrated production to MySQL.",
+      "added": [
+        "Nina's team migrated production to Postgres."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Tariq converted the suite to end-to-end tests.",
+      "dropped": "Tariq's test suite is built on snapshot tests.",
+      "added": [
+        "Tariq's test suite is built on end-to-end tests."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Otto runs WezTerm now.",
+      "dropped": "Otto's terminal is iTerm2.",
+      "added": [
+        "Otto runs WezTerm now."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Sena relocated and now works from CET.",
+      "dropped": "Sena works from GMT.",
+      "added": [
+        "Sena works from CET."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Alma's team moved tracing to Datadog.",
+      "dropped": "Alma traces with Jaeger.",
+      "added": [
+        "Alma's team moved tracing to Datadog."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Tariq migrated the deployment to Hetzner.",
+      "dropped": "Tariq deploys on Azure.",
+      "added": [
+        "Tariq migrated the deployment to Hetzner."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Sam moved the prod database to SQLite.",
+      "dropped": "Raj migrated production to SQLite.",
+      "added": [
+        "Sam moved the prod database to SQLite."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Milo reformatted everything to two spaces.",
+      "dropped": "Milo formats code using mixed indentation.",
+      "added": [
+        "Milo reformatted everything to two spaces."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "These days Yuki goes for coffee instead.",
+      "dropped": "Yuki's morning ritual is tea.",
+      "added": [
+        "Yuki goes for coffee these days instead."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Yuki runs everything on AWS now.",
+      "dropped": "Yuki's infrastructure sits on Fly.io.",
+      "added": [
+        "Yuki runs everything on AWS now."
+      ],
+      "was_shown": true
+    },
+    {
+      "turn": "Bruno moved on to jazz.",
+      "dropped": "Bruno moved to fish.",
+      "added": [
+        "Bruno moved on to jazz."
+      ],
+      "was_shown": true
+    }
+  ]
+}

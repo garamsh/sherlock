@@ -1,0 +1,75 @@
+{
+  "seed": 7,
+  "rows": 28,
+  "live": 19,
+  "keys": 19,
+  "collided_keys": 5,
+  "detail": {
+    "otto.allergy": [
+      [
+        "Otto is allergic to peanuts.",
+        true
+      ],
+      [
+        "Otto is allergic to shellfish.",
+        false
+      ]
+    ],
+    "maria.language": [
+      [
+        "Maria speaks Korean.",
+        true
+      ],
+      [
+        "Maria speaks English.",
+        true
+      ],
+      [
+        "Maria speaks German.",
+        false
+      ]
+    ],
+    "sam.language": [
+      [
+        "Sam speaks German.",
+        true
+      ],
+      [
+        "Sam speaks Korean.",
+        true
+      ],
+      [
+        "Sam speaks English.",
+        false
+      ]
+    ],
+    "otto.language": [
+      [
+        "Otto speaks German.",
+        true
+      ],
+      [
+        "Otto speaks Korean.",
+        true
+      ],
+      [
+        "Otto speaks English.",
+        false
+      ]
+    ],
+    "lisa.language": [
+      [
+        "Lisa speaks Korean.",
+        true
+      ],
+      [
+        "Lisa speaks German.",
+        true
+      ],
+      [
+        "Lisa speaks English.",
+        false
+      ]
+    ]
+  }
+}

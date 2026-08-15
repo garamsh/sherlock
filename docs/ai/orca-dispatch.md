@@ -58,7 +58,9 @@ orca orchestration check --wait --types worker_done,escalation,question --timeou
 
 - The readiness wait before `dispatch --inject` is mandatory. Dispatching before the TUI is idle silently drops the injected preamble — the worker then sits at an empty prompt while the dispatch claims `input_accepted`.
 - Orca's own guide prefers one-shot `worker-start`. This project uses the low-level sequence instead because worker-start was observed racing agent readiness (opencode) and losing the injected input. Re-test it when Orca updates; if you use it, verify input arrival with `worker-read` immediately.
-- `check --wait` timing out is a checkpoint, not a failure — coding tasks routinely run 15–60 minutes; keep waiting.
+- `check --wait --types ...` was observed returning immediately with an empty result rather than blocking (Orca 1.4.180). Do not treat one empty return as "no work left" and do not loop on it — it burns every rolling window at once. Poll `task-list --brief --json` until no task is `dispatched`, and read `check` for the reports.
+- An empty result or a timeout is a checkpoint, not a failure — coding tasks routinely run 15–60 minutes; keep waiting.
+- Mid-flight guidance (`orchestration send --to dispatch:<id>`) is inbox mail the worker only sees when it next runs `orchestration check`. A worker deep in a task will not see it, so never assume a correction landed; re-check the terminal, and prefer letting a worker finish over redirecting it mid-run.
 - Every settled dispatch ends in one of three states before the PM waits again: reused for the next task with `worker-start --task <next> --terminal <handle>`, kept for debugging with `worker-retain --dispatch <id>`, or `worker-release --dispatch <id>`. Released workers stay readable through `worker-read`. Leaving a settled dispatch unaccounted for strands its terminal.
 
 ## Recovery

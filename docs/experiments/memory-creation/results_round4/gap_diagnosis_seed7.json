@@ -1,0 +1,512 @@
+{
+  "seed": 7,
+  "stats": {
+    "offered_and_retired": 73,
+    "offered_not_retired": 9,
+    "not_offered": 11,
+    "no_row_for_old": 7
+  },
+  "total": 100,
+  "per_turn": [
+    {
+      "text": "Lisa's team migrated production to MySQL.",
+      "old": "Postgres",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Milo's team migrated production to Postgres.",
+      "old": "SQLite",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Lisa plays classical these days instead.",
+      "old": "techno",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Nina defaults to Elixir on anything new now.",
+      "old": "Rust",
+      "outcome": "not_offered"
+    },
+    {
+      "text": "Yuki reformatted everything to tabs.",
+      "old": "four spaces",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Sena took up yoga instead.",
+      "old": "swimming",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Raj's hours moved to PST.",
+      "old": "KST",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Vera has since standardized on Python.",
+      "old": "Go",
+      "outcome": "no_row_for_old"
+    },
+    {
+      "text": "Yuki rebuilt the pipelines on GitHub Actions.",
+      "old": "Jenkins",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "These days Tariq goes for tea instead.",
+      "old": "chai",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Nina now has a turtle instead.",
+      "old": "a cat",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Kofi adopted Django for the web tier.",
+      "old": "Phoenix",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Sam now reports into Tomas.",
+      "old": "Karin",
+      "outcome": "not_offered"
+    },
+    {
+      "text": "Tariq runs Alacritty now.",
+      "old": "Kitty",
+      "outcome": "not_offered"
+    },
+    {
+      "text": "Alma has switched to tea lately.",
+      "old": "coffee",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Maria switched the laptop to Ubuntu.",
+      "old": "Fedora",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Yuki relocated and now works from GMT.",
+      "old": "KST",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Raj gets in by bus these days.",
+      "old": "car",
+      "outcome": "no_row_for_old"
+    },
+    {
+      "text": "Ida now reports into Diane.",
+      "old": "Tomas",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Alma now reports into Priya.",
+      "old": "Felix",
+      "outcome": "not_offered"
+    },
+    {
+      "text": "Bruno reformatted everything to mixed indentation.",
+      "old": "four spaces",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Sena adopted Rails for the web tier.",
+      "old": "Phoenix",
+      "outcome": "no_row_for_old"
+    },
+    {
+      "text": "Chen migrated the notes to Notion.",
+      "old": "Obsidian",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Yuki switched the laptop to Ubuntu.",
+      "old": "macOS",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Bruno defaults to Rust on anything new now.",
+      "old": "Python",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Bruno now reports into Felix.",
+      "old": "Priya",
+      "outcome": "no_row_for_old"
+    },
+    {
+      "text": "Kofi switched the commute to bike.",
+      "old": "car",
+      "outcome": "no_row_for_old"
+    },
+    {
+      "text": "Vera's team moved tracing to Honeycomb.",
+      "old": "Zipkin",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Bruno relocated and now works from CET.",
+      "old": "GMT",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Raj moved to zsh.",
+      "old": "fish",
+      "outcome": "not_offered"
+    },
+    {
+      "text": "Vera has switched to tabs.",
+      "old": "four spaces",
+      "outcome": "offered_not_retired"
+    },
+    {
+      "text": "Sam reinstalled onto Arch.",
+      "old": "Ubuntu",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Maria converted the suite to table-driven tests.",
+      "old": "end-to-end tests",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Maria took up rowing instead.",
+      "old": "running",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Yuki keeps everything in Apple Notes now.",
+      "old": "Notion",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Lisa has switched to eight spaces.",
+      "old": "four spaces",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Milo's hours moved to GMT.",
+      "old": "JST",
+      "outcome": "not_offered"
+    },
+    {
+      "text": "Kofi adopted a turtle recently.",
+      "old": "a rabbit",
+      "outcome": "offered_not_retired"
+    },
+    {
+      "text": "These days Kofi goes for tea instead.",
+      "old": "chai",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Lisa defaults to Python on anything new now.",
+      "old": "TypeScript",
+      "outcome": "not_offered"
+    },
+    {
+      "text": "Vera dropped that and does running now.",
+      "old": "rowing",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Kofi replaced the terminal with Kitty.",
+      "old": "iTerm2",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Maria moved to fish.",
+      "old": "bash",
+      "outcome": "offered_not_retired"
+    },
+    {
+      "text": "Sam now has a dog instead.",
+      "old": "a parrot",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Ida defaults to Go on anything new now.",
+      "old": "Elixir",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Ida moved the prod database to SQLite.",
+      "old": "CockroachDB",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Otto defaults to Go on anything new now.",
+      "old": "Python",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Alma has switched to four spaces.",
+      "old": "tabs",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Sena converted the suite to mutation testing.",
+      "old": "property-based tests",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Ida plays ambient these days instead.",
+      "old": "techno",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Raj's team migrated production to SQLite.",
+      "old": "MongoDB",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Milo switched the shell to zsh.",
+      "old": "bash",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Maria has switched to matcha lately.",
+      "old": "coffee",
+      "outcome": "offered_not_retired"
+    },
+    {
+      "text": "Alma runs GNOME Terminal now.",
+      "old": "Alacritty",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Milo reinstalled onto Ubuntu.",
+      "old": "macOS",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Alma now has a parrot instead.",
+      "old": "a rabbit",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Maria's team moved tracing to Honeycomb.",
+      "old": "Zipkin",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Vera moved over to Zed recently.",
+      "old": "VS Code",
+      "outcome": "not_offered"
+    },
+    {
+      "text": "Maria runs Alacritty now.",
+      "old": "Kitty",
+      "outcome": "no_row_for_old"
+    },
+    {
+      "text": "Otto replaced the tracing stack with Jaeger.",
+      "old": "Honeycomb",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Tariq adopted a cat recently.",
+      "old": "a dog",
+      "outcome": "offered_not_retired"
+    },
+    {
+      "text": "Kofi now reports into Tomas.",
+      "old": "Karin",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Sena has switched to two spaces.",
+      "old": "eight spaces",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Chen runs everything on Hetzner now.",
+      "old": "Azure",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Bruno now edits everything in Neovim.",
+      "old": "IntelliJ",
+      "outcome": "offered_not_retired"
+    },
+    {
+      "text": "Yuki converted the suite to property-based tests.",
+      "old": "table-driven tests",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "These days Sena goes for tea instead.",
+      "old": "espresso",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Chen now has a parrot instead.",
+      "old": "a cat",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Sam moved CI to GitHub Actions.",
+      "old": "Jenkins",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Yuki switched the shell to zsh.",
+      "old": "bash",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Nina now reports into Diane.",
+      "old": "Karin",
+      "outcome": "offered_not_retired"
+    },
+    {
+      "text": "Maria migrated the notes to plain text files.",
+      "old": "Logseq",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Milo rebuilt the pipelines on GitLab CI.",
+      "old": "GitHub Actions",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Nina relocated and now works from JST.",
+      "old": "CET",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Lisa took up swimming instead.",
+      "old": "running",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Ida now edits everything in Emacs.",
+      "old": "VS Code",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Bruno moved to fish.",
+      "old": "bash",
+      "outcome": "not_offered"
+    },
+    {
+      "text": "Lisa's team moved tracing to Datadog.",
+      "old": "Zipkin",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Sam replaced the terminal with WezTerm.",
+      "old": "iTerm2",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Sena was moved under Karin.",
+      "old": "Priya",
+      "outcome": "no_row_for_old"
+    },
+    {
+      "text": "Otto now relies on mutation testing.",
+      "old": "end-to-end tests",
+      "outcome": "offered_not_retired"
+    },
+    {
+      "text": "Vera keeps everything in Obsidian now.",
+      "old": "Notion",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Nina gets in by scooter these days.",
+      "old": "car",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Chen relocated and now works from PST.",
+      "old": "KST",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Nina's team migrated production to Postgres.",
+      "old": "MySQL",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Tariq converted the suite to end-to-end tests.",
+      "old": "snapshot tests",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Otto runs WezTerm now.",
+      "old": "iTerm2",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Sena relocated and now works from CET.",
+      "old": "GMT",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Alma's team moved tracing to Datadog.",
+      "old": "Jaeger",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Yuki has since standardized on Python.",
+      "old": "Go",
+      "outcome": "not_offered"
+    },
+    {
+      "text": "Tariq migrated the deployment to Hetzner.",
+      "old": "Azure",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Kofi now relies on snapshot tests.",
+      "old": "property-based tests",
+      "outcome": "offered_not_retired"
+    },
+    {
+      "text": "Sam moved the prod database to SQLite.",
+      "old": "Postgres",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Milo reformatted everything to two spaces.",
+      "old": "mixed indentation",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Milo dropped that and does swimming now.",
+      "old": "yoga",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "These days Yuki goes for coffee instead.",
+      "old": "tea",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Sam now relies on property-based tests.",
+      "old": "end-to-end tests",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Yuki runs everything on AWS now.",
+      "old": "Fly.io",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Raj rebuilt the pipelines on Jenkins.",
+      "old": "GitHub Actions",
+      "outcome": "offered_and_retired"
+    },
+    {
+      "text": "Bruno moved on to jazz.",
+      "old": "techno",
+      "outcome": "not_offered"
+    }
+  ]
+}

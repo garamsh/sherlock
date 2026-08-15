@@ -37,12 +37,13 @@ Pre-flight: `git status` clean; work on a `chore/adopt-harness` branch.
 
 | Category | Paths | Action |
 |---|---|---|
-| Take verbatim | `docs/ai/`, agent adapters, `.github/` templates | `git checkout harness/main -- <path>` |
-| Compare hunks | neutral `docs/convention/` files, `AGENTS.md` | adopt improvements, keep deliberate local changes |
+| Take verbatim | `.github/` templates | `git checkout harness/main -- <path>` |
+| Compare hunks | `docs/ai/`, agent adapters, neutral `docs/convention/` files, `AGENTS.md` | adopt improvements, keep deliberate local changes |
 | Never touch | `docs/architecture/`, `README.md`, `stack-*.md`, source | project-owned |
 
-3. Open one PR titled `chore: sync harness template updates`. Body lists what was adopted, adapted, and deliberately skipped — skipped items are not re-proposed on later syncs.
-4. After merging, invoke the QA agent once to verify the updated docs reference no missing files.
+3. When a hunk deletes a rule, find the file that now owns it before adopting: `grep -rn "<the rule>" AGENTS.md docs/ .claude/agents .opencode/agents`. Upstream deduplication moves rules between documents, and a rule that lands in neither is the defect this step exists to catch (#343).
+4. Open one PR titled `chore: sync harness template updates`. Body lists what was adopted, adapted, and deliberately skipped — skipped items are not re-proposed on later syncs.
+5. After merging, invoke the QA agent once to verify the updated docs reference no missing files.
 
 ## Rules
 

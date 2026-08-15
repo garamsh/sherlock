@@ -4,7 +4,7 @@ Which structure should create, correct and retire a memory entry. The cycle expe
 
 ## Method
 
-488 turns, 152 probes, real embeddings and a real gpt-4o-mini decider, replicated on two dataset seeds. Three probe families, because a structure can be wrong in three ways:
+488 turns, 152 probes, real embeddings and a real gpt-4o-mini decider, replicated on two dataset seeds. A second seed redraws the corrected, control and distractor assignments; it does not redraw the coexist set, and eight of the seventeen structures ran on one seed. What that costs the ranking is in Limits. Three probe families, because a structure can be wrong in three ways:
 
 | family | probes | scores |
 |---|---|---|
@@ -97,7 +97,8 @@ The row reached the decider 82% of the time and was retired in 89% of those. Rep
 
 ## Adopted direction
 
-- The decider is shown the store's retrieval for the incoming turn, and owns what is stored and what is retired.
+The ordering among the top three structures is not resolved at this round's precision (see Limits). Each item below is adopted on a property that was measured directly, not on its place in the net column.
+
 - Threshold supersession is removed from the store, not retuned. The platform retains, ranks and forgets.
 - **The decider is shown the store's retrieval for the incoming turn and returns what to store and what to retire** (B9, net 0.86). It is adopted for the property the key structures cannot match: an unmentioned memory is left alone, so facts the decider never considers survive. Widening the candidate offer is safe at any setting; the retrieval half of its residual is closed (2 corrections of 100 unoffered), and what remains is judgment.
 - **Key-addressed replacement is not adopted.** Scored without an example pointing at the probe set it reaches 0.81, and its losses are coexisting facts silently swallowed by a single key. It is the better structure on corrections and should be revisited if the multi-answer case is carried by something the decider returns rather than a key shape it has to infer.
@@ -112,7 +113,10 @@ The row reached the decider 82% of the time and was retired in 89% of those. Rep
 - One decider model, temperature 0. Nine judgment misses in 100 corrections leaves little headroom to attribute to model choice.
 - Embeddings are truncated to 512 dimensions; every structure uses the same embedder.
 - B9, B10, B11, B15, B16, B17, B18 and the claim graph ran on one seed. B14, B12, and the structures in the first table ran on two. B14's two seeds agree with each other and are both example-inflated; agreement across seeds does not detect a leak that is in the instruction rather than the data.
-- The coexist probe set is 28 values in three families, and one family is 12 of them, so a single example can move the column by 0.43. A larger and flatter coexist set would make the metric harder to move this way.
+- **The coexist set does not vary with the seed.** `harness/round4/dataset.py` builds it from `PERSONS[:4]` and a module-level `COEXIST` constant, so the 12 coexist probes and the 28 fact turns behind them are identical under every seed. Replication redraws the corrected, control and distractor assignments around a fixed coexist set; it never draws a second one. B14's coexist 1.00 "on two seeds" is one measurement reported twice, which is the mechanical reason seed agreement could not detect the example leak.
+- The coexist probe set is 28 values in three families, and one family is 12 of them, so a single example can move the column by 0.43. One probe is 8.3% of the column, against 1% for a corrected probe, because `net` weights the three families equally. A larger and flatter coexist set, redrawn per seed, would make the metric harder to move this way.
+- **The coexist column is also the noisiest, on data that does not change.** B12 scores coexist 0.61 on seed 7 and 0.44 on seed 11 against the identical coexist set, so 0.167 of that column is the surrounding store rather than the probes. A fixed, small, high-variance measurement carries a third of `net`.
+- **The top three sit inside that spread.** The only structures with two seeds move 0.049 (B12) and 0.005 (B14) on net. B9 (0.861), B17 (0.858) and B14 scored with an example outside the data (0.81) fall within one B12-sized spread of each other, and none of the three has a second seed. The round can separate the top group from the bottom group; it cannot order the top group.
 - A structure's first score measures the attempt, not the idea: B5 to B12 to B14 is one structure whose two diagnosed defects were in what the decider was shown. The claim graph is unranked: its decider stored 85 of roughly 290 facts, so the structure was never exercised.
 - Coexist is the smallest probe family at 12.
 

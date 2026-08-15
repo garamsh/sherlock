@@ -160,6 +160,7 @@ python3 harness/round4/call_schedule.py
 python3 harness/round4/precision.py
 python3 harness/round4/offer_width.py
 EMBED_DIMS=1536 python3 harness/round4/separability.py
+python3 harness/round4/marker_following.py
 ```
 
 `OPENAI_API_KEY` required. Results land in `results_round4/`; embeddings and decider replies are cached beside the harness, so a re-run costs nothing after the first. `EMBED_DIMS` defaults to 512 and caches each dimension separately, so the first run at another dimension re-embeds and writes its own result files. The rounds 1–3 runners are `harness/creation_runner.py`, `harness/real_runner.py` and `harness/real_new_runner.py`.

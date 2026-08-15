@@ -1,17 +1,4 @@
-"""Where does B3's remaining correction gap live: retrieval or judgment?
-
-B3 recalls every control fact and destroys nothing, but only half of its
-corrections retire the old value. Two very different causes produce that same
-number, and they have opposite fixes:
-
-  retrieval  the contradicted row was never offered to the decider, so the
-             decider could not have retired it -> widen what is offered
-  judgment   the row was offered and the decider kept it anyway
-             -> the structure is right and the decider is the ceiling
-
-This replays the correction turns and records which one happened. It reuses
-the cached decider replies, so it costs nothing to run after the main round.
-"""
+"""Whether B3's missed corrections were never offered or offered and kept."""
 from __future__ import annotations
 import json
 import os
@@ -34,9 +21,7 @@ def main():
     turns, probes = build(seed=seed)
     embed_batch([t for t, _ in turns] + [p.question for p in probes])
 
-    # Keyed on the exact correction turn, not on the value string: values
-    # repeat across subjects, so matching by value would flag every unrelated
-    # statement that happens to mention the same editor or database.
+    # Keyed on the exact correction turn; values repeat across subjects.
     corrections = {p.correction_text: (p.subject, p.expect_absent[0])
                    for p in probes if p.kind == "corrected"}
 

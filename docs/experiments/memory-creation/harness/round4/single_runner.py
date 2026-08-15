@@ -1,4 +1,4 @@
-"""Run one named structure. Used for the slow or follow-up variants."""
+"""Run one named structure."""
 from __future__ import annotations
 import json
 import os

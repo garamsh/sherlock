@@ -1,10 +1,4 @@
-"""Real OpenAI embeddings and decider calls, thread-safe and batched.
-
-Same providers as the previous round (text-embedding-3-small, gpt-4o-mini)
-so the numbers stay comparable. Differences: a lock around the caches and a
-batch embedding path, because this round runs several structures in parallel
-threads over a much larger dataset.
-"""
+"""OpenAI embeddings and decider calls, cached on disk, thread-safe."""
 from __future__ import annotations
 import json
 import math
@@ -21,10 +15,7 @@ CHAT_CACHE = os.path.join(HERE, ".chat_cache.json")
 
 EMBED_MODEL = "text-embedding-3-small"
 DECIDER_MODEL = "gpt-4o-mini"
-# text-embedding-3-small supports truncated output dimensions. 512 keeps the
-# ranking quality this task needs while making pure-Python cosine over a
-# few-hundred-item store affordable; every structure uses the same embedder,
-# so the comparison is unaffected.
+# Truncated output dimensions; every structure uses the same embedder.
 EMBED_DIMS = 512
 
 _lock = threading.Lock()
@@ -46,12 +37,7 @@ CHAT = _load(CHAT_CACHE)
 
 
 def flush():
-    """Persist both caches.
-
-    The snapshot is taken under the lock but written outside it: the embedding
-    cache is tens of megabytes of JSON, and holding the lock across that write
-    serialises every worker thread on its next cache read.
-    """
+    """Persist both caches. Snapshots under the lock, writes outside it."""
     with _lock:
         embeddings = dict(EMBEDDINGS)
         chat = dict(CHAT)
@@ -106,11 +92,7 @@ def _unit(vec):
 
 
 def cosine(a, b) -> float:
-    """Cosine over unit-normalized vectors, i.e. a plain dot product.
-
-    Everything entering the cache is normalized at insert, so this is the
-    hot-loop form: a few hundred store rows scored per query, in pure Python.
-    """
+    """Dot product; every cached vector is unit-normalized at insert."""
     if not a or not b:
         return 0.0
     return sum(map(_mul, a, b))

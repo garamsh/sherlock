@@ -1,17 +1,4 @@
-"""Probe scoring that separates the three ways a fact can be missing.
-
-"The fact was not recalled" is not one failure. It is three, with three
-different fixes, and a single survival number hides which one happened:
-
-  never_written  the decider never stored it       -> a write-selectivity problem
-  retired        it was stored and later removed   -> a false-retirement problem
-  not_ranked     it is live but outside the top-K  -> a retrieval problem
-
-The previous round reported only presence at probe time, so an over-eager
-structure and an under-writing structure produced the same number. Every
-structure here keeps its removed rows (removal marks `dead`, it never
-deletes), so the classification is a post-hoc scan of the row log.
-"""
+"""Probe scoring. Separates never-written, retired and not-ranked misses."""
 from __future__ import annotations
 
 
@@ -22,7 +9,7 @@ def _rows_containing(inst, subject, value):
 
 
 def _in_recall(rows, subject, value):
-    """A value counts as recalled only from a row that also names the subject."""
+    """True when a recalled row carries both the subject and the value."""
     subj, needle = subject.lower(), value.lower()
     return any(needle in r.content.lower() and subj in r.content.lower()
                for r in rows)

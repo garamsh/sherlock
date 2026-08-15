@@ -1,17 +1,4 @@
-"""Run every creation structure over the falsification dataset.
-
-Three probe families score three different ways to be wrong, so a structure
-cannot win by being aggressive:
-
-  corrected -> latest-wins   (did the new value replace the old one)
-  control   -> survival      (did an uncorrected fact survive; catches
-                              over-retirement, which the previous round's
-                              dataset could not see at all)
-  coexist   -> preservation  (did two simultaneously-true facts both survive;
-                              catches a key structure that collapses topics)
-
-`net` is the mean of the three: the fraction of the store's job done right.
-"""
+"""Run every structure over the dataset and write the comparison table."""
 from __future__ import annotations
 import json
 import os
@@ -32,9 +19,7 @@ RESULTS = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                        "..", "..", "results_round4")
 from scoring import score
 
-# B8 (claim-graph) runs an order of magnitude slower than the rest and is
-# driven separately by claimgraph_runner.py; it is excluded here so the main
-# comparison is not gated on it.
+# B8 is slow enough to gate the run; claimgraph_runner.py drives it separately.
 SYSTEMS = [
     S.StoreThreshold,
     S.DeciderWindow,

@@ -1,32 +1,8 @@
-"""Dataset for the memory-creation falsification round.
-
-The previous round's dataset had three properties that made its numbers
-unable to see a failure mode:
-
-- every planted topic was corrected, so a decider that retires aggressively
-  scored perfectly (no control facts);
-- ten probes backed every reported number, so each metric moved in 0.10 steps;
-- the store stayed at ~15 items, so a decider shown "the last 10 memories"
-  saw the contradicted fact by accident.
-
-This dataset fixes all three. Facts carry an explicit subject (so the store's
-cosine has a fair shot at supersession — the previous dataset's subject-less
-corrections handicapped it), corrections land thousands of items after the
-fact they contradict, and three probe families measure three different ways
-to be wrong:
-
-- CORRECTED: the new value must be recalled and the old value must be gone.
-- CONTROL:   never corrected; must still be recalled. Catches over-retirement.
-- COEXIST:   two values are simultaneously true; both must be recalled.
-             Catches a key-upsert structure that collapses distinct facts.
-"""
+"""Turn stream and probes for the memory-creation comparison."""
 from __future__ import annotations
 import random
 
-# 16 subjects x 20 categories = 320 distinct (subject, topic) facts. The pool
-# has to exceed the probed set by a wide margin: the distractors are what make
-# the store large enough that no recency window can contain the fact a late
-# correction contradicts.
+# 16 subjects x 20 categories; the unprobed surplus is what makes the store large.
 PERSONS = ["Lisa", "Otto", "Maria", "Sam", "Nina", "Raj", "Yuki", "Chen",
            "Ida", "Bruno", "Alma", "Kofi", "Vera", "Milo", "Sena", "Tariq"]
 
@@ -56,8 +32,7 @@ CATEGORIES = [
      ["a dog", "a cat", "a rabbit", "a parrot", "a turtle"],
      ["{p} has {v} at home.", "{p} keeps {v}."],
      ["{p} adopted {v} recently.", "{p} now has {v} instead."]),
-    # Values deliberately avoid the PERSONS names: a manager value that is
-    # also a subject elsewhere would let an unrelated memory satisfy the probe.
+    # Values avoid the PERSONS names, which would let unrelated memories match.
     ("manager", "Who does {p} report to?",
      ["Diane", "Felix", "Priya", "Karin", "Tomas"],
      ["{p} reports to {v}.", "{p}'s manager is {v}."],
@@ -117,9 +92,7 @@ CATEGORIES = [
      ["{p} relocated and now works from {v}.", "{p}'s hours moved to {v}."]),
 ]
 
-# Facts that are simultaneously true. A structure that upserts by topic key
-# must not collapse these into one. Their vocabularies do not overlap any
-# CATEGORIES value, so a coexist memory can never satisfy another probe.
+# Simultaneously-true facts. Their vocabularies do not overlap CATEGORIES.
 COEXIST = [
     ("languages", "Which spoken languages does {p} know?",
      ["Korean", "English", "German"],
@@ -150,16 +123,12 @@ class Probe:
     def __init__(self, kind, subject, question, expect_present, expect_absent=(),
                  correction_text=None):
         self.kind = kind                      # corrected | control | coexist
-        # Values repeat across subjects (many people use Neovim). A memory
-        # only answers this probe when it carries this subject AND the value,
-        # so the subject travels with the probe.
+        # Values repeat across subjects, so a probe needs the subject too.
         self.subject = subject
         self.question = question
         self.expect_present = list(expect_present)
         self.expect_absent = list(expect_absent)
-        # The exact turn that corrects this fact. Values repeat across
-        # subjects, so a diagnosis that matched corrections by value string
-        # would also match unrelated subjects' statements.
+        # The exact correction turn; matching by value would catch other subjects.
         self.correction_text = correction_text
 
 

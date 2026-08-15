@@ -114,12 +114,53 @@ Replaying the 100 correction turns under B3 and recording whether the contradict
 
 The row reached the decider 82% of the time and was retired in 89% of those. Replaying the same 100 turns under B9's wider offer moves the split to 77 offered and retired, 16 offered and kept, 2 not offered, 5 with no live row: widening closed the retrieval half almost entirely, and what remains is judgment — in 14 of the 16 the retire list came back empty with the contradicted row at rank 1 or 2.
 
+### The offer is wide enough, and wider does not pay
+
+Sweeping the offer width over B9's trajectory, against the 95 corrections whose old value still had a live row:
+
+| K | contradicted row reached | candidates per turn | candidate rows across the run |
+|---|---|---|---|
+| 5 | 84 | 4.40 | 2,147 |
+| 10 | 93 | 8.15 | 3,976 |
+| 20 | **95** | 14.70 | 7,174 |
+| 40 | 95 | 23.38 | 11,410 |
+| unbounded | 95 | 29.10 | 14,199 |
+
+The row is at rank 1 for 56 of the 95 and within rank 5 for 84; rank 15 is the deepest anywhere in the run. Coverage therefore saturates at 20 and nothing above it buys anything. The floor is not a free parameter either: the lowest contradicted-row cosine in the run is 0.374, so 0.3 is a ceiling rather than a setting, and 0.6 collapses coverage to 63.
+
+**K stays at 10.** Going 5 → 10 costs 203 extra candidate rows per correction recovered; going 10 → 20 costs 1,599, and buys 2 corrections of 100 — 0.02 on latest-wins and 0.007 on `net`, an order of magnitude below what any affordable run can resolve. Against that, B16 is this round's measured evidence that loading more into one reply degrades it, and a 3% degradation on the 93 corrections already reaching the decider would be four times the gain in the opposite direction. The retrieval half is closed to 98% and the residual is judgment.
+
+### The residual moves more with phrasing than with structure
+
+Every correction template in the dataset announces the change — `switched`, `migrated`, `now`, `these days`, `instead`. Restating each correction in the stored sentence's own form instead, with only the value swapped, and holding the offer fixed at what the announced turn retrieved:
+
+| correction phrasing | retired, of the 93 whose offer carried the row |
+|---|---|
+| announced (`Alma has switched to tea lately.`) | 77 — 0.83 |
+| restated (`Alma drinks tea every morning.`) | 86 — 0.92 |
+
+Paired on the same turns: 75 retired under both, 11 kept only when announced, 2 the reverse, 5 kept under both (McNemar exact p = 0.023). **The corrected column is not inflated by lexical announcement.** An unannounced restatement is judged at least as well, so a deployment where users restate rather than announce is not measured optimistically here.
+
+Two cautions on reading it further. The restated form drops the marker and gains maximal surface overlap with the row it contradicts at the same time — mean rank of that row moves from 2.53 to 1.21, and rank 1 from 56 turns to 81 — so which of the two changes did the work is open, and the arm judged better is also the arm that looks most like what it contradicts. And the effect is concentrated rather than uniform: `manager`, whose values are people's names, carries 3 of the 11 flips, while `testing` stays at 1 of 3 in both arms on `{p} now relies on {v}.`, which is topic ambiguity that rephrasing does not touch.
+
+What is established is the size. **Retire rate moves 0.09 with the phrasing of the incoming turn, which is larger than every difference between the structures in the top group.** It also settles the retrieval tail from the other side: both rows unreachable at K=10 are reached at rank 1 under the restated form, so the tail is corrections that share no surface with what they contradict rather than a limit of the retriever.
+
+## One decider call per turn, and what a cheaper schedule would buy
+
+Every structure calls the decider once per turn, on all 488 turns. Classifying what each call returned, against the turn that prompted it:
+
+- **100 of 488 calls (20.5%) returned no operation at all under B9, 97 under B14** — and only 1 of B9's and 5 of B14's fall on a fact turn. The idle calls are the chatter turns and essentially nothing else, so there is no cheap subset of fact turns to skip.
+- **No retire ever landed on a chatter turn** — 0 across 200 chatter calls in both structures, against 399 wrong retirements at the shipped 0.60 threshold. A skipped call fails to write and cannot delete, so a call gate fails in the opposite direction to the mechanism this round falsified.
+- A gate that skipped every chatter turn saves 20.5% of calls and changes nothing measurable: B14's replay returns `net` 0.9083 unchanged, 312 items down to 304, no probe value moved.
+
+**No gate is worth building on this evidence.** The 20.5% ceiling is `chatter_ratio`, a scripted parameter rather than measured traffic, while the 388 fact turns carry the whole of `net` between them at 0.0026 each — so a gate needs 96.7% recall on fact turns to stay inside this round's own interval, and at 95% it costs more than the distance from the adopted structure to the round's best-scoring one. The number that would change this is the no-fact share of real traffic; build one when that is measured above 50%.
+
 ## Adopted direction
 
 The ordering inside the top group is not resolved at this round's precision (§What the net column can and cannot separate). Each item below is adopted on a property that was counted directly, not on its place in the net column.
 
 - Threshold supersession is removed from the store, not retuned. The platform retains, ranks and forgets.
-- **The decider is shown the store's retrieval for the incoming turn and returns what to store and what to retire** (B9, net 0.86). It is adopted for the property the key structures cannot match: an unmentioned memory is left alone, so facts the decider never considers survive. Widening the candidate offer is safe at any setting; the retrieval half of its residual is closed (2 corrections of 100 unoffered), and what remains is judgment.
+- **The decider is shown the store's retrieval for the incoming turn and returns what to store and what to retire** (B9, net 0.86). It is adopted for the property the key structures cannot match: an unmentioned memory is left alone, so facts the decider never considers survive. Widening the candidate offer deletes nothing at any setting, but it stops paying at 10: the retrieval half of its residual is closed to 98%, and what remains is judgment.
 - **Key-addressed replacement is not adopted.** Scored without an example pointing at the probe set it reaches 0.81, and its losses are coexisting facts silently swallowed by a single key. It is the better structure on corrections and should be revisited if the multi-answer case is carried by something the decider returns rather than a key shape it has to infer.
 - **The question-shaped key definition is worth keeping on its evidence.** Its correction gain is example-independent — latest-wins 0.87 and 0.85 across two unrelated examples, no value-named keys, no write suppression — and it is the round's best correction result. It is an improvement to the write vocabulary, not to the store shape.
 - Claim links, append-only read-time resolution, a main-model-written field, and neighbourhood rewrite are rejected.
@@ -129,7 +170,7 @@ The ordering inside the top group is not resolved at this round's precision (§W
 ## Limits
 
 - The turn stream is scripted. Only a behavioural QA pass measures the agent.
-- One decider model, temperature 0. Nine judgment misses in 100 corrections leaves little headroom to attribute to model choice.
+- One decider model, temperature 0. The 16 judgment misses in 100 corrections under B9 are the whole headroom, and nothing here separates what a different model would do from what a different phrasing does — §The residual moves more with phrasing than with structure shows the second is worth 0.09 on its own.
 - Every structure ran on embeddings truncated to 512 dimensions, with the same embedder. The threshold result was re-measured at the native 1536 and does not depend on the truncation; the structure scores were not re-run at full dimension.
 - **A probe value is credited on a substring match.** `harness/round4/scoring.py` tests `value in row.lower()`, so `Zed` is credited by "Vera has since standardized on Python.", `fish` by "Maria is allergic to shellfish." — a coexist statement scoring a corrected `shell` probe — and `tea` by "team" and by "instead". Counting the credits that hold only as a substring, replayed on seed 7: B9 2, B14 3, B17 3, all in the corrected family, some crediting the new value and some holding the old one present. It is systematic rather than random and it favours structures that write more rows, but at ±0.083 on `net` it moves nothing in this document, so round 4 is not rescored (#371). Round 5 credits a value only where a row states it as a whole word, and fails its dataset check if a value it adds sits inside another value or inside the fixed sentence vocabulary.
 - B9, B10, B11, B15, B16, B17, B18 and the claim graph ran on one seed. B14, B12, and the structures in the first table ran on two. B14's two seeds agree with each other and are both example-inflated; agreement across seeds does not detect a leak that is in the instruction rather than the data.

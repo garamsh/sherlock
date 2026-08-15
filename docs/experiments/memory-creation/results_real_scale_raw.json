@@ -1,0 +1,29 @@
+[
+  {
+    "system": "C1-real",
+    "checkpoint_recall": 0.0,
+    "latest_wins": 0.0,
+    "stale_present": 0.0,
+    "store_items": 0,
+    "elapsed_s": 0.00010997599974871264,
+    "decider_calls": 0
+  },
+  {
+    "system": "C2-real",
+    "checkpoint_recall": 0.8,
+    "latest_wins": 0.0,
+    "stale_present": 0.8,
+    "store_items": 19,
+    "elapsed_s": 11.841713700000128,
+    "decider_calls": 0
+  },
+  {
+    "system": "C3-real",
+    "checkpoint_recall": 1.0,
+    "latest_wins": 0.6,
+    "stale_present": 0.4,
+    "store_items": 14,
+    "elapsed_s": 51.98044892500002,
+    "decider_calls": 1000
+  }
+]

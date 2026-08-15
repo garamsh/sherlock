@@ -2,6 +2,8 @@
 
 One question, answered with numbers: **how should a memory entry come to exist — who decides, with what vocabulary, and when does maintenance happen?** This is the third experiment in the series. The cycle experiment (`memory-cycle/`) established that the write path must be shape-enforced; this experiment compares the structures that can sit behind that enforcement.
 
+A second run on real infrastructure (real OpenAI embeddings, a real gpt-4o-mini decider model, 1,000 turns) is recorded under "Real-infrastructure run" below.
+
 ## The question
 
 The adopted memory model (ADR 0006) writes through an ops vocabulary (`keep`/`update`/`delete`/`add` over recalled IDs) emitted by the main model inside its response. The cycle experiment showed the voluntary form scores 0.00 — but even with the shape enforced (structured output), the ops vocabulary is one choice among many. The owner asked for the alternatives to be measured: everything-as-update, a dedicated memory model, a journal with background distillation, freeform notes, entity records, temporal claims, and append-only with read-time latest-wins.
@@ -58,14 +60,30 @@ Compliance inputs are the same measured or marked rates as the cycle experiment:
 
 ## Adopted direction
 
-The candidate ranking supports the decider-separated shape, shape-enforced:
+The candidate ranking and the real-infrastructure run support the decider-separated shape, shape-enforced:
 
-- **Dedicated memory model** (C9's structure) — a narrow call after each turn owns the memory decision, including corrections. The main model never sees the memory protocol. The store drops its similarity-threshold supersession: the platform retains and ranks; the decider decides. One extra call per turn is the cost.
-- The store's threshold supersession is retained only as a fallback for the main-model-field shape (C2), where no dedicated decider exists.
+- **Dedicated memory model** (C9's structure) — a narrow call after each turn owns the memory decision, including corrections. The main model never sees the memory protocol. The store drops its similarity-threshold supersession: the platform retains and ranks; the decider decides. One extra call per turn is the cost — measured trivial against the 1,000-turn dataset.
+- The store's threshold supersession is retained only as a fallback for the main-model-field shape (C2), where no dedicated decider exists — and the real run measured that fallback failing corrections (latest-wins 0.00).
 
-The write-path enforcement (structured output) is the common precondition either way. The choice is between the simplest performing vocabulary (C2, main-model field) and the clearest layer separation (C9, dedicated model) — the evidence separates them on correction handling, not recall.
+The write-path enforcement (structured output) is the common precondition either way. The evidence separates the options on correction handling, not recall.
 
-## Reproducing
+## Real-infrastructure run
+
+The harness above uses a lexical similarity stand-in, which cannot judge semantic corrections. A second run replaced both approximations with production components: real OpenAI embeddings (text-embedding-3-small) for the store's similarity and a real gpt-4o-mini call as the dedicated memory decider. The dataset is 100 sessions × 10 turns with planted facts and natural-language corrections whose wording shares almost no tokens with the original ("I drink coffee every morning" → "I've switched to tea these days").
+
+| system | recall | latest-wins (net) | stale-present | items | decider calls |
+|---|---|---|---|---|---|
+| C1 ops-voluntary | 0.00 | 0.00 | 0.00 | 0 | 0 |
+| C2 everything-update (store threshold) | 0.80 | 0.00 | 0.80 | 19 | 0 |
+| **C3/C9 dedicated decider** | **1.00** | **0.60** | 0.40 | 14 | 1,000 |
+
+What the real run establishes:
+
+1. **The store's similarity threshold fails even with real embeddings.** C2's cosine ≥ 0.6 supersession never fired for a natural correction; the store kept both versions of every corrected fact (stale-present 0.80). The threshold is not a fixable parameter — it is the wrong layer.
+2. **The decider's semantic judgment catches most corrections.** The real gpt-4o-mini decider retired the contradicted entry in 6 of 10 cases (latest-wins net 0.60) and never missed a fact at recall (1.00). The residual 0.40 is the small decider's judgment ceiling, not a structural gap; a stronger decider model raises it without changing the structure.
+3. **The cost is trivial.** The full 1,000-turn run used 71 embedding calls and 60 unique chat calls (the rest were cache hits). A decider call per turn is affordable; the structure, not the budget, is the constraint.
+
+## ## Reproducing
 
 ```
 cd docs/experiments/memory-creation

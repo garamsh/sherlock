@@ -157,6 +157,7 @@ python3 harness/round4/b9_diagnosis.py
 python3 harness/round4/b16_writes.py
 python3 harness/round4/coexist_families.py
 python3 harness/round4/precision.py
+python3 harness/round4/offer_width.py
 ```
 
 `OPENAI_API_KEY` required. Results land in `results_round4/`; embeddings and decider replies are cached beside the harness, so a re-run costs nothing after the first. The rounds 1–3 runners are `harness/creation_runner.py`, `harness/real_runner.py` and `harness/real_new_runner.py`.

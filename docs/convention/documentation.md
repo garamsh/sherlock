@@ -37,4 +37,4 @@ Issues, PRs, and comments are documentation too.
 - English, Markdown, sentence-case headings.
 - Start each file with one line stating what it governs.
 - Use file paths (`src/auth/service.ts`) instead of drawn hierarchies.
-- File names: lowercase kebab-case (`runtime-safety.md`). Uppercase is reserved for fixed-entry files tools and humans look for first: `README.md`, `AGENTS.md`, `CLAUDE.md`, `BOOTSTRAP.md`.
+- File names: lowercase kebab-case (`runtime-safety.md`). Uppercase is reserved for fixed-entry files tools and humans look for first: `README.md`, `AGENTS.md`, `CLAUDE.md`.

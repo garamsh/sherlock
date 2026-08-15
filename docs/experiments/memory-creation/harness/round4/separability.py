@@ -1,18 +1,4 @@
-"""Can any similarity threshold decide supersession? Measured, not argued.
-
-ADR 0006 supersedes an incoming memory over an existing one when their
-embedding cosine is >= 0.7. That rule is only sound if "this replaces that"
-pairs sit above the cut and everything else sits below it. This script builds
-all four pair families from the dataset and reports the distributions:
-
-  correction     the same subject and topic, new value   -> must supersede
-  coexist        the same subject and topic, both true   -> must NOT supersede
-  cross-subject  the same topic, different subject       -> must NOT supersede
-  unrelated      different subject and topic             -> must NOT supersede
-
-It then sweeps every threshold and reports the best accuracy any threshold
-could reach, which bounds what the mechanism can do at its very best.
-"""
+"""Whether any similarity threshold separates supersession from coexistence."""
 from __future__ import annotations
 import json
 import os

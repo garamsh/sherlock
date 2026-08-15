@@ -1,23 +1,10 @@
-"""Memory-creation structures, compared under identical conditions.
-
-Retention, decay and salience tiering are switched off for every structure,
-and ranking is pure relevance. The store experiment (`memory-architecture/`)
-already answered those; leaving them on here would let decay hide a stale
-memory that the structure never removed, and the question in this round is
-exactly which structure removes it.
-
-So the only thing that can take a memory out of a recall result is the
-structure's own logic. That is what is being measured.
-"""
+"""The candidate memory-creation structures."""
 from __future__ import annotations
 
 from api import cosine, decider, embed, parse_json
 
 RECALL_K = 5
-# Floor for *offering candidates* to a decider — what it is asked to look at,
-# not what gets deleted. Calibrated in separability.py: unrelated pairs sit at
-# p75 0.25 / max 0.42, real corrections at p25 0.57. A bad offer costs a
-# wasted line in a prompt; the deletion decision stays with the structure.
+# Relevance floor for candidates offered to a decider; calibrated in separability.py.
 CANDIDATE_FLOOR = 0.4
 
 
@@ -35,7 +22,7 @@ class Row:
 
 
 class Store:
-    """Rows plus relevance ranking. No decay, no retention, no salience."""
+    """Rows plus relevance ranking. No decay, retention or salience."""
 
     def __init__(self):
         self.rows: list[Row] = []
@@ -70,11 +57,7 @@ class Store:
 
 
 class Structure:
-    """Every structure answers a probe the same way: rank its live rows.
-
-    Only `KeyAppend` overrides the row set, because its rows are not the
-    recall set — the newest row per key is.
-    """
+    """Default probe answering: rank the live rows."""
 
     def recall(self, query, k=RECALL_K):
         return self.store.rank(query, k)
@@ -82,10 +65,6 @@ class Structure:
     def size(self):
         return self.store.size()
 
-
-# ---------------------------------------------------------------------------
-# B1 — main-model field + store similarity threshold (today's fallback)
-# ---------------------------------------------------------------------------
 
 class StoreThreshold(Structure):
     NAME = "B1-store-threshold"
@@ -111,10 +90,6 @@ class StoreThreshold(Structure):
         self.store.add(text)
 
 
-# ---------------------------------------------------------------------------
-# Decider-based structures: a narrow model call owns the memory decision
-# ---------------------------------------------------------------------------
-
 RETIRE_SYS = (
     "You are a memory decider for a long-lived assistant. You are given the "
     "latest message and a list of possibly-related stored memories with ids. "
@@ -128,7 +103,7 @@ RETIRE_SYS = (
 
 
 class DeciderWindow(Structure):
-    """The previous round's winner: the decider sees the most recent memories."""
+    """B2: the decider is shown the most recent memories."""
     NAME = "B2-decider-window"
     BLURB = "decider sees the 10 most recently written memories"
     EXTRA_CALLS = 1.0
@@ -161,24 +136,13 @@ class DeciderWindow(Structure):
 
 
 class DeciderNeighbors(DeciderWindow):
-    """Structural fix: the decider sees what the incoming message is about.
-
-    Instead of a recency window — an arbitrary constant that only happens to
-    contain the contradicted fact while the store is small — the decider is
-    shown the store's own retrieval for the incoming text. Correction
-    detection becomes a comparison against the right candidates rather than a
-    lucky overlap with the last N writes.
-    """
+    """B3: the decider is shown the retrieval for the incoming turn."""
     NAME = "B3-decider-neighbors"
     BLURB = "decider sees the retrieved neighbours of the incoming message"
 
     def context_rows(self, text):
         return self.store.rank(text, RECALL_K, floor=CANDIDATE_FLOOR)
 
-
-# ---------------------------------------------------------------------------
-# Key-addressed structures: latest-wins by construction, no retire vocabulary
-# ---------------------------------------------------------------------------
 
 KEY_SYS = (
     "You maintain a key-value memory for a long-lived assistant. Given the "
@@ -199,12 +163,7 @@ KEY_SYS_NEIGHBOURS = KEY_SYS + (
 
 
 class KeyUpsert(Structure):
-    """Memory is a map. Writing the same key replaces the value.
-
-    There is no retire vocabulary, no similarity threshold, and no correction
-    judgment: a correction is just another write to the same key. The only
-    intelligence required of the decider is naming the topic.
-    """
+    """B4: the decider names a topic key; the same key replaces."""
     NAME = "B4-key-upsert"
     BLURB = "decider writes key->value; same key replaces. No retire op"
     EXTRA_CALLS = 1.0
@@ -250,24 +209,14 @@ class KeyUpsert(Structure):
 
 
 class KeyUpsertNeighbours(KeyUpsert):
-    """Key-upsert with the store's related keys offered back to the decider.
-
-    Key-upsert's whole failure mode is key drift: the same topic named two
-    ways stores two rows and the old value survives. The store already knows
-    which keys are near the incoming text, so it offers them; the decider
-    reuses or coins. Nothing is added to the vocabulary.
-    """
+    """B5: B4 with the store's related keys offered back."""
     NAME = "B5-key-upsert-neighbours"
     BLURB = "key-upsert, with the store offering related existing keys"
     SUGGEST_KEYS = True
 
 
 class KeyAppend(KeyUpsertNeighbours):
-    """Same writes, but nothing is ever removed: latest-per-key at read time.
-
-    Over-retirement is impossible by construction — the store is append-only.
-    Recall groups live rows by key and keeps the newest per key before ranking.
-    """
+    """B6: B5 append-only; recall keeps the newest row per key."""
     NAME = "B6-key-append-readtime"
     BLURB = "append-only; recall keeps the newest row per key"
 
@@ -293,14 +242,7 @@ class KeyAppend(KeyUpsertNeighbours):
 
 
 class KeyUpsertMainModel(KeyUpsertNeighbours):
-    """The same key-addressed store, written from the main model's response.
-
-    If the key makes latest-wins structural, the separate decider layer may
-    not be needed at all: the write becomes a field on the response the model
-    was already producing. Compliance is gated at the cycle experiment's
-    measured-shape rate; the call is not billed as an extra one because it
-    rides the main response.
-    """
+    """B7: B5 written as a field on the main response."""
     NAME = "B7-key-mainmodel-field"
     BLURB = "key-upsert written as a field on the main response (no extra call)"
     EXTRA_CALLS = 0.0
@@ -308,10 +250,6 @@ class KeyUpsertMainModel(KeyUpsertNeighbours):
     def __init__(self, rnd, compliance=0.8, model=None):
         super().__init__(rnd, compliance=compliance, model=model)
 
-
-# ---------------------------------------------------------------------------
-# B8 — claim graph (the other equal-evidence answer from the previous round)
-# ---------------------------------------------------------------------------
 
 LINK_SYS = (
     "You maintain a claim graph for a long-lived assistant. Given the latest "
@@ -357,14 +295,7 @@ class ClaimGraph(Structure):
 
 
 class DeciderNeighborsWide(DeciderNeighbors):
-    """B3 with a wider candidate offer.
-
-    The gap diagnosis splits B3's residual in two: candidates that were never
-    offered (a retrieval miss) and candidates offered but kept (a judgment
-    miss). Widening the offer tests whether the retrieval half closes without
-    any structural change. Offering more costs prompt tokens; unlike a
-    supersession threshold, getting it wrong cannot delete anything.
-    """
+    """B9: B3 with a wider candidate offer."""
     NAME = "B9-decider-neighbors-wide"
     BLURB = "as B3, but offering 10 candidates down to cosine 0.3"
     WIDE_K = 10

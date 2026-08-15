@@ -1,9 +1,4 @@
-"""B8 (claim graph) on its own.
-
-The claim graph emits a variable number of claims per turn, so its calls are
-long and it runs roughly seven times slower than the other structures. Running
-it separately keeps the main comparison from being gated on it.
-"""
+"""Run B8 alone; its calls are long enough to gate the main comparison."""
 from __future__ import annotations
 import json
 import os

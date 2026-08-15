@@ -82,6 +82,25 @@ B1 and B7 write from the main response at the cycle experiment's assumed 80% com
 
 Structures ruled out on the earlier dataset, none of which round 4 re-tests: journal with batched distillation and sleep-consolidation both lose the timing; pure decay without a rehearsal channel empties the store; an always-in-context anchor block pins stale facts; a view rebuilt from a log window forgets everything older than the window; deterministic platform extraction catches too little.
 
+## What the net column can and cannot separate
+
+Each family's score is a mean over its own probes — 100 corrections, 40 controls, 12 coexist probes — so `net` carries their sampling error. Computing it treats the coexist probes as Bernoulli, which overstates their variance because their per-probe values are fractions rather than 0 or 1; probes sharing one store are if anything positively correlated, which widens the true interval further. Both approximations make the figures below a floor on the uncertainty, not a ceiling.
+
+The 95% half-width on `net` runs from 0.033 (B14, whose coexist column is saturated at 1.00 and contributes no variance) to 0.109 (B16). **The eight structures from B14 down to B12 all overlap B9's interval of 0.786 to 0.936. The eight from B2 down to B1 do not.** The round separates the structures that keep data from the structures that destroy it, and orders nothing inside the top group — B9 against B3 included, though the widening claim itself rests on a count (11 unoffered corrections falling to 2) rather than on the difference between two net values.
+
+Almost all of that width is the coexist family:
+
+| corrected probes | coexist probes | 95% half-width on `net` |
+|---|---|---|
+| 100 | 12 | ±0.083 |
+| 400 | 12 | ±0.080 |
+| 100 | 60 | ±0.048 |
+| 100 | 200 | ±0.039 |
+
+Quadrupling the corrected family buys 0.003. Taking coexist from 12 probes to 60 buys 0.035. A second seed buys nothing at all on the column that sets the width, because the coexist set does not vary with the seed.
+
+What survives at this precision is the counts, not the ordering: the offered-versus-not-offered split behind the correction gap, the rows a structure writes against the 388 fact turns, its retire events, and the family-level coexist breakdown. Every conclusion in this document that rests on counting events stands. Every conclusion that rests on ordering two net values inside the top group does not.
+
 ## Where the residual correction gap is
 
 Replaying the 100 correction turns under B3 and recording whether the contradicted row was among the candidates offered:
@@ -97,7 +116,7 @@ The row reached the decider 82% of the time and was retired in 89% of those. Rep
 
 ## Adopted direction
 
-The ordering among the top three structures is not resolved at this round's precision (see Limits). Each item below is adopted on a property that was measured directly, not on its place in the net column.
+The ordering inside the top group is not resolved at this round's precision (§What the net column can and cannot separate). Each item below is adopted on a property that was counted directly, not on its place in the net column.
 
 - Threshold supersession is removed from the store, not retuned. The platform retains, ranks and forgets.
 - **The decider is shown the store's retrieval for the incoming turn and returns what to store and what to retire** (B9, net 0.86). It is adopted for the property the key structures cannot match: an unmentioned memory is left alone, so facts the decider never considers survive. Widening the candidate offer is safe at any setting; the retrieval half of its residual is closed (2 corrections of 100 unoffered), and what remains is judgment.
@@ -116,7 +135,7 @@ The ordering among the top three structures is not resolved at this round's prec
 - **The coexist set does not vary with the seed.** `harness/round4/dataset.py` builds it from `PERSONS[:4]` and a module-level `COEXIST` constant, so the 12 coexist probes and the 28 fact turns behind them are identical under every seed. Replication redraws the corrected, control and distractor assignments around a fixed coexist set; it never draws a second one. B14's coexist 1.00 "on two seeds" is one measurement reported twice, which is the mechanical reason seed agreement could not detect the example leak.
 - The coexist probe set is 28 values in three families, and one family is 12 of them, so a single example can move the column by 0.43. One probe is 8.3% of the column, against 1% for a corrected probe, because `net` weights the three families equally. A larger and flatter coexist set, redrawn per seed, would make the metric harder to move this way.
 - **The coexist column is also the noisiest, on data that does not change.** B12 scores coexist 0.61 on seed 7 and 0.44 on seed 11 against the identical coexist set, so 0.167 of that column is the surrounding store rather than the probes. A fixed, small, high-variance measurement carries a third of `net`.
-- **The top three sit inside that spread.** The only structures with two seeds move 0.049 (B12) and 0.005 (B14) on net. B9 (0.861), B17 (0.858) and B14 scored with an example outside the data (0.81) fall within one B12-sized spread of each other, and none of the three has a second seed. The round can separate the top group from the bottom group; it cannot order the top group.
+- **The measured seed movement agrees with the computed interval.** B12 moves 0.049 on net between its two seeds and B14 moves 0.005, both inside what §What the net column can and cannot separate allows. The two lines of evidence — sampling error computed from the probe counts, and movement observed between seeds — give the same answer about what the ranking can carry.
 - A structure's first score measures the attempt, not the idea: B5 to B12 to B14 is one structure whose two diagnosed defects were in what the decider was shown. The claim graph is unranked: its decider stored 85 of roughly 290 facts, so the structure was never exercised.
 - Coexist is the smallest probe family at 12.
 
@@ -134,6 +153,7 @@ python3 harness/round4/single_runner.py KeyUpsertPluralAware
 SEED=11 python3 harness/round4/single_runner.py KeyUpsertPluralAware
 python3 harness/round4/rewrite_diagnosis.py
 python3 harness/round4/key_diagnosis.py
+python3 harness/round4/precision.py
 ```
 
 `OPENAI_API_KEY` required. Results land in `results_round4/`; embeddings and decider replies are cached beside the harness, so a re-run costs nothing after the first. The rounds 1–3 runners are `harness/creation_runner.py`, `harness/real_runner.py` and `harness/real_new_runner.py`.

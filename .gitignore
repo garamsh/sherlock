@@ -45,3 +45,6 @@ __pycache__/
 *.pyc
 .embed_cache.json
 .chat_cache.json
+
+# Agent worktrees created by the harness; never part of the repository.
+.claude/worktrees/

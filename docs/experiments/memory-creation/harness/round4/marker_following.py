@@ -1,37 +1,47 @@
-"""How much of the corrected column is judgment, and how much is the marker.
+"""What the corrected column responds to: the change marker, or the surface.
 
 Every correction template in `dataset.py` announces the change in words —
 `switched`, `moved`, `now`, `these days`, `instead`. The initial templates
-carry none, so the benchmark never presents a correction that is not announced
-and `latest_wins` may be measuring marker-following rather than supersession
-judgment.
+carry none, so the benchmark only ever presents announced corrections.
 
-Each correction turn gets an unmarked twin: the same fact restated with the new
-value in the initial template that planted the old one, so "Alma drinks coffee
-every morning." is contradicted by "Alma drinks chai every morning." and by
-nothing else.
+Each correction turn is put to the decider in four phrasings of the same fact,
+which vary the marker and the surface distance from the row they contradict
+independently:
+
+  A  the marked correction the dataset writes
+  B  the stored sentence with the new value, no marker
+  C  B with a temporal marker prepended, so C against B is the marker alone
+  D  the category's other initial template with the new value, no marker
 
 The two effects are measured apart:
 
   judgment  - the offer is held fixed at what the marked turn retrieved, and
-              the decider is asked once with the marked text and once with the
-              unmarked text. Same candidates, same ids, one word of difference.
-  retrieval - what the unmarked text retrieves at that same store state, and
+              the decider is asked once per arm against that same candidate
+              list. Same ids, same order, only the sentence differs.
+  retrieval - what each arm's text retrieves at that same store state, and
               whether the contradicted row is still among the candidates.
 
-Only the marked reply is applied, so the store trajectory stays B9's and every
-marked call is served from the cache. The unmarked replies are scored and
+The outcome is then read against the cosine between each arm's text and the
+row it contradicts, with marker presence as the second factor, so a decider
+that tracks surface similarity is distinguishable from one that judges
+supersession.
+
+Only arm A's reply is applied, so the store trajectory stays B9's and every
+arm A call is served from the cache. The other replies are scored and
 discarded.
 
-This script spends live decider calls: one per correction turn, plus one
-embedding batch for the unmarked sentences. The replay pass refuses live
-requests, so a changed prompt fails there rather than silently re-buying the
-cached half.
+Two guards, because the arms B, C and D cost live decider calls. The replay
+pass refuses live requests, so a changed prompt fails there rather than
+re-buying the cached half. The null check then asks every arm with arm A's own
+text, which is a cache hit, and requires all four to return A's retire count
+before anything is bought.
 """
 from __future__ import annotations
 import json
+import math
 import os
 import random
+import statistics
 import sys
 from collections import Counter, defaultdict
 
@@ -46,7 +56,17 @@ from structures import DeciderNeighborsWide, RETIRE_SYS
 RESULTS = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                        "..", "..", "results_round4")
 
+# (arm, what the sentence is, whether it announces the change)
+ARMS = (("A", "the marked correction the dataset writes", True),
+        ("B", "the stored sentence carrying the new value", False),
+        ("C", "B with a temporal marker prepended", True),
+        ("D", "the category's other initial template", False))
+ARM_KEYS = tuple(arm for arm, _, _ in ARMS)
+MARKED = {arm: marked for arm, _, marked in ARMS}
+MARKER_PREFIX = "These days, "
+
 FLUSH_EVERY = 25
+BANDS = 6
 
 
 def _refuse(url, payload, timeout=90):
@@ -87,18 +107,25 @@ def category_index():
     return out
 
 
-def unmarked_form(probe, inits, fact_turns):
-    """The old fact's own sentence, restated with the new value.
-
-    The initial template that planted the old value is the one whose rendering
-    is in the stream, so the unmarked turn differs from the row it contradicts
-    in the value alone.
-    """
-    old, new = probe.expect_absent[0], probe.expect_present[0]
+def planted_template(probe, inits, fact_turns):
+    """The initial template that planted the old value, and the other one."""
     for tmpl in inits:
-        if tmpl.format(p=probe.subject, v=old) in fact_turns:
-            return tmpl.format(p=probe.subject, v=new), tmpl
-    return inits[0].format(p=probe.subject, v=new), inits[0]
+        if tmpl.format(p=probe.subject, v=probe.expect_absent[0]) in fact_turns:
+            other = next((t for t in inits if t != tmpl), tmpl)
+            return tmpl, other
+    return inits[0], inits[-1]
+
+
+def arm_texts(probe, inits, fact_turns):
+    """The four phrasings of one correction, and the templates behind them."""
+    planted, other = planted_template(probe, inits, fact_turns)
+    new = probe.expect_present[0]
+    parallel = planted.format(p=probe.subject, v=new)
+    return ({"A": probe.correction_text,
+             "B": parallel,
+             "C": MARKER_PREFIX + parallel,
+             "D": other.format(p=probe.subject, v=new)},
+            {"B": planted, "D": other})
 
 
 def holds(row, subject, value):
@@ -109,6 +136,12 @@ def holds(row, subject, value):
 def retired_ids(reply):
     ops = parse_json(reply)
     return {rid for rid in (ops.get("retire", []) or []) if isinstance(rid, int)}
+
+
+def best_cosine(text, rows):
+    """Cosine between the sentence and the nearest of the given rows."""
+    qv = embed(text)
+    return max((round(cosine(qv, r.vec), 6) for r in rows), default=None)
 
 
 def rank_of(store, text, subject, value):
@@ -123,7 +156,7 @@ def rank_of(store, text, subject, value):
 
 
 def replay(seed, turns, plan):
-    """Cache-only pass: B9's trajectory, with each correction turn's offer."""
+    """Cache-only pass: B9's trajectory, plus each arm's view of each turn."""
     inst = Traced(random.Random(seed))
     trials = []
     for text, is_fact in turns:
@@ -134,71 +167,187 @@ def replay(seed, turns, plan):
 
         subject, old = item["subject"], item["old_value"]
         offer = inst.store.rank(text, inst.WIDE_K, floor=inst.WIDE_FLOOR)
-        offered_old = [r.id for r in offer if holds(r, subject, old)]
+        offered_old = [r for r in offer if holds(r, subject, old)]
         live_old = [r for r in inst.store.live() if holds(r, subject, old)]
-        marked_rank, marked_cos = rank_of(inst.store, text, subject, old)
-        un_offer = inst.store.rank(item["unmarked"], inst.WIDE_K,
-                                   floor=inst.WIDE_FLOOR)
-        un_offered_old = [r.id for r in un_offer if holds(r, subject, old)]
-        un_rank, un_cos = rank_of(inst.store, item["unmarked"], subject, old)
+
+        retrieval, cosines = {}, {}
+        for arm in ARM_KEYS:
+            arm_text = item["texts"][arm]
+            rank, cos = rank_of(inst.store, arm_text, subject, old)
+            arm_offer = inst.store.rank(arm_text, inst.WIDE_K,
+                                        floor=inst.WIDE_FLOOR)
+            retrieval[arm] = {
+                "rank": rank, "cosine_to_nearest_live": cos,
+                "offered": bool([r for r in arm_offer
+                                 if holds(r, subject, old)]),
+                "offer_size": len(arm_offer)}
+            # The gradient's x: how close this phrasing is to the row whose
+            # retirement is being judged.
+            cosines[arm] = best_cosine(arm_text, offered_old)
 
         inst.turn(text, is_fact)
         trials.append({**item,
                        "live_rows_holding_old": len(live_old),
-                       "offered_old_ids": offered_old,
-                       "marked_rank": marked_rank, "marked_cosine": marked_cos,
-                       "marked_offer_size": len(offer),
-                       "unmarked_offered_old_ids": un_offered_old,
-                       "unmarked_rank": un_rank, "unmarked_cosine": un_cos,
-                       "unmarked_offer_size": len(un_offer),
+                       "offered_old_ids": [r.id for r in offered_old],
+                       "cosine_to_contradicted": cosines,
+                       "retrieval": retrieval,
                        "listing": inst.last["listing"],
-                       "marked_reply": inst.last["reply"]})
+                       "replies": {"A": inst.last["reply"]}})
     return trials
 
 
-def ask_unmarked(trials):
-    """Live pass: the same offer, the unmarked sentence."""
+def ask(trials, arm, text_of):
+    """Ask the decider one arm, against the offer the marked turn retrieved."""
     for i, t in enumerate(trials, 1):
-        t["unmarked_reply"] = decider(
+        t["replies"][arm] = decider(
             RETIRE_SYS,
-            f"Latest message: {t['unmarked']}\nRelated memories: {t['listing']}")
+            f"Latest message: {text_of(t)}\nRelated memories: {t['listing']}")
         if i % FLUSH_EVERY == 0:
             flush()
     flush()
 
 
 def judge(trials):
-    """Score both arms on the rows the fixed offer actually carried."""
+    """Score every arm on the rows the fixed offer actually carried."""
     for t in trials:
         offered = set(t["offered_old_ids"])
         t["judgeable"] = bool(offered)
-        for arm in ("marked", "unmarked"):
-            named = retired_ids(t[f"{arm}_reply"]) & offered
-            t[f"{arm}_retired"] = bool(offered) and named == offered
-            t[f"{arm}_retired_any"] = bool(named)
+        t["retired"] = {}
+        for arm in ARM_KEYS:
+            named = retired_ids(t["replies"][arm]) & offered
+            t["retired"][arm] = bool(offered) and named == offered
 
 
-def rates(trials, key):
-    judgeable = [t for t in trials if t["judgeable"]]
-    return {"n": len(judgeable),
-            "retired": sum(1 for t in judgeable if t[f"{key}_retired"]),
-            "retired_any": sum(1 for t in judgeable if t[f"{key}_retired_any"]),
-            "rate": round(sum(1 for t in judgeable if t[f"{key}_retired"])
-                          / len(judgeable), 4) if judgeable else 0.0}
+def judgeable(trials):
+    return [t for t in trials if t["judgeable"]]
 
 
-def breakdown(trials, field):
+def arm_rates(trials):
+    out = {}
+    rows = judgeable(trials)
+    for arm, blurb, marked in ARMS:
+        cosines = [t["cosine_to_contradicted"][arm] for t in rows]
+        retired = sum(1 for t in rows if t["retired"][arm])
+        out[arm] = {"phrasing": blurb, "marker": marked, "n": len(rows),
+                    "retired": retired,
+                    "rate": round(retired / len(rows), 4) if rows else 0.0,
+                    "mean_cosine": round(statistics.fmean(cosines), 4),
+                    "median_cosine": round(statistics.median(cosines), 4)}
+    return out
+
+
+def mcnemar(trials, left, right):
+    """Paired outcomes for two arms on the same turns, with the exact p."""
+    counts = Counter()
+    for t in judgeable(trials):
+        counts[(t["retired"][left], t["retired"][right])] += 1
+    left_only = counts[(True, False)]
+    right_only = counts[(False, True)]
+    n = left_only + right_only
+    lo = min(left_only, right_only)
+    tail = sum(math.comb(n, k) for k in range(lo + 1)) / 2 ** n if n else 1.0
+    return {"pair": f"{left} vs {right}", "left": left, "right": right,
+            "both_retired": counts[(True, True)],
+            "left_only": left_only, "right_only": right_only,
+            "both_kept": counts[(False, False)],
+            "discordant": n, "exact_p": round(min(1.0, 2 * tail), 4)}
+
+
+def correlation(points):
+    """Pearson r between cosine and the retire outcome."""
+    if len(points) < 3:
+        return None
+    xs = [x for x, _ in points]
+    ys = [1.0 if y else 0.0 for _, y in points]
+    mx, my = statistics.fmean(xs), statistics.fmean(ys)
+    num = sum((x - mx) * (y - my) for x, y in zip(xs, ys))
+    den = math.sqrt(sum((x - mx) ** 2 for x in xs)
+                    * sum((y - my) ** 2 for y in ys))
+    return round(num / den, 4) if den else None
+
+
+def gradient(trials):
+    """Retire outcome against cosine, pooled over the arms.
+
+    Bands are quantiles of the pooled cosine, so each carries the same number
+    of points and the marker split inside a band compares like with like.
+    """
+    points = [(t["cosine_to_contradicted"][arm], t["retired"][arm],
+               MARKED[arm], arm)
+              for t in judgeable(trials) for arm in ARM_KEYS]
+    points.sort()
+    size = math.ceil(len(points) / BANDS)
+    bands = []
+    for start in range(0, len(points), size):
+        chunk = points[start:start + size]
+        marked = [p for p in chunk if p[2]]
+        unmarked = [p for p in chunk if not p[2]]
+
+        def rate(group):
+            return (round(sum(1 for p in group if p[1]) / len(group), 4)
+                    if group else None)
+
+        bands.append({"cosine_from": round(chunk[0][0], 4),
+                      "cosine_to": round(chunk[-1][0], 4),
+                      "n": len(chunk), "retired": sum(1 for p in chunk if p[1]),
+                      "rate": rate(chunk),
+                      "marked_n": len(marked), "marked_rate": rate(marked),
+                      "unmarked_n": len(unmarked),
+                      "unmarked_rate": rate(unmarked)})
+    return {
+        "points": len(points),
+        "r_overall": correlation([(x, y) for x, y, _, _ in points]),
+        "r_marked": correlation([(x, y) for x, y, m, _ in points if m]),
+        "r_unmarked": correlation([(x, y) for x, y, m, _ in points if not m]),
+        "bands": bands,
+    }
+
+
+def by_category(trials):
     out = {}
     groups = defaultdict(list)
-    for t in trials:
-        if t["judgeable"]:
-            groups[t[field]].append(t)
+    for t in judgeable(trials):
+        groups[t["category"]].append(t)
     for name, group in sorted(groups.items()):
-        marked = sum(1 for t in group if t["marked_retired"])
-        unmarked = sum(1 for t in group if t["unmarked_retired"])
-        out[name] = {"n": len(group), "marked": marked, "unmarked": unmarked,
-                     "delta": unmarked - marked}
+        row = {"n": len(group)}
+        for arm in ARM_KEYS:
+            row[arm] = sum(1 for t in group if t["retired"][arm])
+        out[name] = row
     return out
+
+
+def retrieval_summary(trials):
+    rows = [t for t in trials if t["live_rows_holding_old"]]
+    out = {"corrections": len(trials),
+           "with_a_live_row": len(rows),
+           "no_live_row_for_old": len(trials) - len(rows)}
+    for arm in ARM_KEYS:
+        ranks = [t["retrieval"][arm]["rank"] for t in rows]
+        out[arm] = {"offered": sum(1 for t in rows
+                                   if t["retrieval"][arm]["offered"]),
+                    "rank_1": sum(1 for r in ranks if r == 1),
+                    "mean_rank": round(statistics.fmean(ranks), 2)}
+    return out
+
+
+def null_check(trials):
+    """Every arm asked with arm A's text must return arm A's outcome.
+
+    All four prompts are then arm A's prompt, so this is free, and it fails
+    before anything is bought if the scoring or the offer has drifted.
+    """
+    for arm in ARM_KEYS[1:]:
+        ask(trials, arm, lambda t: t["texts"]["A"])
+    judge(trials)
+    counts = {arm: sum(1 for t in judgeable(trials) if t["retired"][arm])
+              for arm in ARM_KEYS}
+    if len(set(counts.values())) != 1:
+        raise SystemExit(f"null check failed, arms disagree on arm A's text: "
+                         f"{counts}")
+    n = len(judgeable(trials))
+    print(f"null check passed before spending: every arm on arm A's text "
+          f"retired {counts} of {n}", flush=True)
+    return {"n": n, "retired_per_arm": counts}
 
 
 def main():
@@ -213,65 +362,43 @@ def main():
         if p.kind != "corrected":
             continue
         name, inits, corrs = index[p.question]
-        text, tmpl = unmarked_form(p, inits, fact_turns)
-        marked_tmpl = next(
-            c for c in corrs
-            if c.format(p=p.subject, v=p.expect_present[0]) == p.correction_text)
+        texts, templates = arm_texts(p, inits, fact_turns)
         plan[p.correction_text] = {
             "category": name, "subject": p.subject,
             "old_value": p.expect_absent[0], "new_value": p.expect_present[0],
-            "marked": p.correction_text, "unmarked": text,
-            "marked_template": marked_tmpl, "unmarked_template": tmpl}
+            "texts": texts, "templates": templates}
 
     embeds_before = api.API_CALLS["embed"]
-    embed_batch([item["unmarked"] for item in plan.values()])
+    embed_batch([text for item in plan.values()
+                 for text in item["texts"].values()])
     embed_batches = api.API_CALLS["embed"] - embeds_before
 
-    # The marked half is already bought; a changed prompt must fail here
-    # rather than re-buy it.
+    # Arm A is already bought; a changed prompt must fail here rather than
+    # re-buy it.
     live_post = api._post
     api._post = _refuse
     trials = replay(seed, turns, plan)
+    null = null_check(trials)
     api._post = live_post
 
     chat_before = api.API_CALLS["chat"]
-    ask_unmarked(trials)
+    for arm in ARM_KEYS[1:]:
+        ask(trials, arm, lambda t, a=arm: t["texts"][a])
     chat_calls = api.API_CALLS["chat"] - chat_before
     judge(trials)
 
-    marked, unmarked = rates(trials, "marked"), rates(trials, "unmarked")
-    judgeable = [t for t in trials if t["judgeable"]]
-    swing = Counter()
-    for t in judgeable:
-        swing[f"marked_{'retired' if t['marked_retired'] else 'kept'}"
-              f"_unmarked_{'retired' if t['unmarked_retired'] else 'kept'}"] += 1
-
-    with_live_row = [t for t in trials if t["live_rows_holding_old"]]
-    retrieval = {
-        "corrections": len(trials),
-        "no_live_row_for_old": len(trials) - len(with_live_row),
-        "marked_offered": sum(1 for t in with_live_row if t["offered_old_ids"]),
-        "unmarked_offered": sum(1 for t in with_live_row
-                                if t["unmarked_offered_old_ids"]),
-        "marked_rank_1": sum(1 for t in with_live_row if t["marked_rank"] == 1),
-        "unmarked_rank_1": sum(1 for t in with_live_row
-                               if t["unmarked_rank"] == 1),
-        "mean_marked_rank": round(sum(t["marked_rank"] for t in with_live_row)
-                                  / len(with_live_row), 2),
-        "mean_unmarked_rank": round(sum(t["unmarked_rank"]
-                                        for t in with_live_row)
-                                    / len(with_live_row), 2),
-    }
-
+    rates = arm_rates(trials)
+    pairs = [mcnemar(trials, "A", arm) for arm in ("B", "C", "D")]
+    pairs.append(mcnemar(trials, "C", "B"))
     summary = {
         "seed": seed, "structure": DeciderNeighborsWide.NAME,
         "live_chat_calls": chat_calls, "live_embed_batches": embed_batches,
+        "null_check": null,
         "judgment": {"offer": "held fixed at what the marked turn retrieved",
-                     "marked": marked, "unmarked": unmarked,
-                     "paired_outcomes": dict(swing)},
-        "retrieval": retrieval,
-        "by_category": breakdown(trials, "category"),
-        "by_correction_template": breakdown(trials, "marked_template"),
+                     "arms": rates, "paired": pairs},
+        "gradient": gradient(trials),
+        "retrieval": retrieval_summary(trials),
+        "by_category": by_category(trials),
         "trials": [{k: v for k, v in t.items() if k != "listing"}
                    for t in trials],
     }
@@ -284,28 +411,50 @@ def main():
     print(f"=== marker following, seed {seed} ===")
     print(f"live decider calls spent: {chat_calls}; "
           f"embedding batches: {embed_batches}")
-    print(f"\njudgment, offer held fixed, {marked['n']} corrections whose offer "
-          f"carried the contradicted row")
-    print(f"  marked   retired {marked['retired']}/{marked['n']} "
-          f"= {marked['rate']}")
-    print(f"  unmarked retired {unmarked['retired']}/{unmarked['n']} "
-          f"= {unmarked['rate']}")
-    print(f"  paired outcomes: {dict(swing)}")
-    print(f"\nretrieval, {retrieval['corrections']} correction turns "
-          f"({retrieval['no_live_row_for_old']} had no live row holding the old "
-          f"value)")
-    print(f"  contradicted row offered: marked {retrieval['marked_offered']}, "
-          f"unmarked {retrieval['unmarked_offered']} "
-          f"(of {len(with_live_row)})")
-    print(f"  at rank 1: marked {retrieval['marked_rank_1']}, "
-          f"unmarked {retrieval['unmarked_rank_1']}; mean rank "
-          f"{retrieval['mean_marked_rank']} -> "
-          f"{retrieval['mean_unmarked_rank']}")
-    print("\n| category | n | marked | unmarked | delta |")
-    print("|---|---|---|---|---|")
+    print(f"\njudgment, offer held fixed, {rates['A']['n']} corrections whose "
+          f"offer carried the contradicted row")
+    print("| arm | marker | phrasing | retired | rate | mean cosine |")
+    print("|---|---|---|---|---|---|")
+    for arm in ARM_KEYS:
+        r = rates[arm]
+        print(f"| {arm} | {'yes' if r['marker'] else 'no'} | {r['phrasing']} "
+              f"| {r['retired']}/{r['n']} | {r['rate']} | {r['mean_cosine']} |")
+    print()
+    print("| pair | both retired | left only | right only | both kept | "
+          "discordant | exact p |")
+    print("|---|---|---|---|---|---|---|")
+    for p in pairs:
+        print(f"| {p['pair']} | {p['both_retired']} | {p['left_only']} "
+              f"| {p['right_only']} | {p['both_kept']} | {p['discordant']} "
+              f"| {p['exact_p']} |")
+
+    grad = summary["gradient"]
+    print(f"\nretire outcome against cosine, {grad['points']} points over four "
+          f"arms")
+    print(f"  Pearson r: overall {grad['r_overall']}, "
+          f"marked {grad['r_marked']}, unmarked {grad['r_unmarked']}")
+    print("| cosine band | n | rate | marked n | marked rate | unmarked n | "
+          "unmarked rate |")
+    print("|---|---|---|---|---|---|---|")
+    for b in grad["bands"]:
+        print(f"| {b['cosine_from']}-{b['cosine_to']} | {b['n']} | {b['rate']} "
+              f"| {b['marked_n']} | {b['marked_rate']} | {b['unmarked_n']} "
+              f"| {b['unmarked_rate']} |")
+
+    ret = summary["retrieval"]
+    print(f"\nretrieval over the {ret['with_a_live_row']} corrections with a "
+          f"live row holding the old value")
+    print("| arm | offered | at rank 1 | mean rank |")
+    print("|---|---|---|---|")
+    for arm in ARM_KEYS:
+        r = ret[arm]
+        print(f"| {arm} | {r['offered']} | {r['rank_1']} | {r['mean_rank']} |")
+
+    print("\n| category | n | " + " | ".join(ARM_KEYS) + " |")
+    print("|" + "---|" * (len(ARM_KEYS) + 2))
     for name, row in summary["by_category"].items():
-        print(f"| {name} | {row['n']} | {row['marked']} | {row['unmarked']} "
-              f"| {row['delta']:+d} |")
+        print(f"| {name} | {row['n']} | "
+              + " | ".join(str(row[arm]) for arm in ARM_KEYS) + " |")
     print(f"\nwrote {path}")
 
 

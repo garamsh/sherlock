@@ -9,7 +9,7 @@
   },
   {
     "system": "C2-everything-update",
-    "checkpoint_recall": 0.7916666666666667,
+    "checkpoint_recall": 0.9583333333333334,
     "correction_latest": 0.0,
     "store_items": 16.75,
     "extra_calls_per_turn": 0.0,
@@ -17,7 +17,7 @@
   },
   {
     "system": "C3-dedicated-model",
-    "checkpoint_recall": 0.8333333333333334,
+    "checkpoint_recall": 1.0,
     "correction_latest": 0.0,
     "store_items": 17.0,
     "extra_calls_per_turn": 1.0,
@@ -33,7 +33,7 @@
   },
   {
     "system": "C5-freeform-notes",
-    "checkpoint_recall": 0.7916666666666667,
+    "checkpoint_recall": 0.9583333333333334,
     "correction_latest": 0.0,
     "store_items": 15.0,
     "extra_calls_per_turn": 0.0,
@@ -41,7 +41,7 @@
   },
   {
     "system": "C6-entity-records",
-    "checkpoint_recall": 0.7916666666666667,
+    "checkpoint_recall": 0.9583333333333334,
     "correction_latest": 0.0,
     "store_items": 17.5,
     "extra_calls_per_turn": 0.0,
@@ -49,7 +49,7 @@
   },
   {
     "system": "C7-claims-temporal",
-    "checkpoint_recall": 0.7916666666666667,
+    "checkpoint_recall": 0.9583333333333334,
     "correction_latest": 0.0,
     "store_items": 17.5,
     "extra_calls_per_turn": 0.0,
@@ -57,10 +57,18 @@
   },
   {
     "system": "C8-append-only",
-    "checkpoint_recall": 0.7916666666666667,
+    "checkpoint_recall": 0.9583333333333334,
     "correction_latest": 0.0,
     "store_items": 17.5,
     "extra_calls_per_turn": 0.0,
     "loc": 26
+  },
+  {
+    "system": "C9-decider-owned",
+    "checkpoint_recall": 1.0,
+    "correction_latest": 1.0,
+    "store_items": 17.75,
+    "extra_calls_per_turn": 1.0,
+    "loc": 38
   }
 ]

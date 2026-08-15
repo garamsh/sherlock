@@ -1,17 +1,36 @@
-"""Check the round-5 dataset invariants on three seeds. Makes no API call."""
+"""Check the round-5 dataset and the match rule that reads it. Makes no API call."""
 from __future__ import annotations
 import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from dataset import COEXIST, build
+from dataset import CATEGORIES, CHATTER, COEXIST, PERSONS, build
 from round4 import dataset as r4
+from scoring import states
 
 SEEDS = (7, 11, 23)
 MIN_FAMILIES, MIN_PROBES, MAX_FAMILY_SHARE = 8, 60, 0.15
+NEEDLE_KINDS = ("coexist value", "category value", "person")
 
 TEMPLATES = {family: tmpl for family, _, _, _, tmpl in COEXIST}
+
+# (row text, value, credited): the words round 4's substring match got wrong,
+# and the multi-word and punctuated values that must still be credited.
+MATCH_CASES = [
+    ("Vera has since standardized on Python.", "Zed", False),
+    ("Maria is allergic to shellfish.", "fish", False),
+    ("Alma's team moved tracing to Datadog.", "tea", False),
+    ("These days Yuki goes for coffee instead.", "Go", False),
+    ("Bruno's web stack is Django.", "Go", False),
+    ("Lisa writes code in VS Code.", "VS Code", True),
+    ("Otto indents with four spaces.", "four spaces", True),
+    ("Otto plays the cello.", "the cello", True),
+    ("Sam writes end-to-end tests.", "end-to-end tests", True),
+    ("Nina writes property-based tests.", "property-based tests", True),
+    ("Kofi deploys on Fly.io.", "Fly.io", True),
+    ("Maria's morning ritual is tea.", "Maria", True),
+]
 
 
 def coexist_texts(probes):
@@ -34,23 +53,68 @@ def probe_key(p):
             tuple(p.expect_absent))
 
 
-def contaminated(probes, turns, texts):
-    """Probe values a statement from another family also answers.
+def _sentence(template):
+    """A template without its placeholders: the words every row built from it carries."""
+    return template.replace("{p}", " ").replace("{v}", " ")
 
-    Scoring matches a row by substring on the subject and the value, so a value
-    that appears in a turn the probe was not planted for scores as a recall.
+
+def phrases():
+    """Every phrase the scorer matches, and every phrase it matches against.
+
+    A chatter line names no subject, so no probe can be credited from one
+    whatever it says; a row built from any other kind carries a subject.
     """
-    coexist_turns = sorted(texts)
-    other_turns = facts_outside(turns, texts)
-    hits = []
-    for p in probes:
-        pool = other_turns if p.kind == "coexist" else coexist_turns
-        subject = p.subject.lower()
-        for value in list(p.expect_present) + list(p.expect_absent):
-            needle = value.lower()
-            hits += [(p.subject, value, t) for t in pool
-                     if subject in t.lower() and needle in t.lower()]
-    return hits
+    out = [(v, "coexist value") for _, _, pool, _, _ in COEXIST for v in pool]
+    out += [(v, "category value") for _, _, values, _, _ in CATEGORIES for v in values]
+    out += [(p, "person") for p in PERSONS]
+    for _, question, _, inits, corrs in CATEGORIES:
+        out += [(_sentence(t), "sentence") for t in [question] + inits + corrs]
+    for _, question, _, _, tmpl in COEXIST:
+        out += [(_sentence(t), "sentence") for t in (question, tmpl)]
+    return out + [(t, "chatter") for t in CHATTER]
+
+
+def collisions():
+    """Values and names that sit inside another phrase of the vocabulary.
+
+    A turn is a sentence, a subject and a value, so this covers every way one
+    family's turn can carry another probe's value.
+    """
+    vocabulary = phrases()
+    found = []
+    for needle, kind in vocabulary:
+        if kind not in NEEDLE_KINDS:
+            continue
+        found += [(needle, kind, text, text_kind, states(text, needle))
+                  for text, text_kind in vocabulary
+                  if text != needle and needle.lower() in text.lower()]
+    return found
+
+
+def check_matching(failures):
+    for text, value, credited in MATCH_CASES:
+        if states(text, value) is not credited:
+            failures.append(f"{value!r} in {text!r}: credited "
+                            f"{not credited}, expected {credited}")
+
+
+def check_vocabulary(failures):
+    found = collisions()
+    for needle, kind, text, text_kind, word in found:
+        if "coexist value" in (kind, text_kind):
+            failures.append(f"round-5 vocabulary: {needle!r} sits inside {text!r}")
+        elif word and text_kind != "chatter":
+            failures.append(f"{needle!r} is a whole word inside {text!r}, which "
+                            f"a row carries alongside a subject")
+
+    grouped: dict[str, list] = {}
+    for needle, _, text, _, word in found:
+        grouped.setdefault(needle, []).append((text.strip(), word))
+    print(f"vocabulary: {len(found)} substring collisions over {len(grouped)} "
+          f"values, {sum(1 for c in found if c[4])} of them whole words")
+    for needle, texts in sorted(grouped.items()):
+        mark = " (whole word)" if any(word for _, word in texts) else ""
+        print(f"  {needle!r} inside {len(texts)}, e.g. {texts[0][0]!r}{mark}")
 
 
 def check_seed(seed, failures):
@@ -84,11 +148,6 @@ def check_seed(seed, failures):
     if share > MAX_FAMILY_SHARE:
         failures.append(f"seed {seed}: one family holds {share:.1%} of the probes")
 
-    bad = contaminated(probes, turns, texts)
-    if bad:
-        failures.append(f"seed {seed}: {len(bad)} probe values answered by "
-                        f"another family, e.g. {bad[0]}")
-
     r4_turns, r4_probes = r4.build(seed=seed)
     if facts_outside(turns, texts) != facts_outside(r4_turns, round4_coexist_texts()):
         failures.append(f"seed {seed}: non-coexist fact turns differ from round 4")
@@ -101,6 +160,8 @@ def check_seed(seed, failures):
 
 def main():
     failures: list[str] = []
+    check_matching(failures)
+    check_vocabulary(failures)
     drawn = {seed: check_seed(seed, failures) for seed in SEEDS}
 
     for i, a in enumerate(SEEDS):
@@ -109,10 +170,9 @@ def main():
                 failures.append(f"seeds {a} and {b} draw the same coexist subjects")
             if drawn[a][1] == drawn[b][1]:
                 failures.append(f"seeds {a} and {b} plant the same coexist turns")
-            shared = len(drawn[a][1] & drawn[b][1])
             print(f"seeds {a} vs {b}: "
                   f"{len(drawn[a][0] & drawn[b][0])} subjects and "
-                  f"{shared} coexist statements in common")
+                  f"{len(drawn[a][1] & drawn[b][1])} coexist statements in common")
 
     if failures:
         print("\nFAIL")

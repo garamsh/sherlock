@@ -12,14 +12,25 @@ services:
       - "8080:8080"
     # The agent executes nothing — the workspace owns process exec
     # (ADR 0017) — so the agent needs no capabilities at all.
+    #
+    # The gateway refuses a group- or other-readable config file or
+    # server key, so only their owner can read them: the container runs
+    # as the host user who generated them.
+    user: "${GAGENT_AGENT_UID:?export GAGENT_AGENT_UID per README.md}"
     environment:
       # The memory file sits at the same absolute path on host and
       # container so it is valid from either side.
       GAGENT_MEMORY_PATH: "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}/memory.db"
+      # The tool set is the operator's choice (ADR 0017); this operator
+      # installs the repository's first-party tools by mounting them.
+      GAGENT_TOOLS_DIR: /opt/gagent/tools
     volumes:
       - "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}:${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}"
       - ./gagent.yaml:/etc/gagent/config.yaml:ro
       - ./tls:/etc/gagent/tls:ro
+      # `make build-tools` at the repository root populates this
+      # directory with the executable each manifest names.
+      - ../../tools:/opt/gagent/tools:ro
     command: ["agent", "--config", "/etc/gagent/config.yaml", "--agent-id", "demo"]
   workspace:
     build:

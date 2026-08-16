@@ -1,4 +1,4 @@
-# Platform images (ADR 0018): one build stage, two targets.
+# Platform images (ADR 0017): one build stage, two targets.
 #   docker build --target agent     — the agent's self (gateway, loop, tools)
 #   docker build --target workspace — the agent's data plane (filesystem + exec gRPC)
 
@@ -16,9 +16,10 @@ RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/gagent ./cmd/gagen
     && mkdir -p /out/data
 
 # Agent image: the agent executes nothing — the workspace owns process
-# exec (ADR 0018) — so the agent runs no untrusted code and distroless
+# exec (ADR 0017) — so the agent runs no untrusted code and distroless
 # static stays correct. Serves the gateway, the rolling session, memory,
-# the mouth, and the tools the agent imports at compile time.
+# the mouth, and the tool client, which reads the operator's tool
+# manifests and spawns each tool's executable per call.
 FROM gcr.io/distroless/static-debian12:nonroot AS agent
 ARG REVISION=unknown
 LABEL org.opencontainers.image.title="gagent-agent" \
@@ -39,7 +40,7 @@ CMD ["agent"]
 # Workspace image: the agent's data plane — serves the gRPC contract
 # (Read/Write/List/Exec) over loopback. Tools live in the agent and
 # reach the workspace through gRPC; the workspace hosts no tools and no
-# plugin loader (ADR 0018).
+# plugin loader (ADR 0017).
 #
 # Minimal glibc base with a shell (Exec children are `sh -c`
 # sub-processes) and the privilege drop made real: a privileged

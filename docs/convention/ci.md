@@ -60,29 +60,13 @@ For every third-party dependency, also check the ecosystem's advisory source for
 
 ## Reference implementation
 
-The rules above bind. This section does not: it is one toolchain — Make for the entry points, GitHub Actions for the pipeline — that satisfies them. A project on another toolchain replaces this section and keeps every rule.
+The rules above bind. This section does not: it is one toolchain — Make for the entry points, GitHub Actions for the pipeline — and it is the one this project uses.
 
 ### Entry points as a Makefile
 
-```makefile
-.PHONY: lint format test build ci
-
-lint:
-	<lint-cmd>
-
-format:
-	<format-cmd>
-
-test:
-	<test-cmd>
-
-build:
-	<build-cmd>
-
-ci: lint format test build
-```
-
-Replace `<lint-cmd>` and the rest with the project's actual commands (`npm run lint`, `ruff check`, `go test ./...`). Local `make lint` and CI `make lint` then invoke the same command.
+- **Entry points**: `make lint`, `make format`, `make test`, `make build`, and `make ci` for the whole set. The `Makefile` holds the commands behind each name; a contributor and the workflow both invoke the name.
+- **Outside the set**: `make smoke-local` starts the deployment `deploy/local/README.md` documents and fails if the agent does not answer. It needs Docker, so it runs in its own workflow job rather than inside `make ci`.
+- **Before pushing**: `make ci` by hand, or `make hooks` once after cloning to have lefthook run lint and format on commit and test on push.
 
 ### GitHub Actions specifics
 

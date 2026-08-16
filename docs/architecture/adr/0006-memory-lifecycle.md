@@ -42,7 +42,7 @@ Update semantics are unchanged: updates supersede rather than overwrite; every c
 
 ## Rejected alternatives
 
-- **Auto-capture at uniform importance.** Measured to be the root of recall pollution; the safety net fabricates a store out of traffic and drowns curated content (experiment rounds 1–5).
+- **Auto-capture at uniform importance.** Measured to be the root of recall pollution; the safety net fabricates a store out of traffic and drowns curated content (`docs/experiments/memory-architecture/`).
 - **Full-array sync each turn** (the model receives the store and returns it) — O(store size) tokens both ways per turn, omission becomes deletion, and LLMs cannot reproduce long lists verbatim. The writeback delta is the same idea scoped to the recalled subset, with ops as the diff language.
 - **Automatic per-turn consolidation** — token cost and unpredictable recall degradation; threshold triggers are the prior-art standard.
 - **Reflection summaries as the default write path** — the experiment shows reflection maximizes raw recall but loses the exact keywords fact lookups need; it remains available as consolidation output, not as the per-turn mechanism.

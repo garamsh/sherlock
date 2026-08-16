@@ -10,16 +10,23 @@ import (
 	"testing"
 )
 
-// SubSchemas splits a tool schema document into its input and output
-// subschema documents so tests can check each against its typed struct.
-func SubSchemas(t *testing.T, schema []byte) (input, output json.RawMessage) {
+// ManifestSchemas splits a tool manifest into its input and output
+// schema documents so tests can check each on its own — against a typed
+// struct, or against the subset a model API accepts.
+func ManifestSchemas(t *testing.T, manifest []byte) (input, output json.RawMessage) {
 	t.Helper()
 	var doc struct {
-		Input  json.RawMessage `json:"input"`
-		Output json.RawMessage `json:"output"`
+		Input  json.RawMessage `json:"input_schema"`
+		Output json.RawMessage `json:"output_schema"`
 	}
-	if err := json.Unmarshal(schema, &doc); err != nil {
-		t.Fatalf("schema document does not parse: %v", err)
+	if err := json.Unmarshal(manifest, &doc); err != nil {
+		t.Fatalf("manifest does not parse: %v", err)
+	}
+	if len(doc.Input) == 0 {
+		t.Fatal("manifest has no input_schema")
+	}
+	if len(doc.Output) == 0 {
+		t.Fatal("manifest has no output_schema")
 	}
 	return doc.Input, doc.Output
 }

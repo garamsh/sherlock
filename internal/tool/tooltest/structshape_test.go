@@ -57,18 +57,29 @@ func TestCheckShape_DriftFails(t *testing.T) {
 	}
 }
 
-func TestSubSchemas_SplitsDocument(t *testing.T) {
-	input, output := tooltest.SubSchemas(t, []byte(`{
-		"input": {"type": "object", "properties": {"a": {}}},
-		"output": {"type": "object"}
+func TestManifestSchemas_SplitsManifest(t *testing.T) {
+	input, output := tooltest.ManifestSchemas(t, []byte(`{
+		"name": "sample",
+		"input_schema": {"type": "object", "properties": {"a": {}}},
+		"output_schema": {"type": "object"}
 	}`))
 	if !json.Valid(input) || !json.Valid(output) {
-		t.Fatalf("SubSchemas returned invalid subschemas: input=%s output=%s", input, output)
+		t.Fatalf("ManifestSchemas returned invalid subschemas: input=%s output=%s", input, output)
 	}
 	var in struct {
 		Properties map[string]json.RawMessage `json:"properties"`
 	}
 	if err := json.Unmarshal(input, &in); err != nil || len(in.Properties) != 1 {
-		t.Fatalf("SubSchemas input = %s, want the input subschema", input)
+		t.Fatalf("ManifestSchemas input = %s, want the input_schema", input)
+	}
+}
+
+// TestReadManifest_ReadsTheShippedContract pins that the helper reaches
+// the tools/ tree from a test binary's own directory, so a guard using
+// it reads the document the registry loads rather than a copy.
+func TestReadManifest_ReadsTheShippedContract(t *testing.T) {
+	input, output := tooltest.ManifestSchemas(t, tooltest.ReadManifest(t, "message_send"))
+	if !json.Valid(input) || !json.Valid(output) {
+		t.Fatalf("shipped manifest did not split: input=%s output=%s", input, output)
 	}
 }

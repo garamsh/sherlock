@@ -1,4 +1,4 @@
-.PHONY: lint format format-fix test build build-tools generate proto ci hooks
+.PHONY: lint format format-fix test build build-tools generate proto ci hooks smoke-local
 
 lint:
 	@if [ -f go.mod ]; then \
@@ -27,6 +27,9 @@ generate:
 	mockery
 
 ci: lint format test build
+
+smoke-local:
+	@deploy/local/smoke.sh
 
 proto:
 	buf generate

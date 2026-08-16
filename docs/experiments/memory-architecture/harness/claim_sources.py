@@ -207,7 +207,8 @@ def method():
     check(s, "architecture count", words[a.one()],
           "the six runners' class-name maps", len(architecture_ids()))
 
-    a = Anchor(r"`harness/architectures\.py`, (\d+) to (\d+) lines each")
+    a = Anchor(r"`harness/architectures/`, one file per series letter, "
+               r"(\d+) to (\d+) lines each")
     loc = [metrics.lines_of_code(c) for c in architecture_classes().values()]
     check(s, "shortest architecture", a.one(0), "metrics.lines_of_code", min(loc))
     check(s, "longest architecture", a.one(1), "metrics.lines_of_code", max(loc))

@@ -24,7 +24,7 @@ The owner's design constraint: the structure must be **simple and self-working**
 
 ## The method
 
-Thirty-eight candidate architectures were implemented as small Python classes behind one interface (`harness/architectures.py`, 26 to 160 lines each); the six runners select them by name. Each candidate encodes one structural idea, or — in the H series — one deliberate combination of them, so the numbers isolate what the idea adds.
+Thirty-eight candidate architectures were implemented as small Python classes behind one interface (`harness/architectures/`, one file per series letter, 26 to 160 lines each); the six runners select them by name. Each candidate encodes one structural idea, or — in the H series — one deliberate combination of them, so the numbers isolate what the idea adds.
 
 **Workloads** (four, ordered by difficulty):
 

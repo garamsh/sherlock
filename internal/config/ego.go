@@ -1,18 +1,18 @@
-package main
+package config
 
 import (
 	"fmt"
 	"os"
 
-	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 )
 
-// resolveEgo reads the ego file named by --ego-file. The empty
+// ResolveEgo reads the ego file named by --ego-file. The empty
 // flag returns an empty ego, which selects the agent package's embedded
 // default; a named file that is missing or unreadable fails at startup,
 // before any discovery or model work begins.
-func resolveEgo(cmd *cobra.Command) (string, error) {
-	path, err := cmd.Flags().GetString("ego-file")
+func ResolveEgo(fs *pflag.FlagSet) (string, error) {
+	path, err := fs.GetString("ego-file")
 	if err != nil {
 		return "", err
 	}

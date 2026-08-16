@@ -6,7 +6,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/spf13/pflag"
+
 	"github.com/garamsh/gagent/internal/agent"
+	"github.com/garamsh/gagent/internal/config"
 	"github.com/garamsh/gagent/internal/memory"
 )
 
@@ -18,7 +21,12 @@ func newStubModel() func(string) agent.Model {
 
 func TestNewFactory_CarriesResolvedConfig(t *testing.T) {
 	t.Chdir(t.TempDir())
-	cfg, err := resolveConfig(newTestCommand(t))
+	t.Setenv("HOME", t.TempDir())
+	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
+	fs := pflag.NewFlagSet("test", pflag.ContinueOnError)
+	config.AddSharedFlags(fs)
+	config.AddAgentFlags(fs)
+	cfg, err := config.Resolve(fs)
 	require.NoError(t, err)
 
 	factory, err := newFactory(cfg, newStubModel(), memory.NewHashingEmbedder(), memory.NewConcatSummarizer(), "", nil)

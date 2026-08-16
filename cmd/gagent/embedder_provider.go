@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/garamsh/gagent/internal/config"
 	"github.com/garamsh/gagent/internal/memory"
 	"github.com/garamsh/gagent/internal/memory/openai"
 )
@@ -13,7 +14,7 @@ import (
 // deterministic offline default; openai builds a real client. A missing
 // or empty API key environment variable fails fast here, at startup,
 // instead of mid-search.
-func newEmbedderFunc(cfg ModelConfig) (memory.Embedder, error) {
+func newEmbedderFunc(cfg config.ModelConfig) (memory.Embedder, error) {
 	switch cfg.Provider {
 	case "hashing":
 		return memory.NewHashingEmbedder(), nil

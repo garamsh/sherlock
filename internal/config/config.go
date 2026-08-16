@@ -1,15 +1,13 @@
-package main
+package config
 
 import (
 	"errors"
-	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
 
-	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 
@@ -84,11 +82,17 @@ type Config struct {
 	// set (ADR 0017 §Decision: the installation list is the operator's,
 	// through config).
 	Tools ToolsConfig `mapstructure:"tools"`
+	// ToolsDir is the directory the script-tool registry reads
+	// manifests from (ADR 0009). It resolves through the same four
+	// layers as every other setting, so GAGENT_TOOLS_DIR reaches it
+	// the way GAGENT_MEMORY_PATH reaches MemoryPath.
+	ToolsDir string `mapstructure:"tools-dir"`
 }
 
 // ToolsConfig is the operator's statement about the tool tree the
-// script-tool runtime reads. The directory itself stays on
-// GAGENT_TOOLS_DIR; what lives here is what only the operator can say.
+// script-tool runtime reads: what lives here is what only the operator
+// can say. Where the tree is read from is ToolsDir, an ordinary setting
+// on Config.
 type ToolsConfig struct {
 	// Pins is the accepted tool set: tool name to the SHA-256 of that
 	// tool's canonical manifest bytes, which the agent logs for every
@@ -139,24 +143,39 @@ type ModelConfig struct {
 	Timeout time.Duration `mapstructure:"timeout"`
 }
 
-// addConfigFlags registers the settings shared by every subcommand as
-// flags on fs. viper resolves the effective value, so these defaults are
-// the fallback layer.
-func addConfigFlags(fs *pflag.FlagSet) {
+// AddSharedFlags registers the flags every subcommand resolves through,
+// on fs. The flag layer is the top of this package's precedence, so the
+// flags it reads are registered here rather than at the call site: a
+// resolution the caller can only reach with the right flag set is one
+// the caller can get wrong.
+func AddSharedFlags(fs *pflag.FlagSet) {
 	fs.String("config", "", "config file path (default: ./gagent.yaml, ./workspace.yaml for the workspace, then the XDG config dir)")
 }
 
-// resolveConfig builds the effective Config for cmd using viper's built-in
-// precedence: flags > GAGENT_* environment variables > config file >
-// defaults. The config file resolves via --config <path>, then
+// AddAgentFlags registers the agent's settings as flags on fs. The
+// agent subcommand's own inputs — which agent to serve, the one-shot
+// message — are not settings and stay with the command.
+func AddAgentFlags(fs *pflag.FlagSet) {
+	fs.String("addr", defaultAddr, "HTTP listen address")
+	fs.String("memory-path", defaultMemoryPath, "SQLite memory file (created on first use)")
+	fs.String("workspace-addr", defaultWorkspaceAddr,
+		"gRPC endpoint of the agent's workspace (the data plane the tools call)")
+	fs.String("ego-file", "",
+		"ego file for the agent's instructions (default: embedded EGO.md)")
+}
+
+// Resolve builds the agent's effective Config from fs using viper's
+// built-in precedence: flags > GAGENT_* environment variables > config
+// file > defaults. The config file resolves via --config <path>, then
 // ./gagent.yaml, then os.UserConfigDir()/gagent/config.yaml (XDG;
 // ~/.config/gagent/config.yaml on Linux). A missing file is an error only
 // when --config named it explicitly.
-func resolveConfig(cmd *cobra.Command) (Config, error) {
+func Resolve(fs *pflag.FlagSet) (Config, error) {
 	v := newConfigViper()
 	v.SetDefault("addr", defaultAddr)
 	v.SetDefault("memory-path", defaultMemoryPath)
 	v.SetDefault("workspace-addr", defaultWorkspaceAddr)
+	v.SetDefault("tools-dir", tool.DefaultToolsDir)
 	v.SetDefault("model.provider", defaultModelProvider)
 	v.SetDefault("model.base-url", defaultModelBaseURL)
 	v.SetDefault("model.model", defaultModelName)
@@ -174,10 +193,10 @@ func resolveConfig(cmd *cobra.Command) (Config, error) {
 	v.SetDefault("tls.key", "")
 	v.SetDefault("tls.client-ca", "")
 	v.SetDefault("console.url", "")
-	if err := v.BindPFlags(cmd.Flags()); err != nil {
+	if err := v.BindPFlags(fs); err != nil {
 		return Config{}, err
 	}
-	configFile, err := cmd.Flags().GetString("config")
+	configFile, err := fs.GetString("config")
 	if err != nil {
 		return Config{}, err
 	}
@@ -213,7 +232,7 @@ func readConfigFile(v *viper.Viper, flagPath, cwdName, xdgName string) error {
 		return err
 	}
 	if loaded != "" {
-		if err := checkConfigFileMode(loaded); err != nil {
+		if err := RequireOwnerOnly("config file", loaded); err != nil {
 			return err
 		}
 	}
@@ -247,19 +266,4 @@ func loadConfigFile(v *viper.Viper, flagPath, cwdName, xdgName string) (string, 
 		return "", err
 	}
 	return path, nil
-}
-
-// checkConfigFileMode rejects a config file readable by group or other:
-// the file is operator material (tool definitions, TLS paths) and must
-// be owner-only — 0600 or 0400 pass, 0644 fails. The platform validates
-// and fails instead of chowning an operator-provided file.
-func checkConfigFileMode(path string) error {
-	info, err := os.Stat(path)
-	if err != nil {
-		return fmt.Errorf("config: stat config file: %w", err)
-	}
-	if perm := info.Mode().Perm(); perm&0o077 != 0 {
-		return fmt.Errorf("config: config file %q is group- or other-accessible (mode %04o); it must be owner-only (e.g. 0600 or 0400)", path, perm)
-	}
-	return nil
 }

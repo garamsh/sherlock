@@ -14,11 +14,12 @@ model:
 # Tools: the agent reads ./tools/<name>/manifest.json at startup
 # (ADR 0009 §Decision). The four first-party tools (files, shell_exec,
 # message_send, github) ship in place under tools/; a `make build-tools`
-# compile keeps the binaries current. Override the directory with
-# GAGENT_TOOLS_DIR, or drop a custom tool into ./tools/<name>/ with
-# its own manifest.json and binary. The github tool rejects startup
-# without GH_TOKEN, so either set GH_TOKEN in the agent's env or
-# remove tools/github/ to run without it.
+# compile keeps the binaries current. Override the directory with the
+# tools-dir key, or drop a custom tool into ./tools/<name>/ with its own
+# manifest.json and binary. The github tool rejects startup without
+# GH_TOKEN, so either set GH_TOKEN in the agent's env or remove
+# tools/github/ to run without it.
+# tools-dir: ./tools
 #
 # tools.pins is the accepted tool set: the SHA-256 of each manifest you
 # reviewed, which the agent logs on the "tool manifest loaded" line for

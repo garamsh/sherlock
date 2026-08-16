@@ -9,14 +9,14 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/garamsh/gagent/internal/config"
 	"github.com/garamsh/gagent/internal/tool"
 )
 
 // pinnedToolTree installs a minimal manifest for the one required tool
-// under a tmpdir, points the agent's tool-directory resolution at it,
-// and returns the directory and the manifest's hash. The tool needs no
-// executable: every assertion here is about startup, which never spawns
-// one.
+// under a tmpdir and returns the directory and the manifest's hash; the
+// caller points Config.ToolsDir at it. The tool needs no executable:
+// every assertion here is about startup, which never spawns one.
 //
 // setToolEnv writes GAGENT_WORKSPACE_ADDR and GAGENT_OUTBOX_DIR through
 // os.Setenv on the way, so the helper claims both through t.Setenv first
@@ -40,7 +40,6 @@ func pinnedToolTree(t *testing.T) (dir, hash string) {
 	manifestPath := filepath.Join(toolDir, "manifest.json")
 	require.NoError(t, os.WriteFile(manifestPath, manifest, 0o644))
 
-	t.Setenv("GAGENT_TOOLS_DIR", dir)
 	t.Setenv("GAGENT_WORKSPACE_ADDR", "")
 	t.Setenv("GAGENT_OUTBOX_DIR", "")
 
@@ -57,7 +56,7 @@ func pinnedToolTree(t *testing.T) (dir, hash string) {
 // the guarantee off in silence.
 func TestBuildToolRegistry_DriftPinRefusesMutatedManifest(t *testing.T) {
 	dir, hash := pinnedToolTree(t)
-	cfg := Config{MemoryPath: filepath.Join(dir, "memory.db")}
+	cfg := config.Config{MemoryPath: filepath.Join(dir, "memory.db"), ToolsDir: dir}
 	cfg.Tools.Pins = tool.ManifestPins{"message_send": hash}
 
 	registry, err := buildToolRegistry(cfg, slog.New(slog.DiscardHandler))
@@ -99,7 +98,7 @@ func TestBuildToolRegistry_UnpinnedToolRefused(t *testing.T) {
 		"output_schema": {"type": "object"}
 	}`), 0o644))
 
-	cfg := Config{MemoryPath: filepath.Join(dir, "memory.db")}
+	cfg := config.Config{MemoryPath: filepath.Join(dir, "memory.db"), ToolsDir: dir}
 	cfg.Tools.Pins = tool.ManifestPins{"message_send": hash}
 
 	_, err := buildToolRegistry(cfg, slog.New(slog.DiscardHandler))
@@ -113,7 +112,7 @@ func TestBuildToolRegistry_UnpinnedToolRefused(t *testing.T) {
 // platform has none to check against until the operator writes one.
 func TestBuildToolRegistry_WithoutPinsLoads(t *testing.T) {
 	dir, _ := pinnedToolTree(t)
-	cfg := Config{MemoryPath: filepath.Join(dir, "memory.db")}
+	cfg := config.Config{MemoryPath: filepath.Join(dir, "memory.db"), ToolsDir: dir}
 
 	registry, err := buildToolRegistry(cfg, slog.New(slog.DiscardHandler))
 	require.NoError(t, err)

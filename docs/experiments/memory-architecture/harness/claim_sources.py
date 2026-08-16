@@ -7,16 +7,17 @@ file and a check fails.
 
 Three registers:
 
-  CHECKS      a figure read out of the README and the committed value it must equal
+  CHECKS      a stated figure and the committed value it must equal
   KNOWN       pairs that already disagree, recorded so a new disagreement still fails
-  UNSOURCED   figures in the README that no committed file carries
+  UNSOURCED   stated figures that no committed file carries
 
-It also checks the two documents that cite this record from outside it: ADR 0006's
-Context and the experiments index.
+ADR 0006's Context quotes this record, so its figures are checked here too, beside
+the README's: they are computed from `results/` and nowhere else can compute them.
+The experiments index is checked for the same reason.
 
 Reads committed files only; runs no architecture and makes no measurement. Exits
-non-zero when a check fails, when an anchor no longer matches the README, or when
-a KNOWN entry no longer describes what the two sides say.
+non-zero when a check fails, when an anchor no longer matches the document it reads,
+or when a KNOWN entry no longer describes what the two sides say.
 """
 from __future__ import annotations
 import math
@@ -424,17 +425,94 @@ def establishes():
               "records them")
 
 
+# --- ADR 0006 --------------------------------------------------------------
+#
+# The Context and the Consequences both quote this record. Their figures are
+# checked here rather than there, because the values they must equal are computed
+# from `results/`, and against the same derivation so the two cannot diverge.
+
+# Stores only what the model wrote back: D2 and everything built on it.
+CURATED = ("D2", "F1", "F2", "F3", "F4", "F5",
+           "G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9")
+# Hybrid RAG over an auto-captured store: the pre-experiment model, and the only
+# baseline with a non-zero density to divide by.
+BASELINE = "B3"
+
+
+def baseline_runs():
+    """Every run holding both the baseline and curated rows, with how to read it."""
+    runs = [(by_arch("table"), "items", lambda r: num(r["R@5"]) / num(r["KB"]))]
+    for target in scale_runner.SCALES:
+        runs.append(({r["arch"]: r for r in result_rows("scale")
+                      if num(r["scale"]) == target},
+                     "items", lambda r: num(r["recall-KB"])))
+    for name in ("long_horizon", "diverse"):
+        runs.append((by_arch(name), "Items", lambda r: num(r["R/KB"])))
+    return runs
+
+
+def curated_ratios():
+    """Per run, each curated architecture's recall and density over the baseline's."""
+    out = []
+    for rows, items, density in baseline_runs():
+        measured = [a for a in CURATED
+                    if a in rows and rows[a].get(items, "—") != "—"]
+        base_recall, base_density = num(rows[BASELINE]["R@5"]), density(rows[BASELINE])
+        out.append({a: (num(rows[a]["R@5"]) / base_recall,
+                        density(rows[a]) / base_density) for a in measured})
+    return out
+
+
+def adr():
+    s = "ADR 0006"
+    text = open(ADR).read()
+
+    check(s, "architecture count",
+          Anchor(r"(\d+) candidate architectures", text).one(),
+          "the six runners' class-name maps", len(architecture_ids()))
+
+    a = Anchor(r"A1 and A2 return (\d\.\d+) recall@5 on every run they appear in, "
+               r"bar (\d\.\d+) for A1 on the diverse workload", text)
+    recalls = [num(rows[arch]["R@5"])
+               for rows, _, _ in baseline_runs() for arch in ("A1", "A2")]
+    on_diverse = num(by_arch("diverse")["A1"]["R@5"])
+    recalls.remove(on_diverse)
+    check(s, "auto-capture recall elsewhere", a.one(0),
+          "A1 and A2 R@5 across every run they appear in", max(recalls))
+    check(s, "auto-capture recall on the diverse workload", a.one(1),
+          "results/diverse.md A1 R@5", on_diverse)
+
+    a = Anchor(r"recall (\d\.\d+)× to (\d\.\d+)× as much", text)
+    best = [max(recall for recall, _ in run.values()) for run in curated_ratios()]
+    check(s, "narrowest recall margin", a.one(0),
+          "the best curated R@5 over the baseline's, per run", min(best))
+    check(s, "widest recall margin", a.one(1),
+          "the best curated R@5 over the baseline's, per run", max(best))
+
+    densities = [d for run in curated_ratios() for _, d in run.values()]
+    source = "curated recall per KB over the baseline's, across the runs"
+    # Both sections state one measurement, so both are checked against one source.
+    for section, pattern in (
+            ("Context", r"recall per KB is (\d+\.\d+)× to (\d+\.\d+)× higher"),
+            ("Consequences",
+             r"recall per KB is (\d+\.\d+)× to (\d+\.\d+)× that of hybrid RAG")):
+        a = Anchor(pattern, text)
+        check(s, f"narrowest density margin ({section})", a.one(0),
+              source, min(densities))
+        check(s, f"widest density margin ({section})", a.one(1),
+              source, max(densities))
+
+    unsourced(s, "Consequences: 'stale recall drops (experiment: 0.17 vs 0.50 for "
+                 "non-superseding architectures)'",
+              "no committed file carries either figure: results/ has no stale column, "
+              "and memory-creation's stale_present never takes 0.50")
+
+
 # --- Pairs that already disagree ------------------------------------------
 #
 # Each entry states what one committed file says, what another says, and a probe
 # that recomputes both. Fix either side and the probe stops matching, so the
 # disagreement cannot go quiet.
-
-def adr_architecture_count():
-    text = open(ADR).read()
-    return {"adr": int(re.search(r"(\d+) candidate architectures", text).group(1)),
-            "harness": len(architecture_ids())}
-
 
 def results_header_sessions():
     long_text = open(os.path.join(RESULTS, "long_horizon.md")).read()
@@ -454,12 +532,6 @@ def small_workload_freshness():
 
 
 KNOWN = [
-    {"section": "ADR 0006 Context",
-     "record": "ADR 0006 cites 32 candidate architectures",
-     "file": "the six runners' class-name maps select 38 distinct ids; the count was "
-             "not adjusted, because only the citation path was in scope",
-     "probe": adr_architecture_count,
-     "expect": {"adr": 32, "harness": 38}},
     {"section": "Results file headers",
      "record": "results/long_horizon.md says 10 sessions and results/diverse.md says "
                "35",
@@ -510,7 +582,7 @@ def citing_documents():
 
 def main():
     for section in (method, small, scale, long_horizon, diverse, large_scale,
-                    establishes):
+                    establishes, adr):
         section()
 
     citing = citing_documents()
@@ -522,8 +594,8 @@ def main():
         if v != "OK":
             failures.append((v, entry))
 
-    print(f"{len(CHECKS)} figures read from README.md and compared to "
-          f"committed files\n")
+    print(f"{len(CHECKS)} figures read from README.md and ADR 0006 and compared "
+          f"to committed files\n")
     for section, verdicts in by_section.items():
         ok = sum(1 for v in verdicts if v == "OK")
         print(f"  {ok:>3}/{len(verdicts):<3} {section}")
@@ -559,7 +631,7 @@ def main():
     if failures:
         print(f"\n{len(failures)} figures do not match their source:\n")
         for v, entry in failures:
-            print(f"  {v} [{entry['section']}] {entry['claim']}: README says "
+            print(f"  {v} [{entry['section']}] {entry['claim']}: stated "
                   f"{entry['stated']}, {entry['source']} holds {entry['found']}")
 
     if failures or stale:

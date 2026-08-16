@@ -5,7 +5,7 @@
 
 ## Context
 
-The founding plan requires human-like memory: memories are refreshed, compressed, and forgotten, with the agent as the decision-maker. The original revision introduced platform auto-capture of every inbound message to make "remember X" reliable with a small chat model. A structured experiment (`docs/experiments/memory-architecture/`, 32 candidate architectures × four workloads: small, 10-year-horizon, eight-category diverse, 60k-item large-scale) measured what that decision actually does: auto-capture stores every turn at uniform low importance, and on every metric that matters — recall@5, precision@5, anti-pollution, memory density (recall per KB), scale stability — the architectures that auto-capture lose to the architectures that store only curated content, by 25–50× on density and up to 2× on recall. The safety net was itself the pollution.
+The founding plan requires human-like memory: memories are refreshed, compressed, and forgotten, with the agent as the decision-maker. The original revision introduced platform auto-capture of every inbound message to make "remember X" reliable with a small chat model. A structured experiment (`docs/experiments/memory-architecture/`, 38 candidate architectures × four workloads: small, 10-year-horizon, eight-category diverse, 60k-item large-scale) measured what that decision actually does: auto-capture stores every turn at uniform low importance, and on every metric that matters — recall@5, precision@5, anti-pollution, memory density (recall per KB), scale stability — the architectures that auto-capture lose to the architectures that store only curated content. Against auto-capture itself there is no ratio to quote: A1 and A2 return 0.00 recall@5 on every run they appear in, bar 0.03 for A1 on the diverse workload. Against hybrid RAG reading the same auto-captured store, the curated architectures recall 1.1× to 2.7× as much, and their recall per KB is 12.5× to 522.9× higher across the runs where both were measured — a spread that moves with the workload and with which curated architecture is asked, so no single figure stands for it and the record carries the per-workload numbers behind it. The safety net was itself the pollution.
 
 The same experiment identified the architecture that holds up on every workload: curation-only storage, a salience tier on every stored memory, salience-scaled Ebbinghaus decay, tiered retention, and supersession on insert. This record revises the lifecycle to that shape. The prior art survey stands (MemGPT self-editing, Mem0's ADD/UPDATE/DELETE vocabulary, A-MEM/Mem0 write-time updates, Zep temporal invalidation, Generative Agents scoring) — the experiment adds the empirical ranking of the mechanisms.
 
@@ -33,7 +33,7 @@ Update semantics are unchanged: updates supersede rather than overwrite; every c
 
 ## Consequences
 
-- The store holds only what the model judged worth keeping. Retrieval is precise because the noise floor is empty; density is 25–50× the auto-capture baseline (experiment rounds 1–5).
+- The store holds only what the model judged worth keeping. Retrieval is precise because the noise floor is empty, and recall per KB is 12.5× to 522.9× that of hybrid RAG reading an auto-captured store, depending on the workload and the architecture (`docs/experiments/memory-architecture/`). Against auto-capture's own retrieval there is no ratio: it returns nothing.
 - The model's failure mode inverts: a model that never writes back (issue #302) leaves memory empty, and that emptiness is honest — there is no safety net fabricating a store out of traffic. Fixing model compliance is a model/prompt concern, not a storage concern.
 - Supersession keeps the latest version of a fact authoritative; stale recall drops (experiment: 0.17 vs 0.50 for non-superseding architectures).
 - Salience-scaled decay means a 10-year-old preference and a yesterday conversation coexist correctly: the preference fades slowly, the chatter fades fast.
@@ -42,7 +42,7 @@ Update semantics are unchanged: updates supersede rather than overwrite; every c
 
 ## Rejected alternatives
 
-- **Auto-capture at uniform importance.** Measured to be the root of recall pollution; the safety net fabricates a store out of traffic and drowns curated content (experiment rounds 1–5).
+- **Auto-capture at uniform importance.** Measured to be the root of recall pollution; the safety net fabricates a store out of traffic and drowns curated content (`docs/experiments/memory-architecture/`).
 - **Full-array sync each turn** (the model receives the store and returns it) — O(store size) tokens both ways per turn, omission becomes deletion, and LLMs cannot reproduce long lists verbatim. The writeback delta is the same idea scoped to the recalled subset, with ops as the diff language.
 - **Automatic per-turn consolidation** — token cost and unpredictable recall degradation; threshold triggers are the prior-art standard.
 - **Reflection summaries as the default write path** — the experiment shows reflection maximizes raw recall but loses the exact keywords fact lookups need; it remains available as consolidation output, not as the per-turn mechanism.

@@ -425,10 +425,11 @@ def establishes():
               "records them")
 
 
-# --- ADR 0006's Context ----------------------------------------------------
+# --- ADR 0006 --------------------------------------------------------------
 #
-# The Context quotes this record. Its figures are checked here rather than there,
-# because the values they must equal are computed from `results/`.
+# The Context and the Consequences both quote this record. Their figures are
+# checked here rather than there, because the values they must equal are computed
+# from `results/`, and against the same derivation so the two cannot diverge.
 
 # Stores only what the model wrote back: D2 and everything built on it.
 CURATED = ("D2", "F1", "F2", "F3", "F4", "F5",
@@ -463,7 +464,7 @@ def curated_ratios():
 
 
 def adr():
-    s = "ADR 0006 Context"
+    s = "ADR 0006"
     text = open(ADR).read()
 
     check(s, "architecture count",
@@ -488,12 +489,23 @@ def adr():
     check(s, "widest recall margin", a.one(1),
           "the best curated R@5 over the baseline's, per run", max(best))
 
-    a = Anchor(r"recall per KB is (\d+\.\d+)× to (\d+\.\d+)× higher", text)
     densities = [d for run in curated_ratios() for _, d in run.values()]
-    check(s, "narrowest density margin", a.one(0),
-          "curated recall per KB over the baseline's, across the runs", min(densities))
-    check(s, "widest density margin", a.one(1),
-          "curated recall per KB over the baseline's, across the runs", max(densities))
+    source = "curated recall per KB over the baseline's, across the runs"
+    # Both sections state one measurement, so both are checked against one source.
+    for section, pattern in (
+            ("Context", r"recall per KB is (\d+\.\d+)× to (\d+\.\d+)× higher"),
+            ("Consequences",
+             r"recall per KB is (\d+\.\d+)× to (\d+\.\d+)× that of hybrid RAG")):
+        a = Anchor(pattern, text)
+        check(s, f"narrowest density margin ({section})", a.one(0),
+              source, min(densities))
+        check(s, f"widest density margin ({section})", a.one(1),
+              source, max(densities))
+
+    unsourced(s, "Consequences: 'stale recall drops (experiment: 0.17 vs 0.50 for "
+                 "non-superseding architectures)'",
+              "no committed file carries either figure: results/ has no stale column, "
+              "and memory-creation's stale_present never takes 0.50")
 
 
 # --- Pairs that already disagree ------------------------------------------
@@ -501,15 +513,6 @@ def adr():
 # Each entry states what one committed file says, what another says, and a probe
 # that recomputes both. Fix either side and the probe stops matching, so the
 # disagreement cannot go quiet.
-
-def adr_consequences_density():
-    text = open(ADR).read()
-    low, high = re.search(r"density is (\d+)–(\d+)× the auto-capture baseline",
-                          text).groups()
-    densities = [d for run in curated_ratios() for _, d in run.values()]
-    return {"consequences": [int(low), int(high)],
-            "measured": [round(min(densities), 1), round(max(densities), 1)]}
-
 
 def results_header_sessions():
     long_text = open(os.path.join(RESULTS, "long_horizon.md")).read()
@@ -529,13 +532,6 @@ def small_workload_freshness():
 
 
 KNOWN = [
-    {"section": "ADR 0006 Consequences",
-     "record": "the Consequences list states density as 25–50× the auto-capture "
-               "baseline",
-     "file": "the same measurement the Context now states runs 12.5× to 522.9×; "
-             "Consequences was out of scope for the correction",
-     "probe": adr_consequences_density,
-     "expect": {"consequences": [25, 50], "measured": [12.5, 522.9]}},
     {"section": "Results file headers",
      "record": "results/long_horizon.md says 10 sessions and results/diverse.md says "
                "35",

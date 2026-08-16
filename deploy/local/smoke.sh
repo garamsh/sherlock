@@ -85,3 +85,30 @@ if [ -z "$reply" ]; then
 fi
 cat "$reply"
 echo
+
+# Exec children carry the executor's five caps (ADR 0008, ADR 0010).
+# The check runs the deployment's own shell_exec tool against the
+# deployment's own Exec RPC, and reads the caps from the kernel's view
+# of the child rather than from a log line.
+echo "==> Exec children carry every resource cap"
+limits=$(docker compose exec -T -e GAGENT_WORKSPACE_ADDR=127.0.0.1:8081 \
+  agent /opt/gagent/tools/shell_exec/shell_exec \
+  <<<'{"command":"cat /proc/self/limits"}' || true)
+missing=0
+while IFS='|' read -r label value; do
+  if ! grep -qE "$label +$value +$value " <<<"$limits"; then
+    echo "the Exec child does not carry $label = $value" >&2
+    missing=1
+  fi
+done <<'CAPS'
+Max cpu time|60
+Max address space|536870912
+Max file size|104857600
+Max open files|1024
+Max processes|64
+CAPS
+if [ "$missing" -ne 0 ]; then
+  echo "$limits" >&2
+  exit 1
+fi
+echo "cpu 60s, address space 512MiB, file size 100MiB, open files 1024, processes 64"

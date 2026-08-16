@@ -3,10 +3,10 @@
 package shell
 
 import (
-	"bytes"
 	"context"
-	"log/slog"
+	"errors"
 	"os"
+	osexec "os/exec"
 	"testing"
 	"time"
 
@@ -14,29 +14,78 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// TestApplyRLimits_LogsFailures verifies that a prlimit failure is
-// surfaced as a WARN log naming the resource, not silently discarded
-// (runtime-safety.md §Anti-patterns). An invalid PID fails every cap.
-func TestApplyRLimits_LogsFailures(t *testing.T) {
-	var buf bytes.Buffer
-	prev := slog.Default()
-	slog.SetDefault(slog.New(slog.NewTextHandler(&buf, &slog.HandlerOptions{Level: slog.LevelWarn})))
-	t.Cleanup(func() { slog.SetDefault(prev) })
-
+// TestLimitSpecs_NprocOnlyInThePrivilegedDrop pins which caps reach the
+// shim: four in single-account mode, five when the child owns a
+// dedicated UID, because RLIMIT_NPROC counts the real UID's processes
+// (ADR 0010).
+func TestLimitSpecs_NprocOnlyInThePrivilegedDrop(t *testing.T) {
 	exec := NewProcessExecutor(DefaultAgentUID, 5*time.Second)
-	exec.applyRLimits(-1)
 
-	out := buf.String()
-	for _, name := range []string{"RLIMIT_CPU", "RLIMIT_AS", "RLIMIT_FSIZE", "RLIMIT_NOFILE"} {
-		assert.Contains(t, out, name, "failed cap must be logged with its resource name")
+	names := func(euid int) []string {
+		var out []string
+		for _, spec := range exec.limitSpecs(euid) {
+			out = append(out, spec.name)
+		}
+		return out
 	}
-	// RLIMIT_NPROC applies only to the privileged drop; it is skipped in
-	// single-account mode, where it would starve the child of the shared
-	// account's own process budget.
-	if os.Geteuid() == 0 {
-		assert.Contains(t, out, "RLIMIT_NPROC")
-	} else {
-		assert.NotContains(t, out, "RLIMIT_NPROC")
+
+	assert.Equal(t, []string{"cpu", "as", "fsize", "nofile"}, names(1000))
+	assert.Equal(t, []string{"cpu", "as", "fsize", "nofile", "nproc"}, names(0))
+}
+
+// TestShimCommandLine_CarriesEveryCapAndTheResolvedProgram pins the
+// command line the untrusted child runs: this binary as the shim, every
+// cap, then the resolved program and the argv it sees.
+func TestShimCommandLine_CarriesEveryCapAndTheResolvedProgram(t *testing.T) {
+	exec := NewProcessExecutor(DefaultAgentUID, 5*time.Second)
+
+	line, err := exec.shimCommandLine("sh", []string{"sh", "-c", "echo hi"}, 0)
+	require.NoError(t, err)
+
+	self, err := os.Executable()
+	require.NoError(t, err)
+	sh, err := osexec.LookPath("sh")
+	require.NoError(t, err)
+	assert.Equal(t, []string{
+		self, ShimCommand,
+		"cpu=60", "as=536870912", "fsize=104857600", "nofile=1024", "nproc=64",
+		"--", sh, "sh", "-c", "echo hi",
+	}, line)
+}
+
+// TestShimCommandLine_FailsWhenThisBinaryIsUnknown pins the fail-closed
+// posture at the other end: without a shim to exec, the call reports
+// the caps as unavailable rather than running the child uncapped.
+func TestShimCommandLine_FailsWhenThisBinaryIsUnknown(t *testing.T) {
+	exec := NewProcessExecutor(DefaultAgentUID, 5*time.Second)
+	exec.shimErr = errors.New("no executable")
+
+	_, err := exec.shimCommandLine("sh", []string{"sh", "-c", "echo hi"}, 0)
+
+	require.ErrorIs(t, err, ErrRlimitsUnavailable)
+}
+
+// TestParseShimArgv covers the shapes the shim must reject rather than
+// apply partially, and the one it must accept.
+func TestParseShimArgv(t *testing.T) {
+	specs, path, argv, err := parseShimArgv([]string{"cpu=60", "nofile=1024", "--", "/bin/sh", "sh", "-c", "echo hi"})
+	require.NoError(t, err)
+	assert.Equal(t, []limitSpec{{name: "cpu", value: 60}, {name: "nofile", value: 1024}}, specs)
+	assert.Equal(t, "/bin/sh", path)
+	assert.Equal(t, []string{"sh", "-c", "echo hi"}, argv)
+
+	for name, args := range map[string][]string{
+		"no separator":      {"cpu=60"},
+		"no program":        {"cpu=60", "--"},
+		"no argv":           {"cpu=60", "--", "/bin/sh"},
+		"malformed limit":   {"cpu", "--", "/bin/sh", "sh"},
+		"unnamed limit":     {"=60", "--", "/bin/sh", "sh"},
+		"unparseable value": {"cpu=soon", "--", "/bin/sh", "sh"},
+	} {
+		t.Run(name, func(t *testing.T) {
+			_, _, _, err := parseShimArgv(args)
+			assert.Error(t, err)
+		})
 	}
 }
 

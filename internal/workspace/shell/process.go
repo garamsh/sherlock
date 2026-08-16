@@ -22,6 +22,13 @@ const DefaultAgentUID = 1001
 // request needs.
 var ErrAgentUIDUnavailable = errors.New("shell: agent_uid unavailable")
 
+// ErrRlimitsUnavailable is returned by ProcessExecutor.Run when an
+// untrusted child's resource caps cannot be applied. The caps are part
+// of the boundary around agent-influenced code (ADR 0008, ADR 0010), so
+// the call fails and no command runs — the executor never downgrades to
+// an uncapped child.
+var ErrRlimitsUnavailable = errors.New("shell: resource limits unavailable")
+
 // ErrTimedOut is returned by ProcessExecutor.Run when the request
 // deadline expires before the child exits. The Result's TimedOut flag is
 // also set.

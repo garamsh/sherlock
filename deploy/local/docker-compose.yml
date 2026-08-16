@@ -47,7 +47,12 @@ services:
     cap_add: ["SETUID", "SETGID", "CHOWN", "SYS_ADMIN"]
     environment:
       GAGENT_WORKSPACE: "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}/workspace"
-      GAGENT_EXEC_UID: "1001"
+      # The exec UID must be an account nothing else on the host runs
+      # as: containers share the host's UID space, and RLIMIT_NPROC
+      # counts every process of the real UID (ADR 0010), so a shared
+      # account starves the child of its process budget. 1001 is the
+      # login user on many hosts; this one is not.
+      GAGENT_EXEC_UID: "10001"
     volumes:
       - "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}:${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}"
     command: ["workspace"]

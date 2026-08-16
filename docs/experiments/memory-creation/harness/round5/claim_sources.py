@@ -1,9 +1,11 @@
-"""Checks every round-5 figure in the record against the committed file it came from.
+"""Checks the round-5 figures generation does not reach.
 
-`../../README.md` §Round 5 states figures; `../../results_round5/` holds the runs
-and `precision.py` holds the arithmetic over them. This reads both and compares,
-so the register cannot drift from either side: change a published figure or a
-result file and a check fails.
+§Round 5's four tables are written by `record.py` from `../../results_round5/`,
+so a cell there cannot disagree with the run behind it and is not read back
+here. What is left is what a generated table does not carry: the figures the
+section states in its prose — the separations it claims, the leads it names,
+what more probes would buy — read against `../../results_round5/` and the
+arithmetic `precision.py` does over it.
 
 Round 4's figures are not this file's business. `../round4/claim_sources.py`
 covers them, and the two registers read disjoint sections of one document.
@@ -25,10 +27,16 @@ RESULTS = os.path.join(ROOT, "results_round5")
 sys.path.insert(0, HERE)
 
 import precision
+import record
 
 README = open(os.path.join(ROOT, "README.md")).read()
-TAGS = {"B14": "B14-key-upsert-plural", "B17": "B17-key-upsert-question-key",
-        "B3": "B3-decider-neighbors", "B9": "B9-decider-neighbors-wide"}
+
+# The result files, the pooling and what the record calls each structure are
+# `record.py`'s, which writes the tables from them; reading them from there
+# keeps one definition rather than two that can disagree.
+TAGS = record.TAGS
+rows = record.rows
+pooled_scores = record.pooled_scores
 
 
 def section(heading):
@@ -77,23 +85,6 @@ def check(part, claim, stated, source, found, places=None):
                    "source": source, "found": found, "places": places})
 
 
-def rows():
-    """{tag: {seed: row}} from the committed round-5 results."""
-    out = {}
-    for tag, system in TAGS.items():
-        for seed in (7, 11):
-            path = os.path.join(RESULTS, f"{system}_seed{seed}.json")
-            with open(path) as f:
-                out.setdefault(tag, {})[seed] = json.load(f)["row"]
-    return out
-
-
-def pooled_scores():
-    """{tag: pooled family scores}, the way precision.py pools them."""
-    loaded = precision.load()
-    return {tag: precision.pooled(loaded[system]) for tag, system in TAGS.items()}
-
-
 # --- The dataset ----------------------------------------------------------
 
 def dataset():
@@ -126,58 +117,6 @@ def dataset():
           len(families))
 
 
-# --- The per-seed table ---------------------------------------------------
-
-COLUMNS = [("latest-wins", "latest_wins"), ("control", "control_survival"),
-           ("coexist", "coexist_preserved"), ("net", "net")]
-LABELS = {"B14": "B14 key-upsert, plural-aware",
-          "B17": "B17 key-upsert, question-shaped key",
-          "B3": "B3 decider-neighbours",
-          "B9": "B9 decider-neighbours, wide"}
-
-
-def per_seed():
-    part = "per seed"
-    data = rows()
-    for tag, label in LABELS.items():
-        for seed in (7, 11):
-            a = Anchor(r"\| " + re.escape(label) + r" \| " + str(seed)
-                       + r" \| (\d+\.?\d*) \| (\d+\.?\d*) \| (\d+\.?\d*) \| (\d+\.?\d*) \| (\d+) \|")
-            row = data[tag][seed]
-            for i, (name, key) in enumerate(COLUMNS):
-                check(part, f"{tag} seed {seed} {name}", a.one(i),
-                      f"{TAGS[tag]}_seed{seed}.json row.{key}", row[key], 3)
-            check(part, f"{tag} seed {seed} items", a.one(4),
-                  f"{TAGS[tag]}_seed{seed}.json row.items", row["items"])
-
-
-# --- The pooled table -----------------------------------------------------
-
-def pooled_table():
-    part = "pooled"
-    data, scores = rows(), pooled_scores()
-    for tag in LABELS:
-        a = Anchor(r"\| " + tag + r" \| (\d+\.?\d*) ±(\d+\.?\d*) \| (\d+\.?\d*) ±(\d+\.?\d*) \| "
-                   r"\*{0,2}(\d+\.?\d*) ±(\d+\.?\d*)\*{0,2} \| (\d+\.?\d*) ±(\d+\.?\d*) \| "
-                   r"(\d+\.?\d*) \|")
-        for i, metric in enumerate(precision.PROBES):
-            score = scores[tag][metric]
-            half = precision.column_half_width(score, precision.PROBES[metric], 2)
-            check(part, f"{tag} {metric}", a.one(i * 2),
-                  f"precision.py pooled {metric}", score, 3)
-            check(part, f"{tag} {metric} half-width", a.one(i * 2 + 1),
-                  f"precision.py column_half_width {metric}", half, 3)
-        check(part, f"{tag} net", a.one(6), "precision.py net",
-              precision.net(scores[tag]), 3)
-        check(part, f"{tag} net half-width", a.one(7),
-              "precision.py half_width", precision.half_width(scores[tag], seeds=2), 3)
-        spreads = [max(data[tag][7][m], data[tag][11][m])
-                   - min(data[tag][7][m], data[tag][11][m])
-                   for m in precision.PROBES]
-        check(part, f"{tag} widest seed spread", a.one(8),
-              f"{TAGS[tag]}_seed7/seed11 per-column spread", max(spreads), 3)
-
-
 # --- What separates -------------------------------------------------------
 
 def separation():
@@ -205,7 +144,7 @@ def separation():
                r"own seeds")
     data = rows()
     every = [max(data[t][7][m], data[t][11][m]) - min(data[t][7][m], data[t][11][m])
-             for t in LABELS for m in precision.PROBES]
+             for t in record.LABELS for m in precision.PROBES]
     check(part, "widest spread anywhere", a.one(), "results_round5 per-column spreads",
           max(every), 3)
 
@@ -227,7 +166,7 @@ def separation():
                r"(\d+\.?\d*)")
     widest, widest_sum = 0.0, 0.0
     for metric in ("latest_wins", "control_survival"):
-        ordered = sorted(LABELS, key=lambda t: -scores[t][metric])
+        ordered = sorted(record.LABELS, key=lambda t: -scores[t][metric])
         gap = scores[ordered[0]][metric] - scores[ordered[-1]][metric]
         if gap > widest:
             widest = gap
@@ -257,22 +196,10 @@ def by_family():
     part = "coexist by family"
     data = rows()
     families = sorted(data["B14"][7]["coexist_by_family"])
-    for family in families:
-        a = Anchor(r"\| " + family + r" \| (\d+\.?\d*) \| (\d+\.?\d*) \| (\d+\.?\d*) \| "
-                   r"(\d+\.?\d*) \| ([+\-][\d.]+) \|")
-        pooled = {}
-        for i, tag in enumerate(("B14", "B17", "B3", "B9")):
-            value = sum(data[tag][s]["coexist_by_family"][family] for s in (7, 11)) / 2
-            pooled[tag] = value
-            check(part, f"{family} {tag}", a.one(i),
-                  f"results_round5 {TAGS[tag]} coexist_by_family.{family}", value, 3)
-        best_other = max(pooled[t] for t in ("B17", "B3", "B9"))
-        check(part, f"{family} B14 over the best other", a.one(4).lstrip("+"),
-              "results_round5 coexist_by_family", pooled["B14"] - best_other, 3)
 
     def lead(family):
         per_family = {t: sum(data[t][s]["coexist_by_family"][family]
-                             for s in (7, 11)) / 2 for t in LABELS}
+                             for s in (7, 11)) / 2 for t in record.LABELS}
         return per_family["B14"] - max(per_family[t] for t in ("B17", "B3", "B9"))
 
     a = Anchor(r"`instrument` \+(\d+\.?\d*) and `volunteer` \+(\d+\.?\d*) over the best other "
@@ -297,20 +224,6 @@ def anchor_structure():
                 if r["system"] == "B3-decider-neighbors":
                     round4[seed] = r
     round5 = rows()["B3"]
-
-    names = {"latest-wins": "latest_wins", "control": "control_survival",
-             "coexist": "coexist_preserved", "net": "net"}
-    for label, key in names.items():
-        a = Anchor(r"\| " + label + r" \| (\d+\.?\d*) / (\d+\.?\d*) / (\d+\.?\d*) \| "
-                   r"(\d+\.?\d*) / (\d+\.?\d*) / (\d+\.?\d*) \| ([+\-−][\d.]+) \|")
-        four = [round4[7][key], round4[11][key]]
-        five = [round5[7][key], round5[11][key]]
-        for i, value in enumerate(four + [sum(four) / 2] + five + [sum(five) / 2]):
-            check(part, f"B3 {label} cell {i}", a.one(i),
-                  "falsification_seed*.json and results_round5", value, 4)
-        check(part, f"B3 {label} move", a.one(6).lstrip("+−-"),
-              "falsification_seed*.json and results_round5",
-              abs(sum(five) / 2 - sum(four) / 2), 4)
 
     a = Anchor(r"B3's round-4 coexist half-width at (\d+) probes per seed is "
                r"±(\d+\.?\d*), so (\d+\.?\d*) is inside it")
@@ -357,8 +270,7 @@ def verdict(entry):
 
 
 def main():
-    for part in (dataset, per_seed, pooled_table, separation, by_family,
-                 anchor_structure, announced):
+    for part in (dataset, separation, by_family, anchor_structure, announced):
         part()
 
     failures = []

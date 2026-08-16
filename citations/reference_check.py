@@ -55,12 +55,12 @@ import sys
 # Extensions this repository stores. A token ending in anything else is not a
 # path here, which is what keeps Go package-qualified symbols out.
 EXTENSIONS = {".md", ".go", ".py", ".yml", ".yaml", ".json", ".sh", ".mod",
-              ".sum", ".proto", ".db", ".txt", ".toml", ".lock"}
+              ".sum", ".proto", ".db", ".txt", ".toml", ".lock", ".dockerfile"}
 
 # Files whose comments are read. Markdown is read whole; everything else only
 # inside a comment, for the reason the docstring gives about string literals.
 COMMENT_PREFIXES = {".go": "//", ".py": "#", ".sh": "#", ".yml": "#",
-                    ".yaml": "#", ".mod": "//"}
+                    ".yaml": "#", ".mod": "//", ".Dockerfile": "#"}
 COMMENT_FILENAMES = {"Dockerfile": "#", "Makefile": "#", ".dockerignore": "#",
                      ".gitignore": "#"}
 

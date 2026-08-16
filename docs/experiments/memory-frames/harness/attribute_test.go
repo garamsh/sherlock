@@ -57,7 +57,7 @@ func TestAttributeFrame_HoldsWhatItsArityRuleAllows(t *testing.T) {
 			injected, err := frame.Context(ctx, asked(800, almaProject))
 			require.NoError(t, err)
 			for _, value := range []string{"amber-quarry", "copper-lantern"} {
-				assert.Equal(t, contains(tc.holds, value), Mentions(injected, value),
+				assert.Equal(t, contains(tc.holds, value), Mentions(injected.Text, value),
 					"%q in %q", value, injected)
 			}
 			size, err := frame.Size(ctx)
@@ -83,7 +83,7 @@ func TestAttributeFrame_HoldsAValueWrittenTwiceOnce(t *testing.T) {
 			assert.LessOrEqual(t, size.Units, 2)
 			injected, err := frame.Context(ctx, asked(900, almaProject))
 			require.NoError(t, err)
-			assert.True(t, Mentions(injected, "amber-quarry"), "the value written last is live: %q", injected)
+			assert.True(t, Mentions(injected.Text, "amber-quarry"), "the value written last is live: %q", injected)
 		})
 	}
 }
@@ -101,14 +101,14 @@ func TestAttributeFrame_LearnedTurnsAnAttributeMultiValuedFromOneAddress(t *test
 
 	injected, err := frame.Context(ctx, asked(2, otto))
 	require.NoError(t, err)
-	assert.True(t, Mentions(injected, "ironwood-annex"))
+	assert.True(t, Mentions(injected.Text, "ironwood-annex"))
 
 	require.NoError(t, frame.Observe(ctx, wrote(400, otto, "silverfin-ridge", "otto's second.")))
 	injected, err = frame.Context(ctx, asked(401, otto))
 	require.NoError(t, err)
-	assert.True(t, Mentions(injected, "ironwood-annex"),
+	assert.True(t, Mentions(injected.Text, "ironwood-annex"),
 		"one address written twice makes the attribute multi-valued for every address under it")
-	assert.True(t, Mentions(injected, "silverfin-ridge"))
+	assert.True(t, Mentions(injected.Text, "silverfin-ridge"))
 }
 
 // The learned rule cannot recover a value it never kept, which is why it
@@ -143,7 +143,7 @@ func TestAttributeFrame_HoldsNothingItCannotAddress(t *testing.T) {
 
 	injected, err := frame.Context(ctx, Turn{Index: 1, Day: 0, At: start, Text: "Which project does Alma lead?"})
 	require.NoError(t, err)
-	assert.Empty(t, injected)
+	assert.Empty(t, injected.Text)
 }
 
 // An address answers with what is at it and with nothing else: a frame that
@@ -158,8 +158,8 @@ func TestAttributeFrame_AnswersFromTheAddressAlone(t *testing.T) {
 
 	injected, err := frame.Context(ctx, asked(2, almaProject))
 	require.NoError(t, err)
-	assert.True(t, Mentions(injected, "amber-quarry"))
-	assert.False(t, Mentions(injected, "copper-lantern"), "another address is not returned")
+	assert.True(t, Mentions(injected.Text, "amber-quarry"))
+	assert.False(t, Mentions(injected.Text, "copper-lantern"), "another address is not returned")
 
 	injected, err = frame.Context(ctx, asked(3, Address{Subject: "Nobody", Attribute: "project"}))
 	require.NoError(t, err)
@@ -192,4 +192,60 @@ func TestNewest_ReturnsTheValueWrittenLast(t *testing.T) {
 		{value: "c", written: start.Add(24 * time.Hour)},
 	}
 	assert.Equal(t, "b", newest(values).value)
+}
+
+// The ceiling takes the operation the write states and decides nothing. It
+// is what any structure reaches when arity arrives with the assertion
+// instead of having to be recovered from it.
+func TestAttributeFrame_DeclaredTakesTheOperationTheWriteStates(t *testing.T) {
+	tests := []struct {
+		name     string
+		declared Operation
+		holds    []string
+	}{
+		{"a declared replacement ends what was there", OperationReplace, []string{"copper-lantern"}},
+		{"a declared join stands beside it", OperationJoin, []string{"amber-quarry", "copper-lantern"}},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			ctx := context.Background()
+			frame := NewAttributeFrame(arityDeclared)
+			first := wrote(0, almaProject, "amber-quarry", "Alma leads the amber-quarry project.")
+			first.Declared = OperationReplace
+			require.NoError(t, frame.Observe(ctx, first))
+
+			second := wrote(400, almaProject, "copper-lantern", "Alma leads the copper-lantern project.")
+			second.Declared = tc.declared
+			require.NoError(t, frame.Observe(ctx, second))
+
+			injected, err := frame.Context(ctx, asked(800, almaProject))
+			require.NoError(t, err)
+			for _, value := range []string{"amber-quarry", "copper-lantern"} {
+				assert.Equal(t, contains(tc.holds, value), Mentions(injected.Text, value), "%q in %q", value, injected)
+			}
+		})
+	}
+}
+
+// The declaration is what the wording says, not what the wording looks
+// like: the same sentence read as a replacement and as a join lands
+// differently, which is what separates the ceiling from the cue rule.
+func TestAttributeFrame_DeclaredIgnoresTheWordingTheCueRuleReads(t *testing.T) {
+	ctx := context.Background()
+	frame := NewAttributeFrame(arityDeclared)
+
+	first := wrote(0, almaProject, "amber-quarry", "Alma leads the amber-quarry project.")
+	first.Declared = OperationReplace
+	require.NoError(t, frame.Observe(ctx, first))
+
+	// A narrowing statement, which carries no conjunction for a cue list to
+	// find, declared as the join it is.
+	second := wrote(400, almaProject, "copper-lantern", "On Thursdays Alma leads the copper-lantern project.")
+	second.Declared = OperationJoin
+	require.NoError(t, frame.Observe(ctx, second))
+
+	injected, err := frame.Context(ctx, asked(800, almaProject))
+	require.NoError(t, err)
+	assert.True(t, Mentions(injected.Text, "amber-quarry"))
+	assert.True(t, Mentions(injected.Text, "copper-lantern"))
 }

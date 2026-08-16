@@ -37,9 +37,9 @@ func TestDocumentFrame_KeepsOneBoundedDocumentAndNoRows(t *testing.T) {
 
 	injected, err := frame.Context(ctx, turnAt(400, "what happened?"))
 	require.NoError(t, err)
-	assert.Contains(t, injected, "turn number 399", "the newest turn is in the document")
-	assert.NotContains(t, injected, "turn number 0 ", "the oldest turn has been dropped")
-	assert.LessOrEqual(t, len(injected), documentLimit)
+	assert.Contains(t, injected.Text, "turn number 399", "the newest turn is in the document")
+	assert.NotContains(t, injected.Text, "turn number 0 ", "the oldest turn has been dropped")
+	assert.LessOrEqual(t, len(injected.Text), documentLimit)
 }
 
 func TestDocumentFrame_HoldsNothingBeforeItObservesAnything(t *testing.T) {
@@ -62,7 +62,7 @@ func TestShippedFrame_ReturnsWhatItObserved(t *testing.T) {
 	injected, err := frame.Context(ctx, Turn{Index: 1, Day: 0, At: start.Add(time.Hour),
 		Text: "Which project does Alma lead?"})
 	require.NoError(t, err)
-	assert.True(t, Mentions(injected, "amber-quarry"))
+	assert.True(t, Mentions(injected.Text, "amber-quarry"))
 }
 
 // A turn carrying no extracted fact is an episodic observation, and the
@@ -95,7 +95,7 @@ func TestShippedFrame_KeepsAFactAndLetsAnObservationExpire(t *testing.T) {
 	injected, err := frame.Context(ctx, Turn{Index: 3, Day: 90, At: start.AddDate(0, 0, 90),
 		Text: "Which project does Alma lead?"})
 	require.NoError(t, err)
-	assert.True(t, Mentions(injected, "amber-quarry"), "a fact survives the retention pass")
+	assert.True(t, Mentions(injected.Text, "amber-quarry"), "a fact survives the retention pass")
 }
 
 func TestShippedFrame_ReportsMoreStoredThanHeld(t *testing.T) {

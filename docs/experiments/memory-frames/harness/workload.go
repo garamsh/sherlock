@@ -343,7 +343,12 @@ func schedule(rng *rand.Rand, p Params, threads []Thread) ([]Turn, int, error) {
 				Address: Address{Subject: thread.Subject, Attribute: thread.Attribute},
 				Value:   a.Value,
 			}
-			placed[s] = Turn{Day: a.Day, At: turnTime(a.Day, s.index), Text: a.Text, Fact: &fact}
+			declared := OperationJoin
+			if a.Replaces {
+				declared = OperationReplace
+			}
+			placed[s] = Turn{Day: a.Day, At: turnTime(a.Day, s.index), Text: a.Text,
+				Fact: &fact, Declared: declared}
 			factTurns++
 		}
 	}

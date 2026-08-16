@@ -35,6 +35,12 @@ const (
 	// them otherwise. The cues are a list, and what that costs is the point
 	// of measuring it.
 	arityCued arityRule = "cued"
+	// arityDeclared takes the operation the write states instead of deciding
+	// anything. It is a ceiling rather than a design: it measures what any
+	// structure reaches when the write operation supplies arity, which is
+	// where #453 concluded it belongs, and it is what the structures that
+	// have to decide for themselves are read against.
+	arityDeclared arityRule = "declared"
 )
 
 // additionCues are the phrases that mark a statement as adding a value
@@ -100,22 +106,29 @@ func (f *attributeFrame) Observe(_ context.Context, t Turn) error {
 // Context returns what the frame holds at the address asked about, and
 // nothing else. An addressed structure answers a question by going to one
 // place, so what it injects is a line or two rather than a filled budget.
-func (f *attributeFrame) Context(_ context.Context, t Turn) (string, error) {
+func (f *attributeFrame) Context(_ context.Context, t Turn) (Injected, error) {
 	if t.Ask == nil {
-		return "", nil
+		return Injected{}, nil
 	}
 	values := f.values[*t.Ask]
+	scanned := len(values)
 	if len(values) == 0 {
-		return "", nil
+		return Injected{}, nil
 	}
 	if !f.returnsEveryValue(t.Ask.Attribute) {
 		values = []heldValue{newest(values)}
+	}
+	if f.rule == arityLearned {
+		// The learned rule reads every address under the attribute to
+		// decide how many values this one returns, so answering one
+		// question touches the whole store.
+		scanned += len(f.values)
 	}
 	lines := make([]string, 0, len(values))
 	for _, held := range values {
 		lines = append(lines, line(*t.Ask, held.value))
 	}
-	return strings.Join(lines, "\n"), nil
+	return Injected{Text: strings.Join(lines, "\n"), Scanned: scanned}, nil
 }
 
 // Size counts one unit per value held and measures the bytes the frame
@@ -144,6 +157,11 @@ func (f *attributeFrame) replaces(t Turn) bool {
 		return true
 	case arityCued:
 		return !marksAddition(t.Text)
+	case arityDeclared:
+		// The workload states the operation on every assertion of the arm
+		// in which this frame writes at all, so "not stated" never reaches
+		// here.
+		return t.Declared != OperationJoin
 	default:
 		return false
 	}
@@ -174,13 +192,18 @@ func (f *attributeFrame) returnsEveryValue(attribute string) bool {
 // any address under it has been written more than one. It reads the
 // attribute's own addresses rather than a list of attributes written into
 // the frame, which is what makes it a rule instead of a clause per case.
+//
+// It reads every address rather than stopping at the first that answers,
+// so what it touches is the same on every run. Stopping early would make
+// the count depend on the order a map is walked in.
 func (f *attributeFrame) multiValued(attribute string) bool {
+	var found bool
 	for address, values := range f.values {
 		if address.Attribute == attribute && len(values) > 1 {
-			return true
+			found = true
 		}
 	}
-	return false
+	return found
 }
 
 // newest returns the value written last. Values at one address are written

@@ -53,9 +53,12 @@ func (f *documentFrame) Observe(_ context.Context, t Turn) error {
 	return nil
 }
 
-// Context returns the document.
-func (f *documentFrame) Context(_ context.Context, _ Turn) (string, error) {
-	return f.text, nil
+// Context returns the document. It reads the one thing it holds.
+func (f *documentFrame) Context(_ context.Context, _ Turn) (Injected, error) {
+	if f.text == "" {
+		return Injected{}, nil
+	}
+	return Injected{Text: f.text, Scanned: 1}, nil
 }
 
 // Size reports the one document the frame holds. Nothing is indexed, so

@@ -298,33 +298,32 @@ def small():
     # measured against a fresh store is zero for every architecture, and an R/KB
     # that is not the row's own recall over its own stored KB came from elsewhere.
     measured = [r for r in result_rows("table") if re.fullmatch(r"[A-Z]\d", r["arch"])]
-    zeroed = [c for c in ("R/KB", "supers", "stale", "rep-keep")
+    zeroed = [c for c in ("R/stored-KB", "supers", "stale", "rep-keep")
               if all(num(r[c]) == 0 for r in measured)]
     check(s, "store-reading columns that are zero for every architecture", 0,
-          "results/table.md R/KB, supers, stale and rep-keep", len(zeroed),
+          "results/table.md R/stored-KB, supers, stale and rep-keep", len(zeroed),
           rounded=False)
-    check(s, "rows whose R/KB is their own recall over their own stored KB",
+    check(s, "rows whose density is their own recall over their own stored KB",
           len(measured), "results/raw.json R@5 and storage_bytes",
           density_from_store(), rounded=False)
 
-    # The two R/KB definitions the record warns apart, and the store they share.
-    a = Anchor(r"F5 holds (\d+) items in both, and reads (\d\.\d+) here against "
-               r"([\d.]+) on the scale run")
+    # The two densities the record names apart, and the store they share.
+    a = Anchor(r"F5 holds (\d+) items in both runs and reads (\d\.\d+) stored "
+               r"against (\d\.\d+) modelled")
     at_1052 = [r for r in result_rows("scale")
                if r["arch"] == "F5" and num(r["scale"]) == 1052][0]
     check(s, "F5 items here", a.one(0), "results/table.md F5 items",
           num(table["F5"]["items"]))
     check(s, "F5 items on the scale run", a.one(0), "results/scale.md F5 items at 1052",
           num(at_1052["items"]))
-    check(s, "F5 density here", a.one(1), "results/table.md F5 R/KB",
-          num(table["F5"]["R/KB"]))
-    check(s, "F5 density on the scale run", a.one(2),
-          "results/scale.md F5 recall-KB at 1052", num(at_1052["recall-KB"]))
-    check(s, "the storage the other runners assume per item",
-          Anchor(r"an assumed ([\d.]+) KB an item").one(),
-          "diverse_runner.py KB per item",
-          float(Anchor(r'kb = r\["item_count"\] \* ([\d.]+)',
-                       open(os.path.join(HERE, "diverse_runner.py")).read()).one()))
+    check(s, "F5 stored density", a.one(1), "results/table.md F5 R/stored-KB",
+          num(table["F5"]["R/stored-KB"]))
+    check(s, "F5 modelled density", a.one(2),
+          "results/scale.md F5 R/modelled-KB at 1052",
+          num(at_1052["R/modelled-KB"]))
+    check(s, "the storage each item is modelled at",
+          Anchor(r"at ([\d.]+) KB a stored item").one(),
+          "metrics.KB_PER_ITEM", metrics.KB_PER_ITEM)
 
 
 # --- Scale run -------------------------------------------------------------
@@ -345,7 +344,7 @@ def scale():
           "workload_spec.SESSIONS", len(SESSIONS))
     check_table(s, heading, "scale",
                 {"R@5": "R@5", "P@5": "P@5", "Items": "items",
-                 "Query μs": "qry μs", "Recall/KB": "recall-KB"}, key=at)
+                 "Query μs": "qry μs", "R/modelled-KB": "R/modelled-KB"}, key=at)
 
     held = [a for a in at
             if at[a]["R@5"] == padded[a]["R@5"] and at[a]["P@5"] == padded[a]["P@5"]]
@@ -367,7 +366,8 @@ def long_horizon():
     s = "Long-horizon workload"
     check_table(s, "Long-horizon workload (a 10-year agent life) — "
                    "`results/long_horizon.md`", "long_horizon",
-                {"R@5": "R@5", "Items": "Items", "Recall/KB": "R/KB"})
+                {"R@5": "R@5", "Items": "Items",
+                 "R/modelled-KB": "R/modelled-KB"})
 
     # The runner prints these from the module, so the file cannot drift from it.
     a = Anchor(r"(\d+) sessions across 10 simulated years \+ (\d+) noise turns",
@@ -403,7 +403,8 @@ def diverse():
           len({sess.category for sess in diverse_workload.SESSIONS}))
 
     rows = by_arch("diverse")
-    columns = {"R@5": "R@5", "P@5": "P@5", "Accuracy": "Acc", "Recall/KB": "R/KB"}
+    columns = {"R@5": "R@5", "P@5": "P@5", "Accuracy": "Acc",
+               "R/modelled-KB": "R/modelled-KB"}
     merged = dict(rows)
     # The README reports G7-G9 as one row; the file carries three that agree.
     for column in columns.values():
@@ -423,7 +424,7 @@ def large_scale():
     check_table(s, "Large-scale workload (60k items) — `results/large_scale.md`",
                 "large_scale",
                 {"R@5": "R@5", "Items": "Items", "Query ms": "qry ms",
-                 "Recall/KB": "R/KB"})
+                 "R/modelled-KB": "R/modelled-KB"})
 
     a = Anchor(r"H1 and H6 ran a smaller workload than the rest of this table, "
                r"([\d,]+) real items rather than ([\d,]+)")
@@ -512,9 +513,9 @@ def baseline_runs():
     for target in scale_runner.SCALES:
         runs.append(({r["arch"]: r for r in result_rows("scale")
                       if num(r["scale"]) == target},
-                     "items", lambda r: num(r["recall-KB"])))
+                     "items", lambda r: num(r["R/modelled-KB"])))
     for name in ("long_horizon", "diverse"):
-        runs.append((by_arch(name), "Items", lambda r: num(r["R/KB"])))
+        runs.append((by_arch(name), "Items", lambda r: num(r["R/modelled-KB"])))
     return runs
 
 

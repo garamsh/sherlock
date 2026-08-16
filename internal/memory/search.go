@@ -38,7 +38,8 @@ func (s *service) Recall(ctx context.Context, task string, tokenBudget int) ([]S
 	if tokenBudget <= 0 {
 		tokenBudget = DefaultRecallTokenBudget
 	}
-	candidates, err := s.rank(ctx, task)
+	// TEMPORARY: reintroduce the row bound, to prove the test catches it.
+	candidates, err := s.search(ctx, task, 0)
 	if err != nil {
 		return nil, err
 	}

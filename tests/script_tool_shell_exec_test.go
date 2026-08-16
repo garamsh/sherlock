@@ -8,7 +8,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/agent/openai"
 	"github.com/garamsh/gagent/internal/tool"
 	"github.com/garamsh/gagent/internal/workspace/shell"
 )
@@ -134,7 +133,6 @@ func TestScriptTool_ShellExec_NullTimeoutAccepted(t *testing.T) {
 		Dir:      root,
 		Pins:     tool.ManifestPins{"shell_exec": hash},
 		Required: []string{"shell_exec"},
-		Sanitize: openai.SanitizeToolParameters,
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() { reg.Close() })

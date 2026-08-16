@@ -79,14 +79,14 @@ var (
 
 // Registry is the platform's tool registry. It walks the operator's
 // tools directory at startup, loads each manifest, validates the
-// schemas, pins the SHA-256 of the canonical manifest bytes, caches the
-// sanitizer's view of the input and output schemas, and exposes the
-// tool set as descriptors (ADR 0009 §Decision). Call dispatches one
-// tool invocation: validate the input against the cached input schema,
-// run the stdio runner, validate the output against the cached output
-// schema. The cached schemas match the model-facing surface the
-// sanitizer produces, so whatever the model sees the runtime accepts
-// (issue #319; sanitizer #318).
+// schemas, hashes the canonical manifest bytes against the operator's
+// pin set, and exposes the tool set as descriptors (ADR 0009
+// §Decision). Call dispatches one tool invocation: validate the input
+// against the manifest's input schema, run the stdio runner, validate
+// the output against the manifest's output schema (ADR 0009
+// invariants 3 and 4). The manifest is the contract on both gates; the
+// model-facing projection of a schema belongs to the model provider,
+// not to this boundary.
 type Registry struct {
 	logger *slog.Logger
 	dir    string
@@ -96,19 +96,12 @@ type Registry struct {
 	// pins is the operator's accepted tool set. A nil set leaves
 	// drift pinning off; a non-nil set is enforced in full.
 	pins ManifestPins
-	// sanitize, when non-nil, reshapes each tool's input and output
-	// schemas before caching them. The cached form is what the
-	// runtime's validation uses; with nil, the cached form equals
-	// the manifest's schema.
-	sanitize func(name string, raw json.RawMessage) json.RawMessage
 }
 
 type toolInstance struct {
-	manifest        Manifest
-	sanitizedInput  json.RawMessage
-	sanitizedOutput json.RawMessage
-	runner          *Runner
-	hash            string
+	manifest Manifest
+	runner   *Runner
+	hash     string
 }
 
 // ManifestPins is the operator's accepted tool set: the SHA-256 of the
@@ -139,15 +132,6 @@ type RegistryOptions struct {
 	// startup. A nil slice uses DefaultRequiredTools; an explicit
 	// slice (including empty) overrides the default.
 	Required []string
-	// Sanitize optionally rewrites a tool's input and output schemas
-	// into the model-facing form the runtime's validation should
-	// match. The manifest remains the source of truth; the sanitizer
-	// reshapes each schema (root type forced to object, strict-mode
-	// keywords dropped, every properties key promoted into required
-	// with a nullable type). Nil disables sanitization — the cached
-	// schemas equal the manifest's and runtime validation behaves as
-	// before this option existed. Issue #319.
-	Sanitize func(name string, raw json.RawMessage) json.RawMessage
 }
 
 // NewRegistry walks dir, loads every manifest, validates the contract,
@@ -169,11 +153,10 @@ func NewRegistry(opts RegistryOptions) (*Registry, error) {
 	}
 
 	reg := &Registry{
-		logger:   logger,
-		dir:      dir,
-		tools:    make(map[string]*toolInstance),
-		pins:     opts.Pins,
-		sanitize: opts.Sanitize,
+		logger: logger,
+		dir:    dir,
+		tools:  make(map[string]*toolInstance),
+		pins:   opts.Pins,
 	}
 	if err := reg.loadTools(dir); err != nil {
 		return nil, err
@@ -195,10 +178,9 @@ func NewRegistry(opts RegistryOptions) (*Registry, error) {
 
 // loadTools walks dir and registers every entry that contains a
 // manifest.json. A directory without a manifest is silently skipped;
-// a broken manifest fails startup. Each registered tool caches the
-// sanitized form of its input and output schemas (when the registry
-// was constructed with a Sanitizer) so runtime validation matches
-// the model-facing surface.
+// a broken manifest fails startup. When the operator supplied a pin
+// set, every manifest is checked against it before the tool is
+// registered.
 func (r *Registry) loadTools(dir string) error {
 	entries, err := os.ReadDir(dir)
 	if err != nil {
@@ -229,18 +211,10 @@ func (r *Registry) loadTools(dir string) error {
 		if err := r.checkPin(loaded.manifest.Name, loaded.hash); err != nil {
 			return err
 		}
-		runner := NewRunner(loaded.manifest, toolDir)
-		sanInput, sanOutput := loaded.manifest.InputSchema, loaded.manifest.OutputSchema
-		if r.sanitize != nil {
-			sanInput = r.sanitize(loaded.manifest.Name, loaded.manifest.InputSchema)
-			sanOutput = r.sanitize(loaded.manifest.Name, loaded.manifest.OutputSchema)
-		}
 		r.tools[loaded.manifest.Name] = &toolInstance{
-			manifest:        loaded.manifest,
-			sanitizedInput:  sanInput,
-			sanitizedOutput: sanOutput,
-			runner:          runner,
-			hash:            loaded.hash,
+			manifest: loaded.manifest,
+			runner:   NewRunner(loaded.manifest, toolDir),
+			hash:     loaded.hash,
 		}
 		r.logger.Info("tool manifest loaded",
 			"op", "tool.load",
@@ -320,14 +294,16 @@ func (r *Registry) Close() error {
 	return nil
 }
 
-// Call validates the input against the cached input schema, dispatches
-// the stdio runner, and validates the output against the cached output
-// schema. The cached schemas match the model-facing surface the
-// sanitizer produces, so the model can emit null for the fields the
-// sanitizer marks nullable and the runtime accepts it. The output is
-// also checked for an error field (ADR 0009 §Decision: a tool may
-// report a failure as a JSON object with an "error" key); on success
-// the validated output is returned.
+// Call validates the input against the manifest's input schema,
+// dispatches the stdio runner, and validates the output against the
+// manifest's output schema (ADR 0009 invariants 3 and 4). The manifest
+// is the contract on both gates. The input is read through
+// absentOptionalNulls first, so a null the model emits for a property
+// the manifest leaves optional reads as absence rather than as a type
+// violation (issue #319); the tool is handed that same validated
+// document. The output is also checked for an error field (ADR 0009
+// §Decision: a tool may report a failure as a JSON object with an
+// "error" key); on success the validated output is returned.
 func (r *Registry) Call(ctx context.Context, name string, input json.RawMessage) (json.RawMessage, error) {
 	r.mu.RLock()
 	t, ok := r.tools[name]
@@ -335,7 +311,8 @@ func (r *Registry) Call(ctx context.Context, name string, input json.RawMessage)
 	if !ok {
 		return nil, fmt.Errorf("tool %q: not installed", name)
 	}
-	if err := validate(t.sanitizedInput, input); err != nil {
+	input = absentOptionalNulls(t.manifest.InputSchema, input)
+	if err := validate(t.manifest.InputSchema, input); err != nil {
 		return nil, &ValidationError{Tool: name, Description: t.manifest.Description, Err: err}
 	}
 	response, stderr, runErr := t.runner.Run(ctx, input)
@@ -345,24 +322,24 @@ func (r *Registry) Call(ctx context.Context, name string, input json.RawMessage)
 	if msg, ok := ReadErrorObject(response); ok {
 		return nil, &ExecutionError{Tool: name, Err: fmt.Errorf("tool reported error: %s", msg)}
 	}
-	if err := validate(t.sanitizedOutput, response); err != nil {
+	if err := validate(t.manifest.OutputSchema, response); err != nil {
 		return nil, &ExecutionError{Tool: name, Err: fmt.Errorf("output failed schema validation (tool quarantined): %w", err)}
 	}
 	return response, nil
 }
 
 // descriptorFromTool projects a tool instance into the model-facing
-// descriptor. The schemas exposed are the cached sanitized forms when
-// the registry was constructed with a sanitizer, otherwise the
-// manifest's schemas. The model-facing surface and the runtime's
-// validation surface are the same shape; whichever the model sees, the
-// runtime accepts.
+// descriptor: the manifest's own schemas, without the runner's command,
+// env, or on-disk path (ADR 0009 §Decision). A provider whose API
+// constrains the schema shape projects it further at its own boundary
+// (internal/agent/openai) — that projection is the provider's, and it
+// never becomes the contract this registry enforces.
 func descriptorFromTool(t *toolInstance) Descriptor {
 	return Descriptor{
 		Name:         t.manifest.Name,
 		Description:  t.manifest.Description,
-		InputSchema:  t.sanitizedInput,
-		OutputSchema: t.sanitizedOutput,
+		InputSchema:  t.manifest.InputSchema,
+		OutputSchema: t.manifest.OutputSchema,
 		Hash:         t.hash,
 	}
 }

@@ -40,14 +40,6 @@ var OpenAITopLevelForbidden = []string{
 // consistent shape.
 var emptyObjectParameters = json.RawMessage(`{"type":"object"}`)
 
-// SanitizeToolParameters is the exported wrapper of sanitizeToolParameters.
-// The script-tool runner's descriptors flow through the same OpenAI
-// sanitizer before reaching the model, so callers that have a manifest's
-// input_schema can hand it here without duplicating the function.
-func SanitizeToolParameters(name string, raw json.RawMessage) json.RawMessage {
-	return sanitizeToolParameters(name, raw)
-}
-
 // sanitizeToolParameters reduces a tool's input schema to the subset the
 // OpenAI function-calling API accepts. Schemas already inside the subset
 // are returned unchanged. Out-of-subset schemas are reduced: the root is
@@ -59,9 +51,12 @@ func SanitizeToolParameters(name string, raw json.RawMessage) json.RawMessage {
 // level so operators can spot upstream tools whose schemas violate the
 // constraint.
 //
-// The original schema is preserved on the tool: runtime validation in
-// internal/tool still uses t.InputSchema(), so the model's reduced view does
-// not weaken the tool's actual contract.
+// The reduction is this provider's alone. It is applied where the wire
+// request is built (toWireTools) and nowhere else, so internal/tool
+// keeps validating against the manifest's own schemas and the model's
+// reduced view does not weaken the tool's actual contract. The one
+// place the two meet is the null this function's promotion invites the
+// model to emit, which the boundary reads as absence.
 func sanitizeToolParameters(name string, raw json.RawMessage) json.RawMessage {
 	if len(raw) == 0 {
 		return raw

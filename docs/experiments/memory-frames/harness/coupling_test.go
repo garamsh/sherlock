@@ -114,15 +114,18 @@ func TestCoupling_TheSameStoreFailsToCorrectEvenWhatItCanFind(t *testing.T) {
 	ctx := context.Background()
 	address := Address{Subject: "Alma", Attribute: "project"}
 
-	tests := []struct {
+	// Since #529 the answer no longer depends on the wording: supersession
+	// on insert is removed, so neither correction lands and the superseded
+	// value stays. The committed results this record was written from were
+	// measured while the mechanism existed, and none of those figures
+	// moves — see §Limits on what the `shipped` column measures.
+	for _, tc := range []struct {
 		name       string
 		correction string
-		corrected  bool
 	}{
-		{"a correction phrased as one", "Alma leads the copper-lantern project from now on.", false},
-		{"a restatement in the same words", "Alma leads the copper-lantern project.", true},
-	}
-	for _, tc := range tests {
+		{"a correction phrased as one", "Alma leads the copper-lantern project from now on."},
+		{"a restatement in the same words", "Alma leads the copper-lantern project."},
+	} {
 		t.Run(tc.name, func(t *testing.T) {
 			frame, err := NewShippedFrame(t.TempDir(), NewEmbedCounter(), 0)
 			require.NoError(t, err)
@@ -132,8 +135,8 @@ func TestCoupling_TheSameStoreFailsToCorrectEvenWhatItCanFind(t *testing.T) {
 				"Alma leads the amber-quarry project.")))
 			require.NoError(t, frame.Observe(ctx, wrote(3000, address, "copper-lantern", tc.correction)))
 
-			assert.Equal(t, tc.corrected, !holds(t, frame, "amber-quarry"),
-				"whether the correction lands is decided by how much the two sentences share")
+			assert.True(t, holds(t, frame, "amber-quarry"),
+				"an insert retires nothing, so the corrected value is still held")
 		})
 	}
 }

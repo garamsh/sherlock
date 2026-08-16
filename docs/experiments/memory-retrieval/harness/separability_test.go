@@ -48,22 +48,26 @@ func TestMeasureSeparability_ReportsWhatTheShippedStoreDid(t *testing.T) {
 	assert.Equal(t, embedderHashing, result.Embedder)
 	assert.Equal(t, 4, result.PairsMeasured)
 
-	// The store's own decision and the harness cosine must agree on every
-	// pair, or the sweep is sweeping a number the mechanism does not read.
-	assert.Equal(t, result.PairsMeasured, result.StoreAgreesWithCosine)
+	// The shipped store retires nothing on insert: supersession on insert
+	// was removed in #529, so the Superseded column reports what the
+	// store does now rather than what the mechanism did. What it did is
+	// in the committed results this record was written from — those
+	// figures were measured while it existed and none of them moves.
+	for _, score := range result.Scores {
+		assert.False(t, score.Superseded,
+			"%s: an insert retires nothing since #529 (cosine %v)", score.Family, score.Cosine)
+	}
 	for _, family := range result.Families {
-		for _, score := range result.Scores {
-			if score.Family != family.Name {
-				continue
-			}
-			assert.Equal(t, score.Cosine >= memory.SupersessionSimilarity, score.Superseded,
-				"%s: cosine %v and the store disagree", family.Name, score.Cosine)
-		}
+		assert.Zero(t, family.Superseded, "%s: no family supersedes", family.Name)
 	}
 
+	// The cosine column is the harness's own and is unaffected: it still
+	// separates the families the same way, which is the measurement the
+	// removal rests on.
 	unrelated := familyNamed(t, result, "unrelated")
-	assert.Zero(t, unrelated.Superseded, "unrelated statements must not supersede")
 	assert.Less(t, unrelated.Median, memory.SupersessionSimilarity)
+	assert.Greater(t, familyNamed(t, result, "coexist").Median, memory.SupersessionSimilarity,
+		"coexisting facts still score above the threshold that used to retire them")
 }
 
 func TestMeasureSeparability_SweepsEveryThreshold(t *testing.T) {

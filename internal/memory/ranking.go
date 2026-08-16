@@ -17,14 +17,17 @@ const (
 	// effective half-life scales with salience (ADR 0006).
 	RecencyHalfLife = 24 * time.Hour
 
-	// SupersessionSimilarity is the embedding cosine at or above which a
-	// newly stored memory supersedes its most similar active predecessor
-	// (ADR 0006). It is not calibrated to where corrections land: it was
-	// set from a single pair, and across the pair set nearly every
+	// SupersessionSimilarity was the embedding cosine at or above which a
+	// newly stored memory retired its most similar active predecessor.
+	// Nothing in the store reads it: an insert retires nothing (#529,
+	// store.go). It was never calibrated to where corrections land — it
+	// was set from a single pair, and across the pair set nearly every
 	// correction scores below it on the shipped embedder while every fact
-	// that must coexist scores above, so it retires what it should keep
-	// (docs/experiments/memory-retrieval/). Removal rather than retuning
-	// is tracked in #334; the value stands until that lands.
+	// that must coexist scores above, so it retired what it should keep.
+	//
+	// The constant stays because docs/experiments/memory-retrieval/'s
+	// harness is written against it: that study is the evidence the
+	// mechanism was removed on, and it reports what the threshold did.
 	SupersessionSimilarity = 0.6
 
 	// Retention tiers (ADR 0006): salience at or above

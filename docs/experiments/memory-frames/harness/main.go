@@ -77,6 +77,7 @@ type Run struct {
 	Stability    *Stability     `json:"stability,omitempty"`
 	Disagreement *ModelRun      `json:"disagreement_run,omitempty"`
 	Arity        Arity          `json:"arity"`
+	Identity     Identity       `json:"identity"`
 	Frames       []FrameResult  `json:"frames"`
 
 	// Finding is the study in which no frame is handed the address. It is
@@ -205,7 +206,7 @@ func run() error {
 	if declared != nil {
 		scored := ScoreDeclarations(*declared)
 		result.Declarer = &scored
-		for _, frame := range []string{frameAttributeDeclared, frameIntervalDeclared} {
+		for _, frame := range []string{frameAttributeDeclared, frameIntervalDeclared, frameMem0} {
 			modelRun, err := MeasureModelRun(ctx, workload, *declared, frame)
 			if err != nil {
 				return err
@@ -344,6 +345,11 @@ func MeasureRun(ctx context.Context, w Workload) (Run, error) {
 			DocumentLimitBytes:     documentLimit,
 		},
 	}
+	identity, err := MeasureIdentity(ctx, w, counter)
+	if err != nil {
+		return Run{}, err
+	}
+	result.Identity = identity
 	for _, arm := range armNames {
 		for _, frame := range frameNames {
 			measured, err := Measure(ctx, w, frame, arm, counter, nil)

@@ -29,18 +29,23 @@ func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
 	root := t.TempDir()
 
 	// The workspace directory: the workspace serves it over gRPC and
-	// execs children in it, so the marker file is visible to both the
-	// files tool and shell_exec.
+	// execs children in it, so the file the canned run writes is
+	// visible to both the files tool and shell_exec. The workspace
+	// creates the directory on first use; the run seeds its own
+	// content, so the test seeds none.
 	workspaceDir := filepath.Join(t.TempDir(), "workspace")
-	require.NoError(t, os.MkdirAll(workspaceDir, 0o755))
-	require.NoError(t, os.WriteFile(
-		filepath.Join(workspaceDir, "marker.txt"), []byte("from the workspace\n"), 0o644))
 
 	_, workspaceAddr, _ := startWorkspaceBinary(t, binary,
 		workspaceDir, emptyConfig(t, "workspace.yaml"))
 	cmd, baseURL, exited := startAgentBinary(t, binary, root, workspaceAddr)
 
 	runBinaryMVPScenario(t, baseURL, root, binaryAgentID)
+
+	// The files tool's write crossed the gRPC contract into the
+	// workspace's own directory, where the exec'd child read it back.
+	written, err := os.ReadFile(filepath.Join(workspaceDir, "question.txt"))
+	require.NoError(t, err)
+	assert.Equal(t, "6 * 7\n", string(written))
 
 	// SIGTERM triggers the agent's graceful shutdown.
 	require.NoError(t, cmd.Process.Signal(syscall.SIGTERM))
@@ -58,8 +63,9 @@ func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
 
 // runBinaryMVPScenario is the binary test's variant of
 // runMVPScenario. The canned loop drives the agent through files
-// (reading the workspace marker), shell_exec (computing through the
-// workspace's Exec RPC), message_send, and a writeback block.
+// (writing a note into the workspace), shell_exec (reading it back and
+// computing through the workspace's Exec RPC), message_send, and a
+// writeback block.
 func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	t.Helper()
 
@@ -87,18 +93,17 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	assert.Contains(t, got[0]["task"], "] unknown: "+e2eQuestion,
 		"the turn input renders the message with its ID and sender (ADR 0015)")
 
-	// Files tool: read the marker file the test placed in the
-	// workspace; the response crosses the workspace gRPC client and
-	// returns the file's contents.
+	// Files tool: the canned run writes its note into the workspace;
+	// the call crosses the workspace gRPC client and reports the write.
 	assert.Equal(t, "files", got[3]["tool_name"])
 	assert.NotContains(t, got[3], "tool_failed")
-	assert.Contains(t, got[3]["tool_result"], "from the workspace",
-		"the files tool reads the marker file end-to-end through the workspace gRPC client")
+	assert.Contains(t, got[3]["tool_result"], "bytes_written",
+		"the files tool writes end-to-end through the workspace gRPC client")
 
 	assert.Equal(t, "shell_exec", got[5]["tool_name"])
 	assert.NotContains(t, got[5], "tool_failed")
-	assert.Contains(t, got[5]["tool_result"], "marker.txt",
-		"the exec'd command crosses the Exec RPC and sees the workspace's files natively")
+	assert.Contains(t, got[5]["tool_result"], "6 * 7",
+		"the exec'd command reads back what the files tool wrote, so it sees the workspace's files natively")
 	assert.Contains(t, got[5]["tool_result"], "42",
 		"the canned run computes through the shell")
 

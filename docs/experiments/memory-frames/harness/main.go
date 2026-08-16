@@ -67,6 +67,7 @@ type Run struct {
 	Params   Params        `json:"params"`
 	Config   Config        `json:"configuration"`
 	Cost     Cost          `json:"cost"`
+	Arity    Arity         `json:"arity"`
 	Frames   []FrameResult `json:"frames"`
 }
 
@@ -126,6 +127,7 @@ func MeasureRun(ctx context.Context, w Workload) (Run, error) {
 		Embedder: embedderName,
 		Digest:   w.TurnDigest,
 		Params:   w.Params,
+		Arity:    MeasureArity(w),
 		Config: Config{
 			WeightVector:           memory.WeightVector,
 			WeightFTS:              memory.WeightFTS,

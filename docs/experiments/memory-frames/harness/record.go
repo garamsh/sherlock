@@ -64,6 +64,7 @@ func RenderTables(r Run) string {
 	renderRun(&b, r)
 	renderYears(&b, r)
 	renderSizes(&b, r)
+	renderArity(&b, r)
 	renderCost(&b, r)
 	return strings.TrimRight(b.String(), "\n")
 }
@@ -143,6 +144,26 @@ func renderSizes(b *strings.Builder, r Run) {
 			fmt.Fprintf(b, "| `%s` | `%s` | %d | %d | %.1f | %.1f |\n",
 				f.Frame, f.Arm, s.Year, s.Size.Units, kilobytes(s.Size.ContentBytes), kilobytes(s.Size.StoredBytes))
 		}
+	}
+	fmt.Fprintln(b)
+}
+
+// renderArity is what an attribute-addressed frame has to decide arity
+// from: the interval between the writes to one address, and how the other
+// addresses under an attribute have behaved.
+func renderArity(b *strings.Builder, r Run) {
+	fmt.Fprintf(b, "### What the addresses look like\n\n")
+	fmt.Fprintf(b, "| class | addresses | values per address | years between the last two writes |\n")
+	fmt.Fprintf(b, "|---|---|---|---|\n")
+	for _, c := range r.Arity.Classes {
+		fmt.Fprintf(b, "| `%s` | %d | %s | %s |\n", c.Class, c.Addresses,
+			figure(c.Values), figureAt(c.Gap, 2))
+	}
+	fmt.Fprintln(b)
+
+	fmt.Fprintf(b, "| attribute | addresses | written more than one value | share |\n|---|---|---|---|\n")
+	for _, a := range r.Arity.Attributes {
+		fmt.Fprintf(b, "| `%s` | %d | %d | %.3f |\n", a.Attribute, a.Addresses, a.MultiValued, a.Share)
 	}
 	fmt.Fprintln(b)
 }

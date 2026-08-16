@@ -30,14 +30,14 @@ The **call protocol is fixed** — one shape, no exceptions:
 The platform's invariants around the tool:
 
 1. The manifest is parseable and its schemas are valid JSON Schema (strict-mode subset). Failure to parse fails startup.
-2. The platform pins a hash of every manifest and refuses to load a tool whose hash drifts from the pin. The tool's self-description is untrusted input at the boundary.
+2. The platform hashes every manifest and holds it against the operator's pin set: it refuses to load a tool whose hash drifts from its pin, and refuses one the set does not name. The pin is the operator's record of the manifest they accepted, so the platform reads a pin set and never writes one — a platform-generated pin would vouch for whatever it already loaded, which is the self-registration shape ADR 0017 rejects. An operator who configures no pin set has no drift check, and the platform says so at startup. The tool's self-description is untrusted input at the boundary.
 3. The platform validates the input against `input_schema` before invoking the tool. An invalid input never reaches the tool.
 4. The platform validates the output against `output_schema` after the tool returns. A non-conforming output is a tool failure; the tool is quarantined.
 5. Required tools (the mouth; the workspace-coupling tools declared in the operator's config) are validated at startup; a missing required tool fails closed.
 
 ## Consequences
 
-- Adding a capability is a directory drop: `tools/<name>/` with a `manifest.json` and an executable. No compilation, no language lock-in, no transport code.
+- Adding a capability is a directory drop: `tools/<name>/` with a `manifest.json` and an executable. No compilation, no language lock-in, no transport code. An operator who pins accepts the new tool by adding its hash to the pin set, which is the same act as reviewing it; the startup refusal names the hash to add.
 - The structural minimum is one manifest format plus a stdio runner (JSON in, JSON out, exit code). No protocol framing, no registration ceremony, no capability negotiation.
 - The shape replaces both the previous in-process tools-as-packages model and the protocol-server model; both histories live in git.
 - The platform's `internal/tool/` is the manifest parser, the stdio runner, the registry, and the hash pinner — a few hundred lines, no third-party dependency.

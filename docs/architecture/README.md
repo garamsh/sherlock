@@ -60,7 +60,7 @@ One pod per agent, two containers (ADR 0017): the agent container is the agent's
 | `cmd/gagent/` | CLI entry point (`gagent agent`, `gagent workspace`): resolve config and wire concrete implementations; nothing else. | — |
 | `internal/gateway/` | Accept normalized inbound messages, serialize the one agent's runs through a single queue, and publish the monitoring event stream. | `gateway.md` |
 | `internal/agent/` | Run the reasoning loop (frame, recall, act, writeback) for the agent's one rolling session. | `agent.md` |
-| `internal/tool/` | The platform tool client: read manifests from the operator's `tools/` directory, spawn the executable, validate inputs and outputs against the manifest's JSON Schemas, and pin manifest hashes to refuse drift at startup (ADR 0017, ADR 0009). | `agent.md`, `environment.md` |
+| `internal/tool/` | The platform tool client: read manifests from the operator's `tools/` directory, spawn the executable, validate inputs and outputs against the manifest's JSON Schemas, and hold each manifest hash against the operator's pin set to refuse drift at startup (ADR 0017, ADR 0009). | `agent.md`, `environment.md` |
 | `internal/tool/tooltest/` | Manifest conformance guards shared by tool tests. | — |
 | `internal/memory/` | Own the agent's long-term memory: the `memory.db` store, hybrid search, and the memory service behind the lifecycle hooks. | `memory.md` |
 | `internal/workspace/` | The gRPC data plane: proto, generated stubs, server wrapping the workspace filesystem backend for Read/Write/List and `internal/workspace/shell.Executor` for Exec (ADR 0017). No tool hosting. | `environment.md` |

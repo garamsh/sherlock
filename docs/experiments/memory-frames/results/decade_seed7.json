@@ -34,13 +34,8 @@
   "document_limit_bytes": 2048
  },
  "cost": {
-<<<<<<< HEAD
-  "turns_observed": 172800,
-  "contexts_produced": 69600,
-=======
-  "turns_observed": 138240,
-  "contexts_produced": 55680,
->>>>>>> 08bc117 (docs: report the head-to-head under an oracle and under a real extractor)
+  "turns_observed": 195840,
+  "contexts_produced": 78880,
   "model_calls": 0,
   "embed_calls": 83520,
   "distinct_texts_embedded": 7616,
@@ -27847,7 +27842,6 @@
    }
   ]
  },
-<<<<<<< HEAD
  "identity": {
   "assertions_landing_on_a_held_address": 240,
   "similarity_to_the_value_at_the_address": {
@@ -27863,7 +27857,7 @@
   "assertions_whose_nearest_value_is_elsewhere": 217,
   "assertions_whose_target_falls_below_the_gate": 220,
   "gate": 0.6
-=======
+ },
  "question_addressing": {
   "forms": [
    {
@@ -28071,7 +28065,6 @@
   "question_addresses_carrying_a_restriction": 40,
   "questions": 12,
   "questions_whose_form_marks_a_number": 7
->>>>>>> 08bc117 (docs: report the head-to-head under an oracle and under a real extractor)
  },
  "frames": [
   {

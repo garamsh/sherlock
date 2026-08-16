@@ -3684,8 +3684,8 @@ The figure that matters for the designs coming next is in the cost table below, 
 | quantity | value |
 |---|---|
 | model calls | 0 |
-| turns observed, over every frame and arm | 172800 |
-| contexts produced, over every frame and arm | 69600 |
+| turns observed, over every frame and arm | 195840 |
+| contexts produced, over every frame and arm | 78880 |
 | embedder calls | 83520 |
 | distinct texts embedded | 7616 |
 | tokens those texts estimate to | 97965 |

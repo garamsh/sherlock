@@ -360,13 +360,13 @@ func renderArity(b *strings.Builder, r Run) {
 
 // renderIdentity is what a design that finds the memory it updates by
 // similarity has to separate, measured on the workload rather than inferred
-// from that design's score.
+// from that design's score. It carries no heading of its own: the record's
+// heading stands directly above it, as it does over the comparison.
 func renderIdentity(b *strings.Builder, r Run) {
 	if r.Identity.Assertions == 0 {
 		return
 	}
 	x := r.Identity
-	fmt.Fprintf(b, "### What a similarity-located write has to separate\n\n")
 	fmt.Fprintf(b, "| quantity | value |\n|---|---|\n")
 	rows := [][2]any{
 		{"assertions landing on an address already holding a value", x.Assertions},

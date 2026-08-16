@@ -154,6 +154,44 @@ for tool in files shell_exec message_send; do
 done
 echo "files, shell_exec, message_send, then the turn finished"
 
+# ADR 0008's file side: a write over the gRPC contract and a write by an
+# exec'd child land under one owner, so either can pick up what the other
+# left. The check writes through the deployment's own files tool, reads
+# the owner from the workspace container, and then has an exec'd child
+# modify that file and the contract overwrite the child's.
+echo "==> a gRPC write lands in the workspace under the exec account"
+call_tool() {
+  docker compose exec -T -e GAGENT_WORKSPACE_ADDR=127.0.0.1:8081 \
+    agent "/opt/gagent/tools/$1/$1" || true
+}
+written=$(call_tool files <<<'{"operation":"write","path":"contract-write.txt","content":"written over the contract\n"}')
+if ! grep -q '"bytes_written"' <<<"$written"; then
+  echo "the files tool could not write into the workspace: ${written:-no output}" >&2
+  exit 1
+fi
+
+exec_uid=$(docker compose exec -T workspace printenv GAGENT_EXEC_UID | tr -d '\r\n' || true)
+owner=$(docker compose exec -T workspace \
+  stat -c '%u' "$GAGENT_DATA_DIR/workspace/contract-write.txt" | tr -d '\r\n' || true)
+if [ "$owner" != "$exec_uid" ]; then
+  echo "the contract's file is owned by uid $owner, not the exec account $exec_uid" >&2
+  docker compose exec -T workspace ls -ln "$GAGENT_DATA_DIR/workspace" >&2 || true
+  exit 1
+fi
+
+appended=$(call_tool shell_exec <<<'{"command":"echo appended >> contract-write.txt && cat contract-write.txt","timeout_nanos":null}')
+if ! grep -q 'appended' <<<"$appended"; then
+  echo "an exec'd child could not modify what the contract wrote: ${appended:-no output}" >&2
+  exit 1
+fi
+
+overwritten=$(call_tool files <<<'{"operation":"write","path":"question.txt","content":"6 * 7 = 42\n"}')
+if ! grep -q '"bytes_written"' <<<"$overwritten"; then
+  echo "the contract could not overwrite the exec child's file: ${overwritten:-no output}" >&2
+  exit 1
+fi
+echo "both writers share the workspace: uid $exec_uid owns what either one writes"
+
 # Exec children carry the executor's five caps (ADR 0008, ADR 0010).
 # The check runs the deployment's own shell_exec tool against the
 # deployment's own Exec RPC, and reads the caps from the kernel's view

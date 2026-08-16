@@ -9,6 +9,15 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// hashingEmbedder is the shipped default, the embedder these tests hold
+// fixed so they measure the credit rule rather than a vector space.
+func hashingEmbedder(t *testing.T) Embedder {
+	t.Helper()
+	embedder, err := NewEmbedder(embedderHashing, "")
+	require.NoError(t, err)
+	return embedder
+}
+
 // trapCorpus holds one planted answer and two facts a content match would
 // confuse with it: the same value under another subject, and the same
 // subject under another topic.
@@ -36,7 +45,7 @@ func trapCorpus() Corpus {
 // value against content would credit all three.
 func TestMeasure_CreditsOnlyThePlantedAnswer(t *testing.T) {
 	corpus := trapCorpus()
-	result, err := Measure(context.Background(), corpus, len(corpus.Items), now)
+	result, err := Measure(context.Background(), corpus, len(corpus.Items), now, hashingEmbedder(t))
 	require.NoError(t, err)
 	require.Len(t, result.Probes, 1)
 
@@ -58,7 +67,7 @@ func TestMeasure_CreditsOnlyThePlantedAnswer(t *testing.T) {
 
 func TestMeasure_RanksThePlantedAnswerFirstWhenNothingElseIsRelevant(t *testing.T) {
 	corpus := trapCorpus()
-	result, err := Measure(context.Background(), corpus, len(corpus.Items), now)
+	result, err := Measure(context.Background(), corpus, len(corpus.Items), now, hashingEmbedder(t))
 	require.NoError(t, err)
 
 	probe := result.Probes[0]
@@ -70,7 +79,7 @@ func TestMeasure_RanksThePlantedAnswerFirstWhenNothingElseIsRelevant(t *testing.
 
 func TestMeasure_ReportsWhatTheShippedRecallBudgetReturns(t *testing.T) {
 	corpus := trapCorpus()
-	result, err := Measure(context.Background(), corpus, len(corpus.Items), now)
+	result, err := Measure(context.Background(), corpus, len(corpus.Items), now, hashingEmbedder(t))
 	require.NoError(t, err)
 
 	probe := result.Probes[0]
@@ -82,9 +91,9 @@ func TestMeasure_ReportsWhatTheShippedRecallBudgetReturns(t *testing.T) {
 func TestMeasure_RejectsAProbeWithNoPlantedAnswer(t *testing.T) {
 	corpus := trapCorpus()
 	corpus.Probes = append(corpus.Probes, Probe{Task: "Ask Otto about nothing.", Subject: "Otto", Topic: "degree"})
-	_, err := Measure(context.Background(), corpus, len(corpus.Items), now)
+	_, err := Measure(context.Background(), corpus, len(corpus.Items), now, hashingEmbedder(t))
 	assert.Error(t, err)
 
-	_, err = Measure(context.Background(), corpus, len(corpus.Items)+1, now)
+	_, err = Measure(context.Background(), corpus, len(corpus.Items)+1, now, hashingEmbedder(t))
 	assert.Error(t, err)
 }

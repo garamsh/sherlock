@@ -4,9 +4,18 @@
 // internal/memory's own hybrid search, so the numbers in ../README.md
 // describe the code that runs in production rather than a model of it.
 //
-// It runs offline on the hashing embedder and needs no API key:
+// It measures two things, under whichever embedder is named: retrieval
+// over the planted corpus, and whether any supersession threshold
+// separates corrections from facts that must both survive.
+//
+// The default run is offline on the shipped hashing embedder and needs no
+// API key:
 //
 //	go run ./docs/experiments/memory-retrieval/harness -seed 7
+//
+// The openai embedder reads its key from OPENAI_API_KEY in the
+// environment and caches vectors by text at -cache, which must be a path
+// outside the repository.
 package main
 
 import (
@@ -24,9 +33,15 @@ import (
 // The run's shape. probeCount probes are drawn from the corpus; every
 // store size holds all of them, so a size difference is a difference in
 // distractor count and nothing else.
+const probeCount = 120
+
+// The measurements the command can run. Both is the default; the
+// cache-replay embedder can only answer separability, because the
+// corpus is not in the round-4 cache.
 const (
-	probeCount = 120
-	embedder   = "hashing"
+	measureRetrieval    = "retrieval"
+	measureSeparability = "separability"
+	measureBoth         = "both"
 )
 
 // The three plantings measured. mixed-30d is the corpus as generated:
@@ -83,11 +98,14 @@ type Arm struct {
 	Sizes []SizeResult `json:"sizes"`
 }
 
-// Run is one seed's whole measurement, written to results/.
+// Run is one seed's whole measurement, written to results/. Embedder and
+// Dimensions head every run because a retrieval figure means nothing
+// without them.
 type Run struct {
 	Seed         int64        `json:"seed"`
 	Now          time.Time    `json:"now"`
 	Embedder     string       `json:"embedder"`
+	Dimensions   int          `json:"dimensions"`
 	Probes       int          `json:"probes"`
 	StoreSizes   []int        `json:"store_sizes"`
 	CorpusParams CorpusParams `json:"corpus_params"`
@@ -105,16 +123,67 @@ func main() {
 func run() error {
 	seed := flag.Int64("seed", 7, "corpus seed")
 	out := flag.String("out", defaultOut(), "directory the results are written to")
+	name := flag.String("embedder", embedderHashing,
+		"embedder to measure: hashing, openai, or openai512-cache")
+	cachePath := flag.String("cache", "",
+		"vector cache file, outside the repository; required by openai and openai512-cache")
+	measure := flag.String("measure", measureBoth, "what to measure: retrieval, separability, or both")
 	flag.Parse()
+
+	if *measure != measureRetrieval && *measure != measureSeparability && *measure != measureBoth {
+		return fmt.Errorf("unknown measurement %q", *measure)
+	}
+	embedder, err := NewEmbedder(*name, *cachePath)
+	if err != nil {
+		return err
+	}
+	ctx := context.Background()
 
 	corpus, err := GenerateCorpus(*seed, probeCount, storeSizes[len(storeSizes)-1], storeSizes[0])
 	if err != nil {
 		return fmt.Errorf("generate corpus: %w", err)
 	}
+	if err := writeJSON(filepath.Join(*out, fmt.Sprintf("corpus_seed%d.json", *seed)), corpus); err != nil {
+		return err
+	}
+
+	if *measure != measureRetrieval {
+		set, err := LoadPairSet(filepath.Join(*out, fmt.Sprintf("separability_pairs_seed%d.json", *seed)))
+		if err != nil {
+			return err
+		}
+		if err := embedder.prefetchAll(ctx, pairTexts(set)); err != nil {
+			return err
+		}
+		started := time.Now()
+		result, err := MeasureSeparability(ctx, set, embedder, now)
+		if err != nil {
+			return fmt.Errorf("separability: %w", err)
+		}
+		fmt.Printf("separability on %s: %d pairs in %s\n", embedder.Name, result.PairsMeasured,
+			time.Since(started).Round(time.Millisecond))
+		if err := writeJSON(filepath.Join(*out,
+			fmt.Sprintf("separability_seed%d_%s.json", *seed, embedder.Name)), result); err != nil {
+			return err
+		}
+		reportSeparability(result)
+	}
+
+	if *measure == measureSeparability {
+		return nil
+	}
+	if err := embedder.prefetchAll(ctx, corpusTexts(corpus)); err != nil {
+		return err
+	}
+	dims, err := embedder.dimensions(ctx)
+	if err != nil {
+		return err
+	}
 	result := Run{
 		Seed:       *seed,
 		Now:        now,
-		Embedder:   embedder,
+		Embedder:   embedder.Name,
+		Dimensions: dims,
 		Probes:     len(corpus.Probes),
 		StoreSizes: storeSizes,
 		CorpusParams: CorpusParams{
@@ -137,7 +206,6 @@ func run() error {
 		},
 	}
 
-	ctx := context.Background()
 	for _, arm := range []Arm{
 		{Name: armMixed30d},
 		{Name: armMixed360d},
@@ -149,25 +217,71 @@ func run() error {
 		}
 		for _, size := range storeSizes {
 			started := time.Now()
-			sized, err := Measure(ctx, planted, size, now)
+			sized, err := Measure(ctx, planted, size, now, embedder)
 			if err != nil {
 				return fmt.Errorf("measure %s at %d: %w", arm.Name, size, err)
 			}
 			arm.Sizes = append(arm.Sizes, sized)
-			fmt.Printf("%s size %d: %d probes in %s\n", arm.Name, size, len(sized.Probes),
-				time.Since(started).Round(time.Millisecond))
+			fmt.Printf("%s %s size %d: %d probes in %s\n", embedder.Name, arm.Name, size,
+				len(sized.Probes), time.Since(started).Round(time.Millisecond))
 		}
 		result.Arms = append(result.Arms, arm)
 	}
 
-	if err := writeJSON(filepath.Join(*out, fmt.Sprintf("corpus_seed%d.json", *seed)), corpus); err != nil {
-		return err
-	}
-	if err := writeJSON(filepath.Join(*out, fmt.Sprintf("retrieval_seed%d.json", *seed)), result); err != nil {
+	if err := writeJSON(filepath.Join(*out,
+		fmt.Sprintf("retrieval_seed%d_%s.json", *seed, embedder.Name)), result); err != nil {
 		return err
 	}
 	report(result)
 	return nil
+}
+
+// corpusTexts is every text the retrieval measurement embeds: the planted
+// facts and the task statements the probes query with.
+func corpusTexts(corpus Corpus) []string {
+	texts := make([]string, 0, len(corpus.Items)+len(corpus.Probes))
+	for _, it := range corpus.Items {
+		texts = append(texts, it.Content)
+	}
+	for _, probe := range corpus.Probes {
+		texts = append(texts, probe.Task)
+	}
+	return texts
+}
+
+// pairTexts is every text the separability measurement embeds.
+func pairTexts(set PairSet) []string {
+	var texts []string
+	for _, pairs := range set.Families {
+		for _, pair := range pairs {
+			texts = append(texts, pair.Old, pair.New)
+		}
+	}
+	return texts
+}
+
+// reportSeparability prints the family table and what the thresholds do
+// with it, naming the embedder on every line because the answer is only
+// meaningful with it.
+func reportSeparability(s Separability) {
+	fmt.Printf("\n%s, %d dimensions, %d pairs per family\n", s.Embedder, s.Dimensions, s.PairsPerFamily)
+	fmt.Println("family         supersede?  min    p25    median p75    max    iqr    store retired")
+	for _, f := range s.Families {
+		fmt.Printf("%-14s %-11t %.3f  %.3f  %.3f  %.3f  %.3f  %.3f  %d of %d\n",
+			f.Name, f.MustSupersede, f.Min, f.P25, f.Median, f.P75, f.Max, f.IQR, f.Superseded, f.Pairs)
+	}
+	fmt.Printf("\ncoexist at or above correction: %.3f of cross pairs\n", s.Overlap.CoexistAtOrAboveCorrect)
+	fmt.Printf("shipped threshold %.2f: %d correct, %d wrong retirements, accuracy %.3f\n",
+		s.ShippedThreshold.Threshold, s.ShippedThreshold.CorrectRetirements,
+		s.ShippedThreshold.WrongRetirements, s.ShippedThreshold.Accuracy)
+	fmt.Printf("ADR 0006 threshold %.2f: %d correct, %d wrong retirements, accuracy %.3f\n",
+		s.ADRThreshold.Threshold, s.ADRThreshold.CorrectRetirements,
+		s.ADRThreshold.WrongRetirements, s.ADRThreshold.Accuracy)
+	fmt.Printf("best possible threshold %.2f: %d correct, %d wrong retirements, accuracy %.3f\n",
+		s.BestThreshold.Threshold, s.BestThreshold.CorrectRetirements,
+		s.BestThreshold.WrongRetirements, s.BestThreshold.Accuracy)
+	fmt.Printf("shipped Store agrees with the harness cosine on %d of %d pairs\n",
+		s.StoreAgreesWithCosine, s.PairsMeasured)
 }
 
 // plantingFor returns the corpus as the named arm plants it.
@@ -204,7 +318,7 @@ func writeJSON(path string, value any) error {
 // would be at other probe counts.
 func report(r Run) {
 	fmt.Printf("\nseed %d, %d probes, %s embedder, %d-dimension vectors\n",
-		r.Seed, r.Probes, r.Embedder, r.Config.EmbeddingDim)
+		r.Seed, r.Probes, r.Embedder, r.Dimensions)
 	fmt.Println("\narm         store  metric               mean    95% interval")
 	for _, arm := range r.Arms {
 		for _, size := range arm.Sizes {

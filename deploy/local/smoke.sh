@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Stands up the deployment README.md documents and fails unless the
-# canned turn runs clean and the workspace's two writers share one
-# owner. Contributors invoke it directly, as does the docker job in
-# .github/workflows/ci.yml.
+# Stands up the deployment README.md documents and fails unless its
+# mTLS ingress accepts a request, the canned turn runs clean, and the
+# workspace's two writers share one owner. Contributors invoke it
+# directly, as does the docker job in .github/workflows/ci.yml.
 set -euo pipefail
 
 cd "$(dirname "$0")"
@@ -47,6 +47,26 @@ echo "==> deployment"
 install -d -m 0777 "$GAGENT_DATA_DIR"
 docker compose build
 docker compose up -d --wait
+
+# The ingress wiring this deployment is assembled from: the certificates
+# generated above, the client CA gagent.yaml names, and the port compose
+# publishes. A wrong-but-loadable client-ca starts clean and rejects
+# every real caller, so startup cannot catch it and neither can a Go test
+# holding its own certificates — only a real request over this port can.
+# A 202 also re-proves the gateway serves only after the tool registry
+# loaded. One request: --retry-connrefused waits for the listener to bind
+# without retrying a rejected handshake, so bad certificate wiring fails
+# here instead of being polled over.
+echo "==> the gateway accepts an mTLS request on the published port"
+status=$(curl -sS -o /dev/null -w '%{http_code}' \
+  --retry 30 --retry-delay 1 --retry-connrefused \
+  --cacert tls/ca.pem --cert tls/client.pem --key tls/client-key.pem \
+  -X POST "https://localhost:8080/agents/demo/messages" \
+  -d '{"content":"hello"}' || true)
+if [ "$status" != "202" ]; then
+  echo "the gateway did not accept an mTLS request (status: ${status:-none})" >&2
+  exit 1
+fi
 
 # One turn, run in the agent container against the deployment's own
 # mounted tools and its workspace sidecar. A failed tool call does not

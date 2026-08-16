@@ -75,6 +75,10 @@ func renderRecord(files runFiles) error {
 	if err := readStudy(files.finding, &finding); err != nil {
 		return err
 	}
+	result.Addresser, err = readCommittedAddresses(files.addresses)
+	if err != nil {
+		return err
+	}
 	if len(finding.Frames) > 0 {
 		result.Finding = &finding
 	}
@@ -167,7 +171,7 @@ func RenderTables(r Run) []Section {
 		section(regionWorkload, r, renderRun),
 		section(regionDecade, r, renderYears, renderSizes),
 		section(regionArity, r, renderArity),
-		section(regionAddress, r, renderQuestions),
+		section(regionAddress, r, renderQuestions, renderAddresser),
 		section(regionDeclaration, r, renderSweep, renderHealing, renderDeclarer, renderModelRun),
 		section(regionDestroy, r, renderBias, renderStability, renderDisagreement),
 		section(regionReach, r, renderReach, renderCoupling, renderCapacity),
@@ -423,6 +427,42 @@ func renderQuestions(b *strings.Builder, r Run) {
 	fmt.Fprintf(b, "| cut | name | addresses | form gets wrong | share |\n|---|---|---|---|---|\n")
 	for _, c := range q.Residual {
 		fmt.Fprintf(b, "| %s | `%s` | %d | %d | %.3f |\n", c.Cut, c.Name, c.Addresses, c.Wrong, c.Share)
+	}
+	fmt.Fprintln(b)
+}
+
+// renderAddresser is where a real model puts a fact when it is asked for the
+// question rather than for the operation, against where the rule puts it.
+func renderAddresser(b *strings.Builder, r Run) {
+	a := r.Addresser
+	if a == nil {
+		return
+	}
+	fmt.Fprintf(b, "### What a model addressed\n\n")
+	fmt.Fprintf(b, "| quantity | value |\n|---|---|\n")
+	rows := [][2]any{
+		{"model", a.Model},
+		{"assertions asked", a.Asked},
+		{"whole address right", figure(a.Accuracy)},
+		{"question right", figure(a.QuestionAcc)},
+		{"assertions the rule restricts", a.Restricted},
+		{"restriction right, of those", figure(a.RestrictionAcc)},
+		{"restriction invented where the rule reads none", figure(a.InventedPerAsked)},
+	}
+	for _, row := range rows {
+		fmt.Fprintf(b, "| %s | %v |\n", row[0], row[1])
+	}
+	fmt.Fprintln(b)
+
+	fmt.Fprintf(b, "| wording | asked | whole address right |\n|---|---|---|\n")
+	for _, cut := range a.Wordings {
+		fmt.Fprintf(b, "| `%s` | %d | %s |\n", cut.Name, cut.Asked, figure(cut.Accuracy))
+	}
+	fmt.Fprintln(b)
+
+	fmt.Fprintf(b, "| class | asked | whole address right |\n|---|---|---|\n")
+	for _, cut := range a.Classes {
+		fmt.Fprintf(b, "| `%s` | %d | %s |\n", cut.Name, cut.Asked, figure(cut.Accuracy))
 	}
 	fmt.Fprintln(b)
 }
@@ -691,6 +731,17 @@ func renderPaid(b *strings.Builder, r Run) {
 			[2]any{"cost of declaring, USD", fmt.Sprintf("%.4f", d.CostUSD)},
 			[2]any{"call bound declaring refuses to pass", declareCallLimit},
 			[2]any{"cost bound declaring refuses to pass, USD", fmt.Sprintf("%.2f", declareCostLimit)})
+	}
+	if a := r.Addresser; a != nil {
+		total += a.CostUSD
+		rows = append(rows,
+			[2]any{"paid calls, addressing", a.Calls},
+			[2]any{"assertions addressed", a.Asked},
+			[2]any{"prompt tokens, addressing", a.PromptTokens},
+			[2]any{"completion tokens, addressing", a.CompletionTokens},
+			[2]any{"cost of addressing, USD", fmt.Sprintf("%.4f", a.CostUSD)},
+			[2]any{"call bound addressing refuses to pass", addressCallLimit},
+			[2]any{"cost bound addressing refuses to pass, USD", fmt.Sprintf("%.2f", addressCostLimit)})
 	}
 	if s := r.Stability; s != nil {
 		total += s.CostUSD

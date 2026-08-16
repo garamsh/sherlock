@@ -20,7 +20,7 @@ build:
 
 build-tools:
 	@for tool in files shell_exec message_send github; do \
-		go build -o tools/$$tool/$$tool ./tools/$$tool/; \
+		CGO_ENABLED=0 go build -o tools/$$tool/$$tool ./tools/$$tool/; \
 	done
 
 generate:

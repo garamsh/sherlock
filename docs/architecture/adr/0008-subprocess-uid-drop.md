@@ -36,7 +36,7 @@ What exec is NOT:
 
 - The `internal/workspace/shell/` package holds the executor; the Executor interface is the only thing the workspace server uses, so added hardening (chroot, seccomp, more rlimits) is a swap, not a rewrite. `shell_exec` is an independent tool server (ADR 0017) that calls the workspace's Exec RPC; it knows only the workspace gRPC client.
 - Two deployment modes run real workloads. The privileged drop: a workspace process with UID-switch privilege (setuid-root binary, supervisor, or container capabilities) runs children as the configured exec UID. The single-account mode: the exec UID set to the process's own UID needs no privilege at all — the operator declares the account explicitly; there is no implicit fallback to the current UID. An unprivileged process with any other exec UID reports `agent_uid unavailable`.
-- Exec children share the workspace directory's ownership story: a privileged workspace chowns the workspace directory to the exec UID, so files written by tools through the gRPC contract and by exec'd children share one owner.
+- Exec children share the workspace directory's ownership story: a privileged workspace chowns the workspace directory to the exec UID, keeps the directory's write bit for its own group, and gives every file the gRPC contract writes to the same UID — so files written by tools through the gRPC contract and by exec'd children share one owner, without the workspace holding a capability over every file in its container.
 - The unauthenticated Exec listener is a remote shell into the workspace, so the loopback-only fail-closed posture (ADR 0012) is what stands until contract authentication exists.
 
 ## Rejected alternatives

@@ -60,14 +60,16 @@ type Config struct {
 
 // Run is one seed's whole measurement.
 type Run struct {
-	Seed         int64          `json:"seed"`
-	Start        string         `json:"start"`
-	Embedder     string         `json:"embedder"`
-	Digest       string         `json:"workload_digest"`
-	Params       Params         `json:"params"`
-	Config       Config         `json:"configuration"`
-	Cost         Cost           `json:"cost"`
-	Sweep        []SweepResult  `json:"declaration_error_sweep"`
+	Seed        int64         `json:"seed"`
+	Start       string        `json:"start"`
+	Embedder    string        `json:"embedder"`
+	Digest      string        `json:"workload_digest"`
+	Params      Params        `json:"params"`
+	Config      Config        `json:"configuration"`
+	Cost        Cost          `json:"cost"`
+	Sweep       []SweepResult `json:"declaration_error_sweep"`
+	Constrained []Constrained `json:"constrained,omitempty"`
+
 	Declarer     *DeclarerScore `json:"declarer,omitempty"`
 	Model        []ModelRun     `json:"model_runs,omitempty"`
 	Bias         []BiasResult   `json:"join_bias,omitempty"`
@@ -104,7 +106,8 @@ func run() error {
 
 	resultPath := filepath.Join(*out, fmt.Sprintf("decade_seed%d.json", *seed))
 	if *render {
-		return renderRecord(resultPath, *record)
+		return renderRecord(resultPath, filepath.Join(*out, fmt.Sprintf("constrained_seed%d.json", *seed)),
+			*record)
 	}
 
 	workload, err := GenerateWorkload(*seed, params)
@@ -184,11 +187,20 @@ func run() error {
 		}
 		result.Disagreement = &run
 	}
-	if err := writeJSON(resultPath, result); err != nil {
+	// The constrained runs are their own file: they are a different
+	// question asked of the same workload, and keeping them out of the
+	// decade file is what keeps that file exactly what it was.
+	constrainedPath := filepath.Join(*out, fmt.Sprintf("constrained_seed%d.json", *seed))
+	if err := writeJSON(constrainedPath, result.Constrained); err != nil {
+		return err
+	}
+	unbounded := result
+	unbounded.Constrained = nil
+	if err := writeJSON(resultPath, unbounded); err != nil {
 		return err
 	}
 	report(result)
-	if err := renderRecord(resultPath, *record); err != nil {
+	if err := renderRecord(resultPath, constrainedPath, *record); err != nil {
 		return err
 	}
 	fmt.Printf("\nrewrote the tables in %s\n", *record)
@@ -234,6 +246,13 @@ func MeasureRun(ctx context.Context, w Workload) (Run, error) {
 			fmt.Printf("%s, %s arm: %d probes over %d years\n", frame, arm, len(measured.Probes), len(measured.Years))
 		}
 	}
+	constrained, err := MeasureConstrained(ctx, w)
+	if err != nil {
+		return Run{}, err
+	}
+	result.Constrained = constrained
+	fmt.Printf("constrained runs: %d\n", len(constrained))
+
 	sweep, err := MeasureSweep(ctx, w, w.Seed)
 	if err != nil {
 		return Run{}, err

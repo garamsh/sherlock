@@ -17,10 +17,7 @@ import (
 // of claims: there is no prose figure to trace back, because there is no
 // prose figure.
 func TestRenderTables_LeavesTheCommittedRecordUnchanged(t *testing.T) {
-	body, err := os.ReadFile(filepath.Join("..", "results", "decade_seed7.json"))
-	require.NoError(t, err)
-	var result Run
-	require.NoError(t, json.Unmarshal(body, &result))
+	result := committedRun(t)
 
 	record, err := os.ReadFile(filepath.Join("..", "README.md"))
 	require.NoError(t, err)
@@ -31,14 +28,27 @@ func TestRenderTables_LeavesTheCommittedRecordUnchanged(t *testing.T) {
 		"the record and the results disagree; run `go run ./docs/experiments/memory-frames/harness -render`")
 }
 
-// A figure without an interval cannot be told from a figure the workload
-// only appeared to produce, so every one of them carries one or says it has
-// no sample.
-func TestRenderTables_GivesEveryFigureAnIntervalOrSaysItHasNone(t *testing.T) {
+// committedRun is every committed result the record renders from. The
+// constrained runs are their own file, so reading one of them is reading
+// half the record.
+func committedRun(t *testing.T) Run {
+	t.Helper()
 	body, err := os.ReadFile(filepath.Join("..", "results", "decade_seed7.json"))
 	require.NoError(t, err)
 	var result Run
 	require.NoError(t, json.Unmarshal(body, &result))
+
+	constrained, err := os.ReadFile(filepath.Join("..", "results", "constrained_seed7.json"))
+	require.NoError(t, err)
+	require.NoError(t, json.Unmarshal(constrained, &result.Constrained))
+	return result
+}
+
+// A figure without an interval cannot be told from a figure the workload
+// only appeared to produce, so every one of them carries one or says it has
+// no sample.
+func TestRenderTables_GivesEveryFigureAnIntervalOrSaysItHasNone(t *testing.T) {
+	result := committedRun(t)
 
 	for _, line := range strings.Split(RenderTables(result), "\n") {
 		if !strings.HasPrefix(line, "| `") {

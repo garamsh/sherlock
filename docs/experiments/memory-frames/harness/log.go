@@ -93,6 +93,24 @@ func (f *logFrame) Held(context.Context) ([]string, error) {
 	return out, nil
 }
 
+// Forget drops the events whose line it is given. A log that forgets is no
+// longer lossless, which is what a bound costs this structure in
+// particular.
+func (f *logFrame) Forget(_ context.Context, held []string) error {
+	victims := map[string]bool{}
+	for _, text := range held {
+		victims[text] = true
+	}
+	kept := f.events[:0]
+	for _, e := range f.events {
+		if !victims[line(e.address, e.value)] {
+			kept = append(kept, e)
+		}
+	}
+	f.events = kept
+	return nil
+}
+
 func (f *logFrame) Close() error { return nil }
 
 // projectNewest keeps the value of the latest event at the address, which

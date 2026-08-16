@@ -30,6 +30,21 @@ func (f *transcriptFrame) Size(context.Context) (Size, error) {
 
 func (f *transcriptFrame) Held(context.Context) ([]string, error) { return f.lines, nil }
 
+func (f *transcriptFrame) Forget(_ context.Context, held []string) error {
+	victims := map[string]bool{}
+	for _, text := range held {
+		victims[text] = true
+	}
+	kept := f.lines[:0]
+	for _, line := range f.lines {
+		if !victims[line] {
+			kept = append(kept, line)
+		}
+	}
+	f.lines = kept
+	return nil
+}
+
 func (f *transcriptFrame) Close() error { return nil }
 
 // silentFrame answers every turn with nothing.
@@ -39,6 +54,7 @@ func (silentFrame) Observe(context.Context, Turn) error             { return nil
 func (silentFrame) Context(context.Context, Turn) (Injected, error) { return Injected{}, nil }
 func (silentFrame) Size(context.Context) (Size, error)              { return Size{}, nil }
 func (silentFrame) Held(context.Context) ([]string, error)          { return nil, nil }
+func (silentFrame) Forget(context.Context, []string) error          { return nil }
 func (silentFrame) Close() error                                    { return nil }
 
 // measureWith runs a frame the registry does not build, which is also the

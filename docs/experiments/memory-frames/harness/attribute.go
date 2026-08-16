@@ -159,6 +159,28 @@ func (f *attributeFrame) Held(context.Context) ([]string, error) {
 	return out, nil
 }
 
+// Forget drops the values whose line it is given.
+func (f *attributeFrame) Forget(_ context.Context, held []string) error {
+	victims := map[string]bool{}
+	for _, text := range held {
+		victims[text] = true
+	}
+	for address, values := range f.values {
+		kept := values[:0]
+		for _, one := range values {
+			if !victims[line(address, one.value)] {
+				kept = append(kept, one)
+			}
+		}
+		if len(kept) == 0 {
+			delete(f.values, address)
+			continue
+		}
+		f.values[address] = kept
+	}
+	return nil
+}
+
 func (f *attributeFrame) Close() error { return nil }
 
 // replaces reports whether this write ends the values already at the

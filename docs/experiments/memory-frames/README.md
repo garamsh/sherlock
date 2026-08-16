@@ -9,9 +9,11 @@ What a memory structure does with a decade of turns, measured through a seam tha
 - The frames
 - The arity question
 - What a wrong declaration costs
+- Whether a write need destroy
 - What a run costs
 - Results
 - What the numbers say
+- What would be chosen today
 - What this record does not say
 - Limits
 - Reproducing
@@ -115,13 +117,27 @@ The corruption is a property of the run and not of any structure. It is applied 
 
 **Healing is measured, not asserted.** After a wrong declaration, the tables report the share of corrupted addresses answering correctly again at the last year and how many checkpoints each carried the damage. `harness/misdeclaration_test.go` asserts the asymmetry those columns show.
 
+## Whether a write need destroy
+
+The two failures are not symmetric and the record already says why: a replacement clears the address, so it clears a wrongly-kept value with it, and nothing re-writes a wrongly-cleared one. That leaves one question, and it is the last one before a structure can be chosen — can a structure be built in which no write destroys, and what does it cost?
+
+Three things are measured, all on the declarations already committed.
+
+**Erring toward the cheaper failure.** A share of the writes that declare a replacement is resolved to a join instead, from taking every declaration as it comes to joining whatever the declaration says. The two ends are structures anyone could build; every point between them is a share of writes chosen by nothing, so the interior is a measuring instrument and not a design. What it is for is the shape of the trade, which is what a chooser needs and what this record did not have.
+
+**A store where replacement closes a span rather than deleting.** `interval-declared` is the interval store taking the declaration instead of deciding for itself, so a wrongly-declared replacement closes a span rather than removing a row and the value is still there. It is run beside `attribute-declared` on the same declarations, and the question is whether keeping the value changes what can be answered.
+
+**Whether the model is in doubt where it is wrong.** A bias needs something to bias on, and the candidate that does not ask the model for a number is asking it more than once and treating the samples disagreeing as the doubt. Every assertion whose declaration has a consequence was asked again, several times, at a temperature that lets the answer vary. Whether disagreement tracks error at all is the figure that decides whether any doubt-reading rule is possible, and it is reported before the rule built on it.
+
+`harness/no_destroy_test.go` asserts each of these: that the interval store holds what a wrong declaration cleared and still cannot answer with it, that the bias's far end is what keeping every value already does, that both declaration-reading stores answer identically, and that a split resolves to a join.
+
 ## What a run costs
 
 Established before the run, as issue #443 requires.
 
 No frame calls a model. Every structure measured here decides what it decides from what it was given, and only the shipped frame touches an embedder at all — the deterministic offline one `cmd/gagent` defaults to. The frames, the workload and the error sweep are free, and the model-call count in the first table below is the check on that rather than an assurance.
 
-**One thing in this record was paid for**, and it is reported in a table of its own after every free figure: asking a model to declare the operation for each of the workload's assertions. It is one call per assertion and nothing else, on the cheapest model that answers in one word without billing reasoning as output. The run refuses to start past a call bound and refuses to finish past a cost bound, both stated in that table, because a bound discovered afterwards is not a bound. Its answers are committed, so scoring them costs nothing and re-running the measurement does not re-buy them: only `-declare` reaches the provider, and the key reaches the process from the environment and nothing else. What the shipped OpenAI embedder costs the read path, and which conclusions may be quoted across the two embedders, is #435's measurement and is not repeated here.
+**Two things in this record were paid for**, and both are in a table of its own after every free figure: asking a model to declare the operation for each of the workload's assertions, and asking it again, several times over, for the assertions whose declaration has a consequence. Each is one call per question and nothing else, on the cheapest model that answers in one word without billing reasoning as output. Each refuses to start past its own call bound and to finish past its own cost bound, all four stated in that table, because a bound discovered afterwards is not a bound. Both answer sets are committed and the second measurement re-used the first rather than re-buying it. Its answers are committed, so scoring them costs nothing and re-running the measurement does not re-buy them: only `-declare` reaches the provider, and the key reaches the process from the environment and nothing else. What the shipped OpenAI embedder costs the read path, and which conclusions may be quoted across the two embedders, is #435's measurement and is not repeated here.
 
 The figure that matters for the designs coming next is in the cost table below, and it is in tokens rather than money on purpose: a price list expires and a token count does not. A design that rewrites a bounded document with a model on every turn makes one call per turn for the whole span, and the table states what one run of one such design spends in prompt and output tokens. Multiply by the price of whatever model it uses at the time, and by the number of designs and seeds being compared.
 
@@ -242,6 +258,16 @@ The figure that matters for the designs coming next is in the cost table below, 
 | `interval` | `oracle` | 8 | 240 | 0.833 ±0.030 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 25 ±0 | 2.0 ±0.1 |
 | `interval` | `oracle` | 9 | 240 | 0.833 ±0.030 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 25 ±0 | 2.0 ±0.1 |
 | `interval` | `oracle` | 10 | 240 | 0.833 ±0.030 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 25 ±0 | 2.0 ±0.1 |
+| `interval-declared` | `oracle` | 1 | 160 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a | 26 ±0 | 1.0 ±0.0 |
+| `interval-declared` | `oracle` | 2 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | 25 ±0 | 1.0 ±0.0 |
+| `interval-declared` | `oracle` | 3 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 26 ±0 | 1.3 ±0.1 |
+| `interval-declared` | `oracle` | 4 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 26 ±0 | 1.3 ±0.1 |
+| `interval-declared` | `oracle` | 5 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 26 ±0 | 1.3 ±0.1 |
+| `interval-declared` | `oracle` | 6 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 34 ±2 | 1.7 ±0.1 |
+| `interval-declared` | `oracle` | 7 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 34 ±2 | 2.0 ±0.1 |
+| `interval-declared` | `oracle` | 8 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 34 ±2 | 2.0 ±0.1 |
+| `interval-declared` | `oracle` | 9 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 34 ±2 | 2.0 ±0.1 |
+| `interval-declared` | `oracle` | 10 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 34 ±2 | 2.0 ±0.1 |
 | `log` | `oracle` | 1 | 160 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a | 26 ±0 | 160.0 ±0.0 |
 | `log` | `oracle` | 2 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | 25 ±0 | 280.0 ±0.0 |
 | `log` | `oracle` | 3 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 26 ±0 | 400.0 ±0.0 |
@@ -332,6 +358,16 @@ The figure that matters for the designs coming next is in the cost table below, 
 | `interval` | `text` | 8 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
 | `interval` | `text` | 9 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
 | `interval` | `text` | 10 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `interval-declared` | `text` | 1 | 160 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | n/a | n/a | 0.000 ±0.000 | n/a | 0 ±0 | 0.0 ±0.0 |
+| `interval-declared` | `text` | 2 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | n/a | 0 ±0 | 0.0 ±0.0 |
+| `interval-declared` | `text` | 3 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `interval-declared` | `text` | 4 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `interval-declared` | `text` | 5 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `interval-declared` | `text` | 6 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `interval-declared` | `text` | 7 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `interval-declared` | `text` | 8 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `interval-declared` | `text` | 9 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `interval-declared` | `text` | 10 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
 | `log` | `text` | 1 | 160 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | n/a | n/a | 0.000 ±0.000 | n/a | 0 ±0 | 0.0 ±0.0 |
 | `log` | `text` | 2 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | n/a | 0 ±0 | 0.0 ±0.0 |
 | `log` | `text` | 3 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
@@ -371,6 +407,9 @@ The figure that matters for the designs coming next is in the cost table below, 
 | `interval` | `oracle` | 1 | 160 | 4.0 | 4.0 |
 | `interval` | `oracle` | 5 | 480 | 12.0 | 12.0 |
 | `interval` | `oracle` | 10 | 840 | 20.9 | 20.9 |
+| `interval-declared` | `oracle` | 1 | 160 | 4.0 | 4.0 |
+| `interval-declared` | `oracle` | 5 | 480 | 12.0 | 12.0 |
+| `interval-declared` | `oracle` | 10 | 840 | 20.9 | 20.9 |
 | `log` | `oracle` | 1 | 160 | 4.0 | 4.0 |
 | `log` | `oracle` | 5 | 480 | 12.0 | 12.0 |
 | `log` | `oracle` | 10 | 840 | 20.9 | 20.9 |
@@ -398,6 +437,9 @@ The figure that matters for the designs coming next is in the cost table below, 
 | `interval` | `text` | 1 | 0 | 0.0 | 0.0 |
 | `interval` | `text` | 5 | 0 | 0.0 | 0.0 |
 | `interval` | `text` | 10 | 0 | 0.0 | 0.0 |
+| `interval-declared` | `text` | 1 | 0 | 0.0 | 0.0 |
+| `interval-declared` | `text` | 5 | 0 | 0.0 | 0.0 |
+| `interval-declared` | `text` | 10 | 0 | 0.0 | 0.0 |
 | `log` | `text` | 1 | 0 | 0.0 | 0.0 |
 | `log` | `text` | 5 | 0 | 0.0 | 0.0 |
 | `log` | `text` | 10 | 0 | 0.0 | 0.0 |
@@ -615,33 +657,154 @@ The figure that matters for the designs coming next is in the cost table below, 
 | `refined` | 80 | 0.212 ±0.090 |
 | `fresh` | 400 | 0.003 ±0.005 |
 
-### What the frame answered on the model's declarations
+### What each frame answered on the model's declarations
+
+| frame | year | recall | carried | replaced | reverted | parallel | refined | fresh | stale returned | units held |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `attribute-declared` | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a | 160 |
+| `attribute-declared` | 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a |
+| `attribute-declared` | 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.188 ±0.086 | n/a |
+| `attribute-declared` | 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.188 ±0.086 | n/a |
+| `attribute-declared` | 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.188 ±0.086 | 415 |
+| `attribute-declared` | 6 | 0.952 ±0.019 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 1.000 ±0.000 | 0.188 ±0.086 | n/a |
+| `attribute-declared` | 7 | 0.952 ±0.019 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 1.000 ±0.000 | 0.212 ±0.090 | n/a |
+| `attribute-declared` | 8 | 0.952 ±0.019 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 1.000 ±0.000 | 0.212 ±0.090 | n/a |
+| `attribute-declared` | 9 | 0.952 ±0.019 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 1.000 ±0.000 | 0.212 ±0.090 | n/a |
+| `attribute-declared` | 10 | 0.952 ±0.019 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 1.000 ±0.000 | 0.212 ±0.090 | 679 |
+| `interval-declared` | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a | 160 |
+| `interval-declared` | 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a |
+| `interval-declared` | 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.188 ±0.086 | n/a |
+| `interval-declared` | 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.188 ±0.086 | n/a |
+| `interval-declared` | 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.188 ±0.086 | 480 |
+| `interval-declared` | 6 | 0.952 ±0.019 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 1.000 ±0.000 | 0.188 ±0.086 | n/a |
+| `interval-declared` | 7 | 0.952 ±0.019 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 1.000 ±0.000 | 0.212 ±0.090 | n/a |
+| `interval-declared` | 8 | 0.952 ±0.019 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 1.000 ±0.000 | 0.212 ±0.090 | n/a |
+| `interval-declared` | 9 | 0.952 ±0.019 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 1.000 ±0.000 | 0.212 ±0.090 | n/a |
+| `interval-declared` | 10 | 0.952 ±0.019 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 1.000 ±0.000 | 0.212 ±0.090 | 840 |
+
+| frame | direction | errors | addresses hit | healed by the last year | years carrying the damage |
+|---|---|---|---|---|---|
+| `attribute-declared` | `join-as-replace` | 23 | 23 | 0.000 ±0.000 | 5.00 ±0.00 |
+| `attribute-declared` | `replace-as-join` | 630 | 598 | 0.933 ±0.020 | 0.00 ±0.00 |
+| `interval-declared` | `join-as-replace` | 23 | 23 | 0.000 ±0.000 | 5.00 ±0.00 |
+| `interval-declared` | `replace-as-join` | 630 | 598 | 0.933 ±0.020 | 0.00 ±0.00 |
+
+### What erring toward join trades
+
+| share joined | destroying errors recovered | left destroying | year | recall | carried | replaced | reverted | parallel | refined | fresh | stale returned |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 0.00 | 0 | 23 | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a |
+| 0.00 | 0 | 23 | 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a |
+| 0.00 | 0 | 23 | 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.188 ±0.086 |
+| 0.00 | 0 | 23 | 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.188 ±0.086 |
+| 0.00 | 0 | 23 | 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.188 ±0.086 |
+| 0.00 | 0 | 23 | 6 | 0.952 ±0.019 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 1.000 ±0.000 | 0.188 ±0.086 |
+| 0.00 | 0 | 23 | 7 | 0.952 ±0.019 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 1.000 ±0.000 | 0.212 ±0.090 |
+| 0.00 | 0 | 23 | 8 | 0.952 ±0.019 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 1.000 ±0.000 | 0.212 ±0.090 |
+| 0.00 | 0 | 23 | 9 | 0.952 ±0.019 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 1.000 ±0.000 | 0.212 ±0.090 |
+| 0.00 | 0 | 23 | 10 | 0.952 ±0.019 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 1.000 ±0.000 | 0.212 ±0.090 |
+| 0.25 | 3 | 20 | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a |
+| 0.25 | 3 | 20 | 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a |
+| 0.25 | 3 | 20 | 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.412 ±0.109 |
+| 0.25 | 3 | 20 | 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.412 ±0.109 |
+| 0.25 | 3 | 20 | 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.412 ±0.109 |
+| 0.25 | 3 | 20 | 6 | 0.958 ±0.018 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.750 ±0.078 | 1.000 ±0.000 | 0.412 ±0.109 |
+| 0.25 | 3 | 20 | 7 | 0.958 ±0.018 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.750 ±0.078 | 1.000 ±0.000 | 0.425 ±0.109 |
+| 0.25 | 3 | 20 | 8 | 0.958 ±0.018 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.750 ±0.078 | 1.000 ±0.000 | 0.425 ±0.109 |
+| 0.25 | 3 | 20 | 9 | 0.958 ±0.018 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.750 ±0.078 | 1.000 ±0.000 | 0.425 ±0.109 |
+| 0.25 | 3 | 20 | 10 | 0.958 ±0.018 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.750 ±0.078 | 1.000 ±0.000 | 0.425 ±0.109 |
+| 0.50 | 8 | 15 | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a |
+| 0.50 | 8 | 15 | 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a |
+| 0.50 | 8 | 15 | 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.650 ±0.105 |
+| 0.50 | 8 | 15 | 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.650 ±0.105 |
+| 0.50 | 8 | 15 | 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.650 ±0.105 |
+| 0.50 | 8 | 15 | 6 | 0.969 ±0.015 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.812 ±0.076 | 1.000 ±0.000 | 0.650 ±0.105 |
+| 0.50 | 8 | 15 | 7 | 0.969 ±0.015 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.812 ±0.076 | 1.000 ±0.000 | 0.625 ±0.107 |
+| 0.50 | 8 | 15 | 8 | 0.969 ±0.015 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.812 ±0.076 | 1.000 ±0.000 | 0.625 ±0.107 |
+| 0.50 | 8 | 15 | 9 | 0.969 ±0.015 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.812 ±0.076 | 1.000 ±0.000 | 0.625 ±0.107 |
+| 0.50 | 8 | 15 | 10 | 0.969 ±0.015 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.812 ±0.076 | 1.000 ±0.000 | 0.625 ±0.107 |
+| 0.75 | 13 | 10 | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a |
+| 0.75 | 13 | 10 | 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a |
+| 0.75 | 13 | 10 | 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.825 ±0.084 |
+| 0.75 | 13 | 10 | 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.825 ±0.084 |
+| 0.75 | 13 | 10 | 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.825 ±0.084 |
+| 0.75 | 13 | 10 | 6 | 0.979 ±0.013 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.875 ±0.068 | 1.000 ±0.000 | 0.825 ±0.084 |
+| 0.75 | 13 | 10 | 7 | 0.979 ±0.013 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.875 ±0.068 | 1.000 ±0.000 | 0.800 ±0.088 |
+| 0.75 | 13 | 10 | 8 | 0.979 ±0.013 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.875 ±0.068 | 1.000 ±0.000 | 0.800 ±0.088 |
+| 0.75 | 13 | 10 | 9 | 0.979 ±0.013 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.875 ±0.068 | 1.000 ±0.000 | 0.800 ±0.088 |
+| 0.75 | 13 | 10 | 10 | 0.979 ±0.013 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.875 ±0.068 | 1.000 ±0.000 | 0.800 ±0.088 |
+| 1.00 | 23 | 0 | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a |
+| 1.00 | 23 | 0 | 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a |
+| 1.00 | 23 | 0 | 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 |
+| 1.00 | 23 | 0 | 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 |
+| 1.00 | 23 | 0 | 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 |
+| 1.00 | 23 | 0 | 6 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 |
+| 1.00 | 23 | 0 | 7 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 |
+| 1.00 | 23 | 0 | 8 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 |
+| 1.00 | 23 | 0 | 9 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 |
+| 1.00 | 23 | 0 | 10 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 |
+
+| share joined | year | units held | content KB |
+|---|---|---|---|
+| 0.00 | 1 | 160 | 4.0 |
+| 0.00 | 5 | 415 | 10.3 |
+| 0.00 | 10 | 679 | 16.8 |
+| 0.25 | 1 | 160 | 4.0 |
+| 0.25 | 5 | 433 | 10.8 |
+| 0.25 | 10 | 704 | 17.5 |
+| 0.50 | 1 | 160 | 4.0 |
+| 0.50 | 5 | 452 | 11.3 |
+| 0.50 | 10 | 731 | 18.1 |
+| 0.75 | 1 | 160 | 4.0 |
+| 0.75 | 5 | 466 | 11.6 |
+| 0.75 | 10 | 764 | 19.0 |
+| 1.00 | 1 | 160 | 4.0 |
+| 1.00 | 5 | 480 | 12.0 |
+| 1.00 | 10 | 800 | 19.9 |
+
+### Whether the model's answer is settled
+
+| quantity | value |
+|---|---|
+| assertions asked | 240 |
+| samples of each | 3 |
+| temperature | 1 |
+| every sample agreed | 0.850 ±0.045 |
+| agreed on the wrong answer | 35 |
+| samples split | 36 |
+| split, where the settled answer is wrong | 0.352 ±0.129 |
+| split, where the settled answer is right | 0.091 ±0.042 |
+| joining on a split recovers | 10 |
+| joining on a split wrongly joins | 26 |
+
+| wording | asked | every sample agreed |
+|---|---|---|
+| `also` | 40 | 1.000 ±0.000 |
+| `narrow` | 40 | 0.750 ±0.136 |
+| `replace` | 160 | 0.838 ±0.057 |
+
+### What the frame answered when a split resolves to join
 
 | year | recall | carried | replaced | reverted | parallel | refined | fresh | stale returned |
 |---|---|---|---|---|---|---|---|---|
 | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a |
 | 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a |
-| 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.188 ±0.086 |
-| 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.188 ±0.086 |
-| 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.188 ±0.086 |
-| 6 | 0.952 ±0.019 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 1.000 ±0.000 | 0.188 ±0.086 |
-| 7 | 0.952 ±0.019 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 1.000 ±0.000 | 0.212 ±0.090 |
-| 8 | 0.952 ±0.019 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 1.000 ±0.000 | 0.212 ±0.090 |
-| 9 | 0.952 ±0.019 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 1.000 ±0.000 | 0.212 ±0.090 |
-| 10 | 0.952 ±0.019 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 1.000 ±0.000 | 0.212 ±0.090 |
-
-| direction | errors | addresses hit | healed by the last year | years carrying the damage |
-|---|---|---|---|---|
-| `join-as-replace` | 23 | 23 | 0.000 ±0.000 | 5.00 ±0.00 |
-| `replace-as-join` | 630 | 598 | 0.933 ±0.020 | 0.00 ±0.00 |
+| 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.263 ±0.097 |
+| 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.263 ±0.097 |
+| 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.263 ±0.097 |
+| 6 | 0.963 ±0.017 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.775 ±0.078 | 1.000 ±0.000 | 0.263 ±0.097 |
+| 7 | 0.963 ±0.017 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.775 ±0.078 | 1.000 ±0.000 | 0.275 ±0.098 |
+| 8 | 0.963 ±0.017 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.775 ±0.078 | 1.000 ±0.000 | 0.275 ±0.098 |
+| 9 | 0.963 ±0.017 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.775 ±0.078 | 1.000 ±0.000 | 0.275 ±0.098 |
+| 10 | 0.963 ±0.017 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.775 ±0.078 | 1.000 ±0.000 | 0.275 ±0.098 |
 
 ### What the run cost
 
 | quantity | value |
 |---|---|
 | model calls | 0 |
-| turns observed, over every frame and arm | 103680 |
-| contexts produced, over every frame and arm | 41760 |
+| turns observed, over every frame and arm | 115200 |
+| contexts produced, over every frame and arm | 46400 |
 | embedder calls | 27680 |
 | distinct texts embedded | 6018 |
 | tokens those texts estimate to | 61324 |
@@ -656,16 +819,23 @@ The figure that matters for the designs coming next is in the cost table below, 
 | quantity | value |
 |---|---|
 | model | gpt-4.1-nano |
-| paid calls | 840 |
+| paid calls, declaring | 840 |
 | assertions declared | 840 |
 | prompt tokens | 105914 |
 | completion tokens | 840 |
 | price per million prompt tokens, USD | 0.1 |
 | price per million completion tokens, USD | 0.4 |
 | price read on | 2026-08-16 |
-| cost, USD | 0.0109 |
-| call bound the run refuses to pass | 1000 |
-| cost bound the run refuses to pass, USD | 0.25 |
+| cost of declaring, USD | 0.0109 |
+| call bound declaring refuses to pass | 1000 |
+| cost bound declaring refuses to pass, USD | 0.25 |
+| paid calls, resampling | 720 |
+| prompt tokens, resampling | 92880 |
+| completion tokens, resampling | 720 |
+| cost of resampling, USD | 0.0096 |
+| call bound resampling refuses to pass | 800 |
+| cost bound resampling refuses to pass, USD | 0.10 |
+| cost of this record in total, USD | 0.0205 |
 <!-- end generated -->
 
 A size is one store read at one moment rather than a sample, so it carries no interval; every other figure above is a mean over the probes of that year with the 95% half-width those probes support.
@@ -700,10 +870,30 @@ A size is one store read at one moment rather than a sample, so it carries no in
 - **Most of what a writeback declares cannot be wrong, and a rate that counts it says very little.** The overwhelming majority of assertions over a decade land on an address holding nothing, where replacing and joining are the same store. Counted over every eligible write the model's replacing errors look catastrophic; counted over the writes that land somewhere they are a fifth. The stale figure the frame actually posts follows the second and not the first.
 - **The recommendation does not survive intact, and what it becomes is a trade rather than a ruin.** On this model's declarations the structure loses recall in one class permanently and returns a superseded value on about one revised thread in five, against a ceiling of neither. Set beside the arms that decide arity for themselves, it recovers recall that always-replacing gives up and pays for it in staleness that always-replacing does not have — and the staleness heals while the lost recall does not. Neither dominates, so "the write states arity" is a choice about which failure is cheaper rather than a structure that removes both.
 
+- **Nothing recovers a wrongly-cleared value, and the store that keeps it proves the point rather than solving it.** `interval-declared` and `attribute-declared` on the same declarations answer identically at every year and every class, while the interval store holds a quarter again as many units — every value a wrong declaration cleared, sitting in a closed span. A question about the present does not return a closed span, so the information is retained and unreachable. Keeping it is not the same as recovering it, and the gap between those two is where this round ends.
+- **Reaching it would take a rule for when to reopen a closed span, which is the arity question again.** The two total policies are the ends already measured: reopen nothing and the answer is the addressed store's; reopen everything and it is what keeping every value scores, staleness at its ceiling. Anything between them decides, after the fact, whether a particular closure was a replacement or a join — which is the decision the whole programme has been trying to source, arriving one step later. The loop closes without an answer, so the destroying error is irreducible on the evidence here and a structure has to be chosen knowing it.
+- **Erring toward join blindly is a bad trade, and the exchange rate is the reason.** Joining every declared replacement recovers every destroying error and puts staleness at its ceiling; the curve between is close to linear. The recall it buys is small because the destroying errors are few, and the staleness it pays is large because the correct replacements are many — so a blind bias is overwhelmingly likely to spoil a write that was right. A policy that cannot tell which declarations to doubt should not be biased at all.
+- **The model is in doubt about four times more often where it is wrong, and it is not enough.** Asked repeatedly, its answers split far more often on the assertions it gets wrong than on the ones it gets right, so disagreement is a real signal and not noise. But most of its wrong answers are given again every time it is asked: the error is settled, not uncertain. Resolving every split to a join recovers well under half the destroying errors and wrongly joins more correct replacements than it recovers.
+- **The one bias that needs no number from the model is measurable, better than blind, and still does not close the gap.** Asking three times and joining where the samples split beats blind biasing by a wide margin on what it buys per point of staleness. It costs three model calls where there was one, carries a sample count as a knob, and leaves the coexistence class short of where a correct declaration would put it. It is reported as what it is rather than recommended.
+- **The two stores that read a declaration are separated by what they hold and what they read, and by nothing a reader can ask about.** That is the same result #457 found among three stores under one self-deciding rule, holding now under a declaration that is sometimes wrong. Whatever is chosen, it is not chosen on what the memory answers.
+
+## What would be chosen today
+
+The programme moves from measuring to deciding after this round, so this is where the record says where it stands. Two of the three questions are answered by the evidence and the third is not.
+
+**The structure is chosen: a fact is held at its address, and arity comes from the write.** Addressing removes the failure the shipped design has — supersession inferred from similarity — outright rather than improving it, and every arm that tried to recover arity from the stored triple failed or reproduced one of the degenerate ends. Among the stores that take a declaration, the plain addressed one answers exactly what the interval store answers while holding less and reading less, so the simpler one is the one to build. The interval store earns its extra bytes only if a question about an earlier year is ever asked, and nothing in this workload asks one.
+
+**The direction of error is chosen: where a writeback must err, it errs toward join.** That is not a preference. A wrong join is repaired by the next correct replacement at that address and carries its damage for no checkpoints; a wrong replacement is repaired by nothing and carries it to the end of the span. The asymmetry is measured, it is structural, and stating it costs no code.
+
+**The policy is not chosen, and the evidence cannot choose it.** Taking a real model's declarations recovers most of the coexistence an always-replacing store gives up, and pays for it with a superseded value on about one revised thread in five. Always replacing returns nothing stale and loses that coexistence permanently. Neither dominates. Which is cheaper depends on whether a fact that is lost costs more than a fact that is wrong, and no measurement in this record answers that — it is a property of what the agent is for, not of the structure. A reader looking for the row with the best numbers should be told that the best-scoring rule measured here is `attribute-cued`, which is disqualified for being a list that grows, and that it sits on the frontier rather than below it. The criterion has to be applied deliberately; it is not visible in the ranking.
+
+What would be built today, then, is the addressed store with the operation stated by the writeback, erring toward join. What is still open is what to do when the declaration is unreliable, and that is a decision to take rather than a measurement to make.
+
 ## What this record does not say
 
 - It recommends no structure. The attribute frame answers one of the questions the programme is asking and leaves the rest open; validity intervals and a derived view are separate issues, and what to build comes after the frames are measured rather than from any one of them.
 - It does not measure a model-driven writeback. Both arms stand in for one, at the two ends of a bracket, and the record says which is which.
+- It does not measure a question about an earlier year. The interval store's extra bytes buy the ability to answer one, and the workload asks none, so what that capability is worth is still unmeasured — the same gap #457 reported, unchanged by this round.
 - It does not rank the structures. `attribute-declared` is not a design and the rest are not finished ones; what to build comes from the record as a whole once every frame is measured, and this round adds three to it.
 - It does not say the attribute frame's storage advantage would survive persistence. It is measured as an in-memory structure with no file format, so what it stores is what it holds; a persisted form would add a page layout and an index the shipped store's figure already carries.
 - It does not measure retrieval quality as such. That is `memory-retrieval/`'s subject, and the constants that decide it are #411's.
@@ -715,6 +905,8 @@ A size is one store read at one moment rather than a sample, so it carries no in
 - **Values are unique tokens.** That is what makes crediting exact, and it is not how every real fact looks: two people can be allergic to the same thing. A workload whose values collided would need a credit rule that reads subject and value together, and this one does not test any structure's behaviour under that.
 - **Crediting is by reading the injected text.** It is the only rule that can score a structure with rows and a structure with one document on the same footing. It credits a value present for the wrong reason — a frame that returned everything it ever saw would score perfectly on recall, which is why the stale figure is beside it and why context size is reported.
 - **A checkpoint does not write.** Real questions are turns and a design could learn from being asked one. Here it cannot, so nothing scores by echoing the question.
+- **The doubt figures are one model's, three samples deep.** Whether disagreement tracks error was measured at three samples of each consequential assertion. More samples would sharpen it, a different model might be in doubt somewhere else, and neither is measured. What the figure supports is that most of this model's wrong answers are settled; it does not support a claim about models in general.
+- **No rule was built on the doubt beyond the simplest one.** Joining where the samples split is the one policy measured, because it needs nothing from the model but another answer. A rule weighing how many samples disagreed, or how far apart they were, would be a threshold on a number, which this round declined to build rather than tested and rejected.
 - **One model, one prompt, one day.** The declaration figures describe the cheapest model at the provider this project ships, asked one way, on one afternoon. A larger model, a prompt that showed it examples, or a second attempt at the same call would all move them, and none of that is measured. The provider is not reproducible to the last bit either, which is why the answers are committed rather than re-bought.
 - **The paid measurement asks about a sentence and not about a turn.** The model sees the address, what is held there, and the statement — what a writeback with a working recall would see. It does not see the conversation around the statement, and a real writeback would. Whether that context carries the arity a qualifier only implies is the obvious next question and it is not this one.
 - **The workload has few writes that join.** Only the two coexistence classes' second values ever do, so the destroying direction's sweep has coarse resolution at the low end and its rows below that resolution show no errors rather than few. A workload with more coexistence would sharpen that curve, and changing it would stop every figure measured against this one from being comparable.

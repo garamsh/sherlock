@@ -1,0 +1,3408 @@
+{
+ "model": "gpt-4.1-nano",
+ "samples_per_assertion": 3,
+ "temperature": 1,
+ "calls": 720,
+ "prompt_tokens": 92880,
+ "completion_tokens": 720,
+ "cost_usd": 0.009576000000000001,
+ "asked": 240,
+ "unanimous": {
+  "mean": 0.85,
+  "half_width": 0.04527017916177182,
+  "n": 240
+ },
+ "unanimously_wrong": 35,
+ "split": 36,
+ "wordings_unanimous": [
+  {
+   "name": "also",
+   "asked": 40,
+   "accuracy": {
+    "mean": 1,
+    "half_width": 0,
+    "n": 40
+   }
+  },
+  {
+   "name": "narrow",
+   "asked": 40,
+   "accuracy": {
+    "mean": 0.75,
+    "half_width": 0.13590154807518112,
+    "n": 40
+   }
+  },
+  {
+   "name": "replace",
+   "asked": 160,
+   "accuracy": {
+    "mean": 0.8375,
+    "half_width": 0.05734249689092326,
+    "n": 160
+   }
+  }
+ ],
+ "answers": [
+  {
+   "subject": "Rania",
+   "attribute": "accounts",
+   "value": "cobalt-pike",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Rania",
+   "attribute": "accounts",
+   "value": "dovetail-harbour",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Leila",
+   "attribute": "bank",
+   "value": "vellum-meadow",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Leila",
+   "attribute": "bank",
+   "value": "zephyr-ridge",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Leila",
+   "attribute": "line",
+   "value": "copper-harbour",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Leila",
+   "attribute": "line",
+   "value": "tamarind-tarn",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Maria",
+   "attribute": "project",
+   "value": "larkin-weir",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Maria",
+   "attribute": "project",
+   "value": "yarrow-annex",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Stefan",
+   "attribute": "supplier",
+   "value": "amber-chandler",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "join"
+   ]
+  },
+  {
+   "subject": "Stefan",
+   "attribute": "supplier",
+   "value": "larkin-harbour",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Tariq",
+   "attribute": "course",
+   "value": "cobalt-yard",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Tariq",
+   "attribute": "course",
+   "value": "vellum-quarry",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Goran",
+   "attribute": "bank",
+   "value": "ravel-orchard",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Goran",
+   "attribute": "bank",
+   "value": "verdigris-tarn",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Wanda",
+   "attribute": "course",
+   "value": "quill-annex",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Wanda",
+   "attribute": "course",
+   "value": "marlow-yard",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Erol",
+   "attribute": "bank",
+   "value": "mirefield-vale",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Erol",
+   "attribute": "bank",
+   "value": "umber-drift",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Josefa",
+   "attribute": "accounts",
+   "value": "dovetail-kiln",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Josefa",
+   "attribute": "accounts",
+   "value": "vellum-mill",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Wanda",
+   "attribute": "bakery",
+   "value": "cinder-fenn",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "join",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Wanda",
+   "attribute": "bakery",
+   "value": "sable-spire",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Freya",
+   "attribute": "line",
+   "value": "nutmeg-sedge",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Freya",
+   "attribute": "line",
+   "value": "vellum-brook",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Luca",
+   "attribute": "course",
+   "value": "amber-beacon",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Luca",
+   "attribute": "course",
+   "value": "cinder-brook",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Tariq",
+   "attribute": "project",
+   "value": "yarrow-hollow",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Tariq",
+   "attribute": "project",
+   "value": "yarrow-harbour",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Kofi",
+   "attribute": "line",
+   "value": "zephyr-fenn",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Kofi",
+   "attribute": "line",
+   "value": "ironwood-pike",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Zara",
+   "attribute": "clinic",
+   "value": "quill-drift",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Zara",
+   "attribute": "clinic",
+   "value": "ember-ledge",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Orla",
+   "attribute": "course",
+   "value": "ember-coppice",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Orla",
+   "attribute": "course",
+   "value": "cinder-drift",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Lorna",
+   "attribute": "accounts",
+   "value": "cobalt-foundry",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Lorna",
+   "attribute": "accounts",
+   "value": "mirefield-glade",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Noor",
+   "attribute": "course",
+   "value": "silverfin-glade",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Noor",
+   "attribute": "course",
+   "value": "flint-harbour",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Idris",
+   "attribute": "backups",
+   "value": "saffron-vale",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Idris",
+   "attribute": "backups",
+   "value": "yarrow-wharf",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Elif",
+   "attribute": "clinic",
+   "value": "dovetail-chandler",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Elif",
+   "attribute": "clinic",
+   "value": "marlow-pike",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Oskar",
+   "attribute": "hall",
+   "value": "brindle-isle",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Oskar",
+   "attribute": "hall",
+   "value": "nutmeg-moor",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Goran",
+   "attribute": "backups",
+   "value": "dovetail-annex",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Goran",
+   "attribute": "backups",
+   "value": "nutmeg-vale",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Dario",
+   "attribute": "bakery",
+   "value": "cobalt-hollow",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Dario",
+   "attribute": "bakery",
+   "value": "saffron-isle",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Yuki",
+   "attribute": "supplier",
+   "value": "umber-wharf",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Yuki",
+   "attribute": "supplier",
+   "value": "marlow-kiln",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Ivo",
+   "attribute": "accounts",
+   "value": "copper-meadow",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Ivo",
+   "attribute": "accounts",
+   "value": "ironwood-spire",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Emeka",
+   "attribute": "project",
+   "value": "harrow-pike",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Emeka",
+   "attribute": "project",
+   "value": "oakhill-isle",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Luca",
+   "attribute": "accounts",
+   "value": "harrow-tarn",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Luca",
+   "attribute": "accounts",
+   "value": "larkin-spire",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Mateo",
+   "attribute": "cottage",
+   "value": "dovetail-wharf",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Mateo",
+   "attribute": "cottage",
+   "value": "ember-weir",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Viktor",
+   "attribute": "cottage",
+   "value": "sable-glade",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "join",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Viktor",
+   "attribute": "cottage",
+   "value": "mirefield-quarry",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Sanjay",
+   "attribute": "line",
+   "value": "verdigris-hearth",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Sanjay",
+   "attribute": "line",
+   "value": "ember-orchard",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Erol",
+   "attribute": "accounts",
+   "value": "brindle-fenn",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Erol",
+   "attribute": "accounts",
+   "value": "vellum-annex",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Kasper",
+   "attribute": "accounts",
+   "value": "cobalt-hearth",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Kasper",
+   "attribute": "accounts",
+   "value": "ember-drift",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Amara",
+   "attribute": "supplier",
+   "value": "ravel-quarry",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Amara",
+   "attribute": "supplier",
+   "value": "nutmeg-glade",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Celia",
+   "attribute": "project",
+   "value": "pewter-spire",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Celia",
+   "attribute": "project",
+   "value": "flint-chandler",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Yuki",
+   "attribute": "bakery",
+   "value": "dovetail-pike",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Yuki",
+   "attribute": "bakery",
+   "value": "thistle-beacon",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Priya",
+   "attribute": "cottage",
+   "value": "ravel-ridge",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Priya",
+   "attribute": "cottage",
+   "value": "ravel-harbour",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Orla",
+   "attribute": "line",
+   "value": "wicklow-orchard",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Orla",
+   "attribute": "line",
+   "value": "quill-chandler",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "join"
+   ]
+  },
+  {
+   "subject": "Elif",
+   "attribute": "team",
+   "value": "wicklow-ledge",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Elif",
+   "attribute": "team",
+   "value": "umber-sedge",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Karin",
+   "attribute": "team",
+   "value": "ravel-yard",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Karin",
+   "attribute": "team",
+   "value": "nutmeg-kiln",
+   "class": "replaced",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Yara",
+   "attribute": "team",
+   "value": "larkin-mill",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Yara",
+   "attribute": "team",
+   "value": "harrow-brook",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Greta",
+   "attribute": "bakery",
+   "value": "ravel-hearth",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Greta",
+   "attribute": "bakery",
+   "value": "pewter-beacon",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Wilma",
+   "attribute": "project",
+   "value": "brindle-lantern",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Wilma",
+   "attribute": "project",
+   "value": "vellum-foundry",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Elif",
+   "attribute": "bank",
+   "value": "brindle-ridge",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "join",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Elif",
+   "attribute": "bank",
+   "value": "ravel-weir",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Rafael",
+   "attribute": "cottage",
+   "value": "nutmeg-gable",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Rafael",
+   "attribute": "cottage",
+   "value": "pewter-tarn",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Josefa",
+   "attribute": "backups",
+   "value": "ironwood-ledge",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Josefa",
+   "attribute": "backups",
+   "value": "oakhill-fenn",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Emeka",
+   "attribute": "accounts",
+   "value": "silverfin-yard",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Emeka",
+   "attribute": "accounts",
+   "value": "cobalt-meadow",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Ingrid",
+   "attribute": "hall",
+   "value": "verdigris-sedge",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Ingrid",
+   "attribute": "hall",
+   "value": "bramble-reach",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Fabio",
+   "attribute": "team",
+   "value": "cinder-reach",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "join",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Fabio",
+   "attribute": "team",
+   "value": "dovetail-reach",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Orla",
+   "attribute": "clinic",
+   "value": "oakhill-vale",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Orla",
+   "attribute": "clinic",
+   "value": "thistle-hearth",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Lorna",
+   "attribute": "hall",
+   "value": "nutmeg-foundry",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Lorna",
+   "attribute": "hall",
+   "value": "brindle-kiln",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Magnus",
+   "attribute": "bakery",
+   "value": "garnet-yard",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "join",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Magnus",
+   "attribute": "bakery",
+   "value": "marlow-vale",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "join"
+   ]
+  },
+  {
+   "subject": "Priya",
+   "attribute": "supplier",
+   "value": "zephyr-sedge",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "join"
+   ]
+  },
+  {
+   "subject": "Priya",
+   "attribute": "supplier",
+   "value": "cinder-annex",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Tariq",
+   "attribute": "supplier",
+   "value": "copper-sedge",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Tariq",
+   "attribute": "supplier",
+   "value": "quill-hearth",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Otto",
+   "attribute": "hall",
+   "value": "silverfin-drift",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Otto",
+   "attribute": "hall",
+   "value": "mirefield-foundry",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Hassan",
+   "attribute": "backups",
+   "value": "wicklow-tarn",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Hassan",
+   "attribute": "backups",
+   "value": "quill-quarry",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Tariq",
+   "attribute": "hall",
+   "value": "ember-brook",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Tariq",
+   "attribute": "hall",
+   "value": "copper-gable",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Goran",
+   "attribute": "course",
+   "value": "ironwood-hollow",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Goran",
+   "attribute": "course",
+   "value": "yarrow-beacon",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Emeka",
+   "attribute": "course",
+   "value": "cinder-foundry",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Emeka",
+   "attribute": "course",
+   "value": "flint-quarry",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Magnus",
+   "attribute": "supplier",
+   "value": "vellum-coppice",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Magnus",
+   "attribute": "supplier",
+   "value": "tamarind-brook",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Sofia",
+   "attribute": "project",
+   "value": "opal-mill",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Sofia",
+   "attribute": "project",
+   "value": "pewter-ridge",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Alma",
+   "attribute": "team",
+   "value": "amber-quarry",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "join",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Alma",
+   "attribute": "team",
+   "value": "thistle-weir",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Sanjay",
+   "attribute": "team",
+   "value": "umber-mill",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Sanjay",
+   "attribute": "team",
+   "value": "wicklow-fenn",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "join",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Hassan",
+   "attribute": "bank",
+   "value": "verdigris-brook",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "join",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Hassan",
+   "attribute": "bank",
+   "value": "larkin-brook",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Kofi",
+   "attribute": "clinic",
+   "value": "harrow-drift",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Kofi",
+   "attribute": "clinic",
+   "value": "pewter-coppice",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Freya",
+   "attribute": "supplier",
+   "value": "nutmeg-chandler",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Freya",
+   "attribute": "supplier",
+   "value": "opal-fenn",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Noor",
+   "attribute": "backups",
+   "value": "brindle-spire",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Noor",
+   "attribute": "backups",
+   "value": "pewter-lantern",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Jana",
+   "attribute": "course",
+   "value": "thistle-spire",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Jana",
+   "attribute": "course",
+   "value": "wicklow-glade",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Emeka",
+   "attribute": "backups",
+   "value": "oakhill-mill",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Emeka",
+   "attribute": "backups",
+   "value": "cinder-gable",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Karin",
+   "attribute": "project",
+   "value": "zephyr-chandler",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Karin",
+   "attribute": "project",
+   "value": "quill-ledge",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Priya",
+   "attribute": "bank",
+   "value": "silverfin-isle",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Priya",
+   "attribute": "bank",
+   "value": "ember-reach",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Zara",
+   "attribute": "bank",
+   "value": "saffron-ledge",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "join",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Zara",
+   "attribute": "bank",
+   "value": "wicklow-annex",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Tomas",
+   "attribute": "supplier",
+   "value": "umber-annex",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Tomas",
+   "attribute": "supplier",
+   "value": "brindle-pike",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "replace",
+    "join"
+   ]
+  },
+  {
+   "subject": "Yuki",
+   "attribute": "line",
+   "value": "ravel-chandler",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Yuki",
+   "attribute": "line",
+   "value": "brindle-beacon",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "join",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Ursula",
+   "attribute": "team",
+   "value": "marlow-harbour",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Ursula",
+   "attribute": "team",
+   "value": "garnet-fenn",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Nikos",
+   "attribute": "bakery",
+   "value": "brindle-meadow",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "join",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Nikos",
+   "attribute": "bakery",
+   "value": "thistle-harbour",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Xavier",
+   "attribute": "hall",
+   "value": "harrow-vale",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Xavier",
+   "attribute": "hall",
+   "value": "harrow-sedge",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Esther",
+   "attribute": "line",
+   "value": "ironwood-drift",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Esther",
+   "attribute": "line",
+   "value": "dovetail-weir",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Nuria",
+   "attribute": "line",
+   "value": "oakhill-kiln",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Nuria",
+   "attribute": "line",
+   "value": "pewter-wharf",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Erol",
+   "attribute": "line",
+   "value": "garnet-hearth",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 3,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Erol",
+   "attribute": "line",
+   "value": "nutmeg-wharf",
+   "class": "reverted",
+   "wording": "replace",
+   "year": 7,
+   "truth": "replace",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Noor",
+   "attribute": "accounts",
+   "value": "ember-tarn",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Nuria",
+   "attribute": "accounts",
+   "value": "thistle-coppice",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Rania",
+   "attribute": "team",
+   "value": "ironwood-hearth",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Esther",
+   "attribute": "team",
+   "value": "dovetail-ledge",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Otto",
+   "attribute": "bakery",
+   "value": "cobalt-isle",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Greta",
+   "attribute": "clinic",
+   "value": "sable-kiln",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Orla",
+   "attribute": "backups",
+   "value": "tamarind-moor",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Maria",
+   "attribute": "bank",
+   "value": "cobalt-tarn",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Rania",
+   "attribute": "supplier",
+   "value": "ember-sedge",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Tomas",
+   "attribute": "course",
+   "value": "opal-foundry",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Bjorn",
+   "attribute": "cottage",
+   "value": "cobalt-orchard",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Ingrid",
+   "attribute": "bank",
+   "value": "mirefield-annex",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Zoltan",
+   "attribute": "bank",
+   "value": "verdigris-wharf",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Otto",
+   "attribute": "backups",
+   "value": "pewter-moor",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Karin",
+   "attribute": "course",
+   "value": "nutmeg-brook",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Tomas",
+   "attribute": "clinic",
+   "value": "tamarind-quarry",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Tariq",
+   "attribute": "bakery",
+   "value": "ironwood-chandler",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Petra",
+   "attribute": "clinic",
+   "value": "garnet-beacon",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Kasper",
+   "attribute": "course",
+   "value": "saffron-gable",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Quinn",
+   "attribute": "hall",
+   "value": "verdigris-moor",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Emeka",
+   "attribute": "hall",
+   "value": "larkin-hearth",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Xavier",
+   "attribute": "supplier",
+   "value": "silverfin-sedge",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Nuria",
+   "attribute": "cottage",
+   "value": "pewter-drift",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Hassan",
+   "attribute": "clinic",
+   "value": "larkin-chandler",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Celia",
+   "attribute": "course",
+   "value": "harrow-wharf",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Karin",
+   "attribute": "hall",
+   "value": "ravel-sedge",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Ivo",
+   "attribute": "bank",
+   "value": "verdigris-yard",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Kasper",
+   "attribute": "supplier",
+   "value": "dovetail-meadow",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Chiara",
+   "attribute": "accounts",
+   "value": "mirefield-ridge",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Farid",
+   "attribute": "hall",
+   "value": "cobalt-ledge",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Kofi",
+   "attribute": "team",
+   "value": "dovetail-glade",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Yuki",
+   "attribute": "backups",
+   "value": "silverfin-coppice",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Erol",
+   "attribute": "team",
+   "value": "wicklow-pike",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Lisa",
+   "attribute": "bank",
+   "value": "opal-gable",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Dario",
+   "attribute": "project",
+   "value": "marlow-ridge",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Gunnar",
+   "attribute": "team",
+   "value": "silverfin-pike",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Emeka",
+   "attribute": "clinic",
+   "value": "thistle-sedge",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Sanjay",
+   "attribute": "hall",
+   "value": "thistle-mill",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Iris",
+   "attribute": "supplier",
+   "value": "amber-moor",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Anders",
+   "attribute": "hall",
+   "value": "harrow-yard",
+   "class": "parallel",
+   "wording": "also",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Hugo",
+   "attribute": "project",
+   "value": "pewter-sedge",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Goran",
+   "attribute": "hall",
+   "value": "ravel-spire",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Freya",
+   "attribute": "hall",
+   "value": "nutmeg-fenn",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "replace",
+    "replace",
+    "join"
+   ]
+  },
+  {
+   "subject": "Xavier",
+   "attribute": "accounts",
+   "value": "brindle-quarry",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Lorna",
+   "attribute": "backups",
+   "value": "flint-gable",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Olga",
+   "attribute": "hall",
+   "value": "harrow-mill",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Ulla",
+   "attribute": "hall",
+   "value": "zephyr-vale",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Hugo",
+   "attribute": "supplier",
+   "value": "zephyr-kiln",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Amara",
+   "attribute": "clinic",
+   "value": "brindle-hearth",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "replace",
+    "join",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Emeka",
+   "attribute": "team",
+   "value": "cinder-isle",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Ursula",
+   "attribute": "hall",
+   "value": "yarrow-foundry",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Amara",
+   "attribute": "accounts",
+   "value": "sable-mill",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Karin",
+   "attribute": "bakery",
+   "value": "saffron-glade",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Sanjay",
+   "attribute": "clinic",
+   "value": "larkin-tarn",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Kofi",
+   "attribute": "backups",
+   "value": "ironwood-quarry",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Zara",
+   "attribute": "project",
+   "value": "silverfin-weir",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Karin",
+   "attribute": "bank",
+   "value": "pewter-hearth",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "replace",
+    "replace",
+    "join"
+   ]
+  },
+  {
+   "subject": "Yuki",
+   "attribute": "team",
+   "value": "copper-mill",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Zoltan",
+   "attribute": "backups",
+   "value": "brindle-chandler",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Mateo",
+   "attribute": "bank",
+   "value": "vellum-beacon",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Ulla",
+   "attribute": "bakery",
+   "value": "copper-ledge",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Lorna",
+   "attribute": "bank",
+   "value": "flint-tarn",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Celia",
+   "attribute": "bank",
+   "value": "thistle-tarn",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "replace",
+    "replace",
+    "join"
+   ]
+  },
+  {
+   "subject": "Xavier",
+   "attribute": "backups",
+   "value": "sable-weir",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Esther",
+   "attribute": "project",
+   "value": "opal-brook",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "replace",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Dario",
+   "attribute": "bank",
+   "value": "nutmeg-lantern",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Luca",
+   "attribute": "clinic",
+   "value": "vellum-moor",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "replace",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Zoltan",
+   "attribute": "clinic",
+   "value": "larkin-moor",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Wanda",
+   "attribute": "supplier",
+   "value": "saffron-wharf",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Gunnar",
+   "attribute": "bakery",
+   "value": "mirefield-moor",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Priya",
+   "attribute": "accounts",
+   "value": "garnet-wharf",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Nuria",
+   "attribute": "clinic",
+   "value": "wicklow-drift",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Dario",
+   "attribute": "clinic",
+   "value": "marlow-reach",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Yannis",
+   "attribute": "supplier",
+   "value": "opal-hearth",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "replace",
+    "join",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Idris",
+   "attribute": "project",
+   "value": "oakhill-weir",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "replace",
+    "join",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Bruno",
+   "attribute": "backups",
+   "value": "thistle-foundry",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Iris",
+   "attribute": "bank",
+   "value": "opal-ledge",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "join",
+    "join"
+   ]
+  },
+  {
+   "subject": "Sanjay",
+   "attribute": "cottage",
+   "value": "oakhill-pike",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "join",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Stefan",
+   "attribute": "cottage",
+   "value": "silverfin-wharf",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  },
+  {
+   "subject": "Alma",
+   "attribute": "line",
+   "value": "copper-pike",
+   "class": "refined",
+   "wording": "narrow",
+   "year": 6,
+   "truth": "join",
+   "samples": [
+    "replace",
+    "replace",
+    "replace"
+   ]
+  }
+ ]
+}

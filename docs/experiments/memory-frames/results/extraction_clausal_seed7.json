@@ -2,13 +2,13 @@
  "shape": "clausal",
  "model": "gpt-4.1-nano",
  "seed": 7,
- "calls": 0,
- "prompt_tokens": 0,
- "completion_tokens": 0,
+ "calls": 335,
+ "prompt_tokens": 68619,
+ "completion_tokens": 6296,
  "price_input_per_million_usd": 0.1,
  "price_output_per_million_usd": 0.4,
  "price_read_on": "2026-08-16",
- "cost_usd": 0,
+ "cost_usd": 0.009380300000000001,
  "messages": [
   {
    "turn": 0,
@@ -255,8 +255,8 @@
    "found": [
     {
      "subject": "Yuki",
-     "attribute": "cottage",
-     "value": "bramble-ledge",
+     "attribute": "project",
+     "value": "paper from bramble-ledge",
      "Declared": "replace"
     }
    ]
@@ -289,7 +289,7 @@
      "subject": "Goran",
      "attribute": "backups",
      "value": "harrow-tarn",
-     "Declared": "replace"
+     "Declared": "join"
     }
    ]
   },
@@ -557,14 +557,7 @@
      "Declared": "replace"
     }
    ],
-   "found": [
-    {
-     "subject": "Nadia",
-     "attribute": "team",
-     "value": "ember-foundry",
-     "Declared": "join"
-    }
-   ]
+   "found": []
   },
   {
    "turn": 39,
@@ -862,14 +855,7 @@
      "Declared": "replace"
     }
    ],
-   "found": [
-    {
-     "subject": "Goran",
-     "attribute": "project",
-     "value": "cinder-chandler",
-     "Declared": "replace"
-    }
-   ]
+   "found": []
   },
   {
    "turn": 63,
@@ -1770,14 +1756,7 @@
      "Declared": "replace"
     }
    ],
-   "found": [
-    {
-     "subject": "Stefan",
-     "attribute": "supplier",
-     "value": "saffron-weir",
-     "Declared": "replace"
-    }
-   ]
+   "found": []
   },
   {
    "turn": 135,
@@ -2092,7 +2071,7 @@
    "found": [
     {
      "subject": "Olga",
-     "attribute": "cottage",
+     "attribute": "supplier",
      "value": "cinder-brook",
      "Declared": "replace"
     }
@@ -2207,7 +2186,20 @@
      "Declared": "replace"
     }
    ],
-   "found": []
+   "found": [
+    {
+     "subject": "Tariq",
+     "attribute": "project",
+     "value": "paper from quill-chandler",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Tariq",
+     "attribute": "settled",
+     "value": "true",
+     "Declared": "replace"
+    }
+   ]
   },
   {
    "turn": 167,
@@ -2333,7 +2325,7 @@
    "found": [
     {
      "subject": "Wilma",
-     "attribute": "accounts",
+     "attribute": "cottage",
      "value": "yarrow-annex",
      "Declared": "replace"
     }
@@ -2667,7 +2659,7 @@
      "subject": "Josefa",
      "attribute": "backups",
      "value": "tamarind-drift",
-     "Declared": "replace"
+     "Declared": "join"
     }
    ]
   },
@@ -3233,7 +3225,7 @@
      "subject": "Jana",
      "attribute": "course",
      "value": "brindle-ridge",
-     "Declared": "join"
+     "Declared": "replace"
     }
    ]
   },
@@ -3327,7 +3319,14 @@
      "Declared": "replace"
     }
    ],
-   "found": []
+   "found": [
+    {
+     "subject": "Tariq",
+     "attribute": "hall",
+     "value": "umber-sedge hall",
+     "Declared": "replace"
+    }
+   ]
   },
   {
    "turn": 272,
@@ -3869,7 +3868,14 @@
      "Declared": "replace"
     }
    ],
-   "found": []
+   "found": [
+    {
+     "subject": "Tomas",
+     "attribute": "supplier",
+     "value": "cobalt-meadow",
+     "Declared": "join"
+    }
+   ]
   },
   {
    "turn": 339,
@@ -3917,7 +3923,7 @@
      "subject": "Ursula",
      "attribute": "team",
      "value": "bramble-reach",
-     "Declared": "replace"
+     "Declared": "join"
     }
    ]
   },
@@ -4410,7 +4416,7 @@
      "subject": "Wanda",
      "attribute": "course",
      "value": "silverfin-glade",
-     "Declared": "join"
+     "Declared": "replace"
     }
    ]
   },
@@ -4965,7 +4971,14 @@
      "Declared": "join"
     }
    ],
-   "found": []
+   "found": [
+    {
+     "subject": "Stefan",
+     "attribute": "project",
+     "value": "ember-coppice",
+     "Declared": "join"
+    }
+   ]
   },
   {
    "turn": 454,
@@ -5140,14 +5153,7 @@
      "Declared": "join"
     }
    ],
-   "found": [
-    {
-     "subject": "Olga",
-     "attribute": "supplier",
-     "value": "wicklow-hearth",
-     "Declared": "join"
-    }
-   ]
+   "found": []
   },
   {
    "turn": 468,
@@ -5171,7 +5177,7 @@
      "subject": "Esther",
      "attribute": "team",
      "value": "garnet-yard",
-     "Declared": "replace"
+     "Declared": "join"
     }
    ]
   },
@@ -5186,14 +5192,7 @@
      "Declared": "replace"
     }
    ],
-   "found": [
-    {
-     "subject": "Rania",
-     "attribute": "supplier",
-     "value": "mirefield-foundry",
-     "Declared": "join"
-    }
-   ]
+   "found": []
   },
   {
    "turn": 471,
@@ -5210,8 +5209,8 @@
     {
      "subject": "Tomas",
      "attribute": "hall",
-     "value": "ember-wharf",
-     "Declared": "replace"
+     "value": "ember-wharf hall",
+     "Declared": "join"
     }
    ]
   },
@@ -5889,7 +5888,7 @@
      "subject": "Kasper",
      "attribute": "course",
      "value": "tamarind-brook",
-     "Declared": "join"
+     "Declared": "replace"
     }
    ]
   },
@@ -6070,7 +6069,7 @@
      "subject": "Otto",
      "attribute": "backups",
      "value": "ember-brook",
-     "Declared": "replace"
+     "Declared": "join"
     }
    ]
   },
@@ -6141,7 +6140,7 @@
     {
      "subject": "Emeka",
      "attribute": "hall",
-     "value": "pewter-ridge hall",
+     "value": "pewter-ridge",
      "Declared": "replace"
     }
    ]
@@ -6472,14 +6471,7 @@
      "Declared": "replace"
     }
    ],
-   "found": [
-    {
-     "subject": "Gunnar",
-     "attribute": "team",
-     "value": "thistle-spire",
-     "Declared": "replace"
-    }
-   ]
+   "found": []
   },
   {
    "turn": 585,
@@ -6814,7 +6806,7 @@
      "subject": "Yuki",
      "attribute": "backups",
      "value": "nutmeg-chandler",
-     "Declared": "join"
+     "Declared": "replace"
     }
    ]
   },
@@ -6967,7 +6959,7 @@
     {
      "subject": "Anders",
      "attribute": "hall",
-     "value": "zephyr-chandler hall",
+     "value": "zephyr-chandler",
      "Declared": "replace"
     }
    ]
@@ -7436,14 +7428,7 @@
      "Declared": "replace"
     }
    ],
-   "found": [
-    {
-     "subject": "Goran",
-     "attribute": "hall",
-     "value": "silverfin-isle",
-     "Declared": "replace"
-    }
-   ]
+   "found": []
   },
   {
    "turn": 706,
@@ -7651,7 +7636,7 @@
      "subject": "Zoltan",
      "attribute": "backups",
      "value": "nutmeg-wharf",
-     "Declared": "replace"
+     "Declared": "join"
     }
    ]
   },

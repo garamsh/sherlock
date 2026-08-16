@@ -2,13 +2,13 @@
  "shape": "packed",
  "model": "gpt-4.1-nano",
  "seed": 7,
- "calls": 24,
- "prompt_tokens": 4578,
- "completion_tokens": 160,
+ "calls": 247,
+ "prompt_tokens": 50562,
+ "completion_tokens": 5967,
  "price_input_per_million_usd": 0.1,
  "price_output_per_million_usd": 0.4,
  "price_read_on": "2026-08-16",
- "cost_usd": 0.0005218,
+ "cost_usd": 0.007443,
  "messages": [
   {
    "turn": 0,
@@ -256,19 +256,19 @@
      "subject": "Cato",
      "attribute": "backups",
      "value": "silverfin-hearth",
-     "Declared": "join"
+     "Declared": "replace"
     },
     {
      "subject": "Amara",
      "attribute": "cottage",
      "value": "ironwood-weir",
-     "Declared": "join"
+     "Declared": "replace"
     },
     {
      "subject": "Lisa",
      "attribute": "team",
      "value": "cinder-meadow",
-     "Declared": "join"
+     "Declared": "replace"
     }
    ]
   },
@@ -567,22 +567,16 @@
    ],
    "found": [
     {
-     "subject": "Ulla",
-     "attribute": "bank",
-     "value": "verdigris-reach",
-     "Declared": "join"
-    },
-    {
      "subject": "Yara",
      "attribute": "clinic",
      "value": "saffron-drift",
-     "Declared": "join"
+     "Declared": "replace"
     },
     {
      "subject": "Yara",
      "attribute": "line",
      "value": "thistle-reach",
-     "Declared": "join"
+     "Declared": "replace"
     }
    ]
   },
@@ -1145,26 +1139,7 @@
      "Declared": "replace"
     }
    ],
-   "found": [
-    {
-     "subject": "Elif",
-     "attribute": "team",
-     "value": "ember-drift",
-     "Declared": "replace"
-    },
-    {
-     "subject": "Karin",
-     "attribute": "team",
-     "value": "brindle-mill",
-     "Declared": "replace"
-    },
-    {
-     "subject": "Yara",
-     "attribute": "team",
-     "value": "ravel-quarry",
-     "Declared": "replace"
-    }
-   ]
+   "found": []
   },
   {
    "turn": 86,
@@ -2689,7 +2664,7 @@
     {
      "subject": "Wilma",
      "attribute": "accounts",
-     "value": "yarrow-annex",
+     "value": "paper from yarrow-annex",
      "Declared": "replace"
     },
     {
@@ -3137,26 +3112,7 @@
      "Declared": "replace"
     }
    ],
-   "found": [
-    {
-     "subject": "Freya",
-     "attribute": "project",
-     "value": "paper from brindle-lantern",
-     "Declared": "replace"
-    },
-    {
-     "subject": "Noor",
-     "attribute": "backups",
-     "value": "ravel-weir",
-     "Declared": "replace"
-    },
-    {
-     "subject": "Jana",
-     "attribute": "course",
-     "value": "brindle-ridge",
-     "Declared": "replace"
-    }
-   ]
+   "found": null
   },
   {
    "turn": 268,
@@ -4122,26 +4078,7 @@
      "Declared": "replace"
     }
    ],
-   "found": [
-    {
-     "subject": "Esther",
-     "attribute": "line",
-     "value": "cinder-reach",
-     "Declared": "replace"
-    },
-    {
-     "subject": "Nuria",
-     "attribute": "line",
-     "value": "thistle-hearth",
-     "Declared": "replace"
-    },
-    {
-     "subject": "Erol",
-     "attribute": "line",
-     "value": "oakhill-vale",
-     "Declared": "replace"
-    }
-   ]
+   "found": []
   },
   {
    "turn": 391,
@@ -4966,15 +4903,15 @@
    ],
    "found": [
     {
-     "subject": "Goran",
-     "attribute": "bank",
-     "value": "mirefield-glade",
-     "Declared": "join"
-    },
-    {
      "subject": "Tariq",
      "attribute": "course",
      "value": "opal-ridge",
+     "Declared": "join"
+    },
+    {
+     "subject": "Goran",
+     "attribute": "bank",
+     "value": "mirefield-glade",
      "Declared": "join"
     },
     {
@@ -6350,7 +6287,7 @@
      "subject": "Dario",
      "attribute": "project",
      "value": "wicklow-glade",
-     "Declared": "replace"
+     "Declared": "join"
     },
     {
      "subject": "Gunnar",
@@ -6769,7 +6706,7 @@
     {
      "subject": "Anders",
      "attribute": "hall",
-     "value": "zephyr-chandler hall",
+     "value": "zephyr-chandler",
      "Declared": "replace"
     },
     {
@@ -6781,7 +6718,7 @@
     {
      "subject": "Goran",
      "attribute": "hall",
-     "value": "silverfin-isle hall",
+     "value": "silverfin-isle",
      "Declared": "replace"
     }
    ]
@@ -7698,7 +7635,7 @@
      "subject": "Yuki",
      "attribute": "team",
      "value": "oakhill-kiln",
-     "Declared": "replace"
+     "Declared": "join"
     },
     {
      "subject": "Zoltan",
@@ -7826,19 +7763,19 @@
      "subject": "Kofi",
      "attribute": "backups",
      "value": "dovetail-weir",
-     "Declared": "join"
+     "Declared": "replace"
     },
     {
      "subject": "Zara",
      "attribute": "project",
      "value": "ironwood-drift",
-     "Declared": "join"
+     "Declared": "replace"
     },
     {
      "subject": "Karin",
      "attribute": "bank",
      "value": "pewter-wharf",
-     "Declared": "join"
+     "Declared": "replace"
     }
    ]
   },

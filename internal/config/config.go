@@ -2,7 +2,6 @@ package config
 
 import (
 	"errors"
-	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -226,7 +225,7 @@ func readConfigFile(v *viper.Viper, flagPath, cwdName, xdgName string) error {
 		return err
 	}
 	if loaded != "" {
-		if err := checkConfigFileMode(loaded); err != nil {
+		if err := RequireOwnerOnly("config file", loaded); err != nil {
 			return err
 		}
 	}
@@ -260,19 +259,4 @@ func loadConfigFile(v *viper.Viper, flagPath, cwdName, xdgName string) (string, 
 		return "", err
 	}
 	return path, nil
-}
-
-// checkConfigFileMode rejects a config file readable by group or other:
-// the file is operator material (tool definitions, TLS paths) and must
-// be owner-only — 0600 or 0400 pass, 0644 fails. The platform validates
-// and fails instead of chowning an operator-provided file.
-func checkConfigFileMode(path string) error {
-	info, err := os.Stat(path)
-	if err != nil {
-		return fmt.Errorf("config: stat config file: %w", err)
-	}
-	if perm := info.Mode().Perm(); perm&0o077 != 0 {
-		return fmt.Errorf("config: config file %q is group- or other-accessible (mode %04o); it must be owner-only (e.g. 0600 or 0400)", path, perm)
-	}
-	return nil
 }

@@ -26,8 +26,8 @@ const (
 	defaultMemoryPath = "data/memory.db"
 
 	// defaultWorkspaceAddr is the gRPC endpoint of the agent's
-	// workspace (ADR 0017): the agent dials it to construct the tools
-	// through internal/workspace/client. Plain host:port, no
+	// workspace (ADR 0017): the agent passes it to tools as
+	// GAGENT_WORKSPACE_ADDR and they dial it. Plain host:port, no
 	// scheme — the workspace listener is unauthenticated in this phase.
 	defaultWorkspaceAddr = "127.0.0.1:8081"
 

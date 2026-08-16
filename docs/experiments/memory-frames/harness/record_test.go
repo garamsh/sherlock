@@ -55,14 +55,16 @@ func committedRun(t *testing.T) Run {
 func TestRenderTables_GivesEveryFigureAnIntervalOrSaysItHasNone(t *testing.T) {
 	result := committedRun(t)
 
-	for _, line := range strings.Split(RenderTables(result), "\n") {
-		if !strings.HasPrefix(line, "| `") {
-			continue
-		}
-		for _, cell := range strings.Split(strings.Trim(line, "| "), " | ") {
-			if strings.ContainsAny(cell, "0123456789") && strings.Contains(cell, ".") {
-				assert.True(t, strings.Contains(cell, "±") || isSizeCell(cell),
-					"the cell %q in %q carries a figure without an interval", cell, line)
+	for _, s := range RenderTables(result) {
+		for _, line := range strings.Split(s.Tables, "\n") {
+			if !strings.HasPrefix(line, "| `") {
+				continue
+			}
+			for _, cell := range strings.Split(strings.Trim(line, "| "), " | ") {
+				if strings.ContainsAny(cell, "0123456789") && strings.Contains(cell, ".") {
+					assert.True(t, strings.Contains(cell, "±") || isSizeCell(cell),
+						"the cell %q in %q carries a figure without an interval", cell, line)
+				}
 			}
 		}
 	}
@@ -75,32 +77,45 @@ func isSizeCell(cell string) bool {
 		!strings.Contains(cell, " ")
 }
 
-func TestReplace_RefusesARecordWithoutBothMarkers(t *testing.T) {
+// A region on one side and not the other is a table silently dropped or a
+// section of the record silently left stale, so every mismatch is an error
+// rather than a partial rewrite.
+func TestReplace_RefusesARecordThatDoesNotMatchWhatIsRendered(t *testing.T) {
+	rendered := []Section{{Name: "one", Tables: "tables"}}
 	tests := []struct {
 		name   string
 		record string
 	}{
-		{"neither marker", "# A record\n"},
-		{"only the opening marker", "# A record\n" + beginMarker + "\n"},
-		{"only the closing marker", "# A record\n" + endMarker + "\n"},
-		{"the markers the wrong way round", endMarker + "\n" + beginMarker + "\n"},
+		{"no region at all", "# A record\n"},
+		{"a region that does not close", "# A record\n" + begin("one") + "\n"},
+		{"a closing marker with nothing opened", "# A record\n" + endMarker + "\n"},
+		{"the markers the wrong way round", endMarker + "\n" + begin("one") + "\n"},
+		{"a region the harness does not render", begin("two") + "\n" + endMarker + "\n"},
+		{"a region that opens without a name", beginPrefix + "\n" + endMarker + "\n"},
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			_, err := Replace(tc.record, "tables")
+			_, err := Replace(tc.record, rendered)
 			assert.Error(t, err)
 		})
 	}
 }
 
-func TestReplace_LeavesEverythingOutsideTheMarkersAlone(t *testing.T) {
-	record := "# A record\n\nbefore.\n\n" + beginMarker + "\n\nold tables\n" + endMarker + "\n\nafter.\n"
+func TestReplace_FillsEachRegionAndLeavesEverythingElseAlone(t *testing.T) {
+	record := "# A record\n\nbefore.\n\n" + begin("one") + "\n\nold one\n" + endMarker +
+		"\n\nbetween.\n\n" + begin("two") + "\n\nold two\n" + endMarker + "\n\nafter.\n"
 
-	out, err := Replace(record, "new tables")
+	out, err := Replace(record, []Section{{Name: "one", Tables: "new one"}, {Name: "two", Tables: "new two"}})
 	require.NoError(t, err)
 
 	assert.Contains(t, out, "before.")
+	assert.Contains(t, out, "between.")
 	assert.Contains(t, out, "after.")
-	assert.Contains(t, out, "new tables")
-	assert.NotContains(t, out, "old tables")
+	assert.Contains(t, out, "new one")
+	assert.Contains(t, out, "new two")
+	assert.NotContains(t, out, "old one")
+	assert.NotContains(t, out, "old two")
 }
+
+// begin is the record's opening marker for one named region.
+func begin(name string) string { return beginPrefix + name + beginSuffix }

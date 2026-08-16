@@ -15,6 +15,11 @@ import (
 // the checks that it does not, and they are mechanical rather than a claim
 // in the record's prose: the address is re-derived after the workload's
 // ground truth has been inverted, and it has to come out the same.
+//
+// The first of them passes today because QuestionAddress takes a sentence, a
+// subject and a value and nothing else, which is the point. It is here so
+// that widening what an address may read fails a test rather than quietly
+// making the round circular.
 
 func TestQuestionAddress_DoesNotMoveWhenTheGroundTruthIsInverted(t *testing.T) {
 	w, err := GenerateWorkload(7, decadeParams())

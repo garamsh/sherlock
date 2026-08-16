@@ -8,6 +8,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"log/slog"
 	"net/http"
@@ -84,7 +85,7 @@ func strconvQuote(s string) string {
 // client surface end-to-end.
 func newGatewayQueue(t *testing.T, root string, newModel func(string) agent.Model) *gateway.Queue {
 	t.Helper()
-	outbox := gateway.NewOutbox(root)
+	outbox := newOutboxWriter(root)
 	factory := &gateway.Factory{
 		MemoryPath: filepath.Join(root, "memory.db"),
 		NewModel:   newModel,
@@ -274,6 +275,36 @@ func collectEvents(t *testing.T, events chan map[string]any, n int) []map[string
 		}
 	}
 	return out
+}
+
+// outboxWriter stands in for the message_send tool: it writes one JSON
+// file per message into the outbox directory, named so a reader sees
+// delivery order. Production has no such type — the tool is a separate
+// binary and the write is the delivery (ADR 0007) — so these scenarios
+// drive the tool's contract without spawning it.
+type outboxWriter struct {
+	dir string
+	mu  sync.Mutex
+	seq int
+}
+
+func newOutboxWriter(root string) *outboxWriter {
+	return &outboxWriter{dir: filepath.Join(root, gateway.OutboxDir)}
+}
+
+func (o *outboxWriter) Send(_ context.Context, msg message.Message) error {
+	payload, err := json.Marshal(msg)
+	if err != nil {
+		return err
+	}
+	o.mu.Lock()
+	o.seq++
+	name := fmt.Sprintf("%d-%06d.json", time.Now().UnixNano(), o.seq)
+	o.mu.Unlock()
+	if err := os.MkdirAll(o.dir, 0o755); err != nil {
+		return err
+	}
+	return os.WriteFile(filepath.Join(o.dir, name), payload, 0o644)
 }
 
 // outboxMessages reads the agent's outbox (root/outbox) in delivery

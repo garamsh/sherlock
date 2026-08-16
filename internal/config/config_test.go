@@ -223,19 +223,6 @@ func TestResolveConfig_ConfigFlagMissingFileFails(t *testing.T) {
 	assert.Error(t, err, "an explicit --config path must exist")
 }
 
-func TestResolveConfig_ConsoleSection(t *testing.T) {
-	dir := t.TempDir()
-	t.Chdir(dir)
-	contents := "console:\n" +
-		"  url: https://console.internal:9443/messages\n"
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o600))
-
-	cfg, err := config.Resolve(agentFlags(t))
-	require.NoError(t, err)
-
-	assert.Equal(t, config.ConsoleConfig{URL: "https://console.internal:9443/messages"}, cfg.Console)
-}
-
 func TestResolveConfig_TLSSection(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
@@ -286,18 +273,6 @@ func TestResolveConfig_TLSSectionEnvOnly(t *testing.T) {
 		Key:      "/from-env/server-key.pem",
 		ClientCA: "/from-env/ca.pem",
 	}, cfg.TLS, "env-only tls.* enables mTLS without a config file")
-}
-
-// TestResolveConfig_ConsoleURLEnvOnly pins the same env-only path for
-// the console sink (issue #228).
-func TestResolveConfig_ConsoleURLEnvOnly(t *testing.T) {
-	t.Chdir(t.TempDir())
-	t.Setenv("GAGENT_CONSOLE_URL", "https://console.internal:9443/messages")
-
-	cfg, err := config.Resolve(agentFlags(t))
-	require.NoError(t, err)
-
-	assert.Equal(t, config.ConsoleConfig{URL: "https://console.internal:9443/messages"}, cfg.Console)
 }
 
 func TestResolveConfig_NoTLSSection(t *testing.T) {

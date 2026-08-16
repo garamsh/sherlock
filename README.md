@@ -43,7 +43,7 @@ Runs the agent's self: the rolling session, memory, the mouth, and the HTTP gate
 
 - `POST /agents/{agent-id}/messages` with `{"content":"..."}` — queues a message for the agent and returns `202` with a message ID. A path naming any other agent ID gets 404: one process serves one agent.
 - `GET /agents/{agent-id}/events` — server-sent events stream of the agent's loop (turn started, tool call, writeback, turn finished). Every run ends with exactly one terminal event — `turn_finished` on success, `turn_failed` with the error on failure.
-- Agent replies (`message_send`) land as JSON files in `outbox/` next to the `memory-path` file.
+- Agent replies (`message_send`) land as JSON files in `outbox/` next to the `memory-path` file. That write is the delivery: the `message_send` tool writes the file and nothing forwards it anywhere, so a reader of that directory is reading everything the agent sent.
 
 With `--message` the agent runs one turn against the same operator-installed tool list and exits; outbound `message_send` content and the final response print to stdout (logs go to stderr):
 
@@ -92,7 +92,6 @@ Agent keys (`gagent agent`; see `gagent.yaml` for an example):
 | `tls.cert` | — | unset (gateway server certificate, PEM; all three `tls:` keys together enable mTLS) |
 | `tls.key` | — | unset (server certificate's private key, PEM) |
 | `tls.client-ca` | — | unset (CA bundle, PEM, that client certificates are verified against) |
-| `console.url` | — | unset (console endpoint every `message_send` is POSTed to over mTLS, reusing the `tls:` material; unset keeps the file outbox, which is also the delivery-failure fallback) |
 
 Workspace keys (`gagent workspace`; see `workspace.yaml` for an example):
 

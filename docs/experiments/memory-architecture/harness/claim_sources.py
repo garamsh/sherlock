@@ -21,6 +21,7 @@ or when a KNOWN entry no longer describes what the two sides say.
 """
 from __future__ import annotations
 import glob
+import json
 import math
 import os
 import re
@@ -248,6 +249,18 @@ def method():
 
 # --- Small workload --------------------------------------------------------
 
+def density_from_store():
+    """Rows whose R/KB is the row's own recall over the KB that row stored."""
+    agree = 0
+    for row in json.load(open(os.path.join(RESULTS, "raw.json"))):
+        if "error" in row:
+            continue
+        kb = row["storage_bytes"] / 1024.0
+        expected = row["R@5"] / kb if kb else 0.0
+        agree += abs(row["R_per_KB"] - expected) < 1e-9
+    return agree
+
+
 def small():
     s = "Small workload"
     heading = "Small workload (1,071 items) — `results/table.md`"
@@ -280,6 +293,38 @@ def small():
     check(s, "columns the committed renderer writes",
           len(_cells(runner.render_table([]).splitlines()[0])),
           "results/table.md header", len(_cells(committed)), rounded=False)
+
+    # Every column that reads the store reads the one the run filled. A column
+    # measured against a fresh store is zero for every architecture, and an R/KB
+    # that is not the row's own recall over its own stored KB came from elsewhere.
+    measured = [r for r in result_rows("table") if re.fullmatch(r"[A-Z]\d", r["arch"])]
+    zeroed = [c for c in ("R/KB", "supers", "stale", "rep-keep")
+              if all(num(r[c]) == 0 for r in measured)]
+    check(s, "store-reading columns that are zero for every architecture", 0,
+          "results/table.md R/KB, supers, stale and rep-keep", len(zeroed),
+          rounded=False)
+    check(s, "rows whose R/KB is their own recall over their own stored KB",
+          len(measured), "results/raw.json R@5 and storage_bytes",
+          density_from_store(), rounded=False)
+
+    # The two R/KB definitions the record warns apart, and the store they share.
+    a = Anchor(r"F5 holds (\d+) items in both, and reads (\d\.\d+) here against "
+               r"([\d.]+) on the scale run")
+    at_1052 = [r for r in result_rows("scale")
+               if r["arch"] == "F5" and num(r["scale"]) == 1052][0]
+    check(s, "F5 items here", a.one(0), "results/table.md F5 items",
+          num(table["F5"]["items"]))
+    check(s, "F5 items on the scale run", a.one(0), "results/scale.md F5 items at 1052",
+          num(at_1052["items"]))
+    check(s, "F5 density here", a.one(1), "results/table.md F5 R/KB",
+          num(table["F5"]["R/KB"]))
+    check(s, "F5 density on the scale run", a.one(2),
+          "results/scale.md F5 recall-KB at 1052", num(at_1052["recall-KB"]))
+    check(s, "the storage the other runners assume per item",
+          Anchor(r"an assumed ([\d.]+) KB an item").one(),
+          "diverse_runner.py KB per item",
+          float(Anchor(r'kb = r\["item_count"\] \* ([\d.]+)',
+                       open(os.path.join(HERE, "diverse_runner.py")).read()).one()))
 
 
 # --- Scale run -------------------------------------------------------------
@@ -543,31 +588,7 @@ def adr():
 # that recomputes both. Fix either side and the probe stops matching, so the
 # disagreement cannot go quiet.
 
-def zeroed_table_columns():
-    """Columns `runner.render_table` writes that are zero for every architecture.
-
-    `R/KB` and `rep-keep` are computed from a freshly constructed store rather than
-    the populated one, so they carry no information; `supers` and `stale` are
-    computed from the query results and do.
-    """
-    rows = [r for r in result_rows("table") if re.fullmatch(r"[A-Z]\d", r["arch"])]
-    out = []
-    for column in ("R/KB", "supers", "stale", "rep-keep"):
-        if all(num(r[column]) == 0 for r in rows):
-            out.append(column)
-    return {"zeroed": out, "architectures": len(rows)}
-
-
-KNOWN = [
-    {"section": "Small workload",
-     "record": "results/table.md carries an R/KB and a rep-keep column",
-     "file": "both are zero for all 17 architectures, because the renderer computes "
-             "them against a freshly constructed store rather than the populated "
-             "one; the supers and stale columns beside them are computed from the "
-             "query results and are not zeroed",
-     "probe": zeroed_table_columns,
-     "expect": {"zeroed": ["R/KB", "rep-keep"], "architectures": 17}},
-]
+KNOWN = []
 
 
 # --- Report ----------------------------------------------------------------

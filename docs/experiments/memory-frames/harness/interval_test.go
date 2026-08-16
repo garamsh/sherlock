@@ -12,7 +12,7 @@ import (
 // present is answered exactly and the past is still there.
 func TestIntervalFrame_ClosesTheSpanARewriteEnds(t *testing.T) {
 	ctx := context.Background()
-	frame := NewIntervalFrame()
+	frame := NewIntervalFrame(aritySingle)
 
 	require.NoError(t, frame.Observe(ctx, wrote(0, almaProject, "amber-quarry", "first.")))
 	require.NoError(t, frame.Observe(ctx, wrote(400, almaProject, "copper-lantern", "second.")))
@@ -32,7 +32,7 @@ func TestIntervalFrame_ClosesTheSpanARewriteEnds(t *testing.T) {
 // what this structure does that an addressed store cannot.
 func TestIntervalFrame_AnswersAsOfTheMomentItIsAsked(t *testing.T) {
 	ctx := context.Background()
-	frame := NewIntervalFrame()
+	frame := NewIntervalFrame(aritySingle)
 
 	require.NoError(t, frame.Observe(ctx, wrote(0, almaProject, "amber-quarry", "first.")))
 	require.NoError(t, frame.Observe(ctx, wrote(400, almaProject, "copper-lantern", "second.")))
@@ -64,7 +64,7 @@ func TestIntervalFrame_AnswersAsOfTheMomentItIsAsked(t *testing.T) {
 // answerable at its own moment.
 func TestIntervalFrame_OpensASecondSpanForAValueWrittenAgain(t *testing.T) {
 	ctx := context.Background()
-	frame := NewIntervalFrame()
+	frame := NewIntervalFrame(aritySingle)
 
 	require.NoError(t, frame.Observe(ctx, wrote(0, almaProject, "amber-quarry", "first.")))
 	require.NoError(t, frame.Observe(ctx, wrote(400, almaProject, "copper-lantern", "second.")))
@@ -86,7 +86,7 @@ func TestIntervalFrame_OpensASecondSpanForAValueWrittenAgain(t *testing.T) {
 
 func TestIntervalFrame_HoldsNothingItCannotAddress(t *testing.T) {
 	ctx := context.Background()
-	frame := NewIntervalFrame()
+	frame := NewIntervalFrame(aritySingle)
 
 	require.NoError(t, frame.Observe(ctx, Turn{Index: 0, Day: 0, At: start,
 		Text: "Alma leads the amber-quarry project."}))

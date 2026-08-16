@@ -69,6 +69,9 @@ func RenderTables(r Run) string {
 	renderHealing(&b, r)
 	renderDeclarer(&b, r)
 	renderModelRun(&b, r)
+	renderBias(&b, r)
+	renderStability(&b, r)
+	renderDisagreement(&b, r)
 	renderCost(&b, r)
 	renderPaid(&b, r)
 	return strings.TrimRight(b.String(), "\n")
@@ -257,13 +260,137 @@ func renderDeclarer(b *strings.Builder, r Run) {
 // which is what the recommendation actually scores rather than what a rate
 // predicts for it.
 func renderModelRun(b *strings.Builder, r Run) {
-	if r.Model == nil {
+	if len(r.Model) == 0 {
 		return
 	}
-	fmt.Fprintf(b, "### What the frame answered on the model's declarations\n\n")
+	fmt.Fprintf(b, "### What each frame answered on the model's declarations\n\n")
+	fmt.Fprintf(b, "| frame | year | recall | %s | stale returned | units held |\n",
+		strings.Join(classNames, " | "))
+	fmt.Fprintf(b, "|---|---|---|%s---|---|\n", strings.Repeat("---|", len(classNames)))
+	for _, run := range r.Model {
+		for _, y := range run.Years {
+			byClass := map[string]ClassResult{}
+			for _, c := range y.Classes {
+				byClass[c.Class] = c
+			}
+			cells := make([]string, 0, len(classNames))
+			for _, class := range classNames {
+				c, ok := byClass[class]
+				if !ok {
+					cells = append(cells, notApplicable)
+					continue
+				}
+				cells = append(cells, figure(c.Recall))
+			}
+			units := notApplicable
+			for _, s := range run.Sizes {
+				if s.Year == y.Year {
+					units = fmt.Sprintf("%d", s.Size.Units)
+				}
+			}
+			fmt.Fprintf(b, "| `%s` | %d | %s | %s | %s | %s |\n",
+				run.Frame, y.Year, figure(y.Recall), strings.Join(cells, " | "), figure(y.Stale), units)
+		}
+	}
+	fmt.Fprintln(b)
+
+	fmt.Fprintf(b, "| frame | direction | errors | addresses hit | healed by the last year | years carrying the damage |\n")
+	fmt.Fprintf(b, "|---|---|---|---|---|---|\n")
+	for _, run := range r.Model {
+		for _, x := range run.Damage {
+			fmt.Fprintf(b, "| `%s` | `%s` | %d | %d | %s | %s |\n", run.Frame, x.Direction,
+				x.Damage.Errors, x.Damage.Addresses, figure(x.Damage.Healed), figureAt(x.Damage.Years, 2))
+		}
+	}
+	fmt.Fprintln(b)
+}
+
+// renderBias is what erring toward the cheaper failure trades, drawn
+// through the error profile a model actually has.
+func renderBias(b *strings.Builder, r Run) {
+	if len(r.Bias) == 0 {
+		return
+	}
+	fmt.Fprintf(b, "### What erring toward join trades\n\n")
+	fmt.Fprintf(b, "| share joined | destroying errors recovered | left destroying | year | recall | %s | stale returned |\n",
+		strings.Join(classNames, " | "))
+	fmt.Fprintf(b, "|---|---|---|---|---|%s---|\n", strings.Repeat("---|", len(classNames)))
+	for _, x := range r.Bias {
+		for _, y := range x.Years {
+			byClass := map[string]ClassResult{}
+			for _, c := range y.Classes {
+				byClass[c.Class] = c
+			}
+			cells := make([]string, 0, len(classNames))
+			for _, class := range classNames {
+				c, ok := byClass[class]
+				if !ok {
+					cells = append(cells, notApplicable)
+					continue
+				}
+				cells = append(cells, figure(c.Recall))
+			}
+			fmt.Fprintf(b, "| %.2f | %d | %d | %d | %s | %s | %s |\n",
+				x.Share, x.Recovered, x.Destroyed, y.Year, figure(y.Recall),
+				strings.Join(cells, " | "), figure(y.Stale))
+		}
+	}
+	fmt.Fprintln(b)
+
+	fmt.Fprintf(b, "| share joined | year | units held | content KB |\n|---|---|---|---|\n")
+	for _, x := range r.Bias {
+		for _, s := range x.Sizes {
+			fmt.Fprintf(b, "| %.2f | %d | %d | %.1f |\n",
+				x.Share, s.Year, s.Size.Units, kilobytes(s.Size.ContentBytes))
+		}
+	}
+	fmt.Fprintln(b)
+}
+
+// renderStability is whether asking the same question again gets the same
+// answer, which is what says whether an uncertainty signal exists to bias
+// on at all.
+func renderStability(b *strings.Builder, r Run) {
+	if r.Stability == nil {
+		return
+	}
+	s := r.Stability
+	fmt.Fprintf(b, "### Whether the model's answer is settled\n\n")
+	rows := [][2]any{
+		{"assertions asked", s.Asked},
+		{"samples of each", s.Samples},
+		{"temperature", s.Temperature},
+		{"every sample agreed", figure(s.Unanimous)},
+		{"agreed on the wrong answer", s.UnanimousWrong},
+		{"samples split", s.Split},
+		{"split, where the settled answer is wrong", figure(s.SplitAmongWrong)},
+		{"split, where the settled answer is right", figure(s.SplitAmongRight)},
+		{"joining on a split recovers", s.Recovers},
+		{"joining on a split wrongly joins", s.Costs},
+	}
+	fmt.Fprintf(b, "| quantity | value |\n|---|---|\n")
+	for _, row := range rows {
+		fmt.Fprintf(b, "| %s | %v |\n", row[0], row[1])
+	}
+	fmt.Fprintln(b)
+
+	fmt.Fprintf(b, "| wording | asked | every sample agreed |\n|---|---|---|\n")
+	for _, cut := range s.Wordings {
+		fmt.Fprintf(b, "| `%s` | %d | %s |\n", cut.Name, cut.Asked, figure(cut.Accuracy))
+	}
+	fmt.Fprintln(b)
+}
+
+// renderDisagreement is the frame driven by the model asked three times,
+// joining wherever the samples split.
+func renderDisagreement(b *strings.Builder, r Run) {
+	if r.Disagreement == nil {
+		return
+	}
+	fmt.Fprintf(b, "### What the frame answered when a split resolves to join\n\n")
 	fmt.Fprintf(b, "| year | recall | %s | stale returned |\n", strings.Join(classNames, " | "))
 	fmt.Fprintf(b, "|---|---|%s---|\n", strings.Repeat("---|", len(classNames)))
-	for _, y := range r.Model.Years {
+	for _, y := range r.Disagreement.Years {
 		byClass := map[string]ClassResult{}
 		for _, c := range y.Classes {
 			byClass[c.Class] = c
@@ -281,14 +408,6 @@ func renderModelRun(b *strings.Builder, r Run) {
 			y.Year, figure(y.Recall), strings.Join(cells, " | "), figure(y.Stale))
 	}
 	fmt.Fprintln(b)
-
-	fmt.Fprintf(b, "| direction | errors | addresses hit | healed by the last year | years carrying the damage |\n")
-	fmt.Fprintf(b, "|---|---|---|---|---|\n")
-	for _, x := range r.Model.Damage {
-		fmt.Fprintf(b, "| `%s` | %d | %d | %s | %s |\n", x.Direction, x.Damage.Errors,
-			x.Damage.Addresses, figure(x.Damage.Healed), figureAt(x.Damage.Years, 2))
-	}
-	fmt.Fprintln(b)
 }
 
 // renderPaid is the money. It is a table of its own, after every free
@@ -304,16 +423,26 @@ func renderPaid(b *strings.Builder, r Run) {
 	d := r.Declarer
 	rows := [][2]any{
 		{"model", d.Model},
-		{"paid calls", d.Calls},
+		{"paid calls, declaring", d.Calls},
 		{"assertions declared", d.Asked},
 		{"prompt tokens", d.PromptTokens},
 		{"completion tokens", d.CompletionTokens},
 		{"price per million prompt tokens, USD", d.PriceInPerM},
 		{"price per million completion tokens, USD", d.PriceOutPerM},
 		{"price read on", d.PriceRead},
-		{"cost, USD", fmt.Sprintf("%.4f", d.CostUSD)},
-		{"call bound the run refuses to pass", declareCallLimit},
-		{"cost bound the run refuses to pass, USD", fmt.Sprintf("%.2f", declareCostLimit)},
+		{"cost of declaring, USD", fmt.Sprintf("%.4f", d.CostUSD)},
+		{"call bound declaring refuses to pass", declareCallLimit},
+		{"cost bound declaring refuses to pass, USD", fmt.Sprintf("%.2f", declareCostLimit)},
+	}
+	if r.Stability != nil {
+		rows = append(rows,
+			[2]any{"paid calls, resampling", r.Stability.Calls},
+			[2]any{"prompt tokens, resampling", r.Stability.PromptTokens},
+			[2]any{"completion tokens, resampling", r.Stability.CompletionTokens},
+			[2]any{"cost of resampling, USD", fmt.Sprintf("%.4f", r.Stability.CostUSD)},
+			[2]any{"call bound resampling refuses to pass", resampleCallLimit},
+			[2]any{"cost bound resampling refuses to pass, USD", fmt.Sprintf("%.2f", resampleCostLimit)},
+			[2]any{"cost of this record in total, USD", fmt.Sprintf("%.4f", d.CostUSD+r.Stability.CostUSD)})
 	}
 	fmt.Fprintf(b, "| quantity | value |\n|---|---|\n")
 	for _, row := range rows {

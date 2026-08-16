@@ -60,18 +60,21 @@ type Config struct {
 
 // Run is one seed's whole measurement.
 type Run struct {
-	Seed     int64          `json:"seed"`
-	Start    string         `json:"start"`
-	Embedder string         `json:"embedder"`
-	Digest   string         `json:"workload_digest"`
-	Params   Params         `json:"params"`
-	Config   Config         `json:"configuration"`
-	Cost     Cost           `json:"cost"`
-	Sweep    []SweepResult  `json:"declaration_error_sweep"`
-	Declarer *DeclarerScore `json:"declarer,omitempty"`
-	Model    *ModelRun      `json:"model_run,omitempty"`
-	Arity    Arity          `json:"arity"`
-	Frames   []FrameResult  `json:"frames"`
+	Seed         int64          `json:"seed"`
+	Start        string         `json:"start"`
+	Embedder     string         `json:"embedder"`
+	Digest       string         `json:"workload_digest"`
+	Params       Params         `json:"params"`
+	Config       Config         `json:"configuration"`
+	Cost         Cost           `json:"cost"`
+	Sweep        []SweepResult  `json:"declaration_error_sweep"`
+	Declarer     *DeclarerScore `json:"declarer,omitempty"`
+	Model        []ModelRun     `json:"model_runs,omitempty"`
+	Bias         []BiasResult   `json:"join_bias,omitempty"`
+	Stability    *Stability     `json:"stability,omitempty"`
+	Disagreement *ModelRun      `json:"disagreement_run,omitempty"`
+	Arity        Arity          `json:"arity"`
+	Frames       []FrameResult  `json:"frames"`
 }
 
 func main() {
@@ -87,7 +90,9 @@ func run() error {
 	record := flag.String("record", defaultRecord(), "the record whose tables -render rewrites")
 	render := flag.Bool("render", false, "rewrite the record's tables from the committed results and measure nothing")
 	declare := flag.Bool("declare", false,
-		"ask a model to declare the operation for every assertion. This is the only flag that spends money")
+		"ask a model to declare the operation for every assertion. Spends money")
+	resample := flag.Bool("resample", false,
+		"ask the model the consequential assertions several times over, to see whether its answer is settled. Spends money")
 	declarerCache := flag.String("declarer-cache", "",
 		"file the declared operations are cached in, outside the repository")
 	params := Params{}
@@ -124,6 +129,20 @@ func run() error {
 			declared.PromptTokens, declared.CompletionTokens, declared.CostUSD)
 	}
 
+	stabilityPath := filepath.Join(*out, fmt.Sprintf("stability_seed%d.json", *seed))
+	if *resample {
+		stable, err := Resample(ctx, workload, *declarerCache)
+		if err != nil {
+			return err
+		}
+		if err := writeJSON(stabilityPath, stable); err != nil {
+			return err
+		}
+		fmt.Printf("resampled %d assertions %d times in %d paid calls: %d prompt and %d completion tokens, $%.4f\n",
+			stable.Asked, stable.Samples, stable.Calls,
+			stable.PromptTokens, stable.CompletionTokens, stable.CostUSD)
+	}
+
 	result, err := MeasureRun(ctx, workload)
 	if err != nil {
 		return err
@@ -135,11 +154,35 @@ func run() error {
 	if declared != nil {
 		scored := ScoreDeclarations(*declared)
 		result.Declarer = &scored
-		modelRun, err := MeasureModelRun(ctx, workload, *declared)
+		for _, frame := range []string{frameAttributeDeclared, frameIntervalDeclared} {
+			modelRun, err := MeasureModelRun(ctx, workload, *declared, frame)
+			if err != nil {
+				return err
+			}
+			result.Model = append(result.Model, modelRun)
+		}
+		bias, err := MeasureJoinBias(ctx, workload, *declared)
 		if err != nil {
 			return err
 		}
-		result.Model = &modelRun
+		result.Bias = bias
+	}
+	result.Stability, err = readCommittedStability(stabilityPath)
+	if err != nil {
+		return err
+	}
+	if result.Stability != nil && declared != nil {
+		measured, err := Measure(ctx, workload, frameAttributeDeclared, armOracle,
+			NewEmbedCounter(), result.Stability.Declaring(*declared))
+		if err != nil {
+			return err
+		}
+		run := ModelRun{Frame: frameAttributeDeclared, Model: result.Stability.Model, Years: measured.Years, Sizes: measured.Sizes}
+		for _, direction := range directionNames {
+			run.Damage = append(run.Damage, DirectionDamage{Direction: direction,
+				Damage: MeasureDamage(declared.Flips(direction), measured.Probes, workload.Params.Years)})
+		}
+		result.Disagreement = &run
 	}
 	if err := writeJSON(resultPath, result); err != nil {
 		return err
@@ -227,6 +270,24 @@ func readCommittedDeclarations(path string) (*Declarations, error) {
 		return nil, fmt.Errorf("decode %s: %w", path, err)
 	}
 	return &declared, nil
+}
+
+// readCommittedStability reads the resampled answers a paid run committed
+// and scores them, which costs nothing.
+func readCommittedStability(path string) (*Stability, error) {
+	body, err := os.ReadFile(path)
+	if os.IsNotExist(err) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("read %s: %w", path, err)
+	}
+	var stable Stability
+	if err := json.Unmarshal(body, &stable); err != nil {
+		return nil, fmt.Errorf("decode %s: %w", path, err)
+	}
+	scored := ScoreStability(stable)
+	return &scored, nil
 }
 
 // defaultOut is the results directory beside this harness.

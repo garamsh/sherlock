@@ -221,6 +221,10 @@ func declarePrompt(d Declaration) string {
 type declareClient struct {
 	key  string
 	http *http.Client
+	// temperature is zero for the declaring pass, which wants one settled
+	// answer, and one for the resampling pass, which is asking whether the
+	// answer is settled at all.
+	temperature int
 }
 
 type declareUsage struct {
@@ -237,7 +241,7 @@ func (c *declareClient) declare(ctx context.Context, prompt string) (Operation, 
 			{"role": "system", "content": declareInstruction},
 			{"role": "user", "content": prompt},
 		},
-		"temperature":           0,
+		"temperature":           c.temperature,
 		"max_completion_tokens": declareMaxTokens,
 	})
 	if err != nil {
@@ -523,19 +527,21 @@ type DirectionDamage struct {
 // error costs; this says what these errors cost, including that they fall
 // on the classes the model finds hard rather than at random.
 type ModelRun struct {
+	Frame  string            `json:"frame"`
 	Model  string            `json:"model"`
 	Years  []YearResult      `json:"years"`
 	Sizes  []SizeAt          `json:"sizes"`
 	Damage []DirectionDamage `json:"damage"`
 }
 
-// MeasureModelRun runs the ceiling frame on the model's own declarations.
-func MeasureModelRun(ctx context.Context, w Workload, d Declarations) (ModelRun, error) {
-	measured, err := Measure(ctx, w, frameAttributeDeclared, armOracle, NewEmbedCounter(), d.Declaring())
+// MeasureModelRun runs a frame that reads declarations on the model's own
+// answers.
+func MeasureModelRun(ctx context.Context, w Workload, d Declarations, frame string) (ModelRun, error) {
+	measured, err := Measure(ctx, w, frame, armOracle, NewEmbedCounter(), d.Declaring())
 	if err != nil {
-		return ModelRun{}, fmt.Errorf("the frame on %s's declarations: %w", d.Model, err)
+		return ModelRun{}, fmt.Errorf("%s on %s's declarations: %w", frame, d.Model, err)
 	}
-	out := ModelRun{Model: d.Model, Years: measured.Years, Sizes: measured.Sizes}
+	out := ModelRun{Frame: frame, Model: d.Model, Years: measured.Years, Sizes: measured.Sizes}
 	for _, direction := range directionNames {
 		out.Damage = append(out.Damage, DirectionDamage{
 			Direction: direction,

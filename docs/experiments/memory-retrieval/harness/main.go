@@ -79,6 +79,25 @@ type Config struct {
 	CharsPerToken          int     `json:"chars_per_token"`
 }
 
+// shippedConfig reads the ranking configuration out of the memory
+// package, so a run records what the code held rather than what someone
+// typed. A committed run keeps the values it read; the check that they
+// are still the code's is a test, because reading them at run time only
+// binds the record to the code on the day it ran.
+func shippedConfig() Config {
+	return Config{
+		WeightVector:           memory.WeightVector,
+		WeightFTS:              memory.WeightFTS,
+		RecencyHalfLifeHours:   memory.RecencyHalfLife.Hours(),
+		SupersessionSimilarity: memory.SupersessionSimilarity,
+		EmbeddingDim:           memory.EmbeddingDim,
+		DefaultCapacity:        memory.DefaultCapacity,
+		DefaultSearchLimit:     memory.DefaultSearchLimit,
+		RecallTokenBudget:      memory.DefaultRecallTokenBudget,
+		CharsPerToken:          memory.CharsPerToken,
+	}
+}
+
 // CorpusParams are the generator's inputs, so a reader can rebuild the
 // corpus from the record alone.
 type CorpusParams struct {
@@ -199,17 +218,7 @@ func run() error {
 			MaxFacts:       maxFacts,
 			AgeWindowHours: ageWindowHours,
 		},
-		Config: Config{
-			WeightVector:           memory.WeightVector,
-			WeightFTS:              memory.WeightFTS,
-			RecencyHalfLifeHours:   memory.RecencyHalfLife.Hours(),
-			SupersessionSimilarity: memory.SupersessionSimilarity,
-			EmbeddingDim:           memory.EmbeddingDim,
-			DefaultCapacity:        memory.DefaultCapacity,
-			DefaultSearchLimit:     memory.DefaultSearchLimit,
-			RecallTokenBudget:      memory.DefaultRecallTokenBudget,
-			CharsPerToken:          memory.CharsPerToken,
-		},
+		Config: shippedConfig(),
 	}
 
 	for _, arm := range []Arm{

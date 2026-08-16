@@ -33,6 +33,20 @@ type attribute struct {
 	question string
 }
 
+// The four ways an assertion is worded. They are what separates a
+// replacement from an addition in the sentence, and the only thing that
+// does: an assertion opens a thread, adds a value with a conjunction,
+// adds one under a qualifier, or ends what came before.
+const (
+	wordingAssert  = "assert"
+	wordingAlso    = "also"
+	wordingNarrow  = "narrow"
+	wordingReplace = "replace"
+)
+
+// wordingNames is the order every table reports the wordings in.
+var wordingNames = []string{wordingAssert, wordingAlso, wordingNarrow, wordingReplace}
+
 // attributes are the twelve fact kinds the workload plants.
 var attributes = []attribute{
 	{

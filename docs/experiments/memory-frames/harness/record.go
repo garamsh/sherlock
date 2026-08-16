@@ -65,7 +65,12 @@ func RenderTables(r Run) string {
 	renderYears(&b, r)
 	renderSizes(&b, r)
 	renderArity(&b, r)
+	renderSweep(&b, r)
+	renderHealing(&b, r)
+	renderDeclarer(&b, r)
+	renderModelRun(&b, r)
 	renderCost(&b, r)
+	renderPaid(&b, r)
 	return strings.TrimRight(b.String(), "\n")
 }
 
@@ -164,6 +169,155 @@ func renderArity(b *strings.Builder, r Run) {
 	fmt.Fprintf(b, "| attribute | addresses | written more than one value | share |\n|---|---|---|---|\n")
 	for _, a := range r.Arity.Attributes {
 		fmt.Fprintf(b, "| `%s` | %d | %d | %.3f |\n", a.Attribute, a.Addresses, a.MultiValued, a.Share)
+	}
+	fmt.Fprintln(b)
+}
+
+// renderSweep is what a wrong declaration costs, per direction and never
+// blended: the recall and the classes at every year of every rate.
+func renderSweep(b *strings.Builder, r Run) {
+	if len(r.Sweep) == 0 {
+		return
+	}
+	fmt.Fprintf(b, "### What a wrong declaration costs, by year\n\n")
+	fmt.Fprintf(b, "| direction | rate | errors | year | recall | %s | stale returned |\n",
+		strings.Join(classNames, " | "))
+	fmt.Fprintf(b, "|---|---|---|---|---|%s---|\n", strings.Repeat("---|", len(classNames)))
+	for _, s := range r.Sweep {
+		for _, y := range s.Years {
+			byClass := map[string]ClassResult{}
+			for _, c := range y.Classes {
+				byClass[c.Class] = c
+			}
+			cells := make([]string, 0, len(classNames))
+			for _, class := range classNames {
+				c, ok := byClass[class]
+				if !ok {
+					cells = append(cells, notApplicable)
+					continue
+				}
+				cells = append(cells, figure(c.Recall))
+			}
+			fmt.Fprintf(b, "| `%s` | %.3f | %d | %d | %s | %s | %s |\n",
+				s.Direction, s.Rate, s.Damage.Errors, y.Year, figure(y.Recall),
+				strings.Join(cells, " | "), figure(y.Stale))
+		}
+	}
+	fmt.Fprintln(b)
+}
+
+// renderHealing is whether a wrong declaration is repaired by what comes
+// after it, which a year-ten recall figure alone cannot say.
+func renderHealing(b *strings.Builder, r Run) {
+	if len(r.Sweep) == 0 {
+		return
+	}
+	fmt.Fprintf(b, "### Whether a wrong declaration heals\n\n")
+	fmt.Fprintf(b, "| direction | rate | eligible writes | errors | addresses hit | healed by the last year | years carrying the damage |\n")
+	fmt.Fprintf(b, "|---|---|---|---|---|---|---|\n")
+	for _, s := range r.Sweep {
+		fmt.Fprintf(b, "| `%s` | %.3f | %d | %d | %d | %s | %s |\n",
+			s.Direction, s.Rate, s.Eligible, s.Damage.Errors, s.Damage.Addresses,
+			figure(s.Damage.Healed), figureAt(s.Damage.Years, 2))
+	}
+	fmt.Fprintln(b)
+}
+
+// renderDeclarer is what a real model answered, cut the ways that decide
+// whether the recommendation survives it.
+func renderDeclarer(b *strings.Builder, r Run) {
+	if r.Declarer == nil {
+		return
+	}
+	d := r.Declarer
+	fmt.Fprintf(b, "### What a model declared\n\n")
+	fmt.Fprintf(b, "| direction | eligible writes | errors | rate | writes with consequence | errors there | rate there |\n")
+	fmt.Fprintf(b, "|---|---|---|---|---|---|---|\n")
+	for _, x := range d.Directions {
+		fmt.Fprintf(b, "| `%s` | %d | %d | %s | %d | %d | %s |\n",
+			x.Direction, x.Eligible, x.Errors, figure(x.Rate),
+			x.Consequential, x.ConsequentialErrors, figure(x.ConsequentialRate))
+	}
+	fmt.Fprintln(b)
+
+	fmt.Fprintf(b, "| wording | asked | accuracy |\n|---|---|---|\n")
+	for _, x := range d.Wordings {
+		fmt.Fprintf(b, "| `%s` | %d | %s |\n", x.Name, x.Asked, figure(x.Accuracy))
+	}
+	fmt.Fprintln(b)
+
+	fmt.Fprintf(b, "| class | asked | accuracy |\n|---|---|---|\n")
+	for _, x := range d.Classes {
+		fmt.Fprintf(b, "| `%s` | %d | %s |\n", x.Name, x.Asked, figure(x.Accuracy))
+	}
+	fmt.Fprintln(b)
+}
+
+// renderModelRun is the ceiling frame driven by the model's own answers,
+// which is what the recommendation actually scores rather than what a rate
+// predicts for it.
+func renderModelRun(b *strings.Builder, r Run) {
+	if r.Model == nil {
+		return
+	}
+	fmt.Fprintf(b, "### What the frame answered on the model's declarations\n\n")
+	fmt.Fprintf(b, "| year | recall | %s | stale returned |\n", strings.Join(classNames, " | "))
+	fmt.Fprintf(b, "|---|---|%s---|\n", strings.Repeat("---|", len(classNames)))
+	for _, y := range r.Model.Years {
+		byClass := map[string]ClassResult{}
+		for _, c := range y.Classes {
+			byClass[c.Class] = c
+		}
+		cells := make([]string, 0, len(classNames))
+		for _, class := range classNames {
+			c, ok := byClass[class]
+			if !ok {
+				cells = append(cells, notApplicable)
+				continue
+			}
+			cells = append(cells, figure(c.Recall))
+		}
+		fmt.Fprintf(b, "| %d | %s | %s | %s |\n",
+			y.Year, figure(y.Recall), strings.Join(cells, " | "), figure(y.Stale))
+	}
+	fmt.Fprintln(b)
+
+	fmt.Fprintf(b, "| direction | errors | addresses hit | healed by the last year | years carrying the damage |\n")
+	fmt.Fprintf(b, "|---|---|---|---|---|\n")
+	for _, x := range r.Model.Damage {
+		fmt.Fprintf(b, "| `%s` | %d | %d | %s | %s |\n", x.Direction, x.Damage.Errors,
+			x.Damage.Addresses, figure(x.Damage.Healed), figureAt(x.Damage.Years, 2))
+	}
+	fmt.Fprintln(b)
+}
+
+// renderPaid is the money. It is a table of its own, after every free
+// figure and never mixed into one, so no reader has to work out which
+// numbers cost something.
+func renderPaid(b *strings.Builder, r Run) {
+	fmt.Fprintf(b, "### What the paid half cost\n\n")
+	if r.Declarer == nil {
+		fmt.Fprintf(b, "| quantity | value |\n|---|---|\n| paid calls | 0 |\n")
+		fmt.Fprintln(b)
+		return
+	}
+	d := r.Declarer
+	rows := [][2]any{
+		{"model", d.Model},
+		{"paid calls", d.Calls},
+		{"assertions declared", d.Asked},
+		{"prompt tokens", d.PromptTokens},
+		{"completion tokens", d.CompletionTokens},
+		{"price per million prompt tokens, USD", d.PriceInPerM},
+		{"price per million completion tokens, USD", d.PriceOutPerM},
+		{"price read on", d.PriceRead},
+		{"cost, USD", fmt.Sprintf("%.4f", d.CostUSD)},
+		{"call bound the run refuses to pass", declareCallLimit},
+		{"cost bound the run refuses to pass, USD", fmt.Sprintf("%.2f", declareCostLimit)},
+	}
+	fmt.Fprintf(b, "| quantity | value |\n|---|---|\n")
+	for _, row := range rows {
+		fmt.Fprintf(b, "| %s | %v |\n", row[0], row[1])
 	}
 	fmt.Fprintln(b)
 }

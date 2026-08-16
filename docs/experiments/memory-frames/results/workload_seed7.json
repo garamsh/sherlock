@@ -24,6 +24,7 @@
     {
      "year": 1,
      "day": 176,
+     "wording": "assert",
      "value": "verdigris-annex",
      "text": "Zara rehearses at the verdigris-annex hall.",
      "replaces": true
@@ -39,6 +40,7 @@
     {
      "year": 1,
      "day": 97,
+     "wording": "assert",
      "value": "ember-foundry",
      "text": "Nadia sits with the ember-foundry team.",
      "replaces": true
@@ -54,6 +56,7 @@
     {
      "year": 1,
      "day": 290,
+     "wording": "assert",
      "value": "umber-weir",
      "text": "Gunnar banks with umber-weir.",
      "replaces": true
@@ -69,6 +72,7 @@
     {
      "year": 1,
      "day": 209,
+     "wording": "assert",
      "value": "verdigris-reach",
      "text": "Ulla banks with verdigris-reach.",
      "replaces": true
@@ -84,6 +88,7 @@
     {
      "year": 1,
      "day": 116,
+     "wording": "assert",
      "value": "saffron-drift",
      "text": "Yara goes to the saffron-drift clinic.",
      "replaces": true
@@ -99,6 +104,7 @@
     {
      "year": 1,
      "day": 129,
+     "wording": "assert",
      "value": "thistle-reach",
      "text": "Yara commutes on the thistle-reach line.",
      "replaces": true
@@ -114,6 +120,7 @@
     {
      "year": 1,
      "day": 129,
+     "wording": "assert",
      "value": "silverfin-hearth",
      "text": "Cato keeps the backups on silverfin-hearth.",
      "replaces": true
@@ -129,6 +136,7 @@
     {
      "year": 1,
      "day": 176,
+     "wording": "assert",
      "value": "ironwood-weir",
      "text": "Amara rents the ironwood-weir cottage.",
      "replaces": true
@@ -144,6 +152,7 @@
     {
      "year": 1,
      "day": 191,
+     "wording": "assert",
      "value": "cinder-meadow",
      "text": "Lisa sits with the cinder-meadow team.",
      "replaces": true
@@ -159,6 +168,7 @@
     {
      "year": 1,
      "day": 75,
+     "wording": "assert",
      "value": "dovetail-brook",
      "text": "Tereza banks with dovetail-brook.",
      "replaces": true
@@ -174,6 +184,7 @@
     {
      "year": 1,
      "day": 66,
+     "wording": "assert",
      "value": "copper-kiln",
      "text": "Hugo sits with the copper-kiln team.",
      "replaces": true
@@ -189,6 +200,7 @@
     {
      "year": 1,
      "day": 256,
+     "wording": "assert",
      "value": "cobalt-annex",
      "text": "Celia keeps the accounts in cobalt-annex.",
      "replaces": true
@@ -204,6 +216,7 @@
     {
      "year": 1,
      "day": 135,
+     "wording": "assert",
      "value": "cobalt-moor",
      "text": "Kasper banks with cobalt-moor.",
      "replaces": true
@@ -219,6 +232,7 @@
     {
      "year": 1,
      "day": 53,
+     "wording": "assert",
      "value": "marlow-weir",
      "text": "Yara keeps the accounts in marlow-weir.",
      "replaces": true
@@ -234,6 +248,7 @@
     {
      "year": 1,
      "day": 19,
+     "wording": "assert",
      "value": "quill-wharf",
      "text": "Tereza keeps the backups on quill-wharf.",
      "replaces": true
@@ -249,6 +264,7 @@
     {
      "year": 1,
      "day": 135,
+     "wording": "assert",
      "value": "quill-hollow",
      "text": "Vasco is taking the quill-hollow course.",
      "replaces": true
@@ -264,6 +280,7 @@
     {
      "year": 1,
      "day": 6,
+     "wording": "assert",
      "value": "dovetail-hollow",
      "text": "Kwame keeps the accounts in dovetail-hollow.",
      "replaces": true
@@ -279,6 +296,7 @@
     {
      "year": 1,
      "day": 176,
+     "wording": "assert",
      "value": "oakhill-reach",
      "text": "Greta keeps the accounts in oakhill-reach.",
      "replaces": true
@@ -294,6 +312,7 @@
     {
      "year": 1,
      "day": 176,
+     "wording": "assert",
      "value": "saffron-meadow",
      "text": "Fabio keeps the accounts in saffron-meadow.",
      "replaces": true
@@ -309,6 +328,7 @@
     {
      "year": 1,
      "day": 116,
+     "wording": "assert",
      "value": "vellum-ledge",
      "text": "Stefan leads the vellum-ledge project.",
      "replaces": true
@@ -324,6 +344,7 @@
     {
      "year": 1,
      "day": 317,
+     "wording": "assert",
      "value": "ironwood-lantern",
      "text": "Beatriz goes to the ironwood-lantern clinic.",
      "replaces": true
@@ -339,6 +360,7 @@
     {
      "year": 1,
      "day": 85,
+     "wording": "assert",
      "value": "zephyr-wharf",
      "text": "Freya sits with the zephyr-wharf team.",
      "replaces": true
@@ -354,6 +376,7 @@
     {
      "year": 1,
      "day": 135,
+     "wording": "assert",
      "value": "nutmeg-quarry",
      "text": "Sanjay is taking the nutmeg-quarry course.",
      "replaces": true
@@ -369,6 +392,7 @@
     {
      "year": 1,
      "day": 213,
+     "wording": "assert",
      "value": "ravel-gable",
      "text": "Esther rents the ravel-gable cottage.",
      "replaces": true
@@ -384,6 +408,7 @@
     {
      "year": 1,
      "day": 44,
+     "wording": "assert",
      "value": "cinder-hearth",
      "text": "Pablo leads the cinder-hearth project.",
      "replaces": true
@@ -399,6 +424,7 @@
     {
      "year": 1,
      "day": 85,
+     "wording": "assert",
      "value": "dovetail-orchard",
      "text": "Wilma orders paper from dovetail-orchard.",
      "replaces": true
@@ -414,6 +440,7 @@
     {
      "year": 1,
      "day": 97,
+     "wording": "assert",
      "value": "umber-brook",
      "text": "Milos commutes on the umber-brook line.",
      "replaces": true
@@ -429,6 +456,7 @@
     {
      "year": 1,
      "day": 66,
+     "wording": "assert",
      "value": "dovetail-isle",
      "text": "Chiara leads the dovetail-isle project.",
      "replaces": true
@@ -444,6 +472,7 @@
     {
      "year": 1,
      "day": 273,
+     "wording": "assert",
      "value": "oakhill-spire",
      "text": "Anders keeps the backups on oakhill-spire.",
      "replaces": true
@@ -459,6 +488,7 @@
     {
      "year": 1,
      "day": 317,
+     "wording": "assert",
      "value": "bramble-lantern",
      "text": "Viktor sits with the bramble-lantern team.",
      "replaces": true
@@ -474,6 +504,7 @@
     {
      "year": 1,
      "day": 66,
+     "wording": "assert",
      "value": "yarrow-spire",
      "text": "Erol orders paper from yarrow-spire.",
      "replaces": true
@@ -489,6 +520,7 @@
     {
      "year": 1,
      "day": 44,
+     "wording": "assert",
      "value": "umber-reach",
      "text": "Jonas rents the umber-reach cottage.",
      "replaces": true
@@ -504,6 +536,7 @@
     {
      "year": 1,
      "day": 191,
+     "wording": "assert",
      "value": "yarrow-weir",
      "text": "Iris leads the yarrow-weir project.",
      "replaces": true
@@ -519,6 +552,7 @@
     {
      "year": 1,
      "day": 213,
+     "wording": "assert",
      "value": "amber-annex",
      "text": "Lisa keeps the backups on amber-annex.",
      "replaces": true
@@ -534,6 +568,7 @@
     {
      "year": 1,
      "day": 284,
+     "wording": "assert",
      "value": "umber-fenn",
      "text": "Tariq keeps the backups on umber-fenn.",
      "replaces": true
@@ -549,6 +584,7 @@
     {
      "year": 1,
      "day": 19,
+     "wording": "assert",
      "value": "copper-chandler",
      "text": "Goran leads the copper-chandler project.",
      "replaces": true
@@ -564,6 +600,7 @@
     {
      "year": 1,
      "day": 209,
+     "wording": "assert",
      "value": "harrow-moor",
      "text": "Tomas rehearses at the harrow-moor hall.",
      "replaces": true
@@ -579,6 +616,7 @@
     {
      "year": 1,
      "day": 97,
+     "wording": "assert",
      "value": "sable-tarn",
      "text": "Gunnar is taking the sable-tarn course.",
      "replaces": true
@@ -594,6 +632,7 @@
     {
      "year": 1,
      "day": 85,
+     "wording": "assert",
      "value": "verdigris-beacon",
      "text": "Petra keeps the accounts in verdigris-beacon.",
      "replaces": true
@@ -609,6 +648,7 @@
     {
      "year": 1,
      "day": 176,
+     "wording": "assert",
      "value": "ironwood-fenn",
      "text": "Olga orders paper from ironwood-fenn.",
      "replaces": true
@@ -624,6 +664,7 @@
     {
      "year": 1,
      "day": 129,
+     "wording": "assert",
      "value": "vellum-vale",
      "text": "Rania keeps the accounts in vellum-vale.",
      "replaces": true
@@ -631,6 +672,7 @@
     {
      "year": 3,
      "day": 803,
+     "wording": "replace",
      "value": "cobalt-pike",
      "text": "Rania has switched the accounts to cobalt-pike.",
      "replaces": true
@@ -638,6 +680,7 @@
     {
      "year": 7,
      "day": 2549,
+     "wording": "replace",
      "value": "dovetail-harbour",
      "text": "Rania has switched the accounts to dovetail-harbour.",
      "replaces": true
@@ -653,6 +696,7 @@
     {
      "year": 1,
      "day": 346,
+     "wording": "assert",
      "value": "marlow-orchard",
      "text": "Leila banks with marlow-orchard.",
      "replaces": true
@@ -660,6 +704,7 @@
     {
      "year": 3,
      "day": 970,
+     "wording": "replace",
      "value": "vellum-meadow",
      "text": "Leila banks with vellum-meadow now.",
      "replaces": true
@@ -667,6 +712,7 @@
     {
      "year": 7,
      "day": 2456,
+     "wording": "replace",
      "value": "zephyr-ridge",
      "text": "Leila banks with zephyr-ridge now.",
      "replaces": true
@@ -682,6 +728,7 @@
     {
      "year": 1,
      "day": 273,
+     "wording": "assert",
      "value": "flint-hearth",
      "text": "Leila commutes on the flint-hearth line.",
      "replaces": true
@@ -689,6 +736,7 @@
     {
      "year": 3,
      "day": 1038,
+     "wording": "replace",
      "value": "copper-harbour",
      "text": "Leila commutes on the copper-harbour line now.",
      "replaces": true
@@ -696,6 +744,7 @@
     {
      "year": 7,
      "day": 2469,
+     "wording": "replace",
      "value": "tamarind-tarn",
      "text": "Leila commutes on the tamarind-tarn line now.",
      "replaces": true
@@ -711,6 +760,7 @@
     {
      "year": 1,
      "day": 350,
+     "wording": "assert",
      "value": "ironwood-reach",
      "text": "Maria leads the ironwood-reach project.",
      "replaces": true
@@ -718,6 +768,7 @@
     {
      "year": 3,
      "day": 1069,
+     "wording": "replace",
      "value": "larkin-weir",
      "text": "Maria leads the larkin-weir project from now on.",
      "replaces": true
@@ -725,6 +776,7 @@
     {
      "year": 7,
      "day": 2393,
+     "wording": "replace",
      "value": "yarrow-annex",
      "text": "Maria leads the yarrow-annex project from now on.",
      "replaces": true
@@ -740,6 +792,7 @@
     {
      "year": 1,
      "day": 135,
+     "wording": "assert",
      "value": "garnet-drift",
      "text": "Stefan orders paper from garnet-drift.",
      "replaces": true
@@ -747,6 +800,7 @@
     {
      "year": 3,
      "day": 970,
+     "wording": "replace",
      "value": "amber-chandler",
      "text": "Stefan orders paper from amber-chandler now.",
      "replaces": true
@@ -754,6 +808,7 @@
     {
      "year": 7,
      "day": 2304,
+     "wording": "replace",
      "value": "larkin-harbour",
      "text": "Stefan orders paper from larkin-harbour now.",
      "replaces": true
@@ -769,6 +824,7 @@
     {
      "year": 1,
      "day": 85,
+     "wording": "assert",
      "value": "dovetail-lantern",
      "text": "Tariq is taking the dovetail-lantern course.",
      "replaces": true
@@ -776,6 +832,7 @@
     {
      "year": 3,
      "day": 928,
+     "wording": "replace",
      "value": "cobalt-yard",
      "text": "Tariq is taking the cobalt-yard course instead.",
      "replaces": true
@@ -783,6 +840,7 @@
     {
      "year": 7,
      "day": 2221,
+     "wording": "replace",
      "value": "vellum-quarry",
      "text": "Tariq is taking the vellum-quarry course instead.",
      "replaces": true
@@ -798,6 +856,7 @@
     {
      "year": 1,
      "day": 187,
+     "wording": "assert",
      "value": "ember-spire",
      "text": "Goran banks with ember-spire.",
      "replaces": true
@@ -805,6 +864,7 @@
     {
      "year": 3,
      "day": 761,
+     "wording": "replace",
      "value": "ravel-orchard",
      "text": "Goran banks with ravel-orchard now.",
      "replaces": true
@@ -812,6 +872,7 @@
     {
      "year": 7,
      "day": 2354,
+     "wording": "replace",
      "value": "verdigris-tarn",
      "text": "Goran banks with verdigris-tarn now.",
      "replaces": true
@@ -827,6 +888,7 @@
     {
      "year": 1,
      "day": 191,
+     "wording": "assert",
      "value": "bramble-weir",
      "text": "Wanda is taking the bramble-weir course.",
      "replaces": true
@@ -834,6 +896,7 @@
     {
      "year": 3,
      "day": 1069,
+     "wording": "replace",
      "value": "quill-annex",
      "text": "Wanda is taking the quill-annex course instead.",
      "replaces": true
@@ -841,6 +904,7 @@
     {
      "year": 7,
      "day": 2354,
+     "wording": "replace",
      "value": "marlow-yard",
      "text": "Wanda is taking the marlow-yard course instead.",
      "replaces": true
@@ -856,6 +920,7 @@
     {
      "year": 1,
      "day": 135,
+     "wording": "assert",
      "value": "silverfin-harbour",
      "text": "Erol banks with silverfin-harbour.",
      "replaces": true
@@ -863,6 +928,7 @@
     {
      "year": 3,
      "day": 862,
+     "wording": "replace",
      "value": "mirefield-vale",
      "text": "Erol banks with mirefield-vale now.",
      "replaces": true
@@ -870,6 +936,7 @@
     {
      "year": 7,
      "day": 2380,
+     "wording": "replace",
      "value": "umber-drift",
      "text": "Erol banks with umber-drift now.",
      "replaces": true
@@ -885,6 +952,7 @@
     {
      "year": 1,
      "day": 135,
+     "wording": "assert",
      "value": "saffron-beacon",
      "text": "Josefa keeps the accounts in saffron-beacon.",
      "replaces": true
@@ -892,6 +960,7 @@
     {
      "year": 3,
      "day": 1049,
+     "wording": "replace",
      "value": "dovetail-kiln",
      "text": "Josefa has switched the accounts to dovetail-kiln.",
      "replaces": true
@@ -899,6 +968,7 @@
     {
      "year": 7,
      "day": 2332,
+     "wording": "replace",
      "value": "vellum-mill",
      "text": "Josefa has switched the accounts to vellum-mill.",
      "replaces": true
@@ -914,6 +984,7 @@
     {
      "year": 1,
      "day": 331,
+     "wording": "assert",
      "value": "cinder-chandler",
      "text": "Wanda buys bread at the cinder-chandler bakery.",
      "replaces": true
@@ -921,6 +992,7 @@
     {
      "year": 3,
      "day": 870,
+     "wording": "replace",
      "value": "cinder-fenn",
      "text": "Wanda buys bread at the cinder-fenn bakery now.",
      "replaces": true
@@ -928,6 +1000,7 @@
     {
      "year": 7,
      "day": 2221,
+     "wording": "replace",
      "value": "sable-spire",
      "text": "Wanda buys bread at the sable-spire bakery now.",
      "replaces": true
@@ -943,6 +1016,7 @@
     {
      "year": 1,
      "day": 53,
+     "wording": "assert",
      "value": "ember-wharf",
      "text": "Freya commutes on the ember-wharf line.",
      "replaces": true
@@ -950,6 +1024,7 @@
     {
      "year": 3,
      "day": 803,
+     "wording": "replace",
      "value": "nutmeg-sedge",
      "text": "Freya commutes on the nutmeg-sedge line now.",
      "replaces": true
@@ -957,6 +1032,7 @@
     {
      "year": 7,
      "day": 2321,
+     "wording": "replace",
      "value": "vellum-brook",
      "text": "Freya commutes on the vellum-brook line now.",
      "replaces": true
@@ -972,6 +1048,7 @@
     {
      "year": 1,
      "day": 19,
+     "wording": "assert",
      "value": "thistle-lantern",
      "text": "Luca is taking the thistle-lantern course.",
      "replaces": true
@@ -979,6 +1056,7 @@
     {
      "year": 3,
      "day": 761,
+     "wording": "replace",
      "value": "amber-beacon",
      "text": "Luca is taking the amber-beacon course instead.",
      "replaces": true
@@ -986,6 +1064,7 @@
     {
      "year": 7,
      "day": 2234,
+     "wording": "replace",
      "value": "cinder-brook",
      "text": "Luca is taking the cinder-brook course instead.",
      "replaces": true
@@ -1001,6 +1080,7 @@
     {
      "year": 1,
      "day": 97,
+     "wording": "assert",
      "value": "wicklow-hearth",
      "text": "Tariq leads the wicklow-hearth project.",
      "replaces": true
@@ -1008,6 +1088,7 @@
     {
      "year": 3,
      "day": 1049,
+     "wording": "replace",
      "value": "yarrow-hollow",
      "text": "Tariq leads the yarrow-hollow project from now on.",
      "replaces": true
@@ -1015,6 +1096,7 @@
     {
      "year": 7,
      "day": 2321,
+     "wording": "replace",
      "value": "yarrow-harbour",
      "text": "Tariq leads the yarrow-harbour project from now on.",
      "replaces": true
@@ -1030,6 +1112,7 @@
     {
      "year": 1,
      "day": 129,
+     "wording": "assert",
      "value": "bramble-harbour",
      "text": "Kofi commutes on the bramble-harbour line.",
      "replaces": true
@@ -1037,6 +1120,7 @@
     {
      "year": 3,
      "day": 849,
+     "wording": "replace",
      "value": "zephyr-fenn",
      "text": "Kofi commutes on the zephyr-fenn line now.",
      "replaces": true
@@ -1044,6 +1128,7 @@
     {
      "year": 7,
      "day": 2549,
+     "wording": "replace",
      "value": "ironwood-pike",
      "text": "Kofi commutes on the ironwood-pike line now.",
      "replaces": true
@@ -1059,6 +1144,7 @@
     {
      "year": 1,
      "day": 53,
+     "wording": "assert",
      "value": "cinder-hollow",
      "text": "Zara goes to the cinder-hollow clinic.",
      "replaces": true
@@ -1066,6 +1152,7 @@
     {
      "year": 3,
      "day": 1008,
+     "wording": "replace",
      "value": "quill-drift",
      "text": "Zara has moved to the quill-drift clinic.",
      "replaces": true
@@ -1073,6 +1160,7 @@
     {
      "year": 7,
      "day": 2518,
+     "wording": "replace",
      "value": "ember-ledge",
      "text": "Zara has moved to the ember-ledge clinic.",
      "replaces": true
@@ -1088,6 +1176,7 @@
     {
      "year": 1,
      "day": 284,
+     "wording": "assert",
      "value": "saffron-weir",
      "text": "Orla is taking the saffron-weir course.",
      "replaces": true
@@ -1095,6 +1184,7 @@
     {
      "year": 3,
      "day": 1085,
+     "wording": "replace",
      "value": "ember-coppice",
      "text": "Orla is taking the ember-coppice course instead.",
      "replaces": true
@@ -1102,6 +1192,7 @@
     {
      "year": 7,
      "day": 2193,
+     "wording": "replace",
      "value": "cinder-drift",
      "text": "Orla is taking the cinder-drift course instead.",
      "replaces": true
@@ -1117,6 +1208,7 @@
     {
      "year": 1,
      "day": 317,
+     "wording": "assert",
      "value": "opal-ridge",
      "text": "Lorna keeps the accounts in opal-ridge.",
      "replaces": true
@@ -1124,6 +1216,7 @@
     {
      "year": 3,
      "day": 1038,
+     "wording": "replace",
      "value": "cobalt-foundry",
      "text": "Lorna has switched the accounts to cobalt-foundry.",
      "replaces": true
@@ -1131,6 +1224,7 @@
     {
      "year": 7,
      "day": 2332,
+     "wording": "replace",
      "value": "mirefield-glade",
      "text": "Lorna has switched the accounts to mirefield-glade.",
      "replaces": true
@@ -1146,6 +1240,7 @@
     {
      "year": 1,
      "day": 160,
+     "wording": "assert",
      "value": "flint-wharf",
      "text": "Noor is taking the flint-wharf course.",
      "replaces": true
@@ -1153,6 +1248,7 @@
     {
      "year": 3,
      "day": 1008,
+     "wording": "replace",
      "value": "silverfin-glade",
      "text": "Noor is taking the silverfin-glade course instead.",
      "replaces": true
@@ -1160,6 +1256,7 @@
     {
      "year": 7,
      "day": 2429,
+     "wording": "replace",
      "value": "flint-harbour",
      "text": "Noor is taking the flint-harbour course instead.",
      "replaces": true
@@ -1175,6 +1272,7 @@
     {
      "year": 1,
      "day": 346,
+     "wording": "assert",
      "value": "opal-moor",
      "text": "Idris keeps the backups on opal-moor.",
      "replaces": true
@@ -1182,6 +1280,7 @@
     {
      "year": 3,
      "day": 830,
+     "wording": "replace",
      "value": "saffron-vale",
      "text": "Idris keeps the backups on saffron-vale from now on.",
      "replaces": true
@@ -1189,6 +1288,7 @@
     {
      "year": 7,
      "day": 2393,
+     "wording": "replace",
      "value": "yarrow-wharf",
      "text": "Idris keeps the backups on yarrow-wharf from now on.",
      "replaces": true
@@ -1204,6 +1304,7 @@
     {
      "year": 1,
      "day": 44,
+     "wording": "assert",
      "value": "copper-foundry",
      "text": "Elif goes to the copper-foundry clinic.",
      "replaces": true
@@ -1211,6 +1312,7 @@
     {
      "year": 3,
      "day": 747,
+     "wording": "replace",
      "value": "dovetail-chandler",
      "text": "Elif has moved to the dovetail-chandler clinic.",
      "replaces": true
@@ -1218,6 +1320,7 @@
     {
      "year": 7,
      "day": 2311,
+     "wording": "replace",
      "value": "marlow-pike",
      "text": "Elif has moved to the marlow-pike clinic.",
      "replaces": true
@@ -1233,6 +1336,7 @@
     {
      "year": 1,
      "day": 230,
+     "wording": "assert",
      "value": "thistle-glade",
      "text": "Oskar rehearses at the thistle-glade hall.",
      "replaces": true
@@ -1240,6 +1344,7 @@
     {
      "year": 3,
      "day": 1049,
+     "wording": "replace",
      "value": "brindle-isle",
      "text": "Oskar rehearses at the brindle-isle hall from now on.",
      "replaces": true
@@ -1247,6 +1352,7 @@
     {
      "year": 7,
      "day": 2536,
+     "wording": "replace",
      "value": "nutmeg-moor",
      "text": "Oskar rehearses at the nutmeg-moor hall from now on.",
      "replaces": true
@@ -1262,6 +1368,7 @@
     {
      "year": 1,
      "day": 6,
+     "wording": "assert",
      "value": "larkin-glade",
      "text": "Goran keeps the backups on larkin-glade.",
      "replaces": true
@@ -1269,6 +1376,7 @@
     {
      "year": 3,
      "day": 850,
+     "wording": "replace",
      "value": "dovetail-annex",
      "text": "Goran keeps the backups on dovetail-annex from now on.",
      "replaces": true
@@ -1276,6 +1384,7 @@
     {
      "year": 7,
      "day": 2365,
+     "wording": "replace",
      "value": "nutmeg-vale",
      "text": "Goran keeps the backups on nutmeg-vale from now on.",
      "replaces": true
@@ -1291,6 +1400,7 @@
     {
      "year": 1,
      "day": 31,
+     "wording": "assert",
      "value": "bramble-yard",
      "text": "Dario buys bread at the bramble-yard bakery.",
      "replaces": true
@@ -1298,6 +1408,7 @@
     {
      "year": 3,
      "day": 928,
+     "wording": "replace",
      "value": "cobalt-hollow",
      "text": "Dario buys bread at the cobalt-hollow bakery now.",
      "replaces": true
@@ -1305,6 +1416,7 @@
     {
      "year": 7,
      "day": 2294,
+     "wording": "replace",
      "value": "saffron-isle",
      "text": "Dario buys bread at the saffron-isle bakery now.",
      "replaces": true
@@ -1320,6 +1432,7 @@
     {
      "year": 1,
      "day": 284,
+     "wording": "assert",
      "value": "flint-moor",
      "text": "Yuki orders paper from flint-moor.",
      "replaces": true
@@ -1327,6 +1440,7 @@
     {
      "year": 3,
      "day": 970,
+     "wording": "replace",
      "value": "umber-wharf",
      "text": "Yuki orders paper from umber-wharf now.",
      "replaces": true
@@ -1334,6 +1448,7 @@
     {
      "year": 7,
      "day": 2456,
+     "wording": "replace",
      "value": "marlow-kiln",
      "text": "Yuki orders paper from marlow-kiln now.",
      "replaces": true
@@ -1349,6 +1464,7 @@
     {
      "year": 1,
      "day": 6,
+     "wording": "assert",
      "value": "cinder-harbour",
      "text": "Ivo keeps the accounts in cinder-harbour.",
      "replaces": true
@@ -1356,6 +1472,7 @@
     {
      "year": 3,
      "day": 1054,
+     "wording": "replace",
      "value": "copper-meadow",
      "text": "Ivo has switched the accounts to copper-meadow.",
      "replaces": true
@@ -1363,6 +1480,7 @@
     {
      "year": 7,
      "day": 2284,
+     "wording": "replace",
      "value": "ironwood-spire",
      "text": "Ivo has switched the accounts to ironwood-spire.",
      "replaces": true
@@ -1378,6 +1496,7 @@
     {
      "year": 1,
      "day": 116,
+     "wording": "assert",
      "value": "oakhill-wharf",
      "text": "Emeka leads the oakhill-wharf project.",
      "replaces": true
@@ -1385,6 +1504,7 @@
     {
      "year": 3,
      "day": 1079,
+     "wording": "replace",
      "value": "harrow-pike",
      "text": "Emeka leads the harrow-pike project from now on.",
      "replaces": true
@@ -1392,6 +1512,7 @@
     {
      "year": 7,
      "day": 2365,
+     "wording": "replace",
      "value": "oakhill-isle",
      "text": "Emeka leads the oakhill-isle project from now on.",
      "replaces": true
@@ -1407,6 +1528,7 @@
     {
      "year": 1,
      "day": 213,
+     "wording": "assert",
      "value": "ember-hearth",
      "text": "Luca keeps the accounts in ember-hearth.",
      "replaces": true
@@ -1414,6 +1536,7 @@
     {
      "year": 3,
      "day": 747,
+     "wording": "replace",
      "value": "harrow-tarn",
      "text": "Luca has switched the accounts to harrow-tarn.",
      "replaces": true
@@ -1421,6 +1544,7 @@
     {
      "year": 7,
      "day": 2536,
+     "wording": "replace",
      "value": "larkin-spire",
      "text": "Luca has switched the accounts to larkin-spire.",
      "replaces": true
@@ -1436,6 +1560,7 @@
     {
      "year": 1,
      "day": 245,
+     "wording": "assert",
      "value": "bramble-ledge",
      "text": "Mateo rents the bramble-ledge cottage.",
      "replaces": true
@@ -1443,6 +1568,7 @@
     {
      "year": 3,
      "day": 901,
+     "wording": "replace",
      "value": "dovetail-wharf",
      "text": "Mateo rents the dovetail-wharf cottage from now on.",
      "replaces": true
@@ -1450,6 +1576,7 @@
     {
      "year": 7,
      "day": 2518,
+     "wording": "replace",
      "value": "ember-weir",
      "text": "Mateo rents the ember-weir cottage from now on.",
      "replaces": true
@@ -1465,6 +1592,7 @@
     {
      "year": 1,
      "day": 229,
+     "wording": "assert",
      "value": "garnet-meadow",
      "text": "Viktor rents the garnet-meadow cottage.",
      "replaces": true
@@ -1472,6 +1600,7 @@
     {
      "year": 3,
      "day": 813,
+     "wording": "replace",
      "value": "sable-glade",
      "text": "Viktor rents the sable-glade cottage from now on.",
      "replaces": true
@@ -1479,6 +1608,7 @@
     {
      "year": 7,
      "day": 2444,
+     "wording": "replace",
      "value": "mirefield-quarry",
      "text": "Viktor rents the mirefield-quarry cottage from now on.",
      "replaces": true
@@ -1494,6 +1624,7 @@
     {
      "year": 1,
      "day": 19,
+     "wording": "assert",
      "value": "wicklow-mill",
      "text": "Sanjay commutes on the wicklow-mill line.",
      "replaces": true
@@ -1501,6 +1632,7 @@
     {
      "year": 3,
      "day": 803,
+     "wording": "replace",
      "value": "verdigris-hearth",
      "text": "Sanjay commutes on the verdigris-hearth line now.",
      "replaces": true
@@ -1508,6 +1640,7 @@
     {
      "year": 7,
      "day": 2275,
+     "wording": "replace",
      "value": "ember-orchard",
      "text": "Sanjay commutes on the ember-orchard line now.",
      "replaces": true
@@ -1523,6 +1656,7 @@
     {
      "year": 1,
      "day": 100,
+     "wording": "assert",
      "value": "yarrow-reach",
      "text": "Erol keeps the accounts in yarrow-reach.",
      "replaces": true
@@ -1530,6 +1664,7 @@
     {
      "year": 3,
      "day": 761,
+     "wording": "replace",
      "value": "brindle-fenn",
      "text": "Erol has switched the accounts to brindle-fenn.",
      "replaces": true
@@ -1537,6 +1672,7 @@
     {
      "year": 7,
      "day": 2456,
+     "wording": "replace",
      "value": "vellum-annex",
      "text": "Erol has switched the accounts to vellum-annex.",
      "replaces": true
@@ -1552,6 +1688,7 @@
     {
      "year": 1,
      "day": 66,
+     "wording": "assert",
      "value": "umber-meadow",
      "text": "Kasper keeps the accounts in umber-meadow.",
      "replaces": true
@@ -1559,6 +1696,7 @@
     {
      "year": 3,
      "day": 981,
+     "wording": "replace",
      "value": "cobalt-hearth",
      "text": "Kasper has switched the accounts to cobalt-hearth.",
      "replaces": true
@@ -1566,6 +1704,7 @@
     {
      "year": 7,
      "day": 2393,
+     "wording": "replace",
      "value": "ember-drift",
      "text": "Kasper has switched the accounts to ember-drift.",
      "replaces": true
@@ -1581,6 +1720,7 @@
     {
      "year": 1,
      "day": 85,
+     "wording": "assert",
      "value": "brindle-mill",
      "text": "Amara orders paper from brindle-mill.",
      "replaces": true
@@ -1588,6 +1728,7 @@
     {
      "year": 3,
      "day": 796,
+     "wording": "replace",
      "value": "ravel-quarry",
      "text": "Amara orders paper from ravel-quarry now.",
      "replaces": true
@@ -1595,6 +1736,7 @@
     {
      "year": 7,
      "day": 2536,
+     "wording": "replace",
      "value": "nutmeg-glade",
      "text": "Amara orders paper from nutmeg-glade now.",
      "replaces": true
@@ -1610,6 +1752,7 @@
     {
      "year": 1,
      "day": 53,
+     "wording": "assert",
      "value": "mirefield-beacon",
      "text": "Celia leads the mirefield-beacon project.",
      "replaces": true
@@ -1617,6 +1760,7 @@
     {
      "year": 3,
      "day": 780,
+     "wording": "replace",
      "value": "pewter-spire",
      "text": "Celia leads the pewter-spire project from now on.",
      "replaces": true
@@ -1624,6 +1768,7 @@
     {
      "year": 7,
      "day": 2429,
+     "wording": "replace",
      "value": "flint-chandler",
      "text": "Celia leads the flint-chandler project from now on.",
      "replaces": true
@@ -1639,6 +1784,7 @@
     {
      "year": 1,
      "day": 53,
+     "wording": "assert",
      "value": "tamarind-drift",
      "text": "Yuki buys bread at the tamarind-drift bakery.",
      "replaces": true
@@ -1646,6 +1792,7 @@
     {
      "year": 3,
      "day": 747,
+     "wording": "replace",
      "value": "dovetail-pike",
      "text": "Yuki buys bread at the dovetail-pike bakery now.",
      "replaces": true
@@ -1653,6 +1800,7 @@
     {
      "year": 7,
      "day": 2221,
+     "wording": "replace",
      "value": "thistle-beacon",
      "text": "Yuki buys bread at the thistle-beacon bakery now.",
      "replaces": true
@@ -1668,6 +1816,7 @@
     {
      "year": 1,
      "day": 309,
+     "wording": "assert",
      "value": "quill-mill",
      "text": "Priya rents the quill-mill cottage.",
      "replaces": true
@@ -1675,6 +1824,7 @@
     {
      "year": 3,
      "day": 862,
+     "wording": "replace",
      "value": "ravel-ridge",
      "text": "Priya rents the ravel-ridge cottage from now on.",
      "replaces": true
@@ -1682,6 +1832,7 @@
     {
      "year": 7,
      "day": 2243,
+     "wording": "replace",
      "value": "ravel-harbour",
      "text": "Priya rents the ravel-harbour cottage from now on.",
      "replaces": true
@@ -1697,6 +1848,7 @@
     {
      "year": 1,
      "day": 187,
+     "wording": "assert",
      "value": "oakhill-foundry",
      "text": "Orla commutes on the oakhill-foundry line.",
      "replaces": true
@@ -1704,6 +1856,7 @@
     {
      "year": 3,
      "day": 780,
+     "wording": "replace",
      "value": "wicklow-orchard",
      "text": "Orla commutes on the wicklow-orchard line now.",
      "replaces": true
@@ -1711,6 +1864,7 @@
     {
      "year": 7,
      "day": 2478,
+     "wording": "replace",
      "value": "quill-chandler",
      "text": "Orla commutes on the quill-chandler line now.",
      "replaces": true
@@ -1726,6 +1880,7 @@
     {
      "year": 1,
      "day": 245,
+     "wording": "assert",
      "value": "ember-hollow",
      "text": "Elif sits with the ember-hollow team.",
      "replaces": true
@@ -1733,6 +1888,7 @@
     {
      "year": 3,
      "day": 893,
+     "wording": "replace",
      "value": "wicklow-ledge",
      "text": "Elif sits with the wicklow-ledge team from now on.",
      "replaces": true
@@ -1740,6 +1896,7 @@
     {
      "year": 7,
      "day": 2429,
+     "wording": "replace",
      "value": "umber-sedge",
      "text": "Elif sits with the umber-sedge team from now on.",
      "replaces": true
@@ -1755,6 +1912,7 @@
     {
      "year": 1,
      "day": 230,
+     "wording": "assert",
      "value": "garnet-mill",
      "text": "Karin sits with the garnet-mill team.",
      "replaces": true
@@ -1762,6 +1920,7 @@
     {
      "year": 3,
      "day": 830,
+     "wording": "replace",
      "value": "ravel-yard",
      "text": "Karin sits with the ravel-yard team from now on.",
      "replaces": true
@@ -1769,6 +1928,7 @@
     {
      "year": 7,
      "day": 2380,
+     "wording": "replace",
      "value": "nutmeg-kiln",
      "text": "Karin sits with the nutmeg-kiln team from now on.",
      "replaces": true
@@ -1784,6 +1944,7 @@
     {
      "year": 1,
      "day": 22,
+     "wording": "assert",
      "value": "harrow-brook",
      "text": "Yara sits with the harrow-brook team.",
      "replaces": true
@@ -1791,6 +1952,7 @@
     {
      "year": 3,
      "day": 1008,
+     "wording": "replace",
      "value": "larkin-mill",
      "text": "Yara sits with the larkin-mill team from now on.",
      "replaces": true
@@ -1798,6 +1960,7 @@
     {
      "year": 7,
      "day": 2549,
+     "wording": "replace",
      "value": "harrow-brook",
      "text": "Yara sits with the harrow-brook team from now on.",
      "replaces": true
@@ -1813,6 +1976,7 @@
     {
      "year": 1,
      "day": 309,
+     "wording": "assert",
      "value": "pewter-beacon",
      "text": "Greta buys bread at the pewter-beacon bakery.",
      "replaces": true
@@ -1820,6 +1984,7 @@
     {
      "year": 3,
      "day": 849,
+     "wording": "replace",
      "value": "ravel-hearth",
      "text": "Greta buys bread at the ravel-hearth bakery now.",
      "replaces": true
@@ -1827,6 +1992,7 @@
     {
      "year": 7,
      "day": 2332,
+     "wording": "replace",
      "value": "pewter-beacon",
      "text": "Greta buys bread at the pewter-beacon bakery now.",
      "replaces": true
@@ -1842,6 +2008,7 @@
     {
      "year": 1,
      "day": 284,
+     "wording": "assert",
      "value": "vellum-foundry",
      "text": "Wilma leads the vellum-foundry project.",
      "replaces": true
@@ -1849,6 +2016,7 @@
     {
      "year": 3,
      "day": 946,
+     "wording": "replace",
      "value": "brindle-lantern",
      "text": "Wilma leads the brindle-lantern project from now on.",
      "replaces": true
@@ -1856,6 +2024,7 @@
     {
      "year": 7,
      "day": 2505,
+     "wording": "replace",
      "value": "vellum-foundry",
      "text": "Wilma leads the vellum-foundry project from now on.",
      "replaces": true
@@ -1871,6 +2040,7 @@
     {
      "year": 1,
      "day": 290,
+     "wording": "assert",
      "value": "ravel-weir",
      "text": "Elif banks with ravel-weir.",
      "replaces": true
@@ -1878,6 +2048,7 @@
     {
      "year": 3,
      "day": 780,
+     "wording": "replace",
      "value": "brindle-ridge",
      "text": "Elif banks with brindle-ridge now.",
      "replaces": true
@@ -1885,6 +2056,7 @@
     {
      "year": 7,
      "day": 2340,
+     "wording": "replace",
      "value": "ravel-weir",
      "text": "Elif banks with ravel-weir now.",
      "replaces": true
@@ -1900,6 +2072,7 @@
     {
      "year": 1,
      "day": 116,
+     "wording": "assert",
      "value": "pewter-tarn",
      "text": "Rafael rents the pewter-tarn cottage.",
      "replaces": true
@@ -1907,6 +2080,7 @@
     {
      "year": 3,
      "day": 850,
+     "wording": "replace",
      "value": "nutmeg-gable",
      "text": "Rafael rents the nutmeg-gable cottage from now on.",
      "replaces": true
@@ -1914,6 +2088,7 @@
     {
      "year": 7,
      "day": 2202,
+     "wording": "replace",
      "value": "pewter-tarn",
      "text": "Rafael rents the pewter-tarn cottage from now on.",
      "replaces": true
@@ -1929,6 +2104,7 @@
     {
      "year": 1,
      "day": 317,
+     "wording": "assert",
      "value": "oakhill-fenn",
      "text": "Josefa keeps the backups on oakhill-fenn.",
      "replaces": true
@@ -1936,6 +2112,7 @@
     {
      "year": 3,
      "day": 830,
+     "wording": "replace",
      "value": "ironwood-ledge",
      "text": "Josefa keeps the backups on ironwood-ledge from now on.",
      "replaces": true
@@ -1943,6 +2120,7 @@
     {
      "year": 7,
      "day": 2321,
+     "wording": "replace",
      "value": "oakhill-fenn",
      "text": "Josefa keeps the backups on oakhill-fenn from now on.",
      "replaces": true
@@ -1958,6 +2136,7 @@
     {
      "year": 1,
      "day": 129,
+     "wording": "assert",
      "value": "cobalt-meadow",
      "text": "Emeka keeps the accounts in cobalt-meadow.",
      "replaces": true
@@ -1965,6 +2144,7 @@
     {
      "year": 3,
      "day": 747,
+     "wording": "replace",
      "value": "silverfin-yard",
      "text": "Emeka has switched the accounts to silverfin-yard.",
      "replaces": true
@@ -1972,6 +2152,7 @@
     {
      "year": 7,
      "day": 2469,
+     "wording": "replace",
      "value": "cobalt-meadow",
      "text": "Emeka has switched the accounts to cobalt-meadow.",
      "replaces": true
@@ -1987,6 +2168,7 @@
     {
      "year": 1,
      "day": 116,
+     "wording": "assert",
      "value": "bramble-reach",
      "text": "Ingrid rehearses at the bramble-reach hall.",
      "replaces": true
@@ -1994,6 +2176,7 @@
     {
      "year": 3,
      "day": 862,
+     "wording": "replace",
      "value": "verdigris-sedge",
      "text": "Ingrid rehearses at the verdigris-sedge hall from now on.",
      "replaces": true
@@ -2001,6 +2184,7 @@
     {
      "year": 7,
      "day": 2444,
+     "wording": "replace",
      "value": "bramble-reach",
      "text": "Ingrid rehearses at the bramble-reach hall from now on.",
      "replaces": true
@@ -2016,6 +2200,7 @@
     {
      "year": 1,
      "day": 209,
+     "wording": "assert",
      "value": "dovetail-reach",
      "text": "Fabio sits with the dovetail-reach team.",
      "replaces": true
@@ -2023,6 +2208,7 @@
     {
      "year": 3,
      "day": 993,
+     "wording": "replace",
      "value": "cinder-reach",
      "text": "Fabio sits with the cinder-reach team from now on.",
      "replaces": true
@@ -2030,6 +2216,7 @@
     {
      "year": 7,
      "day": 2294,
+     "wording": "replace",
      "value": "dovetail-reach",
      "text": "Fabio sits with the dovetail-reach team from now on.",
      "replaces": true
@@ -2045,6 +2232,7 @@
     {
      "year": 1,
      "day": 273,
+     "wording": "assert",
      "value": "thistle-hearth",
      "text": "Orla goes to the thistle-hearth clinic.",
      "replaces": true
@@ -2052,6 +2240,7 @@
     {
      "year": 3,
      "day": 796,
+     "wording": "replace",
      "value": "oakhill-vale",
      "text": "Orla has moved to the oakhill-vale clinic.",
      "replaces": true
@@ -2059,6 +2248,7 @@
     {
      "year": 7,
      "day": 2380,
+     "wording": "replace",
      "value": "thistle-hearth",
      "text": "Orla has moved to the thistle-hearth clinic.",
      "replaces": true
@@ -2074,6 +2264,7 @@
     {
      "year": 1,
      "day": 263,
+     "wording": "assert",
      "value": "brindle-kiln",
      "text": "Lorna rehearses at the brindle-kiln hall.",
      "replaces": true
@@ -2081,6 +2272,7 @@
     {
      "year": 3,
      "day": 849,
+     "wording": "replace",
      "value": "nutmeg-foundry",
      "text": "Lorna rehearses at the nutmeg-foundry hall from now on.",
      "replaces": true
@@ -2088,6 +2280,7 @@
     {
      "year": 7,
      "day": 2202,
+     "wording": "replace",
      "value": "brindle-kiln",
      "text": "Lorna rehearses at the brindle-kiln hall from now on.",
      "replaces": true
@@ -2103,6 +2296,7 @@
     {
      "year": 1,
      "day": 19,
+     "wording": "assert",
      "value": "marlow-vale",
      "text": "Magnus buys bread at the marlow-vale bakery.",
      "replaces": true
@@ -2110,6 +2304,7 @@
     {
      "year": 3,
      "day": 849,
+     "wording": "replace",
      "value": "garnet-yard",
      "text": "Magnus buys bread at the garnet-yard bakery now.",
      "replaces": true
@@ -2117,6 +2312,7 @@
     {
      "year": 7,
      "day": 2365,
+     "wording": "replace",
      "value": "marlow-vale",
      "text": "Magnus buys bread at the marlow-vale bakery now.",
      "replaces": true
@@ -2132,6 +2328,7 @@
     {
      "year": 1,
      "day": 331,
+     "wording": "assert",
      "value": "cinder-annex",
      "text": "Priya orders paper from cinder-annex.",
      "replaces": true
@@ -2139,6 +2336,7 @@
     {
      "year": 3,
      "day": 780,
+     "wording": "replace",
      "value": "zephyr-sedge",
      "text": "Priya orders paper from zephyr-sedge now.",
      "replaces": true
@@ -2146,6 +2344,7 @@
     {
      "year": 7,
      "day": 2505,
+     "wording": "replace",
      "value": "cinder-annex",
      "text": "Priya orders paper from cinder-annex now.",
      "replaces": true
@@ -2161,6 +2360,7 @@
     {
      "year": 1,
      "day": 129,
+     "wording": "assert",
      "value": "quill-hearth",
      "text": "Tariq orders paper from quill-hearth.",
      "replaces": true
@@ -2168,6 +2368,7 @@
     {
      "year": 3,
      "day": 1013,
+     "wording": "replace",
      "value": "copper-sedge",
      "text": "Tariq orders paper from copper-sedge now.",
      "replaces": true
@@ -2175,6 +2376,7 @@
     {
      "year": 7,
      "day": 2340,
+     "wording": "replace",
      "value": "quill-hearth",
      "text": "Tariq orders paper from quill-hearth now.",
      "replaces": true
@@ -2190,6 +2392,7 @@
     {
      "year": 1,
      "day": 31,
+     "wording": "assert",
      "value": "mirefield-foundry",
      "text": "Otto rehearses at the mirefield-foundry hall.",
      "replaces": true
@@ -2197,6 +2400,7 @@
     {
      "year": 3,
      "day": 829,
+     "wording": "replace",
      "value": "silverfin-drift",
      "text": "Otto rehearses at the silverfin-drift hall from now on.",
      "replaces": true
@@ -2204,6 +2408,7 @@
     {
      "year": 7,
      "day": 2216,
+     "wording": "replace",
      "value": "mirefield-foundry",
      "text": "Otto rehearses at the mirefield-foundry hall from now on.",
      "replaces": true
@@ -2219,6 +2424,7 @@
     {
      "year": 1,
      "day": 331,
+     "wording": "assert",
      "value": "quill-quarry",
      "text": "Hassan keeps the backups on quill-quarry.",
      "replaces": true
@@ -2226,6 +2432,7 @@
     {
      "year": 3,
      "day": 1049,
+     "wording": "replace",
      "value": "wicklow-tarn",
      "text": "Hassan keeps the backups on wicklow-tarn from now on.",
      "replaces": true
@@ -2233,6 +2440,7 @@
     {
      "year": 7,
      "day": 2483,
+     "wording": "replace",
      "value": "quill-quarry",
      "text": "Hassan keeps the backups on quill-quarry from now on.",
      "replaces": true
@@ -2248,6 +2456,7 @@
     {
      "year": 1,
      "day": 22,
+     "wording": "assert",
      "value": "copper-gable",
      "text": "Tariq rehearses at the copper-gable hall.",
      "replaces": true
@@ -2255,6 +2464,7 @@
     {
      "year": 3,
      "day": 1054,
+     "wording": "replace",
      "value": "ember-brook",
      "text": "Tariq rehearses at the ember-brook hall from now on.",
      "replaces": true
@@ -2262,6 +2472,7 @@
     {
      "year": 7,
      "day": 2275,
+     "wording": "replace",
      "value": "copper-gable",
      "text": "Tariq rehearses at the copper-gable hall from now on.",
      "replaces": true
@@ -2277,6 +2488,7 @@
     {
      "year": 1,
      "day": 156,
+     "wording": "assert",
      "value": "yarrow-beacon",
      "text": "Goran is taking the yarrow-beacon course.",
      "replaces": true
@@ -2284,6 +2496,7 @@
     {
      "year": 3,
      "day": 803,
+     "wording": "replace",
      "value": "ironwood-hollow",
      "text": "Goran is taking the ironwood-hollow course instead.",
      "replaces": true
@@ -2291,6 +2504,7 @@
     {
      "year": 7,
      "day": 2202,
+     "wording": "replace",
      "value": "yarrow-beacon",
      "text": "Goran is taking the yarrow-beacon course instead.",
      "replaces": true
@@ -2306,6 +2520,7 @@
     {
      "year": 1,
      "day": 230,
+     "wording": "assert",
      "value": "flint-quarry",
      "text": "Emeka is taking the flint-quarry course.",
      "replaces": true
@@ -2313,6 +2528,7 @@
     {
      "year": 3,
      "day": 910,
+     "wording": "replace",
      "value": "cinder-foundry",
      "text": "Emeka is taking the cinder-foundry course instead.",
      "replaces": true
@@ -2320,6 +2536,7 @@
     {
      "year": 7,
      "day": 2393,
+     "wording": "replace",
      "value": "flint-quarry",
      "text": "Emeka is taking the flint-quarry course instead.",
      "replaces": true
@@ -2335,6 +2552,7 @@
     {
      "year": 1,
      "day": 116,
+     "wording": "assert",
      "value": "tamarind-brook",
      "text": "Magnus orders paper from tamarind-brook.",
      "replaces": true
@@ -2342,6 +2560,7 @@
     {
      "year": 3,
      "day": 751,
+     "wording": "replace",
      "value": "vellum-coppice",
      "text": "Magnus orders paper from vellum-coppice now.",
      "replaces": true
@@ -2349,6 +2568,7 @@
     {
      "year": 7,
      "day": 2483,
+     "wording": "replace",
      "value": "tamarind-brook",
      "text": "Magnus orders paper from tamarind-brook now.",
      "replaces": true
@@ -2364,6 +2584,7 @@
     {
      "year": 1,
      "day": 31,
+     "wording": "assert",
      "value": "pewter-ridge",
      "text": "Sofia leads the pewter-ridge project.",
      "replaces": true
@@ -2371,6 +2592,7 @@
     {
      "year": 3,
      "day": 1054,
+     "wording": "replace",
      "value": "opal-mill",
      "text": "Sofia leads the opal-mill project from now on.",
      "replaces": true
@@ -2378,6 +2600,7 @@
     {
      "year": 7,
      "day": 2284,
+     "wording": "replace",
      "value": "pewter-ridge",
      "text": "Sofia leads the pewter-ridge project from now on.",
      "replaces": true
@@ -2393,6 +2616,7 @@
     {
      "year": 1,
      "day": 6,
+     "wording": "assert",
      "value": "thistle-weir",
      "text": "Alma sits with the thistle-weir team.",
      "replaces": true
@@ -2400,6 +2624,7 @@
     {
      "year": 3,
      "day": 830,
+     "wording": "replace",
      "value": "amber-quarry",
      "text": "Alma sits with the amber-quarry team from now on.",
      "replaces": true
@@ -2407,6 +2632,7 @@
     {
      "year": 7,
      "day": 2496,
+     "wording": "replace",
      "value": "thistle-weir",
      "text": "Alma sits with the thistle-weir team from now on.",
      "replaces": true
@@ -2422,6 +2648,7 @@
     {
      "year": 1,
      "day": 229,
+     "wording": "assert",
      "value": "wicklow-fenn",
      "text": "Sanjay sits with the wicklow-fenn team.",
      "replaces": true
@@ -2429,6 +2656,7 @@
     {
      "year": 3,
      "day": 956,
+     "wording": "replace",
      "value": "umber-mill",
      "text": "Sanjay sits with the umber-mill team from now on.",
      "replaces": true
@@ -2436,6 +2664,7 @@
     {
      "year": 7,
      "day": 2321,
+     "wording": "replace",
      "value": "wicklow-fenn",
      "text": "Sanjay sits with the wicklow-fenn team from now on.",
      "replaces": true
@@ -2451,6 +2680,7 @@
     {
      "year": 1,
      "day": 22,
+     "wording": "assert",
      "value": "larkin-brook",
      "text": "Hassan banks with larkin-brook.",
      "replaces": true
@@ -2458,6 +2688,7 @@
     {
      "year": 3,
      "day": 780,
+     "wording": "replace",
      "value": "verdigris-brook",
      "text": "Hassan banks with verdigris-brook now.",
      "replaces": true
@@ -2465,6 +2696,7 @@
     {
      "year": 7,
      "day": 2527,
+     "wording": "replace",
      "value": "larkin-brook",
      "text": "Hassan banks with larkin-brook now.",
      "replaces": true
@@ -2480,6 +2712,7 @@
     {
      "year": 1,
      "day": 19,
+     "wording": "assert",
      "value": "pewter-coppice",
      "text": "Kofi goes to the pewter-coppice clinic.",
      "replaces": true
@@ -2487,6 +2720,7 @@
     {
      "year": 3,
      "day": 1079,
+     "wording": "replace",
      "value": "harrow-drift",
      "text": "Kofi has moved to the harrow-drift clinic.",
      "replaces": true
@@ -2494,6 +2728,7 @@
     {
      "year": 7,
      "day": 2429,
+     "wording": "replace",
      "value": "pewter-coppice",
      "text": "Kofi has moved to the pewter-coppice clinic.",
      "replaces": true
@@ -2509,6 +2744,7 @@
     {
      "year": 1,
      "day": 284,
+     "wording": "assert",
      "value": "opal-fenn",
      "text": "Freya orders paper from opal-fenn.",
      "replaces": true
@@ -2516,6 +2752,7 @@
     {
      "year": 3,
      "day": 829,
+     "wording": "replace",
      "value": "nutmeg-chandler",
      "text": "Freya orders paper from nutmeg-chandler now.",
      "replaces": true
@@ -2523,6 +2760,7 @@
     {
      "year": 7,
      "day": 2438,
+     "wording": "replace",
      "value": "opal-fenn",
      "text": "Freya orders paper from opal-fenn now.",
      "replaces": true
@@ -2538,6 +2776,7 @@
     {
      "year": 1,
      "day": 156,
+     "wording": "assert",
      "value": "pewter-lantern",
      "text": "Noor keeps the backups on pewter-lantern.",
      "replaces": true
@@ -2545,6 +2784,7 @@
     {
      "year": 3,
      "day": 946,
+     "wording": "replace",
      "value": "brindle-spire",
      "text": "Noor keeps the backups on brindle-spire from now on.",
      "replaces": true
@@ -2552,6 +2792,7 @@
     {
      "year": 7,
      "day": 2243,
+     "wording": "replace",
      "value": "pewter-lantern",
      "text": "Noor keeps the backups on pewter-lantern from now on.",
      "replaces": true
@@ -2567,6 +2808,7 @@
     {
      "year": 1,
      "day": 350,
+     "wording": "assert",
      "value": "wicklow-glade",
      "text": "Jana is taking the wicklow-glade course.",
      "replaces": true
@@ -2574,6 +2816,7 @@
     {
      "year": 3,
      "day": 956,
+     "wording": "replace",
      "value": "thistle-spire",
      "text": "Jana is taking the thistle-spire course instead.",
      "replaces": true
@@ -2581,6 +2824,7 @@
     {
      "year": 7,
      "day": 2234,
+     "wording": "replace",
      "value": "wicklow-glade",
      "text": "Jana is taking the wicklow-glade course instead.",
      "replaces": true
@@ -2596,6 +2840,7 @@
     {
      "year": 1,
      "day": 213,
+     "wording": "assert",
      "value": "cinder-gable",
      "text": "Emeka keeps the backups on cinder-gable.",
      "replaces": true
@@ -2603,6 +2848,7 @@
     {
      "year": 3,
      "day": 893,
+     "wording": "replace",
      "value": "oakhill-mill",
      "text": "Emeka keeps the backups on oakhill-mill from now on.",
      "replaces": true
@@ -2610,6 +2856,7 @@
     {
      "year": 7,
      "day": 2354,
+     "wording": "replace",
      "value": "cinder-gable",
      "text": "Emeka keeps the backups on cinder-gable from now on.",
      "replaces": true
@@ -2625,6 +2872,7 @@
     {
      "year": 1,
      "day": 44,
+     "wording": "assert",
      "value": "quill-ledge",
      "text": "Karin leads the quill-ledge project.",
      "replaces": true
@@ -2632,6 +2880,7 @@
     {
      "year": 3,
      "day": 1049,
+     "wording": "replace",
      "value": "zephyr-chandler",
      "text": "Karin leads the zephyr-chandler project from now on.",
      "replaces": true
@@ -2639,6 +2888,7 @@
     {
      "year": 7,
      "day": 2267,
+     "wording": "replace",
      "value": "quill-ledge",
      "text": "Karin leads the quill-ledge project from now on.",
      "replaces": true
@@ -2654,6 +2904,7 @@
     {
      "year": 1,
      "day": 116,
+     "wording": "assert",
      "value": "ember-reach",
      "text": "Priya banks with ember-reach.",
      "replaces": true
@@ -2661,6 +2912,7 @@
     {
      "year": 3,
      "day": 928,
+     "wording": "replace",
      "value": "silverfin-isle",
      "text": "Priya banks with silverfin-isle now.",
      "replaces": true
@@ -2668,6 +2920,7 @@
     {
      "year": 7,
      "day": 2469,
+     "wording": "replace",
      "value": "ember-reach",
      "text": "Priya banks with ember-reach now.",
      "replaces": true
@@ -2683,6 +2936,7 @@
     {
      "year": 1,
      "day": 100,
+     "wording": "assert",
      "value": "wicklow-annex",
      "text": "Zara banks with wicklow-annex.",
      "replaces": true
@@ -2690,6 +2944,7 @@
     {
      "year": 3,
      "day": 960,
+     "wording": "replace",
      "value": "saffron-ledge",
      "text": "Zara banks with saffron-ledge now.",
      "replaces": true
@@ -2697,6 +2952,7 @@
     {
      "year": 7,
      "day": 2234,
+     "wording": "replace",
      "value": "wicklow-annex",
      "text": "Zara banks with wicklow-annex now.",
      "replaces": true
@@ -2712,6 +2968,7 @@
     {
      "year": 1,
      "day": 245,
+     "wording": "assert",
      "value": "brindle-pike",
      "text": "Tomas orders paper from brindle-pike.",
      "replaces": true
@@ -2719,6 +2976,7 @@
     {
      "year": 3,
      "day": 803,
+     "wording": "replace",
      "value": "umber-annex",
      "text": "Tomas orders paper from umber-annex now.",
      "replaces": true
@@ -2726,6 +2984,7 @@
     {
      "year": 7,
      "day": 2496,
+     "wording": "replace",
      "value": "brindle-pike",
      "text": "Tomas orders paper from brindle-pike now.",
      "replaces": true
@@ -2741,6 +3000,7 @@
     {
      "year": 1,
      "day": 85,
+     "wording": "assert",
      "value": "brindle-beacon",
      "text": "Yuki commutes on the brindle-beacon line.",
      "replaces": true
@@ -2748,6 +3008,7 @@
     {
      "year": 3,
      "day": 910,
+     "wording": "replace",
      "value": "ravel-chandler",
      "text": "Yuki commutes on the ravel-chandler line now.",
      "replaces": true
@@ -2755,6 +3016,7 @@
     {
      "year": 7,
      "day": 2234,
+     "wording": "replace",
      "value": "brindle-beacon",
      "text": "Yuki commutes on the brindle-beacon line now.",
      "replaces": true
@@ -2770,6 +3032,7 @@
     {
      "year": 1,
      "day": 317,
+     "wording": "assert",
      "value": "garnet-fenn",
      "text": "Ursula sits with the garnet-fenn team.",
      "replaces": true
@@ -2777,6 +3040,7 @@
     {
      "year": 3,
      "day": 993,
+     "wording": "replace",
      "value": "marlow-harbour",
      "text": "Ursula sits with the marlow-harbour team from now on.",
      "replaces": true
@@ -2784,6 +3048,7 @@
     {
      "year": 7,
      "day": 2429,
+     "wording": "replace",
      "value": "garnet-fenn",
      "text": "Ursula sits with the garnet-fenn team from now on.",
      "replaces": true
@@ -2799,6 +3064,7 @@
     {
      "year": 1,
      "day": 309,
+     "wording": "assert",
      "value": "thistle-harbour",
      "text": "Nikos buys bread at the thistle-harbour bakery.",
      "replaces": true
@@ -2806,6 +3072,7 @@
     {
      "year": 3,
      "day": 830,
+     "wording": "replace",
      "value": "brindle-meadow",
      "text": "Nikos buys bread at the brindle-meadow bakery now.",
      "replaces": true
@@ -2813,6 +3080,7 @@
     {
      "year": 7,
      "day": 2216,
+     "wording": "replace",
      "value": "thistle-harbour",
      "text": "Nikos buys bread at the thistle-harbour bakery now.",
      "replaces": true
@@ -2828,6 +3096,7 @@
     {
      "year": 1,
      "day": 346,
+     "wording": "assert",
      "value": "harrow-sedge",
      "text": "Xavier rehearses at the harrow-sedge hall.",
      "replaces": true
@@ -2835,6 +3104,7 @@
     {
      "year": 3,
      "day": 1038,
+     "wording": "replace",
      "value": "harrow-vale",
      "text": "Xavier rehearses at the harrow-vale hall from now on.",
      "replaces": true
@@ -2842,6 +3112,7 @@
     {
      "year": 7,
      "day": 2536,
+     "wording": "replace",
      "value": "harrow-sedge",
      "text": "Xavier rehearses at the harrow-sedge hall from now on.",
      "replaces": true
@@ -2857,6 +3128,7 @@
     {
      "year": 1,
      "day": 141,
+     "wording": "assert",
      "value": "dovetail-weir",
      "text": "Esther commutes on the dovetail-weir line.",
      "replaces": true
@@ -2864,6 +3136,7 @@
     {
      "year": 3,
      "day": 981,
+     "wording": "replace",
      "value": "ironwood-drift",
      "text": "Esther commutes on the ironwood-drift line now.",
      "replaces": true
@@ -2871,6 +3144,7 @@
     {
      "year": 7,
      "day": 2496,
+     "wording": "replace",
      "value": "dovetail-weir",
      "text": "Esther commutes on the dovetail-weir line now.",
      "replaces": true
@@ -2886,6 +3160,7 @@
     {
      "year": 1,
      "day": 350,
+     "wording": "assert",
      "value": "pewter-wharf",
      "text": "Nuria commutes on the pewter-wharf line.",
      "replaces": true
@@ -2893,6 +3168,7 @@
     {
      "year": 3,
      "day": 849,
+     "wording": "replace",
      "value": "oakhill-kiln",
      "text": "Nuria commutes on the oakhill-kiln line now.",
      "replaces": true
@@ -2900,6 +3176,7 @@
     {
      "year": 7,
      "day": 2252,
+     "wording": "replace",
      "value": "pewter-wharf",
      "text": "Nuria commutes on the pewter-wharf line now.",
      "replaces": true
@@ -2915,6 +3192,7 @@
     {
      "year": 1,
      "day": 53,
+     "wording": "assert",
      "value": "nutmeg-wharf",
      "text": "Erol commutes on the nutmeg-wharf line.",
      "replaces": true
@@ -2922,6 +3200,7 @@
     {
      "year": 3,
      "day": 993,
+     "wording": "replace",
      "value": "garnet-hearth",
      "text": "Erol commutes on the garnet-hearth line now.",
      "replaces": true
@@ -2929,6 +3208,7 @@
     {
      "year": 7,
      "day": 2456,
+     "wording": "replace",
      "value": "nutmeg-wharf",
      "text": "Erol commutes on the nutmeg-wharf line now.",
      "replaces": true
@@ -2944,6 +3224,7 @@
     {
      "year": 2,
      "day": 604,
+     "wording": "assert",
      "value": "mirefield-brook",
      "text": "Noor keeps the accounts in mirefield-brook.",
      "replaces": true
@@ -2951,6 +3232,7 @@
     {
      "year": 6,
      "day": 2162,
+     "wording": "also",
      "value": "ember-tarn",
      "text": "Noor keeps the accounts in ember-tarn too.",
      "replaces": false
@@ -2966,6 +3248,7 @@
     {
      "year": 2,
      "day": 612,
+     "wording": "assert",
      "value": "quill-pike",
      "text": "Nuria keeps the accounts in quill-pike.",
      "replaces": true
@@ -2973,6 +3256,7 @@
     {
      "year": 6,
      "day": 2074,
+     "wording": "also",
      "value": "thistle-coppice",
      "text": "Nuria keeps the accounts in thistle-coppice too.",
      "replaces": false
@@ -2988,6 +3272,7 @@
     {
      "year": 2,
      "day": 723,
+     "wording": "assert",
      "value": "quill-lantern",
      "text": "Rania sits with the quill-lantern team.",
      "replaces": true
@@ -2995,6 +3280,7 @@
     {
      "year": 6,
      "day": 2126,
+     "wording": "also",
      "value": "ironwood-hearth",
      "text": "Rania sits with the ironwood-hearth team as well.",
      "replaces": false
@@ -3010,6 +3296,7 @@
     {
      "year": 2,
      "day": 552,
+     "wording": "assert",
      "value": "dovetail-gable",
      "text": "Esther sits with the dovetail-gable team.",
      "replaces": true
@@ -3017,6 +3304,7 @@
     {
      "year": 6,
      "day": 1989,
+     "wording": "also",
      "value": "dovetail-ledge",
      "text": "Esther sits with the dovetail-ledge team as well.",
      "replaces": false
@@ -3032,6 +3320,7 @@
     {
      "year": 2,
      "day": 439,
+     "wording": "assert",
      "value": "sable-harbour",
      "text": "Otto buys bread at the sable-harbour bakery.",
      "replaces": true
@@ -3039,6 +3328,7 @@
     {
      "year": 6,
      "day": 1945,
+     "wording": "also",
      "value": "cobalt-isle",
      "text": "Otto buys bread at the cobalt-isle bakery as well.",
      "replaces": false
@@ -3054,6 +3344,7 @@
     {
      "year": 2,
      "day": 449,
+     "wording": "assert",
      "value": "marlow-annex",
      "text": "Greta goes to the marlow-annex clinic.",
      "replaces": true
@@ -3061,6 +3352,7 @@
     {
      "year": 6,
      "day": 2026,
+     "wording": "also",
      "value": "sable-kiln",
      "text": "Greta goes to the sable-kiln clinic too.",
      "replaces": false
@@ -3076,6 +3368,7 @@
     {
      "year": 2,
      "day": 449,
+     "wording": "assert",
      "value": "nutmeg-hearth",
      "text": "Orla keeps the backups on nutmeg-hearth.",
      "replaces": true
@@ -3083,6 +3376,7 @@
     {
      "year": 6,
      "day": 1968,
+     "wording": "also",
      "value": "tamarind-moor",
      "text": "Orla keeps the backups on tamarind-moor as well.",
      "replaces": false
@@ -3098,6 +3392,7 @@
     {
      "year": 2,
      "day": 412,
+     "wording": "assert",
      "value": "harrow-meadow",
      "text": "Maria banks with harrow-meadow.",
      "replaces": true
@@ -3105,6 +3400,7 @@
     {
      "year": 6,
      "day": 2166,
+     "wording": "also",
      "value": "cobalt-tarn",
      "text": "Maria banks with cobalt-tarn as well.",
      "replaces": false
@@ -3120,6 +3416,7 @@
     {
      "year": 2,
      "day": 391,
+     "wording": "assert",
      "value": "umber-pike",
      "text": "Rania orders paper from umber-pike.",
      "replaces": true
@@ -3127,6 +3424,7 @@
     {
      "year": 6,
      "day": 1911,
+     "wording": "also",
      "value": "ember-sedge",
      "text": "Rania orders paper from ember-sedge as well.",
      "replaces": false
@@ -3142,6 +3440,7 @@
     {
      "year": 2,
      "day": 649,
+     "wording": "assert",
      "value": "umber-hollow",
      "text": "Tomas is taking the umber-hollow course.",
      "replaces": true
@@ -3149,6 +3448,7 @@
     {
      "year": 6,
      "day": 2141,
+     "wording": "also",
      "value": "opal-foundry",
      "text": "Tomas is taking the opal-foundry course as well.",
      "replaces": false
@@ -3164,6 +3464,7 @@
     {
      "year": 2,
      "day": 512,
+     "wording": "assert",
      "value": "umber-ledge",
      "text": "Bjorn rents the umber-ledge cottage.",
      "replaces": true
@@ -3171,6 +3472,7 @@
     {
      "year": 6,
      "day": 2099,
+     "wording": "also",
      "value": "cobalt-orchard",
      "text": "Bjorn rents the cobalt-orchard cottage as well.",
      "replaces": false
@@ -3186,6 +3488,7 @@
     {
      "year": 2,
      "day": 660,
+     "wording": "assert",
      "value": "garnet-ledge",
      "text": "Ingrid banks with garnet-ledge.",
      "replaces": true
@@ -3193,6 +3496,7 @@
     {
      "year": 6,
      "day": 1841,
+     "wording": "also",
      "value": "mirefield-annex",
      "text": "Ingrid banks with mirefield-annex as well.",
      "replaces": false
@@ -3208,6 +3512,7 @@
     {
      "year": 2,
      "day": 552,
+     "wording": "assert",
      "value": "vellum-lantern",
      "text": "Zoltan banks with vellum-lantern.",
      "replaces": true
@@ -3215,6 +3520,7 @@
     {
      "year": 6,
      "day": 1989,
+     "wording": "also",
      "value": "verdigris-wharf",
      "text": "Zoltan banks with verdigris-wharf as well.",
      "replaces": false
@@ -3230,6 +3536,7 @@
     {
      "year": 2,
      "day": 612,
+     "wording": "assert",
      "value": "flint-ridge",
      "text": "Otto keeps the backups on flint-ridge.",
      "replaces": true
@@ -3237,6 +3544,7 @@
     {
      "year": 6,
      "day": 2048,
+     "wording": "also",
      "value": "pewter-moor",
      "text": "Otto keeps the backups on pewter-moor as well.",
      "replaces": false
@@ -3252,6 +3560,7 @@
     {
      "year": 2,
      "day": 459,
+     "wording": "assert",
      "value": "tamarind-lantern",
      "text": "Karin is taking the tamarind-lantern course.",
      "replaces": true
@@ -3259,6 +3568,7 @@
     {
      "year": 6,
      "day": 2114,
+     "wording": "also",
      "value": "nutmeg-brook",
      "text": "Karin is taking the nutmeg-brook course as well.",
      "replaces": false
@@ -3274,6 +3584,7 @@
     {
      "year": 2,
      "day": 370,
+     "wording": "assert",
      "value": "ravel-drift",
      "text": "Tomas goes to the ravel-drift clinic.",
      "replaces": true
@@ -3281,6 +3592,7 @@
     {
      "year": 6,
      "day": 2166,
+     "wording": "also",
      "value": "tamarind-quarry",
      "text": "Tomas goes to the tamarind-quarry clinic too.",
      "replaces": false
@@ -3296,6 +3608,7 @@
     {
      "year": 2,
      "day": 559,
+     "wording": "assert",
      "value": "wicklow-reach",
      "text": "Tariq buys bread at the wicklow-reach bakery.",
      "replaces": true
@@ -3303,6 +3616,7 @@
     {
      "year": 6,
      "day": 1968,
+     "wording": "also",
      "value": "ironwood-chandler",
      "text": "Tariq buys bread at the ironwood-chandler bakery as well.",
      "replaces": false
@@ -3318,6 +3632,7 @@
     {
      "year": 2,
      "day": 475,
+     "wording": "assert",
      "value": "amber-gable",
      "text": "Petra goes to the amber-gable clinic.",
      "replaces": true
@@ -3325,6 +3640,7 @@
     {
      "year": 6,
      "day": 2126,
+     "wording": "also",
      "value": "garnet-beacon",
      "text": "Petra goes to the garnet-beacon clinic too.",
      "replaces": false
@@ -3340,6 +3656,7 @@
     {
      "year": 2,
      "day": 604,
+     "wording": "assert",
      "value": "amber-ledge",
      "text": "Kasper is taking the amber-ledge course.",
      "replaces": true
@@ -3347,6 +3664,7 @@
     {
      "year": 6,
      "day": 1841,
+     "wording": "also",
      "value": "saffron-gable",
      "text": "Kasper is taking the saffron-gable course as well.",
      "replaces": false
@@ -3362,6 +3680,7 @@
     {
      "year": 2,
      "day": 626,
+     "wording": "assert",
      "value": "cobalt-drift",
      "text": "Quinn rehearses at the cobalt-drift hall.",
      "replaces": true
@@ -3369,6 +3688,7 @@
     {
      "year": 6,
      "day": 2023,
+     "wording": "also",
      "value": "verdigris-moor",
      "text": "Quinn rehearses at the verdigris-moor hall as well.",
      "replaces": false
@@ -3384,6 +3704,7 @@
     {
      "year": 2,
      "day": 676,
+     "wording": "assert",
      "value": "nutmeg-harbour",
      "text": "Emeka rehearses at the nutmeg-harbour hall.",
      "replaces": true
@@ -3391,6 +3712,7 @@
     {
      "year": 6,
      "day": 1934,
+     "wording": "also",
      "value": "larkin-hearth",
      "text": "Emeka rehearses at the larkin-hearth hall as well.",
      "replaces": false
@@ -3406,6 +3728,7 @@
     {
      "year": 2,
      "day": 711,
+     "wording": "assert",
      "value": "umber-orchard",
      "text": "Xavier orders paper from umber-orchard.",
      "replaces": true
@@ -3413,6 +3736,7 @@
     {
      "year": 6,
      "day": 1968,
+     "wording": "also",
      "value": "silverfin-sedge",
      "text": "Xavier orders paper from silverfin-sedge as well.",
      "replaces": false
@@ -3428,6 +3752,7 @@
     {
      "year": 2,
      "day": 475,
+     "wording": "assert",
      "value": "sable-vale",
      "text": "Nuria rents the sable-vale cottage.",
      "replaces": true
@@ -3435,6 +3760,7 @@
     {
      "year": 6,
      "day": 2074,
+     "wording": "also",
      "value": "pewter-drift",
      "text": "Nuria rents the pewter-drift cottage as well.",
      "replaces": false
@@ -3450,6 +3776,7 @@
     {
      "year": 2,
      "day": 624,
+     "wording": "assert",
      "value": "ember-beacon",
      "text": "Hassan goes to the ember-beacon clinic.",
      "replaces": true
@@ -3457,6 +3784,7 @@
     {
      "year": 6,
      "day": 1889,
+     "wording": "also",
      "value": "larkin-chandler",
      "text": "Hassan goes to the larkin-chandler clinic too.",
      "replaces": false
@@ -3472,6 +3800,7 @@
     {
      "year": 2,
      "day": 370,
+     "wording": "assert",
      "value": "marlow-foundry",
      "text": "Celia is taking the marlow-foundry course.",
      "replaces": true
@@ -3479,6 +3808,7 @@
     {
      "year": 6,
      "day": 2039,
+     "wording": "also",
      "value": "harrow-wharf",
      "text": "Celia is taking the harrow-wharf course as well.",
      "replaces": false
@@ -3494,6 +3824,7 @@
     {
      "year": 2,
      "day": 523,
+     "wording": "assert",
      "value": "larkin-hollow",
      "text": "Karin rehearses at the larkin-hollow hall.",
      "replaces": true
@@ -3501,6 +3832,7 @@
     {
      "year": 6,
      "day": 2074,
+     "wording": "also",
      "value": "ravel-sedge",
      "text": "Karin rehearses at the ravel-sedge hall as well.",
      "replaces": false
@@ -3516,6 +3848,7 @@
     {
      "year": 2,
      "day": 586,
+     "wording": "assert",
      "value": "cinder-ridge",
      "text": "Ivo banks with cinder-ridge.",
      "replaces": true
@@ -3523,6 +3856,7 @@
     {
      "year": 6,
      "day": 2039,
+     "wording": "also",
      "value": "verdigris-yard",
      "text": "Ivo banks with verdigris-yard as well.",
      "replaces": false
@@ -3538,6 +3872,7 @@
     {
      "year": 2,
      "day": 704,
+     "wording": "assert",
      "value": "silverfin-moor",
      "text": "Kasper orders paper from silverfin-moor.",
      "replaces": true
@@ -3545,6 +3880,7 @@
     {
      "year": 6,
      "day": 1897,
+     "wording": "also",
      "value": "dovetail-meadow",
      "text": "Kasper orders paper from dovetail-meadow as well.",
      "replaces": false
@@ -3560,6 +3896,7 @@
     {
      "year": 2,
      "day": 637,
+     "wording": "assert",
      "value": "brindle-wharf",
      "text": "Chiara keeps the accounts in brindle-wharf.",
      "replaces": true
@@ -3567,6 +3904,7 @@
     {
      "year": 6,
      "day": 1921,
+     "wording": "also",
      "value": "mirefield-ridge",
      "text": "Chiara keeps the accounts in mirefield-ridge too.",
      "replaces": false
@@ -3582,6 +3920,7 @@
     {
      "year": 2,
      "day": 459,
+     "wording": "assert",
      "value": "silverfin-foundry",
      "text": "Farid rehearses at the silverfin-foundry hall.",
      "replaces": true
@@ -3589,6 +3928,7 @@
     {
      "year": 6,
      "day": 2126,
+     "wording": "also",
      "value": "cobalt-ledge",
      "text": "Farid rehearses at the cobalt-ledge hall as well.",
      "replaces": false
@@ -3604,6 +3944,7 @@
     {
      "year": 2,
      "day": 475,
+     "wording": "assert",
      "value": "zephyr-orchard",
      "text": "Kofi sits with the zephyr-orchard team.",
      "replaces": true
@@ -3611,6 +3952,7 @@
     {
      "year": 6,
      "day": 2177,
+     "wording": "also",
      "value": "dovetail-glade",
      "text": "Kofi sits with the dovetail-glade team as well.",
      "replaces": false
@@ -3626,6 +3968,7 @@
     {
      "year": 2,
      "day": 559,
+     "wording": "assert",
      "value": "umber-spire",
      "text": "Yuki keeps the backups on umber-spire.",
      "replaces": true
@@ -3633,6 +3976,7 @@
     {
      "year": 6,
      "day": 2058,
+     "wording": "also",
      "value": "silverfin-coppice",
      "text": "Yuki keeps the backups on silverfin-coppice as well.",
      "replaces": false
@@ -3648,6 +3992,7 @@
     {
      "year": 2,
      "day": 449,
+     "wording": "assert",
      "value": "opal-yard",
      "text": "Erol sits with the opal-yard team.",
      "replaces": true
@@ -3655,6 +4000,7 @@
     {
      "year": 6,
      "day": 1897,
+     "wording": "also",
      "value": "wicklow-pike",
      "text": "Erol sits with the wicklow-pike team as well.",
      "replaces": false
@@ -3670,6 +4016,7 @@
     {
      "year": 2,
      "day": 370,
+     "wording": "assert",
      "value": "wicklow-foundry",
      "text": "Lisa banks with wicklow-foundry.",
      "replaces": true
@@ -3677,6 +4024,7 @@
     {
      "year": 6,
      "day": 2058,
+     "wording": "also",
      "value": "opal-gable",
      "text": "Lisa banks with opal-gable as well.",
      "replaces": false
@@ -3692,6 +4040,7 @@
     {
      "year": 2,
      "day": 624,
+     "wording": "assert",
      "value": "brindle-sedge",
      "text": "Dario leads the brindle-sedge project.",
      "replaces": true
@@ -3699,6 +4048,7 @@
     {
      "year": 6,
      "day": 1881,
+     "wording": "also",
      "value": "marlow-ridge",
      "text": "Dario leads the marlow-ridge project as well.",
      "replaces": false
@@ -3714,6 +4064,7 @@
     {
      "year": 2,
      "day": 624,
+     "wording": "assert",
      "value": "marlow-beacon",
      "text": "Gunnar sits with the marlow-beacon team.",
      "replaces": true
@@ -3721,6 +4072,7 @@
     {
      "year": 6,
      "day": 1968,
+     "wording": "also",
      "value": "silverfin-pike",
      "text": "Gunnar sits with the silverfin-pike team as well.",
      "replaces": false
@@ -3736,6 +4088,7 @@
     {
      "year": 2,
      "day": 512,
+     "wording": "assert",
      "value": "copper-coppice",
      "text": "Emeka goes to the copper-coppice clinic.",
      "replaces": true
@@ -3743,6 +4096,7 @@
     {
      "year": 6,
      "day": 2162,
+     "wording": "also",
      "value": "thistle-sedge",
      "text": "Emeka goes to the thistle-sedge clinic too.",
      "replaces": false
@@ -3758,6 +4112,7 @@
     {
      "year": 2,
      "day": 488,
+     "wording": "assert",
      "value": "tamarind-yard",
      "text": "Sanjay rehearses at the tamarind-yard hall.",
      "replaces": true
@@ -3765,6 +4120,7 @@
     {
      "year": 6,
      "day": 1825,
+     "wording": "also",
      "value": "thistle-mill",
      "text": "Sanjay rehearses at the thistle-mill hall as well.",
      "replaces": false
@@ -3780,6 +4136,7 @@
     {
      "year": 2,
      "day": 704,
+     "wording": "assert",
      "value": "verdigris-coppice",
      "text": "Iris orders paper from verdigris-coppice.",
      "replaces": true
@@ -3787,6 +4144,7 @@
     {
      "year": 6,
      "day": 1989,
+     "wording": "also",
      "value": "amber-moor",
      "text": "Iris orders paper from amber-moor as well.",
      "replaces": false
@@ -3802,6 +4160,7 @@
     {
      "year": 2,
      "day": 559,
+     "wording": "assert",
      "value": "umber-tarn",
      "text": "Anders rehearses at the umber-tarn hall.",
      "replaces": true
@@ -3809,6 +4168,7 @@
     {
      "year": 6,
      "day": 2166,
+     "wording": "also",
      "value": "harrow-yard",
      "text": "Anders rehearses at the harrow-yard hall as well.",
      "replaces": false
@@ -3824,6 +4184,7 @@
     {
      "year": 2,
      "day": 711,
+     "wording": "assert",
      "value": "opal-vale",
      "text": "Hugo leads the opal-vale project.",
      "replaces": true
@@ -3831,6 +4192,7 @@
     {
      "year": 6,
      "day": 1968,
+     "wording": "narrow",
      "value": "pewter-sedge",
      "text": "On Thursdays Hugo leads the pewter-sedge project.",
      "replaces": false
@@ -3846,6 +4208,7 @@
     {
      "year": 2,
      "day": 604,
+     "wording": "assert",
      "value": "ironwood-coppice",
      "text": "Goran rehearses at the ironwood-coppice hall.",
      "replaces": true
@@ -3853,6 +4216,7 @@
     {
      "year": 6,
      "day": 1881,
+     "wording": "narrow",
      "value": "ravel-spire",
      "text": "In summer Goran rehearses at the ravel-spire hall.",
      "replaces": false
@@ -3868,6 +4232,7 @@
     {
      "year": 2,
      "day": 660,
+     "wording": "assert",
      "value": "harrow-beacon",
      "text": "Freya rehearses at the harrow-beacon hall.",
      "replaces": true
@@ -3875,6 +4240,7 @@
     {
      "year": 6,
      "day": 1889,
+     "wording": "narrow",
      "value": "nutmeg-fenn",
      "text": "In summer Freya rehearses at the nutmeg-fenn hall.",
      "replaces": false
@@ -3890,6 +4256,7 @@
     {
      "year": 2,
      "day": 529,
+     "wording": "assert",
      "value": "quill-harbour",
      "text": "Xavier keeps the accounts in quill-harbour.",
      "replaces": true
@@ -3897,6 +4264,7 @@
     {
      "year": 6,
      "day": 2081,
+     "wording": "narrow",
      "value": "brindle-quarry",
      "text": "For payroll Xavier keeps the accounts in brindle-quarry.",
      "replaces": false
@@ -3912,6 +4280,7 @@
     {
      "year": 2,
      "day": 475,
+     "wording": "assert",
      "value": "ravel-meadow",
      "text": "Lorna keeps the backups on ravel-meadow.",
      "replaces": true
@@ -3919,6 +4288,7 @@
     {
      "year": 6,
      "day": 1955,
+     "wording": "narrow",
      "value": "flint-gable",
      "text": "For the archive Lorna keeps the backups on flint-gable.",
      "replaces": false
@@ -3934,6 +4304,7 @@
     {
      "year": 2,
      "day": 412,
+     "wording": "assert",
      "value": "saffron-yard",
      "text": "Olga rehearses at the saffron-yard hall.",
      "replaces": true
@@ -3941,6 +4312,7 @@
     {
      "year": 6,
      "day": 2048,
+     "wording": "narrow",
      "value": "harrow-mill",
      "text": "In summer Olga rehearses at the harrow-mill hall.",
      "replaces": false
@@ -3956,6 +4328,7 @@
     {
      "year": 2,
      "day": 529,
+     "wording": "assert",
      "value": "umber-kiln",
      "text": "Ulla rehearses at the umber-kiln hall.",
      "replaces": true
@@ -3963,6 +4336,7 @@
     {
      "year": 6,
      "day": 2074,
+     "wording": "narrow",
      "value": "zephyr-vale",
      "text": "In summer Ulla rehearses at the zephyr-vale hall.",
      "replaces": false
@@ -3978,6 +4352,7 @@
     {
      "year": 2,
      "day": 604,
+     "wording": "assert",
      "value": "dovetail-ridge",
      "text": "Hugo orders paper from dovetail-ridge.",
      "replaces": true
@@ -3985,6 +4360,7 @@
     {
      "year": 6,
      "day": 1939,
+     "wording": "narrow",
      "value": "zephyr-kiln",
      "text": "For headed paper Hugo orders from zephyr-kiln.",
      "replaces": false
@@ -4000,6 +4376,7 @@
     {
      "year": 2,
      "day": 401,
+     "wording": "assert",
      "value": "vellum-fenn",
      "text": "Amara goes to the vellum-fenn clinic.",
      "replaces": true
@@ -4007,6 +4384,7 @@
     {
      "year": 6,
      "day": 2039,
+     "wording": "narrow",
      "value": "brindle-hearth",
      "text": "For check-ups Amara goes to the brindle-hearth clinic.",
      "replaces": false
@@ -4022,6 +4400,7 @@
     {
      "year": 2,
      "day": 666,
+     "wording": "assert",
      "value": "zephyr-brook",
      "text": "Emeka sits with the zephyr-brook team.",
      "replaces": true
@@ -4029,6 +4408,7 @@
     {
      "year": 6,
      "day": 2126,
+     "wording": "narrow",
      "value": "cinder-isle",
      "text": "On review days Emeka sits with the cinder-isle team.",
      "replaces": false
@@ -4044,6 +4424,7 @@
     {
      "year": 2,
      "day": 584,
+     "wording": "assert",
      "value": "umber-lantern",
      "text": "Ursula rehearses at the umber-lantern hall.",
      "replaces": true
@@ -4051,6 +4432,7 @@
     {
      "year": 6,
      "day": 2039,
+     "wording": "narrow",
      "value": "yarrow-foundry",
      "text": "In summer Ursula rehearses at the yarrow-foundry hall.",
      "replaces": false
@@ -4066,6 +4448,7 @@
     {
      "year": 2,
      "day": 495,
+     "wording": "assert",
      "value": "opal-sedge",
      "text": "Amara keeps the accounts in opal-sedge.",
      "replaces": true
@@ -4073,6 +4456,7 @@
     {
      "year": 6,
      "day": 2126,
+     "wording": "narrow",
      "value": "sable-mill",
      "text": "For payroll Amara keeps the accounts in sable-mill.",
      "replaces": false
@@ -4088,6 +4472,7 @@
     {
      "year": 2,
      "day": 379,
+     "wording": "assert",
      "value": "verdigris-hollow",
      "text": "Karin buys bread at the verdigris-hollow bakery.",
      "replaces": true
@@ -4095,6 +4480,7 @@
     {
      "year": 6,
      "day": 1866,
+     "wording": "narrow",
      "value": "saffron-glade",
      "text": "At weekends Karin buys bread at the saffron-glade bakery.",
      "replaces": false
@@ -4110,6 +4496,7 @@
     {
      "year": 2,
      "day": 495,
+     "wording": "assert",
      "value": "amber-kiln",
      "text": "Sanjay goes to the amber-kiln clinic.",
      "replaces": true
@@ -4117,6 +4504,7 @@
     {
      "year": 6,
      "day": 2074,
+     "wording": "narrow",
      "value": "larkin-tarn",
      "text": "For check-ups Sanjay goes to the larkin-tarn clinic.",
      "replaces": false
@@ -4132,6 +4520,7 @@
     {
      "year": 2,
      "day": 439,
+     "wording": "assert",
      "value": "vellum-hollow",
      "text": "Kofi keeps the backups on vellum-hollow.",
      "replaces": true
@@ -4139,6 +4528,7 @@
     {
      "year": 6,
      "day": 1897,
+     "wording": "narrow",
      "value": "ironwood-quarry",
      "text": "For the archive Kofi keeps the backups on ironwood-quarry.",
      "replaces": false
@@ -4154,6 +4544,7 @@
     {
      "year": 2,
      "day": 568,
+     "wording": "assert",
      "value": "ravel-wharf",
      "text": "Zara leads the ravel-wharf project.",
      "replaces": true
@@ -4161,6 +4552,7 @@
     {
      "year": 6,
      "day": 1982,
+     "wording": "narrow",
      "value": "silverfin-weir",
      "text": "On Thursdays Zara leads the silverfin-weir project.",
      "replaces": false
@@ -4176,6 +4568,7 @@
     {
      "year": 2,
      "day": 529,
+     "wording": "assert",
      "value": "zephyr-harbour",
      "text": "Karin banks with zephyr-harbour.",
      "replaces": true
@@ -4183,6 +4576,7 @@
     {
      "year": 6,
      "day": 2086,
+     "wording": "narrow",
      "value": "pewter-hearth",
      "text": "For the business account Karin banks with pewter-hearth.",
      "replaces": false
@@ -4198,6 +4592,7 @@
     {
      "year": 2,
      "day": 412,
+     "wording": "assert",
      "value": "dovetail-hearth",
      "text": "Yuki sits with the dovetail-hearth team.",
      "replaces": true
@@ -4205,6 +4600,7 @@
     {
      "year": 6,
      "day": 1989,
+     "wording": "narrow",
      "value": "copper-mill",
      "text": "On review days Yuki sits with the copper-mill team.",
      "replaces": false
@@ -4220,6 +4616,7 @@
     {
      "year": 2,
      "day": 624,
+     "wording": "assert",
      "value": "bramble-sedge",
      "text": "Zoltan keeps the backups on bramble-sedge.",
      "replaces": true
@@ -4227,6 +4624,7 @@
     {
      "year": 6,
      "day": 2114,
+     "wording": "narrow",
      "value": "brindle-chandler",
      "text": "For the archive Zoltan keeps the backups on brindle-chandler.",
      "replaces": false
@@ -4242,6 +4640,7 @@
     {
      "year": 2,
      "day": 523,
+     "wording": "assert",
      "value": "flint-hollow",
      "text": "Mateo banks with flint-hollow.",
      "replaces": true
@@ -4249,6 +4648,7 @@
     {
      "year": 6,
      "day": 2099,
+     "wording": "narrow",
      "value": "vellum-beacon",
      "text": "For the business account Mateo banks with vellum-beacon.",
      "replaces": false
@@ -4264,6 +4664,7 @@
     {
      "year": 2,
      "day": 676,
+     "wording": "assert",
      "value": "ironwood-isle",
      "text": "Ulla buys bread at the ironwood-isle bakery.",
      "replaces": true
@@ -4271,6 +4672,7 @@
     {
      "year": 6,
      "day": 2010,
+     "wording": "narrow",
      "value": "copper-ledge",
      "text": "At weekends Ulla buys bread at the copper-ledge bakery.",
      "replaces": false
@@ -4286,6 +4688,7 @@
     {
      "year": 2,
      "day": 539,
+     "wording": "assert",
      "value": "dovetail-spire",
      "text": "Lorna banks with dovetail-spire.",
      "replaces": true
@@ -4293,6 +4696,7 @@
     {
      "year": 6,
      "day": 2058,
+     "wording": "narrow",
      "value": "flint-tarn",
      "text": "For the business account Lorna banks with flint-tarn.",
      "replaces": false
@@ -4308,6 +4712,7 @@
     {
      "year": 2,
      "day": 604,
+     "wording": "assert",
      "value": "larkin-isle",
      "text": "Celia banks with larkin-isle.",
      "replaces": true
@@ -4315,6 +4720,7 @@
     {
      "year": 6,
      "day": 2058,
+     "wording": "narrow",
      "value": "thistle-tarn",
      "text": "For the business account Celia banks with thistle-tarn.",
      "replaces": false
@@ -4330,6 +4736,7 @@
     {
      "year": 2,
      "day": 449,
+     "wording": "assert",
      "value": "tamarind-fenn",
      "text": "Xavier keeps the backups on tamarind-fenn.",
      "replaces": true
@@ -4337,6 +4744,7 @@
     {
      "year": 6,
      "day": 2114,
+     "wording": "narrow",
      "value": "sable-weir",
      "text": "For the archive Xavier keeps the backups on sable-weir.",
      "replaces": false
@@ -4352,6 +4760,7 @@
     {
      "year": 2,
      "day": 449,
+     "wording": "assert",
      "value": "tamarind-pike",
      "text": "Esther leads the tamarind-pike project.",
      "replaces": true
@@ -4359,6 +4768,7 @@
     {
      "year": 6,
      "day": 1982,
+     "wording": "narrow",
      "value": "opal-brook",
      "text": "On Thursdays Esther leads the opal-brook project.",
      "replaces": false
@@ -4374,6 +4784,7 @@
     {
      "year": 2,
      "day": 475,
+     "wording": "assert",
      "value": "pewter-annex",
      "text": "Dario banks with pewter-annex.",
      "replaces": true
@@ -4381,6 +4792,7 @@
     {
      "year": 6,
      "day": 2114,
+     "wording": "narrow",
      "value": "nutmeg-lantern",
      "text": "For the business account Dario banks with nutmeg-lantern.",
      "replaces": false
@@ -4396,6 +4808,7 @@
     {
      "year": 2,
      "day": 391,
+     "wording": "assert",
      "value": "cinder-tarn",
      "text": "Luca goes to the cinder-tarn clinic.",
      "replaces": true
@@ -4403,6 +4816,7 @@
     {
      "year": 6,
      "day": 2177,
+     "wording": "narrow",
      "value": "vellum-moor",
      "text": "For check-ups Luca goes to the vellum-moor clinic.",
      "replaces": false
@@ -4418,6 +4832,7 @@
     {
      "year": 2,
      "day": 539,
+     "wording": "assert",
      "value": "sable-foundry",
      "text": "Zoltan goes to the sable-foundry clinic.",
      "replaces": true
@@ -4425,6 +4840,7 @@
     {
      "year": 6,
      "day": 1911,
+     "wording": "narrow",
      "value": "larkin-moor",
      "text": "For check-ups Zoltan goes to the larkin-moor clinic.",
      "replaces": false
@@ -4440,6 +4856,7 @@
     {
      "year": 2,
      "day": 401,
+     "wording": "assert",
      "value": "zephyr-coppice",
      "text": "Wanda orders paper from zephyr-coppice.",
      "replaces": true
@@ -4447,6 +4864,7 @@
     {
      "year": 6,
      "day": 2010,
+     "wording": "narrow",
      "value": "saffron-wharf",
      "text": "For headed paper Wanda orders from saffron-wharf.",
      "replaces": false
@@ -4462,6 +4880,7 @@
     {
      "year": 2,
      "day": 430,
+     "wording": "assert",
      "value": "tamarind-wharf",
      "text": "Gunnar buys bread at the tamarind-wharf bakery.",
      "replaces": true
@@ -4469,6 +4888,7 @@
     {
      "year": 6,
      "day": 1955,
+     "wording": "narrow",
      "value": "mirefield-moor",
      "text": "At weekends Gunnar buys bread at the mirefield-moor bakery.",
      "replaces": false
@@ -4484,6 +4904,7 @@
     {
      "year": 2,
      "day": 723,
+     "wording": "assert",
      "value": "cobalt-lantern",
      "text": "Priya keeps the accounts in cobalt-lantern.",
      "replaces": true
@@ -4491,6 +4912,7 @@
     {
      "year": 6,
      "day": 1853,
+     "wording": "narrow",
      "value": "garnet-wharf",
      "text": "For payroll Priya keeps the accounts in garnet-wharf.",
      "replaces": false
@@ -4506,6 +4928,7 @@
     {
      "year": 2,
      "day": 379,
+     "wording": "assert",
      "value": "yarrow-yard",
      "text": "Nuria goes to the yarrow-yard clinic.",
      "replaces": true
@@ -4513,6 +4936,7 @@
     {
      "year": 6,
      "day": 2058,
+     "wording": "narrow",
      "value": "wicklow-drift",
      "text": "For check-ups Nuria goes to the wicklow-drift clinic.",
      "replaces": false
@@ -4528,6 +4952,7 @@
     {
      "year": 2,
      "day": 421,
+     "wording": "assert",
      "value": "copper-tarn",
      "text": "Dario goes to the copper-tarn clinic.",
      "replaces": true
@@ -4535,6 +4960,7 @@
     {
      "year": 6,
      "day": 2004,
+     "wording": "narrow",
      "value": "marlow-reach",
      "text": "For check-ups Dario goes to the marlow-reach clinic.",
      "replaces": false
@@ -4550,6 +4976,7 @@
     {
      "year": 2,
      "day": 660,
+     "wording": "assert",
      "value": "cobalt-sedge",
      "text": "Yannis orders paper from cobalt-sedge.",
      "replaces": true
@@ -4557,6 +4984,7 @@
     {
      "year": 6,
      "day": 1989,
+     "wording": "narrow",
      "value": "opal-hearth",
      "text": "For headed paper Yannis orders from opal-hearth.",
      "replaces": false
@@ -4572,6 +5000,7 @@
     {
      "year": 2,
      "day": 421,
+     "wording": "assert",
      "value": "pewter-chandler",
      "text": "Idris leads the pewter-chandler project.",
      "replaces": true
@@ -4579,6 +5008,7 @@
     {
      "year": 6,
      "day": 2048,
+     "wording": "narrow",
      "value": "oakhill-weir",
      "text": "On Thursdays Idris leads the oakhill-weir project.",
      "replaces": false
@@ -4594,6 +5024,7 @@
     {
      "year": 2,
      "day": 495,
+     "wording": "assert",
      "value": "bramble-drift",
      "text": "Bruno keeps the backups on bramble-drift.",
      "replaces": true
@@ -4601,6 +5032,7 @@
     {
      "year": 6,
      "day": 1955,
+     "wording": "narrow",
      "value": "thistle-foundry",
      "text": "For the archive Bruno keeps the backups on thistle-foundry.",
      "replaces": false
@@ -4616,6 +5048,7 @@
     {
      "year": 2,
      "day": 612,
+     "wording": "assert",
      "value": "marlow-brook",
      "text": "Iris banks with marlow-brook.",
      "replaces": true
@@ -4623,6 +5056,7 @@
     {
      "year": 6,
      "day": 1989,
+     "wording": "narrow",
      "value": "opal-ledge",
      "text": "For the business account Iris banks with opal-ledge.",
      "replaces": false
@@ -4638,6 +5072,7 @@
     {
      "year": 2,
      "day": 512,
+     "wording": "assert",
      "value": "marlow-hollow",
      "text": "Sanjay rents the marlow-hollow cottage.",
      "replaces": true
@@ -4645,6 +5080,7 @@
     {
      "year": 6,
      "day": 2086,
+     "wording": "narrow",
      "value": "oakhill-pike",
      "text": "At new year Sanjay rents the oakhill-pike cottage.",
      "replaces": false
@@ -4660,6 +5096,7 @@
     {
      "year": 2,
      "day": 529,
+     "wording": "assert",
      "value": "yarrow-isle",
      "text": "Stefan rents the yarrow-isle cottage.",
      "replaces": true
@@ -4667,6 +5104,7 @@
     {
      "year": 6,
      "day": 1989,
+     "wording": "narrow",
      "value": "silverfin-wharf",
      "text": "At new year Stefan rents the silverfin-wharf cottage.",
      "replaces": false
@@ -4682,6 +5120,7 @@
     {
      "year": 2,
      "day": 529,
+     "wording": "assert",
      "value": "saffron-spire",
      "text": "Alma commutes on the saffron-spire line.",
      "replaces": true
@@ -4689,6 +5128,7 @@
     {
      "year": 6,
      "day": 2058,
+     "wording": "narrow",
      "value": "copper-pike",
      "text": "In winter Alma commutes on the copper-pike line.",
      "replaces": false
@@ -4704,6 +5144,7 @@
     {
      "year": 1,
      "day": 230,
+     "wording": "assert",
      "value": "quill-brook",
      "text": "Yuki goes to the quill-brook clinic.",
      "replaces": true
@@ -4719,6 +5160,7 @@
     {
      "year": 1,
      "day": 229,
+     "wording": "assert",
      "value": "tamarind-hearth",
      "text": "Bjorn rehearses at the tamarind-hearth hall.",
      "replaces": true
@@ -4734,6 +5176,7 @@
     {
      "year": 1,
      "day": 290,
+     "wording": "assert",
      "value": "bramble-annex",
      "text": "Nuria leads the bramble-annex project.",
      "replaces": true
@@ -4749,6 +5192,7 @@
     {
      "year": 1,
      "day": 160,
+     "wording": "assert",
      "value": "quill-beacon",
      "text": "Xavier buys bread at the quill-beacon bakery.",
      "replaces": true
@@ -4764,6 +5208,7 @@
     {
      "year": 1,
      "day": 141,
+     "wording": "assert",
      "value": "marlow-lantern",
      "text": "Mateo keeps the backups on marlow-lantern.",
      "replaces": true
@@ -4779,6 +5224,7 @@
     {
      "year": 1,
      "day": 317,
+     "wording": "assert",
      "value": "vellum-drift",
      "text": "Tomas keeps the accounts in vellum-drift.",
      "replaces": true
@@ -4794,6 +5240,7 @@
     {
      "year": 1,
      "day": 22,
+     "wording": "assert",
      "value": "silverfin-chandler",
      "text": "Fabio buys bread at the silverfin-chandler bakery.",
      "replaces": true
@@ -4809,6 +5256,7 @@
     {
      "year": 1,
      "day": 229,
+     "wording": "assert",
      "value": "umber-isle",
      "text": "Farid leads the umber-isle project.",
      "replaces": true
@@ -4824,6 +5272,7 @@
     {
      "year": 1,
      "day": 263,
+     "wording": "assert",
      "value": "vellum-glade",
      "text": "Karin commutes on the vellum-glade line.",
      "replaces": true
@@ -4839,6 +5288,7 @@
     {
      "year": 1,
      "day": 230,
+     "wording": "assert",
      "value": "yarrow-orchard",
      "text": "Xavier leads the yarrow-orchard project.",
      "replaces": true
@@ -4854,6 +5304,7 @@
     {
      "year": 1,
      "day": 213,
+     "wording": "assert",
      "value": "amber-hollow",
      "text": "Gunnar goes to the amber-hollow clinic.",
      "replaces": true
@@ -4869,6 +5320,7 @@
     {
      "year": 1,
      "day": 346,
+     "wording": "assert",
      "value": "saffron-sedge",
      "text": "Idris is taking the saffron-sedge course.",
      "replaces": true
@@ -4884,6 +5336,7 @@
     {
      "year": 1,
      "day": 317,
+     "wording": "assert",
      "value": "thistle-ledge",
      "text": "Zoltan keeps the accounts in thistle-ledge.",
      "replaces": true
@@ -4899,6 +5352,7 @@
     {
      "year": 1,
      "day": 229,
+     "wording": "assert",
      "value": "quill-sedge",
      "text": "Josefa goes to the quill-sedge clinic.",
      "replaces": true
@@ -4914,6 +5368,7 @@
     {
      "year": 1,
      "day": 187,
+     "wording": "assert",
      "value": "marlow-meadow",
      "text": "Milos rents the marlow-meadow cottage.",
      "replaces": true
@@ -4929,6 +5384,7 @@
     {
      "year": 1,
      "day": 213,
+     "wording": "assert",
      "value": "opal-orchard",
      "text": "Beatriz rents the opal-orchard cottage.",
      "replaces": true
@@ -4944,6 +5400,7 @@
     {
      "year": 1,
      "day": 156,
+     "wording": "assert",
      "value": "umber-chandler",
      "text": "Hugo keeps the accounts in umber-chandler.",
      "replaces": true
@@ -4959,6 +5416,7 @@
     {
      "year": 1,
      "day": 263,
+     "wording": "assert",
      "value": "zephyr-reach",
      "text": "Lisa buys bread at the zephyr-reach bakery.",
      "replaces": true
@@ -4974,6 +5432,7 @@
     {
      "year": 1,
      "day": 6,
+     "wording": "assert",
      "value": "thistle-moor",
      "text": "Tariq commutes on the thistle-moor line.",
      "replaces": true
@@ -4989,6 +5448,7 @@
     {
      "year": 1,
      "day": 317,
+     "wording": "assert",
      "value": "garnet-lantern",
      "text": "Freya is taking the garnet-lantern course.",
      "replaces": true
@@ -5004,6 +5464,7 @@
     {
      "year": 1,
      "day": 75,
+     "wording": "assert",
      "value": "bramble-isle",
      "text": "Iris sits with the bramble-isle team.",
      "replaces": true
@@ -5019,6 +5480,7 @@
     {
      "year": 1,
      "day": 66,
+     "wording": "assert",
      "value": "ironwood-ridge",
      "text": "Vasco sits with the ironwood-ridge team.",
      "replaces": true
@@ -5034,6 +5496,7 @@
     {
      "year": 1,
      "day": 245,
+     "wording": "assert",
      "value": "bramble-mill",
      "text": "Anders rents the bramble-mill cottage.",
      "replaces": true
@@ -5049,6 +5512,7 @@
     {
      "year": 1,
      "day": 284,
+     "wording": "assert",
      "value": "zephyr-beacon",
      "text": "Kwame banks with zephyr-beacon.",
      "replaces": true
@@ -5064,6 +5528,7 @@
     {
      "year": 1,
      "day": 141,
+     "wording": "assert",
      "value": "brindle-gable",
      "text": "Helena leads the brindle-gable project.",
      "replaces": true
@@ -5079,6 +5544,7 @@
     {
      "year": 1,
      "day": 213,
+     "wording": "assert",
      "value": "silverfin-tarn",
      "text": "Ingrid orders paper from silverfin-tarn.",
      "replaces": true
@@ -5094,6 +5560,7 @@
     {
      "year": 1,
      "day": 156,
+     "wording": "assert",
      "value": "opal-isle",
      "text": "Sofia sits with the opal-isle team.",
      "replaces": true
@@ -5109,6 +5576,7 @@
     {
      "year": 1,
      "day": 191,
+     "wording": "assert",
      "value": "ember-fenn",
      "text": "Josefa sits with the ember-fenn team.",
      "replaces": true
@@ -5124,6 +5592,7 @@
     {
      "year": 1,
      "day": 209,
+     "wording": "assert",
      "value": "silverfin-annex",
      "text": "Olga commutes on the silverfin-annex line.",
      "replaces": true
@@ -5139,6 +5608,7 @@
     {
      "year": 1,
      "day": 256,
+     "wording": "assert",
      "value": "bramble-wharf",
      "text": "Priya goes to the bramble-wharf clinic.",
      "replaces": true
@@ -5154,6 +5624,7 @@
     {
      "year": 1,
      "day": 245,
+     "wording": "assert",
      "value": "ravel-coppice",
      "text": "Karin keeps the accounts in ravel-coppice.",
      "replaces": true
@@ -5169,6 +5640,7 @@
     {
      "year": 1,
      "day": 44,
+     "wording": "assert",
      "value": "mirefield-fenn",
      "text": "Lisa orders paper from mirefield-fenn.",
      "replaces": true
@@ -5184,6 +5656,7 @@
     {
      "year": 1,
      "day": 129,
+     "wording": "assert",
      "value": "marlow-spire",
      "text": "Alma is taking the marlow-spire course.",
      "replaces": true
@@ -5199,6 +5672,7 @@
     {
      "year": 1,
      "day": 116,
+     "wording": "assert",
      "value": "garnet-chandler",
      "text": "Milos keeps the backups on garnet-chandler.",
      "replaces": true
@@ -5214,6 +5688,7 @@
     {
      "year": 1,
      "day": 350,
+     "wording": "assert",
      "value": "nutmeg-orchard",
      "text": "Yara banks with nutmeg-orchard.",
      "replaces": true
@@ -5229,6 +5704,7 @@
     {
      "year": 1,
      "day": 141,
+     "wording": "assert",
      "value": "mirefield-meadow",
      "text": "Pablo goes to the mirefield-meadow clinic.",
      "replaces": true
@@ -5244,6 +5720,7 @@
     {
      "year": 1,
      "day": 44,
+     "wording": "assert",
      "value": "pewter-glade",
      "text": "Kwame buys bread at the pewter-glade bakery.",
      "replaces": true
@@ -5259,6 +5736,7 @@
     {
      "year": 1,
      "day": 350,
+     "wording": "assert",
      "value": "bramble-glade",
      "text": "Dmitri commutes on the bramble-glade line.",
      "replaces": true
@@ -5274,6 +5752,7 @@
     {
      "year": 1,
      "day": 100,
+     "wording": "assert",
      "value": "pewter-harbour",
      "text": "Celia keeps the backups on pewter-harbour.",
      "replaces": true
@@ -5289,6 +5768,7 @@
     {
      "year": 1,
      "day": 322,
+     "wording": "assert",
      "value": "dovetail-vale",
      "text": "Vasco buys bread at the dovetail-vale bakery.",
      "replaces": true
@@ -5304,6 +5784,7 @@
     {
      "year": 2,
      "day": 412,
+     "wording": "assert",
      "value": "zephyr-glade",
      "text": "Jonas keeps the accounts in zephyr-glade.",
      "replaces": true
@@ -5319,6 +5800,7 @@
     {
      "year": 2,
      "day": 459,
+     "wording": "assert",
      "value": "zephyr-ledge",
      "text": "Maria is taking the zephyr-ledge course.",
      "replaces": true
@@ -5334,6 +5816,7 @@
     {
      "year": 2,
      "day": 711,
+     "wording": "assert",
      "value": "opal-hollow",
      "text": "Vasco leads the opal-hollow project.",
      "replaces": true
@@ -5349,6 +5832,7 @@
     {
      "year": 2,
      "day": 439,
+     "wording": "assert",
      "value": "cinder-sedge",
      "text": "Priya sits with the cinder-sedge team.",
      "replaces": true
@@ -5364,6 +5848,7 @@
     {
      "year": 2,
      "day": 529,
+     "wording": "assert",
      "value": "bramble-orchard",
      "text": "Maria commutes on the bramble-orchard line.",
      "replaces": true
@@ -5379,6 +5864,7 @@
     {
      "year": 2,
      "day": 626,
+     "wording": "assert",
      "value": "cinder-wharf",
      "text": "Elif is taking the cinder-wharf course.",
      "replaces": true
@@ -5394,6 +5880,7 @@
     {
      "year": 2,
      "day": 539,
+     "wording": "assert",
      "value": "bramble-meadow",
      "text": "Fabio banks with bramble-meadow.",
      "replaces": true
@@ -5409,6 +5896,7 @@
     {
      "year": 2,
      "day": 660,
+     "wording": "assert",
      "value": "flint-sedge",
      "text": "Noor rents the flint-sedge cottage.",
      "replaces": true
@@ -5424,6 +5912,7 @@
     {
      "year": 2,
      "day": 559,
+     "wording": "assert",
      "value": "tamarind-meadow",
      "text": "Idris banks with tamarind-meadow.",
      "replaces": true
@@ -5439,6 +5928,7 @@
     {
      "year": 2,
      "day": 391,
+     "wording": "assert",
      "value": "cinder-orchard",
      "text": "Ursula banks with cinder-orchard.",
      "replaces": true
@@ -5454,6 +5944,7 @@
     {
      "year": 2,
      "day": 529,
+     "wording": "assert",
      "value": "cobalt-mill",
      "text": "Zoltan rents the cobalt-mill cottage.",
      "replaces": true
@@ -5469,6 +5960,7 @@
     {
      "year": 2,
      "day": 624,
+     "wording": "assert",
      "value": "harrow-spire",
      "text": "Ulla goes to the harrow-spire clinic.",
      "replaces": true
@@ -5484,6 +5976,7 @@
     {
      "year": 2,
      "day": 676,
+     "wording": "assert",
      "value": "ravel-pike",
      "text": "Magnus rents the ravel-pike cottage.",
      "replaces": true
@@ -5499,6 +5992,7 @@
     {
      "year": 2,
      "day": 439,
+     "wording": "assert",
      "value": "ironwood-wharf",
      "text": "Kofi keeps the accounts in ironwood-wharf.",
      "replaces": true
@@ -5514,6 +6008,7 @@
     {
      "year": 2,
      "day": 495,
+     "wording": "assert",
      "value": "flint-glade",
      "text": "Andrei commutes on the flint-glade line.",
      "replaces": true
@@ -5529,6 +6024,7 @@
     {
      "year": 2,
      "day": 512,
+     "wording": "assert",
      "value": "opal-kiln",
      "text": "Anders goes to the opal-kiln clinic.",
      "replaces": true
@@ -5544,6 +6040,7 @@
     {
      "year": 2,
      "day": 421,
+     "wording": "assert",
      "value": "opal-glade",
      "text": "Freya rents the opal-glade cottage.",
      "replaces": true
@@ -5559,6 +6056,7 @@
     {
      "year": 2,
      "day": 637,
+     "wording": "assert",
      "value": "verdigris-kiln",
      "text": "Greta sits with the verdigris-kiln team.",
      "replaces": true
@@ -5574,6 +6072,7 @@
     {
      "year": 2,
      "day": 660,
+     "wording": "assert",
      "value": "bramble-hearth",
      "text": "Jonas rehearses at the bramble-hearth hall.",
      "replaces": true
@@ -5589,6 +6088,7 @@
     {
      "year": 2,
      "day": 626,
+     "wording": "assert",
      "value": "verdigris-glade",
      "text": "Otto keeps the accounts in verdigris-glade.",
      "replaces": true
@@ -5604,6 +6104,7 @@
     {
      "year": 2,
      "day": 559,
+     "wording": "assert",
      "value": "verdigris-vale",
      "text": "Tariq rents the verdigris-vale cottage.",
      "replaces": true
@@ -5619,6 +6120,7 @@
     {
      "year": 2,
      "day": 626,
+     "wording": "assert",
      "value": "wicklow-isle",
      "text": "Otto goes to the wicklow-isle clinic.",
      "replaces": true
@@ -5634,6 +6136,7 @@
     {
      "year": 2,
      "day": 624,
+     "wording": "assert",
      "value": "wicklow-meadow",
      "text": "Anders orders paper from wicklow-meadow.",
      "replaces": true
@@ -5649,6 +6152,7 @@
     {
      "year": 2,
      "day": 568,
+     "wording": "assert",
      "value": "wicklow-moor",
      "text": "Priya commutes on the wicklow-moor line.",
      "replaces": true
@@ -5664,6 +6168,7 @@
     {
      "year": 2,
      "day": 379,
+     "wording": "assert",
      "value": "pewter-isle",
      "text": "Dmitri goes to the pewter-isle clinic.",
      "replaces": true
@@ -5679,6 +6184,7 @@
     {
      "year": 2,
      "day": 723,
+     "wording": "assert",
      "value": "amber-hearth",
      "text": "Beatriz leads the amber-hearth project.",
      "replaces": true
@@ -5694,6 +6200,7 @@
     {
      "year": 2,
      "day": 676,
+     "wording": "assert",
      "value": "yarrow-quarry",
      "text": "Ulla commutes on the yarrow-quarry line.",
      "replaces": true
@@ -5709,6 +6216,7 @@
     {
      "year": 2,
      "day": 626,
+     "wording": "assert",
      "value": "nutmeg-reach",
      "text": "Jana banks with nutmeg-reach.",
      "replaces": true
@@ -5724,6 +6232,7 @@
     {
      "year": 2,
      "day": 552,
+     "wording": "assert",
      "value": "garnet-annex",
      "text": "Viktor orders paper from garnet-annex.",
      "replaces": true
@@ -5739,6 +6248,7 @@
     {
      "year": 2,
      "day": 474,
+     "wording": "assert",
      "value": "flint-orchard",
      "text": "Nadia orders paper from flint-orchard.",
      "replaces": true
@@ -5754,6 +6264,7 @@
     {
      "year": 2,
      "day": 539,
+     "wording": "assert",
      "value": "zephyr-hearth",
      "text": "Sanjay keeps the accounts in zephyr-hearth.",
      "replaces": true
@@ -5769,6 +6280,7 @@
     {
      "year": 2,
      "day": 475,
+     "wording": "assert",
      "value": "cobalt-quarry",
      "text": "Mateo rehearses at the cobalt-quarry hall.",
      "replaces": true
@@ -5784,6 +6296,7 @@
     {
      "year": 2,
      "day": 723,
+     "wording": "assert",
      "value": "brindle-annex",
      "text": "Zara buys bread at the brindle-annex bakery.",
      "replaces": true
@@ -5799,6 +6312,7 @@
     {
      "year": 2,
      "day": 421,
+     "wording": "assert",
      "value": "ravel-annex",
      "text": "Noor rehearses at the ravel-annex hall.",
      "replaces": true
@@ -5814,6 +6328,7 @@
     {
      "year": 2,
      "day": 488,
+     "wording": "assert",
      "value": "saffron-ridge",
      "text": "Elif rehearses at the saffron-ridge hall.",
      "replaces": true
@@ -5829,6 +6344,7 @@
     {
      "year": 2,
      "day": 649,
+     "wording": "assert",
      "value": "brindle-reach",
      "text": "Yannis keeps the backups on brindle-reach.",
      "replaces": true
@@ -5844,6 +6360,7 @@
     {
      "year": 2,
      "day": 412,
+     "wording": "assert",
      "value": "quill-spire",
      "text": "Celia rehearses at the quill-spire hall.",
      "replaces": true
@@ -5859,6 +6376,7 @@
     {
      "year": 2,
      "day": 495,
+     "wording": "assert",
      "value": "umber-foundry",
      "text": "Otto banks with umber-foundry.",
      "replaces": true
@@ -5874,6 +6392,7 @@
     {
      "year": 2,
      "day": 539,
+     "wording": "assert",
      "value": "copper-fenn",
      "text": "Wanda commutes on the copper-fenn line.",
      "replaces": true
@@ -5889,6 +6408,7 @@
     {
      "year": 2,
      "day": 391,
+     "wording": "assert",
      "value": "harrow-gable",
      "text": "Amara is taking the harrow-gable course.",
      "replaces": true
@@ -5904,6 +6424,7 @@
     {
      "year": 3,
      "day": 1008,
+     "wording": "assert",
      "value": "mirefield-ledge",
      "text": "Cato buys bread at the mirefield-ledge bakery.",
      "replaces": true
@@ -5919,6 +6440,7 @@
     {
      "year": 3,
      "day": 956,
+     "wording": "assert",
      "value": "saffron-chandler",
      "text": "Amara buys bread at the saffron-chandler bakery.",
      "replaces": true
@@ -5934,6 +6456,7 @@
     {
      "year": 3,
      "day": 1079,
+     "wording": "assert",
      "value": "brindle-foundry",
      "text": "Vasco rents the brindle-foundry cottage.",
      "replaces": true
@@ -5949,6 +6472,7 @@
     {
      "year": 3,
      "day": 956,
+     "wording": "assert",
      "value": "flint-fenn",
      "text": "Sofia keeps the accounts in flint-fenn.",
      "replaces": true
@@ -5964,6 +6488,7 @@
     {
      "year": 3,
      "day": 946,
+     "wording": "assert",
      "value": "larkin-sedge",
      "text": "Hassan buys bread at the larkin-sedge bakery.",
      "replaces": true
@@ -5979,6 +6504,7 @@
     {
      "year": 3,
      "day": 946,
+     "wording": "assert",
      "value": "wicklow-yard",
      "text": "Nuria rehearses at the wicklow-yard hall.",
      "replaces": true
@@ -5994,6 +6520,7 @@
     {
      "year": 3,
      "day": 993,
+     "wording": "assert",
      "value": "silverfin-spire",
      "text": "Quinn keeps the accounts in silverfin-spire.",
      "replaces": true
@@ -6009,6 +6536,7 @@
     {
      "year": 3,
      "day": 946,
+     "wording": "assert",
      "value": "nutmeg-annex",
      "text": "Priya is taking the nutmeg-annex course.",
      "replaces": true
@@ -6024,6 +6552,7 @@
     {
      "year": 3,
      "day": 813,
+     "wording": "assert",
      "value": "amber-ridge",
      "text": "Yuki banks with amber-ridge.",
      "replaces": true
@@ -6039,6 +6568,7 @@
     {
      "year": 3,
      "day": 960,
+     "wording": "assert",
      "value": "yarrow-pike",
      "text": "Kwame is taking the yarrow-pike course.",
      "replaces": true
@@ -6054,6 +6584,7 @@
     {
      "year": 3,
      "day": 1069,
+     "wording": "assert",
      "value": "yarrow-drift",
      "text": "Esther goes to the yarrow-drift clinic.",
      "replaces": true
@@ -6069,6 +6600,7 @@
     {
      "year": 3,
      "day": 735,
+     "wording": "assert",
      "value": "yarrow-meadow",
      "text": "Celia rents the yarrow-meadow cottage.",
      "replaces": true
@@ -6084,6 +6616,7 @@
     {
      "year": 3,
      "day": 910,
+     "wording": "assert",
      "value": "thistle-pike",
      "text": "Viktor goes to the thistle-pike clinic.",
      "replaces": true
@@ -6099,6 +6632,7 @@
     {
      "year": 3,
      "day": 849,
+     "wording": "assert",
      "value": "opal-harbour",
      "text": "Tomas sits with the opal-harbour team.",
      "replaces": true
@@ -6114,6 +6648,7 @@
     {
      "year": 3,
      "day": 862,
+     "wording": "assert",
      "value": "garnet-tarn",
      "text": "Nikos sits with the garnet-tarn team.",
      "replaces": true
@@ -6129,6 +6664,7 @@
     {
      "year": 3,
      "day": 813,
+     "wording": "assert",
      "value": "yarrow-gable",
      "text": "Anders is taking the yarrow-gable course.",
      "replaces": true
@@ -6144,6 +6680,7 @@
     {
      "year": 3,
      "day": 830,
+     "wording": "assert",
      "value": "copper-vale",
      "text": "Jonas is taking the copper-vale course.",
      "replaces": true
@@ -6159,6 +6696,7 @@
     {
      "year": 3,
      "day": 1013,
+     "wording": "assert",
      "value": "sable-lantern",
      "text": "Linnea keeps the backups on sable-lantern.",
      "replaces": true
@@ -6174,6 +6712,7 @@
     {
      "year": 3,
      "day": 1079,
+     "wording": "assert",
      "value": "sable-ridge",
      "text": "Farid keeps the backups on sable-ridge.",
      "replaces": true
@@ -6189,6 +6728,7 @@
     {
      "year": 3,
      "day": 910,
+     "wording": "assert",
      "value": "cinder-weir",
      "text": "Luca commutes on the cinder-weir line.",
      "replaces": true
@@ -6204,6 +6744,7 @@
     {
      "year": 3,
      "day": 910,
+     "wording": "assert",
      "value": "saffron-foundry",
      "text": "Emeka orders paper from saffron-foundry.",
      "replaces": true
@@ -6219,6 +6760,7 @@
     {
      "year": 3,
      "day": 735,
+     "wording": "assert",
      "value": "thistle-quarry",
      "text": "Bruno buys bread at the thistle-quarry bakery.",
      "replaces": true
@@ -6234,6 +6776,7 @@
     {
      "year": 3,
      "day": 850,
+     "wording": "assert",
      "value": "verdigris-quarry",
      "text": "Maria keeps the backups on verdigris-quarry.",
      "replaces": true
@@ -6249,6 +6792,7 @@
     {
      "year": 3,
      "day": 751,
+     "wording": "assert",
      "value": "nutmeg-pike",
      "text": "Farid goes to the nutmeg-pike clinic.",
      "replaces": true
@@ -6264,6 +6808,7 @@
     {
      "year": 3,
      "day": 935,
+     "wording": "assert",
      "value": "garnet-weir",
      "text": "Goran commutes on the garnet-weir line.",
      "replaces": true
@@ -6279,6 +6824,7 @@
     {
      "year": 3,
      "day": 960,
+     "wording": "assert",
      "value": "quill-weir",
      "text": "Helena is taking the quill-weir course.",
      "replaces": true
@@ -6294,6 +6840,7 @@
     {
      "year": 3,
      "day": 829,
+     "wording": "assert",
      "value": "mirefield-harbour",
      "text": "Goran orders paper from mirefield-harbour.",
      "replaces": true
@@ -6309,6 +6856,7 @@
     {
      "year": 3,
      "day": 1079,
+     "wording": "assert",
      "value": "wicklow-lantern",
      "text": "Iris rents the wicklow-lantern cottage.",
      "replaces": true
@@ -6324,6 +6872,7 @@
     {
      "year": 3,
      "day": 870,
+     "wording": "assert",
      "value": "mirefield-sedge",
      "text": "Magnus banks with mirefield-sedge.",
      "replaces": true
@@ -6339,6 +6888,7 @@
     {
      "year": 3,
      "day": 751,
+     "wording": "assert",
      "value": "wicklow-sedge",
      "text": "Milos is taking the wicklow-sedge course.",
      "replaces": true
@@ -6354,6 +6904,7 @@
     {
      "year": 3,
      "day": 960,
+     "wording": "assert",
      "value": "pewter-ledge",
      "text": "Nadia commutes on the pewter-ledge line.",
      "replaces": true
@@ -6369,6 +6920,7 @@
     {
      "year": 3,
      "day": 893,
+     "wording": "assert",
      "value": "sable-meadow",
      "text": "Lisa rents the sable-meadow cottage.",
      "replaces": true
@@ -6384,6 +6936,7 @@
     {
      "year": 3,
      "day": 981,
+     "wording": "assert",
      "value": "sable-isle",
      "text": "Josefa rehearses at the sable-isle hall.",
      "replaces": true
@@ -6399,6 +6952,7 @@
     {
      "year": 3,
      "day": 813,
+     "wording": "assert",
      "value": "nutmeg-weir",
      "text": "Dmitri leads the nutmeg-weir project.",
      "replaces": true
@@ -6414,6 +6968,7 @@
     {
      "year": 3,
      "day": 1038,
+     "wording": "assert",
      "value": "amber-reach",
      "text": "Dario rehearses at the amber-reach hall.",
      "replaces": true
@@ -6429,6 +6984,7 @@
     {
      "year": 3,
      "day": 761,
+     "wording": "assert",
      "value": "garnet-brook",
      "text": "Jana keeps the backups on garnet-brook.",
      "replaces": true
@@ -6444,6 +7000,7 @@
     {
      "year": 3,
      "day": 803,
+     "wording": "assert",
      "value": "ravel-glade",
      "text": "Elif keeps the backups on ravel-glade.",
      "replaces": true
@@ -6459,6 +7016,7 @@
     {
      "year": 3,
      "day": 796,
+     "wording": "assert",
      "value": "mirefield-lantern",
      "text": "Mateo buys bread at the mirefield-lantern bakery.",
      "replaces": true
@@ -6474,6 +7032,7 @@
     {
      "year": 3,
      "day": 813,
+     "wording": "assert",
      "value": "mirefield-orchard",
      "text": "Bruno leads the mirefield-orchard project.",
      "replaces": true
@@ -6489,6 +7048,7 @@
     {
      "year": 3,
      "day": 981,
+     "wording": "assert",
      "value": "wicklow-hollow",
      "text": "Dora buys bread at the wicklow-hollow bakery.",
      "replaces": true
@@ -6504,6 +7064,7 @@
     {
      "year": 4,
      "day": 1193,
+     "wording": "assert",
      "value": "tamarind-orchard",
      "text": "Oskar commutes on the tamarind-orchard line.",
      "replaces": true
@@ -6519,6 +7080,7 @@
     {
      "year": 4,
      "day": 1104,
+     "wording": "assert",
      "value": "ember-meadow",
      "text": "Tereza rehearses at the ember-meadow hall.",
      "replaces": true
@@ -6534,6 +7096,7 @@
     {
      "year": 4,
      "day": 1123,
+     "wording": "assert",
      "value": "wicklow-wharf",
      "text": "Jana keeps the accounts in wicklow-wharf.",
      "replaces": true
@@ -6549,6 +7112,7 @@
     {
      "year": 4,
      "day": 1104,
+     "wording": "assert",
      "value": "vellum-orchard",
      "text": "Priya rehearses at the vellum-orchard hall.",
      "replaces": true
@@ -6564,6 +7128,7 @@
     {
      "year": 4,
      "day": 1364,
+     "wording": "assert",
      "value": "bramble-hollow",
      "text": "Chiara keeps the backups on bramble-hollow.",
      "replaces": true
@@ -6579,6 +7144,7 @@
     {
      "year": 4,
      "day": 1408,
+     "wording": "assert",
      "value": "dovetail-yard",
      "text": "Elif buys bread at the dovetail-yard bakery.",
      "replaces": true
@@ -6594,6 +7160,7 @@
     {
      "year": 4,
      "day": 1313,
+     "wording": "assert",
      "value": "amber-wharf",
      "text": "Quinn goes to the amber-wharf clinic.",
      "replaces": true
@@ -6609,6 +7176,7 @@
     {
      "year": 4,
      "day": 1204,
+     "wording": "assert",
      "value": "marlow-mill",
      "text": "Iris keeps the accounts in marlow-mill.",
      "replaces": true
@@ -6624,6 +7192,7 @@
     {
      "year": 4,
      "day": 1213,
+     "wording": "assert",
      "value": "yarrow-kiln",
      "text": "Jana sits with the yarrow-kiln team.",
      "replaces": true
@@ -6639,6 +7208,7 @@
     {
      "year": 4,
      "day": 1123,
+     "wording": "assert",
      "value": "ember-quarry",
      "text": "Anders keeps the accounts in ember-quarry.",
      "replaces": true
@@ -6654,6 +7224,7 @@
     {
      "year": 4,
      "day": 1193,
+     "wording": "assert",
      "value": "bramble-coppice",
      "text": "Maria rents the bramble-coppice cottage.",
      "replaces": true
@@ -6669,6 +7240,7 @@
     {
      "year": 4,
      "day": 1104,
+     "wording": "assert",
      "value": "umber-coppice",
      "text": "Rafael commutes on the umber-coppice line.",
      "replaces": true
@@ -6684,6 +7256,7 @@
     {
      "year": 4,
      "day": 1408,
+     "wording": "assert",
      "value": "ravel-fenn",
      "text": "Nadia banks with ravel-fenn.",
      "replaces": true
@@ -6699,6 +7272,7 @@
     {
      "year": 4,
      "day": 1204,
+     "wording": "assert",
      "value": "wicklow-coppice",
      "text": "Pablo keeps the accounts in wicklow-coppice.",
      "replaces": true
@@ -6714,6 +7288,7 @@
     {
      "year": 4,
      "day": 1380,
+     "wording": "assert",
      "value": "cobalt-vale",
      "text": "Petra buys bread at the cobalt-vale bakery.",
      "replaces": true
@@ -6729,6 +7304,7 @@
     {
      "year": 4,
      "day": 1290,
+     "wording": "assert",
      "value": "larkin-beacon",
      "text": "Pablo rents the larkin-beacon cottage.",
      "replaces": true
@@ -6744,6 +7320,7 @@
     {
      "year": 4,
      "day": 1433,
+     "wording": "assert",
      "value": "vellum-yard",
      "text": "Gunnar orders paper from vellum-yard.",
      "replaces": true
@@ -6759,6 +7336,7 @@
     {
      "year": 4,
      "day": 1326,
+     "wording": "assert",
      "value": "marlow-tarn",
      "text": "Esther keeps the backups on marlow-tarn.",
      "replaces": true
@@ -6774,6 +7352,7 @@
     {
      "year": 4,
      "day": 1368,
+     "wording": "assert",
      "value": "ironwood-vale",
      "text": "Idris rents the ironwood-vale cottage.",
      "replaces": true
@@ -6789,6 +7368,7 @@
     {
      "year": 4,
      "day": 1104,
+     "wording": "assert",
      "value": "dovetail-foundry",
      "text": "Ursula goes to the dovetail-foundry clinic.",
      "replaces": true
@@ -6804,6 +7384,7 @@
     {
      "year": 4,
      "day": 1175,
+     "wording": "assert",
      "value": "amber-isle",
      "text": "Lorna buys bread at the amber-isle bakery.",
      "replaces": true
@@ -6819,6 +7400,7 @@
     {
      "year": 4,
      "day": 1337,
+     "wording": "assert",
      "value": "ravel-brook",
      "text": "Elif leads the ravel-brook project.",
      "replaces": true
@@ -6834,6 +7416,7 @@
     {
      "year": 4,
      "day": 1248,
+     "wording": "assert",
      "value": "sable-brook",
      "text": "Tomas rents the sable-brook cottage.",
      "replaces": true
@@ -6849,6 +7432,7 @@
     {
      "year": 4,
      "day": 1447,
+     "wording": "assert",
      "value": "mirefield-coppice",
      "text": "Ingrid is taking the mirefield-coppice course.",
      "replaces": true
@@ -6864,6 +7448,7 @@
     {
      "year": 4,
      "day": 1255,
+     "wording": "assert",
      "value": "amber-coppice",
      "text": "Yannis keeps the accounts in amber-coppice.",
      "replaces": true
@@ -6879,6 +7464,7 @@
     {
      "year": 4,
      "day": 1337,
+     "wording": "assert",
      "value": "wicklow-spire",
      "text": "Dario keeps the backups on wicklow-spire.",
      "replaces": true
@@ -6894,6 +7480,7 @@
     {
      "year": 4,
      "day": 1368,
+     "wording": "assert",
      "value": "quill-glade",
      "text": "Vasco commutes on the quill-glade line.",
      "replaces": true
@@ -6909,6 +7496,7 @@
     {
      "year": 4,
      "day": 1364,
+     "wording": "assert",
      "value": "bramble-moor",
      "text": "Ingrid rents the bramble-moor cottage.",
      "replaces": true
@@ -6924,6 +7512,7 @@
     {
      "year": 4,
      "day": 1290,
+     "wording": "assert",
      "value": "harrow-coppice",
      "text": "Dario orders paper from harrow-coppice.",
      "replaces": true
@@ -6939,6 +7528,7 @@
     {
      "year": 4,
      "day": 1168,
+     "wording": "assert",
      "value": "saffron-lantern",
      "text": "Tereza rents the saffron-lantern cottage.",
      "replaces": true
@@ -6954,6 +7544,7 @@
     {
      "year": 4,
      "day": 1123,
+     "wording": "assert",
      "value": "cinder-beacon",
      "text": "Quinn banks with cinder-beacon.",
      "replaces": true
@@ -6969,6 +7560,7 @@
     {
      "year": 4,
      "day": 1204,
+     "wording": "assert",
      "value": "ironwood-tarn",
      "text": "Andrei goes to the ironwood-tarn clinic.",
      "replaces": true
@@ -6984,6 +7576,7 @@
     {
      "year": 4,
      "day": 1221,
+     "wording": "assert",
      "value": "opal-chandler",
      "text": "Bjorn banks with opal-chandler.",
      "replaces": true
@@ -6999,6 +7592,7 @@
     {
      "year": 4,
      "day": 1354,
+     "wording": "assert",
      "value": "amber-yard",
      "text": "Goran goes to the amber-yard clinic.",
      "replaces": true
@@ -7014,6 +7608,7 @@
     {
      "year": 4,
      "day": 1315,
+     "wording": "assert",
      "value": "cinder-kiln",
      "text": "Maria buys bread at the cinder-kiln bakery.",
      "replaces": true
@@ -7029,6 +7624,7 @@
     {
      "year": 4,
      "day": 1248,
+     "wording": "assert",
      "value": "cobalt-brook",
      "text": "Ivo sits with the cobalt-brook team.",
      "replaces": true
@@ -7044,6 +7640,7 @@
     {
      "year": 4,
      "day": 1213,
+     "wording": "assert",
      "value": "bramble-fenn",
      "text": "Helena keeps the accounts in bramble-fenn.",
      "replaces": true
@@ -7059,6 +7656,7 @@
     {
      "year": 4,
      "day": 1232,
+     "wording": "assert",
      "value": "opal-reach",
      "text": "Hassan orders paper from opal-reach.",
      "replaces": true
@@ -7074,6 +7672,7 @@
     {
      "year": 4,
      "day": 1298,
+     "wording": "assert",
      "value": "harrow-ridge",
      "text": "Quinn is taking the harrow-ridge course.",
      "replaces": true
@@ -7089,6 +7688,7 @@
     {
      "year": 4,
      "day": 1419,
+     "wording": "assert",
      "value": "verdigris-drift",
      "text": "Tomas keeps the backups on verdigris-drift.",
      "replaces": true
@@ -7104,6 +7704,7 @@
     {
      "year": 5,
      "day": 1512,
+     "wording": "assert",
      "value": "dovetail-tarn",
      "text": "Olga buys bread at the dovetail-tarn bakery.",
      "replaces": true
@@ -7119,6 +7720,7 @@
     {
      "year": 5,
      "day": 1643,
+     "wording": "assert",
      "value": "saffron-hollow",
      "text": "Karin goes to the saffron-hollow clinic.",
      "replaces": true
@@ -7134,6 +7736,7 @@
     {
      "year": 5,
      "day": 1691,
+     "wording": "assert",
      "value": "marlow-fenn",
      "text": "Leila goes to the marlow-fenn clinic.",
      "replaces": true
@@ -7149,6 +7752,7 @@
     {
      "year": 5,
      "day": 1521,
+     "wording": "assert",
      "value": "umber-ridge",
      "text": "Sofia commutes on the umber-ridge line.",
      "replaces": true
@@ -7164,6 +7768,7 @@
     {
      "year": 5,
      "day": 1747,
+     "wording": "assert",
      "value": "ember-lantern",
      "text": "Gunnar keeps the accounts in ember-lantern.",
      "replaces": true
@@ -7179,6 +7784,7 @@
     {
      "year": 5,
      "day": 1671,
+     "wording": "assert",
      "value": "flint-weir",
      "text": "Rania banks with flint-weir.",
      "replaces": true
@@ -7194,6 +7800,7 @@
     {
      "year": 5,
      "day": 1504,
+     "wording": "assert",
      "value": "ironwood-meadow",
      "text": "Dora keeps the accounts in ironwood-meadow.",
      "replaces": true
@@ -7209,6 +7816,7 @@
     {
      "year": 5,
      "day": 1553,
+     "wording": "assert",
      "value": "copper-beacon",
      "text": "Ulla rents the copper-beacon cottage.",
      "replaces": true
@@ -7224,6 +7832,7 @@
     {
      "year": 5,
      "day": 1683,
+     "wording": "assert",
      "value": "mirefield-reach",
      "text": "Yannis buys bread at the mirefield-reach bakery.",
      "replaces": true
@@ -7239,6 +7848,7 @@
     {
      "year": 5,
      "day": 1799,
+     "wording": "assert",
      "value": "brindle-moor",
      "text": "Noor banks with brindle-moor.",
      "replaces": true
@@ -7254,6 +7864,7 @@
     {
      "year": 5,
      "day": 1732,
+     "wording": "assert",
      "value": "ironwood-moor",
      "text": "Milos leads the ironwood-moor project.",
      "replaces": true
@@ -7269,6 +7880,7 @@
     {
      "year": 5,
      "day": 1570,
+     "wording": "assert",
      "value": "pewter-vale",
      "text": "Pablo commutes on the pewter-vale line.",
      "replaces": true
@@ -7284,6 +7896,7 @@
     {
      "year": 5,
      "day": 1643,
+     "wording": "assert",
      "value": "dovetail-quarry",
      "text": "Nuria banks with dovetail-quarry.",
      "replaces": true
@@ -7299,6 +7912,7 @@
     {
      "year": 5,
      "day": 1564,
+     "wording": "assert",
      "value": "flint-pike",
      "text": "Farid orders paper from flint-pike.",
      "replaces": true
@@ -7314,6 +7928,7 @@
     {
      "year": 5,
      "day": 1599,
+     "wording": "assert",
      "value": "nutmeg-drift",
      "text": "Halima banks with nutmeg-drift.",
      "replaces": true
@@ -7329,6 +7944,7 @@
     {
      "year": 5,
      "day": 1763,
+     "wording": "assert",
      "value": "ember-mill",
      "text": "Maria rehearses at the ember-mill hall.",
      "replaces": true
@@ -7344,6 +7960,7 @@
     {
      "year": 5,
      "day": 1504,
+     "wording": "assert",
      "value": "cobalt-weir",
      "text": "Petra is taking the cobalt-weir course.",
      "replaces": true
@@ -7359,6 +7976,7 @@
     {
      "year": 5,
      "day": 1786,
+     "wording": "assert",
      "value": "vellum-sedge",
      "text": "Nuria sits with the vellum-sedge team.",
      "replaces": true
@@ -7374,6 +7992,7 @@
     {
      "year": 5,
      "day": 1683,
+     "wording": "assert",
      "value": "marlow-gable",
      "text": "Esther orders paper from marlow-gable.",
      "replaces": true
@@ -7389,6 +8008,7 @@
     {
      "year": 5,
      "day": 1504,
+     "wording": "assert",
      "value": "thistle-annex",
      "text": "Xavier goes to the thistle-annex clinic.",
      "replaces": true
@@ -7404,6 +8024,7 @@
     {
      "year": 5,
      "day": 1466,
+     "wording": "assert",
      "value": "garnet-ridge",
      "text": "Iris is taking the garnet-ridge course.",
      "replaces": true
@@ -7419,6 +8040,7 @@
     {
      "year": 5,
      "day": 1643,
+     "wording": "assert",
      "value": "oakhill-coppice",
      "text": "Goran buys bread at the oakhill-coppice bakery.",
      "replaces": true
@@ -7434,6 +8056,7 @@
     {
      "year": 5,
      "day": 1521,
+     "wording": "assert",
      "value": "larkin-vale",
      "text": "Viktor banks with larkin-vale.",
      "replaces": true
@@ -7449,6 +8072,7 @@
     {
      "year": 5,
      "day": 1806,
+     "wording": "assert",
      "value": "yarrow-ledge",
      "text": "Hassan is taking the yarrow-ledge course.",
      "replaces": true
@@ -7464,6 +8088,7 @@
     {
      "year": 5,
      "day": 1651,
+     "wording": "assert",
      "value": "wicklow-kiln",
      "text": "Viktor rehearses at the wicklow-kiln hall.",
      "replaces": true
@@ -7479,6 +8104,7 @@
     {
      "year": 5,
      "day": 1643,
+     "wording": "assert",
      "value": "pewter-brook",
      "text": "Halima orders paper from pewter-brook.",
      "replaces": true
@@ -7494,6 +8120,7 @@
     {
      "year": 5,
      "day": 1480,
+     "wording": "assert",
      "value": "copper-hearth",
      "text": "Sofia rehearses at the copper-hearth hall.",
      "replaces": true
@@ -7509,6 +8136,7 @@
     {
      "year": 5,
      "day": 1564,
+     "wording": "assert",
      "value": "saffron-tarn",
      "text": "Jana orders paper from saffron-tarn.",
      "replaces": true
@@ -7524,6 +8152,7 @@
     {
      "year": 5,
      "day": 1564,
+     "wording": "assert",
      "value": "vellum-ridge",
      "text": "Viktor buys bread at the vellum-ridge bakery.",
      "replaces": true
@@ -7539,6 +8168,7 @@
     {
      "year": 5,
      "day": 1599,
+     "wording": "assert",
      "value": "brindle-glade",
      "text": "Leila keeps the accounts in brindle-glade.",
      "replaces": true
@@ -7554,6 +8184,7 @@
     {
      "year": 5,
      "day": 1504,
+     "wording": "assert",
      "value": "amber-foundry",
      "text": "Stefan keeps the backups on amber-foundry.",
      "replaces": true
@@ -7569,6 +8200,7 @@
     {
      "year": 5,
      "day": 1812,
+     "wording": "assert",
      "value": "zephyr-mill",
      "text": "Alma orders paper from zephyr-mill.",
      "replaces": true
@@ -7584,6 +8216,7 @@
     {
      "year": 5,
      "day": 1812,
+     "wording": "assert",
      "value": "wicklow-weir",
      "text": "Nadia leads the wicklow-weir project.",
      "replaces": true
@@ -7599,6 +8232,7 @@
     {
      "year": 5,
      "day": 1530,
+     "wording": "assert",
      "value": "ravel-lantern",
      "text": "Helena rehearses at the ravel-lantern hall.",
      "replaces": true
@@ -7614,6 +8248,7 @@
     {
      "year": 5,
      "day": 1691,
+     "wording": "assert",
      "value": "tamarind-chandler",
      "text": "Magnus keeps the backups on tamarind-chandler.",
      "replaces": true
@@ -7629,6 +8264,7 @@
     {
      "year": 5,
      "day": 1806,
+     "wording": "assert",
      "value": "bramble-vale",
      "text": "Tereza goes to the bramble-vale clinic.",
      "replaces": true
@@ -7644,6 +8280,7 @@
     {
      "year": 5,
      "day": 1671,
+     "wording": "assert",
      "value": "dovetail-beacon",
      "text": "Beatriz banks with dovetail-beacon.",
      "replaces": true
@@ -7659,6 +8296,7 @@
     {
      "year": 5,
      "day": 1812,
+     "wording": "assert",
      "value": "flint-brook",
      "text": "Emeka banks with flint-brook.",
      "replaces": true
@@ -7674,6 +8312,7 @@
     {
      "year": 5,
      "day": 1521,
+     "wording": "assert",
      "value": "brindle-brook",
      "text": "Farid sits with the brindle-brook team.",
      "replaces": true
@@ -7689,6 +8328,7 @@
     {
      "year": 5,
      "day": 1759,
+     "wording": "assert",
      "value": "cobalt-ridge",
      "text": "Pablo banks with cobalt-ridge.",
      "replaces": true
@@ -7704,6 +8344,7 @@
     {
      "year": 6,
      "day": 2141,
+     "wording": "assert",
      "value": "mirefield-kiln",
      "text": "Nikos keeps the backups on mirefield-kiln.",
      "replaces": true
@@ -7719,6 +8360,7 @@
     {
      "year": 6,
      "day": 2010,
+     "wording": "assert",
      "value": "wicklow-brook",
      "text": "Tereza leads the wicklow-brook project.",
      "replaces": true
@@ -7734,6 +8376,7 @@
     {
      "year": 6,
      "day": 2039,
+     "wording": "assert",
      "value": "garnet-coppice",
      "text": "Greta commutes on the garnet-coppice line.",
      "replaces": true
@@ -7749,6 +8392,7 @@
     {
      "year": 6,
      "day": 1921,
+     "wording": "assert",
      "value": "yarrow-tarn",
      "text": "Jonas leads the yarrow-tarn project.",
      "replaces": true
@@ -7764,6 +8408,7 @@
     {
      "year": 6,
      "day": 2124,
+     "wording": "assert",
      "value": "zephyr-pike",
      "text": "Yannis banks with zephyr-pike.",
      "replaces": true
@@ -7779,6 +8424,7 @@
     {
      "year": 6,
      "day": 2099,
+     "wording": "assert",
      "value": "quill-foundry",
      "text": "Kofi buys bread at the quill-foundry bakery.",
      "replaces": true
@@ -7794,6 +8440,7 @@
     {
      "year": 6,
      "day": 1863,
+     "wording": "assert",
      "value": "flint-ledge",
      "text": "Fabio goes to the flint-ledge clinic.",
      "replaces": true
@@ -7809,6 +8456,7 @@
     {
      "year": 6,
      "day": 1934,
+     "wording": "assert",
      "value": "silverfin-vale",
      "text": "Sofia is taking the silverfin-vale course.",
      "replaces": true
@@ -7824,6 +8472,7 @@
     {
      "year": 6,
      "day": 2114,
+     "wording": "assert",
      "value": "quill-tarn",
      "text": "Kwame orders paper from quill-tarn.",
      "replaces": true
@@ -7839,6 +8488,7 @@
     {
      "year": 6,
      "day": 2058,
+     "wording": "assert",
      "value": "opal-drift",
      "text": "Petra sits with the opal-drift team.",
      "replaces": true
@@ -7854,6 +8504,7 @@
     {
      "year": 6,
      "day": 1968,
+     "wording": "assert",
      "value": "cobalt-glade",
      "text": "Leila orders paper from cobalt-glade.",
      "replaces": true
@@ -7869,6 +8520,7 @@
     {
      "year": 6,
      "day": 2039,
+     "wording": "assert",
      "value": "oakhill-ledge",
      "text": "Freya keeps the backups on oakhill-ledge.",
      "replaces": true
@@ -7884,6 +8536,7 @@
     {
      "year": 6,
      "day": 1881,
+     "wording": "assert",
      "value": "sable-coppice",
      "text": "Yannis rents the sable-coppice cottage.",
      "replaces": true
@@ -7899,6 +8552,7 @@
     {
      "year": 6,
      "day": 2141,
+     "wording": "assert",
      "value": "ironwood-sedge",
      "text": "Mateo orders paper from ironwood-sedge.",
      "replaces": true
@@ -7914,6 +8568,7 @@
     {
      "year": 6,
      "day": 2074,
+     "wording": "assert",
      "value": "yarrow-mill",
      "text": "Yannis goes to the yarrow-mill clinic.",
      "replaces": true
@@ -7929,6 +8584,7 @@
     {
      "year": 6,
      "day": 2124,
+     "wording": "assert",
      "value": "yarrow-chandler",
      "text": "Fabio leads the yarrow-chandler project.",
      "replaces": true
@@ -7944,6 +8600,7 @@
     {
      "year": 6,
      "day": 2141,
+     "wording": "assert",
      "value": "silverfin-ledge",
      "text": "Zoltan orders paper from silverfin-ledge.",
      "replaces": true
@@ -7959,6 +8616,7 @@
     {
      "year": 6,
      "day": 1989,
+     "wording": "assert",
      "value": "copper-hollow",
      "text": "Priya keeps the backups on copper-hollow.",
      "replaces": true
@@ -7974,6 +8632,7 @@
     {
      "year": 6,
      "day": 2177,
+     "wording": "assert",
      "value": "yarrow-vale",
      "text": "Bruno goes to the yarrow-vale clinic.",
      "replaces": true
@@ -7989,6 +8648,7 @@
     {
      "year": 6,
      "day": 2141,
+     "wording": "assert",
      "value": "marlow-wharf",
      "text": "Dora goes to the marlow-wharf clinic.",
      "replaces": true
@@ -8004,6 +8664,7 @@
     {
      "year": 6,
      "day": 1945,
+     "wording": "assert",
      "value": "tamarind-annex",
      "text": "Chiara is taking the tamarind-annex course.",
      "replaces": true
@@ -8019,6 +8680,7 @@
     {
      "year": 6,
      "day": 1921,
+     "wording": "assert",
      "value": "pewter-foundry",
      "text": "Oskar leads the pewter-foundry project.",
      "replaces": true
@@ -8034,6 +8696,7 @@
     {
      "year": 6,
      "day": 1939,
+     "wording": "assert",
      "value": "oakhill-gable",
      "text": "Beatriz keeps the accounts in oakhill-gable.",
      "replaces": true
@@ -8049,6 +8712,7 @@
     {
      "year": 6,
      "day": 1911,
+     "wording": "assert",
      "value": "thistle-hollow",
      "text": "Helena commutes on the thistle-hollow line.",
      "replaces": true
@@ -8064,6 +8728,7 @@
     {
      "year": 6,
      "day": 2023,
+     "wording": "assert",
      "value": "thistle-vale",
      "text": "Elif orders paper from thistle-vale.",
      "replaces": true
@@ -8079,6 +8744,7 @@
     {
      "year": 6,
      "day": 2010,
+     "wording": "assert",
      "value": "brindle-coppice",
      "text": "Gunnar rents the brindle-coppice cottage.",
      "replaces": true
@@ -8094,6 +8760,7 @@
     {
      "year": 6,
      "day": 1989,
+     "wording": "assert",
      "value": "cinder-mill",
      "text": "Helena orders paper from cinder-mill.",
      "replaces": true
@@ -8109,6 +8776,7 @@
     {
      "year": 6,
      "day": 1889,
+     "wording": "assert",
      "value": "amber-glade",
      "text": "Orla orders paper from amber-glade.",
      "replaces": true
@@ -8124,6 +8792,7 @@
     {
      "year": 6,
      "day": 1939,
+     "wording": "assert",
      "value": "ember-moor",
      "text": "Luca rents the ember-moor cottage.",
      "replaces": true
@@ -8139,6 +8808,7 @@
     {
      "year": 6,
      "day": 1955,
+     "wording": "assert",
      "value": "flint-drift",
      "text": "Freya banks with flint-drift.",
      "replaces": true
@@ -8154,6 +8824,7 @@
     {
      "year": 6,
      "day": 1921,
+     "wording": "assert",
      "value": "silverfin-hollow",
      "text": "Chiara banks with silverfin-hollow.",
      "replaces": true
@@ -8169,6 +8840,7 @@
     {
      "year": 6,
      "day": 2048,
+     "wording": "assert",
      "value": "marlow-coppice",
      "text": "Celia orders paper from marlow-coppice.",
      "replaces": true
@@ -8184,6 +8856,7 @@
     {
      "year": 6,
      "day": 2141,
+     "wording": "assert",
      "value": "zephyr-hollow",
      "text": "Helena buys bread at the zephyr-hollow bakery.",
      "replaces": true
@@ -8199,6 +8872,7 @@
     {
      "year": 6,
      "day": 1825,
+     "wording": "assert",
      "value": "larkin-ridge",
      "text": "Orla leads the larkin-ridge project.",
      "replaces": true
@@ -8214,6 +8888,7 @@
     {
      "year": 6,
      "day": 1939,
+     "wording": "assert",
      "value": "pewter-quarry",
      "text": "Halima commutes on the pewter-quarry line.",
      "replaces": true
@@ -8229,6 +8904,7 @@
     {
      "year": 6,
      "day": 1934,
+     "wording": "assert",
      "value": "vellum-hearth",
      "text": "Kasper goes to the vellum-hearth clinic.",
      "replaces": true
@@ -8244,6 +8920,7 @@
     {
      "year": 6,
      "day": 2177,
+     "wording": "assert",
      "value": "larkin-meadow",
      "text": "Magnus leads the larkin-meadow project.",
      "replaces": true
@@ -8259,6 +8936,7 @@
     {
      "year": 6,
      "day": 1853,
+     "wording": "assert",
      "value": "mirefield-gable",
      "text": "Mateo goes to the mirefield-gable clinic.",
      "replaces": true
@@ -8274,6 +8952,7 @@
     {
      "year": 6,
      "day": 2004,
+     "wording": "assert",
      "value": "garnet-sedge",
      "text": "Amara commutes on the garnet-sedge line.",
      "replaces": true
@@ -8289,6 +8968,7 @@
     {
      "year": 6,
      "day": 1889,
+     "wording": "assert",
      "value": "silverfin-mill",
      "text": "Gunnar leads the silverfin-mill project.",
      "replaces": true
@@ -8304,6 +8984,7 @@
     {
      "year": 7,
      "day": 2221,
+     "wording": "assert",
      "value": "amber-sedge",
      "text": "Rania commutes on the amber-sedge line.",
      "replaces": true
@@ -8319,6 +9000,7 @@
     {
      "year": 7,
      "day": 2469,
+     "wording": "assert",
      "value": "ember-pike",
      "text": "Alma banks with ember-pike.",
      "replaces": true
@@ -8334,6 +9016,7 @@
     {
      "year": 7,
      "day": 2354,
+     "wording": "assert",
      "value": "yarrow-hearth",
      "text": "Dario commutes on the yarrow-hearth line.",
      "replaces": true
@@ -8349,6 +9032,7 @@
     {
      "year": 7,
      "day": 2483,
+     "wording": "assert",
      "value": "sable-chandler",
      "text": "Rafael buys bread at the sable-chandler bakery.",
      "replaces": true
@@ -8364,6 +9048,7 @@
     {
      "year": 7,
      "day": 2243,
+     "wording": "assert",
      "value": "zephyr-isle",
      "text": "Erol keeps the backups on zephyr-isle.",
      "replaces": true
@@ -8379,6 +9064,7 @@
     {
      "year": 7,
      "day": 2456,
+     "wording": "assert",
      "value": "garnet-reach",
      "text": "Greta keeps the backups on garnet-reach.",
      "replaces": true
@@ -8394,6 +9080,7 @@
     {
      "year": 7,
      "day": 2380,
+     "wording": "assert",
      "value": "cobalt-wharf",
      "text": "Rosa goes to the cobalt-wharf clinic.",
      "replaces": true
@@ -8409,6 +9096,7 @@
     {
      "year": 7,
      "day": 2252,
+     "wording": "assert",
      "value": "amber-vale",
      "text": "Noor sits with the amber-vale team.",
      "replaces": true
@@ -8424,6 +9112,7 @@
     {
      "year": 7,
      "day": 2469,
+     "wording": "assert",
      "value": "cobalt-reach",
      "text": "Erol goes to the cobalt-reach clinic.",
      "replaces": true
@@ -8439,6 +9128,7 @@
     {
      "year": 7,
      "day": 2413,
+     "wording": "assert",
      "value": "nutmeg-ridge",
      "text": "Lorna sits with the nutmeg-ridge team.",
      "replaces": true
@@ -8454,6 +9144,7 @@
     {
      "year": 7,
      "day": 2536,
+     "wording": "assert",
      "value": "larkin-foundry",
      "text": "Oskar buys bread at the larkin-foundry bakery.",
      "replaces": true
@@ -8469,6 +9160,7 @@
     {
      "year": 7,
      "day": 2505,
+     "wording": "assert",
      "value": "wicklow-chandler",
      "text": "Iris goes to the wicklow-chandler clinic.",
      "replaces": true
@@ -8484,6 +9176,7 @@
     {
      "year": 7,
      "day": 2294,
+     "wording": "assert",
      "value": "marlow-moor",
      "text": "Amara rehearses at the marlow-moor hall.",
      "replaces": true
@@ -8499,6 +9192,7 @@
     {
      "year": 7,
      "day": 2294,
+     "wording": "assert",
      "value": "zephyr-lantern",
      "text": "Josefa is taking the zephyr-lantern course.",
      "replaces": true
@@ -8514,6 +9208,7 @@
     {
      "year": 7,
      "day": 2496,
+     "wording": "assert",
      "value": "zephyr-meadow",
      "text": "Petra commutes on the zephyr-meadow line.",
      "replaces": true
@@ -8529,6 +9224,7 @@
     {
      "year": 7,
      "day": 2496,
+     "wording": "assert",
      "value": "ravel-foundry",
      "text": "Orla rehearses at the ravel-foundry hall.",
      "replaces": true
@@ -8544,6 +9240,7 @@
     {
      "year": 7,
      "day": 2374,
+     "wording": "assert",
      "value": "marlow-isle",
      "text": "Jonas sits with the marlow-isle team.",
      "replaces": true
@@ -8559,6 +9256,7 @@
     {
      "year": 7,
      "day": 2202,
+     "wording": "assert",
      "value": "verdigris-pike",
      "text": "Oskar rents the verdigris-pike cottage.",
      "replaces": true
@@ -8574,6 +9272,7 @@
     {
      "year": 7,
      "day": 2284,
+     "wording": "assert",
      "value": "oakhill-orchard",
      "text": "Lorna goes to the oakhill-orchard clinic.",
      "replaces": true
@@ -8589,6 +9288,7 @@
     {
      "year": 7,
      "day": 2202,
+     "wording": "assert",
      "value": "larkin-orchard",
      "text": "Lorna leads the larkin-orchard project.",
      "replaces": true
@@ -8604,6 +9304,7 @@
     {
      "year": 7,
      "day": 2527,
+     "wording": "assert",
      "value": "flint-meadow",
      "text": "Rosa commutes on the flint-meadow line.",
      "replaces": true
@@ -8619,6 +9320,7 @@
     {
      "year": 7,
      "day": 2478,
+     "wording": "assert",
      "value": "cinder-ledge",
      "text": "Bjorn buys bread at the cinder-ledge bakery.",
      "replaces": true
@@ -8634,6 +9336,7 @@
     {
      "year": 7,
      "day": 2483,
+     "wording": "assert",
      "value": "oakhill-glade",
      "text": "Alma rents the oakhill-glade cottage.",
      "replaces": true
@@ -8649,6 +9352,7 @@
     {
      "year": 7,
      "day": 2527,
+     "wording": "assert",
      "value": "garnet-isle",
      "text": "Wanda leads the garnet-isle project.",
      "replaces": true
@@ -8664,6 +9368,7 @@
     {
      "year": 7,
      "day": 2321,
+     "wording": "assert",
      "value": "larkin-annex",
      "text": "Hassan sits with the larkin-annex team.",
      "replaces": true
@@ -8679,6 +9384,7 @@
     {
      "year": 7,
      "day": 2340,
+     "wording": "assert",
      "value": "thistle-fenn",
      "text": "Wilma sits with the thistle-fenn team.",
      "replaces": true
@@ -8694,6 +9400,7 @@
     {
      "year": 7,
      "day": 2234,
+     "wording": "assert",
      "value": "amber-brook",
      "text": "Zara sits with the amber-brook team.",
      "replaces": true
@@ -8709,6 +9416,7 @@
     {
      "year": 7,
      "day": 2505,
+     "wording": "assert",
      "value": "ironwood-brook",
      "text": "Iris buys bread at the ironwood-brook bakery.",
      "replaces": true
@@ -8724,6 +9432,7 @@
     {
      "year": 7,
      "day": 2407,
+     "wording": "assert",
      "value": "brindle-vale",
      "text": "Jana rehearses at the brindle-vale hall.",
      "replaces": true
@@ -8739,6 +9448,7 @@
     {
      "year": 7,
      "day": 2267,
+     "wording": "assert",
      "value": "sable-annex",
      "text": "Quinn buys bread at the sable-annex bakery.",
      "replaces": true
@@ -8754,6 +9464,7 @@
     {
      "year": 7,
      "day": 2374,
+     "wording": "assert",
      "value": "vellum-isle",
      "text": "Farid rents the vellum-isle cottage.",
      "replaces": true
@@ -8769,6 +9480,7 @@
     {
      "year": 7,
      "day": 2518,
+     "wording": "assert",
      "value": "vellum-kiln",
      "text": "Halima goes to the vellum-kiln clinic.",
      "replaces": true
@@ -8784,6 +9496,7 @@
     {
      "year": 7,
      "day": 2252,
+     "wording": "assert",
      "value": "flint-annex",
      "text": "Quinn keeps the backups on flint-annex.",
      "replaces": true
@@ -8799,6 +9512,7 @@
     {
      "year": 7,
      "day": 2234,
+     "wording": "assert",
      "value": "larkin-kiln",
      "text": "Milos goes to the larkin-kiln clinic.",
      "replaces": true
@@ -8814,6 +9528,7 @@
     {
      "year": 7,
      "day": 2340,
+     "wording": "assert",
      "value": "brindle-weir",
      "text": "Celia buys bread at the brindle-weir bakery.",
      "replaces": true
@@ -8829,6 +9544,7 @@
     {
      "year": 7,
      "day": 2429,
+     "wording": "assert",
      "value": "harrow-orchard",
      "text": "Orla sits with the harrow-orchard team.",
      "replaces": true
@@ -8844,6 +9560,7 @@
     {
      "year": 7,
      "day": 2304,
+     "wording": "assert",
      "value": "ravel-kiln",
      "text": "Rosa orders paper from ravel-kiln.",
      "replaces": true
@@ -8859,6 +9576,7 @@
     {
      "year": 7,
      "day": 2478,
+     "wording": "assert",
      "value": "nutmeg-beacon",
      "text": "Jonas goes to the nutmeg-beacon clinic.",
      "replaces": true
@@ -8874,6 +9592,7 @@
     {
      "year": 7,
      "day": 2478,
+     "wording": "assert",
      "value": "pewter-reach",
      "text": "Rania is taking the pewter-reach course.",
      "replaces": true
@@ -8889,6 +9608,7 @@
     {
      "year": 7,
      "day": 2216,
+     "wording": "assert",
      "value": "verdigris-ridge",
      "text": "Anders sits with the verdigris-ridge team.",
      "replaces": true
@@ -8904,6 +9624,7 @@
     {
      "year": 8,
      "day": 2764,
+     "wording": "assert",
      "value": "umber-yard",
      "text": "Wanda banks with umber-yard.",
      "replaces": true
@@ -8919,6 +9640,7 @@
     {
      "year": 8,
      "day": 2894,
+     "wording": "assert",
      "value": "ember-isle",
      "text": "Dora rents the ember-isle cottage.",
      "replaces": true
@@ -8934,6 +9656,7 @@
     {
      "year": 8,
      "day": 2676,
+     "wording": "assert",
      "value": "vellum-gable",
      "text": "Nadia goes to the vellum-gable clinic.",
      "replaces": true
@@ -8949,6 +9672,7 @@
     {
      "year": 8,
      "day": 2731,
+     "wording": "assert",
      "value": "copper-orchard",
      "text": "Linnea commutes on the copper-orchard line.",
      "replaces": true
@@ -8964,6 +9688,7 @@
     {
      "year": 8,
      "day": 2780,
+     "wording": "assert",
      "value": "zephyr-foundry",
      "text": "Priya buys bread at the zephyr-foundry bakery.",
      "replaces": true
@@ -8979,6 +9704,7 @@
     {
      "year": 8,
      "day": 2865,
+     "wording": "assert",
      "value": "silverfin-lantern",
      "text": "Beatriz orders paper from silverfin-lantern.",
      "replaces": true
@@ -8994,6 +9720,7 @@
     {
      "year": 8,
      "day": 2875,
+     "wording": "assert",
      "value": "tamarind-spire",
      "text": "Wanda keeps the backups on tamarind-spire.",
      "replaces": true
@@ -9009,6 +9736,7 @@
     {
      "year": 8,
      "day": 2858,
+     "wording": "assert",
      "value": "umber-vale",
      "text": "Rafael goes to the umber-vale clinic.",
      "replaces": true
@@ -9024,6 +9752,7 @@
     {
      "year": 8,
      "day": 2894,
+     "wording": "assert",
      "value": "nutmeg-tarn",
      "text": "Rosa banks with nutmeg-tarn.",
      "replaces": true
@@ -9039,6 +9768,7 @@
     {
      "year": 8,
      "day": 2764,
+     "wording": "assert",
      "value": "yarrow-glade",
      "text": "Jana rents the yarrow-glade cottage.",
      "replaces": true
@@ -9054,6 +9784,7 @@
     {
      "year": 8,
      "day": 2754,
+     "wording": "assert",
      "value": "marlow-chandler",
      "text": "Iris commutes on the marlow-chandler line.",
      "replaces": true
@@ -9069,6 +9800,7 @@
     {
      "year": 8,
      "day": 2875,
+     "wording": "assert",
      "value": "cobalt-harbour",
      "text": "Leila sits with the cobalt-harbour team.",
      "replaces": true
@@ -9084,6 +9816,7 @@
     {
      "year": 8,
      "day": 2731,
+     "wording": "assert",
      "value": "ember-vale",
      "text": "Yannis rehearses at the ember-vale hall.",
      "replaces": true
@@ -9099,6 +9832,7 @@
     {
      "year": 8,
      "day": 2827,
+     "wording": "assert",
      "value": "yarrow-lantern",
      "text": "Nikos banks with yarrow-lantern.",
      "replaces": true
@@ -9114,6 +9848,7 @@
     {
      "year": 8,
      "day": 2731,
+     "wording": "assert",
      "value": "flint-mill",
      "text": "Kasper rents the flint-mill cottage.",
      "replaces": true
@@ -9129,6 +9864,7 @@
     {
      "year": 8,
      "day": 2846,
+     "wording": "assert",
      "value": "nutmeg-spire",
      "text": "Hugo is taking the nutmeg-spire course.",
      "replaces": true
@@ -9144,6 +9880,7 @@
     {
      "year": 8,
      "day": 2642,
+     "wording": "assert",
      "value": "copper-glade",
      "text": "Zoltan sits with the copper-glade team.",
      "replaces": true
@@ -9159,6 +9896,7 @@
     {
      "year": 8,
      "day": 2911,
+     "wording": "assert",
      "value": "mirefield-hearth",
      "text": "Rosa is taking the mirefield-hearth course.",
      "replaces": true
@@ -9174,6 +9912,7 @@
     {
      "year": 8,
      "day": 2896,
+     "wording": "assert",
      "value": "cinder-coppice",
      "text": "Chiara buys bread at the cinder-coppice bakery.",
      "replaces": true
@@ -9189,6 +9928,7 @@
     {
      "year": 8,
      "day": 2687,
+     "wording": "assert",
      "value": "mirefield-spire",
      "text": "Halima keeps the accounts in mirefield-spire.",
      "replaces": true
@@ -9204,6 +9944,7 @@
     {
      "year": 8,
      "day": 2740,
+     "wording": "assert",
      "value": "cobalt-kiln",
      "text": "Wilma rents the cobalt-kiln cottage.",
      "replaces": true
@@ -9219,6 +9960,7 @@
     {
      "year": 8,
      "day": 2793,
+     "wording": "assert",
      "value": "opal-wharf",
      "text": "Otto commutes on the opal-wharf line.",
      "replaces": true
@@ -9234,6 +9976,7 @@
     {
      "year": 8,
      "day": 2671,
+     "wording": "assert",
      "value": "copper-drift",
      "text": "Amara leads the copper-drift project.",
      "replaces": true
@@ -9249,6 +9992,7 @@
     {
      "year": 8,
      "day": 2896,
+     "wording": "assert",
      "value": "verdigris-spire",
      "text": "Ingrid commutes on the verdigris-spire line.",
      "replaces": true
@@ -9264,6 +10008,7 @@
     {
      "year": 8,
      "day": 2570,
+     "wording": "assert",
      "value": "tamarind-gable",
      "text": "Rafael is taking the tamarind-gable course.",
      "replaces": true
@@ -9279,6 +10024,7 @@
     {
      "year": 8,
      "day": 2651,
+     "wording": "assert",
      "value": "dovetail-moor",
      "text": "Nadia rehearses at the dovetail-moor hall.",
      "replaces": true
@@ -9294,6 +10040,7 @@
     {
      "year": 8,
      "day": 2721,
+     "wording": "assert",
      "value": "opal-meadow",
      "text": "Dario sits with the opal-meadow team.",
      "replaces": true
@@ -9309,6 +10056,7 @@
     {
      "year": 8,
      "day": 2659,
+     "wording": "assert",
      "value": "vellum-spire",
      "text": "Nikos commutes on the vellum-spire line.",
      "replaces": true
@@ -9324,6 +10072,7 @@
     {
      "year": 8,
      "day": 2764,
+     "wording": "assert",
      "value": "ravel-tarn",
      "text": "Stefan banks with ravel-tarn.",
      "replaces": true
@@ -9339,6 +10088,7 @@
     {
      "year": 8,
      "day": 2642,
+     "wording": "assert",
      "value": "garnet-kiln",
      "text": "Rosa rehearses at the garnet-kiln hall.",
      "replaces": true
@@ -9354,6 +10104,7 @@
     {
      "year": 8,
      "day": 2651,
+     "wording": "assert",
      "value": "ember-yard",
      "text": "Bjorn commutes on the ember-yard line.",
      "replaces": true
@@ -9369,6 +10120,7 @@
     {
      "year": 8,
      "day": 2687,
+     "wording": "assert",
      "value": "tamarind-ledge",
      "text": "Zara keeps the accounts in tamarind-ledge.",
      "replaces": true
@@ -9384,6 +10136,7 @@
     {
      "year": 8,
      "day": 2800,
+     "wording": "assert",
      "value": "bramble-pike",
      "text": "Nikos leads the bramble-pike project.",
      "replaces": true
@@ -9399,6 +10152,7 @@
     {
      "year": 8,
      "day": 2630,
+     "wording": "assert",
      "value": "bramble-tarn",
      "text": "Viktor is taking the bramble-tarn course.",
      "replaces": true
@@ -9414,6 +10168,7 @@
     {
      "year": 8,
      "day": 2858,
+     "wording": "assert",
      "value": "saffron-brook",
      "text": "Cato orders paper from saffron-brook.",
      "replaces": true
@@ -9429,6 +10184,7 @@
     {
      "year": 8,
      "day": 2846,
+     "wording": "assert",
      "value": "garnet-harbour",
      "text": "Erol buys bread at the garnet-harbour bakery.",
      "replaces": true
@@ -9444,6 +10200,7 @@
     {
      "year": 8,
      "day": 2846,
+     "wording": "assert",
      "value": "nutmeg-ledge",
      "text": "Tereza sits with the nutmeg-ledge team.",
      "replaces": true
@@ -9459,6 +10216,7 @@
     {
      "year": 8,
      "day": 2642,
+     "wording": "assert",
      "value": "zephyr-tarn",
      "text": "Sofia keeps the backups on zephyr-tarn.",
      "replaces": true
@@ -9474,6 +10232,7 @@
     {
      "year": 8,
      "day": 2570,
+     "wording": "assert",
      "value": "pewter-meadow",
      "text": "Wilma commutes on the pewter-meadow line.",
      "replaces": true
@@ -9489,6 +10248,7 @@
     {
      "year": 8,
      "day": 2584,
+     "wording": "assert",
      "value": "mirefield-isle",
      "text": "Jonas buys bread at the mirefield-isle bakery.",
      "replaces": true
@@ -9504,6 +10264,7 @@
     {
      "year": 9,
      "day": 3200,
+     "wording": "assert",
      "value": "marlow-glade",
      "text": "Farid is taking the marlow-glade course.",
      "replaces": true
@@ -9519,6 +10280,7 @@
     {
      "year": 9,
      "day": 3027,
+     "wording": "assert",
      "value": "verdigris-isle",
      "text": "Bjorn orders paper from verdigris-isle.",
      "replaces": true
@@ -9534,6 +10296,7 @@
     {
      "year": 9,
      "day": 3246,
+     "wording": "assert",
      "value": "amber-meadow",
      "text": "Ulla keeps the accounts in amber-meadow.",
      "replaces": true
@@ -9549,6 +10312,7 @@
     {
      "year": 9,
      "day": 3152,
+     "wording": "assert",
      "value": "opal-beacon",
      "text": "Ursula is taking the opal-beacon course.",
      "replaces": true
@@ -9564,6 +10328,7 @@
     {
      "year": 9,
      "day": 3225,
+     "wording": "assert",
      "value": "ember-annex",
      "text": "Esther is taking the ember-annex course.",
      "replaces": true
@@ -9579,6 +10344,7 @@
     {
      "year": 9,
      "day": 3035,
+     "wording": "assert",
      "value": "ironwood-glade",
      "text": "Lorna commutes on the ironwood-glade line.",
      "replaces": true
@@ -9594,6 +10360,7 @@
     {
      "year": 9,
      "day": 3136,
+     "wording": "assert",
      "value": "marlow-sedge",
      "text": "Alma rehearses at the marlow-sedge hall.",
      "replaces": true
@@ -9609,6 +10376,7 @@
     {
      "year": 9,
      "day": 3019,
+     "wording": "assert",
      "value": "vellum-tarn",
      "text": "Greta is taking the vellum-tarn course.",
      "replaces": true
@@ -9624,6 +10392,7 @@
     {
      "year": 9,
      "day": 3091,
+     "wording": "assert",
      "value": "yarrow-ridge",
      "text": "Chiara rehearses at the yarrow-ridge hall.",
      "replaces": true
@@ -9639,6 +10408,7 @@
     {
      "year": 9,
      "day": 3123,
+     "wording": "assert",
      "value": "cobalt-spire",
      "text": "Orla banks with cobalt-spire.",
      "replaces": true
@@ -9654,6 +10424,7 @@
     {
      "year": 9,
      "day": 3192,
+     "wording": "assert",
      "value": "ember-kiln",
      "text": "Kwame sits with the ember-kiln team.",
      "replaces": true
@@ -9669,6 +10440,7 @@
     {
      "year": 9,
      "day": 3001,
+     "wording": "assert",
      "value": "copper-yard",
      "text": "Zara rents the copper-yard cottage.",
      "replaces": true
@@ -9684,6 +10456,7 @@
     {
      "year": 9,
      "day": 3152,
+     "wording": "assert",
      "value": "marlow-quarry",
      "text": "Milos buys bread at the marlow-quarry bakery.",
      "replaces": true
@@ -9699,6 +10472,7 @@
     {
      "year": 9,
      "day": 2926,
+     "wording": "assert",
      "value": "vellum-weir",
      "text": "Josefa commutes on the vellum-weir line.",
      "replaces": true
@@ -9714,6 +10488,7 @@
     {
      "year": 9,
      "day": 3259,
+     "wording": "assert",
      "value": "vellum-harbour",
      "text": "Wilma banks with vellum-harbour.",
      "replaces": true
@@ -9729,6 +10504,7 @@
     {
      "year": 9,
      "day": 3170,
+     "wording": "assert",
      "value": "verdigris-harbour",
      "text": "Quinn orders paper from verdigris-harbour.",
      "replaces": true
@@ -9744,6 +10520,7 @@
     {
      "year": 9,
      "day": 2930,
+     "wording": "assert",
      "value": "sable-orchard",
      "text": "Esther banks with sable-orchard.",
      "replaces": true
@@ -9759,6 +10536,7 @@
     {
      "year": 9,
      "day": 3237,
+     "wording": "assert",
      "value": "ravel-hollow",
      "text": "Yannis commutes on the ravel-hollow line.",
      "replaces": true
@@ -9774,6 +10552,7 @@
     {
      "year": 9,
      "day": 2979,
+     "wording": "assert",
      "value": "cobalt-chandler",
      "text": "Nuria orders paper from cobalt-chandler.",
      "replaces": true
@@ -9789,6 +10568,7 @@
     {
      "year": 9,
      "day": 3180,
+     "wording": "assert",
      "value": "oakhill-moor",
      "text": "Luca orders paper from oakhill-moor.",
      "replaces": true
@@ -9804,6 +10584,7 @@
     {
      "year": 9,
      "day": 2926,
+     "wording": "assert",
      "value": "dovetail-coppice",
      "text": "Erol rents the dovetail-coppice cottage.",
      "replaces": true
@@ -9819,6 +10600,7 @@
     {
      "year": 9,
      "day": 3225,
+     "wording": "assert",
      "value": "oakhill-yard",
      "text": "Ursula rents the oakhill-yard cottage.",
      "replaces": true
@@ -9834,6 +10616,7 @@
     {
      "year": 9,
      "day": 3047,
+     "wording": "assert",
      "value": "nutmeg-meadow",
      "text": "Stefan goes to the nutmeg-meadow clinic.",
      "replaces": true
@@ -9849,6 +10632,7 @@
     {
      "year": 9,
      "day": 3047,
+     "wording": "assert",
      "value": "yarrow-moor",
      "text": "Sanjay banks with yarrow-moor.",
      "replaces": true
@@ -9864,6 +10648,7 @@
     {
      "year": 9,
      "day": 3069,
+     "wording": "assert",
      "value": "mirefield-pike",
      "text": "Zoltan is taking the mirefield-pike course.",
      "replaces": true
@@ -9879,6 +10664,7 @@
     {
      "year": 9,
      "day": 3001,
+     "wording": "assert",
      "value": "harrow-fenn",
      "text": "Nadia buys bread at the harrow-fenn bakery.",
      "replaces": true
@@ -9894,6 +10680,7 @@
     {
      "year": 9,
      "day": 3058,
+     "wording": "assert",
      "value": "cinder-glade",
      "text": "Rafael sits with the cinder-glade team.",
      "replaces": true
@@ -9909,6 +10696,7 @@
     {
      "year": 9,
      "day": 3145,
+     "wording": "assert",
      "value": "brindle-ledge",
      "text": "Ulla is taking the brindle-ledge course.",
      "replaces": true
@@ -9924,6 +10712,7 @@
     {
      "year": 9,
      "day": 3072,
+     "wording": "assert",
      "value": "harrow-hearth",
      "text": "Lisa commutes on the harrow-hearth line.",
      "replaces": true
@@ -9939,6 +10728,7 @@
     {
      "year": 9,
      "day": 2997,
+     "wording": "assert",
      "value": "ravel-mill",
      "text": "Hassan rehearses at the ravel-mill hall.",
      "replaces": true
@@ -9954,6 +10744,7 @@
     {
      "year": 9,
      "day": 3058,
+     "wording": "assert",
      "value": "sable-hearth",
      "text": "Rafael rehearses at the sable-hearth hall.",
      "replaces": true
@@ -9969,6 +10760,7 @@
     {
      "year": 9,
      "day": 2926,
+     "wording": "assert",
      "value": "nutmeg-hollow",
      "text": "Yuki keeps the accounts in nutmeg-hollow.",
      "replaces": true
@@ -9984,6 +10776,7 @@
     {
      "year": 9,
      "day": 2958,
+     "wording": "assert",
      "value": "silverfin-fenn",
      "text": "Nikos rents the silverfin-fenn cottage.",
      "replaces": true
@@ -9999,6 +10792,7 @@
     {
      "year": 9,
      "day": 3116,
+     "wording": "assert",
      "value": "flint-reach",
      "text": "Maria goes to the flint-reach clinic.",
      "replaces": true
@@ -10014,6 +10808,7 @@
     {
      "year": 9,
      "day": 2997,
+     "wording": "assert",
      "value": "yarrow-sedge",
      "text": "Kofi banks with yarrow-sedge.",
      "replaces": true
@@ -10029,6 +10824,7 @@
     {
      "year": 9,
      "day": 2997,
+     "wording": "assert",
      "value": "garnet-moor",
      "text": "Amara sits with the garnet-moor team.",
      "replaces": true
@@ -10044,6 +10840,7 @@
     {
      "year": 9,
      "day": 3069,
+     "wording": "assert",
      "value": "tamarind-ridge",
      "text": "Orla buys bread at the tamarind-ridge bakery.",
      "replaces": true
@@ -10059,6 +10856,7 @@
     {
      "year": 9,
      "day": 3069,
+     "wording": "assert",
      "value": "cobalt-gable",
      "text": "Fabio commutes on the cobalt-gable line.",
      "replaces": true
@@ -10074,6 +10872,7 @@
     {
      "year": 9,
      "day": 3123,
+     "wording": "assert",
      "value": "mirefield-yard",
      "text": "Goran sits with the mirefield-yard team.",
      "replaces": true
@@ -10089,6 +10888,7 @@
     {
      "year": 9,
      "day": 3213,
+     "wording": "assert",
      "value": "yarrow-brook",
      "text": "Luca banks with yarrow-brook.",
      "replaces": true
@@ -10104,6 +10904,7 @@
     {
      "year": 10,
      "day": 3575,
+     "wording": "assert",
      "value": "opal-weir",
      "text": "Dmitri orders paper from opal-weir.",
      "replaces": true
@@ -10119,6 +10920,7 @@
     {
      "year": 10,
      "day": 3323,
+     "wording": "assert",
      "value": "verdigris-fenn",
      "text": "Beatriz sits with the verdigris-fenn team.",
      "replaces": true
@@ -10134,6 +10936,7 @@
     {
      "year": 10,
      "day": 3468,
+     "wording": "assert",
      "value": "harrow-hollow",
      "text": "Stefan is taking the harrow-hollow course.",
      "replaces": true
@@ -10149,6 +10952,7 @@
     {
      "year": 10,
      "day": 3325,
+     "wording": "assert",
      "value": "garnet-gable",
      "text": "Kofi rents the garnet-gable cottage.",
      "replaces": true
@@ -10164,6 +10968,7 @@
     {
      "year": 10,
      "day": 3496,
+     "wording": "assert",
      "value": "sable-gable",
      "text": "Luca rehearses at the sable-gable hall.",
      "replaces": true
@@ -10179,6 +10984,7 @@
     {
      "year": 10,
      "day": 3390,
+     "wording": "assert",
      "value": "verdigris-ledge",
      "text": "Dmitri sits with the verdigris-ledge team.",
      "replaces": true
@@ -10194,6 +11000,7 @@
     {
      "year": 10,
      "day": 3290,
+     "wording": "assert",
      "value": "verdigris-gable",
      "text": "Hassan leads the verdigris-gable project.",
      "replaces": true
@@ -10209,6 +11016,7 @@
     {
      "year": 10,
      "day": 3638,
+     "wording": "assert",
      "value": "wicklow-ridge",
      "text": "Zoltan commutes on the wicklow-ridge line.",
      "replaces": true
@@ -10224,6 +11032,7 @@
     {
      "year": 10,
      "day": 3569,
+     "wording": "assert",
      "value": "larkin-yard",
      "text": "Tariq keeps the accounts in larkin-yard.",
      "replaces": true
@@ -10239,6 +11048,7 @@
     {
      "year": 10,
      "day": 3468,
+     "wording": "assert",
      "value": "quill-reach",
      "text": "Dmitri keeps the backups on quill-reach.",
      "replaces": true
@@ -10254,6 +11064,7 @@
     {
      "year": 10,
      "day": 3638,
+     "wording": "assert",
      "value": "ironwood-kiln",
      "text": "Ursula commutes on the ironwood-kiln line.",
      "replaces": true
@@ -10269,6 +11080,7 @@
     {
      "year": 10,
      "day": 3348,
+     "wording": "assert",
      "value": "saffron-pike",
      "text": "Yannis leads the saffron-pike project.",
      "replaces": true
@@ -10284,6 +11096,7 @@
     {
      "year": 10,
      "day": 3310,
+     "wording": "assert",
      "value": "saffron-harbour",
      "text": "Zara keeps the backups on saffron-harbour.",
      "replaces": true
@@ -10299,6 +11112,7 @@
     {
      "year": 10,
      "day": 3325,
+     "wording": "assert",
      "value": "oakhill-brook",
      "text": "Josefa buys bread at the oakhill-brook bakery.",
      "replaces": true
@@ -10314,6 +11128,7 @@
     {
      "year": 10,
      "day": 3382,
+     "wording": "assert",
      "value": "harrow-weir",
      "text": "Idris rehearses at the harrow-weir hall.",
      "replaces": true
@@ -10329,6 +11144,7 @@
     {
      "year": 10,
      "day": 3436,
+     "wording": "assert",
      "value": "wicklow-quarry",
      "text": "Linnea banks with wicklow-quarry.",
      "replaces": true
@@ -10344,6 +11160,7 @@
     {
      "year": 10,
      "day": 3484,
+     "wording": "assert",
      "value": "silverfin-kiln",
      "text": "Noor commutes on the silverfin-kiln line.",
      "replaces": true
@@ -10359,6 +11176,7 @@
     {
      "year": 10,
      "day": 3323,
+     "wording": "assert",
      "value": "flint-beacon",
      "text": "Magnus sits with the flint-beacon team.",
      "replaces": true
@@ -10374,6 +11192,7 @@
     {
      "year": 10,
      "day": 3417,
+     "wording": "assert",
      "value": "saffron-quarry",
      "text": "Fabio is taking the saffron-quarry course.",
      "replaces": true
@@ -10389,6 +11208,7 @@
     {
      "year": 10,
      "day": 3413,
+     "wording": "assert",
      "value": "zephyr-spire",
      "text": "Magnus goes to the zephyr-spire clinic.",
      "replaces": true
@@ -10404,6 +11224,7 @@
     {
      "year": 10,
      "day": 3365,
+     "wording": "assert",
      "value": "bramble-foundry",
      "text": "Yara is taking the bramble-foundry course.",
      "replaces": true
@@ -10419,6 +11240,7 @@
     {
      "year": 10,
      "day": 3436,
+     "wording": "assert",
      "value": "larkin-quarry",
      "text": "Kofi rehearses at the larkin-quarry hall.",
      "replaces": true
@@ -10434,6 +11256,7 @@
     {
      "year": 10,
      "day": 3597,
+     "wording": "assert",
      "value": "harrow-reach",
      "text": "Vasco goes to the harrow-reach clinic.",
      "replaces": true
@@ -10449,6 +11272,7 @@
     {
      "year": 10,
      "day": 3348,
+     "wording": "assert",
      "value": "amber-pike",
      "text": "Pablo keeps the backups on amber-pike.",
      "replaces": true
@@ -10464,6 +11288,7 @@
     {
      "year": 10,
      "day": 3365,
+     "wording": "assert",
      "value": "cinder-yard",
      "text": "Leila keeps the backups on cinder-yard.",
      "replaces": true
@@ -10479,6 +11304,7 @@
     {
      "year": 10,
      "day": 3361,
+     "wording": "assert",
      "value": "tamarind-kiln",
      "text": "Priya leads the tamarind-kiln project.",
      "replaces": true
@@ -10494,6 +11320,7 @@
     {
      "year": 10,
      "day": 3597,
+     "wording": "assert",
      "value": "nutmeg-mill",
      "text": "Milos banks with nutmeg-mill.",
      "replaces": true
@@ -10509,6 +11336,7 @@
     {
      "year": 10,
      "day": 3544,
+     "wording": "assert",
      "value": "ravel-ledge",
      "text": "Tomas leads the ravel-ledge project.",
      "replaces": true
@@ -10524,6 +11352,7 @@
     {
      "year": 10,
      "day": 3516,
+     "wording": "assert",
      "value": "bramble-spire",
      "text": "Dmitri keeps the accounts in bramble-spire.",
      "replaces": true
@@ -10539,6 +11368,7 @@
     {
      "year": 10,
      "day": 3361,
+     "wording": "assert",
      "value": "opal-tarn",
      "text": "Zara commutes on the opal-tarn line.",
      "replaces": true
@@ -10554,6 +11384,7 @@
     {
      "year": 10,
      "day": 3496,
+     "wording": "assert",
      "value": "tamarind-hollow",
      "text": "Helena banks with tamarind-hollow.",
      "replaces": true
@@ -10569,6 +11400,7 @@
     {
      "year": 10,
      "day": 3417,
+     "wording": "assert",
      "value": "verdigris-chandler",
      "text": "Vasco orders paper from verdigris-chandler.",
      "replaces": true
@@ -10584,6 +11416,7 @@
     {
      "year": 10,
      "day": 3528,
+     "wording": "assert",
      "value": "flint-foundry",
      "text": "Alma leads the flint-foundry project.",
      "replaces": true
@@ -10599,6 +11432,7 @@
     {
      "year": 10,
      "day": 3506,
+     "wording": "assert",
      "value": "bramble-ridge",
      "text": "Helena rents the bramble-ridge cottage.",
      "replaces": true
@@ -10614,6 +11448,7 @@
     {
      "year": 10,
      "day": 3417,
+     "wording": "assert",
      "value": "saffron-kiln",
      "text": "Elif rents the saffron-kiln cottage.",
      "replaces": true
@@ -10629,6 +11464,7 @@
     {
      "year": 10,
      "day": 3597,
+     "wording": "assert",
      "value": "tamarind-harbour",
      "text": "Olga sits with the tamarind-harbour team.",
      "replaces": true
@@ -10644,6 +11480,7 @@
     {
      "year": 10,
      "day": 3343,
+     "wording": "assert",
      "value": "brindle-tarn",
      "text": "Orla rents the brindle-tarn cottage.",
      "replaces": true
@@ -10659,6 +11496,7 @@
     {
      "year": 10,
      "day": 3396,
+     "wording": "assert",
      "value": "copper-brook",
      "text": "Vasco rehearses at the copper-brook hall.",
      "replaces": true
@@ -10674,6 +11512,7 @@
     {
      "year": 10,
      "day": 3436,
+     "wording": "assert",
      "value": "pewter-pike",
      "text": "Greta orders paper from pewter-pike.",
      "replaces": true
@@ -10689,6 +11528,7 @@
     {
      "year": 10,
      "day": 3365,
+     "wording": "assert",
      "value": "cobalt-fenn",
      "text": "Bruno orders paper from cobalt-fenn.",
      "replaces": true

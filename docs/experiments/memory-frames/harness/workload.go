@@ -78,8 +78,12 @@ type Params struct {
 // scheduler placed it on, which is what the interval between two writes to
 // one address is read from.
 type Assert struct {
-	Year     int    `json:"year"`
-	Day      int    `json:"day"`
+	Year int `json:"year"`
+	Day  int `json:"day"`
+	// Wording names the template the sentence was written from. It is
+	// ground truth, like Replaces, and it is what an error rate is cut by
+	// to say whether a mistake follows the words or falls anywhere.
+	Wording  string `json:"wording"`
 	Value    string `json:"value"`
 	Text     string `json:"text"`
 	Replaces bool   `json:"replaces"`
@@ -236,7 +240,7 @@ func buildThreads(rng *rand.Rand, p Params) ([]Thread, error) {
 		v := next()
 		threads = append(threads, Thread{Class: classCarried, Subject: s, Attribute: a.name,
 			Question: fmt.Sprintf(a.question, s),
-			Asserts:  []Assert{{Year: 1, Value: v, Text: fmt.Sprintf(a.assert, s, v), Replaces: true}}})
+			Asserts:  []Assert{{Year: 1, Value: v, Text: fmt.Sprintf(a.assert, s, v), Wording: wordingAssert, Replaces: true}}})
 	}
 	for i := 0; i < n; i++ {
 		s, a := takePair()
@@ -244,9 +248,9 @@ func buildThreads(rng *rand.Rand, p Params) ([]Thread, error) {
 		threads = append(threads, Thread{Class: classReplaced, Subject: s, Attribute: a.name,
 			Question: fmt.Sprintf(a.question, s),
 			Asserts: []Assert{
-				{Year: 1, Value: v1, Text: fmt.Sprintf(a.assert, s, v1), Replaces: true},
-				{Year: mid, Value: v2, Text: fmt.Sprintf(a.replace, s, v2), Replaces: true},
-				{Year: late, Value: v3, Text: fmt.Sprintf(a.replace, s, v3), Replaces: true},
+				{Year: 1, Value: v1, Text: fmt.Sprintf(a.assert, s, v1), Wording: wordingAssert, Replaces: true},
+				{Year: mid, Value: v2, Text: fmt.Sprintf(a.replace, s, v2), Wording: wordingReplace, Replaces: true},
+				{Year: late, Value: v3, Text: fmt.Sprintf(a.replace, s, v3), Wording: wordingReplace, Replaces: true},
 			}})
 	}
 	for i := 0; i < n; i++ {
@@ -255,9 +259,9 @@ func buildThreads(rng *rand.Rand, p Params) ([]Thread, error) {
 		threads = append(threads, Thread{Class: classReverted, Subject: s, Attribute: a.name,
 			Question: fmt.Sprintf(a.question, s),
 			Asserts: []Assert{
-				{Year: 1, Value: v1, Text: fmt.Sprintf(a.assert, s, v1), Replaces: true},
-				{Year: mid, Value: v2, Text: fmt.Sprintf(a.replace, s, v2), Replaces: true},
-				{Year: late, Value: v1, Text: fmt.Sprintf(a.replace, s, v1), Replaces: true},
+				{Year: 1, Value: v1, Text: fmt.Sprintf(a.assert, s, v1), Wording: wordingAssert, Replaces: true},
+				{Year: mid, Value: v2, Text: fmt.Sprintf(a.replace, s, v2), Wording: wordingReplace, Replaces: true},
+				{Year: late, Value: v1, Text: fmt.Sprintf(a.replace, s, v1), Wording: wordingReplace, Replaces: true},
 			}})
 	}
 	for i := 0; i < n; i++ {
@@ -266,8 +270,8 @@ func buildThreads(rng *rand.Rand, p Params) ([]Thread, error) {
 		threads = append(threads, Thread{Class: classParallel, Subject: s, Attribute: a.name,
 			Question: fmt.Sprintf(a.question, s),
 			Asserts: []Assert{
-				{Year: early2, Value: v1, Text: fmt.Sprintf(a.assert, s, v1), Replaces: true},
-				{Year: late2, Value: v2, Text: fmt.Sprintf(a.also, s, v2)},
+				{Year: early2, Value: v1, Text: fmt.Sprintf(a.assert, s, v1), Wording: wordingAssert, Replaces: true},
+				{Year: late2, Value: v2, Text: fmt.Sprintf(a.also, s, v2), Wording: wordingAlso},
 			}})
 	}
 	for i := 0; i < n; i++ {
@@ -276,8 +280,8 @@ func buildThreads(rng *rand.Rand, p Params) ([]Thread, error) {
 		threads = append(threads, Thread{Class: classRefined, Subject: s, Attribute: a.name,
 			Question: fmt.Sprintf(a.question, s),
 			Asserts: []Assert{
-				{Year: early2, Value: v1, Text: fmt.Sprintf(a.assert, s, v1), Replaces: true},
-				{Year: late2, Value: v2, Text: fmt.Sprintf(a.narrow, s, v2)},
+				{Year: early2, Value: v1, Text: fmt.Sprintf(a.assert, s, v1), Wording: wordingAssert, Replaces: true},
+				{Year: late2, Value: v2, Text: fmt.Sprintf(a.narrow, s, v2), Wording: wordingNarrow},
 			}})
 	}
 	for year := 1; year <= p.Years; year++ {
@@ -286,7 +290,7 @@ func buildThreads(rng *rand.Rand, p Params) ([]Thread, error) {
 			v := next()
 			threads = append(threads, Thread{Class: classFresh, Subject: s, Attribute: a.name,
 				Question: fmt.Sprintf(a.question, s),
-				Asserts:  []Assert{{Year: year, Value: v, Text: fmt.Sprintf(a.assert, s, v), Replaces: true}}})
+				Asserts:  []Assert{{Year: year, Value: v, Text: fmt.Sprintf(a.assert, s, v), Wording: wordingAssert, Replaces: true}}})
 		}
 	}
 	if used > len(values) {

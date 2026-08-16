@@ -58,6 +58,8 @@ Four rows are not candidates. `attribute-declared`, `question-declared` and `int
 | `attribute-learned` | every value ever written at `(subject, attribute)` | an attribute is multi-valued once any of its addresses holds more than one value | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 48 ±2 | 601.8 ±0.1 | 19.9 |
 | `attribute-cued` | one or several values at `(subject, attribute)` | a write joins where the sentence carries an addition cue and replaces otherwise | 0.917 ±0.024 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 30 ±1 | 1.2 ±0.0 | 15.9 |
 | `attribute-declared` | one or several values at `(subject, attribute)` | the write states it — a ceiling, not a candidate | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 34 ±2 | 1.3 ±0.1 | 16.9 |
+| `question` | one or several values at the question a fact answers | the question's own form: a question naming one thing holds one value | 0.917 ±0.024 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 53 ±3 | 1.2 ±0.0 | 27.8 |
+| `question-declared` | one or several values at the question a fact answers | the write states it — a ceiling, not a candidate | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 61 ±3 | 1.3 ±0.1 | 29.5 |
 | `interval` | a value with the span it was true for, closed rather than removed | a write closes the open span | 0.833 ±0.030 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 25 ±0 | 2.0 ±0.1 | 20.9 |
 | `interval-declared` | a value with the span it was true for, closed rather than removed | the write states it — a ceiling, not a candidate | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 34 ±2 | 2.0 ±0.1 | 20.9 |
 | `log` | every observation as an event, appended and never changed | the projection takes the newest value at an address | 0.833 ±0.030 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 25 ±0 | 840.0 ±0.0 | 20.9 |
@@ -489,6 +491,26 @@ The comparison table is the last year of this one. Every year is here, class for
 | `attribute-declared` | `oracle` | 8 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 34 ±2 | 1.3 ±0.1 |
 | `attribute-declared` | `oracle` | 9 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 34 ±2 | 1.3 ±0.1 |
 | `attribute-declared` | `oracle` | 10 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 34 ±2 | 1.3 ±0.1 |
+| `question` | `oracle` | 1 | 160 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a | 44 ±1 | 1.0 ±0.0 |
+| `question` | `oracle` | 2 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | 43 ±1 | 1.0 ±0.0 |
+| `question` | `oracle` | 3 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 44 ±1 | 1.0 ±0.0 |
+| `question` | `oracle` | 4 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 44 ±1 | 1.0 ±0.0 |
+| `question` | `oracle` | 5 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 43 ±1 | 1.0 ±0.0 |
+| `question` | `oracle` | 6 | 240 | 0.917 ±0.024 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 54 ±3 | 1.2 ±0.0 |
+| `question` | `oracle` | 7 | 240 | 0.917 ±0.024 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 53 ±3 | 1.2 ±0.0 |
+| `question` | `oracle` | 8 | 240 | 0.917 ±0.024 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 53 ±3 | 1.2 ±0.0 |
+| `question` | `oracle` | 9 | 240 | 0.917 ±0.024 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 53 ±3 | 1.2 ±0.0 |
+| `question` | `oracle` | 10 | 240 | 0.917 ±0.024 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 53 ±3 | 1.2 ±0.0 |
+| `question-declared` | `oracle` | 1 | 160 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a | 44 ±1 | 1.0 ±0.0 |
+| `question-declared` | `oracle` | 2 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | 43 ±1 | 1.0 ±0.0 |
+| `question-declared` | `oracle` | 3 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 44 ±1 | 1.0 ±0.0 |
+| `question-declared` | `oracle` | 4 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 44 ±1 | 1.0 ±0.0 |
+| `question-declared` | `oracle` | 5 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 43 ±1 | 1.0 ±0.0 |
+| `question-declared` | `oracle` | 6 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 61 ±3 | 1.3 ±0.1 |
+| `question-declared` | `oracle` | 7 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 61 ±3 | 1.3 ±0.1 |
+| `question-declared` | `oracle` | 8 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 61 ±3 | 1.3 ±0.1 |
+| `question-declared` | `oracle` | 9 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 60 ±3 | 1.3 ±0.1 |
+| `question-declared` | `oracle` | 10 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 61 ±3 | 1.3 ±0.1 |
 | `interval` | `oracle` | 1 | 160 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a | 26 ±0 | 1.0 ±0.0 |
 | `interval` | `oracle` | 2 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | 25 ±0 | 1.0 ±0.0 |
 | `interval` | `oracle` | 3 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 26 ±0 | 1.3 ±0.1 |
@@ -639,6 +661,26 @@ The comparison table is the last year of this one. Every year is here, class for
 | `attribute-declared` | `text` | 8 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
 | `attribute-declared` | `text` | 9 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
 | `attribute-declared` | `text` | 10 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `question` | `text` | 1 | 160 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | n/a | n/a | 0.000 ±0.000 | n/a | 0 ±0 | 0.0 ±0.0 |
+| `question` | `text` | 2 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | n/a | 0 ±0 | 0.0 ±0.0 |
+| `question` | `text` | 3 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `question` | `text` | 4 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `question` | `text` | 5 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `question` | `text` | 6 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `question` | `text` | 7 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `question` | `text` | 8 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `question` | `text` | 9 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `question` | `text` | 10 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `question-declared` | `text` | 1 | 160 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | n/a | n/a | 0.000 ±0.000 | n/a | 0 ±0 | 0.0 ±0.0 |
+| `question-declared` | `text` | 2 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | n/a | 0 ±0 | 0.0 ±0.0 |
+| `question-declared` | `text` | 3 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `question-declared` | `text` | 4 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `question-declared` | `text` | 5 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `question-declared` | `text` | 6 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `question-declared` | `text` | 7 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `question-declared` | `text` | 8 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `question-declared` | `text` | 9 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `question-declared` | `text` | 10 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
 | `interval` | `text` | 1 | 160 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | n/a | n/a | 0.000 ±0.000 | n/a | 0 ±0 | 0.0 ±0.0 |
 | `interval` | `text` | 2 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | n/a | 0 ±0 | 0.0 ±0.0 |
 | `interval` | `text` | 3 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
@@ -745,6 +787,12 @@ The comparison table is the last year of this one. Every year is here, class for
 | `attribute-declared` | `oracle` | 1 | 160 | 4.0 | 4.0 |
 | `attribute-declared` | `oracle` | 5 | 400 | 10.0 | 10.0 |
 | `attribute-declared` | `oracle` | 10 | 680 | 16.9 | 16.9 |
+| `question` | `oracle` | 1 | 160 | 6.9 | 6.9 |
+| `question` | `oracle` | 5 | 400 | 17.1 | 17.1 |
+| `question` | `oracle` | 10 | 640 | 27.8 | 27.8 |
+| `question-declared` | `oracle` | 1 | 160 | 6.9 | 6.9 |
+| `question-declared` | `oracle` | 5 | 400 | 17.1 | 17.1 |
+| `question-declared` | `oracle` | 10 | 680 | 29.5 | 29.5 |
 | `interval` | `oracle` | 1 | 160 | 4.0 | 4.0 |
 | `interval` | `oracle` | 5 | 480 | 12.0 | 12.0 |
 | `interval` | `oracle` | 10 | 840 | 20.9 | 20.9 |
@@ -790,6 +838,12 @@ The comparison table is the last year of this one. Every year is here, class for
 | `attribute-declared` | `text` | 1 | 0 | 0.0 | 0.0 |
 | `attribute-declared` | `text` | 5 | 0 | 0.0 | 0.0 |
 | `attribute-declared` | `text` | 10 | 0 | 0.0 | 0.0 |
+| `question` | `text` | 1 | 0 | 0.0 | 0.0 |
+| `question` | `text` | 5 | 0 | 0.0 | 0.0 |
+| `question` | `text` | 10 | 0 | 0.0 | 0.0 |
+| `question-declared` | `text` | 1 | 0 | 0.0 | 0.0 |
+| `question-declared` | `text` | 5 | 0 | 0.0 | 0.0 |
+| `question-declared` | `text` | 10 | 0 | 0.0 | 0.0 |
 | `interval` | `text` | 1 | 0 | 0.0 | 0.0 |
 | `interval` | `text` | 5 | 0 | 0.0 | 0.0 |
 | `interval` | `text` | 10 | 0 | 0.0 | 0.0 |
@@ -876,7 +930,9 @@ Every candidate above changes what the store does with an address and none of th
 
 **The residual is the finding.** A question-shaped address halves the addresses whose arity the address form gets wrong, and what remains is one class of the six. Every one of them is a second value added by a conjunction — a sentence adding a value while answering the question its predecessor answered — and no address form separates two values whose questions are identical. The residual is not concentrated in the questions whose form marks no number: about half of it falls under questions whose form marks one, so the fallback is not where the failure is. What the exceptions have in common is the sentence, not the question.
 
-**The head-to-head.** A question-shaped address with no declaration against a topic-shaped address with one: the declaration wins, and the gap is that residual and nothing else. The question address recovers half of what §The arity question said the store cannot recover, and the write still has to state the other half. So the `operation` field does not disappear. It narrows — from every write to the writes that add a value answering a question already answered — and that is a smaller thing to ask a model for than a replace-or-join on every assertion.
+**The head-to-head, with an oracle.** A question-shaped address with no declaration against a topic-shaped address with a declaration that is never wrong: the declaration wins, and the gap is that residual and nothing else. The question address recovers half of what §The arity question said the store cannot recover, and the write still has to state the other half. So the `operation` field does not disappear. It narrows — from every write to the writes that add a value answering a question already answered — and that is a smaller thing to ask a model for than a replace-or-join on every assertion.
+
+**The head-to-head, with a real extractor, goes the other way.** §What harder language costs runs the same comparison in the arm where a model reads the messages, and there the declaration is not free: it is the thing the extractor gets wrong most, so the frame taking it loses the coexistence a correct declaration would have bought. On the plain and subordinated shapes the question address with no declaration answers more than the topic address with a model's declaration, and it returns nothing stale where the declared frame does. What the oracle arm measures is what a declaration is worth when it is right; what that arm measures is what it is worth when a model supplies it, and the second is the number a design is chosen on.
 
 **Whether a model forms the same address.** The rule proves the address is derivable from the sentence and says nothing about whether the thing that will actually form it derives the same one. So the model that was asked to declare the operation for every assertion of this workload was asked, on the same sentences and on the same day, for the question each of them answers and the restriction it carries. Its answers are committed and the table below scores them against the rule's, with the whole address and the question apart, because a wrong question puts a fact where nothing belongs and a wrong restriction puts it at a question nothing asks.
 
@@ -885,13 +941,80 @@ The instruction was bought twice. The first did not say what a restriction is no
 **What these figures say.**
 
 - **The question half of the address is free and the restriction half is not.** The model names the question the rule names on every assertion it was asked about, without exception, on a workload where a wrong question would have been the cheapest kind of mistake to make. It does not produce the rule's restriction anywhere near as often, and the whole address is right on a small fraction of what the question alone is right on. An address is only as good as its worst half.
-- **Its failure is not finding a restriction but declining to invent one.** Where the rule reads a restriction, the model usually reads the same phrase — the disagreements there are mostly the same words without the preposition in front of them, which is a normalisation and not a reading. Where the rule reads none, the model supplies one anyway, on most assertions and on nearly every replacement: it answers *now* and *from now on* to a statement that says a value has changed, and *as well* to one that adds a value. Asked for a field, it fills the field.
+- **Its failure is not finding a restriction but declining to invent one.** Where the rule reads a restriction, the model reads the same phrase in nearly every case — the disagreements there are mostly the same words without the preposition in front of them, which is a normalisation and not a reading. Where the rule reads none, it supplies one anyway on almost every assertion, and on every replacement and every conjunction without exception: it answers *now* and *from now on* to a statement saying a value has changed, and *as well* to one adding a value. Asked for a field, it fills the field, and the narrowing wording is the only one it leaves empty when the sentence narrows nothing — because that is the only wording where the sentence does not.
 - **That is the damaging direction, and it is the one it takes.** A restriction invented on a replacement sends each correction to an address of its own, so the value it should have replaced stays where it was and the correction is answered by nothing. A restriction missed only collapses a narrowing into the question it narrows, which is where a topic-shaped address puts it anyway. The rule reads a position and the model reads a meaning, and on this evidence the meaning is the harder of the two to read.
 - **What it does not say is that a model cannot form this address.** One cheap model, two instructions, one pass, and a free-text field it was never able to leave empty. A form that offers a closed set of restrictions, or one that asks whether the statement narrows anything before asking what it narrows, is a different measurement and is not this one.
 
 
 <!-- generated by the harness: address; do not edit between the markers -->
 
+### What a question determines
+
+| quantity | value |
+|---|---|
+| questions in the address space | 12 |
+| questions whose form marks a number | 7 |
+| addresses, topic-shaped | 600 |
+| addresses, topic-shaped, whose arity the question's form gets wrong | 80 |
+| addresses, question-shaped | 640 |
+| addresses, question-shaped, carrying a restriction | 40 |
+| addresses, question-shaped, whose arity the question's form gets wrong | 40 |
+
+| question | attribute | number | predicts | read from the form | addresses | holding two at once | form gets right | share |
+|---|---|---|---|---|---|---|---|---|
+| `which-project-does-lead` | `project` | singular | `single` | yes | 48 | 1 | 47 | 0.979 |
+| `which-clinic-does-go-to` | `clinic` | singular | `single` | yes | 62 | 5 | 57 | 0.919 |
+| `which-line-does-commute-on` | `line` | singular | `single` | yes | 54 | 0 | 54 | 1.000 |
+| `what-does-keep-the-accounts-in` | `accounts` | unmarked | `single` | no | 49 | 3 | 46 | 0.939 |
+| `where-does-rehearse` | `hall` | unmarked | `single` | no | 53 | 6 | 47 | 0.887 |
+| `who-does-order-paper-from` | `supplier` | unmarked | `single` | no | 55 | 4 | 51 | 0.927 |
+| `which-cottage-does-rent` | `cottage` | singular | `single` | yes | 50 | 2 | 48 | 0.960 |
+| `who-does-bank-with` | `bank` | unmarked | `single` | no | 65 | 5 | 60 | 0.923 |
+| `which-course-is-taking` | `course` | singular | `single` | yes | 49 | 4 | 45 | 0.918 |
+| `which-team-does-sit-with` | `team` | singular | `single` | yes | 54 | 5 | 49 | 0.907 |
+| `which-bakery-does-buy-bread-at` | `bakery` | singular | `single` | yes | 50 | 2 | 48 | 0.960 |
+| `where-does-keep-the-backups` | `backups` | unmarked | `single` | no | 51 | 3 | 48 | 0.941 |
+
+| cut | name | addresses | form gets wrong | share |
+|---|---|---|---|---|
+| class | `carried` | 40 | 0 | 0.000 |
+| class | `replaced` | 40 | 0 | 0.000 |
+| class | `reverted` | 40 | 0 | 0.000 |
+| class | `parallel` | 40 | 40 | 1.000 |
+| class | `refined` | 80 | 0 | 0.000 |
+| class | `fresh` | 400 | 0 | 0.000 |
+| question form | `marks a number` | 367 | 19 | 0.052 |
+| question form | `marks none` | 273 | 21 | 0.077 |
+| second value added by | `also` | 40 | 40 | 1.000 |
+
+### What a model addressed
+
+| quantity | value |
+|---|---|
+| model | gpt-4.1-nano |
+| assertions asked | 840 |
+| whole address right | 0.032 ±0.012 |
+| question right | 1.000 ±0.000 |
+| assertions the rule restricts | 40 |
+| restriction right, of those | 0.650 ±0.150 |
+| restriction the same phrase, of those | 0.950 ±0.068 |
+| restriction invented where the rule reads none | 0.951 ±0.015 |
+
+| wording | asked | whole address right | restriction invented |
+|---|---|---|---|
+| `assert` | 600 | 0.002 ±0.003 | 0.998 ±0.003 |
+| `also` | 40 | 0.000 ±0.000 | 1.000 ±0.000 |
+| `narrow` | 40 | 0.650 ±0.150 | 0.000 ±0.000 |
+| `replace` | 160 | 0.000 ±0.000 | 1.000 ±0.000 |
+
+| class | asked | whole address right |
+|---|---|---|
+| `carried` | 40 | 0.000 ±0.000 |
+| `replaced` | 120 | 0.000 ±0.000 |
+| `reverted` | 120 | 0.000 ±0.000 |
+| `parallel` | 80 | 0.000 ±0.000 |
+| `refined` | 80 | 0.325 ±0.103 |
+| `fresh` | 400 | 0.003 ±0.005 |
 <!-- end generated -->
 
 ## What a wrong declaration costs
@@ -1392,6 +1515,26 @@ Every figure so far reports what a structure *answers*. None reports what it can
 | `attribute-declared` | `oracle` | 8 | 1.000 ±0.000 | 0.169 ±0.009 | 600 | 600 | 0 | 0.000 | 0 |
 | `attribute-declared` | `oracle` | 9 | 1.000 ±0.000 | 0.153 ±0.008 | 640 | 640 | 0 | 0.000 | 0 |
 | `attribute-declared` | `oracle` | 10 | 1.000 ±0.000 | 0.148 ±0.008 | 680 | 680 | 0 | 0.000 | 0 |
+| `question` | `oracle` | 1 | 1.000 ±0.000 | 0.450 ±0.037 | 160 | 160 | 0 | 0.000 | 0 |
+| `question` | `oracle` | 2 | 1.000 ±0.000 | 0.269 ±0.021 | 280 | 280 | 0 | 0.000 | 0 |
+| `question` | `oracle` | 3 | 1.000 ±0.000 | 0.246 ±0.018 | 320 | 320 | 0 | 0.000 | 0 |
+| `question` | `oracle` | 4 | 1.000 ±0.000 | 0.212 ±0.011 | 360 | 360 | 0 | 0.000 | 0 |
+| `question` | `oracle` | 5 | 1.000 ±0.000 | 0.194 ±0.010 | 400 | 400 | 0 | 0.000 | 0 |
+| `question` | `oracle` | 6 | 0.917 ±0.024 | 0.170 ±0.010 | 480 | 480 | 0 | 0.000 | 0 |
+| `question` | `oracle` | 7 | 0.917 ±0.024 | 0.159 ±0.009 | 520 | 520 | 0 | 0.000 | 0 |
+| `question` | `oracle` | 8 | 0.917 ±0.024 | 0.150 ±0.008 | 560 | 560 | 0 | 0.000 | 0 |
+| `question` | `oracle` | 9 | 0.917 ±0.024 | 0.135 ±0.007 | 600 | 600 | 0 | 0.000 | 0 |
+| `question` | `oracle` | 10 | 0.917 ±0.024 | 0.130 ±0.006 | 640 | 640 | 0 | 0.000 | 0 |
+| `question-declared` | `oracle` | 1 | 1.000 ±0.000 | 0.450 ±0.037 | 160 | 160 | 0 | 0.000 | 0 |
+| `question-declared` | `oracle` | 2 | 1.000 ±0.000 | 0.269 ±0.021 | 280 | 280 | 0 | 0.000 | 0 |
+| `question-declared` | `oracle` | 3 | 1.000 ±0.000 | 0.246 ±0.018 | 320 | 320 | 0 | 0.000 | 0 |
+| `question-declared` | `oracle` | 4 | 1.000 ±0.000 | 0.212 ±0.011 | 360 | 360 | 0 | 0.000 | 0 |
+| `question-declared` | `oracle` | 5 | 1.000 ±0.000 | 0.194 ±0.010 | 400 | 400 | 0 | 0.000 | 0 |
+| `question-declared` | `oracle` | 6 | 1.000 ±0.000 | 0.192 ±0.011 | 520 | 520 | 0 | 0.000 | 0 |
+| `question-declared` | `oracle` | 7 | 1.000 ±0.000 | 0.179 ±0.010 | 560 | 560 | 0 | 0.000 | 0 |
+| `question-declared` | `oracle` | 8 | 1.000 ±0.000 | 0.169 ±0.009 | 600 | 600 | 0 | 0.000 | 0 |
+| `question-declared` | `oracle` | 9 | 1.000 ±0.000 | 0.153 ±0.008 | 640 | 640 | 0 | 0.000 | 0 |
+| `question-declared` | `oracle` | 10 | 1.000 ±0.000 | 0.148 ±0.008 | 680 | 680 | 0 | 0.000 | 0 |
 | `interval` | `oracle` | 1 | 1.000 ±0.000 | 0.450 ±0.037 | 160 | 160 | 0 | 0.000 | 0 |
 | `interval` | `oracle` | 2 | 1.000 ±0.000 | 0.269 ±0.021 | 280 | 280 | 0 | 0.000 | 0 |
 | `interval` | `oracle` | 3 | 1.000 ±0.000 | 0.246 ±0.018 | 400 | 400 | 0 | 0.000 | 0 |
@@ -1542,6 +1685,26 @@ Every figure so far reports what a structure *answers*. None reports what it can
 | `attribute-declared` | `text` | 8 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
 | `attribute-declared` | `text` | 9 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
 | `attribute-declared` | `text` | 10 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `question` | `text` | 1 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `question` | `text` | 2 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `question` | `text` | 3 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `question` | `text` | 4 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `question` | `text` | 5 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `question` | `text` | 6 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `question` | `text` | 7 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `question` | `text` | 8 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `question` | `text` | 9 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `question` | `text` | 10 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `question-declared` | `text` | 1 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `question-declared` | `text` | 2 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `question-declared` | `text` | 3 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `question-declared` | `text` | 4 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `question-declared` | `text` | 5 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `question-declared` | `text` | 6 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `question-declared` | `text` | 7 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `question-declared` | `text` | 8 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `question-declared` | `text` | 9 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `question-declared` | `text` | 10 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
 | `interval` | `text` | 1 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
 | `interval` | `text` | 2 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
 | `interval` | `text` | 3 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
@@ -1634,6 +1797,8 @@ Every figure so far reports what a structure *answers*. None reports what it can
 | `attribute-learned` | `oracle` | 160 | 0.000 ±0.000 | 0 | n/a |
 | `attribute-cued` | `oracle` | 160 | 1.000 ±0.000 | 0 | n/a |
 | `attribute-declared` | `oracle` | 160 | 1.000 ±0.000 | 0 | n/a |
+| `question` | `oracle` | 160 | 1.000 ±0.000 | 0 | n/a |
+| `question-declared` | `oracle` | 160 | 1.000 ±0.000 | 0 | n/a |
 | `interval` | `oracle` | 160 | 0.000 ±0.000 | 0 | n/a |
 | `interval-declared` | `oracle` | 160 | 0.000 ±0.000 | 0 | n/a |
 | `log` | `oracle` | 160 | 0.000 ±0.000 | 0 | n/a |
@@ -1649,6 +1814,8 @@ Every figure so far reports what a structure *answers*. None reports what it can
 | `attribute-learned` | `text` | 0 | n/a | 160 | 1.000 ±0.000 |
 | `attribute-cued` | `text` | 0 | n/a | 160 | 1.000 ±0.000 |
 | `attribute-declared` | `text` | 0 | n/a | 160 | 1.000 ±0.000 |
+| `question` | `text` | 0 | n/a | 160 | 1.000 ±0.000 |
+| `question-declared` | `text` | 0 | n/a | 160 | 1.000 ±0.000 |
 | `interval` | `text` | 0 | n/a | 160 | 1.000 ±0.000 |
 | `interval-declared` | `text` | 0 | n/a | 160 | 1.000 ±0.000 |
 | `log` | `text` | 0 | n/a | 160 | 1.000 ±0.000 |
@@ -1732,6 +1899,26 @@ Every figure so far reports what a structure *answers*. None reports what it can
 | `attribute-declared` | `oracle` | 8 | 600 | 14.9 | 14.9 |
 | `attribute-declared` | `oracle` | 9 | 640 | 15.9 | 15.9 |
 | `attribute-declared` | `oracle` | 10 | 680 | 16.9 | 16.9 |
+| `question` | `oracle` | 1 | 160 | 6.9 | 6.9 |
+| `question` | `oracle` | 2 | 280 | 11.9 | 11.9 |
+| `question` | `oracle` | 3 | 320 | 13.7 | 13.7 |
+| `question` | `oracle` | 4 | 360 | 15.4 | 15.4 |
+| `question` | `oracle` | 5 | 400 | 17.1 | 17.1 |
+| `question` | `oracle` | 6 | 480 | 21.1 | 21.1 |
+| `question` | `oracle` | 7 | 520 | 22.8 | 22.8 |
+| `question` | `oracle` | 8 | 560 | 24.5 | 24.5 |
+| `question` | `oracle` | 9 | 600 | 26.1 | 26.1 |
+| `question` | `oracle` | 10 | 640 | 27.8 | 27.8 |
+| `question-declared` | `oracle` | 1 | 160 | 6.9 | 6.9 |
+| `question-declared` | `oracle` | 2 | 280 | 11.9 | 11.9 |
+| `question-declared` | `oracle` | 3 | 320 | 13.7 | 13.7 |
+| `question-declared` | `oracle` | 4 | 360 | 15.4 | 15.4 |
+| `question-declared` | `oracle` | 5 | 400 | 17.1 | 17.1 |
+| `question-declared` | `oracle` | 6 | 520 | 22.8 | 22.8 |
+| `question-declared` | `oracle` | 7 | 560 | 24.4 | 24.4 |
+| `question-declared` | `oracle` | 8 | 600 | 26.2 | 26.2 |
+| `question-declared` | `oracle` | 9 | 640 | 27.8 | 27.8 |
+| `question-declared` | `oracle` | 10 | 680 | 29.5 | 29.5 |
 | `interval` | `oracle` | 1 | 160 | 4.0 | 4.0 |
 | `interval` | `oracle` | 2 | 280 | 7.0 | 7.0 |
 | `interval` | `oracle` | 3 | 400 | 10.0 | 10.0 |
@@ -1882,6 +2069,26 @@ Every figure so far reports what a structure *answers*. None reports what it can
 | `attribute-declared` | `text` | 8 | 0 | 0.0 | 0.0 |
 | `attribute-declared` | `text` | 9 | 0 | 0.0 | 0.0 |
 | `attribute-declared` | `text` | 10 | 0 | 0.0 | 0.0 |
+| `question` | `text` | 1 | 0 | 0.0 | 0.0 |
+| `question` | `text` | 2 | 0 | 0.0 | 0.0 |
+| `question` | `text` | 3 | 0 | 0.0 | 0.0 |
+| `question` | `text` | 4 | 0 | 0.0 | 0.0 |
+| `question` | `text` | 5 | 0 | 0.0 | 0.0 |
+| `question` | `text` | 6 | 0 | 0.0 | 0.0 |
+| `question` | `text` | 7 | 0 | 0.0 | 0.0 |
+| `question` | `text` | 8 | 0 | 0.0 | 0.0 |
+| `question` | `text` | 9 | 0 | 0.0 | 0.0 |
+| `question` | `text` | 10 | 0 | 0.0 | 0.0 |
+| `question-declared` | `text` | 1 | 0 | 0.0 | 0.0 |
+| `question-declared` | `text` | 2 | 0 | 0.0 | 0.0 |
+| `question-declared` | `text` | 3 | 0 | 0.0 | 0.0 |
+| `question-declared` | `text` | 4 | 0 | 0.0 | 0.0 |
+| `question-declared` | `text` | 5 | 0 | 0.0 | 0.0 |
+| `question-declared` | `text` | 6 | 0 | 0.0 | 0.0 |
+| `question-declared` | `text` | 7 | 0 | 0.0 | 0.0 |
+| `question-declared` | `text` | 8 | 0 | 0.0 | 0.0 |
+| `question-declared` | `text` | 9 | 0 | 0.0 | 0.0 |
+| `question-declared` | `text` | 10 | 0 | 0.0 | 0.0 |
 | `interval` | `text` | 1 | 0 | 0.0 | 0.0 |
 | `interval` | `text` | 2 | 0 | 0.0 | 0.0 |
 | `interval` | `text` | 3 | 0 | 0.0 | 0.0 |
@@ -1972,6 +2179,8 @@ Every figure so far reports what a structure *answers*. None reports what it can
 | `attribute-learned` | `oracle` | 800 | 71.1 | 13 |
 | `attribute-cued` | `oracle` | 640 | 53.3 | 18 |
 | `attribute-declared` | `oracle` | 680 | 57.8 | 16 |
+| `question` | `oracle` | 640 | 53.3 | 18 |
+| `question-declared` | `oracle` | 680 | 57.8 | 16 |
 | `interval` | `oracle` | 840 | 75.6 | 12 |
 | `interval-declared` | `oracle` | 840 | 75.6 | 12 |
 | `log` | `oracle` | 840 | 75.6 | 12 |
@@ -1987,6 +2196,8 @@ Every figure so far reports what a structure *answers*. None reports what it can
 | `attribute-learned` | `text` | 0 | 0.0 | n/a |
 | `attribute-cued` | `text` | 0 | 0.0 | n/a |
 | `attribute-declared` | `text` | 0 | 0.0 | n/a |
+| `question` | `text` | 0 | 0.0 | n/a |
+| `question-declared` | `text` | 0 | 0.0 | n/a |
 | `interval` | `text` | 0 | 0.0 | n/a |
 | `interval-declared` | `text` | 0 | 0.0 | n/a |
 | `log` | `text` | 0 | 0.0 | n/a |
@@ -2099,6 +2310,26 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | 800 | `attribute-declared` | 8 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 600 | 14.9 | 14.9 |
 | 800 | `attribute-declared` | 9 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 640 | 15.9 | 15.9 |
 | 800 | `attribute-declared` | 10 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 680 | 16.9 | 16.9 |
+| 800 | `question` | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a | 160 | 6.9 | 6.9 |
+| 800 | `question` | 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | 280 | 11.9 | 11.9 |
+| 800 | `question` | 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 320 | 13.7 | 13.7 |
+| 800 | `question` | 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 360 | 15.4 | 15.4 |
+| 800 | `question` | 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 400 | 17.1 | 17.1 |
+| 800 | `question` | 6 | 0.917 ±0.024 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 480 | 21.1 | 21.1 |
+| 800 | `question` | 7 | 0.917 ±0.024 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 520 | 22.8 | 22.8 |
+| 800 | `question` | 8 | 0.917 ±0.024 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 560 | 24.5 | 24.5 |
+| 800 | `question` | 9 | 0.917 ±0.024 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 600 | 26.1 | 26.1 |
+| 800 | `question` | 10 | 0.917 ±0.024 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 640 | 27.8 | 27.8 |
+| 800 | `question-declared` | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a | 160 | 6.9 | 6.9 |
+| 800 | `question-declared` | 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | 280 | 11.9 | 11.9 |
+| 800 | `question-declared` | 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 320 | 13.7 | 13.7 |
+| 800 | `question-declared` | 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 360 | 15.4 | 15.4 |
+| 800 | `question-declared` | 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 400 | 17.1 | 17.1 |
+| 800 | `question-declared` | 6 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 520 | 22.8 | 22.8 |
+| 800 | `question-declared` | 7 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 560 | 24.4 | 24.4 |
+| 800 | `question-declared` | 8 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 600 | 26.2 | 26.2 |
+| 800 | `question-declared` | 9 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 640 | 27.8 | 27.8 |
+| 800 | `question-declared` | 10 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 680 | 29.5 | 29.5 |
 | 800 | `interval` | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a | 160 | 4.0 | 4.0 |
 | 800 | `interval` | 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | 280 | 7.0 | 7.0 |
 | 800 | `interval` | 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 400 | 10.0 | 10.0 |
@@ -2249,6 +2480,26 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | 200 | `attribute-declared` | 8 | 0.454 ±0.055 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.350 ±0.072 | 0.375 ±0.068 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
 | 200 | `attribute-declared` | 9 | 0.392 ±0.058 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.200 ±0.077 | 0.150 ±0.072 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
 | 200 | `attribute-declared` | 10 | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
+| 200 | `question` | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a | 160 | 6.9 | 6.9 |
+| 200 | `question` | 2 | 0.729 ±0.056 | 0.425 ±0.155 | 0.475 ±0.157 | 0.475 ±0.157 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | 200 | 8.4 | 8.4 |
+| 200 | `question` | 3 | 0.717 ±0.057 | 0.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.675 ±0.147 | 0.625 ±0.152 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 8.5 | 8.5 |
+| 200 | `question` | 4 | 0.604 ±0.062 | 0.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.375 ±0.152 | 0.250 ±0.136 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 8.6 | 8.6 |
+| 200 | `question` | 5 | 0.500 ±0.063 | 0.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 8.6 | 8.6 |
+| 200 | `question` | 6 | 0.333 ±0.047 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 9.1 | 9.1 |
+| 200 | `question` | 7 | 0.500 ±0.052 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 9.1 | 9.1 |
+| 200 | `question` | 8 | 0.454 ±0.055 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.350 ±0.072 | 0.375 ±0.068 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 8.9 | 8.9 |
+| 200 | `question` | 9 | 0.392 ±0.058 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.200 ±0.077 | 0.150 ±0.072 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 8.7 | 8.7 |
+| 200 | `question` | 10 | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 8.5 | 8.5 |
+| 200 | `question-declared` | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a | 160 | 6.9 | 6.9 |
+| 200 | `question-declared` | 2 | 0.729 ±0.056 | 0.425 ±0.155 | 0.475 ±0.157 | 0.475 ±0.157 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | 200 | 8.4 | 8.4 |
+| 200 | `question-declared` | 3 | 0.717 ±0.057 | 0.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.675 ±0.147 | 0.625 ±0.152 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 8.5 | 8.5 |
+| 200 | `question-declared` | 4 | 0.604 ±0.062 | 0.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.375 ±0.152 | 0.250 ±0.136 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 8.6 | 8.6 |
+| 200 | `question-declared` | 5 | 0.500 ±0.063 | 0.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 8.6 | 8.6 |
+| 200 | `question-declared` | 6 | 0.333 ±0.047 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 9.1 | 9.1 |
+| 200 | `question-declared` | 7 | 0.500 ±0.052 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 9.1 | 9.1 |
+| 200 | `question-declared` | 8 | 0.454 ±0.055 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.350 ±0.072 | 0.375 ±0.068 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 8.9 | 8.9 |
+| 200 | `question-declared` | 9 | 0.392 ±0.058 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.200 ±0.077 | 0.150 ±0.072 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 8.7 | 8.7 |
+| 200 | `question-declared` | 10 | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 8.5 | 8.5 |
 | 200 | `interval` | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a | 160 | 4.0 | 4.0 |
 | 200 | `interval` | 2 | 0.729 ±0.056 | 0.425 ±0.155 | 0.475 ±0.157 | 0.475 ±0.157 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | 200 | 5.0 | 5.0 |
 | 200 | `interval` | 3 | 0.717 ±0.057 | 0.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.675 ±0.147 | 0.625 ±0.152 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 5.0 | 5.0 |
@@ -2399,6 +2650,26 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | 50 | `attribute-declared` | 8 | 0.192 ±0.050 | 0.000 ±0.000 | 0.150 ±0.112 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 50 | 1.2 | 1.2 |
 | 50 | `attribute-declared` | 9 | 0.167 ±0.047 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 50 | 1.2 | 1.2 |
 | 50 | `attribute-declared` | 10 | 0.167 ±0.047 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 50 | 1.2 | 1.2 |
+| 50 | `question` | 1 | 0.312 ±0.072 | 0.150 ±0.112 | 0.325 ±0.147 | 0.375 ±0.152 | n/a | n/a | 0.400 ±0.154 | n/a | 50 | 2.1 | 2.1 |
+| 50 | `question` | 2 | 0.208 ±0.051 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.475 ±0.157 | 0.325 ±0.147 | 0.450 ±0.156 | n/a | 50 | 2.1 | 2.1 |
+| 50 | `question` | 3 | 0.208 ±0.051 | 0.000 ±0.000 | 0.400 ±0.154 | 0.400 ±0.154 | 0.000 ±0.000 | 0.000 ±0.000 | 0.450 ±0.156 | 0.000 ±0.000 | 50 | 2.1 | 2.1 |
+| 50 | `question` | 4 | 0.192 ±0.050 | 0.000 ±0.000 | 0.125 ±0.104 | 0.025 ±0.049 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 50 | 2.2 | 2.2 |
+| 50 | `question` | 5 | 0.167 ±0.047 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 50 | 2.1 | 2.1 |
+| 50 | `question` | 6 | 0.133 ±0.035 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.225 ±0.078 | 0.225 ±0.078 | 0.350 ±0.150 | 0.000 ±0.000 | 50 | 2.4 | 2.4 |
+| 50 | `question` | 7 | 0.208 ±0.051 | 0.000 ±0.000 | 0.625 ±0.152 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.625 ±0.152 | 0.000 ±0.000 | 50 | 2.1 | 2.1 |
+| 50 | `question` | 8 | 0.192 ±0.050 | 0.000 ±0.000 | 0.150 ±0.112 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 50 | 2.1 | 2.1 |
+| 50 | `question` | 9 | 0.167 ±0.047 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 50 | 2.1 | 2.1 |
+| 50 | `question` | 10 | 0.167 ±0.047 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 50 | 2.1 | 2.1 |
+| 50 | `question-declared` | 1 | 0.312 ±0.072 | 0.150 ±0.112 | 0.325 ±0.147 | 0.375 ±0.152 | n/a | n/a | 0.400 ±0.154 | n/a | 50 | 2.1 | 2.1 |
+| 50 | `question-declared` | 2 | 0.208 ±0.051 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.475 ±0.157 | 0.325 ±0.147 | 0.450 ±0.156 | n/a | 50 | 2.1 | 2.1 |
+| 50 | `question-declared` | 3 | 0.208 ±0.051 | 0.000 ±0.000 | 0.400 ±0.154 | 0.400 ±0.154 | 0.000 ±0.000 | 0.000 ±0.000 | 0.450 ±0.156 | 0.000 ±0.000 | 50 | 2.1 | 2.1 |
+| 50 | `question-declared` | 4 | 0.192 ±0.050 | 0.000 ±0.000 | 0.125 ±0.104 | 0.025 ±0.049 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 50 | 2.2 | 2.2 |
+| 50 | `question-declared` | 5 | 0.167 ±0.047 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 50 | 2.1 | 2.1 |
+| 50 | `question-declared` | 6 | 0.133 ±0.035 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.225 ±0.078 | 0.225 ±0.078 | 0.350 ±0.150 | 0.000 ±0.000 | 50 | 2.4 | 2.4 |
+| 50 | `question-declared` | 7 | 0.208 ±0.051 | 0.000 ±0.000 | 0.625 ±0.152 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.625 ±0.152 | 0.000 ±0.000 | 50 | 2.1 | 2.1 |
+| 50 | `question-declared` | 8 | 0.192 ±0.050 | 0.000 ±0.000 | 0.150 ±0.112 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 50 | 2.1 | 2.1 |
+| 50 | `question-declared` | 9 | 0.167 ±0.047 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 50 | 2.1 | 2.1 |
+| 50 | `question-declared` | 10 | 0.167 ±0.047 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 50 | 2.1 | 2.1 |
 | 50 | `interval` | 1 | 0.312 ±0.072 | 0.150 ±0.112 | 0.325 ±0.147 | 0.375 ±0.152 | n/a | n/a | 0.400 ±0.154 | n/a | 50 | 1.2 | 1.2 |
 | 50 | `interval` | 2 | 0.208 ±0.051 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.475 ±0.157 | 0.325 ±0.147 | 0.450 ±0.156 | n/a | 50 | 1.2 | 1.2 |
 | 50 | `interval` | 3 | 0.208 ±0.051 | 0.000 ±0.000 | 0.400 ±0.154 | 0.400 ±0.154 | 0.000 ±0.000 | 0.000 ±0.000 | 0.450 ±0.156 | 0.000 ±0.000 | 50 | 1.2 | 1.2 |
@@ -2491,6 +2762,8 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | `oldest` | `attribute-learned` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
 | `oldest` | `attribute-cued` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
 | `oldest` | `attribute-declared` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
+| `oldest` | `question` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 8.5 | 8.5 |
+| `oldest` | `question-declared` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 8.5 | 8.5 |
 | `oldest` | `interval` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
 | `oldest` | `interval-declared` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
 | `oldest` | `log` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
@@ -2506,6 +2779,8 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | `least-recently-read` | `attribute-learned` | 0.388 ±0.058 | 1.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.138 ±0.070 | 0.188 ±0.076 | 0.000 ±0.000 | 0.500 ±0.110 | 200 | 5.0 | 5.0 |
 | `least-recently-read` | `attribute-cued` | 0.431 ±0.060 | 1.000 ±0.000 | 0.300 ±0.144 | 1.000 ±0.000 | 0.163 ±0.089 | 0.125 ±0.068 | 0.000 ±0.000 | 0.000 ±0.000 | 200 | 5.0 | 5.0 |
 | `least-recently-read` | `attribute-declared` | 0.438 ±0.059 | 1.000 ±0.000 | 0.300 ±0.144 | 1.000 ±0.000 | 0.138 ±0.070 | 0.188 ±0.076 | 0.000 ±0.000 | 0.000 ±0.000 | 200 | 5.0 | 5.0 |
+| `least-recently-read` | `question` | 0.435 ±0.061 | 1.000 ±0.000 | 0.300 ±0.144 | 1.000 ±0.000 | 0.062 ±0.052 | 0.250 ±0.111 | 0.000 ±0.000 | 0.000 ±0.000 | 200 | 8.7 | 8.7 |
+| `least-recently-read` | `question-declared` | 0.438 ±0.059 | 1.000 ±0.000 | 0.300 ±0.144 | 1.000 ±0.000 | 0.138 ±0.070 | 0.188 ±0.076 | 0.000 ±0.000 | 0.000 ±0.000 | 200 | 8.6 | 8.6 |
 | `least-recently-read` | `interval` | 0.333 ±0.060 | 1.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 200 | 5.0 | 5.0 |
 | `least-recently-read` | `interval-declared` | 0.388 ±0.058 | 1.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.138 ±0.070 | 0.188 ±0.076 | 0.000 ±0.000 | 0.000 ±0.000 | 200 | 5.0 | 5.0 |
 | `least-recently-read` | `log` | 0.388 ±0.058 | 1.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.138 ±0.070 | 0.188 ±0.076 | 0.000 ±0.000 | 0.500 ±0.110 | 200 | 5.0 | 5.0 |
@@ -2521,6 +2796,8 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | `never-read` | `attribute-learned` | 0.385 ±0.058 | 1.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.188 ±0.076 | 0.125 ±0.068 | 0.000 ±0.000 | 0.500 ±0.110 | 200 | 5.0 | 5.0 |
 | `never-read` | `attribute-cued` | 0.404 ±0.059 | 0.975 ±0.049 | 0.175 ±0.119 | 1.000 ±0.000 | 0.263 ±0.078 | 0.013 ±0.024 | 0.000 ±0.000 | 0.000 ±0.000 | 200 | 5.0 | 5.0 |
 | `never-read` | `attribute-declared` | 0.410 ±0.059 | 0.975 ±0.049 | 0.175 ±0.119 | 1.000 ±0.000 | 0.188 ±0.076 | 0.125 ±0.068 | 0.000 ±0.000 | 0.000 ±0.000 | 200 | 5.0 | 5.0 |
+| `never-read` | `question` | 0.396 ±0.060 | 0.975 ±0.049 | 0.175 ±0.119 | 1.000 ±0.000 | 0.087 ±0.060 | 0.138 ±0.070 | 0.000 ±0.000 | 0.000 ±0.000 | 200 | 8.6 | 8.6 |
+| `never-read` | `question-declared` | 0.410 ±0.059 | 0.975 ±0.049 | 0.175 ±0.119 | 1.000 ±0.000 | 0.188 ±0.076 | 0.125 ±0.068 | 0.000 ±0.000 | 0.000 ±0.000 | 200 | 8.6 | 8.6 |
 | `never-read` | `interval` | 0.267 ±0.056 | 0.850 ±0.112 | 0.000 ±0.000 | 0.750 ±0.136 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 200 | 5.0 | 5.0 |
 | `never-read` | `interval-declared` | 0.319 ±0.055 | 0.850 ±0.112 | 0.000 ±0.000 | 0.750 ±0.136 | 0.188 ±0.076 | 0.125 ±0.068 | 0.000 ±0.000 | 0.000 ±0.000 | 200 | 5.0 | 5.0 |
 | `never-read` | `log` | 0.319 ±0.055 | 0.850 ±0.112 | 0.000 ±0.000 | 0.750 ±0.136 | 0.188 ±0.076 | 0.125 ±0.068 | 0.000 ±0.000 | 0.375 ±0.107 | 200 | 5.0 | 5.0 |
@@ -2536,6 +2813,8 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | `lowest-salience` | `attribute-learned` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
 | `lowest-salience` | `attribute-cued` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
 | `lowest-salience` | `attribute-declared` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
+| `lowest-salience` | `question` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 8.5 | 8.5 |
+| `lowest-salience` | `question-declared` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 8.5 | 8.5 |
 | `lowest-salience` | `interval` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
 | `lowest-salience` | `interval-declared` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
 | `lowest-salience` | `log` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
@@ -2551,6 +2830,8 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | `declared-disposable` | `attribute-learned` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
 | `declared-disposable` | `attribute-cued` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
 | `declared-disposable` | `attribute-declared` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
+| `declared-disposable` | `question` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 8.5 | 8.5 |
+| `declared-disposable` | `question-declared` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 8.5 | 8.5 |
 | `declared-disposable` | `interval` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
 | `declared-disposable` | `interval-declared` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
 | `declared-disposable` | `log` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
@@ -2571,6 +2852,8 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | 64 | `attribute-learned` | 1.000 ±0.000 | 1.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 48 ±2 |
 | 64 | `attribute-cued` | 0.917 ±0.024 | 0.000 ±0.000 | 0.131 ±0.007 | 0.917 ±0.024 | 30 ±1 |
 | 64 | `attribute-declared` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 34 ±2 |
+| 64 | `question` | 0.917 ±0.024 | 0.000 ±0.000 | 0.130 ±0.006 | 0.917 ±0.024 | 53 ±3 |
+| 64 | `question-declared` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 61 ±3 |
 | 64 | `interval` | 0.833 ±0.030 | 0.000 ±0.000 | 0.113 ±0.004 | 0.833 ±0.030 | 25 ±0 |
 | 64 | `interval-declared` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 34 ±2 |
 | 64 | `log` | 0.833 ±0.030 | 0.000 ±0.000 | 0.113 ±0.004 | 0.833 ±0.030 | 25 ±0 |
@@ -2586,6 +2869,8 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | 128 | `attribute-learned` | 1.000 ±0.000 | 1.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 48 ±2 |
 | 128 | `attribute-cued` | 0.917 ±0.024 | 0.000 ±0.000 | 0.131 ±0.007 | 0.917 ±0.024 | 30 ±1 |
 | 128 | `attribute-declared` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 34 ±2 |
+| 128 | `question` | 0.917 ±0.024 | 0.000 ±0.000 | 0.130 ±0.006 | 0.917 ±0.024 | 53 ±3 |
+| 128 | `question-declared` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 61 ±3 |
 | 128 | `interval` | 0.833 ±0.030 | 0.000 ±0.000 | 0.113 ±0.004 | 0.833 ±0.030 | 25 ±0 |
 | 128 | `interval-declared` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 34 ±2 |
 | 128 | `log` | 0.833 ±0.030 | 0.000 ±0.000 | 0.113 ±0.004 | 0.833 ±0.030 | 25 ±0 |
@@ -2601,6 +2886,8 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | 256 | `attribute-learned` | 1.000 ±0.000 | 1.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 48 ±2 |
 | 256 | `attribute-cued` | 0.917 ±0.024 | 0.000 ±0.000 | 0.131 ±0.007 | 0.917 ±0.024 | 30 ±1 |
 | 256 | `attribute-declared` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 34 ±2 |
+| 256 | `question` | 0.917 ±0.024 | 0.000 ±0.000 | 0.130 ±0.006 | 0.917 ±0.024 | 53 ±3 |
+| 256 | `question-declared` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 61 ±3 |
 | 256 | `interval` | 0.833 ±0.030 | 0.000 ±0.000 | 0.113 ±0.004 | 0.833 ±0.030 | 25 ±0 |
 | 256 | `interval-declared` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 34 ±2 |
 | 256 | `log` | 0.833 ±0.030 | 0.000 ±0.000 | 0.113 ±0.004 | 0.833 ±0.030 | 25 ±0 |
@@ -2616,6 +2903,8 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | 512 | `attribute-learned` | 1.000 ±0.000 | 1.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 48 ±2 |
 | 512 | `attribute-cued` | 0.917 ±0.024 | 0.000 ±0.000 | 0.131 ±0.007 | 0.917 ±0.024 | 30 ±1 |
 | 512 | `attribute-declared` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 34 ±2 |
+| 512 | `question` | 0.917 ±0.024 | 0.000 ±0.000 | 0.130 ±0.006 | 0.917 ±0.024 | 53 ±3 |
+| 512 | `question-declared` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 61 ±3 |
 | 512 | `interval` | 0.833 ±0.030 | 0.000 ±0.000 | 0.113 ±0.004 | 0.833 ±0.030 | 25 ±0 |
 | 512 | `interval-declared` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 34 ±2 |
 | 512 | `log` | 0.833 ±0.030 | 0.000 ±0.000 | 0.113 ±0.004 | 0.833 ±0.030 | 25 ±0 |
@@ -2631,6 +2920,8 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | 1024 | `attribute-learned` | 1.000 ±0.000 | 1.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 48 ±2 |
 | 1024 | `attribute-cued` | 0.917 ±0.024 | 0.000 ±0.000 | 0.131 ±0.007 | 0.917 ±0.024 | 30 ±1 |
 | 1024 | `attribute-declared` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 34 ±2 |
+| 1024 | `question` | 0.917 ±0.024 | 0.000 ±0.000 | 0.130 ±0.006 | 0.917 ±0.024 | 53 ±3 |
+| 1024 | `question-declared` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 61 ±3 |
 | 1024 | `interval` | 0.833 ±0.030 | 0.000 ±0.000 | 0.113 ±0.004 | 0.833 ±0.030 | 25 ±0 |
 | 1024 | `interval-declared` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 34 ±2 |
 | 1024 | `log` | 0.833 ±0.030 | 0.000 ±0.000 | 0.113 ±0.004 | 0.833 ±0.030 | 25 ±0 |
@@ -2646,6 +2937,8 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | 2048 | `attribute-learned` | 1.000 ±0.000 | 1.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 48 ±2 |
 | 2048 | `attribute-cued` | 0.917 ±0.024 | 0.000 ±0.000 | 0.131 ±0.007 | 0.917 ±0.024 | 30 ±1 |
 | 2048 | `attribute-declared` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 34 ±2 |
+| 2048 | `question` | 0.917 ±0.024 | 0.000 ±0.000 | 0.130 ±0.006 | 0.917 ±0.024 | 53 ±3 |
+| 2048 | `question-declared` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 61 ±3 |
 | 2048 | `interval` | 0.833 ±0.030 | 0.000 ±0.000 | 0.113 ±0.004 | 0.833 ±0.030 | 25 ±0 |
 | 2048 | `interval-declared` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 34 ±2 |
 | 2048 | `log` | 0.833 ±0.030 | 0.000 ±0.000 | 0.113 ±0.004 | 0.833 ±0.030 | 25 ±0 |
@@ -2764,6 +3057,8 @@ Each varies one thing: `clausal` is the sentence and `packed` is the number of d
 | `plain` | `oracle` | `attribute-learned` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 240 |
 | `plain` | `oracle` | `attribute-cued` | 0.917 ±0.043 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 192 |
 | `plain` | `oracle` | `attribute-declared` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 204 |
+| `plain` | `oracle` | `question` | 0.917 ±0.043 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 192 |
+| `plain` | `oracle` | `question-declared` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 204 |
 | `plain` | `oracle` | `interval` | 0.833 ±0.055 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 252 |
 | `plain` | `oracle` | `interval-declared` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 252 |
 | `plain` | `oracle` | `log` | 0.833 ±0.055 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 252 |
@@ -2779,6 +3074,8 @@ Each varies one thing: `clausal` is the sentence and `packed` is the number of d
 | `plain` | `text` | `attribute-learned` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `plain` | `text` | `attribute-cued` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `plain` | `text` | `attribute-declared` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
+| `plain` | `text` | `question` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
+| `plain` | `text` | `question-declared` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `plain` | `text` | `interval` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `plain` | `text` | `interval-declared` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `plain` | `text` | `log` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
@@ -2794,6 +3091,8 @@ Each varies one thing: `clausal` is the sentence and `packed` is the number of d
 | `plain` | `extracted` | `attribute-learned` | 0.903 ±0.066 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.792 ±0.224 | 0.958 ±0.082 | 0.917 ±0.163 | 0.917 ±0.113 | 210 |
 | `plain` | `extracted` | `attribute-cued` | 0.826 ±0.073 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.792 ±0.224 | 0.500 ±0.000 | 0.917 ±0.163 | 0.000 ±0.000 | 165 |
 | `plain` | `extracted` | `attribute-declared` | 0.792 ±0.074 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.583 ±0.203 | 0.500 ±0.000 | 0.917 ±0.163 | 0.000 ±0.000 | 160 |
+| `plain` | `extracted` | `question` | 0.840 ±0.072 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.417 ±0.110 | 0.958 ±0.082 | 0.917 ±0.163 | 0.000 ±0.000 | 167 |
+| `plain` | `extracted` | `question-declared` | 0.868 ±0.070 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.583 ±0.203 | 0.958 ±0.082 | 0.917 ±0.163 | 0.000 ±0.000 | 171 |
 | `plain` | `extracted` | `interval` | 0.764 ±0.075 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.417 ±0.110 | 0.500 ±0.000 | 0.917 ±0.163 | 0.000 ±0.000 | 219 |
 | `plain` | `extracted` | `interval-declared` | 0.792 ±0.074 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.583 ±0.203 | 0.500 ±0.000 | 0.917 ±0.163 | 0.000 ±0.000 | 219 |
 | `plain` | `extracted` | `log` | 0.764 ±0.075 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.417 ±0.110 | 0.500 ±0.000 | 0.917 ±0.163 | 0.000 ±0.000 | 219 |
@@ -2809,6 +3108,8 @@ Each varies one thing: `clausal` is the sentence and `packed` is the number of d
 | `clausal` | `oracle` | `attribute-learned` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 240 |
 | `clausal` | `oracle` | `attribute-cued` | 0.917 ±0.043 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 192 |
 | `clausal` | `oracle` | `attribute-declared` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 204 |
+| `clausal` | `oracle` | `question` | 0.896 ±0.047 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.875 ±0.128 | 1.000 ±0.000 | 0.000 ±0.000 | 189 |
+| `clausal` | `oracle` | `question-declared` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 204 |
 | `clausal` | `oracle` | `interval` | 0.833 ±0.055 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 252 |
 | `clausal` | `oracle` | `interval-declared` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 252 |
 | `clausal` | `oracle` | `log` | 0.833 ±0.055 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 252 |
@@ -2824,6 +3125,8 @@ Each varies one thing: `clausal` is the sentence and `packed` is the number of d
 | `clausal` | `text` | `attribute-learned` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `clausal` | `text` | `attribute-cued` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `clausal` | `text` | `attribute-declared` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
+| `clausal` | `text` | `question` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
+| `clausal` | `text` | `question-declared` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `clausal` | `text` | `interval` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `clausal` | `text` | `interval-declared` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `clausal` | `text` | `log` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
@@ -2839,6 +3142,8 @@ Each varies one thing: `clausal` is the sentence and `packed` is the number of d
 | `clausal` | `extracted` | `attribute-learned` | 0.965 ±0.035 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.875 ±0.176 | 0.917 ±0.110 | 1.000 ±0.000 | 0.958 ±0.082 | 222 |
 | `clausal` | `extracted` | `attribute-cued` | 0.896 ±0.051 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.875 ±0.176 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 177 |
 | `clausal` | `extracted` | `attribute-declared` | 0.861 ±0.056 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.667 ±0.184 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 172 |
+| `clausal` | `extracted` | `question` | 0.875 ±0.054 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.458 ±0.082 | 0.792 ±0.146 | 1.000 ±0.000 | 0.000 ±0.000 | 174 |
+| `clausal` | `extracted` | `question-declared` | 0.910 ±0.049 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.667 ±0.184 | 0.792 ±0.146 | 1.000 ±0.000 | 0.000 ±0.000 | 179 |
 | `clausal` | `extracted` | `interval` | 0.826 ±0.059 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.458 ±0.082 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 231 |
 | `clausal` | `extracted` | `interval-declared` | 0.861 ±0.056 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.667 ±0.184 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 231 |
 | `clausal` | `extracted` | `log` | 0.826 ±0.059 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.458 ±0.082 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 231 |
@@ -2854,6 +3159,8 @@ Each varies one thing: `clausal` is the sentence and `packed` is the number of d
 | `packed` | `oracle` | `attribute-learned` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 240 |
 | `packed` | `oracle` | `attribute-cued` | 0.917 ±0.043 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 192 |
 | `packed` | `oracle` | `attribute-declared` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 204 |
+| `packed` | `oracle` | `question` | 0.917 ±0.043 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 192 |
+| `packed` | `oracle` | `question-declared` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 204 |
 | `packed` | `oracle` | `interval` | 0.833 ±0.055 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 252 |
 | `packed` | `oracle` | `interval-declared` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 252 |
 | `packed` | `oracle` | `log` | 0.833 ±0.055 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 252 |
@@ -2869,6 +3176,8 @@ Each varies one thing: `clausal` is the sentence and `packed` is the number of d
 | `packed` | `text` | `attribute-learned` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `packed` | `text` | `attribute-cued` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `packed` | `text` | `attribute-declared` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
+| `packed` | `text` | `question` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
+| `packed` | `text` | `question-declared` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `packed` | `text` | `interval` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `packed` | `text` | `interval-declared` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `packed` | `text` | `log` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
@@ -2884,6 +3193,8 @@ Each varies one thing: `clausal` is the sentence and `packed` is the number of d
 | `packed` | `extracted` | `attribute-learned` | 0.917 ±0.055 | 1.000 ±0.000 | 1.000 ±0.000 | 0.917 ±0.163 | 0.833 ±0.220 | 0.750 ±0.148 | 1.000 ±0.000 | 0.917 ±0.113 | 218 |
 | `packed` | `extracted` | `attribute-cued` | 0.868 ±0.064 | 1.000 ±0.000 | 1.000 ±0.000 | 0.917 ±0.163 | 0.833 ±0.220 | 0.458 ±0.082 | 1.000 ±0.000 | 0.000 ±0.000 | 175 |
 | `packed` | `extracted` | `attribute-declared` | 0.847 ±0.066 | 1.000 ±0.000 | 1.000 ±0.000 | 0.917 ±0.163 | 0.708 ±0.224 | 0.458 ±0.082 | 1.000 ±0.000 | 0.125 ±0.135 | 176 |
+| `packed` | `extracted` | `question` | 0.840 ±0.067 | 1.000 ±0.000 | 1.000 ±0.000 | 0.917 ±0.163 | 0.417 ±0.110 | 0.708 ±0.189 | 1.000 ±0.000 | 0.000 ±0.000 | 171 |
+| `packed` | `extracted` | `question-declared` | 0.889 ±0.062 | 1.000 ±0.000 | 1.000 ±0.000 | 0.917 ±0.163 | 0.708 ±0.224 | 0.708 ±0.189 | 1.000 ±0.000 | 0.125 ±0.135 | 182 |
 | `packed` | `extracted` | `interval` | 0.799 ±0.069 | 1.000 ±0.000 | 1.000 ±0.000 | 0.917 ±0.163 | 0.417 ±0.110 | 0.458 ±0.082 | 1.000 ±0.000 | 0.000 ±0.000 | 229 |
 | `packed` | `extracted` | `interval-declared` | 0.847 ±0.066 | 1.000 ±0.000 | 1.000 ±0.000 | 0.917 ±0.163 | 0.708 ±0.224 | 0.458 ±0.082 | 1.000 ±0.000 | 0.125 ±0.135 | 229 |
 | `packed` | `extracted` | `log` | 0.799 ±0.069 | 1.000 ±0.000 | 1.000 ±0.000 | 0.917 ±0.163 | 0.417 ±0.110 | 0.458 ±0.082 | 1.000 ±0.000 | 0.000 ±0.000 | 229 |
@@ -3354,6 +3665,13 @@ The figure that matters for the designs coming next is in the cost table below, 
 | cost of declaring, USD | 0.0109 |
 | call bound declaring refuses to pass | 1000 |
 | cost bound declaring refuses to pass, USD | 0.25 |
+| paid calls, addressing | 840 |
+| assertions addressed | 840 |
+| prompt tokens, addressing | 214623 |
+| completion tokens, addressing | 16041 |
+| cost of addressing, USD | 0.0279 |
+| call bound addressing refuses to pass | 1000 |
+| cost bound addressing refuses to pass, USD | 0.25 |
 | paid calls, resampling | 720 |
 | prompt tokens, resampling | 92880 |
 | completion tokens, resampling | 720 |

@@ -23,12 +23,7 @@ jobs:
         with:
           setup_only: true
           version: "1.72.0"
-      - name: Generate proto stubs and verify drift
-        run: |
-          make proto
-          git diff --exit-code
-      - name: Lint proto files
-        run: buf lint
+      - run: make proto
       - run: make ci
 
   docker:

@@ -20,6 +20,7 @@ non-zero when a check fails, when an anchor no longer matches the document it re
 or when a KNOWN entry no longer describes what the two sides say.
 """
 from __future__ import annotations
+import glob
 import math
 import os
 import re
@@ -463,6 +464,20 @@ def curated_ratios():
     return out
 
 
+def stale_columns():
+    """Committed results carrying a stale-recall metric. `runner.py` renders one;
+    every committed output predates that renderer, so the count is zero."""
+    hits = 0
+    for path in sorted(glob.glob(os.path.join(RESULTS, "*.md"))):
+        header = [ln for ln in open(path) if ln.lstrip().startswith("|")]
+        if header and any("stale" in cell.lower() for cell in _cells(header[0])):
+            hits += 1
+    for path in sorted(glob.glob(os.path.join(RESULTS, "*.json"))):
+        if re.search(r'"[^"]*stale[^"]*"\s*:', open(path).read(), re.I):
+            hits += 1
+    return hits
+
+
 def adr():
     s = "ADR 0006"
     text = open(ADR).read()
@@ -502,10 +517,17 @@ def adr():
         check(s, f"widest density margin ({section})", a.one(1),
               source, max(densities))
 
-    unsourced(s, "Consequences: 'stale recall drops (experiment: 0.17 vs 0.50 for "
-                 "non-superseding architectures)'",
-              "no committed file carries either figure: results/ has no stale column, "
-              "and memory-creation's stale_present never takes 0.50")
+    # The supersession consequence carries no figure because nothing measures it.
+    # Both sides are watched: a figure returning to the line fails the first check,
+    # a stale column reaching `results/` fails the second and says one could be
+    # stated again.
+    bullet = Anchor(r"\n- (Supersession keeps the latest version[^\n]*)", text).one()
+    check(s, "figures on the supersession consequence", 0,
+          "decimals in the Consequences bullet",
+          len(re.findall(r"\d+\.\d+", bullet)), rounded=False)
+    check(s, "committed stale-recall measurements", 0,
+          "results/ table columns and raw keys naming stale", stale_columns(),
+          rounded=False)
 
 
 # --- Pairs that already disagree ------------------------------------------

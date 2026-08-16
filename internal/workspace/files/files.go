@@ -74,13 +74,16 @@ func (f *FS) HandOver(uid int) error {
 		return nil
 	}
 	f.ownerUID = uid
-	if err := f.chownToOwner(f.root); err != nil {
-		return err
+	// Reclaim the directory before setting its mode: a workspace
+	// without CAP_FOWNER can only chmod what it owns, and a restart
+	// finds the directory already handed to the exec account.
+	if err := os.Chown(f.root, os.Geteuid(), -1); err != nil {
+		return fmt.Errorf("reclaim %q: %w", f.root, err)
 	}
 	if err := os.Chmod(f.root, dirModeHandedTo); err != nil {
 		return fmt.Errorf("chmod %q to %o: %w", f.root, dirModeHandedTo, err)
 	}
-	return nil
+	return f.chownToOwner(f.root)
 }
 
 // chownToOwner gives path to the exec account. It is a no-op on a

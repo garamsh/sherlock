@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Stands up the deployment README.md documents and fails unless the agent
 # starts and runs the canned turn clean: every tool call succeeds and the
-# reply lands. `make smoke-local` runs it, and so does the docker job in
+# reply lands. Contributors invoke it directly, as does the docker job in
 # .github/workflows/ci.yml.
 set -euo pipefail
 

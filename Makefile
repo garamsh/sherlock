@@ -14,6 +14,11 @@ format-fix:
 
 test:
 	@if [ -f go.mod ]; then go test ./...; else echo "no go.mod yet; skipping go test"; fi
+# Which entry point carries a documentation check is open in #397. Until it is
+# settled these sit behind `test` rather than under a fifth name; moving them is
+# moving these two lines.
+	@python3 harness/reference_check.py
+	@python3 harness/reference_check_fixtures.py
 
 build:
 	@if [ -f go.mod ]; then go build ./...; else echo "no go.mod yet; skipping go build"; fi

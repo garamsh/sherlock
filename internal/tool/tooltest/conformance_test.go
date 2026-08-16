@@ -1,9 +1,6 @@
 package tooltest_test
 
 import (
-	"encoding/json"
-	"os"
-	"path/filepath"
 	"strings"
 	"testing"
 
@@ -133,76 +130,14 @@ func TestCheck_ThenInheritsParentProperties(t *testing.T) {
 // passes; this is the gate the issue calls out as the build-time guard.
 //
 // The tools became script-tool manifests in Phase 3 (#311); the
-// conformance check now extracts the input_schema and output_schema
-// from each manifest.json so the same gate covers the new shape.
+// conformance check extracts the input_schema and output_schema from
+// each manifest.json, which is the only copy of a tool's contract.
 func TestCheckSchema_AcceptsEveryBuiltinDocument(t *testing.T) {
-	for _, c := range []struct {
-		name   string
-		source string
-	}{
-		{"files", "tools/files/manifest.json"},
-		{"github", "tools/github/manifest.json"},
-		{"message", "internal/message/schema.json"},
-		{"shell_exec", "tools/shell_exec/manifest.json"},
-	} {
-		t.Run(c.name, func(t *testing.T) {
-			schema := mustRead(t, c.source)
-			if strings.HasSuffix(c.source, "manifest.json") {
-				input, output := extractManifestSchemas(t, schema)
-				tooltest.CheckSchema(t, c.name+"-input", input)
-				tooltest.CheckSchema(t, c.name+"-output", output)
-				return
-			}
-			input, output := tooltest.SubSchemas(t, schema)
-			tooltest.CheckSchema(t, c.name+"-input", input)
-			tooltest.CheckSchema(t, c.name+"-output", output)
+	for _, name := range []string{"files", "github", "message_send", "shell_exec"} {
+		t.Run(name, func(t *testing.T) {
+			input, output := tooltest.ManifestSchemas(t, tooltest.ReadManifest(t, name))
+			tooltest.CheckSchema(t, name+"-input", input)
+			tooltest.CheckSchema(t, name+"-output", output)
 		})
-	}
-}
-
-// extractManifestSchemas splits a script-tool manifest.json into the
-// input_schema and output_schema documents the conformance check
-// runs against. Manifests are the source of truth on disk; per-doc
-// schemas let the same suite check both halves of each tool.
-func extractManifestSchemas(t *testing.T, raw []byte) (input, output []byte) {
-	t.Helper()
-	var doc struct {
-		InputSchema  json.RawMessage `json:"input_schema"`
-		OutputSchema json.RawMessage `json:"output_schema"`
-	}
-	if err := json.Unmarshal(raw, &doc); err != nil {
-		t.Fatalf("decode manifest: %v", err)
-	}
-	return doc.InputSchema, doc.OutputSchema
-}
-
-func mustRead(t *testing.T, path string) []byte {
-	t.Helper()
-	rel := filepath.Join(repoRoot(t), path)
-	data, err := os.ReadFile(rel)
-	if err != nil {
-		t.Fatalf("read %s: %v", rel, err)
-	}
-	return data
-}
-
-// repoRoot returns the module root for the current test process. Files
-// in test cases reference paths relative to the repo, not the test
-// package's directory, so a single helper resolves the root once.
-func repoRoot(t *testing.T) string {
-	t.Helper()
-	dir, err := os.Getwd()
-	if err != nil {
-		t.Fatalf("getwd: %v", err)
-	}
-	for {
-		if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
-			return dir
-		}
-		parent := filepath.Dir(dir)
-		if parent == dir {
-			t.Fatalf("could not locate module root from %s", dir)
-		}
-		dir = parent
 	}
 }

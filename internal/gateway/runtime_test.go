@@ -22,6 +22,7 @@ import (
 	"github.com/garamsh/gagent/internal/memory/sqlite"
 	"github.com/garamsh/gagent/internal/message"
 	"github.com/garamsh/gagent/internal/tool"
+	"github.com/garamsh/gagent/internal/tool/tooltest"
 )
 
 // recordingSink captures outbound messages.
@@ -437,9 +438,13 @@ func TestFactory_NilToolClientIsFatal(t *testing.T) {
 	assert.Contains(t, err.Error(), "no tool client configured")
 }
 
+// TestMessageSendTool_DescriptionAndSchemaSatisfyOpenAISubset reads the
+// manifest the registry loads and shows the model, so a forbidden
+// keyword added to the shipped contract fails here.
 func TestMessageSendTool_DescriptionAndSchemaSatisfyOpenAISubset(t *testing.T) {
+	input, _ := tooltest.ManifestSchemas(t, tooltest.ReadManifest(t, "message_send"))
 	var schema map[string]json.RawMessage
-	require.NoError(t, json.Unmarshal(message.InputSchema(), &schema))
+	require.NoError(t, json.Unmarshal(input, &schema))
 	require.Contains(t, schema, "type")
 	assert.JSONEq(t, `"object"`, string(schema["type"]),
 		"the API requires top-level type object")

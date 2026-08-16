@@ -18,7 +18,6 @@ import (
 	"github.com/spf13/pflag"
 
 	"github.com/garamsh/gagent/internal/agent"
-	"github.com/garamsh/gagent/internal/agent/openai"
 	"github.com/garamsh/gagent/internal/gateway"
 	"github.com/garamsh/gagent/internal/message"
 	"github.com/garamsh/gagent/internal/tool"
@@ -111,9 +110,11 @@ func newAgentFactory(ctx context.Context, cfg Config, ego string, logger *slog.L
 // buildToolRegistry loads the operator's tools directory through the
 // script-tool registry (ADR 0009 §Decision). The directory defaults to
 // ./tools; an operator can override it through the env or the tools-dir
-// config key. Each tool's manifest pins a SHA-256 of the canonical
-// bytes the registry refuses to load on drift; the registry's
-// required-tool check fails closed on a missing required name.
+// config key. The registry holds each manifest's SHA-256 against the
+// operator's tools.pins set and refuses a tool that drifted from its
+// pin or that the set does not name; without the section it warns and
+// loads unpinned. The required-tool check fails closed on a missing
+// required name either way.
 //
 // The script-tool runner inherits the agent's environment when it
 // spawns each tool (internal/tool/runner.go). The agent's tools read
@@ -132,10 +133,7 @@ func buildToolRegistry(cfg Config, logger *slog.Logger) (*tool.Registry, error) 
 		Logger:   logger,
 		Dir:      dir,
 		Required: tool.DefaultRequiredTools,
-		// The runtime validates inputs and outputs against the
-		// sanitizer's view, so the model-facing surface and the
-		// runtime's gate are the same shape (issue #319).
-		Sanitize: openai.SanitizeToolParameters,
+		Pins:     cfg.Tools.Pins,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("tool registry: %w", err)

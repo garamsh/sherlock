@@ -117,6 +117,153 @@ func TestScriptTool_DriftPinRefusesLoad(t *testing.T) {
 	assert.Contains(t, err.Error(), "descriptor drift")
 }
 
+// optionalFieldToolFixture installs a fixture whose manifest declares
+// one optional field on each side: `optional_field` is absent from the
+// input schema's `required`, `detail` is absent from the output
+// schema's. The script ignores its input and answers with the required
+// output field alone. The fixture is what makes the two gates
+// measurable against the manifest rather than against a projection of
+// it.
+func optionalFieldToolFixture(t *testing.T, root string) (manifestHash string) {
+	t.Helper()
+	toolDir := filepath.Join(root, "demo")
+	require.NoError(t, os.MkdirAll(toolDir, 0o755))
+	manifest := []byte(`{
+		"name": "demo",
+		"description": "one optional field on each side",
+		"command": "demo.sh",
+		"input_schema": {
+			"type": "object",
+			"properties": {
+				"required_field": {"type": "string"},
+				"optional_field": {"type": "string"}
+			},
+			"required": ["required_field"],
+			"additionalProperties": false
+		},
+		"output_schema": {
+			"type": "object",
+			"properties": {
+				"status": {"type": "string"},
+				"detail": {"type": "string"}
+			},
+			"required": ["status"],
+			"additionalProperties": false
+		}
+	}`)
+	require.NoError(t, os.WriteFile(filepath.Join(toolDir, "manifest.json"), manifest, 0o644))
+	script := []byte("#!/bin/sh\ncat >/dev/null\nprintf %s '{\"status\":\"ok\"}'\n")
+	require.NoError(t, os.WriteFile(filepath.Join(toolDir, "demo.sh"), script, 0o755))
+	hash, err := tool.ManifestHashOfFile(filepath.Join(toolDir, "manifest.json"))
+	require.NoError(t, err)
+	return hash
+}
+
+// optionalFieldRegistry builds the registry over the optional-field
+// fixture with the fixture pinned.
+func optionalFieldRegistry(t *testing.T) *tool.Registry {
+	t.Helper()
+	root := t.TempDir()
+	hash := optionalFieldToolFixture(t, root)
+	reg, err := tool.NewRegistry(tool.RegistryOptions{
+		Dir:      root,
+		Pins:     tool.ManifestPins{"demo": hash},
+		Required: []string{"demo"},
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() { reg.Close() })
+	return reg
+}
+
+// TestScriptTool_ManifestGateAcceptsOmittedOptionalInput holds ADR 0009
+// invariant 3 to the manifest: `optional_field` is optional there, so a
+// call that omits it satisfies the contract and must reach the tool.
+func TestScriptTool_ManifestGateAcceptsOmittedOptionalInput(t *testing.T) {
+	reg := optionalFieldRegistry(t)
+
+	out, err := reg.Call(context.Background(), "demo", json.RawMessage(`{"required_field":"x"}`))
+	require.NoError(t, err)
+	assert.JSONEq(t, `{"status":"ok"}`, string(out))
+}
+
+// TestScriptTool_ManifestGateReadsNullAsAbsent keeps issue #319's
+// outcome on the manifest gate: the model-facing projection promotes an
+// optional property to required + nullable, so the null the model then
+// emits for it reads as absence instead of as a type violation.
+func TestScriptTool_ManifestGateReadsNullAsAbsent(t *testing.T) {
+	reg := optionalFieldRegistry(t)
+
+	out, err := reg.Call(context.Background(), "demo",
+		json.RawMessage(`{"required_field":"x","optional_field":null}`))
+	require.NoError(t, err)
+	assert.JSONEq(t, `{"status":"ok"}`, string(out))
+}
+
+// TestScriptTool_ManifestGateRejectsNullOnRequiredInput bounds the rule
+// above: absence is only what the manifest already permits. A null on a
+// property the manifest requires is the type violation it looks like.
+func TestScriptTool_ManifestGateRejectsNullOnRequiredInput(t *testing.T) {
+	reg := optionalFieldRegistry(t)
+
+	_, err := reg.Call(context.Background(), "demo", json.RawMessage(`{"required_field":null}`))
+	require.Error(t, err)
+	assert.ErrorIs(t, err, tool.ErrValidation)
+}
+
+// TestScriptTool_ManifestGateAcceptsOmittedOptionalOutput holds ADR
+// 0009 invariant 4 to the manifest: `detail` is optional there, so an
+// output carrying only `status` conforms and is not quarantined.
+func TestScriptTool_ManifestGateAcceptsOmittedOptionalOutput(t *testing.T) {
+	reg := optionalFieldRegistry(t)
+
+	out, err := reg.Call(context.Background(), "demo", json.RawMessage(`{"required_field":"x"}`))
+	require.NoError(t, err)
+	var body map[string]any
+	require.NoError(t, json.Unmarshal(out, &body))
+	assert.NotContains(t, body, "detail")
+}
+
+// TestScriptTool_DescriptorCarriesManifestSchemas states which schemas
+// leave the registry: the manifest's own, on both sides. A provider
+// that needs a different shape projects one at its own boundary.
+func TestScriptTool_DescriptorCarriesManifestSchemas(t *testing.T) {
+	reg := optionalFieldRegistry(t)
+
+	desc, ok := reg.Get("demo")
+	require.True(t, ok)
+	assert.JSONEq(t, `{
+		"type":"object",
+		"properties":{"required_field":{"type":"string"},"optional_field":{"type":"string"}},
+		"required":["required_field"],
+		"additionalProperties":false
+	}`, string(desc.InputSchema))
+	assert.JSONEq(t, `{
+		"type":"object",
+		"properties":{"status":{"type":"string"},"detail":{"type":"string"}},
+		"required":["status"],
+		"additionalProperties":false
+	}`, string(desc.OutputSchema))
+}
+
+// TestScriptTool_UnpinnedToolRefusesLoad pins the other half of ADR
+// 0009 invariant 2: the pin set is the operator's accepted tool set, so
+// a tool present in the tree but absent from the set is refused. An
+// unreviewed directory drop is otherwise indistinguishable from an
+// installation.
+func TestScriptTool_UnpinnedToolRefusesLoad(t *testing.T) {
+	root := t.TempDir()
+	hash := scriptToolFixture(t, root, "echo")
+	_ = scriptToolFixture(t, root, "unreviewed")
+
+	_, err := tool.NewRegistry(tool.RegistryOptions{
+		Dir:      root,
+		Pins:     tool.ManifestPins{"echo": hash},
+		Required: []string{"echo"},
+	})
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), `unpinned tool "unreviewed"`)
+}
+
 // TestScriptTool_InputRejection covers the boundary: an input that
 // does not match the manifest's input schema is rejected before the
 // tool runs. The runner is never invoked.

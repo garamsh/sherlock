@@ -12,6 +12,8 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
+
+	"github.com/garamsh/gagent/internal/tool"
 )
 
 // Default settings, overridable by config file, environment, or flags.
@@ -78,6 +80,23 @@ type Config struct {
 	// gateway.md). The file outbox stays the default and the
 	// delivery-failure fallback.
 	Console ConsoleConfig `mapstructure:"console"`
+	// Tools carries the operator's statement about the installed tool
+	// set (ADR 0017 §Decision: the installation list is the operator's,
+	// through config).
+	Tools ToolsConfig `mapstructure:"tools"`
+}
+
+// ToolsConfig is the operator's statement about the tool tree the
+// script-tool runtime reads. The directory itself stays on
+// GAGENT_TOOLS_DIR; what lives here is what only the operator can say.
+type ToolsConfig struct {
+	// Pins is the accepted tool set: tool name to the SHA-256 of that
+	// tool's canonical manifest bytes, which the agent logs for every
+	// tool it loads. An absent section leaves drift pinning off; a
+	// present one is enforced in full, so a tool dropped into the tree
+	// after the section was written is refused until its hash joins it
+	// (ADR 0009 invariant 2).
+	Pins tool.ManifestPins `mapstructure:"pins"`
 }
 
 // ConsoleConfig selects the console sink. An empty URL keeps the file

@@ -124,7 +124,18 @@ every destructive action before taking it.
 
 Tools are stand-alone executables behind the script-tool contract (ADR 0017, ADR 0009). The agent binary does not import them; the script-tool runtime (`internal/tool`) reads each tool's `manifest.json` from the `tools/` directory at startup and spawns the binary as a one-shot stdio process. To add a tool:
 
-- drop a directory under `tools/<name>/` containing `manifest.json` (name, description, `command` path relative to the manifest's dir, optional `env`, and the two JSON Schemas) and the executable the manifest names. First-party tools ship in place: `files`, `shell_exec`, `message_send`, `github` — `make build-tools` rebuilds them. A tool that needs files or exec reaches the workspace gRPC client (via `internal/workspace/client`); a tool that needs an external API calls it directly. The default install is the four shipped tools; override the directory with `GAGENT_TOOLS_DIR` (default `./tools`) or remove a manifest to drop a tool from the agent's surface. The script-tool runtime validates the required tool set at startup and refuses to load a tool whose manifest hash drifts from the pin.
+- drop a directory under `tools/<name>/` containing `manifest.json` (name, description, `command` path relative to the manifest's dir, optional `env`, and the two JSON Schemas) and the executable the manifest names. First-party tools ship in place: `files`, `shell_exec`, `message_send`, `github` — `make build-tools` rebuilds them. A tool that needs files or exec reaches the workspace gRPC client (via `internal/workspace/client`); a tool that needs an external API calls it directly. The default install is the four shipped tools; override the directory with `GAGENT_TOOLS_DIR` (default `./tools`) or remove a manifest to drop a tool from the agent's surface. The script-tool runtime validates the required tool set at startup and refuses to load a tool whose manifest hash drifts from the pin you gave it.
+
+The pin set is yours to write, because only you can say which manifest you reviewed. Put it under `tools:` in the agent config, one SHA-256 per tool name:
+
+```yaml
+tools:
+  pins:
+    message_send: 3f0a…
+    files: 8c21…
+```
+
+Each hash is on the `tool manifest loaded` line the agent logs for that tool, and a refusal quotes the hash you would pin to accept what is on disk. Once the section exists it is the whole accepted set: a manifest that changed under a pin is refused, and so is a tool directory the set does not name — a drop you did not review is otherwise indistinguishable from one you did. Adding a tool is then a directory drop plus its hash. Leave the section out and the agent loads the tree unpinned, warning at startup that it has no record to check drift against.
 
 Example configs in the repository root: `gagent.yaml` (agent) and `workspace.yaml` (workspace).
 

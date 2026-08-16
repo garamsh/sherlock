@@ -46,14 +46,14 @@ A tool is a **script with a manifest**: a `manifest.json` that declares the cont
 | Concern | Owner |
 |---|---|
 | Contract shape (manifest schema and the call protocol) | Platform |
-| Installation list (which tools are present) | Operator (config) |
+| Installation list (which tools are present, and the manifest hash accepted for each) | Operator (config) |
 | Boundary validation (manifest parse, input/output schema check, drift pin) | Platform |
 | Self-description (name, description, input/output schema, executable) | Tool author (manifest) |
 | Input validation, output conformance | Tool (primary); Platform (boundary re-validation) |
 | Behavior — external API calls, local compute, workspace calls, anything else | Tool |
 | Domain security policy | Tool (ADR 0005) |
 
-The platform owns the call contract — manifest format and the single stdio invocation shape — and the boundary posture (validation, drift pin, required-tool check). The tool author owns the contract surface (the manifest) and the implementation. The platform discovers the tool by reading the manifest at startup, pins a hash of the manifest, and refuses to load a tool whose hash drifts from the pin. The tool's self-description is untrusted input at the boundary; the platform validates every fetched descriptor at the boundary and quarantines any tool whose schema fails to parse or whose output violates its declared output schema. Strict schema enforcement at the model API layer (constrained decoding when the provider supports it, `parallel_tool_calls: false` because strict is incompatible with parallel calls) prevents the model from emitting arguments the schema rejects.
+The platform owns the call contract — manifest format and the single stdio invocation shape — and the boundary posture (validation, drift pin, required-tool check). The tool author owns the contract surface (the manifest) and the implementation. The platform discovers the tool by reading the manifest at startup, hashes it, and refuses to load a tool whose hash drifts from the operator's pin or that the operator's pin set does not name: the installation list is the operator's, and so is the record of what each manifest said when they accepted it. The tool's self-description is untrusted input at the boundary; the platform validates every fetched descriptor at the boundary and quarantines any tool whose schema fails to parse or whose output violates its declared output schema. Strict schema enforcement at the model API layer (constrained decoding when the provider supports it, `parallel_tool_calls: false` because strict is incompatible with parallel calls) prevents the model from emitting arguments the schema rejects.
 
 There is no compile-time tool registry, no runtime plugin loader, no wire protocol, and no remote tool registry. A capability is added by dropping a `tools/<name>/` directory containing a `manifest.json` and an executable. The platform's `internal/tool` package is the manifest loader, the stdio runner, the registry, and the drift pinner.
 

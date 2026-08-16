@@ -13,7 +13,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/agent/openai"
 	"github.com/garamsh/gagent/internal/tool"
 )
 
@@ -235,7 +234,6 @@ func TestScriptTool_GitHub_NullBodyAccepted(t *testing.T) {
 		Dir:      root,
 		Pins:     tool.ManifestPins{"github": hash},
 		Required: []string{"github"},
-		Sanitize: openai.SanitizeToolParameters,
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() { reg.Close() })

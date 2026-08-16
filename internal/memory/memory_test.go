@@ -744,7 +744,7 @@ func TestCompress_HardCapsOversizedSingleContent(t *testing.T) {
 // the other.
 //
 // The contents are what the store actually holds since #523: the
-// addressed sentence internal/gateway/writeback.go's sentenceOf
+// addressed sentence internal/agent/memory/writeback.go's sentenceOf
 // renders, "<subject> — <question> <value>". That shared prefix is a
 // large fraction of a short fact's tokens, which is what lifted cosine
 // past the old supersession threshold for pairs with nothing in common

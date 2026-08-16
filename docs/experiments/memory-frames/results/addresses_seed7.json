@@ -2,12 +2,12 @@
  "model": "gpt-4.1-nano",
  "seed": 7,
  "calls": 840,
- "prompt_tokens": 207063,
- "completion_tokens": 15256,
+ "prompt_tokens": 214623,
+ "completion_tokens": 16041,
  "price_input_per_million_usd": 0.1,
  "price_output_per_million_usd": 0.4,
  "price_read_on": "2026-08-16",
- "cost_usd": 0.0268087,
+ "cost_usd": 0.027878700000000003,
  "addressed": [
   {
    "subject": "Zara",
@@ -40,7 +40,7 @@
    "answered": {
     "subject": "Nadia",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "nadia"
+    "qualifier": "sits with the ember-foundry team"
    }
   },
   {
@@ -56,7 +56,8 @@
    },
    "answered": {
     "subject": "Gunnar",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "umber-weir"
    }
   },
   {
@@ -72,7 +73,8 @@
    },
    "answered": {
     "subject": "Ulla",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "with verdigris-reach"
    }
   },
   {
@@ -140,7 +142,7 @@
    "answered": {
     "subject": "Amara",
     "attribute": "which-cottage-does-rent",
-    "qualifier": "the statement holds for"
+    "qualifier": "the statement: amara rents the ironwood-weir cottage"
    }
   },
   {
@@ -157,7 +159,7 @@
    "answered": {
     "subject": "Lisa",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "lisa"
+    "qualifier": "sits with the cinder-meadow team"
    }
   },
   {
@@ -173,7 +175,8 @@
    },
    "answered": {
     "subject": "Tereza",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "dovetail-brook"
    }
   },
   {
@@ -224,7 +227,7 @@
    "answered": {
     "subject": "Kasper",
     "attribute": "who-does-bank-with",
-    "qualifier": "cobalt-moor"
+    "qualifier": "kasper"
    }
   },
   {
@@ -275,7 +278,7 @@
    "answered": {
     "subject": "Vasco",
     "attribute": "which-course-is-taking",
-    "qualifier": "vasco"
+    "qualifier": "taking the quill-hollow course"
    }
   },
   {
@@ -393,7 +396,8 @@
    },
    "answered": {
     "subject": "Sanjay",
-    "attribute": "which-course-is-taking"
+    "attribute": "which-course-is-taking",
+    "qualifier": "taking the nutmeg-quarry course"
    }
   },
   {
@@ -409,7 +413,8 @@
    },
    "answered": {
     "subject": "Esther",
-    "attribute": "which-cottage-does-rent"
+    "attribute": "which-cottage-does-rent",
+    "qualifier": "rents the ravel-gable cottage"
    }
   },
   {
@@ -443,7 +448,7 @@
    "answered": {
     "subject": "Wilma",
     "attribute": "who-does-order-paper-from",
-    "qualifier": "dovetail-orchard"
+    "qualifier": "from dovetail-orchard"
    }
   },
   {
@@ -562,7 +567,7 @@
    "answered": {
     "subject": "Iris",
     "attribute": "which-project-does-lead",
-    "qualifier": "the yarrow-weir project"
+    "qualifier": "the yarrow-weir"
    }
   },
   {
@@ -646,7 +651,8 @@
    },
    "answered": {
     "subject": "Gunnar",
-    "attribute": "which-course-is-taking"
+    "attribute": "which-course-is-taking",
+    "qualifier": "taking the sable-tarn course"
    }
   },
   {
@@ -663,7 +669,7 @@
    "answered": {
     "subject": "Petra",
     "attribute": "what-does-keep-the-accounts-in",
-    "qualifier": "verdigris-beacon"
+    "qualifier": "in verdigris-beacon"
    }
   },
   {
@@ -680,7 +686,7 @@
    "answered": {
     "subject": "Olga",
     "attribute": "who-does-order-paper-from",
-    "qualifier": "ironwood-fenn"
+    "qualifier": "olga"
    }
   },
   {
@@ -747,7 +753,8 @@
    },
    "answered": {
     "subject": "Leila",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "marlow-orchard"
    }
   },
   {
@@ -764,7 +771,7 @@
    "answered": {
     "subject": "Leila",
     "attribute": "who-does-bank-with",
-    "qualifier": "vellum-meadow"
+    "qualifier": "with vellum-meadow now"
    }
   },
   {
@@ -781,7 +788,7 @@
    "answered": {
     "subject": "Leila",
     "attribute": "who-does-bank-with",
-    "qualifier": "zephyr-ridge"
+    "qualifier": "with zephyr-ridge now"
    }
   },
   {
@@ -815,7 +822,7 @@
    "answered": {
     "subject": "Leila",
     "attribute": "which-line-does-commute-on",
-    "qualifier": "now"
+    "qualifier": "the copper-harbour line now"
    }
   },
   {
@@ -832,7 +839,7 @@
    "answered": {
     "subject": "Leila",
     "attribute": "which-line-does-commute-on",
-    "qualifier": "now"
+    "qualifier": "the tamarind-tarn line now"
    }
   },
   {
@@ -849,7 +856,7 @@
    "answered": {
     "subject": "Maria",
     "attribute": "which-project-does-lead",
-    "qualifier": "the ironwood-reach project"
+    "qualifier": "the ironwood-reach"
    }
   },
   {
@@ -883,7 +890,7 @@
    "answered": {
     "subject": "Maria",
     "attribute": "which-project-does-lead",
-    "qualifier": "from now on"
+    "qualifier": "the yarrow-annex project from now on"
    }
   },
   {
@@ -899,7 +906,8 @@
    },
    "answered": {
     "subject": "Stefan",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "garnet-drift"
    }
   },
   {
@@ -967,7 +975,7 @@
    "answered": {
     "subject": "Tariq",
     "attribute": "which-course-is-taking",
-    "qualifier": "the cobalt-yard course"
+    "qualifier": "taking the cobalt-yard course instead"
    }
   },
   {
@@ -1001,7 +1009,7 @@
    "answered": {
     "subject": "Goran",
     "attribute": "who-does-bank-with",
-    "qualifier": "ember-spire"
+    "qualifier": "banks with ember-spire"
    }
   },
   {
@@ -1035,7 +1043,7 @@
    "answered": {
     "subject": "Goran",
     "attribute": "who-does-bank-with",
-    "qualifier": "verdigris-tarn"
+    "qualifier": "with verdigris-tarn now"
    }
   },
   {
@@ -1052,7 +1060,7 @@
    "answered": {
     "subject": "Wanda",
     "attribute": "which-course-is-taking",
-    "qualifier": "the bramble-weir course"
+    "qualifier": "taking the bramble-weir course"
    }
   },
   {
@@ -1069,7 +1077,7 @@
    "answered": {
     "subject": "Wanda",
     "attribute": "which-course-is-taking",
-    "qualifier": "the quill-annex course"
+    "qualifier": "instead"
    }
   },
   {
@@ -1086,7 +1094,7 @@
    "answered": {
     "subject": "Wanda",
     "attribute": "which-course-is-taking",
-    "qualifier": "the marlow-yard course"
+    "qualifier": "taking the marlow-yard course"
    }
   },
   {
@@ -1102,7 +1110,8 @@
    },
    "answered": {
     "subject": "Erol",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "silverfin-harbour"
    }
   },
   {
@@ -1119,7 +1128,7 @@
    "answered": {
     "subject": "Erol",
     "attribute": "who-does-bank-with",
-    "qualifier": "now"
+    "qualifier": "mirefield-vale now"
    }
   },
   {
@@ -1136,7 +1145,7 @@
    "answered": {
     "subject": "Erol",
     "attribute": "who-does-bank-with",
-    "qualifier": "now"
+    "qualifier": "with umber-drift now"
    }
   },
   {
@@ -1203,7 +1212,8 @@
    },
    "answered": {
     "subject": "Wanda",
-    "attribute": "which-bakery-does-buy-bread-at"
+    "attribute": "which-bakery-does-buy-bread-at",
+    "qualifier": "the cinder-chandler bakery"
    }
   },
   {
@@ -1237,7 +1247,7 @@
    "answered": {
     "subject": "Wanda",
     "attribute": "which-bakery-does-buy-bread-at",
-    "qualifier": "now"
+    "qualifier": "the sable-spire bakery"
    }
   },
   {
@@ -1288,7 +1298,7 @@
    "answered": {
     "subject": "Freya",
     "attribute": "which-line-does-commute-on",
-    "qualifier": "now"
+    "qualifier": "the vellum-brook line now"
    }
   },
   {
@@ -1322,7 +1332,7 @@
    "answered": {
     "subject": "Luca",
     "attribute": "which-course-is-taking",
-    "qualifier": "the amber-beacon course"
+    "qualifier": "taking the amber-beacon course"
    }
   },
   {
@@ -1339,7 +1349,7 @@
    "answered": {
     "subject": "Luca",
     "attribute": "which-course-is-taking",
-    "qualifier": "the cinder-brook course"
+    "qualifier": "instead"
    }
   },
   {
@@ -1373,7 +1383,7 @@
    "answered": {
     "subject": "Tariq",
     "attribute": "which-project-does-lead",
-    "qualifier": "from now on"
+    "qualifier": "the yarrow-hollow project from now on"
    }
   },
   {
@@ -1390,7 +1400,7 @@
    "answered": {
     "subject": "Tariq",
     "attribute": "which-project-does-lead",
-    "qualifier": "from now on"
+    "qualifier": "the yarrow-harbour project from now on"
    }
   },
   {
@@ -1441,7 +1451,7 @@
    "answered": {
     "subject": "Kofi",
     "attribute": "which-line-does-commute-on",
-    "qualifier": "now"
+    "qualifier": "the ironwood-pike line now"
    }
   },
   {
@@ -1475,7 +1485,7 @@
    "answered": {
     "subject": "Zara",
     "attribute": "which-clinic-does-go-to",
-    "qualifier": "the quill-drift clinic"
+    "qualifier": "has moved to the quill-drift clinic"
    }
   },
   {
@@ -1492,7 +1502,7 @@
    "answered": {
     "subject": "Zara",
     "attribute": "which-clinic-does-go-to",
-    "qualifier": "the ember-ledge clinic"
+    "qualifier": "has moved to the ember-ledge clinic"
    }
   },
   {
@@ -1509,7 +1519,7 @@
    "answered": {
     "subject": "Orla",
     "attribute": "which-course-is-taking",
-    "qualifier": "the saffron-weir course"
+    "qualifier": "the saffron-weir"
    }
   },
   {
@@ -1560,7 +1570,7 @@
    "answered": {
     "subject": "Lorna",
     "attribute": "what-does-keep-the-accounts-in",
-    "qualifier": "opal-ridge"
+    "qualifier": "in opal-ridge"
    }
   },
   {
@@ -1611,7 +1621,7 @@
    "answered": {
     "subject": "Noor",
     "attribute": "which-course-is-taking",
-    "qualifier": "the flint-wharf course"
+    "qualifier": "taking the flint-wharf course"
    }
   },
   {
@@ -1628,7 +1638,7 @@
    "answered": {
     "subject": "Noor",
     "attribute": "which-course-is-taking",
-    "qualifier": "the silverfin-glade"
+    "qualifier": "taking the silverfin-glade course instead"
    }
   },
   {
@@ -1645,7 +1655,7 @@
    "answered": {
     "subject": "Noor",
     "attribute": "which-course-is-taking",
-    "qualifier": "the flint-harbour course"
+    "qualifier": "taking the flint-harbour course"
    }
   },
   {
@@ -1730,7 +1740,7 @@
    "answered": {
     "subject": "Elif",
     "attribute": "which-clinic-does-go-to",
-    "qualifier": "the dovetail-chandler clinic"
+    "qualifier": "has moved to the dovetail-chandler clinic"
    }
   },
   {
@@ -1781,7 +1791,7 @@
    "answered": {
     "subject": "Oskar",
     "attribute": "where-does-rehearse",
-    "qualifier": "at the brindle-isle hall from now on"
+    "qualifier": "at the brindle-isle hall"
    }
   },
   {
@@ -1798,7 +1808,7 @@
    "answered": {
     "subject": "Oskar",
     "attribute": "where-does-rehearse",
-    "qualifier": "at the nutmeg-moor hall from now on"
+    "qualifier": "at the nutmeg-moor hall"
    }
   },
   {
@@ -1815,7 +1825,7 @@
    "answered": {
     "subject": "Goran",
     "attribute": "where-does-keep-the-backups",
-    "qualifier": "larkin-glade"
+    "qualifier": "on larkin-glade"
    }
   },
   {
@@ -1832,7 +1842,7 @@
    "answered": {
     "subject": "Goran",
     "attribute": "where-does-keep-the-backups",
-    "qualifier": "from now on"
+    "qualifier": "on dovetail-annex"
    }
   },
   {
@@ -1849,7 +1859,7 @@
    "answered": {
     "subject": "Goran",
     "attribute": "where-does-keep-the-backups",
-    "qualifier": "from now on"
+    "qualifier": "on nutmeg-vale"
    }
   },
   {
@@ -1865,7 +1875,8 @@
    },
    "answered": {
     "subject": "Dario",
-    "attribute": "which-bakery-does-buy-bread-at"
+    "attribute": "which-bakery-does-buy-bread-at",
+    "qualifier": "the bramble-yard bakery"
    }
   },
   {
@@ -1882,7 +1893,7 @@
    "answered": {
     "subject": "Dario",
     "attribute": "which-bakery-does-buy-bread-at",
-    "qualifier": "cobalt-hollow"
+    "qualifier": "the cobalt-hollow bakery"
    }
   },
   {
@@ -1915,7 +1926,8 @@
    },
    "answered": {
     "subject": "Yuki",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "from flint-moor"
    }
   },
   {
@@ -1949,7 +1961,7 @@
    "answered": {
     "subject": "Yuki",
     "attribute": "who-does-order-paper-from",
-    "qualifier": "now"
+    "qualifier": "marlow-kiln"
    }
   },
   {
@@ -2034,7 +2046,7 @@
    "answered": {
     "subject": "Emeka",
     "attribute": "which-project-does-lead",
-    "qualifier": "from now on"
+    "qualifier": "the harrow-pike project from now on"
    }
   },
   {
@@ -2068,7 +2080,7 @@
    "answered": {
     "subject": "Luca",
     "attribute": "what-does-keep-the-accounts-in",
-    "qualifier": "ember-hearth"
+    "qualifier": "in ember-hearth"
    }
   },
   {
@@ -2170,7 +2182,7 @@
    "answered": {
     "subject": "Viktor",
     "attribute": "which-cottage-does-rent",
-    "qualifier": "garnet-meadow"
+    "qualifier": "the garnet-meadow cottage"
    }
   },
   {
@@ -2187,7 +2199,7 @@
    "answered": {
     "subject": "Viktor",
     "attribute": "which-cottage-does-rent",
-    "qualifier": "from now on"
+    "qualifier": "the sable-glade cottage"
    }
   },
   {
@@ -2255,7 +2267,7 @@
    "answered": {
     "subject": "Sanjay",
     "attribute": "which-line-does-commute-on",
-    "qualifier": "now"
+    "qualifier": "the ember-orchard line now"
    }
   },
   {
@@ -2289,7 +2301,7 @@
    "answered": {
     "subject": "Erol",
     "attribute": "what-does-keep-the-accounts-in",
-    "qualifier": "to brindle-fenn"
+    "qualifier": "has switched the accounts to brindle-fenn"
    }
   },
   {
@@ -2323,7 +2335,7 @@
    "answered": {
     "subject": "Kasper",
     "attribute": "what-does-keep-the-accounts-in",
-    "qualifier": "umber-meadow"
+    "qualifier": "in umber-meadow"
    }
   },
   {
@@ -2340,7 +2352,7 @@
    "answered": {
     "subject": "Kasper",
     "attribute": "what-does-keep-the-accounts-in",
-    "qualifier": "the accounts"
+    "qualifier": "to cobalt-hearth"
    }
   },
   {
@@ -2357,7 +2369,7 @@
    "answered": {
     "subject": "Kasper",
     "attribute": "what-does-keep-the-accounts-in",
-    "qualifier": "to ember-drift"
+    "qualifier": "has switched the accounts to ember-drift"
    }
   },
   {
@@ -2373,7 +2385,8 @@
    },
    "answered": {
     "subject": "Amara",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "from brindle-mill"
    }
   },
   {
@@ -2441,7 +2454,7 @@
    "answered": {
     "subject": "Celia",
     "attribute": "which-project-does-lead",
-    "qualifier": "from now on"
+    "qualifier": "the pewter-spire project from now on"
    }
   },
   {
@@ -2458,7 +2471,7 @@
    "answered": {
     "subject": "Celia",
     "attribute": "which-project-does-lead",
-    "qualifier": "from now on"
+    "qualifier": "the flint-chandler project from now on"
    }
   },
   {
@@ -2474,7 +2487,8 @@
    },
    "answered": {
     "subject": "Yuki",
-    "attribute": "which-bakery-does-buy-bread-at"
+    "attribute": "which-bakery-does-buy-bread-at",
+    "qualifier": "the tamarind-drift"
    }
   },
   {
@@ -2491,7 +2505,7 @@
    "answered": {
     "subject": "Yuki",
     "attribute": "which-bakery-does-buy-bread-at",
-    "qualifier": "the dovetail-pike bakery"
+    "qualifier": "the dovetail-pike"
    }
   },
   {
@@ -2508,7 +2522,7 @@
    "answered": {
     "subject": "Yuki",
     "attribute": "which-bakery-does-buy-bread-at",
-    "qualifier": "the thistle-beacon bakery now"
+    "qualifier": "the thistle-beacon"
    }
   },
   {
@@ -2525,7 +2539,7 @@
    "answered": {
     "subject": "Priya",
     "attribute": "which-cottage-does-rent",
-    "qualifier": "the quill-mill cottage"
+    "qualifier": "the statement that priya rents the quill-mill cottage"
    }
   },
   {
@@ -2559,7 +2573,7 @@
    "answered": {
     "subject": "Priya",
     "attribute": "which-cottage-does-rent",
-    "qualifier": "from now on"
+    "qualifier": "does-rent-the-ravel-harbour cottage"
    }
   },
   {
@@ -2593,7 +2607,7 @@
    "answered": {
     "subject": "Orla",
     "attribute": "which-line-does-commute-on",
-    "qualifier": "now"
+    "qualifier": "the wicklow-orchard line now"
    }
   },
   {
@@ -2610,7 +2624,7 @@
    "answered": {
     "subject": "Orla",
     "attribute": "which-line-does-commute-on",
-    "qualifier": "now"
+    "qualifier": "the quill-chandler line now"
    }
   },
   {
@@ -2627,7 +2641,7 @@
    "answered": {
     "subject": "Elif",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "elif"
+    "qualifier": "sits with the ember-hollow team"
    }
   },
   {
@@ -2678,7 +2692,7 @@
    "answered": {
     "subject": "Karin",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "karin"
+    "qualifier": "sits with the garnet-mill team"
    }
   },
   {
@@ -2729,7 +2743,7 @@
    "answered": {
     "subject": "Yara",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "yara sits with the harrow-brook team"
+    "qualifier": "yara"
    }
   },
   {
@@ -2779,7 +2793,8 @@
    },
    "answered": {
     "subject": "Greta",
-    "attribute": "which-bakery-does-buy-bread-at"
+    "attribute": "which-bakery-does-buy-bread-at",
+    "qualifier": "the pewter-beacon bakery"
    }
   },
   {
@@ -2796,7 +2811,7 @@
    "answered": {
     "subject": "Greta",
     "attribute": "which-bakery-does-buy-bread-at",
-    "qualifier": "now"
+    "qualifier": "at the ravel-hearth bakery"
    }
   },
   {
@@ -2813,7 +2828,7 @@
    "answered": {
     "subject": "Greta",
     "attribute": "which-bakery-does-buy-bread-at",
-    "qualifier": "now"
+    "qualifier": "the pewter-beacon bakery"
    }
   },
   {
@@ -2847,7 +2862,7 @@
    "answered": {
     "subject": "Wilma",
     "attribute": "which-project-does-lead",
-    "qualifier": "from now on"
+    "qualifier": "the brindle-lantern project from now on"
    }
   },
   {
@@ -2880,7 +2895,8 @@
    },
    "answered": {
     "subject": "Elif",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "banks with ravel-weir"
    }
   },
   {
@@ -2930,7 +2946,8 @@
    },
    "answered": {
     "subject": "Rafael",
-    "attribute": "which-cottage-does-rent"
+    "attribute": "which-cottage-does-rent",
+    "qualifier": "the pewter-tarn cottage"
    }
   },
   {
@@ -2947,7 +2964,7 @@
    "answered": {
     "subject": "Rafael",
     "attribute": "which-cottage-does-rent",
-    "qualifier": "from now on"
+    "qualifier": "the nutmeg-gable cottage"
    }
   },
   {
@@ -2998,7 +3015,7 @@
    "answered": {
     "subject": "Josefa",
     "attribute": "where-does-keep-the-backups",
-    "qualifier": "from now on"
+    "qualifier": "on ironwood-ledge"
    }
   },
   {
@@ -3015,7 +3032,7 @@
    "answered": {
     "subject": "Josefa",
     "attribute": "where-does-keep-the-backups",
-    "qualifier": "from now on"
+    "qualifier": "on oakhill-fenn"
    }
   },
   {
@@ -3066,7 +3083,7 @@
    "answered": {
     "subject": "Emeka",
     "attribute": "what-does-keep-the-accounts-in",
-    "qualifier": "the accounts"
+    "qualifier": "to cobalt-meadow"
    }
   },
   {
@@ -3117,7 +3134,7 @@
    "answered": {
     "subject": "Ingrid",
     "attribute": "where-does-rehearse",
-    "qualifier": "at the bramble-reach hall from now on"
+    "qualifier": "at the bramble-reach hall"
    }
   },
   {
@@ -3202,7 +3219,7 @@
    "answered": {
     "subject": "Orla",
     "attribute": "which-clinic-does-go-to",
-    "qualifier": "oakhill-vale"
+    "qualifier": "the oakhill-vale clinic"
    }
   },
   {
@@ -3253,7 +3270,7 @@
    "answered": {
     "subject": "Lorna",
     "attribute": "where-does-rehearse",
-    "qualifier": "at the nutmeg-foundry hall from now on"
+    "qualifier": "at the nutmeg-foundry hall"
    }
   },
   {
@@ -3270,7 +3287,7 @@
    "answered": {
     "subject": "Lorna",
     "attribute": "where-does-rehearse",
-    "qualifier": "at the brindle-kiln hall from now on"
+    "qualifier": "at the brindle-kiln hall"
    }
   },
   {
@@ -3321,7 +3338,7 @@
    "answered": {
     "subject": "Magnus",
     "attribute": "which-bakery-does-buy-bread-at",
-    "qualifier": "now"
+    "qualifier": "at the marlow-vale bakery now"
    }
   },
   {
@@ -3338,7 +3355,7 @@
    "answered": {
     "subject": "Priya",
     "attribute": "who-does-order-paper-from",
-    "qualifier": "cinder-annex"
+    "qualifier": "from cinder-annex"
    }
   },
   {
@@ -3372,7 +3389,7 @@
    "answered": {
     "subject": "Priya",
     "attribute": "who-does-order-paper-from",
-    "qualifier": "now"
+    "qualifier": "from cinder-annex now"
    }
   },
   {
@@ -3389,7 +3406,7 @@
    "answered": {
     "subject": "Tariq",
     "attribute": "who-does-order-paper-from",
-    "qualifier": "quill-hearth"
+    "qualifier": "tariq"
    }
   },
   {
@@ -3406,7 +3423,7 @@
    "answered": {
     "subject": "Tariq",
     "attribute": "who-does-order-paper-from",
-    "qualifier": "now"
+    "qualifier": "copper-sedge"
    }
   },
   {
@@ -3457,7 +3474,7 @@
    "answered": {
     "subject": "Otto",
     "attribute": "where-does-rehearse",
-    "qualifier": "at the silverfin-drift hall from now on"
+    "qualifier": "at the silverfin-drift hall"
    }
   },
   {
@@ -3474,7 +3491,7 @@
    "answered": {
     "subject": "Otto",
     "attribute": "where-does-rehearse",
-    "qualifier": "at the mirefield-foundry hall from now on"
+    "qualifier": "at the mirefield-foundry hall"
    }
   },
   {
@@ -3508,7 +3525,7 @@
    "answered": {
     "subject": "Hassan",
     "attribute": "where-does-keep-the-backups",
-    "qualifier": "from now on"
+    "qualifier": "on wicklow-tarn"
    }
   },
   {
@@ -3525,7 +3542,7 @@
    "answered": {
     "subject": "Hassan",
     "attribute": "where-does-keep-the-backups",
-    "qualifier": "from now on"
+    "qualifier": "on quill-quarry"
    }
   },
   {
@@ -3542,7 +3559,7 @@
    "answered": {
     "subject": "Tariq",
     "attribute": "where-does-rehearse",
-    "qualifier": "the copper-gable hall"
+    "qualifier": "at the copper-gable hall"
    }
   },
   {
@@ -3559,7 +3576,7 @@
    "answered": {
     "subject": "Tariq",
     "attribute": "where-does-rehearse",
-    "qualifier": "at the ember-brook hall from now on"
+    "qualifier": "at the ember-brook hall"
    }
   },
   {
@@ -3576,7 +3593,7 @@
    "answered": {
     "subject": "Tariq",
     "attribute": "where-does-rehearse",
-    "qualifier": "at the copper-gable hall from now on"
+    "qualifier": "at the copper-gable hall"
    }
   },
   {
@@ -3592,7 +3609,8 @@
    },
    "answered": {
     "subject": "Goran",
-    "attribute": "which-course-is-taking"
+    "attribute": "which-course-is-taking",
+    "qualifier": "taking the yarrow-beacon course"
    }
   },
   {
@@ -3609,7 +3627,7 @@
    "answered": {
     "subject": "Goran",
     "attribute": "which-course-is-taking",
-    "qualifier": "the ironwood-hollow course"
+    "qualifier": "taking the ironwood-hollow course"
    }
   },
   {
@@ -3626,7 +3644,7 @@
    "answered": {
     "subject": "Goran",
     "attribute": "which-course-is-taking",
-    "qualifier": "the yarrow-beacon course"
+    "qualifier": "taking the yarrow-beacon course instead"
    }
   },
   {
@@ -3660,7 +3678,7 @@
    "answered": {
     "subject": "Emeka",
     "attribute": "which-course-is-taking",
-    "qualifier": "taking the cinder-foundry course"
+    "qualifier": "taking the cinder-foundry course instead"
    }
   },
   {
@@ -3693,7 +3711,8 @@
    },
    "answered": {
     "subject": "Magnus",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "tamarind-brook"
    }
   },
   {
@@ -3710,7 +3729,7 @@
    "answered": {
     "subject": "Magnus",
     "attribute": "who-does-order-paper-from",
-    "qualifier": "now"
+    "qualifier": "from vellum-coppice now"
    }
   },
   {
@@ -3863,7 +3882,7 @@
    "answered": {
     "subject": "Sanjay",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "from now on"
+    "qualifier": "sanjay"
    }
   },
   {
@@ -3896,7 +3915,8 @@
    },
    "answered": {
     "subject": "Hassan",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "hassan"
    }
   },
   {
@@ -3930,7 +3950,7 @@
    "answered": {
     "subject": "Hassan",
     "attribute": "who-does-bank-with",
-    "qualifier": "now"
+    "qualifier": "larkin-brook now"
    }
   },
   {
@@ -3981,7 +4001,7 @@
    "answered": {
     "subject": "Kofi",
     "attribute": "which-clinic-does-go-to",
-    "qualifier": "the pewter-coppice clinic"
+    "qualifier": "has moved to the pewter-coppice clinic"
    }
   },
   {
@@ -3997,7 +4017,8 @@
    },
    "answered": {
     "subject": "Freya",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "freya"
    }
   },
   {
@@ -4014,7 +4035,7 @@
    "answered": {
     "subject": "Freya",
     "attribute": "who-does-order-paper-from",
-    "qualifier": "now"
+    "qualifier": "nutmeg-chandler"
    }
   },
   {
@@ -4031,7 +4052,7 @@
    "answered": {
     "subject": "Freya",
     "attribute": "who-does-order-paper-from",
-    "qualifier": "opal-fenn"
+    "qualifier": "from opal-fenn now"
    }
   },
   {
@@ -4065,7 +4086,7 @@
    "answered": {
     "subject": "Noor",
     "attribute": "where-does-keep-the-backups",
-    "qualifier": "from now on"
+    "qualifier": "on brindle-spire"
    }
   },
   {
@@ -4082,7 +4103,7 @@
    "answered": {
     "subject": "Noor",
     "attribute": "where-does-keep-the-backups",
-    "qualifier": "from now on"
+    "qualifier": "on pewter-lantern"
    }
   },
   {
@@ -4098,7 +4119,8 @@
    },
    "answered": {
     "subject": "Jana",
-    "attribute": "which-course-is-taking"
+    "attribute": "which-course-is-taking",
+    "qualifier": "taking the wicklow-glade course"
    }
   },
   {
@@ -4115,7 +4137,7 @@
    "answered": {
     "subject": "Jana",
     "attribute": "which-course-is-taking",
-    "qualifier": "the thistle-spire course"
+    "qualifier": "taking the thistle-spire course instead"
    }
   },
   {
@@ -4132,7 +4154,7 @@
    "answered": {
     "subject": "Jana",
     "attribute": "which-course-is-taking",
-    "qualifier": "the wicklow-glade course"
+    "qualifier": "taking the wicklow-glade course instead"
    }
   },
   {
@@ -4149,7 +4171,7 @@
    "answered": {
     "subject": "Emeka",
     "attribute": "where-does-keep-the-backups",
-    "qualifier": "cinder-gable"
+    "qualifier": "on cinder-gable"
    }
   },
   {
@@ -4183,7 +4205,7 @@
    "answered": {
     "subject": "Emeka",
     "attribute": "where-does-keep-the-backups",
-    "qualifier": "from now on"
+    "qualifier": "on cinder-gable"
    }
   },
   {
@@ -4234,7 +4256,7 @@
    "answered": {
     "subject": "Karin",
     "attribute": "which-project-does-lead",
-    "qualifier": "the quill-ledge project from now on"
+    "qualifier": "from now on"
    }
   },
   {
@@ -4250,7 +4272,8 @@
    },
    "answered": {
     "subject": "Priya",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "ember-reach"
    }
   },
   {
@@ -4267,7 +4290,7 @@
    "answered": {
     "subject": "Priya",
     "attribute": "who-does-bank-with",
-    "qualifier": "silverfin-isle"
+    "qualifier": "silverfin-isle now"
    }
   },
   {
@@ -4284,7 +4307,7 @@
    "answered": {
     "subject": "Priya",
     "attribute": "who-does-bank-with",
-    "qualifier": "now"
+    "qualifier": "with ember-reach now"
    }
   },
   {
@@ -4335,7 +4358,7 @@
    "answered": {
     "subject": "Zara",
     "attribute": "who-does-bank-with",
-    "qualifier": "wicklow-annex"
+    "qualifier": "wicklow-annex now"
    }
   },
   {
@@ -4351,7 +4374,8 @@
    },
    "answered": {
     "subject": "Tomas",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "from brindle-pike"
    }
   },
   {
@@ -4385,7 +4409,7 @@
    "answered": {
     "subject": "Tomas",
     "attribute": "who-does-order-paper-from",
-    "qualifier": "now"
+    "qualifier": "from brindle-pike now"
    }
   },
   {
@@ -4419,7 +4443,7 @@
    "answered": {
     "subject": "Yuki",
     "attribute": "which-line-does-commute-on",
-    "qualifier": "now"
+    "qualifier": "the ravel-chandler line now"
    }
   },
   {
@@ -4521,7 +4545,7 @@
    "answered": {
     "subject": "Nikos",
     "attribute": "which-bakery-does-buy-bread-at",
-    "qualifier": "at the brindle-meadow bakery"
+    "qualifier": "at the brindle-meadow bakery now"
    }
   },
   {
@@ -4538,7 +4562,7 @@
    "answered": {
     "subject": "Nikos",
     "attribute": "which-bakery-does-buy-bread-at",
-    "qualifier": "the thistle-harbour bakery now"
+    "qualifier": "the thistle-harbour"
    }
   },
   {
@@ -4572,7 +4596,7 @@
    "answered": {
     "subject": "Xavier",
     "attribute": "where-does-rehearse",
-    "qualifier": "at the harrow-vale hall from now on"
+    "qualifier": "at the harrow-vale hall"
    }
   },
   {
@@ -4640,7 +4664,7 @@
    "answered": {
     "subject": "Esther",
     "attribute": "which-line-does-commute-on",
-    "qualifier": "now"
+    "qualifier": "the dovetail-weir line now"
    }
   },
   {
@@ -4725,7 +4749,7 @@
    "answered": {
     "subject": "Erol",
     "attribute": "which-line-does-commute-on",
-    "qualifier": "now"
+    "qualifier": "the garnet-hearth line now"
    }
   },
   {
@@ -4742,7 +4766,7 @@
    "answered": {
     "subject": "Erol",
     "attribute": "which-line-does-commute-on",
-    "qualifier": "now"
+    "qualifier": "the nutmeg-wharf line now"
    }
   },
   {
@@ -4759,7 +4783,7 @@
    "answered": {
     "subject": "Noor",
     "attribute": "what-does-keep-the-accounts-in",
-    "qualifier": "mirefield-brook"
+    "qualifier": "in mirefield-brook"
    }
   },
   {
@@ -4776,7 +4800,7 @@
    "answered": {
     "subject": "Noor",
     "attribute": "what-does-keep-the-accounts-in",
-    "qualifier": "ember-tarn"
+    "qualifier": "in ember-tarn too"
    }
   },
   {
@@ -4793,7 +4817,7 @@
    "answered": {
     "subject": "Nuria",
     "attribute": "what-does-keep-the-accounts-in",
-    "qualifier": "quill-pike"
+    "qualifier": "nuria"
    }
   },
   {
@@ -4810,7 +4834,7 @@
    "answered": {
     "subject": "Nuria",
     "attribute": "what-does-keep-the-accounts-in",
-    "qualifier": "thistle-coppice"
+    "qualifier": "nuria"
    }
   },
   {
@@ -4826,7 +4850,8 @@
    },
    "answered": {
     "subject": "Rania",
-    "attribute": "which-team-does-sit-with"
+    "attribute": "which-team-does-sit-with",
+    "qualifier": "sits with the quill-lantern team"
    }
   },
   {
@@ -4877,7 +4902,7 @@
    "answered": {
     "subject": "Esther",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "the dovetail-ledge team"
+    "qualifier": "as well"
    }
   },
   {
@@ -4893,7 +4918,8 @@
    },
    "answered": {
     "subject": "Otto",
-    "attribute": "which-bakery-does-buy-bread-at"
+    "attribute": "which-bakery-does-buy-bread-at",
+    "qualifier": "the sable-harbour bakery"
    }
   },
   {
@@ -4910,7 +4936,7 @@
    "answered": {
     "subject": "Otto",
     "attribute": "which-bakery-does-buy-bread-at",
-    "qualifier": "the cobalt-isle bakery"
+    "qualifier": "at the cobalt-isle bakery"
    }
   },
   {
@@ -4927,7 +4953,7 @@
    "answered": {
     "subject": "Greta",
     "attribute": "which-clinic-does-go-to",
-    "qualifier": "the marlow-annex"
+    "qualifier": "marlow-annex"
    }
   },
   {
@@ -4944,7 +4970,7 @@
    "answered": {
     "subject": "Greta",
     "attribute": "which-clinic-does-go-to",
-    "qualifier": "the sable-kiln clinic"
+    "qualifier": "sable-kiln"
    }
   },
   {
@@ -5029,7 +5055,7 @@
    "answered": {
     "subject": "Rania",
     "attribute": "who-does-order-paper-from",
-    "qualifier": "umber-pike"
+    "qualifier": "from umber-pike"
    }
   },
   {
@@ -5046,7 +5072,7 @@
    "answered": {
     "subject": "Rania",
     "attribute": "who-does-order-paper-from",
-    "qualifier": "ember-sedge"
+    "qualifier": "as well"
    }
   },
   {
@@ -5080,7 +5106,7 @@
    "answered": {
     "subject": "Tomas",
     "attribute": "which-course-is-taking",
-    "qualifier": "the opal-foundry course"
+    "qualifier": "as well"
    }
   },
   {
@@ -5097,7 +5123,7 @@
    "answered": {
     "subject": "Bjorn",
     "attribute": "which-cottage-does-rent",
-    "qualifier": "the umber-ledge cottage"
+    "qualifier": "the umber-ledge"
    }
   },
   {
@@ -5130,7 +5156,8 @@
    },
    "answered": {
     "subject": "Ingrid",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "garnet-ledge"
    }
   },
   {
@@ -5147,7 +5174,7 @@
    "answered": {
     "subject": "Ingrid",
     "attribute": "who-does-bank-with",
-    "qualifier": "mirefield-annex"
+    "qualifier": "with mirefield-annex"
    }
   },
   {
@@ -5163,7 +5190,8 @@
    },
    "answered": {
     "subject": "Zoltan",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "zoltan"
    }
   },
   {
@@ -5180,7 +5208,7 @@
    "answered": {
     "subject": "Zoltan",
     "attribute": "who-does-bank-with",
-    "qualifier": "verdigris-wharf"
+    "qualifier": "as well"
    }
   },
   {
@@ -5231,7 +5259,7 @@
    "answered": {
     "subject": "Karin",
     "attribute": "which-course-is-taking",
-    "qualifier": "the tamarind-lantern course"
+    "qualifier": "taking the tamarind-lantern course"
    }
   },
   {
@@ -5248,7 +5276,7 @@
    "answered": {
     "subject": "Karin",
     "attribute": "which-course-is-taking",
-    "qualifier": "the nutmeg-brook course"
+    "qualifier": "as well"
    }
   },
   {
@@ -5282,7 +5310,7 @@
    "answered": {
     "subject": "Tomas",
     "attribute": "which-clinic-does-go-to",
-    "qualifier": "the tamarind-quarry clinic"
+    "qualifier": "tamarind-quarry"
    }
   },
   {
@@ -5298,7 +5326,8 @@
    },
    "answered": {
     "subject": "Tariq",
-    "attribute": "which-bakery-does-buy-bread-at"
+    "attribute": "which-bakery-does-buy-bread-at",
+    "qualifier": "the wicklow-reach"
    }
   },
   {
@@ -5315,7 +5344,7 @@
    "answered": {
     "subject": "Tariq",
     "attribute": "which-bakery-does-buy-bread-at",
-    "qualifier": "the ironwood-chandler bakery"
+    "qualifier": "at the ironwood-chandler bakery"
    }
   },
   {
@@ -5349,7 +5378,7 @@
    "answered": {
     "subject": "Petra",
     "attribute": "which-clinic-does-go-to",
-    "qualifier": "the garnet-beacon clinic"
+    "qualifier": "garnet-beacon"
    }
   },
   {
@@ -5365,7 +5394,8 @@
    },
    "answered": {
     "subject": "Kasper",
-    "attribute": "which-course-is-taking"
+    "attribute": "which-course-is-taking",
+    "qualifier": "taking the amber-ledge course"
    }
   },
   {
@@ -5382,7 +5412,7 @@
    "answered": {
     "subject": "Kasper",
     "attribute": "which-course-is-taking",
-    "qualifier": "the saffron-gable"
+    "qualifier": "as well"
    }
   },
   {
@@ -5399,7 +5429,7 @@
    "answered": {
     "subject": "Quinn",
     "attribute": "where-does-rehearse",
-    "qualifier": "the cobalt-drift hall"
+    "qualifier": "at the cobalt-drift hall"
    }
   },
   {
@@ -5416,7 +5446,7 @@
    "answered": {
     "subject": "Quinn",
     "attribute": "where-does-rehearse",
-    "qualifier": "the verdigris-moor hall"
+    "qualifier": "at the verdigris-moor hall"
    }
   },
   {
@@ -5483,7 +5513,8 @@
    },
    "answered": {
     "subject": "Xavier",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "as well"
    }
   },
   {
@@ -5517,7 +5548,7 @@
    "answered": {
     "subject": "Nuria",
     "attribute": "which-cottage-does-rent",
-    "qualifier": "the pewter-drift cottage"
+    "qualifier": "as well"
    }
   },
   {
@@ -5568,7 +5599,7 @@
    "answered": {
     "subject": "Celia",
     "attribute": "which-course-is-taking",
-    "qualifier": "taking the marlow-foundry course"
+    "qualifier": "the marlow-foundry"
    }
   },
   {
@@ -5585,7 +5616,7 @@
    "answered": {
     "subject": "Celia",
     "attribute": "which-course-is-taking",
-    "qualifier": "the harrow-wharf course"
+    "qualifier": "as well"
    }
   },
   {
@@ -5653,7 +5684,7 @@
    "answered": {
     "subject": "Ivo",
     "attribute": "who-does-bank-with",
-    "qualifier": "verdigris-yard"
+    "qualifier": "with verdigris-yard"
    }
   },
   {
@@ -5686,7 +5717,8 @@
    },
    "answered": {
     "subject": "Kasper",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "as well"
    }
   },
   {
@@ -5703,7 +5735,7 @@
    "answered": {
     "subject": "Chiara",
     "attribute": "what-does-keep-the-accounts-in",
-    "qualifier": "brindle-wharf"
+    "qualifier": "in brindle-wharf"
    }
   },
   {
@@ -5720,7 +5752,7 @@
    "answered": {
     "subject": "Chiara",
     "attribute": "what-does-keep-the-accounts-in",
-    "qualifier": "mirefield-ridge"
+    "qualifier": "in mirefield-ridge"
    }
   },
   {
@@ -5754,7 +5786,7 @@
    "answered": {
     "subject": "Farid",
     "attribute": "where-does-rehearse",
-    "qualifier": "at the cobalt-ledge hall"
+    "qualifier": "as well"
    }
   },
   {
@@ -5788,7 +5820,7 @@
    "answered": {
     "subject": "Kofi",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "the dovetail-glade team"
+    "qualifier": "as well"
    }
   },
   {
@@ -5839,7 +5871,7 @@
    "answered": {
     "subject": "Erol",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "the opal-yard team"
+    "qualifier": "sits with the opal-yard team"
    }
   },
   {
@@ -5856,7 +5888,7 @@
    "answered": {
     "subject": "Erol",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "wicklow-pike"
+    "qualifier": "sits with the wicklow-pike team"
    }
   },
   {
@@ -5872,7 +5904,8 @@
    },
    "answered": {
     "subject": "Lisa",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "with wicklow-foundry"
    }
   },
   {
@@ -5888,7 +5921,8 @@
    },
    "answered": {
     "subject": "Lisa",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "with opal-gable"
    }
   },
   {
@@ -5956,7 +5990,7 @@
    "answered": {
     "subject": "Gunnar",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "the silverfin-pike team"
+    "qualifier": "gunnar"
    }
   },
   {
@@ -6040,7 +6074,8 @@
    },
    "answered": {
     "subject": "Iris",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "iris"
    }
   },
   {
@@ -6056,7 +6091,8 @@
    },
    "answered": {
     "subject": "Iris",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "as well"
    }
   },
   {
@@ -6125,7 +6161,7 @@
    "answered": {
     "subject": "Hugo",
     "attribute": "which-project-does-lead",
-    "qualifier": "thursdays"
+    "qualifier": "on thursdays"
    }
   },
   {
@@ -6282,7 +6318,7 @@
    "answered": {
     "subject": "Olga",
     "attribute": "where-does-rehearse",
-    "qualifier": "the saffron-yard hall"
+    "qualifier": "at the saffron-yard hall"
    }
   },
   {
@@ -6351,7 +6387,8 @@
    },
    "answered": {
     "subject": "Hugo",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "dovetail-ridge"
    }
   },
   {
@@ -6421,7 +6458,7 @@
    "answered": {
     "subject": "Emeka",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "emeka"
+    "qualifier": "sits with the zephyr-brook team"
    }
   },
   {
@@ -6649,7 +6686,7 @@
    "answered": {
     "subject": "Zara",
     "attribute": "which-project-does-lead",
-    "qualifier": "the silverfin-weir project"
+    "qualifier": "on thursdays"
    }
   },
   {
@@ -6665,7 +6702,8 @@
    },
    "answered": {
     "subject": "Karin",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "karin"
    }
   },
   {
@@ -6769,7 +6807,8 @@
    },
    "answered": {
     "subject": "Mateo",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "mateo"
    }
   },
   {
@@ -6803,7 +6842,8 @@
    },
    "answered": {
     "subject": "Ulla",
-    "attribute": "which-bakery-does-buy-bread-at"
+    "attribute": "which-bakery-does-buy-bread-at",
+    "qualifier": "the statement narrows nothing"
    }
   },
   {
@@ -6837,7 +6877,8 @@
    },
    "answered": {
     "subject": "Lorna",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "lorna"
    }
   },
   {
@@ -6872,7 +6913,7 @@
    "answered": {
     "subject": "Celia",
     "attribute": "who-does-bank-with",
-    "qualifier": "larkin-isle"
+    "qualifier": "celia"
    }
   },
   {
@@ -6977,7 +7018,7 @@
    "answered": {
     "subject": "Dario",
     "attribute": "who-does-bank-with",
-    "qualifier": "pewter-annex"
+    "qualifier": "banks with pewter-annex"
    }
   },
   {
@@ -7030,7 +7071,7 @@
    "answered": {
     "subject": "Luca",
     "attribute": "which-clinic-does-go-to",
-    "qualifier": "the vellum-moor clinic"
+    "qualifier": "for check-ups"
    }
   },
   {
@@ -7081,7 +7122,8 @@
    },
    "answered": {
     "subject": "Wanda",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "zephyr-coppice"
    }
   },
   {
@@ -7099,7 +7141,7 @@
    "answered": {
     "subject": "Wanda",
     "attribute": "who-does-order-paper-from",
-    "qualifier": "saffron-wharf"
+    "qualifier": "headed paper"
    }
   },
   {
@@ -7115,7 +7157,8 @@
    },
    "answered": {
     "subject": "Gunnar",
-    "attribute": "which-bakery-does-buy-bread-at"
+    "attribute": "which-bakery-does-buy-bread-at",
+    "qualifier": "the tamarind-wharf bakery"
    }
   },
   {
@@ -7254,7 +7297,8 @@
    },
    "answered": {
     "subject": "Yannis",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "cobalt-sedge"
    }
   },
   {
@@ -7271,7 +7315,8 @@
    },
    "answered": {
     "subject": "Yannis",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "headed paper"
    }
   },
   {
@@ -7341,7 +7386,7 @@
    "answered": {
     "subject": "Bruno",
     "attribute": "where-does-keep-the-backups",
-    "qualifier": "the archive bruno keeps the backups on thistle-foundry"
+    "qualifier": "the archive"
    }
   },
   {
@@ -7358,7 +7403,7 @@
    "answered": {
     "subject": "Iris",
     "attribute": "who-does-bank-with",
-    "qualifier": "marlow-brook"
+    "qualifier": "iris"
    }
   },
   {
@@ -7376,7 +7421,7 @@
    "answered": {
     "subject": "Iris",
     "attribute": "who-does-bank-with",
-    "qualifier": "the business account"
+    "qualifier": "iris"
    }
   },
   {
@@ -7392,7 +7437,8 @@
    },
    "answered": {
     "subject": "Sanjay",
-    "attribute": "which-cottage-does-rent"
+    "attribute": "which-cottage-does-rent",
+    "qualifier": "marlow-hollow"
    }
   },
   {
@@ -7548,7 +7594,7 @@
    "answered": {
     "subject": "Xavier",
     "attribute": "which-bakery-does-buy-bread-at",
-    "qualifier": "the quill-beacon bakery"
+    "qualifier": "the quill-beacon"
    }
   },
   {
@@ -7582,7 +7628,7 @@
    "answered": {
     "subject": "Tomas",
     "attribute": "what-does-keep-the-accounts-in",
-    "qualifier": "vellum-drift"
+    "qualifier": "in vellum-drift"
    }
   },
   {
@@ -7667,7 +7713,7 @@
    "answered": {
     "subject": "Gunnar",
     "attribute": "which-clinic-does-go-to",
-    "qualifier": "the amber-hollow"
+    "qualifier": "the amber-hollow clinic"
    }
   },
   {
@@ -7684,7 +7730,7 @@
    "answered": {
     "subject": "Idris",
     "attribute": "which-course-is-taking",
-    "qualifier": "the saffron-sedge course"
+    "qualifier": "taking the saffron-sedge course"
    }
   },
   {
@@ -7735,7 +7781,7 @@
    "answered": {
     "subject": "Milos",
     "attribute": "which-cottage-does-rent",
-    "qualifier": "marlow-meadow"
+    "qualifier": "milos"
    }
   },
   {
@@ -7769,7 +7815,7 @@
    "answered": {
     "subject": "Hugo",
     "attribute": "what-does-keep-the-accounts-in",
-    "qualifier": "umber-chandler"
+    "qualifier": "in umber-chandler"
    }
   },
   {
@@ -7786,7 +7832,7 @@
    "answered": {
     "subject": "Lisa",
     "attribute": "which-bakery-does-buy-bread-at",
-    "qualifier": "the zephyr-reach bakery"
+    "qualifier": "the zephyr-reach"
    }
   },
   {
@@ -7819,7 +7865,8 @@
    },
    "answered": {
     "subject": "Freya",
-    "attribute": "which-course-is-taking"
+    "attribute": "which-course-is-taking",
+    "qualifier": "taking the garnet-lantern course"
    }
   },
   {
@@ -7886,7 +7933,8 @@
    },
    "answered": {
     "subject": "Kwame",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "kwame"
    }
   },
   {
@@ -7937,7 +7985,7 @@
    "answered": {
     "subject": "Sofia",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "sofia"
+    "qualifier": "sits with the opal-isle team"
    }
   },
   {
@@ -7954,7 +8002,7 @@
    "answered": {
     "subject": "Josefa",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "josefa"
+    "qualifier": "sits with the ember-fenn team"
    }
   },
   {
@@ -8191,7 +8239,8 @@
    },
    "answered": {
     "subject": "Maria",
-    "attribute": "which-course-is-taking"
+    "attribute": "which-course-is-taking",
+    "qualifier": "taking the zephyr-ledge course"
    }
   },
   {
@@ -8259,7 +8308,7 @@
    "answered": {
     "subject": "Elif",
     "attribute": "which-course-is-taking",
-    "qualifier": "the cinder-wharf course"
+    "qualifier": "taking the cinder-wharf course"
    }
   },
   {
@@ -8309,7 +8358,8 @@
    },
    "answered": {
     "subject": "Idris",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "tamarind-meadow"
    }
   },
   {
@@ -8343,7 +8393,7 @@
    "answered": {
     "subject": "Zoltan",
     "attribute": "which-cottage-does-rent",
-    "qualifier": "cobalt-mill"
+    "qualifier": "the cobalt-mill cottage"
    }
   },
   {
@@ -8360,7 +8410,7 @@
    "answered": {
     "subject": "Ulla",
     "attribute": "which-clinic-does-go-to",
-    "qualifier": "the harrow-spire"
+    "qualifier": "the harrow-spire clinic"
    }
   },
   {
@@ -8377,7 +8427,7 @@
    "answered": {
     "subject": "Magnus",
     "attribute": "which-cottage-does-rent",
-    "qualifier": "the ravel-pike cottage"
+    "qualifier": "the statement that magnus rents the ravel-pike cottage"
    }
   },
   {
@@ -8394,7 +8444,7 @@
    "answered": {
     "subject": "Kofi",
     "attribute": "what-does-keep-the-accounts-in",
-    "qualifier": "ironwood-wharf"
+    "qualifier": "in ironwood-wharf"
    }
   },
   {
@@ -8496,7 +8546,7 @@
    "answered": {
     "subject": "Otto",
     "attribute": "what-does-keep-the-accounts-in",
-    "qualifier": "verdigris-glade"
+    "qualifier": "in verdigris-glade"
    }
   },
   {
@@ -8547,7 +8597,7 @@
    "answered": {
     "subject": "Anders",
     "attribute": "who-does-order-paper-from",
-    "qualifier": "wicklow-meadow"
+    "qualifier": "from wicklow-meadow"
    }
   },
   {
@@ -8665,7 +8715,8 @@
    },
    "answered": {
     "subject": "Nadia",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "from flint-orchard"
    }
   },
   {
@@ -8682,7 +8733,7 @@
    "answered": {
     "subject": "Sanjay",
     "attribute": "what-does-keep-the-accounts-in",
-    "qualifier": "zephyr-hearth"
+    "qualifier": "in zephyr-hearth"
    }
   },
   {
@@ -8800,7 +8851,8 @@
    },
    "answered": {
     "subject": "Otto",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "otto"
    }
   },
   {
@@ -8867,7 +8919,8 @@
    },
    "answered": {
     "subject": "Amara",
-    "attribute": "which-bakery-does-buy-bread-at"
+    "attribute": "which-bakery-does-buy-bread-at",
+    "qualifier": "the saffron-chandler bakery"
    }
   },
   {
@@ -8918,7 +8971,7 @@
    "answered": {
     "subject": "Hassan",
     "attribute": "which-bakery-does-buy-bread-at",
-    "qualifier": "larkin-sedge"
+    "qualifier": "the larkin-sedge bakery"
    }
   },
   {
@@ -8969,7 +9022,7 @@
    "answered": {
     "subject": "Priya",
     "attribute": "which-course-is-taking",
-    "qualifier": "the nutmeg-annex course"
+    "qualifier": "taking the nutmeg-annex course"
    }
   },
   {
@@ -8985,7 +9038,8 @@
    },
    "answered": {
     "subject": "Yuki",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "with amber-ridge"
    }
   },
   {
@@ -9001,7 +9055,8 @@
    },
    "answered": {
     "subject": "Kwame",
-    "attribute": "which-course-is-taking"
+    "attribute": "which-course-is-taking",
+    "qualifier": "taking the yarrow-pike course"
    }
   },
   {
@@ -9052,7 +9107,7 @@
    "answered": {
     "subject": "Viktor",
     "attribute": "which-clinic-does-go-to",
-    "qualifier": "the thistle-pike clinic"
+    "qualifier": "the thistle-pike"
    }
   },
   {
@@ -9086,7 +9141,7 @@
    "answered": {
     "subject": "Nikos",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "nikos"
+    "qualifier": "sits with the garnet-tarn team"
    }
   },
   {
@@ -9102,7 +9157,8 @@
    },
    "answered": {
     "subject": "Anders",
-    "attribute": "which-course-is-taking"
+    "attribute": "which-course-is-taking",
+    "qualifier": "taking the yarrow-gable course"
    }
   },
   {
@@ -9119,7 +9175,7 @@
    "answered": {
     "subject": "Jonas",
     "attribute": "which-course-is-taking",
-    "qualifier": "the copper-vale course"
+    "qualifier": "taking the copper-vale course"
    }
   },
   {
@@ -9136,7 +9192,7 @@
    "answered": {
     "subject": "Linnea",
     "attribute": "where-does-keep-the-backups",
-    "qualifier": "sable-lantern"
+    "qualifier": "on sable-lantern"
    }
   },
   {
@@ -9186,7 +9242,8 @@
    },
    "answered": {
     "subject": "Emeka",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "from saffron-foundry"
    }
   },
   {
@@ -9270,7 +9327,8 @@
    },
    "answered": {
     "subject": "Helena",
-    "attribute": "which-course-is-taking"
+    "attribute": "which-course-is-taking",
+    "qualifier": "helena"
    }
   },
   {
@@ -9286,7 +9344,8 @@
    },
    "answered": {
     "subject": "Goran",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "mirefield-harbour"
    }
   },
   {
@@ -9303,7 +9362,7 @@
    "answered": {
     "subject": "Iris",
     "attribute": "which-cottage-does-rent",
-    "qualifier": "iris"
+    "qualifier": "wicklow-lantern cottage"
    }
   },
   {
@@ -9319,7 +9378,8 @@
    },
    "answered": {
     "subject": "Magnus",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "mirefield-sedge"
    }
   },
   {
@@ -9335,7 +9395,8 @@
    },
    "answered": {
     "subject": "Milos",
-    "attribute": "which-course-is-taking"
+    "attribute": "which-course-is-taking",
+    "qualifier": "taking the wicklow-sedge course"
    }
   },
   {
@@ -9368,7 +9429,8 @@
    },
    "answered": {
     "subject": "Lisa",
-    "attribute": "which-cottage-does-rent"
+    "attribute": "which-cottage-does-rent",
+    "qualifier": "cottage"
    }
   },
   {
@@ -9469,7 +9531,8 @@
    },
    "answered": {
     "subject": "Mateo",
-    "attribute": "which-bakery-does-buy-bread-at"
+    "attribute": "which-bakery-does-buy-bread-at",
+    "qualifier": "the mirefield-lantern"
    }
   },
   {
@@ -9502,7 +9565,8 @@
    },
    "answered": {
     "subject": "Dora",
-    "attribute": "which-bakery-does-buy-bread-at"
+    "attribute": "which-bakery-does-buy-bread-at",
+    "qualifier": "the wicklow-hollow bakery"
    }
   },
   {
@@ -9603,7 +9667,8 @@
    },
    "answered": {
     "subject": "Elif",
-    "attribute": "which-bakery-does-buy-bread-at"
+    "attribute": "which-bakery-does-buy-bread-at",
+    "qualifier": "the dovetail-yard"
    }
   },
   {
@@ -9721,7 +9786,8 @@
    },
    "answered": {
     "subject": "Nadia",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "nadia"
    }
   },
   {
@@ -9771,7 +9837,8 @@
    },
    "answered": {
     "subject": "Pablo",
-    "attribute": "which-cottage-does-rent"
+    "attribute": "which-cottage-does-rent",
+    "qualifier": "larkin-beacon"
    }
   },
   {
@@ -9788,7 +9855,7 @@
    "answered": {
     "subject": "Gunnar",
     "attribute": "who-does-order-paper-from",
-    "qualifier": "vellum-yard"
+    "qualifier": "from vellum-yard"
    }
   },
   {
@@ -9805,7 +9872,7 @@
    "answered": {
     "subject": "Esther",
     "attribute": "where-does-keep-the-backups",
-    "qualifier": "marlow-tarn"
+    "qualifier": "on marlow-tarn"
    }
   },
   {
@@ -9822,7 +9889,7 @@
    "answered": {
     "subject": "Idris",
     "attribute": "which-cottage-does-rent",
-    "qualifier": "the ironwood-vale cottage"
+    "qualifier": "the statement narrows nothing"
    }
   },
   {
@@ -9839,7 +9906,7 @@
    "answered": {
     "subject": "Ursula",
     "attribute": "which-clinic-does-go-to",
-    "qualifier": "the dovetail-foundry clinic"
+    "qualifier": "the dovetail-foundry"
    }
   },
   {
@@ -9855,7 +9922,8 @@
    },
    "answered": {
     "subject": "Lorna",
-    "attribute": "which-bakery-does-buy-bread-at"
+    "attribute": "which-bakery-does-buy-bread-at",
+    "qualifier": "the amber-isle bakery"
    }
   },
   {
@@ -9889,7 +9957,7 @@
    "answered": {
     "subject": "Tomas",
     "attribute": "which-cottage-does-rent",
-    "qualifier": "sable-brook"
+    "qualifier": "the sable-brook cottage"
    }
   },
   {
@@ -9906,7 +9974,7 @@
    "answered": {
     "subject": "Ingrid",
     "attribute": "which-course-is-taking",
-    "qualifier": "the mirefield-coppice course"
+    "qualifier": "taking the mirefield-coppice course"
    }
   },
   {
@@ -9940,7 +10008,7 @@
    "answered": {
     "subject": "Dario",
     "attribute": "where-does-keep-the-backups",
-    "qualifier": "wicklow-spire"
+    "qualifier": "on wicklow-spire"
    }
   },
   {
@@ -9990,7 +10058,8 @@
    },
    "answered": {
     "subject": "Dario",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "harrow-coppice"
    }
   },
   {
@@ -10007,7 +10076,7 @@
    "answered": {
     "subject": "Tereza",
     "attribute": "which-cottage-does-rent",
-    "qualifier": "saffron-lantern"
+    "qualifier": "the saffron-lantern cottage"
    }
   },
   {
@@ -10023,7 +10092,8 @@
    },
    "answered": {
     "subject": "Quinn",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "quinn"
    }
   },
   {
@@ -10056,7 +10126,8 @@
    },
    "answered": {
     "subject": "Bjorn",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "bjorn"
    }
   },
   {
@@ -10090,7 +10161,7 @@
    "answered": {
     "subject": "Maria",
     "attribute": "which-bakery-does-buy-bread-at",
-    "qualifier": "cinder-kiln"
+    "qualifier": "the cinder-kiln bakery"
    }
   },
   {
@@ -10107,7 +10178,7 @@
    "answered": {
     "subject": "Ivo",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "the cobalt-brook team"
+    "qualifier": "sits with the cobalt-brook team"
    }
   },
   {
@@ -10124,7 +10195,7 @@
    "answered": {
     "subject": "Helena",
     "attribute": "what-does-keep-the-accounts-in",
-    "qualifier": "in bramble-fenn"
+    "qualifier": "helena"
    }
   },
   {
@@ -10156,7 +10227,8 @@
    },
    "answered": {
     "subject": "Quinn",
-    "attribute": "which-course-is-taking"
+    "attribute": "which-course-is-taking",
+    "qualifier": "taking the harrow-ridge course"
    }
   },
   {
@@ -10189,7 +10261,8 @@
    },
    "answered": {
     "subject": "Olga",
-    "attribute": "which-bakery-does-buy-bread-at"
+    "attribute": "which-bakery-does-buy-bread-at",
+    "qualifier": "the dovetail-tarn"
    }
   },
   {
@@ -10206,7 +10279,7 @@
    "answered": {
     "subject": "Karin",
     "attribute": "which-clinic-does-go-to",
-    "qualifier": "the saffron-hollow clinic"
+    "qualifier": "the saffron-hollow"
    }
   },
   {
@@ -10273,7 +10346,8 @@
    },
    "answered": {
     "subject": "Rania",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "with flint-weir"
    }
   },
   {
@@ -10290,7 +10364,7 @@
    "answered": {
     "subject": "Dora",
     "attribute": "what-does-keep-the-accounts-in",
-    "qualifier": "ironwood-meadow"
+    "qualifier": "in ironwood-meadow"
    }
   },
   {
@@ -10307,7 +10381,7 @@
    "answered": {
     "subject": "Ulla",
     "attribute": "which-cottage-does-rent",
-    "qualifier": "copper-beacon"
+    "qualifier": "the copper-beacon cottage"
    }
   },
   {
@@ -10341,7 +10415,7 @@
    "answered": {
     "subject": "Noor",
     "attribute": "who-does-bank-with",
-    "qualifier": "brindle-moor"
+    "qualifier": "with brindle-moor"
    }
   },
   {
@@ -10375,7 +10449,7 @@
    "answered": {
     "subject": "Pablo",
     "attribute": "which-line-does-commute-on",
-    "qualifier": "the pewter-vale line"
+    "qualifier": "pewter-vale"
    }
   },
   {
@@ -10391,7 +10465,8 @@
    },
    "answered": {
     "subject": "Nuria",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "nuria"
    }
   },
   {
@@ -10407,7 +10482,8 @@
    },
    "answered": {
     "subject": "Farid",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "from flint-pike"
    }
   },
   {
@@ -10509,7 +10585,7 @@
    "answered": {
     "subject": "Xavier",
     "attribute": "which-clinic-does-go-to",
-    "qualifier": "the thistle-annex"
+    "qualifier": "the thistle-annex clinic"
    }
   },
   {
@@ -10526,7 +10602,7 @@
    "answered": {
     "subject": "Iris",
     "attribute": "which-course-is-taking",
-    "qualifier": "the garnet-ridge course"
+    "qualifier": "iris"
    }
   },
   {
@@ -10543,7 +10619,7 @@
    "answered": {
     "subject": "Goran",
     "attribute": "which-bakery-does-buy-bread-at",
-    "qualifier": "oakhill-coppice"
+    "qualifier": "the oakhill-coppice"
    }
   },
   {
@@ -10559,7 +10635,8 @@
    },
    "answered": {
     "subject": "Viktor",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "larkin-vale"
    }
   },
   {
@@ -10575,7 +10652,8 @@
    },
    "answered": {
     "subject": "Hassan",
-    "attribute": "which-course-is-taking"
+    "attribute": "which-course-is-taking",
+    "qualifier": "taking the yarrow-ledge course"
    }
   },
   {
@@ -10642,7 +10720,8 @@
    },
    "answered": {
     "subject": "Jana",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "from saffron-tarn"
    }
   },
   {
@@ -10709,7 +10788,8 @@
    },
    "answered": {
     "subject": "Alma",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "from zephyr-mill"
    }
   },
   {
@@ -10793,7 +10873,8 @@
    },
    "answered": {
     "subject": "Beatriz",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "beatriz"
    }
   },
   {
@@ -10809,7 +10890,8 @@
    },
    "answered": {
     "subject": "Emeka",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "with flint-brook"
    }
   },
   {
@@ -10825,7 +10907,8 @@
    },
    "answered": {
     "subject": "Farid",
-    "attribute": "which-team-does-sit-with"
+    "attribute": "which-team-does-sit-with",
+    "qualifier": "sits with the brindle-brook team"
    }
   },
   {
@@ -10926,7 +11009,8 @@
    },
    "answered": {
     "subject": "Yannis",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "yannis"
    }
   },
   {
@@ -10942,7 +11026,8 @@
    },
    "answered": {
     "subject": "Kofi",
-    "attribute": "which-bakery-does-buy-bread-at"
+    "attribute": "which-bakery-does-buy-bread-at",
+    "qualifier": "the quill-foundry"
    }
   },
   {
@@ -10959,7 +11044,7 @@
    "answered": {
     "subject": "Fabio",
     "attribute": "which-clinic-does-go-to",
-    "qualifier": "the flint-ledge clinic"
+    "qualifier": "the flint-ledge"
    }
   },
   {
@@ -10976,7 +11061,7 @@
    "answered": {
     "subject": "Sofia",
     "attribute": "which-course-is-taking",
-    "qualifier": "the silverfin-vale course"
+    "qualifier": "taking the silverfin-vale course"
    }
   },
   {
@@ -10993,7 +11078,7 @@
    "answered": {
     "subject": "Kwame",
     "attribute": "who-does-order-paper-from",
-    "qualifier": "quill-tarn"
+    "qualifier": "from quill-tarn"
    }
   },
   {
@@ -11027,7 +11112,7 @@
    "answered": {
     "subject": "Leila",
     "attribute": "who-does-order-paper-from",
-    "qualifier": "cobalt-glade"
+    "qualifier": "from cobalt-glade"
    }
   },
   {
@@ -11044,7 +11129,7 @@
    "answered": {
     "subject": "Freya",
     "attribute": "where-does-keep-the-backups",
-    "qualifier": "oakhill-ledge"
+    "qualifier": "on oakhill-ledge"
    }
   },
   {
@@ -11061,7 +11146,7 @@
    "answered": {
     "subject": "Yannis",
     "attribute": "which-cottage-does-rent",
-    "qualifier": "sable-coppice"
+    "qualifier": "the sable-coppice cottage"
    }
   },
   {
@@ -11078,7 +11163,7 @@
    "answered": {
     "subject": "Mateo",
     "attribute": "who-does-order-paper-from",
-    "qualifier": "ironwood-sedge"
+    "qualifier": "from ironwood-sedge"
    }
   },
   {
@@ -11095,7 +11180,7 @@
    "answered": {
     "subject": "Yannis",
     "attribute": "which-clinic-does-go-to",
-    "qualifier": "the yarrow-mill clinic"
+    "qualifier": "the yarrow-mill"
    }
   },
   {
@@ -11197,7 +11282,7 @@
    "answered": {
     "subject": "Chiara",
     "attribute": "which-course-is-taking",
-    "qualifier": "the tamarind-annex course"
+    "qualifier": "the tamarind-annex"
    }
   },
   {
@@ -11315,7 +11400,8 @@
    },
    "answered": {
     "subject": "Orla",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "from amber-glade"
    }
   },
   {
@@ -11331,7 +11417,8 @@
    },
    "answered": {
     "subject": "Luca",
-    "attribute": "which-cottage-does-rent"
+    "attribute": "which-cottage-does-rent",
+    "qualifier": "the ember-moor cottage"
    }
   },
   {
@@ -11347,7 +11434,8 @@
    },
    "answered": {
     "subject": "Freya",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "freya"
    }
   },
   {
@@ -11381,7 +11469,7 @@
    "answered": {
     "subject": "Celia",
     "attribute": "who-does-order-paper-from",
-    "qualifier": "marlow-coppice"
+    "qualifier": "from marlow-coppice"
    }
   },
   {
@@ -11397,7 +11485,8 @@
    },
    "answered": {
     "subject": "Helena",
-    "attribute": "which-bakery-does-buy-bread-at"
+    "attribute": "which-bakery-does-buy-bread-at",
+    "qualifier": "the zephyr-hollow bakery"
    }
   },
   {
@@ -11549,7 +11638,8 @@
    },
    "answered": {
     "subject": "Alma",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "alma"
    }
   },
   {
@@ -11651,7 +11741,7 @@
    "answered": {
     "subject": "Noor",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "no restriction"
+    "qualifier": "sits with the amber-vale team"
    }
   },
   {
@@ -11685,7 +11775,7 @@
    "answered": {
     "subject": "Lorna",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "the nutmeg-ridge team"
+    "qualifier": "lorna"
    }
   },
   {
@@ -11702,7 +11792,7 @@
    "answered": {
     "subject": "Oskar",
     "attribute": "which-bakery-does-buy-bread-at",
-    "qualifier": "larkin-foundry"
+    "qualifier": "the larkin-foundry"
    }
   },
   {
@@ -11719,7 +11809,7 @@
    "answered": {
     "subject": "Iris",
     "attribute": "which-clinic-does-go-to",
-    "qualifier": "the wicklow-chandler clinic"
+    "qualifier": "wicklow-chandler"
    }
   },
   {
@@ -11752,7 +11842,8 @@
    },
    "answered": {
     "subject": "Josefa",
-    "attribute": "which-course-is-taking"
+    "attribute": "which-course-is-taking",
+    "qualifier": "taking the zephyr-lantern course"
    }
   },
   {
@@ -11803,7 +11894,7 @@
    "answered": {
     "subject": "Jonas",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "jonas"
+    "qualifier": "marlow-isle"
    }
   },
   {
@@ -11837,7 +11928,7 @@
    "answered": {
     "subject": "Lorna",
     "attribute": "which-clinic-does-go-to",
-    "qualifier": "the oakhill-orchard clinic"
+    "qualifier": "the oakhill-orchard"
    }
   },
   {
@@ -11939,7 +12030,7 @@
    "answered": {
     "subject": "Hassan",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "larkin-annex"
+    "qualifier": "sits with the larkin-annex team"
    }
   },
   {
@@ -11990,7 +12081,7 @@
    "answered": {
     "subject": "Iris",
     "attribute": "which-bakery-does-buy-bread-at",
-    "qualifier": "the ironwood-brook bakery"
+    "qualifier": "at the ironwood-brook bakery"
    }
   },
   {
@@ -12040,7 +12131,8 @@
    },
    "answered": {
     "subject": "Farid",
-    "attribute": "which-cottage-does-rent"
+    "attribute": "which-cottage-does-rent",
+    "qualifier": "the vellum-isle cottage"
    }
   },
   {
@@ -12125,7 +12217,7 @@
    "answered": {
     "subject": "Orla",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "orla"
+    "qualifier": "the harrow-orchard team"
    }
   },
   {
@@ -12141,7 +12233,8 @@
    },
    "answered": {
     "subject": "Rosa",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "ravel-kiln"
    }
   },
   {
@@ -12158,7 +12251,7 @@
    "answered": {
     "subject": "Jonas",
     "attribute": "which-clinic-does-go-to",
-    "qualifier": "nutmeg-beacon"
+    "qualifier": "the nutmeg-beacon clinic"
    }
   },
   {
@@ -12192,7 +12285,7 @@
    "answered": {
     "subject": "Anders",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "anders"
+    "qualifier": "sits with the verdigris-ridge team"
    }
   },
   {
@@ -12208,7 +12301,8 @@
    },
    "answered": {
     "subject": "Wanda",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "with umber-yard"
    }
   },
   {
@@ -12275,7 +12369,8 @@
    },
    "answered": {
     "subject": "Priya",
-    "attribute": "which-bakery-does-buy-bread-at"
+    "attribute": "which-bakery-does-buy-bread-at",
+    "qualifier": "the zephyr-foundry"
    }
   },
   {
@@ -12291,7 +12386,8 @@
    },
    "answered": {
     "subject": "Beatriz",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "beatriz"
    }
   },
   {
@@ -12358,7 +12454,8 @@
    },
    "answered": {
     "subject": "Jana",
-    "attribute": "which-cottage-does-rent"
+    "attribute": "which-cottage-does-rent",
+    "qualifier": "the yarrow-glade cottage"
    }
   },
   {
@@ -12392,7 +12489,7 @@
    "answered": {
     "subject": "Leila",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "leila"
+    "qualifier": "the cobalt-harbour team"
    }
   },
   {
@@ -12425,7 +12522,8 @@
    },
    "answered": {
     "subject": "Nikos",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "nicos"
    }
   },
   {
@@ -12458,7 +12556,8 @@
    },
    "answered": {
     "subject": "Hugo",
-    "attribute": "which-course-is-taking"
+    "attribute": "which-course-is-taking",
+    "qualifier": "taking the nutmeg-spire course"
    }
   },
   {
@@ -12475,7 +12574,7 @@
    "answered": {
     "subject": "Zoltan",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "zoltan sits with the copper-glade team"
+    "qualifier": "sits with the copper-glade team"
    }
   },
   {
@@ -12492,7 +12591,7 @@
    "answered": {
     "subject": "Rosa",
     "attribute": "which-course-is-taking",
-    "qualifier": "the mirefield-hearth course"
+    "qualifier": "taking the mirefield-hearth course"
    }
   },
   {
@@ -12508,7 +12607,8 @@
    },
    "answered": {
     "subject": "Chiara",
-    "attribute": "which-bakery-does-buy-bread-at"
+    "attribute": "which-bakery-does-buy-bread-at",
+    "qualifier": "the cinder-coppice bakery"
    }
   },
   {
@@ -12542,7 +12642,7 @@
    "answered": {
     "subject": "Wilma",
     "attribute": "which-cottage-does-rent",
-    "qualifier": "cobalt-kiln"
+    "qualifier": "the cobalt-kiln cottage"
    }
   },
   {
@@ -12610,7 +12710,7 @@
    "answered": {
     "subject": "Rafael",
     "attribute": "which-course-is-taking",
-    "qualifier": "the tamarind-gable course"
+    "qualifier": "taking the tamarind-gable course"
    }
   },
   {
@@ -12644,7 +12744,7 @@
    "answered": {
     "subject": "Dario",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "the opal-meadow team"
+    "qualifier": "dario"
    }
   },
   {
@@ -12779,7 +12879,8 @@
    },
    "answered": {
     "subject": "Cato",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "from saffron-brook"
    }
   },
   {
@@ -12813,7 +12914,7 @@
    "answered": {
     "subject": "Tereza",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "tereza"
+    "qualifier": "the nutmeg-ledge team"
    }
   },
   {
@@ -12880,7 +12981,8 @@
    },
    "answered": {
     "subject": "Farid",
-    "attribute": "which-course-is-taking"
+    "attribute": "which-course-is-taking",
+    "qualifier": "taking the marlow-glade course"
    }
   },
   {
@@ -12896,7 +12998,8 @@
    },
    "answered": {
     "subject": "Bjorn",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "from verdigris-isle"
    }
   },
   {
@@ -12929,7 +13032,8 @@
    },
    "answered": {
     "subject": "Ursula",
-    "attribute": "which-course-is-taking"
+    "attribute": "which-course-is-taking",
+    "qualifier": "taking the opal-beacon course"
    }
   },
   {
@@ -12946,7 +13050,7 @@
    "answered": {
     "subject": "Esther",
     "attribute": "which-course-is-taking",
-    "qualifier": "the ember-annex course"
+    "qualifier": "the ember-annex"
    }
   },
   {
@@ -12997,7 +13101,7 @@
    "answered": {
     "subject": "Greta",
     "attribute": "which-course-is-taking",
-    "qualifier": "the vellum-tarn course"
+    "qualifier": "taking the vellum-tarn course"
    }
   },
   {
@@ -13048,7 +13152,7 @@
    "answered": {
     "subject": "Kwame",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "kwame"
+    "qualifier": "sits with the ember-kiln team"
    }
   },
   {
@@ -13082,7 +13186,7 @@
    "answered": {
     "subject": "Milos",
     "attribute": "which-bakery-does-buy-bread-at",
-    "qualifier": "the marlow-quarry bakery"
+    "qualifier": "the statement narrows nothing"
    }
   },
   {
@@ -13115,7 +13219,8 @@
    },
    "answered": {
     "subject": "Wilma",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "wilma"
    }
   },
   {
@@ -13131,7 +13236,8 @@
    },
    "answered": {
     "subject": "Quinn",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "from verdigris-harbour"
    }
   },
   {
@@ -13148,7 +13254,7 @@
    "answered": {
     "subject": "Esther",
     "attribute": "who-does-bank-with",
-    "qualifier": "sable-orchard"
+    "qualifier": "esther"
    }
   },
   {
@@ -13181,7 +13287,8 @@
    },
    "answered": {
     "subject": "Nuria",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "nuria"
    }
   },
   {
@@ -13198,7 +13305,7 @@
    "answered": {
     "subject": "Luca",
     "attribute": "who-does-order-paper-from",
-    "qualifier": "oakhill-moor"
+    "qualifier": "from oakhill-moor"
    }
   },
   {
@@ -13215,7 +13322,7 @@
    "answered": {
     "subject": "Erol",
     "attribute": "which-cottage-does-rent",
-    "qualifier": "dovetail-coppice"
+    "qualifier": "the dovetail-coppice cottage"
    }
   },
   {
@@ -13249,7 +13356,7 @@
    "answered": {
     "subject": "Stefan",
     "attribute": "which-clinic-does-go-to",
-    "qualifier": "the nutmeg-meadow"
+    "qualifier": "the nutmeg-meadow clinic"
    }
   },
   {
@@ -13265,7 +13372,8 @@
    },
    "answered": {
     "subject": "Sanjay",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "yarrow-moor"
    }
   },
   {
@@ -13299,7 +13407,7 @@
    "answered": {
     "subject": "Nadia",
     "attribute": "which-bakery-does-buy-bread-at",
-    "qualifier": "harrow-fenn"
+    "qualifier": "the harrow-fenn"
    }
   },
   {
@@ -13315,7 +13423,8 @@
    },
    "answered": {
     "subject": "Rafael",
-    "attribute": "which-team-does-sit-with"
+    "attribute": "which-team-does-sit-with",
+    "qualifier": "rafael"
    }
   },
   {
@@ -13331,7 +13440,8 @@
    },
    "answered": {
     "subject": "Ulla",
-    "attribute": "which-course-is-taking"
+    "attribute": "which-course-is-taking",
+    "qualifier": "taking the brindle-ledge course"
    }
   },
   {
@@ -13416,7 +13526,7 @@
    "answered": {
     "subject": "Nikos",
     "attribute": "which-cottage-does-rent",
-    "qualifier": "the silverfin-fenn cottage"
+    "qualifier": "the statement that nikos rents the silverfin-fenn cottage"
    }
   },
   {
@@ -13449,7 +13559,8 @@
    },
    "answered": {
     "subject": "Kofi",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "with yarrow-sedge"
    }
   },
   {
@@ -13466,7 +13577,7 @@
    "answered": {
     "subject": "Amara",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "the garnet-moor team"
+    "qualifier": "sits with the garnet-moor team"
    }
   },
   {
@@ -13483,7 +13594,7 @@
    "answered": {
     "subject": "Orla",
     "attribute": "which-bakery-does-buy-bread-at",
-    "qualifier": "the tamarind-ridge bakery"
+    "qualifier": "the tamarind-ridge"
    }
   },
   {
@@ -13517,7 +13628,7 @@
    "answered": {
     "subject": "Goran",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "the mirefield-yard team"
+    "qualifier": "sits with the mirefield-yard team"
    }
   },
   {
@@ -13534,7 +13645,7 @@
    "answered": {
     "subject": "Luca",
     "attribute": "who-does-bank-with",
-    "qualifier": "yarrow-brook"
+    "qualifier": "luca"
    }
   },
   {
@@ -13550,7 +13661,8 @@
    },
    "answered": {
     "subject": "Dmitri",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "dmitri"
    }
   },
   {
@@ -13567,7 +13679,7 @@
    "answered": {
     "subject": "Beatriz",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "the verdigris-fenn team"
+    "qualifier": "sits with the verdigris-fenn team"
    }
   },
   {
@@ -13584,7 +13696,7 @@
    "answered": {
     "subject": "Stefan",
     "attribute": "which-course-is-taking",
-    "qualifier": "the harrow-hollow course"
+    "qualifier": "taking the harrow-hollow course"
    }
   },
   {
@@ -13601,7 +13713,7 @@
    "answered": {
     "subject": "Kofi",
     "attribute": "which-cottage-does-rent",
-    "qualifier": "garnet-gable"
+    "qualifier": "the garnet-gable cottage"
    }
   },
   {
@@ -13702,7 +13814,8 @@
    },
    "answered": {
     "subject": "Dmitri",
-    "attribute": "where-does-keep-the-backups"
+    "attribute": "where-does-keep-the-backups",
+    "qualifier": "on quill-reach"
    }
   },
   {
@@ -13770,7 +13883,7 @@
    "answered": {
     "subject": "Josefa",
     "attribute": "which-bakery-does-buy-bread-at",
-    "qualifier": "the oakhill-brook bakery"
+    "qualifier": "at the oakhill-brook bakery"
    }
   },
   {
@@ -13803,7 +13916,8 @@
    },
    "answered": {
     "subject": "Linnea",
-    "attribute": "who-does-bank-with"
+    "attribute": "who-does-bank-with",
+    "qualifier": "linnea"
    }
   },
   {
@@ -13836,7 +13950,8 @@
    },
    "answered": {
     "subject": "Magnus",
-    "attribute": "which-team-does-sit-with"
+    "attribute": "which-team-does-sit-with",
+    "qualifier": "magnus"
    }
   },
   {
@@ -13853,7 +13968,7 @@
    "answered": {
     "subject": "Fabio",
     "attribute": "which-course-is-taking",
-    "qualifier": "taking the saffron-quarry course"
+    "qualifier": "the saffron-quarry course"
    }
   },
   {
@@ -13886,7 +14001,8 @@
    },
    "answered": {
     "subject": "Yara",
-    "attribute": "which-course-is-taking"
+    "attribute": "which-course-is-taking",
+    "qualifier": "taking the bramble-foundry course"
    }
   },
   {
@@ -13954,7 +14070,7 @@
    "answered": {
     "subject": "Leila",
     "attribute": "where-does-keep-the-backups",
-    "qualifier": "cinder-yard"
+    "qualifier": "on cinder-yard"
    }
   },
   {
@@ -13971,7 +14087,7 @@
    "answered": {
     "subject": "Priya",
     "attribute": "which-project-does-lead",
-    "qualifier": "the-tamarind-kiln-project"
+    "qualifier": "the tamarind-kiln project"
    }
   },
   {
@@ -13988,7 +14104,7 @@
    "answered": {
     "subject": "Milos",
     "attribute": "who-does-bank-with",
-    "qualifier": "nutmeg-mill"
+    "qualifier": "milos"
    }
   },
   {
@@ -14022,7 +14138,7 @@
    "answered": {
     "subject": "Dmitri",
     "attribute": "what-does-keep-the-accounts-in",
-    "qualifier": "bramble-spire"
+    "qualifier": "in bramble-spire"
    }
   },
   {
@@ -14072,7 +14188,8 @@
    },
    "answered": {
     "subject": "Vasco",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "vasco"
    }
   },
   {
@@ -14123,7 +14240,7 @@
    "answered": {
     "subject": "Elif",
     "attribute": "which-cottage-does-rent",
-    "qualifier": "saffron-kiln"
+    "qualifier": "the saffron-kiln cottage"
    }
   },
   {
@@ -14140,7 +14257,7 @@
    "answered": {
     "subject": "Olga",
     "attribute": "which-team-does-sit-with",
-    "qualifier": "olga"
+    "qualifier": "sits with the tamarind-harbour team"
    }
   },
   {
@@ -14174,7 +14291,7 @@
    "answered": {
     "subject": "Vasco",
     "attribute": "where-does-rehearse",
-    "qualifier": "the copper-brook hall"
+    "qualifier": "at the copper-brook hall"
    }
   },
   {
@@ -14190,7 +14307,8 @@
    },
    "answered": {
     "subject": "Greta",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "from pewter-pike"
    }
   },
   {
@@ -14206,7 +14324,8 @@
    },
    "answered": {
     "subject": "Bruno",
-    "attribute": "who-does-order-paper-from"
+    "attribute": "who-does-order-paper-from",
+    "qualifier": "bruno"
    }
   }
  ]

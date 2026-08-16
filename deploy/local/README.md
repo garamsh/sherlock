@@ -61,7 +61,7 @@ The sample `gagent.yaml` uses the mock model provider, so the agent replies with
 
 ## Check
 
-`make -C ../.. smoke-local` runs the whole sequence above — tools, certificates, `docker compose up`, one message — and fails unless the agent accepts the message, all three tool calls succeed, the turn finishes, and the reply reaches the outbox. It reads the monitoring stream for that, because a failed tool call is reported to the model and the loop carries on, so a reply alone does not prove the run was clean. The `docker` job in `.github/workflows/ci.yml` runs the same command, so a change that stops this deployment from starting — or starts a tool call failing inside it — fails CI.
+`./smoke.sh` runs the whole sequence above — tools, certificates, `docker compose up`, one message — and fails unless the agent accepts the message, all three tool calls succeed, the turn finishes, and the reply reaches the outbox. It reads the monitoring stream for that, because a failed tool call is reported to the model and the loop carries on, so a reply alone does not prove the run was clean. The `docker` job in `.github/workflows/ci.yml` runs the same script, so a change that stops this deployment from starting — or starts a tool call failing inside it — fails CI.
 
 ## Cleanup
 

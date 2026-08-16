@@ -65,7 +65,6 @@ The rules above bind. This section does not: it is one toolchain — Make for th
 ### Entry points as a Makefile
 
 - **Entry points**: `make lint`, `make format`, `make test`, `make build`, and `make ci` for the whole set. The `Makefile` holds the commands behind each name; a contributor and the workflow both invoke the name.
-- **Outside the set**: `make smoke-local` starts the deployment `deploy/local/README.md` documents and fails if the agent does not answer. It needs Docker, so it runs in its own workflow job rather than inside `make ci`.
 - **Before pushing**: `make ci` by hand, or `make hooks` once after cloning to have lefthook run lint and format on commit and test on push.
 
 ### GitHub Actions specifics

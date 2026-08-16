@@ -60,15 +60,18 @@ type Config struct {
 
 // Run is one seed's whole measurement.
 type Run struct {
-	Seed     int64         `json:"seed"`
-	Start    string        `json:"start"`
-	Embedder string        `json:"embedder"`
-	Digest   string        `json:"workload_digest"`
-	Params   Params        `json:"params"`
-	Config   Config        `json:"configuration"`
-	Cost     Cost          `json:"cost"`
-	Arity    Arity         `json:"arity"`
-	Frames   []FrameResult `json:"frames"`
+	Seed     int64          `json:"seed"`
+	Start    string         `json:"start"`
+	Embedder string         `json:"embedder"`
+	Digest   string         `json:"workload_digest"`
+	Params   Params         `json:"params"`
+	Config   Config         `json:"configuration"`
+	Cost     Cost           `json:"cost"`
+	Sweep    []SweepResult  `json:"declaration_error_sweep"`
+	Declarer *DeclarerScore `json:"declarer,omitempty"`
+	Model    *ModelRun      `json:"model_run,omitempty"`
+	Arity    Arity          `json:"arity"`
+	Frames   []FrameResult  `json:"frames"`
 }
 
 func main() {
@@ -83,6 +86,10 @@ func run() error {
 	out := flag.String("out", defaultOut(), "directory the results are written to")
 	record := flag.String("record", defaultRecord(), "the record whose tables -render rewrites")
 	render := flag.Bool("render", false, "rewrite the record's tables from the committed results and measure nothing")
+	declare := flag.Bool("declare", false,
+		"ask a model to declare the operation for every assertion. This is the only flag that spends money")
+	declarerCache := flag.String("declarer-cache", "",
+		"file the declared operations are cached in, outside the repository")
 	params := Params{}
 	flag.IntVar(&params.Years, "years", 10, "the span the workload covers")
 	flag.IntVar(&params.SessionsPerYear, "sessions-per-year", 36, "conversations in each year")
@@ -102,9 +109,37 @@ func run() error {
 	if err := writeJSON(filepath.Join(*out, fmt.Sprintf("workload_seed%d.json", *seed)), workload); err != nil {
 		return err
 	}
-	result, err := MeasureRun(context.Background(), workload)
+	ctx := context.Background()
+	declarationPath := filepath.Join(*out, fmt.Sprintf("declarations_seed%d.json", *seed))
+	if *declare {
+		declared, err := Declare(ctx, workload, *declarerCache)
+		if err != nil {
+			return err
+		}
+		if err := writeJSON(declarationPath, declared); err != nil {
+			return err
+		}
+		fmt.Printf("declared %d assertions in %d paid calls: %d prompt and %d completion tokens, $%.4f\n",
+			len(declared.Declarations), declared.Calls,
+			declared.PromptTokens, declared.CompletionTokens, declared.CostUSD)
+	}
+
+	result, err := MeasureRun(ctx, workload)
 	if err != nil {
 		return err
+	}
+	declared, err := readCommittedDeclarations(declarationPath)
+	if err != nil {
+		return err
+	}
+	if declared != nil {
+		scored := ScoreDeclarations(*declared)
+		result.Declarer = &scored
+		modelRun, err := MeasureModelRun(ctx, workload, *declared)
+		if err != nil {
+			return err
+		}
+		result.Model = &modelRun
 	}
 	if err := writeJSON(resultPath, result); err != nil {
 		return err
@@ -148,7 +183,7 @@ func MeasureRun(ctx context.Context, w Workload) (Run, error) {
 	}
 	for _, arm := range armNames {
 		for _, frame := range frameNames {
-			measured, err := Measure(ctx, w, frame, arm, counter)
+			measured, err := Measure(ctx, w, frame, arm, counter, nil)
 			if err != nil {
 				return Run{}, fmt.Errorf("%s in the %s arm: %w", frame, arm, err)
 			}
@@ -156,6 +191,13 @@ func MeasureRun(ctx context.Context, w Workload) (Run, error) {
 			fmt.Printf("%s, %s arm: %d probes over %d years\n", frame, arm, len(measured.Probes), len(measured.Years))
 		}
 	}
+	sweep, err := MeasureSweep(ctx, w, w.Seed)
+	if err != nil {
+		return Run{}, err
+	}
+	result.Sweep = sweep
+	fmt.Printf("declaration-error sweep: %d runs\n", len(sweep))
+
 	calls, distinct, tokens := counter.Totals()
 	result.Cost = Cost{
 		TurnsObserved:    w.Params.Turns * len(armNames) * len(frameNames),
@@ -167,6 +209,24 @@ func MeasureRun(ctx context.Context, w Workload) (Run, error) {
 		PerTurnModel:     ProjectPerTurnModel(w.Params.Turns, w.MeanTurnChars()),
 	}
 	return result, nil
+}
+
+// readCommittedDeclarations reads the answers a paid run committed. A tree
+// without that file measures nothing about a model and spends nothing: the
+// free path cannot reach the provider.
+func readCommittedDeclarations(path string) (*Declarations, error) {
+	body, err := os.ReadFile(path)
+	if os.IsNotExist(err) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("read %s: %w", path, err)
+	}
+	var declared Declarations
+	if err := json.Unmarshal(body, &declared); err != nil {
+		return nil, fmt.Errorf("decode %s: %w", path, err)
+	}
+	return &declared, nil
 }
 
 // defaultOut is the results directory beside this harness.

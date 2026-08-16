@@ -91,7 +91,8 @@ func SizeYears(years int) []int {
 
 // Measure runs one frame over the whole workload in one arm, asking every
 // answerable thread at the end of every year.
-func Measure(ctx context.Context, w Workload, frameName, arm string, counter *EmbedCounter) (FrameResult, error) {
+func Measure(ctx context.Context, w Workload, frameName, arm string, counter *EmbedCounter,
+	declaring Declaring) (FrameResult, error) {
 	dir, err := os.MkdirTemp("", "memory-frames")
 	if err != nil {
 		return FrameResult{}, fmt.Errorf("temp dir: %w", err)
@@ -108,7 +109,7 @@ func Measure(ctx context.Context, w Workload, frameName, arm string, counter *Em
 	sizeYears := SizeYears(w.Params.Years)
 	year := 1
 	checkpoint := func() error {
-		probes, size, err := ask(ctx, frame, w, year, arm)
+		probes, size, err := ask(ctx, frame, w, year, arm, declaring)
 		if err != nil {
 			return err
 		}
@@ -127,7 +128,7 @@ func Measure(ctx context.Context, w Workload, frameName, arm string, counter *Em
 				return FrameResult{}, err
 			}
 		}
-		if err := frame.Observe(ctx, observed(turn, arm)); err != nil {
+		if err := frame.Observe(ctx, observed(turn, arm, declaring)); err != nil {
 			return FrameResult{}, err
 		}
 	}
@@ -143,22 +144,27 @@ func Measure(ctx context.Context, w Workload, frameName, arm string, counter *Em
 // the extracted forms beside the text; the text arm hands it the text
 // alone. This is the one place an arm touches a turn, so a frame never
 // learns which arm it is in.
-func observed(t Turn, arm string) Turn {
+func observed(t Turn, arm string, declaring Declaring) Turn {
 	if arm == armText {
 		t.Fact, t.Ask, t.Declared = nil, nil, ""
+		return t
 	}
-	return t
+	if declaring == nil {
+		return t
+	}
+	return declaring(t)
 }
 
 // ask puts every thread answerable at this year to the frame and scores
 // what comes back. A checkpoint reads the frame and never writes to it.
-func ask(ctx context.Context, frame Frame, w Workload, year int, arm string) ([]ProbeResult, Size, error) {
+func ask(ctx context.Context, frame Frame, w Workload, year int, arm string,
+	declaring Declaring) ([]ProbeResult, Size, error) {
 	var probes []ProbeResult
 	for _, thread := range w.Threads {
 		if !thread.ProbedAt(year) {
 			continue
 		}
-		injected, err := frame.Context(ctx, observed(Checkpoint(year, thread), arm))
+		injected, err := frame.Context(ctx, observed(Checkpoint(year, thread), arm, declaring))
 		if err != nil {
 			return nil, Size{}, fmt.Errorf("context for %s at year %d: %w", thread.Subject, year, err)
 		}

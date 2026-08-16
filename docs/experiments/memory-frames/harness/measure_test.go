@@ -46,7 +46,7 @@ func measureWith(t *testing.T, frame Frame, w Workload, arm string) FrameResult 
 	year := 1
 	ctx := context.Background()
 	checkpoint := func() {
-		probes, size, err := ask(ctx, frame, w, year, arm)
+		probes, size, err := ask(ctx, frame, w, year, arm, nil)
 		require.NoError(t, err)
 		out.Probes = append(out.Probes, probes...)
 		out.Years = append(out.Years, summarizeYear(year, probes))
@@ -57,7 +57,7 @@ func measureWith(t *testing.T, frame Frame, w Workload, arm string) FrameResult 
 		for year <= w.Params.Years && turn.Day >= year*daysPerYear {
 			checkpoint()
 		}
-		require.NoError(t, frame.Observe(ctx, observed(turn, arm)))
+		require.NoError(t, frame.Observe(ctx, observed(turn, arm, nil)))
 	}
 	for year <= w.Params.Years {
 		checkpoint()
@@ -131,7 +131,7 @@ func TestMeasure_RunsTheRegisteredFramesOverTheWholeDecade(t *testing.T) {
 
 	for _, arm := range armNames {
 		for _, name := range frameNames {
-			result, err := Measure(context.Background(), w, name, arm, NewEmbedCounter())
+			result, err := Measure(context.Background(), w, name, arm, NewEmbedCounter(), nil)
 			require.NoError(t, err, "%s in the %s arm", name, arm)
 			assert.Equal(t, name, result.Frame)
 			assert.Equal(t, arm, result.Arm)
@@ -150,9 +150,9 @@ func TestMeasure_LeavesAFrameThatReadsOnlyTextUnchangedByTheArm(t *testing.T) {
 	w, err := GenerateWorkload(7, Params{Years: 10, SessionsPerYear: 2, TurnsPerSession: 4, ThreadsPerClass: 1})
 	require.NoError(t, err)
 
-	oracle, err := Measure(context.Background(), w, frameDocument, armOracle, NewEmbedCounter())
+	oracle, err := Measure(context.Background(), w, frameDocument, armOracle, NewEmbedCounter(), nil)
 	require.NoError(t, err)
-	text, err := Measure(context.Background(), w, frameDocument, armText, NewEmbedCounter())
+	text, err := Measure(context.Background(), w, frameDocument, armText, NewEmbedCounter(), nil)
 	require.NoError(t, err)
 
 	assert.Equal(t, oracle.Probes, text.Probes)
@@ -209,7 +209,7 @@ func TestMeasure_GivesOneArityRuleTheSameAnswerWhateverStoreTakesIt(t *testing.T
 	require.NoError(t, err)
 
 	scored := func(name string) []ProbeResult {
-		result, err := Measure(context.Background(), w, name, armOracle, NewEmbedCounter())
+		result, err := Measure(context.Background(), w, name, armOracle, NewEmbedCounter(), nil)
 		require.NoError(t, err)
 		// What each store reads to answer is where they differ, so it is
 		// not part of the answer they are being compared on.

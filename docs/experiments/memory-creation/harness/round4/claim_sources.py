@@ -1,8 +1,11 @@
-"""Checks every numeric claim in the record against the committed file it came from.
+"""Checks the round-4 figures generation does not reach.
 
-`../../README.md` states figures; `../../results_round4/` and this directory hold
-what produced them. This reads both and compares, so the register cannot drift
-from either side: change a published figure or a result file and a check fails.
+Round 4's ten result tables are written by `record.py` from
+`../../results_round4/`, so a cell there cannot disagree with the run behind it
+and is not read back here. What is left is what a generated table does not
+carry: an input the record states from this directory, and — most of what
+follows — the figures its prose states outside a table, which is every reading
+it draws from those tables and every count it quotes from a diagnosis file.
 
 Three registers:
 
@@ -27,9 +30,11 @@ ROOT = os.path.join(HERE, "..", "..")
 RESULTS = os.path.join(ROOT, "results_round4")
 
 sys.path.insert(0, HERE)
+sys.path.insert(0, os.path.join(HERE, ".."))
 
 import dataset
 import precision
+import record
 
 README = open(os.path.join(ROOT, "README.md")).read()
 
@@ -70,41 +75,6 @@ class Anchor:
         return g[index] if isinstance(g, tuple) else g
 
 
-def section(heading):
-    """The README text under one heading, up to the next heading of any level.
-
-    The document carries more than one round, so a table shape is no longer
-    unique to the section that owns it.
-    """
-    body = README.split(f"\n{heading}\n", 1)
-    if len(body) != 2:
-        raise SystemExit(f"heading not found: {heading}")
-    return re.split(r"\n#{2,3} ", body[1], maxsplit=1)[0]
-
-
-def structures_table():
-    """The §The structures rows, as {label: [cells]}."""
-    out = {}
-    for line in section("## The structures").splitlines():
-        if not re.match(r"\| \*{0,2}B\d", line):
-            continue
-        cells = [re.sub(r"\*+", "", c).strip() for c in line.strip("|").split("|")]
-        out[cells[0].split()[0]] = cells[2:]
-    return out
-
-
-def category_table():
-    """The §What the corrected column is measuring rows, as {label: [cells]}."""
-    out = {}
-    for line in section("### What the corrected column is measuring").splitlines():
-        if not line.startswith("| ") or line.startswith("| B"):
-            continue
-        cells = [re.sub(r"\*+", "", c).strip() for c in line.strip("|").split("|")]
-        if len(cells) == 6 and all(c.isdigit() for c in cells[1:]):
-            out[cells[0]] = [int(c) for c in cells[1:]]
-    return out
-
-
 CHECKS = []
 UNSOURCED = []
 
@@ -129,12 +99,6 @@ def method():
     check(s, "probes", a.one(1), "falsification_seed7.json probes",
           load("falsification_seed7")["probes"])
 
-    kinds = load("falsification_seed7")["probe_kinds"]
-    for family in ("corrected", "control", "coexist"):
-        a = Anchor(rf"\| {family} \| (\d+) \|")
-        check(s, f"probe family {family}", a.one(),
-              f"falsification_seed7.json probe_kinds.{family}", kinds[family])
-
     persons = re.search(r"^PERSONS = (\[.*?\])",
                         open(os.path.join(HERE, "dataset.py")).read(),
                         re.S | re.M).group(1)
@@ -150,15 +114,12 @@ def method():
     check(s, "structures scored", words[a.one(1)],
           "results_round4/ scored rows", len(seeds))
 
-    rounds13 = os.path.join(HERE, "..", "real_dataset.py")
-    topics = re.findall(r'^    \("', open(rounds13).read(), re.M)
-    a = Anchor(r"planted (\w+) topics, corrected every one of them, and backed "
-               r"each number with (\w+) probes")
-    words = {"ten": 10}
-    check(s, "rounds 1-3 topics planted", words[a.one(0)],
-          "harness/real_dataset.py TOPICS", len(topics))
-    check(s, "rounds 1-3 probes", words[a.one(1)],
-          "harness/real_dataset.py build() probes", len(topics))
+    Anchor(r"planted (\w+) topics, corrected every one of them, and backed "
+           r"each number with (\w+) probes")
+    unsourced(s, "the rounds 1–3 dataset shape: ten topics, ten probes each",
+              "the harness that carried it was deleted in #483 as superseded, so "
+              "the record now states the shape on its own authority; the anchor "
+              "above still fails if the sentence is reworded")
 
 
 def scored_systems():
@@ -181,24 +142,6 @@ def separability():
     s = "No similarity threshold can decide supersession"
     check(s, "pairs per family", Anchor(r"(\d+) pairs per family").one(),
           "separability.json n_per_family", load("separability")["n_per_family"])
-
-    table = {}
-    for line in README.splitlines():
-        m = re.match(r"\| (correction|coexist|cross-subject|unrelated) \| (?:yes|no) \| "
-                     r"(\d+\.?\d*) \| (\d+\.?\d*) \| (\d+\.?\d*) \| (\d+\.?\d*) \|", line)
-        if m:
-            table[m.group(1)] = m.groups()[1:]
-    for family, cells in table.items():
-        f512 = load("separability")["families"][family]
-        f1536 = load("separability_dims1536")["families"][family]
-        check(s, f"{family} median 512", cells[0],
-              f"separability.json families.{family}.median", f512["median"], 3)
-        check(s, f"{family} IQR 512", cells[1],
-              f"separability.json families.{family}.iqr", f512["iqr"], 3)
-        check(s, f"{family} median 1536", cells[2],
-              f"separability_dims1536.json families.{family}.median", f1536["median"], 3)
-        check(s, f"{family} IQR 1536", cells[3],
-              f"separability_dims1536.json families.{family}.iqr", f1536["iqr"], 3)
 
     a = Anchor(r"the family's minimum is (\d+\.?\d*) at 512 and (\d+\.?\d*) at 1536")
     check(s, "coexist minimum 512", a.one(0), "separability.json families.coexist.min",
@@ -231,21 +174,6 @@ def separability():
           load("separability_dims1536")["correction_coexist_overlap"]
           ["coexist_at_or_above_correction"] * 100, 1)
 
-    for label, key in (("0.60 (shipped)", "harness_threshold_0.60"),
-                       ("0.70 (ADR 0006)", "adr_0006_threshold_0.70"),
-                       ("0.91 (highest accuracy)", "best_possible_threshold")):
-        pattern = r"\| " + re.escape(label) + r" \| (\d+) \| (\d+) \| (\d+) \| (\d+) \|"
-        a = Anchor(pattern)
-        d512, d1536 = load("separability")[key], load("separability_dims1536")[key]
-        check(s, f"{label} correct 512", a.one(0), f"separability.json {key}."
-              "correct_retirements", d512["correct_retirements"])
-        check(s, f"{label} wrong 512", a.one(1), f"separability.json {key}."
-              "wrong_retirements", d512["wrong_retirements"])
-        check(s, f"{label} correct 1536", a.one(2), f"separability_dims1536.json {key}."
-              "correct_retirements", d1536["correct_retirements"])
-        check(s, f"{label} wrong 1536", a.one(3), f"separability_dims1536.json {key}."
-              "wrong_retirements", d1536["wrong_retirements"])
-
     a = Anchor(r"at the same (\d+\.?\d*) accuracy")
     check(s, "highest-accuracy setting accuracy", a.one(),
           "separability.json best_possible_threshold.accuracy",
@@ -272,45 +200,13 @@ def separability():
 
 # --- The structures -------------------------------------------------------
 
-SOURCE_OF = {
-    "B14": ("B14-key-upsert-plural", 7), "B17": ("B17-key-upsert-question-key", 7),
-    "B18": ("B18-key-upsert-unseen-example", 7), "B15": ("B15-key-upsert-namespace", 7),
-    "B9": ("B9-decider-neighbors-wide", 7), "B10": ("B10-neighbourhood-rewrite", 7),
-    "B11": ("B11-rewrite-scoped", 7), "B12": ("B12-key-upsert-value-hints", 7),
-    "B16": ("B16-decider-verdicts", 7),
-}
-SWEEP_OF = {"B1": "B1-store-threshold", "B2": "B2-decider-window",
-            "B3": "B3-decider-neighbors", "B4": "B4-key-upsert",
-            "B5": "B5-key-upsert-neighbours", "B6": "B6-key-append-readtime",
-            "B7": "B7-key-mainmodel-field"}
-COLUMNS = [("latest-wins", "latest_wins"), ("control", "control_survival"),
-           ("coexist", "coexist_preserved"), ("net", "net"),
-           ("net (s11)", None), ("control retired", "control_retired"),
-           ("items", "items")]
-
-
-def scored(tag, seed):
-    """The scored row for one structure at one seed, wherever it was written."""
-    if tag in SWEEP_OF:
-        return sweep_row(seed, SWEEP_OF[tag]), f"falsification_seed{seed}.json rows[]"
-    name = SOURCE_OF[tag][0]
-    return row(f"{name}_seed{seed}"), f"{name}_seed{seed}.json row"
+# Which result file holds each structure's scored row is `record.py`'s, which
+# writes the table from them; reading it from there keeps one definition.
+SYSTEM_OF = {tag: system for tag, _, _, system, _, _ in record.STRUCTURES}
 
 
 def structures():
     s = "The structures"
-    for tag, cells in structures_table().items():
-        base, where = scored(tag, 7)
-        for cell, (label, key) in zip(cells, COLUMNS):
-            if label == "net (s11)":
-                if cell == "—":
-                    continue
-                other, where11 = scored(tag, 11)
-                check(s, f"{tag} net (s11)", cell, where11, other["net"], 2)
-                continue
-            places = None if key == "items" else 2
-            check(s, f"{tag} {label}", cell, f"{where}.{key}", base[key], places)
-
     a = Anchor(r"assumed (\d+)% compliance")
     src = open(os.path.join(HERE, "structures.py")).read()
     check(s, "main-response compliance", a.one(), "structures.py compliance default",
@@ -334,8 +230,10 @@ def structures():
           load("b9_diagnosis_seed7")["correction_gap"]["not_offered"])
 
     a = Anchor(r"stays at (\d+\.?\d*) across B3 and B9")
-    for tag, (r_, where) in (("B3", scored("B3", 7)), ("B9", scored("B9", 7))):
-        check(s, f"{tag} control retired", a.one(), f"{where}.control_retired",
+    for tag in ("B3", "B9"):
+        r_ = record.scored(SYSTEM_OF[tag], 7)
+        check(s, f"{tag} control retired", a.one(),
+              f"the scored row of {SYSTEM_OF[tag]} at seed 7 .control_retired",
               r_["control_retired"], 2)
 
     a = Anchor(r"It retires half of the never-corrected facts and (\d+)% of the "
@@ -387,16 +285,6 @@ def structures():
           load("b9_diagnosis_seed7")["coexist_values_lost"])
 
     fam = {f["family"]: f for f in load("coexist_families_seed7")["families"]}
-    for family in ("allergy", "instrument", "languages"):
-        a = Anchor(rf"\| {family} \| (\d+) \| (\d+) \| (\d+) \| (\d+) \|")
-        check(s, f"{family} planted values", a.one(0),
-              f"coexist_families_seed7.json families {family}.values",
-              fam[family]["values"])
-        for i, tag in enumerate(("B14", "B17", "B18")):
-            check(s, f"{family} preserved under {tag}", a.one(i + 1),
-                  f"coexist_families_seed7.json families {family}.preserved.{tag}",
-                  fam[family]["preserved"][tag])
-
     a = Anchor(r"it costs instrument (\d+) of (\d+) — a family neither example names — "
                r"taking coexist from (\d+\.?\d*) to (\d+\.?\d*)")
     check(s, "B18 instrument preserved", a.one(0),
@@ -563,11 +451,6 @@ def net_column():
           load("b9_diagnosis_seed7")["correction_gap"]["not_offered"])
 
     budget = {(c, x): h for c, x, h in precision.budget()}
-    for corrected, coexist in ((100, 12), (400, 12), (100, 60), (100, 200)):
-        a = Anchor(rf"\| {corrected} \| {coexist} \| ±(\d+\.?\d*) \|")
-        check(s, f"half-width at {corrected}/{coexist}", a.one(),
-              "precision.py budget()", budget[(corrected, coexist)], 3)
-
     a = Anchor(r"corrected family buys (\d+\.?\d*)\. Taking coexist from 12 probes to 60 "
                r"buys (\d+\.?\d*)")
     check(s, "gain from quadrupling corrected", a.one(0), "precision.py budget()",
@@ -589,13 +472,6 @@ def net_column():
 def gap():
     s = "Where the residual correction gap is"
     g = load("gap_diagnosis_seed7")["stats"]
-    for label, key in (("offered, retired", "offered_and_retired"),
-                       ("offered, kept", "offered_not_retired"),
-                       ("not offered", "not_offered"),
-                       ("no live row held the old value", "no_row_for_old")):
-        a = Anchor(r"\| " + re.escape(label) + r" \| (\d+) \|")
-        check(s, f"B3 {label}", a.one(), f"gap_diagnosis_seed7.json stats.{key}", g[key])
-
     a = Anchor(r"reached the decider (\d+)% of the time and was retired in (\d+)% of those")
     total = load("gap_diagnosis_seed7")["total"]
     offered = g["offered_and_retired"] + g["offered_not_retired"]
@@ -640,19 +516,6 @@ def offer_width():
     check(s, "corrections with a live row", a.one(),
           "offer_width_seed7.json corrections_with_a_live_row",
           d["corrections_with_a_live_row"])
-
-    for i, label in enumerate(("5", "10", "20", "40", "unbounded")):
-        a = Anchor(r"(?m)^\| " + label + r" \| \*{0,2}(\d+)\*{0,2} \| (\d+\.\d\d) \| "
-                   r"([\d,]+) \|$")
-        k = d["k_sweep"][i]
-        check(s, f"K={label} reached", a.one(0), f"offer_width_seed7.json k_sweep[{i}]."
-              "offered", k["offered"])
-        check(s, f"K={label} candidates per turn", a.one(1),
-              f"offer_width_seed7.json k_sweep[{i}].candidates_mean",
-              k["candidates_mean"], 2)
-        check(s, f"K={label} candidate rows", a.one(2).replace(",", ""),
-              f"offer_width_seed7.json k_sweep[{i}].candidates_total",
-              k["candidates_total"])
 
     ranks = [t["rank"] for t in d["per_correction_turn"]]
     a = Anchor(r"rank 1 for (\d+) of the (\d+) and within rank 5 for (\d+); rank (\d+) "
@@ -713,12 +576,6 @@ def offer_width():
 
 # --- What the corrected column is measuring -------------------------------
 
-ARMS = {"A": "the announced correction the dataset writes",
-        "B": "the stored sentence carrying the new value",
-        "C": "B with a temporal marker prepended",
-        "D": "the category's other initial template"}
-
-
 def marker():
     s = "What the corrected column is measuring"
     mf = load("marker_following_seed7")
@@ -727,19 +584,6 @@ def marker():
     a = Anchor(r"on the (\d+) whose offer carried the contradicted row")
     check(s, "judgeable corrections", a.one(),
           "marker_following_seed7.json judgment.arms.A.n", arms["A"]["n"])
-
-    for tag, phrasing in ARMS.items():
-        a = Anchor(r"\| " + tag + r" \| (?:yes|no) \| " + re.escape(phrasing)
-                   + r" \| (\d+) — (\d+\.?\d*) \| (\d+\.?\d*) \|")
-        check(s, f"arm {tag} retired", a.one(0),
-              f"marker_following_seed7.json judgment.arms.{tag}.retired",
-              arms[tag]["retired"])
-        check(s, f"arm {tag} rate", a.one(1),
-              f"marker_following_seed7.json judgment.arms.{tag}.rate",
-              arms[tag]["rate"], 2)
-        check(s, f"arm {tag} mean cosine", a.one(2),
-              f"marker_following_seed7.json judgment.arms.{tag}.mean_cosine",
-              arms[tag]["mean_cosine"], 3)
 
     paired = {p["pair"]: p for p in mf["judgment"]["paired"]}
     a = Anchor(r"(\d+) discordant pairs, exact p = (\d+\.?\d*)")
@@ -774,28 +618,16 @@ def marker():
           max(b["rate"] for b in bands[1:]), 2)
 
     cats = mf["by_category"]
-    table = category_table()
-    for label, cells in table.items():
-        if label == "all 20":
-            group = list(cats)
-        elif "," in label:
-            group = [n.strip() for n in label.split(",")]
-        elif label in cats:
-            group = [label]
-        else:
-            continue
-        for i, key in enumerate(("n", "A", "B", "C", "D")):
-            check(s, f"category row '{label}' {key}", cells[i],
-                  f"marker_following_seed7.json by_category summed over {len(group)}",
-                  sum(cats[c][key] for c in group))
-
     check(s, "perfect categories",
           {"Eight": 8}[Anchor(r"(\w+) categories are perfect under every arm").one()],
           "marker_following_seed7.json by_category",
           sum(1 for c in cats.values() if all(c[k] == c["n"] for k in "ABCD")))
 
     a = Anchor(r"D trails C by (\d+) inside them")
-    named = set(table)
+    # The categories the table gives a row of their own; the rest are the block
+    # this claim is about.
+    named = {c for group, _ in record.CATEGORY_ROWS if group and len(group) == 1
+             for c in group}
     partial = [c for c, v in cats.items()
                if not all(v[k] == v["n"] for k in "ABCD") and c not in named]
     check(s, "D behind C in the unnamed block", a.one(),

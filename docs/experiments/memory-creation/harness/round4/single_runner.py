@@ -13,16 +13,33 @@ from api import embed_batch, flush
 from dataset import build
 from scoring import score
 import structures as S
+import structures_a as SA
+import structures_b as SB
 
 # Results land beside the report, not beside the caller's shell.
 RESULTS = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                        "..", "..", "results_round4")
 
+# The follow-up structures are kept out of `structures.py` so the comparison
+# set stays as it was run, which left B15 to B18 reachable by no command
+# (#483). Looking across all three modules is what makes every row of §The
+# structures regenerable by the same command.
+MODULES = (S, SA, SB)
+
+
+def structure(name):
+    for module in MODULES:
+        cls = getattr(module, name, None)
+        if cls is not None:
+            return cls
+    raise SystemExit(f"no structure named {name} in "
+                     + ", ".join(m.__name__ for m in MODULES))
+
 
 def main():
     name = sys.argv[1]
     seed = int(os.environ.get("SEED", "7"))
-    cls = getattr(S, name)
+    cls = structure(name)
     turns, probes = build(seed=seed)
     embed_batch([t for t, _ in turns] + [p.question for p in probes])
     inst = cls(random.Random(seed))

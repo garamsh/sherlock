@@ -2,12 +2,9 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"math"
 	"os"
 	"path/filepath"
-	"regexp"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -76,55 +73,17 @@ func TestRecordSeparability_MatchesItsCommittedSource(t *testing.T) {
 		runs[embedder] = loadSeparability(t, embedder)
 	}
 
-	// | `hashing` 256 | correction | yes | 0.000 | 0.309 | 0.676 | 0.195 | 6 of 250 |
-	family := regexp.MustCompile("(?m)^\\| `([a-z0-9-]+)` (\\d+) \\| ([a-z-]+) \\| (yes|no) \\|(.*)\\|$")
-	rows := family.FindAllStringSubmatch(r.readme, -1)
-	require.Len(t, rows, len(runs)*len(familyOrder), "the family table lost or gained a row")
-	for _, row := range rows {
-		result, ok := runs[row[1]]
-		require.True(t, ok, "the family table names an embedder with no committed result: %s", row[1])
-		r.number(row[1]+" dimensions", row[2], float64(result.Dimensions))
-
-		scores := familyNamed(t, result, row[3])
-		assert.Equal(t, row[4] == "yes", scores.MustSupersede,
-			"%s %s: the record and the pair set disagree on what must supersede", row[1], row[3])
-
-		cells := strings.Split(strings.TrimSuffix(row[5], "|"), "|")
-		require.Len(t, cells, 5, "%s %s: the row lost or gained a column", row[1], row[3])
-		claim := fmt.Sprintf("%s %s", row[1], row[3])
-		for i, want := range []float64{scores.Min, scores.Median, scores.Max, scores.IQR} {
-			r.number(fmt.Sprintf("%s, column %d", claim, i+1), strings.TrimSpace(cells[i]), want)
-		}
-		retired := regexp.MustCompile(`(\d+) of (\d+)`).FindStringSubmatch(cells[4])
-		require.Len(t, retired, 3, "%s: the retired cell is not 'n of m'", claim)
-		r.number(claim+" retired by the shipped store", retired[1], float64(scores.Superseded))
-		r.number(claim+" pairs", retired[2], float64(scores.Pairs))
-	}
-
-	// | `hashing` 256 | 6 correct, 365 wrong | 0 correct, 281 wrong | 0.91, accuracy 0.750 | 0.999 of cross pairs |
-	sweep := regexp.MustCompile("(?m)^\\| `([a-z0-9-]+)` \\d+ \\| (\\d+) correct, (\\d+) wrong \\| (\\d+) correct, " +
-		"(\\d+) wrong \\| (\\d+\\.\\d+), accuracy (\\d+\\.\\d+) \\| (\\d+\\.\\d+) of cross pairs \\|$")
-	sweepRows := sweep.FindAllStringSubmatch(r.readme, -1)
-	require.Len(t, sweepRows, len(runs), "the threshold table lost or gained a row")
-	for _, row := range sweepRows {
-		result := runs[row[1]]
-		claim := row[1] + " threshold table"
-		r.number(claim+", shipped correct", row[2], float64(result.ShippedThreshold.CorrectRetirements))
-		r.number(claim+", shipped wrong", row[3], float64(result.ShippedThreshold.WrongRetirements))
-		r.number(claim+", ADR correct", row[4], float64(result.ADRThreshold.CorrectRetirements))
-		r.number(claim+", ADR wrong", row[5], float64(result.ADRThreshold.WrongRetirements))
-		r.number(claim+", best threshold", row[6], result.BestThreshold.Threshold)
-		r.number(claim+", best accuracy", row[7], result.BestThreshold.Accuracy)
-		r.number(claim+", coexist at or above correction", row[8], result.Overlap.CoexistAtOrAboveCorrect)
-
-		// The record's headline rests on these three holding for every
-		// embedder, so they are checked as claims and not as prose.
+	// The record's headline rests on these three holding for every embedder,
+	// so they are checked as claims. The tables they summarise are generated
+	// by record.go and are not read back here.
+	for _, name := range separabilityEmbedders {
+		result := runs[name]
 		assert.True(t, result.Overlap.CorrectionMedianBelowMin,
-			"%s: the correction median is no longer below the coexist minimum", row[1])
+			"%s: the correction median is no longer below the coexist minimum", name)
 		assert.True(t, result.Overlap.CoexistMinAboveShipped,
-			"%s: the coexist minimum is no longer at or above the shipped threshold", row[1])
+			"%s: the coexist minimum is no longer at or above the shipped threshold", name)
 		assert.Equal(t, result.PairsMeasured, result.StoreAgreesWithCosine,
-			"%s: the shipped store and the harness cosine disagree on some pair", row[1])
+			"%s: the shipped store and the harness cosine disagree on some pair", name)
 	}
 
 	a := r.anchor(`writes the ([\d,]+) pairs to ` + "`results/separability_pairs_seed7.json`" + `, (\d+) per family`)

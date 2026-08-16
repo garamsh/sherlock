@@ -13,6 +13,7 @@ import traceback
 sys.path.insert(0, os.path.dirname(__file__))
 
 from workload_spec import SESSIONS
+import record
 import architectures
 import metrics
 
@@ -151,6 +152,7 @@ def main():
     with open("results/scale_raw.json", "w") as f:
         json.dump(all_rows, f, indent=2, default=str)
     print(f"\nWrote {os.path.abspath('results/scale.md')}")
+    print(f"Rewrote {record.write()} from the committed results")
 
 
 if __name__ == "__main__":

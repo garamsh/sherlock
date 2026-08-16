@@ -1,17 +1,16 @@
-"""Checks every figure in the record against the committed file it came from.
+"""Checks the figures generation does not reach.
 
-`../README.md` states figures; `../results_raw.json` holds the run behind the
-results table and `systems.py` and `system_runner.py` hold the inputs behind the
-rest. This reads both sides and compares, so the register cannot drift from
-either: change a published figure or a result file and a check fails.
+The results table is written by `record.py` from `../results_raw.json`, so it
+cannot disagree with the run and is not checked here. What is left is the three
+kinds of figure a generated table does not carry: an input this record states
+from `systems.py` or `system_runner.py`, a figure its prose restates outside
+the table, and the headline figure `../../README.md` quotes — a document this
+record does not own and no generator of its own writes.
 
 Two registers:
 
   CHECKS      a stated figure and the committed value it must equal
   UNSOURCED   stated figures that no committed file carries
-
-`../../README.md` quotes this record's headline figure, so it is checked here
-beside the record's own: nowhere else can compute it.
 
 Reads committed files only; runs no system and makes no measurement. Exits
 non-zero when a check fails or when an anchor no longer matches the document.
@@ -71,42 +70,6 @@ def check(part, claim, stated, source, found, places=None):
 
 def unsourced(part, claim, needed):
     UNSOURCED.append({"part": part, "claim": claim, "needed": needed})
-
-
-# --- The results table ----------------------------------------------------
-
-ROWS = {
-    "N1 voluntary writeback": "N1-voluntary-writeback",
-    "N2 structured writeback (80%)": "N2-structured-writeback",
-    "N2s structured, lazy model (50%)": "N2s-structured-lazy",
-    "N3 platform extraction": "N3-platform-extraction",
-    "N4 rolling narrative": "N4-rolling-narrative",
-    "N5 log + on-demand": "N5-log-ondemand",
-    "N6 forced notes": "N6-forced-notes",
-    "N7 bounded context": "N7-full-context",
-    "N8 structured + core block": "N8-structured-coreblock",
-}
-COLUMNS = [("context-recall", "context_recall", 2), ("store items", "store_items", 0),
-           ("extra calls/turn", "extra_calls_per_turn", 2),
-           ("tokens/turn", "injected_tokens_per_turn", 0)]
-
-
-def results_table():
-    """The record's table against the raw run, formatted as the runner formats it.
-
-    `results_table.md` is generated with `format`, which rounds half to even, so
-    the comparison uses the same conversion rather than a rounding rule of its own.
-    """
-    part = "the results"
-    for label, system in ROWS.items():
-        # N7's row carries a parenthetical after its token count.
-        a = Anchor(r"\| " + re.escape(label) + r" \| \*{0,2}(\d+\.\d+)\*{0,2} \| "
-                   r"(\d+) \| (\d+\.\d+) \| (\d+)")
-        row = BY_SYSTEM[system]
-        for i, (name, key, places) in enumerate(COLUMNS):
-            check(part, f"{label} {name}", a.one(i),
-                  f"results_raw.json {system}.{key}",
-                  f"{row[key]:.{places}f}")
 
 
 # --- The compliance table -------------------------------------------------
@@ -251,7 +214,7 @@ def verdict(entry):
 
 
 def main():
-    for part in (results_table, compliance, workload, findings, index, external):
+    for part in (compliance, workload, findings, index, external):
         part()
 
     failures = []

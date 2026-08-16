@@ -37,6 +37,7 @@ sys.path.insert(0, HERE)
 
 import architectures
 import metrics
+import record
 import runner
 import scale_runner
 from workload_spec import SESSIONS, LONG_HORIZON_SESSIONS
@@ -74,27 +75,6 @@ def result_rows(name):
 def by_arch(name, key="arch"):
     """`results/<name>.md` keyed by its architecture column."""
     return {r[key]: r for r in result_rows(name)}
-
-
-def readme_rows(heading):
-    """Rows of the table under the given README heading, as a list of dicts."""
-    body = README.split(f"### {heading}", 1)
-    if len(body) != 2:
-        raise SystemExit(f"README has no heading: {heading}")
-    header, rows = None, []
-    for line in body[1].splitlines():
-        if not line.startswith("|"):
-            if rows:
-                break
-            continue
-        if _is_rule(line):
-            continue
-        cells = _cells(line)
-        if header is None:
-            header = cells
-        else:
-            rows.append(dict(zip(header, cells)))
-    return rows
 
 
 class Anchor:
@@ -144,26 +124,6 @@ def unsourced(section, claim, needed):
     UNSOURCED.append({"section": section, "claim": claim, "needed": needed})
 
 
-def check_table(section, heading, result_file, columns, key=None):
-    """Every cell of a README table against the result file's row for that arch.
-
-    `columns` maps a README column header to the result file's header.
-    """
-    source = by_arch(result_file) if key is None else key
-    for row in readme_rows(heading):
-        arch = row["arch"].split()[0]
-        if arch not in source:
-            unsourced(section, f"{arch} row",
-                      f"results/{result_file}.md has no {arch} row")
-            continue
-        found = source[arch]
-        for mine, theirs in columns.items():
-            if row[mine] == "—":
-                continue
-            check(section, f"{arch} {mine}", row[mine],
-                  f"results/{result_file}.md {arch} {theirs}", num(found[theirs]))
-
-
 # --- The method ------------------------------------------------------------
 
 def architecture_ids():
@@ -207,7 +167,8 @@ def method():
     check(s, "architecture count", words[a.one()],
           "the six runners' class-name maps", len(architecture_ids()))
 
-    a = Anchor(r"`harness/architectures\.py`, (\d+) to (\d+) lines each")
+    a = Anchor(r"`harness/architectures/`, one file per series letter, "
+               r"(\d+) to (\d+) lines each")
     loc = [metrics.lines_of_code(c) for c in architecture_classes().values()]
     check(s, "shortest architecture", a.one(0), "metrics.lines_of_code", min(loc))
     check(s, "longest architecture", a.one(1), "metrics.lines_of_code", max(loc))
@@ -263,14 +224,10 @@ def density_from_store():
 
 def small():
     s = "Small workload"
-    heading = "Small workload (1,071 items) — `results/table.md`"
     table = by_arch("table")
     check(s, "heading item count",
           Anchor(r"### Small workload \(([\d,]+) items\)").one(),
           "results/table.md A1 items", num(table["A1"]["items"]))
-    check_table(s, heading, "table",
-                {"R@5": "R@5", "P@5": "P@5", "Anti-pollution": "anti-poll",
-                 "Items": "items", "KB": "KB"})
 
     shown = ("R@5", "P@5", "anti-poll", "items", "KB")
     tied = [c for c in shown if table["E3"][c] == table["E4"][c]]
@@ -330,7 +287,6 @@ def small():
 
 def scale():
     s = "Scale run"
-    heading = "Scale run over the small workload — `results/scale.md`"
     at = {r["arch"]: r for r in result_rows("scale") if num(r["scale"]) == 1052}
     padded = {r["arch"]: r for r in result_rows("scale") if num(r["scale"]) == 5000}
     check(s, "padding target named in the prose",
@@ -342,13 +298,9 @@ def scale():
           Anchor(r"Same (\d+) sessions' queries",
                  open(os.path.join(RESULTS, "scale.md")).read()).one(),
           "workload_spec.SESSIONS", len(SESSIONS))
-    check_table(s, heading, "scale",
-                {"R@5": "R@5", "P@5": "P@5", "Items": "items",
-                 "Query μs": "qry μs", "R/modelled-KB": "R/modelled-KB"}, key=at)
-
     held = [a for a in at
             if at[a]["R@5"] == padded[a]["R@5"] and at[a]["P@5"] == padded[a]["P@5"]]
-    stated = [row["arch"].split()[0] for row in readme_rows(heading)]
+    stated = [arch for arch, _, _ in record.TABLES["scale"]["rows"]]
     check(s, "rows holding R@5 and P@5 at the larger padding", len(stated),
           "results/scale.md rows equal at both scales",
           sum(1 for a in stated if a in held), rounded=False)
@@ -364,10 +316,6 @@ def scale():
 
 def long_horizon():
     s = "Long-horizon workload"
-    check_table(s, "Long-horizon workload (a 10-year agent life) — "
-                   "`results/long_horizon.md`", "long_horizon",
-                {"R@5": "R@5", "Items": "Items",
-                 "R/modelled-KB": "R/modelled-KB"})
 
     # The runner prints these from the module, so the file cannot drift from it.
     a = Anchor(r"(\d+) sessions across 10 simulated years \+ (\d+) noise turns",
@@ -392,8 +340,6 @@ def long_horizon():
 
 def diverse():
     s = "Diverse workload"
-    heading = "Diverse workload (8 memory categories) — `results/diverse.md`"
-
     a = Anchor(r"(\d+) sessions across (\d+) cognitive categories",
                open(os.path.join(RESULTS, "diverse.md")).read())
     check(s, "sessions the result file states", a.one(0),
@@ -402,30 +348,9 @@ def diverse():
           "diverse_workload.SESSIONS categories",
           len({sess.category for sess in diverse_workload.SESSIONS}))
 
-    rows = by_arch("diverse")
-    columns = {"R@5": "R@5", "P@5": "P@5", "Accuracy": "Acc",
-               "R/modelled-KB": "R/modelled-KB"}
-    merged = dict(rows)
-    # The README reports G7-G9 as one row; the file carries three that agree.
-    for column in columns.values():
-        values = {rows[a][column] for a in ("G7", "G8", "G9")}
-        merged["G7–G9"] = merged.get("G7–G9", {"arch": "G7–G9"})
-        merged["G7–G9"][column] = values.pop() if len(values) == 1 else "split"
-    check_table(s, heading, "diverse", columns, key=merged)
-
-    check(s, "recursive retrieval reported as one row", 1,
-          "results/diverse.md G7, G8 and G9 agreeing on every reported column",
-          1 if all(merged["G7–G9"][c] != "split" for c in columns.values()) else 0,
-          rounded=False)
-
 
 def large_scale():
     s = "Large-scale workload"
-    check_table(s, "Large-scale workload (60k items) — `results/large_scale.md`",
-                "large_scale",
-                {"R@5": "R@5", "Items": "Items", "Query ms": "qry ms",
-                 "R/modelled-KB": "R/modelled-KB"})
-
     a = Anchor(r"H1 and H6 ran a smaller workload than the rest of this table, "
                r"([\d,]+) real items rather than ([\d,]+)")
     note = Anchor(r"H1 and H6 ran on a smaller workload \((\d+) sessions × (\d+) "

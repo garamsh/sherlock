@@ -6,7 +6,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/garamsh/gagent/internal/gateway"
+	"github.com/garamsh/gagent/internal/memory"
 )
 
 // An unbounded store makes every structure look manageable, because nothing
@@ -250,9 +250,9 @@ func enforce(ctx context.Context, frame Frame, l *ledger, planted map[string]boo
 // stands in for that design reads the value that design would.
 func gatewaySalienceAdd(carriesFact bool) float64 {
 	if carriesFact {
-		return gateway.SalienceAddSemantic
+		return memory.SalienceAddSemantic
 	}
-	return gateway.SalienceAddEpisodic
+	return memory.SalienceAddEpisodic
 }
 
 // The constraints swept. The capacities are chosen to bite: the loosest sits

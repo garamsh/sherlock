@@ -45,7 +45,7 @@ const (
 )
 
 // The three plantings measured. mixed-30d is the corpus as generated:
-// the salience mix internal/gateway/writeback.go derives, over a 30-day
+// the salience mix internal/agent/memory/writeback.go derives, over a 30-day
 // window. mixed-360d stretches that window twelvefold. flat holds
 // salience and timestamp constant, which leaves the ranking function's
 // relevance term alone to order the store.

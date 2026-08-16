@@ -260,7 +260,7 @@ func seedEpisodicCluster(t *testing.T, path string, contents ...string) {
 		_, err := svc.Store(context.Background(), memory.StoreInput{
 			Content:         content,
 			Type:            memory.TypeEpisodic,
-			ImportanceScore: gateway.SalienceAddEpisodic,
+			ImportanceScore: memory.SalienceAddEpisodic,
 			Source:          "agent",
 		})
 		require.NoError(t, err)

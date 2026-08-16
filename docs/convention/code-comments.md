@@ -6,6 +6,8 @@ When and how to comment code — and when to leave it alone.
 
 Add a comment where it helps a reader. Skip where the code is self-evident. When in doubt, prefer to omit; an absent comment is easier to add later than an absent explanation is to remember.
 
+A comment that no longer describes the code below it is corrected or deleted in the same change that moved the code. A stale comment is worse than an absent one: it is read as true.
+
 ## Brevity
 
 When you do comment, write the shortest version that conveys the essential point. One short sentence beats a paragraph.
@@ -14,7 +16,7 @@ Long comments drift out of sync with the code they explain; short ones age well.
 
 ## Voice
 
-Write comments in declarative or imperative mood, stating facts: `returns the cached token`, `retries once on timeout`. Never narrate ("this will now…"), apologize ("unfortunately we have to…"), or justify the author's choices ("I chose this because…") — rationale belongs in the commit message or an ADR.
+Write comments in declarative or imperative mood, stating facts: `returns the cached token`, `retries once on timeout`. Never narrate ("this will now…", or `// loop through users` above a for-loop), apologize ("unfortunately we have to…"), or justify the author's choices ("I chose this because…") — rationale belongs in the commit message or an ADR.
 
 ## Inline vs doc comments
 
@@ -25,13 +27,12 @@ Write comments in declarative or imperative mood, stating facts: `returns the ca
 ## Forbidden
 
 - **Paraphrasing** (`// increment counter` above `i++`)
-- **Narrating** (`// loop through users` above a for-loop)
 - **Section dividers** (`// constructor` / `// getters` / `// setters`)
 - **Wall-of-text** above a function — one line at the top of the body, or a doc comment on the type/module, is enough
 
 ## TODOs
 
-`// TODO(name): …` with an owner. `FIXME` / `XXX` decay — prefer TODO.
+`// TODO(name): …` with an owner. One marker, so one search finds every open item — never `FIXME` or `XXX` beside it.
 
 ## Language
 

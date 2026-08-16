@@ -25,5 +25,5 @@ All agent-influenced effects land under the unprivileged UID; only operator-sanc
 ## Rejected alternatives
 
 - **Network-isolating operator-sanctioned tools too** — breaks the flagship use case (browser automation *is* network egress); the tool is the sanctioned channel, unlike agent-influenced exec.
-- **Per-tool `uid` option in the config** — an option nobody needs yet (`simplicity.md` §No speculative or dead generality); it arrives with its first use case.
+- **Per-tool `uid` option in the config** — an option nobody needs yet (`simplicity.md` §Rules); it arrives with its first use case.
 - **Silent privileged fallback** — a privilege upgrade the operator never sees; the hard-fail contract is the honest one.

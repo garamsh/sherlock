@@ -1,16 +1,15 @@
 # Continuous Integration
 
-How this project's checks are named, run, and secured. The rules hold on any toolchain; the toolchain they are met with appears at the end.
+How a project's checks are named, run, and secured. The rules hold on any toolchain; one toolchain appears at the end as a reference implementation.
 
 ## Contents
 - Core principle
 - One entry point per task
 - Run the checks before pushing
-- Reuse before writing pipeline steps
+- Reuse
 - Verify a pinned dependency before adopting it
 - Security baseline
-- Anti-patterns
-- This project's toolchain
+- Reference implementation
 
 ## Core principle
 
@@ -21,16 +20,18 @@ Local checks and CI checks are the same checks, invoked by the same names. CI re
 - **One name per task.** Each of lint, format, test, and build has exactly one name that a human and CI both invoke. What implements that name — a task runner, a script, a package manifest entry — is the project's choice; the name is the contract.
 - **One name for the whole set.** A single name runs lint, format, test, and build in order, so "run the checks" is one command locally and one step in CI.
 - **CI calls the names, not the commands behind them.** A pipeline that spells out the underlying tool invocations has created a second set of commands, and the two drift.
-- **Entry points stay thin.** When a step outgrows a one-liner, the answer is a maintained action (§Reuse), not a script. A script is the last resort for what no action does; a step that grew into a script is a signal the entry point needs re-splitting, not that the script needs adding.
+- **Entry points stay thin.** An entry point that has grown past a few lines is one name doing several jobs; re-split it into named tasks rather than letting it become a script. What it may not become is a pipeline component: it runs on a contributor's machine as well as in CI.
 
 ## Run the checks before pushing
 
 - Run the project's checks locally before code leaves the machine. CI is the second line of defence, not the only one.
 - Automating that locally — a version-control hook, a watch task, an on-save editor command — is the contributor's choice. No tool is mandated, and running the checks by hand satisfies the rule.
 
-## Reuse before writing pipeline steps
+## Reuse
 
-For each step in the pipeline:
+A pipeline step is one of two kinds. A check — lint, format, test, build — is invoked by its entry-point name (§One entry point per task). Everything else a pipeline needs — toolchain setup, caching, artifacts, deploys — is a step this section governs.
+
+For each of those steps:
 
 1. **Search for a maintained component** — a published action, plugin, or reusable job — at its current version, before writing pipeline code.
 2. **Verify it** per the next section before pinning.
@@ -46,6 +47,8 @@ Before pinning anything the pipeline pulls in — a published component, contain
 
 Pre-trained recollection is a starting point, not source of truth. An agent that picks a version from memory silently uses a stale or nonexistent release.
 
+Pin to a reference that cannot move: a digest, or a full commit SHA. A tag can be repointed at any time and a branch moves by design, so neither pins anything.
+
 For every third-party dependency, also check the ecosystem's advisory source for known vulnerabilities in the candidate version.
 
 ## Security baseline
@@ -55,25 +58,23 @@ For every third-party dependency, also check the ecosystem's advisory source for
 - **Avoid script injection**: pass attacker-controlled input to a command through the environment, never interpolated into the command text.
 - **Mask derived values**: values derived from secrets that can reach the logs are masked with the platform's masking mechanism.
 
-## Anti-patterns
+## Reference implementation
 
-- Hand-written steps for what a maintained component already does.
-- Pipeline commands that diverge from the project's entry points — local and CI must match.
-- A self-rolled CI runner that uses different commands than local.
-- Entry points carrying long shell logic — either reduce to a maintained action (§Reuse) or re-split the entry point into multiple named tasks.
-- Pinning to a mutable reference (a branch, `latest`). Pin a tag or a digest.
-- Reusing a pipeline component without auditing its contents — treat it like any other dependency.
+The rules above bind. This section does not: it is one toolchain — Make for the entry points, GitHub Actions for the pipeline — and it is the one this project uses.
 
-## This project's toolchain
+### Entry points as a Makefile
 
-The rules above hold on any toolchain. This project meets them with Make for the entry points and GitHub Actions for the pipeline.
-
-- **Entry points**: `make lint`, `make format`, `make test`, `make build`, and `make ci` for the whole set. The workflow invokes the targets, never the commands inside them.
+- **Entry points**: `make lint`, `make format`, `make test`, `make build`, and `make ci` for the whole set. The `Makefile` holds the commands behind each name; a contributor and the workflow both invoke the name.
+- **Outside the set**: `make smoke-local` starts the deployment `deploy/local/README.md` documents and fails if the agent does not answer. It needs Docker, so it runs in its own workflow job rather than inside `make ci`.
 - **Before pushing**: `make ci` by hand, or `make hooks` once after cloning to have lefthook run lint and format on commit and test on push.
-- **Existing components**: search the GitHub Marketplace before writing an inline `run:` block.
+
+### GitHub Actions specifics
+
+- **Existing components**: search the GitHub Marketplace before writing inline `run:` blocks.
 - **Advisories**: for every third-party action, check the GitHub Advisory Database (`github.com/advisories?query=type%3Areviewed+ecosystem%3Aactions`) for the candidate version.
-- **Toolchain setup**: use the official setup action for the language; take its version and inputs from its own docs.
+- **Toolchain setup**: use the official setup action for the project's language; take its version and inputs from its own docs.
+- **Checks**: run `make lint`, `make format`, `make test`, `make build` — the targets, not the commands inside them.
 - **Artifacts**: use the artifact action.
 - **Permissions**: `permissions: read-all` at the workflow top; `write` granted per job.
 - **Secrets**: repo or environment secrets, OIDC for cloud deploys, `::add-mask::VALUE` for values derived from secrets.
-- **Pinning**: a SHA or a tag, never `@main`.
+- **Pinning**: a full commit SHA.

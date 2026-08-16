@@ -28,9 +28,6 @@ services:
       - "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}:${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}"
       - ./gagent.yaml:/etc/gagent/config.yaml:ro
       - ./tls:/etc/gagent/tls:ro
-      # `make build-tools` at the repository root populates this
-      # directory with the executable each manifest names.
-      - ../../tools:/opt/gagent/tools:ro
     command: ["agent", "--config", "/etc/gagent/config.yaml", "--agent-id", "demo"]
   workspace:
     build:

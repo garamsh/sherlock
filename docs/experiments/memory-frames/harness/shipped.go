@@ -164,4 +164,19 @@ func storedBytes(dir string) (int64, error) {
 	return total, nil
 }
 
+// Held is the content of every active row. The archive is left out: a
+// search never reaches it, so a row there is not held in any sense a read
+// could act on — it is only paid for, which the byte figures carry.
+func (f *shippedFrame) Held(ctx context.Context) ([]string, error) {
+	active, err := f.store.Active(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("list active: %w", err)
+	}
+	out := make([]string, 0, len(active))
+	for _, m := range active {
+		out = append(out, m.Content)
+	}
+	return out, nil
+}
+
 func (f *shippedFrame) Close() error { return f.svc.Close() }

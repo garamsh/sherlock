@@ -43,6 +43,12 @@ type ProbeResult struct {
 	Superseded   int `json:"superseded"`
 	Stale        int `json:"stale_returned"`
 	ContextChars int `json:"context_chars"`
+	// SubjectRelated is how many values are live anywhere on the probed
+	// subject, and SubjectReached how many of them the context carried. A
+	// frame answering the question while leaving the rest of the subject
+	// outside the context leaves that rest where no writeback can reach it.
+	SubjectRelated int `json:"subject_related"`
+	SubjectReached int `json:"subject_reached"`
 	// Scanned is how much of what the frame holds it read to answer this
 	// question, in the unit its Size reports.
 	Scanned int `json:"scanned"`
@@ -81,6 +87,11 @@ type FrameResult struct {
 	Years  []YearResult  `json:"years"`
 	Sizes  []SizeAt      `json:"sizes"`
 	Probes []ProbeResult `json:"probes"`
+	// Reach is what this frame could not reach, per year, and what holding
+	// it costs. Coupling is whether a correction lands on a value no read
+	// ever returned.
+	Reach    []YearReach `json:"reach"`
+	Coupling Coupling    `json:"coupling"`
 }
 
 // SizeYears are the years the store size is reported at: the first, the
@@ -107,17 +118,44 @@ func Measure(ctx context.Context, w Workload, frameName, arm string, counter *Em
 
 	out := FrameResult{Frame: frameName, Arm: arm}
 	sizeYears := SizeYears(w.Params.Years)
+	planted := plantedValues(w)
+	// firstReached is the first year a value appeared in any context. A
+	// value missing from it at the end of the run was never reached, and a
+	// value whose first year is after a correction was not reachable when
+	// that correction landed.
+	firstReached := map[string]int{}
+	// heldAt is the planted values the structure holds at each checkpoint,
+	// which is what says whether a correction took.
+	heldAt := map[int]map[string]bool{}
 	year := 1
 	checkpoint := func() error {
-		probes, size, err := ask(ctx, frame, w, year, arm, declaring)
+		probes, injected, size, err := ask(ctx, frame, w, year, arm, declaring, planted)
 		if err != nil {
 			return err
+		}
+		for _, values := range injected {
+			for _, value := range values {
+				if _, seen := firstReached[value]; !seen {
+					firstReached[value] = year
+				}
+			}
 		}
 		out.Probes = append(out.Probes, probes...)
 		out.Years = append(out.Years, summarizeYear(year, probes))
 		if containsInt(sizeYears, year) {
 			out.Sizes = append(out.Sizes, SizeAt{Year: year, Size: size})
 		}
+		held, err := frame.Held(ctx)
+		if err != nil {
+			return fmt.Errorf("held at year %d: %w", year, err)
+		}
+		heldAt[year] = map[string]bool{}
+		for _, text := range held {
+			for _, value := range valuesIn(text, planted) {
+				heldAt[year][value] = true
+			}
+		}
+		out.Reach = append(out.Reach, summarizeReach(w, year, probes, heldAt[year], firstReached, size))
 		year++
 		return nil
 	}
@@ -137,7 +175,42 @@ func Measure(ctx context.Context, w Workload, frameName, arm string, counter *Em
 			return FrameResult{}, err
 		}
 	}
+	out.Coupling = MeasureCoupling(w, heldAt, firstReached)
 	return out, nil
+}
+
+// summarizeReach reads one checkpoint against the workload's own relations
+// and against everything the frame has reached so far.
+func summarizeReach(w Workload, year int, probes []ProbeResult, held map[string]bool,
+	firstReached map[string]int, size Size) YearReach {
+	out := YearReach{Year: year, Units: size.Units,
+		ContentBytes: size.ContentBytes, StoredBytes: size.StoredBytes}
+	var thread, subject []float64
+	for _, p := range probes {
+		thread = append(thread, ratio(p.Found, p.Expected))
+		subject = append(subject, ratio(p.SubjectReached, p.SubjectRelated))
+	}
+	out.ThreadReach = NewFigure(thread)
+	out.SubjectReach = NewFigure(subject)
+
+	var frozen []string
+	for value := range held {
+		out.Held++
+		if _, reached := firstReached[value]; reached {
+			out.Reached++
+			continue
+		}
+		frozen = append(frozen, value)
+	}
+	out.Frozen = len(frozen)
+	out.Share = ratio(out.Frozen, out.Held)
+	needed := neededAfter(w, year)
+	for _, value := range frozen {
+		if needed[value] {
+			out.NeededLater++
+		}
+	}
+	return out
 }
 
 // observed is the turn as the arm delivers it. The oracle arm hands a frame
@@ -158,15 +231,19 @@ func observed(t Turn, arm string, declaring Declaring) Turn {
 // ask puts every thread answerable at this year to the frame and scores
 // what comes back. A checkpoint reads the frame and never writes to it.
 func ask(ctx context.Context, frame Frame, w Workload, year int, arm string,
-	declaring Declaring) ([]ProbeResult, Size, error) {
-	var probes []ProbeResult
+	declaring Declaring, planted map[string]bool) ([]ProbeResult, [][]string, Size, error) {
+	var (
+		probes  []ProbeResult
+		carried [][]string
+	)
+	bySubject := liveBySubject(w, year)
 	for _, thread := range w.Threads {
 		if !thread.ProbedAt(year) {
 			continue
 		}
 		injected, err := frame.Context(ctx, observed(Checkpoint(year, thread), arm, declaring))
 		if err != nil {
-			return nil, Size{}, fmt.Errorf("context for %s at year %d: %w", thread.Subject, year, err)
+			return nil, nil, Size{}, fmt.Errorf("context for %s at year %d: %w", thread.Subject, year, err)
 		}
 		live, stale := thread.TruthAt(year)
 		result := ProbeResult{
@@ -185,13 +262,21 @@ func ask(ctx context.Context, frame Frame, w Workload, year int, arm string,
 				break
 			}
 		}
+		values := valuesIn(injected.Text, planted)
+		result.SubjectRelated = len(bySubject[thread.Subject])
+		for _, value := range bySubject[thread.Subject] {
+			if contains(values, value) {
+				result.SubjectReached++
+			}
+		}
 		probes = append(probes, result)
+		carried = append(carried, values)
 	}
 	size, err := frame.Size(ctx)
 	if err != nil {
-		return nil, Size{}, fmt.Errorf("size at year %d: %w", year, err)
+		return nil, nil, Size{}, fmt.Errorf("size at year %d: %w", year, err)
 	}
-	return probes, size, nil
+	return probes, carried, size, nil
 }
 
 // summarizeYear turns one checkpoint's probes into the figures the record

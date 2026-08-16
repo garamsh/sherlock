@@ -112,8 +112,12 @@ type Frame interface {
 	// Context returns what the frame would put in the model's context at
 	// this turn, and how much of what it holds it read to produce it.
 	Context(ctx context.Context, t Turn) (Injected, error)
-	// Size reports what the frame holds.
+	// Size reports how much the frame holds.
 	Size(ctx context.Context) (Size, error)
+	// Held reports what the frame holds, as the text it would emit for it.
+	// Size counts; this identifies, which is what separates the part of a
+	// store a read has reached from the part no read ever has.
+	Held(ctx context.Context) ([]string, error)
 	// Close releases whatever the frame opened.
 	Close() error
 }

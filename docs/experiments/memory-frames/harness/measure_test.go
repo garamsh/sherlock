@@ -28,6 +28,8 @@ func (f *transcriptFrame) Size(context.Context) (Size, error) {
 	return Size{Units: len(f.lines)}, nil
 }
 
+func (f *transcriptFrame) Held(context.Context) ([]string, error) { return f.lines, nil }
+
 func (f *transcriptFrame) Close() error { return nil }
 
 // silentFrame answers every turn with nothing.
@@ -36,6 +38,7 @@ type silentFrame struct{}
 func (silentFrame) Observe(context.Context, Turn) error             { return nil }
 func (silentFrame) Context(context.Context, Turn) (Injected, error) { return Injected{}, nil }
 func (silentFrame) Size(context.Context) (Size, error)              { return Size{}, nil }
+func (silentFrame) Held(context.Context) ([]string, error)          { return nil, nil }
 func (silentFrame) Close() error                                    { return nil }
 
 // measureWith runs a frame the registry does not build, which is also the
@@ -46,11 +49,28 @@ func measureWith(t *testing.T, frame Frame, w Workload, arm string) FrameResult 
 	year := 1
 	ctx := context.Background()
 	checkpoint := func() {
-		probes, size, err := ask(ctx, frame, w, year, arm, nil)
+		probes, injected, size, err := ask(ctx, frame, w, year, arm, nil, plantedValues(w))
 		require.NoError(t, err)
 		out.Probes = append(out.Probes, probes...)
 		out.Years = append(out.Years, summarizeYear(year, probes))
 		out.Sizes = append(out.Sizes, SizeAt{Year: year, Size: size})
+		held, err := frame.Held(ctx)
+		require.NoError(t, err)
+		reachedNow := map[string]bool{}
+		for _, text := range held {
+			for _, value := range valuesIn(text, plantedValues(w)) {
+				reachedNow[value] = true
+			}
+		}
+		injectedNow := map[string]int{}
+		for _, values := range injected {
+			for _, value := range values {
+				if _, seen := injectedNow[value]; !seen {
+					injectedNow[value] = year
+				}
+			}
+		}
+		out.Reach = append(out.Reach, summarizeReach(w, year, probes, reachedNow, injectedNow, size))
 		year++
 	}
 	for _, turn := range w.Turns {

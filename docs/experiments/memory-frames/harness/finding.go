@@ -184,6 +184,12 @@ func find(ctx context.Context, w Workload, frameName, arm, form string, budget i
 
 // findThreads asks every answerable thread its own question at the end of
 // every year, which is the question every earlier round asked.
+//
+// It scores a probe the way the decade run's own checkpoint does rather
+// than through it: that path also takes a size, a reach and a bound this
+// study has no use for, and leaving it untouched is what keeps the rows it
+// committed from moving. `finding_test.go` reads the two files against each
+// other, so the two paths cannot drift.
 func findThreads(ctx context.Context, w Workload, frameName, arm, form string, budget int,
 	resolving Resolving) ([]YearResult, error) {
 	var out []YearResult

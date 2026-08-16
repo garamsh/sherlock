@@ -955,35 +955,51 @@ func renderFinding(b *strings.Builder, r Run) {
 	fmt.Fprintln(b)
 
 	fmt.Fprintf(b, "### What a question about a whole person returned\n\n")
-	fmt.Fprintf(b, "| question | arm | frame | subjects asked | addresses spanned | recall | stale returned | context chars | units read | inside the budget |\n")
-	fmt.Fprintf(b, "|---|---|---|---|---|---|---|---|---|---|\n")
+	fmt.Fprintf(b, "| question | arm | frame | subjects asked | addresses spanned | recall | stale returned | context chars | of the budget | units read | inside the budget |\n")
+	fmt.Fprintf(b, "|---|---|---|---|---|---|---|---|---|---|---|\n")
 	for _, f := range findingRows(r.Finding.Frames) {
 		if len(f.Subjects) == 0 {
 			continue
 		}
 		s := f.Subjects[len(f.Subjects)-1]
-		fmt.Fprintf(b, "| `%s` | `%s` | `%s` | %d | %s | %s | %s | %s | %s | %s |\n",
+		fmt.Fprintf(b, "| `%s` | `%s` | `%s` | %d | %s | %s | %s | %s | %s | %s | %s |\n",
 			f.Question, f.Arm, f.Frame, s.Asked, figureAt(s.Addresses, 2), figure(s.Recall),
-			figure(s.Stale), figureAt(s.ContextChars, 1), figureAt(s.Scanned, 1), figure(s.Fits))
+			figure(s.Stale), figureAt(s.ContextChars, 1), figure(perBudget(s.ContextChars, f.Budget)),
+			figureAt(s.Scanned, 1), figure(s.Fits))
 	}
 	fmt.Fprintln(b)
 
 	if len(r.Finding.Budgets) > 0 {
 		fmt.Fprintf(b, "### What a multi-address answer does as the budget narrows\n\n")
-		fmt.Fprintf(b, "| frame | budget, tokens | recall | context chars | inside the budget |\n")
-		fmt.Fprintf(b, "|---|---|---|---|---|\n")
+		fmt.Fprintf(b, "| frame | budget, tokens | recall | context chars | of the budget | inside the budget |\n")
+		fmt.Fprintf(b, "|---|---|---|---|---|---|\n")
 		for _, f := range r.Finding.Budgets {
 			if len(f.Subjects) == 0 {
 				continue
 			}
 			s := f.Subjects[len(f.Subjects)-1]
-			fmt.Fprintf(b, "| `%s` | %d | %s | %s | %s |\n", f.Frame, f.Budget,
-				figure(s.Recall), figureAt(s.ContextChars, 1), figure(s.Fits))
+			fmt.Fprintf(b, "| `%s` | %d | %s | %s | %s | %s |\n", f.Frame, f.Budget,
+				figure(s.Recall), figureAt(s.ContextChars, 1),
+				figure(perBudget(s.ContextChars, f.Budget)), figure(s.Fits))
 		}
 		fmt.Fprintln(b)
 	}
 
 	renderResolution(b, r.Finding.Resolution)
+}
+
+// perBudget is an answer's size as a multiple of the read budget it was
+// produced under. The budget is a constant of the row, so dividing scales
+// the mean and the interval alike and no figure is invented by it.
+//
+// It is beside the share that fits rather than instead of it, because that
+// share is a threshold: the shipped store bounds its own answer with a
+// per-row token estimate that rounds down, so its answers run a few per
+// cent past the budget in characters and the share reads zero for a reason
+// that has nothing to do with how much it found.
+func perBudget(f Figure, budget int) Figure {
+	chars := float64(budgetChars(budget))
+	return Figure{Mean: f.Mean / chars, Half: f.Half / chars, N: f.N}
 }
 
 // findingRows orders the finding study's rows by the axis under test: the

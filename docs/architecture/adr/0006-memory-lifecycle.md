@@ -33,7 +33,7 @@ Update semantics are unchanged: updates supersede rather than overwrite; every c
 
 ## Consequences
 
-- The store holds only what the model judged worth keeping. Retrieval is precise because the noise floor is empty; density is 25–50× the auto-capture baseline (experiment rounds 1–5).
+- The store holds only what the model judged worth keeping. Retrieval is precise because the noise floor is empty, and recall per KB is 12.5× to 522.9× that of hybrid RAG reading an auto-captured store, depending on the workload and the architecture (`docs/experiments/memory-architecture/`). Against auto-capture's own retrieval there is no ratio: it returns nothing.
 - The model's failure mode inverts: a model that never writes back (issue #302) leaves memory empty, and that emptiness is honest — there is no safety net fabricating a store out of traffic. Fixing model compliance is a model/prompt concern, not a storage concern.
 - Supersession keeps the latest version of a fact authoritative; stale recall drops (experiment: 0.17 vs 0.50 for non-superseding architectures).
 - Salience-scaled decay means a 10-year-old preference and a yesterday conversation coexist correctly: the preference fades slowly, the chatter fades fast.

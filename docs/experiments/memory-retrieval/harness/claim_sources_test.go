@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -31,7 +32,7 @@ import (
 
 const (
 	readmePath = "../README.md"
-	resultPath = "../results/retrieval_seed7.json"
+	resultsDir = "../results"
 	corpusPath = "../results/corpus_seed7.json"
 )
 
@@ -93,7 +94,15 @@ func halfUp(value float64, places int) float64 {
 
 func loadRun(t *testing.T) Run {
 	t.Helper()
-	body, err := os.ReadFile(resultPath)
+	return loadRunFor(t, embedderHashing)
+}
+
+// loadRunFor reads the committed retrieval run for one embedder. Every
+// result file names the embedder that produced it, so no figure can be
+// read without knowing which one it came from.
+func loadRunFor(t *testing.T, embedder string) Run {
+	t.Helper()
+	body, err := os.ReadFile(filepath.Join(resultsDir, "retrieval_seed7_"+embedder+".json"))
 	require.NoError(t, err)
 	var run Run
 	require.NoError(t, json.Unmarshal(body, &run))
@@ -175,18 +184,21 @@ func TestRecordFigures_MatchTheirCommittedSource(t *testing.T) {
 	r := newRegister(t)
 	run := loadRun(t)
 
-	// | `arm` | 1,000 | 0.030 ±0.013 | ... | 29.6 ±5.8 |
-	row := regexp.MustCompile("(?m)^\\| `([a-z0-9-]+)` \\| ([\\d,]+) \\|(.*)\\|$")
+	// | `hashing` | `mixed-30d` | 1,000 | 0.030 ±0.013 | ... | 29.6 ±5.8 |
+	row := regexp.MustCompile("(?m)^\\| `([a-z0-9-]+)` \\| `([a-z0-9-]+)` \\| ([\\d,]+) \\|(.*)\\|$")
 	rows := row.FindAllStringSubmatch(r.readme, -1)
-	require.Len(t, rows, len(run.Arms)*len(run.StoreSizes), "the score table lost or gained a row")
+	require.Len(t, rows, len(measuredEmbedders)*len(run.Arms)*len(run.StoreSizes),
+		"the score table lost or gained a row")
 
 	for _, match := range rows {
-		size, err := strconv.Atoi(strings.ReplaceAll(match[2], ",", ""))
+		size, err := strconv.Atoi(strings.ReplaceAll(match[3], ",", ""))
 		require.NoError(t, err)
-		figures := figuresFor(t, run, match[1], size)
+		embedded := loadRunFor(t, match[1])
+		require.Equal(t, match[1], embedded.Embedder, "a row states an embedder its file does not")
+		figures := figuresFor(t, embedded, match[2], size)
 
 		var cells []string
-		for _, cell := range strings.Split(match[3], "|") {
+		for _, cell := range strings.Split(match[4], "|") {
 			cells = append(cells, strings.TrimSpace(strings.ReplaceAll(cell, "*", "")))
 		}
 		named := []struct {
@@ -198,11 +210,13 @@ func TestRecordFigures_MatchTheirCommittedSource(t *testing.T) {
 			{"recall@10", figures.RecallAtLimit}, {"precision@10", figures.PrecisionAtLimit},
 			{"best rank", figures.BestRank},
 		}
-		require.Len(t, cells, len(named), "%s at %d: the row lost or gained a column", match[1], size)
+		require.Len(t, cells, len(named), "%s %s at %d: the row lost or gained a column",
+			match[1], match[2], size)
 		for i, want := range named {
 			stated := strings.SplitN(cells[i], " ±", 2)
-			require.Len(t, stated, 2, "%s at %d: %s states no interval", match[1], size, want.name)
-			claim := fmt.Sprintf("%s at %d, %s", match[1], size, want.name)
+			require.Len(t, stated, 2, "%s %s at %d: %s states no interval",
+				match[1], match[2], size, want.name)
+			claim := fmt.Sprintf("%s %s at %d, %s", match[1], match[2], size, want.name)
 			r.number(claim, stated[0], want.fig.Mean)
 			r.number(claim+" half-width", stated[1], want.fig.Half)
 		}
@@ -218,33 +232,60 @@ func TestRecordFindings_MatchTheirCommittedSource(t *testing.T) {
 	mixed := figuresFor(t, run, armMixed30d, 9_000)
 	small := figuresFor(t, run, armMixed30d, 1_000)
 
-	a := r.anchor(`where one returned memory in (\d+) is an answer`)
-	r.number("returned memories per answer", a[0], 1/mixed.PrecisionAtLimit.Mean)
+	openai := loadRunFor(t, embedderOpenAI)
+	openaiMixed := figuresFor(t, openai, armMixed30d, 9_000)
 
-	a = r.anchor(`the best answer sits at rank (\d+) on average — the top (\d+\.\d+)% of the store, against about ([\d,]+) if the order were random — while ` +
-		"`DefaultSearchLimit` shows the top (\\d+\\.\\d+)%")
-	r.number("best rank at the largest store", a[0], mixed.BestRank.Mean)
-	r.number("best rank as a share of the store", a[1], 100*mixed.BestRank.Mean/9_000)
-	r.number("best rank under a random order", a[2], randomBestRank(corpus, 9_000))
-	r.number("the search limit as a share of the store", a[3], 100*float64(run.Config.DefaultSearchLimit)/9_000)
+	a := r.anchor(`0.037 of the answers under ` + "`hashing`" + ` and (\d+\.\d+) under ` +
+		"`openai`" + `, where one returned memory in (\d+) and one in (\d+)`)
+	r.number("openai recall@10 at 9,000", a[0], openaiMixed.RecallAtLimit.Mean)
+	r.number("hashing returned memories per answer", a[1], 1/mixed.PrecisionAtLimit.Mean)
+	r.number("openai returned memories per answer", a[2], 1/openaiMixed.PrecisionAtLimit.Mean)
 
-	a = r.anchor(`average (\d+\.\d+) hours old against a store averaging (\d+), and carry salience (\d+\.\d+) against the store's (\d+\.\d+)`)
-	r.number("age of the returned memories", a[0], mixed.ReturnedAge.Mean)
-	r.number("age of the store", a[1], sizeFor(t, run, armMixed30d, 9_000).StoreAgeHours)
-	r.number("salience of the returned memories", a[2], mixed.ReturnedSalience.Mean)
-	r.number("salience of the store", a[3], sizeFor(t, run, armMixed30d, 9_000).StoreSalience)
+	a = r.anchor(`the best answer sits at rank (\d+\.\d+) under ` + "`hashing`" + ` and (\d+\.\d+) under ` +
+		"`openai`" + ` — the top (\d+\.\d+)% and (\d+\.\d+)% of the store, against about ([\d,]+) if the order were random — while ` +
+		"`DefaultSearchLimit`" + ` shows the top (\d+\.\d+)%`)
+	r.number("hashing best rank at the largest store", a[0], mixed.BestRank.Mean)
+	r.number("openai best rank at the largest store", a[1], openaiMixed.BestRank.Mean)
+	r.number("hashing best rank as a share of the store", a[2], 100*mixed.BestRank.Mean/9_000)
+	r.number("openai best rank as a share of the store", a[3], 100*openaiMixed.BestRank.Mean/9_000)
+	r.number("best rank under a random order", a[4], randomBestRank(corpus, 9_000))
+	r.number("the search limit as a share of the store", a[5], 100*float64(run.Config.DefaultSearchLimit)/9_000)
 
-	a = r.anchor(`takes recall@10 at 1,000 items from (\d+\.\d+) to (\d+\.\d+)`)
-	r.number("recall@10 at 1,000, as generated", a[0], small.RecallAtLimit.Mean)
-	r.number("recall@10 at 1,000, stretched", a[1], figuresFor(t, run, armMixed360d, 1_000).RecallAtLimit.Mean)
+	a = r.anchor(`average (\d+\.\d+) hours old under ` + "`hashing`" + ` and (\d+\.\d+) under ` + "`openai`" +
+		`, against a store averaging (\d+), and carry salience (\d+\.\d+) and (\d+\.\d+) against the store's (\d+\.\d+)`)
+	r.number("hashing age of the returned memories", a[0], mixed.ReturnedAge.Mean)
+	r.number("openai age of the returned memories", a[1], openaiMixed.ReturnedAge.Mean)
+	r.number("age of the store", a[2], sizeFor(t, run, armMixed30d, 9_000).StoreAgeHours)
+	r.number("hashing salience of the returned memories", a[3], mixed.ReturnedSalience.Mean)
+	r.number("openai salience of the returned memories", a[4], openaiMixed.ReturnedSalience.Mean)
+	r.number("salience of the store", a[5], sizeFor(t, run, armMixed30d, 9_000).StoreSalience)
 
-	a = r.anchor(`at 9,000 items enough is, and the same stretch takes it from (\d+\.\d+) to (\d+\.\d+)`)
-	r.number("recall@10 at 9,000, as generated", a[0], mixed.RecallAtLimit.Mean)
-	r.number("recall@10 at 9,000, stretched", a[1], figuresFor(t, run, armMixed360d, 9_000).RecallAtLimit.Mean)
+	a = r.anchor(`takes recall@10 at 1,000 items from (\d+\.\d+) to (\d+\.\d+) under ` + "`hashing`" +
+		` and from (\d+\.\d+) to (\d+\.\d+) under ` + "`openai`")
+	r.number("hashing recall@10 at 1,000, as generated", a[0], small.RecallAtLimit.Mean)
+	r.number("hashing recall@10 at 1,000, stretched", a[1], figuresFor(t, run, armMixed360d, 1_000).RecallAtLimit.Mean)
+	r.number("openai recall@10 at 1,000, as generated", a[2], figuresFor(t, openai, armMixed30d, 1_000).RecallAtLimit.Mean)
+	r.number("openai recall@10 at 1,000, stretched", a[3], figuresFor(t, openai, armMixed360d, 1_000).RecallAtLimit.Mean)
 
-	a = r.anchor(`` + "`flat`" + ` returns (\d+\.\d+) of the planted answers in the top ten at 1,000 items and (\d+\.\d+) at 9,000`)
-	r.number("flat recall@10 at 1,000", a[0], figuresFor(t, run, armFlat, 1_000).RecallAtLimit.Mean)
-	r.number("flat recall@10 at 9,000", a[1], flat.RecallAtLimit.Mean)
+	a = r.anchor(`the same stretch takes it from (\d+\.\d+) to (\d+\.\d+) and from (\d+\.\d+) to (\d+\.\d+)`)
+	r.number("hashing recall@10 at 9,000, as generated", a[0], mixed.RecallAtLimit.Mean)
+	r.number("hashing recall@10 at 9,000, stretched", a[1], figuresFor(t, run, armMixed360d, 9_000).RecallAtLimit.Mean)
+	r.number("openai recall@10 at 9,000, as generated", a[2], openaiMixed.RecallAtLimit.Mean)
+	r.number("openai recall@10 at 9,000, stretched", a[3], figuresFor(t, openai, armMixed360d, 9_000).RecallAtLimit.Mean)
+
+	a = r.anchor(`falls from (\d+\.\d+) to (\d+\.\d+) between 1,000 and 9,000 items, which the intervals separate; its ` +
+		"`flat`" + ` fall from (\d+\.\d+) to (\d+\.\d+)`)
+	r.number("hashing mixed-30d recall@10 at 1,000", a[0], small.RecallAtLimit.Mean)
+	r.number("hashing mixed-30d recall@10 at 9,000", a[1], mixed.RecallAtLimit.Mean)
+	r.number("hashing flat recall@10 at 1,000", a[2], figuresFor(t, run, armFlat, 1_000).RecallAtLimit.Mean)
+	r.number("hashing flat recall@10 at 9,000", a[3], flat.RecallAtLimit.Mean)
+	assertSeparated(t, "hashing mixed-30d over store size", small.RecallAtLimit, mixed.RecallAtLimit, true)
+	assertSeparated(t, "hashing flat over store size",
+		figuresFor(t, run, armFlat, 1_000).RecallAtLimit, flat.RecallAtLimit, false)
+
+	a = r.anchor(`precision@10 at 9,000 items is (\d+\.\d+) under ` + "`hashing`" + ` and (\d+\.\d+) under ` + "`openai`")
+	r.number("hashing precision@10 at 9,000", a[0], mixed.PrecisionAtLimit.Mean)
+	r.number("openai precision@10 at 9,000", a[1], openaiMixed.PrecisionAtLimit.Mean)
 
 	a = r.anchor(`the relevance term is bounded by (\d+\.\d+) in total`)
 	r.number("bound on the relevance term", a[0], run.Config.WeightVector+run.Config.WeightFTS)
@@ -254,25 +295,115 @@ func TestRecordFindings_MatchTheirCommittedSource(t *testing.T) {
 		float64(run.Config.RecallTokenBudget*run.Config.CharsPerToken)/float64(run.Config.DefaultSearchLimit))
 	r.number("content length of the corpus", a[1], sizeFor(t, run, armMixed30d, 9_000).StoreContentChars)
 
-	a = r.anchor(`` + "`returned@budget`" + ` is exactly (\d+\.\d+) in all nine rows`)
-	for _, arm := range run.Arms {
-		for _, size := range arm.Sizes {
-			r.number(fmt.Sprintf("returned@budget, %s at %d", arm.Name, size.Size), a[0],
-				size.Figures.ReturnedAtBudget.Mean)
-			assert.Equal(t, size.Figures.RecallAtLimit, size.Figures.RecallAtBudget,
-				"%s at %d: recall@budget is not recall@10, so the record's claim has moved", arm.Name, size.Size)
+	a = r.anchor(`` + "`returned@budget`" + ` is exactly (\d+\.\d+) in all eighteen rows`)
+	var rows int
+	for _, embedded := range []Run{run, openai} {
+		for _, arm := range embedded.Arms {
+			for _, size := range arm.Sizes {
+				r.number(fmt.Sprintf("returned@budget, %s %s at %d", embedded.Embedder, arm.Name, size.Size),
+					a[0], size.Figures.ReturnedAtBudget.Mean)
+				assert.Equal(t, size.Figures.RecallAtLimit, size.Figures.RecallAtBudget,
+					"%s %s at %d: recall@budget is not recall@10", embedded.Embedder, arm.Name, size.Size)
+				rows++
+			}
 		}
 	}
+	assert.Equal(t, 18, rows, "the record says eighteen rows")
 
 	a = r.anchor(`Facts are short single-clause statements averaging (\d+\.\d+) characters`)
 	r.number("content length in Limits", a[0], sizeFor(t, run, armMixed30d, 9_000).StoreContentChars)
 
+	// §What the embedder costs.
+	a = r.anchor(`Its best answer sits at rank (\d+\.\d+) to (\d+\.\d+) of the whole store against ` +
+		"`hashing`" + `'s (\d+\.\d+) to (\d+\.\d+), and at 1,000 items every probe's first result is a planted answer — precision@1 of (\d+\.\d+)`)
+	r.number("openai flat best rank at 1,000", a[0], figuresFor(t, openai, armFlat, 1_000).BestRank.Mean)
+	r.number("openai flat best rank at 9,000", a[1], figuresFor(t, openai, armFlat, 9_000).BestRank.Mean)
+	r.number("hashing flat best rank at 1,000", a[2], figuresFor(t, run, armFlat, 1_000).BestRank.Mean)
+	r.number("hashing flat best rank at 9,000", a[3], figuresFor(t, run, armFlat, 9_000).BestRank.Mean)
+	r.number("openai flat precision@1 at 1,000", a[4], figuresFor(t, openai, armFlat, 1_000).PrecisionAt1.Mean)
+
+	a = r.anchor(`recall@10 is (\d+\.\d+) against (\d+\.\d+) at 1,000 items, (\d+\.\d+) against (\d+\.\d+) at 4,000, and (\d+\.\d+) against (\d+\.\d+) at 9,000`)
+	for i, size := range storeSizes {
+		r.number(fmt.Sprintf("openai mixed-30d recall@10 at %d", size), a[2*i],
+			figuresFor(t, openai, armMixed30d, size).RecallAtLimit.Mean)
+		r.number(fmt.Sprintf("hashing mixed-30d recall@10 at %d", size), a[2*i+1],
+			figuresFor(t, run, armMixed30d, size).RecallAtLimit.Mean)
+		// The record's two central claims about the embedders are claims
+		// about intervals: apart everywhere under flat, overlapping
+		// everywhere under the planting the read path ships with.
+		assertSeparated(t, fmt.Sprintf("the embedders under flat at %d", size),
+			figuresFor(t, run, armFlat, size).RecallAtLimit,
+			figuresFor(t, openai, armFlat, size).RecallAtLimit, true)
+		assertSeparated(t, fmt.Sprintf("the embedders under mixed-30d at %d", size),
+			figuresFor(t, run, armMixed30d, size).RecallAtLimit,
+			figuresFor(t, openai, armMixed30d, size).RecallAtLimit, false)
+	}
+
+	a = r.anchor(`returns at 9,000 items average (\d+\.\d+) hours old with salience (\d+\.\d+), against ` +
+		"`hashing`" + `'s (\d+\.\d+) hours and (\d+\.\d+)`)
+	r.number("openai returned age", a[0], openaiMixed.ReturnedAge.Mean)
+	r.number("openai returned salience", a[1], openaiMixed.ReturnedSalience.Mean)
+	r.number("hashing returned age", a[2], mixed.ReturnedAge.Mean)
+	r.number("hashing returned salience", a[3], mixed.ReturnedSalience.Mean)
+
+	a = r.anchor(`embedded ([\d,]+) distinct texts, at a published price of \$(\d+\.\d+) per million tokens`)
+	r.number("distinct texts embedded", a[0], float64(distinctTextsEmbedded(t, corpus)))
+
+	// §Which conclusions may be quoted across embedders.
+	a = r.anchor(`That is (\d+) on the embedder that ships, a factor of (\d+)`)
+	hashingRetired := familyNamed(t, loadSeparability(t, embedderHashing), "correction").Superseded
+	openaiRetired := familyNamed(t, loadSeparability(t, embedderOpenAI512), "correction").Superseded
+	r.number("corrections the shipped embedder retires", a[0], float64(hashingRetired))
+	r.number("the factor between them", a[1], float64(openaiRetired)/float64(hashingRetired))
+
+	a = r.anchor(`(\d+\.\d+) against (\d+\.\d+) recall@10 at 9,000 items, intervals apart at every size`)
+	r.number("hashing flat recall@10 quoted", a[0], flat.RecallAtLimit.Mean)
+	r.number("openai flat recall@10 quoted", a[1], figuresFor(t, openai, armFlat, 9_000).RecallAtLimit.Mean)
+
+	a = r.anchor(`ten memories averaging under (\w+) hours old from a store averaging (\d+)`)
+	hours, err := strconv.ParseFloat(numberWord(t, a[0]), 64)
+	require.NoError(t, err)
+	assert.Less(t, mixed.ReturnedAge.Mean, hours, "hashing returns older memories than the record says")
+	assert.Less(t, openaiMixed.ReturnedAge.Mean, hours, "openai returns older memories than the record says")
+	r.number("store age quoted", a[1], sizeFor(t, run, armMixed30d, 9_000).StoreAgeHours)
+
 	r.report()
 
-	// One figure in the record no committed file carries.
+	// Figures in the record no committed file carries.
 	r.anchor(`A full run is minutes of CPU`)
 	t.Log("unsourced: [Limits] 'a full run is minutes of CPU' — no committed file records the runtime; " +
 		"the harness prints it per size and writes nothing")
+	r.anchor(`They are (\d+) MB for this corpus`)
+	t.Log("unsourced: [Limits] 'they are 202 MB for this corpus' — the vector cache is written outside " +
+		"the repository and nothing committed records its size")
+	r.anchor(`a published price of \$0.02 per million tokens`)
+	t.Log("unsourced: [What the embedder costs] the price per million tokens is the provider's, " +
+		"not a measurement; no committed file carries a token count or a bill")
+}
+
+// assertSeparated checks a claim the record makes about two figures: that
+// their 95% intervals do or do not overlap. A record that says "which the
+// intervals separate" is stating a fact about the numbers, so the register
+// checks it like any other.
+// distinctTextsEmbedded is every text the openai run paid for: the
+// corpus and its probes, plus the separability pair set.
+func distinctTextsEmbedded(t *testing.T, corpus Corpus) int {
+	t.Helper()
+	set, err := LoadPairSet(filepath.Join(resultsDir, "separability_pairs_seed7.json"))
+	require.NoError(t, err)
+	texts := map[string]bool{}
+	for _, text := range append(corpusTexts(corpus), pairTexts(set)...) {
+		texts[text] = true
+	}
+	return len(texts)
+}
+
+func assertSeparated(t *testing.T, claim string, a, b Figure, want bool) {
+	t.Helper()
+	overlap := a.Mean-a.Half <= b.Mean+b.Half && b.Mean-b.Half <= a.Mean+a.Half
+	assert.Equal(t, want, !overlap,
+		"%s: [%.3f, %.3f] and [%.3f, %.3f]", claim,
+		a.Mean-a.Half, a.Mean+a.Half, b.Mean-b.Half, b.Mean+b.Half)
 }
 
 func pairsIn(corpus Corpus) map[string]bool {
@@ -370,8 +501,8 @@ func figuresFor(t *testing.T, run Run, arm string, size int) Figures {
 func numberWord(t *testing.T, word string) string {
 	t.Helper()
 	words := map[string]string{"three": "3", "four": "4", "five": "5", "six": "6",
-		"seven": "7", "eight": "8", "nine": "9", "ten": "10"}
-	value, ok := words[word]
+		"seven": "7", "eight": "8", "nine": "9", "ten": "10", "seventeen": "17"}
+	value, ok := words[strings.ToLower(word)]
 	require.True(t, ok, "unspelled number %q", word)
 	return value
 }

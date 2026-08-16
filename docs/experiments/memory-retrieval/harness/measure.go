@@ -49,11 +49,11 @@ type SizeResult struct {
 }
 
 // Measure plants the corpus prefix of the given size into a fresh store
-// and runs every probe through the shipped read path. The store, the
-// embedder, the hybrid search and the ranking function are the ones
-// internal/memory ships; the harness supplies only the corpus and the
-// clock.
-func Measure(ctx context.Context, corpus Corpus, size int, now time.Time) (SizeResult, error) {
+// and runs every probe through the shipped read path under the given
+// embedder. The store, the hybrid search and the ranking function are the
+// ones internal/memory ships, and so is each embedder; the harness
+// supplies only the corpus and the clock.
+func Measure(ctx context.Context, corpus Corpus, size int, now time.Time, embedder Embedder) (SizeResult, error) {
 	if size > len(corpus.Items) {
 		return SizeResult{}, fmt.Errorf("store size %d exceeds the %d-item corpus", size, len(corpus.Items))
 	}
@@ -69,14 +69,13 @@ func Measure(ctx context.Context, corpus Corpus, size int, now time.Time) (SizeR
 	}
 	defer store.Close()
 
-	embedder := memory.NewHashingEmbedder()
 	items := corpus.Items[:size]
-	ids, err := plant(ctx, store, embedder, items, now)
+	ids, err := plant(ctx, store, embedder.Embedder, items, now)
 	if err != nil {
 		return SizeResult{}, err
 	}
 
-	svc := memory.NewService(store, embedder, memory.NewConcatSummarizer(),
+	svc := memory.NewService(store, embedder.Embedder, memory.NewConcatSummarizer(),
 		memory.WithClock(func() time.Time { return now }))
 
 	out := SizeResult{Size: size}

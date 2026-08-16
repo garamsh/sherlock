@@ -1,35 +1,18 @@
 # Simplicity Conventions
 
-Structural economy in code: how many shapes one concept may have, when a layer or abstraction earns its place, and what never ships. Complexity must earn its place. Scope boundary: `runtime-safety.md` owns types and validation placement, `style.md` owns naming and pattern consistency; this file owns structure — shape count, layer count, abstraction count.
+The default response to a problem is to change the shape, not to add to it.
 
-## One concept, one shape
+## Core principle
 
-- A domain concept has exactly one struct/type definition. A second struct with the same fields carrying the same data (a "translation DTO") is a defect, not layering.
-- A distinct shape is justified only at a real boundary: wire format, storage schema, or an external API. "Clean separation" is not a boundary.
-- When two shapes genuinely exist, exactly one named function converts between them, at the boundary — never field-by-field copies spread across call sites.
+Where a defect or a requirement can be met either by adding — a branch, a guard, a special case, a wrapper, a file — or by changing the shape so the case cannot arise, take the second. Adding is correct once the restructure has been considered and rejected, and the pull request says why.
 
-## Layers earn their place by transforming
+Every line, file, and folder is one more the next reader holds and the next change keeps working. That cost is what this rule is paid to avoid. Additions collecting in one place are worth reading as a sign the shape is wrong.
 
-- A new layer (package, struct pair, indirection) must transform data or cross a process/machine boundary. A layer that only copies fields or forwards arguments is removed.
-- Before adding a layer, ask: what breaks if the consumer uses the inner type directly? If the answer is "nothing", the layer does not exist.
-- Every capability is a tool behind one contract; no organizing layer is introduced above or beside that contract.
-- Before adding a capability, ask first whether it is expressible behind the existing tool contract. A new subsystem is the last resort, not the default.
+## Rules
 
-## No speculative or dead generality
-
-- Generality lands with its first real caller; an abstraction lands when the second real case arrives — never before. No single-use abstractions, no plugin systems, registries, or dispatch tables built ahead of a second user.
-- Ship nothing unused: no struct tags nothing applies (e.g. `yaml:` tags on a type nothing YAML-decodes), no options no caller sets, no parameters reserved "for later".
-
-## Consolidate with judgment
-
-- When two features look similar, first verify whether they truly differ. If a unified module is more intuitive and needs no flags and conditionals everywhere, unify. If unification requires branching at every turn, they differ in essence — keep them separate. A wrong abstraction is worse than honest duplication.
-
-## No guard-stacking
-
-- `runtime-safety.md` owns where validation happens (once, at the boundary). This file owns the consequence: do not add compensating checks, wrappers, or fallback layers around a weak boundary — strengthen the boundary instead.
-- A fallback path is justified only when the underlying failure is real and expected (e.g. an optional capability absent at runtime) and is documented as such at the fallback site.
-- Delete, don't wrap: prefer deleting dead code and dead paths over layering compatibility shims on top of them.
-
-## Clarity is testable
-
-- If a competent engineer cannot understand a unit in a few seconds of reading, restructure it before shipping. Nesting depth, indirection hops, and the number of concepts a reader must hold at once are all reviewable.
+- **A division is a response, not a plan.** Start flat. Split a file, or introduce a folder, when the current shape already holds more than one thing — never because a division is expected later. An empty container is a claim the code does not support.
+- **No speculative abstraction.** Do not build for imagined future needs: no configuration options nobody asked for, no indirection layers for one caller. Add the abstraction when the second real case arrives — except a seam, a boundary declared so that a test or an alternative implementation can take the place of the real thing, which earns its keep on the first.
+- **An abstraction that hides nothing is complexity.** One standing between a caller and a single concrete thing, adding no meaning and no seam, is removed.
+- **Consolidate with judgment.** When two features look similar: first verify whether they truly differ. If a unified module is more intuitive and does not need flags and conditionals everywhere, unify them. If unification requires branching at every turn, they are different in essence — keep them separate. A wrong abstraction is worse than honest duplication.
+- **Delete, don't wrap.** Prefer deleting dead code and dead paths over layering compatibility shims on top of them.
+- **Structural complexity is reviewable.** Nesting depth, indirection hops, and the number of concepts a reader must hold at once are all reviewable. A unit harder to read than the problem it solves is restructured before shipping.

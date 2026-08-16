@@ -8,7 +8,7 @@
 
 ## Verification
 
-<!-- Commands run locally and their results. Example: `make ci` — pass. -->
+<!-- Commands run locally and their results. Example: `<check command>` — pass. -->
 
 ## Conventions consulted
 

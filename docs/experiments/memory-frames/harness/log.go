@@ -83,6 +83,16 @@ func (f *logFrame) Size(context.Context) (Size, error) {
 	return out, nil
 }
 
+// Held is every event. The memory is derived from them, so what the log
+// holds is what it could ever derive.
+func (f *logFrame) Held(context.Context) ([]string, error) {
+	out := make([]string, 0, len(f.events))
+	for _, e := range f.events {
+		out = append(out, line(e.address, e.value))
+	}
+	return out, nil
+}
+
 func (f *logFrame) Close() error { return nil }
 
 // projectNewest keeps the value of the latest event at the address, which

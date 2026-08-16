@@ -71,4 +71,13 @@ func (f *documentFrame) Size(_ context.Context) (Size, error) {
 	return Size{Units: units, ContentBytes: int64(len(f.text)), StoredBytes: int64(len(f.text))}, nil
 }
 
+// Held is the document. Everything in it is what the next question gets,
+// so a frame with one bounded document holds nothing a read does not reach.
+func (f *documentFrame) Held(context.Context) ([]string, error) {
+	if f.text == "" {
+		return nil, nil
+	}
+	return []string{f.text}, nil
+}
+
 func (f *documentFrame) Close() error { return nil }

@@ -65,6 +65,9 @@ func RenderTables(r Run) string {
 	renderYears(&b, r)
 	renderSizes(&b, r)
 	renderArity(&b, r)
+	renderReach(&b, r)
+	renderCapacity(&b, r)
+	renderCoupling(&b, r)
 	renderSweep(&b, r)
 	renderHealing(&b, r)
 	renderDeclarer(&b, r)
@@ -447,6 +450,69 @@ func renderPaid(b *strings.Builder, r Run) {
 	fmt.Fprintf(b, "| quantity | value |\n|---|---|\n")
 	for _, row := range rows {
 		fmt.Fprintf(b, "| %s | %v |\n", row[0], row[1])
+	}
+	fmt.Fprintln(b)
+}
+
+// renderReach is what a read brought back of what was related to it, and
+// what each structure holds that no read ever reached.
+func renderReach(b *strings.Builder, r Run) {
+	fmt.Fprintf(b, "### What a read reached, and what it never did\n\n")
+	fmt.Fprintf(b, "| frame | arm | year | thread reach | subject reach | held | reached | frozen | frozen share | frozen still needed |\n")
+	fmt.Fprintf(b, "|---|---|---|---|---|---|---|---|---|---|\n")
+	for _, f := range r.Frames {
+		for _, x := range f.Reach {
+			fmt.Fprintf(b, "| `%s` | `%s` | %d | %s | %s | %d | %d | %d | %.3f | %d |\n",
+				f.Frame, f.Arm, x.Year, figure(x.ThreadReach), figure(x.SubjectReach),
+				x.Held, x.Reached, x.Frozen, x.Share, x.NeededLater)
+		}
+	}
+	fmt.Fprintln(b)
+}
+
+// renderCapacity is the size trajectory year by year and what it
+// extrapolates to, which is what says whether a decade approaches the
+// ceiling the shipped configuration evicts at.
+func renderCapacity(b *strings.Builder, r Run) {
+	fmt.Fprintf(b, "### What a decade consumes\n\n")
+	fmt.Fprintf(b, "| frame | arm | year | units | content KB | stored KB |\n|---|---|---|---|---|---|\n")
+	for _, f := range r.Frames {
+		for _, x := range f.Reach {
+			fmt.Fprintf(b, "| `%s` | `%s` | %d | %d | %.1f | %.1f |\n",
+				f.Frame, f.Arm, x.Year, x.Units, kilobytes(x.ContentBytes), kilobytes(x.StoredBytes))
+		}
+	}
+	fmt.Fprintln(b)
+
+	fmt.Fprintf(b, "| frame | arm | units at the last year | units added a year | decades to the active-index capacity |\n")
+	fmt.Fprintf(b, "|---|---|---|---|---|\n")
+	for _, f := range r.Frames {
+		if len(f.Reach) < 2 {
+			continue
+		}
+		last := f.Reach[len(f.Reach)-1]
+		first := f.Reach[0]
+		perYear := float64(last.Units-first.Units) / float64(last.Year-first.Year)
+		decades := notApplicable
+		if perYear > 0 {
+			decades = fmt.Sprintf("%.0f", float64(r.Config.DefaultCapacity-last.Units)/perYear/10)
+		}
+		fmt.Fprintf(b, "| `%s` | `%s` | %d | %.1f | %s |\n", f.Frame, f.Arm, last.Units, perYear, decades)
+	}
+	fmt.Fprintln(b)
+}
+
+// renderCoupling is whether a correction lands on a value no read had
+// returned before it.
+func renderCoupling(b *strings.Builder, r Run) {
+	fmt.Fprintf(b, "### Whether a correction reaches what a read did not\n\n")
+	fmt.Fprintf(b, "| frame | arm | corrections whose value a read had returned | applied | corrections whose value no read had returned | applied |\n")
+	fmt.Fprintf(b, "|---|---|---|---|---|---|\n")
+	for _, f := range r.Frames {
+		c := f.Coupling
+		fmt.Fprintf(b, "| `%s` | `%s` | %d | %s | %d | %s |\n", f.Frame, f.Arm,
+			c.Reached.Corrections, figure(c.Reached.Rate),
+			c.Unreached.Corrections, figure(c.Unreached.Rate))
 	}
 	fmt.Fprintln(b)
 }

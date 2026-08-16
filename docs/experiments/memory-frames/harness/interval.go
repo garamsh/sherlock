@@ -97,6 +97,19 @@ func (f *intervalFrame) Size(context.Context) (Size, error) {
 	return out, nil
 }
 
+// Held is every span, open or closed. A closed span is held and unreachable
+// by a question about the present, which is the distinction this round is
+// measuring.
+func (f *intervalFrame) Held(context.Context) ([]string, error) {
+	var out []string
+	for address, spans := range f.values {
+		for _, span := range spans {
+			out = append(out, line(address, span.value))
+		}
+	}
+	return out, nil
+}
+
 func (f *intervalFrame) Close() error { return nil }
 
 // closes reports whether this write ends the spans open at the address.

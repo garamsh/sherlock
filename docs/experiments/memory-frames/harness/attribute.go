@@ -146,6 +146,19 @@ func (f *attributeFrame) Size(context.Context) (Size, error) {
 	return out, nil
 }
 
+// Held is every value at every address, in address order where the map
+// gives one and in write order within an address. Nothing downstream reads
+// the order, and sorting it would cost more than it says.
+func (f *attributeFrame) Held(context.Context) ([]string, error) {
+	var out []string
+	for address, values := range f.values {
+		for _, held := range values {
+			out = append(out, line(address, held.value))
+		}
+	}
+	return out, nil
+}
+
 func (f *attributeFrame) Close() error { return nil }
 
 // replaces reports whether this write ends the values already at the

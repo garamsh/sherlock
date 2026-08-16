@@ -34,9 +34,9 @@ const (
 	// retention falls below the threshold is forgotten.
 	ruleMemoryBank streamRule = "memorybank"
 	// ruleReflection is Park et al. 2023's second mechanism (§Reflection):
-	// the stream, plus a higher-level record synthesized from the last
-	// window of observations every reflectionEvery of them, retrievable like
-	// any other record.
+	// the stream, plus a higher-level record synthesized over the last window
+	// of observations whenever the importance summed since the previous one
+	// passes the trigger, retrievable like any other record.
 	ruleReflection streamRule = "reflection"
 )
 
@@ -123,7 +123,8 @@ func NewStreamFrame(rule streamRule, counter *EmbedCounter, budget int) Frame {
 }
 
 // Observe appends the turn as a record, and on the reflecting rule
-// synthesizes one more every reflectionEvery observations.
+// synthesizes one more once the importance summed since the last synthesis
+// passes the trigger.
 //
 // It reads the text and never the extracted fact: none of the three designs
 // addresses anything, so a turn's assertion changes what the record's
@@ -162,14 +163,16 @@ func (f *streamFrame) append(ctx context.Context, text string, at time.Time, imp
 // observations, retrievable like any other.
 //
 // Generative Agents has a model read the window and write what it concludes.
-// The seam has no model, so the synthesis here is the window's own
-// fact-carrying sentences joined into one record — the operation a
-// summarizer performs and not the inference one does, which is what the
-// record states this row bounds and does not measure.
+// The seam has no model, so the synthesis here is the window's own records at
+// the higher importance, joined into one — the operation a summarizer
+// performs and not the inference one does, which is what the record states
+// this row bounds and does not measure. In an arm where no write marks
+// anything as carrying a fact, one importance is all there is and the
+// synthesis selects nothing.
 //
 // A reflection is never read into a later reflection and never grows past
-// what a context holds. Without both, a synthesis of syntheses doubles every
-// eight observations and the structure stops being a memory.
+// what a context holds. Without both, a synthesis of syntheses doubles at
+// every trigger and the structure stops being a memory.
 func (f *streamFrame) reflect(ctx context.Context, at time.Time) error {
 	from := max(len(f.items)-reflectionWindow, 0)
 	var (

@@ -117,6 +117,25 @@ func TestScriptTool_DriftPinRefusesLoad(t *testing.T) {
 	assert.Contains(t, err.Error(), "descriptor drift")
 }
 
+// TestScriptTool_UnpinnedToolRefusesLoad pins the other half of ADR
+// 0009 invariant 2: the pin set is the operator's accepted tool set, so
+// a tool present in the tree but absent from the set is refused. An
+// unreviewed directory drop is otherwise indistinguishable from an
+// installation.
+func TestScriptTool_UnpinnedToolRefusesLoad(t *testing.T) {
+	root := t.TempDir()
+	hash := scriptToolFixture(t, root, "echo")
+	_ = scriptToolFixture(t, root, "unreviewed")
+
+	_, err := tool.NewRegistry(tool.RegistryOptions{
+		Dir:      root,
+		Pins:     tool.ManifestPins{"echo": hash},
+		Required: []string{"echo"},
+	})
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), `unpinned tool "unreviewed"`)
+}
+
 // TestScriptTool_InputRejection covers the boundary: an input that
 // does not match the manifest's input schema is rejected before the
 // tool runs. The runner is never invoked.

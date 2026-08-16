@@ -93,9 +93,8 @@ type Registry struct {
 
 	mu    sync.RWMutex
 	tools map[string]*toolInstance
-	// pins records the manifest hash the registry serves for each
-	// tool. The operator can supply a pin set at startup; a tool
-	// whose hash drifts from the pin is rejected.
+	// pins is the operator's accepted tool set. A nil set leaves
+	// drift pinning off; a non-nil set is enforced in full.
 	pins ManifestPins
 	// sanitize, when non-nil, reshapes each tool's input and output
 	// schemas before caching them. The cached form is what the
@@ -112,20 +111,30 @@ type toolInstance struct {
 	hash            string
 }
 
-// ManifestPins is the operator's drift-check set: the SHA-256 of the
-// canonical manifest bytes for each tool the operator has accepted. A
-// tool whose manifest hash is not in the set is rejected at startup.
-// The legacy protocol client uses the same shape but its own type
-// alias; the two types are interchangeable at runtime.
+// ManifestPins is the operator's accepted tool set: the SHA-256 of the
+// canonical manifest bytes for each tool the operator reviewed and
+// accepted. A tool whose manifest hash drifts from its pin is rejected
+// at startup, and so is a tool the set does not name — the set states
+// which tools are accepted, so an unnamed one is unreviewed. An empty
+// non-nil set therefore accepts no tool at all.
+//
+// The pin is operator material: only the operator can say which
+// manifest they accepted, so the platform reads a pin set and never
+// manufactures one (docs/architecture/security.md §Tool trust posture:
+// free contribution, operator installation).
 type ManifestPins map[string]string
 
 // RegistryOptions configures NewRegistry. The zero value is usable:
 // empty Logger falls back to slog.Default(), empty Dir falls back to
-// DefaultToolsDir, nil ManifestPins disables drift pinning.
+// DefaultToolsDir.
 type RegistryOptions struct {
 	Logger *slog.Logger
 	Dir    string
-	Pins   ManifestPins
+	// Pins is the operator's accepted tool set (see ManifestPins). A
+	// nil set leaves drift pinning off and NewRegistry warns, because
+	// the operator then has no record to check a mutated manifest
+	// against.
+	Pins ManifestPins
 	// Required is the set of tool names the registry must hold at
 	// startup. A nil slice uses DefaultRequiredTools; an explicit
 	// slice (including empty) overrides the default.
@@ -142,8 +151,8 @@ type RegistryOptions struct {
 }
 
 // NewRegistry walks dir, loads every manifest, validates the contract,
-// pins the SHA-256 of the canonical manifest bytes, and sets the
-// required-tool set. A missing required tool fails closed (ADR 0009
+// checks each manifest hash against the operator's pin set, and sets
+// the required-tool set. A missing required tool fails closed (ADR 0009
 // invariant 5).
 func NewRegistry(opts RegistryOptions) (*Registry, error) {
 	logger := opts.Logger
@@ -168,6 +177,15 @@ func NewRegistry(opts RegistryOptions) (*Registry, error) {
 	}
 	if err := reg.loadTools(dir); err != nil {
 		return nil, err
+	}
+	if opts.Pins == nil {
+		// The hash of every loaded manifest is on the lines above
+		// this one, which is where the operator copies the pin set
+		// from.
+		logger.Warn("tool drift pinning disabled: no pin set configured",
+			"op", "tool.load",
+			"tools_dir", dir,
+		)
 	}
 	if err := reg.checkRequired(required); err != nil {
 		return nil, err
@@ -208,12 +226,8 @@ func (r *Registry) loadTools(dir string) error {
 		if _, exists := r.tools[loaded.manifest.Name]; exists {
 			return fmt.Errorf("duplicate tool name %q", loaded.manifest.Name)
 		}
-		if r.pins != nil {
-			pinned, ok := r.pins[loaded.manifest.Name]
-			if ok && pinned != loaded.hash {
-				return fmt.Errorf("descriptor drift for %q: pinned=%s fetched=%s",
-					loaded.manifest.Name, pinned, loaded.hash)
-			}
+		if err := r.checkPin(loaded.manifest.Name, loaded.hash); err != nil {
+			return err
 		}
 		runner := NewRunner(loaded.manifest, toolDir)
 		sanInput, sanOutput := loaded.manifest.InputSchema, loaded.manifest.OutputSchema
@@ -233,6 +247,26 @@ func (r *Registry) loadTools(dir string) error {
 			"name", loaded.manifest.Name,
 			"hash", loaded.hash,
 		)
+	}
+	return nil
+}
+
+// checkPin holds the loaded manifest against the operator's accepted
+// tool set (ADR 0009 invariant 2). A nil set is the operator declining
+// to pin. A non-nil set is the whole accepted set, so a tool it does
+// not name is refused for the same reason a drifted one is: neither
+// hash is one the operator accepted. Both errors carry the hash the
+// operator pins to accept what is on disk.
+func (r *Registry) checkPin(name, hash string) error {
+	if r.pins == nil {
+		return nil
+	}
+	pinned, ok := r.pins[name]
+	if !ok {
+		return fmt.Errorf("unpinned tool %q: not named by the pin set; pin it as %s or remove the tool", name, hash)
+	}
+	if pinned != hash {
+		return fmt.Errorf("descriptor drift for %q: pinned=%s fetched=%s", name, pinned, hash)
 	}
 	return nil
 }
@@ -277,19 +311,6 @@ func (r *Registry) Get(name string) (Descriptor, bool) {
 		return Descriptor{}, false
 	}
 	return descriptorFromTool(t), true
-}
-
-// PinsExport returns the manifest hash for every loaded tool. The
-// operator regenerates the pin set from this map on a deliberate
-// manifest change.
-func (r *Registry) PinsExport() ManifestPins {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	out := make(ManifestPins, len(r.tools))
-	for name, t := range r.tools {
-		out[name] = t.hash
-	}
-	return out
 }
 
 // Close releases every tool's resources. The stdio runner is stateless;

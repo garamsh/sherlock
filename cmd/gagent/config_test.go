@@ -9,6 +9,8 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/garamsh/gagent/internal/tool"
 )
 
 // newTestCommand returns a bare command carrying the shared config flags
@@ -325,6 +327,34 @@ func TestResolveConfig_ConfigFileMustBeOwnerOnly(t *testing.T) {
 	_, err = resolveConfig(newTestCommand(t))
 	require.Error(t, err, "a group/other-readable config file must fail startup")
 	assert.Contains(t, err.Error(), "owner-only")
+}
+
+func TestResolveConfig_ToolsPinsSection(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	contents := "tools:\n" +
+		"  pins:\n" +
+		"    message_send: 0f9b\n" +
+		"    files: 7c31\n"
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o600))
+
+	cfg, err := resolveConfig(newTestCommand(t))
+	require.NoError(t, err)
+
+	assert.Equal(t, tool.ManifestPins{"message_send": "0f9b", "files": "7c31"}, cfg.Tools.Pins)
+}
+
+// TestResolveConfig_NoToolsSection separates "no pin set" from "a pin
+// set naming nothing": the first leaves drift pinning off, the second
+// would accept no tool at all, so an absent section must not resolve to
+// an empty set.
+func TestResolveConfig_NoToolsSection(t *testing.T) {
+	t.Chdir(t.TempDir())
+
+	cfg, err := resolveConfig(newTestCommand(t))
+	require.NoError(t, err)
+
+	assert.Nil(t, cfg.Tools.Pins)
 }
 
 func TestResolveConfig_InvalidConfigFileFails(t *testing.T) {

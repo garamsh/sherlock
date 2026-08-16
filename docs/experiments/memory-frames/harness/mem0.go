@@ -93,19 +93,22 @@ func (f *mem0Frame) update(ctx context.Context, written Written) error {
 	if err != nil {
 		return fmt.Errorf("embed: %w", err)
 	}
-	for _, index := range f.nearest(vector) {
-		if cosine(vector, f.items[index].vector) < f.gate {
-			break
-		}
+	candidates := f.nearest(vector)
+	for _, index := range candidates {
 		if f.items[index].text == text {
-			// The no-op: the memory is already there.
+			// The no-op: the memory is already among the candidates.
 			return nil
 		}
-		if written.Declared == OperationReplace {
-			f.items[index] = &mem0Item{text: text, vector: vector}
+	}
+	// An update ends the nearest candidate, and only when the gate accepts
+	// it. Where it does not, there is nothing this write can be an update to
+	// and the design adds.
+	if written.Declared == OperationReplace && len(candidates) > 0 {
+		nearest := candidates[0]
+		if cosine(vector, f.items[nearest].vector) >= f.gate {
+			f.items[nearest] = &mem0Item{text: text, vector: vector}
 			return nil
 		}
-		break
 	}
 	f.items = append(f.items, &mem0Item{text: text, vector: vector})
 	return nil

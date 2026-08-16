@@ -17,7 +17,6 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/garamsh/gagent/internal/workspace"
-	"github.com/garamsh/gagent/internal/workspace/client"
 )
 
 // TestEndToEnd_WorkspaceServesContract drives "gagent workspace" as a
@@ -133,12 +132,13 @@ func startWorkspaceBinary(t *testing.T, binary, workspaceDir, configPath string)
 			t.Fatalf("workspace exited before serving: %v\nlogs:\n%s", err, logs)
 		default:
 		}
-		ws, closeFn, err := client.New(context.Background(), addr)
+		conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err == nil {
+			ws := workspace.NewWorkspaceClient(conn)
 			ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 			_, err = ws.List(ctx, &workspace.ListRequest{Path: "."})
 			cancel()
-			closeFn()
+			conn.Close()
 			if err == nil {
 				return cmd, addr, exited
 			}

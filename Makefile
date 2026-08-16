@@ -1,10 +1,8 @@
 .PHONY: lint format format-fix test build build-tools generate proto ci hooks smoke-local
 
 lint:
-	@if [ -f go.mod ]; then \
-		go vet ./...; \
-		golangci-lint run ./...; \
-	else echo "no go.mod yet; skipping go vet"; fi
+	go vet ./...
+	golangci-lint run ./...
 
 format:
 	@test -z "$$(gofmt -l .)" || { gofmt -l .; exit 1; }
@@ -13,7 +11,7 @@ format-fix:
 	@gofmt -w .
 
 test:
-	@if [ -f go.mod ]; then go test ./...; else echo "no go.mod yet; skipping go test"; fi
+	go test ./...
 # Which entry point carries a documentation check is open in #397. Until it is
 # settled these sit behind `test` rather than under a fifth name; moving them is
 # moving these two lines.
@@ -21,7 +19,7 @@ test:
 	@python3 citations/reference_check_fixtures.py
 
 build:
-	@if [ -f go.mod ]; then go build ./...; else echo "no go.mod yet; skipping go build"; fi
+	go build ./...
 
 build-tools:
 	@for tool in files shell_exec message_send github; do \

@@ -4,11 +4,11 @@
  "seed": 7,
  "calls": 796,
  "prompt_tokens": 149869,
- "completion_tokens": 7882,
+ "completion_tokens": 7903,
  "price_input_per_million_usd": 0.1,
  "price_output_per_million_usd": 0.4,
  "price_read_on": "2026-08-16",
- "cost_usd": 0.0181397,
+ "cost_usd": 0.0181481,
  "messages": [
   {
    "turn": 0,
@@ -369,14 +369,7 @@
      "Declared": "replace"
     }
    ],
-   "found": [
-    {
-     "subject": "Zara",
-     "attribute": "hall",
-     "value": "verdigris-annex",
-     "Declared": "replace"
-    }
-   ]
+   "found": []
   },
   {
    "turn": 24,
@@ -389,14 +382,7 @@
      "Declared": "replace"
     }
    ],
-   "found": [
-    {
-     "subject": "Milos",
-     "attribute": "line",
-     "value": "garnet-drift",
-     "Declared": "replace"
-    }
-   ]
+   "found": []
   },
   {
    "turn": 25,
@@ -836,7 +822,14 @@
      "Declared": "replace"
     }
    ],
-   "found": []
+   "found": [
+    {
+     "subject": "Dario",
+     "attribute": "bakery",
+     "value": "larkin-spire",
+     "Declared": "replace"
+    }
+   ]
   },
   {
    "turn": 61,
@@ -1555,14 +1548,7 @@
      "Declared": "replace"
     }
    ],
-   "found": [
-    {
-     "subject": "Wanda",
-     "attribute": "bakery",
-     "value": "copper-foundry",
-     "Declared": "replace"
-    }
-   ]
+   "found": []
   },
   {
    "turn": 119,
@@ -2984,7 +2970,14 @@
      "Declared": "replace"
     }
    ],
-   "found": []
+   "found": [
+    {
+     "subject": "Magnus",
+     "attribute": "bakery",
+     "value": "oakhill-foundry",
+     "Declared": "replace"
+    }
+   ]
   },
   {
    "turn": 237,
@@ -4347,7 +4340,7 @@
      "subject": "Wanda",
      "attribute": "course",
      "value": "silverfin-glade",
-     "Declared": "join"
+     "Declared": "replace"
     }
    ]
   },
@@ -4500,7 +4493,14 @@
      "Declared": "join"
     }
    ],
-   "found": []
+   "found": [
+    {
+     "subject": "Kofi",
+     "attribute": "line",
+     "value": "bramble-yard",
+     "Declared": "replace"
+    }
+   ]
   },
   {
    "turn": 415,
@@ -4639,7 +4639,14 @@
      "Declared": "join"
     }
    ],
-   "found": []
+   "found": [
+    {
+     "subject": "Orla",
+     "attribute": "course",
+     "value": "umber-wharf",
+     "Declared": "replace"
+    }
+   ]
   },
   {
    "turn": 430,
@@ -4789,7 +4796,7 @@
      "subject": "Leila",
      "attribute": "line",
      "value": "cinder-hollow",
-     "Declared": "replace"
+     "Declared": "join"
     }
    ]
   },
@@ -4887,7 +4894,7 @@
      "subject": "Tariq",
      "attribute": "course",
      "value": "opal-ridge",
-     "Declared": "join"
+     "Declared": "replace"
     }
    ]
   },
@@ -5134,7 +5141,7 @@
      "subject": "Tomas",
      "attribute": "hall",
      "value": "ember-wharf",
-     "Declared": "replace"
+     "Declared": "join"
     }
    ]
   },
@@ -5851,7 +5858,14 @@
      "Declared": "replace"
     }
    ],
-   "found": []
+   "found": [
+    {
+     "subject": "Tariq",
+     "attribute": "bakery",
+     "value": "flint-quarry",
+     "Declared": "replace"
+    }
+   ]
   },
   {
    "turn": 534,
@@ -6965,7 +6979,7 @@
     {
      "subject": "Ulla",
      "attribute": "hall",
-     "value": "brindle-beacon",
+     "value": "brindle-beacon hall",
      "Declared": "replace"
     }
    ]
@@ -7651,14 +7665,7 @@
      "Declared": "replace"
     }
    ],
-   "found": [
-    {
-     "subject": "Karin",
-     "attribute": "bakery",
-     "value": "harrow-sedge",
-     "Declared": "replace"
-    }
-   ]
+   "found": []
   },
   {
    "turn": 743,

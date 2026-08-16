@@ -67,12 +67,14 @@ var packedFrames = []string{
 }
 
 // packedJoins are what separates one assertion from the next inside a
-// packed message.
+// packed message. The cue rule reads the whole message, so a join carrying
+// an addition cue would mark every assertion beside it as an addition and
+// the packed rows would measure this list rather than packing.
 var packedJoins = []string{
 	"; and separately, ",
 	"; meanwhile, ",
 	"; on a different note, ",
-	"; also worth saying, ",
+	"; one more for the pile, ",
 }
 
 // clause strips the sentence-ending period so an assertion can be embedded

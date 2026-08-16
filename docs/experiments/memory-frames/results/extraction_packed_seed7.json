@@ -3,12 +3,12 @@
  "model": "gpt-4.1-nano",
  "seed": 7,
  "calls": 247,
- "prompt_tokens": 50562,
- "completion_tokens": 5967,
+ "prompt_tokens": 50658,
+ "completion_tokens": 5778,
  "price_input_per_million_usd": 0.1,
  "price_output_per_million_usd": 0.4,
  "price_read_on": "2026-08-16",
- "cost_usd": 0.007443,
+ "cost_usd": 0.007377000000000001,
  "messages": [
   {
    "turn": 0,
@@ -186,7 +186,7 @@
   },
   {
    "turn": 10,
-   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Lisa keeps the backups on umber-drift; also worth saying, Tariq keeps the backups on dovetail-kiln; on a different note, Goran leads the cinder-chandler project.",
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Lisa keeps the backups on umber-drift; one more for the pile, Tariq keeps the backups on dovetail-kiln; on a different note, Goran leads the cinder-chandler project.",
    "planted": [
     {
      "subject": "Lisa",
@@ -230,7 +230,7 @@
   },
   {
    "turn": 11,
-   "text": "From the notes, tidied up and probably still incomplete: Cato keeps the backups on silverfin-hearth; and separately, Amara rents the ironwood-weir cottage; also worth saying, Lisa sits with the cinder-meadow team.",
+   "text": "From the notes, tidied up and probably still incomplete: Cato keeps the backups on silverfin-hearth; and separately, Amara rents the ironwood-weir cottage; one more for the pile, Lisa sits with the cinder-meadow team.",
    "planted": [
     {
      "subject": "Cato",
@@ -256,19 +256,19 @@
      "subject": "Cato",
      "attribute": "backups",
      "value": "silverfin-hearth",
-     "Declared": "replace"
+     "Declared": "join"
     },
     {
      "subject": "Amara",
      "attribute": "cottage",
      "value": "ironwood-weir",
-     "Declared": "replace"
+     "Declared": "join"
     },
     {
      "subject": "Lisa",
      "attribute": "team",
      "value": "cinder-meadow",
-     "Declared": "replace"
+     "Declared": "join"
     }
    ]
   },
@@ -482,7 +482,7 @@
   },
   {
    "turn": 34,
-   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Kasper banks with cobalt-moor; also worth saying, Yara keeps the accounts in quill-hollow; meanwhile, Tereza keeps the backups on saffron-meadow.",
+   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Kasper banks with cobalt-moor; one more for the pile, Yara keeps the accounts in quill-hollow; meanwhile, Tereza keeps the backups on saffron-meadow.",
    "planted": [
     {
      "subject": "Kasper",
@@ -544,7 +544,7 @@
   },
   {
    "turn": 38,
-   "text": "Catching you up on what changed while you were away, in no particular order: Ulla banks with verdigris-reach; on a different note, Yara goes to the saffron-drift clinic; also worth saying, Yara commutes on the thistle-reach line.",
+   "text": "Catching you up on what changed while you were away, in no particular order: Ulla banks with verdigris-reach; on a different note, Yara goes to the saffron-drift clinic; one more for the pile, Yara commutes on the thistle-reach line.",
    "planted": [
     {
      "subject": "Ulla",
@@ -567,16 +567,22 @@
    ],
    "found": [
     {
+     "subject": "Ulla",
+     "attribute": "bank",
+     "value": "verdigris-reach",
+     "Declared": "join"
+    },
+    {
      "subject": "Yara",
      "attribute": "clinic",
      "value": "saffron-drift",
-     "Declared": "replace"
+     "Declared": "join"
     },
     {
      "subject": "Yara",
      "attribute": "line",
      "value": "thistle-reach",
-     "Declared": "replace"
+     "Declared": "join"
     }
    ]
   },
@@ -594,7 +600,7 @@
   },
   {
    "turn": 41,
-   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Chiara leads the larkin-harbour project; also worth saying, Anders keeps the backups on cobalt-yard; and separately, Viktor sits with the ember-spire team.",
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Chiara leads the larkin-harbour project; one more for the pile, Anders keeps the backups on cobalt-yard; and separately, Viktor sits with the ember-spire team.",
    "planted": [
     {
      "subject": "Chiara",
@@ -750,7 +756,7 @@
   },
   {
    "turn": 48,
-   "text": "From the notes, tidied up and probably still incomplete: Emeka leads the ember-weir project; also worth saying, Luca keeps the accounts in garnet-meadow; and separately, Mateo rents the sable-glade cottage.",
+   "text": "From the notes, tidied up and probably still incomplete: Emeka leads the ember-weir project; one more for the pile, Luca keeps the accounts in garnet-meadow; and separately, Mateo rents the sable-glade cottage.",
    "planted": [
     {
      "subject": "Emeka",
@@ -842,7 +848,7 @@
   },
   {
    "turn": 57,
-   "text": "From the notes, tidied up and probably still incomplete: Erol orders paper from verdigris-tarn; also worth saying, Jonas rents the quill-annex cottage; meanwhile, Iris leads the silverfin-harbour project.",
+   "text": "From the notes, tidied up and probably still incomplete: Erol orders paper from verdigris-tarn; one more for the pile, Jonas rents the quill-annex cottage; meanwhile, Iris leads the silverfin-harbour project.",
    "planted": [
     {
      "subject": "Erol",
@@ -865,16 +871,22 @@
    ],
    "found": [
     {
+     "subject": "Erol",
+     "attribute": "orders",
+     "value": "paper from verdigris-tarn",
+     "Declared": "join"
+    },
+    {
      "subject": "Jonas",
      "attribute": "cottage",
      "value": "quill-annex",
-     "Declared": "replace"
+     "Declared": "join"
     },
     {
      "subject": "Iris",
      "attribute": "project",
      "value": "silverfin-harbour",
-     "Declared": "replace"
+     "Declared": "join"
     }
    ]
   },
@@ -1002,7 +1014,7 @@
   },
   {
    "turn": 72,
-   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Vasco is taking the zephyr-wharf course; also worth saying, Kwame keeps the accounts in cinder-hearth; meanwhile, Greta keeps the accounts in dovetail-isle.",
+   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Vasco is taking the zephyr-wharf course; one more for the pile, Kwame keeps the accounts in cinder-hearth; meanwhile, Greta keeps the accounts in dovetail-isle.",
    "planted": [
     {
      "subject": "Vasco",
@@ -1118,7 +1130,7 @@
   },
   {
    "turn": 85,
-   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Elif sits with the ember-drift team; also worth saying, Karin sits with the brindle-mill team; and separately, Yara sits with the ravel-quarry team.",
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Elif sits with the ember-drift team; one more for the pile, Karin sits with the brindle-mill team; and separately, Yara sits with the ravel-quarry team.",
    "planted": [
     {
      "subject": "Elif",
@@ -1143,7 +1155,7 @@
   },
   {
    "turn": 86,
-   "text": "Catching you up on what changed while you were away, in no particular order: Freya commutes on the marlow-pike line; also worth saying, Luca is taking the brindle-isle course; also worth saying, Tariq leads the larkin-glade project.",
+   "text": "Catching you up on what changed while you were away, in no particular order: Freya commutes on the marlow-pike line; one more for the pile, Luca is taking the brindle-isle course; one more for the pile, Tariq leads the larkin-glade project.",
    "planted": [
     {
      "subject": "Freya",
@@ -1295,7 +1307,7 @@
   },
   {
    "turn": 105,
-   "text": "Catching you up on what changed while you were away, in no particular order: Olga orders paper from cinder-brook; meanwhile, Rania keeps the accounts in yarrow-hollow; also worth saying, Leila banks with bramble-harbour.",
+   "text": "Catching you up on what changed while you were away, in no particular order: Olga orders paper from cinder-brook; meanwhile, Rania keeps the accounts in yarrow-hollow; one more for the pile, Leila banks with bramble-harbour.",
    "planted": [
     {
      "subject": "Olga",
@@ -1505,7 +1517,7 @@
   },
   {
    "turn": 122,
-   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Leila commutes on the ironwood-pike line; also worth saying, Maria leads the quill-drift project; and separately, Stefan orders paper from saffron-weir.",
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Leila commutes on the ironwood-pike line; one more for the pile, Maria leads the quill-drift project; and separately, Stefan orders paper from saffron-weir.",
    "planted": [
     {
      "subject": "Leila",
@@ -1653,7 +1665,7 @@
   },
   {
    "turn": 134,
-   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Kasper keeps the accounts in ember-orchard; also worth saying, Amara orders paper from yarrow-reach; also worth saying, Celia leads the brindle-fenn project.",
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Kasper keeps the accounts in ember-orchard; one more for the pile, Amara orders paper from yarrow-reach; one more for the pile, Celia leads the brindle-fenn project.",
    "planted": [
     {
      "subject": "Kasper",
@@ -1949,7 +1961,7 @@
   },
   {
    "turn": 158,
-   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Tariq is taking the cinder-drift course; meanwhile, Goran banks with cobalt-foundry; also worth saying, Wanda is taking the flint-wharf course.",
+   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Tariq is taking the cinder-drift course; meanwhile, Goran banks with cobalt-foundry; one more for the pile, Wanda is taking the flint-wharf course.",
    "planted": [
     {
      "subject": "Tariq",
@@ -2071,7 +2083,7 @@
   },
   {
    "turn": 172,
-   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Vasco is taking the nutmeg-quarry course instead; also worth saying, Kwame has switched the accounts to dovetail-orchard; meanwhile, Greta has switched the accounts to oakhill-spire.",
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Vasco is taking the nutmeg-quarry course instead; one more for the pile, Kwame has switched the accounts to dovetail-orchard; meanwhile, Greta has switched the accounts to oakhill-spire.",
    "planted": [
     {
      "subject": "Vasco",
@@ -2093,12 +2105,6 @@
     }
    ],
    "found": [
-    {
-     "subject": "Vasco",
-     "attribute": "course",
-     "value": "nutmeg-quarry",
-     "Declared": "replace"
-    },
     {
      "subject": "Kwame",
      "attribute": "accounts",
@@ -2189,7 +2195,7 @@
   },
   {
    "turn": 179,
-   "text": "Catching you up on what changed while you were away, in no particular order: Erol orders paper from bramble-weir now; and separately, Jonas rents the marlow-yard cottage from now on; also worth saying, Iris leads the mirefield-vale project from now on.",
+   "text": "Catching you up on what changed while you were away, in no particular order: Erol orders paper from bramble-weir now; and separately, Jonas rents the marlow-yard cottage from now on; one more for the pile, Iris leads the mirefield-vale project from now on.",
    "planted": [
     {
      "subject": "Erol",
@@ -2213,7 +2219,7 @@
    "found": [
     {
      "subject": "Erol",
-     "attribute": "project",
+     "attribute": "cottage",
      "value": "bramble-weir",
      "Declared": "replace"
     },
@@ -2233,7 +2239,7 @@
   },
   {
    "turn": 180,
-   "text": "From the notes, tidied up and probably still incomplete: Freya sits with the vellum-vale team from now on; on a different note, Sanjay is taking the marlow-orchard course instead; also worth saying, Esther rents the flint-hearth cottage from now on.",
+   "text": "From the notes, tidied up and probably still incomplete: Freya sits with the vellum-vale team from now on; on a different note, Sanjay is taking the marlow-orchard course instead; one more for the pile, Esther rents the flint-hearth cottage from now on.",
    "planted": [
     {
      "subject": "Freya",
@@ -2337,7 +2343,7 @@
   },
   {
    "turn": 191,
-   "text": "From the notes, tidied up and probably still incomplete: Fabio has switched the accounts to umber-reach; also worth saying, Stefan leads the umber-fenn project from now on; meanwhile, Beatriz has moved to the sable-tarn clinic.",
+   "text": "From the notes, tidied up and probably still incomplete: Fabio has switched the accounts to umber-reach; one more for the pile, Stefan leads the umber-fenn project from now on; meanwhile, Beatriz has moved to the sable-tarn clinic.",
    "planted": [
     {
      "subject": "Fabio",
@@ -2487,7 +2493,7 @@
   },
   {
    "turn": 197,
-   "text": "From the notes, tidied up and probably still incomplete: Rafael rents the flint-chandler cottage; also worth saying, Josefa keeps the backups on tamarind-drift; meanwhile, Emeka keeps the accounts in dovetail-pike.",
+   "text": "From the notes, tidied up and probably still incomplete: Rafael rents the flint-chandler cottage; one more for the pile, Josefa keeps the backups on tamarind-drift; meanwhile, Emeka keeps the accounts in dovetail-pike.",
    "planted": [
     {
      "subject": "Rafael",
@@ -2633,7 +2639,7 @@
   },
   {
    "turn": 215,
-   "text": "Catching you up on what changed while you were away, in no particular order: Pablo leads the ironwood-reach project from now on; and separately, Wilma orders paper from yarrow-annex now; also worth saying, Milos commutes on the amber-chandler line now.",
+   "text": "Catching you up on what changed while you were away, in no particular order: Pablo leads the ironwood-reach project from now on; and separately, Wilma orders paper from yarrow-annex now; one more for the pile, Milos commutes on the amber-chandler line now.",
    "planted": [
     {
      "subject": "Pablo",
@@ -2664,7 +2670,7 @@
     {
      "subject": "Wilma",
      "attribute": "accounts",
-     "value": "paper from yarrow-annex",
+     "value": "yarrow-annex",
      "Declared": "replace"
     },
     {
@@ -2912,6 +2918,12 @@
      "attribute": "bakery",
      "value": "oakhill-foundry bakery",
      "Declared": "replace"
+    },
+    {
+     "subject": "Priya",
+     "attribute": "cottage",
+     "value": "wicklow-orchard",
+     "Declared": "replace"
     }
    ]
   },
@@ -3091,7 +3103,7 @@
   },
   {
    "turn": 267,
-   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Freya orders paper from brindle-lantern; also worth saying, Noor keeps the backups on ravel-weir; on a different note, Jana is taking the brindle-ridge course.",
+   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Freya orders paper from brindle-lantern; one more for the pile, Noor keeps the backups on ravel-weir; on a different note, Jana is taking the brindle-ridge course.",
    "planted": [
     {
      "subject": "Freya",
@@ -3112,7 +3124,26 @@
      "Declared": "replace"
     }
    ],
-   "found": null
+   "found": [
+    {
+     "subject": "Freya",
+     "attribute": "paper",
+     "value": "brindle-lantern",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Noor",
+     "attribute": "backups",
+     "value": "ravel-weir",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Jana",
+     "attribute": "course",
+     "value": "brindle-ridge",
+     "Declared": "replace"
+    }
+   ]
   },
   {
    "turn": 268,
@@ -3305,13 +3336,13 @@
      "subject": "Hassan",
      "attribute": "bank",
      "value": "ravel-hearth",
-     "Declared": "replace"
+     "Declared": "join"
     },
     {
      "subject": "Kofi",
      "attribute": "clinic",
      "value": "vellum-foundry",
-     "Declared": "replace"
+     "Declared": "join"
     }
    ]
   },
@@ -3461,7 +3492,7 @@
   },
   {
    "turn": 316,
-   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Magnus orders paper from nutmeg-kiln; also worth saying, Sofia leads the harrow-brook project; and separately, Alma sits with the larkin-mill team.",
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Magnus orders paper from nutmeg-kiln; one more for the pile, Sofia leads the harrow-brook project; and separately, Alma sits with the larkin-mill team.",
    "planted": [
     {
      "subject": "Magnus",
@@ -3487,19 +3518,19 @@
      "subject": "Magnus",
      "attribute": "project",
      "value": "nutmeg-kiln",
-     "Declared": "replace"
+     "Declared": "join"
     },
     {
      "subject": "Sofia",
      "attribute": "project",
      "value": "harrow-brook",
-     "Declared": "replace"
+     "Declared": "join"
     },
     {
      "subject": "Alma",
      "attribute": "team",
      "value": "larkin-mill",
-     "Declared": "replace"
+     "Declared": "join"
     }
    ]
   },
@@ -3535,7 +3566,7 @@
   },
   {
    "turn": 322,
-   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Zara banks with ironwood-ledge; on a different note, Tomas orders paper from cobalt-meadow; also worth saying, Yuki commutes on the silverfin-yard line.",
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Zara banks with ironwood-ledge; on a different note, Tomas orders paper from cobalt-meadow; one more for the pile, Yuki commutes on the silverfin-yard line.",
    "planted": [
     {
      "subject": "Zara",
@@ -3565,14 +3596,14 @@
     },
     {
      "subject": "Tomas",
-     "attribute": "orders",
-     "value": "paper from cobalt-meadow",
+     "attribute": "project",
+     "value": "cobalt-meadow",
      "Declared": "replace"
     },
     {
      "subject": "Yuki",
-     "attribute": "commutes",
-     "value": "silverfin-yard line",
+     "attribute": "line",
+     "value": "silverfin-yard",
      "Declared": "replace"
     }
    ]
@@ -3627,7 +3658,7 @@
   },
   {
    "turn": 331,
-   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Emeka keeps the backups on pewter-tarn; on a different note, Karin leads the nutmeg-gable project; also worth saying, Priya banks with oakhill-fenn.",
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Emeka keeps the backups on pewter-tarn; on a different note, Karin leads the nutmeg-gable project; one more for the pile, Priya banks with oakhill-fenn.",
    "planted": [
     {
      "subject": "Emeka",
@@ -4078,7 +4109,26 @@
      "Declared": "replace"
     }
    ],
-   "found": []
+   "found": [
+    {
+     "subject": "Esther",
+     "attribute": "line",
+     "value": "cinder-reach",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Nuria",
+     "attribute": "line",
+     "value": "thistle-hearth",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Erol",
+     "attribute": "line",
+     "value": "oakhill-vale",
+     "Declared": "replace"
+    }
+   ]
   },
   {
    "turn": 391,
@@ -4440,7 +4490,7 @@
   },
   {
    "turn": 437,
-   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Orla keeps the backups on quill-hearth; also worth saying, Maria banks with copper-sedge; also worth saying, Rania orders paper from mirefield-foundry.",
+   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Orla keeps the backups on quill-hearth; one more for the pile, Maria banks with copper-sedge; one more for the pile, Rania orders paper from mirefield-foundry.",
    "planted": [
     {
      "subject": "Orla",
@@ -4466,13 +4516,13 @@
      "subject": "Orla",
      "attribute": "backups",
      "value": "quill-hearth",
-     "Declared": "replace"
+     "Declared": "join"
     },
     {
      "subject": "Maria",
      "attribute": "bank",
      "value": "copper-sedge",
-     "Declared": "replace"
+     "Declared": "join"
     }
    ]
   },
@@ -4575,7 +4625,7 @@
   },
   {
    "turn": 451,
-   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Leila commutes on the cinder-hollow line as well; also worth saying, Maria leads the ember-ledge project as well; also worth saying, Stefan orders paper from ember-coppice as well.",
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Leila commutes on the cinder-hollow line as well; one more for the pile, Maria leads the ember-ledge project as well; one more for the pile, Stefan orders paper from ember-coppice as well.",
    "planted": [
     {
      "subject": "Leila",
@@ -4601,19 +4651,19 @@
      "subject": "Leila",
      "attribute": "line",
      "value": "cinder-hollow",
-     "Declared": "replace"
+     "Declared": "join"
     },
     {
      "subject": "Maria",
      "attribute": "project",
      "value": "ember-ledge",
-     "Declared": "replace"
+     "Declared": "join"
     },
     {
      "subject": "Stefan",
      "attribute": "project",
      "value": "ember-coppice",
-     "Declared": "replace"
+     "Declared": "join"
     }
    ]
   },
@@ -4737,7 +4787,7 @@
   },
   {
    "turn": 459,
-   "text": "Catching you up on what changed while you were away, in no particular order: For payroll Lorna keeps the accounts in cinder-harbour; also worth saying, On alternate weeks Noor takes the ironwood-spire course; also worth saying, For the archive Idris keeps the backups on harrow-pike.",
+   "text": "Catching you up on what changed while you were away, in no particular order: For payroll Lorna keeps the accounts in cinder-harbour; one more for the pile, On alternate weeks Noor takes the ironwood-spire course; one more for the pile, For the archive Idris keeps the backups on harrow-pike.",
    "planted": [
     {
      "subject": "Lorna",
@@ -4811,7 +4861,7 @@
   },
   {
    "turn": 465,
-   "text": "From the notes, tidied up and probably still incomplete: In winter Freya commutes on the thistle-glade line; also worth saying, On alternate weeks Luca takes the nutmeg-moor course; meanwhile, On Thursdays Tariq leads the dovetail-annex project.",
+   "text": "From the notes, tidied up and probably still incomplete: In winter Freya commutes on the thistle-glade line; one more for the pile, On alternate weeks Luca takes the nutmeg-moor course; meanwhile, On Thursdays Tariq leads the dovetail-annex project.",
    "planted": [
     {
      "subject": "Freya",
@@ -4968,19 +5018,19 @@
      "subject": "Tomas",
      "attribute": "hall",
      "value": "ember-wharf",
-     "Declared": "join"
+     "Declared": "replace"
     },
     {
      "subject": "Gunnar",
      "attribute": "course",
      "value": "vellum-brook",
-     "Declared": "join"
+     "Declared": "replace"
     },
     {
      "subject": "Petra",
      "attribute": "accounts",
      "value": "amber-beacon",
-     "Declared": "join"
+     "Declared": "replace"
     }
    ]
   },
@@ -5114,7 +5164,7 @@
   },
   {
    "turn": 487,
-   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Pablo leads the tamarind-tarn project from now on; meanwhile, Wilma orders paper from larkin-weir now; also worth saying, Milos commutes on the garnet-drift line now.",
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Pablo leads the tamarind-tarn project from now on; meanwhile, Wilma orders paper from larkin-weir now; one more for the pile, Milos commutes on the garnet-drift line now.",
    "planted": [
     {
      "subject": "Pablo",
@@ -5220,7 +5270,7 @@
   },
   {
    "turn": 493,
-   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Vasco is taking the ravel-gable course instead; also worth saying, Kwame has switched the accounts to umber-brook; on a different note, Greta has switched the accounts to bramble-lantern.",
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Vasco is taking the ravel-gable course instead; one more for the pile, Kwame has switched the accounts to umber-brook; on a different note, Greta has switched the accounts to bramble-lantern.",
    "planted": [
     {
      "subject": "Vasco",
@@ -5306,7 +5356,7 @@
   },
   {
    "turn": 501,
-   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Freya sits with the cobalt-pike team from now on; also worth saying, Sanjay is taking the vellum-meadow course instead; meanwhile, Esther rents the copper-harbour cottage from now on.",
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Freya sits with the cobalt-pike team from now on; one more for the pile, Sanjay is taking the vellum-meadow course instead; meanwhile, Esther rents the copper-harbour cottage from now on.",
    "planted": [
     {
      "subject": "Freya",
@@ -5454,7 +5504,7 @@
   },
   {
    "turn": 513,
-   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Erol orders paper from verdigris-tarn now; also worth saying, Jonas rents the quill-annex cottage from now on; and separately, Iris leads the silverfin-harbour project from now on.",
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Erol orders paper from verdigris-tarn now; one more for the pile, Jonas rents the quill-annex cottage from now on; and separately, Iris leads the silverfin-harbour project from now on.",
    "planted": [
     {
      "subject": "Erol",
@@ -5478,21 +5528,21 @@
    "found": [
     {
      "subject": "Erol",
-     "attribute": "bank",
+     "attribute": "supplier",
      "value": "verdigris-tarn",
-     "Declared": "replace"
+     "Declared": "join"
     },
     {
      "subject": "Jonas",
      "attribute": "cottage",
      "value": "quill-annex",
-     "Declared": "replace"
+     "Declared": "join"
     },
     {
      "subject": "Iris",
      "attribute": "project",
      "value": "silverfin-harbour",
-     "Declared": "replace"
+     "Declared": "join"
     }
    ]
   },
@@ -5530,19 +5580,19 @@
      "subject": "Zoltan",
      "attribute": "bank",
      "value": "copper-gable",
-     "Declared": "replace"
+     "Declared": "join"
     },
     {
      "subject": "Otto",
      "attribute": "backups",
      "value": "ember-brook",
-     "Declared": "replace"
+     "Declared": "join"
     },
     {
      "subject": "Karin",
      "attribute": "course",
      "value": "yarrow-beacon",
-     "Declared": "replace"
+     "Declared": "join"
     }
    ]
   },
@@ -5628,7 +5678,7 @@
   },
   {
    "turn": 523,
-   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Kasper banks with quill-wharf now; also worth saying, Yara has switched the accounts to oakhill-reach; and separately, Tereza keeps the backups on ironwood-lantern from now on.",
+   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Kasper banks with quill-wharf now; one more for the pile, Yara has switched the accounts to oakhill-reach; and separately, Tereza keeps the backups on ironwood-lantern from now on.",
    "planted": [
     {
      "subject": "Kasper",
@@ -5762,7 +5812,7 @@
   },
   {
    "turn": 539,
-   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Fabio has switched the accounts to yarrow-weir; on a different note, Stefan leads the copper-chandler project from now on; also worth saying, Beatriz has moved to the verdigris-beacon clinic.",
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Fabio has switched the accounts to yarrow-weir; on a different note, Stefan leads the copper-chandler project from now on; one more for the pile, Beatriz has moved to the verdigris-beacon clinic.",
    "planted": [
     {
      "subject": "Fabio",
@@ -5872,7 +5922,7 @@
   },
   {
    "turn": 551,
-   "text": "Catching you up on what changed while you were away, in no particular order: Tomas goes to the ironwood-hollow clinic; also worth saying, Tariq buys bread at the flint-quarry bakery; on a different note, Petra goes to the cinder-foundry clinic.",
+   "text": "Catching you up on what changed while you were away, in no particular order: Tomas goes to the ironwood-hollow clinic; one more for the pile, Tariq buys bread at the flint-quarry bakery; on a different note, Petra goes to the cinder-foundry clinic.",
    "planted": [
     {
      "subject": "Tomas",
@@ -6255,7 +6305,7 @@
   },
   {
    "turn": 599,
-   "text": "Catching you up on what changed while you were away, in no particular order: Lisa banks with brindle-spire; also worth saying, Dario leads the wicklow-glade project; meanwhile, Gunnar sits with the thistle-spire team.",
+   "text": "Catching you up on what changed while you were away, in no particular order: Lisa banks with brindle-spire; one more for the pile, Dario leads the wicklow-glade project; meanwhile, Gunnar sits with the thistle-spire team.",
    "planted": [
     {
      "subject": "Lisa",
@@ -6367,7 +6417,7 @@
      "subject": "Yuki",
      "attribute": "backups",
      "value": "nutmeg-chandler",
-     "Declared": "join"
+     "Declared": "replace"
     }
    ]
   },
@@ -6601,7 +6651,7 @@
   },
   {
    "turn": 646,
-   "text": "Catching you up on what changed while you were away, in no particular order: Olga rehearses at the umber-annex hall; on a different note, Ulla rehearses at the brindle-beacon hall; also worth saying, Hugo orders paper from ravel-chandler.",
+   "text": "Catching you up on what changed while you were away, in no particular order: Olga rehearses at the umber-annex hall; on a different note, Ulla rehearses at the brindle-beacon hall; one more for the pile, Hugo orders paper from ravel-chandler.",
    "planted": [
     {
      "subject": "Olga",
@@ -6622,26 +6672,7 @@
      "Declared": "replace"
     }
    ],
-   "found": [
-    {
-     "subject": "Olga",
-     "attribute": "hall",
-     "value": "umber-annex",
-     "Declared": "replace"
-    },
-    {
-     "subject": "Ulla",
-     "attribute": "hall",
-     "value": "brindle-beacon",
-     "Declared": "replace"
-    },
-    {
-     "subject": "Hugo",
-     "attribute": "bank",
-     "value": "ravel-chandler",
-     "Declared": "replace"
-    }
-   ]
+   "found": []
   },
   {
    "turn": 647,
@@ -6681,7 +6712,7 @@
   },
   {
    "turn": 653,
-   "text": "Catching you up on what changed while you were away, in no particular order: Anders rehearses at the zephyr-chandler hall; meanwhile, Hugo leads the ember-reach project; also worth saying, Goran rehearses at the silverfin-isle hall.",
+   "text": "Catching you up on what changed while you were away, in no particular order: Anders rehearses at the zephyr-chandler hall; meanwhile, Hugo leads the ember-reach project; one more for the pile, Goran rehearses at the silverfin-isle hall.",
    "planted": [
     {
      "subject": "Anders",
@@ -6815,7 +6846,7 @@
   },
   {
    "turn": 669,
-   "text": "From the notes, tidied up and probably still incomplete: Freya rehearses at the wicklow-annex hall; on a different note, Xavier keeps the accounts in saffron-ledge; also worth saying, Lorna keeps the backups on brindle-pike.",
+   "text": "From the notes, tidied up and probably still incomplete: Freya rehearses at the wicklow-annex hall; on a different note, Xavier keeps the accounts in saffron-ledge; one more for the pile, Lorna keeps the backups on brindle-pike.",
    "planted": [
     {
      "subject": "Freya",
@@ -7141,7 +7172,7 @@
   },
   {
    "turn": 717,
-   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Emeka goes to the cinder-gable clinic; meanwhile, Sanjay rehearses at the oakhill-mill hall; also worth saying, Iris orders paper from quill-ledge.",
+   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Emeka goes to the cinder-gable clinic; meanwhile, Sanjay rehearses at the oakhill-mill hall; one more for the pile, Iris orders paper from quill-ledge.",
    "planted": [
     {
      "subject": "Emeka",
@@ -7177,7 +7208,7 @@
     },
     {
      "subject": "Iris",
-     "attribute": "accounts",
+     "attribute": "orders",
      "value": "paper from quill-ledge",
      "Declared": "replace"
     }
@@ -7287,7 +7318,7 @@
   },
   {
    "turn": 735,
-   "text": "From the notes, tidied up and probably still incomplete: Amara keeps the accounts in brindle-meadow; also worth saying, Karin buys bread at the harrow-sedge bakery; and separately, Sanjay goes to the harrow-vale clinic.",
+   "text": "From the notes, tidied up and probably still incomplete: Amara keeps the accounts in brindle-meadow; one more for the pile, Karin buys bread at the harrow-sedge bakery; and separately, Sanjay goes to the harrow-vale clinic.",
    "planted": [
     {
      "subject": "Amara",
@@ -7505,7 +7536,7 @@
   },
   {
    "turn": 765,
-   "text": "Catching you up on what changed while you were away, in no particular order: Amara goes to the garnet-fenn clinic; meanwhile, Emeka sits with the marlow-harbour team; also worth saying, Ursula rehearses at the thistle-harbour hall.",
+   "text": "Catching you up on what changed while you were away, in no particular order: Amara goes to the garnet-fenn clinic; meanwhile, Emeka sits with the marlow-harbour team; one more for the pile, Ursula rehearses at the thistle-harbour hall.",
    "planted": [
     {
      "subject": "Amara",
@@ -7609,7 +7640,7 @@
   },
   {
    "turn": 776,
-   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Yuki sits with the oakhill-kiln team; also worth saying, Zoltan keeps the backups on nutmeg-wharf; and separately, Mateo banks with garnet-hearth.",
+   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Yuki sits with the oakhill-kiln team; one more for the pile, Zoltan keeps the backups on nutmeg-wharf; and separately, Mateo banks with garnet-hearth.",
    "planted": [
     {
      "subject": "Yuki",
@@ -7641,13 +7672,13 @@
      "subject": "Zoltan",
      "attribute": "backups",
      "value": "nutmeg-wharf",
-     "Declared": "replace"
+     "Declared": "join"
     },
     {
      "subject": "Mateo",
      "attribute": "bank",
      "value": "garnet-hearth",
-     "Declared": "replace"
+     "Declared": "join"
     }
    ]
   },

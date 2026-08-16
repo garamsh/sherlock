@@ -339,16 +339,16 @@ func schedule(rng *rand.Rand, p Params, threads []Thread) ([]Turn, int, error) {
 	days := sessionDays(rng, p)
 	placed := make(map[slot]Turn)
 	var factTurns int
-	// pending collects the assertions a packed shape puts in one message.
-	// The plain and clausal shapes flush after every one, so a message
-	// carries exactly what it carried before.
 	// Assertions are gathered by year first. A packed shape puts several of
 	// them — from different threads, which is what a message asserting
 	// several things looks like — into one message; the other shapes put
-	// one in each, which is a group of one.
+	// one in each, which is a group of one. A placement points back at the
+	// assertion it came from rather than naming it by its value, because a
+	// reverted thread asserts one value twice and a lookup by value would
+	// give both of them the later day.
 	type placement struct {
-		written Written
-		text    string
+		thread, assert int
+		written        Written
 	}
 	byYear := make([][]placement, p.Years)
 	for i := range threads {
@@ -361,6 +361,7 @@ func schedule(rng *rand.Rand, p Params, threads []Thread) ([]Turn, int, error) {
 			}
 			a.Text = harden(rng, p.Shape, a.Text)
 			byYear[a.Year-1] = append(byYear[a.Year-1], placement{
+				thread: i, assert: j,
 				written: Written{
 					Fact: Fact{
 						Address: Address{Subject: thread.Subject, Attribute: thread.Attribute},
@@ -368,7 +369,6 @@ func schedule(rng *rand.Rand, p Params, threads []Thread) ([]Turn, int, error) {
 					},
 					Declared: declared,
 				},
-				text: a.Text,
 			})
 		}
 	}
@@ -376,9 +376,6 @@ func schedule(rng *rand.Rand, p Params, threads []Thread) ([]Turn, int, error) {
 	if p.Shape == shapePacked {
 		perMessage = packedAssertions
 	}
-	// Where each assertion landed is written back onto the thread, so the
-	// evidence tables read the day a message was actually said.
-	dayOf := map[string]int{}
 	for year := 1; year <= p.Years; year++ {
 		group := byYear[year-1]
 		for len(group) > 0 {
@@ -394,18 +391,16 @@ func schedule(rng *rand.Rand, p Params, threads []Thread) ([]Turn, int, error) {
 			texts := make([]string, 0, take)
 			for _, one := range group[:take] {
 				written = append(written, one.written)
-				texts = append(texts, one.text)
-				dayOf[one.written.Value] = day
+				texts = append(texts, threads[one.thread].Asserts[one.assert].Text)
+				// Where the assertion landed is written back onto the
+				// thread, so the evidence tables read the day a message was
+				// actually said.
+				threads[one.thread].Asserts[one.assert].Day = day
 			}
 			placed[s] = Turn{Day: day, At: turnTime(day, s.index),
 				Text: pack(rng, texts), Written: written}
 			factTurns++
 			group = group[take:]
-		}
-	}
-	for i := range threads {
-		for j := range threads[i].Asserts {
-			threads[i].Asserts[j].Day = dayOf[threads[i].Asserts[j].Value]
 		}
 	}
 	for year := 1; year <= p.Years; year++ {

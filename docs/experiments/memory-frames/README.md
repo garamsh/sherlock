@@ -12,6 +12,7 @@ What a memory structure does with a decade of turns, measured through a seam tha
 - Whether a write need destroy
 - What a read cannot reach
 - What a constraint costs
+- What harder language costs
 - What a run costs
 - Results
 - What the numbers say
@@ -159,13 +160,39 @@ Five candidates. Four decide from the store's own history — oldest first, leas
 
 The constrained runs use the oracle arm alone: the question is what a structure does when it must give something up, and in the text arm the addressed structures hold nothing to give. Their tables are separate from the unbounded ones throughout, and the unbounded figures above are unchanged.
 
+## What harder language costs
+
+Every figure above was measured on one conversation shape, and this record's own limits said so: short single-clause sentences, one fact to a message, and an extraction the oracle performs without ever erring. Real conversation is none of the three. There is reason to expect the sentence matters rather than merely to check: §What a model declared has the same model reading a conjunction perfectly and a narrowing qualifier at well under half of that, on sentences of one clause each. If one qualifier does that, the shape of a sentence is already the dominant variable, and nothing in this programme had run past one clause.
+
+**It is a separate run with its own workload, its own digests and its own result file.** `harness/harder.go` generates three shapes from one set of threads and one schedule, and `results/harder_seed7.json` holds what every frame answered on each. It writes its own files rather than extending the decade run's, and no row of the decade run's results moved. It is smaller than the decade run because every message is read by a model once per shape and the bound on that sets its size, so its figures are comparable to each other and to nothing above.
+
+- `plain` — the decade run's sentences at this run's size. It is what the other two are read against, and without it a difference would have nowhere to be a difference from.
+- `clausal` — the same assertions, each wrapped in a subordinate frame, so a sentence embeds and qualifies instead of stating one clause.
+- `packed` — the plain sentences, three to a message, so one message carries three replace-or-join decisions.
+
+Each varies one thing: `clausal` is the sentence and `packed` is the number of decisions in it. Whether they are genuinely harder is measured rather than asserted — §How hard the language actually is reports the characters and clauses the generator produced, so a null result can be told from a generator that produced nothing to be null about.
+
+**The framing carries no arity marker, and a test holds it there.** `attribute-cued` decides arity by reading the whole message for one of its addition cues, so a cue in the framing is read as though the assertion had carried it. The first connective list this study was built with joined packed assertions with a phrase containing one — and it marked a large share of the packed fact-carrying messages as additions, nearly all of them for no reason but that phrase, putting `attribute-cued` at its best recall of any shape while it returned superseded values on most revised threads. It was reading the generator rather than the workload. No figure produced by that list is published: `harness/harder_test.go` now checks every clausal frame, packed frame and packed join against the cue rule, and checks that framing an assertion never changes what that rule reads out of it, and the study was re-run. It is recorded here because a reader of the `attribute-cued` rows needs to know that the sentence a frame was measured against is a thing that can be quietly edited, and what stops it.
+
+**The middle of the extraction bracket.** This record has both ends and nothing between them: under the oracle the addressed frames answer nearly everything, and with no extraction they answer nothing at every year, because there is nowhere to put a sentence they cannot address. So a third arm runs beside those two. `extracted` is the same messages carrying what a model read out of them — one call a message, answering in JSON, the same model this record already pays for elsewhere. Every frame runs in it, on all three shapes, and it is where a buildable structure actually sits.
+
+**The extractor is given the attribute vocabulary.** An addressed store has an address space, and what is asked here is whether a model finds the facts and puts them in the right places — not whether it can invent a set of keys and keep to it, which is a harder problem and a different one. Every misaddressing counted below is therefore a choice among names the model was handed.
+
+**Failures are reported by kind and never as one rate.** A fact missed leaves an addressed store empty where it should have held something. A fact addressed to the wrong `(subject, attribute)` puts something where nothing belongs, which corrupts rather than omits. A fact invented from a message that asserted none fills a store with what was never said. Those are three different harms and one rate covering them would hide which of them a structure has.
+
+**§What each frame answered on each shape reports the last year of each run.** Three shapes across three arms and every frame is already a long table, and a year column would multiply it by the span for a question that is about the sentence rather than about time. What a shape costs shows in what a structure ends the span holding and answering; the per-year form of the same question is the decade run's table.
+
+**Whether the failures inside one message are independent is its own figure.** Three assertions in a sentence can fail three times or once, and a rate per assertion cannot tell those apart — the second is a message read wrong rather than three decisions gone wrong. So the share of messages read entirely right and the share read entirely wrong are reported beside the per-assertion rate, and what independence would predict is arithmetic a reader does on those two.
+
 ## What a run costs
 
 Established before the run, as issue #443 requires.
 
 No frame calls a model. Every structure measured here decides what it decides from what it was given, and only the shipped frame touches an embedder at all — the deterministic offline one `cmd/gagent` defaults to. The frames, the workload and the error sweep are free, and the model-call count in the first table below is the check on that rather than an assurance.
 
-**Two things in this record were paid for**, and both are in a table of its own after every free figure: asking a model to declare the operation for each of the workload's assertions, and asking it again, several times over, for the assertions whose declaration has a consequence. Each is one call per question and nothing else, on the cheapest model that answers in one word without billing reasoning as output. Each refuses to start past its own call bound and to finish past its own cost bound, all four stated in that table, because a bound discovered afterwards is not a bound. Both answer sets are committed and the second measurement re-used the first rather than re-buying it. Its answers are committed, so scoring them costs nothing and re-running the measurement does not re-buy them: only `-declare` reaches the provider, and the key reaches the process from the environment and nothing else. What the shipped OpenAI embedder costs the read path, and which conclusions may be quoted across the two embedders, is #435's measurement and is not repeated here.
+**Three things in this record were paid for**, and all three are in a table of its own after every free figure: asking a model to declare the operation for each of the workload's assertions, asking it again several times over for the assertions whose declaration has a consequence, and having it read every message of every conversation shape. Each is one call per question or per message and nothing else, on the cheapest model that answers without billing reasoning as output. Each refuses to start past its own call bound and to finish past its own cost bound, all six stated in that table, because a bound discovered afterwards is not a bound. Every answer set is committed, so scoring them costs nothing and re-running the measurement does not re-buy them: only `-declare`, `-resample` and `-extract` reach the provider, and the key reaches the process from the environment and nothing else. What the shipped OpenAI embedder costs the read path, and which conclusions may be quoted across the two embedders, is #435's measurement and is not repeated here.
+
+**Paid calls are below messages read in the shape table, and the gap is the cache and not a discount.** Answers are cached on the message, and the three shapes differ only in the sentences that carry a fact — their small talk is word for word the same. A message repeated between shapes is bought once and read three times, so the calls column counts what was purchased and the messages column counts what was scored. A run that read only cached answers would report no cost at all, which is why each committed artifact is produced with the cache cleared and carries the price its own calls cost.
 
 The figure that matters for the designs coming next is in the cost table below, and it is in tokens rather than money on purpose: a price list expires and a token count does not. A design that rewrites a bounded document with a model on every turn makes one call per turn for the whole span, and the table states what one run of one such design spends in prompt and output tokens. Multiply by the price of whatever model it uses at the time, and by the number of designs and seeds being compared.
 
@@ -1387,51 +1414,57 @@ The figure that matters for the designs coming next is in the cost table below, 
 |---|---|---|---|---|---|---|
 | `plain` | 835d3e7e585ae737 | 252 | 252 | 1.00 ±0.00 | 42 ±1 | 1.00 ±0.00 |
 | `clausal` | 7b6fe290d7648b4e | 252 | 252 | 1.00 ±0.00 | 144 ±2 | 5.01 ±0.07 |
-| `packed` | 6f93102b72dcdee8 | 84 | 252 | 3.00 ±0.00 | 246 ±5 | 6.70 ±0.10 |
+| `packed` | 46d137c66357e17f | 84 | 252 | 3.00 ±0.00 | 248 ±6 | 6.70 ±0.10 |
 
 ### What a model read out of a message
 
 | shape | planted | returned | correct | missed | misaddressed | invented a message | operation right |
 |---|---|---|---|---|---|---|---|
-| `plain` | 252 | 218 | 0.849 ±0.044 | 0.151 ±0.044 | 0.000 ±0.000 | 0.005 ±0.005 | 0.930 ±0.034 |
-| `clausal` | 252 | 229 | 0.829 ±0.047 | 0.155 ±0.045 | 0.016 ±0.015 | 0.020 ±0.010 | 0.833 ±0.051 |
-| `packed` | 252 | 224 | 0.810 ±0.049 | 0.151 ±0.044 | 0.040 ±0.024 | 0.013 ±0.010 | 0.882 ±0.044 |
+| `plain` | 252 | 219 | 0.849 ±0.044 | 0.151 ±0.044 | 0.000 ±0.000 | 0.006 ±0.005 | 0.921 ±0.036 |
+| `clausal` | 252 | 231 | 0.841 ±0.045 | 0.143 ±0.043 | 0.016 ±0.015 | 0.019 ±0.009 | 0.835 ±0.050 |
+| `packed` | 252 | 229 | 0.829 ±0.047 | 0.123 ±0.041 | 0.048 ±0.026 | 0.010 ±0.008 | 0.780 ±0.056 |
+
+| shape | assertions a message | messages carrying a fact | read entirely right | read entirely wrong |
+|---|---|---|---|---|
+| `plain` | 1.00 ±0.00 | 252 | 0.849 ±0.044 | 0.151 ±0.044 |
+| `clausal` | 1.00 ±0.00 | 252 | 0.841 ±0.045 | 0.159 ±0.045 |
+| `packed` | 3.00 ±0.00 | 84 | 0.679 ±0.100 | 0.083 ±0.059 |
 
 | shape | wording | asked | read correctly |
 |---|---|---|---|
-| `plain` | `assert` | 168 | 0.833 ±0.057 |
+| `plain` | `assert` | 168 | 0.827 ±0.057 |
 | `plain` | `also` | 12 | 0.833 ±0.220 |
-| `plain` | `narrow` | 12 | 0.833 ±0.220 |
-| `plain` | `replace` | 60 | 0.900 ±0.077 |
-| `clausal` | `assert` | 168 | 0.804 ±0.060 |
+| `plain` | `narrow` | 12 | 1.000 ±0.000 |
+| `plain` | `replace` | 60 | 0.883 ±0.082 |
+| `clausal` | `assert` | 168 | 0.821 ±0.058 |
 | `clausal` | `also` | 12 | 0.750 ±0.256 |
 | `clausal` | `narrow` | 12 | 0.833 ±0.220 |
 | `clausal` | `replace` | 60 | 0.917 ±0.071 |
-| `packed` | `assert` | 168 | 0.798 ±0.061 |
+| `packed` | `assert` | 168 | 0.827 ±0.057 |
 | `packed` | `also` | 12 | 0.833 ±0.220 |
 | `packed` | `narrow` | 12 | 0.500 ±0.295 |
 | `packed` | `replace` | 60 | 0.900 ±0.077 |
 
 | shape | class | asked | read correctly |
 |---|---|---|---|
-| `plain` | `carried` | 12 | 1.000 ±0.000 |
+| `plain` | `carried` | 12 | 0.917 ±0.163 |
 | `plain` | `replaced` | 36 | 1.000 ±0.000 |
-| `plain` | `reverted` | 36 | 0.833 ±0.123 |
+| `plain` | `reverted` | 36 | 0.806 ±0.131 |
 | `plain` | `parallel` | 24 | 0.792 ±0.166 |
-| `plain` | `refined` | 24 | 0.917 ±0.113 |
-| `plain` | `fresh` | 120 | 0.792 ±0.073 |
-| `clausal` | `carried` | 12 | 0.917 ±0.163 |
+| `plain` | `refined` | 24 | 0.958 ±0.082 |
+| `plain` | `fresh` | 120 | 0.800 ±0.072 |
+| `clausal` | `carried` | 12 | 1.000 ±0.000 |
 | `clausal` | `replaced` | 36 | 0.972 ±0.054 |
-| `clausal` | `reverted` | 36 | 0.861 ±0.115 |
+| `clausal` | `reverted` | 36 | 0.889 ±0.104 |
 | `clausal` | `parallel` | 24 | 0.792 ±0.166 |
 | `clausal` | `refined` | 24 | 0.875 ±0.135 |
-| `clausal` | `fresh` | 120 | 0.767 ±0.076 |
-| `packed` | `carried` | 12 | 0.917 ±0.163 |
-| `packed` | `replaced` | 36 | 1.000 ±0.000 |
-| `packed` | `reverted` | 36 | 0.833 ±0.123 |
+| `clausal` | `fresh` | 120 | 0.775 ±0.075 |
+| `packed` | `carried` | 12 | 1.000 ±0.000 |
+| `packed` | `replaced` | 36 | 0.972 ±0.054 |
+| `packed` | `reverted` | 36 | 0.861 ±0.115 |
 | `packed` | `parallel` | 24 | 0.833 ±0.152 |
 | `packed` | `refined` | 24 | 0.750 ±0.177 |
-| `packed` | `fresh` | 120 | 0.742 ±0.079 |
+| `packed` | `fresh` | 120 | 0.775 ±0.075 |
 
 ### What each frame answered on each shape
 
@@ -1457,16 +1490,16 @@ The figure that matters for the designs coming next is in the cost table below, 
 | `plain` | `text` | `interval` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `plain` | `text` | `interval-declared` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `plain` | `text` | `log` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
-| `plain` | `extracted` | `shipped` | 0.792 ±0.086 | 0.750 ±0.256 | 0.917 ±0.163 | 0.667 ±0.279 | 0.667 ±0.220 | 0.750 ±0.191 | 1.000 ±0.000 | 0.833 ±0.152 | 190 |
+| `plain` | `extracted` | `shipped` | 0.792 ±0.086 | 0.750 ±0.256 | 0.917 ±0.163 | 0.667 ±0.279 | 0.667 ±0.220 | 0.833 ±0.139 | 0.917 ±0.163 | 0.833 ±0.152 | 193 |
 | `plain` | `extracted` | `document` | 0.056 ±0.053 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.333 ±0.279 | 0.000 ±0.000 | 1 |
-| `plain` | `extracted` | `attribute-single` | 0.792 ±0.069 | 1.000 ±0.000 | 1.000 ±0.000 | 0.833 ±0.220 | 0.417 ±0.110 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 155 |
-| `plain` | `extracted` | `attribute-multi` | 0.924 ±0.057 | 1.000 ±0.000 | 1.000 ±0.000 | 0.833 ±0.220 | 0.792 ±0.224 | 0.917 ±0.110 | 1.000 ±0.000 | 0.917 ±0.113 | 208 |
-| `plain` | `extracted` | `attribute-learned` | 0.924 ±0.057 | 1.000 ±0.000 | 1.000 ±0.000 | 0.833 ±0.220 | 0.792 ±0.224 | 0.917 ±0.110 | 1.000 ±0.000 | 0.917 ±0.113 | 208 |
-| `plain` | `extracted` | `attribute-cued` | 0.854 ±0.066 | 1.000 ±0.000 | 1.000 ±0.000 | 0.833 ±0.220 | 0.792 ±0.224 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 164 |
-| `plain` | `extracted` | `attribute-declared` | 0.826 ±0.068 | 1.000 ±0.000 | 1.000 ±0.000 | 0.833 ±0.220 | 0.625 ±0.213 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 160 |
-| `plain` | `extracted` | `interval` | 0.792 ±0.069 | 1.000 ±0.000 | 1.000 ±0.000 | 0.833 ±0.220 | 0.417 ±0.110 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 218 |
-| `plain` | `extracted` | `interval-declared` | 0.826 ±0.068 | 1.000 ±0.000 | 1.000 ±0.000 | 0.833 ±0.220 | 0.625 ±0.213 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 218 |
-| `plain` | `extracted` | `log` | 0.792 ±0.069 | 1.000 ±0.000 | 1.000 ±0.000 | 0.833 ±0.220 | 0.417 ±0.110 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 218 |
+| `plain` | `extracted` | `attribute-single` | 0.764 ±0.075 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.417 ±0.110 | 0.500 ±0.000 | 0.917 ±0.163 | 0.000 ±0.000 | 156 |
+| `plain` | `extracted` | `attribute-multi` | 0.903 ±0.066 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.792 ±0.224 | 0.958 ±0.082 | 0.917 ±0.163 | 0.917 ±0.113 | 210 |
+| `plain` | `extracted` | `attribute-learned` | 0.903 ±0.066 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.792 ±0.224 | 0.958 ±0.082 | 0.917 ±0.163 | 0.917 ±0.113 | 210 |
+| `plain` | `extracted` | `attribute-cued` | 0.826 ±0.073 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.792 ±0.224 | 0.500 ±0.000 | 0.917 ±0.163 | 0.000 ±0.000 | 165 |
+| `plain` | `extracted` | `attribute-declared` | 0.792 ±0.074 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.583 ±0.203 | 0.500 ±0.000 | 0.917 ±0.163 | 0.000 ±0.000 | 160 |
+| `plain` | `extracted` | `interval` | 0.764 ±0.075 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.417 ±0.110 | 0.500 ±0.000 | 0.917 ±0.163 | 0.000 ±0.000 | 219 |
+| `plain` | `extracted` | `interval-declared` | 0.792 ±0.074 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.583 ±0.203 | 0.500 ±0.000 | 0.917 ±0.163 | 0.000 ±0.000 | 219 |
+| `plain` | `extracted` | `log` | 0.764 ±0.075 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.417 ±0.110 | 0.500 ±0.000 | 0.917 ±0.163 | 0.000 ±0.000 | 219 |
 | `clausal` | `oracle` | `shipped` | 0.646 ±0.102 | 0.333 ±0.279 | 0.667 ±0.279 | 0.833 ±0.220 | 0.542 ±0.189 | 0.500 ±0.241 | 1.000 ±0.000 | 0.625 ±0.198 | 166 |
 | `clausal` | `oracle` | `document` | 0.042 ±0.046 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.250 ±0.256 | 0.000 ±0.000 | 1 |
 | `clausal` | `oracle` | `attribute-single` | 0.833 ±0.055 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 180 |
@@ -1487,22 +1520,22 @@ The figure that matters for the designs coming next is in the cost table below, 
 | `clausal` | `text` | `interval` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `clausal` | `text` | `interval-declared` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `clausal` | `text` | `log` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
-| `clausal` | `extracted` | `shipped` | 0.590 ±0.105 | 0.167 ±0.220 | 0.583 ±0.291 | 0.833 ±0.220 | 0.458 ±0.189 | 0.500 ±0.241 | 1.000 ±0.000 | 0.583 ±0.201 | 146 |
+| `clausal` | `extracted` | `shipped` | 0.625 ±0.104 | 0.250 ±0.256 | 0.667 ±0.279 | 0.833 ±0.220 | 0.500 ±0.209 | 0.500 ±0.241 | 1.000 ±0.000 | 0.500 ±0.204 | 147 |
 | `clausal` | `extracted` | `document` | 0.042 ±0.046 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.250 ±0.256 | 0.000 ±0.000 | 1 |
-| `clausal` | `extracted` | `attribute-single` | 0.812 ±0.063 | 0.917 ±0.163 | 1.000 ±0.000 | 1.000 ±0.000 | 0.458 ±0.082 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 165 |
-| `clausal` | `extracted` | `attribute-multi` | 0.951 ±0.044 | 0.917 ±0.163 | 1.000 ±0.000 | 1.000 ±0.000 | 0.875 ±0.176 | 0.917 ±0.110 | 1.000 ±0.000 | 0.958 ±0.082 | 221 |
-| `clausal` | `extracted` | `attribute-learned` | 0.951 ±0.044 | 0.917 ±0.163 | 1.000 ±0.000 | 1.000 ±0.000 | 0.875 ±0.176 | 0.917 ±0.110 | 1.000 ±0.000 | 0.958 ±0.082 | 221 |
-| `clausal` | `extracted` | `attribute-cued` | 0.882 ±0.056 | 0.917 ±0.163 | 1.000 ±0.000 | 1.000 ±0.000 | 0.875 ±0.176 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 175 |
-| `clausal` | `extracted` | `attribute-declared` | 0.847 ±0.060 | 0.917 ±0.163 | 1.000 ±0.000 | 1.000 ±0.000 | 0.667 ±0.184 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 170 |
-| `clausal` | `extracted` | `interval` | 0.812 ±0.063 | 0.917 ±0.163 | 1.000 ±0.000 | 1.000 ±0.000 | 0.458 ±0.082 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 229 |
-| `clausal` | `extracted` | `interval-declared` | 0.847 ±0.060 | 0.917 ±0.163 | 1.000 ±0.000 | 1.000 ±0.000 | 0.667 ±0.184 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 229 |
-| `clausal` | `extracted` | `log` | 0.812 ±0.063 | 0.917 ±0.163 | 1.000 ±0.000 | 1.000 ±0.000 | 0.458 ±0.082 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 229 |
-| `packed` | `oracle` | `shipped` | 0.833 ±0.078 | 1.000 ±0.000 | 0.500 ±0.295 | 1.000 ±0.000 | 0.875 ±0.128 | 0.625 ±0.213 | 1.000 ±0.000 | 0.875 ±0.135 | 73 |
+| `clausal` | `extracted` | `attribute-single` | 0.826 ±0.059 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.458 ±0.082 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 167 |
+| `clausal` | `extracted` | `attribute-multi` | 0.965 ±0.035 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.875 ±0.176 | 0.917 ±0.110 | 1.000 ±0.000 | 0.958 ±0.082 | 222 |
+| `clausal` | `extracted` | `attribute-learned` | 0.965 ±0.035 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.875 ±0.176 | 0.917 ±0.110 | 1.000 ±0.000 | 0.958 ±0.082 | 222 |
+| `clausal` | `extracted` | `attribute-cued` | 0.896 ±0.051 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.875 ±0.176 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 177 |
+| `clausal` | `extracted` | `attribute-declared` | 0.861 ±0.056 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.667 ±0.184 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 172 |
+| `clausal` | `extracted` | `interval` | 0.826 ±0.059 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.458 ±0.082 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 231 |
+| `clausal` | `extracted` | `interval-declared` | 0.861 ±0.056 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.667 ±0.184 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 231 |
+| `clausal` | `extracted` | `log` | 0.826 ±0.059 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.458 ±0.082 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 231 |
+| `packed` | `oracle` | `shipped` | 0.792 ±0.086 | 1.000 ±0.000 | 0.250 ±0.256 | 1.000 ±0.000 | 0.875 ±0.128 | 0.625 ±0.213 | 1.000 ±0.000 | 0.750 ±0.177 | 70 |
 | `packed` | `oracle` | `document` | 0.083 ±0.064 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.500 ±0.295 | 0.000 ±0.000 | 1 |
 | `packed` | `oracle` | `attribute-single` | 0.833 ±0.055 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 180 |
 | `packed` | `oracle` | `attribute-multi` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 240 |
 | `packed` | `oracle` | `attribute-learned` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 240 |
-| `packed` | `oracle` | `attribute-cued` | 0.958 ±0.032 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.750 ±0.148 | 1.000 ±0.000 | 0.750 ±0.177 | 225 |
+| `packed` | `oracle` | `attribute-cued` | 0.917 ±0.043 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 192 |
 | `packed` | `oracle` | `attribute-declared` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 204 |
 | `packed` | `oracle` | `interval` | 0.833 ±0.055 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 252 |
 | `packed` | `oracle` | `interval-declared` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 252 |
@@ -1517,16 +1550,16 @@ The figure that matters for the designs coming next is in the cost table below, 
 | `packed` | `text` | `interval` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `packed` | `text` | `interval-declared` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `packed` | `text` | `log` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
-| `packed` | `extracted` | `shipped` | 0.785 ±0.091 | 1.000 ±0.000 | 0.500 ±0.295 | 1.000 ±0.000 | 0.750 ±0.256 | 0.458 ±0.224 | 1.000 ±0.000 | 0.875 ±0.135 | 66 |
+| `packed` | `extracted` | `shipped` | 0.701 ±0.102 | 0.750 ±0.256 | 0.250 ±0.256 | 1.000 ±0.000 | 0.750 ±0.256 | 0.458 ±0.224 | 1.000 ±0.000 | 0.750 ±0.177 | 64 |
 | `packed` | `extracted` | `document` | 0.083 ±0.064 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.500 ±0.295 | 0.000 ±0.000 | 1 |
-| `packed` | `extracted` | `attribute-single` | 0.764 ±0.077 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.417 ±0.110 | 0.417 ±0.110 | 1.000 ±0.000 | 0.000 ±0.000 | 159 |
-| `packed` | `extracted` | `attribute-multi` | 0.889 ±0.065 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.833 ±0.220 | 0.750 ±0.148 | 1.000 ±0.000 | 0.917 ±0.113 | 213 |
-| `packed` | `extracted` | `attribute-learned` | 0.889 ±0.065 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.833 ±0.220 | 0.750 ±0.148 | 1.000 ±0.000 | 0.917 ±0.113 | 213 |
-| `packed` | `extracted` | `attribute-cued` | 0.861 ±0.070 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.833 ±0.220 | 0.583 ±0.163 | 1.000 ±0.000 | 0.667 ±0.193 | 200 |
-| `packed` | `extracted` | `attribute-declared` | 0.819 ±0.076 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.750 ±0.226 | 0.417 ±0.110 | 1.000 ±0.000 | 0.042 ±0.082 | 169 |
-| `packed` | `extracted` | `interval` | 0.764 ±0.077 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.417 ±0.110 | 0.417 ±0.110 | 1.000 ±0.000 | 0.000 ±0.000 | 224 |
-| `packed` | `extracted` | `interval-declared` | 0.819 ±0.076 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.750 ±0.226 | 0.417 ±0.110 | 1.000 ±0.000 | 0.042 ±0.082 | 224 |
-| `packed` | `extracted` | `log` | 0.764 ±0.077 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.417 ±0.110 | 0.417 ±0.110 | 1.000 ±0.000 | 0.000 ±0.000 | 224 |
+| `packed` | `extracted` | `attribute-single` | 0.799 ±0.069 | 1.000 ±0.000 | 1.000 ±0.000 | 0.917 ±0.163 | 0.417 ±0.110 | 0.458 ±0.082 | 1.000 ±0.000 | 0.000 ±0.000 | 165 |
+| `packed` | `extracted` | `attribute-multi` | 0.917 ±0.055 | 1.000 ±0.000 | 1.000 ±0.000 | 0.917 ±0.163 | 0.833 ±0.220 | 0.750 ±0.148 | 1.000 ±0.000 | 0.917 ±0.113 | 218 |
+| `packed` | `extracted` | `attribute-learned` | 0.917 ±0.055 | 1.000 ±0.000 | 1.000 ±0.000 | 0.917 ±0.163 | 0.833 ±0.220 | 0.750 ±0.148 | 1.000 ±0.000 | 0.917 ±0.113 | 218 |
+| `packed` | `extracted` | `attribute-cued` | 0.868 ±0.064 | 1.000 ±0.000 | 1.000 ±0.000 | 0.917 ±0.163 | 0.833 ±0.220 | 0.458 ±0.082 | 1.000 ±0.000 | 0.000 ±0.000 | 175 |
+| `packed` | `extracted` | `attribute-declared` | 0.847 ±0.066 | 1.000 ±0.000 | 1.000 ±0.000 | 0.917 ±0.163 | 0.708 ±0.224 | 0.458 ±0.082 | 1.000 ±0.000 | 0.125 ±0.135 | 176 |
+| `packed` | `extracted` | `interval` | 0.799 ±0.069 | 1.000 ±0.000 | 1.000 ±0.000 | 0.917 ±0.163 | 0.417 ±0.110 | 0.458 ±0.082 | 1.000 ±0.000 | 0.000 ±0.000 | 229 |
+| `packed` | `extracted` | `interval-declared` | 0.847 ±0.066 | 1.000 ±0.000 | 1.000 ±0.000 | 0.917 ±0.163 | 0.708 ±0.224 | 0.458 ±0.082 | 1.000 ±0.000 | 0.125 ±0.135 | 229 |
+| `packed` | `extracted` | `log` | 0.799 ±0.069 | 1.000 ±0.000 | 1.000 ±0.000 | 0.917 ±0.163 | 0.417 ±0.110 | 0.458 ±0.082 | 1.000 ±0.000 | 0.000 ±0.000 | 229 |
 
 ### What a wrong declaration costs, by year
 
@@ -1893,7 +1926,16 @@ The figure that matters for the designs coming next is in the cost table below, 
 | cost of resampling, USD | 0.0096 |
 | call bound resampling refuses to pass | 800 |
 | cost bound resampling refuses to pass, USD | 0.10 |
-| cost of this record in total, USD | 0.0205 |
+| cost of reading the messages, USD | 0.0349 |
+| call bound reading refuses to pass | 3000 |
+| cost bound reading refuses to pass, USD | 0.40 |
+| cost of this record in total, USD | 0.0554 |
+
+| shape | messages read | paid calls | tokens | cost USD |
+|---|---|---|---|---|
+| `plain` | 800 | 796 | 157772 | 0.0181 |
+| `clausal` | 800 | 335 | 74958 | 0.0094 |
+| `packed` | 800 | 247 | 56436 | 0.0074 |
 <!-- end generated -->
 
 A size is one store read at one moment rather than a sample, so it carries no interval; every other figure above is a mean over the probes of that year with the 95% half-width those probes support.
@@ -1953,6 +1995,17 @@ A size is one store read at one moment rather than a sample, so it carries no in
 - **The read budget buys reach long after it stops buying recall.** For the store that fills a budget by ranking, recall stops improving well before the budget stops improving what else the context carries: the related facts about the subject keep arriving as the budget grows, and the answer to the question asked stopped changing. Under the criterion this round reports against, the manageable budget is far above the shipped value and far above where recall plateaus.
 - **An addressed store has no such budget, and that is the answer rather than a low score.** Its recall, its staleness and what it carries about the subject are identical at every budget from a fraction of the shipped value to four times it, because it returns the address it was asked for and nothing else. Nothing about giving it a larger context makes it bring back more. Whether that is what one wants is the same question #471 left open, and the budget sweep does not settle it.
 
+- **Harder language barely changes what an extractor finds, and changes where it puts it.** The share of planted facts read correctly falls only slightly from plain sentences to subordinated ones to packed ones, and the share missed does not rise at all. What rises on every step is the share read out at the wrong address: none whatever on plain sentences, and highest where three assertions share a message. The harm that corrupts an addressed store rather than leaving it empty is the one the language produces, and a single extraction rate would have reported the whole thing as no change.
+- **Nothing was invented out of small talk, on any shape.** Every message that asserted nothing returned nothing, in all three. What inventions there are sit inside messages that did assert something — a fact added beside the ones that were there rather than conjured from an empty message. Whatever a writeback needs guarding against here, it is not a store filled from chatter.
+- **The write operation degrades further than anything else the language touches.** Of the facts the model both found and addressed correctly, the share whose replace-or-join it also read correctly falls on every step from plain to clausal to packed, and its intervals at the two ends do not overlap — where the correct rate's do. §What would be chosen today puts arity in the write, so this is the part of the design most exposed to the sentence, and it is the part harder language damages most.
+- **A packed message is read whole or not at all.** The share of packed messages with every assertion right stands well above the per-assertion rate raised to the assertions a message carries, and the share with every assertion wrong stands far above what the same arithmetic gives. The failures inside a sentence are not independent: it is understood or it is not, and its three decisions go with it. The same number of facts is lost either way, in fewer and larger pieces — which is a different risk to hold than three separate ones and not a smaller one.
+- **An addressed store's answers do not depend on the sentence at all.** In the oracle arm every attribute frame, the interval store and the log post identical rows on all three shapes, class for class and figure for figure. That is not a null result needing explanation: those structures hold an address and a value, so there is nothing about the sentence left for them to be sensitive to. Everything harder language does to them has to arrive through the writeback.
+- **The two frames that read text are the two the language reaches.** `shipped` and `document` are the only frames whose oracle-arm rows move between shapes at all, and `shipped` moves a long way: about a quarter of its recall goes on subordinated sentences, and on packed messages `replaced` falls to a fraction of what it answers on plain ones. Its retrieval matches a question against sentences it kept, and a sentence carrying a housekeeping preamble and two other people's facts matches worse. The design that holds text pays for the shape of the text and the designs that hold facts do not.
+- **A real extractor puts an addressed structure close to its ceiling and nothing like the floor.** In the `extracted` arm every addressed frame answers most of what the same frame answers under a perfect oracle, on all three shapes, against nothing at all in the arm with no extraction. The bracket this record has carried since it opened now has a middle and the middle is near the top: the distance from an oracle to a real extractor is small beside the distance from a real extractor to none. What makes an addressed structure buildable is that something extracts, not that something extracts perfectly.
+- **In that arm the shapes do not order.** The addressed frames answer no worse on the harder shapes than on the plain one — on several of them slightly better, because that pass of the extractor happened to miss fewer facts on the harder sentences. What separates the shapes is which failures the extractor makes and not how many, and one pass of one model is too thin a sample for the difference between the shapes to be read as a difference at all.
+- **The ceiling stops being a ceiling once a real extractor supplies it.** `attribute-declared` answers every class at every year when the oracle hands it the declarations, and loses recall on all three shapes when a model reads them off the message. On the packed shape it also returns superseded values, where under the oracle it returns none on any shape — at a rate whose interval reaches zero, so what the table supports is that the failure appears where a message carries several decisions, not how large it is. The frame that cannot be wrong about arity is wrong about it anyway, because it was told wrong: a ceiling measured with a perfect informant bounds the structure and not the system.
+- **No claim here rests on the cuts by wording or by class.** Each cut divides a few hundred assertions among six classes or four wordings, so its cells are small and their intervals are correspondingly wide; a cell that moves between shapes moves on a sample too thin to say the shape moved it. They are reported so these tables read against §What a model declared, and so a larger run has something to be read against.
+
 ## What would be chosen today
 
 The programme moves from measuring to deciding after this round, so this is where the record says where it stands. Two of the three questions are answered by the evidence and the third is not.
@@ -1965,9 +2018,11 @@ The programme moves from measuring to deciding after this round, so this is wher
 
 **What this round adds to the structure.** The addressed store's weakness under the read-and-update criterion is that it brings back little beyond the address asked, so a turn's writeback sees little it could correct. That would be decisive if a fact had to be read before it could be fixed — and the constructed case says it does not, for this structure: the write computes its address and lands whether or not any read ever returned it. The same case says the opposite for the store that supersedes by similarity. So the criterion the user named separates these two designs further rather than closing the gap, and the choice already stated stands.
 
+**The structure survives harder language and the writeback is where it bends.** An addressed store answers identically on plain, subordinated and packed sentences whenever the writeback is perfect, because what it holds is an address and a value and a sentence is not something it can be sensitive to; the store that answers by matching a question against text it kept loses about a quarter of its recall on subordinated sentences and most of one class on packed ones. So the shape of the language does not reach the chosen structure — it reaches the writeback standing in front of it, and it reaches the part of that writeback this section already named as the open question. What breaks first is the declaration: of the facts a model both finds and addresses correctly, the share whose operation it also gets right falls furthest of anything measured across the shapes. What breaks second is the address, which was never wrong on plain sentences and is wrong most often where a message carries three assertions. Neither failure could have appeared in the decade run, whose oracle never errs, and both land on exactly the two things the choice rests on — that a fact reaches its address, and that the write states arity. The choice stands; what this round adds is that the reliability of a declaration is a property of the sentence and not only of the model.
+
 **The policy is not chosen, and the evidence cannot choose it.** Taking a real model's declarations recovers most of the coexistence an always-replacing store gives up, and pays for it with a superseded value on about one revised thread in five. Always replacing returns nothing stale and loses that coexistence permanently. Neither dominates. Which is cheaper depends on whether a fact that is lost costs more than a fact that is wrong, and no measurement in this record answers that — it is a property of what the agent is for, not of the structure. A reader looking for the row with the best numbers should be told that the best-scoring rule measured here is `attribute-cued`, which is disqualified for being a list that grows, and that it sits on the frontier rather than below it. The criterion has to be applied deliberately; it is not visible in the ranking.
 
-What would be built today, then, is the addressed store with the operation stated by the writeback, erring toward join. What is still open is what to do when the declaration is unreliable, and that is a decision to take rather than a measurement to make.
+What would be built today, then, is the addressed store with the operation stated by the writeback, erring toward join. What is still open is what to do when the declaration is unreliable — a decision to take rather than a measurement to make, and one this round makes more pressing rather than easier, because it has now measured a sentence shape that makes the declaration less reliable.
 
 ## What this record does not say
 
@@ -1981,6 +2036,7 @@ What would be built today, then, is the addressed store with the operation state
 - It does not say the attribute frame's storage advantage would survive persistence. It is measured as an in-memory structure with no file format, so what it stores is what it holds; a persisted form would add a page layout and an index the shipped store's figure already carries.
 - It does not measure retrieval quality as such. That is `memory-retrieval/`'s subject, and the constants that decide it are #411's.
 - It says nothing about latency. No run time is measured, and the frames differ so much in what they do per turn that comparing theirs would compare implementations rather than structures.
+- It does not say what shape real conversation has. Three shapes are measured and a transcript is none of them, so the record says what each shape costs and not which of them a deployment would meet.
 
 ## Limits
 
@@ -2004,11 +2060,18 @@ What would be built today, then, is the addressed store with the operation state
 - **What the oracle arm covers narrowed when the question arrived extracted.** A frame handed the address is measured on holding and updating and not on finding. The shipped frame is still measured on all three, because it queries with the question's text, so the two are not measured on the same job and the record does not read their recall figures against each other as though they were. A comparison of the finding half needs a run in which no frame receives the address, and this is not that run.
 - **The active index never approaches capacity.** Retention removes the observations before the ceiling is near, so capacity eviction never fires in either arm and this workload says nothing about what it would do.
 - **The oracle never errs.** It extracts every fact exactly and nothing else. A partial or noisy extractor is the realistic middle of the bracket and is not measured.
-- **One conversation shape.** Turns are short single-clause sentences, sessions are single-day, and a year's assertions are scattered uniformly through it. A workload with long turns, or one where facts arrive in bursts, would move both the token budget and the retention window's effect.
+- **Every figure but the shape study's is one conversation shape.** The decade run's turns are short single-clause sentences, one fact to a message, and a year's assertions scattered uniformly through it. §What harder language costs varies the sentence and the assertions in a message on a separate, smaller workload and re-measures nothing above it. Sessions are single-day in all of them, and a workload where facts arrive in bursts would move both the token budget and the retention window's effect.
+- **The shape study is smaller than the decade run, and no figure of one is comparable to a figure of the other.** Every message is read by a model once per shape and the bound on that sets the size. Where its plain shape differs from the decade run on what looks like the same quantity, the size is the reason, which is why the plain shape is in the study at all.
+- **Three shapes are three points, not a sample of conversation.** One subordinate framing drawn from six templates, one packing width, and small talk that never changes. A transcript has neither a fixed width nor six frames, and nothing here says where between these three it falls, or what a fourth shape would do.
+- **The extractor is handed the address space.** It is given the attribute names, so what is measured is whether a model finds the facts and puts them in the right places among names it was given. An extractor that has to invent keys and keep to them is a harder problem and is not measured; every misaddressing counted here is a choice among a dozen names.
+- **The extractor reads one message and nothing around it.** No earlier turn, no store it is writing into, no answer it gave a minute ago. A real writeback sees all three, and whether the context that a packed message's neighbours provide would recover the decisions lost inside it is the obvious next question and not this one.
+- **One model, one prompt, one pass over each message.** The extraction figures are the cheapest model at one provider, asked one way, on one afternoon, once. A second pass would move them — the shapes already fail to order in the extracted arm, which is what a sample this thin looks like — and the answers are committed rather than re-bought for the same reason the declarations are.
+- **The shape study measures no bound.** It runs unconstrained, so what harder language costs a structure that must also evict is uncrossed with §What a constraint costs and unmeasured.
 - **The results are not regenerated by `make ci`.** A full run is minutes of CPU, so CI compiles the harness, runs its tests, and checks this record against the committed results; it does not re-measure. A change in `internal/memory` that moves these figures will not fail CI, and re-running is a manual step.
 
 ## Reproducing
 
-- `go run ./docs/experiments/memory-frames/harness -seed 7` — the whole measurement and the tables above. Offline, no API key, no cost.
+- `go run ./docs/experiments/memory-frames/harness -seed 7` — the decade measurement and the tables above. Offline, no API key, no cost.
+- `go run ./docs/experiments/memory-frames/harness -harder -seed 7` — the conversation shapes, scored against the committed extractions. Offline, no API key, no cost.
 - `go run ./docs/experiments/memory-frames/harness -render` — rewrites the tables above from the committed results without measuring anything.
-- `go test ./docs/experiments/memory-frames/harness` — the workload's ground truth, the credit rule, the seam's frames, the interval, the determinism check under two scheduling conditions, and the check that this record matches the committed results.
+- `go test ./docs/experiments/memory-frames/harness` — the workload's ground truth, the credit rule, the seam's frames, the interval, the determinism check under two scheduling conditions, the shapes' framing against the cue rule, the extraction score's three failure kinds, and the check that this record matches the committed results.

@@ -4,11 +4,11 @@
  "seed": 7,
  "calls": 335,
  "prompt_tokens": 68619,
- "completion_tokens": 6296,
+ "completion_tokens": 6339,
  "price_input_per_million_usd": 0.1,
  "price_output_per_million_usd": 0.4,
  "price_read_on": "2026-08-16",
- "cost_usd": 0.009380300000000001,
+ "cost_usd": 0.009397500000000001,
  "messages": [
   {
    "turn": 0,
@@ -187,7 +187,14 @@
      "Declared": "replace"
     }
    ],
-   "found": []
+   "found": [
+    {
+     "subject": "Freya",
+     "attribute": "team",
+     "value": "ironwood-fenn",
+     "Declared": "join"
+    }
+   ]
   },
   {
    "turn": 10,
@@ -252,14 +259,7 @@
      "Declared": "replace"
     }
    ],
-   "found": [
-    {
-     "subject": "Yuki",
-     "attribute": "project",
-     "value": "paper from bramble-ledge",
-     "Declared": "replace"
-    }
-   ]
+   "found": []
   },
   {
    "turn": 15,
@@ -289,7 +289,7 @@
      "subject": "Goran",
      "attribute": "backups",
      "value": "harrow-tarn",
-     "Declared": "join"
+     "Declared": "replace"
     }
    ]
   },
@@ -557,7 +557,14 @@
      "Declared": "replace"
     }
    ],
-   "found": []
+   "found": [
+    {
+     "subject": "Nadia",
+     "attribute": "team",
+     "value": "ember-foundry",
+     "Declared": "join"
+    }
+   ]
   },
   {
    "turn": 39,
@@ -855,7 +862,14 @@
      "Declared": "replace"
     }
    ],
-   "found": []
+   "found": [
+    {
+     "subject": "Goran",
+     "attribute": "project",
+     "value": "cinder-chandler",
+     "Declared": "replace"
+    }
+   ]
   },
   {
    "turn": 63,
@@ -1756,7 +1770,14 @@
      "Declared": "replace"
     }
    ],
-   "found": []
+   "found": [
+    {
+     "subject": "Stefan",
+     "attribute": "supplier",
+     "value": "saffron-weir",
+     "Declared": "replace"
+    }
+   ]
   },
   {
    "turn": 135,
@@ -2071,7 +2092,7 @@
    "found": [
     {
      "subject": "Olga",
-     "attribute": "supplier",
+     "attribute": "cottage",
      "value": "cinder-brook",
      "Declared": "replace"
     }
@@ -2186,20 +2207,7 @@
      "Declared": "replace"
     }
    ],
-   "found": [
-    {
-     "subject": "Tariq",
-     "attribute": "project",
-     "value": "paper from quill-chandler",
-     "Declared": "replace"
-    },
-    {
-     "subject": "Tariq",
-     "attribute": "settled",
-     "value": "true",
-     "Declared": "replace"
-    }
-   ]
+   "found": []
   },
   {
    "turn": 167,
@@ -2388,14 +2396,7 @@
      "Declared": "replace"
     }
    ],
-   "found": [
-    {
-     "subject": "Vasco",
-     "attribute": "course",
-     "value": "nutmeg-quarry",
-     "Declared": "replace"
-    }
-   ]
+   "found": []
   },
   {
    "turn": 181,
@@ -3036,7 +3037,7 @@
     {
      "subject": "Magnus",
      "attribute": "bakery",
-     "value": "oakhill-foundry",
+     "value": "oakhill-foundry bakery",
      "Declared": "replace"
     }
    ]
@@ -3225,7 +3226,7 @@
      "subject": "Jana",
      "attribute": "course",
      "value": "brindle-ridge",
-     "Declared": "replace"
+     "Declared": "join"
     }
    ]
   },
@@ -3360,8 +3361,8 @@
    "found": [
     {
      "subject": "Freya",
-     "attribute": "cottage",
-     "value": "brindle-lantern",
+     "attribute": "project",
+     "value": "paper from brindle-lantern",
      "Declared": "replace"
     }
    ]
@@ -3868,14 +3869,7 @@
      "Declared": "replace"
     }
    ],
-   "found": [
-    {
-     "subject": "Tomas",
-     "attribute": "supplier",
-     "value": "cobalt-meadow",
-     "Declared": "join"
-    }
-   ]
+   "found": []
   },
   {
    "turn": 339,
@@ -3923,7 +3917,7 @@
      "subject": "Ursula",
      "attribute": "team",
      "value": "bramble-reach",
-     "Declared": "join"
+     "Declared": "replace"
     }
    ]
   },
@@ -4416,7 +4410,7 @@
      "subject": "Wanda",
      "attribute": "course",
      "value": "silverfin-glade",
-     "Declared": "replace"
+     "Declared": "join"
     }
    ]
   },
@@ -4436,7 +4430,7 @@
      "subject": "Gunnar",
      "attribute": "course",
      "value": "vellum-brook",
-     "Declared": "replace"
+     "Declared": "join"
     }
    ]
   },
@@ -4956,7 +4950,7 @@
      "subject": "Tariq",
      "attribute": "course",
      "value": "opal-ridge",
-     "Declared": "join"
+     "Declared": "replace"
     }
    ]
   },
@@ -5192,7 +5186,14 @@
      "Declared": "replace"
     }
    ],
-   "found": []
+   "found": [
+    {
+     "subject": "Rania",
+     "attribute": "supplier",
+     "value": "mirefield-foundry",
+     "Declared": "join"
+    }
+   ]
   },
   {
    "turn": 471,
@@ -5210,7 +5211,7 @@
      "subject": "Tomas",
      "attribute": "hall",
      "value": "ember-wharf hall",
-     "Declared": "join"
+     "Declared": "replace"
     }
    ]
   },
@@ -6069,7 +6070,7 @@
      "subject": "Otto",
      "attribute": "backups",
      "value": "ember-brook",
-     "Declared": "join"
+     "Declared": "replace"
     }
    ]
   },
@@ -6140,7 +6141,7 @@
     {
      "subject": "Emeka",
      "attribute": "hall",
-     "value": "pewter-ridge",
+     "value": "pewter-ridge hall",
      "Declared": "replace"
     }
    ]
@@ -6471,7 +6472,14 @@
      "Declared": "replace"
     }
    ],
-   "found": []
+   "found": [
+    {
+     "subject": "Gunnar",
+     "attribute": "team",
+     "value": "thistle-spire",
+     "Declared": "join"
+    }
+   ]
   },
   {
    "turn": 585,
@@ -6806,7 +6814,7 @@
      "subject": "Yuki",
      "attribute": "backups",
      "value": "nutmeg-chandler",
-     "Declared": "replace"
+     "Declared": "join"
     }
    ]
   },
@@ -7029,7 +7037,7 @@
     {
      "subject": "Sanjay",
      "attribute": "hall",
-     "value": "oakhill-mill hall",
+     "value": "oakhill-mill",
      "Declared": "replace"
     }
    ]
@@ -7428,7 +7436,14 @@
      "Declared": "replace"
     }
    ],
-   "found": []
+   "found": [
+    {
+     "subject": "Goran",
+     "attribute": "hall",
+     "value": "silverfin-isle",
+     "Declared": "replace"
+    }
+   ]
   },
   {
    "turn": 706,
@@ -7636,7 +7651,7 @@
      "subject": "Zoltan",
      "attribute": "backups",
      "value": "nutmeg-wharf",
-     "Declared": "join"
+     "Declared": "replace"
     }
    ]
   },

@@ -272,6 +272,14 @@ type ExtractionScore struct {
 	// planted facts: a message asserting nothing can still have something
 	// invented from it, and dividing by facts would hide exactly that case.
 	InventedPerMessage Figure `json:"invented_per_message"`
+	// Whether the failures inside one message are independent of each
+	// other. A rate per assertion cannot tell three separate errors from
+	// one message read wrong, and those are different failures: the second
+	// says a message is read whole or not at all. Both shares are over the
+	// messages that assert something, so on a shape putting one assertion
+	// in a message they are the correct rate and its complement.
+	MessagesRight Figure `json:"messages_read_entirely_right"`
+	MessagesWrong Figure `json:"messages_read_entirely_wrong"`
 	// Declaration accuracy over the assertions the model both found and
 	// addressed correctly, which is the only population where the question
 	// #463 asked can still be asked.
@@ -303,8 +311,10 @@ func ScoreExtraction(w Workload, e Extraction) ExtractionScore {
 	}
 	byWording, byClass := map[string][]float64{}, map[string][]float64{}
 	var correct, missed, misaddressed, invented, declared []float64
+	var messagesRight, messagesWrong []float64
 
 	for _, m := range e.Messages {
+		var rightHere int
 		if len(m.Planted) > 0 {
 			out.FactMessages++
 		}
@@ -332,6 +342,7 @@ func ScoreExtraction(w Workload, e Extraction) ExtractionScore {
 			switch {
 			case right:
 				out.Correct++
+				rightHere++
 			case ok:
 				out.Misaddressed++
 			default:
@@ -347,12 +358,18 @@ func ScoreExtraction(w Workload, e Extraction) ExtractionScore {
 			byWording[wordingOf[one.Value]] = append(byWording[wordingOf[one.Value]], boolAsFloat(right))
 			byClass[classOf[one.Value]] = append(byClass[classOf[one.Value]], boolAsFloat(right))
 		}
+		if len(m.Planted) > 0 {
+			messagesRight = append(messagesRight, boolAsFloat(rightHere == len(m.Planted)))
+			messagesWrong = append(messagesWrong, boolAsFloat(rightHere == 0))
+		}
 	}
 	out.CorrectRate = NewFigure(correct)
 	out.MissedRate = NewFigure(missed)
 	out.MisaddressedRate = NewFigure(misaddressed)
 	out.InventedPerMessage = NewFigure(invented)
 	out.DeclaredRate = NewFigure(declared)
+	out.MessagesRight = NewFigure(messagesRight)
+	out.MessagesWrong = NewFigure(messagesWrong)
 	out.Wordings = cutFrom(byWording, wordingNames)
 	out.Classes = cutFrom(byClass, classNames)
 	return out

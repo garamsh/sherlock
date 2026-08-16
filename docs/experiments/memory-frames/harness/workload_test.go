@@ -177,6 +177,45 @@ func TestGenerateWorkload_PlacesEveryAssertionInsideItsOwnYear(t *testing.T) {
 	}
 }
 
+// The day stamped on an assertion is what §What the addresses look like
+// reads the interval between two writes from, so an assertion carrying a
+// day it was not said on is a wrong figure in a published table.
+func TestGenerateWorkload_StampsEachAssertionWithTheDayItWasSaid(t *testing.T) {
+	w, err := GenerateWorkload(7, smallParams())
+	require.NoError(t, err)
+
+	// A reverted thread asserts one value twice, so an address and a value
+	// map to the days they were said on rather than to one day.
+	said := map[Fact][]int{}
+	for _, turn := range w.Turns {
+		for _, written := range turn.Written {
+			said[written.Fact] = append(said[written.Fact], turn.Day)
+		}
+	}
+	var repeated int
+	for _, thread := range w.Threads {
+		address := Address{Subject: thread.Subject, Attribute: thread.Attribute}
+		stamped := map[Fact][]int{}
+		for _, a := range thread.Asserts {
+			assert.Equal(t, a.Year, a.Day/daysPerYear+1,
+				"%q is stamped with a day outside the year it was asserted in", a.Value)
+			fact := Fact{Address: address, Value: a.Value}
+			stamped[fact] = append(stamped[fact], a.Day)
+		}
+		for fact, days := range stamped {
+			if len(days) > 1 {
+				repeated++
+			}
+			sort.Ints(days)
+			got := append([]int(nil), said[fact]...)
+			sort.Ints(got)
+			assert.Equal(t, got, days, "the days stamped on %q are not the days it was said on", fact.Value)
+		}
+	}
+	require.NotZero(t, repeated,
+		"the workload must assert one value twice, or this checks nothing a single assertion would not")
+}
+
 func TestGenerateWorkload_RejectsASpanTooShortForItsSchedule(t *testing.T) {
 	p := smallParams()
 	p.Years = 3

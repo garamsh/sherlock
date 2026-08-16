@@ -169,6 +169,143 @@ func TestEndToEnd_OneShotAgentTurnAgainstWorkspace(t *testing.T) {
 	assert.Equal(t, "sender", replies[0].Target)
 }
 
+// The next two tests are a pair, and the pair is the point: the same
+// broken deployment — an agent whose workspace is not listening, so
+// shell_exec and files fail at the boundary — is run down each of the
+// agent's two paths, and they are meant to end differently.
+//
+// A served turn hands the failure to the model, which gets another
+// iteration to react; the turn finishes and the gateway keeps serving.
+// A one-shot run has no model left to react and no caller still
+// watching the stream, so it reports the failure the only way a process
+// that has already exited can: its exit status.
+//
+// Neither path branches on a mode, a flag, or the configured provider.
+// They differ because serving a gateway and running one turn are
+// different things (docs/architecture/gateway.md).
+
+// TestEndToEnd_OneShotAgentTurnFailedToolCallExitsNonZero is the
+// one-shot half of that pair. The canned run still reaches
+// message_send and still finishes — a failed tool call is not a failed
+// turn — so the turn's own result cannot carry the failure, and
+// exiting 0 here would report a clean run that did not happen.
+func TestEndToEnd_OneShotAgentTurnFailedToolCallExitsNonZero(t *testing.T) {
+	binary := buildGagentBinary(t)
+	root := t.TempDir()
+
+	cmd := exec.Command(binary, "agent",
+		"--config", emptyConfig(t, "gagent.yaml"),
+		"--agent-id", binaryAgentID,
+		"--memory-path", filepath.Join(root, "memory.db"),
+		"--workspace-addr", closedLoopbackAddr(t),
+		"--message", e2eQuestion)
+	cmd.Env = append(os.Environ(),
+		"GAGENT_TOOLS_DIR="+toolsDirForTest(t),
+		"GH_TOKEN=fake-test-token",
+	)
+	out, err := cmd.CombinedOutput()
+
+	require.Error(t, err, "a turn whose tool calls failed must not exit 0: %s", out)
+	var exitErr *exec.ExitError
+	require.ErrorAs(t, err, &exitErr)
+	assert.NotZero(t, exitErr.ExitCode())
+	assert.Contains(t, string(out), "tool call(s) failed",
+		"the run names what failed rather than only setting a status")
+	for _, name := range []string{"shell_exec", "files"} {
+		assert.Contains(t, string(out), name,
+			"the run names every tool that failed at the workspace boundary")
+	}
+
+	// The turn itself still ran: the reply the canned scenario sends
+	// through message_send is on stdout and in the outbox, because the
+	// failure is reported, not thrown away.
+	assert.Contains(t, string(out), "[http -> sender] 42",
+		"the turn's output still prints before the failure is reported")
+	replies := outboxMessages(t, root)
+	require.Len(t, replies, 1)
+	assert.Equal(t, "42", replies[0].Content)
+}
+
+// TestEndToEnd_ServedTurnFailedToolCallCarriesOn is the serving half.
+// The same failing tool calls reach the model as tool results, the
+// turn ends in turn_finished rather than turn_failed, and the gateway
+// accepts the next message — a model recovering from a tool error is
+// the loop working, and this path must not acquire the one-shot's
+// exit contract.
+func TestEndToEnd_ServedTurnFailedToolCallCarriesOn(t *testing.T) {
+	binary := buildGagentBinary(t)
+	root := t.TempDir()
+
+	cmd, baseURL, exited := startAgentBinary(t, binary, root, closedLoopbackAddr(t))
+
+	events := subscribeSSE(t, baseURL+"/agents/"+binaryAgentID+"/events")
+	resp := postJSON(t, baseURL+"/agents/"+binaryAgentID+"/messages",
+		`{"content":`+strconvQuote(e2eQuestion)+`}`)
+	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
+	resp.Body.Close()
+
+	got := collectEvents(t, events, 10)
+	var kinds []string
+	for _, e := range got {
+		kinds = append(kinds, e["kind"].(string))
+	}
+	assert.Equal(t, []string{
+		"turn_started", "recall",
+		"writeback", "tool_call",
+		"writeback", "tool_call",
+		"writeback", "tool_call",
+		"writeback", "turn_finished",
+	}, kinds, "the turn runs to completion despite the failures")
+
+	// The two tools that cross to the workspace failed, and each
+	// failure was fed back to the model as a tool result.
+	assert.Equal(t, "shell_exec", got[3]["tool_name"])
+	assert.Equal(t, true, got[3]["tool_failed"])
+	assert.Equal(t, "files", got[5]["tool_name"])
+	assert.Equal(t, true, got[5]["tool_failed"])
+
+	// message_send needs no workspace, so the mouth still worked and
+	// the turn ended cleanly rather than failing.
+	assert.Equal(t, "message_send", got[7]["tool_name"])
+	assert.NotContains(t, got[7], "tool_failed")
+	assert.Equal(t, "turn_finished", got[9]["kind"],
+		"a failed tool call never terminates the turn as turn_failed")
+
+	// The agent is still serving: the failures did not take the
+	// process down the one-shot's path.
+	select {
+	case err := <-exited:
+		t.Fatalf("the agent exited after a failed tool call: %v", err)
+	default:
+	}
+	second := postJSON(t, baseURL+"/agents/"+binaryAgentID+"/messages",
+		`{"content":`+strconvQuote(e2eQuestion)+`}`)
+	assert.Equal(t, http.StatusAccepted, second.StatusCode,
+		"the gateway still accepts messages after a turn with failed tool calls")
+	second.Body.Close()
+
+	require.NoError(t, cmd.Process.Signal(syscall.SIGTERM))
+	select {
+	case err := <-exited:
+		require.NoError(t, err, "the served agent still exits cleanly on SIGTERM")
+	case <-time.After(15 * time.Second):
+		t.Fatal("agent did not exit on SIGTERM")
+	}
+}
+
+// closedLoopbackAddr returns a loopback address with nothing listening
+// on it: the port is bound to find a free one and released before the
+// address is handed back. Dialing it is what makes the workspace-bound
+// tools fail at their boundary.
+func closedLoopbackAddr(t *testing.T) string {
+	t.Helper()
+	listen, err := net.Listen("tcp", "127.0.0.1:0")
+	require.NoError(t, err)
+	addr := listen.Addr().String()
+	require.NoError(t, listen.Close())
+	return addr
+}
+
 // buildGagentBinary compiles the gagent CLI binary into a temp
 // directory and builds each first-party tool into the module's
 // tools/<name>/<name> so the script-tool registry can resolve it

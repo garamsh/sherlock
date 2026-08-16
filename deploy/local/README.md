@@ -61,7 +61,13 @@ The sample `gagent.yaml` uses the mock model provider, so the agent replies with
 
 ## Check
 
-`./smoke.sh` runs the whole sequence above — tools, certificates, `docker compose up`, one message — and fails unless the agent accepts the message, all three tool calls succeed, the turn finishes, and the reply reaches the outbox. It reads the monitoring stream for that, because a failed tool call is reported to the model and the loop carries on, so a reply alone does not prove the run was clean. The `docker` job in `.github/workflows/ci.yml` runs the same script, so a change that stops this deployment from starting — or starts a tool call failing inside it — fails CI.
+`./smoke.sh` runs the whole sequence above — tools, certificates, `docker compose up` — and then asserts three things against the running deployment:
+
+- **The mTLS ingress accepts a caller.** One `POST /agents/demo/messages` over the published port, with the client certificate generated above, must return 202. This is the deployment's wiring — these certificates, the client CA `gagent.yaml` names, that port — rather than the gateway's mTLS code, which the Go tests cover with certificates of their own. A client CA that loads but matches nobody starts cleanly and rejects every real caller, so only a real request catches it.
+- **The canned turn runs clean.** It runs one turn in the agent container (`gagent agent --message`) against these mounted tools and this workspace sidecar, and takes that run's exit status as the answer. A failed tool call does not end a turn — the model is told and carries on — so a one-shot run reports one in its exit status; nothing here reads the monitoring stream to find out.
+- **Both writers share one owner** (ADR 0008, ADR 0010). A write over the gRPC contract and a write by an exec'd child land under the exec account, each able to pick up what the other left, and Exec children carry all five resource caps.
+
+The `docker` job in `.github/workflows/ci.yml` runs the same script, so a change that stops this deployment from starting — or breaks its mTLS wiring, or starts a tool call failing inside it, or breaks the shared-owner contract — fails CI.
 
 ## Cleanup
 

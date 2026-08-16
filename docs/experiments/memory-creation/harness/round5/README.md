@@ -37,8 +37,9 @@ A fourth bullet is answered by the match rule: a value credited on a substring i
 - `runner.py` — runs the named structures and writes `results_round5/<structure>_seed<seed>.json`.
 - `dataset_check.py` — the invariants above, the match rule, the value vocabulary, and the metrics against round 4's scorer, on seeds 7, 11 and 23.
 - `round4.py` — loads round 4's `dataset.py` and `scoring.py` by path, because both rounds name a module `dataset` and a module `scoring`.
-- `precision.py` — the 95% interval on `net` at round 5's probe counts, and the coexist probes per seed that would resolve a gap the current counts leave open.
+- `precision.py` — the 95% interval and the separation verdict per column and on `net`, at round 5's probe counts, and the probes per seed that would resolve a gap the current counts leave open.
 - `correction_categories.py` — splits the corrected column by whether the category holds two values that can both be true, so an advantage sitting only there is reported as the narrower claim it is.
+- `claim_sources.py` — reads every round-5 figure the experiment record states, names the committed file behind it, and fails if the two disagree. Round 4's figures are `../round4/claim_sources.py`'s; the two read disjoint sections of one document.
 
 ## Running
 
@@ -49,6 +50,7 @@ python3 harness/round5/runner.py DeciderNeighbors
 SEED=11 python3 harness/round5/runner.py DeciderNeighbors
 python3 harness/round5/precision.py
 python3 harness/round5/correction_categories.py
+python3 harness/round5/claim_sources.py
 ```
 
-The check makes no API call; it prints each seed's composition and the vocabulary collisions the boundary rule neutralises. The runner needs `OPENAI_API_KEY`; embeddings and decider replies cache beside round 4's `api.py`, as round 4's runners do. `precision.py` reads the committed results and `correction_categories.py` replays them from that cache with live calls refused, so both run after the runs and neither adds a call.
+The check makes no API call; it prints each seed's composition and the vocabulary collisions the boundary rule neutralises. The runner needs `OPENAI_API_KEY`; embeddings and decider replies cache beside round 4's `api.py`, as round 4's runners do. `precision.py` and `claim_sources.py` read the committed results and `correction_categories.py` replays them from that cache with live calls refused, so all three run after the runs and none adds a call.

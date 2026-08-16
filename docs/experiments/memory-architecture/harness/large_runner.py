@@ -15,6 +15,10 @@ import architectures
 import metrics
 
 
+# Seeds the per-session topic draw and the noise filler, so a run reproduces.
+TOPIC_SEED = 0
+NOISE_SEED = 0
+
 NEW = ["M1", "M2", "M3", "M4", "M5", "M6"]
 WINNERS = ["D2", "F5", "G4", "G6", "H1", "H6"]
 NEW_CLASS = {
@@ -183,10 +187,14 @@ def make_large_workload(n_sessions=100, n_real_per_session=100, n_noise=50000):
     ]
     cur_items: list[tuple] = []
     queries = []
+    # Which topics a session draws was left to the global random state, which is
+    # seeded from the OS at import, so every process built a different workload
+    # and scored a different one. The draw runs off its own seeded stream now.
+    topic_rng = random.Random(TOPIC_SEED)
     for s in range(n_sessions):
         # Each session uses multiple topics so it has more real items.
         n_topics = max(1, n_real_per_session // 10)
-        session_topics = random.sample(topics, min(n_topics, len(topics)))
+        session_topics = topic_rng.sample(topics, min(n_topics, len(topics)))
         for topic_id, snippets in session_topics:
             for idx, (text, sal) in enumerate(snippets):
                 cur_items.append((f"session-{s}.{topic_id}.{idx:03d}", "user", text,
@@ -230,13 +238,13 @@ def make_large_workload(n_sessions=100, n_real_per_session=100, n_noise=50000):
             seen.add(q[0])
             unique_queries.append(q)
     queries = unique_queries
-    random.seed(0)
+    noise_rng = random.Random(NOISE_SEED)
     filler_words = ["alpha", "beta", "gamma", "delta", "epsilon", "zeta", "theta", "lambda",
                     "sigma", "omega", "phi", "psi", "lunch", "weather", "weekend", "train",
                     "station", "queue", "regular", "general"]
     noise_items = []
     for i in range(n_noise):
-        words = " ".join(random.choices(filler_words, k=5))
+        words = " ".join(noise_rng.choices(filler_words, k=5))
         noise_items.append((f"noise.{i:06d}", "user", f"filler {words}", {"salience": 0.0, "kind": "noise"}))
     return cur_items, noise_items, queries
 
@@ -281,7 +289,7 @@ def eval_one(name, cls, n_sessions=100, n_real_per_session=100, n_noise=50000):
 
 
 def render(rows, queries):
-    headers = ["arch", "R@5", "Items", "KB", "qry ms", "R/KB"]
+    headers = ["arch", "R@5", "Items", "modelled KB", "qry ms", "R/modelled-KB"]
     lines = ["| " + " | ".join(headers) + " |",
              "|" + "|".join(["-" * len(h) for h in headers]) + "|"]
     for r in rows:
@@ -297,10 +305,10 @@ def render(rows, queries):
                 expected_keywords: list[str]
             qs = [QQ(id=q[0], text=q[1], expected_keywords=q[2]) for q in queries]
             r5 = metrics.recall_at_k(qs, rbq, k=5)
-            kb = r["item_count"] * 0.05
-            rkb = r5 / (kb / 1024.0) if kb > 0 else 0.0
+            kb = metrics.modelled_kb(r["item_count"])
+            rkb = metrics.recall_per_modelled_kb(r["item_count"], r5)
             row = [r["name"], f"{r5:.2f}", str(r["item_count"]), f"{kb:.1f}",
-                   f"{r['query_ms']:.1f}", f"{rkb:.3f}"]
+                   f"{r['query_ms']:.1f}", f"{rkb:.4g}"]
         lines.append("| " + " | ".join(row) + " |")
     return "\n".join(lines)
 

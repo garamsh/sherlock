@@ -99,7 +99,7 @@ def eval_at_scale(arch_name: str, cls, queries, target_items: int):
 
 
 def render_scale_table(rows, queries):
-    headers = ["arch", "scale", "items", "R@5", "P@5", "qry μs", "recall-KB"]
+    headers = ["arch", "scale", "items", "R@5", "P@5", "qry μs", "R/modelled-KB"]
     lines = ["| " + " | ".join(headers) + " |",
              "|" + "|".join(["-" * len(h) for h in headers]) + "|"]
     for r in rows:
@@ -109,12 +109,12 @@ def render_scale_table(rows, queries):
             rbq = r["results_by_query"]
             r5 = metrics.recall_at_k(queries, rbq, k=5)
             p5 = metrics.precision_at_k(queries, rbq, k=5)
-            kb = r["item_count"] * 0.05  # rough estimate
-            rkb = r5 / (kb / 1024.0) if kb > 0 else 0.0
+            kb = metrics.modelled_kb(r["item_count"])
+            rkb = metrics.recall_per_modelled_kb(r["item_count"], r5)
             row = [
                 r["name"], str(r["scale"]), str(r["item_count"]),
                 f"{r5:.2f}", f"{p5:.2f}", f"{r['query_ms'] * 1000:.1f}",
-                f"{rkb:.3f}",
+                f"{rkb:.4g}",
             ]
         lines.append("| " + " | ".join(row) + " |")
     return "\n".join(lines)
@@ -144,7 +144,8 @@ def main():
         f.write("- R@5: Recall@5 (any expected keyword in top-5)\n")
         f.write("- P@5: Precision@5 (% of top-5 that are relevant)\n")
         f.write("- qry μs: per-query latency\n")
-        f.write("- recall-KB: R@5 per KB of stored memory (effective memory density)\n\n")
+        f.write("- R/modelled-KB: R@5 per KB of store modelled at metrics.KB_PER_ITEM an\n")
+        f.write("  item. Not the R/stored-KB results/table.md reports.\n\n")
         f.write(table + "\n")
     print("\n" + table)
     with open("results/scale_raw.json", "w") as f:

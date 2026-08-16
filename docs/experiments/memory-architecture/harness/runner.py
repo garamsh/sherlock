@@ -93,6 +93,7 @@ def run_one(arch_name):
         "item_count": int(stats.get("item_count", 0)),
         "anti_pollution": ap,
         "cls": cls,
+        "arch": arch,
         "wall_total_s": t1 - t0,
     }
 
@@ -149,21 +150,21 @@ def main():
         if "error" in r or "results_by_query" not in r:
             continue
         rbq = r["results_by_query"]
-        cls = r.get("cls")
         r["R@5"] = metrics.recall_at_k(all_queries, rbq, k=5)
         r["P@5"] = metrics.precision_at_k(all_queries, rbq, k=5)
         r["time@1"] = metrics.time_aware_top1(all_queries, rbq)
         r["noise"] = metrics.noise_rejection(all_queries, rbq, k=5)
         r["anti_poll"] = r.get("anti_pollution")
-        r["dedup"] = metrics.dedup_ratio(cls() if cls else None)
+        # Every metric below that reads the store reads the one the run filled.
+        arch = r.get("arch")
+        r["dedup"] = metrics.dedup_ratio(arch)
         r["accuracy"] = metrics.content_accuracy(all_queries, rbq)
         # New efficiency/precision metrics.
-        if cls is not None:
-            fresh = cls()
-            r["R_per_KB"] = metrics.effective_recall_per_kb(fresh, r["R@5"])
-            r["supers"] = metrics.supersession_accuracy(fresh, rbq, SESSIONS)
-            r["stale"] = metrics.stale_recall_rate(fresh, rbq)
-            r["rep_keep"] = int(metrics.compression_density(fresh))
+        if arch is not None:
+            r["R_per_KB"] = metrics.effective_recall_per_kb(arch, r["R@5"])
+            r["supers"] = metrics.supersession_accuracy(arch, rbq, SESSIONS)
+            r["stale"] = metrics.stale_recall_rate(arch, rbq)
+            r["rep_keep"] = int(metrics.compression_density(arch))
         else:
             r["R_per_KB"] = 0.0
             r["supers"] = 0.0
@@ -214,10 +215,10 @@ def main():
             f.write(f"- dedup: {r.get('dedup', 0):.3f}\n")
             f.write(f"- accuracy: {r.get('accuracy', 0):.3f}\n")
             f.write(f"- LoC: {metrics.lines_of_code(r['cls']) if r.get('cls') else 0}\n\n")
-    # Raw JSON (without the class objects).
+    # Raw JSON (without the class objects or the stores they built).
     raw_rows = []
     for r in rows:
-        rr = {k: v for k, v in r.items() if k != "cls"}
+        rr = {k: v for k, v in r.items() if k not in ("cls", "arch")}
         raw_rows.append(rr)
     with open("results/raw.json", "w") as f:
         json.dump(raw_rows, f, indent=2, default=str)

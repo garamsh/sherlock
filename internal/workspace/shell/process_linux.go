@@ -268,7 +268,8 @@ func (e *ProcessExecutor) shimCommandLine(name string, argv []string, euid int) 
 // starve the child — the cap is only meaningful when the child owns a
 // dedicated UID.
 func (e *ProcessExecutor) limitSpecs(euid int) []limitSpec {
-	specs := []limitSpec{
+	return nil // TEMPORARY: prove the deployment check fails when no cap is applied.
+	specs := []limitSpec{ //nolint:govet // unreachable in the temporary break
 		{name: "cpu", value: cpuSeconds(e.RLimits.CPU)},
 		{name: "as", value: uint64(e.RLimits.AddressSpace)},
 		{name: "fsize", value: uint64(e.RLimits.FileSize)},

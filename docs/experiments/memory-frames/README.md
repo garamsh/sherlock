@@ -10,6 +10,7 @@ What a memory structure does with a decade of turns, measured through a seam tha
 - The arity question
 - What a wrong declaration costs
 - Whether a write need destroy
+- What a read cannot reach
 - What a run costs
 - Results
 - What the numbers say
@@ -130,6 +131,18 @@ Three things are measured, all on the declarations already committed.
 **Whether the model is in doubt where it is wrong.** A bias needs something to bias on, and the candidate that does not ask the model for a number is asking it more than once and treating the samples disagreeing as the doubt. Every assertion whose declaration has a consequence was asked again, several times, at a temperature that lets the answer vary. Whether disagreement tracks error at all is the figure that decides whether any doubt-reading rule is possible, and it is reported before the rule built on it.
 
 `harness/no_destroy_test.go` asserts each of these: that the interval store holds what a wrong declaration cleared and still cannot answer with it, that the bias's far end is what keeping every value already does, that both declaration-reading stores answer identically, and that a split resolves to a join.
+
+## What a read cannot reach
+
+Every figure before this one reports what a structure *answers*. None reports what it cannot reach, and the two are different questions. The writeback only ever sees what arrived in the context, so a memory no read returns is not merely unread — it is frozen, and it stays whatever it was for as long as it exists. A decade of rows in that state shows up in no recall figure.
+
+**Related is read off the workload and never off similarity.** The workload knows which values are true, which thread each sits on and which subject it belongs to. A relation defined by a retrieval function would measure that function rather than the structure, which is the substitution this programme exists to avoid. Two relations are reported: the values live on the thread the question is about, which is recall under another name, and the values live anywhere on that subject, which is what a turn could have corrected had the context carried it.
+
+**The frozen share is what a structure holds that no context has ever carried**, counted in planted values so the same number means the same thing for a store of rows and a store of addresses. It is reported per year so it can be seen accumulating, and beside it is how much of it a later checkpoint still needs — which is what forgetting the never-reached would cost.
+
+**Whether a write can reach what a read cannot** is constructed rather than argued, in `harness/coupling_test.go`: a fact is written, never once read back, and then corrected, with enough other facts in the same words that the row a lookup must find is not alone. What each structure does with that correction is the measurement.
+
+**Capacity is measured rather than bounded.** The trajectory is reported for every year rather than three of them, and what it extrapolates to is computed from it, so "nothing approaches a limit" is a finding rather than an assumption.
 
 ## What a run costs
 
@@ -469,6 +482,464 @@ The figure that matters for the designs coming next is in the cost table below, 
 | `team` | 52 | 14 | 0.269 |
 | `bakery` | 47 | 11 | 0.234 |
 | `backups` | 46 | 14 | 0.304 |
+
+### What a read reached, and what it never did
+
+| frame | arm | year | thread reach | subject reach | held | reached | frozen | frozen share | frozen still needed |
+|---|---|---|---|---|---|---|---|---|---|
+| `shipped` | `oracle` | 1 | 0.919 ±0.042 | 0.919 ±0.028 | 147 | 147 | 0 | 0.000 | 0 |
+| `shipped` | `oracle` | 2 | 0.946 ±0.029 | 0.941 ±0.017 | 263 | 263 | 0 | 0.000 | 0 |
+| `shipped` | `oracle` | 3 | 0.921 ±0.034 | 0.881 ±0.024 | 364 | 364 | 0 | 0.000 | 0 |
+| `shipped` | `oracle` | 4 | 0.908 ±0.037 | 0.880 ±0.024 | 400 | 400 | 0 | 0.000 | 0 |
+| `shipped` | `oracle` | 5 | 0.912 ±0.036 | 0.878 ±0.023 | 438 | 438 | 0 | 0.000 | 0 |
+| `shipped` | `oracle` | 6 | 0.892 ±0.037 | 0.750 ±0.031 | 543 | 543 | 0 | 0.000 | 0 |
+| `shipped` | `oracle` | 7 | 0.927 ±0.029 | 0.576 ±0.042 | 619 | 619 | 0 | 0.000 | 0 |
+| `shipped` | `oracle` | 8 | 0.927 ±0.029 | 0.560 ±0.044 | 658 | 658 | 0 | 0.000 | 0 |
+| `shipped` | `oracle` | 9 | 0.925 ±0.030 | 0.518 ±0.044 | 696 | 696 | 0 | 0.000 | 0 |
+| `shipped` | `oracle` | 10 | 0.923 ±0.030 | 0.507 ±0.045 | 733 | 733 | 0 | 0.000 | 0 |
+| `document` | `oracle` | 1 | 0.075 ±0.041 | 0.075 ±0.032 | 12 | 12 | 0 | 0.000 | 0 |
+| `document` | `oracle` | 2 | 0.037 ±0.024 | 0.030 ±0.010 | 9 | 9 | 0 | 0.000 | 0 |
+| `document` | `oracle` | 3 | 0.037 ±0.024 | 0.030 ±0.009 | 9 | 9 | 0 | 0.000 | 0 |
+| `document` | `oracle` | 4 | 0.008 ±0.012 | 0.007 ±0.004 | 2 | 2 | 0 | 0.000 | 0 |
+| `document` | `oracle` | 5 | 0.025 ±0.020 | 0.017 ±0.007 | 6 | 6 | 0 | 0.000 | 0 |
+| `document` | `oracle` | 6 | 0.023 ±0.016 | 0.017 ±0.006 | 9 | 9 | 0 | 0.000 | 0 |
+| `document` | `oracle` | 7 | 0.042 ±0.025 | 0.024 ±0.008 | 10 | 10 | 0 | 0.000 | 0 |
+| `document` | `oracle` | 8 | 0.021 ±0.018 | 0.009 ±0.006 | 5 | 5 | 0 | 0.000 | 0 |
+| `document` | `oracle` | 9 | 0.004 ±0.008 | 0.002 ±0.002 | 1 | 1 | 0 | 0.000 | 0 |
+| `document` | `oracle` | 10 | 0.008 ±0.012 | 0.003 ±0.002 | 2 | 2 | 0 | 0.000 | 0 |
+| `attribute-single` | `oracle` | 1 | 1.000 ±0.000 | 0.450 ±0.037 | 160 | 160 | 0 | 0.000 | 0 |
+| `attribute-single` | `oracle` | 2 | 1.000 ±0.000 | 0.269 ±0.021 | 280 | 280 | 0 | 0.000 | 0 |
+| `attribute-single` | `oracle` | 3 | 1.000 ±0.000 | 0.246 ±0.018 | 320 | 320 | 0 | 0.000 | 0 |
+| `attribute-single` | `oracle` | 4 | 1.000 ±0.000 | 0.212 ±0.011 | 360 | 360 | 0 | 0.000 | 0 |
+| `attribute-single` | `oracle` | 5 | 1.000 ±0.000 | 0.194 ±0.010 | 400 | 400 | 0 | 0.000 | 0 |
+| `attribute-single` | `oracle` | 6 | 0.833 ±0.030 | 0.149 ±0.008 | 440 | 440 | 0 | 0.000 | 0 |
+| `attribute-single` | `oracle` | 7 | 0.833 ±0.030 | 0.139 ±0.007 | 480 | 480 | 0 | 0.000 | 0 |
+| `attribute-single` | `oracle` | 8 | 0.833 ±0.030 | 0.131 ±0.006 | 520 | 520 | 0 | 0.000 | 0 |
+| `attribute-single` | `oracle` | 9 | 0.833 ±0.030 | 0.117 ±0.004 | 560 | 560 | 0 | 0.000 | 0 |
+| `attribute-single` | `oracle` | 10 | 0.833 ±0.030 | 0.113 ±0.004 | 600 | 600 | 0 | 0.000 | 0 |
+| `attribute-multi` | `oracle` | 1 | 1.000 ±0.000 | 0.450 ±0.037 | 160 | 160 | 0 | 0.000 | 0 |
+| `attribute-multi` | `oracle` | 2 | 1.000 ±0.000 | 0.269 ±0.021 | 280 | 280 | 0 | 0.000 | 0 |
+| `attribute-multi` | `oracle` | 3 | 1.000 ±0.000 | 0.246 ±0.018 | 400 | 400 | 0 | 0.000 | 0 |
+| `attribute-multi` | `oracle` | 4 | 1.000 ±0.000 | 0.212 ±0.011 | 440 | 440 | 0 | 0.000 | 0 |
+| `attribute-multi` | `oracle` | 5 | 1.000 ±0.000 | 0.194 ±0.010 | 480 | 480 | 0 | 0.000 | 0 |
+| `attribute-multi` | `oracle` | 6 | 1.000 ±0.000 | 0.192 ±0.011 | 600 | 600 | 0 | 0.000 | 0 |
+| `attribute-multi` | `oracle` | 7 | 1.000 ±0.000 | 0.179 ±0.010 | 680 | 680 | 0 | 0.000 | 0 |
+| `attribute-multi` | `oracle` | 8 | 1.000 ±0.000 | 0.169 ±0.009 | 720 | 720 | 0 | 0.000 | 0 |
+| `attribute-multi` | `oracle` | 9 | 1.000 ±0.000 | 0.153 ±0.008 | 760 | 760 | 0 | 0.000 | 0 |
+| `attribute-multi` | `oracle` | 10 | 1.000 ±0.000 | 0.148 ±0.008 | 800 | 800 | 0 | 0.000 | 0 |
+| `attribute-learned` | `oracle` | 1 | 1.000 ±0.000 | 0.450 ±0.037 | 160 | 160 | 0 | 0.000 | 0 |
+| `attribute-learned` | `oracle` | 2 | 1.000 ±0.000 | 0.269 ±0.021 | 280 | 280 | 0 | 0.000 | 0 |
+| `attribute-learned` | `oracle` | 3 | 1.000 ±0.000 | 0.246 ±0.018 | 400 | 400 | 0 | 0.000 | 0 |
+| `attribute-learned` | `oracle` | 4 | 1.000 ±0.000 | 0.212 ±0.011 | 440 | 440 | 0 | 0.000 | 0 |
+| `attribute-learned` | `oracle` | 5 | 1.000 ±0.000 | 0.194 ±0.010 | 480 | 480 | 0 | 0.000 | 0 |
+| `attribute-learned` | `oracle` | 6 | 1.000 ±0.000 | 0.192 ±0.011 | 600 | 600 | 0 | 0.000 | 0 |
+| `attribute-learned` | `oracle` | 7 | 1.000 ±0.000 | 0.179 ±0.010 | 680 | 680 | 0 | 0.000 | 0 |
+| `attribute-learned` | `oracle` | 8 | 1.000 ±0.000 | 0.169 ±0.009 | 720 | 720 | 0 | 0.000 | 0 |
+| `attribute-learned` | `oracle` | 9 | 1.000 ±0.000 | 0.153 ±0.008 | 760 | 760 | 0 | 0.000 | 0 |
+| `attribute-learned` | `oracle` | 10 | 1.000 ±0.000 | 0.148 ±0.008 | 800 | 800 | 0 | 0.000 | 0 |
+| `attribute-cued` | `oracle` | 1 | 1.000 ±0.000 | 0.450 ±0.037 | 160 | 160 | 0 | 0.000 | 0 |
+| `attribute-cued` | `oracle` | 2 | 1.000 ±0.000 | 0.269 ±0.021 | 280 | 280 | 0 | 0.000 | 0 |
+| `attribute-cued` | `oracle` | 3 | 1.000 ±0.000 | 0.246 ±0.018 | 320 | 320 | 0 | 0.000 | 0 |
+| `attribute-cued` | `oracle` | 4 | 1.000 ±0.000 | 0.212 ±0.011 | 360 | 360 | 0 | 0.000 | 0 |
+| `attribute-cued` | `oracle` | 5 | 1.000 ±0.000 | 0.194 ±0.010 | 400 | 400 | 0 | 0.000 | 0 |
+| `attribute-cued` | `oracle` | 6 | 0.917 ±0.024 | 0.171 ±0.010 | 480 | 480 | 0 | 0.000 | 0 |
+| `attribute-cued` | `oracle` | 7 | 0.917 ±0.024 | 0.159 ±0.009 | 520 | 520 | 0 | 0.000 | 0 |
+| `attribute-cued` | `oracle` | 8 | 0.917 ±0.024 | 0.150 ±0.008 | 560 | 560 | 0 | 0.000 | 0 |
+| `attribute-cued` | `oracle` | 9 | 0.917 ±0.024 | 0.135 ±0.007 | 600 | 600 | 0 | 0.000 | 0 |
+| `attribute-cued` | `oracle` | 10 | 0.917 ±0.024 | 0.131 ±0.007 | 640 | 640 | 0 | 0.000 | 0 |
+| `attribute-declared` | `oracle` | 1 | 1.000 ±0.000 | 0.450 ±0.037 | 160 | 160 | 0 | 0.000 | 0 |
+| `attribute-declared` | `oracle` | 2 | 1.000 ±0.000 | 0.269 ±0.021 | 280 | 280 | 0 | 0.000 | 0 |
+| `attribute-declared` | `oracle` | 3 | 1.000 ±0.000 | 0.246 ±0.018 | 320 | 320 | 0 | 0.000 | 0 |
+| `attribute-declared` | `oracle` | 4 | 1.000 ±0.000 | 0.212 ±0.011 | 360 | 360 | 0 | 0.000 | 0 |
+| `attribute-declared` | `oracle` | 5 | 1.000 ±0.000 | 0.194 ±0.010 | 400 | 400 | 0 | 0.000 | 0 |
+| `attribute-declared` | `oracle` | 6 | 1.000 ±0.000 | 0.192 ±0.011 | 520 | 520 | 0 | 0.000 | 0 |
+| `attribute-declared` | `oracle` | 7 | 1.000 ±0.000 | 0.179 ±0.010 | 560 | 560 | 0 | 0.000 | 0 |
+| `attribute-declared` | `oracle` | 8 | 1.000 ±0.000 | 0.169 ±0.009 | 600 | 600 | 0 | 0.000 | 0 |
+| `attribute-declared` | `oracle` | 9 | 1.000 ±0.000 | 0.153 ±0.008 | 640 | 640 | 0 | 0.000 | 0 |
+| `attribute-declared` | `oracle` | 10 | 1.000 ±0.000 | 0.148 ±0.008 | 680 | 680 | 0 | 0.000 | 0 |
+| `interval` | `oracle` | 1 | 1.000 ±0.000 | 0.450 ±0.037 | 160 | 160 | 0 | 0.000 | 0 |
+| `interval` | `oracle` | 2 | 1.000 ±0.000 | 0.269 ±0.021 | 280 | 280 | 0 | 0.000 | 0 |
+| `interval` | `oracle` | 3 | 1.000 ±0.000 | 0.246 ±0.018 | 400 | 400 | 0 | 0.000 | 0 |
+| `interval` | `oracle` | 4 | 1.000 ±0.000 | 0.212 ±0.011 | 440 | 440 | 0 | 0.000 | 0 |
+| `interval` | `oracle` | 5 | 1.000 ±0.000 | 0.194 ±0.010 | 480 | 480 | 0 | 0.000 | 0 |
+| `interval` | `oracle` | 6 | 0.833 ±0.030 | 0.149 ±0.008 | 600 | 600 | 0 | 0.000 | 0 |
+| `interval` | `oracle` | 7 | 0.833 ±0.030 | 0.139 ±0.007 | 680 | 680 | 0 | 0.000 | 0 |
+| `interval` | `oracle` | 8 | 0.833 ±0.030 | 0.131 ±0.006 | 720 | 720 | 0 | 0.000 | 0 |
+| `interval` | `oracle` | 9 | 0.833 ±0.030 | 0.117 ±0.004 | 760 | 760 | 0 | 0.000 | 0 |
+| `interval` | `oracle` | 10 | 0.833 ±0.030 | 0.113 ±0.004 | 800 | 800 | 0 | 0.000 | 0 |
+| `interval-declared` | `oracle` | 1 | 1.000 ±0.000 | 0.450 ±0.037 | 160 | 160 | 0 | 0.000 | 0 |
+| `interval-declared` | `oracle` | 2 | 1.000 ±0.000 | 0.269 ±0.021 | 280 | 280 | 0 | 0.000 | 0 |
+| `interval-declared` | `oracle` | 3 | 1.000 ±0.000 | 0.246 ±0.018 | 400 | 400 | 0 | 0.000 | 0 |
+| `interval-declared` | `oracle` | 4 | 1.000 ±0.000 | 0.212 ±0.011 | 440 | 440 | 0 | 0.000 | 0 |
+| `interval-declared` | `oracle` | 5 | 1.000 ±0.000 | 0.194 ±0.010 | 480 | 480 | 0 | 0.000 | 0 |
+| `interval-declared` | `oracle` | 6 | 1.000 ±0.000 | 0.192 ±0.011 | 600 | 600 | 0 | 0.000 | 0 |
+| `interval-declared` | `oracle` | 7 | 1.000 ±0.000 | 0.179 ±0.010 | 680 | 680 | 0 | 0.000 | 0 |
+| `interval-declared` | `oracle` | 8 | 1.000 ±0.000 | 0.169 ±0.009 | 720 | 720 | 0 | 0.000 | 0 |
+| `interval-declared` | `oracle` | 9 | 1.000 ±0.000 | 0.153 ±0.008 | 760 | 760 | 0 | 0.000 | 0 |
+| `interval-declared` | `oracle` | 10 | 1.000 ±0.000 | 0.148 ±0.008 | 800 | 800 | 0 | 0.000 | 0 |
+| `log` | `oracle` | 1 | 1.000 ±0.000 | 0.450 ±0.037 | 160 | 160 | 0 | 0.000 | 0 |
+| `log` | `oracle` | 2 | 1.000 ±0.000 | 0.269 ±0.021 | 280 | 280 | 0 | 0.000 | 0 |
+| `log` | `oracle` | 3 | 1.000 ±0.000 | 0.246 ±0.018 | 400 | 400 | 0 | 0.000 | 0 |
+| `log` | `oracle` | 4 | 1.000 ±0.000 | 0.212 ±0.011 | 440 | 440 | 0 | 0.000 | 0 |
+| `log` | `oracle` | 5 | 1.000 ±0.000 | 0.194 ±0.010 | 480 | 480 | 0 | 0.000 | 0 |
+| `log` | `oracle` | 6 | 0.833 ±0.030 | 0.149 ±0.008 | 600 | 600 | 0 | 0.000 | 0 |
+| `log` | `oracle` | 7 | 0.833 ±0.030 | 0.139 ±0.007 | 680 | 680 | 0 | 0.000 | 0 |
+| `log` | `oracle` | 8 | 0.833 ±0.030 | 0.131 ±0.006 | 720 | 720 | 0 | 0.000 | 0 |
+| `log` | `oracle` | 9 | 0.833 ±0.030 | 0.117 ±0.004 | 760 | 760 | 0 | 0.000 | 0 |
+| `log` | `oracle` | 10 | 0.833 ±0.030 | 0.113 ±0.004 | 800 | 800 | 0 | 0.000 | 0 |
+| `shipped` | `text` | 1 | 0.056 ±0.036 | 0.056 ±0.030 | 9 | 9 | 0 | 0.000 | 0 |
+| `shipped` | `text` | 2 | 0.017 ±0.016 | 0.015 ±0.007 | 4 | 4 | 0 | 0.000 | 0 |
+| `shipped` | `text` | 3 | 0.025 ±0.020 | 0.020 ±0.008 | 6 | 6 | 0 | 0.000 | 0 |
+| `shipped` | `text` | 4 | 0.004 ±0.008 | 0.003 ±0.003 | 1 | 1 | 0 | 0.000 | 0 |
+| `shipped` | `text` | 5 | 0.021 ±0.018 | 0.014 ±0.006 | 5 | 5 | 0 | 0.000 | 0 |
+| `shipped` | `text` | 6 | 0.013 ±0.013 | 0.009 ±0.005 | 4 | 4 | 0 | 0.000 | 0 |
+| `shipped` | `text` | 7 | 0.013 ±0.014 | 0.008 ±0.004 | 3 | 3 | 0 | 0.000 | 0 |
+| `shipped` | `text` | 8 | 0.004 ±0.008 | 0.002 ±0.002 | 1 | 1 | 0 | 0.000 | 0 |
+| `shipped` | `text` | 9 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `shipped` | `text` | 10 | 0.008 ±0.012 | 0.003 ±0.002 | 2 | 2 | 0 | 0.000 | 0 |
+| `document` | `text` | 1 | 0.075 ±0.041 | 0.075 ±0.032 | 12 | 12 | 0 | 0.000 | 0 |
+| `document` | `text` | 2 | 0.037 ±0.024 | 0.030 ±0.010 | 9 | 9 | 0 | 0.000 | 0 |
+| `document` | `text` | 3 | 0.037 ±0.024 | 0.030 ±0.009 | 9 | 9 | 0 | 0.000 | 0 |
+| `document` | `text` | 4 | 0.008 ±0.012 | 0.007 ±0.004 | 2 | 2 | 0 | 0.000 | 0 |
+| `document` | `text` | 5 | 0.025 ±0.020 | 0.017 ±0.007 | 6 | 6 | 0 | 0.000 | 0 |
+| `document` | `text` | 6 | 0.023 ±0.016 | 0.017 ±0.006 | 9 | 9 | 0 | 0.000 | 0 |
+| `document` | `text` | 7 | 0.042 ±0.025 | 0.024 ±0.008 | 10 | 10 | 0 | 0.000 | 0 |
+| `document` | `text` | 8 | 0.021 ±0.018 | 0.009 ±0.006 | 5 | 5 | 0 | 0.000 | 0 |
+| `document` | `text` | 9 | 0.004 ±0.008 | 0.002 ±0.002 | 1 | 1 | 0 | 0.000 | 0 |
+| `document` | `text` | 10 | 0.008 ±0.012 | 0.003 ±0.002 | 2 | 2 | 0 | 0.000 | 0 |
+| `attribute-single` | `text` | 1 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-single` | `text` | 2 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-single` | `text` | 3 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-single` | `text` | 4 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-single` | `text` | 5 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-single` | `text` | 6 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-single` | `text` | 7 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-single` | `text` | 8 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-single` | `text` | 9 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-single` | `text` | 10 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-multi` | `text` | 1 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-multi` | `text` | 2 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-multi` | `text` | 3 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-multi` | `text` | 4 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-multi` | `text` | 5 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-multi` | `text` | 6 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-multi` | `text` | 7 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-multi` | `text` | 8 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-multi` | `text` | 9 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-multi` | `text` | 10 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-learned` | `text` | 1 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-learned` | `text` | 2 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-learned` | `text` | 3 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-learned` | `text` | 4 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-learned` | `text` | 5 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-learned` | `text` | 6 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-learned` | `text` | 7 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-learned` | `text` | 8 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-learned` | `text` | 9 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-learned` | `text` | 10 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-cued` | `text` | 1 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-cued` | `text` | 2 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-cued` | `text` | 3 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-cued` | `text` | 4 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-cued` | `text` | 5 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-cued` | `text` | 6 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-cued` | `text` | 7 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-cued` | `text` | 8 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-cued` | `text` | 9 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-cued` | `text` | 10 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-declared` | `text` | 1 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-declared` | `text` | 2 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-declared` | `text` | 3 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-declared` | `text` | 4 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-declared` | `text` | 5 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-declared` | `text` | 6 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-declared` | `text` | 7 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-declared` | `text` | 8 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-declared` | `text` | 9 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `attribute-declared` | `text` | 10 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `interval` | `text` | 1 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `interval` | `text` | 2 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `interval` | `text` | 3 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `interval` | `text` | 4 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `interval` | `text` | 5 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `interval` | `text` | 6 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `interval` | `text` | 7 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `interval` | `text` | 8 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `interval` | `text` | 9 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `interval` | `text` | 10 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `interval-declared` | `text` | 1 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `interval-declared` | `text` | 2 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `interval-declared` | `text` | 3 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `interval-declared` | `text` | 4 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `interval-declared` | `text` | 5 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `interval-declared` | `text` | 6 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `interval-declared` | `text` | 7 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `interval-declared` | `text` | 8 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `interval-declared` | `text` | 9 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `interval-declared` | `text` | 10 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `log` | `text` | 1 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `log` | `text` | 2 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `log` | `text` | 3 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `log` | `text` | 4 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `log` | `text` | 5 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `log` | `text` | 6 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `log` | `text` | 7 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `log` | `text` | 8 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `log` | `text` | 9 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `log` | `text` | 10 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+
+### What a decade consumes
+
+| frame | arm | year | units | content KB | stored KB |
+|---|---|---|---|---|---|
+| `shipped` | `oracle` | 1 | 168 | 6.5 | 856.0 |
+| `shipped` | `oracle` | 2 | 272 | 10.4 | 1656.0 |
+| `shipped` | `oracle` | 3 | 387 | 15.4 | 2480.0 |
+| `shipped` | `oracle` | 4 | 425 | 16.9 | 3288.0 |
+| `shipped` | `oracle` | 5 | 461 | 18.2 | 4060.0 |
+| `shipped` | `oracle` | 6 | 552 | 22.2 | 4892.0 |
+| `shipped` | `oracle` | 7 | 658 | 26.8 | 5700.0 |
+| `shipped` | `oracle` | 8 | 698 | 28.4 | 6496.0 |
+| `shipped` | `oracle` | 9 | 735 | 29.8 | 7312.0 |
+| `shipped` | `oracle` | 10 | 783 | 31.6 | 8112.0 |
+| `document` | `oracle` | 1 | 1 | 2.0 | 2.0 |
+| `document` | `oracle` | 2 | 1 | 2.0 | 2.0 |
+| `document` | `oracle` | 3 | 1 | 2.0 | 2.0 |
+| `document` | `oracle` | 4 | 1 | 2.0 | 2.0 |
+| `document` | `oracle` | 5 | 1 | 2.0 | 2.0 |
+| `document` | `oracle` | 6 | 1 | 2.0 | 2.0 |
+| `document` | `oracle` | 7 | 1 | 2.0 | 2.0 |
+| `document` | `oracle` | 8 | 1 | 2.0 | 2.0 |
+| `document` | `oracle` | 9 | 1 | 2.0 | 2.0 |
+| `document` | `oracle` | 10 | 1 | 2.0 | 2.0 |
+| `attribute-single` | `oracle` | 1 | 160 | 4.0 | 4.0 |
+| `attribute-single` | `oracle` | 2 | 280 | 7.0 | 7.0 |
+| `attribute-single` | `oracle` | 3 | 320 | 8.0 | 8.0 |
+| `attribute-single` | `oracle` | 4 | 360 | 9.0 | 9.0 |
+| `attribute-single` | `oracle` | 5 | 400 | 10.0 | 10.0 |
+| `attribute-single` | `oracle` | 6 | 440 | 11.0 | 11.0 |
+| `attribute-single` | `oracle` | 7 | 480 | 12.0 | 12.0 |
+| `attribute-single` | `oracle` | 8 | 520 | 12.9 | 12.9 |
+| `attribute-single` | `oracle` | 9 | 560 | 13.9 | 13.9 |
+| `attribute-single` | `oracle` | 10 | 600 | 14.9 | 14.9 |
+| `attribute-multi` | `oracle` | 1 | 160 | 4.0 | 4.0 |
+| `attribute-multi` | `oracle` | 2 | 280 | 7.0 | 7.0 |
+| `attribute-multi` | `oracle` | 3 | 400 | 10.0 | 10.0 |
+| `attribute-multi` | `oracle` | 4 | 440 | 11.0 | 11.0 |
+| `attribute-multi` | `oracle` | 5 | 480 | 12.0 | 12.0 |
+| `attribute-multi` | `oracle` | 6 | 600 | 15.0 | 15.0 |
+| `attribute-multi` | `oracle` | 7 | 680 | 16.9 | 16.9 |
+| `attribute-multi` | `oracle` | 8 | 720 | 17.9 | 17.9 |
+| `attribute-multi` | `oracle` | 9 | 760 | 18.9 | 18.9 |
+| `attribute-multi` | `oracle` | 10 | 800 | 19.9 | 19.9 |
+| `attribute-learned` | `oracle` | 1 | 160 | 4.0 | 4.0 |
+| `attribute-learned` | `oracle` | 2 | 280 | 7.0 | 7.0 |
+| `attribute-learned` | `oracle` | 3 | 400 | 10.0 | 10.0 |
+| `attribute-learned` | `oracle` | 4 | 440 | 11.0 | 11.0 |
+| `attribute-learned` | `oracle` | 5 | 480 | 12.0 | 12.0 |
+| `attribute-learned` | `oracle` | 6 | 600 | 15.0 | 15.0 |
+| `attribute-learned` | `oracle` | 7 | 680 | 16.9 | 16.9 |
+| `attribute-learned` | `oracle` | 8 | 720 | 17.9 | 17.9 |
+| `attribute-learned` | `oracle` | 9 | 760 | 18.9 | 18.9 |
+| `attribute-learned` | `oracle` | 10 | 800 | 19.9 | 19.9 |
+| `attribute-cued` | `oracle` | 1 | 160 | 4.0 | 4.0 |
+| `attribute-cued` | `oracle` | 2 | 280 | 7.0 | 7.0 |
+| `attribute-cued` | `oracle` | 3 | 320 | 8.0 | 8.0 |
+| `attribute-cued` | `oracle` | 4 | 360 | 9.0 | 9.0 |
+| `attribute-cued` | `oracle` | 5 | 400 | 10.0 | 10.0 |
+| `attribute-cued` | `oracle` | 6 | 480 | 12.0 | 12.0 |
+| `attribute-cued` | `oracle` | 7 | 520 | 13.0 | 13.0 |
+| `attribute-cued` | `oracle` | 8 | 560 | 13.9 | 13.9 |
+| `attribute-cued` | `oracle` | 9 | 600 | 14.9 | 14.9 |
+| `attribute-cued` | `oracle` | 10 | 640 | 15.9 | 15.9 |
+| `attribute-declared` | `oracle` | 1 | 160 | 4.0 | 4.0 |
+| `attribute-declared` | `oracle` | 2 | 280 | 7.0 | 7.0 |
+| `attribute-declared` | `oracle` | 3 | 320 | 8.0 | 8.0 |
+| `attribute-declared` | `oracle` | 4 | 360 | 9.0 | 9.0 |
+| `attribute-declared` | `oracle` | 5 | 400 | 10.0 | 10.0 |
+| `attribute-declared` | `oracle` | 6 | 520 | 13.0 | 13.0 |
+| `attribute-declared` | `oracle` | 7 | 560 | 14.0 | 14.0 |
+| `attribute-declared` | `oracle` | 8 | 600 | 14.9 | 14.9 |
+| `attribute-declared` | `oracle` | 9 | 640 | 15.9 | 15.9 |
+| `attribute-declared` | `oracle` | 10 | 680 | 16.9 | 16.9 |
+| `interval` | `oracle` | 1 | 160 | 4.0 | 4.0 |
+| `interval` | `oracle` | 2 | 280 | 7.0 | 7.0 |
+| `interval` | `oracle` | 3 | 400 | 10.0 | 10.0 |
+| `interval` | `oracle` | 4 | 440 | 11.0 | 11.0 |
+| `interval` | `oracle` | 5 | 480 | 12.0 | 12.0 |
+| `interval` | `oracle` | 6 | 600 | 15.0 | 15.0 |
+| `interval` | `oracle` | 7 | 720 | 17.9 | 17.9 |
+| `interval` | `oracle` | 8 | 760 | 18.9 | 18.9 |
+| `interval` | `oracle` | 9 | 800 | 19.9 | 19.9 |
+| `interval` | `oracle` | 10 | 840 | 20.9 | 20.9 |
+| `interval-declared` | `oracle` | 1 | 160 | 4.0 | 4.0 |
+| `interval-declared` | `oracle` | 2 | 280 | 7.0 | 7.0 |
+| `interval-declared` | `oracle` | 3 | 400 | 10.0 | 10.0 |
+| `interval-declared` | `oracle` | 4 | 440 | 11.0 | 11.0 |
+| `interval-declared` | `oracle` | 5 | 480 | 12.0 | 12.0 |
+| `interval-declared` | `oracle` | 6 | 600 | 15.0 | 15.0 |
+| `interval-declared` | `oracle` | 7 | 720 | 17.9 | 17.9 |
+| `interval-declared` | `oracle` | 8 | 760 | 18.9 | 18.9 |
+| `interval-declared` | `oracle` | 9 | 800 | 19.9 | 19.9 |
+| `interval-declared` | `oracle` | 10 | 840 | 20.9 | 20.9 |
+| `log` | `oracle` | 1 | 160 | 4.0 | 4.0 |
+| `log` | `oracle` | 2 | 280 | 7.0 | 7.0 |
+| `log` | `oracle` | 3 | 400 | 10.0 | 10.0 |
+| `log` | `oracle` | 4 | 440 | 11.0 | 11.0 |
+| `log` | `oracle` | 5 | 480 | 12.0 | 12.0 |
+| `log` | `oracle` | 6 | 600 | 15.0 | 15.0 |
+| `log` | `oracle` | 7 | 720 | 17.9 | 17.9 |
+| `log` | `oracle` | 8 | 760 | 18.9 | 18.9 |
+| `log` | `oracle` | 9 | 800 | 19.9 | 19.9 |
+| `log` | `oracle` | 10 | 840 | 20.9 | 20.9 |
+| `shipped` | `text` | 1 | 30 | 1.2 | 812.0 |
+| `shipped` | `text` | 2 | 13 | 0.6 | 1592.0 |
+| `shipped` | `text` | 3 | 29 | 1.2 | 2388.0 |
+| `shipped` | `text` | 4 | 26 | 1.1 | 3164.0 |
+| `shipped` | `text` | 5 | 28 | 1.2 | 3940.0 |
+| `shipped` | `text` | 6 | 13 | 0.5 | 4720.0 |
+| `shipped` | `text` | 7 | 12 | 0.5 | 5504.0 |
+| `shipped` | `text` | 8 | 11 | 0.5 | 6280.0 |
+| `shipped` | `text` | 9 | 9 | 0.4 | 7064.0 |
+| `shipped` | `text` | 10 | 22 | 0.9 | 7844.0 |
+| `document` | `text` | 1 | 1 | 2.0 | 2.0 |
+| `document` | `text` | 2 | 1 | 2.0 | 2.0 |
+| `document` | `text` | 3 | 1 | 2.0 | 2.0 |
+| `document` | `text` | 4 | 1 | 2.0 | 2.0 |
+| `document` | `text` | 5 | 1 | 2.0 | 2.0 |
+| `document` | `text` | 6 | 1 | 2.0 | 2.0 |
+| `document` | `text` | 7 | 1 | 2.0 | 2.0 |
+| `document` | `text` | 8 | 1 | 2.0 | 2.0 |
+| `document` | `text` | 9 | 1 | 2.0 | 2.0 |
+| `document` | `text` | 10 | 1 | 2.0 | 2.0 |
+| `attribute-single` | `text` | 1 | 0 | 0.0 | 0.0 |
+| `attribute-single` | `text` | 2 | 0 | 0.0 | 0.0 |
+| `attribute-single` | `text` | 3 | 0 | 0.0 | 0.0 |
+| `attribute-single` | `text` | 4 | 0 | 0.0 | 0.0 |
+| `attribute-single` | `text` | 5 | 0 | 0.0 | 0.0 |
+| `attribute-single` | `text` | 6 | 0 | 0.0 | 0.0 |
+| `attribute-single` | `text` | 7 | 0 | 0.0 | 0.0 |
+| `attribute-single` | `text` | 8 | 0 | 0.0 | 0.0 |
+| `attribute-single` | `text` | 9 | 0 | 0.0 | 0.0 |
+| `attribute-single` | `text` | 10 | 0 | 0.0 | 0.0 |
+| `attribute-multi` | `text` | 1 | 0 | 0.0 | 0.0 |
+| `attribute-multi` | `text` | 2 | 0 | 0.0 | 0.0 |
+| `attribute-multi` | `text` | 3 | 0 | 0.0 | 0.0 |
+| `attribute-multi` | `text` | 4 | 0 | 0.0 | 0.0 |
+| `attribute-multi` | `text` | 5 | 0 | 0.0 | 0.0 |
+| `attribute-multi` | `text` | 6 | 0 | 0.0 | 0.0 |
+| `attribute-multi` | `text` | 7 | 0 | 0.0 | 0.0 |
+| `attribute-multi` | `text` | 8 | 0 | 0.0 | 0.0 |
+| `attribute-multi` | `text` | 9 | 0 | 0.0 | 0.0 |
+| `attribute-multi` | `text` | 10 | 0 | 0.0 | 0.0 |
+| `attribute-learned` | `text` | 1 | 0 | 0.0 | 0.0 |
+| `attribute-learned` | `text` | 2 | 0 | 0.0 | 0.0 |
+| `attribute-learned` | `text` | 3 | 0 | 0.0 | 0.0 |
+| `attribute-learned` | `text` | 4 | 0 | 0.0 | 0.0 |
+| `attribute-learned` | `text` | 5 | 0 | 0.0 | 0.0 |
+| `attribute-learned` | `text` | 6 | 0 | 0.0 | 0.0 |
+| `attribute-learned` | `text` | 7 | 0 | 0.0 | 0.0 |
+| `attribute-learned` | `text` | 8 | 0 | 0.0 | 0.0 |
+| `attribute-learned` | `text` | 9 | 0 | 0.0 | 0.0 |
+| `attribute-learned` | `text` | 10 | 0 | 0.0 | 0.0 |
+| `attribute-cued` | `text` | 1 | 0 | 0.0 | 0.0 |
+| `attribute-cued` | `text` | 2 | 0 | 0.0 | 0.0 |
+| `attribute-cued` | `text` | 3 | 0 | 0.0 | 0.0 |
+| `attribute-cued` | `text` | 4 | 0 | 0.0 | 0.0 |
+| `attribute-cued` | `text` | 5 | 0 | 0.0 | 0.0 |
+| `attribute-cued` | `text` | 6 | 0 | 0.0 | 0.0 |
+| `attribute-cued` | `text` | 7 | 0 | 0.0 | 0.0 |
+| `attribute-cued` | `text` | 8 | 0 | 0.0 | 0.0 |
+| `attribute-cued` | `text` | 9 | 0 | 0.0 | 0.0 |
+| `attribute-cued` | `text` | 10 | 0 | 0.0 | 0.0 |
+| `attribute-declared` | `text` | 1 | 0 | 0.0 | 0.0 |
+| `attribute-declared` | `text` | 2 | 0 | 0.0 | 0.0 |
+| `attribute-declared` | `text` | 3 | 0 | 0.0 | 0.0 |
+| `attribute-declared` | `text` | 4 | 0 | 0.0 | 0.0 |
+| `attribute-declared` | `text` | 5 | 0 | 0.0 | 0.0 |
+| `attribute-declared` | `text` | 6 | 0 | 0.0 | 0.0 |
+| `attribute-declared` | `text` | 7 | 0 | 0.0 | 0.0 |
+| `attribute-declared` | `text` | 8 | 0 | 0.0 | 0.0 |
+| `attribute-declared` | `text` | 9 | 0 | 0.0 | 0.0 |
+| `attribute-declared` | `text` | 10 | 0 | 0.0 | 0.0 |
+| `interval` | `text` | 1 | 0 | 0.0 | 0.0 |
+| `interval` | `text` | 2 | 0 | 0.0 | 0.0 |
+| `interval` | `text` | 3 | 0 | 0.0 | 0.0 |
+| `interval` | `text` | 4 | 0 | 0.0 | 0.0 |
+| `interval` | `text` | 5 | 0 | 0.0 | 0.0 |
+| `interval` | `text` | 6 | 0 | 0.0 | 0.0 |
+| `interval` | `text` | 7 | 0 | 0.0 | 0.0 |
+| `interval` | `text` | 8 | 0 | 0.0 | 0.0 |
+| `interval` | `text` | 9 | 0 | 0.0 | 0.0 |
+| `interval` | `text` | 10 | 0 | 0.0 | 0.0 |
+| `interval-declared` | `text` | 1 | 0 | 0.0 | 0.0 |
+| `interval-declared` | `text` | 2 | 0 | 0.0 | 0.0 |
+| `interval-declared` | `text` | 3 | 0 | 0.0 | 0.0 |
+| `interval-declared` | `text` | 4 | 0 | 0.0 | 0.0 |
+| `interval-declared` | `text` | 5 | 0 | 0.0 | 0.0 |
+| `interval-declared` | `text` | 6 | 0 | 0.0 | 0.0 |
+| `interval-declared` | `text` | 7 | 0 | 0.0 | 0.0 |
+| `interval-declared` | `text` | 8 | 0 | 0.0 | 0.0 |
+| `interval-declared` | `text` | 9 | 0 | 0.0 | 0.0 |
+| `interval-declared` | `text` | 10 | 0 | 0.0 | 0.0 |
+| `log` | `text` | 1 | 0 | 0.0 | 0.0 |
+| `log` | `text` | 2 | 0 | 0.0 | 0.0 |
+| `log` | `text` | 3 | 0 | 0.0 | 0.0 |
+| `log` | `text` | 4 | 0 | 0.0 | 0.0 |
+| `log` | `text` | 5 | 0 | 0.0 | 0.0 |
+| `log` | `text` | 6 | 0 | 0.0 | 0.0 |
+| `log` | `text` | 7 | 0 | 0.0 | 0.0 |
+| `log` | `text` | 8 | 0 | 0.0 | 0.0 |
+| `log` | `text` | 9 | 0 | 0.0 | 0.0 |
+| `log` | `text` | 10 | 0 | 0.0 | 0.0 |
+
+| frame | arm | units at the last year | units added a year | decades to the active-index capacity |
+|---|---|---|---|---|
+| `shipped` | `oracle` | 783 | 68.3 | 13 |
+| `document` | `oracle` | 1 | 0.0 | n/a |
+| `attribute-single` | `oracle` | 600 | 48.9 | 19 |
+| `attribute-multi` | `oracle` | 800 | 71.1 | 13 |
+| `attribute-learned` | `oracle` | 800 | 71.1 | 13 |
+| `attribute-cued` | `oracle` | 640 | 53.3 | 18 |
+| `attribute-declared` | `oracle` | 680 | 57.8 | 16 |
+| `interval` | `oracle` | 840 | 75.6 | 12 |
+| `interval-declared` | `oracle` | 840 | 75.6 | 12 |
+| `log` | `oracle` | 840 | 75.6 | 12 |
+| `shipped` | `text` | 22 | -0.9 | n/a |
+| `document` | `text` | 1 | 0.0 | n/a |
+| `attribute-single` | `text` | 0 | 0.0 | n/a |
+| `attribute-multi` | `text` | 0 | 0.0 | n/a |
+| `attribute-learned` | `text` | 0 | 0.0 | n/a |
+| `attribute-cued` | `text` | 0 | 0.0 | n/a |
+| `attribute-declared` | `text` | 0 | 0.0 | n/a |
+| `interval` | `text` | 0 | 0.0 | n/a |
+| `interval-declared` | `text` | 0 | 0.0 | n/a |
+| `log` | `text` | 0 | 0.0 | n/a |
+
+### Whether a correction reaches what a read did not
+
+| frame | arm | corrections whose value a read had returned | applied | corrections whose value no read had returned | applied |
+|---|---|---|---|---|---|
+| `shipped` | `oracle` | 141 | 0.064 ±0.040 | 19 | 1.000 ±0.000 |
+| `document` | `oracle` | 14 | 1.000 ±0.000 | 146 | 1.000 ±0.000 |
+| `attribute-single` | `oracle` | 160 | 1.000 ±0.000 | 0 | n/a |
+| `attribute-multi` | `oracle` | 160 | 0.000 ±0.000 | 0 | n/a |
+| `attribute-learned` | `oracle` | 160 | 0.000 ±0.000 | 0 | n/a |
+| `attribute-cued` | `oracle` | 160 | 1.000 ±0.000 | 0 | n/a |
+| `attribute-declared` | `oracle` | 160 | 1.000 ±0.000 | 0 | n/a |
+| `interval` | `oracle` | 160 | 0.000 ±0.000 | 0 | n/a |
+| `interval-declared` | `oracle` | 160 | 0.000 ±0.000 | 0 | n/a |
+| `log` | `oracle` | 160 | 0.000 ±0.000 | 0 | n/a |
+| `shipped` | `text` | 9 | 1.000 ±0.000 | 151 | 1.000 ±0.000 |
+| `document` | `text` | 14 | 1.000 ±0.000 | 146 | 1.000 ±0.000 |
+| `attribute-single` | `text` | 0 | n/a | 160 | 1.000 ±0.000 |
+| `attribute-multi` | `text` | 0 | n/a | 160 | 1.000 ±0.000 |
+| `attribute-learned` | `text` | 0 | n/a | 160 | 1.000 ±0.000 |
+| `attribute-cued` | `text` | 0 | n/a | 160 | 1.000 ±0.000 |
+| `attribute-declared` | `text` | 0 | n/a | 160 | 1.000 ±0.000 |
+| `interval` | `text` | 0 | n/a | 160 | 1.000 ±0.000 |
+| `interval-declared` | `text` | 0 | n/a | 160 | 1.000 ±0.000 |
+| `log` | `text` | 0 | n/a | 160 | 1.000 ±0.000 |
 
 ### What a wrong declaration costs, by year
 
@@ -877,6 +1348,15 @@ A size is one store read at one moment rather than a sample, so it carries no in
 - **The one bias that needs no number from the model is measurable, better than blind, and still does not close the gap.** Asking three times and joining where the samples split beats blind biasing by a wide margin on what it buys per point of staleness. It costs three model calls where there was one, carries a sample count as a knob, and leaves the coexistence class short of where a correct declaration would put it. It is reported as what it is rather than recommended.
 - **The two stores that read a declaration are separated by what they hold and what they read, and by nothing a reader can ask about.** That is the same result #457 found among three stores under one self-deciding rule, holding now under a declaration that is sometimes wrong. Whatever is chosen, it is not chosen on what the memory answers.
 
+- **A write reaches what a read cannot, in one structure and not the other.** Constructed directly: a fact written, never once read back, then corrected among enough facts in the same words that a lookup does not find it alone. The addressed store applies the correction — the address is computed from the sentence, so the write lands whether or not anything ever returned that address. The store that supersedes what its own lookup surfaces does not. Reading and updating are decoupled in one design and coupled in the other, and that is a larger difference between them than any figure this record carried before.
+- **The same store fails to correct even what it can find, which bounds what the coupling explains.** With the row it must correct sitting alone, a correction phrased as a correction still does not land, while a restatement in the same words does: supersession fires on how much the two sentences share, and a correction shares little with what it corrects. So two causes are present and this workload separates them only in the constructed case. The workload-scale column reads backwards for the same reason — on that store a value no read returned is usually a value some unrelated write already archived, so "never reached" and "no longer held" are close to the same event and the column is not evidence about the coupling. The test is the measurement; the column is reported so a reader is not left to find that out.
+- **Nothing is frozen, on this workload, in any structure.** Every planted value each structure holds has been carried into some context at least once. For the addressed stores that is unsurprising: the address asked is the address returned, and every address is asked every year. For the shipped store it is not — it holds hundreds of rows and returns tens per turn, but a decade asks thousands of questions, so the budget cycles through everything many times over. The failure mode the criterion names is real and this workload is too small to produce it.
+- **What would produce it is a store larger than the reads can cycle through.** The frozen share turns positive when what a structure holds outruns what a decade of contexts can carry, and both of those are in the tables above. Nothing here approaches that, so the number to watch is the ratio rather than this round's zero.
+- **The bytes that cannot be reached are the archive, and they are almost all of them.** The frozen share is zero over what a search can reach because the archive is not part of it: the shipped store never hard-deletes, no query reaches an archived row, and at the last year its stored bytes stand at two orders of magnitude above the content its active index holds. Those bytes are held, cannot be read, and cannot be corrected — the case the criterion describes, sitting outside the index rather than inside it.
+- **A forgetting rule keyed on use has nothing to forget here.** The rule the frozen share would feed — drop what no read has ever reached — is well defined, needs no threshold and no clause for a class, and on this workload removes nothing, because nothing qualifies. It cannot be shown to be safe or unsafe by a run in which it never fires. The `carried` trap it was written against does not arise for the same reason: a carried fact is injected at every checkpoint that asks it, so a rule keyed on injection never sees it, and only a rule keyed on re-assertion would have eaten it.
+- **A structure that answers the question brings back very little else.** The addressed stores carry about an eighth of what is live about the subject they are asked about; the shipped store carries about half, because a budget filled by ranking sweeps in whatever else scores. Under the criterion this round is for, that is the addressed store's one disadvantage — everything about that subject the context did not carry is outside the reach of that turn's writeback. What the coupling result says is that for an addressed store it does not follow that those facts are unfixable, because a later correction does not need to have read them.
+- **Nothing approaches the capacity ceiling.** Every structure adds tens of units a year and the active-index capacity is more than a dozen decades away at the fastest rate measured. The question closes: capacity is not what bounds a decade, and it was never the constraint the ceiling was written for.
+
 ## What would be chosen today
 
 The programme moves from measuring to deciding after this round, so this is where the record says where it stands. Two of the three questions are answered by the evidence and the third is not.
@@ -884,6 +1364,8 @@ The programme moves from measuring to deciding after this round, so this is wher
 **The structure is chosen: a fact is held at its address, and arity comes from the write.** Addressing removes the failure the shipped design has — supersession inferred from similarity — outright rather than improving it, and every arm that tried to recover arity from the stored triple failed or reproduced one of the degenerate ends. Among the stores that take a declaration, the plain addressed one answers exactly what the interval store answers while holding less and reading less, so the simpler one is the one to build. The interval store earns its extra bytes only if a question about an earlier year is ever asked, and nothing in this workload asks one.
 
 **The direction of error is chosen: where a writeback must err, it errs toward join.** That is not a preference. A wrong join is repaired by the next correct replacement at that address and carries its damage for no checkpoints; a wrong replacement is repaired by nothing and carries it to the end of the span. The asymmetry is measured, it is structural, and stating it costs no code.
+
+**What this round adds to the structure.** The addressed store's weakness under the read-and-update criterion is that it brings back little beyond the address asked, so a turn's writeback sees little it could correct. That would be decisive if a fact had to be read before it could be fixed — and the constructed case says it does not, for this structure: the write computes its address and lands whether or not any read ever returned it. The same case says the opposite for the store that supersedes by similarity. So the criterion the user named separates these two designs further rather than closing the gap, and the choice already stated stands.
 
 **The policy is not chosen, and the evidence cannot choose it.** Taking a real model's declarations recovers most of the coexistence an always-replacing store gives up, and pays for it with a superseded value on about one revised thread in five. Always replacing returns nothing stale and loses that coexistence permanently. Neither dominates. Which is cheaper depends on whether a fact that is lost costs more than a fact that is wrong, and no measurement in this record answers that — it is a property of what the agent is for, not of the structure. A reader looking for the row with the best numbers should be told that the best-scoring rule measured here is `attribute-cued`, which is disqualified for being a list that grows, and that it sits on the frontier rather than below it. The criterion has to be applied deliberately; it is not visible in the ranking.
 
@@ -893,6 +1375,7 @@ What would be built today, then, is the addressed store with the operation state
 
 - It does not choose the policy for a declaration that cannot be trusted. §What would be chosen today states the structure and the direction of error as settled and says why the evidence cannot settle this third one: taking a model's declarations and always replacing are a genuine trade, and which failure is cheaper is a property of what the agent is for rather than of anything measured here. A reader looking for that decision will not find it in a table.
 - It does not measure a writeback that decides what is worth storing. Both arms hold extraction constant, so what a model is measured deciding here is arity and nothing else; whether a model writes anything at all unprompted is `memory-cycle/`'s subject.
+- It does not measure a forgetting rule in operation. The rule the frozen share would feed removes nothing here because nothing qualifies, so whether it is safe is untested rather than established — a run in which a rule never fires says nothing about the rule.
 - It does not measure a question about an earlier year. The interval store's extra bytes buy the ability to answer one, and the workload asks none, so what that capability is worth is still unmeasured — the same gap #457 reported, unchanged by this round.
 - It does not rank the structures. `attribute-declared` is a ceiling rather than a design, several arms are the ends of a range rather than candidates, and the best-scoring rule measured is disqualified — so the order of the rows is not an order of preference.
 - It does not say the attribute frame's storage advantage would survive persistence. It is measured as an in-memory structure with no file format, so what it stores is what it holds; a persisted form would add a page layout and an index the shipped store's figure already carries.
@@ -905,6 +1388,9 @@ What would be built today, then, is the addressed store with the operation state
 - **Values are unique tokens.** That is what makes crediting exact, and it is not how every real fact looks: two people can be allergic to the same thing. A workload whose values collided would need a credit rule that reads subject and value together, and this one does not test any structure's behaviour under that.
 - **Crediting is by reading the injected text.** It is the only rule that can score a structure with rows and a structure with one document on the same footing. It credits a value present for the wrong reason — a frame that returned everything it ever saw would score perfectly on recall, which is why the stale figure is beside it and why context size is reported.
 - **A checkpoint does not write.** Real questions are turns and a design could learn from being asked one. Here it cannot, so nothing scores by echoing the question.
+- **The frozen share is zero because the workload is small, not because a structure cannot freeze.** A decade of questions carries more into contexts than any structure here holds, so everything is reached. The number is a property of this workload's ratio of questions to facts, and a store that outgrew that ratio would report differently — which is what the extrapolation beside it is for.
+- **The frozen share is counted over what a search can reach.** The shipped store's archive is excluded, because no query returns an archived row: counting it as held would make the figure incomparable with a structure that has no archive. What the archive costs is in the byte columns and is not in the frozen column, and those bytes are the clearest case of the criterion in the record.
+- **The subject relation counts what is live, not what would be useful.** A value true anywhere on the probed subject counts as related whether or not a person would think it relevant to that question. It is the widest relation the workload can define without inventing one, and a narrower one would need a judgement the ground truth does not carry.
 - **The doubt figures are one model's, three samples deep.** Whether disagreement tracks error was measured at three samples of each consequential assertion. More samples would sharpen it, a different model might be in doubt somewhere else, and neither is measured. What the figure supports is that most of this model's wrong answers are settled; it does not support a claim about models in general.
 - **No rule was built on the doubt beyond the simplest one.** Joining where the samples split is the one policy measured, because it needs nothing from the model but another answer. A rule weighing how many samples disagreed, or how far apart they were, would be a threshold on a number, which this round declined to build rather than tested and rejected.
 - **One model, one prompt, one day.** The declaration figures describe the cheapest model at the provider this project ships, asked one way, on one afternoon. A larger model, a prompt that showed it examples, or a second attempt at the same call would all move them, and none of that is measured. The provider is not reproducible to the last bit either, which is why the answers are committed rather than re-bought.

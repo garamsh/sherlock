@@ -150,15 +150,12 @@ def method():
     check(s, "structures scored", words[a.one(1)],
           "results_round4/ scored rows", len(seeds))
 
-    rounds13 = os.path.join(HERE, "..", "real_dataset.py")
-    topics = re.findall(r'^    \("', open(rounds13).read(), re.M)
-    a = Anchor(r"planted (\w+) topics, corrected every one of them, and backed "
-               r"each number with (\w+) probes")
-    words = {"ten": 10}
-    check(s, "rounds 1-3 topics planted", words[a.one(0)],
-          "harness/real_dataset.py TOPICS", len(topics))
-    check(s, "rounds 1-3 probes", words[a.one(1)],
-          "harness/real_dataset.py build() probes", len(topics))
+    Anchor(r"planted (\w+) topics, corrected every one of them, and backed "
+           r"each number with (\w+) probes")
+    unsourced(s, "the rounds 1–3 dataset shape: ten topics, ten probes each",
+              "the harness that carried it was deleted in #483 as superseded, so "
+              "the record now states the shape on its own authority; the anchor "
+              "above still fails if the sentence is reworded")
 
 
 def scored_systems():

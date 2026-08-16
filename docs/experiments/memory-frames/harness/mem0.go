@@ -130,18 +130,25 @@ func (f *mem0Frame) nearest(vector []float32) []int {
 // Context returns the memories most similar to what is asked, up to the
 // candidate count the design retrieves at.
 //
-// The query is the address in the arm that supplies one, so this frame is
+// The query is the address where a form supplies one, so this frame is
 // handed exactly what every addressed frame is handed and the comparison
 // between them is about what a structure does with an address rather than
-// about what it knows. Where no address arrives it queries with the turn's
-// text, which is what its retrieval takes in production.
+// about what it knows. Where none arrives it queries with the question's
+// words, which is what its retrieval takes in production — this design is
+// the one fact-holding structure here with a read path that a worded
+// question reaches at all.
+//
+// A question naming a subject and no attribute is one more query string.
+// Where an addressed store answers such a question by reading every address
+// under the subject and returning all of them, this one ranks and stops at
+// the count it retrieves at, whatever the question spanned.
 func (f *mem0Frame) Context(ctx context.Context, t Turn) (Injected, error) {
 	if len(f.items) == 0 {
 		return Injected{}, nil
 	}
 	query := t.Text
 	if t.Ask != nil {
-		query = t.Ask.Subject + " " + t.Ask.Attribute
+		query = strings.TrimSpace(t.Ask.Subject + " " + t.Ask.Attribute)
 	}
 	vector, err := f.embedder.Embed(ctx, query)
 	if err != nil {

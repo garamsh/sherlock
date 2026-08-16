@@ -133,14 +133,19 @@ func TestEmbedCounter_CountsTheCallsAndTheDistinctTexts(t *testing.T) {
 }
 
 // Ask reaches every frame, and a frame that does not address facts ignores
-// it. That is the shipped design's own choice — its read path takes a task
-// statement — rather than a handicap the harness imposes, and it is why the
-// figures this record already carried did not move when the read side of
-// the seam was extended.
+// it. That is each design's own choice — the shipped read path and the
+// three memory streams' both take a task statement — rather than a handicap
+// the harness imposes, and it is why the figures this record already
+// carried did not move when the read side of the seam was extended.
+//
+// It is also why these frames post one row under every question form: a
+// structure that never reads an address cannot be told which form supplied
+// one.
 func TestFrames_ThatDoNotAddressFactsIgnoreTheAddressAsked(t *testing.T) {
 	ctx := context.Background()
 	address := Address{Subject: "Alma", Attribute: "project"}
-	for _, name := range []string{frameShipped, frameDocument} {
+	for _, name := range []string{frameShipped, frameDocument,
+		frameGenerativeAgents, frameReflection, frameMemoryBank} {
 		t.Run(name, func(t *testing.T) {
 			frame, err := NewFrame(name, t.TempDir(), NewEmbedCounter(), 0)
 			require.NoError(t, err)

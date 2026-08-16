@@ -259,6 +259,10 @@ Chhikara et al. 2025, *Mem0: Building Production-Ready AI Agents with Scalable L
 
 It is here because it is the published design closest to what §What would be chosen today recommends, and because it differs from that recommendation in exactly one decision. Both take the write operation from a model reading the sentence. This one then has to find which memory the operation applies to, and finds it by similarity; the addressed store computes the address and goes there. Running the two on one set of declarations separates identity from arity, which no run in this record had separated before.
 
+**One shipped design carries this programme's conclusion and its refutation, one on each side of that write.** That the operation should be stated by the write is what five rounds here concluded and what §What would be chosen today recommends. That two statements about one fact can be identified by the similarity between them is what `memory-retrieval/` measured and rejected. Mem0 does both, in that order, in one write path. The rows below are therefore not a verdict on the design so much as a reading of which half of it carries the weight.
+
+**What the design is for, before what it scores.** Mem0 is built for production agents with a model in the loop, and its similarity retrieval is not the identity decision — it is the *filter in front of* the identity decision. Ten candidates are pulled by embedding and a model, seeing the new fact and all ten, chooses which one the operation lands on and whether it lands at all. The retrieval only has to put the right memory somewhere in ten; the model does the discriminating. This seam has no model, so what is measured here is the filter deciding alone, and §What a similarity-located write has to separate is what says it cannot: the right memory is not reliably even the nearest one. The figures below are what Mem0's identity step scores with the part that discriminates removed. That is a real limit of what this instrument can say about this design, and it is also the round's finding, because it locates exactly which call the design cannot be built without.
+
 **What it needed that the seam withholds.** A model in the write path, twice over. The first call is extraction, which the arms already bracket: under the oracle it is perfect and in the `text` arm there is none, so this design holds nothing there for the reason every addressed structure holds nothing there. The second call is the judgement — whether a candidate is the memory this fact updates — and nothing in the seam supplies it. The paper states no threshold, because the model decides. So two arms bracket it instead: `mem0` takes the nearest candidate whose similarity clears the constant this project's own store supersedes at, and `mem0-nearest` takes the nearest candidate whatever its similarity. The design sits between them at a point nothing measured here can locate, which is the shape of answer §The arity question gave `attribute-learned`. §What a similarity-located write has to separate is the evidence about where a working gate would have to sit.
 
 Its read is handed the address in the arm that supplies one, rendered as the query string its retrieval takes, so it is given exactly what every addressed frame is given. What separates it from the addressed store is what it does with an address, not what it knows.
@@ -278,6 +282,7 @@ Its read is handed the address in the arm that supplies one, rendered as the que
 
 - **Removing the judgement destroys the store.** It ends the decade holding a tenth of what was written to it and answering under a fifth of what it is asked, and it answers `carried` on nothing at all: a fact asserted in the first year is ended by some later write about something else long before it is asked in the last. What it does answer is mostly the year's own assertions, which is what a store that has just been written looks like.
 - **Its stale figure is zero, and that is the clearest case in this record of why recall is never reported alone.** It returns no superseded value because it has destroyed nearly everything, including the values that are still true. A column ranking on staleness alone would put this row at the top of the table.
+- **Read against `mem0`, the pair is the confirmation rather than two scores.** One end never updates and keeps everything, so it answers nearly all of it and returns what has stopped being true on nine revised threads in ten. The other updates every time and keeps almost nothing, so it returns nothing stale and answers under a fifth. Neither end is the design; what the pair says is that the whole of the design's behaviour lives in the judgement between them, and that judgement is the model call the seam withholds.
 
 ## Method
 
@@ -3073,6 +3078,8 @@ Every figure outside this section was produced with the question already turned 
 |---|---|---|
 | `thread` | 600 | 0.998 ±0.003 |
 | `subject` | 80 | 1.000 ±0.000 |
+<!-- end generated -->
+
 ## Where the published designs came from
 
 Ten structures were measured here before this round and every one of them was invented in this repository. The recommendation they produced had never met a published design on the workload that produced it. This section is what was searched, what it found, and why each design found is where it is.

@@ -1,0 +1,54 @@
+{
+  "seed": 11,
+  "turns": 645,
+  "probes": 204,
+  "probe_kinds": {
+    "corrected": 100,
+    "control": 40,
+    "coexist": 64
+  },
+  "row": {
+    "system": "B17-key-upsert-question-key",
+    "blurb": "B14's 5-key offer, with the key defined as the question a fact answers",
+    "extra_calls": 1.0,
+    "decider_calls": 645,
+    "items": 392,
+    "elapsed_s": 407.2,
+    "latest_wins": 0.78,
+    "control_survival": 0.9,
+    "coexist_preserved": 0.7786,
+    "stale_present": 0.19,
+    "net": 0.8195,
+    "control_never_written": 0.05,
+    "control_retired": 0.0,
+    "control_not_ranked": 0.05,
+    "coexist_never_written": 0.0208,
+    "coexist_retired": 0.2153,
+    "coexist_not_ranked": 0.0,
+    "coexist_by_family": {
+      "allergy": 0.9583,
+      "certification": 1.0,
+      "committee": 1.0,
+      "craft": 1.0,
+      "cuisine": 0.5,
+      "garden": 1.0,
+      "instrument": 0.3333,
+      "volunteer": 0.4375
+    },
+    "outcomes": {
+      "corrected:recalled": 96,
+      "corrected:not_ranked": 4,
+      "control:recalled": 36,
+      "control:not_ranked": 2,
+      "control:never_written": 2,
+      "coexist:recalled": 110,
+      "coexist:retired": 31,
+      "coexist:never_written": 3
+    }
+  },
+  "api_calls": {
+    "embed": 2,
+    "chat": 508,
+    "chat_cached": 137
+  }
+}

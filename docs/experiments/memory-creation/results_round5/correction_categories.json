@@ -1,0 +1,765 @@
+{
+  "two_valued_categories": [
+    "pet",
+    "gym",
+    "testing"
+  ],
+  "seeds": [
+    7,
+    11
+  ],
+  "structures": {
+    "B3": {
+      "7": {
+        "structure": "B3-decider-neighbors",
+        "two_valued": {
+          "n": 18,
+          "latest_wins": 0.6667
+        },
+        "single_valued": {
+          "n": 82,
+          "latest_wins": 0.7073
+        },
+        "by_category": {
+          "ci": {
+            "n": 4,
+            "latest_wins": 0.25
+          },
+          "cloud": {
+            "n": 3,
+            "latest_wins": 0.6667
+          },
+          "commute": {
+            "n": 3,
+            "latest_wins": 1.0
+          },
+          "database": {
+            "n": 6,
+            "latest_wins": 0.8333
+          },
+          "drink": {
+            "n": 6,
+            "latest_wins": 0.8333
+          },
+          "editor": {
+            "n": 3,
+            "latest_wins": 0.3333
+          },
+          "framework": {
+            "n": 2,
+            "latest_wins": 1.0
+          },
+          "gym": {
+            "n": 5,
+            "latest_wins": 0.8
+          },
+          "indent": {
+            "n": 7,
+            "latest_wins": 0.8571
+          },
+          "language": {
+            "n": 7,
+            "latest_wins": 0.5714
+          },
+          "manager": {
+            "n": 7,
+            "latest_wins": 0.1429
+          },
+          "music": {
+            "n": 3,
+            "latest_wins": 0.6667
+          },
+          "notes": {
+            "n": 4,
+            "latest_wins": 1.0
+          },
+          "os": {
+            "n": 4,
+            "latest_wins": 1.0
+          },
+          "pet": {
+            "n": 6,
+            "latest_wins": 0.6667
+          },
+          "shell": {
+            "n": 5,
+            "latest_wins": 0.4
+          },
+          "terminal": {
+            "n": 6,
+            "latest_wins": 0.6667
+          },
+          "testing": {
+            "n": 7,
+            "latest_wins": 0.5714
+          },
+          "timezone": {
+            "n": 7,
+            "latest_wins": 1.0
+          },
+          "tracing": {
+            "n": 5,
+            "latest_wins": 1.0
+          }
+        }
+      },
+      "11": {
+        "structure": "B3-decider-neighbors",
+        "two_valued": {
+          "n": 10,
+          "latest_wins": 0.4
+        },
+        "single_valued": {
+          "n": 90,
+          "latest_wins": 0.7
+        },
+        "by_category": {
+          "ci": {
+            "n": 3,
+            "latest_wins": 0.6667
+          },
+          "cloud": {
+            "n": 6,
+            "latest_wins": 0.8333
+          },
+          "commute": {
+            "n": 5,
+            "latest_wins": 1.0
+          },
+          "database": {
+            "n": 4,
+            "latest_wins": 1.0
+          },
+          "drink": {
+            "n": 4,
+            "latest_wins": 0.75
+          },
+          "editor": {
+            "n": 9,
+            "latest_wins": 0.6667
+          },
+          "framework": {
+            "n": 5,
+            "latest_wins": 0.2
+          },
+          "gym": {
+            "n": 5,
+            "latest_wins": 0.6
+          },
+          "indent": {
+            "n": 5,
+            "latest_wins": 0.4
+          },
+          "language": {
+            "n": 6,
+            "latest_wins": 0.8333
+          },
+          "manager": {
+            "n": 6,
+            "latest_wins": 0.5
+          },
+          "music": {
+            "n": 6,
+            "latest_wins": 0.5
+          },
+          "notes": {
+            "n": 9,
+            "latest_wins": 0.8889
+          },
+          "os": {
+            "n": 5,
+            "latest_wins": 0.8
+          },
+          "pet": {
+            "n": 2,
+            "latest_wins": 0.0
+          },
+          "shell": {
+            "n": 4,
+            "latest_wins": 0.5
+          },
+          "terminal": {
+            "n": 5,
+            "latest_wins": 0.6
+          },
+          "testing": {
+            "n": 3,
+            "latest_wins": 0.3333
+          },
+          "timezone": {
+            "n": 4,
+            "latest_wins": 1.0
+          },
+          "tracing": {
+            "n": 4,
+            "latest_wins": 0.75
+          }
+        }
+      }
+    },
+    "B9": {
+      "7": {
+        "structure": "B9-decider-neighbors-wide",
+        "two_valued": {
+          "n": 18,
+          "latest_wins": 0.7778
+        },
+        "single_valued": {
+          "n": 82,
+          "latest_wins": 0.7317
+        },
+        "by_category": {
+          "ci": {
+            "n": 4,
+            "latest_wins": 0.25
+          },
+          "cloud": {
+            "n": 3,
+            "latest_wins": 1.0
+          },
+          "commute": {
+            "n": 3,
+            "latest_wins": 1.0
+          },
+          "database": {
+            "n": 6,
+            "latest_wins": 1.0
+          },
+          "drink": {
+            "n": 6,
+            "latest_wins": 0.8333
+          },
+          "editor": {
+            "n": 3,
+            "latest_wins": 0.3333
+          },
+          "framework": {
+            "n": 2,
+            "latest_wins": 1.0
+          },
+          "gym": {
+            "n": 5,
+            "latest_wins": 1.0
+          },
+          "indent": {
+            "n": 7,
+            "latest_wins": 0.8571
+          },
+          "language": {
+            "n": 7,
+            "latest_wins": 0.5714
+          },
+          "manager": {
+            "n": 7,
+            "latest_wins": 0.2857
+          },
+          "music": {
+            "n": 3,
+            "latest_wins": 1.0
+          },
+          "notes": {
+            "n": 4,
+            "latest_wins": 0.75
+          },
+          "os": {
+            "n": 4,
+            "latest_wins": 1.0
+          },
+          "pet": {
+            "n": 6,
+            "latest_wins": 0.8333
+          },
+          "shell": {
+            "n": 5,
+            "latest_wins": 0.6
+          },
+          "terminal": {
+            "n": 6,
+            "latest_wins": 0.5
+          },
+          "testing": {
+            "n": 7,
+            "latest_wins": 0.5714
+          },
+          "timezone": {
+            "n": 7,
+            "latest_wins": 1.0
+          },
+          "tracing": {
+            "n": 5,
+            "latest_wins": 0.8
+          }
+        }
+      },
+      "11": {
+        "structure": "B9-decider-neighbors-wide",
+        "two_valued": {
+          "n": 10,
+          "latest_wins": 0.4
+        },
+        "single_valued": {
+          "n": 90,
+          "latest_wins": 0.6889
+        },
+        "by_category": {
+          "ci": {
+            "n": 3,
+            "latest_wins": 0.6667
+          },
+          "cloud": {
+            "n": 6,
+            "latest_wins": 0.6667
+          },
+          "commute": {
+            "n": 5,
+            "latest_wins": 1.0
+          },
+          "database": {
+            "n": 4,
+            "latest_wins": 0.5
+          },
+          "drink": {
+            "n": 4,
+            "latest_wins": 0.75
+          },
+          "editor": {
+            "n": 9,
+            "latest_wins": 0.5556
+          },
+          "framework": {
+            "n": 5,
+            "latest_wins": 0.4
+          },
+          "gym": {
+            "n": 5,
+            "latest_wins": 0.6
+          },
+          "indent": {
+            "n": 5,
+            "latest_wins": 0.6
+          },
+          "language": {
+            "n": 6,
+            "latest_wins": 0.8333
+          },
+          "manager": {
+            "n": 6,
+            "latest_wins": 0.3333
+          },
+          "music": {
+            "n": 6,
+            "latest_wins": 0.6667
+          },
+          "notes": {
+            "n": 9,
+            "latest_wins": 0.8889
+          },
+          "os": {
+            "n": 5,
+            "latest_wins": 0.8
+          },
+          "pet": {
+            "n": 2,
+            "latest_wins": 0.0
+          },
+          "shell": {
+            "n": 4,
+            "latest_wins": 0.75
+          },
+          "terminal": {
+            "n": 5,
+            "latest_wins": 0.6
+          },
+          "testing": {
+            "n": 3,
+            "latest_wins": 0.3333
+          },
+          "timezone": {
+            "n": 4,
+            "latest_wins": 1.0
+          },
+          "tracing": {
+            "n": 4,
+            "latest_wins": 0.75
+          }
+        }
+      }
+    },
+    "B14": {
+      "7": {
+        "structure": "B14-key-upsert-plural",
+        "two_valued": {
+          "n": 18,
+          "latest_wins": 0.6111
+        },
+        "single_valued": {
+          "n": 82,
+          "latest_wins": 0.7195
+        },
+        "by_category": {
+          "ci": {
+            "n": 4,
+            "latest_wins": 0.5
+          },
+          "cloud": {
+            "n": 3,
+            "latest_wins": 1.0
+          },
+          "commute": {
+            "n": 3,
+            "latest_wins": 1.0
+          },
+          "database": {
+            "n": 6,
+            "latest_wins": 1.0
+          },
+          "drink": {
+            "n": 6,
+            "latest_wins": 0.1667
+          },
+          "editor": {
+            "n": 3,
+            "latest_wins": 0.6667
+          },
+          "framework": {
+            "n": 2,
+            "latest_wins": 0.5
+          },
+          "gym": {
+            "n": 5,
+            "latest_wins": 0.6
+          },
+          "indent": {
+            "n": 7,
+            "latest_wins": 0.8571
+          },
+          "language": {
+            "n": 7,
+            "latest_wins": 0.5714
+          },
+          "manager": {
+            "n": 7,
+            "latest_wins": 0.5714
+          },
+          "music": {
+            "n": 3,
+            "latest_wins": 1.0
+          },
+          "notes": {
+            "n": 4,
+            "latest_wins": 0.0
+          },
+          "os": {
+            "n": 4,
+            "latest_wins": 1.0
+          },
+          "pet": {
+            "n": 6,
+            "latest_wins": 0.1667
+          },
+          "shell": {
+            "n": 5,
+            "latest_wins": 0.6
+          },
+          "terminal": {
+            "n": 6,
+            "latest_wins": 0.8333
+          },
+          "testing": {
+            "n": 7,
+            "latest_wins": 1.0
+          },
+          "timezone": {
+            "n": 7,
+            "latest_wins": 1.0
+          },
+          "tracing": {
+            "n": 5,
+            "latest_wins": 1.0
+          }
+        }
+      },
+      "11": {
+        "structure": "B14-key-upsert-plural",
+        "two_valued": {
+          "n": 10,
+          "latest_wins": 0.6
+        },
+        "single_valued": {
+          "n": 90,
+          "latest_wins": 0.7778
+        },
+        "by_category": {
+          "ci": {
+            "n": 3,
+            "latest_wins": 1.0
+          },
+          "cloud": {
+            "n": 6,
+            "latest_wins": 0.8333
+          },
+          "commute": {
+            "n": 5,
+            "latest_wins": 1.0
+          },
+          "database": {
+            "n": 4,
+            "latest_wins": 1.0
+          },
+          "drink": {
+            "n": 4,
+            "latest_wins": 1.0
+          },
+          "editor": {
+            "n": 9,
+            "latest_wins": 0.7778
+          },
+          "framework": {
+            "n": 5,
+            "latest_wins": 0.2
+          },
+          "gym": {
+            "n": 5,
+            "latest_wins": 0.6
+          },
+          "indent": {
+            "n": 5,
+            "latest_wins": 1.0
+          },
+          "language": {
+            "n": 6,
+            "latest_wins": 0.0
+          },
+          "manager": {
+            "n": 6,
+            "latest_wins": 0.6667
+          },
+          "music": {
+            "n": 6,
+            "latest_wins": 0.3333
+          },
+          "notes": {
+            "n": 9,
+            "latest_wins": 1.0
+          },
+          "os": {
+            "n": 5,
+            "latest_wins": 1.0
+          },
+          "pet": {
+            "n": 2,
+            "latest_wins": 0.0
+          },
+          "shell": {
+            "n": 4,
+            "latest_wins": 1.0
+          },
+          "terminal": {
+            "n": 5,
+            "latest_wins": 0.8
+          },
+          "testing": {
+            "n": 3,
+            "latest_wins": 1.0
+          },
+          "timezone": {
+            "n": 4,
+            "latest_wins": 1.0
+          },
+          "tracing": {
+            "n": 4,
+            "latest_wins": 1.0
+          }
+        }
+      }
+    },
+    "B17": {
+      "7": {
+        "structure": "B17-key-upsert-question-key",
+        "two_valued": {
+          "n": 18,
+          "latest_wins": 0.6667
+        },
+        "single_valued": {
+          "n": 82,
+          "latest_wins": 0.7805
+        },
+        "by_category": {
+          "ci": {
+            "n": 4,
+            "latest_wins": 0.5
+          },
+          "cloud": {
+            "n": 3,
+            "latest_wins": 1.0
+          },
+          "commute": {
+            "n": 3,
+            "latest_wins": 1.0
+          },
+          "database": {
+            "n": 6,
+            "latest_wins": 0.6667
+          },
+          "drink": {
+            "n": 6,
+            "latest_wins": 1.0
+          },
+          "editor": {
+            "n": 3,
+            "latest_wins": 0.6667
+          },
+          "framework": {
+            "n": 2,
+            "latest_wins": 0.5
+          },
+          "gym": {
+            "n": 5,
+            "latest_wins": 1.0
+          },
+          "indent": {
+            "n": 7,
+            "latest_wins": 0.8571
+          },
+          "language": {
+            "n": 7,
+            "latest_wins": 0.4286
+          },
+          "manager": {
+            "n": 7,
+            "latest_wins": 0.5714
+          },
+          "music": {
+            "n": 3,
+            "latest_wins": 1.0
+          },
+          "notes": {
+            "n": 4,
+            "latest_wins": 1.0
+          },
+          "os": {
+            "n": 4,
+            "latest_wins": 1.0
+          },
+          "pet": {
+            "n": 6,
+            "latest_wins": 0.0
+          },
+          "shell": {
+            "n": 5,
+            "latest_wins": 0.6
+          },
+          "terminal": {
+            "n": 6,
+            "latest_wins": 0.8333
+          },
+          "testing": {
+            "n": 7,
+            "latest_wins": 1.0
+          },
+          "timezone": {
+            "n": 7,
+            "latest_wins": 0.8571
+          },
+          "tracing": {
+            "n": 5,
+            "latest_wins": 1.0
+          }
+        }
+      },
+      "11": {
+        "structure": "B17-key-upsert-question-key",
+        "two_valued": {
+          "n": 10,
+          "latest_wins": 0.4
+        },
+        "single_valued": {
+          "n": 90,
+          "latest_wins": 0.8222
+        },
+        "by_category": {
+          "ci": {
+            "n": 3,
+            "latest_wins": 1.0
+          },
+          "cloud": {
+            "n": 6,
+            "latest_wins": 0.6667
+          },
+          "commute": {
+            "n": 5,
+            "latest_wins": 1.0
+          },
+          "database": {
+            "n": 4,
+            "latest_wins": 0.75
+          },
+          "drink": {
+            "n": 4,
+            "latest_wins": 1.0
+          },
+          "editor": {
+            "n": 9,
+            "latest_wins": 0.8889
+          },
+          "framework": {
+            "n": 5,
+            "latest_wins": 0.4
+          },
+          "gym": {
+            "n": 5,
+            "latest_wins": 0.6
+          },
+          "indent": {
+            "n": 5,
+            "latest_wins": 1.0
+          },
+          "language": {
+            "n": 6,
+            "latest_wins": 0.6667
+          },
+          "manager": {
+            "n": 6,
+            "latest_wins": 0.6667
+          },
+          "music": {
+            "n": 6,
+            "latest_wins": 0.3333
+          },
+          "notes": {
+            "n": 9,
+            "latest_wins": 1.0
+          },
+          "os": {
+            "n": 5,
+            "latest_wins": 1.0
+          },
+          "pet": {
+            "n": 2,
+            "latest_wins": 0.0
+          },
+          "shell": {
+            "n": 4,
+            "latest_wins": 1.0
+          },
+          "terminal": {
+            "n": 5,
+            "latest_wins": 0.8
+          },
+          "testing": {
+            "n": 3,
+            "latest_wins": 0.3333
+          },
+          "timezone": {
+            "n": 4,
+            "latest_wins": 1.0
+          },
+          "tracing": {
+            "n": 4,
+            "latest_wins": 1.0
+          }
+        }
+      }
+    }
+  }
+}

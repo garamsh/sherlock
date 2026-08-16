@@ -1,0 +1,55 @@
+{
+  "seed": 11,
+  "turns": 645,
+  "probes": 204,
+  "probe_kinds": {
+    "corrected": 100,
+    "control": 40,
+    "coexist": 64
+  },
+  "row": {
+    "system": "B14-key-upsert-plural",
+    "blurb": "B12, told to coin a narrower key when both facts can be true",
+    "extra_calls": 1.0,
+    "decider_calls": 645,
+    "items": 429,
+    "elapsed_s": 419.0,
+    "latest_wins": 0.76,
+    "control_survival": 0.925,
+    "coexist_preserved": 0.9531,
+    "stale_present": 0.2,
+    "net": 0.8794,
+    "control_never_written": 0.025,
+    "control_retired": 0.0,
+    "control_not_ranked": 0.05,
+    "coexist_never_written": 0.0069,
+    "coexist_retired": 0.0278,
+    "coexist_not_ranked": 0.0069,
+    "coexist_by_family": {
+      "allergy": 1.0,
+      "certification": 1.0,
+      "committee": 0.9375,
+      "craft": 1.0,
+      "cuisine": 0.875,
+      "garden": 1.0,
+      "instrument": 1.0,
+      "volunteer": 0.8125
+    },
+    "outcomes": {
+      "corrected:recalled": 94,
+      "corrected:not_ranked": 6,
+      "control:recalled": 37,
+      "control:not_ranked": 2,
+      "control:never_written": 1,
+      "coexist:recalled": 138,
+      "coexist:retired": 4,
+      "coexist:not_ranked": 1,
+      "coexist:never_written": 1
+    }
+  },
+  "api_calls": {
+    "embed": 14,
+    "chat": 500,
+    "chat_cached": 145
+  }
+}

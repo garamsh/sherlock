@@ -18,11 +18,11 @@ import sys
 
 sys.path.insert(0, os.path.dirname(__file__))
 
+import record
 from systems import ALL_SYSTEMS, SimModel
 
 # Results land beside the report, not beside the caller's shell.
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
-TABLE = os.path.join(ROOT, "results_table.md")
 RAW = os.path.join(ROOT, "results_raw.json")
 
 
@@ -90,7 +90,11 @@ def run_system(cls, seed: int = 7):
     return sys, checkpoint_results
 
 
-def main():
+def main(argv=()):
+    if "--render" in argv:
+        print(f"Rewrote {os.path.abspath(record.write(ROOT))} "
+              f"from the committed run")
+        return
     rows = []
     # Multiple seeds to smooth the simulated compliance randomness.
     SEEDS = [7, 42, 1234]
@@ -117,24 +121,12 @@ def main():
             "extra_calls_per_turn": agg_calls / n / len(SCRIPT),
             "injected_tokens_per_turn": agg_tokens / n / len(SCRIPT),
         })
-    headers = ["system", "context-recall", "store items", "extra calls/turn", "injected tokens/turn"]
-    lines = ["| " + " | ".join(headers) + " |",
-             "|" + "|".join(["-" * len(h) for h in headers]) + "|"]
-    for r in rows:
-        lines.append("| {} | {:.2f} | {:.0f} | {:.2f} | {:.0f} |".format(
-            r["system"], r["context_recall"], r["store_items"],
-            r["extra_calls_per_turn"], r["injected_tokens_per_turn"]))
-    table = "\n".join(lines)
-    with open(TABLE, "w") as f:
-        f.write("# System-level memory experiment — the full cycle\n\n")
-        f.write("Question: which memory *system* — write path, read path, store policy together — keeps facts in the model's context over a multi-week conversation? The previous experiments ranked stores assuming the write happens; QA measured that it does not (0/15 voluntary writeback on gpt-4o).\n\n")
-        f.write("Compliance inputs are measured or marked assumptions: voluntary writeback 0% (QA #5-#8), structured output 100% (API-enforced), platform extraction 100% (deterministic), forced narrow call 95% (assumption), on-demand search 30% (assumption).\n\n")
-        f.write(table + "\n")
-    print(table)
     with open(RAW, "w") as f:
         json.dump(rows, f, indent=2)
-    print(f"\nWrote {os.path.abspath(TABLE)} and {os.path.abspath(RAW)}")
+    table = record.write(ROOT, rows)
+    print(record.render(rows))
+    print(f"\nWrote {os.path.abspath(RAW)} and {os.path.abspath(table)}")
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])

@@ -42,6 +42,14 @@ type chatRequest struct {
 			Strict      bool            `json:"strict"`
 		} `json:"function"`
 	} `json:"tools"`
+	ResponseFormat struct {
+		Type       string `json:"type"`
+		JSONSchema struct {
+			Name   string          `json:"name"`
+			Strict bool            `json:"strict"`
+			Schema json.RawMessage `json:"schema"`
+		} `json:"json_schema"`
+	} `json:"response_format"`
 }
 
 // fakeProvider records the last request and replies with handler-chosen
@@ -86,8 +94,10 @@ func newTestModel(t *testing.T, server *httptest.Server) *openai.Model {
 	return model
 }
 
-func TestChat_FinalResponsePreservesWritebackBlock(t *testing.T) {
-	final := "Done.\n```memory\n{\"add\":[{\"content\":\"user likes tea\",\"type\":\"semantic\"}]}\n```"
+func TestChat_FinalResponseIsReturnedVerbatim(t *testing.T) {
+	final := `{"reply":"Done.","memory_ops":[{"address":{"subject":"user",` +
+		`"question":"which drinks does the user like","restriction":null},` +
+		`"value":"tea","operation":"join"}]}`
 	fake, server := newFakeProvider(t,
 		`{"choices":[{"message":{"content":`+jsonString(final)+`},"finish_reason":"stop"}]}`)
 	defer server.Close()
@@ -119,16 +129,41 @@ func TestChat_FinalResponsePreservesWritebackBlock(t *testing.T) {
 		`{"type":"object","properties":{"text":{"type":"string"}},"required":["text"]}`,
 		string(fake.request.Tools[0].Function.Parameters))
 
-	// The content comes back verbatim, writeback block included, for the
-	// session to strip and parse.
+	// The content comes back verbatim, memory writes included, for the
+	// session to parse.
 	assert.Equal(t, final, resp.Content)
 	assert.Empty(t, resp.ToolCalls)
+}
+
+// TestChat_RequestBodyCarriesTheResponseSchema pins ADR 0018 at the wire
+// level: the memory write is a field of a schema the API enforces, not a
+// block the model may leave out. The schema sent is the one the parser
+// reads, so the two cannot drift apart.
+func TestChat_RequestBodyCarriesTheResponseSchema(t *testing.T) {
+	fake, server := newFakeProvider(t,
+		`{"choices":[{"message":{"content":"{\"reply\":\"ok\",\"memory_ops\":[]}"},"finish_reason":"stop"}]}`)
+	defer server.Close()
+	model := newTestModel(t, server)
+
+	_, err := model.Chat(t.Context(),
+		[]agent.Message{{Role: agent.RoleUser, Content: "hi"}}, nil)
+	require.NoError(t, err)
+
+	assert.Equal(t, "json_schema", fake.request.ResponseFormat.Type,
+		"the call constrains the response to a schema, not to free text")
+	assert.True(t, fake.request.ResponseFormat.JSONSchema.Strict,
+		"strict mode is what makes the memory field un-omittable")
+	assert.NotEmpty(t, fake.request.ResponseFormat.JSONSchema.Name,
+		"the API requires the schema to be named")
+	assert.JSONEq(t, agent.ResponseSchema,
+		string(fake.request.ResponseFormat.JSONSchema.Schema),
+		"the schema sent is the one ParseWriteback reads")
 }
 
 func TestChat_ToolCallRoundTrip(t *testing.T) {
 	fake, server := newFakeProvider(t,
 		`{"choices":[{"message":{"content":"","tool_calls":[{"id":"call_1","type":"function","function":{"name":"echo","arguments":"{\"text\":\"hi\"}"}}]},"finish_reason":"tool_calls"}]}`,
-		`{"choices":[{"message":{"content":`+jsonString("The echo said hi.\n```memory\n{}\n```")+`},"finish_reason":"stop"}]}`)
+		`{"choices":[{"message":{"content":`+jsonString(`{"reply":"The echo said hi.","memory_ops":[]}`)+`},"finish_reason":"stop"}]}`)
 	defer server.Close()
 	model := newTestModel(t, server)
 
@@ -149,7 +184,7 @@ func TestChat_ToolCallRoundTrip(t *testing.T) {
 		{Role: agent.RoleTool, Name: "echo", ToolCallID: "call_1", Content: `{"echo":"hi"}`},
 	}, nil)
 	require.NoError(t, err)
-	assert.Equal(t, "The echo said hi.\n```memory\n{}\n```", second.Content)
+	assert.Equal(t, `{"reply":"The echo said hi.","memory_ops":[]}`, second.Content)
 
 	require.Len(t, fake.request.Messages, 3)
 	assistant := fake.request.Messages[1]

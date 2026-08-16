@@ -94,7 +94,7 @@ func (q *Queue) AgentID() string { return q.agentID }
 // ctx) until a run drains a slot. The sender is recorded on the envelope
 // so the agent can address replies per message (ADR 0015); an empty
 // sender means the channel provided none. Nothing is written to memory
-// at accept time: the writeback block is the single write path
+// at accept time: the writeback is the single write path
 // (ADR 0006, ADR 0011).
 func (q *Queue) Enqueue(ctx context.Context, sender, content string) (string, error) {
 	select {

@@ -9,10 +9,10 @@ import (
 )
 
 // ScriptedStep is one canned model reply: either tool-call requests or a
-// final response whose Content should end with the memory writeback block,
+// final response whose Content is the document ResponseSchema describes,
 // mirroring the real model contract (ADR 0004).
 type ScriptedStep struct {
-	// Content is the raw response text, including the ```memory block.
+	// Content is the raw response text: the schema's JSON document.
 	Content string
 	// ToolCalls requests tool execution; empty means this is a final
 	// response. IDs may be left empty — the model assigns call-<n>.

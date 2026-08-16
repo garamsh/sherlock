@@ -19,8 +19,8 @@ const maxToolCallsPerTurn = 6
 
 // Model is the agent's narrow view of a chat model (ADR 0004): it receives
 // the conversation plus the registered tool schemas and returns either a
-// final response or tool-call requests. Every response content ends with
-// the structured memory block parsed by ParseWriteback.
+// final response or tool-call requests. Response content is the document
+// ResponseSchema describes, parsed by ParseWriteback.
 type Model interface {
 	Chat(ctx context.Context, messages []Message, tools []tool.Descriptor) (Response, error)
 }
@@ -38,7 +38,8 @@ type ToolClient interface {
 }
 
 // Response is one model reply: visible content plus optional tool calls.
-// Content includes the trailing memory block; the session strips it.
+// Content is the schema's document; the session parses the reply out of
+// it.
 type Response struct {
 	Content   string
 	ToolCalls []ToolCall
@@ -81,9 +82,9 @@ const (
 	// EventWriteback fires after each model response's memory block is
 	// parsed and handed to the sink.
 	EventWriteback EventKind = "writeback"
-	// EventWritebackError fires when a model response carried a memory
-	// block the parser could not turn into operations (unterminated
-	// fence or invalid JSON). The turn itself continues; the warning
+	// EventWritebackError fires when a model response was not the
+	// document the response schema describes, so the parser could not
+	// turn it into operations. The turn itself continues; the warning
 	// records what the model missed so subscribers can detect it. Issue
 	// #93.
 	EventWritebackError EventKind = "writeback_error"
@@ -140,8 +141,8 @@ type Compactor interface {
 // the history and runs one turn per call to Run.
 type Session interface {
 	// Run executes one turn of the memory lifecycle — frame, recall, act,
-	// writeback — and returns the model's final response with the memory
-	// block stripped.
+	// writeback — and returns the reply field of the model's final
+	// response.
 	Run(ctx context.Context, task string) (string, error)
 	// History returns a copy of the conversation so far.
 	History() []Message
@@ -397,7 +398,8 @@ func (s *session) applyWriteback(ctx context.Context, ops []WritebackOp) ([]Reca
 // coherenceNote renders the write-time coherence set for the model.
 func coherenceNote(similar []RecalledMemory) string {
 	out := "## Memory coherence\nThese existing memories are similar to what you just stored. " +
-		"If any contradict or are superseded by it, correct them with update/delete in your next memory block:\n"
+		"If any has stopped being true, write the current value at its address in your next " +
+		"memory_ops with operation \"replace\":\n"
 	for _, m := range similar {
 		out += fmt.Sprintf("- [%s] (%s): %s\n", m.ID, m.Age, m.Content)
 	}

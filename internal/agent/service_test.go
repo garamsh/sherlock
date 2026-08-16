@@ -15,6 +15,19 @@ import (
 	"github.com/garamsh/gagent/internal/tool"
 )
 
+// replyOnly renders the response document (agent.ResponseSchema) for a
+// turn whose reply states no memory writes.
+func replyOnly(text string) string {
+	out, err := json.Marshal(struct {
+		Reply string              `json:"reply"`
+		Ops   []agent.WritebackOp `json:"memory_ops"`
+	}{Reply: text, Ops: []agent.WritebackOp{}})
+	if err != nil {
+		panic(err)
+	}
+	return string(out)
+}
+
 // fakeRecaller scripts the recall hook: it returns fixed memories and
 // records the task statements it was queried with.
 type fakeRecaller struct {
@@ -49,7 +62,7 @@ type recordingModel struct {
 func (m *recordingModel) Chat(_ context.Context, msgs []agent.Message, _ []tool.Descriptor) (agent.Response, error) {
 	m.seen = append(m.seen, append([]agent.Message(nil), msgs...))
 	if len(m.steps) == 0 {
-		return agent.Response{Content: "done.\n```memory\n{}\n```"}, nil
+		return agent.Response{Content: replyOnly("done.")}, nil
 	}
 	step := m.steps[0]
 	m.steps = m.steps[1:]
@@ -61,8 +74,10 @@ func (m *recordingModel) Chat(_ context.Context, msgs []agent.Message, _ []tool.
 // note, and the next model call reads them for judgment.
 func TestSession_WriteTimeCoherencePresentedToModel(t *testing.T) {
 	model := &recordingModel{steps: []agent.ScriptedStep{
-		{Content: "Noted.\n```memory\n{\"add\":[{\"content\":\"user's favorite telescope is the Orion XT8\",\"type\":\"semantic\"}]}\n```"},
-		{Content: "Corrected the old one.\n```memory\n{}\n```"},
+		{Content: `{"reply":"Noted.","memory_ops":[{"address":{"subject":"user",` +
+			`"question":"what is the user's favorite telescope","restriction":null},` +
+			`"value":"the Orion XT8","operation":"replace"}]}`},
+		{Content: replyOnly("Corrected the old one.")},
 	}}
 	writeback := &fakeWriteback{similar: []agent.RecalledMemory{
 		{ID: "7", Content: "user's favorite telescope is the Kepler-9 refractor", Age: "3d"},
@@ -99,7 +114,7 @@ func TestSession_WriteTimeCoherencePresentedToModel(t *testing.T) {
 // similar returned, no note in the history.
 func TestSession_NoCoherenceNoteWithoutSimilar(t *testing.T) {
 	model := &recordingModel{steps: []agent.ScriptedStep{
-		{Content: "Done.\n```memory\n{}\n```"},
+		{Content: replyOnly("Done.")},
 	}}
 	s := agent.NewSession(model, newFakeClient(), agent.Options{Writeback: &fakeWriteback{}})
 
@@ -222,17 +237,22 @@ func newFakeClientWith(t *fakeTool) *fakeClient {
 }
 
 func TestSessionRun_ScriptedMultiTurnScenario(t *testing.T) {
-	// Script: turn 1 the model requests the echo tool and keeps/adds
-	// memories; turn 2 it answers with the tool result and updates/deletes.
+	// Script: turn 1 the model requests the echo tool and joins a value at
+	// a fresh address; turn 2 it answers with the tool result and replaces
+	// the value at another.
 	model := agent.NewScriptedModel(
 		agent.ScriptedStep{
-			Content: "Let me check.\n```memory\n{\"keep\":[\"m1\"],\"add\":[{\"content\":\"user likes tea\",\"type\":\"semantic\"}]}\n```",
+			Content: `{"reply":"Let me check.","memory_ops":[{"address":{"subject":"user",` +
+				`"question":"which drinks does the user like","restriction":null},` +
+				`"value":"tea","operation":"join"}]}`,
 			ToolCalls: []agent.ToolCall{
 				{Name: "echo", Input: json.RawMessage(`{"text":"hi"}`)},
 			},
 		},
 		agent.ScriptedStep{
-			Content: "The echo said hi.\n```memory\n{\"update\":[{\"id\":\"m1\",\"content\":\"revised\"}],\"delete\":[\"m9\"]}\n```",
+			Content: `{"reply":"The echo said hi.","memory_ops":[{"address":{"subject":"user",` +
+				`"question":"which team does the user sit with","restriction":"since june"},` +
+				`"value":"platform","operation":"replace"}]}`,
 		},
 	)
 	recaller := &fakeRecaller{memories: []agent.RecalledMemory{
@@ -272,16 +292,25 @@ func TestSessionRun_ScriptedMultiTurnScenario(t *testing.T) {
 	assert.Equal(t, history[3].ToolCalls[0].ID, history[4].ToolCallID)
 	assert.Equal(t, agent.RoleAssistant, history[5].Role)
 
-	// Every model response's memory block reached the writeback sink.
+	// Every model response's memory writes reached the writeback sink.
 	require.Equal(t, [][]agent.WritebackOp{
-		{
-			{Kind: agent.OpKeep, ID: "m1"},
-			{Kind: agent.OpAdd, Content: "user likes tea", Type: "semantic"},
-		},
-		{
-			{Kind: agent.OpUpdate, ID: "m1", Content: "revised"},
-			{Kind: agent.OpDelete, ID: "m9"},
-		},
+		{{
+			Address: agent.MemoryAddress{
+				Subject:  "user",
+				Question: "which drinks does the user like",
+			},
+			Value:     "tea",
+			Operation: agent.OpJoin,
+		}},
+		{{
+			Address: agent.MemoryAddress{
+				Subject:     "user",
+				Question:    "which team does the user sit with",
+				Restriction: "since june",
+			},
+			Value:     "platform",
+			Operation: agent.OpReplace,
+		}},
 	}, writeback.batches)
 
 	// Events fired in order within the turn.
@@ -307,8 +336,8 @@ func TestSessionRun_ScriptedMultiTurnScenario(t *testing.T) {
 
 func TestSessionRun_RollingSession(t *testing.T) {
 	model := agent.NewScriptedModel(
-		agent.ScriptedStep{Content: "first\n```memory\n{}\n```"},
-		agent.ScriptedStep{Content: "second\n```memory\n{}\n```"},
+		agent.ScriptedStep{Content: replyOnly("first")},
+		agent.ScriptedStep{Content: replyOnly("second")},
 	)
 	events := &fakeEvents{}
 	s := agent.NewSession(model, newFakeClient(), agent.Options{Events: events})
@@ -330,7 +359,7 @@ func TestSessionRun_RollingSession(t *testing.T) {
 
 func TestSessionRun_NoRecallStatesAbsence(t *testing.T) {
 	model := agent.NewScriptedModel(
-		agent.ScriptedStep{Content: "ok\n```memory\n{}\n```"},
+		agent.ScriptedStep{Content: replyOnly("ok")},
 	)
 	s := agent.NewSession(model, newFakeClient(), agent.Options{})
 
@@ -345,7 +374,7 @@ func TestSessionRun_NoRecallStatesAbsence(t *testing.T) {
 // entered the context.
 func TestSessionRun_RecallEventEmitted(t *testing.T) {
 	model := agent.NewScriptedModel(
-		agent.ScriptedStep{Content: "done\n```memory\n{}\n```"},
+		agent.ScriptedStep{Content: replyOnly("done")},
 	)
 	recaller := &fakeRecaller{memories: []agent.RecalledMemory{
 		{ID: "m1", Content: "user drinks tea", Age: "2d"},
@@ -373,19 +402,24 @@ func TestSessionRun_RecallEventEmitted(t *testing.T) {
 }
 
 // TestSessionRun_LenientWritebackParse is issue #93's regression. A model
-// response whose ```memory block is unparseable (unterminated fence or
-// invalid JSON) must not fail the turn: the visible reply still reaches
-// the user, the memory update is dropped for that turn only, and the
-// session records the parse miss on the event stream as
-// EventWritebackError.
+// response that is not the document the response schema describes must
+// not fail the turn: the content still reaches the user, the memory
+// update is dropped for that turn only, and the session records the
+// parse miss on the event stream as EventWritebackError.
 func TestSessionRun_LenientWritebackParse(t *testing.T) {
 	tests := []struct {
 		name           string
 		content        string
+		wantVisible    string
 		wantWarnSubstr string
 	}{
-		{"unterminated fence", "still useful\n```memory\n{}", "unterminated"},
-		{"invalid JSON", "still useful\n```memory\nnot json\n```", "invalid JSON"},
+		{"prose instead of the document", "still useful", "still useful", "invalid JSON"},
+		{
+			name:           "truncated document",
+			content:        `{"reply":"still useful","memory_ops":[`,
+			wantVisible:    `{"reply":"still useful","memory_ops":[`,
+			wantWarnSubstr: "invalid JSON",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -399,7 +433,7 @@ func TestSessionRun_LenientWritebackParse(t *testing.T) {
 
 			final, err := s.Run(context.Background(), "task")
 			require.NoError(t, err, "parse failure is non-fatal (issue #93)")
-			assert.Equal(t, "still useful", final, "visible reply reaches the user")
+			assert.Equal(t, tt.wantVisible, final, "the content still reaches the user")
 
 			// The writeback sink receives no operations for this turn.
 			assert.Empty(t, writeback.batches,
@@ -425,18 +459,20 @@ func TestSessionRun_LenientWritebackParse(t *testing.T) {
 			}
 			terminal := events.events[len(events.events)-1]
 			assert.Equal(t, agent.EventTurnFinished, terminal.Kind)
-			assert.Equal(t, "still useful", terminal.Response)
+			assert.Equal(t, tt.wantVisible, terminal.Response)
 		})
 	}
 }
 
 // TestSessionRun_StrictWritebackSchema is the contract-strict sibling
 // to TestSessionRun_LenientWritebackParse: a writeback whose JSON parses
-// but violates the operation schema still fails the turn, so the model
-// learns the contract (issue #93).
+// but states a write with nowhere to land still fails the turn, so the
+// model learns the contract (issue #93).
 func TestSessionRun_StrictWritebackSchema(t *testing.T) {
 	model := agent.NewScriptedModel(
-		agent.ScriptedStep{Content: "broken\n```memory\n{\"keep\":[\"\"]}\n```"},
+		agent.ScriptedStep{Content: `{"reply":"broken","memory_ops":[{"address":` +
+			`{"subject":"","question":"","restriction":null},` +
+			`"value":"","operation":null}]}`},
 	)
 	events := &fakeEvents{}
 	s := agent.NewSession(model, newFakeClient(), agent.Options{Events: events})
@@ -453,10 +489,10 @@ func TestSessionRun_StrictWritebackSchema(t *testing.T) {
 func TestSessionRun_UnknownToolFeedsErrorBack(t *testing.T) {
 	model := agent.NewScriptedModel(
 		agent.ScriptedStep{
-			Content:   "calling\n```memory\n{}\n```",
+			Content:   replyOnly("calling"),
 			ToolCalls: []agent.ToolCall{{Name: "ghost", Input: json.RawMessage(`{}`)}},
 		},
-		agent.ScriptedStep{Content: "recovered\n```memory\n{}\n```"},
+		agent.ScriptedStep{Content: replyOnly("recovered")},
 	)
 	events := &fakeEvents{}
 	s := agent.NewSession(model, newFakeClient(), agent.Options{Events: events})
@@ -477,7 +513,7 @@ func TestSessionRun_UnknownToolFeedsErrorBack(t *testing.T) {
 func TestSessionRun_ScriptExhausted(t *testing.T) {
 	model := agent.NewScriptedModel(
 		agent.ScriptedStep{
-			Content:   "loop\n```memory\n{}\n```",
+			Content:   replyOnly("loop"),
 			ToolCalls: []agent.ToolCall{{Name: "ghost", Input: json.RawMessage(`{}`)}},
 		},
 	)
@@ -491,11 +527,11 @@ func TestSessionRun_ScriptExhausted(t *testing.T) {
 func TestSessionRun_LoopExhausted(t *testing.T) {
 	model := agent.NewScriptedModel(
 		agent.ScriptedStep{
-			Content:   "again\n```memory\n{}\n```",
+			Content:   replyOnly("again"),
 			ToolCalls: []agent.ToolCall{{Name: "ghost", Input: json.RawMessage(`{}`)}},
 		},
 		agent.ScriptedStep{
-			Content:   "again\n```memory\n{}\n```",
+			Content:   replyOnly("again"),
 			ToolCalls: []agent.ToolCall{{Name: "ghost", Input: json.RawMessage(`{}`)}},
 		},
 	)
@@ -515,10 +551,10 @@ type stubbornModel struct {
 func (m *stubbornModel) Chat(_ context.Context, messages []agent.Message, _ []tool.Descriptor) (agent.Response, error) {
 	last := messages[len(messages)-1]
 	if last.Role == agent.RoleTool && strings.Contains(last.Content, "Not executed") {
-		return agent.Response{Content: "changing approach\n```memory\n{}\n```"}, nil
+		return agent.Response{Content: replyOnly("changing approach")}, nil
 	}
 	return agent.Response{
-		Content:   "retrying\n```memory\n{}\n```",
+		Content:   replyOnly("retrying"),
 		ToolCalls: []agent.ToolCall{m.call},
 	}, nil
 }
@@ -560,10 +596,10 @@ func TestSessionRun_RepeatedFailingCallShortCircuits(t *testing.T) {
 
 func TestSessionRun_RepeatDetectionIsExactMatch(t *testing.T) {
 	steps := []agent.ScriptedStep{
-		{Content: "calling\n```memory\n{}\n```", ToolCalls: []agent.ToolCall{{Name: "flaky", Input: json.RawMessage(`{"n":1}`)}}},
-		{Content: "calling\n```memory\n{}\n```", ToolCalls: []agent.ToolCall{{Name: "flaky", Input: json.RawMessage(`{"n":1}`)}}},
-		{Content: "calling\n```memory\n{}\n```", ToolCalls: []agent.ToolCall{{Name: "flaky", Input: json.RawMessage(`{"n":2}`)}}},
-		{Content: "done\n```memory\n{}\n```"},
+		{Content: replyOnly("calling"), ToolCalls: []agent.ToolCall{{Name: "flaky", Input: json.RawMessage(`{"n":1}`)}}},
+		{Content: replyOnly("calling"), ToolCalls: []agent.ToolCall{{Name: "flaky", Input: json.RawMessage(`{"n":1}`)}}},
+		{Content: replyOnly("calling"), ToolCalls: []agent.ToolCall{{Name: "flaky", Input: json.RawMessage(`{"n":2}`)}}},
+		{Content: replyOnly("done")},
 	}
 	flaky := &fakeTool{name: "flaky", response: json.RawMessage(`{}`)}
 	client := newFakeClient()
@@ -589,8 +625,8 @@ func TestSessionRun_RepeatBookkeepingResetsPerTurn(t *testing.T) {
 	client.register(flaky)
 	client.setErr(flaky.name, errors.New("boom"))
 	call := agent.ToolCall{Name: "flaky", Input: json.RawMessage(`{"n":1}`)}
-	step := agent.ScriptedStep{Content: "calling\n```memory\n{}\n```", ToolCalls: []agent.ToolCall{call}}
-	final := agent.ScriptedStep{Content: "done\n```memory\n{}\n```"}
+	step := agent.ScriptedStep{Content: replyOnly("calling"), ToolCalls: []agent.ToolCall{call}}
+	final := agent.ScriptedStep{Content: replyOnly("done")}
 	s := agent.NewSession(agent.NewScriptedModel(step, step, final, step, step, final), client, agent.Options{})
 
 	_, err := s.Run(context.Background(), "task one")
@@ -609,7 +645,7 @@ func searchSteps(queries ...string) []agent.ScriptedStep {
 	for _, q := range queries {
 		input, _ := json.Marshal(map[string]string{"query": q})
 		steps = append(steps, agent.ScriptedStep{
-			Content:   "searching\n```memory\n{}\n```",
+			Content:   replyOnly("searching"),
 			ToolCalls: []agent.ToolCall{{Name: "search", Input: input}},
 		})
 	}
@@ -620,7 +656,7 @@ func TestSessionRun_ToolBudgetShortCircuits(t *testing.T) {
 	search := &fakeTool{name: "search", description: "counts executions", response: json.RawMessage(`{"ok":true}`)}
 	events := &fakeEvents{}
 	steps := append(searchSteps("q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8"),
-		agent.ScriptedStep{Content: "done\n```memory\n{}\n```"})
+		agent.ScriptedStep{Content: replyOnly("done")})
 	s := agent.NewSession(agent.NewScriptedModel(steps...), newFakeClientWith(search), agent.Options{Events: events})
 
 	final, err := s.Run(context.Background(), "task")
@@ -655,7 +691,7 @@ func TestSessionRun_ToolBudgetShortCircuits(t *testing.T) {
 func TestSessionRun_ToolBudgetNoticeOmitsEmptyDescription(t *testing.T) {
 	events := &fakeEvents{}
 	steps := append(searchSteps("q1", "q2", "q3", "q4", "q5", "q6", "q7"),
-		agent.ScriptedStep{Content: "done\n```memory\n{}\n```"})
+		agent.ScriptedStep{Content: replyOnly("done")})
 	s := agent.NewSession(agent.NewScriptedModel(steps...), newFakeClient(), agent.Options{Events: events})
 
 	_, err := s.Run(context.Background(), "task")
@@ -679,10 +715,10 @@ func TestSessionRun_ToolBudgetIsPerTool(t *testing.T) {
 	files := &fakeTool{name: "files", description: "files", response: json.RawMessage(`{"ok":true}`)}
 	steps := append(searchSteps("q1", "q2", "q3", "q4", "q5", "q6", "q7"),
 		agent.ScriptedStep{
-			Content:   "reading\n```memory\n{}\n```",
+			Content:   replyOnly("reading"),
 			ToolCalls: []agent.ToolCall{{Name: "files", Input: json.RawMessage(`{"op":"read"}`)}},
 		},
-		agent.ScriptedStep{Content: "done\n```memory\n{}\n```"})
+		agent.ScriptedStep{Content: replyOnly("done")})
 	client := newFakeClient()
 	client.register(search)
 	client.register(files)
@@ -698,9 +734,9 @@ func TestSessionRun_ToolBudgetIsPerTool(t *testing.T) {
 func TestSessionRun_ToolBudgetResetsPerTurn(t *testing.T) {
 	search := &fakeTool{name: "search", response: json.RawMessage(`{"ok":true}`)}
 	steps := append(searchSteps("q1", "q2", "q3", "q4", "q5", "q6", "q7"),
-		agent.ScriptedStep{Content: "one\n```memory\n{}\n```"})
+		agent.ScriptedStep{Content: replyOnly("one")})
 	steps = append(steps, searchSteps("r1", "r2", "r3", "r4", "r5", "r6")...)
-	steps = append(steps, agent.ScriptedStep{Content: "two\n```memory\n{}\n```"})
+	steps = append(steps, agent.ScriptedStep{Content: replyOnly("two")})
 	s := agent.NewSession(agent.NewScriptedModel(steps...), newFakeClientWith(search), agent.Options{})
 
 	_, err := s.Run(context.Background(), "task one")
@@ -725,11 +761,11 @@ func TestSessionRun_RepeatedGuardPrecedesBudget(t *testing.T) {
 	steps := make([]agent.ScriptedStep, 0, 9)
 	for range 8 {
 		steps = append(steps, agent.ScriptedStep{
-			Content:   "retrying\n```memory\n{}\n```",
+			Content:   replyOnly("retrying"),
 			ToolCalls: []agent.ToolCall{call},
 		})
 	}
-	steps = append(steps, agent.ScriptedStep{Content: "done\n```memory\n{}\n```"})
+	steps = append(steps, agent.ScriptedStep{Content: replyOnly("done")})
 	s := agent.NewSession(agent.NewScriptedModel(steps...), client, agent.Options{})
 
 	final, err := s.Run(context.Background(), "task")
@@ -754,8 +790,8 @@ func TestSessionRun_RepeatedGuardPrecedesBudget(t *testing.T) {
 
 func TestSessionRun_CompactorHook(t *testing.T) {
 	model := agent.NewScriptedModel(
-		agent.ScriptedStep{Content: "one\n```memory\n{}\n```"},
-		agent.ScriptedStep{Content: "two\n```memory\n{}\n```"},
+		agent.ScriptedStep{Content: replyOnly("one")},
+		agent.ScriptedStep{Content: replyOnly("two")},
 	)
 	compactor := &fakeCompactor{}
 	s := agent.NewSession(model, newFakeClient(), agent.Options{

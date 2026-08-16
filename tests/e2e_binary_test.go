@@ -24,7 +24,7 @@ const binaryAgentID = "e2e-bin"
 // model computes through shell_exec, which crosses the wire to the
 // workspace's Exec RPC and runs in the workspace directory, reads its
 // note back through the files tool, replies through message_send, and
-// closes with a writeback block.
+// closes with a memory write.
 func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
 	binary := buildGagentBinary(t)
 	root := t.TempDir()
@@ -66,7 +66,7 @@ func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
 // runMVPScenario. The canned loop drives the agent through shell_exec
 // (writing a note into the workspace and computing through the
 // workspace's Exec RPC), files (reading that note back), message_send,
-// and a writeback block.
+// and a memory write.
 func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	t.Helper()
 
@@ -124,7 +124,7 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 // TestEndToEnd_OneShotAgentTurnAgainstWorkspace runs "gagent agent
 // --message" against a running workspace: the one-shot mode runs the
 // canned turn — shell_exec, files, message_send via the protocol
-// client, plus a writeback block — and exits. The outbound message
+// client, plus a memory write — and exits. The outbound message
 // lands in the file outbox (the same dir the serving mode uses); the
 // one-shot runner echoes it to stdout after the turn lands.
 func TestEndToEnd_OneShotAgentTurnAgainstWorkspace(t *testing.T) {

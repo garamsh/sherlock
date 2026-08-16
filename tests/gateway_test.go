@@ -54,7 +54,7 @@ func (m *gatedModel) Chat(ctx context.Context, msgs []agent.Message, tools []too
 }
 
 // replyScript scripts one full turn per message: message_send with the
-// given reply, then a final response carrying a writeback block.
+// given reply, then a final response carrying a memory write.
 func replyScript(replies ...string) *agent.ScriptedModel {
 	var steps []agent.ScriptedStep
 	for _, reply := range replies {
@@ -64,8 +64,9 @@ func replyScript(replies ...string) *agent.ScriptedModel {
 				Input: json.RawMessage(
 					`{"channel":"http","target":"sender","content":` + strconvQuote(reply) + `}`),
 			}}},
-			agent.ScriptedStep{Content: "Replied.\n```memory\n" +
-				`{"add":[{"content":"handled an inbound message","type":"episodic"}]}` + "\n```"},
+			agent.ScriptedStep{Content: `{"reply":"Replied.","memory_ops":[{"address":{` +
+				`"subject":"the http channel","question":"what did the http channel ask for",` +
+				`"restriction":null},"value":"an acknowledgement","operation":null}]}`},
 		)
 	}
 	return agent.NewScriptedModel(steps...)
@@ -153,13 +154,13 @@ func TestGateway_EndToEnd(t *testing.T) {
 	assert.Equal(t, "reply-2", replies[1].Content)
 	assert.Equal(t, message.Message{Channel: "http", Target: "sender", Content: "reply-1"}, replies[0])
 
-	// The writeback block landed in the agent's memory store.
+	// The turn's memory write landed in the agent's memory store.
 	_, err := os.Stat(filepath.Join(root, "memory.db"))
 	require.NoError(t, err)
 
 	// Curation-only storage (ADR 0006): nothing is captured at accept
 	// time — the raw inbound messages never enter memory, active or
-	// archived; only the writeback add does.
+	// archived; only the writeback does.
 	assert.NotContains(t, allMemoryContents(t, root), "first",
 		"the first inbound message is never auto-stored")
 	assert.NotContains(t, allMemoryContents(t, root), "second",

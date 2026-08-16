@@ -257,7 +257,7 @@ func TestServer_EventsStreamsTurnFailed(t *testing.T) {
 
 // TestServer_EventsWritebackOpsDistinguishable pins the issue #193
 // observability fix: the writeback event always carries an ops field, so
-// an empty memory block (`[]`) is distinguishable from a missing block
+// an empty memory list (`[]`) is distinguishable from a missing one
 // (`null`) in the monitoring stream.
 func TestServer_EventsWritebackOpsDistinguishable(t *testing.T) {
 	srv := newTestServer(t, func(_ string, events agent.EventSink) (*gateway.Runtime, error) {
@@ -275,7 +275,7 @@ func TestServer_EventsWritebackOpsDistinguishable(t *testing.T) {
 
 	empty, missing := readWritebackEvents(t, received)
 	assert.Equal(t, []any{}, empty["ops"],
-		"an empty memory block serializes as an empty ops array")
+		"an empty memory list serializes as an empty ops array")
 	assert.Nil(t, missing["ops"],
 		"a missing memory block serializes as null")
 }

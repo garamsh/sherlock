@@ -10,12 +10,14 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"strings"
 	"syscall"
 	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
+	"github.com/garamsh/gagent/internal/agent"
 	"github.com/garamsh/gagent/internal/agent/openai"
 	"github.com/garamsh/gagent/internal/gateway"
 	"github.com/garamsh/gagent/internal/message"
@@ -33,6 +35,12 @@ func newAgentCommand() *cobra.Command {
 		Use:   "agent",
 		Short: "Run the agent: serve its gateway, or run one turn with --message",
 		RunE: func(cmd *cobra.Command, _ []string) error {
+			// Past flag parsing, so every error below is a runtime
+			// outcome — a turn whose tool calls failed, a listener that
+			// would not bind — and prints on its own rather than under
+			// a usage dump. A flag parse error never reaches this line
+			// and still prints usage.
+			cmd.SilenceUsage = true
 			cfg, err := resolveConfig(cmd)
 			if err != nil {
 				return err
@@ -170,11 +178,38 @@ func messageSendOutboxDir(memoryPath string) string {
 	return filepath.Join(filepath.Dir(memoryPath), "outbox")
 }
 
+// failedToolCalls is the one-shot run's event sink: it collects the
+// names of the turn's failed tool calls so the process can report them
+// in its exit status.
+//
+// Only the one-shot path wires this. A served turn hands the session
+// the gateway's monitoring sink instead, and its failed tool call goes
+// to the model, which gets another iteration to react — that is the
+// loop working (docs/architecture/agent.md). A one-shot run has no such
+// reader: the turn ends, the process exits, and nothing acts on the
+// failure, so exiting 0 would report a clean run that did not happen.
+//
+// The session emits from the goroutine that called Run, and the
+// one-shot path calls Run once, so the collection needs no lock.
+type failedToolCalls struct {
+	names []string
+}
+
+// Emit implements agent.EventSink.
+func (f *failedToolCalls) Emit(_ context.Context, e agent.Event) {
+	if e.Kind == agent.EventToolCall && e.ToolFailed {
+		f.names = append(f.names, e.ToolName)
+	}
+}
+
 // runAgentTurn builds the agent runtime and runs one turn. One-shot mode
 // echoes outbound messages to stdout (in addition to the file outbox the
 // message_send manifest runs writes to) so a CLI invocation prints the
 // agent's reply without an outbox watcher. The serving mode stays
 // outbox-only.
+//
+// The turn's output is printed before a failed tool call is reported,
+// so a caller reading stdout sees what the agent produced either way.
 func runAgentTurn(ctx context.Context, cfg Config, agentID, msg, ego string) error {
 	// Logs go to stderr so stdout carries only the agent's output.
 	logger := slog.New(slog.NewJSONHandler(os.Stderr, nil))
@@ -187,7 +222,8 @@ func runAgentTurn(ctx context.Context, cfg Config, agentID, msg, ego string) err
 	if err != nil {
 		return err
 	}
-	rt, err := factory.New(ctx, agentID, nil)
+	failed := &failedToolCalls{}
+	rt, err := factory.New(ctx, agentID, failed)
 	if err != nil {
 		return err
 	}
@@ -206,6 +242,10 @@ func runAgentTurn(ctx context.Context, cfg Config, agentID, msg, ego string) err
 	}
 	fmt.Println(response)
 	echoOutboxToStdout(outboxDir, before)
+	if len(failed.names) > 0 {
+		return fmt.Errorf("one-shot turn: %d tool call(s) failed: %s",
+			len(failed.names), strings.Join(failed.names, ", "))
+	}
 	return nil
 }
 

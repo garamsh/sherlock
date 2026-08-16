@@ -18,7 +18,8 @@ RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/gagent ./cmd/gagen
 # Agent image: the agent executes nothing — the workspace owns process
 # exec (ADR 0017) — so the agent runs no untrusted code and distroless
 # static stays correct. Serves the gateway, the rolling session, memory,
-# the mouth, and the tools the agent imports at compile time.
+# the mouth, and the tool client, which reads the operator's tool
+# manifests and spawns each tool's executable per call.
 FROM gcr.io/distroless/static-debian12:nonroot AS agent
 ARG REVISION=unknown
 LABEL org.opencontainers.image.title="gagent-agent" \

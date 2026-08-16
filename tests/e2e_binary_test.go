@@ -22,17 +22,18 @@ const binaryAgentID = "e2e-bin"
 // serving the gRPC contract (files and exec) and the agent spawning
 // the tools it loaded from its tools directory (ADR 0017). The mock
 // model computes through shell_exec, which crosses the wire to the
-// workspace's Exec RPC and runs in the workspace directory, replies
-// through message_send, and closes with a writeback block.
+// workspace's Exec RPC and runs in the workspace directory, reads its
+// note back through the files tool, replies through message_send, and
+// closes with a writeback block.
 func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
 	binary := buildGagentBinary(t)
 	root := t.TempDir()
 
 	// The workspace directory: the workspace serves it over gRPC and
-	// execs children in it, so the file the canned run writes is
-	// visible to both the files tool and shell_exec. The workspace
-	// creates the directory on first use; the run seeds its own
-	// content, so the test seeds none.
+	// execs children in it, so the file the exec'd child writes is the
+	// file the files tool reads. The workspace creates the directory on
+	// first use and the run writes its own content, so the test seeds
+	// nothing.
 	workspaceDir := filepath.Join(t.TempDir(), "workspace")
 
 	_, workspaceAddr, _ := startWorkspaceBinary(t, binary,
@@ -41,8 +42,8 @@ func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
 
 	runBinaryMVPScenario(t, baseURL, root, binaryAgentID)
 
-	// The files tool's write crossed the gRPC contract into the
-	// workspace's own directory, where the exec'd child read it back.
+	// The exec'd child wrote into the workspace's own directory, where
+	// the files tool read it back over the gRPC contract.
 	written, err := os.ReadFile(filepath.Join(workspaceDir, "question.txt"))
 	require.NoError(t, err)
 	assert.Equal(t, "6 * 7\n", string(written))
@@ -62,10 +63,10 @@ func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
 }
 
 // runBinaryMVPScenario is the binary test's variant of
-// runMVPScenario. The canned loop drives the agent through files
-// (writing a note into the workspace), shell_exec (reading it back and
-// computing through the workspace's Exec RPC), message_send, and a
-// writeback block.
+// runMVPScenario. The canned loop drives the agent through shell_exec
+// (writing a note into the workspace and computing through the
+// workspace's Exec RPC), files (reading that note back), message_send,
+// and a writeback block.
 func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	t.Helper()
 
@@ -76,7 +77,7 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
 	resp.Body.Close()
 
-	// Four-step scenario: files, shell_exec, message_send, then the
+	// Four-step scenario: shell_exec, files, message_send, then the
 	// final writeback — a writeback event follows every model response.
 	got := collectEvents(t, events, 10)
 	var kinds []string
@@ -93,19 +94,19 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	assert.Contains(t, got[0]["task"], "] unknown: "+e2eQuestion,
 		"the turn input renders the message with its ID and sender (ADR 0015)")
 
-	// Files tool: the canned run writes its note into the workspace;
-	// the call crosses the workspace gRPC client and reports the write.
-	assert.Equal(t, "files", got[3]["tool_name"])
+	// shell_exec: the canned run's command crosses the Exec RPC, writes
+	// its note into the workspace directory, and computes the answer.
+	assert.Equal(t, "shell_exec", got[3]["tool_name"])
 	assert.NotContains(t, got[3], "tool_failed")
-	assert.Contains(t, got[3]["tool_result"], "bytes_written",
-		"the files tool writes end-to-end through the workspace gRPC client")
+	assert.Contains(t, got[3]["tool_result"], "42",
+		"the canned run computes through the shell")
 
-	assert.Equal(t, "shell_exec", got[5]["tool_name"])
+	// Files tool: the same file, read back through the gRPC contract —
+	// the exec'd child and the files tool see one workspace directory.
+	assert.Equal(t, "files", got[5]["tool_name"])
 	assert.NotContains(t, got[5], "tool_failed")
 	assert.Contains(t, got[5]["tool_result"], "6 * 7",
-		"the exec'd command reads back what the files tool wrote, so it sees the workspace's files natively")
-	assert.Contains(t, got[5]["tool_result"], "42",
-		"the canned run computes through the shell")
+		"the files tool reads back what the exec'd child wrote, through the workspace gRPC client")
 
 	assert.Equal(t, "message_send", got[7]["tool_name"])
 	assert.NotContains(t, got[7], "tool_failed")
@@ -122,7 +123,7 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 
 // TestEndToEnd_OneShotAgentTurnAgainstWorkspace runs "gagent agent
 // --message" against a running workspace: the one-shot mode runs the
-// canned turn — files, shell_exec, message_send via the protocol
+// canned turn — shell_exec, files, message_send via the protocol
 // client, plus a writeback block — and exits. The outbound message
 // lands in the file outbox (the same dir the serving mode uses); the
 // one-shot runner echoes it to stdout after the turn lands.

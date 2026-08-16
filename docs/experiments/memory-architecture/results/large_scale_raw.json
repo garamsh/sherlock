@@ -95,7 +95,7 @@
       ]
     },
     "item_count": 10000,
-    "query_ms": 91.63121861534623
+    "query_ms": 72.52825330742277
   },
   {
     "name": "M2",
@@ -193,55 +193,55 @@
       ]
     },
     "item_count": 10000,
-    "query_ms": 1857.145572384533
+    "query_ms": 1550.361389538703
   },
   {
     "name": "M3",
     "results_by_query": {
       "q-bike": [
-        "RetrievalResult(turn_id='session-19.bike.001', role='user', content='I commute by bike', score=0.5, metadata={'salience': 0.6, 'kind': 'bike'})",
+        "RetrievalResult(turn_id='session-14.bike.001', role='user', content='I commute by bike', score=0.5, metadata={'salience': 0.6, 'kind': 'bike'})",
         "RetrievalResult(turn_id='session-0.bike.001', role='user', content='I commute by bike', score=0.5, metadata={'salience': 0.6, 'kind': 'bike'})",
         "RetrievalResult(turn_id='session-0.bike.000', role='user', content='I bike to work', score=0.25, metadata={'salience': 0.7, 'kind': 'bike'})",
         "RetrievalResult(turn_id='session-0.bike.009', role='user', content='I bike on weekends', score=0.25, metadata={'salience': 0.3, 'kind': 'bike'})",
         "RetrievalResult(turn_id='session-0.bike.004', role='user', content='I bike to Dolores Park', score=0.22360679774997894, metadata={'salience': 0.4, 'kind': 'bike'})"
       ],
       "q-Jordan": [
-        "RetrievalResult(turn_id='session-16.family.000', role='user', content='My partner is Jordan', score=0.75, metadata={'salience': 0.7, 'kind': 'family'})",
+        "RetrievalResult(turn_id='session-13.family.000', role='user', content='My partner is Jordan', score=0.75, metadata={'salience': 0.7, 'kind': 'family'})",
         "RetrievalResult(turn_id='session-0.family.000', role='user', content='My partner is Jordan', score=0.75, metadata={'salience': 0.7, 'kind': 'family'})",
         "RetrievalResult(turn_id='session-0.family.004', role='user', content='My sister is Anna', score=0.5, metadata={'salience': 0.4, 'kind': 'family'})",
         "RetrievalResult(turn_id='session-0.family.008', role='user', content='Mom is a retired teacher', score=0.44721359549995787, metadata={'salience': 0.3, 'kind': 'family'})",
         "RetrievalResult(turn_id='session-0.family.007', role='user', content='Mom is 67', score=0.28867513459481287, metadata={'salience': 0.3, 'kind': 'family'})"
       ],
       "q-Otto": [
-        "RetrievalResult(turn_id='session-9.manager.005', role='user', content='Otto is senior', score=0.6666666666666667, metadata={'salience': 0.4, 'kind': 'manager'})",
+        "RetrievalResult(turn_id='session-4.manager.005', role='user', content='Otto is senior', score=0.6666666666666667, metadata={'salience': 0.4, 'kind': 'manager'})",
         "RetrievalResult(turn_id='session-0.family.007', role='user', content='Mom is 67', score=0.33333333333333337, metadata={'salience': 0.3, 'kind': 'family'})",
         "RetrievalResult(turn_id='session-0.family.000', role='user', content='My partner is Jordan', score=0.28867513459481287, metadata={'salience': 0.7, 'kind': 'family'})",
         "RetrievalResult(turn_id='session-0.family.002', role='user', content='Jordan is an architect', score=0.28867513459481287, metadata={'salience': 0.4, 'kind': 'family'})",
         "RetrievalResult(turn_id='session-0.family.004', role='user', content='My sister is Anna', score=0.28867513459481287, metadata={'salience': 0.4, 'kind': 'family'})"
       ],
       "q-review": [
-        "RetrievalResult(turn_id='session-13.review.008', role='user', content='PR review is required', score=0.5773502691896258, metadata={'salience': 0.3, 'kind': 'review'})",
+        "RetrievalResult(turn_id='session-12.review.008', role='user', content='PR review is required', score=0.5773502691896258, metadata={'salience': 0.3, 'kind': 'review'})",
         "RetrievalResult(turn_id='session-0.family.007', role='user', content='Mom is 67', score=0.33333333333333337, metadata={'salience': 0.3, 'kind': 'family'})",
         "RetrievalResult(turn_id='session-0.family.008', role='user', content='Mom is a retired teacher', score=0.2581988897471611, metadata={'salience': 0.3, 'kind': 'family'})",
         "RetrievalResult(turn_id='session-0.bike.000', role='user', content='I bike to work', score=0.0, metadata={'salience': 0.7, 'kind': 'bike'})",
         "RetrievalResult(turn_id='session-0.bike.001', role='user', content='I commute by bike', score=0.0, metadata={'salience': 0.6, 'kind': 'bike'})"
       ],
       "q-vs": [
-        "RetrievalResult(turn_id='session-5.editor.000', role='user', content='I use VS Code', score=0.44721359549995787, metadata={'salience': 0.7, 'kind': 'editor'})",
+        "RetrievalResult(turn_id='session-13.editor.000', role='user', content='I use VS Code', score=0.44721359549995787, metadata={'salience': 0.7, 'kind': 'editor'})",
         "RetrievalResult(turn_id='session-0.bike.000', role='user', content='I bike to work', score=0.22360679774997894, metadata={'salience': 0.7, 'kind': 'bike'})",
         "RetrievalResult(turn_id='session-0.bike.001', role='user', content='I commute by bike', score=0.22360679774997894, metadata={'salience': 0.6, 'kind': 'bike'})",
         "RetrievalResult(turn_id='session-0.bike.009', role='user', content='I bike on weekends', score=0.22360679774997894, metadata={'salience': 0.3, 'kind': 'bike'})",
         "RetrievalResult(turn_id='session-0.bike.004', role='user', content='I bike to Dolores Park', score=0.19999999999999996, metadata={'salience': 0.4, 'kind': 'bike'})"
       ],
       "q-Maria-py": [
-        "RetrievalResult(turn_id='session-8.junior.001', role='user', content='Maria writes Python', score=0.6666666666666667, metadata={'salience': 0.6, 'kind': 'junior'})",
+        "RetrievalResult(turn_id='session-37.junior.001', role='user', content='Maria writes Python', score=0.6666666666666667, metadata={'salience': 0.6, 'kind': 'junior'})",
         "RetrievalResult(turn_id='session-0.bike.000', role='user', content='I bike to work', score=0.0, metadata={'salience': 0.7, 'kind': 'bike'})",
         "RetrievalResult(turn_id='session-0.bike.001', role='user', content='I commute by bike', score=0.0, metadata={'salience': 0.6, 'kind': 'bike'})",
         "RetrievalResult(turn_id='session-0.bike.002', role='user', content='I bike three days a week', score=0.0, metadata={'salience': 0.5, 'kind': 'bike'})",
         "RetrievalResult(turn_id='session-0.bike.003', role='user', content='I bike along the Mission bike lane', score=0.0, metadata={'salience': 0.5, 'kind': 'bike'})"
       ],
       "q-py": [
-        "RetrievalResult(turn_id='session-21.lang.008', role='user', content='I prefer Django for web', score=0.5999999999999999, metadata={'salience': 0.3, 'kind': 'lang'})",
+        "RetrievalResult(turn_id='session-87.lang.008', role='user', content='I prefer Django for web', score=0.5999999999999999, metadata={'salience': 0.3, 'kind': 'lang'})",
         "RetrievalResult(turn_id='session-0.bike.000', role='user', content='I bike to work', score=0.22360679774997894, metadata={'salience': 0.7, 'kind': 'bike'})",
         "RetrievalResult(turn_id='session-0.bike.001', role='user', content='I commute by bike', score=0.22360679774997894, metadata={'salience': 0.6, 'kind': 'bike'})",
         "RetrievalResult(turn_id='session-0.bike.009', role='user', content='I bike on weekends', score=0.22360679774997894, metadata={'salience': 0.3, 'kind': 'bike'})",
@@ -255,35 +255,35 @@
         "RetrievalResult(turn_id='session-0.bike.002', role='user', content='I bike three days a week', score=0.0, metadata={'salience': 0.5, 'kind': 'bike'})"
       ],
       "q-deploy": [
-        "RetrievalResult(turn_id='session-9.family.007', role='user', content='Mom is 67', score=0.28867513459481287, metadata={'salience': 0.3, 'kind': 'family'})",
+        "RetrievalResult(turn_id='session-1.track.009', role='user', content='Maria is junior', score=0.28867513459481287, metadata={'salience': 0.3, 'kind': 'track'})",
         "RetrievalResult(turn_id='session-0.family.007', role='user', content='Mom is 67', score=0.28867513459481287, metadata={'salience': 0.3, 'kind': 'family'})",
         "RetrievalResult(turn_id='session-0.family.000', role='user', content='My partner is Jordan', score=0.25, metadata={'salience': 0.7, 'kind': 'family'})",
         "RetrievalResult(turn_id='session-0.family.002', role='user', content='Jordan is an architect', score=0.25, metadata={'salience': 0.4, 'kind': 'family'})",
         "RetrievalResult(turn_id='session-0.family.004', role='user', content='My sister is Anna', score=0.25, metadata={'salience': 0.4, 'kind': 'family'})"
       ],
       "q-kafka": [
-        "RetrievalResult(turn_id='session-3.junior.008', role='user', content='Maria drinks coffee', score=0.33333333333333337, metadata={'salience': 0.4, 'kind': 'junior'})",
+        "RetrievalResult(turn_id='session-0.drink.001', role='user', content='Maria drinks coffee', score=0.33333333333333337, metadata={'salience': 0.6, 'kind': 'drink'})",
         "RetrievalResult(turn_id='session-0.family.003', role='user', content='Jordan has a cat named Pixel', score=0.2357022603955159, metadata={'salience': 0.4, 'kind': 'family'})",
         "RetrievalResult(turn_id='session-0.bike.000', role='user', content='I bike to work', score=0.0, metadata={'salience': 0.7, 'kind': 'bike'})",
         "RetrievalResult(turn_id='session-0.bike.001', role='user', content='I commute by bike', score=0.0, metadata={'salience': 0.6, 'kind': 'bike'})",
         "RetrievalResult(turn_id='session-0.bike.002', role='user', content='I bike three days a week', score=0.0, metadata={'salience': 0.5, 'kind': 'bike'})"
       ],
       "q-pg": [
-        "RetrievalResult(turn_id='session-2.manager.006', role='user', content='Otto likes Go', score=0.4082482904638629, metadata={'salience': 0.4, 'kind': 'manager'})",
+        "RetrievalResult(turn_id='session-0.manager.008', role='user', content='Otto reviews PRs', score=0.4082482904638629, metadata={'salience': 0.4, 'kind': 'manager'})",
         "RetrievalResult(turn_id='session-0.family.003', role='user', content='Jordan has a cat named Pixel', score=0.28867513459481287, metadata={'salience': 0.4, 'kind': 'family'})",
         "RetrievalResult(turn_id='session-0.bike.000', role='user', content='I bike to work', score=0.0, metadata={'salience': 0.7, 'kind': 'bike'})",
         "RetrievalResult(turn_id='session-0.bike.001', role='user', content='I commute by bike', score=0.0, metadata={'salience': 0.6, 'kind': 'bike'})",
         "RetrievalResult(turn_id='session-0.bike.002', role='user', content='I bike three days a week', score=0.0, metadata={'salience': 0.5, 'kind': 'bike'})"
       ],
       "q-Sam": [
-        "RetrievalResult(turn_id='session-23.personal.000', role='user', content='My best friend is Sam', score=0.7999999999999998, metadata={'salience': 0.7, 'kind': 'personal'})",
+        "RetrievalResult(turn_id='session-47.personal.000', role='user', content='My best friend is Sam', score=0.7999999999999998, metadata={'salience': 0.7, 'kind': 'personal'})",
         "RetrievalResult(turn_id='session-0.family.000', role='user', content='My partner is Jordan', score=0.44721359549995787, metadata={'salience': 0.7, 'kind': 'family'})",
         "RetrievalResult(turn_id='session-0.family.004', role='user', content='My sister is Anna', score=0.44721359549995787, metadata={'salience': 0.4, 'kind': 'family'})",
         "RetrievalResult(turn_id='session-0.family.008', role='user', content='Mom is a retired teacher', score=0.3999999999999999, metadata={'salience': 0.3, 'kind': 'family'})",
         "RetrievalResult(turn_id='session-0.family.007', role='user', content='Mom is 67', score=0.2581988897471611, metadata={'salience': 0.3, 'kind': 'family'})"
       ],
       "q-coffee": [
-        "RetrievalResult(turn_id='session-5.junior.007', role='user', content='Maria bikes', score=0.35355339059327373, metadata={'salience': 0.4, 'kind': 'junior'})",
+        "RetrievalResult(turn_id='session-14.bike.007', role='user', content='Maria bikes', score=0.35355339059327373, metadata={'salience': 0.4, 'kind': 'bike'})",
         "RetrievalResult(turn_id='session-0.bike.007', role='user', content='Maria bikes', score=0.35355339059327373, metadata={'salience': 0.4, 'kind': 'bike'})",
         "RetrievalResult(turn_id='session-0.family.003', role='user', content='Jordan has a cat named Pixel', score=0.20412414523193156, metadata={'salience': 0.4, 'kind': 'family'})",
         "RetrievalResult(turn_id='session-0.bike.000', role='user', content='I bike to work', score=0.0, metadata={'salience': 0.7, 'kind': 'bike'})",
@@ -291,7 +291,7 @@
       ]
     },
     "item_count": 10000,
-    "query_ms": 457.3673267694047
+    "query_ms": 355.56133046144475
   },
   {
     "name": "M4",
@@ -389,7 +389,7 @@
       ]
     },
     "item_count": 10000,
-    "query_ms": 0.12177976951576196
+    "query_ms": 0.11653869240902938
   },
   {
     "name": "M5",
@@ -478,7 +478,7 @@
       ]
     },
     "item_count": 207,
-    "query_ms": 0.6787338454562885
+    "query_ms": 0.6454501538895644
   },
   {
     "name": "M6",
@@ -552,105 +552,105 @@
       ]
     },
     "item_count": 150,
-    "query_ms": 0.4864149997727229
+    "query_ms": 0.3476597692530889
   },
   {
     "name": "D2",
     "results_by_query": {
       "q-bike": [
-        "RetrievalResult(turn_id='session-99.bike.001', role='user', content='I commute by bike', score=1.6714411176115451, metadata={'salience': 0.6, 'kind': 'bike'})",
-        "RetrievalResult(turn_id='session-98.bike.001', role='user', content='I commute by bike', score=1.6714392455889926, metadata={'salience': 0.6, 'kind': 'bike'})",
-        "RetrievalResult(turn_id='session-97.bike.001', role='user', content='I commute by bike', score=1.671436563613312, metadata={'salience': 0.6, 'kind': 'bike'})",
-        "RetrievalResult(turn_id='session-96.bike.001', role='user', content='I commute by bike', score=1.6714319982865713, metadata={'salience': 0.6, 'kind': 'bike'})",
-        "RetrievalResult(turn_id='session-95.bike.001', role='user', content='I commute by bike', score=1.6714305962158864, metadata={'salience': 0.6, 'kind': 'bike'})"
+        "RetrievalResult(turn_id='session-99.bike.001', role='user', content='I commute by bike', score=1.671440909193163, metadata={'salience': 0.6, 'kind': 'bike'})",
+        "RetrievalResult(turn_id='session-98.bike.001', role='user', content='I commute by bike', score=1.6714384826351885, metadata={'salience': 0.6, 'kind': 'bike'})",
+        "RetrievalResult(turn_id='session-97.bike.001', role='user', content='I commute by bike', score=1.6714349392607875, metadata={'salience': 0.6, 'kind': 'bike'})",
+        "RetrievalResult(turn_id='session-96.bike.001', role='user', content='I commute by bike', score=1.6714259990618894, metadata={'salience': 0.6, 'kind': 'bike'})",
+        "RetrievalResult(turn_id='session-95.bike.001', role='user', content='I commute by bike', score=1.6714244415575177, metadata={'salience': 0.6, 'kind': 'bike'})"
       ],
       "q-Jordan": [
-        "RetrievalResult(turn_id='session-99.family.000', role='user', content='My partner is Jordan', score=1.9873435754601692, metadata={'salience': 0.7, 'kind': 'family'})",
-        "RetrievalResult(turn_id='session-98.family.000', role='user', content='My partner is Jordan', score=1.9873378923833105, metadata={'salience': 0.7, 'kind': 'family'})",
-        "RetrievalResult(turn_id='session-97.family.000', role='user', content='My partner is Jordan', score=1.9873360343902684, metadata={'salience': 0.7, 'kind': 'family'})",
-        "RetrievalResult(turn_id='session-96.family.000', role='user', content='My partner is Jordan', score=1.9873338397455875, metadata={'salience': 0.7, 'kind': 'family'})",
-        "RetrievalResult(turn_id='session-95.family.000', role='user', content='My partner is Jordan', score=1.9873305268270531, metadata={'salience': 0.7, 'kind': 'family'})"
+        "RetrievalResult(turn_id='session-99.family.000', role='user', content='My partner is Jordan', score=1.9873432713036616, metadata={'salience': 0.7, 'kind': 'family'})",
+        "RetrievalResult(turn_id='session-98.family.000', role='user', content='My partner is Jordan', score=1.9873364997534908, metadata={'salience': 0.7, 'kind': 'family'})",
+        "RetrievalResult(turn_id='session-97.family.000', role='user', content='My partner is Jordan', score=1.98733326047585, metadata={'salience': 0.7, 'kind': 'family'})",
+        "RetrievalResult(turn_id='session-96.family.000', role='user', content='My partner is Jordan', score=1.9873282736250706, metadata={'salience': 0.7, 'kind': 'family'})",
+        "RetrievalResult(turn_id='session-95.family.000', role='user', content='My partner is Jordan', score=1.9873242505455686, metadata={'salience': 0.7, 'kind': 'family'})"
       ],
       "q-Otto": [
-        "RetrievalResult(turn_id='session-99.manager.000', role='user', content='Otto is my manager', score=1.8404676316833462, metadata={'salience': 0.7, 'kind': 'manager'})",
-        "RetrievalResult(turn_id='session-98.manager.000', role='user', content='Otto is my manager', score=1.840464629944711, metadata={'salience': 0.7, 'kind': 'manager'})",
-        "RetrievalResult(turn_id='session-97.manager.000', role='user', content='Otto is my manager', score=1.8404606698948565, metadata={'salience': 0.7, 'kind': 'manager'})",
-        "RetrievalResult(turn_id='session-96.manager.000', role='user', content='Otto is my manager', score=1.8404596260877282, metadata={'salience': 0.7, 'kind': 'manager'})",
-        "RetrievalResult(turn_id='session-94.manager.000', role='user', content='Otto is my manager', score=1.8404538213416055, metadata={'salience': 0.7, 'kind': 'manager'})"
+        "RetrievalResult(turn_id='session-99.manager.000', role='user', content='Otto is my manager', score=1.8404670550018218, metadata={'salience': 0.7, 'kind': 'manager'})",
+        "RetrievalResult(turn_id='session-98.manager.000', role='user', content='Otto is my manager', score=1.8404636838880324, metadata={'salience': 0.7, 'kind': 'manager'})",
+        "RetrievalResult(turn_id='session-97.manager.000', role='user', content='Otto is my manager', score=1.8404567528176226, metadata={'salience': 0.7, 'kind': 'manager'})",
+        "RetrievalResult(turn_id='session-96.manager.000', role='user', content='Otto is my manager', score=1.8404545759812068, metadata={'salience': 0.7, 'kind': 'manager'})",
+        "RetrievalResult(turn_id='session-94.manager.000', role='user', content='Otto is my manager', score=1.8404473642201487, metadata={'salience': 0.7, 'kind': 'manager'})"
       ],
       "q-review": [
-        "RetrievalResult(turn_id='session-99.review.008', role='user', content='PR review is required', score=1.4389724824870287, metadata={'salience': 0.3, 'kind': 'review'})",
-        "RetrievalResult(turn_id='session-98.review.008', role='user', content='PR review is required', score=1.438969105609342, metadata={'salience': 0.3, 'kind': 'review'})",
-        "RetrievalResult(turn_id='session-97.review.008', role='user', content='PR review is required', score=1.4389652706627487, metadata={'salience': 0.3, 'kind': 'review'})",
-        "RetrievalResult(turn_id='session-96.review.008', role='user', content='PR review is required', score=1.438962581282235, metadata={'salience': 0.3, 'kind': 'review'})",
-        "RetrievalResult(turn_id='session-95.review.008', role='user', content='PR review is required', score=1.4389606212033572, metadata={'salience': 0.3, 'kind': 'review'})"
+        "RetrievalResult(turn_id='session-99.review.008', role='user', content='PR review is required', score=1.4389715377588639, metadata={'salience': 0.3, 'kind': 'review'})",
+        "RetrievalResult(turn_id='session-98.review.008', role='user', content='PR review is required', score=1.4389677602547328, metadata={'salience': 0.3, 'kind': 'review'})",
+        "RetrievalResult(turn_id='session-97.review.008', role='user', content='PR review is required', score=1.4389605296818406, metadata={'salience': 0.3, 'kind': 'review'})",
+        "RetrievalResult(turn_id='session-96.review.008', role='user', content='PR review is required', score=1.438956046353798, metadata={'salience': 0.3, 'kind': 'review'})",
+        "RetrievalResult(turn_id='session-95.review.008', role='user', content='PR review is required', score=1.4389539737288854, metadata={'salience': 0.3, 'kind': 'review'})"
       ],
       "q-vs": [
-        "RetrievalResult(turn_id='session-96.editor.000', role='user', content='I use VS Code', score=1.7706192774450564, metadata={'salience': 0.7, 'kind': 'editor'})",
-        "RetrievalResult(turn_id='session-95.editor.000', role='user', content='I use VS Code', score=1.7706181235426008, metadata={'salience': 0.7, 'kind': 'editor'})",
-        "RetrievalResult(turn_id='session-94.editor.000', role='user', content='I use VS Code', score=1.7706153626930894, metadata={'salience': 0.7, 'kind': 'editor'})",
-        "RetrievalResult(turn_id='session-93.editor.000', role='user', content='I use VS Code', score=1.7706130731656569, metadata={'salience': 0.7, 'kind': 'editor'})",
-        "RetrievalResult(turn_id='session-92.editor.000', role='user', content='I use VS Code', score=1.7706078945978438, metadata={'salience': 0.7, 'kind': 'editor'})"
+        "RetrievalResult(turn_id='session-96.editor.000', role='user', content='I use VS Code', score=1.7706124353954729, metadata={'salience': 0.7, 'kind': 'editor'})",
+        "RetrievalResult(turn_id='session-95.editor.000', role='user', content='I use VS Code', score=1.7706111068186696, metadata={'salience': 0.7, 'kind': 'editor'})",
+        "RetrievalResult(turn_id='session-94.editor.000', role='user', content='I use VS Code', score=1.7706080770795876, metadata={'salience': 0.7, 'kind': 'editor'})",
+        "RetrievalResult(turn_id='session-93.editor.000', role='user', content='I use VS Code', score=1.7706053756372766, metadata={'salience': 0.7, 'kind': 'editor'})",
+        "RetrievalResult(turn_id='session-92.editor.000', role='user', content='I use VS Code', score=1.770600136457787, metadata={'salience': 0.7, 'kind': 'editor'})"
       ],
       "q-Maria-py": [
-        "RetrievalResult(turn_id='session-99.junior.001', role='user', content='Maria writes Python', score=1.840882874950161, metadata={'salience': 0.6, 'kind': 'junior'})",
-        "RetrievalResult(turn_id='session-98.junior.001', role='user', content='Maria writes Python', score=1.840879767579073, metadata={'salience': 0.6, 'kind': 'junior'})",
-        "RetrievalResult(turn_id='session-97.junior.001', role='user', content='Maria writes Python', score=1.8408767495479808, metadata={'salience': 0.6, 'kind': 'junior'})",
-        "RetrievalResult(turn_id='session-96.junior.001', role='user', content='Maria writes Python', score=1.8408756947216838, metadata={'salience': 0.6, 'kind': 'junior'})",
-        "RetrievalResult(turn_id='session-95.junior.001', role='user', content='Maria writes Python', score=1.840871290582442, metadata={'salience': 0.6, 'kind': 'junior'})"
+        "RetrievalResult(turn_id='session-99.junior.001', role='user', content='Maria writes Python', score=1.8408816941303643, metadata={'salience': 0.6, 'kind': 'junior'})",
+        "RetrievalResult(turn_id='session-98.junior.001', role='user', content='Maria writes Python', score=1.8408776612476498, metadata={'salience': 0.6, 'kind': 'junior'})",
+        "RetrievalResult(turn_id='session-97.junior.001', role='user', content='Maria writes Python', score=1.840871669744264, metadata={'salience': 0.6, 'kind': 'junior'})",
+        "RetrievalResult(turn_id='session-96.junior.001', role='user', content='Maria writes Python', score=1.8408696561979254, metadata={'salience': 0.6, 'kind': 'junior'})",
+        "RetrievalResult(turn_id='session-95.junior.001', role='user', content='Maria writes Python', score=1.8408639485213172, metadata={'salience': 0.6, 'kind': 'junior'})"
       ],
       "q-py": [
-        "RetrievalResult(turn_id='session-99.lang.000', role='user', content='I prefer Python', score=1.852713163355656, metadata={'salience': 0.7, 'kind': 'lang'})",
-        "RetrievalResult(turn_id='session-98.lang.000', role='user', content='I prefer Python', score=1.8527099100034412, metadata={'salience': 0.7, 'kind': 'lang'})",
-        "RetrievalResult(turn_id='session-97.lang.000', role='user', content='I prefer Python', score=1.8527064370648538, metadata={'salience': 0.7, 'kind': 'lang'})",
-        "RetrievalResult(turn_id='session-95.lang.000', role='user', content='I prefer Python', score=1.8526998792193157, metadata={'salience': 0.7, 'kind': 'lang'})",
-        "RetrievalResult(turn_id='session-94.lang.000', role='user', content='I prefer Python', score=1.8526990818958207, metadata={'salience': 0.7, 'kind': 'lang'})"
+        "RetrievalResult(turn_id='session-99.lang.000', role='user', content='I prefer Python', score=1.8527120975707125, metadata={'salience': 0.7, 'kind': 'lang'})",
+        "RetrievalResult(turn_id='session-98.lang.000', role='user', content='I prefer Python', score=1.8527083834717557, metadata={'salience': 0.7, 'kind': 'lang'})",
+        "RetrievalResult(turn_id='session-97.lang.000', role='user', content='I prefer Python', score=1.8527034029217224, metadata={'salience': 0.7, 'kind': 'lang'})",
+        "RetrievalResult(turn_id='session-95.lang.000', role='user', content='I prefer Python', score=1.8526927856178013, metadata={'salience': 0.7, 'kind': 'lang'})",
+        "RetrievalResult(turn_id='session-94.lang.000', role='user', content='I prefer Python', score=1.8526917946306691, metadata={'salience': 0.7, 'kind': 'lang'})"
       ],
       "q-go": [
-        "RetrievalResult(turn_id='session-99.lang.001', role='user', content='I prefer Go for systems', score=1.6358179603815919, metadata={'salience': 0.6, 'kind': 'lang'})",
-        "RetrievalResult(turn_id='session-98.lang.001', role='user', content='I prefer Go for systems', score=1.6358147037631676, metadata={'salience': 0.6, 'kind': 'lang'})",
-        "RetrievalResult(turn_id='session-97.lang.001', role='user', content='I prefer Go for systems', score=1.6358112297539655, metadata={'salience': 0.6, 'kind': 'lang'})",
-        "RetrievalResult(turn_id='session-95.lang.001', role='user', content='I prefer Go for systems', score=1.6358046730118376, metadata={'salience': 0.6, 'kind': 'lang'})",
-        "RetrievalResult(turn_id='session-94.lang.001', role='user', content='I prefer Go for systems', score=1.6358038735776042, metadata={'salience': 0.6, 'kind': 'lang'})"
+        "RetrievalResult(turn_id='session-99.lang.001', role='user', content='I prefer Go for systems', score=1.635816770355535, metadata={'salience': 0.6, 'kind': 'lang'})",
+        "RetrievalResult(turn_id='session-98.lang.001', role='user', content='I prefer Go for systems', score=1.6358130684218457, metadata={'salience': 0.6, 'kind': 'lang'})",
+        "RetrievalResult(turn_id='session-97.lang.001', role='user', content='I prefer Go for systems', score=1.635808122316674, metadata={'salience': 0.6, 'kind': 'lang'})",
+        "RetrievalResult(turn_id='session-95.lang.001', role='user', content='I prefer Go for systems', score=1.635797480621374, metadata={'salience': 0.6, 'kind': 'lang'})",
+        "RetrievalResult(turn_id='session-94.lang.001', role='user', content='I prefer Go for systems', score=1.6357964645391854, metadata={'salience': 0.6, 'kind': 'lang'})"
       ],
       "q-deploy": [
-        "RetrievalResult(turn_id='session-99.family.000', role='user', content='My partner is Jordan', score=1.574991724060604, metadata={'salience': 0.7, 'kind': 'family'})",
-        "RetrievalResult(turn_id='session-99.manager.000', role='user', content='Otto is my manager', score=1.5749905495774374, metadata={'salience': 0.7, 'kind': 'manager'})",
-        "RetrievalResult(turn_id='session-98.manager.000', role='user', content='Otto is my manager', score=1.5749875478739144, metadata={'salience': 0.7, 'kind': 'manager'})",
-        "RetrievalResult(turn_id='session-98.family.000', role='user', content='My partner is Jordan', score=1.574986041062881, metadata={'salience': 0.7, 'kind': 'family'})",
-        "RetrievalResult(turn_id='session-97.family.000', role='user', content='My partner is Jordan', score=1.5749841830957112, metadata={'salience': 0.7, 'kind': 'family'})"
+        "RetrievalResult(turn_id='session-99.family.000', role='user', content='My partner is Jordan', score=1.574990499572429, metadata={'salience': 0.7, 'kind': 'family'})",
+        "RetrievalResult(turn_id='session-99.manager.000', role='user', content='Otto is my manager', score=1.5749890451971784, metadata={'salience': 0.7, 'kind': 'manager'})",
+        "RetrievalResult(turn_id='session-98.manager.000', role='user', content='Otto is my manager', score=1.5749856741290769, metadata={'salience': 0.7, 'kind': 'manager'})",
+        "RetrievalResult(turn_id='session-98.family.000', role='user', content='My partner is Jordan', score=1.5749837281290153, metadata={'salience': 0.7, 'kind': 'family'})",
+        "RetrievalResult(turn_id='session-97.family.000', role='user', content='My partner is Jordan', score=1.5749804889024435, metadata={'salience': 0.7, 'kind': 'family'})"
       ],
       "q-kafka": [
-        "RetrievalResult(turn_id='session-95.deploy.001', role='user', content='Deploy audit log Kafka', score=1.4943162355700408, metadata={'salience': 0.6, 'kind': 'deploy'})",
-        "RetrievalResult(turn_id='session-94.deploy.001', role='user', content='Deploy audit log Kafka', score=1.4943129784853282, metadata={'salience': 0.6, 'kind': 'deploy'})",
-        "RetrievalResult(turn_id='session-93.deploy.001', role='user', content='Deploy audit log Kafka', score=1.4943109349026185, metadata={'salience': 0.6, 'kind': 'deploy'})",
-        "RetrievalResult(turn_id='session-92.deploy.001', role='user', content='Deploy audit log Kafka', score=1.494307441691952, metadata={'salience': 0.6, 'kind': 'deploy'})",
-        "RetrievalResult(turn_id='session-91.deploy.001', role='user', content='Deploy audit log Kafka', score=1.4943052724023382, metadata={'salience': 0.6, 'kind': 'deploy'})"
+        "RetrievalResult(turn_id='session-95.deploy.001', role='user', content='Deploy audit log Kafka', score=1.4943087347508786, metadata={'salience': 0.6, 'kind': 'deploy'})",
+        "RetrievalResult(turn_id='session-94.deploy.001', role='user', content='Deploy audit log Kafka', score=1.494305243867991, metadata={'salience': 0.6, 'kind': 'deploy'})",
+        "RetrievalResult(turn_id='session-93.deploy.001', role='user', content='Deploy audit log Kafka', score=1.4943027565521918, metadata={'salience': 0.6, 'kind': 'deploy'})",
+        "RetrievalResult(turn_id='session-92.deploy.001', role='user', content='Deploy audit log Kafka', score=1.4942991776206074, metadata={'salience': 0.6, 'kind': 'deploy'})",
+        "RetrievalResult(turn_id='session-91.deploy.001', role='user', content='Deploy audit log Kafka', score=1.494297005517264, metadata={'salience': 0.6, 'kind': 'deploy'})"
       ],
       "q-pg": [
-        "RetrievalResult(turn_id='session-99.review.000', role='user', content='Otto reviews code', score=1.4041124689882607, metadata={'salience': 0.7, 'kind': 'review'})",
-        "RetrievalResult(turn_id='session-98.review.000', role='user', content='Otto reviews code', score=1.4041091183712435, metadata={'salience': 0.7, 'kind': 'review'})",
-        "RetrievalResult(turn_id='session-97.review.000', role='user', content='Otto reviews code', score=1.4041052984295304, metadata={'salience': 0.7, 'kind': 'review'})",
-        "RetrievalResult(turn_id='session-96.review.000', role='user', content='Otto reviews code', score=1.404102593490614, metadata={'salience': 0.7, 'kind': 'review'})",
-        "RetrievalResult(turn_id='session-95.deploy.000', role='user', content='Deploy uses Helm', score=1.4041017435961893, metadata={'salience': 0.7, 'kind': 'deploy'})"
+        "RetrievalResult(turn_id='session-99.review.000', role='user', content='Otto reviews code', score=1.4041106479840113, metadata={'salience': 0.7, 'kind': 'review'})",
+        "RetrievalResult(turn_id='session-98.review.000', role='user', content='Otto reviews code', score=1.4041068098330243, metadata={'salience': 0.7, 'kind': 'review'})",
+        "RetrievalResult(turn_id='session-97.review.000', role='user', content='Otto reviews code', score=1.4040993921876992, metadata={'salience': 0.7, 'kind': 'review'})",
+        "RetrievalResult(turn_id='session-96.review.000', role='user', content='Otto reviews code', score=1.404095125666506, metadata={'salience': 0.7, 'kind': 'review'})",
+        "RetrievalResult(turn_id='session-95.deploy.000', role='user', content='Deploy uses Helm', score=1.4040941963632396, metadata={'salience': 0.7, 'kind': 'deploy'})"
       ],
       "q-Sam": [
-        "RetrievalResult(turn_id='session-99.personal.000', role='user', content='My best friend is Sam', score=2.031004021561465, metadata={'salience': 0.7, 'kind': 'personal'})",
-        "RetrievalResult(turn_id='session-98.personal.000', role='user', content='My best friend is Sam', score=2.0310003431607555, metadata={'salience': 0.7, 'kind': 'personal'})",
-        "RetrievalResult(turn_id='session-97.personal.000', role='user', content='My best friend is Sam', score=2.030998658116461, metadata={'salience': 0.7, 'kind': 'personal'})",
-        "RetrievalResult(turn_id='session-96.personal.000', role='user', content='My best friend is Sam', score=2.0309948926131804, metadata={'salience': 0.7, 'kind': 'personal'})",
-        "RetrievalResult(turn_id='session-95.personal.000', role='user', content='My best friend is Sam', score=2.0309921127050403, metadata={'salience': 0.7, 'kind': 'personal'})"
+        "RetrievalResult(turn_id='session-99.personal.000', role='user', content='My best friend is Sam', score=2.0310021116675605, metadata={'salience': 0.7, 'kind': 'personal'})",
+        "RetrievalResult(turn_id='session-98.personal.000', role='user', content='My best friend is Sam', score=2.0309980694641183, metadata={'salience': 0.7, 'kind': 'personal'})",
+        "RetrievalResult(turn_id='session-97.personal.000', role='user', content='My best friend is Sam', score=2.030995820252672, metadata={'salience': 0.7, 'kind': 'personal'})",
+        "RetrievalResult(turn_id='session-96.personal.000', role='user', content='My best friend is Sam', score=2.0309878390457934, metadata={'salience': 0.7, 'kind': 'personal'})",
+        "RetrievalResult(turn_id='session-95.personal.000', role='user', content='My best friend is Sam', score=2.0309845148912657, metadata={'salience': 0.7, 'kind': 'personal'})"
       ],
       "q-coffee": [
-        "RetrievalResult(turn_id='session-99.drink.000', role='user', content='I drink coffee', score=1.5165126391700605, metadata={'salience': 0.7, 'kind': 'drink'})",
-        "RetrievalResult(turn_id='session-98.drink.000', role='user', content='I drink coffee', score=1.5165099704858678, metadata={'salience': 0.7, 'kind': 'drink'})",
-        "RetrievalResult(turn_id='session-97.drink.000', role='user', content='I drink coffee', score=1.5165059783126267, metadata={'salience': 0.7, 'kind': 'drink'})",
-        "RetrievalResult(turn_id='session-96.drink.000', role='user', content='I drink coffee', score=1.5165029685077187, metadata={'salience': 0.7, 'kind': 'drink'})",
-        "RetrievalResult(turn_id='session-95.drink.000', role='user', content='I drink coffee', score=1.516499129555262, metadata={'salience': 0.7, 'kind': 'drink'})"
+        "RetrievalResult(turn_id='session-99.drink.000', role='user', content='I drink coffee', score=1.5165106252694704, metadata={'salience': 0.7, 'kind': 'drink'})",
+        "RetrievalResult(turn_id='session-98.drink.000', role='user', content='I drink coffee', score=1.5165076823035601, metadata={'salience': 0.7, 'kind': 'drink'})",
+        "RetrievalResult(turn_id='session-97.drink.000', role='user', content='I drink coffee', score=1.5165018411456557, metadata={'salience': 0.7, 'kind': 'drink'})",
+        "RetrievalResult(turn_id='session-96.drink.000', role='user', content='I drink coffee', score=1.5164954359322271, metadata={'salience': 0.7, 'kind': 'drink'})",
+        "RetrievalResult(turn_id='session-95.drink.000', role='user', content='I drink coffee', score=1.5164909186297288, metadata={'salience': 0.7, 'kind': 'drink'})"
       ]
     },
     "item_count": 10000,
-    "query_ms": 242.32050476968288
+    "query_ms": 281.54970038467303
   },
   {
     "name": "F5",
@@ -748,301 +748,301 @@
       ]
     },
     "item_count": 83,
-    "query_ms": 1.8567150776775985
+    "query_ms": 2.4744195382182417
   },
   {
     "name": "G4",
     "results_by_query": {
       "q-bike": [
-        "RetrievalResult(turn_id='reflect-2915', role='reflection', content='[reflection covering 8 recent items] user: I use Go for backend | user: I avoid Java | user: I like TypeScript for web | user: I think Rust is great for systems | user: I prefer Django for web | user: I avoid PHP | user: I bike to work | user: I commute by bike', score=1.4027722655884165, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-2420', role='reflection', content='[reflection covering 8 recent items] user: I use Go for backend | user: I avoid Java | user: I like TypeScript for web | user: I think Rust is great for systems | user: I prefer Django for web | user: I avoid PHP | user: I bike to work | user: I commute by bike', score=1.4027642545335604, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-5336', role='reflection', content=\"[reflection covering 8 recent items] user: I like cold brew | user: Otto drinks cold brew | user: I don't drink tea | user: I drink water | user: I bike to work | user: I commute by bike | user: I bike three days a week | user: I bike along the Mission bike lane\", score=1.3876390190468588, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-4931', role='reflection', content=\"[reflection covering 8 recent items] user: I like cold brew | user: Otto drinks cold brew | user: I don't drink tea | user: I drink water | user: I bike to work | user: I commute by bike | user: I bike three days a week | user: I bike along the Mission bike lane\", score=1.3876265589422694, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-4391', role='reflection', content=\"[reflection covering 8 recent items] user: I like cold brew | user: Otto drinks cold brew | user: I don't drink tea | user: I drink water | user: I bike to work | user: I commute by bike | user: I bike three days a week | user: I bike along the Mission bike lane\", score=1.3876131003194474, metadata={'salience': 0.6, 'kind': 'reflection'})"
+        "RetrievalResult(turn_id='reflect-2915', role='reflection', content='[reflection covering 8 recent items] user: I use Go for backend | user: I avoid Java | user: I like TypeScript for web | user: I think Rust is great for systems | user: I prefer Django for web | user: I avoid PHP | user: I bike to work | user: I commute by bike', score=1.4027826988166496, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-2420', role='reflection', content='[reflection covering 8 recent items] user: I use Go for backend | user: I avoid Java | user: I like TypeScript for web | user: I think Rust is great for systems | user: I prefer Django for web | user: I avoid PHP | user: I bike to work | user: I commute by bike', score=1.402776519387686, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-5336', role='reflection', content=\"[reflection covering 8 recent items] user: I like cold brew | user: Otto drinks cold brew | user: I don't drink tea | user: I drink water | user: I bike to work | user: I commute by bike | user: I bike three days a week | user: I bike along the Mission bike lane\", score=1.3876497635976321, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-4931', role='reflection', content=\"[reflection covering 8 recent items] user: I like cold brew | user: Otto drinks cold brew | user: I don't drink tea | user: I drink water | user: I bike to work | user: I commute by bike | user: I bike three days a week | user: I bike along the Mission bike lane\", score=1.3876375865078803, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-4391', role='reflection', content=\"[reflection covering 8 recent items] user: I like cold brew | user: Otto drinks cold brew | user: I don't drink tea | user: I drink water | user: I bike to work | user: I commute by bike | user: I bike three days a week | user: I bike along the Mission bike lane\", score=1.3876218755438845, metadata={'salience': 0.6, 'kind': 'reflection'})"
       ],
       "q-Jordan": [
-        "RetrievalResult(turn_id='session-99.family.000', role='user', content='My partner is Jordan', score=1.637122813513617, metadata={'salience': 0.7, 'kind': 'family'})",
-        "RetrievalResult(turn_id='session-98.family.000', role='user', content='My partner is Jordan', score=1.6371108325683017, metadata={'salience': 0.7, 'kind': 'family'})",
-        "RetrievalResult(turn_id='session-97.family.000', role='user', content='My partner is Jordan', score=1.6371056957432315, metadata={'salience': 0.7, 'kind': 'family'})",
-        "RetrievalResult(turn_id='session-96.family.000', role='user', content='My partner is Jordan', score=1.6370997642604834, metadata={'salience': 0.7, 'kind': 'family'})",
-        "RetrievalResult(turn_id='session-95.family.000', role='user', content='My partner is Jordan', score=1.6370913372696174, metadata={'salience': 0.7, 'kind': 'family'})"
+        "RetrievalResult(turn_id='session-99.family.000', role='user', content='My partner is Jordan', score=1.6371237740520233, metadata={'salience': 0.7, 'kind': 'family'})",
+        "RetrievalResult(turn_id='session-98.family.000', role='user', content='My partner is Jordan', score=1.637112779122642, metadata={'salience': 0.7, 'kind': 'family'})",
+        "RetrievalResult(turn_id='session-97.family.000', role='user', content='My partner is Jordan', score=1.6371086824365833, metadata={'salience': 0.7, 'kind': 'family'})",
+        "RetrievalResult(turn_id='session-96.family.000', role='user', content='My partner is Jordan', score=1.637102352504785, metadata={'salience': 0.7, 'kind': 'family'})",
+        "RetrievalResult(turn_id='session-95.family.000', role='user', content='My partner is Jordan', score=1.6370935736654197, metadata={'salience': 0.7, 'kind': 'family'})"
       ],
       "q-Otto": [
-        "RetrievalResult(turn_id='reflect-6992', role='reflection', content='[reflection covering 8 recent items] user: Deploy is weekly | user: Deploy is on AWS | user: Otto is my manager | user: Otto is the architect | user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys | user: Otto is senior', score=1.658124424577193, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-2177', role='reflection', content='[reflection covering 8 recent items] user: Deploy is weekly | user: Deploy is on AWS | user: Otto is my manager | user: Otto is the architect | user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys | user: Otto is senior', score=1.6580006108674283, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-10367', role='reflection', content='[reflection covering 8 recent items] user: VS Code is open source | user: VS Code is free | user: Otto is my manager | user: Otto is the architect | user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys | user: Otto is senior', score=1.652826023698832, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-8342', role='reflection', content='[reflection covering 8 recent items] user: VS Code is open source | user: VS Code is free | user: Otto is my manager | user: Otto is the architect | user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys | user: Otto is senior', score=1.6527245901352208, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-10943', role='reflection', content='[reflection covering 8 recent items] user: Otto is my manager | user: Otto is the architect | user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys | user: Otto is senior | user: Otto likes Go | user: Otto prefers Go for systems', score=1.6521182152462905, metadata={'salience': 0.6, 'kind': 'reflection'})"
+        "RetrievalResult(turn_id='reflect-6992', role='reflection', content='[reflection covering 8 recent items] user: Deploy is weekly | user: Deploy is on AWS | user: Otto is my manager | user: Otto is the architect | user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys | user: Otto is senior', score=1.6581370685762442, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-2177', role='reflection', content='[reflection covering 8 recent items] user: Deploy is weekly | user: Deploy is on AWS | user: Otto is my manager | user: Otto is the architect | user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys | user: Otto is senior', score=1.658014885085743, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-10367', role='reflection', content='[reflection covering 8 recent items] user: VS Code is open source | user: VS Code is free | user: Otto is my manager | user: Otto is the architect | user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys | user: Otto is senior', score=1.6528292327832703, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-8342', role='reflection', content='[reflection covering 8 recent items] user: VS Code is open source | user: VS Code is free | user: Otto is my manager | user: Otto is the architect | user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys | user: Otto is senior', score=1.6527336638293473, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-10943', role='reflection', content='[reflection covering 8 recent items] user: Otto is my manager | user: Otto is the architect | user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys | user: Otto is senior | user: Otto likes Go | user: Otto prefers Go for systems', score=1.6521220492065773, metadata={'salience': 0.6, 'kind': 'reflection'})"
       ],
       "q-review": [
-        "RetrievalResult(turn_id='reflect-7460', role='reflection', content='[reflection covering 8 recent items] user: Maria reviews code too | user: Review is required for merges | user: Otto does the final review | user: I prefer async reviews | user: PR review is required | user: Review happens on GitHub | user: I use VS Code | user: I switched to VS Code', score=1.4014744908267982, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-9161', role='reflection', content='[reflection covering 8 recent items] user: Otto does the final review | user: I prefer async reviews | user: PR review is required | user: Review happens on GitHub | user: I use VS Code | user: I switched to VS Code | user: I prefer VS Code | user: VS Code has good Python support', score=1.3844025440686714, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-5075', role='reflection', content='[reflection covering 8 recent items] user: Maria reviews code too | user: Review is required for merges | user: Otto does the final review | user: I prefer async reviews | user: PR review is required | user: Review happens on GitHub | user: Deploy uses Helm | user: Deploy audit log Kafka', score=1.3696228820500378, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-7370', role='reflection', content='[reflection covering 8 recent items] user: Maria reviews code too | user: Review is required for merges | user: Otto does the final review | user: I prefer async reviews | user: PR review is required | user: Review happens on GitHub | user: We use Postgres 14 | user: We use OpenTelemetry', score=1.3684970374725343, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-9260', role='reflection', content='[reflection covering 8 recent items] user: Maria reviews code too | user: Review is required for merges | user: Otto does the final review | user: I prefer async reviews | user: PR review is required | user: Review happens on GitHub | user: I drink coffee | user: Maria drinks coffee', score=1.367562307366476, metadata={'salience': 0.6, 'kind': 'reflection'})"
+        "RetrievalResult(turn_id='reflect-7460', role='reflection', content='[reflection covering 8 recent items] user: Maria reviews code too | user: Review is required for merges | user: Otto does the final review | user: I prefer async reviews | user: PR review is required | user: Review happens on GitHub | user: I use VS Code | user: I switched to VS Code', score=1.4014877772637182, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-9161', role='reflection', content='[reflection covering 8 recent items] user: Otto does the final review | user: I prefer async reviews | user: PR review is required | user: Review happens on GitHub | user: I use VS Code | user: I switched to VS Code | user: I prefer VS Code | user: VS Code has good Python support', score=1.3844101650590737, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-5075', role='reflection', content='[reflection covering 8 recent items] user: Maria reviews code too | user: Review is required for merges | user: Otto does the final review | user: I prefer async reviews | user: PR review is required | user: Review happens on GitHub | user: Deploy uses Helm | user: Deploy audit log Kafka', score=1.3696361517539908, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-7370', role='reflection', content='[reflection covering 8 recent items] user: Maria reviews code too | user: Review is required for merges | user: Otto does the final review | user: I prefer async reviews | user: PR review is required | user: Review happens on GitHub | user: We use Postgres 14 | user: We use OpenTelemetry', score=1.3685106017759348, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-9260', role='reflection', content='[reflection covering 8 recent items] user: Maria reviews code too | user: Review is required for merges | user: Otto does the final review | user: I prefer async reviews | user: PR review is required | user: Review happens on GitHub | user: I drink coffee | user: Maria drinks coffee', score=1.3675694939907734, metadata={'salience': 0.6, 'kind': 'reflection'})"
       ],
       "q-vs": [
-        "RetrievalResult(turn_id='reflect-6830', role='reflection', content='[reflection covering 8 recent items] user: I use Go for backend | user: I avoid Java | user: I like TypeScript for web | user: I think Rust is great for systems | user: I prefer Django for web | user: I avoid PHP | user: We use Postgres 14 | user: We use OpenTelemetry', score=1.5294182486911287, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-4535', role='reflection', content='[reflection covering 8 recent items] user: I use Go for backend | user: I avoid Java | user: I like TypeScript for web | user: I think Rust is great for systems | user: I prefer Django for web | user: I avoid PHP | user: I use VS Code | user: I switched to VS Code', score=1.5283652511239096, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-3680', role='reflection', content='[reflection covering 8 recent items] user: I use Go for backend | user: I avoid Java | user: I like TypeScript for web | user: I think Rust is great for systems | user: I prefer Django for web | user: I avoid PHP | user: I use VS Code | user: I switched to VS Code', score=1.5283465387069688, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-395', role='reflection', content='[reflection covering 8 recent items] user: I use Go for backend | user: I avoid Java | user: I like TypeScript for web | user: I think Rust is great for systems | user: I prefer Django for web | user: I avoid PHP | user: I use VS Code | user: I switched to VS Code', score=1.5283076626351115, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-9386', role='reflection', content='[reflection covering 8 recent items] user: I like TypeScript for web | user: I think Rust is great for systems | user: I prefer Django for web | user: I avoid PHP | user: We use Postgres 14 | user: We use OpenTelemetry | user: We use Kafka | user: We use Datadog', score=1.5148755304552348, metadata={'salience': 0.6, 'kind': 'reflection'})"
+        "RetrievalResult(turn_id='reflect-6830', role='reflection', content='[reflection covering 8 recent items] user: I use Go for backend | user: I avoid Java | user: I like TypeScript for web | user: I think Rust is great for systems | user: I prefer Django for web | user: I avoid PHP | user: We use Postgres 14 | user: We use OpenTelemetry', score=1.529434580200281, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-4535', role='reflection', content='[reflection covering 8 recent items] user: I use Go for backend | user: I avoid Java | user: I like TypeScript for web | user: I think Rust is great for systems | user: I prefer Django for web | user: I avoid PHP | user: I use VS Code | user: I switched to VS Code', score=1.5283784152725624, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-3680', role='reflection', content='[reflection covering 8 recent items] user: I use Go for backend | user: I avoid Java | user: I like TypeScript for web | user: I think Rust is great for systems | user: I prefer Django for web | user: I avoid PHP | user: I use VS Code | user: I switched to VS Code', score=1.5283606024756569, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-395', role='reflection', content='[reflection covering 8 recent items] user: I use Go for backend | user: I avoid Java | user: I like TypeScript for web | user: I think Rust is great for systems | user: I prefer Django for web | user: I avoid PHP | user: I use VS Code | user: I switched to VS Code', score=1.5283287303993682, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-9386', role='reflection', content='[reflection covering 8 recent items] user: I like TypeScript for web | user: I think Rust is great for systems | user: I prefer Django for web | user: I avoid PHP | user: We use Postgres 14 | user: We use OpenTelemetry | user: We use Kafka | user: We use Datadog', score=1.5148837307234047, metadata={'salience': 0.6, 'kind': 'reflection'})"
       ],
       "q-Maria-py": [
-        "RetrievalResult(turn_id='session-99.junior.001', role='user', content='Maria writes Python', score=1.5409443085999321, metadata={'salience': 0.6, 'kind': 'junior'})",
-        "RetrievalResult(turn_id='session-98.junior.001', role='user', content='Maria writes Python', score=1.5409376394236403, metadata={'salience': 0.6, 'kind': 'junior'})",
-        "RetrievalResult(turn_id='session-97.junior.001', role='user', content='Maria writes Python', score=1.5409296248627522, metadata={'salience': 0.6, 'kind': 'junior'})",
-        "RetrievalResult(turn_id='session-96.junior.001', role='user', content='Maria writes Python', score=1.540926629264497, metadata={'salience': 0.6, 'kind': 'junior'})",
-        "RetrievalResult(turn_id='session-95.junior.001', role='user', content='Maria writes Python', score=1.540914960243718, metadata={'salience': 0.6, 'kind': 'junior'})"
+        "RetrievalResult(turn_id='session-99.junior.001', role='user', content='Maria writes Python', score=1.5409509454772705, metadata={'salience': 0.6, 'kind': 'junior'})",
+        "RetrievalResult(turn_id='session-98.junior.001', role='user', content='Maria writes Python', score=1.5409446771453612, metadata={'salience': 0.6, 'kind': 'junior'})",
+        "RetrievalResult(turn_id='session-97.junior.001', role='user', content='Maria writes Python', score=1.5409378975037733, metadata={'salience': 0.6, 'kind': 'junior'})",
+        "RetrievalResult(turn_id='session-96.junior.001', role='user', content='Maria writes Python', score=1.5409346387669836, metadata={'salience': 0.6, 'kind': 'junior'})",
+        "RetrievalResult(turn_id='session-95.junior.001', role='user', content='Maria writes Python', score=1.5409226955656592, metadata={'salience': 0.6, 'kind': 'junior'})"
       ],
       "q-py": [
-        "RetrievalResult(turn_id='reflect-10457', role='reflection', content=\"[reflection covering 8 recent items] user: I don't drink tea | user: I drink water | user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling | user: I use Go for backend | user: I avoid Java\", score=1.5260332564957524, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-9197', role='reflection', content=\"[reflection covering 8 recent items] user: I don't drink tea | user: I drink water | user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling | user: I use Go for backend | user: I avoid Java\", score=1.5259652577925331, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-8432', role='reflection', content=\"[reflection covering 8 recent items] user: I don't drink tea | user: I drink water | user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling | user: I use Go for backend | user: I avoid Java\", score=1.5259306951574338, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-6452', role='reflection', content=\"[reflection covering 8 recent items] user: I don't drink tea | user: I drink water | user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling | user: I use Go for backend | user: I avoid Java\", score=1.5258538663930745, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-9872', role='reflection', content='[reflection covering 8 recent items] user: I bike in the morning | user: I bike on weekends | user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling | user: I use Go for backend | user: I avoid Java', score=1.5153971484258018, metadata={'salience': 0.6, 'kind': 'reflection'})"
+        "RetrievalResult(turn_id='reflect-10457', role='reflection', content=\"[reflection covering 8 recent items] user: I don't drink tea | user: I drink water | user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling | user: I use Go for backend | user: I avoid Java\", score=1.5260415994691512, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-9197', role='reflection', content=\"[reflection covering 8 recent items] user: I don't drink tea | user: I drink water | user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling | user: I use Go for backend | user: I avoid Java\", score=1.5259768014947954, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-8432', role='reflection', content=\"[reflection covering 8 recent items] user: I don't drink tea | user: I drink water | user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling | user: I use Go for backend | user: I avoid Java\", score=1.5259442624337465, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-6452', role='reflection', content=\"[reflection covering 8 recent items] user: I don't drink tea | user: I drink water | user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling | user: I use Go for backend | user: I avoid Java\", score=1.5258746703333053, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-9872', role='reflection', content='[reflection covering 8 recent items] user: I bike in the morning | user: I bike on weekends | user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling | user: I use Go for backend | user: I avoid Java', score=1.5154020017061716, metadata={'salience': 0.6, 'kind': 'reflection'})"
       ],
       "q-go": [
-        "RetrievalResult(turn_id='reflect-11123', role='reflection', content='[reflection covering 8 recent items] user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling | user: I use Go for backend | user: I avoid Java | user: I like TypeScript for web | user: I think Rust is great for systems', score=1.4234600220559666, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-10988', role='reflection', content='[reflection covering 8 recent items] user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling | user: I use Go for backend | user: I avoid Java | user: I like TypeScript for web | user: I think Rust is great for systems', score=1.4234517957299662, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-10718', role='reflection', content='[reflection covering 8 recent items] user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling | user: I use Go for backend | user: I avoid Java | user: I like TypeScript for web | user: I think Rust is great for systems', score=1.4234342877858546, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-10493', role='reflection', content='[reflection covering 8 recent items] user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling | user: I use Go for backend | user: I avoid Java | user: I like TypeScript for web | user: I think Rust is great for systems', score=1.4234202601036028, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-9593', role='reflection', content='[reflection covering 8 recent items] user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling | user: I use Go for backend | user: I avoid Java | user: I like TypeScript for web | user: I think Rust is great for systems', score=1.4233704236101086, metadata={'salience': 0.6, 'kind': 'reflection'})"
+        "RetrievalResult(turn_id='reflect-11123', role='reflection', content='[reflection covering 8 recent items] user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling | user: I use Go for backend | user: I avoid Java | user: I like TypeScript for web | user: I think Rust is great for systems', score=1.4234682333304127, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-10988', role='reflection', content='[reflection covering 8 recent items] user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling | user: I use Go for backend | user: I avoid Java | user: I like TypeScript for web | user: I think Rust is great for systems', score=1.423460922261885, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-10718', role='reflection', content='[reflection covering 8 recent items] user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling | user: I use Go for backend | user: I avoid Java | user: I like TypeScript for web | user: I think Rust is great for systems', score=1.4234433430175844, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-10493', role='reflection', content='[reflection covering 8 recent items] user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling | user: I use Go for backend | user: I avoid Java | user: I like TypeScript for web | user: I think Rust is great for systems', score=1.4234292660910293, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-9593', role='reflection', content='[reflection covering 8 recent items] user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling | user: I use Go for backend | user: I avoid Java | user: I like TypeScript for web | user: I think Rust is great for systems', score=1.4233792608654832, metadata={'salience': 0.6, 'kind': 'reflection'})"
       ],
       "q-deploy": [
-        "RetrievalResult(turn_id='reflect-4625', role='reflection', content='[reflection covering 8 recent items] user: My sister is Anna | user: Anna lives in Seattle | user: Anna is a therapist | user: Mom is 67 | user: Mom is a retired teacher | user: Mom lives in Portland | user: Otto is my manager | user: Otto is the architect', score=1.4562753231365448, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-2825', role='reflection', content='[reflection covering 8 recent items] user: My sister is Anna | user: Anna lives in Seattle | user: Anna is a therapist | user: Mom is 67 | user: Mom is a retired teacher | user: Mom lives in Portland | user: Otto is my manager | user: Otto is the architect', score=1.4562387715618175, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-1700', role='reflection', content='[reflection covering 8 recent items] user: My sister is Anna | user: Anna lives in Seattle | user: Anna is a therapist | user: Mom is 67 | user: Mom is a retired teacher | user: Mom lives in Portland | user: Otto is my manager | user: Otto is the architect', score=1.4562236269454736, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-1610', role='reflection', content='[reflection covering 8 recent items] user: My sister is Anna | user: Anna lives in Seattle | user: Anna is a therapist | user: Mom is 67 | user: Mom is a retired teacher | user: Mom lives in Portland | user: Otto is my manager | user: Otto is the architect', score=1.4562226675161416, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-10880', role='reflection', content='[reflection covering 8 recent items] user: My sister is Anna | user: Anna lives in Seattle | user: Anna is a therapist | user: Mom is 67 | user: Mom is a retired teacher | user: Mom lives in Portland | user: Maria is the junior engineer | user: Maria writes Python', score=1.4096296866133882, metadata={'salience': 0.6, 'kind': 'reflection'})"
+        "RetrievalResult(turn_id='reflect-4625', role='reflection', content='[reflection covering 8 recent items] user: My sister is Anna | user: Anna lives in Seattle | user: Anna is a therapist | user: Mom is 67 | user: Mom is a retired teacher | user: Mom lives in Portland | user: Otto is my manager | user: Otto is the architect', score=1.4562912600478075, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-2825', role='reflection', content='[reflection covering 8 recent items] user: My sister is Anna | user: Anna lives in Seattle | user: Anna is a therapist | user: Mom is 67 | user: Mom is a retired teacher | user: Mom lives in Portland | user: Otto is my manager | user: Otto is the architect', score=1.45625725647428, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-1700', role='reflection', content='[reflection covering 8 recent items] user: My sister is Anna | user: Anna lives in Seattle | user: Anna is a therapist | user: Mom is 67 | user: Mom is a retired teacher | user: Mom lives in Portland | user: Otto is my manager | user: Otto is the architect', score=1.456245628455163, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-1610', role='reflection', content='[reflection covering 8 recent items] user: My sister is Anna | user: Anna lives in Seattle | user: Anna is a therapist | user: Mom is 67 | user: Mom is a retired teacher | user: Mom lives in Portland | user: Otto is my manager | user: Otto is the architect', score=1.456244996862308, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-10880', role='reflection', content='[reflection covering 8 recent items] user: My sister is Anna | user: Anna lives in Seattle | user: Anna is a therapist | user: Mom is 67 | user: Mom is a retired teacher | user: Mom lives in Portland | user: Maria is the junior engineer | user: Maria writes Python', score=1.4096398289578402, metadata={'salience': 0.6, 'kind': 'reflection'})"
       ],
       "q-kafka": [
-        "RetrievalResult(turn_id='reflect-7955', role='reflection', content=\"[reflection covering 8 recent items] user: I avoid energy drinks | user: Maria drinks coffee too | user: I like cold brew | user: Otto drinks cold brew | user: I don't drink tea | user: I drink water | user: Deploy uses Helm | user: Deploy audit log Kafka\", score=1.2362158244166335, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-3545', role='reflection', content=\"[reflection covering 8 recent items] user: I avoid energy drinks | user: Maria drinks coffee too | user: I like cold brew | user: Otto drinks cold brew | user: I don't drink tea | user: I drink water | user: Deploy uses Helm | user: Deploy audit log Kafka\", score=1.2360780958360293, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-2996', role='reflection', content='[reflection covering 8 recent items] user: I like TypeScript for web | user: I think Rust is great for systems | user: I prefer Django for web | user: I avoid PHP | user: Deploy uses Helm | user: Deploy audit log Kafka | user: Deploy needs Postgres | user: Deploy uses Datadog', score=1.2355847292485262, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-1331', role='reflection', content='[reflection covering 8 recent items] user: I like TypeScript for web | user: I think Rust is great for systems | user: I prefer Django for web | user: I avoid PHP | user: Deploy uses Helm | user: Deploy audit log Kafka | user: Deploy needs Postgres | user: Deploy uses Datadog', score=1.2355633161814803, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-71', role='reflection', content='[reflection covering 8 recent items] user: I like TypeScript for web | user: I think Rust is great for systems | user: I prefer Django for web | user: I avoid PHP | user: Deploy uses Helm | user: Deploy audit log Kafka | user: Deploy needs Postgres | user: Deploy uses Datadog', score=1.2355581734478143, metadata={'salience': 0.6, 'kind': 'reflection'})"
+        "RetrievalResult(turn_id='reflect-7955', role='reflection', content=\"[reflection covering 8 recent items] user: I avoid energy drinks | user: Maria drinks coffee too | user: I like cold brew | user: Otto drinks cold brew | user: I don't drink tea | user: I drink water | user: Deploy uses Helm | user: Deploy audit log Kafka\", score=1.236234257031066, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-3545', role='reflection', content=\"[reflection covering 8 recent items] user: I avoid energy drinks | user: Maria drinks coffee too | user: I like cold brew | user: Otto drinks cold brew | user: I don't drink tea | user: I drink water | user: Deploy uses Helm | user: Deploy audit log Kafka\", score=1.2360961343444168, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-2996', role='reflection', content='[reflection covering 8 recent items] user: I like TypeScript for web | user: I think Rust is great for systems | user: I prefer Django for web | user: I avoid PHP | user: Deploy uses Helm | user: Deploy audit log Kafka | user: Deploy needs Postgres | user: Deploy uses Datadog', score=1.2356031353724883, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-1331', role='reflection', content='[reflection covering 8 recent items] user: I like TypeScript for web | user: I think Rust is great for systems | user: I prefer Django for web | user: I avoid PHP | user: Deploy uses Helm | user: Deploy audit log Kafka | user: Deploy needs Postgres | user: Deploy uses Datadog', score=1.2355867336041757, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-71', role='reflection', content='[reflection covering 8 recent items] user: I like TypeScript for web | user: I think Rust is great for systems | user: I prefer Django for web | user: I avoid PHP | user: Deploy uses Helm | user: Deploy audit log Kafka | user: Deploy needs Postgres | user: Deploy uses Datadog', score=1.2355827310666738, metadata={'salience': 0.6, 'kind': 'reflection'})"
       ],
       "q-pg": [
-        "RetrievalResult(turn_id='reflect-11204', role='reflection', content='[reflection covering 8 recent items] user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys | user: Otto is senior | user: Otto likes Go | user: Otto prefers Go for systems | user: Otto reviews PRs | user: Otto is on Slack', score=1.312574865091438, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-10664', role='reflection', content='[reflection covering 8 recent items] user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys | user: Otto is senior | user: Otto likes Go | user: Otto prefers Go for systems | user: Otto reviews PRs | user: Otto is on Slack', score=1.3125407566807854, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-9224', role='reflection', content='[reflection covering 8 recent items] user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys | user: Otto is senior | user: Otto likes Go | user: Otto prefers Go for systems | user: Otto reviews PRs | user: Otto is on Slack', score=1.312461628262771, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-8864', role='reflection', content='[reflection covering 8 recent items] user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys | user: Otto is senior | user: Otto likes Go | user: Otto prefers Go for systems | user: Otto reviews PRs | user: Otto is on Slack', score=1.3124450803849772, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-7829', role='reflection', content='[reflection covering 8 recent items] user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys | user: Otto is senior | user: Otto likes Go | user: Otto prefers Go for systems | user: Otto reviews PRs | user: Otto is on Slack', score=1.3123996634526958, metadata={'salience': 0.6, 'kind': 'reflection'})"
+        "RetrievalResult(turn_id='reflect-11204', role='reflection', content='[reflection covering 8 recent items] user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys | user: Otto is senior | user: Otto likes Go | user: Otto prefers Go for systems | user: Otto reviews PRs | user: Otto is on Slack', score=1.312584603506926, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-10664', role='reflection', content='[reflection covering 8 recent items] user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys | user: Otto is senior | user: Otto likes Go | user: Otto prefers Go for systems | user: Otto reviews PRs | user: Otto is on Slack', score=1.3125518616258975, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-9224', role='reflection', content='[reflection covering 8 recent items] user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys | user: Otto is senior | user: Otto likes Go | user: Otto prefers Go for systems | user: Otto reviews PRs | user: Otto is on Slack', score=1.3124754730641315, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-8864', role='reflection', content='[reflection covering 8 recent items] user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys | user: Otto is senior | user: Otto likes Go | user: Otto prefers Go for systems | user: Otto reviews PRs | user: Otto is on Slack', score=1.3124604511638127, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-7829', role='reflection', content='[reflection covering 8 recent items] user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys | user: Otto is senior | user: Otto likes Go | user: Otto prefers Go for systems | user: Otto reviews PRs | user: Otto is on Slack', score=1.3124195151898355, metadata={'salience': 0.6, 'kind': 'reflection'})"
       ],
       "q-Sam": [
-        "RetrievalResult(turn_id='session-99.personal.000', role='user', content='My best friend is Sam', score=1.680906671676587, metadata={'salience': 0.7, 'kind': 'personal'})",
-        "RetrievalResult(turn_id='session-98.personal.000', role='user', content='My best friend is Sam', score=1.6808992317124218, metadata={'salience': 0.7, 'kind': 'personal'})",
-        "RetrievalResult(turn_id='session-97.personal.000', role='user', content='My best friend is Sam', score=1.6808952914660424, metadata={'salience': 0.7, 'kind': 'personal'})",
-        "RetrievalResult(turn_id='session-96.personal.000', role='user', content='My best friend is Sam', score=1.6808848651092707, metadata={'salience': 0.7, 'kind': 'personal'})",
-        "RetrievalResult(turn_id='session-95.personal.000', role='user', content='My best friend is Sam', score=1.6808778564864704, metadata={'salience': 0.7, 'kind': 'personal'})"
+        "RetrievalResult(turn_id='session-99.personal.000', role='user', content='My best friend is Sam', score=1.680916709136778, metadata={'salience': 0.7, 'kind': 'personal'})",
+        "RetrievalResult(turn_id='session-98.personal.000', role='user', content='My best friend is Sam', score=1.6809098013888732, metadata={'salience': 0.7, 'kind': 'personal'})",
+        "RetrievalResult(turn_id='session-97.personal.000', role='user', content='My best friend is Sam', score=1.6809060993342433, metadata={'salience': 0.7, 'kind': 'personal'})",
+        "RetrievalResult(turn_id='session-96.personal.000', role='user', content='My best friend is Sam', score=1.680896207559361, metadata={'salience': 0.7, 'kind': 'personal'})",
+        "RetrievalResult(turn_id='session-95.personal.000', role='user', content='My best friend is Sam', score=1.6808887675524233, metadata={'salience': 0.7, 'kind': 'personal'})"
       ],
       "q-coffee": [
-        "RetrievalResult(turn_id='reflect-1277', role='reflection', content=\"[reflection covering 8 recent items] user: I don't drink tea | user: I drink water | user: Maria is the junior engineer | user: Maria writes Python | user: Maria joined last month | user: Maria prefers pytest | user: Maria works on the platform team | user: Maria skims coverage\", score=1.3998043660289703, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-4967', role='reflection', content=\"[reflection covering 8 recent items] user: I don't drink tea | user: I drink water | user: Maria works on the platform team | user: Maria manages metrics | user: Maria handles deploys | user: Maria works on Postgres | user: Maria is on Slack | user: Maria writes Python\", score=1.393928518625276, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-8495', role='reflection', content='[reflection covering 8 recent items] user: Maria works on the platform team | user: Maria skims coverage | user: Maria handles deploys | user: Maria bikes | user: Maria drinks coffee | user: Maria is on Slack | user: I drink coffee | user: Maria drinks coffee', score=1.3809090208842316, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-6065', role='reflection', content='[reflection covering 8 recent items] user: Maria works on the platform team | user: Maria skims coverage | user: Maria handles deploys | user: Maria bikes | user: Maria drinks coffee | user: Maria is on Slack | user: I drink coffee | user: Maria drinks coffee', score=1.3808157402770265, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-350', role='reflection', content='[reflection covering 8 recent items] user: Maria works on the platform team | user: Maria skims coverage | user: Maria handles deploys | user: Maria bikes | user: Maria drinks coffee | user: Maria is on Slack | user: I drink coffee | user: Maria drinks coffee', score=1.3807119087340842, metadata={'salience': 0.6, 'kind': 'reflection'})"
+        "RetrievalResult(turn_id='reflect-1277', role='reflection', content=\"[reflection covering 8 recent items] user: I don't drink tea | user: I drink water | user: Maria is the junior engineer | user: Maria writes Python | user: Maria joined last month | user: Maria prefers pytest | user: Maria works on the platform team | user: Maria skims coverage\", score=1.3998297705570917, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-4967', role='reflection', content=\"[reflection covering 8 recent items] user: I don't drink tea | user: I drink water | user: Maria works on the platform team | user: Maria manages metrics | user: Maria handles deploys | user: Maria works on Postgres | user: Maria is on Slack | user: Maria writes Python\", score=1.3939496084202614, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-8495', role='reflection', content='[reflection covering 8 recent items] user: Maria works on the platform team | user: Maria skims coverage | user: Maria handles deploys | user: Maria bikes | user: Maria drinks coffee | user: Maria is on Slack | user: I drink coffee | user: Maria drinks coffee', score=1.3809257656499931, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-6065', role='reflection', content='[reflection covering 8 recent items] user: Maria works on the platform team | user: Maria skims coverage | user: Maria handles deploys | user: Maria bikes | user: Maria drinks coffee | user: Maria is on Slack | user: I drink coffee | user: Maria drinks coffee', score=1.3808385313798464, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-350', role='reflection', content='[reflection covering 8 recent items] user: Maria works on the platform team | user: Maria skims coverage | user: Maria handles deploys | user: Maria bikes | user: Maria drinks coffee | user: Maria is on Slack | user: I drink coffee | user: Maria drinks coffee', score=1.3807381990369096, metadata={'salience': 0.6, 'kind': 'reflection'})"
       ]
     },
     "item_count": 11250,
-    "query_ms": 458.4706896156646
+    "query_ms": 260.4132591538991
   },
   {
     "name": "G6",
     "results_by_query": {
       "q-bike": [
-        "RetrievalResult(turn_id='session-99.bike.001', role='user', content='I commute by bike', score=2.18145679873332, metadata={'salience': 0.6, 'kind': 'bike'})",
-        "RetrievalResult(turn_id='session-99.lang.000', role='user', content='I prefer Python', score=1.964674020976724, metadata={'salience': 0.7, 'kind': 'lang'})",
-        "RetrievalResult(turn_id='session-99.bike.000', role='user', content='I bike to work', score=1.9292140415041124, metadata={'salience': 0.7, 'kind': 'bike'})",
-        "RetrievalResult(turn_id='session-99.lang.001', role='user', content='I prefer Go for systems', score=1.8050155167994224, metadata={'salience': 0.6, 'kind': 'lang'})",
-        "RetrievalResult(turn_id='session-99.drink.002', role='user', content='I switched to coffee', score=1.7062763395216987, metadata={'salience': 0.5, 'kind': 'drink'})"
+        "RetrievalResult(turn_id='session-99.bike.001', role='user', content='I commute by bike', score=2.1814569728445834, metadata={'salience': 0.6, 'kind': 'bike'})",
+        "RetrievalResult(turn_id='session-99.lang.000', role='user', content='I prefer Python', score=1.9646741662811982, metadata={'salience': 0.7, 'kind': 'lang'})",
+        "RetrievalResult(turn_id='session-99.bike.000', role='user', content='I bike to work', score=1.9292142056564918, metadata={'salience': 0.7, 'kind': 'bike'})",
+        "RetrievalResult(turn_id='session-99.lang.001', role='user', content='I prefer Go for systems', score=1.8050156705899318, metadata={'salience': 0.6, 'kind': 'lang'})",
+        "RetrievalResult(turn_id='session-99.drink.002', role='user', content='I switched to coffee', score=1.7062765075688984, metadata={'salience': 0.5, 'kind': 'drink'})"
       ],
       "q-Jordan": [
-        "RetrievalResult(turn_id='session-99.family.000', role='user', content='My partner is Jordan', score=2.494253925187481, metadata={'salience': 0.7, 'kind': 'family'})",
-        "RetrievalResult(turn_id='session-99.manager.000', role='user', content='Otto is my manager', score=2.1885856549829774, metadata={'salience': 0.7, 'kind': 'manager'})",
-        "RetrievalResult(turn_id='session-99.personal.000', role='user', content='My best friend is Sam', score=2.1370042988263207, metadata={'salience': 0.7, 'kind': 'personal'})",
-        "RetrievalResult(turn_id='session-99.junior.000', role='user', content='Maria is the junior engineer', score=1.8948594722387766, metadata={'salience': 0.7, 'kind': 'junior'})",
-        "RetrievalResult(turn_id='session-99.family.004', role='user', content='My sister is Anna', score=1.8885859100637044, metadata={'salience': 0.4, 'kind': 'family'})"
+        "RetrievalResult(turn_id='session-99.family.000', role='user', content='My partner is Jordan', score=2.4942540715522075, metadata={'salience': 0.7, 'kind': 'family'})",
+        "RetrievalResult(turn_id='session-99.manager.000', role='user', content='Otto is my manager', score=2.188585817962492, metadata={'salience': 0.7, 'kind': 'manager'})",
+        "RetrievalResult(turn_id='session-99.personal.000', role='user', content='My best friend is Sam', score=2.137004458381418, metadata={'salience': 0.7, 'kind': 'personal'})",
+        "RetrievalResult(turn_id='session-99.junior.000', role='user', content='Maria is the junior engineer', score=1.8948596449424249, metadata={'salience': 0.7, 'kind': 'junior'})",
+        "RetrievalResult(turn_id='session-99.family.004', role='user', content='My sister is Anna', score=1.8885860654787878, metadata={'salience': 0.4, 'kind': 'family'})"
       ],
       "q-Otto": [
-        "RetrievalResult(turn_id='session-99.manager.000', role='user', content='Otto is my manager', score=2.341679278494275, metadata={'salience': 0.7, 'kind': 'manager'})",
-        "RetrievalResult(turn_id='session-99.manager.001', role='user', content='Otto is the architect', score=2.241679249483465, metadata={'salience': 0.6, 'kind': 'manager'})",
-        "RetrievalResult(turn_id='session-99.manager.005', role='user', content='Otto is senior', score=2.1409474146005283, metadata={'salience': 0.4, 'kind': 'manager'})",
-        "RetrievalResult(turn_id='session-99.review.000', role='user', content='Otto reviews code', score=2.0818408575555, metadata={'salience': 0.7, 'kind': 'review'})",
-        "RetrievalResult(turn_id='session-99.family.000', role='user', content='My partner is Jordan', score=2.0109950930192, metadata={'salience': 0.7, 'kind': 'family'})"
+        "RetrievalResult(turn_id='session-99.manager.000', role='user', content='Otto is my manager', score=2.341679445086717, metadata={'salience': 0.7, 'kind': 'manager'})",
+        "RetrievalResult(turn_id='session-99.manager.001', role='user', content='Otto is the architect', score=2.2416794257187194, metadata={'salience': 0.6, 'kind': 'manager'})",
+        "RetrievalResult(turn_id='session-99.manager.005', role='user', content='Otto is senior', score=2.140947614734032, metadata={'salience': 0.4, 'kind': 'manager'})",
+        "RetrievalResult(turn_id='session-99.review.000', role='user', content='Otto reviews code', score=2.081841029132873, metadata={'salience': 0.7, 'kind': 'review'})",
+        "RetrievalResult(turn_id='session-99.family.000', role='user', content='My partner is Jordan', score=2.0109952429968554, metadata={'salience': 0.7, 'kind': 'family'})"
       ],
       "q-review": [
-        "RetrievalResult(turn_id='session-99.review.008', role='user', content='PR review is required', score=1.9402189642664363, metadata={'salience': 0.3, 'kind': 'review'})",
-        "RetrievalResult(turn_id='session-99.family.000', role='user', content='My partner is Jordan', score=1.6999996661711476, metadata={'salience': 0.7, 'kind': 'family'})",
-        "RetrievalResult(turn_id='session-99.lang.000', role='user', content='I prefer Python', score=1.6999995948203597, metadata={'salience': 0.7, 'kind': 'lang'})",
-        "RetrievalResult(turn_id='session-99.personal.000', role='user', content='My best friend is Sam', score=1.6999994629096808, metadata={'salience': 0.7, 'kind': 'personal'})",
-        "RetrievalResult(turn_id='session-99.manager.000', role='user', content='Otto is my manager', score=1.6999993980679888, metadata={'salience': 0.7, 'kind': 'manager'})"
+        "RetrievalResult(turn_id='session-99.review.008', role='user', content='PR review is required', score=1.940219189159278, metadata={'salience': 0.3, 'kind': 'review'})",
+        "RetrievalResult(turn_id='session-99.family.000', role='user', content='My partner is Jordan', score=1.6999998206554694, metadata={'salience': 0.7, 'kind': 'family'})",
+        "RetrievalResult(turn_id='session-99.lang.000', role='user', content='I prefer Python', score=1.6999997544018777, metadata={'salience': 0.7, 'kind': 'lang'})",
+        "RetrievalResult(turn_id='session-99.personal.000', role='user', content='My best friend is Sam', score=1.6999996305843714, metadata={'salience': 0.7, 'kind': 'personal'})",
+        "RetrievalResult(turn_id='session-99.manager.000', role='user', content='Otto is my manager', score=1.6999995691670962, metadata={'salience': 0.7, 'kind': 'manager'})"
       ],
       "q-vs": [
-        "RetrievalResult(turn_id='session-99.infra.000', role='user', content='We use Postgres 14', score=2.0129995811452983, metadata={'salience': 0.7, 'kind': 'infra'})",
-        "RetrievalResult(turn_id='session-99.lang.000', role='user', content='I prefer Python', score=2.00044558089363, metadata={'salience': 0.7, 'kind': 'lang'})",
-        "RetrievalResult(turn_id='session-99.infra.001', role='user', content='We use OpenTelemetry', score=1.9614208769653194, metadata={'salience': 0.6, 'kind': 'infra'})",
-        "RetrievalResult(turn_id='session-99.bike.000', role='user', content='I bike to work', score=1.9601931140200377, metadata={'salience': 0.7, 'kind': 'bike'})",
-        "RetrievalResult(turn_id='session-99.lang.004', role='user', content='I use Go for backend', score=1.9126801428964273, metadata={'salience': 0.4, 'kind': 'lang'})"
+        "RetrievalResult(turn_id='session-99.infra.000', role='user', content='We use Postgres 14', score=2.012999776492798, metadata={'salience': 0.7, 'kind': 'infra'})",
+        "RetrievalResult(turn_id='session-99.lang.000', role='user', content='I prefer Python', score=2.000445746805119, metadata={'salience': 0.7, 'kind': 'lang'})",
+        "RetrievalResult(turn_id='session-99.infra.001', role='user', content='We use OpenTelemetry', score=1.9614210838343076, metadata={'salience': 0.6, 'kind': 'infra'})",
+        "RetrievalResult(turn_id='session-99.bike.000', role='user', content='I bike to work', score=1.9601932987794242, metadata={'salience': 0.7, 'kind': 'bike'})",
+        "RetrievalResult(turn_id='session-99.lang.004', role='user', content='I use Go for backend', score=1.9126803410660773, metadata={'salience': 0.4, 'kind': 'lang'})"
       ],
       "q-Maria-py": [
-        "RetrievalResult(turn_id='session-99.junior.001', role='user', content='Maria writes Python', score=2.3415807366384183, metadata={'salience': 0.6, 'kind': 'junior'})",
-        "RetrievalResult(turn_id='session-99.lang.000', role='user', content='I prefer Python', score=2.070790375012405, metadata={'salience': 0.7, 'kind': 'lang'})",
-        "RetrievalResult(turn_id='session-99.manager.003', role='user', content='Otto writes architecture docs', score=1.8211135680332655, metadata={'salience': 0.5, 'kind': 'manager'})",
-        "RetrievalResult(turn_id='session-99.family.000', role='user', content='My partner is Jordan', score=1.6999996344645925, metadata={'salience': 0.7, 'kind': 'family'})",
-        "RetrievalResult(turn_id='session-99.personal.000', role='user', content='My best friend is Sam', score=1.6999994312031323, metadata={'salience': 0.7, 'kind': 'personal'})"
+        "RetrievalResult(turn_id='session-99.junior.001', role='user', content='Maria writes Python', score=2.3415809447451617, metadata={'salience': 0.6, 'kind': 'junior'})",
+        "RetrievalResult(turn_id='session-99.lang.000', role='user', content='I prefer Python', score=2.0707905503734603, metadata={'salience': 0.7, 'kind': 'lang'})",
+        "RetrievalResult(turn_id='session-99.manager.003', role='user', content='Otto writes architecture docs', score=1.8211137786304823, metadata={'salience': 0.5, 'kind': 'manager'})",
+        "RetrievalResult(turn_id='session-99.family.000', role='user', content='My partner is Jordan', score=1.6999998047284528, metadata={'salience': 0.7, 'kind': 'family'})",
+        "RetrievalResult(turn_id='session-99.personal.000', role='user', content='My best friend is Sam', score=1.6999996146573577, metadata={'salience': 0.7, 'kind': 'personal'})"
       ],
       "q-py": [
-        "RetrievalResult(turn_id='session-99.lang.000', role='user', content='I prefer Python', score=2.3540418857238183, metadata={'salience': 0.7, 'kind': 'lang'})",
-        "RetrievalResult(turn_id='session-99.lang.001', role='user', content='I prefer Go for systems', score=2.1066185410870846, metadata={'salience': 0.6, 'kind': 'lang'})",
-        "RetrievalResult(turn_id='session-99.lang.002', role='user', content='I prefer Rust for hot paths', score=1.9624772724785915, metadata={'salience': 0.5, 'kind': 'lang'})",
-        "RetrievalResult(turn_id='session-99.bike.000', role='user', content='I bike to work', score=1.9399615505931371, metadata={'salience': 0.7, 'kind': 'bike'})",
-        "RetrievalResult(turn_id='session-99.lang.008', role='user', content='I prefer Django for web', score=1.9066184959215562, metadata={'salience': 0.3, 'kind': 'lang'})"
+        "RetrievalResult(turn_id='session-99.lang.000', role='user', content='I prefer Python', score=2.3540420754069813, metadata={'salience': 0.7, 'kind': 'lang'})",
+        "RetrievalResult(turn_id='session-99.lang.001', role='user', content='I prefer Go for systems', score=2.1066187420299496, metadata={'salience': 0.6, 'kind': 'lang'})",
+        "RetrievalResult(turn_id='session-99.lang.002', role='user', content='I prefer Rust for hot paths', score=1.9624774860235679, metadata={'salience': 0.5, 'kind': 'lang'})",
+        "RetrievalResult(turn_id='session-99.bike.000', role='user', content='I bike to work', score=1.9399617591241896, metadata={'salience': 0.7, 'kind': 'bike'})",
+        "RetrievalResult(turn_id='session-99.lang.008', role='user', content='I prefer Django for web', score=1.9066187391027287, metadata={'salience': 0.3, 'kind': 'lang'})"
       ],
       "q-go": [
-        "RetrievalResult(turn_id='session-99.lang.001', role='user', content='I prefer Go for systems', score=2.137889244248555, metadata={'salience': 0.6, 'kind': 'lang'})",
-        "RetrievalResult(turn_id='session-99.manager.007', role='user', content='Otto prefers Go for systems', score=1.9378889819734857, metadata={'salience': 0.4, 'kind': 'manager'})",
-        "RetrievalResult(turn_id='session-99.lang.007', role='user', content='I think Rust is great for systems', score=1.754599245142918, metadata={'salience': 0.3, 'kind': 'lang'})",
-        "RetrievalResult(turn_id='session-99.infra.001', role='user', content='We use OpenTelemetry', score=1.7443365468906817, metadata={'salience': 0.6, 'kind': 'infra'})",
-        "RetrievalResult(turn_id='session-99.lang.002', role='user', content='I prefer Rust for hot paths', score=1.7295281885200469, metadata={'salience': 0.5, 'kind': 'lang'})"
+        "RetrievalResult(turn_id='session-99.lang.001', role='user', content='I prefer Go for systems', score=2.137889459229948, metadata={'salience': 0.6, 'kind': 'lang'})",
+        "RetrievalResult(turn_id='session-99.manager.007', role='user', content='Otto prefers Go for systems', score=1.9378892392332818, metadata={'salience': 0.4, 'kind': 'manager'})",
+        "RetrievalResult(turn_id='session-99.lang.007', role='user', content='I think Rust is great for systems', score=1.7545995049441683, metadata={'salience': 0.3, 'kind': 'lang'})",
+        "RetrievalResult(turn_id='session-99.infra.001', role='user', content='We use OpenTelemetry', score=1.7443367930555798, metadata={'salience': 0.6, 'kind': 'infra'})",
+        "RetrievalResult(turn_id='session-99.lang.002', role='user', content='I prefer Rust for hot paths', score=1.729528417039453, metadata={'salience': 0.5, 'kind': 'lang'})"
       ],
       "q-deploy": [
-        "RetrievalResult(turn_id='session-99.family.000', role='user', content='My partner is Jordan', score=2.074999568778522, metadata={'salience': 0.7, 'kind': 'family'})",
-        "RetrievalResult(turn_id='session-99.manager.000', role='user', content='Otto is my manager', score=2.0749993006753895, metadata={'salience': 0.7, 'kind': 'manager'})",
-        "RetrievalResult(turn_id='session-99.personal.000', role='user', content='My best friend is Sam', score=2.035409562142044, metadata={'salience': 0.7, 'kind': 'personal'})",
-        "RetrievalResult(turn_id='session-99.junior.000', role='user', content='Maria is the junior engineer', score=2.035409288895557, metadata={'salience': 0.7, 'kind': 'junior'})",
-        "RetrievalResult(turn_id='session-99.manager.001', role='user', content='Otto is the architect', score=1.9749992647943988, metadata={'salience': 0.6, 'kind': 'manager'})"
+        "RetrievalResult(turn_id='session-99.family.000', role='user', content='My partner is Jordan', score=2.0749997791916805, metadata={'salience': 0.7, 'kind': 'family'})",
+        "RetrievalResult(turn_id='session-99.manager.000', role='user', content='Otto is my manager', score=2.0749995277033175, metadata={'salience': 0.7, 'kind': 'manager'})",
+        "RetrievalResult(turn_id='session-99.personal.000', role='user', content='My best friend is Sam', score=2.0354097857455584, metadata={'salience': 0.7, 'kind': 'personal'})",
+        "RetrievalResult(turn_id='session-99.junior.000', role='user', content='Maria is the junior engineer', score=2.035409525647604, metadata={'salience': 0.7, 'kind': 'junior'})",
+        "RetrievalResult(turn_id='session-99.manager.001', role='user', content='Otto is the architect', score=1.974999505242355, metadata={'salience': 0.6, 'kind': 'manager'})"
       ],
       "q-kafka": [
-        "RetrievalResult(turn_id='session-95.deploy.001', role='user', content='Deploy audit log Kafka', score=1.9943334343949841, metadata={'salience': 0.6, 'kind': 'deploy'})",
-        "RetrievalResult(turn_id='session-99.infra.002', role='user', content='We use Kafka', score=1.955340672763028, metadata={'salience': 0.5, 'kind': 'infra'})",
-        "RetrievalResult(turn_id='session-99.family.000', role='user', content='My partner is Jordan', score=1.6999995456273649, metadata={'salience': 0.7, 'kind': 'family'})",
-        "RetrievalResult(turn_id='session-99.lang.000', role='user', content='I prefer Python', score=1.6999994742765856, metadata={'salience': 0.7, 'kind': 'lang'})",
-        "RetrievalResult(turn_id='session-99.personal.000', role='user', content='My best friend is Sam', score=1.6999993423659228, metadata={'salience': 0.7, 'kind': 'personal'})"
+        "RetrievalResult(turn_id='session-95.deploy.001', role='user', content='Deploy audit log Kafka', score=1.994334284409316, metadata={'salience': 0.6, 'kind': 'deploy'})",
+        "RetrievalResult(turn_id='session-99.infra.002', role='user', content='We use Kafka', score=1.955340964668209, metadata={'salience': 0.5, 'kind': 'infra'})",
+        "RetrievalResult(turn_id='session-99.family.000', role='user', content='My partner is Jordan', score=1.6999997709708095, metadata={'salience': 0.7, 'kind': 'family'})",
+        "RetrievalResult(turn_id='session-99.lang.000', role='user', content='I prefer Python', score=1.699999704717221, metadata={'salience': 0.7, 'kind': 'lang'})",
+        "RetrievalResult(turn_id='session-99.personal.000', role='user', content='My best friend is Sam', score=1.6999995808997208, metadata={'salience': 0.7, 'kind': 'personal'})"
       ],
       "q-pg": [
-        "RetrievalResult(turn_id='session-99.review.000', role='user', content='Otto reviews code', score=1.9041233300085283, metadata={'salience': 0.7, 'kind': 'review'})",
-        "RetrievalResult(turn_id='session-95.deploy.000', role='user', content='Deploy uses Helm', score=1.9041202251457354, metadata={'salience': 0.7, 'kind': 'deploy'})",
-        "RetrievalResult(turn_id='session-99.manager.000', role='user', content='Otto is my manager', score=1.8767759496965009, metadata={'salience': 0.7, 'kind': 'manager'})",
-        "RetrievalResult(turn_id='session-99.manager.001', role='user', content='Otto is the architect', score=1.7767759109232917, metadata={'salience': 0.6, 'kind': 'manager'})",
-        "RetrievalResult(turn_id='session-99.manager.004', role='user', content='Otto handles deploys', score=1.704123331454448, metadata={'salience': 0.5, 'kind': 'manager'})"
+        "RetrievalResult(turn_id='session-99.review.000', role='user', content='Otto reviews code', score=1.9041235920168225, metadata={'salience': 0.7, 'kind': 'review'})",
+        "RetrievalResult(turn_id='session-95.deploy.000', role='user', content='Deploy uses Helm', score=1.9041210404952977, metadata={'salience': 0.7, 'kind': 'deploy'})",
+        "RetrievalResult(turn_id='session-99.manager.000', role='user', content='Otto is my manager', score=1.876776206719871, metadata={'salience': 0.7, 'kind': 'manager'})",
+        "RetrievalResult(turn_id='session-99.manager.001', role='user', content='Otto is the architect', score=1.7767761832414033, metadata={'salience': 0.6, 'kind': 'manager'})",
+        "RetrievalResult(turn_id='session-99.manager.004', role='user', content='Otto handles deploys', score=1.7041236210286725, metadata={'salience': 0.5, 'kind': 'manager'})"
       ],
       "q-Sam": [
-        "RetrievalResult(turn_id='session-99.personal.000', role='user', content='My best friend is Sam', score=2.536132033226724, metadata={'salience': 0.7, 'kind': 'personal'})",
-        "RetrievalResult(turn_id='session-99.family.000', role='user', content='My partner is Jordan', score=2.1226572316030237, metadata={'salience': 0.7, 'kind': 'family'})",
-        "RetrievalResult(turn_id='session-99.manager.000', role='user', content='Otto is my manager', score=2.122656963499909, metadata={'salience': 0.7, 'kind': 'manager'})",
-        "RetrievalResult(turn_id='session-99.junior.000', role='user', content='Maria is the junior engineer', score=1.8692928200088328, metadata={'salience': 0.7, 'kind': 'junior'})",
-        "RetrievalResult(turn_id='session-99.family.004', role='user', content='My sister is Anna', score=1.8226571783490155, metadata={'salience': 0.4, 'kind': 'family'})"
+        "RetrievalResult(turn_id='session-99.personal.000', role='user', content='My best friend is Sam', score=2.5361322984660806, metadata={'salience': 0.7, 'kind': 'personal'})",
+        "RetrievalResult(turn_id='session-99.family.000', role='user', content='My partner is Jordan', score=2.122657483652033, metadata={'salience': 0.7, 'kind': 'family'})",
+        "RetrievalResult(turn_id='session-99.manager.000', role='user', content='Otto is my manager', score=2.122657232163676, metadata={'salience': 0.7, 'kind': 'manager'})",
+        "RetrievalResult(turn_id='session-99.junior.000', role='user', content='Maria is the junior engineer', score=1.8692930983967107, metadata={'salience': 0.7, 'kind': 'junior'})",
+        "RetrievalResult(turn_id='session-99.family.004', role='user', content='My sister is Anna', score=1.8226574620950071, metadata={'salience': 0.4, 'kind': 'family'})"
       ],
       "q-coffee": [
-        "RetrievalResult(turn_id='session-99.junior.000', role='user', content='Maria is the junior engineer', score=1.9009751297629072, metadata={'salience': 0.7, 'kind': 'junior'})",
-        "RetrievalResult(turn_id='session-99.junior.001', role='user', content='Maria writes Python', score=1.8594580113520183, metadata={'salience': 0.6, 'kind': 'junior'})",
-        "RetrievalResult(turn_id='session-99.track.001', role='user', content='Maria manages metrics', score=1.8594578415908039, metadata={'salience': 0.6, 'kind': 'track'})",
-        "RetrievalResult(turn_id='session-99.junior.003', role='user', content='Maria prefers pytest', score=1.75945795828687, metadata={'salience': 0.5, 'kind': 'junior'})",
-        "RetrievalResult(turn_id='session-99.junior.002', role='user', content='Maria joined last month', score=1.7246970269962447, metadata={'salience': 0.5, 'kind': 'junior'})"
+        "RetrievalResult(turn_id='session-99.junior.000', role='user', content='Maria is the junior engineer', score=1.900975419351007, metadata={'salience': 0.7, 'kind': 'junior'})",
+        "RetrievalResult(turn_id='session-99.junior.001', role='user', content='Maria writes Python', score=1.8594583182556697, metadata={'salience': 0.6, 'kind': 'junior'})",
+        "RetrievalResult(turn_id='session-99.track.001', role='user', content='Maria manages metrics', score=1.8594581641596457, metadata={'salience': 0.6, 'kind': 'track'})",
+        "RetrievalResult(turn_id='session-99.junior.003', role='user', content='Maria prefers pytest', score=1.7594582840505766, metadata={'salience': 0.5, 'kind': 'junior'})",
+        "RetrievalResult(turn_id='session-99.junior.002', role='user', content='Maria joined last month', score=1.724697353790079, metadata={'salience': 0.5, 'kind': 'junior'})"
       ]
     },
     "item_count": 83,
-    "query_ms": 3.9255617686475697
+    "query_ms": 1.7440825381244605
   },
   {
     "name": "H1",
     "results_by_query": {
       "q-bike": [
-        "RetrievalResult(turn_id='session-29.bike.001', role='user', content='I commute by bike', score=2.1615862461686843, metadata={'salience': 0.6, 'kind': 'bike'})",
-        "RetrievalResult(turn_id='reflect-51', role='reflection', content='[reflection of 5 items] reflection: [reflection of 3 items] user: Maria manages metrics | reflec | user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling', score=2.0617921399788544, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-368', role='reflection', content='[reflection of 1 items] user: I drink coffee', score=2.0394348338870407, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-338', role='reflection', content='[reflection of 1 items] user: I drink coffee', score=2.039419602978937, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-270', role='reflection', content='[reflection of 2 items] reflection: [reflection of 1 items] user: I drink coffee | user: I use VS Code', score=2.0393995711557893, metadata={'salience': 0.6, 'kind': 'reflection'})"
+        "RetrievalResult(turn_id='session-29.bike.001', role='user', content='I commute by bike', score=2.161587122069277, metadata={'salience': 0.6, 'kind': 'bike'})",
+        "RetrievalResult(turn_id='reflect-51', role='reflection', content='[reflection of 5 items] reflection: [reflection of 3 items] user: Maria manages metrics | reflec | user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling', score=2.0618239537689664, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-368', role='reflection', content='[reflection of 1 items] user: I drink coffee', score=2.0394504809258365, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-338', role='reflection', content='[reflection of 1 items] user: I drink coffee', score=2.039439539019734, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-270', role='reflection', content='[reflection of 2 items] reflection: [reflection of 1 items] user: I drink coffee | user: I use VS Code', score=2.0394241418356027, metadata={'salience': 0.6, 'kind': 'reflection'})"
       ],
       "q-Jordan": [
-        "RetrievalResult(turn_id='session-28.family.000', role='user', content='My partner is Jordan', score=2.4997319883354994, metadata={'salience': 0.7, 'kind': 'family'})",
-        "RetrievalResult(turn_id='reflect-10', role='reflection', content='[reflection of 2 items] user: My partner is Jordan | user: Jordan and I live together', score=2.266828710917089, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='session-29.manager.000', role='user', content='Otto is my manager', score=2.202562177685002, metadata={'salience': 0.7, 'kind': 'manager'})",
-        "RetrievalResult(turn_id='session-29.personal.000', role='user', content='My best friend is Sam', score=2.149506320740991, metadata={'salience': 0.7, 'kind': 'personal'})",
-        "RetrievalResult(turn_id='reflect-23', role='reflection', content='[reflection of 4 items] user: Otto is my manager | user: Otto is the architect | user: I have been with Otto three years | user: Otto writes architecture docs', score=2.135297390128305, metadata={'salience': 0.6, 'kind': 'reflection'})"
+        "RetrievalResult(turn_id='session-28.family.000', role='user', content='My partner is Jordan', score=2.49973381302706, metadata={'salience': 0.7, 'kind': 'family'})",
+        "RetrievalResult(turn_id='reflect-10', role='reflection', content='[reflection of 2 items] user: My partner is Jordan | user: Jordan and I live together', score=2.2668606606101105, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='session-29.manager.000', role='user', content='Otto is my manager', score=2.202562879028418, metadata={'salience': 0.7, 'kind': 'manager'})",
+        "RetrievalResult(turn_id='session-29.personal.000', role='user', content='My best friend is Sam', score=2.1495067168857567, metadata={'salience': 0.7, 'kind': 'personal'})",
+        "RetrievalResult(turn_id='reflect-23', role='reflection', content='[reflection of 4 items] user: Otto is my manager | user: Otto is the architect | user: I have been with Otto three years | user: Otto writes architecture docs', score=2.1353293140976817, metadata={'salience': 0.6, 'kind': 'reflection'})"
       ],
       "q-Otto": [
-        "RetrievalResult(turn_id='reflect-23', role='reflection', content='[reflection of 4 items] user: Otto is my manager | user: Otto is the architect | user: I have been with Otto three years | user: Otto writes architecture docs', score=2.4142696009816875, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='session-29.manager.000', role='user', content='Otto is my manager', score=2.3392884343776514, metadata={'salience': 0.7, 'kind': 'manager'})",
-        "RetrievalResult(turn_id='session-29.manager.001', role='user', content='Otto is the architect', score=2.2392883215465336, metadata={'salience': 0.6, 'kind': 'manager'})",
-        "RetrievalResult(turn_id='reflect-332', role='reflection', content='[reflection of 3 items] user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys', score=2.2100497127428262, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-335', role='reflection', content='[reflection of 3 items] user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys', score=2.2100446755617025, metadata={'salience': 0.6, 'kind': 'reflection'})"
+        "RetrievalResult(turn_id='reflect-23', role='reflection', content='[reflection of 4 items] user: Otto is my manager | user: Otto is the architect | user: I have been with Otto three years | user: Otto writes architecture docs', score=2.4143015478931718, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='session-29.manager.000', role='user', content='Otto is my manager', score=2.3392891573176606, metadata={'salience': 0.7, 'kind': 'manager'})",
+        "RetrievalResult(turn_id='session-29.manager.001', role='user', content='Otto is the architect', score=2.2392890784031962, metadata={'salience': 0.6, 'kind': 'manager'})",
+        "RetrievalResult(turn_id='reflect-332', role='reflection', content='[reflection of 3 items] user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys', score=2.2100685890713456, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-335', role='reflection', content='[reflection of 3 items] user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys', score=2.210064538575474, metadata={'salience': 0.6, 'kind': 'reflection'})"
       ],
       "q-review": [
-        "RetrievalResult(turn_id='reflect-394', role='reflection', content='[reflection of 1 items] user: I use VS Code', score=1.9961861368052702, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-160', role='reflection', content='[reflection of 1 items] user: I prefer VS Code', score=1.9961157741615987, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-35', role='reflection', content='[reflection of 3 items] reflection: [reflection of 1 items] user: Otto handles deploys | user: I prefer VS Code | user: I switched to VS Code', score=1.9850089902214716, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-391', role='reflection', content='[reflection of 1 items] reflection: [reflection of 1 items] user: I use VS Code', score=1.9565752540660601, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-159', role='reflection', content='[reflection of 1 items] reflection: [reflection of 1 items] user: I prefer VS Code', score=1.9565046993696056, metadata={'salience': 0.6, 'kind': 'reflection'})"
+        "RetrievalResult(turn_id='reflect-394', role='reflection', content='[reflection of 1 items] user: I use VS Code', score=1.9961979317983667, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-160', role='reflection', content='[reflection of 1 items] user: I prefer VS Code', score=1.9961466240332044, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-35', role='reflection', content='[reflection of 3 items] reflection: [reflection of 1 items] user: Otto handles deploys | user: I prefer VS Code | user: I switched to VS Code', score=1.9850409362663477, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-391', role='reflection', content='[reflection of 1 items] reflection: [reflection of 1 items] user: I use VS Code', score=1.9565870065706814, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-159', role='reflection', content='[reflection of 1 items] reflection: [reflection of 1 items] user: I prefer VS Code', score=1.9565355355662506, metadata={'salience': 0.6, 'kind': 'reflection'})"
       ],
       "q-vs": [
-        "RetrievalResult(turn_id='reflect-394', role='reflection', content='[reflection of 1 items] user: I use VS Code', score=2.2762911521914653, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-86', role='reflection', content='[reflection of 4 items] user: We use Postgres 14 | user: We use OpenTelemetry | user: We use Kafka | user: We use Datadog', score=2.248648243503575, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-484', role='reflection', content='[reflection of 2 items] user: We use Kafka | user: We use Datadog', score=2.210314134160015, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-463', role='reflection', content='[reflection of 2 items] user: We use Kafka | user: We use Datadog', score=2.2103061654880856, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-398', role='reflection', content='[reflection of 2 items] user: We use Kafka | user: We use Datadog', score=2.2102777858134526, metadata={'salience': 0.6, 'kind': 'reflection'})"
+        "RetrievalResult(turn_id='reflect-394', role='reflection', content='[reflection of 1 items] user: I use VS Code', score=2.2763029555372154, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-86', role='reflection', content='[reflection of 4 items] user: We use Postgres 14 | user: We use OpenTelemetry | user: We use Kafka | user: We use Datadog', score=2.248679919463601, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-484', role='reflection', content='[reflection of 2 items] user: We use Kafka | user: We use Datadog', score=2.2103143451935177, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-463', role='reflection', content='[reflection of 2 items] user: We use Kafka | user: We use Datadog', score=2.2103084847223435, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-398', role='reflection', content='[reflection of 2 items] user: We use Kafka | user: We use Datadog', score=2.210289416895785, metadata={'salience': 0.6, 'kind': 'reflection'})"
       ],
       "q-Maria-py": [
-        "RetrievalResult(turn_id='session-28.lang.000', role='user', content='I prefer Python', score=2.100196647468997, metadata={'salience': 0.7, 'kind': 'lang'})",
-        "RetrievalResult(turn_id='reflect-238', role='reflection', content='[reflection of 3 items] reflection: [reflection of 3 items] user: Otto writes architecture docs  | user: I prefer Rust for hot paths | user: I think Python is great for tooling', score=2.0785478503109327, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-304', role='reflection', content='[reflection of 3 items] reflection: [reflection of 3 items] reflection: [reflection of 1 items]  | user: Maria is the junior engineer | user: Maria writes Python', score=2.061943503713203, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-441', role='reflection', content='[reflection of 5 items] user: Maria is the junior engineer | user: Maria writes Python | user: Maria joined last month | user: Maria prefers pytest | user: Maria works on the platform team', score=2.0503314381266913, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-51', role='reflection', content='[reflection of 5 items] reflection: [reflection of 3 items] user: Maria manages metrics | reflec | user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling', score=2.0421213885285057, metadata={'salience': 0.6, 'kind': 'reflection'})"
+        "RetrievalResult(turn_id='session-28.lang.000', role='user', content='I prefer Python', score=2.1002000686571156, metadata={'salience': 0.7, 'kind': 'lang'})",
+        "RetrievalResult(turn_id='reflect-238', role='reflection', content='[reflection of 3 items] reflection: [reflection of 3 items] user: Otto writes architecture docs  | user: I prefer Rust for hot paths | user: I think Python is great for tooling', score=2.078574785464835, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-304', role='reflection', content='[reflection of 3 items] reflection: [reflection of 3 items] reflection: [reflection of 1 items]  | user: Maria is the junior engineer | user: Maria writes Python', score=2.061965908762484, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-441', role='reflection', content='[reflection of 5 items] user: Maria is the junior engineer | user: Maria writes Python | user: Maria joined last month | user: Maria prefers pytest | user: Maria works on the platform team', score=2.0503362300810926, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-51', role='reflection', content='[reflection of 5 items] reflection: [reflection of 3 items] user: Maria manages metrics | reflec | user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling', score=2.042153300614089, metadata={'salience': 0.6, 'kind': 'reflection'})"
       ],
       "q-py": [
-        "RetrievalResult(turn_id='session-28.lang.000', role='user', content='I prefer Python', score=2.3508102989841912, metadata={'salience': 0.7, 'kind': 'lang'})",
-        "RetrievalResult(turn_id='reflect-51', role='reflection', content='[reflection of 5 items] reflection: [reflection of 3 items] user: Maria manages metrics | reflec | user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling', score=2.294733963152246, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-438', role='reflection', content='[reflection of 1 items] user: I prefer pair reviews', score=2.2757346500096634, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-160', role='reflection', content='[reflection of 1 items] user: I prefer VS Code', score=2.2756432817889336, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-341', role='reflection', content='[reflection of 2 items] reflection: [reflection of 1 items] user: I prefer Rust for hot paths | user: I prefer VS Code', score=2.2705779100985515, metadata={'salience': 0.6, 'kind': 'reflection'})"
+        "RetrievalResult(turn_id='session-28.lang.000', role='user', content='I prefer Python', score=2.3508137259496995, metadata={'salience': 0.7, 'kind': 'lang'})",
+        "RetrievalResult(turn_id='reflect-51', role='reflection', content='[reflection of 5 items] reflection: [reflection of 3 items] user: Maria manages metrics | reflec | user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling', score=2.2947658813740768, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-438', role='reflection', content='[reflection of 1 items] user: I prefer pair reviews', score=2.275739591186615, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-160', role='reflection', content='[reflection of 1 items] user: I prefer VS Code', score=2.2756741569725403, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-341', role='reflection', content='[reflection of 2 items] reflection: [reflection of 1 items] user: I prefer Rust for hot paths | user: I prefer VS Code', score=2.270597668398315, metadata={'salience': 0.6, 'kind': 'reflection'})"
       ],
       "q-go": [
-        "RetrievalResult(turn_id='session-28.lang.001', role='user', content='I prefer Go for systems', score=2.135230158029332, metadata={'salience': 0.6, 'kind': 'lang'})",
-        "RetrievalResult(turn_id='reflect-51', role='reflection', content='[reflection of 5 items] reflection: [reflection of 3 items] user: Maria manages metrics | reflec | user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling', score=2.133152542181671, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-238', role='reflection', content='[reflection of 3 items] reflection: [reflection of 3 items] user: Otto writes architecture docs  | user: I prefer Rust for hot paths | user: I think Python is great for tooling', score=2.0506871396834336, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-217', role='reflection', content='[reflection of 3 items] reflection: [reflection of 2 items] reflection: [reflection of 4 items]  | user: I prefer Rust for hot paths | user: I think Python is great for tooling', score=2.031450331620644, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-300', role='reflection', content='[reflection of 3 items] reflection: [reflection of 1 items] reflection: [reflection of 3 items]  | user: I prefer Rust for hot paths | user: I think Python is great for tooling', score=2.0295525004739465, metadata={'salience': 0.6, 'kind': 'reflection'})"
+        "RetrievalResult(turn_id='session-28.lang.001', role='user', content='I prefer Go for systems', score=2.135233800912865, metadata={'salience': 0.6, 'kind': 'lang'})",
+        "RetrievalResult(turn_id='reflect-51', role='reflection', content='[reflection of 5 items] reflection: [reflection of 3 items] user: Maria manages metrics | reflec | user: I prefer Python | user: I prefer Go for systems | user: I prefer Rust for hot paths | user: I think Python is great for tooling', score=2.1331844734395267, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-238', role='reflection', content='[reflection of 3 items] reflection: [reflection of 3 items] user: Otto writes architecture docs  | user: I prefer Rust for hot paths | user: I think Python is great for tooling', score=2.0507140940106074, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-217', role='reflection', content='[reflection of 3 items] reflection: [reflection of 2 items] reflection: [reflection of 4 items]  | user: I prefer Rust for hot paths | user: I think Python is great for tooling', score=2.0314797230156003, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-300', role='reflection', content='[reflection of 3 items] reflection: [reflection of 1 items] reflection: [reflection of 3 items]  | user: I prefer Rust for hot paths | user: I think Python is great for tooling', score=2.029574961491108, metadata={'salience': 0.6, 'kind': 'reflection'})"
       ],
       "q-deploy": [
-        "RetrievalResult(turn_id='reflect-23', role='reflection', content='[reflection of 4 items] user: Otto is my manager | user: Otto is the architect | user: I have been with Otto three years | user: Otto writes architecture docs', score=2.1059238081361724, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='session-29.manager.000', role='user', content='Otto is my manager', score=2.074996863497674, metadata={'salience': 0.7, 'kind': 'manager'})",
-        "RetrievalResult(turn_id='session-28.family.000', role='user', content='My partner is Jordan', score=2.074992760368866, metadata={'salience': 0.7, 'kind': 'family'})",
-        "RetrievalResult(turn_id='reflect-10', role='reflection', content='[reflection of 2 items] user: My partner is Jordan | user: Jordan and I live together', score=2.0719447187962783, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-71', role='reflection', content='[reflection of 2 items] user: My best friend is Sam | user: Sam and I have known each other ten years', score=2.0529764058229185, metadata={'salience': 0.6, 'kind': 'reflection'})"
+        "RetrievalResult(turn_id='reflect-23', role='reflection', content='[reflection of 4 items] user: Otto is my manager | user: Otto is the architect | user: I have been with Otto three years | user: Otto writes architecture docs', score=2.1059558230364943, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='session-29.manager.000', role='user', content='Otto is my manager', score=2.074997650444136, metadata={'salience': 0.7, 'kind': 'manager'})",
+        "RetrievalResult(turn_id='session-28.family.000', role='user', content='My partner is Jordan', score=2.074994670662718, metadata={'salience': 0.7, 'kind': 'family'})",
+        "RetrievalResult(turn_id='reflect-10', role='reflection', content='[reflection of 2 items] user: My partner is Jordan | user: Jordan and I live together', score=2.0719767594202314, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-71', role='reflection', content='[reflection of 2 items] user: My best friend is Sam | user: Sam and I have known each other ten years', score=2.053008290161836, metadata={'salience': 0.6, 'kind': 'reflection'})"
       ],
       "q-kafka": [
-        "RetrievalResult(turn_id='reflect-484', role='reflection', content='[reflection of 2 items] user: We use Kafka | user: We use Datadog', score=2.0858913654797133, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-463', role='reflection', content='[reflection of 2 items] user: We use Kafka | user: We use Datadog', score=2.085883396810411, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-398', role='reflection', content='[reflection of 2 items] user: We use Kafka | user: We use Datadog', score=2.085855017145135, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-286', role='reflection', content='[reflection of 2 items] user: We use Kafka | user: We use Datadog', score=2.0858138153587333, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-269', role='reflection', content='[reflection of 2 items] user: We use Kafka | user: We use Datadog', score=2.085809454376963, metadata={'salience': 0.6, 'kind': 'reflection'})"
+        "RetrievalResult(turn_id='reflect-484', role='reflection', content='[reflection of 2 items] user: We use Kafka | user: We use Datadog', score=2.085891631759815, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-463', role='reflection', content='[reflection of 2 items] user: We use Kafka | user: We use Datadog', score=2.085885771290249, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-398', role='reflection', content='[reflection of 2 items] user: We use Kafka | user: We use Datadog', score=2.0858667034689233, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-286', role='reflection', content='[reflection of 2 items] user: We use Kafka | user: We use Datadog', score=2.085836537556572, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-269', role='reflection', content='[reflection of 2 items] user: We use Kafka | user: We use Datadog', score=2.0858333429612212, metadata={'salience': 0.6, 'kind': 'reflection'})"
       ],
       "q-pg": [
-        "RetrievalResult(turn_id='reflect-23', role='reflection', content='[reflection of 4 items] user: Otto is my manager | user: Otto is the architect | user: I have been with Otto three years | user: Otto writes architecture docs', score=2.0941400139682247, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-332', role='reflection', content='[reflection of 3 items] user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys', score=2.0845783388462245, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-335', role='reflection', content='[reflection of 3 items] user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys', score=2.084573301667709, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-308', role='reflection', content='[reflection of 3 items] user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys', score=2.0845626426440473, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-263', role='reflection', content='[reflection of 3 items] user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys', score=2.0845492867882336, metadata={'salience': 0.6, 'kind': 'reflection'})"
+        "RetrievalResult(turn_id='reflect-23', role='reflection', content='[reflection of 4 items] user: Otto is my manager | user: Otto is the architect | user: I have been with Otto three years | user: Otto writes architecture docs', score=2.0941720440209965, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-332', role='reflection', content='[reflection of 3 items] user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys', score=2.0845972983265573, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-335', role='reflection', content='[reflection of 3 items] user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys', score=2.084593247832446, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-308', role='reflection', content='[reflection of 3 items] user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys', score=2.0845841218023597, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-263', role='reflection', content='[reflection of 3 items] user: I have been with Otto three years | user: Otto writes architecture docs | user: Otto handles deploys', score=2.084574767256825, metadata={'salience': 0.6, 'kind': 'reflection'})"
       ],
       "q-Sam": [
-        "RetrievalResult(turn_id='session-29.personal.000', role='user', content='My best friend is Sam', score=2.540295695220715, metadata={'salience': 0.7, 'kind': 'personal'})",
-        "RetrievalResult(turn_id='reflect-71', role='reflection', content='[reflection of 2 items] user: My best friend is Sam | user: Sam and I have known each other ten years', score=2.283424776733774, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='session-29.manager.000', role='user', content='Otto is my manager', score=2.134769519446457, metadata={'salience': 0.7, 'kind': 'manager'})",
-        "RetrievalResult(turn_id='session-28.family.000', role='user', content='My partner is Jordan', score=2.134765416318338, metadata={'salience': 0.7, 'kind': 'family'})",
-        "RetrievalResult(turn_id='reflect-10', role='reflection', content='[reflection of 2 items] user: My partner is Jordan | user: Jordan and I live together', score=2.099370192976074, metadata={'salience': 0.6, 'kind': 'reflection'})"
+        "RetrievalResult(turn_id='session-29.personal.000', role='user', content='My best friend is Sam', score=2.5402961994768214, metadata={'salience': 0.7, 'kind': 'personal'})",
+        "RetrievalResult(turn_id='reflect-71', role='reflection', content='[reflection of 2 items] user: My best friend is Sam | user: Sam and I have known each other ten years', score=2.283456684979921, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='session-29.manager.000', role='user', content='Otto is my manager', score=2.1347703289009154, metadata={'salience': 0.7, 'kind': 'manager'})",
+        "RetrievalResult(turn_id='session-28.family.000', role='user', content='My partner is Jordan', score=2.1347673491199304, metadata={'salience': 0.7, 'kind': 'family'})",
+        "RetrievalResult(turn_id='reflect-10', role='reflection', content='[reflection of 2 items] user: My partner is Jordan | user: Jordan and I live together', score=2.0994022575072235, metadata={'salience': 0.6, 'kind': 'reflection'})"
       ],
       "q-coffee": [
-        "RetrievalResult(turn_id='reflect-441', role='reflection', content='[reflection of 5 items] user: Maria is the junior engineer | user: Maria writes Python | user: Maria joined last month | user: Maria prefers pytest | user: Maria works on the platform team', score=2.1427135276485374, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-82', role='reflection', content='[reflection of 2 items] user: I drink coffee | user: Maria drinks coffee', score=2.1227434916523613, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-309', role='reflection', content='[reflection of 3 items] user: Maria joined last month | user: Maria prefers pytest | user: Maria works on the platform team', score=2.118385108147649, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-237', role='reflection', content='[reflection of 3 items] user: Maria joined last month | user: Maria prefers pytest | user: Maria works on the platform team', score=2.118366731202801, metadata={'salience': 0.6, 'kind': 'reflection'})",
-        "RetrievalResult(turn_id='reflect-372', role='reflection', content='[reflection of 3 items] user: I drink coffee | user: Maria drinks coffee | reflection: [reflection of 1 items] user: I drink coffee', score=2.0999239234049902, metadata={'salience': 0.6, 'kind': 'reflection'})"
+        "RetrievalResult(turn_id='reflect-441', role='reflection', content='[reflection of 5 items] user: Maria is the junior engineer | user: Maria writes Python | user: Maria joined last month | user: Maria prefers pytest | user: Maria works on the platform team', score=2.142718388867401, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-82', role='reflection', content='[reflection of 2 items] user: I drink coffee | user: Maria drinks coffee', score=2.1227753569790027, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-309', role='reflection', content='[reflection of 3 items] user: Maria joined last month | user: Maria prefers pytest | user: Maria works on the platform team', score=2.1184065236968244, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-237', role='reflection', content='[reflection of 3 items] user: Maria joined last month | user: Maria prefers pytest | user: Maria works on the platform team', score=2.118393092458148, metadata={'salience': 0.6, 'kind': 'reflection'})",
+        "RetrievalResult(turn_id='reflect-372', role='reflection', content='[reflection of 3 items] user: I drink coffee | user: Maria drinks coffee | reflection: [reflection of 1 items] user: I drink coffee', score=2.0999395678417767, metadata={'salience': 0.6, 'kind': 'reflection'})"
       ]
     },
     "item_count": 485,
-    "query_ms": 13.492320615798235
+    "query_ms": 10.643997615203261
   },
   {
     "name": "H6",

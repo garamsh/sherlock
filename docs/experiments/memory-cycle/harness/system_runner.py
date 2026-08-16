@@ -20,6 +20,11 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 from systems import ALL_SYSTEMS, SimModel
 
+# Results land beside the report, not beside the caller's shell.
+ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+TABLE = os.path.join(ROOT, "results_table.md")
+RAW = os.path.join(ROOT, "results_raw.json")
+
 
 # ---------------------------------------------------------------------------
 # The scripted conversation. Each turn: (user_text, planted_facts).
@@ -86,7 +91,6 @@ def run_system(cls, seed: int = 7):
 
 
 def main():
-    os.makedirs("results", exist_ok=True)
     rows = []
     # Multiple seeds to smooth the simulated compliance randomness.
     SEEDS = [7, 42, 1234]
@@ -121,15 +125,15 @@ def main():
             r["system"], r["context_recall"], r["store_items"],
             r["extra_calls_per_turn"], r["injected_tokens_per_turn"]))
     table = "\n".join(lines)
-    with open("results/system_cycle.md", "w") as f:
+    with open(TABLE, "w") as f:
         f.write("# System-level memory experiment — the full cycle\n\n")
         f.write("Question: which memory *system* — write path, read path, store policy together — keeps facts in the model's context over a multi-week conversation? The previous experiments ranked stores assuming the write happens; QA measured that it does not (0/15 voluntary writeback on gpt-4o).\n\n")
         f.write("Compliance inputs are measured or marked assumptions: voluntary writeback 0% (QA #5-#8), structured output 100% (API-enforced), platform extraction 100% (deterministic), forced narrow call 95% (assumption), on-demand search 30% (assumption).\n\n")
         f.write(table + "\n")
     print(table)
-    with open("results/system_cycle_raw.json", "w") as f:
+    with open(RAW, "w") as f:
         json.dump(rows, f, indent=2)
-    print(f"\nWrote {os.path.abspath('results/system_cycle.md')}")
+    print(f"\nWrote {os.path.abspath(TABLE)} and {os.path.abspath(RAW)}")
 
 
 if __name__ == "__main__":

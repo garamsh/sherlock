@@ -5,7 +5,7 @@
 
 ## Context
 
-`docs/PLAN.md` §6 fixes the language as Go and the working language as English. PLAN §5.1 names a top-level structure of `gateway/`, `agent/`, `tools/`, while `docs/convention/stack-go.md` mandates Layout A (`cmd/<binary>` + `internal/<domain>`) with a banned-name list. The two must be reconciled without adding layers.
+The system's components — gateway, agent, tools — each invite a top-level folder of their own, while `docs/convention/stack-go.md` mandates Layout A (`cmd/<binary>` + `internal/<domain>`) with a banned-name list. The two shapes must be reconciled without adding layers.
 
 ## Decision
 
@@ -20,4 +20,4 @@ One Go module at the repository root. Components map to packages and binaries, n
 
 - The platform binary (`cmd/gagent`) holds no tool behavior. A capability is added by installing a tool under `tools/<name>/`, not by a Go import.
 - The platform's tool runtime (`internal/tool`) is the only place the platform knows about tools, and what it knows is the manifest contract — manifest load, schema-validated call boundary, drift pin, descriptor projection.
-- Conventions take precedence over PLAN folder names (stack-go.md).
+- Conventions take precedence over component-shaped folder names (stack-go.md).

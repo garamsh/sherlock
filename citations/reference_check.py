@@ -33,9 +33,14 @@ the cost is stated rather than left implicit:
     — stays out. Cost: a dead path with an unusual extension is missed.
   - A first segment carrying an interior dot, which is a hostname or a schema
     namespace (`gagent.local/schema/tool-input.json`) rather than a directory.
-  - `docs/convention/`, whose files state rules for any Go project and so cite
-    illustrations (`src/auth/service.ts`) and names they exist to forbid
-    (`internal/infra/`). Cost: a dead path in a convention file is missed.
+  - `docs/convention/stack-go.md`, the one convention file that illustrates with
+    paths rooted in this tree's own top-level names — `internal/infra/` and
+    `internal/kit/` are names it exists to forbid, `internal/user/user.go` and
+    `internal/logger/` are shapes it is describing. Other convention files
+    illustrate with foreign roots (`src/auth/service.ts`), which nothing above
+    admits, so they are checked. Cost: 3 live citations inside `stack-go.md`
+    go unchecked, naming 2 distinct paths, `internal/` and `tests/`; a dead
+    reference among them is missed.
 
 Reads tracked files only, resolves against the working tree, and touches no
 network. Exits non-zero when a citation does not resolve. Takes the tree to check
@@ -69,7 +74,7 @@ BARE_TOKEN = re.compile(r"(?<![`\w/.-])([A-Za-z0-9._-]+(?:/[A-Za-z0-9._-]+)+/?)"
 ADR_REFERENCE = re.compile(r"\bADR[\s-]?(\d{4})\b")
 
 # Excluded for the reason the docstring gives.
-EXCLUDED_TREE = "docs/convention/"
+EXCLUDED_FILE = "docs/convention/stack-go.md"
 
 
 def tracked(root):
@@ -181,7 +186,7 @@ def check(root):
         name, extension = os.path.basename(path), os.path.splitext(path)[1]
         if extension not in readable and name not in COMMENT_FILENAMES:
             continue
-        if path.startswith(EXCLUDED_TREE):
+        if path == EXCLUDED_FILE:
             continue
         try:
             text = open(os.path.join(root, path), encoding="utf-8").read()

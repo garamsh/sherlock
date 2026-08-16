@@ -31,6 +31,7 @@ const (
 	regionWorkload    = "workload"
 	regionDecade      = "decade"
 	regionArity       = "arity"
+	regionAddress     = "address"
 	regionDeclaration = "declaration"
 	regionDestroy     = "destroy"
 	regionReach       = "reach"
@@ -166,6 +167,7 @@ func RenderTables(r Run) []Section {
 		section(regionWorkload, r, renderRun),
 		section(regionDecade, r, renderYears, renderSizes),
 		section(regionArity, r, renderArity),
+		section(regionAddress, r, renderQuestions),
 		section(regionDeclaration, r, renderSweep, renderHealing, renderDeclarer, renderModelRun),
 		section(regionDestroy, r, renderBias, renderStability, renderDisagreement),
 		section(regionReach, r, renderReach, renderCoupling, renderCapacity),
@@ -200,6 +202,8 @@ var (
 		frameAttributeLearned:  "every value ever written at `(subject, attribute)`",
 		frameAttributeCued:     "one or several values at `(subject, attribute)`",
 		frameAttributeDeclared: "one or several values at `(subject, attribute)`",
+		frameQuestion:          "one or several values at the question a fact answers",
+		frameQuestionDeclared:  "one or several values at the question a fact answers",
 		frameInterval:          "a value with the span it was true for, closed rather than removed",
 		frameIntervalDeclared:  "a value with the span it was true for, closed rather than removed",
 		frameLog:               "every observation as an event, appended and never changed",
@@ -217,6 +221,8 @@ var (
 		frameAttributeLearned:  "an attribute is multi-valued once any of its addresses holds more than one value",
 		frameAttributeCued:     "a write joins where the sentence carries an addition cue and replaces otherwise",
 		frameAttributeDeclared: "the write states it — a ceiling, not a candidate",
+		frameQuestion:          "the question's own form: a question naming one thing holds one value",
+		frameQuestionDeclared:  "the write states it — a ceiling, not a candidate",
 		frameInterval:          "a write closes the open span",
 		frameIntervalDeclared:  "the write states it — a ceiling, not a candidate",
 		frameLog:               "the projection takes the newest value at an address",
@@ -380,6 +386,54 @@ func renderIdentity(b *strings.Builder, r Run) {
 		fmt.Fprintf(b, "| %s | %v |\n", row[0], row[1])
 	}
 	fmt.Fprintln(b)
+}
+
+// renderQuestions is what a question's own form says about the addresses
+// under it, and the addresses it says the wrong thing about.
+func renderQuestions(b *strings.Builder, r Run) {
+	q := r.Questions
+	if len(q.Forms) == 0 {
+		return
+	}
+	fmt.Fprintf(b, "### What a question determines\n\n")
+	fmt.Fprintf(b, "| quantity | value |\n|---|---|\n")
+	rows := [][2]any{
+		{"questions in the address space", q.Questions},
+		{"questions whose form marks a number", q.FormMarked},
+		{"addresses, topic-shaped", q.TopicAddresses},
+		{"addresses, topic-shaped, whose arity the question's form gets wrong", q.TopicWrong},
+		{"addresses, question-shaped", q.QuestionAddresses},
+		{"addresses, question-shaped, carrying a restriction", q.Qualified},
+		{"addresses, question-shaped, whose arity the question's form gets wrong", q.QuestionWrong},
+	}
+	for _, row := range rows {
+		fmt.Fprintf(b, "| %s | %v |\n", row[0], row[1])
+	}
+	fmt.Fprintln(b)
+
+	fmt.Fprintf(b, "| question | attribute | number | predicts | read from the form | addresses | holding two at once | form gets right | share |\n")
+	fmt.Fprintf(b, "|---|---|---|---|---|---|---|---|---|\n")
+	for _, f := range q.Forms {
+		fmt.Fprintf(b, "| `%s` | `%s` | %s | `%s` | %s | %d | %d | %d | %.3f |\n",
+			f.Question, f.Attribute, f.Number, f.Predicted, yesNo(f.FromForm),
+			f.Addresses, f.MultiValued, f.Agreed, f.Share)
+	}
+	fmt.Fprintln(b)
+
+	fmt.Fprintf(b, "| cut | name | addresses | form gets wrong | share |\n|---|---|---|---|---|\n")
+	for _, c := range q.Residual {
+		fmt.Fprintf(b, "| %s | `%s` | %d | %d | %.3f |\n", c.Cut, c.Name, c.Addresses, c.Wrong, c.Share)
+	}
+	fmt.Fprintln(b)
+}
+
+// yesNo renders a flag as a word. A glyph in a table is decoration where a
+// word is a value.
+func yesNo(flag bool) string {
+	if flag {
+		return "yes"
+	}
+	return "no"
 }
 
 // renderSweep is what a wrong declaration costs, per direction and never

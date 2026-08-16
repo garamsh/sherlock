@@ -71,14 +71,15 @@ type Run struct {
 	Constrained []Constrained `json:"constrained,omitempty"`
 	Shapes      []ShapeRun    `json:"shapes,omitempty"`
 
-	Declarer     *DeclarerScore `json:"declarer,omitempty"`
-	Model        []ModelRun     `json:"model_runs,omitempty"`
-	Bias         []BiasResult   `json:"join_bias,omitempty"`
-	Stability    *Stability     `json:"stability,omitempty"`
-	Disagreement *ModelRun      `json:"disagreement_run,omitempty"`
-	Arity        Arity          `json:"arity"`
-	Identity     Identity       `json:"identity"`
-	Frames       []FrameResult  `json:"frames"`
+	Declarer     *DeclarerScore     `json:"declarer,omitempty"`
+	Model        []ModelRun         `json:"model_runs,omitempty"`
+	Bias         []BiasResult       `json:"join_bias,omitempty"`
+	Stability    *Stability         `json:"stability,omitempty"`
+	Disagreement *ModelRun          `json:"disagreement_run,omitempty"`
+	Arity        Arity              `json:"arity"`
+	Identity     Identity           `json:"identity"`
+	Questions    QuestionAddressing `json:"question_addressing"`
+	Frames       []FrameResult      `json:"frames"`
 
 	// Finding is the study in which no frame is handed the address. It is
 	// its own file for the reason the shapes are, and is folded in here only
@@ -321,12 +322,13 @@ func readCommittedResolutions(path string) (*Resolutions, error) {
 func MeasureRun(ctx context.Context, w Workload) (Run, error) {
 	counter := NewEmbedCounter()
 	result := Run{
-		Seed:     w.Seed,
-		Start:    w.Start,
-		Embedder: embedderName,
-		Digest:   w.TurnDigest,
-		Params:   w.Params,
-		Arity:    MeasureArity(w),
+		Seed:      w.Seed,
+		Start:     w.Start,
+		Embedder:  embedderName,
+		Digest:    w.TurnDigest,
+		Params:    w.Params,
+		Arity:     MeasureArity(w),
+		Questions: MeasureQuestions(w),
 		Config: Config{
 			WeightVector:           memory.WeightVector,
 			WeightFTS:              memory.WeightFTS,

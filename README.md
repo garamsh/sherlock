@@ -133,7 +133,7 @@ Individual targets: `make lint`, `make format`, `make test`, `make build`.
 Beyond Go and GNU Make, the toolchain is:
 
 - **golangci-lint** — `make lint` (`go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.12.2`; the version is pinned in `ci.yml` and `.golangci.yml`).
-- **buf** — `make proto` regenerates the workspace gRPC stubs (`buf.yaml` + `buf.gen.yaml`); the CLI version is pinned in `.github/workflows/ci.yml` (1.72.0).
+- **buf** — `make proto` regenerates the workspace gRPC stubs (`buf.yaml` + `buf.gen.yaml`), fails if regenerating moved the tree, and lints the proto files; the CLI version is pinned in `.github/workflows/ci.yml` (1.72.0).
 - **lefthook** — `make hooks` installs the git hooks once after cloning (pre-commit lint/format, pre-push test).
 
 This repository is developed by AI agents under written conventions — see `AGENTS.md` for what a contributor is held to and `docs/convention/` for the rules all code follows. Internal structure and design decisions live in `docs/architecture/`.

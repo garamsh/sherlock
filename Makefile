@@ -36,6 +36,10 @@ smoke-local:
 
 proto:
 	buf generate
+# Regenerating a committed tree is a no-op; a diff here is a stub the proto moved
+# past. Committing the regenerated stubs clears it.
+	git diff --exit-code
+	buf lint
 
 hooks:
 	@lefthook install

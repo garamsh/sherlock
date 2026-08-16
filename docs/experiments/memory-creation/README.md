@@ -16,6 +16,8 @@ Which structure should create, correct and retire a memory entry. The cycle expe
 
 Rounds 1–3 of this experiment used a dataset that planted ten topics, corrected every one of them, and backed each number with ten probes. That dataset cannot detect over-retirement, because it holds no never-corrected fact to over-retire, and cannot distinguish a structure working from a store being small; its numbers are superseded by the table below and its harness is kept only for the structures round 4 does not cover.
 
+Everything from here to §Round 5 is round 4. Round 5 re-measures four of these structures on a dataset whose coexist half is rebuilt, and is reported in its own section rather than folded into the tables below, because it is a second measurement on different data and not a correction of round 4.
+
 ## No similarity threshold can decide supersession
 
 ADR 0006 supersedes on embedding cosine; `internal/memory/ranking.go` uses 0.6. 250 pairs per family, measured at the round's 512 dimensions and again at the embedder's native 1536:
@@ -63,11 +65,13 @@ B1 and B7 write from the main response at the cycle experiment's assumed 80% com
 - **What the decider is shown is the structure.** B2 and B3 differ only in that. Showing the store's retrieval instead of the recent writes moves corrections from 0.01 to 0.71 — a gap far outside anything this round's precision could blur. Widening the offer beyond that is a smaller move than the round can order (§What the net column can and cannot separate); what it demonstrably does is a count, taking the contradicted rows that never reached the decider from 11 of 100 to 2. B2's much better showing in the earlier rounds measured a ten-topic store, not the structure.
 - **The candidate set is safe to widen; a threshold is not.** Retirement of control facts stays at 0.00 across B3 and B9. No setting deletes data — but the offer stops paying at 10, and §The offer is wide enough, and wider does not pay has the cost curve.
 - **The shipped mechanism is last.** It retires half of the never-corrected facts and 61% of the coexisting ones.
-- **A topic key works, once the decider can see what a key holds.** The first two key structures were wrong about the hint, not about the idea. B4 offers no hints, so the decider coins fresh keys and corrections never land (0.24). B5 offers key *names*, so it reuses a key without knowing whether it holds the same fact, and destroys 55% of the control facts. Offering each key with its current value (B12) drops control retirement to 0.00 and lifts net from 0.51 to 0.77. The residual was five keys holding several simultaneously-true facts — `otto.language` taking German, then Korean, then English, each write replacing the last — and telling the decider to coin a narrower key in that case (B14) reaches coexist 1.00 and net 0.91, the highest net in the round, destroying nothing. Neither figure puts it ahead of B9: the round does not order the top group (§What the net column can and cannot separate), and the 1.00 was measured under one narrowing example, an instruction the per-family decomposition below shows the coexist column is sensitive to.
+- **A topic key works, once the decider can see what a key holds.** The first two key structures were wrong about the hint, not about the idea. B4 offers no hints, so the decider coins fresh keys and corrections never land (0.24). B5 offers key *names*, so it reuses a key without knowing whether it holds the same fact, and destroys 55% of the control facts. Offering each key with its current value (B12) drops control retirement to 0.00 and lifts net from 0.51 to 0.77. The residual was five keys holding several simultaneously-true facts — `otto.language` taking German, then Korean, then English, each write replacing the last — and telling the decider to coin a narrower key in that case (B14) reaches coexist 1.00 and net 0.91, the highest net in the round, destroying nothing. Neither figure puts it ahead of B9: the round does not order the top group (§What the net column can and cannot separate). What the 1.00 rests on is settled by round 5, which scores the same structure on a coexist set its narrowing example cannot reach (§Round 5).
 - **Append-only does not help.** B6 deletes nothing and still loses 65% of control facts, because read-time latest-per-key hides the colliding rows.
 - **Output obligations crowd out the write.** Three structures added something the decider had to produce every turn, and all three lost facts rather than judgment. B10 must re-emit the neighbourhood, and drops lines from it. B15 must match against 11-88 offered keys on the correction turns, and answers 49 of 388 fact turns with an empty write list against B14's 5. B16 must return a verdict for every shown candidate, and stores 268 rows against 388 — 68 of its 69 never-written facts come from a turn that stored nothing at all, not from drift. B16 used the vocabulary correctly in bulk (3,846 candidates judged, none skipped) at the same one call per turn as the rest, so this is not disobedience or cost: a reply has a budget, and bookkeeping spends it. B14's output is one key and one value and has no bookkeeping.
 - **A multi-valued topic needs somewhere to put its second value.** All four of B9's coexist losses are a sibling statement retiring its twin — "Lisa plays the cello" retires "Lisa plays the drums", and the same for Otto, Maria and Lisa's Korean. B9 has no way to express that both hold; B14's narrower key gives each sibling its own address.
-- **The narrowing example moves the coexist column, and this round cannot say by how much for B14.** Coexist preservation per family, over three key-addressed runs:
+- **Withdrawn: that B14's coexist column is an artifact of its narrowing example.** Round 5 falsifies this, and #361 recorded before the runs what that would mean: "If B14 still leads by a clear margin on a coexist set its example cannot reach, the example-leak explanation in §The structures is wrong and needs withdrawing, not softening." B14 scores coexist 0.961 on eight families its example names none of, and separates there from every structure measured beside it (§Round 5). The reading this document carried — that B14's 1.00 might be an artifact of an example naming `languages`, so its honest coexist was unmeasured and its net overstated — is not supported, and is withdrawn rather than qualified. What replaces it is in §Round 5, and it is a narrower claim than B14 winning.
+
+  The round-4 measurement underneath the withdrawn reading stands, and says less than was drawn from it. Coexist preservation per family, over three key-addressed runs:
 
 | family | values | B14 (topic key, example names languages) | B17 (question key, example names allergies) | B18 (question key, example names nothing in the data) |
 |---|---|---|---|---|
@@ -75,7 +79,7 @@ B1 and B7 write from the main response at the cycle experiment's assumed 80% com
 | instrument | 8 | 8 | 8 | 4 |
 | languages | 12 | 12 | 4 | 5 |
 
-  Only one of the two comparisons is clean. B18 is B17 with the narrowing example moved off the probe set and nothing else changed, and it costs instrument 4 of 8 — a family neither example names — taking coexist from 0.78 to 0.64. So the plural split does not carry to families the prompt does not name, and the coexist column moves with the example. B17 against B14 changes two things at once: B17 takes B15's key definition as well as a different example, so `languages` falling from 12 to 4 is confounded between the two and these runs cannot separate them. No run scores B14's own instruction under a different example, so what B14's 1.00 would be without an example naming `languages` is not measured. The family at stake is large — `languages` is 12 of the 28 planted coexist values and 4 of the 12 coexist probes, a third of the column — and allergy survives all three.
+  Only one of the two comparisons is clean. B18 is B17 with the narrowing example moved off the probe set and nothing else changed, and it costs instrument 4 of 8 — a family neither example names — taking coexist from 0.78 to 0.64. That is B17's column moving with B17's example, and round 5 finds the same structure last of four at coexist 0.754. It was generalised here into a claim about B14, which round 5 refutes. B17 against B14 changes two things at once: B17 takes B15's key definition as well as a different example, so `languages` falling from 12 to 4 is confounded between the two and these runs cannot separate them. The family at stake is large — `languages` is 12 of the 28 planted coexist values and 4 of the 12 coexist probes, a third of the column — which is why round 5 redrew the coexist set rather than argue the point on this one.
 - **Key-upsert's silent case is unsafe where B9's is safe.** In B9 an unmentioned memory is left alone, so a coexist family the decider never thinks about survives by default. In a key-addressed store the default is one key per topic, so a family the decider does not recognise as multi-answer is swallowed — `maria.languages` holding three `speaks-X` rows with two dropped, `otto.hobbies` swallowing cello and drums. A plural stem does not save it. The structure needs a per-family signal that nothing in it currently carries.
 - **The key definition is worth keeping on its own.** B17 posts the round's best correction number — latest-wins 0.87 against B14's 0.75, stale 0.09 against 0.22 — and keys that name a single-valued answer all but disappear: 23 of B14's live keys name one, against 2 of B17's, and both `alma.tea` and `kofi.pets.turtle` are gone. Its remaining eight misses are genuine topic ambiguity, such as "Maria moved to fish" read as a diet — `maria.shell` was on the table and the decider wrote `maria.diet`. It also settles B15: empty writes are 8 of 388 here against B15's 49, so B15's write collapse came from the offer size, not from the key definition the two share.
 - **The protocol's silent case decides its safety.** B10 removes the vocabulary entirely: the decider returns what the shown set should now be, so deletion is omission. Classifying all 106 of its removals shows what that costs — 4% are paraphrase churn, the rest are collateral, a fact about another subject or another true value dropped from the reply. Stating the scope explicitly (B11) makes it worse, not better: 0.63. B14 keeps the same one-field output and does not have the problem, because a key that is not written is not touched. Whether the vocabulary is small matters less than whether silence means "no change"; a threshold firing on similarity, a key collision and an omitted line are the same failure.
@@ -177,13 +181,77 @@ Every structure calls the decider once per turn, on all 488 turns. Classifying w
 
 **No gate is worth building on this evidence.** The 20.5% ceiling is `chatter_ratio`, a scripted parameter rather than measured traffic, while the 388 fact turns carry the whole of `net` between them at 0.0026 each — so a gate needs 96.7% recall on fact turns to stay inside this round's own interval. Take 95% as an illustration rather than a measurement: at that recall the gate loses 0.050 of `net`, which is more than the 0.048 between the adopted structure and the round's best-scoring one. The number that would change this is the no-fact share of real traffic, and this document sets the bar it would have to clear rather than measuring one: half the turns carrying no fact.
 
+## Round 5: the same question on a redrawn coexist set
+
+Round 4's coexist column is 12 probes over three families, identical under every seed, and one family holds 12 of its 28 values. Round 5 redraws it: eight families, 64 probes and 144 coexist statements per seed, drawn per seed so a second seed measures a second set, with every family an eighth of the column. No coexist family names or answers a topic in the corrected and control set — round 4's spoken-`languages` family sat beside a `language` category holding programming languages, and it is gone. A value is credited only where a row states it as a whole word. The corrected, control and distractor assignments are round 4's for the same seed, so the coexist set is the only difference between the two datasets; the stream grows from 488 turns to 645. `harness/round5/dataset_check.py` asserts those invariants and fails on any metric that differs from round 4's scorer.
+
+Four structures, two seeds, eight runs. Every round-4 figure above stands: round 5 is a second measurement on a different dataset, not a correction of round 4.
+
+| structure | seed | latest-wins | control | coexist | net | items |
+|---|---|---|---|---|---|---|
+| B14 key-upsert, plural-aware | 7 | 0.700 | 0.925 | 0.969 | 0.865 | 425 |
+| B14 key-upsert, plural-aware | 11 | 0.760 | 0.925 | 0.953 | 0.879 | 429 |
+| B17 key-upsert, question-shaped key | 7 | 0.760 | 0.975 | 0.729 | 0.821 | 386 |
+| B17 key-upsert, question-shaped key | 11 | 0.780 | 0.900 | 0.779 | 0.820 | 392 |
+| B3 decider-neighbours | 7 | 0.700 | 0.975 | 0.787 | 0.821 | 392 |
+| B3 decider-neighbours | 11 | 0.670 | 0.950 | 0.823 | 0.814 | 411 |
+| B9 decider-neighbours, wide | 7 | 0.740 | 0.925 | 0.794 | 0.820 | 387 |
+| B9 decider-neighbours, wide | 11 | 0.660 | 0.925 | 0.815 | 0.800 | 399 |
+
+Pooled over both seeds, with the 95% half-width at each column's own probe count and the widest gap that column showed between the two seeds:
+
+| structure | latest-wins | control | coexist | net | widest seed spread |
+|---|---|---|---|---|---|
+| B14 | 0.730 ±0.062 | 0.925 ±0.058 | **0.961 ±0.034** | 0.872 ±0.030 | 0.060 |
+| B17 | 0.770 ±0.058 | 0.938 ±0.053 | 0.754 ±0.075 | 0.820 ±0.036 | 0.075 |
+| B3 | 0.685 ±0.064 | 0.963 ±0.042 | 0.805 ±0.069 | 0.817 ±0.034 | 0.036 |
+| B9 | 0.700 ±0.064 | 0.925 ±0.058 | 0.805 ±0.069 | 0.810 ±0.037 | 0.080 |
+
+**One column separates and three do not.** On coexist B14 leads B3 and B9 by 0.156 against a summed half-width of 0.102, and B17 by 0.207 against 0.108; both gaps also clear the 0.080 widest spread any structure showed between its own seeds. On `net`, latest-wins and control nothing separates — B14's net leads of 0.052 to 0.062 sit inside summed half-widths of 0.065 to 0.067, and the widest gap in either of the other two columns is 0.085 against 0.123. `harness/round5/precision.py` reports the interval and the separation verdict per column.
+
+**What more probes would buy.** 366 coexist probes per seed would separate B14 from B3 on `net`, and 232 would separate it from B9. No coexist count separates B14 from B17 there: the corrected and control families put a floor under that width, and only more of them would lower it.
+
+**B14's coexist lead is carried by two families of eight.** Preserved fraction per family, pooled over both seeds:
+
+| family | B14 | B17 | B3 | B9 | B14 over the best other |
+|---|---|---|---|---|---|
+| allergy | 1.000 | 0.938 | 0.979 | 0.979 | +0.021 |
+| certification | 1.000 | 1.000 | 1.000 | 1.000 | +0.000 |
+| committee | 0.969 | 0.969 | 0.875 | 0.906 | +0.000 |
+| craft | 1.000 | 1.000 | 0.625 | 0.688 | +0.000 |
+| cuisine | 0.813 | 0.500 | 0.813 | 0.781 | +0.000 |
+| garden | 1.000 | 0.750 | 1.000 | 0.969 | +0.000 |
+| instrument | 1.000 | 0.375 | 0.521 | 0.458 | +0.479 |
+| volunteer | 0.906 | 0.500 | 0.625 | 0.656 | +0.250 |
+
+B14 is at or above every other structure in all eight families, but `instrument` and `volunteer` carry the lead and the remaining six are ties or +0.021. The claim the data supports is that narrow one, not that B14 preserves coexisting values better across the board.
+
+**The anchor holds.** B3 ran on both datasets, so what the dataset change did is visible on its own rather than confounded with the structures:
+
+| column | round 4 (s7 / s11 / mean) | round 5 (s7 / s11 / mean) | move |
+|---|---|---|---|
+| latest-wins | 0.7100 / 0.6800 / 0.6950 | 0.7000 / 0.6700 / 0.6850 | −0.0100 |
+| control | 0.9750 / 0.9250 / 0.9500 | 0.9750 / 0.9500 / 0.9625 | +0.0125 |
+| coexist | 0.8472 / 0.9444 / 0.8958 | 0.7865 / 0.8229 / 0.8047 | −0.0911 |
+| net | 0.8441 / 0.8498 / 0.8470 | 0.8205 / 0.8143 / 0.8174 | −0.0296 |
+
+The corrected and control columns are flat and the whole move sits in the column round 5 redrew. B3's round-4 coexist half-width at 12 probes per seed is ±0.122, so 0.805 is inside it.
+
+**The announced-only corrections flatter no structure.** §What the corrected column is measuring shows that on the three categories where a person can hold two values at once, the template's announcement is what makes the item a correction. Splitting round 5's corrected column on that line costs every structure: B3 −0.17, B9 −0.12, B14 −0.14 and B17 −0.27 on latest-wins, two-valued categories against single-valued. No structure's correction score is propped up by them.
+
+**Against the pre-registration.** #361 recorded four predictions before the runs, so the result could not be read backwards into whatever arrived. Prediction 1 — B14's coexist falls once the `languages` family is gone — failed at both seeds, and the consequence it named for itself is carried out in §The structures. Predictions 2 (B9 and B17 do not separate) and 3 (B3 lands close to its round-4 self) hold. Prediction 4 — the group still does not order — holds on `net` and fails on coexist, which is the column the pre-registration named as the one that could move the adopted direction.
+
 ## Adopted direction
 
-The ordering inside the top group is not resolved at this round's precision (§What the net column can and cannot separate). Each item below is adopted on a property that was counted directly, not on its place in the net column.
+The ordering inside the top group is not resolved on `net` at either round's precision (§What the net column can and cannot separate, §Round 5). Each item below is adopted on a property that was counted directly, not on its place in the net column.
 
 - Threshold supersession is removed from the store, not retuned. The platform retains, ranks and forgets.
 - **The decider is shown the store's retrieval for the incoming turn and returns what to store and what to retire** (B9, net 0.86). It is adopted for the property the key structures cannot match: an unmentioned memory is left alone, so facts the decider never considers survive. Widening the candidate offer deletes nothing at any setting, but it stops paying at 10: the retrieval half of its residual is closed to 98%, and what remains is judgment.
-- **Key-addressed replacement is not adopted.** Its losses are coexisting facts silently swallowed by a single key, and the coexist column that carries a third of its net moves with the narrowing example the prompt happens to give: B18, the question-shaped key definition under an example that names nothing in the data, scores coexist 0.64 and net 0.81. B14's 0.91 was measured under one example and no run repeats it under another, so it is not a figure to adopt on. The key-addressed family holds the round's two best correction numbers — B17 at 0.87 and B18 at 0.85, against B9's 0.76 — though B14 itself is not among them at 0.75, so what carries corrections is the key *definition* rather than the replacement rule. The shape should be revisited if the multi-answer case is carried by something the decider returns rather than a key it has to infer.
+- **Key-addressed replacement is not adopted, and the reason has changed.** The reason this document gave — that B14's coexist column moved with its narrowing example, so its 0.91 was not a figure to adopt on — is withdrawn (§The structures). Round 5 measures B14 at coexist 0.961 on eight families its own narrowing example names none of, separating from B3 and B9 by 0.156 against a summed half-width of 0.102 and from B17 by 0.207 against 0.108. That is the one column round 5 separates, and it is the column #361 named in advance as the one that could move this decision.
+
+  What holds the adoption where it is, is what round 5 does not show. `net` still does not order the group: B14's leads of 0.052 to 0.062 sit inside summed half-widths of 0.065 to 0.067, and B14 against B17 is unresolvable there at any coexist probe count, because the corrected and control families floor that width. Latest-wins and control separate nothing. And B14's coexist lead is carried by two families of eight — `instrument` +0.479 and `volunteer` +0.250 over the best other structure, the remaining six ties or +0.021 — so what is established is that B14 preserves those two better, not that it preserves coexisting values better across the board. The key-addressed family also holds the round's two best correction numbers — B17 at 0.87 and B18 at 0.85, against B9's 0.76 — though B14 itself is not among them at 0.75, so what carries corrections is the key *definition* rather than the replacement rule.
+
+  B9 therefore stays adopted, on the property stated in the bullet above rather than on any column round 5 measured. Whether the coexist separation should change what ships is a question for its own issue; this record does not decide it.
 - **The question-shaped key definition is worth keeping on its evidence.** Its correction gain is example-independent — latest-wins 0.87 and 0.85 across two unrelated examples, no write suppression, and keys naming a single-valued answer down to 2 under B17 from B14's 23 — and it is the round's best correction result. It is an improvement to the write vocabulary, not to the store shape.
 - Claim links, append-only read-time resolution, a main-model-written field, and neighbourhood rewrite are rejected.
 - The write protocol keeps an explicit retire list. Silence must mean no change.
@@ -195,11 +263,11 @@ The ordering inside the top group is not resolved at this round's precision (§W
 - One decider model, temperature 0. The 16 judgment misses in 100 corrections under B9 are the whole headroom, and nothing here separates what a different model would do from what a different phrasing does — §What the corrected column is measuring puts the second at 0.25 across four phrasings of the same corrections.
 - 18 of the 93 judgeable corrections are in categories where a person can hold two values at once, so they are corrections only because the template announces them (§What the corrected column is measuring). Every structure is scored on the same 18, so the ranking is not distorted, but the corrected column is not purely a measure of judgment.
 - Every structure ran on embeddings truncated to 512 dimensions, with the same embedder. The threshold result was re-measured at the native 1536 and does not depend on the truncation; the structure scores were not re-run at full dimension.
-- **A probe value is credited on a substring match.** `harness/round4/scoring.py` tests `value in row.lower()`, so `Zed` is credited by "Vera has since standardized on Python.", `fish` by "Maria is allergic to shellfish." — a coexist statement scoring a corrected `shell` probe — and `tea` by "team" and by "instead". Counting the credits that hold only as a substring, replayed on seed 7: B9 2, B14 2, B17 3, all in the corrected family, some crediting the new value and some holding the old one present. It is systematic rather than random and it favours structures that write more rows, but at ±0.083 on `net` it moves nothing in this document, so round 4 is not rescored (#371). Round 5 credits a value only where a row states it as a whole word, and fails its dataset check if a value it adds sits inside another value or inside the fixed sentence vocabulary.
-- B9, B10, B11, B15, B16, B17, B18 and the claim graph ran on one seed. B14, B12 and B1 through B7 ran on two. B14's two seeds agree with each other; agreement across seeds does not detect an effect that is in the instruction rather than the data.
-- **The coexist set does not vary with the seed.** `harness/round4/dataset.py` builds it from `PERSONS[:4]` and a module-level `COEXIST` constant, so the 12 coexist probes and the 28 fact turns behind them are identical under every seed. Replication redraws the corrected, control and distractor assignments around a fixed coexist set; it never draws a second one. B14's coexist 1.00 "on two seeds" is one measurement reported twice, which is the mechanical reason seed agreement says nothing about the narrowing example.
-- The coexist probe set is 28 values in three families, and one family is 12 of them, carried by 4 of the 12 coexist probes, so losing that one family moves the column by 0.33. One probe is 8.3% of the column, against 1% for a corrected probe, because `net` weights the three families equally. A larger and flatter coexist set, redrawn per seed, would make the metric harder to move this way.
-- **The coexist column is also the noisiest, on data that does not change.** B12 scores coexist 0.61 on seed 7 and 0.44 on seed 11 against the identical coexist set, so 0.167 of that column is the surrounding store rather than the probes. A fixed, small, high-variance measurement carries a third of `net`.
+- **A probe value is credited on a substring match.** `harness/round4/scoring.py` tests `value in row.lower()`, so `Zed` is credited by "Vera has since standardized on Python.", `fish` by "Maria is allergic to shellfish." — a coexist statement scoring a corrected `shell` probe — and `tea` by "team" and by "instead". Counting the credits that hold only as a substring, replayed on seed 7: B9 2, B14 2, B17 3, all in the corrected family, some crediting the new value and some holding the old one present. It is systematic rather than random and it favours structures that write more rows, but at ±0.083 on `net` it moves nothing in this document, so round 4 is not rescored (#371). **Answered for round 5**, which credits a value only where a row states it as a whole word and fails its dataset check if a value it adds sits inside another value or inside the fixed sentence vocabulary; round 4's figures above are still measured under the substring rule.
+- B9, B10, B11, B15, B16, B17, B18 and the claim graph ran on one seed in round 4. B14, B12 and B1 through B7 ran on two. B14's two seeds agree with each other; agreement across seeds does not detect an effect that is in the instruction rather than the data. **Answered for B9 and B17 by round 5**, which runs both on two seeds against a coexist set that is redrawn each time.
+- **The coexist set does not vary with the seed. Answered by round 5.** `harness/round4/dataset.py` builds it from `PERSONS[:4]` and a module-level `COEXIST` constant, so the 12 coexist probes and the 28 fact turns behind them are identical under every seed. Replication redraws the corrected, control and distractor assignments around a fixed coexist set; it never draws a second one. B14's coexist 1.00 "on two seeds" is one measurement reported twice. Round 5 draws the coexist set per seed, so its two seeds are two measurements: the answer is in §Round 5, and it is that B14's coexist survives the redraw at 0.961.
+- **Answered by round 5.** The coexist probe set is 28 values in three families, and one family is 12 of them, carried by 4 of the 12 coexist probes, so losing that one family moves the column by 0.33. One probe is 8.3% of the column, against 1% for a corrected probe, because `net` weights the three families equally. Round 5 is the larger and flatter set this bullet asked for: 64 probes over eight families, each family an eighth of the column and each probe 1.6% of it.
+- **The coexist column is also the noisiest, on data that does not change. Answered by round 5.** B12 scores coexist 0.61 on seed 7 and 0.44 on seed 11 against the identical coexist set, so 0.167 of that column is the surrounding store rather than the probes. A fixed, small, high-variance measurement carries a third of `net`. On round 5's redrawn set the coexist column is the quietest of the three between seeds — 0.016 to 0.049 across the four structures, against 0.020 to 0.080 on latest-wins and 0.000 to 0.075 on control.
 - **The measured seed movement agrees with the computed interval.** B12 moves 0.049 on net between its two seeds and B14 moves 0.005, both inside what §What the net column can and cannot separate allows. The two lines of evidence — sampling error computed from the probe counts, and movement observed between seeds — give the same answer about what the ranking can carry.
 - A structure's first score measures the attempt, not the idea: B5 to B12 to B14 is one structure whose two diagnosed defects were in what the decider was shown. The claim graph is unranked: its decider stored 85 items against the 288 facts the stream states before any correction, so the structure was never exercised.
 
@@ -237,6 +305,28 @@ The B15, B16, B17 and B18 rows in §The structures cannot be regenerated by any 
 
 `OPENAI_API_KEY` required. Results land in `results_round4/`; embeddings and decider replies are cached beside the harness, so a re-run costs nothing after the first — but only against the cache files that produced these results. A replay depends on the exact stored vectors, not merely on the cache holding the same sentences: candidate order decides what the decider is shown, and adjacent candidates are routinely within 1e-5 of each other in cosine, while the embedding API is not bitwise deterministic across calls. Re-embedding 384 of the sentences from the same model moved vectors by about 1e-4 and diverged B9's trajectory at turn 127 of 488. A cache rebuilt rather than kept reproduces this round only by luck. `EMBED_DIMS` defaults to 512 and caches each dimension separately, so the first run at another dimension re-embeds and writes its own result files. The rounds 1–3 runners are `harness/creation_runner.py`, `harness/real_runner.py` and `harness/real_new_runner.py`.
 
-`python3 harness/round4/claim_sources.py` reads every figure in this document, names the committed file behind it, and fails if the two disagree. It also lists the claims no committed file carries, and the disagreements already recorded. It needs no key and writes nothing.
+Round 5 is eight runs, one structure and seed per invocation:
 
-`python3 harness/round5/dataset_check.py` checks the round-5 dataset, its value vocabulary and its match rule. It needs no key and writes nothing.
+```
+cd docs/experiments/memory-creation
+python3 harness/round5/dataset_check.py
+python3 harness/round5/runner.py DeciderNeighbors
+python3 harness/round5/runner.py DeciderNeighborsWide
+python3 harness/round5/runner.py KeyUpsertPluralAware
+python3 harness/round5/runner.py KeyUpsertQuestionKey
+SEED=11 python3 harness/round5/runner.py DeciderNeighbors
+SEED=11 python3 harness/round5/runner.py DeciderNeighborsWide
+SEED=11 python3 harness/round5/runner.py KeyUpsertPluralAware
+SEED=11 python3 harness/round5/runner.py KeyUpsertQuestionKey
+python3 harness/round5/precision.py
+python3 harness/round5/correction_categories.py
+```
+
+Results land in `results_round5/`. Only the runner needs a key: `dataset_check.py` makes no call, `precision.py` reads the committed results, and `correction_categories.py` replays them from the cache with live calls refused.
+
+Two registers read the figures in this document against the files behind them, name the committed source of each, and fail if the two disagree. Both need no key and write nothing.
+
+```
+python3 harness/round4/claim_sources.py
+python3 harness/round5/claim_sources.py
+```

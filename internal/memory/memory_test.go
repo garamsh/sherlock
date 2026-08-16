@@ -225,18 +225,13 @@ func TestCompress_RejectsSemanticInput(t *testing.T) {
 	require.ErrorIs(t, err, memory.ErrNotEpisodic)
 }
 
-// TestStore_SupersedesHighlySimilarPredecessor pins ADR 0006
-// supersession on insert: an add whose embedding cosine with the most
-// similar active memory reaches SupersessionSimilarity takes over — the
-// predecessor archives with superseded_by/valid_to set, never
-// hard-deleted.
-func TestStore_SupersedesHighlySimilarPredecessor(t *testing.T) {
-	path := filepath.Join(t.TempDir(), "memory.db")
-	st, err := sqlite.Open(path)
-	require.NoError(t, err)
-	svc := memory.NewService(st, memory.NewHashingEmbedder(), memory.NewConcatSummarizer(),
-		memory.WithClock(func() time.Time { return now }))
-	t.Cleanup(func() { assert.NoError(t, svc.Close()) })
+// TestStore_ExactRestatementKeepsBoth pins that an insert retires
+// nothing, even for the case supersession on insert was built for: a
+// second write of the very same sentence. Identity is not inferred from
+// similarity (ADR 0006 §Decision, ADR 0018), so the store has nothing
+// to decide with and adds.
+func TestStore_ExactRestatementKeepsBoth(t *testing.T) {
+	svc := newService(t)
 
 	oldID := storeMemory(t, svc, "the release train leaves on monday", "semantic", 0.7)
 	res, err := svc.Store(context.Background(), memory.StoreInput{
@@ -246,38 +241,26 @@ func TestStore_SupersedesHighlySimilarPredecessor(t *testing.T) {
 		Source:          "test",
 	})
 	require.NoError(t, err)
-	assert.Equal(t, oldID, res.SupersededID, "the near-duplicate supersedes in place")
+	assert.Zero(t, res.SupersededID, "an insert retires nothing")
 	assert.NotEqual(t, oldID, res.ID)
 
 	results := search(t, svc, "release train")
-	require.Len(t, results, 1, "only the newest version stays active")
-	assert.Equal(t, res.ID, results[0].ID)
-
-	db, err := sql.Open("sqlite", path)
-	require.NoError(t, err)
-	defer db.Close()
-	var supersededBy int64
-	var validTo int64
-	require.NoError(t, db.QueryRow(
-		`SELECT superseded_by, valid_to FROM memories_archive WHERE id = ?`, oldID,
-	).Scan(&supersededBy, &validTo))
-	assert.Equal(t, res.ID, supersededBy, "the archived predecessor points at its replacement")
-	assert.Equal(t, now.Unix(), validTo)
+	require.Len(t, results, 2, "both versions stay active")
 }
 
-// TestStore_CorrectionRestatementSupersedes pins issue #324: a
-// correction-shaped restatement ("X … was replaced by Y") adds enough
-// narrative tokens to dilute the hashing embedder's cosine to ~0.67,
-// below the pre-calibration threshold, so two contradictory versions of
-// one fact stayed active. With SupersessionSimilarity calibrated to the
-// hashing embedder's distribution the correction supersedes in place.
-func TestStore_CorrectionRestatementSupersedes(t *testing.T) {
-	path := filepath.Join(t.TempDir(), "memory.db")
-	st, err := sqlite.Open(path)
-	require.NoError(t, err)
-	svc := memory.NewService(st, memory.NewHashingEmbedder(), memory.NewConcatSummarizer(),
-		memory.WithClock(func() time.Time { return now }))
-	t.Cleanup(func() { assert.NoError(t, svc.Close()) })
+// TestStore_CorrectionCoexistsWithWhatItCorrects states the cost of
+// removing supersession on insert (#529), so it is visible in the suite
+// and not only in prose: until the addressed store lands (#336 step 2)
+// a correction sits beside the value it corrects instead of replacing
+// it.
+//
+// That is the accumulating direction. ADR 0018 §Where a writeback must
+// err prefers it: the next correct write at the address repairs it,
+// where the destroying direction — which is what the threshold produced
+// once writes carried their address in the content — repairs at 0.000
+// and carries its damage for the rest of the span.
+func TestStore_CorrectionCoexistsWithWhatItCorrects(t *testing.T) {
+	svc := newService(t)
 
 	oldID := storeMemory(t, svc,
 		"A main.go file with a greeting program has been created in the agent-test project.",
@@ -290,28 +273,22 @@ func TestStore_CorrectionRestatementSupersedes(t *testing.T) {
 		Source:          "test",
 	})
 	require.NoError(t, err)
-	assert.Equal(t, oldID, res.SupersededID,
-		"the correction restatement supersedes its predecessor at hashing-embedder similarity")
-	assert.NotEqual(t, oldID, res.ID)
+	assert.Zero(t, res.SupersededID, "the correction does not retire what it corrects")
 
 	results := search(t, svc, "greeting program agent-test")
-	require.Len(t, results, 1, "only the corrected version stays active")
-	assert.Equal(t, res.ID, results[0].ID)
-
-	db, err := sql.Open("sqlite", path)
-	require.NoError(t, err)
-	defer db.Close()
-	var supersededBy int64
-	require.NoError(t, db.QueryRow(
-		`SELECT superseded_by FROM memories_archive WHERE id = ?`, oldID,
-	).Scan(&supersededBy))
-	assert.Equal(t, res.ID, supersededBy,
-		"the archived predecessor points at the correction")
+	ids := make([]int64, 0, len(results))
+	for _, m := range results {
+		ids = append(ids, m.ID)
+	}
+	assert.Contains(t, ids, oldID, "the corrected value is still there — the cost, stated")
+	assert.Contains(t, ids, res.ID)
 }
 
-// TestStore_DissimilarInsertKeepsBoth pins the other side of the
-// supersession threshold: an add with no highly similar active memory
-// inserts a fresh row and supersedes nothing.
+// TestStore_DissimilarInsertKeepsBoth pins the unrelated-content case:
+// an add that shares nothing with what is already stored inserts a
+// fresh row and retires nothing. It held before supersession on insert
+// was removed and holds after, which is what makes it the control for
+// the two tests above.
 func TestStore_DissimilarInsertKeepsBoth(t *testing.T) {
 	svc := newService(t)
 	oldID := storeMemory(t, svc, "the release train leaves on monday", "semantic", 0.7)
@@ -758,4 +735,40 @@ func TestCompress_HardCapsOversizedSingleContent(t *testing.T) {
 	require.Len(t, active, 1)
 	assert.Equal(t, memory.SummaryMaxLen, len(active[0].Content),
 		"a single oversized original is hard-capped to one parent's length")
+}
+
+// TestStore_DifferentAddressesUnderOneSubjectCoexist pins #529: two
+// facts about one subject that answer different questions both survive
+// a write. Both are joins — ADR 0018 §Where a writeback must err makes
+// join the direction the system errs toward — so neither may destroy
+// the other.
+//
+// The contents are what the store actually holds since #523: the
+// addressed sentence internal/gateway/writeback.go's sentenceOf
+// renders, "<subject> — <question> <value>". That shared prefix is a
+// large fraction of a short fact's tokens, which is what lifted cosine
+// past the old supersession threshold for pairs with nothing in common
+// but their subject. The embedder is the runtime's default.
+func TestStore_DifferentAddressesUnderOneSubjectCoexist(t *testing.T) {
+	svc := newService(t)
+
+	telescopeID := storeMemory(t, svc,
+		"Dana — what is her favorite telescope the Newtonian", "semantic", 0.7)
+	res, err := svc.Store(context.Background(), memory.StoreInput{
+		Content:         "Dana — what is her favorite eyepiece the wide-angle",
+		Type:            memory.TypeSemantic,
+		ImportanceScore: 0.7,
+		Source:          "test",
+	})
+	require.NoError(t, err)
+	assert.Zero(t, res.SupersededID,
+		"a write at another address must not retire a fact answering a different question")
+
+	active := search(t, svc, "Dana")
+	ids := make([]int64, 0, len(active))
+	for _, m := range active {
+		ids = append(ids, m.ID)
+	}
+	assert.Contains(t, ids, telescopeID, "the earlier fact is still active")
+	assert.Contains(t, ids, res.ID, "the later fact is still active")
 }

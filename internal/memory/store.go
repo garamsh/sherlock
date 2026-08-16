@@ -14,20 +14,34 @@ type StoreInput struct {
 	Source          string
 }
 
-// StoreResult reports the new memory, the active predecessor it
-// superseded (0 when none), and any entries evicted to keep the active
-// index within capacity.
+// StoreResult reports the new memory and any entries evicted to keep
+// the active index within capacity. SupersededID is always 0: an insert
+// retires nothing (see Store). It stays because
+// docs/experiments/memory-retrieval/'s harness reads it to report what
+// the mechanism did while it existed.
 type StoreResult struct {
 	ID           int64
 	SupersededID int64
 	EvictedIDs   []int64
 }
 
-// Store implements the store operation, with supersession on insert
-// (ADR 0006): when the new memory's most similar active predecessor has
-// an embedding cosine of at least SupersessionSimilarity, the new row
-// takes over and the predecessor archives with superseded_by/valid_to
-// set — the newest version of a fact is the version that lives.
+// Store implements the store operation. An insert adds; it never
+// retires an existing memory.
+//
+// Identity is not inferred from similarity (ADR 0006 §Decision, ADR
+// 0018): no threshold separates a correction from two facts that must
+// both survive, because on the shipped embedder the correction family's
+// median cosine sits below the coexisting family's minimum
+// (docs/experiments/memory-retrieval/). Supersession on insert read
+// that cosine anyway and retired the loser, which destroyed facts that
+// answer different questions about one subject once writes carried
+// their address in the content (#529).
+//
+// Until the addressed store lands (#336 step 2) the cost is that a
+// correction coexists with the value it corrects rather than replacing
+// it. That is the accumulating direction, which the next correct write
+// repairs — ADR 0018 §Where a writeback must err prefers it to the
+// destroying direction, which nothing repairs.
 func (s *service) Store(ctx context.Context, in StoreInput) (StoreResult, error) {
 	if err := validateNew(in.Content, in.Type, in.ImportanceScore); err != nil {
 		return StoreResult{}, err
@@ -35,14 +49,6 @@ func (s *service) Store(ctx context.Context, in StoreInput) (StoreResult, error)
 	emb, err := s.embedder.Embed(ctx, in.Content)
 	if err != nil {
 		return StoreResult{}, fmt.Errorf("embed: %w", err)
-	}
-	matches, err := s.Similar(ctx, in.Content, 1)
-	if err != nil {
-		return StoreResult{}, fmt.Errorf("supersession lookup: %w", err)
-	}
-	var superseded int64
-	if len(matches) > 0 && cosine(emb, matches[0].Embedding) >= SupersessionSimilarity {
-		superseded = matches[0].ID
 	}
 	now := s.clock()
 	id, err := s.store.Insert(ctx, Memory{
@@ -56,16 +62,11 @@ func (s *service) Store(ctx context.Context, in StoreInput) (StoreResult, error)
 	if err != nil {
 		return StoreResult{}, fmt.Errorf("insert: %w", err)
 	}
-	if superseded > 0 {
-		if err := s.store.Archive(ctx, superseded, id, now); err != nil {
-			return StoreResult{}, fmt.Errorf("archive superseded %d: %w", superseded, err)
-		}
-	}
 	evicted, err := s.enforceCapacity(ctx)
 	if err != nil {
 		return StoreResult{}, err
 	}
-	return StoreResult{ID: id, SupersededID: superseded, EvictedIDs: evicted}, nil
+	return StoreResult{ID: id, EvictedIDs: evicted}, nil
 }
 
 // enforceCapacity evicts lowest-score-first to the archive until the

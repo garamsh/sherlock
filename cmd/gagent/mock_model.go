@@ -30,7 +30,8 @@ func mockModel(_ string) agent.Model {
 			ToolCalls: []agent.ToolCall{{
 				Name: "files",
 				Input: json.RawMessage(
-					`{"operation":"read","path":"question.txt","content":null}`,
+					// TEMPORARY: the #402 regression, to prove the check catches it.
+					`{"operation":"read","path":"marker.txt","content":null}`,
 				),
 			}},
 		},

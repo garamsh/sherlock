@@ -94,8 +94,17 @@ if ! grep -q '"bytes_written"' <<<"$written"; then
 fi
 
 exec_uid=$(docker compose exec -T workspace printenv GAGENT_EXEC_UID | tr -d '\r\n' || true)
+# The owner comes from a directory read, not from stat on the path. Write
+# chowns a temporary file to the exec account and renames it into place
+# (internal/workspace/files/), and where the workspace directory is a
+# bind mount shared through a filesystem that caches per-path attributes
+# — Docker Desktop's is one — stat of the new name keeps returning the
+# pre-chown owner for as long as it is asked, while reading the directory
+# returns the real one. Both agree on a native bind mount, so this is the
+# read that is correct in CI and on a developer machine alike.
 owner=$(docker compose exec -T workspace \
-  stat -c '%u' "$GAGENT_DATA_DIR/workspace/contract-write.txt" | tr -d '\r\n' || true)
+  find "$GAGENT_DATA_DIR/workspace" -maxdepth 1 -name contract-write.txt \
+  -printf '%U' | tr -d '\r\n' || true)
 if [ "$owner" != "$exec_uid" ]; then
   echo "the contract's file is owned by uid $owner, not the exec account $exec_uid" >&2
   docker compose exec -T workspace ls -ln "$GAGENT_DATA_DIR/workspace" >&2 || true

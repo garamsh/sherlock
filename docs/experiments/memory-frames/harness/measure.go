@@ -43,6 +43,9 @@ type ProbeResult struct {
 	Superseded   int `json:"superseded"`
 	Stale        int `json:"stale_returned"`
 	ContextChars int `json:"context_chars"`
+	// Scanned is how much of what the frame holds it read to answer this
+	// question, in the unit its Size reports.
+	Scanned int `json:"scanned"`
 }
 
 // ClassResult is one fact class at one year.
@@ -61,6 +64,7 @@ type YearResult struct {
 	Recall       Figure        `json:"recall"`
 	Stale        Figure        `json:"stale_returned"`
 	ContextChars Figure        `json:"context_chars"`
+	Scanned      Figure        `json:"scanned"`
 	Classes      []ClassResult `json:"classes"`
 }
 
@@ -141,7 +145,7 @@ func Measure(ctx context.Context, w Workload, frameName, arm string, counter *Em
 // learns which arm it is in.
 func observed(t Turn, arm string) Turn {
 	if arm == armText {
-		t.Fact, t.Ask = nil, nil
+		t.Fact, t.Ask, t.Declared = nil, nil, ""
 	}
 	return t
 }
@@ -161,15 +165,16 @@ func ask(ctx context.Context, frame Frame, w Workload, year int, arm string) ([]
 		live, stale := thread.TruthAt(year)
 		result := ProbeResult{
 			Year: year, Class: thread.Class, Subject: thread.Subject, Attribute: thread.Attribute,
-			Expected: len(live), Superseded: len(stale), ContextChars: len(injected),
+			Expected: len(live), Superseded: len(stale),
+			ContextChars: len(injected.Text), Scanned: injected.Scanned,
 		}
 		for _, value := range live {
-			if Mentions(injected, value) {
+			if Mentions(injected.Text, value) {
 				result.Found++
 			}
 		}
 		for _, value := range stale {
-			if Mentions(injected, value) {
+			if Mentions(injected.Text, value) {
 				result.Stale = 1
 				break
 			}
@@ -187,10 +192,11 @@ func ask(ctx context.Context, frame Frame, w Workload, year int, arm string) ([]
 // reports, as a whole and per class.
 func summarizeYear(year int, probes []ProbeResult) YearResult {
 	out := YearResult{Year: year, Probes: len(probes)}
-	var recall, stale, chars []float64
+	var recall, stale, chars, scanned []float64
 	for _, p := range probes {
 		recall = append(recall, ratio(p.Found, p.Expected))
 		chars = append(chars, float64(p.ContextChars))
+		scanned = append(scanned, float64(p.Scanned))
 		if p.Superseded > 0 {
 			stale = append(stale, float64(p.Stale))
 		}
@@ -198,6 +204,7 @@ func summarizeYear(year int, probes []ProbeResult) YearResult {
 	out.Recall = NewFigure(recall)
 	out.Stale = NewFigure(stale)
 	out.ContextChars = NewFigure(chars)
+	out.Scanned = NewFigure(scanned)
 	for _, class := range classNames {
 		var classRecall, classStale []float64
 		for _, p := range probes {

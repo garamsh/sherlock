@@ -109,9 +109,9 @@ func renderRun(b *strings.Builder, r Run) {
 // exists to carry.
 func renderYears(b *strings.Builder, r Run) {
 	fmt.Fprintf(b, "### What each frame answered, by year\n\n")
-	fmt.Fprintf(b, "| frame | arm | year | asked | recall | %s | stale returned | context chars |\n",
+	fmt.Fprintf(b, "| frame | arm | year | asked | recall | %s | stale returned | context chars | units read |\n",
 		strings.Join(classNames, " | "))
-	fmt.Fprintf(b, "|---|---|---|---|---|%s---|---|\n", strings.Repeat("---|", len(classNames)))
+	fmt.Fprintf(b, "|---|---|---|---|---|%s---|---|---|\n", strings.Repeat("---|", len(classNames)))
 	for _, f := range r.Frames {
 		for _, y := range f.Years {
 			byClass := map[string]ClassResult{}
@@ -127,9 +127,9 @@ func renderYears(b *strings.Builder, r Run) {
 				}
 				cells = append(cells, figure(c.Recall))
 			}
-			fmt.Fprintf(b, "| `%s` | `%s` | %d | %d | %s | %s | %s | %s |\n",
+			fmt.Fprintf(b, "| `%s` | `%s` | %d | %d | %s | %s | %s | %s | %s |\n",
 				f.Frame, f.Arm, y.Year, y.Probes, figure(y.Recall), strings.Join(cells, " | "),
-				figure(y.Stale), figureAt(y.ContextChars, 0))
+				figure(y.Stale), figureAt(y.ContextChars, 0), figureAt(y.Scanned, 1))
 		}
 	}
 	fmt.Fprintln(b)

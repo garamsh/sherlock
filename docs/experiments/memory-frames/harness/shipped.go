@@ -91,17 +91,25 @@ func (f *shippedFrame) Observe(ctx context.Context, t Turn) error {
 
 // Context returns what a turn's recall would inject: the shipped hybrid
 // search on the turn's text, bounded by the shipped token budget.
-func (f *shippedFrame) Context(ctx context.Context, t Turn) (string, error) {
+//
+// What it reads is the whole active index. The ranking core scores every
+// active memory against the query before any bound applies, so the count
+// below is the active count, read again here only to report it.
+func (f *shippedFrame) Context(ctx context.Context, t Turn) (Injected, error) {
 	f.now = t.At
 	recalled, err := f.svc.Recall(ctx, t.Text, 0)
 	if err != nil {
-		return "", fmt.Errorf("recall at turn %d: %w", t.Index, err)
+		return Injected{}, fmt.Errorf("recall at turn %d: %w", t.Index, err)
+	}
+	active, err := f.store.Active(ctx)
+	if err != nil {
+		return Injected{}, fmt.Errorf("list active at turn %d: %w", t.Index, err)
 	}
 	contents := make([]string, 0, len(recalled))
 	for _, m := range recalled {
 		contents = append(contents, m.Content)
 	}
-	return strings.Join(contents, "\n"), nil
+	return Injected{Text: strings.Join(contents, "\n"), Scanned: len(active)}, nil
 }
 
 // Size counts the active index, which is what a query reaches; the archive

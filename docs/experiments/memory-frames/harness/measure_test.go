@@ -20,8 +20,8 @@ func (f *transcriptFrame) Observe(_ context.Context, t Turn) error {
 	return nil
 }
 
-func (f *transcriptFrame) Context(context.Context, Turn) (string, error) {
-	return strings.Join(f.lines, "\n"), nil
+func (f *transcriptFrame) Context(context.Context, Turn) (Injected, error) {
+	return Injected{Text: strings.Join(f.lines, "\n"), Scanned: len(f.lines)}, nil
 }
 
 func (f *transcriptFrame) Size(context.Context) (Size, error) {
@@ -33,10 +33,10 @@ func (f *transcriptFrame) Close() error { return nil }
 // silentFrame answers every turn with nothing.
 type silentFrame struct{}
 
-func (silentFrame) Observe(context.Context, Turn) error           { return nil }
-func (silentFrame) Context(context.Context, Turn) (string, error) { return "", nil }
-func (silentFrame) Size(context.Context) (Size, error)            { return Size{}, nil }
-func (silentFrame) Close() error                                  { return nil }
+func (silentFrame) Observe(context.Context, Turn) error             { return nil }
+func (silentFrame) Context(context.Context, Turn) (Injected, error) { return Injected{}, nil }
+func (silentFrame) Size(context.Context) (Size, error)              { return Size{}, nil }
+func (silentFrame) Close() error                                    { return nil }
 
 // measureWith runs a frame the registry does not build, which is also the
 // check that the seam admits a structure neither shipped nor document.
@@ -199,4 +199,28 @@ func TestSummarizeYear_ReportsAClassOnlyWhereItWasAsked(t *testing.T) {
 	assert.Equal(t, classReplaced, out.Classes[1].Class)
 	assert.Equal(t, 1.0, out.Classes[1].Stale.Mean)
 	assert.InDelta(t, 2.0/3.0, out.Recall.Mean, 1e-9)
+}
+
+// Three structurally different stores taking the same arity decision answer
+// the same. The claim carries the round's headline, so it fails here if it
+// stops being true rather than being eyeballed off a table.
+func TestMeasure_GivesOneArityRuleTheSameAnswerWhateverStoreTakesIt(t *testing.T) {
+	w, err := GenerateWorkload(7, Params{Years: 10, SessionsPerYear: 8, TurnsPerSession: 12, ThreadsPerClass: 4})
+	require.NoError(t, err)
+
+	scored := func(name string) []ProbeResult {
+		result, err := Measure(context.Background(), w, name, armOracle, NewEmbedCounter())
+		require.NoError(t, err)
+		// What each store reads to answer is where they differ, so it is
+		// not part of the answer they are being compared on.
+		out := make([]ProbeResult, len(result.Probes))
+		for i, p := range result.Probes {
+			p.Scanned = 0
+			out[i] = p
+		}
+		return out
+	}
+	addressed := scored(frameAttributeSingle)
+	assert.Equal(t, addressed, scored(frameInterval))
+	assert.Equal(t, addressed, scored(frameLog))
 }

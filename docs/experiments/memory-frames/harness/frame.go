@@ -6,8 +6,16 @@ import (
 	"time"
 )
 
-// Fact is one assertion in extracted form: a subject, an attribute and a
-// value. It carries nothing else on purpose.
+// Address is a subject and one of its attributes: where a fact about that
+// subject is held by a structure that addresses facts rather than searching
+// for them.
+type Address struct {
+	Subject   string `json:"subject"`
+	Attribute string `json:"attribute"`
+}
+
+// Fact is one assertion in extracted form: an address and a value. It
+// carries nothing else on purpose.
 //
 // It does not say whether the attribute holds one value or several. Arity
 // is the question the coexisting classes exist to ask, and a design handed
@@ -15,21 +23,29 @@ import (
 // replaces either: deciding that a new value supersedes an old one, or
 // stands beside it, is what separates one structure from another.
 type Fact struct {
-	Subject   string `json:"subject"`
-	Attribute string `json:"attribute"`
-	Value     string `json:"value"`
+	Address
+	Value string `json:"value"`
 }
 
-// Turn is one observation a frame receives. Text is what was said. Fact is
-// the same assertion already extracted, present only in the oracle arm and
-// only on a turn that carries one; a frame may read either, both, or
-// neither.
+// Turn is one observation a frame receives. Text is what was said.
+//
+// Fact and Ask are the same turn already extracted, present only in the
+// oracle arm: Fact on a turn that asserts something, Ask on a turn that
+// questions. A frame may read them, the text, or neither.
+//
+// Ask carries the address and never the value, for the reason Fact carries
+// no arity: it says where to look and not what is there. It exists because
+// a structure that addresses facts has to turn a question into an address,
+// and with no model in the run it would otherwise have to parse the
+// question — which would make the comparison a comparison of parsers on the
+// read side, having removed exactly that from the write side.
 type Turn struct {
 	Index int
 	Day   int
 	At    time.Time
 	Text  string
 	Fact  *Fact
+	Ask   *Address
 }
 
 // Size is what a frame holds. Units counts whatever the frame treats as one
@@ -69,15 +85,23 @@ type Frame interface {
 
 // The frames measured. shipped is internal/memory as it runs in production;
 // document keeps no store at all and is what proves the seam does not
-// encode the shipped design's shape.
+// encode the shipped design's shape; the three attribute frames hold a fact
+// at its address and differ only in how many values one address holds.
 const (
-	frameShipped  = "shipped"
-	frameDocument = "document"
+	frameShipped          = "shipped"
+	frameDocument         = "document"
+	frameAttributeSingle  = "attribute-single"
+	frameAttributeMulti   = "attribute-multi"
+	frameAttributeLearned = "attribute-learned"
+	frameAttributeCued    = "attribute-cued"
 )
 
 // frameNames is the order every result file and table reports the frames
 // in.
-var frameNames = []string{frameShipped, frameDocument}
+var frameNames = []string{
+	frameShipped, frameDocument,
+	frameAttributeSingle, frameAttributeMulti, frameAttributeLearned, frameAttributeCued,
+}
 
 // NewFrame builds a frame by name. dir is a directory the frame may keep
 // state in; a frame that keeps none ignores it.
@@ -87,7 +111,15 @@ func NewFrame(name, dir string, counter *EmbedCounter) (Frame, error) {
 		return NewShippedFrame(dir, counter)
 	case frameDocument:
 		return NewDocumentFrame(), nil
+	case frameAttributeSingle:
+		return NewAttributeFrame(aritySingle), nil
+	case frameAttributeMulti:
+		return NewAttributeFrame(arityMulti), nil
+	case frameAttributeLearned:
+		return NewAttributeFrame(arityLearned), nil
+	case frameAttributeCued:
+		return NewAttributeFrame(arityCued), nil
 	default:
-		return nil, fmt.Errorf("unknown frame %q (want %q or %q)", name, frameShipped, frameDocument)
+		return nil, fmt.Errorf("unknown frame %q (want one of %v)", name, frameNames)
 	}
 }

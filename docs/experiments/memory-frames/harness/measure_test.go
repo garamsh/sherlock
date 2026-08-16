@@ -40,13 +40,13 @@ func (silentFrame) Close() error                                  { return nil }
 
 // measureWith runs a frame the registry does not build, which is also the
 // check that the seam admits a structure neither shipped nor document.
-func measureWith(t *testing.T, frame Frame, w Workload) FrameResult {
+func measureWith(t *testing.T, frame Frame, w Workload, arm string) FrameResult {
 	t.Helper()
 	out := FrameResult{}
 	year := 1
 	ctx := context.Background()
 	checkpoint := func() {
-		probes, size, err := ask(ctx, frame, w, year)
+		probes, size, err := ask(ctx, frame, w, year, arm)
 		require.NoError(t, err)
 		out.Probes = append(out.Probes, probes...)
 		out.Years = append(out.Years, summarizeYear(year, probes))
@@ -57,7 +57,7 @@ func measureWith(t *testing.T, frame Frame, w Workload) FrameResult {
 		for year <= w.Params.Years && turn.Day >= year*daysPerYear {
 			checkpoint()
 		}
-		require.NoError(t, frame.Observe(ctx, turn))
+		require.NoError(t, frame.Observe(ctx, observed(turn, arm)))
 	}
 	for year <= w.Params.Years {
 		checkpoint()
@@ -69,7 +69,7 @@ func TestMeasure_CreditsEveryLiveValueToAFrameThatForgetsNothing(t *testing.T) {
 	w, err := GenerateWorkload(7, smallParams())
 	require.NoError(t, err)
 
-	result := measureWith(t, &transcriptFrame{}, w)
+	result := measureWith(t, &transcriptFrame{}, w, armOracle)
 
 	require.Len(t, result.Years, w.Params.Years)
 	for _, y := range result.Years {
@@ -92,7 +92,7 @@ func TestMeasure_CreditsNothingToAFrameThatReturnsNothing(t *testing.T) {
 	w, err := GenerateWorkload(7, smallParams())
 	require.NoError(t, err)
 
-	result := measureWith(t, silentFrame{}, w)
+	result := measureWith(t, silentFrame{}, w, armOracle)
 
 	for _, y := range result.Years {
 		assert.Equal(t, 0.0, y.Recall.Mean, "year %d", y.Year)
@@ -107,7 +107,7 @@ func TestMeasure_AsksEveryAnswerableThreadAtEveryYear(t *testing.T) {
 	w, err := GenerateWorkload(7, smallParams())
 	require.NoError(t, err)
 
-	result := measureWith(t, silentFrame{}, w)
+	result := measureWith(t, silentFrame{}, w, armOracle)
 
 	var total int
 	for i, y := range result.Years {

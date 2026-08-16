@@ -104,7 +104,7 @@ func Measure(ctx context.Context, w Workload, frameName, arm string, counter *Em
 	sizeYears := SizeYears(w.Params.Years)
 	year := 1
 	checkpoint := func() error {
-		probes, size, err := ask(ctx, frame, w, year)
+		probes, size, err := ask(ctx, frame, w, year, arm)
 		if err != nil {
 			return err
 		}
@@ -123,10 +123,7 @@ func Measure(ctx context.Context, w Workload, frameName, arm string, counter *Em
 				return FrameResult{}, err
 			}
 		}
-		if arm == armText {
-			turn.Fact = nil
-		}
-		if err := frame.Observe(ctx, turn); err != nil {
+		if err := frame.Observe(ctx, observed(turn, arm)); err != nil {
 			return FrameResult{}, err
 		}
 	}
@@ -138,15 +135,26 @@ func Measure(ctx context.Context, w Workload, frameName, arm string, counter *Em
 	return out, nil
 }
 
+// observed is the turn as the arm delivers it. The oracle arm hands a frame
+// the extracted forms beside the text; the text arm hands it the text
+// alone. This is the one place an arm touches a turn, so a frame never
+// learns which arm it is in.
+func observed(t Turn, arm string) Turn {
+	if arm == armText {
+		t.Fact, t.Ask = nil, nil
+	}
+	return t
+}
+
 // ask puts every thread answerable at this year to the frame and scores
 // what comes back. A checkpoint reads the frame and never writes to it.
-func ask(ctx context.Context, frame Frame, w Workload, year int) ([]ProbeResult, Size, error) {
+func ask(ctx context.Context, frame Frame, w Workload, year int, arm string) ([]ProbeResult, Size, error) {
 	var probes []ProbeResult
 	for _, thread := range w.Threads {
 		if !thread.ProbedAt(year) {
 			continue
 		}
-		injected, err := frame.Context(ctx, Checkpoint(year, thread))
+		injected, err := frame.Context(ctx, observed(Checkpoint(year, thread), arm))
 		if err != nil {
 			return nil, Size{}, fmt.Errorf("context for %s at year %d: %w", thread.Subject, year, err)
 		}

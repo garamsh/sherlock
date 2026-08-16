@@ -106,9 +106,11 @@ func newAgentFactory(ctx context.Context, cfg config.Config, ego string, logger 
 }
 
 // buildToolRegistry loads the operator's tools directory through the
-// script-tool registry (ADR 0009 §Decision). The directory defaults to
-// ./tools; an operator can override it through the env or the tools-dir
-// config key. The registry holds each manifest's SHA-256 against the
+// script-tool registry (ADR 0009 §Decision). The directory is a resolved
+// setting like every other one, so GAGENT_TOOLS_DIR reaches it through
+// the layer that carries GAGENT_MEMORY_PATH rather than through a second
+// read of the environment. The registry holds each manifest's SHA-256
+// against the
 // operator's tools.pins set and refuses a tool that drifted from its
 // pin or that the set does not name; without the section it warns and
 // loads unpinned. The required-tool check fails closed on a missing
@@ -123,13 +125,12 @@ func newAgentFactory(ctx context.Context, cfg config.Config, ego string, logger 
 // to set any required key is the operator's misconfiguration, not a
 // tool startup error.
 func buildToolRegistry(cfg config.Config, logger *slog.Logger) (*tool.Registry, error) {
-	dir := toolDir(cfg)
 	if err := setToolEnv(cfg); err != nil {
 		return nil, err
 	}
 	registry, err := tool.NewRegistry(tool.RegistryOptions{
 		Logger:   logger,
-		Dir:      dir,
+		Dir:      cfg.ToolsDir,
 		Required: tool.DefaultRequiredTools,
 		Pins:     cfg.Tools.Pins,
 	})
@@ -154,17 +155,6 @@ func setToolEnv(cfg config.Config) error {
 		return fmt.Errorf("set GAGENT_OUTBOX_DIR: %w", err)
 	}
 	return nil
-}
-
-// toolDir is the directory the registry reads manifests from. The
-// default is ./tools (the in-tree location `make build-tools` populates
-// in place); an operator can override via the GAGENT_TOOLS_DIR env or a
-// future config key.
-func toolDir(cfg config.Config) string {
-	if dir := os.Getenv("GAGENT_TOOLS_DIR"); dir != "" {
-		return dir
-	}
-	return tool.DefaultToolsDir
 }
 
 // messageSendOutboxDir returns the directory the message_send manifest
@@ -335,7 +325,7 @@ func serveAgent(ctx context.Context, cfg config.Config, agentID, ego string) err
 		logger.Info("agent listening",
 			"op", "startup", "addr", cfg.Addr, "agent_id", agentID,
 			"memory_path", cfg.MemoryPath, "workspace_addr", cfg.WorkspaceAddr,
-			"tools_dir", toolDir(cfg),
+			"tools_dir", cfg.ToolsDir,
 			"auth", "mtls")
 		if err := srv.ListenAndServeTLS("", ""); !errors.Is(err, http.ErrServerClosed) {
 			logger.Error("https server failed", "op", "serve", "error", err)
@@ -345,7 +335,7 @@ func serveAgent(ctx context.Context, cfg config.Config, agentID, ego string) err
 		logger.Info("agent listening",
 			"op", "startup", "addr", cfg.Addr, "agent_id", agentID,
 			"memory_path", cfg.MemoryPath, "workspace_addr", cfg.WorkspaceAddr,
-			"tools_dir", toolDir(cfg),
+			"tools_dir", cfg.ToolsDir,
 			"warning", "no authentication: loopback binds only")
 		if err := srv.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
 			logger.Error("http server failed", "op", "serve", "error", err)

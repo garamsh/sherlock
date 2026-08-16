@@ -82,11 +82,17 @@ type Config struct {
 	// set (ADR 0017 §Decision: the installation list is the operator's,
 	// through config).
 	Tools ToolsConfig `mapstructure:"tools"`
+	// ToolsDir is the directory the script-tool registry reads
+	// manifests from (ADR 0009). It resolves through the same four
+	// layers as every other setting, so GAGENT_TOOLS_DIR reaches it
+	// the way GAGENT_MEMORY_PATH reaches MemoryPath.
+	ToolsDir string `mapstructure:"tools-dir"`
 }
 
 // ToolsConfig is the operator's statement about the tool tree the
-// script-tool runtime reads. The directory itself stays on
-// GAGENT_TOOLS_DIR; what lives here is what only the operator can say.
+// script-tool runtime reads: what lives here is what only the operator
+// can say. Where the tree is read from is ToolsDir, an ordinary setting
+// on Config.
 type ToolsConfig struct {
 	// Pins is the accepted tool set: tool name to the SHA-256 of that
 	// tool's canonical manifest bytes, which the agent logs for every
@@ -169,6 +175,7 @@ func Resolve(fs *pflag.FlagSet) (Config, error) {
 	v.SetDefault("addr", defaultAddr)
 	v.SetDefault("memory-path", defaultMemoryPath)
 	v.SetDefault("workspace-addr", defaultWorkspaceAddr)
+	v.SetDefault("tools-dir", tool.DefaultToolsDir)
 	v.SetDefault("model.provider", defaultModelProvider)
 	v.SetDefault("model.base-url", defaultModelBaseURL)
 	v.SetDefault("model.model", defaultModelName)

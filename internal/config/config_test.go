@@ -358,6 +358,44 @@ func TestResolveConfig_NoToolsSection(t *testing.T) {
 	assert.Nil(t, cfg.Tools.Pins)
 }
 
+// TestResolveConfig_ToolsDirDefaults pins the tools directory to the
+// same resolution every other setting gets. The empty-environment case
+// is the one that could have changed silently: the hand-rolled lookup
+// this replaced treated an empty GAGENT_TOOLS_DIR as unset, and viper
+// has to agree or a deployment that exports the variable empty would
+// start reading manifests from "".
+func TestResolveConfig_ToolsDirDefaults(t *testing.T) {
+	t.Chdir(t.TempDir())
+
+	cfg, err := config.Resolve(agentFlags(t))
+	require.NoError(t, err)
+
+	assert.Equal(t, "./tools", cfg.ToolsDir)
+}
+
+func TestResolveConfig_ToolsDirEmptyEnvFallsBack(t *testing.T) {
+	t.Chdir(t.TempDir())
+	fs := agentFlags(t)
+	t.Setenv("GAGENT_TOOLS_DIR", "")
+
+	cfg, err := config.Resolve(fs)
+	require.NoError(t, err)
+
+	assert.Equal(t, "./tools", cfg.ToolsDir,
+		"an empty GAGENT_TOOLS_DIR is unset, not a directory named the empty string")
+}
+
+func TestResolveConfig_ToolsDirEnvOverridesDefault(t *testing.T) {
+	t.Chdir(t.TempDir())
+	fs := agentFlags(t)
+	t.Setenv("GAGENT_TOOLS_DIR", "/opt/gagent/tools")
+
+	cfg, err := config.Resolve(fs)
+	require.NoError(t, err)
+
+	assert.Equal(t, "/opt/gagent/tools", cfg.ToolsDir)
+}
+
 func TestResolveConfig_InvalidConfigFileFails(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)

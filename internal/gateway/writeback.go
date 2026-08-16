@@ -20,8 +20,10 @@ const (
 	// SalienceAddSemantic is the salience of an added semantic fact.
 	SalienceAddSemantic = 0.7
 	// SalienceAddEpisodic is the salience of an added episodic
-	// observation. The context-overflow summary is what carries it;
-	// a writeback states facts, not observations of a turn.
+	// observation. No write path carries it since the writeback began
+	// stating facts rather than turns (ADR 0018); it is the tier an
+	// episodic observation would rank at, and the measurement in
+	// docs/experiments/memory-frames/ reads it as such.
 	SalienceAddEpisodic = 0.5
 )
 

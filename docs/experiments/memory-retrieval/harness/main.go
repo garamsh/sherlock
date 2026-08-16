@@ -128,8 +128,14 @@ func run() error {
 	cachePath := flag.String("cache", "",
 		"vector cache file, outside the repository; required by openai and openai512-cache")
 	measure := flag.String("measure", measureBoth, "what to measure: retrieval, separability, or both")
+	record := flag.String("record", defaultRecord(), "the record whose tables -render rewrites")
+	render := flag.Bool("render", false,
+		"rewrite the record's tables from the committed results and measure nothing")
 	flag.Parse()
 
+	if *render {
+		return renderRecord(*out, *record)
+	}
 	if *measure != measureRetrieval && *measure != measureSeparability && *measure != measureBoth {
 		return fmt.Errorf("unknown measurement %q", *measure)
 	}
@@ -170,7 +176,7 @@ func run() error {
 	}
 
 	if *measure == measureSeparability {
-		return nil
+		return renderIfRecordSeed(*seed, *out, *record)
 	}
 	if err := embedder.prefetchAll(ctx, corpusTexts(corpus)); err != nil {
 		return err
@@ -233,7 +239,17 @@ func run() error {
 		return err
 	}
 	report(result)
-	return nil
+	return renderIfRecordSeed(*seed, *out, *record)
+}
+
+// renderIfRecordSeed rewrites the record's tables after a run at the seed the
+// record reports, so a measurement cannot leave the document behind it. A run
+// at another seed writes its own result files and touches no record.
+func renderIfRecordSeed(seed int64, out, record string) error {
+	if seed != recordSeed {
+		return nil
+	}
+	return renderRecord(out, record)
 }
 
 // corpusTexts is every text the retrieval measurement embeds: the planted
@@ -301,6 +317,11 @@ func plantingFor(arm string, corpus Corpus) (Corpus, error) {
 // defaultOut is the results directory beside this harness.
 func defaultOut() string {
 	return filepath.Join("docs", "experiments", "memory-retrieval", "results")
+}
+
+// defaultRecord is the record whose tables this harness writes.
+func defaultRecord() string {
+	return filepath.Join("docs", "experiments", "memory-retrieval", "README.md")
 }
 
 func writeJSON(path string, value any) error {

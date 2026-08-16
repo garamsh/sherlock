@@ -15,17 +15,19 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// The claim register. ../README.md states figures; ../results/ and this
-// package hold what produced them. Every figure in the record is read out
-// of the record and compared with the committed value behind it, so the
-// two cannot drift: change a published figure or a result file without
-// the other and a check fails.
+// The claim register, for the figures generation does not reach. The
+// record's three result tables are written by record.go from ../results/,
+// so a cell there cannot disagree with its run and is not read back here.
+// What is left is what a generated table does not carry: an input the
+// record states from this package, a figure its prose states outside a
+// table, and — in the separability half — the claim that this harness
+// reproduces memory-creation's published figures, which is a comparison
+// with a result file this experiment does not own.
 //
-// Three registers, after harness/round4/claim_sources.py in the
+// Two registers, after harness/round4/claim_sources.py in the
 // memory-creation experiment:
 //
 //	checks     a figure read out of the README and the value it must equal
-//	unsourced  figures in the README that no committed file carries
 //	corpus     the committed corpus against the generator that claims it
 //
 // Reads committed files only; makes no API call and needs no key.
@@ -80,16 +82,6 @@ func (r *register) number(claim, stated string, found float64) {
 	require.NoError(r.t, err, claim)
 	assert.Equal(r.t, want, halfUp(found, places),
 		"%s: the record says %s, its source holds %v", claim, stated, found)
-}
-
-// halfUp rounds away from zero, the direction a reader assumes.
-func halfUp(value float64, places int) float64 {
-	factor := math.Pow(10, float64(places))
-	rounded := math.Floor(math.Abs(value)*factor+0.5) / factor
-	if value < 0 {
-		return -rounded
-	}
-	return rounded
 }
 
 func loadRun(t *testing.T) Run {
@@ -177,52 +169,6 @@ func TestRecordMethod_MatchesItsCommittedSource(t *testing.T) {
 	a = r.anchor(`appears under (\d+) other topics and its topic under (\d+) other subjects`)
 	r.number("topics a subject appears under", a[0], float64(len(topics)-1))
 	r.number("subjects a topic appears under", a[1], float64(len(subjects)-1))
-	r.report()
-}
-
-func TestRecordFigures_MatchTheirCommittedSource(t *testing.T) {
-	r := newRegister(t)
-	run := loadRun(t)
-
-	// | `hashing` | `mixed-30d` | 1,000 | 0.030 ±0.013 | ... | 29.6 ±5.8 |
-	row := regexp.MustCompile("(?m)^\\| `([a-z0-9-]+)` \\| `([a-z0-9-]+)` \\| ([\\d,]+) \\|(.*)\\|$")
-	rows := row.FindAllStringSubmatch(r.readme, -1)
-	require.Len(t, rows, len(measuredEmbedders)*len(run.Arms)*len(run.StoreSizes),
-		"the score table lost or gained a row")
-
-	for _, match := range rows {
-		size, err := strconv.Atoi(strings.ReplaceAll(match[3], ",", ""))
-		require.NoError(t, err)
-		embedded := loadRunFor(t, match[1])
-		require.Equal(t, match[1], embedded.Embedder, "a row states an embedder its file does not")
-		figures := figuresFor(t, embedded, match[2], size)
-
-		var cells []string
-		for _, cell := range strings.Split(match[4], "|") {
-			cells = append(cells, strings.TrimSpace(strings.ReplaceAll(cell, "*", "")))
-		}
-		named := []struct {
-			name string
-			fig  Figure
-		}{
-			{"recall@1", figures.RecallAt1}, {"precision@1", figures.PrecisionAt1},
-			{"recall@5", figures.RecallAt5}, {"precision@5", figures.PrecisionAt5},
-			{"recall@10", figures.RecallAtLimit}, {"precision@10", figures.PrecisionAtLimit},
-			{"recall@budget", figures.RecallAtBudget}, {"precision@budget", figures.PrecisionAtBudget},
-			{"returned@budget", figures.ReturnedAtBudget},
-			{"best rank", figures.BestRank},
-		}
-		require.Len(t, cells, len(named), "%s %s at %d: the row lost or gained a column",
-			match[1], match[2], size)
-		for i, want := range named {
-			stated := strings.SplitN(cells[i], " ±", 2)
-			require.Len(t, stated, 2, "%s %s at %d: %s states no interval",
-				match[1], match[2], size, want.name)
-			claim := fmt.Sprintf("%s %s at %d, %s", match[1], match[2], size, want.name)
-			r.number(claim, stated[0], want.fig.Mean)
-			r.number(claim+" half-width", stated[1], want.fig.Half)
-		}
-	}
 	r.report()
 }
 

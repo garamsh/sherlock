@@ -66,6 +66,7 @@ The write path moves from a prompt convention to an API-enforced response schema
 ```
 cd docs/experiments/memory-cycle
 python3 harness/system_runner.py     # rewrites results_table.md and results_raw.json
+python3 harness/claim_sources.py     # checks this document against both
 ```
 
-The runner rewrites `results_table.md` and `results_raw.json` beside this document, whatever directory it is called from; the simulation is offline and makes no API call.
+The runner rewrites `results_table.md` and `results_raw.json` beside this document, whatever directory it is called from; the simulation is offline and neither script makes an API call. `claim_sources.py` reads the figures here against the run behind them and the compliance rates in `harness/systems.py`, and fails when a figure stops matching its source. The QA compliance measurements the method table cites are behavioural passes against a live model rather than runs of this harness, so it reports them as carried by no file here.

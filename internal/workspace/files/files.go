@@ -152,9 +152,9 @@ func (f *FS) Write(path string, content []byte) error {
 	if err := os.Chmod(tmp.Name(), fileMode); err != nil {
 		return fmt.Errorf("write %q: %w", path, err)
 	}
-	if err := f.chownToOwner(tmp.Name()); err != nil {
-		return fmt.Errorf("write %q: %w", path, err)
-	}
+	// TEMPORARY: skip the hand-over, to prove the check catches a file
+	// the contract writes under its own account.
+	_ = f.chownToOwner
 	if err := os.Rename(tmp.Name(), resolved); err != nil {
 		return fmt.Errorf("write %q: %w", path, err)
 	}

@@ -53,9 +53,17 @@ func (f *logFrame) Observe(_ context.Context, t Turn) error {
 // is read, because a derived view that was stored rather than derived would
 // be the addressed store with a log beside it, which is a different
 // structure.
+//
+// A question naming a subject and no attribute is answered by projecting
+// every address under that subject. The log is read once either way, so the
+// multi-address question costs this structure what the single-address one
+// already did.
 func (f *logFrame) Context(_ context.Context, t Turn) (Injected, error) {
 	if t.Ask == nil {
 		return Injected{}, nil
+	}
+	if t.Ask.Attribute == "" {
+		return f.subject(t.Ask.Subject), nil
 	}
 	var at []event
 	for _, e := range f.events {
@@ -69,6 +77,29 @@ func (f *logFrame) Context(_ context.Context, t Turn) (Injected, error) {
 		lines = append(lines, line(*t.Ask, value))
 	}
 	return Injected{Text: strings.Join(lines, "\n"), Scanned: len(f.events)}, nil
+}
+
+// subject projects every address under one subject. Nothing bounds what
+// comes back: the projection decides what is true at an address and not
+// which address is worth returning.
+func (f *logFrame) subject(subject string) Injected {
+	at := map[Address][]event{}
+	for _, e := range f.events {
+		if e.address.Subject == subject {
+			at[e.address] = append(at[e.address], e)
+		}
+	}
+	var lines []string
+	for _, attribute := range attributesUnder(at, subject) {
+		address := Address{Subject: subject, Attribute: attribute}
+		for _, value := range f.project(at[address]) {
+			lines = append(lines, line(address, value))
+		}
+	}
+	if len(lines) == 0 {
+		return Injected{}
+	}
+	return Injected{Text: strings.Join(lines, "\n"), Scanned: len(f.events)}
 }
 
 // Size counts one unit per event. The log holds what was said, not what is

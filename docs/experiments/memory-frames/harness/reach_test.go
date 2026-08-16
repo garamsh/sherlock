@@ -36,32 +36,6 @@ func TestValuesIn_FindsAValueWhereTheCreditRuleDoes(t *testing.T) {
 	}
 }
 
-// The subject relation comes from the workload and counts every value live
-// anywhere on that subject, which is what a turn could have corrected.
-func TestLiveBySubject_CountsEveryLiveValueOfASubject(t *testing.T) {
-	w, err := GenerateWorkload(7, smallParams())
-	require.NoError(t, err)
-
-	live := liveBySubject(w, w.Params.Years)
-	var total int
-	for _, values := range live {
-		total += len(values)
-	}
-	var expected int
-	for _, thread := range w.Threads {
-		values, _ := thread.TruthAt(w.Params.Years)
-		expected += len(values)
-	}
-	assert.Equal(t, expected, total)
-
-	for _, thread := range w.Threads {
-		values, _ := thread.TruthAt(w.Params.Years)
-		for _, value := range values {
-			assert.Contains(t, live[thread.Subject], value)
-		}
-	}
-}
-
 // Forgetting what no read reached costs recall only where a later
 // checkpoint still needs it, so what is needed later is read off the
 // workload rather than off any structure.

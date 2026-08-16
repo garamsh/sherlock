@@ -1,6 +1,8 @@
-# Platform images (ADR 0017): one build stage, two targets.
-#   docker build --target agent     — the agent's self (gateway, loop, memory, mouth, tool client)
-#   docker build --target workspace — the agent's data plane (filesystem + exec gRPC)
+# The workspace image (ADR 0017). The agent image is a separate file
+# beside this one, and the two stay separate images (#512).
+#
+# The build context is the repository root — the build stage copies the
+# module — and `make build-images` is the entry point that builds both.
 
 FROM golang:1.26 AS build
 WORKDIR /src
@@ -14,28 +16,6 @@ COPY . .
 # binary is fully static.
 RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/gagent ./cmd/gagent \
     && mkdir -p /out/data
-
-# Agent image: the agent executes nothing — the workspace owns process
-# exec (ADR 0017) — so the agent runs no untrusted code and distroless
-# static stays correct. Serves the gateway, the rolling session, memory,
-# the mouth, and the tool client, which reads the operator's tool
-# manifests and spawns each tool's executable per call.
-FROM gcr.io/distroless/static-debian12:nonroot AS agent
-ARG REVISION=unknown
-LABEL org.opencontainers.image.title="gagent-agent" \
-      org.opencontainers.image.source="https://github.com/garamsh/gagent" \
-      org.opencontainers.image.revision="${REVISION}"
-
-COPY --from=build /out/gagent /gagent
-# Writable data directory for the nonroot user (uid 65532); mount the
-# memory volume here.
-COPY --from=build --chown=65532:65532 /out/data /data
-
-USER nonroot
-# Config comes from GAGENT_* env vars or a mounted config file
-# (`--config <path>`); no config is baked in.
-ENTRYPOINT ["/gagent"]
-CMD ["agent"]
 
 # Workspace image: the agent's data plane — serves the gRPC contract
 # (Read/Write/List/Exec) over loopback. Tools live in the agent and

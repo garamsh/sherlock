@@ -2,7 +2,7 @@
 
 Current architecture of the system and the decisions behind it. This file is the index; workers read it before touching code, the PM keeps it honest.
 
-One pod per agent, two containers (ADR 0017): the agent container is the agent's self (gateway, reasoning loop, memory, mouth, tool client); the sidecar container is the agent's workspace — the computer: the gRPC data plane serving files and process execution. Tools are scripts the operator installs under `tools/<name>/` with a `manifest.json` and an executable; the platform owns the manifest format, the stdio call protocol, the boundary validation, and the drift pin. The code ships one binary with two subcommands (`gagent agent`, `gagent workspace`); first-party and third-party tools ship the same way, as `tools/<name>/` directories. Deployment artifacts live at the repo-root `Dockerfile` (agent/workspace targets) and `deploy/local/`.
+One pod per agent, two containers (ADR 0017): the agent container is the agent's self (gateway, reasoning loop, memory, mouth, tool client); the sidecar container is the agent's workspace — the computer: the gRPC data plane serving files and process execution. Tools are scripts the operator installs under `tools/<name>/` with a `manifest.json` and an executable; the platform owns the manifest format, the stdio call protocol, the boundary validation, and the drift pin. The code ships one binary with two subcommands (`gagent agent`, `gagent workspace`); first-party and third-party tools ship the same way, as `tools/<name>/` directories. Deployment artifacts live at `build/agent.Dockerfile` and `build/workspace.Dockerfile` (one image each, built by `make build-images`) and `deploy/local/`.
 
 ## Contents
 - Structure

@@ -35,8 +35,7 @@ jobs:
           go-version: '1.26'
       # Build-only smoke check of both platform images (ADR 0017);
       # nothing is pushed.
-      - run: docker build --target agent --build-arg REVISION="$GITHUB_SHA" -t gagent-agent .
-      - run: docker build --target workspace --build-arg REVISION="$GITHUB_SHA" -t gagent-workspace .
+      - run: make build-images REVISION="$GITHUB_SHA"
       # The deployment deploy/local/README.md documents must start and
       # answer a request; the step fails if the agent does not.
       - run: deploy/local/smoke.sh

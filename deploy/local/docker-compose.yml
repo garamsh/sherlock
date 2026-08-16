@@ -7,7 +7,7 @@ services:
   agent:
     build:
       context: ../..
-      target: agent
+      dockerfile: build/agent.Dockerfile
     ports:
       - "8080:8080"
     # The agent executes nothing — the workspace owns process exec
@@ -35,7 +35,7 @@ services:
   workspace:
     build:
       context: ../..
-      target: workspace
+      dockerfile: build/workspace.Dockerfile
     network_mode: service:agent
     depends_on:
       - agent

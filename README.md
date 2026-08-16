@@ -35,7 +35,7 @@ gagent agent --message "hello"            # runs one turn and exits
 gagent agent                             # or: serve the agent's gateway
 ```
 
-To try the platform in Docker instead (distroless agent image, debian-slim workspace image, local compose setup), see `deploy/local/`.
+To try the platform in Docker instead: `make build-images` builds both images — distroless agent (`build/agent.Dockerfile`), debian-slim workspace (`build/workspace.Dockerfile`) — and `deploy/local/` holds the local compose setup.
 
 ### gagent agent
 

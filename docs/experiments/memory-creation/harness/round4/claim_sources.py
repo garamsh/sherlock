@@ -30,6 +30,7 @@ ROOT = os.path.join(HERE, "..", "..")
 RESULTS = os.path.join(ROOT, "results_round4")
 
 sys.path.insert(0, HERE)
+sys.path.insert(0, os.path.join(HERE, ".."))
 
 import dataset
 import precision

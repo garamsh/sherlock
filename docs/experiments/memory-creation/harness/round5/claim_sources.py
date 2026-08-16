@@ -25,6 +25,7 @@ ROOT = os.path.join(HERE, "..", "..")
 RESULTS = os.path.join(ROOT, "results_round5")
 
 sys.path.insert(0, HERE)
+sys.path.insert(0, os.path.join(HERE, ".."))
 
 import precision
 import record
@@ -34,7 +35,7 @@ README = open(os.path.join(ROOT, "README.md")).read()
 # The result files, the pooling and what the record calls each structure are
 # `record.py`'s, which writes the tables from them; reading them from there
 # keeps one definition rather than two that can disagree.
-TAGS = record.TAGS
+TAGS = record.ROUND5_SYSTEMS
 rows = record.rows
 pooled_scores = record.pooled_scores
 
@@ -144,7 +145,7 @@ def separation():
                r"own seeds")
     data = rows()
     every = [max(data[t][7][m], data[t][11][m]) - min(data[t][7][m], data[t][11][m])
-             for t in record.LABELS for m in precision.PROBES]
+             for t in record.ROUND5_LABELS for m in precision.PROBES]
     check(part, "widest spread anywhere", a.one(), "results_round5 per-column spreads",
           max(every), 3)
 
@@ -166,7 +167,7 @@ def separation():
                r"(\d+\.?\d*)")
     widest, widest_sum = 0.0, 0.0
     for metric in ("latest_wins", "control_survival"):
-        ordered = sorted(record.LABELS, key=lambda t: -scores[t][metric])
+        ordered = sorted(record.ROUND5_LABELS, key=lambda t: -scores[t][metric])
         gap = scores[ordered[0]][metric] - scores[ordered[-1]][metric]
         if gap > widest:
             widest = gap
@@ -199,7 +200,7 @@ def by_family():
 
     def lead(family):
         per_family = {t: sum(data[t][s]["coexist_by_family"][family]
-                             for s in (7, 11)) / 2 for t in record.LABELS}
+                             for s in (7, 11)) / 2 for t in record.ROUND5_LABELS}
         return per_family["B14"] - max(per_family[t] for t in ("B17", "B3", "B9"))
 
     a = Anchor(r"`instrument` \+(\d+\.?\d*) and `volunteer` \+(\d+\.?\d*) over the best other "

@@ -396,11 +396,10 @@ python3 harness/round5/correction_categories.py
 
 Results land in `results_round5/`. Only the runner needs a key: `dataset_check.py` makes no call, `precision.py` reads the committed results, and `correction_categories.py` replays them from the cache with live calls refused.
 
-Every result table in this document is written by the harness from the committed results and sits between markers; nothing between them is typed, so a cell cannot disagree with the run behind it. Two commands rewrite them, measure nothing, and leave the file unchanged when the results are unchanged.
+Every result table in this document is written by `harness/record.py` from the committed results and sits between markers; nothing between them is typed, so a cell cannot disagree with the run behind it. The command rewrites all fourteen, measures nothing, and leaves the file unchanged when the results are unchanged.
 
 ```
-python3 harness/round4/record.py
-python3 harness/round5/record.py
+python3 harness/record.py
 ```
 
 Two registers carry what generation does not: the inputs this document states from the harness, and the figures its prose states outside a table — every reading drawn from those tables and every count quoted from a diagnosis file. Both need no key and write nothing.

@@ -65,7 +65,7 @@ func measureWith(t *testing.T, frame Frame, w Workload, arm string) FrameResult 
 	year := 1
 	ctx := context.Background()
 	checkpoint := func() {
-		probes, injected, size, err := ask(ctx, frame, w, year, arm, nil, plantedValues(w))
+		probes, injected, size, err := ask(ctx, frame, "", w, year, arm, nil, plantedValues(w))
 		require.NoError(t, err)
 		out.Probes = append(out.Probes, probes...)
 		out.Years = append(out.Years, summarizeYear(year, probes))

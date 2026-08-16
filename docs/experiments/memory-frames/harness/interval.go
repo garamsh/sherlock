@@ -95,8 +95,7 @@ func (f *intervalFrame) subject(subject string, at time.Time) Injected {
 		lines   []string
 		scanned int
 	)
-	for _, attribute := range attributesUnder(f.values, subject) {
-		address := Address{Subject: subject, Attribute: attribute}
+	for _, address := range addressesUnder(f.values, subject) {
 		spans := f.values[address]
 		scanned += len(spans)
 		for _, span := range spans {

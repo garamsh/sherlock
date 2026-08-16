@@ -90,8 +90,7 @@ func (f *logFrame) subject(subject string) Injected {
 		}
 	}
 	var lines []string
-	for _, attribute := range attributesUnder(at, subject) {
-		address := Address{Subject: subject, Attribute: attribute}
+	for _, address := range addressesUnder(at, subject) {
 		for _, value := range f.project(at[address]) {
 			lines = append(lines, line(address, value))
 		}

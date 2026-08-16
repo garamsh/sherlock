@@ -9,9 +9,16 @@ import (
 // Address is a subject and one of its attributes: where a fact about that
 // subject is held by a structure that addresses facts rather than searching
 // for them.
+//
+// Attribute is a topic noun for the frames that address by topic and the
+// question a fact answers for the frames that address by question, and
+// Qualifier is the restriction that question carries where the sentence put
+// one on it. `question.go` forms both and states what it may read to do it;
+// every other frame receives an empty Qualifier and is the structure it was.
 type Address struct {
 	Subject   string `json:"subject"`
 	Attribute string `json:"attribute"`
+	Qualifier string `json:"qualifier,omitempty"`
 }
 
 // Fact is one assertion in extracted form: an address and a value. It
@@ -140,10 +147,11 @@ type Frame interface {
 
 // The frames measured. shipped is internal/memory as it runs in production;
 // document keeps no store at all and is what proves the seam does not
-// encode the shipped design's shape; the three attribute frames hold a fact
-// at its address and differ only in how many values one address holds. The
-// last four are published designs ported behind the same seam, each named
-// after the paper it comes from.
+// encode the shipped design's shape; the attribute frames hold a fact at
+// its address and differ only in how many values one address holds; the
+// question frames hold it at the question it answers instead. The last five
+// are published designs ported behind the same seam, each named after the
+// paper it comes from.
 const (
 	frameShipped           = "shipped"
 	frameDocument          = "document"
@@ -152,6 +160,8 @@ const (
 	frameAttributeLearned  = "attribute-learned"
 	frameAttributeCued     = "attribute-cued"
 	frameAttributeDeclared = "attribute-declared"
+	frameQuestion          = "question"
+	frameQuestionDeclared  = "question-declared"
 	frameInterval          = "interval"
 	frameIntervalDeclared  = "interval-declared"
 	frameLog               = "log"
@@ -168,7 +178,8 @@ const (
 var frameNames = []string{
 	frameShipped, frameDocument,
 	frameAttributeSingle, frameAttributeMulti, frameAttributeLearned, frameAttributeCued,
-	frameAttributeDeclared, frameInterval, frameIntervalDeclared, frameLog,
+	frameAttributeDeclared, frameQuestion, frameQuestionDeclared,
+	frameInterval, frameIntervalDeclared, frameLog,
 	frameGenerativeAgents, frameReflection, frameMemoryBank, frameMem0, frameMem0Nearest,
 }
 
@@ -190,6 +201,10 @@ func NewFrame(name, dir string, counter *EmbedCounter, budget int) (Frame, error
 		return NewAttributeFrame(arityCued), nil
 	case frameAttributeDeclared:
 		return NewAttributeFrame(arityDeclared), nil
+	case frameQuestion:
+		return NewQuestionFrame(arityQuestion), nil
+	case frameQuestionDeclared:
+		return NewQuestionFrame(arityDeclared), nil
 	case frameInterval:
 		return NewIntervalFrame(aritySingle), nil
 	case frameIntervalDeclared:

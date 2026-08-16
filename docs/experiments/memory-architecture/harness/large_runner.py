@@ -12,6 +12,7 @@ import traceback
 sys.path.insert(0, os.path.dirname(__file__))
 
 import architectures
+import record
 import metrics
 
 
@@ -350,6 +351,7 @@ def main():
     with open("results/large_scale_raw.json", "w") as f:
         json.dump(rows, f, indent=2, default=str)
     print(f"\nWrote {os.path.abspath('results/large_scale.md')}")
+    print(f"Rewrote {record.write()} from the committed results")
 
 
 if __name__ == "__main__":

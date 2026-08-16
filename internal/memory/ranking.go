@@ -39,6 +39,23 @@ const (
 	RetentionDropSalience = 0.3
 	RetentionWindow       = 7 * 24 * time.Hour
 
+	// Salience at write time is platform-derived from the operation the
+	// writeback states, never model-written (ADR 0006): a correction
+	// ranks highest, a fact added beside what is held high, an episodic
+	// observation mid. The tiers above read what these set.
+	//
+	// SalienceUpdate is the salience of a correction — a write that
+	// replaces the values already at its address.
+	SalienceUpdate = 0.8
+	// SalienceAddSemantic is the salience of an added semantic fact.
+	SalienceAddSemantic = 0.7
+	// SalienceAddEpisodic is the salience of an added episodic
+	// observation. No write path carries it since the writeback began
+	// stating facts rather than turns (ADR 0018); it is the tier an
+	// episodic observation would rank at, and the measurement in
+	// docs/experiments/memory-frames/ reads it as such.
+	SalienceAddEpisodic = 0.5
+
 	// DefaultForgetThreshold is the lifecycle score below which Forget
 	// archives a memory when the caller passes no threshold.
 	DefaultForgetThreshold = 0.15

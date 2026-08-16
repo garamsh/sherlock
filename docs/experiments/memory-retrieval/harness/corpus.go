@@ -163,7 +163,7 @@ var topics = []topic{
 }
 
 // Salience values are the ones the platform derives from a writeback op
-// in internal/gateway/writeback.go; the corpus plants no others.
+// in internal/agent/memory/writeback.go; the corpus plants no others.
 const (
 	salienceAddEpisodic = 0.5
 	salienceAddSemantic = 0.7

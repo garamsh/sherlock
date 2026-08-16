@@ -1,4 +1,4 @@
-package gateway_test
+package memory_test
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/gateway"
+	agentmemory "github.com/garamsh/gagent/internal/agent/memory"
 	"github.com/garamsh/gagent/internal/memory"
 	"github.com/garamsh/gagent/internal/memory/sqlite"
 )
@@ -38,7 +38,7 @@ func TestRecall_ReturnsStoredMemoriesWithIDAndAge(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	recaller := gateway.Recall{Svc: svc, Now: func() time.Time { return time.Now() }}
+	recaller := agentmemory.Recall{Svc: svc, Now: func() time.Time { return time.Now() }}
 	recalled, err := recaller.Recall(ctx, "where is the deploy key")
 	require.NoError(t, err)
 	require.NotEmpty(t, recalled)
@@ -49,7 +49,7 @@ func TestRecall_ReturnsStoredMemoriesWithIDAndAge(t *testing.T) {
 
 func TestRecall_EmptyStoreReturnsNothing(t *testing.T) {
 	svc, _ := newMemoryService(t)
-	recaller := gateway.Recall{Svc: svc}
+	recaller := agentmemory.Recall{Svc: svc}
 	recalled, err := recaller.Recall(context.Background(), "anything")
 	require.NoError(t, err)
 	assert.Empty(t, recalled)

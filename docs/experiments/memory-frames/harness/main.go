@@ -28,7 +28,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/garamsh/gagent/internal/gateway"
 	"github.com/garamsh/gagent/internal/memory"
 )
 
@@ -356,8 +355,8 @@ func MeasureRun(ctx context.Context, w Workload) (Run, error) {
 			RetentionDropSalience:  memory.RetentionDropSalience,
 			RetentionWindowHours:   memory.RetentionWindow.Hours(),
 			ConsolidationThreshold: memory.ConsolidationThreshold,
-			SalienceAddEpisodic:    gateway.SalienceAddEpisodic,
-			SalienceAddSemantic:    gateway.SalienceAddSemantic,
+			SalienceAddEpisodic:    memory.SalienceAddEpisodic,
+			SalienceAddSemantic:    memory.SalienceAddSemantic,
 			EmbeddingDim:           memory.EmbeddingDim,
 			DefaultCapacity:        memory.DefaultCapacity,
 			RecallTokenBudget:      memory.DefaultRecallTokenBudget,

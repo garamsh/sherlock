@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/garamsh/gagent/internal/agent"
+	agentmemory "github.com/garamsh/gagent/internal/agent/memory"
 	"github.com/garamsh/gagent/internal/memory"
 	"github.com/garamsh/gagent/internal/memory/sqlite"
 	"github.com/garamsh/gagent/internal/message"
@@ -53,7 +54,7 @@ type Factory struct {
 	// Ego is the session ego; empty selects the agent package's embedded
 	// default (the platform contract is appended regardless).
 	Ego string
-	// MaxHistoryMessages overrides DefaultMaxHistoryMessages. A negative
+	// MaxHistoryMessages overrides the compaction package default. A negative
 	// value disables context compaction.
 	MaxHistoryMessages int
 	// Summarizer overrides the deterministic context summarizer. Nil uses
@@ -84,7 +85,7 @@ func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink)
 	}
 	maxHistoryMessages := f.MaxHistoryMessages
 	if maxHistoryMessages == 0 {
-		maxHistoryMessages = DefaultMaxHistoryMessages
+		maxHistoryMessages = agentmemory.DefaultMaxHistoryMessages
 	}
 	if maxHistoryMessages < 0 {
 		maxHistoryMessages = 0
@@ -101,10 +102,10 @@ func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink)
 	}
 
 	session := agent.NewSession(f.NewModel(agentID), tools, agent.Options{
-		Recaller:           Recall{Svc: memSvc},
-		Writeback:          Writeback{Svc: memSvc},
+		Recaller:           agentmemory.Recall{Svc: memSvc},
+		Writeback:          agentmemory.Writeback{Svc: memSvc},
 		Events:             events,
-		Compactor:          Compactor{Svc: memSvc, Summarizer: summarizer, MaxHistoryMessages: maxHistoryMessages},
+		Compactor:          agentmemory.Compactor{Svc: memSvc, Summarizer: summarizer, MaxHistoryMessages: maxHistoryMessages},
 		Ego:                f.Ego,
 		MaxHistoryMessages: maxHistoryMessages,
 	})

@@ -1,4 +1,4 @@
-package gateway
+package memory
 
 import (
 	"context"
@@ -8,23 +8,6 @@ import (
 
 	"github.com/garamsh/gagent/internal/agent"
 	"github.com/garamsh/gagent/internal/memory"
-)
-
-// Salience is platform-derived from the writeback operation, never
-// model-written (ADR 0006): a correction ranks highest, an added semantic
-// fact high, an added episodic observation mid.
-const (
-	// SalienceUpdate is the salience of a correction — a write that
-	// replaces the values already at its address.
-	SalienceUpdate = 0.8
-	// SalienceAddSemantic is the salience of an added semantic fact.
-	SalienceAddSemantic = 0.7
-	// SalienceAddEpisodic is the salience of an added episodic
-	// observation. No write path carries it since the writeback began
-	// stating facts rather than turns (ADR 0018); it is the tier an
-	// episodic observation would rank at, and the measurement in
-	// docs/experiments/memory-frames/ reads it as such.
-	SalienceAddEpisodic = 0.5
 )
 
 // coherenceNoteBudget bounds how many similar memories one writeback
@@ -97,9 +80,9 @@ func (w Writeback) Apply(ctx context.Context, ops []agent.WritebackOp) ([]agent.
 // everything else is a fact added beside what is held.
 func salienceOf(op agent.MemoryOperation) float64 {
 	if op == agent.OpReplace {
-		return SalienceUpdate
+		return memory.SalienceUpdate
 	}
-	return SalienceAddSemantic
+	return memory.SalienceAddSemantic
 }
 
 // sentenceOf renders an addressed write as the sentence the shipped

@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/garamsh/gagent/internal/gateway"
 	"github.com/garamsh/gagent/internal/memory"
 	"github.com/garamsh/gagent/internal/memory/sqlite"
 )
@@ -27,7 +26,7 @@ const dbName = "memory.db"
 // is curation-only). The frame derives it from the observation the arm
 // hands it — a turn carrying an extracted fact is a semantic add, a turn
 // carrying none is an episodic add — which is the mapping
-// internal/gateway/writeback.go applies to an add op, and the two arms then
+// internal/agent/memory/writeback.go applies to an add op, and the two arms then
 // bracket what the decider is worth.
 type shippedFrame struct {
 	dir      string
@@ -71,9 +70,9 @@ func (f *shippedFrame) open() error {
 // lifecycle this project does not run.
 func (f *shippedFrame) Observe(ctx context.Context, t Turn) error {
 	f.now = t.At
-	typ, salience := memory.TypeEpisodic, gateway.SalienceAddEpisodic
+	typ, salience := memory.TypeEpisodic, memory.SalienceAddEpisodic
 	if len(t.Written) > 0 {
-		typ, salience = memory.TypeSemantic, gateway.SalienceAddSemantic
+		typ, salience = memory.TypeSemantic, memory.SalienceAddSemantic
 	}
 	if _, err := f.svc.Store(ctx, memory.StoreInput{
 		Content:         t.Text,

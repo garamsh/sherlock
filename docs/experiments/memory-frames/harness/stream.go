@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/garamsh/gagent/internal/gateway"
 	"github.com/garamsh/gagent/internal/memory"
 )
 
@@ -66,7 +65,7 @@ const (
 // semanticImportance is what the substituted importance comes to for a turn
 // that carries a fact, on the paper's 1-to-10 scale. It is what a reflection
 // reads and what a reflection is written at.
-const semanticImportance = gateway.SalienceAddSemantic * importanceCeiling
+const semanticImportance = memory.SalienceAddSemantic * importanceCeiling
 
 // streamItem is one record in the stream.
 type streamItem struct {

@@ -1,4 +1,4 @@
-package gateway_test
+package memory_test
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/garamsh/gagent/internal/agent"
-	"github.com/garamsh/gagent/internal/gateway"
+	agentmemory "github.com/garamsh/gagent/internal/agent/memory"
 	"github.com/garamsh/gagent/internal/memory"
 )
 
@@ -24,7 +24,7 @@ func telescope() agent.MemoryAddress {
 
 func TestWriteback_StoresTheAddressWithItsValue(t *testing.T) {
 	svc, _ := newMemoryService(t)
-	wb := gateway.Writeback{Svc: svc}
+	wb := agentmemory.Writeback{Svc: svc}
 
 	_, err := wb.Apply(context.Background(), []agent.WritebackOp{{
 		Address: agent.MemoryAddress{
@@ -58,7 +58,7 @@ func TestWriteback_StoresTheAddressWithItsValue(t *testing.T) {
 func TestWriteback_RestrictionReachesTheStore(t *testing.T) {
 	svc, _ := newMemoryService(t)
 	ctx := context.Background()
-	wb := gateway.Writeback{Svc: svc}
+	wb := agentmemory.Writeback{Svc: svc}
 
 	narrowed := telescope()
 	narrowed.Restriction = "for planets"
@@ -85,13 +85,13 @@ func TestWriteback_SalienceFollowsTheOperation(t *testing.T) {
 		operation    agent.MemoryOperation
 		wantSalience float64
 	}{
-		{"a replacement is a correction", agent.OpReplace, gateway.SalienceUpdate},
-		{"a join adds a fact", agent.OpJoin, gateway.SalienceAddSemantic},
+		{"a replacement is a correction", agent.OpReplace, memory.SalienceUpdate},
+		{"a join adds a fact", agent.OpJoin, memory.SalienceAddSemantic},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			svc, _ := newMemoryService(t)
-			wb := gateway.Writeback{Svc: svc}
+			wb := agentmemory.Writeback{Svc: svc}
 
 			_, err := wb.Apply(context.Background(), []agent.WritebackOp{{
 				Address:   telescope(),
@@ -127,7 +127,7 @@ func TestWriteback_SurfacesSimilarMemories(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	wb := gateway.Writeback{Svc: svc}
+	wb := agentmemory.Writeback{Svc: svc}
 	notes, err := wb.Apply(ctx, []agent.WritebackOp{{
 		Address: agent.MemoryAddress{
 			Subject:  "user",
@@ -156,7 +156,7 @@ func TestWriteback_SurfacesSimilarMemories(t *testing.T) {
 // (ADR 0006 step 5): a turn that states no fact asks the store nothing.
 func TestWriteback_EmptyWritebackRetrievesNothing(t *testing.T) {
 	svc, _ := newMemoryService(t)
-	wb := gateway.Writeback{Svc: svc}
+	wb := agentmemory.Writeback{Svc: svc}
 
 	notes, err := wb.Apply(context.Background(), []agent.WritebackOp{})
 	require.NoError(t, err)

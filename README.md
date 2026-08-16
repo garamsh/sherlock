@@ -45,6 +45,8 @@ With `--message` the agent runs one turn against the same operator-installed too
 gagent agent --agent-id my-agent --message "hello"
 ```
 
+A one-shot run exits non-zero if any tool call in the turn failed, naming the tools that failed on stderr — the turn's output still prints first. A failed tool call does not end the turn (the model is told and gets another iteration), so the exit status is where a caller that is no longer watching learns the run was not clean. The serving path differs on purpose: there the failure goes to the model and the `tool_call` event, the turn still ends `turn_finished`, and the gateway keeps serving.
+
 **Warning: an unauthenticated gateway is a remote shell into the agent.** The gateway authenticates callers with mTLS when the `tls:` config section is set (server certificate/key plus a client CA — callers must present a certificate from that CA; ADR 0012). Without `tls:` the gateway serves loopback binds only, and a non-loopback `--addr` fails startup. Certificate issuance and CA operation are operator scope; rotation is a restart with new files.
 
 ### gagent workspace

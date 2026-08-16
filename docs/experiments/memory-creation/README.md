@@ -2,6 +2,18 @@
 
 Which structure should create, correct and retire a memory entry. The cycle experiment (`memory-cycle/`) established that the write path must be shape-enforced; this one compares the structures that sit behind that enforcement.
 
+## Contents
+- Method
+- No similarity threshold can decide supersession
+- The structures
+- What the net column can and cannot separate
+- Where the residual correction gap is
+- One decider call per turn, and what a cheaper schedule would buy
+- Round 5: the same question on a redrawn coexist set
+- Adopted direction
+- Limits
+- Reproducing
+
 ## Method
 
 488 turns, 152 probes, real embeddings and a real gpt-4o-mini decider, replicated on two dataset seeds. A second seed redraws the corrected, control and distractor assignments; it does not redraw the coexist set, and eight of the seventeen structures ran on one seed. What that costs the ranking is in Limits. Three probe families, because a structure can be wrong in three ways:

@@ -2,6 +2,15 @@
 
 One question, answered with numbers: **what memory architecture should a years-long agent use?** This document is self-contained — it explains the method, every architecture tested, every result, and what was adopted. The harness is in `harness/` and runs offline; every figure below names the file under `results/` it comes from, and `harness/claim_sources.py` checks that it still does.
 
+## Contents
+- The question
+- The method
+- The architectures, in plain terms
+- The results
+- What the numbers establish
+- What was adopted
+- Reproducing
+
 ## The question
 
 gagent's agent lives for years and talks to its owner continuously. It needs long-term memory that:

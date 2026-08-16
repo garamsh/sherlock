@@ -3,6 +3,13 @@
 > Status: accepted
 > Date: 2026-08-09 (revised in place 2026-08-13; 2026-08-14)
 
+## Contents
+- Context
+- Decision
+- Consequences
+- Non-goals
+- Rejected alternatives
+
 ## Context
 
 Two pressures outgrew the original single-container model, in which trust domains were separated by Unix UIDs inside one container:

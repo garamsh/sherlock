@@ -199,6 +199,14 @@ def main():
     # Per-architecture detail.
     with open("results/per_architecture.md", "w") as f:
         f.write("# Per-architecture detail\n\n")
+        # The Contents list documentation.md §Format asks of a document
+        # past ~50 lines. This record's section headings are the run's
+        # rows, so the list is emitted from the same rows in the same
+        # order; a hand-written one would go stale on the next run.
+        f.write("## Contents\n")
+        for r in rows:
+            f.write(f"- {r['name']}\n")
+        f.write("\n")
         for r in rows:
             f.write(f"## {r['name']}\n\n")
             if "error" in r:

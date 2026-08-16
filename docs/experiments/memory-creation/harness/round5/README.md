@@ -2,6 +2,13 @@
 
 What round 5 changes in the memory-creation dataset and scoring, and what it holds fixed. Numbers a run produces belong in the experiment record, not here.
 
+## Contents
+- What changes
+- Why
+- What stays fixed
+- Files
+- Running
+
 ## What changes
 
 - The coexist subjects come from the seeded generator instead of the first four persons, and each subject's values are drawn from its family's pool, so a second seed measures a second coexist set rather than the same one twice.

@@ -55,7 +55,7 @@ func TestShippedFrame_ReturnsWhatItObserved(t *testing.T) {
 	defer frame.Close()
 	ctx := context.Background()
 
-	fact := Fact{Subject: "Alma", Attribute: "project", Value: "amber-quarry"}
+	fact := Fact{Address: Address{Subject: "Alma", Attribute: "project"}, Value: "amber-quarry"}
 	require.NoError(t, frame.Observe(ctx, Turn{Index: 0, Day: 0, At: start,
 		Text: "Alma leads the amber-quarry project.", Fact: &fact}))
 
@@ -76,7 +76,7 @@ func TestShippedFrame_KeepsAFactAndLetsAnObservationExpire(t *testing.T) {
 	defer frame.Close()
 	ctx := context.Background()
 
-	fact := Fact{Subject: "Alma", Attribute: "project", Value: "amber-quarry"}
+	fact := Fact{Address: Address{Subject: "Alma", Attribute: "project"}, Value: "amber-quarry"}
 	require.NoError(t, frame.Observe(ctx, Turn{Index: 0, Day: 0, At: start,
 		Text: "Alma leads the amber-quarry project.", Fact: &fact}))
 	require.NoError(t, frame.Observe(ctx, Turn{Index: 1, Day: 0, At: start.Add(time.Minute),
@@ -130,4 +130,35 @@ func TestEmbedCounter_CountsTheCallsAndTheDistinctTexts(t *testing.T) {
 	assert.Equal(t, 1, distinct, "the same text is only ever paid for once")
 	assert.Positive(t, tokens)
 	assert.Greater(t, calls, distinct)
+}
+
+// Ask reaches every frame, and a frame that does not address facts ignores
+// it. That is the shipped design's own choice — its read path takes a task
+// statement — rather than a handicap the harness imposes, and it is why the
+// figures this record already carried did not move when the read side of
+// the seam was extended.
+func TestFrames_ThatDoNotAddressFactsIgnoreTheAddressAsked(t *testing.T) {
+	ctx := context.Background()
+	address := Address{Subject: "Alma", Attribute: "project"}
+	for _, name := range []string{frameShipped, frameDocument} {
+		t.Run(name, func(t *testing.T) {
+			frame, err := NewFrame(name, t.TempDir(), NewEmbedCounter())
+			require.NoError(t, err)
+			defer frame.Close()
+
+			fact := Fact{Address: address, Value: "amber-quarry"}
+			require.NoError(t, frame.Observe(ctx, Turn{Index: 0, Day: 0, At: start,
+				Text: "Alma leads the amber-quarry project.", Fact: &fact}))
+
+			question := Turn{Index: 1, Day: 1, At: start.AddDate(0, 0, 1),
+				Text: "Which project does Alma lead?"}
+			without, err := frame.Context(ctx, question)
+			require.NoError(t, err)
+			question.Ask = &address
+			with, err := frame.Context(ctx, question)
+			require.NoError(t, err)
+
+			assert.Equal(t, without, with)
+		})
+	}
 }

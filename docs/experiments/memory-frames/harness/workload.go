@@ -74,9 +74,12 @@ type Params struct {
 
 // Assert is one assertion on a thread. Replaces is ground truth and no
 // frame ever sees it: whether a new value ends the earlier ones or stands
-// beside them is what the comparison is asking.
+// beside them is what the comparison is asking. Day is the day the
+// scheduler placed it on, which is what the interval between two writes to
+// one address is read from.
 type Assert struct {
 	Year     int    `json:"year"`
+	Day      int    `json:"day"`
 	Value    string `json:"value"`
 	Text     string `json:"text"`
 	Replaces bool   `json:"replaces"`
@@ -325,16 +328,22 @@ func schedule(rng *rand.Rand, p Params, threads []Thread) ([]Turn, int, error) {
 	days := sessionDays(rng, p)
 	placed := make(map[slot]Turn)
 	var factTurns int
-	for _, thread := range threads {
-		for _, a := range thread.Asserts {
+	for i := range threads {
+		thread := &threads[i]
+		for j := range thread.Asserts {
+			a := &thread.Asserts[j]
 			slots := free[a.Year-1]
 			if len(slots) == 0 {
 				return nil, 0, fmt.Errorf("year %d has no free turn left for %s", a.Year, thread.Subject)
 			}
 			s := slots[0]
 			free[a.Year-1] = slots[1:]
-			fact := Fact{Subject: thread.Subject, Attribute: thread.Attribute, Value: a.Value}
-			placed[s] = Turn{Day: days[s.session], At: turnTime(days[s.session], s.index), Text: a.Text, Fact: &fact}
+			a.Day = days[s.session]
+			fact := Fact{
+				Address: Address{Subject: thread.Subject, Attribute: thread.Attribute},
+				Value:   a.Value,
+			}
+			placed[s] = Turn{Day: a.Day, At: turnTime(a.Day, s.index), Text: a.Text, Fact: &fact}
 			factTurns++
 		}
 	}
@@ -383,5 +392,11 @@ func turnTime(day, index int) time.Time {
 // checkpoint, never written to.
 func Checkpoint(year int, thread Thread) Turn {
 	day := year*daysPerYear - 1
-	return Turn{Day: day, At: start.AddDate(0, 0, day).Add(11 * time.Hour), Text: thread.Question}
+	address := Address{Subject: thread.Subject, Attribute: thread.Attribute}
+	return Turn{
+		Day:  day,
+		At:   start.AddDate(0, 0, day).Add(11 * time.Hour),
+		Text: thread.Question,
+		Ask:  &address,
+	}
 }

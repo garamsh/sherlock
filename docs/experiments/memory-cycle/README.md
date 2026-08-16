@@ -65,7 +65,7 @@ The write path moves from a prompt convention to an API-enforced response schema
 
 ```
 cd docs/experiments/memory-cycle
-python3 harness/system_runner.py
+python3 harness/system_runner.py     # rewrites results_table.md and results_raw.json
 ```
 
-The runner rewrites `results_table.md`; raw per-system numbers are in `results_raw.json`.
+The runner rewrites `results_table.md` and `results_raw.json` beside this document, whatever directory it is called from; the simulation is offline and makes no API call.

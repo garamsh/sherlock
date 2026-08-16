@@ -57,6 +57,31 @@ type Config struct {
 	DocumentLimitBytes     int     `json:"document_limit_bytes"`
 }
 
+// shippedConfig reads the configuration this record measures under out
+// of the memory package, so a run records what the code held rather than
+// what someone typed. A committed run keeps the values it read; the
+// check that they are still the code's is a test, because reading them
+// at run time only binds the record to the code on the day it ran.
+func shippedConfig() Config {
+	return Config{
+		WeightVector:           memory.WeightVector,
+		WeightFTS:              memory.WeightFTS,
+		RecencyHalfLifeHours:   memory.RecencyHalfLife.Hours(),
+		SupersessionSimilarity: memory.SupersessionSimilarity,
+		RetentionKeepSalience:  memory.RetentionKeepSalience,
+		RetentionDropSalience:  memory.RetentionDropSalience,
+		RetentionWindowHours:   memory.RetentionWindow.Hours(),
+		ConsolidationThreshold: memory.ConsolidationThreshold,
+		SalienceAddEpisodic:    memory.SalienceAddEpisodic,
+		SalienceAddSemantic:    memory.SalienceAddSemantic,
+		EmbeddingDim:           memory.EmbeddingDim,
+		DefaultCapacity:        memory.DefaultCapacity,
+		RecallTokenBudget:      memory.DefaultRecallTokenBudget,
+		CharsPerToken:          memory.CharsPerToken,
+		DocumentLimitBytes:     documentLimit,
+	}
+}
+
 // Run is one seed's whole measurement.
 type Run struct {
 	Seed        int64         `json:"seed"`
@@ -346,23 +371,7 @@ func MeasureRun(ctx context.Context, w Workload) (Run, error) {
 		Params:    w.Params,
 		Arity:     MeasureArity(w),
 		Questions: MeasureQuestions(w),
-		Config: Config{
-			WeightVector:           memory.WeightVector,
-			WeightFTS:              memory.WeightFTS,
-			RecencyHalfLifeHours:   memory.RecencyHalfLife.Hours(),
-			SupersessionSimilarity: memory.SupersessionSimilarity,
-			RetentionKeepSalience:  memory.RetentionKeepSalience,
-			RetentionDropSalience:  memory.RetentionDropSalience,
-			RetentionWindowHours:   memory.RetentionWindow.Hours(),
-			ConsolidationThreshold: memory.ConsolidationThreshold,
-			SalienceAddEpisodic:    memory.SalienceAddEpisodic,
-			SalienceAddSemantic:    memory.SalienceAddSemantic,
-			EmbeddingDim:           memory.EmbeddingDim,
-			DefaultCapacity:        memory.DefaultCapacity,
-			RecallTokenBudget:      memory.DefaultRecallTokenBudget,
-			CharsPerToken:          memory.CharsPerToken,
-			DocumentLimitBytes:     documentLimit,
-		},
+		Config:    shippedConfig(),
 	}
 	identity, err := MeasureIdentity(ctx, w, counter)
 	if err != nil {

@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"math/rand"
+
+	"github.com/garamsh/gagent/internal/memory"
 )
 
 // subjects are the entities the planted facts are about. Each name is one
@@ -163,11 +165,16 @@ var topics = []topic{
 }
 
 // Salience values are the ones the platform derives from a writeback op
-// in internal/agent/memory/writeback.go; the corpus plants no others.
+// (internal/agent/memory/writeback.go); the corpus plants no others.
+// They are read from the memory package rather than re-typed: the
+// committed corpus carries the salience it planted, and the generator is
+// checked against that file, so a shipped value that moves fails there
+// instead of leaving this corpus quietly planting a salience the
+// platform no longer assigns.
 const (
-	salienceAddEpisodic = 0.5
-	salienceAddSemantic = 0.7
-	salienceUpdate      = 0.8
+	salienceAddEpisodic = memory.SalienceAddEpisodic
+	salienceAddSemantic = memory.SalienceAddSemantic
+	salienceUpdate      = memory.SalienceUpdate
 )
 
 // Corpus parameters. minFacts and maxFacts bound how many facts one

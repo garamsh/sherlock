@@ -24,7 +24,7 @@ const notApplicable = "n/a"
 
 // renderRecord rewrites the record's generated block from a committed
 // result file.
-func renderRecord(resultPath, constrainedPath, recordPath string) error {
+func renderRecord(resultPath, constrainedPath, shapePath, recordPath string) error {
 	body, err := os.ReadFile(resultPath)
 	if err != nil {
 		return fmt.Errorf("read %s: %w", resultPath, err)
@@ -40,6 +40,14 @@ func renderRecord(resultPath, constrainedPath, recordPath string) error {
 		}
 	} else if !os.IsNotExist(err) {
 		return fmt.Errorf("read %s: %w", constrainedPath, err)
+	}
+	shapes, err := os.ReadFile(shapePath)
+	if err == nil {
+		if err := json.Unmarshal(shapes, &result.Shapes); err != nil {
+			return fmt.Errorf("decode %s: %w", shapePath, err)
+		}
+	} else if !os.IsNotExist(err) {
+		return fmt.Errorf("read %s: %w", shapePath, err)
 	}
 	record, err := os.ReadFile(recordPath)
 	if err != nil {
@@ -79,6 +87,9 @@ func RenderTables(r Run) string {
 	renderBounds(&b, r)
 	renderRules(&b, r)
 	renderBudgets(&b, r)
+	renderLanguage(&b, r)
+	renderExtraction(&b, r)
+	renderShapes(&b, r)
 	renderSweep(&b, r)
 	renderHealing(&b, r)
 	renderDeclarer(&b, r)
@@ -429,38 +440,72 @@ func renderDisagreement(b *strings.Builder, r Run) {
 // numbers cost something.
 func renderPaid(b *strings.Builder, r Run) {
 	fmt.Fprintf(b, "### What the paid half cost\n\n")
-	if r.Declarer == nil {
+	var rows [][2]any
+	var total float64
+	if d := r.Declarer; d != nil {
+		total += d.CostUSD
+		rows = append(rows,
+			[2]any{"model", d.Model},
+			[2]any{"paid calls, declaring", d.Calls},
+			[2]any{"assertions declared", d.Asked},
+			[2]any{"prompt tokens", d.PromptTokens},
+			[2]any{"completion tokens", d.CompletionTokens},
+			[2]any{"price per million prompt tokens, USD", d.PriceInPerM},
+			[2]any{"price per million completion tokens, USD", d.PriceOutPerM},
+			[2]any{"price read on", d.PriceRead},
+			[2]any{"cost of declaring, USD", fmt.Sprintf("%.4f", d.CostUSD)},
+			[2]any{"call bound declaring refuses to pass", declareCallLimit},
+			[2]any{"cost bound declaring refuses to pass, USD", fmt.Sprintf("%.2f", declareCostLimit)})
+	}
+	if s := r.Stability; s != nil {
+		total += s.CostUSD
+		rows = append(rows,
+			[2]any{"paid calls, resampling", s.Calls},
+			[2]any{"prompt tokens, resampling", s.PromptTokens},
+			[2]any{"completion tokens, resampling", s.CompletionTokens},
+			[2]any{"cost of resampling, USD", fmt.Sprintf("%.4f", s.CostUSD)},
+			[2]any{"call bound resampling refuses to pass", resampleCallLimit},
+			[2]any{"cost bound resampling refuses to pass, USD", fmt.Sprintf("%.2f", resampleCostLimit)})
+	}
+	var extracted []*ExtractionScore
+	var reading float64
+	for _, s := range r.Shapes {
+		if s.Extraction == nil {
+			continue
+		}
+		extracted = append(extracted, s.Extraction)
+		reading += s.Extraction.CostUSD
+	}
+	if len(extracted) > 0 {
+		total += reading
+		rows = append(rows,
+			[2]any{"cost of reading the messages, USD", fmt.Sprintf("%.4f", reading)},
+			[2]any{"call bound reading refuses to pass", extractCallLimit},
+			[2]any{"cost bound reading refuses to pass, USD", fmt.Sprintf("%.2f", extractCostLimit)})
+	}
+	if len(rows) == 0 {
 		fmt.Fprintf(b, "| quantity | value |\n|---|---|\n| paid calls | 0 |\n")
 		fmt.Fprintln(b)
 		return
 	}
-	d := r.Declarer
-	rows := [][2]any{
-		{"model", d.Model},
-		{"paid calls, declaring", d.Calls},
-		{"assertions declared", d.Asked},
-		{"prompt tokens", d.PromptTokens},
-		{"completion tokens", d.CompletionTokens},
-		{"price per million prompt tokens, USD", d.PriceInPerM},
-		{"price per million completion tokens, USD", d.PriceOutPerM},
-		{"price read on", d.PriceRead},
-		{"cost of declaring, USD", fmt.Sprintf("%.4f", d.CostUSD)},
-		{"call bound declaring refuses to pass", declareCallLimit},
-		{"cost bound declaring refuses to pass, USD", fmt.Sprintf("%.2f", declareCostLimit)},
-	}
-	if r.Stability != nil {
-		rows = append(rows,
-			[2]any{"paid calls, resampling", r.Stability.Calls},
-			[2]any{"prompt tokens, resampling", r.Stability.PromptTokens},
-			[2]any{"completion tokens, resampling", r.Stability.CompletionTokens},
-			[2]any{"cost of resampling, USD", fmt.Sprintf("%.4f", r.Stability.CostUSD)},
-			[2]any{"call bound resampling refuses to pass", resampleCallLimit},
-			[2]any{"cost bound resampling refuses to pass, USD", fmt.Sprintf("%.2f", resampleCostLimit)},
-			[2]any{"cost of this record in total, USD", fmt.Sprintf("%.4f", d.CostUSD+r.Stability.CostUSD)})
-	}
+	rows = append(rows, [2]any{"cost of this record in total, USD", fmt.Sprintf("%.4f", total)})
 	fmt.Fprintf(b, "| quantity | value |\n|---|---|\n")
 	for _, row := range rows {
 		fmt.Fprintf(b, "| %s | %v |\n", row[0], row[1])
+	}
+	fmt.Fprintln(b)
+
+	if len(extracted) == 0 {
+		return
+	}
+	// A shape pays for the messages it did not already have an answer for,
+	// so its calls are below its messages wherever a message repeats
+	// between shapes. The count is what was bought, not what was read.
+	fmt.Fprintf(b, "| shape | messages read | paid calls | tokens | cost USD |\n")
+	fmt.Fprintf(b, "|---|---|---|---|---|\n")
+	for _, e := range extracted {
+		fmt.Fprintf(b, "| `%s` | %d | %d | %d | %.4f |\n",
+			e.Shape, e.Messages, e.Calls, e.Tokens, e.CostUSD)
 	}
 	fmt.Fprintln(b)
 }
@@ -612,6 +657,115 @@ func renderBudgets(b *strings.Builder, r Run) {
 		fmt.Fprintf(b, "| %d | `%s` | %s | %s | %s | %s | %s |\n",
 			c.Budget, c.Frame, figure(y.Recall), figure(y.Stale),
 			figure(reach.SubjectReach), figure(reach.ThreadReach), figureAt(y.ContextChars, 0))
+	}
+	fmt.Fprintln(b)
+}
+
+// renderLanguage is what the generator actually produced. A null result on
+// a harder shape is more likely the generator than the model, so what the
+// sentences are is measured before anything is concluded from them.
+func renderLanguage(b *strings.Builder, r Run) {
+	if len(r.Shapes) == 0 {
+		return
+	}
+	fmt.Fprintf(b, "### How hard the language actually is\n\n")
+	fmt.Fprintf(b, "| shape | digest | messages carrying a fact | assertions | assertions a message | characters a message | clauses a message |\n")
+	fmt.Fprintf(b, "|---|---|---|---|---|---|---|\n")
+	for _, s := range r.Shapes {
+		l := s.Language
+		fmt.Fprintf(b, "| `%s` | %s | %d | %d | %s | %s | %s |\n", s.Shape, s.Digest[:16],
+			l.FactMessages, l.Assertions, figureAt(l.PerMessage, 2),
+			figureAt(l.Chars, 0), figureAt(l.Clauses, 2))
+	}
+	fmt.Fprintln(b)
+}
+
+// renderExtraction is where a real extractor lands, and the three ways it
+// fails reported apart from one another.
+func renderExtraction(b *strings.Builder, r Run) {
+	var any bool
+	for _, s := range r.Shapes {
+		any = any || s.Extraction != nil
+	}
+	if !any {
+		return
+	}
+	fmt.Fprintf(b, "### What a model read out of a message\n\n")
+	fmt.Fprintf(b, "| shape | planted | returned | correct | missed | misaddressed | invented a message | operation right |\n")
+	fmt.Fprintf(b, "|---|---|---|---|---|---|---|---|\n")
+	for _, s := range r.Shapes {
+		if s.Extraction == nil {
+			continue
+		}
+		e := s.Extraction
+		fmt.Fprintf(b, "| `%s` | %d | %d | %s | %s | %s | %s | %s |\n", s.Shape,
+			e.Planted, e.Found, figure(e.CorrectRate), figure(e.MissedRate),
+			figure(e.MisaddressedRate), figureAt(e.InventedPerMessage, 3), figure(e.DeclaredRate))
+	}
+	fmt.Fprintln(b)
+
+	// Whether the failures inside one message are independent. Read against
+	// the correct rate above: independent failures would put the share of
+	// messages read entirely right at that rate raised to the assertions a
+	// message carries, and the share read entirely wrong at its complement
+	// raised to the same.
+	fmt.Fprintf(b, "| shape | assertions a message | messages carrying a fact | read entirely right | read entirely wrong |\n")
+	fmt.Fprintf(b, "|---|---|---|---|---|\n")
+	for _, s := range r.Shapes {
+		if s.Extraction == nil {
+			continue
+		}
+		e := s.Extraction
+		fmt.Fprintf(b, "| `%s` | %s | %d | %s | %s |\n", s.Shape, figureAt(s.Language.PerMessage, 2),
+			e.FactMessages, figure(e.MessagesRight), figure(e.MessagesWrong))
+	}
+	fmt.Fprintln(b)
+
+	fmt.Fprintf(b, "| shape | wording | asked | read correctly |\n|---|---|---|---|\n")
+	for _, s := range r.Shapes {
+		if s.Extraction == nil {
+			continue
+		}
+		for _, cut := range s.Extraction.Wordings {
+			fmt.Fprintf(b, "| `%s` | `%s` | %d | %s |\n", s.Shape, cut.Name, cut.Asked, figure(cut.Accuracy))
+		}
+	}
+	fmt.Fprintln(b)
+
+	fmt.Fprintf(b, "| shape | class | asked | read correctly |\n|---|---|---|---|\n")
+	for _, s := range r.Shapes {
+		if s.Extraction == nil {
+			continue
+		}
+		for _, cut := range s.Extraction.Classes {
+			fmt.Fprintf(b, "| `%s` | `%s` | %d | %s |\n", s.Shape, cut.Name, cut.Asked, figure(cut.Accuracy))
+		}
+	}
+	fmt.Fprintln(b)
+}
+
+// renderShapes is every frame on every shape, in the arm that extracts
+// perfectly, the arm that extracts with a model, and the arm that does not
+// extract at all.
+func renderShapes(b *strings.Builder, r Run) {
+	if len(r.Shapes) == 0 {
+		return
+	}
+	fmt.Fprintf(b, "### What each frame answered on each shape\n\n")
+	fmt.Fprintf(b, "| shape | arm | frame | recall | %s | stale returned | units |\n",
+		strings.Join(classNames, " | "))
+	fmt.Fprintf(b, "|---|---|---|---|%s---|---|\n", strings.Repeat("---|", len(classNames)))
+	for _, s := range r.Shapes {
+		for _, f := range s.Frames {
+			y := f.Years[len(f.Years)-1]
+			units := notApplicable
+			if len(f.Sizes) > 0 {
+				units = fmt.Sprintf("%d", f.Sizes[len(f.Sizes)-1].Size.Units)
+			}
+			fmt.Fprintf(b, "| `%s` | `%s` | `%s` | %s | %s | %s | %s |\n",
+				s.Shape, f.Arm, f.Frame, figure(y.Recall), strings.Join(classCells(y), " | "),
+				figure(y.Stale), units)
+		}
 	}
 	fmt.Fprintln(b)
 }

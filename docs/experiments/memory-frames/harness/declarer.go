@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"strings"
@@ -39,6 +40,9 @@ const (
 	declareTimeout     = 60 * time.Second
 	// declareMaxTokens bounds one answer. The answer is one word.
 	declareMaxTokens = 4
+	// declareRetries and declareBackoff bound the wait on a rate limit.
+	declareRetries = 8
+	declareBackoff = 2 * time.Second
 )
 
 // declareInstruction is what the model is asked. It states the job and the
@@ -255,7 +259,7 @@ func (c *declareClient) declare(ctx context.Context, prompt string) (Operation, 
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+c.key)
 
-	resp, err := c.http.Do(req)
+	resp, err := c.do(ctx, req, body)
 	if err != nil {
 		return "", declareUsage{}, fmt.Errorf("declare: %w", err)
 	}
@@ -285,6 +289,36 @@ func (c *declareClient) declare(ctx context.Context, prompt string) (Operation, 
 	}
 	usage := declareUsage{Prompt: decoded.Usage.PromptTokens, Completion: decoded.Usage.CompletionTokens}
 	return parseOperation(decoded.Choices[0].Message.Content), usage, nil
+}
+
+// do sends the request, waiting and retrying a bounded number of times when
+// the provider says the rate limit was reached. A run that stops on a limit
+// it was always going to hit has spent money for nothing, and the retry is
+// bounded so a provider that is down still fails rather than looping.
+func (c *declareClient) do(ctx context.Context, req *http.Request, body []byte) (*http.Response, error) {
+	var last error
+	for attempt := range declareRetries {
+		if attempt > 0 {
+			req = req.Clone(ctx)
+			req.Body = io.NopCloser(bytes.NewReader(body))
+			select {
+			case <-ctx.Done():
+				return nil, ctx.Err()
+			case <-time.After(time.Duration(attempt) * declareBackoff):
+			}
+		}
+		resp, err := c.http.Do(req)
+		if err != nil {
+			last = err
+			continue
+		}
+		if resp.StatusCode != http.StatusTooManyRequests {
+			return resp, nil
+		}
+		resp.Body.Close()
+		last = fmt.Errorf("rate limited after %d attempts", attempt+1)
+	}
+	return nil, last
 }
 
 // parseOperation reads the model's word. Anything that is not one of the
@@ -483,16 +517,18 @@ func (d Declarations) Declaring() Declaring {
 		answers[one.key()] = one.Declared
 	}
 	return func(t Turn) Turn {
-		if t.Fact == nil {
-			return t
+		written := make([]Written, len(t.Written))
+		copy(written, t.Written)
+		for i := range written {
+			asserted := Declaration{
+				Subject: written[i].Subject, Attribute: written[i].Attribute,
+				Value: written[i].Value, Year: t.Day/daysPerYear + 1,
+			}
+			if answered, ok := answers[asserted.key()]; ok {
+				written[i].Declared = answered
+			}
 		}
-		asserted := Declaration{
-			Subject: t.Fact.Subject, Attribute: t.Fact.Attribute,
-			Value: t.Fact.Value, Year: t.Day/daysPerYear + 1,
-		}
-		if answered, ok := answers[asserted.key()]; ok {
-			t.Declared = answered
-		}
+		t.Written = written
 		return t
 	}
 }

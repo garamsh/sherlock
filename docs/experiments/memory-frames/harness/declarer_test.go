@@ -165,17 +165,17 @@ func TestDeclarations_DeclaringSubstitutesTheAnswerForThatWrite(t *testing.T) {
 	declaring := d.Declaring()
 
 	early := wrote(0, almaProject, "a", "first.")
-	early.Declared = OperationReplace
-	assert.Equal(t, OperationJoin, declaring(early).Declared)
+	early.Written[0].Declared = OperationReplace
+	assert.Equal(t, OperationJoin, declaring(early).Written[0].Declared)
 
 	late := wrote(6*daysPerYear+10, almaProject, "a", "back again.")
-	late.Declared = OperationReplace
-	assert.Equal(t, OperationReplace, declaring(late).Declared)
+	late.Written[0].Declared = OperationReplace
+	assert.Equal(t, OperationReplace, declaring(late).Written[0].Declared)
 
 	// A turn the model was never asked about keeps what the workload said.
 	unknown := wrote(0, almaProject, "z", "never asked.")
-	unknown.Declared = OperationReplace
-	assert.Equal(t, OperationReplace, declaring(unknown).Declared)
+	unknown.Written[0].Declared = OperationReplace
+	assert.Equal(t, OperationReplace, declaring(unknown).Written[0].Declared)
 }
 
 func TestDeclareCost_IsTheArithmeticTheRecordReports(t *testing.T) {

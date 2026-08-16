@@ -234,7 +234,7 @@ func summarizeReach(w Workload, year int, probes []ProbeResult, held map[string]
 // learns which arm it is in.
 func observed(t Turn, arm string, declaring Declaring) Turn {
 	if arm == armText {
-		t.Fact, t.Ask, t.Declared = nil, nil, ""
+		t.Written, t.Ask = nil, nil
 		return t
 	}
 	if declaring == nil {

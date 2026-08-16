@@ -34,12 +34,20 @@ func (b JoinBias) over(inner Declaring) Declaring {
 		if inner != nil {
 			t = inner(t)
 		}
-		if t.Fact == nil || t.Declared != OperationReplace || b.Share <= 0 {
+		if len(t.Written) == 0 || b.Share <= 0 {
 			return t
 		}
-		if uniform(b.Seed, t.Index) < b.Share {
-			t.Declared = OperationJoin
+		written := make([]Written, len(t.Written))
+		copy(written, t.Written)
+		for i := range written {
+			if written[i].Declared != OperationReplace {
+				continue
+			}
+			if uniform(b.Seed, drawKey(t.Index, i)) < b.Share {
+				written[i].Declared = OperationJoin
+			}
 		}
+		t.Written = written
 		return t
 	}
 }
@@ -86,21 +94,21 @@ func countRecovered(w Workload, d Declarations, declaring Declaring) (recovered,
 		}
 	}
 	for _, t := range w.Turns {
-		if t.Fact == nil {
-			continue
+		biased := declaring(t)
+		for i, written := range t.Written {
+			asserted := Declaration{
+				Subject: written.Subject, Attribute: written.Attribute,
+				Value: written.Value, Year: t.Day/daysPerYear + 1,
+			}
+			if !wrong[asserted.key()] {
+				continue
+			}
+			if biased.Written[i].Declared == OperationJoin {
+				recovered++
+				continue
+			}
+			left++
 		}
-		asserted := Declaration{
-			Subject: t.Fact.Subject, Attribute: t.Fact.Attribute,
-			Value: t.Fact.Value, Year: t.Day/daysPerYear + 1,
-		}
-		if !wrong[asserted.key()] {
-			continue
-		}
-		if declaring(t).Declared == OperationJoin {
-			recovered++
-			continue
-		}
-		left++
 	}
 	return recovered, left
 }

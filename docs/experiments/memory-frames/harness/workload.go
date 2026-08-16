@@ -62,6 +62,10 @@ type Params struct {
 	SessionsPerYear int `json:"sessions_per_year"`
 	TurnsPerSession int `json:"turns_per_session"`
 	ThreadsPerClass int `json:"threads_per_class"`
+	// Shape is how the sentences are written and how many assertions share
+	// a message. An empty shape is the plain one every earlier figure was
+	// measured on, which is what keeps those runs reproducible.
+	Shape string `json:"shape,omitempty"`
 	// The counts below are what the parameters above produced, so a reader
 	// can check the noise volume rather than compute it.
 	Sessions   int `json:"sessions"`
@@ -170,6 +174,9 @@ func contains(values []string, want string) bool {
 func GenerateWorkload(seed int64, p Params) (Workload, error) {
 	if p.Years < 4 || p.SessionsPerYear < 1 || p.TurnsPerSession < 1 || p.ThreadsPerClass < 1 {
 		return Workload{}, fmt.Errorf("years must be at least 4 and the other parameters positive")
+	}
+	if p.Shape == "" {
+		p.Shape = shapePlain
 	}
 	rng := rand.New(rand.NewSource(seed))
 
@@ -332,28 +339,68 @@ func schedule(rng *rand.Rand, p Params, threads []Thread) ([]Turn, int, error) {
 	days := sessionDays(rng, p)
 	placed := make(map[slot]Turn)
 	var factTurns int
+	// Assertions are gathered by year first. A packed shape puts several of
+	// them — from different threads, which is what a message asserting
+	// several things looks like — into one message; the other shapes put
+	// one in each, which is a group of one. A placement points back at the
+	// assertion it came from rather than naming it by its value, because a
+	// reverted thread asserts one value twice and a lookup by value would
+	// give both of them the later day.
+	type placement struct {
+		thread, assert int
+		written        Written
+	}
+	byYear := make([][]placement, p.Years)
 	for i := range threads {
 		thread := &threads[i]
 		for j := range thread.Asserts {
 			a := &thread.Asserts[j]
-			slots := free[a.Year-1]
-			if len(slots) == 0 {
-				return nil, 0, fmt.Errorf("year %d has no free turn left for %s", a.Year, thread.Subject)
-			}
-			s := slots[0]
-			free[a.Year-1] = slots[1:]
-			a.Day = days[s.session]
-			fact := Fact{
-				Address: Address{Subject: thread.Subject, Attribute: thread.Attribute},
-				Value:   a.Value,
-			}
 			declared := OperationJoin
 			if a.Replaces {
 				declared = OperationReplace
 			}
-			placed[s] = Turn{Day: a.Day, At: turnTime(a.Day, s.index), Text: a.Text,
-				Fact: &fact, Declared: declared}
+			a.Text = harden(rng, p.Shape, a.Text)
+			byYear[a.Year-1] = append(byYear[a.Year-1], placement{
+				thread: i, assert: j,
+				written: Written{
+					Fact: Fact{
+						Address: Address{Subject: thread.Subject, Attribute: thread.Attribute},
+						Value:   a.Value,
+					},
+					Declared: declared,
+				},
+			})
+		}
+	}
+	perMessage := 1
+	if p.Shape == shapePacked {
+		perMessage = packedAssertions
+	}
+	for year := 1; year <= p.Years; year++ {
+		group := byYear[year-1]
+		for len(group) > 0 {
+			take := min(perMessage, len(group))
+			slots := free[year-1]
+			if len(slots) == 0 {
+				return nil, 0, fmt.Errorf("year %d has no free turn left", year)
+			}
+			s := slots[0]
+			free[year-1] = slots[1:]
+			day := days[s.session]
+			written := make([]Written, 0, take)
+			texts := make([]string, 0, take)
+			for _, one := range group[:take] {
+				written = append(written, one.written)
+				texts = append(texts, threads[one.thread].Asserts[one.assert].Text)
+				// Where the assertion landed is written back onto the
+				// thread, so the evidence tables read the day a message was
+				// actually said.
+				threads[one.thread].Asserts[one.assert].Day = day
+			}
+			placed[s] = Turn{Day: day, At: turnTime(day, s.index),
+				Text: pack(rng, texts), Written: written}
 			factTurns++
+			group = group[take:]
 		}
 	}
 	for year := 1; year <= p.Years; year++ {

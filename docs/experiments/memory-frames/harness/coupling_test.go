@@ -57,7 +57,7 @@ func TestCoupling_AWriteReachesWhatNoReadReturned(t *testing.T) {
 			write := func(day int, address Address, value, text string, op Operation) {
 				turn := wrote(day, address, value, text)
 				if tc.declares {
-					turn.Declared = op
+					turn.Written[0].Declared = op
 				}
 				require.NoError(t, frame.Observe(ctx, turn))
 			}

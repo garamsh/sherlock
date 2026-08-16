@@ -72,7 +72,7 @@ func (f *shippedFrame) open() error {
 func (f *shippedFrame) Observe(ctx context.Context, t Turn) error {
 	f.now = t.At
 	typ, salience := memory.TypeEpisodic, gateway.SalienceAddEpisodic
-	if t.Fact != nil {
+	if len(t.Written) > 0 {
 		typ, salience = memory.TypeSemantic, gateway.SalienceAddSemantic
 	}
 	if _, err := f.svc.Store(ctx, memory.StoreInput{

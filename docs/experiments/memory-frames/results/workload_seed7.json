@@ -5,6 +5,7 @@
   "sessions_per_year": 36,
   "turns_per_session": 16,
   "threads_per_class": 40,
+  "shape": "plain",
   "sessions": 360,
   "turns": 5760,
   "fact_turns": 840,

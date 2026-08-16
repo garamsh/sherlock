@@ -49,18 +49,17 @@ func NewIntervalFrame(rule arityRule) Frame {
 // rather than reviving the first: it was true, then it was not, and then it
 // was again, and the record says so.
 func (f *intervalFrame) Observe(_ context.Context, t Turn) error {
-	if t.Fact == nil {
-		return nil
-	}
-	spans := f.values[t.Fact.Address]
-	if f.closes(t) {
-		for i := range spans {
-			if spans[i].to.IsZero() {
-				spans[i].to = t.At
+	for _, written := range t.Written {
+		spans := f.values[written.Address]
+		if f.closes(written) {
+			for i := range spans {
+				if spans[i].to.IsZero() {
+					spans[i].to = t.At
+				}
 			}
 		}
+		f.values[written.Address] = append(spans, validity{value: written.Value, from: t.At})
 	}
-	f.values[t.Fact.Address] = append(spans, validity{value: t.Fact.Value, from: t.At})
 	return nil
 }
 
@@ -138,9 +137,9 @@ func (f *intervalFrame) Close() error { return nil }
 // closes reports whether this write ends the spans open at the address.
 // The self-deciding rule closes on every write; the declared rule closes
 // when the write says it replaces.
-func (f *intervalFrame) closes(t Turn) bool {
+func (f *intervalFrame) closes(written Written) bool {
 	if f.rule == arityDeclared {
-		return t.Declared != OperationJoin
+		return written.Declared != OperationJoin
 	}
 	return true
 }

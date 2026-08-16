@@ -1,0 +1,7862 @@
+{
+ "shape": "packed",
+ "model": "gpt-4.1-nano",
+ "seed": 7,
+ "calls": 247,
+ "prompt_tokens": 50658,
+ "completion_tokens": 5778,
+ "price_input_per_million_usd": 0.1,
+ "price_output_per_million_usd": 0.4,
+ "price_read_on": "2026-08-16",
+ "cost_usd": 0.007377000000000001,
+ "messages": [
+  {
+   "turn": 0,
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Pablo leads the tamarind-tarn project; on a different note, Wilma orders paper from larkin-weir; meanwhile, Milos commutes on the garnet-drift line.",
+   "planted": [
+    {
+     "subject": "Pablo",
+     "attribute": "project",
+     "value": "tamarind-tarn",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Wilma",
+     "attribute": "supplier",
+     "value": "larkin-weir",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Milos",
+     "attribute": "line",
+     "value": "garnet-drift",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Pablo",
+     "attribute": "project",
+     "value": "tamarind-tarn",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Wilma",
+     "attribute": "accounts",
+     "value": "larkin-weir",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Milos",
+     "attribute": "line",
+     "value": "garnet-drift",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 1,
+   "text": "Remind me to chase Sofia about the invoice.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 2,
+   "text": "Tell Amara the kettle is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 3,
+   "text": "Kwame said nothing came of the visitor log.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 4,
+   "text": "Tariq has no news on the window blind.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 5,
+   "text": "Nadia is running late; the rota can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 6,
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Elif goes to the oakhill-isle clinic; on a different note, Oskar rehearses at the ember-hearth hall; on a different note, Goran keeps the backups on harrow-tarn.",
+   "planted": [
+    {
+     "subject": "Elif",
+     "attribute": "clinic",
+     "value": "oakhill-isle",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Oskar",
+     "attribute": "hall",
+     "value": "ember-hearth",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Goran",
+     "attribute": "backups",
+     "value": "harrow-tarn",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Elif",
+     "attribute": "clinic",
+     "value": "oakhill-isle",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Oskar",
+     "attribute": "hall",
+     "value": "ember-hearth",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Goran",
+     "attribute": "backups",
+     "value": "harrow-tarn",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 7,
+   "text": "Rosa has no news on the photocopier.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 8,
+   "text": "Catching you up on what changed while you were away, in no particular order: Tereza banks with dovetail-brook; on a different note, Hugo sits with the copper-kiln team; on a different note, Celia keeps the accounts in cobalt-annex.",
+   "planted": [
+    {
+     "subject": "Tereza",
+     "attribute": "bank",
+     "value": "dovetail-brook",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Hugo",
+     "attribute": "team",
+     "value": "copper-kiln",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Celia",
+     "attribute": "accounts",
+     "value": "cobalt-annex",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Tereza",
+     "attribute": "bank",
+     "value": "dovetail-brook",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Hugo",
+     "attribute": "team",
+     "value": "copper-kiln",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Celia",
+     "attribute": "accounts",
+     "value": "cobalt-annex",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 9,
+   "text": "Idris is running late; the coffee machine can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 10,
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Lisa keeps the backups on umber-drift; one more for the pile, Tariq keeps the backups on dovetail-kiln; on a different note, Goran leads the cinder-chandler project.",
+   "planted": [
+    {
+     "subject": "Lisa",
+     "attribute": "backups",
+     "value": "umber-drift",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Tariq",
+     "attribute": "backups",
+     "value": "dovetail-kiln",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Goran",
+     "attribute": "project",
+     "value": "cinder-chandler",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Lisa",
+     "attribute": "backups",
+     "value": "umber-drift",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Tariq",
+     "attribute": "backups",
+     "value": "dovetail-kiln",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Goran",
+     "attribute": "project",
+     "value": "cinder-chandler",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 11,
+   "text": "From the notes, tidied up and probably still incomplete: Cato keeps the backups on silverfin-hearth; and separately, Amara rents the ironwood-weir cottage; one more for the pile, Lisa sits with the cinder-meadow team.",
+   "planted": [
+    {
+     "subject": "Cato",
+     "attribute": "backups",
+     "value": "silverfin-hearth",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Amara",
+     "attribute": "cottage",
+     "value": "ironwood-weir",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Lisa",
+     "attribute": "team",
+     "value": "cinder-meadow",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Cato",
+     "attribute": "backups",
+     "value": "silverfin-hearth",
+     "Declared": "join"
+    },
+    {
+     "subject": "Amara",
+     "attribute": "cottage",
+     "value": "ironwood-weir",
+     "Declared": "join"
+    },
+    {
+     "subject": "Lisa",
+     "attribute": "team",
+     "value": "cinder-meadow",
+     "Declared": "join"
+    }
+   ]
+  },
+  {
+   "turn": 12,
+   "text": "Emeka asked about the spare key again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 13,
+   "text": "Farid wants a word about the badge at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 14,
+   "text": "Petra got the post by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 15,
+   "text": "Rosa brought the parking permit up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 16,
+   "text": "Otto got the post by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 17,
+   "text": "Milos has no news on the fire drill.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 18,
+   "text": "Yuki asked about the parking permit again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 19,
+   "text": "Emeka says the first aid box is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 20,
+   "text": "Linnea sent the badge back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 21,
+   "text": "Cato has the fire drill until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 22,
+   "text": "Catching you up on what changed while you were away, in no particular order: Fabio keeps the accounts in yarrow-spire; on a different note, Stefan leads the amber-annex project; meanwhile, Beatriz goes to the harrow-moor clinic.",
+   "planted": [
+    {
+     "subject": "Fabio",
+     "attribute": "accounts",
+     "value": "yarrow-spire",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Stefan",
+     "attribute": "project",
+     "value": "amber-annex",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Beatriz",
+     "attribute": "clinic",
+     "value": "harrow-moor",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Fabio",
+     "attribute": "accounts",
+     "value": "yarrow-spire",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Stefan",
+     "attribute": "project",
+     "value": "amber-annex",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Beatriz",
+     "attribute": "clinic",
+     "value": "harrow-moor",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 23,
+   "text": "From the notes, tidied up and probably still incomplete: Zara rehearses at the verdigris-annex hall; meanwhile, Nadia sits with the ember-foundry team; and separately, Gunnar banks with umber-weir.",
+   "planted": [
+    {
+     "subject": "Zara",
+     "attribute": "hall",
+     "value": "verdigris-annex",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Nadia",
+     "attribute": "team",
+     "value": "ember-foundry",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Gunnar",
+     "attribute": "bank",
+     "value": "umber-weir",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Zara",
+     "attribute": "hall",
+     "value": "verdigris-annex",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Nadia",
+     "attribute": "team",
+     "value": "ember-foundry",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Gunnar",
+     "attribute": "bank",
+     "value": "umber-weir",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 24,
+   "text": "Karin said nothing came of the notice board.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 25,
+   "text": "Tell Dario the notice board is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 26,
+   "text": "Emeka got the notice board by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 27,
+   "text": "Otto brought the recycling up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 28,
+   "text": "Vasco had a look at the window blind and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 29,
+   "text": "Goran says the printer is sorted.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 30,
+   "text": "Maria said nothing came of the recycling.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 31,
+   "text": "Dmitri sent the kettle back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 32,
+   "text": "Mateo is running late; the coffee machine can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 33,
+   "text": "Quinn got the umbrella stand by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 34,
+   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Kasper banks with cobalt-moor; one more for the pile, Yara keeps the accounts in quill-hollow; meanwhile, Tereza keeps the backups on saffron-meadow.",
+   "planted": [
+    {
+     "subject": "Kasper",
+     "attribute": "bank",
+     "value": "cobalt-moor",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Yara",
+     "attribute": "accounts",
+     "value": "quill-hollow",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Tereza",
+     "attribute": "backups",
+     "value": "saffron-meadow",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Kasper",
+     "attribute": "bank",
+     "value": "cobalt-moor",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Yara",
+     "attribute": "accounts",
+     "value": "quill-hollow",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Tereza",
+     "attribute": "backups",
+     "value": "saffron-meadow",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 35,
+   "text": "Dora sent the recycling back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 36,
+   "text": "Andrei has no news on the printer.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 37,
+   "text": "Tomas says the post is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 38,
+   "text": "Catching you up on what changed while you were away, in no particular order: Ulla banks with verdigris-reach; on a different note, Yara goes to the saffron-drift clinic; one more for the pile, Yara commutes on the thistle-reach line.",
+   "planted": [
+    {
+     "subject": "Ulla",
+     "attribute": "bank",
+     "value": "verdigris-reach",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Yara",
+     "attribute": "clinic",
+     "value": "saffron-drift",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Yara",
+     "attribute": "line",
+     "value": "thistle-reach",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Ulla",
+     "attribute": "bank",
+     "value": "verdigris-reach",
+     "Declared": "join"
+    },
+    {
+     "subject": "Yara",
+     "attribute": "clinic",
+     "value": "saffron-drift",
+     "Declared": "join"
+    },
+    {
+     "subject": "Yara",
+     "attribute": "line",
+     "value": "thistle-reach",
+     "Declared": "join"
+    }
+   ]
+  },
+  {
+   "turn": 39,
+   "text": "Amara brought the spare key up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 40,
+   "text": "Ulla got the notice board by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 41,
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Chiara leads the larkin-harbour project; one more for the pile, Anders keeps the backups on cobalt-yard; and separately, Viktor sits with the ember-spire team.",
+   "planted": [
+    {
+     "subject": "Chiara",
+     "attribute": "project",
+     "value": "larkin-harbour",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Anders",
+     "attribute": "backups",
+     "value": "cobalt-yard",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Viktor",
+     "attribute": "team",
+     "value": "ember-spire",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Chiara",
+     "attribute": "project",
+     "value": "larkin-harbour",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Anders",
+     "attribute": "backups",
+     "value": "cobalt-yard",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Viktor",
+     "attribute": "team",
+     "value": "ember-spire",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 42,
+   "text": "From the notes, tidied up and probably still incomplete: Viktor rents the mirefield-quarry cottage; on a different note, Sanjay commutes on the wicklow-mill line; on a different note, Erol keeps the accounts in verdigris-hearth.",
+   "planted": [
+    {
+     "subject": "Viktor",
+     "attribute": "cottage",
+     "value": "mirefield-quarry",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Sanjay",
+     "attribute": "line",
+     "value": "wicklow-mill",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Erol",
+     "attribute": "accounts",
+     "value": "verdigris-hearth",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Viktor",
+     "attribute": "cottage",
+     "value": "mirefield-quarry",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Sanjay",
+     "attribute": "line",
+     "value": "wicklow-mill",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Erol",
+     "attribute": "accounts",
+     "value": "verdigris-hearth",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 43,
+   "text": "Someone should tell Wanda where the printer ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 44,
+   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Freya sits with the ironwood-fenn team; meanwhile, Sanjay is taking the dovetail-harbour course; on a different note, Esther rents the zephyr-ridge cottage.",
+   "planted": [
+    {
+     "subject": "Freya",
+     "attribute": "team",
+     "value": "ironwood-fenn",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Sanjay",
+     "attribute": "course",
+     "value": "dovetail-harbour",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Esther",
+     "attribute": "cottage",
+     "value": "zephyr-ridge",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Freya",
+     "attribute": "team",
+     "value": "ironwood-fenn",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Sanjay",
+     "attribute": "course",
+     "value": "dovetail-harbour",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Esther",
+     "attribute": "cottage",
+     "value": "zephyr-ridge",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 45,
+   "text": "Celia says the visitor log is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 46,
+   "text": "Someone should tell Leila where the spare key ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 47,
+   "text": "Erol says the visitor log is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 48,
+   "text": "From the notes, tidied up and probably still incomplete: Emeka leads the ember-weir project; one more for the pile, Luca keeps the accounts in garnet-meadow; and separately, Mateo rents the sable-glade cottage.",
+   "planted": [
+    {
+     "subject": "Emeka",
+     "attribute": "project",
+     "value": "ember-weir",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Luca",
+     "attribute": "accounts",
+     "value": "garnet-meadow",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Mateo",
+     "attribute": "cottage",
+     "value": "sable-glade",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Emeka",
+     "attribute": "project",
+     "value": "ember-weir",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Luca",
+     "attribute": "accounts",
+     "value": "garnet-meadow",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Mateo",
+     "attribute": "cottage",
+     "value": "sable-glade",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 49,
+   "text": "Maria is not worried about the recycling.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 50,
+   "text": "Sanjay is running late; the umbrella stand can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 51,
+   "text": "Ask Freya whether the notice board ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 52,
+   "text": "Tell Orla the kettle is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 53,
+   "text": "Tell Petra the badge is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 54,
+   "text": "Iris thinks the kettle can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 55,
+   "text": "Amara said nothing came of the coffee machine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 56,
+   "text": "Zara says the invoice is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 57,
+   "text": "From the notes, tidied up and probably still incomplete: Erol orders paper from verdigris-tarn; one more for the pile, Jonas rents the quill-annex cottage; meanwhile, Iris leads the silverfin-harbour project.",
+   "planted": [
+    {
+     "subject": "Erol",
+     "attribute": "supplier",
+     "value": "verdigris-tarn",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Jonas",
+     "attribute": "cottage",
+     "value": "quill-annex",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Iris",
+     "attribute": "project",
+     "value": "silverfin-harbour",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Erol",
+     "attribute": "orders",
+     "value": "paper from verdigris-tarn",
+     "Declared": "join"
+    },
+    {
+     "subject": "Jonas",
+     "attribute": "cottage",
+     "value": "quill-annex",
+     "Declared": "join"
+    },
+    {
+     "subject": "Iris",
+     "attribute": "project",
+     "value": "silverfin-harbour",
+     "Declared": "join"
+    }
+   ]
+  },
+  {
+   "turn": 58,
+   "text": "Nikos thinks the photocopier can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 59,
+   "text": "Ask Priya whether the first aid box ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 60,
+   "text": "Iris got the stationery order by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 61,
+   "text": "Ask Lisa whether the lift ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 62,
+   "text": "Anders mentioned the kettle in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 63,
+   "text": "Dario got the spare key by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 64,
+   "text": "Nikos got the visitor log by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 65,
+   "text": "Dora got the coffee machine by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 66,
+   "text": "Ingrid got the notice board by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 67,
+   "text": "From the notes, tidied up and probably still incomplete: Dario buys bread at the larkin-spire bakery; and separately, Yuki orders paper from bramble-ledge; meanwhile, Ivo keeps the accounts in dovetail-wharf.",
+   "planted": [
+    {
+     "subject": "Dario",
+     "attribute": "bakery",
+     "value": "larkin-spire",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Yuki",
+     "attribute": "supplier",
+     "value": "bramble-ledge",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Ivo",
+     "attribute": "accounts",
+     "value": "dovetail-wharf",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Dario",
+     "attribute": "bakery",
+     "value": "larkin-spire",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Yuki",
+     "attribute": "accounts",
+     "value": "bramble-ledge",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Ivo",
+     "attribute": "accounts",
+     "value": "dovetail-wharf",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 68,
+   "text": "Xavier is not worried about the invoice.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 69,
+   "text": "Sanjay is not worried about the invoice.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 70,
+   "text": "Orla mentioned the notice board in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 71,
+   "text": "Kasper got the post by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 72,
+   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Vasco is taking the zephyr-wharf course; one more for the pile, Kwame keeps the accounts in cinder-hearth; meanwhile, Greta keeps the accounts in dovetail-isle.",
+   "planted": [
+    {
+     "subject": "Vasco",
+     "attribute": "course",
+     "value": "zephyr-wharf",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Kwame",
+     "attribute": "accounts",
+     "value": "cinder-hearth",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Greta",
+     "attribute": "accounts",
+     "value": "dovetail-isle",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Vasco",
+     "attribute": "course",
+     "value": "zephyr-wharf",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Kwame",
+     "attribute": "accounts",
+     "value": "cinder-hearth",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Greta",
+     "attribute": "accounts",
+     "value": "dovetail-isle",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 73,
+   "text": "Elif is not worried about the printer.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 74,
+   "text": "Ask Ulla whether the window blind ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 75,
+   "text": "Petra left a note about the visitor log.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 76,
+   "text": "Lisa has the recycling until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 77,
+   "text": "Beatriz is not worried about the wall clock.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 78,
+   "text": "Elif has no news on the recycling.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 79,
+   "text": "Kasper is not worried about the rota.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 80,
+   "text": "Tell Anders the badge is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 81,
+   "text": "Rafael has the rota until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 82,
+   "text": "Wilma brought the printer up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 83,
+   "text": "Rosa has no news on the first aid box.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 84,
+   "text": "Viktor is not worried about the post.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 85,
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Elif sits with the ember-drift team; one more for the pile, Karin sits with the brindle-mill team; and separately, Yara sits with the ravel-quarry team.",
+   "planted": [
+    {
+     "subject": "Elif",
+     "attribute": "team",
+     "value": "ember-drift",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Karin",
+     "attribute": "team",
+     "value": "brindle-mill",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Yara",
+     "attribute": "team",
+     "value": "ravel-quarry",
+     "Declared": "replace"
+    }
+   ],
+   "found": []
+  },
+  {
+   "turn": 86,
+   "text": "Catching you up on what changed while you were away, in no particular order: Freya commutes on the marlow-pike line; one more for the pile, Luca is taking the brindle-isle course; one more for the pile, Tariq leads the larkin-glade project.",
+   "planted": [
+    {
+     "subject": "Freya",
+     "attribute": "line",
+     "value": "marlow-pike",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Luca",
+     "attribute": "course",
+     "value": "brindle-isle",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Tariq",
+     "attribute": "project",
+     "value": "larkin-glade",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Freya",
+     "attribute": "line",
+     "value": "marlow-pike",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Luca",
+     "attribute": "course",
+     "value": "brindle-isle",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Tariq",
+     "attribute": "project",
+     "value": "larkin-glade",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 87,
+   "text": "Leila mentioned the umbrella stand in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 88,
+   "text": "Ask Dario whether the kettle ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 89,
+   "text": "Tomas says the photocopier is sorted.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 90,
+   "text": "Ask Yara whether the stationery order ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 91,
+   "text": "Dmitri says the window blind is sorted.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 92,
+   "text": "Tell Lorna the parking permit is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 93,
+   "text": "Someone should tell Jonas where the invoice ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 94,
+   "text": "Stefan left a note about the fire drill.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 95,
+   "text": "Erol says the recycling is sorted.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 96,
+   "text": "Xavier thinks the rota can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 97,
+   "text": "Ask Greta whether the fire drill ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 98,
+   "text": "Elif left a note about the wall clock.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 99,
+   "text": "Ingrid said nothing came of the window blind.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 100,
+   "text": "Tereza is running late; the parking permit can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 101,
+   "text": "Sanjay is running late; the visitor log can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 102,
+   "text": "Ask Idris whether the visitor log ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 103,
+   "text": "Amara thinks the fire drill can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 104,
+   "text": "Xavier said nothing came of the recycling.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 105,
+   "text": "Catching you up on what changed while you were away, in no particular order: Olga orders paper from cinder-brook; meanwhile, Rania keeps the accounts in yarrow-hollow; one more for the pile, Leila banks with bramble-harbour.",
+   "planted": [
+    {
+     "subject": "Olga",
+     "attribute": "supplier",
+     "value": "cinder-brook",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Rania",
+     "attribute": "accounts",
+     "value": "yarrow-hollow",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Leila",
+     "attribute": "bank",
+     "value": "bramble-harbour",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Rania",
+     "attribute": "accounts",
+     "value": "yarrow-hollow",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Leila",
+     "attribute": "bank",
+     "value": "bramble-harbour",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 106,
+   "text": "Sofia brought the lift up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 107,
+   "text": "Someone should tell Farid where the first aid box ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 108,
+   "text": "Tariq sent the badge back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 109,
+   "text": "Elif is running late; the photocopier can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 110,
+   "text": "Ask Anders whether the first aid box ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 111,
+   "text": "Yannis got the badge by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 112,
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Kofi commutes on the nutmeg-vale line; and separately, Zara goes to the cobalt-hollow clinic; and separately, Orla is taking the flint-moor course.",
+   "planted": [
+    {
+     "subject": "Kofi",
+     "attribute": "line",
+     "value": "nutmeg-vale",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Zara",
+     "attribute": "clinic",
+     "value": "cobalt-hollow",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Orla",
+     "attribute": "course",
+     "value": "flint-moor",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Kofi",
+     "attribute": "line",
+     "value": "nutmeg-vale",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Zara",
+     "attribute": "clinic",
+     "value": "cobalt-hollow",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Orla",
+     "attribute": "course",
+     "value": "flint-moor",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 113,
+   "text": "Elif is not worried about the invoice.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 114,
+   "text": "Milos sent the kettle back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 115,
+   "text": "Oskar has the printer until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 116,
+   "text": "Tariq wants a word about the first aid box at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 117,
+   "text": "Petra got the rota by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 118,
+   "text": "Petra asked about the photocopier again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 119,
+   "text": "Remind me to chase Kasper about the rota.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 120,
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Tomas rehearses at the sable-spire hall; meanwhile, Gunnar is taking the nutmeg-sedge course; and separately, Petra keeps the accounts in thistle-lantern.",
+   "planted": [
+    {
+     "subject": "Tomas",
+     "attribute": "hall",
+     "value": "sable-spire",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Gunnar",
+     "attribute": "course",
+     "value": "nutmeg-sedge",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Petra",
+     "attribute": "accounts",
+     "value": "thistle-lantern",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Tomas",
+     "attribute": "hall",
+     "value": "sable-spire",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Gunnar",
+     "attribute": "course",
+     "value": "nutmeg-sedge",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Petra",
+     "attribute": "accounts",
+     "value": "thistle-lantern",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 121,
+   "text": "Rafael left a note about the window blind.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 122,
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Leila commutes on the ironwood-pike line; one more for the pile, Maria leads the quill-drift project; and separately, Stefan orders paper from saffron-weir.",
+   "planted": [
+    {
+     "subject": "Leila",
+     "attribute": "line",
+     "value": "ironwood-pike",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Maria",
+     "attribute": "project",
+     "value": "quill-drift",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Stefan",
+     "attribute": "supplier",
+     "value": "saffron-weir",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Leila",
+     "attribute": "line",
+     "value": "ironwood-pike",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Maria",
+     "attribute": "project",
+     "value": "quill-drift",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Stefan",
+     "attribute": "accounts",
+     "value": "saffron-weir",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 123,
+   "text": "Remind me to chase Hassan about the parking permit.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 124,
+   "text": "Tell Ivo the invoice is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 125,
+   "text": "Quinn got the photocopier by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 126,
+   "text": "Someone should tell Quinn where the spare key ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 127,
+   "text": "From the notes, tidied up and probably still incomplete: Erol banks with flint-harbour; and separately, Josefa keeps the accounts in saffron-vale; on a different note, Wanda buys bread at the copper-foundry bakery.",
+   "planted": [
+    {
+     "subject": "Erol",
+     "attribute": "bank",
+     "value": "flint-harbour",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Josefa",
+     "attribute": "accounts",
+     "value": "saffron-vale",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Wanda",
+     "attribute": "bakery",
+     "value": "copper-foundry",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Erol",
+     "attribute": "bank",
+     "value": "flint-harbour",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Josefa",
+     "attribute": "accounts",
+     "value": "saffron-vale",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Wanda",
+     "attribute": "bakery",
+     "value": "copper-foundry",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 128,
+   "text": "Cato asked about the notice board again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 129,
+   "text": "Jana is running late; the photocopier can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 130,
+   "text": "Kasper said nothing came of the badge.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 131,
+   "text": "Hugo thinks the visitor log can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 132,
+   "text": "Josefa is not worried about the wall clock.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 133,
+   "text": "Ask Jana whether the invoice ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 134,
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Kasper keeps the accounts in ember-orchard; one more for the pile, Amara orders paper from yarrow-reach; one more for the pile, Celia leads the brindle-fenn project.",
+   "planted": [
+    {
+     "subject": "Kasper",
+     "attribute": "accounts",
+     "value": "ember-orchard",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Amara",
+     "attribute": "supplier",
+     "value": "yarrow-reach",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Celia",
+     "attribute": "project",
+     "value": "brindle-fenn",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Kasper",
+     "attribute": "accounts",
+     "value": "ember-orchard",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Amara",
+     "attribute": "orders",
+     "value": "paper from yarrow-reach",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Celia",
+     "attribute": "project",
+     "value": "brindle-fenn",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 135,
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Greta buys bread at the nutmeg-glade bakery; on a different note, Wilma leads the mirefield-beacon project; meanwhile, Elif banks with pewter-spire.",
+   "planted": [
+    {
+     "subject": "Greta",
+     "attribute": "bakery",
+     "value": "nutmeg-glade",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Wilma",
+     "attribute": "project",
+     "value": "mirefield-beacon",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Elif",
+     "attribute": "bank",
+     "value": "pewter-spire",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Greta",
+     "attribute": "bakery",
+     "value": "nutmeg-glade",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Wilma",
+     "attribute": "project",
+     "value": "mirefield-beacon",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Elif",
+     "attribute": "bank",
+     "value": "pewter-spire",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 136,
+   "text": "Sofia mentioned the umbrella stand in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 137,
+   "text": "Ulla is running late; the parking permit can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 138,
+   "text": "Yara had a look at the window blind and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 139,
+   "text": "Olga got the rota by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 140,
+   "text": "Nikos is running late; the stationery order can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 141,
+   "text": "Luca brought the visitor log up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 142,
+   "text": "Celia left a note about the first aid box.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 143,
+   "text": "Sofia wants a word about the post at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 144,
+   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Lorna keeps the accounts in marlow-kiln; on a different note, Noor is taking the copper-meadow course; on a different note, Idris keeps the backups on oakhill-wharf.",
+   "planted": [
+    {
+     "subject": "Lorna",
+     "attribute": "accounts",
+     "value": "marlow-kiln",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Noor",
+     "attribute": "course",
+     "value": "copper-meadow",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Idris",
+     "attribute": "backups",
+     "value": "oakhill-wharf",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Lorna",
+     "attribute": "accounts",
+     "value": "marlow-kiln",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Noor",
+     "attribute": "course",
+     "value": "copper-meadow",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Idris",
+     "attribute": "backups",
+     "value": "oakhill-wharf",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 145,
+   "text": "Leila thinks the wall clock can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 146,
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Yuki buys bread at the vellum-annex bakery; on a different note, Priya rents the umber-meadow cottage; on a different note, Orla commutes on the cobalt-hearth line.",
+   "planted": [
+    {
+     "subject": "Yuki",
+     "attribute": "bakery",
+     "value": "vellum-annex",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Priya",
+     "attribute": "cottage",
+     "value": "umber-meadow",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Orla",
+     "attribute": "line",
+     "value": "cobalt-hearth",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Yuki",
+     "attribute": "bakery",
+     "value": "vellum-annex",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Priya",
+     "attribute": "cottage",
+     "value": "umber-meadow",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Orla",
+     "attribute": "line",
+     "value": "cobalt-hearth",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 147,
+   "text": "Anders says the coffee machine is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 148,
+   "text": "Chiara says the spare key is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 149,
+   "text": "Magnus has no news on the first aid box.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 150,
+   "text": "Tell Linnea the first aid box is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 151,
+   "text": "Rafael had a look at the fire drill and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 152,
+   "text": "Gunnar had a look at the photocopier and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 153,
+   "text": "Quinn brought the stationery order up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 154,
+   "text": "Emeka asked about the recycling again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 155,
+   "text": "Olga asked about the spare key again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 156,
+   "text": "Halima is running late; the umbrella stand can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 157,
+   "text": "Andrei has the recycling until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 158,
+   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Tariq is taking the cinder-drift course; meanwhile, Goran banks with cobalt-foundry; one more for the pile, Wanda is taking the flint-wharf course.",
+   "planted": [
+    {
+     "subject": "Tariq",
+     "attribute": "course",
+     "value": "cinder-drift",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Goran",
+     "attribute": "bank",
+     "value": "cobalt-foundry",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Wanda",
+     "attribute": "course",
+     "value": "flint-wharf",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Tariq",
+     "attribute": "course",
+     "value": "cinder-drift",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Goran",
+     "attribute": "bank",
+     "value": "cobalt-foundry",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Wanda",
+     "attribute": "course",
+     "value": "flint-wharf",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 159,
+   "text": "Orla brought the stationery order up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 160,
+   "text": "Gunnar got the first aid box by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 161,
+   "text": "Vasco said nothing came of the fire drill.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 162,
+   "text": "Remind me to chase Bjorn about the coffee machine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 163,
+   "text": "Quinn mentioned the parking permit in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 164,
+   "text": "Esther is running late; the recycling can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 165,
+   "text": "Remind me to chase Yannis about the kettle.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 166,
+   "text": "Hassan says the badge is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 167,
+   "text": "Ursula asked about the kettle again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 168,
+   "text": "Petra has no news on the kettle.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 169,
+   "text": "Dmitri sent the invoice back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 170,
+   "text": "Jonas said nothing came of the spare key.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 171,
+   "text": "Bjorn sent the coffee machine back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 172,
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Vasco is taking the nutmeg-quarry course instead; one more for the pile, Kwame has switched the accounts to dovetail-orchard; meanwhile, Greta has switched the accounts to oakhill-spire.",
+   "planted": [
+    {
+     "subject": "Vasco",
+     "attribute": "course",
+     "value": "nutmeg-quarry",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Kwame",
+     "attribute": "accounts",
+     "value": "dovetail-orchard",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Greta",
+     "attribute": "accounts",
+     "value": "oakhill-spire",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Kwame",
+     "attribute": "accounts",
+     "value": "dovetail-orchard",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Greta",
+     "attribute": "accounts",
+     "value": "oakhill-spire",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 173,
+   "text": "From the notes, tidied up and probably still incomplete: Ingrid rehearses at the thistle-beacon hall; and separately, Fabio sits with the quill-mill team; meanwhile, Orla goes to the ravel-ridge clinic.",
+   "planted": [
+    {
+     "subject": "Ingrid",
+     "attribute": "hall",
+     "value": "thistle-beacon",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Fabio",
+     "attribute": "team",
+     "value": "quill-mill",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Orla",
+     "attribute": "clinic",
+     "value": "ravel-ridge",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Ingrid",
+     "attribute": "hall",
+     "value": "thistle-beacon",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Fabio",
+     "attribute": "team",
+     "value": "quill-mill",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Orla",
+     "attribute": "clinic",
+     "value": "ravel-ridge",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 174,
+   "text": "Tell Zoltan the badge is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 175,
+   "text": "Tereza left a note about the visitor log.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 176,
+   "text": "Mateo said nothing came of the kettle.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 177,
+   "text": "Tariq has the umbrella stand until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 178,
+   "text": "Milos has no news on the rota.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 179,
+   "text": "Catching you up on what changed while you were away, in no particular order: Erol orders paper from bramble-weir now; and separately, Jonas rents the marlow-yard cottage from now on; one more for the pile, Iris leads the mirefield-vale project from now on.",
+   "planted": [
+    {
+     "subject": "Erol",
+     "attribute": "supplier",
+     "value": "bramble-weir",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Jonas",
+     "attribute": "cottage",
+     "value": "marlow-yard",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Iris",
+     "attribute": "project",
+     "value": "mirefield-vale",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Erol",
+     "attribute": "cottage",
+     "value": "bramble-weir",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Jonas",
+     "attribute": "cottage",
+     "value": "marlow-yard",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Iris",
+     "attribute": "project",
+     "value": "mirefield-vale",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 180,
+   "text": "From the notes, tidied up and probably still incomplete: Freya sits with the vellum-vale team from now on; on a different note, Sanjay is taking the marlow-orchard course instead; one more for the pile, Esther rents the flint-hearth cottage from now on.",
+   "planted": [
+    {
+     "subject": "Freya",
+     "attribute": "team",
+     "value": "vellum-vale",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Sanjay",
+     "attribute": "course",
+     "value": "marlow-orchard",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Esther",
+     "attribute": "cottage",
+     "value": "flint-hearth",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Freya",
+     "attribute": "team",
+     "value": "vellum-vale",
+     "Declared": "join"
+    },
+    {
+     "subject": "Sanjay",
+     "attribute": "course",
+     "value": "marlow-orchard",
+     "Declared": "join"
+    },
+    {
+     "subject": "Esther",
+     "attribute": "cottage",
+     "value": "flint-hearth",
+     "Declared": "join"
+    }
+   ]
+  },
+  {
+   "turn": 181,
+   "text": "Cato brought the kettle up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 182,
+   "text": "Kwame thinks the coffee machine can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 183,
+   "text": "Jonas thinks the wall clock can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 184,
+   "text": "Alma has no news on the notice board.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 185,
+   "text": "Idris asked about the invoice again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 186,
+   "text": "Beatriz has no news on the invoice.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 187,
+   "text": "Anders brought the lift up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 188,
+   "text": "Yuki wants a word about the visitor log at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 189,
+   "text": "Jonas thinks the umbrella stand can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 190,
+   "text": "Elif mentioned the stationery order in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 191,
+   "text": "From the notes, tidied up and probably still incomplete: Fabio has switched the accounts to umber-reach; one more for the pile, Stefan leads the umber-fenn project from now on; meanwhile, Beatriz has moved to the sable-tarn clinic.",
+   "planted": [
+    {
+     "subject": "Fabio",
+     "attribute": "accounts",
+     "value": "umber-reach",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Stefan",
+     "attribute": "project",
+     "value": "umber-fenn",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Beatriz",
+     "attribute": "clinic",
+     "value": "sable-tarn",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Fabio",
+     "attribute": "accounts",
+     "value": "umber-reach",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Stefan",
+     "attribute": "project",
+     "value": "umber-fenn",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Beatriz",
+     "attribute": "clinic",
+     "value": "sable-tarn",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 192,
+   "text": "From the notes, tidied up and probably still incomplete: Lisa keeps the backups on saffron-beacon from now on; on a different note, Tariq keeps the backups on vellum-mill from now on; on a different note, Goran leads the cinder-fenn project from now on.",
+   "planted": [
+    {
+     "subject": "Lisa",
+     "attribute": "backups",
+     "value": "saffron-beacon",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Tariq",
+     "attribute": "backups",
+     "value": "vellum-mill",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Goran",
+     "attribute": "project",
+     "value": "cinder-fenn",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Lisa",
+     "attribute": "backups",
+     "value": "saffron-beacon",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Tariq",
+     "attribute": "backups",
+     "value": "vellum-mill",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Goran",
+     "attribute": "project",
+     "value": "cinder-fenn",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 193,
+   "text": "Erol has the spare key until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 194,
+   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Chiara leads the dovetail-lantern project from now on; on a different note, Anders keeps the backups on vellum-quarry from now on; meanwhile, Viktor sits with the ravel-orchard team from now on.",
+   "planted": [
+    {
+     "subject": "Chiara",
+     "attribute": "project",
+     "value": "dovetail-lantern",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Anders",
+     "attribute": "backups",
+     "value": "vellum-quarry",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Viktor",
+     "attribute": "team",
+     "value": "ravel-orchard",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Chiara",
+     "attribute": "project",
+     "value": "dovetail-lantern",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Anders",
+     "attribute": "backups",
+     "value": "vellum-quarry",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Viktor",
+     "attribute": "team",
+     "value": "ravel-orchard",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 195,
+   "text": "Idris has the spare key until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 196,
+   "text": "Ask Ursula whether the stationery order ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 197,
+   "text": "From the notes, tidied up and probably still incomplete: Rafael rents the flint-chandler cottage; one more for the pile, Josefa keeps the backups on tamarind-drift; meanwhile, Emeka keeps the accounts in dovetail-pike.",
+   "planted": [
+    {
+     "subject": "Rafael",
+     "attribute": "cottage",
+     "value": "flint-chandler",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Josefa",
+     "attribute": "backups",
+     "value": "tamarind-drift",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Emeka",
+     "attribute": "accounts",
+     "value": "dovetail-pike",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Rafael",
+     "attribute": "cottage",
+     "value": "flint-chandler",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Josefa",
+     "attribute": "backups",
+     "value": "tamarind-drift",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Emeka",
+     "attribute": "accounts",
+     "value": "dovetail-pike",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 198,
+   "text": "Dmitri said nothing came of the spare key.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 199,
+   "text": "Sanjay says the recycling is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 200,
+   "text": "Freya wants a word about the window blind at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 201,
+   "text": "Farid has no news on the window blind.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 202,
+   "text": "Dora asked about the wall clock again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 203,
+   "text": "Jonas wants a word about the post at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 204,
+   "text": "Rania brought the coffee machine up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 205,
+   "text": "Halima mentioned the fire drill in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 206,
+   "text": "Rafael brought the lift up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 207,
+   "text": "Magnus wants a word about the wall clock at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 208,
+   "text": "Tell Halima the badge is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 209,
+   "text": "Ask Rania whether the photocopier ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 210,
+   "text": "Jana says the printer is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 211,
+   "text": "Farid had a look at the parking permit and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 212,
+   "text": "Viktor wants a word about the parking permit at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 213,
+   "text": "Idris says the coffee machine is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 214,
+   "text": "Halima has the kettle until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 215,
+   "text": "Catching you up on what changed while you were away, in no particular order: Pablo leads the ironwood-reach project from now on; and separately, Wilma orders paper from yarrow-annex now; one more for the pile, Milos commutes on the amber-chandler line now.",
+   "planted": [
+    {
+     "subject": "Pablo",
+     "attribute": "project",
+     "value": "ironwood-reach",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Wilma",
+     "attribute": "supplier",
+     "value": "yarrow-annex",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Milos",
+     "attribute": "line",
+     "value": "amber-chandler",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Pablo",
+     "attribute": "project",
+     "value": "ironwood-reach",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Wilma",
+     "attribute": "accounts",
+     "value": "yarrow-annex",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Milos",
+     "attribute": "line",
+     "value": "amber-chandler",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 216,
+   "text": "Zara says the post is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 217,
+   "text": "Xavier wants a word about the badge at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 218,
+   "text": "Otto said nothing came of the stationery order.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 219,
+   "text": "From the notes, tidied up and probably still incomplete: Tariq orders paper from quill-chandler; meanwhile, Otto rehearses at the ember-hollow hall; meanwhile, Hassan keeps the backups on wicklow-ledge.",
+   "planted": [
+    {
+     "subject": "Tariq",
+     "attribute": "supplier",
+     "value": "quill-chandler",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Otto",
+     "attribute": "hall",
+     "value": "ember-hollow",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Hassan",
+     "attribute": "backups",
+     "value": "wicklow-ledge",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Tariq",
+     "attribute": "project",
+     "value": "orders paper from quill-chandler",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Otto",
+     "attribute": "hall",
+     "value": "ember-hollow hall",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Hassan",
+     "attribute": "backups",
+     "value": "wicklow-ledge",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 220,
+   "text": "Dmitri is running late; the kettle can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 221,
+   "text": "Bruno wants a word about the printer at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 222,
+   "text": "Zara mentioned the printer in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 223,
+   "text": "Ask Rafael whether the umbrella stand ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 224,
+   "text": "Viktor is running late; the photocopier can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 225,
+   "text": "Wilma says the lift is sorted.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 226,
+   "text": "Ivo thinks the visitor log can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 227,
+   "text": "Kasper had a look at the notice board and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 228,
+   "text": "Tell Kwame the rota is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 229,
+   "text": "Viktor says the badge is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 230,
+   "text": "Tell Hassan the rota is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 231,
+   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Kasper banks with marlow-weir now; and separately, Yara has switched the accounts to dovetail-hollow; meanwhile, Tereza keeps the backups on vellum-ledge from now on.",
+   "planted": [
+    {
+     "subject": "Kasper",
+     "attribute": "bank",
+     "value": "marlow-weir",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Yara",
+     "attribute": "accounts",
+     "value": "dovetail-hollow",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Tereza",
+     "attribute": "backups",
+     "value": "vellum-ledge",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Kasper",
+     "attribute": "bank",
+     "value": "marlow-weir",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Yara",
+     "attribute": "accounts",
+     "value": "dovetail-hollow",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Tereza",
+     "attribute": "backups",
+     "value": "vellum-ledge",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 232,
+   "text": "Tomas got the visitor log by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 233,
+   "text": "Stefan mentioned the umbrella stand in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 234,
+   "text": "Noor brought the first aid box up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 235,
+   "text": "Elif brought the stationery order up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 236,
+   "text": "Ask Pablo whether the printer ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 237,
+   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Lorna rehearses at the ravel-harbour hall; on a different note, Magnus buys bread at the oakhill-foundry bakery; meanwhile, Priya orders paper from wicklow-orchard.",
+   "planted": [
+    {
+     "subject": "Lorna",
+     "attribute": "hall",
+     "value": "ravel-harbour",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Magnus",
+     "attribute": "bakery",
+     "value": "oakhill-foundry",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Priya",
+     "attribute": "supplier",
+     "value": "wicklow-orchard",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Lorna",
+     "attribute": "hall",
+     "value": "ravel-harbour hall",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Magnus",
+     "attribute": "bakery",
+     "value": "oakhill-foundry bakery",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Priya",
+     "attribute": "cottage",
+     "value": "wicklow-orchard",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 238,
+   "text": "Someone should tell Emeka where the window blind ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 239,
+   "text": "Halima thinks the invoice can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 240,
+   "text": "Tariq brought the kettle up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 241,
+   "text": "Freya left a note about the stationery order.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 242,
+   "text": "Dario asked about the first aid box again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 243,
+   "text": "Esther has the invoice until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 244,
+   "text": "Bruno has the post until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 245,
+   "text": "Linnea left a note about the visitor log.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 246,
+   "text": "Sanjay wants a word about the stationery order at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 247,
+   "text": "Anders said nothing came of the spare key.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 248,
+   "text": "Ask Rania whether the parking permit ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 249,
+   "text": "Yuki said nothing came of the invoice.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 250,
+   "text": "Tell Quinn the wall clock is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 251,
+   "text": "Kofi brought the invoice up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 252,
+   "text": "Milos sent the coffee machine back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 253,
+   "text": "Erol says the visitor log is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 254,
+   "text": "Farid asked about the coffee machine again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 255,
+   "text": "Ask Priya whether the spare key ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 256,
+   "text": "Halima is not worried about the fire drill.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 257,
+   "text": "Hassan says the printer is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 258,
+   "text": "Kwame is not worried about the visitor log.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 259,
+   "text": "Rosa had a look at the parking permit and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 260,
+   "text": "Ask Zara whether the wall clock ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 261,
+   "text": "Ulla sent the stationery order back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 262,
+   "text": "Tell Kofi the wall clock is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 263,
+   "text": "Sofia wants a word about the notice board at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 264,
+   "text": "Olga had a look at the badge and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 265,
+   "text": "Emeka is not worried about the printer.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 266,
+   "text": "Remind me to chase Orla about the spare key.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 267,
+   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Freya orders paper from brindle-lantern; one more for the pile, Noor keeps the backups on ravel-weir; on a different note, Jana is taking the brindle-ridge course.",
+   "planted": [
+    {
+     "subject": "Freya",
+     "attribute": "supplier",
+     "value": "brindle-lantern",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Noor",
+     "attribute": "backups",
+     "value": "ravel-weir",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Jana",
+     "attribute": "course",
+     "value": "brindle-ridge",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Freya",
+     "attribute": "paper",
+     "value": "brindle-lantern",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Noor",
+     "attribute": "backups",
+     "value": "ravel-weir",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Jana",
+     "attribute": "course",
+     "value": "brindle-ridge",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 268,
+   "text": "Someone should tell Dmitri where the window blind ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 269,
+   "text": "Remind me to chase Goran about the coffee machine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 270,
+   "text": "Pablo asked about the visitor log again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 271,
+   "text": "From the notes, tidied up and probably still incomplete: Tariq rehearses at the umber-sedge hall; and separately, Goran is taking the garnet-mill course; on a different note, Emeka is taking the ravel-yard course.",
+   "planted": [
+    {
+     "subject": "Tariq",
+     "attribute": "hall",
+     "value": "umber-sedge",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Goran",
+     "attribute": "course",
+     "value": "garnet-mill",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Emeka",
+     "attribute": "course",
+     "value": "ravel-yard",
+     "Declared": "replace"
+    }
+   ],
+   "found": []
+  },
+  {
+   "turn": 272,
+   "text": "Ulla sent the visitor log back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 273,
+   "text": "Ask Halima whether the photocopier ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 274,
+   "text": "Olga asked about the post again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 275,
+   "text": "Oskar said nothing came of the coffee machine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 276,
+   "text": "Someone should tell Zoltan where the photocopier ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 277,
+   "text": "Pablo is not worried about the lift.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 278,
+   "text": "Karin thinks the printer can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 279,
+   "text": "Greta had a look at the spare key and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 280,
+   "text": "Luca sent the recycling back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 281,
+   "text": "Nuria says the window blind is sorted.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 282,
+   "text": "Esther left a note about the post.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 283,
+   "text": "Remind me to chase Jana about the stationery order.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 284,
+   "text": "Lisa said nothing came of the coffee machine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 285,
+   "text": "Emeka is not worried about the spare key.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 286,
+   "text": "Tomas is running late; the spare key can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 287,
+   "text": "Otto says the parking permit is sorted.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 288,
+   "text": "Someone should tell Yuki where the wall clock ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 289,
+   "text": "Emeka has no news on the notice board.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 290,
+   "text": "Olga is not worried about the coffee machine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 291,
+   "text": "Catching you up on what changed while you were away, in no particular order: Sanjay sits with the pewter-beacon team; on a different note, Hassan banks with ravel-hearth; and separately, Kofi goes to the vellum-foundry clinic.",
+   "planted": [
+    {
+     "subject": "Sanjay",
+     "attribute": "team",
+     "value": "pewter-beacon",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Hassan",
+     "attribute": "bank",
+     "value": "ravel-hearth",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Kofi",
+     "attribute": "clinic",
+     "value": "vellum-foundry",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Sanjay",
+     "attribute": "team",
+     "value": "pewter-beacon",
+     "Declared": "join"
+    },
+    {
+     "subject": "Hassan",
+     "attribute": "bank",
+     "value": "ravel-hearth",
+     "Declared": "join"
+    },
+    {
+     "subject": "Kofi",
+     "attribute": "clinic",
+     "value": "vellum-foundry",
+     "Declared": "join"
+    }
+   ]
+  },
+  {
+   "turn": 292,
+   "text": "Zoltan left a note about the lift.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 293,
+   "text": "Sanjay got the printer by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 294,
+   "text": "Rosa thinks the badge can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 295,
+   "text": "Luca wants a word about the printer at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 296,
+   "text": "Jana got the first aid box by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 297,
+   "text": "Mateo mentioned the first aid box in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 298,
+   "text": "Jonas is running late; the visitor log can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 299,
+   "text": "Someone should tell Nuria where the printer ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 300,
+   "text": "Yuki had a look at the photocopier and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 301,
+   "text": "Tell Magnus the lift is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 302,
+   "text": "Oskar had a look at the wall clock and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 303,
+   "text": "Sofia brought the kettle up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 304,
+   "text": "Someone should tell Stefan where the umbrella stand ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 305,
+   "text": "Quinn sent the stationery order back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 306,
+   "text": "Mateo thinks the kettle can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 307,
+   "text": "Remind me to chase Bjorn about the wall clock.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 308,
+   "text": "Ask Vasco whether the first aid box ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 309,
+   "text": "Tomas has the post until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 310,
+   "text": "Oskar says the first aid box is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 311,
+   "text": "Remind me to chase Emeka about the parking permit.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 312,
+   "text": "Ivo is not worried about the recycling.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 313,
+   "text": "Rafael is not worried about the coffee machine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 314,
+   "text": "Emeka has no news on the badge.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 315,
+   "text": "Tell Oskar the parking permit is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 316,
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Magnus orders paper from nutmeg-kiln; one more for the pile, Sofia leads the harrow-brook project; and separately, Alma sits with the larkin-mill team.",
+   "planted": [
+    {
+     "subject": "Magnus",
+     "attribute": "supplier",
+     "value": "nutmeg-kiln",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Sofia",
+     "attribute": "project",
+     "value": "harrow-brook",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Alma",
+     "attribute": "team",
+     "value": "larkin-mill",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Magnus",
+     "attribute": "project",
+     "value": "nutmeg-kiln",
+     "Declared": "join"
+    },
+    {
+     "subject": "Sofia",
+     "attribute": "project",
+     "value": "harrow-brook",
+     "Declared": "join"
+    },
+    {
+     "subject": "Alma",
+     "attribute": "team",
+     "value": "larkin-mill",
+     "Declared": "join"
+    }
+   ]
+  },
+  {
+   "turn": 317,
+   "text": "Greta got the lift by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 318,
+   "text": "Mateo says the visitor log is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 319,
+   "text": "Zoltan left a note about the lift.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 320,
+   "text": "Pablo is running late; the first aid box can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 321,
+   "text": "Lisa had a look at the coffee machine and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 322,
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Zara banks with ironwood-ledge; on a different note, Tomas orders paper from cobalt-meadow; one more for the pile, Yuki commutes on the silverfin-yard line.",
+   "planted": [
+    {
+     "subject": "Zara",
+     "attribute": "bank",
+     "value": "ironwood-ledge",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Tomas",
+     "attribute": "supplier",
+     "value": "cobalt-meadow",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Yuki",
+     "attribute": "line",
+     "value": "silverfin-yard",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Zara",
+     "attribute": "bank",
+     "value": "ironwood-ledge",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Tomas",
+     "attribute": "project",
+     "value": "cobalt-meadow",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Yuki",
+     "attribute": "line",
+     "value": "silverfin-yard",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 323,
+   "text": "Orla says the umbrella stand is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 324,
+   "text": "Someone should tell Emeka where the badge ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 325,
+   "text": "Hugo thinks the fire drill can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 326,
+   "text": "Jana had a look at the badge and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 327,
+   "text": "Tomas asked about the fire drill again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 328,
+   "text": "Noor mentioned the notice board in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 329,
+   "text": "Dario had a look at the stationery order and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 330,
+   "text": "Dmitri thinks the wall clock can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 331,
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Emeka keeps the backups on pewter-tarn; on a different note, Karin leads the nutmeg-gable project; one more for the pile, Priya banks with oakhill-fenn.",
+   "planted": [
+    {
+     "subject": "Emeka",
+     "attribute": "backups",
+     "value": "pewter-tarn",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Karin",
+     "attribute": "project",
+     "value": "nutmeg-gable",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Priya",
+     "attribute": "bank",
+     "value": "oakhill-fenn",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Emeka",
+     "attribute": "backups",
+     "value": "pewter-tarn",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Karin",
+     "attribute": "project",
+     "value": "nutmeg-gable",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Priya",
+     "attribute": "bank",
+     "value": "oakhill-fenn",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 332,
+   "text": "Leila got the umbrella stand by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 333,
+   "text": "Remind me to chase Jana about the post.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 334,
+   "text": "Yara is running late; the rota can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 335,
+   "text": "Wanda is running late; the coffee machine can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 336,
+   "text": "Remind me to chase Stefan about the printer.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 337,
+   "text": "Maria wants a word about the parking permit at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 338,
+   "text": "Noor said nothing came of the window blind.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 339,
+   "text": "Dario said nothing came of the kettle.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 340,
+   "text": "Orla said nothing came of the printer.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 341,
+   "text": "Priya thinks the post can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 342,
+   "text": "Zoltan brought the visitor log up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 343,
+   "text": "Freya is running late; the spare key can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 344,
+   "text": "Petra mentioned the spare key in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 345,
+   "text": "Mateo has no news on the stationery order.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 346,
+   "text": "Maria wants a word about the rota at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 347,
+   "text": "Someone should tell Kofi where the recycling ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 348,
+   "text": "Jonas wants a word about the fire drill at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 349,
+   "text": "Someone should tell Josefa where the recycling ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 350,
+   "text": "Greta thinks the recycling can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 351,
+   "text": "Vasco has the lift until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 352,
+   "text": "Yara brought the kettle up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 353,
+   "text": "Vasco brought the window blind up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 354,
+   "text": "Tomas wants a word about the coffee machine at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 355,
+   "text": "Nuria says the recycling is sorted.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 356,
+   "text": "Halima has no news on the parking permit.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 357,
+   "text": "Kofi left a note about the stationery order.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 358,
+   "text": "Luca mentioned the first aid box in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 359,
+   "text": "Ask Stefan whether the lift ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 360,
+   "text": "Linnea wants a word about the printer at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 361,
+   "text": "Olga brought the stationery order up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 362,
+   "text": "Ulla is running late; the notice board can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 363,
+   "text": "Beatriz says the post is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 364,
+   "text": "Nikos brought the parking permit up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 365,
+   "text": "Celia asked about the photocopier again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 366,
+   "text": "Sofia has no news on the rota.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 367,
+   "text": "Ask Esther whether the rota ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 368,
+   "text": "Hugo brought the lift up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 369,
+   "text": "Hassan brought the recycling up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 370,
+   "text": "Fabio is not worried about the rota.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 371,
+   "text": "Goran sent the badge back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 372,
+   "text": "Ask Dario whether the coffee machine ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 373,
+   "text": "Someone should tell Karin where the lift ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 374,
+   "text": "Luca is not worried about the recycling.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 375,
+   "text": "Amara had a look at the invoice and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 376,
+   "text": "Amara got the coffee machine by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 377,
+   "text": "Karin says the rota is sorted.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 378,
+   "text": "Ask Farid whether the notice board ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 379,
+   "text": "Gunnar said nothing came of the printer.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 380,
+   "text": "Beatriz said nothing came of the parking permit.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 381,
+   "text": "Esther sent the wall clock back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 382,
+   "text": "Petra had a look at the rota and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 383,
+   "text": "Esther said nothing came of the fire drill.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 384,
+   "text": "Dmitri thinks the stationery order can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 385,
+   "text": "Lorna wants a word about the window blind at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 386,
+   "text": "Ivo thinks the coffee machine can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 387,
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Ursula sits with the bramble-reach team; meanwhile, Nikos buys bread at the verdigris-sedge bakery; on a different note, Xavier rehearses at the dovetail-reach hall.",
+   "planted": [
+    {
+     "subject": "Ursula",
+     "attribute": "team",
+     "value": "bramble-reach",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Nikos",
+     "attribute": "bakery",
+     "value": "verdigris-sedge",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Xavier",
+     "attribute": "hall",
+     "value": "dovetail-reach",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Ursula",
+     "attribute": "team",
+     "value": "bramble-reach",
+     "Declared": "join"
+    },
+    {
+     "subject": "Nikos",
+     "attribute": "bakery",
+     "value": "verdigris-sedge",
+     "Declared": "join"
+    },
+    {
+     "subject": "Xavier",
+     "attribute": "hall",
+     "value": "dovetail-reach",
+     "Declared": "join"
+    }
+   ]
+  },
+  {
+   "turn": 388,
+   "text": "Josefa said nothing came of the window blind.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 389,
+   "text": "Noor had a look at the recycling and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 390,
+   "text": "From the notes, tidied up and probably still incomplete: Esther commutes on the cinder-reach line; and separately, Nuria commutes on the thistle-hearth line; meanwhile, Erol commutes on the oakhill-vale line.",
+   "planted": [
+    {
+     "subject": "Esther",
+     "attribute": "line",
+     "value": "cinder-reach",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Nuria",
+     "attribute": "line",
+     "value": "thistle-hearth",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Erol",
+     "attribute": "line",
+     "value": "oakhill-vale",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Esther",
+     "attribute": "line",
+     "value": "cinder-reach",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Nuria",
+     "attribute": "line",
+     "value": "thistle-hearth",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Erol",
+     "attribute": "line",
+     "value": "oakhill-vale",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 391,
+   "text": "Dario wants a word about the window blind at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 392,
+   "text": "Farid brought the post up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 393,
+   "text": "Ask Viktor whether the window blind ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 394,
+   "text": "Tell Kofi the lift is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 395,
+   "text": "Bruno asked about the fire drill again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 396,
+   "text": "Sanjay mentioned the fire drill in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 397,
+   "text": "Petra says the fire drill is sorted.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 398,
+   "text": "Amara says the kettle is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 399,
+   "text": "Tomas left a note about the first aid box.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 400,
+   "text": "Iris said nothing came of the coffee machine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 401,
+   "text": "Erol is running late; the window blind can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 402,
+   "text": "Someone should tell Halima where the invoice ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 403,
+   "text": "Pablo thinks the spare key can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 404,
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Tomas is taking the silverfin-drift course; meanwhile, Bjorn rents the quill-quarry cottage; meanwhile, Ingrid banks with wicklow-tarn.",
+   "planted": [
+    {
+     "subject": "Tomas",
+     "attribute": "course",
+     "value": "silverfin-drift",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Bjorn",
+     "attribute": "cottage",
+     "value": "quill-quarry",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Ingrid",
+     "attribute": "bank",
+     "value": "wicklow-tarn",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Tomas",
+     "attribute": "course",
+     "value": "silverfin-drift",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Bjorn",
+     "attribute": "cottage",
+     "value": "quill-quarry",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Ingrid",
+     "attribute": "bank",
+     "value": "wicklow-tarn",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 405,
+   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Olga orders paper from wicklow-hearth as well; and separately, Rania keeps the accounts in yarrow-harbour too; meanwhile, Leila banks with zephyr-fenn as well.",
+   "planted": [
+    {
+     "subject": "Olga",
+     "attribute": "supplier",
+     "value": "wicklow-hearth",
+     "Declared": "join"
+    },
+    {
+     "subject": "Rania",
+     "attribute": "accounts",
+     "value": "yarrow-harbour",
+     "Declared": "join"
+    },
+    {
+     "subject": "Leila",
+     "attribute": "bank",
+     "value": "zephyr-fenn",
+     "Declared": "join"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Olga",
+     "attribute": "project",
+     "value": "housekeeping",
+     "Declared": "join"
+    },
+    {
+     "subject": "Olga",
+     "attribute": "cottage",
+     "value": "wicklow-hearth",
+     "Declared": "join"
+    },
+    {
+     "subject": "Rania",
+     "attribute": "accounts",
+     "value": "yarrow-harbour",
+     "Declared": "join"
+    },
+    {
+     "subject": "Leila",
+     "attribute": "bank",
+     "value": "zephyr-fenn",
+     "Declared": "join"
+    }
+   ]
+  },
+  {
+   "turn": 406,
+   "text": "Milos thinks the window blind can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 407,
+   "text": "Chiara is not worried about the post.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 408,
+   "text": "Kasper says the coffee machine is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 409,
+   "text": "Tell Bjorn the recycling is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 410,
+   "text": "Mateo has the notice board until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 411,
+   "text": "Dmitri said nothing came of the badge.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 412,
+   "text": "Erol asked about the recycling again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 413,
+   "text": "Quinn got the spare key by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 414,
+   "text": "Dora wants a word about the stationery order at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 415,
+   "text": "Priya brought the parking permit up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 416,
+   "text": "Priya is running late; the photocopier can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 417,
+   "text": "Ask Erol whether the umbrella stand ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 418,
+   "text": "Bjorn has no news on the invoice.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 419,
+   "text": "Ask Amara whether the umbrella stand ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 420,
+   "text": "Viktor mentioned the window blind in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 421,
+   "text": "Farid mentioned the coffee machine in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 422,
+   "text": "Kwame brought the post up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 423,
+   "text": "Remind me to chase Nikos about the lift.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 424,
+   "text": "Dmitri sent the parking permit back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 425,
+   "text": "Olga says the umbrella stand is sorted.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 426,
+   "text": "Zara says the kettle is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 427,
+   "text": "Celia mentioned the first aid box in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 428,
+   "text": "Noor said nothing came of the recycling.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 429,
+   "text": "Rosa sent the window blind back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 430,
+   "text": "Magnus says the visitor log is sorted.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 431,
+   "text": "Hugo brought the spare key up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 432,
+   "text": "Farid is running late; the stationery order can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 433,
+   "text": "Someone should tell Kofi where the notice board ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 434,
+   "text": "Zoltan thinks the coffee machine can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 435,
+   "text": "Remind me to chase Gunnar about the rota.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 436,
+   "text": "Sanjay says the lift is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 437,
+   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Orla keeps the backups on quill-hearth; one more for the pile, Maria banks with copper-sedge; one more for the pile, Rania orders paper from mirefield-foundry.",
+   "planted": [
+    {
+     "subject": "Orla",
+     "attribute": "backups",
+     "value": "quill-hearth",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Maria",
+     "attribute": "bank",
+     "value": "copper-sedge",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Rania",
+     "attribute": "supplier",
+     "value": "mirefield-foundry",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Orla",
+     "attribute": "backups",
+     "value": "quill-hearth",
+     "Declared": "join"
+    },
+    {
+     "subject": "Maria",
+     "attribute": "bank",
+     "value": "copper-sedge",
+     "Declared": "join"
+    }
+   ]
+  },
+  {
+   "turn": 438,
+   "text": "Tell Quinn the coffee machine is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 439,
+   "text": "Someone should tell Viktor where the fire drill ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 440,
+   "text": "Tell Orla the window blind is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 441,
+   "text": "Hugo thinks the visitor log can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 442,
+   "text": "Wilma thinks the badge can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 443,
+   "text": "Farid left a note about the visitor log.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 444,
+   "text": "Dora mentioned the first aid box in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 445,
+   "text": "From the notes, tidied up and probably still incomplete: In winter Kofi commutes on the bramble-yard line; on a different note, For check-ups Zara goes to the saffron-isle clinic; on a different note, On alternate weeks Orla takes the umber-wharf course.",
+   "planted": [
+    {
+     "subject": "Kofi",
+     "attribute": "line",
+     "value": "bramble-yard",
+     "Declared": "join"
+    },
+    {
+     "subject": "Zara",
+     "attribute": "clinic",
+     "value": "saffron-isle",
+     "Declared": "join"
+    },
+    {
+     "subject": "Orla",
+     "attribute": "course",
+     "value": "umber-wharf",
+     "Declared": "join"
+    }
+   ],
+   "found": []
+  },
+  {
+   "turn": 446,
+   "text": "Ask Oskar whether the photocopier ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 447,
+   "text": "Priya had a look at the stationery order and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 448,
+   "text": "Kasper says the kettle is sorted.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 449,
+   "text": "Noor mentioned the kettle in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 450,
+   "text": "Noor asked about the post again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 451,
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Leila commutes on the cinder-hollow line as well; one more for the pile, Maria leads the ember-ledge project as well; one more for the pile, Stefan orders paper from ember-coppice as well.",
+   "planted": [
+    {
+     "subject": "Leila",
+     "attribute": "line",
+     "value": "cinder-hollow",
+     "Declared": "join"
+    },
+    {
+     "subject": "Maria",
+     "attribute": "project",
+     "value": "ember-ledge",
+     "Declared": "join"
+    },
+    {
+     "subject": "Stefan",
+     "attribute": "supplier",
+     "value": "ember-coppice",
+     "Declared": "join"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Leila",
+     "attribute": "line",
+     "value": "cinder-hollow",
+     "Declared": "join"
+    },
+    {
+     "subject": "Maria",
+     "attribute": "project",
+     "value": "ember-ledge",
+     "Declared": "join"
+    },
+    {
+     "subject": "Stefan",
+     "attribute": "project",
+     "value": "ember-coppice",
+     "Declared": "join"
+    }
+   ]
+  },
+  {
+   "turn": 452,
+   "text": "Catching you up on what changed while you were away, in no particular order: Esther sits with the garnet-yard team; meanwhile, Otto buys bread at the cinder-annex bakery; and separately, Greta goes to the zephyr-sedge clinic.",
+   "planted": [
+    {
+     "subject": "Esther",
+     "attribute": "team",
+     "value": "garnet-yard",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Otto",
+     "attribute": "bakery",
+     "value": "cinder-annex",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Greta",
+     "attribute": "clinic",
+     "value": "zephyr-sedge",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Esther",
+     "attribute": "team",
+     "value": "garnet-yard",
+     "Declared": "join"
+    },
+    {
+     "subject": "Otto",
+     "attribute": "bakery",
+     "value": "cinder-annex",
+     "Declared": "join"
+    },
+    {
+     "subject": "Greta",
+     "attribute": "clinic",
+     "value": "zephyr-sedge",
+     "Declared": "join"
+    }
+   ]
+  },
+  {
+   "turn": 453,
+   "text": "From the notes, tidied up and probably still incomplete: Noor keeps the accounts in brindle-kiln; and separately, Nuria keeps the accounts in nutmeg-foundry; and separately, Rania sits with the marlow-vale team.",
+   "planted": [
+    {
+     "subject": "Noor",
+     "attribute": "accounts",
+     "value": "brindle-kiln",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Nuria",
+     "attribute": "accounts",
+     "value": "nutmeg-foundry",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Rania",
+     "attribute": "team",
+     "value": "marlow-vale",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Noor",
+     "attribute": "accounts",
+     "value": "brindle-kiln",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Nuria",
+     "attribute": "accounts",
+     "value": "nutmeg-foundry",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Rania",
+     "attribute": "team",
+     "value": "marlow-vale",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 454,
+   "text": "Dmitri brought the window blind up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 455,
+   "text": "Milos mentioned the visitor log in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 456,
+   "text": "Esther asked about the post again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 457,
+   "text": "Erol asked about the window blind again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 458,
+   "text": "Leila wants a word about the recycling at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 459,
+   "text": "Catching you up on what changed while you were away, in no particular order: For payroll Lorna keeps the accounts in cinder-harbour; one more for the pile, On alternate weeks Noor takes the ironwood-spire course; one more for the pile, For the archive Idris keeps the backups on harrow-pike.",
+   "planted": [
+    {
+     "subject": "Lorna",
+     "attribute": "accounts",
+     "value": "cinder-harbour",
+     "Declared": "join"
+    },
+    {
+     "subject": "Noor",
+     "attribute": "course",
+     "value": "ironwood-spire",
+     "Declared": "join"
+    },
+    {
+     "subject": "Idris",
+     "attribute": "backups",
+     "value": "harrow-pike",
+     "Declared": "join"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Lorna",
+     "attribute": "accounts",
+     "value": "cinder-harbour",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Noor",
+     "attribute": "course",
+     "value": "ironwood-spire",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Idris",
+     "attribute": "backups",
+     "value": "harrow-pike",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 460,
+   "text": "Zara has no news on the coffee machine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 461,
+   "text": "Remind me to chase Ingrid about the invoice.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 462,
+   "text": "Pablo got the window blind by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 463,
+   "text": "Tell Rania the lift is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 464,
+   "text": "Olga brought the post up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 465,
+   "text": "From the notes, tidied up and probably still incomplete: In winter Freya commutes on the thistle-glade line; one more for the pile, On alternate weeks Luca takes the nutmeg-moor course; meanwhile, On Thursdays Tariq leads the dovetail-annex project.",
+   "planted": [
+    {
+     "subject": "Freya",
+     "attribute": "line",
+     "value": "thistle-glade",
+     "Declared": "join"
+    },
+    {
+     "subject": "Luca",
+     "attribute": "course",
+     "value": "nutmeg-moor",
+     "Declared": "join"
+    },
+    {
+     "subject": "Tariq",
+     "attribute": "project",
+     "value": "dovetail-annex",
+     "Declared": "join"
+    }
+   ],
+   "found": []
+  },
+  {
+   "turn": 466,
+   "text": "Catching you up on what changed while you were away, in no particular order: For the business account Erol banks with opal-moor; and separately, For payroll Josefa keeps the accounts in yarrow-wharf; and separately, At weekends Wanda buys bread at the dovetail-chandler bakery.",
+   "planted": [
+    {
+     "subject": "Erol",
+     "attribute": "bank",
+     "value": "opal-moor",
+     "Declared": "join"
+    },
+    {
+     "subject": "Josefa",
+     "attribute": "accounts",
+     "value": "yarrow-wharf",
+     "Declared": "join"
+    },
+    {
+     "subject": "Wanda",
+     "attribute": "bakery",
+     "value": "dovetail-chandler",
+     "Declared": "join"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Erol",
+     "attribute": "bank",
+     "value": "opal-moor",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Josefa",
+     "attribute": "accounts",
+     "value": "yarrow-wharf",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Wanda",
+     "attribute": "bakery",
+     "value": "dovetail-chandler",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 467,
+   "text": "Catching you up on what changed while you were away, in no particular order: Tariq is taking the opal-ridge course as well; on a different note, Goran banks with mirefield-glade as well; on a different note, Wanda is taking the silverfin-glade course as well.",
+   "planted": [
+    {
+     "subject": "Tariq",
+     "attribute": "course",
+     "value": "opal-ridge",
+     "Declared": "join"
+    },
+    {
+     "subject": "Goran",
+     "attribute": "bank",
+     "value": "mirefield-glade",
+     "Declared": "join"
+    },
+    {
+     "subject": "Wanda",
+     "attribute": "course",
+     "value": "silverfin-glade",
+     "Declared": "join"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Tariq",
+     "attribute": "course",
+     "value": "opal-ridge",
+     "Declared": "join"
+    },
+    {
+     "subject": "Goran",
+     "attribute": "bank",
+     "value": "mirefield-glade",
+     "Declared": "join"
+    },
+    {
+     "subject": "Wanda",
+     "attribute": "course",
+     "value": "silverfin-glade",
+     "Declared": "join"
+    }
+   ]
+  },
+  {
+   "turn": 468,
+   "text": "Sanjay said nothing came of the stationery order.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 469,
+   "text": "Alma mentioned the invoice in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 470,
+   "text": "Emeka says the visitor log is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 471,
+   "text": "From the notes, tidied up and probably still incomplete: Tomas rehearses at the ember-wharf hall as well; meanwhile, Gunnar is taking the vellum-brook course as well; on a different note, Petra keeps the accounts in amber-beacon too.",
+   "planted": [
+    {
+     "subject": "Tomas",
+     "attribute": "hall",
+     "value": "ember-wharf",
+     "Declared": "join"
+    },
+    {
+     "subject": "Gunnar",
+     "attribute": "course",
+     "value": "vellum-brook",
+     "Declared": "join"
+    },
+    {
+     "subject": "Petra",
+     "attribute": "accounts",
+     "value": "amber-beacon",
+     "Declared": "join"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Tomas",
+     "attribute": "hall",
+     "value": "ember-wharf",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Gunnar",
+     "attribute": "course",
+     "value": "vellum-brook",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Petra",
+     "attribute": "accounts",
+     "value": "amber-beacon",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 472,
+   "text": "Someone should tell Kasper where the wall clock ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 473,
+   "text": "Zoltan mentioned the printer in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 474,
+   "text": "Sanjay has the fire drill until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 475,
+   "text": "Someone should tell Otto where the lift ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 476,
+   "text": "Goran wants a word about the visitor log at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 477,
+   "text": "Hugo is running late; the spare key can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 478,
+   "text": "Esther asked about the stationery order again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 479,
+   "text": "Elif has no news on the invoice.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 480,
+   "text": "Anders has the first aid box until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 481,
+   "text": "Ask Iris whether the post ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 482,
+   "text": "Zoltan left a note about the lift.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 483,
+   "text": "Bruno says the badge is sorted.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 484,
+   "text": "Catching you up on what changed while you were away, in no particular order: Lisa keeps the backups on umber-drift from now on; and separately, Tariq keeps the backups on dovetail-kiln from now on; meanwhile, Goran leads the cinder-chandler project from now on.",
+   "planted": [
+    {
+     "subject": "Lisa",
+     "attribute": "backups",
+     "value": "umber-drift",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Tariq",
+     "attribute": "backups",
+     "value": "dovetail-kiln",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Goran",
+     "attribute": "project",
+     "value": "cinder-chandler",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Lisa",
+     "attribute": "backups",
+     "value": "umber-drift",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Tariq",
+     "attribute": "backups",
+     "value": "dovetail-kiln",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Goran",
+     "attribute": "project",
+     "value": "cinder-chandler",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 485,
+   "text": "Someone should tell Petra where the stationery order ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 486,
+   "text": "Halima brought the invoice up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 487,
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Pablo leads the tamarind-tarn project from now on; meanwhile, Wilma orders paper from larkin-weir now; one more for the pile, Milos commutes on the garnet-drift line now.",
+   "planted": [
+    {
+     "subject": "Pablo",
+     "attribute": "project",
+     "value": "tamarind-tarn",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Wilma",
+     "attribute": "supplier",
+     "value": "larkin-weir",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Milos",
+     "attribute": "line",
+     "value": "garnet-drift",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Pablo",
+     "attribute": "project",
+     "value": "tamarind-tarn",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Wilma",
+     "attribute": "accounts",
+     "value": "larkin-weir",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Milos",
+     "attribute": "line",
+     "value": "garnet-drift",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 488,
+   "text": "Idris left a note about the first aid box.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 489,
+   "text": "Alma thinks the wall clock can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 490,
+   "text": "From the notes, tidied up and probably still incomplete: Xavier orders paper from opal-mill; and separately, Nuria rents the thistle-weir cottage; on a different note, Hassan goes to the amber-quarry clinic.",
+   "planted": [
+    {
+     "subject": "Xavier",
+     "attribute": "supplier",
+     "value": "opal-mill",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Nuria",
+     "attribute": "cottage",
+     "value": "thistle-weir",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Hassan",
+     "attribute": "clinic",
+     "value": "amber-quarry",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Nuria",
+     "attribute": "cottage",
+     "value": "thistle-weir",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Hassan",
+     "attribute": "clinic",
+     "value": "amber-quarry",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 491,
+   "text": "Remind me to chase Esther about the post.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 492,
+   "text": "Tomas asked about the stationery order again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 493,
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Vasco is taking the ravel-gable course instead; one more for the pile, Kwame has switched the accounts to umber-brook; on a different note, Greta has switched the accounts to bramble-lantern.",
+   "planted": [
+    {
+     "subject": "Vasco",
+     "attribute": "course",
+     "value": "ravel-gable",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Kwame",
+     "attribute": "accounts",
+     "value": "umber-brook",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Greta",
+     "attribute": "accounts",
+     "value": "bramble-lantern",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Vasco",
+     "attribute": "course",
+     "value": "ravel-gable",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Kwame",
+     "attribute": "accounts",
+     "value": "umber-brook",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Greta",
+     "attribute": "accounts",
+     "value": "bramble-lantern",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 494,
+   "text": "Leila sent the post back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 495,
+   "text": "Nikos has the visitor log until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 496,
+   "text": "Priya asked about the spare key again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 497,
+   "text": "Nikos wants a word about the visitor log at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 498,
+   "text": "Esther mentioned the kettle in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 499,
+   "text": "Olga says the kettle is sorted.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 500,
+   "text": "Dmitri sent the visitor log back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 501,
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Freya sits with the cobalt-pike team from now on; one more for the pile, Sanjay is taking the vellum-meadow course instead; meanwhile, Esther rents the copper-harbour cottage from now on.",
+   "planted": [
+    {
+     "subject": "Freya",
+     "attribute": "team",
+     "value": "cobalt-pike",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Sanjay",
+     "attribute": "course",
+     "value": "vellum-meadow",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Esther",
+     "attribute": "cottage",
+     "value": "copper-harbour",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Freya",
+     "attribute": "team",
+     "value": "cobalt-pike",
+     "Declared": "join"
+    },
+    {
+     "subject": "Sanjay",
+     "attribute": "course",
+     "value": "vellum-meadow",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Esther",
+     "attribute": "cottage",
+     "value": "copper-harbour",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 502,
+   "text": "Emeka has the wall clock until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 503,
+   "text": "Amara mentioned the first aid box in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 504,
+   "text": "Rosa left a note about the notice board.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 505,
+   "text": "Freya left a note about the fire drill.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 506,
+   "text": "From the notes, tidied up and probably still incomplete: Chiara leads the larkin-harbour project from now on; on a different note, Anders keeps the backups on cobalt-yard from now on; meanwhile, Viktor sits with the ember-spire team from now on.",
+   "planted": [
+    {
+     "subject": "Chiara",
+     "attribute": "project",
+     "value": "larkin-harbour",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Anders",
+     "attribute": "backups",
+     "value": "cobalt-yard",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Viktor",
+     "attribute": "team",
+     "value": "ember-spire",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Chiara",
+     "attribute": "project",
+     "value": "larkin-harbour",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Anders",
+     "attribute": "backups",
+     "value": "cobalt-yard",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Viktor",
+     "attribute": "team",
+     "value": "ember-spire",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 507,
+   "text": "Kasper said nothing came of the window blind.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 508,
+   "text": "Noor says the recycling is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 509,
+   "text": "Nadia had a look at the parking permit and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 510,
+   "text": "Ask Freya whether the recycling ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 511,
+   "text": "Esther mentioned the post in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 512,
+   "text": "Tomas asked about the printer again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 513,
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Erol orders paper from verdigris-tarn now; one more for the pile, Jonas rents the quill-annex cottage from now on; and separately, Iris leads the silverfin-harbour project from now on.",
+   "planted": [
+    {
+     "subject": "Erol",
+     "attribute": "supplier",
+     "value": "verdigris-tarn",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Jonas",
+     "attribute": "cottage",
+     "value": "quill-annex",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Iris",
+     "attribute": "project",
+     "value": "silverfin-harbour",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Erol",
+     "attribute": "supplier",
+     "value": "verdigris-tarn",
+     "Declared": "join"
+    },
+    {
+     "subject": "Jonas",
+     "attribute": "cottage",
+     "value": "quill-annex",
+     "Declared": "join"
+    },
+    {
+     "subject": "Iris",
+     "attribute": "project",
+     "value": "silverfin-harbour",
+     "Declared": "join"
+    }
+   ]
+  },
+  {
+   "turn": 514,
+   "text": "Freya sent the rota back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 515,
+   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Zoltan banks with copper-gable; meanwhile, Otto keeps the backups on ember-brook; and separately, Karin is taking the yarrow-beacon course.",
+   "planted": [
+    {
+     "subject": "Zoltan",
+     "attribute": "bank",
+     "value": "copper-gable",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Otto",
+     "attribute": "backups",
+     "value": "ember-brook",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Karin",
+     "attribute": "course",
+     "value": "yarrow-beacon",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Zoltan",
+     "attribute": "bank",
+     "value": "copper-gable",
+     "Declared": "join"
+    },
+    {
+     "subject": "Otto",
+     "attribute": "backups",
+     "value": "ember-brook",
+     "Declared": "join"
+    },
+    {
+     "subject": "Karin",
+     "attribute": "course",
+     "value": "yarrow-beacon",
+     "Declared": "join"
+    }
+   ]
+  },
+  {
+   "turn": 516,
+   "text": "Maria is running late; the window blind can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 517,
+   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Kasper is taking the tamarind-brook course; on a different note, Quinn rehearses at the vellum-coppice hall; meanwhile, Emeka rehearses at the pewter-ridge hall.",
+   "planted": [
+    {
+     "subject": "Kasper",
+     "attribute": "course",
+     "value": "tamarind-brook",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Quinn",
+     "attribute": "hall",
+     "value": "vellum-coppice",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Emeka",
+     "attribute": "hall",
+     "value": "pewter-ridge",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Kasper",
+     "attribute": "course",
+     "value": "tamarind-brook",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Quinn",
+     "attribute": "hall",
+     "value": "vellum-coppice",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Emeka",
+     "attribute": "hall",
+     "value": "pewter-ridge",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 518,
+   "text": "Dario asked about the first aid box again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 519,
+   "text": "Noor has the notice board until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 520,
+   "text": "Ingrid has no news on the invoice.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 521,
+   "text": "Wilma says the photocopier is sorted.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 522,
+   "text": "Viktor got the lift by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 523,
+   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Kasper banks with quill-wharf now; one more for the pile, Yara has switched the accounts to oakhill-reach; and separately, Tereza keeps the backups on ironwood-lantern from now on.",
+   "planted": [
+    {
+     "subject": "Kasper",
+     "attribute": "bank",
+     "value": "quill-wharf",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Yara",
+     "attribute": "accounts",
+     "value": "oakhill-reach",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Tereza",
+     "attribute": "backups",
+     "value": "ironwood-lantern",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Kasper",
+     "attribute": "bank",
+     "value": "quill-wharf",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Yara",
+     "attribute": "accounts",
+     "value": "oakhill-reach",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Tereza",
+     "attribute": "backups",
+     "value": "ironwood-lantern",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 524,
+   "text": "Tell Cato the photocopier is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 525,
+   "text": "Remind me to chase Zoltan about the post.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 526,
+   "text": "Vasco asked about the photocopier again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 527,
+   "text": "Orla wants a word about the coffee machine at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 528,
+   "text": "Amara has no news on the spare key.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 529,
+   "text": "Fabio is running late; the first aid box can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 530,
+   "text": "Wanda got the recycling by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 531,
+   "text": "Pablo is not worried about the fire drill.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 532,
+   "text": "Someone should tell Linnea where the lift ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 533,
+   "text": "Andrei got the photocopier by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 534,
+   "text": "Remind me to chase Lisa about the visitor log.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 535,
+   "text": "Lorna is not worried about the parking permit.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 536,
+   "text": "Chiara left a note about the lift.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 537,
+   "text": "Ingrid has no news on the visitor log.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 538,
+   "text": "Halima wants a word about the badge at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 539,
+   "text": "A few things came out of the review, and I am writing them down before they go the way of the last set: Fabio has switched the accounts to yarrow-weir; on a different note, Stefan leads the copper-chandler project from now on; one more for the pile, Beatriz has moved to the verdigris-beacon clinic.",
+   "planted": [
+    {
+     "subject": "Fabio",
+     "attribute": "accounts",
+     "value": "yarrow-weir",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Stefan",
+     "attribute": "project",
+     "value": "copper-chandler",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Beatriz",
+     "attribute": "clinic",
+     "value": "verdigris-beacon",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Fabio",
+     "attribute": "accounts",
+     "value": "yarrow-weir",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Stefan",
+     "attribute": "project",
+     "value": "copper-chandler",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Beatriz",
+     "attribute": "clinic",
+     "value": "verdigris-beacon",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 540,
+   "text": "Sanjay is running late; the rota can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 541,
+   "text": "Nadia has no news on the badge.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 542,
+   "text": "Iris asked about the recycling again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 543,
+   "text": "Hassan had a look at the recycling and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 544,
+   "text": "Ivo is running late; the notice board can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 545,
+   "text": "Farid got the badge by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 546,
+   "text": "Tomas got the fire drill by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 547,
+   "text": "Quinn says the notice board is sorted.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 548,
+   "text": "Hugo has the recycling until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 549,
+   "text": "Sanjay asked about the stationery order again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 550,
+   "text": "Wanda asked about the notice board again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 551,
+   "text": "Catching you up on what changed while you were away, in no particular order: Tomas goes to the ironwood-hollow clinic; one more for the pile, Tariq buys bread at the flint-quarry bakery; on a different note, Petra goes to the cinder-foundry clinic.",
+   "planted": [
+    {
+     "subject": "Tomas",
+     "attribute": "clinic",
+     "value": "ironwood-hollow",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Tariq",
+     "attribute": "bakery",
+     "value": "flint-quarry",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Petra",
+     "attribute": "clinic",
+     "value": "cinder-foundry",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Tomas",
+     "attribute": "clinic",
+     "value": "ironwood-hollow",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Tariq",
+     "attribute": "bakery",
+     "value": "flint-quarry",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Petra",
+     "attribute": "clinic",
+     "value": "cinder-foundry",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 552,
+   "text": "Linnea got the fire drill by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 553,
+   "text": "Andrei is running late; the fire drill can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 554,
+   "text": "Dmitri has the wall clock until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 555,
+   "text": "Ivo thinks the invoice can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 556,
+   "text": "Maria thinks the photocopier can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 557,
+   "text": "Bruno thinks the badge can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 558,
+   "text": "Ingrid is running late; the wall clock can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 559,
+   "text": "Ask Greta whether the visitor log ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 560,
+   "text": "Karin wants a word about the lift at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 561,
+   "text": "Tell Beatriz the stationery order is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 562,
+   "text": "Linnea got the wall clock by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 563,
+   "text": "Farid has the printer until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 564,
+   "text": "Ask Mateo whether the stationery order ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 565,
+   "text": "Sanjay has the badge until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 566,
+   "text": "Hassan thinks the parking permit can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 567,
+   "text": "Nadia says the fire drill is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 568,
+   "text": "Olga wants a word about the notice board at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 569,
+   "text": "Idris has the notice board until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 570,
+   "text": "From the notes, tidied up and probably still incomplete: Celia is taking the wicklow-fenn course; meanwhile, Karin rehearses at the umber-mill hall; on a different note, Ivo banks with larkin-brook.",
+   "planted": [
+    {
+     "subject": "Celia",
+     "attribute": "course",
+     "value": "wicklow-fenn",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Karin",
+     "attribute": "hall",
+     "value": "umber-mill",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Ivo",
+     "attribute": "bank",
+     "value": "larkin-brook",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Celia",
+     "attribute": "course",
+     "value": "wicklow-fenn",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Karin",
+     "attribute": "hall",
+     "value": "umber-mill",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Ivo",
+     "attribute": "bank",
+     "value": "larkin-brook",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 571,
+   "text": "Rafael is running late; the recycling can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 572,
+   "text": "Esther says the coffee machine is sorted.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 573,
+   "text": "Nadia says the recycling is sorted.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 574,
+   "text": "Farid brought the rota up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 575,
+   "text": "Viktor is not worried about the window blind.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 576,
+   "text": "Zoltan got the window blind by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 577,
+   "text": "Tell Tariq the post is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 578,
+   "text": "Iris had a look at the parking permit and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 579,
+   "text": "Ask Beatriz whether the invoice ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 580,
+   "text": "Remind me to chase Maria about the stationery order.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 581,
+   "text": "Tell Greta the invoice is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 582,
+   "text": "Wilma is running late; the lift can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 583,
+   "text": "Fabio left a note about the lift.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 584,
+   "text": "Rosa sent the lift back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 585,
+   "text": "Kasper says the fire drill is sorted.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 586,
+   "text": "Bruno is not worried about the rota.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 587,
+   "text": "Ulla got the umbrella stand by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 588,
+   "text": "Lorna is not worried about the wall clock.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 589,
+   "text": "Dario got the stationery order by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 590,
+   "text": "Tell Andrei the coffee machine is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 591,
+   "text": "Milos brought the first aid box up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 592,
+   "text": "From the notes, tidied up and probably still incomplete: Kasper orders paper from verdigris-brook; and separately, Chiara keeps the accounts in pewter-coppice; and separately, Farid rehearses at the harrow-drift hall.",
+   "planted": [
+    {
+     "subject": "Kasper",
+     "attribute": "supplier",
+     "value": "verdigris-brook",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Chiara",
+     "attribute": "accounts",
+     "value": "pewter-coppice",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Farid",
+     "attribute": "hall",
+     "value": "harrow-drift",
+     "Declared": "replace"
+    }
+   ],
+   "found": []
+  },
+  {
+   "turn": 593,
+   "text": "Pablo sent the lift back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 594,
+   "text": "Ask Halima whether the notice board ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 595,
+   "text": "Rafael has no news on the parking permit.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 596,
+   "text": "Quinn sent the photocopier back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 597,
+   "text": "Tereza thinks the spare key can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 598,
+   "text": "Josefa got the rota by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 599,
+   "text": "Catching you up on what changed while you were away, in no particular order: Lisa banks with brindle-spire; one more for the pile, Dario leads the wicklow-glade project; meanwhile, Gunnar sits with the thistle-spire team.",
+   "planted": [
+    {
+     "subject": "Lisa",
+     "attribute": "bank",
+     "value": "brindle-spire",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Dario",
+     "attribute": "project",
+     "value": "wicklow-glade",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Gunnar",
+     "attribute": "team",
+     "value": "thistle-spire",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Lisa",
+     "attribute": "bank",
+     "value": "brindle-spire",
+     "Declared": "join"
+    },
+    {
+     "subject": "Dario",
+     "attribute": "project",
+     "value": "wicklow-glade",
+     "Declared": "join"
+    },
+    {
+     "subject": "Gunnar",
+     "attribute": "team",
+     "value": "thistle-spire",
+     "Declared": "join"
+    }
+   ]
+  },
+  {
+   "turn": 600,
+   "text": "Tell Alma the window blind is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 601,
+   "text": "Tereza thinks the rota can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 602,
+   "text": "Zoltan is running late; the photocopier can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 603,
+   "text": "Remind me to chase Yuki about the invoice.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 604,
+   "text": "Celia asked about the recycling again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 605,
+   "text": "Yuki has the rota until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 606,
+   "text": "Someone should tell Anders where the parking permit ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 607,
+   "text": "Catching you up on what changed while you were away, in no particular order: Kofi sits with the opal-fenn team; on a different note, Yuki keeps the backups on nutmeg-chandler; on a different note, Erol sits with the pewter-lantern team.",
+   "planted": [
+    {
+     "subject": "Kofi",
+     "attribute": "team",
+     "value": "opal-fenn",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Yuki",
+     "attribute": "backups",
+     "value": "nutmeg-chandler",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Erol",
+     "attribute": "team",
+     "value": "pewter-lantern",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Yuki",
+     "attribute": "backups",
+     "value": "nutmeg-chandler",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 608,
+   "text": "Xavier brought the spare key up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 609,
+   "text": "Olga left a note about the first aid box.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 610,
+   "text": "Alma asked about the invoice again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 611,
+   "text": "Lisa has no news on the post.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 612,
+   "text": "Remind me to chase Ingrid about the photocopier.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 613,
+   "text": "Ulla says the coffee machine is sorted.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 614,
+   "text": "Mateo sent the lift back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 615,
+   "text": "Anders says the lift is sorted.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 616,
+   "text": "Orla asked about the stationery order again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 617,
+   "text": "Tell Linnea the photocopier is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 618,
+   "text": "Magnus is not worried about the kettle.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 619,
+   "text": "Oskar says the rota is sorted.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 620,
+   "text": "Andrei has the post until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 621,
+   "text": "Tell Dario the fire drill is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 622,
+   "text": "Helena is running late; the visitor log can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 623,
+   "text": "Idris thinks the parking permit can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 624,
+   "text": "Dario has the invoice until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 625,
+   "text": "Freya mentioned the invoice in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 626,
+   "text": "Esther said nothing came of the invoice.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 627,
+   "text": "Lorna has no news on the coffee machine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 628,
+   "text": "Rafael thinks the fire drill can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 629,
+   "text": "Magnus asked about the badge again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 630,
+   "text": "Jana thinks the window blind can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 631,
+   "text": "Otto left a note about the post.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 632,
+   "text": "Remind me to chase Kasper about the umbrella stand.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 633,
+   "text": "Someone should tell Idris where the umbrella stand ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 634,
+   "text": "Tell Rania the fire drill is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 635,
+   "text": "Freya has no news on the fire drill.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 636,
+   "text": "Quinn is running late; the printer can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 637,
+   "text": "Tereza has no news on the window blind.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 638,
+   "text": "Karin sent the window blind back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 639,
+   "text": "Josefa is running late; the photocopier can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 640,
+   "text": "Ursula had a look at the stationery order and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 641,
+   "text": "Celia sent the notice board back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 642,
+   "text": "Wilma brought the parking permit up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 643,
+   "text": "Nikos brought the stationery order up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 644,
+   "text": "Remind me to chase Karin about the wall clock.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 645,
+   "text": "Tereza says the invoice is sorted.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 646,
+   "text": "Catching you up on what changed while you were away, in no particular order: Olga rehearses at the umber-annex hall; on a different note, Ulla rehearses at the brindle-beacon hall; one more for the pile, Hugo orders paper from ravel-chandler.",
+   "planted": [
+    {
+     "subject": "Olga",
+     "attribute": "hall",
+     "value": "umber-annex",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Ulla",
+     "attribute": "hall",
+     "value": "brindle-beacon",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Hugo",
+     "attribute": "supplier",
+     "value": "ravel-chandler",
+     "Declared": "replace"
+    }
+   ],
+   "found": []
+  },
+  {
+   "turn": 647,
+   "text": "Greta says the badge is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 648,
+   "text": "Kwame had a look at the umbrella stand and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 649,
+   "text": "Olga brought the fire drill up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 650,
+   "text": "Yannis wants a word about the printer at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 651,
+   "text": "Otto brought the lift up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 652,
+   "text": "Mateo thinks the badge can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 653,
+   "text": "Catching you up on what changed while you were away, in no particular order: Anders rehearses at the zephyr-chandler hall; meanwhile, Hugo leads the ember-reach project; one more for the pile, Goran rehearses at the silverfin-isle hall.",
+   "planted": [
+    {
+     "subject": "Anders",
+     "attribute": "hall",
+     "value": "zephyr-chandler",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Hugo",
+     "attribute": "project",
+     "value": "ember-reach",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Goran",
+     "attribute": "hall",
+     "value": "silverfin-isle",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Anders",
+     "attribute": "hall",
+     "value": "zephyr-chandler",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Hugo",
+     "attribute": "project",
+     "value": "ember-reach",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Goran",
+     "attribute": "hall",
+     "value": "silverfin-isle",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 654,
+   "text": "Celia left a note about the badge.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 655,
+   "text": "Fabio got the lift by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 656,
+   "text": "Andrei sent the photocopier back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 657,
+   "text": "Yannis brought the spare key up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 658,
+   "text": "Yuki thinks the wall clock can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 659,
+   "text": "Ask Jonas whether the fire drill ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 660,
+   "text": "Remind me to chase Emeka about the rota.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 661,
+   "text": "Amara had a look at the post and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 662,
+   "text": "Olga says the kettle is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 663,
+   "text": "Viktor says the lift is sorted.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 664,
+   "text": "Halima says the window blind is sorted.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 665,
+   "text": "Anders is not worried about the stationery order.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 666,
+   "text": "Halima asked about the invoice again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 667,
+   "text": "Remind me to chase Kofi about the recycling.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 668,
+   "text": "Ingrid sent the coffee machine back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 669,
+   "text": "From the notes, tidied up and probably still incomplete: Freya rehearses at the wicklow-annex hall; on a different note, Xavier keeps the accounts in saffron-ledge; one more for the pile, Lorna keeps the backups on brindle-pike.",
+   "planted": [
+    {
+     "subject": "Freya",
+     "attribute": "hall",
+     "value": "wicklow-annex",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Xavier",
+     "attribute": "accounts",
+     "value": "saffron-ledge",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Lorna",
+     "attribute": "backups",
+     "value": "brindle-pike",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Freya",
+     "attribute": "hall",
+     "value": "wicklow-annex",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Xavier",
+     "attribute": "accounts",
+     "value": "saffron-ledge",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Lorna",
+     "attribute": "backups",
+     "value": "brindle-pike",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 670,
+   "text": "Tariq thinks the fire drill can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 671,
+   "text": "Priya wants a word about the umbrella stand at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 672,
+   "text": "Orla mentioned the fire drill in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 673,
+   "text": "Lisa sent the wall clock back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 674,
+   "text": "Olga wants a word about the badge at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 675,
+   "text": "Emeka said nothing came of the window blind.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 676,
+   "text": "Luca is not worried about the recycling.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 677,
+   "text": "Celia has no news on the wall clock.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 678,
+   "text": "Yuki thinks the umbrella stand can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 679,
+   "text": "Elif got the first aid box by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 680,
+   "text": "Remind me to chase Yara about the badge.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 681,
+   "text": "Someone should tell Goran where the spare key ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 682,
+   "text": "Rosa is not worried about the stationery order.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 683,
+   "text": "Dario mentioned the rota in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 684,
+   "text": "Someone should tell Emeka where the umbrella stand ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 685,
+   "text": "Tell Anders the invoice is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 686,
+   "text": "Dmitri said nothing came of the visitor log.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 687,
+   "text": "Sanjay is not worried about the coffee machine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 688,
+   "text": "Nuria left a note about the photocopier.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 689,
+   "text": "Noor thinks the parking permit can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 690,
+   "text": "Ursula brought the wall clock up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 691,
+   "text": "Zara sent the rota back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 692,
+   "text": "Petra is not worried about the first aid box.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 693,
+   "text": "Yannis says the parking permit is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 694,
+   "text": "Rafael is running late; the stationery order can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 695,
+   "text": "Dmitri sent the umbrella stand back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 696,
+   "text": "Dora brought the parking permit up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 697,
+   "text": "Jonas got the fire drill by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 698,
+   "text": "Alma says the recycling is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 699,
+   "text": "Leila says the recycling is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 700,
+   "text": "Tell Ursula the rota is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 701,
+   "text": "Freya got the parking permit by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 702,
+   "text": "Andrei thinks the stationery order can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 703,
+   "text": "Stefan asked about the fire drill again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 704,
+   "text": "Dora brought the stationery order up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 705,
+   "text": "Noor sent the coffee machine back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 706,
+   "text": "Kofi wants a word about the invoice at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 707,
+   "text": "Xavier asked about the badge again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 708,
+   "text": "Lisa sent the coffee machine back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 709,
+   "text": "Otto has the spare key until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 710,
+   "text": "Dora had a look at the coffee machine and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 711,
+   "text": "Mateo left a note about the visitor log.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 712,
+   "text": "Rafael wants a word about the notice board at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 713,
+   "text": "Rosa sent the fire drill back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 714,
+   "text": "Tariq got the kettle by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 715,
+   "text": "Elif wants a word about the first aid box at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 716,
+   "text": "Sofia has the notice board until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 717,
+   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Emeka goes to the cinder-gable clinic; meanwhile, Sanjay rehearses at the oakhill-mill hall; one more for the pile, Iris orders paper from quill-ledge.",
+   "planted": [
+    {
+     "subject": "Emeka",
+     "attribute": "clinic",
+     "value": "cinder-gable",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Sanjay",
+     "attribute": "hall",
+     "value": "oakhill-mill",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Iris",
+     "attribute": "supplier",
+     "value": "quill-ledge",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Emeka",
+     "attribute": "clinic",
+     "value": "cinder-gable",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Sanjay",
+     "attribute": "hall",
+     "value": "oakhill-mill",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Iris",
+     "attribute": "orders",
+     "value": "paper from quill-ledge",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 718,
+   "text": "Kofi brought the photocopier up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 719,
+   "text": "Tell Quinn the umbrella stand is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 720,
+   "text": "Emeka is not worried about the lift.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 721,
+   "text": "Dora left a note about the post.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 722,
+   "text": "Helena has no news on the rota.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 723,
+   "text": "Fabio sent the kettle back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 724,
+   "text": "Alma said nothing came of the rota.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 725,
+   "text": "Fabio sent the notice board back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 726,
+   "text": "Yannis thinks the stationery order can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 727,
+   "text": "Milos said nothing came of the rota.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 728,
+   "text": "Oskar is running late; the rota can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 729,
+   "text": "Zoltan thinks the stationery order can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 730,
+   "text": "Milos thinks the umbrella stand can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 731,
+   "text": "Olga left a note about the printer.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 732,
+   "text": "Nuria is running late; the photocopier can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 733,
+   "text": "Tomas is running late; the spare key can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 734,
+   "text": "Rafael got the visitor log by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 735,
+   "text": "From the notes, tidied up and probably still incomplete: Amara keeps the accounts in brindle-meadow; one more for the pile, Karin buys bread at the harrow-sedge bakery; and separately, Sanjay goes to the harrow-vale clinic.",
+   "planted": [
+    {
+     "subject": "Amara",
+     "attribute": "accounts",
+     "value": "brindle-meadow",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Karin",
+     "attribute": "bakery",
+     "value": "harrow-sedge",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Sanjay",
+     "attribute": "clinic",
+     "value": "harrow-vale",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Amara",
+     "attribute": "accounts",
+     "value": "brindle-meadow",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Karin",
+     "attribute": "bakery",
+     "value": "harrow-sedge",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Sanjay",
+     "attribute": "clinic",
+     "value": "harrow-vale",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 736,
+   "text": "Dmitri has no news on the kettle.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 737,
+   "text": "Rania brought the coffee machine up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 738,
+   "text": "Bjorn had a look at the wall clock and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 739,
+   "text": "Noor says the badge is fine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 740,
+   "text": "Freya had a look at the kettle and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 741,
+   "text": "Noor wants a word about the recycling at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 742,
+   "text": "Ivo asked about the post again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 743,
+   "text": "Remind me to chase Rania about the photocopier.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 744,
+   "text": "Leila got the rota by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 745,
+   "text": "Dmitri brought the kettle up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 746,
+   "text": "Freya brought the spare key up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 747,
+   "text": "Olga sent the recycling back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 748,
+   "text": "Chiara is not worried about the stationery order.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 749,
+   "text": "Nikos is running late; the parking permit can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 750,
+   "text": "Someone should tell Josefa where the printer ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 751,
+   "text": "Ursula sent the kettle back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 752,
+   "text": "Kasper thinks the wall clock can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 753,
+   "text": "Ursula got the lift by mistake.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 754,
+   "text": "Rania brought the photocopier up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 755,
+   "text": "Someone should tell Dora where the notice board ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 756,
+   "text": "Noor is running late; the post can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 757,
+   "text": "Farid sent the wall clock back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 758,
+   "text": "Helena mentioned the printer in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 759,
+   "text": "Remind me to chase Otto about the post.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 760,
+   "text": "Rania mentioned the post in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 761,
+   "text": "Ask Iris whether the rota ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 762,
+   "text": "Erol wants a word about the post at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 763,
+   "text": "Remind me to chase Nuria about the window blind.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 764,
+   "text": "Dmitri brought the invoice up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 765,
+   "text": "Catching you up on what changed while you were away, in no particular order: Amara goes to the garnet-fenn clinic; meanwhile, Emeka sits with the marlow-harbour team; one more for the pile, Ursula rehearses at the thistle-harbour hall.",
+   "planted": [
+    {
+     "subject": "Amara",
+     "attribute": "clinic",
+     "value": "garnet-fenn",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Emeka",
+     "attribute": "team",
+     "value": "marlow-harbour",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Ursula",
+     "attribute": "hall",
+     "value": "thistle-harbour",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Amara",
+     "attribute": "clinic",
+     "value": "garnet-fenn",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Emeka",
+     "attribute": "team",
+     "value": "marlow-harbour",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Ursula",
+     "attribute": "hall",
+     "value": "thistle-harbour",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 766,
+   "text": "Yannis mentioned the badge in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 767,
+   "text": "Goran had a look at the window blind and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 768,
+   "text": "Celia left a note about the badge.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 769,
+   "text": "Dora has the spare key until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 770,
+   "text": "Farid asked about the wall clock again.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 771,
+   "text": "Remind me to chase Yuki about the photocopier.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 772,
+   "text": "Emeka is running late; the badge can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 773,
+   "text": "Linnea left a note about the kettle.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 774,
+   "text": "Pablo thinks the stationery order can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 775,
+   "text": "Noor wants a word about the parking permit at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 776,
+   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Yuki sits with the oakhill-kiln team; one more for the pile, Zoltan keeps the backups on nutmeg-wharf; and separately, Mateo banks with garnet-hearth.",
+   "planted": [
+    {
+     "subject": "Yuki",
+     "attribute": "team",
+     "value": "oakhill-kiln",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Zoltan",
+     "attribute": "backups",
+     "value": "nutmeg-wharf",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Mateo",
+     "attribute": "bank",
+     "value": "garnet-hearth",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Yuki",
+     "attribute": "team",
+     "value": "oakhill-kiln",
+     "Declared": "join"
+    },
+    {
+     "subject": "Zoltan",
+     "attribute": "backups",
+     "value": "nutmeg-wharf",
+     "Declared": "join"
+    },
+    {
+     "subject": "Mateo",
+     "attribute": "bank",
+     "value": "garnet-hearth",
+     "Declared": "join"
+    }
+   ]
+  },
+  {
+   "turn": 777,
+   "text": "Dora thinks the badge can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 778,
+   "text": "Emeka has the first aid box until the end of the week.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 779,
+   "text": "Orla is not worried about the fire drill.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 780,
+   "text": "Rania thinks the lift can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 781,
+   "text": "Zoltan is running late; the first aid box can wait.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 782,
+   "text": "Tell Ivo the lift is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 783,
+   "text": "Nikos brought the umbrella stand up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 784,
+   "text": "Kwame wants a word about the first aid box at some point.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 785,
+   "text": "Bjorn had a look at the printer and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 786,
+   "text": "Magnus mentioned the window blind in passing.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 787,
+   "text": "Beatriz has no news on the wall clock.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 788,
+   "text": "Kwame thinks the umbrella stand can wait until next month.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 789,
+   "text": "Hugo sent the recycling back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 790,
+   "text": "Tell Farid the parking permit is on the list.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 791,
+   "text": "Three or four bits of housekeeping, none of them urgent but all of them the sort of thing that gets lost: Kofi keeps the backups on dovetail-weir; and separately, Zara leads the ironwood-drift project; and separately, Karin banks with pewter-wharf.",
+   "planted": [
+    {
+     "subject": "Kofi",
+     "attribute": "backups",
+     "value": "dovetail-weir",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Zara",
+     "attribute": "project",
+     "value": "ironwood-drift",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Karin",
+     "attribute": "bank",
+     "value": "pewter-wharf",
+     "Declared": "replace"
+    }
+   ],
+   "found": [
+    {
+     "subject": "Kofi",
+     "attribute": "backups",
+     "value": "dovetail-weir",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Zara",
+     "attribute": "project",
+     "value": "ironwood-drift",
+     "Declared": "replace"
+    },
+    {
+     "subject": "Karin",
+     "attribute": "bank",
+     "value": "pewter-wharf",
+     "Declared": "replace"
+    }
+   ]
+  },
+  {
+   "turn": 792,
+   "text": "Vasco brought the fire drill up and then dropped it.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 793,
+   "text": "Petra had a look at the post and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 794,
+   "text": "Ingrid sent the wall clock back unopened.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 795,
+   "text": "Ask Olga whether the photocopier ever turned up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 796,
+   "text": "Ingrid said nothing came of the coffee machine.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 797,
+   "text": "Someone should tell Goran where the umbrella stand ended up.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 798,
+   "text": "Kwame had a look at the visitor log and shrugged.",
+   "planted": null,
+   "found": []
+  },
+  {
+   "turn": 799,
+   "text": "Luca brought the notice board up and then dropped it.",
+   "planted": null,
+   "found": []
+  }
+ ]
+}

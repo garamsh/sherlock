@@ -12,8 +12,14 @@ import (
 // wrote returns the turn that writes a value to an address, said in the
 // given words.
 func wrote(day int, address Address, value, text string) Turn {
-	fact := Fact{Address: address, Value: value}
-	return Turn{Index: day, Day: day, At: start.AddDate(0, 0, day), Text: text, Fact: &fact}
+	return Turn{Index: day, Day: day, At: start.AddDate(0, 0, day), Text: text,
+		Written: []Written{{Fact: Fact{Address: address, Value: value}}}}
+}
+
+// stating sets what a turn's one assertion says it does to its address.
+func stating(t Turn, op Operation) Turn {
+	t.Written[0].Declared = op
+	return t
 }
 
 // asked returns the turn that questions an address.
@@ -210,12 +216,10 @@ func TestAttributeFrame_DeclaredTakesTheOperationTheWriteStates(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			ctx := context.Background()
 			frame := NewAttributeFrame(arityDeclared)
-			first := wrote(0, almaProject, "amber-quarry", "Alma leads the amber-quarry project.")
-			first.Declared = OperationReplace
+			first := stating(wrote(0, almaProject, "amber-quarry", "Alma leads the amber-quarry project."), OperationReplace)
 			require.NoError(t, frame.Observe(ctx, first))
 
-			second := wrote(400, almaProject, "copper-lantern", "Alma leads the copper-lantern project.")
-			second.Declared = tc.declared
+			second := stating(wrote(400, almaProject, "copper-lantern", "Alma leads the copper-lantern project."), tc.declared)
 			require.NoError(t, frame.Observe(ctx, second))
 
 			injected, err := frame.Context(ctx, asked(800, almaProject))
@@ -234,14 +238,12 @@ func TestAttributeFrame_DeclaredIgnoresTheWordingTheCueRuleReads(t *testing.T) {
 	ctx := context.Background()
 	frame := NewAttributeFrame(arityDeclared)
 
-	first := wrote(0, almaProject, "amber-quarry", "Alma leads the amber-quarry project.")
-	first.Declared = OperationReplace
+	first := stating(wrote(0, almaProject, "amber-quarry", "Alma leads the amber-quarry project."), OperationReplace)
 	require.NoError(t, frame.Observe(ctx, first))
 
 	// A narrowing statement, which carries no conjunction for a cue list to
 	// find, declared as the join it is.
-	second := wrote(400, almaProject, "copper-lantern", "On Thursdays Alma leads the copper-lantern project.")
-	second.Declared = OperationJoin
+	second := stating(wrote(400, almaProject, "copper-lantern", "On Thursdays Alma leads the copper-lantern project."), OperationJoin)
 	require.NoError(t, frame.Observe(ctx, second))
 
 	injected, err := frame.Context(ctx, asked(800, almaProject))

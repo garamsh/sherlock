@@ -12,9 +12,9 @@ import (
 // others alone, so the two failures never reach a frame mixed together.
 func TestMisdeclaration_CorruptsOneDirectionAndLeavesTheOther(t *testing.T) {
 	join := wrote(0, almaProject, "amber-quarry", "joins.")
-	join.Declared = OperationJoin
+	join.Written[0].Declared = OperationJoin
 	replace := wrote(1, almaProject, "copper-lantern", "replaces.")
-	replace.Declared = OperationReplace
+	replace.Written[0].Declared = OperationReplace
 
 	tests := []struct {
 		direction string
@@ -29,19 +29,19 @@ func TestMisdeclaration_CorruptsOneDirectionAndLeavesTheOther(t *testing.T) {
 			// Rate 1 corrupts every eligible write, which is what makes the
 			// direction's reach visible without depending on a draw.
 			errs := Misdeclaration{Direction: tc.direction, Rate: 1, Seed: 7}
-			assert.Equal(t, tc.join, errs.applyTo(join).Declared)
-			assert.Equal(t, tc.replace, errs.applyTo(replace).Declared)
+			assert.Equal(t, tc.join, errs.applyTo(join).Written[0].Declared)
+			assert.Equal(t, tc.replace, errs.applyTo(replace).Written[0].Declared)
 		})
 	}
 }
 
 func TestMisdeclaration_CorruptsNothingAtRateZero(t *testing.T) {
 	join := wrote(0, almaProject, "amber-quarry", "joins.")
-	join.Declared = OperationJoin
+	join.Written[0].Declared = OperationJoin
 
 	for _, direction := range directionNames {
 		errs := Misdeclaration{Direction: direction, Rate: 0, Seed: 7}
-		assert.Equal(t, join, errs.applyTo(join))
+		assert.Equal(t, join.Written, errs.applyTo(join).Written)
 	}
 }
 
@@ -118,7 +118,7 @@ func TestMeasureDamage_CountsNoDamageWhereTheAddressWasEmpty(t *testing.T) {
 	frame := NewAttributeFrame(arityDeclared)
 
 	opening := wrote(0, almaProject, "amber-quarry", "Alma leads the amber-quarry project.")
-	opening.Declared = OperationReplace
+	opening.Written[0].Declared = OperationReplace
 	errs := Misdeclaration{Direction: directionReplaceAsJoin, Rate: 1, Seed: 7}
 	require.NoError(t, frame.Observe(ctx, errs.applyTo(opening)))
 

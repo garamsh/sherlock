@@ -64,10 +64,14 @@ func (f *intervalFrame) Observe(_ context.Context, t Turn) error {
 }
 
 // Context returns the values whose span covers the moment the question is
-// asked.
+// asked. A question naming a subject and no attribute is answered from
+// every address under that subject, as of the same moment.
 func (f *intervalFrame) Context(_ context.Context, t Turn) (Injected, error) {
 	if t.Ask == nil {
 		return Injected{}, nil
+	}
+	if t.Ask.Attribute == "" {
+		return f.subject(t.Ask.Subject, t.At), nil
 	}
 	spans := f.values[*t.Ask]
 	var lines []string
@@ -80,6 +84,31 @@ func (f *intervalFrame) Context(_ context.Context, t Turn) (Injected, error) {
 		return Injected{}, nil
 	}
 	return Injected{Text: strings.Join(lines, "\n"), Scanned: len(spans)}, nil
+}
+
+// subject answers the multi-address question from every address under one
+// subject, as of the moment it is asked. Nothing bounds what comes back:
+// a store of spans has no ranking over its addresses and no budget to stop
+// at, so it returns every span that covers the moment.
+func (f *intervalFrame) subject(subject string, at time.Time) Injected {
+	var (
+		lines   []string
+		scanned int
+	)
+	for _, attribute := range attributesUnder(f.values, subject) {
+		address := Address{Subject: subject, Attribute: attribute}
+		spans := f.values[address]
+		scanned += len(spans)
+		for _, span := range spans {
+			if span.covers(at) {
+				lines = append(lines, line(address, span.value))
+			}
+		}
+	}
+	if len(lines) == 0 {
+		return Injected{}
+	}
+	return Injected{Text: strings.Join(lines, "\n"), Scanned: scanned}
 }
 
 // Size counts one unit per span. A value that was true twice is two spans,

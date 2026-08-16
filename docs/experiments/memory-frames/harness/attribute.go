@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"sort"
 	"strings"
 	"time"
 )
@@ -110,9 +111,17 @@ func (f *attributeFrame) write(written Written, text string, at time.Time) {
 // Context returns what the frame holds at the address asked about, and
 // nothing else. An addressed structure answers a question by going to one
 // place, so what it injects is a line or two rather than a filled budget.
+//
+// A question naming a subject and no attribute is answered from every
+// address under that subject, which is the only thing an addressed store
+// can do with one: it is a partial address, and the store has no other way
+// in.
 func (f *attributeFrame) Context(_ context.Context, t Turn) (Injected, error) {
 	if t.Ask == nil {
 		return Injected{}, nil
+	}
+	if t.Ask.Attribute == "" {
+		return f.subject(t.Ask.Subject), nil
 	}
 	values := f.values[*t.Ask]
 	scanned := len(values)
@@ -133,6 +142,43 @@ func (f *attributeFrame) Context(_ context.Context, t Turn) (Injected, error) {
 		lines = append(lines, line(*t.Ask, held.value))
 	}
 	return Injected{Text: strings.Join(lines, "\n"), Scanned: scanned}, nil
+}
+
+// subject answers the multi-address question from every address under one
+// subject. Nothing bounds what comes back: a store holding an address and a
+// value has no ranking to order the addresses by and no budget to stop at,
+// so it returns them all.
+//
+// What it reads is the subject's own values rather than every address it
+// holds, which is what a store keyed on the subject first would touch. The
+// flat map here would read more, and counting that would report a property
+// of this implementation instead of one of the structure.
+func (f *attributeFrame) subject(subject string) Injected {
+	var (
+		lines   []string
+		scanned int
+	)
+	for _, attribute := range attributesUnder(f.values, subject) {
+		address := Address{Subject: subject, Attribute: attribute}
+		values := f.values[address]
+		scanned += len(values)
+		if f.rule == arityLearned {
+			// The learned rule reads every address under the attribute to
+			// decide how many values this one returns, and it takes that
+			// decision once per address the answer spans.
+			scanned += len(f.values)
+		}
+		if !f.returnsEveryValue(attribute) {
+			values = []heldValue{newest(values)}
+		}
+		for _, held := range values {
+			lines = append(lines, line(address, held.value))
+		}
+	}
+	if len(lines) == 0 {
+		return Injected{}
+	}
+	return Injected{Text: strings.Join(lines, "\n"), Scanned: scanned}
 }
 
 // Size counts one unit per value held and measures the bytes the frame
@@ -261,4 +307,19 @@ func newest(values []heldValue) heldValue {
 // counted in so the two cannot drift apart.
 func line(address Address, value string) string {
 	return fmt.Sprintf("%s %s %s", address.Subject, address.Attribute, value)
+}
+
+// attributesUnder is the attributes one subject holds something under, in
+// name order. The order is alphabetical because an addressed store has no
+// other: it holds no score, so any order it emits in carries no claim about
+// which address matters, and a fixed one keeps a run reproducible.
+func attributesUnder[V any](values map[Address]V, subject string) []string {
+	var out []string
+	for address := range values {
+		if address.Subject == subject {
+			out = append(out, address.Attribute)
+		}
+	}
+	sort.Strings(out)
+	return out
 }

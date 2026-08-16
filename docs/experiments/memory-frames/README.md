@@ -26,6 +26,7 @@ Ten ways of holding a memory over a decade of turns, compared: what each stores,
 - What a read cannot reach
 - What a constraint costs
 - What harder language costs
+- Whether a structure can find what it holds
 - What a run costs
 - What this record does not say
 - Limits
@@ -57,6 +58,8 @@ Recall is never reported without the stale figure beside it. A frame that answer
 
 A size is one store read at one moment rather than a sample, so it carries no interval; every other figure in this record is a mean over the probes of that year with the 95% half-width those probes support. The other arm, in which nothing arrives extracted, is not in this table and moves these rows a long way; §What the comparison shows says how, and §The seam says why both arms are run.
 
+Every question behind this table arrives already turned into an address, so these rows say what a structure holds and updates and nothing about what it finds. §Whether a structure can find what it holds is the run that withholds the address, and it moves the addressed rows further than either arm does.
+
 ## What would be chosen today
 
 The programme moves from measuring to deciding after this round, so this is where the record says where it stands. Two of the three questions are answered by the evidence and the third is not.
@@ -71,9 +74,15 @@ The programme moves from measuring to deciding after this round, so this is wher
 
 **The structure survives harder language and the writeback is where it bends.** An addressed store answers identically on plain, subordinated and packed sentences whenever the writeback is perfect, because what it holds is an address and a value; the store that answers by matching a question against text it kept loses about a quarter of its recall on subordinated sentences and most of one class on packed ones. So the shape of the language does not reach the chosen structure — it reaches the writeback standing in front of it, and it reaches the part of that writeback this section already named as the open question. What breaks first is the declaration: of the facts a model both finds and addresses correctly, the share whose operation it also gets right falls furthest of anything the extraction measures across the shapes. What breaks second is the address, which was never wrong on plain sentences and is wrong most often where a message carries three assertions. Neither failure could have appeared in the decade run, whose oracle never errs, and both land on exactly the two things the choice rests on — that a fact reaches its address, and that the write states arity. The choice stands; what this round adds is that the reliability of a declaration is a property of the sentence and not only of the model.
 
+**The structure cannot find, and the finding has to live in front of it.** Every figure behind the choice above was produced with the question already turned into an address. Asked the same questions in words, every structure that holds facts at an address answers nothing at all, in the arm where it holds everything: there is nowhere to look when a question carries no key. That is not a score to be improved and no arity rule repairs it — it is the other face of what addressing bought, which is that identity is settled before the read rather than inferred during it. So the design that would be built is not one thing but three: a writeback that reads a sentence into an address, a store that holds an address and a value, and a read step that reads a question into an address. §Whether a structure can find what it holds measures the third — one model call a question, and behind it the store answers what it answers under the oracle. What survives is the simplicity claim about the store. What does not survive is any claim that the store on its own is a memory: two of the three parts read language, and the store between them does no finding whatever.
+
+**The alternative is the design this record already measures, and it is a worse trade rather than an unmeasured one.** A store that ranks text against the question needs no step in front of it, and the same rows say what that buys and costs: it finds nearly as much of a person, it reads its whole index to do it, it returns a superseded value on most subjects, and its footprint is orders of magnitude larger because it keeps the sentences. Nor is its read path free of a call — it embeds the question before it ranks, which on the hosted embedder is a call per read (#435). So the comparison is not a call against no call; it is one call that returns an address against one call that returns a vector, and everything downstream of them differs. A design that wanted both would pay for both stores, which the byte columns price.
+
+**A question spanning many addresses is where the choice starts to cost, and nothing in the structure decides it.** Asked what it knows about a person, an addressed store returns every address under that subject: no ranking, no threshold, and no budget either. Where the relevant set is larger than the read budget it returns it anyway, and at the tightest budget swept it already does on half the subjects for the arm that keeps every value. The only structure here that chooses what to leave out is the shipped one, and it chooses with the hybrid score's constants — the mechanism this programme disqualified when the question was arity. So the choice is between a structure that overflows and a ranking with constants nobody calibrated, and this round declines to put the second inside the first. Where an ordering would have to live, if one is wanted, is the read step that already reads the question: it knows what was asked, and a step that can turn a question into an address can turn it into fewer addresses. That is a design to specify and measure, not a constant to fit, and it is not in this record.
+
 **The policy is not chosen, and the evidence cannot choose it.** Taking a real model's declarations recovers most of the coexistence an always-replacing store gives up, and pays for it with a superseded value on about one revised thread in five. Always replacing returns nothing stale and loses that coexistence permanently. Neither dominates. Which is cheaper depends on whether a fact that is lost costs more than a fact that is wrong, and no measurement in this record answers that — it is a property of what the agent is for, not of the structure. A reader looking for the row with the best numbers should be told that the best-scoring rule measured here is `attribute-cued`, which is disqualified for being a list that grows, and that it sits on the frontier rather than below it. The criterion has to be applied deliberately; it is not visible in the ranking.
 
-What would be built today, then, is the addressed store with the operation stated by the writeback, erring toward join. What is still open is what to do when the declaration is unreliable — a decision to take rather than a measurement to make, and one this round makes more pressing rather than easier, because it has now measured a sentence shape that makes the declaration less reliable.
+What would be built today, then, is the addressed store with the operation stated by the writeback, erring toward join, and a read step in front of it that turns a question into an address. What is still open is what to do when the declaration is unreliable — a decision to take rather than a measurement to make, and one this round makes more pressing rather than easier, because it has now measured a sentence shape that makes the declaration less reliable. What is open beside it is what the read step should ask for when a question reaches more than fits.
 
 ## What the comparison shows
 
@@ -195,6 +204,8 @@ The extracted form says what was asserted and nothing else. It does not say whet
 One more thing arrives in that arm and it is not extraction. `Declared` is the write operation — whether the value ends what is at its address or joins it — which is where this record's own arity finding puts it: nothing recovers from the triple what the sentence carried, so only a writeback that reads the sentence can state it. Every frame receives it and only the ceiling reads it, which is what makes that arm a ceiling rather than a design. `Fact` still says nothing about arity, so the question the other frames are asked is the question they were asked before.
 
 A question is a turn too, and in the same arm it also arrives extracted: the address it is asking about, never the value. That is the read-side half of the same decision. A design that addresses facts has to turn a question into an address, and with no model in the run it would otherwise parse the question — which would put on the read side exactly the parser comparison that was removed from the write side. Every frame receives it and each decides what to do with it: the shipped frame ignores it and queries with the question's text, because its read path takes a task statement and giving it an address would stop it being the shipped design.
+
+**What a question carries is an axis of its own, and tying it to the arm is what left one half of the standard unmeasured.** While the two moved together, an addressed structure had either a perfect extractor and a perfect question or neither, so nothing it scored said whether it could find. §Whether a structure can find what it holds runs this seam with the two separated — the arm decides what a write carries, the form decides what a question carries — and no frame was changed to allow it.
 
 **The arms bracket the writeback, and the bracket is not optional.** The shipped store is curation-only: only the writeback block writes to it, and the writeback is a model decision (`docs/architecture/memory.md`). With no model in the run something has to stand in for it, and picking one stand-in would hide a choice that moves every figure. So both frames run in both arms, and the arms bracket the same thing for every design.
 
@@ -2093,13 +2104,269 @@ Each varies one thing: `clausal` is the sentence and `packed` is the number of d
 | `packed` | `extracted` | `log` | 0.799 ±0.069 | 1.000 ±0.000 | 1.000 ±0.000 | 0.917 ±0.163 | 0.417 ±0.110 | 0.458 ±0.082 | 1.000 ±0.000 | 0.000 ±0.000 | 229 |
 <!-- end generated -->
 
+## Whether a structure can find what it holds
+
+Every figure outside this section was produced with the question already turned into `(subject, attribute)`. A frame handed the address is measured on holding and on updating; the standard this programme is measured against has a second half — surfacing the meaningful one — and no addressed structure had been measured on it. This section is the run in which no frame receives the address unless the form it is measured under supplies one.
+
+**It is a separate run with its own file, on the decade run's workload.** `harness/finding.go` measures it and `results/finding_seed7.json` holds it. The workload is generated from the same seed with the same parameters and carries the same turn digest, so where this run hands over the address it answers what the decade run answered — which `harness/finding_test.go` checks against the committed decade file value by value rather than by hashing it. No row of that file moved.
+
+**Three forms, and the arm is not one of them.** An arm decides what a turn carries when a frame observes it. A form decides what a question carries when a frame is asked. Both arms run under every form.
+
+- `addressed` — the question carries the address it was generated from. It is the ceiling every figure elsewhere in this record was measured at.
+- `worded` — the question carries its words and nothing else.
+- `resolved` — the question carries the address a model read out of its words: one call per question, answering in JSON, the same model this record already pays for elsewhere. It is the read-side twin of the `extracted` arm, and it is where a buildable design sits.
+
+**Nothing was added to a structure to make it find.** The recommendation is a store that holds an address and a value and reads one place, and bolting a ranking function and a threshold onto it to make a worded question work would be a different structure with a different simplicity claim — and would answer a question nobody asked. So no frame gained a scorer, and what a worded question reaches an addressed store as is nothing at all.
+
+**A resolver that matched the question's words was not built.** Every question here is written from the attribute's own template, so the subject's name and usually the attribute's own noun stand in it as tokens. A step that matched those words against the address space would place nearly every question and would be scoring the generator rather than a design. What is measured instead is the step a system would ship — a model reading the question — and the same objection applies to its figure, which is why §Limits calls it a ceiling rather than an estimate.
+
+**A question about a person is a partial address.** Every checkpoint before this round named one address; `What do you know about <subject>?` names a subject and no attribute. Its ground truth is every value true anywhere on that subject — the relation §What a read cannot reach already defined, read off the workload rather than off any retrieval function. An addressed structure answers it from every address under the subject, emitted in attribute order: the order carries no claim about which of them matters, because such a structure holds nothing that would support one.
+
+**The two kinds of question are asked in separate runs over separate stores.** A read is not always free — the shipped store records an access on every recall — so asking both out of one store would answer the second from a store the first had already moved.
+
+**What a structure returns when the relevant set does not fit is reported rather than repaired.** The read budget is swept under the multi-address question the way #472 swept it under the single-address one. A structure that fills a budget answers inside whatever budget it is given; a structure that holds an address and a value has no budget to answer inside, so what it returns is everything the partial address reaches, and the table reports how far past the budget that goes rather than cutting it to fit. Cutting it needs an ordering, an ordering is a mechanism those stores do not have, and building one to publish a number is the move this programme has refused before.
+
+**The share inside the budget is a threshold and the multiple is not.** The shipped store bounds its own answer with a per-row token estimate that divides by four and rounds down, so its answers come back a few per cent past the budget in characters and its share-inside reads zero for a reason that has nothing to do with how much it found. The column beside it, what it returned as a multiple of the budget, is where that answer's size is read. An answer that is empty fits trivially, which is why neither column is read without the recall beside it.
+
+**What these figures say.**
+
+- **Nothing that holds facts at an address answers a question in words.** In the arm where they hold everything, every addressed structure — the attribute arms, the interval store, the log — posts a recall of zero at every year, on the single-address question and on the multi-address one alike, and the units-read column beside it is zero too. That is not a score to be improved. A store whose read path is a lookup has nowhere to look when the question carries no key, and what this record has been measuring for those structures all along is holding and updating.
+- **The two structures that hold text are the two the form does not move.** `shipped` and `document` post identical figures under all three forms, because neither reads an address: what a question carries reaches only the family that addresses. The text arm is form-invariant for the same reason from the other side — a store that holds nothing answers nothing whatever the question carries — and both invariances are in the table rather than asserted.
+- **A step in front of the store recovers all of it but one question.** With a model turning the question's words into an address, every addressed structure answers what it answers under the oracle, class for class, at every year but one. The model misplaced a single question of the several hundred it was asked, and the damage is exactly what a misplaced question does: one thread unanswered in the one year it was asked, in the class asked only once.
+- **That is the easiest form of the addressing problem and the figure is a ceiling.** Every question here is written from its attribute's template, so it carries the subject's name and usually the attribute's own noun. A question that only implied what it asked about is where such a step would be tested, and none is asked here.
+- **The finding does not have to live in the store, and putting it in front costs one model call a question.** The paid table below states what that came to in calls and tokens. It is the same kind of cost the write side already pays — a model reading language — once for each question instead of once for each turn, and it buys an answer from a store that still reads one place.
+- **A question about a person spans several addresses by the end of the decade, and an addressed structure answers it by reading them and nothing else.** It touches the addresses under one subject where the shipped store ranks its whole active index and the log projects every event it ever kept, and the gap between those columns is the same one the single-address question opened, widened by nothing.
+- **On that question the structures separate on what they return that is no longer true, not on what they find.** The shipped store finds nearly as much of a person as the addressed store that takes its arity from the write, and returns a superseded value on most subjects while doing it; the addressed store returns none. Ranking against the question's text finds a person's facts, and brings back what has stopped being true along with them.
+- **A structure with no store at all answers almost nothing about a person.** The bounded document holds the most recent turns and a person's facts are spread over a decade, so the multi-address question is the one place in this record where the floor is not close to anything.
+- **The addressed store's insensitivity to the read budget survives the multi-address question, and stops being free.** From the tightest budget swept to the loosest it returns the same characters: at the loosest that is a fraction of what it was allowed, and at the tightest the store that keeps every value is past what it was allowed on half the subjects. #472 read that insensitivity as the addressed store answering the address it was asked for; a question spanning many addresses shows the other face of it — the structure has no budget, so it neither fills one nor stops at one.
+- **What each structure does when the relevant set does not fit, one line each.** The attribute arms, the interval store and the log do not choose: they return every address under the subject whatever the budget, and where that is more than fits, more than fits is what they return. The bounded document chooses by recency — the oldest text goes when the limit is passed — which is a rule with one constant, the limit itself, and on a question about a person what it keeps answers almost none of it. The shipped store chooses by rank, which is a ranking with three constants — the two weights and the half-life — and it pays for the choice: at the tightest budget its answer about a person falls by about a quarter, because a ranked list cut at a budget drops what the ranking put last. A ranking with constants nobody calibrated is what this programme disqualified when the question was arity, and it is the only mechanism in this table that answers the overflow question at all.
+- **What has to fit grows with the span.** A subject spans about two addresses at the end of the first year and about seven and a half at the end of the tenth, and what an addressed structure returns for one grows with it, near enough linearly. The figure to read is that slope rather than the share inside a budget at year ten: a person with more attributes, or a span longer than a decade, reaches any fixed budget on the same line.
+
+<!-- generated by the harness: finding; do not edit between the markers -->
+
+### What each frame found when the question arrived as words
+
+| question | arm | frame | recall | carried | replaced | reverted | parallel | refined | fresh | stale returned | units read |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| `addressed` | `oracle` | `shipped` | 0.923 ±0.030 | 0.900 ±0.094 | 0.875 ±0.104 | 1.000 ±0.000 | 0.925 ±0.066 | 0.838 ±0.081 | 1.000 ±0.000 | 0.838 ±0.081 | 783.0 ±0.0 |
+| `addressed` | `oracle` | `document` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 1.0 ±0.0 |
+| `addressed` | `oracle` | `attribute-single` | 0.833 ±0.030 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 1.0 ±0.0 |
+| `addressed` | `oracle` | `attribute-multi` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.8 ±0.1 |
+| `addressed` | `oracle` | `attribute-learned` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 601.8 ±0.1 |
+| `addressed` | `oracle` | `attribute-cued` | 0.917 ±0.024 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 1.2 ±0.0 |
+| `addressed` | `oracle` | `attribute-declared` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 1.3 ±0.1 |
+| `addressed` | `oracle` | `interval` | 0.833 ±0.030 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 2.0 ±0.1 |
+| `addressed` | `oracle` | `interval-declared` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 2.0 ±0.1 |
+| `addressed` | `oracle` | `log` | 0.833 ±0.030 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 840.0 ±0.0 |
+| `addressed` | `text` | `shipped` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 22.0 ±0.0 |
+| `addressed` | `text` | `document` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 1.0 ±0.0 |
+| `addressed` | `text` | `attribute-single` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `addressed` | `text` | `attribute-multi` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `addressed` | `text` | `attribute-learned` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `addressed` | `text` | `attribute-cued` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `addressed` | `text` | `attribute-declared` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `addressed` | `text` | `interval` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `addressed` | `text` | `interval-declared` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `addressed` | `text` | `log` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `worded` | `oracle` | `shipped` | 0.923 ±0.030 | 0.900 ±0.094 | 0.875 ±0.104 | 1.000 ±0.000 | 0.925 ±0.066 | 0.838 ±0.081 | 1.000 ±0.000 | 0.838 ±0.081 | 783.0 ±0.0 |
+| `worded` | `oracle` | `document` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 1.0 ±0.0 |
+| `worded` | `oracle` | `attribute-single` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `worded` | `oracle` | `attribute-multi` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `worded` | `oracle` | `attribute-learned` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `worded` | `oracle` | `attribute-cued` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `worded` | `oracle` | `attribute-declared` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `worded` | `oracle` | `interval` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `worded` | `oracle` | `interval-declared` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `worded` | `oracle` | `log` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `worded` | `text` | `shipped` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 22.0 ±0.0 |
+| `worded` | `text` | `document` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 1.0 ±0.0 |
+| `worded` | `text` | `attribute-single` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `worded` | `text` | `attribute-multi` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `worded` | `text` | `attribute-learned` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `worded` | `text` | `attribute-cued` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `worded` | `text` | `attribute-declared` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `worded` | `text` | `interval` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `worded` | `text` | `interval-declared` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `worded` | `text` | `log` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `resolved` | `oracle` | `shipped` | 0.923 ±0.030 | 0.900 ±0.094 | 0.875 ±0.104 | 1.000 ±0.000 | 0.925 ±0.066 | 0.838 ±0.081 | 1.000 ±0.000 | 0.838 ±0.081 | 783.0 ±0.0 |
+| `resolved` | `oracle` | `document` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 1.0 ±0.0 |
+| `resolved` | `oracle` | `attribute-single` | 0.833 ±0.030 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 1.0 ±0.0 |
+| `resolved` | `oracle` | `attribute-multi` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.8 ±0.1 |
+| `resolved` | `oracle` | `attribute-learned` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 601.8 ±0.1 |
+| `resolved` | `oracle` | `attribute-cued` | 0.917 ±0.024 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 1.2 ±0.0 |
+| `resolved` | `oracle` | `attribute-declared` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 1.3 ±0.1 |
+| `resolved` | `oracle` | `interval` | 0.833 ±0.030 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 2.0 ±0.1 |
+| `resolved` | `oracle` | `interval-declared` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 2.0 ±0.1 |
+| `resolved` | `oracle` | `log` | 0.833 ±0.030 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 840.0 ±0.0 |
+| `resolved` | `text` | `shipped` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 22.0 ±0.0 |
+| `resolved` | `text` | `document` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 1.0 ±0.0 |
+| `resolved` | `text` | `attribute-single` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `resolved` | `text` | `attribute-multi` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `resolved` | `text` | `attribute-learned` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `resolved` | `text` | `attribute-cued` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `resolved` | `text` | `attribute-declared` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `resolved` | `text` | `interval` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `resolved` | `text` | `interval-declared` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+| `resolved` | `text` | `log` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
+
+### What a question about a whole person returned
+
+| question | arm | frame | subjects asked | addresses spanned | recall | stale returned | context chars | of the budget | units read | inside the budget |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `addressed` | `oracle` | `shipped` | 80 | 7.50 ±0.41 | 0.935 ±0.020 | 0.878 ±0.093 | 2160.0 ±3.0 | 1.055 ±0.001 | 783.0 ±0.0 | 0.000 ±0.000 |
+| `addressed` | `oracle` | `document` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 2047.0 ±0.0 | 1.000 ±0.000 | 1.0 ±0.0 | 1.000 ±0.000 |
+| `addressed` | `oracle` | `attribute-single` | 80 | 7.50 ±0.41 | 0.896 ±0.021 | 0.000 ±0.000 | 197.5 ±10.7 | 0.096 ±0.005 | 7.5 ±0.4 | 1.000 ±0.000 |
+| `addressed` | `oracle` | `attribute-multi` | 80 | 7.50 ±0.41 | 1.000 ±0.000 | 1.000 ±0.000 | 263.8 ±19.6 | 0.129 ±0.010 | 10.0 ±0.8 | 1.000 ±0.000 |
+| `addressed` | `oracle` | `attribute-learned` | 80 | 7.50 ±0.41 | 1.000 ±0.000 | 1.000 ±0.000 | 263.8 ±19.6 | 0.129 ±0.010 | 4510.0 ±245.5 | 1.000 ±0.000 |
+| `addressed` | `oracle` | `attribute-cued` | 80 | 7.50 ±0.41 | 0.949 ±0.016 | 0.000 ±0.000 | 210.7 ±12.1 | 0.103 ±0.006 | 8.0 ±0.5 | 1.000 ±0.000 |
+| `addressed` | `oracle` | `attribute-declared` | 80 | 7.50 ±0.41 | 1.000 ±0.000 | 0.000 ±0.000 | 223.9 ±13.8 | 0.109 ±0.007 | 8.5 ±0.5 | 1.000 ±0.000 |
+| `addressed` | `oracle` | `interval` | 80 | 7.50 ±0.41 | 0.896 ±0.021 | 0.000 ±0.000 | 197.5 ±10.7 | 0.096 ±0.005 | 10.5 ±0.8 | 1.000 ±0.000 |
+| `addressed` | `oracle` | `interval-declared` | 80 | 7.50 ±0.41 | 1.000 ±0.000 | 0.000 ±0.000 | 223.9 ±13.8 | 0.109 ±0.007 | 10.5 ±0.8 | 1.000 ±0.000 |
+| `addressed` | `oracle` | `log` | 80 | 7.50 ±0.41 | 0.896 ±0.021 | 0.000 ±0.000 | 197.5 ±10.7 | 0.096 ±0.005 | 840.0 ±0.0 | 1.000 ±0.000 |
+| `addressed` | `text` | `shipped` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 977.0 ±0.0 | 0.477 ±0.000 | 22.0 ±0.0 | 1.000 ±0.000 |
+| `addressed` | `text` | `document` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 2047.0 ±0.0 | 1.000 ±0.000 | 1.0 ±0.0 | 1.000 ±0.000 |
+| `addressed` | `text` | `attribute-single` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `addressed` | `text` | `attribute-multi` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `addressed` | `text` | `attribute-learned` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `addressed` | `text` | `attribute-cued` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `addressed` | `text` | `attribute-declared` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `addressed` | `text` | `interval` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `addressed` | `text` | `interval-declared` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `addressed` | `text` | `log` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `worded` | `oracle` | `shipped` | 80 | 7.50 ±0.41 | 0.935 ±0.020 | 0.878 ±0.093 | 2160.0 ±3.0 | 1.055 ±0.001 | 783.0 ±0.0 | 0.000 ±0.000 |
+| `worded` | `oracle` | `document` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 2047.0 ±0.0 | 1.000 ±0.000 | 1.0 ±0.0 | 1.000 ±0.000 |
+| `worded` | `oracle` | `attribute-single` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `worded` | `oracle` | `attribute-multi` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `worded` | `oracle` | `attribute-learned` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `worded` | `oracle` | `attribute-cued` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `worded` | `oracle` | `attribute-declared` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `worded` | `oracle` | `interval` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `worded` | `oracle` | `interval-declared` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `worded` | `oracle` | `log` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `worded` | `text` | `shipped` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 977.0 ±0.0 | 0.477 ±0.000 | 22.0 ±0.0 | 1.000 ±0.000 |
+| `worded` | `text` | `document` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 2047.0 ±0.0 | 1.000 ±0.000 | 1.0 ±0.0 | 1.000 ±0.000 |
+| `worded` | `text` | `attribute-single` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `worded` | `text` | `attribute-multi` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `worded` | `text` | `attribute-learned` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `worded` | `text` | `attribute-cued` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `worded` | `text` | `attribute-declared` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `worded` | `text` | `interval` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `worded` | `text` | `interval-declared` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `worded` | `text` | `log` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `resolved` | `oracle` | `shipped` | 80 | 7.50 ±0.41 | 0.935 ±0.020 | 0.878 ±0.093 | 2160.0 ±3.0 | 1.055 ±0.001 | 783.0 ±0.0 | 0.000 ±0.000 |
+| `resolved` | `oracle` | `document` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 2047.0 ±0.0 | 1.000 ±0.000 | 1.0 ±0.0 | 1.000 ±0.000 |
+| `resolved` | `oracle` | `attribute-single` | 80 | 7.50 ±0.41 | 0.896 ±0.021 | 0.000 ±0.000 | 197.5 ±10.7 | 0.096 ±0.005 | 7.5 ±0.4 | 1.000 ±0.000 |
+| `resolved` | `oracle` | `attribute-multi` | 80 | 7.50 ±0.41 | 1.000 ±0.000 | 1.000 ±0.000 | 263.8 ±19.6 | 0.129 ±0.010 | 10.0 ±0.8 | 1.000 ±0.000 |
+| `resolved` | `oracle` | `attribute-learned` | 80 | 7.50 ±0.41 | 1.000 ±0.000 | 1.000 ±0.000 | 263.8 ±19.6 | 0.129 ±0.010 | 4510.0 ±245.5 | 1.000 ±0.000 |
+| `resolved` | `oracle` | `attribute-cued` | 80 | 7.50 ±0.41 | 0.949 ±0.016 | 0.000 ±0.000 | 210.7 ±12.1 | 0.103 ±0.006 | 8.0 ±0.5 | 1.000 ±0.000 |
+| `resolved` | `oracle` | `attribute-declared` | 80 | 7.50 ±0.41 | 1.000 ±0.000 | 0.000 ±0.000 | 223.9 ±13.8 | 0.109 ±0.007 | 8.5 ±0.5 | 1.000 ±0.000 |
+| `resolved` | `oracle` | `interval` | 80 | 7.50 ±0.41 | 0.896 ±0.021 | 0.000 ±0.000 | 197.5 ±10.7 | 0.096 ±0.005 | 10.5 ±0.8 | 1.000 ±0.000 |
+| `resolved` | `oracle` | `interval-declared` | 80 | 7.50 ±0.41 | 1.000 ±0.000 | 0.000 ±0.000 | 223.9 ±13.8 | 0.109 ±0.007 | 10.5 ±0.8 | 1.000 ±0.000 |
+| `resolved` | `oracle` | `log` | 80 | 7.50 ±0.41 | 0.896 ±0.021 | 0.000 ±0.000 | 197.5 ±10.7 | 0.096 ±0.005 | 840.0 ±0.0 | 1.000 ±0.000 |
+| `resolved` | `text` | `shipped` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 977.0 ±0.0 | 0.477 ±0.000 | 22.0 ±0.0 | 1.000 ±0.000 |
+| `resolved` | `text` | `document` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 2047.0 ±0.0 | 1.000 ±0.000 | 1.0 ±0.0 | 1.000 ±0.000 |
+| `resolved` | `text` | `attribute-single` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `resolved` | `text` | `attribute-multi` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `resolved` | `text` | `attribute-learned` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `resolved` | `text` | `attribute-cued` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `resolved` | `text` | `attribute-declared` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `resolved` | `text` | `interval` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `resolved` | `text` | `interval-declared` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+| `resolved` | `text` | `log` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
+
+### What a multi-address answer does as the budget narrows
+
+| frame | budget, tokens | recall | context chars | of the budget | inside the budget |
+|---|---|---|---|---|---|
+| `shipped` | 64 | 0.671 ±0.045 | 250.9 ±3.2 | 0.980 ±0.013 | 0.637 ±0.106 |
+| `document` | 64 | 0.002 ±0.003 | 252.0 ±0.0 | 0.984 ±0.000 | 1.000 ±0.000 |
+| `attribute-single` | 64 | 0.896 ±0.021 | 197.5 ±10.7 | 0.771 ±0.042 | 0.938 ±0.053 |
+| `attribute-multi` | 64 | 1.000 ±0.000 | 263.8 ±19.6 | 1.030 ±0.077 | 0.512 ±0.110 |
+| `attribute-learned` | 64 | 1.000 ±0.000 | 263.8 ±19.6 | 1.030 ±0.077 | 0.512 ±0.110 |
+| `attribute-cued` | 64 | 0.949 ±0.016 | 210.7 ±12.1 | 0.823 ±0.047 | 0.762 ±0.094 |
+| `attribute-declared` | 64 | 1.000 ±0.000 | 223.9 ±13.8 | 0.875 ±0.054 | 0.713 ±0.100 |
+| `interval` | 64 | 0.896 ±0.021 | 197.5 ±10.7 | 0.771 ±0.042 | 0.938 ±0.053 |
+| `interval-declared` | 64 | 1.000 ±0.000 | 223.9 ±13.8 | 0.875 ±0.054 | 0.713 ±0.100 |
+| `log` | 64 | 0.896 ±0.021 | 197.5 ±10.7 | 0.771 ±0.042 | 0.938 ±0.053 |
+| `shipped` | 128 | 0.906 ±0.024 | 526.6 ±3.2 | 1.028 ±0.006 | 0.175 ±0.084 |
+| `document` | 128 | 0.003 ±0.004 | 477.0 ±0.0 | 0.932 ±0.000 | 1.000 ±0.000 |
+| `attribute-single` | 128 | 0.896 ±0.021 | 197.5 ±10.7 | 0.386 ±0.021 | 1.000 ±0.000 |
+| `attribute-multi` | 128 | 1.000 ±0.000 | 263.8 ±19.6 | 0.515 ±0.038 | 1.000 ±0.000 |
+| `attribute-learned` | 128 | 1.000 ±0.000 | 263.8 ±19.6 | 0.515 ±0.038 | 1.000 ±0.000 |
+| `attribute-cued` | 128 | 0.949 ±0.016 | 210.7 ±12.1 | 0.412 ±0.024 | 1.000 ±0.000 |
+| `attribute-declared` | 128 | 1.000 ±0.000 | 223.9 ±13.8 | 0.437 ±0.027 | 1.000 ±0.000 |
+| `interval` | 128 | 0.896 ±0.021 | 197.5 ±10.7 | 0.386 ±0.021 | 1.000 ±0.000 |
+| `interval-declared` | 128 | 1.000 ±0.000 | 223.9 ±13.8 | 0.437 ±0.027 | 1.000 ±0.000 |
+| `log` | 128 | 0.896 ±0.021 | 197.5 ±10.7 | 0.386 ±0.021 | 1.000 ±0.000 |
+| `shipped` | 256 | 0.935 ±0.020 | 1069.8 ±3.3 | 1.045 ±0.003 | 0.000 ±0.000 |
+| `document` | 256 | 0.003 ±0.004 | 1014.0 ±0.0 | 0.990 ±0.000 | 1.000 ±0.000 |
+| `attribute-single` | 256 | 0.896 ±0.021 | 197.5 ±10.7 | 0.193 ±0.010 | 1.000 ±0.000 |
+| `attribute-multi` | 256 | 1.000 ±0.000 | 263.8 ±19.6 | 0.258 ±0.019 | 1.000 ±0.000 |
+| `attribute-learned` | 256 | 1.000 ±0.000 | 263.8 ±19.6 | 0.258 ±0.019 | 1.000 ±0.000 |
+| `attribute-cued` | 256 | 0.949 ±0.016 | 210.7 ±12.1 | 0.206 ±0.012 | 1.000 ±0.000 |
+| `attribute-declared` | 256 | 1.000 ±0.000 | 223.9 ±13.8 | 0.219 ±0.014 | 1.000 ±0.000 |
+| `interval` | 256 | 0.896 ±0.021 | 197.5 ±10.7 | 0.193 ±0.010 | 1.000 ±0.000 |
+| `interval-declared` | 256 | 1.000 ±0.000 | 223.9 ±13.8 | 0.219 ±0.014 | 1.000 ±0.000 |
+| `log` | 256 | 0.896 ±0.021 | 197.5 ±10.7 | 0.193 ±0.010 | 1.000 ±0.000 |
+| `shipped` | 512 | 0.935 ±0.020 | 2160.0 ±3.0 | 1.055 ±0.001 | 0.000 ±0.000 |
+| `document` | 512 | 0.003 ±0.004 | 2047.0 ±0.0 | 1.000 ±0.000 | 1.000 ±0.000 |
+| `attribute-single` | 512 | 0.896 ±0.021 | 197.5 ±10.7 | 0.096 ±0.005 | 1.000 ±0.000 |
+| `attribute-multi` | 512 | 1.000 ±0.000 | 263.8 ±19.6 | 0.129 ±0.010 | 1.000 ±0.000 |
+| `attribute-learned` | 512 | 1.000 ±0.000 | 263.8 ±19.6 | 0.129 ±0.010 | 1.000 ±0.000 |
+| `attribute-cued` | 512 | 0.949 ±0.016 | 210.7 ±12.1 | 0.103 ±0.006 | 1.000 ±0.000 |
+| `attribute-declared` | 512 | 1.000 ±0.000 | 223.9 ±13.8 | 0.109 ±0.007 | 1.000 ±0.000 |
+| `interval` | 512 | 0.896 ±0.021 | 197.5 ±10.7 | 0.096 ±0.005 | 1.000 ±0.000 |
+| `interval-declared` | 512 | 1.000 ±0.000 | 223.9 ±13.8 | 0.109 ±0.007 | 1.000 ±0.000 |
+| `log` | 512 | 0.896 ±0.021 | 197.5 ±10.7 | 0.096 ±0.005 | 1.000 ±0.000 |
+| `shipped` | 1024 | 0.935 ±0.020 | 4342.1 ±3.0 | 1.060 ±0.001 | 0.000 ±0.000 |
+| `document` | 1024 | 0.008 ±0.007 | 4094.0 ±0.0 | 1.000 ±0.000 | 1.000 ±0.000 |
+| `attribute-single` | 1024 | 0.896 ±0.021 | 197.5 ±10.7 | 0.048 ±0.003 | 1.000 ±0.000 |
+| `attribute-multi` | 1024 | 1.000 ±0.000 | 263.8 ±19.6 | 0.064 ±0.005 | 1.000 ±0.000 |
+| `attribute-learned` | 1024 | 1.000 ±0.000 | 263.8 ±19.6 | 0.064 ±0.005 | 1.000 ±0.000 |
+| `attribute-cued` | 1024 | 0.949 ±0.016 | 210.7 ±12.1 | 0.051 ±0.003 | 1.000 ±0.000 |
+| `attribute-declared` | 1024 | 1.000 ±0.000 | 223.9 ±13.8 | 0.055 ±0.003 | 1.000 ±0.000 |
+| `interval` | 1024 | 0.896 ±0.021 | 197.5 ±10.7 | 0.048 ±0.003 | 1.000 ±0.000 |
+| `interval-declared` | 1024 | 1.000 ±0.000 | 223.9 ±13.8 | 0.055 ±0.003 | 1.000 ±0.000 |
+| `log` | 1024 | 0.896 ±0.021 | 197.5 ±10.7 | 0.048 ±0.003 | 1.000 ±0.000 |
+| `shipped` | 2048 | 0.935 ±0.020 | 8712.1 ±3.0 | 1.063 ±0.000 | 0.000 ±0.000 |
+| `document` | 2048 | 0.013 ±0.008 | 8167.0 ±0.0 | 0.997 ±0.000 | 1.000 ±0.000 |
+| `attribute-single` | 2048 | 0.896 ±0.021 | 197.5 ±10.7 | 0.024 ±0.001 | 1.000 ±0.000 |
+| `attribute-multi` | 2048 | 1.000 ±0.000 | 263.8 ±19.6 | 0.032 ±0.002 | 1.000 ±0.000 |
+| `attribute-learned` | 2048 | 1.000 ±0.000 | 263.8 ±19.6 | 0.032 ±0.002 | 1.000 ±0.000 |
+| `attribute-cued` | 2048 | 0.949 ±0.016 | 210.7 ±12.1 | 0.026 ±0.001 | 1.000 ±0.000 |
+| `attribute-declared` | 2048 | 1.000 ±0.000 | 223.9 ±13.8 | 0.027 ±0.002 | 1.000 ±0.000 |
+| `interval` | 2048 | 0.896 ±0.021 | 197.5 ±10.7 | 0.024 ±0.001 | 1.000 ±0.000 |
+| `interval-declared` | 2048 | 1.000 ±0.000 | 223.9 ±13.8 | 0.027 ±0.002 | 1.000 ±0.000 |
+| `log` | 2048 | 0.896 ±0.021 | 197.5 ±10.7 | 0.024 ±0.001 | 1.000 ±0.000 |
+
+### What a model read out of a question
+
+| quantity | value |
+|---|---|
+| model | gpt-4.1-nano |
+| questions asked | 680 |
+| placed at the right address | 679 |
+| placed on the wrong subject | 0 |
+| placed on the right subject and the wrong attribute | 1 |
+| not placed at all | 0 |
+| placed correctly, rate | 0.999 ±0.003 |
+| wrong subject, rate | 0.000 ±0.000 |
+| wrong attribute, rate | 0.001 ±0.003 |
+| not placed, rate | 0.000 ±0.000 |
+
+| question | asked | placed correctly |
+|---|---|---|
+| `thread` | 600 | 0.998 ±0.003 |
+| `subject` | 80 | 1.000 ±0.000 |
+<!-- end generated -->
+
 ## What a run costs
 
 Established before the run, as issue #443 requires.
 
 No frame calls a model. Every structure measured here decides what it decides from what it was given, and only the shipped frame touches an embedder at all — the deterministic offline one `cmd/gagent` defaults to. The frames, the workload and the error sweep are free, and the model-call count in the first table below is the check on that rather than an assurance.
 
-**Three things in this record were paid for**, and all three are in a table of its own after every free figure: asking a model to declare the operation for each of the workload's assertions, asking it again several times over for the assertions whose declaration has a consequence, and having it read every message of every conversation shape. Each is one call per question or per message and nothing else, on the cheapest model that answers without billing reasoning as output. Each refuses to start past its own call bound and to finish past its own cost bound, all six stated in that table, because a bound discovered afterwards is not a bound. Every answer set is committed, so scoring them costs nothing and re-running the measurement does not re-buy them: only `-declare`, `-resample` and `-extract` reach the provider, and the key reaches the process from the environment and nothing else. What the shipped OpenAI embedder costs the read path, and which conclusions may be quoted across the two embedders, is #435's measurement and is not repeated here.
+**Four things in this record were paid for**, and all four are in a table of its own after every free figure: asking a model to declare the operation for each of the workload's assertions, asking it again several times over for the assertions whose declaration has a consequence, having it read every message of every conversation shape, and having it turn each of the finding study's questions into an address. Each is one call per question or per message and nothing else, on the cheapest model that answers without billing reasoning as output. Each refuses to start past its own call bound and to finish past its own cost bound, all eight stated in that table, because a bound discovered afterwards is not a bound. Every answer set is committed, so scoring them costs nothing and re-running the measurement does not re-buy them: only `-declare`, `-resample`, `-extract` and `-resolve` reach the provider, and the key reaches the process from the environment and nothing else. What the shipped OpenAI embedder costs the read path, and which conclusions may be quoted across the two embedders, is #435's measurement and is not repeated here.
 
 **Paid calls are below messages read in the shape table, and the gap is the cache and not a discount.** Answers are cached on the message and the three shapes are read in one run against one cache, and most of what any shape says is small talk drawn from a single pool, so a message that recurs between shapes is paid for by whichever shape said it first and read from the cache by the rest. The calls column counts what was purchased and the messages column counts what was scored, which is why the shape read first pays for nearly all of its 800 messages and the two after it pay for a fraction of theirs. A run reading a cache an earlier run filled would report no cost at all, which is why the committed artifacts come from a run that started with the cache cleared, and each carries the price of the calls it made.
 
@@ -2147,7 +2414,14 @@ The figure that matters for the designs coming next is in the cost table below, 
 | cost of reading the messages, USD | 0.0349 |
 | call bound reading refuses to pass | 3000 |
 | cost bound reading refuses to pass, USD | 0.40 |
-| cost of this record in total, USD | 0.0554 |
+| paid calls, resolving | 680 |
+| questions resolved | 680 |
+| prompt tokens, resolving | 98121 |
+| completion tokens, resolving | 6977 |
+| cost of resolving, USD | 0.0126 |
+| call bound resolving refuses to pass | 1000 |
+| cost bound resolving refuses to pass, USD | 0.10 |
+| cost of this record in total, USD | 0.0680 |
 
 | shape | messages read | paid calls | tokens | cost USD |
 |---|---|---|---|---|
@@ -2169,6 +2443,7 @@ The figure that matters for the designs coming next is in the cost table below, 
 - It does not measure retrieval quality as such. That is `memory-retrieval/`'s subject, and the constants that decide it are #411's.
 - It says nothing about latency. No run time is measured, and the frames differ so much in what they do per turn that comparing theirs would compare implementations rather than structures.
 - It does not say what shape real conversation has. Three shapes are measured and a transcript is none of them, so the record says what each shape costs and not which of them a deployment would meet.
+- It does not measure a question that has to be understood before it can be placed. Every question here names its subject and, where it has one, its attribute, so what §Whether a structure can find what it holds measures is a resolution step at its easiest. A question that only implies what it asks about is where such a step would be tested, and none is asked.
 
 ## Limits
 
@@ -2189,7 +2464,11 @@ The figure that matters for the designs coming next is in the cost table below, 
 - **The workload has few writes that join.** Only the two coexistence classes' second values ever do, so the destroying direction's sweep has coarse resolution at the low end and its rows below that resolution show no errors rather than few. A workload with more coexistence would sharpen that curve, and changing it would stop every figure measured against this one from being comparable.
 - **The interval store's distinguishing capability is unmeasured.** Every checkpoint asks about the present, so nothing here scores the one question a store of spans can answer and an addressed store cannot. A unit test asks it as of a moment inside a closed span and gets what was true then, which is what the claim rests on; the workload asks no such question and was not widened to, because a workload changed mid-programme stops every figure measured against the earlier one from being comparable. It is a separate issue and it would have to run against every frame from the start.
 - **The byte figures understate the stores that keep instants.** Content and stored bytes count the text a frame holds. The interval store keeps two instants bounding every span and the addressed stores keep one beside every value, and neither is in the byte column — so the comparison of bytes between them understates the interval store by exactly the bounds that are the reason to use it. The units column carries that difference and the byte column does not.
-- **What the oracle arm covers narrowed when the question arrived extracted.** A frame handed the address is measured on holding and updating and not on finding. The shipped frame is still measured on all three, because it queries with the question's text, so the two are not measured on the same job and the record does not read their recall figures against each other as though they were. A comparison of the finding half needs a run in which no frame receives the address, and this is not that run.
+- **What the oracle arm covers narrowed when the question arrived extracted.** A frame handed the address is measured on holding and updating and not on finding, and every figure outside §Whether a structure can find what it holds was produced that way. The shipped frame is measured on all three throughout, because it queries with the question's text, so a recall figure of its from those tables is not doing the same job as an addressed structure's. The finding half is measured in its own run, against its own file, and the two are not read against each other.
+- **The questions name what they ask about in so many words.** Each is written from the attribute's own template, so `Which clinic does X go to?` carries the word the address is keyed on, and the multi-address question names its subject. Turning such a question into an address is the easiest form of that problem: the resolution figure is a ceiling on it and not an estimate of what a question that only implied its subject or its attribute would cost.
+- **One phrasing of the multi-address question, asked of every subject at every year.** Nothing here says what a differently-worded question about a person would reach, and a question about a person that named a topic would span fewer addresses than one that named none.
+- **Overflow is measured against the read budget and against nothing else.** Inside the budget means the answer fits the token budget every other figure in this record is measured at. Whether a model reads an answer that fits is a different question and is not asked.
+- **No structure was given a way to choose what to leave out that it did not already have.** Where the relevant set does not fit, the structures that hold facts return all of it and the record reports that rather than a truncation: any ordering over the addresses under a subject is a mechanism those stores do not have, and building one to publish a number is what this programme refuses. What such a mechanism would cost is therefore unmeasured, and §Whether a structure can find what it holds names where it would have to live instead of scoring it.
 - **The active index never approaches capacity.** Retention removes the observations before the ceiling is near, so capacity eviction never fires in either arm and this workload says nothing about what it would do.
 - **The oracle never errs.** It extracts every fact exactly and nothing else. A partial or noisy extractor is the realistic middle of the bracket and is not measured.
 - **Every figure but the shape study's is one conversation shape.** The decade run's turns are short single-clause sentences, one fact to a message, and a year's assertions scattered uniformly through it. §What harder language costs varies the sentence and the assertions in a message on a separate, smaller workload and re-measures nothing in the decade run. Sessions are single-day in all of them, and a workload where facts arrive in bursts would move both the token budget and the retention window's effect.
@@ -2205,5 +2484,6 @@ The figure that matters for the designs coming next is in the cost table below, 
 
 - `go run ./docs/experiments/memory-frames/harness -seed 7` — the decade measurement and the tables in this record. Offline, no API key, no cost.
 - `go run ./docs/experiments/memory-frames/harness -harder -seed 7` — the conversation shapes, scored against the committed extractions. Offline, no API key, no cost.
+- `go run ./docs/experiments/memory-frames/harness -finding -seed 7` — the finding study, scored against the committed resolutions. Offline, no API key, no cost.
 - `go run ./docs/experiments/memory-frames/harness -render` — rewrites every generated region of this record from the committed results without measuring anything.
-- `go test ./docs/experiments/memory-frames/harness` — the workload's ground truth, the credit rule, the seam's frames, the interval, the determinism check under two scheduling conditions, the shapes' framing against the cue rule, the extraction score's three failure kinds, and the check that this record matches the committed results.
+- `go test ./docs/experiments/memory-frames/harness` — the workload's ground truth, the credit rule, the seam's frames, the interval, the determinism check under two scheduling conditions, the shapes' framing against the cue rule, the extraction score's three failure kinds, the question forms and the finding study's agreement with the committed decade rows, and the check that this record matches the committed results.

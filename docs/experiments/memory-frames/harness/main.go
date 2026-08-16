@@ -78,6 +78,39 @@ type Run struct {
 	Disagreement *ModelRun      `json:"disagreement_run,omitempty"`
 	Arity        Arity          `json:"arity"`
 	Frames       []FrameResult  `json:"frames"`
+
+	// Finding is the study in which no frame is handed the address. It is
+	// its own file for the reason the shapes are, and is folded in here only
+	// to render.
+	Finding *FindingStudy `json:"-"`
+}
+
+// runFiles are the files one seed's studies read and write. Their names
+// differ only in the seed, so they are named in one place rather than
+// rebuilt wherever one of them is opened.
+type runFiles struct {
+	workload     string
+	declarations string
+	stability    string
+	resolutions  string
+	decade       string
+	constrained  string
+	shapes       string
+	finding      string
+	record       string
+}
+
+// filesFor names every file of one seed's run.
+func filesFor(out, record string, seed int64) runFiles {
+	named := func(kind string) string {
+		return filepath.Join(out, fmt.Sprintf("%s_seed%d.json", kind, seed))
+	}
+	return runFiles{
+		workload: named("workload"), declarations: named("declarations"),
+		stability: named("stability"), resolutions: named("resolutions"),
+		decade: named("decade"), constrained: named("constrained"),
+		shapes: named("harder"), finding: named("finding"), record: record,
+	}
 }
 
 func main() {
@@ -98,6 +131,10 @@ func run() error {
 		"run the conversation-shape study instead of the decade measurement")
 	extract := flag.Bool("extract", false,
 		"have a model read every message of every shape. Spends money")
+	finding := flag.Bool("finding", false,
+		"run the finding study, in which no frame is handed the address, instead of the decade measurement")
+	resolve := flag.Bool("resolve", false,
+		"have a model turn every question into an address. Spends money")
 	resample := flag.Bool("resample", false,
 		"ask the model the consequential assertions several times over, to see whether its answer is settled. Spends money")
 	declarerCache := flag.String("declarer-cache", "",
@@ -109,25 +146,27 @@ func run() error {
 	flag.IntVar(&params.ThreadsPerClass, "threads-per-class", 40, "fact threads in each class")
 	flag.Parse()
 
-	resultPath := filepath.Join(*out, fmt.Sprintf("decade_seed%d.json", *seed))
+	files := filesFor(*out, *record, *seed)
 	if *render {
-		return renderRecord(resultPath, filepath.Join(*out, fmt.Sprintf("constrained_seed%d.json", *seed)),
-			filepath.Join(*out, fmt.Sprintf("harder_seed%d.json", *seed)), *record)
+		return renderRecord(files)
 	}
 
 	if *harder {
-		return runHarder(ctx0(), *seed, *out, *record, *extract, *declarerCache)
+		return runHarder(ctx0(), *seed, files, *extract, *declarerCache)
+	}
+	if *finding {
+		return runFinding(ctx0(), *seed, params, files, *resolve, *declarerCache)
 	}
 
 	workload, err := GenerateWorkload(*seed, params)
 	if err != nil {
 		return fmt.Errorf("generate workload: %w", err)
 	}
-	if err := writeJSON(filepath.Join(*out, fmt.Sprintf("workload_seed%d.json", *seed)), workload); err != nil {
+	if err := writeJSON(files.workload, workload); err != nil {
 		return err
 	}
 	ctx := context.Background()
-	declarationPath := filepath.Join(*out, fmt.Sprintf("declarations_seed%d.json", *seed))
+	declarationPath := files.declarations
 	if *declare {
 		declared, err := Declare(ctx, workload, *declarerCache)
 		if err != nil {
@@ -141,7 +180,7 @@ func run() error {
 			declared.PromptTokens, declared.CompletionTokens, declared.CostUSD)
 	}
 
-	stabilityPath := filepath.Join(*out, fmt.Sprintf("stability_seed%d.json", *seed))
+	stabilityPath := files.stability
 	if *resample {
 		stable, err := Resample(ctx, workload, *declarerCache)
 		if err != nil {
@@ -199,22 +238,81 @@ func run() error {
 	// The constrained runs are their own file: they are a different
 	// question asked of the same workload, and keeping them out of the
 	// decade file is what keeps that file exactly what it was.
-	constrainedPath := filepath.Join(*out, fmt.Sprintf("constrained_seed%d.json", *seed))
-	if err := writeJSON(constrainedPath, result.Constrained); err != nil {
+	if err := writeJSON(files.constrained, result.Constrained); err != nil {
 		return err
 	}
 	unbounded := result
 	unbounded.Constrained = nil
-	if err := writeJSON(resultPath, unbounded); err != nil {
+	if err := writeJSON(files.decade, unbounded); err != nil {
 		return err
 	}
 	report(result)
-	if err := renderRecord(resultPath, constrainedPath,
-		filepath.Join(*out, fmt.Sprintf("harder_seed%d.json", *seed)), *record); err != nil {
+	if err := renderRecord(files); err != nil {
 		return err
 	}
 	fmt.Printf("\nrewrote the tables in %s\n", *record)
 	return nil
+}
+
+// runFinding measures the finding study and writes it beside the decade run
+// rather than into it. It is the same workload asked a different way, so
+// its file says which figures compare to which and no row of the decade
+// run's results moves.
+func runFinding(ctx context.Context, seed int64, params Params, files runFiles,
+	pay bool, cachePath string) error {
+	workload, err := GenerateWorkload(seed, params)
+	if err != nil {
+		return fmt.Errorf("generate workload: %w", err)
+	}
+	if pay {
+		resolved, err := Resolve(ctx, workload, cachePath)
+		if err != nil {
+			return err
+		}
+		if err := writeJSON(files.resolutions, resolved); err != nil {
+			return err
+		}
+		fmt.Printf("resolved %d questions in %d paid calls: %d prompt and %d completion tokens, $%.4f\n",
+			len(resolved.Resolutions), resolved.Calls,
+			resolved.PromptTokens, resolved.CompletionTokens, resolved.CostUSD)
+	}
+	resolutions, err := readCommittedResolutions(files.resolutions)
+	if err != nil {
+		return err
+	}
+	var resolving Resolving
+	if resolutions != nil {
+		resolving = resolutions.Resolving()
+	}
+	study, err := MeasureFinding(ctx, workload, resolving)
+	if err != nil {
+		return err
+	}
+	if resolutions != nil {
+		scored := ScoreResolutions(*resolutions)
+		study.Resolution = &scored
+	}
+	if err := writeJSON(files.finding, study); err != nil {
+		return err
+	}
+	return renderRecord(files)
+}
+
+// readCommittedResolutions reads the answers a paid run committed. A tree
+// without that file measures no resolved form and spends nothing.
+func readCommittedResolutions(path string) (*Resolutions, error) {
+	body, err := os.ReadFile(path)
+	if os.IsNotExist(err) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("read %s: %w", path, err)
+	}
+	var resolved Resolutions
+	if err := json.Unmarshal(body, &resolved); err != nil {
+		return nil, fmt.Errorf("decode %s: %w", path, err)
+	}
+	return &resolved, nil
 }
 
 // MeasureRun runs every frame in every arm over one workload and collects
@@ -307,10 +405,10 @@ func ctx0() context.Context { return context.Background() }
 // runHarder measures the conversation-shape study and writes it beside the
 // decade run rather than into it: it is a different workload, so its figures
 // are comparable to each other and not to that one.
-func runHarder(ctx context.Context, seed int64, out, record string, pay bool, cachePath string) error {
+func runHarder(ctx context.Context, seed int64, files runFiles, pay bool, cachePath string) error {
 	extractions := map[string]Extraction{}
 	for _, shape := range shapeNames {
-		path := filepath.Join(out, fmt.Sprintf("extraction_%s_seed%d.json", shape, seed))
+		path := filepath.Join(filepath.Dir(files.shapes), fmt.Sprintf("extraction_%s_seed%d.json", shape, seed))
 		if pay {
 			w, err := GenerateWorkload(seed, harderParams(shape))
 			if err != nil {
@@ -344,13 +442,11 @@ func runHarder(ctx context.Context, seed int64, out, record string, pay bool, ca
 	if err != nil {
 		return err
 	}
-	shapePath := filepath.Join(out, fmt.Sprintf("harder_seed%d.json", seed))
-	if err := writeJSON(shapePath, shapes); err != nil {
+	if err := writeJSON(files.shapes, shapes); err != nil {
 		return err
 	}
 	fmt.Printf("measured %d shapes\n", len(shapes))
-	return renderRecord(filepath.Join(out, fmt.Sprintf("decade_seed%d.json", seed)),
-		filepath.Join(out, fmt.Sprintf("constrained_seed%d.json", seed)), shapePath, record)
+	return renderRecord(files)
 }
 
 // readCommittedStability reads the resampled answers a paid run committed

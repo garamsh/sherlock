@@ -1,0 +1,5453 @@
+{
+ "model": "gpt-4.1-nano",
+ "seed": 7,
+ "calls": 680,
+ "prompt_tokens": 98121,
+ "completion_tokens": 6977,
+ "price_input_per_million_usd": 0.1,
+ "price_output_per_million_usd": 0.4,
+ "price_read_on": "2026-08-16",
+ "cost_usd": 0.0126029,
+ "resolutions": [
+  {
+   "question": "Where does Zara rehearse?",
+   "kind": "thread",
+   "subject": "Zara",
+   "attribute": "hall",
+   "found_subject": "Zara",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Which team does Nadia sit with?",
+   "kind": "thread",
+   "subject": "Nadia",
+   "attribute": "team",
+   "found_subject": "Nadia",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Who does Gunnar bank with?",
+   "kind": "thread",
+   "subject": "Gunnar",
+   "attribute": "bank",
+   "found_subject": "Gunnar",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Who does Ulla bank with?",
+   "kind": "thread",
+   "subject": "Ulla",
+   "attribute": "bank",
+   "found_subject": "Ulla",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which clinic does Yara go to?",
+   "kind": "thread",
+   "subject": "Yara",
+   "attribute": "clinic",
+   "found_subject": "Yara",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which line does Yara commute on?",
+   "kind": "thread",
+   "subject": "Yara",
+   "attribute": "line",
+   "found_subject": "Yara",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Where does Cato keep the backups?",
+   "kind": "thread",
+   "subject": "Cato",
+   "attribute": "backups",
+   "found_subject": "Cato",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which cottage does Amara rent?",
+   "kind": "thread",
+   "subject": "Amara",
+   "attribute": "cottage",
+   "found_subject": "Amara",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which team does Lisa sit with?",
+   "kind": "thread",
+   "subject": "Lisa",
+   "attribute": "team",
+   "found_subject": "Lisa",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Who does Tereza bank with?",
+   "kind": "thread",
+   "subject": "Tereza",
+   "attribute": "bank",
+   "found_subject": "Tereza",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which team does Hugo sit with?",
+   "kind": "thread",
+   "subject": "Hugo",
+   "attribute": "team",
+   "found_subject": "Hugo",
+   "found_attribute": "team"
+  },
+  {
+   "question": "What does Celia keep the accounts in?",
+   "kind": "thread",
+   "subject": "Celia",
+   "attribute": "accounts",
+   "found_subject": "Celia",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Who does Kasper bank with?",
+   "kind": "thread",
+   "subject": "Kasper",
+   "attribute": "bank",
+   "found_subject": "Kasper",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "What does Yara keep the accounts in?",
+   "kind": "thread",
+   "subject": "Yara",
+   "attribute": "accounts",
+   "found_subject": "Yara",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Where does Tereza keep the backups?",
+   "kind": "thread",
+   "subject": "Tereza",
+   "attribute": "backups",
+   "found_subject": "Tereza",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which course is Vasco taking?",
+   "kind": "thread",
+   "subject": "Vasco",
+   "attribute": "course",
+   "found_subject": "Vasco",
+   "found_attribute": "course"
+  },
+  {
+   "question": "What does Kwame keep the accounts in?",
+   "kind": "thread",
+   "subject": "Kwame",
+   "attribute": "accounts",
+   "found_subject": "Kwame",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "What does Greta keep the accounts in?",
+   "kind": "thread",
+   "subject": "Greta",
+   "attribute": "accounts",
+   "found_subject": "Greta",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "What does Fabio keep the accounts in?",
+   "kind": "thread",
+   "subject": "Fabio",
+   "attribute": "accounts",
+   "found_subject": "Fabio",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Which project does Stefan lead?",
+   "kind": "thread",
+   "subject": "Stefan",
+   "attribute": "project",
+   "found_subject": "Stefan",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Which clinic does Beatriz go to?",
+   "kind": "thread",
+   "subject": "Beatriz",
+   "attribute": "clinic",
+   "found_subject": "Beatriz",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which team does Freya sit with?",
+   "kind": "thread",
+   "subject": "Freya",
+   "attribute": "team",
+   "found_subject": "Freya",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which course is Sanjay taking?",
+   "kind": "thread",
+   "subject": "Sanjay",
+   "attribute": "course",
+   "found_subject": "Sanjay",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Which cottage does Esther rent?",
+   "kind": "thread",
+   "subject": "Esther",
+   "attribute": "cottage",
+   "found_subject": "Esther",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which project does Pablo lead?",
+   "kind": "thread",
+   "subject": "Pablo",
+   "attribute": "project",
+   "found_subject": "Pablo",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Who does Wilma order paper from?",
+   "kind": "thread",
+   "subject": "Wilma",
+   "attribute": "supplier",
+   "found_subject": "Wilma",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which line does Milos commute on?",
+   "kind": "thread",
+   "subject": "Milos",
+   "attribute": "line",
+   "found_subject": "Milos",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which project does Chiara lead?",
+   "kind": "thread",
+   "subject": "Chiara",
+   "attribute": "project",
+   "found_subject": "Chiara",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Where does Anders keep the backups?",
+   "kind": "thread",
+   "subject": "Anders",
+   "attribute": "backups",
+   "found_subject": "Anders",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which team does Viktor sit with?",
+   "kind": "thread",
+   "subject": "Viktor",
+   "attribute": "team",
+   "found_subject": "Viktor",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Who does Erol order paper from?",
+   "kind": "thread",
+   "subject": "Erol",
+   "attribute": "supplier",
+   "found_subject": "Erol",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which cottage does Jonas rent?",
+   "kind": "thread",
+   "subject": "Jonas",
+   "attribute": "cottage",
+   "found_subject": "Jonas",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which project does Iris lead?",
+   "kind": "thread",
+   "subject": "Iris",
+   "attribute": "project",
+   "found_subject": "Iris",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Where does Lisa keep the backups?",
+   "kind": "thread",
+   "subject": "Lisa",
+   "attribute": "backups",
+   "found_subject": "Lisa",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Where does Tariq keep the backups?",
+   "kind": "thread",
+   "subject": "Tariq",
+   "attribute": "backups",
+   "found_subject": "Tariq",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which project does Goran lead?",
+   "kind": "thread",
+   "subject": "Goran",
+   "attribute": "project",
+   "found_subject": "Goran",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Where does Tomas rehearse?",
+   "kind": "thread",
+   "subject": "Tomas",
+   "attribute": "hall",
+   "found_subject": "Tomas",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Which course is Gunnar taking?",
+   "kind": "thread",
+   "subject": "Gunnar",
+   "attribute": "course",
+   "found_subject": "Gunnar",
+   "found_attribute": "course"
+  },
+  {
+   "question": "What does Petra keep the accounts in?",
+   "kind": "thread",
+   "subject": "Petra",
+   "attribute": "accounts",
+   "found_subject": "Petra",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Who does Olga order paper from?",
+   "kind": "thread",
+   "subject": "Olga",
+   "attribute": "supplier",
+   "found_subject": "Olga",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "What does Rania keep the accounts in?",
+   "kind": "thread",
+   "subject": "Rania",
+   "attribute": "accounts",
+   "found_subject": "Rania",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Who does Leila bank with?",
+   "kind": "thread",
+   "subject": "Leila",
+   "attribute": "bank",
+   "found_subject": "Leila",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which line does Leila commute on?",
+   "kind": "thread",
+   "subject": "Leila",
+   "attribute": "line",
+   "found_subject": "Leila",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which project does Maria lead?",
+   "kind": "thread",
+   "subject": "Maria",
+   "attribute": "project",
+   "found_subject": "Maria",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Who does Stefan order paper from?",
+   "kind": "thread",
+   "subject": "Stefan",
+   "attribute": "supplier",
+   "found_subject": "Stefan",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which course is Tariq taking?",
+   "kind": "thread",
+   "subject": "Tariq",
+   "attribute": "course",
+   "found_subject": "Tariq",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Who does Goran bank with?",
+   "kind": "thread",
+   "subject": "Goran",
+   "attribute": "bank",
+   "found_subject": "Goran",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which course is Wanda taking?",
+   "kind": "thread",
+   "subject": "Wanda",
+   "attribute": "course",
+   "found_subject": "Wanda",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Who does Erol bank with?",
+   "kind": "thread",
+   "subject": "Erol",
+   "attribute": "bank",
+   "found_subject": "Erol",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "What does Josefa keep the accounts in?",
+   "kind": "thread",
+   "subject": "Josefa",
+   "attribute": "accounts",
+   "found_subject": "Josefa",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Which bakery does Wanda buy bread at?",
+   "kind": "thread",
+   "subject": "Wanda",
+   "attribute": "bakery",
+   "found_subject": "Wanda",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which line does Freya commute on?",
+   "kind": "thread",
+   "subject": "Freya",
+   "attribute": "line",
+   "found_subject": "Freya",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which course is Luca taking?",
+   "kind": "thread",
+   "subject": "Luca",
+   "attribute": "course",
+   "found_subject": "Luca",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Which project does Tariq lead?",
+   "kind": "thread",
+   "subject": "Tariq",
+   "attribute": "project",
+   "found_subject": "Tariq",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Which line does Kofi commute on?",
+   "kind": "thread",
+   "subject": "Kofi",
+   "attribute": "line",
+   "found_subject": "Kofi",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which clinic does Zara go to?",
+   "kind": "thread",
+   "subject": "Zara",
+   "attribute": "clinic",
+   "found_subject": "Zara",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which course is Orla taking?",
+   "kind": "thread",
+   "subject": "Orla",
+   "attribute": "course",
+   "found_subject": "Orla",
+   "found_attribute": "course"
+  },
+  {
+   "question": "What does Lorna keep the accounts in?",
+   "kind": "thread",
+   "subject": "Lorna",
+   "attribute": "accounts",
+   "found_subject": "Lorna",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Which course is Noor taking?",
+   "kind": "thread",
+   "subject": "Noor",
+   "attribute": "course",
+   "found_subject": "Noor",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Where does Idris keep the backups?",
+   "kind": "thread",
+   "subject": "Idris",
+   "attribute": "backups",
+   "found_subject": "Idris",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which clinic does Elif go to?",
+   "kind": "thread",
+   "subject": "Elif",
+   "attribute": "clinic",
+   "found_subject": "Elif",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Where does Oskar rehearse?",
+   "kind": "thread",
+   "subject": "Oskar",
+   "attribute": "hall",
+   "found_subject": "Oskar",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Where does Goran keep the backups?",
+   "kind": "thread",
+   "subject": "Goran",
+   "attribute": "backups",
+   "found_subject": "Goran",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which bakery does Dario buy bread at?",
+   "kind": "thread",
+   "subject": "Dario",
+   "attribute": "bakery",
+   "found_subject": "Dario",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Who does Yuki order paper from?",
+   "kind": "thread",
+   "subject": "Yuki",
+   "attribute": "supplier",
+   "found_subject": "Yuki",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "What does Ivo keep the accounts in?",
+   "kind": "thread",
+   "subject": "Ivo",
+   "attribute": "accounts",
+   "found_subject": "Ivo",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Which project does Emeka lead?",
+   "kind": "thread",
+   "subject": "Emeka",
+   "attribute": "project",
+   "found_subject": "Emeka",
+   "found_attribute": "project"
+  },
+  {
+   "question": "What does Luca keep the accounts in?",
+   "kind": "thread",
+   "subject": "Luca",
+   "attribute": "accounts",
+   "found_subject": "Luca",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Which cottage does Mateo rent?",
+   "kind": "thread",
+   "subject": "Mateo",
+   "attribute": "cottage",
+   "found_subject": "Mateo",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which cottage does Viktor rent?",
+   "kind": "thread",
+   "subject": "Viktor",
+   "attribute": "cottage",
+   "found_subject": "Viktor",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which line does Sanjay commute on?",
+   "kind": "thread",
+   "subject": "Sanjay",
+   "attribute": "line",
+   "found_subject": "Sanjay",
+   "found_attribute": "line"
+  },
+  {
+   "question": "What does Erol keep the accounts in?",
+   "kind": "thread",
+   "subject": "Erol",
+   "attribute": "accounts",
+   "found_subject": "Erol",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "What does Kasper keep the accounts in?",
+   "kind": "thread",
+   "subject": "Kasper",
+   "attribute": "accounts",
+   "found_subject": "Kasper",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Who does Amara order paper from?",
+   "kind": "thread",
+   "subject": "Amara",
+   "attribute": "supplier",
+   "found_subject": "Amara",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which project does Celia lead?",
+   "kind": "thread",
+   "subject": "Celia",
+   "attribute": "project",
+   "found_subject": "Celia",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Which bakery does Yuki buy bread at?",
+   "kind": "thread",
+   "subject": "Yuki",
+   "attribute": "bakery",
+   "found_subject": "Yuki",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which cottage does Priya rent?",
+   "kind": "thread",
+   "subject": "Priya",
+   "attribute": "cottage",
+   "found_subject": "Priya",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which line does Orla commute on?",
+   "kind": "thread",
+   "subject": "Orla",
+   "attribute": "line",
+   "found_subject": "Orla",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which team does Elif sit with?",
+   "kind": "thread",
+   "subject": "Elif",
+   "attribute": "team",
+   "found_subject": "Elif",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which team does Karin sit with?",
+   "kind": "thread",
+   "subject": "Karin",
+   "attribute": "team",
+   "found_subject": "Karin",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which team does Yara sit with?",
+   "kind": "thread",
+   "subject": "Yara",
+   "attribute": "team",
+   "found_subject": "Yara",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which bakery does Greta buy bread at?",
+   "kind": "thread",
+   "subject": "Greta",
+   "attribute": "bakery",
+   "found_subject": "Greta",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which project does Wilma lead?",
+   "kind": "thread",
+   "subject": "Wilma",
+   "attribute": "project",
+   "found_subject": "Wilma",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Who does Elif bank with?",
+   "kind": "thread",
+   "subject": "Elif",
+   "attribute": "bank",
+   "found_subject": "Elif",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which cottage does Rafael rent?",
+   "kind": "thread",
+   "subject": "Rafael",
+   "attribute": "cottage",
+   "found_subject": "Rafael",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Where does Josefa keep the backups?",
+   "kind": "thread",
+   "subject": "Josefa",
+   "attribute": "backups",
+   "found_subject": "Josefa",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "What does Emeka keep the accounts in?",
+   "kind": "thread",
+   "subject": "Emeka",
+   "attribute": "accounts",
+   "found_subject": "Emeka",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Where does Ingrid rehearse?",
+   "kind": "thread",
+   "subject": "Ingrid",
+   "attribute": "hall",
+   "found_subject": "Ingrid",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Which team does Fabio sit with?",
+   "kind": "thread",
+   "subject": "Fabio",
+   "attribute": "team",
+   "found_subject": "Fabio",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which clinic does Orla go to?",
+   "kind": "thread",
+   "subject": "Orla",
+   "attribute": "clinic",
+   "found_subject": "Orla",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Where does Lorna rehearse?",
+   "kind": "thread",
+   "subject": "Lorna",
+   "attribute": "hall",
+   "found_subject": "Lorna",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Which bakery does Magnus buy bread at?",
+   "kind": "thread",
+   "subject": "Magnus",
+   "attribute": "bakery",
+   "found_subject": "Magnus",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Who does Priya order paper from?",
+   "kind": "thread",
+   "subject": "Priya",
+   "attribute": "supplier",
+   "found_subject": "Priya",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Who does Tariq order paper from?",
+   "kind": "thread",
+   "subject": "Tariq",
+   "attribute": "supplier",
+   "found_subject": "Tariq",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Where does Otto rehearse?",
+   "kind": "thread",
+   "subject": "Otto",
+   "attribute": "hall",
+   "found_subject": "Otto",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Where does Hassan keep the backups?",
+   "kind": "thread",
+   "subject": "Hassan",
+   "attribute": "backups",
+   "found_subject": "Hassan",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Where does Tariq rehearse?",
+   "kind": "thread",
+   "subject": "Tariq",
+   "attribute": "hall",
+   "found_subject": "Tariq",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Which course is Goran taking?",
+   "kind": "thread",
+   "subject": "Goran",
+   "attribute": "course",
+   "found_subject": "Goran",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Which course is Emeka taking?",
+   "kind": "thread",
+   "subject": "Emeka",
+   "attribute": "course",
+   "found_subject": "Emeka",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Who does Magnus order paper from?",
+   "kind": "thread",
+   "subject": "Magnus",
+   "attribute": "supplier",
+   "found_subject": "Magnus",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which project does Sofia lead?",
+   "kind": "thread",
+   "subject": "Sofia",
+   "attribute": "project",
+   "found_subject": "Sofia",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Which team does Alma sit with?",
+   "kind": "thread",
+   "subject": "Alma",
+   "attribute": "team",
+   "found_subject": "Alma",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which team does Sanjay sit with?",
+   "kind": "thread",
+   "subject": "Sanjay",
+   "attribute": "team",
+   "found_subject": "Sanjay",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Who does Hassan bank with?",
+   "kind": "thread",
+   "subject": "Hassan",
+   "attribute": "bank",
+   "found_subject": "Hassan",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which clinic does Kofi go to?",
+   "kind": "thread",
+   "subject": "Kofi",
+   "attribute": "clinic",
+   "found_subject": "Kofi",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Who does Freya order paper from?",
+   "kind": "thread",
+   "subject": "Freya",
+   "attribute": "supplier",
+   "found_subject": "Freya",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Where does Noor keep the backups?",
+   "kind": "thread",
+   "subject": "Noor",
+   "attribute": "backups",
+   "found_subject": "Noor",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which course is Jana taking?",
+   "kind": "thread",
+   "subject": "Jana",
+   "attribute": "course",
+   "found_subject": "Jana",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Where does Emeka keep the backups?",
+   "kind": "thread",
+   "subject": "Emeka",
+   "attribute": "backups",
+   "found_subject": "Emeka",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which project does Karin lead?",
+   "kind": "thread",
+   "subject": "Karin",
+   "attribute": "project",
+   "found_subject": "Karin",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Who does Priya bank with?",
+   "kind": "thread",
+   "subject": "Priya",
+   "attribute": "bank",
+   "found_subject": "Priya",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Who does Zara bank with?",
+   "kind": "thread",
+   "subject": "Zara",
+   "attribute": "bank",
+   "found_subject": "Zara",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Who does Tomas order paper from?",
+   "kind": "thread",
+   "subject": "Tomas",
+   "attribute": "supplier",
+   "found_subject": "Tomas",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which line does Yuki commute on?",
+   "kind": "thread",
+   "subject": "Yuki",
+   "attribute": "line",
+   "found_subject": "Yuki",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which team does Ursula sit with?",
+   "kind": "thread",
+   "subject": "Ursula",
+   "attribute": "team",
+   "found_subject": "Ursula",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which bakery does Nikos buy bread at?",
+   "kind": "thread",
+   "subject": "Nikos",
+   "attribute": "bakery",
+   "found_subject": "Nikos",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Where does Xavier rehearse?",
+   "kind": "thread",
+   "subject": "Xavier",
+   "attribute": "hall",
+   "found_subject": "Xavier",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Which line does Esther commute on?",
+   "kind": "thread",
+   "subject": "Esther",
+   "attribute": "line",
+   "found_subject": "Esther",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which line does Nuria commute on?",
+   "kind": "thread",
+   "subject": "Nuria",
+   "attribute": "line",
+   "found_subject": "Nuria",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which line does Erol commute on?",
+   "kind": "thread",
+   "subject": "Erol",
+   "attribute": "line",
+   "found_subject": "Erol",
+   "found_attribute": "line"
+  },
+  {
+   "question": "What does Noor keep the accounts in?",
+   "kind": "thread",
+   "subject": "Noor",
+   "attribute": "accounts",
+   "found_subject": "Noor",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "What does Nuria keep the accounts in?",
+   "kind": "thread",
+   "subject": "Nuria",
+   "attribute": "accounts",
+   "found_subject": "Nuria",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Which team does Rania sit with?",
+   "kind": "thread",
+   "subject": "Rania",
+   "attribute": "team",
+   "found_subject": "Rania",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which team does Esther sit with?",
+   "kind": "thread",
+   "subject": "Esther",
+   "attribute": "team",
+   "found_subject": "Esther",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which bakery does Otto buy bread at?",
+   "kind": "thread",
+   "subject": "Otto",
+   "attribute": "bakery",
+   "found_subject": "Otto",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which clinic does Greta go to?",
+   "kind": "thread",
+   "subject": "Greta",
+   "attribute": "clinic",
+   "found_subject": "Greta",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Where does Orla keep the backups?",
+   "kind": "thread",
+   "subject": "Orla",
+   "attribute": "backups",
+   "found_subject": "Orla",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Who does Maria bank with?",
+   "kind": "thread",
+   "subject": "Maria",
+   "attribute": "bank",
+   "found_subject": "Maria",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Who does Rania order paper from?",
+   "kind": "thread",
+   "subject": "Rania",
+   "attribute": "supplier",
+   "found_subject": "Rania",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which course is Tomas taking?",
+   "kind": "thread",
+   "subject": "Tomas",
+   "attribute": "course",
+   "found_subject": "Tomas",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Which cottage does Bjorn rent?",
+   "kind": "thread",
+   "subject": "Bjorn",
+   "attribute": "cottage",
+   "found_subject": "Bjorn",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Who does Ingrid bank with?",
+   "kind": "thread",
+   "subject": "Ingrid",
+   "attribute": "bank",
+   "found_subject": "Ingrid",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Who does Zoltan bank with?",
+   "kind": "thread",
+   "subject": "Zoltan",
+   "attribute": "bank",
+   "found_subject": "Zoltan",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Where does Otto keep the backups?",
+   "kind": "thread",
+   "subject": "Otto",
+   "attribute": "backups",
+   "found_subject": "Otto",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which course is Karin taking?",
+   "kind": "thread",
+   "subject": "Karin",
+   "attribute": "course",
+   "found_subject": "Karin",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Which clinic does Tomas go to?",
+   "kind": "thread",
+   "subject": "Tomas",
+   "attribute": "clinic",
+   "found_subject": "Tomas",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which bakery does Tariq buy bread at?",
+   "kind": "thread",
+   "subject": "Tariq",
+   "attribute": "bakery",
+   "found_subject": "Tariq",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which clinic does Petra go to?",
+   "kind": "thread",
+   "subject": "Petra",
+   "attribute": "clinic",
+   "found_subject": "Petra",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which course is Kasper taking?",
+   "kind": "thread",
+   "subject": "Kasper",
+   "attribute": "course",
+   "found_subject": "Kasper",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Where does Quinn rehearse?",
+   "kind": "thread",
+   "subject": "Quinn",
+   "attribute": "hall",
+   "found_subject": "Quinn",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Where does Emeka rehearse?",
+   "kind": "thread",
+   "subject": "Emeka",
+   "attribute": "hall",
+   "found_subject": "Emeka",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Who does Xavier order paper from?",
+   "kind": "thread",
+   "subject": "Xavier",
+   "attribute": "supplier",
+   "found_subject": "Xavier",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which cottage does Nuria rent?",
+   "kind": "thread",
+   "subject": "Nuria",
+   "attribute": "cottage",
+   "found_subject": "Nuria",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which clinic does Hassan go to?",
+   "kind": "thread",
+   "subject": "Hassan",
+   "attribute": "clinic",
+   "found_subject": "Hassan",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which course is Celia taking?",
+   "kind": "thread",
+   "subject": "Celia",
+   "attribute": "course",
+   "found_subject": "Celia",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Where does Karin rehearse?",
+   "kind": "thread",
+   "subject": "Karin",
+   "attribute": "hall",
+   "found_subject": "Karin",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Who does Ivo bank with?",
+   "kind": "thread",
+   "subject": "Ivo",
+   "attribute": "bank",
+   "found_subject": "Ivo",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Who does Kasper order paper from?",
+   "kind": "thread",
+   "subject": "Kasper",
+   "attribute": "supplier",
+   "found_subject": "Kasper",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "What does Chiara keep the accounts in?",
+   "kind": "thread",
+   "subject": "Chiara",
+   "attribute": "accounts",
+   "found_subject": "Chiara",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Where does Farid rehearse?",
+   "kind": "thread",
+   "subject": "Farid",
+   "attribute": "hall",
+   "found_subject": "Farid",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Which team does Kofi sit with?",
+   "kind": "thread",
+   "subject": "Kofi",
+   "attribute": "team",
+   "found_subject": "Kofi",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Where does Yuki keep the backups?",
+   "kind": "thread",
+   "subject": "Yuki",
+   "attribute": "backups",
+   "found_subject": "Yuki",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which team does Erol sit with?",
+   "kind": "thread",
+   "subject": "Erol",
+   "attribute": "team",
+   "found_subject": "Erol",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Who does Lisa bank with?",
+   "kind": "thread",
+   "subject": "Lisa",
+   "attribute": "bank",
+   "found_subject": "Lisa",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which project does Dario lead?",
+   "kind": "thread",
+   "subject": "Dario",
+   "attribute": "project",
+   "found_subject": "Dario",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Which team does Gunnar sit with?",
+   "kind": "thread",
+   "subject": "Gunnar",
+   "attribute": "team",
+   "found_subject": "Gunnar",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which clinic does Emeka go to?",
+   "kind": "thread",
+   "subject": "Emeka",
+   "attribute": "clinic",
+   "found_subject": "Emeka",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Where does Sanjay rehearse?",
+   "kind": "thread",
+   "subject": "Sanjay",
+   "attribute": "hall",
+   "found_subject": "Sanjay",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Who does Iris order paper from?",
+   "kind": "thread",
+   "subject": "Iris",
+   "attribute": "supplier",
+   "found_subject": "Iris",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Where does Anders rehearse?",
+   "kind": "thread",
+   "subject": "Anders",
+   "attribute": "hall",
+   "found_subject": "Anders",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Which project does Hugo lead?",
+   "kind": "thread",
+   "subject": "Hugo",
+   "attribute": "project",
+   "found_subject": "Hugo",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Where does Goran rehearse?",
+   "kind": "thread",
+   "subject": "Goran",
+   "attribute": "hall",
+   "found_subject": "Goran",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Where does Freya rehearse?",
+   "kind": "thread",
+   "subject": "Freya",
+   "attribute": "hall",
+   "found_subject": "Freya",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "What does Xavier keep the accounts in?",
+   "kind": "thread",
+   "subject": "Xavier",
+   "attribute": "accounts",
+   "found_subject": "Xavier",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Where does Lorna keep the backups?",
+   "kind": "thread",
+   "subject": "Lorna",
+   "attribute": "backups",
+   "found_subject": "Lorna",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Where does Olga rehearse?",
+   "kind": "thread",
+   "subject": "Olga",
+   "attribute": "hall",
+   "found_subject": "Olga",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Where does Ulla rehearse?",
+   "kind": "thread",
+   "subject": "Ulla",
+   "attribute": "hall",
+   "found_subject": "Ulla",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Who does Hugo order paper from?",
+   "kind": "thread",
+   "subject": "Hugo",
+   "attribute": "supplier",
+   "found_subject": "Hugo",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which clinic does Amara go to?",
+   "kind": "thread",
+   "subject": "Amara",
+   "attribute": "clinic",
+   "found_subject": "Amara",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which team does Emeka sit with?",
+   "kind": "thread",
+   "subject": "Emeka",
+   "attribute": "team",
+   "found_subject": "Emeka",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Where does Ursula rehearse?",
+   "kind": "thread",
+   "subject": "Ursula",
+   "attribute": "hall",
+   "found_subject": "Ursula",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "What does Amara keep the accounts in?",
+   "kind": "thread",
+   "subject": "Amara",
+   "attribute": "accounts",
+   "found_subject": "Amara",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Which bakery does Karin buy bread at?",
+   "kind": "thread",
+   "subject": "Karin",
+   "attribute": "bakery",
+   "found_subject": "Karin",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which clinic does Sanjay go to?",
+   "kind": "thread",
+   "subject": "Sanjay",
+   "attribute": "clinic",
+   "found_subject": "Sanjay",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Where does Kofi keep the backups?",
+   "kind": "thread",
+   "subject": "Kofi",
+   "attribute": "backups",
+   "found_subject": "Kofi",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which project does Zara lead?",
+   "kind": "thread",
+   "subject": "Zara",
+   "attribute": "project",
+   "found_subject": "Zara",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Who does Karin bank with?",
+   "kind": "thread",
+   "subject": "Karin",
+   "attribute": "bank",
+   "found_subject": "Karin",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which team does Yuki sit with?",
+   "kind": "thread",
+   "subject": "Yuki",
+   "attribute": "team",
+   "found_subject": "Yuki",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Where does Zoltan keep the backups?",
+   "kind": "thread",
+   "subject": "Zoltan",
+   "attribute": "backups",
+   "found_subject": "Zoltan",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Who does Mateo bank with?",
+   "kind": "thread",
+   "subject": "Mateo",
+   "attribute": "bank",
+   "found_subject": "Mateo",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which bakery does Ulla buy bread at?",
+   "kind": "thread",
+   "subject": "Ulla",
+   "attribute": "bakery",
+   "found_subject": "Ulla",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Who does Lorna bank with?",
+   "kind": "thread",
+   "subject": "Lorna",
+   "attribute": "bank",
+   "found_subject": "Lorna",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Who does Celia bank with?",
+   "kind": "thread",
+   "subject": "Celia",
+   "attribute": "bank",
+   "found_subject": "Celia",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Where does Xavier keep the backups?",
+   "kind": "thread",
+   "subject": "Xavier",
+   "attribute": "backups",
+   "found_subject": "Xavier",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which project does Esther lead?",
+   "kind": "thread",
+   "subject": "Esther",
+   "attribute": "project",
+   "found_subject": "Esther",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Who does Dario bank with?",
+   "kind": "thread",
+   "subject": "Dario",
+   "attribute": "bank",
+   "found_subject": "Dario",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which clinic does Luca go to?",
+   "kind": "thread",
+   "subject": "Luca",
+   "attribute": "clinic",
+   "found_subject": "Luca",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which clinic does Zoltan go to?",
+   "kind": "thread",
+   "subject": "Zoltan",
+   "attribute": "clinic",
+   "found_subject": "Zoltan",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Who does Wanda order paper from?",
+   "kind": "thread",
+   "subject": "Wanda",
+   "attribute": "supplier",
+   "found_subject": "Wanda",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which bakery does Gunnar buy bread at?",
+   "kind": "thread",
+   "subject": "Gunnar",
+   "attribute": "bakery",
+   "found_subject": "Gunnar",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "What does Priya keep the accounts in?",
+   "kind": "thread",
+   "subject": "Priya",
+   "attribute": "accounts",
+   "found_subject": "Priya",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Which clinic does Nuria go to?",
+   "kind": "thread",
+   "subject": "Nuria",
+   "attribute": "clinic",
+   "found_subject": "Nuria",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which clinic does Dario go to?",
+   "kind": "thread",
+   "subject": "Dario",
+   "attribute": "clinic",
+   "found_subject": "Dario",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Who does Yannis order paper from?",
+   "kind": "thread",
+   "subject": "Yannis",
+   "attribute": "supplier",
+   "found_subject": "Yannis",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which project does Idris lead?",
+   "kind": "thread",
+   "subject": "Idris",
+   "attribute": "project",
+   "found_subject": "Idris",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Where does Bruno keep the backups?",
+   "kind": "thread",
+   "subject": "Bruno",
+   "attribute": "backups",
+   "found_subject": "Bruno",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Who does Iris bank with?",
+   "kind": "thread",
+   "subject": "Iris",
+   "attribute": "bank",
+   "found_subject": "Iris",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which cottage does Sanjay rent?",
+   "kind": "thread",
+   "subject": "Sanjay",
+   "attribute": "cottage",
+   "found_subject": "Sanjay",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which cottage does Stefan rent?",
+   "kind": "thread",
+   "subject": "Stefan",
+   "attribute": "cottage",
+   "found_subject": "Stefan",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which line does Alma commute on?",
+   "kind": "thread",
+   "subject": "Alma",
+   "attribute": "line",
+   "found_subject": "Alma",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which clinic does Yuki go to?",
+   "kind": "thread",
+   "subject": "Yuki",
+   "attribute": "clinic",
+   "found_subject": "Yuki",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Where does Bjorn rehearse?",
+   "kind": "thread",
+   "subject": "Bjorn",
+   "attribute": "hall",
+   "found_subject": "Bjorn",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Which project does Nuria lead?",
+   "kind": "thread",
+   "subject": "Nuria",
+   "attribute": "project",
+   "found_subject": "Nuria",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Which bakery does Xavier buy bread at?",
+   "kind": "thread",
+   "subject": "Xavier",
+   "attribute": "bakery",
+   "found_subject": "Xavier",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Where does Mateo keep the backups?",
+   "kind": "thread",
+   "subject": "Mateo",
+   "attribute": "backups",
+   "found_subject": "Mateo",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "What does Tomas keep the accounts in?",
+   "kind": "thread",
+   "subject": "Tomas",
+   "attribute": "accounts",
+   "found_subject": "Tomas",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Which bakery does Fabio buy bread at?",
+   "kind": "thread",
+   "subject": "Fabio",
+   "attribute": "bakery",
+   "found_subject": "Fabio",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which project does Farid lead?",
+   "kind": "thread",
+   "subject": "Farid",
+   "attribute": "project",
+   "found_subject": "Farid",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Which line does Karin commute on?",
+   "kind": "thread",
+   "subject": "Karin",
+   "attribute": "line",
+   "found_subject": "Karin",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which project does Xavier lead?",
+   "kind": "thread",
+   "subject": "Xavier",
+   "attribute": "project",
+   "found_subject": "Xavier",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Which clinic does Gunnar go to?",
+   "kind": "thread",
+   "subject": "Gunnar",
+   "attribute": "clinic",
+   "found_subject": "Gunnar",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which course is Idris taking?",
+   "kind": "thread",
+   "subject": "Idris",
+   "attribute": "course",
+   "found_subject": "Idris",
+   "found_attribute": "course"
+  },
+  {
+   "question": "What does Zoltan keep the accounts in?",
+   "kind": "thread",
+   "subject": "Zoltan",
+   "attribute": "accounts",
+   "found_subject": "Zoltan",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Which clinic does Josefa go to?",
+   "kind": "thread",
+   "subject": "Josefa",
+   "attribute": "clinic",
+   "found_subject": "Josefa",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which cottage does Milos rent?",
+   "kind": "thread",
+   "subject": "Milos",
+   "attribute": "cottage",
+   "found_subject": "Milos",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which cottage does Beatriz rent?",
+   "kind": "thread",
+   "subject": "Beatriz",
+   "attribute": "cottage",
+   "found_subject": "Beatriz",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "What does Hugo keep the accounts in?",
+   "kind": "thread",
+   "subject": "Hugo",
+   "attribute": "accounts",
+   "found_subject": "Hugo",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Which bakery does Lisa buy bread at?",
+   "kind": "thread",
+   "subject": "Lisa",
+   "attribute": "bakery",
+   "found_subject": "Lisa",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which line does Tariq commute on?",
+   "kind": "thread",
+   "subject": "Tariq",
+   "attribute": "line",
+   "found_subject": "Tariq",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which course is Freya taking?",
+   "kind": "thread",
+   "subject": "Freya",
+   "attribute": "course",
+   "found_subject": "Freya",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Which team does Iris sit with?",
+   "kind": "thread",
+   "subject": "Iris",
+   "attribute": "team",
+   "found_subject": "Iris",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which team does Vasco sit with?",
+   "kind": "thread",
+   "subject": "Vasco",
+   "attribute": "team",
+   "found_subject": "Vasco",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which cottage does Anders rent?",
+   "kind": "thread",
+   "subject": "Anders",
+   "attribute": "cottage",
+   "found_subject": "Anders",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Who does Kwame bank with?",
+   "kind": "thread",
+   "subject": "Kwame",
+   "attribute": "bank",
+   "found_subject": "Kwame",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which project does Helena lead?",
+   "kind": "thread",
+   "subject": "Helena",
+   "attribute": "project",
+   "found_subject": "Helena",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Who does Ingrid order paper from?",
+   "kind": "thread",
+   "subject": "Ingrid",
+   "attribute": "supplier",
+   "found_subject": "Ingrid",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which team does Sofia sit with?",
+   "kind": "thread",
+   "subject": "Sofia",
+   "attribute": "team",
+   "found_subject": "Sofia",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which team does Josefa sit with?",
+   "kind": "thread",
+   "subject": "Josefa",
+   "attribute": "team",
+   "found_subject": "Josefa",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which line does Olga commute on?",
+   "kind": "thread",
+   "subject": "Olga",
+   "attribute": "line",
+   "found_subject": "Olga",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which clinic does Priya go to?",
+   "kind": "thread",
+   "subject": "Priya",
+   "attribute": "clinic",
+   "found_subject": "Priya",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "What does Karin keep the accounts in?",
+   "kind": "thread",
+   "subject": "Karin",
+   "attribute": "accounts",
+   "found_subject": "Karin",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Who does Lisa order paper from?",
+   "kind": "thread",
+   "subject": "Lisa",
+   "attribute": "supplier",
+   "found_subject": "Lisa",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which course is Alma taking?",
+   "kind": "thread",
+   "subject": "Alma",
+   "attribute": "course",
+   "found_subject": "Alma",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Where does Milos keep the backups?",
+   "kind": "thread",
+   "subject": "Milos",
+   "attribute": "backups",
+   "found_subject": "Milos",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Who does Yara bank with?",
+   "kind": "thread",
+   "subject": "Yara",
+   "attribute": "bank",
+   "found_subject": "Yara",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which clinic does Pablo go to?",
+   "kind": "thread",
+   "subject": "Pablo",
+   "attribute": "clinic",
+   "found_subject": "Pablo",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which bakery does Kwame buy bread at?",
+   "kind": "thread",
+   "subject": "Kwame",
+   "attribute": "bakery",
+   "found_subject": "Kwame",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which line does Dmitri commute on?",
+   "kind": "thread",
+   "subject": "Dmitri",
+   "attribute": "line",
+   "found_subject": "Dmitri",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Where does Celia keep the backups?",
+   "kind": "thread",
+   "subject": "Celia",
+   "attribute": "backups",
+   "found_subject": "Celia",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which bakery does Vasco buy bread at?",
+   "kind": "thread",
+   "subject": "Vasco",
+   "attribute": "bakery",
+   "found_subject": "Vasco",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "What does Jonas keep the accounts in?",
+   "kind": "thread",
+   "subject": "Jonas",
+   "attribute": "accounts",
+   "found_subject": "Jonas",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Which course is Maria taking?",
+   "kind": "thread",
+   "subject": "Maria",
+   "attribute": "course",
+   "found_subject": "Maria",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Which project does Vasco lead?",
+   "kind": "thread",
+   "subject": "Vasco",
+   "attribute": "project",
+   "found_subject": "Vasco",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Which team does Priya sit with?",
+   "kind": "thread",
+   "subject": "Priya",
+   "attribute": "team",
+   "found_subject": "Priya",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which line does Maria commute on?",
+   "kind": "thread",
+   "subject": "Maria",
+   "attribute": "line",
+   "found_subject": "Maria",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which course is Elif taking?",
+   "kind": "thread",
+   "subject": "Elif",
+   "attribute": "course",
+   "found_subject": "Elif",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Who does Fabio bank with?",
+   "kind": "thread",
+   "subject": "Fabio",
+   "attribute": "bank",
+   "found_subject": "Fabio",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which cottage does Noor rent?",
+   "kind": "thread",
+   "subject": "Noor",
+   "attribute": "cottage",
+   "found_subject": "Noor",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Who does Idris bank with?",
+   "kind": "thread",
+   "subject": "Idris",
+   "attribute": "bank",
+   "found_subject": "Idris",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Who does Ursula bank with?",
+   "kind": "thread",
+   "subject": "Ursula",
+   "attribute": "bank",
+   "found_subject": "Ursula",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which cottage does Zoltan rent?",
+   "kind": "thread",
+   "subject": "Zoltan",
+   "attribute": "cottage",
+   "found_subject": "Zoltan",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which clinic does Ulla go to?",
+   "kind": "thread",
+   "subject": "Ulla",
+   "attribute": "clinic",
+   "found_subject": "Ulla",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which cottage does Magnus rent?",
+   "kind": "thread",
+   "subject": "Magnus",
+   "attribute": "cottage",
+   "found_subject": "Magnus",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "What does Kofi keep the accounts in?",
+   "kind": "thread",
+   "subject": "Kofi",
+   "attribute": "accounts",
+   "found_subject": "Kofi",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Which line does Andrei commute on?",
+   "kind": "thread",
+   "subject": "Andrei",
+   "attribute": "line",
+   "found_subject": "Andrei",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which clinic does Anders go to?",
+   "kind": "thread",
+   "subject": "Anders",
+   "attribute": "clinic",
+   "found_subject": "Anders",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which cottage does Freya rent?",
+   "kind": "thread",
+   "subject": "Freya",
+   "attribute": "cottage",
+   "found_subject": "Freya",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which team does Greta sit with?",
+   "kind": "thread",
+   "subject": "Greta",
+   "attribute": "team",
+   "found_subject": "Greta",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Where does Jonas rehearse?",
+   "kind": "thread",
+   "subject": "Jonas",
+   "attribute": "hall",
+   "found_subject": "Jonas",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "What does Otto keep the accounts in?",
+   "kind": "thread",
+   "subject": "Otto",
+   "attribute": "accounts",
+   "found_subject": "Otto",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Which cottage does Tariq rent?",
+   "kind": "thread",
+   "subject": "Tariq",
+   "attribute": "cottage",
+   "found_subject": "Tariq",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which clinic does Otto go to?",
+   "kind": "thread",
+   "subject": "Otto",
+   "attribute": "clinic",
+   "found_subject": "Otto",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Who does Anders order paper from?",
+   "kind": "thread",
+   "subject": "Anders",
+   "attribute": "supplier",
+   "found_subject": "Anders",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which line does Priya commute on?",
+   "kind": "thread",
+   "subject": "Priya",
+   "attribute": "line",
+   "found_subject": "Priya",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which clinic does Dmitri go to?",
+   "kind": "thread",
+   "subject": "Dmitri",
+   "attribute": "clinic",
+   "found_subject": "Dmitri",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which project does Beatriz lead?",
+   "kind": "thread",
+   "subject": "Beatriz",
+   "attribute": "project",
+   "found_subject": "Beatriz",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Which line does Ulla commute on?",
+   "kind": "thread",
+   "subject": "Ulla",
+   "attribute": "line",
+   "found_subject": "Ulla",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Who does Jana bank with?",
+   "kind": "thread",
+   "subject": "Jana",
+   "attribute": "bank",
+   "found_subject": "Jana",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Who does Viktor order paper from?",
+   "kind": "thread",
+   "subject": "Viktor",
+   "attribute": "supplier",
+   "found_subject": "Viktor",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Who does Nadia order paper from?",
+   "kind": "thread",
+   "subject": "Nadia",
+   "attribute": "supplier",
+   "found_subject": "Nadia",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "What does Sanjay keep the accounts in?",
+   "kind": "thread",
+   "subject": "Sanjay",
+   "attribute": "accounts",
+   "found_subject": "Sanjay",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Where does Mateo rehearse?",
+   "kind": "thread",
+   "subject": "Mateo",
+   "attribute": "hall",
+   "found_subject": "Mateo",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Which bakery does Zara buy bread at?",
+   "kind": "thread",
+   "subject": "Zara",
+   "attribute": "bakery",
+   "found_subject": "Zara",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Where does Noor rehearse?",
+   "kind": "thread",
+   "subject": "Noor",
+   "attribute": "hall",
+   "found_subject": "Noor",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Where does Elif rehearse?",
+   "kind": "thread",
+   "subject": "Elif",
+   "attribute": "hall",
+   "found_subject": "Elif",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Where does Yannis keep the backups?",
+   "kind": "thread",
+   "subject": "Yannis",
+   "attribute": "backups",
+   "found_subject": "Yannis",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Where does Celia rehearse?",
+   "kind": "thread",
+   "subject": "Celia",
+   "attribute": "hall",
+   "found_subject": "Celia",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Who does Otto bank with?",
+   "kind": "thread",
+   "subject": "Otto",
+   "attribute": "bank",
+   "found_subject": "Otto",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which line does Wanda commute on?",
+   "kind": "thread",
+   "subject": "Wanda",
+   "attribute": "line",
+   "found_subject": "Wanda",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which course is Amara taking?",
+   "kind": "thread",
+   "subject": "Amara",
+   "attribute": "course",
+   "found_subject": "Amara",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Which bakery does Cato buy bread at?",
+   "kind": "thread",
+   "subject": "Cato",
+   "attribute": "bakery",
+   "found_subject": "Cato",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which bakery does Amara buy bread at?",
+   "kind": "thread",
+   "subject": "Amara",
+   "attribute": "bakery",
+   "found_subject": "Amara",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which cottage does Vasco rent?",
+   "kind": "thread",
+   "subject": "Vasco",
+   "attribute": "cottage",
+   "found_subject": "Vasco",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "What does Sofia keep the accounts in?",
+   "kind": "thread",
+   "subject": "Sofia",
+   "attribute": "accounts",
+   "found_subject": "Sofia",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Which bakery does Hassan buy bread at?",
+   "kind": "thread",
+   "subject": "Hassan",
+   "attribute": "bakery",
+   "found_subject": "Hassan",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Where does Nuria rehearse?",
+   "kind": "thread",
+   "subject": "Nuria",
+   "attribute": "hall",
+   "found_subject": "Nuria",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "What does Quinn keep the accounts in?",
+   "kind": "thread",
+   "subject": "Quinn",
+   "attribute": "accounts",
+   "found_subject": "Quinn",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Which course is Priya taking?",
+   "kind": "thread",
+   "subject": "Priya",
+   "attribute": "course",
+   "found_subject": "Priya",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Who does Yuki bank with?",
+   "kind": "thread",
+   "subject": "Yuki",
+   "attribute": "bank",
+   "found_subject": "Yuki",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which course is Kwame taking?",
+   "kind": "thread",
+   "subject": "Kwame",
+   "attribute": "course",
+   "found_subject": "Kwame",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Which clinic does Esther go to?",
+   "kind": "thread",
+   "subject": "Esther",
+   "attribute": "clinic",
+   "found_subject": "Esther",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which cottage does Celia rent?",
+   "kind": "thread",
+   "subject": "Celia",
+   "attribute": "cottage",
+   "found_subject": "Celia",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which clinic does Viktor go to?",
+   "kind": "thread",
+   "subject": "Viktor",
+   "attribute": "clinic",
+   "found_subject": "Viktor",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which team does Tomas sit with?",
+   "kind": "thread",
+   "subject": "Tomas",
+   "attribute": "team",
+   "found_subject": "Tomas",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which team does Nikos sit with?",
+   "kind": "thread",
+   "subject": "Nikos",
+   "attribute": "team",
+   "found_subject": "Nikos",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which course is Anders taking?",
+   "kind": "thread",
+   "subject": "Anders",
+   "attribute": "course",
+   "found_subject": "Anders",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Which course is Jonas taking?",
+   "kind": "thread",
+   "subject": "Jonas",
+   "attribute": "course",
+   "found_subject": "Jonas",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Where does Linnea keep the backups?",
+   "kind": "thread",
+   "subject": "Linnea",
+   "attribute": "backups",
+   "found_subject": "Linnea",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Where does Farid keep the backups?",
+   "kind": "thread",
+   "subject": "Farid",
+   "attribute": "backups",
+   "found_subject": "Farid",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which line does Luca commute on?",
+   "kind": "thread",
+   "subject": "Luca",
+   "attribute": "line",
+   "found_subject": "Luca",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Who does Emeka order paper from?",
+   "kind": "thread",
+   "subject": "Emeka",
+   "attribute": "supplier",
+   "found_subject": "Emeka",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which bakery does Bruno buy bread at?",
+   "kind": "thread",
+   "subject": "Bruno",
+   "attribute": "bakery",
+   "found_subject": "Bruno",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Where does Maria keep the backups?",
+   "kind": "thread",
+   "subject": "Maria",
+   "attribute": "backups",
+   "found_subject": "Maria",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which clinic does Farid go to?",
+   "kind": "thread",
+   "subject": "Farid",
+   "attribute": "clinic",
+   "found_subject": "Farid",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which line does Goran commute on?",
+   "kind": "thread",
+   "subject": "Goran",
+   "attribute": "line",
+   "found_subject": "Goran",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which course is Helena taking?",
+   "kind": "thread",
+   "subject": "Helena",
+   "attribute": "course",
+   "found_subject": "Helena",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Who does Goran order paper from?",
+   "kind": "thread",
+   "subject": "Goran",
+   "attribute": "supplier",
+   "found_subject": "Goran",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which cottage does Iris rent?",
+   "kind": "thread",
+   "subject": "Iris",
+   "attribute": "cottage",
+   "found_subject": "Iris",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Who does Magnus bank with?",
+   "kind": "thread",
+   "subject": "Magnus",
+   "attribute": "bank",
+   "found_subject": "Magnus",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which course is Milos taking?",
+   "kind": "thread",
+   "subject": "Milos",
+   "attribute": "course",
+   "found_subject": "Milos",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Which line does Nadia commute on?",
+   "kind": "thread",
+   "subject": "Nadia",
+   "attribute": "line",
+   "found_subject": "Nadia",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which cottage does Lisa rent?",
+   "kind": "thread",
+   "subject": "Lisa",
+   "attribute": "cottage",
+   "found_subject": "Lisa",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Where does Josefa rehearse?",
+   "kind": "thread",
+   "subject": "Josefa",
+   "attribute": "hall",
+   "found_subject": "Josefa",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Which project does Dmitri lead?",
+   "kind": "thread",
+   "subject": "Dmitri",
+   "attribute": "project",
+   "found_subject": "Dmitri",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Where does Dario rehearse?",
+   "kind": "thread",
+   "subject": "Dario",
+   "attribute": "hall",
+   "found_subject": "Dario",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Where does Jana keep the backups?",
+   "kind": "thread",
+   "subject": "Jana",
+   "attribute": "backups",
+   "found_subject": "Jana",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Where does Elif keep the backups?",
+   "kind": "thread",
+   "subject": "Elif",
+   "attribute": "backups",
+   "found_subject": "Elif",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which bakery does Mateo buy bread at?",
+   "kind": "thread",
+   "subject": "Mateo",
+   "attribute": "bakery",
+   "found_subject": "Mateo",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which project does Bruno lead?",
+   "kind": "thread",
+   "subject": "Bruno",
+   "attribute": "project",
+   "found_subject": "Bruno",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Which bakery does Dora buy bread at?",
+   "kind": "thread",
+   "subject": "Dora",
+   "attribute": "bakery",
+   "found_subject": "Dora",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which line does Oskar commute on?",
+   "kind": "thread",
+   "subject": "Oskar",
+   "attribute": "line",
+   "found_subject": "Oskar",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Where does Tereza rehearse?",
+   "kind": "thread",
+   "subject": "Tereza",
+   "attribute": "hall",
+   "found_subject": "Tereza",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "What does Jana keep the accounts in?",
+   "kind": "thread",
+   "subject": "Jana",
+   "attribute": "accounts",
+   "found_subject": "Jana",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Where does Priya rehearse?",
+   "kind": "thread",
+   "subject": "Priya",
+   "attribute": "hall",
+   "found_subject": "Priya",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Where does Chiara keep the backups?",
+   "kind": "thread",
+   "subject": "Chiara",
+   "attribute": "backups",
+   "found_subject": "Chiara",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which bakery does Elif buy bread at?",
+   "kind": "thread",
+   "subject": "Elif",
+   "attribute": "bakery",
+   "found_subject": "Elif",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which clinic does Quinn go to?",
+   "kind": "thread",
+   "subject": "Quinn",
+   "attribute": "clinic",
+   "found_subject": "Quinn",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "What does Iris keep the accounts in?",
+   "kind": "thread",
+   "subject": "Iris",
+   "attribute": "accounts",
+   "found_subject": "Iris",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Which team does Jana sit with?",
+   "kind": "thread",
+   "subject": "Jana",
+   "attribute": "team",
+   "found_subject": "Jana",
+   "found_attribute": "team"
+  },
+  {
+   "question": "What does Anders keep the accounts in?",
+   "kind": "thread",
+   "subject": "Anders",
+   "attribute": "accounts",
+   "found_subject": "Anders",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Which cottage does Maria rent?",
+   "kind": "thread",
+   "subject": "Maria",
+   "attribute": "cottage",
+   "found_subject": "Maria",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which line does Rafael commute on?",
+   "kind": "thread",
+   "subject": "Rafael",
+   "attribute": "line",
+   "found_subject": "Rafael",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Who does Nadia bank with?",
+   "kind": "thread",
+   "subject": "Nadia",
+   "attribute": "bank",
+   "found_subject": "Nadia",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "What does Pablo keep the accounts in?",
+   "kind": "thread",
+   "subject": "Pablo",
+   "attribute": "accounts",
+   "found_subject": "Pablo",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Which bakery does Petra buy bread at?",
+   "kind": "thread",
+   "subject": "Petra",
+   "attribute": "bakery",
+   "found_subject": "Petra",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which cottage does Pablo rent?",
+   "kind": "thread",
+   "subject": "Pablo",
+   "attribute": "cottage",
+   "found_subject": "Pablo",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Who does Gunnar order paper from?",
+   "kind": "thread",
+   "subject": "Gunnar",
+   "attribute": "supplier",
+   "found_subject": "Gunnar",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Where does Esther keep the backups?",
+   "kind": "thread",
+   "subject": "Esther",
+   "attribute": "backups",
+   "found_subject": "Esther",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which cottage does Idris rent?",
+   "kind": "thread",
+   "subject": "Idris",
+   "attribute": "cottage",
+   "found_subject": "Idris",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which clinic does Ursula go to?",
+   "kind": "thread",
+   "subject": "Ursula",
+   "attribute": "clinic",
+   "found_subject": "Ursula",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which bakery does Lorna buy bread at?",
+   "kind": "thread",
+   "subject": "Lorna",
+   "attribute": "bakery",
+   "found_subject": "Lorna",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which project does Elif lead?",
+   "kind": "thread",
+   "subject": "Elif",
+   "attribute": "project",
+   "found_subject": "Elif",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Which cottage does Tomas rent?",
+   "kind": "thread",
+   "subject": "Tomas",
+   "attribute": "cottage",
+   "found_subject": "Tomas",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which course is Ingrid taking?",
+   "kind": "thread",
+   "subject": "Ingrid",
+   "attribute": "course",
+   "found_subject": "Ingrid",
+   "found_attribute": "course"
+  },
+  {
+   "question": "What does Yannis keep the accounts in?",
+   "kind": "thread",
+   "subject": "Yannis",
+   "attribute": "accounts",
+   "found_subject": "Yannis",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Where does Dario keep the backups?",
+   "kind": "thread",
+   "subject": "Dario",
+   "attribute": "backups",
+   "found_subject": "Dario",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which line does Vasco commute on?",
+   "kind": "thread",
+   "subject": "Vasco",
+   "attribute": "line",
+   "found_subject": "Vasco",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which cottage does Ingrid rent?",
+   "kind": "thread",
+   "subject": "Ingrid",
+   "attribute": "cottage",
+   "found_subject": "Ingrid",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Who does Dario order paper from?",
+   "kind": "thread",
+   "subject": "Dario",
+   "attribute": "supplier",
+   "found_subject": "Dario",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which cottage does Tereza rent?",
+   "kind": "thread",
+   "subject": "Tereza",
+   "attribute": "cottage",
+   "found_subject": "Tereza",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Who does Quinn bank with?",
+   "kind": "thread",
+   "subject": "Quinn",
+   "attribute": "bank",
+   "found_subject": "Quinn",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which clinic does Andrei go to?",
+   "kind": "thread",
+   "subject": "Andrei",
+   "attribute": "clinic",
+   "found_subject": "Andrei",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Who does Bjorn bank with?",
+   "kind": "thread",
+   "subject": "Bjorn",
+   "attribute": "bank",
+   "found_subject": "Bjorn",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which clinic does Goran go to?",
+   "kind": "thread",
+   "subject": "Goran",
+   "attribute": "clinic",
+   "found_subject": "Goran",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which bakery does Maria buy bread at?",
+   "kind": "thread",
+   "subject": "Maria",
+   "attribute": "bakery",
+   "found_subject": "Maria",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which team does Ivo sit with?",
+   "kind": "thread",
+   "subject": "Ivo",
+   "attribute": "team",
+   "found_subject": "Ivo",
+   "found_attribute": "team"
+  },
+  {
+   "question": "What does Helena keep the accounts in?",
+   "kind": "thread",
+   "subject": "Helena",
+   "attribute": "accounts",
+   "found_subject": "Helena",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Who does Hassan order paper from?",
+   "kind": "thread",
+   "subject": "Hassan",
+   "attribute": "supplier",
+   "found_subject": "Hassan",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which course is Quinn taking?",
+   "kind": "thread",
+   "subject": "Quinn",
+   "attribute": "course",
+   "found_subject": "Quinn",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Where does Tomas keep the backups?",
+   "kind": "thread",
+   "subject": "Tomas",
+   "attribute": "backups",
+   "found_subject": "Tomas",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which bakery does Olga buy bread at?",
+   "kind": "thread",
+   "subject": "Olga",
+   "attribute": "bakery",
+   "found_subject": "Olga",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which clinic does Karin go to?",
+   "kind": "thread",
+   "subject": "Karin",
+   "attribute": "clinic",
+   "found_subject": "Karin",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which clinic does Leila go to?",
+   "kind": "thread",
+   "subject": "Leila",
+   "attribute": "clinic",
+   "found_subject": "Leila",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which line does Sofia commute on?",
+   "kind": "thread",
+   "subject": "Sofia",
+   "attribute": "line",
+   "found_subject": "Sofia",
+   "found_attribute": "line"
+  },
+  {
+   "question": "What does Gunnar keep the accounts in?",
+   "kind": "thread",
+   "subject": "Gunnar",
+   "attribute": "accounts",
+   "found_subject": "Gunnar",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Who does Rania bank with?",
+   "kind": "thread",
+   "subject": "Rania",
+   "attribute": "bank",
+   "found_subject": "Rania",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "What does Dora keep the accounts in?",
+   "kind": "thread",
+   "subject": "Dora",
+   "attribute": "accounts",
+   "found_subject": "Dora",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Which cottage does Ulla rent?",
+   "kind": "thread",
+   "subject": "Ulla",
+   "attribute": "cottage",
+   "found_subject": "Ulla",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which bakery does Yannis buy bread at?",
+   "kind": "thread",
+   "subject": "Yannis",
+   "attribute": "bakery",
+   "found_subject": "Yannis",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Who does Noor bank with?",
+   "kind": "thread",
+   "subject": "Noor",
+   "attribute": "bank",
+   "found_subject": "Noor",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which project does Milos lead?",
+   "kind": "thread",
+   "subject": "Milos",
+   "attribute": "project",
+   "found_subject": "Milos",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Which line does Pablo commute on?",
+   "kind": "thread",
+   "subject": "Pablo",
+   "attribute": "line",
+   "found_subject": "Pablo",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Who does Nuria bank with?",
+   "kind": "thread",
+   "subject": "Nuria",
+   "attribute": "bank",
+   "found_subject": "Nuria",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Who does Farid order paper from?",
+   "kind": "thread",
+   "subject": "Farid",
+   "attribute": "supplier",
+   "found_subject": "Farid",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Who does Halima bank with?",
+   "kind": "thread",
+   "subject": "Halima",
+   "attribute": "bank",
+   "found_subject": "Halima",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Where does Maria rehearse?",
+   "kind": "thread",
+   "subject": "Maria",
+   "attribute": "hall",
+   "found_subject": "Maria",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Which course is Petra taking?",
+   "kind": "thread",
+   "subject": "Petra",
+   "attribute": "course",
+   "found_subject": "Petra",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Which team does Nuria sit with?",
+   "kind": "thread",
+   "subject": "Nuria",
+   "attribute": "team",
+   "found_subject": "Nuria",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Who does Esther order paper from?",
+   "kind": "thread",
+   "subject": "Esther",
+   "attribute": "supplier",
+   "found_subject": "Esther",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which clinic does Xavier go to?",
+   "kind": "thread",
+   "subject": "Xavier",
+   "attribute": "clinic",
+   "found_subject": "Xavier",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which course is Iris taking?",
+   "kind": "thread",
+   "subject": "Iris",
+   "attribute": "course",
+   "found_subject": "Iris",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Which bakery does Goran buy bread at?",
+   "kind": "thread",
+   "subject": "Goran",
+   "attribute": "bakery",
+   "found_subject": "Goran",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Who does Viktor bank with?",
+   "kind": "thread",
+   "subject": "Viktor",
+   "attribute": "bank",
+   "found_subject": "Viktor",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which course is Hassan taking?",
+   "kind": "thread",
+   "subject": "Hassan",
+   "attribute": "course",
+   "found_subject": "Hassan",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Where does Viktor rehearse?",
+   "kind": "thread",
+   "subject": "Viktor",
+   "attribute": "hall",
+   "found_subject": "Viktor",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Who does Halima order paper from?",
+   "kind": "thread",
+   "subject": "Halima",
+   "attribute": "supplier",
+   "found_subject": "Halima",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Where does Sofia rehearse?",
+   "kind": "thread",
+   "subject": "Sofia",
+   "attribute": "hall",
+   "found_subject": "Sofia",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Who does Jana order paper from?",
+   "kind": "thread",
+   "subject": "Jana",
+   "attribute": "supplier",
+   "found_subject": "Jana",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which bakery does Viktor buy bread at?",
+   "kind": "thread",
+   "subject": "Viktor",
+   "attribute": "bakery",
+   "found_subject": "Viktor",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "What does Leila keep the accounts in?",
+   "kind": "thread",
+   "subject": "Leila",
+   "attribute": "accounts",
+   "found_subject": "Leila",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Where does Stefan keep the backups?",
+   "kind": "thread",
+   "subject": "Stefan",
+   "attribute": "backups",
+   "found_subject": "Stefan",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Who does Alma order paper from?",
+   "kind": "thread",
+   "subject": "Alma",
+   "attribute": "supplier",
+   "found_subject": "Alma",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which project does Nadia lead?",
+   "kind": "thread",
+   "subject": "Nadia",
+   "attribute": "project",
+   "found_subject": "Nadia",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Where does Helena rehearse?",
+   "kind": "thread",
+   "subject": "Helena",
+   "attribute": "hall",
+   "found_subject": "Helena",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Where does Magnus keep the backups?",
+   "kind": "thread",
+   "subject": "Magnus",
+   "attribute": "backups",
+   "found_subject": "Magnus",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which clinic does Tereza go to?",
+   "kind": "thread",
+   "subject": "Tereza",
+   "attribute": "clinic",
+   "found_subject": "Tereza",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Who does Beatriz bank with?",
+   "kind": "thread",
+   "subject": "Beatriz",
+   "attribute": "bank",
+   "found_subject": "Beatriz",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Who does Emeka bank with?",
+   "kind": "thread",
+   "subject": "Emeka",
+   "attribute": "bank",
+   "found_subject": "Emeka",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which team does Farid sit with?",
+   "kind": "thread",
+   "subject": "Farid",
+   "attribute": "team",
+   "found_subject": "Farid",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Who does Pablo bank with?",
+   "kind": "thread",
+   "subject": "Pablo",
+   "attribute": "bank",
+   "found_subject": "Pablo",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Where does Nikos keep the backups?",
+   "kind": "thread",
+   "subject": "Nikos",
+   "attribute": "backups",
+   "found_subject": "Nikos",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which project does Tereza lead?",
+   "kind": "thread",
+   "subject": "Tereza",
+   "attribute": "project",
+   "found_subject": "Tereza",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Which line does Greta commute on?",
+   "kind": "thread",
+   "subject": "Greta",
+   "attribute": "line",
+   "found_subject": "Greta",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which project does Jonas lead?",
+   "kind": "thread",
+   "subject": "Jonas",
+   "attribute": "project",
+   "found_subject": "Jonas",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Who does Yannis bank with?",
+   "kind": "thread",
+   "subject": "Yannis",
+   "attribute": "bank",
+   "found_subject": "Yannis",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which bakery does Kofi buy bread at?",
+   "kind": "thread",
+   "subject": "Kofi",
+   "attribute": "bakery",
+   "found_subject": "Kofi",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which clinic does Fabio go to?",
+   "kind": "thread",
+   "subject": "Fabio",
+   "attribute": "clinic",
+   "found_subject": "Fabio",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which course is Sofia taking?",
+   "kind": "thread",
+   "subject": "Sofia",
+   "attribute": "course",
+   "found_subject": "Sofia",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Who does Kwame order paper from?",
+   "kind": "thread",
+   "subject": "Kwame",
+   "attribute": "supplier",
+   "found_subject": "Kwame",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which team does Petra sit with?",
+   "kind": "thread",
+   "subject": "Petra",
+   "attribute": "team",
+   "found_subject": "Petra",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Who does Leila order paper from?",
+   "kind": "thread",
+   "subject": "Leila",
+   "attribute": "supplier",
+   "found_subject": "Leila",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Where does Freya keep the backups?",
+   "kind": "thread",
+   "subject": "Freya",
+   "attribute": "backups",
+   "found_subject": "Freya",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which cottage does Yannis rent?",
+   "kind": "thread",
+   "subject": "Yannis",
+   "attribute": "cottage",
+   "found_subject": "Yannis",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Who does Mateo order paper from?",
+   "kind": "thread",
+   "subject": "Mateo",
+   "attribute": "supplier",
+   "found_subject": "Mateo",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which clinic does Yannis go to?",
+   "kind": "thread",
+   "subject": "Yannis",
+   "attribute": "clinic",
+   "found_subject": "Yannis",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which project does Fabio lead?",
+   "kind": "thread",
+   "subject": "Fabio",
+   "attribute": "project",
+   "found_subject": "Fabio",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Who does Zoltan order paper from?",
+   "kind": "thread",
+   "subject": "Zoltan",
+   "attribute": "supplier",
+   "found_subject": "Zoltan",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Where does Priya keep the backups?",
+   "kind": "thread",
+   "subject": "Priya",
+   "attribute": "backups",
+   "found_subject": "Priya",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which clinic does Bruno go to?",
+   "kind": "thread",
+   "subject": "Bruno",
+   "attribute": "clinic",
+   "found_subject": "Bruno",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which clinic does Dora go to?",
+   "kind": "thread",
+   "subject": "Dora",
+   "attribute": "clinic",
+   "found_subject": "Dora",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which course is Chiara taking?",
+   "kind": "thread",
+   "subject": "Chiara",
+   "attribute": "course",
+   "found_subject": "Chiara",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Which project does Oskar lead?",
+   "kind": "thread",
+   "subject": "Oskar",
+   "attribute": "project",
+   "found_subject": "Oskar",
+   "found_attribute": "project"
+  },
+  {
+   "question": "What does Beatriz keep the accounts in?",
+   "kind": "thread",
+   "subject": "Beatriz",
+   "attribute": "accounts",
+   "found_subject": "Beatriz",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Which line does Helena commute on?",
+   "kind": "thread",
+   "subject": "Helena",
+   "attribute": "line",
+   "found_subject": "Helena",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Who does Elif order paper from?",
+   "kind": "thread",
+   "subject": "Elif",
+   "attribute": "supplier",
+   "found_subject": "Elif",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which cottage does Gunnar rent?",
+   "kind": "thread",
+   "subject": "Gunnar",
+   "attribute": "cottage",
+   "found_subject": "Gunnar",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Who does Helena order paper from?",
+   "kind": "thread",
+   "subject": "Helena",
+   "attribute": "supplier",
+   "found_subject": "Helena",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Who does Orla order paper from?",
+   "kind": "thread",
+   "subject": "Orla",
+   "attribute": "supplier",
+   "found_subject": "Orla",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which cottage does Luca rent?",
+   "kind": "thread",
+   "subject": "Luca",
+   "attribute": "cottage",
+   "found_subject": "Luca",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Who does Freya bank with?",
+   "kind": "thread",
+   "subject": "Freya",
+   "attribute": "bank",
+   "found_subject": "Freya",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Who does Chiara bank with?",
+   "kind": "thread",
+   "subject": "Chiara",
+   "attribute": "bank",
+   "found_subject": "Chiara",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Who does Celia order paper from?",
+   "kind": "thread",
+   "subject": "Celia",
+   "attribute": "supplier",
+   "found_subject": "Celia",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which bakery does Helena buy bread at?",
+   "kind": "thread",
+   "subject": "Helena",
+   "attribute": "bakery",
+   "found_subject": "Helena",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which project does Orla lead?",
+   "kind": "thread",
+   "subject": "Orla",
+   "attribute": "project",
+   "found_subject": "Orla",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Which line does Halima commute on?",
+   "kind": "thread",
+   "subject": "Halima",
+   "attribute": "line",
+   "found_subject": "Halima",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which clinic does Kasper go to?",
+   "kind": "thread",
+   "subject": "Kasper",
+   "attribute": "clinic",
+   "found_subject": "Kasper",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which project does Magnus lead?",
+   "kind": "thread",
+   "subject": "Magnus",
+   "attribute": "project",
+   "found_subject": "Magnus",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Which clinic does Mateo go to?",
+   "kind": "thread",
+   "subject": "Mateo",
+   "attribute": "clinic",
+   "found_subject": "Mateo",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which line does Amara commute on?",
+   "kind": "thread",
+   "subject": "Amara",
+   "attribute": "line",
+   "found_subject": "Amara",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which project does Gunnar lead?",
+   "kind": "thread",
+   "subject": "Gunnar",
+   "attribute": "project",
+   "found_subject": "Gunnar",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Which line does Rania commute on?",
+   "kind": "thread",
+   "subject": "Rania",
+   "attribute": "line",
+   "found_subject": "Rania",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Who does Alma bank with?",
+   "kind": "thread",
+   "subject": "Alma",
+   "attribute": "bank",
+   "found_subject": "Alma",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which line does Dario commute on?",
+   "kind": "thread",
+   "subject": "Dario",
+   "attribute": "line",
+   "found_subject": "Dario",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which bakery does Rafael buy bread at?",
+   "kind": "thread",
+   "subject": "Rafael",
+   "attribute": "bakery",
+   "found_subject": "Rafael",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Where does Erol keep the backups?",
+   "kind": "thread",
+   "subject": "Erol",
+   "attribute": "backups",
+   "found_subject": "Erol",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Where does Greta keep the backups?",
+   "kind": "thread",
+   "subject": "Greta",
+   "attribute": "backups",
+   "found_subject": "Greta",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which clinic does Rosa go to?",
+   "kind": "thread",
+   "subject": "Rosa",
+   "attribute": "clinic",
+   "found_subject": "Rosa",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which team does Noor sit with?",
+   "kind": "thread",
+   "subject": "Noor",
+   "attribute": "team",
+   "found_subject": "Noor",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which clinic does Erol go to?",
+   "kind": "thread",
+   "subject": "Erol",
+   "attribute": "clinic",
+   "found_subject": "Erol",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which team does Lorna sit with?",
+   "kind": "thread",
+   "subject": "Lorna",
+   "attribute": "team",
+   "found_subject": "Lorna",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which bakery does Oskar buy bread at?",
+   "kind": "thread",
+   "subject": "Oskar",
+   "attribute": "bakery",
+   "found_subject": "Oskar",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which clinic does Iris go to?",
+   "kind": "thread",
+   "subject": "Iris",
+   "attribute": "clinic",
+   "found_subject": "Iris",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Where does Amara rehearse?",
+   "kind": "thread",
+   "subject": "Amara",
+   "attribute": "hall",
+   "found_subject": "Amara",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Which course is Josefa taking?",
+   "kind": "thread",
+   "subject": "Josefa",
+   "attribute": "course",
+   "found_subject": "Josefa",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Which line does Petra commute on?",
+   "kind": "thread",
+   "subject": "Petra",
+   "attribute": "line",
+   "found_subject": "Petra",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Where does Orla rehearse?",
+   "kind": "thread",
+   "subject": "Orla",
+   "attribute": "hall",
+   "found_subject": "Orla",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Which team does Jonas sit with?",
+   "kind": "thread",
+   "subject": "Jonas",
+   "attribute": "team",
+   "found_subject": "Jonas",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which cottage does Oskar rent?",
+   "kind": "thread",
+   "subject": "Oskar",
+   "attribute": "cottage",
+   "found_subject": "Oskar",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which clinic does Lorna go to?",
+   "kind": "thread",
+   "subject": "Lorna",
+   "attribute": "clinic",
+   "found_subject": "Lorna",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which project does Lorna lead?",
+   "kind": "thread",
+   "subject": "Lorna",
+   "attribute": "project",
+   "found_subject": "Lorna",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Which line does Rosa commute on?",
+   "kind": "thread",
+   "subject": "Rosa",
+   "attribute": "line",
+   "found_subject": "Rosa",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which bakery does Bjorn buy bread at?",
+   "kind": "thread",
+   "subject": "Bjorn",
+   "attribute": "bakery",
+   "found_subject": "Bjorn",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which cottage does Alma rent?",
+   "kind": "thread",
+   "subject": "Alma",
+   "attribute": "cottage",
+   "found_subject": "Alma",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which project does Wanda lead?",
+   "kind": "thread",
+   "subject": "Wanda",
+   "attribute": "project",
+   "found_subject": "Wanda",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Which team does Hassan sit with?",
+   "kind": "thread",
+   "subject": "Hassan",
+   "attribute": "team",
+   "found_subject": "Hassan",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which team does Wilma sit with?",
+   "kind": "thread",
+   "subject": "Wilma",
+   "attribute": "team",
+   "found_subject": "Wilma",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which team does Zara sit with?",
+   "kind": "thread",
+   "subject": "Zara",
+   "attribute": "team",
+   "found_subject": "Zara",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which bakery does Iris buy bread at?",
+   "kind": "thread",
+   "subject": "Iris",
+   "attribute": "bakery",
+   "found_subject": "Iris",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Where does Jana rehearse?",
+   "kind": "thread",
+   "subject": "Jana",
+   "attribute": "hall",
+   "found_subject": "Jana",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Which bakery does Quinn buy bread at?",
+   "kind": "thread",
+   "subject": "Quinn",
+   "attribute": "bakery",
+   "found_subject": "Quinn",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which cottage does Farid rent?",
+   "kind": "thread",
+   "subject": "Farid",
+   "attribute": "cottage",
+   "found_subject": "Farid",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which clinic does Halima go to?",
+   "kind": "thread",
+   "subject": "Halima",
+   "attribute": "clinic",
+   "found_subject": "Halima",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Where does Quinn keep the backups?",
+   "kind": "thread",
+   "subject": "Quinn",
+   "attribute": "backups",
+   "found_subject": "Quinn",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which clinic does Milos go to?",
+   "kind": "thread",
+   "subject": "Milos",
+   "attribute": "clinic",
+   "found_subject": "Milos",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which bakery does Celia buy bread at?",
+   "kind": "thread",
+   "subject": "Celia",
+   "attribute": "bakery",
+   "found_subject": "Celia",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which team does Orla sit with?",
+   "kind": "thread",
+   "subject": "Orla",
+   "attribute": "team",
+   "found_subject": "Orla",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Who does Rosa order paper from?",
+   "kind": "thread",
+   "subject": "Rosa",
+   "attribute": "supplier",
+   "found_subject": "Rosa",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which clinic does Jonas go to?",
+   "kind": "thread",
+   "subject": "Jonas",
+   "attribute": "clinic",
+   "found_subject": "Jonas",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which course is Rania taking?",
+   "kind": "thread",
+   "subject": "Rania",
+   "attribute": "course",
+   "found_subject": "Rania",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Which team does Anders sit with?",
+   "kind": "thread",
+   "subject": "Anders",
+   "attribute": "team",
+   "found_subject": "Anders",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Who does Wanda bank with?",
+   "kind": "thread",
+   "subject": "Wanda",
+   "attribute": "bank",
+   "found_subject": "Wanda",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which cottage does Dora rent?",
+   "kind": "thread",
+   "subject": "Dora",
+   "attribute": "cottage",
+   "found_subject": "Dora",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which clinic does Nadia go to?",
+   "kind": "thread",
+   "subject": "Nadia",
+   "attribute": "clinic",
+   "found_subject": "Nadia",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which line does Linnea commute on?",
+   "kind": "thread",
+   "subject": "Linnea",
+   "attribute": "line",
+   "found_subject": "Linnea",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which bakery does Priya buy bread at?",
+   "kind": "thread",
+   "subject": "Priya",
+   "attribute": "bakery",
+   "found_subject": "Priya",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Who does Beatriz order paper from?",
+   "kind": "thread",
+   "subject": "Beatriz",
+   "attribute": "supplier",
+   "found_subject": "Beatriz",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Where does Wanda keep the backups?",
+   "kind": "thread",
+   "subject": "Wanda",
+   "attribute": "backups",
+   "found_subject": "Wanda",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which clinic does Rafael go to?",
+   "kind": "thread",
+   "subject": "Rafael",
+   "attribute": "clinic",
+   "found_subject": "Rafael",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Who does Rosa bank with?",
+   "kind": "thread",
+   "subject": "Rosa",
+   "attribute": "bank",
+   "found_subject": "Rosa",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which cottage does Jana rent?",
+   "kind": "thread",
+   "subject": "Jana",
+   "attribute": "cottage",
+   "found_subject": "Jana",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which line does Iris commute on?",
+   "kind": "thread",
+   "subject": "Iris",
+   "attribute": "line",
+   "found_subject": "Iris",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which team does Leila sit with?",
+   "kind": "thread",
+   "subject": "Leila",
+   "attribute": "team",
+   "found_subject": "Leila",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Where does Yannis rehearse?",
+   "kind": "thread",
+   "subject": "Yannis",
+   "attribute": "hall",
+   "found_subject": "Yannis",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Who does Nikos bank with?",
+   "kind": "thread",
+   "subject": "Nikos",
+   "attribute": "bank",
+   "found_subject": "Nikos",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which cottage does Kasper rent?",
+   "kind": "thread",
+   "subject": "Kasper",
+   "attribute": "cottage",
+   "found_subject": "Kasper",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which course is Hugo taking?",
+   "kind": "thread",
+   "subject": "Hugo",
+   "attribute": "course",
+   "found_subject": "Hugo",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Which team does Zoltan sit with?",
+   "kind": "thread",
+   "subject": "Zoltan",
+   "attribute": "team",
+   "found_subject": "Zoltan",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which course is Rosa taking?",
+   "kind": "thread",
+   "subject": "Rosa",
+   "attribute": "course",
+   "found_subject": "Rosa",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Which bakery does Chiara buy bread at?",
+   "kind": "thread",
+   "subject": "Chiara",
+   "attribute": "bakery",
+   "found_subject": "Chiara",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "What does Halima keep the accounts in?",
+   "kind": "thread",
+   "subject": "Halima",
+   "attribute": "accounts",
+   "found_subject": "Halima",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Which cottage does Wilma rent?",
+   "kind": "thread",
+   "subject": "Wilma",
+   "attribute": "cottage",
+   "found_subject": "Wilma",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which line does Otto commute on?",
+   "kind": "thread",
+   "subject": "Otto",
+   "attribute": "line",
+   "found_subject": "Otto",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which project does Amara lead?",
+   "kind": "thread",
+   "subject": "Amara",
+   "attribute": "project",
+   "found_subject": "Amara",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Which line does Ingrid commute on?",
+   "kind": "thread",
+   "subject": "Ingrid",
+   "attribute": "line",
+   "found_subject": "Ingrid",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which course is Rafael taking?",
+   "kind": "thread",
+   "subject": "Rafael",
+   "attribute": "course",
+   "found_subject": "Rafael",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Where does Nadia rehearse?",
+   "kind": "thread",
+   "subject": "Nadia",
+   "attribute": "hall",
+   "found_subject": "Nadia",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Which team does Dario sit with?",
+   "kind": "thread",
+   "subject": "Dario",
+   "attribute": "team",
+   "found_subject": "Dario",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which line does Nikos commute on?",
+   "kind": "thread",
+   "subject": "Nikos",
+   "attribute": "line",
+   "found_subject": "Nikos",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Who does Stefan bank with?",
+   "kind": "thread",
+   "subject": "Stefan",
+   "attribute": "bank",
+   "found_subject": "Stefan",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Where does Rosa rehearse?",
+   "kind": "thread",
+   "subject": "Rosa",
+   "attribute": "hall",
+   "found_subject": "Rosa",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Which line does Bjorn commute on?",
+   "kind": "thread",
+   "subject": "Bjorn",
+   "attribute": "line",
+   "found_subject": "Bjorn",
+   "found_attribute": "line"
+  },
+  {
+   "question": "What does Zara keep the accounts in?",
+   "kind": "thread",
+   "subject": "Zara",
+   "attribute": "accounts",
+   "found_subject": "Zara",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Which project does Nikos lead?",
+   "kind": "thread",
+   "subject": "Nikos",
+   "attribute": "project",
+   "found_subject": "Nikos",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Which course is Viktor taking?",
+   "kind": "thread",
+   "subject": "Viktor",
+   "attribute": "course",
+   "found_subject": "Viktor",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Who does Cato order paper from?",
+   "kind": "thread",
+   "subject": "Cato",
+   "attribute": "supplier",
+   "found_subject": "Cato",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which bakery does Erol buy bread at?",
+   "kind": "thread",
+   "subject": "Erol",
+   "attribute": "bakery",
+   "found_subject": "Erol",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which team does Tereza sit with?",
+   "kind": "thread",
+   "subject": "Tereza",
+   "attribute": "team",
+   "found_subject": "Tereza",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Where does Sofia keep the backups?",
+   "kind": "thread",
+   "subject": "Sofia",
+   "attribute": "backups",
+   "found_subject": "Sofia",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which line does Wilma commute on?",
+   "kind": "thread",
+   "subject": "Wilma",
+   "attribute": "line",
+   "found_subject": "Wilma",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which bakery does Jonas buy bread at?",
+   "kind": "thread",
+   "subject": "Jonas",
+   "attribute": "bakery",
+   "found_subject": "Jonas",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which course is Farid taking?",
+   "kind": "thread",
+   "subject": "Farid",
+   "attribute": "course",
+   "found_subject": "Farid",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Who does Bjorn order paper from?",
+   "kind": "thread",
+   "subject": "Bjorn",
+   "attribute": "supplier",
+   "found_subject": "Bjorn",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "What does Ulla keep the accounts in?",
+   "kind": "thread",
+   "subject": "Ulla",
+   "attribute": "accounts",
+   "found_subject": "Ulla",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Which course is Ursula taking?",
+   "kind": "thread",
+   "subject": "Ursula",
+   "attribute": "course",
+   "found_subject": "Ursula",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Which course is Esther taking?",
+   "kind": "thread",
+   "subject": "Esther",
+   "attribute": "course",
+   "found_subject": "Esther",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Which line does Lorna commute on?",
+   "kind": "thread",
+   "subject": "Lorna",
+   "attribute": "line",
+   "found_subject": "Lorna",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Where does Alma rehearse?",
+   "kind": "thread",
+   "subject": "Alma",
+   "attribute": "hall",
+   "found_subject": "Alma",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Which course is Greta taking?",
+   "kind": "thread",
+   "subject": "Greta",
+   "attribute": "course",
+   "found_subject": "Greta",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Where does Chiara rehearse?",
+   "kind": "thread",
+   "subject": "Chiara",
+   "attribute": "hall",
+   "found_subject": "Chiara",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Who does Orla bank with?",
+   "kind": "thread",
+   "subject": "Orla",
+   "attribute": "bank",
+   "found_subject": "Orla",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which team does Kwame sit with?",
+   "kind": "thread",
+   "subject": "Kwame",
+   "attribute": "team",
+   "found_subject": "Kwame",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which cottage does Zara rent?",
+   "kind": "thread",
+   "subject": "Zara",
+   "attribute": "cottage",
+   "found_subject": "Zara",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which bakery does Milos buy bread at?",
+   "kind": "thread",
+   "subject": "Milos",
+   "attribute": "bakery",
+   "found_subject": "Milos",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which line does Josefa commute on?",
+   "kind": "thread",
+   "subject": "Josefa",
+   "attribute": "line",
+   "found_subject": "Josefa",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Who does Wilma bank with?",
+   "kind": "thread",
+   "subject": "Wilma",
+   "attribute": "bank",
+   "found_subject": "Wilma",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Who does Quinn order paper from?",
+   "kind": "thread",
+   "subject": "Quinn",
+   "attribute": "supplier",
+   "found_subject": "Quinn",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Who does Esther bank with?",
+   "kind": "thread",
+   "subject": "Esther",
+   "attribute": "bank",
+   "found_subject": "Esther",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which line does Yannis commute on?",
+   "kind": "thread",
+   "subject": "Yannis",
+   "attribute": "line",
+   "found_subject": "Yannis",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Who does Nuria order paper from?",
+   "kind": "thread",
+   "subject": "Nuria",
+   "attribute": "supplier",
+   "found_subject": "Nuria",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Who does Luca order paper from?",
+   "kind": "thread",
+   "subject": "Luca",
+   "attribute": "supplier",
+   "found_subject": "Luca",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which cottage does Erol rent?",
+   "kind": "thread",
+   "subject": "Erol",
+   "attribute": "cottage",
+   "found_subject": "Erol",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which cottage does Ursula rent?",
+   "kind": "thread",
+   "subject": "Ursula",
+   "attribute": "cottage",
+   "found_subject": "Ursula",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which clinic does Stefan go to?",
+   "kind": "thread",
+   "subject": "Stefan",
+   "attribute": "clinic",
+   "found_subject": "Stefan",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Who does Sanjay bank with?",
+   "kind": "thread",
+   "subject": "Sanjay",
+   "attribute": "bank",
+   "found_subject": "Sanjay",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which course is Zoltan taking?",
+   "kind": "thread",
+   "subject": "Zoltan",
+   "attribute": "course",
+   "found_subject": "Zoltan",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Which bakery does Nadia buy bread at?",
+   "kind": "thread",
+   "subject": "Nadia",
+   "attribute": "bakery",
+   "found_subject": "Nadia",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which team does Rafael sit with?",
+   "kind": "thread",
+   "subject": "Rafael",
+   "attribute": "team",
+   "found_subject": "Rafael",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which course is Ulla taking?",
+   "kind": "thread",
+   "subject": "Ulla",
+   "attribute": "course",
+   "found_subject": "Ulla",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Which line does Lisa commute on?",
+   "kind": "thread",
+   "subject": "Lisa",
+   "attribute": "line",
+   "found_subject": "Lisa",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Where does Hassan rehearse?",
+   "kind": "thread",
+   "subject": "Hassan",
+   "attribute": "hall",
+   "found_subject": "Hassan",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Where does Rafael rehearse?",
+   "kind": "thread",
+   "subject": "Rafael",
+   "attribute": "hall",
+   "found_subject": "Rafael",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "What does Yuki keep the accounts in?",
+   "kind": "thread",
+   "subject": "Yuki",
+   "attribute": "accounts",
+   "found_subject": "Yuki",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Which cottage does Nikos rent?",
+   "kind": "thread",
+   "subject": "Nikos",
+   "attribute": "cottage",
+   "found_subject": "Nikos",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which clinic does Maria go to?",
+   "kind": "thread",
+   "subject": "Maria",
+   "attribute": "clinic",
+   "found_subject": "Maria",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Who does Kofi bank with?",
+   "kind": "thread",
+   "subject": "Kofi",
+   "attribute": "bank",
+   "found_subject": "Kofi",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which team does Amara sit with?",
+   "kind": "thread",
+   "subject": "Amara",
+   "attribute": "team",
+   "found_subject": "Amara",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which bakery does Orla buy bread at?",
+   "kind": "thread",
+   "subject": "Orla",
+   "attribute": "bakery",
+   "found_subject": "Orla",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Which line does Fabio commute on?",
+   "kind": "thread",
+   "subject": "Fabio",
+   "attribute": "line",
+   "found_subject": "Fabio",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which team does Goran sit with?",
+   "kind": "thread",
+   "subject": "Goran",
+   "attribute": "team",
+   "found_subject": "Goran",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Who does Luca bank with?",
+   "kind": "thread",
+   "subject": "Luca",
+   "attribute": "bank",
+   "found_subject": "Luca",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Who does Dmitri order paper from?",
+   "kind": "thread",
+   "subject": "Dmitri",
+   "attribute": "supplier",
+   "found_subject": "Dmitri",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which team does Beatriz sit with?",
+   "kind": "thread",
+   "subject": "Beatriz",
+   "attribute": "team",
+   "found_subject": "Beatriz",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which course is Stefan taking?",
+   "kind": "thread",
+   "subject": "Stefan",
+   "attribute": "course",
+   "found_subject": "Stefan",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Which cottage does Kofi rent?",
+   "kind": "thread",
+   "subject": "Kofi",
+   "attribute": "cottage",
+   "found_subject": "Kofi",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Where does Luca rehearse?",
+   "kind": "thread",
+   "subject": "Luca",
+   "attribute": "hall",
+   "found_subject": "Luca",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Which team does Dmitri sit with?",
+   "kind": "thread",
+   "subject": "Dmitri",
+   "attribute": "team",
+   "found_subject": "Dmitri",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which project does Hassan lead?",
+   "kind": "thread",
+   "subject": "Hassan",
+   "attribute": "project",
+   "found_subject": "Hassan",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Which line does Zoltan commute on?",
+   "kind": "thread",
+   "subject": "Zoltan",
+   "attribute": "line",
+   "found_subject": "Zoltan",
+   "found_attribute": "line"
+  },
+  {
+   "question": "What does Tariq keep the accounts in?",
+   "kind": "thread",
+   "subject": "Tariq",
+   "attribute": "accounts",
+   "found_subject": "Tariq",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Where does Dmitri keep the backups?",
+   "kind": "thread",
+   "subject": "Dmitri",
+   "attribute": "backups",
+   "found_subject": "Dmitri",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which line does Ursula commute on?",
+   "kind": "thread",
+   "subject": "Ursula",
+   "attribute": "line",
+   "found_subject": "Ursula",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which project does Yannis lead?",
+   "kind": "thread",
+   "subject": "Yannis",
+   "attribute": "project",
+   "found_subject": "Yannis",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Where does Zara keep the backups?",
+   "kind": "thread",
+   "subject": "Zara",
+   "attribute": "backups",
+   "found_subject": "Zara",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which bakery does Josefa buy bread at?",
+   "kind": "thread",
+   "subject": "Josefa",
+   "attribute": "bakery",
+   "found_subject": "Josefa",
+   "found_attribute": "bakery"
+  },
+  {
+   "question": "Where does Idris rehearse?",
+   "kind": "thread",
+   "subject": "Idris",
+   "attribute": "hall",
+   "found_subject": "Idris",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Who does Linnea bank with?",
+   "kind": "thread",
+   "subject": "Linnea",
+   "attribute": "bank",
+   "found_subject": "Linnea",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which line does Noor commute on?",
+   "kind": "thread",
+   "subject": "Noor",
+   "attribute": "line",
+   "found_subject": "Noor",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Which team does Magnus sit with?",
+   "kind": "thread",
+   "subject": "Magnus",
+   "attribute": "team",
+   "found_subject": "Magnus",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which course is Fabio taking?",
+   "kind": "thread",
+   "subject": "Fabio",
+   "attribute": "course",
+   "found_subject": "Fabio",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Which clinic does Magnus go to?",
+   "kind": "thread",
+   "subject": "Magnus",
+   "attribute": "clinic",
+   "found_subject": "Magnus",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Which course is Yara taking?",
+   "kind": "thread",
+   "subject": "Yara",
+   "attribute": "course",
+   "found_subject": "Yara",
+   "found_attribute": "course"
+  },
+  {
+   "question": "Where does Kofi rehearse?",
+   "kind": "thread",
+   "subject": "Kofi",
+   "attribute": "hall",
+   "found_subject": "Kofi",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Which clinic does Vasco go to?",
+   "kind": "thread",
+   "subject": "Vasco",
+   "attribute": "clinic",
+   "found_subject": "Vasco",
+   "found_attribute": "clinic"
+  },
+  {
+   "question": "Where does Pablo keep the backups?",
+   "kind": "thread",
+   "subject": "Pablo",
+   "attribute": "backups",
+   "found_subject": "Pablo",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Where does Leila keep the backups?",
+   "kind": "thread",
+   "subject": "Leila",
+   "attribute": "backups",
+   "found_subject": "Leila",
+   "found_attribute": "backups"
+  },
+  {
+   "question": "Which project does Priya lead?",
+   "kind": "thread",
+   "subject": "Priya",
+   "attribute": "project",
+   "found_subject": "Priya",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Who does Milos bank with?",
+   "kind": "thread",
+   "subject": "Milos",
+   "attribute": "bank",
+   "found_subject": "Milos",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Which project does Tomas lead?",
+   "kind": "thread",
+   "subject": "Tomas",
+   "attribute": "project",
+   "found_subject": "Tomas",
+   "found_attribute": "project"
+  },
+  {
+   "question": "What does Dmitri keep the accounts in?",
+   "kind": "thread",
+   "subject": "Dmitri",
+   "attribute": "accounts",
+   "found_subject": "Dmitri",
+   "found_attribute": "accounts"
+  },
+  {
+   "question": "Which line does Zara commute on?",
+   "kind": "thread",
+   "subject": "Zara",
+   "attribute": "line",
+   "found_subject": "Zara",
+   "found_attribute": "line"
+  },
+  {
+   "question": "Who does Helena bank with?",
+   "kind": "thread",
+   "subject": "Helena",
+   "attribute": "bank",
+   "found_subject": "Helena",
+   "found_attribute": "bank"
+  },
+  {
+   "question": "Who does Vasco order paper from?",
+   "kind": "thread",
+   "subject": "Vasco",
+   "attribute": "supplier",
+   "found_subject": "Vasco",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Which project does Alma lead?",
+   "kind": "thread",
+   "subject": "Alma",
+   "attribute": "project",
+   "found_subject": "Alma",
+   "found_attribute": "project"
+  },
+  {
+   "question": "Which cottage does Helena rent?",
+   "kind": "thread",
+   "subject": "Helena",
+   "attribute": "cottage",
+   "found_subject": "Helena",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which cottage does Elif rent?",
+   "kind": "thread",
+   "subject": "Elif",
+   "attribute": "cottage",
+   "found_subject": "Elif",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Which team does Olga sit with?",
+   "kind": "thread",
+   "subject": "Olga",
+   "attribute": "team",
+   "found_subject": "Olga",
+   "found_attribute": "team"
+  },
+  {
+   "question": "Which cottage does Orla rent?",
+   "kind": "thread",
+   "subject": "Orla",
+   "attribute": "cottage",
+   "found_subject": "Orla",
+   "found_attribute": "cottage"
+  },
+  {
+   "question": "Where does Vasco rehearse?",
+   "kind": "thread",
+   "subject": "Vasco",
+   "attribute": "hall",
+   "found_subject": "Vasco",
+   "found_attribute": "hall"
+  },
+  {
+   "question": "Who does Greta order paper from?",
+   "kind": "thread",
+   "subject": "Greta",
+   "attribute": "supplier",
+   "found_subject": "Greta",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "Who does Bruno order paper from?",
+   "kind": "thread",
+   "subject": "Bruno",
+   "attribute": "supplier",
+   "found_subject": "Bruno",
+   "found_attribute": "supplier"
+  },
+  {
+   "question": "What do you know about Alma?",
+   "kind": "subject",
+   "subject": "Alma",
+   "attribute": "",
+   "found_subject": "Alma",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Otto?",
+   "kind": "subject",
+   "subject": "Otto",
+   "attribute": "",
+   "found_subject": "Otto",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Maria?",
+   "kind": "subject",
+   "subject": "Maria",
+   "attribute": "",
+   "found_subject": "Maria",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Kofi?",
+   "kind": "subject",
+   "subject": "Kofi",
+   "attribute": "",
+   "found_subject": "Kofi",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Lisa?",
+   "kind": "subject",
+   "subject": "Lisa",
+   "attribute": "",
+   "found_subject": "Lisa",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Nadia?",
+   "kind": "subject",
+   "subject": "Nadia",
+   "attribute": "",
+   "found_subject": "Nadia",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Tomas?",
+   "kind": "subject",
+   "subject": "Tomas",
+   "attribute": "",
+   "found_subject": "Tomas",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Ingrid?",
+   "kind": "subject",
+   "subject": "Ingrid",
+   "attribute": "",
+   "found_subject": "Ingrid",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Rafael?",
+   "kind": "subject",
+   "subject": "Rafael",
+   "attribute": "",
+   "found_subject": "Rafael",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Yuki?",
+   "kind": "subject",
+   "subject": "Yuki",
+   "attribute": "",
+   "found_subject": "Yuki",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Hassan?",
+   "kind": "subject",
+   "subject": "Hassan",
+   "attribute": "",
+   "found_subject": "Hassan",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Petra?",
+   "kind": "subject",
+   "subject": "Petra",
+   "attribute": "",
+   "found_subject": "Petra",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Emeka?",
+   "kind": "subject",
+   "subject": "Emeka",
+   "attribute": "",
+   "found_subject": "Emeka",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Sofia?",
+   "kind": "subject",
+   "subject": "Sofia",
+   "attribute": "",
+   "found_subject": "Sofia",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Anders?",
+   "kind": "subject",
+   "subject": "Anders",
+   "attribute": "",
+   "found_subject": "Anders",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Leila?",
+   "kind": "subject",
+   "subject": "Leila",
+   "attribute": "",
+   "found_subject": "Leila",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Bruno?",
+   "kind": "subject",
+   "subject": "Bruno",
+   "attribute": "",
+   "found_subject": "Bruno",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Chiara?",
+   "kind": "subject",
+   "subject": "Chiara",
+   "attribute": "",
+   "found_subject": "Chiara",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Dmitri?",
+   "kind": "subject",
+   "subject": "Dmitri",
+   "attribute": "",
+   "found_subject": "Dmitri",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Esther?",
+   "kind": "subject",
+   "subject": "Esther",
+   "attribute": "",
+   "found_subject": "Esther",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Farid?",
+   "kind": "subject",
+   "subject": "Farid",
+   "attribute": "",
+   "found_subject": "Farid",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Greta?",
+   "kind": "subject",
+   "subject": "Greta",
+   "attribute": "",
+   "found_subject": "Greta",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Hugo?",
+   "kind": "subject",
+   "subject": "Hugo",
+   "attribute": "",
+   "found_subject": "Hugo",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Iris?",
+   "kind": "subject",
+   "subject": "Iris",
+   "attribute": "",
+   "found_subject": "Iris",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Jonas?",
+   "kind": "subject",
+   "subject": "Jonas",
+   "attribute": "",
+   "found_subject": "Jonas",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Karin?",
+   "kind": "subject",
+   "subject": "Karin",
+   "attribute": "",
+   "found_subject": "Karin",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Luca?",
+   "kind": "subject",
+   "subject": "Luca",
+   "attribute": "",
+   "found_subject": "Luca",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Mateo?",
+   "kind": "subject",
+   "subject": "Mateo",
+   "attribute": "",
+   "found_subject": "Mateo",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Noor?",
+   "kind": "subject",
+   "subject": "Noor",
+   "attribute": "",
+   "found_subject": "Noor",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Olga?",
+   "kind": "subject",
+   "subject": "Olga",
+   "attribute": "",
+   "found_subject": "Olga",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Pablo?",
+   "kind": "subject",
+   "subject": "Pablo",
+   "attribute": "",
+   "found_subject": "Pablo",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Quinn?",
+   "kind": "subject",
+   "subject": "Quinn",
+   "attribute": "",
+   "found_subject": "Quinn",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Rosa?",
+   "kind": "subject",
+   "subject": "Rosa",
+   "attribute": "",
+   "found_subject": "Rosa",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Stefan?",
+   "kind": "subject",
+   "subject": "Stefan",
+   "attribute": "",
+   "found_subject": "Stefan",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Tariq?",
+   "kind": "subject",
+   "subject": "Tariq",
+   "attribute": "",
+   "found_subject": "Tariq",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Ulla?",
+   "kind": "subject",
+   "subject": "Ulla",
+   "attribute": "",
+   "found_subject": "Ulla",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Viktor?",
+   "kind": "subject",
+   "subject": "Viktor",
+   "attribute": "",
+   "found_subject": "Viktor",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Wanda?",
+   "kind": "subject",
+   "subject": "Wanda",
+   "attribute": "",
+   "found_subject": "Wanda",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Xavier?",
+   "kind": "subject",
+   "subject": "Xavier",
+   "attribute": "",
+   "found_subject": "Xavier",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Yara?",
+   "kind": "subject",
+   "subject": "Yara",
+   "attribute": "",
+   "found_subject": "Yara",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Zoltan?",
+   "kind": "subject",
+   "subject": "Zoltan",
+   "attribute": "",
+   "found_subject": "Zoltan",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Amara?",
+   "kind": "subject",
+   "subject": "Amara",
+   "attribute": "",
+   "found_subject": "Amara",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Bjorn?",
+   "kind": "subject",
+   "subject": "Bjorn",
+   "attribute": "",
+   "found_subject": "Bjorn",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Celia?",
+   "kind": "subject",
+   "subject": "Celia",
+   "attribute": "",
+   "found_subject": "Celia",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Dario?",
+   "kind": "subject",
+   "subject": "Dario",
+   "attribute": "",
+   "found_subject": "Dario",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Elif?",
+   "kind": "subject",
+   "subject": "Elif",
+   "attribute": "",
+   "found_subject": "Elif",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Fabio?",
+   "kind": "subject",
+   "subject": "Fabio",
+   "attribute": "",
+   "found_subject": "Fabio",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Gunnar?",
+   "kind": "subject",
+   "subject": "Gunnar",
+   "attribute": "",
+   "found_subject": "Gunnar",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Helena?",
+   "kind": "subject",
+   "subject": "Helena",
+   "attribute": "",
+   "found_subject": "Helena",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Idris?",
+   "kind": "subject",
+   "subject": "Idris",
+   "attribute": "",
+   "found_subject": "Idris",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Jana?",
+   "kind": "subject",
+   "subject": "Jana",
+   "attribute": "",
+   "found_subject": "Jana",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Kasper?",
+   "kind": "subject",
+   "subject": "Kasper",
+   "attribute": "",
+   "found_subject": "Kasper",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Linnea?",
+   "kind": "subject",
+   "subject": "Linnea",
+   "attribute": "",
+   "found_subject": "Linnea",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Milos?",
+   "kind": "subject",
+   "subject": "Milos",
+   "attribute": "",
+   "found_subject": "Milos",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Nuria?",
+   "kind": "subject",
+   "subject": "Nuria",
+   "attribute": "",
+   "found_subject": "Nuria",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Oskar?",
+   "kind": "subject",
+   "subject": "Oskar",
+   "attribute": "",
+   "found_subject": "Oskar",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Priya?",
+   "kind": "subject",
+   "subject": "Priya",
+   "attribute": "",
+   "found_subject": "Priya",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Rania?",
+   "kind": "subject",
+   "subject": "Rania",
+   "attribute": "",
+   "found_subject": "Rania",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Sanjay?",
+   "kind": "subject",
+   "subject": "Sanjay",
+   "attribute": "",
+   "found_subject": "Sanjay",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Tereza?",
+   "kind": "subject",
+   "subject": "Tereza",
+   "attribute": "",
+   "found_subject": "Tereza",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Ursula?",
+   "kind": "subject",
+   "subject": "Ursula",
+   "attribute": "",
+   "found_subject": "Ursula",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Vasco?",
+   "kind": "subject",
+   "subject": "Vasco",
+   "attribute": "",
+   "found_subject": "Vasco",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Wilma?",
+   "kind": "subject",
+   "subject": "Wilma",
+   "attribute": "",
+   "found_subject": "Wilma",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Yannis?",
+   "kind": "subject",
+   "subject": "Yannis",
+   "attribute": "",
+   "found_subject": "Yannis",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Zara?",
+   "kind": "subject",
+   "subject": "Zara",
+   "attribute": "",
+   "found_subject": "Zara",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Andrei?",
+   "kind": "subject",
+   "subject": "Andrei",
+   "attribute": "",
+   "found_subject": "Andrei",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Beatriz?",
+   "kind": "subject",
+   "subject": "Beatriz",
+   "attribute": "",
+   "found_subject": "Beatriz",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Cato?",
+   "kind": "subject",
+   "subject": "Cato",
+   "attribute": "",
+   "found_subject": "Cato",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Dora?",
+   "kind": "subject",
+   "subject": "Dora",
+   "attribute": "",
+   "found_subject": "Dora",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Erol?",
+   "kind": "subject",
+   "subject": "Erol",
+   "attribute": "",
+   "found_subject": "Erol",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Freya?",
+   "kind": "subject",
+   "subject": "Freya",
+   "attribute": "",
+   "found_subject": "Freya",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Goran?",
+   "kind": "subject",
+   "subject": "Goran",
+   "attribute": "",
+   "found_subject": "Goran",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Halima?",
+   "kind": "subject",
+   "subject": "Halima",
+   "attribute": "",
+   "found_subject": "Halima",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Ivo?",
+   "kind": "subject",
+   "subject": "Ivo",
+   "attribute": "",
+   "found_subject": "Ivo",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Josefa?",
+   "kind": "subject",
+   "subject": "Josefa",
+   "attribute": "",
+   "found_subject": "Josefa",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Kwame?",
+   "kind": "subject",
+   "subject": "Kwame",
+   "attribute": "",
+   "found_subject": "Kwame",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Lorna?",
+   "kind": "subject",
+   "subject": "Lorna",
+   "attribute": "",
+   "found_subject": "Lorna",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Magnus?",
+   "kind": "subject",
+   "subject": "Magnus",
+   "attribute": "",
+   "found_subject": "Magnus",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Nikos?",
+   "kind": "subject",
+   "subject": "Nikos",
+   "attribute": "",
+   "found_subject": "Nikos",
+   "found_attribute": ""
+  },
+  {
+   "question": "What do you know about Orla?",
+   "kind": "subject",
+   "subject": "Orla",
+   "attribute": "",
+   "found_subject": "Orla",
+   "found_attribute": ""
+  }
+ ]
+}

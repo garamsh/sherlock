@@ -251,7 +251,7 @@ func ask(ctx context.Context, frame Frame, w Workload, year int, arm string,
 		probes  []ProbeResult
 		carried [][]string
 	)
-	bySubject := liveBySubject(w, year)
+	bySubject, _ := subjectTruth(w, year)
 	for _, thread := range w.Threads {
 		if !thread.ProbedAt(year) {
 			continue

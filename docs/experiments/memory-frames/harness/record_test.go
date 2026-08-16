@@ -29,9 +29,9 @@ func TestRenderTables_LeavesTheCommittedRecordUnchanged(t *testing.T) {
 }
 
 // committedRun is every committed result the record renders from. The
-// constrained runs and the conversation shapes each ask a different
-// question of a different workload and are their own files, so reading one
-// of them is reading a third of the record.
+// constrained runs, the conversation shapes and the finding study each ask
+// a different question and are their own files, so reading one of them is
+// reading a part of the record.
 func committedRun(t *testing.T) Run {
 	t.Helper()
 	body, err := os.ReadFile(filepath.Join("..", "results", "decade_seed7.json"))
@@ -46,6 +46,9 @@ func committedRun(t *testing.T) Run {
 	shapes, err := os.ReadFile(filepath.Join("..", "results", "harder_seed7.json"))
 	require.NoError(t, err)
 	require.NoError(t, json.Unmarshal(shapes, &result.Shapes))
+
+	finding := committedFinding(t)
+	result.Finding = &finding
 	return result
 }
 

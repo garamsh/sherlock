@@ -36,6 +36,7 @@ const (
 	regionReach       = "reach"
 	regionConstraint  = "constraint"
 	regionLanguage    = "language"
+	regionFinding     = "finding"
 	regionCost        = "cost"
 )
 
@@ -51,43 +52,57 @@ type Section struct {
 // return.
 const notApplicable = "n/a"
 
-// renderRecord rewrites the record's generated block from a committed
-// result file.
-func renderRecord(resultPath, constrainedPath, shapePath, recordPath string) error {
-	body, err := os.ReadFile(resultPath)
+// renderRecord rewrites the record's generated block from the committed
+// result files.
+func renderRecord(files runFiles) error {
+	body, err := os.ReadFile(files.decade)
 	if err != nil {
-		return fmt.Errorf("read %s: %w", resultPath, err)
+		return fmt.Errorf("read %s: %w", files.decade, err)
 	}
 	var result Run
 	if err := json.Unmarshal(body, &result); err != nil {
-		return fmt.Errorf("decode %s: %w", resultPath, err)
+		return fmt.Errorf("decode %s: %w", files.decade, err)
 	}
-	constrained, err := os.ReadFile(constrainedPath)
-	if err == nil {
-		if err := json.Unmarshal(constrained, &result.Constrained); err != nil {
-			return fmt.Errorf("decode %s: %w", constrainedPath, err)
-		}
-	} else if !os.IsNotExist(err) {
-		return fmt.Errorf("read %s: %w", constrainedPath, err)
+	if err := readStudy(files.constrained, &result.Constrained); err != nil {
+		return err
 	}
-	shapes, err := os.ReadFile(shapePath)
-	if err == nil {
-		if err := json.Unmarshal(shapes, &result.Shapes); err != nil {
-			return fmt.Errorf("decode %s: %w", shapePath, err)
-		}
-	} else if !os.IsNotExist(err) {
-		return fmt.Errorf("read %s: %w", shapePath, err)
+	if err := readStudy(files.shapes, &result.Shapes); err != nil {
+		return err
 	}
-	record, err := os.ReadFile(recordPath)
+	var finding FindingStudy
+	if err := readStudy(files.finding, &finding); err != nil {
+		return err
+	}
+	if len(finding.Frames) > 0 {
+		result.Finding = &finding
+	}
+	record, err := os.ReadFile(files.record)
 	if err != nil {
-		return fmt.Errorf("read %s: %w", recordPath, err)
+		return fmt.Errorf("read %s: %w", files.record, err)
 	}
 	rewritten, err := Replace(string(record), RenderTables(result))
 	if err != nil {
-		return fmt.Errorf("%s: %w", recordPath, err)
+		return fmt.Errorf("%s: %w", files.record, err)
 	}
-	if err := os.WriteFile(recordPath, []byte(rewritten), 0o644); err != nil {
-		return fmt.Errorf("write %s: %w", recordPath, err)
+	if err := os.WriteFile(files.record, []byte(rewritten), 0o644); err != nil {
+		return fmt.Errorf("write %s: %w", files.record, err)
+	}
+	return nil
+}
+
+// readStudy reads one study's committed file into the run. A study that has
+// not been run has no file, and the tables it feeds are left out rather
+// than rendered empty.
+func readStudy(path string, into any) error {
+	body, err := os.ReadFile(path)
+	if os.IsNotExist(err) {
+		return nil
+	}
+	if err != nil {
+		return fmt.Errorf("read %s: %w", path, err)
+	}
+	if err := json.Unmarshal(body, into); err != nil {
+		return fmt.Errorf("decode %s: %w", path, err)
 	}
 	return nil
 }
@@ -155,6 +170,7 @@ func RenderTables(r Run) []Section {
 		section(regionReach, r, renderReach, renderCoupling, renderCapacity),
 		section(regionConstraint, r, renderBounds, renderRules, renderBudgets),
 		section(regionLanguage, r, renderLanguage, renderExtraction, renderShapes),
+		section(regionFinding, r, renderFinding),
 		section(regionCost, r, renderCost, renderPaid),
 	}
 }
@@ -612,6 +628,18 @@ func renderPaid(b *strings.Builder, r Run) {
 			[2]any{"call bound reading refuses to pass", extractCallLimit},
 			[2]any{"cost bound reading refuses to pass, USD", fmt.Sprintf("%.2f", extractCostLimit)})
 	}
+	if r.Finding != nil && r.Finding.Resolution != nil {
+		q := r.Finding.Resolution
+		total += q.CostUSD
+		rows = append(rows,
+			[2]any{"paid calls, resolving", q.Calls},
+			[2]any{"questions resolved", q.Asked},
+			[2]any{"prompt tokens, resolving", q.PromptTokens},
+			[2]any{"completion tokens, resolving", q.CompletionTokens},
+			[2]any{"cost of resolving, USD", fmt.Sprintf("%.4f", q.CostUSD)},
+			[2]any{"call bound resolving refuses to pass", resolveCallLimit},
+			[2]any{"cost bound resolving refuses to pass, USD", fmt.Sprintf("%.2f", resolveCostLimit)})
+	}
 	if len(rows) == 0 {
 		fmt.Fprintf(b, "| quantity | value |\n|---|---|\n| paid calls | 0 |\n")
 		fmt.Fprintln(b)
@@ -895,6 +923,129 @@ func renderShapes(b *strings.Builder, r Run) {
 				s.Shape, f.Arm, f.Frame, figure(y.Recall), strings.Join(classCells(y), " | "),
 				figure(y.Stale), units)
 		}
+	}
+	fmt.Fprintln(b)
+}
+
+// renderFinding is every frame on the finding half: the same decade
+// workload, asked in a run where a question carries an address only where
+// the form supplies one.
+//
+// It reports the last year of each run. Three forms across two arms and
+// every frame is already a long table, and a year column would multiply it
+// by the span for a question that is about the question rather than about
+// time.
+func renderFinding(b *strings.Builder, r Run) {
+	if r.Finding == nil {
+		return
+	}
+	fmt.Fprintf(b, "### What each frame found when the question arrived as words\n\n")
+	fmt.Fprintf(b, "| question | arm | frame | recall | %s | stale returned | units read |\n",
+		strings.Join(classNames, " | "))
+	fmt.Fprintf(b, "|---|---|---|---|%s---|---|\n", strings.Repeat("---|", len(classNames)))
+	for _, f := range findingRows(r.Finding.Frames) {
+		if len(f.Years) == 0 {
+			continue
+		}
+		y := f.Years[len(f.Years)-1]
+		fmt.Fprintf(b, "| `%s` | `%s` | `%s` | %s | %s | %s | %s |\n",
+			f.Question, f.Arm, f.Frame, figure(y.Recall), strings.Join(classCells(y), " | "),
+			figure(y.Stale), figureAt(y.Scanned, 1))
+	}
+	fmt.Fprintln(b)
+
+	fmt.Fprintf(b, "### What a question about a whole person returned\n\n")
+	fmt.Fprintf(b, "| question | arm | frame | subjects asked | addresses spanned | recall | stale returned | context chars | of the budget | units read | inside the budget |\n")
+	fmt.Fprintf(b, "|---|---|---|---|---|---|---|---|---|---|---|\n")
+	for _, f := range findingRows(r.Finding.Frames) {
+		if len(f.Subjects) == 0 {
+			continue
+		}
+		s := f.Subjects[len(f.Subjects)-1]
+		fmt.Fprintf(b, "| `%s` | `%s` | `%s` | %d | %s | %s | %s | %s | %s | %s | %s |\n",
+			f.Question, f.Arm, f.Frame, s.Asked, figureAt(s.Addresses, 2), figure(s.Recall),
+			figure(s.Stale), figureAt(s.ContextChars, 1), figure(perBudget(s.ContextChars, f.Budget)),
+			figureAt(s.Scanned, 1), figure(s.Fits))
+	}
+	fmt.Fprintln(b)
+
+	if len(r.Finding.Budgets) > 0 {
+		fmt.Fprintf(b, "### What a multi-address answer does as the budget narrows\n\n")
+		fmt.Fprintf(b, "| frame | budget, tokens | recall | context chars | of the budget | inside the budget |\n")
+		fmt.Fprintf(b, "|---|---|---|---|---|---|\n")
+		for _, f := range r.Finding.Budgets {
+			if len(f.Subjects) == 0 {
+				continue
+			}
+			s := f.Subjects[len(f.Subjects)-1]
+			fmt.Fprintf(b, "| `%s` | %d | %s | %s | %s | %s |\n", f.Frame, f.Budget,
+				figure(s.Recall), figureAt(s.ContextChars, 1),
+				figure(perBudget(s.ContextChars, f.Budget)), figure(s.Fits))
+		}
+		fmt.Fprintln(b)
+	}
+
+	renderResolution(b, r.Finding.Resolution)
+}
+
+// perBudget is an answer's size as a multiple of the read budget it was
+// produced under. The budget is a constant of the row, so dividing scales
+// the mean and the interval alike and no figure is invented by it.
+//
+// It is beside the share that fits rather than instead of it, because that
+// share is a threshold: the shipped store bounds its own answer with a
+// per-row token estimate that rounds down, so its answers run a few per
+// cent past the budget in characters and the share reads zero for a reason
+// that has nothing to do with how much it found.
+func perBudget(f Figure, budget int) Figure {
+	chars := float64(budgetChars(budget))
+	return Figure{Mean: f.Mean / chars, Half: f.Half / chars, N: f.N}
+}
+
+// findingRows orders the finding study's rows by the axis under test: the
+// form the question arrived in first, then the arm, then the frame.
+func findingRows(frames []FindingFrame) []FindingFrame {
+	out := make([]FindingFrame, 0, len(frames))
+	for _, form := range questionForms {
+		for _, arm := range armNames {
+			for _, f := range frames {
+				if f.Question == form && f.Arm == arm {
+					out = append(out, f)
+				}
+			}
+		}
+	}
+	return out
+}
+
+// renderResolution is what a model made of a question, and the ways it
+// failed reported apart from one another.
+func renderResolution(b *strings.Builder, score *ResolutionScore) {
+	if score == nil {
+		return
+	}
+	fmt.Fprintf(b, "### What a model read out of a question\n\n")
+	fmt.Fprintf(b, "| quantity | value |\n|---|---|\n")
+	rows := [][2]any{
+		{"model", score.Model},
+		{"questions asked", score.Asked},
+		{"placed at the right address", score.Correct},
+		{"placed on the wrong subject", score.WrongSubject},
+		{"placed on the right subject and the wrong attribute", score.WrongAttribute},
+		{"not placed at all", score.Unplaced},
+		{"placed correctly, rate", figure(score.CorrectRate)},
+		{"wrong subject, rate", figure(score.WrongSubjectRate)},
+		{"wrong attribute, rate", figure(score.WrongAttrRate)},
+		{"not placed, rate", figure(score.UnplacedRate)},
+	}
+	for _, row := range rows {
+		fmt.Fprintf(b, "| %s | %v |\n", row[0], row[1])
+	}
+	fmt.Fprintln(b)
+
+	fmt.Fprintf(b, "| question | asked | placed correctly |\n|---|---|---|\n")
+	for _, cut := range score.Kinds {
+		fmt.Fprintf(b, "| `%s` | %d | %s |\n", cut.Name, cut.Asked, figure(cut.Accuracy))
 	}
 	fmt.Fprintln(b)
 }

@@ -447,12 +447,20 @@ func turnTime(day, index int) time.Time {
 // last session of its year and observes nothing: a frame is read at a
 // checkpoint, never written to.
 func Checkpoint(year int, thread Thread) Turn {
-	day := year*daysPerYear - 1
 	address := Address{Subject: thread.Subject, Attribute: thread.Attribute}
+	turn := CheckpointAt(year, thread.Question)
+	turn.Ask = &address
+	return turn
+}
+
+// CheckpointAt is where in the calendar a year's questions stand. Every
+// question of a year is asked at the same moment, whatever it asks about,
+// so the answers to two of them are answers from one store.
+func CheckpointAt(year int, question string) Turn {
+	day := year*daysPerYear - 1
 	return Turn{
 		Day:  day,
 		At:   start.AddDate(0, 0, day).Add(11 * time.Hour),
-		Text: thread.Question,
-		Ask:  &address,
+		Text: question,
 	}
 }

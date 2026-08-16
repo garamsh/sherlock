@@ -82,17 +82,6 @@ func isValueRune(r rune) bool {
 	return r >= 'a' && r <= 'z' || r >= '0' && r <= '9' || r == '-'
 }
 
-// liveBySubject is every value true at one year, grouped by the subject it
-// belongs to. It is the relation the reach figures are measured against.
-func liveBySubject(w Workload, year int) map[string][]string {
-	out := map[string][]string{}
-	for _, thread := range w.Threads {
-		live, _ := thread.TruthAt(year)
-		out[thread.Subject] = append(out[thread.Subject], live...)
-	}
-	return out
-}
-
 // neededAfter is every value some checkpoint after the given year still
 // requires. Forgetting anything in this set costs recall; forgetting
 // anything outside it costs nothing any measurement here can detect.

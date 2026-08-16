@@ -1,7 +1,7 @@
 # ADR 0008: Agent-influenced sub-processes run dropped to the unprivileged UID
 
 > Status: accepted
-> Date: 2026-07-30 (revised in place 2026-08-13)
+> Date: 2026-07-30 (revised in place 2026-08-13; 2026-08-16)
 
 ## Context
 
@@ -20,6 +20,7 @@ Mechanism:
 - The child cannot reach the agent's memory or the platform's runtime material — kernel DAC either way. In single-account mode this one axis intentionally does not hold — the child shares the workspace's account; the remaining axes (scrubbed environment, resource limits, optional network isolation) are unchanged.
 - The child has a configurable timeout; on expiry it is SIGKILLed and the result carries `timed_out: true` — a normal outcome crossing the wire, not an RPC error.
 - When the platform cannot run the child as the configured account, the executor reports `agent_uid unavailable` instead of silently upgrading.
+- When the platform cannot apply one of the child's resource limits, the executor fails the call instead of running the child uncapped.
 
 Threat model (honest):
 

@@ -1,0 +1,54 @@
+{
+  "seed": 11,
+  "turns": 645,
+  "probes": 204,
+  "probe_kinds": {
+    "corrected": 100,
+    "control": 40,
+    "coexist": 64
+  },
+  "row": {
+    "system": "B3-decider-neighbors",
+    "blurb": "decider sees the retrieved neighbours of the incoming message",
+    "extra_calls": 1.0,
+    "decider_calls": 645,
+    "items": 411,
+    "elapsed_s": 373.7,
+    "latest_wins": 0.67,
+    "control_survival": 0.95,
+    "coexist_preserved": 0.8229,
+    "stale_present": 0.3,
+    "net": 0.8143,
+    "control_never_written": 0.0,
+    "control_retired": 0.0,
+    "control_not_ranked": 0.05,
+    "coexist_never_written": 0.0,
+    "coexist_retired": 0.1736,
+    "coexist_not_ranked": 0.0069,
+    "coexist_by_family": {
+      "allergy": 1.0,
+      "certification": 1.0,
+      "committee": 0.875,
+      "craft": 0.6875,
+      "cuisine": 0.75,
+      "garden": 1.0,
+      "instrument": 0.5833,
+      "volunteer": 0.6875
+    },
+    "outcomes": {
+      "corrected:recalled": 92,
+      "corrected:not_ranked": 6,
+      "corrected:retired": 2,
+      "control:recalled": 38,
+      "control:not_ranked": 2,
+      "coexist:recalled": 118,
+      "coexist:retired": 25,
+      "coexist:not_ranked": 1
+    }
+  },
+  "api_calls": {
+    "embed": 12,
+    "chat": 510,
+    "chat_cached": 135
+  }
+}

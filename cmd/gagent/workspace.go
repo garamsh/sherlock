@@ -144,7 +144,7 @@ func serveWorkspace(ctx context.Context, cfg WorkspaceConfig) error {
 	if err != nil {
 		return err
 	}
-	if err := files.SecureWorkspace(workspaceFS.Root(), cfg.ExecUID); err != nil {
+	if err := workspaceFS.HandOver(cfg.ExecUID); err != nil {
 		return err
 	}
 

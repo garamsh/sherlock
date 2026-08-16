@@ -107,14 +107,69 @@ func TestFS_ReadMissingFile(t *testing.T) {
 	assert.NotErrorIs(t, err, files.ErrOutsideWorkspace)
 }
 
-// TestSecureWorkspace_UnprivilegedServerSkipsChown pins the
-// single-account posture: a server that is not root owns the workspace
-// directory itself, so the chown to the exec UID is a no-op. The
-// privileged path needs euid 0 and is exercised by deployments, not
-// unit tests.
-func TestSecureWorkspace_UnprivilegedServerSkipsChown(t *testing.T) {
+// TestFS_HandOverUnprivilegedServerSkipsChown pins the single-account
+// posture: a server that is not root owns the workspace directory
+// itself, so handing it to the exec UID is a no-op and the directory
+// keeps the mode a sole owner needs. The privileged path needs euid 0
+// and is exercised by deployments, not unit tests.
+func TestFS_HandOverUnprivilegedServerSkipsChown(t *testing.T) {
 	if os.Geteuid() == 0 {
 		t.Skip("test asserts the unprivileged no-op path")
 	}
-	require.NoError(t, files.SecureWorkspace(t.TempDir(), 1001))
+	root := t.TempDir()
+	fs, err := files.Open(root)
+	require.NoError(t, err)
+	before, err := os.Stat(root)
+	require.NoError(t, err)
+
+	require.NoError(t, fs.HandOver(1001))
+
+	after, err := os.Stat(root)
+	require.NoError(t, err)
+	assert.Equal(t, before.Mode().Perm(), after.Mode().Perm(),
+		"a workspace the process owns keeps its mode: no owner to share the directory with")
+}
+
+// TestFS_WriteReplacesAFileItCannotOpen pins the property the exec
+// account needs from the gRPC write path: the file it replaces may
+// belong to another account, so the write goes through a rename, which
+// needs the directory's write bit rather than the file's. An unwritable
+// file stands in for the exec account's here — the ownership case needs
+// two accounts and is exercised by deployments.
+func TestFS_WriteReplacesAFileItCannotOpen(t *testing.T) {
+	if os.Geteuid() == 0 {
+		t.Skip("root opens a 0444 file for writing, so the case cannot be staged")
+	}
+	root := t.TempDir()
+	fs, err := files.Open(root)
+	require.NoError(t, err)
+	require.NoError(t, os.WriteFile(filepath.Join(root, "note.txt"), []byte("first\n"), 0o444))
+
+	require.NoError(t, fs.Write("note.txt", []byte("second\n")))
+
+	content, err := fs.Read("note.txt")
+	require.NoError(t, err)
+	assert.Equal(t, "second\n", string(content))
+	info, err := os.Stat(filepath.Join(root, "note.txt"))
+	require.NoError(t, err)
+	assert.Equal(t, os.FileMode(0o644), info.Mode().Perm(),
+		"the replacement carries the documented file mode")
+}
+
+// TestFS_WriteCreatesParentsAtTheDirectoryMode pins what a nested write
+// leaves behind: the parents it creates carry the same mode as the
+// workspace root, so a directory the gRPC contract created is one exec'd
+// children can write in too.
+func TestFS_WriteCreatesParentsAtTheDirectoryMode(t *testing.T) {
+	root := t.TempDir()
+	fs, err := files.Open(root)
+	require.NoError(t, err)
+
+	require.NoError(t, fs.Write(filepath.Join("sub", "deeper", "note.txt"), []byte("hi\n")))
+
+	for _, dir := range []string{"sub", filepath.Join("sub", "deeper")} {
+		info, err := os.Stat(filepath.Join(root, dir))
+		require.NoError(t, err)
+		assert.Equal(t, os.FileMode(0o755), info.Mode().Perm(), dir)
+	}
 }

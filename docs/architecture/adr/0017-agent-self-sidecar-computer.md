@@ -14,8 +14,6 @@ The single-container record itself anticipated this move: "The pod/sidecar topol
 
 The follow-up #249/#250 work added a gRPC computer contract that bundled filesystem and process exec behind one service. The sidecar's tool-hosting role was removed and process exec was settled on the workspace: the workspace is the computer (filesystem + exec), the agent executes nothing, and the plugin concept was dropped in favor of tools-as-packages imported at compile time.
 
-The follow-up #255 work closed the tools-as-packages loop: `tools/files`, `tools/playwright`, `tools/shell_exec` were in-process Go packages; the gRPC workspace client was the boundary tools use to reach the workspace; the tool contract was described as an agent-facing wire protocol (`ListTools`/`Call`) even though the in-process implementation short-circuited it.
-
 The remaining pressure on the tools-as-packages shape was threefold:
 
 - **Contribution friction.** Every contribution requires a Go import and a rebuild of the platform binary; the agent binary is no longer the right unit of evolution for capabilities.

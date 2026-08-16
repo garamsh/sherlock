@@ -15,12 +15,12 @@ What round 5 changes in the memory-creation dataset and scoring, and what it hol
 Three bullets in the experiment record's Limits section describe one defect in the coexist column:
 
 - The coexist set does not vary with the seed: 12 probes and the 28 fact turns behind them are identical under every seed, so a structure scored on two seeds is one coexist measurement reported twice.
-- One family holds 12 of the 28 values, so a single prompt example moves the column by 0.43, and one probe is 8.3% of a column that carries a third of `net`.
+- One family holds 12 of the 28 values, carried by 4 of the 12 probes, so a single prompt example moves the column by 0.33, and one probe is 8.3% of a column that carries a third of `net`.
 - That column is also the noisiest in the round — 0.167 of it moved between two seeds on identical data.
 
 At 64 probes one probe is 1.6% of the column and one family 12.5%, and the sampling error the record computes for `net` falls from ±0.083 to ±0.047 (`harness/round4/precision.py` holds the formula and the counts it assumes).
 
-A fourth bullet is answered by the match rule: a value credited on a substring is credited from rows that state nothing, which cost 2 credits under B9 and 3 each under B14 and B17 on seed 7. That is inside round 4's interval and outside the one round 5 aims at.
+A fourth bullet is answered by the match rule: a value credited on a substring is credited from rows that state nothing, which cost 2 credits under B9, 2 under B14 and 3 under B17 on seed 7. That is inside round 4's interval and outside the one round 5 aims at.
 
 ## What stays fixed
 

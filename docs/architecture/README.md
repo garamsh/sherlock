@@ -51,6 +51,7 @@ One pod per agent, two containers (ADR 0017): the agent container is the agent's
 - `0015` — the turn drains the queue
 - `0016` — the identity is the agent ID
 - `0017` — the agent is the self; the workspace is the data plane; tools are scripts with manifests (pod-per-agent)
+- `0018` — a fact is held at the address of the question it answers, and the write states the operation
 
 ### Modules
 

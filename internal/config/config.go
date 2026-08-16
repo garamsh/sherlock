@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"errors"
@@ -9,7 +9,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 
@@ -139,20 +138,34 @@ type ModelConfig struct {
 	Timeout time.Duration `mapstructure:"timeout"`
 }
 
-// addConfigFlags registers the settings shared by every subcommand as
-// flags on fs. viper resolves the effective value, so these defaults are
-// the fallback layer.
-func addConfigFlags(fs *pflag.FlagSet) {
+// AddSharedFlags registers the flags every subcommand resolves through,
+// on fs. The flag layer is the top of this package's precedence, so the
+// flags it reads are registered here rather than at the call site: a
+// resolution the caller can only reach with the right flag set is one
+// the caller can get wrong.
+func AddSharedFlags(fs *pflag.FlagSet) {
 	fs.String("config", "", "config file path (default: ./gagent.yaml, ./workspace.yaml for the workspace, then the XDG config dir)")
 }
 
-// resolveConfig builds the effective Config for cmd using viper's built-in
-// precedence: flags > GAGENT_* environment variables > config file >
-// defaults. The config file resolves via --config <path>, then
+// AddAgentFlags registers the agent's settings as flags on fs. The
+// agent subcommand's own inputs — which agent to serve, the one-shot
+// message — are not settings and stay with the command.
+func AddAgentFlags(fs *pflag.FlagSet) {
+	fs.String("addr", defaultAddr, "HTTP listen address")
+	fs.String("memory-path", defaultMemoryPath, "SQLite memory file (created on first use)")
+	fs.String("workspace-addr", defaultWorkspaceAddr,
+		"gRPC endpoint of the agent's workspace (the data plane the tools call)")
+	fs.String("ego-file", "",
+		"ego file for the agent's instructions (default: embedded EGO.md)")
+}
+
+// Resolve builds the agent's effective Config from fs using viper's
+// built-in precedence: flags > GAGENT_* environment variables > config
+// file > defaults. The config file resolves via --config <path>, then
 // ./gagent.yaml, then os.UserConfigDir()/gagent/config.yaml (XDG;
 // ~/.config/gagent/config.yaml on Linux). A missing file is an error only
 // when --config named it explicitly.
-func resolveConfig(cmd *cobra.Command) (Config, error) {
+func Resolve(fs *pflag.FlagSet) (Config, error) {
 	v := newConfigViper()
 	v.SetDefault("addr", defaultAddr)
 	v.SetDefault("memory-path", defaultMemoryPath)
@@ -174,10 +187,10 @@ func resolveConfig(cmd *cobra.Command) (Config, error) {
 	v.SetDefault("tls.key", "")
 	v.SetDefault("tls.client-ca", "")
 	v.SetDefault("console.url", "")
-	if err := v.BindPFlags(cmd.Flags()); err != nil {
+	if err := v.BindPFlags(fs); err != nil {
 		return Config{}, err
 	}
-	configFile, err := cmd.Flags().GetString("config")
+	configFile, err := fs.GetString("config")
 	if err != nil {
 		return Config{}, err
 	}

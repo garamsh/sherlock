@@ -1,20 +1,18 @@
-package main
+package config
 
 import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
-	"net"
-	"net/netip"
 	"os"
 	"strings"
 )
 
-// serverTLSConfig resolves the gateway's TLS setup (ADR 0012): a nil
+// ServerTLS resolves the gateway's TLS setup (ADR 0012): a nil
 // config means plain HTTP, a non-nil config serves HTTPS with client
 // certificates required and verified against the client CA. A partial
 // tls: section is a startup error naming the missing paths.
-func serverTLSConfig(cfg TLSConfig) (*tls.Config, error) {
+func ServerTLS(cfg TLSConfig) (*tls.Config, error) {
 	if cfg.Cert == "" && cfg.Key == "" && cfg.ClientCA == "" {
 		return nil, nil
 	}
@@ -66,19 +64,4 @@ func checkServerKeyMode(path string) error {
 		return fmt.Errorf("tls: server key %q is group- or other-accessible (mode %04o); it must be owner-only (e.g. 0600 or 0400)", path, perm)
 	}
 	return nil
-}
-
-// isLoopbackAddr reports whether addr binds loopback only. The wildcard
-// form (":8080", "0.0.0.0:8080") binds every interface and is not
-// loopback; an unparseable address fails safe as non-loopback.
-func isLoopbackAddr(addr string) bool {
-	host, _, err := net.SplitHostPort(addr)
-	if err != nil {
-		return false
-	}
-	if strings.EqualFold(host, "localhost") {
-		return true
-	}
-	ip, err := netip.ParseAddr(host)
-	return err == nil && ip.IsLoopback()
 }

@@ -6,13 +6,14 @@ import (
 
 	"github.com/garamsh/gagent/internal/agent"
 	"github.com/garamsh/gagent/internal/agent/openai"
+	"github.com/garamsh/gagent/internal/config"
 )
 
 // newModelFunc resolves the model config into the Factory.NewModel wiring:
 // mock keeps the scripted placeholder; openai builds a real client. A
 // missing or empty API key environment variable fails fast here, at
 // startup, instead of mid-turn.
-func newModelFunc(cfg ModelConfig) (func(agentID string) agent.Model, error) {
+func newModelFunc(cfg config.ModelConfig) (func(agentID string) agent.Model, error) {
 	switch cfg.Provider {
 	case "mock":
 		return mockModel, nil

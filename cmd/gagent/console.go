@@ -9,6 +9,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/garamsh/gagent/internal/config"
 	"github.com/garamsh/gagent/internal/gateway"
 	"github.com/garamsh/gagent/internal/message"
 )
@@ -23,11 +24,11 @@ const defaultConsoleTimeout = 10 * time.Second
 // the platform certificate is the client identity and the same private
 // CA verifies the console. A console: section without tls: disables the
 // console sink with a WARN instead of failing startup.
-func consoleSinkFor(cfg Config, logger *slog.Logger) (func(agentID string, fallback *gateway.Outbox) message.Sink, error) {
+func consoleSinkFor(cfg config.Config, logger *slog.Logger) (func(agentID string, fallback *gateway.Outbox) message.Sink, error) {
 	if cfg.Console.URL == "" {
 		return nil, nil
 	}
-	if cfg.TLS == (TLSConfig{}) {
+	if cfg.TLS == (config.TLSConfig{}) {
 		logger.Warn("console sink unavailable: the tls: section is unset; using the file outbox",
 			"op", "startup", "console_url", cfg.Console.URL)
 		return nil, nil

@@ -10,23 +10,24 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/garamsh/gagent/internal/agent"
+	"github.com/garamsh/gagent/internal/config"
 )
 
 func TestNewModelFunc_MockKeepsScriptedModel(t *testing.T) {
-	newModel, err := newModelFunc(ModelConfig{Provider: "mock"})
+	newModel, err := newModelFunc(config.ModelConfig{Provider: "mock"})
 	require.NoError(t, err)
 	assert.NotNil(t, newModel("any-env"))
 }
 
 func TestNewModelFunc_UnknownProviderFails(t *testing.T) {
-	_, err := newModelFunc(ModelConfig{Provider: "anthropic"})
+	_, err := newModelFunc(config.ModelConfig{Provider: "anthropic"})
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "unknown model provider")
 }
 
 func TestNewModelFunc_OpenAIMissingKeyEnvFailsFast(t *testing.T) {
 	t.Setenv("GAGENT_TEST_UNSET_KEY", "")
-	_, err := newModelFunc(ModelConfig{
+	_, err := newModelFunc(config.ModelConfig{
 		Provider:  "openai",
 		BaseURL:   "http://localhost:1234/v1",
 		Model:     "test-model",
@@ -38,7 +39,7 @@ func TestNewModelFunc_OpenAIMissingKeyEnvFailsFast(t *testing.T) {
 
 func TestNewModelFunc_OpenAIBuildsClient(t *testing.T) {
 	t.Setenv("GAGENT_TEST_KEY", "sk-test")
-	newModel, err := newModelFunc(ModelConfig{
+	newModel, err := newModelFunc(config.ModelConfig{
 		Provider:  "openai",
 		BaseURL:   "http://localhost:1234/v1",
 		Model:     "test-model",
@@ -50,7 +51,7 @@ func TestNewModelFunc_OpenAIBuildsClient(t *testing.T) {
 
 func TestNewModelFunc_OpenAIIncompleteSettingsFail(t *testing.T) {
 	t.Setenv("GAGENT_TEST_KEY", "sk-test")
-	_, err := newModelFunc(ModelConfig{
+	_, err := newModelFunc(config.ModelConfig{
 		Provider:  "openai",
 		Model:     "test-model",
 		APIKeyEnv: "GAGENT_TEST_KEY",
@@ -71,7 +72,7 @@ func TestNewModelFunc_OpenAIConfiguredTimeoutReachesModel(t *testing.T) {
 	defer slow.Close()
 
 	t.Setenv("GAGENT_TEST_KEY", "sk-test")
-	newModel, err := newModelFunc(ModelConfig{
+	newModel, err := newModelFunc(config.ModelConfig{
 		Provider:  "openai",
 		BaseURL:   slow.URL + "/v1",
 		Model:     "test-model",

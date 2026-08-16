@@ -18,6 +18,7 @@ import (
 	"github.com/spf13/pflag"
 
 	"github.com/garamsh/gagent/internal/agent"
+	"github.com/garamsh/gagent/internal/config"
 	"github.com/garamsh/gagent/internal/gateway"
 	"github.com/garamsh/gagent/internal/message"
 	"github.com/garamsh/gagent/internal/tool"
@@ -40,11 +41,11 @@ func newAgentCommand() *cobra.Command {
 			// a usage dump. A flag parse error never reaches this line
 			// and still prints usage.
 			cmd.SilenceUsage = true
-			cfg, err := resolveConfig(cmd)
+			cfg, err := config.Resolve(cmd.Flags())
 			if err != nil {
 				return err
 			}
-			ego, err := resolveEgo(cmd)
+			ego, err := config.ResolveEgo(cmd.Flags())
 			if err != nil {
 				return err
 			}
@@ -66,16 +67,13 @@ func newAgentCommand() *cobra.Command {
 	return cmd
 }
 
-// addAgentFlags registers the agent subcommand's settings as flags on fs.
+// addAgentFlags registers the agent subcommand's flags on fs: the
+// settings config resolves, plus the two inputs the command reads
+// itself — which agent this process serves, and the one-shot message.
 func addAgentFlags(fs *pflag.FlagSet) {
+	config.AddAgentFlags(fs)
 	fs.String("agent-id", "default", "agent ID this process serves")
 	fs.String("message", "", "run one turn with this message and exit instead of serving")
-	fs.String("addr", defaultAddr, "HTTP listen address")
-	fs.String("memory-path", defaultMemoryPath, "SQLite memory file (created on first use)")
-	fs.String("workspace-addr", defaultWorkspaceAddr,
-		"gRPC endpoint of the agent's workspace (the data plane the tools call)")
-	fs.String("ego-file", "",
-		"ego file for the agent's instructions (default: embedded EGO.md)")
 }
 
 // newAgentFactory resolves the model providers, loads the operator's
@@ -83,7 +81,7 @@ func addAgentFlags(fs *pflag.FlagSet) {
 // registry both agent modes share. The agent constructs no tool-shaped
 // code at compile time (ADR 0017 §Decision, ADR 0009 §Decision); the
 // script-tool registry (Phase 2) is the lifecycle owner for tool calls.
-func newAgentFactory(ctx context.Context, cfg Config, ego string, logger *slog.Logger) (*gateway.Factory, *tool.Registry, error) {
+func newAgentFactory(ctx context.Context, cfg config.Config, ego string, logger *slog.Logger) (*gateway.Factory, *tool.Registry, error) {
 	newModel, err := newModelFunc(cfg.Model)
 	if err != nil {
 		return nil, nil, err
@@ -124,7 +122,7 @@ func newAgentFactory(ctx context.Context, cfg Config, ego string, logger *slog.L
 // here so the runtime's spawn inherits the resolved values; failure
 // to set any required key is the operator's misconfiguration, not a
 // tool startup error.
-func buildToolRegistry(cfg Config, logger *slog.Logger) (*tool.Registry, error) {
+func buildToolRegistry(cfg config.Config, logger *slog.Logger) (*tool.Registry, error) {
 	dir := toolDir(cfg)
 	if err := setToolEnv(cfg); err != nil {
 		return nil, err
@@ -147,7 +145,7 @@ func buildToolRegistry(cfg Config, logger *slog.Logger) (*tool.Registry, error) 
 // GAGENT_OUTBOX_DIR come from the config; GH_TOKEN must already be
 // present in the agent's env because the agent does not materialize
 // secrets (ADR 0003, ADR 0013).
-func setToolEnv(cfg Config) error {
+func setToolEnv(cfg config.Config) error {
 	if err := os.Setenv("GAGENT_WORKSPACE_ADDR", cfg.WorkspaceAddr); err != nil {
 		return fmt.Errorf("set GAGENT_WORKSPACE_ADDR: %w", err)
 	}
@@ -162,7 +160,7 @@ func setToolEnv(cfg Config) error {
 // default is ./tools (the in-tree location `make build-tools` populates
 // in place); an operator can override via the GAGENT_TOOLS_DIR env or a
 // future config key.
-func toolDir(cfg Config) string {
+func toolDir(cfg config.Config) string {
 	if dir := os.Getenv("GAGENT_TOOLS_DIR"); dir != "" {
 		return dir
 	}
@@ -208,7 +206,7 @@ func (f *failedToolCalls) Emit(_ context.Context, e agent.Event) {
 //
 // The turn's output is printed before a failed tool call is reported,
 // so a caller reading stdout sees what the agent produced either way.
-func runAgentTurn(ctx context.Context, cfg Config, agentID, msg, ego string) error {
+func runAgentTurn(ctx context.Context, cfg config.Config, agentID, msg, ego string) error {
 	// Logs go to stderr so stdout carries only the agent's output.
 	logger := slog.New(slog.NewJSONHandler(os.Stderr, nil))
 	slog.SetDefault(logger)
@@ -289,15 +287,15 @@ func echoOutboxToStdout(dir string, before map[string]struct{}) {
 // serveAgent runs the agent's HTTP gateway until an interrupt or SIGTERM.
 // Callers authenticate with mTLS when the tls: config section is set
 // (ADR 0012); without it the gateway serves loopback binds only.
-func serveAgent(ctx context.Context, cfg Config, agentID, ego string) error {
+func serveAgent(ctx context.Context, cfg config.Config, agentID, ego string) error {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	slog.SetDefault(logger)
 
-	tlsConfig, err := serverTLSConfig(cfg.TLS)
+	tlsConfig, err := config.ServerTLS(cfg.TLS)
 	if err != nil {
 		return err
 	}
-	if tlsConfig == nil && !isLoopbackAddr(cfg.Addr) {
+	if tlsConfig == nil && !config.IsLoopbackAddr(cfg.Addr) {
 		return fmt.Errorf("addr %q is not a loopback bind: serving beyond localhost requires the tls: config section (ADR 0012)", cfg.Addr)
 	}
 

@@ -12,6 +12,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/garamsh/gagent/internal/config"
 	"github.com/garamsh/gagent/internal/workspace/shell"
 )
 
@@ -33,7 +34,7 @@ func newRootCommand() *cobra.Command {
 		Use:   "gagent",
 		Short: "Run one agent pod: the agent process or its workspace data plane",
 	}
-	addConfigFlags(root.PersistentFlags())
+	config.AddSharedFlags(root.PersistentFlags())
 	root.AddCommand(newAgentCommand(), newWorkspaceCommand())
 	return root
 }

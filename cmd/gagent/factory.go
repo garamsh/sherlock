@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/garamsh/gagent/internal/agent"
+	"github.com/garamsh/gagent/internal/config"
 	"github.com/garamsh/gagent/internal/gateway"
 	"github.com/garamsh/gagent/internal/memory"
 	"github.com/garamsh/gagent/internal/tool"
@@ -13,7 +14,7 @@ import (
 // agent no longer compiles any tool-shaped code (ADR 0017 §Decision,
 // ADR 0009 §Decision).
 func newFactory(
-	cfg Config,
+	cfg config.Config,
 	newModel func(agentID string) agent.Model,
 	embedder memory.Embedder,
 	summarizer memory.Summarizer,

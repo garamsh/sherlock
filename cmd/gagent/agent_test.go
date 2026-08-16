@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/garamsh/gagent/internal/config"
 	"github.com/garamsh/gagent/internal/tool"
 )
 
@@ -57,7 +58,7 @@ func pinnedToolTree(t *testing.T) (dir, hash string) {
 // the guarantee off in silence.
 func TestBuildToolRegistry_DriftPinRefusesMutatedManifest(t *testing.T) {
 	dir, hash := pinnedToolTree(t)
-	cfg := Config{MemoryPath: filepath.Join(dir, "memory.db")}
+	cfg := config.Config{MemoryPath: filepath.Join(dir, "memory.db")}
 	cfg.Tools.Pins = tool.ManifestPins{"message_send": hash}
 
 	registry, err := buildToolRegistry(cfg, slog.New(slog.DiscardHandler))
@@ -99,7 +100,7 @@ func TestBuildToolRegistry_UnpinnedToolRefused(t *testing.T) {
 		"output_schema": {"type": "object"}
 	}`), 0o644))
 
-	cfg := Config{MemoryPath: filepath.Join(dir, "memory.db")}
+	cfg := config.Config{MemoryPath: filepath.Join(dir, "memory.db")}
 	cfg.Tools.Pins = tool.ManifestPins{"message_send": hash}
 
 	_, err := buildToolRegistry(cfg, slog.New(slog.DiscardHandler))
@@ -113,7 +114,7 @@ func TestBuildToolRegistry_UnpinnedToolRefused(t *testing.T) {
 // platform has none to check against until the operator writes one.
 func TestBuildToolRegistry_WithoutPinsLoads(t *testing.T) {
 	dir, _ := pinnedToolTree(t)
-	cfg := Config{MemoryPath: filepath.Join(dir, "memory.db")}
+	cfg := config.Config{MemoryPath: filepath.Join(dir, "memory.db")}
 
 	registry, err := buildToolRegistry(cfg, slog.New(slog.DiscardHandler))
 	require.NoError(t, err)

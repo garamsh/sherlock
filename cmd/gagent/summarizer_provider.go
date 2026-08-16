@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/garamsh/gagent/internal/config"
 	"github.com/garamsh/gagent/internal/memory"
 	"github.com/garamsh/gagent/internal/memory/openai"
 )
@@ -16,7 +17,7 @@ import (
 // path only when the cluster's joined length exceeds SummaryMaxLen. A
 // missing or empty API key environment variable fails fast at startup
 // instead of mid-consolidation.
-func newSummarizerFunc(cfg ModelConfig) (memory.Summarizer, error) {
+func newSummarizerFunc(cfg config.ModelConfig) (memory.Summarizer, error) {
 	switch cfg.Provider {
 	case "mock":
 		return memory.NewConcatSummarizer(), nil

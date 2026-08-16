@@ -201,7 +201,7 @@ func findThreads(ctx context.Context, w Workload, frameName, arm, form string, b
 			}
 			turn := Checkpoint(year, thread)
 			turn.Ask = addressFor(turn.Text, turn.Ask, form, resolving)
-			injected, err := frame.Context(ctx, turn)
+			injected, err := frame.Context(ctx, readdress(turn, frameName))
 			if err != nil {
 				return fmt.Errorf("context for %s at year %d: %w", thread.Subject, year, err)
 			}
@@ -247,7 +247,7 @@ func findSubjects(ctx context.Context, w Workload, frameName, arm, form string, 
 			}
 			turn := CheckpointAt(year, subjectQuestion(subject))
 			turn.Ask = addressFor(turn.Text, &Address{Subject: subject}, form, resolving)
-			injected, err := frame.Context(ctx, turn)
+			injected, err := frame.Context(ctx, readdress(turn, frameName))
 			if err != nil {
 				return fmt.Errorf("context for %s at year %d: %w", subject, year, err)
 			}
@@ -301,7 +301,7 @@ func walk(ctx context.Context, w Workload, frameName, arm string, budget int,
 			}
 			year++
 		}
-		if err := frame.Observe(ctx, observed(turn, arm, nil)); err != nil {
+		if err := frame.Observe(ctx, readdress(observed(turn, arm, nil), frameName)); err != nil {
 			return fmt.Errorf("observe turn %d: %w", turn.Index, err)
 		}
 	}
@@ -317,6 +317,11 @@ func walk(ctx context.Context, w Workload, frameName, arm string, budget int,
 // addressFor is the address a question reaches a frame with. It is the one
 // place a form touches a question, so a frame never learns which form it is
 // under.
+//
+// What it returns is the topic address, which `readdress` then forms into
+// whatever the frame under measurement addresses by. A resolver asked for a
+// question-shaped address is a different measurement and §What this record
+// does not say says it is not made here.
 func addressFor(text string, address *Address, form string, resolving Resolving) *Address {
 	switch form {
 	case questionAddressed:

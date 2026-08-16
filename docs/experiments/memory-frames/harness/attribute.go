@@ -42,6 +42,13 @@ const (
 	// where #453 concluded it belongs, and it is what the structures that
 	// have to decide for themselves are read against.
 	arityDeclared arityRule = "declared"
+	// arityQuestion reads the address. A question naming one thing holds
+	// one value and a question naming several holds several, so a frame
+	// addressing facts by the question they answer has the arity in front
+	// of it without being told. Where the question's form marks no number
+	// the rule has nothing to read and replaces, and how much of the
+	// workload that fallback covers is reported rather than buried.
+	arityQuestion arityRule = "question"
 )
 
 // additionCues are the phrases that mark a statement as adding a value
@@ -74,12 +81,31 @@ type heldValue struct {
 type attributeFrame struct {
 	rule   arityRule
 	values map[Address][]heldValue
+	// narrower indexes the addresses that restrict a question by the
+	// question they restrict. It is empty for a frame addressing by topic,
+	// where an address restricts nothing.
+	narrower map[Address][]Address
 }
 
 // NewAttributeFrame returns the attribute-addressed frame under one arity
 // rule.
 func NewAttributeFrame(rule arityRule) Frame {
 	return &attributeFrame{rule: rule, values: map[Address][]heldValue{}}
+}
+
+// NewQuestionFrame returns the same store holding facts at the question they
+// answer.
+//
+// The store is the attribute frame's and the write path is unchanged: what
+// differs is where a fact lands, which `question.go` decides, and that a
+// question restricted by the sentence is answered by a read of the question
+// it restricts. That second part is one relation between addresses rather
+// than a rule per case — a narrower question is a question about the same
+// thing — and without it a value written at a restricted address would be
+// held where nothing ever asks for it.
+func NewQuestionFrame(rule arityRule) Frame {
+	return &attributeFrame{rule: rule, values: map[Address][]heldValue{},
+		narrower: map[Address][]Address{}}
 }
 
 // Observe writes the value to its address. A turn carrying no extracted
@@ -94,6 +120,7 @@ func (f *attributeFrame) Observe(_ context.Context, t Turn) error {
 
 // write applies one of a message's assertions.
 func (f *attributeFrame) write(written Written, text string, at time.Time) {
+	f.index(written.Address)
 	values := f.values[written.Address]
 	if f.replaces(written, text) {
 		values = values[:0]
@@ -123,23 +150,31 @@ func (f *attributeFrame) Context(_ context.Context, t Turn) (Injected, error) {
 	if t.Ask.Attribute == "" {
 		return f.subject(t.Ask.Subject), nil
 	}
-	values := f.values[*t.Ask]
-	scanned := len(values)
-	if len(values) == 0 {
-		return Injected{}, nil
+	var (
+		lines   []string
+		scanned int
+	)
+	for _, at := range append([]Address{*t.Ask}, f.narrower[*t.Ask]...) {
+		values := f.values[at]
+		scanned += len(values)
+		if len(values) == 0 {
+			continue
+		}
+		if !f.returnsEveryValue(at.Attribute) {
+			values = []heldValue{newest(values)}
+		}
+		for _, held := range values {
+			lines = append(lines, line(at, held.value))
+		}
 	}
-	if !f.returnsEveryValue(t.Ask.Attribute) {
-		values = []heldValue{newest(values)}
+	if len(lines) == 0 {
+		return Injected{}, nil
 	}
 	if f.rule == arityLearned {
 		// The learned rule reads every address under the attribute to
 		// decide how many values this one returns, so answering one
 		// question touches the whole store.
 		scanned += len(f.values)
-	}
-	lines := make([]string, 0, len(values))
-	for _, held := range values {
-		lines = append(lines, line(*t.Ask, held.value))
 	}
 	return Injected{Text: strings.Join(lines, "\n"), Scanned: scanned}, nil
 }
@@ -158,8 +193,7 @@ func (f *attributeFrame) subject(subject string) Injected {
 		lines   []string
 		scanned int
 	)
-	for _, attribute := range attributesUnder(f.values, subject) {
-		address := Address{Subject: subject, Attribute: attribute}
+	for _, address := range addressesUnder(f.values, subject) {
 		values := f.values[address]
 		scanned += len(values)
 		if f.rule == arityLearned {
@@ -168,7 +202,7 @@ func (f *attributeFrame) subject(subject string) Injected {
 			// decision once per address the answer spans.
 			scanned += len(f.values)
 		}
-		if !f.returnsEveryValue(attribute) {
+		if !f.returnsEveryValue(address.Attribute) {
 			values = []heldValue{newest(values)}
 		}
 		for _, held := range values {
@@ -179,6 +213,28 @@ func (f *attributeFrame) subject(subject string) Injected {
 		return Injected{}
 	}
 	return Injected{Text: strings.Join(lines, "\n"), Scanned: scanned}
+}
+
+// index records a restricted question under the question it restricts, so a
+// read of the wider one finds it. An address restricting nothing indexes
+// nothing, which is every address of a frame that addresses by topic.
+func (f *attributeFrame) index(at Address) {
+	if f.narrower == nil || at.Qualifier == "" {
+		return
+	}
+	wider := Address{Subject: at.Subject, Attribute: at.Attribute}
+	if !containsAddress(f.narrower[wider], at) {
+		f.narrower[wider] = append(f.narrower[wider], at)
+	}
+}
+
+func containsAddress(known []Address, want Address) bool {
+	for _, one := range known {
+		if one == want {
+			return true
+		}
+	}
+	return false
 }
 
 // Size counts one unit per value held and measures the bytes the frame
@@ -224,11 +280,32 @@ func (f *attributeFrame) Forget(_ context.Context, held []string) error {
 		}
 		if len(kept) == 0 {
 			delete(f.values, address)
+			f.unindex(address)
 			continue
 		}
 		f.values[address] = kept
 	}
 	return nil
+}
+
+// unindex drops a forgotten restricted question from the question it
+// restricts, so a later read does not look where nothing is held.
+func (f *attributeFrame) unindex(at Address) {
+	if f.narrower == nil || at.Qualifier == "" {
+		return
+	}
+	wider := Address{Subject: at.Subject, Attribute: at.Attribute}
+	kept := f.narrower[wider][:0]
+	for _, one := range f.narrower[wider] {
+		if one != at {
+			kept = append(kept, one)
+		}
+	}
+	if len(kept) == 0 {
+		delete(f.narrower, wider)
+		return
+	}
+	f.narrower[wider] = kept
 }
 
 func (f *attributeFrame) Close() error { return nil }
@@ -242,6 +319,11 @@ func (f *attributeFrame) replaces(written Written, text string) bool {
 		return true
 	case arityCued:
 		return !marksAddition(text)
+	case arityQuestion:
+		// The address is the question, so the arity is in front of the
+		// frame. A question naming several things holds them all; one
+		// naming a single thing, or naming no number at all, replaces.
+		return numberOf(written.Attribute) != questionPlural
 	case arityDeclared:
 		// The workload states the operation on every assertion of the arm
 		// in which this frame writes at all, so "not stated" never reaches
@@ -304,22 +386,40 @@ func newest(values []heldValue) heldValue {
 }
 
 // line is one held value as the frame emits it, and is the unit its size is
-// counted in so the two cannot drift apart.
+// counted in so the two cannot drift apart. A restriction on the question is
+// part of the line, because two values held under one question and different
+// restrictions are two things and a line naming both the same would count
+// them as one.
 func line(address Address, value string) string {
-	return fmt.Sprintf("%s %s %s", address.Subject, address.Attribute, value)
+	if address.Qualifier == "" {
+		return fmt.Sprintf("%s %s %s", address.Subject, address.Attribute, value)
+	}
+	return fmt.Sprintf("%s %s %s %s", address.Subject, address.Attribute, address.Qualifier, value)
 }
 
-// attributesUnder is the attributes one subject holds something under, in
-// name order. The order is alphabetical because an addressed store has no
-// other: it holds no score, so any order it emits in carries no claim about
-// which address matters, and a fixed one keeps a run reproducible.
-func attributesUnder[V any](values map[Address]V, subject string) []string {
-	var out []string
+// addressesUnder is the addresses one subject holds something at, in name
+// order. The order is alphabetical because an addressed store has no other:
+// it holds no score, so any order it emits in carries no claim about which
+// address matters, and a fixed one keeps a run reproducible. A restriction
+// orders after the question it restricts, which puts a narrower answer
+// beside the wider one it belongs with.
+//
+// It returns addresses rather than attribute names because a question-shaped
+// address restricted by a sentence is a second address under one question: a
+// walk by name would return the unrestricted one twice and the restricted
+// one never.
+func addressesUnder[V any](values map[Address]V, subject string) []Address {
+	var out []Address
 	for address := range values {
 		if address.Subject == subject {
-			out = append(out, address.Attribute)
+			out = append(out, address)
 		}
 	}
-	sort.Strings(out)
+	sort.Slice(out, func(i, j int) bool {
+		if out[i].Attribute != out[j].Attribute {
+			return out[i].Attribute < out[j].Attribute
+		}
+		return out[i].Qualifier < out[j].Qualifier
+	})
 	return out
 }

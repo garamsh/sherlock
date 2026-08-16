@@ -138,7 +138,7 @@ func MeasureUnder(ctx context.Context, w Workload, frameName, arm string, counte
 	heldAt := map[int]map[string]bool{}
 	year := 1
 	checkpoint := func() error {
-		probes, injected, size, err := ask(ctx, frame, w, year, arm, declaring, planted)
+		probes, injected, size, err := ask(ctx, frame, frameName, w, year, arm, declaring, planted)
 		if err != nil {
 			return err
 		}
@@ -176,7 +176,7 @@ func MeasureUnder(ctx context.Context, w Workload, frameName, arm string, counte
 				return FrameResult{}, err
 			}
 		}
-		delivered := observed(turn, arm, declaring)
+		delivered := readdress(observed(turn, arm, declaring), frameName)
 		if err := frame.Observe(ctx, delivered); err != nil {
 			return FrameResult{}, err
 		}
@@ -245,7 +245,7 @@ func observed(t Turn, arm string, declaring Declaring) Turn {
 
 // ask puts every thread answerable at this year to the frame and scores
 // what comes back. A checkpoint reads the frame and never writes to it.
-func ask(ctx context.Context, frame Frame, w Workload, year int, arm string,
+func ask(ctx context.Context, frame Frame, frameName string, w Workload, year int, arm string,
 	declaring Declaring, planted map[string]bool) ([]ProbeResult, [][]string, Size, error) {
 	var (
 		probes  []ProbeResult
@@ -256,7 +256,8 @@ func ask(ctx context.Context, frame Frame, w Workload, year int, arm string,
 		if !thread.ProbedAt(year) {
 			continue
 		}
-		injected, err := frame.Context(ctx, observed(Checkpoint(year, thread), arm, declaring))
+		injected, err := frame.Context(ctx,
+			readdress(observed(Checkpoint(year, thread), arm, declaring), frameName))
 		if err != nil {
 			return nil, nil, Size{}, fmt.Errorf("context for %s at year %d: %w", thread.Subject, year, err)
 		}

@@ -71,14 +71,16 @@ type Run struct {
 	Constrained []Constrained `json:"constrained,omitempty"`
 	Shapes      []ShapeRun    `json:"shapes,omitempty"`
 
-	Declarer     *DeclarerScore `json:"declarer,omitempty"`
-	Model        []ModelRun     `json:"model_runs,omitempty"`
-	Bias         []BiasResult   `json:"join_bias,omitempty"`
-	Stability    *Stability     `json:"stability,omitempty"`
-	Disagreement *ModelRun      `json:"disagreement_run,omitempty"`
-	Arity        Arity          `json:"arity"`
-	Identity     Identity       `json:"identity"`
-	Frames       []FrameResult  `json:"frames"`
+	Declarer     *DeclarerScore     `json:"declarer,omitempty"`
+	Addresser    *AddressScore      `json:"addresser,omitempty"`
+	Model        []ModelRun         `json:"model_runs,omitempty"`
+	Bias         []BiasResult       `json:"join_bias,omitempty"`
+	Stability    *Stability         `json:"stability,omitempty"`
+	Disagreement *ModelRun          `json:"disagreement_run,omitempty"`
+	Arity        Arity              `json:"arity"`
+	Identity     Identity           `json:"identity"`
+	Questions    QuestionAddressing `json:"question_addressing"`
+	Frames       []FrameResult      `json:"frames"`
 
 	// Finding is the study in which no frame is handed the address. It is
 	// its own file for the reason the shapes are, and is folded in here only
@@ -92,6 +94,7 @@ type Run struct {
 type runFiles struct {
 	workload     string
 	declarations string
+	addresses    string
 	stability    string
 	resolutions  string
 	decade       string
@@ -108,6 +111,7 @@ func filesFor(out, record string, seed int64) runFiles {
 	}
 	return runFiles{
 		workload: named("workload"), declarations: named("declarations"),
+		addresses: named("addresses"),
 		stability: named("stability"), resolutions: named("resolutions"),
 		decade: named("decade"), constrained: named("constrained"),
 		shapes: named("harder"), finding: named("finding"), record: record,
@@ -128,6 +132,8 @@ func run() error {
 	render := flag.Bool("render", false, "rewrite the record's tables from the committed results and measure nothing")
 	declare := flag.Bool("declare", false,
 		"ask a model to declare the operation for every assertion. Spends money")
+	address := flag.Bool("address", false,
+		"ask a model for the question every assertion answers, which is where a question-shaped address comes from. Spends money")
 	harder := flag.Bool("harder", false,
 		"run the conversation-shape study instead of the decade measurement")
 	extract := flag.Bool("extract", false,
@@ -179,6 +185,19 @@ func run() error {
 		fmt.Printf("declared %d assertions in %d paid calls: %d prompt and %d completion tokens, $%.4f\n",
 			len(declared.Declarations), declared.Calls,
 			declared.PromptTokens, declared.CompletionTokens, declared.CostUSD)
+	}
+
+	if *address {
+		addressed, err := AskToAddress(ctx, workload, *declarerCache)
+		if err != nil {
+			return err
+		}
+		if err := writeJSON(files.addresses, addressed); err != nil {
+			return err
+		}
+		fmt.Printf("addressed %d assertions in %d paid calls: %d prompt and %d completion tokens, $%.4f\n",
+			len(addressed.Addressed), addressed.Calls,
+			addressed.PromptTokens, addressed.CompletionTokens, addressed.CostUSD)
 	}
 
 	stabilityPath := files.stability
@@ -321,12 +340,13 @@ func readCommittedResolutions(path string) (*Resolutions, error) {
 func MeasureRun(ctx context.Context, w Workload) (Run, error) {
 	counter := NewEmbedCounter()
 	result := Run{
-		Seed:     w.Seed,
-		Start:    w.Start,
-		Embedder: embedderName,
-		Digest:   w.TurnDigest,
-		Params:   w.Params,
-		Arity:    MeasureArity(w),
+		Seed:      w.Seed,
+		Start:     w.Start,
+		Embedder:  embedderName,
+		Digest:    w.TurnDigest,
+		Params:    w.Params,
+		Arity:     MeasureArity(w),
+		Questions: MeasureQuestions(w),
 		Config: Config{
 			WeightVector:           memory.WeightVector,
 			WeightFTS:              memory.WeightFTS,
@@ -453,6 +473,24 @@ func runHarder(ctx context.Context, seed int64, files runFiles, pay bool, cacheP
 	}
 	fmt.Printf("measured %d shapes\n", len(shapes))
 	return renderRecord(files)
+}
+
+// readCommittedAddresses reads the addresses a paid run committed and scores
+// them against the rule's, which costs nothing.
+func readCommittedAddresses(path string) (*AddressScore, error) {
+	body, err := os.ReadFile(path)
+	if os.IsNotExist(err) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("read %s: %w", path, err)
+	}
+	var addressed Addresses
+	if err := json.Unmarshal(body, &addressed); err != nil {
+		return nil, fmt.Errorf("decode %s: %w", path, err)
+	}
+	scored := ScoreAddresses(addressed)
+	return &scored, nil
 }
 
 // readCommittedStability reads the resampled answers a paid run committed

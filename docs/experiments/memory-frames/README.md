@@ -891,10 +891,10 @@ What would be built today, then, is the addressed store with the operation state
 
 ## What this record does not say
 
-- It recommends no structure. The attribute frame answers one of the questions the programme is asking and leaves the rest open; validity intervals and a derived view are separate issues, and what to build comes after the frames are measured rather than from any one of them.
-- It does not measure a model-driven writeback. Both arms stand in for one, at the two ends of a bracket, and the record says which is which.
+- It does not choose the policy for a declaration that cannot be trusted. §What would be chosen today states the structure and the direction of error as settled and says why the evidence cannot settle this third one: taking a model's declarations and always replacing are a genuine trade, and which failure is cheaper is a property of what the agent is for rather than of anything measured here. A reader looking for that decision will not find it in a table.
+- It does not measure a writeback that decides what is worth storing. Both arms hold extraction constant, so what a model is measured deciding here is arity and nothing else; whether a model writes anything at all unprompted is `memory-cycle/`'s subject.
 - It does not measure a question about an earlier year. The interval store's extra bytes buy the ability to answer one, and the workload asks none, so what that capability is worth is still unmeasured — the same gap #457 reported, unchanged by this round.
-- It does not rank the structures. `attribute-declared` is not a design and the rest are not finished ones; what to build comes from the record as a whole once every frame is measured, and this round adds three to it.
+- It does not rank the structures. `attribute-declared` is a ceiling rather than a design, several arms are the ends of a range rather than candidates, and the best-scoring rule measured is disqualified — so the order of the rows is not an order of preference.
 - It does not say the attribute frame's storage advantage would survive persistence. It is measured as an in-memory structure with no file format, so what it stores is what it holds; a persisted form would add a page layout and an index the shipped store's figure already carries.
 - It does not measure retrieval quality as such. That is `memory-retrieval/`'s subject, and the constants that decide it are #411's.
 - It says nothing about latency. No run time is measured, and the frames differ so much in what they do per turn that comparing theirs would compare implementations rather than structures.

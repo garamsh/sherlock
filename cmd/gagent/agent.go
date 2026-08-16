@@ -109,14 +109,12 @@ func newAgentFactory(ctx context.Context, cfg config.Config, ego string, logger 
 // loads unpinned. The required-tool check fails closed on a missing
 // required name either way.
 //
-// The script-tool runner inherits the agent's environment when it
-// spawns each tool (internal/tool/runner.go). The agent's tools read
-// these variables from their own env (per-tool contracts: github
-// reads GH_TOKEN, files/shell_exec dial GAGENT_WORKSPACE_ADDR,
-// message_send writes to GAGENT_OUTBOX_DIR). The agent sets them
-// here so the runtime's spawn inherits the resolved values.
+// The resolved values the shipped tools read from their own
+// environment are published before the registry loads, because the
+// runner hands the platform's environment to every tool it spawns
+// (tool.SetSpawnEnv).
 func buildToolRegistry(cfg config.Config, logger *slog.Logger) (*tool.Registry, error) {
-	if err := setToolEnv(cfg); err != nil {
+	if err := tool.SetSpawnEnv(cfg.WorkspaceAddr, gateway.DirFor(cfg.MemoryPath)); err != nil {
 		return nil, err
 	}
 	registry, err := tool.NewRegistry(tool.RegistryOptions{
@@ -129,21 +127,6 @@ func buildToolRegistry(cfg config.Config, logger *slog.Logger) (*tool.Registry, 
 		return nil, fmt.Errorf("tool registry: %w", err)
 	}
 	return registry, nil
-}
-
-// setToolEnv wires the operator's resolved config into the env the
-// script-tool runner inherits on every spawn (ADR 0009 §Decision:
-// "the runner inherits the agent's env"). GH_TOKEN must already be
-// present in the agent's env because the agent does not materialize
-// secrets (ADR 0003, ADR 0013).
-func setToolEnv(cfg config.Config) error {
-	if err := os.Setenv("GAGENT_WORKSPACE_ADDR", cfg.WorkspaceAddr); err != nil {
-		return fmt.Errorf("set GAGENT_WORKSPACE_ADDR: %w", err)
-	}
-	if err := os.Setenv("GAGENT_OUTBOX_DIR", gateway.DirFor(cfg.MemoryPath)); err != nil {
-		return fmt.Errorf("set GAGENT_OUTBOX_DIR: %w", err)
-	}
-	return nil
 }
 
 // runAgentTurn wires the agent runtime and hands one turn to the

@@ -102,6 +102,30 @@ func TestFindSubjects_MovesOnlyTheFramesThatFillABudget(t *testing.T) {
 		"an addressed store has no budget to answer inside and returns every address under the subject")
 }
 
+// A multi-address answer is credited against everything true anywhere on
+// the subject, and its stale figure is one where the answer carries a value
+// that subject has stopped holding. The two arity ends bracket both: the
+// store that keeps every value returns all of them and every superseded one
+// with them, and the store that replaces returns no superseded value and
+// loses the ones that coexist.
+func TestFindSubjects_CreditTheWholeSubjectAndFlagWhatItStoppedHolding(t *testing.T) {
+	ctx := context.Background()
+	w, err := GenerateWorkload(7, smallParams())
+	require.NoError(t, err)
+
+	lastYear := func(name string) SubjectYear {
+		years, err := findSubjects(ctx, w, name, armOracle, questionAddressed, 0, nil)
+		require.NoError(t, err)
+		return years[len(years)-1]
+	}
+	multi, single := lastYear(frameAttributeMulti), lastYear(frameAttributeSingle)
+
+	assert.Equal(t, 1.0, multi.Recall.Mean, "a store that never replaces holds every live value")
+	assert.Equal(t, 1.0, multi.Stale.Mean, "and returns the superseded ones beside them")
+	assert.Zero(t, single.Stale.Mean, "a store that always replaces has no superseded value to return")
+	assert.Less(t, single.Recall.Mean, 1.0, "and has lost the values that coexist")
+}
+
 // The form is the one thing that decides what a question carries. A worded
 // question carries no address whatever the arm, which is what makes the
 // finding half measurable at all.

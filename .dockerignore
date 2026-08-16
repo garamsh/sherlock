@@ -6,5 +6,5 @@ docs/
 data/
 bin/
 deploy/
-Dockerfile
+build/
 .dockerignore

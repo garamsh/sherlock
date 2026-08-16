@@ -1,4 +1,8 @@
-.PHONY: lint format format-fix test build build-tools generate proto ci hooks
+.PHONY: lint format format-fix test build build-tools build-images generate proto ci hooks
+
+# The revision the images are labelled with. CI passes the commit it built;
+# the default is what a contributor's checkout is sitting on.
+REVISION ?= $(shell git rev-parse HEAD)
 
 lint:
 	go vet ./...
@@ -25,6 +29,13 @@ build-tools:
 	@for tool in files shell_exec message_send github; do \
 		CGO_ENABLED=0 go build -o tools/$$tool/$$tool ./tools/$$tool/; \
 	done
+
+# Builds both platform images (ADR 0017); nothing is pushed and no registry is
+# named here. The build context is the repository root because the build stage
+# copies the module.
+build-images:
+	docker build -f build/agent.Dockerfile --build-arg REVISION="$(REVISION)" -t gagent-agent .
+	docker build -f build/workspace.Dockerfile --build-arg REVISION="$(REVISION)" -t gagent-workspace .
 
 generate:
 	mockery

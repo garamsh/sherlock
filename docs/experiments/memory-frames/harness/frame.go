@@ -114,6 +114,11 @@ type Frame interface {
 	Context(ctx context.Context, t Turn) (Injected, error)
 	// Size reports how much the frame holds.
 	Size(ctx context.Context) (Size, error)
+	// Forget drops what it is given, which is a subset of what Held
+	// returned. A structure under a capacity has to give something up, and
+	// what it gives up is decided outside it: no frame carries a rule for
+	// that, the same way none carries one for arity.
+	Forget(ctx context.Context, held []string) error
 	// Held reports what the frame holds, as the text it would emit for it.
 	// Size counts; this identifies, which is what separates the part of a
 	// store a read has reached from the part no read ever has.
@@ -149,12 +154,12 @@ var frameNames = []string{
 
 // NewFrame builds a frame by name. dir is a directory the frame may keep
 // state in; a frame that keeps none ignores it.
-func NewFrame(name, dir string, counter *EmbedCounter) (Frame, error) {
+func NewFrame(name, dir string, counter *EmbedCounter, budget int) (Frame, error) {
 	switch name {
 	case frameShipped:
-		return NewShippedFrame(dir, counter)
+		return NewShippedFrame(dir, counter, budget)
 	case frameDocument:
-		return NewDocumentFrame(), nil
+		return NewDocumentFrame(budget), nil
 	case frameAttributeSingle:
 		return NewAttributeFrame(aritySingle), nil
 	case frameAttributeMulti:

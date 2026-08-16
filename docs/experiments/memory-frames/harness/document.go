@@ -29,8 +29,25 @@ type documentFrame struct {
 	text  string
 }
 
-// NewDocumentFrame returns the bounded-document frame.
-func NewDocumentFrame() Frame { return &documentFrame{limit: documentLimit} }
+// NewDocumentFrame returns the bounded-document frame. A budget of zero
+// takes the shipped default, which is what every figure before this round
+// was measured at.
+func NewDocumentFrame(budget int) Frame {
+	limit := documentLimit
+	if budget > 0 {
+		limit = budget * memory.CharsPerToken
+	}
+	return &documentFrame{limit: limit}
+}
+
+// Forget drops whole lines from the document. It is what a bound asks of a
+// structure that keeps one text: the text gets shorter.
+func (f *documentFrame) Forget(_ context.Context, held []string) error {
+	for _, victim := range held {
+		f.text = strings.TrimPrefix(strings.ReplaceAll(f.text, victim, ""), "\n")
+	}
+	return nil
+}
 
 // Observe appends the turn and trims whole lines off the front until the
 // document is inside its limit. It reads no extracted fact: the arms differ

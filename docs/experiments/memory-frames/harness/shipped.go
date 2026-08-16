@@ -34,6 +34,9 @@ type shippedFrame struct {
 	embedder memory.Embedder
 	store    *sqlite.Store
 	svc      memory.Service
+	// budget is the tokens a recall injects; zero takes the shipped
+	// default, which is what every figure before this round was measured at.
+	budget int
 	// now is the simulated clock the ranking function's recency term and
 	// the retention window both read. Every entry point sets it from the
 	// turn before doing anything else, so a decade passes inside the run.
@@ -42,8 +45,8 @@ type shippedFrame struct {
 
 // NewShippedFrame opens a store under dir and wires the shipped service
 // over it.
-func NewShippedFrame(dir string, counter *EmbedCounter) (Frame, error) {
-	f := &shippedFrame{dir: dir, embedder: counter.Wrap(memory.NewHashingEmbedder())}
+func NewShippedFrame(dir string, counter *EmbedCounter, budget int) (Frame, error) {
+	f := &shippedFrame{dir: dir, budget: budget, embedder: counter.Wrap(memory.NewHashingEmbedder())}
 	if err := f.open(); err != nil {
 		return nil, err
 	}
@@ -97,7 +100,7 @@ func (f *shippedFrame) Observe(ctx context.Context, t Turn) error {
 // below is the active count, read again here only to report it.
 func (f *shippedFrame) Context(ctx context.Context, t Turn) (Injected, error) {
 	f.now = t.At
-	recalled, err := f.svc.Recall(ctx, t.Text, 0)
+	recalled, err := f.svc.Recall(ctx, t.Text, f.budget)
 	if err != nil {
 		return Injected{}, fmt.Errorf("recall at turn %d: %w", t.Index, err)
 	}
@@ -162,6 +165,32 @@ func storedBytes(dir string) (int64, error) {
 		total += info.Size()
 	}
 	return total, nil
+}
+
+// Forget archives the rows whose content it is given. The platform never
+// hard-deletes, so what a bound removes from the index stays in the store —
+// which is why the footprint is reported beside the bound.
+func (f *shippedFrame) Forget(ctx context.Context, held []string) error {
+	if len(held) == 0 {
+		return nil
+	}
+	active, err := f.store.Active(ctx)
+	if err != nil {
+		return fmt.Errorf("list active: %w", err)
+	}
+	victims := map[string]bool{}
+	for _, text := range held {
+		victims[text] = true
+	}
+	for _, m := range active {
+		if !victims[m.Content] {
+			continue
+		}
+		if err := f.store.Archive(ctx, m.ID, 0, f.now); err != nil {
+			return fmt.Errorf("archive %d: %w", m.ID, err)
+		}
+	}
+	return nil
 }
 
 // Held is the content of every active row. The archive is left out: a

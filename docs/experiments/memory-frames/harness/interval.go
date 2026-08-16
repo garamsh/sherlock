@@ -110,6 +110,29 @@ func (f *intervalFrame) Held(context.Context) ([]string, error) {
 	return out, nil
 }
 
+// Forget drops the spans whose line it is given. Nothing about holding a
+// closed span protects it from a bound.
+func (f *intervalFrame) Forget(_ context.Context, held []string) error {
+	victims := map[string]bool{}
+	for _, text := range held {
+		victims[text] = true
+	}
+	for address, spans := range f.values {
+		kept := spans[:0]
+		for _, span := range spans {
+			if !victims[line(address, span.value)] {
+				kept = append(kept, span)
+			}
+		}
+		if len(kept) == 0 {
+			delete(f.values, address)
+			continue
+		}
+		f.values[address] = kept
+	}
+	return nil
+}
+
 func (f *intervalFrame) Close() error { return nil }
 
 // closes reports whether this write ends the spans open at the address.

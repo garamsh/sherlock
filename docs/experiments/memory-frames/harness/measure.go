@@ -104,19 +104,28 @@ func SizeYears(years int) []int {
 // answerable thread at the end of every year.
 func Measure(ctx context.Context, w Workload, frameName, arm string, counter *EmbedCounter,
 	declaring Declaring) (FrameResult, error) {
+	return MeasureUnder(ctx, w, frameName, arm, counter, declaring, Under{})
+}
+
+// MeasureUnder is the same run inside a capacity and a read budget. The
+// zero Under constrains nothing, which is what every figure before this
+// round was measured at.
+func MeasureUnder(ctx context.Context, w Workload, frameName, arm string, counter *EmbedCounter,
+	declaring Declaring, under Under) (FrameResult, error) {
 	dir, err := os.MkdirTemp("", "memory-frames")
 	if err != nil {
 		return FrameResult{}, fmt.Errorf("temp dir: %w", err)
 	}
 	defer os.RemoveAll(dir)
 
-	frame, err := NewFrame(frameName, dir, counter)
+	frame, err := NewFrame(frameName, dir, counter, under.Budget)
 	if err != nil {
 		return FrameResult{}, err
 	}
 	defer frame.Close()
 
 	out := FrameResult{Frame: frameName, Arm: arm}
+	books := newLedger()
 	sizeYears := SizeYears(w.Params.Years)
 	planted := plantedValues(w)
 	// firstReached is the first year a value appeared in any context. A
@@ -134,6 +143,7 @@ func Measure(ctx context.Context, w Workload, frameName, arm string, counter *Em
 			return err
 		}
 		for _, values := range injected {
+			books.read(values, Checkpoint(year, w.Threads[0]).At)
 			for _, value := range values {
 				if _, seen := firstReached[value]; !seen {
 					firstReached[value] = year
@@ -166,8 +176,13 @@ func Measure(ctx context.Context, w Workload, frameName, arm string, counter *Em
 				return FrameResult{}, err
 			}
 		}
-		if err := frame.Observe(ctx, observed(turn, arm, declaring)); err != nil {
+		delivered := observed(turn, arm, declaring)
+		if err := frame.Observe(ctx, delivered); err != nil {
 			return FrameResult{}, err
+		}
+		books.wrote(delivered, planted)
+		if err := enforce(ctx, frame, books, planted, under.Bound); err != nil {
+			return FrameResult{}, fmt.Errorf("bound at turn %d: %w", turn.Index, err)
 		}
 	}
 	for year <= w.Params.Years {

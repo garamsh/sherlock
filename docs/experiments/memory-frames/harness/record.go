@@ -24,7 +24,7 @@ const notApplicable = "n/a"
 
 // renderRecord rewrites the record's generated block from a committed
 // result file.
-func renderRecord(resultPath, recordPath string) error {
+func renderRecord(resultPath, constrainedPath, recordPath string) error {
 	body, err := os.ReadFile(resultPath)
 	if err != nil {
 		return fmt.Errorf("read %s: %w", resultPath, err)
@@ -32,6 +32,14 @@ func renderRecord(resultPath, recordPath string) error {
 	var result Run
 	if err := json.Unmarshal(body, &result); err != nil {
 		return fmt.Errorf("decode %s: %w", resultPath, err)
+	}
+	constrained, err := os.ReadFile(constrainedPath)
+	if err == nil {
+		if err := json.Unmarshal(constrained, &result.Constrained); err != nil {
+			return fmt.Errorf("decode %s: %w", constrainedPath, err)
+		}
+	} else if !os.IsNotExist(err) {
+		return fmt.Errorf("read %s: %w", constrainedPath, err)
 	}
 	record, err := os.ReadFile(recordPath)
 	if err != nil {
@@ -68,6 +76,9 @@ func RenderTables(r Run) string {
 	renderReach(&b, r)
 	renderCapacity(&b, r)
 	renderCoupling(&b, r)
+	renderBounds(&b, r)
+	renderRules(&b, r)
+	renderBudgets(&b, r)
 	renderSweep(&b, r)
 	renderHealing(&b, r)
 	renderDeclarer(&b, r)
@@ -513,6 +524,94 @@ func renderCoupling(b *strings.Builder, r Run) {
 		fmt.Fprintf(b, "| `%s` | `%s` | %d | %s | %d | %s |\n", f.Frame, f.Arm,
 			c.Reached.Corrections, figure(c.Reached.Rate),
 			c.Unreached.Corrections, figure(c.Unreached.Rate))
+	}
+	fmt.Fprintln(b)
+}
+
+// classCells is the per-class recall of one year, in the record's order.
+func classCells(y YearResult) []string {
+	byClass := map[string]ClassResult{}
+	for _, c := range y.Classes {
+		byClass[c.Class] = c
+	}
+	cells := make([]string, 0, len(classNames))
+	for _, class := range classNames {
+		c, ok := byClass[class]
+		if !ok {
+			cells = append(cells, notApplicable)
+			continue
+		}
+		cells = append(cells, figure(c.Recall))
+	}
+	return cells
+}
+
+// renderBounds is what each structure answers inside a capacity it has to
+// evict to stay within, year by year, beside what it is then holding.
+func renderBounds(b *strings.Builder, r Run) {
+	if len(r.Constrained) == 0 {
+		return
+	}
+	fmt.Fprintf(b, "### What a bounded store answers\n\n")
+	fmt.Fprintf(b, "| capacity | frame | year | recall | %s | stale returned | units | content KB | stored KB |\n",
+		strings.Join(classNames, " | "))
+	fmt.Fprintf(b, "|---|---|---|---|%s---|---|---|---|\n", strings.Repeat("---|", len(classNames)))
+	for _, c := range r.Constrained {
+		if c.Sweep != sweepCapacity {
+			continue
+		}
+		for i, y := range c.Years {
+			reach := c.Reach[i]
+			fmt.Fprintf(b, "| %d | `%s` | %d | %s | %s | %s | %d | %.1f | %.1f |\n",
+				c.Bound.Units, c.Frame, y.Year, figure(y.Recall), strings.Join(classCells(y), " | "),
+				figure(y.Stale), reach.Units, kilobytes(reach.ContentBytes), kilobytes(reach.StoredBytes))
+		}
+	}
+	fmt.Fprintln(b)
+}
+
+// renderRules is what each candidate for deciding an eviction buys, at one
+// capacity tight enough that the choice has to matter.
+func renderRules(b *strings.Builder, r Run) {
+	if len(r.Constrained) == 0 {
+		return
+	}
+	fmt.Fprintf(b, "### What decides the eviction\n\n")
+	fmt.Fprintf(b, "| rule | frame | recall | %s | stale returned | units | content KB | stored KB |\n",
+		strings.Join(classNames, " | "))
+	fmt.Fprintf(b, "|---|---|---|%s---|---|---|---|\n", strings.Repeat("---|", len(classNames)))
+	for _, c := range r.Constrained {
+		if c.Sweep != sweepEviction {
+			continue
+		}
+		y := c.Years[len(c.Years)-1]
+		reach := c.Reach[len(c.Reach)-1]
+		fmt.Fprintf(b, "| `%s` | `%s` | %s | %s | %s | %d | %.1f | %.1f |\n",
+			c.Bound.Rule, c.Frame, figure(y.Recall), strings.Join(classCells(y), " | "),
+			figure(y.Stale), reach.Units, kilobytes(reach.ContentBytes), kilobytes(reach.StoredBytes))
+	}
+	fmt.Fprintln(b)
+}
+
+// renderBudgets is what varying the read budget does. Subject reach is the
+// criterion this round reports against: a structure whose related facts fit
+// inside the budget is manageable and one whose do not is not.
+func renderBudgets(b *strings.Builder, r Run) {
+	if len(r.Constrained) == 0 {
+		return
+	}
+	fmt.Fprintf(b, "### What the read budget buys\n\n")
+	fmt.Fprintf(b, "| budget | frame | recall | stale returned | subject reach | thread reach | context chars |\n")
+	fmt.Fprintf(b, "|---|---|---|---|---|---|---|\n")
+	for _, c := range r.Constrained {
+		if c.Sweep != sweepBudget {
+			continue
+		}
+		y := c.Years[len(c.Years)-1]
+		reach := c.Reach[len(c.Reach)-1]
+		fmt.Fprintf(b, "| %d | `%s` | %s | %s | %s | %s | %s |\n",
+			c.Budget, c.Frame, figure(y.Recall), figure(y.Stale),
+			figure(reach.SubjectReach), figure(reach.ThreadReach), figureAt(y.ContextChars, 0))
 	}
 	fmt.Fprintln(b)
 }

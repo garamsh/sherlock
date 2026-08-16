@@ -15,7 +15,7 @@ func turnAt(index int, text string) Turn {
 }
 
 func TestNewFrame_RejectsAnUnknownName(t *testing.T) {
-	_, err := NewFrame("nothing-by-that-name", t.TempDir(), NewEmbedCounter())
+	_, err := NewFrame("nothing-by-that-name", t.TempDir(), NewEmbedCounter(), 0)
 	assert.Error(t, err)
 }
 
@@ -23,7 +23,7 @@ func TestNewFrame_RejectsAnUnknownName(t *testing.T) {
 // the shape of the one this project ships. The document frame is that
 // structure: one bounded text, no identity, no scoring, no query.
 func TestDocumentFrame_KeepsOneBoundedDocumentAndNoRows(t *testing.T) {
-	frame := NewDocumentFrame()
+	frame := NewDocumentFrame(0)
 	ctx := context.Background()
 
 	for i := 0; i < 400; i++ {
@@ -43,14 +43,14 @@ func TestDocumentFrame_KeepsOneBoundedDocumentAndNoRows(t *testing.T) {
 }
 
 func TestDocumentFrame_HoldsNothingBeforeItObservesAnything(t *testing.T) {
-	frame := NewDocumentFrame()
+	frame := NewDocumentFrame(0)
 	size, err := frame.Size(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, Size{}, size)
 }
 
 func TestShippedFrame_ReturnsWhatItObserved(t *testing.T) {
-	frame, err := NewShippedFrame(t.TempDir(), NewEmbedCounter())
+	frame, err := NewShippedFrame(t.TempDir(), NewEmbedCounter(), 0)
 	require.NoError(t, err)
 	defer frame.Close()
 	ctx := context.Background()
@@ -71,7 +71,7 @@ func TestShippedFrame_ReturnsWhatItObserved(t *testing.T) {
 // indefinitely. Both come from internal/memory's own constants, and the
 // difference between them is what the two arms bracket.
 func TestShippedFrame_KeepsAFactAndLetsAnObservationExpire(t *testing.T) {
-	frame, err := NewShippedFrame(t.TempDir(), NewEmbedCounter())
+	frame, err := NewShippedFrame(t.TempDir(), NewEmbedCounter(), 0)
 	require.NoError(t, err)
 	defer frame.Close()
 	ctx := context.Background()
@@ -99,7 +99,7 @@ func TestShippedFrame_KeepsAFactAndLetsAnObservationExpire(t *testing.T) {
 }
 
 func TestShippedFrame_ReportsMoreStoredThanHeld(t *testing.T) {
-	frame, err := NewShippedFrame(t.TempDir(), NewEmbedCounter())
+	frame, err := NewShippedFrame(t.TempDir(), NewEmbedCounter(), 0)
 	require.NoError(t, err)
 	defer frame.Close()
 	ctx := context.Background()
@@ -117,7 +117,7 @@ func TestShippedFrame_ReportsMoreStoredThanHeld(t *testing.T) {
 
 func TestEmbedCounter_CountsTheCallsAndTheDistinctTexts(t *testing.T) {
 	counter := NewEmbedCounter()
-	frame, err := NewShippedFrame(t.TempDir(), counter)
+	frame, err := NewShippedFrame(t.TempDir(), counter, 0)
 	require.NoError(t, err)
 	defer frame.Close()
 	ctx := context.Background()
@@ -142,7 +142,7 @@ func TestFrames_ThatDoNotAddressFactsIgnoreTheAddressAsked(t *testing.T) {
 	address := Address{Subject: "Alma", Attribute: "project"}
 	for _, name := range []string{frameShipped, frameDocument} {
 		t.Run(name, func(t *testing.T) {
-			frame, err := NewFrame(name, t.TempDir(), NewEmbedCounter())
+			frame, err := NewFrame(name, t.TempDir(), NewEmbedCounter(), 0)
 			require.NoError(t, err)
 			defer frame.Close()
 

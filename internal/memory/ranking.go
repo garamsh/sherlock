@@ -39,7 +39,11 @@ const (
 	// archives a memory when the caller passes no threshold.
 	DefaultForgetThreshold = 0.15
 
-	// DefaultRecallTokenBudget bounds the tokens Recall injects.
+	// DefaultRecallTokenBudget bounds the tokens Recall injects, and is
+	// the only bound on what a recall returns: the count varies with the
+	// budget (ADR 0006 §Decision step 2), so no row limit applies to it.
+	// DefaultSearchLimit bounds Search and Similar, which is a different
+	// operation with a caller-supplied limit.
 	DefaultRecallTokenBudget = 512
 	// CharsPerToken approximates tokens from content length.
 	CharsPerToken = 4

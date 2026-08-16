@@ -208,6 +208,8 @@ func TestRecordFigures_MatchTheirCommittedSource(t *testing.T) {
 			{"recall@1", figures.RecallAt1}, {"precision@1", figures.PrecisionAt1},
 			{"recall@5", figures.RecallAt5}, {"precision@5", figures.PrecisionAt5},
 			{"recall@10", figures.RecallAtLimit}, {"precision@10", figures.PrecisionAtLimit},
+			{"recall@budget", figures.RecallAtBudget}, {"precision@budget", figures.PrecisionAtBudget},
+			{"returned@budget", figures.ReturnedAtBudget},
 			{"best rank", figures.BestRank},
 		}
 		require.Len(t, cells, len(named), "%s %s at %d: the row lost or gained a column",
@@ -290,25 +292,40 @@ func TestRecordFindings_MatchTheirCommittedSource(t *testing.T) {
 	a = r.anchor(`the relevance term is bounded by (\d+\.\d+) in total`)
 	r.number("bound on the relevance term", a[0], run.Config.WeightVector+run.Config.WeightFTS)
 
-	a = r.anchor(`only when the ten average more than (\d+\.\d+) characters. The corpus averages (\d+\.\d+)`)
-	r.number("content length the budget would bind at", a[0],
-		float64(run.Config.RecallTokenBudget*run.Config.CharsPerToken)/float64(run.Config.DefaultSearchLimit))
-	r.number("content length of the corpus", a[1], sizeFor(t, run, armMixed30d, 9_000).StoreContentChars)
+	a = r.anchor(`facts averaging (\d+\.\d+) characters against a (\d+)-character token`)
+	r.number("content length of the corpus", a[0], sizeFor(t, run, armMixed30d, 9_000).StoreContentChars)
+	r.number("characters per token", a[1], float64(run.Config.CharsPerToken))
 
-	a = r.anchor(`` + "`returned@budget`" + ` is exactly (\d+\.\d+) in all eighteen rows`)
-	var rows int
-	for _, embedded := range []Run{run, openai} {
-		for _, arm := range embedded.Arms {
-			for _, size := range arm.Sizes {
-				r.number(fmt.Sprintf("returned@budget, %s %s at %d", embedded.Embedder, arm.Name, size.Size),
-					a[0], size.Figures.ReturnedAtBudget.Mean)
-				assert.Equal(t, size.Figures.RecallAtLimit, size.Figures.RecallAtBudget,
-					"%s %s at %d: recall@budget is not recall@10", embedded.Embedder, arm.Name, size.Size)
-				rows++
-			}
-		}
-	}
-	assert.Equal(t, 18, rows, "the record says eighteen rows")
+	a = r.anchor(`that is (\d+\.\d+) to (\d+\.\d+) memories a turn against the (\d+) a search returns`)
+	low, high := budgetSpread(run, openai)
+	r.number("smallest returned@budget", a[0], low)
+	r.number("largest returned@budget", a[1], high)
+	r.number("what a search returns", a[2], float64(run.Config.DefaultSearchLimit))
+
+	a = r.anchor(`at 9,000 items ` + "`mixed-360d`" + ` goes from (\d+\.\d+) to (\d+\.\d+) under ` + "`hashing`" +
+		` and from (\d+\.\d+) to (\d+\.\d+) under ` + "`openai`" + `, and ` + "`mixed-30d`" +
+		` from (\d+\.\d+) to (\d+\.\d+) and from (\d+\.\d+) to (\d+\.\d+)`)
+	hashingStretched := figuresFor(t, run, armMixed360d, 9_000)
+	openaiStretched := figuresFor(t, openai, armMixed360d, 9_000)
+	r.number("hashing mixed-360d recall@10 at 9,000", a[0], hashingStretched.RecallAtLimit.Mean)
+	r.number("hashing mixed-360d recall@budget at 9,000", a[1], hashingStretched.RecallAtBudget.Mean)
+	r.number("openai mixed-360d recall@10 at 9,000", a[2], openaiStretched.RecallAtLimit.Mean)
+	r.number("openai mixed-360d recall@budget at 9,000", a[3], openaiStretched.RecallAtBudget.Mean)
+	r.number("hashing mixed-30d recall@10 at 9,000", a[4], mixed.RecallAtLimit.Mean)
+	r.number("hashing mixed-30d recall@budget at 9,000", a[5], mixed.RecallAtBudget.Mean)
+	r.number("openai mixed-30d recall@10 at 9,000", a[6], openaiMixed.RecallAtLimit.Mean)
+	r.number("openai mixed-30d recall@budget at 9,000", a[7], openaiMixed.RecallAtBudget.Mean)
+
+	a = r.anchor(`` + "`flat`" + ` at 9,000 falls from (\d+\.\d+) to (\d+\.\d+) under ` + "`hashing`" +
+		` and from (\d+\.\d+) to (\d+\.\d+) under ` + "`openai`" +
+		` — because the same answers arrive among nearly (\w+) times as many memories`)
+	openaiFlat := figuresFor(t, openai, armFlat, 9_000)
+	r.number("hashing flat precision@10 at 9,000", a[0], flat.PrecisionAtLimit.Mean)
+	r.number("hashing flat precision@budget at 9,000", a[1], flat.PrecisionAtBudget.Mean)
+	r.number("openai flat precision@10 at 9,000", a[2], openaiFlat.PrecisionAtLimit.Mean)
+	r.number("openai flat precision@budget at 9,000", a[3], openaiFlat.PrecisionAtBudget.Mean)
+	r.number("returned@budget over the search limit", numberWord(t, a[4]),
+		halfUp(flat.ReturnedAtBudget.Mean/float64(run.Config.DefaultSearchLimit), 0))
 
 	a = r.anchor(`Facts are short single-clause statements averaging (\d+\.\d+) characters`)
 	r.number("content length in Limits", a[0], sizeFor(t, run, armMixed30d, 9_000).StoreContentChars)
@@ -404,6 +421,22 @@ func assertSeparated(t *testing.T, claim string, a, b Figure, want bool) {
 	assert.Equal(t, want, !overlap,
 		"%s: [%.3f, %.3f] and [%.3f, %.3f]", claim,
 		a.Mean-a.Half, a.Mean+a.Half, b.Mean-b.Half, b.Mean+b.Half)
+}
+
+// budgetSpread returns the smallest and largest returned@budget across
+// every row of the runs, the range the record states as what a recall
+// injects.
+func budgetSpread(runs ...Run) (low, high float64) {
+	low = math.Inf(1)
+	for _, run := range runs {
+		for _, arm := range run.Arms {
+			for _, size := range arm.Sizes {
+				low = math.Min(low, size.Figures.ReturnedAtBudget.Mean)
+				high = math.Max(high, size.Figures.ReturnedAtBudget.Mean)
+			}
+		}
+	}
+	return low, high
 }
 
 func pairsIn(corpus Corpus) map[string]bool {

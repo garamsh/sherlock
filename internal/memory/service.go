@@ -9,8 +9,9 @@ import (
 const (
 	// DefaultCapacity caps the active (searchable) index.
 	DefaultCapacity = 10_000
-	// DefaultSearchLimit bounds search results when the caller passes no
-	// positive limit.
+	// DefaultSearchLimit bounds what one Search or Similar call returns
+	// when the caller passes no positive limit. Recall is bounded by
+	// DefaultRecallTokenBudget instead, and by nothing else.
 	DefaultSearchLimit = 10
 )
 

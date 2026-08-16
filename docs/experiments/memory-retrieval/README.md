@@ -55,28 +55,28 @@ Every figure is a mean over the 120 probes, and every figure carries the 95% hal
 
 ## What the read path scores, under each embedder
 
-`recall@k` is planted answers returned over answers planted; `precision@k` is planted answers returned over memories returned. `@10` is `DefaultSearchLimit`, the shipped cap on what one search returns. Best rank is where the highest-ranked answer sits in the whole ranked store, so it reads against the store size beside it.
+`recall@k` is planted answers returned over answers planted; `precision@k` is planted answers returned over memories returned. `@10` is `DefaultSearchLimit`, the shipped cap on what one search returns. `@budget` is what a turn's recall injects: the same ranking bounded by `DefaultRecallTokenBudget` rather than by rows, so the count varies with the content and `returned@budget` reports it. Best rank is where the highest-ranked answer sits in the whole ranked store, so it reads against the store size beside it.
 
-| embedder | planting | store | recall@1 | precision@1 | recall@5 | precision@5 | recall@10 | precision@10 | best rank |
-|---|---|---|---|---|---|---|---|---|---|
-| `hashing` | `mixed-30d` | 1,000 | 0.030 ±0.013 | 0.150 ±0.064 | 0.063 ±0.021 | 0.058 ±0.019 | 0.092 ±0.024 | 0.044 ±0.011 | 29.6 ±5.8 |
-| `hashing` | `mixed-30d` | 4,000 | 0.018 ±0.010 | 0.092 ±0.052 | 0.042 ±0.018 | 0.040 ±0.016 | 0.056 ±0.020 | 0.027 ±0.009 | 103.2 ±21.1 |
-| `hashing` | `mixed-30d` | 9,000 | 0.013 ±0.009 | 0.067 ±0.045 | 0.024 ±0.014 | 0.025 ±0.014 | 0.037 ±0.017 | 0.018 ±0.008 | 242.9 ±49.8 |
-| `hashing` | `mixed-360d` | 1,000 | 0.008 ±0.007 | 0.042 ±0.036 | 0.157 ±0.029 | 0.147 ±0.027 | 0.478 ±0.049 | 0.235 ±0.026 | 10.9 ±3.4 |
-| `hashing` | `mixed-360d` | 4,000 | 0.003 ±0.004 | 0.017 ±0.023 | 0.008 ±0.007 | 0.008 ±0.007 | 0.038 ±0.017 | 0.018 ±0.008 | 37.7 ±13.4 |
-| `hashing` | `mixed-360d` | 9,000 | 0.003 ±0.004 | 0.017 ±0.023 | 0.004 ±0.004 | 0.005 ±0.006 | 0.008 ±0.007 | 0.004 ±0.004 | 86.8 ±32.9 |
-| `hashing` | `flat` | 1,000 | 0.189 ±0.019 | 0.833 ±0.067 | 0.775 ±0.060 | 0.735 ±0.060 | 0.875 ±0.059 | 0.433 ±0.039 | 10.4 ±4.7 |
-| `hashing` | `flat` | 4,000 | 0.175 ±0.021 | 0.767 ±0.076 | 0.726 ±0.067 | 0.678 ±0.066 | 0.807 ±0.071 | 0.392 ±0.042 | 35.1 ±17.5 |
-| `hashing` | `flat` | 9,000 | 0.174 ±0.021 | 0.758 ±0.077 | 0.712 ±0.068 | 0.663 ±0.067 | 0.799 ±0.070 | 0.388 ±0.041 | 76.1 ±41.8 |
-| `openai` | `mixed-30d` | 1,000 | 0.044 ±0.016 | 0.208 ±0.073 | 0.074 ±0.023 | 0.073 ±0.021 | 0.100 ±0.025 | 0.049 ±0.012 | 19.1 ±3.1 |
-| `openai` | `mixed-30d` | 4,000 | 0.024 ±0.012 | 0.125 ±0.059 | 0.056 ±0.019 | 0.055 ±0.019 | 0.070 ±0.023 | 0.034 ±0.011 | 68.7 ±11.1 |
-| `openai` | `mixed-30d` | 9,000 | 0.014 ±0.010 | 0.075 ±0.047 | 0.037 ±0.016 | 0.037 ±0.015 | 0.054 ±0.019 | 0.027 ±0.009 | 165.1 ±26.4 |
-| `openai` | `mixed-360d` | 1,000 | 0.007 ±0.007 | 0.033 ±0.032 | 0.220 ±0.029 | 0.205 ±0.025 | 0.587 ±0.044 | 0.290 ±0.024 | 4.8 ±0.3 |
-| `openai` | `mixed-360d` | 4,000 | 0.004 ±0.004 | 0.025 ±0.028 | 0.007 ±0.007 | 0.007 ±0.006 | 0.031 ±0.015 | 0.016 ±0.007 | 15.0 ±1.0 |
-| `openai` | `mixed-360d` | 9,000 | 0.004 ±0.004 | 0.025 ±0.028 | 0.004 ±0.004 | 0.005 ±0.006 | 0.007 ±0.007 | 0.003 ±0.003 | 33.8 ±2.8 |
-| `openai` | `flat` | 1,000 | 0.219 ±0.013 | 1.000 ±0.000 | 0.899 ±0.022 | 0.873 ±0.030 | 1.000 ±0.000 | 0.504 ±0.027 | 1.0 ±0.0 |
-| `openai` | `flat` | 4,000 | 0.209 ±0.016 | 0.942 ±0.042 | 0.878 ±0.029 | 0.850 ±0.034 | 0.999 ±0.002 | 0.503 ±0.027 | 1.1 ±0.1 |
-| `openai` | `flat` | 9,000 | 0.207 ±0.016 | 0.925 ±0.047 | 0.843 ±0.044 | 0.807 ±0.047 | 0.982 ±0.013 | 0.493 ±0.026 | 1.4 ±0.2 |
+| embedder | planting | store | recall@1 | precision@1 | recall@5 | precision@5 | recall@10 | precision@10 | recall@budget | precision@budget | returned@budget | best rank |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `hashing` | `mixed-30d` | 1,000 | 0.030 ±0.013 | 0.150 ±0.064 | 0.063 ±0.021 | 0.058 ±0.019 | 0.092 ±0.024 | 0.044 ±0.011 | 0.561 ±0.057 | 0.041 ±0.005 | 68.3 ±0.4 | 29.6 ±5.8 |
+| `hashing` | `mixed-30d` | 4,000 | 0.018 ±0.010 | 0.092 ±0.052 | 0.042 ±0.018 | 0.040 ±0.016 | 0.056 ±0.020 | 0.027 ±0.009 | 0.161 ±0.034 | 0.011 ±0.002 | 68.0 ±0.3 | 103.2 ±21.1 |
+| `hashing` | `mixed-30d` | 9,000 | 0.013 ±0.009 | 0.067 ±0.045 | 0.024 ±0.014 | 0.025 ±0.014 | 0.037 ±0.017 | 0.018 ±0.008 | 0.086 ±0.025 | 0.006 ±0.002 | 67.0 ±0.4 | 242.9 ±49.8 |
+| `hashing` | `mixed-360d` | 1,000 | 0.008 ±0.007 | 0.042 ±0.036 | 0.157 ±0.029 | 0.147 ±0.027 | 0.478 ±0.049 | 0.235 ±0.026 | 0.863 ±0.051 | 0.065 ±0.005 | 66.3 ±0.9 | 10.9 ±3.4 |
+| `hashing` | `mixed-360d` | 4,000 | 0.003 ±0.004 | 0.017 ±0.023 | 0.008 ±0.007 | 0.008 ±0.007 | 0.038 ±0.017 | 0.018 ±0.008 | 0.610 ±0.062 | 0.045 ±0.005 | 67.4 ±1.2 | 37.7 ±13.4 |
+| `hashing` | `mixed-360d` | 9,000 | 0.003 ±0.004 | 0.017 ±0.023 | 0.004 ±0.004 | 0.005 ±0.006 | 0.008 ±0.007 | 0.004 ±0.004 | 0.471 ±0.053 | 0.034 ±0.004 | 68.6 ±0.6 | 86.8 ±32.9 |
+| `hashing` | `flat` | 1,000 | 0.189 ±0.019 | 0.833 ±0.067 | 0.775 ±0.060 | 0.735 ±0.060 | 0.875 ±0.059 | 0.433 ±0.039 | 0.905 ±0.052 | 0.066 ±0.005 | 68.0 ±1.6 | 10.4 ±4.7 |
+| `hashing` | `flat` | 4,000 | 0.175 ±0.021 | 0.767 ±0.076 | 0.726 ±0.067 | 0.678 ±0.066 | 0.807 ±0.071 | 0.392 ±0.042 | 0.875 ±0.059 | 0.065 ±0.006 | 66.7 ±1.7 | 35.1 ±17.5 |
+| `hashing` | `flat` | 9,000 | 0.174 ±0.021 | 0.758 ±0.077 | 0.712 ±0.068 | 0.663 ±0.067 | 0.799 ±0.070 | 0.388 ±0.041 | 0.875 ±0.059 | 0.065 ±0.006 | 66.5 ±1.6 | 76.1 ±41.8 |
+| `openai` | `mixed-30d` | 1,000 | 0.044 ±0.016 | 0.208 ±0.073 | 0.074 ±0.023 | 0.073 ±0.021 | 0.100 ±0.025 | 0.049 ±0.012 | 0.673 ±0.046 | 0.049 ±0.004 | 69.1 ±0.3 | 19.1 ±3.1 |
+| `openai` | `mixed-30d` | 4,000 | 0.024 ±0.012 | 0.125 ±0.059 | 0.056 ±0.019 | 0.055 ±0.019 | 0.070 ±0.023 | 0.034 ±0.011 | 0.170 ±0.033 | 0.012 ±0.002 | 68.6 ±0.3 | 68.7 ±11.1 |
+| `openai` | `mixed-30d` | 9,000 | 0.014 ±0.010 | 0.075 ±0.047 | 0.037 ±0.016 | 0.037 ±0.015 | 0.054 ±0.019 | 0.027 ±0.009 | 0.085 ±0.024 | 0.006 ±0.002 | 68.2 ±0.4 | 165.1 ±26.4 |
+| `openai` | `mixed-360d` | 1,000 | 0.007 ±0.007 | 0.033 ±0.032 | 0.220 ±0.029 | 0.205 ±0.025 | 0.587 ±0.044 | 0.290 ±0.024 | 0.995 ±0.009 | 0.076 ±0.004 | 66.5 ±0.9 | 4.8 ±0.3 |
+| `openai` | `mixed-360d` | 4,000 | 0.004 ±0.004 | 0.025 ±0.028 | 0.007 ±0.007 | 0.007 ±0.006 | 0.031 ±0.015 | 0.016 ±0.007 | 0.927 ±0.029 | 0.069 ±0.004 | 67.9 ±1.0 | 15.0 ±1.0 |
+| `openai` | `mixed-360d` | 9,000 | 0.004 ±0.004 | 0.025 ±0.028 | 0.004 ±0.004 | 0.005 ±0.006 | 0.007 ±0.007 | 0.003 ±0.003 | 0.565 ±0.047 | 0.041 ±0.004 | 69.7 ±0.4 | 33.8 ±2.8 |
+| `openai` | `flat` | 1,000 | 0.219 ±0.013 | 1.000 ±0.000 | 0.899 ±0.022 | 0.873 ±0.030 | 1.000 ±0.000 | 0.504 ±0.027 | 1.000 ±0.000 | 0.077 ±0.004 | 66.1 ±1.2 | 1.0 ±0.0 |
+| `openai` | `flat` | 4,000 | 0.209 ±0.016 | 0.942 ±0.042 | 0.878 ±0.029 | 0.850 ±0.034 | 0.999 ±0.002 | 0.503 ±0.027 | 1.000 ±0.000 | 0.076 ±0.004 | 66.7 ±1.4 | 1.1 ±0.1 |
+| `openai` | `flat` | 9,000 | 0.207 ±0.016 | 0.925 ±0.047 | 0.843 ±0.044 | 0.807 ±0.047 | 0.982 ±0.013 | 0.493 ±0.026 | 1.000 ±0.000 | 0.076 ±0.004 | 66.9 ±1.3 | 1.4 ±0.2 |
 
 ## What the numbers say
 
@@ -89,7 +89,7 @@ Both embedders are in every bullet, because every one of these findings was firs
 - **The age window moves the figure, and not monotonically, under both.** Stretching the same draws twelvefold takes recall@10 at 1,000 items from 0.092 to 0.478 under `hashing` and from 0.100 to 0.587 under `openai`, because almost nothing is then young enough for recency to matter; at 9,000 items enough is, and the same stretch takes it from 0.037 to 0.008 and from 0.054 to 0.007. A corpus parameter that no constant in `ranking.go` mentions moves the figure by many times either interval, which is why the window is stated here rather than assumed.
 - **Store size costs recall.** `hashing` under `mixed-30d` falls from 0.092 to 0.037 between 1,000 and 9,000 items, which the intervals separate; its `flat` fall from 0.875 to 0.799 they do not. The probes are the same at both sizes, so a paired comparison could be sharper than these unpaired intervals, and this run does not make one.
 - **An empty noise floor is not enough for precision.** ADR 0006 records as a consequence that "retrieval is precise because the noise floor is empty". This store holds nothing but curated facts — no chatter, no auto-capture — and precision@10 at 9,000 items is 0.018 under `hashing` and 0.027 under `openai`. Curation removes one cause of imprecision; on this corpus it does not deliver the consequence on its own under either embedder.
-- **The recall token budget never binds.** `Recall` takes its candidates from a search capped at `DefaultSearchLimit`, so it returns at most ten memories whatever budget it is given; the 512-token budget can only trim below that, and only when the ten average more than 204.8 characters. The corpus averages 30.7. `returned@budget` is exactly 10.0 in all eighteen rows, and `recall@budget` equals `recall@10` in all eighteen.
+- **The recall token budget is what a recall returns, and it returns far more than a search, under both.** `Recall` ranks the whole active index and fills its 512-token budget, so the count varies with the content rather than sitting at a row limit (ADR 0006 §Decision step 2). On this corpus — facts averaging 30.7 characters against a 4-character token — that is 66.1 to 69.7 memories a turn against the 10 a search returns, and both embedders recall several times as many planted answers: at 9,000 items `mixed-360d` goes from 0.008 to 0.471 under `hashing` and from 0.007 to 0.565 under `openai`, and `mixed-30d` from 0.037 to 0.086 and from 0.054 to 0.085. Precision goes the other way wherever the ten rows were already answering — `flat` at 9,000 falls from 0.388 to 0.065 under `hashing` and from 0.493 to 0.076 under `openai` — because the same answers arrive among nearly seven times as many memories. Until #425 the search limit capped the candidates first, so the budget could not bind and this row was the search's ten in every planting, under either embedder.
 
 ## What the embedder costs
 

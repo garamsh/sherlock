@@ -437,6 +437,42 @@ func TestRecall_TrimsToTokenBudget(t *testing.T) {
 	assert.Len(t, all, 5)
 }
 
+// TestRecall_BoundIsTheBudgetAloneNotARowLimit pins the one bound (ADR
+// 0006 §Decision step 2: "a variable number of raw entries within a
+// token budget"). A row limit anywhere in the recall path would decide
+// the count before the budget could, and DefaultSearchLimit is the one
+// that used to: it capped the candidates at ten, so no budget above ten
+// short memories could bind.
+func TestRecall_BoundIsTheBudgetAloneNotARowLimit(t *testing.T) {
+	svc := newService(t)
+	// No two memories share a word, so none supersedes another on
+	// insert (ADR 0006) and the store holds all of them.
+	const planted = memory.DefaultSearchLimit * 3
+	for i := range planted {
+		storeMemory(t, svc, fmt.Sprintf("alpha%d beta%d gamma%d", i, i, i), "episodic", 0.5)
+	}
+
+	// Every memory costs a handful of tokens, so the default budget
+	// bounds nothing here and the count is the store's.
+	results, err := svc.Recall(context.Background(), "alpha0", memory.DefaultRecallTokenBudget)
+	require.NoError(t, err)
+	assert.Len(t, results, planted,
+		"the budget fits every memory, so recall returns every memory")
+	assert.Greater(t, len(results), memory.DefaultSearchLimit,
+		"a recall bounded by DefaultSearchLimit cannot exceed it, and this one must")
+
+	// The budget still binds when it is the smaller bound.
+	const smallBudget = 20
+	trimmed, err := svc.Recall(context.Background(), "alpha0", smallBudget)
+	require.NoError(t, err)
+	assert.Less(t, len(trimmed), planted, "a budget below the store's cost trims")
+	var used int
+	for _, m := range trimmed {
+		used += max(len(m.Content)/memory.CharsPerToken, 1)
+	}
+	assert.LessOrEqual(t, used, smallBudget, "the trim stops at the budget")
+}
+
 func TestService_RejectsInvalidInput(t *testing.T) {
 	svc := newService(t)
 

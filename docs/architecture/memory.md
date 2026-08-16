@@ -23,4 +23,4 @@ Governs long-term memory: the store, the search, and the lifecycle. Rationale: A
 
 - Snapshot/backup of the memory file outside the pod — default post-MVP.
 - Cross-agent shared memory — deferred.
-- Benchmark-based evaluation harness — the read path is measured offline against a planted corpus with known ground truth (`docs/experiments/memory-retrieval/`); no benchmark runs against a live agent's store, and the write path is unmeasured against the shipped implementation.
+- Benchmark-based evaluation harness — the read path is measured against a planted corpus with known ground truth under both embedders, and the supersession threshold against the pair set that refuted it (`docs/experiments/memory-retrieval/`); no benchmark runs against a live agent's store, and the write path is unmeasured against the shipped implementation.

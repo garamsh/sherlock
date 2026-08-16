@@ -1,0 +1,4020 @@
+{
+ "seed": 7,
+ "source": "memory-creation/harness/round4/separability.py build_pairs",
+ "must_supersede": {
+  "correction": true,
+  "coexist": false,
+  "cross-subject": false,
+  "unrelated": false
+ },
+ "families": {
+  "correction": [
+   {
+    "old": "Alma's team runs SQLite in production.",
+    "new": "Alma's team migrated production to Postgres."
+   },
+   {
+    "old": "Kofi keeps notes in Obsidian.",
+    "new": "Kofi migrated the notes to Notion."
+   },
+   {
+    "old": "Milo builds with Django.",
+    "new": "Milo adopted Next.js for the web tier."
+   },
+   {
+    "old": "Otto keeps notes in Obsidian.",
+    "new": "Otto keeps everything in Notion now."
+   },
+   {
+    "old": "Tracing for Otto runs on OpenTelemetry.",
+    "new": "Otto replaced the tracing stack with Datadog."
+   },
+   {
+    "old": "Nina uses bash.",
+    "new": "Nina switched the shell to fish."
+   },
+   {
+    "old": "Yuki does swimming after work.",
+    "new": "Yuki took up rowing instead."
+   },
+   {
+    "old": "Tariq's shell is nushell.",
+    "new": "Tariq moved to fish."
+   },
+   {
+    "old": "Kofi deploys on GCP.",
+    "new": "Kofi migrated the deployment to Hetzner."
+   },
+   {
+    "old": "Bruno's terminal is WezTerm.",
+    "new": "Bruno runs Kitty now."
+   },
+   {
+    "old": "Maria commutes by scooter.",
+    "new": "Maria switched the commute to car."
+   },
+   {
+    "old": "Nina runs CI on GitLab CI.",
+    "new": "Nina rebuilt the pipelines on GitHub Actions."
+   },
+   {
+    "old": "Alma keeps fit with rowing.",
+    "new": "Alma took up yoga instead."
+   },
+   {
+    "old": "Maria indents with eight spaces.",
+    "new": "Maria reformatted everything to tabs."
+   },
+   {
+    "old": "Sena deploys on Fly.io.",
+    "new": "Sena runs everything on Azure now."
+   },
+   {
+    "old": "Kofi keeps a turtle.",
+    "new": "Kofi adopted a dog recently."
+   },
+   {
+    "old": "Yuki's infrastructure sits on GCP.",
+    "new": "Yuki runs everything on Hetzner now."
+   },
+   {
+    "old": "For new work Tariq reaches for Go.",
+    "new": "Tariq has since standardized on TypeScript."
+   },
+   {
+    "old": "Nina's web stack is SvelteKit.",
+    "new": "Nina adopted Rails for the web tier."
+   },
+   {
+    "old": "Vera's team traces with Datadog.",
+    "new": "Vera's team moved tracing to OpenTelemetry."
+   },
+   {
+    "old": "Chen's team traces with OpenTelemetry.",
+    "new": "Chen replaced the tracing stack with Honeycomb."
+   },
+   {
+    "old": "Bruno's morning ritual is tea.",
+    "new": "These days Bruno goes for espresso instead."
+   },
+   {
+    "old": "Nina's terminal is GNOME Terminal.",
+    "new": "Nina runs Alacritty now."
+   },
+   {
+    "old": "Vera codes to classical.",
+    "new": "Vera plays jazz these days instead."
+   },
+   {
+    "old": "Otto's manager is Diane.",
+    "new": "Otto was moved under Felix."
+   },
+   {
+    "old": "Sam works on Windows.",
+    "new": "Sam reinstalled onto Ubuntu."
+   },
+   {
+    "old": "Nina uses bash.",
+    "new": "Nina switched the shell to fish."
+   },
+   {
+    "old": "Yuki is based in JST.",
+    "new": "Yuki's hours moved to CET."
+   },
+   {
+    "old": "Kofi's pipelines live in GitHub Actions.",
+    "new": "Kofi rebuilt the pipelines on Jenkins."
+   },
+   {
+    "old": "Tariq runs CI on CircleCI.",
+    "new": "Tariq moved CI to GitHub Actions."
+   },
+   {
+    "old": "Alma indents with eight spaces.",
+    "new": "Alma has switched to two spaces."
+   },
+   {
+    "old": "Production for Kofi is MongoDB.",
+    "new": "Kofi's team migrated production to Postgres."
+   },
+   {
+    "old": "Ida's terminal is Kitty.",
+    "new": "Ida replaced the terminal with iTerm2."
+   },
+   {
+    "old": "Alma's team traces with Zipkin.",
+    "new": "Alma replaced the tracing stack with Datadog."
+   },
+   {
+    "old": "Chen's manager is Tomas.",
+    "new": "Chen was moved under Karin."
+   },
+   {
+    "old": "Lisa indents with eight spaces.",
+    "new": "Lisa reformatted everything to four spaces."
+   },
+   {
+    "old": "Sena does running after work.",
+    "new": "Sena took up swimming instead."
+   },
+   {
+    "old": "Chen runs CI on Buildkite.",
+    "new": "Chen rebuilt the pipelines on CircleCI."
+   },
+   {
+    "old": "Lisa runs CI on CircleCI.",
+    "new": "Lisa rebuilt the pipelines on GitHub Actions."
+   },
+   {
+    "old": "Yuki's pipelines live in Buildkite.",
+    "new": "Yuki moved CI to GitLab CI."
+   },
+   {
+    "old": "Vera writes end-to-end tests.",
+    "new": "Vera converted the suite to table-driven tests."
+   },
+   {
+    "old": "Nina drinks tea every morning.",
+    "new": "These days Nina goes for espresso instead."
+   },
+   {
+    "old": "Kofi's team runs MongoDB in production.",
+    "new": "Kofi's team migrated production to MySQL."
+   },
+   {
+    "old": "Sam uses iTerm2 as a terminal.",
+    "new": "Sam replaced the terminal with WezTerm."
+   },
+   {
+    "old": "Lisa indents with two spaces.",
+    "new": "Lisa reformatted everything to four spaces."
+   },
+   {
+    "old": "Ida uses nushell.",
+    "new": "Ida moved to zsh."
+   },
+   {
+    "old": "Sena keeps notes in Apple Notes.",
+    "new": "Sena migrated the notes to Logseq."
+   },
+   {
+    "old": "Lisa writes property-based tests.",
+    "new": "Lisa converted the suite to table-driven tests."
+   },
+   {
+    "old": "Nina runs CI on Jenkins.",
+    "new": "Nina rebuilt the pipelines on GitHub Actions."
+   },
+   {
+    "old": "Tariq commutes by scooter.",
+    "new": "Tariq gets in by bike these days."
+   },
+   {
+    "old": "Ida writes code in VS Code.",
+    "new": "Ida moved over to Zed recently."
+   },
+   {
+    "old": "Sena's machine runs Windows.",
+    "new": "Sena switched the laptop to macOS."
+   },
+   {
+    "old": "Tariq uses iTerm2 as a terminal.",
+    "new": "Tariq runs Kitty now."
+   },
+   {
+    "old": "Nina's web stack is Django.",
+    "new": "Nina adopted Phoenix for the web tier."
+   },
+   {
+    "old": "Maria's team traces with Honeycomb.",
+    "new": "Maria replaced the tracing stack with OpenTelemetry."
+   },
+   {
+    "old": "Production for Sam is CockroachDB.",
+    "new": "Sam's team migrated production to MySQL."
+   },
+   {
+    "old": "Tracing for Sena runs on OpenTelemetry.",
+    "new": "Sena's team moved tracing to Honeycomb."
+   },
+   {
+    "old": "Chen keeps a parrot.",
+    "new": "Chen now has a turtle instead."
+   },
+   {
+    "old": "Yuki keeps fit with running.",
+    "new": "Yuki took up swimming instead."
+   },
+   {
+    "old": "Alma uses nushell.",
+    "new": "Alma moved to elvish."
+   },
+   {
+    "old": "Alma uses GNOME Terminal as a terminal.",
+    "new": "Alma replaced the terminal with Kitty."
+   },
+   {
+    "old": "Chen takes the bike to the office.",
+    "new": "Chen gets in by bus these days."
+   },
+   {
+    "old": "Raj formats code using two spaces.",
+    "new": "Raj reformatted everything to eight spaces."
+   },
+   {
+    "old": "Nina's shell is elvish.",
+    "new": "Nina switched the shell to nushell."
+   },
+   {
+    "old": "Ida writes code in Neovim.",
+    "new": "Ida now edits everything in Zed."
+   },
+   {
+    "old": "Lisa prefers Rust for new services.",
+    "new": "Lisa defaults to Python on anything new now."
+   },
+   {
+    "old": "Ida takes the car to the office.",
+    "new": "Ida switched the commute to bike."
+   },
+   {
+    "old": "Ida works from CET.",
+    "new": "Ida relocated and now works from KST."
+   },
+   {
+    "old": "Raj indents with tabs.",
+    "new": "Raj reformatted everything to two spaces."
+   },
+   {
+    "old": "Bruno's terminal is iTerm2.",
+    "new": "Bruno replaced the terminal with Kitty."
+   },
+   {
+    "old": "Ida does swimming after work.",
+    "new": "Ida took up running instead."
+   },
+   {
+    "old": "Lisa's terminal is GNOME Terminal.",
+    "new": "Lisa replaced the terminal with iTerm2."
+   },
+   {
+    "old": "Sena takes the car to the office.",
+    "new": "Sena switched the commute to scooter."
+   },
+   {
+    "old": "Yuki's team traces with Jaeger.",
+    "new": "Yuki replaced the tracing stack with Datadog."
+   },
+   {
+    "old": "Kofi writes code in Neovim.",
+    "new": "Kofi now edits everything in VS Code."
+   },
+   {
+    "old": "Milo keeps a dog.",
+    "new": "Milo now has a turtle instead."
+   },
+   {
+    "old": "Chen deploys on AWS.",
+    "new": "Chen migrated the deployment to Fly.io."
+   },
+   {
+    "old": "Ida's test suite is built on table-driven tests.",
+    "new": "Ida now relies on snapshot tests."
+   },
+   {
+    "old": "Alma's team traces with OpenTelemetry.",
+    "new": "Alma replaced the tracing stack with Jaeger."
+   },
+   {
+    "old": "Raj drinks matcha every morning.",
+    "new": "These days Raj goes for espresso instead."
+   },
+   {
+    "old": "Ida uses iTerm2 as a terminal.",
+    "new": "Ida replaced the terminal with GNOME Terminal."
+   },
+   {
+    "old": "Ida prefers Go for new services.",
+    "new": "Ida has since standardized on TypeScript."
+   },
+   {
+    "old": "Lisa deploys on Azure.",
+    "new": "Lisa migrated the deployment to GCP."
+   },
+   {
+    "old": "Vera's machine runs Arch.",
+    "new": "Vera reinstalled onto macOS."
+   },
+   {
+    "old": "Otto uses WezTerm as a terminal.",
+    "new": "Otto replaced the terminal with iTerm2."
+   },
+   {
+    "old": "Maria's morning ritual is coffee.",
+    "new": "Maria has switched to tea lately."
+   },
+   {
+    "old": "Vera writes mutation testing.",
+    "new": "Vera converted the suite to table-driven tests."
+   },
+   {
+    "old": "Tariq indents with tabs.",
+    "new": "Tariq has switched to eight spaces."
+   },
+   {
+    "old": "Maria's pipelines live in CircleCI.",
+    "new": "Maria moved CI to GitHub Actions."
+   },
+   {
+    "old": "Tracing for Yuki runs on Honeycomb.",
+    "new": "Yuki's team moved tracing to Zipkin."
+   },
+   {
+    "old": "Tariq deploys on AWS.",
+    "new": "Tariq migrated the deployment to GCP."
+   },
+   {
+    "old": "Alma indents with four spaces.",
+    "new": "Alma reformatted everything to two spaces."
+   },
+   {
+    "old": "Otto runs CI on CircleCI.",
+    "new": "Otto rebuilt the pipelines on GitHub Actions."
+   },
+   {
+    "old": "Bruno's terminal is Kitty.",
+    "new": "Bruno runs WezTerm now."
+   },
+   {
+    "old": "Sam uses zsh.",
+    "new": "Sam moved to fish."
+   },
+   {
+    "old": "Lisa's infrastructure sits on Fly.io.",
+    "new": "Lisa runs everything on AWS now."
+   },
+   {
+    "old": "Vera reports to Felix.",
+    "new": "Vera was moved under Diane."
+   },
+   {
+    "old": "Ida does climbing after work.",
+    "new": "Ida dropped that and does running now."
+   },
+   {
+    "old": "Chen runs CI on GitLab CI.",
+    "new": "Chen moved CI to Jenkins."
+   },
+   {
+    "old": "Lisa's pipelines live in GitLab CI.",
+    "new": "Lisa moved CI to Jenkins."
+   },
+   {
+    "old": "Milo does yoga after work.",
+    "new": "Milo dropped that and does running now."
+   },
+   {
+    "old": "Lisa works on Fedora.",
+    "new": "Lisa reinstalled onto Arch."
+   },
+   {
+    "old": "Lisa deploys on Azure.",
+    "new": "Lisa runs everything on Hetzner now."
+   },
+   {
+    "old": "Vera writes notes in Obsidian.",
+    "new": "Vera keeps everything in plain text files now."
+   },
+   {
+    "old": "Otto formats code using tabs.",
+    "new": "Otto has switched to mixed indentation."
+   },
+   {
+    "old": "Chen indents with eight spaces.",
+    "new": "Chen reformatted everything to four spaces."
+   },
+   {
+    "old": "Milo drinks espresso every morning.",
+    "new": "Milo has switched to tea lately."
+   },
+   {
+    "old": "Milo's test suite is built on mutation testing.",
+    "new": "Milo now relies on property-based tests."
+   },
+   {
+    "old": "Otto's shell is zsh.",
+    "new": "Otto moved to elvish."
+   },
+   {
+    "old": "Alma's infrastructure sits on Azure.",
+    "new": "Alma runs everything on Hetzner now."
+   },
+   {
+    "old": "Chen deploys on Fly.io.",
+    "new": "Chen migrated the deployment to Hetzner."
+   },
+   {
+    "old": "Raj prefers Go for new services.",
+    "new": "Raj has since standardized on TypeScript."
+   },
+   {
+    "old": "Alma writes end-to-end tests.",
+    "new": "Alma converted the suite to property-based tests."
+   },
+   {
+    "old": "Maria keeps a rabbit.",
+    "new": "Maria adopted a dog recently."
+   },
+   {
+    "old": "Kofi indents with mixed indentation.",
+    "new": "Kofi reformatted everything to two spaces."
+   },
+   {
+    "old": "Vera's web stack is SvelteKit.",
+    "new": "Vera adopted Next.js for the web tier."
+   },
+   {
+    "old": "Alma's editor is Zed.",
+    "new": "Alma moved over to Emacs recently."
+   },
+   {
+    "old": "For new work Yuki reaches for Rust.",
+    "new": "Yuki has since standardized on Go."
+   },
+   {
+    "old": "Sena builds with Rails.",
+    "new": "Sena rewrote the frontend in Django."
+   },
+   {
+    "old": "Milo runs CI on Jenkins.",
+    "new": "Milo moved CI to GitLab CI."
+   },
+   {
+    "old": "Vera uses WezTerm as a terminal.",
+    "new": "Vera replaced the terminal with GNOME Terminal."
+   },
+   {
+    "old": "Production for Chen is MySQL.",
+    "new": "Chen's team migrated production to Postgres."
+   },
+   {
+    "old": "Otto drinks tea every morning.",
+    "new": "These days Otto goes for chai instead."
+   },
+   {
+    "old": "Nina indents with mixed indentation.",
+    "new": "Nina has switched to eight spaces."
+   },
+   {
+    "old": "Maria's infrastructure sits on Hetzner.",
+    "new": "Maria runs everything on GCP now."
+   },
+   {
+    "old": "Chen is based in KST.",
+    "new": "Chen's hours moved to GMT."
+   },
+   {
+    "old": "Ida works on macOS.",
+    "new": "Ida reinstalled onto Arch."
+   },
+   {
+    "old": "Lisa builds with Rails.",
+    "new": "Lisa rewrote the frontend in Django."
+   },
+   {
+    "old": "Tariq builds with Django.",
+    "new": "Tariq adopted Rails for the web tier."
+   },
+   {
+    "old": "Tracing for Kofi runs on Honeycomb.",
+    "new": "Kofi replaced the tracing stack with OpenTelemetry."
+   },
+   {
+    "old": "Kofi codes to ambient.",
+    "new": "Kofi moved on to jazz."
+   },
+   {
+    "old": "Yuki runs CI on Buildkite.",
+    "new": "Yuki moved CI to CircleCI."
+   },
+   {
+    "old": "Sena's team traces with Jaeger.",
+    "new": "Sena replaced the tracing stack with Zipkin."
+   },
+   {
+    "old": "Raj's team traces with Honeycomb.",
+    "new": "Raj's team moved tracing to Zipkin."
+   },
+   {
+    "old": "Vera writes code in Neovim.",
+    "new": "Vera now edits everything in VS Code."
+   },
+   {
+    "old": "Otto's editor is Neovim.",
+    "new": "Otto now edits everything in Zed."
+   },
+   {
+    "old": "Sam prefers Go for new services.",
+    "new": "Sam defaults to Rust on anything new now."
+   },
+   {
+    "old": "Sena's editor is Emacs.",
+    "new": "Sena now edits everything in Zed."
+   },
+   {
+    "old": "Sena has a dog at home.",
+    "new": "Sena now has a turtle instead."
+   },
+   {
+    "old": "Maria does yoga after work.",
+    "new": "Maria dropped that and does swimming now."
+   },
+   {
+    "old": "Kofi deploys on Fly.io.",
+    "new": "Kofi runs everything on AWS now."
+   },
+   {
+    "old": "Yuki does rowing after work.",
+    "new": "Yuki dropped that and does yoga now."
+   },
+   {
+    "old": "Kofi runs CI on GitHub Actions.",
+    "new": "Kofi rebuilt the pipelines on GitLab CI."
+   },
+   {
+    "old": "Otto listens to jazz while working.",
+    "new": "Otto moved on to classical."
+   },
+   {
+    "old": "Ida's manager is Diane.",
+    "new": "Ida now reports into Priya."
+   },
+   {
+    "old": "Alma is based in KST.",
+    "new": "Alma's hours moved to PST."
+   },
+   {
+    "old": "Bruno drinks chai every morning.",
+    "new": "Bruno has switched to coffee lately."
+   },
+   {
+    "old": "Sam's pipelines live in GitLab CI.",
+    "new": "Sam rebuilt the pipelines on Jenkins."
+   },
+   {
+    "old": "Tariq's team runs SQLite in production.",
+    "new": "Tariq moved the prod database to MySQL."
+   },
+   {
+    "old": "Nina is based in CET.",
+    "new": "Nina's hours moved to PST."
+   },
+   {
+    "old": "Kofi is based in KST.",
+    "new": "Kofi relocated and now works from CET."
+   },
+   {
+    "old": "Chen's web stack is Django.",
+    "new": "Chen adopted SvelteKit for the web tier."
+   },
+   {
+    "old": "Raj's web stack is Django.",
+    "new": "Raj rewrote the frontend in SvelteKit."
+   },
+   {
+    "old": "Yuki takes the car to the office.",
+    "new": "Yuki gets in by scooter these days."
+   },
+   {
+    "old": "Chen's team runs SQLite in production.",
+    "new": "Chen's team migrated production to MongoDB."
+   },
+   {
+    "old": "Bruno's infrastructure sits on Azure.",
+    "new": "Bruno runs everything on Hetzner now."
+   },
+   {
+    "old": "Ida reports to Karin.",
+    "new": "Ida was moved under Felix."
+   },
+   {
+    "old": "Production for Chen is CockroachDB.",
+    "new": "Chen's team migrated production to MySQL."
+   },
+   {
+    "old": "Vera indents with two spaces.",
+    "new": "Vera reformatted everything to mixed indentation."
+   },
+   {
+    "old": "Otto commutes by bike.",
+    "new": "Otto switched the commute to car."
+   },
+   {
+    "old": "Kofi writes code in Emacs.",
+    "new": "Kofi moved over to Neovim recently."
+   },
+   {
+    "old": "Yuki works from GMT.",
+    "new": "Yuki's hours moved to CET."
+   },
+   {
+    "old": "Raj writes mutation testing.",
+    "new": "Raj converted the suite to snapshot tests."
+   },
+   {
+    "old": "Kofi's manager is Diane.",
+    "new": "Kofi was moved under Priya."
+   },
+   {
+    "old": "Otto reports to Priya.",
+    "new": "Otto was moved under Diane."
+   },
+   {
+    "old": "Alma's web stack is Rails.",
+    "new": "Alma rewrote the frontend in Next.js."
+   },
+   {
+    "old": "Yuki writes code in Zed.",
+    "new": "Yuki now edits everything in IntelliJ."
+   },
+   {
+    "old": "Sam listens to lo-fi while working.",
+    "new": "Sam moved on to ambient."
+   },
+   {
+    "old": "Vera formats code using eight spaces.",
+    "new": "Vera reformatted everything to four spaces."
+   },
+   {
+    "old": "Otto's infrastructure sits on Hetzner.",
+    "new": "Otto runs everything on Azure now."
+   },
+   {
+    "old": "Lisa keeps fit with climbing.",
+    "new": "Lisa took up yoga instead."
+   },
+   {
+    "old": "Lisa builds with Next.js.",
+    "new": "Lisa rewrote the frontend in Phoenix."
+   },
+   {
+    "old": "Vera keeps notes in plain text files.",
+    "new": "Vera migrated the notes to Logseq."
+   },
+   {
+    "old": "Lisa's editor is IntelliJ.",
+    "new": "Lisa moved over to Neovim recently."
+   },
+   {
+    "old": "Kofi's terminal is iTerm2.",
+    "new": "Kofi runs GNOME Terminal now."
+   },
+   {
+    "old": "Raj uses iTerm2 as a terminal.",
+    "new": "Raj runs Alacritty now."
+   },
+   {
+    "old": "Tariq reports to Priya.",
+    "new": "Tariq now reports into Felix."
+   },
+   {
+    "old": "Alma writes code in IntelliJ.",
+    "new": "Alma moved over to Zed recently."
+   },
+   {
+    "old": "Chen is based in JST.",
+    "new": "Chen relocated and now works from CET."
+   },
+   {
+    "old": "Yuki's editor is Zed.",
+    "new": "Yuki now edits everything in Neovim."
+   },
+   {
+    "old": "Sam's team runs MySQL in production.",
+    "new": "Sam's team migrated production to MongoDB."
+   },
+   {
+    "old": "Alma takes the car to the office.",
+    "new": "Alma switched the commute to scooter."
+   },
+   {
+    "old": "Bruno writes notes in Notion.",
+    "new": "Bruno keeps everything in Logseq now."
+   },
+   {
+    "old": "Sena uses WezTerm as a terminal.",
+    "new": "Sena replaced the terminal with iTerm2."
+   },
+   {
+    "old": "Tariq's test suite is built on property-based tests.",
+    "new": "Tariq converted the suite to end-to-end tests."
+   },
+   {
+    "old": "Tariq listens to jazz while working.",
+    "new": "Tariq plays lo-fi these days instead."
+   },
+   {
+    "old": "Milo does swimming after work.",
+    "new": "Milo took up yoga instead."
+   },
+   {
+    "old": "Nina prefers Rust for new services.",
+    "new": "Nina has since standardized on Python."
+   },
+   {
+    "old": "Nina drinks coffee every morning.",
+    "new": "Nina has switched to chai lately."
+   },
+   {
+    "old": "Tariq deploys on GCP.",
+    "new": "Tariq runs everything on Hetzner now."
+   },
+   {
+    "old": "Ida keeps a rabbit.",
+    "new": "Ida adopted a turtle recently."
+   },
+   {
+    "old": "Ida's terminal is WezTerm.",
+    "new": "Ida replaced the terminal with iTerm2."
+   },
+   {
+    "old": "Alma does swimming after work.",
+    "new": "Alma dropped that and does climbing now."
+   },
+   {
+    "old": "Raj indents with four spaces.",
+    "new": "Raj reformatted everything to eight spaces."
+   },
+   {
+    "old": "Sam's terminal is Alacritty.",
+    "new": "Sam replaced the terminal with Kitty."
+   },
+   {
+    "old": "Ida's shell is nushell.",
+    "new": "Ida moved to fish."
+   },
+   {
+    "old": "Kofi writes notes in Notion.",
+    "new": "Kofi migrated the notes to plain text files."
+   },
+   {
+    "old": "Tracing for Sena runs on Datadog.",
+    "new": "Sena replaced the tracing stack with OpenTelemetry."
+   },
+   {
+    "old": "Bruno keeps notes in plain text files.",
+    "new": "Bruno migrated the notes to Obsidian."
+   },
+   {
+    "old": "Nina's infrastructure sits on Hetzner.",
+    "new": "Nina runs everything on Fly.io now."
+   },
+   {
+    "old": "Otto's team runs SQLite in production.",
+    "new": "Otto's team migrated production to MySQL."
+   },
+   {
+    "old": "Otto's morning ritual is chai.",
+    "new": "Otto has switched to matcha lately."
+   },
+   {
+    "old": "Kofi's shell is zsh.",
+    "new": "Kofi switched the shell to nushell."
+   },
+   {
+    "old": "Yuki does rowing after work.",
+    "new": "Yuki took up yoga instead."
+   },
+   {
+    "old": "Lisa's team traces with Datadog.",
+    "new": "Lisa's team moved tracing to Honeycomb."
+   },
+   {
+    "old": "Nina indents with eight spaces.",
+    "new": "Nina has switched to four spaces."
+   },
+   {
+    "old": "Kofi is based in GMT.",
+    "new": "Kofi relocated and now works from JST."
+   },
+   {
+    "old": "Raj drinks coffee every morning.",
+    "new": "These days Raj goes for chai instead."
+   },
+   {
+    "old": "Raj's team traces with Datadog.",
+    "new": "Raj's team moved tracing to OpenTelemetry."
+   },
+   {
+    "old": "Production for Yuki is SQLite.",
+    "new": "Yuki's team migrated production to MySQL."
+   },
+   {
+    "old": "For new work Bruno reaches for Rust.",
+    "new": "Bruno defaults to Python on anything new now."
+   },
+   {
+    "old": "Vera's web stack is Phoenix.",
+    "new": "Vera rewrote the frontend in Django."
+   },
+   {
+    "old": "Chen commutes by bus.",
+    "new": "Chen gets in by train these days."
+   },
+   {
+    "old": "Alma formats code using tabs.",
+    "new": "Alma reformatted everything to four spaces."
+   },
+   {
+    "old": "Bruno reports to Diane.",
+    "new": "Bruno now reports into Tomas."
+   },
+   {
+    "old": "Chen reports to Felix.",
+    "new": "Chen now reports into Priya."
+   },
+   {
+    "old": "Alma is based in CET.",
+    "new": "Alma's hours moved to JST."
+   },
+   {
+    "old": "Lisa's morning ritual is espresso.",
+    "new": "Lisa has switched to tea lately."
+   },
+   {
+    "old": "Vera works from GMT.",
+    "new": "Vera relocated and now works from KST."
+   },
+   {
+    "old": "Otto drinks coffee every morning.",
+    "new": "These days Otto goes for chai instead."
+   },
+   {
+    "old": "Nina drinks coffee every morning.",
+    "new": "Nina has switched to chai lately."
+   },
+   {
+    "old": "Maria writes code in VS Code.",
+    "new": "Maria moved over to Emacs recently."
+   },
+   {
+    "old": "Vera commutes by train.",
+    "new": "Vera gets in by scooter these days."
+   },
+   {
+    "old": "Otto's editor is VS Code.",
+    "new": "Otto moved over to Emacs recently."
+   },
+   {
+    "old": "Nina takes the train to the office.",
+    "new": "Nina switched the commute to bus."
+   },
+   {
+    "old": "Milo formats code using tabs.",
+    "new": "Milo reformatted everything to four spaces."
+   },
+   {
+    "old": "Otto keeps fit with running.",
+    "new": "Otto took up yoga instead."
+   },
+   {
+    "old": "Milo's morning ritual is espresso.",
+    "new": "These days Milo goes for coffee instead."
+   },
+   {
+    "old": "Otto uses elvish.",
+    "new": "Otto moved to zsh."
+   },
+   {
+    "old": "Raj's web stack is Django.",
+    "new": "Raj rewrote the frontend in Next.js."
+   },
+   {
+    "old": "Lisa keeps fit with yoga.",
+    "new": "Lisa took up swimming instead."
+   },
+   {
+    "old": "Tariq keeps notes in plain text files.",
+    "new": "Tariq keeps everything in Apple Notes now."
+   },
+   {
+    "old": "Yuki's team traces with Honeycomb.",
+    "new": "Yuki's team moved tracing to Datadog."
+   },
+   {
+    "old": "Tariq's shell is bash.",
+    "new": "Tariq switched the shell to fish."
+   },
+   {
+    "old": "Vera listens to jazz while working.",
+    "new": "Vera plays classical these days instead."
+   },
+   {
+    "old": "Yuki deploys on Azure.",
+    "new": "Yuki runs everything on Fly.io now."
+   },
+   {
+    "old": "Chen's test suite is built on property-based tests.",
+    "new": "Chen now relies on table-driven tests."
+   },
+   {
+    "old": "Nina writes mutation testing.",
+    "new": "Nina now relies on snapshot tests."
+   },
+   {
+    "old": "Sena indents with mixed indentation.",
+    "new": "Sena reformatted everything to two spaces."
+   },
+   {
+    "old": "Tracing for Sena runs on Zipkin.",
+    "new": "Sena replaced the tracing stack with Datadog."
+   },
+   {
+    "old": "Production for Nina is MySQL.",
+    "new": "Nina's team migrated production to CockroachDB."
+   },
+   {
+    "old": "Chen works on macOS.",
+    "new": "Chen reinstalled onto Fedora."
+   },
+   {
+    "old": "Sam reports to Karin.",
+    "new": "Sam now reports into Felix."
+   },
+   {
+    "old": "Bruno builds with Rails.",
+    "new": "Bruno rewrote the frontend in Next.js."
+   },
+   {
+    "old": "Ida reports to Karin.",
+    "new": "Ida was moved under Tomas."
+   },
+   {
+    "old": "Vera's web stack is Next.js.",
+    "new": "Vera rewrote the frontend in Rails."
+   },
+   {
+    "old": "Nina indents with mixed indentation.",
+    "new": "Nina has switched to eight spaces."
+   },
+   {
+    "old": "Milo keeps notes in Apple Notes.",
+    "new": "Milo migrated the notes to Logseq."
+   },
+   {
+    "old": "Raj takes the car to the office.",
+    "new": "Raj switched the commute to scooter."
+   },
+   {
+    "old": "Sam builds with Next.js.",
+    "new": "Sam adopted Phoenix for the web tier."
+   }
+  ],
+  "coexist": [
+   {
+    "old": "Bruno is allergic to peanuts.",
+    "new": "Bruno is allergic to shellfish."
+   },
+   {
+    "old": "Bruno speaks English.",
+    "new": "Bruno speaks Korean."
+   },
+   {
+    "old": "Maria is allergic to peanuts.",
+    "new": "Maria is allergic to shellfish."
+   },
+   {
+    "old": "Sena plays the cello.",
+    "new": "Sena plays the drums."
+   },
+   {
+    "old": "Tariq is allergic to shellfish.",
+    "new": "Tariq is allergic to peanuts."
+   },
+   {
+    "old": "Lisa speaks German.",
+    "new": "Lisa speaks Korean."
+   },
+   {
+    "old": "Sam is allergic to shellfish.",
+    "new": "Sam is allergic to peanuts."
+   },
+   {
+    "old": "Ida is allergic to shellfish.",
+    "new": "Ida is allergic to peanuts."
+   },
+   {
+    "old": "Otto speaks Korean.",
+    "new": "Otto speaks German."
+   },
+   {
+    "old": "Chen is allergic to shellfish.",
+    "new": "Chen is allergic to peanuts."
+   },
+   {
+    "old": "Sena is allergic to peanuts.",
+    "new": "Sena is allergic to shellfish."
+   },
+   {
+    "old": "Yuki plays the drums.",
+    "new": "Yuki plays the cello."
+   },
+   {
+    "old": "Raj speaks Korean.",
+    "new": "Raj speaks English."
+   },
+   {
+    "old": "Alma is allergic to shellfish.",
+    "new": "Alma is allergic to peanuts."
+   },
+   {
+    "old": "Alma is allergic to shellfish.",
+    "new": "Alma is allergic to peanuts."
+   },
+   {
+    "old": "Alma speaks English.",
+    "new": "Alma speaks Korean."
+   },
+   {
+    "old": "Alma is allergic to peanuts.",
+    "new": "Alma is allergic to shellfish."
+   },
+   {
+    "old": "Raj is allergic to peanuts.",
+    "new": "Raj is allergic to shellfish."
+   },
+   {
+    "old": "Lisa speaks English.",
+    "new": "Lisa speaks Korean."
+   },
+   {
+    "old": "Kofi is allergic to shellfish.",
+    "new": "Kofi is allergic to peanuts."
+   },
+   {
+    "old": "Maria speaks German.",
+    "new": "Maria speaks Korean."
+   },
+   {
+    "old": "Vera plays the drums.",
+    "new": "Vera plays the cello."
+   },
+   {
+    "old": "Ida is allergic to peanuts.",
+    "new": "Ida is allergic to shellfish."
+   },
+   {
+    "old": "Alma plays the drums.",
+    "new": "Alma plays the cello."
+   },
+   {
+    "old": "Sena is allergic to shellfish.",
+    "new": "Sena is allergic to peanuts."
+   },
+   {
+    "old": "Sam plays the cello.",
+    "new": "Sam plays the drums."
+   },
+   {
+    "old": "Nina speaks German.",
+    "new": "Nina speaks Korean."
+   },
+   {
+    "old": "Maria plays the cello.",
+    "new": "Maria plays the drums."
+   },
+   {
+    "old": "Maria is allergic to shellfish.",
+    "new": "Maria is allergic to peanuts."
+   },
+   {
+    "old": "Maria speaks English.",
+    "new": "Maria speaks Korean."
+   },
+   {
+    "old": "Otto speaks English.",
+    "new": "Otto speaks Korean."
+   },
+   {
+    "old": "Sam is allergic to peanuts.",
+    "new": "Sam is allergic to shellfish."
+   },
+   {
+    "old": "Raj is allergic to shellfish.",
+    "new": "Raj is allergic to peanuts."
+   },
+   {
+    "old": "Chen speaks English.",
+    "new": "Chen speaks German."
+   },
+   {
+    "old": "Alma plays the cello.",
+    "new": "Alma plays the drums."
+   },
+   {
+    "old": "Sena is allergic to peanuts.",
+    "new": "Sena is allergic to shellfish."
+   },
+   {
+    "old": "Ida is allergic to shellfish.",
+    "new": "Ida is allergic to peanuts."
+   },
+   {
+    "old": "Chen speaks German.",
+    "new": "Chen speaks English."
+   },
+   {
+    "old": "Sena plays the cello.",
+    "new": "Sena plays the drums."
+   },
+   {
+    "old": "Yuki plays the cello.",
+    "new": "Yuki plays the drums."
+   },
+   {
+    "old": "Chen speaks English.",
+    "new": "Chen speaks German."
+   },
+   {
+    "old": "Nina is allergic to shellfish.",
+    "new": "Nina is allergic to peanuts."
+   },
+   {
+    "old": "Raj is allergic to shellfish.",
+    "new": "Raj is allergic to peanuts."
+   },
+   {
+    "old": "Milo speaks Korean.",
+    "new": "Milo speaks German."
+   },
+   {
+    "old": "Kofi speaks English.",
+    "new": "Kofi speaks Korean."
+   },
+   {
+    "old": "Otto plays the cello.",
+    "new": "Otto plays the drums."
+   },
+   {
+    "old": "Ida plays the drums.",
+    "new": "Ida plays the cello."
+   },
+   {
+    "old": "Kofi plays the drums.",
+    "new": "Kofi plays the cello."
+   },
+   {
+    "old": "Sam speaks Korean.",
+    "new": "Sam speaks English."
+   },
+   {
+    "old": "Chen is allergic to peanuts.",
+    "new": "Chen is allergic to shellfish."
+   },
+   {
+    "old": "Nina plays the drums.",
+    "new": "Nina plays the cello."
+   },
+   {
+    "old": "Vera plays the drums.",
+    "new": "Vera plays the cello."
+   },
+   {
+    "old": "Chen is allergic to shellfish.",
+    "new": "Chen is allergic to peanuts."
+   },
+   {
+    "old": "Kofi speaks English.",
+    "new": "Kofi speaks Korean."
+   },
+   {
+    "old": "Otto is allergic to shellfish.",
+    "new": "Otto is allergic to peanuts."
+   },
+   {
+    "old": "Tariq plays the cello.",
+    "new": "Tariq plays the drums."
+   },
+   {
+    "old": "Kofi speaks Korean.",
+    "new": "Kofi speaks German."
+   },
+   {
+    "old": "Sam plays the cello.",
+    "new": "Sam plays the drums."
+   },
+   {
+    "old": "Chen plays the cello.",
+    "new": "Chen plays the drums."
+   },
+   {
+    "old": "Tariq is allergic to peanuts.",
+    "new": "Tariq is allergic to shellfish."
+   },
+   {
+    "old": "Sena is allergic to shellfish.",
+    "new": "Sena is allergic to peanuts."
+   },
+   {
+    "old": "Tariq plays the drums.",
+    "new": "Tariq plays the cello."
+   },
+   {
+    "old": "Alma plays the drums.",
+    "new": "Alma plays the cello."
+   },
+   {
+    "old": "Sam is allergic to peanuts.",
+    "new": "Sam is allergic to shellfish."
+   },
+   {
+    "old": "Sena plays the cello.",
+    "new": "Sena plays the drums."
+   },
+   {
+    "old": "Yuki speaks English.",
+    "new": "Yuki speaks German."
+   },
+   {
+    "old": "Sam is allergic to peanuts.",
+    "new": "Sam is allergic to shellfish."
+   },
+   {
+    "old": "Milo speaks German.",
+    "new": "Milo speaks Korean."
+   },
+   {
+    "old": "Milo speaks Korean.",
+    "new": "Milo speaks English."
+   },
+   {
+    "old": "Kofi speaks Korean.",
+    "new": "Kofi speaks German."
+   },
+   {
+    "old": "Chen plays the drums.",
+    "new": "Chen plays the cello."
+   },
+   {
+    "old": "Vera is allergic to peanuts.",
+    "new": "Vera is allergic to shellfish."
+   },
+   {
+    "old": "Yuki plays the drums.",
+    "new": "Yuki plays the cello."
+   },
+   {
+    "old": "Raj plays the cello.",
+    "new": "Raj plays the drums."
+   },
+   {
+    "old": "Vera is allergic to peanuts.",
+    "new": "Vera is allergic to shellfish."
+   },
+   {
+    "old": "Lisa is allergic to peanuts.",
+    "new": "Lisa is allergic to shellfish."
+   },
+   {
+    "old": "Otto speaks Korean.",
+    "new": "Otto speaks German."
+   },
+   {
+    "old": "Yuki is allergic to shellfish.",
+    "new": "Yuki is allergic to peanuts."
+   },
+   {
+    "old": "Yuki speaks Korean.",
+    "new": "Yuki speaks English."
+   },
+   {
+    "old": "Lisa plays the cello.",
+    "new": "Lisa plays the drums."
+   },
+   {
+    "old": "Ida speaks English.",
+    "new": "Ida speaks Korean."
+   },
+   {
+    "old": "Sena speaks Korean.",
+    "new": "Sena speaks German."
+   },
+   {
+    "old": "Alma is allergic to peanuts.",
+    "new": "Alma is allergic to shellfish."
+   },
+   {
+    "old": "Ida speaks German.",
+    "new": "Ida speaks Korean."
+   },
+   {
+    "old": "Chen is allergic to peanuts.",
+    "new": "Chen is allergic to shellfish."
+   },
+   {
+    "old": "Sam is allergic to shellfish.",
+    "new": "Sam is allergic to peanuts."
+   },
+   {
+    "old": "Ida plays the cello.",
+    "new": "Ida plays the drums."
+   },
+   {
+    "old": "Lisa plays the cello.",
+    "new": "Lisa plays the drums."
+   },
+   {
+    "old": "Milo speaks English.",
+    "new": "Milo speaks German."
+   },
+   {
+    "old": "Raj is allergic to peanuts.",
+    "new": "Raj is allergic to shellfish."
+   },
+   {
+    "old": "Milo is allergic to peanuts.",
+    "new": "Milo is allergic to shellfish."
+   },
+   {
+    "old": "Chen speaks English.",
+    "new": "Chen speaks German."
+   },
+   {
+    "old": "Milo plays the drums.",
+    "new": "Milo plays the cello."
+   },
+   {
+    "old": "Yuki plays the cello.",
+    "new": "Yuki plays the drums."
+   },
+   {
+    "old": "Yuki is allergic to shellfish.",
+    "new": "Yuki is allergic to peanuts."
+   },
+   {
+    "old": "Bruno speaks English.",
+    "new": "Bruno speaks German."
+   },
+   {
+    "old": "Sena is allergic to shellfish.",
+    "new": "Sena is allergic to peanuts."
+   },
+   {
+    "old": "Ida plays the cello.",
+    "new": "Ida plays the drums."
+   },
+   {
+    "old": "Nina is allergic to peanuts.",
+    "new": "Nina is allergic to shellfish."
+   },
+   {
+    "old": "Maria plays the drums.",
+    "new": "Maria plays the cello."
+   },
+   {
+    "old": "Vera speaks English.",
+    "new": "Vera speaks German."
+   },
+   {
+    "old": "Alma plays the drums.",
+    "new": "Alma plays the cello."
+   },
+   {
+    "old": "Sena is allergic to peanuts.",
+    "new": "Sena is allergic to shellfish."
+   },
+   {
+    "old": "Tariq plays the drums.",
+    "new": "Tariq plays the cello."
+   },
+   {
+    "old": "Bruno speaks German.",
+    "new": "Bruno speaks Korean."
+   },
+   {
+    "old": "Nina is allergic to shellfish.",
+    "new": "Nina is allergic to peanuts."
+   },
+   {
+    "old": "Alma is allergic to peanuts.",
+    "new": "Alma is allergic to shellfish."
+   },
+   {
+    "old": "Raj is allergic to shellfish.",
+    "new": "Raj is allergic to peanuts."
+   },
+   {
+    "old": "Bruno speaks Korean.",
+    "new": "Bruno speaks German."
+   },
+   {
+    "old": "Alma plays the drums.",
+    "new": "Alma plays the cello."
+   },
+   {
+    "old": "Ida plays the cello.",
+    "new": "Ida plays the drums."
+   },
+   {
+    "old": "Alma is allergic to shellfish.",
+    "new": "Alma is allergic to peanuts."
+   },
+   {
+    "old": "Alma plays the drums.",
+    "new": "Alma plays the cello."
+   },
+   {
+    "old": "Lisa plays the drums.",
+    "new": "Lisa plays the cello."
+   },
+   {
+    "old": "Kofi is allergic to peanuts.",
+    "new": "Kofi is allergic to shellfish."
+   },
+   {
+    "old": "Alma plays the drums.",
+    "new": "Alma plays the cello."
+   },
+   {
+    "old": "Vera speaks Korean.",
+    "new": "Vera speaks German."
+   },
+   {
+    "old": "Yuki speaks German.",
+    "new": "Yuki speaks Korean."
+   },
+   {
+    "old": "Nina plays the cello.",
+    "new": "Nina plays the drums."
+   },
+   {
+    "old": "Otto plays the drums.",
+    "new": "Otto plays the cello."
+   },
+   {
+    "old": "Sam speaks German.",
+    "new": "Sam speaks Korean."
+   },
+   {
+    "old": "Nina plays the cello.",
+    "new": "Nina plays the drums."
+   },
+   {
+    "old": "Tariq is allergic to shellfish.",
+    "new": "Tariq is allergic to peanuts."
+   },
+   {
+    "old": "Maria is allergic to peanuts.",
+    "new": "Maria is allergic to shellfish."
+   },
+   {
+    "old": "Bruno speaks Korean.",
+    "new": "Bruno speaks German."
+   },
+   {
+    "old": "Raj speaks Korean.",
+    "new": "Raj speaks German."
+   },
+   {
+    "old": "Alma is allergic to peanuts.",
+    "new": "Alma is allergic to shellfish."
+   },
+   {
+    "old": "Sena speaks Korean.",
+    "new": "Sena speaks German."
+   },
+   {
+    "old": "Yuki is allergic to shellfish.",
+    "new": "Yuki is allergic to peanuts."
+   },
+   {
+    "old": "Kofi speaks English.",
+    "new": "Kofi speaks German."
+   },
+   {
+    "old": "Vera plays the drums.",
+    "new": "Vera plays the cello."
+   },
+   {
+    "old": "Chen plays the cello.",
+    "new": "Chen plays the drums."
+   },
+   {
+    "old": "Raj speaks Korean.",
+    "new": "Raj speaks English."
+   },
+   {
+    "old": "Otto plays the cello.",
+    "new": "Otto plays the drums."
+   },
+   {
+    "old": "Lisa plays the drums.",
+    "new": "Lisa plays the cello."
+   },
+   {
+    "old": "Alma is allergic to shellfish.",
+    "new": "Alma is allergic to peanuts."
+   },
+   {
+    "old": "Otto is allergic to peanuts.",
+    "new": "Otto is allergic to shellfish."
+   },
+   {
+    "old": "Raj is allergic to shellfish.",
+    "new": "Raj is allergic to peanuts."
+   },
+   {
+    "old": "Lisa is allergic to peanuts.",
+    "new": "Lisa is allergic to shellfish."
+   },
+   {
+    "old": "Milo is allergic to peanuts.",
+    "new": "Milo is allergic to shellfish."
+   },
+   {
+    "old": "Milo plays the drums.",
+    "new": "Milo plays the cello."
+   },
+   {
+    "old": "Alma plays the cello.",
+    "new": "Alma plays the drums."
+   },
+   {
+    "old": "Yuki is allergic to peanuts.",
+    "new": "Yuki is allergic to shellfish."
+   },
+   {
+    "old": "Alma is allergic to shellfish.",
+    "new": "Alma is allergic to peanuts."
+   },
+   {
+    "old": "Raj is allergic to shellfish.",
+    "new": "Raj is allergic to peanuts."
+   },
+   {
+    "old": "Maria plays the cello.",
+    "new": "Maria plays the drums."
+   },
+   {
+    "old": "Milo speaks German.",
+    "new": "Milo speaks English."
+   },
+   {
+    "old": "Bruno is allergic to shellfish.",
+    "new": "Bruno is allergic to peanuts."
+   },
+   {
+    "old": "Maria is allergic to peanuts.",
+    "new": "Maria is allergic to shellfish."
+   },
+   {
+    "old": "Vera plays the cello.",
+    "new": "Vera plays the drums."
+   },
+   {
+    "old": "Sena is allergic to shellfish.",
+    "new": "Sena is allergic to peanuts."
+   },
+   {
+    "old": "Sena is allergic to shellfish.",
+    "new": "Sena is allergic to peanuts."
+   },
+   {
+    "old": "Otto plays the drums.",
+    "new": "Otto plays the cello."
+   },
+   {
+    "old": "Maria is allergic to shellfish.",
+    "new": "Maria is allergic to peanuts."
+   },
+   {
+    "old": "Kofi speaks German.",
+    "new": "Kofi speaks English."
+   },
+   {
+    "old": "Ida plays the drums.",
+    "new": "Ida plays the cello."
+   },
+   {
+    "old": "Tariq speaks Korean.",
+    "new": "Tariq speaks German."
+   },
+   {
+    "old": "Bruno speaks German.",
+    "new": "Bruno speaks Korean."
+   },
+   {
+    "old": "Kofi is allergic to shellfish.",
+    "new": "Kofi is allergic to peanuts."
+   },
+   {
+    "old": "Ida is allergic to peanuts.",
+    "new": "Ida is allergic to shellfish."
+   },
+   {
+    "old": "Tariq speaks Korean.",
+    "new": "Tariq speaks German."
+   },
+   {
+    "old": "Otto speaks English.",
+    "new": "Otto speaks German."
+   },
+   {
+    "old": "Maria is allergic to shellfish.",
+    "new": "Maria is allergic to peanuts."
+   },
+   {
+    "old": "Raj speaks German.",
+    "new": "Raj speaks Korean."
+   },
+   {
+    "old": "Raj is allergic to shellfish.",
+    "new": "Raj is allergic to peanuts."
+   },
+   {
+    "old": "Raj speaks Korean.",
+    "new": "Raj speaks English."
+   },
+   {
+    "old": "Chen plays the drums.",
+    "new": "Chen plays the cello."
+   },
+   {
+    "old": "Chen speaks German.",
+    "new": "Chen speaks English."
+   },
+   {
+    "old": "Maria is allergic to shellfish.",
+    "new": "Maria is allergic to peanuts."
+   },
+   {
+    "old": "Yuki speaks English.",
+    "new": "Yuki speaks German."
+   },
+   {
+    "old": "Alma is allergic to peanuts.",
+    "new": "Alma is allergic to shellfish."
+   },
+   {
+    "old": "Chen is allergic to shellfish.",
+    "new": "Chen is allergic to peanuts."
+   },
+   {
+    "old": "Yuki plays the cello.",
+    "new": "Yuki plays the drums."
+   },
+   {
+    "old": "Alma plays the cello.",
+    "new": "Alma plays the drums."
+   },
+   {
+    "old": "Tariq plays the drums.",
+    "new": "Tariq plays the cello."
+   },
+   {
+    "old": "Kofi speaks German.",
+    "new": "Kofi speaks English."
+   },
+   {
+    "old": "Alma speaks English.",
+    "new": "Alma speaks Korean."
+   },
+   {
+    "old": "Kofi plays the cello.",
+    "new": "Kofi plays the drums."
+   },
+   {
+    "old": "Tariq is allergic to shellfish.",
+    "new": "Tariq is allergic to peanuts."
+   },
+   {
+    "old": "Vera is allergic to peanuts.",
+    "new": "Vera is allergic to shellfish."
+   },
+   {
+    "old": "Lisa plays the cello.",
+    "new": "Lisa plays the drums."
+   },
+   {
+    "old": "Sam plays the drums.",
+    "new": "Sam plays the cello."
+   },
+   {
+    "old": "Kofi plays the cello.",
+    "new": "Kofi plays the drums."
+   },
+   {
+    "old": "Kofi speaks German.",
+    "new": "Kofi speaks Korean."
+   },
+   {
+    "old": "Bruno plays the cello.",
+    "new": "Bruno plays the drums."
+   },
+   {
+    "old": "Milo speaks Korean.",
+    "new": "Milo speaks German."
+   },
+   {
+    "old": "Yuki is allergic to peanuts.",
+    "new": "Yuki is allergic to shellfish."
+   },
+   {
+    "old": "Sam is allergic to shellfish.",
+    "new": "Sam is allergic to peanuts."
+   },
+   {
+    "old": "Yuki is allergic to peanuts.",
+    "new": "Yuki is allergic to shellfish."
+   },
+   {
+    "old": "Otto plays the cello.",
+    "new": "Otto plays the drums."
+   },
+   {
+    "old": "Alma is allergic to peanuts.",
+    "new": "Alma is allergic to shellfish."
+   },
+   {
+    "old": "Kofi is allergic to peanuts.",
+    "new": "Kofi is allergic to shellfish."
+   },
+   {
+    "old": "Yuki speaks Korean.",
+    "new": "Yuki speaks German."
+   },
+   {
+    "old": "Yuki speaks English.",
+    "new": "Yuki speaks German."
+   },
+   {
+    "old": "Vera plays the cello.",
+    "new": "Vera plays the drums."
+   },
+   {
+    "old": "Milo speaks German.",
+    "new": "Milo speaks English."
+   },
+   {
+    "old": "Nina plays the drums.",
+    "new": "Nina plays the cello."
+   },
+   {
+    "old": "Lisa speaks English.",
+    "new": "Lisa speaks German."
+   },
+   {
+    "old": "Raj plays the drums.",
+    "new": "Raj plays the cello."
+   },
+   {
+    "old": "Kofi plays the drums.",
+    "new": "Kofi plays the cello."
+   },
+   {
+    "old": "Raj speaks Korean.",
+    "new": "Raj speaks German."
+   },
+   {
+    "old": "Sam is allergic to peanuts.",
+    "new": "Sam is allergic to shellfish."
+   },
+   {
+    "old": "Bruno is allergic to peanuts.",
+    "new": "Bruno is allergic to shellfish."
+   },
+   {
+    "old": "Milo plays the cello.",
+    "new": "Milo plays the drums."
+   },
+   {
+    "old": "Chen plays the cello.",
+    "new": "Chen plays the drums."
+   },
+   {
+    "old": "Lisa speaks English.",
+    "new": "Lisa speaks Korean."
+   },
+   {
+    "old": "Maria plays the drums.",
+    "new": "Maria plays the cello."
+   },
+   {
+    "old": "Alma plays the cello.",
+    "new": "Alma plays the drums."
+   },
+   {
+    "old": "Otto plays the cello.",
+    "new": "Otto plays the drums."
+   },
+   {
+    "old": "Raj speaks Korean.",
+    "new": "Raj speaks English."
+   },
+   {
+    "old": "Maria plays the cello.",
+    "new": "Maria plays the drums."
+   },
+   {
+    "old": "Maria plays the drums.",
+    "new": "Maria plays the cello."
+   },
+   {
+    "old": "Sena speaks German.",
+    "new": "Sena speaks Korean."
+   },
+   {
+    "old": "Raj plays the drums.",
+    "new": "Raj plays the cello."
+   },
+   {
+    "old": "Sam is allergic to shellfish.",
+    "new": "Sam is allergic to peanuts."
+   },
+   {
+    "old": "Otto plays the cello.",
+    "new": "Otto plays the drums."
+   },
+   {
+    "old": "Otto plays the cello.",
+    "new": "Otto plays the drums."
+   },
+   {
+    "old": "Otto speaks German.",
+    "new": "Otto speaks Korean."
+   },
+   {
+    "old": "Vera speaks Korean.",
+    "new": "Vera speaks German."
+   },
+   {
+    "old": "Milo plays the drums.",
+    "new": "Milo plays the cello."
+   },
+   {
+    "old": "Chen plays the cello.",
+    "new": "Chen plays the drums."
+   },
+   {
+    "old": "Vera speaks Korean.",
+    "new": "Vera speaks English."
+   },
+   {
+    "old": "Maria is allergic to shellfish.",
+    "new": "Maria is allergic to peanuts."
+   },
+   {
+    "old": "Alma speaks English.",
+    "new": "Alma speaks German."
+   },
+   {
+    "old": "Chen speaks English.",
+    "new": "Chen speaks German."
+   },
+   {
+    "old": "Milo speaks Korean.",
+    "new": "Milo speaks German."
+   },
+   {
+    "old": "Maria speaks German.",
+    "new": "Maria speaks Korean."
+   },
+   {
+    "old": "Ida is allergic to peanuts.",
+    "new": "Ida is allergic to shellfish."
+   },
+   {
+    "old": "Tariq plays the cello.",
+    "new": "Tariq plays the drums."
+   },
+   {
+    "old": "Tariq is allergic to shellfish.",
+    "new": "Tariq is allergic to peanuts."
+   },
+   {
+    "old": "Maria is allergic to shellfish.",
+    "new": "Maria is allergic to peanuts."
+   },
+   {
+    "old": "Nina speaks English.",
+    "new": "Nina speaks German."
+   },
+   {
+    "old": "Nina is allergic to peanuts.",
+    "new": "Nina is allergic to shellfish."
+   },
+   {
+    "old": "Otto is allergic to peanuts.",
+    "new": "Otto is allergic to shellfish."
+   },
+   {
+    "old": "Alma speaks Korean.",
+    "new": "Alma speaks German."
+   },
+   {
+    "old": "Ida plays the cello.",
+    "new": "Ida plays the drums."
+   },
+   {
+    "old": "Milo is allergic to shellfish.",
+    "new": "Milo is allergic to peanuts."
+   },
+   {
+    "old": "Sena plays the cello.",
+    "new": "Sena plays the drums."
+   },
+   {
+    "old": "Nina speaks German.",
+    "new": "Nina speaks English."
+   },
+   {
+    "old": "Chen is allergic to peanuts.",
+    "new": "Chen is allergic to shellfish."
+   },
+   {
+    "old": "Sam speaks English.",
+    "new": "Sam speaks Korean."
+   },
+   {
+    "old": "Chen speaks Korean.",
+    "new": "Chen speaks German."
+   },
+   {
+    "old": "Kofi speaks English.",
+    "new": "Kofi speaks German."
+   },
+   {
+    "old": "Sena is allergic to peanuts.",
+    "new": "Sena is allergic to shellfish."
+   },
+   {
+    "old": "Yuki plays the drums.",
+    "new": "Yuki plays the cello."
+   },
+   {
+    "old": "Kofi plays the cello.",
+    "new": "Kofi plays the drums."
+   },
+   {
+    "old": "Nina is allergic to peanuts.",
+    "new": "Nina is allergic to shellfish."
+   },
+   {
+    "old": "Milo is allergic to peanuts.",
+    "new": "Milo is allergic to shellfish."
+   },
+   {
+    "old": "Bruno plays the cello.",
+    "new": "Bruno plays the drums."
+   },
+   {
+    "old": "Kofi is allergic to shellfish.",
+    "new": "Kofi is allergic to peanuts."
+   }
+  ],
+  "cross-subject": [
+   {
+    "old": "Milo's test suite is built on table-driven tests.",
+    "new": "Chen writes table-driven tests."
+   },
+   {
+    "old": "Alma's morning ritual is espresso.",
+    "new": "Vera drinks espresso every morning."
+   },
+   {
+    "old": "Otto uses zsh.",
+    "new": "Nina uses zsh."
+   },
+   {
+    "old": "Kofi keeps notes in Logseq.",
+    "new": "Otto writes notes in Logseq."
+   },
+   {
+    "old": "Lisa keeps fit with rowing.",
+    "new": "Alma keeps fit with rowing."
+   },
+   {
+    "old": "Sena has a parrot at home.",
+    "new": "Sam keeps a parrot."
+   },
+   {
+    "old": "Otto formats code using eight spaces.",
+    "new": "Nina indents with eight spaces."
+   },
+   {
+    "old": "Lisa's web stack is Phoenix.",
+    "new": "Otto's web stack is Phoenix."
+   },
+   {
+    "old": "Sam deploys on Fly.io.",
+    "new": "Tariq's infrastructure sits on Fly.io."
+   },
+   {
+    "old": "Sena has a cat at home.",
+    "new": "Sam has a cat at home."
+   },
+   {
+    "old": "Tariq uses zsh.",
+    "new": "Alma's shell is zsh."
+   },
+   {
+    "old": "Milo deploys on Hetzner.",
+    "new": "Chen's infrastructure sits on Hetzner."
+   },
+   {
+    "old": "Tracing for Kofi runs on Jaeger.",
+    "new": "Tracing for Vera runs on Jaeger."
+   },
+   {
+    "old": "Milo has a parrot at home.",
+    "new": "Alma keeps a parrot."
+   },
+   {
+    "old": "Kofi's infrastructure sits on Azure.",
+    "new": "Sam's infrastructure sits on Azure."
+   },
+   {
+    "old": "Milo prefers Rust for new services.",
+    "new": "For new work Bruno reaches for Rust."
+   },
+   {
+    "old": "For new work Vera reaches for Elixir.",
+    "new": "Lisa prefers Elixir for new services."
+   },
+   {
+    "old": "Kofi keeps notes in Obsidian.",
+    "new": "Alma keeps notes in Obsidian."
+   },
+   {
+    "old": "Maria deploys on Azure.",
+    "new": "Alma deploys on Azure."
+   },
+   {
+    "old": "Chen writes snapshot tests.",
+    "new": "Maria writes snapshot tests."
+   },
+   {
+    "old": "Vera uses zsh.",
+    "new": "Tariq's shell is zsh."
+   },
+   {
+    "old": "Yuki reports to Tomas.",
+    "new": "Chen's manager is Tomas."
+   },
+   {
+    "old": "Sam takes the bus to the office.",
+    "new": "Ida commutes by bus."
+   },
+   {
+    "old": "Nina runs CI on Jenkins.",
+    "new": "Chen's pipelines live in Jenkins."
+   },
+   {
+    "old": "Sena's team runs SQLite in production.",
+    "new": "Production for Tariq is SQLite."
+   },
+   {
+    "old": "Raj works from KST.",
+    "new": "Ida is based in KST."
+   },
+   {
+    "old": "Sena writes notes in Logseq.",
+    "new": "Kofi writes notes in Logseq."
+   },
+   {
+    "old": "Kofi builds with Django.",
+    "new": "Yuki's web stack is Django."
+   },
+   {
+    "old": "Lisa is based in KST.",
+    "new": "Tariq works from KST."
+   },
+   {
+    "old": "Tariq's team runs Postgres in production.",
+    "new": "Production for Chen is Postgres."
+   },
+   {
+    "old": "Nina takes the bus to the office.",
+    "new": "Raj takes the bus to the office."
+   },
+   {
+    "old": "Yuki's web stack is Rails.",
+    "new": "Nina's web stack is Rails."
+   },
+   {
+    "old": "Otto's infrastructure sits on Azure.",
+    "new": "Milo's infrastructure sits on Azure."
+   },
+   {
+    "old": "Vera's terminal is Kitty.",
+    "new": "Raj uses Kitty as a terminal."
+   },
+   {
+    "old": "Tariq commutes by bus.",
+    "new": "Vera takes the bus to the office."
+   },
+   {
+    "old": "Bruno keeps notes in Obsidian.",
+    "new": "Maria writes notes in Obsidian."
+   },
+   {
+    "old": "Vera writes notes in Obsidian.",
+    "new": "Ida writes notes in Obsidian."
+   },
+   {
+    "old": "Sam's editor is Neovim.",
+    "new": "Lisa writes code in Neovim."
+   },
+   {
+    "old": "Vera's team runs MongoDB in production.",
+    "new": "Bruno's team runs MongoDB in production."
+   },
+   {
+    "old": "Otto writes property-based tests.",
+    "new": "Alma writes property-based tests."
+   },
+   {
+    "old": "Otto takes the bike to the office.",
+    "new": "Yuki commutes by bike."
+   },
+   {
+    "old": "Bruno indents with four spaces.",
+    "new": "Ida formats code using four spaces."
+   },
+   {
+    "old": "Otto drinks espresso every morning.",
+    "new": "Raj's morning ritual is espresso."
+   },
+   {
+    "old": "Otto takes the car to the office.",
+    "new": "Milo takes the car to the office."
+   },
+   {
+    "old": "Maria listens to lo-fi while working.",
+    "new": "Lisa codes to lo-fi."
+   },
+   {
+    "old": "Milo takes the bike to the office.",
+    "new": "Ida commutes by bike."
+   },
+   {
+    "old": "Nina drinks espresso every morning.",
+    "new": "Alma drinks espresso every morning."
+   },
+   {
+    "old": "Sam prefers Go for new services.",
+    "new": "Milo prefers Go for new services."
+   },
+   {
+    "old": "Tariq indents with mixed indentation.",
+    "new": "Lisa formats code using mixed indentation."
+   },
+   {
+    "old": "Raj writes code in Emacs.",
+    "new": "Sena writes code in Emacs."
+   },
+   {
+    "old": "Bruno's shell is nushell.",
+    "new": "Alma's shell is nushell."
+   },
+   {
+    "old": "Otto writes code in VS Code.",
+    "new": "Kofi writes code in VS Code."
+   },
+   {
+    "old": "Maria deploys on Azure.",
+    "new": "Yuki's infrastructure sits on Azure."
+   },
+   {
+    "old": "Otto keeps fit with rowing.",
+    "new": "Raj keeps fit with rowing."
+   },
+   {
+    "old": "Raj commutes by bus.",
+    "new": "Maria takes the bus to the office."
+   },
+   {
+    "old": "Tariq's test suite is built on snapshot tests.",
+    "new": "Yuki's test suite is built on snapshot tests."
+   },
+   {
+    "old": "Ida is based in GMT.",
+    "new": "Lisa works from GMT."
+   },
+   {
+    "old": "Nina's infrastructure sits on Hetzner.",
+    "new": "Bruno deploys on Hetzner."
+   },
+   {
+    "old": "Vera listens to lo-fi while working.",
+    "new": "Yuki codes to lo-fi."
+   },
+   {
+    "old": "Bruno's morning ritual is matcha.",
+    "new": "Kofi's morning ritual is matcha."
+   },
+   {
+    "old": "Milo writes notes in Obsidian.",
+    "new": "Maria keeps notes in Obsidian."
+   },
+   {
+    "old": "Nina's shell is nushell.",
+    "new": "Tariq uses nushell."
+   },
+   {
+    "old": "Tariq listens to ambient while working.",
+    "new": "Vera codes to ambient."
+   },
+   {
+    "old": "Otto listens to classical while working.",
+    "new": "Alma codes to classical."
+   },
+   {
+    "old": "Lisa listens to classical while working.",
+    "new": "Vera codes to classical."
+   },
+   {
+    "old": "Maria codes to lo-fi.",
+    "new": "Sam codes to lo-fi."
+   },
+   {
+    "old": "Tariq keeps notes in Notion.",
+    "new": "Ida keeps notes in Notion."
+   },
+   {
+    "old": "Yuki keeps a rabbit.",
+    "new": "Otto keeps a rabbit."
+   },
+   {
+    "old": "Vera uses iTerm2 as a terminal.",
+    "new": "Tariq uses iTerm2 as a terminal."
+   },
+   {
+    "old": "Tariq takes the bus to the office.",
+    "new": "Raj commutes by bus."
+   },
+   {
+    "old": "Nina is based in KST.",
+    "new": "Raj is based in KST."
+   },
+   {
+    "old": "Lisa's editor is Neovim.",
+    "new": "Otto writes code in Neovim."
+   },
+   {
+    "old": "Ida indents with eight spaces.",
+    "new": "Sena formats code using eight spaces."
+   },
+   {
+    "old": "Nina writes code in Emacs.",
+    "new": "Tariq writes code in Emacs."
+   },
+   {
+    "old": "Vera drinks coffee every morning.",
+    "new": "Otto's morning ritual is coffee."
+   },
+   {
+    "old": "For new work Sena reaches for Elixir.",
+    "new": "Chen prefers Elixir for new services."
+   },
+   {
+    "old": "Maria works on Windows.",
+    "new": "Nina works on Windows."
+   },
+   {
+    "old": "Vera's test suite is built on property-based tests.",
+    "new": "Maria writes property-based tests."
+   },
+   {
+    "old": "Chen's editor is Emacs.",
+    "new": "Maria writes code in Emacs."
+   },
+   {
+    "old": "Lisa's editor is Emacs.",
+    "new": "Milo writes code in Emacs."
+   },
+   {
+    "old": "Sam works on Ubuntu.",
+    "new": "Maria's machine runs Ubuntu."
+   },
+   {
+    "old": "Sena takes the car to the office.",
+    "new": "Vera takes the car to the office."
+   },
+   {
+    "old": "Ida takes the bus to the office.",
+    "new": "Yuki takes the bus to the office."
+   },
+   {
+    "old": "Raj's team traces with Datadog.",
+    "new": "Tracing for Chen runs on Datadog."
+   },
+   {
+    "old": "Yuki writes code in Neovim.",
+    "new": "Vera writes code in Neovim."
+   },
+   {
+    "old": "Kofi's team runs SQLite in production.",
+    "new": "Production for Sena is SQLite."
+   },
+   {
+    "old": "For new work Lisa reaches for TypeScript.",
+    "new": "For new work Alma reaches for TypeScript."
+   },
+   {
+    "old": "Chen commutes by bus.",
+    "new": "Tariq takes the bus to the office."
+   },
+   {
+    "old": "Chen's editor is Neovim.",
+    "new": "Kofi writes code in Neovim."
+   },
+   {
+    "old": "Production for Sena is CockroachDB.",
+    "new": "Production for Milo is CockroachDB."
+   },
+   {
+    "old": "Chen's morning ritual is matcha.",
+    "new": "Maria's morning ritual is matcha."
+   },
+   {
+    "old": "Raj's pipelines live in GitHub Actions.",
+    "new": "Nina's pipelines live in GitHub Actions."
+   },
+   {
+    "old": "Tariq's team runs MongoDB in production.",
+    "new": "Otto's team runs MongoDB in production."
+   },
+   {
+    "old": "Tariq's infrastructure sits on AWS.",
+    "new": "Milo deploys on AWS."
+   },
+   {
+    "old": "Kofi indents with two spaces.",
+    "new": "Yuki indents with two spaces."
+   },
+   {
+    "old": "Vera builds with Next.js.",
+    "new": "Nina's web stack is Next.js."
+   },
+   {
+    "old": "Nina's morning ritual is espresso.",
+    "new": "Alma drinks espresso every morning."
+   },
+   {
+    "old": "Sena uses Kitty as a terminal.",
+    "new": "Lisa's terminal is Kitty."
+   },
+   {
+    "old": "Milo's web stack is Next.js.",
+    "new": "Lisa builds with Next.js."
+   },
+   {
+    "old": "Nina has a turtle at home.",
+    "new": "Milo has a turtle at home."
+   },
+   {
+    "old": "For new work Yuki reaches for Python.",
+    "new": "For new work Bruno reaches for Python."
+   },
+   {
+    "old": "Raj's team runs MongoDB in production.",
+    "new": "Production for Sam is MongoDB."
+   },
+   {
+    "old": "For new work Yuki reaches for Elixir.",
+    "new": "Lisa prefers Elixir for new services."
+   },
+   {
+    "old": "Kofi deploys on Fly.io.",
+    "new": "Raj deploys on Fly.io."
+   },
+   {
+    "old": "Milo's pipelines live in Buildkite.",
+    "new": "Sena runs CI on Buildkite."
+   },
+   {
+    "old": "Raj does swimming after work.",
+    "new": "Bruno keeps fit with swimming."
+   },
+   {
+    "old": "Lisa uses WezTerm as a terminal.",
+    "new": "Raj uses WezTerm as a terminal."
+   },
+   {
+    "old": "Tracing for Kofi runs on Jaeger.",
+    "new": "Tariq's team traces with Jaeger."
+   },
+   {
+    "old": "Bruno takes the car to the office.",
+    "new": "Milo commutes by car."
+   },
+   {
+    "old": "Nina's team traces with OpenTelemetry.",
+    "new": "Lisa's team traces with OpenTelemetry."
+   },
+   {
+    "old": "Raj deploys on Azure.",
+    "new": "Otto deploys on Azure."
+   },
+   {
+    "old": "Sam reports to Priya.",
+    "new": "Sena's manager is Priya."
+   },
+   {
+    "old": "Chen's test suite is built on table-driven tests.",
+    "new": "Kofi writes table-driven tests."
+   },
+   {
+    "old": "Raj formats code using tabs.",
+    "new": "Lisa formats code using tabs."
+   },
+   {
+    "old": "Ida takes the bike to the office.",
+    "new": "Otto commutes by bike."
+   },
+   {
+    "old": "Tracing for Chen runs on Datadog.",
+    "new": "Tracing for Milo runs on Datadog."
+   },
+   {
+    "old": "Raj's morning ritual is espresso.",
+    "new": "Milo drinks espresso every morning."
+   },
+   {
+    "old": "Vera keeps fit with running.",
+    "new": "Lisa does running after work."
+   },
+   {
+    "old": "Alma's web stack is SvelteKit.",
+    "new": "Kofi's web stack is SvelteKit."
+   },
+   {
+    "old": "Otto's terminal is iTerm2.",
+    "new": "Raj uses iTerm2 as a terminal."
+   },
+   {
+    "old": "Milo drinks matcha every morning.",
+    "new": "Alma drinks matcha every morning."
+   },
+   {
+    "old": "Maria builds with Next.js.",
+    "new": "Raj builds with Next.js."
+   },
+   {
+    "old": "Nina listens to classical while working.",
+    "new": "Yuki listens to classical while working."
+   },
+   {
+    "old": "Otto is based in PST.",
+    "new": "Milo works from PST."
+   },
+   {
+    "old": "Sam commutes by scooter.",
+    "new": "Nina takes the scooter to the office."
+   },
+   {
+    "old": "Chen's infrastructure sits on AWS.",
+    "new": "Lisa's infrastructure sits on AWS."
+   },
+   {
+    "old": "Raj's editor is IntelliJ.",
+    "new": "Otto writes code in IntelliJ."
+   },
+   {
+    "old": "Sena's shell is zsh.",
+    "new": "Bruno uses zsh."
+   },
+   {
+    "old": "Nina's infrastructure sits on Fly.io.",
+    "new": "Sena's infrastructure sits on Fly.io."
+   },
+   {
+    "old": "For new work Chen reaches for Elixir.",
+    "new": "For new work Kofi reaches for Elixir."
+   },
+   {
+    "old": "Chen codes to ambient.",
+    "new": "Alma codes to ambient."
+   },
+   {
+    "old": "Bruno's pipelines live in GitLab CI.",
+    "new": "Tariq runs CI on GitLab CI."
+   },
+   {
+    "old": "Tracing for Chen runs on Datadog.",
+    "new": "Tracing for Raj runs on Datadog."
+   },
+   {
+    "old": "Lisa does climbing after work.",
+    "new": "Sena keeps fit with climbing."
+   },
+   {
+    "old": "Alma indents with four spaces.",
+    "new": "Chen formats code using four spaces."
+   },
+   {
+    "old": "Otto drinks tea every morning.",
+    "new": "Vera's morning ritual is tea."
+   },
+   {
+    "old": "Sena's editor is IntelliJ.",
+    "new": "Alma's editor is IntelliJ."
+   },
+   {
+    "old": "Kofi commutes by scooter.",
+    "new": "Tariq commutes by scooter."
+   },
+   {
+    "old": "Milo does climbing after work.",
+    "new": "Raj keeps fit with climbing."
+   },
+   {
+    "old": "Sam runs CI on CircleCI.",
+    "new": "Kofi's pipelines live in CircleCI."
+   },
+   {
+    "old": "Sam builds with SvelteKit.",
+    "new": "Lisa's web stack is SvelteKit."
+   },
+   {
+    "old": "Production for Vera is SQLite.",
+    "new": "Bruno's team runs SQLite in production."
+   },
+   {
+    "old": "Vera's test suite is built on end-to-end tests.",
+    "new": "Milo's test suite is built on end-to-end tests."
+   },
+   {
+    "old": "Bruno codes to lo-fi.",
+    "new": "Raj codes to lo-fi."
+   },
+   {
+    "old": "Lisa's pipelines live in GitLab CI.",
+    "new": "Vera's pipelines live in GitLab CI."
+   },
+   {
+    "old": "Raj's infrastructure sits on GCP.",
+    "new": "Ida's infrastructure sits on GCP."
+   },
+   {
+    "old": "Chen works on Fedora.",
+    "new": "Otto's machine runs Fedora."
+   },
+   {
+    "old": "Yuki drinks coffee every morning.",
+    "new": "Tariq's morning ritual is coffee."
+   },
+   {
+    "old": "Tariq's shell is fish.",
+    "new": "Nina's shell is fish."
+   },
+   {
+    "old": "Vera keeps fit with swimming.",
+    "new": "Chen keeps fit with swimming."
+   },
+   {
+    "old": "Lisa prefers Elixir for new services.",
+    "new": "Alma prefers Elixir for new services."
+   },
+   {
+    "old": "Milo uses WezTerm as a terminal.",
+    "new": "Raj uses WezTerm as a terminal."
+   },
+   {
+    "old": "Milo codes to classical.",
+    "new": "Chen listens to classical while working."
+   },
+   {
+    "old": "Raj works on Fedora.",
+    "new": "Tariq's machine runs Fedora."
+   },
+   {
+    "old": "Raj's infrastructure sits on Azure.",
+    "new": "Otto deploys on Azure."
+   },
+   {
+    "old": "Bruno uses iTerm2 as a terminal.",
+    "new": "Milo's terminal is iTerm2."
+   },
+   {
+    "old": "Raj keeps notes in Apple Notes.",
+    "new": "Lisa writes notes in Apple Notes."
+   },
+   {
+    "old": "Otto builds with Django.",
+    "new": "Kofi's web stack is Django."
+   },
+   {
+    "old": "Lisa deploys on Fly.io.",
+    "new": "Sena deploys on Fly.io."
+   },
+   {
+    "old": "Lisa keeps a parrot.",
+    "new": "Sam has a parrot at home."
+   },
+   {
+    "old": "Yuki works from KST.",
+    "new": "Tariq works from KST."
+   },
+   {
+    "old": "Sam commutes by bike.",
+    "new": "Lisa takes the bike to the office."
+   },
+   {
+    "old": "Sena builds with Django.",
+    "new": "Bruno's web stack is Django."
+   },
+   {
+    "old": "Tracing for Nina runs on Jaeger.",
+    "new": "Kofi's team traces with Jaeger."
+   },
+   {
+    "old": "Otto commutes by scooter.",
+    "new": "Nina takes the scooter to the office."
+   },
+   {
+    "old": "Yuki works from JST.",
+    "new": "Chen works from JST."
+   },
+   {
+    "old": "Chen listens to lo-fi while working.",
+    "new": "Sena codes to lo-fi."
+   },
+   {
+    "old": "Otto's team traces with Datadog.",
+    "new": "Bruno's team traces with Datadog."
+   },
+   {
+    "old": "Raj writes notes in Notion.",
+    "new": "Sena keeps notes in Notion."
+   },
+   {
+    "old": "Sena's web stack is SvelteKit.",
+    "new": "Nina's web stack is SvelteKit."
+   },
+   {
+    "old": "Maria listens to lo-fi while working.",
+    "new": "Sam codes to lo-fi."
+   },
+   {
+    "old": "Bruno runs CI on GitHub Actions.",
+    "new": "Yuki runs CI on GitHub Actions."
+   },
+   {
+    "old": "Raj does yoga after work.",
+    "new": "Maria does yoga after work."
+   },
+   {
+    "old": "Bruno uses fish.",
+    "new": "Yuki's shell is fish."
+   },
+   {
+    "old": "Vera listens to jazz while working.",
+    "new": "Raj codes to jazz."
+   },
+   {
+    "old": "Kofi's team traces with Honeycomb.",
+    "new": "Tracing for Ida runs on Honeycomb."
+   },
+   {
+    "old": "Bruno's team traces with Honeycomb.",
+    "new": "Tracing for Raj runs on Honeycomb."
+   },
+   {
+    "old": "Lisa's team runs MySQL in production.",
+    "new": "Raj's team runs MySQL in production."
+   },
+   {
+    "old": "Yuki's shell is zsh.",
+    "new": "Nina's shell is zsh."
+   },
+   {
+    "old": "Chen does running after work.",
+    "new": "Maria keeps fit with running."
+   },
+   {
+    "old": "Vera writes notes in Notion.",
+    "new": "Alma writes notes in Notion."
+   },
+   {
+    "old": "Yuki's test suite is built on property-based tests.",
+    "new": "Sam's test suite is built on property-based tests."
+   },
+   {
+    "old": "Kofi's team traces with Honeycomb.",
+    "new": "Ida's team traces with Honeycomb."
+   },
+   {
+    "old": "Sam's terminal is Alacritty.",
+    "new": "Alma's terminal is Alacritty."
+   },
+   {
+    "old": "Lisa writes notes in Notion.",
+    "new": "Alma keeps notes in Notion."
+   },
+   {
+    "old": "Vera prefers Go for new services.",
+    "new": "For new work Kofi reaches for Go."
+   },
+   {
+    "old": "Yuki takes the bike to the office.",
+    "new": "Alma takes the bike to the office."
+   },
+   {
+    "old": "Yuki deploys on AWS.",
+    "new": "Otto's infrastructure sits on AWS."
+   },
+   {
+    "old": "Nina codes to techno.",
+    "new": "Milo codes to techno."
+   },
+   {
+    "old": "Sena's team runs CockroachDB in production.",
+    "new": "Vera's team runs CockroachDB in production."
+   },
+   {
+    "old": "Kofi does yoga after work.",
+    "new": "Alma keeps fit with yoga."
+   },
+   {
+    "old": "Chen listens to techno while working.",
+    "new": "Milo listens to techno while working."
+   },
+   {
+    "old": "Bruno indents with mixed indentation.",
+    "new": "Otto indents with mixed indentation."
+   },
+   {
+    "old": "Vera is based in CET.",
+    "new": "Lisa works from CET."
+   },
+   {
+    "old": "Bruno codes to jazz.",
+    "new": "Maria listens to jazz while working."
+   },
+   {
+    "old": "Chen's pipelines live in Jenkins.",
+    "new": "Bruno's pipelines live in Jenkins."
+   },
+   {
+    "old": "Kofi's morning ritual is coffee.",
+    "new": "Sena drinks coffee every morning."
+   },
+   {
+    "old": "Otto takes the bike to the office.",
+    "new": "Sam commutes by bike."
+   },
+   {
+    "old": "For new work Kofi reaches for TypeScript.",
+    "new": "Tariq prefers TypeScript for new services."
+   },
+   {
+    "old": "For new work Ida reaches for Rust.",
+    "new": "For new work Tariq reaches for Rust."
+   },
+   {
+    "old": "Alma uses WezTerm as a terminal.",
+    "new": "Kofi uses WezTerm as a terminal."
+   },
+   {
+    "old": "Milo's terminal is iTerm2.",
+    "new": "Alma uses iTerm2 as a terminal."
+   },
+   {
+    "old": "Otto uses fish.",
+    "new": "Kofi uses fish."
+   },
+   {
+    "old": "Chen indents with two spaces.",
+    "new": "Ida indents with two spaces."
+   },
+   {
+    "old": "Kofi builds with Django.",
+    "new": "Raj's web stack is Django."
+   },
+   {
+    "old": "Nina runs CI on GitLab CI.",
+    "new": "Maria runs CI on GitLab CI."
+   },
+   {
+    "old": "Lisa's test suite is built on property-based tests.",
+    "new": "Ida's test suite is built on property-based tests."
+   },
+   {
+    "old": "Nina's team runs MongoDB in production.",
+    "new": "Production for Sena is MongoDB."
+   },
+   {
+    "old": "Sam builds with Next.js.",
+    "new": "Ida's web stack is Next.js."
+   },
+   {
+    "old": "Vera's manager is Diane.",
+    "new": "Milo reports to Diane."
+   },
+   {
+    "old": "Kofi reports to Diane.",
+    "new": "Chen's manager is Diane."
+   },
+   {
+    "old": "Bruno takes the bus to the office.",
+    "new": "Sam commutes by bus."
+   },
+   {
+    "old": "Raj's test suite is built on end-to-end tests.",
+    "new": "Tariq's test suite is built on end-to-end tests."
+   },
+   {
+    "old": "Raj prefers Python for new services.",
+    "new": "For new work Ida reaches for Python."
+   },
+   {
+    "old": "Tariq's machine runs Windows.",
+    "new": "Otto works on Windows."
+   },
+   {
+    "old": "Tariq's pipelines live in Buildkite.",
+    "new": "Yuki runs CI on Buildkite."
+   },
+   {
+    "old": "For new work Kofi reaches for Rust.",
+    "new": "Sena prefers Rust for new services."
+   },
+   {
+    "old": "Maria's morning ritual is coffee.",
+    "new": "Tariq drinks coffee every morning."
+   },
+   {
+    "old": "Bruno has a turtle at home.",
+    "new": "Raj has a turtle at home."
+   },
+   {
+    "old": "Bruno is based in PST.",
+    "new": "Kofi works from PST."
+   },
+   {
+    "old": "Kofi's team traces with Jaeger.",
+    "new": "Tracing for Raj runs on Jaeger."
+   },
+   {
+    "old": "Ida writes code in VS Code.",
+    "new": "Sam's editor is VS Code."
+   },
+   {
+    "old": "Otto's pipelines live in GitLab CI.",
+    "new": "Sam runs CI on GitLab CI."
+   },
+   {
+    "old": "Bruno keeps notes in Obsidian.",
+    "new": "Tariq keeps notes in Obsidian."
+   },
+   {
+    "old": "Raj writes end-to-end tests.",
+    "new": "Maria writes end-to-end tests."
+   },
+   {
+    "old": "Sena's manager is Felix.",
+    "new": "Chen reports to Felix."
+   },
+   {
+    "old": "Otto is based in GMT.",
+    "new": "Milo works from GMT."
+   },
+   {
+    "old": "Bruno's editor is IntelliJ.",
+    "new": "Otto's editor is IntelliJ."
+   },
+   {
+    "old": "Maria drinks tea every morning.",
+    "new": "Chen's morning ritual is tea."
+   },
+   {
+    "old": "Bruno's test suite is built on mutation testing.",
+    "new": "Lisa writes mutation testing."
+   },
+   {
+    "old": "Tariq's shell is fish.",
+    "new": "Otto's shell is fish."
+   },
+   {
+    "old": "Nina works from GMT.",
+    "new": "Yuki works from GMT."
+   },
+   {
+    "old": "Alma's infrastructure sits on Hetzner.",
+    "new": "Bruno's infrastructure sits on Hetzner."
+   },
+   {
+    "old": "Production for Tariq is CockroachDB.",
+    "new": "Alma's team runs CockroachDB in production."
+   },
+   {
+    "old": "Yuki writes table-driven tests.",
+    "new": "Sam's test suite is built on table-driven tests."
+   },
+   {
+    "old": "Milo's terminal is iTerm2.",
+    "new": "Raj's terminal is iTerm2."
+   },
+   {
+    "old": "Ida's team traces with Datadog.",
+    "new": "Otto's team traces with Datadog."
+   },
+   {
+    "old": "Chen indents with tabs.",
+    "new": "Milo formats code using tabs."
+   },
+   {
+    "old": "Tariq uses nushell.",
+    "new": "Sam uses nushell."
+   },
+   {
+    "old": "Maria's web stack is Django.",
+    "new": "Milo builds with Django."
+   },
+   {
+    "old": "Sam's terminal is Alacritty.",
+    "new": "Alma's terminal is Alacritty."
+   },
+   {
+    "old": "Raj keeps notes in Logseq.",
+    "new": "Sam keeps notes in Logseq."
+   },
+   {
+    "old": "Kofi is based in KST.",
+    "new": "Vera works from KST."
+   },
+   {
+    "old": "Otto writes code in VS Code.",
+    "new": "Raj's editor is VS Code."
+   },
+   {
+    "old": "Bruno's team runs SQLite in production.",
+    "new": "Otto's team runs SQLite in production."
+   },
+   {
+    "old": "Sam keeps fit with climbing.",
+    "new": "Sena keeps fit with climbing."
+   },
+   {
+    "old": "Lisa indents with tabs.",
+    "new": "Milo formats code using tabs."
+   },
+   {
+    "old": "Kofi's pipelines live in GitHub Actions.",
+    "new": "Tariq runs CI on GitHub Actions."
+   },
+   {
+    "old": "Kofi works on Windows.",
+    "new": "Ida works on Windows."
+   },
+   {
+    "old": "Chen keeps fit with climbing.",
+    "new": "Nina does climbing after work."
+   }
+  ],
+  "unrelated": [
+   {
+    "old": "Sena drinks coffee every morning.",
+    "new": "Otto runs CI on CircleCI."
+   },
+   {
+    "old": "Nina's infrastructure sits on GCP.",
+    "new": "Ida codes to lo-fi."
+   },
+   {
+    "old": "Sena's morning ritual is tea.",
+    "new": "Lisa's machine runs Windows."
+   },
+   {
+    "old": "Otto's editor is Neovim.",
+    "new": "Vera prefers TypeScript for new services."
+   },
+   {
+    "old": "Tracing for Sena runs on OpenTelemetry.",
+    "new": "Yuki uses Kitty as a terminal."
+   },
+   {
+    "old": "Bruno's team runs MongoDB in production.",
+    "new": "Sena keeps notes in Notion."
+   },
+   {
+    "old": "Kofi's test suite is built on mutation testing.",
+    "new": "Tariq's machine runs Arch."
+   },
+   {
+    "old": "Alma's machine runs Arch.",
+    "new": "Lisa keeps notes in Notion."
+   },
+   {
+    "old": "Chen works from CET.",
+    "new": "Tariq's editor is Emacs."
+   },
+   {
+    "old": "Ida uses Kitty as a terminal.",
+    "new": "Otto indents with tabs."
+   },
+   {
+    "old": "Yuki's web stack is Django.",
+    "new": "Vera keeps notes in plain text files."
+   },
+   {
+    "old": "For new work Nina reaches for Rust.",
+    "new": "Alma deploys on Hetzner."
+   },
+   {
+    "old": "Kofi uses fish.",
+    "new": "Milo codes to techno."
+   },
+   {
+    "old": "Tariq keeps fit with climbing.",
+    "new": "Ida's team traces with Datadog."
+   },
+   {
+    "old": "Yuki's test suite is built on end-to-end tests.",
+    "new": "Lisa codes to lo-fi."
+   },
+   {
+    "old": "For new work Raj reaches for Rust.",
+    "new": "Production for Bruno is CockroachDB."
+   },
+   {
+    "old": "Maria reports to Diane.",
+    "new": "Sena writes notes in plain text files."
+   },
+   {
+    "old": "Sena's web stack is Phoenix.",
+    "new": "For new work Raj reaches for Go."
+   },
+   {
+    "old": "Ida drinks matcha every morning.",
+    "new": "Tariq has a dog at home."
+   },
+   {
+    "old": "Otto's test suite is built on mutation testing.",
+    "new": "Yuki reports to Tomas."
+   },
+   {
+    "old": "Yuki writes code in IntelliJ.",
+    "new": "Sam's team runs Postgres in production."
+   },
+   {
+    "old": "Production for Alma is MySQL.",
+    "new": "Kofi drinks chai every morning."
+   },
+   {
+    "old": "Alma's morning ritual is matcha.",
+    "new": "Sena's manager is Diane."
+   },
+   {
+    "old": "Vera's machine runs Ubuntu.",
+    "new": "Bruno has a dog at home."
+   },
+   {
+    "old": "Alma's pipelines live in CircleCI.",
+    "new": "Vera listens to jazz while working."
+   },
+   {
+    "old": "Alma's machine runs Arch.",
+    "new": "Bruno writes code in Neovim."
+   },
+   {
+    "old": "Lisa reports to Tomas.",
+    "new": "Production for Maria is CockroachDB."
+   },
+   {
+    "old": "Milo uses elvish.",
+    "new": "Raj writes notes in Apple Notes."
+   },
+   {
+    "old": "Chen works from JST.",
+    "new": "Kofi formats code using four spaces."
+   },
+   {
+    "old": "Ida uses Kitty as a terminal.",
+    "new": "Raj works from PST."
+   },
+   {
+    "old": "Tariq keeps fit with climbing.",
+    "new": "Otto's team runs Postgres in production."
+   },
+   {
+    "old": "Nina writes code in IntelliJ.",
+    "new": "Otto uses elvish."
+   },
+   {
+    "old": "Ida does climbing after work.",
+    "new": "Bruno's team runs MongoDB in production."
+   },
+   {
+    "old": "Kofi's team traces with Honeycomb.",
+    "new": "Vera's test suite is built on snapshot tests."
+   },
+   {
+    "old": "Sena works on Ubuntu.",
+    "new": "Sam's morning ritual is coffee."
+   },
+   {
+    "old": "Tracing for Kofi runs on Honeycomb.",
+    "new": "Lisa keeps notes in Logseq."
+   },
+   {
+    "old": "Lisa drinks espresso every morning.",
+    "new": "Nina formats code using two spaces."
+   },
+   {
+    "old": "Yuki's web stack is Rails.",
+    "new": "Raj indents with two spaces."
+   },
+   {
+    "old": "Tariq formats code using four spaces.",
+    "new": "Production for Milo is Postgres."
+   },
+   {
+    "old": "Tracing for Lisa runs on Jaeger.",
+    "new": "Chen has a cat at home."
+   },
+   {
+    "old": "Yuki does yoga after work.",
+    "new": "Milo writes code in Zed."
+   },
+   {
+    "old": "Bruno drinks tea every morning.",
+    "new": "Alma takes the train to the office."
+   },
+   {
+    "old": "Nina keeps fit with climbing.",
+    "new": "Ida commutes by car."
+   },
+   {
+    "old": "Milo listens to jazz while working.",
+    "new": "Raj works on macOS."
+   },
+   {
+    "old": "Otto's terminal is GNOME Terminal.",
+    "new": "Maria's team traces with OpenTelemetry."
+   },
+   {
+    "old": "Otto works on Ubuntu.",
+    "new": "Sena prefers TypeScript for new services."
+   },
+   {
+    "old": "Milo has a turtle at home.",
+    "new": "Lisa's team traces with Zipkin."
+   },
+   {
+    "old": "Kofi runs CI on CircleCI.",
+    "new": "Milo prefers Go for new services."
+   },
+   {
+    "old": "Ida keeps a rabbit.",
+    "new": "Kofi drinks coffee every morning."
+   },
+   {
+    "old": "Yuki's editor is IntelliJ.",
+    "new": "Ida builds with Rails."
+   },
+   {
+    "old": "Alma's editor is IntelliJ.",
+    "new": "Kofi's test suite is built on mutation testing."
+   },
+   {
+    "old": "Milo formats code using eight spaces.",
+    "new": "Tariq codes to lo-fi."
+   },
+   {
+    "old": "Vera listens to classical while working.",
+    "new": "Maria works from KST."
+   },
+   {
+    "old": "Ida works from CET.",
+    "new": "Kofi listens to jazz while working."
+   },
+   {
+    "old": "Otto's editor is IntelliJ.",
+    "new": "Sena codes to classical."
+   },
+   {
+    "old": "Sena's morning ritual is espresso.",
+    "new": "Bruno's pipelines live in Jenkins."
+   },
+   {
+    "old": "Chen codes to jazz.",
+    "new": "Milo keeps fit with rowing."
+   },
+   {
+    "old": "Alma's shell is elvish.",
+    "new": "Tracing for Otto runs on Jaeger."
+   },
+   {
+    "old": "Kofi keeps notes in Apple Notes.",
+    "new": "Ida runs CI on Buildkite."
+   },
+   {
+    "old": "Kofi's manager is Felix.",
+    "new": "Ida uses iTerm2 as a terminal."
+   },
+   {
+    "old": "Nina's test suite is built on table-driven tests.",
+    "new": "Milo keeps a parrot."
+   },
+   {
+    "old": "Milo's web stack is Rails.",
+    "new": "Production for Otto is Postgres."
+   },
+   {
+    "old": "Kofi's terminal is Kitty.",
+    "new": "Alma is based in KST."
+   },
+   {
+    "old": "Vera's test suite is built on end-to-end tests.",
+    "new": "Nina commutes by train."
+   },
+   {
+    "old": "Lisa's team runs SQLite in production.",
+    "new": "Alma keeps fit with rowing."
+   },
+   {
+    "old": "Alma listens to jazz while working.",
+    "new": "Vera formats code using tabs."
+   },
+   {
+    "old": "Otto keeps a turtle.",
+    "new": "Bruno's infrastructure sits on Azure."
+   },
+   {
+    "old": "Chen's test suite is built on mutation testing.",
+    "new": "Nina prefers Python for new services."
+   },
+   {
+    "old": "Nina's infrastructure sits on AWS.",
+    "new": "Yuki keeps fit with yoga."
+   },
+   {
+    "old": "Otto's infrastructure sits on Fly.io.",
+    "new": "Kofi builds with Rails."
+   },
+   {
+    "old": "Vera keeps notes in Apple Notes.",
+    "new": "Production for Milo is MongoDB."
+   },
+   {
+    "old": "Maria reports to Diane.",
+    "new": "Alma's machine runs Arch."
+   },
+   {
+    "old": "Vera builds with Django.",
+    "new": "Ida's pipelines live in Jenkins."
+   },
+   {
+    "old": "Sena builds with Phoenix.",
+    "new": "Kofi is based in KST."
+   },
+   {
+    "old": "Vera's team runs Postgres in production.",
+    "new": "Chen's terminal is iTerm2."
+   },
+   {
+    "old": "Otto's infrastructure sits on Azure.",
+    "new": "Sena uses nushell."
+   },
+   {
+    "old": "Maria prefers Python for new services.",
+    "new": "Sam keeps notes in Logseq."
+   },
+   {
+    "old": "Yuki's test suite is built on property-based tests.",
+    "new": "Bruno writes code in Zed."
+   },
+   {
+    "old": "Milo keeps notes in Logseq.",
+    "new": "Production for Tariq is MySQL."
+   },
+   {
+    "old": "Alma's terminal is iTerm2.",
+    "new": "Sam's morning ritual is chai."
+   },
+   {
+    "old": "Maria codes to techno.",
+    "new": "Raj formats code using mixed indentation."
+   },
+   {
+    "old": "Otto's infrastructure sits on Fly.io.",
+    "new": "Tracing for Nina runs on Zipkin."
+   },
+   {
+    "old": "Production for Bruno is MySQL.",
+    "new": "Sam's editor is Zed."
+   },
+   {
+    "old": "Nina works on Arch.",
+    "new": "Raj reports to Priya."
+   },
+   {
+    "old": "Maria writes notes in Obsidian.",
+    "new": "Yuki's machine runs macOS."
+   },
+   {
+    "old": "Bruno's manager is Tomas.",
+    "new": "Sam writes notes in Logseq."
+   },
+   {
+    "old": "Yuki's manager is Felix.",
+    "new": "Sena writes code in VS Code."
+   },
+   {
+    "old": "Nina prefers Go for new services.",
+    "new": "Milo runs CI on Jenkins."
+   },
+   {
+    "old": "Tariq deploys on Hetzner.",
+    "new": "Sam reports to Felix."
+   },
+   {
+    "old": "Sam commutes by bike.",
+    "new": "Chen reports to Karin."
+   },
+   {
+    "old": "Ida writes property-based tests.",
+    "new": "Kofi builds with Next.js."
+   },
+   {
+    "old": "Raj's test suite is built on property-based tests.",
+    "new": "Milo deploys on Hetzner."
+   },
+   {
+    "old": "Bruno indents with mixed indentation.",
+    "new": "Sena works on macOS."
+   },
+   {
+    "old": "Vera's machine runs macOS.",
+    "new": "Lisa listens to ambient while working."
+   },
+   {
+    "old": "Production for Yuki is SQLite.",
+    "new": "Chen has a parrot at home."
+   },
+   {
+    "old": "Otto does climbing after work.",
+    "new": "Milo takes the bus to the office."
+   },
+   {
+    "old": "Kofi's pipelines live in Buildkite.",
+    "new": "For new work Lisa reaches for Rust."
+   },
+   {
+    "old": "Maria's team runs CockroachDB in production.",
+    "new": "Sam's pipelines live in Jenkins."
+   },
+   {
+    "old": "Otto is based in KST.",
+    "new": "Bruno commutes by train."
+   },
+   {
+    "old": "Bruno keeps a rabbit.",
+    "new": "Lisa works on Arch."
+   },
+   {
+    "old": "Alma keeps fit with swimming.",
+    "new": "Kofi keeps a dog."
+   },
+   {
+    "old": "Sam's shell is zsh.",
+    "new": "Kofi commutes by car."
+   },
+   {
+    "old": "Otto's terminal is Alacritty.",
+    "new": "Lisa writes notes in Notion."
+   },
+   {
+    "old": "Kofi does running after work.",
+    "new": "Otto keeps a dog."
+   },
+   {
+    "old": "Lisa's pipelines live in Buildkite.",
+    "new": "Milo deploys on AWS."
+   },
+   {
+    "old": "Chen's team runs CockroachDB in production.",
+    "new": "Otto's pipelines live in CircleCI."
+   },
+   {
+    "old": "Chen writes notes in Obsidian.",
+    "new": "Maria uses fish."
+   },
+   {
+    "old": "Bruno uses zsh.",
+    "new": "Yuki reports to Tomas."
+   },
+   {
+    "old": "Sam commutes by car.",
+    "new": "Lisa writes code in Neovim."
+   },
+   {
+    "old": "Raj formats code using eight spaces.",
+    "new": "Maria drinks chai every morning."
+   },
+   {
+    "old": "Bruno commutes by scooter.",
+    "new": "Tariq prefers Go for new services."
+   },
+   {
+    "old": "Tracing for Otto runs on Zipkin.",
+    "new": "Milo prefers Python for new services."
+   },
+   {
+    "old": "Yuki has a rabbit at home.",
+    "new": "Bruno deploys on Fly.io."
+   },
+   {
+    "old": "Lisa builds with Django.",
+    "new": "Raj works from CET."
+   },
+   {
+    "old": "Raj does climbing after work.",
+    "new": "Production for Maria is MySQL."
+   },
+   {
+    "old": "Maria's pipelines live in GitLab CI.",
+    "new": "Lisa writes code in VS Code."
+   },
+   {
+    "old": "Yuki writes code in Zed.",
+    "new": "Milo does running after work."
+   },
+   {
+    "old": "Tariq's pipelines live in CircleCI.",
+    "new": "Production for Alma is Postgres."
+   },
+   {
+    "old": "Raj listens to techno while working.",
+    "new": "Yuki's terminal is Alacritty."
+   },
+   {
+    "old": "Chen reports to Karin.",
+    "new": "Sam keeps notes in Logseq."
+   },
+   {
+    "old": "Vera codes to classical.",
+    "new": "Alma works on Ubuntu."
+   },
+   {
+    "old": "Alma works from PST.",
+    "new": "Tariq's web stack is Rails."
+   },
+   {
+    "old": "Lisa's pipelines live in GitLab CI.",
+    "new": "Otto builds with Phoenix."
+   },
+   {
+    "old": "Alma's manager is Priya.",
+    "new": "Ida prefers TypeScript for new services."
+   },
+   {
+    "old": "For new work Bruno reaches for Go.",
+    "new": "Raj indents with eight spaces."
+   },
+   {
+    "old": "Sam's editor is Neovim.",
+    "new": "Tariq codes to techno."
+   },
+   {
+    "old": "Nina keeps a rabbit.",
+    "new": "Tracing for Raj runs on Jaeger."
+   },
+   {
+    "old": "Alma's terminal is iTerm2.",
+    "new": "Sena reports to Tomas."
+   },
+   {
+    "old": "Lisa keeps a cat.",
+    "new": "Milo takes the scooter to the office."
+   },
+   {
+    "old": "Kofi takes the scooter to the office.",
+    "new": "Alma's shell is zsh."
+   },
+   {
+    "old": "Milo's terminal is WezTerm.",
+    "new": "Otto's machine runs Fedora."
+   },
+   {
+    "old": "Bruno codes to jazz.",
+    "new": "Alma's terminal is WezTerm."
+   },
+   {
+    "old": "Lisa takes the car to the office.",
+    "new": "Tariq uses fish."
+   },
+   {
+    "old": "Sena works on macOS.",
+    "new": "Lisa runs CI on CircleCI."
+   },
+   {
+    "old": "Yuki writes notes in Obsidian.",
+    "new": "Bruno's terminal is iTerm2."
+   },
+   {
+    "old": "Chen's shell is nushell.",
+    "new": "Nina's morning ritual is coffee."
+   },
+   {
+    "old": "Tariq does running after work.",
+    "new": "Kofi formats code using mixed indentation."
+   },
+   {
+    "old": "Otto uses zsh.",
+    "new": "Vera does rowing after work."
+   },
+   {
+    "old": "Raj uses Kitty as a terminal.",
+    "new": "Nina keeps a turtle."
+   },
+   {
+    "old": "Vera keeps fit with running.",
+    "new": "Tariq has a parrot at home."
+   },
+   {
+    "old": "Alma's test suite is built on table-driven tests.",
+    "new": "Sena codes to techno."
+   },
+   {
+    "old": "Alma runs CI on GitHub Actions.",
+    "new": "Yuki formats code using mixed indentation."
+   },
+   {
+    "old": "Milo has a dog at home.",
+    "new": "Alma's machine runs Fedora."
+   },
+   {
+    "old": "For new work Milo reaches for TypeScript.",
+    "new": "Vera formats code using eight spaces."
+   },
+   {
+    "old": "Sam's test suite is built on table-driven tests.",
+    "new": "Nina's morning ritual is matcha."
+   },
+   {
+    "old": "For new work Ida reaches for Python.",
+    "new": "Sam's shell is bash."
+   },
+   {
+    "old": "Raj keeps a parrot.",
+    "new": "Alma takes the bus to the office."
+   },
+   {
+    "old": "Vera works on macOS.",
+    "new": "Chen keeps fit with rowing."
+   },
+   {
+    "old": "Bruno's manager is Diane.",
+    "new": "Maria works on Ubuntu."
+   },
+   {
+    "old": "Chen's web stack is Next.js.",
+    "new": "Bruno listens to ambient while working."
+   },
+   {
+    "old": "Tracing for Chen runs on OpenTelemetry.",
+    "new": "Alma's terminal is Alacritty."
+   },
+   {
+    "old": "Bruno codes to jazz.",
+    "new": "Maria indents with mixed indentation."
+   },
+   {
+    "old": "Chen commutes by scooter.",
+    "new": "Nina does running after work."
+   },
+   {
+    "old": "Maria's machine runs Ubuntu.",
+    "new": "Otto's manager is Felix."
+   },
+   {
+    "old": "Ida writes code in IntelliJ.",
+    "new": "Tariq's test suite is built on table-driven tests."
+   },
+   {
+    "old": "Tracing for Sam runs on Jaeger.",
+    "new": "Chen deploys on Hetzner."
+   },
+   {
+    "old": "Yuki reports to Tomas.",
+    "new": "Ida deploys on GCP."
+   },
+   {
+    "old": "Lisa's terminal is WezTerm.",
+    "new": "Vera formats code using tabs."
+   },
+   {
+    "old": "Maria takes the car to the office.",
+    "new": "Bruno listens to ambient while working."
+   },
+   {
+    "old": "Kofi's machine runs Ubuntu.",
+    "new": "Ida indents with mixed indentation."
+   },
+   {
+    "old": "Milo is based in CET.",
+    "new": "Chen writes mutation testing."
+   },
+   {
+    "old": "Sam has a cat at home.",
+    "new": "Yuki deploys on Hetzner."
+   },
+   {
+    "old": "Sena reports to Priya.",
+    "new": "Vera is based in GMT."
+   },
+   {
+    "old": "Lisa is based in KST.",
+    "new": "Sena's morning ritual is tea."
+   },
+   {
+    "old": "Lisa's shell is elvish.",
+    "new": "Milo formats code using two spaces."
+   },
+   {
+    "old": "Kofi takes the train to the office.",
+    "new": "Nina writes code in Zed."
+   },
+   {
+    "old": "Sena commutes by bike.",
+    "new": "Vera's machine runs Fedora."
+   },
+   {
+    "old": "Tariq works on Arch.",
+    "new": "Otto is based in KST."
+   },
+   {
+    "old": "Vera does swimming after work.",
+    "new": "Sam formats code using four spaces."
+   },
+   {
+    "old": "Vera builds with Next.js.",
+    "new": "Maria's team runs Postgres in production."
+   },
+   {
+    "old": "Vera drinks espresso every morning.",
+    "new": "Lisa prefers Go for new services."
+   },
+   {
+    "old": "Alma is based in JST.",
+    "new": "Raj uses zsh."
+   },
+   {
+    "old": "Chen does swimming after work.",
+    "new": "Sam listens to lo-fi while working."
+   },
+   {
+    "old": "Yuki's test suite is built on mutation testing.",
+    "new": "Chen keeps notes in Obsidian."
+   },
+   {
+    "old": "Tariq codes to classical.",
+    "new": "Maria's team traces with Zipkin."
+   },
+   {
+    "old": "Sam runs CI on GitHub Actions.",
+    "new": "Sena listens to ambient while working."
+   },
+   {
+    "old": "Vera's team traces with Datadog.",
+    "new": "Bruno writes code in Neovim."
+   },
+   {
+    "old": "Otto writes code in Neovim.",
+    "new": "Chen codes to jazz."
+   },
+   {
+    "old": "Production for Ida is Postgres.",
+    "new": "Lisa writes table-driven tests."
+   },
+   {
+    "old": "Raj's terminal is GNOME Terminal.",
+    "new": "Maria keeps a dog."
+   },
+   {
+    "old": "Lisa drinks coffee every morning.",
+    "new": "Otto's shell is bash."
+   },
+   {
+    "old": "Sena drinks tea every morning.",
+    "new": "Yuki's shell is zsh."
+   },
+   {
+    "old": "Yuki reports to Diane.",
+    "new": "Otto's web stack is SvelteKit."
+   },
+   {
+    "old": "Tracing for Sam runs on OpenTelemetry.",
+    "new": "Otto takes the bus to the office."
+   },
+   {
+    "old": "Bruno's infrastructure sits on Fly.io.",
+    "new": "Vera's team runs MySQL in production."
+   },
+   {
+    "old": "Maria writes code in IntelliJ.",
+    "new": "Otto takes the scooter to the office."
+   },
+   {
+    "old": "Sena works from CET.",
+    "new": "Yuki keeps notes in Obsidian."
+   },
+   {
+    "old": "Lisa's team runs Postgres in production.",
+    "new": "Alma's web stack is SvelteKit."
+   },
+   {
+    "old": "Production for Sena is CockroachDB.",
+    "new": "Nina formats code using tabs."
+   },
+   {
+    "old": "Vera keeps a cat.",
+    "new": "Otto's test suite is built on mutation testing."
+   },
+   {
+    "old": "Ida's team traces with Honeycomb.",
+    "new": "Vera drinks matcha every morning."
+   },
+   {
+    "old": "Kofi's machine runs macOS.",
+    "new": "Sena drinks coffee every morning."
+   },
+   {
+    "old": "Sam's machine runs Fedora.",
+    "new": "Lisa builds with Django."
+   },
+   {
+    "old": "Sena reports to Diane.",
+    "new": "Maria uses WezTerm as a terminal."
+   },
+   {
+    "old": "Yuki's infrastructure sits on Azure.",
+    "new": "Sam drinks coffee every morning."
+   },
+   {
+    "old": "Sena has a parrot at home.",
+    "new": "Bruno's infrastructure sits on Azure."
+   },
+   {
+    "old": "Lisa reports to Tomas.",
+    "new": "Otto indents with tabs."
+   },
+   {
+    "old": "Vera prefers Python for new services.",
+    "new": "Nina is based in KST."
+   },
+   {
+    "old": "Maria's shell is nushell.",
+    "new": "Tariq commutes by car."
+   },
+   {
+    "old": "Sam deploys on Fly.io.",
+    "new": "Nina listens to classical while working."
+   },
+   {
+    "old": "Sena's machine runs Ubuntu.",
+    "new": "Raj reports to Felix."
+   },
+   {
+    "old": "Yuki does running after work.",
+    "new": "Vera works on macOS."
+   },
+   {
+    "old": "Maria keeps notes in plain text files.",
+    "new": "Tariq deploys on AWS."
+   },
+   {
+    "old": "Tariq writes code in Emacs.",
+    "new": "Otto listens to lo-fi while working."
+   },
+   {
+    "old": "Otto deploys on Azure.",
+    "new": "Tariq's morning ritual is matcha."
+   },
+   {
+    "old": "Raj keeps fit with running.",
+    "new": "Maria indents with two spaces."
+   },
+   {
+    "old": "Chen has a parrot at home.",
+    "new": "Sena deploys on GCP."
+   },
+   {
+    "old": "Chen codes to ambient.",
+    "new": "Vera does running after work."
+   },
+   {
+    "old": "Otto codes to ambient.",
+    "new": "Tariq keeps fit with swimming."
+   },
+   {
+    "old": "Sena takes the car to the office.",
+    "new": "Chen is based in KST."
+   },
+   {
+    "old": "Sam's pipelines live in Buildkite.",
+    "new": "Chen has a parrot at home."
+   },
+   {
+    "old": "For new work Sam reaches for Rust.",
+    "new": "Tariq indents with eight spaces."
+   },
+   {
+    "old": "Alma writes code in IntelliJ.",
+    "new": "Ida prefers TypeScript for new services."
+   },
+   {
+    "old": "Vera writes code in IntelliJ.",
+    "new": "Otto builds with Next.js."
+   },
+   {
+    "old": "Alma takes the car to the office.",
+    "new": "For new work Sam reaches for TypeScript."
+   },
+   {
+    "old": "Nina writes table-driven tests.",
+    "new": "Otto's machine runs Fedora."
+   },
+   {
+    "old": "Maria runs CI on CircleCI.",
+    "new": "Otto works from GMT."
+   },
+   {
+    "old": "Lisa runs CI on Jenkins.",
+    "new": "Alma writes code in Zed."
+   },
+   {
+    "old": "Kofi codes to jazz.",
+    "new": "Maria works on macOS."
+   },
+   {
+    "old": "Lisa writes end-to-end tests.",
+    "new": "For new work Bruno reaches for Python."
+   },
+   {
+    "old": "Sena reports to Priya.",
+    "new": "Maria's infrastructure sits on AWS."
+   },
+   {
+    "old": "Lisa keeps a rabbit.",
+    "new": "Alma drinks tea every morning."
+   },
+   {
+    "old": "Tariq uses iTerm2 as a terminal.",
+    "new": "Raj's pipelines live in Buildkite."
+   },
+   {
+    "old": "Yuki's test suite is built on property-based tests.",
+    "new": "Nina formats code using tabs."
+   },
+   {
+    "old": "Raj's web stack is SvelteKit.",
+    "new": "Tariq drinks tea every morning."
+   },
+   {
+    "old": "Lisa is based in GMT.",
+    "new": "Maria formats code using eight spaces."
+   },
+   {
+    "old": "Tracing for Nina runs on OpenTelemetry.",
+    "new": "Tariq uses nushell."
+   },
+   {
+    "old": "Nina's team runs CockroachDB in production.",
+    "new": "Ida keeps notes in Notion."
+   },
+   {
+    "old": "For new work Milo reaches for TypeScript.",
+    "new": "Maria keeps notes in plain text files."
+   },
+   {
+    "old": "Nina indents with tabs.",
+    "new": "Kofi builds with Phoenix."
+   },
+   {
+    "old": "Lisa deploys on Azure.",
+    "new": "For new work Sena reaches for Go."
+   },
+   {
+    "old": "Maria listens to lo-fi while working.",
+    "new": "Ida deploys on Fly.io."
+   },
+   {
+    "old": "Tariq uses Kitty as a terminal.",
+    "new": "Alma keeps notes in Logseq."
+   },
+   {
+    "old": "Ida listens to techno while working.",
+    "new": "Bruno keeps a parrot."
+   },
+   {
+    "old": "For new work Ida reaches for Elixir.",
+    "new": "Alma's editor is Neovim."
+   },
+   {
+    "old": "Lisa's pipelines live in Buildkite.",
+    "new": "Chen works on Fedora."
+   },
+   {
+    "old": "Milo's manager is Karin.",
+    "new": "Otto uses zsh."
+   },
+   {
+    "old": "Kofi keeps fit with yoga.",
+    "new": "Tariq listens to ambient while working."
+   },
+   {
+    "old": "Yuki indents with tabs.",
+    "new": "Sena takes the car to the office."
+   },
+   {
+    "old": "Maria writes notes in plain text files.",
+    "new": "Chen's test suite is built on snapshot tests."
+   },
+   {
+    "old": "Alma's pipelines live in Buildkite.",
+    "new": "Maria drinks matcha every morning."
+   },
+   {
+    "old": "Bruno uses zsh.",
+    "new": "Milo's manager is Priya."
+   },
+   {
+    "old": "Ida prefers Elixir for new services.",
+    "new": "Maria writes property-based tests."
+   },
+   {
+    "old": "Milo uses bash.",
+    "new": "Kofi indents with tabs."
+   },
+   {
+    "old": "Maria's team traces with Datadog.",
+    "new": "Kofi's morning ritual is tea."
+   },
+   {
+    "old": "Chen drinks coffee every morning.",
+    "new": "Lisa commutes by train."
+   },
+   {
+    "old": "For new work Tariq reaches for Rust.",
+    "new": "Raj's terminal is Kitty."
+   },
+   {
+    "old": "Tariq indents with tabs.",
+    "new": "Milo works on Fedora."
+   },
+   {
+    "old": "Ida prefers Rust for new services.",
+    "new": "Otto's editor is Emacs."
+   },
+   {
+    "old": "Tariq reports to Diane.",
+    "new": "Maria's shell is nushell."
+   }
+  ]
+ }
+}

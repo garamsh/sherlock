@@ -116,7 +116,7 @@ No store at all: one bounded document holding the most recent turns' text, rewri
 
 ## `attribute-single` — one value at an address
 
-One value at `(subject, attribute)`, and a write replaces what is there. It is the plainest member of the addressed family §What the comparison shows describes, and the arity decision taken at one end.
+One value at `(subject, attribute)`, and a write replaces what is there. It is one end of the addressed family §What the comparison shows describes.
 
 **What these figures say.**
 
@@ -124,7 +124,7 @@ One value at `(subject, attribute)`, and a write replaces what is there. It is t
 
 ## `attribute-multi` — every value at an address
 
-Every value ever written at `(subject, attribute)`, and a write never replaces. It is the same addressed store as `attribute-single` with the arity decision taken at the other end.
+Every value ever written at `(subject, attribute)`, and a write never replaces. It is the other end of the addressed family §What the comparison shows describes.
 
 **What these figures say.**
 
@@ -152,7 +152,7 @@ One or several values at `(subject, attribute)`. A value joins the ones already 
 
 **Not a candidate and not a structure.** It is the attribute store with arity supplied rather than decided: the write states whether the value replaces what is at its address or joins it, and the frame takes it. A frame reading that is not answering the arity question, it is assuming it answered. It is here as the ceiling every structure that has to decide for itself is read against, and it belongs in no ranking of designs — a reader scanning the rows for the best one has found a row that is not competing.
 
-Its row is the ceiling, and §What the comparison shows reads the distance between it and every structure that has to decide arity for itself. What it costs when the declaration is wrong is its own study, because in production that declaration comes from a model reading a sentence: §What a wrong declaration costs sweeps the error rate and §Whether a write need destroy asks whether the damage can be made non-destructive.
+§What the comparison shows reads the distance between its row and every structure that has to decide arity for itself. What it costs when the declaration is wrong is its own study, because in production that declaration comes from a model reading a sentence: §What a wrong declaration costs sweeps the error rate and §Whether a write need destroy asks whether the damage can be made non-destructive.
 
 ## `interval` — a value with the span it was true for
 

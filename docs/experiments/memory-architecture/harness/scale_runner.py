@@ -137,7 +137,9 @@ def main():
     table = render_scale_table(all_rows, queries)
     with open("results/scale.md", "w") as f:
         f.write("# Memory Architecture — Scale Test\n\n")
-        f.write("Same 5 sessions' queries, but the store is padded with synthetic noise sessions to reach the target scale. Tests whether accuracy and latency hold as the store grows.\n\n")
+        f.write(f"Same {len(SESSIONS)} sessions' queries, but the store is padded with synthetic "
+                "noise sessions to reach the target scale. Tests whether accuracy and latency "
+                "hold as the store grows.\n\n")
         f.write("Metrics:\n")
         f.write("- R@5: Recall@5 (any expected keyword in top-5)\n")
         f.write("- P@5: Precision@5 (% of top-5 that are relevant)\n")

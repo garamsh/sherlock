@@ -4,8 +4,8 @@
 
 - items: 1071
 - storage: 36.2 KB
-- avg insert: 0.3 μs
-- avg query: 0.1 μs
+- avg insert: 3.0 μs
+- avg query: 0.3 μs
 - R@5: 0.000
 - P@5: 0.000
 - time@1: 0.000
@@ -19,8 +19,8 @@
 
 - items: 1071
 - storage: 36.2 KB
-- avg insert: 0.4 μs
-- avg query: 0.2 μs
+- avg insert: 0.7 μs
+- avg query: 0.3 μs
 - R@5: 0.000
 - P@5: 0.000
 - time@1: 0.000
@@ -34,8 +34,8 @@
 
 - items: 1071
 - storage: 36.2 KB
-- avg insert: 0.3 μs
-- avg query: 62.8 μs
+- avg insert: 0.5 μs
+- avg query: 560.8 μs
 - R@5: 0.000
 - P@5: 0.000
 - time@1: 0.000
@@ -49,8 +49,8 @@
 
 - items: 1071
 - storage: 36.2 KB
-- avg insert: 690.5 μs
-- avg query: 4118.2 μs
+- avg insert: 6670.9 μs
+- avg query: 45168.8 μs
 - R@5: 0.500
 - P@5: 0.149
 - time@1: 0.000
@@ -64,8 +64,8 @@
 
 - items: 1071
 - storage: 36.2 KB
-- avg insert: 6.2 μs
-- avg query: 16974.9 μs
+- avg insert: 74.3 μs
+- avg query: 125286.9 μs
 - R@5: 0.300
 - P@5: 0.100
 - time@1: 0.000
@@ -79,8 +79,8 @@
 
 - items: 1071
 - storage: 36.2 KB
-- avg insert: 698.8 μs
-- avg query: 21713.1 μs
+- avg insert: 5319.8 μs
+- avg query: 247829.3 μs
 - R@5: 0.300
 - P@5: 0.080
 - time@1: 0.000
@@ -94,8 +94,8 @@
 
 - items: 1071
 - storage: 36.2 KB
-- avg insert: 717.0 μs
-- avg query: 21944.2 μs
+- avg insert: 7540.0 μs
+- avg query: 299948.7 μs
 - R@5: 0.300
 - P@5: 0.080
 - time@1: 0.000
@@ -109,8 +109,8 @@
 
 - items: 36
 - storage: 2.0 KB
-- avg insert: 55.5 μs
-- avg query: 700.9 μs
+- avg insert: 501.4 μs
+- avg query: 4780.8 μs
 - R@5: 0.600
 - P@5: 0.170
 - time@1: 0.000
@@ -124,8 +124,8 @@
 
 - items: 1071
 - storage: 36.2 KB
-- avg insert: 735.2 μs
-- avg query: 22720.5 μs
+- avg insert: 7279.7 μs
+- avg query: 187360.6 μs
 - R@5: 0.500
 - P@5: 0.150
 - time@1: 0.000
@@ -139,8 +139,8 @@
 
 - items: 1071
 - storage: 36.2 KB
-- avg insert: 728.2 μs
-- avg query: 23049.2 μs
+- avg insert: 8723.5 μs
+- avg query: 205282.4 μs
 - R@5: 0.500
 - P@5: 0.150
 - time@1: 0.000
@@ -154,8 +154,8 @@
 
 - items: 1071
 - storage: 36.2 KB
-- avg insert: 726.5 μs
-- avg query: 22591.0 μs
+- avg insert: 7074.3 μs
+- avg query: 200823.4 μs
 - R@5: 0.650
 - P@5: 0.170
 - time@1: 0.000
@@ -169,8 +169,8 @@
 
 - items: 1071
 - storage: 36.2 KB
-- avg insert: 728.1 μs
-- avg query: 22055.1 μs
+- avg insert: 5568.6 μs
+- avg query: 252840.7 μs
 - R@5: 0.650
 - P@5: 0.170
 - time@1: 0.000
@@ -182,21 +182,76 @@
 
 ## F1
 
-ERROR: 'F1'
+- items: 36
+- storage: 2.0 KB
+- avg insert: 1226.4 μs
+- avg query: 9268.7 μs
+- R@5: 0.800
+- P@5: 0.210
+- time@1: 0.000
+- noise: 1.000
+- anti-poll: 1.0
+- dedup: 1.000
+- accuracy: 0.773
+- LoC: 71
 
 ## F2
 
-ERROR: 'F2'
+- items: 33
+- storage: 1.9 KB
+- avg insert: 3317.6 μs
+- avg query: 6639.1 μs
+- R@5: 0.600
+- P@5: 0.150
+- time@1: 0.000
+- noise: 1.000
+- anti-poll: 0.0
+- dedup: 1.000
+- accuracy: 0.609
+- LoC: 78
 
 ## F3
 
-ERROR: 'F3'
+- items: 16
+- storage: 2.1 KB
+- avg insert: 1969.6 μs
+- avg query: 2938.9 μs
+- R@5: 0.500
+- P@5: 0.100
+- time@1: 0.000
+- noise: 1.000
+- anti-poll: 1.0
+- dedup: 1.000
+- accuracy: 0.673
+- LoC: 88
 
 ## F4
 
-ERROR: 'F4'
+- items: 36
+- storage: 2.0 KB
+- avg insert: 610.4 μs
+- avg query: 11813.8 μs
+- R@5: 0.800
+- P@5: 0.210
+- time@1: 0.000
+- noise: 1.000
+- anti-poll: 1.0
+- dedup: 1.000
+- accuracy: 0.764
+- LoC: 82
 
 ## F5
 
-ERROR: 'F5'
+- items: 33
+- storage: 1.9 KB
+- avg insert: 4851.5 μs
+- avg query: 7971.5 μs
+- R@5: 0.800
+- P@5: 0.200
+- time@1: 0.000
+- noise: 1.000
+- anti-poll: 1.0
+- dedup: 1.000
+- accuracy: 0.755
+- LoC: 103
 

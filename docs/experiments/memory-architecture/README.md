@@ -26,7 +26,7 @@ Thirty-eight candidate architectures were implemented as small Python classes be
 | diverse | 50 sessions across 8 memory categories + 5,000 noise | does it handle the variety of human memory |
 | large-scale | 10,000 real items + 50,000 noise | does accuracy and speed hold at scale |
 
-A fifth run replays the small workload's queries against stores padded toward 1,052 and 5,000 stored items, to separate the effect of store size from the effect of the workload. It is the only run in which the F series produced a small-workload number.
+A fifth run replays the small workload's queries against stores padded toward 1,052 and 5,000 stored items, to separate the effect of store size from the effect of the workload.
 
 **Metrics**: recall@5 (did the right memory appear in the top 5), precision@5 (how much of the top 5 is right), content accuracy, anti-pollution (does noise crowd out curated memory after 1,000 junk turns), supersession accuracy (does the newest version of a fact win), stale recall (how often an outdated fact is returned), storage size, recall per KB (memory density), query latency.
 
@@ -94,24 +94,27 @@ A fifth run replays the small workload's queries against stores padded toward 1,
 | A1 auto-capture | 0.00 | 0.00 | 0.0 | 1,071 | 36.2 |
 | B3 hybrid RAG | 0.30 | 0.08 | 0.0 | 1,071 | 36.2 |
 | D2 curation-only | 0.60 | 0.17 | 0.0 | 36 | 2.0 |
-| **E3 salience tier** | **0.65** | **0.17** | **1.0** | 1,071 | 36.2 |
+| E3 salience tier | 0.65 | 0.17 | 1.0 | 1,071 | 36.2 |
+| **F5 combined** | **0.80** | **0.20** | **1.0** | **33** | **1.9** |
 
-Auto-capture fails completely: with 1,000 noise turns in the store, the right memory is never found. E4 ties E3 on every column in this table; they are the only two rows that survive the anti-pollution probe.
+Auto-capture fails completely: with 1,000 noise turns in the store, the right memory is never found. E4 ties E3 on every column in this table, and F1 and F4 match F5 on recall at 0.80.
 
-The F series produced no measurement here. `results/per_architecture.md` records `ERROR: 'F1'` through `ERROR: 'F5'`, the runner's own report of an architecture name it could not resolve — and the committed `harness/runner.py` resolves all five. The committed small-workload results therefore predate the committed harness: `results/table.md` also carries 13 columns where the committed runner writes 17. Re-running is out of scope for this record, so the F series is absent from this table rather than estimated into it.
+**The F-series rows are first measurements, not corrections.** The run committed with this record errored on F1 through F5, so until now the record carried no small-workload number for any of them — there is no earlier figure for them to disagree with. Every architecture that did produce a number then reproduces it here unchanged.
+
+`results/table.md` carries the 17 columns the committed renderer writes. Two of them, `R/KB` and `rep-keep`, are zero for every architecture, because the renderer measures them against an empty store rather than the one the run filled; the record uses neither.
 
 ### Scale run over the small workload — `results/scale.md`
 
-The same queries against a store padded toward 1,052 items. This is the run behind every F-series number ever quoted for the small workload.
+The same queries against a store padded toward 1,052 items, which separates store size from the workload.
 
 | arch | R@5 | P@5 | Items | Query μs | Recall/KB |
 |---|---|---|---|---|---|
 | A1 auto-capture | 0.00 | 0.00 | 1,081 | 0.1 | 0.0 |
-| B3 hybrid RAG | 0.30 | 0.08 | 1,081 | 22,288.1 | 5.7 |
-| D2 curation-only | 0.60 | 0.17 | 36 | 731.8 | 341.3 |
-| **F5 combined** | **0.80** | 0.20 | **33** | 680.6 | **496.5** |
+| B3 hybrid RAG | 0.30 | 0.08 | 1,081 | 24,153.3 | 5.7 |
+| D2 curation-only | 0.60 | 0.17 | 36 | 741.0 | 341.3 |
+| **F5 combined** | **0.80** | 0.20 | **33** | 645.2 | **496.5** |
 
-At the 5,000-item padding every row above holds its R@5 and P@5 unchanged; only the stores that keep everything slow down, B3 from 22,288.1 μs to 103,794.3 μs.
+At the 5,000-item padding every row above holds its R@5 and P@5 unchanged; only the stores that keep everything slow down, B3 from 24,153.3 μs to 116,003.2 μs.
 
 ### Long-horizon workload (a 10-year agent life) — `results/long_horizon.md`
 
@@ -139,11 +142,11 @@ Reflection wins on raw recall and precision — combining memories into summarie
 
 | arch | R@5 | Items | Query ms | Recall/KB |
 |---|---|---|---|---|
-| D2 curation | 0.69 | 10,000 | 213.2 | 1.4 |
-| **F5 combined** | 0.62 | **79** | 1.8 | **159.5** |
-| G4 reflection | 0.69 | 11,250 | 238.6 | 1.3 |
+| D2 curation | 0.69 | 10,000 | 205.7 | 1.4 |
+| **F5 combined** | 0.62 | **79** | 1.7 | **159.5** |
+| G4 reflection | 0.69 | 11,250 | 311.1 | 1.3 |
 | G6 decade-stable | 0.54 | 79 | 1.6 | 139.6 |
-| M5 WM+LRU | 0.54 | 207 | 0.7 | 53.3 |
+| M5 WM+LRU | 0.54 | 207 | 0.6 | 53.3 |
 | M6 LSM | 0.46 | 150 | 0.4 | 63.0 |
 | H6 triple hybrid | 0.00 | 436 | 0.0 | 0.0 |
 
@@ -153,7 +156,7 @@ Retention, not curation, is what stays small here: every one of the 10,000 real 
 
 1. **Auto-capture is the root failure.** A1 and A2 score 0.00 recall on the small, scale and long-horizon runs; on the diverse workload A1 reaches 0.03 and A2 stays at 0.00. Neither was run at 60k. This is the measurement that retired the platform auto-capture ADR 0006's earlier revision introduced.
 2. **Curation-only is the floor.** Storing only what the model writes is the precondition for every other win.
-3. **The minimal winning set is four rules**: curation-only storage, a salience tier on every memory, salience-scaled decay with tiered retention, and supersession on insert. F5 and G6 carry them. Across the runs they were measured on, their R@5 stays between 0.54 and 0.90 while their store is 32 to 127 times smaller than the architectures that keep everything. Neither was measured on the small workload.
+3. **The minimal winning set is four rules**: curation-only storage, a salience tier on every memory, salience-scaled decay with tiered retention, and supersession on insert. F5 and G6 carry them. Across the runs they were measured on, their R@5 stays between 0.54 and 0.90 while their store is 32 to 127 times smaller than the architectures that keep everything. G6 does not run on the small workload; F5 leads it at 0.80.
 4. **More mechanisms do not compose for free.** Single-combination hybrids are middling; the triple hybrid breaks. Simple is not a preference here — it is what the data supports.
 5. **Recursive retrieval is real but conditional.** It pays off in connected corpora (a codebase, one long conversation), not in fragmented sessions.
 
@@ -174,4 +177,4 @@ python3 harness/large_runner.py         # 60k-item workload
 python3 harness/claim_sources.py        # check this document against results/
 ```
 
-Each runner rewrites its table under `results/`, and the recorded run of each is committed there with raw JSON beside it. `claim_sources.py` reads both sides and fails when a figure here stops matching the file behind it; it makes no run of its own. Re-running `runner.py` will not reproduce the committed small-workload table — that table predates the committed harness, as its absent F series records.
+Each runner rewrites its table under `results/`, and the recorded run of each is committed there with raw JSON beside it. Every committed result is a run of the committed harness, so a runner reproduces its table apart from the timing columns, which are machine-dependent. `claim_sources.py` reads both sides and fails when a figure here stops matching the file behind it; it makes no run of its own.

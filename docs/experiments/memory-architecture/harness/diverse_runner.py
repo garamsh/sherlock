@@ -1,4 +1,4 @@
-"""Diverse workload runner. 35 sessions across 8 cognitive categories.
+"""Diverse workload runner: the sessions `diverse_workload` holds, over 8 categories.
 
 Tests memory architectures against the variety of what a real human
 (or agent) actually remembers: people, events, routines, opinions,
@@ -130,7 +130,11 @@ def render_table(rows, queries):
 def main():
     os.makedirs("results", exist_ok=True)
     queries = build_queries()
-    print("Running diverse workload: 35 sessions × 8 cognitive categories + 5000 noise")
+    sessions = len(SESSIONS)
+    categories = len({s.category for s in SESSIONS})
+    noise = len(noise_filler())
+    print(f"Running diverse workload: {sessions} sessions × {categories} cognitive "
+          f"categories + {noise} noise")
     rows = []
     for name in ARCH_NAMES:
         cls = getattr(architectures, CLASS_NAMES.get(name), None)
@@ -144,7 +148,8 @@ def main():
     table = render_table(rows, queries)
     with open("results/diverse.md", "w") as f:
         f.write("# Memory Architecture — Diverse Workload (8 cognitive categories)\n\n")
-        f.write("35 sessions across 8 cognitive categories: Person, Event, Routine, Opinion, Procedure, Spatial, Emotion, Relationship. Plus 5000 noise turns. Tests whether the architecture can handle the variety of what a real human (or agent) remembers.\n\n")
+        f.write(f"{sessions} sessions across {categories} cognitive categories: Person, Event, Routine, Opinion, Procedure, Spatial, Emotion, Relationship. "
+                f"Plus {noise} noise turns. Tests whether the architecture can handle the variety of what a real human (or agent) remembers.\n\n")
         f.write(table + "\n")
     print("\n" + table)
     with open("results/diverse_raw.json", "w") as f:

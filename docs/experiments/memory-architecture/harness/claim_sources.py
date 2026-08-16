@@ -264,26 +264,22 @@ def small():
     check(s, "E4 ties E3 on every column this table shows", len(shown),
           "results/table.md E3 and E4 rows", len(tied), rounded=False)
 
+    # The run is complete and was produced by the committed harness: no
+    # architecture failed, every name the runner selects has a measured row, and
+    # the file's column count is the one the committed renderer writes.
     detail = open(os.path.join(RESULTS, "per_architecture.md")).read()
-    a = Anchor(r"`ERROR: '(F\d)'` through `ERROR: '(F\d)'`")
-    errored = re.findall(r"## (F\d)\n\nERROR: '(F\d)'", detail)
-    check(s, "first errored architecture", a.one(0),
-          "results/per_architecture.md ERROR blocks", errored[0][0], rounded=False)
-    check(s, "last errored architecture", a.one(1),
-          "results/per_architecture.md ERROR blocks", errored[-1][0], rounded=False)
-    check(s, "the committed runner resolves the errored architectures", 5,
-          "runner.import_arch over the ERROR blocks",
-          sum(1 for name, _ in errored if runner.import_arch(name) is not None),
+    check(s, "architectures that failed to run", 0,
+          "results/per_architecture.md ERROR blocks",
+          len(re.findall(r"^ERROR: ", detail, re.M)), rounded=False)
+    check(s, "architectures the runner selects that the table measures",
+          len(runner.ALL_NAMES), "results/table.md rows carrying an item count",
+          sum(1 for a in runner.ALL_NAMES if table[a]["items"] != "—"),
           rounded=False)
-
-    a = Anchor(r"carries (\d+) columns where the committed runner writes (\d+)")
     committed = [ln for ln in open(os.path.join(RESULTS, "table.md"))
                  if ln.lstrip().startswith("|")][0]
-    check(s, "committed table columns", a.one(0), "results/table.md header",
-          len(_cells(committed)))
-    check(s, "columns the committed runner writes", a.one(1),
-          "runner.render_table headers",
-          len(_cells(runner.render_table([]).splitlines()[0])))
+    check(s, "columns the committed renderer writes",
+          len(_cells(runner.render_table([]).splitlines()[0])),
+          "results/table.md header", len(_cells(committed)), rounded=False)
 
 
 # --- Scale run -------------------------------------------------------------
@@ -296,6 +292,12 @@ def scale():
     check(s, "padding target named in the prose",
           Anchor(r"padded toward ([\d,]+) items").one(),
           "scale_runner.SCALES", scale_runner.SCALES[0])
+
+    # The runner prints this from the module, so the file cannot drift from it.
+    check(s, "sessions the result file states",
+          Anchor(r"Same (\d+) sessions' queries",
+                 open(os.path.join(RESULTS, "scale.md")).read()).one(),
+          "workload_spec.SESSIONS", len(SESSIONS))
     check_table(s, heading, "scale",
                 {"R@5": "R@5", "P@5": "P@5", "Items": "items",
                  "Query μs": "qry μs", "Recall/KB": "recall-KB"}, key=at)
@@ -322,6 +324,16 @@ def long_horizon():
                    "`results/long_horizon.md`", "long_horizon",
                 {"R@5": "R@5", "Items": "Items", "Recall/KB": "R/KB"})
 
+    # The runner prints these from the module, so the file cannot drift from it.
+    a = Anchor(r"(\d+) sessions across 10 simulated years \+ (\d+) noise turns",
+               open(os.path.join(RESULTS, "long_horizon.md")).read())
+    check(s, "sessions the result file states", a.one(0),
+          "workload_spec.LONG_HORIZON_SESSIONS", len(LONG_HORIZON_SESSIONS))
+    check(s, "noise the result file states", a.one(1),
+          "long_horizon_runner.py noise target",
+          int(Anchor(r"noise = len\(LONG_HORIZON_SESSIONS\), (\d+)",
+                     open(os.path.join(HERE, "long_horizon_runner.py")).read()).one()))
+
     a = Anchor(r"F5 falls to (\d\.\d+) from the (\d\.\d+) it scores on the scale run")
     check(s, "F5 here", a.one(0), "results/long_horizon.md F5 R@5",
           num(by_arch("long_horizon")["F5"]["R@5"]))
@@ -336,6 +348,15 @@ def long_horizon():
 def diverse():
     s = "Diverse workload"
     heading = "Diverse workload (8 memory categories) — `results/diverse.md`"
+
+    a = Anchor(r"(\d+) sessions across (\d+) cognitive categories",
+               open(os.path.join(RESULTS, "diverse.md")).read())
+    check(s, "sessions the result file states", a.one(0),
+          "diverse_workload.SESSIONS", len(diverse_workload.SESSIONS))
+    check(s, "categories the result file states", a.one(1),
+          "diverse_workload.SESSIONS categories",
+          len({sess.category for sess in diverse_workload.SESSIONS}))
+
     rows = by_arch("diverse")
     columns = {"R@5": "R@5", "P@5": "P@5", "Accuracy": "Acc", "Recall/KB": "R/KB"}
     merged = dict(rows)
@@ -464,20 +485,6 @@ def curated_ratios():
     return out
 
 
-def stale_columns():
-    """Committed results carrying a stale-recall metric. `runner.py` renders one;
-    every committed output predates that renderer, so the count is zero."""
-    hits = 0
-    for path in sorted(glob.glob(os.path.join(RESULTS, "*.md"))):
-        header = [ln for ln in open(path) if ln.lstrip().startswith("|")]
-        if header and any("stale" in cell.lower() for cell in _cells(header[0])):
-            hits += 1
-    for path in sorted(glob.glob(os.path.join(RESULTS, "*.json"))):
-        if re.search(r'"[^"]*stale[^"]*"\s*:', open(path).read(), re.I):
-            hits += 1
-    return hits
-
-
 def adr():
     s = "ADR 0006"
     text = open(ADR).read()
@@ -517,17 +524,17 @@ def adr():
         check(s, f"widest density margin ({section})", a.one(1),
               source, max(densities))
 
-    # The supersession consequence carries no figure because nothing measures it.
-    # Both sides are watched: a figure returning to the line fails the first check,
-    # a stale column reaching `results/` fails the second and says one could be
-    # stated again.
-    bullet = Anchor(r"\n- (Supersession keeps the latest version[^\n]*)", text).one()
-    check(s, "figures on the supersession consequence", 0,
-          "decimals in the Consequences bullet",
-          len(re.findall(r"\d+\.\d+", bullet)), rounded=False)
-    check(s, "committed stale-recall measurements", 0,
-          "results/ table columns and raw keys naming stale", stale_columns(),
-          rounded=False)
+    # The supersession consequence states what the stale column can and cannot
+    # rank, so both halves are checked against the column itself.
+    rows = [r for r in result_rows("table") if re.fullmatch(r"[A-Z]\d", r["arch"])]
+    silent = [r for r in rows if num(r["R@5"]) == 0]
+    a = Anchor(r"returns nothing scores (\d\.\d+) and the column cannot rank", text)
+    check(s, "stale rate of the architectures that return nothing", a.one(),
+          "results/table.md stale where R@5 is 0.00",
+          max(num(r["stale"]) for r in silent))
+    check(s, "architectures scoring zero stale", len(silent),
+          "results/table.md rows at stale 0.00",
+          sum(1 for r in rows if num(r["stale"]) == 0), rounded=False)
 
 
 # --- Pairs that already disagree ------------------------------------------
@@ -536,42 +543,30 @@ def adr():
 # that recomputes both. Fix either side and the probe stops matching, so the
 # disagreement cannot go quiet.
 
-def results_header_sessions():
-    long_text = open(os.path.join(RESULTS, "long_horizon.md")).read()
-    diverse_text = open(os.path.join(RESULTS, "diverse.md")).read()
-    return {"long_horizon_header": int(re.search(r"(\d+) sessions", long_text).group(1)),
-            "long_horizon_module": len(LONG_HORIZON_SESSIONS),
-            "diverse_header": int(re.search(r"(\d+) sessions", diverse_text).group(1)),
-            "diverse_module": len(diverse_workload.SESSIONS)}
+def zeroed_table_columns():
+    """Columns `runner.render_table` writes that are zero for every architecture.
 
-
-def small_workload_freshness():
-    detail = open(os.path.join(RESULTS, "per_architecture.md")).read()
-    errored = [n for n, _ in re.findall(r"## ([A-Z]\d)\n\nERROR: '([A-Z]\d)'", detail)]
-    return {"errored": errored,
-            "resolved_by_committed_runner":
-                [n for n in errored if runner.import_arch(n) is not None]}
+    `R/KB` and `rep-keep` are computed from a freshly constructed store rather than
+    the populated one, so they carry no information; `supers` and `stale` are
+    computed from the query results and do.
+    """
+    rows = [r for r in result_rows("table") if re.fullmatch(r"[A-Z]\d", r["arch"])]
+    out = []
+    for column in ("R/KB", "supers", "stale", "rep-keep"):
+        if all(num(r[column]) == 0 for r in rows):
+            out.append(column)
+    return {"zeroed": out, "architectures": len(rows)}
 
 
 KNOWN = [
-    {"section": "Results file headers",
-     "record": "results/long_horizon.md says 10 sessions and results/diverse.md says "
-               "35",
-     "file": "workload_spec.LONG_HORIZON_SESSIONS holds 9 and "
-             "diverse_workload.SESSIONS holds 50; the headers are literals the "
-             "runners print, so correcting them means re-running",
-     "probe": results_header_sessions,
-     "expect": {"long_horizon_header": 10, "long_horizon_module": 9,
-                "diverse_header": 35, "diverse_module": 50}},
     {"section": "Small workload",
-     "record": "results/table.md, per_architecture.md and raw.json carry no F-series "
-               "measurement",
-     "file": "the run failed to resolve F1 through F5, and the committed "
-             "harness/runner.py resolves all five: the committed outputs predate the "
-             "committed harness",
-     "probe": small_workload_freshness,
-     "expect": {"errored": ["F1", "F2", "F3", "F4", "F5"],
-                "resolved_by_committed_runner": ["F1", "F2", "F3", "F4", "F5"]}},
+     "record": "results/table.md carries an R/KB and a rep-keep column",
+     "file": "both are zero for all 17 architectures, because the renderer computes "
+             "them against a freshly constructed store rather than the populated "
+             "one; the supers and stale columns beside them are computed from the "
+             "query results and are not zeroed",
+     "probe": zeroed_table_columns,
+     "expect": {"zeroed": ["R/KB", "rep-keep"], "architectures": 17}},
 ]
 
 

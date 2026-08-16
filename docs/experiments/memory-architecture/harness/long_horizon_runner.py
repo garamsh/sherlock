@@ -1,8 +1,9 @@
-"""Long-horizon workload runner. 23 architectures × 10-year time horizon.
+"""Long-horizon workload runner: every architecture over a 10-year time horizon.
 
-Each turn-unit = 1 simulated day. 10 sessions across 10 years of Lisa's life.
-500 real items + 5000 noise items. Tests whether the architecture can hold
-10 years of accumulated memory without losing accuracy.
+Each turn-unit = 1 simulated day, over the sessions `workload_spec` holds for
+Lisa's life plus a noise target. Tests whether the architecture can hold 10 years
+of accumulated memory without losing accuracy. The counts are read from those two
+places at run time and printed into the result file, so they cannot drift from it.
 """
 from __future__ import annotations
 import json
@@ -124,20 +125,22 @@ def render_table(rows):
 def main():
     os.makedirs("results", exist_ok=True)
     rows = []
-    print("Running long-horizon workload: 10 sessions (10 years) + 5000 noise")
+    sessions, noise = len(LONG_HORIZON_SESSIONS), 5000
+    print(f"Running long-horizon workload: {sessions} sessions (10 years) + {noise} noise")
     for name in ARCH_NAMES:
         cls = getattr(architectures, CLASS_NAMES.get(name), None)
         if cls is None:
             print(f"  {name}: MISSING class")
             continue
         print(f"  {name} ... ", end="", flush=True)
-        r = eval_long_horizon(name, cls, 5000)
+        r = eval_long_horizon(name, cls, noise)
         print(f"items={r.get('item_count', '?')} qry_ms={r.get('query_ms', 0):.1f}")
         rows.append(r)
     table = render_table(rows)
     with open("results/long_horizon.md", "w") as f:
         f.write("# Memory Architecture — Long-Horizon Test (10-year agent life)\n\n")
-        f.write("10 sessions across 10 simulated years + 5000 noise turns. The architecture must hold 10 years of accumulated memory without losing accuracy.\n\n")
+        f.write(f"{sessions} sessions across 10 simulated years + {noise} noise turns. "
+                "The architecture must hold 10 years of accumulated memory without losing accuracy.\n\n")
         f.write(table + "\n")
     print("\n" + table)
     with open("results/long_horizon_raw.json", "w") as f:

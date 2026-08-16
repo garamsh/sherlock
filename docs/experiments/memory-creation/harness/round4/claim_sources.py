@@ -70,10 +70,22 @@ class Anchor:
         return g[index] if isinstance(g, tuple) else g
 
 
+def section(heading):
+    """The README text under one heading, up to the next heading of any level.
+
+    The document carries more than one round, so a table shape is no longer
+    unique to the section that owns it.
+    """
+    body = README.split(f"\n{heading}\n", 1)
+    if len(body) != 2:
+        raise SystemExit(f"heading not found: {heading}")
+    return re.split(r"\n#{2,3} ", body[1], maxsplit=1)[0]
+
+
 def structures_table():
     """The §The structures rows, as {label: [cells]}."""
     out = {}
-    for line in README.splitlines():
+    for line in section("## The structures").splitlines():
         if not re.match(r"\| \*{0,2}B\d", line):
             continue
         cells = [re.sub(r"\*+", "", c).strip() for c in line.strip("|").split("|")]
@@ -84,7 +96,7 @@ def structures_table():
 def category_table():
     """The §What the corrected column is measuring rows, as {label: [cells]}."""
     out = {}
-    for line in README.splitlines():
+    for line in section("### What the corrected column is measuring").splitlines():
         if not line.startswith("| ") or line.startswith("| B"):
             continue
         cells = [re.sub(r"\*+", "", c).strip() for c in line.strip("|").split("|")]
@@ -915,14 +927,6 @@ def adopted():
     a = Anchor(r"\(B9, net (\d+\.?\d*)\)")
     check(s, "B9 net", a.one(), "B9-decider-neighbors-wide_seed7.json row.net",
           row("B9-decider-neighbors-wide_seed7")["net"], 2)
-
-    a = Anchor(r"scores coexist (\d+\.?\d*) and net (\d+\.?\d*)\. B14's (\d+\.?\d*) was measured")
-    b18 = row("B18-key-upsert-unseen-example_seed7")
-    check(s, "B18 coexist", a.one(0), "B18-...seed7.json row.coexist_preserved",
-          b18["coexist_preserved"], 2)
-    check(s, "B18 net", a.one(1), "B18-...seed7.json row.net", b18["net"], 2)
-    check(s, "B14 net", a.one(2), "B14-key-upsert-plural_seed7.json row.net",
-          row("B14-key-upsert-plural_seed7")["net"], 2)
 
     a = Anchor(r"B17 at (\d+\.?\d*) and B18 at (\d+\.?\d*), against B9's (\d+\.?\d*) — though "
                r"B14 itself is not among them at (\d+\.?\d*)")

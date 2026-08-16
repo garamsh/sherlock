@@ -1,7 +1,7 @@
 # ADR 0015: The turn drains the queue — bounded batch intake, supersede as cancellation
 
 > Status: accepted
-> Date: 2026-08-03
+> Date: 2026-08-03 (revised in place 2026-08-17)
 
 ## Context
 
@@ -17,7 +17,7 @@ Early on, each inbound message was exactly one turn. Under orchestration, inboun
 
 - Burst cost flattens: N queued messages cost ⌈N/K⌉ turns instead of N, and notification-class items share turns instead of each buying one.
 - The gateway API is unchanged (POST + SSE); no new verbs, no new components, no work-item lifecycle.
-- A failed turn consumes its batch the way a failed run consumed its message before. The batch is not silently lost to the sender: the terminal event (`turn_failed`) signals the failure on the monitoring stream, and the only influence is another message (ADR 0014) — a sender retries by sending again.
+- A failed turn consumes its batch the way a failed run consumed its message before, and the only influence is another message (ADR 0014) — a sender retries by sending again. The failure is visible as `turn_failed` on the monitoring stream to a subscriber that is keeping up, and nowhere else: the broker drops events for a subscriber that has fallen behind its buffer, while that subscriber is still connected and with nothing in the stream marking the gap, and the runner logs the failure and takes the next batch. A sender that misses the event cannot tell a failed turn from one that never started.
 - The contract tells the model a turn may carry several messages and that a later message may retract an earlier one.
 - The queue is bounded; a full queue applies backpressure to the sender instead of dropping messages. Monitoring events reference the batch's message IDs.
 

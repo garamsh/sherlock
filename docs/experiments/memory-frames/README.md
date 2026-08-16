@@ -205,7 +205,11 @@ Park et al. 2023, *Generative Agents: Interactive Simulacra of Human Behavior* (
 
 The second mechanism of the same paper. When the importance summed since the last reflection passes 150, the design writes a higher-level record over the last hundred, and that record is retrievable like any other.
 
-**What it needed that the seam withholds.** A model to write the synthesis. There is none, so the synthesis here is the window's own fact-carrying sentences joined into one record — the operation a summarizer performs and not the inference one does. What this row bounds is what aggregating observations into one retrievable object buys; it does not measure what a model's insight would add, and no figure below should be read as though it did. Two properties keep the substitution from eating the structure: a reflection is never read into a later reflection, and no reflection outgrows what a context holds. `harness/stream_test.go` holds both, because without them a synthesis of syntheses doubles on a schedule and the structure stops being a memory.
+**What it needed that the seam withholds.** A model to write the synthesis. There is none, so the synthesis here is the window's records at the higher importance, joined into one — the operation a summarizer performs and not the inference one does. What this row bounds is what aggregating observations into one retrievable object buys; it does not measure what a model's insight would add, and no figure below should be read as though it did. Taking the whole window instead would fill the synthesis with small talk and measure the noise; taking the records the write marked is the closest a non-inferring operation comes to what a model would have picked out of the window.
+
+One consequence of that is worth stating before its rows are read: in the `text` arm no write marks anything, one importance is all there is, and the synthesis therefore selects nothing — so this design posts `generative-agents`'s rows there. That is a property of the substitution and not of the design, and it is the only place in this record where two rows are equal for a reason that is not a result.
+
+Two properties keep the substitution from eating the structure: a reflection is never read into a later reflection, and no reflection outgrows what a context holds. `harness/stream_test.go` holds both, because without them a synthesis of syntheses doubles at every trigger and the structure stops being a memory.
 
 ## `memorybank` — the stream under a forgetting curve
 

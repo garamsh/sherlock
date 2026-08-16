@@ -141,7 +141,9 @@ type Frame interface {
 // The frames measured. shipped is internal/memory as it runs in production;
 // document keeps no store at all and is what proves the seam does not
 // encode the shipped design's shape; the three attribute frames hold a fact
-// at its address and differ only in how many values one address holds.
+// at its address and differ only in how many values one address holds. The
+// last four are published designs ported behind the same seam, each named
+// after the paper it comes from.
 const (
 	frameShipped           = "shipped"
 	frameDocument          = "document"
@@ -153,14 +155,21 @@ const (
 	frameInterval          = "interval"
 	frameIntervalDeclared  = "interval-declared"
 	frameLog               = "log"
+	frameGenerativeAgents  = "generative-agents"
+	frameMemoryBank        = "memorybank"
+	frameReflection        = "reflection"
+	frameMem0              = "mem0"
+	frameMem0Nearest       = "mem0-nearest"
 )
 
 // frameNames is the order every result file and table reports the frames
-// in.
+// in. The designs invented here come first and the published ones after
+// them, in the order they were published.
 var frameNames = []string{
 	frameShipped, frameDocument,
 	frameAttributeSingle, frameAttributeMulti, frameAttributeLearned, frameAttributeCued,
 	frameAttributeDeclared, frameInterval, frameIntervalDeclared, frameLog,
+	frameGenerativeAgents, frameReflection, frameMemoryBank, frameMem0, frameMem0Nearest,
 }
 
 // NewFrame builds a frame by name. dir is a directory the frame may keep
@@ -187,6 +196,16 @@ func NewFrame(name, dir string, counter *EmbedCounter, budget int) (Frame, error
 		return NewIntervalFrame(arityDeclared), nil
 	case frameLog:
 		return NewLogFrame(), nil
+	case frameGenerativeAgents:
+		return NewStreamFrame(ruleGenerativeAgents, counter, budget), nil
+	case frameReflection:
+		return NewStreamFrame(ruleReflection, counter, budget), nil
+	case frameMemoryBank:
+		return NewStreamFrame(ruleMemoryBank, counter, budget), nil
+	case frameMem0:
+		return NewMem0Frame(counter), nil
+	case frameMem0Nearest:
+		return NewMem0NearestFrame(counter), nil
 	default:
 		return nil, fmt.Errorf("unknown frame %q (want one of %v)", name, frameNames)
 	}

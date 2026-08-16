@@ -37,6 +37,7 @@ const (
 	regionConstraint  = "constraint"
 	regionLanguage    = "language"
 	regionFinding     = "finding"
+	regionLiterature  = "literature"
 	regionCost        = "cost"
 )
 
@@ -171,6 +172,7 @@ func RenderTables(r Run) []Section {
 		section(regionConstraint, r, renderBounds, renderRules, renderBudgets),
 		section(regionLanguage, r, renderLanguage, renderExtraction, renderShapes),
 		section(regionFinding, r, renderFinding),
+		section(regionLiterature, r, renderIdentity),
 		section(regionCost, r, renderCost, renderPaid),
 	}
 }
@@ -201,6 +203,11 @@ var (
 		frameInterval:          "a value with the span it was true for, closed rather than removed",
 		frameIntervalDeclared:  "a value with the span it was true for, closed rather than removed",
 		frameLog:               "every observation as an event, appended and never changed",
+		frameGenerativeAgents:  "every turn's text as a record, with an embedding, a time and an importance",
+		frameReflection:        "the same records, plus a synthesis written over the recent ones",
+		frameMemoryBank:        "the same records, minus the ones the forgetting curve has taken",
+		frameMem0:              "one extracted fact per memory, with an embedding over it",
+		frameMem0Nearest:       "one extracted fact per memory, with an embedding over it",
 	}
 	frameDecides = map[string]string{
 		frameShipped:           "supersession from similarity on insert; retention and consolidation after a turn",
@@ -213,6 +220,11 @@ var (
 		frameInterval:          "a write closes the open span",
 		frameIntervalDeclared:  "the write states it — a ceiling, not a candidate",
 		frameLog:               "the projection takes the newest value at an address",
+		frameGenerativeAgents:  "nothing is replaced or removed; a read ranks on recency, importance and relevance",
+		frameReflection:        "the same, and the synthesis is a record the same ranking can return",
+		frameMemoryBank:        "the same ranking; a record goes when its retention falls under the curve",
+		frameMem0:              "the write states the operation and similarity finds what it applies to",
+		frameMem0Nearest:       "the same, with the similarity gate removed — the far end, not a design",
 	}
 )
 
@@ -342,6 +354,30 @@ func renderArity(b *strings.Builder, r Run) {
 	fmt.Fprintf(b, "| attribute | addresses | written more than one value | share |\n|---|---|---|---|\n")
 	for _, a := range r.Arity.Attributes {
 		fmt.Fprintf(b, "| `%s` | %d | %d | %.3f |\n", a.Attribute, a.Addresses, a.MultiValued, a.Share)
+	}
+	fmt.Fprintln(b)
+}
+
+// renderIdentity is what a design that finds the memory it updates by
+// similarity has to separate, measured on the workload rather than inferred
+// from that design's score.
+func renderIdentity(b *strings.Builder, r Run) {
+	if r.Identity.Assertions == 0 {
+		return
+	}
+	x := r.Identity
+	fmt.Fprintf(b, "### What a similarity-located write has to separate\n\n")
+	fmt.Fprintf(b, "| quantity | value |\n|---|---|\n")
+	rows := [][2]any{
+		{"assertions landing on an address already holding a value", x.Assertions},
+		{"similarity to the value at that address", figure(x.Target)},
+		{"highest similarity to a value at any other address", figure(x.Distractor)},
+		{"assertions whose nearest value is at another address", x.Inverted},
+		{"gate a write accepts a candidate at", x.Gate},
+		{"assertions whose own target falls below that gate", x.BelowGate},
+	}
+	for _, row := range rows {
+		fmt.Fprintf(b, "| %s | %v |\n", row[0], row[1])
 	}
 	fmt.Fprintln(b)
 }

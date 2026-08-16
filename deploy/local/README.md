@@ -2,6 +2,13 @@
 
 Run the gagent platform in Docker — two services per the pod shape (ADR 0017): the `agent` service serves the gateway, and the `workspace` service shares the agent's network namespace (`network_mode: service:agent`) so the unauthenticated gRPC listener stays on loopback. **Local testing only, on a trusted host.** The published port reaches beyond the container's loopback, so the gateway requires mTLS (ADR 0013): it serves HTTPS and verifies client certificates against a throwaway CA you generate below.
 
+## Contents
+- Requirements
+- Certificates
+- Run
+- Check
+- Cleanup
+
 ## Requirements
 
 Two variables must be exported before `docker compose up`:

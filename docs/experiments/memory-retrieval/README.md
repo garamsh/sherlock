@@ -2,6 +2,17 @@
 
 What the read path returns for a task statement, and what the choice of embedder costs it, measured against the memory implementation this project ships.
 
+## Contents
+- Method
+- What the read path scores, under each embedder
+- What the numbers say
+- What the embedder costs
+- Whether a threshold separates corrections from facts that must both survive
+- Which conclusions may be quoted across embedders
+- What this record does not say
+- Limits
+- Reproducing
+
 ## Method
 
 Every other experiment in this tree reimplements the idea under test in Python, so its numbers describe a model of the design rather than the code. This one plants a corpus into the store `internal/memory` ships and queries it through the service that ships: `memory.NewService` over `internal/memory/sqlite`. The harness supplies the corpus and a fixed clock; the store, the embedders, the hybrid search and the ranking function are the ones that run in production, called through `Search`, `Recall` and `Similar`. It is a Go command because that is the shape that can call the package directly — a harness in another language would have to re-describe the thing it is measuring, which is the gap this experiment exists to close.

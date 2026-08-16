@@ -1,5 +1,24 @@
 # Per-architecture detail
 
+## Contents
+- A0
+- A1
+- A2
+- B1
+- B2
+- B3
+- C3
+- D2
+- E1
+- E2
+- E3
+- E4
+- F1
+- F2
+- F3
+- F4
+- F5
+
 ## A0
 
 - items: 1071

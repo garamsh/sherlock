@@ -2,6 +2,15 @@
 
 One question, answered with numbers: **which memory *system* — write path, read path, and store policy together — actually keeps facts in the model's context?** This is the second experiment in the series; the first (`memory-architecture/`) ranked stores assuming the write happens. QA pass #8 measured that it does not: gpt-4o emitted zero voluntary writeback blocks in 15/15 responses. This experiment tests the whole cycle.
 
+## Contents
+- The question
+- The method
+- The systems, in plain terms
+- The results
+- What the numbers establish
+- Adopted direction
+- Reproducing
+
 ## The question
 
 The memory-architecture experiment answered "how should the store rank and forget". It left the cycle untested: how a fact gets written, and how it gets back into the model's context. A store's recall@5 is meaningless when nothing is ever written. The candidate systems below differ in the write path and read path, not the store.

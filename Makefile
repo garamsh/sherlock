@@ -35,12 +35,12 @@ smoke-local:
 	@deploy/local/smoke.sh
 
 proto:
+	buf lint
 	buf generate
 # Scoped to the generated stubs, so unrelated uncommitted work does not fail the
 # target, and read from status rather than diff, so a stub that appeared counts as
 # one that moved. A stub named here is not committed; committing it clears this.
 	@test -z "$$(git status --porcelain -- '*.pb.go')" || { git status --porcelain -- '*.pb.go'; exit 1; }
-	buf lint
 
 hooks:
 	@lefthook install

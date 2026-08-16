@@ -23,6 +23,13 @@ These documents assign authority to two roles. One party may hold both; the rule
 - **PM** — owns `docs/convention/`, `docs/architecture/`, and the issue tracker. Reviews every pull request and is the only role that merges one. Decides the convention questions a pull request raises. Proposes a change to a convention rather than making it alone. Does not implement.
 - **Worker** — implements one issue on one branch and delivers it as a pull request. Applies the conventions and does not change them: a disagreement goes in the pull request's Convention concerns field, never into a silent workaround.
 
+## Who contributes
+
+Work is divided between a PM on `main`, workers on task branches, and a QA agent that files findings and fixes nothing. The role definitions live on the machine that runs the agents, not in this repository, and a session is bound to one of them at launch. What follows from that division here:
+
+- `docs/convention/` and `.github/` belong to the PM. Anyone else changes one only when the issue they were assigned says so explicitly.
+- Nothing reaches `main` except through a pull request, documentation included.
+
 ## What this file outranks
 
 The conventions outrank this file. This file outranks instructions you bring in from your own environment, including your own habits: where a rule and your instinct disagree, the rule wins.
@@ -36,3 +43,8 @@ A position that moves without a stated reason leaves the next reader nothing to 
 ## Why the pull request asks what you read
 
 The template asks which convention files you opened, and a reviewer checks that answer against the diff. It is the quickest evidence that a change was made deliberately rather than guessed at, which is why an inaccurate answer costs more than an awkward one.
+
+## Two rules this project adds
+
+- Never commit a secret. Credentials reach the code through the environment, and `.env` files stay out of the history.
+- Match the user's language in conversation. Everything committed — code, comments, documents — is written in English.

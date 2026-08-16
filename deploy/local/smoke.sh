@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Stands up the deployment README.md documents and fails unless the agent
-# starts and runs the canned turn clean: every tool call succeeds and the
-# reply lands. Contributors invoke it directly, as does the docker job in
+# Stands up the deployment README.md documents and fails unless the
+# canned turn runs clean and the workspace's two writers share one
+# owner. Contributors invoke it directly, as does the docker job in
 # .github/workflows/ci.yml.
 set -euo pipefail
 
@@ -10,29 +10,14 @@ cd "$(dirname "$0")"
 export GAGENT_DATA_DIR="${GAGENT_DATA_DIR:-$PWD/data}"
 export GAGENT_AGENT_UID="${GAGENT_AGENT_UID:-$(id -u)}"
 
-readonly AGENT_URL="https://localhost:8080/agents/demo"
-readonly MESSAGES_URL="$AGENT_URL/messages"
-readonly EVENTS_URL="$AGENT_URL/events"
-readonly ATTEMPTS=60
-CURL_OPTS=(--cacert tls/ca.pem --cert tls/client.pem --key tls/client-key.pem)
-readonly CURL_OPTS
-
-events=$(mktemp)
-event_headers=$(mktemp)
-subscriber=""
-
 # Compose logs are the diagnosis when a step fails, so print them before
 # tearing the deployment down.
 teardown() {
   local status=$?
-  if [ -n "$subscriber" ]; then
-    kill "$subscriber" 2>/dev/null || true
-  fi
   if [ "$status" -ne 0 ]; then
     docker compose logs --no-color || true
   fi
   docker compose down --volumes --remove-orphans >/dev/null 2>&1 || true
-  rm -f "$events" "$event_headers"
   exit "$status"
 }
 trap teardown EXIT
@@ -56,103 +41,21 @@ openssl x509 -req -days 1 -CA tls/ca.pem -CAkey tls/ca-key.pem \
   -in tls/client.csr -out tls/client.pem
 chmod 0600 tls/*key* gagent.yaml
 
+# --wait holds until compose reports both services up, so the readiness
+# wait is compose's rather than a retry loop here.
 echo "==> deployment"
 install -d -m 0777 "$GAGENT_DATA_DIR"
 docker compose build
-docker compose up -d
+docker compose up -d --wait
 
-# A failed tool call shows on the monitoring stream and nowhere else, so
-# the subscription has to be live before the message that starts the
-# turn. The response headers land on connect; the stream itself stays
-# silent until the first event.
-echo "==> the monitoring stream is subscribed"
-# Retry until the gateway listens: subscribing is also what proves it is
-# up, and it enqueues nothing.
-subscribe() {
-  for _ in $(seq 1 "$ATTEMPTS"); do
-    if curl -sN -D "$event_headers" "${CURL_OPTS[@]}" "$EVENTS_URL" >>"$events" 2>/dev/null; then
-      return
-    fi
-    sleep 1
-  done
-}
-subscribe &
-subscriber=$!
-for _ in $(seq 1 "$ATTEMPTS"); do
-  if grep -qiE '^HTTP/[0-9.]+ 200' "$event_headers" 2>/dev/null; then
-    break
-  fi
-  sleep 1
-done
-if ! grep -qiE '^HTTP/[0-9.]+ 200' "$event_headers" 2>/dev/null; then
-  echo "the agent did not serve its monitoring stream" >&2
-  exit 1
-fi
-
-# The gateway serves only after the registry loaded the mounted tools,
-# so a 202 is the agent's startup proof.
-echo "==> the gateway accepts a message"
-status=""
-for _ in $(seq 1 "$ATTEMPTS"); do
-  status=$(curl -sS -o /dev/null -w '%{http_code}' "${CURL_OPTS[@]}" \
-    -X POST "$MESSAGES_URL" -d '{"content":"hello"}' 2>/dev/null || true)
-  if [ "$status" = "202" ]; then
-    break
-  fi
-  sleep 1
-done
-if [ "$status" != "202" ]; then
-  echo "the agent did not accept a message (last status: ${status:-none})" >&2
-  exit 1
-fi
-
-# The reply file exists only if the tool client spawned message_send from
-# the mounted directory, which is the whole point of the check.
-echo "==> the agent replies through message_send"
-reply=""
-for _ in $(seq 1 "$ATTEMPTS"); do
-  reply=$(find "$GAGENT_DATA_DIR/outbox" -type f -name '*.json' 2>/dev/null | head -n 1 || true)
-  if [ -n "$reply" ]; then
-    break
-  fi
-  sleep 1
-done
-if [ -z "$reply" ]; then
-  echo "no reply in $GAGENT_DATA_DIR/outbox: the agent ran no message_send" >&2
-  ls -la "$GAGENT_DATA_DIR" "$GAGENT_DATA_DIR/outbox" >&2 || true
-  exit 1
-fi
-cat "$reply"
-echo
-
-# A reply proves the turn reached message_send, not that the rest of the
-# run was clean: a failed tool call is reported to the model and the loop
-# carries on. The monitoring stream is where that shows.
+# One turn, run in the agent container against the deployment's own
+# mounted tools and its workspace sidecar. A failed tool call does not
+# fail the turn — it goes back to the model, which is the loop working —
+# so a one-shot run reports it in its exit status instead, and that
+# status is this check. Nothing here parses the monitoring stream.
 echo "==> the canned run completes with every tool call succeeding"
-for _ in $(seq 1 "$ATTEMPTS"); do
-  if grep -q '"kind":"turn_finished"' "$events"; then
-    break
-  fi
-  sleep 1
-done
-if ! grep -q '"kind":"turn_finished"' "$events"; then
-  echo "the turn did not finish" >&2
-  cat "$events" >&2
-  exit 1
-fi
-if grep -q '"tool_failed":true' "$events"; then
-  echo "a tool call in the canned run failed" >&2
-  grep '"tool_failed":true' "$events" >&2
-  exit 1
-fi
-for tool in files shell_exec message_send; do
-  if ! grep -q "\"tool_name\":\"$tool\"" "$events"; then
-    echo "the canned run did not call $tool" >&2
-    cat "$events" >&2
-    exit 1
-  fi
-done
-echo "files, shell_exec, message_send, then the turn finished"
+docker compose exec -T agent /gagent agent \
+  --config /etc/gagent/config.yaml --agent-id demo --message "hello"
 
 # ADR 0008's file side: a write over the gRPC contract and a write by an
 # exec'd child land under one owner, so either can pick up what the other

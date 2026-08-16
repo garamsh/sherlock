@@ -11,9 +11,16 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+
+	"github.com/garamsh/gagent/internal/workspace/shell"
 )
 
 func main() {
+	// The workspace's executor execs this binary as its resource-limit
+	// shim for every untrusted child (ADR 0008). The verb short-circuits
+	// the command tree: the shim caps itself and execs the child's
+	// command, so it never returns to run a subcommand.
+	shell.ShimIfRequested()
 	if err := newRootCommand().Execute(); err != nil {
 		os.Exit(1)
 	}

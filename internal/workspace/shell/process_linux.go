@@ -7,6 +7,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"log/slog"
 	"os"
 	"os/exec"
@@ -14,8 +15,6 @@ import (
 	"strings"
 	"syscall"
 	"time"
-
-	"golang.org/x/sys/unix"
 )
 
 // rlimits are the resource limits ProcessExecutor applies to the child.
@@ -61,6 +60,12 @@ type ProcessExecutor struct {
 	// would surface as a raw fork/exec EPERM. NewProcessExecutor
 	// detects it once at construction; tests set it directly.
 	netNS bool
+	// shimPath is this binary, which every untrusted child execs first
+	// to apply its own caps (ADR 0008). Resolved once at construction;
+	// shimErr carries a resolution failure to Run, which refuses the
+	// call rather than running the child uncapped.
+	shimPath string
+	shimErr  error
 }
 
 // NewProcessExecutor returns a ProcessExecutor configured with the given
@@ -69,11 +74,14 @@ type ProcessExecutor struct {
 // drop to AgentUID, including when it cannot create the fresh network
 // namespace required for NoNetwork.
 func NewProcessExecutor(agentUID int, defaultTimeout time.Duration) *ProcessExecutor {
+	self, err := os.Executable()
 	exec := &ProcessExecutor{
 		AgentUID:       agentUID,
 		DefaultTimeout: defaultTimeout,
 		RLimits:        DefaultRlimits(),
 		netNS:          netNSCapable(),
+		shimPath:       self,
+		shimErr:        err,
 	}
 	if !exec.netNS && os.Geteuid() == 0 {
 		slog.Warn("shell: CAP_SYS_ADMIN missing; netns-isolated children will report agent_uid unavailable",
@@ -89,10 +97,10 @@ func NewProcessExecutor(agentUID int, defaultTimeout time.Duration) *ProcessExec
 // On timeout the child is SIGKILLed and the returned error is ErrTimedOut
 // with TimedOut set.
 //
-// Resource limits are applied via prlimit(2) targeting the child PID
-// immediately after Start. There is a tiny race window between fork and
-// prlimit in which the child could exceed its limits — acceptable for an
-// advisory cap on top of the UID-based trust boundary.
+// An untrusted child execs this binary's shim first, which applies the
+// resource caps to itself before exec'ing the command, so the caps are
+// in force from the command's first instruction. A cap that cannot be
+// applied returns ErrRlimitsUnavailable and no command runs (ADR 0008).
 func (e *ProcessExecutor) Run(ctx context.Context, req Request) (Result, error) {
 	euid := os.Geteuid()
 	if euid != 0 && euid != e.AgentUID {
@@ -112,11 +120,23 @@ func (e *ProcessExecutor) Run(ctx context.Context, req Request) (Result, error) 
 	runCtx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 
-	var cmd *exec.Cmd
+	name, argv := "sh", []string{"sh", "-c", req.Command}
 	if req.Args != nil {
-		cmd = exec.CommandContext(runCtx, req.Command, req.Args...)
+		name, argv = req.Command, append([]string{req.Command}, req.Args...)
+	}
+	var cmd *exec.Cmd
+	if req.Trusted {
+		// Resource caps bind untrusted code only (ADR 0010): a
+		// trusted (operator-sanctioned) child is bounded by its
+		// per-call timeout and the deployment's container/pod limits,
+		// so it execs its command directly.
+		cmd = exec.CommandContext(runCtx, name, argv[1:]...)
 	} else {
-		cmd = exec.CommandContext(runCtx, "sh", "-c", req.Command)
+		shimmed, err := e.shimCommandLine(name, argv, euid)
+		if err != nil {
+			return Result{}, err
+		}
+		cmd = exec.CommandContext(runCtx, shimmed[0], shimmed[1:]...)
 	}
 	attr := &syscall.SysProcAttr{
 		Setpgid:   true,
@@ -163,6 +183,20 @@ func (e *ProcessExecutor) Run(ctx context.Context, req Request) (Result, error) 
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 
+	// The shim reports a cap it could not apply on this descriptor and
+	// closes it at exec, so silence is the child's "caps in force".
+	var statusR, statusW *os.File
+	if !req.Trusted {
+		var err error
+		statusR, statusW, err = os.Pipe()
+		if err != nil {
+			return Result{}, fmt.Errorf("%w: status pipe: %v", ErrRlimitsUnavailable, err)
+		}
+		defer statusR.Close()
+		defer statusW.Close()
+		cmd.ExtraFiles = []*os.File{statusW}
+	}
+
 	start := cmd.Start
 	if req.NoNetwork && euid != 0 {
 		start = func() error { return startUsernsChild(cmd) }
@@ -176,13 +210,12 @@ func (e *ProcessExecutor) Run(ctx context.Context, req Request) (Result, error) 
 		return Result{}, fmt.Errorf("shell: start: %w", err)
 	}
 
-	// Resource caps bind untrusted code only (ADR 0010): a trusted
-	// (operator-sanctioned) child is bounded by its per-call timeout
-	// and the deployment's container/pod limits. Apply caps to the
-	// now-running child via prlimit(2); individual failures are logged
-	// at WARN — the run still produces a result, just without that cap.
-	if !req.Trusted {
-		e.applyRLimits(cmd.Process.Pid)
+	if statusR != nil {
+		statusW.Close()
+		if err := shimStatus(statusR); err != nil {
+			_ = cmd.Wait()
+			return Result{}, err
+		}
 	}
 
 	err := cmd.Wait()
@@ -213,58 +246,59 @@ func (e *ProcessExecutor) Run(ctx context.Context, req Request) (Result, error) 
 	return result, fmt.Errorf("shell: %w", err)
 }
 
-// applyRLimits applies the configured resource caps to the given PID via
-// prlimit(2). A per-resource failure is logged at WARN and ignored: the
-// child still runs, just without that one cap. Setting both Cur and Max
-// to the same value produces a hard cap rather than a soft one with a
-// higher hard ceiling.
-//
-// RLIMIT_NPROC is skipped in single-account mode: it counts every
-// process of the real UID, so on a shared account the host's own
-// processes would starve the child — the cap is only meaningful when the
-// child owns a dedicated UID (the privileged drop).
-func (e *ProcessExecutor) applyRLimits(pid int) {
-	limits := []struct {
-		name     string
-		resource int
-		rlim     *unix.Rlimit
-	}{
-		{"RLIMIT_CPU", unix.RLIMIT_CPU, cpuLimit(e.RLimits.CPU)},
-		{"RLIMIT_AS", unix.RLIMIT_AS, &unix.Rlimit{
-			Cur: uint64(e.RLimits.AddressSpace),
-			Max: uint64(e.RLimits.AddressSpace),
-		}},
-		{"RLIMIT_FSIZE", unix.RLIMIT_FSIZE, &unix.Rlimit{
-			Cur: uint64(e.RLimits.FileSize),
-			Max: uint64(e.RLimits.FileSize),
-		}},
-		{"RLIMIT_NOFILE", unix.RLIMIT_NOFILE, &unix.Rlimit{
-			Cur: e.RLimits.OpenFiles,
-			Max: e.RLimits.OpenFiles,
-		}},
+// shimCommandLine renders the command line an untrusted child runs:
+// this binary as the resource-limit shim, the caps it must apply, and
+// the program it execs afterwards. The program is resolved here,
+// against the platform's own PATH, so a request's Env cannot redirect
+// which binary the caps end up protecting.
+func (e *ProcessExecutor) shimCommandLine(name string, argv []string, euid int) ([]string, error) {
+	if e.shimErr != nil {
+		return nil, fmt.Errorf("%w: locating this binary: %v", ErrRlimitsUnavailable, e.shimErr)
 	}
-	if os.Geteuid() == 0 {
-		limits = append(limits, struct {
-			name     string
-			resource int
-			rlim     *unix.Rlimit
-		}{"RLIMIT_NPROC", unix.RLIMIT_NPROC, &unix.Rlimit{
-			Cur: e.RLimits.Processes,
-			Max: e.RLimits.Processes,
-		}})
+	path, err := exec.LookPath(name)
+	if err != nil {
+		return nil, fmt.Errorf("shell: start: %w", err)
 	}
-	for _, l := range limits {
-		if err := unix.Prlimit(pid, l.resource, l.rlim, nil); err != nil {
-			slog.Warn("shell: rlimit not applied",
-				"resource", l.name, "pid", pid, "error", err)
-		}
-	}
+	return shimArgv(e.shimPath, e.limitSpecs(euid), path, argv), nil
 }
 
-// cpuLimit converts a duration into the seconds unit the kernel expects
-// for RLIMIT_CPU. A zero or negative duration produces a 1-second cap
-// rather than "unlimited" — the child should never run forever.
-func cpuLimit(d time.Duration) *unix.Rlimit {
+// limitSpecs is the cap set an untrusted child carries. RLIMIT_NPROC
+// joins only in the privileged drop: it counts every process of the
+// real UID, so on a shared account the host's own processes would
+// starve the child — the cap is only meaningful when the child owns a
+// dedicated UID.
+func (e *ProcessExecutor) limitSpecs(euid int) []limitSpec {
+	specs := []limitSpec{
+		{name: "cpu", value: cpuSeconds(e.RLimits.CPU)},
+		{name: "as", value: uint64(e.RLimits.AddressSpace)},
+		{name: "fsize", value: uint64(e.RLimits.FileSize)},
+		{name: "nofile", value: e.RLimits.OpenFiles},
+	}
+	if euid == 0 {
+		specs = append(specs, limitSpec{name: "nproc", value: e.RLimits.Processes})
+	}
+	return specs
+}
+
+// shimStatus reads what the shim reported. The shim closes the
+// descriptor at exec, so an empty read means the caps are in force;
+// anything else is the reason they are not, and the command never ran.
+func shimStatus(status *os.File) error {
+	reported, err := io.ReadAll(status)
+	if err != nil {
+		return fmt.Errorf("%w: reading the shim's status: %v", ErrRlimitsUnavailable, err)
+	}
+	if len(reported) > 0 {
+		return fmt.Errorf("%w: %s", ErrRlimitsUnavailable, strings.TrimSpace(string(reported)))
+	}
+	return nil
+}
+
+// cpuSeconds converts a duration into the seconds unit the kernel
+// expects for RLIMIT_CPU. A zero or negative duration produces a
+// 1-second cap rather than "unlimited" — the child should never run
+// forever.
+func cpuSeconds(d time.Duration) uint64 {
 	seconds := uint64(d / time.Second)
 	if d%time.Second != 0 {
 		seconds++
@@ -272,7 +306,7 @@ func cpuLimit(d time.Duration) *unix.Rlimit {
 	if seconds == 0 {
 		seconds = 1
 	}
-	return &unix.Rlimit{Cur: seconds, Max: seconds}
+	return seconds
 }
 
 // capSysAdmin is the bit position of CAP_SYS_ADMIN in the effective

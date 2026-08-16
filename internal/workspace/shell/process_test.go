@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"syscall"
 	"testing"
 	"time"
 
@@ -104,25 +105,57 @@ func requireUnprivileged(t *testing.T) {
 
 // TestProcessExecutor_UntrustedChildCarriesDefaultCaps pins the ADR 0010
 // trust-class rule on the untrusted path: an agent-supplied command
-// runs under the executor's resource caps.
+// runs under the executor's resource caps, and carries them from its
+// first instruction — the shim applies them before exec, so a plain
+// `ulimit -v` reads the cap with nothing to race (issue #401).
 func TestProcessExecutor_UntrustedChildCarriesDefaultCaps(t *testing.T) {
 	requireUnprivileged(t)
 	exec := shell.NewProcessExecutor(os.Geteuid(), 5*time.Second)
 
-	// prlimit lands after fork, so a plain `ulimit -v` races the
-	// application (issue #244): the child polls its own limit with a
-	// bound instead, and reports what it converged to.
-	res, err := exec.Run(context.Background(), shell.Request{Command: pollLimitCommand})
+	res, err := exec.Run(context.Background(), shell.Request{Command: "ulimit -v"})
 	require.NoError(t, err)
 	assert.Equal(t, "524288\n", res.Stdout,
 		"the untrusted child carries the 512MiB address-space cap")
 }
 
-// pollLimitCommand prints the child's address-space limit once it stops
-// being "unlimited", or after ~2s — the prlimit-after-fork application
-// window is microseconds, so the bound is generous and the result
-// deterministic either way.
-const pollLimitCommand = `v=unlimited; i=0; while [ "$v" = unlimited ] && [ $i -lt 2000 ]; do v=$(ulimit -v); i=$((i+1)); done; echo "$v"`
+// TestProcessExecutor_UntrustedChildCarriesEveryCap reads the caps from
+// the kernel's own view of the child. Single-account mode carries four:
+// RLIMIT_NPROC counts the shared account's processes, so it applies
+// only to the privileged drop (ADR 0010).
+func TestProcessExecutor_UntrustedChildCarriesEveryCap(t *testing.T) {
+	requireUnprivileged(t)
+	exec := shell.NewProcessExecutor(os.Geteuid(), 5*time.Second)
+
+	res, err := exec.Run(context.Background(), shell.Request{Command: "cat /proc/self/limits"})
+	require.NoError(t, err)
+	for _, want := range []string{
+		`Max cpu time +60 +60 `,
+		`Max address space +536870912 +536870912 `,
+		`Max file size +104857600 +104857600 `,
+		`Max open files +1024 +1024 `,
+	} {
+		assert.Regexp(t, want, res.Stdout)
+	}
+}
+
+// TestProcessExecutor_UncappableChildFailsClosed pins the posture ADR
+// 0008 sets for a boundary mechanism the platform cannot deliver: the
+// call fails and no command runs, rather than a warning behind an
+// uncapped child. An open-file cap above the hard limit is the
+// unprivileged way to make the child's setrlimit fail.
+func TestProcessExecutor_UncappableChildFailsClosed(t *testing.T) {
+	requireUnprivileged(t)
+	exec := shell.NewProcessExecutor(os.Geteuid(), 5*time.Second)
+	var hard syscall.Rlimit
+	require.NoError(t, syscall.Getrlimit(syscall.RLIMIT_NOFILE, &hard))
+	exec.RLimits.OpenFiles = hard.Max + 1
+
+	marker := filepath.Join(t.TempDir(), "ran")
+	_, err := exec.Run(context.Background(), shell.Request{Command: "touch " + marker})
+
+	require.ErrorIs(t, err, shell.ErrRlimitsUnavailable)
+	assert.NoFileExists(t, marker, "the command must not run when a cap cannot be applied")
+}
 
 // TestProcessExecutor_TrustedChildRunsWithoutCaps pins the other half:
 // an operator-sanctioned (script-tool) child runs without the
@@ -131,7 +164,7 @@ func TestProcessExecutor_TrustedChildRunsWithoutCaps(t *testing.T) {
 	requireUnprivileged(t)
 	exec := shell.NewProcessExecutor(os.Geteuid(), 5*time.Second)
 
-	res, err := exec.Run(context.Background(), shell.Request{Command: pollLimitCommand, Trusted: true})
+	res, err := exec.Run(context.Background(), shell.Request{Command: "ulimit -v", Trusted: true})
 	require.NoError(t, err)
 	assert.Equal(t, "unlimited\n", res.Stdout,
 		"the trusted child carries no address-space cap")

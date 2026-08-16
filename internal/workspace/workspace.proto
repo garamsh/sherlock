@@ -6,9 +6,9 @@ option go_package = "github.com/garamsh/gagent/internal/workspace;workspace";
 // Workspace is the data plane the agent uses for its working environment
 // (ADR 0017): it serves the filesystem (Read, Write, List) and runs
 // agent-influenced processes (Exec) in the workspace directory. It
-// exposes no tool hosting: tools are agent-side Go packages the agent
-// imports at compile time, and tools are the only callers of this
-// contract. The plugin concept is dropped.
+// exposes no tool hosting: tools are executables the agent's tool
+// client spawns from their manifests, and tools are the only callers
+// of this contract. The plugin concept is dropped.
 service Workspace {
   rpc Read(ReadRequest) returns (ReadResponse);
   rpc Write(WriteRequest) returns (WriteResponse);

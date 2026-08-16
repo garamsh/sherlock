@@ -1,8 +1,8 @@
 # Example workspace config. The workspace is the computer (ADR 0017):
 # it serves the filesystem (Read/Write/List) and runs agent-influenced
 # processes (Exec) in the workspace directory. It does not host tools —
-# tools are agent-side Go packages the agent imports at compile time,
-# and the agent's shell_exec tool calls the Exec RPC.
+# tools are executables the agent's tool client spawns from their
+# manifests, and the shell_exec tool calls the Exec RPC.
 # The workspace listener is unauthenticated in this phase and serves
 # loopback binds only; a non-loopback addr fails startup.
 addr: "127.0.0.1:8081"

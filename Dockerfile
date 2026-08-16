@@ -1,5 +1,5 @@
 # Platform images (ADR 0017): one build stage, two targets.
-#   docker build --target agent     — the agent's self (gateway, loop, tools)
+#   docker build --target agent     — the agent's self (gateway, loop, memory, mouth, tool client)
 #   docker build --target workspace — the agent's data plane (filesystem + exec gRPC)
 
 FROM golang:1.26 AS build

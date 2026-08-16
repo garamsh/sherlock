@@ -19,11 +19,12 @@ const (
 
 	// SupersessionSimilarity is the embedding cosine at or above which a
 	// newly stored memory supersedes its most similar active predecessor
-	// (ADR 0006). The value is calibrated to the hashing embedder's
-	// similarity distribution: a correction restating a fact lands around
-	// 0.66 (issue #324), a paraphrase lands lower, and a real embedder
-	// (OpenAI) scores the same pairs higher. Revisit the threshold if the
-	// default embedder changes.
+	// (ADR 0006). It is not calibrated to where corrections land: it was
+	// set from a single pair, and across the pair set nearly every
+	// correction scores below it on the shipped embedder while every fact
+	// that must coexist scores above, so it retires what it should keep
+	// (docs/experiments/memory-retrieval/). Removal rather than retuning
+	// is tracked in #334; the value stands until that lands.
 	SupersessionSimilarity = 0.6
 
 	// Retention tiers (ADR 0006): salience at or above

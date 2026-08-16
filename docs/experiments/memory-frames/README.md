@@ -8,6 +8,7 @@ What a memory structure does with a decade of turns, measured through a seam tha
 - The workload
 - The frames
 - The arity question
+- What a wrong declaration costs
 - What a run costs
 - Results
 - What the numbers say
@@ -98,11 +99,29 @@ Addressing a fact at `(subject, attribute)` settles identity and moves the probl
 
 That wording is the only thing separating these classes is a fact about the workload, and a fact about conversation. Nothing but the words distinguishes "she leads that project as well" from "she leads that project now", and no structure recovers from the triple what the sentence carried. The conclusion is not that language is a poor signal. It is that a rule enumerating language is a poor structure, and that arity belongs where the language is read — in the write operation — rather than in the store that receives it.
 
+## What a wrong declaration costs
+
+`attribute-declared` answers everything and returns nothing stale, and it was measured with a declaration that is never wrong. In production that declaration comes from a model reading a sentence, and models err. This section measures what the recommendation costs when it is wrong, whether the damage repairs itself, and where a real model sits.
+
+**The two directions are never blended, here or in any table below.** A write that should have joined and arrives as a replacement ends a value that was still true: the information is gone. A write that should have replaced and arrives as a join leaves a value that has stopped being true beside the one that replaced it: the information is wrong but still there. One rate covering both would let a reader average a failure that destroys with one that accumulates, and the tables report each against its own denominator.
+
+The corruption is a property of the run and not of any structure. It is applied where an arm hands a turn over, so no frame carries a clause for it and no frame can tell a corrupted declaration from an honest one — which is what a frame would face from a writeback that is sometimes wrong. Which writes are corrupted comes from each turn's own index, so a rate corrupts the same writes whatever order a run reaches them in.
+
+**Only the declared-operation frame is swept, and only in the oracle arm.** It is the one structure that reads a declaration, so it is the only one a wrong declaration can reach; the text arm carries no declaration for anything to be wrong about.
+
+**What the rate is a share of.** Each direction can only corrupt the writes that declare its operation, and the eligible counts are in the table. They are very different: most writes over a decade replace, and the ones that join are the two coexistence classes' second values alone. The join direction therefore has coarse resolution — a rate below one over its eligible count corrupts nothing, which is why its lowest rows show no errors and no damage rather than a small amount of both.
+
+**A write to an empty address cannot be wrong.** The first assertion at an address is the same store either way it is declared, so its declaration is unfalsifiable. Most assertions over a decade are of that kind, which is why the model's rates below are reported against two denominators: every eligible write, which is what the sweep's rate is a share of, and the writes that land on an address already holding something, which are the ones a declaration has consequences for.
+
+**Healing is measured, not asserted.** After a wrong declaration, the tables report the share of corrupted addresses answering correctly again at the last year and how many checkpoints each carried the damage. `harness/misdeclaration_test.go` asserts the asymmetry those columns show.
+
 ## What a run costs
 
 Established before the run, as issue #443 requires.
 
-No frame calls a model. Every arm added since the first round decides what it decides from what it was given, and only the shipped frame touches an embedder at all — the deterministic offline one `cmd/gagent` defaults to. So a run costs nothing and needs no key, and the model-call count in the table below is the check on that rather than an assurance. Each round has been started without asking on that basis. What the shipped OpenAI embedder costs the read path, and which conclusions may be quoted across the two embedders, is #435's measurement and is not repeated here.
+No frame calls a model. Every structure measured here decides what it decides from what it was given, and only the shipped frame touches an embedder at all — the deterministic offline one `cmd/gagent` defaults to. The frames, the workload and the error sweep are free, and the model-call count in the first table below is the check on that rather than an assurance.
+
+**One thing in this record was paid for**, and it is reported in a table of its own after every free figure: asking a model to declare the operation for each of the workload's assertions. It is one call per assertion and nothing else, on the cheapest model that answers in one word without billing reasoning as output. The run refuses to start past a call bound and refuses to finish past a cost bound, both stated in that table, because a bound discovered afterwards is not a bound. Its answers are committed, so scoring them costs nothing and re-running the measurement does not re-buy them: only `-declare` reaches the provider, and the key reaches the process from the environment and nothing else. What the shipped OpenAI embedder costs the read path, and which conclusions may be quoted across the two embedders, is #435's measurement and is not repeated here.
 
 The figure that matters for the designs coming next is in the cost table below, and it is in tokens rather than money on purpose: a price list expires and a token count does not. A design that rewrites a bounded document with a model on every turn makes one call per turn for the whole span, and the table states what one run of one such design spends in prompt and output tokens. Multiply by the price of whatever model it uses at the time, and by the number of designs and seeds being compared.
 
@@ -409,6 +428,213 @@ The figure that matters for the designs coming next is in the cost table below, 
 | `bakery` | 47 | 11 | 0.234 |
 | `backups` | 46 | 14 | 0.304 |
 
+### What a wrong declaration costs, by year
+
+| direction | rate | errors | year | recall | carried | replaced | reverted | parallel | refined | fresh | stale returned |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| `join-as-replace` | 0.005 | 0 | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a |
+| `join-as-replace` | 0.005 | 0 | 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a |
+| `join-as-replace` | 0.005 | 0 | 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.005 | 0 | 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.005 | 0 | 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.005 | 0 | 6 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.005 | 0 | 7 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.005 | 0 | 8 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.005 | 0 | 9 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.005 | 0 | 10 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.010 | 0 | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a |
+| `join-as-replace` | 0.010 | 0 | 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a |
+| `join-as-replace` | 0.010 | 0 | 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.010 | 0 | 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.010 | 0 | 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.010 | 0 | 6 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.010 | 0 | 7 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.010 | 0 | 8 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.010 | 0 | 9 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.010 | 0 | 10 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.020 | 0 | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a |
+| `join-as-replace` | 0.020 | 0 | 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a |
+| `join-as-replace` | 0.020 | 0 | 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.020 | 0 | 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.020 | 0 | 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.020 | 0 | 6 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.020 | 0 | 7 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.020 | 0 | 8 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.020 | 0 | 9 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.020 | 0 | 10 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.050 | 1 | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a |
+| `join-as-replace` | 0.050 | 1 | 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a |
+| `join-as-replace` | 0.050 | 1 | 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.050 | 1 | 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.050 | 1 | 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.050 | 1 | 6 | 0.998 ±0.004 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.988 ±0.024 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.050 | 1 | 7 | 0.998 ±0.004 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.988 ±0.024 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.050 | 1 | 8 | 0.998 ±0.004 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.988 ±0.024 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.050 | 1 | 9 | 0.998 ±0.004 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.988 ±0.024 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.050 | 1 | 10 | 0.998 ±0.004 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.988 ±0.024 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.100 | 5 | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a |
+| `join-as-replace` | 0.100 | 5 | 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a |
+| `join-as-replace` | 0.100 | 5 | 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.100 | 5 | 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.100 | 5 | 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.100 | 5 | 6 | 0.990 ±0.009 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.950 ±0.047 | 0.988 ±0.024 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.100 | 5 | 7 | 0.990 ±0.009 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.950 ±0.047 | 0.988 ±0.024 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.100 | 5 | 8 | 0.990 ±0.009 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.950 ±0.047 | 0.988 ±0.024 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.100 | 5 | 9 | 0.990 ±0.009 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.950 ±0.047 | 0.988 ±0.024 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.100 | 5 | 10 | 0.990 ±0.009 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.950 ±0.047 | 0.988 ±0.024 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.200 | 14 | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a |
+| `join-as-replace` | 0.200 | 14 | 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a |
+| `join-as-replace` | 0.200 | 14 | 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.200 | 14 | 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.200 | 14 | 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.200 | 14 | 6 | 0.971 ±0.015 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.900 ±0.063 | 0.925 ±0.056 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.200 | 14 | 7 | 0.971 ±0.015 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.900 ±0.063 | 0.925 ±0.056 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.200 | 14 | 8 | 0.971 ±0.015 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.900 ±0.063 | 0.925 ±0.056 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.200 | 14 | 9 | 0.971 ±0.015 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.900 ±0.063 | 0.925 ±0.056 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.200 | 14 | 10 | 0.971 ±0.015 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.900 ±0.063 | 0.925 ±0.056 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.500 | 36 | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a |
+| `join-as-replace` | 0.500 | 36 | 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a |
+| `join-as-replace` | 0.500 | 36 | 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.500 | 36 | 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.500 | 36 | 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.500 | 36 | 6 | 0.925 ±0.023 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 0.838 ±0.073 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.500 | 36 | 7 | 0.925 ±0.023 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 0.838 ±0.073 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.500 | 36 | 8 | 0.925 ±0.023 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 0.838 ±0.073 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.500 | 36 | 9 | 0.925 ±0.023 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 0.838 ±0.073 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `join-as-replace` | 0.500 | 36 | 10 | 0.925 ±0.023 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 0.838 ±0.073 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `replace-as-join` | 0.005 | 4 | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a |
+| `replace-as-join` | 0.005 | 4 | 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a |
+| `replace-as-join` | 0.005 | 4 | 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `replace-as-join` | 0.005 | 4 | 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `replace-as-join` | 0.005 | 4 | 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `replace-as-join` | 0.005 | 4 | 6 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `replace-as-join` | 0.005 | 4 | 7 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `replace-as-join` | 0.005 | 4 | 8 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `replace-as-join` | 0.005 | 4 | 9 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `replace-as-join` | 0.005 | 4 | 10 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `replace-as-join` | 0.010 | 8 | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a |
+| `replace-as-join` | 0.010 | 8 | 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a |
+| `replace-as-join` | 0.010 | 8 | 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.013 ±0.024 |
+| `replace-as-join` | 0.010 | 8 | 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.013 ±0.024 |
+| `replace-as-join` | 0.010 | 8 | 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.013 ±0.024 |
+| `replace-as-join` | 0.010 | 8 | 6 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.013 ±0.024 |
+| `replace-as-join` | 0.010 | 8 | 7 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `replace-as-join` | 0.010 | 8 | 8 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `replace-as-join` | 0.010 | 8 | 9 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `replace-as-join` | 0.010 | 8 | 10 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `replace-as-join` | 0.020 | 13 | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a |
+| `replace-as-join` | 0.020 | 13 | 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a |
+| `replace-as-join` | 0.020 | 13 | 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.025 ±0.034 |
+| `replace-as-join` | 0.020 | 13 | 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.025 ±0.034 |
+| `replace-as-join` | 0.020 | 13 | 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.025 ±0.034 |
+| `replace-as-join` | 0.020 | 13 | 6 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.025 ±0.034 |
+| `replace-as-join` | 0.020 | 13 | 7 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `replace-as-join` | 0.020 | 13 | 8 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `replace-as-join` | 0.020 | 13 | 9 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `replace-as-join` | 0.020 | 13 | 10 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 |
+| `replace-as-join` | 0.050 | 37 | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a |
+| `replace-as-join` | 0.050 | 37 | 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a |
+| `replace-as-join` | 0.050 | 37 | 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.050 ±0.048 |
+| `replace-as-join` | 0.050 | 37 | 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.050 ±0.048 |
+| `replace-as-join` | 0.050 | 37 | 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.050 ±0.048 |
+| `replace-as-join` | 0.050 | 37 | 6 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.050 ±0.048 |
+| `replace-as-join` | 0.050 | 37 | 7 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.025 ±0.034 |
+| `replace-as-join` | 0.050 | 37 | 8 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.025 ±0.034 |
+| `replace-as-join` | 0.050 | 37 | 9 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.025 ±0.034 |
+| `replace-as-join` | 0.050 | 37 | 10 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.025 ±0.034 |
+| `replace-as-join` | 0.100 | 74 | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a |
+| `replace-as-join` | 0.100 | 74 | 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a |
+| `replace-as-join` | 0.100 | 74 | 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.113 ±0.070 |
+| `replace-as-join` | 0.100 | 74 | 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.113 ±0.070 |
+| `replace-as-join` | 0.100 | 74 | 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.113 ±0.070 |
+| `replace-as-join` | 0.100 | 74 | 6 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.113 ±0.070 |
+| `replace-as-join` | 0.100 | 74 | 7 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.050 ±0.048 |
+| `replace-as-join` | 0.100 | 74 | 8 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.050 ±0.048 |
+| `replace-as-join` | 0.100 | 74 | 9 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.050 ±0.048 |
+| `replace-as-join` | 0.100 | 74 | 10 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.050 ±0.048 |
+| `replace-as-join` | 0.200 | 151 | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a |
+| `replace-as-join` | 0.200 | 151 | 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a |
+| `replace-as-join` | 0.200 | 151 | 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.225 ±0.092 |
+| `replace-as-join` | 0.200 | 151 | 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.225 ±0.092 |
+| `replace-as-join` | 0.200 | 151 | 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.225 ±0.092 |
+| `replace-as-join` | 0.200 | 151 | 6 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.225 ±0.092 |
+| `replace-as-join` | 0.200 | 151 | 7 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.125 ±0.073 |
+| `replace-as-join` | 0.200 | 151 | 8 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.125 ±0.073 |
+| `replace-as-join` | 0.200 | 151 | 9 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.125 ±0.073 |
+| `replace-as-join` | 0.200 | 151 | 10 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.125 ±0.073 |
+| `replace-as-join` | 0.500 | 379 | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a |
+| `replace-as-join` | 0.500 | 379 | 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a |
+| `replace-as-join` | 0.500 | 379 | 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.588 ±0.109 |
+| `replace-as-join` | 0.500 | 379 | 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.588 ±0.109 |
+| `replace-as-join` | 0.500 | 379 | 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.588 ±0.109 |
+| `replace-as-join` | 0.500 | 379 | 6 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.588 ±0.109 |
+| `replace-as-join` | 0.500 | 379 | 7 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.487 ±0.110 |
+| `replace-as-join` | 0.500 | 379 | 8 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.487 ±0.110 |
+| `replace-as-join` | 0.500 | 379 | 9 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.487 ±0.110 |
+| `replace-as-join` | 0.500 | 379 | 10 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.487 ±0.110 |
+
+### Whether a wrong declaration heals
+
+| direction | rate | eligible writes | errors | addresses hit | healed by the last year | years carrying the damage |
+|---|---|---|---|---|---|---|
+| `join-as-replace` | 0.005 | 80 | 0 | 0 | n/a | n/a |
+| `join-as-replace` | 0.010 | 80 | 0 | 0 | n/a | n/a |
+| `join-as-replace` | 0.020 | 80 | 0 | 0 | n/a | n/a |
+| `join-as-replace` | 0.050 | 80 | 1 | 1 | 0.000 ±0.000 | 5.00 ±0.00 |
+| `join-as-replace` | 0.100 | 80 | 5 | 5 | 0.000 ±0.000 | 5.00 ±0.00 |
+| `join-as-replace` | 0.200 | 80 | 14 | 14 | 0.000 ±0.000 | 5.00 ±0.00 |
+| `join-as-replace` | 0.500 | 80 | 36 | 36 | 0.000 ±0.000 | 5.00 ±0.00 |
+| `replace-as-join` | 0.005 | 760 | 4 | 4 | 1.000 ±0.000 | 0.00 ±0.00 |
+| `replace-as-join` | 0.010 | 760 | 8 | 8 | 1.000 ±0.000 | 0.50 ±0.98 |
+| `replace-as-join` | 0.020 | 760 | 13 | 12 | 1.000 ±0.000 | 0.33 ±0.65 |
+| `replace-as-join` | 0.050 | 760 | 37 | 35 | 0.943 ±0.078 | 0.57 ±0.57 |
+| `replace-as-join` | 0.100 | 760 | 74 | 70 | 0.943 ±0.055 | 0.63 ±0.41 |
+| `replace-as-join` | 0.200 | 760 | 151 | 144 | 0.931 ±0.042 | 0.67 ±0.28 |
+| `replace-as-join` | 0.500 | 760 | 379 | 323 | 0.879 ±0.036 | 0.48 ±0.18 |
+
+### What a model declared
+
+| direction | eligible writes | errors | rate | writes with consequence | errors there | rate there |
+|---|---|---|---|---|---|---|
+| `join-as-replace` | 80 | 23 | 0.287 ±0.100 | 80 | 23 | 0.287 ±0.100 |
+| `replace-as-join` | 760 | 630 | 0.829 ±0.027 | 160 | 32 | 0.200 ±0.062 |
+
+| wording | asked | accuracy |
+|---|---|---|
+| `assert` | 600 | 0.003 ±0.005 |
+| `also` | 40 | 1.000 ±0.000 |
+| `narrow` | 40 | 0.425 ±0.155 |
+| `replace` | 160 | 0.800 ±0.062 |
+
+| class | asked | accuracy |
+|---|---|---|
+| `carried` | 40 | 0.000 ±0.000 |
+| `replaced` | 120 | 0.550 ±0.089 |
+| `reverted` | 120 | 0.517 ±0.090 |
+| `parallel` | 80 | 0.512 ±0.110 |
+| `refined` | 80 | 0.212 ±0.090 |
+| `fresh` | 400 | 0.003 ±0.005 |
+
+### What the frame answered on the model's declarations
+
+| year | recall | carried | replaced | reverted | parallel | refined | fresh | stale returned |
+|---|---|---|---|---|---|---|---|---|
+| 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a |
+| 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a |
+| 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.188 ±0.086 |
+| 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.188 ±0.086 |
+| 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.188 ±0.086 |
+| 6 | 0.952 ±0.019 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 1.000 ±0.000 | 0.188 ±0.086 |
+| 7 | 0.952 ±0.019 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 1.000 ±0.000 | 0.212 ±0.090 |
+| 8 | 0.952 ±0.019 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 1.000 ±0.000 | 0.212 ±0.090 |
+| 9 | 0.952 ±0.019 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 1.000 ±0.000 | 0.212 ±0.090 |
+| 10 | 0.952 ±0.019 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.713 ±0.078 | 1.000 ±0.000 | 0.212 ±0.090 |
+
+| direction | errors | addresses hit | healed by the last year | years carrying the damage |
+|---|---|---|---|---|
+| `join-as-replace` | 23 | 23 | 0.000 ±0.000 | 5.00 ±0.00 |
+| `replace-as-join` | 630 | 598 | 0.933 ±0.020 | 0.00 ±0.00 |
+
 ### What the run cost
 
 | quantity | value |
@@ -424,6 +650,22 @@ The figure that matters for the designs coming next is in the cost table below, 
 | a per-turn model design: output tokens per call | 512 |
 | a per-turn model design: prompt tokens per run | 4158720 |
 | a per-turn model design: output tokens per run | 2949120 |
+
+### What the paid half cost
+
+| quantity | value |
+|---|---|
+| model | gpt-4.1-nano |
+| paid calls | 840 |
+| assertions declared | 840 |
+| prompt tokens | 105914 |
+| completion tokens | 840 |
+| price per million prompt tokens, USD | 0.1 |
+| price per million completion tokens, USD | 0.4 |
+| price read on | 2026-08-16 |
+| cost, USD | 0.0109 |
+| call bound the run refuses to pass | 1000 |
+| cost bound the run refuses to pass, USD | 0.25 |
 <!-- end generated -->
 
 A size is one store read at one moment rather than a sample, so it carries no interval; every other figure above is a mean over the probes of that year with the 95% half-width those probes support.
@@ -450,6 +692,14 @@ A size is one store read at one moment rather than a sample, so it carries no in
 - **A structure that reads everything it holds does not survive a decade, whatever its recall says.** The shipped design ranks its whole active index on every recall, and the units it reads to answer one question rise with the store across the span. The log's projection rises the same way, for the same reason: it is derived rather than stored. `attribute-learned` is the third, and this is a cost #453 did not see — its rule reads every address it holds to decide how many values one of them returns, so answering one question touches all of them while every other addressed arm touches one.
 - **The interval store buys history and the workload never asks for it.** Every question a checkpoint asks is about the present, so what this structure does that no other arm can — answer what was true in an earlier year — is unmeasured here. Its recall and stale figures are `attribute-single`'s and its extra rows are the price of a capability this workload does not exercise. That is a finding about the instrument: the seam has no way to ask about the past because the workload never asks one.
 
+- **The two error directions fail in opposite figures, and one of them is invisible in recall.** A wrong replacement takes recall down and never touches the stale figure; a wrong join leaves recall at its ceiling at every rate measured, up to and including corrupting half of every eligible write, and shows up only as staleness. A table ranking on recall alone would report the accumulating failure as no failure at all, which is why recall never appears in this record without the stale figure beside it.
+- **One of them heals and the other does not, and that is the structural difference.** A wrong join is repaired by the next correct replacement at that address, so nearly all of them are gone by the last year and the ones that are not are addresses the workload never writes to again. A wrong replacement is repaired by nothing: it destroys a value that is still true, and nothing in the workload asserts that value again. Healing is a property of what a structure does next, not of what it holds, and addressing supplies it in one direction only.
+- **What repairs the one and not the other is the same mechanism.** A replacement clears the address, so it clears a wrongly-kept value with it; nothing re-writes a wrongly-cleared one. Making a wrong replacement heal would take a record of what was cleared and a rule for putting it back — which is what the interval frame holds and what §The frames says it holds it for, and a rule for when to put a value back is a rule about arity again.
+- **A real model does not reach the ceiling, and the gap is one class.** Driven by a model's own declarations rather than by a rate, the frame answers every class at every year until the year the coexistence values arrive, and from then on loses only `refined`. `parallel` — the same requirement worded with a conjunction — stays at its ceiling for the whole decade. Every one of the model's destroying errors landed on the narrowing wording and none landed on the conjunction.
+- **The model reproduces the cue list's failure, which says the failure is not the cue list's.** `attribute-cued` is disqualified because it enumerates the words that mark an addition, and it fails on `refined` and passes `parallel`. A model that enumerates nothing fails on the same class and passes the same class. What that says is not that the model is a cue list, but that a conjunction states arity and a qualifier only implies it — so an addition marked by implicature is hard to read rather than merely hard to list, and the disqualification stands against the rule and not against reading language.
+- **Most of what a writeback declares cannot be wrong, and a rate that counts it says very little.** The overwhelming majority of assertions over a decade land on an address holding nothing, where replacing and joining are the same store. Counted over every eligible write the model's replacing errors look catastrophic; counted over the writes that land somewhere they are a fifth. The stale figure the frame actually posts follows the second and not the first.
+- **The recommendation does not survive intact, and what it becomes is a trade rather than a ruin.** On this model's declarations the structure loses recall in one class permanently and returns a superseded value on about one revised thread in five, against a ceiling of neither. Set beside the arms that decide arity for themselves, it recovers recall that always-replacing gives up and pays for it in staleness that always-replacing does not have — and the staleness heals while the lost recall does not. Neither dominates, so "the write states arity" is a choice about which failure is cheaper rather than a structure that removes both.
+
 ## What this record does not say
 
 - It recommends no structure. The attribute frame answers one of the questions the programme is asking and leaves the rest open; validity intervals and a derived view are separate issues, and what to build comes after the frames are measured rather than from any one of them.
@@ -465,6 +715,9 @@ A size is one store read at one moment rather than a sample, so it carries no in
 - **Values are unique tokens.** That is what makes crediting exact, and it is not how every real fact looks: two people can be allergic to the same thing. A workload whose values collided would need a credit rule that reads subject and value together, and this one does not test any structure's behaviour under that.
 - **Crediting is by reading the injected text.** It is the only rule that can score a structure with rows and a structure with one document on the same footing. It credits a value present for the wrong reason — a frame that returned everything it ever saw would score perfectly on recall, which is why the stale figure is beside it and why context size is reported.
 - **A checkpoint does not write.** Real questions are turns and a design could learn from being asked one. Here it cannot, so nothing scores by echoing the question.
+- **One model, one prompt, one day.** The declaration figures describe the cheapest model at the provider this project ships, asked one way, on one afternoon. A larger model, a prompt that showed it examples, or a second attempt at the same call would all move them, and none of that is measured. The provider is not reproducible to the last bit either, which is why the answers are committed rather than re-bought.
+- **The paid measurement asks about a sentence and not about a turn.** The model sees the address, what is held there, and the statement — what a writeback with a working recall would see. It does not see the conversation around the statement, and a real writeback would. Whether that context carries the arity a qualifier only implies is the obvious next question and it is not this one.
+- **The workload has few writes that join.** Only the two coexistence classes' second values ever do, so the destroying direction's sweep has coarse resolution at the low end and its rows below that resolution show no errors rather than few. A workload with more coexistence would sharpen that curve, and changing it would stop every figure measured against this one from being comparable.
 - **The interval store's distinguishing capability is unmeasured.** Every checkpoint asks about the present, so nothing here scores the one question a store of spans can answer and an addressed store cannot. A unit test asks it as of a moment inside a closed span and gets what was true then, which is what the claim rests on; the workload asks no such question and was not widened to, because a workload changed mid-programme stops every figure measured against the earlier one from being comparable. It is a separate issue and it would have to run against every frame from the start.
 - **The byte figures understate the stores that keep instants.** Content and stored bytes count the text a frame holds. The interval store keeps two instants bounding every span and the addressed stores keep one beside every value, and neither is in the byte column — so the comparison of bytes between them understates the interval store by exactly the bounds that are the reason to use it. The units column carries that difference and the byte column does not.
 - **What the oracle arm covers narrowed when the question arrived extracted.** A frame handed the address is measured on holding and updating and not on finding. The shipped frame is still measured on all three, because it queries with the question's text, so the two are not measured on the same job and the record does not read their recall figures against each other as though they were. A comparison of the finding half needs a run in which no frame receives the address, and this is not that run.

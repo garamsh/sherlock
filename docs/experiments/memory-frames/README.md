@@ -225,7 +225,6 @@ The same store taking the declaration instead of reading the question, so a conj
 
 **What these figures say.** It answers every class at every year and returns nothing stale, which is `attribute-declared`'s row on a different address. What that settles is that a question-shaped address costs nothing against the ceiling — a structure addressing facts by question reaches exactly what a structure addressing them by topic reaches, once both are told the operation. The distance between it and `question` is therefore the whole of what the question's form fails to carry, and §Whether the address carries the arity is what that distance is made of.
 
-
 ## `interval` — a value with the span it was true for
 
 A value is written with a start and is never removed. A replacement closes the open span instead of deleting the row, so a value that has stopped being true is still there with the span it was true for. It inherits the arity question and does not answer it — closing is replacing and not closing is coexisting — and it closes, because a frame that never closed would have nothing closed and the separation of what is true now from what was ever true would not exist. It answers as of the moment it is asked.

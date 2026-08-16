@@ -104,14 +104,19 @@ func stemOf(question string) string {
 // would be an address that already knew what it is being measured to find
 // out.
 func QuestionAddress(text, subject, value, attribute string) Address {
-	stem, ok := questionStems[attribute]
-	if !ok {
-		// An extractor may address a fact outside the vocabulary. The fact
-		// lands where it was addressed rather than being dropped, so a
-		// misaddressing costs what misaddressing costs and not less.
-		stem = attribute
+	return Address{Subject: subject, Attribute: questionStemOf(attribute),
+		Qualifier: qualifierIn(text, subject, value)}
+}
+
+// questionStemOf is the question an attribute is asked by. An extractor may
+// address a fact outside the vocabulary, and that fact lands where it was
+// addressed rather than being dropped, so a misaddressing costs what
+// misaddressing costs and not less.
+func questionStemOf(attribute string) string {
+	if stem, ok := questionStems[attribute]; ok {
+		return stem
 	}
-	return Address{Subject: subject, Attribute: stem, Qualifier: qualifierIn(text, subject, value)}
+	return attribute
 }
 
 // qualifierIn is the restriction the sentence puts on the question, or the
@@ -202,7 +207,7 @@ func readdress(t Turn, frameName string) Turn {
 		// question with no restriction on it. What answers a narrower
 		// question also answers this one, which is what the frame's read
 		// path does with it.
-		asked := QuestionAddress(t.Text, t.Ask.Subject, "", t.Ask.Attribute)
+		asked := Address{Subject: t.Ask.Subject, Attribute: questionStemOf(t.Ask.Attribute)}
 		t.Ask = &asked
 	}
 	return t

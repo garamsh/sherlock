@@ -34,10 +34,17 @@ const (
 // way the extractor is handed the attribute names: what is asked is whether
 // a model puts a fact at the right question, not whether it can invent a set
 // of questions and keep to them.
+//
+// It states what a restriction is not, because the first version did not and
+// most of its answers came back with the value in that field. That is a
+// defect in the instruction rather than an answer worth publishing, so the
+// pass was re-bought; what it deliberately does not say is which sentences
+// carry a restriction, which is the judgement under measurement.
 var addressInstruction = "You are the write step of a memory system. Memory holds a fact at the question it answers.\n\n" +
 	"Read the statement and answer with the question it answers, chosen from this list, and with the restriction the statement places on that question.\n\n" +
 	"The questions are exactly: " + strings.Join(questionKeys(), ", ") + ".\n\n" +
-	"A restriction is a phrase in the statement that narrows what is being asked, such as a time or a purpose the statement holds for. " +
+	"A restriction is a phrase in the statement that narrows what is being asked: never the subject and never the answer itself, " +
+	"but other material limiting when or for what the statement holds. " +
 	"Give it in the statement's own words, lower-cased. Where the statement narrows nothing, give an empty string.\n\n" +
 	`Answer with JSON only, in this shape: {"question":"...","restriction":"..."}`
 
@@ -278,14 +285,25 @@ type AddressScore struct {
 	Accuracy      Figure `json:"address_accuracy"`
 	QuestionAcc   Figure `json:"question_accuracy"`
 	// Restricted is the assertions the rule reads a restriction out of, and
-	// RestrictionRight how many of them the model restricted the same way.
-	Restricted       int        `json:"assertions_the_rule_restricts"`
-	RestrictionRight int        `json:"restriction_right"`
-	RestrictionAcc   Figure     `json:"restriction_accuracy"`
+	// RestrictionRight how many of them the model restricted in the same
+	// words. RestrictionOverlap is the looser test: the two restrictions
+	// contain one another, which is the same phrase given differently
+	// rather than a different phrase, and the two are apart because only
+	// one of them is a disagreement about what the sentence says.
+	Restricted         int    `json:"assertions_the_rule_restricts"`
+	RestrictionRight   int    `json:"restriction_right"`
+	RestrictionAcc     Figure `json:"restriction_accuracy"`
+	RestrictionOverlap Figure `json:"restriction_overlaps"`
+	// Invented is a restriction where the rule reads none. It is the
+	// damaging direction: a statement sent to a restricted address answers
+	// a question nothing asks.
 	Invented         int        `json:"restrictions_invented"`
 	InventedPerAsked Figure     `json:"restrictions_invented_per_assertion"`
 	Wordings         []CutScore `json:"wordings"`
 	Classes          []CutScore `json:"classes"`
+	// Inventions cuts the invented restrictions by the wording that wrote
+	// the sentence, which is where they concentrate.
+	Inventions       []CutScore `json:"inventions_by_wording"`
 	CostUSD          float64    `json:"cost_usd"`
 	Calls            int        `json:"calls"`
 	PromptTokens     int        `json:"prompt_tokens"`
@@ -297,8 +315,8 @@ type AddressScore struct {
 func ScoreAddresses(a Addresses) AddressScore {
 	out := AddressScore{Model: a.Model, Asked: len(a.Addressed), CostUSD: a.CostUSD, Calls: a.Calls,
 		PromptTokens: a.PromptTokens, CompletionTokens: a.CompletionTokens}
-	byWording, byClass := map[string][]float64{}, map[string][]float64{}
-	var whole, question, restriction, invented []float64
+	byWording, byClass, inventedBy := map[string][]float64{}, map[string][]float64{}, map[string][]float64{}
+	var whole, question, restriction, overlap, invented []float64
 	for _, one := range a.Addressed {
 		whole = append(whole, boolAsFloat(one.Right()))
 		question = append(question, boolAsFloat(one.QuestionRight()))
@@ -312,6 +330,7 @@ func ScoreAddresses(a Addresses) AddressScore {
 			out.Restricted++
 			right := one.Answered.Qualifier == one.Formed.Qualifier
 			restriction = append(restriction, boolAsFloat(right))
+			overlap = append(overlap, boolAsFloat(sharePhrase(one.Answered.Qualifier, one.Formed.Qualifier)))
 			if right {
 				out.RestrictionRight++
 			}
@@ -323,12 +342,26 @@ func ScoreAddresses(a Addresses) AddressScore {
 		}
 		byWording[one.Wording] = append(byWording[one.Wording], boolAsFloat(one.Right()))
 		byClass[one.Class] = append(byClass[one.Class], boolAsFloat(one.Right()))
+		inventedBy[one.Wording] = append(inventedBy[one.Wording], boolAsFloat(madeUp))
 	}
 	out.Accuracy = NewFigure(whole)
 	out.QuestionAcc = NewFigure(question)
 	out.RestrictionAcc = NewFigure(restriction)
+	out.RestrictionOverlap = NewFigure(overlap)
 	out.InventedPerAsked = NewFigure(invented)
 	out.Wordings = cutFrom(byWording, wordingNames)
 	out.Classes = cutFrom(byClass, classNames)
+	out.Inventions = cutFrom(inventedBy, wordingNames)
 	return out
+}
+
+// sharePhrase reports whether two restrictions are the same phrase given
+// differently. One containing the other is a model that read the phrase the
+// rule read and wrote it without its preposition; neither containing the
+// other is a model that read something else.
+func sharePhrase(answered, formed string) bool {
+	if answered == "" || formed == "" {
+		return false
+	}
+	return strings.Contains(formed, answered) || strings.Contains(answered, formed)
 }

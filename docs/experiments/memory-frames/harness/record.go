@@ -447,6 +447,7 @@ func renderAddresser(b *strings.Builder, r Run) {
 		{"question right", figure(a.QuestionAcc)},
 		{"assertions the rule restricts", a.Restricted},
 		{"restriction right, of those", figure(a.RestrictionAcc)},
+		{"restriction the same phrase, of those", figure(a.RestrictionOverlap)},
 		{"restriction invented where the rule reads none", figure(a.InventedPerAsked)},
 	}
 	for _, row := range rows {
@@ -454,9 +455,14 @@ func renderAddresser(b *strings.Builder, r Run) {
 	}
 	fmt.Fprintln(b)
 
-	fmt.Fprintf(b, "| wording | asked | whole address right |\n|---|---|---|\n")
+	invented := map[string]Figure{}
+	for _, cut := range a.Inventions {
+		invented[cut.Name] = cut.Accuracy
+	}
+	fmt.Fprintf(b, "| wording | asked | whole address right | restriction invented |\n|---|---|---|---|\n")
 	for _, cut := range a.Wordings {
-		fmt.Fprintf(b, "| `%s` | %d | %s |\n", cut.Name, cut.Asked, figure(cut.Accuracy))
+		fmt.Fprintf(b, "| `%s` | %d | %s | %s |\n", cut.Name, cut.Asked,
+			figure(cut.Accuracy), figure(invented[cut.Name]))
 	}
 	fmt.Fprintln(b)
 

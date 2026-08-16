@@ -1,4 +1,4 @@
-# ADR 0017: The agent is the self; the workspace is the data plane — pod-per-agent, and tools are independent servers behind a platform protocol
+# ADR 0017: The agent is the self; the workspace is the data plane — pod-per-agent, and tools are scripts with manifests
 
 > Status: accepted
 > Date: 2026-08-09 (revised in place 2026-08-13; 2026-08-14)
@@ -14,8 +14,6 @@ The single-container record itself anticipated this move: "The pod/sidecar topol
 
 The follow-up #249/#250 work added a gRPC computer contract that bundled filesystem and process exec behind one service. The sidecar's tool-hosting role was removed and process exec was settled on the workspace: the workspace is the computer (filesystem + exec), the agent executes nothing, and the plugin concept was dropped in favor of tools-as-packages imported at compile time.
 
-The follow-up #255 work closed the tools-as-packages loop: `tools/files`, `tools/playwright`, `tools/shell_exec` were in-process Go packages; the gRPC workspace client was the boundary tools use to reach the workspace; the tool contract was described as an agent-facing wire protocol (`ListTools`/`Call`) even though the in-process implementation short-circuited it.
-
 The remaining pressure on the tools-as-packages shape was threefold:
 
 - **Contribution friction.** Every contribution requires a Go import and a rebuild of the platform binary; the agent binary is no longer the right unit of evolution for capabilities.
@@ -26,7 +24,7 @@ The platform is asked to specify *only the protocol*: how a tool advertises itse
 
 ## Decision
 
-One pod per agent, holding two containers. Tools are independent servers behind one platform-owned protocol; the workspace is the data plane.
+One pod per agent, holding two containers. Tools are scripts with manifests behind one platform-owned contract; the workspace is the data plane.
 
 ### Pod
 
@@ -35,7 +33,7 @@ One pod per agent, holding two containers. Tools are independent servers behind 
 
 ### Tool contract
 
-A tool is an **independent server** behind one platform-owned protocol. The platform specifies only the protocol; everything else is the tool's choice.
+A tool is a **script with a manifest**: a `manifest.json` that declares the contract and an executable the platform spawns per call. The platform specifies only the manifest format and the stdio call shape; everything else is the tool's choice.
 
 | Concern | Owner |
 |---|---|
@@ -69,7 +67,7 @@ The platform contract tells the model to use specific tools (e.g., `message_send
 
 - Self-destruction is bounded by construction: an attacker who reaches the workspace can read, write, list, and exec inside the workspace's trust domain — bounded by the exec UID's DAC and the network namespace — but the agent's self is unreachable from the sidecar.
 - Adding a capability is an installation, not a rebuild. The platform binary evolves independently of the tool set; the operator chooses which tools are present.
-- The workspace contract remains a wire protocol (descriptor plus call) for files and exec; the tool contract becomes an actual wire protocol (descriptor plus call) for tools. Two protocols, two audiences. The tool contract is the platform's external surface for tools; the agent binary never imports a tool's package.
+- The workspace contract remains a wire protocol (descriptor plus call) for files and exec; the tool contract is a manifest plus one stdio invocation per call, not a wire protocol. Two contracts, two audiences. The tool contract is the platform's external surface for tools; the agent binary never imports a tool's package.
 - The responsibility split is structural: where today the platform must reach into every tool to validate, version, and privilege, the platform now reaches the protocol and the tool self-serves everything else. Each tool is reviewable on its own; the platform is reviewable on its own.
 - Secret-bearing tools (operator-sanctioned external APIs) hold their credentials in their own process env, scoped per tool by operator config. The platform does not become a secret dispatcher (ADR 0003, ADR 0013); secrets never materialize in the execution domain (ADR 0008 scrubbed exec env is unchanged).
 - `memory.db` remains in the agent container; the per-agent SQLite store and its store interface (ADR 0002) carry forward. Memory is still a layer, never a tool.
@@ -81,7 +79,7 @@ The platform contract tells the model to use specific tools (e.g., `message_send
 
 The workspace is explicitly not:
 
-- **A tool host.** Tools live in independent processes outside both containers; the workspace exposes no tool registry and no tool call surface.
+- **A tool host.** Tools run as processes the agent container's tool client spawns; the workspace exposes no tool registry and no tool call surface.
 - **A plugin loader.** There is no runtime mechanism to register a new tool against the workspace.
 
 The platform is explicitly not:

@@ -40,6 +40,10 @@ data/
 !/tools/*/*.yml
 !/tools/*/*.json
 
+# Experiment harness binary, written at the root by a direct build. Every such
+# package under docs/experiments/ is named harness; no other build output is covered.
+/harness
+
 # Python (experiment harnesses under docs/experiments/)
 __pycache__/
 *.pyc

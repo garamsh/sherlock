@@ -85,22 +85,26 @@ func NewAttributeFrame(rule arityRule) Frame {
 // fact is not written: an addressed structure has nowhere to put a sentence
 // it cannot address, and what that costs is the text arm's whole result.
 func (f *attributeFrame) Observe(_ context.Context, t Turn) error {
-	if t.Fact == nil {
-		return nil
+	for _, written := range t.Written {
+		f.write(written, t.Text, t.At)
 	}
-	values := f.values[t.Fact.Address]
-	if f.replaces(t) {
+	return nil
+}
+
+// write applies one of a message's assertions.
+func (f *attributeFrame) write(written Written, text string, at time.Time) {
+	values := f.values[written.Address]
+	if f.replaces(written, text) {
 		values = values[:0]
 	}
 	for i, held := range values {
-		if held.value == t.Fact.Value {
-			values[i].written = t.At
-			f.values[t.Fact.Address] = values
-			return nil
+		if held.value == written.Value {
+			values[i].written = at
+			f.values[written.Address] = values
+			return
 		}
 	}
-	f.values[t.Fact.Address] = append(values, heldValue{value: t.Fact.Value, written: t.At})
-	return nil
+	f.values[written.Address] = append(values, heldValue{value: written.Value, written: at})
 }
 
 // Context returns what the frame holds at the address asked about, and
@@ -186,17 +190,17 @@ func (f *attributeFrame) Close() error { return nil }
 // replaces reports whether this write ends the values already at the
 // address. Only the two rules that decide arity at write time answer yes:
 // single always, cued when the statement marks no addition.
-func (f *attributeFrame) replaces(t Turn) bool {
+func (f *attributeFrame) replaces(written Written, text string) bool {
 	switch f.rule {
 	case aritySingle:
 		return true
 	case arityCued:
-		return !marksAddition(t.Text)
+		return !marksAddition(text)
 	case arityDeclared:
 		// The workload states the operation on every assertion of the arm
 		// in which this frame writes at all, so "not stated" never reaches
 		// here.
-		return t.Declared != OperationJoin
+		return written.Declared != OperationJoin
 	default:
 		return false
 	}

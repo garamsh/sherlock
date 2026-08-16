@@ -43,10 +43,9 @@ func NewLogFrame() Frame {
 
 // Observe appends. Nothing else happens on a write.
 func (f *logFrame) Observe(_ context.Context, t Turn) error {
-	if t.Fact == nil {
-		return nil
+	for _, written := range t.Written {
+		f.events = append(f.events, event{address: written.Address, value: written.Value, at: t.At})
 	}
-	f.events = append(f.events, event{address: t.Fact.Address, value: t.Fact.Value, at: t.At})
 	return nil
 }
 

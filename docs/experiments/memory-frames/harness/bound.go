@@ -101,13 +101,15 @@ func newLedger() *ledger { return &ledger{holdings: map[string]*holding{}} }
 // ends up holding for it is not necessarily this text, which is why the
 // ledger is consulted by value below and tolerates a miss.
 func (l *ledger) wrote(t Turn, planted map[string]bool) {
-	disposable := t.Fact == nil
-	salience := gatewaySalienceAdd(t.Fact != nil)
+	disposable := len(t.Written) == 0
+	salience := gatewaySalienceAdd(len(t.Written) > 0)
 	for _, value := range valuesIn(t.Text, planted) {
 		l.note(value, t.At, salience, disposable)
 	}
-	if t.Fact != nil {
-		l.note(t.Fact.Value, t.At, salience, disposable)
+	if len(t.Written) > 0 {
+		for _, written := range t.Written {
+			l.note(written.Value, t.At, salience, disposable)
+		}
 		return
 	}
 	l.note(t.Text, t.At, salience, disposable)

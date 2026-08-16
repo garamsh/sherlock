@@ -287,14 +287,16 @@ func (s Stability) Declaring(base Declarations) Declaring {
 	}
 	return func(t Turn) Turn {
 		t = inner(t)
-		if t.Fact == nil {
-			return t
+		written := make([]Written, len(t.Written))
+		copy(written, t.Written)
+		for i := range written {
+			key := Declaration{Subject: written[i].Subject, Attribute: written[i].Attribute,
+				Value: written[i].Value, Year: t.Day/daysPerYear + 1}.key()
+			if answer, ok := resampled[key]; ok {
+				written[i].Declared = answer
+			}
 		}
-		key := Declaration{Subject: t.Fact.Subject, Attribute: t.Fact.Attribute,
-			Value: t.Fact.Value, Year: t.Day/daysPerYear + 1}.key()
-		if answer, ok := resampled[key]; ok {
-			t.Declared = answer
-		}
+		t.Written = written
 		return t
 	}
 }

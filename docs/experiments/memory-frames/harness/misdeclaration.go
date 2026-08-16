@@ -51,16 +51,30 @@ type Misdeclaration struct {
 // applyTo returns the turn as a writeback with this error rate would have
 // declared it.
 func (m Misdeclaration) applyTo(t Turn) Turn {
-	if !m.corrupts(t) {
-		return t
+	written := make([]Written, len(t.Written))
+	copy(written, t.Written)
+	for i := range written {
+		if !m.corrupts(written[i], drawKey(t.Index, i)) {
+			continue
+		}
+		if written[i].Declared == OperationJoin {
+			written[i].Declared = OperationReplace
+		} else {
+			written[i].Declared = OperationJoin
+		}
 	}
-	if t.Declared == OperationJoin {
-		t.Declared = OperationReplace
-	} else {
-		t.Declared = OperationJoin
-	}
+	t.Written = written
 	return t
 }
+
+// drawKey identifies one assertion for the draw. The first assertion of a
+// message keys on the message's own index, so a workload of one assertion a
+// message draws exactly what it drew before a message could carry several.
+func drawKey(index, written int) int { return index + written*assertionStride }
+
+// assertionStride separates the draws of assertions sharing a message far
+// enough that they cannot collide with another message's.
+const assertionStride = 1_000_003
 
 // corrupts reports whether this turn's declaration is one of the corrupted
 // ones. The draw comes from the turn's own index rather than from a
@@ -68,23 +82,23 @@ func (m Misdeclaration) applyTo(t Turn) Turn {
 // frame, in every arm and whatever else the run does first: a difference
 // between two frames measured under one rate is then a difference between
 // the frames.
-func (m Misdeclaration) corrupts(t Turn) bool {
-	if t.Fact == nil || m.Rate <= 0 {
+func (m Misdeclaration) corrupts(written Written, key int) bool {
+	if m.Rate <= 0 {
 		return false
 	}
 	switch m.Direction {
 	case directionJoinAsReplace:
-		if t.Declared != OperationJoin {
+		if written.Declared != OperationJoin {
 			return false
 		}
 	case directionReplaceAsJoin:
-		if t.Declared != OperationReplace {
+		if written.Declared != OperationReplace {
 			return false
 		}
 	default:
 		return false
 	}
-	return uniform(m.Seed, t.Index) < m.Rate
+	return uniform(m.Seed, key) < m.Rate
 }
 
 // Flips are the addresses this rate corrupts and the year it corrupts them
@@ -93,8 +107,10 @@ func (m Misdeclaration) corrupts(t Turn) bool {
 func (m Misdeclaration) Flips(w Workload) []Flip {
 	var out []Flip
 	for _, t := range w.Turns {
-		if m.corrupts(t) {
-			out = append(out, Flip{Address: t.Fact.Address, Year: t.Day/daysPerYear + 1})
+		for i, written := range t.Written {
+			if m.corrupts(written, drawKey(t.Index, i)) {
+				out = append(out, Flip{Address: written.Address, Year: t.Day/daysPerYear + 1})
+			}
 		}
 	}
 	return out
@@ -256,8 +272,10 @@ func eligibleWrites(w Workload, direction string) int {
 	}
 	var n int
 	for _, t := range w.Turns {
-		if t.Fact != nil && t.Declared == want {
-			n++
+		for _, written := range t.Written {
+			if written.Declared == want {
+				n++
+			}
 		}
 	}
 	return n

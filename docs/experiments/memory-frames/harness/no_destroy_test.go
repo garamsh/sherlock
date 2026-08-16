@@ -11,7 +11,7 @@ import (
 // declaredWrite is a write that states what it does to the address.
 func declaredWrite(day int, address Address, value, text string, op Operation) Turn {
 	t := wrote(day, address, value, text)
-	t.Declared = op
+	t.Written[0].Declared = op
 	return t
 }
 
@@ -86,12 +86,12 @@ func TestJoinBias_EndsAreTakeTheDeclarationAndNeverDestroy(t *testing.T) {
 	join := declaredWrite(4, almaProject, "amber-quarry", "joins.", OperationJoin)
 
 	none := JoinBias{Share: 0, Seed: 7}.over(nil)
-	assert.Equal(t, OperationReplace, none(replace).Declared)
-	assert.Equal(t, OperationJoin, none(join).Declared)
+	assert.Equal(t, OperationReplace, none(replace).Written[0].Declared)
+	assert.Equal(t, OperationJoin, none(join).Written[0].Declared)
 
 	all := JoinBias{Share: 1, Seed: 7}.over(nil)
-	assert.Equal(t, OperationJoin, all(replace).Declared, "no write destroys at the far end")
-	assert.Equal(t, OperationJoin, all(join).Declared)
+	assert.Equal(t, OperationJoin, all(replace).Written[0].Declared, "no write destroys at the far end")
+	assert.Equal(t, OperationJoin, all(join).Written[0].Declared)
 }
 
 // Never destroying is not a new structure: it is what the store that keeps
@@ -188,10 +188,10 @@ func TestStability_DeclaringResolvesASplitToJoin(t *testing.T) {
 	declaring := stable.Declaring(base)
 
 	settled := wrote(0, almaProject, "a", "first.")
-	assert.Equal(t, OperationReplace, declaring(settled).Declared)
+	assert.Equal(t, OperationReplace, declaring(settled).Written[0].Declared)
 
 	split := wrote(5*daysPerYear+10, almaProject, "b", "second.")
-	assert.Equal(t, OperationJoin, declaring(split).Declared)
+	assert.Equal(t, OperationJoin, declaring(split).Written[0].Declared)
 }
 
 // Whether the samples disagreeing says anything about the answer being

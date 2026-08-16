@@ -39,11 +39,23 @@ const (
 	OperationJoin Operation = "join"
 )
 
+// Written is one assertion as a write states it: the fact in extracted
+// form, and what the write does with the values already at its address.
+//
+// One message can assert several things, so a turn carries a list of these
+// rather than one of each. Arity stays off Fact — a fact still says nothing
+// about how many values its attribute holds — and sits here, on the write,
+// which is where this record concluded it belongs.
+type Written struct {
+	Fact
+	Declared Operation
+}
+
 // Turn is one observation a frame receives. Text is what was said.
 //
-// Fact and Ask are the same turn already extracted, present only in the
-// oracle arm: Fact on a turn that asserts something, Ask on a turn that
-// questions. A frame may read them, the text, or neither.
+// Written and Ask are the same turn already extracted, present only in the
+// arms that extract: Written on a turn that asserts something, Ask on a
+// turn that questions. A frame may read them, the text, or neither.
 //
 // Declared is not extraction. It is the write operation, which is where
 // #453 concluded arity belongs — nothing recovers from the triple what the
@@ -60,13 +72,12 @@ const (
 // question — which would make the comparison a comparison of parsers on the
 // read side, having removed exactly that from the write side.
 type Turn struct {
-	Index    int
-	Day      int
-	At       time.Time
-	Text     string
-	Fact     *Fact
-	Ask      *Address
-	Declared Operation
+	Index   int
+	Day     int
+	At      time.Time
+	Text    string
+	Written []Written
+	Ask     *Address
 }
 
 // Size is what a frame holds. Units counts whatever the frame treats as one

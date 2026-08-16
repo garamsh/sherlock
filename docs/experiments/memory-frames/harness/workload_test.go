@@ -40,9 +40,7 @@ func TestGenerateWorkload_ReportsTheCountsItPlanted(t *testing.T) {
 
 	var facts int
 	for _, turn := range w.Turns {
-		if turn.Fact != nil {
-			facts++
-		}
+		facts += len(turn.Written)
 	}
 	assert.Equal(t, facts, w.Params.FactTurns)
 
@@ -114,7 +112,7 @@ func TestGenerateWorkload_NoNoiseTurnCarriesAPlantedValue(t *testing.T) {
 		}
 	}
 	for _, turn := range w.Turns {
-		if turn.Fact != nil {
+		if len(turn.Written) > 0 {
 			continue
 		}
 		for _, value := range values {
@@ -131,13 +129,12 @@ func TestGenerateWorkload_EveryFactTurnSaysItsOwnValue(t *testing.T) {
 	require.NoError(t, err)
 
 	for _, turn := range w.Turns {
-		if turn.Fact == nil {
-			continue
+		for _, written := range turn.Written {
+			assert.True(t, Mentions(turn.Text, written.Value),
+				"turn %q does not say its own value %q", turn.Text, written.Value)
+			assert.True(t, strings.Contains(turn.Text, written.Subject),
+				"turn %q does not name its own subject %q", turn.Text, written.Subject)
 		}
-		assert.True(t, Mentions(turn.Text, turn.Fact.Value),
-			"turn %q does not say its own value %q", turn.Text, turn.Fact.Value)
-		assert.True(t, strings.Contains(turn.Text, turn.Fact.Subject),
-			"turn %q does not name its own subject %q", turn.Text, turn.Fact.Subject)
 	}
 }
 
@@ -162,10 +159,9 @@ func TestGenerateWorkload_PlacesEveryAssertionInsideItsOwnYear(t *testing.T) {
 	// years it was said in rather than to one year.
 	planted := map[string][]int{}
 	for _, turn := range w.Turns {
-		if turn.Fact == nil {
-			continue
+		for _, written := range turn.Written {
+			planted[written.Value] = append(planted[written.Value], turn.Day/daysPerYear+1)
 		}
-		planted[turn.Fact.Value] = append(planted[turn.Fact.Value], turn.Day/daysPerYear+1)
 	}
 	expected := map[string][]int{}
 	for _, thread := range w.Threads {

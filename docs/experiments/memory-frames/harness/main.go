@@ -69,6 +69,7 @@ type Run struct {
 	Cost        Cost          `json:"cost"`
 	Sweep       []SweepResult `json:"declaration_error_sweep"`
 	Constrained []Constrained `json:"constrained,omitempty"`
+	Shapes      []ShapeRun    `json:"shapes,omitempty"`
 
 	Declarer     *DeclarerScore `json:"declarer,omitempty"`
 	Model        []ModelRun     `json:"model_runs,omitempty"`
@@ -93,6 +94,10 @@ func run() error {
 	render := flag.Bool("render", false, "rewrite the record's tables from the committed results and measure nothing")
 	declare := flag.Bool("declare", false,
 		"ask a model to declare the operation for every assertion. Spends money")
+	harder := flag.Bool("harder", false,
+		"run the conversation-shape study instead of the decade measurement")
+	extract := flag.Bool("extract", false,
+		"have a model read every message of every shape. Spends money")
 	resample := flag.Bool("resample", false,
 		"ask the model the consequential assertions several times over, to see whether its answer is settled. Spends money")
 	declarerCache := flag.String("declarer-cache", "",
@@ -107,7 +112,11 @@ func run() error {
 	resultPath := filepath.Join(*out, fmt.Sprintf("decade_seed%d.json", *seed))
 	if *render {
 		return renderRecord(resultPath, filepath.Join(*out, fmt.Sprintf("constrained_seed%d.json", *seed)),
-			*record)
+			filepath.Join(*out, fmt.Sprintf("harder_seed%d.json", *seed)), *record)
+	}
+
+	if *harder {
+		return runHarder(ctx0(), *seed, *out, *record, *extract, *declarerCache)
 	}
 
 	workload, err := GenerateWorkload(*seed, params)
@@ -200,7 +209,8 @@ func run() error {
 		return err
 	}
 	report(result)
-	if err := renderRecord(resultPath, constrainedPath, *record); err != nil {
+	if err := renderRecord(resultPath, constrainedPath,
+		filepath.Join(*out, fmt.Sprintf("harder_seed%d.json", *seed)), *record); err != nil {
 		return err
 	}
 	fmt.Printf("\nrewrote the tables in %s\n", *record)
@@ -291,6 +301,58 @@ func readCommittedDeclarations(path string) (*Declarations, error) {
 	return &declared, nil
 }
 
+// ctx0 is the run's context. The harness takes no cancellation of its own.
+func ctx0() context.Context { return context.Background() }
+
+// runHarder measures the conversation-shape study and writes it beside the
+// decade run rather than into it: it is a different workload, so its figures
+// are comparable to each other and not to that one.
+func runHarder(ctx context.Context, seed int64, out, record string, pay bool, cachePath string) error {
+	extractions := map[string]Extraction{}
+	for _, shape := range shapeNames {
+		path := filepath.Join(out, fmt.Sprintf("extraction_%s_seed%d.json", shape, seed))
+		if pay {
+			w, err := GenerateWorkload(seed, harderParams(shape))
+			if err != nil {
+				return err
+			}
+			extracted, err := Extract(ctx, w, cachePath)
+			if err != nil {
+				return err
+			}
+			if err := writeJSON(path, extracted); err != nil {
+				return err
+			}
+			fmt.Printf("%s: read %d messages in %d paid calls, %d prompt and %d completion tokens, $%.4f\n",
+				shape, len(extracted.Messages), extracted.Calls,
+				extracted.PromptTokens, extracted.CompletionTokens, extracted.CostUSD)
+		}
+		body, err := os.ReadFile(path)
+		if os.IsNotExist(err) {
+			continue
+		}
+		if err != nil {
+			return fmt.Errorf("read %s: %w", path, err)
+		}
+		var extracted Extraction
+		if err := json.Unmarshal(body, &extracted); err != nil {
+			return fmt.Errorf("decode %s: %w", path, err)
+		}
+		extractions[shape] = extracted
+	}
+	shapes, err := MeasureShapes(ctx, seed, extractions)
+	if err != nil {
+		return err
+	}
+	shapePath := filepath.Join(out, fmt.Sprintf("harder_seed%d.json", seed))
+	if err := writeJSON(shapePath, shapes); err != nil {
+		return err
+	}
+	fmt.Printf("measured %d shapes\n", len(shapes))
+	return renderRecord(filepath.Join(out, fmt.Sprintf("decade_seed%d.json", seed)),
+		filepath.Join(out, fmt.Sprintf("constrained_seed%d.json", seed)), shapePath, record)
+}
+
 // readCommittedStability reads the resampled answers a paid run committed
 // and scores them, which costs nothing.
 func readCommittedStability(path string) (*Stability, error) {
@@ -337,8 +399,8 @@ func turnDigest(turns []Turn) string {
 	h := sha256.New()
 	for _, t := range turns {
 		fmt.Fprintf(h, "%d|%d|%s|%s|", t.Index, t.Day, t.At.UTC().Format("2006-01-02T15:04:05Z"), t.Text)
-		if t.Fact != nil {
-			fmt.Fprintf(h, "%s|%s|%s", t.Fact.Subject, t.Fact.Attribute, t.Fact.Value)
+		for _, written := range t.Written {
+			fmt.Fprintf(h, "%s|%s|%s", written.Subject, written.Attribute, written.Value)
 		}
 		fmt.Fprintln(h)
 	}

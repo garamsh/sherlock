@@ -57,7 +57,7 @@ func TestShippedFrame_ReturnsWhatItObserved(t *testing.T) {
 
 	fact := Fact{Address: Address{Subject: "Alma", Attribute: "project"}, Value: "amber-quarry"}
 	require.NoError(t, frame.Observe(ctx, Turn{Index: 0, Day: 0, At: start,
-		Text: "Alma leads the amber-quarry project.", Fact: &fact}))
+		Text: "Alma leads the amber-quarry project.", Written: []Written{{Fact: fact}}}))
 
 	injected, err := frame.Context(ctx, Turn{Index: 1, Day: 0, At: start.Add(time.Hour),
 		Text: "Which project does Alma lead?"})
@@ -78,7 +78,7 @@ func TestShippedFrame_KeepsAFactAndLetsAnObservationExpire(t *testing.T) {
 
 	fact := Fact{Address: Address{Subject: "Alma", Attribute: "project"}, Value: "amber-quarry"}
 	require.NoError(t, frame.Observe(ctx, Turn{Index: 0, Day: 0, At: start,
-		Text: "Alma leads the amber-quarry project.", Fact: &fact}))
+		Text: "Alma leads the amber-quarry project.", Written: []Written{{Fact: fact}}}))
 	require.NoError(t, frame.Observe(ctx, Turn{Index: 1, Day: 0, At: start.Add(time.Minute),
 		Text: "Otto asked about the printer again."}))
 
@@ -148,7 +148,7 @@ func TestFrames_ThatDoNotAddressFactsIgnoreTheAddressAsked(t *testing.T) {
 
 			fact := Fact{Address: address, Value: "amber-quarry"}
 			require.NoError(t, frame.Observe(ctx, Turn{Index: 0, Day: 0, At: start,
-				Text: "Alma leads the amber-quarry project.", Fact: &fact}))
+				Text: "Alma leads the amber-quarry project.", Written: []Written{{Fact: fact}}}))
 
 			question := Turn{Index: 1, Day: 1, At: start.AddDate(0, 0, 1),
 				Text: "Which project does Alma lead?"}

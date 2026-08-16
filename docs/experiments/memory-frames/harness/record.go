@@ -24,7 +24,7 @@ const notApplicable = "n/a"
 
 // renderRecord rewrites the record's generated block from a committed
 // result file.
-func renderRecord(resultPath, constrainedPath, recordPath string) error {
+func renderRecord(resultPath, constrainedPath, shapePath, recordPath string) error {
 	body, err := os.ReadFile(resultPath)
 	if err != nil {
 		return fmt.Errorf("read %s: %w", resultPath, err)
@@ -40,6 +40,14 @@ func renderRecord(resultPath, constrainedPath, recordPath string) error {
 		}
 	} else if !os.IsNotExist(err) {
 		return fmt.Errorf("read %s: %w", constrainedPath, err)
+	}
+	shapes, err := os.ReadFile(shapePath)
+	if err == nil {
+		if err := json.Unmarshal(shapes, &result.Shapes); err != nil {
+			return fmt.Errorf("decode %s: %w", shapePath, err)
+		}
+	} else if !os.IsNotExist(err) {
+		return fmt.Errorf("read %s: %w", shapePath, err)
 	}
 	record, err := os.ReadFile(recordPath)
 	if err != nil {
@@ -79,6 +87,9 @@ func RenderTables(r Run) string {
 	renderBounds(&b, r)
 	renderRules(&b, r)
 	renderBudgets(&b, r)
+	renderLanguage(&b, r)
+	renderExtraction(&b, r)
+	renderShapes(&b, r)
 	renderSweep(&b, r)
 	renderHealing(&b, r)
 	renderDeclarer(&b, r)
@@ -612,6 +623,98 @@ func renderBudgets(b *strings.Builder, r Run) {
 		fmt.Fprintf(b, "| %d | `%s` | %s | %s | %s | %s | %s |\n",
 			c.Budget, c.Frame, figure(y.Recall), figure(y.Stale),
 			figure(reach.SubjectReach), figure(reach.ThreadReach), figureAt(y.ContextChars, 0))
+	}
+	fmt.Fprintln(b)
+}
+
+// renderLanguage is what the generator actually produced. A null result on
+// a harder shape is more likely the generator than the model, so what the
+// sentences are is measured before anything is concluded from them.
+func renderLanguage(b *strings.Builder, r Run) {
+	if len(r.Shapes) == 0 {
+		return
+	}
+	fmt.Fprintf(b, "### How hard the language actually is\n\n")
+	fmt.Fprintf(b, "| shape | digest | messages carrying a fact | assertions | assertions a message | characters a message | clauses a message |\n")
+	fmt.Fprintf(b, "|---|---|---|---|---|---|---|\n")
+	for _, s := range r.Shapes {
+		l := s.Language
+		fmt.Fprintf(b, "| `%s` | %s | %d | %d | %s | %s | %s |\n", s.Shape, s.Digest[:16],
+			l.FactMessages, l.Assertions, figureAt(l.PerMessage, 2),
+			figureAt(l.Chars, 0), figureAt(l.Clauses, 2))
+	}
+	fmt.Fprintln(b)
+}
+
+// renderExtraction is where a real extractor lands, and the three ways it
+// fails reported apart from one another.
+func renderExtraction(b *strings.Builder, r Run) {
+	var any bool
+	for _, s := range r.Shapes {
+		any = any || s.Extraction != nil
+	}
+	if !any {
+		return
+	}
+	fmt.Fprintf(b, "### What a model read out of a message\n\n")
+	fmt.Fprintf(b, "| shape | planted | returned | correct | missed | misaddressed | invented a message | operation right |\n")
+	fmt.Fprintf(b, "|---|---|---|---|---|---|---|---|\n")
+	for _, s := range r.Shapes {
+		if s.Extraction == nil {
+			continue
+		}
+		e := s.Extraction
+		fmt.Fprintf(b, "| `%s` | %d | %d | %s | %s | %s | %s | %s |\n", s.Shape,
+			e.Planted, e.Found, figure(e.CorrectRate), figure(e.MissedRate),
+			figure(e.MisaddressedRate), figureAt(e.InventedPerMessage, 3), figure(e.DeclaredRate))
+	}
+	fmt.Fprintln(b)
+
+	fmt.Fprintf(b, "| shape | wording | asked | read correctly |\n|---|---|---|---|\n")
+	for _, s := range r.Shapes {
+		if s.Extraction == nil {
+			continue
+		}
+		for _, cut := range s.Extraction.Wordings {
+			fmt.Fprintf(b, "| `%s` | `%s` | %d | %s |\n", s.Shape, cut.Name, cut.Asked, figure(cut.Accuracy))
+		}
+	}
+	fmt.Fprintln(b)
+
+	fmt.Fprintf(b, "| shape | class | asked | read correctly |\n|---|---|---|---|\n")
+	for _, s := range r.Shapes {
+		if s.Extraction == nil {
+			continue
+		}
+		for _, cut := range s.Extraction.Classes {
+			fmt.Fprintf(b, "| `%s` | `%s` | %d | %s |\n", s.Shape, cut.Name, cut.Asked, figure(cut.Accuracy))
+		}
+	}
+	fmt.Fprintln(b)
+}
+
+// renderShapes is every frame on every shape, in the arm that extracts
+// perfectly, the arm that extracts with a model, and the arm that does not
+// extract at all.
+func renderShapes(b *strings.Builder, r Run) {
+	if len(r.Shapes) == 0 {
+		return
+	}
+	fmt.Fprintf(b, "### What each frame answered on each shape\n\n")
+	fmt.Fprintf(b, "| shape | arm | frame | recall | %s | stale returned | units |\n",
+		strings.Join(classNames, " | "))
+	fmt.Fprintf(b, "|---|---|---|---|%s---|---|\n", strings.Repeat("---|", len(classNames)))
+	for _, s := range r.Shapes {
+		for _, f := range s.Frames {
+			y := f.Years[len(f.Years)-1]
+			units := notApplicable
+			if len(f.Sizes) > 0 {
+				units = fmt.Sprintf("%d", f.Sizes[len(f.Sizes)-1].Size.Units)
+			}
+			fmt.Fprintf(b, "| `%s` | `%s` | `%s` | %s | %s | %s | %s |\n",
+				s.Shape, f.Arm, f.Frame, figure(y.Recall), strings.Join(classCells(y), " | "),
+				figure(y.Stale), units)
+		}
 	}
 	fmt.Fprintln(b)
 }

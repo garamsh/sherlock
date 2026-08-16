@@ -1,4 +1,4 @@
-.PHONY: lint format format-fix test build build-tools build-images generate proto ci hooks
+.PHONY: lint format format-fix test build build-tools build-images proto ci hooks
 
 # The revision the images are labelled with. CI passes the commit it built;
 # the default is what a contributor's checkout is sitting on.
@@ -36,9 +36,6 @@ build-tools:
 build-images:
 	docker build -f build/agent.Dockerfile --build-arg REVISION="$(REVISION)" -t gagent-agent .
 	docker build -f build/workspace.Dockerfile --build-arg REVISION="$(REVISION)" -t gagent-workspace .
-
-generate:
-	mockery
 
 ci: lint format test build
 

@@ -1,9 +1,0 @@
-template: testify
-packages:
-  github.com/garamsh/gagent/internal/tool:
-    config:
-      dir: internal/tool/mocks
-      pkgname: mocks
-      filename: "{{.InterfaceName}}.go"
-    interfaces:
-      Tool:

@@ -13,11 +13,6 @@ import (
 	"sync"
 )
 
-// DefaultRequiredTools is the set of tool names the platform requires
-// at startup (ADR 0009 §Decision, invariant 5). A missing required tool
-// fails closed. The package-level var is declared on the legacy
-// protocol client — the script-tool runner re-uses the same value.
-
 // DefaultToolsDir is the operator's tools directory when the agent's
 // config does not override it.
 const DefaultToolsDir = "./tools"

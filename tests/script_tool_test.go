@@ -323,11 +323,8 @@ func TestScriptTool_OutputQuarantine(t *testing.T) {
 	assert.Contains(t, err.Error(), "output failed schema validation")
 }
 
-// TestScriptTool_ManifestFixtureSchemaConforms confirms the
-// integration fixture is a valid manifest: the tooltest conformance
-// guard accepts it. The guard is shared between the legacy
-// in-process tools and the new manifest-based tools, so a tool
-// author's manifest must pass the same shape check.
+// TestScriptTool_ManifestFixtureSchemaConforms confirms the integration
+// fixture is a valid manifest: the loader the runtime uses accepts it.
 func TestScriptTool_ManifestFixtureSchemaConforms(t *testing.T) {
 	root := t.TempDir()
 	toolDir := filepath.Join(root, "echo")
@@ -349,10 +346,8 @@ func TestScriptTool_ManifestFixtureSchemaConforms(t *testing.T) {
 	}`)
 	require.NoError(t, os.WriteFile(filepath.Join(toolDir, "manifest.json"), manifest, 0o644))
 
-	// The conformance guard is exposed by the tooltest package. The
-	// guard is the same path the manifest loader uses to validate
-	// each schema, so a pass here proves the fixture compiles under
-	// the same library the runtime will use.
+	// LoadManifest is the path the runtime loads every manifest
+	// through, so the fixture is checked under the real one.
 	m, _, err := tool.LoadManifest(filepath.Join(toolDir, "manifest.json"))
 	require.NoError(t, err)
 	assert.Equal(t, "echo", m.Name)

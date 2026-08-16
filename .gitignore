@@ -32,7 +32,7 @@ go.work.sum
 # Environment data (docs/architecture/environment.md)
 data/
 
-# Tool binaries built by ./tests during the suite
+# Tool executables make build-tools compiles into each tool's directory
 /tools/*/[a-z_]*
 !/tools/*/*.go
 !/tools/*/*.md

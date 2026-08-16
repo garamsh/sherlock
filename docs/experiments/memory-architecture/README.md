@@ -101,7 +101,9 @@ Auto-capture fails completely: with 1,000 noise turns in the store, the right me
 
 **The F-series rows are first measurements, not corrections.** The run committed with this record errored on F1 through F5, so until now the record carried no small-workload number for any of them — there is no earlier figure for them to disagree with. Every architecture that did produce a number then reproduces it here unchanged.
 
-`results/table.md` carries the 17 columns the committed renderer writes. Two of them, `R/KB` and `rep-keep`, are zero for every architecture, because the renderer measures them against an empty store rather than the one the run filled; the record uses neither.
+`results/table.md` carries the 17 columns the committed renderer writes, every one of them measured against the store the run filled. Nothing this document states moves as a result: the density figures it quotes are computed from `R@5` and `Items`, not read from that file's `R/KB`.
+
+Its `R/KB` is also not the `R/KB` the other five result files report. Here it is recall per KB of the bytes actually stored; there it is recall over an assumed 0.05 KB an item, divided by 1,024 a second time. F5 holds 33 items in both, and reads 0.430 here against 496.5 on the scale run. Compare either column with itself, never across the two.
 
 ### Scale run over the small workload — `results/scale.md`
 

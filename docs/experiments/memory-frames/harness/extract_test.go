@@ -39,7 +39,7 @@ var elsewhere = Written{
 	Declared: planted.Declared,
 }
 
-func TestScoreExtractionSeparatesTheThreeFailures(t *testing.T) {
+func TestScoreExtraction_SeparatesTheThreeFailures(t *testing.T) {
 	tests := []struct {
 		name                                             string
 		found                                            []Written
@@ -67,7 +67,7 @@ func TestScoreExtractionSeparatesTheThreeFailures(t *testing.T) {
 	}
 }
 
-func TestScoreExtractionCountsAnInventionAgainstTheMessage(t *testing.T) {
+func TestScoreExtraction_CountsAnInventionAgainstTheMessage(t *testing.T) {
 	invented := Written{Fact: Fact{Address: Address{Subject: "Wilma", Attribute: "supplier"},
 		Value: "never-asserted"}}
 	e := Extraction{Messages: []Extracted{{Index: 0, Text: "small talk", Found: []Written{invented}}}}
@@ -80,7 +80,7 @@ func TestScoreExtractionCountsAnInventionAgainstTheMessage(t *testing.T) {
 		"counting inventions against planted facts would hide the message that planted none")
 }
 
-func TestScoreExtractionReadsTheOperationOnlyWhereTheFactWasRead(t *testing.T) {
+func TestScoreExtraction_ReadsTheOperationOnlyWhereTheFactWasRead(t *testing.T) {
 	wrongOperation := planted
 	wrongOperation.Declared = OperationJoin
 
@@ -94,7 +94,7 @@ func TestScoreExtractionReadsTheOperationOnlyWhereTheFactWasRead(t *testing.T) {
 		"an operation on a fact put in the wrong place answers no question this record asks")
 }
 
-func TestScoreExtractionCutsByTheWorkloadsWordingAndClass(t *testing.T) {
+func TestScoreExtraction_CutsByTheWorkloadsWordingAndClass(t *testing.T) {
 	score := ScoreExtraction(plantedWorkload(), readAs(planted))
 
 	require.Len(t, score.Wordings, 1)
@@ -104,7 +104,7 @@ func TestScoreExtractionCutsByTheWorkloadsWordingAndClass(t *testing.T) {
 	assert.Equal(t, classFresh, score.Classes[0].Name)
 }
 
-func TestParseExtractionReadsTheAnswer(t *testing.T) {
+func TestParseExtraction_ReadsTheAnswer(t *testing.T) {
 	tests := []struct {
 		name   string
 		answer string
@@ -126,7 +126,7 @@ func TestParseExtractionReadsTheAnswer(t *testing.T) {
 	}
 }
 
-func TestObservedCarriesWhatTheModelReadAndNotWhatWasPlanted(t *testing.T) {
+func TestObserved_CarriesWhatTheModelReadAndNotWhatWasPlanted(t *testing.T) {
 	w := Workload{Turns: []Turn{
 		{Index: 0, Text: "a message", Written: []Written{planted}},
 		{Index: 1, Text: "small talk"},

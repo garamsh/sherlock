@@ -29,7 +29,7 @@ func framingTexts() map[string][]string {
 	}
 }
 
-func TestShapeFramingMarksNoAddition(t *testing.T) {
+func TestMarksAddition_FindsNoCueInAnyShapeFraming(t *testing.T) {
 	for kind, texts := range framingTexts() {
 		for _, text := range texts {
 			t.Run(kind+" "+text[:min(24, len(text))], func(t *testing.T) {
@@ -40,7 +40,7 @@ func TestShapeFramingMarksNoAddition(t *testing.T) {
 	}
 }
 
-func TestHardenKeepsWhetherAnAssertionMarksAnAddition(t *testing.T) {
+func TestHarden_KeepsWhetherAnAssertionMarksAnAddition(t *testing.T) {
 	plain, err := GenerateWorkload(7, shapeParams(shapePlain))
 	require.NoError(t, err)
 	clausal, err := GenerateWorkload(7, shapeParams(shapeClausal))
@@ -61,13 +61,13 @@ func TestHardenKeepsWhetherAnAssertionMarksAnAddition(t *testing.T) {
 	}
 }
 
-func TestHardenLeavesThePlainShapeAlone(t *testing.T) {
+func TestHarden_LeavesThePlainShapeAlone(t *testing.T) {
 	const sentence = "Alma works on amber-quarry."
 	assert.Equal(t, sentence, harden(fixedRand(), shapePlain, sentence),
 		"the plain shape is the decade run's sentences, so hardening it would move that baseline")
 }
 
-func TestPackDoesNotDoubleAPeriod(t *testing.T) {
+func TestPack_DoesNotDoubleAPeriod(t *testing.T) {
 	sentences := []string{
 		"Alma works on amber-quarry.",
 		"Bo answers to copper-lantern.",
@@ -82,13 +82,13 @@ func TestPackDoesNotDoubleAPeriod(t *testing.T) {
 	}
 }
 
-func TestPackLeavesALoneSentenceUntouched(t *testing.T) {
+func TestPack_LeavesALoneSentenceUntouched(t *testing.T) {
 	const sentence = "Alma works on amber-quarry."
 	assert.Equal(t, sentence, pack(fixedRand(), []string{sentence}),
 		"a shape putting one assertion in a message must produce the sentence itself")
 }
 
-func TestMeasureLanguageOrdersTheShapes(t *testing.T) {
+func TestMeasureLanguage_OrdersTheShapes(t *testing.T) {
 	measured := map[string]Language{}
 	for _, shape := range shapeNames {
 		w, err := GenerateWorkload(7, shapeParams(shape))
@@ -110,7 +110,7 @@ func TestMeasureLanguageOrdersTheShapes(t *testing.T) {
 		"the shapes share their threads and their schedule, so they assert the same things")
 }
 
-func TestCountClausesReadsPunctuationAndSubordinators(t *testing.T) {
+func TestCountClauses_ReadsPunctuationAndSubordinators(t *testing.T) {
 	tests := []struct {
 		name string
 		text string

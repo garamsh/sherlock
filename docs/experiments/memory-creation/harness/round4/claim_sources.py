@@ -138,11 +138,15 @@ def method():
     check(s, "structures scored", words[a.one(1)],
           "results_round4/ scored rows", len(seeds))
 
-    unsourced(s, "rounds 1-3: 'ten probes backed each number, and the store held "
-                 "about fifteen items'",
-              "no rounds 1-3 result file is committed; harness/creation_runner.py, "
-              "real_runner.py and real_new_runner.py are present but write nothing "
-              "into the tree")
+    rounds13 = os.path.join(HERE, "..", "real_dataset.py")
+    topics = re.findall(r'^    \("', open(rounds13).read(), re.M)
+    a = Anchor(r"planted (\w+) topics, corrected every one of them, and backed "
+               r"each number with (\w+) probes")
+    words = {"ten": 10}
+    check(s, "rounds 1-3 topics planted", words[a.one(0)],
+          "harness/real_dataset.py TOPICS", len(topics))
+    check(s, "rounds 1-3 probes", words[a.one(1)],
+          "harness/real_dataset.py build() probes", len(topics))
 
 
 def scored_systems():
@@ -433,19 +437,79 @@ def structures():
     check(s, "B11 net", a.one(), "B11-rewrite-scoped_seed7.json row.net",
           row("B11-rewrite-scoped_seed7")["net"], 2)
 
-    unsourced(s, "'answers 49 of 388 fact turns with an empty write list against "
-                 "B14's 5' and 'empty writes are 8 of 388 here against B15's 49'",
-              "a per-structure count of empty write lists over the 388 fact turns; "
-              "b16_writes.py records this shape for B9 and B16 only. The figures are "
-              "asserted in structures_a.py's comments, which are not a result file")
-    unsourced(s, "'3,846 candidates judged, none skipped' for B16",
-              "a count of candidates shown to and judged by B16; b16_writes_seed7.json "
-              "records rows written and facts never written, not candidates judged")
-    unsourced(s, "B17 'every value-named key is gone (no `alma.tea`, no "
-                 "`kofi.pets.turtle`)' and 'Its remaining eight misses'",
-              "B17's key assignments and its per-correction outcome classification; no "
-              "committed file carries either. B17-...seed7.json row.outcomes gives "
-              "corrected:not_ranked 7, which is not the same quantity")
+    writes = load("b16_writes_seed7")["structures"]
+    a = Anchor(r"answers (\d+) of (\d+) fact turns with an empty write list against "
+               r"B14's (\d+)")
+    check(s, "B15 empty write turns", a.one(0),
+          "b16_writes_seed7.json B15.empty_write_turns",
+          writes["B15"]["empty_write_turns"])
+    check(s, "fact turns restated", a.one(1),
+          "b16_writes_seed7.json B15.fact_turns", writes["B15"]["fact_turns"])
+    check(s, "B14 empty write turns", a.one(2),
+          "b16_writes_seed7.json B14.empty_write_turns",
+          writes["B14"]["empty_write_turns"])
+
+    a = Anchor(r"empty writes are (\d+) of (\d+) here against B15's (\d+)")
+    check(s, "B17 empty write turns", a.one(0),
+          "b16_writes_seed7.json B17.empty_write_turns",
+          writes["B17"]["empty_write_turns"])
+    check(s, "fact turns behind B17", a.one(1),
+          "b16_writes_seed7.json B17.fact_turns", writes["B17"]["fact_turns"])
+    check(s, "B15 empty write turns restated", a.one(2),
+          "b16_writes_seed7.json B15.empty_write_turns",
+          writes["B15"]["empty_write_turns"])
+
+    a = Anchor(r"\(([\d,]+) candidates judged, none skipped\)")
+    check(s, "B16 candidates judged", a.one().replace(",", ""),
+          "b16_writes_seed7.json B16.candidates_judged",
+          writes["B16"]["candidates_judged"])
+    check(s, "B16 candidates skipped", 0,
+          "b16_writes_seed7.json B16.candidates_skipped",
+          writes["B16"]["candidates_skipped"])
+
+    upsert = {tag: load(f"upsert_diagnosis_{tag}_seed7")
+              for tag in ("B14", "B15", "B17")}
+    a = Anchor(r"(\d+) of B14's live keys name one, against (\d+) of B17's, and both "
+               r"`(\S+?)` and `(\S+?)` are gone")
+    check(s, "B14 value-named keys", a.one(0),
+          "upsert_diagnosis_B14_seed7.json value_named_keys",
+          len(upsert["B14"]["value_named_keys"]))
+    check(s, "B17 value-named keys", a.one(1),
+          "upsert_diagnosis_B17_seed7.json value_named_keys",
+          len(upsert["B17"]["value_named_keys"]))
+    for i in (2, 3):
+        key = a.one(i)
+        check(s, f"{key} under B14 and not B17", "B14",
+              "upsert_diagnosis_*_seed7.json value_named_keys",
+              ("B14" if key in upsert["B14"]["value_named_keys"] else "")
+              + ("B17" if key in upsert["B17"]["value_named_keys"] else ""))
+
+    a = Anchor(r"Its remaining (\w+) misses are genuine topic ambiguity")
+    coined = sum(v for k, v in upsert["B17"]["stats"].items() if k.startswith("coined"))
+    check(s, "B17 coined-key misses", {"eight": 8}[a.one()],
+          "upsert_diagnosis_B17_seed7.json stats coined_key_*", coined)
+
+    a = Anchor(r"`(\S+?)` was on the table and the decider wrote `(\S+?)`")
+    fish = [e for e in upsert["B17"]["per_turn"] if e["text"] == "Maria moved to fish."]
+    check(s, "the key Maria's shell correction should have reused", a.one(0),
+          "upsert_diagnosis_B17_seed7.json per_turn old_keys", fish[0]["old_keys"][0])
+    check(s, "the key it wrote instead", a.one(1),
+          "upsert_diagnosis_B17_seed7.json per_turn written_keys",
+          fish[0]["written_keys"][0])
+
+    a = Anchor(r"B15 must match against (\d+)-(\d+) offered keys on the correction turns")
+    widths = [e["n_offered"] for e in upsert["B15"]["per_turn"]]
+    check(s, "B15 narrowest offer", a.one(0),
+          "upsert_diagnosis_B15_seed7.json per_turn.n_offered", min(widths))
+    check(s, "B15 widest offer", a.one(1),
+          "upsert_diagnosis_B15_seed7.json per_turn.n_offered", max(widths))
+
+    a = Anchor(r"`otto.language` taking (\w+), then (\w+), then (\w+)")
+    order = [c for c, _ in load("key_diagnosis_seed7")["detail"]["otto.language"]]
+    for i in range(3):
+        check(s, f"otto.language write {i + 1}", a.one(i),
+              "key_diagnosis_seed7.json detail['otto.language']",
+              order[i].split()[-1].rstrip("."))
 
 
 # One probe per subject per family; `dataset.py` plants them over PERSONS[:4].
@@ -499,10 +563,13 @@ def net_column():
     check(s, "gain from five times coexist", a.one(1), "precision.py budget()",
           budget[(100, 12)] - budget[(100, 60)], 3)
 
-    unsourced(s, "the family scores 0.80 / 0.95 / 0.80 behind the half-width table",
-              "precision.py budget() holds them as literals; they are design "
-              "arithmetic rather than any structure's measurement, and no result "
-              "file carries them")
+    a = Anchor(r"hold the three family scores fixed at (\d\.\d+), (\d\.\d+) and "
+               r"(\d\.\d+)")
+    literals = re.findall(r"_se\((\d\.\d+), ",
+                          open(os.path.join(HERE, "precision.py")).read())
+    for i, label in enumerate(("corrected", "control", "coexist")):
+        check(s, f"half-width table {label} score", a.one(i),
+              "precision.py budget() literals", literals[i], 2)
 
 
 # --- Where the residual correction gap is ---------------------------------
@@ -534,12 +601,22 @@ def gap():
         check(s, f"B9 {key}", a.one(i),
               f"b9_diagnosis_seed7.json correction_gap.{key}", b9[key])
 
-    a = Anchor(r"in (\d+) of the (\d+) the retire list came back empty")
-    check(s, "B9 empty retire lists", a.one(0),
+    a = Anchor(r"all (\d+) were offered, and in (\d+) of them the retire list came "
+               r"back empty")
+    check(s, "B9 offered and kept", a.one(0),
+          "b9_diagnosis_seed7.json correction_gap.offered_and_kept", b9["offered_and_kept"])
+    check(s, "B9 empty retire lists", a.one(1),
           "b9_diagnosis_seed7.json offered_and_kept_with_empty_retire_list",
           load("b9_diagnosis_seed7")["offered_and_kept_with_empty_retire_list"])
-    check(s, "B9 offered and kept", a.one(1),
-          "b9_diagnosis_seed7.json correction_gap.offered_and_kept", b9["offered_and_kept"])
+
+    a = Anchor(r"Those 14 sit at ranks ([\d, and]+?), so what the decider")
+    stated_ranks = [int(n) for n in re.findall(r"\d+", a.one())]
+    detail = load("b9_diagnosis_seed7")["offered_and_kept_detail"]
+    found_ranks = sorted(r["rank"] for d in detail if d["retire_list_empty"]
+                         for r in d["survivors"])
+    check(s, "ranks of the rows passed over", str(stated_ranks),
+          "b9_diagnosis_seed7.json offered_and_kept_detail[].survivors[].rank",
+          str(found_ranks))
 
 
 # --- The offer is wide enough, and wider does not pay ---------------------
@@ -818,11 +895,17 @@ def call_schedule():
     check(s, "gate recall", a.one(), "precision.py interval() over B14's row",
           (1 - precision.interval(row("B14-key-upsert-plural_seed7"))[1]) * 100, 1)
 
-    unsourced(s, "'at 95% it costs more than the distance from the adopted structure "
-                 "to the round's best-scoring one', and 'build one when that is "
-                 "measured above 50%'",
-              "the 95% and the 50% are settings the author chose, not measurements; "
-              "no committed file carries either")
+    a = Anchor(r"Take (\d+)% as an illustration rather than a measurement: at that "
+               r"recall the gate loses (\d\.\d+) of `net`, which is more than the "
+               r"(\d\.\d+) between")
+    missed = (100 - int(a.one(0))) / 100
+    check(s, "net lost at the illustrated recall", a.one(1),
+          "call_schedule_seed7.json B14.gate.calls, each fact turn carrying 1/388",
+          missed * b14["gate"]["calls"] / b14["gate"]["calls"], 3)
+    check(s, "distance from the adopted structure to the best-scoring one", a.one(2),
+          "B14-...seed7.json and B9-...seed7.json row.net",
+          row("B14-key-upsert-plural_seed7")["net"]
+          - row("B9-decider-neighbors-wide_seed7")["net"], 3)
 
 
 # --- Adopted direction ----------------------------------------------------
@@ -949,118 +1032,36 @@ def limits():
     check(s, "B14 net movement", a.one(1), "B14-...seed7/seed11 row.net",
           b14s11["net"] - b14s7["net"], 3)
 
-    a = Anchor(r"its decider stored (\d+) of roughly (\d+) facts")
+    a = Anchor(r"its decider stored (\d+) items against the (\d+) facts the stream "
+               r"states before any correction")
     check(s, "claim graph items", a.one(0), "claimgraph_seed7.json row.items",
           load("claimgraph_seed7")["row"]["items"])
+    labels = load("call_schedule_seed7")["label_counts"]
+    check(s, "facts stated before correction", a.one(1),
+          "call_schedule_seed7.json label_counts initial+distractor+coexist",
+          labels["initial"] + labels["distractor"] + labels["coexist"])
 
-    unsourced(s, "'replayed on seed 7: B9 2, B14 3, B17 3' substring-only credits",
-              "a script that scores each structure twice, once on the substring rule "
-              "and once on a whole-word rule, and counts the difference. "
-              "round5/dataset_check.py checks the round-5 vocabulary, not these counts")
+    credits = load("substring_credits_seed7")["structures"]
+    a = Anchor(r"replayed on seed 7: B9 (\d+), B14 (\d+), B17 (\d+)")
+    for i, tag in enumerate(("B9", "B14", "B17")):
+        check(s, f"{tag} substring-only credits", a.one(i),
+              f"substring_credits_seed7.json {tag}.substring_only_credits",
+              credits[tag]["substring_only_credits"])
+    check(s, "substring credits all corrected", "corrected",
+          "substring_credits_seed7.json credits[].family",
+          "".join(sorted({c["family"] for d in credits.values()
+                          for c in d["credits"]})))
+
+
 
 
 # --- Pairs that already disagree ------------------------------------------
 #
-# Each entry states what the record says, what the committed file says, and a
-# probe that recomputes the file side. The probe keeps the entry honest: fix
-# either side and it stops matching, so the disagreement cannot go quiet.
+# Empty: #396 resolved the six this register reported. An entry belongs here
+# only while the record and its source say different things, with a probe that
+# recomputes the file side so the disagreement cannot go quiet.
 
-def b9_kept_ranks():
-    detail = load("b9_diagnosis_seed7")["offered_and_kept_detail"]
-    empty = [d for d in detail if d["retire_list_empty"]]
-    ranks = sorted(r["rank"] for d in empty for r in d["survivors"])
-    return {"empty_retire_lists": len(empty), "ranks": ranks,
-            "at_rank_1_or_2": sum(1 for r in ranks if r <= 2)}
-
-
-def b12_collided_order():
-    return {k: [c for c, _ in rows]
-            for k, rows in load("key_diagnosis_seed7")["detail"].items()}
-
-
-def b15_offer_sizes():
-    n = [t["n_offered"] for t in load("upsert_diagnosis_B15_seed7")["per_turn"]]
-    return {"turns": len(n), "min": min(n), "max": max(n)}
-
-
-def offer_width_units():
-    d = load("offer_width_seed7")
-    k10, k20 = d["k_sweep"][1], d["k_sweep"][2]
-    corrected = load("falsification_seed7")["probe_kinds"]["corrected"]
-    gain_latest = (k20["offered"] - k10["offered"]) / corrected
-    loss_latest = 0.03 * k10["offered"] / corrected
-    return {"gain_on_latest_wins": round(gain_latest, 4),
-            "loss_on_latest_wins": round(loss_latest, 4),
-            "ratio_in_latest_wins": round(loss_latest / gain_latest, 2),
-            "ratio_in_net": round((loss_latest / 3) / (gain_latest / 3), 2),
-            "ratio_mixing_units": round(loss_latest / (gain_latest / 3), 2)}
-
-
-def fact_counts():
-    labels = load("call_schedule_seed7")["label_counts"]
-    return {"initial_fact_statements":
-            labels["initial"] + labels["distractor"] + labels["coexist"],
-            "distinct_facts_planted":
-            load("b16_writes_seed7")["structures"]["B9"]["facts_planted"],
-            "fact_turns": sum(v for k, v in labels.items() if k != "chatter")}
-
-
-def control_column_rounding():
-    out = {}
-    for tag in ("B14", "B9", "B3"):
-        r, _ = scored(tag, 7)
-        out[tag] = r["control_survival"]
-    return out
-
-
-KNOWN = [
-    {"section": "Where the residual correction gap is",
-     "record": "in 14 of the 16 the retire list came back empty with the contradicted "
-               "row at rank 1 or 2",
-     "file": "b9_diagnosis_seed7.json offered_and_kept_detail: 14 empty retire lists, "
-             "of which 5 sit at rank 1 or 2; the ranks run 1 to 10",
-     "probe": b9_kept_ranks,
-     "expect": {"empty_retire_lists": 14, "at_rank_1_or_2": 5,
-                "ranks": [1, 1, 1, 2, 2, 3, 4, 5, 5, 7, 8, 9, 9, 10]}},
-    {"section": "The structures",
-     "record": "`otto.language` taking Korean, then English, then German",
-     "file": "key_diagnosis_seed7.json detail: otto.language takes German, Korean, "
-             "English; Korean, English, German is maria.language's order",
-     "probe": lambda: b12_collided_order()["otto.language"],
-     "expect": ["Otto speaks German.", "Otto speaks Korean.", "Otto speaks English."]},
-    {"section": "The structures",
-     "record": "B15 must match against 32-99 offered keys",
-     "file": "upsert_diagnosis_B15_seed7.json per_turn.n_offered spans 11 to 88 over "
-             "the 100 correction turns; no committed file records the range over all "
-             "388 fact turns, and that file's own producing script is absent",
-     "probe": b15_offer_sizes,
-     "expect": {"turns": 100, "min": 11, "max": 88}},
-    {"section": "The offer is wide enough, and wider does not pay",
-     "record": "a 3% degradation on the 93 corrections already reaching the decider "
-               "would be four times the gain in the opposite direction",
-     "file": "offer_width_seed7.json: the loss and the gain are four times apart only "
-             "when a latest-wins loss is divided by a net gain; in either column alone "
-             "the ratio is 1.4",
-     "probe": offer_width_units,
-     "expect": {"gain_on_latest_wins": 0.02, "loss_on_latest_wins": 0.0279,
-                "ratio_in_latest_wins": 1.4, "ratio_in_net": 1.4,
-                "ratio_mixing_units": 4.18}},
-    {"section": "Limits",
-     "record": "its decider stored 85 of roughly 290 facts",
-     "file": "no committed file carries 290. call_schedule_seed7.json label_counts "
-             "gives 288 initial fact statements and 388 fact turns; "
-             "b16_writes_seed7.json gives 268 distinct facts planted",
-     "probe": fact_counts,
-     "expect": {"initial_fact_statements": 288, "distinct_facts_planted": 268,
-                "fact_turns": 388}},
-    {"section": "The structures",
-     "record": "the control column prints B3 as 0.97 and B14 and B9 as 0.98",
-     "file": "all three rows hold control_survival 0.975; the same value is rounded "
-             "in two directions",
-     "probe": control_column_rounding,
-     "expect": {"B14": 0.975, "B9": 0.975, "B3": 0.975},
-     "accounts_for": [("The structures", "B3 control")]},
-]
+KNOWN = []
 
 
 # --- Report ---------------------------------------------------------------

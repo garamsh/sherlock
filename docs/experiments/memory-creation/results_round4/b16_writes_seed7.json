@@ -5,6 +5,7 @@
       "structure": "B9-decider-neighbors-wide",
       "fact_turns": 388,
       "rows_written": 388,
+      "empty_write_turns": 1,
       "facts_planted": 268,
       "never_written": 1,
       "turn_stored_nothing": 1,
@@ -28,10 +29,26 @@
         }
       ]
     },
+    "B14": {
+      "structure": "B14-key-upsert-plural",
+      "fact_turns": 388,
+      "rows_written": 394,
+      "empty_write_turns": 5
+    },
+    "B15": {
+      "structure": "B15-key-upsert-namespace",
+      "fact_turns": 388,
+      "rows_written": 348,
+      "empty_write_turns": 49
+    },
     "B16": {
       "structure": "B16-decider-verdicts",
       "fact_turns": 388,
       "rows_written": 268,
+      "empty_write_turns": 121,
+      "candidates_shown": 3846,
+      "candidates_judged": 3846,
+      "candidates_skipped": 0,
       "facts_planted": 268,
       "never_written": 69,
       "turn_stored_nothing": 68,
@@ -672,6 +689,12 @@
           "stored": []
         }
       ]
+    },
+    "B17": {
+      "structure": "B17-key-upsert-question-key",
+      "fact_turns": 388,
+      "rows_written": 388,
+      "empty_write_turns": 8
     }
   }
 }

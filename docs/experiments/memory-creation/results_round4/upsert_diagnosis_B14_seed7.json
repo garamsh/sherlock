@@ -1,0 +1,1255 @@
+{
+  "seed": 7,
+  "stats": {
+    "reused_key": 80,
+    "coined_key_not_offered": 7,
+    "coined_key_offered": 7,
+    "no_live_old_row": 6
+  },
+  "per_turn": [
+    {
+      "text": "Lisa's team migrated production to MySQL.",
+      "old": "Postgres",
+      "outcome": "reused_key",
+      "old_keys": [
+        "lisa.database"
+      ],
+      "written_keys": [
+        "lisa.database"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Milo's team migrated production to Postgres.",
+      "old": "SQLite",
+      "outcome": "reused_key",
+      "old_keys": [
+        "milo.database"
+      ],
+      "written_keys": [
+        "milo.database"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Lisa plays classical these days instead.",
+      "old": "techno",
+      "outcome": "reused_key",
+      "old_keys": [
+        "lisa.music.genre"
+      ],
+      "written_keys": [
+        "lisa.music.genre"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Nina defaults to Elixir on anything new now.",
+      "old": "Rust",
+      "outcome": "reused_key",
+      "old_keys": [
+        "nina.programming_language"
+      ],
+      "written_keys": [
+        "nina.programming_language"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Yuki reformatted everything to tabs.",
+      "old": "four spaces",
+      "outcome": "reused_key",
+      "old_keys": [
+        "yuki.indentation"
+      ],
+      "written_keys": [
+        "yuki.indentation"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Sena took up yoga instead.",
+      "old": "swimming",
+      "outcome": "reused_key",
+      "old_keys": [
+        "sena.fitness"
+      ],
+      "written_keys": [
+        "sena.fitness"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Raj's hours moved to PST.",
+      "old": "KST",
+      "outcome": "reused_key",
+      "old_keys": [
+        "raj.timezone"
+      ],
+      "written_keys": [
+        "raj.timezone"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Vera has since standardized on Python.",
+      "old": "Go",
+      "outcome": "coined_key_not_offered",
+      "old_keys": [
+        "vera.programming_language"
+      ],
+      "written_keys": [
+        "vera.editor"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Yuki rebuilt the pipelines on GitHub Actions.",
+      "old": "Jenkins",
+      "outcome": "reused_key",
+      "old_keys": [
+        "yuki.ci"
+      ],
+      "written_keys": [
+        "yuki.ci"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "These days Tariq goes for tea instead.",
+      "old": "chai",
+      "outcome": "reused_key",
+      "old_keys": [
+        "tariq.morning.ritual"
+      ],
+      "written_keys": [
+        "tariq.morning.ritual"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Nina now has a turtle instead.",
+      "old": "a cat",
+      "outcome": "reused_key",
+      "old_keys": [
+        "nina.pets"
+      ],
+      "written_keys": [
+        "nina.pets"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Kofi adopted Django for the web tier.",
+      "old": "Phoenix",
+      "outcome": "reused_key",
+      "old_keys": [
+        "kofi.web_stack"
+      ],
+      "written_keys": [
+        "kofi.web_stack"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Sam now reports into Tomas.",
+      "old": "Karin",
+      "outcome": "coined_key_not_offered",
+      "old_keys": [
+        "sam.manager"
+      ],
+      "written_keys": [
+        "sam.reports_to"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Tariq runs Alacritty now.",
+      "old": "Kitty",
+      "outcome": "coined_key_not_offered",
+      "old_keys": [
+        "tariq.terminal"
+      ],
+      "written_keys": [
+        "tariq.role"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Alma has switched to tea lately.",
+      "old": "coffee",
+      "outcome": "coined_key_offered",
+      "old_keys": [
+        "alma.coffee"
+      ],
+      "written_keys": [
+        "alma.tea"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Maria switched the laptop to Ubuntu.",
+      "old": "Fedora",
+      "outcome": "reused_key",
+      "old_keys": [
+        "maria.os"
+      ],
+      "written_keys": [
+        "maria.os"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Yuki relocated and now works from GMT.",
+      "old": "KST",
+      "outcome": "no_live_old_row",
+      "old_keys": [],
+      "written_keys": [
+        "yuki.time_zone"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Raj gets in by bus these days.",
+      "old": "car",
+      "outcome": "reused_key",
+      "old_keys": [
+        "raj.transportation"
+      ],
+      "written_keys": [
+        "raj.transportation"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Ida now reports into Diane.",
+      "old": "Tomas",
+      "outcome": "reused_key",
+      "old_keys": [
+        "ida.manager"
+      ],
+      "written_keys": [
+        "ida.manager"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Alma now reports into Priya.",
+      "old": "Felix",
+      "outcome": "coined_key_not_offered",
+      "old_keys": [
+        "alma.manager"
+      ],
+      "written_keys": [
+        "alma.reports_to"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Bruno reformatted everything to mixed indentation.",
+      "old": "four spaces",
+      "outcome": "reused_key",
+      "old_keys": [
+        "bruno.indentation"
+      ],
+      "written_keys": [
+        "bruno.indentation"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Sena adopted Rails for the web tier.",
+      "old": "Phoenix",
+      "outcome": "coined_key_offered",
+      "old_keys": [
+        "sena.builds"
+      ],
+      "written_keys": [
+        "sena.web_tier"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Chen migrated the notes to Notion.",
+      "old": "Obsidian",
+      "outcome": "reused_key",
+      "old_keys": [
+        "chen.notes"
+      ],
+      "written_keys": [
+        "chen.notes"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Yuki switched the laptop to Ubuntu.",
+      "old": "macOS",
+      "outcome": "reused_key",
+      "old_keys": [
+        "yuki.os"
+      ],
+      "written_keys": [
+        "yuki.os"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Bruno defaults to Rust on anything new now.",
+      "old": "Python",
+      "outcome": "reused_key",
+      "old_keys": [
+        "bruno.programming_language"
+      ],
+      "written_keys": [
+        "bruno.programming_language"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Bruno now reports into Felix.",
+      "old": "Priya",
+      "outcome": "coined_key_not_offered",
+      "old_keys": [
+        "bruno.manager"
+      ],
+      "written_keys": [
+        "bruno.reports_to"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Kofi switched the commute to bike.",
+      "old": "car",
+      "outcome": "reused_key",
+      "old_keys": [
+        "kofi.transportation"
+      ],
+      "written_keys": [
+        "kofi.transportation"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Vera's team moved tracing to Honeycomb.",
+      "old": "Zipkin",
+      "outcome": "reused_key",
+      "old_keys": [
+        "vera.team.tracing"
+      ],
+      "written_keys": [
+        "vera.team.tracing"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Bruno relocated and now works from CET.",
+      "old": "GMT",
+      "outcome": "reused_key",
+      "old_keys": [
+        "bruno.time_zone"
+      ],
+      "written_keys": [
+        "bruno.time_zone"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Raj moved to zsh.",
+      "old": "fish",
+      "outcome": "reused_key",
+      "old_keys": [
+        "raj.shell"
+      ],
+      "written_keys": [
+        "raj.shell"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Vera has switched to tabs.",
+      "old": "four spaces",
+      "outcome": "reused_key",
+      "old_keys": [
+        "vera.indentation"
+      ],
+      "written_keys": [
+        "vera.indentation"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Sam reinstalled onto Arch.",
+      "old": "Ubuntu",
+      "outcome": "reused_key",
+      "old_keys": [
+        "sam.os"
+      ],
+      "written_keys": [
+        "sam.os"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Maria converted the suite to table-driven tests.",
+      "old": "end-to-end tests",
+      "outcome": "reused_key",
+      "old_keys": [
+        "maria.testing"
+      ],
+      "written_keys": [
+        "maria.testing"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Maria took up rowing instead.",
+      "old": "running",
+      "outcome": "reused_key",
+      "old_keys": [
+        "maria.fitness"
+      ],
+      "written_keys": [
+        "maria.fitness"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Yuki keeps everything in Apple Notes now.",
+      "old": "Notion",
+      "outcome": "reused_key",
+      "old_keys": [
+        "yuki.notes"
+      ],
+      "written_keys": [
+        "yuki.notes"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Lisa has switched to eight spaces.",
+      "old": "four spaces",
+      "outcome": "reused_key",
+      "old_keys": [
+        "lisa.indentation"
+      ],
+      "written_keys": [
+        "lisa.indentation"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Milo's hours moved to GMT.",
+      "old": "JST",
+      "outcome": "no_live_old_row",
+      "old_keys": [],
+      "written_keys": [
+        "milo.time_zone"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Kofi adopted a turtle recently.",
+      "old": "a rabbit",
+      "outcome": "coined_key_offered",
+      "old_keys": [
+        "kofi.pets"
+      ],
+      "written_keys": [
+        "kofi.pets.turtle"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "These days Kofi goes for tea instead.",
+      "old": "chai",
+      "outcome": "reused_key",
+      "old_keys": [
+        "kofi.drinks"
+      ],
+      "written_keys": [
+        "kofi.drinks"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Lisa defaults to Python on anything new now.",
+      "old": "TypeScript",
+      "outcome": "reused_key",
+      "old_keys": [
+        "lisa.programming_language"
+      ],
+      "written_keys": [
+        "lisa.programming_language"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Vera dropped that and does running now.",
+      "old": "rowing",
+      "outcome": "reused_key",
+      "old_keys": [
+        "vera.rowing"
+      ],
+      "written_keys": [
+        "vera.rowing"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Kofi replaced the terminal with Kitty.",
+      "old": "iTerm2",
+      "outcome": "reused_key",
+      "old_keys": [
+        "kofi.terminal"
+      ],
+      "written_keys": [
+        "kofi.terminal"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Maria moved to fish.",
+      "old": "bash",
+      "outcome": "coined_key_not_offered",
+      "old_keys": [
+        "maria.shell"
+      ],
+      "written_keys": [
+        "maria.diet.fish"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Sam now has a dog instead.",
+      "old": "a parrot",
+      "outcome": "reused_key",
+      "old_keys": [
+        "sam.pets.parrot"
+      ],
+      "written_keys": [
+        "sam.pets.dog",
+        "sam.pets.parrot"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Ida defaults to Go on anything new now.",
+      "old": "Elixir",
+      "outcome": "reused_key",
+      "old_keys": [
+        "ida.programming_language"
+      ],
+      "written_keys": [
+        "ida.programming_language"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Ida moved the prod database to SQLite.",
+      "old": "CockroachDB",
+      "outcome": "reused_key",
+      "old_keys": [
+        "ida.database"
+      ],
+      "written_keys": [
+        "ida.database"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Otto defaults to Go on anything new now.",
+      "old": "Python",
+      "outcome": "reused_key",
+      "old_keys": [
+        "otto.language.python"
+      ],
+      "written_keys": [
+        "otto.language.go",
+        "otto.language.python"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Alma has switched to four spaces.",
+      "old": "tabs",
+      "outcome": "reused_key",
+      "old_keys": [
+        "alma.indentation"
+      ],
+      "written_keys": [
+        "alma.indentation"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Sena converted the suite to mutation testing.",
+      "old": "property-based tests",
+      "outcome": "reused_key",
+      "old_keys": [
+        "sena.testing"
+      ],
+      "written_keys": [
+        "sena.testing"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Ida plays ambient these days instead.",
+      "old": "techno",
+      "outcome": "reused_key",
+      "old_keys": [
+        "ida.music.genre"
+      ],
+      "written_keys": [
+        "ida.music.genre"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Raj's team migrated production to SQLite.",
+      "old": "MongoDB",
+      "outcome": "reused_key",
+      "old_keys": [
+        "raj.database"
+      ],
+      "written_keys": [
+        "raj.database"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Milo switched the shell to zsh.",
+      "old": "bash",
+      "outcome": "reused_key",
+      "old_keys": [
+        "milo.shell"
+      ],
+      "written_keys": [
+        "milo.shell"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Maria has switched to matcha lately.",
+      "old": "coffee",
+      "outcome": "coined_key_offered",
+      "old_keys": [
+        "maria.coffee"
+      ],
+      "written_keys": [
+        "maria.tea"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Alma runs GNOME Terminal now.",
+      "old": "Alacritty",
+      "outcome": "reused_key",
+      "old_keys": [
+        "alma.terminal"
+      ],
+      "written_keys": [
+        "alma.terminal"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Milo reinstalled onto Ubuntu.",
+      "old": "macOS",
+      "outcome": "reused_key",
+      "old_keys": [
+        "milo.os"
+      ],
+      "written_keys": [
+        "milo.os"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Alma now has a parrot instead.",
+      "old": "a rabbit",
+      "outcome": "reused_key",
+      "old_keys": [
+        "alma.pets"
+      ],
+      "written_keys": [
+        "alma.pets"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Maria's team moved tracing to Honeycomb.",
+      "old": "Zipkin",
+      "outcome": "reused_key",
+      "old_keys": [
+        "maria.team.tracing"
+      ],
+      "written_keys": [
+        "maria.team.tracing"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Vera moved over to Zed recently.",
+      "old": "VS Code",
+      "outcome": "no_live_old_row",
+      "old_keys": [],
+      "written_keys": [
+        "vera.current_location"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Maria runs Alacritty now.",
+      "old": "Kitty",
+      "outcome": "coined_key_not_offered",
+      "old_keys": [
+        "maria.terminal"
+      ],
+      "written_keys": [
+        "tariq.role",
+        "maria.role"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Otto replaced the tracing stack with Jaeger.",
+      "old": "Honeycomb",
+      "outcome": "reused_key",
+      "old_keys": [
+        "otto.team.tracing"
+      ],
+      "written_keys": [
+        "otto.team.tracing"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Tariq adopted a cat recently.",
+      "old": "a dog",
+      "outcome": "coined_key_offered",
+      "old_keys": [
+        "tariq.pet.dog"
+      ],
+      "written_keys": [
+        "tariq.pet.cat"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Kofi now reports into Tomas.",
+      "old": "Karin",
+      "outcome": "reused_key",
+      "old_keys": [
+        "kofi.reports_to"
+      ],
+      "written_keys": [
+        "kofi.reports_to"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Sena has switched to two spaces.",
+      "old": "eight spaces",
+      "outcome": "reused_key",
+      "old_keys": [
+        "sena.indentation"
+      ],
+      "written_keys": [
+        "sena.indentation"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Chen runs everything on Hetzner now.",
+      "old": "Azure",
+      "outcome": "reused_key",
+      "old_keys": [
+        "chen.infrastructure"
+      ],
+      "written_keys": [
+        "chen.infrastructure"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Bruno now edits everything in Neovim.",
+      "old": "IntelliJ",
+      "outcome": "no_live_old_row",
+      "old_keys": [],
+      "written_keys": [
+        "bruno.editor"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Yuki converted the suite to property-based tests.",
+      "old": "table-driven tests",
+      "outcome": "reused_key",
+      "old_keys": [
+        "yuki.testing"
+      ],
+      "written_keys": [
+        "yuki.testing"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "These days Sena goes for tea instead.",
+      "old": "espresso",
+      "outcome": "reused_key",
+      "old_keys": [
+        "sena.morning_ritual"
+      ],
+      "written_keys": [
+        "sena.morning_ritual"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Chen now has a parrot instead.",
+      "old": "a cat",
+      "outcome": "no_live_old_row",
+      "old_keys": [],
+      "written_keys": [
+        "chen.pets"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Sam moved CI to GitHub Actions.",
+      "old": "Jenkins",
+      "outcome": "reused_key",
+      "old_keys": [
+        "sam.ci"
+      ],
+      "written_keys": [
+        "sam.ci"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Yuki switched the shell to zsh.",
+      "old": "bash",
+      "outcome": "no_live_old_row",
+      "old_keys": [],
+      "written_keys": [
+        "yuki.shell"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Nina now reports into Diane.",
+      "old": "Karin",
+      "outcome": "reused_key",
+      "old_keys": [
+        "nina.manager"
+      ],
+      "written_keys": [
+        "nina.manager"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Maria migrated the notes to plain text files.",
+      "old": "Logseq",
+      "outcome": "reused_key",
+      "old_keys": [
+        "maria.notes"
+      ],
+      "written_keys": [
+        "maria.notes"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Milo rebuilt the pipelines on GitLab CI.",
+      "old": "GitHub Actions",
+      "outcome": "reused_key",
+      "old_keys": [
+        "milo.ci"
+      ],
+      "written_keys": [
+        "milo.ci"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Nina relocated and now works from JST.",
+      "old": "CET",
+      "outcome": "reused_key",
+      "old_keys": [
+        "nina.working_hours"
+      ],
+      "written_keys": [
+        "nina.working_hours"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Lisa took up swimming instead.",
+      "old": "running",
+      "outcome": "reused_key",
+      "old_keys": [
+        "lisa.fitness"
+      ],
+      "written_keys": [
+        "lisa.fitness"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Ida now edits everything in Emacs.",
+      "old": "VS Code",
+      "outcome": "reused_key",
+      "old_keys": [
+        "ida.editor"
+      ],
+      "written_keys": [
+        "ida.editor"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Bruno moved to fish.",
+      "old": "bash",
+      "outcome": "coined_key_offered",
+      "old_keys": [
+        "bruno.shell"
+      ],
+      "written_keys": [
+        "bruno.diet.fish"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Lisa's team moved tracing to Datadog.",
+      "old": "Zipkin",
+      "outcome": "reused_key",
+      "old_keys": [
+        "lisa.team.tracing"
+      ],
+      "written_keys": [
+        "lisa.team.tracing"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Sam replaced the terminal with WezTerm.",
+      "old": "iTerm2",
+      "outcome": "reused_key",
+      "old_keys": [
+        "sam.terminal"
+      ],
+      "written_keys": [
+        "sam.terminal"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Sena was moved under Karin.",
+      "old": "Priya",
+      "outcome": "reused_key",
+      "old_keys": [
+        "sena.reports_to"
+      ],
+      "written_keys": [
+        "sena.reports_to"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Otto now relies on mutation testing.",
+      "old": "end-to-end tests",
+      "outcome": "reused_key",
+      "old_keys": [
+        "otto.testing"
+      ],
+      "written_keys": [
+        "otto.testing"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Vera keeps everything in Obsidian now.",
+      "old": "Notion",
+      "outcome": "reused_key",
+      "old_keys": [
+        "vera.notes"
+      ],
+      "written_keys": [
+        "vera.notes"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Nina gets in by scooter these days.",
+      "old": "car",
+      "outcome": "reused_key",
+      "old_keys": [
+        "nina.commute"
+      ],
+      "written_keys": [
+        "nina.commute"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Chen relocated and now works from PST.",
+      "old": "KST",
+      "outcome": "reused_key",
+      "old_keys": [
+        "chen.timezone"
+      ],
+      "written_keys": [
+        "chen.timezone"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Nina's team migrated production to Postgres.",
+      "old": "MySQL",
+      "outcome": "reused_key",
+      "old_keys": [
+        "nina.database"
+      ],
+      "written_keys": [
+        "nina.database"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Tariq converted the suite to end-to-end tests.",
+      "old": "snapshot tests",
+      "outcome": "reused_key",
+      "old_keys": [
+        "tariq.testing"
+      ],
+      "written_keys": [
+        "tariq.testing"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Otto runs WezTerm now.",
+      "old": "iTerm2",
+      "outcome": "reused_key",
+      "old_keys": [
+        "otto.terminal"
+      ],
+      "written_keys": [
+        "otto.terminal"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Sena relocated and now works from CET.",
+      "old": "GMT",
+      "outcome": "reused_key",
+      "old_keys": [
+        "sena.time_zone"
+      ],
+      "written_keys": [
+        "sena.time_zone"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Alma's team moved tracing to Datadog.",
+      "old": "Jaeger",
+      "outcome": "reused_key",
+      "old_keys": [
+        "alma.tracing"
+      ],
+      "written_keys": [
+        "alma.tracing"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Yuki has since standardized on Python.",
+      "old": "Go",
+      "outcome": "reused_key",
+      "old_keys": [
+        "yuki.programming_language"
+      ],
+      "written_keys": [
+        "yuki.programming_language"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Tariq migrated the deployment to Hetzner.",
+      "old": "Azure",
+      "outcome": "reused_key",
+      "old_keys": [
+        "tariq.cloud"
+      ],
+      "written_keys": [
+        "tariq.cloud"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Kofi now relies on snapshot tests.",
+      "old": "property-based tests",
+      "outcome": "coined_key_offered",
+      "old_keys": [
+        "kofi.testing"
+      ],
+      "written_keys": [
+        "kofi.testing.snapshot"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Sam moved the prod database to SQLite.",
+      "old": "Postgres",
+      "outcome": "reused_key",
+      "old_keys": [
+        "sam.database"
+      ],
+      "written_keys": [
+        "sam.database"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Milo reformatted everything to two spaces.",
+      "old": "mixed indentation",
+      "outcome": "reused_key",
+      "old_keys": [
+        "milo.indentation"
+      ],
+      "written_keys": [
+        "milo.indentation"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Milo dropped that and does swimming now.",
+      "old": "yoga",
+      "outcome": "reused_key",
+      "old_keys": [
+        "milo.fitness"
+      ],
+      "written_keys": [
+        "milo.fitness"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "These days Yuki goes for coffee instead.",
+      "old": "tea",
+      "outcome": "reused_key",
+      "old_keys": [
+        "yuki.morning_ritual"
+      ],
+      "written_keys": [
+        "yuki.morning_ritual"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Sam now relies on property-based tests.",
+      "old": "end-to-end tests",
+      "outcome": "reused_key",
+      "old_keys": [
+        "sam.testing"
+      ],
+      "written_keys": [
+        "sam.testing"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Yuki runs everything on AWS now.",
+      "old": "Fly.io",
+      "outcome": "reused_key",
+      "old_keys": [
+        "yuki.infrastructure"
+      ],
+      "written_keys": [
+        "yuki.infrastructure"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Raj rebuilt the pipelines on Jenkins.",
+      "old": "GitHub Actions",
+      "outcome": "reused_key",
+      "old_keys": [
+        "raj.ci"
+      ],
+      "written_keys": [
+        "raj.ci"
+      ],
+      "n_offered": 5
+    },
+    {
+      "text": "Bruno moved on to jazz.",
+      "old": "techno",
+      "outcome": "reused_key",
+      "old_keys": [
+        "bruno.music.genre"
+      ],
+      "written_keys": [
+        "bruno.music.genre"
+      ],
+      "n_offered": 5
+    }
+  ],
+  "live_keys": 312,
+  "value_named_keys": [
+    "alma.coffee",
+    "alma.tea",
+    "bruno.diet.fish",
+    "chen.rowing",
+    "kofi.pets.turtle",
+    "maria.coffee",
+    "maria.diet.fish",
+    "maria.tea",
+    "nina.programming_language.zed",
+    "otto.language.go",
+    "otto.language.python",
+    "otto.language.zed",
+    "sam.pets.dog",
+    "sam.pets.parrot",
+    "sena.music.jazz",
+    "tariq.diet.fish",
+    "tariq.music.classical",
+    "tariq.pet.cat",
+    "tariq.pet.dog",
+    "vera.coffee",
+    "vera.diet.fish",
+    "vera.music.classical",
+    "vera.rowing"
+  ],
+  "split_keys": [
+    "lisa.allergy.peanuts",
+    "lisa.allergy.shellfish",
+    "lisa.hobbies.cello",
+    "lisa.language.english",
+    "lisa.language.german",
+    "lisa.language.korean",
+    "maria.allergy.peanuts",
+    "maria.allergy.shellfish",
+    "maria.hobbies.cello",
+    "maria.language.english",
+    "maria.language.german",
+    "maria.language.korean",
+    "otto.allergy.peanuts",
+    "otto.allergy.shellfish",
+    "otto.hobbies.cello",
+    "otto.language.english",
+    "otto.language.german",
+    "otto.language.korean",
+    "sam.allergy.peanuts",
+    "sam.allergy.shellfish",
+    "sam.hobbies.cello",
+    "sam.hobbies.drums",
+    "sam.language.english",
+    "sam.language.german",
+    "sam.language.korean"
+  ]
+}

@@ -87,6 +87,10 @@ A fifth run replays the small workload's queries against stores padded toward 1,
 
 ## The results
 
+Two densities appear below, under names that say which is which. `results/table.md` reports **`R/stored-KB`**: recall per KB of the bytes a run actually stored. The other five files report **`R/modelled-KB`**, which models the store at 0.05 KB a stored item. The split is not a preference — the `Memory` interface is store, retrieve and stats, so an architecture holding its items in several containers, as H5, M5 and M6 do, can report a count but not a size. `harness/metrics.py` holds one definition of each and every runner calls it.
+
+Every `R/modelled-KB` figure here is 1,024 times smaller than the figure the same file used to carry, which had been divided by 1,024 twice. Absolute values are all that moved: a constant factor cancels in a ratio, so every ordering below, every multiple this document quotes, and ADR 0006's 12.5× to 522.9× are unchanged.
+
 ### Small workload (1,071 items) — `results/table.md`
 
 | arch | R@5 | P@5 | Anti-pollution | Items | KB |
@@ -99,66 +103,66 @@ A fifth run replays the small workload's queries against stores padded toward 1,
 
 Auto-capture fails completely: with 1,000 noise turns in the store, the right memory is never found. E4 ties E3 on every column in this table, and F1 and F4 match F5 on recall at 0.80.
 
+F5 holds 33 items in both runs and reads 0.430 stored against 0.485 modelled — the same store, two quantities.
+
 **The F-series rows are first measurements, not corrections.** The run committed with this record errored on F1 through F5, so until now the record carried no small-workload number for any of them — there is no earlier figure for them to disagree with. Every architecture that did produce a number then reproduces it here unchanged.
 
-`results/table.md` carries the 17 columns the committed renderer writes, every one of them measured against the store the run filled. Nothing this document states moves as a result: the density figures it quotes are computed from `R@5` and `Items`, not read from that file's `R/KB`.
-
-Its `R/KB` is also not the `R/KB` the other five result files report. Here it is recall per KB of the bytes actually stored; there it is recall over an assumed 0.05 KB an item, divided by 1,024 a second time. F5 holds 33 items in both, and reads 0.430 here against 496.5 on the scale run. Compare either column with itself, never across the two.
+`results/table.md` carries the 17 columns the committed renderer writes, every one of them measured against the store the run filled.
 
 ### Scale run over the small workload — `results/scale.md`
 
 The same queries against a store padded toward 1,052 items, which separates store size from the workload.
 
-| arch | R@5 | P@5 | Items | Query μs | Recall/KB |
+| arch | R@5 | P@5 | Items | Query μs | R/modelled-KB |
 |---|---|---|---|---|---|
-| A1 auto-capture | 0.00 | 0.00 | 1,081 | 0.1 | 0.0 |
-| B3 hybrid RAG | 0.30 | 0.08 | 1,081 | 24,153.3 | 5.7 |
-| D2 curation-only | 0.60 | 0.17 | 36 | 741.0 | 341.3 |
-| **F5 combined** | **0.80** | 0.20 | **33** | 645.2 | **496.5** |
+| A1 auto-capture | 0.00 | 0.00 | 1,081 | 0.2 | 0.000 |
+| B3 hybrid RAG | 0.30 | 0.08 | 1,081 | 22,856.4 | 0.006 |
+| D2 curation-only | 0.60 | 0.17 | 36 | 825.8 | 0.333 |
+| **F5 combined** | **0.80** | 0.20 | **33** | 720.9 | **0.485** |
 
-At the 5,000-item padding every row above holds its R@5 and P@5 unchanged; only the stores that keep everything slow down, B3 from 24,153.3 μs to 116,003.2 μs.
+At the 5,000-item padding every row above holds its R@5 and P@5 unchanged; only the stores that keep everything slow down, B3 from 22,856.4 μs to 130,617.7 μs.
 
 ### Long-horizon workload (a 10-year agent life) — `results/long_horizon.md`
 
-| arch | R@5 | Items | Recall/KB |
+| arch | R@5 | Items | R/modelled-KB |
 |---|---|---|---|
-| B3 hybrid | 0.80 | 5,090 | 3.2 |
-| D2 curation | 0.90 | 90 | 204.8 |
-| F5 combined | 0.70 | 63 | 227.6 |
-| G1 Generative Agents | 0.90 | 90 | 204.8 |
-| **G6 decade-stable** | **0.90** | **63** | **292.6** |
+| B3 hybrid | 0.80 | 5,090 | 0.003 |
+| D2 curation | 0.90 | 90 | 0.200 |
+| F5 combined | 0.70 | 63 | 0.222 |
+| G1 Generative Agents | 0.90 | 90 | 0.200 |
+| **G6 decade-stable** | **0.90** | **63** | **0.286** |
 
 The 10-year workload separates uniform decay from salience-scaled decay: F5 falls to 0.70 from the 0.80 it scores on the scale run above, because it cannot tell a 10-year-old preference from yesterday's chatter; G6 reaches 0.90 because its half-life grows with salience. The two runs use different workloads, so the comparison is between F5 and G6 on this one, not between 0.80 and 0.70 as a trend.
 
 ### Diverse workload (8 memory categories) — `results/diverse.md`
 
-| arch | R@5 | P@5 | Accuracy | Recall/KB |
+| arch | R@5 | P@5 | Accuracy | R/modelled-KB |
 |---|---|---|---|---|
-| F5 combined | 0.62 | 0.15 | 0.99 | 91.7 |
-| **G4 reflection** | **0.87** | **0.39** | **1.00** | 31.7 |
-| G7–G9 recursive | 0.79 | 0.24 | 0.99 | 32.6 |
+| F5 combined | 0.62 | 0.15 | 0.99 | 0.090 |
+| **G4 reflection** | **0.87** | **0.39** | **1.00** | 0.031 |
+| G7–G9 recursive | 0.79 | 0.24 | 0.99 | 0.032 |
 
 Reflection wins on raw recall and precision — combining memories into summaries finds more of the right things. Recursive retrieval matches single-hop: multi-hop needs a connected corpus, and independent sessions give it no path to walk.
 
 ### Large-scale workload (60k items) — `results/large_scale.md`
 
-| arch | R@5 | Items | Query ms | Recall/KB |
+| arch | R@5 | Items | Query ms | R/modelled-KB |
 |---|---|---|---|---|
-| D2 curation | 0.69 | 10,000 | 205.7 | 1.4 |
-| **F5 combined** | 0.62 | **79** | 1.7 | **159.5** |
-| G4 reflection | 0.69 | 11,250 | 311.1 | 1.3 |
-| G6 decade-stable | 0.54 | 79 | 1.6 | 139.6 |
-| M5 WM+LRU | 0.54 | 207 | 0.6 | 53.3 |
-| M6 LSM | 0.46 | 150 | 0.4 | 63.0 |
-| H6 triple hybrid | 0.00 | 436 | 0.0 | 0.0 |
+| D2 curation | 0.85 | 10,000 | 281.5 | 0.002 |
+| **F5 combined** | 0.69 | **83** | 2.5 | **0.167** |
+| G4 reflection | 0.85 | 11,250 | 260.4 | 0.002 |
+| G6 decade-stable | 0.69 | 83 | 1.7 | 0.167 |
+| M5 WM+LRU | 0.77 | 207 | 0.6 | 0.074 |
+| M6 LSM | 0.54 | 150 | 0.3 | 0.072 |
+| H6 triple hybrid | 0.00 | 431 | 0.0 | 0.000 |
 
-Retention, not curation, is what stays small here: every one of the 10,000 real items is curated, so D2 and G4 buy the round's best recall at the round's worst density and a query two orders of magnitude slower. F5 and G6 keep 79 items because they also drop and supersede. The pure structures (M5, M6) prove that a structure with no scoring formula at all can work — but F5's two rules beat them on density. The triple hybrid H6's collapse to 0.00 is the experiment's clearest warning: mechanisms piled together interact destructively. H1 and H6 ran a smaller workload than the rest of this table, 3,000 real items rather than 10,000.
+Retention, not curation, is what stays small here: every one of the 10,000 real items is curated, so D2 and G4 buy the round's best recall at the round's worst density and a query two orders of magnitude slower. F5 and G6 keep 83 items because they also drop and supersede. The pure structures (M5, M6) prove that a structure with no scoring formula at all can work — but F5's two rules beat them on density. The triple hybrid H6's collapse to 0.00 is the experiment's clearest warning: mechanisms piled together interact destructively. H1 and H6 ran a smaller workload than the rest of this table, 3,000 real items rather than 10,000.
 
 ## What the numbers establish
 
 1. **Auto-capture is the root failure.** A1 and A2 score 0.00 recall on the small, scale and long-horizon runs; on the diverse workload A1 reaches 0.03 and A2 stays at 0.00. Neither was run at 60k. This is the measurement that retired the platform auto-capture ADR 0006's earlier revision introduced.
 2. **Curation-only is the floor.** Storing only what the model writes is the precondition for every other win.
-3. **The minimal winning set is four rules**: curation-only storage, a salience tier on every memory, salience-scaled decay with tiered retention, and supersession on insert. F5 and G6 carry them. Across the runs they were measured on, their R@5 stays between 0.54 and 0.90 while their store is 32 to 127 times smaller than the architectures that keep everything. G6 does not run on the small workload; F5 leads it at 0.80.
+3. **The minimal winning set is four rules**: curation-only storage, a salience tier on every memory, salience-scaled decay with tiered retention, and supersession on insert. F5 and G6 carry them. Across the runs they were measured on, their R@5 stays between 0.60 and 0.90 while their store is 32 to 121 times smaller than the architectures that keep everything. G6 does not run on the small workload; F5 leads it at 0.80.
 4. **More mechanisms do not compose for free.** Single-combination hybrids are middling; the triple hybrid breaks. Simple is not a preference here — it is what the data supports.
 5. **Recursive retrieval is real but conditional.** It pays off in connected corpora (a codebase, one long conversation), not in fragmented sessions.
 
@@ -177,6 +181,7 @@ python3 harness/diverse_runner.py       # 8-category workload
 python3 harness/hybrid_runner.py        # H series on the diverse and 10-year workloads
 python3 harness/large_runner.py         # 60k-item workload
 python3 harness/claim_sources.py        # check this document against results/
+python3 harness/determinism_check.py    # check the 60k run is the same at every hash seed
 ```
 
-Each runner rewrites its table under `results/`, and the recorded run of each is committed there with raw JSON beside it. Every committed result is a run of the committed harness, so a runner reproduces its table apart from the timing columns, which are machine-dependent. `claim_sources.py` reads both sides and fails when a figure here stops matching the file behind it; it makes no run of its own.
+Each runner rewrites its table under `results/`, and the recorded run of each is committed there with raw JSON beside it. Every committed result is a run of the committed harness, so a runner reproduces its table apart from the timing columns, which are machine-dependent. `claim_sources.py` reads both sides and fails when a figure here stops matching the file behind it; it makes no run of its own. `determinism_check.py` rebuilds the 60k workload and one architecture's retrievals under three `PYTHONHASHSEED` values and fails if they differ — that run once drew each session's topics from an unseeded stream, so every process scored a different workload.

@@ -2,25 +2,18 @@ package main
 
 import (
 	"context"
-	"encoding/json"
-	"errors"
+	"crypto/tls"
 	"fmt"
 	"log/slog"
-	"net/http"
 	"os"
 	"os/signal"
-	"path/filepath"
-	"strings"
 	"syscall"
-	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
-	"github.com/garamsh/gagent/internal/agent"
 	"github.com/garamsh/gagent/internal/config"
 	"github.com/garamsh/gagent/internal/gateway"
-	"github.com/garamsh/gagent/internal/message"
 	"github.com/garamsh/gagent/internal/tool"
 )
 
@@ -121,9 +114,7 @@ func newAgentFactory(ctx context.Context, cfg config.Config, ego string, logger 
 // these variables from their own env (per-tool contracts: github
 // reads GH_TOKEN, files/shell_exec dial GAGENT_WORKSPACE_ADDR,
 // message_send writes to GAGENT_OUTBOX_DIR). The agent sets them
-// here so the runtime's spawn inherits the resolved values; failure
-// to set any required key is the operator's misconfiguration, not a
-// tool startup error.
+// here so the runtime's spawn inherits the resolved values.
 func buildToolRegistry(cfg config.Config, logger *slog.Logger) (*tool.Registry, error) {
 	if err := setToolEnv(cfg); err != nil {
 		return nil, err
@@ -142,136 +133,45 @@ func buildToolRegistry(cfg config.Config, logger *slog.Logger) (*tool.Registry, 
 
 // setToolEnv wires the operator's resolved config into the env the
 // script-tool runner inherits on every spawn (ADR 0009 §Decision:
-// "the runner inherits the agent's env"). GAGENT_WORKSPACE_ADDR and
-// GAGENT_OUTBOX_DIR come from the config; GH_TOKEN must already be
+// "the runner inherits the agent's env"). GH_TOKEN must already be
 // present in the agent's env because the agent does not materialize
 // secrets (ADR 0003, ADR 0013).
 func setToolEnv(cfg config.Config) error {
 	if err := os.Setenv("GAGENT_WORKSPACE_ADDR", cfg.WorkspaceAddr); err != nil {
 		return fmt.Errorf("set GAGENT_WORKSPACE_ADDR: %w", err)
 	}
-	outbox := messageSendOutboxDir(cfg.MemoryPath)
-	if err := os.Setenv("GAGENT_OUTBOX_DIR", outbox); err != nil {
+	if err := os.Setenv("GAGENT_OUTBOX_DIR", gateway.DirFor(cfg.MemoryPath)); err != nil {
 		return fmt.Errorf("set GAGENT_OUTBOX_DIR: %w", err)
 	}
 	return nil
 }
 
-// messageSendOutboxDir returns the directory the message_send manifest
-// writes to: the parent's outbox subdirectory, mirroring the gateway's
-// outbox sink shape (docs/architecture/gateway.md).
-func messageSendOutboxDir(memoryPath string) string {
-	return filepath.Join(filepath.Dir(memoryPath), "outbox")
-}
-
-// failedToolCalls is the one-shot run's event sink: it collects the
-// names of the turn's failed tool calls so the process can report them
-// in its exit status.
-//
-// Only the one-shot path wires this. A served turn hands the session
-// the gateway's monitoring sink instead, and its failed tool call goes
-// to the model, which gets another iteration to react — that is the
-// loop working (docs/architecture/agent.md). A one-shot run has no such
-// reader: the turn ends, the process exits, and nothing acts on the
-// failure, so exiting 0 would report a clean run that did not happen.
-//
-// The session emits from the goroutine that called Run, and the
-// one-shot path calls Run once, so the collection needs no lock.
-type failedToolCalls struct {
-	names []string
-}
-
-// Emit implements agent.EventSink.
-func (f *failedToolCalls) Emit(_ context.Context, e agent.Event) {
-	if e.Kind == agent.EventToolCall && e.ToolFailed {
-		f.names = append(f.names, e.ToolName)
-	}
-}
-
-// runAgentTurn builds the agent runtime and runs one turn. One-shot mode
-// echoes outbound messages to stdout (in addition to the file outbox the
-// message_send manifest runs writes to) so a CLI invocation prints the
-// agent's reply without an outbox watcher. The serving mode stays
+// runAgentTurn wires the agent runtime and hands one turn to the
+// gateway, pointing its output at stdout: a CLI invocation prints the
+// agent's reply without an outbox watcher, while the serving mode stays
 // outbox-only.
-//
-// The turn's output is printed before a failed tool call is reported,
-// so a caller reading stdout sees what the agent produced either way.
 func runAgentTurn(ctx context.Context, cfg config.Config, agentID, msg, ego string) error {
 	// Logs go to stderr so stdout carries only the agent's output.
 	logger := slog.New(slog.NewJSONHandler(os.Stderr, nil))
 	slog.SetDefault(logger)
 
-	outboxDir := messageSendOutboxDir(cfg.MemoryPath)
-	before := outboxSnapshot(outboxDir)
-
 	factory, registry, err := newAgentFactory(ctx, cfg, ego, logger)
 	if err != nil {
 		return err
 	}
-	failed := &failedToolCalls{}
-	rt, err := factory.New(ctx, agentID, failed)
-	if err != nil {
-		return err
-	}
 	defer func() {
-		if err := rt.Close(context.Background()); err != nil {
-			logger.Error("runtime close failed", "op", "shutdown", "error", err)
-		}
 		if err := registry.Close(); err != nil {
 			logger.Error("tool registry close failed", "op", "shutdown", "error", err)
 		}
 	}()
 
-	response, err := rt.Session.Run(ctx, msg)
-	if err != nil {
-		return err
-	}
-	fmt.Println(response)
-	echoOutboxToStdout(outboxDir, before)
-	if len(failed.names) > 0 {
-		return fmt.Errorf("one-shot turn: %d tool call(s) failed: %s",
-			len(failed.names), strings.Join(failed.names, ", "))
-	}
-	return nil
-}
-
-// outboxSnapshot returns the names of the files currently in the
-// outbox; the one-shot runner uses it to know which new messages the
-// turn produced.
-func outboxSnapshot(dir string) map[string]struct{} {
-	out := map[string]struct{}{}
-	entries, err := os.ReadDir(dir)
-	if err != nil {
-		return out
-	}
-	for _, e := range entries {
-		out[e.Name()] = struct{}{}
-	}
-	return out
-}
-
-// echoOutboxToStdout prints any outbox messages written during this
-// turn, in name order so the run replays the delivery order. The
-// file outbox is the durable record; stdout is the CLI echo.
-func echoOutboxToStdout(dir string, before map[string]struct{}) {
-	entries, err := os.ReadDir(dir)
-	if err != nil {
-		return
-	}
-	for _, e := range entries {
-		if _, seen := before[e.Name()]; seen {
-			continue
-		}
-		body, err := os.ReadFile(filepath.Join(dir, e.Name()))
-		if err != nil {
-			continue
-		}
-		var msg message.Message
-		if err := json.Unmarshal(body, &msg); err != nil {
-			continue
-		}
-		fmt.Printf("[%s -> %s] %s\n", msg.Channel, msg.Target, msg.Content)
-	}
+	return gateway.Turn{
+		Factory:   factory,
+		AgentID:   agentID,
+		OutboxDir: gateway.DirFor(cfg.MemoryPath),
+		Out:       os.Stdout,
+		Logger:    logger,
+	}.Run(ctx, msg)
 }
 
 // serveAgent runs the agent's HTTP gateway until an interrupt or SIGTERM.
@@ -306,45 +206,20 @@ func serveAgent(ctx context.Context, cfg config.Config, agentID, ego string) err
 	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	srv := &http.Server{
-		Addr:              cfg.Addr,
-		Handler:           gateway.NewHandler(queue, logger),
-		TLSConfig:         tlsConfig,
-		ReadHeaderTimeout: 10 * time.Second,
-	}
-	go func() {
-		<-ctx.Done()
-		shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
-		if err := srv.Shutdown(shutdownCtx); err != nil {
-			logger.Error("http shutdown failed", "op", "shutdown", "error", err)
-		}
-	}()
+	logger.Info("agent listening",
+		"op", "startup", "addr", cfg.Addr, "agent_id", agentID,
+		"memory_path", cfg.MemoryPath, "workspace_addr", cfg.WorkspaceAddr,
+		"tools_dir", cfg.ToolsDir,
+		"auth", authLabel(tlsConfig))
+	return gateway.Serve(ctx, cfg.Addr, tlsConfig, queue, logger)
+}
 
+// authLabel names the gateway's caller authentication for the startup
+// log: mTLS when the tls: section built a config, otherwise the warning
+// that the listener has none and is therefore loopback-only (ADR 0012).
+func authLabel(tlsConfig *tls.Config) string {
 	if tlsConfig != nil {
-		logger.Info("agent listening",
-			"op", "startup", "addr", cfg.Addr, "agent_id", agentID,
-			"memory_path", cfg.MemoryPath, "workspace_addr", cfg.WorkspaceAddr,
-			"tools_dir", cfg.ToolsDir,
-			"auth", "mtls")
-		if err := srv.ListenAndServeTLS("", ""); !errors.Is(err, http.ErrServerClosed) {
-			logger.Error("https server failed", "op", "serve", "error", err)
-			return err
-		}
-	} else {
-		logger.Info("agent listening",
-			"op", "startup", "addr", cfg.Addr, "agent_id", agentID,
-			"memory_path", cfg.MemoryPath, "workspace_addr", cfg.WorkspaceAddr,
-			"tools_dir", cfg.ToolsDir,
-			"warning", "no authentication: loopback binds only")
-		if err := srv.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
-			logger.Error("http server failed", "op", "serve", "error", err)
-			return err
-		}
+		return "mtls"
 	}
-	if err := queue.Close(); err != nil {
-		logger.Error("queue shutdown failed", "op", "shutdown", "error", err)
-		return err
-	}
-	return nil
+	return "none: loopback binds only"
 }

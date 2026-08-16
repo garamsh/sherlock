@@ -55,14 +55,18 @@ const (
 	// harness's and is named here rather than buried: it is one half-life,
 	// so a record is forgotten once the elapsed days pass its strength.
 	forgettingThreshold = 1 / math.E
-	// reflectionEvery is how many observations pass between two reflections,
-	// and reflectionWindow is how many of the most recent ones a reflection
-	// reads. Generative Agents triggers on a sum of importance and reads the
-	// last hundred records; with importance a constant here the trigger is a
-	// count, which is what memory-architecture/'s G4 also ran.
-	reflectionEvery  = 8
-	reflectionWindow = 100
+	// reflectionTrigger is the summed importance of the records seen since
+	// the last reflection at which Generative Agents writes the next one,
+	// and reflectionWindow is how many of the most recent records that
+	// reflection reads. Both are the paper's.
+	reflectionTrigger = 150.0
+	reflectionWindow  = 100
 )
+
+// semanticImportance is what the substituted importance comes to for a turn
+// that carries a fact, on the paper's 1-to-10 scale. It is what a reflection
+// reads and what a reflection is written at.
+const semanticImportance = gateway.SalienceAddSemantic * importanceCeiling
 
 // streamItem is one record in the stream.
 type streamItem struct {
@@ -102,9 +106,9 @@ type streamFrame struct {
 	budget   int
 	embedder memory.Embedder
 	items    []*streamItem
-	// observed counts what has entered the stream, which is what triggers a
-	// reflection.
-	observed int
+	// pending is the importance summed since the last reflection, which is
+	// what the reflecting rule triggers on.
+	pending float64
 }
 
 // NewStreamFrame returns the memory stream under one published design's
@@ -126,11 +130,13 @@ func NewStreamFrame(rule streamRule, counter *EmbedCounter, budget int) Frame {
 // importance is worth and nothing else. That is why these rows move between
 // the arms at all.
 func (f *streamFrame) Observe(ctx context.Context, t Turn) error {
-	if err := f.append(ctx, t.Text, t.At, gatewaySalienceAdd(len(t.Written) > 0)); err != nil {
+	importance := gatewaySalienceAdd(len(t.Written) > 0) * importanceCeiling
+	if err := f.append(ctx, t.Text, t.At, importance); err != nil {
 		return fmt.Errorf("observe turn %d: %w", t.Index, err)
 	}
-	f.observed++
-	if f.rule == ruleReflection && f.observed%reflectionEvery == 0 {
+	f.pending += importance
+	if f.rule == ruleReflection && f.pending >= reflectionTrigger {
+		f.pending = 0
 		if err := f.reflect(ctx, t.At); err != nil {
 			return fmt.Errorf("reflect at turn %d: %w", t.Index, err)
 		}
@@ -171,7 +177,7 @@ func (f *streamFrame) reflect(ctx context.Context, at time.Time) error {
 		chars int
 	)
 	for _, item := range f.items[from:] {
-		if item.importance < gateway.SalienceAddSemantic || item.reflected {
+		if item.importance < semanticImportance || item.reflected {
 			continue
 		}
 		if chars+len(item.text) > f.budget {
@@ -183,7 +189,7 @@ func (f *streamFrame) reflect(ctx context.Context, at time.Time) error {
 	if len(parts) == 0 {
 		return nil
 	}
-	if err := f.append(ctx, strings.Join(parts, " "), at, gateway.SalienceAddSemantic); err != nil {
+	if err := f.append(ctx, strings.Join(parts, " "), at, semanticImportance); err != nil {
 		return err
 	}
 	f.items[len(f.items)-1].reflected = true

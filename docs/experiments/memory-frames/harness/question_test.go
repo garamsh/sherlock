@@ -186,6 +186,47 @@ func TestQuestionFrame_AnswersAQuestionWithWhatANarrowerOneHolds(t *testing.T) {
 		"a value written at a narrower question is unreachable from the question it narrows")
 }
 
+// A question naming a subject and no attribute reaches every address under
+// that subject, and a restricted question is one of them. A walk by
+// attribute name would return the unrestricted address twice and the
+// restricted one never, which is what `addressesUnder` exists to prevent.
+func TestQuestionFrame_AnswersAPartialAddressFromItsRestrictedAddressesToo(t *testing.T) {
+	ctx := context.Background()
+	frame := NewQuestionFrame(arityQuestion)
+	t.Cleanup(func() { require.NoError(t, frame.Close()) })
+
+	const (
+		subject   = "Maria"
+		attribute = "project"
+		wide      = "amber-quarry"
+		narrow    = "copper-lantern"
+		elsewhere = "cobalt-ridge"
+	)
+	written := []struct {
+		text      string
+		attribute string
+		value     string
+	}{
+		{fmt.Sprintf(attributes[0].assert, subject, wide), attribute, wide},
+		{fmt.Sprintf(attributes[0].narrow, subject, narrow), attribute, narrow},
+		{fmt.Sprintf(attributes[1].assert, subject, elsewhere), attributes[1].name, elsewhere},
+	}
+	for i, one := range written {
+		require.NoError(t, frame.Observe(ctx, Turn{At: time.Now().Add(time.Duration(i) * time.Hour),
+			Text: one.text, Written: []Written{{Fact: Fact{
+				Address: QuestionAddress(one.text, subject, one.value, one.attribute),
+				Value:   one.value}}}}))
+	}
+
+	injected, err := frame.Context(ctx, Turn{Ask: &Address{Subject: subject}})
+	require.NoError(t, err)
+
+	for _, value := range []string{wide, narrow, elsewhere} {
+		assert.True(t, Mentions(injected.Text, value),
+			"a question about the whole subject did not reach %q", value)
+	}
+}
+
 func TestMeasureQuestions_PutsTheResidualWhereASecondValueAnswersTheSameQuestion(t *testing.T) {
 	w, err := GenerateWorkload(7, decadeParams())
 	require.NoError(t, err)

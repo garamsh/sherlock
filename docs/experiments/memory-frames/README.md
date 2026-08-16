@@ -3691,7 +3691,7 @@ The figure that matters for the designs coming next is in the cost table below, 
 | cost of resolving, USD | 0.0126 |
 | call bound resolving refuses to pass | 1000 |
 | cost bound resolving refuses to pass, USD | 0.10 |
-| cost of this record in total, USD | 0.0680 |
+| cost of this record in total, USD | 0.0959 |
 
 | shape | messages read | paid calls | tokens | cost USD |
 |---|---|---|---|---|

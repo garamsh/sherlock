@@ -8,25 +8,86 @@ import (
 	"strings"
 )
 
-// ErrMalformedWriteback marks a model response whose memory block fails
-// the writeback contract: a JSON parse error or a schema violation. It is
-// surfaced as a fatal error only for schema violations (the model emitted
-// a contract the platform refuses to apply). JSON parse failures — the
-// fence was malformed or the JSON inside was unparseable — are recorded
-// as warnings, not fatal errors, so a single bad writeback does not
-// abort an otherwise-successful turn (issue #93).
-var ErrMalformedWriteback = errors.New("malformed memory writeback block")
+// ErrMalformedWriteback marks a model response the writeback contract
+// refuses: a JSON parse error or a schema violation. It is surfaced as a
+// fatal error only for schema violations (the model emitted a contract
+// the platform refuses to apply). JSON parse failures — the response was
+// not the document the schema describes — are recorded as warnings, not
+// fatal errors, so a single bad writeback does not abort an
+// otherwise-successful turn (issue #93).
+var ErrMalformedWriteback = errors.New("malformed memory writeback")
 
-// writebackFence opens the structured memory block that ends every model
-// response (ADR 0006 step 4).
-const writebackFence = "```memory"
+// ResponseSchema is the JSON Schema every model response is constrained
+// to (ADR 0018). A provider with constrained decoding sends it as the
+// response format; ParseWriteback reads what it produces, so the schema
+// and the parser are one contract and are kept together.
+//
+// Three properties carry the decision. The memory field is required, so
+// a response has no shape in which it is absent and an empty list is an
+// answer the model states rather than a field it omits. The address is
+// the subject and the question the fact answers — not the subject and a
+// topic noun — with the restriction the sentence puts on that question.
+// The operation is nullable, because a statement that narrows its own
+// question gets its own address and declares nothing.
+const ResponseSchema = `{
+  "type": "object",
+  "properties": {
+    "reply": {
+      "type": "string",
+      "description": "Everything the person reads. The memory field is not shown to them."
+    },
+    "memory_ops": {
+      "type": "array",
+      "description": "One entry per fact this turn states. The empty list is an answer, not an omission.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "object",
+            "description": "Where the fact is held: the question it answers, not the topic it is about.",
+            "properties": {
+              "subject": {
+                "type": "string",
+                "description": "Who or what the fact is about."
+              },
+              "question": {
+                "type": "string",
+                "description": "The question this fact answers, in the statement's own words."
+              },
+              "restriction": {
+                "type": ["string", "null"],
+                "description": "What the statement narrows that question to, in its own words. Null where it narrows nothing."
+              }
+            },
+            "required": ["subject", "question", "restriction"],
+            "additionalProperties": false
+          },
+          "value": {
+            "type": "string",
+            "description": "The answer to that question, stated on its own."
+          },
+          "operation": {
+            "type": ["string", "null"],
+            "enum": ["replace", "join", null],
+            "description": "replace where the value ends what that address holds, join where it stands beside it. Null where the statement answers a question of its own."
+          }
+        },
+        "required": ["address", "value", "operation"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["reply", "memory_ops"],
+  "additionalProperties": false
+}`
 
-// WritebackError reports a memory block that could not be applied. It
-// matches ErrMalformedWriteback via errors.Is. Parse failures — an
-// unterminated fence or invalid JSON — are returned as warnings: the
-// visible reply still reaches the user and the turn's memory update is
-// dropped (issue #93). Schema violations (e.g. keep with empty id) are
-// fatal: the platform refuses to apply a contract-violating writeback.
+// WritebackError reports a memory write that could not be applied. It
+// matches ErrMalformedWriteback via errors.Is. Parse failures — a
+// response that is not the schema's document — are returned as warnings:
+// the visible reply still reaches the user and the turn's memory update
+// is dropped (issue #93). Schema violations (a write with no address or
+// no value) are fatal: the platform refuses to apply a
+// contract-violating writeback.
 type WritebackError struct {
 	Err error
 }
@@ -42,84 +103,113 @@ func (e *WritebackError) Unwrap() error { return e.Err }
 // Is reports whether target is ErrMalformedWriteback.
 func (e *WritebackError) Is(target error) bool { return target == ErrMalformedWriteback }
 
-// writebackJSON is the wire shape of the memory block: keep/update/delete
-// reference recalled memories by ID; add carries new facts.
+// writebackJSON is the wire shape of a model response: the visible reply
+// and the memory writes the turn states. Restriction is a pointer
+// because a statement that narrows nothing states null; Operation is
+// left undecoded because no JSON value in it may fail the document —
+// whatever it holds that is not a readable declaration joins.
 type writebackJSON struct {
-	Keep   []string `json:"keep"`
-	Update []struct {
-		ID      string `json:"id"`
-		Content string `json:"content"`
-	} `json:"update"`
-	Delete []string `json:"delete"`
-	Add    []struct {
-		Content string `json:"content"`
-		Type    string `json:"type"`
-	} `json:"add"`
+	Reply string `json:"reply"`
+	Ops   []struct {
+		Address struct {
+			Subject     string  `json:"subject"`
+			Question    string  `json:"question"`
+			Restriction *string `json:"restriction"`
+		} `json:"address"`
+		Value     string          `json:"value"`
+		Operation json.RawMessage `json:"operation"`
+	} `json:"memory_ops"`
 }
 
-// ParseWriteback splits a model response into its visible content and
-// the memory operations of its trailing writeback block. With no fence
-// it returns the whole content with no operations; a present but empty
-// block returns a non-nil, empty ops slice so the event stream can tell
-// an empty writeback from a missing one (issue #193). Failures are
-// reported as *WritebackError: parse failures as warn, schema violations
-// as the fatal err.
+// ParseWriteback splits a model response into its visible reply and the
+// memory writes it states. A response with no content at all — the step
+// that only requests tool calls — states nothing and returns no
+// operations; a response that parses returns a non-nil, possibly empty
+// ops slice, so the event stream can tell an empty writeback from a
+// missing one (issue #193). Failures are reported as *WritebackError:
+// parse failures as warn, schema violations as the fatal err.
 func ParseWriteback(content string) (visible string, ops []WritebackOp, warn error, err error) {
-	idx := strings.Index(content, writebackFence)
-	if idx < 0 {
-		return content, nil, nil, nil
+	trimmed := strings.TrimSpace(content)
+	if trimmed == "" {
+		return "", nil, nil, nil
 	}
-	visible = strings.TrimSpace(content[:idx])
-	rest := content[idx+len(writebackFence):]
-	end := strings.Index(rest, "```")
-	if end < 0 {
-		parseWarn := &WritebackError{Err: errors.New("unterminated ```memory fence")}
-		slog.Warn("agent: writeback dropped", "op", "parse_writeback", "reason", parseWarn.Error())
-		return visible, nil, parseWarn, nil
-	}
-	var block writebackJSON
-	if jsonErr := json.Unmarshal([]byte(strings.TrimSpace(rest[:end])), &block); jsonErr != nil {
+	var doc writebackJSON
+	if jsonErr := json.Unmarshal([]byte(trimmed), &doc); jsonErr != nil {
 		parseWarn := &WritebackError{Err: fmt.Errorf("invalid JSON: %s", jsonErrorMessage(jsonErr))}
 		slog.Warn("agent: writeback dropped", "op", "parse_writeback", "reason", parseWarn.Error())
-		return visible, nil, parseWarn, nil
+		return trimmed, nil, parseWarn, nil
 	}
-	ops, err = block.ops()
+	ops, err = doc.ops()
 	if err != nil {
 		return "", nil, nil, err
 	}
-	if ops == nil {
-		ops = []WritebackOp{}
-	}
-	return visible, ops, nil, nil
+	return strings.TrimSpace(doc.Reply), ops, nil, nil
 }
 
+// ops turns the decoded response into the writes the sink applies. An
+// address missing its subject or its question cannot be landed on and a
+// write with no value holds nothing, so both are contract violations.
 func (b *writebackJSON) ops() ([]WritebackOp, error) {
-	var ops []WritebackOp
-	for _, id := range b.Keep {
-		if id == "" {
-			return nil, &WritebackError{Err: errors.New("keep operation missing id")}
+	ops := make([]WritebackOp, 0, len(b.Ops))
+	for _, o := range b.Ops {
+		subject := strings.TrimSpace(o.Address.Subject)
+		question := strings.TrimSpace(o.Address.Question)
+		value := strings.TrimSpace(o.Value)
+		if subject == "" || question == "" || value == "" {
+			return nil, &WritebackError{
+				Err: errors.New("memory op requires a subject, a question and a value"),
+			}
 		}
-		ops = append(ops, WritebackOp{Kind: OpKeep, ID: id})
-	}
-	for _, u := range b.Update {
-		if u.ID == "" || u.Content == "" {
-			return nil, &WritebackError{Err: errors.New("update operation requires id and content")}
-		}
-		ops = append(ops, WritebackOp{Kind: OpUpdate, ID: u.ID, Content: u.Content})
-	}
-	for _, id := range b.Delete {
-		if id == "" {
-			return nil, &WritebackError{Err: errors.New("delete operation missing id")}
-		}
-		ops = append(ops, WritebackOp{Kind: OpDelete, ID: id})
-	}
-	for _, a := range b.Add {
-		if a.Content == "" {
-			return nil, &WritebackError{Err: errors.New("add operation missing content")}
-		}
-		ops = append(ops, WritebackOp{Kind: OpAdd, Content: a.Content, Type: a.Type})
+		ops = append(ops, WritebackOp{
+			Address: MemoryAddress{
+				Subject:     subject,
+				Question:    question,
+				Restriction: trimPointer(o.Address.Restriction),
+			},
+			Value:     value,
+			Operation: parseOperation(o.Operation),
+		})
 	}
 	return ops, nil
+}
+
+// parseOperation reads the operation a write declares. Only "replace"
+// destroys; every other answer — the field absent, null, empty, a word
+// the contract does not name, or a JSON value that is not a string at
+// all — joins (ADR 0018 §Where a writeback must err). Nothing here
+// fails: a declaration the parser cannot read is the case the join
+// default exists for. What was stated and could not be read is logged,
+// because the join it falls back to is otherwise indistinguishable from
+// a declared one.
+func parseOperation(declared json.RawMessage) MemoryOperation {
+	if len(declared) == 0 {
+		return OpJoin
+	}
+	var word string
+	if err := json.Unmarshal(declared, &word); err != nil {
+		slog.Warn("agent: writeback operation unreadable, joined",
+			"op", "parse_writeback", "declared", string(declared))
+		return OpJoin
+	}
+	switch strings.ToLower(strings.TrimSpace(word)) {
+	case string(OpReplace):
+		return OpReplace
+	case string(OpJoin), "":
+		return OpJoin
+	default:
+		slog.Warn("agent: writeback operation unreadable, joined",
+			"op", "parse_writeback", "declared", word)
+		return OpJoin
+	}
+}
+
+// trimPointer returns the trimmed string a pointer holds, or the empty
+// string when it holds none.
+func trimPointer(s *string) string {
+	if s == nil {
+		return ""
+	}
+	return strings.TrimSpace(*s)
 }
 
 // jsonErrorMessage returns a model-facing message for a JSON unmarshal

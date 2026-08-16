@@ -16,7 +16,7 @@ func TestComposeInstructions_EmbeddedDefaultEgo(t *testing.T) {
 	assert.True(t, strings.HasPrefix(composed, strings.TrimSpace(agent.DefaultEgo)),
 		"empty ego selects the embedded EGO.md")
 	assert.Contains(t, composed, agent.Contract)
-	assert.Contains(t, composed, "```memory", "writeback contract is always present")
+	assert.Contains(t, composed, "memory_ops", "writeback contract is always present")
 }
 
 func TestComposeInstructions_CustomEgo(t *testing.T) {
@@ -29,46 +29,43 @@ func TestComposeInstructions_CustomEgo(t *testing.T) {
 		"the platform contract is appended regardless of the ego source")
 }
 
-// TestContract_ExampleMemoryBlock pins the literal ```memory ... ```
-// shape the contract teaches the model (issue #96; proposal #94). The
-// example appears verbatim so the model can copy the JSON shape without
-// guessing.
+// TestContract_ExampleMemoryBlock pins the literal response document the
+// contract teaches the model (issue #96; proposal #94; ADR 0018). The
+// example appears verbatim so the model can copy the shape — address,
+// value and operation — without guessing.
 func TestContract_ExampleMemoryBlock(t *testing.T) {
-	const example = `{"keep":["m1"],"add":[{"content":"user prefers dark mode","type":"semantic"}]}`
+	const example = `{"reply":"Noted.","memory_ops":[{"address":{"subject":"user",` +
+		`"question":"what is the user's favorite telescope","restriction":null},` +
+		`"value":"the Kepler-9 refractor","operation":null}]}`
 
-	intro := "A correct block looks like:"
+	intro := `When the user says "my favorite telescope is the Kepler-9 refractor":`
 	assert.Contains(t, agent.Contract, intro,
 		"the example is introduced as a shape reference")
 	assert.Contains(t, agent.Contract, example,
-		"the example JSON block is present verbatim")
+		"the example response document is present verbatim")
 	assert.Greater(t, strings.Index(agent.Contract, example),
 		strings.Index(agent.Contract, intro),
 		"the example JSON follows its introduction")
 }
 
 // TestContract_AddRequiredForSharedFacts pins the issue #193 contract
-// fix: gpt-4o-mini ended every response with an empty ```memory block
-// because the contract made add an opt-in. The contract must state when
-// an add is required — a shared fact or preference, a correction, or a
-// remember request — and show one example block for a stated fact.
+// fix: gpt-4o-mini ended every response with an empty memory block
+// because the contract made the write an opt-in. The contract must state
+// when an entry is required — a shared fact or preference, a correction,
+// or a remember request — and show one example for a stated fact.
 func TestContract_AddRequiredForSharedFacts(t *testing.T) {
 	contract := agent.Contract
-	const rule = "An `add` op is required"
+	const rule = "An entry is required"
 	idx := strings.Index(contract, rule)
-	require.Greater(t, idx, -1, "the add-required rule is missing")
+	require.Greater(t, idx, -1, "the entry-required rule is missing")
 	for _, trigger := range []string{
 		"shares a fact or preference",
 		"corrects an earlier fact",
 		"asks to\nremember",
 	} {
 		assert.Contains(t, contract, trigger,
-			"the add-required rule covers %q", trigger)
+			"the entry-required rule covers %q", trigger)
 	}
-	const example = `{"add":[{"content":"user's favorite telescope is the Kepler-9 refractor","type":"semantic"}]}`
-	assert.Contains(t, contract, example,
-		"a one-example block shows the add for a stated fact")
-	assert.Greater(t, strings.Index(contract, example), idx,
-		"the example block follows the rule")
 	// The rule lives in the Memory writeback section so the model reads
 	// it next to the block format it constrains.
 	mwIdx := strings.Index(contract, "## Memory writeback")
@@ -179,10 +176,10 @@ func TestContract_RecordOnlyObtainedFacts(t *testing.T) {
 	}
 	assert.Contains(t, line, "placeholder",
 		"the one-line rule forbids placeholders from failed tool calls")
-	assert.Contains(t, line, "visible reply",
-		"the one-line rule ties the visible reply to the writeback side effect")
+	assert.Contains(t, line, "your reply must match the writeback side effect",
+		"the one-line rule ties the reply to the writeback side effect")
 	// The rule lives in the Memory writeback section so the model reads it
-	// next to the add-op format it constrains.
+	// next to the write format it constrains.
 	mwIdx := strings.Index(contract, "## Memory writeback")
 	tuIdx := strings.Index(contract, "## When a tool is unavailable")
 	require.Greater(t, mwIdx, -1, "Memory writeback section missing")
@@ -193,17 +190,35 @@ func TestContract_RecordOnlyObtainedFacts(t *testing.T) {
 
 // TestContract_WritebackIsTheOnlyWritePath pins the ADR 0006
 // curation-only model: the contract never claims the platform remembers
-// user messages automatically — the writeback block is the single write
-// path, and a fact the model does not distill into the block is gone.
+// user messages automatically — the writeback is the single write path,
+// and a fact the model does not state in memory_ops is gone.
 func TestContract_WritebackIsTheOnlyWritePath(t *testing.T) {
 	contract := agent.Contract
 	assert.NotContains(t, contract, "remembered automatically",
-		"no platform auto-capture: only the writeback block writes to memory")
+		"no platform auto-capture: only the writeback writes to memory")
 	assert.NotContains(t, contract, "distilled facts, not transcripts",
 		"the auto-capture scoping line is gone with the capture path")
 	assert.Contains(t, contract,
-		"acknowledging it in the visible\nreply alone stores nothing",
-		"the add-required rule carries the curation burden")
+		"acknowledging it in `reply` alone stores nothing",
+		"the entry-required rule carries the curation burden")
+}
+
+// TestContract_MemoryWriteStatesAddressAndOperation pins ADR 0018 in the
+// prose half of the contract: the model is told the address is the
+// question rather than the topic, and told which way to err when it
+// cannot tell a replacement from an addition.
+func TestContract_MemoryWriteStatesAddressAndOperation(t *testing.T) {
+	contract := agent.Contract
+	assert.Contains(t, contract, "A fact is held at the address of the question it answers",
+		"the contract states where a fact goes")
+	assert.Contains(t, contract, "Not a topic noun",
+		"the contract separates a question address from a topic address")
+	assert.Contains(t, contract, "When you are unsure, write `\"join\"`",
+		"the contract states the direction a writeback errs in")
+	assert.Contains(t, contract, "a wrong\n  join is repaired by the next correct value at that address",
+		"the contract states why join is the safe direction")
+	assert.NotContains(t, contract, "```memory",
+		"the fence is replaced, not kept as a second shape the model may emit")
 }
 
 // TestContract_MultiMessageTurn pins ADR 0015: the contract tells the

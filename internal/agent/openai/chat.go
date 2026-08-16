@@ -15,12 +15,34 @@ import (
 // maxErrorBody caps how much of an error response body is kept in APIError.
 const maxErrorBody = 512
 
+// responseSchemaName labels the response schema in the request body; the
+// API requires a name and reports schema errors against it.
+const responseSchemaName = "agent_response"
+
 // chatRequest is the chat-completions request body.
 type chatRequest struct {
-	Model             string        `json:"model"`
-	Messages          []chatMessage `json:"messages"`
-	Tools             []chatTool    `json:"tools,omitempty"`
-	ParallelToolCalls bool          `json:"parallel_tool_calls"`
+	Model             string         `json:"model"`
+	Messages          []chatMessage  `json:"messages"`
+	Tools             []chatTool     `json:"tools,omitempty"`
+	ParallelToolCalls bool           `json:"parallel_tool_calls"`
+	ResponseFormat    responseFormat `json:"response_format"`
+}
+
+// responseFormat constrains the response to a schema rather than to free
+// text (ADR 0018): the memory write is a field of the response, not a
+// block the model may leave out.
+type responseFormat struct {
+	Type       string           `json:"type"`
+	JSONSchema responseSchemaID `json:"json_schema"`
+}
+
+// responseSchemaID is the API's envelope around one JSON Schema
+// document. Strict turns on constrained decoding, the same mechanism
+// each tool's parameters already run under (ADR 0017).
+type responseSchemaID struct {
+	Name   string          `json:"name"`
+	Strict bool            `json:"strict"`
+	Schema json.RawMessage `json:"schema"`
 }
 
 // chatMessage is the wire shape of one conversation entry. The OpenAI API
@@ -74,6 +96,13 @@ type chatResponse struct {
 // request and maps the first choice back to an agent.Response. Tool calls
 // win over content when both are present.
 //
+// The request carries agent.ResponseSchema as a strict json_schema
+// response format, so the model's memory write is a field of the
+// response the API constrains rather than a block the model chooses to
+// emit (ADR 0018, issue #515). A step that only requests tool calls
+// carries no content, and the parser reads that as a turn that stated
+// nothing.
+//
 // parallel_tool_calls is forced to false: ADR 0017 requires strict-mode
 // constrained decoding (advertised as Strict: true on each tool), and the
 // OpenAI chat-completions API flags strict mode as incompatible with
@@ -84,6 +113,14 @@ func (m *Model) Chat(ctx context.Context, messages []agent.Message, tools []tool
 		Messages:          toWireMessages(messages),
 		Tools:             toWireTools(tools),
 		ParallelToolCalls: false,
+		ResponseFormat: responseFormat{
+			Type: "json_schema",
+			JSONSchema: responseSchemaID{
+				Name:   responseSchemaName,
+				Strict: true,
+				Schema: json.RawMessage(agent.ResponseSchema),
+			},
+		},
 	})
 	if err != nil {
 		return agent.Response{}, fmt.Errorf("encode request: %w", err)

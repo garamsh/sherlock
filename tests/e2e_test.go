@@ -29,13 +29,13 @@ const e2eAgentID = "e2e"
 
 // e2eQuestion is the inbound message that drives the canned MVP
 // scenario: the mock model sends the canned reply through message_send
-// and ends the turn with a writeback block recording the question
+// and ends the turn with a memory write recording the answer
 // (ADR 0011: the writeback is the single write path).
 const e2eQuestion = "what is 6 * 7?"
 
 // mvpScript drives the canned MVP scenario through the scripted mock
 // model: reply to the sender through message_send, then close the
-// turn with a writeback block recording the question. The mock no
+// turn with a memory write recording the answer. The mock no
 // longer calls shell_exec (ADR 0017): process exec is the agent's
 // native capability, and the canned scenario exercises the tools that
 // exist — message_send only.
@@ -47,9 +47,9 @@ func mvpScript() *agent.ScriptedModel {
 				`{"channel":"http","target":"sender","content":"42"}`,
 			),
 		}}},
-		agent.ScriptedStep{Content: "Replied via message_send and stored the result.\n" +
-			"```memory\n" +
-			`{"add":[{"content":"user asked: 6 * 7","type":"episodic"}]}` + "\n```"},
+		agent.ScriptedStep{Content: `{"reply":"Replied via message_send and stored the result.",` +
+			`"memory_ops":[{"address":{"subject":"user","question":"what is 6 * 7",` +
+			`"restriction":null},"value":"42","operation":null}]}`},
 	)
 }
 
@@ -145,9 +145,9 @@ func runMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	assert.Contains(t, got[0]["task"], "] unknown: "+e2eQuestion,
 		"the turn input renders the message with its ID and sender (ADR 0015)")
 
-	// The agent replied via message_send. The final writeback
-	// records the question as an episodic memory (ADR 0011: the
-	// writeback is the single write path).
+	// The agent replied via message_send. The final writeback records
+	// the answer at the address of the question it answers (ADR 0011:
+	// the writeback is the single write path; ADR 0018).
 	assert.Equal(t, "message_send", got[3]["tool_name"])
 	assert.NotContains(t, got[3], "tool_failed")
 
@@ -163,10 +163,10 @@ func runMVPScenario(t *testing.T, baseURL, root, agentID string) {
 }
 
 // assertMemoryStore opens the agent's memory store and confirms the
-// writeback add is still queryable after shutdown. With curation-only
+// writeback is still queryable after shutdown. With curation-only
 // storage (ADR 0006) nothing is auto-stored before the turn, so the
-// writeback's episodic add is the only memory — below
-// ConsolidationMinCluster it survives shutdown uncompressed.
+// turn's one write is the only memory — a writeback states a fact, so
+// it is semantic and consolidation never touches it (ADR 0018).
 func assertMemoryStore(t *testing.T, root string) {
 	t.Helper()
 	store, err := sqlite.Open(filepath.Join(root, "memory.db"))
@@ -174,15 +174,15 @@ func assertMemoryStore(t *testing.T, root string) {
 	t.Cleanup(func() { store.Close() })
 
 	svc := memory.NewService(store, memory.NewHashingEmbedder(), memory.NewConcatSummarizer())
-	found, err := svc.Search(context.Background(), "user asked 6 * 7", 10)
+	found, err := svc.Search(context.Background(), "what is 6 * 7", 10)
 	require.NoError(t, err)
 
 	var recorded bool
 	for _, h := range found {
-		if strings.Contains(h.Content, "user asked: 6 * 7") {
+		if strings.Contains(h.Content, "what is 6 * 7") && strings.Contains(h.Content, "42") {
 			recorded = true
-			assert.Equal(t, memory.TypeEpisodic, h.Type,
-				"the writeback add is the only memory; a lone episodic memory is not consolidated")
+			assert.Equal(t, memory.TypeSemantic, h.Type,
+				"a writeback states a fact at an address, never an episode")
 		}
 	}
 	assert.True(t, recorded,

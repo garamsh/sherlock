@@ -37,28 +37,38 @@ type Message struct {
 	ToolCalls  []ToolCall `json:"tool_calls,omitempty"`
 }
 
-// OpKind identifies one memory writeback operation.
-type OpKind string
+// MemoryAddress is where a fact is held (ADR 0018): the subject it is
+// about, the question it answers, and whatever restriction the sentence
+// puts on that question. A statement that narrows its question narrows
+// its address with it, so the two values coexist instead of one
+// destroying the other.
+type MemoryAddress struct {
+	Subject     string `json:"subject"`
+	Question    string `json:"question"`
+	Restriction string `json:"restriction,omitempty"`
+}
+
+// MemoryOperation is what a value does to the values already at its
+// address: end them, or stand beside them (ADR 0018).
+type MemoryOperation string
 
 const (
-	// OpKeep marks a recalled memory as still valid, unchanged.
-	OpKeep OpKind = "keep"
-	// OpUpdate supersedes a recalled memory with new content.
-	OpUpdate OpKind = "update"
-	// OpDelete retires a recalled memory.
-	OpDelete OpKind = "delete"
-	// OpAdd persists a new fact.
-	OpAdd OpKind = "add"
+	// OpReplace supersedes the values already at the address.
+	OpReplace MemoryOperation = "replace"
+	// OpJoin leaves them where they are and adds one.
+	OpJoin MemoryOperation = "join"
 )
 
-// WritebackOp is one parsed operation from the memory block that ends every
-// model response (ADR 0006). ID is set for keep/update/delete; Content for
-// update/add; Type for add.
+// WritebackOp is one memory write parsed from a model response: the
+// address the fact lands on, the value held there, and the operation the
+// write states (ADR 0018). A write whose operation the response leaves
+// unstated or unreadable parses as OpJoin, because a wrong join is
+// repaired by the next correct replacement at that address and a wrong
+// replacement is repaired by nothing.
 type WritebackOp struct {
-	Kind    OpKind `json:"kind"`
-	ID      string `json:"id,omitempty"`
-	Content string `json:"content,omitempty"`
-	Type    string `json:"type,omitempty"`
+	Address   MemoryAddress   `json:"address"`
+	Value     string          `json:"value"`
+	Operation MemoryOperation `json:"operation"`
 }
 
 var (

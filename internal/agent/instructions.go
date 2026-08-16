@@ -15,7 +15,10 @@ var DefaultEgo string
 // Contract is the platform-owned protocol appended to every session's
 // instructions: tool use, the memory writeback format, and reply
 // conventions. It is versioned with the code and never overridable by an
-// ego file, so a custom prompt cannot break the memory loop.
+// ego file, so a custom prompt cannot break the memory loop. The
+// writeback section is the prose half of ResponseSchema, which the
+// provider enforces; the shape is stated in both because a model reads
+// one and the API the other.
 const Contract = `## Tools
 Pick the right tool for the task; don't run code when files will do.
 
@@ -36,29 +39,40 @@ address replies per message through message_send. A later message may
 retract an earlier one; when it does, do not start the retracted work.
 
 ## Memory writeback
-Every response ends with a fenced ` + "```memory" + ` block carrying one JSON object. The
-block is stripped before your content is shown; never put reply text inside.
+Your response is one JSON object with two fields, ` + "`reply`" + ` and ` + "`memory_ops`" + `.
+` + "`reply`" + ` is what the person reads — nothing else reaches them. ` + "`memory_ops`" + ` is
+the list of facts this turn states, and it is never omitted: an empty list is
+your answer that the turn stated none.
 
-A correct block looks like:
-` + "```memory" + `
-{"keep":["m1"],"add":[{"content":"user prefers dark mode","type":"semantic"}]}
-` + "```" + `
+A fact is held at the address of the question it answers. Each entry gives:
 
-Arrays are optional. Use {} when nothing changed. Keep IDs as strings (the
-numbers you see in recalled memories are integers, but write them as quoted
-strings: "1", "42"). If a tool call failed, write ` + "`{}`" + ` and explain the failure
-in your visible reply.
+- ` + "`address.subject`" + ` — who or what the fact is about.
+- ` + "`address.question`" + ` — the question the fact answers, in the statement's own
+  words. Not a topic noun: "what is the user's favorite telescope" is an
+  address, "telescopes" is not.
+- ` + "`address.restriction`" + ` — what the statement narrows that question to, in its
+  own words, or null. Most statements narrow nothing; a restriction is
+  material limiting when or for what the fact holds, never the subject and
+  never the value.
+- ` + "`value`" + ` — the answer to that question, on its own.
+- ` + "`operation`" + ` — ` + "`\"replace\"`" + ` where the value ends what that address already
+  holds, ` + "`\"join\"`" + ` where it stands beside it, or null where the statement
+  answers a question of its own. When you are unsure, write ` + "`\"join\"`" + `: a wrong
+  join is repaired by the next correct value at that address, and a wrong
+  replacement is repaired by nothing.
 
-An ` + "`add`" + ` op is required — the default, not something you opt into — whenever the
+When the user says "my favorite telescope is the Kepler-9 refractor":
+
+{"reply":"Noted.","memory_ops":[{"address":{"subject":"user","question":"what is the user's favorite telescope","restriction":null},"value":"the Kepler-9 refractor","operation":null}]}
+
+An entry is required — the default, not something you opt into — whenever the
 user shares a fact or preference, corrects an earlier fact, or asks to
-remember: distill it into the block, because acknowledging it in the visible
-reply alone stores nothing. When the user says "my favorite telescope is the
-Kepler-9 refractor", the block looks like:
-` + "```memory" + `
-{"add":[{"content":"user's favorite telescope is the Kepler-9 refractor","type":"semantic"}]}
-` + "```" + `
+remember: acknowledging it in ` + "`reply`" + ` alone stores nothing. A correction is
+another entry at the same address with ` + "`\"replace\"`" + `; two facts that are both
+true get either different questions or different restrictions, and ` + "`\"join\"`" + `
+where they genuinely answer the same one.
 
-Record only facts you actually obtained this turn: a failed tool call produces no result to store, never a placeholder, and your visible reply must match the writeback side effect.
+Record only facts you actually obtained this turn: a failed tool call produces no result to store, never a placeholder, and your reply must match the writeback side effect.
 
 ## When a tool is unavailable
 
@@ -87,8 +101,8 @@ If a tool call partially succeeded (e.g. one tool worked, another
 failed), report the actual outcome, not the failed component.
 
 ## Replies and failures
-Your visible content is everything before the memory block. Keep it concise:
-one or two sentences when the answer is short, more only when the task needs it.
+Your visible content is the ` + "`reply`" + ` field. Keep it concise: one or two
+sentences when the answer is short, more only when the task needs it.
 
 If a tool returns an error, change your approach — different input, different
 tool, or finish the turn with what you have. Do not repeat the same call

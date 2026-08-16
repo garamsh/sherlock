@@ -52,8 +52,9 @@ func replyModel(_ string) agent.Model {
 			Name:  "message_send",
 			Input: json.RawMessage(`{"channel":"test","target":"sender","content":"Message received."}`),
 		}}},
-		agent.ScriptedStep{Content: "Replied.\n```memory\n" +
-			`{"add":[{"content":"handled an inbound message","type":"episodic"}]}` + "\n```"},
+		agent.ScriptedStep{Content: `{"reply":"Replied.","memory_ops":[{"address":{` +
+			`"subject":"the test channel","question":"what did the test channel ask for",` +
+			`"restriction":null},"value":"an acknowledgement","operation":null}]}`},
 	)
 }
 
@@ -238,14 +239,33 @@ func TestFactory_ConfiguredEmbedderReachesMemoryService(t *testing.T) {
 		"the configured embedder, not the hashing default, embedded the memory")
 }
 
-// consolidateModel scripts one turn whose writeback adds two episodic
-// memories, reaching the consolidation cluster threshold.
+// consolidateModel scripts one turn that states no fact: the episodic
+// cluster the consolidation trigger works over is seeded into the store
+// directly, because a writeback states facts at addresses and never
+// episodes (ADR 0018).
 func consolidateModel(_ string) agent.Model {
 	return agent.NewScriptedModel(
-		agent.ScriptedStep{Content: "Done.\n```memory\n" +
-			`{"add":[{"content":"deployed v1 to staging","type":"episodic"},` +
-			`{"content":"staging deploy failed on migration","type":"episodic"}]}` + "\n```"},
+		agent.ScriptedStep{Content: `{"reply":"Done.","memory_ops":[]}`},
 	)
+}
+
+// seedEpisodicCluster writes the two episodic memories the consolidation
+// threshold works over into the store the factory will open.
+func seedEpisodicCluster(t *testing.T, path string, contents ...string) {
+	t.Helper()
+	store, err := sqlite.Open(path)
+	require.NoError(t, err)
+	svc := memory.NewService(store, memory.NewHashingEmbedder(), memory.NewConcatSummarizer())
+	for _, content := range contents {
+		_, err := svc.Store(context.Background(), memory.StoreInput{
+			Content:         content,
+			Type:            memory.TypeEpisodic,
+			ImportanceScore: gateway.SalienceAddEpisodic,
+			Source:          "agent",
+		})
+		require.NoError(t, err)
+	}
+	require.NoError(t, svc.Close())
 }
 
 // TestRuntime_CloseConsolidatesEpisodicCluster pins the ADR 0011 shutdown
@@ -253,6 +273,8 @@ func consolidateModel(_ string) agent.Model {
 // into one semantic parent and archives the originals.
 func TestRuntime_CloseConsolidatesEpisodicCluster(t *testing.T) {
 	root := t.TempDir()
+	seedEpisodicCluster(t, memoryPath(root),
+		"deployed v1 to staging", "staging deploy failed on migration")
 	sink := &recordingSink{}
 	factory := &gateway.Factory{
 		MemoryPath: memoryPath(root),
@@ -284,8 +306,8 @@ func TestRuntime_CloseConsolidatesEpisodicCluster(t *testing.T) {
 
 func compactionModel(_ string) agent.Model {
 	return agent.NewScriptedModel(
-		agent.ScriptedStep{Content: "First reply.\n```memory\n{}\n```"},
-		agent.ScriptedStep{Content: "Second reply.\n```memory\n{}\n```"},
+		agent.ScriptedStep{Content: `{"reply":"First reply.","memory_ops":[]}`},
+		agent.ScriptedStep{Content: `{"reply":"Second reply.","memory_ops":[]}`},
 	)
 }
 

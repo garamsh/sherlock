@@ -28,13 +28,20 @@ type validity struct {
 // What it can be asked is the difference. Context answers as of the moment
 // of the question, so the same structure that answers "what is true now"
 // answers "what was true then" by being asked then.
+// It runs under two of the arity rules the attribute frames run under, and
+// under nothing else. Closing on every write is the self-deciding end;
+// closing when the write says to is the same store taking the declaration,
+// which is how a wrongly-cleared value comes to be sitting in a closed span
+// rather than gone.
 type intervalFrame struct {
+	rule   arityRule
 	values map[Address][]validity
 }
 
-// NewIntervalFrame returns the validity-interval frame.
-func NewIntervalFrame() Frame {
-	return &intervalFrame{values: map[Address][]validity{}}
+// NewIntervalFrame returns the validity-interval frame under one arity
+// rule.
+func NewIntervalFrame(rule arityRule) Frame {
+	return &intervalFrame{rule: rule, values: map[Address][]validity{}}
 }
 
 // Observe closes whatever is open at the address and opens a span for the
@@ -46,9 +53,11 @@ func (f *intervalFrame) Observe(_ context.Context, t Turn) error {
 		return nil
 	}
 	spans := f.values[t.Fact.Address]
-	for i := range spans {
-		if spans[i].to.IsZero() {
-			spans[i].to = t.At
+	if f.closes(t) {
+		for i := range spans {
+			if spans[i].to.IsZero() {
+				spans[i].to = t.At
+			}
 		}
 	}
 	f.values[t.Fact.Address] = append(spans, validity{value: t.Fact.Value, from: t.At})
@@ -89,6 +98,29 @@ func (f *intervalFrame) Size(context.Context) (Size, error) {
 }
 
 func (f *intervalFrame) Close() error { return nil }
+
+// closes reports whether this write ends the spans open at the address.
+// The self-deciding rule closes on every write; the declared rule closes
+// when the write says it replaces.
+func (f *intervalFrame) closes(t Turn) bool {
+	if f.rule == arityDeclared {
+		return t.Declared != OperationJoin
+	}
+	return true
+}
+
+// Values is every value the store holds at an address, open span or closed.
+// It is what the store kept rather than what a question reaches, and the
+// difference between the two is this round's subject.
+func (f *intervalFrame) Values(address Address) []string {
+	var out []string
+	for _, span := range f.values[address] {
+		if !contains(out, span.value) {
+			out = append(out, span.value)
+		}
+	}
+	return out
+}
 
 // covers reports whether the span was true at the given moment. A span
 // starts at its write and ends when the write that closed it landed, so the

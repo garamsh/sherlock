@@ -131,6 +131,7 @@ const (
 	frameAttributeCued     = "attribute-cued"
 	frameAttributeDeclared = "attribute-declared"
 	frameInterval          = "interval"
+	frameIntervalDeclared  = "interval-declared"
 	frameLog               = "log"
 )
 
@@ -139,7 +140,7 @@ const (
 var frameNames = []string{
 	frameShipped, frameDocument,
 	frameAttributeSingle, frameAttributeMulti, frameAttributeLearned, frameAttributeCued,
-	frameAttributeDeclared, frameInterval, frameLog,
+	frameAttributeDeclared, frameInterval, frameIntervalDeclared, frameLog,
 }
 
 // NewFrame builds a frame by name. dir is a directory the frame may keep
@@ -161,7 +162,9 @@ func NewFrame(name, dir string, counter *EmbedCounter) (Frame, error) {
 	case frameAttributeDeclared:
 		return NewAttributeFrame(arityDeclared), nil
 	case frameInterval:
-		return NewIntervalFrame(), nil
+		return NewIntervalFrame(aritySingle), nil
+	case frameIntervalDeclared:
+		return NewIntervalFrame(arityDeclared), nil
 	case frameLog:
 		return NewLogFrame(), nil
 	default:

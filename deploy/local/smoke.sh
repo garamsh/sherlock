@@ -56,8 +56,10 @@ echo "==> the gateway accepts a message"
 status=""
 for _ in $(seq 1 "$ATTEMPTS"); do
   status=$(curl -sS -o /dev/null -w '%{http_code}' "${CURL_OPTS[@]}" \
-    -X POST "$MESSAGES_URL" -d '{"content":"hello"}' || true)
-  [ "$status" = "202" ] && break
+    -X POST "$MESSAGES_URL" -d '{"content":"hello"}' 2>/dev/null || true)
+  if [ "$status" = "202" ]; then
+    break
+  fi
   sleep 1
 done
 if [ "$status" != "202" ]; then
@@ -70,12 +72,15 @@ fi
 echo "==> the agent replies through message_send"
 reply=""
 for _ in $(seq 1 "$ATTEMPTS"); do
-  reply=$(find "$GAGENT_DATA_DIR/outbox" -type f -name '*.json' 2>/dev/null | head -n 1)
-  [ -n "$reply" ] && break
+  reply=$(find "$GAGENT_DATA_DIR/outbox" -type f -name '*.json' 2>/dev/null | head -n 1 || true)
+  if [ -n "$reply" ]; then
+    break
+  fi
   sleep 1
 done
 if [ -z "$reply" ]; then
   echo "no reply in $GAGENT_DATA_DIR/outbox: the agent ran no message_send" >&2
+  ls -la "$GAGENT_DATA_DIR" "$GAGENT_DATA_DIR/outbox" >&2 || true
   exit 1
 fi
 cat "$reply"

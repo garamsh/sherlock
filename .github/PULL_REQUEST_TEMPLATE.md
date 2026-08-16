@@ -12,8 +12,8 @@
 
 ## Conventions consulted
 
-<!-- The docs/convention/ files you actually read and applied. -->
+<!-- The docs/convention/ files you actually opened and applied. A reviewer checks this against the diff, so an inaccurate answer costs more than an awkward one. -->
 
 ## Convention concerns
 
-<!-- Disagreements or gaps found in docs/convention/. The PM decides; do not work around a convention silently. Write N/A with a reason when there are none. -->
+<!-- Disagreements or gaps found in docs/convention/. A disagreement goes here, never into a silent workaround; the PM decides. -->

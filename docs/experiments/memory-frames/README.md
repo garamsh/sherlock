@@ -1,6 +1,6 @@
 # Memory-frames experiment
 
-Ten ways of holding a memory over a decade of turns, compared: what each stores, how each decides what to keep, what each answers and what each costs. §The structures compared is that comparison on one page, and §What would be chosen today is what it comes to. The design this project ships is one of the ten and is the baseline the rest are read against; the seam it is measured through is what lets structurally different designs sit beside it.
+Fifteen ways of holding a memory over a decade of turns, compared: what each stores, how each decides what to keep, what each answers and what each costs. §The structures compared is that comparison on one page, and §What would be chosen today is what it comes to. The design this project ships is one of the fifteen and is the baseline the rest are read against; four more come from published papers and §Where the published designs came from says what was searched, what was ported and what each design needed that the seam withholds. The seam is what lets structurally different designs sit beside one another at all.
 
 ## Contents
 - The structures compared
@@ -16,6 +16,11 @@ Ten ways of holding a memory over a decade of turns, compared: what each stores,
 - `interval` — a value with the span it was true for
 - `interval-declared` — spans, with arity stated by the write
 - `log` — events, with the memory computed from them
+- `generative-agents` — a scored memory stream that never forgets
+- `reflection` — the same stream, with a synthesis written back into it
+- `memorybank` — the stream under a forgetting curve
+- `mem0` — an operation stated by the write, applied to a memory found by similarity
+- `mem0-nearest` — the same design with the judgement removed
 - Method
 - The seam
 - The workload
@@ -27,6 +32,7 @@ Ten ways of holding a memory over a decade of turns, compared: what each stores,
 - What a constraint costs
 - What harder language costs
 - Whether a structure can find what it holds
+- Where the published designs came from
 - What a run costs
 - What this record does not say
 - Limits
@@ -182,6 +188,38 @@ Whether keeping the value changes what can be answered is §Whether a write need
 Every observation is an event, appended and never changed; the memory is not stored but computed from the log when it is asked for. Its arity decision lives in the projection, which makes it the only structure here where that decision can be taken again: no event is lost, so a different projection over the same events is a different memory with nothing re-observed. `harness/log_test.go` runs one log through both projections and gets both memories, which is what that claim rests on.
 
 **What these figures say.** The projection it runs takes the newest value at an address, which is `attribute-single`'s and `interval`'s decision in a third store; §What the comparison shows carries what follows from that and what separates the three.
+
+## `generative-agents` — a scored memory stream that never forgets
+
+Park et al. 2023, *Generative Agents: Interactive Simulacra of Human Behavior* (arXiv:2304.03442, UIST 2023). Every observation enters a stream as a record and nothing ever leaves it. A read scores every record on three terms — recency, an exponential decay on the hours since the record was last accessed; importance, the poignancy a model assigns at write time; relevance, the cosine between the record and the query — min-max normalizes each, sums them at equal weight, and fills the context from the top of that ranking.
+
+**What it needed that the seam withholds.** Three things, and each is a substitution rather than a widening. A query, taken from the turn's text, which is what the shipped frame does. A limit, which the seam names nowhere: it takes the shipped recall budget, so it fills the same context `document` and `shipped` fill and a difference between them is not a difference of budget. And a model at write time to score importance, substituted by the salience the shipped writeback would have carried — the two constants §The run reports — so both arms bracket it exactly as they bracket everything else a writeback decides. That substitution takes two values rather than the paper's ten, so after min-max scaling it is a flag saying whether the turn asserted anything: coarser than a poignancy score and more separated than one. In the `text` arm it takes one value and the importance term contributes nothing at all.
+
+## `reflection` — the same stream, with a synthesis written back into it
+
+The second mechanism of the same paper. When the importance summed since the last reflection passes 150, the design writes a higher-level record over the last hundred, and that record is retrievable like any other.
+
+**What it needed that the seam withholds.** A model to write the synthesis. There is none, so the synthesis here is the window's own fact-carrying sentences joined into one record — the operation a summarizer performs and not the inference one does. What this row bounds is what aggregating observations into one retrievable object buys; it does not measure what a model's insight would add, and no figure below should be read as though it did. Two properties keep the substitution from eating the structure: a reflection is never read into a later reflection, and no reflection outgrows what a context holds. `harness/stream_test.go` holds both, because without them a synthesis of syntheses doubles on a schedule and the structure stops being a memory.
+
+## `memorybank` — the stream under a forgetting curve
+
+Zhong et al. 2023, *MemoryBank: Enhancing Large Language Models with Long-Term Memory* (arXiv:2305.10250, AAAI 2024). The same stream, with an Ebbinghaus retention of `exp(-t/S)` in the days `t` since a record was last recalled over the strength `S` its rehearsals have built. A retrieval rehearses what it returns — strength up by one, elapsed days back to zero — and a record whose retention falls under the threshold is forgotten.
+
+**What it needed that the seam withholds.** The threshold. The paper states the curve and not a cut, so the cut is the harness's and is named where the rule reads it: one half-life, so a record goes once the days since a read last returned it pass its strength.
+
+## `mem0` — an operation stated by the write, applied to a memory found by similarity
+
+Chhikara et al. 2025, *Mem0: Building Production-Ready AI Agents with Scalable Long-Term Memory* (arXiv:2504.19413). Two phases. A model reads the message and emits the facts it asserts; then, for each fact, the design retrieves the ten most similar memories it already holds and a model chooses among add, update, delete and no-op over them.
+
+It is here because it is the published design closest to what §What would be chosen today recommends, and because it differs from that recommendation in exactly one decision. Both take the write operation from a model reading the sentence. This one then has to find which memory the operation applies to, and finds it by similarity; the addressed store computes the address and goes there. Running the two on one set of declarations separates identity from arity, which no run in this record had separated before.
+
+**What it needed that the seam withholds.** A model in the write path, twice over. The first call is extraction, which the arms already bracket: under the oracle it is perfect and in the `text` arm there is none, so this design holds nothing there for the reason every addressed structure holds nothing there. The second call is the judgement — whether a candidate is the memory this fact updates — and nothing in the seam supplies it. The paper states no threshold, because the model decides. So two arms bracket it instead: `mem0` takes the nearest candidate whose similarity clears the constant this project's own store supersedes at, and `mem0-nearest` takes the nearest candidate whatever its similarity. The design sits between them at a point nothing measured here can locate, which is the shape of answer §The arity question gave `attribute-learned`. §What a similarity-located write has to separate is the evidence about where a working gate would have to sit.
+
+Its read is handed the address in the arm that supplies one, rendered as the query string its retrieval takes, so it is given exactly what every addressed frame is given. What separates it from the addressed store is what it does with an address, not what it knows.
+
+## `mem0-nearest` — the same design with the judgement removed
+
+`mem0` with no gate: an update ends the nearest memory however far away it is. It is not a design anyone proposes and belongs in no ranking — it is the far end of the bracket the section above describes, and it is here for the reason `attribute-multi` is here.
 
 ## Method
 
@@ -2358,13 +2396,57 @@ Every figure outside this section was produced with the question already turned 
 |---|---|---|
 | `thread` | 600 | 0.998 ±0.003 |
 | `subject` | 80 | 1.000 ±0.000 |
+## Where the published designs came from
+
+Ten structures were measured here before this round and every one of them was invented in this repository. The recommendation they produced had never met a published design on the workload that produced it. This section is what was searched, what it found, and why each design found is where it is.
+
+**The sweep, and what it could not have covered.** Thirty-nine web searches and twenty-seven paper retrievals on 2026-08-16, over agent long-term memory, memory operations, temporal knowledge graphs for agents, forgetting and consolidation, conversational-memory benchmarks, and the named systems each of those returned. It is a sweep and not a survey: it covers what those searches surfaced on that day and nothing else. Two gaps are worth stating because a later reader cannot see them. Nothing submitted in July 2026 surfaced at all, and the newest item found carries an August 2026 identifier with a June submission date, so the weeks before this round are under-covered. And mechanism was read from the method section for four designs and from the abstract alone for the rest, so a design listed below as expressible has not been checked at the depth a port would need.
+
+**What the seam withholds is the sorting criterion.** `harness/frame.go` is `Observe`, `Context` and `Size`. It names no query, no limit, no score, no similarity, no session and no model. A design needing one of those is not thereby excluded — every frame ported here takes a query from the turn and a limit from the shipped budget, and each design's own section says so — but a design whose distinguishing step *is* one of those cannot be ported without standing something in for it, and a substitution measures the substitute.
+
+**Ported, and measured in every table above.** Generative Agents and its reflection mechanism (Park et al. 2023, arXiv:2304.03442), MemoryBank (Zhong et al. 2023, arXiv:2305.10250) and Mem0 (Chhikara et al. 2025, arXiv:2504.19413). Each has a section of its own stating what it needed and what stood in for it.
+
+**Already in this record under another name.** Two designs converge with structures invented here, which is a result rather than a coincidence.
+
+- **Zep / Graphiti** (Rasmussen et al. 2025, arXiv:2501.13956) holds facts as graph edges on two timelines and, when a new fact contradicts an old one, sets the old edge's invalid timestamp instead of removing the edge. That is `interval`: a value written with a start, closed rather than deleted when it stops being true, and answered as of the moment it is asked. The two were arrived at independently — the interval store is #457's — and the rows `interval` and `interval-declared` post are what that mechanism scores on this workload.
+- **Mem0's graph variant** marks obsolete relations invalid rather than deleting them, which is the same move inside the design ported as `mem0`. It is therefore `interval-declared`'s store with `mem0`'s identity step, and this record measures each half separately rather than the combination.
+
+**Could not be expressed through the seam, and what each needed.**
+
+| design | what it needed | what the seam gives instead |
+|---|---|---|
+| MemGPT (Packer et al. 2023, arXiv:2310.08560) | the model to issue its own paging calls between a bounded context and a searchable archive | nothing decides when to page, and without that decision the design is `document` with a store beside it |
+| A-MEM (Xu et al. 2025, arXiv:2502.12110) | three model calls per write — write the note's keywords and context, choose which neighbours to link, rewrite the neighbours it linked | with all three removed what is left is the memory stream `generative-agents` already measures |
+| SeCom (Pan et al. 2025, arXiv:2502.05589), Nemori (arXiv:2508.03341), SimpleMem (arXiv:2601.02553), ES-Mem (arXiv:2601.07582) | a segment or session boundary to build memory units at | a turn, and nothing that says where one conversation ends |
+| Memory-R1 (arXiv:2508.19828), AgeMem (arXiv:2601.01885), AtomMem (arXiv:2601.08323) | a policy trained by reinforcement learning to choose the memory operation | the operation, stated by the write, which is what `attribute-declared` and `mem0` already take |
+| EM-LLM (arXiv:2407.09450) | the model's key-value cache | text in and text out |
+| Letta's sleep-time agent (arXiv:2504.13171) | an idle phase in which a second agent rewrites the memory | a turn-driven loop with no idle phase in it |
+
+**Expressible and not run this round.** Each would test something this record has not tested, and each is named so the next round has a list rather than a search.
+
+- **MemoryOS** (arXiv:2506.06326, EMNLP 2025) — three tiers, each with a published hard capacity, and a heat rule promoting a segment once its visits, its size and its recency sum past a threshold. It is the only design found that carries its own capacity and its own eviction rule, which is exactly what §What a constraint costs puts outside every frame so that all of them are bound alike. Running it means either disabling the mechanism that distinguishes it or exempting it from that comparison, and which of those is right is a question this round did not settle.
+- **FadeMem** (arXiv:2601.18642) — `memorybank`'s curve with relevance, access frequency and temporal pattern modulating it. It is the later version of a design measured here, so running both would say what that iteration bought.
+- **ENGRAM** (arXiv:2511.12960) — episodic, semantic and procedural records behind one retriever, offered as the claim that the elaborate machinery is unnecessary. The shipped frame already types a turn the first two ways, so this is the null hypothesis stated as a design.
+- **Hippocampus** (arXiv:2602.13594, MLSys 2026) — the same content under a compressed index and no model on the write path. It changes what a read costs rather than what a store holds, and this record measures that column in units rather than in time.
+- **MemInsight** (arXiv:2503.21760, EMNLP 2025) and **LongMemEval's key expansion** (arXiv:2410.10813, ICLR 2025) — enriching the index at write time against enriching the query at read time, a separation no run here has made.
+- **HippoRAG 2** (arXiv:2502.14802) — triples in an open graph with a personalized-PageRank read. `memory-architecture/` measured that multi-hop retrieval matches single-hop where sessions are independent, so this would put the published successor of that finding on this workload rather than open a new question.
+
+### What a similarity-located write has to separate
+
+A structure that computes an address knows which memory a write lands on. A structure that searches for it has to tell the memory the write updates from every other memory it holds, and whether that separation exists is a property of the workload rather than of any design's score. It is read here the way §The arity question read the timing rule, and for the same reason: a design whose mechanism cannot work on this workload should be shown not to work before its row is read as a score.
+
+The candidate set is every value written so far, which is the widest a design could be holding and therefore the hardest separation to make. A design that prunes holds a subset of it, and a separation that fails here does not become available by holding less. A first assertion at an address has nothing to be separated from and is not counted.
+
+<!-- generated by the harness: literature; do not edit between the markers -->
 <!-- end generated -->
 
 ## What a run costs
 
 Established before the run, as issue #443 requires.
 
-No frame calls a model. Every structure measured here decides what it decides from what it was given, and only the shipped frame touches an embedder at all — the deterministic offline one `cmd/gagent` defaults to. The frames, the workload and the error sweep are free, and the model-call count in the first table below is the check on that rather than an assurance.
+No frame calls a model. Every structure measured here decides what it decides from what it was given; the ones that rank a store by similarity — the shipped frame, the three memory streams and the two Mem0 arms — touch an embedder, and it is the deterministic offline one `cmd/gagent` defaults to. The frames, the workload and the error sweep are free, and the model-call count in the first table below is the check on that rather than an assurance.
+
+**The published designs raised three counts in that table and moved no figure any of them is read on.** Turns observed and contexts produced are the turn count times the frames times the arms, so both rose with the frames added; the embedder counts rose because five of the new arms embed what they hold and what they are asked. None of the three is a figure about a structure, and every per-frame row committed before this round is unchanged.
 
 **Four things in this record were paid for**, and all four are in a table of its own after every free figure: asking a model to declare the operation for each of the workload's assertions, asking it again several times over for the assertions whose declaration has a consequence, having it read every message of every conversation shape, and having it turn each of the finding study's questions into an address. Each is one call per question or per message and nothing else, on the cheapest model that answers without billing reasoning as output. Each refuses to start past its own call bound and to finish past its own cost bound, all eight stated in that table, because a bound discovered afterwards is not a bound. Every answer set is committed, so scoring them costs nothing and re-running the measurement does not re-buy them: only `-declare`, `-resample`, `-extract` and `-resolve` reach the provider, and the key reaches the process from the environment and nothing else. What the shipped OpenAI embedder costs the read path, and which conclusions may be quoted across the two embedders, is #435's measurement and is not repeated here.
 

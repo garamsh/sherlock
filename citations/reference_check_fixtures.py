@@ -6,6 +6,11 @@ one it lived in, so the check is shown finding it rather than asserted to. The
 fourth is reconstructed too, and shown *not* being found: it sits behind a named
 exclusion, and a fixture that quietly dropped it would hide the boundary.
 
+Two more hold the convention exclusion to its width from both sides: a name
+`stack-go.md` exists to forbid stays silent, and a dead path in a sibling
+convention file is reported. Widening the exclusion back to the directory would
+fail the second.
+
 A check tuned until its output is empty passes every day and finds nothing. This
 is what stops that: tighten a rule far enough and these stop failing.
 
@@ -60,6 +65,21 @@ FIXTURES = [
         # not defects. The check reports nothing here and that is the boundary.
         "expect": None,
     },
+    {
+        "defect": "#428 — a name stack-go.md exists to forbid is not a dead path",
+        "path": "docs/convention/stack-go.md",
+        "line": "Never pre-emptively create `internal/infra/`, `internal/platform/`.",
+        # Suppressed by the one excluded file. `internal` is a real top-level entry
+        # here, so the token is admitted and the exclusion is what silences it —
+        # without it in the scaffold this fixture would pass for the wrong reason.
+        "expect": None,
+    },
+    {
+        "defect": "#428 — a convention file other than stack-go.md is checked",
+        "path": "docs/convention/documentation.md",
+        "line": "Use file paths (`docs/PLAN.md`) instead of drawn hierarchies.",
+        "expect": "docs/PLAN.md",
+    },
 ]
 
 # Enough of the real tree for the rooted rule to mean what it means in the
@@ -68,6 +88,7 @@ SCAFFOLD = [
     "README.md",
     "tools/files/main.go",
     "tools/shell_exec/main.go",
+    "internal/memory/ranking.go",
     "docs/convention/stack-go.md",
     "docs/experiments/memory-cycle/README.md",
     "deploy/local/docker-compose.yml",

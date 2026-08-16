@@ -103,7 +103,7 @@ def render_table(rows):
         "arch", "LoC", "items", "KB", "ins μs",
         "qry μs", "R@5", "P@5", "time@1",
         "noise", "anti-poll", "dedup",
-        "acc", "R/KB", "supers", "stale", "rep-keep",
+        "acc", "R/stored-KB", "supers", "stale", "rep-keep",
     ]
     lines = ["| " + " | ".join(headers) + " |",
              "|" + "|".join(["-" * len(h) for h in headers]) + "|"]
@@ -188,7 +188,8 @@ def main():
         f.write("- anti-poll: Anti-pollution (recall after 1000 noise turns)\n")
         f.write("- dedup: Unique items / total items\n")
         f.write("- accuracy: % of retrieved chunks with content from a known keyword family\n")
-        f.write("- R/KB: Recall per KB of storage (effective memory density)\n")
+        f.write("- R/stored-KB: Recall per KB of the bytes actually stored. Not the\n")
+        f.write("  R/modelled-KB the other result files report.\n")
         f.write("- supers: Supersession accuracy (latest version of fact appears in top-5)\n")
         f.write("- stale: Stale recall rate (% of retrieved items containing old/superseded content)\n")
         f.write("- rep-keep: Repetition-session items kept (lower = more compression)\n\n")

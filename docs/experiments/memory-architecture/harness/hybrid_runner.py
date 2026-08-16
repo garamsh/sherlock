@@ -83,7 +83,7 @@ def eval_long_horizon(name, cls):
 
 
 def render(rows, queries, workload):
-    headers = ["arch", "R@5", "P@5", "Acc", "Items", "KB", "qry ms", "R/KB"]
+    headers = ["arch", "R@5", "P@5", "Acc", "Items", "modelled KB", "qry ms", "R/modelled-KB"]
     lines = ["| " + " | ".join(headers) + " |",
              "|" + "|".join(["-" * len(h) for h in headers]) + "|"]
     for r in rows:
@@ -94,11 +94,11 @@ def render(rows, queries, workload):
             r5 = metrics.recall_at_k(queries, rbq, k=5)
             p5 = metrics.precision_at_k(queries, rbq, k=5)
             acc = metrics.content_accuracy(queries, rbq)
-            kb = r["item_count"] * 0.05
-            rkb = r5 / (kb / 1024.0) if kb > 0 else 0.0
+            kb = metrics.modelled_kb(r["item_count"])
+            rkb = metrics.recall_per_modelled_kb(r["item_count"], r5)
             row = [r["name"], f"{r5:.2f}", f"{p5:.2f}", f"{acc:.2f}",
                    str(r["item_count"]), f"{kb:.1f}",
-                   f"{r['query_ms']:.1f}", f"{rkb:.3f}"]
+                   f"{r['query_ms']:.1f}", f"{rkb:.4g}"]
         lines.append("| " + " | ".join(row) + " |")
     return "\n".join(lines)
 
@@ -152,7 +152,7 @@ def main():
     print("\n" + "=" * 60)
     print("Cross-workload comparison")
     print("=" * 60)
-    lines = ["| arch | R@5 (diverse) | R@5 (long) | avg | R/KB (diverse) |",
+    lines = ["| arch | R@5 (diverse) | R@5 (long) | avg | R/modelled-KB (diverse) |",
              "|---|---:|---:|---:|---:|"]
     for d, l in zip(diverse_rows, long_rows):
         if "error" in d or "error" in l:
@@ -160,9 +160,8 @@ def main():
         d_r5 = metrics.recall_at_k(diverse_queries, d["results_by_query"], k=5)
         l_r5 = metrics.recall_at_k(long_queries, l["results_by_query"], k=5)
         avg = (d_r5 + l_r5) / 2
-        kb = d["item_count"] * 0.05
-        rkb = d_r5 / (kb / 1024.0) if kb > 0 else 0.0
-        lines.append(f"| {d['name']} | {d_r5:.2f} | {l_r5:.2f} | {avg:.2f} | {rkb:.3f} |")
+        rkb = metrics.recall_per_modelled_kb(d["item_count"], d_r5)
+        lines.append(f"| {d['name']} | {d_r5:.2f} | {l_r5:.2f} | {avg:.2f} | {rkb:.4g} |")
     print("\n" + "\n".join(lines))
     with open("results/hybrid_summary.md", "w") as f:
         f.write("# Hybrid Architectures — Cross-workload Summary\n\n")

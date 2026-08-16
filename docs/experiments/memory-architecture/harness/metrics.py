@@ -120,8 +120,18 @@ def component_count(arch_class) -> int:
     return sum(src.count(name) for name in ("Counter(", "dict(", "{}"))
 
 
+# Storage a stored item is assumed to occupy where the store cannot be read.
+# The `Memory` contract is store/retrieve/stats, so an architecture that keeps its
+# items in several containers reports a count and not a size.
+KB_PER_ITEM = 0.05
+
+
 def effective_recall_per_kb(arch, R5: float) -> float:
-    """Recall per KB of storage. Higher = more useful memory per byte."""
+    """Recall per KB of the bytes an architecture actually stored.
+
+    Only for stores that expose their items as one list; `modelled_kb` covers the
+    rest. Higher = more useful memory per byte.
+    """
     items = getattr(arch, "items", None)
     if not items:
         return 0.0
@@ -129,6 +139,17 @@ def effective_recall_per_kb(arch, R5: float) -> float:
     if bytes_stored == 0:
         return 0.0
     return R5 / (bytes_stored / 1024.0)
+
+
+def modelled_kb(item_count: int) -> float:
+    """Storage an item count stands for, at `KB_PER_ITEM` each."""
+    return item_count * KB_PER_ITEM
+
+
+def recall_per_modelled_kb(item_count: int, R5: float) -> float:
+    """Recall per modelled KB. Not comparable with `effective_recall_per_kb`."""
+    kb = modelled_kb(item_count)
+    return R5 / kb if kb > 0 else 0.0
 
 
 def supersession_accuracy(arch, queries: dict, sessions: list) -> float:

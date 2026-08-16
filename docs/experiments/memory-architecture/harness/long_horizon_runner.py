@@ -97,7 +97,7 @@ def eval_long_horizon(name: str, cls, target_noise: int):
 
 
 def render_table(rows):
-    headers = ["arch", "R@5", "Acc", "Anti-poll", "Items", "KB", "qry ms", "R/KB"]
+    headers = ["arch", "R@5", "Acc", "Anti-poll", "Items", "modelled KB", "qry ms", "R/modelled-KB"]
     lines = ["| " + " | ".join(headers) + " |",
              "|" + "|".join(["-" * len(h) for h in headers]) + "|"]
     queries = build_long_horizon_queries()
@@ -110,13 +110,13 @@ def render_table(rows):
             acc = metrics.content_accuracy(queries, rbq)
             ap = sum(1 for qid in rbq if qid.startswith("noise") and not any("alpha" in r.content for r in rbq[qid][:5])) / max(1, 1)
             # items + KB
-            kb = r["item_count"] * 0.05
-            rkb = r5 / (kb / 1024.0) if kb > 0 else 0
+            kb = metrics.modelled_kb(r["item_count"])
+            rkb = metrics.recall_per_modelled_kb(r["item_count"], r5)
             row = [
                 r["name"], f"{r5:.2f}", f"{acc:.2f}",
                 f"{ap:.2f}",
                 str(r["item_count"]), f"{kb:.1f}",
-                f"{r['query_ms']:.1f}", f"{rkb:.3f}",
+                f"{r['query_ms']:.1f}", f"{rkb:.4g}",
             ]
         lines.append("| " + " | ".join(row) + " |")
     return "\n".join(lines)

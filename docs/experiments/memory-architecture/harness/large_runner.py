@@ -289,7 +289,7 @@ def eval_one(name, cls, n_sessions=100, n_real_per_session=100, n_noise=50000):
 
 
 def render(rows, queries):
-    headers = ["arch", "R@5", "Items", "KB", "qry ms", "R/KB"]
+    headers = ["arch", "R@5", "Items", "modelled KB", "qry ms", "R/modelled-KB"]
     lines = ["| " + " | ".join(headers) + " |",
              "|" + "|".join(["-" * len(h) for h in headers]) + "|"]
     for r in rows:
@@ -305,10 +305,10 @@ def render(rows, queries):
                 expected_keywords: list[str]
             qs = [QQ(id=q[0], text=q[1], expected_keywords=q[2]) for q in queries]
             r5 = metrics.recall_at_k(qs, rbq, k=5)
-            kb = r["item_count"] * 0.05
-            rkb = r5 / (kb / 1024.0) if kb > 0 else 0.0
+            kb = metrics.modelled_kb(r["item_count"])
+            rkb = metrics.recall_per_modelled_kb(r["item_count"], r5)
             row = [r["name"], f"{r5:.2f}", str(r["item_count"]), f"{kb:.1f}",
-                   f"{r['query_ms']:.1f}", f"{rkb:.3f}"]
+                   f"{r['query_ms']:.1f}", f"{rkb:.4g}"]
         lines.append("| " + " | ".join(row) + " |")
     return "\n".join(lines)
 

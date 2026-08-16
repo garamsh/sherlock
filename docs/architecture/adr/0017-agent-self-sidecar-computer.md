@@ -1,7 +1,7 @@
 # ADR 0017: The agent is the self; the workspace is the data plane — pod-per-agent, and tools are scripts with manifests
 
 > Status: accepted
-> Date: 2026-08-09 (revised in place 2026-08-13; 2026-08-14)
+> Date: 2026-08-09 (revised in place 2026-08-13; 2026-08-14; 2026-08-17)
 
 ## Contents
 - Context
@@ -37,6 +37,7 @@ One pod per agent, holding two containers. Tools are scripts with manifests behi
 
 - **The agent container is the agent's self.** It holds the gateway (the agent's ears and eyes), the reasoning loop, memory (the agent's long-term organ — a layer, never a tool), the mouth (outbound messaging), and **the tool client** (the platform's protocol client over `internal/tool` — discovery, call, validation, policy). The agent constructs nothing tool-shaped at compile time and discovers tools at runtime from its operator-supplied list. The agent executes nothing and owns no tool behavior.
 - **The sidecar container is the workspace — the computer.** It serves the gRPC contract — Read, Write, List, Exec — over a loopback listener. It holds no tool servers and no `tools:` config. Tools that need files or exec call the workspace gRPC client; tools that need an external API call it directly. Process exec is the workspace's own: the executor (`internal/workspace/shell/`) runs children dropped to the configured exec UID in the workspace directory (ADR 0008), and the model reaches exec through the `shell_exec` tool, which calls the workspace's Exec RPC.
+- **Two images, one per container.** An image is a set of files, and everything running in the container inherits them, so what an image ships is the reach available inside it. The agent's image is the one holding the secrets and the memory store, so it ships the platform binary and no other executable file — no shell, no interpreter. The workspace's image ships the shell its Exec path runs.
 
 ### Tool contract
 

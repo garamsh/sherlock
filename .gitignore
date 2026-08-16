@@ -40,8 +40,10 @@ data/
 !/tools/*/*.yml
 !/tools/*/*.json
 
-# Experiment harness binary, written at the root by a direct build. Every such
-# package under docs/experiments/ is named harness; no other build output is covered.
+# Binaries a direct build writes at the repository root, each under its package's
+# name: cmd/gagent, and every harness package under docs/experiments/. Only these
+# two names; a binary built under any other name is not covered.
+/gagent
 /harness
 
 # Python (experiment harnesses under docs/experiments/)

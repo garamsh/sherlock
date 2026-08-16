@@ -1,33 +1,21 @@
 package gateway
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"os"
 	"path/filepath"
 	"sort"
-	"sync"
-	"time"
 
 	"github.com/garamsh/gagent/internal/message"
 )
 
-// OutboxDir is the subdirectory next to the memory file that holds
-// delivered outbound messages.
+// OutboxDir is the subdirectory next to the memory file the
+// message_send tool delivers into. Outbound delivery is that tool
+// writing a JSON file there (ADR 0007: outbound is a tool); this package
+// only names the directory and reads what the tool left.
 const OutboxDir = "outbox"
-
-// Outbox is the MVP message.Sink (ADR 0007): it "delivers" every outbound
-// message by appending a JSON file to <memory dir>/outbox/. Real channel
-// adapters replace it without touching the tool or the agent.
-// Outbox is safe for concurrent use.
-type Outbox struct {
-	dir string
-
-	mu  sync.Mutex
-	seq int
-}
 
 // DirFor returns the outbox directory that belongs to a memory file:
 // the subdirectory beside it. The message_send tool the platform spawns
@@ -36,34 +24,6 @@ type Outbox struct {
 // spelling the same join.
 func DirFor(memoryPath string) string {
 	return filepath.Join(filepath.Dir(memoryPath), OutboxDir)
-}
-
-// NewOutbox returns a sink writing to <dir>/outbox/.
-func NewOutbox(dir string) *Outbox {
-	return &Outbox{dir: filepath.Join(dir, OutboxDir)}
-}
-
-// Dir returns the directory the outbox writes to.
-func (o *Outbox) Dir() string { return o.dir }
-
-// Send implements message.Sink. Filenames are timestamp plus sequence so
-// delivery order is lexicographic and unique within the process.
-func (o *Outbox) Send(_ context.Context, msg message.Message) error {
-	payload, err := json.Marshal(msg)
-	if err != nil {
-		return fmt.Errorf("encode outbound message: %w", err)
-	}
-	o.mu.Lock()
-	o.seq++
-	name := fmt.Sprintf("%d-%06d.json", time.Now().UnixNano(), o.seq)
-	o.mu.Unlock()
-	if err := os.MkdirAll(o.dir, 0o755); err != nil {
-		return fmt.Errorf("create outbox %q: %w", o.dir, err)
-	}
-	if err := os.WriteFile(filepath.Join(o.dir, name), payload, 0o644); err != nil {
-		return fmt.Errorf("write outbound message: %w", err)
-	}
-	return nil
 }
 
 // outboxSnapshot returns the names of the files currently in dir. A

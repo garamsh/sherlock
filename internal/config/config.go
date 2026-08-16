@@ -73,11 +73,6 @@ type Config struct {
 	// TLS carries the gateway's mTLS material (ADR 0012). When unset,
 	// the gateway serves loopback binds only.
 	TLS TLSConfig `mapstructure:"tls"`
-	// Console selects the console sink: with URL set, every message_send
-	// is POSTed to the console endpoint over mTLS (docs/architecture/
-	// gateway.md). The file outbox stays the default and the
-	// delivery-failure fallback.
-	Console ConsoleConfig `mapstructure:"console"`
 	// Tools carries the operator's statement about the installed tool
 	// set (ADR 0017 §Decision: the installation list is the operator's,
 	// through config).
@@ -101,13 +96,6 @@ type ToolsConfig struct {
 	// after the section was written is refused until its hash joins it
 	// (ADR 0009 invariant 2).
 	Pins tool.ManifestPins `mapstructure:"pins"`
-}
-
-// ConsoleConfig selects the console sink. An empty URL keeps the file
-// outbox as the outbound sink.
-type ConsoleConfig struct {
-	// URL is the console endpoint outbound messages are POSTed to.
-	URL string `mapstructure:"url"`
 }
 
 // TLSConfig selects the gateway's mTLS material (ADR 0012): the server
@@ -192,7 +180,6 @@ func Resolve(fs *pflag.FlagSet) (Config, error) {
 	v.SetDefault("tls.cert", "")
 	v.SetDefault("tls.key", "")
 	v.SetDefault("tls.client-ca", "")
-	v.SetDefault("console.url", "")
 	if err := v.BindPFlags(fs); err != nil {
 		return Config{}, err
 	}

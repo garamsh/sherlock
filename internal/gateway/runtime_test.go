@@ -11,6 +11,7 @@ import (
 	"strings"
 	"sync"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -92,7 +93,7 @@ func TestFactory_CustomSinkReceivesOutboundMessages(t *testing.T) {
 
 func TestFactory_NilSinkWritesOutbox(t *testing.T) {
 	root := t.TempDir()
-	outbox := gateway.NewOutbox(filepath.Dir(memoryPath(root)))
+	outbox := &fileSink{dir: gateway.DirFor(memoryPath(root))}
 	factory := &gateway.Factory{
 		MemoryPath: memoryPath(root),
 		NewModel:   replyModel,
@@ -372,13 +373,44 @@ func (s stubClient) Call(_ context.Context, _ string, _ json.RawMessage) (json.R
 	return json.RawMessage(`{}`), s.err
 }
 
+// outboundSink is what a mouthClient delivers through. It is a test
+// seam and has no production counterpart: outbound delivery is the
+// message_send tool writing a JSON file into the outbox directory, so
+// nothing in internal/ implements this.
+type outboundSink interface {
+	Send(ctx context.Context, msg message.Message) error
+}
+
+// fileSink is the stand-in for that tool: it writes one JSON file per
+// message into dir, named so a reader sees delivery order.
+type fileSink struct {
+	dir string
+	mu  sync.Mutex
+	seq int
+}
+
+func (f *fileSink) Send(_ context.Context, msg message.Message) error {
+	payload, err := json.Marshal(msg)
+	if err != nil {
+		return err
+	}
+	f.mu.Lock()
+	f.seq++
+	name := fmt.Sprintf("%d-%06d.json", time.Now().UnixNano(), f.seq)
+	f.mu.Unlock()
+	if err := os.MkdirAll(f.dir, 0o755); err != nil {
+		return err
+	}
+	return os.WriteFile(filepath.Join(f.dir, name), payload, 0o644)
+}
+
 // mouthClient is a stubClient that forwards message_send calls to a
-// message.Sink. It mirrors the message_send tool's contract (in/out
+// sink. It mirrors the message_send tool's contract (in/out
 // schemas) so the test factories exercise the structural shape —
 // descriptor fetched over the wire — without spawning the binary.
 type mouthClient struct {
 	descriptors []tool.Descriptor
-	sink        message.Sink
+	sink        outboundSink
 }
 
 func (m mouthClient) List() []tool.Descriptor {
@@ -401,10 +433,10 @@ func (m mouthClient) Call(_ context.Context, name string, input json.RawMessage)
 	return json.RawMessage(`{"status":"queued"}`), nil
 }
 
-// mouthClientSink wires the gateway's default sink into a mouthClient so
-// the test factories can use the file outbox as the message_send delivery
-// endpoint without spawning the binary.
-func mouthClientSink(sink message.Sink) agent.ToolClient {
+// mouthClientSink wires a sink into a mouthClient so the test factories
+// can stand in for the message_send delivery endpoint without spawning
+// the binary.
+func mouthClientSink(sink outboundSink) agent.ToolClient {
 	return mouthClient{
 		descriptors: []tool.Descriptor{
 			{Name: "message_send", Description: "Queue an outbound message for delivery to a channel and target."},

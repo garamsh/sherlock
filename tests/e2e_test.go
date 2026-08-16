@@ -56,13 +56,13 @@ func mvpScript() *agent.ScriptedModel {
 // TestEndToEnd_MVPScenario drives the canned MVP scenario across the
 // real wired system in-process: HTTP ingress, memory store, the
 // message_send tool client (the canned scenario does not exercise
-// other tools), and the reply through the file outbox sink. No Docker
+// other tools), and the reply written into the file outbox. No Docker
 // daemon, no real gRPC, no fork+exec required.
 func TestEndToEnd_MVPScenario(t *testing.T) {
 	root := t.TempDir()
 	agentID := e2eAgentID
 
-	outbox := gateway.NewOutbox(root)
+	outbox := newOutboxWriter(root)
 	factory := &gateway.Factory{
 		MemoryPath: filepath.Join(root, "memory.db"),
 		NewModel: func(string) agent.Model {

@@ -11,7 +11,6 @@ import (
 	agentmemory "github.com/garamsh/gagent/internal/agent/memory"
 	"github.com/garamsh/gagent/internal/memory"
 	"github.com/garamsh/gagent/internal/memory/sqlite"
-	"github.com/garamsh/gagent/internal/message"
 	"github.com/garamsh/gagent/internal/tool"
 )
 
@@ -42,9 +41,10 @@ type Runtime struct {
 // Factory assembles the one agent's runtime from the agent-container
 // modules (ADR 0017): the SQLite memory store at MemoryPath, the
 // platform tool client (the per-operator tool list), and the rolling
-// session. The runtime no longer wires an outbound sink: the
-// message_send binary the platform client spawns writes directly to
-// the operator-configured outbox dir.
+// session. It wires no outbound delivery, because there is none to
+// wire: the message_send binary the platform client spawns writes each
+// message as a JSON file into the outbox directory it is handed, and
+// that write is the delivery (ADR 0007).
 type Factory struct {
 	// MemoryPath is the agent's SQLite memory file, created on first
 	// use.
@@ -139,6 +139,3 @@ func (nullClient) List() []tool.Descriptor { return nil }
 func (nullClient) Call(_ context.Context, name string, _ json.RawMessage) (json.RawMessage, error) {
 	return nil, errors.New("agent: no tool client configured: " + name)
 }
-
-// keep the message package import live for the test wiring helpers.
-var _ = message.Sink(nil)

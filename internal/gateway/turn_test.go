@@ -130,11 +130,12 @@ func TestTurn_MissingOutboxIsNotAFailure(t *testing.T) {
 	assert.Contains(t, out.String(), "nothing to send")
 }
 
-// TestDirFor pins the one definition of the outbox path: the writer
-// joins OutboxDir onto a directory, and this joins it onto the memory
-// file's directory, so a caller that has the memory path and a caller
-// that has the parent reach the same place.
+// TestDirFor pins the one definition of the outbox path. It is computed
+// here and nowhere else: the value reaches the message_send tool as
+// GAGENT_OUTBOX_DIR and this package reads back what the tool wrote
+// there, so writer and reader agree by naming one function rather than
+// by both spelling the same join.
 func TestDirFor(t *testing.T) {
 	assert.Equal(t, filepath.Join("data", "outbox"), gateway.DirFor("data/memory.db"))
-	assert.Equal(t, gateway.NewOutbox("data").Dir(), gateway.DirFor("data/memory.db"))
+	assert.Equal(t, filepath.Join("data", gateway.OutboxDir), gateway.DirFor("data/memory.db"))
 }

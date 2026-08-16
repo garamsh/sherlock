@@ -37,15 +37,11 @@ The shape the system is partitioned into. Bootstrap keeps the one the project us
 
 ## Stack-specific
 
-These apply only when the project uses that stack. The bootstrap process (root `README.md` §Bootstrap) keeps the relevant ones and deletes the rest, removing the rows below for the files it deletes.
+These apply only when the project uses that stack. The bootstrap process keeps the relevant ones and deletes the rest, removing the rows below for the files it deletes.
 
 | File | Governs |
 |---|---|
-| `stack-fastapi.md` | FastAPI and Pydantic v2 services |
 | `stack-go.md` | Go modules and services |
-| `stack-nestjs.md` | NestJS services |
-| `stack-nextjs.md` | Next.js App Router applications |
-| `stack-tailwind.md` | Tailwind CSS styling |
 
 A stack file states the concrete form of what a stack-neutral file governs: the test client and file placement behind `testing.md`, the comment syntax behind `code-comments.md`, the commands behind an entry-point name in `ci.md`. It never restates the rule itself. This table and the one above are where that split is recorded — the files do not point at each other.
 

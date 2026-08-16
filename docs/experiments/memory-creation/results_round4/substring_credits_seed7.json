@@ -1,0 +1,86 @@
+{
+  "seed": 7,
+  "structures": {
+    "B9": {
+      "structure": "B9-decider-neighbors-wide",
+      "substring_only_credits": 2,
+      "credits": [
+        {
+          "family": "corrected",
+          "subject": "Vera",
+          "value": "Zed",
+          "expected": "present",
+          "rows": [
+            "Vera has since standardized on Python."
+          ]
+        },
+        {
+          "family": "corrected",
+          "subject": "Maria",
+          "value": "fish",
+          "expected": "present",
+          "rows": [
+            "Maria is allergic to shellfish."
+          ]
+        }
+      ]
+    },
+    "B14": {
+      "structure": "B14-key-upsert-plural",
+      "substring_only_credits": 2,
+      "credits": [
+        {
+          "family": "corrected",
+          "subject": "Maria",
+          "value": "fish",
+          "expected": "present",
+          "rows": [
+            "Maria is allergic to shellfish."
+          ]
+        },
+        {
+          "family": "corrected",
+          "subject": "Yuki",
+          "value": "tea",
+          "expected": "absent",
+          "rows": [
+            "These days, Yuki goes for coffee instead."
+          ]
+        }
+      ]
+    },
+    "B17": {
+      "structure": "B17-key-upsert-question-key",
+      "substring_only_credits": 3,
+      "credits": [
+        {
+          "family": "corrected",
+          "subject": "Vera",
+          "value": "Zed",
+          "expected": "present",
+          "rows": [
+            "Vera has since standardized on Python."
+          ]
+        },
+        {
+          "family": "corrected",
+          "subject": "Maria",
+          "value": "fish",
+          "expected": "present",
+          "rows": [
+            "Maria is allergic to shellfish."
+          ]
+        },
+        {
+          "family": "corrected",
+          "subject": "Yuki",
+          "value": "tea",
+          "expected": "absent",
+          "rows": [
+            "These days Yuki goes for coffee instead."
+          ]
+        }
+      ]
+    }
+  }
+}

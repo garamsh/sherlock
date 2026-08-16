@@ -214,10 +214,14 @@ func TestProcessExecutor_SingleAccountRunsAsOwnUID(t *testing.T) {
 
 	res, err := exec.Run(context.Background(), shell.Request{Command: "echo -n $(id -u):$(id -g)"})
 	require.NoError(t, err)
+	// The child's own output is in the message because the two ways this
+	// assertion fails look identical without it: a child that ran as the
+	// wrong account, and a child that never ran at all (issue #522).
 	assert.Equal(t,
 		fmt.Sprintf("%d:%d", os.Geteuid(), os.Getegid()), res.Stdout,
-		"the child runs as the agent's own account in single-account mode")
-	assert.Equal(t, 0, res.ExitCode)
+		"the child runs as the agent's own account in single-account mode (exit=%d, stderr=%q)",
+		res.ExitCode, res.Stderr)
+	assert.Equal(t, 0, res.ExitCode, "stderr: %s", res.Stderr)
 }
 
 func TestProcessExecutor_DefaultTimeoutRejectsZero(t *testing.T) {

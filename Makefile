@@ -36,9 +36,10 @@ smoke-local:
 
 proto:
 	buf generate
-# Regenerating a committed tree is a no-op; a diff here is a stub the proto moved
-# past. Committing the regenerated stubs clears it.
-	git diff --exit-code
+# Scoped to the generated stubs, so unrelated uncommitted work does not fail the
+# target, and read from status rather than diff, so a stub that appeared counts as
+# one that moved. A stub named here is not committed; committing it clears this.
+	@test -z "$$(git status --porcelain -- '*.pb.go')" || { git status --porcelain -- '*.pb.go'; exit 1; }
 	buf lint
 
 hooks:

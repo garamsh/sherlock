@@ -5,7 +5,7 @@
 # the gRPC data plane (files and exec) in this container's network
 # namespace, so the default loopback workspace-addr reaches it.
 # The agent executes nothing itself: GAGENT_EXEC_UID is set on the
-# workspace container, where shell_exec children run as uid 1001.
+# workspace container, where shell_exec children run as uid 10001.
 # The container publishes the port beyond its own loopback, so the gateway
 # requires mTLS (ADR 0013): throwaway certs live in ./tls (see README.md).
 addr: ":8080"

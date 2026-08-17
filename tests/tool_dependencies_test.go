@@ -51,8 +51,14 @@ func TestToolDependencies_AreTheDeclaredOnes(t *testing.T) {
 				"internal/workspace/shell",
 			},
 		},
-		// A tool that needs no workspace links none of it.
-		{tool: "message_send", want: []string{}},
+		// message_send links internal/message and nothing else: that
+		// package is the delivered record's one declaration, which the
+		// tool marshals and the outbox reader decodes (#561). It is a
+		// leaf of type declarations, so importing it drags in no
+		// backend — the property #525 is about internal/workspace
+		// lacking.
+		{tool: "message_send", want: []string{"internal/message"}},
+		// A tool that needs nothing of the platform links nothing.
 		{tool: "github", want: []string{}},
 	} {
 		t.Run(tc.tool, func(t *testing.T) {

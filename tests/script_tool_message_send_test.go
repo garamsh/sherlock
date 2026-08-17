@@ -17,13 +17,16 @@ import (
 // TestScriptTool_MessageSend_Integration drops the message_send tool
 // into a tmpdir, points GAGENT_OUTBOX_DIR at a tmpdir, and asserts
 // the tool writes the outbound message to the outbox and returns
-// the queued status.
+// the queued status. The delivered file carries the sending agent
+// (ADR 0016), which the tool takes from its environment rather than
+// from the call — the model never states who it is.
 func TestScriptTool_MessageSend_Integration(t *testing.T) {
 	root := t.TempDir()
 	hash := installTool(t, root, "message_send")
 
 	outbox := t.TempDir()
 	t.Setenv("GAGENT_OUTBOX_DIR", outbox)
+	t.Setenv("GAGENT_AGENT_ID", "agent-7")
 
 	reg, err := tool.NewRegistry(tool.RegistryOptions{
 		Dir:      root,
@@ -51,6 +54,8 @@ func TestScriptTool_MessageSend_Integration(t *testing.T) {
 	assert.Equal(t, "http", msg["channel"])
 	assert.Equal(t, "alice", msg["target"])
 	assert.Equal(t, "42", msg["content"])
+	assert.Equal(t, "agent-7", msg["agent_id"],
+		"a reader of the outbox knows which agent sent the file")
 }
 
 // TestScriptTool_MessageSend_MissingOutboxDir covers the error path
@@ -86,6 +91,7 @@ func TestScriptTool_MessageSend_InputRejected(t *testing.T) {
 	hash := installTool(t, root, "message_send")
 	outbox := t.TempDir()
 	t.Setenv("GAGENT_OUTBOX_DIR", outbox)
+	t.Setenv("GAGENT_AGENT_ID", "agent-7")
 
 	reg, err := tool.NewRegistry(tool.RegistryOptions{
 		Dir:      root,

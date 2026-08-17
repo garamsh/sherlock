@@ -74,7 +74,7 @@ func addAgentFlags(fs *pflag.FlagSet) {
 // registry both agent modes share. The agent constructs no tool-shaped
 // code at compile time (ADR 0017 §Decision, ADR 0009 §Decision); the
 // script-tool registry (Phase 2) is the lifecycle owner for tool calls.
-func newAgentFactory(ctx context.Context, cfg config.Config, ego string, logger *slog.Logger) (*gateway.Factory, *tool.Registry, error) {
+func newAgentFactory(ctx context.Context, cfg config.Config, agentID, ego string, logger *slog.Logger) (*gateway.Factory, *tool.Registry, error) {
 	newModel, err := newModelFunc(cfg.Model)
 	if err != nil {
 		return nil, nil, err
@@ -87,7 +87,7 @@ func newAgentFactory(ctx context.Context, cfg config.Config, ego string, logger 
 	if err != nil {
 		return nil, nil, err
 	}
-	registry, err := buildToolRegistry(cfg, logger)
+	registry, err := buildToolRegistry(cfg, agentID, logger)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -113,8 +113,8 @@ func newAgentFactory(ctx context.Context, cfg config.Config, ego string, logger 
 // environment are published before the registry loads, because the
 // runner hands the platform's environment to every tool it spawns
 // (tool.SetSpawnEnv).
-func buildToolRegistry(cfg config.Config, logger *slog.Logger) (*tool.Registry, error) {
-	if err := tool.SetSpawnEnv(cfg.WorkspaceAddr, gateway.DirFor(cfg.MemoryPath)); err != nil {
+func buildToolRegistry(cfg config.Config, agentID string, logger *slog.Logger) (*tool.Registry, error) {
+	if err := tool.SetSpawnEnv(cfg.WorkspaceAddr, gateway.DirFor(cfg.MemoryPath), agentID); err != nil {
 		return nil, err
 	}
 	registry, err := tool.NewRegistry(tool.RegistryOptions{
@@ -138,7 +138,7 @@ func runAgentTurn(ctx context.Context, cfg config.Config, agentID, msg, ego stri
 	logger := slog.New(slog.NewJSONHandler(os.Stderr, nil))
 	slog.SetDefault(logger)
 
-	factory, registry, err := newAgentFactory(ctx, cfg, ego, logger)
+	factory, registry, err := newAgentFactory(ctx, cfg, agentID, ego, logger)
 	if err != nil {
 		return err
 	}
@@ -172,7 +172,7 @@ func serveAgent(ctx context.Context, cfg config.Config, agentID, ego string) err
 		return fmt.Errorf("addr %q is not a loopback bind: serving beyond localhost requires the tls: config section (ADR 0012)", cfg.Addr)
 	}
 
-	factory, registry, err := newAgentFactory(ctx, cfg, ego, logger)
+	factory, registry, err := newAgentFactory(ctx, cfg, agentID, ego, logger)
 	if err != nil {
 		return err
 	}

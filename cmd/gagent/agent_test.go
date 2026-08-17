@@ -59,7 +59,7 @@ func TestBuildToolRegistry_DriftPinRefusesMutatedManifest(t *testing.T) {
 	cfg := config.Config{MemoryPath: filepath.Join(dir, "memory.db"), ToolsDir: dir}
 	cfg.Tools.Pins = tool.ManifestPins{"message_send": hash}
 
-	registry, err := buildToolRegistry(cfg, slog.New(slog.DiscardHandler))
+	registry, err := buildToolRegistry(cfg, "test-agent", slog.New(slog.DiscardHandler))
 	require.NoError(t, err, "the unmutated manifest matches its pin")
 	require.NoError(t, registry.Close())
 
@@ -77,7 +77,7 @@ func TestBuildToolRegistry_DriftPinRefusesMutatedManifest(t *testing.T) {
 	require.NoError(t, os.WriteFile(
 		filepath.Join(dir, "message_send", "manifest.json"), mutated, 0o644))
 
-	_, err = buildToolRegistry(cfg, slog.New(slog.DiscardHandler))
+	_, err = buildToolRegistry(cfg, "test-agent", slog.New(slog.DiscardHandler))
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "descriptor drift")
 }
@@ -101,7 +101,7 @@ func TestBuildToolRegistry_UnpinnedToolRefused(t *testing.T) {
 	cfg := config.Config{MemoryPath: filepath.Join(dir, "memory.db"), ToolsDir: dir}
 	cfg.Tools.Pins = tool.ManifestPins{"message_send": hash}
 
-	_, err := buildToolRegistry(cfg, slog.New(slog.DiscardHandler))
+	_, err := buildToolRegistry(cfg, "test-agent", slog.New(slog.DiscardHandler))
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), `unpinned tool "exfiltrate"`)
 }
@@ -114,7 +114,7 @@ func TestBuildToolRegistry_WithoutPinsLoads(t *testing.T) {
 	dir, _ := pinnedToolTree(t)
 	cfg := config.Config{MemoryPath: filepath.Join(dir, "memory.db"), ToolsDir: dir}
 
-	registry, err := buildToolRegistry(cfg, slog.New(slog.DiscardHandler))
+	registry, err := buildToolRegistry(cfg, "test-agent", slog.New(slog.DiscardHandler))
 	require.NoError(t, err)
 	t.Cleanup(func() { _ = registry.Close() })
 	assert.Len(t, registry.List(), 1)

@@ -183,6 +183,8 @@ Registry: **ECR, `ap-northeast-2`, account `486152169996`.** Two repositories, b
 
 **Tag scheme, decided and not yet built**: a `v`-prefixed git tag pushed to GitHub is to trigger the release, which will push the image tagged without the `v` — `v0.0.1` in git becoming `0.0.1` in ECR.
 
+**Base images are pinned by digest.** Every `FROM` in `build/` names `tag@sha256:...`, which is what `docs/convention/ci.md` §Verify a pinned dependency before adopting it requires of a container image; the tag stays for readability and the digest is what resolves. Two builds of one commit therefore pull the same base bytes. What moves those digests is `.github/dependabot.yml`, and it covers less than the whole job — see §Open questions.
+
 **The release workflow and its IAM role do not exist yet.** Nothing pushes to these repositories today, and both were empty when this was written. `make build-images` builds both images locally and pushes nothing; the `docker` job in `.github/workflows/ci.yml` builds them as a smoke check and pushes nothing. That workflow triggers on pull requests and pushes to `main` and carries no tag filter, so pushing `v0.0.1` today runs nothing at all. An operator can rely on the names and the tag rule; they cannot yet pull an image.
 
 ## Load-bearing facts
@@ -199,6 +201,7 @@ Everything else in this document is **descriptive**: true, useful, and free to c
 
 ## Open questions
 
+- **What moves a base-image digest when the tag does not.** A digest receives no security patch; a tag does, and pinning gave that up deliberately. `.github/dependabot.yml` raises a pull request when a base image's tag moves to a new version, which is the covered half. The other half is not covered: Dependabot's docker ecosystem offers version updates and no security-update channel, and a digest refresh under an *unchanged* tag is conditional rather than promised. So a `debian:12-slim` republished with a CVE fix under the same tag may raise nothing, and the fallback is re-resolving the digest by hand. Determined on 2026-08-17 from GitHub's supported-ecosystems table and `dependabot-core`'s `docker/lib/dependabot/docker/update_checker.rb`; re-check it before relying on the covered half.
 - **Who refreshes the ECR pull credential on-prem.** Relayed to us and unverified on both sides: the deployment target is an on-premises Talos cluster, ECR authorization tokens expire after 12 hours, and with no IRSA path on-prem the refresher is unassigned. Not this repository's to solve, but an image URI without a way for the cluster to authenticate is half an instruction.
 - **Agent-to-sidecar authentication.** The workspace's gRPC listener ships pod-local and unauthenticated, which is what forces the loopback-only rule above (`security.md`, `environment.md`).
 - **Whether an accepted message survives a restart.** The gateway's 202 says the message is queued in this process and nothing more (`gateway.md`, #492); an operator draining a pod cannot currently know what a restart drops.

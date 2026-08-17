@@ -1,0 +1,13 @@
+# Moves the base-image digests in build/*.Dockerfile, which ci.md:50
+# requires to be digests and which therefore do not update themselves.
+#
+# This covers the tag-moved case only. Dependabot's docker ecosystem has
+# no security-update channel, and a digest refresh under an unchanged tag
+# is not guaranteed, so a republished base may raise no pull request at
+# all; docs/architecture/deployment.md §Images and tags carries the gap.
+version: 2
+updates:
+  - package-ecosystem: "docker"
+    directory: "/build"
+    schedule:
+      interval: "weekly"

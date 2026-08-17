@@ -4,7 +4,7 @@
 # The build context is the repository root — the build stage copies the
 # module — and `make build-images` is the entry point that builds both.
 
-FROM golang:1.26 AS build
+FROM golang:1.26@sha256:0d1d3a794be25f809dd2cb3160d8c73276c4056a9f8242a138e908ddeee7b6b6 AS build
 WORKDIR /src
 
 # Layer caching: resolve dependencies before copying source.
@@ -26,7 +26,7 @@ RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/gagent ./cmd/gagen
 # sub-processes) and the privilege drop made real: a privileged
 # workspace chowns its data directory to the configured exec-uid at
 # startup and drops Exec children to it (ADR 0008).
-FROM debian:12-slim AS workspace
+FROM debian:12-slim@sha256:abd67ffcfa541b485a3dff59865ab629aa048a6c613e639d36e7456b0b229241 AS workspace
 ARG REVISION=unknown
 LABEL org.opencontainers.image.title="gagent-workspace" \
       org.opencontainers.image.source="https://github.com/garamsh/gagent" \

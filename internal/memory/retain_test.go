@@ -59,13 +59,13 @@ func TestRetentionWindow_RecordAndCodeAgree(t *testing.T) {
 func TestRetentionWindow_IsWallClockFromTheTimestamp(t *testing.T) {
 	clock := now
 	svc, store, _ := newServiceWithStore(t, memory.WithClock(func() time.Time { return clock }))
-	mid, err := store.Insert(t.Context(), memory.Memory{
+	mid, _, err := store.Write(t.Context(), memory.Memory{
 		Address:         memory.Address{Subject: "Alma", Question: "what was asked"},
 		Value:           "the printer again",
 		ImportanceScore: (memory.RetentionKeepSalience + memory.RetentionDropSalience) / 2,
 		Timestamp:       now,
 		Source:          "test",
-	})
+	}, nil, now)
 	require.NoError(t, err)
 
 	// A hundred retention passes inside the window drop nothing: the

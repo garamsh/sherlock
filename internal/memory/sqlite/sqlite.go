@@ -109,10 +109,16 @@ func holdsSentences(db *sql.DB) (bool, error) {
 // Close implements memory.Store.
 func (s *Store) Close() error { return s.db.Close() }
 
-// Insert implements memory.Store. A value already active at the address
+// Write implements memory.Store. A value already active at the address
 // is not stored twice: the write moves its timestamp and returns the row
 // that was already there, so restating a fact holds it once.
-func (s *Store) Insert(ctx context.Context, m memory.Memory) (int64, error) {
+func (s *Store) Write(ctx context.Context, m memory.Memory, supersede []int64, at time.Time) (int64, []int64, error) {
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return 0, nil, fmt.Errorf("begin write: %w", err)
+	}
+	defer tx.Rollback()
+
 	// RETURNING rather than LastInsertId, which reports the connection's
 	// last inserted rowid and so reports a stale row when the upsert
 	// takes its update branch.
@@ -121,7 +127,7 @@ func (s *Store) Insert(ctx context.Context, m memory.Memory) (int64, error) {
 	// after a replacement wrote it keeps the correction's tier, which is
 	// what ADR 0006 asks of a correction's salience.
 	var id int64
-	err := s.db.QueryRowContext(ctx,
+	err = tx.QueryRowContext(ctx,
 		`INSERT INTO memories_active
 			(subject, question, restriction, value, importance_score, timestamp, source)
 		 VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -133,9 +139,29 @@ func (s *Store) Insert(ctx context.Context, m memory.Memory) (int64, error) {
 		m.Address.Subject, m.Address.Question, m.Address.Restriction, m.Value,
 		m.ImportanceScore, m.Timestamp.Unix(), m.Source).Scan(&id)
 	if err != nil {
-		return 0, fmt.Errorf("insert memory: %w", err)
+		return 0, nil, fmt.Errorf("write memory: %w", err)
 	}
-	return id, nil
+
+	archived := make([]int64, 0, len(supersede))
+	for _, old := range supersede {
+		// The row just written is never archived against itself, which
+		// is what a replacement restating the value it replaces asks
+		// for: the value stays, at the new timestamp.
+		if old == id {
+			continue
+		}
+		if err := archiveTx(ctx, tx, old, id, at); err != nil {
+			return 0, nil, err
+		}
+		archived = append(archived, old)
+	}
+	if err := tx.Commit(); err != nil {
+		return 0, nil, fmt.Errorf("commit write: %w", err)
+	}
+	if len(archived) == 0 {
+		return id, nil, nil
+	}
+	return id, archived, nil
 }
 
 // At implements memory.Store.
@@ -192,13 +218,27 @@ func (s *Store) Archive(ctx context.Context, id int64, supersededBy int64, valid
 		return fmt.Errorf("begin archive %d: %w", id, err)
 	}
 	defer tx.Rollback()
+	if err := archiveTx(ctx, tx, id, supersededBy, validTo); err != nil {
+		return err
+	}
+	return tx.Commit()
+}
+
+// archiveTx moves one active row to the archive inside tx. It is shared
+// by Archive and by the supersessions Write performs, so a superseded
+// row and a retired one reach the archive by the same statements.
+func archiveTx(ctx context.Context, tx *sql.Tx, id int64, supersededBy int64, validTo time.Time) error {
 	res, err := tx.ExecContext(ctx,
 		`INSERT INTO memories_archive (`+columns+`)
 		 SELECT `+columns+` FROM memories_active WHERE id = ?`, id)
 	if err != nil {
 		return fmt.Errorf("copy to archive %d: %w", id, err)
 	}
-	if n, _ := res.RowsAffected(); n == 0 {
+	n, err := res.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("copy to archive %d: %w", id, err)
+	}
+	if n == 0 {
 		return fmt.Errorf("id %d: %w", id, memory.ErrNotFound)
 	}
 	if _, err := tx.ExecContext(ctx,
@@ -210,7 +250,7 @@ func (s *Store) Archive(ctx context.Context, id int64, supersededBy int64, valid
 		`DELETE FROM memories_active WHERE id = ?`, id); err != nil {
 		return fmt.Errorf("remove active %d: %w", id, err)
 	}
-	return tx.Commit()
+	return nil
 }
 
 // RecordAccess implements memory.Store.

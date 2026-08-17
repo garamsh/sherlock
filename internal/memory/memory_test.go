@@ -282,6 +282,19 @@ func TestStore_EvictsLowestScoreBeyondCapacity(t *testing.T) {
 		"the lowest-scoring memory is the one that left")
 }
 
+// A negative capacity is clamped rather than read as a cap the eviction
+// can slice past.
+func TestStore_NegativeCapacityEvictsEverythingRatherThanPanicking(t *testing.T) {
+	svc := newService(t,
+		memory.WithClock(func() time.Time { return now }),
+		memory.WithCapacity(-1))
+
+	res := write(t, svc, almaProject, "amber-quarry", memory.OpJoin)
+
+	assert.Equal(t, []int64{res.ID}, res.EvictedIDs)
+	assert.Empty(t, valuesAt(t, svc, almaProject))
+}
+
 func TestService_RejectsInvalidInput(t *testing.T) {
 	svc := newService(t)
 	cases := map[string]memory.StoreInput{

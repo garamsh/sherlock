@@ -75,8 +75,13 @@ func TestCompact_DoesNotLeaveAToolMessageWithoutItsCall(t *testing.T) {
 		"the cut moves past the tool messages it would have orphaned")
 }
 
-// The session's own first system message is the composed instructions,
-// not history, so compaction drops it before counting.
+// TestCompact_DropsTheLeadingSystemMessage records what compaction does
+// with the session's first system message, which is the composed ego and
+// platform contract rather than history: it drops it before counting,
+// and nothing puts it back — internal/agent re-injects the instructions
+// only into an empty history. This test states the behaviour rather than
+// endorsing it; whether the instructions should survive a compaction is
+// not #582's to decide and is raised on its pull request.
 func TestCompact_DropsTheLeadingSystemMessage(t *testing.T) {
 	h := append([]agent.Message{{Role: agent.RoleSystem, Content: "instructions"}}, history(4)...)
 	compactor := agentmemory.Compactor{MaxHistoryMessages: 10}

@@ -38,8 +38,7 @@ See §0 for the banned-name list.
 
 ### Layout A — small service (default)
 
-- `cmd/<binary>/main.go` — thin entry point; constructs concrete
-  types.
+- `cmd/<binary>/main.go` — the binary's entry point.
 - `internal/<domain>/<domain>.go` — the aggregate: domain types, DTOs
   and sentinel errors (`User`, `CreateUserInput`, `ErrUserNotFound`).
 - `internal/<domain>/service.go` — the contract: `type Service
@@ -69,10 +68,9 @@ See §0 for the banned-name list.
 **Single file vs package** for an impl:
 
 - **Single file** (`postgres.go`, `memory.go`) when impl ≤ ~300 LoC
-  and has no private helpers worth isolating. Filename = vendor.
+  and has no private helpers worth isolating.
 - **Package** (`postgres/`, `memory/`) when impl > ~300 LoC or owns
-  private helpers / connection-pool / per-SQL constants. Folder name
-  = vendor.
+  private helpers / connection-pool / per-SQL constants.
 
 ### Layout B — domain-rich service (5k–30k LoC)
 
@@ -107,8 +105,7 @@ past ~300 LoC.
 A root-level file exists when the module has that concern, and it is
 named after the concern:
 
-- `errors.go` — sentinels shared across domains (§4). Domain
-  sentinels stay in `internal/<domain>/<domain>.go`.
+- `errors.go` — sentinels shared across domains (§4).
 - `config.go` — the module's configuration type and its loading.
 - `logger.go` — only when logger setup goes past `slog.Default()`
   (§5). A project that calls `slog.Default()` directly has no
@@ -173,17 +170,24 @@ file declares and which depends.
 
 ## 4. Error handling
 
-- Errors are values. Use `error` interface, never panics in libraries.
-- Wrap: `fmt.Errorf("op x: %w", err)` or `errors.Join`.
-- Sentinels: `var ErrNotFound = errors.New("not found")` +
-  `errors.Is(err, ErrNotFound)`. Domain sentinels in `<domain>.go`
+- **An adapter translates before it returns.** `postgres.go` turns
+  `pgx.ErrNoRows` into `ErrUserNotFound`; the driver's error does not
+  leave the file that imports the driver. The errors an
+  implementation returns are part of the interface declared in
+  `service.go`, so one that leaks its library's errors is not one
+  `memory.go` can stand in for.
+- **Sentinel** when the caller branches on which failure and the
+  failure carries no data: `var ErrNotFound = errors.New("not
+  found")`, read with `errors.Is`. Domain sentinels in `<domain>.go`
   (`internal/user/user.go` for `ErrUserNotFound`); shared sentinels
   in `errors.go`.
-- Custom error types: implement `Error()` and possibly
-  `Is(target error) bool` / `Unwrap() error`.
-- Don't log and return — pick one (usually return; let the caller
-  decide to log).
-- Wrap at boundaries (network, IO, external calls), not on every line.
+- **Typed** when the caller needs data out of the failure: a struct with `Error()`, read with `errors.As`, and `Is(target error) bool` or `Unwrap() error` where it wraps another.
+- **Opaque** when the caller has no business branching. A sentinel or a type a caller can match on is API you have to keep working; where nothing needs to branch, publish neither.
+- **`%w` publishes the error it wraps.** A caller can reach through it with `errors.Is` and `errors.As`, so replacing what is inside breaks them later. Wrap with `%w` where a caller is meant to branch on the wrapped error, `%v` where it is not, `errors.Join` where the caller needs all of several.
+- Add context at a boundary — network, IO, an external call — not on every line: `fmt.Errorf("create user: %w", err)`.
+- **Each transport translates in one place.** Whatever implements a transport owns the mapping from domain error to that transport's codes — `httpserver.go` answering 404 to `ErrUserNotFound`, or the type satisfying a generated gRPC service — and nothing else names one. A second transport gets its own translator, not a share of the first. A domain outlives the transport it is served over, and a mapping spread across handlers gives one sentinel several codes.
+- **Don't log and return.** Return, and let the outermost boundary log once: the transport translator where the module has one, `main` where it has none. Logging on the way up prints one failure several times, some lines carrying the request's `trace_id` and some not.
+- **A panic does not cross a package boundary.** A violated invariant may panic — recovering from one hides the bug that caused it — but that ends the program rather than answering the caller. An HTTP server still holds a recover middleware: `net/http` recovers a handler's panic and logs the stack itself, but aborts the response instead of answering — the client gets a closed connection, or an HTTP/2 `RST_STREAM` — so the middleware exists to reply 500.
 
 ## 5. Logging & observability
 
@@ -227,7 +231,9 @@ project says otherwise).
   unit under test through its exported API. **Default to this.**
 - **Internal tests** (`package user`): same directory and package as
   the code under test. Use only when you genuinely need a white-box
-  seam (uncommon).
+  seam (uncommon), or when the package cannot be imported — `package
+  main` cannot, so a test of one is internal by necessity rather than
+  by choice.
 - **`tests/` at module root:** integration / E2E tests that wire
   multiple domains. Separate binary.
 - **In-process integration test client:** `httptest.NewServer`.
@@ -285,6 +291,12 @@ configured.
 These are the commands that sit behind the project's entry-point
 names.
 
+`go test` prints only `ok <pkg>` for a package that passes and discards
+the rest of its output; the full output appears on failure, or under
+`-v`. So anything a test binary prints about what it covered is missing
+from exactly the run that needed it. An entry point that has something
+to report prints it itself, before invoking `go test`.
+
 | Task | Command |
 |------|---------|
 | Build | `go build ./...` |
@@ -296,6 +308,15 @@ names.
 | Module tidy | `go mod tidy` |
 | Lint (if configured) | `golangci-lint run` |
 | Coverage | `go test -cover ./...` |
+
+Every tool the module invokes is built with a toolchain at least the
+module's `go` directive. `go install tool@version` and `go run
+tool@version` take the toolchain from the tool's own `go.mod`, not from
+this module, so a tool whose directive is older yields a binary that
+refuses to load the module's packages, fatally and at package-load time
+(#513). Set that floor once for the module rather than per tool:
+`GOTOOLCHAIN` with an `+auto` suffix sets a minimum without stopping a
+tool that needs more.
 
 A task runner (Taskfile, Mage, Make) wraps these under the entry-point
 names; the underlying go commands stay the same.

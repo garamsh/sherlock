@@ -239,7 +239,11 @@ project says otherwise).
 
 Within `internal/<domain>/`:
 
-- Tests for `<group>.go` live in `<group>_test.go`.
+- Tests for `<group>.go` live in `<group>_test.go`, whichever package
+  they declare. Where one group needs both an external and an internal
+  file, the plain name stays with the external one and the internal one
+  is `<group>_internal_test.go`. A package whose only test file for a
+  group is internal keeps the plain name.
 - Table-driven subtests: `tests := []struct{ name string; ... }{...}`,
   run through `t.Run("case name", ...)`.
 - Test names: `TestFunctionName` or `TestFunctionName_Scenario`.

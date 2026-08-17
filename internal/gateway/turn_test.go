@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
+	"io"
 	"log/slog"
 	"os"
 	"path/filepath"
@@ -90,6 +92,38 @@ func TestTurn_EchoesResponseAndDeliveredMessages(t *testing.T) {
 	assert.Contains(t, out.String(), "[http -> sender] 42")
 	assert.NotContains(t, out.String(), "from an earlier turn",
 		"only messages this turn delivered are echoed")
+}
+
+// assertStoreCheckpointed fails unless the SQLite handle at path was
+// closed. The store opens in WAL mode, so a live handle keeps `-wal`
+// and `-shm` beside the database and the last checkpoint never runs;
+// a clean close checkpoints and removes both. The memory file outlives
+// the pod (`deployment.md`), so what is left on disk is what the next
+// agent starts from — which is why this asserts on the directory rather
+// than on a call having been made.
+func assertStoreCheckpointed(t *testing.T, path string) {
+	t.Helper()
+	for _, suffix := range []string{"-wal", "-shm"} {
+		_, err := os.Stat(path + suffix)
+		assert.True(t, errors.Is(err, os.ErrNotExist),
+			"%s%s must be checkpointed away by the store's close, got err=%v",
+			filepath.Base(path), suffix, err)
+	}
+}
+
+// TestTurn_ClosesTheStore pins the one-shot path: `gagent agent
+// --message` opens a store per run, so a run that leaks the handle
+// leaves the WAL sidecars behind on every invocation (#568).
+func TestTurn_ClosesTheStore(t *testing.T) {
+	factory, memoryPath := turnFactory(t,
+		agent.ScriptedStep{Content: `{"reply":"done","memory_ops":[]}`})
+
+	require.NoError(t, gateway.Turn{
+		Factory: factory, AgentID: "a1", OutboxDir: gateway.DirFor(memoryPath),
+		Out: io.Discard, Logger: slog.New(slog.DiscardHandler),
+	}.Run(context.Background(), "hello"))
+
+	assertStoreCheckpointed(t, memoryPath)
 }
 
 // TestTurn_ReportsFailedToolCalls holds the exit-status contract: a

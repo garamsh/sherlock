@@ -1,13 +1,21 @@
-# Moves the base-image digests in build/*.Dockerfile, which ci.md:50
-# requires to be digests and which therefore do not update themselves.
+# Moves the pins ci.md §Verify a pinned dependency requires a mover for:
+# the base-image digests in build/*.Dockerfile, and the action SHAs in
+# .github/workflows/.
 #
-# This covers the tag-moved case only. Dependabot's docker ecosystem has
-# no security-update channel, and a digest refresh under an unchanged tag
-# is not guaranteed, so a republished base may raise no pull request at
-# all; docs/architecture/deployment.md §Images and tags carries the gap.
+# The docker entry covers the tag-moved case only. Dependabot's docker
+# ecosystem has no security-update channel, and a digest refresh under an
+# unchanged tag is not guaranteed, so a republished base may raise no
+# pull request at all; docs/architecture/deployment.md §Images and tags
+# carries the gap.
 version: 2
 updates:
   - package-ecosystem: "docker"
     directory: "/build"
+    schedule:
+      interval: "weekly"
+  # "/" is where the github-actions ecosystem looks; the workflows under
+  # .github/workflows/ are what it reads.
+  - package-ecosystem: "github-actions"
+    directory: "/"
     schedule:
       interval: "weekly"

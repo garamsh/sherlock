@@ -49,6 +49,8 @@ Pre-trained recollection is a starting point, not source of truth. An agent that
 
 Pin to a reference that cannot move: a digest, or a full commit SHA. A tag can be repointed at any time and a branch moves by design, so neither pins anything.
 
+**A pin owes maintenance.** What a moving tag delivered, security patches included, stops arriving once the reference is frozen — so the change that introduces a pin names the mechanism that will move it: an update tool with that reference in its scope, or a person and a cadence. Where the mechanism cannot see a republished tag, the change says what will. Nothing re-resolves a digest on its own, so an upstream that rebuilds a tag under the same name is invisible until something resolves the tag again and compares.
+
 For every third-party dependency, also check the ecosystem's advisory source for known vulnerabilities in the candidate version.
 
 ## Security baseline

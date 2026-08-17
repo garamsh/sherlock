@@ -8,6 +8,7 @@ What makes a PR review valid, and how authors respond. Applies to every review a
 - Citing violations
 - Blockers and nits
 - Single-account setups
+- Reviewing your own change
 - Responding to a review (author)
 
 ## Submitting a review
@@ -26,8 +27,10 @@ What makes a PR review valid, and how authors respond. Applies to every review a
 | Depth | … | … |
 
 Decision: approve / request changes / reject
+Reviewed at: <commit sha>
 ```
 
+- **The review names the commit it read.** A branch that moved after the review is then visible as such, instead of leaving a decision attached to code nobody examined.
 - An approve requires the Scope, Verification, and Depth rows to read `pass`. The other three may read `unverified`, with a stated reason (some PRs touch nothing a convention governs). A `fail` in any row is a request-changes or a reject, never an approve.
 - A check you did not verify is marked `unverified` — never guessed. Skipping a check is allowed; hiding the skip is not. A review full of `unverified` rows tells the reader the review did not really happen.
 - **Reject maps to request changes.** GitHub has no `reject` review state, so a reject decision is submitted as a request-changes review whose decision line reads `reject` (in single-account setups, the `comment` substitute per §Single-account setups). What reject does that request changes does not: the reviewer closes the PR and files an issue describing the right direction.
@@ -44,6 +47,8 @@ Decision: approve / request changes / reject
 | Depth | The change obeys every rule and is still the wrong thing to keep. |
 
 **Scope** is measured against the task the pull request states — its issue where one exists, its Summary where none does — never against taste. A line that traces to an acceptance criterion is in scope however large it is, and a correct one-line drive-by is out of scope however small. Out-of-scope work is not wrong — it is a separate issue.
+
+**Verification** asks whether what the pull request claims can be confirmed, and one substitution is not allowed: **a stronger verification replaces a weaker one only when it would fail everywhere the weaker one fails.** Two instances this project has met. The host's check state is read and reported even where a local run supersedes it, because a local run does not fail where the host's environment does. And a change to a pinned version, base image, path or command is checked against the documents that name it, because a passing build does not fail where a document naming the old value has gone stale.
 
 **Depth** is the check the other five cannot make. They ask whether the change follows the rules; Depth asks whether it is right: a correctness risk the tests do not cover, a materially simpler approach passed over, a defect no convention happens to name. Marking it `pass` asserts the reviewer looked for those and found none, so it is the one row that cannot be filled without reading the change itself.
 
@@ -64,6 +69,14 @@ When the PM and authors share one GitHub account, `comment` is the only review s
 
 - **Approve.** Post the review, then merge immediately — the merge is the approval.
 - **Request changes.** Post the review and leave the PR open. The author responds to it as to any request-changes review.
+
+## Reviewing your own change
+
+One session sometimes holds both roles, and the artifacts do not say so on their own: `git author` distinguishes the identities, and a change the author also reviewed looks from the outside like a change two parties agreed on.
+
+- **The review states that its author wrote the change**, beside the decision.
+- **The `Depth` row names what shared authorship left unchecked.** Depth asks whether the change is right rather than whether it follows the rules, and the author is the one reader who cannot arrive at it fresh. `pass` alone asserts a check this arrangement cannot make.
+- Nothing else relaxes. Every other row means what it means and carries the evidence it would otherwise carry.
 
 ## Responding to a review (author)
 

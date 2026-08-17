@@ -13,6 +13,8 @@ How branches, commits, and PR titles are written, and what survives a merge.
 
 One task, one branch. Branch from `main`; never commit to `main` directly.
 
+A host namespace in front of the prefix satisfies the rule as written: `fix/dockerignore-env` and `sauce-git/fix/dockerignore-env` both carry it. What is required is the type prefix on the branch's own name, wherever the host puts that name.
+
 ## Commits
 
 Only the PR title reaches `main`. A branch's commits are squashed away at merge, so they are a working record for the reviewer reading the branch, not the permanent history.
@@ -23,7 +25,7 @@ Format: `<type>: <imperative summary>`
 - Summary: imperative mood, lowercase, no trailing period. `fix: reject empty tokens`, not `fixed some bugs`.
 - One concern per commit. If a change needs "and" to describe it, split it.
 - Omit the body unless the reason for the change is invisible in the diff. A body never restates what changed.
-- The message contains only what the project put there. Tooling does not append trailers, footers, or attribution lines.
+- The message contains only what the author wrote: no trailer, footer or attribution line naming the tool or model that produced the change. The rule governs what an author writes, and model attribution is what it is for. A co-author trailer the forge generates at squash time from two distinct git identities is not its subject — no author writes it and no reviewer can reach it.
 - Reversing an earlier decision mid-branch is an ordinary commit describing the new state. Earlier commits are not rewritten to hide that the decision changed.
 - A point about a commit message is fixed in the commit that carries it — amend or rebase, then force-push the same branch. A later commit cannot remove text from an earlier one, so it cannot carry that fix. This is the one case where rewriting a branch commit is right.
 

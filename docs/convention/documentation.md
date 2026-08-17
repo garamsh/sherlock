@@ -27,7 +27,7 @@ Issues, PRs, and comments are documentation too.
 
 ## Format
 
-- English and Markdown. The H1 is the document's title in title case, or the exact name where the document is named after a file or a repository; every heading below it is sentence case.
+- English and Markdown. The H1 is the document's name. Where the document is named after a file, a repository or a numbered record, its name is that name and is written the way that thing is written — `AGENTS.md`, `ADR 0018: <the decision it records>`. Title case is the default for a prose title and does not override a name. Every heading below the H1 is sentence case.
 - Start each file with one line stating what it governs.
 - A file past ~50 lines opens with a `## Contents` list of its section headings; a shorter one does not. A Contents list is never the remedy for a file that has outgrown one topic — see §Keep it maintainable.
 - **No decoration.** No emojis, badges, or ornamental headers. This holds for files under `docs/` as much as for GitHub artifacts: a check-mark glyph in a table is decoration where `yes` is a word.

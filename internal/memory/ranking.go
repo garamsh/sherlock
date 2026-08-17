@@ -17,17 +17,18 @@ const (
 	// effective half-life scales with salience (ADR 0006).
 	RecencyHalfLife = 24 * time.Hour
 
-	// SupersessionSimilarity was the embedding cosine at or above which a
-	// newly stored memory retired its most similar active predecessor.
-	// Nothing in the store reads it: an insert retires nothing (#529,
-	// store.go). It was never calibrated to where corrections land — it
-	// was set from a single pair, and across the pair set nearly every
-	// correction scores below it on the shipped embedder while every fact
-	// that must coexist scores above, so it retired what it should keep.
+	// SupersessionSimilarity was the cosine at or above which an insert
+	// retired its most similar predecessor. No store path has read it
+	// since 8ad0532 removed that mechanism (#529); why the threshold
+	// could not work is ADR 0006's Context and
+	// docs/experiments/memory-retrieval/'s subject, and is not restated
+	// here.
 	//
-	// The constant stays because docs/experiments/memory-retrieval/'s
-	// harness is written against it: that study is the evidence the
-	// mechanism was removed on, and it reports what the threshold did.
+	// It stays in this package rather than moving to the harness that
+	// reads it, because that study measures the shipped store as it
+	// runs: a copy beside the harness would be a constant the store does
+	// not hold, which is the shape #504 removed elsewhere. #336 step 2
+	// replaces this store, and that is when the constant goes.
 	SupersessionSimilarity = 0.6
 
 	// Retention tiers (ADR 0006): salience at or above
@@ -50,10 +51,12 @@ const (
 	// SalienceAddSemantic is the salience of an added semantic fact.
 	SalienceAddSemantic = 0.7
 	// SalienceAddEpisodic is the salience of an added episodic
-	// observation. No write path carries it since the writeback began
-	// stating facts rather than turns (ADR 0018); it is the tier an
-	// episodic observation would rank at, and the measurement in
-	// docs/experiments/memory-frames/ reads it as such.
+	// observation. No write path has carried it since 178ea89 made the
+	// writeback state facts rather than turns (#523, ADR 0018). It stays
+	// for the same reason as SupersessionSimilarity above: it is the
+	// tier an episodic observation ranks at, and
+	// docs/experiments/memory-frames/ measures the shipped store using
+	// it.
 	SalienceAddEpisodic = 0.5
 
 	// DefaultRecallTokenBudget bounds the tokens Recall injects, and is

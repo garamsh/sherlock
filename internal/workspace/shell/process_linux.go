@@ -168,6 +168,18 @@ func (e *ProcessExecutor) Run(ctx context.Context, req Request) (Result, error) 
 		attr.GidMappingsEnableSetgroups = false
 	}
 	cmd.SysProcAttr = attr
+	// On expiry the whole process group goes, not the child alone (ADR
+	// 0008). The child leads its own group — that is what Setpgid above is
+	// for — and an untrusted child is the shim, which execs a shell, which
+	// execs the command: every one of them inherits the pipe Wait drains,
+	// so killing the first alone leaves Run blocked until the last exits.
+	// A timeout the caller waits out is not a timeout.
+	cmd.Cancel = func() error {
+		if err := syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL); err != nil {
+			return err
+		}
+		return os.ErrProcessDone
+	}
 	if req.Stdin != nil {
 		cmd.Stdin = bytes.NewReader(req.Stdin)
 	}

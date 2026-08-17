@@ -2,126 +2,122 @@ package gateway
 
 import (
 	"context"
-	"fmt"
-	"slices"
-	"strings"
+	"log/slog"
 	"sync"
+	"time"
 
 	"github.com/garamsh/gagent/internal/agent"
 )
 
-// MaxDrainBatch bounds how many queued messages one turn takes (ADR 0015);
-// overflow stays queued for the next turn.
-const MaxDrainBatch = 8
+// DefaultQueueCapacity bounds the inbox. Enqueue blocks when
+// the queue is full, giving senders natural backpressure.
+const DefaultQueueCapacity = 64
 
-// run is the agent's runner loop. A turn drains the queue: the first
-// message plus everything waiting behind it, up to MaxDrainBatch,
-// rendered as one turn input (ADR 0015). A failed turn is logged and the
-// queue continues with the next drain.
-func (q *Queue) run(events *batchEvents) {
-	defer close(q.done)
-	logger := q.logger.With("agent_id", q.agentID)
-	for {
-		select {
-		case <-q.ctx.Done():
-			return
-		case msg := <-q.inbox:
-			batch := drain(q.inbox, msg)
-			ids := messageIDs(batch)
-			events.setBatch(ids)
-			_, err := q.runtime.Session.Run(q.ctx, renderBatch(batch))
-			events.setBatch(nil)
-			if err != nil {
-				logger.Error("run failed",
-					"op", "run", "message_ids", ids, "error", err)
-				continue
-			}
-			logger.Info("run finished", "op", "run", "message_ids", ids)
-			// Threshold consolidation (ADR 0011) and tiered retention
-			// (ADR 0006) evaluate after the completed turn, never
-			// mid-turn; a failure leaves the store consistent and only
-			// logs.
-			if q.runtime.ConsolidateIfDue != nil {
-				if err := q.runtime.ConsolidateIfDue(q.ctx); err != nil {
-					logger.Warn("consolidation failed",
-						"op", "consolidate", "error", err)
-				}
-			}
-			if q.runtime.Retain != nil {
-				if err := q.runtime.Retain(q.ctx); err != nil {
-					logger.Warn("retention failed",
-						"op", "retain", "error", err)
-				}
-			}
-		}
+// RuntimeFactory builds the agent's runtime. The events sink is the
+// agent's monitoring stream and outlives any single runtime.
+type RuntimeFactory interface {
+	New(ctx context.Context, agentID string, events agent.EventSink) (*Runtime, error)
+}
+
+// Queue is the gateway's core: it serializes the one agent's runs so the
+// agent runs one turn at a time (ADR 0007, ADR 0017 — one agent per
+// process). Queue is safe for concurrent use; Close shuts the runner and
+// the runtime down.
+type Queue struct {
+	agentID string
+	runtime *Runtime
+	broker  *Broker
+	inbox   chan Inbound
+	logger  *slog.Logger
+
+	ctx    context.Context
+	cancel context.CancelFunc
+	done   chan struct{}
+
+	once   sync.Once
+	closed chan struct{}
+}
+
+// NewQueue builds the agent's runtime through factory and starts the
+// runner. A factory error fails startup: the runtime is created eagerly
+// so a misconfiguration surfaces before the gateway serves. A nil logger
+// discards log output.
+func NewQueue(factory RuntimeFactory, agentID string, logger *slog.Logger) (*Queue, error) {
+	if logger == nil {
+		logger = slog.Default()
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	broker := NewBroker()
+	events := &batchEvents{inner: broker}
+	rt, err := factory.New(ctx, agentID, events)
+	if err != nil {
+		cancel()
+		broker.Close()
+		return nil, err
+	}
+	q := &Queue{
+		agentID: agentID,
+		runtime: rt,
+		broker:  broker,
+		inbox:   make(chan Inbound, DefaultQueueCapacity),
+		logger:  logger,
+		ctx:     ctx,
+		cancel:  cancel,
+		done:    make(chan struct{}),
+		closed:  make(chan struct{}),
+	}
+	go q.run(events)
+	return q, nil
+}
+
+// AgentID returns the ID of the agent this process serves.
+func (q *Queue) AgentID() string { return q.agentID }
+
+// Enqueue assigns the message an ID and queues it for the agent. It
+// returns the assigned ID once the message is queued; there is no
+// synchronous agent response. A full queue blocks the caller (honoring
+// ctx) until a run drains a slot. The sender is recorded on the envelope
+// so the agent can address replies per message (ADR 0015); an empty
+// sender means the channel provided none. Nothing is written to memory
+// at accept time: the writeback is the single write path
+// (ADR 0006, ADR 0011).
+func (q *Queue) Enqueue(ctx context.Context, sender, content string) (string, error) {
+	select {
+	case <-q.closed:
+		return "", ErrQueueClosed
+	default:
+	}
+	id, err := newID("msg")
+	if err != nil {
+		return "", err
+	}
+	msg := Inbound{ID: id, Sender: sender, Content: content, QueuedAt: time.Now()}
+	select {
+	case q.inbox <- msg:
+		q.logger.Info("message enqueued",
+			"op", "enqueue", "agent_id", q.agentID, "message_id", id)
+		return id, nil
+	case <-ctx.Done():
+		return "", ctx.Err()
+	case <-q.ctx.Done():
+		return "", ErrQueueClosed
 	}
 }
 
-// drain returns msg plus every message already waiting in the inbox,
-// bounded by MaxDrainBatch; overflow stays queued for the next turn.
-func drain(inbox <-chan Inbound, msg Inbound) []Inbound {
-	batch := []Inbound{msg}
-	for len(batch) < MaxDrainBatch {
-		select {
-		case m := <-inbox:
-			batch = append(batch, m)
-		default:
-			return batch
-		}
-	}
-	return batch
-}
+// Events returns the agent's monitoring stream.
+func (q *Queue) Events() *Broker { return q.broker }
 
-// renderBatch renders one drained batch as the turn's input: one line
-// per message carrying its ID, sender, and content (ADR 0015). A message
-// without a sender renders as "unknown".
-func renderBatch(batch []Inbound) string {
-	var b strings.Builder
-	for i, m := range batch {
-		sender := m.Sender
-		if sender == "" {
-			sender = "unknown"
-		}
-		fmt.Fprintf(&b, "[%s] %s: %s", m.ID, sender, m.Content)
-		if i < len(batch)-1 {
-			b.WriteByte('\n')
-		}
-	}
-	return b.String()
-}
-
-func messageIDs(batch []Inbound) []string {
-	ids := make([]string, len(batch))
-	for i, m := range batch {
-		ids[i] = m.ID
-	}
-	return ids
-}
-
-// batchEvents is the agent's event sink: it stamps terminal events with
-// the message IDs of the batch the turn drained (ADR 0015) and forwards
-// everything to the monitoring stream.
-type batchEvents struct {
-	inner agent.EventSink
-
-	mu  sync.Mutex
-	ids []string
-}
-
-// setBatch records the message IDs of the batch whose turn is running;
-// nil clears it once the turn's terminal event has been emitted.
-func (s *batchEvents) setBatch(ids []string) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	s.ids = ids
-}
-
-// Emit implements agent.EventSink.
-func (s *batchEvents) Emit(ctx context.Context, e agent.Event) {
-	if e.Kind == agent.EventTurnFinished || e.Kind == agent.EventTurnFailed {
-		s.mu.Lock()
-		e.MessageIDs = slices.Clone(s.ids)
-		s.mu.Unlock()
-	}
-	s.inner.Emit(ctx, e)
+// Close stops accepting messages, cancels an in-flight run, waits for
+// the runner to exit, and releases the runtime and the stream. Close is
+// idempotent.
+func (q *Queue) Close() error {
+	var err error
+	q.once.Do(func() {
+		close(q.closed)
+		q.cancel()
+		<-q.done
+		err = q.runtime.Close(context.Background())
+		q.broker.Close()
+	})
+	return err
 }

@@ -37,6 +37,22 @@ type Message struct {
 	ToolCalls  []ToolCall `json:"tool_calls,omitempty"`
 }
 
+// Response is one model reply: visible content plus optional tool calls.
+// Content is the schema's document; the session parses the reply out of
+// it.
+type Response struct {
+	Content   string
+	ToolCalls []ToolCall
+}
+
+// RecalledMemory is one long-term memory entry injected into context during
+// the recall step, shown to the model with its ID and age.
+type RecalledMemory struct {
+	ID      string
+	Content string
+	Age     string
+}
+
 // MemoryAddress is where a fact is held (ADR 0018): the subject it is
 // about, the question it answers, and whatever restriction the sentence
 // puts on that question. A statement that narrows its question narrows
@@ -71,6 +87,61 @@ type WritebackOp struct {
 	Operation MemoryOperation `json:"operation"`
 }
 
+// EventKind identifies a loop lifecycle event.
+type EventKind string
+
+const (
+	// EventTurnStarted fires once per Run, before frame and recall.
+	EventTurnStarted EventKind = "turn_started"
+	// EventRecall fires once per Run after the recall step, carrying the
+	// injected memory IDs and their count, so subscribers see what
+	// memory entered the context each turn (issue #325). Sessions
+	// without a Recaller emit nothing.
+	EventRecall EventKind = "recall"
+	// EventWriteback fires after each model response's memory block is
+	// parsed and handed to the sink.
+	EventWriteback EventKind = "writeback"
+	// EventWritebackError fires when a model response was not the
+	// document the response schema describes, so the parser could not
+	// turn it into operations. The turn itself continues; the warning
+	// records what the model missed so subscribers can detect it. Issue
+	// #93.
+	EventWritebackError EventKind = "writeback_error"
+	// EventToolCall fires after each tool execution.
+	EventToolCall EventKind = "tool_call"
+	// EventTurnFinished fires once per Run with the final response.
+	EventTurnFinished EventKind = "turn_finished"
+	// EventTurnFailed fires once per Run that returns an error, so the
+	// monitoring stream always ends a turn with a terminal event.
+	EventTurnFailed EventKind = "turn_failed"
+)
+
+// Event is one structured loop event for the gateway monitoring stream.
+// Which fields are set depends on Kind: Task on turn_started,
+// RecalledIDs and RecalledCount on recall, Ops on writeback, the Tool*
+// fields on tool_call, Response on turn_finished, Error on turn_failed
+// and writeback_error.
+type Event struct {
+	Kind       EventKind
+	Turn       int
+	Task       string
+	Ops        []WritebackOp
+	ToolName   string
+	ToolInput  json.RawMessage
+	ToolResult string
+	ToolFailed bool
+	Response   string
+	Error      string
+	// RecalledIDs names the memories the recall step injected this turn;
+	// RecalledCount is their number.
+	RecalledIDs   []string
+	RecalledCount int
+	// MessageIDs names the inbound messages the turn drained; the
+	// gateway stamps it on terminal events (ADR 0015). The session
+	// never sets it.
+	MessageIDs []string
+}
+
 var (
 	// ErrScriptExhausted is returned by the scripted model when a test
 	// scenario asks for more responses than were scripted.
@@ -79,3 +150,12 @@ var (
 	// cap without the model producing a final response.
 	ErrLoopExhausted = errors.New("act loop exceeded max iterations")
 )
+
+// ErrMalformedWriteback marks a model response the writeback contract
+// refuses: a JSON parse error or a schema violation. It is surfaced as a
+// fatal error only for schema violations (the model emitted a contract
+// the platform refuses to apply). JSON parse failures — the response was
+// not the document the schema describes — are recorded as warnings, not
+// fatal errors, so a single bad writeback does not abort an
+// otherwise-successful turn (issue #93).
+var ErrMalformedWriteback = errors.New("malformed memory writeback")

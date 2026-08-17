@@ -1,9 +1,9 @@
 package tool_test
 
 import (
-	"encoding/json"
 	"os"
 	"path/filepath"
+	"regexp"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -27,51 +27,69 @@ func TestSetSpawnEnv_PublishesWhatTheToolsRead(t *testing.T) {
 	assert.Equal(t, "agent-7", os.Getenv(tool.AgentIDEnv))
 }
 
-// TestSetSpawnEnv_CoversTheShippedManifests reads what the shipped
-// tools declare they need and holds the platform's own constants
-// against it. A manifest that starts declaring another variable is
-// either one the operator supplies, like the github token, or one this
-// function must set — and this is where that decision surfaces instead
-// of becoming a tool that starts up without its value.
-func TestSetSpawnEnv_CoversTheShippedManifests(t *testing.T) {
+// getenvCall matches a shipped tool reading a variable by name.
+var getenvCall = regexp.MustCompile(`os\.Getenv\("([A-Z0-9_]+)"\)`)
+
+// TestSetSpawnEnv_CoversWhatTheShippedToolsRead holds the platform's
+// constants against what the shipped tools actually read. A tool that
+// starts reading another variable is either one the operator supplies,
+// like the github token, or one this function must set — and this is
+// where that decision surfaces instead of becoming a tool that starts
+// up without its value.
+//
+// The source is the tools' own os.Getenv calls. It used to be their
+// manifests' env arrays, which #550 deleted: that field was inert, and
+// it was also an incomplete record of what the tools read — tools/github
+// reads GITHUB_API_BASE and never declared it, so the variable below was
+// invisible to this check for as long as the check trusted the manifest.
+// Reading the calls cannot drift from the code the way a hand-maintained
+// declaration did.
+func TestSetSpawnEnv_CoversWhatTheShippedToolsRead(t *testing.T) {
 	// Set by the operator, never by the platform: a materialized secret
-	// is a stolen secret (ADR 0003, ADR 0013).
-	operatorSupplied := map[string]bool{"GH_TOKEN": true}
+	// is a stolen secret (ADR 0003, ADR 0013), and the platform does not
+	// dispatch secrets (ADR 0009). GITHUB_API_BASE is not a secret but is
+	// the operator's too — it retargets the API for an enterprise host,
+	// and the default is the public one.
+	operatorSupplied := map[string]bool{
+		"GH_TOKEN":        true,
+		"GITHUB_API_BASE": true,
+	}
 	platformSet := map[string]bool{
 		tool.WorkspaceAddrEnv: true,
 		tool.OutboxDirEnv:     true,
 		tool.AgentIDEnv:       true,
 	}
 
-	declared := map[string]string{}
-	entries, err := os.ReadDir(filepath.Join("..", "..", "tools"))
+	read := map[string]string{}
+	toolsDir := filepath.Join("..", "..", "tools")
+	entries, err := os.ReadDir(toolsDir)
 	require.NoError(t, err)
 	for _, e := range entries {
 		if !e.IsDir() {
 			continue
 		}
-		raw, err := os.ReadFile(filepath.Join("..", "..", "tools", e.Name(), "manifest.json"))
+		sources, err := filepath.Glob(filepath.Join(toolsDir, e.Name(), "*.go"))
 		require.NoError(t, err)
-		var m struct {
-			Env []string `json:"env"`
-		}
-		require.NoError(t, json.Unmarshal(raw, &m))
-		for _, name := range m.Env {
-			declared[name] = e.Name()
+		for _, src := range sources {
+			body, err := os.ReadFile(src)
+			require.NoError(t, err)
+			for _, m := range getenvCall.FindAllStringSubmatch(string(body), -1) {
+				read[m[1]] = e.Name()
+			}
 		}
 	}
-	require.NotEmpty(t, declared, "the shipped tools declare the env they read")
+	require.NotEmpty(t, read, "the shipped tools read their inputs from the environment")
 
-	for name, toolName := range declared {
+	for name, toolName := range read {
 		if operatorSupplied[name] {
 			continue
 		}
 		assert.True(t, platformSet[name],
-			"tools/%s declares %s, which nothing sets: add it to SetSpawnEnv or to the operator-supplied set",
+			"tools/%s reads %s, which nothing sets: add it to SetSpawnEnv or to the operator-supplied set",
 			toolName, name)
 	}
 	for name := range platformSet {
-		assert.Contains(t, declared, name,
-			"the platform sets %s but no shipped manifest declares it", name)
+		assert.Contains(t, read, name,
+			"the platform sets %s but no shipped tool reads it", name)
 	}
 }

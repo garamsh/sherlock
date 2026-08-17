@@ -227,8 +227,15 @@ func TestScriptTool_ManifestGateAcceptsOmittedOptionalOutput(t *testing.T) {
 func TestScriptTool_DescriptorCarriesManifestSchemas(t *testing.T) {
 	reg := optionalFieldRegistry(t)
 
-	desc, ok := reg.Get("demo")
-	require.True(t, ok)
+	// List is the whole descriptor surface agent.ToolClient declares, so
+	// the assertion reads the tool through the path the session does.
+	var desc tool.Descriptor
+	for _, d := range reg.List() {
+		if d.Name == "demo" {
+			desc = d
+		}
+	}
+	require.Equal(t, "demo", desc.Name)
 	assert.JSONEq(t, `{
 		"type":"object",
 		"properties":{"required_field":{"type":"string"},"optional_field":{"type":"string"}},

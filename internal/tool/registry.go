@@ -204,20 +204,6 @@ func (r *Registry) List() []Descriptor {
 	return out
 }
 
-// Get returns the descriptor for one tool, or false if the tool is not
-// installed. Call sites that need a single descriptor (e.g. the
-// session's per-tool description lookup) use it to avoid scanning
-// List().
-func (r *Registry) Get(name string) (Descriptor, bool) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	t, ok := r.tools[name]
-	if !ok {
-		return Descriptor{}, false
-	}
-	return descriptorFromTool(t), true
-}
-
 // Call validates the input against the manifest's input schema,
 // dispatches the stdio runner, and validates the output against the
 // manifest's output schema (ADR 0009 invariants 3 and 4). The manifest

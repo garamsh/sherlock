@@ -285,3 +285,37 @@ echo "{\"len\":\"${#line}\"}"`)
 	// the line becomes `{}` which is two characters.
 	assert.Contains(t, string(out), `"len":"2"`)
 }
+
+// TestRunner_ToolInheritsTheAgentEnvironment pins the decided posture
+// (#543): security is drawn by environment, and the environments are
+// the two containers. A tool is the agent's own (ADR 0017), so it runs
+// inside the agent's environment and inherits it whole rather than
+// across a boundary from it.
+//
+// The manifest below declares no env at all, which is the case that
+// matters: a tool that asks for no secret still receives every
+// credential the agent holds. That is why installing a tool is a trust
+// decision and not a capability one
+// (docs/architecture/security.md §Tool trust posture).
+//
+// Nothing pinned this before, which is how the document and the code
+// drifted apart with neither wrong on its own terms.
+func TestRunner_ToolInheritsTheAgentEnvironment(t *testing.T) {
+	t.Setenv("GAGENT_TEST_AGENT_SECRET", "the-model-key")
+	script := tinyScript(t, `cat >/dev/null
+printf '{"seen":"%s"}\n' "$GAGENT_TEST_AGENT_SECRET"`)
+	manifest := tool.Manifest{
+		Name:         "inherits",
+		Description:  "inherits",
+		Command:      script,
+		InputSchema:  json.RawMessage(`{"type":"object"}`),
+		OutputSchema: json.RawMessage(`{"type":"object"}`),
+	}
+	runner := tool.NewRunner(manifest, t.TempDir())
+
+	out, stderr, err := runner.Run(context.Background(), json.RawMessage(`{}`))
+	require.NoError(t, err)
+	assert.Empty(t, stderr)
+	assert.JSONEq(t, `{"seen":"the-model-key"}`, string(out),
+		"a tool reads what the agent's environment holds, declared or not")
+}

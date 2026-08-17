@@ -126,6 +126,7 @@ Every fatal path exits **1** and prints `Error: <message>`; nothing distinguishe
 | Two manifests declaring the same name | agent | `duplicate tool name "files"` |
 | A pin set is configured and a tool on disk is not named in it | agent | `unpinned tool "…": not named by the pin set; pin it as <sha256> or remove the tool` |
 | A pin set is configured and a manifest's hash drifted | agent | `descriptor drift for "…": pinned=<sha256> fetched=<sha256>` |
+| `tools.pins` present and naming no tool | agent | `config: tools.pins is present and names no tool; a pin set is the tools the operator accepted, so an empty one accepts nothing and no agent can start under it` |
 | `message_send` is absent from the tools tree | agent | `tool registry: required tools missing: [message_send]` |
 | `memory-path`'s directory cannot be created, or the store cannot be opened | agent | `mkdir …: read-only file system` / `open "…": …` |
 | Workspace directory cannot be created, chowned or chmodded | workspace | `create workspace root "…": …` / `chown "…" to uid 1001: …` |
@@ -148,7 +149,9 @@ Two traps in that second table are worth naming separately, because they produce
 
 **Choose `exec-uid` as a uid nothing else on the node runs as.** Containers share the node's uid space and `RLIMIT_NPROC` counts every process of the real uid, so a shared account spends the child's 64-process budget on processes that are not the child's. The code default is `1001`, which is the login user on many hosts; the sample deployment overrides it to `10001` for exactly this reason (`deploy/local/docker-compose.yml`).
 
-**`tools.pins` absent and `tools.pins: {}` are different.** An absent section leaves pinning off and warns. A present but empty section is a statement that no tool is accepted, and every tool on disk is then refused at startup.
+**`tools.pins` absent and `tools.pins: {}` are different, and an empty section does not start.** An absent section leaves pinning off and warns. A present but empty section is rejected while the config resolves, because it is an unfinished configuration rather than a stricter one: "accept no tool" has no running form. `message_send` is required and the required set is not operator-configurable, so a pin set naming nothing refuses the mouth and the agent stops whatever else the tools tree holds. Name each tool and the hash the agent logs for it on the `tool manifest loaded` line, or remove the section to run unpinned.
+
+**Upgrading with `tools.pins: {}` already in a config file will stop the pod from starting, and that pod was not pinned before.** Until #562 an empty section resolved to the same value as an absent one and quietly left pinning off, so a deployment carrying it has been running unpinned while reading as strict. The startup failure is the first accurate signal it has had.
 
 **A one-shot `gagent agent --message` run skips the TLS and bind gates entirely**, because it never serves. A Job that smoke-tests configuration will not catch a broken `tls:` section or a non-loopback `addr`.
 

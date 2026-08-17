@@ -1,4 +1,9 @@
-package tool_test
+// This file is an internal test (stack-go.md §7's white-box seam) because
+// validate and validateSchemaDocument have no exported form of their own.
+// An external test reaches them only through Registry.Call or
+// ValidateManifest, which would assert registry and manifest behaviour with
+// schema validation as a side effect.
+package tool
 
 import (
 	"encoding/json"
@@ -6,12 +11,10 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/garamsh/gagent/internal/tool"
 )
 
 func TestValidateSchema_EmptySchemaAcceptsAnyInput(t *testing.T) {
-	require.NoError(t, tool.ValidatePublic(json.RawMessage(nil), json.RawMessage(`{"anything":1}`)))
+	require.NoError(t, validate(json.RawMessage(nil), json.RawMessage(`{"anything":1}`)))
 }
 
 func TestValidateSchema_MatchingInputPasses(t *testing.T) {
@@ -20,7 +23,7 @@ func TestValidateSchema_MatchingInputPasses(t *testing.T) {
 		"properties":{"name":{"type":"string"}},
 		"required":["name"]
 	}`)
-	require.NoError(t, tool.ValidatePublic(schema, json.RawMessage(`{"name":"ada"}`)))
+	require.NoError(t, validate(schema, json.RawMessage(`{"name":"ada"}`)))
 }
 
 func TestValidateSchema_MismatchedInputFails(t *testing.T) {
@@ -29,7 +32,7 @@ func TestValidateSchema_MismatchedInputFails(t *testing.T) {
 		"properties":{"name":{"type":"string"}},
 		"required":["name"]
 	}`)
-	err := tool.ValidatePublic(schema, json.RawMessage(`{"name":42}`))
+	err := validate(schema, json.RawMessage(`{"name":42}`))
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "input does not match schema")
 }
@@ -37,13 +40,13 @@ func TestValidateSchema_MismatchedInputFails(t *testing.T) {
 func TestValidateSchemaDocument_RejectsInvalidDocument(t *testing.T) {
 	// `type` must be a string or array of strings; an integer is
 	// not a valid JSON Schema "type" value.
-	err := tool.ValidateSchemaDocumentPublic(json.RawMessage(`{"type":42}`))
+	err := validateSchemaDocument(json.RawMessage(`{"type":42}`))
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "schema does not parse")
 }
 
 func TestValidateSchemaDocument_AcceptsValidDocument(t *testing.T) {
-	err := tool.ValidateSchemaDocumentPublic(json.RawMessage(`{
+	err := validateSchemaDocument(json.RawMessage(`{
 		"type":"object",
 		"properties":{"x":{"type":"integer"}}
 	}`))

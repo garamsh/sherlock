@@ -12,17 +12,6 @@ import (
 // cwd-independent so validation errors never embed a host filesystem path.
 const schemaResourceURI = "https://gagent.local/schema/tool-input.json"
 
-// ValidatePublic exposes the validate function for tests.
-func ValidatePublic(schema json.RawMessage, input json.RawMessage) error {
-	return validate(schema, input)
-}
-
-// ValidateSchemaDocumentPublic exposes the validateSchemaDocument
-// function for tests.
-func ValidateSchemaDocumentPublic(schema json.RawMessage) error {
-	return validateSchemaDocument(schema)
-}
-
 // validate checks input against a JSON Schema document. An empty schema
 // accepts any input. The schema is compiled with the same library the
 // tool runtime uses (santhosh-tekuri/jsonschema/v6), so the platform's

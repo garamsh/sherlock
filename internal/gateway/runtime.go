@@ -25,10 +25,10 @@ type Runtime struct {
 	// Close releases the runtime's resources. Called once on queue
 	// shutdown.
 	Close func(ctx context.Context) error
-	// Retain is the tiered retention pass (ADR 0006): the runner
-	// evaluates it after a completed turn, alongside ConsolidateIfDue;
-	// a failure logs at WARN and never fails a turn. Nil means no
-	// retention pass (test runtimes).
+	// Retain is the tiered retention pass (ADR 0006) and the only pass
+	// the runner evaluates after a completed turn; a failure logs at
+	// WARN and never fails a turn. Nil means no retention pass (test
+	// runtimes).
 	Retain func(ctx context.Context) error
 }
 

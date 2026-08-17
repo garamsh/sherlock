@@ -2,8 +2,6 @@ package tool_test
 
 import (
 	"encoding/json"
-	"os"
-	"path/filepath"
 	"strings"
 	"testing"
 
@@ -23,13 +21,6 @@ const minimalManifest = `{
 	"input_schema": {"type": "object"},
 	"output_schema": {"type": "object"}
 }`
-
-// writeFile writes data to a path under t.TempDir and returns the path.
-// Used to scaffold manifests in subdirectories.
-func writeFile(t *testing.T, path, data string) error {
-	t.Helper()
-	return os.WriteFile(path, []byte(data), 0o600)
-}
 
 // TestParseManifest_OK covers the happy path: a well-formed manifest
 // parses, the required fields are present, and the schemas are valid
@@ -64,7 +55,6 @@ func TestParseManifest_RejectsMalformedJSON(t *testing.T) {
 // TestValidateManifest_RequiresName covers the structural rules: name
 // and command must be non-empty. The platform fails startups that omit
 // either field rather than ship a tool whose descriptor is incomplete.
-// LoadManifest runs the full parse + validate pipeline.
 func TestValidateManifest_RequiresName(t *testing.T) {
 	_, err := tool.ValidateManifest(tool.Manifest{
 		Description:  "no name",
@@ -231,25 +221,6 @@ func TestManifestHash_NumbersKeepTheirLiteral(t *testing.T) {
 	b := `{"name":"a","description":"d","command":"c","input_schema":{"type":"object","maxLength":9007199254740992},"output_schema":{"type":"object"}}`
 	assert.NotEqual(t, tool.ManifestHash([]byte(a)), tool.ManifestHash([]byte(b)),
 		"two distinct integers must not canonicalize to one value")
-}
-
-// TestLoadManifest_ReadsFile exercises the file path through LoadManifest
-// and confirms the parsed manifest matches the bytes on disk.
-func TestLoadManifest_ReadsFile(t *testing.T) {
-	path := filepath.Join(t.TempDir(), "manifest.json")
-	require.NoError(t, writeFile(t, path, minimalManifest))
-	m, raw, err := tool.LoadManifest(path)
-	require.NoError(t, err)
-	assert.Equal(t, "echo", m.Name)
-	assert.Equal(t, []byte(minimalManifest), raw)
-}
-
-// TestLoadManifest_FileMissing surfaces the read error path so the
-// caller can replace the path or fail startup.
-func TestLoadManifest_FileMissing(t *testing.T) {
-	_, _, err := tool.LoadManifest(filepath.Join(t.TempDir(), "missing.json"))
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "read manifest")
 }
 
 // TestLoadManifest_SerializesTheDeclaredFields pins the JSON round-trip

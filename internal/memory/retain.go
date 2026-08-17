@@ -10,8 +10,7 @@ import (
 // memories below RetentionDropSalience drop to the archive at the next
 // pass, and the tier between is retained for RetentionWindow from its
 // timestamp. Drops move to the archive; the platform never hard-deletes.
-// The gateway evaluates Retain after a completed turn, alongside
-// ConsolidateIfDue.
+// The gateway evaluates Retain after a completed turn.
 func (s *service) Retain(ctx context.Context) ([]int64, error) {
 	active, err := s.store.Active(ctx)
 	if err != nil {

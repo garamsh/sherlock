@@ -22,6 +22,24 @@ format-fix:
 test:
 	go test ./...
 
+# The capability list the tests below run under is read out of the deployment
+# rather than repeated here (#620): it has one owner, `cap_add` in
+# $(DEPLOYED_COMPOSE), and a second copy in this file or in the workflow would
+# be the shape #591 and #589 record — a claim in one file about a value another
+# file owns.
+#
+# `caps` reads one key's flow sequence and lowercases the names. It matches one
+# line per occurrence, so `$(words …)` counts them: two services share that file
+# and only the workspace drops capabilities, so a key found twice means the
+# wrong service's list could be read. The guards are in the recipe, not here, so
+# no other target pays for them.
+DEPLOYED_COMPOSE = deploy/local/docker-compose.yml
+COMMA := ,
+caps = $(shell sed -n "s/^[[:space:]]*$(1):[[:space:]]*\[\(.*\)\][[:space:]]*$$/\1/p" $(DEPLOYED_COMPOSE) | tr -d " \"'" | tr 'A-Z' 'a-z')
+DEPLOYED_CAP_ADD = $(call caps,cap_add)
+DEPLOYED_CAP_DROP = $(call caps,cap_drop)
+DEPLOYED_CAP_SET = -all,+$(subst $(COMMA),$(COMMA)+,$(DEPLOYED_CAP_ADD))
+
 # The executor's privileged family: the cases that assert the drop to the
 # exec UID and the fresh network namespace, neither of which a process
 # without privilege can reach (ADR 0008, ADR 0010). It is not one of the
@@ -34,11 +52,22 @@ test:
 # account cannot enter. GAGENT_PRIVILEGED_TESTS then makes every guard in the
 # family report an absent privilege instead of skipping past it, so a run
 # that cannot reach the boundary says so.
+#
+# setpriv narrows the run to the deployment's capability set before a single
+# case executes. A check that holds more privilege than the deployment cannot
+# fail the way the deployment fails, which is how #612 was true in production
+# and green in CI at once (#620). The narrowing only ever drops, so whatever
+# the runner granted, what the tests see is the deployment's set — and
+# GAGENT_DEPLOYED_CAPS names it, so a run that skipped this line is a failure
+# rather than a quieter pass.
 test-privileged:
+	@test "$(words $(DEPLOYED_CAP_ADD)) $(words $(DEPLOYED_CAP_DROP))" = "1 1" || { echo "$(DEPLOYED_COMPOSE): want one cap_add and one cap_drop in the flow-sequence form, read $(words $(DEPLOYED_CAP_ADD)) and $(words $(DEPLOYED_CAP_DROP))"; exit 1; }
+	@test "$(DEPLOYED_CAP_DROP)" = all || { echo "$(DEPLOYED_COMPOSE): cap_drop is [$(DEPLOYED_CAP_DROP)], not [ALL]: the capability set is only a whitelist while everything else is dropped"; exit 1; }
 	@test "$$(id -u)" = 0 || { echo "test-privileged needs root: the drop to the exec UID is what it exercises (ADR 0008)"; exit 1; }
 	go test -c -o $(PRIVILEGED_TEST_BIN) ./internal/workspace/shell/
 	@chmod 0755 $(PRIVILEGED_TEST_BIN)
-	GAGENT_PRIVILEGED_TESTS=1 $(PRIVILEGED_TEST_BIN)
+	GAGENT_PRIVILEGED_TESTS=1 GAGENT_DEPLOYED_CAPS=$(DEPLOYED_CAP_ADD) \
+		setpriv --bounding-set=$(DEPLOYED_CAP_SET) $(PRIVILEGED_TEST_BIN)
 
 build:
 	go build ./...

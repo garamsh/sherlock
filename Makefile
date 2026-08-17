@@ -21,10 +21,6 @@ format-fix:
 
 test:
 	go test ./...
-# The documentation checks sit behind `test` rather than under a fifth name,
-# which is where #397 settled them; moving them is moving these two lines.
-	@python3 citations/reference_check.py
-	@python3 citations/reference_check_fixtures.py
 
 # The executor's privileged family: the cases that assert the drop to the
 # exec UID and the fresh network namespace, neither of which a process

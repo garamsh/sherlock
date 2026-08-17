@@ -141,8 +141,23 @@ func ManifestHash(raw []byte) string {
 // JSON-decoded and re-encoded with sorted keys and no whitespace, so
 // whitespace and key order do not contribute to the hash.
 func canonicalManifest(raw []byte) []byte {
-	var doc map[string]json.RawMessage
-	if err := json.Unmarshal(raw, &doc); err != nil {
+	// Decoding into any is what puts nested objects in front of the
+	// recursion below: a map[string]json.RawMessage matches neither of
+	// its cases, so every value would pass through as its original
+	// bytes and only the top level would sort (#559). UseNumber keeps
+	// each number as its literal rather than a float64, so two
+	// manifests that differ only past float64's exact range stay two
+	// manifests.
+	dec := json.NewDecoder(bytes.NewReader(raw))
+	dec.UseNumber()
+	var doc any
+	if err := dec.Decode(&doc); err != nil {
+		return raw
+	}
+	// A decoder stops at the end of the first value. Anything after it
+	// would not reach the hash, so bytes that differ there would share
+	// one — fall back to hashing the raw bytes instead.
+	if dec.More() {
 		return raw
 	}
 	out, err := canonicalizeManifest(doc)
@@ -152,9 +167,10 @@ func canonicalManifest(raw []byte) []byte {
 	return out
 }
 
-// canonicalizeManifest re-encodes v with sorted object keys. Arrays,
-// primitives, and schema values are kept as-is when they are objects or
-// arrays; nested objects are sorted recursively.
+// canonicalizeManifest re-encodes v with sorted object keys at every
+// depth. Array order is preserved: a list's order is contract — `env`
+// names variables and a schema's `required` lists fields — so two
+// manifests differing in it are two manifests, not one reformatted.
 func canonicalizeManifest(v any) ([]byte, error) {
 	switch t := v.(type) {
 	case map[string]any:

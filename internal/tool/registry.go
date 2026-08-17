@@ -318,7 +318,11 @@ func (r *Registry) Call(ctx context.Context, name string, input json.RawMessage)
 		return nil, &ExecutionError{Tool: name, Err: fmt.Errorf("tool reported error: %s", msg)}
 	}
 	if err := validate(t.manifest.OutputSchema, response); err != nil {
-		return nil, &ExecutionError{Tool: name, Err: fmt.Errorf("output failed schema validation (tool quarantined): %w", err)}
+		// The call fails and the output is dropped; the tool stays
+		// installed and callable. What the boundary gives is that a
+		// non-conforming output never reaches the model, not that a
+		// tool which emits one is taken out of service.
+		return nil, &ExecutionError{Tool: name, Err: fmt.Errorf("output failed schema validation, so the call failed and the output was dropped: %w", err)}
 	}
 	return response, nil
 }

@@ -212,7 +212,7 @@ func TestScriptTool_ManifestGateRejectsNullOnRequiredInput(t *testing.T) {
 
 // TestScriptTool_ManifestGateAcceptsOmittedOptionalOutput holds ADR
 // 0009 invariant 4 to the manifest: `detail` is optional there, so an
-// output carrying only `status` conforms and is not quarantined.
+// output carrying only `status` conforms and the call succeeds.
 func TestScriptTool_ManifestGateAcceptsOmittedOptionalOutput(t *testing.T) {
 	reg := optionalFieldRegistry(t)
 
@@ -284,11 +284,21 @@ func TestScriptTool_InputRejection(t *testing.T) {
 	assert.ErrorIs(t, err, tool.ErrValidation)
 }
 
-// TestScriptTool_OutputQuarantine covers the output boundary: a
-// script whose output does not match the manifest's output schema
-// is quarantined. The platform never returns a non-conforming output
-// to the model.
-func TestScriptTool_OutputQuarantine(t *testing.T) {
+// TestScriptTool_NonConformingOutputFailsTheCallAndTheToolStays covers
+// the output boundary and states its whole extent (#564): a script
+// whose output does not match its manifest's output_schema fails the
+// call, the error names the tool, and the output never reaches the
+// model — but the tool is not taken out of service. It stays listed
+// and the next call runs.
+//
+// The platform documented a quarantine for years and never implemented
+// one. Building it would take the agent's only way to speak on one
+// malformed response, since message_send is required and the required
+// set is not operator-configurable, and the state would not survive a
+// restart — a control that cannot be recovered from and expires on its
+// own is not a boundary. What is a boundary is the output being
+// dropped, and that is what this test holds.
+func TestScriptTool_NonConformingOutputFailsTheCallAndTheToolStays(t *testing.T) {
 	root := t.TempDir()
 	toolDir := filepath.Join(root, "broken")
 	require.NoError(t, os.MkdirAll(toolDir, 0o755))
@@ -317,10 +327,25 @@ func TestScriptTool_OutputQuarantine(t *testing.T) {
 	require.NoError(t, err)
 	t.Cleanup(func() { reg.Close() })
 
-	_, err = reg.Call(context.Background(), "broken", json.RawMessage(`{}`))
+	out, err := reg.Call(context.Background(), "broken", json.RawMessage(`{}`))
 	require.Error(t, err)
 	assert.ErrorIs(t, err, tool.ErrExecution)
 	assert.Contains(t, err.Error(), "output failed schema validation")
+	assert.Contains(t, err.Error(), "broken", "the error names the tool")
+	assert.Nil(t, out, "the non-conforming output does not reach the caller")
+	assert.NotContains(t, err.Error(), "quarantin",
+		"the error must not name a mechanism the platform does not have")
+
+	// The tool is still installed and still callable: no quarantine.
+	names := make([]string, 0, 1)
+	for _, d := range reg.List() {
+		names = append(names, d.Name)
+	}
+	assert.Contains(t, names, "broken", "a tool that emitted a bad output stays advertised")
+
+	_, err = reg.Call(context.Background(), "broken", json.RawMessage(`{}`))
+	require.Error(t, err, "the next call runs and fails the same way")
+	assert.ErrorIs(t, err, tool.ErrExecution)
 }
 
 // TestScriptTool_ManifestFixtureSchemaConforms confirms the integration

@@ -119,3 +119,42 @@ func TestBuildToolRegistry_WithoutPinsLoads(t *testing.T) {
 	t.Cleanup(func() { _ = registry.Close() })
 	assert.Len(t, registry.List(), 1)
 }
+
+// TestBuildToolRegistry_RequiresTheMouthAndNothingElse pins the extent
+// of the required-tool guarantee (#564, ADR 0009 invariant 5). Two
+// halves, and the second is the one the documents used to overstate.
+//
+// A tree without message_send fails startup closed: the agent cannot
+// speak, so there is no useful agent to start. A tree holding only
+// message_send starts cleanly — the workspace-coupling tools are
+// capabilities the operator installs or does not (ADR 0017), so their
+// absence is a choice rather than a failure, and there is no operator
+// key that would add them to the required set.
+func TestBuildToolRegistry_RequiresTheMouthAndNothingElse(t *testing.T) {
+	t.Run("the mouth alone is enough to start", func(t *testing.T) {
+		dir, _ := pinnedToolTree(t)
+		cfg := config.Config{MemoryPath: filepath.Join(dir, "memory.db"), ToolsDir: dir}
+
+		registry, err := buildToolRegistry(cfg, "test-agent", slog.New(slog.DiscardHandler))
+		require.NoError(t, err, "files and shell_exec are absent and the agent still starts")
+		t.Cleanup(func() { _ = registry.Close() })
+
+		names := make([]string, 0, 1)
+		for _, d := range registry.List() {
+			names = append(names, d.Name)
+		}
+		assert.Equal(t, []string{"message_send"}, names,
+			"the tree holds one tool and the agent runs on it")
+	})
+
+	t.Run("without the mouth startup fails closed", func(t *testing.T) {
+		dir, _ := pinnedToolTree(t)
+		require.NoError(t, os.RemoveAll(filepath.Join(dir, "message_send")))
+		cfg := config.Config{MemoryPath: filepath.Join(dir, "memory.db"), ToolsDir: dir}
+
+		_, err := buildToolRegistry(cfg, "test-agent", slog.New(slog.DiscardHandler))
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "required tools missing")
+		assert.Contains(t, err.Error(), "message_send")
+	})
+}

@@ -31,8 +31,18 @@ jobs:
   # without euid 0 and CAP_SYS_ADMIN, so on the default runner every one of
   # those cases skips and `go test` still prints ok — which is how deleting
   # the drop left the suite green (#604). A step cannot ask for a capability,
-  # so the job runs in a container that holds one: the same pairing the
-  # deployment gives the workspace container (deploy/local/).
+  # so the job runs in a container that holds one.
+  #
+  # What the tests run under is not what this container holds, and that is
+  # deliberate: `make test-privileged` narrows itself to the capability set the
+  # deployment grants the workspace before any case executes, reading that set
+  # from deploy/local/docker-compose.yml rather than from a copy here (#620).
+  # This file therefore names no capability the deployment owns — only the one
+  # the runtime does not grant by default and the narrowing cannot add back.
+  # The container's set is a superset on purpose: setpriv only ever drops, and
+  # keeping checkout at the runner's normal privilege is what lets the whole
+  # job be reproduced locally, which matters while #603 keeps the host from
+  # running any of it.
   privileged:
     runs-on: ubuntu-latest
     container:
@@ -41,8 +51,9 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # The image carries the toolchain, so no setup step runs here; the
-      # target refuses to run at all without root, and the family reports an
-      # unreachable boundary instead of skipping past it.
+      # target refuses to run at all without root, refuses to run wider than
+      # the deployment, and the family reports an unreachable boundary instead
+      # of skipping past it.
       - run: make test-privileged
 
   docker:

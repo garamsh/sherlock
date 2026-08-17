@@ -1,0 +1,308 @@
+############ internal/tool ############
+Starting...
+Gathering coverage... done in 69.73437ms
+ NOT COVERED CONDITIONALS_NEGATION at manifest.go:92:9
+ NOT COVERED CONDITIONALS_NEGATION at manifest.go:99:39
+ NOT COVERED CONDITIONALS_NEGATION at manifest.go:96:9
+      KILLED CONDITIONALS_NEGATION at manifest.go:80:56
+      KILLED CONDITIONALS_NEGATION at manifest.go:71:12
+      KILLED CONDITIONALS_NEGATION at manifest.go:37:9
+      KILLED CONDITIONALS_NEGATION at manifest.go:41:9
+      KILLED CONDITIONALS_NEGATION at manifest.go:74:15
+      KILLED CONDITIONALS_NEGATION at manifest.go:54:32
+      KILLED CONDITIONALS_NEGATION at manifest.go:33:9
+      KILLED CONDITIONALS_NEGATION at manifest.go:60:20
+ NOT COVERED CONDITIONALS_NEGATION at registry.go:74:12
+ NOT COVERED CONDITIONALS_NEGATION at registry.go:78:9
+ NOT COVERED CONDITIONALS_NEGATION at registry.go:82:14
+ NOT COVERED CONDITIONALS_NEGATION at registry.go:92:36
+ NOT COVERED CONDITIONALS_NEGATION at registry.go:95:15
+ NOT COVERED CONDITIONALS_NEGATION at registry.go:104:45
+ NOT COVERED CONDITIONALS_NEGATION at registry.go:117:9
+ NOT COVERED CONDITIONALS_NEGATION at registry.go:129:43
+ NOT COVERED CONDITIONALS_NEGATION at registry.go:136:10
+ NOT COVERED CONDITIONALS_NEGATION at registry.go:142:64
+ NOT COVERED CONDITIONALS_NEGATION at registry.go:166:12
+ NOT COVERED CONDITIONALS_NEGATION at registry.go:173:12
+ NOT COVERED CONDITIONALS_BOUNDARY at registry.go:188:18
+ NOT COVERED CONDITIONALS_NEGATION at registry.go:188:18
+ NOT COVERED CONDITIONALS_BOUNDARY at registry.go:203:59
+ NOT COVERED CONDITIONALS_NEGATION at registry.go:203:59
+ NOT COVERED CONDITIONALS_NEGATION at registry.go:246:57
+ NOT COVERED CONDITIONALS_NEGATION at registry.go:250:12
+ NOT COVERED CONDITIONALS_NEGATION at registry.go:256:61
+ NOT COVERED CONDITIONALS_NEGATION at registry.go:289:12
+ NOT COVERED CONDITIONALS_NEGATION at registry.go:301:9
+      KILLED CONDITIONALS_NEGATION at manifest.go:57:19
+      KILLED CONDITIONALS_NEGATION at manifest.go:128:34
+      KILLED CONDITIONALS_NEGATION at manifest.go:77:55
+      KILLED CONDITIONALS_NEGATION at manifest.go:138:9
+      KILLED CONDITIONALS_NEGATION at manifest.go:163:11
+      KILLED CONDITIONALS_NEGATION at manifest.go:169:11
+      KILLED CONDITIONALS_NEGATION at runner.go:57:9
+      KILLED CONDITIONALS_NEGATION at runner.go:42:24
+      KILLED CONDITIONALS_NEGATION at runner.go:53:9
+       LIVED CONDITIONALS_BOUNDARY at manifest.go:179:9
+      KILLED CONDITIONALS_NEGATION at manifest.go:183:11
+       LIVED CONDITIONALS_NEGATION at manifest.go:159:9
+       LIVED CONDITIONALS_BOUNDARY at manifest.go:159:9
+      KILLED CONDITIONALS_NEGATION at runner.go:61:9
+      KILLED CONDITIONALS_NEGATION at runner.go:64:29
+       LIVED CONDITIONALS_NEGATION at manifest.go:179:9
+      KILLED CONDITIONALS_NEGATION at runner.go:101:13
+      KILLED CONDITIONALS_NEGATION at runner.go:104:13
+      KILLED CONDITIONALS_NEGATION at runner.go:109:49
+ NOT COVERED CONDITIONALS_NEGATION at schema.go:64:19
+ NOT COVERED CONDITIONALS_NEGATION at schema.go:68:45
+ NOT COVERED CONDITIONALS_NEGATION at schema.go:68:59
+ NOT COVERED CONDITIONALS_NEGATION at schema.go:83:9
+ NOT COVERED CONDITIONALS_NEGATION at schema.go:96:46
+      KILLED CONDITIONALS_NEGATION at runner.go:142:18
+      KILLED CONDITIONALS_NEGATION at runner.go:155:9
+      KILLED CONDITIONALS_NEGATION at runner.go:162:15
+      KILLED CONDITIONALS_NEGATION at runner.go:132:43
+ NOT COVERED CONDITIONALS_NEGATION at tool.go:66:19
+ NOT COVERED CONDITIONALS_NEGATION at tool.go:76:65
+ NOT COVERED CONDITIONALS_NEGATION at tool.go:94:64
+      KILLED CONDITIONALS_NEGATION at runner.go:124:48
+      KILLED CONDITIONALS_NEGATION at runner.go:158:15
+      KILLED CONDITIONALS_NEGATION at runner.go:120:19
+      KILLED CONDITIONALS_NEGATION at schema.go:31:17
+      KILLED CONDITIONALS_NEGATION at schema.go:35:9
+      KILLED CONDITIONALS_NEGATION at schema.go:118:9
+      KILLED CONDITIONALS_NEGATION at tooltest/conformance.go:51:49
+      KILLED CONDITIONALS_NEGATION at tooltest/conformance.go:33:37
+      KILLED CONDITIONALS_NEGATION at schema.go:39:9
+      KILLED CONDITIONALS_NEGATION at tooltest/conformance.go:48:39
+      KILLED CONDITIONALS_NEGATION at schema.go:42:45
+      KILLED CONDITIONALS_NEGATION at tooltest/conformance.go:63:9
+      KILLED CONDITIONALS_NEGATION at schema.go:128:9
+      KILLED CONDITIONALS_NEGATION at schema.go:132:55
+      KILLED CONDITIONALS_NEGATION at tooltest/conformance.go:67:55
+      KILLED CONDITIONALS_NEGATION at tooltest/conformance.go:70:49
+      KILLED CONDITIONALS_NEGATION at spawnenv.go:49:45
+      KILLED ARITHMETIC_BASE at tooltest/conformance.go:128:33
+      KILLED ARITHMETIC_BASE at tooltest/conformance.go:128:29
+      KILLED ARITHMETIC_BASE at tooltest/conformance.go:140:39
+      KILLED ARITHMETIC_BASE at tooltest/conformance.go:155:56
+      KILLED CONDITIONALS_NEGATION at tooltest/conformance.go:97:50
+      KILLED CONDITIONALS_NEGATION at tooltest/conformance.go:82:46
+      KILLED CONDITIONALS_NEGATION at tooltest/conformance.go:128:56
+      KILLED CONDITIONALS_NEGATION at tooltest/conformance.go:115:50
+      KILLED CONDITIONALS_NEGATION at tooltest/conformance.go:93:14
+      KILLED ARITHMETIC_BASE at tooltest/conformance.go:155:41
+       LIVED CONDITIONALS_NEGATION at tooltest/conformance.go:138:51
+       LIVED CONDITIONALS_NEGATION at tooltest/conformance.go:140:73
+       LIVED CONDITIONALS_NEGATION at tooltest/conformance.go:151:56
+       LIVED CONDITIONALS_NEGATION at tooltest/conformance.go:154:69
+       LIVED CONDITIONALS_NEGATION at tooltest/conformance.go:154:47
+       LIVED CONDITIONALS_BOUNDARY at tooltest/conformance.go:154:69
+      KILLED CONDITIONALS_NEGATION at tooltest/conformance.go:172:46
+       LIVED CONDITIONALS_NEGATION at tooltest/conformance.go:155:80
+       LIVED CONDITIONALS_BOUNDARY at tooltest/conformance.go:172:68
+      KILLED CONDITIONALS_NEGATION at tooltest/conformance.go:176:43
+      KILLED CONDITIONALS_NEGATION at tooltest/conformance.go:172:68
+      KILLED CONDITIONALS_NEGATION at tooltest/conformance.go:184:87
+      KILLED CONDITIONALS_NEGATION at tooltest/conformance.go:181:49
+      KILLED CONDITIONALS_NEGATION at tooltest/conformance.go:199:11
+       LIVED CONDITIONALS_BOUNDARY at tooltest/conformance.go:200:20
+      KILLED CONDITIONALS_NEGATION at tooltest/conformance.go:200:20
+      KILLED CONDITIONALS_NEGATION at tooltest/manifest.go:20:9
+      KILLED CONDITIONALS_NEGATION at tooltest/conformance.go:196:56
+      KILLED CONDITIONALS_NEGATION at tooltest/manifest.go:36:59
+      KILLED CONDITIONALS_NEGATION at tooltest/manifest.go:32:9
+      KILLED CONDITIONALS_NEGATION at tooltest/manifest.go:40:13
+      KILLED CONDITIONALS_NEGATION at tooltest/structshape.go:50:16
+      KILLED CONDITIONALS_NEGATION at tooltest/structshape.go:25:20
+      KILLED CONDITIONALS_NEGATION at tooltest/structshape.go:22:48
+      KILLED CONDITIONALS_NEGATION at tooltest/structshape.go:41:45
+      KILLED CONDITIONALS_NEGATION at tooltest/structshape.go:83:16
+      KILLED CONDITIONALS_NEGATION at tooltest/structshape.go:28:21
+      KILLED CONDITIONALS_NEGATION at tooltest/structshape.go:57:53
+      KILLED CONDITIONALS_BOUNDARY at tooltest/structshape.go:83:16
+      KILLED INCREMENT_DECREMENT at tooltest/structshape.go:83:35
+      KILLED CONDITIONALS_NEGATION at tooltest/structshape.go:85:11
+      KILLED CONDITIONALS_NEGATION at tooltest/structshape.go:85:25
+
+Mutation testing completed in 10 seconds 112 milliseconds
+Killed: 77, Lived: 13, Not covered: 32
+Timed out: 0, Not viable: 0, Skipped: 0
+Test efficacy: 85.56%
+Mutator coverage: 73.77%
+### EXIT=0 for internal/tool ###
+############ internal/workspace/shell ############
+Starting...
+Gathering coverage... done in 83.510102ms
+ NOT COVERED CONDITIONALS_NEGATION at dumpable_linux.go:23:62
+ NOT COVERED CONDITIONALS_NEGATION at limits.go:31:38
+ NOT COVERED CONDITIONALS_NEGATION at dumpable_linux.go:45:63
+      KILLED ARITHMETIC_BASE at childenv.go:20:11
+      KILLED ARITHMETIC_BASE at childenv.go:19:11
+      KILLED ARITHMETIC_BASE at childenv.go:21:11
+      KILLED ARITHMETIC_BASE at limits.go:51:34
+      KILLED ARITHMETIC_BASE at limits.go:51:30
+      KILLED CONDITIONALS_NEGATION at limits.go:28:36
+      KILLED CONDITIONALS_NEGATION at dumpable_linux.go:44:28
+       LIVED CONDITIONALS_NEGATION at childenv.go:11:10
+       LIVED CONDITIONALS_NEGATION at childenv.go:15:10
+      KILLED CONDITIONALS_NEGATION at limits.go:63:10
+       LIVED ARITHMETIC_BASE at limits.go:48:47
+       LIVED ARITHMETIC_BASE at limits.go:48:37
+ NOT COVERED CONDITIONALS_NEGATION at limits_linux.go:46:9
+ NOT COVERED CONDITIONALS_NEGATION at limits_linux.go:59:54
+ NOT COVERED CONDITIONALS_NEGATION at limits_linux.go:73:9
+ NOT COVERED CONDITIONALS_NEGATION at limits_linux.go:78:12
+      KILLED ARITHMETIC_BASE at limits.go:66:80
+      KILLED ARITHMETIC_BASE at limits.go:64:18
+       LIVED CONDITIONALS_BOUNDARY at limits.go:28:18
+       LIVED CONDITIONALS_NEGATION at dumpable_linux.go:44:9
+      KILLED ARITHMETIC_BASE at limits.go:80:67
+      KILLED ARITHMETIC_BASE at limits.go:80:51
+      KILLED CONDITIONALS_NEGATION at limits.go:65:17
+       LIVED CONDITIONALS_BOUNDARY at limits.go:65:17
+      KILLED CONDITIONALS_NEGATION at limits.go:75:10
+      KILLED ARITHMETIC_BASE at process_linux.go:36:20
+      KILLED CONDITIONALS_NEGATION at limits.go:71:18
+      KILLED ARITHMETIC_BASE at process_linux.go:38:28
+      KILLED ARITHMETIC_BASE at process_linux.go:37:28
+      KILLED CONDITIONALS_NEGATION at process_linux.go:106:23
+      KILLED CONDITIONALS_NEGATION at process_linux.go:106:10
+      KILLED ARITHMETIC_BASE at process_linux.go:37:21
+      KILLED ARITHMETIC_BASE at process_linux.go:38:21
+       LIVED CONDITIONALS_NEGATION at process_linux.go:86:33
+      KILLED CONDITIONALS_BOUNDARY at process_linux.go:113:13
+      KILLED CONDITIONALS_NEGATION at process_linux.go:113:13
+      KILLED CONDITIONALS_NEGATION at process_linux.go:116:13
+       LIVED CONDITIONALS_NEGATION at process_linux.go:109:27
+      KILLED CONDITIONALS_NEGATION at process_linux.go:136:10
+      KILLED CONDITIONALS_NEGATION at process_linux.go:124:14
+ NOT COVERED CONDITIONALS_NEGATION at process_linux.go:205:28
+      KILLED CONDITIONALS_NEGATION at process_linux.go:145:10
+       LIVED CONDITIONALS_BOUNDARY at process_linux.go:116:13
+      KILLED CONDITIONALS_NEGATION at limits.go:28:18
+      KILLED CONDITIONALS_NEGATION at process_linux.go:160:27
+       LIVED CONDITIONALS_NEGATION at process_linux.go:154:27
+      KILLED CONDITIONALS_NEGATION at process_linux.go:192:10
+       LIVED CONDITIONALS_NEGATION at process_linux.go:171:15
+      KILLED CONDITIONALS_NEGATION at process_linux.go:213:13
+       LIVED CONDITIONALS_NEGATION at process_linux.go:174:17
+       LIVED CONDITIONALS_NEGATION at process_linux.go:178:13
+      KILLED CONDITIONALS_NEGATION at process_linux.go:204:25
+      KILLED CONDITIONALS_NEGATION at process_linux.go:215:38
+ NOT COVERED INCREMENT_DECREMENT at process_linux.go:304:10
+      KILLED CONDITIONALS_NEGATION at process_linux.go:229:9
+      KILLED CONDITIONALS_NEGATION at process_linux.go:255:15
+ NOT COVERED CONDITIONALS_NEGATION at process_linux.go:327:9
+ NOT COVERED CONDITIONALS_NEGATION at process_linux.go:330:30
+ NOT COVERED CONDITIONALS_NEGATION at process_linux.go:337:9
+       LIVED CONDITIONALS_NEGATION at process_linux.go:201:27
+      KILLED CONDITIONALS_NEGATION at process_linux.go:259:9
+      KILLED CONDITIONALS_NEGATION at process_linux.go:277:10
+      KILLED CONDITIONALS_NEGATION at process_linux.go:288:9
+      KILLED ARITHMETIC_BASE at process_linux.go:303:6
+      KILLED ARITHMETIC_BASE at process_linux.go:302:22
+      KILLED CONDITIONALS_BOUNDARY at process_linux.go:291:19
+      KILLED CONDITIONALS_NEGATION at process_linux.go:291:19
+      KILLED CONDITIONALS_NEGATION at process_linux.go:303:19
+      KILLED CONDITIONALS_NEGATION at process_linux.go:306:13
+       LIVED CONDITIONALS_NEGATION at process_linux.go:323:18
+
+Mutation testing completed in 10 seconds 610 milliseconds
+Killed: 45, Lived: 16, Not covered: 12
+Timed out: 0, Not viable: 0, Skipped: 0
+Test efficacy: 73.77%
+Mutator coverage: 83.56%
+### EXIT=0 for internal/workspace/shell ###
+############ internal/memory ############
+Starting...
+Gathering coverage... done in 275.331184ms
+ NOT COVERED ARITHMETIC_BASE at ranking.go:19:23
+ NOT COVERED ARITHMETIC_BASE at ranking.go:28:28
+ NOT COVERED ARITHMETIC_BASE at ranking.go:28:33
+      KILLED CONDITIONALS_NEGATION at read.go:36:43
+       LIVED ARITHMETIC_BASE at ranking.go:51:27
+       LIVED ARITHMETIC_BASE at ranking.go:50:43
+       LIVED ARITHMETIC_BASE at ranking.go:50:38
+      KILLED CONDITIONALS_NEGATION at read.go:56:43
+       LIVED ARITHMETIC_BASE at ranking.go:51:47
+       LIVED ARITHMETIC_BASE at ranking.go:51:59
+      KILLED CONDITIONALS_NEGATION at read.go:33:9
+       LIVED INVERT_NEGATIVES at ranking.go:51:38
+      KILLED CONDITIONALS_NEGATION at read.go:53:9
+       LIVED ARITHMETIC_BASE at ranking.go:51:38
+      KILLED CONDITIONALS_NEGATION at read.go:28:19
+      KILLED CONDITIONALS_NEGATION at service.go:137:24
+      KILLED CONDITIONALS_NEGATION at retain.go:26:24
+      KILLED CONDITIONALS_NEGATION at retain.go:23:24
+       LIVED CONDITIONALS_BOUNDARY at retain.go:26:24
+      KILLED CONDITIONALS_NEGATION at service.go:143:14
+      KILLED CONDITIONALS_NEGATION at retain.go:30:53
+       LIVED CONDITIONALS_BOUNDARY at retain.go:23:24
+      KILLED CONDITIONALS_NEGATION at service.go:140:25
+       LIVED CONDITIONALS_BOUNDARY at retain.go:27:25
+      KILLED CONDITIONALS_NEGATION at retain.go:17:9
+      KILLED CONDITIONALS_NEGATION at retain.go:27:25
+      KILLED ARITHMETIC_BASE at sqlite/sqlite.go:75:36
+      KILLED CONDITIONALS_NEGATION at service.go:146:18
+      KILLED CONDITIONALS_NEGATION at service.go:146:47
+      KILLED CONDITIONALS_NEGATION at service.go:156:15
+      KILLED CONDITIONALS_BOUNDARY at sqlite/sqlite.go:106:15
+      KILLED CONDITIONALS_NEGATION at sqlite/sqlite.go:80:9
+      KILLED CONDITIONALS_NEGATION at sqlite/sqlite.go:103:9
+      KILLED CONDITIONALS_NEGATION at sqlite/sqlite.go:76:9
+      KILLED CONDITIONALS_NEGATION at service.go:163:59
+      KILLED CONDITIONALS_NEGATION at sqlite/sqlite.go:117:9
+      KILLED CONDITIONALS_NEGATION at sqlite/sqlite.go:106:15
+      KILLED CONDITIONALS_NEGATION at sqlite/sqlite.go:88:36
+      KILLED CONDITIONALS_NEGATION at sqlite/sqlite.go:141:9
+      KILLED ARITHMETIC_BASE at sqlite/sqlite.go:197:51
+      KILLED CONDITIONALS_NEGATION at sqlite/sqlite.go:150:10
+      KILLED ARITHMETIC_BASE at sqlite/sqlite.go:197:45
+      KILLED ARITHMETIC_BASE at sqlite/sqlite.go:197:20
+      KILLED ARITHMETIC_BASE at sqlite/sqlite.go:197:12
+      KILLED ARITHMETIC_BASE at sqlite/sqlite.go:233:20
+      KILLED ARITHMETIC_BASE at sqlite/sqlite.go:232:35
+      KILLED CONDITIONALS_NEGATION at sqlite/sqlite.go:153:50
+      KILLED ARITHMETIC_BASE at sqlite/sqlite.go:232:43
+      KILLED ARITHMETIC_BASE at sqlite/sqlite.go:233:12
+       LIVED CONDITIONALS_NEGATION at sqlite/sqlite.go:161:19
+      KILLED CONDITIONALS_NEGATION at sqlite/sqlite.go:158:29
+      KILLED CONDITIONALS_NEGATION at sqlite/sqlite.go:198:9
+      KILLED CONDITIONALS_NEGATION at sqlite/sqlite.go:221:63
+      KILLED CONDITIONALS_NEGATION at sqlite/sqlite.go:205:10
+      KILLED CONDITIONALS_NEGATION at sqlite/sqlite.go:217:9
+      KILLED CONDITIONALS_NEGATION at sqlite/sqlite.go:234:9
+      KILLED CONDITIONALS_NEGATION at sqlite/sqlite.go:238:9
+      KILLED CONDITIONALS_NEGATION at sqlite/sqlite.go:246:50
+      KILLED CONDITIONALS_NEGATION at sqlite/sqlite.go:241:7
+      KILLED CONDITIONALS_NEGATION at sqlite/sqlite.go:259:9
+      KILLED CONDITIONALS_NEGATION at sqlite/sqlite.go:250:56
+      KILLED CONDITIONALS_NEGATION at store.go:53:30
+      KILLED CONDITIONALS_NEGATION at sqlite/sqlite.go:288:9
+      KILLED CONDITIONALS_NEGATION at sqlite/sqlite.go:306:8
+      KILLED CONDITIONALS_NEGATION at store.go:57:18
+      KILLED CONDITIONALS_NEGATION at sqlite/sqlite.go:266:24
+      KILLED CONDITIONALS_NEGATION at store.go:59:10
+      KILLED CONDITIONALS_NEGATION at store.go:72:9
+      KILLED CONDITIONALS_NEGATION at store.go:107:9
+      KILLED CONDITIONALS_NEGATION at store.go:76:9
+      KILLED CONDITIONALS_NEGATION at store.go:97:8
+      KILLED CONDITIONALS_NEGATION at store.go:110:17
+       LIVED CONDITIONALS_NEGATION at store.go:120:9
+       LIVED CONDITIONALS_BOUNDARY at store.go:110:17
+       LIVED CONDITIONALS_BOUNDARY at store.go:121:14
+      KILLED CONDITIONALS_NEGATION at store.go:121:14
+       LIVED CONDITIONALS_BOUNDARY at store.go:123:23
+      KILLED CONDITIONALS_NEGATION at store.go:123:23
+       LIVED INVERT_NEGATIVES at store.go:125:41
+       LIVED ARITHMETIC_BASE at store.go:125:41
+      KILLED INVERT_NEGATIVES at store.go:126:39
+      KILLED ARITHMETIC_BASE at store.go:126:39
+      KILLED CONDITIONALS_NEGATION at store.go:127:53
+
+Mutation testing completed in 13 seconds 72 milliseconds
+Killed: 63, Lived: 17, Not covered: 3
+Timed out: 0, Not viable: 0, Skipped: 0
+Test efficacy: 78.75%
+Mutator coverage: 96.39%
+### EXIT=0 for internal/memory ###

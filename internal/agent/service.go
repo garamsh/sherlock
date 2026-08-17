@@ -45,7 +45,7 @@ type ToolClient interface {
 // internal/agent/memory implements it over the memory service and the
 // runtime wires it; nil means no recall.
 type Recaller interface {
-	Recall(ctx context.Context, task string) ([]RecalledMemory, error)
+	Recall(ctx context.Context, task string) (Recalled, error)
 }
 
 // WritebackSink receives the memory operations the turn ended with. A
@@ -184,14 +184,14 @@ func (s *session) Run(ctx context.Context, task string) (response string, err er
 			return "", fmt.Errorf("model chat: %w", err)
 		}
 		write, calls := splitWriteback(resp.ToolCalls)
+		if write != nil {
+			return s.finish(ctx, *write)
+		}
 		s.history = append(s.history, Message{
 			Role:      RoleAssistant,
 			Content:   resp.Content,
 			ToolCalls: resp.ToolCalls,
 		})
-		if write != nil {
-			return s.finish(ctx, *write)
-		}
 		if len(calls) == 0 {
 			// The model tried to end the turn without writing. It is
 			// not ended: a turn that returns a reply and stores
@@ -257,11 +257,18 @@ func splitWriteback(calls []ToolCall) (*ToolCall, []ToolCall) {
 // here where a malformed response was once a warn: the arguments are the
 // only place the turn's reply and its facts arrive, so there is nothing
 // to hand back and nothing to store (issue #615).
+// A turn's history keeps the reply rather than the call that carried
+// it. The writeback call is the turn's last act and nothing answers it,
+// so leaving it in history leaves a tool call with no result — which a
+// provider rejects on the next turn, and did: MiniMax returns HTTP 400
+// "tool call result does not follow tool call" on the turn after the
+// first, which made a rolling session unusable past turn one (#630).
 func (s *session) finish(ctx context.Context, call ToolCall) (string, error) {
 	reply, ops, parseWarn, err := ParseWriteback(string(call.Input))
 	if err != nil {
 		return "", err
 	}
+	s.history = append(s.history, Message{Role: RoleAssistant, Content: reply})
 	if parseWarn != nil {
 		s.emit(ctx, Event{Kind: EventWritebackError, Turn: s.turn, Error: parseWarn.Error()})
 		return "", parseWarn
@@ -362,19 +369,25 @@ func toolBudgetNotice(name, description string) string {
 	return notice
 }
 
-func (s *session) recall(ctx context.Context, task string) ([]RecalledMemory, error) {
+func (s *session) recall(ctx context.Context, task string) (Recalled, error) {
 	if s.opts.Recaller == nil {
-		return nil, nil
+		return Recalled{}, nil
 	}
 	recalled, err := s.opts.Recaller.Recall(ctx, task)
 	if err != nil {
-		return nil, fmt.Errorf("recall: %w", err)
+		return Recalled{}, fmt.Errorf("recall: %w", err)
 	}
 	var ids []string
-	for _, m := range recalled {
+	for _, m := range recalled.Memories {
 		ids = append(ids, m.ID)
 	}
-	s.emit(ctx, Event{Kind: EventRecall, Turn: s.turn, RecalledIDs: ids, RecalledCount: len(ids)})
+	s.emit(ctx, Event{
+		Kind:          EventRecall,
+		Turn:          s.turn,
+		RecalledIDs:   ids,
+		RecalledCount: len(ids),
+		RecallOutcome: recalled.Outcome,
+	})
 	return recalled, nil
 }
 
@@ -414,12 +427,21 @@ func (s *session) emit(ctx context.Context, e Event) {
 // frameContext composes the per-turn system block: the task statement
 // (frame) followed by the recalled memories, with an explicit statement
 // when recall came back empty (ADR 0006 step 2).
-func frameContext(task string, recalled []RecalledMemory) string {
+// frameContext renders the turn's task and what recall reached. The two
+// emptinesses are stated apart (ADR 0019): a question memory could not
+// place is not a question memory had no answer to, and a model told the
+// second when the first happened is being told something false.
+func frameContext(task string, recalled Recalled) string {
 	out := "## Current task\n" + task + "\n\n## Recalled memories\n"
-	if len(recalled) == 0 {
-		return out + "No relevant memories."
+	if len(recalled.Memories) == 0 {
+		switch recalled.Outcome {
+		case RecallUnplaced:
+			return out + "Memory was not consulted: this task did not resolve to an address."
+		default:
+			return out + "No relevant memories."
+		}
 	}
-	for _, m := range recalled {
+	for _, m := range recalled.Memories {
 		out += fmt.Sprintf("- [%s] (%s): %s\n", m.ID, m.Age, m.Content)
 	}
 	return out

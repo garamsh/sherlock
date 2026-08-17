@@ -54,12 +54,14 @@ func (m *gatedModel) Chat(ctx context.Context, msgs []agent.Message, tools []too
 	return m.inner.Chat(ctx, msgs, tools)
 }
 
-// replyScript scripts one full turn per message: message_send with the
-// given reply, then a final response carrying a memory write.
+// replyScript scripts one full turn per message: the read step's call,
+// message_send with the given reply, then the reserved writeback the
+// turn ends on.
 func replyScript(replies ...string) *agent.ScriptedModel {
 	var steps []agent.ScriptedStep
 	for _, reply := range replies {
 		steps = append(steps,
+			resolveStep(),
 			agent.ScriptedStep{ToolCalls: []agent.ToolCall{{
 				Name: "message_send",
 				Input: json.RawMessage(
@@ -169,7 +171,7 @@ func TestGateway_EndToEnd(t *testing.T) {
 
 	// The SSE subscriber observed the loop events of both turns, in
 	// order: turn 1 fully finishes before turn 2 starts.
-	got := collectEvents(t, events, 8)
+	got := collectEvents(t, events, 10)
 	var kinds []string
 	var startedTasks []string
 	for _, e := range got {
@@ -182,17 +184,13 @@ func TestGateway_EndToEnd(t *testing.T) {
 	assert.Contains(t, startedTasks[0], "] unknown: first",
 		"the turn input renders the message with its ID and sender (ADR 0015)")
 	assert.Contains(t, startedTasks[1], "] unknown: second")
-	// No recall event, because there is no recall step: asked in words
-	// an addressed store answers nothing at all, so #582 wired no
-	// Recaller and #336 step 3 is the step that reads a question into an
-	// address (ADR 0018). This is the shipped regression the sequence
-	// carries between its second and third merges, and it is asserted
-	// rather than absent so that restoring the step has to move a test.
-	// The writeback fires once per turn now, when the turn ends on the
+	// A recall event per turn: #630 wired the read step, so every turn
+	// resolves its task into an address before the act loop (ADR 0019).
+	// The writeback fires once per turn, when the turn ends on the
 	// reserved call, rather than once per model response (issue #615).
 	assert.Equal(t, []string{
-		"turn_started", "tool_call", "writeback", "turn_finished",
-		"turn_started", "tool_call", "writeback", "turn_finished",
+		"turn_started", "recall", "tool_call", "writeback", "turn_finished",
+		"turn_started", "recall", "tool_call", "writeback", "turn_finished",
 	}, kinds)
 
 	// One agent per process: a message naming another agent ID gets 404.
@@ -344,4 +342,12 @@ func writebackStep(document string) agent.ScriptedStep {
 		Name:  agent.MemoryWriteTool,
 		Input: json.RawMessage(document),
 	}}}
+}
+
+// resolveStep scripts the read step's model call, which every turn now
+// makes before the act loop (ADR 0019). Content and no tool call is the
+// step placing no address, which is what a turn whose task names no
+// stored fact resolves to.
+func resolveStep() agent.ScriptedStep {
+	return agent.ScriptedStep{Content: "no address"}
 }

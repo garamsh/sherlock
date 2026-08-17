@@ -82,11 +82,14 @@ func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink)
 		tools = nullClient{}
 	}
 
-	session := agent.NewSession(f.NewModel(agentID), tools, agent.Options{
-		// No Recaller: asked in words an addressed store answers
-		// nothing at all (ADR 0018), and the step that reads a
-		// question into an address is #336 step 3. A session without
-		// one states the emptiness rather than injecting anything.
+	// One model, both places. The reasoning loop and the read step run
+	// on the same provider: nothing about resolving a question into an
+	// address needs a different one, and a second provider section for
+	// a resolver would be the shape #582 deleted (ADR 0019).
+	model := f.NewModel(agentID)
+
+	session := agent.NewSession(model, tools, agent.Options{
+		Recaller:           agentmemory.Recall{Svc: memSvc, Model: model},
 		Writeback:          agentmemory.Writeback{Svc: memSvc},
 		Events:             events,
 		Compactor:          agentmemory.Compactor{MaxHistoryMessages: maxHistoryMessages},

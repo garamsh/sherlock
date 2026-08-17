@@ -116,10 +116,16 @@ type eventPayload struct {
 	Response   string              `json:"response,omitempty"`
 	Error      string              `json:"error,omitempty"`
 	// RecalledIDs and RecalledCount carry the recall event's injected
-	// memories (issue #325).
-	RecalledIDs   []string `json:"recalled_ids,omitempty"`
-	RecalledCount int      `json:"recalled_count,omitempty"`
-	MessageIDs    []string `json:"message_ids,omitempty"`
+	// memories (issue #325); RecallOutcome says how the read step
+	// reached them, so a question memory could not place is
+	// distinguishable on the stream from one it had no answer to
+	// (ADR 0019). Without it an operator cannot tell whether the read
+	// step works, and the running system is the only place that
+	// evidence comes from.
+	RecalledIDs   []string            `json:"recalled_ids,omitempty"`
+	RecalledCount int                 `json:"recalled_count,omitempty"`
+	RecallOutcome agent.RecallOutcome `json:"recall_outcome,omitempty"`
+	MessageIDs    []string            `json:"message_ids,omitempty"`
 }
 
 // events streams the agent's loop events as server-sent events.
@@ -167,6 +173,7 @@ func (h *handler) events(w http.ResponseWriter, r *http.Request) {
 				Error:         e.Error,
 				RecalledIDs:   e.RecalledIDs,
 				RecalledCount: e.RecalledCount,
+				RecallOutcome: e.RecallOutcome,
 				MessageIDs:    e.MessageIDs,
 			})
 			if err != nil {

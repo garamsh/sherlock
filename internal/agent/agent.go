@@ -53,6 +53,37 @@ type RecalledMemory struct {
 	Age     string
 }
 
+// RecallOutcome says how the read step ended, so an operator can tell a
+// question memory was never asked from a question it had no answer to.
+// ADR 0019 requires the two apart: the design's accuracy cannot be
+// measured here, so the running system is the only place that evidence
+// comes from, and a stream that collapses "memory was not consulted"
+// into "memory was empty" teaches nothing.
+type RecallOutcome string
+
+const (
+	// RecallUnplaced means the step reached no address: it named no
+	// subject, so nothing was read.
+	RecallUnplaced RecallOutcome = "unplaced"
+	// RecallAddressed means the address the step placed held something.
+	RecallAddressed RecallOutcome = "addressed"
+	// RecallWidened means the address held nothing and the subject
+	// answered instead. It is reported because ADR 0019 defers an
+	// ordering until a subject read is observed to exceed the budget,
+	// and this is what would show one.
+	RecallWidened RecallOutcome = "widened"
+	// RecallEmpty means an address was placed and neither it nor the
+	// subject held anything.
+	RecallEmpty RecallOutcome = "empty"
+)
+
+// Recalled is what the recall step produced: the memories injected and
+// how the read reached them.
+type Recalled struct {
+	Memories []RecalledMemory
+	Outcome  RecallOutcome
+}
+
 // MemoryAddress is where a fact is held (ADR 0018): the subject it is
 // about, the question it answers, and whatever restriction the sentence
 // puts on that question. A statement that narrows its question narrows
@@ -136,6 +167,10 @@ type Event struct {
 	// RecalledCount is their number.
 	RecalledIDs   []string
 	RecalledCount int
+	// RecallOutcome says how the read step reached what it injected, so
+	// an unplaced question and an empty address are distinguishable on
+	// the stream (ADR 0019). Empty on every event but recall.
+	RecallOutcome RecallOutcome
 	// MessageIDs names the inbound messages the turn drained; the
 	// gateway stamps it on terminal events (ADR 0015). The session
 	// never sets it.

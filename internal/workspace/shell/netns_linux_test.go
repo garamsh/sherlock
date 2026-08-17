@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -35,14 +36,15 @@ func TestNetnsProbeHelper(t *testing.T) {
 	os.Exit(0)
 }
 
-// probeBinary copies the test binary into a world-accessible path so the
-// child — running as the agent UID — can exec it as the probe.
+// probeBinary copies the test binary into a path the child — running as
+// the agent UID — can exec as the probe. Both the file and every directory
+// above it have to be reachable by that account, which is what
+// execAccountDir provides.
 func probeBinary(t *testing.T) string {
 	t.Helper()
 	src, err := os.Executable()
 	require.NoError(t, err)
-	dir := t.TempDir()
-	require.NoError(t, os.Chmod(dir, 0o755))
+	dir := execAccountDir(t)
 	dst := filepath.Join(dir, "probe")
 	data, err := os.ReadFile(src)
 	require.NoError(t, err)
@@ -73,6 +75,9 @@ func runProbe(t *testing.T, executor shell.Executor, req shell.Request) shell.Re
 		return res
 	}
 	if errors.Is(err, shell.ErrAgentUIDUnavailable) {
+		if privilegedRun() {
+			t.Fatalf("GAGENT_PRIVILEGED_TESTS is set but this host cannot create the isolation namespace, so the run cannot report on it: %v", err)
+		}
 		t.Skipf("this host cannot create the isolation namespace: %v", err)
 	}
 	what := "the child could not be started"
@@ -125,6 +130,13 @@ func TestProcessExecutor_NoNetworkBlocksLoopback(t *testing.T) {
 		Env:     []string{"GAGENT_NETNS_PROBE_ADDR=" + ln.Addr().String()},
 	}
 	executor := shell.NewProcessExecutor(testExecUID, 5*time.Second)
+	// The probe is this test binary, and a Go runtime reserves more address
+	// space at startup than the default cap allows — under it the child dies
+	// in `mallocinit` before it dials anything, which is a run that says
+	// nothing about the network. The cap is not what this case is about, so
+	// it is raised rather than worked around; that the caps bind at all is
+	// pinned by the ulimit cases in process_test.go.
+	executor.RLimits.AddressSpace = 4 * 1024 * 1024 * 1024
 
 	res := runProbe(t, executor, shell.Request{
 		Command:   req.Command,
@@ -141,23 +153,72 @@ func TestProcessExecutor_NoNetworkBlocksLoopback(t *testing.T) {
 		"the same child without the namespace reaches the loopback")
 }
 
-// TestProcessExecutor_LoopbackDownInNamespace observes the namespace
-// directly: a fresh netns holds only the loopback interface, and it is
-// down (flags 0x8 — LOOPBACK without UP/RUNNING). Needs a root process
-// that can unshare a network namespace; it skips when the host refuses
-// one.
-func TestProcessExecutor_LoopbackDownInNamespace(t *testing.T) {
+// TestProcessExecutor_NamespaceCarriesNoNetwork observes the namespace
+// directly, by running one observation twice — inside the namespace and
+// outside it — and comparing. Three things hold inside: a loopback exists,
+// no route does, and the host's interfaces are not all there. The pair is
+// what makes those host-independent: a fresh netns is not empty in the
+// sense of holding one device, because the kernel instantiates a fallback
+// device per loaded tunnel module (`gre0`, `sit0`, `tunl0` and the rest),
+// and which modules are loaded is the host's business. What is always true
+// is that nothing is routable and that the host's own devices did not come
+// along.
+//
+// It reads procfs, not sysfs. A sysfs mount is tagged with the network
+// namespace of whoever mounted it, so a `/sys/class/net` inherited across
+// a fresh netns still lists the mounter's interfaces and can never answer
+// this question — the child would have to remount sysfs, which it has no
+// privilege to do. `/proc/net` is `/proc/self/net`, which is per-process
+// and does answer it.
+//
+// Needs a root process that can unshare a network namespace; it skips when
+// the host refuses one, unless the run declared itself privileged.
+func TestProcessExecutor_NamespaceCarriesNoNetwork(t *testing.T) {
 	requireRoot(t)
 	executor := shell.NewProcessExecutor(testExecUID, 5*time.Second)
+	observe := "cat /proc/net/dev; echo " + routeMarker + "; cat /proc/net/route"
 
-	res := runProbe(t, executor, shell.Request{
-		Command:   "ls /sys/class/net && cat /sys/class/net/lo/flags",
-		NoNetwork: true,
-	})
+	isolated := runProbe(t, executor, shell.Request{Command: observe, NoNetwork: true})
+	host := runProbe(t, executor, shell.Request{Command: observe})
 
-	assert.Equal(t, "lo\n0x8\n", res.Stdout,
-		"the namespace is empty but for a down loopback (exit=%d, stderr=%q)",
-		res.ExitCode, res.Stderr)
+	isolatedDevices, isolatedRoutes := splitNetObservation(t, isolated)
+	hostDevices, hostRoutes := splitNetObservation(t, host)
+
+	assert.Contains(t, isolatedDevices, "lo",
+		"the namespace holds a loopback (exit=%d, stderr=%q)", isolated.ExitCode, isolated.Stderr)
+	assert.Empty(t, isolatedRoutes,
+		"nothing is routable from inside the namespace (devices=%v, stderr=%q)",
+		isolatedDevices, isolated.Stderr)
+	assert.NotEmpty(t, hostRoutes,
+		"the same child without the namespace keeps the host's routes, which is what makes the empty table above a result")
+	assert.NotSubset(t, isolatedDevices, hostDevices,
+		"the namespace is not the host's: at least one host device did not come along (isolated=%v host=%v)",
+		isolatedDevices, hostDevices)
+}
+
+// routeMarker separates the two files the namespace observation reads, so
+// one child reports both and neither is inferred from the other's absence.
+const routeMarker = "==ROUTE=="
+
+// splitNetObservation reads the child's report: the interface names in
+// /proc/net/dev, whose first two lines are a two-row header, and the route
+// entries in /proc/net/route, whose first line is a header.
+func splitNetObservation(t *testing.T, res shell.Result) (devices, routes []string) {
+	t.Helper()
+	parts := strings.SplitN(res.Stdout, routeMarker+"\n", 2)
+	require.Len(t, parts, 2, "the child reported both files (stdout=%q)", res.Stdout)
+
+	dev := strings.Split(strings.TrimRight(parts[0], "\n"), "\n")
+	require.Greater(t, len(dev), 2, "/proc/net/dev carries its two header rows (stdout=%q)", parts[0])
+	for _, line := range dev[2:] {
+		name, _, found := strings.Cut(line, ":")
+		require.True(t, found, "an interface row names its interface before the colon: %q", line)
+		devices = append(devices, strings.TrimSpace(name))
+	}
+
+	route := strings.Split(strings.TrimRight(parts[1], "\n"), "\n")
+	require.NotEmpty(t, route, "/proc/net/route carries its header row (stdout=%q)", parts[1])
+	return devices, route[1:]
 }
 
 // pythonProbe returns a python3 one-liner connecting to addr and exiting

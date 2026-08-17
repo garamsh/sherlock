@@ -139,7 +139,14 @@ func TestParseCapEff(t *testing.T) {
 // result; the euid check is bypassed by running as root.
 func TestProcessExecutor_RootWithoutCapSysAdminReportsAgentUIDUnavailable(t *testing.T) {
 	if os.Geteuid() != 0 {
-		t.Skip("this case needs root; run with `sudo -E go test ./internal/workspace/shell/...`")
+		// Same declaration the external test package's requireRoot honors,
+		// inlined because a helper cannot cross the two test packages in this
+		// directory: a run that promised privilege reports the absence of it
+		// rather than skipping past it.
+		if os.Getenv("GAGENT_PRIVILEGED_TESTS") != "" {
+			t.Fatalf("GAGENT_PRIVILEGED_TESTS is set but this run has euid %d", os.Geteuid())
+		}
+		t.Skip("this case needs root; run `make test-privileged`")
 	}
 	exec := NewProcessExecutor(testExecUID, 5*time.Second)
 	exec.netNS = false

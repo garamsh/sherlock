@@ -1,0 +1,64 @@
+Hand-deletion runs, verbatim harness output, recovered from the run's transcript.
+Tree: 949ac99. Round 1 is M1-M9, round 2 is M2b, M10, M11, M12.
+
+=== round 1 ===
+M1: package=SURVIVED suite=KILLED  (drift pin never enforced (call site deleted))
+M2: does not compile (not a viable mutant)
+M3: package=SURVIVED suite=KILLED  (a tool the pin set does not name is accepted)
+M4: package=SURVIVED suite=SURVIVED  (the privilege drop is removed (child keeps root))
+M5: package=KILLED suite=-  (the wrong-account refusal is removed)
+M6: package=SURVIVED suite=SURVIVED  (netns isolation dropped for the privileged path)
+M7: package=KILLED suite=-  (a replacement supersedes nothing (behaves as a join))
+M8: package=KILLED suite=-  (an unknown operation is accepted)
+M9: package=KILLED suite=-  (an empty value is accepted)
+
+==== SUMMARY ====
+id   pkg tests  full suite  description
+M1   SURVIVED   KILLED      drift pin never enforced (call site deleted)
+M2   NO-COMPILE -           a drifted manifest hash is accepted
+M3   SURVIVED   KILLED      a tool the pin set does not name is accepted
+M4   SURVIVED   SURVIVED    the privilege drop is removed (child keeps root)
+M5   KILLED     -           the wrong-account refusal is removed
+M6   SURVIVED   SURVIVED    netns isolation dropped for the privileged path
+M7   KILLED     -           a replacement supersedes nothing (behaves as a join)
+M8   KILLED     -           an unknown operation is accepted
+M9   KILLED     -           an empty value is accepted
+
+viable mutants: 8
+survived their own package's tests: 4
+survived the entire suite:          2
+
+tree clean after restore: YES
+
+=== round 2 ===
+M2b: package=SURVIVED suite=KILLED  (a drifted manifest hash is accepted (viable form))
+M10: package=SURVIVED suite=SURVIVED  (duplicate tool names are accepted)
+M11: SKIPPED (no safe textual anchor)
+M12: package=KILLED suite=-  (unprivileged netns isolation removed (single-account path))
+
+==== ROUND 2 SUMMARY ====
+M2b   SURVIVED    KILLED      a drifted manifest hash is accepted (viable form)
+M10   SURVIVED    SURVIVED    duplicate tool names are accepted
+M12   KILLED      -           unprivileged netns isolation removed (single-account path)
+
+tree clean: YES
+
+=== gremlins totals, as the run reported them ===
+internal/tool                killed= 77 lived= 13 notcovered= 32
+internal/workspace/shell     killed= 45 lived= 16 notcovered= 12
+internal/memory              killed= 63 lived= 17 notcovered= 3
+
+TOTAL killed=185 lived=46 notcovered=47  examined=278
+
+=== survivors: helper pkg vs production ===
+tooltest (test-helper pkg): 9
+production code:            37
+
+=== re-run of the two whole-suite survivors in internal/workspace/shell ===
+Tree: b4093e3, two commits after the run above. Neither commit touches this
+package, and both mutants still survive.
+
+HEAD: b4093e3
+M4: package=SURVIVED suite=SURVIVED  (the privilege drop is removed (child keeps root))
+M6: package=SURVIVED suite=SURVIVED  (netns isolation dropped for the privileged path)
+tree clean: YES

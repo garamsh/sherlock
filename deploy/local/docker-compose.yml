@@ -41,10 +41,19 @@ services:
       - agent
     # The executor's privilege drop, made real (ADR 0008, ADR 0010):
     # SETUID/SETGID for the child credential drop, CHOWN for the
-    # workspace-directory handover, SYS_ADMIN for the netns unshare.
-    # Nothing else.
+    # workspace-directory handover, SYS_ADMIN for the netns unshare, and
+    # KILL for the deadline.
+    #
+    # KILL is the one that reads like a spare. It is not: the drop leaves
+    # the child owning neither of the executor's uids, and kill(2) then
+    # permits a signal only from a holder of CAP_KILL — root is no
+    # substitute once the capability is dropped. Without it the SIGKILL on
+    # expiry silently does nothing and a command outlives the deadline it
+    # was given (#612). The executor refuses every call rather than accept
+    # that, so removing this line stops exec working instead of quietly
+    # unbounding it. Nothing else.
     cap_drop: ["ALL"]
-    cap_add: ["SETUID", "SETGID", "CHOWN", "SYS_ADMIN"]
+    cap_add: ["SETUID", "SETGID", "CHOWN", "SYS_ADMIN", "KILL"]
     environment:
       GAGENT_WORKSPACE: "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}/workspace"
       # The exec UID must be an account nothing else on the host runs

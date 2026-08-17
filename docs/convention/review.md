@@ -8,6 +8,7 @@ What makes a PR review valid, and how authors respond. Applies to every review a
 - Citing violations
 - Blockers and nits
 - Single-account setups
+- Reviewing your own change
 - Responding to a review (author)
 
 ## Submitting a review
@@ -68,6 +69,14 @@ When the PM and authors share one GitHub account, `comment` is the only review s
 
 - **Approve.** Post the review, then merge immediately — the merge is the approval.
 - **Request changes.** Post the review and leave the PR open. The author responds to it as to any request-changes review.
+
+## Reviewing your own change
+
+One session sometimes holds both roles, and the artifacts do not say so on their own: `git author` distinguishes the identities, and a change the author also reviewed looks from the outside like a change two parties agreed on.
+
+- **The review states that its author wrote the change**, beside the decision.
+- **The `Depth` row names what shared authorship left unchecked.** Depth asks whether the change is right rather than whether it follows the rules, and the author is the one reader who cannot arrive at it fresh. `pass` alone asserts a check this arrangement cannot make.
+- Nothing else relaxes. Every other row means what it means and carries the evidence it would otherwise carry.
 
 ## Responding to a review (author)
 

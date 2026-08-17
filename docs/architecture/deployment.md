@@ -125,8 +125,9 @@ Every fatal path exits **1** and prints `Error: <message>`; nothing distinguishe
 | Certificate/key unparseable or mismatched; client CA unreadable or holding no PEM | agent | `tls: load server certificate: …` / `tls: client CA "…" holds no PEM certificates` |
 | Non-loopback `addr` without a `tls:` section | agent | `addr "0.0.0.0:8080" is not a loopback bind: serving beyond localhost requires the tls: config section (ADR 0012)` |
 | Non-loopback `addr` | workspace | `addr "0.0.0.0:8081" is not a loopback bind: the gRPC listener is unauthenticated and serves loopback only` |
-| `provider: openai` with the named key variable unset or empty | agent | `model provider "openai": environment variable OPENAI_API_KEY is not set or is empty` |
-| Unknown provider name | agent | `unknown model provider "…" (want "mock" or "openai")` |
+| `provider: openai-compatible` with the named key variable unset or empty | agent | `model.provider "openai-compatible": environment variable OPENAI_API_KEY is not set or is empty` |
+| Unknown `model.provider` value | agent | `unknown model.provider "…" (want "mock", or "openai-compatible" for any endpoint speaking the OpenAI chat-completions wire protocol)` |
+| `provider: openai`, the value retired by #613 | agent | `model.provider "openai" names a vendor where it selects a wire protocol: set it to "openai-compatible", which is the same protocol and the same wiring` |
 | Tools directory missing or unreadable | agent | `tool registry: tools directory "./tools" does not exist` |
 | A manifest is unreadable, is not JSON, carries an unknown field, or omits `name`/`command` | agent | `load tools/foo/manifest.json: parse manifest: …` |
 | A manifest carries the removed `env` field (#550) | agent | `load tools/foo/manifest.json: parse manifest: json: unknown field "env"` |

@@ -51,7 +51,7 @@ func TestResolveConfig_ModelSection(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
 	contents := "model:\n" +
-		"  provider: openai\n" +
+		"  provider: openai-compatible\n" +
 		"  base-url: http://localhost:11434/v1\n" +
 		"  model: llama3.2\n" +
 		"  api-key-env: OLLAMA_KEY\n" +
@@ -61,7 +61,7 @@ func TestResolveConfig_ModelSection(t *testing.T) {
 	cfg, err := config.Resolve(agentFlags(t))
 	require.NoError(t, err)
 
-	assert.Equal(t, "openai", cfg.Model.Provider)
+	assert.Equal(t, "openai-compatible", cfg.Model.Provider)
 	assert.Equal(t, "http://localhost:11434/v1", cfg.Model.BaseURL)
 	assert.Equal(t, "llama3.2", cfg.Model.Model)
 	assert.Equal(t, "OLLAMA_KEY", cfg.Model.APIKeyEnv)

@@ -10,7 +10,16 @@ addr: "127.0.0.1:8080"
 # memory-path: data/memory.db            # default; the agent's SQLite memory file
 # workspace-addr: "127.0.0.1:8081"        # default; gRPC endpoint of the agent's workspace
 model:
+  # provider names the wire protocol the endpoint speaks, not the vendor:
+  # mock (scripted, offline) or openai-compatible. base-url is what picks
+  # the vendor, so OpenAI, MiniMax, Ollama and vLLM share one value here.
   provider: mock
+# The MiniMax configuration this project runs on (README.md §Pointing at a
+# MiniMax endpoint, which also records what that endpoint does not honour):
+#   provider: openai-compatible
+#   base-url: https://api.minimax.io/v1
+#   model: MiniMax-M2
+#   api-key-env: MINIMAX_KEY
 # Tools: the agent reads ./tools/<name>/manifest.json at startup
 # (ADR 0009 §Decision). The four first-party tools (files, shell_exec,
 # message_send, github) ship in place under tools/; a `make build-tools`

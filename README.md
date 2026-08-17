@@ -80,8 +80,8 @@ Agent keys (`gagent agent`; see `gagent.yaml` for an example):
 | `workspace-addr` | `--workspace-addr` | `127.0.0.1:8081` (gRPC endpoint of the agent's workspace. The agent does not dial it; it publishes the value as `GAGENT_WORKSPACE_ADDR` to every tool it spawns, and the tools that need files or exec dial it themselves. A wrong address surfaces at the first tool call, not at startup — the agent's only workspace setting) |
 | `tools-dir` | — | `./tools` (the directory manifests are read from at startup) |
 | `tools.pins` | — | unset (the accepted tool set, one manifest SHA-256 per tool name — see §Adding tools. Unset loads the tree unpinned and warns; present and naming no tool fails startup) |
-| `model.provider` | — | `mock` (scripted, offline) or `openai` |
-| `model.base-url` | — | `https://api.openai.com/v1` (any OpenAI-compatible endpoint, e.g. Ollama/vLLM) |
+| `model.provider` | — | `mock` (scripted, offline) or `openai-compatible`. It names the wire protocol the endpoint speaks, not the vendor: one value serves OpenAI, MiniMax, Ollama and vLLM alike, and `model.base-url` is what picks between them |
+| `model.base-url` | — | `https://api.openai.com/v1` (any OpenAI-compatible endpoint, e.g. MiniMax/Ollama/vLLM — see §Pointing at a MiniMax endpoint) |
 | `model.model` | — | `gpt-4o-mini` |
 | `model.api-key-env` | — | `OPENAI_API_KEY` (name of the env var holding the key — the key itself never goes in the config file) |
 | `model.timeout` | — | `60s` (one chat-completions request; raise for slow local endpoints like CPU-served Ollama/vLLM) |
@@ -97,6 +97,24 @@ Workspace keys (`gagent workspace`; see `workspace.yaml` for an example):
 | `workspace` | `--workspace` | `data/workspace` (workspace directory, created on first use; Exec children work here by default) |
 | `exec-uid` | `--exec-uid` | `1001` (UID Exec children run as; single-account mode: set to the workspace's own UID — any other unprivileged value fails closed with `agent_uid unavailable`; a privileged workspace also chowns the workspace directory to it) |
 | `exec-timeout` | `--exec-timeout` | `30s` (per-call ceiling for Exec commands) |
+
+### Pointing at a MiniMax endpoint
+
+MiniMax speaks the OpenAI chat-completions protocol, so it needs no code and no `model.provider` value of its own. The protocol value stays `openai-compatible` and `model.base-url` is what picks the vendor:
+
+```yaml
+model:
+  provider: openai-compatible
+  base-url: https://api.minimax.io/v1
+  model: MiniMax-M2
+  api-key-env: MINIMAX_KEY
+```
+
+The key never goes in the file — `api-key-env` names the environment variable holding it (ADR 0003).
+
+Models the endpoint lists: `MiniMax-M3`, `MiniMax-M2.7`, `MiniMax-M2.7-highspeed`, `MiniMax-M2.5`, `MiniMax-M2.5-highspeed`, `MiniMax-M2.1`, `MiniMax-M2.1-highspeed`, `MiniMax-M2`. `https://api.minimaxi.com/v1` and `https://api.minimax.chat/v1` both answer 401; only `api.minimax.io` authenticates.
+
+**One asymmetry an operator has to know, because "OpenAI-compatible" does not imply it.** On this endpoint a *tool* schema is enforced — a call returns the declared function with well-formed JSON arguments — while a *response* schema is not: `response_format: json_schema` is accepted with HTTP 200 and ignored. Tool calling holds; the response schema is decoration. #615 holds the measurements and owns what to do about it. This note is here so the difference is met at the config line rather than after a turn. Probed 2026-08-17; re-check against the endpoint before relying on either half.
 
 ### Agent ego
 
@@ -135,7 +153,7 @@ Each hash is on the `tool manifest loaded` line the agent logs for that tool, an
 
 Example configs in the repository root: `gagent.yaml` (agent) and `workspace.yaml` (workspace).
 
-With the default `mock` provider the agent wires the scripted mock model, which answers the first message with a canned run of the full loop: it computes through `shell_exec` (the call crosses the wire to the workspace's Exec RPC and runs in the workspace directory), reads the result back through `files`, replies via `message_send`, and writes the answer to an address in `memory_ops`. The script covers the first message per process; a later message fails its turn with `script exhausted` (a `turn_failed` event) — the mock is a wiring demo, not a conversation partner. With `provider: openai` it runs against a real chat model; a missing API key env var fails at startup. To work on the codebase you need Go, GNU Make and Python 3 — `make test` runs the citation checks under `citations/` as well as the Go tests. The standard checks are:
+With the default `mock` provider the agent wires the scripted mock model, which answers the first message with a canned run of the full loop: it computes through `shell_exec` (the call crosses the wire to the workspace's Exec RPC and runs in the workspace directory), reads the result back through `files`, replies via `message_send`, and writes the answer to an address in `memory_ops`. The script covers the first message per process; a later message fails its turn with `script exhausted` (a `turn_failed` event) — the mock is a wiring demo, not a conversation partner. With `provider: openai-compatible` it runs against a real chat model; a missing API key env var fails at startup. To work on the codebase you need Go, GNU Make and Python 3 — `make test` runs the citation checks under `citations/` as well as the Go tests. The standard checks are:
 
 ```sh
 make ci      # lint + format check + test + build (same as CI)

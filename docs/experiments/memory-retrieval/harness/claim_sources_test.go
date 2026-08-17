@@ -146,7 +146,7 @@ func TestRecordMethod_MatchesItsCommittedSource(t *testing.T) {
 	a = r.anchor(`all of them sit inside the first ([\d,]+) items`)
 	r.number("smallest store", a[0], float64(storeSizes[0]))
 
-	a = r.anchor(`derives from a writeback op — (\d+\.\d+), (\d+\.\d+), (\d+\.\d+) — and ages are drawn over a (\d+)-day window`)
+	a = r.anchor(`then derived from a writeback op — (\d+\.\d+), (\d+\.\d+), (\d+\.\d+) — and ages are drawn over a (\d+)-day window`)
 	r.number("salience, episodic add", a[0], salienceAddEpisodic)
 	r.number("salience, semantic add", a[1], salienceAddSemantic)
 	r.number("salience, update", a[2], salienceUpdate)
@@ -163,7 +163,7 @@ func TestRecordMethod_MatchesItsCommittedSource(t *testing.T) {
 	a = r.anchor(`a mean over the (\d+) probes`)
 	r.number("probes behind each figure", a[0], float64(run.Probes))
 
-	a = r.anchor(`archives a new memory's most similar predecessor at cosine (\d+\.\d+) and above`)
+	a = r.anchor(`archived a new memory's most similar predecessor at cosine (\d+\.\d+) and above`)
 	r.number("supersession threshold", a[0], run.Config.SupersessionSimilarity)
 
 	a = r.anchor(`appears under (\d+) other topics and its topic under (\d+) other subjects`)

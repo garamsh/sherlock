@@ -90,7 +90,7 @@ func TestRecordSeparability_MatchesItsCommittedSource(t *testing.T) {
 	r.number("pairs measured", a[0], float64(runs[embedderHashing].PairsMeasured))
 	r.number("pairs per family", a[1], float64(runs[embedderHashing].PairsPerFamily))
 
-	a = r.anchor(`agree on ([\d,]+) of ([\d,]+) pairs under every embedder`)
+	a = r.anchor(`agreed on ([\d,]+) of ([\d,]+) pairs under every embedder`)
 	for name, result := range runs {
 		r.number(name+" store agrees with cosine", a[0], float64(result.StoreAgreesWithCosine))
 		r.number(name+" pairs measured", a[1], float64(result.PairsMeasured))
@@ -105,7 +105,7 @@ func TestRecordSeparability_MatchesItsCommittedSource(t *testing.T) {
 	r.number("openai coexist at or above correction", a[3],
 		runs[embedderOpenAI].Overlap.CoexistAtOrAboveCorrect)
 
-	a = r.anchor("`hashing`" + ` retires (\d+) of (\d+) corrections where ` + "`openai512-cache`" + ` retires (\d+)`)
+	a = r.anchor("`hashing`" + ` retired (\d+) of (\d+) corrections where ` + "`openai512-cache`" + ` retired (\d+)`)
 	r.number("hashing corrections retired", a[0],
 		float64(familyNamed(t, runs[embedderHashing], "correction").Superseded))
 	r.number("corrections in the family", a[1],
@@ -114,7 +114,7 @@ func TestRecordSeparability_MatchesItsCommittedSource(t *testing.T) {
 		float64(familyNamed(t, runs[embedderOpenAI512], "correction").Superseded))
 
 	hashingCorrection := familyNamed(t, runs[embedderHashing], "correction")
-	a = r.anchor(`catches (\d+\.\d+)% of the corrections it exists for while destroying every coexisting fact and (\d+) of (\d+) statements about a different person`)
+	a = r.anchor(`caught (\d+\.\d+)% of the corrections it existed for while destroying every coexisting fact and (\d+) of (\d+) statements about a different person`)
 	r.number("share of corrections caught", a[0], 100*float64(hashingCorrection.Superseded)/float64(hashingCorrection.Pairs))
 	r.number("cross-subject statements retired", a[1],
 		float64(familyNamed(t, runs[embedderHashing], "cross-subject").Superseded))

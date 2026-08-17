@@ -145,7 +145,9 @@ type Frame interface {
 	Close() error
 }
 
-// The frames measured. shipped is internal/memory as it runs in production;
+// The frames measured. shipped is internal/memory as it ran in
+// production when these results were committed (see the record's
+// §Limits: supersession on insert has since been removed, #529);
 // document keeps no store at all and is what proves the seam does not
 // encode the shipped design's shape; the attribute frames hold a fact at
 // its address and differ only in how many values one address holds; the

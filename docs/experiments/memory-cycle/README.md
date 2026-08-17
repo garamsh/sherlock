@@ -30,12 +30,12 @@ Model behavior is simulated with measured or explicitly-marked compliance rates,
 | Forced narrow call | 95% | assumption — a one-sentence forced call is far easier to comply with than a per-response fenced block |
 | On-demand search usage | 30% | assumption — a model often does not know what it does not know |
 
-The store behind every candidate is the same (the adopted G6 scoring: salience + relevance + salience-scaled recency, supersession at cosine ≥ 0.6).
+The store behind every candidate is the same (the G6 scoring adopted at the time: salience + relevance + salience-scaled recency, supersession at cosine ≥ 0.6, which the store no longer does — #529).
 
 ## The systems, in plain terms
 
-- **N1 Voluntary writeback** (current production) — the contract asks the model to end every response with a fenced memory block; the platform parses it if present. Per-turn recall injection on the read side.
-- **N2 Structured writeback** — the response itself is an API-enforced schema `{reply, memory_ops}`; the memory field cannot be absent. Two willingness rates tested (80%, and a lazy 50% variant N2s).
+- **N1 Voluntary writeback** (production when this ran) — the contract asks the model to end every response with a fenced memory block; the platform parses it if present. Per-turn recall injection on the read side.
+- **N2 Structured writeback** (production since, #336 step 1) — the response itself is an API-enforced schema `{reply, memory_ops}`; the memory field cannot be absent. Two willingness rates tested (80%, and a lazy 50% variant N2s).
 - **N3 Platform extraction** — no model involvement in writes; the platform pattern-matches fact-shaped statements from the user turn and stores them deterministically.
 - **N4 Rolling narrative** — one living "what I know about the user" document, rewritten by a forced narrow model call each turn; the whole document is injected every turn.
 - **N5 Log + on-demand search** — every turn stored verbatim; nothing injected; the model has a search tool and decides when to use it.
@@ -72,7 +72,7 @@ The store behind every candidate is the same (the adopted G6 scoring: salience +
 
 ## Adopted direction
 
-The write path moves from a prompt convention to an API-enforced response schema (`response_format: json_schema` on the chat-completions call): the model's reply and its memory ops are one structured response. The store (ADR 0006, G6) and the per-turn recall injection are unchanged. The lazy-model residual (N2s) is mitigated by contract guidance and is observable through the writeback event stream.
+The write path moves from a prompt convention to an API-enforced response schema (`response_format: json_schema` on the chat-completions call): the model's reply and its memory ops are one structured response. The store (ADR 0006, G6) and the per-turn recall injection were unchanged by this round; the store has since dropped supersession on insert (#529). The lazy-model residual (N2s) is mitigated by contract guidance and is observable through the writeback event stream.
 
 ## Reproducing
 

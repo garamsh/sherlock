@@ -73,7 +73,7 @@ func addAgentFlags(fs *pflag.FlagSet) {
 // tool manifests, and returns the runtime factory and the tool
 // registry both agent modes share. The agent constructs no tool-shaped
 // code at compile time (ADR 0017 §Decision, ADR 0009 §Decision); the
-// script-tool registry (Phase 2) is the lifecycle owner for tool calls.
+// script-tool registry is the lifecycle owner for tool calls.
 func newAgentFactory(ctx context.Context, cfg config.Config, agentID, ego string, logger *slog.Logger) (*gateway.Factory, *tool.Registry, error) {
 	newModel, err := newModelFunc(cfg.Model)
 	if err != nil {

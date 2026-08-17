@@ -20,8 +20,8 @@ import (
 	"github.com/garamsh/gagent/internal/workspace/shell"
 )
 
-// buildToolBinary compiles the script tool at src/<name>.go into
-// dst and returns the path. The script-tool runner resolves the
+// buildToolBinary compiles the tool named by name into its directory
+// under root and returns the path. The script-tool runner resolves the
 // manifest's command relative to the manifest's directory, so the
 // binary must land at the same path the manifest names.
 func buildToolBinary(t *testing.T, root, name string) string {

@@ -69,9 +69,10 @@ func TestSanitizeToolParameters_DropsForbiddenTopLevelKeywords(t *testing.T) {
 }
 
 // TestSanitizeToolParameters_ForbiddenListMatchesExporter pins the
-// contract between sanitizeSuite and the exported list: every keyword
-// listed in OpenAITopLevelForbidden is reachable through the
-// sanitizer's drop loop, so future edits to either side stay in sync.
+// exported list against the keywords TestSanitizeToolParameters_
+// DropsForbiddenTopLevelKeywords covers: OpenAITopLevelForbidden must
+// equal the list spelled out below, element for element and in order,
+// so an edit to either side that drops a keyword fails here.
 // Issues #313, #314.
 func TestSanitizeToolParameters_ForbiddenListMatchesExporter(t *testing.T) {
 	quietLogger(t)

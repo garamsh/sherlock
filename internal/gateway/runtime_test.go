@@ -85,7 +85,9 @@ func TestFactory_CustomSinkReceivesOutboundMessages(t *testing.T) {
 		Target:  "sender",
 		Content: "Message received.",
 	}, sink.messages()[0])
-	// The custom sink replaces the default file outbox entirely.
+	// Delivery belongs to the tool client, so a tool client routing
+	// message_send into memory means nothing writes files: the factory
+	// creates no outbox of its own.
 	_, err = os.Stat(filepath.Join(root, gateway.OutboxDir))
 	assert.ErrorIs(t, err, os.ErrNotExist)
 }
@@ -148,8 +150,8 @@ func TestQueue_ThresholdConsolidationRunsAfterTurn(t *testing.T) {
 	root := t.TempDir()
 
 	// Seed the store past the threshold, then close it; the runtime
-	// opens the same file. Each note carries unique tokens so inserts
-	// stay below the supersession similarity (ADR 0006).
+	// opens the same file. Each note carries unique tokens so the seed
+	// is a set of distinct memories.
 	seed, err := sqlite.Open(memoryPath(root))
 	require.NoError(t, err)
 	seedSvc := memory.NewService(seed, memory.NewHashingEmbedder(), memory.NewConcatSummarizer())
@@ -477,8 +479,9 @@ func (f *fileSink) Send(_ context.Context, msg message.Message) error {
 
 // mouthClient is a stubClient that forwards message_send calls to a
 // sink. It mirrors the message_send tool's contract (in/out
-// schemas) so the test factories exercise the structural shape —
-// descriptor fetched over the wire — without spawning the binary.
+// schemas) so the test factories exercise the structural shape — the
+// descriptor the registry reads from a manifest — without spawning the
+// binary.
 type mouthClient struct {
 	descriptors []tool.Descriptor
 	sink        outboundSink

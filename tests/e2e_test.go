@@ -35,10 +35,11 @@ const e2eQuestion = "what is 6 * 7?"
 
 // mvpScript drives the canned MVP scenario through the scripted mock
 // model: reply to the sender through message_send, then close the
-// turn with a memory write recording the answer. The mock no
-// longer calls shell_exec (ADR 0017): process exec is the agent's
-// native capability, and the canned scenario exercises the tools that
-// exist — message_send only.
+// turn with a memory write recording the answer. It is narrower than
+// cmd/gagent's shipped mock, which also calls shell_exec and files:
+// this harness stubs message_send alone, so the scenario stays free of
+// a real workspace, its gRPC listener and a fork+exec. That is the
+// harness's scope, not a statement about which tools exist.
 func mvpScript() *agent.ScriptedModel {
 	return agent.NewScriptedModel(
 		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{

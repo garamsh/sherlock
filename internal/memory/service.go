@@ -63,9 +63,10 @@ type Summarizer interface {
 // (Compress, Forget, Consolidate, Retain), and the runtime queries (Search,
 // Recall, Similar) the agent loop needs (ADR 0011).
 type Service interface {
-	// Store embeds and inserts a new memory, superseding a highly similar
-	// active predecessor (ADR 0006) and evicting lowest-score-first when
-	// the active index exceeds capacity.
+	// Store embeds and inserts a new memory. An insert retires nothing:
+	// identity is not inferred from similarity (ADR 0018), so a
+	// correction coexists with what it corrects. It evicts
+	// lowest-score-first when the active index exceeds capacity.
 	Store(ctx context.Context, in StoreInput) (StoreResult, error)
 	// Search runs hybrid search and records access on the returned
 	// memories. A non-positive limit falls back to DefaultSearchLimit.
@@ -77,15 +78,16 @@ type Service interface {
 	// superseded_by stays 0 (retirement, not supersession). A missing or
 	// already-archived ID returns ErrNotFound.
 	Delete(ctx context.Context, id int64) error
-	// Compress summarizes a set of episodic memories into one semantic
-	// parent and archives the originals.
+	// Compress summarizes a set of episodic memories into one or more
+	// semantic parents — the summary is chunked so each parent stays
+	// within SummaryMaxLen — and archives the originals.
 	Compress(ctx context.Context, ids []int64) (CompressResult, error)
 	// Forget archives active memories whose lifecycle score falls below
 	// threshold. A non-positive threshold uses DefaultForgetThreshold.
 	Forget(ctx context.Context, threshold float64) ([]int64, error)
-	// Consolidate compresses the active episodic cluster into one semantic
-	// parent once it reaches ConsolidationMinCluster; the platform calls it
-	// on shutdown (ADR 0011).
+	// Consolidate compresses the active episodic cluster into one or more
+	// semantic parents once it reaches ConsolidationMinCluster; the
+	// platform calls it on shutdown (ADR 0011).
 	Consolidate(ctx context.Context) (CompressResult, error)
 	// ConsolidateIfDue is the threshold trigger: it consolidates when the
 	// active episodic count has crossed ConsolidationThreshold, and is a

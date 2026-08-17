@@ -31,8 +31,9 @@ type Writeback struct {
 // The store still holds sentences, so each addressed write is rendered
 // into one; #336 step 2 replaces the store with one that holds the
 // address itself. Until it does, the declared operation reaches the
-// store only as salience — whether a value supersedes another is still
-// decided there by similarity, not by what the write declared.
+// store only as salience: the store infers no identity from what the
+// write declared, and an insert retires nothing (ADR 0018), so a
+// replacement coexists with what it replaces.
 func (w Writeback) Apply(ctx context.Context, ops []agent.WritebackOp) ([]agent.RecalledMemory, error) {
 	var notes []agent.RecalledMemory
 	seen := make(map[int64]struct{}, len(ops))

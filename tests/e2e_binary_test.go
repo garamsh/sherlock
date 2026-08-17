@@ -416,7 +416,7 @@ func startAgentBinary(t *testing.T, binary, root, workspaceAddr string) (*exec.C
 }
 
 // toolsDirForTest returns the absolute path to the module-root tools/
-// directory so subprocess-driven test runs find the built-in
+// directory so subprocess-driven test runs find the shipped tools'
 // manifests regardless of cwd. The test process chdir's around, so
 // resolving from the test binary's location is the only reliable way.
 func toolsDirForTest(t *testing.T) string {

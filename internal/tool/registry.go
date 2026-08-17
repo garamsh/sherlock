@@ -19,8 +19,7 @@ const DefaultToolsDir = "./tools"
 
 // DefaultRequiredTools is the set of tool names the platform requires
 // at startup (ADR 0009 §Decision, invariant 5). A missing required tool
-// fails closed. The script-tool runtime owns the invariant; the script
-// registry uses it.
+// fails closed.
 var DefaultRequiredTools = []string{"message_send"}
 
 // ValidationError reports input that failed schema validation at the

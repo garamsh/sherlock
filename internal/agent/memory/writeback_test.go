@@ -52,9 +52,9 @@ func TestWriteback_StoresTheAddressWithItsValue(t *testing.T) {
 // something a later read has to infer.
 //
 // Whether the two values then coexist is the store's business and not
-// this step's: the shipped store still supersedes on insert (#336 step 2
-// removes it), and two sentences this alike are what that mechanism
-// destroys.
+// this step's: the shipped store retires nothing on insert, so two
+// sentences this alike both survive until the addressed store computes
+// their identity (#336 step 2).
 func TestWriteback_RestrictionReachesTheStore(t *testing.T) {
 	svc, _ := newMemoryService(t)
 	ctx := context.Background()
@@ -116,8 +116,9 @@ func TestWriteback_SurfacesSimilarMemories(t *testing.T) {
 	svc, _ := newMemoryService(t)
 	ctx := context.Background()
 	// Seeded in the sentence form the store held before this change, and
-	// deliberately below SupersessionSimilarity: the coherence note is the
-	// backstop for pairs insert-time supersession does not catch (ADR 0006).
+	// deliberately below SupersessionSimilarity: nothing acts on that
+	// threshold now, so the coherence note is what surfaces a near
+	// duplicate to the model (ADR 0006 step 5).
 	const seeded = "user's favorite telescope is the Kepler-9 refractor"
 	stored, err := svc.Store(ctx, memory.StoreInput{
 		Content:         seeded,

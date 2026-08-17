@@ -80,7 +80,7 @@ func strconvQuote(s string) string {
 
 // newGatewayQueue starts the one agent's queue over a real factory: the
 // memory file and the file outbox live under root. The factory holds
-// a mouthClient that forwards message_send to the same file outbox the
+// a stub tool client that forwards message_send to the same file outbox the
 // gateway writes to, so the test exercises the platform protocol
 // client surface end-to-end.
 func newGatewayQueue(t *testing.T, root string, newModel func(string) agent.Model) *gateway.Queue {

@@ -23,8 +23,10 @@ const summarizerSystemPrompt = "You compress a cluster of episodic memories into
 
 // Summarizer is an OpenAI-compatible chat-completions-backed
 // memory.Summarizer. It is stateless across calls and safe for
-// concurrent use; the same Config struct that wires the agent's chat
-// model (cmd/gagent/embedder_provider.go) drives the summarizer.
+// concurrent use. It is constructed in cmd/gagent/summarizer_provider.go
+// from the chat model's config section — the same values that build the
+// agent's model — through this package's Config, which it shares with
+// the memory Embedder rather than with internal/agent/openai.
 type Summarizer struct {
 	endpoint string
 	model    string

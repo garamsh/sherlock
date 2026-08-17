@@ -22,8 +22,9 @@ const (
 )
 
 // AddWorkspaceFlags registers the workspace's settings as flags on fs.
-// The addr flag shadows the agent's — the workspace's default listener
-// is 8081, not the gateway's 8080.
+// The addr flag is the same name the agent registers on its own set,
+// not a shadow of a shared one — only --config is shared — and its
+// default listener is 8081, not the gateway's 8080.
 func AddWorkspaceFlags(fs *pflag.FlagSet) {
 	fs.String("addr", defaultWorkspaceAddr, "gRPC listen address for the workspace contract")
 	fs.String("workspace", defaultWorkspace, "workspace directory (created on first use)")

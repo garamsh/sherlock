@@ -26,7 +26,7 @@ type Model interface {
 }
 
 // ToolClient is the platform's tool client surface the session consumes
-// (ADR 0017 §Tool contract). Production uses *tool.Client; tests may
+// (ADR 0017 §Tool contract). Production uses *tool.Registry; tests may
 // substitute any implementation that exposes the same listing and call
 // surface.
 type ToolClient interface {
@@ -62,7 +62,7 @@ type Recaller interface {
 
 // WritebackSink receives the memory operations parsed from every model
 // response. Apply returns the existing memories most similar to the
-// turn's add/update ops — the write-time coherence step (ADR 0006 step
+// turn's replace/join ops — the write-time coherence step (ADR 0006 step
 // 5) — or nil when there is nothing to show; nil sink means ops are
 // discarded.
 type WritebackSink interface {
@@ -138,8 +138,8 @@ type Compactor interface {
 	Compact(ctx context.Context, history []Message) ([]Message, error)
 }
 
-// Session is one rolling conversation per environment (ADR 0006): it holds
-// the history and runs one turn per call to Run.
+// Session is one rolling conversation per agent (ADR 0006, ADR 0016):
+// it holds the history and runs one turn per call to Run.
 type Session interface {
 	// Run executes one turn of the memory lifecycle — frame, recall, act,
 	// writeback — and returns the reply field of the model's final
@@ -381,7 +381,7 @@ func (s *session) recall(ctx context.Context, task string) ([]RecalledMemory, er
 
 // applyWriteback applies the parsed ops and returns the write-time
 // coherence set (ADR 0006 step 5): the existing memories most similar to
-// the turn's add/update ops. The note joins the history after the
+// the turn's replace/join ops. The note joins the history after the
 // assistant message, so the next model call — the same turn when it
 // continues, otherwise the next turn — judges them.
 func (s *session) applyWriteback(ctx context.Context, ops []WritebackOp) ([]RecalledMemory, error) {

@@ -1,14 +1,20 @@
-package workspace
+// Package server is the workspace's gRPC backend: it wraps the
+// filesystem and exec backends behind the wire contract the parent
+// package's generated stubs declare, so a caller that needs only the
+// wire types links no backend (#525).
+package server
 
 import (
 	"context"
 	"errors"
 	"time"
 
-	"github.com/garamsh/gagent/internal/workspace/files"
-	"github.com/garamsh/gagent/internal/workspace/shell"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	"github.com/garamsh/gagent/internal/workspace"
+	"github.com/garamsh/gagent/internal/workspace/files"
+	"github.com/garamsh/gagent/internal/workspace/shell"
 )
 
 // Server is the gRPC workspace backend: Read, Write, and List against
@@ -18,34 +24,34 @@ import (
 // tools are executables the agent's tool client spawns from their
 // manifests. The plugin concept is dropped.
 type Server struct {
-	UnimplementedWorkspaceServer
+	workspace.UnimplementedWorkspaceServer
 	FS       *files.FS
 	Executor shell.Executor
 }
 
-func (s *Server) Read(_ context.Context, req *ReadRequest) (*ReadResponse, error) {
+func (s *Server) Read(_ context.Context, req *workspace.ReadRequest) (*workspace.ReadResponse, error) {
 	content, err := s.FS.Read(req.GetPath())
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	return &ReadResponse{Content: content}, nil
+	return &workspace.ReadResponse{Content: content}, nil
 }
 
-func (s *Server) Write(_ context.Context, req *WriteRequest) (*WriteResponse, error) {
+func (s *Server) Write(_ context.Context, req *workspace.WriteRequest) (*workspace.WriteResponse, error) {
 	if err := s.FS.Write(req.GetPath(), req.GetContent()); err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	return &WriteResponse{}, nil
+	return &workspace.WriteResponse{}, nil
 }
 
-func (s *Server) List(_ context.Context, req *ListRequest) (*ListResponse, error) {
+func (s *Server) List(_ context.Context, req *workspace.ListRequest) (*workspace.ListResponse, error) {
 	entries, err := s.FS.List(req.GetPath())
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	out := &ListResponse{Entries: make([]*Entry, 0, len(entries))}
+	out := &workspace.ListResponse{Entries: make([]*workspace.Entry, 0, len(entries))}
 	for _, entry := range entries {
-		out.Entries = append(out.Entries, &Entry{Name: entry.Name, Dir: entry.Dir})
+		out.Entries = append(out.Entries, &workspace.Entry{Name: entry.Name, Dir: entry.Dir})
 	}
 	return out, nil
 }
@@ -56,7 +62,7 @@ func (s *Server) List(_ context.Context, req *ListRequest) (*ListResponse, error
 // the response carries timed_out: true (ADR 0008) — while a privilege
 // drop the platform cannot perform fails closed with
 // agent_uid unavailable.
-func (s *Server) Exec(ctx context.Context, req *ExecRequest) (*ExecResponse, error) {
+func (s *Server) Exec(ctx context.Context, req *workspace.ExecRequest) (*workspace.ExecResponse, error) {
 	workdir := req.GetWorkdir()
 	if workdir == "" {
 		workdir = s.FS.Root()
@@ -81,8 +87,8 @@ func (s *Server) Exec(ctx context.Context, req *ExecRequest) (*ExecResponse, err
 	return execResponse(result), nil
 }
 
-func execResponse(result shell.Result) *ExecResponse {
-	return &ExecResponse{
+func execResponse(result shell.Result) *workspace.ExecResponse {
+	return &workspace.ExecResponse{
 		Stdout:   result.Stdout,
 		Stderr:   result.Stderr,
 		ExitCode: int32(result.ExitCode),

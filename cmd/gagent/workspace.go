@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/garamsh/gagent/internal/config"
-	"github.com/garamsh/gagent/internal/workspace"
+	"github.com/garamsh/gagent/internal/workspace/server"
 )
 
 // newWorkspaceCommand returns the "gagent workspace" subcommand: it
@@ -54,7 +54,7 @@ func serveWorkspace(ctx context.Context, cfg config.WorkspaceConfig) error {
 	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	return workspace.Serve(ctx, workspace.ServeOptions{
+	return server.Serve(ctx, server.ServeOptions{
 		Addr:        cfg.Addr,
 		Dir:         cfg.Workspace,
 		ExecUID:     cfg.ExecUID,

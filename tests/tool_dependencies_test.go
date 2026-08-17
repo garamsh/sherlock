@@ -24,39 +24,25 @@ const module = "github.com/garamsh/gagent/"
 // tool links shows up as a failing test naming the package that moved,
 // in either direction.
 //
-// internal/workspace/shell and internal/workspace/files are in the two
-// workspace-coupled sets and neither tool calls them: internal/workspace
-// holds the generated stubs and server.go in one package, and server.go
-// imports both backends, so importing the wire types links the exec
-// backend too. That is #525, and this test is where it is visible;
-// fixing it turns those two lines red, which is the point.
+// internal/workspace holds the wire and nothing else: the backends and
+// the server that wraps them live in internal/workspace/files,
+// internal/workspace/shell and internal/workspace/server, which no tool
+// imports — so importing the wire types links no exec backend. That is
+// #525 fixed, and these sets are what keeps it fixed: a backend
+// reaching a tool's dependency set turns the set red.
 func TestToolDependencies_AreTheDeclaredOnes(t *testing.T) {
 	for _, tc := range []struct {
 		tool string
 		want []string
 	}{
-		{
-			tool: "files",
-			want: []string{
-				"internal/workspace",
-				"internal/workspace/files",
-				"internal/workspace/shell",
-			},
-		},
-		{
-			tool: "shell_exec",
-			want: []string{
-				"internal/workspace",
-				"internal/workspace/files",
-				"internal/workspace/shell",
-			},
-		},
+		{tool: "files", want: []string{"internal/workspace"}},
+		{tool: "shell_exec", want: []string{"internal/workspace"}},
 		// message_send links internal/message and nothing else: that
 		// package is the delivered record's one declaration, which the
 		// tool marshals and the outbox reader decodes (#561). It is a
 		// leaf of type declarations, so importing it drags in no
-		// backend — the property #525 is about internal/workspace
-		// lacking.
+		// backend — the property #525 established for
+		// internal/workspace.
 		{tool: "message_send", want: []string{"internal/message"}},
 		// A tool that needs nothing of the platform links nothing.
 		{tool: "github", want: []string{}},

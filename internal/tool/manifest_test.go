@@ -177,6 +177,52 @@ func TestManifestHash_StableUnderWhitespace(t *testing.T) {
 		"whitespace is not part of the hash")
 }
 
+// TestManifestHash_StableUnderNestedKeyOrder is the case that
+// distinguishes a hash over the manifest's meaning from a hash over its
+// bytes below the top level. Nearly all of a manifest is nested — the
+// two schemas — so a pin that fires on a reordered schema key fires on
+// a reformat, which is a control an operator eventually turns off
+// (#559).
+func TestManifestHash_StableUnderNestedKeyOrder(t *testing.T) {
+	a := `{"name":"a","description":"d","command":"c","input_schema":{"type":"object","properties":{"a":{"type":"string"}},"required":["a"],"additionalProperties":false},"output_schema":{"type":"object"}}`
+	b := `{"name":"a","description":"d","command":"c","input_schema":{"additionalProperties":false,"required":["a"],"properties":{"a":{"type":"string"}},"type":"object"},"output_schema":{"type":"object"}}`
+	assert.Equal(t, tool.ManifestHash([]byte(a)), tool.ManifestHash([]byte(b)),
+		"a reordered schema key is formatting, not contract drift")
+}
+
+// TestManifestHash_StableUnderDeepKeyOrder pins the same rule below the
+// first nested level: a schema nests, so sorting one level down would
+// leave the same defect one level further in.
+func TestManifestHash_StableUnderDeepKeyOrder(t *testing.T) {
+	a := `{"name":"a","description":"d","command":"c","input_schema":{"type":"object","properties":{"outer":{"type":"object","properties":{"inner":{"type":"string","description":"x"}},"required":["inner"]}}},"output_schema":{"type":"object"}}`
+	b := `{"name":"a","description":"d","command":"c","input_schema":{"type":"object","properties":{"outer":{"required":["inner"],"properties":{"inner":{"description":"x","type":"string"}},"type":"object"}}},"output_schema":{"type":"object"}}`
+	assert.Equal(t, tool.ManifestHash([]byte(a)), tool.ManifestHash([]byte(b)),
+		"object keys are sorted at every depth, not only at the top")
+}
+
+// TestManifestHash_ArrayOrderIsSignal pins the limit of the rule above.
+// An array's order is meaning — `env` names variables and `required`
+// lists fields — so two manifests differing in array order are two
+// different manifests and must not share a hash.
+func TestManifestHash_ArrayOrderIsSignal(t *testing.T) {
+	a := `{"name":"a","description":"d","command":"c","env":["FOO=1","BAR=2"],"input_schema":{"type":"object"},"output_schema":{"type":"object"}}`
+	b := `{"name":"a","description":"d","command":"c","env":["BAR=2","FOO=1"],"input_schema":{"type":"object"},"output_schema":{"type":"object"}}`
+	assert.NotEqual(t, tool.ManifestHash([]byte(a)), tool.ManifestHash([]byte(b)),
+		"array order is contract, so reordering one is drift")
+}
+
+// TestManifestHash_NumbersKeepTheirLiteral pins that canonicalization
+// does not round-trip numbers through float64: two integers that differ
+// beyond float64's exact range are different manifests, and a hash that
+// collided them would accept an unreviewed manifest under a reviewed
+// pin.
+func TestManifestHash_NumbersKeepTheirLiteral(t *testing.T) {
+	a := `{"name":"a","description":"d","command":"c","input_schema":{"type":"object","maxLength":9007199254740993},"output_schema":{"type":"object"}}`
+	b := `{"name":"a","description":"d","command":"c","input_schema":{"type":"object","maxLength":9007199254740992},"output_schema":{"type":"object"}}`
+	assert.NotEqual(t, tool.ManifestHash([]byte(a)), tool.ManifestHash([]byte(b)),
+		"two distinct integers must not canonicalize to one value")
+}
+
 // TestLoadManifest_ReadsFile exercises the file path through LoadManifest
 // and confirms the parsed manifest matches the bytes on disk.
 func TestLoadManifest_ReadsFile(t *testing.T) {

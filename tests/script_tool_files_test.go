@@ -121,7 +121,6 @@ func TestScriptTool_Files_Integration(t *testing.T) {
 		Required: []string{"files"},
 	})
 	require.NoError(t, err)
-	t.Cleanup(func() { reg.Close() })
 
 	// Read: the registry calls the files tool, which dials the
 	// stub workspace and returns the file's contents.
@@ -161,7 +160,6 @@ func TestScriptTool_Files_InputRejected(t *testing.T) {
 		Required: []string{"files"},
 	})
 	require.NoError(t, err)
-	t.Cleanup(func() { reg.Close() })
 
 	// Missing path: the manifest requires "path", so the
 	// registry rejects before the script runs.
@@ -191,7 +189,6 @@ func TestScriptTool_Files_WriteRequiresContent(t *testing.T) {
 		Required: []string{"files"},
 	})
 	require.NoError(t, err)
-	t.Cleanup(func() { reg.Close() })
 
 	// Empty content: the runtime check in dispatch returns an
 	// error before gRPC is called.
@@ -227,7 +224,6 @@ func TestScriptTool_Files_NullContentAccepted(t *testing.T) {
 		Required: []string{"files"},
 	})
 	require.NoError(t, err)
-	t.Cleanup(func() { reg.Close() })
 
 	_, err = reg.Call(context.Background(), "files",
 		json.RawMessage(`{"operation":"write","path":"new.txt","content":null}`))

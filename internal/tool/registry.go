@@ -218,13 +218,6 @@ func (r *Registry) Get(name string) (Descriptor, bool) {
 	return descriptorFromTool(t), true
 }
 
-// Close releases every tool's resources. The stdio runner is stateless;
-// Close is a no-op today but is part of the client surface so future
-// long-lived tool resources have a shutdown hook.
-func (r *Registry) Close() error {
-	return nil
-}
-
 // Call validates the input against the manifest's input schema,
 // dispatches the stdio runner, and validates the output against the
 // manifest's output schema (ADR 0009 invariants 3 and 4). The manifest

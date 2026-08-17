@@ -63,7 +63,6 @@ func TestScriptTool_GitHub_Integration(t *testing.T) {
 		Required: []string{"github"},
 	})
 	require.NoError(t, err)
-	t.Cleanup(func() { reg.Close() })
 
 	cases := []struct {
 		name     string
@@ -136,7 +135,6 @@ func TestScriptTool_GitHub_MissingToken(t *testing.T) {
 		Required: []string{"github"},
 	})
 	require.NoError(t, err)
-	t.Cleanup(func() { reg.Close() })
 
 	_, err = reg.Call(context.Background(), "github",
 		json.RawMessage(`{"operation":"push","owner":"example","repo":"widget","branch":"main","sha":"deadbeef"}`))
@@ -162,7 +160,6 @@ func TestScriptTool_GitHub_PushRequiresBranchAndSha(t *testing.T) {
 		Required: []string{"github"},
 	})
 	require.NoError(t, err)
-	t.Cleanup(func() { reg.Close() })
 
 	// Missing branch and sha: the runtime check in run() returns
 	// an error before the GitHub request is made.
@@ -185,7 +182,6 @@ func TestScriptTool_GitHub_InputRejected(t *testing.T) {
 		Required: []string{"github"},
 	})
 	require.NoError(t, err)
-	t.Cleanup(func() { reg.Close() })
 
 	// Missing owner / repo: those remain unconditional in the
 	// schema's required list, so the registry still rejects before
@@ -236,7 +232,6 @@ func TestScriptTool_GitHub_NullBodyAccepted(t *testing.T) {
 		Required: []string{"github"},
 	})
 	require.NoError(t, err)
-	t.Cleanup(func() { reg.Close() })
 
 	// Strict-mode requires every property (nullable) for every
 	// operation; null fields the open_issue call doesn't need

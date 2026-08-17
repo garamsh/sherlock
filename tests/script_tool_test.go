@@ -68,7 +68,6 @@ func TestScriptTool_RoundTripIntegration(t *testing.T) {
 		Required: []string{"echo"},
 	})
 	require.NoError(t, err)
-	t.Cleanup(func() { reg.Close() })
 
 	list := reg.List()
 	require.Len(t, list, 1)
@@ -171,7 +170,6 @@ func optionalFieldRegistry(t *testing.T) *tool.Registry {
 		Required: []string{"demo"},
 	})
 	require.NoError(t, err)
-	t.Cleanup(func() { reg.Close() })
 	return reg
 }
 
@@ -277,7 +275,6 @@ func TestScriptTool_InputRejection(t *testing.T) {
 		Required: []string{"echo"},
 	})
 	require.NoError(t, err)
-	t.Cleanup(func() { reg.Close() })
 
 	_, err = reg.Call(context.Background(), "echo", json.RawMessage(`{"wrong":42}`))
 	require.Error(t, err)
@@ -325,7 +322,6 @@ func TestScriptTool_NonConformingOutputFailsTheCallAndTheToolStays(t *testing.T)
 		Required: []string{"broken"},
 	})
 	require.NoError(t, err)
-	t.Cleanup(func() { reg.Close() })
 
 	out, err := reg.Call(context.Background(), "broken", json.RawMessage(`{}`))
 	require.Error(t, err)

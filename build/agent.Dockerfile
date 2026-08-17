@@ -4,7 +4,7 @@
 # The build context is the repository root — the build stage copies the
 # module — and `make build-images` is the entry point that builds both.
 
-FROM golang:1.26 AS build
+FROM golang:1.26@sha256:0d1d3a794be25f809dd2cb3160d8c73276c4056a9f8242a138e908ddeee7b6b6 AS build
 WORKDIR /src
 
 # Layer caching: resolve dependencies before copying source.
@@ -22,7 +22,7 @@ RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/gagent ./cmd/gagen
 # static stays correct. Serves the gateway, the rolling session, memory,
 # the mouth, and the tool client, which reads the operator's tool
 # manifests and spawns each tool's executable per call.
-FROM gcr.io/distroless/static-debian12:nonroot AS agent
+FROM gcr.io/distroless/static-debian12:nonroot@sha256:1b7b9f0f0e0a1d2155f531db587cc48ec26aaf97ab64364225f5bf18a054e66a AS agent
 ARG REVISION=unknown
 LABEL org.opencontainers.image.title="gagent-agent" \
       org.opencontainers.image.source="https://github.com/garamsh/gagent" \

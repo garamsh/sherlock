@@ -1,4 +1,4 @@
-.PHONY: lint format format-fix test test-privileged build build-tools build-images proto ci hooks
+.PHONY: lint format format-fix test test-privileged build build-tools build-images toolchain-image proto ci hooks
 
 # The revision the images are labelled with. CI passes the commit it built;
 # the default is what a contributor's checkout is sitting on.
@@ -83,6 +83,27 @@ build-tools:
 build-images:
 	docker build -f build/agent.Dockerfile --build-arg REVISION="$(REVISION)" -t gagent-agent .
 	docker build -f build/workspace.Dockerfile --build-arg REVISION="$(REVISION)" -t gagent-workspace .
+
+# The toolchain image the privileged CI job runs in, read out of the
+# Dockerfile that owns the pin rather than restated in the workflow (#633).
+# The workspace image is the one it reads, because the family that job runs
+# is the workspace's boundary (#620) and the toolchain it is checked under
+# should be the toolchain that image is built with.
+#
+# One owner means one thing to move: Dependabot's docker ecosystem is scoped
+# to /build, so the digest bump it proposes carries the workflow with it and
+# there is no second copy left behind (#589, #575).
+#
+# `=` rather than `:=` so no other target pays for the sed, and the guard
+# sits in the recipe for the same reason. It fails closed: an empty read
+# would otherwise hand the job an image field that resolves to something
+# else, and a doubled one would hand it two names.
+TOOLCHAIN_DOCKERFILE = build/workspace.Dockerfile
+toolchain_image = $(shell sed -n 's/^FROM \([^ ]*\) AS build$$/\1/p' $(TOOLCHAIN_DOCKERFILE))
+
+toolchain-image:
+	@test "$(words $(toolchain_image))" = 1 || { echo "$(TOOLCHAIN_DOCKERFILE): want exactly one 'FROM <image> AS build' line, read [$(toolchain_image)]"; exit 1; }
+	@echo "$(toolchain_image)"
 
 ci: lint format test build
 

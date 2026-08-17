@@ -26,6 +26,24 @@ jobs:
       - run: make proto
       - run: make ci
 
+  # The image the privileged job runs in, read out of the Dockerfile that owns
+  # the pin. A job's `container.image` cannot read a file, but it can read the
+  # `needs` context, so the read happens in a job ahead of it — the one place
+  # Actions makes that value computable. `make toolchain-image` is the same
+  # command a contributor runs, and it refuses to emit an empty or doubled
+  # read, so a Dockerfile this can no longer parse stops the job below rather
+  # than pointing it somewhere else (#633).
+  toolchain:
+    runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.read.outputs.image }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - id: read
+        run: |
+          image="$(make -s toolchain-image)"
+          echo "image=$image" >> "$GITHUB_OUTPUT"
+
   # The executor's privileged family (ADR 0008, ADR 0010) asserts the drop to
   # the exec UID and the empty network namespace. Neither can be observed
   # without euid 0 and CAP_SYS_ADMIN, so on the default runner every one of
@@ -44,9 +62,10 @@ jobs:
   # job be reproduced locally, which matters while #603 keeps the host from
   # running any of it.
   privileged:
+    needs: toolchain
     runs-on: ubuntu-latest
     container:
-      image: golang:1.26@sha256:0d1d3a794be25f809dd2cb3160d8c73276c4056a9f8242a138e908ddeee7b6b6
+      image: ${{ needs.toolchain.outputs.image }}
       options: --cap-add=SYS_ADMIN
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

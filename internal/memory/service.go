@@ -67,8 +67,8 @@ type Store interface {
 // way the record's figures were produced.
 type Service interface {
 	// Store writes one value at one address. OpReplace supersedes what
-	// is held there; OpJoin leaves it and adds one. It evicts
-	// lowest-score-first when the active index exceeds capacity.
+	// is held there; OpJoin leaves it and adds one. It evicts the least
+	// recently read when the active index exceeds capacity.
 	Store(ctx context.Context, in StoreInput) (StoreResult, error)
 	// At answers one address: the values held there and, where the
 	// address restricts nothing, the values at every address that

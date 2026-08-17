@@ -100,8 +100,11 @@ func salienceOf(op Operation) float64 {
 	return SalienceJoin
 }
 
-// enforceCapacity evicts lowest-score-first to the archive until the
-// active index is within capacity.
+// enforceCapacity evicts least-recently-read-first to the archive until
+// the active index is within capacity (ADR 0018 §Forgetting is decided by
+// use). A memory nothing has read has been read longest ago, so it goes
+// first — which is the rule paying for what it saves out of the newest
+// facts, not a gap in it.
 func (s *service) enforceCapacity(ctx context.Context) ([]int64, error) {
 	active, err := s.store.Active(ctx)
 	if err != nil {
@@ -110,18 +113,20 @@ func (s *service) enforceCapacity(ctx context.Context) ([]int64, error) {
 	if len(active) <= s.capacity {
 		return nil, nil
 	}
-	// Stable, and the ID breaks a tie. Salience takes two values and a
-	// timestamp is stored to the second, so equal scores are the common
-	// case rather than the rare one, and an unspecified order among them
-	// would make which memory is evicted depend on the sort.
-	now := s.clock()
+	// The zero LastAccessed precedes every real one, which is what puts a
+	// never-read memory first. Stable, and the ID breaks a tie: a read
+	// time is stored to the second and every never-read memory carries
+	// the same one, so equal keys are the common case rather than the
+	// rare one, and an unspecified order among them would make which
+	// memory is evicted depend on the sort.
 	sort.SliceStable(active, func(i, j int) bool {
-		si, sj := score(active[i], now), score(active[j], now)
-		if si != sj {
-			return si < sj
+		li, lj := active[i].LastAccessed, active[j].LastAccessed
+		if !li.Equal(lj) {
+			return li.Before(lj)
 		}
 		return active[i].ID < active[j].ID
 	})
+	now := s.clock()
 	evicted := make([]int64, 0, len(active)-s.capacity)
 	for _, m := range active[:len(active)-s.capacity] {
 		if err := s.store.Archive(ctx, m.ID, 0, now); err != nil {

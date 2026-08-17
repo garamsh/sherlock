@@ -61,7 +61,9 @@ func turnFactory(t *testing.T, steps ...agent.ScriptedStep) (*gateway.Factory, s
 	memoryPath := filepath.Join(t.TempDir(), "memory.db")
 	return &gateway.Factory{
 		MemoryPath: memoryPath,
-		NewModel:   func(string) agent.Model { return agent.NewScriptedModel(steps...) },
+		NewModel: func(string) agent.Model {
+			return agent.NewScriptedModel(append([]agent.ScriptedStep{resolveStep()}, steps...)...)
+		},
 	}, memoryPath
 }
 

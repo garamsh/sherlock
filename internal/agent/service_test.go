@@ -46,12 +46,20 @@ func writebackCall(document string) agent.ToolCall {
 type fakeRecaller struct {
 	memories []agent.RecalledMemory
 	tasks    []string
+	outcome  agent.RecallOutcome
 	err      error
 }
 
-func (f *fakeRecaller) Recall(_ context.Context, task string) ([]agent.RecalledMemory, error) {
+func (f *fakeRecaller) Recall(_ context.Context, task string) (agent.Recalled, error) {
 	f.tasks = append(f.tasks, task)
-	return f.memories, f.err
+	if f.err != nil {
+		return agent.Recalled{}, f.err
+	}
+	outcome := f.outcome
+	if outcome == "" {
+		outcome = agent.RecallAddressed
+	}
+	return agent.Recalled{Memories: f.memories, Outcome: outcome}, nil
 }
 
 // fakeWriteback records every batch of parsed memory operations.
@@ -386,6 +394,66 @@ type toolCapturingModel struct {
 func (m *toolCapturingModel) Chat(_ context.Context, _ []agent.Message, tools []tool.Descriptor) (agent.Response, error) {
 	m.seen = append(m.seen, append([]tool.Descriptor(nil), tools...))
 	return agent.Response{ToolCalls: []agent.ToolCall{writebackCall(replyOnly("done"))}}, nil
+}
+
+// TestSessionRun_TheTwoEmptinessesReachTheModelApart is ADR 0019's
+// split held where it matters: what the model is told. A question memory
+// could not place is not a question memory had no answer to, and a model
+// told the second when the first happened is being told something false.
+// The recall event carries the same distinction for the operator.
+func TestSessionRun_TheTwoEmptinessesReachTheModelApart(t *testing.T) {
+	tests := []struct {
+		name      string
+		outcome   agent.RecallOutcome
+		wantFrame string
+		notFrame  string
+	}{
+		{
+			name:      "placed nothing",
+			outcome:   agent.RecallUnplaced,
+			wantFrame: "did not resolve to an address",
+			notFrame:  "No relevant memories.",
+		},
+		{
+			name:      "held nothing",
+			outcome:   agent.RecallEmpty,
+			wantFrame: "No relevant memories.",
+			notFrame:  "did not resolve to an address",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			model := agent.NewScriptedModel(finalStep("ok"))
+			events := &fakeEvents{}
+			s := agent.NewSession(model, newFakeClient(), agent.Options{
+				Recaller: &fakeRecaller{outcome: tt.outcome},
+				Events:   events,
+			})
+
+			_, err := s.Run(context.Background(), "task")
+			require.NoError(t, err)
+
+			var frame string
+			for _, m := range s.History() {
+				if strings.Contains(m.Content, "## Recalled memories") {
+					frame = m.Content
+				}
+			}
+			require.NotEmpty(t, frame)
+			assert.Contains(t, frame, tt.wantFrame)
+			assert.NotContains(t, frame, tt.notFrame)
+
+			var recall agent.Event
+			for _, e := range events.events {
+				if e.Kind == agent.EventRecall {
+					recall = e
+				}
+			}
+			require.Equal(t, agent.EventRecall, recall.Kind, "the turn emits a recall event")
+			assert.Equal(t, tt.outcome, recall.RecallOutcome,
+				"the stream carries which emptiness it was")
+		})
+	}
 }
 
 // TestSessionRun_ProseInsteadOfAWritebackDoesNotEndTheTurn is issue

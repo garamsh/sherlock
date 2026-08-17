@@ -48,6 +48,7 @@ func (s *recordingSink) messages() []message.Message {
 // response carrying a writeback block.
 func replyModel(_ string) agent.Model {
 	return agent.NewScriptedModel(
+		resolveStep(),
 		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{
 			Name:  "message_send",
 			Input: json.RawMessage(`{"channel":"test","target":"sender","content":"Message received."}`),
@@ -164,7 +165,9 @@ func TestQueue_CloseClosesTheStore(t *testing.T) {
 
 func compactionModel(_ string) agent.Model {
 	return agent.NewScriptedModel(
+		resolveStep(),
 		writebackStep(`{"reply":"First reply.","memory_ops":[]}`),
+		resolveStep(),
 		writebackStep(`{"reply":"Second reply.","memory_ops":[]}`),
 	)
 }
@@ -408,4 +411,12 @@ func writebackStep(document string) agent.ScriptedStep {
 		Name:  agent.MemoryWriteTool,
 		Input: json.RawMessage(document),
 	}}}
+}
+
+// resolveStep scripts the read step's model call, which every turn now
+// makes before the act loop (ADR 0019). Content and no tool call is the
+// step placing no address, which is what a turn whose task names no
+// stored fact resolves to.
+func resolveStep() agent.ScriptedStep {
+	return agent.ScriptedStep{Content: "no address"}
 }

@@ -18,6 +18,11 @@ import (
 // tool (ADR 0011, ADR 0017).
 func mockModel(_ string) agent.Model {
 	return agent.NewScriptedModel(
+		// The read step's call, which every turn makes before the act
+		// loop (ADR 0019). This one places no address: the canned
+		// scenario's first turn asks a question the empty store holds
+		// nothing for.
+		agent.ScriptedStep{Content: "no address"},
 		agent.ScriptedStep{
 			ToolCalls: []agent.ToolCall{{
 				Name: "shell_exec",

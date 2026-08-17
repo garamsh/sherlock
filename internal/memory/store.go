@@ -19,6 +19,11 @@ type StoreInput struct {
 // superseded at its address, and any entries evicted to keep the active
 // index within capacity. SupersededIDs is empty for a join, and empty for
 // a replacement onto an address holding nothing.
+//
+// The write and the supersessions land together or not at all, so a
+// failure never leaves a value and its correction both active at one
+// address — which is the stale answer ADR 0018 exists to remove, and it
+// would be nobody's to repair.
 type StoreResult struct {
 	ID            int64
 	SupersededIDs []int64
@@ -40,46 +45,47 @@ type StoreResult struct {
 // address that restricts the same question is a different address holding
 // the answer to a different question, so a narrowing statement never
 // destroys the broader one (ADR 0018 §The address names the question).
+//
+// The insert and the supersessions it causes are one transaction. The
+// address is read first to learn what is there; a value written between
+// that read and the write is superseded by ID or not at all, never half.
 func (s *service) Store(ctx context.Context, in StoreInput) (StoreResult, error) {
 	if err := validate(in); err != nil {
 		return StoreResult{}, err
 	}
-	held, err := s.store.At(ctx, in.Address)
-	if err != nil {
-		return StoreResult{}, fmt.Errorf("read address: %w", err)
+	var supersede []Memory
+	if in.Operation == OpReplace {
+		held, err := s.store.At(ctx, in.Address)
+		if err != nil {
+			return StoreResult{}, fmt.Errorf("read address: %w", err)
+		}
+		supersede = held
 	}
 	now := s.clock()
-	id, err := s.store.Insert(ctx, Memory{
+	id, superseded, err := s.store.Write(ctx, Memory{
 		Address:         in.Address,
 		Value:           in.Value,
 		ImportanceScore: salienceOf(in.Operation),
 		Timestamp:       now,
 		Source:          in.Source,
-	})
+	}, ids(supersede), now)
 	if err != nil {
-		return StoreResult{}, fmt.Errorf("insert: %w", err)
-	}
-	var superseded []int64
-	if in.Operation == OpReplace {
-		// Archived after the insert so the archive records which value
-		// replaced them, which is what makes the change reversible
-		// (ADR 0002). The restated value keeps its own row rather than
-		// superseding itself.
-		for _, m := range held {
-			if m.ID == id {
-				continue
-			}
-			if err := s.store.Archive(ctx, m.ID, id, now); err != nil {
-				return StoreResult{}, fmt.Errorf("supersede %d: %w", m.ID, err)
-			}
-			superseded = append(superseded, m.ID)
-		}
+		return StoreResult{}, fmt.Errorf("write %s: %w", in.Operation, err)
 	}
 	evicted, err := s.enforceCapacity(ctx)
 	if err != nil {
 		return StoreResult{}, err
 	}
 	return StoreResult{ID: id, SupersededIDs: superseded, EvictedIDs: evicted}, nil
+}
+
+// ids is the IDs of the memories a replacement supersedes.
+func ids(held []Memory) []int64 {
+	out := make([]int64, 0, len(held))
+	for _, m := range held {
+		out = append(out, m.ID)
+	}
+	return out
 }
 
 // salienceOf derives the stored salience from the operation the write
@@ -104,9 +110,17 @@ func (s *service) enforceCapacity(ctx context.Context) ([]int64, error) {
 	if len(active) <= s.capacity {
 		return nil, nil
 	}
+	// Stable, and the ID breaks a tie. Salience takes two values and a
+	// timestamp is stored to the second, so equal scores are the common
+	// case rather than the rare one, and an unspecified order among them
+	// would make which memory is evicted depend on the sort.
 	now := s.clock()
-	sort.Slice(active, func(i, j int) bool {
-		return score(active[i], now) < score(active[j], now)
+	sort.SliceStable(active, func(i, j int) bool {
+		si, sj := score(active[i], now), score(active[j], now)
+		if si != sj {
+			return si < sj
+		}
+		return active[i].ID < active[j].ID
 	})
 	evicted := make([]int64, 0, len(active)-s.capacity)
 	for _, m := range active[:len(active)-s.capacity] {

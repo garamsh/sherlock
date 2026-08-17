@@ -49,6 +49,17 @@ func mustAt(t *testing.T, st *sqlite.Store, a memory.Address) []memory.Memory {
 	return held
 }
 
+// writeOne stores one memory and returns its ID. Every test here writes
+// without superseding anything; the supersessions Write performs are the
+// service's, and internal/memory's tests cover them.
+func writeOne(t *testing.T, st *sqlite.Store, m memory.Memory) int64 {
+	t.Helper()
+	id, archived, err := st.Write(context.Background(), m, nil, now)
+	require.NoError(t, err)
+	require.Empty(t, archived)
+	return id
+}
+
 func only(t *testing.T, held []memory.Memory) memory.Memory {
 	t.Helper()
 	require.Len(t, held, 1)
@@ -57,10 +68,8 @@ func only(t *testing.T, held []memory.Memory) memory.Memory {
 
 func TestStore_InsertRoundTrip(t *testing.T) {
 	st, _ := openStore(t)
-	ctx := context.Background()
 
-	id, err := st.Insert(ctx, sample(project, "amber-quarry"))
-	require.NoError(t, err)
+	id := writeOne(t, st, sample(project, "amber-quarry"))
 	require.Positive(t, id)
 
 	got := only(t, mustAt(t, st, project))
@@ -96,8 +105,7 @@ func TestStore_TheThreeReadsAreThreePrefixesOfOneAddress(t *testing.T) {
 		sample(team, "platform"),
 		sample(memory.Address{Subject: "Otto", Question: "which project does he lead"}, "cinder-lake"),
 	} {
-		_, err := st.Insert(ctx, m)
-		require.NoError(t, err)
+		writeOne(t, st, m)
 	}
 
 	exact, err := st.At(ctx, project)
@@ -128,14 +136,11 @@ func valuesOf(held []memory.Memory) []string {
 // fact does not accumulate rows.
 func TestStore_InsertingAValueTwiceAtOneAddressHoldsItOnce(t *testing.T) {
 	st, _ := openStore(t)
-	ctx := context.Background()
 
-	first, err := st.Insert(ctx, sample(project, "amber-quarry"))
-	require.NoError(t, err)
+	first := writeOne(t, st, sample(project, "amber-quarry"))
 	restated := sample(project, "amber-quarry")
 	restated.Timestamp = now.Add(time.Hour)
-	again, err := st.Insert(ctx, restated)
-	require.NoError(t, err)
+	again := writeOne(t, st, restated)
 
 	assert.Equal(t, first, again, "the row that was already there comes back")
 	got := only(t, mustAt(t, st, project))
@@ -149,10 +154,8 @@ func TestStore_OneValueUnderTwoQuestionsIsTwoRows(t *testing.T) {
 	ctx := context.Background()
 	team := memory.Address{Subject: "Alma", Question: "which team does she sit on"}
 
-	_, err := st.Insert(ctx, sample(project, "platform"))
-	require.NoError(t, err)
-	_, err = st.Insert(ctx, sample(team, "platform"))
-	require.NoError(t, err)
+	writeOne(t, st, sample(project, "platform"))
+	writeOne(t, st, sample(team, "platform"))
 
 	active, err := st.Active(ctx)
 	require.NoError(t, err)
@@ -163,10 +166,8 @@ func TestStore_ArchiveMovesRowAndRecordsChain(t *testing.T) {
 	st, path := openStore(t)
 	ctx := context.Background()
 
-	oldID, err := st.Insert(ctx, sample(project, "amber-quarry"))
-	require.NoError(t, err)
-	newID, err := st.Insert(ctx, sample(project, "basalt-run"))
-	require.NoError(t, err)
+	oldID := writeOne(t, st, sample(project, "amber-quarry"))
+	newID := writeOne(t, st, sample(project, "basalt-run"))
 
 	require.NoError(t, st.Archive(ctx, oldID, newID, now))
 
@@ -187,6 +188,39 @@ func TestStore_ArchiveMovesRowAndRecordsChain(t *testing.T) {
 	assert.Equal(t, now.Unix(), validTo)
 }
 
+// A write and the supersessions it causes land together or not at all.
+// Half of it would leave a value and its correction both active at one
+// address, which is the stale answer an addressed store exists to remove
+// and which nothing would repair.
+func TestStore_WriteAndItsSupersessionsAreOneTransaction(t *testing.T) {
+	st, _ := openStore(t)
+	ctx := context.Background()
+	held := writeOne(t, st, sample(project, "amber-quarry"))
+
+	// 404 is no active row, so the supersession fails after the new
+	// value has been written inside the same transaction.
+	_, _, err := st.Write(ctx, sample(project, "basalt-run"), []int64{held, 404}, now)
+	require.ErrorIs(t, err, memory.ErrNotFound)
+
+	assert.Equal(t, []string{"amber-quarry"}, valuesOf(mustAt(t, st, project)),
+		"the failed write left the address exactly as it was")
+}
+
+// The row a write lands on is never archived against itself, whether or
+// not the caller named it: a replacement restating the value it replaces
+// keeps that value, at the new timestamp.
+func TestStore_WriteNeverSupersedesTheRowItJustWrote(t *testing.T) {
+	st, _ := openStore(t)
+	ctx := context.Background()
+	held := writeOne(t, st, sample(project, "amber-quarry"))
+
+	id, archived, err := st.Write(ctx, sample(project, "amber-quarry"), []int64{held}, now)
+	require.NoError(t, err)
+	assert.Equal(t, held, id)
+	assert.Empty(t, archived)
+	assert.Equal(t, []string{"amber-quarry"}, valuesOf(mustAt(t, st, project)))
+}
+
 func TestStore_ArchiveMissingReturnsErrNotFound(t *testing.T) {
 	st, _ := openStore(t)
 	err := st.Archive(context.Background(), 42, 0, now)
@@ -200,12 +234,10 @@ func TestStore_AnArchivedValueCanBeWrittenAgain(t *testing.T) {
 	st, _ := openStore(t)
 	ctx := context.Background()
 
-	id, err := st.Insert(ctx, sample(project, "amber-quarry"))
-	require.NoError(t, err)
+	id := writeOne(t, st, sample(project, "amber-quarry"))
 	require.NoError(t, st.Archive(ctx, id, 0, now))
 
-	again, err := st.Insert(ctx, sample(project, "amber-quarry"))
-	require.NoError(t, err)
+	again := writeOne(t, st, sample(project, "amber-quarry"))
 	assert.NotEqual(t, id, again)
 	assert.Equal(t, []string{"amber-quarry"}, valuesOf(mustAt(t, st, project)))
 }
@@ -214,8 +246,7 @@ func TestStore_RecordAccess(t *testing.T) {
 	st, _ := openStore(t)
 	ctx := context.Background()
 
-	id, err := st.Insert(ctx, sample(project, "amber-quarry"))
-	require.NoError(t, err)
+	id := writeOne(t, st, sample(project, "amber-quarry"))
 
 	require.NoError(t, st.RecordAccess(ctx, []int64{id}, now))
 	require.NoError(t, st.RecordAccess(ctx, []int64{id}, now.Add(time.Hour)))
@@ -227,9 +258,7 @@ func TestStore_RecordAccess(t *testing.T) {
 
 func TestStore_ReopenKeepsData(t *testing.T) {
 	st, path := openStore(t)
-	ctx := context.Background()
-	_, err := st.Insert(ctx, sample(project, "amber-quarry"))
-	require.NoError(t, err)
+	writeOne(t, st, sample(project, "amber-quarry"))
 	require.NoError(t, st.Close())
 
 	reopened, err := sqlite.Open(path)

@@ -17,11 +17,17 @@ const DefaultCapacity = 10_000
 // asks, the subject it is about — and each is one query. Nothing here
 // scans what the store holds to answer.
 type Store interface {
-	// Insert appends a new active memory and returns its ID. A value
-	// already active at the same address is not inserted twice: its
+	// Write stores m and archives supersede against it, in one
+	// transaction, and returns m's ID and the IDs actually archived. A
+	// value already active at m's address is not stored twice: its
 	// timestamp moves to the new write and its existing ID comes back,
-	// so restating a fact holds it once.
-	Insert(ctx context.Context, m Memory) (int64, error)
+	// so restating a fact holds it once — and that row is never one of
+	// the rows archived, whether or not the caller named it.
+	//
+	// It is one method rather than an insert and a loop because a write
+	// that landed while its supersessions did not would leave a value
+	// and its correction both active at one address.
+	Write(ctx context.Context, m Memory, supersede []int64, at time.Time) (int64, []int64, error)
 	// At returns the active memories held at exactly one address.
 	At(ctx context.Context, a Address) ([]Memory, error)
 	// UnderQuestion returns the active memories at every address with
@@ -98,9 +104,11 @@ func WithClock(clock func() time.Time) Option {
 }
 
 // WithCapacity overrides DefaultCapacity (tests; production keeps the
-// default).
+// default). A negative capacity is clamped to zero, which evicts
+// everything, rather than being read as a cap the eviction can slice
+// past.
 func WithCapacity(capacity int) Option {
-	return func(s *service) { s.capacity = capacity }
+	return func(s *service) { s.capacity = max(capacity, 0) }
 }
 
 // NewService returns the memory service over the given store.

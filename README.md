@@ -80,7 +80,7 @@ Agent keys (`gagent agent`; see `gagent.yaml` for an example):
 | `workspace-addr` | `--workspace-addr` | `127.0.0.1:8081` (gRPC endpoint of the agent's workspace. The agent does not dial it; it publishes the value as `GAGENT_WORKSPACE_ADDR` to every tool it spawns, and the tools that need files or exec dial it themselves. A wrong address surfaces at the first tool call, not at startup — the agent's only workspace setting) |
 | `tools-dir` | — | `./tools` (the directory manifests are read from at startup) |
 | `tools.pins` | — | unset (the accepted tool set, one manifest SHA-256 per tool name — see §Adding tools. Unset loads the tree unpinned and warns; present and naming no tool fails startup) |
-| `model.provider` | — | `mock` (scripted, offline) or `openai-compatible`. It names the wire protocol the endpoint speaks, not the vendor: one value serves OpenAI, MiniMax, Ollama and vLLM alike, and `model.base-url` is what picks between them |
+| `model.provider` | — | `mock` (scripted, offline), `openai-compatible` (the chat-completions protocol) or `anthropic-compatible` (the Messages protocol). It names the wire protocol the endpoint speaks, not the vendor: one value serves every endpoint speaking it, and `model.base-url` is what picks between them |
 | `model.base-url` | — | `https://api.openai.com/v1` (any OpenAI-compatible endpoint, e.g. MiniMax/Ollama/vLLM — see §Pointing at a MiniMax endpoint) |
 | `model.model` | — | `gpt-4o-mini` |
 | `model.api-key-env` | — | `OPENAI_API_KEY` (name of the env var holding the key — the key itself never goes in the config file) |
@@ -98,9 +98,13 @@ Workspace keys (`gagent workspace`; see `workspace.yaml` for an example):
 | `exec-uid` | `--exec-uid` | `1001` (UID Exec children run as; single-account mode: set to the workspace's own UID — any other unprivileged value fails closed with `agent_uid unavailable`; a privileged workspace also chowns the workspace directory to it) |
 | `exec-timeout` | `--exec-timeout` | `30s` (per-call ceiling for Exec commands) |
 
-### Pointing at a MiniMax endpoint
+### Endpoints, and how far each is verified
 
-MiniMax speaks the OpenAI chat-completions protocol, so it needs no code and no `model.provider` value of its own. The protocol value stays `openai-compatible` and `model.base-url` is what picks the vendor:
+`model.provider` names a wire protocol and `model.base-url` picks the vendor speaking it, so a new vendor on an existing protocol needs configuration and no code. What differs between protocols, and how far each has actually been exercised, is below — the gap between "it is compatible" and "this part was run" is where an agent breaks quietly.
+
+#### MiniMax, on `openai-compatible`
+
+MiniMax speaks the OpenAI chat-completions protocol, so it needs no `model.provider` value of its own:
 
 ```yaml
 model:
@@ -115,6 +119,32 @@ The key never goes in the file — `api-key-env` names the environment variable 
 Models the endpoint lists: `MiniMax-M3`, `MiniMax-M2.7`, `MiniMax-M2.7-highspeed`, `MiniMax-M2.5`, `MiniMax-M2.5-highspeed`, `MiniMax-M2.1`, `MiniMax-M2.1-highspeed`, `MiniMax-M2`. `https://api.minimaxi.com/v1` and `https://api.minimax.chat/v1` both answer 401; only `api.minimax.io` authenticates.
 
 **One asymmetry an operator has to know, because "OpenAI-compatible" does not imply it.** On this endpoint a *tool* schema is enforced — a call returns the declared function with well-formed JSON arguments — while a *response* schema is not: `response_format: json_schema` is accepted with HTTP 200 and ignored. Tool calling holds; the response schema is decoration. #615 holds the measurements and owns what to do about it. This note is here so the difference is met at the config line rather than after a turn. Probed 2026-08-17; re-check against the endpoint before relying on either half.
+
+#### Anthropic, on `anthropic-compatible`
+
+Anthropic's Messages API is a different protocol rather than a different vendor, so it takes its own value:
+
+```yaml
+model:
+  provider: anthropic-compatible
+  base-url: https://api.anthropic.com/v1
+  model: claude-sonnet-4-5
+  api-key-env: ANTHROPIC_API_KEY
+```
+
+**This configuration has never been run against the live API.** There is no Anthropic key in the environment this was built in, so no request has left the machine: the client is written to the protocol's documented contract and tested against a local fake that asserts the request it emits. Those tests confirm the client sends what this implementation believes the API wants; **they cannot confirm the API agrees.** The first real call is the thing that would establish that, and it has not happened. Treat the block above as unexercised until someone runs it.
+
+Three differences from the chat-completions protocol are handled in the client rather than by the operator, and are listed because they are what a first live call would exercise: the system prompt moves to a top-level field instead of a message role, a tool result is a block on a user message instead of a role of its own, and `max_tokens` is required rather than optional (`internal/agent/anthropic`, default 4096 — a response that hits the ceiling is returned as an error rather than as a truncated document).
+
+#### What each protocol gives the agent
+
+| | `openai-compatible`, OpenAI | `openai-compatible`, MiniMax | `anthropic-compatible`, Anthropic |
+|---|---|---|---|
+| Tool calling | enforced | enforced (probed) | not run |
+| Response schema on the reply | enforced via `response_format` | accepted and ignored (#615) | no such field in the protocol |
+| Verified by | in use | probed 2026-08-17 | nothing yet — no key, no live call |
+
+The response-schema row is the one that decides how much the writeback can rely on the wire. Only the first column constrains it; the second silently does not, and the third has no mechanism to. **#615 owns what the writeback should do about a protocol that cannot constrain the reply** — this table records the difference rather than resolving it.
 
 ### Agent ego
 

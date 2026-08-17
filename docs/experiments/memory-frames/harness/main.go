@@ -97,6 +97,7 @@ type Run struct {
 
 	Declarer     *DeclarerScore     `json:"declarer,omitempty"`
 	Addresser    *AddressScore      `json:"addresser,omitempty"`
+	Prose        *ProseScore        `json:"prose,omitempty"`
 	Model        []ModelRun         `json:"model_runs,omitempty"`
 	Bias         []BiasResult       `json:"join_bias,omitempty"`
 	Stability    *Stability         `json:"stability,omitempty"`
@@ -119,6 +120,7 @@ type runFiles struct {
 	workload     string
 	declarations string
 	addresses    string
+	prose        string
 	stability    string
 	resolutions  string
 	decade       string
@@ -135,7 +137,7 @@ func filesFor(out, record string, seed int64) runFiles {
 	}
 	return runFiles{
 		workload: named("workload"), declarations: named("declarations"),
-		addresses: named("addresses"),
+		addresses: named("addresses"), prose: named("prose"),
 		stability: named("stability"), resolutions: named("resolutions"),
 		decade: named("decade"), constrained: named("constrained"),
 		shapes: named("harder"), finding: named("finding"), record: record,
@@ -156,6 +158,9 @@ func run() error {
 	render := flag.Bool("render", false, "rewrite the record's tables from the committed results and measure nothing")
 	declare := flag.Bool("declare", false,
 		"ask a model to declare the operation for every assertion. Spends money")
+	prose := flag.Bool("prose", false,
+		"put every assertion through the shipped contract prose and the shipped response schema, "+
+			"and every probe through a read step, to measure whether a fact lands where its question looks. Spends money")
 	address := flag.Bool("address", false,
 		"ask a model for the question every assertion answers, which is where a question-shaped address comes from. Spends money")
 	harder := flag.Bool("harder", false,
@@ -209,6 +214,19 @@ func run() error {
 		fmt.Printf("declared %d assertions in %d paid calls: %d prompt and %d completion tokens, $%.4f\n",
 			len(declared.Declarations), declared.Calls,
 			declared.PromptTokens, declared.CompletionTokens, declared.CostUSD)
+	}
+
+	if *prose {
+		measured, err := Prose(workload, *declarerCache)
+		if err != nil {
+			return err
+		}
+		if err := writeJSON(files.prose, measured); err != nil {
+			return err
+		}
+		fmt.Printf("put %d assertions and %d probes through the shipped prose in %d paid calls: %d prompt and %d completion tokens, $%.4f\n",
+			len(measured.Writes), len(measured.Reads), measured.Calls,
+			measured.PromptTokens, measured.CompletionTokens, measured.CostUSD)
 	}
 
 	if *address {
@@ -481,6 +499,24 @@ func runHarder(ctx context.Context, seed int64, files runFiles, pay bool, cacheP
 	}
 	fmt.Printf("measured %d shapes\n", len(shapes))
 	return renderRecord(files)
+}
+
+// readCommittedProse reads the prose round a paid run committed and scores
+// it, which costs nothing.
+func readCommittedProse(path string) (*ProseScore, error) {
+	body, err := os.ReadFile(path)
+	if os.IsNotExist(err) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("read %s: %w", path, err)
+	}
+	var run ProseRun
+	if err := json.Unmarshal(body, &run); err != nil {
+		return nil, fmt.Errorf("decode %s: %w", path, err)
+	}
+	scored := ScoreProse(run)
+	return &scored, nil
 }
 
 // readCommittedAddresses reads the addresses a paid run committed and scores

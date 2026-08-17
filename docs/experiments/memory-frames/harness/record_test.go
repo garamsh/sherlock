@@ -50,6 +50,8 @@ func committedRun(t *testing.T) Run {
 	finding := committedFinding(t)
 	result.Finding = &finding
 
+	result.Prose, err = readCommittedProse(filepath.Join("..", "results", "prose_seed7.json"))
+	require.NoError(t, err)
 	result.Addresser, err = readCommittedAddresses(filepath.Join("..", "results", "addresses_seed7.json"))
 	require.NoError(t, err)
 	return result

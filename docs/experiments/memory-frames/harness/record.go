@@ -32,6 +32,7 @@ const (
 	regionDecade      = "decade"
 	regionArity       = "arity"
 	regionAddress     = "address"
+	regionProse       = "prose"
 	regionDeclaration = "declaration"
 	regionDestroy     = "destroy"
 	regionReach       = "reach"
@@ -73,6 +74,10 @@ func renderRecord(files runFiles) error {
 	}
 	var finding FindingStudy
 	if err := readStudy(files.finding, &finding); err != nil {
+		return err
+	}
+	result.Prose, err = readCommittedProse(files.prose)
+	if err != nil {
 		return err
 	}
 	result.Addresser, err = readCommittedAddresses(files.addresses)
@@ -172,6 +177,7 @@ func RenderTables(r Run) []Section {
 		section(regionDecade, r, renderYears, renderSizes),
 		section(regionArity, r, renderArity),
 		section(regionAddress, r, renderQuestions, renderAddresser),
+		section(regionProse, r, renderProse),
 		section(regionDeclaration, r, renderSweep, renderHealing, renderDeclarer, renderModelRun),
 		section(regionDestroy, r, renderBias, renderStability, renderDisagreement),
 		section(regionReach, r, renderReach, renderCoupling, renderCapacity),
@@ -749,6 +755,22 @@ func renderPaid(b *strings.Builder, r Run) {
 			[2]any{"call bound addressing refuses to pass", addressCallLimit},
 			[2]any{"cost bound addressing refuses to pass, USD", fmt.Sprintf("%.2f", addressCostLimit)})
 	}
+	if p := r.Prose; p != nil {
+		total += p.CostUSD
+		rows = append(rows,
+			[2]any{"model, the shipped prose round", p.Model},
+			[2]any{"paid calls, the shipped prose round", p.Calls},
+			[2]any{"assertions put through the shipped prose", p.Asked},
+			[2]any{"probes put through the read step", p.Reads},
+			[2]any{"prompt tokens, the shipped prose round", p.PromptTokens},
+			[2]any{"completion tokens, the shipped prose round", p.CompletionTokens},
+			[2]any{"price per million prompt tokens, the shipped prose round, USD", p.PriceInPerM},
+			[2]any{"price per million completion tokens, the shipped prose round, USD", p.PriceOutPerM},
+			[2]any{"price read on, the shipped prose round", p.PriceRead},
+			[2]any{"cost of the shipped prose round, USD", fmt.Sprintf("%.4f", p.CostUSD)},
+			[2]any{"call bound the shipped prose round refuses to pass", proseCallLimit},
+			[2]any{"cost bound the shipped prose round refuses to pass, USD", fmt.Sprintf("%.2f", proseCostLimit)})
+	}
 	if s := r.Stability; s != nil {
 		total += s.CostUSD
 		rows = append(rows,
@@ -1240,4 +1262,67 @@ func figureAt(f Figure, decimals int) string {
 // site.
 func kilobytes(bytes int64) float64 {
 	return float64(bytes) / 1024
+}
+
+// renderProse is the round that asks what the shipped write prose
+// produces. The first table puts the conformance figure and the
+// reachability figure in one column on purpose: they are the two numbers
+// #547 says must not be confused, and a reader who sees only one of them
+// has the wrong impression of the write path.
+func renderProse(b *strings.Builder, r Run) {
+	p := r.Prose
+	if p == nil {
+		return
+	}
+	fmt.Fprintf(b, "### What the shipped prose produces\n\n")
+	fmt.Fprintf(b, "| quantity | value |\n|---|---|\n")
+	rows := [][2]any{
+		{"assertions asked", p.Asked},
+		{"probes asked", p.Reads},
+		{"`parsed`, the response was a write the shipped parser took", figure(p.Parsed)},
+		{"`reachable`, the paired probe landed on the same address", figure(p.Reachable)},
+		{"`subject right`, against the workload's own subject", figure(p.SubjectRight)},
+		{"`subject match`, write and read agree on the subject", figure(p.SubjectMatch)},
+		{"`question match`, write and read agree on the question", figure(p.QuestionMatch)},
+		{"`self-answering`, the value is inside the address", figure(p.SelfAnswering)},
+		{"— of which the subject slot holds it", figure(p.SubjectHoldsValue)},
+		{"— of which the question slot holds it", figure(p.QuestionHoldsValue)},
+	}
+	for _, row := range rows {
+		fmt.Fprintf(b, "| %s | %v |\n", row[0], row[1])
+	}
+	fmt.Fprintln(b)
+
+	fmt.Fprintf(b, "| wording | asked | reachable |\n|---|---|---|\n")
+	for _, cut := range p.Wordings {
+		fmt.Fprintf(b, "| `%s` | %d | %s |\n", cut.Name, cut.Asked, figure(cut.Accuracy))
+	}
+	fmt.Fprintln(b)
+
+	fmt.Fprintf(b, "| class | asked | reachable |\n|---|---|---|\n")
+	for _, cut := range p.Classes {
+		fmt.Fprintf(b, "| `%s` | %d | %s |\n", cut.Name, cut.Asked, figure(cut.Accuracy))
+	}
+	fmt.Fprintln(b)
+
+	if len(p.Examples) == 0 {
+		return
+	}
+	fmt.Fprintf(b, "### What the failures look like\n\n")
+	fmt.Fprintf(b, "The first rows of each kind in workload order, so the selection is reproducible rather than the most striking ones. `address` is what the write produced; `probe reaches` is where the read step, given only the question, went looking.\n\n")
+	fmt.Fprintf(b, "| kind | assertion | address | value | probe reaches |\n|---|---|---|---|---|\n")
+	for _, e := range p.Examples {
+		fmt.Fprintf(b, "| %s | %s | %s / %s | %s | %s |\n",
+			e.Kind, e.Text, cell(e.Subject), cell(e.Question), cell(e.Value), cell(e.ReadAs))
+	}
+	fmt.Fprintln(b)
+}
+
+// cell renders a string that may be empty into a table cell, so a blank
+// reads as nothing rather than as a missing column.
+func cell(s string) string {
+	if strings.TrimSpace(s) == "" {
+		return notApplicable
+	}
+	return s
 }

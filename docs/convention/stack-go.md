@@ -255,9 +255,8 @@ generator is configured and none is required.
 Most doubles here are stateful fakes — a map, a slice or a channel the
 test reads back afterwards — which is a different thing from the
 expectation-based mock a generator emits. The rest are one-method
-stubs, shorter than the directive that would generate them.
-`simplicity.md` §"Consolidate with judgment": a wrong abstraction is
-worse than honest duplication.
+stubs, shorter than the directive that would generate them. A generator
+modelling the wrong idea costs more than writing each double out.
 
 Nothing has to keep a double in sync with its interface: one that stops
 satisfying it fails to compile.

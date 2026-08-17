@@ -374,9 +374,16 @@ func TestScriptTool_ManifestFixtureSchemaConforms(t *testing.T) {
 	}`)
 	require.NoError(t, os.WriteFile(filepath.Join(toolDir, "manifest.json"), manifest, 0o644))
 
-	// LoadManifest is the path the runtime loads every manifest
-	// through, so the fixture is checked under the real one.
-	m, _, err := tool.LoadManifest(filepath.Join(toolDir, "manifest.json"))
+	// The registry is the path the runtime loads every manifest through,
+	// so the fixture is checked under the real one. The tree holds the
+	// fixture and nothing else, so the required set is explicitly empty
+	// rather than the default that expects the mouth.
+	reg, err := tool.NewRegistry(tool.RegistryOptions{Dir: root, Required: []string{}})
 	require.NoError(t, err)
-	assert.Equal(t, "echo", m.Name)
+
+	names := make([]string, 0, 1)
+	for _, d := range reg.List() {
+		names = append(names, d.Name)
+	}
+	assert.Equal(t, []string{"echo"}, names)
 }

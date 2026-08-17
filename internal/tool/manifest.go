@@ -22,28 +22,6 @@ type manifestDir struct {
 	hash     string
 }
 
-// LoadManifest reads, parses, and validates the manifest at path. The
-// returned struct is the parsed manifest; the bytes are the file's own,
-// returned unchanged, which is what a caller keeps as the on-disk
-// record. They are not what the pin is taken over: ManifestHash
-// canonicalizes first, so formatting and key order do not reach the
-// hash.
-func LoadManifest(path string) (Manifest, []byte, error) {
-	raw, err := os.ReadFile(path)
-	if err != nil {
-		return Manifest{}, nil, fmt.Errorf("read manifest: %w", err)
-	}
-	m, err := ParseManifest(raw)
-	if err != nil {
-		return Manifest{}, nil, err
-	}
-	m, err = ValidateManifest(m)
-	if err != nil {
-		return Manifest{}, nil, err
-	}
-	return m, raw, nil
-}
-
 // ParseManifest decodes the manifest bytes without validating the
 // embedded schemas. Tests use it to assert the failure modes of the
 // shape itself; startup uses it after a successful raw read.

@@ -144,6 +144,28 @@ func TestProcessExecutor_UntrustedChildCarriesEveryCap(t *testing.T) {
 	}
 }
 
+// TestProcessExecutor_StdinReachesTheChild pins that Request.Stdin is
+// what the child reads on its standard input. Nothing asserted it
+// before (survey process:171): no test in the repository set the field,
+// so inverting the plumbing that hands it over left the whole suite
+// green.
+//
+// `cat` is the assertion's other half. With stdin attached it writes
+// back what it was given; with none it reads EOF and writes nothing, so
+// a request whose bytes never reach the child produces empty stdout
+// rather than a different error.
+func TestProcessExecutor_StdinReachesTheChild(t *testing.T) {
+	requireUnprivileged(t)
+	exec := shell.NewProcessExecutor(os.Geteuid(), 5*time.Second)
+
+	res, err := exec.Run(context.Background(), shell.Request{
+		Command: "cat",
+		Stdin:   []byte("the request's own bytes"),
+	})
+	require.NoError(t, err)
+	assert.Equal(t, "the request's own bytes", res.Stdout)
+}
+
 // TestProcessExecutor_UncappableChildFailsClosed pins the posture ADR
 // 0008 sets for a boundary mechanism the platform cannot deliver: the
 // call fails and no command runs, rather than a warning behind an

@@ -43,9 +43,19 @@ type Embedder interface {
 	Embed(ctx context.Context, text string) ([]float32, error)
 }
 
+// Summary is what a Summarizer produced: the text, and whether a model
+// generated it. The deterministic stand-in ADR 0004 licenses so the
+// pipeline runs offline reports Generated false, so a caller that may
+// only keep model-generated content can tell without inspecting the
+// text — and cannot hold a summary without having been told.
+type Summary struct {
+	Text      string
+	Generated bool
+}
+
 // Summarizer compresses a set of memory contents into one parent text.
 type Summarizer interface {
-	Summarize(ctx context.Context, contents []string) (string, error)
+	Summarize(ctx context.Context, contents []string) (Summary, error)
 }
 
 // Service is the memory domain's behavior contract: the write operations

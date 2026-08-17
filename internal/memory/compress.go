@@ -86,7 +86,10 @@ func (s *service) Compress(ctx context.Context, ids []int64) (CompressResult, er
 	if err != nil {
 		return CompressResult{}, fmt.Errorf("summarize: %w", err)
 	}
-	chunks := chunkSummary(summary, SummaryMaxLen, ChunkSeparator)
+	// Compress rewrites memories the writeback already curated, so it
+	// keeps the text whichever arm produced it; provenance gates the
+	// context-overflow write, where the content is not yet curated.
+	chunks := chunkSummary(summary.Text, SummaryMaxLen, ChunkSeparator)
 	if len(chunks) == 0 {
 		return CompressResult{}, fmt.Errorf("summarize: %w: empty output", ErrInvalidInput)
 	}

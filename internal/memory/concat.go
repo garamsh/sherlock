@@ -23,12 +23,14 @@ type ConcatSummarizer struct{}
 // NewConcatSummarizer returns the deterministic summarizer.
 func NewConcatSummarizer() ConcatSummarizer { return ConcatSummarizer{} }
 
-// Summarize implements Summarizer.
-func (ConcatSummarizer) Summarize(_ context.Context, contents []string) (string, error) {
+// Summarize implements Summarizer. The result reports Generated false:
+// a join is not a summary, and ADR 0004 makes this a stand-in for a
+// model's availability, never for its behavior.
+func (ConcatSummarizer) Summarize(_ context.Context, contents []string) (Summary, error) {
 	if len(contents) == 0 {
-		return "", fmt.Errorf("summarize: %w: no contents", ErrInvalidInput)
+		return Summary{}, fmt.Errorf("summarize: %w: no contents", ErrInvalidInput)
 	}
-	return strings.Join(contents, ChunkSeparator), nil
+	return Summary{Text: strings.Join(contents, ChunkSeparator)}, nil
 }
 
 // ChunkSeparator joins cluster contents inside the deterministic

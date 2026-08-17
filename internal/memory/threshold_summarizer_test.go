@@ -16,22 +16,23 @@ import (
 // summary. The threshold composite's selection logic — not the actual
 // summary quality — is what these tests pin.
 type trackingSummarizer struct {
-	calls   int
-	summary string
-	err     error
+	calls     int
+	summary   string
+	generated bool
+	err       error
 }
 
-func (s *trackingSummarizer) Summarize(_ context.Context, _ []string) (string, error) {
+func (s *trackingSummarizer) Summarize(_ context.Context, _ []string) (memory.Summary, error) {
 	s.calls++
 	if s.err != nil {
-		return "", s.err
+		return memory.Summary{}, s.err
 	}
-	return s.summary, nil
+	return memory.Summary{Text: s.summary, Generated: s.generated}, nil
 }
 
 func TestThresholdSummarizer_PicksQualityAboveMaxLen(t *testing.T) {
 	fast := &trackingSummarizer{summary: "fast"}
-	quality := &trackingSummarizer{summary: "quality"}
+	quality := &trackingSummarizer{summary: "quality", generated: true}
 
 	composite := memory.ThresholdSummarizer{
 		Fast:    fast,
@@ -40,14 +41,14 @@ func TestThresholdSummarizer_PicksQualityAboveMaxLen(t *testing.T) {
 
 	out, err := composite.Summarize(context.Background(), []string{"short"})
 	require.NoError(t, err)
-	assert.Equal(t, "fast", out,
+	assert.Equal(t, "fast", out.Text,
 		"below MaxLen the fast summarizer is selected")
 	assert.Equal(t, 1, fast.calls)
 	assert.Equal(t, 0, quality.calls)
 
 	out, err = composite.Summarize(context.Background(), []string{strings.Repeat("x", memory.SummaryMaxLen+1)})
 	require.NoError(t, err)
-	assert.Equal(t, "quality", out,
+	assert.Equal(t, "quality", out.Text,
 		"above MaxLen the quality summarizer is selected")
 	assert.Equal(t, 1, fast.calls)
 	assert.Equal(t, 1, quality.calls)
@@ -69,7 +70,7 @@ func TestThresholdSummarizer_FallsBackToFastOnQualityError(t *testing.T) {
 	out, err := composite.Summarize(context.Background(), []string{strings.Repeat("x", memory.SummaryMaxLen+1)})
 	require.NoError(t, err,
 		"a quality error falls back to fast, never bubbles up")
-	assert.Equal(t, "fast", out)
+	assert.Equal(t, "fast", out.Text)
 	assert.Equal(t, 1, quality.calls, "quality is still attempted once")
 	assert.Equal(t, 1, fast.calls, "fast picks up after the quality error")
 }
@@ -80,14 +81,14 @@ func TestThresholdSummarizer_NilQualitySkipsModel(t *testing.T) {
 
 	out, err := composite.Summarize(context.Background(), []string{strings.Repeat("x", memory.SummaryMaxLen+10)})
 	require.NoError(t, err)
-	assert.Equal(t, "fast", out,
+	assert.Equal(t, "fast", out.Text,
 		"with no quality summarizer wired, fast always wins")
 	assert.Equal(t, 1, fast.calls)
 }
 
 func TestThresholdSummarizer_FastAtExactlyMaxLen(t *testing.T) {
 	fast := &trackingSummarizer{summary: "fast"}
-	quality := &trackingSummarizer{summary: "quality"}
+	quality := &trackingSummarizer{summary: "quality", generated: true}
 	composite := memory.ThresholdSummarizer{Fast: fast, Quality: quality}
 
 	// Two equal pieces joined by " | " whose total joined length is
@@ -96,6 +97,6 @@ func TestThresholdSummarizer_FastAtExactlyMaxLen(t *testing.T) {
 	piece := strings.Repeat("x", (memory.SummaryMaxLen-len(memory.ChunkSeparator))/2)
 	out, err := composite.Summarize(context.Background(), []string{piece, piece})
 	require.NoError(t, err)
-	assert.Equal(t, "fast", out,
+	assert.Equal(t, "fast", out.Text,
 		"joined length equal to MaxLen still picks fast (concat fits one parent)")
 }

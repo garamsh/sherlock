@@ -99,54 +99,26 @@ func TestSimilar_DoesNotRecordAccess(t *testing.T) {
 	assert.Zero(t, results[0].AccessCount)
 }
 
-func TestUpdate_SupersedesAndExcludesOldFromSearch(t *testing.T) {
-	svc := newService(t)
-	oldID := storeMemory(t, svc, "release is on monday", "episodic", 0.7)
-
-	res, err := svc.Update(context.Background(), memory.UpdateInput{
-		ID:      oldID,
-		Content: "release is on tuesday",
-	})
-	require.NoError(t, err)
-	assert.Equal(t, oldID, res.SupersededID)
-	assert.NotEqual(t, oldID, res.ID)
-
-	results := search(t, svc, "release monday")
-	require.NotEmpty(t, results)
-	for _, r := range results {
-		assert.NotEqual(t, oldID, r.ID, "archived row must not be searchable")
-		assert.NotContains(t, r.Content, "monday")
-	}
-
-	_, err = svc.Update(context.Background(), memory.UpdateInput{ID: oldID, Content: "again"})
-	require.ErrorIs(t, err, memory.ErrNotFound)
-}
-
-func TestDelete_ArchivesAndExcludesFromSearch(t *testing.T) {
-	svc := newService(t)
-	id := storeMemory(t, svc, "temporary zebra note", "episodic", 0.5)
-	keep := storeMemory(t, svc, "durable zebra fact", "semantic", 0.5)
-
-	require.NoError(t, svc.Delete(context.Background(), id))
-
-	results := search(t, svc, "zebra")
-	require.NotEmpty(t, results, "the surviving memory proves search still matches")
-	for _, r := range results {
-		assert.NotEqual(t, id, r.ID, "deleted row must not be searchable")
-		assert.Equal(t, keep, r.ID)
-	}
-}
-
-func TestDelete_RecordsValidToWithoutSupersession(t *testing.T) {
+// TestRetire_RecordsValidToWithoutSupersession pins the half of the
+// archive contract a supersession never exercises: a row retired rather
+// than replaced records valid_to and leaves superseded_by NULL, so the
+// archive says which of the two happened. Retention is the operation
+// that retires — Service.Delete was the other one, and #582 removed it
+// because an addressed write states no declaration that produces one.
+func TestRetire_RecordsValidToWithoutSupersession(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "memory.db")
 	st, err := sqlite.Open(path)
 	require.NoError(t, err)
+	clock := now
 	svc := memory.NewService(st, memory.NewHashingEmbedder(), memory.NewConcatSummarizer(),
-		memory.WithClock(func() time.Time { return now }))
+		memory.WithClock(func() time.Time { return clock }))
 	t.Cleanup(func() { assert.NoError(t, svc.Close()) })
 
-	id := storeMemory(t, svc, "temporary note", "episodic", 0.5)
-	require.NoError(t, svc.Delete(context.Background(), id))
+	id := storeMemory(t, svc, "temporary note", "episodic", 0.1)
+	clock = now.Add(time.Hour)
+	archived, err := svc.Retain(context.Background())
+	require.NoError(t, err)
+	require.Equal(t, []int64{id}, archived)
 
 	db, err := sql.Open("sqlite", path)
 	require.NoError(t, err)
@@ -156,34 +128,8 @@ func TestDelete_RecordsValidToWithoutSupersession(t *testing.T) {
 	require.NoError(t, db.QueryRow(
 		`SELECT superseded_by, valid_to FROM memories_archive WHERE id = ?`, id,
 	).Scan(&supersededBy, &validTo))
-	assert.False(t, supersededBy.Valid, "delete retires; it does not supersede")
-	assert.Equal(t, now.Unix(), validTo)
-}
-
-func TestDelete_MissingOrAlreadyArchivedReturnsErrNotFound(t *testing.T) {
-	svc := newService(t)
-	id := storeMemory(t, svc, "note", "episodic", 0.5)
-
-	require.NoError(t, svc.Delete(context.Background(), id))
-	err := svc.Delete(context.Background(), id)
-	require.ErrorIs(t, err, memory.ErrNotFound, "delete is not idempotent")
-
-	err = svc.Delete(context.Background(), 999)
-	require.ErrorIs(t, err, memory.ErrNotFound)
-}
-
-func TestUpdate_InheritsImportanceWhenOmitted(t *testing.T) {
-	svc := newService(t)
-	oldID := storeMemory(t, svc, "release is on monday", "episodic", 0.7)
-
-	res, err := svc.Update(context.Background(), memory.UpdateInput{ID: oldID, Content: "release is on tuesday"})
-	require.NoError(t, err)
-
-	results, err := svc.Similar(context.Background(), "release tuesday", 0)
-	require.NoError(t, err)
-	require.Len(t, results, 1)
-	assert.Equal(t, res.ID, results[0].ID)
-	assert.InDelta(t, 0.7, results[0].ImportanceScore, 1e-9)
+	assert.False(t, supersededBy.Valid, "retention retires; it does not supersede")
+	assert.Equal(t, clock.Unix(), validTo)
 }
 
 func TestCompress_SummarizesEpisodicIntoSemanticParent(t *testing.T) {
@@ -332,10 +278,6 @@ func TestRetain_TiersBySalience(t *testing.T) {
 	results := search(t, svc, "salience")
 	require.Len(t, results, 1)
 	assert.Equal(t, high, results[0].ID, "only the high-salience memory stays active")
-
-	err = svc.Delete(context.Background(), low)
-	assert.ErrorIs(t, err, memory.ErrNotFound,
-		"the dropped memory sits in the archive, not the active index")
 }
 
 func TestStore_EvictsLowestScoreBeyondCapacity(t *testing.T) {

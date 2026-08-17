@@ -58,10 +58,15 @@ type Summarizer interface {
 	Summarize(ctx context.Context, contents []string) (Summary, error)
 }
 
-// Service is the memory domain's behavior contract: the write operations
-// behind the writeback block (Store, Update, Delete), platform maintenance
-// (Compress, Forget, Consolidate, Retain), and the runtime queries (Search,
-// Recall, Similar) the agent loop needs (ADR 0011).
+// Service is the memory domain's behavior contract: the write the
+// writeback block makes (Store), platform maintenance (Compress,
+// Consolidate, ConsolidateIfDue, Retain), and the runtime queries
+// (Search, Recall, Similar) the agent loop needs (ADR 0011).
+//
+// Store is the only write, because it is the only one the writeback can
+// state. An addressed write carries an address, a value and an operation
+// (ADR 0018), so it names no memory ID: Update took one, and there is no
+// declaration a model can make that produces a Delete at all.
 type Service interface {
 	// Store embeds and inserts a new memory. An insert retires nothing:
 	// identity is not inferred from similarity (ADR 0018), so a
@@ -71,13 +76,6 @@ type Service interface {
 	// Search runs hybrid search and records access on the returned
 	// memories. A non-positive limit falls back to DefaultSearchLimit.
 	Search(ctx context.Context, query string, limit int) ([]ScoredMemory, error)
-	// Update supersedes a memory: a new row is inserted and the old row
-	// is archived with superseded_by/valid_to set. Never overwrites.
-	Update(ctx context.Context, in UpdateInput) (UpdateResult, error)
-	// Delete archives one active memory by ID, recording valid_to while
-	// superseded_by stays 0 (retirement, not supersession). A missing or
-	// already-archived ID returns ErrNotFound.
-	Delete(ctx context.Context, id int64) error
 	// Compress summarizes a set of episodic memories into one or more
 	// semantic parents — the summary is chunked so each parent stays
 	// within SummaryMaxLen — and archives the originals.

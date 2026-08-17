@@ -12,33 +12,6 @@ import (
 	"sort"
 )
 
-// Manifest is the contract the platform reads from tools/<name>/manifest.json
-// (ADR 0009 §Decision). The manifest is the full description the platform
-// trusts: name, description, command, env, and the two JSON Schemas. The
-// descriptor the model sees is a strict projection of this struct.
-type Manifest struct {
-	Name         string          `json:"name"`
-	Description  string          `json:"description"`
-	Command      string          `json:"command"`
-	Env          []string        `json:"env,omitempty"`
-	InputSchema  json.RawMessage `json:"input_schema"`
-	OutputSchema json.RawMessage `json:"output_schema"`
-}
-
-// Descriptor is the model-facing view of a tool: its name, description,
-// and JSON Schema documents, JSON-serializable so it can be handed to a
-// model. The descriptor is a strict projection of the on-disk manifest
-// (ADR 0009 §Decision): the runner's command, env, and on-disk paths
-// never reach the model. Hash is the descriptor's content hash; the
-// platform pins it against any drift on the next startup.
-type Descriptor struct {
-	Name         string          `json:"name"`
-	Description  string          `json:"description"`
-	InputSchema  json.RawMessage `json:"input_schema"`
-	OutputSchema json.RawMessage `json:"output_schema"`
-	Hash         string          `json:"hash"`
-}
-
 // manifestDir is the directory containing the manifest. The Command path
 // is resolved against this directory so the manifest is self-contained
 // and the operator can move the tool tree without breaking paths.

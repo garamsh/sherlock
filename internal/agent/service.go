@@ -39,22 +39,6 @@ type ToolClient interface {
 	Call(ctx context.Context, name string, input json.RawMessage) (json.RawMessage, error)
 }
 
-// Response is one model reply: visible content plus optional tool calls.
-// Content is the schema's document; the session parses the reply out of
-// it.
-type Response struct {
-	Content   string
-	ToolCalls []ToolCall
-}
-
-// RecalledMemory is one long-term memory entry injected into context during
-// the recall step, shown to the model with its ID and age.
-type RecalledMemory struct {
-	ID      string
-	Content string
-	Age     string
-}
-
 // Recaller is the recall hook point of the memory lifecycle (ADR 0006).
 // internal/agent/memory implements it over the memory service and the
 // runtime wires it; nil means no recall.
@@ -69,61 +53,6 @@ type Recaller interface {
 // discarded.
 type WritebackSink interface {
 	Apply(ctx context.Context, ops []WritebackOp) ([]RecalledMemory, error)
-}
-
-// EventKind identifies a loop lifecycle event.
-type EventKind string
-
-const (
-	// EventTurnStarted fires once per Run, before frame and recall.
-	EventTurnStarted EventKind = "turn_started"
-	// EventRecall fires once per Run after the recall step, carrying the
-	// injected memory IDs and their count, so subscribers see what
-	// memory entered the context each turn (issue #325). Sessions
-	// without a Recaller emit nothing.
-	EventRecall EventKind = "recall"
-	// EventWriteback fires after each model response's memory block is
-	// parsed and handed to the sink.
-	EventWriteback EventKind = "writeback"
-	// EventWritebackError fires when a model response was not the
-	// document the response schema describes, so the parser could not
-	// turn it into operations. The turn itself continues; the warning
-	// records what the model missed so subscribers can detect it. Issue
-	// #93.
-	EventWritebackError EventKind = "writeback_error"
-	// EventToolCall fires after each tool execution.
-	EventToolCall EventKind = "tool_call"
-	// EventTurnFinished fires once per Run with the final response.
-	EventTurnFinished EventKind = "turn_finished"
-	// EventTurnFailed fires once per Run that returns an error, so the
-	// monitoring stream always ends a turn with a terminal event.
-	EventTurnFailed EventKind = "turn_failed"
-)
-
-// Event is one structured loop event for the gateway monitoring stream.
-// Which fields are set depends on Kind: Task on turn_started,
-// RecalledIDs and RecalledCount on recall, Ops on writeback, the Tool*
-// fields on tool_call, Response on turn_finished, Error on turn_failed
-// and writeback_error.
-type Event struct {
-	Kind       EventKind
-	Turn       int
-	Task       string
-	Ops        []WritebackOp
-	ToolName   string
-	ToolInput  json.RawMessage
-	ToolResult string
-	ToolFailed bool
-	Response   string
-	Error      string
-	// RecalledIDs names the memories the recall step injected this turn;
-	// RecalledCount is their number.
-	RecalledIDs   []string
-	RecalledCount int
-	// MessageIDs names the inbound messages the turn drained; the
-	// gateway stamps it on terminal events (ADR 0015). The session
-	// never sets it.
-	MessageIDs []string
 }
 
 // EventSink receives loop events in emission order. Nil means events are

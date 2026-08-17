@@ -8,15 +8,6 @@ import (
 	"strings"
 )
 
-// ErrMalformedWriteback marks a model response the writeback contract
-// refuses: a JSON parse error or a schema violation. It is surfaced as a
-// fatal error only for schema violations (the model emitted a contract
-// the platform refuses to apply). JSON parse failures — the response was
-// not the document the schema describes — are recorded as warnings, not
-// fatal errors, so a single bad writeback does not abort an
-// otherwise-successful turn (issue #93).
-var ErrMalformedWriteback = errors.New("malformed memory writeback")
-
 // ResponseSchema is the JSON Schema every model response is constrained
 // to (ADR 0018). A provider with constrained decoding sends it as the
 // response format; ParseWriteback reads what it produces, so the schema

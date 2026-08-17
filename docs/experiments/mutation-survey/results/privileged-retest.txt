@@ -1,0 +1,61 @@
+Re-run of the same 16 internal/workspace/shell survivors against the privileged
+command #604 added, verbatim harness output. Compare with survivor-retest.txt,
+which is the same 16 against `go test ./...`.
+
+Tree: 210a0c1 (commits after it changed only this record, not the code), this
+branch on top of origin/main f5ded3e (which carries #605 and
+#606 — process:171 is killed by its own package here for that reason, so the
+suite column is not reached for it). The suite command is `make test-privileged`
+inside the digest-pinned image the workflow's privileged job names, run as root
+with CAP_SYS_ADMIN, because this host has no passwordless sudo and the pipeline
+is failing account-wide (#603). No run here is a CI run.
+
+One caveat the numbers do not carry themselves: the container differs from the
+host in more than privilege. `childenv:15` is killed here because `LANG` is unset
+in that image, not because the run is privileged — on a host where LANG is set
+the same mutant survives both commands.
+
+HEAD: 210a0c1
+suite command: docker run --rm --cap-add=SYS_ADMIN -v "$PWD:/src" -w /src -v gagent-gocache:/root/.cache/go-build -v gagent-gomod:/go/pkg/mod golang:1.26@sha256:0d1d3a794be25f809dd2cb3160d8c73276c4056a9f8242a138e908ddeee7b6b6 make test-privileged
+childenv:11: package=SURVIVED suite=SURVIVED  (CONDITIONALS_NEGATION: the PATH fallback fires when PATH is set)
+childenv:15: package=SURVIVED suite=KILLED  (CONDITIONALS_NEGATION: the LANG fallback fires when LANG is set)
+limits:28: package=SURVIVED suite=SURVIVED  (CONDITIONALS_BOUNDARY: the shim verb is ignored at exactly two args)
+limits:48a: package=SURVIVED suite=SURVIVED  (ARITHMETIC_BASE: the shim argv slice is preallocated smaller)
+limits:48b: package=SURVIVED suite=SURVIVED  (ARITHMETIC_BASE: the shim argv slice is preallocated smaller)
+limits:65: package=SURVIVED suite=SURVIVED  (CONDITIONALS_BOUNDARY: a program with one argv entry is rejected)
+dumpable:44: package=SURVIVED suite=SURVIVED  (CONDITIONALS_NEGATION: the non-dumpable flag is never lifted for the fork)
+process:86: package=SURVIVED suite=SURVIVED  (CONDITIONALS_NEGATION: the missing-CAP_SYS_ADMIN warning inverts)
+process:109: package=SURVIVED suite=KILLED  (CONDITIONALS_NEGATION: the netns-uncapable refusal inverts)
+process:116: package=SURVIVED suite=SURVIVED  (CONDITIONALS_BOUNDARY: a zero timeout is accepted instead of refused)
+process:154: package=SURVIVED suite=KILLED  (CONDITIONALS_NEGATION: the privileged netns unshare inverts)
+process:171: package=KILLED suite=-  (CONDITIONALS_NEGATION: the request's stdin never reaches the child)
+process:174: package=SURVIVED suite=KILLED  (CONDITIONALS_NEGATION: the request's workdir is ignored)
+process:178: package=SURVIVED suite=KILLED  (CONDITIONALS_NEGATION: the request's env entries never reach the child)
+process:201: package=SURVIVED suite=SURVIVED  (CONDITIONALS_NEGATION: the userns spawn path is taken as root instead)
+process:323: package=SURVIVED suite=KILLED  (CONDITIONALS_NEGATION: netns capability is reported for the wrong euid)
+
+==== SUMMARY ====
+id           pkg tests   full suite  description
+childenv:11  SURVIVED    SURVIVED    CONDITIONALS_NEGATION: the PATH fallback fires when PATH is set
+childenv:15  SURVIVED    KILLED      CONDITIONALS_NEGATION: the LANG fallback fires when LANG is set
+limits:28    SURVIVED    SURVIVED    CONDITIONALS_BOUNDARY: the shim verb is ignored at exactly two args
+limits:48a   SURVIVED    SURVIVED    ARITHMETIC_BASE: the shim argv slice is preallocated smaller
+limits:48b   SURVIVED    SURVIVED    ARITHMETIC_BASE: the shim argv slice is preallocated smaller
+limits:65    SURVIVED    SURVIVED    CONDITIONALS_BOUNDARY: a program with one argv entry is rejected
+dumpable:44  SURVIVED    SURVIVED    CONDITIONALS_NEGATION: the non-dumpable flag is never lifted for the fork
+process:86   SURVIVED    SURVIVED    CONDITIONALS_NEGATION: the missing-CAP_SYS_ADMIN warning inverts
+process:109  SURVIVED    KILLED      CONDITIONALS_NEGATION: the netns-uncapable refusal inverts
+process:116  SURVIVED    SURVIVED    CONDITIONALS_BOUNDARY: a zero timeout is accepted instead of refused
+process:154  SURVIVED    KILLED      CONDITIONALS_NEGATION: the privileged netns unshare inverts
+process:171  KILLED      -           CONDITIONALS_NEGATION: the request's stdin never reaches the child
+process:174  SURVIVED    KILLED      CONDITIONALS_NEGATION: the request's workdir is ignored
+process:178  SURVIVED    KILLED      CONDITIONALS_NEGATION: the request's env entries never reach the child
+process:201  SURVIVED    SURVIVED    CONDITIONALS_NEGATION: the userns spawn path is taken as root instead
+process:323  SURVIVED    KILLED      CONDITIONALS_NEGATION: netns capability is reported for the wrong euid
+
+attempted:                          16
+viable:                             16
+survived their own package's tests: 15
+survived the entire suite:          9
+
+tree clean after restore: YES

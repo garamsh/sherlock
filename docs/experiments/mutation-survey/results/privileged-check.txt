@@ -1,0 +1,159 @@
+Closing the two survivors: the privileged entry point run six ways, verbatim.
+Tree: 210a0c1, this branch on top of origin/main f5ded3e (which carries #605 and
+#606). Commits after it on this branch changed only this record — no Go file, no
+Makefile, no workflow — so what ran below is the head's code.
+
+`make test-privileged` is the command the workflow's privileged job invokes.
+Here it runs as root with CAP_SYS_ADMIN inside the same digest-pinned image the
+job names, because this host has no passwordless sudo and GitHub Actions is
+failing account-wide (#603) — so no run below is a CI run, and none is reported
+as one. The workflow change itself is therefore UNVERIFIED on the host.
+
+  docker run --rm --cap-add=SYS_ADMIN -v "$PWD:/src" -w /src \
+    -v gagent-gocache:/root/.cache/go-build -v gagent-gomod:/go/pkg/mod \
+    golang:1.26@sha256:0d1d3a794be25f809dd2cb3160d8c73276c4056a9f8242a138e908ddeee7b6b6 \
+    make test-privileged
+
+=== 1. the mutants: M4 and M6 against the privileged command ===
+The package column is the unprivileged `go test ./internal/workspace/shell/...`,
+which still cannot reach the boundary and still reports SURVIVED. The suite
+column is the privileged command.
+
+HEAD: 210a0c1
+suite command: docker run --rm --cap-add=SYS_ADMIN -v "$PWD:/src" -w /src -v gagent-gocache:/root/.cache/go-build -v gagent-gomod:/go/pkg/mod golang:1.26@sha256:0d1d3a794be25f809dd2cb3160d8c73276c4056a9f8242a138e908ddeee7b6b6 make test-privileged
+M4: package=SURVIVED suite=KILLED  (the privilege drop is removed (child keeps root))
+M6: package=SURVIVED suite=KILLED  (netns isolation dropped for the privileged path)
+
+==== SUMMARY ====
+id           pkg tests   full suite  description
+M4           SURVIVED    KILLED      the privilege drop is removed (child keeps root)
+M6           SURVIVED    KILLED      netns isolation dropped for the privileged path
+
+attempted:                          2
+viable:                             2
+survived their own package's tests: 2
+survived the entire suite:          0
+
+tree clean after restore: YES
+
+=== 2. clean tree, root with CAP_SYS_ADMIN: green ===
+exit 0
+
+go test -c -o /tmp/gagent-privileged.test ./internal/workspace/shell/
+GAGENT_PRIVILEGED_TESTS=1 /tmp/gagent-privileged.test
+PASS
+
+=== 3. clean tree, root without CAP_SYS_ADMIN: red, not skipped ===
+The capability the namespace needs is absent. Before this branch the two
+cases skipped and the run printed ok; the declaration makes the absence the
+result.
+exit 2
+
+go test -c -o /tmp/gagent-privileged.test ./internal/workspace/shell/
+GAGENT_PRIVILEGED_TESTS=1 /tmp/gagent-privileged.test
+2026/08/17 06:31:39 WARN shell: CAP_SYS_ADMIN missing; netns-isolated children will report agent_uid unavailable reason="unshare(CLONE_NEWNET) requires CAP_SYS_ADMIN"
+2026/08/17 06:31:39 WARN shell: CAP_SYS_ADMIN missing; netns-isolated children will report agent_uid unavailable reason="unshare(CLONE_NEWNET) requires CAP_SYS_ADMIN"
+2026/08/17 06:31:39 WARN shell: CAP_SYS_ADMIN missing; netns-isolated children will report agent_uid unavailable reason="unshare(CLONE_NEWNET) requires CAP_SYS_ADMIN"
+2026/08/17 06:31:39 WARN shell: CAP_SYS_ADMIN missing; netns-isolated children will report agent_uid unavailable reason="unshare(CLONE_NEWNET) requires CAP_SYS_ADMIN"
+--- FAIL: TestProcessExecutor_NoNetworkBlocksLoopback (0.03s)
+    netns_linux_test.go:141: GAGENT_PRIVILEGED_TESTS is set but this host cannot create the isolation namespace, so the run cannot report on it: shell: agent_uid unavailable
+--- FAIL: TestProcessExecutor_NamespaceCarriesNoNetwork (0.00s)
+    netns_linux_test.go:181: GAGENT_PRIVILEGED_TESTS is set but this host cannot create the isolation namespace, so the run cannot report on it: shell: agent_uid unavailable
+2026/08/17 06:31:39 WARN shell: CAP_SYS_ADMIN missing; netns-isolated children will report agent_uid unavailable reason="unshare(CLONE_NEWNET) requires CAP_SYS_ADMIN"
+2026/08/17 06:31:39 WARN shell: CAP_SYS_ADMIN missing; netns-isolated children will report agent_uid unavailable reason="unshare(CLONE_NEWNET) requires CAP_SYS_ADMIN"
+2026/08/17 06:31:39 WARN shell: CAP_SYS_ADMIN missing; netns-isolated children will report agent_uid unavailable reason="unshare(CLONE_NEWNET) requires CAP_SYS_ADMIN"
+2026/08/17 06:31:39 WARN shell: CAP_SYS_ADMIN missing; netns-isolated children will report agent_uid unavailable reason="unshare(CLONE_NEWNET) requires CAP_SYS_ADMIN"
+2026/08/17 06:31:39 WARN shell: CAP_SYS_ADMIN missing; netns-isolated children will report agent_uid unavailable reason="unshare(CLONE_NEWNET) requires CAP_SYS_ADMIN"
+2026/08/17 06:31:40 WARN shell: CAP_SYS_ADMIN missing; netns-isolated children will report agent_uid unavailable reason="unshare(CLONE_NEWNET) requires CAP_SYS_ADMIN"
+2026/08/17 06:31:40 WARN shell: CAP_SYS_ADMIN missing; netns-isolated children will report agent_uid unavailable reason="unshare(CLONE_NEWNET) requires CAP_SYS_ADMIN"
+2026/08/17 06:31:40 WARN shell: CAP_SYS_ADMIN missing; netns-isolated children will report agent_uid unavailable reason="unshare(CLONE_NEWNET) requires CAP_SYS_ADMIN"
+2026/08/17 06:31:40 WARN shell: CAP_SYS_ADMIN missing; netns-isolated children will report agent_uid unavailable reason="unshare(CLONE_NEWNET) requires CAP_SYS_ADMIN"
+2026/08/17 06:31:40 WARN shell: CAP_SYS_ADMIN missing; netns-isolated children will report agent_uid unavailable reason="unshare(CLONE_NEWNET) requires CAP_SYS_ADMIN"
+FAIL
+make: *** [Makefile:45: test-privileged] Error 1
+
+=== 4. clean tree, not root, declaration set: red, not skipped ===
+The shape of a privileged job later pointed at an unprivileged runner. Every
+case that cannot reach the boundary says so, in both test packages.
+exit 1
+
+go: downloading golang.org/x/sys v0.46.0
+go: downloading github.com/stretchr/testify v1.11.1
+go: downloading github.com/davecgh/go-spew v1.1.1
+go: downloading gopkg.in/yaml.v3 v3.0.1
+go: downloading github.com/pmezard/go-difflib v1.0.0
+--- FAIL: TestProcessExecutor_RootWithoutCapSysAdminReportsAgentUIDUnavailable (0.00s)
+    process_linux_test.go:147: GAGENT_PRIVILEGED_TESTS is set but this run has euid 1000
+--- FAIL: TestProcessExecutor_NoNetworkBlocksLoopback (0.00s)
+    netns_linux_test.go:114: GAGENT_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
+--- FAIL: TestProcessExecutor_NamespaceCarriesNoNetwork (0.00s)
+    netns_linux_test.go:177: GAGENT_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
+--- FAIL: TestProcessExecutor_SingleAccountNoNetworkBlocksLoopback (0.00s)
+    netns_linux_test.go:269: GAGENT_PRIVILEGED_TESTS is set but this host cannot create the isolation namespace, so the run cannot report on it: shell: agent_uid unavailable
+--- FAIL: TestProcessExecutor_SingleAccountLoopbackDownInNamespace (0.00s)
+    netns_linux_test.go:294: GAGENT_PRIVILEGED_TESTS is set but this host cannot create the isolation namespace, so the run cannot report on it: shell: agent_uid unavailable
+--- FAIL: TestProcessExecutor_Success (0.00s)
+    process_test.go:81: GAGENT_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
+--- FAIL: TestProcessExecutor_NonZeroExit (0.00s)
+    process_test.go:93: GAGENT_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
+--- FAIL: TestProcessExecutor_Timeout (0.00s)
+    process_test.go:103: GAGENT_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
+--- FAIL: TestProcessExecutor_PrivilegedDropRunsAsExecUID (0.00s)
+    process_test.go:274: GAGENT_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
+--- FAIL: TestProcessExecutor_DefaultTimeoutRejectsZero (0.00s)
+    process_test.go:311: GAGENT_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
+--- FAIL: TestProcessExecutor_RunsInWorkspace (0.00s)
+    process_test.go:320: GAGENT_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
+--- FAIL: TestProcessExecutor_ScrubsPlatformEnv (0.00s)
+    process_test.go:335: GAGENT_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
+--- FAIL: TestProcessExecutor_RequestEnvAppliesOnTop (0.00s)
+    process_test.go:348: GAGENT_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
+FAIL
+
+=== 5. clean tree, not root, declaration unset: skips and passes ===
+The contributor's `make test` is unchanged: the family skips, as it did before
+this branch.
+exit 0
+
+PASS
+
+=== 6. the timeout fix: the test that fails without it ===
+`fix: kill the process group when a command times out` is in this branch because
+the privileged family cannot be green without it, not because it was found on the
+way past. Reverting that one commit's change to process_linux.go and running the
+same privileged command:
+
+  git show <the fix> -- internal/workspace/shell/process_linux.go | git apply -R -
+
+--- FAIL: TestProcessExecutor_Timeout (5.00s)
+        Error:      "5.003052009s" is not less than "3s"
+exit 2
+
+With the fix, the same case passes in 0.10s (section 2 above). The test is not
+new: TestProcessExecutor_Timeout has asserted `elapsed < 3s` all along, behind
+requireRoot, so it is the only case in the package that exercises a timeout at
+all and no run ever reached it. The defect is not privilege-specific — the shim,
+the shell and the command inherit the same pipe in single-account mode too — it
+is only that the sole test for it needs root.
+
+=== 7. a finding the check produced, not part of this branch's change ===
+The privileged job runs with the container runtime's default capability set plus
+SYS_ADMIN. Running the same target under the capability set the deployment gives
+the workspace container instead — `cap_drop: ["ALL"]`, `cap_add: ["SETUID",
+"SETGID", "CHOWN", "SYS_ADMIN"]` (deploy/local/docker-compose.yml) — fails:
+
+  --- FAIL: TestProcessExecutor_Timeout (5.01s)
+          Error:      "5.012587554s" is not less than "3s"
+  exit 2
+
+Adding CAP_KILL to that set makes it pass; that is the whole difference, measured
+both ways. Signalling a process that runs as a different uid needs CAP_KILL, and
+root does not bypass the check when the capability is not in its effective set —
+so in the shipped deployment the executor cannot signal the child it dropped to
+the exec UID, and ADR 0008's "on expiry it is SIGKILLed" does not hold there.
+That is true of the single-child kill this branch replaced as much as of the
+process-group kill it added.
+
+Not fixed here: the deployment's capability set is a separate change from #604,
+and by the rule that a fix which merely happened first is out of scope, it is
+reported rather than made. The check that found it is the one #604 asked for.

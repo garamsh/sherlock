@@ -55,7 +55,7 @@ func TestWriteback_StoresTheValueAtItsAddress(t *testing.T) {
 	wb := agentmemory.Writeback{Svc: svc}
 	scheme := memory.Address{Subject: "user", Question: "which colour scheme does the user prefer"}
 
-	_, err := wb.Apply(context.Background(), []agent.WritebackOp{{
+	err := wb.Apply(context.Background(), []agent.WritebackOp{{
 		Address: agent.MemoryAddress{
 			Subject:  scheme.Subject,
 			Question: scheme.Question,
@@ -82,7 +82,7 @@ func TestWriteback_RestrictionReachesTheStore(t *testing.T) {
 
 	narrowed := telescope()
 	narrowed.Restriction = "for planets"
-	_, err := wb.Apply(ctx, []agent.WritebackOp{
+	err := wb.Apply(ctx, []agent.WritebackOp{
 		{Address: telescope(), Value: "the Kepler-9 refractor", Operation: agent.OpReplace},
 		{Address: narrowed, Value: "the Orion XT8", Operation: agent.OpReplace},
 	})
@@ -113,7 +113,7 @@ func TestWriteback_OperationReachesTheStore(t *testing.T) {
 			svc := newMemoryService(t)
 			wb := agentmemory.Writeback{Svc: svc}
 
-			_, err := wb.Apply(context.Background(), []agent.WritebackOp{
+			err := wb.Apply(context.Background(), []agent.WritebackOp{
 				{Address: telescope(), Value: "the Kepler-9 refractor", Operation: agent.OpJoin},
 				{Address: telescope(), Value: "the Orion XT8", Operation: tt.operation},
 			})
@@ -141,7 +141,7 @@ func TestWriteback_SalienceFollowsTheOperation(t *testing.T) {
 			svc := newMemoryService(t)
 			wb := agentmemory.Writeback{Svc: svc}
 
-			_, err := wb.Apply(context.Background(), []agent.WritebackOp{{
+			err := wb.Apply(context.Background(), []agent.WritebackOp{{
 				Address:   telescope(),
 				Value:     "the Kepler-9 refractor",
 				Operation: tt.operation,
@@ -156,41 +156,13 @@ func TestWriteback_SalienceFollowsTheOperation(t *testing.T) {
 	}
 }
 
-// TestWriteback_ReturnsNoCoherenceNote records what #582 removed from
-// ADR 0006 step 5. The step surfaced the most similar existing memories
-// for the model to judge, which is what a store that could not compute
-// which memory a write was for needed; the address computes it and the
-// stated operation says what to do about it.
-func TestWriteback_ReturnsNoCoherenceNote(t *testing.T) {
-	svc := newMemoryService(t)
-	ctx := context.Background()
-	wb := agentmemory.Writeback{Svc: svc}
-
-	_, err := wb.Apply(ctx, []agent.WritebackOp{
-		{Address: telescope(), Value: "the Kepler-9 refractor", Operation: agent.OpJoin},
-	})
-	require.NoError(t, err)
-
-	notes, err := wb.Apply(ctx, []agent.WritebackOp{{
-		Address: agent.MemoryAddress{
-			Subject:  "user",
-			Question: "which telescope does the user use for planets",
-		},
-		Value:     "the Orion XT8",
-		Operation: agent.OpJoin,
-	}})
-	require.NoError(t, err)
-	assert.Empty(t, notes, "no similarity read stands behind a coherence note any more")
-}
-
-// TestWriteback_EmptyWritebackStoresNothing: a turn that states no fact
+// / TestWriteback_EmptyWritebackStoresNothing: a turn that states no fact
 // asks the store nothing.
 func TestWriteback_EmptyWritebackStoresNothing(t *testing.T) {
 	svc := newMemoryService(t)
 	wb := agentmemory.Writeback{Svc: svc}
 
-	notes, err := wb.Apply(context.Background(), []agent.WritebackOp{})
+	err := wb.Apply(context.Background(), []agent.WritebackOp{})
 	require.NoError(t, err)
-	assert.Empty(t, notes)
 	assert.Empty(t, valuesAt(t, svc, telescopeAddress()))
 }

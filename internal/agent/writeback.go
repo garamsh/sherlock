@@ -6,12 +6,51 @@ import (
 	"fmt"
 	"log/slog"
 	"strings"
+
+	"github.com/garamsh/gagent/internal/tool"
 )
 
-// ResponseSchema is the JSON Schema every model response is constrained
-// to (ADR 0018). A provider with constrained decoding sends it as the
-// response format; ParseWriteback reads what it produces, so the schema
-// and the parser are one contract and are kept together.
+// MemoryWriteTool is the reserved tool a turn ends by calling. It is the
+// platform's, never an operator's: the session adds its descriptor to
+// what the model is shown, intercepts the call, and never routes it to
+// the tool client (ADR 0017 leaves the operator's directory to the
+// operator).
+//
+// It carries the writeback because a response format does not. MiniMax
+// accepts `response_format: json_schema` with HTTP 200 and ignores it on
+// every model tried, which returned the write path to the 0.00 that
+// #336 step 1 exists to remove — silently, because a response that is
+// not the document parses to no operations and the turn otherwise
+// succeeds (issue #615). Tool calls are honoured where the response
+// format is not, and they are the same constrained decoding each tool's
+// parameters already run under.
+const MemoryWriteTool = "memory_write"
+
+// memoryWriteDescription tells the model what the tool is for and that
+// the turn ends through it. It is the descriptor's text rather than the
+// session instructions because a tool the model is shown carries its own
+// contract, and because what a caller may decline is not settled by
+// prose: the session will not end a turn without this call.
+const memoryWriteDescription = "Deliver your reply and record what this turn stated. " +
+	"Every turn ends with this call and no turn ends without it: the reply you pass here " +
+	"is what the person reads, and memory_ops is the list of facts the turn stated — " +
+	"the empty list is your answer that it stated none."
+
+// MemoryWriteDescriptor is the reserved tool as the model sees it. Its
+// parameters are ResponseSchema, so what the write carries is the same
+// document whichever transport delivers it.
+func MemoryWriteDescriptor() tool.Descriptor {
+	return tool.Descriptor{
+		Name:        MemoryWriteTool,
+		Description: memoryWriteDescription,
+		InputSchema: json.RawMessage(ResponseSchema),
+	}
+}
+
+// ResponseSchema is the JSON Schema the writeback is constrained to
+// (ADR 0018). It is the reserved tool's parameters, and ParseWriteback
+// reads what the model puts in them, so the schema and the parser are
+// one contract and are kept together.
 //
 // Three properties carry the decision. The memory field is required, so
 // a response has no shape in which it is absent and an empty list is an

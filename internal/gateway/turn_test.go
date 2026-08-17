@@ -9,6 +9,7 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -36,7 +37,10 @@ func (m *deliveringModel) Chat(context.Context, []agent.Message, []tool.Descript
 		deliver(m.t, m.dir, m.name, m.msg)
 		m.delivered = true
 	}
-	return agent.Response{Content: m.answer}, nil
+	return agent.Response{ToolCalls: []agent.ToolCall{{
+		Name:  agent.MemoryWriteTool,
+		Input: json.RawMessage(`{"reply":` + strconv.Quote(m.answer) + `,"memory_ops":[]}`),
+	}}}, nil
 }
 
 // deliver writes one message into dir the way the message_send tool
@@ -116,7 +120,7 @@ func assertStoreCheckpointed(t *testing.T, path string) {
 // leaves the WAL sidecars behind on every invocation (#568).
 func TestTurn_ClosesTheStore(t *testing.T) {
 	factory, memoryPath := turnFactory(t,
-		agent.ScriptedStep{Content: `{"reply":"done","memory_ops":[]}`})
+		writebackStep(`{"reply":"done","memory_ops":[]}`))
 
 	require.NoError(t, gateway.Turn{
 		Factory: factory, AgentID: "a1", OutboxDir: gateway.DirFor(memoryPath),
@@ -133,7 +137,7 @@ func TestTurn_ReportsFailedToolCalls(t *testing.T) {
 	factory, memoryPath := turnFactory(t,
 		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{
 			Name: "absent_tool", Input: json.RawMessage(`{}`)}}},
-		agent.ScriptedStep{Content: "carried on"},
+		writebackStep(`{"reply":"carried on","memory_ops":[]}`),
 	)
 
 	var out bytes.Buffer
@@ -152,7 +156,7 @@ func TestTurn_ReportsFailedToolCalls(t *testing.T) {
 // nothing: the directory the message_send tool would create does not
 // exist yet, and that is an ordinary clean run.
 func TestTurn_MissingOutboxIsNotAFailure(t *testing.T) {
-	factory, memoryPath := turnFactory(t, agent.ScriptedStep{Content: "nothing to send"})
+	factory, memoryPath := turnFactory(t, writebackStep(`{"reply":"nothing to send","memory_ops":[]}`))
 
 	var out bytes.Buffer
 	err := gateway.Turn{

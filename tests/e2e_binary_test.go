@@ -79,18 +79,18 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 
 	// Four-step scenario: shell_exec, files, message_send, then the
 	// final writeback — a writeback event follows every model response.
-	got := collectEvents(t, events, 9)
+	got := collectEvents(t, events, 6)
 	var kinds []string
 	for _, e := range got {
 		kinds = append(kinds, e["kind"].(string))
 	}
 	// No recall event: there is no recall step until #336 step 3
 	// supplies the one that reads a question into an address (ADR 0018).
+	// The writeback fires once per turn now, when the turn ends on the
+	// reserved call, rather than once per model response (issue #615).
 	assert.Equal(t, []string{
 		"turn_started",
-		"writeback", "tool_call",
-		"writeback", "tool_call",
-		"writeback", "tool_call",
+		"tool_call", "tool_call", "tool_call",
 		"writeback", "turn_finished",
 	}, kinds)
 	assert.Contains(t, got[0]["task"], "] unknown: "+e2eQuestion,
@@ -98,20 +98,20 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 
 	// shell_exec: the canned run's command crosses the Exec RPC, writes
 	// its note into the workspace directory, and computes the answer.
-	assert.Equal(t, "shell_exec", got[2]["tool_name"])
-	assert.NotContains(t, got[2], "tool_failed")
-	assert.Contains(t, got[2]["tool_result"], "42",
+	assert.Equal(t, "shell_exec", got[1]["tool_name"])
+	assert.NotContains(t, got[1], "tool_failed")
+	assert.Contains(t, got[1]["tool_result"], "42",
 		"the canned run computes through the shell")
 
 	// Files tool: the same file, read back through the gRPC contract —
 	// the exec'd child and the files tool see one workspace directory.
-	assert.Equal(t, "files", got[4]["tool_name"])
-	assert.NotContains(t, got[4], "tool_failed")
-	assert.Contains(t, got[4]["tool_result"], "6 * 7",
+	assert.Equal(t, "files", got[2]["tool_name"])
+	assert.NotContains(t, got[2], "tool_failed")
+	assert.Contains(t, got[2]["tool_result"], "6 * 7",
 		"the files tool reads back what the exec'd child wrote, through the workspace gRPC client")
 
-	assert.Equal(t, "message_send", got[6]["tool_name"])
-	assert.NotContains(t, got[6], "tool_failed")
+	assert.Equal(t, "message_send", got[3]["tool_name"])
+	assert.NotContains(t, got[3], "tool_failed")
 
 	require.Eventually(t, func() bool {
 		return len(outboxMessages(t, root)) == 1
@@ -246,31 +246,29 @@ func TestEndToEnd_ServedTurnFailedToolCallCarriesOn(t *testing.T) {
 	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
 	resp.Body.Close()
 
-	got := collectEvents(t, events, 9)
+	got := collectEvents(t, events, 6)
 	var kinds []string
 	for _, e := range got {
 		kinds = append(kinds, e["kind"].(string))
 	}
 	assert.Equal(t, []string{
 		"turn_started",
-		"writeback", "tool_call",
-		"writeback", "tool_call",
-		"writeback", "tool_call",
+		"tool_call", "tool_call", "tool_call",
 		"writeback", "turn_finished",
 	}, kinds, "the turn runs to completion despite the failures")
 
 	// The two tools that cross to the workspace failed, and each
 	// failure was fed back to the model as a tool result.
-	assert.Equal(t, "shell_exec", got[2]["tool_name"])
+	assert.Equal(t, "shell_exec", got[1]["tool_name"])
+	assert.Equal(t, true, got[1]["tool_failed"])
+	assert.Equal(t, "files", got[2]["tool_name"])
 	assert.Equal(t, true, got[2]["tool_failed"])
-	assert.Equal(t, "files", got[4]["tool_name"])
-	assert.Equal(t, true, got[4]["tool_failed"])
 
 	// message_send needs no workspace, so the mouth still worked and
 	// the turn ended cleanly rather than failing.
-	assert.Equal(t, "message_send", got[6]["tool_name"])
-	assert.NotContains(t, got[6], "tool_failed")
-	assert.Equal(t, "turn_finished", got[8]["kind"],
+	assert.Equal(t, "message_send", got[3]["tool_name"])
+	assert.NotContains(t, got[3], "tool_failed")
+	assert.Equal(t, "turn_finished", got[5]["kind"],
 		"a failed tool call never terminates the turn as turn_failed")
 
 	// The agent is still serving: the failures did not take the

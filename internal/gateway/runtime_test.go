@@ -52,9 +52,9 @@ func replyModel(_ string) agent.Model {
 			Name:  "message_send",
 			Input: json.RawMessage(`{"channel":"test","target":"sender","content":"Message received."}`),
 		}}},
-		agent.ScriptedStep{Content: `{"reply":"Replied.","memory_ops":[{"address":{` +
-			`"subject":"the test channel","question":"what did the test channel ask for",` +
-			`"restriction":null},"value":"an acknowledgement","operation":null}]}`},
+		writebackStep(`{"reply":"Replied.","memory_ops":[{"address":{`+
+			`"subject":"the test channel","question":"what did the test channel ask for",`+
+			`"restriction":null},"value":"an acknowledgement","operation":null}]}`),
 	)
 }
 
@@ -164,8 +164,8 @@ func TestQueue_CloseClosesTheStore(t *testing.T) {
 
 func compactionModel(_ string) agent.Model {
 	return agent.NewScriptedModel(
-		agent.ScriptedStep{Content: `{"reply":"First reply.","memory_ops":[]}`},
-		agent.ScriptedStep{Content: `{"reply":"Second reply.","memory_ops":[]}`},
+		writebackStep(`{"reply":"First reply.","memory_ops":[]}`),
+		writebackStep(`{"reply":"Second reply.","memory_ops":[]}`),
 	)
 }
 
@@ -399,4 +399,13 @@ func TestMessageSendTool_DescriptionAndSchemaSatisfyOpenAISubset(t *testing.T) {
 		assert.NotContains(t, schema, keyword,
 			"the API rejects top-level %q", keyword)
 	}
+}
+
+// writebackStep scripts the call a turn ends with: the reserved
+// writeback tool carrying the response document (issue #615).
+func writebackStep(document string) agent.ScriptedStep {
+	return agent.ScriptedStep{ToolCalls: []agent.ToolCall{{
+		Name:  agent.MemoryWriteTool,
+		Input: json.RawMessage(document),
+	}}}
 }

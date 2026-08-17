@@ -20,13 +20,13 @@ type Writeback struct {
 // address, with the operation the write states deciding what happens to
 // the values already there (ADR 0018).
 //
-// It returns no coherence note. ADR 0006 step 5 surfaced the most similar
-// existing memories for the model to judge, which is what a store that
-// could not compute which memory a write was for needed; the address
-// computes it and the stated operation says what to do about it, so there
-// is nothing left for the note to ask. The mechanism it read is the one
-// ADR 0018 removes rather than weakens.
-func (w Writeback) Apply(ctx context.Context, ops []agent.WritebackOp) ([]agent.RecalledMemory, error) {
+// It returns no coherence note, and the sink no longer has a shape in
+// which it could. ADR 0006 step 5 surfaced the most similar existing
+// memories for the model to judge, which is what a store that could not
+// compute which memory a write was for needed; the address computes it
+// and the stated operation says what to do about it. A turn now ends on
+// this call, so there is also no later model call within it to read one.
+func (w Writeback) Apply(ctx context.Context, ops []agent.WritebackOp) error {
 	for _, op := range ops {
 		_, err := w.Svc.Store(ctx, memory.StoreInput{
 			Address: memory.Address{
@@ -39,10 +39,10 @@ func (w Writeback) Apply(ctx context.Context, ops []agent.WritebackOp) ([]agent.
 			Source:    "agent",
 		})
 		if err != nil {
-			return nil, fmt.Errorf("writeback %s: %w", op.Operation, err)
+			return fmt.Errorf("writeback %s: %w", op.Operation, err)
 		}
 	}
-	return nil, nil
+	return nil
 }
 
 // operationOf carries the parsed operation across the domain boundary.

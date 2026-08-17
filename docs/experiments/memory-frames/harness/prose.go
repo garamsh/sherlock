@@ -63,12 +63,15 @@ const (
 	// agent.ComposeInstructions("") and agent.ResponseSchema as the
 	// committed round measured them. #546 held this record's figures
 	// against the constants they were measured under; the constant this
-	// round is measured under is the prompt itself, so it is pinned the
-	// same way. A change to instructions.go fails the test rather than
-	// leaving a record that describes a prompt no longer shipped — and
-	// that is the whole subject here, so the failure is the point rather
-	// than an inconvenience. The remedy is a decision: re-run and commit,
-	// or say in §Limits that these figures are historical.
+	// round was measured under is the prompt itself, so it was pinned the
+	// same way.
+	//
+	// The prompt half is now the record of a past state. #615 moved the
+	// writeback to a tool call, which moved the prose, and the remedy
+	// the pin offered — re-run and commit — needs a key this project no
+	// longer has. So the figures are historical, §Limits says so, and
+	// the test asserts the prompt has moved rather than that it has not.
+	// The schema half is unchanged and still live.
 	proseMeasuredPrompt = "0f5bbf7d30e221386a840e6706a4a860aa38aabbf9db6511cf042754fe055a62"
 	proseMeasuredSchema = "0944fae4c3f16b2db3551289c7872aad257e23142491f1df141b84e91ce5b69f"
 )

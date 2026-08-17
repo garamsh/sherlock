@@ -3,8 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-
-	"github.com/garamsh/gagent/internal/memory"
 )
 
 // What a design that finds the memory it updates by similarity has to work
@@ -44,8 +42,8 @@ type Identity struct {
 // design that prunes holds a subset of it, and a separation that fails here
 // does not become available by holding less.
 func MeasureIdentity(ctx context.Context, w Workload, counter *EmbedCounter) (Identity, error) {
-	embedder := counter.Wrap(memory.NewHashingEmbedder())
-	out := Identity{Gate: memory.SupersessionSimilarity}
+	embedder := counter.Wrap(NewHashingEmbedder())
+	out := Identity{Gate: mem0Gate}
 	// held is the vector of the value most recently written at each address,
 	// and written every vector put in so far with the address it went to.
 	held := map[Address][]float32{}

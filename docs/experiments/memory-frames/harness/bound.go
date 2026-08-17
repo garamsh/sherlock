@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"sort"
 	"time"
-
-	"github.com/garamsh/gagent/internal/memory"
 )
 
 // An unbounded store makes every structure look manageable, because nothing
@@ -245,14 +243,29 @@ func enforce(ctx context.Context, frame Frame, l *ledger, planted map[string]boo
 	return nil
 }
 
-// gatewaySalienceAdd is the salience the shipped writeback derives for an
-// add, read from internal/gateway rather than restated, so the rule that
-// stands in for that design reads the value that design would.
+// The two salience tiers a turn was written at while the store held
+// sentences: a turn carrying an extracted fact was a semantic add, a turn
+// carrying none an episodic one.
+//
+// They were read from internal/memory until #582, which left the store
+// with neither. An addressed write states an operation instead, and there
+// is no episodic tier at all, because an addressed store has nowhere to
+// put a turn it cannot address. The values stay at what they were so the
+// frames that model a scored stream are run at the numbers this project
+// shipped when they were first measured.
+const (
+	salienceAddSemantic = 0.7
+	salienceAddEpisodic = 0.5
+)
+
+// gatewaySalienceAdd is the salience the shipped writeback derived for an
+// add, so the rule that stands in for that design reads the value that
+// design would.
 func gatewaySalienceAdd(carriesFact bool) float64 {
 	if carriesFact {
-		return memory.SalienceAddSemantic
+		return salienceAddSemantic
 	}
-	return memory.SalienceAddEpisodic
+	return salienceAddEpisodic
 }
 
 // The constraints swept. The capacities are chosen to bite: the loosest sits

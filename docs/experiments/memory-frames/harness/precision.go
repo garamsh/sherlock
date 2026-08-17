@@ -8,10 +8,11 @@ const Z = 1.96
 // Figure is one published number with the interval its sample supports.
 // Half is the 95% half-width from the sample standard deviation of the
 // per-probe values, so a figure and its uncertainty are never separated. It
-// follows the shape docs/experiments/memory-retrieval/harness/precision.go
-// established; that harness is a separate command and a record's figures
-// are only reproducible while the code that computed them is committed
-// beside them, so the definition is repeated here rather than shared.
+// follows the shape memory-retrieval/'s harness established, which is the
+// reason it is a copy: that harness was a separate command, and a record's
+// figures are only reproducible while the code that computed them is
+// committed beside them. #582 removed that harness with the store it
+// measured, and this definition was already independent of it.
 //
 // One approximation remains and it widens rather than narrows the interval:
 // a year's probes are answered from one store, so their errors are if

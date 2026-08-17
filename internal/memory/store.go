@@ -6,67 +6,92 @@ import (
 	"sort"
 )
 
-// StoreInput carries the fields required to store a new memory.
+// StoreInput is one addressed write (ADR 0018): where the fact goes, what
+// it says, and what it does to the values already there.
 type StoreInput struct {
-	Content         string
-	Type            Type
-	ImportanceScore float64
-	Source          string
+	Address   Address
+	Value     string
+	Operation Operation
+	Source    string
 }
 
-// StoreResult reports the new memory and any entries evicted to keep
-// the active index within capacity. SupersededID is always 0: an insert
-// retires nothing (see Store). It stays because
-// docs/experiments/memory-retrieval/'s harness reads it to report what
-// the mechanism did while it existed.
+// StoreResult reports the written memory, the values a replacement
+// superseded at its address, and any entries evicted to keep the active
+// index within capacity. SupersededIDs is empty for a join, and empty for
+// a replacement onto an address holding nothing.
 type StoreResult struct {
-	ID           int64
-	SupersededID int64
-	EvictedIDs   []int64
+	ID            int64
+	SupersededIDs []int64
+	EvictedIDs    []int64
 }
 
-// Store implements the store operation. An insert adds; it never
-// retires an existing memory.
+// Store implements the store operation: the value lands at its address,
+// and the operation the write states decides what happens to the values
+// already held there (ADR 0018).
 //
-// Identity is not inferred from similarity (ADR 0006 §Decision, ADR
-// 0018): no threshold separates a correction from two facts that must
-// both survive, because on the shipped embedder the correction family's
-// median cosine sits below the coexisting family's minimum
-// (docs/experiments/memory-retrieval/). Supersession on insert read
-// that cosine anyway and retired the loser, which destroyed facts that
-// answer different questions about one subject once writes carried
-// their address in the content (#529).
+// Identity is settled by the address. Nothing here compares the new value
+// with what is held, because no threshold separates a correction from two
+// facts that must both survive — on the shipped embedder the correction
+// family's median cosine sits below the coexisting family's minimum
+// (docs/experiments/memory-retrieval/). A replacement replaces because
+// the write said so, and a join joins for the same reason.
 //
-// Until the addressed store lands (#336 step 2) the cost is that a
-// correction coexists with the value it corrects rather than replacing
-// it. That is the accumulating direction, which the next correct write
-// repairs — ADR 0018 §Where a writeback must err prefers it to the
-// destroying direction, which nothing repairs.
+// A replacement supersedes only the values at the address written. An
+// address that restricts the same question is a different address holding
+// the answer to a different question, so a narrowing statement never
+// destroys the broader one (ADR 0018 §The address names the question).
 func (s *service) Store(ctx context.Context, in StoreInput) (StoreResult, error) {
-	if err := validateNew(in.Content, in.Type, in.ImportanceScore); err != nil {
+	if err := validate(in); err != nil {
 		return StoreResult{}, err
 	}
-	emb, err := s.embedder.Embed(ctx, in.Content)
+	held, err := s.store.At(ctx, in.Address)
 	if err != nil {
-		return StoreResult{}, fmt.Errorf("embed: %w", err)
+		return StoreResult{}, fmt.Errorf("read address: %w", err)
 	}
 	now := s.clock()
 	id, err := s.store.Insert(ctx, Memory{
-		Content:         in.Content,
-		Embedding:       emb,
-		Type:            in.Type,
-		ImportanceScore: in.ImportanceScore,
+		Address:         in.Address,
+		Value:           in.Value,
+		ImportanceScore: salienceOf(in.Operation),
 		Timestamp:       now,
 		Source:          in.Source,
 	})
 	if err != nil {
 		return StoreResult{}, fmt.Errorf("insert: %w", err)
 	}
+	var superseded []int64
+	if in.Operation == OpReplace {
+		// Archived after the insert so the archive records which value
+		// replaced them, which is what makes the change reversible
+		// (ADR 0002). The restated value keeps its own row rather than
+		// superseding itself.
+		for _, m := range held {
+			if m.ID == id {
+				continue
+			}
+			if err := s.store.Archive(ctx, m.ID, id, now); err != nil {
+				return StoreResult{}, fmt.Errorf("supersede %d: %w", m.ID, err)
+			}
+			superseded = append(superseded, m.ID)
+		}
+	}
 	evicted, err := s.enforceCapacity(ctx)
 	if err != nil {
 		return StoreResult{}, err
 	}
-	return StoreResult{ID: id, EvictedIDs: evicted}, nil
+	return StoreResult{ID: id, SupersededIDs: superseded, EvictedIDs: evicted}, nil
+}
+
+// salienceOf derives the stored salience from the operation the write
+// states (ADR 0006): a replacement is a correction and ranks highest, a
+// value joining what is held ranks high. Salience is platform-derived
+// here rather than in the caller, because the operation is what decides
+// it and this is where the operation arrives.
+func salienceOf(op Operation) float64 {
+	if op == OpReplace {
+		return SalienceReplace
+	}
+	return SalienceJoin
 }
 
 // enforceCapacity evicts lowest-score-first to the archive until the
@@ -81,7 +106,7 @@ func (s *service) enforceCapacity(ctx context.Context) ([]int64, error) {
 	}
 	now := s.clock()
 	sort.Slice(active, func(i, j int) bool {
-		return score(active[i], 0, now) < score(active[j], 0, now)
+		return score(active[i], now) < score(active[j], now)
 	})
 	evicted := make([]int64, 0, len(active)-s.capacity)
 	for _, m := range active[:len(active)-s.capacity] {

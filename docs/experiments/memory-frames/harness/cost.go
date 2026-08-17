@@ -2,8 +2,6 @@ package main
 
 import (
 	"context"
-
-	"github.com/garamsh/gagent/internal/memory"
 )
 
 // instructionTokens is the allowance the projection below gives the
@@ -53,8 +51,8 @@ type ModelProjection struct {
 // design holds, the turn it is reading, and an instruction; the output is
 // the rewritten document.
 func ProjectPerTurnModel(turns, meanTurnChars int) ModelProjection {
-	document := documentLimit / memory.CharsPerToken
-	prompt := document + meanTurnChars/memory.CharsPerToken + instructionTokens
+	document := documentLimit / charsPerToken
+	prompt := document + meanTurnChars/charsPerToken + instructionTokens
 	return ModelProjection{
 		CallsPerRun:         turns,
 		PromptTokensPerCall: prompt,
@@ -78,7 +76,7 @@ func NewEmbedCounter() *EmbedCounter {
 }
 
 // Wrap returns the embedder with this counter behind it.
-func (c *EmbedCounter) Wrap(inner memory.Embedder) memory.Embedder {
+func (c *EmbedCounter) Wrap(inner Embedder) Embedder {
 	return countingEmbedder{inner: inner, counter: c}
 }
 
@@ -88,16 +86,16 @@ func (c *EmbedCounter) Totals() (calls, distinct, tokens int) {
 }
 
 type countingEmbedder struct {
-	inner   memory.Embedder
+	inner   Embedder
 	counter *EmbedCounter
 }
 
-// Embed implements memory.Embedder.
+// Embed implements Embedder.
 func (e countingEmbedder) Embed(ctx context.Context, text string) ([]float32, error) {
 	e.counter.calls++
 	if !e.counter.distinct[text] {
 		e.counter.distinct[text] = true
-		e.counter.tokens += max(len(text)/memory.CharsPerToken, 1)
+		e.counter.tokens += max(len(text)/charsPerToken, 1)
 	}
 	return e.inner.Embed(ctx, text)
 }

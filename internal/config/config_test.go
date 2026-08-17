@@ -45,13 +45,6 @@ func TestResolveConfig_Defaults(t *testing.T) {
 		APIKeyEnv: "OPENAI_API_KEY",
 		Timeout:   60 * time.Second,
 	}, cfg.Model)
-	assert.Equal(t, config.ModelConfig{
-		Provider:  "hashing",
-		BaseURL:   "https://api.openai.com/v1",
-		Model:     "text-embedding-3-small",
-		APIKeyEnv: "OPENAI_API_KEY",
-		Timeout:   60 * time.Second,
-	}, cfg.Embedder)
 }
 
 func TestResolveConfig_ModelSection(t *testing.T) {
@@ -73,27 +66,6 @@ func TestResolveConfig_ModelSection(t *testing.T) {
 	assert.Equal(t, "llama3.2", cfg.Model.Model)
 	assert.Equal(t, "OLLAMA_KEY", cfg.Model.APIKeyEnv)
 	assert.Equal(t, 120*time.Second, cfg.Model.Timeout)
-}
-
-func TestResolveConfig_EmbedderSection(t *testing.T) {
-	dir := t.TempDir()
-	t.Chdir(dir)
-	contents := "embedder:\n" +
-		"  provider: openai\n" +
-		"  base-url: http://localhost:11434/v1\n" +
-		"  model: nomic-embed-text\n" +
-		"  api-key-env: OLLAMA_KEY\n" +
-		"  timeout: 120s\n"
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o600))
-
-	cfg, err := config.Resolve(agentFlags(t))
-	require.NoError(t, err)
-
-	assert.Equal(t, "openai", cfg.Embedder.Provider)
-	assert.Equal(t, "http://localhost:11434/v1", cfg.Embedder.BaseURL)
-	assert.Equal(t, "nomic-embed-text", cfg.Embedder.Model)
-	assert.Equal(t, "OLLAMA_KEY", cfg.Embedder.APIKeyEnv)
-	assert.Equal(t, 120*time.Second, cfg.Embedder.Timeout)
 }
 
 func TestResolveConfig_ModelTimeoutEnvOverridesFile(t *testing.T) {

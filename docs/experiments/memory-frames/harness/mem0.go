@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"sort"
 	"strings"
-
-	"github.com/garamsh/gagent/internal/memory"
 )
 
 // mem0Candidates is how many existing memories Mem0's update phase puts in
@@ -34,7 +32,7 @@ const mem0Candidates = 10
 // which is in the run table. §What a published design needed reports what
 // that substitution can and cannot decide.
 type mem0Frame struct {
-	embedder memory.Embedder
+	embedder Embedder
 	items    []*mem0Item
 	// gate is the similarity at or above which a candidate is taken to be
 	// the memory the write updates.
@@ -52,8 +50,8 @@ type mem0Item struct {
 // a gate at the shipped supersession similarity — the same judgement this
 // project's own store makes, at the constant the run table reports.
 func NewMem0Frame(counter *EmbedCounter) Frame {
-	return &mem0Frame{embedder: counter.Wrap(memory.NewHashingEmbedder()),
-		gate: memory.SupersessionSimilarity}
+	return &mem0Frame{embedder: counter.Wrap(NewHashingEmbedder()),
+		gate: mem0Gate}
 }
 
 // NewMem0NearestFrame returns the same design with the gate removed: an
@@ -65,7 +63,7 @@ func NewMem0Frame(counter *EmbedCounter) Frame {
 // attribute-multi are the two ends of the arity question, and the design
 // sits between them at a point nothing here can locate.
 func NewMem0NearestFrame(counter *EmbedCounter) Frame {
-	return &mem0Frame{embedder: counter.Wrap(memory.NewHashingEmbedder())}
+	return &mem0Frame{embedder: counter.Wrap(NewHashingEmbedder())}
 }
 
 // Observe runs the update phase for each of the turn's assertions: retrieve

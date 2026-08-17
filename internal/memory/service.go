@@ -6,28 +6,35 @@ import (
 	"time"
 )
 
-const (
-	// DefaultCapacity caps the active (searchable) index.
-	DefaultCapacity = 10_000
-	// DefaultSearchLimit bounds what one Search or Similar call returns
-	// when the caller passes no positive limit. Recall is bounded by
-	// DefaultRecallTokenBudget instead, and by nothing else.
-	DefaultSearchLimit = 10
-)
+// DefaultCapacity caps the active (readable) index.
+const DefaultCapacity = 10_000
 
 // Store hides the persistence engine (ADR 0002 escape hatch). It owns
-// rows and indexes only; all scoring lives in the service so retrieval,
-// eviction, and forget share one ranking function.
+// rows and indexes only; what a read reaches is decided by the address it
+// is given, so the store holds no scoring and no ordering over addresses.
+//
+// The three read methods are one hierarchy — an address, the question it
+// asks, the subject it is about — and each is one query. Nothing here
+// scans what the store holds to answer.
 type Store interface {
-	// Insert appends a new active memory and returns its ID.
+	// Insert appends a new active memory and returns its ID. A value
+	// already active at the same address is not inserted twice: its
+	// timestamp moves to the new write and its existing ID comes back,
+	// so restating a fact holds it once.
 	Insert(ctx context.Context, m Memory) (int64, error)
-	// Get returns one active memory by ID, or ErrNotFound.
-	Get(ctx context.Context, id int64) (Memory, error)
-	// Active returns every active memory, including embeddings.
+	// At returns the active memories held at exactly one address.
+	At(ctx context.Context, a Address) ([]Memory, error)
+	// UnderQuestion returns the active memories at every address with
+	// this subject and question — the question asked and the
+	// restrictions under it (ADR 0018).
+	UnderQuestion(ctx context.Context, subject, question string) ([]Memory, error)
+	// UnderSubject returns the active memories at every address under
+	// one subject.
+	UnderSubject(ctx context.Context, subject string) ([]Memory, error)
+	// Active returns every active memory. Retention and capacity
+	// eviction read it; no read of the store's contents answers a
+	// question.
 	Active(ctx context.Context) ([]Memory, error)
-	// FTSRanks returns the raw FTS5 rank per row matching query; rows
-	// with no keyword match are absent from the map.
-	FTSRanks(ctx context.Context, query string) (map[int64]float64, error)
 	// Archive moves an active memory to the archive table, recording
 	// supersededBy (0 when not superseded) and validTo.
 	Archive(ctx context.Context, id int64, supersededBy int64, validTo time.Time) error
@@ -38,77 +45,48 @@ type Store interface {
 	Close() error
 }
 
-// Embedder converts text to an embedding vector (ADR 0004).
-type Embedder interface {
-	Embed(ctx context.Context, text string) ([]float32, error)
-}
-
-// Summary is what a Summarizer produced: the text, and whether a model
-// generated it. The deterministic stand-in ADR 0004 licenses so the
-// pipeline runs offline reports Generated false, so a caller that may
-// only keep model-generated content can tell without inspecting the
-// text — and cannot hold a summary without having been told.
-type Summary struct {
-	Text      string
-	Generated bool
-}
-
-// Summarizer compresses a set of memory contents into one parent text.
-type Summarizer interface {
-	Summarize(ctx context.Context, contents []string) (Summary, error)
-}
-
 // Service is the memory domain's behavior contract: the write the
-// writeback block makes (Store), platform maintenance (Compress,
-// Consolidate, ConsolidateIfDue, Retain), and the runtime queries
-// (Search, Recall, Similar) the agent loop needs (ADR 0011).
+// writeback block makes (Store), the two addressed reads, and the
+// after-turn retention pass the gateway evaluates (ADR 0011).
 //
 // Store is the only write, because it is the only one the writeback can
 // state. An addressed write carries an address, a value and an operation
-// (ADR 0018), so it names no memory ID: Update took one, and there is no
-// declaration a model can make that produces a Delete at all.
+// (ADR 0018), so it names no memory ID.
+//
+// Neither read takes a query in words. ADR 0018 §What ships is three
+// parts: asked in words an addressed store answers nothing at all, and
+// the step that reads a question into an address is #336 step 3, in front
+// of this. Until it lands the agent loop calls neither of these — the
+// callers are the tests and the measurement, which supply the address the
+// way the record's figures were produced.
 type Service interface {
-	// Store embeds and inserts a new memory. An insert retires nothing:
-	// identity is not inferred from similarity (ADR 0018), so a
-	// correction coexists with what it corrects. It evicts
+	// Store writes one value at one address. OpReplace supersedes what
+	// is held there; OpJoin leaves it and adds one. It evicts
 	// lowest-score-first when the active index exceeds capacity.
 	Store(ctx context.Context, in StoreInput) (StoreResult, error)
-	// Search runs hybrid search and records access on the returned
-	// memories. A non-positive limit falls back to DefaultSearchLimit.
-	Search(ctx context.Context, query string, limit int) ([]ScoredMemory, error)
-	// Compress summarizes a set of episodic memories into one or more
-	// semantic parents — the summary is chunked so each parent stays
-	// within SummaryMaxLen — and archives the originals.
-	Compress(ctx context.Context, ids []int64) (CompressResult, error)
-	// Consolidate compresses the active episodic cluster into one or more
-	// semantic parents once it reaches ConsolidationMinCluster; the
-	// platform calls it on shutdown (ADR 0011).
-	Consolidate(ctx context.Context) (CompressResult, error)
-	// ConsolidateIfDue is the threshold trigger: it consolidates when the
-	// active episodic count has crossed ConsolidationThreshold, and is a
-	// no-op below it. The gateway evaluates it after a completed turn.
-	ConsolidateIfDue(ctx context.Context) (CompressResult, error)
+	// At answers one address: the values held there and, where the
+	// address restricts nothing, the values at every address that
+	// restricts the same question (ADR 0018). Access is recorded on
+	// what comes back.
+	At(ctx context.Context, a Address) ([]Memory, error)
+	// UnderSubject answers a question that names a subject and no
+	// question. Every address under the subject comes back, in no
+	// order: an addressed store has no ranking over addresses and no
+	// budget to stop at, so where that is more than fits it returns
+	// more than fits (ADR 0018 §What is not measured).
+	UnderSubject(ctx context.Context, subject string) ([]Memory, error)
 	// Retain is the tiered retention pass (ADR 0006): it archives active
 	// memories whose salience tier has expired and keeps the rest. The
-	// gateway evaluates it after a completed turn, alongside
-	// ConsolidateIfDue.
+	// gateway evaluates it after a completed turn.
 	Retain(ctx context.Context) ([]int64, error)
-	// Recall is the agent loop's search entry point: hybrid search on the
-	// task statement, trimmed to a token budget, access recorded.
-	Recall(ctx context.Context, task string, tokenBudget int) ([]ScoredMemory, error)
-	// Similar returns the most similar active memories for write-time
-	// coherence. It does not record access.
-	Similar(ctx context.Context, content string, limit int) ([]ScoredMemory, error)
 	// Close releases the underlying store.
 	Close() error
 }
 
 type service struct {
-	store      Store
-	embedder   Embedder
-	summarizer Summarizer
-	clock      func() time.Time
-	capacity   int
+	store    Store
+	clock    func() time.Time
+	capacity int
 }
 
 // Option customizes a service; defaults come from the package constants.
@@ -126,13 +104,11 @@ func WithCapacity(capacity int) Option {
 }
 
 // NewService returns the memory service over the given store.
-func NewService(store Store, embedder Embedder, summarizer Summarizer, opts ...Option) Service {
+func NewService(store Store, opts ...Option) Service {
 	s := &service{
-		store:      store,
-		embedder:   embedder,
-		summarizer: summarizer,
-		clock:      time.Now,
-		capacity:   DefaultCapacity,
+		store:    store,
+		clock:    time.Now,
+		capacity: DefaultCapacity,
 	}
 	for _, opt := range opts {
 		opt(s)
@@ -143,30 +119,38 @@ func NewService(store Store, embedder Embedder, summarizer Summarizer, opts ...O
 // Close closes the underlying store.
 func (s *service) Close() error { return s.store.Close() }
 
-// validateNew rejects values that would corrupt the store. Agent input is
+// validate rejects writes that would corrupt the store. Agent input is
 // already schema-validated at the tool boundary; this guards the module
 // boundary for direct runtime callers.
-func validateNew(content string, typ Type, importance float64) error {
-	if content == "" {
-		return fmt.Errorf("%w: empty content", ErrInvalidInput)
+//
+// A restriction is not required: a sentence that narrows nothing places
+// none, and rejecting the empty one would reject most writes.
+func validate(in StoreInput) error {
+	if in.Address.Subject == "" {
+		return fmt.Errorf("%w: empty subject", ErrInvalidInput)
 	}
-	if typ != TypeEpisodic && typ != TypeSemantic {
-		return fmt.Errorf("%w: unknown type %q", ErrInvalidInput, typ)
+	if in.Address.Question == "" {
+		return fmt.Errorf("%w: empty question", ErrInvalidInput)
 	}
-	if importance < 0 || importance > 1 {
-		return fmt.Errorf("%w: importance_score %v outside [0,1]", ErrInvalidInput, importance)
+	if in.Value == "" {
+		return fmt.Errorf("%w: empty value", ErrInvalidInput)
+	}
+	if in.Operation != OpReplace && in.Operation != OpJoin {
+		return fmt.Errorf("%w: unknown operation %q", ErrInvalidInput, in.Operation)
 	}
 	return nil
 }
 
 // recordAccess marks returned memories as accessed (ADR 0006, Act step).
-func (s *service) recordAccess(ctx context.Context, results []ScoredMemory) error {
-	if len(results) == 0 {
+// ADR 0018 §Forgetting is decided by use rests on this being written on
+// every read, not on the reads a caller finds interesting.
+func (s *service) recordAccess(ctx context.Context, held []Memory) error {
+	if len(held) == 0 {
 		return nil
 	}
-	ids := make([]int64, len(results))
-	for i, r := range results {
-		ids[i] = r.ID
+	ids := make([]int64, len(held))
+	for i, m := range held {
+		ids[i] = m.ID
 	}
 	if err := s.store.RecordAccess(ctx, ids, s.clock()); err != nil {
 		return fmt.Errorf("record access: %w", err)

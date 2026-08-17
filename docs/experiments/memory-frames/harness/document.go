@@ -3,15 +3,13 @@ package main
 import (
 	"context"
 	"strings"
-
-	"github.com/garamsh/gagent/internal/memory"
 )
 
 // documentLimit is the document's size in bytes. It is the shipped recall
 // token budget converted at the shipped characters-per-token estimate, so
 // the two frames put contexts of the same size in front of the model and a
 // recall difference between them is not a budget difference.
-const documentLimit = memory.DefaultRecallTokenBudget * memory.CharsPerToken
+const documentLimit = recallTokenBudget * charsPerToken
 
 // documentFrame keeps no store: one bounded document, rewritten each turn,
 // holding the most recent turns' text and dropping the oldest to stay
@@ -35,7 +33,7 @@ type documentFrame struct {
 func NewDocumentFrame(budget int) Frame {
 	limit := documentLimit
 	if budget > 0 {
-		limit = budget * memory.CharsPerToken
+		limit = budget * charsPerToken
 	}
 	return &documentFrame{limit: limit}
 }

@@ -18,6 +18,9 @@ import (
 
 var now = time.Date(2026, 7, 25, 12, 0, 0, 0, time.UTC)
 
+// project is the address most of these tests write to.
+var project = memory.Address{Subject: "Alma", Question: "which project does she lead"}
+
 func openStore(t *testing.T) (*sqlite.Store, string) {
 	t.Helper()
 	path := filepath.Join(t.TempDir(), "memory.db")
@@ -27,81 +30,159 @@ func openStore(t *testing.T) (*sqlite.Store, string) {
 	return st, path
 }
 
-func sample(content string) memory.Memory {
+func sample(a memory.Address, value string) memory.Memory {
 	return memory.Memory{
-		Content:         content,
-		Embedding:       []float32{0.5, -0.5, 0.25},
-		Type:            memory.TypeEpisodic,
+		Address:         a,
+		Value:           value,
 		ImportanceScore: 0.7,
 		Timestamp:       now,
 		Source:          "test",
 	}
 }
 
-func TestStore_InsertGetRoundTrip(t *testing.T) {
+// mustAt reads one address, and only returns the single memory a read
+// was expected to reach.
+func mustAt(t *testing.T, st *sqlite.Store, a memory.Address) []memory.Memory {
+	t.Helper()
+	held, err := st.At(context.Background(), a)
+	require.NoError(t, err)
+	return held
+}
+
+func only(t *testing.T, held []memory.Memory) memory.Memory {
+	t.Helper()
+	require.Len(t, held, 1)
+	return held[0]
+}
+
+func TestStore_InsertRoundTrip(t *testing.T) {
 	st, _ := openStore(t)
 	ctx := context.Background()
 
-	id, err := st.Insert(ctx, sample("the cat sat"))
+	id, err := st.Insert(ctx, sample(project, "amber-quarry"))
 	require.NoError(t, err)
 	require.Positive(t, id)
 
-	got, err := st.Get(ctx, id)
-	require.NoError(t, err)
+	got := only(t, mustAt(t, st, project))
 	assert.Equal(t, id, got.ID)
-	assert.Equal(t, "the cat sat", got.Content)
-	assert.Equal(t, memory.TypeEpisodic, got.Type)
+	assert.Equal(t, project, got.Address)
+	assert.Equal(t, "amber-quarry", got.Value)
 	assert.InDelta(t, 0.7, got.ImportanceScore, 1e-9)
-	assert.Equal(t, []float32{0.5, -0.5, 0.25}, got.Embedding)
 	assert.Equal(t, now, got.Timestamp)
 	assert.Equal(t, "test", got.Source)
 	assert.Zero(t, got.AccessCount)
-	assert.True(t, got.LastAccessed.IsZero())
 	assert.Zero(t, got.SupersededBy)
-	assert.True(t, got.ValidTo.IsZero())
 }
 
-func TestStore_GetMissingReturnsErrNotFound(t *testing.T) {
+func TestStore_AtIsEmptyForAnAddressNothingWasWrittenTo(t *testing.T) {
 	st, _ := openStore(t)
-	_, err := st.Get(context.Background(), 42)
-	require.ErrorIs(t, err, memory.ErrNotFound)
+	held, err := st.At(context.Background(), project)
+	require.NoError(t, err)
+	assert.Empty(t, held)
 }
 
-func TestStore_ActiveListsAll(t *testing.T) {
+// The three reads are the three prefixes of one address: the address
+// itself, the question it asks, and the subject it is about.
+func TestStore_TheThreeReadsAreThreePrefixesOfOneAddress(t *testing.T) {
 	st, _ := openStore(t)
 	ctx := context.Background()
-	for range 3 {
-		_, err := st.Insert(ctx, sample("entry"))
+	onCall := project
+	onCall.Restriction = "on call"
+	team := memory.Address{Subject: "Alma", Question: "which team does she sit on"}
+
+	for _, m := range []memory.Memory{
+		sample(project, "amber-quarry"),
+		sample(onCall, "basalt-run"),
+		sample(team, "platform"),
+		sample(memory.Address{Subject: "Otto", Question: "which project does he lead"}, "cinder-lake"),
+	} {
+		_, err := st.Insert(ctx, m)
 		require.NoError(t, err)
 	}
+
+	exact, err := st.At(ctx, project)
+	require.NoError(t, err)
+	assert.Equal(t, []string{"amber-quarry"}, valuesOf(exact), "the address itself")
+
+	question, err := st.UnderQuestion(ctx, project.Subject, project.Question)
+	require.NoError(t, err)
+	assert.Equal(t, []string{"amber-quarry", "basalt-run"}, valuesOf(question),
+		"the question asked and the restrictions under it, unrestricted first")
+
+	subject, err := st.UnderSubject(ctx, "Alma")
+	require.NoError(t, err)
+	assert.ElementsMatch(t, []string{"amber-quarry", "basalt-run", "platform"}, valuesOf(subject),
+		"every address under the subject, and no other subject's")
+}
+
+func valuesOf(held []memory.Memory) []string {
+	out := make([]string, 0, len(held))
+	for _, m := range held {
+		out = append(out, m.Value)
+	}
+	return out
+}
+
+// One value at one address is held once. The second write moves the
+// timestamp and returns the row that was already there, so a restated
+// fact does not accumulate rows.
+func TestStore_InsertingAValueTwiceAtOneAddressHoldsItOnce(t *testing.T) {
+	st, _ := openStore(t)
+	ctx := context.Background()
+
+	first, err := st.Insert(ctx, sample(project, "amber-quarry"))
+	require.NoError(t, err)
+	restated := sample(project, "amber-quarry")
+	restated.Timestamp = now.Add(time.Hour)
+	again, err := st.Insert(ctx, restated)
+	require.NoError(t, err)
+
+	assert.Equal(t, first, again, "the row that was already there comes back")
+	got := only(t, mustAt(t, st, project))
+	assert.Equal(t, now.Add(time.Hour), got.Timestamp, "the write moves the timestamp")
+}
+
+// The same value under a different question is a different fact and is
+// held separately: the uniqueness is per address, not per value.
+func TestStore_OneValueUnderTwoQuestionsIsTwoRows(t *testing.T) {
+	st, _ := openStore(t)
+	ctx := context.Background()
+	team := memory.Address{Subject: "Alma", Question: "which team does she sit on"}
+
+	_, err := st.Insert(ctx, sample(project, "platform"))
+	require.NoError(t, err)
+	_, err = st.Insert(ctx, sample(team, "platform"))
+	require.NoError(t, err)
+
 	active, err := st.Active(ctx)
 	require.NoError(t, err)
-	assert.Len(t, active, 3)
+	assert.Len(t, active, 2)
 }
 
 func TestStore_ArchiveMovesRowAndRecordsChain(t *testing.T) {
 	st, path := openStore(t)
 	ctx := context.Background()
 
-	oldID, err := st.Insert(ctx, sample("old version"))
+	oldID, err := st.Insert(ctx, sample(project, "amber-quarry"))
 	require.NoError(t, err)
-	newID, err := st.Insert(ctx, sample("new version"))
+	newID, err := st.Insert(ctx, sample(project, "basalt-run"))
 	require.NoError(t, err)
 
 	require.NoError(t, st.Archive(ctx, oldID, newID, now))
 
-	_, err = st.Get(ctx, oldID)
-	require.ErrorIs(t, err, memory.ErrNotFound)
+	held, err := st.At(ctx, project)
+	require.NoError(t, err)
+	assert.Equal(t, []string{"basalt-run"}, valuesOf(held), "an archived row leaves the read")
 
 	db, err := sql.Open("sqlite", path)
 	require.NoError(t, err)
 	defer db.Close()
-	var content string
+	var value string
 	var supersededBy, validTo int64
 	require.NoError(t, db.QueryRow(
-		`SELECT content, superseded_by, valid_to FROM memories_archive WHERE id = ?`, oldID,
-	).Scan(&content, &supersededBy, &validTo))
-	assert.Equal(t, "old version", content)
+		`SELECT value, superseded_by, valid_to FROM memories_archive WHERE id = ?`, oldID,
+	).Scan(&value, &supersededBy, &validTo))
+	assert.Equal(t, "amber-quarry", value)
 	assert.Equal(t, newID, supersededBy)
 	assert.Equal(t, now.Unix(), validTo)
 }
@@ -112,67 +193,34 @@ func TestStore_ArchiveMissingReturnsErrNotFound(t *testing.T) {
 	require.ErrorIs(t, err, memory.ErrNotFound)
 }
 
-func TestStore_ArchivedRowsLeaveKeywordSearch(t *testing.T) {
+// Archiving frees the address for the same value again: the uniqueness
+// index covers the active table only, so a value can be written, retired
+// and written again without colliding with its own archived row.
+func TestStore_AnArchivedValueCanBeWrittenAgain(t *testing.T) {
 	st, _ := openStore(t)
 	ctx := context.Background()
 
-	id, err := st.Insert(ctx, sample("unique zebra fact"))
+	id, err := st.Insert(ctx, sample(project, "amber-quarry"))
 	require.NoError(t, err)
-
-	ranks, err := st.FTSRanks(ctx, "zebra")
-	require.NoError(t, err)
-	assert.Contains(t, ranks, id)
-
 	require.NoError(t, st.Archive(ctx, id, 0, now))
 
-	ranks, err = st.FTSRanks(ctx, "zebra")
+	again, err := st.Insert(ctx, sample(project, "amber-quarry"))
 	require.NoError(t, err)
-	assert.Empty(t, ranks)
-}
-
-func TestStore_FTSRanksMatchesOnlyKeywordRows(t *testing.T) {
-	st, _ := openStore(t)
-	ctx := context.Background()
-
-	cat, err := st.Insert(ctx, sample("the cat sat on the mat"))
-	require.NoError(t, err)
-	_, err = st.Insert(ctx, sample("quantum entanglement notes"))
-	require.NoError(t, err)
-
-	ranks, err := st.FTSRanks(ctx, "cat")
-	require.NoError(t, err)
-	require.Len(t, ranks, 1)
-	assert.Contains(t, ranks, cat)
-}
-
-func TestStore_FTSRanksIgnoresSpecialCharacters(t *testing.T) {
-	st, _ := openStore(t)
-	ctx := context.Background()
-	id, err := st.Insert(ctx, sample("release plan"))
-	require.NoError(t, err)
-
-	for _, query := range []string{`"release`, `release OR`, `release*`, `NEAR(release)`} {
-		_, err := st.FTSRanks(ctx, query)
-		assert.NoError(t, err, "query %q must not inject FTS syntax", query)
-	}
-
-	ranks, err := st.FTSRanks(ctx, `release OR`)
-	require.NoError(t, err)
-	assert.Contains(t, ranks, id)
+	assert.NotEqual(t, id, again)
+	assert.Equal(t, []string{"amber-quarry"}, valuesOf(mustAt(t, st, project)))
 }
 
 func TestStore_RecordAccess(t *testing.T) {
 	st, _ := openStore(t)
 	ctx := context.Background()
 
-	id, err := st.Insert(ctx, sample("fact"))
+	id, err := st.Insert(ctx, sample(project, "amber-quarry"))
 	require.NoError(t, err)
 
 	require.NoError(t, st.RecordAccess(ctx, []int64{id}, now))
 	require.NoError(t, st.RecordAccess(ctx, []int64{id}, now.Add(time.Hour)))
 
-	got, err := st.Get(ctx, id)
-	require.NoError(t, err)
+	got := only(t, mustAt(t, st, project))
 	assert.Equal(t, int64(2), got.AccessCount)
 	assert.Equal(t, now.Add(time.Hour), got.LastAccessed)
 }
@@ -180,14 +228,39 @@ func TestStore_RecordAccess(t *testing.T) {
 func TestStore_ReopenKeepsData(t *testing.T) {
 	st, path := openStore(t)
 	ctx := context.Background()
-	id, err := st.Insert(ctx, sample("persistent fact"))
+	_, err := st.Insert(ctx, sample(project, "amber-quarry"))
 	require.NoError(t, err)
 	require.NoError(t, st.Close())
 
 	reopened, err := sqlite.Open(path)
 	require.NoError(t, err)
 	defer reopened.Close()
-	got, err := reopened.Get(ctx, id)
+	got := only(t, mustAt(t, reopened, project))
+	assert.Equal(t, "amber-quarry", got.Value)
+}
+
+// A memory.db written before #582 holds sentences, and no address can be
+// computed from one without a model call. Opening it reports that rather
+// than failing on a missing column somewhere later.
+func TestOpen_RefusesAPreAddressedStore(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "memory.db")
+	db, err := sql.Open("sqlite", path)
 	require.NoError(t, err)
-	assert.Equal(t, "persistent fact", got.Content)
+	_, err = db.Exec(`CREATE TABLE memories_active (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		content TEXT NOT NULL,
+		embedding BLOB NOT NULL,
+		type TEXT NOT NULL,
+		importance_score REAL NOT NULL,
+		access_count INTEGER NOT NULL DEFAULT 0,
+		last_accessed INTEGER,
+		timestamp INTEGER NOT NULL,
+		source TEXT NOT NULL,
+		superseded_by INTEGER,
+		valid_to INTEGER)`)
+	require.NoError(t, err)
+	require.NoError(t, db.Close())
+
+	_, err = sqlite.Open(path)
+	assert.ErrorIs(t, err, sqlite.ErrPreAddressedStore)
 }

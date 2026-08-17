@@ -2,7 +2,6 @@ package memory_test
 
 import (
 	"context"
-	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -10,35 +9,7 @@ import (
 
 	"github.com/garamsh/gagent/internal/agent"
 	agentmemory "github.com/garamsh/gagent/internal/agent/memory"
-	"github.com/garamsh/gagent/internal/memory"
 )
-
-// fixedSummarizer returns one prepared result, so a test states what
-// the summarizer produced rather than which implementation it wired.
-type fixedSummarizer struct {
-	summary memory.Summary
-	err     error
-	calls   int
-}
-
-func (s *fixedSummarizer) Summarize(_ context.Context, _ []string) (memory.Summary, error) {
-	s.calls++
-	return s.summary, s.err
-}
-
-// recordingStore records what compaction asked to store. Only Store is
-// reached by this path; the rest of memory.Service is unimplemented on
-// purpose, so a compactor that started writing elsewhere would panic
-// rather than pass.
-type recordingStore struct {
-	memory.Service
-	stored []memory.StoreInput
-}
-
-func (s *recordingStore) Store(_ context.Context, in memory.StoreInput) (memory.StoreResult, error) {
-	s.stored = append(s.stored, in)
-	return memory.StoreResult{ID: int64(len(s.stored))}, nil
-}
 
 // history returns n user messages with distinguishable content.
 func history(n int) []agent.Message {
@@ -49,57 +20,70 @@ func history(n int) []agent.Message {
 	return out
 }
 
-// TestCompact_StoresNothingWhenTheSummarizerDidNotSummarize pins the
-// rule ADR 0006 rests the context-overflow write on: the write is
-// licensed by the content being model-generated, so a deterministic
-// stand-in's join — which is the evicted turns themselves — is not
-// stored. Before this rule the shipped default stored every evicted
-// user message verbatim (#541).
-func TestCompact_StoresNothingWhenTheSummarizerDidNotSummarize(t *testing.T) {
-	store := &recordingStore{}
-	summarizer := &fixedSummarizer{summary: memory.Summary{Text: "a | b | c"}}
-	compactor := agentmemory.Compactor{Svc: store, Summarizer: summarizer, MaxHistoryMessages: 2}
+// TestCompact_KeepsTheNewestAndDropsTheRest is what compaction does now:
+// the oldest turns leave the window and nothing is written anywhere.
+//
+// It used to summarize them into an episodic memory. #582 removed that
+// write — an addressed store holds an address and a value, and a summary
+// of a conversation answers no question a read can ask for — and the
+// compactor kept the half that bounds the window.
+func TestCompact_KeepsTheNewestAndDropsTheRest(t *testing.T) {
+	compactor := agentmemory.Compactor{MaxHistoryMessages: 2}
 
 	kept, err := compactor.Compact(context.Background(), history(6))
 
 	require.NoError(t, err)
-	assert.Empty(t, store.stored,
-		"a join is not a summary, so the evicted turns do not enter the searchable store")
-	assert.Len(t, kept, 2,
-		"the turns still leave the window: this changes what is stored, not what is evicted")
-	assert.Equal(t, 1, summarizer.calls)
+	assert.Len(t, kept, 2, "the newest messages stay in the window")
+	assert.Equal(t, history(6)[4:], kept, "and they are the newest ones")
 }
 
-// TestCompact_StoresWhatAModelSummarized pins the other half: a real
-// summarizer's output is left alone and stored as the episodic memory
-// ADR 0006 describes.
-func TestCompact_StoresWhatAModelSummarized(t *testing.T) {
-	store := &recordingStore{}
-	summarizer := &fixedSummarizer{
-		summary: memory.Summary{Text: "the session discussed deployment", Generated: true},
+func TestCompact_BelowTheCapKeepsEverything(t *testing.T) {
+	compactor := agentmemory.Compactor{MaxHistoryMessages: 10}
+
+	kept, err := compactor.Compact(context.Background(), history(6))
+
+	require.NoError(t, err)
+	assert.Len(t, kept, 6)
+}
+
+// A zero cap disables compaction: the session keeps its whole history.
+func TestCompact_ZeroCapKeepsEverything(t *testing.T) {
+	compactor := agentmemory.Compactor{}
+
+	kept, err := compactor.Compact(context.Background(), history(6))
+
+	require.NoError(t, err)
+	assert.Len(t, kept, 6)
+}
+
+// A tool message answers the assistant message that called for it, so a
+// cut landing on one moves past it rather than orphaning it.
+func TestCompact_DoesNotLeaveAToolMessageWithoutItsCall(t *testing.T) {
+	h := []agent.Message{
+		{Role: agent.RoleUser, Content: "a"},
+		{Role: agent.RoleAssistant, Content: "b"},
+		{Role: agent.RoleTool, Content: "c"},
+		{Role: agent.RoleTool, Content: "d"},
+		{Role: agent.RoleUser, Content: "e"},
 	}
-	compactor := agentmemory.Compactor{Svc: store, Summarizer: summarizer, MaxHistoryMessages: 2}
+	compactor := agentmemory.Compactor{MaxHistoryMessages: 3}
 
-	kept, err := compactor.Compact(context.Background(), history(6))
+	kept, err := compactor.Compact(context.Background(), h)
 
 	require.NoError(t, err)
-	require.Len(t, store.stored, 1)
-	assert.Equal(t, "the session discussed deployment", store.stored[0].Content)
-	assert.Equal(t, memory.TypeEpisodic, store.stored[0].Type)
-	assert.Equal(t, "context-overflow", store.stored[0].Source)
-	assert.Len(t, kept, 2)
+	assert.Equal(t, []agent.Message{{Role: agent.RoleUser, Content: "e"}}, kept,
+		"the cut moves past the tool messages it would have orphaned")
 }
 
-// TestCompact_SummarizerErrorFails pins that a summarizer error is not
-// the same as a summarizer that did not summarize: one is a failure and
-// surfaces, the other is a decision not to store.
-func TestCompact_SummarizerErrorFails(t *testing.T) {
-	store := &recordingStore{}
-	summarizer := &fixedSummarizer{err: errors.New("provider unavailable")}
-	compactor := agentmemory.Compactor{Svc: store, Summarizer: summarizer, MaxHistoryMessages: 2}
+// The session's own first system message is the composed instructions,
+// not history, so compaction drops it before counting.
+func TestCompact_DropsTheLeadingSystemMessage(t *testing.T) {
+	h := append([]agent.Message{{Role: agent.RoleSystem, Content: "instructions"}}, history(4)...)
+	compactor := agentmemory.Compactor{MaxHistoryMessages: 10}
 
-	_, err := compactor.Compact(context.Background(), history(6))
+	kept, err := compactor.Compact(context.Background(), h)
 
-	require.Error(t, err)
-	assert.Empty(t, store.stored)
+	require.NoError(t, err)
+	assert.Len(t, kept, 4)
+	assert.NotContains(t, kept, agent.Message{Role: agent.RoleSystem, Content: "instructions"})
 }

@@ -143,169 +143,6 @@ func TestFactory_OutboxConstruction(t *testing.T) {
 	}, sink.messages()[0])
 }
 
-// TestQueue_ThresholdConsolidationRunsAfterTurn is the ADR 0011
-// acceptance case with a real store: seeded past ConsolidationThreshold,
-// one completed turn consolidates the episodic cluster — no shutdown.
-func TestQueue_ThresholdConsolidationRunsAfterTurn(t *testing.T) {
-	root := t.TempDir()
-
-	// Seed the store past the threshold, then close it; the runtime
-	// opens the same file. Each note carries unique tokens so the seed
-	// is a set of distinct memories.
-	seed, err := sqlite.Open(memoryPath(root))
-	require.NoError(t, err)
-	seedSvc := memory.NewService(seed, memory.NewHashingEmbedder(), memory.NewConcatSummarizer())
-	for i := range memory.ConsolidationThreshold {
-		_, err := seedSvc.Store(context.Background(), memory.StoreInput{
-			Content:         fmt.Sprintf("episodic note %d w%d x%d y%d z%d q%d", i, i, i, i, i, i),
-			Type:            memory.TypeEpisodic,
-			ImportanceScore: 0.5,
-			Source:          "test",
-		})
-		require.NoError(t, err)
-	}
-	require.NoError(t, seedSvc.Close())
-
-	sink := &recordingSink{}
-	factory := &gateway.Factory{
-		MemoryPath: memoryPath(root),
-		NewModel:   replyModel,
-
-		Tools: mouthClientSink(sink),
-	}
-	rt, err := factory.New(context.Background(), "env-1", nil)
-	require.NoError(t, err)
-
-	_, err = rt.Session.Run(context.Background(), "one turn")
-	require.NoError(t, err)
-	require.NoError(t, rt.ConsolidateIfDue(context.Background()),
-		"the after-turn trigger runs against the real store")
-
-	store, err := sqlite.Open(memoryPath(root))
-	require.NoError(t, err)
-	defer func() {
-		assert.NoError(t, store.Close())
-	}()
-	active, err := store.Active(context.Background())
-	require.NoError(t, err)
-	var episodic, semantic int
-	for _, m := range active {
-		switch m.Type {
-		case memory.TypeEpisodic:
-			episodic++
-		case memory.TypeSemantic:
-			semantic++
-		}
-	}
-	assert.Zero(t, episodic, "the whole episodic cluster archived")
-	assert.Positive(t, semantic, "the cluster compressed into semantic parents")
-
-	require.NoError(t, rt.Close(context.Background()))
-}
-
-// stubEmbedder returns a distinctive short vector so tests can tell it
-// apart from the 256-dimensional hashing default.
-type stubEmbedder struct{}
-
-// Embed implements memory.Embedder.
-func (stubEmbedder) Embed(context.Context, string) ([]float32, error) {
-	return []float32{1, 0, 0}, nil
-}
-
-func TestFactory_ConfiguredEmbedderReachesMemoryService(t *testing.T) {
-	root := t.TempDir()
-	sink := &recordingSink{}
-	factory := &gateway.Factory{
-		MemoryPath: memoryPath(root),
-		NewModel:   replyModel,
-
-		Embedder: stubEmbedder{},
-		Tools:    mouthClientSink(sink),
-	}
-	rt, err := factory.New(context.Background(), "env-1", nil)
-	require.NoError(t, err)
-
-	_, err = rt.Session.Run(context.Background(), "hi")
-	require.NoError(t, err)
-	require.NoError(t, rt.Close(context.Background()))
-
-	store, err := sqlite.Open(memoryPath(root))
-	require.NoError(t, err)
-	defer func() {
-		assert.NoError(t, store.Close())
-	}()
-	active, err := store.Active(context.Background())
-	require.NoError(t, err)
-	require.Len(t, active, 1, "the scripted turn writes back exactly one memory")
-	assert.Equal(t, []float32{1, 0, 0}, active[0].Embedding,
-		"the configured embedder, not the hashing default, embedded the memory")
-}
-
-// consolidateModel scripts one turn that states no fact: the episodic
-// cluster the consolidation trigger works over is seeded into the store
-// directly, because a writeback states facts at addresses and never
-// episodes (ADR 0018).
-func consolidateModel(_ string) agent.Model {
-	return agent.NewScriptedModel(
-		agent.ScriptedStep{Content: `{"reply":"Done.","memory_ops":[]}`},
-	)
-}
-
-// seedEpisodicCluster writes the two episodic memories the consolidation
-// threshold works over into the store the factory will open.
-func seedEpisodicCluster(t *testing.T, path string, contents ...string) {
-	t.Helper()
-	store, err := sqlite.Open(path)
-	require.NoError(t, err)
-	svc := memory.NewService(store, memory.NewHashingEmbedder(), memory.NewConcatSummarizer())
-	for _, content := range contents {
-		_, err := svc.Store(context.Background(), memory.StoreInput{
-			Content:         content,
-			Type:            memory.TypeEpisodic,
-			ImportanceScore: memory.SalienceAddEpisodic,
-			Source:          "agent",
-		})
-		require.NoError(t, err)
-	}
-	require.NoError(t, svc.Close())
-}
-
-// TestRuntime_CloseConsolidatesEpisodicCluster pins the ADR 0011 shutdown
-// trigger: closing the runtime compresses the active episodic cluster
-// into one semantic parent and archives the originals.
-func TestRuntime_CloseConsolidatesEpisodicCluster(t *testing.T) {
-	root := t.TempDir()
-	seedEpisodicCluster(t, memoryPath(root),
-		"deployed v1 to staging", "staging deploy failed on migration")
-	sink := &recordingSink{}
-	factory := &gateway.Factory{
-		MemoryPath: memoryPath(root),
-		NewModel:   consolidateModel,
-
-		Tools: mouthClientSink(sink),
-	}
-	rt, err := factory.New(context.Background(), "env-1", nil)
-	require.NoError(t, err)
-
-	_, err = rt.Session.Run(context.Background(), "deploy work")
-	require.NoError(t, err)
-	require.NoError(t, rt.Close(context.Background()))
-
-	store, err := sqlite.Open(memoryPath(root))
-	require.NoError(t, err)
-	defer func() {
-		assert.NoError(t, store.Close())
-	}()
-	active, err := store.Active(context.Background())
-	require.NoError(t, err)
-	require.Len(t, active, 1,
-		"the two episodic originals are archived; only the semantic parent stays active")
-	assert.Equal(t, memory.TypeSemantic, active[0].Type)
-	assert.Equal(t, memory.CompressSource, active[0].Source)
-	assert.Contains(t, active[0].Content, "deployed v1 to staging")
-	assert.Contains(t, active[0].Content, "staging deploy failed on migration")
-}
-
 // TestQueue_CloseClosesTheStore pins the served path: SIGTERM cancels
 // the context, the queue closes, and the runtime's Close has to leave a
 // checkpointed database behind. The store is a mounted volume
@@ -332,21 +169,14 @@ func compactionModel(_ string) agent.Model {
 	)
 }
 
-// generatedSummarizer stands in for a model-backed summarizer: it
-// reports Generated true, which is what licenses the context-overflow
-// write (ADR 0006, ADR 0004).
-type generatedSummarizer struct{ text string }
-
-func (g generatedSummarizer) Summarize(_ context.Context, _ []string) (memory.Summary, error) {
-	return memory.Summary{Text: g.text, Generated: true}, nil
-}
-
-// TestFactory_HistoryOverflowStoresNothingWithoutARealSummarizer pins
-// the shipped default: no summarizer is configured, so compaction holds
-// a join of the evicted turns rather than a summary, and stores none of
-// it. Until #541 this test asserted the opposite — that the evicted
-// user text was searchable — which is how the defect survived.
-func TestFactory_HistoryOverflowStoresNothingWithoutARealSummarizer(t *testing.T) {
+// TestFactory_HistoryOverflowStoresNothing pins ADR 0006's curation
+// rule where it used to be most at risk: the turns that leave the
+// context window enter no store. It held by a provenance check until
+// #582 and holds by construction now — compaction takes no memory
+// service, so there is no path for an evicted turn to reach the store.
+// Until #541 this test asserted the opposite, that the evicted user text
+// was searchable, which is how the defect survived.
+func TestFactory_HistoryOverflowStoresNothing(t *testing.T) {
 	root := t.TempDir()
 	sink := &recordingSink{}
 	factory := &gateway.Factory{
@@ -374,57 +204,46 @@ func TestFactory_HistoryOverflowStoresNothingWithoutARealSummarizer(t *testing.T
 	defer func() {
 		assert.NoError(t, store.Close())
 	}()
-	svc := memory.NewService(store, memory.NewHashingEmbedder(), memory.NewConcatSummarizer())
-	found, err := svc.Search(context.Background(), "first overflowing task", 10)
+	active, err := store.Active(context.Background())
 	require.NoError(t, err)
-	for _, candidate := range found {
-		assert.NotEqual(t, "context-overflow", candidate.Source,
+	for _, m := range active {
+		assert.NotEqual(t, "context-overflow", m.Source,
 			"an inbound message the model never stated as a fact stays out of the store (ADR 0006)")
 	}
 }
 
-// TestFactory_HistoryOverflowStoresAModelSummary pins the other half at
-// the wiring level: with a summarizer that reports a generated summary,
-// the episodic memory ADR 0006 describes is written and searchable.
-func TestFactory_HistoryOverflowStoresAModelSummary(t *testing.T) {
+// TestFactory_WritebackReachesTheStoreAtItsAddress is the wiring case
+// the configured-embedder test used to be: one scripted turn writes
+// back, and the value is readable at the address the write stated.
+func TestFactory_WritebackReachesTheStoreAtItsAddress(t *testing.T) {
 	root := t.TempDir()
 	sink := &recordingSink{}
 	factory := &gateway.Factory{
 		MemoryPath: memoryPath(root),
-		NewModel:   compactionModel,
-
-		Tools:              mouthClientSink(sink),
-		MaxHistoryMessages: 4,
-		Summarizer:         generatedSummarizer{text: "the session opened with an overflowing task"},
+		NewModel:   replyModel,
+		Tools:      mouthClientSink(sink),
 	}
 	rt, err := factory.New(context.Background(), "env-1", nil)
 	require.NoError(t, err)
 
-	_, err = rt.Session.Run(context.Background(), "first overflowing task")
+	_, err = rt.Session.Run(context.Background(), "hi")
 	require.NoError(t, err)
-	_, err = rt.Session.Run(context.Background(), "second task continues")
-	require.NoError(t, err)
-
 	require.NoError(t, rt.Close(context.Background()))
+
 	store, err := sqlite.Open(memoryPath(root))
 	require.NoError(t, err)
-	defer func() {
-		assert.NoError(t, store.Close())
-	}()
-	svc := memory.NewService(store, memory.NewHashingEmbedder(), memory.NewConcatSummarizer())
-	found, err := svc.Search(context.Background(), "overflowing task", 10)
+	defer func() { assert.NoError(t, store.Close()) }()
+	active, err := store.Active(context.Background())
 	require.NoError(t, err)
-	var overflow memory.ScoredMemory
-	for _, candidate := range found {
-		if candidate.Source == "context-overflow" {
-			overflow = candidate
-			break
-		}
-	}
-	require.NotZero(t, overflow.ID)
-	assert.Equal(t, memory.TypeEpisodic, overflow.Type)
-	assert.Equal(t, "the session opened with an overflowing task", overflow.Content,
-		"what is stored is the summary, not the turns it was made from")
+	require.Len(t, active, 1, "the scripted turn writes back exactly one memory")
+	assert.NotEmpty(t, active[0].Address.Subject)
+	assert.NotEmpty(t, active[0].Address.Question)
+	assert.NotEmpty(t, active[0].Value)
+
+	held, err := memory.NewService(store).At(context.Background(), active[0].Address)
+	require.NoError(t, err)
+	require.Len(t, held, 1, "the value is readable at the address it was written to")
+	assert.Equal(t, active[0].Value, held[0].Value)
 }
 
 // stubClient is a minimal platform-tool-client stand-in for tests

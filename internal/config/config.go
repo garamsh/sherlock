@@ -41,15 +41,6 @@ const (
 	// internal/agent/openai.DefaultTimeout so the default behaviour is
 	// identical whether the key is set or not.
 	defaultModelTimeout = 60 * time.Second
-
-	defaultEmbedderProvider = "hashing"
-	defaultEmbedderBaseURL  = "https://api.openai.com/v1"
-	defaultEmbedderModel    = "text-embedding-3-small"
-	defaultEmbedderKeyEnv   = "OPENAI_API_KEY"
-	// defaultEmbedderTimeout bounds one embeddings request. It mirrors
-	// internal/memory/openai.DefaultTimeout so the default behaviour is
-	// identical whether the key is set or not.
-	defaultEmbedderTimeout = 60 * time.Second
 )
 
 // Config is the agent's resolved settings, parsed once at the command
@@ -71,9 +62,6 @@ type Config struct {
 	WorkspaceAddr string `mapstructure:"workspace-addr"`
 	// Model selects the chat model provider (ADR 0004).
 	Model ModelConfig `mapstructure:"model"`
-	// Embedder selects the memory embedder provider (ADR 0004); the
-	// hashing default keeps the platform fully offline.
-	Embedder ModelConfig `mapstructure:"embedder"`
 	// TLS carries the gateway's mTLS material (ADR 0012). When unset,
 	// the gateway serves loopback binds only.
 	TLS TLSConfig `mapstructure:"tls"`
@@ -121,9 +109,8 @@ type TLSConfig struct {
 }
 
 // ModelConfig selects a model provider: the chat model under the model:
-// section, the memory embedder under the embedder: section. The API key
-// itself never appears here: APIKeyEnv names the environment variable
-// holding it (ADR 0003).
+// section. The API key itself never appears here: APIKeyEnv names the
+// environment variable holding it (ADR 0003).
 type ModelConfig struct {
 	// Provider selects the implementation: "mock" (scripted) or "openai".
 	Provider string `mapstructure:"provider"`
@@ -177,11 +164,6 @@ func Resolve(fs *pflag.FlagSet) (Config, error) {
 	v.SetDefault("model.model", defaultModelName)
 	v.SetDefault("model.api-key-env", defaultModelKeyEnv)
 	v.SetDefault("model.timeout", defaultModelTimeout)
-	v.SetDefault("embedder.provider", defaultEmbedderProvider)
-	v.SetDefault("embedder.base-url", defaultEmbedderBaseURL)
-	v.SetDefault("embedder.model", defaultEmbedderModel)
-	v.SetDefault("embedder.api-key-env", defaultEmbedderKeyEnv)
-	v.SetDefault("embedder.timeout", defaultEmbedderTimeout)
 	// Keys with neither a flag nor a default still get an empty default,
 	// so the env layer (GAGENT_TLS_CERT, …) reaches Unmarshal when the
 	// key is absent from the config file (issue #228).

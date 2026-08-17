@@ -23,14 +23,8 @@ type Runtime struct {
 	// an empty tool surface (tests).
 	Tools agent.ToolClient
 	// Close releases the runtime's resources. Called once on queue
-	// shutdown; memory consolidation (ADR 0011) runs before the store
-	// closes.
+	// shutdown.
 	Close func(ctx context.Context) error
-	// ConsolidateIfDue is the threshold consolidation trigger (ADR 0011):
-	// the runner evaluates it after a completed turn, off the turn path;
-	// a failure logs at WARN and never fails a turn. Nil means no
-	// threshold trigger (test runtimes).
-	ConsolidateIfDue func(ctx context.Context) error
 	// Retain is the tiered retention pass (ADR 0006): the runner
 	// evaluates it after a completed turn, alongside ConsolidateIfDue;
 	// a failure logs at WARN and never fails a turn. Nil means no
@@ -58,12 +52,6 @@ type Factory struct {
 	// Zero selects that default; a negative value is clamped to zero,
 	// which disables context compaction.
 	MaxHistoryMessages int
-	// Summarizer overrides the deterministic context summarizer. Nil uses
-	// memory.NewConcatSummarizer.
-	Summarizer memory.Summarizer
-	// Embedder overrides the memory embedder. Nil uses
-	// memory.NewHashingEmbedder, the deterministic offline default.
-	Embedder memory.Embedder
 	// Tools is the platform tool client. Nil means the agent runs
 	// without tools (tests).
 	Tools agent.ToolClient
@@ -80,10 +68,6 @@ func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink)
 	if err != nil {
 		return nil, err
 	}
-	summarizer := f.Summarizer
-	if summarizer == nil {
-		summarizer = memory.NewConcatSummarizer()
-	}
 	maxHistoryMessages := f.MaxHistoryMessages
 	if maxHistoryMessages == 0 {
 		maxHistoryMessages = agentmemory.DefaultMaxHistoryMessages
@@ -91,11 +75,7 @@ func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink)
 	if maxHistoryMessages < 0 {
 		maxHistoryMessages = 0
 	}
-	embedder := f.Embedder
-	if embedder == nil {
-		embedder = memory.NewHashingEmbedder()
-	}
-	memSvc := memory.NewService(store, embedder, summarizer)
+	memSvc := memory.NewService(store)
 
 	tools := f.Tools
 	if tools == nil {
@@ -103,33 +83,29 @@ func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink)
 	}
 
 	session := agent.NewSession(f.NewModel(agentID), tools, agent.Options{
-		Recaller:           agentmemory.Recall{Svc: memSvc},
+		// No Recaller: asked in words an addressed store answers
+		// nothing at all (ADR 0018), and the step that reads a
+		// question into an address is #336 step 3. A session without
+		// one states the emptiness rather than injecting anything.
 		Writeback:          agentmemory.Writeback{Svc: memSvc},
 		Events:             events,
-		Compactor:          agentmemory.Compactor{Svc: memSvc, Summarizer: summarizer, MaxHistoryMessages: maxHistoryMessages},
+		Compactor:          agentmemory.Compactor{MaxHistoryMessages: maxHistoryMessages},
 		Ego:                f.Ego,
 		MaxHistoryMessages: maxHistoryMessages,
 	})
 	return &Runtime{
 		Session: session,
 		Tools:   tools,
-		ConsolidateIfDue: func(ctx context.Context) error {
-			_, err := memSvc.ConsolidateIfDue(ctx)
-			return err
-		},
 		Retain: func(ctx context.Context) error {
 			_, err := memSvc.Retain(ctx)
 			return err
 		},
-		Close: func(ctx context.Context) error {
-			// Consolidation writes, so it runs before the handle
-			// closes. The close runs even when it fails: the store
-			// opens in WAL mode, so an unclosed handle leaves the
-			// `-wal` and `-shm` files beside `memory.db` with the
-			// last checkpoint unrun, and that file is what the next
-			// agent starts from (`deployment.md`).
-			_, err := memSvc.Consolidate(ctx)
-			return errors.Join(err, memSvc.Close())
+		Close: func(context.Context) error {
+			// The store opens in WAL mode, so an unclosed handle
+			// leaves the `-wal` and `-shm` files beside `memory.db`
+			// with the last checkpoint unrun, and that file is what
+			// the next agent starts from (`deployment.md`).
+			return memSvc.Close()
 		},
 	}, nil
 }

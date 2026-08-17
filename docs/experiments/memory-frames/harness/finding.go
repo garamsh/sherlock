@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-
-	"github.com/garamsh/gagent/internal/memory"
 )
 
 // Every addressed figure this record published was produced with the
@@ -128,7 +126,7 @@ type FindingStudy struct {
 // structure holding nothing has nothing that does not fit.
 func MeasureFinding(ctx context.Context, w Workload, resolving Resolving) (FindingStudy, error) {
 	out := FindingStudy{Seed: w.Seed, Digest: w.TurnDigest, Params: w.Params,
-		Budget: memory.DefaultRecallTokenBudget}
+		Budget: recallTokenBudget}
 	forms := questionForms
 	if resolving == nil {
 		forms = []string{questionAddressed, questionWorded}
@@ -403,5 +401,5 @@ func budgetChars(tokens int) int {
 	if tokens <= 0 {
 		return documentLimit
 	}
-	return tokens * memory.CharsPerToken
+	return tokens * charsPerToken
 }

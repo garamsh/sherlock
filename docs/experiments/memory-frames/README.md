@@ -401,11 +401,9 @@ Every planted value is a hyphenated pair of words, and no pair is planted on mor
 | fact threads | 600 |
 | questions asked | 2320 |
 | turn-stream digest | 466624f9ea463291930522af5b619bcf5fa2b07f44dbde8fb3e6c24837316eae |
-| supersession similarity | 0.6 |
 | retention keep salience | 0.6 |
 | retention drop salience | 0.3 |
 | retention window hours | 168 |
-| consolidation threshold | 100 |
 | salience of an episodic add | 0.5 |
 | salience of a semantic add | 0.7 |
 | recall token budget | 512 |
@@ -3848,6 +3846,9 @@ The figure that matters for the designs coming next is in the cost table below, 
 
 ## Limits
 
+- **The `shipped` row is historical, and it is the only row that is.** Its figures were taken against `internal/memory` as it then ran: sentences with an embedding and a keyword index over them, superseding on insert from similarity, consolidating episodic clusters after a turn. #582 replaced that store with the addressed one ADR 0018 decided, so the row's `what it holds` and `how it decides` cells describe what produced these numbers rather than what the name now points at. Re-measuring it is the step after that one; until then every comparison in this record that reads `shipped` is reading the design as it was.
+- **Two of the run's recorded constants no longer exist to be checked.** §The run lists the configuration a run measured under, and a test holds it against what the code declares (`#546`), so a constant moving fails rather than leaving the record describing a system that has changed. `supersession similarity 0.6` and `consolidation threshold 100` were the sentence store's and are declared nowhere now; they are dropped from that table rather than pinned to nothing, and those are the values the committed run was measured under. The constants that remain are still read from where they are declared — the retention tiers and the capacity from `internal/memory`, and the embedding dimension, context budget and salience tiers from the harness, which owns them since an addressed store stopped declaring them.
+- **The similarity machinery is the harness's own.** The hashing embedder and the cosine live in `harness/embedding.go` because three of the ported designs model similarity as part of their mechanism and the platform no longer has either. They are unchanged in value and behaviour from the versions `internal/memory` held, so the ported rows are run at the numbers this project shipped.
 - **A published design is ported, not run as its authors run it.** Each is a reimplementation of the paper's mechanism behind this seam, on this workload, under this embedder and with this record's substitutions for whatever the seam withholds. The comparison it belongs to is the one in these tables.
 - **The step that distinguishes two of the ported designs is a model call, and both are substituted.** Reflection's synthesis becomes a concatenation of the window's fact-carrying sentences; Mem0's judgement about which memory a fact updates becomes a similarity gate, at a constant the paper does not state. Both rows bound what the mechanism's shape buys and neither measures what the model would add.
 - **The importance term takes two values.** Generative Agents scores poignancy on a ten-point scale with a model. The stand-in here is the shipped writeback's two salience constants, so min-max scaling turns that term into a flag saying whether the turn asserted anything. A real poignancy would order records inside the fact-carrying half, and this one cannot.

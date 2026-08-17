@@ -158,8 +158,9 @@ func TestBudget_MovesOnlyTheFramesThatFillOne(t *testing.T) {
 	}
 	assert.Less(t, chars(frameDocument, 64), chars(frameDocument, 1024),
 		"a bounded document is what the budget bounds")
-	assert.Less(t, chars(frameShipped, 64), chars(frameShipped, 1024),
-		"a ranked store fills whatever budget it is given")
+	assert.Equal(t, chars(frameShipped, 64), chars(frameShipped, 1024),
+		"the shipped store is addressed since #582, so its answer is the address "+
+			"asked whatever the budget (ADR 0018 §Consequences)")
 	assert.Equal(t, chars(frameAttributeDeclared, 64), chars(frameAttributeDeclared, 1024),
 		"an addressed store returns the address it was asked for whatever the budget")
 }

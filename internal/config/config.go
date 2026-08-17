@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"fmt"
 	"io/fs"
 	"log/slog"
 	"os"
@@ -97,7 +98,11 @@ type ToolsConfig struct {
 	// tool it loads. An absent section leaves drift pinning off; a
 	// present one is enforced in full, so a tool dropped into the tree
 	// after the section was written is refused until its hash joins it
-	// (ADR 0009 invariant 2).
+	// (ADR 0009 invariant 2). A present section naming no tool is
+	// neither, and Resolve rejects it — checkToolPins says why.
+	//
+	// Nil therefore means the operator wrote no section, and never that
+	// they wrote an empty one.
 	Pins tool.ManifestPins `mapstructure:"pins"`
 }
 
@@ -200,7 +205,42 @@ func Resolve(fs *pflag.FlagSet) (Config, error) {
 		return Config{}, err
 	}
 	reportUnknownKeys(loaded, used.Unused)
+	if err := checkToolPins(v, cfg.Tools.Pins); err != nil {
+		return Config{}, err
+	}
 	return cfg, nil
+}
+
+// toolPinsKey is the config key holding the operator's accepted tool
+// set. It is named here because two things read it: the resolution that
+// binds it, and the check that an operator who opened the section
+// filled it.
+const toolPinsKey = "tools.pins"
+
+// checkToolPins rejects a pin section that names no tool.
+//
+// The three states an operator can write are not three settings. An
+// absent section declines to pin, and the registry says so at startup.
+// A populated one is the tool set the operator accepted. A present but
+// empty one is neither, and it cannot mean "accept no tool": message_send
+// is required and the required set is not operator-configurable, so a
+// registry accepting nothing fails its required check whatever the tools
+// directory holds. There is no tree in which an empty set produces a
+// running agent, which is why it is read as a section someone opened and
+// did not fill rather than as the strictest setting.
+//
+// It is checked here because here is the only place the state is
+// visible. viper's Unmarshal leaves an empty mapping nil, exactly as it
+// leaves an absent one, so by the time a pin set reaches the registry
+// the two are the same value — which is how the strictest-looking
+// setting came to turn pinning off and say nothing (#562).
+func checkToolPins(v *viper.Viper, pins tool.ManifestPins) error {
+	if len(pins) > 0 || !v.IsSet(toolPinsKey) {
+		return nil
+	}
+	return fmt.Errorf("config: %s is present and names no tool; a pin set is the tools the operator "+
+		"accepted, so an empty one accepts nothing and no agent can start under it. Name each tool "+
+		"and the manifest hash the agent logs for it, or remove the section to run unpinned", toolPinsKey)
 }
 
 // newConfigViper returns a viper with the shared resolution layer both

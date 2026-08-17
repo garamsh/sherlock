@@ -322,10 +322,14 @@ func TestResolveConfig_ToolsPinsSection(t *testing.T) {
 	assert.Equal(t, tool.ManifestPins{"message_send": "0f9b", "files": "7c31"}, cfg.Tools.Pins)
 }
 
+// The pin section has three states an operator can write, and #562 is
+// what it cost to have only checked one of them: an empty mapping
+// resolves to the same nil an absent section does, so the setting that
+// looks strictest turned pinning off. Each state is measured here.
+
 // TestResolveConfig_NoToolsSection separates "no pin set" from "a pin
 // set naming nothing": the first leaves drift pinning off, the second
-// would accept no tool at all, so an absent section must not resolve to
-// an empty set.
+// names no tool the operator accepted.
 func TestResolveConfig_NoToolsSection(t *testing.T) {
 	t.Chdir(t.TempDir())
 
@@ -341,6 +345,39 @@ func TestResolveConfig_NoToolsSection(t *testing.T) {
 // this replaced treated an empty GAGENT_TOOLS_DIR as unset, and viper
 // has to agree or a deployment that exports the variable empty would
 // start reading manifests from "".
+// TestResolveConfig_EmptyToolsPinsSectionFails is the case #562
+// reported. It must not resolve, and it must not resolve to the absent
+// state: an operator who wrote the section is configuring pinning, and
+// the one outcome they must not get is pinning switched off.
+func TestResolveConfig_EmptyToolsPinsSectionFails(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
+		[]byte("tools:\n  pins: {}\n"), 0o600))
+
+	_, err := config.Resolve(agentFlags(t))
+
+	require.Error(t, err, "an empty pin set must not resolve to pinning being off")
+	assert.Contains(t, err.Error(), "tools.pins", "the error names the key the operator wrote")
+	assert.Contains(t, err.Error(), "names no tool", "the error says what is wrong with it")
+}
+
+// TestResolveConfig_ToolsSectionWithoutPinsIsAbsent bounds the check to
+// the section it is about: a tools: section carrying something else has
+// no pin set, which is the absent state and not the empty one.
+func TestResolveConfig_ToolsSectionWithoutPinsIsAbsent(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
+		[]byte("tools-dir: ./elsewhere\n"), 0o600))
+
+	cfg, err := config.Resolve(agentFlags(t))
+
+	require.NoError(t, err)
+	assert.Nil(t, cfg.Tools.Pins)
+	assert.Equal(t, "./elsewhere", cfg.ToolsDir)
+}
+
 func TestResolveConfig_ToolsDirDefaults(t *testing.T) {
 	t.Chdir(t.TempDir())
 

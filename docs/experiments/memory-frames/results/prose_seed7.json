@@ -2,12 +2,12 @@
  "model": "gpt-4o-mini",
  "seed": 7,
  "calls": 1440,
- "prompt_tokens": 1358333,
- "completion_tokens": 49141,
+ "prompt_tokens": 1737173,
+ "completion_tokens": 46421,
  "price_input_per_million_usd": 0.15,
  "price_output_per_million_usd": 0.6,
  "price_read_on": "2026-08-17",
- "cost_usd": 0.23323454999999998,
+ "cost_usd": 0.28842855,
  "writes": [
   {
    "subject": "Zara",
@@ -34,7 +34,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Nadia",
-   "got_question": "who is Nadia sitting with",
+   "got_question": "who does Nadia sit with",
    "got_value": "the ember-foundry team"
   },
   {
@@ -48,8 +48,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Gunnar",
-   "got_question": "where does Gunnar bank",
-   "got_value": "Umber-Weir"
+   "got_question": "which bank does Gunnar use",
+   "got_value": "umber-weir"
   },
   {
    "subject": "Ulla",
@@ -62,7 +62,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Ulla",
-   "got_question": "where does Ulla bank",
+   "got_question": "which bank does Ulla bank with",
    "got_value": "verdigris-reach"
   },
   {
@@ -90,7 +90,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Yara",
-   "got_question": "What line does Yara commute on?",
+   "got_question": "which line does Yara commute on",
    "got_value": "the thistle-reach line"
   },
   {
@@ -118,7 +118,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Amara",
-   "got_question": "what does Amara rent",
+   "got_question": "which cottage does Amara rent",
    "got_value": "the ironwood-weir cottage"
   },
   {
@@ -132,8 +132,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Lisa",
-   "got_question": "where does Lisa sit",
-   "got_value": "with the cinder-meadow team"
+   "got_question": "which team does Lisa sit with",
+   "got_value": "the cinder-meadow team"
   },
   {
    "subject": "Tereza",
@@ -146,7 +146,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Tereza",
-   "got_question": "where does Tereza bank",
+   "got_question": "which bank does Tereza bank with",
    "got_value": "dovetail-brook"
   },
   {
@@ -160,7 +160,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Hugo",
-   "got_question": "who is sitting with the copper-kiln team",
+   "got_question": "who does Hugo sit with",
    "got_value": "the copper-kiln team"
   },
   {
@@ -174,8 +174,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Celia",
-   "got_question": "who keeps the accounts",
-   "got_value": "Celia"
+   "got_question": "what does Celia do in cobalt-annex",
+   "got_value": "keeps the accounts"
   },
   {
    "subject": "Kasper",
@@ -188,7 +188,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Kasper",
-   "got_question": "where does Kasper bank",
+   "got_question": "which bank does Kasper use",
    "got_value": "cobalt-moor"
   },
   {
@@ -202,8 +202,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Yara",
-   "got_question": "who keeps the accounts in marlow-weir",
-   "got_value": "Yara"
+   "got_question": "where does Yara keep the accounts",
+   "got_value": "marlow-weir"
   },
   {
    "subject": "Tereza",
@@ -230,7 +230,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Vasco",
-   "got_question": "What course is Vasco taking?",
+   "got_question": "which course is Vasco taking",
    "got_value": "the quill-hollow course"
   },
   {
@@ -258,8 +258,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Greta",
-   "got_question": "who keeps the accounts",
-   "got_value": "Greta"
+   "got_question": "where does Greta keep the accounts",
+   "got_value": "oakhill-reach"
   },
   {
    "subject": "Fabio",
@@ -314,8 +314,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Freya",
-   "got_question": "where does Freya sit",
-   "got_value": "with the zephyr-wharf team"
+   "got_question": "who does Freya sit with",
+   "got_value": "the zephyr-wharf team"
   },
   {
    "subject": "Sanjay",
@@ -328,8 +328,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Sanjay",
-   "got_question": "What course is Sanjay taking?",
-   "got_value": "nutmeg-quarry course"
+   "got_question": "which course is Sanjay taking",
+   "got_value": "the nutmeg-quarry course"
   },
   {
    "subject": "Esther",
@@ -342,7 +342,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Esther",
-   "got_question": "what does Esther rent",
+   "got_question": "where does Esther rent a cottage",
    "got_value": "the ravel-gable cottage"
   },
   {
@@ -370,7 +370,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Wilma",
-   "got_question": "who does Wilma order paper from",
+   "got_question": "where does Wilma order paper from",
    "got_value": "dovetail-orchard"
   },
   {
@@ -384,8 +384,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Milos",
-   "got_question": "what line does Milos commute on",
-   "got_value": "umber-brook line"
+   "got_question": "which line does Milos commute on",
+   "got_value": "the umber-brook line"
   },
   {
    "subject": "Chiara",
@@ -426,7 +426,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Viktor",
-   "got_question": "who is Viktor sitting with",
+   "got_question": "who does Viktor sit with",
    "got_value": "the bramble-lantern team"
   },
   {
@@ -440,8 +440,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Erol",
-   "got_question": "from whom does Erol order paper",
-   "got_value": "Yarrow-Spire"
+   "got_question": "where does Erol order paper from",
+   "got_value": "yarrow-spire"
   },
   {
    "subject": "Jonas",
@@ -538,7 +538,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Gunnar",
-   "got_question": "What course is Gunnar taking?",
+   "got_question": "which course is Gunnar taking",
    "got_value": "the sable-tarn course"
   },
   {
@@ -552,8 +552,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Petra",
-   "got_question": "who keeps the accounts in verdigris-beacon",
-   "got_value": "Petra"
+   "got_question": "what does Petra do in verdigris-beacon",
+   "got_value": "keeps the accounts"
   },
   {
    "subject": "Olga",
@@ -566,7 +566,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Olga",
-   "got_question": "who orders paper",
+   "got_question": "where does Olga order paper from",
    "got_value": "ironwood-fenn"
   },
   {
@@ -594,7 +594,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Rania",
-   "got_question": "what account has Rania switched to",
+   "got_question": "which account has Rania switched to",
    "got_value": "cobalt-pike"
   },
   {
@@ -608,7 +608,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Rania",
-   "got_question": "what accounts has Rania switched to",
+   "got_question": "which accounts has Rania switched to",
    "got_value": "dovetail-harbour"
   },
   {
@@ -622,7 +622,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Leila",
-   "got_question": "where does Leila bank",
+   "got_question": "which bank does Leila bank with",
    "got_value": "marlow-orchard"
   },
   {
@@ -636,7 +636,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Leila",
-   "got_question": "where does Leila bank",
+   "got_question": "which bank does Leila bank with",
    "got_value": "vellum-meadow"
   },
   {
@@ -650,7 +650,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Leila",
-   "got_question": "where does Leila bank",
+   "got_question": "which bank does Leila bank with",
    "got_value": "zephyr-ridge"
   },
   {
@@ -664,7 +664,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Leila",
-   "got_question": "What line does Leila commute on?",
+   "got_question": "which line does Leila commute on",
    "got_value": "the flint-hearth line"
   },
   {
@@ -678,7 +678,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Leila",
-   "got_question": "What line does Leila commute on",
+   "got_question": "which line does Leila commute on",
    "got_value": "the copper-harbour line"
   },
   {
@@ -692,8 +692,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Leila",
-   "got_question": "What line does Leila commute on",
-   "got_value": "tamarind-tarn"
+   "got_question": "which line does Leila commute on",
+   "got_value": "the tamarind-tarn line"
   },
   {
    "subject": "Maria",
@@ -720,7 +720,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Maria",
-   "got_question": "who is leading the Larkin-Weir project",
+   "got_question": "who leads the larkin-weir project",
    "got_value": "Maria"
   },
   {
@@ -734,7 +734,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Maria",
-   "got_question": "who is leading the yarrow-annex project",
+   "got_question": "who leads the yarrow-annex project",
    "got_value": "Maria"
   },
   {
@@ -748,7 +748,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Stefan",
-   "got_question": "who orders paper",
+   "got_question": "where does Stefan order paper from",
    "got_value": "garnet-drift"
   },
   {
@@ -776,7 +776,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Stefan",
-   "got_question": "what does Stefan order from Larkin Harbour",
+   "got_question": "what does Stefan order from larkin-harbour",
    "got_value": "paper"
   },
   {
@@ -790,8 +790,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Tariq",
-   "got_question": "what course is Tariq taking",
-   "got_value": "dovetail-lantern course"
+   "got_question": "which course is Tariq taking",
+   "got_value": "the dovetail-lantern course"
   },
   {
    "subject": "Tariq",
@@ -804,7 +804,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Tariq",
-   "got_question": "What course is Tariq taking?",
+   "got_question": "which course is Tariq taking",
    "got_value": "the cobalt-yard course"
   },
   {
@@ -818,8 +818,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Tariq",
-   "got_question": "what course is Tariq taking",
-   "got_value": "vellum-quarry course"
+   "got_question": "which course is Tariq taking",
+   "got_value": "the vellum-quarry course"
   },
   {
    "subject": "Goran",
@@ -832,7 +832,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Goran",
-   "got_question": "where does Goran bank",
+   "got_question": "which bank does Goran bank with",
    "got_value": "ember-spire"
   },
   {
@@ -846,7 +846,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Goran",
-   "got_question": "where does Goran bank",
+   "got_question": "which bank does Goran bank with",
    "got_value": "ravel-orchard"
   },
   {
@@ -860,7 +860,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Goran",
-   "got_question": "where does Goran bank",
+   "got_question": "which bank does Goran bank with",
    "got_value": "verdigris-tarn"
   },
   {
@@ -874,7 +874,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Wanda",
-   "got_question": "What course is Wanda taking?",
+   "got_question": "which course is Wanda taking",
    "got_value": "the bramble-weir course"
   },
   {
@@ -888,8 +888,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Wanda",
-   "got_question": "What course is Wanda taking",
-   "got_value": "quill-annex course"
+   "got_question": "which course is Wanda taking",
+   "got_value": "the quill-annex course"
   },
   {
    "subject": "Wanda",
@@ -902,8 +902,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Wanda",
-   "got_question": "What course is Wanda taking",
-   "got_value": "Marlow-Yard course"
+   "got_question": "which course is Wanda taking",
+   "got_value": "the marlow-yard course"
   },
   {
    "subject": "Erol",
@@ -916,7 +916,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Erol",
-   "got_question": "where does Erol bank",
+   "got_question": "which bank does Erol bank with",
    "got_value": "silverfin-harbour"
   },
   {
@@ -930,7 +930,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Erol",
-   "got_question": "where does Erol bank",
+   "got_question": "which bank does Erol bank with",
    "got_value": "mirefield-vale"
   },
   {
@@ -944,7 +944,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Erol",
-   "got_question": "where does Erol bank",
+   "got_question": "which bank does Erol bank with",
    "got_value": "umber-drift"
   },
   {
@@ -958,8 +958,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Josefa",
-   "got_question": "who keeps the accounts in saffron-beacon",
-   "got_value": "Josefa"
+   "got_question": "what does Josefa do in saffron-beacon",
+   "got_value": "keeps the accounts"
   },
   {
    "subject": "Josefa",
@@ -972,7 +972,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Josefa",
-   "got_question": "what accounts has Josefa switched to",
+   "got_question": "which account has Josefa switched to",
    "got_value": "dovetail-kiln"
   },
   {
@@ -986,7 +986,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Josefa",
-   "got_question": "what accounts has Josefa switched to",
+   "got_question": "which accounts has Josefa switched to",
    "got_value": "vellum-mill"
   },
   {
@@ -1042,8 +1042,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Freya",
-   "got_question": "What line does Freya commute on?",
-   "got_value": "ember-wharf line"
+   "got_question": "which line does Freya commute on",
+   "got_value": "the ember-wharf line"
   },
   {
    "subject": "Freya",
@@ -1056,7 +1056,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Freya",
-   "got_question": "What line does Freya commute on",
+   "got_question": "which line does Freya commute on",
    "got_value": "the nutmeg-sedge line"
   },
   {
@@ -1070,7 +1070,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Freya",
-   "got_question": "what line does Freya commute on",
+   "got_question": "which line does Freya commute on",
    "got_value": "the vellum-brook line"
   },
   {
@@ -1084,7 +1084,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Luca",
-   "got_question": "what course is Luca taking",
+   "got_question": "which course is Luca taking",
    "got_value": "the thistle-lantern course"
   },
   {
@@ -1099,7 +1099,7 @@
    "ops": 1,
    "got_subject": "Luca",
    "got_question": "which course is Luca taking",
-   "got_value": "amber-beacon course"
+   "got_value": "the amber-beacon course"
   },
   {
    "subject": "Luca",
@@ -1127,7 +1127,7 @@
    "ops": 1,
    "got_subject": "Tariq",
    "got_question": "who leads the wicklow-hearth project",
-   "got_value": "Tariq leads the wicklow-hearth project."
+   "got_value": "Tariq"
   },
   {
    "subject": "Tariq",
@@ -1140,7 +1140,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Tariq",
-   "got_question": "who is leading the yarrow-hollow project",
+   "got_question": "who leads the yarrow-hollow project",
    "got_value": "Tariq"
   },
   {
@@ -1154,7 +1154,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Tariq",
-   "got_question": "who leads the Yarrow-Harbour project",
+   "got_question": "who leads the yarrow-harbour project",
    "got_value": "Tariq"
   },
   {
@@ -1168,7 +1168,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Kofi",
-   "got_question": "what line does Kofi commute on",
+   "got_question": "which line does Kofi commute on",
    "got_value": "the bramble-harbour line"
   },
   {
@@ -1182,8 +1182,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Kofi",
-   "got_question": "What line does Kofi commute on",
-   "got_value": "zephyr-fenn line"
+   "got_question": "which line does Kofi commute on",
+   "got_value": "the zephyr-fenn line"
   },
   {
    "subject": "Kofi",
@@ -1196,8 +1196,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Kofi",
-   "got_question": "What line does Kofi commute on",
-   "got_value": "ironwood-pike line"
+   "got_question": "which line does Kofi commute on",
+   "got_value": "the ironwood-pike line"
   },
   {
    "subject": "Zara",
@@ -1252,8 +1252,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Orla",
-   "got_question": "what course is Orla taking",
-   "got_value": "saffron-weir course"
+   "got_question": "which course is Orla taking",
+   "got_value": "the saffron-weir course"
   },
   {
    "subject": "Orla",
@@ -1266,8 +1266,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Orla",
-   "got_question": "What course is Orla taking",
-   "got_value": "ember-coppice course"
+   "got_question": "which course is Orla taking",
+   "got_value": "the ember-coppice course"
   },
   {
    "subject": "Orla",
@@ -1280,7 +1280,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Orla",
-   "got_question": "What course is Orla taking",
+   "got_question": "which course is Orla taking",
    "got_value": "the cinder-drift course"
   },
   {
@@ -1294,8 +1294,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Lorna",
-   "got_question": "who keeps the accounts",
-   "got_value": "Lorna keeps the accounts"
+   "got_question": "what does Lorna do in opal-ridge",
+   "got_value": "keeps the accounts"
   },
   {
    "subject": "Lorna",
@@ -1308,7 +1308,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Lorna",
-   "got_question": "what accounts has Lorna switched to",
+   "got_question": "which accounts has Lorna switched to",
    "got_value": "cobalt-foundry"
   },
   {
@@ -1322,7 +1322,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Lorna",
-   "got_question": "what accounts has Lorna switched to",
+   "got_question": "which account has Lorna switched to",
    "got_value": "mirefield-glade"
   },
   {
@@ -1336,7 +1336,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Noor",
-   "got_question": "what course is Noor taking",
+   "got_question": "which course is Noor taking",
    "got_value": "the flint-wharf course"
   },
   {
@@ -1351,7 +1351,7 @@
    "ops": 1,
    "got_subject": "Noor",
    "got_question": "which course is Noor taking",
-   "got_value": "silverfin-glade"
+   "got_value": "the silverfin-glade course"
   },
   {
    "subject": "Noor",
@@ -1364,7 +1364,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Noor",
-   "got_question": "what course is Noor taking",
+   "got_question": "which course is Noor taking",
    "got_value": "the flint-harbour course"
   },
   {
@@ -1392,7 +1392,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Idris",
-   "got_question": "who keeps the backups",
+   "got_question": "where does Idris keep the backups",
    "got_value": "saffron-vale"
   },
   {
@@ -1477,7 +1477,7 @@
    "ops": 1,
    "got_subject": "Oskar",
    "got_question": "where does Oskar rehearse",
-   "got_value": "the Brindle-Isle Hall"
+   "got_value": "the brindle-isle hall"
   },
   {
    "subject": "Oskar",
@@ -1491,7 +1491,7 @@
    "ops": 1,
    "got_subject": "Oskar",
    "got_question": "where does Oskar rehearse",
-   "got_value": "the Nutmeg-Moor Hall"
+   "got_value": "the nutmeg-moor hall"
   },
   {
    "subject": "Goran",
@@ -1532,7 +1532,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Goran",
-   "got_question": "who keeps the backups",
+   "got_question": "where does Goran keep the backups",
    "got_value": "nutmeg-vale"
   },
   {
@@ -1575,7 +1575,7 @@
    "ops": 1,
    "got_subject": "Dario",
    "got_question": "where does Dario buy bread",
-   "got_value": "saffron-isle bakery"
+   "got_value": "the saffron-isle bakery"
   },
   {
    "subject": "Yuki",
@@ -1588,8 +1588,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Yuki",
-   "got_question": "who does Yuki order paper from",
-   "got_value": "Flint-Moor"
+   "got_question": "where does Yuki order paper from",
+   "got_value": "flint-moor"
   },
   {
    "subject": "Yuki",
@@ -1617,7 +1617,7 @@
    "ops": 1,
    "got_subject": "Yuki",
    "got_question": "who does Yuki order paper from",
-   "got_value": "Marlow-Kiln"
+   "got_value": "marlow-kiln"
   },
   {
    "subject": "Ivo",
@@ -1644,7 +1644,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Ivo",
-   "got_question": "what accounts has Ivo switched to",
+   "got_question": "which account has Ivo switched to",
    "got_value": "copper-meadow"
   },
   {
@@ -1658,7 +1658,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Ivo",
-   "got_question": "what accounts has Ivo switched to",
+   "got_question": "which account has Ivo switched to",
    "got_value": "ironwood-spire"
   },
   {
@@ -1673,7 +1673,7 @@
    "ops": 1,
    "got_subject": "Emeka",
    "got_question": "who leads the oakhill-wharf project",
-   "got_value": "leads the oakhill-wharf project"
+   "got_value": "Emeka"
   },
   {
    "subject": "Emeka",
@@ -1686,7 +1686,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Emeka",
-   "got_question": "who is leading the harrow-pike project",
+   "got_question": "who leads the harrow-pike project",
    "got_value": "Emeka"
   },
   {
@@ -1700,7 +1700,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Emeka",
-   "got_question": "who is leading the oakhill-isle project",
+   "got_question": "who leads the oakhill-isle project",
    "got_value": "Emeka"
   },
   {
@@ -1714,7 +1714,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Luca",
-   "got_question": "who keeps the accounts",
+   "got_question": "who keeps the accounts in ember-hearth",
    "got_value": "Luca"
   },
   {
@@ -1728,7 +1728,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Luca",
-   "got_question": "what accounts has Luca switched to",
+   "got_question": "which accounts has Luca switched to",
    "got_value": "harrow-tarn"
   },
   {
@@ -1742,7 +1742,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Luca",
-   "got_question": "what accounts has Luca switched to",
+   "got_question": "which accounts has Luca switched to",
    "got_value": "larkin-spire"
   },
   {
@@ -1756,8 +1756,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Mateo",
-   "got_question": "who rents the bramble-ledge cottage",
-   "got_value": "Mateo"
+   "got_question": "where does Mateo rent a cottage",
+   "got_value": "the bramble-ledge cottage"
   },
   {
    "subject": "Mateo",
@@ -1770,8 +1770,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Mateo",
-   "got_question": "who rents the dovetail-wharf cottage",
-   "got_value": "Mateo"
+   "got_question": "which cottage does Mateo rent",
+   "got_value": "the dovetail-wharf cottage"
   },
   {
    "subject": "Mateo",
@@ -1784,8 +1784,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Mateo",
-   "got_question": "who is renting the ember-weir cottage",
-   "got_value": "Mateo"
+   "got_question": "which cottage does Mateo rent",
+   "got_value": "the ember-weir cottage"
   },
   {
    "subject": "Viktor",
@@ -1798,8 +1798,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Viktor",
-   "got_question": "who rents the garnet-meadow cottage",
-   "got_value": "Viktor"
+   "got_question": "where does Viktor rent a cottage",
+   "got_value": "the garnet-meadow cottage"
   },
   {
    "subject": "Viktor",
@@ -1812,7 +1812,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Viktor",
-   "got_question": "who is renting the sable-glade cottage",
+   "got_question": "who rents the sable-glade cottage",
    "got_value": "Viktor"
   },
   {
@@ -1826,8 +1826,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Viktor",
-   "got_question": "who is renting the mirefield-quarry cottage",
-   "got_value": "Viktor"
+   "got_question": "which cottage does Viktor rent",
+   "got_value": "the mirefield-quarry cottage"
   },
   {
    "subject": "Sanjay",
@@ -1840,8 +1840,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Sanjay",
-   "got_question": "what line does Sanjay commute on",
-   "got_value": "wicklow-mill line"
+   "got_question": "which line does Sanjay commute on",
+   "got_value": "the wicklow-mill line"
   },
   {
    "subject": "Sanjay",
@@ -1854,8 +1854,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Sanjay",
-   "got_question": "What line does Sanjay commute on now?",
-   "got_value": "verdigris-hearth line"
+   "got_question": "which line does Sanjay commute on",
+   "got_value": "the verdigris-hearth line"
   },
   {
    "subject": "Sanjay",
@@ -1868,8 +1868,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Sanjay",
-   "got_question": "what line does Sanjay commute on",
-   "got_value": "ember-orchard line"
+   "got_question": "which line does Sanjay commute on",
+   "got_value": "the ember-orchard line"
   },
   {
    "subject": "Erol",
@@ -1896,7 +1896,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Erol",
-   "got_question": "what accounts has Erol switched to",
+   "got_question": "which account has Erol switched to",
    "got_value": "brindle-fenn"
   },
   {
@@ -1910,7 +1910,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Erol",
-   "got_question": "what accounts has Erol switched to",
+   "got_question": "which account has Erol switched to",
    "got_value": "vellum-annex"
   },
   {
@@ -1924,8 +1924,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Kasper",
-   "got_question": "who keeps the accounts in umber-meadow",
-   "got_value": "Kasper"
+   "got_question": "where does Kasper keep the accounts",
+   "got_value": "umber-meadow"
   },
   {
    "subject": "Kasper",
@@ -1938,7 +1938,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Kasper",
-   "got_question": "what accounts has Kasper switched to",
+   "got_question": "which account has Kasper switched to",
    "got_value": "cobalt-hearth"
   },
   {
@@ -1952,7 +1952,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Kasper",
-   "got_question": "which accounts has Kasper switched to",
+   "got_question": "which account has Kasper switched to",
    "got_value": "ember-drift"
   },
   {
@@ -1966,8 +1966,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Amara",
-   "got_question": "who orders paper from Brindle Mill",
-   "got_value": "Amara orders paper from Brindle Mill"
+   "got_question": "where does Amara order paper from",
+   "got_value": "brindle-mill"
   },
   {
    "subject": "Amara",
@@ -1991,12 +1991,11 @@
    "wording": "replace",
    "text": "Amara orders paper from nutmeg-glade now.",
    "probe": "Who does Amara order paper from?",
-   "parsed": false,
-   "ops": 0,
-   "got_subject": "",
-   "got_question": "",
-   "got_value": "",
-   "reply": "{\"reply\":\"It seems like you want to place an order for paper from Nutmeg Glade. Could you please confirm the details of the order, such as the type and quantity of paper?\",\"memory_ops\":[]}"
+   "parsed": true,
+   "ops": 1,
+   "got_subject": "Amara",
+   "got_question": "what does Amara order from nutmeg-glade",
+   "got_value": "paper"
   },
   {
    "subject": "Celia",
@@ -2023,7 +2022,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Celia",
-   "got_question": "who is leading the pewter-spire project",
+   "got_question": "who leads the pewter-spire project",
    "got_value": "Celia"
   },
   {
@@ -2037,7 +2036,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Celia",
-   "got_question": "who is leading the flint-chandler project",
+   "got_question": "who leads the flint-chandler project",
    "got_value": "Celia"
   },
   {
@@ -2093,8 +2092,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Priya",
-   "got_question": "who rents the quill-mill cottage",
-   "got_value": "Priya"
+   "got_question": "where does Priya rent a cottage",
+   "got_value": "the quill-mill cottage"
   },
   {
    "subject": "Priya",
@@ -2107,8 +2106,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Priya",
-   "got_question": "who rents the ravel-ridge cottage",
-   "got_value": "Priya"
+   "got_question": "which cottage does Priya rent",
+   "got_value": "the ravel-ridge cottage"
   },
   {
    "subject": "Priya",
@@ -2121,8 +2120,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Priya",
-   "got_question": "who is renting the ravel-harbour cottage",
-   "got_value": "Priya"
+   "got_question": "which cottage does Priya rent",
+   "got_value": "the ravel-harbour cottage"
   },
   {
    "subject": "Orla",
@@ -2135,8 +2134,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Orla",
-   "got_question": "What line does Orla commute on?",
-   "got_value": "oakhill-foundry line"
+   "got_question": "which line does Orla commute on",
+   "got_value": "the oakhill-foundry line"
   },
   {
    "subject": "Orla",
@@ -2149,8 +2148,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Orla",
-   "got_question": "What line does Orla commute on?",
-   "got_value": "wicklow-orchard line"
+   "got_question": "which line does Orla commute on",
+   "got_value": "the wicklow-orchard line"
   },
   {
    "subject": "Orla",
@@ -2163,7 +2162,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Orla",
-   "got_question": "What line does Orla commute on?",
+   "got_question": "which line does Orla commute on",
    "got_value": "the quill-chandler line"
   },
   {
@@ -2191,8 +2190,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Elif",
-   "got_question": "where does Elif sit from now on",
-   "got_value": "with the Wicklow-Ledge team"
+   "got_question": "which team does Elif sit with",
+   "got_value": "the wicklow-ledge team"
   },
   {
    "subject": "Elif",
@@ -2205,8 +2204,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Elif",
-   "got_question": "where does Elif sit",
-   "got_value": "with the umber-sedge team"
+   "got_question": "which team does Elif sit with",
+   "got_value": "the umber-sedge team"
   },
   {
    "subject": "Karin",
@@ -2233,7 +2232,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Karin",
-   "got_question": "who will Karin sit with from now on",
+   "got_question": "which team does Karin sit with",
    "got_value": "the ravel-yard team"
   },
   {
@@ -2247,7 +2246,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Karin",
-   "got_question": "who will Karin sit with from now on",
+   "got_question": "which team does Karin sit with",
    "got_value": "the nutmeg-kiln team"
   },
   {
@@ -2261,8 +2260,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Yara",
-   "got_question": "where does Yara sit",
-   "got_value": "with the harrow-brook team"
+   "got_question": "who does Yara sit with",
+   "got_value": "the harrow-brook team"
   },
   {
    "subject": "Yara",
@@ -2275,8 +2274,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Yara",
-   "got_question": "where does Yara sit",
-   "got_value": "with the Larkin-Mill team"
+   "got_question": "which team does Yara sit with",
+   "got_value": "the larkin-mill team"
   },
   {
    "subject": "Yara",
@@ -2289,8 +2288,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Yara",
-   "got_question": "where does Yara sit",
-   "got_value": "with the harrow-brook team"
+   "got_question": "which team does Yara sit with",
+   "got_value": "the harrow-brook team"
   },
   {
    "subject": "Greta",
@@ -2359,7 +2358,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Wilma",
-   "got_question": "who is leading the brindle-lantern project",
+   "got_question": "who leads the brindle-lantern project",
    "got_value": "Wilma"
   },
   {
@@ -2373,7 +2372,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Wilma",
-   "got_question": "who is leading the vellum-foundry project",
+   "got_question": "who leads the vellum-foundry project",
    "got_value": "Wilma"
   },
   {
@@ -2387,7 +2386,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Elif",
-   "got_question": "who does Elif bank with",
+   "got_question": "which bank does Elif use",
    "got_value": "ravel-weir"
   },
   {
@@ -2401,7 +2400,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Elif",
-   "got_question": "where does Elif bank",
+   "got_question": "which bank does Elif bank with",
    "got_value": "brindle-ridge"
   },
   {
@@ -2415,7 +2414,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Elif",
-   "got_question": "where does Elif bank",
+   "got_question": "which bank does Elif bank with",
    "got_value": "ravel-weir"
   },
   {
@@ -2443,7 +2442,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Rafael",
-   "got_question": "what is Rafael's rental property",
+   "got_question": "which cottage does Rafael rent",
    "got_value": "the nutmeg-gable cottage"
   },
   {
@@ -2513,8 +2512,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Emeka",
-   "got_question": "who keeps the accounts",
-   "got_value": "Emeka"
+   "got_question": "where does Emeka keep the accounts",
+   "got_value": "cobalt-meadow"
   },
   {
    "subject": "Emeka",
@@ -2527,7 +2526,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Emeka",
-   "got_question": "what accounts has Emeka switched to",
+   "got_question": "which account has Emeka switched to",
    "got_value": "silverfin-yard"
   },
   {
@@ -2541,7 +2540,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Emeka",
-   "got_question": "what accounts has Emeka switched to",
+   "got_question": "which account has Emeka switched to",
    "got_value": "cobalt-meadow"
   },
   {
@@ -2569,7 +2568,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Ingrid",
-   "got_question": "where does Ingrid rehearse from now on",
+   "got_question": "where does Ingrid rehearse",
    "got_value": "the verdigris-sedge hall"
   },
   {
@@ -2584,7 +2583,7 @@
    "ops": 1,
    "got_subject": "Ingrid",
    "got_question": "where does Ingrid rehearse",
-   "got_value": "the Bramble-Reach Hall"
+   "got_value": "the bramble-reach hall"
   },
   {
    "subject": "Fabio",
@@ -2597,7 +2596,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Fabio",
-   "got_question": "who does Fabio sit with",
+   "got_question": "which team does Fabio sit with",
    "got_value": "the dovetail-reach team"
   },
   {
@@ -2611,8 +2610,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Fabio",
-   "got_question": "where does Fabio sit",
-   "got_value": "with the cinder-reach team"
+   "got_question": "which team does Fabio sit with",
+   "got_value": "the cinder-reach team"
   },
   {
    "subject": "Fabio",
@@ -2625,8 +2624,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Fabio",
-   "got_question": "where does Fabio sit from now on",
-   "got_value": "with the dovetail-reach team"
+   "got_question": "which team does Fabio sit with",
+   "got_value": "the dovetail-reach team"
   },
   {
    "subject": "Orla",
@@ -2639,7 +2638,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Orla",
-   "got_question": "where does Orla go for clinic visits",
+   "got_question": "where does Orla go",
    "got_value": "the thistle-hearth clinic"
   },
   {
@@ -2654,7 +2653,7 @@
    "ops": 1,
    "got_subject": "Orla",
    "got_question": "where has Orla moved to",
-   "got_value": "the Oakhill-Vale clinic"
+   "got_value": "the oakhill-vale clinic"
   },
   {
    "subject": "Orla",
@@ -2696,7 +2695,7 @@
    "ops": 1,
    "got_subject": "Lorna",
    "got_question": "where does Lorna rehearse",
-   "got_value": "the Nutmeg-Foundry Hall"
+   "got_value": "the nutmeg-foundry hall"
   },
   {
    "subject": "Lorna",
@@ -2710,7 +2709,7 @@
    "ops": 1,
    "got_subject": "Lorna",
    "got_question": "where does Lorna rehearse",
-   "got_value": "the Brindle-Kiln Hall"
+   "got_value": "the brindle-kiln hall"
   },
   {
    "subject": "Magnus",
@@ -2724,7 +2723,7 @@
    "ops": 1,
    "got_subject": "Magnus",
    "got_question": "where does Magnus buy bread",
-   "got_value": "the Marlow-Vale bakery"
+   "got_value": "the marlow-vale bakery"
   },
   {
    "subject": "Magnus",
@@ -2752,7 +2751,7 @@
    "ops": 1,
    "got_subject": "Magnus",
    "got_question": "where does Magnus buy bread",
-   "got_value": "the Marlow-Vale bakery"
+   "got_value": "the marlow-vale bakery"
   },
   {
    "subject": "Priya",
@@ -2779,8 +2778,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Priya",
-   "got_question": "what does Priya order",
-   "got_value": "paper from zephyr-sedge"
+   "got_question": "what does Priya order from zephyr-sedge",
+   "got_value": "paper"
   },
   {
    "subject": "Priya",
@@ -2821,8 +2820,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Tariq",
-   "got_question": "from whom does Tariq order paper",
-   "got_value": "Copper-Sedge"
+   "got_question": "what does Tariq order from copper-sedge",
+   "got_value": "paper"
   },
   {
    "subject": "Tariq",
@@ -2835,7 +2834,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Tariq",
-   "got_question": "What does Tariq order from Quill-Hearth?",
+   "got_question": "what does Tariq order from quill-hearth",
    "got_value": "paper"
   },
   {
@@ -2850,7 +2849,7 @@
    "ops": 1,
    "got_subject": "Otto",
    "got_question": "where does Otto rehearse",
-   "got_value": "mirefield-foundry hall"
+   "got_value": "the mirefield-foundry hall"
   },
   {
    "subject": "Otto",
@@ -2878,7 +2877,7 @@
    "ops": 1,
    "got_subject": "Otto",
    "got_question": "where does Otto rehearse",
-   "got_value": "mirefield-foundry hall"
+   "got_value": "the mirefield-foundry hall"
   },
   {
    "subject": "Hassan",
@@ -2948,7 +2947,7 @@
    "ops": 1,
    "got_subject": "Tariq",
    "got_question": "where does Tariq rehearse",
-   "got_value": "the Ember-Brook Hall"
+   "got_value": "the ember-brook hall"
   },
   {
    "subject": "Tariq",
@@ -2975,8 +2974,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Goran",
-   "got_question": "What course is Goran taking",
-   "got_value": "yarrow-beacon course"
+   "got_question": "which course is Goran taking",
+   "got_value": "the yarrow-beacon course"
   },
   {
    "subject": "Goran",
@@ -2989,7 +2988,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Goran",
-   "got_question": "what course is Goran taking",
+   "got_question": "which course is Goran taking",
    "got_value": "the ironwood-hollow course"
   },
   {
@@ -3003,8 +3002,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Goran",
-   "got_question": "what course is Goran taking",
-   "got_value": "yarrow-beacon course"
+   "got_question": "which course is Goran taking",
+   "got_value": "the yarrow-beacon course"
   },
   {
    "subject": "Emeka",
@@ -3017,7 +3016,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Emeka",
-   "got_question": "what course is Emeka taking",
+   "got_question": "which course is Emeka taking",
    "got_value": "the flint-quarry course"
   },
   {
@@ -3031,7 +3030,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Emeka",
-   "got_question": "what course is Emeka taking",
+   "got_question": "which course is Emeka taking",
    "got_value": "the cinder-foundry course"
   },
   {
@@ -3045,7 +3044,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Emeka",
-   "got_question": "what course is Emeka taking",
+   "got_question": "which course is Emeka taking",
    "got_value": "the flint-quarry course"
   },
   {
@@ -3059,7 +3058,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Magnus",
-   "got_question": "from whom does Magnus order paper",
+   "got_question": "where does Magnus order paper from",
    "got_value": "tamarind-brook"
   },
   {
@@ -3073,8 +3072,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Magnus",
-   "got_question": "where does Magnus order paper from",
-   "got_value": "Vellum-Coppice"
+   "got_question": "what does Magnus order from vellum-coppice",
+   "got_value": "paper"
   },
   {
    "subject": "Magnus",
@@ -3087,8 +3086,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Magnus",
-   "got_question": "What has Magnus ordered?",
-   "got_value": "paper from Tamarind Brook"
+   "got_question": "what does Magnus order from tamarind-brook",
+   "got_value": "paper"
   },
   {
    "subject": "Sofia",
@@ -3100,7 +3099,7 @@
    "probe": "Which project does Sofia lead?",
    "parsed": true,
    "ops": 1,
-   "got_subject": "sofia",
+   "got_subject": "Sofia",
    "got_question": "who leads the pewter-ridge project",
    "got_value": "Sofia"
   },
@@ -3115,7 +3114,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Sofia",
-   "got_question": "who is leading the opal-mill project",
+   "got_question": "who leads the opal-mill project",
    "got_value": "Sofia"
   },
   {
@@ -3129,7 +3128,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Sofia",
-   "got_question": "who is leading the pewter-ridge project",
+   "got_question": "who leads the pewter-ridge project",
    "got_value": "Sofia"
   },
   {
@@ -3157,8 +3156,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Alma",
-   "got_question": "where does Alma sit",
-   "got_value": "with the amber-quarry team"
+   "got_question": "which team does Alma sit with",
+   "got_value": "the amber-quarry team"
   },
   {
    "subject": "Alma",
@@ -3171,7 +3170,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Alma",
-   "got_question": "who will Alma sit with from now on",
+   "got_question": "which team does Alma sit with",
    "got_value": "the thistle-weir team"
   },
   {
@@ -3185,7 +3184,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Sanjay",
-   "got_question": "who does Sanjay sit with",
+   "got_question": "which team does Sanjay sit with",
    "got_value": "the wicklow-fenn team"
   },
   {
@@ -3199,8 +3198,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Sanjay",
-   "got_question": "where does Sanjay sit from now on",
-   "got_value": "with the umber-mill team"
+   "got_question": "which team does Sanjay sit with",
+   "got_value": "the umber-mill team"
   },
   {
    "subject": "Sanjay",
@@ -3214,7 +3213,7 @@
    "ops": 1,
    "got_subject": "Sanjay",
    "got_question": "which team does Sanjay sit with",
-   "got_value": "wicklow-fenn team"
+   "got_value": "the wicklow-fenn team"
   },
   {
    "subject": "Hassan",
@@ -3227,7 +3226,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Hassan",
-   "got_question": "where does Hassan bank",
+   "got_question": "which bank does Hassan bank with",
    "got_value": "larkin-brook"
   },
   {
@@ -3241,7 +3240,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Hassan",
-   "got_question": "where does Hassan bank",
+   "got_question": "which bank does Hassan bank with",
    "got_value": "verdigris-brook"
   },
   {
@@ -3255,7 +3254,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Hassan",
-   "got_question": "where does Hassan bank",
+   "got_question": "which bank does Hassan bank with",
    "got_value": "larkin-brook"
   },
   {
@@ -3269,7 +3268,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Kofi",
-   "got_question": "where does Kofi go for medical care",
+   "got_question": "where does Kofi go for medical treatment",
    "got_value": "the pewter-coppice clinic"
   },
   {
@@ -3311,7 +3310,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Freya",
-   "got_question": "who does Freya order paper from",
+   "got_question": "from whom does Freya order paper",
    "got_value": "opal-fenn"
   },
   {
@@ -3325,8 +3324,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Freya",
-   "got_question": "where does Freya order paper from",
-   "got_value": "nutmeg-chandler"
+   "got_question": "what does Freya order from nutmeg-chandler",
+   "got_value": "paper"
   },
   {
    "subject": "Freya",
@@ -3395,8 +3394,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Jana",
-   "got_question": "what course is Jana taking",
-   "got_value": "wicklow-glade"
+   "got_question": "which course is Jana taking",
+   "got_value": "the wicklow-glade course"
   },
   {
    "subject": "Jana",
@@ -3409,7 +3408,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Jana",
-   "got_question": "what course is Jana taking",
+   "got_question": "which course is Jana taking",
    "got_value": "the thistle-spire course"
   },
   {
@@ -3424,7 +3423,7 @@
    "ops": 1,
    "got_subject": "Jana",
    "got_question": "which course is Jana taking",
-   "got_value": "the Wicklow-Glade course"
+   "got_value": "the wicklow-glade course"
   },
   {
    "subject": "Emeka",
@@ -3480,7 +3479,7 @@
    "ops": 1,
    "got_subject": "Karin",
    "got_question": "who leads the quill-ledge project",
-   "got_value": "Karin leads the quill-ledge project"
+   "got_value": "Karin"
   },
   {
    "subject": "Karin",
@@ -3506,8 +3505,8 @@
    "probe": "Which project does Karin lead?",
    "parsed": true,
    "ops": 1,
-   "got_subject": "quill-ledge project",
-   "got_question": "who is leading the quill-ledge project",
+   "got_subject": "Karin",
+   "got_question": "who leads the quill-ledge project",
    "got_value": "Karin"
   },
   {
@@ -3521,7 +3520,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Priya",
-   "got_question": "where does Priya bank",
+   "got_question": "which bank does Priya bank with",
    "got_value": "ember-reach"
   },
   {
@@ -3535,7 +3534,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Priya",
-   "got_question": "where does Priya bank",
+   "got_question": "which bank does Priya bank with",
    "got_value": "silverfin-isle"
   },
   {
@@ -3549,7 +3548,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Priya",
-   "got_question": "where does Priya bank",
+   "got_question": "which bank does Priya bank with",
    "got_value": "ember-reach"
   },
   {
@@ -3563,8 +3562,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Zara",
-   "got_question": "where does Zara bank",
-   "got_value": "Wicklow-Annex"
+   "got_question": "which bank does Zara use",
+   "got_value": "wicklow-annex"
   },
   {
    "subject": "Zara",
@@ -3577,7 +3576,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Zara",
-   "got_question": "where does Zara bank",
+   "got_question": "which bank does Zara bank with",
    "got_value": "saffron-ledge"
   },
   {
@@ -3591,8 +3590,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Zara",
-   "got_question": "where does Zara bank",
-   "got_value": "Wicklow-Annex"
+   "got_question": "which bank does Zara bank with",
+   "got_value": "wicklow-annex"
   },
   {
    "subject": "Tomas",
@@ -3605,7 +3604,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Tomas",
-   "got_question": "from whom does Tomas order paper",
+   "got_question": "where does Tomas order paper from",
    "got_value": "brindle-pike"
   },
   {
@@ -3633,7 +3632,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Tomas",
-   "got_question": "what does Tomas order from Brindle-Pike",
+   "got_question": "what does Tomas order from brindle-pike",
    "got_value": "paper"
   },
   {
@@ -3647,7 +3646,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Yuki",
-   "got_question": "what line does Yuki commute on",
+   "got_question": "which line does Yuki commute on",
    "got_value": "the brindle-beacon line"
   },
   {
@@ -3661,7 +3660,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Yuki",
-   "got_question": "What line does Yuki commute on now?",
+   "got_question": "which line does Yuki commute on",
    "got_value": "the ravel-chandler line"
   },
   {
@@ -3675,7 +3674,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Yuki",
-   "got_question": "What line does Yuki commute on",
+   "got_question": "which line does Yuki commute on",
    "got_value": "the brindle-beacon line"
   },
   {
@@ -3689,7 +3688,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Ursula",
-   "got_question": "who does Ursula sit with",
+   "got_question": "which team does Ursula sit with",
    "got_value": "the garnet-fenn team"
   },
   {
@@ -3703,8 +3702,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Ursula",
-   "got_question": "where does Ursula sit",
-   "got_value": "with the Marlow Harbour team"
+   "got_question": "which team does Ursula sit with",
+   "got_value": "the marlow-harbour team"
   },
   {
    "subject": "Ursula",
@@ -3717,8 +3716,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Ursula",
-   "got_question": "where does Ursula sit",
-   "got_value": "with the garnet-fenn team"
+   "got_question": "which team does Ursula sit with",
+   "got_value": "the garnet-fenn team"
   },
   {
    "subject": "Nikos",
@@ -3788,7 +3787,7 @@
    "ops": 1,
    "got_subject": "Xavier",
    "got_question": "where does Xavier rehearse",
-   "got_value": "Harrow-Vale Hall"
+   "got_value": "the harrow-vale hall"
   },
   {
    "subject": "Xavier",
@@ -3802,7 +3801,7 @@
    "ops": 1,
    "got_subject": "Xavier",
    "got_question": "where does Xavier rehearse",
-   "got_value": "Harrow-Sedge Hall"
+   "got_value": "the harrow-sedge hall"
   },
   {
    "subject": "Esther",
@@ -3815,7 +3814,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Esther",
-   "got_question": "where does Esther commute",
+   "got_question": "which line does Esther commute on",
    "got_value": "the dovetail-weir line"
   },
   {
@@ -3829,7 +3828,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Esther",
-   "got_question": "what line does Esther commute on",
+   "got_question": "which line does Esther commute on",
    "got_value": "the ironwood-drift line"
   },
   {
@@ -3843,8 +3842,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Esther",
-   "got_question": "what line does Esther commute on",
-   "got_value": "dovetail-weir line"
+   "got_question": "which line does Esther commute on",
+   "got_value": "the dovetail-weir line"
   },
   {
    "subject": "Nuria",
@@ -3857,8 +3856,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Nuria",
-   "got_question": "what line does Nuria commute on",
-   "got_value": "pewter-wharf line"
+   "got_question": "which line does Nuria commute on",
+   "got_value": "the pewter-wharf line"
   },
   {
    "subject": "Nuria",
@@ -3871,8 +3870,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Nuria",
-   "got_question": "What line does Nuria commute on",
-   "got_value": "oakhill-kiln line"
+   "got_question": "which line does Nuria commute on",
+   "got_value": "the oakhill-kiln line"
   },
   {
    "subject": "Nuria",
@@ -3885,8 +3884,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Nuria",
-   "got_question": "on which line does Nuria commute",
-   "got_value": "pewter-wharf"
+   "got_question": "which line does Nuria commute on",
+   "got_value": "the pewter-wharf line"
   },
   {
    "subject": "Erol",
@@ -3899,7 +3898,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Erol",
-   "got_question": "what line does Erol commute on",
+   "got_question": "which line does Erol commute on",
    "got_value": "the nutmeg-wharf line"
   },
   {
@@ -3913,8 +3912,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Erol",
-   "got_question": "what line does Erol commute on",
-   "got_value": "garnet-hearth line"
+   "got_question": "which line does Erol commute on",
+   "got_value": "the garnet-hearth line"
   },
   {
    "subject": "Erol",
@@ -3927,8 +3926,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Erol",
-   "got_question": "what line does Erol commute on",
-   "got_value": "nutmeg-wharf line"
+   "got_question": "which line does Erol commute on",
+   "got_value": "the nutmeg-wharf line"
   },
   {
    "subject": "Noor",
@@ -3941,8 +3940,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Noor",
-   "got_question": "who keeps the accounts",
-   "got_value": "Noor"
+   "got_question": "where does Noor keep the accounts",
+   "got_value": "mirefield-brook"
   },
   {
    "subject": "Noor",
@@ -3955,8 +3954,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Noor",
-   "got_question": "who keeps the accounts in ember-tarn",
-   "got_value": "Noor"
+   "got_question": "what does Noor do in ember-tarn",
+   "got_value": "keeps the accounts"
   },
   {
    "subject": "Nuria",
@@ -3969,7 +3968,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Nuria",
-   "got_question": "who keeps the accounts",
+   "got_question": "where does Nuria keep the accounts",
    "got_value": "quill-pike"
   },
   {
@@ -3983,8 +3982,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Nuria",
-   "got_question": "who keeps the accounts in thistle-coppice",
-   "got_value": "Nuria"
+   "got_question": "where does Nuria keep the accounts",
+   "got_value": "thistle-coppice"
   },
   {
    "subject": "Rania",
@@ -3997,8 +3996,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Rania",
-   "got_question": "where does Rania sit",
-   "got_value": "with the quill-lantern team"
+   "got_question": "who does Rania sit with",
+   "got_value": "the quill-lantern team"
   },
   {
    "subject": "Rania",
@@ -4011,7 +4010,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Rania",
-   "got_question": "who does Rania sit with",
+   "got_question": "which team does Rania sit with",
    "got_value": "the ironwood-hearth team"
   },
   {
@@ -4025,8 +4024,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Esther",
-   "got_question": "where does Esther sit",
-   "got_value": "with the dovetail-gable team"
+   "got_question": "which team does Esther sit with",
+   "got_value": "the dovetail-gable team"
   },
   {
    "subject": "Esther",
@@ -4039,7 +4038,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Esther",
-   "got_question": "who does Esther sit with",
+   "got_question": "which team does Esther sit with",
    "got_value": "the dovetail-ledge team"
   },
   {
@@ -4054,7 +4053,7 @@
    "ops": 1,
    "got_subject": "Otto",
    "got_question": "where does Otto buy bread",
-   "got_value": "sable-harbour bakery"
+   "got_value": "the sable-harbour bakery"
   },
   {
    "subject": "Otto",
@@ -4082,7 +4081,7 @@
    "ops": 1,
    "got_subject": "Greta",
    "got_question": "where does Greta go",
-   "got_value": "the Marlow-Annex clinic"
+   "got_value": "the marlow-annex clinic"
   },
   {
    "subject": "Greta",
@@ -4137,7 +4136,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Maria",
-   "got_question": "where does Maria bank",
+   "got_question": "which bank does Maria use",
    "got_value": "harrow-meadow"
   },
   {
@@ -4151,7 +4150,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Maria",
-   "got_question": "where does Maria bank",
+   "got_question": "which bank does Maria bank with",
    "got_value": "cobalt-tarn"
   },
   {
@@ -4165,7 +4164,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Rania",
-   "got_question": "who does Rania order paper from",
+   "got_question": "where does Rania order paper from",
    "got_value": "umber-pike"
   },
   {
@@ -4193,8 +4192,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Tomas",
-   "got_question": "what course is Tomas taking",
-   "got_value": "umber-hollow course"
+   "got_question": "which course is Tomas taking",
+   "got_value": "the umber-hollow course"
   },
   {
    "subject": "Tomas",
@@ -4207,8 +4206,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Tomas",
-   "got_question": "What course is Tomas taking?",
-   "got_value": "opal-foundry"
+   "got_question": "which course is Tomas taking",
+   "got_value": "the opal-foundry course"
   },
   {
    "subject": "Bjorn",
@@ -4235,7 +4234,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Bjorn",
-   "got_question": "what does Bjorn rent",
+   "got_question": "which cottage does Bjorn rent",
    "got_value": "the cobalt-orchard cottage"
   },
   {
@@ -4249,7 +4248,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Ingrid",
-   "got_question": "where does Ingrid bank",
+   "got_question": "which bank does Ingrid use",
    "got_value": "garnet-ledge"
   },
   {
@@ -4263,7 +4262,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Ingrid",
-   "got_question": "where does Ingrid bank",
+   "got_question": "which bank does Ingrid use",
    "got_value": "mirefield-annex"
   },
   {
@@ -4277,7 +4276,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Zoltan",
-   "got_question": "where does Zoltan bank",
+   "got_question": "which bank does Zoltan bank with",
    "got_value": "vellum-lantern"
   },
   {
@@ -4291,7 +4290,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Zoltan",
-   "got_question": "where does Zoltan bank",
+   "got_question": "which bank does Zoltan bank with",
    "got_value": "verdigris-wharf"
   },
   {
@@ -4333,7 +4332,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Karin",
-   "got_question": "what course is Karin taking",
+   "got_question": "which course is Karin taking",
    "got_value": "the tamarind-lantern course"
   },
   {
@@ -4347,7 +4346,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Karin",
-   "got_question": "what course is Karin taking",
+   "got_question": "which course is Karin taking",
    "got_value": "the nutmeg-brook course"
   },
   {
@@ -4375,7 +4374,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Tomas",
-   "got_question": "where does Tomas go for clinic visits",
+   "got_question": "where does Tomas go",
    "got_value": "the tamarind-quarry clinic"
   },
   {
@@ -4431,7 +4430,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Petra",
-   "got_question": "where does Petra go for clinic visits",
+   "got_question": "where does Petra go",
    "got_value": "the garnet-beacon clinic"
   },
   {
@@ -4445,7 +4444,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Kasper",
-   "got_question": "what course is Kasper taking",
+   "got_question": "which course is Kasper taking",
    "got_value": "the amber-ledge course"
   },
   {
@@ -4459,7 +4458,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Kasper",
-   "got_question": "what course is Kasper taking",
+   "got_question": "which course is Kasper taking",
    "got_value": "the saffron-gable course"
   },
   {
@@ -4516,7 +4515,7 @@
    "ops": 1,
    "got_subject": "Emeka",
    "got_question": "where does Emeka rehearse",
-   "got_value": "Larkin-Heath Hall"
+   "got_value": "the larkin-hearth hall"
   },
   {
    "subject": "Xavier",
@@ -4529,7 +4528,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Xavier",
-   "got_question": "from whom does Xavier order paper",
+   "got_question": "where does Xavier order paper from",
    "got_value": "umber-orchard"
   },
   {
@@ -4543,7 +4542,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Xavier",
-   "got_question": "from whom does Xavier order paper",
+   "got_question": "from which supplier does Xavier order paper",
    "got_value": "silverfin-sedge"
   },
   {
@@ -4571,7 +4570,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Nuria",
-   "got_question": "What does Nuria rent?",
+   "got_question": "which cottage does Nuria rent",
    "got_value": "the pewter-drift cottage"
   },
   {
@@ -4585,8 +4584,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Hassan",
-   "got_question": "where does Hassan go for medical care",
-   "got_value": "ember-beacon clinic"
+   "got_question": "where does Hassan go",
+   "got_value": "the ember-beacon clinic"
   },
   {
    "subject": "Hassan",
@@ -4599,7 +4598,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Hassan",
-   "got_question": "where does Hassan go",
+   "got_question": "which clinic does Hassan go to",
    "got_value": "the larkin-chandler clinic"
   },
   {
@@ -4613,7 +4612,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Celia",
-   "got_question": "what course is Celia taking",
+   "got_question": "which course is Celia taking",
    "got_value": "the marlow-foundry course"
   },
   {
@@ -4669,7 +4668,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Ivo",
-   "got_question": "where does Ivo bank",
+   "got_question": "which bank does Ivo bank with",
    "got_value": "cinder-ridge"
   },
   {
@@ -4683,7 +4682,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Ivo",
-   "got_question": "where does Ivo bank",
+   "got_question": "which bank does Ivo use",
    "got_value": "verdigris-yard"
   },
   {
@@ -4697,7 +4696,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Kasper",
-   "got_question": "from whom does Kasper order paper",
+   "got_question": "where does Kasper order paper from",
    "got_value": "silverfin-moor"
   },
   {
@@ -4711,7 +4710,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Kasper",
-   "got_question": "from whom does Kasper order paper",
+   "got_question": "from which supplier does Kasper order paper",
    "got_value": "dovetail-meadow"
   },
   {
@@ -4725,8 +4724,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Chiara",
-   "got_question": "who keeps the accounts in brindle-wharf",
-   "got_value": "Chiara"
+   "got_question": "where does Chiara keep the accounts",
+   "got_value": "brindle-wharf"
   },
   {
    "subject": "Chiara",
@@ -4739,8 +4738,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Chiara",
-   "got_question": "who keeps the accounts in mirefield-ridge",
-   "got_value": "Chiara"
+   "got_question": "what does Chiara do in mirefield-ridge",
+   "got_value": "keeps the accounts"
   },
   {
    "subject": "Farid",
@@ -4781,7 +4780,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Kofi",
-   "got_question": "who is Kofi sitting with",
+   "got_question": "who does Kofi sit with",
    "got_value": "the zephyr-orchard team"
   },
   {
@@ -4795,7 +4794,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Kofi",
-   "got_question": "who does Kofi sit with",
+   "got_question": "which team does Kofi sit with",
    "got_value": "the dovetail-glade team"
   },
   {
@@ -4851,7 +4850,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Erol",
-   "got_question": "who does Erol sit with",
+   "got_question": "which team does Erol sit with",
    "got_value": "the wicklow-pike team"
   },
   {
@@ -4865,7 +4864,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Lisa",
-   "got_question": "where does Lisa bank",
+   "got_question": "which bank does Lisa use",
    "got_value": "wicklow-foundry"
   },
   {
@@ -4879,7 +4878,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Lisa",
-   "got_question": "who does Lisa bank with",
+   "got_question": "which bank does Lisa bank with",
    "got_value": "opal-gable"
   },
   {
@@ -4894,7 +4893,7 @@
    "ops": 1,
    "got_subject": "Dario",
    "got_question": "who leads the brindle-sedge project",
-   "got_value": "Dario leads the brindle-sedge project"
+   "got_value": "Dario"
   },
   {
    "subject": "Dario",
@@ -4908,7 +4907,7 @@
    "ops": 1,
    "got_subject": "Dario",
    "got_question": "who leads the marlow-ridge project",
-   "got_value": "Dario leads the marlow-ridge project"
+   "got_value": "Dario"
   },
   {
    "subject": "Gunnar",
@@ -4921,7 +4920,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Gunnar",
-   "got_question": "who is Gunnar sitting with",
+   "got_question": "which team does Gunnar sit with",
    "got_value": "the marlow-beacon team"
   },
   {
@@ -4935,7 +4934,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Gunnar",
-   "got_question": "what team does Gunnar sit with",
+   "got_question": "which team does Gunnar sit with",
    "got_value": "the silverfin-pike team"
   },
   {
@@ -4949,8 +4948,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Emeka",
-   "got_question": "where does Emeka go for medical care",
-   "got_value": "the Copper-Coppice clinic"
+   "got_question": "where does Emeka go",
+   "got_value": "the copper-coppice clinic"
   },
   {
    "subject": "Emeka",
@@ -4963,7 +4962,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Emeka",
-   "got_question": "where does Emeka go for clinic visits",
+   "got_question": "where does Emeka go",
    "got_value": "the thistle-sedge clinic"
   },
   {
@@ -5005,7 +5004,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Iris",
-   "got_question": "from whom does Iris order paper",
+   "got_question": "where does Iris order paper from",
    "got_value": "verdigris-coppice"
   },
   {
@@ -5019,7 +5018,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Iris",
-   "got_question": "from whom does Iris order paper",
+   "got_question": "from which supplier does Iris order paper",
    "got_value": "amber-moor"
   },
   {
@@ -5048,7 +5047,7 @@
    "ops": 1,
    "got_subject": "Anders",
    "got_question": "where does Anders rehearse",
-   "got_value": "Harrow-Yard Hall"
+   "got_value": "the harrow-yard hall"
   },
   {
    "subject": "Hugo",
@@ -5060,7 +5059,7 @@
    "probe": "Which project does Hugo lead?",
    "parsed": true,
    "ops": 1,
-   "got_subject": "opal-vale project",
+   "got_subject": "Hugo",
    "got_question": "who leads the opal-vale project",
    "got_value": "Hugo"
   },
@@ -5103,7 +5102,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Goran",
-   "got_question": "where does Goran rehearse in summer",
+   "got_question": "where does Goran rehearse",
    "got_value": "the ravel-spire hall"
   },
   {
@@ -5131,7 +5130,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Freya",
-   "got_question": "where does Freya rehearse in summer",
+   "got_question": "where does Freya rehearse",
    "got_value": "the nutmeg-fenn hall"
   },
   {
@@ -5145,8 +5144,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Xavier",
-   "got_question": "who keeps the accounts",
-   "got_value": "Xavier"
+   "got_question": "where does Xavier keep the accounts",
+   "got_value": "quill-harbour"
   },
   {
    "subject": "Xavier",
@@ -5159,8 +5158,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Xavier",
-   "got_question": "where does Xavier keep the payroll accounts",
-   "got_value": "Brindle Quarry"
+   "got_question": "where does Xavier keep the accounts for payroll",
+   "got_value": "brindle-quarry"
   },
   {
    "subject": "Lorna",
@@ -5187,7 +5186,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Lorna",
-   "got_question": "where does Lorna keep the backups for the archive",
+   "got_question": "where does Lorna keep the backups",
    "got_value": "flint-gable"
   },
   {
@@ -5215,7 +5214,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Olga",
-   "got_question": "where does Olga rehearse in summer",
+   "got_question": "where does Olga rehearse",
    "got_value": "the harrow-mill hall"
   },
   {
@@ -5243,8 +5242,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Ulla",
-   "got_question": "where does Ulla rehearse in summer",
-   "got_value": "zephyr-vale hall"
+   "got_question": "where does Ulla rehearse",
+   "got_value": "the zephyr-vale hall"
   },
   {
    "subject": "Hugo",
@@ -5257,7 +5256,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Hugo",
-   "got_question": "from whom does Hugo order paper",
+   "got_question": "where does Hugo order paper from",
    "got_value": "dovetail-ridge"
   },
   {
@@ -5271,7 +5270,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Hugo",
-   "got_question": "where does Hugo order headed paper",
+   "got_question": "where does Hugo order headed paper from",
    "got_value": "zephyr-kiln"
   },
   {
@@ -5313,8 +5312,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Emeka",
-   "got_question": "where does Emeka sit",
-   "got_value": "with the zephyr-brook team"
+   "got_question": "which team does Emeka sit with",
+   "got_value": "the zephyr-brook team"
   },
   {
    "subject": "Emeka",
@@ -5355,7 +5354,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Ursula",
-   "got_question": "where does Ursula rehearse in summer",
+   "got_question": "where does Ursula rehearse",
    "got_value": "the yarrow-foundry hall"
   },
   {
@@ -5369,8 +5368,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Amara",
-   "got_question": "who keeps the accounts",
-   "got_value": "Amara keeps the accounts"
+   "got_question": "where does Amara keep the accounts",
+   "got_value": "opal-sedge"
   },
   {
    "subject": "Amara",
@@ -5411,7 +5410,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Karin",
-   "got_question": "where does Karin buy bread on weekends",
+   "got_question": "where does Karin buy bread",
    "got_value": "the saffron-glade bakery"
   },
   {
@@ -5467,7 +5466,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Kofi",
-   "got_question": "where does Kofi keep the backups",
+   "got_question": "where does Kofi keep the backups for the archive",
    "got_value": "ironwood-quarry"
   },
   {
@@ -5482,7 +5481,7 @@
    "ops": 1,
    "got_subject": "Zara",
    "got_question": "who leads the ravel-wharf project",
-   "got_value": "leads the ravel-wharf project"
+   "got_value": "Zara"
   },
   {
    "subject": "Zara",
@@ -5509,7 +5508,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Karin",
-   "got_question": "where does Karin bank",
+   "got_question": "which bank does Karin use",
    "got_value": "zephyr-harbour"
   },
   {
@@ -5520,12 +5519,11 @@
    "wording": "narrow",
    "text": "For the business account Karin banks with pewter-hearth.",
    "probe": "Who does Karin bank with?",
-   "parsed": false,
-   "ops": 0,
-   "got_subject": "",
-   "got_question": "",
-   "got_value": "",
-   "reply": "{\"reply\":\"It seems like you're mentioning a business account related to Karin and a bank named Pewter Hearth. Could you please provide more context or specify what you need help with regarding this account?\",\"memory_ops\":[]}"
+   "parsed": true,
+   "ops": 1,
+   "got_subject": "Karin",
+   "got_question": "which bank does Karin use for her business account",
+   "got_value": "pewter-hearth"
   },
   {
    "subject": "Yuki",
@@ -5538,7 +5536,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Yuki",
-   "got_question": "who is Yuki sitting with",
+   "got_question": "who does Yuki sit with",
    "got_value": "the dovetail-hearth team"
   },
   {
@@ -5552,8 +5550,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Yuki",
-   "got_question": "who does Yuki sit with on review days",
-   "got_value": "the copper-mill team"
+   "got_question": "where does Yuki sit on review days",
+   "got_value": "with the copper-mill team"
   },
   {
    "subject": "Zoltan",
@@ -5594,7 +5592,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Mateo",
-   "got_question": "where does Mateo bank",
+   "got_question": "which bank does Mateo use",
    "got_value": "flint-hollow"
   },
   {
@@ -5608,8 +5606,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Mateo",
-   "got_question": "where does Mateo bank for his business account",
-   "got_value": "Vellum Beacon"
+   "got_question": "which bank does Mateo use for the business account",
+   "got_value": "vellum-beacon"
   },
   {
    "subject": "Ulla",
@@ -5636,7 +5634,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Ulla",
-   "got_question": "where does Ulla buy bread at weekends",
+   "got_question": "where does Ulla buy bread",
    "got_value": "the copper-ledge bakery"
   },
   {
@@ -5650,7 +5648,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Lorna",
-   "got_question": "what does Lorna bank with",
+   "got_question": "which bank does Lorna bank with",
    "got_value": "dovetail-spire"
   },
   {
@@ -5666,7 +5664,7 @@
    "got_subject": "",
    "got_question": "",
    "got_value": "",
-   "reply": "{\"reply\":\"Could you please provide more context or specify what you need regarding the business account for Lorna Banks with Flint Tarn?\",\"memory_ops\":[]}"
+   "reply": "{\"reply\":\"Could you please clarify what specific information or action you need regarding the business account for Lorna Banks with Flint Tarn?\",\"memory_ops\":[]}"
   },
   {
    "subject": "Celia",
@@ -5679,8 +5677,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Celia",
-   "got_question": "who is associated with larkin-isle",
-   "got_value": "banks"
+   "got_question": "which airline does Celia bank with",
+   "got_value": "larkin-isle"
   },
   {
    "subject": "Celia",
@@ -5690,12 +5688,11 @@
    "wording": "narrow",
    "text": "For the business account Celia banks with thistle-tarn.",
    "probe": "Who does Celia bank with?",
-   "parsed": false,
-   "ops": 0,
-   "got_subject": "",
-   "got_question": "",
-   "got_value": "",
-   "reply": "{\"reply\":\"I need to clarify what specific information or action you would like regarding the business account with Thistle Tarn. Could you please provide more details?\",\"memory_ops\":[]}"
+   "parsed": true,
+   "ops": 1,
+   "got_subject": "Celia",
+   "got_question": "which bank does Celia use for her business account",
+   "got_value": "thistle-tarn"
   },
   {
    "subject": "Xavier",
@@ -5751,7 +5748,7 @@
    "ops": 1,
    "got_subject": "Esther",
    "got_question": "who leads the opal-brook project",
-   "got_value": "Esther leads the opal-brook project"
+   "got_value": "Esther"
   },
   {
    "subject": "Dario",
@@ -5764,7 +5761,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Dario",
-   "got_question": "where does Dario bank",
+   "got_question": "which bank does Dario use",
    "got_value": "pewter-annex"
   },
   {
@@ -5778,8 +5775,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Dario",
-   "got_question": "which business account does Dario bank with",
-   "got_value": "Nutmeg Lantern"
+   "got_question": "which bank does Dario use for the business account",
+   "got_value": "nutmeg-lantern"
   },
   {
    "subject": "Luca",
@@ -5835,7 +5832,7 @@
    "ops": 1,
    "got_subject": "Zoltan",
    "got_question": "where does Zoltan go for check-ups",
-   "got_value": "the Larkin-Moor clinic"
+   "got_value": "the larkin-moor clinic"
   },
   {
    "subject": "Wanda",
@@ -5848,7 +5845,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Wanda",
-   "got_question": "from whom does Wanda order paper",
+   "got_question": "where does Wanda order paper from",
    "got_value": "zephyr-coppice"
   },
   {
@@ -5862,8 +5859,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Wanda",
-   "got_question": "What does Wanda order from Saffron Wharf?",
-   "got_value": "headed paper"
+   "got_question": "where does Wanda order headed paper from",
+   "got_value": "saffron-wharf"
   },
   {
    "subject": "Gunnar",
@@ -5890,7 +5887,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Gunnar",
-   "got_question": "where does Gunnar buy bread on weekends",
+   "got_question": "where does Gunnar buy bread",
    "got_value": "the mirefield-moor bakery"
   },
   {
@@ -5904,8 +5901,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Priya",
-   "got_question": "who keeps the accounts in cobalt-lantern",
-   "got_value": "Priya"
+   "got_question": "where does Priya keep the accounts",
+   "got_value": "in cobalt-lantern"
   },
   {
    "subject": "Priya",
@@ -5918,7 +5915,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Priya",
-   "got_question": "where does Priya keep the payroll accounts",
+   "got_question": "where does Priya keep the accounts for payroll",
    "got_value": "garnet-wharf"
   },
   {
@@ -5932,7 +5929,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Nuria",
-   "got_question": "where does Nuria go for medical care",
+   "got_question": "where does Nuria go",
    "got_value": "the yarrow-yard clinic"
   },
   {
@@ -5988,7 +5985,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Yannis",
-   "got_question": "from whom does Yannis order paper",
+   "got_question": "where does Yannis order paper from",
    "got_value": "cobalt-sedge"
   },
   {
@@ -6003,7 +6000,7 @@
    "ops": 1,
    "got_subject": "Yannis",
    "got_question": "where does Yannis order headed paper from",
-   "got_value": "Opal Hearth"
+   "got_value": "opal-hearth"
   },
   {
    "subject": "Idris",
@@ -6028,9 +6025,9 @@
    "text": "On Thursdays Idris leads the oakhill-weir project.",
    "probe": "Which project does Idris lead?",
    "parsed": true,
-   "ops": 2,
+   "ops": 1,
    "got_subject": "Idris",
-   "got_question": "who leads the oakhill-weir project on Thursdays",
+   "got_question": "who leads the oakhill-weir project",
    "got_value": "Idris"
   },
   {
@@ -6072,7 +6069,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Iris",
-   "got_question": "who does Iris bank with",
+   "got_question": "which bank does Iris use",
    "got_value": "marlow-brook"
   },
   {
@@ -6086,7 +6083,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Iris",
-   "got_question": "which account does Iris bank with",
+   "got_question": "which bank does Iris use for the business account",
    "got_value": "opal-ledge"
   },
   {
@@ -6114,8 +6111,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Sanjay",
-   "got_question": "where does Sanjay rent at New Year",
-   "got_value": "Oakhill-Pike cottage"
+   "got_question": "where does Sanjay rent a cottage",
+   "got_value": "the oakhill-pike cottage"
   },
   {
    "subject": "Stefan",
@@ -6128,8 +6125,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Stefan",
-   "got_question": "who rents the yarrow-isle cottage",
-   "got_value": "Stefan"
+   "got_question": "where does Stefan rent a cottage",
+   "got_value": "the yarrow-isle cottage"
   },
   {
    "subject": "Stefan",
@@ -6142,7 +6139,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Stefan",
-   "got_question": "where does Stefan rent a cottage at new year",
+   "got_question": "where does Stefan rent a cottage",
    "got_value": "the silverfin-wharf cottage"
   },
   {
@@ -6156,8 +6153,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Alma",
-   "got_question": "What line does Alma commute on?",
-   "got_value": "saffron-spire line"
+   "got_question": "which line does Alma commute on",
+   "got_value": "the saffron-spire line"
   },
   {
    "subject": "Alma",
@@ -6170,7 +6167,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Alma",
-   "got_question": "what is Alma's winter commute",
+   "got_question": "which line does Alma commute on",
    "got_value": "the copper-pike line"
   },
   {
@@ -6254,7 +6251,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Tomas",
-   "got_question": "what does Tomas keep the accounts in",
+   "got_question": "where does Tomas keep the accounts",
    "got_value": "vellum-drift"
   },
   {
@@ -6281,7 +6278,7 @@
    "probe": "Which project does Farid lead?",
    "parsed": true,
    "ops": 1,
-   "got_subject": "umber-isle project",
+   "got_subject": "Farid",
    "got_question": "who leads the umber-isle project",
    "got_value": "Farid"
   },
@@ -6296,8 +6293,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Karin",
-   "got_question": "What line does Karin commute on?",
-   "got_value": "vellum-glade line"
+   "got_question": "which line does Karin commute on",
+   "got_value": "the vellum-glade line"
   },
   {
    "subject": "Xavier",
@@ -6338,8 +6335,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Idris",
-   "got_question": "what course is Idris taking",
-   "got_value": "saffron-sedge course"
+   "got_question": "which course is Idris taking",
+   "got_value": "the saffron-sedge course"
   },
   {
    "subject": "Zoltan",
@@ -6408,8 +6405,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Hugo",
-   "got_question": "who keeps the accounts in umber-chandler",
-   "got_value": "Hugo"
+   "got_question": "where does Hugo keep the accounts",
+   "got_value": "umber-chandler"
   },
   {
    "subject": "Lisa",
@@ -6423,7 +6420,7 @@
    "ops": 1,
    "got_subject": "Lisa",
    "got_question": "where does Lisa buy bread",
-   "got_value": "zephyr-reach bakery"
+   "got_value": "the zephyr-reach bakery"
   },
   {
    "subject": "Tariq",
@@ -6436,7 +6433,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Tariq",
-   "got_question": "What line does Tariq commute on?",
+   "got_question": "which line does Tariq commute on",
    "got_value": "the thistle-moor line"
   },
   {
@@ -6450,7 +6447,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Freya",
-   "got_question": "what course is Freya taking",
+   "got_question": "which course is Freya taking",
    "got_value": "the garnet-lantern course"
   },
   {
@@ -6464,8 +6461,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Iris",
-   "got_question": "where does Iris sit",
-   "got_value": "with the bramble-isle team"
+   "got_question": "which team does Iris sit with",
+   "got_value": "the bramble-isle team"
   },
   {
    "subject": "Vasco",
@@ -6492,8 +6489,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Anders",
-   "got_question": "who rents the bramble-mill cottage",
-   "got_value": "Anders"
+   "got_question": "where does Anders rent a cottage",
+   "got_value": "the bramble-mill cottage"
   },
   {
    "subject": "Kwame",
@@ -6506,7 +6503,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Kwame",
-   "got_question": "who does Kwame bank with",
+   "got_question": "which bank does Kwame use",
    "got_value": "zephyr-beacon"
   },
   {
@@ -6534,7 +6531,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Ingrid",
-   "got_question": "from whom does Ingrid order paper",
+   "got_question": "where does Ingrid order paper from",
    "got_value": "silverfin-tarn"
   },
   {
@@ -6562,7 +6559,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Josefa",
-   "got_question": "who does Josefa sit with",
+   "got_question": "which team does Josefa sit with",
    "got_value": "the ember-fenn team"
   },
   {
@@ -6576,8 +6573,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Olga",
-   "got_question": "what line does Olga commute on",
-   "got_value": "silverfin-annex"
+   "got_question": "which line does Olga commute on",
+   "got_value": "the silverfin-annex line"
   },
   {
    "subject": "Priya",
@@ -6590,8 +6587,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Priya",
-   "got_question": "where does Priya go for medical care",
-   "got_value": "the Bramble-Wharf clinic"
+   "got_question": "where does Priya go",
+   "got_value": "the bramble-wharf clinic"
   },
   {
    "subject": "Karin",
@@ -6618,7 +6615,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Lisa",
-   "got_question": "who does Lisa order paper from",
+   "got_question": "where does Lisa order paper from",
    "got_value": "mirefield-fenn"
   },
   {
@@ -6632,7 +6629,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Alma",
-   "got_question": "what course is Alma taking",
+   "got_question": "which course is Alma taking",
    "got_value": "the marlow-spire course"
   },
   {
@@ -6657,12 +6654,11 @@
    "wording": "assert",
    "text": "Yara banks with nutmeg-orchard.",
    "probe": "Who does Yara bank with?",
-   "parsed": false,
-   "ops": 0,
-   "got_subject": "",
-   "got_question": "",
-   "got_value": "",
-   "reply": "{\"reply\":\"It seems like you might be referring to a specific topic or context involving Yara and nutmeg orchards. Could you provide more details or clarify what you would like to know or discuss?\",\"memory_ops\":[]}"
+   "parsed": true,
+   "ops": 1,
+   "got_subject": "Yara",
+   "got_question": "which bank does Yara use",
+   "got_value": "nutmeg-orchard"
   },
   {
    "subject": "Pablo",
@@ -6675,8 +6671,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Pablo",
-   "got_question": "where does Pablo go for clinic visits",
-   "got_value": "mirefield-meadow clinic"
+   "got_question": "where does Pablo go",
+   "got_value": "the mirefield-meadow clinic"
   },
   {
    "subject": "Kwame",
@@ -6703,7 +6699,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Dmitri",
-   "got_question": "what line does Dmitri commute on",
+   "got_question": "which line does Dmitri commute on",
    "got_value": "the bramble-glade line"
   },
   {
@@ -6732,7 +6728,7 @@
    "ops": 1,
    "got_subject": "Vasco",
    "got_question": "where does Vasco buy bread",
-   "got_value": "dovetail-vale bakery"
+   "got_value": "the dovetail-vale bakery"
   },
   {
    "subject": "Jonas",
@@ -6759,7 +6755,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Maria",
-   "got_question": "what course is Maria taking",
+   "got_question": "which course is Maria taking",
    "got_value": "the zephyr-ledge course"
   },
   {
@@ -6787,8 +6783,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Priya",
-   "got_question": "where does Priya sit",
-   "got_value": "with the cinder-sedge team"
+   "got_question": "which team does Priya sit with",
+   "got_value": "the cinder-sedge team"
   },
   {
    "subject": "Maria",
@@ -6801,7 +6797,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Maria",
-   "got_question": "What line does Maria commute on?",
+   "got_question": "which line does Maria commute on",
    "got_value": "the bramble-orchard line"
   },
   {
@@ -6815,7 +6811,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Elif",
-   "got_question": "what course is Elif taking",
+   "got_question": "which course is Elif taking",
    "got_value": "the cinder-wharf course"
   },
   {
@@ -6829,7 +6825,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Fabio",
-   "got_question": "where does Fabio bank",
+   "got_question": "which bank does Fabio bank with",
    "got_value": "bramble-meadow"
   },
   {
@@ -6843,8 +6839,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Noor",
-   "got_question": "who rents the flint-sedge cottage",
-   "got_value": "Noor"
+   "got_question": "where does Noor rent a cottage",
+   "got_value": "the flint-sedge cottage"
   },
   {
    "subject": "Idris",
@@ -6854,12 +6850,11 @@
    "wording": "assert",
    "text": "Idris banks with tamarind-meadow.",
    "probe": "Who does Idris bank with?",
-   "parsed": false,
-   "ops": 0,
-   "got_subject": "",
-   "got_question": "",
-   "got_value": "",
-   "reply": "{\"reply\":\"It seems like you might be referring to a specific context or topic. Could you provide more details or clarify what you mean by \\\"Idris banks with tamarind-meadow\\\"?\",\"memory_ops\":[]}"
+   "parsed": true,
+   "ops": 1,
+   "got_subject": "Idris",
+   "got_question": "which bank does Idris use",
+   "got_value": "tamarind-meadow"
   },
   {
    "subject": "Ursula",
@@ -6869,12 +6864,11 @@
    "wording": "assert",
    "text": "Ursula banks with cinder-orchard.",
    "probe": "Who does Ursula bank with?",
-   "parsed": false,
-   "ops": 0,
-   "got_subject": "",
-   "got_question": "",
-   "got_value": "",
-   "reply": "{\"reply\":\"It seems like you're mentioning Ursula Banks in relation to Cinder-Orchard. Could you provide more context or specify what you would like to know or discuss about them?\",\"memory_ops\":[]}"
+   "parsed": true,
+   "ops": 1,
+   "got_subject": "Ursula",
+   "got_question": "which bank does Ursula bank with",
+   "got_value": "cinder-orchard"
   },
   {
    "subject": "Zoltan",
@@ -6902,7 +6896,7 @@
    "ops": 1,
    "got_subject": "Ulla",
    "got_question": "where does Ulla go",
-   "got_value": "the Harrow-Spire clinic"
+   "got_value": "the harrow-spire clinic"
   },
   {
    "subject": "Magnus",
@@ -6943,7 +6937,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Andrei",
-   "got_question": "What line does Andrei commute on?",
+   "got_question": "which line does Andrei commute on",
    "got_value": "the flint-glade line"
   },
   {
@@ -6985,7 +6979,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Greta",
-   "got_question": "who is sitting with the verdigris-kiln team",
+   "got_question": "who does Greta sit with",
    "got_value": "the verdigris-kiln team"
   },
   {
@@ -7013,8 +7007,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Otto",
-   "got_question": "who keeps the accounts",
-   "got_value": "Otto"
+   "got_question": "where does Otto keep the accounts",
+   "got_value": "verdigris-glade"
   },
   {
    "subject": "Tariq",
@@ -7027,8 +7021,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Tariq",
-   "got_question": "who rents the verdigris-vale cottage",
-   "got_value": "Tariq"
+   "got_question": "where does Tariq rent a cottage",
+   "got_value": "the verdigris-vale cottage"
   },
   {
    "subject": "Otto",
@@ -7042,7 +7036,7 @@
    "ops": 1,
    "got_subject": "Otto",
    "got_question": "where does Otto go",
-   "got_value": "the Wicklow-Isle clinic"
+   "got_value": "the wicklow-isle clinic"
   },
   {
    "subject": "Anders",
@@ -7055,8 +7049,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Anders",
-   "got_question": "from whom does Anders order paper",
-   "got_value": "Wicklow-Meadow"
+   "got_question": "where does Anders order paper from",
+   "got_value": "wicklow-meadow"
   },
   {
    "subject": "Priya",
@@ -7069,8 +7063,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Priya",
-   "got_question": "what line does Priya commute on",
-   "got_value": "Wicklow-Moor line"
+   "got_question": "which line does Priya commute on",
+   "got_value": "the wicklow-moor line"
   },
   {
    "subject": "Dmitri",
@@ -7111,8 +7105,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Ulla",
-   "got_question": "what line does Ulla commute on",
-   "got_value": "yarrow-quarry line"
+   "got_question": "which line does Ulla commute on",
+   "got_value": "the yarrow-quarry line"
   },
   {
    "subject": "Jana",
@@ -7125,7 +7119,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Jana",
-   "got_question": "what bank does Jana use",
+   "got_question": "which bank does Jana use",
    "got_value": "nutmeg-reach"
   },
   {
@@ -7139,7 +7133,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Viktor",
-   "got_question": "from whom does Viktor order paper",
+   "got_question": "where does Viktor order paper from",
    "got_value": "garnet-annex"
   },
   {
@@ -7153,7 +7147,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Nadia",
-   "got_question": "who does Nadia order paper from",
+   "got_question": "where does Nadia order paper from",
    "got_value": "flint-orchard"
   },
   {
@@ -7167,8 +7161,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Sanjay",
-   "got_question": "who keeps the accounts in zephyr-hearth",
-   "got_value": "Sanjay"
+   "got_question": "where does Sanjay keep the accounts",
+   "got_value": "zephyr-hearth"
   },
   {
    "subject": "Mateo",
@@ -7265,7 +7259,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Otto",
-   "got_question": "where does Otto bank",
+   "got_question": "which bank does Otto use",
    "got_value": "umber-foundry"
   },
   {
@@ -7279,8 +7273,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Wanda",
-   "got_question": "What line does Wanda commute on?",
-   "got_value": "copper-fenn line"
+   "got_question": "which line does Wanda commute on",
+   "got_value": "the copper-fenn line"
   },
   {
    "subject": "Amara",
@@ -7293,7 +7287,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Amara",
-   "got_question": "what course is Amara taking",
+   "got_question": "which course is Amara taking",
    "got_value": "the harrow-gable course"
   },
   {
@@ -7308,7 +7302,7 @@
    "ops": 1,
    "got_subject": "Cato",
    "got_question": "where does Cato buy bread",
-   "got_value": "mirefield-ledge bakery"
+   "got_value": "the mirefield-ledge bakery"
   },
   {
    "subject": "Amara",
@@ -7335,8 +7329,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Vasco",
-   "got_question": "who rents the brindle-foundry cottage",
-   "got_value": "Vasco"
+   "got_question": "where does Vasco rent a cottage",
+   "got_value": "the brindle-foundry cottage"
   },
   {
    "subject": "Sofia",
@@ -7349,8 +7343,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Sofia",
-   "got_question": "who keeps the accounts in flint-fenn",
-   "got_value": "Sofia"
+   "got_question": "where does Sofia keep the accounts",
+   "got_value": "flint-fenn"
   },
   {
    "subject": "Hassan",
@@ -7391,8 +7385,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Quinn",
-   "got_question": "who keeps the accounts",
-   "got_value": "Quinn"
+   "got_question": "where does Quinn keep the accounts",
+   "got_value": "silverfin-spire"
   },
   {
    "subject": "Priya",
@@ -7405,8 +7399,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Priya",
-   "got_question": "what course is Priya taking",
-   "got_value": "nutmeg-annex"
+   "got_question": "which course is Priya taking",
+   "got_value": "the nutmeg-annex course"
   },
   {
    "subject": "Yuki",
@@ -7419,7 +7413,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Yuki",
-   "got_question": "where does Yuki bank",
+   "got_question": "which bank does Yuki use",
    "got_value": "amber-ridge"
   },
   {
@@ -7433,8 +7427,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Kwame",
-   "got_question": "what course is Kwame taking",
-   "got_value": "yarrow-pike course"
+   "got_question": "which course is Kwame taking",
+   "got_value": "the yarrow-pike course"
   },
   {
    "subject": "Esther",
@@ -7489,8 +7483,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Tomas",
-   "got_question": "who is sitting with the opal-harbour team",
-   "got_value": "Tomas is sitting with the opal-harbour team."
+   "got_question": "who does Tomas sit with",
+   "got_value": "the opal-harbour team"
   },
   {
    "subject": "Nikos",
@@ -7503,8 +7497,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Nikos",
-   "got_question": "who does Nikos sit with",
-   "got_value": "the garnet-tarn team"
+   "got_question": "where does Nikos sit",
+   "got_value": "with the garnet-tarn team"
   },
   {
    "subject": "Anders",
@@ -7517,7 +7511,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Anders",
-   "got_question": "what course is Anders taking",
+   "got_question": "which course is Anders taking",
    "got_value": "the yarrow-gable course"
   },
   {
@@ -7531,7 +7525,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Jonas",
-   "got_question": "what course is Jonas taking",
+   "got_question": "which course is Jonas taking",
    "got_value": "the copper-vale course"
   },
   {
@@ -7573,7 +7567,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Luca",
-   "got_question": "where does Luca commute",
+   "got_question": "which line does Luca commute on",
    "got_value": "the cinder-weir line"
   },
   {
@@ -7587,8 +7581,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Emeka",
-   "got_question": "who orders paper",
-   "got_value": "Saffron Foundry"
+   "got_question": "where does Emeka order paper from",
+   "got_value": "saffron-foundry"
   },
   {
    "subject": "Bruno",
@@ -7643,8 +7637,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Goran",
-   "got_question": "on which line does Goran commute",
-   "got_value": "garnet-weir line"
+   "got_question": "which line does Goran commute on",
+   "got_value": "the garnet-weir line"
   },
   {
    "subject": "Helena",
@@ -7657,8 +7651,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Helena",
-   "got_question": "What course is Helena taking?",
-   "got_value": "quill-weir course"
+   "got_question": "which course is Helena taking",
+   "got_value": "the quill-weir course"
   },
   {
    "subject": "Goran",
@@ -7671,7 +7665,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Goran",
-   "got_question": "from whom does Goran order paper",
+   "got_question": "where does Goran order paper from",
    "got_value": "mirefield-harbour"
   },
   {
@@ -7685,7 +7679,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Iris",
-   "got_question": "What does Iris rent?",
+   "got_question": "what does Iris rent",
    "got_value": "the wicklow-lantern cottage"
   },
   {
@@ -7699,7 +7693,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Magnus",
-   "got_question": "where does Magnus bank",
+   "got_question": "which bank does Magnus use",
    "got_value": "mirefield-sedge"
   },
   {
@@ -7713,8 +7707,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Milos",
-   "got_question": "what course is Milos taking",
-   "got_value": "wicklow-sedge"
+   "got_question": "which course is Milos taking",
+   "got_value": "the wicklow-sedge course"
   },
   {
    "subject": "Nadia",
@@ -7727,7 +7721,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Nadia",
-   "got_question": "What line does Nadia commute on?",
+   "got_question": "which line does Nadia commute on",
    "got_value": "the pewter-ledge line"
   },
   {
@@ -7741,8 +7735,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Lisa",
-   "got_question": "who rents the sable-meadow cottage",
-   "got_value": "Lisa"
+   "got_question": "where does Lisa rent a cottage",
+   "got_value": "the sable-meadow cottage"
   },
   {
    "subject": "Josefa",
@@ -7770,7 +7764,7 @@
    "ops": 1,
    "got_subject": "Dmitri",
    "got_question": "who leads the nutmeg-weir project",
-   "got_value": "Dmitri leads the nutmeg-weir project"
+   "got_value": "Dmitri"
   },
   {
    "subject": "Dario",
@@ -7826,7 +7820,7 @@
    "ops": 1,
    "got_subject": "Mateo",
    "got_question": "where does Mateo buy bread",
-   "got_value": "mirefield-lantern bakery"
+   "got_value": "the mirefield-lantern bakery"
   },
   {
    "subject": "Bruno",
@@ -7867,8 +7861,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Oskar",
-   "got_question": "what line does Oskar commute on",
-   "got_value": "tamarind-orchard line"
+   "got_question": "which line does Oskar commute on",
+   "got_value": "the tamarind-orchard line"
   },
   {
    "subject": "Tereza",
@@ -7910,7 +7904,7 @@
    "ops": 1,
    "got_subject": "Priya",
    "got_question": "where does Priya rehearse",
-   "got_value": "vellum-orchard hall"
+   "got_value": "the vellum-orchard hall"
   },
   {
    "subject": "Chiara",
@@ -7965,8 +7959,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Iris",
-   "got_question": "who keeps the accounts in marlow-mill",
-   "got_value": "Iris"
+   "got_question": "where does Iris keep the accounts",
+   "got_value": "marlow-mill"
   },
   {
    "subject": "Jana",
@@ -7979,8 +7973,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Jana",
-   "got_question": "where does Jana sit",
-   "got_value": "with the yarrow-kiln team"
+   "got_question": "who does Jana sit with",
+   "got_value": "the yarrow-kiln team"
   },
   {
    "subject": "Anders",
@@ -7993,7 +7987,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Anders",
-   "got_question": "who keeps the accounts",
+   "got_question": "who keeps the accounts in ember-quarry",
    "got_value": "Anders"
   },
   {
@@ -8021,8 +8015,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Rafael",
-   "got_question": "what line does Rafael commute on",
-   "got_value": "umber-coppice line"
+   "got_question": "which line does Rafael commute on",
+   "got_value": "the umber-coppice line"
   },
   {
    "subject": "Nadia",
@@ -8033,9 +8027,9 @@
    "text": "Nadia banks with ravel-fenn.",
    "probe": "Who does Nadia bank with?",
    "parsed": true,
-   "ops": 2,
-   "got_subject": "user",
-   "got_question": "who does the user bank with",
+   "ops": 1,
+   "got_subject": "Nadia",
+   "got_question": "which bank does Nadia use",
    "got_value": "ravel-fenn"
   },
   {
@@ -8077,7 +8071,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Pablo",
-   "got_question": "What does Pablo rent?",
+   "got_question": "where does Pablo rent a cottage",
    "got_value": "the larkin-beacon cottage"
   },
   {
@@ -8091,7 +8085,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Gunnar",
-   "got_question": "who orders paper from vellum-yard",
+   "got_question": "where does Gunnar order paper from",
    "got_value": "vellum-yard"
   },
   {
@@ -8133,7 +8127,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Ursula",
-   "got_question": "where does Ursula go for medical care",
+   "got_question": "where does Ursula go",
    "got_value": "the dovetail-foundry clinic"
   },
   {
@@ -8162,7 +8156,7 @@
    "ops": 1,
    "got_subject": "Elif",
    "got_question": "who leads the ravel-brook project",
-   "got_value": "Elif leads the ravel-brook project"
+   "got_value": "Elif"
   },
   {
    "subject": "Tomas",
@@ -8175,7 +8169,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Tomas",
-   "got_question": "what does Tomas rent",
+   "got_question": "where does Tomas rent a cottage",
    "got_value": "the sable-brook cottage"
   },
   {
@@ -8189,8 +8183,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Ingrid",
-   "got_question": "what course is Ingrid taking",
-   "got_value": "mirefield-coppice"
+   "got_question": "which course is Ingrid taking",
+   "got_value": "the mirefield-coppice course"
   },
   {
    "subject": "Yannis",
@@ -8231,7 +8225,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Vasco",
-   "got_question": "where does Vasco commute",
+   "got_question": "which line does Vasco commute on",
    "got_value": "the quill-glade line"
   },
   {
@@ -8259,8 +8253,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Dario",
-   "got_question": "from whom does Dario order paper",
-   "got_value": "Harrow-Coppice"
+   "got_question": "where does Dario order paper from",
+   "got_value": "harrow-coppice"
   },
   {
    "subject": "Tereza",
@@ -8273,7 +8267,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Tereza",
-   "got_question": "what does Tereza rent",
+   "got_question": "where does Tereza rent a cottage",
    "got_value": "the saffron-lantern cottage"
   },
   {
@@ -8287,7 +8281,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Quinn",
-   "got_question": "where does Quinn bank",
+   "got_question": "which bank does Quinn use",
    "got_value": "cinder-beacon"
   },
   {
@@ -8301,8 +8295,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Andrei",
-   "got_question": "where does Andrei go for medical care",
-   "got_value": "the Ironwood-Tarn clinic"
+   "got_question": "where does Andrei go",
+   "got_value": "the ironwood-tarn clinic"
   },
   {
    "subject": "Bjorn",
@@ -8315,8 +8309,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Bjorn",
-   "got_question": "who does Bjorn bank with",
-   "got_value": "Opal-Chandler"
+   "got_question": "which bank does Bjorn bank with",
+   "got_value": "opal-chandler"
   },
   {
    "subject": "Goran",
@@ -8357,8 +8351,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Ivo",
-   "got_question": "where does Ivo sit",
-   "got_value": "with the cobalt-brook team"
+   "got_question": "which team does Ivo sit with",
+   "got_value": "the cobalt-brook team"
   },
   {
    "subject": "Helena",
@@ -8371,7 +8365,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Helena",
-   "got_question": "who keeps the accounts",
+   "got_question": "where does Helena keep the accounts",
    "got_value": "bramble-fenn"
   },
   {
@@ -8385,8 +8379,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Hassan",
-   "got_question": "who orders paper from opal-reach",
-   "got_value": "Hassan"
+   "got_question": "where does Hassan order paper from",
+   "got_value": "opal-reach"
   },
   {
    "subject": "Quinn",
@@ -8399,7 +8393,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Quinn",
-   "got_question": "what course is Quinn taking",
+   "got_question": "which course is Quinn taking",
    "got_value": "the harrow-ridge course"
   },
   {
@@ -8456,7 +8450,7 @@
    "ops": 1,
    "got_subject": "Leila",
    "got_question": "where does Leila go",
-   "got_value": "the Marlow-Fenn clinic"
+   "got_value": "the marlow-fenn clinic"
   },
   {
    "subject": "Sofia",
@@ -8469,8 +8463,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Sofia",
-   "got_question": "What line does Sofia commute on?",
-   "got_value": "umber-ridge line"
+   "got_question": "which line does Sofia commute on",
+   "got_value": "the umber-ridge line"
   },
   {
    "subject": "Gunnar",
@@ -8484,7 +8478,7 @@
    "ops": 1,
    "got_subject": "Gunnar",
    "got_question": "who keeps the accounts in ember-lantern",
-   "got_value": "Gunnar keeps the accounts in ember-lantern"
+   "got_value": "Gunnar"
   },
   {
    "subject": "Rania",
@@ -8497,7 +8491,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Rania",
-   "got_question": "where does Rania bank",
+   "got_question": "which bank does Rania use",
    "got_value": "flint-weir"
   },
   {
@@ -8525,7 +8519,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Ulla",
-   "got_question": "what does Ulla rent",
+   "got_question": "where does Ulla rent a cottage",
    "got_value": "the copper-beacon cottage"
   },
   {
@@ -8540,7 +8534,7 @@
    "ops": 1,
    "got_subject": "Yannis",
    "got_question": "where does Yannis buy bread",
-   "got_value": "mirefield-reach bakery"
+   "got_value": "the mirefield-reach bakery"
   },
   {
    "subject": "Noor",
@@ -8553,7 +8547,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Noor",
-   "got_question": "where does Noor bank",
+   "got_question": "which bank does Noor use",
    "got_value": "brindle-moor"
   },
   {
@@ -8568,7 +8562,7 @@
    "ops": 1,
    "got_subject": "Milos",
    "got_question": "who leads the ironwood-moor project",
-   "got_value": "leads the ironwood-moor project"
+   "got_value": "Milos"
   },
   {
    "subject": "Pablo",
@@ -8581,8 +8575,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Pablo",
-   "got_question": "What line does Pablo commute on?",
-   "got_value": "pewter-vale line"
+   "got_question": "which line does Pablo commute on",
+   "got_value": "the pewter-vale line"
   },
   {
    "subject": "Nuria",
@@ -8595,7 +8589,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Nuria",
-   "got_question": "where does Nuria bank",
+   "got_question": "which bank does Nuria use",
    "got_value": "dovetail-quarry"
   },
   {
@@ -8609,8 +8603,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Farid",
-   "got_question": "who does Farid order paper from",
-   "got_value": "Flint-Pike"
+   "got_question": "where does Farid order paper from",
+   "got_value": "flint-pike"
   },
   {
    "subject": "Halima",
@@ -8623,8 +8617,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Halima",
-   "got_question": "where does Halima bank",
-   "got_value": "Nutmeg Drift"
+   "got_question": "which bank does Halima bank with",
+   "got_value": "nutmeg-drift"
   },
   {
    "subject": "Maria",
@@ -8651,7 +8645,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Petra",
-   "got_question": "what course is Petra taking",
+   "got_question": "which course is Petra taking",
    "got_value": "the cobalt-weir course"
   },
   {
@@ -8665,8 +8659,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Nuria",
-   "got_question": "where does Nuria sit",
-   "got_value": "with the vellum-sedge team"
+   "got_question": "which team does Nuria sit with",
+   "got_value": "the vellum-sedge team"
   },
   {
    "subject": "Esther",
@@ -8679,7 +8673,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Esther",
-   "got_question": "who does Esther order paper from",
+   "got_question": "where does Esther order paper from",
    "got_value": "marlow-gable"
   },
   {
@@ -8693,7 +8687,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Xavier",
-   "got_question": "where does Xavier go for medical care",
+   "got_question": "where does Xavier go",
    "got_value": "the thistle-annex clinic"
   },
   {
@@ -8707,7 +8701,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Iris",
-   "got_question": "what course is Iris taking",
+   "got_question": "which course is Iris taking",
    "got_value": "the garnet-ridge course"
   },
   {
@@ -8722,7 +8716,7 @@
    "ops": 1,
    "got_subject": "Goran",
    "got_question": "where does Goran buy bread",
-   "got_value": "oakhill-coppice bakery"
+   "got_value": "the oakhill-coppice bakery"
   },
   {
    "subject": "Viktor",
@@ -8735,7 +8729,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Viktor",
-   "got_question": "where does Viktor bank",
+   "got_question": "which bank does Viktor use",
    "got_value": "larkin-vale"
   },
   {
@@ -8749,8 +8743,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Hassan",
-   "got_question": "what course is Hassan taking",
-   "got_value": "yarrow-ledge course"
+   "got_question": "which course is Hassan taking",
+   "got_value": "the yarrow-ledge course"
   },
   {
    "subject": "Viktor",
@@ -8764,7 +8758,7 @@
    "ops": 1,
    "got_subject": "Viktor",
    "got_question": "where does Viktor rehearse",
-   "got_value": "the Wicklow-Kiln Hall"
+   "got_value": "the wicklow-kiln hall"
   },
   {
    "subject": "Halima",
@@ -8778,7 +8772,7 @@
    "ops": 1,
    "got_subject": "Halima",
    "got_question": "where does Halima order paper from",
-   "got_value": "Pewter-Brook"
+   "got_value": "pewter-brook"
   },
   {
    "subject": "Sofia",
@@ -8805,7 +8799,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Jana",
-   "got_question": "from whom does Jana order paper",
+   "got_question": "where does Jana order paper from",
    "got_value": "saffron-tarn"
   },
   {
@@ -8833,8 +8827,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Leila",
-   "got_question": "who keeps the accounts in brindle-glade",
-   "got_value": "Leila"
+   "got_question": "where does Leila keep the accounts",
+   "got_value": "brindle-glade"
   },
   {
    "subject": "Stefan",
@@ -8861,7 +8855,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Alma",
-   "got_question": "from whom does Alma order paper",
+   "got_question": "where does Alma order paper from",
    "got_value": "zephyr-mill"
   },
   {
@@ -8945,7 +8939,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Emeka",
-   "got_question": "where does Emeka bank",
+   "got_question": "which bank does Emeka use",
    "got_value": "flint-brook"
   },
   {
@@ -8959,7 +8953,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Farid",
-   "got_question": "who is Farid sitting with",
+   "got_question": "which team does Farid sit with",
    "got_value": "the brindle-brook team"
   },
   {
@@ -8973,7 +8967,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Pablo",
-   "got_question": "where does Pablo bank",
+   "got_question": "which bank does Pablo bank with",
    "got_value": "cobalt-ridge"
   },
   {
@@ -9015,8 +9009,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Greta",
-   "got_question": "What line does Greta commute on?",
-   "got_value": "garnet-coppice line"
+   "got_question": "which line does Greta commute on",
+   "got_value": "the garnet-coppice line"
   },
   {
    "subject": "Jonas",
@@ -9028,7 +9022,7 @@
    "probe": "Which project does Jonas lead?",
    "parsed": true,
    "ops": 1,
-   "got_subject": "yarrow-tarn project",
+   "got_subject": "Jonas",
    "got_question": "who leads the yarrow-tarn project",
    "got_value": "Jonas"
   },
@@ -9072,7 +9066,7 @@
    "ops": 1,
    "got_subject": "Fabio",
    "got_question": "where does Fabio go",
-   "got_value": "the Flint-Ledge clinic"
+   "got_value": "the flint-ledge clinic"
   },
   {
    "subject": "Sofia",
@@ -9085,8 +9079,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Sofia",
-   "got_question": "what course is Sofia taking",
-   "got_value": "silverfin-vale"
+   "got_question": "which course is Sofia taking",
+   "got_value": "the silverfin-vale course"
   },
   {
    "subject": "Kwame",
@@ -9099,7 +9093,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Kwame",
-   "got_question": "from whom does Kwame order paper",
+   "got_question": "where does Kwame order paper from",
    "got_value": "quill-tarn"
   },
   {
@@ -9113,8 +9107,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Petra",
-   "got_question": "where does Petra sit",
-   "got_value": "with the opal-drift team"
+   "got_question": "who does Petra sit with",
+   "got_value": "the opal-drift team"
   },
   {
    "subject": "Leila",
@@ -9127,7 +9121,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Leila",
-   "got_question": "from whom does Leila order paper",
+   "got_question": "where does Leila order paper from",
    "got_value": "cobalt-glade"
   },
   {
@@ -9169,7 +9163,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Mateo",
-   "got_question": "who does Mateo order paper from",
+   "got_question": "where does Mateo order paper from",
    "got_value": "ironwood-sedge"
   },
   {
@@ -9196,7 +9190,7 @@
    "probe": "Which project does Fabio lead?",
    "parsed": true,
    "ops": 1,
-   "got_subject": "yarrow-chandler project",
+   "got_subject": "Fabio",
    "got_question": "who leads the yarrow-chandler project",
    "got_value": "Fabio"
   },
@@ -9211,7 +9205,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Zoltan",
-   "got_question": "who orders paper",
+   "got_question": "where does Zoltan order paper from",
    "got_value": "silverfin-ledge"
   },
   {
@@ -9239,8 +9233,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Bruno",
-   "got_question": "where does Bruno go for medical care",
-   "got_value": "the Yarrow-Vale clinic"
+   "got_question": "where does Bruno go",
+   "got_value": "the yarrow-vale clinic"
   },
   {
    "subject": "Dora",
@@ -9253,8 +9247,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Dora",
-   "got_question": "where does Dora go for medical care",
-   "got_value": "the Marlow-Wharf clinic"
+   "got_question": "where does Dora go",
+   "got_value": "the marlow-wharf clinic"
   },
   {
    "subject": "Chiara",
@@ -9267,8 +9261,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Chiara",
-   "got_question": "what course is Chiara taking",
-   "got_value": "tamarind-annex"
+   "got_question": "which course is Chiara taking",
+   "got_value": "the tamarind-annex course"
   },
   {
    "subject": "Oskar",
@@ -9295,8 +9289,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Beatriz",
-   "got_question": "who keeps the accounts in oakhill-gable",
-   "got_value": "Beatriz"
+   "got_question": "where does Beatriz keep the accounts",
+   "got_value": "oakhill-gable"
   },
   {
    "subject": "Helena",
@@ -9309,7 +9303,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Helena",
-   "got_question": "What line does Helena commute on?",
+   "got_question": "which line does Helena commute on",
    "got_value": "the thistle-hollow line"
   },
   {
@@ -9337,8 +9331,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Gunnar",
-   "got_question": "who rents the brindle-coppice cottage",
-   "got_value": "Gunnar"
+   "got_question": "where does Gunnar rent a cottage",
+   "got_value": "the brindle-coppice cottage"
   },
   {
    "subject": "Helena",
@@ -9352,7 +9346,7 @@
    "ops": 1,
    "got_subject": "Helena",
    "got_question": "where does Helena order paper from",
-   "got_value": "Cinder-Mill"
+   "got_value": "cinder-mill"
   },
   {
    "subject": "Orla",
@@ -9365,7 +9359,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Orla",
-   "got_question": "from whom does Orla order paper",
+   "got_question": "where does Orla order paper from",
    "got_value": "amber-glade"
   },
   {
@@ -9393,7 +9387,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Freya",
-   "got_question": "where does Freya bank",
+   "got_question": "which bank does Freya use",
    "got_value": "flint-drift"
   },
   {
@@ -9407,7 +9401,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Chiara",
-   "got_question": "what is Chiara's bank",
+   "got_question": "which bank does Chiara use",
    "got_value": "silverfin-hollow"
   },
   {
@@ -9421,8 +9415,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Celia",
-   "got_question": "from whom does Celia order paper",
-   "got_value": "Marlow-Coppice"
+   "got_question": "where does Celia order paper from",
+   "got_value": "marlow-coppice"
   },
   {
    "subject": "Helena",
@@ -9436,7 +9430,7 @@
    "ops": 1,
    "got_subject": "Helena",
    "got_question": "where does Helena buy bread",
-   "got_value": "zephyr-hollow bakery"
+   "got_value": "the zephyr-hollow bakery"
   },
   {
    "subject": "Orla",
@@ -9463,7 +9457,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Halima",
-   "got_question": "What line does Halima commute on?",
+   "got_question": "which line does Halima commute on",
    "got_value": "the pewter-quarry line"
   },
   {
@@ -9492,7 +9486,7 @@
    "ops": 1,
    "got_subject": "Magnus",
    "got_question": "who leads the larkin-meadow project",
-   "got_value": "Magnus leads the larkin-meadow project."
+   "got_value": "Magnus"
   },
   {
    "subject": "Mateo",
@@ -9505,7 +9499,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Mateo",
-   "got_question": "where does Mateo go for medical care",
+   "got_question": "where does Mateo go",
    "got_value": "the mirefield-gable clinic"
   },
   {
@@ -9519,7 +9513,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Amara",
-   "got_question": "What line does Amara commute on?",
+   "got_question": "which line does Amara commute on",
    "got_value": "the garnet-sedge line"
   },
   {
@@ -9547,8 +9541,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Rania",
-   "got_question": "What line does Rania commute on?",
-   "got_value": "amber-sedge line"
+   "got_question": "which line does Rania commute on",
+   "got_value": "the amber-sedge line"
   },
   {
    "subject": "Alma",
@@ -9561,7 +9555,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Alma",
-   "got_question": "who does Alma bank with",
+   "got_question": "which bank does Alma use",
    "got_value": "ember-pike"
   },
   {
@@ -9575,8 +9569,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Dario",
-   "got_question": "what line does Dario commute on",
-   "got_value": "yarrow-hearth line"
+   "got_question": "which line does Dario commute on",
+   "got_value": "the yarrow-hearth line"
   },
   {
    "subject": "Rafael",
@@ -9590,7 +9584,7 @@
    "ops": 1,
    "got_subject": "Rafael",
    "got_question": "where does Rafael buy bread",
-   "got_value": "sable-chandler bakery"
+   "got_value": "the sable-chandler bakery"
   },
   {
    "subject": "Erol",
@@ -9645,8 +9639,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Noor",
-   "got_question": "where does Noor sit",
-   "got_value": "with the amber-vale team"
+   "got_question": "which team does Noor sit with",
+   "got_value": "the amber-vale team"
   },
   {
    "subject": "Erol",
@@ -9673,8 +9667,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Lorna",
-   "got_question": "where does Lorna sit",
-   "got_value": "with the nutmeg-ridge team"
+   "got_question": "which team does Lorna sit with",
+   "got_value": "the nutmeg-ridge team"
   },
   {
    "subject": "Oskar",
@@ -9688,7 +9682,7 @@
    "ops": 1,
    "got_subject": "Oskar",
    "got_question": "where does Oskar buy bread",
-   "got_value": "larkin-foundry bakery"
+   "got_value": "the larkin-foundry bakery"
   },
   {
    "subject": "Iris",
@@ -9701,8 +9695,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Iris",
-   "got_question": "where does Iris go for clinic visits",
-   "got_value": "the Wicklow-Chandler clinic"
+   "got_question": "where does Iris go",
+   "got_value": "the wicklow-chandler clinic"
   },
   {
    "subject": "Amara",
@@ -9716,7 +9710,7 @@
    "ops": 1,
    "got_subject": "Amara",
    "got_question": "where does Amara rehearse",
-   "got_value": "the Marlow-Moor Hall"
+   "got_value": "the marlow-moor hall"
   },
   {
    "subject": "Josefa",
@@ -9729,8 +9723,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Josefa",
-   "got_question": "what course is Josefa taking",
-   "got_value": "zephyr-lantern"
+   "got_question": "which course is Josefa taking",
+   "got_value": "the zephyr-lantern course"
   },
   {
    "subject": "Petra",
@@ -9743,8 +9737,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Petra",
-   "got_question": "What line does Petra commute on?",
-   "got_value": "zephyr-meadow line"
+   "got_question": "which line does Petra commute on",
+   "got_value": "the zephyr-meadow line"
   },
   {
    "subject": "Orla",
@@ -9771,7 +9765,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Jonas",
-   "got_question": "who is Jonas sitting with",
+   "got_question": "who does Jonas sit with",
    "got_value": "the marlow-isle team"
   },
   {
@@ -9785,7 +9779,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Oskar",
-   "got_question": "what cottage does Oskar rent",
+   "got_question": "which cottage does Oskar rent",
    "got_value": "the verdigris-pike cottage"
   },
   {
@@ -9799,8 +9793,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Lorna",
-   "got_question": "where does Lorna go for clinic visits",
-   "got_value": "Oakhill-Orchard clinic"
+   "got_question": "where does Lorna go",
+   "got_value": "the oakhill-orchard clinic"
   },
   {
    "subject": "Lorna",
@@ -9827,7 +9821,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Rosa",
-   "got_question": "What line does Rosa commute on?",
+   "got_question": "which line does Rosa commute on",
    "got_value": "the flint-meadow line"
   },
   {
@@ -9855,8 +9849,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Alma",
-   "got_question": "who rents the oakhill-glade cottage",
-   "got_value": "Alma"
+   "got_question": "where does Alma rent a cottage",
+   "got_value": "the oakhill-glade cottage"
   },
   {
    "subject": "Wanda",
@@ -9883,8 +9877,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Hassan",
-   "got_question": "where does Hassan sit",
-   "got_value": "with the larkin-annex team"
+   "got_question": "which team does Hassan sit with",
+   "got_value": "the larkin-annex team"
   },
   {
    "subject": "Wilma",
@@ -9897,8 +9891,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Wilma",
-   "got_question": "who does Wilma sit with",
-   "got_value": "the thistle-fenn team"
+   "got_question": "where does Wilma sit",
+   "got_value": "with the thistle-fenn team"
   },
   {
    "subject": "Zara",
@@ -9911,8 +9905,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Zara",
-   "got_question": "where does Zara sit",
-   "got_value": "with the amber-brook team"
+   "got_question": "who does Zara sit with",
+   "got_value": "the amber-brook team"
   },
   {
    "subject": "Iris",
@@ -9954,7 +9948,7 @@
    "ops": 1,
    "got_subject": "Quinn",
    "got_question": "where does Quinn buy bread",
-   "got_value": "sable-annex bakery"
+   "got_value": "the sable-annex bakery"
   },
   {
    "subject": "Farid",
@@ -10010,7 +10004,7 @@
    "ops": 1,
    "got_subject": "Milos",
    "got_question": "where does Milos go",
-   "got_value": "the Larkin-Kiln clinic"
+   "got_value": "the larkin-kiln clinic"
   },
   {
    "subject": "Celia",
@@ -10037,8 +10031,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Orla",
-   "got_question": "where does Orla sit",
-   "got_value": "with the harrow-orchard team"
+   "got_question": "who does Orla sit with",
+   "got_value": "the harrow-orchard team"
   },
   {
    "subject": "Rosa",
@@ -10051,7 +10045,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Rosa",
-   "got_question": "from whom does Rosa order paper",
+   "got_question": "where does Rosa order paper from",
    "got_value": "ravel-kiln"
   },
   {
@@ -10079,7 +10073,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Rania",
-   "got_question": "what course is Rania taking",
+   "got_question": "which course is Rania taking",
    "got_value": "the pewter-reach course"
   },
   {
@@ -10093,7 +10087,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Anders",
-   "got_question": "who is Anders sitting with",
+   "got_question": "which team does Anders sit with",
    "got_value": "the verdigris-ridge team"
   },
   {
@@ -10107,7 +10101,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Wanda",
-   "got_question": "where does Wanda bank",
+   "got_question": "which bank does Wanda use",
    "got_value": "umber-yard"
   },
   {
@@ -10121,7 +10115,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Dora",
-   "got_question": "What does Dora rent?",
+   "got_question": "where does Dora rent a cottage",
    "got_value": "the ember-isle cottage"
   },
   {
@@ -10149,7 +10143,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Linnea",
-   "got_question": "What line does Linnea commute on?",
+   "got_question": "which line does Linnea commute on",
    "got_value": "the copper-orchard line"
   },
   {
@@ -10164,7 +10158,7 @@
    "ops": 1,
    "got_subject": "Priya",
    "got_question": "where does Priya buy bread",
-   "got_value": "zephyr-foundry bakery"
+   "got_value": "the zephyr-foundry bakery"
   },
   {
    "subject": "Beatriz",
@@ -10177,7 +10171,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Beatriz",
-   "got_question": "who does Beatriz order paper from",
+   "got_question": "from whom does Beatriz order paper",
    "got_value": "silverfin-lantern"
   },
   {
@@ -10216,12 +10210,11 @@
    "wording": "assert",
    "text": "Rosa banks with nutmeg-tarn.",
    "probe": "Who does Rosa bank with?",
-   "parsed": false,
-   "ops": 0,
-   "got_subject": "",
-   "got_question": "",
-   "got_value": "",
-   "reply": "{\"reply\":\"It seems like you're mentioning a specific type of rose, possibly a variety known as \\\"Rosa banksiae\\\" or similar, along with \\\"nutmeg-tarn,\\\" which could refer to a color or a specific location. Could you provide more context or clarify what you're looking for?\",\"memory_ops\":[]}"
+   "parsed": true,
+   "ops": 1,
+   "got_subject": "Rosa",
+   "got_question": "where does Rosa bank",
+   "got_value": "nutmeg-tarn"
   },
   {
    "subject": "Jana",
@@ -10234,8 +10227,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Jana",
-   "got_question": "who rents the yarrow-glade cottage",
-   "got_value": "Jana"
+   "got_question": "which cottage does Jana rent",
+   "got_value": "the yarrow-glade cottage"
   },
   {
    "subject": "Iris",
@@ -10248,8 +10241,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Iris",
-   "got_question": "What line does Iris commute on?",
-   "got_value": "marlow-chandler line"
+   "got_question": "which line does Iris commute on",
+   "got_value": "the marlow-chandler line"
   },
   {
    "subject": "Leila",
@@ -10262,7 +10255,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Leila",
-   "got_question": "who does Leila sit with",
+   "got_question": "which team does Leila sit with",
    "got_value": "the cobalt-harbour team"
   },
   {
@@ -10290,7 +10283,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Nikos",
-   "got_question": "where does Nikos bank",
+   "got_question": "which bank does Nikos use",
    "got_value": "yarrow-lantern"
   },
   {
@@ -10304,8 +10297,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Kasper",
-   "got_question": "who rents the flint-mill cottage",
-   "got_value": "Kasper"
+   "got_question": "where does Kasper rent",
+   "got_value": "the flint-mill cottage"
   },
   {
    "subject": "Hugo",
@@ -10318,7 +10311,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Hugo",
-   "got_question": "what course is Hugo taking",
+   "got_question": "which course is Hugo taking",
    "got_value": "the nutmeg-spire course"
   },
   {
@@ -10332,8 +10325,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Zoltan",
-   "got_question": "where does Zoltan sit",
-   "got_value": "with the copper-glade team"
+   "got_question": "who does Zoltan sit with",
+   "got_value": "the copper-glade team"
   },
   {
    "subject": "Rosa",
@@ -10346,8 +10339,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Rosa",
-   "got_question": "what course is Rosa taking",
-   "got_value": "mirefield-hearth"
+   "got_question": "which course is Rosa taking",
+   "got_value": "the mirefield-hearth course"
   },
   {
    "subject": "Chiara",
@@ -10374,8 +10367,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Halima",
-   "got_question": "who keeps the accounts",
-   "got_value": "Halima"
+   "got_question": "where does Halima keep the accounts",
+   "got_value": "mirefield-spire"
   },
   {
    "subject": "Wilma",
@@ -10402,8 +10395,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Otto",
-   "got_question": "what line does Otto commute on",
-   "got_value": "opal-wharf line"
+   "got_question": "which line does Otto commute on",
+   "got_value": "the opal-wharf line"
   },
   {
    "subject": "Amara",
@@ -10430,7 +10423,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Ingrid",
-   "got_question": "what line does Ingrid commute on",
+   "got_question": "which line does Ingrid commute on",
    "got_value": "the verdigris-spire line"
   },
   {
@@ -10444,7 +10437,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Rafael",
-   "got_question": "what course is Rafael taking",
+   "got_question": "which course is Rafael taking",
    "got_value": "the tamarind-gable course"
   },
   {
@@ -10472,7 +10465,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Dario",
-   "got_question": "who is Dario sitting with",
+   "got_question": "which team does Dario sit with",
    "got_value": "the opal-meadow team"
   },
   {
@@ -10486,7 +10479,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Nikos",
-   "got_question": "what line does Nikos commute on",
+   "got_question": "which line does Nikos commute on",
    "got_value": "the vellum-spire line"
   },
   {
@@ -10500,7 +10493,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Stefan",
-   "got_question": "where does Stefan bank",
+   "got_question": "which bank does Stefan use",
    "got_value": "ravel-tarn"
   },
   {
@@ -10528,8 +10521,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Bjorn",
-   "got_question": "what line does Bjorn commute on",
-   "got_value": "ember-yard line"
+   "got_question": "which line does Bjorn commute on",
+   "got_value": "the ember-yard line"
   },
   {
    "subject": "Zara",
@@ -10570,7 +10563,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Viktor",
-   "got_question": "what course is Viktor taking",
+   "got_question": "which course is Viktor taking",
    "got_value": "the bramble-tarn course"
   },
   {
@@ -10584,8 +10577,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Cato",
-   "got_question": "who does Cato order paper from",
-   "got_value": "Saffron-Brook"
+   "got_question": "where does Cato order paper from",
+   "got_value": "saffron-brook"
   },
   {
    "subject": "Erol",
@@ -10612,8 +10605,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Tereza",
-   "got_question": "where does Tereza sit",
-   "got_value": "with the nutmeg-ledge team"
+   "got_question": "who does Tereza sit with",
+   "got_value": "the nutmeg-ledge team"
   },
   {
    "subject": "Sofia",
@@ -10640,8 +10633,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Wilma",
-   "got_question": "What line does Wilma commute on?",
-   "got_value": "pewter-meadow line"
+   "got_question": "which line does Wilma commute on",
+   "got_value": "the pewter-meadow line"
   },
   {
    "subject": "Jonas",
@@ -10655,7 +10648,7 @@
    "ops": 1,
    "got_subject": "Jonas",
    "got_question": "where does Jonas buy bread",
-   "got_value": "mirefield-isle bakery"
+   "got_value": "the mirefield-isle bakery"
   },
   {
    "subject": "Farid",
@@ -10668,8 +10661,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Farid",
-   "got_question": "what course is Farid taking",
-   "got_value": "marlow-glade"
+   "got_question": "which course is Farid taking",
+   "got_value": "the marlow-glade course"
   },
   {
    "subject": "Bjorn",
@@ -10683,7 +10676,7 @@
    "ops": 1,
    "got_subject": "Bjorn",
    "got_question": "where does Bjorn order paper from",
-   "got_value": "Verdigris Isle"
+   "got_value": "verdigris-isle"
   },
   {
    "subject": "Ulla",
@@ -10696,8 +10689,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Ulla",
-   "got_question": "who keeps the accounts",
-   "got_value": "Ulla"
+   "got_question": "where does Ulla keep the accounts",
+   "got_value": "amber-meadow"
   },
   {
    "subject": "Ursula",
@@ -10710,8 +10703,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Ursula",
-   "got_question": "what course is Ursula taking",
-   "got_value": "opal-beacon"
+   "got_question": "which course is Ursula taking",
+   "got_value": "the opal-beacon course"
   },
   {
    "subject": "Esther",
@@ -10724,8 +10717,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Esther",
-   "got_question": "What course is Esther taking",
-   "got_value": "ember-annex"
+   "got_question": "which course is Esther taking",
+   "got_value": "the ember-annex course"
   },
   {
    "subject": "Lorna",
@@ -10738,8 +10731,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Lorna",
-   "got_question": "What line does Lorna commute on?",
-   "got_value": "ironwood-glade line"
+   "got_question": "which line does Lorna commute on",
+   "got_value": "the ironwood-glade line"
   },
   {
    "subject": "Alma",
@@ -10753,7 +10746,7 @@
    "ops": 1,
    "got_subject": "Alma",
    "got_question": "where does Alma rehearse",
-   "got_value": "the Marlow-Sedge Hall"
+   "got_value": "the marlow-sedge hall"
   },
   {
    "subject": "Greta",
@@ -10766,7 +10759,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Greta",
-   "got_question": "What course is Greta taking",
+   "got_question": "which course is Greta taking",
    "got_value": "the vellum-tarn course"
   },
   {
@@ -10794,8 +10787,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Orla",
-   "got_question": "who does Orla bank with",
-   "got_value": "Cobalt-Spire"
+   "got_question": "which bank does Orla bank with",
+   "got_value": "cobalt-spire"
   },
   {
    "subject": "Kwame",
@@ -10808,7 +10801,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Kwame",
-   "got_question": "who is Kwame sitting with",
+   "got_question": "who does Kwame sit with",
    "got_value": "the ember-kiln team"
   },
   {
@@ -10837,7 +10830,7 @@
    "ops": 1,
    "got_subject": "Milos",
    "got_question": "where does Milos buy bread",
-   "got_value": "the Marlow-Quarry bakery"
+   "got_value": "the marlow-quarry bakery"
   },
   {
    "subject": "Josefa",
@@ -10850,8 +10843,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Josefa",
-   "got_question": "what line does Josefa commute on",
-   "got_value": "vellum-weir line"
+   "got_question": "which line does Josefa commute on",
+   "got_value": "the vellum-weir line"
   },
   {
    "subject": "Wilma",
@@ -10864,7 +10857,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Wilma",
-   "got_question": "where does Wilma bank",
+   "got_question": "which bank does Wilma use",
    "got_value": "vellum-harbour"
   },
   {
@@ -10878,8 +10871,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Quinn",
-   "got_question": "who orders paper",
-   "got_value": "Verdigris Harbour"
+   "got_question": "where does Quinn order paper from",
+   "got_value": "verdigris-harbour"
   },
   {
    "subject": "Esther",
@@ -10892,8 +10885,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Esther",
-   "got_question": "who is associated with sable-orchard",
-   "got_value": "banks"
+   "got_question": "which bank does Esther use",
+   "got_value": "sable-orchard"
   },
   {
    "subject": "Yannis",
@@ -10906,7 +10899,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Yannis",
-   "got_question": "what line does Yannis commute on",
+   "got_question": "which line does Yannis commute on",
    "got_value": "the ravel-hollow line"
   },
   {
@@ -10920,7 +10913,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Nuria",
-   "got_question": "who does Nuria order paper from",
+   "got_question": "from whom does Nuria order paper",
    "got_value": "cobalt-chandler"
   },
   {
@@ -10962,8 +10955,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Ursula",
-   "got_question": "who rents the oakhill-yard cottage",
-   "got_value": "Ursula"
+   "got_question": "where does Ursula rent a cottage",
+   "got_value": "the oakhill-yard cottage"
   },
   {
    "subject": "Stefan",
@@ -10990,7 +10983,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Sanjay",
-   "got_question": "where does Sanjay bank",
+   "got_question": "which bank does Sanjay use",
    "got_value": "yarrow-moor"
   },
   {
@@ -11004,8 +10997,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Zoltan",
-   "got_question": "what course is Zoltan taking",
-   "got_value": "mirefield-pike"
+   "got_question": "which course is Zoltan taking",
+   "got_value": "the mirefield-pike course"
   },
   {
    "subject": "Nadia",
@@ -11032,7 +11025,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Rafael",
-   "got_question": "who is Rafael sitting with",
+   "got_question": "who does Rafael sit with",
    "got_value": "the cinder-glade team"
   },
   {
@@ -11046,7 +11039,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Ulla",
-   "got_question": "what course is Ulla taking",
+   "got_question": "which course is Ulla taking",
    "got_value": "the brindle-ledge course"
   },
   {
@@ -11060,7 +11053,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Lisa",
-   "got_question": "What line does Lisa commute on?",
+   "got_question": "which line does Lisa commute on",
    "got_value": "the harrow-hearth line"
   },
   {
@@ -11102,8 +11095,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Yuki",
-   "got_question": "who keeps the accounts",
-   "got_value": "Yuki"
+   "got_question": "where does Yuki keep the accounts",
+   "got_value": "nutmeg-hollow"
   },
   {
    "subject": "Nikos",
@@ -11116,7 +11109,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Nikos",
-   "got_question": "What does Nikos rent?",
+   "got_question": "which cottage does Nikos rent",
    "got_value": "the silverfin-fenn cottage"
   },
   {
@@ -11144,7 +11137,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Kofi",
-   "got_question": "where does Kofi bank",
+   "got_question": "which bank does Kofi use",
    "got_value": "yarrow-sedge"
   },
   {
@@ -11158,8 +11151,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Amara",
-   "got_question": "where does Amara sit",
-   "got_value": "with the garnet-moor team"
+   "got_question": "who does Amara sit with",
+   "got_value": "the garnet-moor team"
   },
   {
    "subject": "Orla",
@@ -11186,7 +11179,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Fabio",
-   "got_question": "What line does Fabio commute on?",
+   "got_question": "which line does Fabio commute on",
    "got_value": "the cobalt-gable line"
   },
   {
@@ -11200,7 +11193,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Goran",
-   "got_question": "who is Goran sitting with",
+   "got_question": "who does Goran sit with",
    "got_value": "the mirefield-yard team"
   },
   {
@@ -11214,7 +11207,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Luca",
-   "got_question": "where does Luca bank",
+   "got_question": "which bank does Luca bank with",
    "got_value": "yarrow-brook"
   },
   {
@@ -11228,7 +11221,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Dmitri",
-   "got_question": "who orders paper",
+   "got_question": "where does Dmitri order paper from",
    "got_value": "opal-weir"
   },
   {
@@ -11242,7 +11235,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Beatriz",
-   "got_question": "who does Beatriz sit with",
+   "got_question": "which team does Beatriz sit with",
    "got_value": "the verdigris-fenn team"
   },
   {
@@ -11256,7 +11249,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Stefan",
-   "got_question": "what course is Stefan taking",
+   "got_question": "which course is Stefan taking",
    "got_value": "the harrow-hollow course"
   },
   {
@@ -11270,7 +11263,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Kofi",
-   "got_question": "what does Kofi rent",
+   "got_question": "where does Kofi rent",
    "got_value": "the garnet-gable cottage"
   },
   {
@@ -11298,8 +11291,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Dmitri",
-   "got_question": "where does Dmitri sit",
-   "got_value": "with the verdigris-ledge team"
+   "got_question": "who does Dmitri sit with",
+   "got_value": "the verdigris-ledge team"
   },
   {
    "subject": "Hassan",
@@ -11326,8 +11319,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Zoltan",
-   "got_question": "what line does Zoltan commute on",
-   "got_value": "wicklow-ridge line"
+   "got_question": "which line does Zoltan commute on",
+   "got_value": "the wicklow-ridge line"
   },
   {
    "subject": "Tariq",
@@ -11368,7 +11361,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Ursula",
-   "got_question": "what line does Ursula commute on",
+   "got_question": "which line does Ursula commute on",
    "got_value": "the ironwood-kiln line"
   },
   {
@@ -11411,7 +11404,7 @@
    "ops": 1,
    "got_subject": "Josefa",
    "got_question": "where does Josefa buy bread",
-   "got_value": "oakhill-brook bakery"
+   "got_value": "the oakhill-brook bakery"
   },
   {
    "subject": "Idris",
@@ -11438,7 +11431,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Linnea",
-   "got_question": "who does Linnea bank with",
+   "got_question": "which bank does Linnea bank with",
    "got_value": "wicklow-quarry"
   },
   {
@@ -11452,8 +11445,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Noor",
-   "got_question": "What line does Noor commute on?",
-   "got_value": "silverfin-kiln"
+   "got_question": "which line does Noor commute on",
+   "got_value": "the silverfin-kiln line"
   },
   {
    "subject": "Magnus",
@@ -11466,7 +11459,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Magnus",
-   "got_question": "who is sitting with the flint-beacon team",
+   "got_question": "who does Magnus sit with",
    "got_value": "the flint-beacon team"
   },
   {
@@ -11480,8 +11473,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Fabio",
-   "got_question": "what course is Fabio taking",
-   "got_value": "saffron-quarry course"
+   "got_question": "which course is Fabio taking",
+   "got_value": "the saffron-quarry course"
   },
   {
    "subject": "Magnus",
@@ -11508,7 +11501,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Yara",
-   "got_question": "what course is Yara taking",
+   "got_question": "which course is Yara taking",
    "got_value": "the bramble-foundry course"
   },
   {
@@ -11537,7 +11530,7 @@
    "ops": 1,
    "got_subject": "Vasco",
    "got_question": "where does Vasco go",
-   "got_value": "the Harrow-Reach clinic"
+   "got_value": "the harrow-reach clinic"
   },
   {
    "subject": "Pablo",
@@ -11592,8 +11585,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Milos",
-   "got_question": "where does Milos bank",
-   "got_value": "Nutmeg-Mill"
+   "got_question": "which bank does Milos use",
+   "got_value": "nutmeg-mill"
   },
   {
    "subject": "Tomas",
@@ -11607,7 +11600,7 @@
    "ops": 1,
    "got_subject": "Tomas",
    "got_question": "who leads the ravel-ledge project",
-   "got_value": "Tomas leads the ravel-ledge project"
+   "got_value": "Tomas"
   },
   {
    "subject": "Dmitri",
@@ -11620,8 +11613,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Dmitri",
-   "got_question": "who keeps the accounts in bramble-spire",
-   "got_value": "Dmitri keeps the accounts in bramble-spire"
+   "got_question": "what does Dmitri keep in bramble-spire",
+   "got_value": "the accounts"
   },
   {
    "subject": "Zara",
@@ -11634,8 +11627,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Zara",
-   "got_question": "what line does Zara commute on",
-   "got_value": "opal-tarn line"
+   "got_question": "which line does Zara commute on",
+   "got_value": "the opal-tarn line"
   },
   {
    "subject": "Helena",
@@ -11648,7 +11641,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Helena",
-   "got_question": "where does Helena bank",
+   "got_question": "which bank does Helena use",
    "got_value": "tamarind-hollow"
   },
   {
@@ -11677,7 +11670,7 @@
    "ops": 1,
    "got_subject": "Alma",
    "got_question": "who leads the flint-foundry project",
-   "got_value": "leads the flint-foundry project"
+   "got_value": "Alma"
   },
   {
    "subject": "Helena",
@@ -11704,7 +11697,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Elif",
-   "got_question": "What does Elif rent?",
+   "got_question": "where does Elif rent a cottage",
    "got_value": "the saffron-kiln cottage"
   },
   {
@@ -11718,7 +11711,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Olga",
-   "got_question": "who is sitting with the tamarind-harbour team",
+   "got_question": "who does Olga sit with",
    "got_value": "the tamarind-harbour team"
   },
   {
@@ -11732,7 +11725,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Orla",
-   "got_question": "what does Orla rent",
+   "got_question": "where does Orla rent",
    "got_value": "the brindle-tarn cottage"
   },
   {
@@ -11760,8 +11753,8 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Greta",
-   "got_question": "from whom does Greta order paper",
-   "got_value": "Pewter-Pike"
+   "got_question": "where does Greta order paper from",
+   "got_value": "pewter-pike"
   },
   {
    "subject": "Bruno",
@@ -11774,7 +11767,7 @@
    "parsed": true,
    "ops": 1,
    "got_subject": "Bruno",
-   "got_question": "who orders paper",
+   "got_question": "where does Bruno order paper from",
    "got_value": "cobalt-fenn"
   }
  ],

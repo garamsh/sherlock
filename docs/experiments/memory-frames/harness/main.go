@@ -98,6 +98,7 @@ type Run struct {
 	Declarer     *DeclarerScore     `json:"declarer,omitempty"`
 	Addresser    *AddressScore      `json:"addresser,omitempty"`
 	Prose        *ProseScore        `json:"prose,omitempty"`
+	ProseBefore  *ProseScore        `json:"prose_before,omitempty"`
 	Model        []ModelRun         `json:"model_runs,omitempty"`
 	Bias         []BiasResult       `json:"join_bias,omitempty"`
 	Stability    *Stability         `json:"stability,omitempty"`
@@ -121,6 +122,7 @@ type runFiles struct {
 	declarations string
 	addresses    string
 	prose        string
+	proseBefore  string
 	stability    string
 	resolutions  string
 	decade       string
@@ -138,7 +140,8 @@ func filesFor(out, record string, seed int64) runFiles {
 	return runFiles{
 		workload: named("workload"), declarations: named("declarations"),
 		addresses: named("addresses"), prose: named("prose"),
-		stability: named("stability"), resolutions: named("resolutions"),
+		proseBefore: named("prose_baseline"),
+		stability:   named("stability"), resolutions: named("resolutions"),
 		decade: named("decade"), constrained: named("constrained"),
 		shapes: named("harder"), finding: named("finding"), record: record,
 	}

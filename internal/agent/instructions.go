@@ -46,14 +46,31 @@ your answer that the turn stated none.
 
 A fact is held at the address of the question it answers. Each entry gives:
 
-- ` + "`address.subject`" + ` — who or what the fact is about.
-- ` + "`address.question`" + ` — the question the fact answers, in the statement's own
-  words. Not a topic noun: "what is the user's favorite telescope" is an
-  address, "telescopes" is not.
+- ` + "`address.subject`" + ` — who or what the statement is about. In "Dmitri flies
+  with the northern-arc airline" that is Dmitri and not the airline: the
+  statement is about him, and the airline is what it says about him. The
+  subject is never the value.
+- ` + "`address.question`" + ` — the question this fact answers, phrased the way
+  someone who does not yet know the answer would ask it. That is the whole
+  test. Whoever looks for this fact later has the question and not the
+  answer, so the answer never appears in the question, and the question is
+  worded the way it will be asked rather than the way this statement
+  happened to put it. Not a topic noun: "what is the user's favorite
+  telescope" is an address, "telescopes" is not.
+  It asks about the subject. "who leads the northern-arc project" is not a
+  question about Dmitri even when Dmitri is the answer — it is a question
+  about the project, and it belongs to a different address.
+  Where the statement says what kind of thing the answer is, ask for that
+  kind: "Dmitri flies with the northern-arc airline" answers "which airline
+  does Dmitri fly with". Where it says no kind, take the question word from
+  what the answer is — ` + "`who`" + ` for a person or an organisation, ` + "`where`" + ` for a
+  place, ` + "`what`" + ` otherwise. Never take it from the statement's verb, which
+  describes the doing and not the answer.
 - ` + "`address.restriction`" + ` — what the statement narrows that question to, in its
   own words, or null. Most statements narrow nothing; a restriction is
   material limiting when or for what the fact holds, never the subject and
-  never the value.
+  never the value. It goes in this field and never inside the question: the
+  question stays the one a reader would ask, and this is what narrows it.
 - ` + "`value`" + ` — the answer to that question, on its own.
 - ` + "`operation`" + ` — ` + "`\"replace\"`" + ` where the value ends what that address already
   holds, ` + "`\"join\"`" + ` where it stands beside it, or null where the statement
@@ -64,6 +81,17 @@ A fact is held at the address of the question it answers. Each entry gives:
 When the user says "my favorite telescope is the Kepler-9 refractor":
 
 {"reply":"Noted.","memory_ops":[{"address":{"subject":"user","question":"what is the user's favorite telescope","restriction":null},"value":"the Kepler-9 refractor","operation":null}]}
+
+A statement about someone else, carrying a restriction, works the same way.
+When the user says "In winter Dmitri flies with the northern-arc airline":
+
+{"reply":"Noted.","memory_ops":[{"address":{"subject":"Dmitri","question":"which airline does Dmitri fly with","restriction":"in winter"},"value":"the northern-arc airline","operation":null}]}
+
+The subject is Dmitri because the statement is about him; the question asks
+for an airline because the statement says that is what the answer is; "in
+winter" is the restriction and is
+not in the question, so the same question reaches the fact whether or not a
+reader knows about the winter.
 
 An entry is required — the default, not something you opt into — whenever the
 user shares a fact or preference, corrects an earlier fact, or asks to

@@ -80,6 +80,10 @@ func renderRecord(files runFiles) error {
 	if err != nil {
 		return err
 	}
+	result.ProseBefore, err = readCommittedProse(files.proseBefore)
+	if err != nil {
+		return err
+	}
 	result.Addresser, err = readCommittedAddresses(files.addresses)
 	if err != nil {
 		return err
@@ -1274,36 +1278,49 @@ func renderProse(b *strings.Builder, r Run) {
 	if p == nil {
 		return
 	}
+	before := r.ProseBefore
 	fmt.Fprintf(b, "### What the shipped prose produces\n\n")
-	fmt.Fprintf(b, "| quantity | value |\n|---|---|\n")
-	rows := [][2]any{
-		{"assertions asked", p.Asked},
-		{"probes asked", p.Reads},
-		{"`parsed`, the response was a write the shipped parser took", figure(p.Parsed)},
-		{"`reachable`, the paired probe landed on the same address", figure(p.Reachable)},
-		{"`subject right`, against the workload's own subject", figure(p.SubjectRight)},
-		{"`subject match`, write and read agree on the subject", figure(p.SubjectMatch)},
-		{"`question match`, write and read agree on the question", figure(p.QuestionMatch)},
-		{"`self-answering`, the value is inside the address", figure(p.SelfAnswering)},
-		{"— of which the subject slot holds it", figure(p.SubjectHoldsValue)},
-		{"— of which the question slot holds it", figure(p.QuestionHoldsValue)},
-	}
-	for _, row := range rows {
-		fmt.Fprintf(b, "| %s | %v |\n", row[0], row[1])
-	}
-	fmt.Fprintln(b)
+	if before != nil {
+		fmt.Fprintf(b, "`before` is the prose measured at `452ed72`, SHA-256 `%s`; `after` is the same round on the same workload with the prose #554 revised, SHA-256 `%s`. The round, its four layers and the read step are byte-identical between the two — only the prompt under test moved.\n\n",
+			proseBaselinePrompt[:12], proseMeasuredPrompt[:12])
+		fmt.Fprintf(b, "| quantity | before | after |\n|---|---|---|\n")
+		rows := [][3]any{
+			{"assertions asked", before.Asked, p.Asked},
+			{"probes asked", before.Reads, p.Reads},
+			{"`parsed`, the response was a write the shipped parser took", figure(before.Parsed), figure(p.Parsed)},
+			{"`reachable`, the paired probe landed on the same address", figure(before.Reachable), figure(p.Reachable)},
+			{"`subject right`, against the workload's own subject", figure(before.SubjectRight), figure(p.SubjectRight)},
+			{"`subject match`, write and read agree on the subject", figure(before.SubjectMatch), figure(p.SubjectMatch)},
+			{"`question match`, write and read agree on the question", figure(before.QuestionMatch), figure(p.QuestionMatch)},
+			{"`self-answering`, the value is inside the address", figure(before.SelfAnswering), figure(p.SelfAnswering)},
+			{"— of which the subject slot holds it", figure(before.SubjectHoldsValue), figure(p.SubjectHoldsValue)},
+			{"— of which the question slot holds it", figure(before.QuestionHoldsValue), figure(p.QuestionHoldsValue)},
+		}
+		for _, row := range rows {
+			fmt.Fprintf(b, "| %s | %v | %v |\n", row[0], row[1], row[2])
+		}
+		fmt.Fprintln(b)
 
-	fmt.Fprintf(b, "| wording | asked | reachable |\n|---|---|---|\n")
-	for _, cut := range p.Wordings {
-		fmt.Fprintf(b, "| `%s` | %d | %s |\n", cut.Name, cut.Asked, figure(cut.Accuracy))
-	}
-	fmt.Fprintln(b)
+		was := map[string]Figure{}
+		for _, cut := range before.Wordings {
+			was[cut.Name] = cut.Accuracy
+		}
+		fmt.Fprintf(b, "| wording | asked | reachable before | reachable after |\n|---|---|---|---|\n")
+		for _, cut := range p.Wordings {
+			fmt.Fprintf(b, "| `%s` | %d | %s | %s |\n", cut.Name, cut.Asked, figure(was[cut.Name]), figure(cut.Accuracy))
+		}
+		fmt.Fprintln(b)
 
-	fmt.Fprintf(b, "| class | asked | reachable |\n|---|---|---|\n")
-	for _, cut := range p.Classes {
-		fmt.Fprintf(b, "| `%s` | %d | %s |\n", cut.Name, cut.Asked, figure(cut.Accuracy))
+		wasClass := map[string]Figure{}
+		for _, cut := range before.Classes {
+			wasClass[cut.Name] = cut.Accuracy
+		}
+		fmt.Fprintf(b, "| class | asked | reachable before | reachable after |\n|---|---|---|---|\n")
+		for _, cut := range p.Classes {
+			fmt.Fprintf(b, "| `%s` | %d | %s | %s |\n", cut.Name, cut.Asked, figure(wasClass[cut.Name]), figure(cut.Accuracy))
+		}
+		fmt.Fprintln(b)
 	}
-	fmt.Fprintln(b)
 
 	if len(p.Examples) == 0 {
 		return

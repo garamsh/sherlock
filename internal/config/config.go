@@ -113,12 +113,15 @@ type TLSConfig struct {
 // variable holding it (ADR 0003).
 type ModelConfig struct {
 	// Provider selects the wire protocol the endpoint speaks, not the
-	// vendor behind it: "mock" (scripted) or "openai-compatible". One
-	// value serves every endpoint speaking that protocol, so the vendor
-	// is chosen by BaseURL rather than here.
+	// vendor behind it: "mock" (scripted), "openai-compatible" (the
+	// chat-completions protocol) or "anthropic-compatible" (the Messages
+	// protocol). One value serves every endpoint speaking that protocol,
+	// so the vendor is chosen by BaseURL rather than here.
 	Provider string `mapstructure:"provider"`
-	// BaseURL is the endpoint's API root; any OpenAI-compatible endpoint
-	// (MiniMax, Ollama, vLLM, …) works through the same field.
+	// BaseURL is the endpoint's API root, and the field that picks the
+	// vendor: any endpoint speaking the protocol Provider names works
+	// through it (MiniMax, Ollama and vLLM for the OpenAI-compatible
+	// one; Anthropic for the Messages one).
 	BaseURL string `mapstructure:"base-url"`
 	// Model is the model name passed to the provider.
 	Model string `mapstructure:"model"`

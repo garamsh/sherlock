@@ -8,32 +8,41 @@ import (
 var (
 	// ErrNotFound is returned when no active memory exists for an ID.
 	ErrNotFound = errors.New("memory not found")
-	// ErrNotEpisodic is returned when an operation restricted to episodic
-	// memories receives a semantic one.
-	ErrNotEpisodic = errors.New("memory is not episodic")
 	// ErrInvalidInput is returned for inputs that would corrupt the store.
 	ErrInvalidInput = errors.New("invalid memory input")
 )
 
-// Type distinguishes the two kinds of long-term memory.
-type Type string
+// Address is where a fact is held (ADR 0018): the subject it is about,
+// the question it answers, and whatever restriction the sentence puts on
+// that question. Restriction is empty where the sentence places none.
+//
+// The address is what settles which memory a write is for. No field of it
+// is compared for similarity against anything, and no threshold reads it.
+type Address struct {
+	Subject     string
+	Question    string
+	Restriction string
+}
+
+// Operation is what a value does to the values already at its address
+// (ADR 0018). There is no third: a write either replaces what is held or
+// joins it.
+type Operation string
 
 const (
-	// TypeEpisodic marks memories of specific events or turns.
-	TypeEpisodic Type = "episodic"
-	// TypeSemantic marks durable knowledge, often compressed from
-	// episodic memories.
-	TypeSemantic Type = "semantic"
+	// OpReplace supersedes the values already at the address.
+	OpReplace Operation = "replace"
+	// OpJoin leaves them where they are and adds one.
+	OpJoin Operation = "join"
 )
 
-// Memory is one stored entry. SupersededBy is 0 and ValidTo is the zero
-// time while the memory is active (searchable); both are set when the
-// memory moves to the archive.
+// Memory is one value held at one address. SupersededBy is 0 and ValidTo
+// is the zero time while the memory is active (readable); both are set
+// when the memory moves to the archive.
 type Memory struct {
 	ID              int64
-	Content         string
-	Embedding       []float32
-	Type            Type
+	Address         Address
+	Value           string
 	ImportanceScore float64
 	AccessCount     int64
 	LastAccessed    time.Time
@@ -41,10 +50,4 @@ type Memory struct {
 	Source          string
 	SupersededBy    int64
 	ValidTo         time.Time
-}
-
-// ScoredMemory is a Memory with its ranking score from a search.
-type ScoredMemory struct {
-	Memory
-	Score float64
 }

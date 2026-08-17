@@ -5,31 +5,18 @@ import (
 	"time"
 )
 
-// All ranking weights, budgets, and thresholds live here — the one place
-// for tunables per docs/architecture/memory.md and ADR 0006.
+// All salience tiers, retention bounds and the one scoring function live
+// here — the one place for tunables per docs/architecture/memory.md and
+// ADR 0006.
+//
+// What used to sit beside them went with the store it belonged to
+// (#582): the vector and keyword weights, the cosine, and the
+// supersession threshold were the read path's, and an addressed store
+// reads an address instead of scoring contents.
 const (
-	// WeightVector and WeightFTS blend embedding cosine with keyword
-	// match into one relevance score.
-	WeightVector = 0.7
-	WeightFTS    = 0.3
-
 	// RecencyHalfLife is the base half-life of the recency term; the
 	// effective half-life scales with salience (ADR 0006).
 	RecencyHalfLife = 24 * time.Hour
-
-	// SupersessionSimilarity was the cosine at or above which an insert
-	// retired its most similar predecessor. No store path has read it
-	// since 8ad0532 removed that mechanism (#529); why the threshold
-	// could not work is ADR 0006's Context and
-	// docs/experiments/memory-retrieval/'s subject, and is not restated
-	// here.
-	//
-	// It stays in this package rather than moving to the harness that
-	// reads it, because that study measures the shipped store as it
-	// runs: a copy beside the harness would be a constant the store does
-	// not hold, which is the shape #504 removed elsewhere. #336 step 2
-	// replaces this store, and that is when the constant goes.
-	SupersessionSimilarity = 0.6
 
 	// Retention tiers (ADR 0006): salience at or above
 	// RetentionKeepSalience keeps a memory indefinitely; salience below
@@ -40,71 +27,26 @@ const (
 	RetentionDropSalience = 0.3
 	RetentionWindow       = 7 * 24 * time.Hour
 
-	// Salience at write time is platform-derived from the operation the
-	// writeback states, never model-written (ADR 0006): a correction
-	// ranks highest, a fact added beside what is held high, an episodic
-	// observation mid. The tiers above read what these set.
+	// Salience is platform-derived from the operation the write states,
+	// never model-written (ADR 0006, ADR 0018). The tiers above read
+	// what these set.
 	//
-	// SalienceUpdate is the salience of a correction — a write that
+	// SalienceReplace is the salience of a correction — a write that
 	// replaces the values already at its address.
-	SalienceUpdate = 0.8
-	// SalienceAddSemantic is the salience of an added semantic fact.
-	SalienceAddSemantic = 0.7
-	// SalienceAddEpisodic is the salience of an added episodic
-	// observation. No write path has carried it since 178ea89 made the
-	// writeback state facts rather than turns (#523, ADR 0018). It stays
-	// for the same reason as SupersessionSimilarity above: it is the
-	// tier an episodic observation ranks at, and
-	// docs/experiments/memory-frames/ measures the shipped store using
-	// it.
-	SalienceAddEpisodic = 0.5
-
-	// DefaultRecallTokenBudget bounds the tokens Recall injects, and is
-	// the only bound on what a recall returns: the count varies with the
-	// budget (ADR 0006 §Decision step 2), so no row limit applies to it.
-	// DefaultSearchLimit bounds Search and Similar, which is a different
-	// operation with a caller-supplied limit.
-	DefaultRecallTokenBudget = 512
-	// CharsPerToken approximates tokens from content length.
-	CharsPerToken = 4
+	SalienceReplace = 0.8
+	// SalienceJoin is the salience of a value added beside what is held.
+	SalienceJoin = 0.7
 )
 
-// relevance blends vector cosine with the normalized FTS score.
-func relevance(cosine, ftsNorm float64) float64 {
-	return WeightVector*cosine + WeightFTS*ftsNorm
-}
-
-// score is the single ranking function (ADR 0006): salience + relevance +
-// recency, where recency is an Ebbinghaus decay whose half-life scales
-// with salience — high-salience memories fade slowly, low-salience fast.
-// Lifecycle decisions (eviction, forget) call it with rel 0 — the same
-// function, without a query.
-func score(m Memory, rel float64, now time.Time) float64 {
+// score orders memories for eviction: salience plus an Ebbinghaus decay
+// whose half-life scales with salience, so high-salience memories fade
+// slowly and low-salience fast (ADR 0006).
+//
+// It takes no relevance term. An addressed read reaches its address
+// without scoring anything, so the only caller left is the capacity
+// eviction, which never had a query to score against.
+func score(m Memory, now time.Time) float64 {
 	age := max(now.Sub(m.Timestamp), 0)
 	halfLife := RecencyHalfLife.Hours() * (1 + m.ImportanceScore)
-	recency := math.Exp(-math.Ln2 * age.Hours() / halfLife)
-	return m.ImportanceScore + rel + recency
-}
-
-// cosine returns the cosine similarity of two vectors, 0 when either has
-// no magnitude or the dimensions differ.
-func cosine(a, b []float32) float64 {
-	if len(a) != len(b) || len(a) == 0 {
-		return 0
-	}
-	var dot, na, nb float64
-	for i := range a {
-		dot += float64(a[i]) * float64(b[i])
-		na += float64(a[i]) * float64(a[i])
-		nb += float64(b[i]) * float64(b[i])
-	}
-	if na == 0 || nb == 0 {
-		return 0
-	}
-	return dot / (math.Sqrt(na) * math.Sqrt(nb))
-}
-
-// estimateTokens approximates the token cost of a memory's content.
-func estimateTokens(content string) int {
-	return max(len(content)/CharsPerToken, 1)
+	return m.ImportanceScore + math.Exp(-math.Ln2*age.Hours()/halfLife)
 }

@@ -85,11 +85,6 @@ Agent keys (`gagent agent`; see `gagent.yaml` for an example):
 | `model.model` | — | `gpt-4o-mini` |
 | `model.api-key-env` | — | `OPENAI_API_KEY` (name of the env var holding the key — the key itself never goes in the config file) |
 | `model.timeout` | — | `60s` (one chat-completions request; raise for slow local endpoints like CPU-served Ollama/vLLM) |
-| `embedder.provider` | — | `hashing` (default, offline) or `openai` (any OpenAI-compatible embeddings endpoint) |
-| `embedder.base-url` | — | `https://api.openai.com/v1` |
-| `embedder.model` | — | `text-embedding-3-small` |
-| `embedder.api-key-env` | — | `OPENAI_API_KEY` (same env-var indirection as the chat model) |
-| `embedder.timeout` | — | `60s` (one embeddings request) |
 | `tls.cert` | — | unset (gateway server certificate, PEM; all three `tls:` keys together enable mTLS) |
 | `tls.key` | — | unset (server certificate's private key, PEM) |
 | `tls.client-ca` | — | unset (CA bundle, PEM, that client certificates are verified against) |

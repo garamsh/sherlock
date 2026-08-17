@@ -169,7 +169,7 @@ func TestGateway_EndToEnd(t *testing.T) {
 
 	// The SSE subscriber observed the loop events of both turns, in
 	// order: turn 1 fully finishes before turn 2 starts.
-	got := collectEvents(t, events, 12)
+	got := collectEvents(t, events, 10)
 	var kinds []string
 	var startedTasks []string
 	for _, e := range got {
@@ -182,9 +182,15 @@ func TestGateway_EndToEnd(t *testing.T) {
 	assert.Contains(t, startedTasks[0], "] unknown: first",
 		"the turn input renders the message with its ID and sender (ADR 0015)")
 	assert.Contains(t, startedTasks[1], "] unknown: second")
+	// No recall event, because there is no recall step: asked in words
+	// an addressed store answers nothing at all, so #582 wired no
+	// Recaller and #336 step 3 is the step that reads a question into an
+	// address (ADR 0018). This is the shipped regression the sequence
+	// carries between its second and third merges, and it is asserted
+	// rather than absent so that restoring the step has to move a test.
 	assert.Equal(t, []string{
-		"turn_started", "recall", "writeback", "tool_call", "writeback", "turn_finished",
-		"turn_started", "recall", "writeback", "tool_call", "writeback", "turn_finished",
+		"turn_started", "writeback", "tool_call", "writeback", "turn_finished",
+		"turn_started", "writeback", "tool_call", "writeback", "turn_finished",
 	}, kinds)
 
 	// One agent per process: a message naming another agent ID gets 404.
@@ -193,8 +199,8 @@ func TestGateway_EndToEnd(t *testing.T) {
 	resp.Body.Close()
 }
 
-// allMemoryContents returns the content of every memory in the agent's
-// store, active or archived — the platform never hard-deletes.
+// allMemoryContents returns the address and value of every memory in the
+// agent's store, active or archived — the platform never hard-deletes.
 func allMemoryContents(t *testing.T, root string) []string {
 	t.Helper()
 	db, err := sql.Open("sqlite", filepath.Join(root, "memory.db"))
@@ -203,8 +209,11 @@ func allMemoryContents(t *testing.T, root string) []string {
 		assert.NoError(t, db.Close())
 	}()
 	rows, err := db.Query(
-		`SELECT content FROM memories_active
-		 UNION ALL SELECT content FROM memories_archive`)
+		`SELECT subject || ' ' || question || ' ' || restriction || ' ' || value
+		 FROM memories_active
+		 UNION ALL
+		 SELECT subject || ' ' || question || ' ' || restriction || ' ' || value
+		 FROM memories_archive`)
 	require.NoError(t, err)
 	defer func() {
 		assert.NoError(t, rows.Close())

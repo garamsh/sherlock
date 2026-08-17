@@ -52,10 +52,21 @@ func TestRetentionWindow_RecordAndCodeAgree(t *testing.T) {
 // written one second before the boundary survives a pass at the
 // boundary and drops at the next pass after it, whether one turn
 // happened in between or a hundred.
+//
+// The row is written through the store rather than the service, because
+// no operation a writeback can state produces a salience inside the
+// window's tier — see TestRetain_DropsNothingAWritebackWrote below.
 func TestRetentionWindow_IsWallClockFromTheTimestamp(t *testing.T) {
 	clock := now
-	svc := newService(t, memory.WithClock(func() time.Time { return clock }))
-	mid := storeMemory(t, svc, "mid-salience observation", "episodic", 0.5)
+	svc, store, _ := newServiceWithStore(t, memory.WithClock(func() time.Time { return clock }))
+	mid, err := store.Insert(t.Context(), memory.Memory{
+		Address:         memory.Address{Subject: "Alma", Question: "what was asked"},
+		Value:           "the printer again",
+		ImportanceScore: (memory.RetentionKeepSalience + memory.RetentionDropSalience) / 2,
+		Timestamp:       now,
+		Source:          "test",
+	})
+	require.NoError(t, err)
 
 	// A hundred retention passes inside the window drop nothing: the
 	// pass counts no turns, so running it does not age the memory.
@@ -74,4 +85,39 @@ func TestRetentionWindow_IsWallClockFromTheTimestamp(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, []int64{mid}, archived,
 		"past the window the mid tier drops on elapsed time alone")
+}
+
+// TestRetain_DropsNothingAWritebackWrote records what the addressed
+// store did to the retention pass. Salience is derived from the
+// operation the write states, and both operations sit at or above
+// RetentionKeepSalience, so every value the writeback stores is in the
+// keep-indefinitely tier and the pass has nothing to drop.
+//
+// The tier it used to drop was the episodic one, and #582 removed the
+// only write that carried it: an addressed store has nowhere to put a
+// summary of turns it cannot address. The pass still runs and still
+// drops a lower-salience row (above), so what changed is what reaches
+// it, not what it does.
+func TestRetain_DropsNothingAWritebackWrote(t *testing.T) {
+	clock := now
+	svc := newService(t, memory.WithClock(func() time.Time { return clock }))
+	for _, op := range []memory.Operation{memory.OpReplace, memory.OpJoin} {
+		_, err := svc.Store(t.Context(), memory.StoreInput{
+			Address:   memory.Address{Subject: "Alma", Question: "which project " + string(op)},
+			Value:     "amber-quarry",
+			Operation: op,
+			Source:    "agent",
+		})
+		require.NoError(t, err)
+	}
+
+	clock = now.Add(100 * memory.RetentionWindow)
+	archived, err := svc.Retain(t.Context())
+	require.NoError(t, err)
+	assert.Empty(t, archived,
+		"both salience tiers a write can state are at or above RetentionKeepSalience")
+	assert.GreaterOrEqual(t, memory.SalienceJoin, memory.RetentionKeepSalience,
+		"a join is in the keep tier")
+	assert.GreaterOrEqual(t, memory.SalienceReplace, memory.RetentionKeepSalience,
+		"a replacement is in the keep tier")
 }

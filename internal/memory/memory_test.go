@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"fmt"
 	"path/filepath"
-	"strings"
 	"testing"
 	"time"
 
@@ -18,681 +17,293 @@ import (
 
 var now = time.Date(2026, 7, 25, 12, 0, 0, 0, time.UTC)
 
+// almaProject is the address most of these tests write to: a subject and
+// the question a value answers about it.
+var almaProject = memory.Address{Subject: "Alma", Question: "which project does she lead"}
+
 func newService(t *testing.T, opts ...memory.Option) memory.Service {
+	t.Helper()
+	svc, _, _ := newServiceWithStore(t, opts...)
+	return svc
+}
+
+// newServiceWithStore also hands back the store and its path, for the
+// tests that must write a row the service cannot produce or read a
+// column the service does not return.
+func newServiceWithStore(t *testing.T, opts ...memory.Option) (memory.Service, *sqlite.Store, string) {
 	t.Helper()
 	if len(opts) == 0 {
 		opts = []memory.Option{memory.WithClock(func() time.Time { return now })}
 	}
-	st, err := sqlite.Open(filepath.Join(t.TempDir(), "memory.db"))
-	require.NoError(t, err)
-	svc := memory.NewService(st, memory.NewHashingEmbedder(), memory.NewConcatSummarizer(), opts...)
-	t.Cleanup(func() { assert.NoError(t, svc.Close()) })
-	return svc
-}
-
-func storeMemory(t *testing.T, svc memory.Service, content, typ string, importance float64) int64 {
-	t.Helper()
-	res, err := svc.Store(context.Background(), memory.StoreInput{
-		Content:         content,
-		Type:            memory.Type(typ),
-		ImportanceScore: importance,
-		Source:          "test",
-	})
-	require.NoError(t, err)
-	require.Positive(t, res.ID)
-	return res.ID
-}
-
-func search(t *testing.T, svc memory.Service, query string) []memory.ScoredMemory {
-	t.Helper()
-	results, err := svc.Search(context.Background(), query, 0)
-	require.NoError(t, err)
-	return results
-}
-
-func TestSearch_ReturnsStoredMemories(t *testing.T) {
-	svc := newService(t)
-	catID := storeMemory(t, svc, "the cat sat on the mat", "episodic", 0.5)
-	storeMemory(t, svc, "quantum entanglement lecture notes", "semantic", 0.5)
-
-	results := search(t, svc, "cat")
-	require.NotEmpty(t, results)
-	assert.Equal(t, catID, results[0].ID)
-	assert.Equal(t, "the cat sat on the mat", results[0].Content)
-	assert.Equal(t, memory.TypeEpisodic, results[0].Type)
-}
-
-func TestSearch_EmptyStoreReturnsEmptyResults(t *testing.T) {
-	svc := newService(t)
-	assert.Empty(t, search(t, svc, "anything"))
-}
-
-func TestSearch_RecordsAccess(t *testing.T) {
-	svc := newService(t)
-	storeMemory(t, svc, "the cat sat on the mat", "episodic", 0.5)
-
-	first, err := svc.Search(context.Background(), "cat", 0)
-	require.NoError(t, err)
-	require.Len(t, first, 1)
-	assert.Zero(t, first[0].AccessCount)
-
-	second, err := svc.Search(context.Background(), "cat", 0)
-	require.NoError(t, err)
-	require.Len(t, second, 1)
-	assert.Equal(t, int64(1), second[0].AccessCount)
-	assert.Equal(t, now, second[0].LastAccessed)
-}
-
-func TestSimilar_DoesNotRecordAccess(t *testing.T) {
-	svc := newService(t)
-	storeMemory(t, svc, "the cat sat on the mat", "episodic", 0.5)
-
-	for range 2 {
-		results, err := svc.Similar(context.Background(), "cat mat", 0)
-		require.NoError(t, err)
-		require.Len(t, results, 1)
-	}
-
-	results, err := svc.Search(context.Background(), "cat", 0)
-	require.NoError(t, err)
-	require.Len(t, results, 1)
-	assert.Zero(t, results[0].AccessCount)
-}
-
-// TestRetire_RecordsValidToWithoutSupersession pins the half of the
-// archive contract a supersession never exercises: a row retired rather
-// than replaced records valid_to and leaves superseded_by NULL, so the
-// archive says which of the two happened. Retention is the operation
-// that retires — Service.Delete was the other one, and #582 removed it
-// because an addressed write states no declaration that produces one.
-func TestRetire_RecordsValidToWithoutSupersession(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "memory.db")
 	st, err := sqlite.Open(path)
 	require.NoError(t, err)
-	clock := now
-	svc := memory.NewService(st, memory.NewHashingEmbedder(), memory.NewConcatSummarizer(),
-		memory.WithClock(func() time.Time { return clock }))
+	svc := memory.NewService(st, opts...)
 	t.Cleanup(func() { assert.NoError(t, svc.Close()) })
+	return svc, st, path
+}
 
-	id := storeMemory(t, svc, "temporary note", "episodic", 0.1)
-	clock = now.Add(time.Hour)
-	archived, err := svc.Retain(context.Background())
+func write(t *testing.T, svc memory.Service, a memory.Address, value string, op memory.Operation) memory.StoreResult {
+	t.Helper()
+	res, err := svc.Store(context.Background(), memory.StoreInput{
+		Address: a, Value: value, Operation: op, Source: "test",
+	})
 	require.NoError(t, err)
-	require.Equal(t, []int64{id}, archived)
+	require.Positive(t, res.ID)
+	return res
+}
+
+func valuesAt(t *testing.T, svc memory.Service, a memory.Address) []string {
+	t.Helper()
+	held, err := svc.At(context.Background(), a)
+	require.NoError(t, err)
+	return values(held)
+}
+
+func values(held []memory.Memory) []string {
+	out := make([]string, 0, len(held))
+	for _, m := range held {
+		out = append(out, m.Value)
+	}
+	return out
+}
+
+func TestStore_ValueIsReadableAtTheAddressItWasWrittenTo(t *testing.T) {
+	svc := newService(t)
+	write(t, svc, almaProject, "amber-quarry", memory.OpJoin)
+
+	assert.Equal(t, []string{"amber-quarry"}, valuesAt(t, svc, almaProject))
+}
+
+// The address settles identity, so a write lands where it was addressed
+// and nowhere else. A question about the same subject is a different
+// address and is not answered by this one.
+func TestStore_AnAddressAnswersOnlyItsOwnQuestion(t *testing.T) {
+	svc := newService(t)
+	write(t, svc, almaProject, "amber-quarry", memory.OpJoin)
+
+	assert.Empty(t, valuesAt(t, svc,
+		memory.Address{Subject: "Alma", Question: "which team does she sit on"}))
+	assert.Empty(t, valuesAt(t, svc,
+		memory.Address{Subject: "Otto", Question: "which project does he lead"}))
+}
+
+// The #529 case that forced supersession on insert out ahead of this
+// store: two facts about one subject share nearly every token, so a
+// similarity threshold destroyed one of them. Addresses settle it without
+// comparing anything.
+func TestStore_TwoQuestionsAboutOneSubjectCoexist(t *testing.T) {
+	svc := newService(t)
+	team := memory.Address{Subject: "Alma", Question: "which team does she sit on"}
+	write(t, svc, almaProject, "amber-quarry", memory.OpReplace)
+	write(t, svc, team, "platform", memory.OpReplace)
+
+	assert.Equal(t, []string{"amber-quarry"}, valuesAt(t, svc, almaProject))
+	assert.Equal(t, []string{"platform"}, valuesAt(t, svc, team),
+		"a replacement empties the address written and no other")
+}
+
+func TestStore_ReplaceSupersedesWhatTheAddressHeld(t *testing.T) {
+	svc := newService(t)
+	first := write(t, svc, almaProject, "amber-quarry", memory.OpJoin)
+	res := write(t, svc, almaProject, "basalt-run", memory.OpReplace)
+
+	assert.Equal(t, []int64{first.ID}, res.SupersededIDs)
+	assert.Equal(t, []string{"basalt-run"}, valuesAt(t, svc, almaProject))
+}
+
+func TestStore_JoinLeavesWhatTheAddressHeld(t *testing.T) {
+	svc := newService(t)
+	write(t, svc, almaProject, "amber-quarry", memory.OpJoin)
+	res := write(t, svc, almaProject, "basalt-run", memory.OpJoin)
+
+	assert.Empty(t, res.SupersededIDs)
+	assert.ElementsMatch(t, []string{"amber-quarry", "basalt-run"}, valuesAt(t, svc, almaProject))
+}
+
+// The superseded row moves to the archive naming the value that replaced
+// it, which is what makes the change reversible (ADR 0002).
+func TestStore_ReplaceArchivesTheOldRowNamingItsSuccessor(t *testing.T) {
+	svc, _, path := newServiceWithStore(t)
+	first := write(t, svc, almaProject, "amber-quarry", memory.OpJoin)
+	second := write(t, svc, almaProject, "basalt-run", memory.OpReplace)
 
 	db, err := sql.Open("sqlite", path)
 	require.NoError(t, err)
 	defer db.Close()
-	var supersededBy sql.NullInt64
-	var validTo int64
+	var value string
+	var supersededBy, validTo int64
 	require.NoError(t, db.QueryRow(
-		`SELECT superseded_by, valid_to FROM memories_archive WHERE id = ?`, id,
-	).Scan(&supersededBy, &validTo))
-	assert.False(t, supersededBy.Valid, "retention retires; it does not supersede")
-	assert.Equal(t, clock.Unix(), validTo)
+		`SELECT value, superseded_by, valid_to FROM memories_archive WHERE id = ?`, first.ID,
+	).Scan(&value, &supersededBy, &validTo))
+	assert.Equal(t, "amber-quarry", value)
+	assert.Equal(t, second.ID, supersededBy)
+	assert.Equal(t, now.Unix(), validTo)
 }
 
-func TestCompress_SummarizesEpisodicIntoSemanticParent(t *testing.T) {
+// A statement that narrows its question asks its own question, so it gets
+// its own address and no write has to choose between the two values
+// (ADR 0018 §The address names the question). A read of the wider
+// question finds both; a read of the narrower finds only itself.
+func TestAt_ReturnsTheAddressAskedAndTheRestrictionsUnderIt(t *testing.T) {
 	svc := newService(t)
-	id1 := storeMemory(t, svc, "deployed v1 to staging", "episodic", 0.4)
-	id2 := storeMemory(t, svc, "staging deploy failed on migration", "episodic", 0.8)
-	keep := storeMemory(t, svc, "unrelated fact about cats", "episodic", 0.3)
+	onCall := almaProject
+	onCall.Restriction = "on call"
+	write(t, svc, almaProject, "amber-quarry", memory.OpReplace)
+	write(t, svc, onCall, "basalt-run", memory.OpReplace)
 
-	res, err := svc.Compress(context.Background(), []int64{id1, id2})
+	assert.ElementsMatch(t, []string{"amber-quarry", "basalt-run"}, valuesAt(t, svc, almaProject),
+		"the wider question is answered by itself and by what restricts it")
+	assert.Equal(t, []string{"basalt-run"}, valuesAt(t, svc, onCall),
+		"the narrower question is answered by itself alone")
+}
+
+// A restricted write never destroys the question it restricts: they are
+// two addresses, so the narrowing statement has nothing to choose.
+func TestStore_ARestrictedReplaceLeavesTheWiderQuestionAlone(t *testing.T) {
+	svc := newService(t)
+	onCall := almaProject
+	onCall.Restriction = "on call"
+	write(t, svc, almaProject, "amber-quarry", memory.OpReplace)
+	write(t, svc, onCall, "basalt-run", memory.OpReplace)
+
+	held, err := svc.At(context.Background(), memory.Address{
+		Subject: almaProject.Subject, Question: almaProject.Question, Restriction: ""})
 	require.NoError(t, err)
-	assert.ElementsMatch(t, []int64{id1, id2}, res.ArchivedIDs)
+	assert.Contains(t, values(held), "amber-quarry")
+}
 
-	results := search(t, svc, "staging deploy")
-	require.NotEmpty(t, results)
-	ids := make([]int64, 0, len(results))
-	for _, r := range results {
-		ids = append(ids, r.ID)
+// A question naming a subject and no question is answered from every
+// address under that subject. Nothing bounds it and nothing orders it by
+// relevance: an addressed store has no ranking to offer (ADR 0018 §What
+// is not measured).
+func TestUnderSubject_ReturnsEveryAddressUnderTheSubject(t *testing.T) {
+	svc := newService(t)
+	write(t, svc, almaProject, "amber-quarry", memory.OpReplace)
+	write(t, svc, memory.Address{Subject: "Alma", Question: "which team does she sit on"},
+		"platform", memory.OpReplace)
+	write(t, svc, memory.Address{Subject: "Otto", Question: "which project does he lead"},
+		"cinder-lake", memory.OpReplace)
+
+	held, err := svc.UnderSubject(context.Background(), "Alma")
+	require.NoError(t, err)
+	assert.ElementsMatch(t, []string{"amber-quarry", "platform"}, values(held))
+}
+
+func TestUnderSubject_ReturnsMoreThanFitsRatherThanChoosing(t *testing.T) {
+	svc := newService(t)
+	for i := range 50 {
+		write(t, svc, memory.Address{Subject: "Alma", Question: fmt.Sprintf("question %02d", i)},
+			fmt.Sprintf("value-%02d", i), memory.OpReplace)
 	}
-	require.Len(t, res.ParentIDs, 1, "small cluster yields one parent")
-	assert.Contains(t, ids, res.ParentIDs[0])
-	assert.Contains(t, ids, keep)
-	assert.NotContains(t, ids, id1)
-	assert.NotContains(t, ids, id2)
 
-	for _, r := range results {
-		if r.ID == res.ParentIDs[0] {
-			assert.Equal(t, memory.TypeSemantic, r.Type)
-			assert.Contains(t, r.Content, "deployed v1 to staging")
-			assert.InDelta(t, 0.8, r.ImportanceScore, 1e-9)
-		}
-	}
+	held, err := svc.UnderSubject(context.Background(), "Alma")
+	require.NoError(t, err)
+	assert.Len(t, held, 50,
+		"the store has no budget to answer inside and no ordering to trim by")
 }
 
-func TestCompress_RejectsSemanticInput(t *testing.T) {
+// Restating a fact holds it once. The address and the value are the same,
+// so there is no second thing to hold — and nothing compared the two
+// texts to decide that.
+func TestStore_RestatingAValueAtItsAddressHoldsItOnce(t *testing.T) {
 	svc := newService(t)
-	id := storeMemory(t, svc, "durable knowledge", "semantic", 0.9)
+	first := write(t, svc, almaProject, "amber-quarry", memory.OpJoin)
+	again := write(t, svc, almaProject, "amber-quarry", memory.OpJoin)
 
-	_, err := svc.Compress(context.Background(), []int64{id})
-	require.ErrorIs(t, err, memory.ErrNotEpisodic)
+	assert.Equal(t, first.ID, again.ID)
+	assert.Equal(t, []string{"amber-quarry"}, valuesAt(t, svc, almaProject))
 }
 
-// TestStore_ExactRestatementKeepsBoth pins that an insert retires
-// nothing, even for the case supersession on insert was built for: a
-// second write of the very same sentence. Identity is not inferred from
-// similarity (ADR 0006 §Decision, ADR 0018), so the store has nothing
-// to decide with and adds.
-func TestStore_ExactRestatementKeepsBoth(t *testing.T) {
+// A join restating what a replacement wrote keeps the correction's
+// salience: a correction never drops a tier (ADR 0006).
+func TestStore_RestatingACorrectionKeepsItsSalience(t *testing.T) {
 	svc := newService(t)
+	write(t, svc, almaProject, "amber-quarry", memory.OpReplace)
+	write(t, svc, almaProject, "amber-quarry", memory.OpJoin)
 
-	oldID := storeMemory(t, svc, "the release train leaves on monday", "semantic", 0.7)
-	res, err := svc.Store(context.Background(), memory.StoreInput{
-		Content:         "the release train leaves on monday",
-		Type:            memory.TypeSemantic,
-		ImportanceScore: 0.7,
-		Source:          "test",
-	})
+	held, err := svc.At(context.Background(), almaProject)
 	require.NoError(t, err)
-	assert.Zero(t, res.SupersededID, "an insert retires nothing")
-	assert.NotEqual(t, oldID, res.ID)
-
-	results := search(t, svc, "release train")
-	require.Len(t, results, 2, "both versions stay active")
+	require.Len(t, held, 1)
+	assert.InDelta(t, memory.SalienceReplace, held[0].ImportanceScore, 1e-9)
 }
 
-// TestStore_CorrectionCoexistsWithWhatItCorrects states the cost of
-// removing supersession on insert (#529), so it is visible in the suite
-// and not only in prose: until the addressed store lands (#336 step 2)
-// a correction sits beside the value it corrects instead of replacing
-// it.
-//
-// That is the accumulating direction. ADR 0018 §Where a writeback must
-// err prefers it: the next correct write at the address repairs it,
-// where the destroying direction — which is what the threshold produced
-// once writes carried their address in the content — repairs at 0.000
-// and carries its damage for the rest of the span.
-func TestStore_CorrectionCoexistsWithWhatItCorrects(t *testing.T) {
+// Salience is platform-derived from the operation the write states, never
+// model-written (ADR 0006).
+func TestStore_SalienceComesFromTheOperation(t *testing.T) {
 	svc := newService(t)
+	write(t, svc, almaProject, "amber-quarry", memory.OpReplace)
+	write(t, svc, memory.Address{Subject: "Otto", Question: "which project does he lead"},
+		"basalt-run", memory.OpJoin)
 
-	oldID := storeMemory(t, svc,
-		"A main.go file with a greeting program has been created in the agent-test project.",
-		"episodic", 0.5)
-	res, err := svc.Store(context.Background(), memory.StoreInput{
-		Content: "the greeting program in the agent-test project is now main.py, " +
-			"a Python file — the Go main.go version was replaced",
-		Type:            memory.TypeEpisodic,
-		ImportanceScore: 0.5,
-		Source:          "test",
-	})
+	replaced, err := svc.At(context.Background(), almaProject)
 	require.NoError(t, err)
-	assert.Zero(t, res.SupersededID, "the correction does not retire what it corrects")
+	require.Len(t, replaced, 1)
+	assert.InDelta(t, memory.SalienceReplace, replaced[0].ImportanceScore, 1e-9)
 
-	results := search(t, svc, "greeting program agent-test")
-	ids := make([]int64, 0, len(results))
-	for _, m := range results {
-		ids = append(ids, m.ID)
-	}
-	assert.Contains(t, ids, oldID, "the corrected value is still there — the cost, stated")
-	assert.Contains(t, ids, res.ID)
+	joined, err := svc.At(context.Background(),
+		memory.Address{Subject: "Otto", Question: "which project does he lead"})
+	require.NoError(t, err)
+	require.Len(t, joined, 1)
+	assert.InDelta(t, memory.SalienceJoin, joined[0].ImportanceScore, 1e-9)
 }
 
-// TestStore_DissimilarInsertKeepsBoth pins the unrelated-content case:
-// an add that shares nothing with what is already stored inserts a
-// fresh row and retires nothing. It held before supersession on insert
-// was removed and holds after, which is what makes it the control for
-// the two tests above.
-func TestStore_DissimilarInsertKeepsBoth(t *testing.T) {
-	svc := newService(t)
-	oldID := storeMemory(t, svc, "the release train leaves on monday", "semantic", 0.7)
-
-	res, err := svc.Store(context.Background(), memory.StoreInput{
-		Content:         "quantum entanglement lecture notes",
-		Type:            memory.TypeSemantic,
-		ImportanceScore: 0.7,
-		Source:          "test",
-	})
+// ADR 0018 §Forgetting is decided by use rests on a read being recorded,
+// so every read records one.
+func TestAt_RecordsAccess(t *testing.T) {
+	svc, store, _ := newServiceWithStore(t)
+	write(t, svc, almaProject, "amber-quarry", memory.OpJoin)
+	_, err := svc.At(context.Background(), almaProject)
 	require.NoError(t, err)
-	assert.Zero(t, res.SupersededID, "a dissimilar add supersedes nothing")
 
-	results := search(t, svc, "release train")
-	require.NotEmpty(t, results)
-	assert.Equal(t, oldID, results[0].ID, "the predecessor stays active")
-}
-
-// TestRetain_TiersBySalience pins the ADR 0006 tiered retention pass:
-// high salience keeps indefinitely, mid salience lives for
-// RetentionWindow, low salience drops to the archive at the next pass.
-func TestRetain_TiersBySalience(t *testing.T) {
-	clock := now
-	svc := newService(t, memory.WithClock(func() time.Time { return clock }))
-	high := storeMemory(t, svc, "durable high-salience fact", "semantic", 0.8)
-	mid := storeMemory(t, svc, "mid-salience episodic observation", "episodic", 0.5)
-	low := storeMemory(t, svc, "low-salience chatter", "episodic", 0.1)
-
-	clock = now.Add(memory.RetentionWindow - time.Hour)
-	archived, err := svc.Retain(context.Background())
+	active, err := store.Active(context.Background())
 	require.NoError(t, err)
-	assert.ElementsMatch(t, []int64{low}, archived,
-		"within the window only low-salience memories drop")
-
-	clock = now.Add(memory.RetentionWindow + time.Hour)
-	archived, err = svc.Retain(context.Background())
-	require.NoError(t, err)
-	assert.ElementsMatch(t, []int64{mid}, archived,
-		"past the window the mid tier drops; the high tier never does")
-
-	results := search(t, svc, "salience")
-	require.Len(t, results, 1)
-	assert.Equal(t, high, results[0].ID, "only the high-salience memory stays active")
+	require.Len(t, active, 1)
+	assert.Equal(t, int64(1), active[0].AccessCount)
+	assert.Equal(t, now, active[0].LastAccessed)
 }
 
 func TestStore_EvictsLowestScoreBeyondCapacity(t *testing.T) {
 	svc := newService(t,
 		memory.WithClock(func() time.Time { return now }),
 		memory.WithCapacity(3))
-
-	var ids []int64
-	contents := []string{
-		"memory number zero apple banana",
-		"memory number one cherry durian",
-		"memory number two elderberry fig",
-		"memory number three grape hazelnut",
+	for i := range 3 {
+		write(t, svc, memory.Address{Subject: "Alma", Question: fmt.Sprintf("question %d", i)},
+			fmt.Sprintf("value-%d", i), memory.OpJoin)
 	}
-	for i, importance := range []float64{0.1, 0.9, 0.5, 0.7} {
-		res, err := svc.Store(context.Background(), memory.StoreInput{
-			Content:         contents[i],
-			Type:            memory.TypeEpisodic,
-			ImportanceScore: importance,
-			Source:          "test",
-		})
-		require.NoError(t, err)
-		ids = append(ids, res.ID)
-		if i == 3 {
-			assert.Equal(t, []int64{ids[0]}, res.EvictedIDs, "lowest importance is evicted first")
-		}
-	}
+	res := write(t, svc, memory.Address{Subject: "Alma", Question: "the fourth question"},
+		"value-3", memory.OpReplace)
 
-	active, err := svc.Search(context.Background(), "memory number", 10)
+	require.Len(t, res.EvictedIDs, 1)
+	held, err := svc.UnderSubject(context.Background(), "Alma")
 	require.NoError(t, err)
-	require.Len(t, active, 3)
-	for _, m := range active {
-		assert.NotEqual(t, ids[0], m.ID)
-	}
-}
-
-func TestRecall_TrimsToTokenBudget(t *testing.T) {
-	svc := newService(t)
-	// Distinct sentences, so the budget has several memories to trim
-	// between. They were required to differ when an insert superseded a
-	// near-duplicate; nothing retires on insert now (ADR 0018).
-	for _, content := range []string{
-		"a fairly long memory about cats knocking vases off shelves loudly",
-		"a fairly long memory about cats sleeping through thunderstorms nightly",
-		"a fairly long memory about cats learning to open door handles quietly",
-		"a fairly long memory about cats riding the city trams at dawn yesterday",
-		"a fairly long memory about cats adopting the warehouse office suddenly",
-	} {
-		storeMemory(t, svc, content, "episodic", 0.5)
-	}
-
-	results, err := svc.Recall(context.Background(), "cats", 10)
-	require.NoError(t, err)
-	assert.Len(t, results, 1, "budget fits fewer than all; top entry is always kept")
-
-	all, err := svc.Recall(context.Background(), "cats", 100_000)
-	require.NoError(t, err)
-	assert.Len(t, all, 5)
-}
-
-// TestRecall_BoundIsTheBudgetAloneNotARowLimit pins the one bound (ADR
-// 0006 §Decision step 2: "a variable number of raw entries within a
-// token budget"). A row limit anywhere in the recall path would decide
-// the count before the budget could, and DefaultSearchLimit is the one
-// that used to: it capped the candidates at ten, so no budget above ten
-// short memories could bind.
-func TestRecall_BoundIsTheBudgetAloneNotARowLimit(t *testing.T) {
-	svc := newService(t)
-	// No two memories share a word, so each is its own search hit and
-	// the store holds all of them.
-	const planted = memory.DefaultSearchLimit * 3
-	for i := range planted {
-		storeMemory(t, svc, fmt.Sprintf("alpha%d beta%d gamma%d", i, i, i), "episodic", 0.5)
-	}
-
-	// Every memory costs a handful of tokens, so the default budget
-	// bounds nothing here and the count is the store's.
-	results, err := svc.Recall(context.Background(), "alpha0", memory.DefaultRecallTokenBudget)
-	require.NoError(t, err)
-	assert.Len(t, results, planted,
-		"the budget fits every memory, so recall returns every memory")
-	assert.Greater(t, len(results), memory.DefaultSearchLimit,
-		"a recall bounded by DefaultSearchLimit cannot exceed it, and this one must")
-
-	// The budget still binds when it is the smaller bound.
-	const smallBudget = 20
-	trimmed, err := svc.Recall(context.Background(), "alpha0", smallBudget)
-	require.NoError(t, err)
-	assert.Less(t, len(trimmed), planted, "a budget below the store's cost trims")
-	var used int
-	for _, m := range trimmed {
-		used += max(len(m.Content)/memory.CharsPerToken, 1)
-	}
-	assert.LessOrEqual(t, used, smallBudget, "the trim stops at the budget")
+	assert.Len(t, held, 3, "the active index stays within capacity")
+	assert.NotContains(t, values(held), "value-0",
+		"the lowest-scoring memory is the one that left")
 }
 
 func TestService_RejectsInvalidInput(t *testing.T) {
 	svc := newService(t)
+	cases := map[string]memory.StoreInput{
+		"empty subject":  {Address: memory.Address{Question: "q"}, Value: "v", Operation: memory.OpJoin},
+		"empty question": {Address: memory.Address{Subject: "s"}, Value: "v", Operation: memory.OpJoin},
+		"empty value":    {Address: almaProject, Operation: memory.OpJoin},
+		"unknown op":     {Address: almaProject, Value: "v", Operation: memory.Operation("merge")},
+		"no op":          {Address: almaProject, Value: "v"},
+	}
+	for name, in := range cases {
+		t.Run(name, func(t *testing.T) {
+			_, err := svc.Store(context.Background(), in)
+			assert.ErrorIs(t, err, memory.ErrInvalidInput)
+		})
+	}
+}
 
+// An empty restriction is not invalid: a sentence that narrows nothing
+// places none, which is most of what a writeback states.
+func TestStore_AcceptsAnAddressWithNoRestriction(t *testing.T) {
+	svc := newService(t)
 	_, err := svc.Store(context.Background(), memory.StoreInput{
-		Content: "", Type: memory.TypeEpisodic, Source: "test",
-	})
-	require.ErrorIs(t, err, memory.ErrInvalidInput)
-
-	_, err = svc.Store(context.Background(), memory.StoreInput{
-		Content: "x", Type: "bogus", Source: "test",
-	})
-	require.ErrorIs(t, err, memory.ErrInvalidInput)
-
-	_, err = svc.Compress(context.Background(), nil)
-	require.ErrorIs(t, err, memory.ErrInvalidInput)
-}
-
-// TestConsolidate_CompressesEpisodicCluster pins the ADR 0011 platform
-// trigger: once at least ConsolidationMinCluster episodic memories are
-// active, Consolidate compresses them into one semantic parent and
-// archives the originals.
-func TestConsolidate_CompressesEpisodicCluster(t *testing.T) {
-	path := filepath.Join(t.TempDir(), "memory.db")
-	st, err := sqlite.Open(path)
-	require.NoError(t, err)
-	svc := memory.NewService(st, memory.NewHashingEmbedder(), memory.NewConcatSummarizer(),
-		memory.WithClock(func() time.Time { return now }))
-	t.Cleanup(func() { assert.NoError(t, svc.Close()) })
-
-	id1 := storeMemory(t, svc, "deployed v1 to staging", "episodic", 0.4)
-	id2 := storeMemory(t, svc, "staging deploy failed on migration", "episodic", 0.8)
-	keep := storeMemory(t, svc, "durable knowledge about cats", "semantic", 0.9)
-
-	res, err := svc.Consolidate(context.Background())
-	require.NoError(t, err)
-	require.Positive(t, res.ParentIDs[0])
-	assert.ElementsMatch(t, []int64{id1, id2}, res.ArchivedIDs)
-
-	results, err := svc.Search(context.Background(), "staging deploy", 10)
-	require.NoError(t, err)
-	ids := make([]int64, 0, len(results))
-	for _, r := range results {
-		ids = append(ids, r.ID)
-	}
-	assert.Contains(t, ids, res.ParentIDs[0], "the semantic parent is searchable")
-	assert.NotContains(t, ids, id1, "archived originals leave the active index")
-	assert.NotContains(t, ids, id2, "archived originals leave the active index")
-
-	cats, err := svc.Search(context.Background(), "durable knowledge cats", 10)
-	require.NoError(t, err)
-	require.NotEmpty(t, cats)
-	assert.Equal(t, keep, cats[0].ID, "semantic memories are not consolidated")
-
-	db, err := sql.Open("sqlite", path)
-	require.NoError(t, err)
-	defer db.Close()
-	for _, id := range []int64{id1, id2} {
-		var supersededBy int64
-		require.NoError(t, db.QueryRow(
-			`SELECT superseded_by FROM memories_archive WHERE id = ?`, id,
-		).Scan(&supersededBy))
-		assert.Equal(t, res.ParentIDs[0], supersededBy,
-			"the archived original points at its semantic parent")
-	}
-}
-
-// TestConsolidateIfDue_TriggersOnlyAtThreshold pins the threshold
-// trigger (ADR 0006, ADR 0011): below ConsolidationThreshold active
-// episodic memories nothing runs; at the threshold the cluster
-// compresses into semantic parents.
-func TestConsolidateIfDue_TriggersOnlyAtThreshold(t *testing.T) {
-	svc := newService(t)
-	// Each note carries unique tokens so the cluster is a set of
-	// distinct memories rather than one repeated sentence.
-	for i := range memory.ConsolidationThreshold - 1 {
-		storeMemory(t, svc, fmt.Sprintf("episodic note %d w%d x%d y%d z%d q%d", i, i, i, i, i, i), "episodic", 0.5)
-	}
-
-	res, err := svc.ConsolidateIfDue(context.Background())
-	require.NoError(t, err)
-	assert.Empty(t, res.ArchivedIDs, "below the threshold nothing consolidates")
-
-	storeMemory(t, svc, fmt.Sprintf("episodic note %d w%d x%d y%d z%d q%d",
-		memory.ConsolidationThreshold-1, memory.ConsolidationThreshold-1,
-		memory.ConsolidationThreshold-1, memory.ConsolidationThreshold-1,
-		memory.ConsolidationThreshold-1, memory.ConsolidationThreshold-1), "episodic", 0.5)
-	res, err = svc.ConsolidateIfDue(context.Background())
-	require.NoError(t, err)
-	require.Len(t, res.ArchivedIDs, memory.ConsolidationThreshold,
-		"at the threshold the whole episodic cluster compresses")
-	assert.NotEmpty(t, res.ParentIDs)
-
-	active, err := svc.Search(context.Background(), "episodic note", 10)
-	require.NoError(t, err)
-	for _, m := range active {
-		assert.Equal(t, memory.TypeSemantic, m.Type,
-			"only the semantic parents stay active")
-	}
-}
-
-func TestConsolidate_BelowClusterIsNoOp(t *testing.T) {
-	svc := newService(t)
-	id := storeMemory(t, svc, "lone episodic note", "episodic", 0.5)
-
-	res, err := svc.Consolidate(context.Background())
-	require.NoError(t, err)
-	assert.Empty(t, res.ParentIDs)
-	assert.Empty(t, res.ArchivedIDs)
-
-	results, err := svc.Search(context.Background(), "lone episodic", 10)
-	require.NoError(t, err)
-	require.Len(t, results, 1)
-	assert.Equal(t, id, results[0].ID, "the single episodic memory stays active")
-}
-
-func TestHashingEmbedder_IsDeterministicAndNormalized(t *testing.T) {
-	emb := memory.NewHashingEmbedder()
-	a, err := emb.Embed(context.Background(), "the cat sat")
-	require.NoError(t, err)
-	b, err := emb.Embed(context.Background(), "the cat sat")
-	require.NoError(t, err)
-	assert.Equal(t, a, b)
-	assert.Len(t, a, memory.EmbeddingDim)
-
-	var norm float64
-	for _, v := range a {
-		norm += float64(v) * float64(v)
-	}
-	assert.InDelta(t, 1.0, norm, 1e-6)
-}
-
-// TestCompress_ClusterExceedingSummaryMaxLenLeavesNoContentBehind pins
-// issue #194: a cluster whose joined contents exceed SummaryMaxLen
-// must split into multiple semantic parents so every byte of the
-// originals stays in the searchable index. Tail content no longer
-// disappears into the archive.
-func TestCompress_ClusterExceedingSummaryMaxLenLeavesNoContentBehind(t *testing.T) {
-	svc := newService(t)
-
-	// 30 short messages join to ~30 * 32 = ~960 bytes of summary text,
-	// well past the 512-byte cap that truncated everything before. Each
-	// carries a unique token so every original is traceable into the
-	// summary the join produces.
-	const count = 30
-	originals := make([]int64, 0, count)
-	for i := range count {
-		content := fmt.Sprintf("user-turn %02d: ref %04d token-%02d", i, i*7+1, i)
-		originals = append(originals, storeMemory(t, svc, content, "episodic", 0.5))
-	}
-
-	res, err := svc.Compress(context.Background(), originals)
-	require.NoError(t, err)
-	require.Greater(t, len(res.ParentIDs), 1,
-		"a cluster past SummaryMaxLen must produce more than one parent")
-	for _, id := range res.ParentIDs {
-		assert.Positive(t, id)
-	}
-	assert.ElementsMatch(t, originals, res.ArchivedIDs)
-
-	active, err := svc.Search(context.Background(), "user-turn", 100)
-	require.NoError(t, err)
-	got := make(map[int64]string, len(active))
-	for _, r := range active {
-		got[r.ID] = r.Content
-	}
-	for _, pid := range res.ParentIDs {
-		require.Contains(t, got, pid, "every parent stays in the active index")
-		assert.LessOrEqual(t, len(got[pid]), memory.SummaryMaxLen,
-			"each parent respects the per-parent length cap")
-	}
-
-	// The first content lives entirely inside the cluster; after
-	// consolidation its distinguishing substring (a unique ref token)
-	// must surface from at least one parent's content — it cannot
-	// be archived and forgotten.
-	firstRef := fmt.Sprintf("ref %04d", 0*7+1)
-	lastRef := fmt.Sprintf("ref %04d", (count-1)*7+1)
-	found := 0
-	for _, content := range got {
-		if strings.Contains(content, firstRef) || strings.Contains(content, lastRef) {
-			found++
-		}
-	}
-	assert.Positive(t, found,
-		"head and tail tokens must surface from at least one parent")
-}
-
-// TestCompress_PreferredParentIsFirstChunk pins that the first parent
-// (the one the archived originals point at via superseded_by) is the
-// head of the cluster — coherent with ConcatSummarizer's join order.
-func TestCompress_PreferredParentIsFirstChunk(t *testing.T) {
-	svc := newService(t)
-
-	var ids []int64
-	for i := range 20 {
-		ids = append(ids, storeMemory(t, svc,
-			fmt.Sprintf("alpha marker %04d tail token-%02d extra%02d uniq%02d", i, i, i, i), "episodic", 0.5))
-	}
-
-	res, err := svc.Compress(context.Background(), ids)
-	require.NoError(t, err)
-	require.NotEmpty(t, res.ParentIDs)
-
-	active, err := svc.Search(context.Background(), "alpha marker", 100)
-	require.NoError(t, err)
-	contents := make(map[int64]string, len(active))
-	for _, r := range active {
-		contents[r.ID] = r.Content
-	}
-	preferred := contents[res.ParentIDs[0]]
-	assert.True(t, strings.HasPrefix(preferred, "alpha marker 0000"),
-		"the preferred (first) parent opens with the first original; got %q", preferred)
-	assert.Contains(t, preferred, " | ",
-		"the preferred parent joins multiple originals via the chunk separator")
-}
-
-// TestCompress_ChunkSeparatorIsTheChunkerBoundary pins that the
-// summarizer output's separator is what the chunker uses to keep whole
-// content pieces inside one parent. The "aa bb cc" join lands inside
-// a single chunk because it fits SummaryMaxLen; a larger join splits
-// at separator boundaries so whole pieces never straddle parents.
-func TestCompress_ChunkSeparatorIsTheChunkerBoundary(t *testing.T) {
-	svc := newService(t)
-
-	// Three pieces small enough that the joined summary fits one parent.
-	id1 := storeMemory(t, svc, "aa", "episodic", 0.5)
-	id2 := storeMemory(t, svc, "bb", "episodic", 0.5)
-	id3 := storeMemory(t, svc, "cc", "episodic", 0.5)
-	res, err := svc.Compress(context.Background(), []int64{id1, id2, id3})
-	require.NoError(t, err)
-	require.Len(t, res.ParentIDs, 1,
-		"a small cluster fits one parent with no chunking")
-
-	// Larger cluster: each original carries the same 20-char run plus a
-	// unique tag, so the joined text exceeds SummaryMaxLen and must
-	// split across parents, and every tag must still surface in one of
-	// them.
-	var ids []int64
-	for i := range 40 {
-		ids = append(ids, storeMemory(t, svc,
-			fmt.Sprintf("%s %02d", strings.Repeat("a", 20), i), "episodic", 0.5))
-	}
-	res, err = svc.Compress(context.Background(), ids)
-	require.NoError(t, err)
-	require.Greater(t, len(res.ParentIDs), 1,
-		"40 originals of 20 chars joined must exceed SummaryMaxLen")
-
-	active, err := svc.Search(context.Background(), strings.Repeat("a", 20), 100)
-	require.NoError(t, err)
-	require.NotEmpty(t, active)
-	totalBytes := 0
-	for _, r := range active {
-		assert.LessOrEqual(t, len(r.Content), memory.SummaryMaxLen,
-			"each parent respects the per-parent length cap")
-		totalBytes += len(r.Content)
-	}
-	// 40 originals of 20 chars + 39 separators of 3 chars = 917 chars
-	// of joined content. After chunking the parents must still hold
-	// at least that much text (chunking never drops content).
-	assert.GreaterOrEqual(t, totalBytes, 40*20,
-		"the union of parents covers every original byte")
-}
-
-// TestCompress_HardCapsOversizedSingleContent pins that an original
-// exceeding SummaryMaxLen on its own is hard-capped, not split across
-// multiple parents — the chunker's hard-cap fallback fires when there
-// is no separator to break on.
-func TestCompress_HardCapsOversizedSingleContent(t *testing.T) {
-	svc := newService(t)
-
-	// One oversized original past SummaryMaxLen with no separator
-	// inside; the chunker must hard-cap without losing the bytes it
-	// trimmed (they are inside the single parent it produces).
-	oversized := strings.Repeat("z", memory.SummaryMaxLen+50)
-	id := storeMemory(t, svc, oversized, "episodic", 0.5)
-
-	res, err := svc.Compress(context.Background(), []int64{id})
-	require.NoError(t, err)
-	require.Len(t, res.ParentIDs, 1)
-
-	active, err := svc.Search(context.Background(), "zzz", 10)
-	require.NoError(t, err)
-	require.Len(t, active, 1)
-	assert.Equal(t, memory.SummaryMaxLen, len(active[0].Content),
-		"a single oversized original is hard-capped to one parent's length")
-}
-
-// TestStore_DifferentAddressesUnderOneSubjectCoexist pins #529: two
-// facts about one subject that answer different questions both survive
-// a write. Both are joins — ADR 0018 §Where a writeback must err makes
-// join the direction the system errs toward — so neither may destroy
-// the other.
-//
-// The contents are what the store actually holds since #523: the
-// addressed sentence internal/agent/memory/writeback.go's sentenceOf
-// renders, "<subject> — <question> <value>". That shared prefix is a
-// large fraction of a short fact's tokens, which is what lifted cosine
-// past the old supersession threshold for pairs with nothing in common
-// but their subject. The embedder is the runtime's default.
-func TestStore_DifferentAddressesUnderOneSubjectCoexist(t *testing.T) {
-	svc := newService(t)
-
-	telescopeID := storeMemory(t, svc,
-		"Dana — what is her favorite telescope the Newtonian", "semantic", 0.7)
-	res, err := svc.Store(context.Background(), memory.StoreInput{
-		Content:         "Dana — what is her favorite eyepiece the wide-angle",
-		Type:            memory.TypeSemantic,
-		ImportanceScore: 0.7,
-		Source:          "test",
-	})
-	require.NoError(t, err)
-	assert.Zero(t, res.SupersededID,
-		"a write at another address must not retire a fact answering a different question")
-
-	active := search(t, svc, "Dana")
-	ids := make([]int64, 0, len(active))
-	for _, m := range active {
-		ids = append(ids, m.ID)
-	}
-	assert.Contains(t, ids, telescopeID, "the earlier fact is still active")
-	assert.Contains(t, ids, res.ID, "the later fact is still active")
+		Address: almaProject, Value: "amber-quarry", Operation: memory.OpJoin, Source: "test"})
+	assert.NoError(t, err)
 }

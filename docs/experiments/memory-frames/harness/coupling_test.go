@@ -42,7 +42,7 @@ func TestCoupling_AWriteReachesWhatNoReadReturned(t *testing.T) {
 		declares bool
 	}{
 		{"a store that finds what it supersedes", func() (Frame, error) {
-			return NewShippedFrame(t.TempDir(), NewEmbedCounter(), 0)
+			return NewShippedFrame(t.TempDir())
 		}, false},
 		{"a store that computes the address", func() (Frame, error) {
 			return NewAttributeFrame(arityDeclared), nil
@@ -127,7 +127,7 @@ func TestCoupling_TheSameStoreFailsToCorrectEvenWhatItCanFind(t *testing.T) {
 		{"a restatement in the same words", "Alma leads the copper-lantern project."},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			frame, err := NewShippedFrame(t.TempDir(), NewEmbedCounter(), 0)
+			frame, err := NewShippedFrame(t.TempDir())
 			require.NoError(t, err)
 			defer frame.Close()
 

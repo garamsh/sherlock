@@ -37,48 +37,56 @@ import (
 // be quoted across the two; this record does not repeat that measurement.
 const embedderName = "hashing"
 
-// Config is what the shipped frame ran under, read from the packages that
-// declare it so the record cannot state a value the code has moved.
+// Config is what the run ran under, read from wherever the value is
+// declared so the record cannot state a value the code has moved.
+//
+// A field is here only while something still declares the value. #582
+// replaced the shipped store, and the four constants that were the
+// sentence store's read path — the vector and keyword weights, the
+// supersession threshold and the consolidation trigger — are declared
+// nowhere now, so they are not fields. The committed results still carry
+// them as keys and this struct ignores them; §Limits is where the record
+// says which of its figures were taken under them.
 type Config struct {
-	WeightVector           float64 `json:"weight_vector"`
-	WeightFTS              float64 `json:"weight_fts"`
-	RecencyHalfLifeHours   float64 `json:"recency_half_life_hours"`
-	SupersessionSimilarity float64 `json:"supersession_similarity"`
-	RetentionKeepSalience  float64 `json:"retention_keep_salience"`
-	RetentionDropSalience  float64 `json:"retention_drop_salience"`
-	RetentionWindowHours   float64 `json:"retention_window_hours"`
-	ConsolidationThreshold int     `json:"consolidation_threshold"`
-	SalienceAddEpisodic    float64 `json:"salience_add_episodic"`
-	SalienceAddSemantic    float64 `json:"salience_add_semantic"`
-	EmbeddingDim           int     `json:"embedding_dim"`
-	DefaultCapacity        int     `json:"default_capacity"`
-	RecallTokenBudget      int     `json:"default_recall_token_budget"`
-	CharsPerToken          int     `json:"chars_per_token"`
-	DocumentLimitBytes     int     `json:"document_limit_bytes"`
+	RecencyHalfLifeHours  float64 `json:"recency_half_life_hours"`
+	RetentionKeepSalience float64 `json:"retention_keep_salience"`
+	RetentionDropSalience float64 `json:"retention_drop_salience"`
+	RetentionWindowHours  float64 `json:"retention_window_hours"`
+	SalienceAddEpisodic   float64 `json:"salience_add_episodic"`
+	SalienceAddSemantic   float64 `json:"salience_add_semantic"`
+	EmbeddingDim          int     `json:"embedding_dim"`
+	DefaultCapacity       int     `json:"default_capacity"`
+	RecallTokenBudget     int     `json:"default_recall_token_budget"`
+	CharsPerToken         int     `json:"chars_per_token"`
+	DocumentLimitBytes    int     `json:"document_limit_bytes"`
 }
 
 // shippedConfig reads the configuration this record measures under out
-// of the memory package, so a run records what the code held rather than
-// what someone typed. A committed run keeps the values it read; the
-// check that they are still the code's is a test, because reading them
-// at run time only binds the record to the code on the day it ran.
+// of wherever the value is declared, so a run records what the code held
+// rather than what someone typed. A committed run keeps the values it
+// read; the check that they are still the code's is a test, because
+// reading them at run time only binds the record to the code on the day
+// it ran.
+//
+// Two sources, because #582 split them. The retention and capacity
+// values are the shipped store's and come from internal/memory. The rest
+// describe the comparison rather than the shipped store — the embedding
+// the ported designs model similarity with, the context budget every
+// frame is allowed, the salience a scored stream ranks by — and are the
+// harness's own since the addressed store stopped declaring them.
 func shippedConfig() Config {
 	return Config{
-		WeightVector:           memory.WeightVector,
-		WeightFTS:              memory.WeightFTS,
-		RecencyHalfLifeHours:   memory.RecencyHalfLife.Hours(),
-		SupersessionSimilarity: memory.SupersessionSimilarity,
-		RetentionKeepSalience:  memory.RetentionKeepSalience,
-		RetentionDropSalience:  memory.RetentionDropSalience,
-		RetentionWindowHours:   memory.RetentionWindow.Hours(),
-		ConsolidationThreshold: memory.ConsolidationThreshold,
-		SalienceAddEpisodic:    memory.SalienceAddEpisodic,
-		SalienceAddSemantic:    memory.SalienceAddSemantic,
-		EmbeddingDim:           memory.EmbeddingDim,
-		DefaultCapacity:        memory.DefaultCapacity,
-		RecallTokenBudget:      memory.DefaultRecallTokenBudget,
-		CharsPerToken:          memory.CharsPerToken,
-		DocumentLimitBytes:     documentLimit,
+		RecencyHalfLifeHours:  memory.RecencyHalfLife.Hours(),
+		RetentionKeepSalience: memory.RetentionKeepSalience,
+		RetentionDropSalience: memory.RetentionDropSalience,
+		RetentionWindowHours:  memory.RetentionWindow.Hours(),
+		DefaultCapacity:       memory.DefaultCapacity,
+		SalienceAddEpisodic:   salienceAddEpisodic,
+		SalienceAddSemantic:   salienceAddSemantic,
+		EmbeddingDim:          EmbeddingDim,
+		RecallTokenBudget:     recallTokenBudget,
+		CharsPerToken:         charsPerToken,
+		DocumentLimitBytes:    documentLimit,
 	}
 }
 

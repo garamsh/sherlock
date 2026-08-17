@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
-	"strings"
 	"testing"
 	"time"
 
@@ -138,13 +137,15 @@ func runMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	// Monitoring: the full turn lifecycle was published, in order: one
 	// turn with one tool call (message_send) and a writeback after
 	// every model response.
-	got := collectEvents(t, events, 6)
+	got := collectEvents(t, events, 5)
 	var kinds []string
 	for _, e := range got {
 		kinds = append(kinds, e["kind"].(string))
 	}
+	// No recall event: there is no recall step until #336 step 3
+	// supplies the one that reads a question into an address (ADR 0018).
 	assert.Equal(t, []string{
-		"turn_started", "recall",
+		"turn_started",
 		"writeback", "tool_call",
 		"writeback", "turn_finished",
 	}, kinds)
@@ -154,8 +155,8 @@ func runMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	// The agent replied via message_send. The final writeback records
 	// the answer at the address of the question it answers (ADR 0011:
 	// the writeback is the single write path; ADR 0018).
-	assert.Equal(t, "message_send", got[3]["tool_name"])
-	assert.NotContains(t, got[3], "tool_failed")
+	assert.Equal(t, "message_send", got[2]["tool_name"])
+	assert.NotContains(t, got[2], "tool_failed")
 
 	// Reply: message_send output landed in the agent's outbox.
 	require.Eventually(t, func() bool {
@@ -171,28 +172,30 @@ func runMVPScenario(t *testing.T, baseURL, root, agentID string) {
 }
 
 // assertMemoryStore opens the agent's memory store and confirms the
-// writeback is still queryable after shutdown. With curation-only
-// storage (ADR 0006) nothing is auto-stored before the turn, so the
-// turn's one write is the only memory — a writeback states a fact, so
-// it is semantic and consolidation never touches it (ADR 0018).
+// writeback is still readable after shutdown, at the address it was
+// written to. With curation-only storage (ADR 0006) nothing is
+// auto-stored before the turn, so the turn's one write is the only
+// memory.
+//
+// The address is supplied here rather than found. Asked in words an
+// addressed store answers nothing at all (ADR 0018), and the step that
+// reads a question into an address is #336 step 3 — so this asserts what
+// the store can do, which is answer the address it is given.
 func assertMemoryStore(t *testing.T, root string) {
 	t.Helper()
 	store, err := sqlite.Open(filepath.Join(root, "memory.db"))
 	require.NoError(t, err)
 	t.Cleanup(func() { store.Close() })
 
-	svc := memory.NewService(store, memory.NewHashingEmbedder(), memory.NewConcatSummarizer())
-	found, err := svc.Search(context.Background(), "what is 6 * 7", 10)
+	svc := memory.NewService(store)
+	held, err := svc.At(context.Background(), memory.Address{
+		Subject:  "user",
+		Question: "what is 6 * 7",
+	})
 	require.NoError(t, err)
 
-	var recorded bool
-	for _, h := range found {
-		if strings.Contains(h.Content, "what is 6 * 7") && strings.Contains(h.Content, "42") {
-			recorded = true
-			assert.Equal(t, memory.TypeSemantic, h.Type,
-				"a writeback states a fact at an address, never an episode")
-		}
-	}
-	assert.True(t, recorded,
-		"the recorded question must stay queryable after shutdown, got: %v", found)
+	require.Len(t, held, 1,
+		"the turn's one write is readable at its address after shutdown, got: %v", held)
+	assert.Equal(t, "42", held[0].Value)
+	assert.Equal(t, "agent", held[0].Source)
 }

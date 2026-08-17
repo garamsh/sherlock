@@ -2,8 +2,7 @@ package memory_test
 
 import (
 	"context"
-	"strconv"
-	"strings"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -12,9 +11,11 @@ import (
 	"github.com/garamsh/gagent/internal/agent"
 	agentmemory "github.com/garamsh/gagent/internal/agent/memory"
 	"github.com/garamsh/gagent/internal/memory"
+	"github.com/garamsh/gagent/internal/memory/sqlite"
 )
 
-// telescope is the address a user's stated preference lands on.
+// telescope is the address a user's stated preference lands on, in the
+// agent's vocabulary and in the store's.
 func telescope() agent.MemoryAddress {
 	return agent.MemoryAddress{
 		Subject:  "user",
@@ -22,28 +23,49 @@ func telescope() agent.MemoryAddress {
 	}
 }
 
-func TestWriteback_StoresTheAddressWithItsValue(t *testing.T) {
-	svc, _ := newMemoryService(t)
+func telescopeAddress() memory.Address {
+	return memory.Address{
+		Subject:  "user",
+		Question: "what is the user's favorite telescope",
+	}
+}
+
+func newMemoryService(t *testing.T) memory.Service {
+	t.Helper()
+	st, err := sqlite.Open(filepath.Join(t.TempDir(), "memory.db"))
+	require.NoError(t, err)
+	svc := memory.NewService(st)
+	t.Cleanup(func() { assert.NoError(t, svc.Close()) })
+	return svc
+}
+
+func valuesAt(t *testing.T, svc memory.Service, a memory.Address) []string {
+	t.Helper()
+	held, err := svc.At(context.Background(), a)
+	require.NoError(t, err)
+	out := make([]string, 0, len(held))
+	for _, m := range held {
+		out = append(out, m.Value)
+	}
+	return out
+}
+
+func TestWriteback_StoresTheValueAtItsAddress(t *testing.T) {
+	svc := newMemoryService(t)
 	wb := agentmemory.Writeback{Svc: svc}
+	scheme := memory.Address{Subject: "user", Question: "which colour scheme does the user prefer"}
 
 	_, err := wb.Apply(context.Background(), []agent.WritebackOp{{
 		Address: agent.MemoryAddress{
-			Subject:  "user",
-			Question: "which colour scheme does the user prefer",
+			Subject:  scheme.Subject,
+			Question: scheme.Question,
 		},
 		Value:     "dark mode",
 		Operation: agent.OpJoin,
 	}})
 	require.NoError(t, err)
 
-	found, err := svc.Search(context.Background(), "colour scheme dark mode", 1)
-	require.NoError(t, err)
-	require.NotEmpty(t, found)
-	assert.Contains(t, found[0].Content, "user")
-	assert.Contains(t, found[0].Content, "which colour scheme does the user prefer")
-	assert.Contains(t, found[0].Content, "dark mode")
-	assert.Equal(t, memory.TypeSemantic, found[0].Type,
-		"a writeback states a fact, never an observation of the turn")
+	assert.Equal(t, []string{"dark mode"}, valuesAt(t, svc, scheme))
 }
 
 // TestWriteback_RestrictionReachesTheStore is ADR 0018 §The address
@@ -51,29 +73,55 @@ func TestWriteback_StoresTheAddressWithItsValue(t *testing.T) {
 // address, so the narrowing is part of what is written rather than
 // something a later read has to infer.
 //
-// Whether the two values then coexist is the store's business and not
-// this step's: the shipped store retires nothing on insert, so two
-// sentences this alike both survive until the addressed store computes
-// their identity (#336 step 2).
+// The two values then coexist because they are two addresses. Nothing
+// compared the sentences to decide that.
 func TestWriteback_RestrictionReachesTheStore(t *testing.T) {
-	svc, _ := newMemoryService(t)
+	svc := newMemoryService(t)
 	ctx := context.Background()
 	wb := agentmemory.Writeback{Svc: svc}
 
 	narrowed := telescope()
 	narrowed.Restriction = "for planets"
 	_, err := wb.Apply(ctx, []agent.WritebackOp{
-		{Address: narrowed, Value: "the Orion XT8", Operation: agent.OpJoin},
+		{Address: telescope(), Value: "the Kepler-9 refractor", Operation: agent.OpReplace},
+		{Address: narrowed, Value: "the Orion XT8", Operation: agent.OpReplace},
 	})
 	require.NoError(t, err)
 
-	found, err := svc.Search(ctx, "favorite telescope planets", 1)
-	require.NoError(t, err)
-	require.NotEmpty(t, found)
-	assert.True(t,
-		containsAll(found[0].Content, "for planets", "the Orion XT8",
-			"what is the user's favorite telescope"),
-		"the stored sentence carries the whole address: %q", found[0].Content)
+	restricted := telescopeAddress()
+	restricted.Restriction = "for planets"
+	assert.Equal(t, []string{"the Orion XT8"}, valuesAt(t, svc, restricted),
+		"the restriction is part of the address written")
+	assert.ElementsMatch(t,
+		[]string{"the Kepler-9 refractor", "the Orion XT8"}, valuesAt(t, svc, telescopeAddress()),
+		"the wider question is answered by itself and by what restricts it")
+}
+
+// TestWriteback_OperationReachesTheStore pins what the declaration buys:
+// a replacement supersedes what the address held and a join leaves it.
+func TestWriteback_OperationReachesTheStore(t *testing.T) {
+	tests := []struct {
+		name      string
+		operation agent.MemoryOperation
+		want      []string
+	}{
+		{"a replacement supersedes what is held", agent.OpReplace, []string{"the Orion XT8"}},
+		{"a join leaves it", agent.OpJoin, []string{"the Kepler-9 refractor", "the Orion XT8"}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			svc := newMemoryService(t)
+			wb := agentmemory.Writeback{Svc: svc}
+
+			_, err := wb.Apply(context.Background(), []agent.WritebackOp{
+				{Address: telescope(), Value: "the Kepler-9 refractor", Operation: agent.OpJoin},
+				{Address: telescope(), Value: "the Orion XT8", Operation: tt.operation},
+			})
+			require.NoError(t, err)
+
+			assert.ElementsMatch(t, tt.want, valuesAt(t, svc, telescopeAddress()))
+		})
+	}
 }
 
 // TestWriteback_SalienceFollowsTheOperation pins ADR 0006's rule that
@@ -85,12 +133,12 @@ func TestWriteback_SalienceFollowsTheOperation(t *testing.T) {
 		operation    agent.MemoryOperation
 		wantSalience float64
 	}{
-		{"a replacement is a correction", agent.OpReplace, memory.SalienceUpdate},
-		{"a join adds a fact", agent.OpJoin, memory.SalienceAddSemantic},
+		{"a replacement is a correction", agent.OpReplace, memory.SalienceReplace},
+		{"a join adds a fact", agent.OpJoin, memory.SalienceJoin},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			svc, _ := newMemoryService(t)
+			svc := newMemoryService(t)
 			wb := agentmemory.Writeback{Svc: svc}
 
 			_, err := wb.Apply(context.Background(), []agent.WritebackOp{{
@@ -100,35 +148,29 @@ func TestWriteback_SalienceFollowsTheOperation(t *testing.T) {
 			}})
 			require.NoError(t, err)
 
-			found, err := svc.Search(context.Background(), "favorite telescope", 1)
+			held, err := svc.At(context.Background(), telescopeAddress())
 			require.NoError(t, err)
-			require.NotEmpty(t, found)
-			assert.InDelta(t, tt.wantSalience, found[0].ImportanceScore, 0.0001)
+			require.Len(t, held, 1)
+			assert.InDelta(t, tt.wantSalience, held[0].ImportanceScore, 0.0001)
 		})
 	}
 }
 
-// TestWriteback_SurfacesSimilarMemories is the ADR 0006 step 5
-// acceptance case: writing a fact that contradicts an existing memory
-// surfaces the existing memory for judgment — and not the just-written
-// version itself.
-func TestWriteback_SurfacesSimilarMemories(t *testing.T) {
-	svc, _ := newMemoryService(t)
+// TestWriteback_ReturnsNoCoherenceNote records what #582 removed from
+// ADR 0006 step 5. The step surfaced the most similar existing memories
+// for the model to judge, which is what a store that could not compute
+// which memory a write was for needed; the address computes it and the
+// stated operation says what to do about it.
+func TestWriteback_ReturnsNoCoherenceNote(t *testing.T) {
+	svc := newMemoryService(t)
 	ctx := context.Background()
-	// Seeded in the sentence form the store held before this change, and
-	// deliberately below SupersessionSimilarity: nothing acts on that
-	// threshold now, so the coherence note is what surfaces a near
-	// duplicate to the model (ADR 0006 step 5).
-	const seeded = "user's favorite telescope is the Kepler-9 refractor"
-	stored, err := svc.Store(ctx, memory.StoreInput{
-		Content:         seeded,
-		Type:            memory.TypeSemantic,
-		ImportanceScore: 0.5,
-		Source:          "agent",
+	wb := agentmemory.Writeback{Svc: svc}
+
+	_, err := wb.Apply(ctx, []agent.WritebackOp{
+		{Address: telescope(), Value: "the Kepler-9 refractor", Operation: agent.OpJoin},
 	})
 	require.NoError(t, err)
 
-	wb := agentmemory.Writeback{Svc: svc}
 	notes, err := wb.Apply(ctx, []agent.WritebackOp{{
 		Address: agent.MemoryAddress{
 			Subject:  "user",
@@ -138,38 +180,17 @@ func TestWriteback_SurfacesSimilarMemories(t *testing.T) {
 		Operation: agent.OpJoin,
 	}})
 	require.NoError(t, err)
-
-	require.NotEmpty(t, notes, "the contradicting memory is presented for judgment")
-	var found bool
-	for _, n := range notes {
-		if n.Content == seeded {
-			found = true
-			assert.Equal(t, strconv.FormatInt(stored.ID, 10), n.ID)
-			assert.NotEmpty(t, n.Age)
-		}
-		assert.NotContains(t, n.Content, "Orion XT8",
-			"the just-written version never judges itself")
-	}
-	assert.True(t, found, "the seeded memory is in the coherence set: %v", notes)
+	assert.Empty(t, notes, "no similarity read stands behind a coherence note any more")
 }
 
-// TestWriteback_EmptyWritebackRetrievesNothing pins the coherence scope
-// (ADR 0006 step 5): a turn that states no fact asks the store nothing.
-func TestWriteback_EmptyWritebackRetrievesNothing(t *testing.T) {
-	svc, _ := newMemoryService(t)
+// TestWriteback_EmptyWritebackStoresNothing: a turn that states no fact
+// asks the store nothing.
+func TestWriteback_EmptyWritebackStoresNothing(t *testing.T) {
+	svc := newMemoryService(t)
 	wb := agentmemory.Writeback{Svc: svc}
 
 	notes, err := wb.Apply(context.Background(), []agent.WritebackOp{})
 	require.NoError(t, err)
 	assert.Empty(t, notes)
-}
-
-// containsAll reports whether s contains every substring.
-func containsAll(s string, subs ...string) bool {
-	for _, sub := range subs {
-		if !strings.Contains(s, sub) {
-			return false
-		}
-	}
-	return true
+	assert.Empty(t, valuesAt(t, svc, telescopeAddress()))
 }

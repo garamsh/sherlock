@@ -3,29 +3,31 @@ package sqlite
 import (
 	"context"
 	"database/sql"
-	"encoding/binary"
 	"errors"
 	"fmt"
-	"math"
-	"strings"
 	"time"
-	"unicode"
 
 	_ "modernc.org/sqlite"
 
 	"github.com/garamsh/gagent/internal/memory"
 )
 
-// schema holds the DDL. The active table is searchable; the archive table
-// preserves superseded, evicted, compressed, and forgotten rows. The FTS
-// index is external-content over the active table, kept in sync by
-// triggers so archived rows drop out of keyword search automatically.
+// schema holds the DDL. The active table is readable; the archive table
+// preserves superseded, evicted and forgotten rows.
+//
+// One index carries every read. Its leading columns are the address —
+// subject, then question, then restriction — so the three reads are the
+// three prefixes of one key, and its trailing value column is what makes
+// a value held once at an address held once (ADR 0018). There is no
+// embedding column and no keyword index: an addressed store reaches its
+// address and needs neither.
 const schema = `
 CREATE TABLE IF NOT EXISTS memories_active (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
-	content TEXT NOT NULL,
-	embedding BLOB NOT NULL,
-	type TEXT NOT NULL CHECK (type IN ('episodic', 'semantic')),
+	subject TEXT NOT NULL,
+	question TEXT NOT NULL,
+	restriction TEXT NOT NULL,
+	value TEXT NOT NULL,
 	importance_score REAL NOT NULL,
 	access_count INTEGER NOT NULL DEFAULT 0,
 	last_accessed INTEGER,
@@ -34,11 +36,14 @@ CREATE TABLE IF NOT EXISTS memories_active (
 	superseded_by INTEGER,
 	valid_to INTEGER
 );
+CREATE UNIQUE INDEX IF NOT EXISTS memories_active_address
+	ON memories_active (subject, question, restriction, value);
 CREATE TABLE IF NOT EXISTS memories_archive (
 	id INTEGER PRIMARY KEY,
-	content TEXT NOT NULL,
-	embedding BLOB NOT NULL,
-	type TEXT NOT NULL,
+	subject TEXT NOT NULL,
+	question TEXT NOT NULL,
+	restriction TEXT NOT NULL,
+	value TEXT NOT NULL,
 	importance_score REAL NOT NULL,
 	access_count INTEGER NOT NULL,
 	last_accessed INTEGER,
@@ -47,21 +52,16 @@ CREATE TABLE IF NOT EXISTS memories_archive (
 	superseded_by INTEGER,
 	valid_to INTEGER
 );
-CREATE VIRTUAL TABLE IF NOT EXISTS memories_fts USING fts5(
-	content,
-	content = 'memories_active',
-	content_rowid = 'id'
-);
-CREATE TRIGGER IF NOT EXISTS memories_active_ai AFTER INSERT ON memories_active BEGIN
-	INSERT INTO memories_fts(rowid, content) VALUES (new.id, new.content);
-END;
-CREATE TRIGGER IF NOT EXISTS memories_active_ad AFTER DELETE ON memories_active BEGIN
-	INSERT INTO memories_fts(memories_fts, rowid, content) VALUES ('delete', old.id, old.content);
-END;
 `
 
-const columns = `id, content, embedding, type, importance_score, access_count,
-	last_accessed, timestamp, source, superseded_by, valid_to`
+const columns = `id, subject, question, restriction, value, importance_score,
+	access_count, last_accessed, timestamp, source, superseded_by, valid_to`
+
+// ErrPreAddressedStore reports a memory.db written before #582, which
+// holds sentences rather than addresses. It is a distinct error because
+// there is no migration to offer: computing an address from a stored
+// sentence is a model call, and the store does not make one.
+var ErrPreAddressedStore = errors.New("memory.db holds the pre-addressed schema")
 
 // Store is the SQLite-backed memory.Store.
 type Store struct {
@@ -76,6 +76,15 @@ func Open(path string) (*Store, error) {
 	if err != nil {
 		return nil, fmt.Errorf("open %q: %w", path, err)
 	}
+	legacy, err := holdsSentences(db)
+	if err != nil {
+		db.Close()
+		return nil, fmt.Errorf("inspect %q: %w", path, err)
+	}
+	if legacy {
+		db.Close()
+		return nil, fmt.Errorf("%q: %w", path, ErrPreAddressedStore)
+	}
 	if _, err := db.Exec(schema); err != nil {
 		db.Close()
 		return nil, fmt.Errorf("create schema: %w", err)
@@ -83,41 +92,85 @@ func Open(path string) (*Store, error) {
 	return &Store{db: db}, nil
 }
 
+// holdsSentences reports whether the file already carries the sentence
+// store's active table. An empty or absent file carries no table at all
+// and is not one.
+func holdsSentences(db *sql.DB) (bool, error) {
+	var count int
+	err := db.QueryRow(
+		`SELECT count(*) FROM pragma_table_info('memories_active') WHERE name = 'content'`,
+	).Scan(&count)
+	if err != nil {
+		return false, fmt.Errorf("read table info: %w", err)
+	}
+	return count > 0, nil
+}
+
 // Close implements memory.Store.
 func (s *Store) Close() error { return s.db.Close() }
 
-// Insert implements memory.Store.
+// Insert implements memory.Store. A value already active at the address
+// is not stored twice: the write moves its timestamp and returns the row
+// that was already there, so restating a fact holds it once.
 func (s *Store) Insert(ctx context.Context, m memory.Memory) (int64, error) {
-	res, err := s.db.ExecContext(ctx,
-		`INSERT INTO memories_active (content, embedding, type, importance_score, timestamp, source)
-		 VALUES (?, ?, ?, ?, ?, ?)`,
-		m.Content, encodeEmbedding(m.Embedding), string(m.Type),
-		m.ImportanceScore, m.Timestamp.Unix(), m.Source)
+	// RETURNING rather than LastInsertId, which reports the connection's
+	// last inserted rowid and so reports a stale row when the upsert
+	// takes its update branch.
+	//
+	// Salience is raised and never lowered: a value restated by a join
+	// after a replacement wrote it keeps the correction's tier, which is
+	// what ADR 0006 asks of a correction's salience.
+	var id int64
+	err := s.db.QueryRowContext(ctx,
+		`INSERT INTO memories_active
+			(subject, question, restriction, value, importance_score, timestamp, source)
+		 VALUES (?, ?, ?, ?, ?, ?, ?)
+		 ON CONFLICT (subject, question, restriction, value) DO UPDATE SET
+			timestamp = excluded.timestamp,
+			importance_score = max(importance_score, excluded.importance_score),
+			source = excluded.source
+		 RETURNING id`,
+		m.Address.Subject, m.Address.Question, m.Address.Restriction, m.Value,
+		m.ImportanceScore, m.Timestamp.Unix(), m.Source).Scan(&id)
 	if err != nil {
 		return 0, fmt.Errorf("insert memory: %w", err)
 	}
-	return res.LastInsertId()
+	return id, nil
 }
 
-// Get implements memory.Store. Only active memories are visible.
-func (s *Store) Get(ctx context.Context, id int64) (memory.Memory, error) {
-	row := s.db.QueryRowContext(ctx,
-		`SELECT `+columns+` FROM memories_active WHERE id = ?`, id)
-	m, err := scanMemory(row)
-	if errors.Is(err, sql.ErrNoRows) {
-		return memory.Memory{}, fmt.Errorf("id %d: %w", id, memory.ErrNotFound)
-	}
-	if err != nil {
-		return memory.Memory{}, fmt.Errorf("get %d: %w", id, err)
-	}
-	return m, nil
+// At implements memory.Store.
+func (s *Store) At(ctx context.Context, a memory.Address) ([]memory.Memory, error) {
+	return s.query(ctx,
+		`WHERE subject = ? AND question = ? AND restriction = ?`,
+		a.Subject, a.Question, a.Restriction)
+}
+
+// UnderQuestion implements memory.Store.
+func (s *Store) UnderQuestion(ctx context.Context, subject, question string) ([]memory.Memory, error) {
+	return s.query(ctx, `WHERE subject = ? AND question = ?`, subject, question)
+}
+
+// UnderSubject implements memory.Store.
+func (s *Store) UnderSubject(ctx context.Context, subject string) ([]memory.Memory, error) {
+	return s.query(ctx, `WHERE subject = ?`, subject)
 }
 
 // Active implements memory.Store.
 func (s *Store) Active(ctx context.Context) ([]memory.Memory, error) {
-	rows, err := s.db.QueryContext(ctx, `SELECT `+columns+` FROM memories_active`)
+	return s.query(ctx, ``)
+}
+
+// query runs one read over the active table. The order is the address
+// index's own — restriction, then insertion — so a read is repeatable and
+// a caller reading two addresses gets the narrower one after the wider.
+// It is a traversal order and not a ranking: nothing here scores a row,
+// and an addressed store has no ordering to offer over the addresses a
+// question spans (ADR 0018 §What is not measured).
+func (s *Store) query(ctx context.Context, where string, args ...any) ([]memory.Memory, error) {
+	rows, err := s.db.QueryContext(ctx,
+		`SELECT `+columns+` FROM memories_active `+where+` ORDER BY restriction, id`, args...)
 	if err != nil {
-		return nil, fmt.Errorf("list active: %w", err)
+		return nil, fmt.Errorf("read active: %w", err)
 	}
 	defer rows.Close()
 	var out []memory.Memory
@@ -127,37 +180,6 @@ func (s *Store) Active(ctx context.Context) ([]memory.Memory, error) {
 			return nil, fmt.Errorf("scan active: %w", err)
 		}
 		out = append(out, m)
-	}
-	return out, rows.Err()
-}
-
-// FTSRanks implements memory.Store. The query is tokenized and each token
-// is quoted and OR-ed, so agent-supplied text can never inject FTS5
-// syntax.
-func (s *Store) FTSRanks(ctx context.Context, query string) (map[int64]float64, error) {
-	terms := tokenize(query)
-	if len(terms) == 0 {
-		return map[int64]float64{}, nil
-	}
-	quoted := make([]string, len(terms))
-	for i, t := range terms {
-		quoted[i] = `"` + strings.ReplaceAll(t, `"`, `""`) + `"`
-	}
-	rows, err := s.db.QueryContext(ctx,
-		`SELECT rowid, rank FROM memories_fts WHERE memories_fts MATCH ?`,
-		strings.Join(quoted, " OR "))
-	if err != nil {
-		return nil, fmt.Errorf("fts match: %w", err)
-	}
-	defer rows.Close()
-	out := make(map[int64]float64)
-	for rows.Next() {
-		var id int64
-		var rank float64
-		if err := rows.Scan(&id, &rank); err != nil {
-			return nil, fmt.Errorf("scan fts: %w", err)
-		}
-		out[id] = rank
 	}
 	return out, rows.Err()
 }
@@ -215,20 +237,17 @@ type scanner interface {
 func scanMemory(row scanner) (memory.Memory, error) {
 	var (
 		m          memory.Memory
-		typ        string
-		emb        []byte
 		lastAccess sql.NullInt64
 		timestamp  int64
 		superseded sql.NullInt64
 		validTo    sql.NullInt64
 	)
-	err := row.Scan(&m.ID, &m.Content, &emb, &typ, &m.ImportanceScore,
-		&m.AccessCount, &lastAccess, &timestamp, &m.Source, &superseded, &validTo)
+	err := row.Scan(&m.ID, &m.Address.Subject, &m.Address.Question, &m.Address.Restriction,
+		&m.Value, &m.ImportanceScore, &m.AccessCount, &lastAccess, &timestamp,
+		&m.Source, &superseded, &validTo)
 	if err != nil {
 		return memory.Memory{}, err
 	}
-	m.Type = memory.Type(typ)
-	m.Embedding = decodeEmbedding(emb)
 	m.Timestamp = time.Unix(timestamp, 0).UTC()
 	if lastAccess.Valid {
 		m.LastAccessed = time.Unix(lastAccess.Int64, 0).UTC()
@@ -242,34 +261,10 @@ func scanMemory(row scanner) (memory.Memory, error) {
 	return m, nil
 }
 
-func encodeEmbedding(v []float32) []byte {
-	buf := make([]byte, 4*len(v))
-	for i, f := range v {
-		binary.LittleEndian.PutUint32(buf[4*i:], math.Float32bits(f))
-	}
-	return buf
-}
-
-func decodeEmbedding(buf []byte) []float32 {
-	out := make([]float32, len(buf)/4)
-	for i := range out {
-		out[i] = math.Float32frombits(binary.LittleEndian.Uint32(buf[4*i:]))
-	}
-	return out
-}
-
 // nullID maps the service's "0 means none" convention to SQL NULL.
 func nullID(id int64) any {
 	if id == 0 {
 		return nil
 	}
 	return id
-}
-
-// tokenize mirrors memory's tokenization so FTS queries match what the
-// embedder saw.
-func tokenize(text string) []string {
-	return strings.FieldsFunc(strings.ToLower(text), func(r rune) bool {
-		return !unicode.IsLetter(r) && !unicode.IsDigit(r)
-	})
 }

@@ -145,9 +145,11 @@ type Frame interface {
 	Close() error
 }
 
-// The frames measured. shipped is internal/memory as it ran in
-// production when these results were committed (see the record's
-// §Limits: supersession on insert has since been removed, #529);
+// The frames measured. shipped is internal/memory as it runs in
+// production, which since #582 is the addressed store ADR 0018 decided;
+// the committed figures under this name were taken while it held
+// sentences with an embedding and a keyword index over them, and the
+// record's §Limits says so;
 // document keeps no store at all and is what proves the seam does not
 // encode the shipped design's shape; the attribute frames hold a fact at
 // its address and differ only in how many values one address holds; the
@@ -190,7 +192,7 @@ var frameNames = []string{
 func NewFrame(name, dir string, counter *EmbedCounter, budget int) (Frame, error) {
 	switch name {
 	case frameShipped:
-		return NewShippedFrame(dir, counter, budget)
+		return NewShippedFrame(dir)
 	case frameDocument:
 		return NewDocumentFrame(budget), nil
 	case frameAttributeSingle:

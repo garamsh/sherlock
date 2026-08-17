@@ -7,8 +7,6 @@ import (
 	"sort"
 	"strings"
 	"time"
-
-	"github.com/garamsh/gagent/internal/memory"
 )
 
 // streamRule is which published design a memory stream is run as. The three
@@ -65,7 +63,7 @@ const (
 // semanticImportance is what the substituted importance comes to for a turn
 // that carries a fact, on the paper's 1-to-10 scale. It is what a reflection
 // reads and what a reflection is written at.
-const semanticImportance = memory.SalienceAddSemantic * importanceCeiling
+const semanticImportance = salienceAddSemantic * importanceCeiling
 
 // streamItem is one record in the stream.
 type streamItem struct {
@@ -103,7 +101,7 @@ type streamItem struct {
 type streamFrame struct {
 	rule     streamRule
 	budget   int
-	embedder memory.Embedder
+	embedder Embedder
 	items    []*streamItem
 	// pending is the importance summed since the last reflection, which is
 	// what the reflecting rule triggers on.
@@ -116,9 +114,9 @@ type streamFrame struct {
 func NewStreamFrame(rule streamRule, counter *EmbedCounter, budget int) Frame {
 	limit := documentLimit
 	if budget > 0 {
-		limit = budget * memory.CharsPerToken
+		limit = budget * charsPerToken
 	}
-	return &streamFrame{rule: rule, budget: limit, embedder: counter.Wrap(memory.NewHashingEmbedder())}
+	return &streamFrame{rule: rule, budget: limit, embedder: counter.Wrap(NewHashingEmbedder())}
 }
 
 // Observe appends the turn as a record, and on the reflecting rule
@@ -305,7 +303,7 @@ func (f *streamFrame) Size(context.Context) (Size, error) {
 
 // vectorBytes is what one embedding costs where it is kept: the shipped
 // dimension at four bytes a component.
-const vectorBytes = memory.EmbeddingDim * 4
+const vectorBytes = EmbeddingDim * 4
 
 // Held is every record's text.
 func (f *streamFrame) Held(context.Context) ([]string, error) {
@@ -357,17 +355,4 @@ func normalize(values []float64) {
 	for i := range values {
 		values[i] = (values[i] - low) / span
 	}
-}
-
-// cosine is the similarity between two embeddings. The shipped embedder
-// returns unit vectors, so the dot product is the cosine.
-func cosine(a, b []float32) float64 {
-	if len(a) != len(b) {
-		return 0
-	}
-	var sum float32
-	for i := range a {
-		sum += a[i] * b[i]
-	}
-	return float64(sum)
 }

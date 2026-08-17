@@ -27,6 +27,7 @@ Issues, PRs, and comments are documentation too.
 - **Facts only.** No rhetoric, no self-assessment, no inflated language ("perfect", "massive improvement"). State what changed, where, and why.
 - **Stay inside the template.** No extra sections beyond the template fields; leave no field empty — write `N/A` with a reason.
 - **One comment, one point.** A comment carries a single request, instruction, or question. Ground it by citing a path or a rule, not by arguing.
+- **An issue that can be met literally while its goal fails is malformed.** Where it enumerates cases, checks, or candidates, say whether the list bounds the work — unmarked, a reader takes it as the definition. Where it asks for a measurement, say what condition makes a null result an answer rather than a run that never exercised the thing.
 
 ## Format
 

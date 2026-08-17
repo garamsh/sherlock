@@ -1,4 +1,4 @@
-package workspace_test
+package server_test
 
 import (
 	"context"
@@ -16,6 +16,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/garamsh/gagent/internal/workspace"
+	"github.com/garamsh/gagent/internal/workspace/server"
 	"github.com/garamsh/gagent/internal/workspace/shell"
 )
 
@@ -36,7 +37,7 @@ func TestServe_ContractEndToEnd(t *testing.T) {
 	addr := listen.Addr().String()
 	require.NoError(t, listen.Close())
 
-	opts := workspace.ServeOptions{
+	opts := server.ServeOptions{
 		Addr: addr,
 		Dir:  filepath.Join(t.TempDir(), "workspace"),
 		// Single-account mode: exec children run as the test process's
@@ -47,7 +48,7 @@ func TestServe_ContractEndToEnd(t *testing.T) {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	done := make(chan error, 1)
-	go func() { done <- workspace.Serve(ctx, opts, slog.New(slog.DiscardHandler)) }()
+	go func() { done <- server.Serve(ctx, opts, slog.New(slog.DiscardHandler)) }()
 	t.Cleanup(func() {
 		cancel()
 		select {

@@ -17,6 +17,7 @@ import (
 	"github.com/garamsh/gagent/internal/tool"
 	"github.com/garamsh/gagent/internal/workspace"
 	"github.com/garamsh/gagent/internal/workspace/files"
+	"github.com/garamsh/gagent/internal/workspace/server"
 	"github.com/garamsh/gagent/internal/workspace/shell"
 )
 
@@ -68,7 +69,7 @@ func startFakeWorkspace(t *testing.T) (string, *files.FS, *fakeExecutor, func())
 	addr := listen.Addr().String()
 
 	srv := grpc.NewServer()
-	workspace.RegisterWorkspaceServer(srv, &workspace.Server{FS: fs, Executor: exec})
+	workspace.RegisterWorkspaceServer(srv, &server.Server{FS: fs, Executor: exec})
 	go func() { _ = srv.Serve(listen) }()
 
 	stop := func() {

@@ -1,4 +1,4 @@
-package workspace_test
+package server_test
 
 import (
 	"context"
@@ -15,6 +15,7 @@ import (
 
 	"github.com/garamsh/gagent/internal/workspace"
 	"github.com/garamsh/gagent/internal/workspace/files"
+	"github.com/garamsh/gagent/internal/workspace/server"
 	"github.com/garamsh/gagent/internal/workspace/shell"
 )
 
@@ -48,7 +49,7 @@ func newTestWorkspace(t *testing.T) (workspace.WorkspaceClient, *files.FS, *fake
 	require.NoError(t, err)
 
 	srv := grpc.NewServer()
-	workspace.RegisterWorkspaceServer(srv, &workspace.Server{FS: fs, Executor: exec})
+	workspace.RegisterWorkspaceServer(srv, &server.Server{FS: fs, Executor: exec})
 
 	go func() { _ = srv.Serve(listen) }()
 

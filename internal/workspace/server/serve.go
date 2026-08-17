@@ -1,4 +1,4 @@
-package workspace
+package server
 
 import (
 	"context"
@@ -10,6 +10,7 @@ import (
 
 	"google.golang.org/grpc"
 
+	"github.com/garamsh/gagent/internal/workspace"
 	"github.com/garamsh/gagent/internal/workspace/files"
 	"github.com/garamsh/gagent/internal/workspace/shell"
 )
@@ -63,7 +64,7 @@ func Serve(ctx context.Context, opts ServeOptions, logger *slog.Logger) error {
 		return err
 	}
 	grpcServer := grpc.NewServer()
-	RegisterWorkspaceServer(grpcServer, &Server{
+	workspace.RegisterWorkspaceServer(grpcServer, &Server{
 		FS:       workspaceFS,
 		Executor: shell.NewProcessExecutor(opts.ExecUID, opts.ExecTimeout),
 	})

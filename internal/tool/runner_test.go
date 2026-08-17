@@ -113,8 +113,8 @@ func TestRunner_InvalidJsonOutput(t *testing.T) {
 }
 
 // TestRunner_EmptyOutput covers the case where the tool writes
-// nothing to stdout: the runner returns an empty-output error so the
-// caller can quarantine the tool.
+// nothing to stdout: the runner returns an empty-output error, so the
+// call fails rather than an empty result reaching the caller.
 func TestRunner_EmptyOutput(t *testing.T) {
 	script := tinyScript(t, `cat >/dev/null
 exit 0`)

@@ -212,7 +212,7 @@ func TestScriptTool_ManifestGateRejectsNullOnRequiredInput(t *testing.T) {
 
 // TestScriptTool_ManifestGateAcceptsOmittedOptionalOutput holds ADR
 // 0009 invariant 4 to the manifest: `detail` is optional there, so an
-// output carrying only `status` conforms and is not quarantined.
+// output carrying only `status` conforms and the call succeeds.
 func TestScriptTool_ManifestGateAcceptsOmittedOptionalOutput(t *testing.T) {
 	reg := optionalFieldRegistry(t)
 

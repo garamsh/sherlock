@@ -304,6 +304,25 @@ func TestRuntime_CloseConsolidatesEpisodicCluster(t *testing.T) {
 	assert.Contains(t, active[0].Content, "staging deploy failed on migration")
 }
 
+// TestQueue_CloseClosesTheStore pins the served path: SIGTERM cancels
+// the context, the queue closes, and the runtime's Close has to leave a
+// checkpointed database behind. The store is a mounted volume
+// (`deployment.md`), so an unclosed handle hands the next agent a
+// `memory.db` whose last writes are still in a `-wal` beside it (#568).
+func TestQueue_CloseClosesTheStore(t *testing.T) {
+	root := t.TempDir()
+	factory := &gateway.Factory{
+		MemoryPath: memoryPath(root),
+		NewModel:   func(string) agent.Model { return agent.NewScriptedModel() },
+	}
+	q, err := gateway.NewQueue(factory, "env-1", newTestLogger())
+	require.NoError(t, err)
+
+	require.NoError(t, q.Close())
+
+	assertStoreCheckpointed(t, memoryPath(root))
+}
+
 func compactionModel(_ string) agent.Model {
 	return agent.NewScriptedModel(
 		agent.ScriptedStep{Content: `{"reply":"First reply.","memory_ops":[]}`},

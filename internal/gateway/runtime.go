@@ -121,8 +121,14 @@ func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink)
 			return err
 		},
 		Close: func(ctx context.Context) error {
+			// Consolidation writes, so it runs before the handle
+			// closes. The close runs even when it fails: the store
+			// opens in WAL mode, so an unclosed handle leaves the
+			// `-wal` and `-shm` files beside `memory.db` with the
+			// last checkpoint unrun, and that file is what the next
+			// agent starts from (`deployment.md`).
 			_, err := memSvc.Consolidate(ctx)
-			return err
+			return errors.Join(err, memSvc.Close())
 		},
 	}, nil
 }

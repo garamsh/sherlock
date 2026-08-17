@@ -32,8 +32,10 @@ type Model interface {
 type ToolClient interface {
 	// List returns the descriptors (sorted by name) the model sees.
 	List() []tool.Descriptor
-	// Call dispatches one tool call. Validation, permission policy,
-	// and output quarantine are the client's responsibility.
+	// Call dispatches one tool call. Validation and permission policy
+	// are the client's responsibility, and so is holding a
+	// non-conforming output back: a call whose output fails its schema
+	// returns an error and the output does not reach the model.
 	Call(ctx context.Context, name string, input json.RawMessage) (json.RawMessage, error)
 }
 

@@ -1,10 +1,14 @@
 package main
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/garamsh/gagent/internal/agent"
 )
 
 // TestAskedProse_AsksEveryAssertionWithItsOwnProbe pins the pairing this
@@ -198,4 +202,26 @@ func TestProseNormalize_IsCaseAndPunctuationOnly(t *testing.T) {
 	assert.NotEqual(t, proseNormalize("where does Zara rehearse"),
 		proseNormalize("where does Zara practise"),
 		"a different wording is a different address, and this round does not hide that")
+}
+
+// TestProseRound_MeasuredTheShippedPrompt is this round's link in the
+// chain #546 built. That commit held the decade run against the
+// internal/memory constants it measured under; the constant this round
+// measures under is the shipped prompt, and a record that describes what
+// a prompt produces is worthless once the prompt has moved.
+//
+// The remedy when it fails is a decision and not an edit: re-run the
+// round and commit the result, or record these figures as historical in
+// §Limits. Editing the digest to match makes the record say a prompt was
+// measured that never was.
+func TestProseRound_MeasuredTheShippedPrompt(t *testing.T) {
+	prompt := sha256.Sum256([]byte(agent.ComposeInstructions("")))
+	assert.Equal(t, proseMeasuredPrompt, hex.EncodeToString(prompt[:]),
+		"internal/agent/instructions.go no longer holds the prose this round measured, "+
+			"so §What the shipped prose produces describes a prompt that has changed: "+
+			"re-run `-prose` and commit the result, or record the figures as historical")
+
+	schema := sha256.Sum256([]byte(agent.ResponseSchema))
+	assert.Equal(t, proseMeasuredSchema, hex.EncodeToString(schema[:]),
+		"agent.ResponseSchema no longer holds the schema this round measured")
 }

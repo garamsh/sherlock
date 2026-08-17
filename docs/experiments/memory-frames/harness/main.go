@@ -97,6 +97,7 @@ type Run struct {
 
 	Declarer     *DeclarerScore     `json:"declarer,omitempty"`
 	Addresser    *AddressScore      `json:"addresser,omitempty"`
+	Prose        *ProseScore        `json:"prose,omitempty"`
 	Model        []ModelRun         `json:"model_runs,omitempty"`
 	Bias         []BiasResult       `json:"join_bias,omitempty"`
 	Stability    *Stability         `json:"stability,omitempty"`
@@ -498,6 +499,24 @@ func runHarder(ctx context.Context, seed int64, files runFiles, pay bool, cacheP
 	}
 	fmt.Printf("measured %d shapes\n", len(shapes))
 	return renderRecord(files)
+}
+
+// readCommittedProse reads the prose round a paid run committed and scores
+// it, which costs nothing.
+func readCommittedProse(path string) (*ProseScore, error) {
+	body, err := os.ReadFile(path)
+	if os.IsNotExist(err) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("read %s: %w", path, err)
+	}
+	var run ProseRun
+	if err := json.Unmarshal(body, &run); err != nil {
+		return nil, fmt.Errorf("decode %s: %w", path, err)
+	}
+	scored := ScoreProse(run)
+	return &scored, nil
 }
 
 // readCommittedAddresses reads the addresses a paid run committed and scores

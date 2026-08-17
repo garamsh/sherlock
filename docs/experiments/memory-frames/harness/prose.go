@@ -53,6 +53,19 @@ const (
 	prosePriceIn   = 0.15
 	prosePriceOut  = 0.60
 	prosePriceRead = "2026-08-17"
+
+	// proseMeasuredPrompt and proseMeasuredSchema are the SHA-256 of
+	// agent.ComposeInstructions("") and agent.ResponseSchema as the
+	// committed round measured them. #546 held this record's figures
+	// against the constants they were measured under; the constant this
+	// round is measured under is the prompt itself, so it is pinned the
+	// same way. A change to instructions.go fails the test rather than
+	// leaving a record that describes a prompt no longer shipped — and
+	// that is the whole subject here, so the failure is the point rather
+	// than an inconvenience. The remedy is a decision: re-run and commit,
+	// or say in §Limits that these figures are historical.
+	proseMeasuredPrompt = "6be53ea7ac20e7897020ddf8158e5ccd3018d3b7c1954b7506c3f913496574cc"
+	proseMeasuredSchema = "0944fae4c3f16b2db3551289c7872aad257e23142491f1df141b84e91ce5b69f"
 )
 
 // proseReadInstruction is the read step, and this round has to supply it:
@@ -224,6 +237,15 @@ func proseKey(subject, question string) string {
 // ProseScore is what the round reports. Every rate is a Figure so the
 // record cannot show a number the workload only appeared to produce.
 type ProseScore struct {
+	Model            string  `json:"model"`
+	Calls            int     `json:"calls"`
+	PromptTokens     int     `json:"prompt_tokens"`
+	CompletionTokens int     `json:"completion_tokens"`
+	PriceInPerM      float64 `json:"price_input_per_million_usd"`
+	PriceOutPerM     float64 `json:"price_output_per_million_usd"`
+	PriceRead        string  `json:"price_read_on"`
+	CostUSD          float64 `json:"cost_usd"`
+
 	Asked int `json:"asked"`
 	Reads int `json:"reads"`
 
@@ -269,7 +291,13 @@ func ScoreProse(run ProseRun) ProseScore {
 		reads[r.Probe] = r
 	}
 
-	score := ProseScore{Asked: len(run.Writes), Reads: len(run.Reads)}
+	score := ProseScore{
+		Model: run.Model, Calls: run.Calls,
+		PromptTokens: run.PromptTokens, CompletionTokens: run.CompletionTokens,
+		PriceInPerM: run.PriceInputPerMillionUSD, PriceOutPerM: run.PriceOutputPerMillion,
+		PriceRead: run.PriceReadOn, CostUSD: run.CostUSD,
+		Asked: len(run.Writes), Reads: len(run.Reads),
+	}
 	var parsed, right, subjectVal, questionVal, selfAns []float64
 	var reachable, subjectMatch, questionMatch []float64
 	wordings := map[string][]float64{}

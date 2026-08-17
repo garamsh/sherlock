@@ -2,9 +2,6 @@
 	"name": "files",
 	"description": "Read, write, and list files inside the agent's workspace.",
 	"command": "files",
-	"env": [
-		"GAGENT_WORKSPACE_ADDR"
-	],
 	"input_schema": {
 		"type": "object",
 		"properties": {

@@ -132,16 +132,35 @@ exit 0`)
 	require.Error(t, err)
 }
 
-// TestRunner_EnvIsForwarded pins the per-tool env scoping: the
-// manifest's env entries are forwarded to the spawned process. The
-// script echoes the env var to stdout.
-func TestRunner_EnvIsForwarded(t *testing.T) {
-	script := tinyScript(t, `echo "{\"got\":\"$MY_SCOPE_VAR\"}"`)
+// TestRunner_ToolGetsNothingTheAgentDoesNotHold pins the answer to the
+// question #550 turned on: whether a tool may hold a credential the
+// agent does not. It may not. No manifest field and no other surface
+// puts a value in front of one tool, so a variable the agent's
+// environment lacks is a variable the tool reads empty.
+//
+// TestRunner_ToolInheritsTheAgentEnvironment already holds the other
+// direction. The inherited value is asserted here as the control rather
+// than as a second pin of it: without one, an empty `scoped` would also
+// be what a broken script or a failed spawn produced, and the assertion
+// that matters would pass for the wrong reason.
+//
+// This replaces TestRunner_EnvIsForwarded, which passed while the field
+// was inert. That test declared `MY_SCOPE_VAR=from-manifest`, an
+// assignment, and proved the runner forwards one; every shipped manifest
+// instead held a bare name, which is not an assignment and set nothing.
+// A green test over a form of the field nothing used is how three
+// documents came to describe a per-tool scope that never existed.
+func TestRunner_ToolGetsNothingTheAgentDoesNotHold(t *testing.T) {
+	t.Setenv("GAGENT_TEST_AGENT_HOLDS", "from-the-agent")
+
+	// Deliberately never set: it stands for the credential an operator
+	// might want to give one tool and not the agent. Nothing can.
+	script := tinyScript(t,
+		`echo "{\"inherited\":\"$GAGENT_TEST_AGENT_HOLDS\",\"scoped\":\"$GAGENT_TEST_TOOL_ONLY\"}"`)
 	manifest := tool.Manifest{
-		Name:         "env",
-		Description:  "env",
+		Name:         "envprobe",
+		Description:  "envprobe",
 		Command:      script,
-		Env:          []string{"MY_SCOPE_VAR=from-manifest"},
 		InputSchema:  json.RawMessage(`{"type":"object"}`),
 		OutputSchema: json.RawMessage(`{"type":"object"}`),
 	}
@@ -149,7 +168,16 @@ func TestRunner_EnvIsForwarded(t *testing.T) {
 
 	out, _, err := runner.Run(context.Background(), json.RawMessage(`{}`))
 	require.NoError(t, err)
-	assert.Contains(t, string(out), "from-manifest")
+
+	var got struct {
+		Inherited string `json:"inherited"`
+		Scoped    string `json:"scoped"`
+	}
+	require.NoError(t, json.Unmarshal(out, &got))
+	assert.Equal(t, "from-the-agent", got.Inherited,
+		"the tool runs inside the agent's environment and reads what it holds")
+	assert.Empty(t, got.Scoped,
+		"nothing gives a tool a value the agent does not have")
 }
 
 // TestRunner_CommandRelativeToManifestDir confirms the resolver: a

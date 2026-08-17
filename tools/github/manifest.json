@@ -2,9 +2,6 @@
 	"name": "github",
 	"description": "Push branches and manage issues, pull requests, and comments on GitHub via the REST API.",
 	"command": "github",
-	"env": [
-		"GH_TOKEN"
-	],
 	"input_schema": {
 		"type": "object",
 		"properties": {

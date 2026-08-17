@@ -7,10 +7,12 @@ import (
 )
 
 // ErrAgentUIDUnavailable is returned by ProcessExecutor.Run when the
-// child cannot run as AgentUID: AgentUID differs from the euid and the
-// process lacks the privilege to switch (typically: not running as root
-// or setuid-root), or the host cannot provide the network isolation the
-// request needs.
+// platform cannot deliver the boundary the call needs: AgentUID differs
+// from the euid and the process lacks the privilege to switch (typically:
+// not running as root or setuid-root), the host cannot provide the network
+// isolation the request needs, or the executor holds no CAP_KILL and so
+// could not stop a child it dropped to another account when its deadline
+// expired (#612).
 var ErrAgentUIDUnavailable = errors.New("shell: agent_uid unavailable")
 
 // ErrRlimitsUnavailable is returned by ProcessExecutor.Run when an

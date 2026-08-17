@@ -74,11 +74,14 @@ func runProbe(t *testing.T, executor shell.Executor, req shell.Request) shell.Re
 	if err == nil {
 		return res
 	}
+	// The sentinel covers every boundary the platform cannot deliver — the
+	// namespace among them, and since #612 an absent CAP_KILL too — so the
+	// wording names the class and lets the error name the cause.
 	if errors.Is(err, shell.ErrAgentUIDUnavailable) {
 		if privilegedRun() {
-			t.Fatalf("GAGENT_PRIVILEGED_TESTS is set but this host cannot create the isolation namespace, so the run cannot report on it: %v", err)
+			t.Fatalf("GAGENT_PRIVILEGED_TESTS is set but this host cannot provide what an isolated call needs, so the run cannot report on it: %v", err)
 		}
-		t.Skipf("this host cannot create the isolation namespace: %v", err)
+		t.Skipf("this host cannot provide what an isolated call needs: %v", err)
 	}
 	what := "the child could not be started"
 	if req.NoNetwork {

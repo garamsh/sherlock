@@ -2,10 +2,6 @@
 	"name": "message_send",
 	"description": "Queue an outbound message for delivery to a channel and target.",
 	"command": "message_send",
-	"env": [
-		"GAGENT_OUTBOX_DIR",
-		"GAGENT_AGENT_ID"
-	],
 	"input_schema": {
 		"type": "object",
 		"properties": {

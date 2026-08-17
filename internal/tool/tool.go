@@ -8,13 +8,18 @@ import (
 
 // Manifest is the contract the platform reads from tools/<name>/manifest.json
 // (ADR 0009 §Decision). The manifest is the full description the platform
-// trusts: name, description, command, env, and the two JSON Schemas. The
+// trusts: name, description, command, and the two JSON Schemas. The
 // descriptor the model sees is a strict projection of this struct.
+//
+// The manifest describes the tool's interface and promises nothing about
+// secrets: it names no credential and carries no value the runner reads
+// into the tool's environment. A tool's credentials come from the agent's
+// environment, which it inherits whole (#543, security.md §Tool trust
+// posture), so the manifest has no field that could narrow or widen them.
 type Manifest struct {
 	Name         string          `json:"name"`
 	Description  string          `json:"description"`
 	Command      string          `json:"command"`
-	Env          []string        `json:"env,omitempty"`
 	InputSchema  json.RawMessage `json:"input_schema"`
 	OutputSchema json.RawMessage `json:"output_schema"`
 }

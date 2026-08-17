@@ -40,7 +40,6 @@ func TestParseManifest_OK(t *testing.T) {
 	assert.Equal(t, "echo", m.Name)
 	assert.Equal(t, "echo the input", m.Description)
 	assert.Equal(t, "echo.sh", m.Command)
-	assert.Empty(t, m.Env)
 	assert.JSONEq(t, `{"type":"object"}`, string(m.InputSchema))
 }
 
@@ -135,20 +134,31 @@ func TestParseManifest_DefaultsMissingSchemas(t *testing.T) {
 	assert.JSONEq(t, `{"type":"object"}`, string(m.OutputSchema))
 }
 
-// TestParseManifest_EnvArray confirms the env field round-trips as a
-// string slice. The runner forwards the array to the spawned process.
-func TestParseManifest_EnvArray(t *testing.T) {
+// TestParseManifest_RejectsEnvField pins the removal of the env field
+// (#550). It was inert — the runner appended its entries to the child's
+// environment, and every manifest filled it with bare names, which are
+// not assignments — and a manifest field that names a capability and has
+// none is the defect #503 was. Rejecting it is the strict-fields rule
+// doing its job: an operator carrying the field forward gets a startup
+// error naming it rather than a declaration that reads as a per-tool
+// credential scope and is not one.
+//
+// This is the test the field never had. Nothing pinned its behaviour,
+// which is how it stayed inert across three documents describing it.
+func TestParseManifest_RejectsEnvField(t *testing.T) {
 	raw := []byte(`{
 		"name": "echo",
 		"description": "d",
 		"command": "x.sh",
-		"env": ["FOO=bar", "BAZ=qux"],
+		"env": ["GH_TOKEN"],
 		"input_schema": {"type": "object"},
 		"output_schema": {"type": "object"}
 	}`)
-	m, err := tool.ParseManifest(raw)
-	require.NoError(t, err)
-	assert.Equal(t, []string{"FOO=bar", "BAZ=qux"}, m.Env)
+	_, err := tool.ParseManifest(raw)
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "parse manifest")
+	assert.Contains(t, err.Error(), "env",
+		"the error names the field so an operator can find it")
 }
 
 // TestManifestHash_StableUnderKeyOrder pins the canonicalization rule:
@@ -201,12 +211,12 @@ func TestManifestHash_StableUnderDeepKeyOrder(t *testing.T) {
 }
 
 // TestManifestHash_ArrayOrderIsSignal pins the limit of the rule above.
-// An array's order is meaning — `env` names variables and `required`
-// lists fields — so two manifests differing in array order are two
-// different manifests and must not share a hash.
+// An array's order is meaning — a schema's `required` lists fields and
+// its `enum` lists accepted values — so two manifests differing in array
+// order are two different manifests and must not share a hash.
 func TestManifestHash_ArrayOrderIsSignal(t *testing.T) {
-	a := `{"name":"a","description":"d","command":"c","env":["FOO=1","BAR=2"],"input_schema":{"type":"object"},"output_schema":{"type":"object"}}`
-	b := `{"name":"a","description":"d","command":"c","env":["BAR=2","FOO=1"],"input_schema":{"type":"object"},"output_schema":{"type":"object"}}`
+	a := `{"name":"a","description":"d","command":"c","input_schema":{"type":"object","required":["x","y"]},"output_schema":{"type":"object"}}`
+	b := `{"name":"a","description":"d","command":"c","input_schema":{"type":"object","required":["y","x"]},"output_schema":{"type":"object"}}`
 	assert.NotEqual(t, tool.ManifestHash([]byte(a)), tool.ManifestHash([]byte(b)),
 		"array order is contract, so reordering one is drift")
 }
@@ -242,15 +252,15 @@ func TestLoadManifest_FileMissing(t *testing.T) {
 	assert.Contains(t, err.Error(), "read manifest")
 }
 
-// TestLoadManifest_EnvArraySerialize pins the JSON round-trip: the
-// env field is a string array, and the manifest deserializes it into
-// the Manifest struct correctly.
-func TestLoadManifest_EnvArraySerialize(t *testing.T) {
+// TestLoadManifest_SerializesTheDeclaredFields pins the JSON round-trip
+// over the fields the manifest still has, so a change to the struct's
+// tags surfaces here. The env field is gone (#550) and its absence is
+// pinned by TestParseManifest_RejectsEnvField.
+func TestLoadManifest_SerializesTheDeclaredFields(t *testing.T) {
 	doc := map[string]any{
 		"name":          "t",
 		"description":   "d",
 		"command":       "x.sh",
-		"env":           []string{"A=1", "B=2"},
 		"input_schema":  map[string]any{"type": "object"},
 		"output_schema": map[string]any{"type": "object"},
 	}
@@ -258,5 +268,7 @@ func TestLoadManifest_EnvArraySerialize(t *testing.T) {
 	require.NoError(t, err)
 	m, err := tool.ParseManifest(raw)
 	require.NoError(t, err)
-	assert.Equal(t, []string{"A=1", "B=2"}, m.Env)
+	assert.Equal(t, "t", m.Name)
+	assert.Equal(t, "d", m.Description)
+	assert.Equal(t, "x.sh", m.Command)
 }

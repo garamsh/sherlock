@@ -43,7 +43,12 @@ func (r *Runner) Run(ctx context.Context, input json.RawMessage) (json.RawMessag
 		return nil, "", errors.New("runner: command is empty")
 	}
 	cmd := exec.CommandContext(ctx, resolveCommand(r.workdir, r.manifest.Command))
-	cmd.Env = append(os.Environ(), r.manifest.Env...)
+	// The tool runs inside the agent's environment and inherits it whole
+	// (#543, security.md §Tool trust posture). The manifest cannot change
+	// that in either direction: it names no variable to add and none to
+	// keep out, because the platform does not dispatch secrets
+	// (ADR 0009). Passing os.Environ() unmodified is the whole policy.
+	cmd.Env = os.Environ()
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
 		return nil, "", fmt.Errorf("open stdin: %w", err)

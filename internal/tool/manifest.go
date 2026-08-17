@@ -142,9 +142,10 @@ func canonicalManifest(raw []byte) []byte {
 }
 
 // canonicalizeManifest re-encodes v with sorted object keys at every
-// depth. Array order is preserved: a list's order is contract — `env`
-// names variables and a schema's `required` lists fields — so two
-// manifests differing in it are two manifests, not one reformatted.
+// depth. Array order is preserved: a list's order is contract — a
+// schema's `required` lists fields, and its `enum` lists the accepted
+// values — so two manifests differing in it are two manifests, not one
+// reformatted.
 func canonicalizeManifest(v any) ([]byte, error) {
 	switch t := v.(type) {
 	case map[string]any:

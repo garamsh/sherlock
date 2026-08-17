@@ -12,6 +12,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/garamsh/gagent/internal/agent"
+	agentmemory "github.com/garamsh/gagent/internal/agent/memory"
 	"github.com/garamsh/gagent/internal/tool"
 )
 
@@ -1026,4 +1027,28 @@ func TestSessionRun_InstructionsInjectedOnce(t *testing.T) {
 	}
 	assert.Equal(t, 1, injections, "instructions are injected once, on the first turn")
 	require.Len(t, model.calls, 2)
+}
+
+// TestSessionRun_InstructionsSurviveCompaction crosses the boundary #642
+// fell at: a session whose history overflows keeps its instructions at
+// the head, so the model is still answering to the ego and contract —
+// and still ending turns with the writeback call they instruct — after
+// the first compaction.
+func TestSessionRun_InstructionsSurviveCompaction(t *testing.T) {
+	model := &captureModel{}
+	s := agent.NewSession(model, newFakeClient(), agent.Options{
+		Compactor:          agentmemory.Compactor{MaxHistoryMessages: 3},
+		MaxHistoryMessages: 3,
+	})
+
+	_, err := s.Run(context.Background(), "task one")
+	require.NoError(t, err)
+	_, err = s.Run(context.Background(), "task two")
+	require.NoError(t, err)
+
+	last := model.calls[len(model.calls)-1]
+	require.NotEmpty(t, last)
+	assert.Equal(t, agent.RoleSystem, last[0].Role)
+	assert.Equal(t, agent.ComposeInstructions(""), last[0].Content,
+		"the instructions still lead the history the model sees after a compaction")
 }

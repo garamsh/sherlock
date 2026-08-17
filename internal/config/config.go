@@ -3,11 +3,14 @@ package config
 import (
 	"errors"
 	"io/fs"
+	"log/slog"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"time"
 
+	"github.com/go-viper/mapstructure/v2"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 
@@ -187,13 +190,16 @@ func Resolve(fs *pflag.FlagSet) (Config, error) {
 	if err != nil {
 		return Config{}, err
 	}
-	if err := readConfigFile(v, configFile, "gagent", "config.yaml"); err != nil {
+	loaded, err := readConfigFile(v, configFile, "gagent", "config.yaml")
+	if err != nil {
 		return Config{}, err
 	}
 	var cfg Config
-	if err := v.Unmarshal(&cfg); err != nil {
+	var used mapstructure.Metadata
+	if err := v.Unmarshal(&cfg, recordKeys(&used)); err != nil {
 		return Config{}, err
 	}
+	reportUnknownKeys(loaded, used.Unused)
 	return cfg, nil
 }
 
@@ -212,18 +218,86 @@ func newConfigViper() *viper.Viper {
 // order: an explicit --config path, then ./<cwdName>.yaml, then
 // os.UserConfigDir()/gagent/<xdgName> (XDG; ~/.config/gagent/ on Linux).
 // A missing file is an error only for the explicit flag path. A loaded
-// file must be owner-only (docs/architecture/security.md).
-func readConfigFile(v *viper.Viper, flagPath, cwdName, xdgName string) error {
+// file must be owner-only (docs/architecture/security.md). It returns
+// the path it loaded, or "" when no file exists.
+func readConfigFile(v *viper.Viper, flagPath, cwdName, xdgName string) (string, error) {
 	loaded, err := loadConfigFile(v, flagPath, cwdName, xdgName)
 	if err != nil {
-		return err
+		return "", err
 	}
 	if loaded != "" {
 		if err := RequireOwnerOnly("config file", loaded); err != nil {
-			return err
+			return "", err
 		}
 	}
-	return nil
+	return loaded, nil
+}
+
+// recordKeys makes Unmarshal record which input keys it consumed, so
+// the ones it did not can be reported.
+func recordKeys(md *mapstructure.Metadata) viper.DecoderConfigOption {
+	return func(dc *mapstructure.DecoderConfig) { dc.Metadata = md }
+}
+
+// reportUnknownKeys warns for every key the config file carries that no
+// setting reads: a typo, a renamed key, or a block left over from a
+// removed feature. It reports rather than refuses, because refusing
+// would reject an operator's whole file the moment a key is renamed.
+//
+// The warning names the key and the file, which is what makes it
+// actionable: `tools.pin` for `tools.pins` turns drift pinning off
+// while the registry reports it as never configured (ADR 0009
+// invariant 2), and only the key's own name separates the two.
+//
+// unused carries every input key Unmarshal left over, which includes
+// the command's flags — they are bound to the same viper and most name
+// no setting. Only the keys the file itself carries are the operator's
+// to fix, so the file is what they are filtered against.
+func reportUnknownKeys(loaded string, unused []string) {
+	if loaded == "" || len(unused) == 0 {
+		return
+	}
+	fileKeys := configFileKeys(loaded)
+	if len(fileKeys) == 0 {
+		return
+	}
+	unknown := make([]string, 0, len(unused))
+	for _, key := range unused {
+		if carriedBy(fileKeys, key) {
+			unknown = append(unknown, key)
+		}
+	}
+	sort.Strings(unknown)
+	for _, key := range unknown {
+		slog.Warn("unknown config key: nothing reads it",
+			"op", "config.load", "key", key, "file", loaded)
+	}
+}
+
+// carriedBy reports whether the config file holds key, either as a leaf
+// of its own or as the root of a section: an unread `console:` section
+// is left over as `console`, while the file spells its leaf
+// `console.url`.
+func carriedBy(fileKeys []string, key string) bool {
+	for _, fileKey := range fileKeys {
+		if fileKey == key || strings.HasPrefix(fileKey, key+".") {
+			return true
+		}
+	}
+	return false
+}
+
+// configFileKeys returns the keys the config file itself carries,
+// separately from the defaults, flags and environment merged alongside
+// them. A file that no longer parses yields none: it was read once
+// already, and a diagnostic is not the place to fail on a second read.
+func configFileKeys(path string) []string {
+	v := viper.New()
+	v.SetConfigFile(path)
+	if err := v.ReadInConfig(); err != nil {
+		return nil
+	}
+	return v.AllKeys()
 }
 
 // loadConfigFile reads the config file into v and returns the path it

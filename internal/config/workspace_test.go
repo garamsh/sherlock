@@ -109,3 +109,20 @@ func TestResolveWorkspaceConfig_ConfigFlag(t *testing.T) {
 
 	assert.Equal(t, "/from-flag", cfg.Workspace)
 }
+
+func TestResolveWorkspaceConfig_UnknownFileKeyIsReported(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	path := filepath.Join(dir, "workspace.yaml")
+	require.NoError(t, os.WriteFile(path,
+		[]byte("addr: \"127.0.0.1:8081\"\nexec-uid-typo: 10001\n"), 0o600))
+	buf, restore := captureSlog(t)
+	defer restore()
+
+	_, err := config.ResolveWorkspace(workspaceFlags(t))
+	require.NoError(t, err)
+
+	assert.Contains(t, buf.String(), "key=exec-uid-typo",
+		"the workspace resolves the same way, so it reports the same way")
+	assert.Contains(t, buf.String(), "file="+path)
+}

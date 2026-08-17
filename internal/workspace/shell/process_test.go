@@ -16,6 +16,12 @@ import (
 	"github.com/garamsh/gagent/internal/workspace/shell"
 )
 
+// testExecUID is the account these tests ask the executor to drop to.
+// The platform declares no default of its own — the exec UID reaches
+// the workspace from config (internal/config), so the value a test
+// wants is the test's to name.
+const testExecUID = 1001
+
 // fakeExecutor is the test double for the Executor interface. It records
 // the last request and returns the canned result and error so callers
 // can assert on the Request shape without a real fork+exec.
@@ -42,7 +48,7 @@ func requireRoot(t *testing.T) {
 
 func TestProcessExecutor_Success(t *testing.T) {
 	requireRoot(t)
-	exec := shell.NewProcessExecutor(shell.DefaultAgentUID, 5*time.Second)
+	exec := shell.NewProcessExecutor(testExecUID, 5*time.Second)
 
 	res, err := exec.Run(context.Background(), shell.Request{Command: "echo hello"})
 	require.NoError(t, err)
@@ -54,7 +60,7 @@ func TestProcessExecutor_Success(t *testing.T) {
 
 func TestProcessExecutor_NonZeroExit(t *testing.T) {
 	requireRoot(t)
-	exec := shell.NewProcessExecutor(shell.DefaultAgentUID, 5*time.Second)
+	exec := shell.NewProcessExecutor(testExecUID, 5*time.Second)
 
 	res, err := exec.Run(context.Background(), shell.Request{Command: "sh -c 'exit 7'"})
 	require.NoError(t, err, "non-zero exits are not errors")
@@ -64,7 +70,7 @@ func TestProcessExecutor_NonZeroExit(t *testing.T) {
 
 func TestProcessExecutor_Timeout(t *testing.T) {
 	requireRoot(t)
-	exec := shell.NewProcessExecutor(shell.DefaultAgentUID, 5*time.Second)
+	exec := shell.NewProcessExecutor(testExecUID, 5*time.Second)
 
 	start := time.Now()
 	res, err := exec.Run(context.Background(), shell.Request{
@@ -84,7 +90,7 @@ func TestProcessExecutor_AgentUIDUnavailable(t *testing.T) {
 	}
 	// The AgentUID must differ from both 0 and the process euid — any
 	// fixed value could equal the test host's UID (the CI runner runs as
-	// 1001, DefaultAgentUID itself) and turn the fail-closed case into
+	// 1001, testExecUID itself) and turn the fail-closed case into
 	// the legitimate single-account path.
 	exec := shell.NewProcessExecutor(os.Geteuid()+1, 5*time.Second)
 
@@ -226,7 +232,7 @@ func TestProcessExecutor_SingleAccountRunsAsOwnUID(t *testing.T) {
 
 func TestProcessExecutor_DefaultTimeoutRejectsZero(t *testing.T) {
 	requireRoot(t)
-	exec := shell.NewProcessExecutor(shell.DefaultAgentUID, 0)
+	exec := shell.NewProcessExecutor(testExecUID, 0)
 
 	_, err := exec.Run(context.Background(), shell.Request{Command: "echo hi"})
 
@@ -237,7 +243,7 @@ func TestProcessExecutor_RunsInWorkspace(t *testing.T) {
 	requireRoot(t)
 	root := t.TempDir()
 	require.NoError(t, os.WriteFile(root+"/marker.txt", []byte("in-workspace"), 0o644))
-	exec := shell.NewProcessExecutor(shell.DefaultAgentUID, 5*time.Second)
+	exec := shell.NewProcessExecutor(testExecUID, 5*time.Second)
 
 	res, err := exec.Run(context.Background(), shell.Request{
 		Command: "cat marker.txt",
@@ -251,7 +257,7 @@ func TestProcessExecutor_RunsInWorkspace(t *testing.T) {
 func TestProcessExecutor_ScrubsPlatformEnv(t *testing.T) {
 	requireRoot(t)
 	t.Setenv("GAGENT_TEST_PLATFORM_SECRET", "hunter2")
-	exec := shell.NewProcessExecutor(shell.DefaultAgentUID, 5*time.Second)
+	exec := shell.NewProcessExecutor(testExecUID, 5*time.Second)
 
 	res, err := exec.Run(context.Background(), shell.Request{Command: "env"})
 
@@ -263,7 +269,7 @@ func TestProcessExecutor_ScrubsPlatformEnv(t *testing.T) {
 
 func TestProcessExecutor_RequestEnvAppliesOnTop(t *testing.T) {
 	requireRoot(t)
-	exec := shell.NewProcessExecutor(shell.DefaultAgentUID, 5*time.Second)
+	exec := shell.NewProcessExecutor(testExecUID, 5*time.Second)
 
 	res, err := exec.Run(context.Background(), shell.Request{
 		Command: "printf %s \"$GAGENT_TEST_REQUEST_VAR\"",

@@ -14,12 +14,18 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// testExecUID is this file's copy of the account the tests drop to;
+// process_test.go holds the external-test one. The platform declares
+// no default of its own — the exec UID reaches the workspace from
+// config (internal/config).
+const testExecUID = 1001
+
 // TestLimitSpecs_NprocOnlyInThePrivilegedDrop pins which caps reach the
 // shim: four in single-account mode, five when the child owns a
 // dedicated UID, because RLIMIT_NPROC counts the real UID's processes
 // (ADR 0010).
 func TestLimitSpecs_NprocOnlyInThePrivilegedDrop(t *testing.T) {
-	exec := NewProcessExecutor(DefaultAgentUID, 5*time.Second)
+	exec := NewProcessExecutor(testExecUID, 5*time.Second)
 
 	names := func(euid int) []string {
 		var out []string
@@ -37,7 +43,7 @@ func TestLimitSpecs_NprocOnlyInThePrivilegedDrop(t *testing.T) {
 // command line the untrusted child runs: this binary as the shim, every
 // cap, then the resolved program and the argv it sees.
 func TestShimCommandLine_CarriesEveryCapAndTheResolvedProgram(t *testing.T) {
-	exec := NewProcessExecutor(DefaultAgentUID, 5*time.Second)
+	exec := NewProcessExecutor(testExecUID, 5*time.Second)
 
 	line, err := exec.shimCommandLine("sh", []string{"sh", "-c", "echo hi"}, 0)
 	require.NoError(t, err)
@@ -57,7 +63,7 @@ func TestShimCommandLine_CarriesEveryCapAndTheResolvedProgram(t *testing.T) {
 // posture at the other end: without a shim to exec, the call reports
 // the caps as unavailable rather than running the child uncapped.
 func TestShimCommandLine_FailsWhenThisBinaryIsUnknown(t *testing.T) {
-	exec := NewProcessExecutor(DefaultAgentUID, 5*time.Second)
+	exec := NewProcessExecutor(testExecUID, 5*time.Second)
 	exec.shimErr = errors.New("no executable")
 
 	_, err := exec.shimCommandLine("sh", []string{"sh", "-c", "echo hi"}, 0)
@@ -135,7 +141,7 @@ func TestProcessExecutor_RootWithoutCapSysAdminReportsAgentUIDUnavailable(t *tes
 	if os.Geteuid() != 0 {
 		t.Skip("this case needs root; run with `sudo -E go test ./internal/workspace/shell/...`")
 	}
-	exec := NewProcessExecutor(DefaultAgentUID, 5*time.Second)
+	exec := NewProcessExecutor(testExecUID, 5*time.Second)
 	exec.netNS = false
 
 	res, err := exec.Run(context.Background(), Request{

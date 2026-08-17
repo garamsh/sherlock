@@ -124,7 +124,7 @@ func TestProcessExecutor_NoNetworkBlocksLoopback(t *testing.T) {
 		Command: fmt.Sprintf("%s -test.run=TestNetnsProbeHelper", probeBinary(t)),
 		Env:     []string{"GAGENT_NETNS_PROBE_ADDR=" + ln.Addr().String()},
 	}
-	executor := shell.NewProcessExecutor(shell.DefaultAgentUID, 5*time.Second)
+	executor := shell.NewProcessExecutor(testExecUID, 5*time.Second)
 
 	res := runProbe(t, executor, shell.Request{
 		Command:   req.Command,
@@ -148,7 +148,7 @@ func TestProcessExecutor_NoNetworkBlocksLoopback(t *testing.T) {
 // one.
 func TestProcessExecutor_LoopbackDownInNamespace(t *testing.T) {
 	requireRoot(t)
-	executor := shell.NewProcessExecutor(shell.DefaultAgentUID, 5*time.Second)
+	executor := shell.NewProcessExecutor(testExecUID, 5*time.Second)
 
 	res := runProbe(t, executor, shell.Request{
 		Command:   "ls /sys/class/net && cat /sys/class/net/lo/flags",

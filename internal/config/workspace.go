@@ -14,7 +14,8 @@ const (
 	defaultWorkspace = "data/workspace"
 
 	// defaultExecUID is the account the workspace's exec children drop
-	// to (ADR 0008); it mirrors shell.DefaultAgentUID.
+	// to (ADR 0008). It is the only declaration of that default: the
+	// workspace reads it from config and applies no default of its own.
 	defaultExecUID = 1001
 
 	// defaultExecTimeout is the per-call ceiling for Exec commands.

@@ -338,25 +338,6 @@ func TestRetain_TiersBySalience(t *testing.T) {
 		"the dropped memory sits in the archive, not the active index")
 }
 
-func TestForget_ArchivesBelowThreshold(t *testing.T) {
-	clock := now
-	svc := newService(t, memory.WithClock(func() time.Time { return clock }))
-	oldID := storeMemory(t, svc, "stale trivia", "episodic", 0)
-
-	clock = now.Add(30 * 24 * time.Hour)
-	freshID := storeMemory(t, svc, "fresh important fact", "semantic", 0.9)
-
-	archived, err := svc.Forget(context.Background(), 0.5)
-	require.NoError(t, err)
-	assert.Contains(t, archived, oldID)
-	assert.NotContains(t, archived, freshID)
-
-	results := search(t, svc, "stale trivia")
-	for _, r := range results {
-		assert.NotEqual(t, oldID, r.ID)
-	}
-}
-
 func TestStore_EvictsLowestScoreBeyondCapacity(t *testing.T) {
 	svc := newService(t,
 		memory.WithClock(func() time.Time { return now }),

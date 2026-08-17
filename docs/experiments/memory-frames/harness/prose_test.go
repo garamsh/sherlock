@@ -204,22 +204,31 @@ func TestProseNormalize_IsCaseAndPunctuationOnly(t *testing.T) {
 		"a different wording is a different address, and this round does not hide that")
 }
 
-// TestProseRound_MeasuredTheShippedPrompt is this round's link in the
-// chain #546 built. That commit held the decade run against the
-// internal/memory constants it measured under; the constant this round
-// measures under is the shipped prompt, and a record that describes what
-// a prompt produces is worthless once the prompt has moved.
+// TestProseRound_MeasuredAPromptThatHasSinceChanged is what this
+// round's link in the chain #546 built became. That commit held the
+// decade run against the internal/memory constants it measured under;
+// the constant this round measured under is the shipped prompt, and the
+// shipped prompt moved when the writeback became a tool call (#615):
+// under a tool transport the sentence "Your response is one JSON object
+// with two fields" describes a mechanism the agent no longer has.
 //
-// The remedy when it fails is a decision and not an edit: re-run the
-// round and commit the result, or record these figures as historical in
-// §Limits. Editing the digest to match makes the record say a prompt was
-// measured that never was.
-func TestProseRound_MeasuredTheShippedPrompt(t *testing.T) {
+// The register is not softened and the digest is not edited to match —
+// that would make the record say a prompt was measured that never was.
+// It is inverted, because the true claim has inverted: proseMeasuredPrompt
+// is now the record of a past prompt rather than an assertion about the
+// present one, and §Limits says the figures are historical. What this
+// still catches is the transition back: restore that prose and the
+// figures describe the shipped prompt again, which makes the §Limits
+// note wrong and must fail rather than pass quietly.
+//
+// The schema half is untouched and stays a live assertion: #615 moved
+// where ResponseSchema travels, not what it says.
+func TestProseRound_MeasuredAPromptThatHasSinceChanged(t *testing.T) {
 	prompt := sha256.Sum256([]byte(agent.ComposeInstructions("")))
-	assert.Equal(t, proseMeasuredPrompt, hex.EncodeToString(prompt[:]),
-		"internal/agent/instructions.go no longer holds the prose this round measured, "+
-			"so §What the shipped prose produces describes a prompt that has changed: "+
-			"re-run `-prose` and commit the result, or record the figures as historical")
+	assert.NotEqual(t, proseMeasuredPrompt, hex.EncodeToString(prompt[:]),
+		"internal/agent/instructions.go holds the prose this round measured again, "+
+			"so §What the shipped prose produces is no longer historical: "+
+			"remove that note from §Limits, or re-run `-prose` and commit the result")
 
 	schema := sha256.Sum256([]byte(agent.ResponseSchema))
 	assert.Equal(t, proseMeasuredSchema, hex.EncodeToString(schema[:]),

@@ -119,11 +119,14 @@ func RenderScores(runs map[string]Run) string {
 }
 
 // RenderFamilies is each pair family's cosine distribution and what the
-// shipped store did with it, under every embedder measured.
+// store did with it when these results were measured, under every
+// embedder measured. The store retires nothing now (#529), so a re-run
+// reports 0 in the retired column; the committed figures are what the
+// mechanism did while it existed.
 func RenderFamilies(seps map[string]Separability) string {
 	var b strings.Builder
 	fmt.Fprintf(&b, "| embedder | family | must supersede? | min | median | max | IQR "+
-		"| retired by the shipped store |\n")
+		"| retired by the store as it then ran |\n")
 	fmt.Fprintf(&b, "|%s\n", strings.Repeat("---|", 8))
 	for _, name := range separabilityEmbedders {
 		s := seps[name]
@@ -142,7 +145,7 @@ func RenderFamilies(seps map[string]Separability) string {
 // project has used, and with the best one available to it.
 func RenderThresholds(seps map[string]Separability) string {
 	var b strings.Builder
-	fmt.Fprintf(&b, "| embedder | at %s, the shipped value | at %s, ADR 0006's value "+
+	fmt.Fprintf(&b, "| embedder | at %s, the value then shipped | at %s, ADR 0006's value then "+
 		"| best possible threshold | coexist scores at or above a correction |\n",
 		fixed(seps[embedderHashing].ShippedThreshold.Threshold, 2),
 		fixed(seps[embedderHashing].ADRThreshold.Threshold, 2))

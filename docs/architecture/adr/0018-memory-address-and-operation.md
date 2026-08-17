@@ -12,7 +12,7 @@
 
 ## Context
 
-The shipped memory holds sentences with an embedding and a keyword index over them, and infers on insert whether a new sentence replaces an existing one from the similarity between the two. That the mechanism is contradicted by measurement has been on the record since #334 was filed, and the lifecycle (ADR 0006) carried it anyway, because a decision is not withdrawn by an objection alone and nothing had yet said what replaces it.
+The shipped memory holds sentences with an embedding and a keyword index over them, and inferred on insert whether a new sentence replaced an existing one from the similarity between the two — the mechanism the store has since stopped carrying (#529, ADR 0006 §Decision). That the mechanism is contradicted by measurement has been on the record since #334 was filed, and the lifecycle (ADR 0006) carried it anyway, because a decision is not withdrawn by an objection alone and nothing had yet said what replaces it.
 
 `docs/experiments/memory-frames/` is the record that answers that. It compares seventeen ways of holding a memory over a decade of turns behind one seam — twelve invented in this repository, the shipped design among them, and five ported from published papers — measuring what each stores, what it answers class by class, what it returns that has stopped being true, and what answering costs it. Its §The structures compared is the comparison on one page and its §What would be chosen today is where the programme stands. That programme is now closed, and this record is the decision taken on its evidence. Every figure below is the record's; none is restated from an issue.
 

@@ -197,7 +197,7 @@ Retention, not curation, is what stays small here: every one of the 10,000 real 
 
 ## What was adopted
 
-ADR 0006 (revised 2026-08-14) records the selected model: curation-only storage, platform-derived salience, salience-scaled Ebbinghaus recency, tiered retention, supersession on insert. The implementation is #322; the behavioral verification and its two follow-up fixes (supersession threshold calibration, recall-event observability) are QA pass #7 and #326.
+ADR 0006 records the selected model: curation-only storage, platform-derived salience, salience-scaled Ebbinghaus recency, tiered retention. Supersession on insert was adopted alongside them and has since been withdrawn — ADR 0006 §Decision now records that identity is not inferred from similarity (#529) — so this record's evidence for the rest stands and its supersession half describes a mechanism the store no longer carries. The implementation is #322; the behavioral verification and its two follow-up fixes (supersession threshold calibration, recall-event observability) are QA pass #7 and #326.
 
 ## Reproducing
 

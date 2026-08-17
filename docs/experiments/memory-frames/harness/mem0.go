@@ -30,7 +30,7 @@ const mem0Candidates = 10
 // path, twice over: once to extract the fact, which the oracle arm supplies
 // and the text arm does not, and once to judge whether a candidate memory is
 // the one the new fact updates. The second is substituted here by a
-// similarity gate at the constant this project's own store supersedes at,
+// similarity gate at the constant this project's own store then superseded at,
 // which is in the run table. §What a published design needed reports what
 // that substitution can and cannot decide.
 type mem0Frame struct {

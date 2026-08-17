@@ -2,7 +2,7 @@
 
 What the read path returns for a task statement, and what the choice of embedder costs it, measured against the memory implementation this project ships.
 
-Both claims this record refutes have since been corrected in the files it quotes: ADR 0006 §Consequences no longer infers precision from an empty noise floor, and `internal/memory/ranking.go` no longer states a calibration for `SupersessionSimilarity` (#424, #436). Quotations of those two files below are what they said when these measurements were taken. No finding here changes, and the threshold still ships at the value measured — removal rather than retuning is #334.
+Both claims this record refutes have since been corrected in the files it quotes: ADR 0006 §Consequences no longer infers precision from an empty noise floor, and `internal/memory/ranking.go` no longer states a calibration for `SupersessionSimilarity` (#424, #436). Quotations of those two files below are what they said when these measurements were taken. No finding here changes, and the threshold was still shipped at the value measured when these figures were taken. #334 has since been settled by removal rather than retuning: the store no longer supersedes on insert (#529), so every sentence below about what the shipped store retires describes the design as it ran, not as it runs (§Limits).
 
 ## Contents
 - Method
@@ -19,7 +19,7 @@ Both claims this record refutes have since been corrected in the files it quotes
 
 Every other experiment in this tree reimplements the idea under test in Python, so its numbers describe a model of the design rather than the code. This one plants a corpus into the store `internal/memory` ships and queries it through the service that ships: `memory.NewService` over `internal/memory/sqlite`. The harness supplies the corpus and a fixed clock; the store, the embedders, the hybrid search and the ranking function are the ones that run in production, called through `Search`, `Recall` and `Similar`. It is a Go command because that is the shape that can call the package directly — a harness in another language would have to re-describe the thing it is measuring, which is the gap this experiment exists to close.
 
-The facts are written with the store's own insert rather than through `memory.Service.Store`. Supersession on insert archives a new memory's most similar predecessor at cosine 0.6 and above, which would silently remove planted facts and leave the ground truth describing a store that no longer holds them. The write path is `memory-creation/`'s subject and the threshold is #334's; the retrieval half of this record measures the read. The supersession half below measures that mechanism head-on, one pair at a time, where it cannot corrupt anything.
+The facts are written with the store's own insert rather than through `memory.Service.Store`. Supersession on insert archived a new memory's most similar predecessor at cosine 0.6 and above, which would have silently removed planted facts and left the ground truth describing a store that no longer held them. The write path is `memory-creation/`'s subject and the threshold is #334's; the retrieval half of this record measures the read. The supersession half below measures that mechanism head-on, one pair at a time, where it cannot corrupt anything.
 
 Every figure names the embedder that produced it, and every result file carries that name too. A retrieval figure without one is unreadable: the same corpus, probes and ranking function score differently under each.
 
@@ -42,7 +42,7 @@ The `hashing` run is offline and needs no API key. The `openai` run reads its ke
 - 120 of those pairs are probed. Their 605 facts are the ground truth, and all of them sit inside the first 1,000 items, so a larger store is the same store with more distractors rather than a different one.
 - Every fact is a hard negative for some probe. The full store holds all 1,800 pairs, so a probe's subject appears under 19 other topics and its topic under 89 other subjects and neither alone selects an answer; the smaller stores are prefixes of the same order and hold a subset of those distractors.
 - A probe is a task statement, not a copy of the fact it looks for. The shipped recall step queries with the frame's task statement, so the query shares the topic's head word with its answers and differs elsewhere.
-- Salience is drawn from the three values `internal/agent/memory/writeback.go` derives from a writeback op — 0.5, 0.7, 0.8 — and ages are drawn over a 30-day window. Both are drawn independently of whether a fact answers a probe, so the ranking function's salience and recency terms carry no information about the answer. A corpus that correlated them would be measuring itself, and a comparison run on it would attribute to the embedder whatever the correlation did.
+- Salience is drawn from the three values `internal/agent/memory/writeback.go` then derived from a writeback op — 0.5, 0.7, 0.8 — and ages are drawn over a 30-day window. Two of them come from a writeback op today: 0.5 is the episodic tier no write path carries since the writeback began stating facts rather than turns (`internal/memory/ranking.go`). Both are drawn independently of whether a fact answers a probe, so the ranking function's salience and recency terms carry no information about the answer. A corpus that correlated them would be measuring itself, and a comparison run on it would attribute to the embedder whatever the correlation did.
 
 ### What counts as a correct retrieval
 
@@ -122,11 +122,11 @@ Both embedders are in every bullet, because every one of these findings was firs
 
 It does, and it is worse on the embedder that ships.
 
-The pair set is `memory-creation`'s own: `harness/pairs_from_round4.py` calls that experiment's `build_pairs(seed=7)` unchanged and writes the 1,000 pairs to `results/separability_pairs_seed7.json`, 250 per family. Each pair is measured twice over: the harness takes the embedding cosine, and the shipped `memory.Service.Store` writes the old statement and then the new one into a store holding nothing else, so its retire-or-not is the mechanism's own answer rather than a prediction. The two agree on 1,000 of 1,000 pairs under every embedder, which is what makes the sweep below a sweep of the number the mechanism actually reads.
+The pair set is `memory-creation`'s own: `harness/pairs_from_round4.py` calls that experiment's `build_pairs(seed=7)` unchanged and writes the 1,000 pairs to `results/separability_pairs_seed7.json`, 250 per family. Each pair is measured twice over: the harness takes the embedding cosine, and the shipped `memory.Service.Store` writes the old statement and then the new one into a store holding nothing else, so its retire-or-not is the mechanism's own answer rather than a prediction. The two agreed on 1,000 of 1,000 pairs under every embedder, which is what makes the sweep below a sweep of the number the mechanism actually read.
 
 <!-- generated by the harness; do not edit between the markers: separability-families -->
 
-| embedder | family | must supersede? | min | median | max | IQR | retired by the shipped store |
+| embedder | family | must supersede? | min | median | max | IQR | retired by the store as it then ran |
 |---|---|---|---|---|---|---|---|
 | `hashing` 256 | correction | yes | 0.000 | 0.309 | 0.676 | 0.195 | 6 of 250 |
 | `hashing` 256 | coexist | no | 0.667 | 0.750 | 0.800 | 0.133 | 250 of 250 |
@@ -147,7 +147,7 @@ What each embedder does with the thresholds the project has used:
 
 <!-- generated by the harness; do not edit between the markers: separability-thresholds -->
 
-| embedder | at 0.60, the shipped value | at 0.70, ADR 0006's value | best possible threshold | coexist scores at or above a correction |
+| embedder | at 0.60, the value then shipped | at 0.70, ADR 0006's value then | best possible threshold | coexist scores at or above a correction |
 |---|---|---|---|---|
 | `hashing` 256 | 6 correct, 365 wrong | 0 correct, 281 wrong | 0.91, accuracy 0.750 | 0.999 of cross pairs |
 | `openai` 1536 | 154 correct, 389 wrong | 37 correct, 307 wrong | 0.91, accuracy 0.750 | 0.979 of cross pairs |
@@ -155,8 +155,8 @@ What each embedder does with the thresholds the project has used:
 
 <!-- end generated -->
 
-- **The refutation transfers, and the shipped embedder is the worst case.** On all three, the correction family's median sits below the coexist family's minimum, the highest-accuracy threshold is the one that supersedes nothing, and every one of the 250 coexist pairs is retired by the shipped store. On `hashing` the inversion is near-total: a coexisting pair scores at or above a correction in 0.999 of the 62,500 cross pairs, against 0.955 at 512 and 0.979 at 1536. #334 is strengthened rather than qualified.
-- **What the shipped store does with the shipped threshold is not what the OpenAI figure says.** At 0.60, `hashing` retires 6 of 250 corrections where `openai512-cache` retires 162. The mechanism on the embedder that ships catches 2.4% of the corrections it exists for while destroying every coexisting fact and 115 of 250 statements about a different person entirely.
+- **The refutation transfers, and the shipped embedder is the worst case.** On all three, the correction family's median sits below the coexist family's minimum, the highest-accuracy threshold is the one that supersedes nothing, and every one of the 250 coexist pairs was retired by the store as it then ran. On `hashing` the inversion is near-total: a coexisting pair scores at or above a correction in 0.999 of the 62,500 cross pairs, against 0.955 at 512 and 0.979 at 1536. #334 is strengthened rather than qualified.
+- **What the store did with the shipped threshold is not what the OpenAI figure says.** At 0.60, `hashing` retired 6 of 250 corrections where `openai512-cache` retired 162. The mechanism, on the embedder that ships, caught 2.4% of the corrections it existed for while destroying every coexisting fact and 115 of 250 statements about a different person entirely.
 - **The constant's own justification does not survive being asked of a distribution.** `ranking.go` cited 0.66 as where a correction lands on this embedder; #324 measured that on one pair. Across 250, the correction family's median is 0.309 and its 75th percentile 0.378 — 0.66 is not where corrections land but where the family's extreme sits, its maximum being 0.676. The coexist family's minimum on the same embedder is 0.667. A threshold low enough to catch the pair the constant was calibrated on is at or below every pair that must survive, so it retires all of them.
 - **Why the hashing numbers fall where they do.** A correction in this dataset restates the fact in different words, so under a bag-of-tokens embedder it shares few tokens with what it corrects; two coexisting facts share a template and differ in one value, so they share almost all of them. Token overlap tracks phrasing, and supersession needs it to track fact identity.
 - **This half of the record replays the old measurement rather than quoting it.** Running the committed round-4 512-dimension vectors through this harness reproduces `memory-creation`'s published separability figures exactly: correction 0.630 median and 0.121 IQR, coexist 0.789 and 0.060, cross-subject 0.642 and 0.165, unrelated 0.212 and 0.098, and 162 correct against 399 wrong retirements at 0.60. The pair set here is therefore the pair set there.
@@ -189,7 +189,8 @@ What each embedder does with the thresholds the project has used:
 - **The OpenAI vectors are not committed.** They are 202 MB for this corpus; the run caches them outside the repository. The 512-dimension column replays `memory-creation`'s round-4 embedding cache, which no directory in this tree carries. What is committed is every figure derived from them, per-pair and per-probe, and the check that the replay reproduces the published numbers.
 - **The results are not regenerated by `make ci`.** A full run is minutes of CPU and the `openai` half needs a key, so CI compiles the harness, runs its tests, and checks the figures this record states outside its generated tables; it does not re-measure. Re-running is a manual step.
 - **What CI checks about the code these figures came from is the configuration and not the behaviour.** Each committed run records the ranking constants it read from `internal/memory`, and a test holds that record against what the package holds now, so a moved constant fails rather than leaving this record describing a system that has changed. Nothing checks the behaviour behind those constants: a change to the ranking function's shape, to what the store returns, or to the embedder moves these figures without failing anything, and only a manual re-run finds it.
-- **`ranking.go` is measured through its callers.** The harness reads its constants for the run header and calls the shipped `Store` for every supersession decision, but computes the pair cosine itself, because `internal/memory` does not export one. The two agree on all 1,000 pairs under every embedder, which is the check that the harness's cosine is the one the mechanism reads.
+- **`ranking.go` is measured through its callers.** The harness reads its constants for the run header and called the shipped `Store` for the retire-or-not on every pair, but computes the pair cosine itself, because `internal/memory` does not export one. The two agreed on all 1,000 pairs under every embedder, which is the check that the harness's cosine was the one the mechanism read.
+- **The separability re-run no longer reproduces the separability tables.** An insert retires nothing since #529, so `StoreResult.SupersededID` is always 0 (`internal/memory/store.go`) and a re-run reports 0 retired in every family, against the committed figures below. The harness still asks the shipped `Store`, which is what makes that reproducible in the other direction: `harness/separability_test.go` asserts no family supersedes, and the cosine columns — the distributions the conclusions rest on — re-measure unchanged.
 
 ## Reproducing
 

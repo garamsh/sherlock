@@ -64,7 +64,7 @@ Serving the gateway beyond localhost means setting the `tls:` section — `cert`
 - The tools tree is read at startup only — one `manifest.json` per `tools/<name>/` directory, plus the executable the manifest names. It can be mounted read-only.
 - **The memory store grows monotonically.** An insert retires nothing: a correction coexists with the fact it corrects, because no similarity threshold separates the two (`memory.md`, ADR 0018). Size the volume for growth and expect it to be reclaimed by the memory service's own compression and retention, not by writes replacing each other.
 
-**Owner-only files.** Exactly two files are mode-checked, and both belong to the agent: the config file and the `tls:` server key. `0600` and `0400` pass; `0644` fails and the process exits. Kubernetes projects Secret and ConfigMap volumes at `0644` by default, so both must carry an explicit `defaultMode`. The certificate and the client CA are not checked.
+**Owner-only files.** Three files are mode-checked, and one of them is the workspace's: the agent's config file, the agent's `tls:` server key, and the workspace's config file. The check lives in the loader both processes share (`internal/config/`), so `workspace.yaml` carries the same rule as `gagent.yaml`. `0600` and `0400` pass; `0644` fails and the process exits. Kubernetes projects Secret and ConfigMap volumes at `0644` by default, so **all three** need an explicit `defaultMode` — a sidecar whose config is mounted at the default crash-loops exactly as the agent would. The certificate and the client CA are not checked.
 
 ## Configuration and secrets
 
@@ -162,10 +162,12 @@ Two traps in that second table are worth naming separately, because they produce
 
 Both serving processes trap `SIGTERM` and `SIGINT`. A one-shot `gagent agent --message` run installs no signal handler at all — it runs to completion or dies.
 
-- **Agent** — stops accepting (further posts get 503), drains in-flight HTTP requests **bounded at 10s**, then closes the queue. Closing cancels the in-flight turn rather than draining it, waits for the runner to return, and then runs a **memory consolidation pass**. Neither the wait nor the consolidation is bounded, and consolidation can issue embedder and summarizer requests when those providers are `openai` — each bounded only by its own provider timeout (default 60s).
+- **Agent** — closes the listener, drains in-flight HTTP requests **bounded at 10s**, then closes the queue. Closing cancels the in-flight turn rather than draining it, waits for the runner to return, and then runs a **memory consolidation pass**. Neither the wait nor the consolidation is bounded, and consolidation can issue embedder and summarizer requests when those providers are `openai` — each bounded only by its own provider timeout (default 60s).
 - **Workspace** — `GracefulStop`, which waits for in-flight RPCs with **no bound**. In practice an in-flight Exec is bounded by `exec-timeout` (default 30s). Exec children carry `Pdeathsig`, so they die with the workspace process.
 
 Because the monitoring stream is long-lived by design, an agent with a connected SSE subscriber will normally spend the whole 10s drain before it gets to the queue.
+
+**A draining agent refuses the connection; it does not decline the request.** The queue closes only after the listener is gone, so there is no window in which the pod accepts a post and answers it with a status. A sender posting during shutdown gets TCP connection refused, and one holding an open connection has it closed — neither distinguishable from a pod that crashed. A sender that needs to tell a drain from a failure has to learn it from the orchestrator, because the gateway has no way to say it.
 
 **No total shutdown deadline exists** — not as a flag, an environment variable, or a config key. The only explicit bound this repository states is the 10s HTTP drain; everything after it is unbounded, so `SIGKILL` at the end of the orchestrator's grace period is the real bound. Derive `terminationGracePeriodSeconds` from your own `exec-timeout` and provider timeouts rather than copying a number from here, and expect this document to state one when the code does.
 
@@ -176,9 +178,9 @@ Registry: **ECR, `ap-northeast-2`, account `486152169996`.** Two repositories, b
 - `garam/gagent-agent`
 - `garam/gagent-workspace`
 
-**Tag scheme**: a `v`-prefixed git tag pushed to GitHub triggers CI, which pushes the image tagged without the `v` — `v0.0.1` in git becomes `0.0.1` in ECR.
+**Tag scheme, decided and not yet built**: a `v`-prefixed git tag pushed to GitHub is to trigger the release, which will push the image tagged without the `v` — `v0.0.1` in git becoming `0.0.1` in ECR.
 
-**The release workflow and its IAM role do not exist yet.** Nothing pushes to these repositories today, and both were empty when this was written. `make build-images` builds both images locally and pushes nothing; the `docker` job in `.github/workflows/ci.yml` builds them as a smoke check and pushes nothing. An operator can rely on the names and the tag rule; they cannot yet pull an image.
+**The release workflow and its IAM role do not exist yet.** Nothing pushes to these repositories today, and both were empty when this was written. `make build-images` builds both images locally and pushes nothing; the `docker` job in `.github/workflows/ci.yml` builds them as a smoke check and pushes nothing. That workflow triggers on pull requests and pushes to `main` and carries no tag filter, so pushing `v0.0.1` today runs nothing at all. An operator can rely on the names and the tag rule; they cannot yet pull an image.
 
 ## Load-bearing facts
 

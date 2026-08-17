@@ -259,7 +259,7 @@ func callerID(r *http.Request) string {
 }
 
 // newID returns a random identifier with the given prefix
-// (e.g. "trace-9f2c..."), used for trace IDs and (in service.go) message
+// (e.g. "trace-9f2c..."), used for trace IDs and (in queue.go) message
 // IDs.
 func newID(prefix string) (string, error) {
 	var b [16]byte

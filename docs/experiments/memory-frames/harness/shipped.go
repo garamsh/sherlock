@@ -65,7 +65,7 @@ func (f *shippedFrame) open() error {
 }
 
 // Observe stores the turn and then runs the two passes the gateway runs
-// after a completed turn (internal/gateway/queue.go): threshold
+// after a completed turn (internal/gateway/runner.go): threshold
 // consolidation and tiered retention. Leaving them out would measure a
 // lifecycle this project does not run.
 func (f *shippedFrame) Observe(ctx context.Context, t Turn) error {

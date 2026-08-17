@@ -198,8 +198,10 @@ func TestFactory_HistoryOverflowStoresNothing(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "First reply.", first)
 	assert.Contains(t, second, "Second reply.")
-	assert.LessOrEqual(t, len(rt.Session.History()), factory.MaxHistoryMessages+1,
-		"the turns still leave the window; only the write is refused")
+	assert.LessOrEqual(t, len(rt.Session.History()), factory.MaxHistoryMessages+2,
+		"the turns still leave the window; only the write is refused — "+
+			"the bound is the cap, the instructions that survive the cut (#642), "+
+			"and the in-flight assistant reply")
 
 	require.NoError(t, rt.Close(context.Background()))
 	store, err := sqlite.Open(memoryPath(root))

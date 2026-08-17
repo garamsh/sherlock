@@ -75,20 +75,20 @@ func TestCompact_DoesNotLeaveAToolMessageWithoutItsCall(t *testing.T) {
 		"the cut moves past the tool messages it would have orphaned")
 }
 
-// TestCompact_DropsTheLeadingSystemMessage records what compaction does
-// with the session's first system message, which is the composed ego and
-// platform contract rather than history: it drops it before counting,
-// and nothing puts it back — internal/agent re-injects the instructions
-// only into an empty history. This test states the behaviour rather than
-// endorsing it; whether the instructions should survive a compaction is
-// not #582's to decide and is raised on its pull request.
-func TestCompact_DropsTheLeadingSystemMessage(t *testing.T) {
-	h := append([]agent.Message{{Role: agent.RoleSystem, Content: "instructions"}}, history(4)...)
-	compactor := agentmemory.Compactor{MaxHistoryMessages: 10}
+// TestCompact_KeepsTheLeadingSystemMessage pins what compaction owes the
+// session's first system message, which is the composed ego and platform
+// contract rather than history: it stays at the head whatever the window
+// drops. The session injects it only into an empty history, so a
+// compactor that dropped it left the model without the instruction the
+// writeback call depends on for the rest of the session (#642).
+func TestCompact_KeepsTheLeadingSystemMessage(t *testing.T) {
+	instructions := agent.Message{Role: agent.RoleSystem, Content: "instructions"}
+	h := append([]agent.Message{instructions}, history(4)...)
+	compactor := agentmemory.Compactor{MaxHistoryMessages: 2}
 
 	kept, err := compactor.Compact(context.Background(), h)
 
 	require.NoError(t, err)
-	assert.Len(t, kept, 4)
-	assert.NotContains(t, kept, agent.Message{Role: agent.RoleSystem, Content: "instructions"})
+	assert.Equal(t, instructions, kept[0], "the instructions lead after a compaction")
+	assert.Equal(t, history(4)[2:], kept[1:], "the window still drops the oldest conversation")
 }

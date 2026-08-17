@@ -60,6 +60,13 @@ type ProcessExecutor struct {
 	// would surface as a raw fork/exec EPERM. NewProcessExecutor
 	// detects it once at construction; tests set it directly.
 	netNS bool
+	// canSignal is true when this process holds CAP_KILL, which is what
+	// it takes to signal a child it dropped to another account. Without
+	// it the per-call deadline cannot be enforced, so Run fails closed
+	// rather than starting a command nothing can stop (#612).
+	// NewProcessExecutor detects it once at construction; tests set it
+	// directly.
+	canSignal bool
 	// shimPath is this binary, which every untrusted child execs first
 	// to apply its own caps (ADR 0008). Resolved once at construction;
 	// shimErr carries a resolution failure to Run, which refuses the
@@ -71,8 +78,10 @@ type ProcessExecutor struct {
 // NewProcessExecutor returns a ProcessExecutor configured with the given
 // agent UID and default per-call timeout. It does not validate
 // privilege — Run reports ErrAgentUIDUnavailable when the caller cannot
-// drop to AgentUID, including when it cannot create the fresh network
-// namespace required for NoNetwork.
+// drop to AgentUID, when it cannot create the fresh network namespace
+// required for NoNetwork, and when it could not signal the account it
+// drops to. The two capability probes run here, once, and each warns when
+// what it found will make calls fail.
 func NewProcessExecutor(agentUID int, defaultTimeout time.Duration) *ProcessExecutor {
 	self, err := os.Executable()
 	exec := &ProcessExecutor{
@@ -80,6 +89,7 @@ func NewProcessExecutor(agentUID int, defaultTimeout time.Duration) *ProcessExec
 		DefaultTimeout: defaultTimeout,
 		RLimits:        DefaultRlimits(),
 		netNS:          netNSCapable(),
+		canSignal:      signalCapable(),
 		shimPath:       self,
 		shimErr:        err,
 	}
@@ -87,15 +97,30 @@ func NewProcessExecutor(agentUID int, defaultTimeout time.Duration) *ProcessExec
 		slog.Warn("shell: CAP_SYS_ADMIN missing; netns-isolated children will report agent_uid unavailable",
 			"reason", "unshare(CLONE_NEWNET) requires CAP_SYS_ADMIN")
 	}
+	if !exec.canSignal && exec.dropsAccount() {
+		slog.Warn("shell: CAP_KILL missing; every Exec will report agent_uid unavailable",
+			"reason", "signalling a child dropped to another account requires CAP_KILL, so its timeout cannot be enforced")
+	}
 	return exec
+}
+
+// dropsAccount reports whether this executor's children run under an
+// account other than its own — the privileged drop, where a signal from
+// the executor crosses a uid boundary. Single-account mode does not: the
+// child owns the executor's own uid, which is permission enough.
+func (e *ProcessExecutor) dropsAccount() bool {
+	euid := os.Geteuid()
+	return euid == 0 && euid != e.AgentUID
 }
 
 // Run executes one command and returns its captured output. If the
 // caller cannot run the child as AgentUID — AgentUID differs from the
 // euid and the process is not root — Run returns ErrAgentUIDUnavailable
 // and a zero Result (no implicit fallback to the current UID, ADR 0010).
-// On timeout the child is SIGKILLed and the returned error is ErrTimedOut
-// with TimedOut set.
+// On timeout the child's process group is SIGKILLed and the returned error
+// is ErrTimedOut with TimedOut set; a privileged executor that holds no
+// CAP_KILL cannot perform that kill, so it refuses the call instead of
+// running a command whose deadline would pass unenforced (#612).
 //
 // An untrusted child execs this binary's shim first, which applies the
 // resource caps to itself before exec'ing the command, so the caps are
@@ -108,6 +133,10 @@ func (e *ProcessExecutor) Run(ctx context.Context, req Request) (Result, error) 
 	}
 	if req.NoNetwork && euid == 0 && !e.netNS {
 		return Result{}, ErrAgentUIDUnavailable
+	}
+	if e.dropsAccount() && !e.canSignal {
+		return Result{}, fmt.Errorf("%w: CAP_KILL is absent, so a child dropped to uid %d cannot be signalled and its deadline cannot be enforced",
+			ErrAgentUIDUnavailable, e.AgentUID)
 	}
 	timeout := req.Timeout
 	if timeout <= 0 {
@@ -321,9 +350,13 @@ func cpuSeconds(d time.Duration) uint64 {
 	return seconds
 }
 
-// capSysAdmin is the bit position of CAP_SYS_ADMIN in the effective
-// capability mask reported by /proc/self/status (capabilities(7)).
-const capSysAdmin = 21
+// capSysAdmin and capKill are the bit positions of CAP_SYS_ADMIN and
+// CAP_KILL in the effective capability mask reported by
+// /proc/self/status (capabilities(7)).
+const (
+	capKill     = 5
+	capSysAdmin = 21
+)
 
 // netNSCapable reports whether this process can create a fresh network
 // namespace: euid 0 with CAP_SYS_ADMIN in the effective set, the
@@ -340,6 +373,22 @@ func netNSCapable() bool {
 		return true
 	}
 	return eff&(1<<capSysAdmin) != 0
+}
+
+// signalCapable reports whether this process holds CAP_KILL. kill(2)
+// permits a signal only when the sender's real or effective uid matches
+// the target's real or saved-set uid, or the sender holds CAP_KILL; a
+// child dropped to the exec account owns neither of the executor's uids,
+// so the capability is the only route, and being root is no substitute
+// once it has been dropped from the bounding set (capabilities(7)). A
+// read failure is treated as capable, as netNSCapable treats one: the
+// check refines a diagnosis rather than standing as the boundary.
+func signalCapable() bool {
+	eff, err := readEffectiveCaps()
+	if err != nil {
+		return true
+	}
+	return eff&(1<<capKill) != 0
 }
 
 // readEffectiveCaps parses the CapEff line of /proc/self/status and

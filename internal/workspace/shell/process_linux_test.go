@@ -131,6 +131,22 @@ func TestParseCapEff(t *testing.T) {
 	}
 }
 
+// requireRoot skips a case that needs root, honouring the same
+// declaration the external test package's requireRoot does. It is a second
+// copy because a helper cannot cross the two test packages in this
+// directory: a run that promised privilege reports the absence of it
+// rather than skipping past it.
+func requireRoot(t *testing.T) {
+	t.Helper()
+	if os.Geteuid() == 0 {
+		return
+	}
+	if os.Getenv("GAGENT_PRIVILEGED_TESTS") != "" {
+		t.Fatalf("GAGENT_PRIVILEGED_TESTS is set but this run has euid %d", os.Geteuid())
+	}
+	t.Skip("this case needs root; run `make test-privileged`")
+}
+
 // TestProcessExecutor_RootWithoutCapSysAdminReportsAgentUIDUnavailable
 // pins the issue-#195 contract: a root process without CAP_SYS_ADMIN
 // (e.g. a default Docker container) must surface the documented
@@ -138,16 +154,7 @@ func TestParseCapEff(t *testing.T) {
 // The test toggles the unexported netNS flag to simulate the probe
 // result; the euid check is bypassed by running as root.
 func TestProcessExecutor_RootWithoutCapSysAdminReportsAgentUIDUnavailable(t *testing.T) {
-	if os.Geteuid() != 0 {
-		// Same declaration the external test package's requireRoot honors,
-		// inlined because a helper cannot cross the two test packages in this
-		// directory: a run that promised privilege reports the absence of it
-		// rather than skipping past it.
-		if os.Getenv("GAGENT_PRIVILEGED_TESTS") != "" {
-			t.Fatalf("GAGENT_PRIVILEGED_TESTS is set but this run has euid %d", os.Geteuid())
-		}
-		t.Skip("this case needs root; run `make test-privileged`")
-	}
+	requireRoot(t)
 	exec := NewProcessExecutor(testExecUID, 5*time.Second)
 	exec.netNS = false
 
@@ -160,4 +167,48 @@ func TestProcessExecutor_RootWithoutCapSysAdminReportsAgentUIDUnavailable(t *tes
 		"a root process lacking netns capability must report the documented unavailability")
 	assert.Empty(t, res.Stdout,
 		"the executor must not fork when the netns gate fires")
+}
+
+// TestProcessExecutor_RootWithoutCapKillReportsAgentUIDUnavailable pins
+// the posture #612 settles: a deadline the executor cannot enforce is a
+// boundary it cannot deliver, so the call fails closed rather than running
+// a command nothing can stop. Signalling a child dropped to another account
+// needs CAP_KILL and root is no substitute for it; without the capability
+// the SIGKILL on expiry silently does nothing and the caller waits out the
+// command it asked to bound.
+//
+// The test toggles the unexported probe result, as the CAP_SYS_ADMIN case
+// above does. The error names the capability, because the message is the
+// whole diagnosis an operator gets.
+func TestProcessExecutor_RootWithoutCapKillReportsAgentUIDUnavailable(t *testing.T) {
+	requireRoot(t)
+	exec := NewProcessExecutor(testExecUID, 5*time.Second)
+	exec.canSignal = false
+
+	res, err := exec.Run(context.Background(), Request{Command: "echo hi"})
+
+	require.ErrorIs(t, err, ErrAgentUIDUnavailable,
+		"a privileged executor that cannot signal its child must report the documented unavailability")
+	assert.Contains(t, err.Error(), "CAP_KILL",
+		"the message names the capability to grant")
+	assert.Empty(t, res.Stdout,
+		"the executor must not fork when the signal gate fires")
+}
+
+// TestProcessExecutor_SingleAccountNeedsNoKillCapability pins the other
+// half: the gate is about crossing a uid boundary, not about holding a
+// capability. In single-account mode the child owns the executor's own uid,
+// which is permission enough to signal it, so the absent capability must
+// not fail the call.
+func TestProcessExecutor_SingleAccountNeedsNoKillCapability(t *testing.T) {
+	if os.Geteuid() == 0 {
+		t.Skip("single-account mode is only meaningful without root")
+	}
+	exec := NewProcessExecutor(os.Geteuid(), 5*time.Second)
+	exec.canSignal = false
+
+	res, err := exec.Run(context.Background(), Request{Command: "echo hi"})
+
+	require.NoError(t, err, "the executor's own account needs no capability to signal")
+	assert.Equal(t, "hi\n", res.Stdout)
 }

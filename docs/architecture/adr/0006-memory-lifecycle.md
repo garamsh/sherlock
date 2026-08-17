@@ -40,7 +40,7 @@ Supersession semantics are unchanged in shape: a write that replaces what an add
 - Nothing in this lifecycle keeps the latest version of a fact authoritative. Curation decides what enters the store and retention decides what leaves it; which of two memories about one fact is current is a question this record no longer answers, and ADR 0018 is where it is answered.
 - Salience decides the retention tiers and nothing else, and both tiers a write can state sit at or above the keep tier, so the retention pass drops nothing a writeback wrote (`memory.md`). What it used to decide beside them was eviction order, which is now read off what a read touched.
 - ADR 0015's turn-drain guarantee rests on the terminal-event signal and the sender-resends philosophy, not on a memory backstop.
-- Parameters (tier boundaries, retention window) are tunable constants, not architecture. Both are declared in `internal/memory/salience.go`, which is what this list is checked against.
+- The numbers behind the tiers and the window above are tunable constants, not architecture. `internal/memory/salience.go` declares them and is where their values are read; this record does not carry their names.
 
 ## Rejected alternatives
 

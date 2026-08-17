@@ -44,6 +44,36 @@ func TestNewModelFunc_RetiredOpenAIValueNamesItsReplacement(t *testing.T) {
 		"the refusal must name the replacement the operator has to write")
 }
 
+// TestNewModelFunc_AnthropicCompatibleBuildsClient pins the second wire
+// protocol reaching its own package (#621): selecting it must not fall
+// through to the OpenAI-compatible client, which cannot speak it.
+func TestNewModelFunc_AnthropicCompatibleBuildsClient(t *testing.T) {
+	t.Setenv("GAGENT_TEST_KEY", "test-key")
+	newModel, err := newModelFunc(config.ModelConfig{
+		Provider:  "anthropic-compatible",
+		BaseURL:   "https://api.anthropic.com/v1",
+		Model:     "claude-test",
+		APIKeyEnv: "GAGENT_TEST_KEY",
+	})
+	require.NoError(t, err)
+	assert.NotNil(t, newModel("any-env"))
+}
+
+// TestNewModelFunc_AnthropicCompatibleMissingKeyEnvFailsFast pins that
+// the new protocol fails at startup on a missing key exactly as the
+// other one does, rather than on the first turn.
+func TestNewModelFunc_AnthropicCompatibleMissingKeyEnvFailsFast(t *testing.T) {
+	t.Setenv("GAGENT_TEST_UNSET_KEY", "")
+	_, err := newModelFunc(config.ModelConfig{
+		Provider:  "anthropic-compatible",
+		BaseURL:   "https://api.anthropic.com/v1",
+		Model:     "claude-test",
+		APIKeyEnv: "GAGENT_TEST_UNSET_KEY",
+	})
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "GAGENT_TEST_UNSET_KEY")
+}
+
 func TestNewModelFunc_OpenAICompatibleMissingKeyEnvFailsFast(t *testing.T) {
 	t.Setenv("GAGENT_TEST_UNSET_KEY", "")
 	_, err := newModelFunc(config.ModelConfig{

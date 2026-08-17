@@ -33,6 +33,7 @@ Reviewed at: <commit sha>
 - **The review names the commit it read.** A branch that moved after the review is then visible as such, instead of leaving a decision attached to code nobody examined.
 - An approve requires the Scope, Verification, and Depth rows to read `pass`. The other three may read `unverified`, with a stated reason (some PRs touch nothing a convention governs). A `fail` in any row is a request-changes or a reject, never an approve.
 - A check you did not verify is marked `unverified` — never guessed. Skipping a check is allowed; hiding the skip is not. A review full of `unverified` rows tells the reader the review did not really happen.
+- **The evidence has to test the row it sits in.** A cheap command usually answers a question adjacent to the one asked, and a clean answer looks the same either way. A checksum answers whether a file changed; where the row asks whether a measured value changed, it is the wrong instrument even on every file where the two agree.
 - **Reject maps to request changes.** GitHub has no `reject` review state, so a reject decision is submitted as a request-changes review whose decision line reads `reject` (in single-account setups, the `comment` substitute per §Single-account setups). What reject does that request changes does not: the reviewer closes the PR and files an issue describing the right direction.
 
 ## What each check verifies
@@ -72,11 +73,11 @@ When the PM and authors share one GitHub account, `comment` is the only review s
 
 ## Reviewing your own change
 
-One session sometimes holds both roles, and the artifacts do not say so on their own: `git author` distinguishes the identities, and a change the author also reviewed looks from the outside like a change two parties agreed on.
+A self-review reads the diff against the reviewer's own understanding of the rules — the understanding that produced the diff. It catches what the change contradicts on its face. It misses what the change contradicts in something the reviewer already believes, because reading the diff again does not re-examine the belief.
 
-- **The review states that its author wrote the change**, beside the decision.
-- **The `Depth` row names what shared authorship left unchecked.** Depth asks whether the change is right rather than whether it follows the rules, and the author is the one reader who cannot arrive at it fresh. `pass` alone asserts a check this arrangement cannot make.
-- Nothing else relaxes. Every other row means what it means and carries the evidence it would otherwise carry.
+- **The review says the author reviewed it**, in one line beside the decision. A reader cannot tell otherwise, and a review that hides it is asserting a second pair of eyes.
+- **What the shared authorship left unchecked is marked in the row that owns it.** A rule two sections away that the author already believed they knew is a Conventions row; a command whose output arrived after the claim was written is a Verification row. The work is finding them — `pass` asserted from the understanding that produced the diff is what this section exists to name.
+- Nothing else relaxes. Scope, Verification and Depth still read `pass` for an approve, and a `fail` in any row is still not one.
 
 ## Responding to a review (author)
 

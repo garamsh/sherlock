@@ -80,10 +80,11 @@ func dispatch(ctx context.Context, ws workspace.WorkspaceClient, in callInput) (
 		if err != nil {
 			return callOutput{}, grpcError("read", err)
 		}
-		// BytesWritten and Entries are not produced by read. Emit
-		// zero/empty so the runtime's sanitized output schema
-		// (which requires every property, nullable) accepts the
-		// response and the manifest's stricter form accepts it too
+		// BytesWritten and Entries are not produced by read, and the
+		// struct carries no omitempty, so every key is emitted
+		// regardless. Entries must be an empty slice rather than nil:
+		// nil marshals to null, which fails the manifest's
+		// "entries": {"type": "array"} at the registry's output gate
 		// (issue #319).
 		return callOutput{
 			Content: string(resp.GetContent()),

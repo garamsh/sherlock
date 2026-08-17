@@ -24,7 +24,7 @@ type Inbound struct {
 	QueuedAt time.Time
 }
 
-// DefaultQueueCapacity bounds the followup queue. Enqueue blocks when
+// DefaultQueueCapacity bounds the inbox. Enqueue blocks when
 // the queue is full, giving senders natural backpressure.
 const DefaultQueueCapacity = 64
 

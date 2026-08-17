@@ -15,7 +15,7 @@ import (
 
 // Runner is the platform's stdio runner (ADR 0009 §Decision). It spawns
 // the tool's executable, writes one JSON line to stdin, reads one JSON
-// line from stdout, and returns the validated output or the failure
+// line from stdout, and returns the decoded response or the failure
 // details. The runner is stateless: each Call spawns a new process.
 type Runner struct {
 	manifest Manifest
@@ -29,13 +29,15 @@ func NewRunner(manifest Manifest, workdir string) *Runner {
 	return &Runner{manifest: manifest, workdir: workdir}
 }
 
-// Run dispatches one call to the tool: it spawns the executable,
-// writes the validated input as one JSON line to stdin, reads one JSON
-// line from stdout, and validates the response against the output
-// schema. On a non-zero exit or a missing error object the captured
-// stderr is returned as the failure detail. The output schema is
-// re-validated by the registry after Run returns — Run only enforces
-// the structural "one JSON object per line" contract.
+// Run dispatches one call to the tool: it spawns the executable, writes
+// the input as one JSON line to stdin, and reads one JSON line from
+// stdout. On a non-zero exit or a missing error object the captured
+// stderr is returned as the failure detail.
+//
+// Run enforces the transport contract and nothing else — one JSON
+// object per line, exit status, stderr. Neither schema is applied here:
+// Registry.Call validates the input before Run is reached and the
+// response after it returns (registry.go).
 func (r *Runner) Run(ctx context.Context, input json.RawMessage) (json.RawMessage, string, error) {
 	if r.manifest.Command == "" {
 		return nil, "", errors.New("runner: command is empty")

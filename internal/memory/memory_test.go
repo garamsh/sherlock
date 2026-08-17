@@ -393,8 +393,9 @@ func TestStore_EvictsLowestScoreBeyondCapacity(t *testing.T) {
 
 func TestRecall_TrimsToTokenBudget(t *testing.T) {
 	svc := newService(t)
-	// Distinct sentences: near-duplicates would supersede on insert
-	// (ADR 0006) instead of accumulating for the budget to trim.
+	// Distinct sentences, so the budget has several memories to trim
+	// between. They were required to differ when an insert superseded a
+	// near-duplicate; nothing retires on insert now (ADR 0018).
 	for _, content := range []string{
 		"a fairly long memory about cats knocking vases off shelves loudly",
 		"a fairly long memory about cats sleeping through thunderstorms nightly",
@@ -422,8 +423,8 @@ func TestRecall_TrimsToTokenBudget(t *testing.T) {
 // short memories could bind.
 func TestRecall_BoundIsTheBudgetAloneNotARowLimit(t *testing.T) {
 	svc := newService(t)
-	// No two memories share a word, so none supersedes another on
-	// insert (ADR 0006) and the store holds all of them.
+	// No two memories share a word, so each is its own search hit and
+	// the store holds all of them.
 	const planted = memory.DefaultSearchLimit * 3
 	for i := range planted {
 		storeMemory(t, svc, fmt.Sprintf("alpha%d beta%d gamma%d", i, i, i), "episodic", 0.5)
@@ -522,8 +523,8 @@ func TestConsolidate_CompressesEpisodicCluster(t *testing.T) {
 // compresses into semantic parents.
 func TestConsolidateIfDue_TriggersOnlyAtThreshold(t *testing.T) {
 	svc := newService(t)
-	// Each note carries unique tokens so inserts stay below the
-	// supersession similarity (ADR 0006) and the cluster accumulates.
+	// Each note carries unique tokens so the cluster is a set of
+	// distinct memories rather than one repeated sentence.
 	for i := range memory.ConsolidationThreshold - 1 {
 		storeMemory(t, svc, fmt.Sprintf("episodic note %d w%d x%d y%d z%d q%d", i, i, i, i, i, i), "episodic", 0.5)
 	}
@@ -591,8 +592,8 @@ func TestCompress_ClusterExceedingSummaryMaxLenLeavesNoContentBehind(t *testing.
 
 	// 30 short messages join to ~30 * 32 = ~960 bytes of summary text,
 	// well past the 512-byte cap that truncated everything before. Each
-	// carries a unique token so inserts stay below the supersession
-	// similarity (ADR 0006) and the whole cluster accumulates.
+	// carries a unique token so every original is traceable into the
+	// summary the join produces.
 	const count = 30
 	originals := make([]int64, 0, count)
 	for i := range count {
@@ -684,9 +685,9 @@ func TestCompress_ChunkSeparatorIsTheChunkerBoundary(t *testing.T) {
 		"a small cluster fits one parent with no chunking")
 
 	// Larger cluster: each original carries the same 20-char run plus a
-	// unique tag (identical originals would supersede on insert, ADR
-	// 0006), so the joined text exceeds SummaryMaxLen and must split
-	// across parents, but the whole content must still surface somewhere.
+	// unique tag, so the joined text exceeds SummaryMaxLen and must
+	// split across parents, and every tag must still surface in one of
+	// them.
 	var ids []int64
 	for i := range 40 {
 		ids = append(ids, storeMemory(t, svc,

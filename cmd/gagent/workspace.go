@@ -16,7 +16,8 @@ import (
 
 // newWorkspaceCommand returns the "gagent workspace" subcommand: it
 // serves the workspace's gRPC contract (ADR 0017) — the filesystem and
-// process execution. The local addr flag shadows the shared one — the
+// process execution. Its addr flag is its own, not the agent's: sibling
+// subcommands register the same name on separate flag sets, and the
 // workspace's default listener is 8081, not the gateway's 8080.
 func newWorkspaceCommand() *cobra.Command {
 	cmd := &cobra.Command{

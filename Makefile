@@ -16,9 +16,8 @@ format-fix:
 
 test:
 	go test ./...
-# Which entry point carries a documentation check is open in #397. Until it is
-# settled these sit behind `test` rather than under a fifth name; moving them is
-# moving these two lines.
+# The documentation checks sit behind `test` rather than under a fifth name,
+# which is where #397 settled them; moving them is moving these two lines.
 	@python3 citations/reference_check.py
 	@python3 citations/reference_check_fixtures.py
 

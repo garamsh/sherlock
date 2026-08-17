@@ -274,12 +274,12 @@ func TestProcessExecutor_RequestEnvAppliesOnTop(t *testing.T) {
 	assert.Equal(t, "from-request", res.Stdout)
 }
 
-// TestFakeExecutor_NoNetworkPassesThrough pins that the executor
-// honours the NoNetwork flag on the Request: tools that want a fresh,
-// empty network namespace for an untrusted child set it, and the
-// resulting namespace holds only loopback (ADR 0010). The Tool adapter
-// is gone (ADR 0017) but the executor's contract is what future tools
-// and the agent's own internal exec paths depend on.
+// TestFakeExecutor_NoNetworkPassesThrough pins the interface shape, not
+// the namespace: Request.NoNetwork must cross the Executor boundary
+// verbatim, so a caller's request for isolation is observable to any
+// implementation. No process runs here — the double records the request
+// and returns a canned result. What a real namespace contains is pinned
+// by the root and userns tests in netns_linux_test.go.
 func TestFakeExecutor_NoNetworkPassesThrough(t *testing.T) {
 	exec := &fakeExecutor{}
 	_, err := exec.Run(context.Background(), shell.Request{Command: "echo", NoNetwork: true})

@@ -49,7 +49,8 @@ type Executor interface {
 type Request struct {
 	// Command is the program to run. With no Args it is interpreted by
 	// `sh -c`; with Args it is the executable and the Args reach it
-	// verbatim (the script-tool argv form, ADR 0009).
+	// verbatim. Only the Exec RPC supplies Args
+	// (internal/workspace/server.go); the shipped tools send none.
 	Command string
 	Args    []string
 	// Stdin, when non-nil, is fed to the child's standard input.
@@ -60,7 +61,8 @@ type Request struct {
 	// NoNetwork runs the child in a fresh, empty network namespace
 	// (CLONE_NEWNET before the UID drop, or CLONE_NEWUSER|CLONE_NEWNET
 	// with a self UID mapping in single-account mode, ADR 0010): no
-	// loopback, no interfaces. Tools that need a network-isolated
+	// configured interface and no route off it — only the kernel's own
+	// loopback, left down. Tools that need a network-isolated
 	// child set it; tools whose network is the operator-sanctioned
 	// egress channel leave it false.
 	NoNetwork bool

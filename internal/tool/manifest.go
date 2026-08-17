@@ -50,10 +50,11 @@ type manifestDir struct {
 }
 
 // LoadManifest reads, parses, and validates the manifest at path. The
-// returned struct is the parsed manifest; canonicalBytes is the bytes the
-// hash pins against — round-tripping through encoding/json would re-key
-// the document and break the pin, so the caller must keep the original
-// bytes for the hash.
+// returned struct is the parsed manifest; the bytes are the file's own,
+// returned unchanged, which is what a caller keeps as the on-disk
+// record. They are not what the pin is taken over: ManifestHash
+// canonicalizes first, so formatting and key order do not reach the
+// hash.
 func LoadManifest(path string) (Manifest, []byte, error) {
 	raw, err := os.ReadFile(path)
 	if err != nil {

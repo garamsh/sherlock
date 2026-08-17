@@ -20,8 +20,8 @@ const ConsolidationThreshold = 100
 
 // Consolidate is the platform-owned consolidation entry point (ADR 0011):
 // when at least ConsolidationMinCluster episodic memories are active they
-// compress into one semantic parent with the originals archived. The
-// gateway calls it on shutdown; the after-turn trigger is
+// compress into one or more semantic parents with the originals
+// archived. The gateway calls it on shutdown; the after-turn trigger is
 // ConsolidateIfDue.
 func (s *service) Consolidate(ctx context.Context) (CompressResult, error) {
 	active, err := s.store.Active(ctx)

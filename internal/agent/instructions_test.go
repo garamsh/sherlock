@@ -260,9 +260,11 @@ func TestDefaultEgo_BehaviorGuidance(t *testing.T) {
 // is unavailable" section (issue #113, QA #108 follow-up). The four
 // previously-failing scenarios in QA #108 share a single cause: when
 // shell_exec returned an error, the model kept retrying different
-// shell commands instead of switching to typed tools. With shell_exec
-// gone, the contract carries the typed-tool alternative map and the
-// "do not retry the same tool after it has already failed" rule.
+// shell commands instead of switching to typed tools. The trigger was
+// that failure, not the tool's absence — shell_exec is still a tool
+// (TestContract_ShellExecIsATool). The contract now carries the
+// typed-tool alternative map and the "do not retry the same tool after
+// it has already failed" rule.
 func TestContract_ToolUnavailableFallbackSection(t *testing.T) {
 	contract := agent.Contract
 	assert.Contains(t, contract, "## When a tool is unavailable",

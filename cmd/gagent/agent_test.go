@@ -18,9 +18,10 @@ import (
 // caller points Config.ToolsDir at it. The tool needs no executable:
 // every assertion here is about startup, which never spawns one.
 //
-// setToolEnv writes GAGENT_WORKSPACE_ADDR and GAGENT_OUTBOX_DIR through
-// os.Setenv on the way, so the helper claims both through t.Setenv first
-// and the test framework restores them.
+// tool.SetSpawnEnv writes GAGENT_WORKSPACE_ADDR, GAGENT_OUTBOX_DIR and
+// GAGENT_AGENT_ID through os.Setenv on the way, so the helper claims the
+// first two through t.Setenv first and the framework restores them.
+// GAGENT_AGENT_ID is not claimed and outlives the test.
 func pinnedToolTree(t *testing.T) (dir, hash string) {
 	t.Helper()
 	dir = t.TempDir()

@@ -7,7 +7,7 @@
 # The agent executes nothing itself: GAGENT_EXEC_UID is set on the
 # workspace container, where shell_exec children run as uid 10001.
 # The container publishes the port beyond its own loopback, so the gateway
-# requires mTLS (ADR 0013): throwaway certs live in ./tls (see README.md).
+# requires mTLS (ADR 0012): throwaway certs live in ./tls (see README.md).
 addr: ":8080"
 tls:
   cert: /etc/gagent/tls/server.pem

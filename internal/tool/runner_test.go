@@ -15,10 +15,10 @@ import (
 )
 
 // tinyScript writes a small sh script to a temp directory and returns
-// the absolute path. The script's body receives the validated input
-// on stdin and writes one JSON line to stdout. The helper makes the
-// runner test hermetic: no test-time binary is built, the test
-// filesystem is the only state.
+// the absolute path. The script's body receives whatever the caller
+// passed to Run on stdin and writes one JSON line to stdout. The helper
+// makes the runner test hermetic: no test-time binary is built, the
+// test filesystem is the only state.
 func tinyScript(t *testing.T, body string) string {
 	t.Helper()
 	dir := t.TempDir()
@@ -29,8 +29,9 @@ func tinyScript(t *testing.T, body string) string {
 }
 
 // TestRunner_RoundTrip is the happy path: the script reads the input
-// from stdin, writes one JSON line to stdout, and the runner returns
-// the validated output.
+// from stdin, writes one JSON line to stdout, and the runner returns it
+// decoded. Nothing here validates against a schema — that is the
+// registry's gate.
 func TestRunner_RoundTrip(t *testing.T) {
 	script := tinyScript(t, `cat >/dev/null
 echo '{"echo":"hello"}'`)

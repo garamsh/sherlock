@@ -61,10 +61,10 @@ func run() error {
 	return json.NewEncoder(os.Stdout).Encode(callOutput{Status: "queued"})
 }
 
-// writeOutbox writes a single message to the outbox directory. The
-// directory is the agent's default file outbox; the agent reads the
-// same directory, so the message lands on the same delivery queue
-// the in-process sink used.
+// writeOutbox writes a single message to the outbox directory named by
+// GAGENT_OUTBOX_DIR. That write is the delivery: nothing forwards the
+// file onward, so whatever consumes the agent's replies reads this
+// directory (ADR 0007).
 func writeOutbox(dir string, msg message.Message) error {
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return err

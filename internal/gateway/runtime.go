@@ -54,8 +54,9 @@ type Factory struct {
 	// Ego is the session ego; empty selects the agent package's embedded
 	// default (the platform contract is appended regardless).
 	Ego string
-	// MaxHistoryMessages overrides the compaction package default. A negative
-	// value disables context compaction.
+	// MaxHistoryMessages overrides agentmemory.DefaultMaxHistoryMessages.
+	// Zero selects that default; a negative value is clamped to zero,
+	// which disables context compaction.
 	MaxHistoryMessages int
 	// Summarizer overrides the deterministic context summarizer. Nil uses
 	// memory.NewConcatSummarizer.

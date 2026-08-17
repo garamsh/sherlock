@@ -12,7 +12,7 @@ gagent is an autonomous agent platform written in Go. It runs AI agents that can
 
 - **Two processes per agent: self and workspace.** The agent process holds the gateway (message ingress and the monitoring stream), the reasoning loop, long-term memory, the mouth (outbound messaging), and the script-tool runtime (`internal/tool`) that loads each tool from `tools/<name>/manifest.json` and dispatches calls as one-shot stdio processes (ADR 0017, ADR 0009). The workspace process is the computer: a gRPC server for the filesystem (Read, Write, List) and process execution (Exec) in the workspace directory. Tools are stand-alone executables behind a fixed stdio contract; the agent binary hosts no tool behavior.
 - **The workspace enforces permissions at the action site.** Agent-influenced file writes run under the workspace's own UID, and workspace ownership is kernel-enforced (ADR 0008, ADR 0010). Process exec is the workspace's capability (ADR 0017), surfaced to the model as the `shell_exec` tool: the tool calls the workspace's Exec RPC, and children drop to the configured exec UID and run in the workspace directory, so exec'd programs see the files the tools see. The agent executes nothing. The orchestration layer manages the pod boundary (network egress, mounts, lifecycle).
-- **Memory is agent-curated, tiered, and self-pruning.** The store accepts only the per-turn writeback (keep/update/delete/add) — no platform auto-capture — so it holds only what the model judged worth keeping. The platform derives a salience tier from each write, applies salience-scaled decay and tiered retention, and supersedes stale facts on insert (ADR 0006, ADR 0011).
+- **Memory is agent-curated, tiered, and append-only.** What the store holds is what the model wrote back: every response carries `memory_ops`, and each op is an address (subject, question, an optional restriction), the value held there, and the operation the write states — `replace` for a correction, `join` for a fact that stands beside what is already there (ADR 0018). The platform derives a salience tier from that operation and applies salience-scaled decay and tiered retention (ADR 0006, ADR 0011). **An insert retires nothing**: identity is not inferred from similarity, so a correction currently coexists with the value it corrects and the store grows monotonically until retention prunes by salience. The one write the platform makes on its own is the summary of turns leaving the context window, and only when a model actually summarized them — nothing captures a turn the model did not write back.
 
 ## Who it is for
 
@@ -26,7 +26,7 @@ One CLI binary, `gagent`, runs both processes of an agent pod (ADR 0017): the wo
 go run ./cmd/gagent <subcommand>   # or: go build -o gagent ./cmd/gagent
 ```
 
-The agent reaches the workspace over the gRPC data plane, so start the workspace first. With the default mock model this runs fully offline. The repository-root example configs are picked up automatically and must be owner-only first:
+Start the workspace first: the agent's `files` and `shell_exec` tools dial it when the model first calls one, and a tool that finds nothing listening fails that call. With the default mock model this runs fully offline. The repository-root example configs are picked up automatically and must be owner-only first:
 
 ```sh
 chmod 0600 gagent.yaml workspace.yaml     # config files must be owner-only
@@ -57,7 +57,7 @@ A one-shot run exits non-zero if any tool call in the turn failed, naming the to
 
 ### gagent workspace
 
-Serves the agent's workspace (ADR 0017) — the computer: a gRPC data plane over loopback serving the filesystem (Read, Write, List) and process execution (Exec) in the workspace directory. The workspace owns the workspace directory and the executor; it holds no tools and no plugin loader. The agent reaches it through the workspace gRPC client it dials from `--workspace-addr`; the agent's `shell_exec` tool calls the Exec RPC, so the agent itself executes nothing.
+Serves the agent's workspace (ADR 0017) — the computer: a gRPC data plane over loopback serving the filesystem (Read, Write, List) and process execution (Exec) in the workspace directory. The workspace owns the workspace directory and the executor; it holds no tools and no plugin loader. Nothing in the agent process dials it — the tools that need files or exec dial it themselves (§Adding tools), so the agent itself executes nothing.
 
 ```sh
 gagent workspace
@@ -77,8 +77,9 @@ Agent keys (`gagent agent`; see `gagent.yaml` for an example):
 |---|---|---|
 | `addr` | `--addr` | `127.0.0.1:8080` (gateway listen address; loopback-only unless `tls:` is set) |
 | `memory-path` | `--memory-path` | `data/memory.db` (the agent's SQLite memory file, created on first use) |
-| `workspace-addr` | `--workspace-addr` | `127.0.0.1:8081` (gRPC endpoint of the agent's workspace; the agent dials it once at startup and passes the client to the tools that need files or exec — the agent's only workspace setting) |
+| `workspace-addr` | `--workspace-addr` | `127.0.0.1:8081` (gRPC endpoint of the agent's workspace. The agent does not dial it; it publishes the value as `GAGENT_WORKSPACE_ADDR` to every tool it spawns, and the tools that need files or exec dial it themselves. A wrong address surfaces at the first tool call, not at startup — the agent's only workspace setting) |
 | `tools-dir` | — | `./tools` (the directory manifests are read from at startup) |
+| `tools.pins` | — | unset (the accepted tool set, one manifest SHA-256 per tool name — see §Adding tools. Unset loads the tree unpinned and warns; present and naming no tool fails startup) |
 | `model.provider` | — | `mock` (scripted, offline) or `openai` |
 | `model.base-url` | — | `https://api.openai.com/v1` (any OpenAI-compatible endpoint, e.g. Ollama/vLLM) |
 | `model.model` | — | `gpt-4o-mini` |
@@ -139,7 +140,7 @@ Each hash is on the `tool manifest loaded` line the agent logs for that tool, an
 
 Example configs in the repository root: `gagent.yaml` (agent) and `workspace.yaml` (workspace).
 
-With the default `mock` provider the agent wires the scripted mock model, which answers the first message with a canned run of the full loop: it computes through `shell_exec` (the call crosses the wire to the workspace's Exec RPC and runs in the workspace directory), replies via `message_send`, and writes the outcome back as a new episodic memory. The script covers the first message per process; a later message fails its turn with `script exhausted` (a `turn_failed` event) — the mock is a wiring demo, not a conversation partner. With `provider: openai` it runs against a real chat model; a missing API key env var fails at startup. To work on the codebase you need Go and GNU Make, and the standard checks are:
+With the default `mock` provider the agent wires the scripted mock model, which answers the first message with a canned run of the full loop: it computes through `shell_exec` (the call crosses the wire to the workspace's Exec RPC and runs in the workspace directory), reads the result back through `files`, replies via `message_send`, and writes the answer to an address in `memory_ops`. The script covers the first message per process; a later message fails its turn with `script exhausted` (a `turn_failed` event) — the mock is a wiring demo, not a conversation partner. With `provider: openai` it runs against a real chat model; a missing API key env var fails at startup. To work on the codebase you need Go, GNU Make and Python 3 — `make test` runs the citation checks under `citations/` as well as the Go tests. The standard checks are:
 
 ```sh
 make ci      # lint + format check + test + build (same as CI)
@@ -151,7 +152,7 @@ Individual targets: `make lint`, `make format`, `make test`, `make build`.
 
 Beyond Go and GNU Make, the toolchain is:
 
-- **golangci-lint** — `make lint` (`go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.12.2`; the version is pinned in `ci.yml` and `.golangci.yml`).
+- **golangci-lint** — `make lint` runs it from your PATH. CI installs `v2.12.2` through `golangci-lint-action` (`.github/workflows/ci.yml`), which is the one place the version is enforced; `.golangci.yml` carries it in a comment beside the config-schema version it declares.
 - **buf** — `make proto` lints the proto files, regenerates the workspace gRPC stubs (`buf.yaml` + `buf.gen.yaml`), and fails if a regenerated stub is uncommitted; the CLI version is pinned in `.github/workflows/ci.yml` (1.72.0).
 - **lefthook** — `make hooks` installs the git hooks once after cloning (pre-commit lint/format, pre-push test).
 

@@ -47,6 +47,8 @@ Reviewed at: <commit sha>
 
 **Scope** is measured against the task the pull request states — its issue where one exists, its Summary where none does — never against taste. A line that traces to an acceptance criterion is in scope however large it is, and a correct one-line drive-by is out of scope however small. Out-of-scope work is not wrong — it is a separate issue.
 
+**Verification** asks whether what the pull request claims can be confirmed, and one substitution is not allowed: **a stronger verification replaces a weaker one only when it would fail everywhere the weaker one fails.** Two instances this project has met. The host's check state is read and reported even where a local run supersedes it, because a local run does not fail where the host's environment does. And a change to a pinned version, base image, path or command is checked against the documents that name it, because a passing build does not fail where a document naming the old value has gone stale.
+
 **Depth** is the check the other five cannot make. They ask whether the change follows the rules; Depth asks whether it is right: a correctness risk the tests do not cover, a materially simpler approach passed over, a defect no convention happens to name. Marking it `pass` asserts the reviewer looked for those and found none, so it is the one row that cannot be filled without reading the change itself.
 
 ## Citing violations

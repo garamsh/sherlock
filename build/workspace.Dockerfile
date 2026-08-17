@@ -26,7 +26,7 @@ RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/gagent ./cmd/gagen
 # sub-processes) and the privilege drop made real: a privileged
 # workspace chowns its data directory to the configured exec-uid at
 # startup and drops Exec children to it (ADR 0008).
-FROM debian:12-slim@sha256:abd67ffcfa541b485a3dff59865ab629aa048a6c613e639d36e7456b0b229241 AS workspace
+FROM debian:13-slim@sha256:3a39a0592364683e6bab97937b72cad5a8fa6dcbbee90edb3bb48c7f8e94f258 AS workspace
 ARG REVISION=unknown
 LABEL org.opencontainers.image.title="gagent-workspace" \
       org.opencontainers.image.source="https://github.com/garamsh/gagent" \

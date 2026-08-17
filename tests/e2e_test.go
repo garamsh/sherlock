@@ -47,9 +47,9 @@ func mvpScript() *agent.ScriptedModel {
 				`{"channel":"http","target":"sender","content":"42"}`,
 			),
 		}}},
-		agent.ScriptedStep{Content: `{"reply":"Replied via message_send and stored the result.",` +
-			`"memory_ops":[{"address":{"subject":"user","question":"what is 6 * 7",` +
-			`"restriction":null},"value":"42","operation":null}]}`},
+		writebackStep(`{"reply":"Replied via message_send and stored the result.",`+
+			`"memory_ops":[{"address":{"subject":"user","question":"what is 6 * 7",`+
+			`"restriction":null},"value":"42","operation":null}]}`),
 	)
 }
 
@@ -137,17 +137,18 @@ func runMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	// Monitoring: the full turn lifecycle was published, in order: one
 	// turn with one tool call (message_send) and a writeback after
 	// every model response.
-	got := collectEvents(t, events, 5)
+	got := collectEvents(t, events, 4)
 	var kinds []string
 	for _, e := range got {
 		kinds = append(kinds, e["kind"].(string))
 	}
 	// No recall event: there is no recall step until #336 step 3
 	// supplies the one that reads a question into an address (ADR 0018).
+	// The writeback fires once per turn now, when the turn ends on the
+	// reserved call, rather than once per model response (issue #615).
 	assert.Equal(t, []string{
 		"turn_started",
-		"writeback", "tool_call",
-		"writeback", "turn_finished",
+		"tool_call", "writeback", "turn_finished",
 	}, kinds)
 	assert.Contains(t, got[0]["task"], "] unknown: "+e2eQuestion,
 		"the turn input renders the message with its ID and sender (ADR 0015)")
@@ -155,8 +156,8 @@ func runMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	// The agent replied via message_send. The final writeback records
 	// the answer at the address of the question it answers (ADR 0011:
 	// the writeback is the single write path; ADR 0018).
-	assert.Equal(t, "message_send", got[2]["tool_name"])
-	assert.NotContains(t, got[2], "tool_failed")
+	assert.Equal(t, "message_send", got[1]["tool_name"])
+	assert.NotContains(t, got[1], "tool_failed")
 
 	// Reply: message_send output landed in the agent's outbox.
 	require.Eventually(t, func() bool {

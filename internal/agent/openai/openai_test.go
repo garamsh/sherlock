@@ -3,6 +3,7 @@ package openai_test
 import (
 	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -55,7 +56,11 @@ type chatRequest struct {
 // fakeProvider records the last request and replies with handler-chosen
 // bodies in order, at the configured HTTP status.
 type fakeProvider struct {
-	t       *testing.T
+	t *testing.T
+	// body is the raw request, kept because a decoded struct cannot
+	// show that a field was absent: chatRequest has no response_format
+	// member, so decoding would drop one silently.
+	body    []byte
 	request chatRequest
 	auth    string
 	status  int
@@ -67,7 +72,10 @@ func (f *fakeProvider) serveHTTP(w http.ResponseWriter, r *http.Request) {
 	require.Equal(f.t, http.MethodPost, r.Method)
 	require.Equal(f.t, "/v1/chat/completions", r.URL.Path)
 	f.auth = r.Header.Get("Authorization")
-	require.NoError(f.t, json.NewDecoder(r.Body).Decode(&f.request))
+	raw, err := io.ReadAll(r.Body)
+	require.NoError(f.t, err)
+	f.body = raw
+	require.NoError(f.t, json.Unmarshal(raw, &f.request))
 	reply := f.replies[f.calls]
 	f.calls++
 	w.Header().Set("Content-Type", "application/json")
@@ -135,28 +143,49 @@ func TestChat_FinalResponseIsReturnedVerbatim(t *testing.T) {
 	assert.Empty(t, resp.ToolCalls)
 }
 
-// TestChat_RequestBodyCarriesTheResponseSchema pins ADR 0018 at the wire
-// level: the memory write is a field of a schema the API enforces, not a
-// block the model may leave out. The schema sent is the one the parser
-// reads, so the two cannot drift apart.
-func TestChat_RequestBodyCarriesTheResponseSchema(t *testing.T) {
+// TestChat_RequestBodySendsNoResponseFormat pins what issue #615
+// removed. A response format is a promise a provider can accept and not
+// keep — MiniMax answers HTTP 200 and prose — and a request that relies
+// on one has no way to tell that from a turn stating no facts. The
+// request carries none, and the writeback travels as a tool.
+func TestChat_RequestBodySendsNoResponseFormat(t *testing.T) {
 	fake, server := newFakeProvider(t,
-		`{"choices":[{"message":{"content":"{\"reply\":\"ok\",\"memory_ops\":[]}"},"finish_reason":"stop"}]}`)
+		`{"choices":[{"message":{"content":"ok"},"finish_reason":"stop"}]}`)
 	defer server.Close()
 	model := newTestModel(t, server)
 
 	_, err := model.Chat(t.Context(),
-		[]agent.Message{{Role: agent.RoleUser, Content: "hi"}}, nil)
+		[]agent.Message{{Role: agent.RoleUser, Content: "hi"}},
+		[]tool.Descriptor{agent.MemoryWriteDescriptor()})
 	require.NoError(t, err)
 
-	assert.Equal(t, "json_schema", fake.request.ResponseFormat.Type,
-		"the call constrains the response to a schema, not to free text")
-	assert.True(t, fake.request.ResponseFormat.JSONSchema.Strict,
-		"strict mode is what makes the memory field un-omittable")
-	assert.NotEmpty(t, fake.request.ResponseFormat.JSONSchema.Name,
-		"the API requires the schema to be named")
-	assert.JSONEq(t, agent.ResponseSchema,
-		string(fake.request.ResponseFormat.JSONSchema.Schema),
+	assert.NotContains(t, string(fake.body), "response_format",
+		"no response format is sent: the provider may accept and ignore it")
+}
+
+// TestChat_ReservedWritebackToolIsAdvertisedStrict pins the transport
+// that replaced it: the reserved tool reaches the wire like any other,
+// with ResponseSchema as its parameters and strict mode on, so the
+// document is constrained by the mechanism every tool's parameters
+// already run under (ADR 0017, ADR 0018). The schema sent is the one the
+// parser reads, so the two cannot drift apart.
+func TestChat_ReservedWritebackToolIsAdvertisedStrict(t *testing.T) {
+	fake, server := newFakeProvider(t,
+		`{"choices":[{"message":{"content":"ok"},"finish_reason":"stop"}]}`)
+	defer server.Close()
+	model := newTestModel(t, server)
+
+	_, err := model.Chat(t.Context(),
+		[]agent.Message{{Role: agent.RoleUser, Content: "hi"}},
+		[]tool.Descriptor{agent.MemoryWriteDescriptor()})
+	require.NoError(t, err)
+
+	require.Len(t, fake.request.Tools, 1)
+	fn := fake.request.Tools[0].Function
+	assert.Equal(t, agent.MemoryWriteTool, fn.Name)
+	assert.True(t, fn.Strict, "strict mode is what constrains the document")
+	assert.NotEmpty(t, fn.Description, "the tool carries its own contract")
+	assert.JSONEq(t, agent.ResponseSchema, string(fn.Parameters),
 		"the schema sent is the one ParseWriteback reads")
 }
 

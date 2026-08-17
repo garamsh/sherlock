@@ -28,6 +28,19 @@ func replyOnly(text string) string {
 	return string(out)
 }
 
+// finalStep scripts the call a turn ends with: the reserved writeback
+// tool carrying the response document. A turn no longer ends by
+// returning content, so every terminal step in these tests is one of
+// these (issue #615).
+func finalStep(text string) agent.ScriptedStep {
+	return agent.ScriptedStep{ToolCalls: []agent.ToolCall{writebackCall(replyOnly(text))}}
+}
+
+// writebackCall is one reserved writeback call carrying a document.
+func writebackCall(document string) agent.ToolCall {
+	return agent.ToolCall{Name: agent.MemoryWriteTool, Input: json.RawMessage(document)}
+}
+
 // fakeRecaller scripts the recall hook: it returns fixed memories and
 // records the task statements it was queried with.
 type fakeRecaller struct {
@@ -41,88 +54,14 @@ func (f *fakeRecaller) Recall(_ context.Context, task string) ([]agent.RecalledM
 	return f.memories, f.err
 }
 
-// fakeWriteback records every batch of parsed memory operations and
-// returns the canned coherence set.
+// fakeWriteback records every batch of parsed memory operations.
 type fakeWriteback struct {
 	batches [][]agent.WritebackOp
-	similar []agent.RecalledMemory
 }
 
-func (f *fakeWriteback) Apply(_ context.Context, ops []agent.WritebackOp) ([]agent.RecalledMemory, error) {
+func (f *fakeWriteback) Apply(_ context.Context, ops []agent.WritebackOp) error {
 	f.batches = append(f.batches, ops)
-	return f.similar, nil
-}
-
-// recordingModel captures the messages each Chat call sees.
-type recordingModel struct {
-	steps []agent.ScriptedStep
-	seen  [][]agent.Message
-}
-
-func (m *recordingModel) Chat(_ context.Context, msgs []agent.Message, _ []tool.Descriptor) (agent.Response, error) {
-	m.seen = append(m.seen, append([]agent.Message(nil), msgs...))
-	if len(m.steps) == 0 {
-		return agent.Response{Content: replyOnly("done.")}, nil
-	}
-	step := m.steps[0]
-	m.steps = m.steps[1:]
-	return agent.Response{Content: step.Content, ToolCalls: step.ToolCalls}, nil
-}
-
-// TestSession_WriteTimeCoherencePresentedToModel pins ADR 0006 step 5:
-// the memories similar to a writeback add join the history as a system
-// note, and the next model call reads them for judgment.
-func TestSession_WriteTimeCoherencePresentedToModel(t *testing.T) {
-	model := &recordingModel{steps: []agent.ScriptedStep{
-		{Content: `{"reply":"Noted.","memory_ops":[{"address":{"subject":"user",` +
-			`"question":"what is the user's favorite telescope","restriction":null},` +
-			`"value":"the Orion XT8","operation":"replace"}]}`},
-		{Content: replyOnly("Corrected the old one.")},
-	}}
-	writeback := &fakeWriteback{similar: []agent.RecalledMemory{
-		{ID: "7", Content: "user's favorite telescope is the Kepler-9 refractor", Age: "3d"},
-	}}
-
-	s := agent.NewSession(model, newFakeClient(), agent.Options{Writeback: writeback})
-	_, err := s.Run(context.Background(), "my favorite telescope is the Orion XT8")
-	require.NoError(t, err)
-
-	var note string
-	for _, m := range s.History() {
-		if m.Role == agent.RoleSystem && strings.Contains(m.Content, "## Memory coherence") {
-			note = m.Content
-		}
-	}
-	require.NotEmpty(t, note, "the coherence note joins the history")
-	assert.Contains(t, note, "Kepler-9 refractor")
-	assert.Contains(t, note, "[7]")
-
-	// The next turn's model call sees the note in its context.
-	_, err = s.Run(context.Background(), "anything else?")
-	require.NoError(t, err)
-	require.Len(t, model.seen, 2)
-	var seenByModel bool
-	for _, m := range model.seen[1] {
-		if strings.Contains(m.Content, "## Memory coherence") {
-			seenByModel = true
-		}
-	}
-	assert.True(t, seenByModel, "the model reads the coherence note at its next call")
-}
-
-// TestSession_NoCoherenceNoteWithoutSimilar pins the quiet path: nothing
-// similar returned, no note in the history.
-func TestSession_NoCoherenceNoteWithoutSimilar(t *testing.T) {
-	model := &recordingModel{steps: []agent.ScriptedStep{
-		{Content: replyOnly("Done.")},
-	}}
-	s := agent.NewSession(model, newFakeClient(), agent.Options{Writeback: &fakeWriteback{}})
-
-	_, err := s.Run(context.Background(), "hello")
-	require.NoError(t, err)
-	for _, m := range s.History() {
-		assert.NotContains(t, m.Content, "## Memory coherence")
-	}
+	return nil
 }
 
 // fakeEvents records the emitted events in order.
@@ -237,22 +176,23 @@ func newFakeClientWith(t *fakeTool) *fakeClient {
 }
 
 func TestSessionRun_ScriptedMultiTurnScenario(t *testing.T) {
-	// Script: turn 1 the model requests the echo tool and joins a value at
-	// a fresh address; turn 2 it answers with the tool result and replaces
-	// the value at another.
+	// Script: the model requests the echo tool, then ends the turn on the
+	// reserved writeback carrying both facts it stated. A turn writes
+	// once, when it ends, rather than once per model response.
 	model := agent.NewScriptedModel(
 		agent.ScriptedStep{
-			Content: `{"reply":"Let me check.","memory_ops":[{"address":{"subject":"user",` +
-				`"question":"which drinks does the user like","restriction":null},` +
-				`"value":"tea","operation":"join"}]}`,
+			Content: "Let me check.",
 			ToolCalls: []agent.ToolCall{
 				{Name: "echo", Input: json.RawMessage(`{"text":"hi"}`)},
 			},
 		},
 		agent.ScriptedStep{
-			Content: `{"reply":"The echo said hi.","memory_ops":[{"address":{"subject":"user",` +
-				`"question":"which team does the user sit with","restriction":"since june"},` +
-				`"value":"platform","operation":"replace"}]}`,
+			ToolCalls: []agent.ToolCall{writebackCall(
+				`{"reply":"The echo said hi.","memory_ops":[{"address":{"subject":"user",` +
+					`"question":"which drinks does the user like","restriction":null},` +
+					`"value":"tea","operation":"join"},{"address":{"subject":"user",` +
+					`"question":"which team does the user sit with","restriction":"since june"},` +
+					`"value":"platform","operation":"replace"}]}`)},
 		},
 	)
 	recaller := &fakeRecaller{memories: []agent.RecalledMemory{
@@ -292,43 +232,45 @@ func TestSessionRun_ScriptedMultiTurnScenario(t *testing.T) {
 	assert.Equal(t, history[3].ToolCalls[0].ID, history[4].ToolCallID)
 	assert.Equal(t, agent.RoleAssistant, history[5].Role)
 
-	// Every model response's memory writes reached the writeback sink.
+	// The turn's memory writes reached the sink, in one batch: the
+	// writeback is the call the turn ends on.
 	require.Equal(t, [][]agent.WritebackOp{
-		{{
-			Address: agent.MemoryAddress{
-				Subject:  "user",
-				Question: "which drinks does the user like",
+		{
+			{
+				Address: agent.MemoryAddress{
+					Subject:  "user",
+					Question: "which drinks does the user like",
+				},
+				Value:     "tea",
+				Operation: agent.OpJoin,
 			},
-			Value:     "tea",
-			Operation: agent.OpJoin,
-		}},
-		{{
-			Address: agent.MemoryAddress{
-				Subject:     "user",
-				Question:    "which team does the user sit with",
-				Restriction: "since june",
+			{
+				Address: agent.MemoryAddress{
+					Subject:     "user",
+					Question:    "which team does the user sit with",
+					Restriction: "since june",
+				},
+				Value:     "platform",
+				Operation: agent.OpReplace,
 			},
-			Value:     "platform",
-			Operation: agent.OpReplace,
-		}},
+		},
 	}, writeback.batches)
 
 	// Events fired in order within the turn.
 	require.Equal(t, []agent.EventKind{
 		agent.EventTurnStarted,
 		agent.EventRecall,
-		agent.EventWriteback,
 		agent.EventToolCall,
 		agent.EventWriteback,
 		agent.EventTurnFinished,
 	}, events.kinds())
 	assert.Equal(t, "what did the echo say?", events.events[0].Task)
-	toolEvent := events.events[3]
+	toolEvent := events.events[2]
 	assert.Equal(t, "echo", toolEvent.ToolName)
 	assert.JSONEq(t, `{"text":"hi"}`, string(toolEvent.ToolInput))
 	assert.Equal(t, `{"echo":"hi"}`, toolEvent.ToolResult)
 	assert.False(t, toolEvent.ToolFailed)
-	assert.Equal(t, "The echo said hi.", events.events[5].Response)
+	assert.Equal(t, "The echo said hi.", events.events[4].Response)
 	for _, e := range events.events {
 		assert.Equal(t, 1, e.Turn)
 	}
@@ -336,8 +278,8 @@ func TestSessionRun_ScriptedMultiTurnScenario(t *testing.T) {
 
 func TestSessionRun_RollingSession(t *testing.T) {
 	model := agent.NewScriptedModel(
-		agent.ScriptedStep{Content: replyOnly("first")},
-		agent.ScriptedStep{Content: replyOnly("second")},
+		finalStep("first"),
+		finalStep("second"),
 	)
 	events := &fakeEvents{}
 	s := agent.NewSession(model, newFakeClient(), agent.Options{Events: events})
@@ -359,7 +301,7 @@ func TestSessionRun_RollingSession(t *testing.T) {
 
 func TestSessionRun_NoRecallStatesAbsence(t *testing.T) {
 	model := agent.NewScriptedModel(
-		agent.ScriptedStep{Content: replyOnly("ok")},
+		finalStep("ok"),
 	)
 	s := agent.NewSession(model, newFakeClient(), agent.Options{})
 
@@ -374,7 +316,7 @@ func TestSessionRun_NoRecallStatesAbsence(t *testing.T) {
 // entered the context.
 func TestSessionRun_RecallEventEmitted(t *testing.T) {
 	model := agent.NewScriptedModel(
-		agent.ScriptedStep{Content: replyOnly("done")},
+		finalStep("done"),
 	)
 	recaller := &fakeRecaller{memories: []agent.RecalledMemory{
 		{ID: "m1", Content: "user drinks tea", Age: "2d"},
@@ -401,67 +343,148 @@ func TestSessionRun_RecallEventEmitted(t *testing.T) {
 	assert.Equal(t, 1, recallEvents[0].Turn)
 }
 
-// TestSessionRun_LenientWritebackParse is issue #93's regression. A model
-// response that is not the document the response schema describes must
-// not fail the turn: the content still reaches the user, the memory
-// update is dropped for that turn only, and the session records the
-// parse miss on the event stream as EventWritebackError.
-func TestSessionRun_LenientWritebackParse(t *testing.T) {
-	tests := []struct {
-		name           string
-		content        string
-		wantVisible    string
-		wantWarnSubstr string
-	}{
-		{"prose instead of the document", "still useful", "still useful", "invalid JSON"},
-		{
-			name:           "truncated document",
-			content:        `{"reply":"still useful","memory_ops":[`,
-			wantVisible:    `{"reply":"still useful","memory_ops":[`,
-			wantWarnSubstr: "invalid JSON",
-		},
+// TestSessionRun_ModelSeesTheReservedWritebackTool pins the half of the
+// design that decides whether the writeback is declinable. The model is
+// shown the tool — it must be, to call it — but the tool is the
+// platform's: it is added to what the model sees rather than installed
+// by the operator, and an operator tool taking the reserved name is
+// dropped rather than silently shadowing it.
+func TestSessionRun_ModelSeesTheReservedWritebackTool(t *testing.T) {
+	client := newFakeClientWith(newEchoTool())
+	client.register(&fakeTool{name: agent.MemoryWriteTool, description: "an impostor"})
+	model := &toolCapturingModel{}
+	s := agent.NewSession(model, client, agent.Options{})
+
+	_, err := s.Run(context.Background(), "task")
+	require.NoError(t, err)
+
+	require.NotEmpty(t, model.seen)
+	var names []string
+	var reserved int
+	for _, d := range model.seen[0] {
+		names = append(names, d.Name)
+		if d.Name == agent.MemoryWriteTool {
+			reserved++
+			assert.Equal(t, agent.MemoryWriteDescriptor().Description, d.Description,
+				"the reserved descriptor is the platform's, not the operator's")
+		}
 	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			model := agent.NewScriptedModel(agent.ScriptedStep{Content: tt.content})
-			events := &fakeEvents{}
-			writeback := &fakeWriteback{}
-			s := agent.NewSession(model, newFakeClient(), agent.Options{
-				Events:    events,
-				Writeback: writeback,
-			})
+	assert.Contains(t, names, "echo", "the operator's tools still reach the model")
+	assert.Equal(t, 1, reserved, "the reserved name appears exactly once")
 
-			final, err := s.Run(context.Background(), "task")
-			require.NoError(t, err, "parse failure is non-fatal (issue #93)")
-			assert.Equal(t, tt.wantVisible, final, "the content still reaches the user")
+	// It is not reachable through the tool client: the session ends the
+	// turn on it instead of dispatching it.
+	assert.Zero(t, client.tools[agent.MemoryWriteTool].calls)
+}
 
-			// The writeback sink receives no operations for this turn.
-			assert.Empty(t, writeback.batches,
-				"the memory update for this turn is dropped")
+// toolCapturingModel records the descriptors it was shown and ends the
+// turn the way a turn ends.
+type toolCapturingModel struct {
+	seen [][]tool.Descriptor
+}
 
-			// The monitoring stream records the parse miss.
-			var sawParseWarn agent.Event
-			for _, e := range events.events {
-				if e.Kind == agent.EventWritebackError {
-					sawParseWarn = e
-					break
-				}
-			}
-			require.NotZero(t, sawParseWarn, "EventWritebackError captures the parse miss")
-			assert.Contains(t, sawParseWarn.Error, tt.wantWarnSubstr,
-				"EventWritebackError carries the parse failure message")
-			assert.Contains(t, sawParseWarn.Error, agent.ErrMalformedWriteback.Error())
+func (m *toolCapturingModel) Chat(_ context.Context, _ []agent.Message, tools []tool.Descriptor) (agent.Response, error) {
+	m.seen = append(m.seen, append([]tool.Descriptor(nil), tools...))
+	return agent.Response{ToolCalls: []agent.ToolCall{writebackCall(replyOnly("done"))}}, nil
+}
 
-			// The turn still ends with turn_finished — never turn_failed.
-			for _, e := range events.events {
-				assert.NotEqual(t, agent.EventTurnFailed, e.Kind,
-					"the turn still ends with turn_finished, not turn_failed")
-			}
-			terminal := events.events[len(events.events)-1]
-			assert.Equal(t, agent.EventTurnFinished, terminal.Kind)
-			assert.Equal(t, tt.wantVisible, terminal.Response)
-		})
+// TestSessionRun_ProseInsteadOfAWritebackDoesNotEndTheTurn is issue
+// #615's regression, and it is the shape a provider that ignores what it
+// was sent produces: content, no tool calls, HTTP 200. Under the
+// response format this parsed to no operations and the turn finished, so
+// the user got a reply and memory got nothing — the 0.00 write path
+// #336 step 1 removed. The turn is not ended on it now: the session says
+// what is missing and asks again.
+func TestSessionRun_ProseInsteadOfAWritebackDoesNotEndTheTurn(t *testing.T) {
+	model := agent.NewScriptedModel(
+		agent.ScriptedStep{Content: "<think>The user says hello.</think> Hello!"},
+		finalStep("Hello!"),
+	)
+	events := &fakeEvents{}
+	writeback := &fakeWriteback{}
+	s := agent.NewSession(model, newFakeClient(), agent.Options{
+		Events:    events,
+		Writeback: writeback,
+	})
+
+	final, err := s.Run(context.Background(), "hello")
+	require.NoError(t, err, "the model complied on the second call")
+	assert.Equal(t, "Hello!", final)
+
+	// The turn wrote, because it ended the only way a turn can.
+	require.Len(t, writeback.batches, 1)
+
+	// The refusal is on the stream, so a provider that does this is
+	// visible rather than silent.
+	var sawRefusal bool
+	for _, e := range events.events {
+		if e.Kind == agent.EventWritebackError {
+			sawRefusal = true
+			assert.Contains(t, e.Error, agent.MemoryWriteTool)
+		}
 	}
+	assert.True(t, sawRefusal, "the dropped turn-ending attempt reaches the event stream")
+
+	// The model was told what was missing.
+	var told bool
+	for _, m := range s.History() {
+		if m.Role == agent.RoleSystem && strings.Contains(m.Content, agent.MemoryWriteTool) {
+			told = true
+		}
+	}
+	assert.True(t, told, "the session names the call the turn needs")
+}
+
+// TestSessionRun_ProseForeverFailsTheTurn is the other half: a provider
+// that never honours the tool exhausts the loop and fails. A turn that
+// cannot write must not look like a turn that stated no facts, which is
+// what made the MiniMax defect silent (issue #615).
+func TestSessionRun_ProseForeverFailsTheTurn(t *testing.T) {
+	steps := make([]agent.ScriptedStep, 4)
+	for i := range steps {
+		steps[i] = agent.ScriptedStep{Content: "prose, no call"}
+	}
+	events := &fakeEvents{}
+	writeback := &fakeWriteback{}
+	s := agent.NewSession(agent.NewScriptedModel(steps...), newFakeClient(), agent.Options{
+		Events:        events,
+		Writeback:     writeback,
+		MaxIterations: 4,
+	})
+
+	final, err := s.Run(context.Background(), "task")
+	require.Error(t, err, "a turn that never writes fails rather than replying")
+	assert.True(t, errors.Is(err, agent.ErrLoopExhausted))
+	assert.Empty(t, final)
+	assert.Empty(t, writeback.batches)
+
+	terminal := events.events[len(events.events)-1]
+	assert.Equal(t, agent.EventTurnFailed, terminal.Kind)
+}
+
+// TestSessionRun_MalformedWritebackArgumentsFailTheTurn pins where the
+// leniency issue #93 asked for now sits. The arguments are the only
+// place the reply and the facts arrive, so arguments that are not the
+// document leave nothing to hand back and nothing to store: the turn
+// fails rather than returning a reply that was never written down.
+func TestSessionRun_MalformedWritebackArgumentsFailTheTurn(t *testing.T) {
+	model := agent.NewScriptedModel(
+		agent.ScriptedStep{ToolCalls: []agent.ToolCall{writebackCall(`{"reply":"still useful","memory_ops":[`)}},
+	)
+	events := &fakeEvents{}
+	writeback := &fakeWriteback{}
+	s := agent.NewSession(model, newFakeClient(), agent.Options{
+		Events:    events,
+		Writeback: writeback,
+	})
+
+	_, err := s.Run(context.Background(), "task")
+	require.Error(t, err)
+	assert.True(t, errors.Is(err, agent.ErrMalformedWriteback))
+	assert.Empty(t, writeback.batches)
+
+	terminal := events.events[len(events.events)-1]
+	assert.Equal(t, agent.EventTurnFailed, terminal.Kind)
 }
 
 // TestSessionRun_StrictWritebackSchema is the contract-strict sibling
@@ -470,9 +493,10 @@ func TestSessionRun_LenientWritebackParse(t *testing.T) {
 // model learns the contract (issue #93).
 func TestSessionRun_StrictWritebackSchema(t *testing.T) {
 	model := agent.NewScriptedModel(
-		agent.ScriptedStep{Content: `{"reply":"broken","memory_ops":[{"address":` +
-			`{"subject":"","question":"","restriction":null},` +
-			`"value":"","operation":null}]}`},
+		agent.ScriptedStep{ToolCalls: []agent.ToolCall{writebackCall(
+			`{"reply":"broken","memory_ops":[{"address":` +
+				`{"subject":"","question":"","restriction":null},` +
+				`"value":"","operation":null}]}`)}},
 	)
 	events := &fakeEvents{}
 	s := agent.NewSession(model, newFakeClient(), agent.Options{Events: events})
@@ -489,10 +513,10 @@ func TestSessionRun_StrictWritebackSchema(t *testing.T) {
 func TestSessionRun_UnknownToolFeedsErrorBack(t *testing.T) {
 	model := agent.NewScriptedModel(
 		agent.ScriptedStep{
-			Content:   replyOnly("calling"),
+			Content:   "calling",
 			ToolCalls: []agent.ToolCall{{Name: "ghost", Input: json.RawMessage(`{}`)}},
 		},
-		agent.ScriptedStep{Content: replyOnly("recovered")},
+		finalStep("recovered"),
 	)
 	events := &fakeEvents{}
 	s := agent.NewSession(model, newFakeClient(), agent.Options{Events: events})
@@ -504,7 +528,10 @@ func TestSessionRun_UnknownToolFeedsErrorBack(t *testing.T) {
 	toolMsg := s.History()[4]
 	assert.Equal(t, agent.RoleTool, toolMsg.Role)
 	assert.Contains(t, toolMsg.Content, "tool not found")
-	toolEvent := events.events[2]
+	// turn_started, then the tool call: the writeback event fires once
+	// per turn now, when the turn ends on it, rather than once per
+	// model response.
+	toolEvent := events.events[1]
 	assert.Equal(t, agent.EventToolCall, toolEvent.Kind)
 	assert.True(t, toolEvent.ToolFailed)
 	assert.Contains(t, toolEvent.ToolResult, "tool not found")
@@ -513,7 +540,7 @@ func TestSessionRun_UnknownToolFeedsErrorBack(t *testing.T) {
 func TestSessionRun_ScriptExhausted(t *testing.T) {
 	model := agent.NewScriptedModel(
 		agent.ScriptedStep{
-			Content:   replyOnly("loop"),
+			Content:   "loop",
 			ToolCalls: []agent.ToolCall{{Name: "ghost", Input: json.RawMessage(`{}`)}},
 		},
 	)
@@ -527,11 +554,11 @@ func TestSessionRun_ScriptExhausted(t *testing.T) {
 func TestSessionRun_LoopExhausted(t *testing.T) {
 	model := agent.NewScriptedModel(
 		agent.ScriptedStep{
-			Content:   replyOnly("again"),
+			Content:   "again",
 			ToolCalls: []agent.ToolCall{{Name: "ghost", Input: json.RawMessage(`{}`)}},
 		},
 		agent.ScriptedStep{
-			Content:   replyOnly("again"),
+			Content:   "again",
 			ToolCalls: []agent.ToolCall{{Name: "ghost", Input: json.RawMessage(`{}`)}},
 		},
 	)
@@ -551,10 +578,10 @@ type stubbornModel struct {
 func (m *stubbornModel) Chat(_ context.Context, messages []agent.Message, _ []tool.Descriptor) (agent.Response, error) {
 	last := messages[len(messages)-1]
 	if last.Role == agent.RoleTool && strings.Contains(last.Content, "Not executed") {
-		return agent.Response{Content: replyOnly("changing approach")}, nil
+		return agent.Response{ToolCalls: []agent.ToolCall{writebackCall(replyOnly("changing approach"))}}, nil
 	}
 	return agent.Response{
-		Content:   replyOnly("retrying"),
+		Content:   "retrying",
 		ToolCalls: []agent.ToolCall{m.call},
 	}, nil
 }
@@ -596,10 +623,10 @@ func TestSessionRun_RepeatedFailingCallShortCircuits(t *testing.T) {
 
 func TestSessionRun_RepeatDetectionIsExactMatch(t *testing.T) {
 	steps := []agent.ScriptedStep{
-		{Content: replyOnly("calling"), ToolCalls: []agent.ToolCall{{Name: "flaky", Input: json.RawMessage(`{"n":1}`)}}},
-		{Content: replyOnly("calling"), ToolCalls: []agent.ToolCall{{Name: "flaky", Input: json.RawMessage(`{"n":1}`)}}},
-		{Content: replyOnly("calling"), ToolCalls: []agent.ToolCall{{Name: "flaky", Input: json.RawMessage(`{"n":2}`)}}},
-		{Content: replyOnly("done")},
+		{Content: "calling", ToolCalls: []agent.ToolCall{{Name: "flaky", Input: json.RawMessage(`{"n":1}`)}}},
+		{Content: "calling", ToolCalls: []agent.ToolCall{{Name: "flaky", Input: json.RawMessage(`{"n":1}`)}}},
+		{Content: "calling", ToolCalls: []agent.ToolCall{{Name: "flaky", Input: json.RawMessage(`{"n":2}`)}}},
+		finalStep("done"),
 	}
 	flaky := &fakeTool{name: "flaky", response: json.RawMessage(`{}`)}
 	client := newFakeClient()
@@ -625,8 +652,8 @@ func TestSessionRun_RepeatBookkeepingResetsPerTurn(t *testing.T) {
 	client.register(flaky)
 	client.setErr(flaky.name, errors.New("boom"))
 	call := agent.ToolCall{Name: "flaky", Input: json.RawMessage(`{"n":1}`)}
-	step := agent.ScriptedStep{Content: replyOnly("calling"), ToolCalls: []agent.ToolCall{call}}
-	final := agent.ScriptedStep{Content: replyOnly("done")}
+	step := agent.ScriptedStep{Content: "calling", ToolCalls: []agent.ToolCall{call}}
+	final := finalStep("done")
 	s := agent.NewSession(agent.NewScriptedModel(step, step, final, step, step, final), client, agent.Options{})
 
 	_, err := s.Run(context.Background(), "task one")
@@ -645,7 +672,7 @@ func searchSteps(queries ...string) []agent.ScriptedStep {
 	for _, q := range queries {
 		input, _ := json.Marshal(map[string]string{"query": q})
 		steps = append(steps, agent.ScriptedStep{
-			Content:   replyOnly("searching"),
+			Content:   "searching",
 			ToolCalls: []agent.ToolCall{{Name: "search", Input: input}},
 		})
 	}
@@ -656,7 +683,7 @@ func TestSessionRun_ToolBudgetShortCircuits(t *testing.T) {
 	search := &fakeTool{name: "search", description: "counts executions", response: json.RawMessage(`{"ok":true}`)}
 	events := &fakeEvents{}
 	steps := append(searchSteps("q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8"),
-		agent.ScriptedStep{Content: replyOnly("done")})
+		finalStep("done"))
 	s := agent.NewSession(agent.NewScriptedModel(steps...), newFakeClientWith(search), agent.Options{Events: events})
 
 	final, err := s.Run(context.Background(), "task")
@@ -691,7 +718,7 @@ func TestSessionRun_ToolBudgetShortCircuits(t *testing.T) {
 func TestSessionRun_ToolBudgetNoticeOmitsEmptyDescription(t *testing.T) {
 	events := &fakeEvents{}
 	steps := append(searchSteps("q1", "q2", "q3", "q4", "q5", "q6", "q7"),
-		agent.ScriptedStep{Content: replyOnly("done")})
+		finalStep("done"))
 	s := agent.NewSession(agent.NewScriptedModel(steps...), newFakeClient(), agent.Options{Events: events})
 
 	_, err := s.Run(context.Background(), "task")
@@ -715,10 +742,10 @@ func TestSessionRun_ToolBudgetIsPerTool(t *testing.T) {
 	files := &fakeTool{name: "files", description: "files", response: json.RawMessage(`{"ok":true}`)}
 	steps := append(searchSteps("q1", "q2", "q3", "q4", "q5", "q6", "q7"),
 		agent.ScriptedStep{
-			Content:   replyOnly("reading"),
+			Content:   "reading",
 			ToolCalls: []agent.ToolCall{{Name: "files", Input: json.RawMessage(`{"op":"read"}`)}},
 		},
-		agent.ScriptedStep{Content: replyOnly("done")})
+		finalStep("done"))
 	client := newFakeClient()
 	client.register(search)
 	client.register(files)
@@ -734,9 +761,9 @@ func TestSessionRun_ToolBudgetIsPerTool(t *testing.T) {
 func TestSessionRun_ToolBudgetResetsPerTurn(t *testing.T) {
 	search := &fakeTool{name: "search", response: json.RawMessage(`{"ok":true}`)}
 	steps := append(searchSteps("q1", "q2", "q3", "q4", "q5", "q6", "q7"),
-		agent.ScriptedStep{Content: replyOnly("one")})
+		finalStep("one"))
 	steps = append(steps, searchSteps("r1", "r2", "r3", "r4", "r5", "r6")...)
-	steps = append(steps, agent.ScriptedStep{Content: replyOnly("two")})
+	steps = append(steps, finalStep("two"))
 	s := agent.NewSession(agent.NewScriptedModel(steps...), newFakeClientWith(search), agent.Options{})
 
 	_, err := s.Run(context.Background(), "task one")
@@ -761,11 +788,11 @@ func TestSessionRun_RepeatedGuardPrecedesBudget(t *testing.T) {
 	steps := make([]agent.ScriptedStep, 0, 9)
 	for range 8 {
 		steps = append(steps, agent.ScriptedStep{
-			Content:   replyOnly("retrying"),
+			Content:   "retrying",
 			ToolCalls: []agent.ToolCall{call},
 		})
 	}
-	steps = append(steps, agent.ScriptedStep{Content: replyOnly("done")})
+	steps = append(steps, finalStep("done"))
 	s := agent.NewSession(agent.NewScriptedModel(steps...), client, agent.Options{})
 
 	final, err := s.Run(context.Background(), "task")
@@ -790,8 +817,8 @@ func TestSessionRun_RepeatedGuardPrecedesBudget(t *testing.T) {
 
 func TestSessionRun_CompactorHook(t *testing.T) {
 	model := agent.NewScriptedModel(
-		agent.ScriptedStep{Content: replyOnly("one")},
-		agent.ScriptedStep{Content: replyOnly("two")},
+		finalStep("one"),
+		finalStep("two"),
 	)
 	compactor := &fakeCompactor{}
 	s := agent.NewSession(model, newFakeClient(), agent.Options{
@@ -847,7 +874,7 @@ type captureModel struct {
 
 func (m *captureModel) Chat(_ context.Context, messages []agent.Message, _ []tool.Descriptor) (agent.Response, error) {
 	m.calls = append(m.calls, append([]agent.Message(nil), messages...))
-	return agent.Response{Content: "done"}, nil
+	return agent.Response{ToolCalls: []agent.ToolCall{writebackCall(replyOnly("done"))}}, nil
 }
 
 func TestSessionRun_InstructionsAreFirstSystemMessage(t *testing.T) {

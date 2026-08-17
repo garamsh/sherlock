@@ -20,7 +20,7 @@ The model decides content; the platform runs the mechanics.
 
 - Duplicate writes from dual paths become structurally impossible; the contract shrinks to one line (record only verified facts).
 - The lifecycle (frame, recall, act, writeback) is unchanged — the writeback was already the per-turn write protocol.
-- The write path stops depending on the prompt for its shape. The response schema the provider enforces is what makes the memory field present; the contract text still teaches what to put in it, and is no longer the only thing holding the write open.
+- The write path stops depending on the prompt for its shape. The reserved writeback tool is what makes the memory field present, and the session's refusal to end a turn without it is what makes the write happen at all; the contract text still teaches what to put in it, and is no longer the only thing holding the write open. It is a tool rather than a response format because a provider can accept a response format and ignore it (#615).
 - The founding "agent-driven memory management" principle narrows: the agent decides what to remember, correct, and retract; the platform decides when to consolidate and evict.
 
 ## Rejected alternatives

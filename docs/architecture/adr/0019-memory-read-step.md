@@ -12,7 +12,7 @@
 
 ## Context
 
-`docs/architecture/memory.md` §Current state says the agent recalls nothing. The store holds an address and a value and answers every class in full when handed one; the writeback states an address, a value and an operation in a shape the model API enforces. What is missing is the half that turns a question into an address: asked in words, an addressed store answers nothing at all, so the finding has to happen in front of it (ADR 0018 §What ships is three parts).
+`docs/architecture/memory.md` §Current state says the agent recalls nothing. The store holds an address and a value and answers every class in full when handed one; the writeback states an address, a value and an operation in the reserved tool call a turn ends on. What is missing is the half that turns a question into an address: asked in words, an addressed store answers nothing at all, so the finding has to happen in front of it (ADR 0018 §What ships is three parts).
 
 ADR 0018 named that step and left it unbuilt. It also recorded what nobody has measured about it — the one resolution figure was taken resolving into the topic address space, and "resolution into a question-shaped address space is reasoned about and measured nowhere" (§What is not measured).
 

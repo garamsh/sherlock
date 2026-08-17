@@ -43,10 +43,15 @@ func mockModel(_ string) agent.Model {
 			}},
 		},
 		agent.ScriptedStep{
-			Content: `{"reply":"Replied via message_send and recorded the answer.",` +
-				`"memory_ops":[{"address":{"subject":"user",` +
-				`"question":"what is 6 * 7","restriction":null},` +
-				`"value":"42","operation":null}]}`,
+			ToolCalls: []agent.ToolCall{{
+				Name: agent.MemoryWriteTool,
+				Input: json.RawMessage(
+					`{"reply":"Replied via message_send and recorded the answer.",` +
+						`"memory_ops":[{"address":{"subject":"user",` +
+						`"question":"what is 6 * 7","restriction":null},` +
+						`"value":"42","operation":null}]}`,
+				),
+			}},
 		},
 	)
 }

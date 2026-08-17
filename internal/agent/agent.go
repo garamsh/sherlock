@@ -146,6 +146,14 @@ var (
 	// ErrScriptExhausted is returned by the scripted model when a test
 	// scenario asks for more responses than were scripted.
 	ErrScriptExhausted = errors.New("scripted model: script exhausted")
+	// ErrWritebackNotCalled marks a model response that ended nothing:
+	// no reserved writeback call and no tool call to run. It is the
+	// shape a provider produces when it ignores the tools it was sent,
+	// which is how MiniMax ignores a response format (issue #615). The
+	// session does not end a turn on it — it says so and asks again —
+	// so this reaches a subscriber as the reason a turn is still
+	// running rather than as the reason it failed.
+	ErrWritebackNotCalled = errors.New("model ended a turn without calling " + MemoryWriteTool)
 	// ErrLoopExhausted is returned when the act loop exceeds the iteration
 	// cap without the model producing a final response.
 	ErrLoopExhausted = errors.New("act loop exceeded max iterations")

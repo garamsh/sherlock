@@ -39,10 +39,11 @@ address replies per message through message_send. A later message may
 retract an earlier one; when it does, do not start the retracted work.
 
 ## Memory writeback
-Your response is one JSON object with two fields, ` + "`reply`" + ` and ` + "`memory_ops`" + `.
-` + "`reply`" + ` is what the person reads — nothing else reaches them. ` + "`memory_ops`" + ` is
-the list of facts this turn states, and it is never omitted: an empty list is
-your answer that the turn stated none.
+End every turn by calling ` + "`memory_write`" + `. Its arguments are ` + "`reply`" + ` and
+` + "`memory_ops`" + `. ` + "`reply`" + ` is what the person reads — nothing else reaches them.
+` + "`memory_ops`" + ` is the list of facts this turn states, and it is never omitted:
+an empty list is your answer that the turn stated none. A turn is not finished
+until you make that call, so make it even when you have nothing to record.
 
 A fact is held at the address of the question it answers. Each entry gives:
 

@@ -68,7 +68,6 @@ func TestScriptTool_RoundTripIntegration(t *testing.T) {
 		Required: []string{"echo"},
 	})
 	require.NoError(t, err)
-	t.Cleanup(func() { reg.Close() })
 
 	list := reg.List()
 	require.Len(t, list, 1)
@@ -171,7 +170,6 @@ func optionalFieldRegistry(t *testing.T) *tool.Registry {
 		Required: []string{"demo"},
 	})
 	require.NoError(t, err)
-	t.Cleanup(func() { reg.Close() })
 	return reg
 }
 
@@ -229,8 +227,15 @@ func TestScriptTool_ManifestGateAcceptsOmittedOptionalOutput(t *testing.T) {
 func TestScriptTool_DescriptorCarriesManifestSchemas(t *testing.T) {
 	reg := optionalFieldRegistry(t)
 
-	desc, ok := reg.Get("demo")
-	require.True(t, ok)
+	// List is the whole descriptor surface agent.ToolClient declares, so
+	// the assertion reads the tool through the path the session does.
+	var desc tool.Descriptor
+	for _, d := range reg.List() {
+		if d.Name == "demo" {
+			desc = d
+		}
+	}
+	require.Equal(t, "demo", desc.Name)
 	assert.JSONEq(t, `{
 		"type":"object",
 		"properties":{"required_field":{"type":"string"},"optional_field":{"type":"string"}},
@@ -277,7 +282,6 @@ func TestScriptTool_InputRejection(t *testing.T) {
 		Required: []string{"echo"},
 	})
 	require.NoError(t, err)
-	t.Cleanup(func() { reg.Close() })
 
 	_, err = reg.Call(context.Background(), "echo", json.RawMessage(`{"wrong":42}`))
 	require.Error(t, err)
@@ -325,7 +329,6 @@ func TestScriptTool_NonConformingOutputFailsTheCallAndTheToolStays(t *testing.T)
 		Required: []string{"broken"},
 	})
 	require.NoError(t, err)
-	t.Cleanup(func() { reg.Close() })
 
 	out, err := reg.Call(context.Background(), "broken", json.RawMessage(`{}`))
 	require.Error(t, err)

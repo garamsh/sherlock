@@ -37,7 +37,6 @@ func TestScriptTool_ShellExec_Integration(t *testing.T) {
 		Required: []string{"shell_exec"},
 	})
 	require.NoError(t, err)
-	t.Cleanup(func() { reg.Close() })
 
 	out, err := reg.Call(context.Background(), "shell_exec",
 		json.RawMessage(`{"command":"echo hello from exec"}`))
@@ -74,7 +73,6 @@ func TestScriptTool_ShellExec_TimeoutSurfacesTrue(t *testing.T) {
 		Required: []string{"shell_exec"},
 	})
 	require.NoError(t, err)
-	t.Cleanup(func() { reg.Close() })
 
 	out, err := reg.Call(context.Background(), "shell_exec",
 		json.RawMessage(`{"command":"sleep 9999","timeout_nanos":1000000}`))
@@ -102,7 +100,6 @@ func TestScriptTool_ShellExec_InputRejected(t *testing.T) {
 		Required: []string{"shell_exec"},
 	})
 	require.NoError(t, err)
-	t.Cleanup(func() { reg.Close() })
 
 	_, err = reg.Call(context.Background(), "shell_exec",
 		json.RawMessage(`{"timeout_nanos":1000}`))
@@ -135,7 +132,6 @@ func TestScriptTool_ShellExec_NullTimeoutAccepted(t *testing.T) {
 		Required: []string{"shell_exec"},
 	})
 	require.NoError(t, err)
-	t.Cleanup(func() { reg.Close() })
 
 	out, err := reg.Call(context.Background(), "shell_exec",
 		json.RawMessage(`{"command":"echo ok","timeout_nanos":null}`))

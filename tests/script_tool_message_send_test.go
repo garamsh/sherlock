@@ -34,7 +34,6 @@ func TestScriptTool_MessageSend_Integration(t *testing.T) {
 		Required: []string{"message_send"},
 	})
 	require.NoError(t, err)
-	t.Cleanup(func() { reg.Close() })
 
 	out, err := reg.Call(context.Background(), "message_send",
 		json.RawMessage(`{"channel":"http","target":"alice","content":"42"}`))
@@ -76,7 +75,6 @@ func TestScriptTool_MessageSend_MissingOutboxDir(t *testing.T) {
 		Required: []string{"message_send"},
 	})
 	require.NoError(t, err)
-	t.Cleanup(func() { reg.Close() })
 
 	_, err = reg.Call(context.Background(), "message_send",
 		json.RawMessage(`{"channel":"http","target":"alice","content":"42"}`))
@@ -99,7 +97,6 @@ func TestScriptTool_MessageSend_InputRejected(t *testing.T) {
 		Required: []string{"message_send"},
 	})
 	require.NoError(t, err)
-	t.Cleanup(func() { reg.Close() })
 
 	_, err = reg.Call(context.Background(), "message_send",
 		json.RawMessage(`{"channel":"http","target":"alice"}`))

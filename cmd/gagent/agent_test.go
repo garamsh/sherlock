@@ -60,9 +60,8 @@ func TestBuildToolRegistry_DriftPinRefusesMutatedManifest(t *testing.T) {
 	cfg := config.Config{MemoryPath: filepath.Join(dir, "memory.db"), ToolsDir: dir}
 	cfg.Tools.Pins = tool.ManifestPins{"message_send": hash}
 
-	registry, err := buildToolRegistry(cfg, "test-agent", slog.New(slog.DiscardHandler))
+	_, err := buildToolRegistry(cfg, "test-agent", slog.New(slog.DiscardHandler))
 	require.NoError(t, err, "the unmutated manifest matches its pin")
-	require.NoError(t, registry.Close())
 
 	mutated := []byte(`{
 		"name": "message_send",
@@ -117,7 +116,6 @@ func TestBuildToolRegistry_WithoutPinsLoads(t *testing.T) {
 
 	registry, err := buildToolRegistry(cfg, "test-agent", slog.New(slog.DiscardHandler))
 	require.NoError(t, err)
-	t.Cleanup(func() { _ = registry.Close() })
 	assert.Len(t, registry.List(), 1)
 }
 
@@ -138,7 +136,6 @@ func TestBuildToolRegistry_RequiresTheMouthAndNothingElse(t *testing.T) {
 
 		registry, err := buildToolRegistry(cfg, "test-agent", slog.New(slog.DiscardHandler))
 		require.NoError(t, err, "files and shell_exec are absent and the agent still starts")
-		t.Cleanup(func() { _ = registry.Close() })
 
 		names := make([]string, 0, 1)
 		for _, d := range registry.List() {

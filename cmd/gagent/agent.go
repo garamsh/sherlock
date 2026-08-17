@@ -74,7 +74,7 @@ func addAgentFlags(fs *pflag.FlagSet) {
 // registry both agent modes share. The agent constructs no tool-shaped
 // code at compile time (ADR 0017 §Decision, ADR 0009 §Decision); the
 // script-tool registry is the lifecycle owner for tool calls.
-func newAgentFactory(ctx context.Context, cfg config.Config, agentID, ego string, logger *slog.Logger) (*gateway.Factory, *tool.Registry, error) {
+func newAgentFactory(cfg config.Config, agentID, ego string, logger *slog.Logger) (*gateway.Factory, *tool.Registry, error) {
 	newModel, err := newModelFunc(cfg.Model)
 	if err != nil {
 		return nil, nil, err
@@ -91,11 +91,14 @@ func newAgentFactory(ctx context.Context, cfg config.Config, agentID, ego string
 	if err != nil {
 		return nil, nil, err
 	}
-	factory, err := newFactory(cfg, newModel, embedder, summarizer, ego, registry)
-	if err != nil {
-		return nil, nil, err
-	}
-	return factory, registry, nil
+	return &gateway.Factory{
+		MemoryPath: cfg.MemoryPath,
+		NewModel:   newModel,
+		Embedder:   embedder,
+		Summarizer: summarizer,
+		Ego:        ego,
+		Tools:      registry,
+	}, registry, nil
 }
 
 // buildToolRegistry loads the operator's tools directory through the
@@ -138,7 +141,7 @@ func runAgentTurn(ctx context.Context, cfg config.Config, agentID, msg, ego stri
 	logger := slog.New(slog.NewJSONHandler(os.Stderr, nil))
 	slog.SetDefault(logger)
 
-	factory, registry, err := newAgentFactory(ctx, cfg, agentID, ego, logger)
+	factory, registry, err := newAgentFactory(cfg, agentID, ego, logger)
 	if err != nil {
 		return err
 	}
@@ -172,7 +175,7 @@ func serveAgent(ctx context.Context, cfg config.Config, agentID, ego string) err
 		return fmt.Errorf("addr %q is not a loopback bind: serving beyond localhost requires the tls: config section (ADR 0012)", cfg.Addr)
 	}
 
-	factory, registry, err := newAgentFactory(ctx, cfg, agentID, ego, logger)
+	factory, registry, err := newAgentFactory(cfg, agentID, ego, logger)
 	if err != nil {
 		return err
 	}

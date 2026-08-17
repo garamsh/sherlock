@@ -52,6 +52,8 @@ func committedRun(t *testing.T) Run {
 
 	result.Prose, err = readCommittedProse(filepath.Join("..", "results", "prose_seed7.json"))
 	require.NoError(t, err)
+	result.ProseBefore, err = readCommittedProse(filepath.Join("..", "results", "prose_baseline_seed7.json"))
+	require.NoError(t, err)
 	result.Addresser, err = readCommittedAddresses(filepath.Join("..", "results", "addresses_seed7.json"))
 	require.NoError(t, err)
 	return result

@@ -1025,7 +1025,7 @@ The instruction was bought twice. The first did not say what a restriction is no
 
 ## What the shipped prose produces
 
-Every address figure above came from a prompt written for this record: `harness/addressing.go` hands the model the twelve questions this workload asks and has it choose one. The prompt the platform actually ships — `internal/agent/instructions.go` §Memory writeback — names none of them, is written for a person talking to an agent rather than for an extraction task, and had never been measured. This section measures it (#547).
+Every address figure above came from a prompt written for this record: `harness/addressing.go` hands the model the twelve questions this workload asks and has it choose one. The prompt the platform actually ships — `internal/agent/instructions.go` §Memory writeback — names none of them, is written for a person talking to an agent rather than for an extraction task, and had never been measured. The round measured it (#547) and #554 revised the prose against that baseline; both runs are below.
 
 **The measurement asks whether a fact lands where its own question looks, and not whether the address is well formed.** A well-formed address no question will reach is the failure this section exists to find, so the run reports conformance and reachability side by side and never merges them. The write half uses `agent.ComposeInstructions("")`, `agent.ResponseSchema` and `agent.ParseWriteback` — the shipped prompt, the shipped schema and the shipped parser, so `parsed` here means what it means in the running agent. The read half is given the paired probe and nothing else: never the assertion, never the value, never the subject. That is the control. An address only the answer could have formed is one a question cannot reach, and the read call has no way to guess it.
 
@@ -1035,34 +1035,36 @@ Every address figure above came from a prompt written for this record: `harness/
 
 ### What the shipped prose produces
 
-| quantity | value |
-|---|---|
-| assertions asked | 840 |
-| probes asked | 600 |
-| `parsed`, the response was a write the shipped parser took | 0.990 ±0.007 |
-| `reachable`, the paired probe landed on the same address | 0.187 ±0.026 |
-| `subject right`, against the workload's own subject | 0.983 ±0.009 |
-| `subject match`, write and read agree on the subject | 0.983 ±0.009 |
-| `question match`, write and read agree on the question | 0.187 ±0.026 |
-| `self-answering`, the value is inside the address | 0.138 ±0.023 |
-| — of which the subject slot holds it | 0.006 ±0.005 |
-| — of which the question slot holds it | 0.138 ±0.023 |
+`before` is the prose measured at `452ed72`, SHA-256 `6be53ea7ac20`; `after` is the same round on the same workload with the prose #554 revised, SHA-256 `0f5bbf7d30e2`. The round, its four layers and the read step are byte-identical between the two — only the prompt under test moved.
 
-| wording | asked | reachable |
+| quantity | before | after |
 |---|---|---|
-| `assert` | 600 | 0.190 ±0.031 |
-| `also` | 40 | 0.300 ±0.144 |
-| `narrow` | 40 | 0.075 ±0.083 |
-| `replace` | 160 | 0.175 ±0.059 |
+| assertions asked | 840 | 840 |
+| probes asked | 600 | 600 |
+| `parsed`, the response was a write the shipped parser took | 0.990 ±0.007 | 0.999 ±0.002 |
+| `reachable`, the paired probe landed on the same address | 0.187 ±0.026 | 0.394 ±0.033 |
+| `subject right`, against the workload's own subject | 0.983 ±0.009 | 0.999 ±0.002 |
+| `subject match`, write and read agree on the subject | 0.983 ±0.009 | 0.999 ±0.002 |
+| `question match`, write and read agree on the question | 0.187 ±0.026 | 0.394 ±0.033 |
+| `self-answering`, the value is inside the address | 0.138 ±0.023 | 0.105 ±0.021 |
+| — of which the subject slot holds it | 0.006 ±0.005 | 0.000 ±0.000 |
+| — of which the question slot holds it | 0.138 ±0.023 | 0.105 ±0.021 |
 
-| class | asked | reachable |
-|---|---|---|
-| `carried` | 40 | 0.200 ±0.126 |
-| `replaced` | 120 | 0.100 ±0.054 |
-| `reverted` | 120 | 0.258 ±0.079 |
-| `parallel` | 80 | 0.275 ±0.098 |
-| `refined` | 80 | 0.175 ±0.084 |
-| `fresh` | 400 | 0.175 ±0.037 |
+| wording | asked | reachable before | reachable after |
+|---|---|---|---|
+| `assert` | 600 | 0.190 ±0.031 | 0.367 ±0.039 |
+| `also` | 40 | 0.300 ±0.144 | 0.550 ±0.156 |
+| `narrow` | 40 | 0.075 ±0.083 | 0.225 ±0.131 |
+| `replace` | 160 | 0.175 ±0.059 | 0.500 ±0.078 |
+
+| class | asked | reachable before | reachable after |
+|---|---|---|---|
+| `carried` | 40 | 0.200 ±0.126 | 0.350 ±0.150 |
+| `replaced` | 120 | 0.100 ±0.054 | 0.408 ±0.088 |
+| `reverted` | 120 | 0.258 ±0.079 | 0.525 ±0.090 |
+| `parallel` | 80 | 0.275 ±0.098 | 0.463 ±0.110 |
+| `refined` | 80 | 0.175 ±0.084 | 0.263 ±0.097 |
+| `fresh` | 400 | 0.175 ±0.037 | 0.367 ±0.047 |
 
 ### What the failures look like
 
@@ -1070,34 +1072,30 @@ The first rows of each kind in workload order, so the selection is reproducible 
 
 | kind | assertion | address | value | probe reaches |
 |---|---|---|---|---|
-| subject holds the value | Karin leads the quill-ledge project from now on. | quill-ledge project / who is leading the quill-ledge project | Karin | Karin / Which project does Karin lead? |
-| subject holds the value | Hugo leads the opal-vale project. | opal-vale project / who leads the opal-vale project | Hugo | Hugo / Which project does Hugo lead? |
-| subject holds the value | Farid leads the umber-isle project. | umber-isle project / who leads the umber-isle project | Farid | Farid / Which project does Farid lead? |
-| question holds the value | Hugo sits with the copper-kiln team. | Hugo / who is sitting with the copper-kiln team | the copper-kiln team | Hugo / Which team does Hugo sit with? |
-| question holds the value | Yara keeps the accounts in marlow-weir. | Yara / who keeps the accounts in marlow-weir | Yara | Yara / What does Yara keep the accounts in? |
+| question holds the value | Celia keeps the accounts in cobalt-annex. | Celia / what does Celia do in cobalt-annex | keeps the accounts | Celia / What does Celia keep the accounts in? |
 | question holds the value | Stefan leads the vellum-ledge project. | Stefan / who leads the vellum-ledge project | Stefan | Stefan / Which project does Stefan lead? |
-| wrong subject | Karin leads the quill-ledge project from now on. | quill-ledge project / who is leading the quill-ledge project | Karin | Karin / Which project does Karin lead? |
-| wrong subject | Hugo leads the opal-vale project. | opal-vale project / who leads the opal-vale project | Hugo | Hugo / Which project does Hugo lead? |
-| wrong subject | Farid leads the umber-isle project. | umber-isle project / who leads the umber-isle project | Farid | Farid / Which project does Farid lead? |
-| unreachable | Nadia sits with the ember-foundry team. | Nadia / who is Nadia sitting with | the ember-foundry team | Nadia / Which team does Nadia sit with? |
-| unreachable | Gunnar banks with umber-weir. | Gunnar / where does Gunnar bank | Umber-Weir | Gunnar / Who does Gunnar bank with? |
-| unreachable | Ulla banks with verdigris-reach. | Ulla / where does Ulla bank | verdigris-reach | Ulla / Who does Ulla bank with? |
-| no write | Amara orders paper from nutmeg-glade now. | n/a / n/a | n/a | Amara / Who does Amara order paper from? |
-| no write | For the business account Karin banks with pewter-hearth. | n/a / n/a | n/a | Karin / Who does Karin bank with? |
+| question holds the value | Pablo leads the cinder-hearth project. | Pablo / who leads the cinder-hearth project | Pablo | Pablo / Which project does Pablo lead? |
+| unreachable | Nadia sits with the ember-foundry team. | Nadia / who does Nadia sit with | the ember-foundry team | Nadia / Which team does Nadia sit with? |
+| unreachable | Gunnar banks with umber-weir. | Gunnar / which bank does Gunnar use | umber-weir | Gunnar / Who does Gunnar bank with? |
+| unreachable | Ulla banks with verdigris-reach. | Ulla / which bank does Ulla bank with | verdigris-reach | Ulla / Who does Ulla bank with? |
 | no write | For the business account Lorna banks with flint-tarn. | n/a / n/a | n/a | Lorna / Who does Lorna bank with? |
 | reachable | Zara rehearses at the verdigris-annex hall. | Zara / where does Zara rehearse | the verdigris-annex hall | Zara / Where does Zara rehearse? |
+| reachable | Yara commutes on the thistle-reach line. | Yara / which line does Yara commute on | the thistle-reach line | Yara / Which line does Yara commute on? |
 | reachable | Cato keeps the backups on silverfin-hearth. | Cato / where does Cato keep the backups | silverfin-hearth | Cato / Where does Cato keep the backups? |
-| reachable | Tereza keeps the backups on quill-wharf. | Tereza / where does Tereza keep the backups | quill-wharf | Tereza / Where does Tereza keep the backups? |
 <!-- end generated -->
 
-- **The concern is confirmed and the diagnosis behind it is refuted, and those are two findings.** The prose writes an address for nearly every assertion and almost none of them can be found: it parses at nearly one and reaches at under a fifth. That is the gap #547 predicted. But the mode it predicted — the subject slot holding the value, as in the observation where a cat's name was both the subject and the value — happens on well under one assertion in a hundred. It is real, it is visible in the failure table, and it is not what makes the addresses unreachable.
-- **The failure is the question slot, alone.** The write and the read agree on the subject in nearly every row, and `reachable` tracks `question match` to three decimals. So the two halves of an address fail independently and only one of them is failing: the sentence to look at is "the question the fact answers, in the statement's own words", and not the one defining the subject.
-- **"In the statement's own words" is the instruction doing the damage.** The write reads the sentence and phrases the question the way the sentence is phrased; the reader asks it the way a question is phrased. `Nadia sits with the ember-foundry team` is written to `who is Nadia sitting with` and asked as `Which team does Nadia sit with?` — the same fact, two wordings, two addresses. The instruction tells the write to take its wording from the one place the reader will not be standing.
-- **Some of it is worse than wording, and the same instruction explains it.** `Gunnar banks with umber-weir` is written to `where does Gunnar bank` when the value is an institution and the probe asks `Who does Gunnar bank with?`. Taking the wording from the statement takes the interrogative from it too, so a sentence whose verb suggests a place produces a where-question for a who-fact. That is not a near miss a looser comparison would recover.
-- **The wording that narrows fares worst and the wording that adds fares best.** A statement carrying a restriction reaches its probe least often of the four, which is the class §Whether the address carries the arity found a question address recovers — recovered there by a rule forming the address, and not recovered here by a model forming it from the shipped prose.
-- **What this decides.** #336 step 2 should not be measured end to end against this write. A store built and scored behind an extractor that reaches under a fifth of its own questions would report the store as the failure, which is the specific mistake #547 exists to prevent. The prose is a text change in `instructions.go`, and this section is the baseline it is measured against.
+- **The concern the round was built on is confirmed, and the diagnosis behind it is refuted.** The prose measured at `452ed72` wrote an address for nearly every assertion and almost none could be found: `parsed` `0.990` against `reachable` `0.187`. But the mode that motivated the round — the subject slot holding the value, as in the observation where a cat's name was both subject and value — happened on well under one assertion in a hundred. It was real, and it was not what made the addresses unreachable.
+- **The failure was the question slot, alone.** Write and read agreed on the subject in nearly every row, and `reachable` tracked `question match` to three decimals. The two halves of an address failed independently and only one of them was failing, which is what made the fix a change to one sentence rather than to the shape.
+- **The sentence was "in the statement's own words".** It told the write to take the question's wording from the one place the reader will not be standing. `Nadia sits with the ember-foundry team` was written to `who is Nadia sitting with` and asked as `Which team does Nadia sit with?`. Worse, taking the wording from the statement took the interrogative with it: `Gunnar banks with umber-weir` was written to `where does Gunnar bank` for a fact whose answer is a party, which no read phrasing could have reached.
+- **The revision states what a question has to be rather than where to copy it from.** It asks for the question someone who does not yet know the answer would ask, which forbids the answer appearing in it; it says the question is about the subject; it takes the question word from what the answer is and never from the statement's verb; and it puts a restriction in its own field and out of the question. `reachable` goes `0.187` to `0.394`, on intervals that do not overlap, and `subject holds the value` goes to zero.
+- **The `where`-for-`who` case is fixed, which is the half no wording change could reach.** Under the revision `Gunnar banks with umber-weir` asks for a party. That failure and the phrasing drift had different causes and needed different sentences, and both moved.
+- **A second revision was measured and did not separate from the first.** The rule that closed the remaining gap by naming the kind of thing the answer is — `which line does Yara commute on` — also pushed the write to invent a kind where the statement gives none, so `Gunnar banks with umber-weir` became `which bank does Gunnar use` and stopped being reachable. It scored `0.394` against the first revision's `0.380`, well inside both intervals. Two prose passes were run against this workload and no third: past this point the gain is in guessing which interrogative a probe author chose, and that is fitting the workload rather than fixing the prose.
+- **What remains is mostly not the prose, and the record says so rather than leaving a number to be read as a ceiling on the write.** The workload's twelve probes are not consistent about their own question word: seven ask `Which <noun>`, two ask `Who`, and three ask `Where` or `What` where the statement names a kind. No instruction can predict which of those a probe author picked, so a share of the residue belongs to the probe set. What is left that is the prose's is visible in the failure table: the write still sometimes asks a question about the value rather than the subject — `who leads the vellum-ledge project` for a fact about Stefan.
+- **`narrow` improves and stays nominally worst, and this workload cannot say whether that is inherent.** It goes `0.075` to `0.225` while `assert` goes to `0.367`. At forty assertions its interval is `±0.131` and overlaps `assert`'s, so the ordering is not established here. The mechanism is visible even where the rate is not: a restricted statement has to be split, the restriction into its own field and the question left as the one a reader would ask, and the write sometimes leaves the restriction inside the question. That is a harder task than the one §Whether the address carries the arity measured, where `refined` goes `0.500` to `1.000` with the address supplied by a rule; forming a restricted address from prose is not the same act as scoring one that was formed correctly, and ADR 0018 §What is not measured should be read with that distinction in mind.
+- **What this decides.** The write is no longer the reason a store would look bad, but it is not good: three assertions in five still land where their own question does not look. #336 step 2 can proceed on the understanding that this write is a known and measured floor rather than a solved problem, and that a store measured end to end behind it inherits this number.
 
 ## What a wrong declaration costs
+
 
 `attribute-declared` answers everything and returns nothing stale, and it was measured with a declaration that is never wrong. In production that declaration comes from a model reading a sentence, and models err. This section measures what the recommendation costs when it is wrong, whether the damage repairs itself, and where a real model sits.
 
@@ -3795,12 +3793,12 @@ The figure that matters for the designs coming next is in the cost table below, 
 | paid calls, the shipped prose round | 1440 |
 | assertions put through the shipped prose | 840 |
 | probes put through the read step | 600 |
-| prompt tokens, the shipped prose round | 1358333 |
-| completion tokens, the shipped prose round | 49141 |
+| prompt tokens, the shipped prose round | 1737173 |
+| completion tokens, the shipped prose round | 46421 |
 | price per million prompt tokens, the shipped prose round, USD | 0.15 |
 | price per million completion tokens, the shipped prose round, USD | 0.6 |
 | price read on, the shipped prose round | 2026-08-17 |
-| cost of the shipped prose round, USD | 0.2332 |
+| cost of the shipped prose round, USD | 0.2884 |
 | call bound the shipped prose round refuses to pass | 2000 |
 | cost bound the shipped prose round refuses to pass, USD | 0.60 |
 | paid calls, resampling | 720 |
@@ -3819,7 +3817,7 @@ The figure that matters for the designs coming next is in the cost table below, 
 | cost of resolving, USD | 0.0126 |
 | call bound resolving refuses to pass | 1000 |
 | cost bound resolving refuses to pass, USD | 0.10 |
-| cost of this record in total, USD | 0.3291 |
+| cost of this record in total, USD | 0.3843 |
 
 | shape | messages read | paid calls | tokens | cost USD |
 |---|---|---|---|---|
@@ -3894,6 +3892,8 @@ The figure that matters for the designs coming next is in the cost table below, 
 - **The shipped-prose round supplies its own read step, and the write half supplies nothing.** The write is the shipped prompt, schema and parser unchanged, and each assertion is handed over as the user turn with no surrounding context. The read step had to be written for this record because the platform ships none — #336 step 3 is where one lands. It is the shipped prose's own two address sentences with "statement" read as "question", carries no example, no subject list and no attribute list, and is given the probe alone. A read prompt carrying more than the write prompt could place a question the write could not, and the figure would then describe the read prompt. `reachable` is the one figure that depends on it; `parsed`, `subject right` and `self-answering` are decided against the workload's own ground truth and do not.
 - **Two differences between that round and production are real and were not smoothed over.** The contract's worked example is first-person — "my favorite telescope" — and this workload's sentences are third-person about named people. And the contract advertises a tool set that is not present here, because it is the shipped instructions unchanged rather than an extract of the writeback section. Either could move the figures, and neither was adjusted to improve them.
 - **The shipped-prose round compares addresses exactly, on case and punctuation only.** Two questions that differ in wording are two addresses, which is what a store keyed by an address does. A looser rule would recover some of the gap and would be a constant nothing measured, so none was used — but it means `reachable` is a floor for any store that normalises more than this one does.
+- **The shipped-prose round was run twice against one fixed benchmark, and that is a fitting risk.** The scoring, the four layers and the read step are byte-identical between the two runs; only the prompt moved. But a prompt revised twice against one workload can be fitting that workload's phrasing rather than improving, and the second revision's own result is the evidence — it traded one attribute for another and did not separate from the first. Two passes were run and no third for that reason.
+- **The round's residue is partly the workload's and the record does not charge it to the prose.** The twelve probes disagree about their own question word, so a share of the unreachable rows is a probe-author choice no instruction can predict. The record does not estimate that share, because separating it would need a probe set written to one rule and this one was not.
 - **That round is one model, one prompt, one pass, like every other paid half here.** It is `gpt-4o-mini` because that is what `internal/config` resolves to with nothing configured and what the observation in #547 came from; the other paid rounds buy the cheaper `gpt-4.1-nano`, so its figures are not comparable with theirs on cost per call.
 - **What CI checks about the shipped prose is that it has not moved.** The round's figures describe a prompt, so the SHA-256 of `agent.ComposeInstructions("")` and of `agent.ResponseSchema` are pinned in the harness and a test fails when either changes. That is the same link #546 built for the decade run's constants, pointed at the constant this round measures under. It says nothing about whether a changed prompt is better — only that these figures stopped describing it.
 - **The results are not regenerated by `make ci`.** A full run is minutes of CPU, so CI compiles the harness, runs its tests, and checks this record against the committed results; it does not re-measure. Re-running is a manual step.

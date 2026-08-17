@@ -54,6 +54,11 @@ const (
 	prosePriceOut  = 0.60
 	prosePriceRead = "2026-08-17"
 
+	// proseBaselinePrompt is the digest of the prose the committed
+	// baseline measured, before #554 revised it. It is here so the
+	// before column of the record names a prompt rather than a date.
+	proseBaselinePrompt = "6be53ea7ac20e7897020ddf8158e5ccd3018d3b7c1954b7506c3f913496574cc"
+
 	// proseMeasuredPrompt and proseMeasuredSchema are the SHA-256 of
 	// agent.ComposeInstructions("") and agent.ResponseSchema as the
 	// committed round measured them. #546 held this record's figures
@@ -64,7 +69,7 @@ const (
 	// that is the whole subject here, so the failure is the point rather
 	// than an inconvenience. The remedy is a decision: re-run and commit,
 	// or say in §Limits that these figures are historical.
-	proseMeasuredPrompt = "6be53ea7ac20e7897020ddf8158e5ccd3018d3b7c1954b7506c3f913496574cc"
+	proseMeasuredPrompt = "0f5bbf7d30e221386a840e6706a4a860aa38aabbf9db6511cf042754fe055a62"
 	proseMeasuredSchema = "0944fae4c3f16b2db3551289c7872aad257e23142491f1df141b84e91ce5b69f"
 )
 

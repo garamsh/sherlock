@@ -59,7 +59,9 @@ Automated, at `949ac99`, from `results/gremlins.txt`:
 
 Hand deletions, from `results/hand-mutants.txt`: **13 attempted, 11 viable** (one does not compile once its comparison is gone, one has no safe textual anchor), **6 survive their own package's tests, 3 survive the entire suite.**
 
-## The three deletions the whole suite misses
+## The three deletions the whole suite missed
+
+**One of the three is closed.** The duplicate-name deletion (`M10`) is killed as of #605; the two privileged-path deletions (`M4`, `M6`) still survive and are #604's. The figures above are the survey as it ran and are not restated here — this section carries each deletion's current status instead.
 
 Each is its own defect with its own cause. The exact edits are in `harness/hand_mutants.py`, which is the verbatim record — it applies each deletion by exact-string anchor and reports a miss rather than mutating a moved site, so it cannot drift out of agreement with the code the way a transcription in prose would.
 
@@ -81,7 +83,9 @@ The contrast is the useful part: deleting the **unprivileged** path of the same 
 
 ### Duplicate tool names — `internal/tool/registry.go:139-141`
 
-Deleting the duplicate-name rejection survives both the package's tests and the suite. Harness id `M10`. Nothing anywhere asserts it: the guard's message has one occurrence in the tree, the `return` statement itself.
+Deleting the duplicate-name rejection survived both the package's tests and the suite. Harness id `M10`. Nothing anywhere asserted it: the guard's message had one occurrence in the tree, the `return` statement itself.
+
+**Closed by #605.** `internal/tool/registry_test.go` installs two tool directories whose manifests claim one name and asserts the refusal by its message. `M10` reports `package=KILLED` in `results/hand-mutants-after-605.txt` — killed by the package that defines the guard, not by the integration suite.
 
 Distinct from the drift-pin deletions (`M1`, `M2b`, `M3`), which survive `internal/tool`'s own tests and are killed by the integration suite. The pin is guarded, just not where it is defined; the duplicate-name guard is guarded nowhere.
 
@@ -96,12 +100,12 @@ Only `internal/workspace/shell`'s 16 were re-run against the whole suite. The 13
 | The guard is checked by the integration suite, not by the package that defines it | `dumpable_linux.go:44`, `process_linux.go:109`, `:174`, `:201` | killed |
 | Inside `if euid == 0`, which no run this repository performs enters | `process_linux.go:86`, `:154`, `:323` | survives |
 | Behind `requireRoot`, so the test naming the behaviour skips | `process_linux.go:116`, `:178` | survives |
-| No test asserts it at all: nothing anywhere checks that `Request.Stdin` reaches the child | `process_linux.go:171` | survives |
+| No test asserted it at all: nothing anywhere checked that `Request.Stdin` reaches the child — closed by #606 | `process_linux.go:171` | killed by the package since #606 |
 | The test asserts presence and non-emptiness, so the fallback value passes too | `childenv.go:11`, `:15` | survives |
 | Unobservable: the mutant rewrites the capacity argument of a zero-length `make` | `limits.go:48` (two mutants) | survives |
 | An untested boundary on an argument shape no caller builds: the shim verb with no arguments, and a program whose `Args` is non-nil and empty, which the Exec RPC cannot produce (`internal/workspace/server.go:66` passes `req.GetArgs()`, nil when the field is empty) | `limits.go:28`, `:65` | survives |
 
-So of this package's 16: **4 are covered elsewhere, 2 are equivalent mutants no test can kill, 2 sit on a boundary no shipped caller reaches, and 8 are genuine gaps** — 5 of the 8, plus both surviving hand deletions, from the single cause that the privileged half of the executor's tests never executes.
+So of this package's 16: **4 are covered elsewhere, 2 are equivalent mutants no test can kill, 2 sit on a boundary no shipped caller reaches, and 8 are genuine gaps** — 5 of the 8, plus both surviving hand deletions, from the single cause that the privileged half of the executor's tests never executes. One of the 8, `process_linux.go:171`, is closed by #606; it was the only one of them whose cause was an absent test rather than a test that never runs, which is why it could be closed without touching how the suite is invoked.
 
 `internal/tool`'s 13, by inspection only:
 
@@ -119,9 +123,11 @@ So of this package's 16: **4 are covered elsewhere, 2 are equivalent mutants no 
 
 Filed, one per cause, each carrying the mutant and the green run:
 
-- #604 — the privileged half of `internal/workspace/shell`'s tests never executes: the ADR 0008 drop, the ADR 0010 unshare, and five gremlins survivors in the same region.
-- #605 — duplicate tool names are accepted and nothing catches it.
-- #606 — no test asserts `Request.Stdin` reaches the child.
+- #604 — the privileged half of `internal/workspace/shell`'s tests never executes: the ADR 0008 drop, the ADR 0010 unshare, and five gremlins survivors in the same region. Open.
+- #605 — duplicate tool names are accepted and nothing catches it. **Closed**; `M10` is killed by `internal/tool`'s own tests.
+- #606 — no test asserts `Request.Stdin` reaches the child. **Closed**; `process:171` is killed by `internal/workspace/shell`'s own tests.
+
+The two closed ones were the survey's only findings whose cause was an absent assertion. #604's is that a test which names the behaviour never runs, which is why it takes a change to how the suite is invoked rather than a test.
 
 Not filed, with the reason:
 

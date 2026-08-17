@@ -1,0 +1,50 @@
+Re-run of the thirteen hand deletions after #605 added internal/tool's
+registry_test.go, verbatim harness output. Tree: fa0a1fa, which is origin/main
+4e69889 plus the two test commits this run exists to check.
+
+M10 is the change: package=KILLED where the survey recorded SURVIVED/SURVIVED.
+Nothing else moved.
+
+This is one pass over all thirteen, so its totals are directly comparable to the
+README's combined figures rather than to hand-mutants.txt, which records the two
+rounds the survey ran separately. Against the README: 11 viable is unchanged,
+survivors of their own package's tests fall from 6 to 5, and survivors of the
+entire suite from 3 to 2. Both deltas are M10.
+
+HEAD: fa0a1fa
+M1: package=SURVIVED suite=KILLED  (drift pin never enforced (call site deleted))
+M2: NO-COMPILE (not a viable mutant)
+M2b: package=SURVIVED suite=KILLED  (a drifted manifest hash is accepted (viable form))
+M3: package=SURVIVED suite=KILLED  (a tool the pin set does not name is accepted)
+M10: package=KILLED suite=-  (duplicate tool names are accepted)
+M11: NO-ANCHOR (no safe textual anchor)
+M4: package=SURVIVED suite=SURVIVED  (the privilege drop is removed (child keeps root))
+M5: package=KILLED suite=-  (the wrong-account refusal is removed)
+M6: package=SURVIVED suite=SURVIVED  (netns isolation dropped for the privileged path)
+M12: package=KILLED suite=-  (netns isolation dropped for the unprivileged path (single-account))
+M7: package=KILLED suite=-  (a replacement supersedes nothing (behaves as a join))
+M8: package=KILLED suite=-  (an unknown operation is accepted)
+M9: package=KILLED suite=-  (an empty value is accepted)
+
+==== SUMMARY ====
+id           pkg tests   full suite  description
+M1           SURVIVED    KILLED      drift pin never enforced (call site deleted)
+M2           NO-COMPILE  -           a drifted manifest hash is accepted
+M2b          SURVIVED    KILLED      a drifted manifest hash is accepted (viable form)
+M3           SURVIVED    KILLED      a tool the pin set does not name is accepted
+M10          KILLED      -           duplicate tool names are accepted
+M11          NO-ANCHOR   -           the manifest hash is constant (drift undetectable at source)
+M4           SURVIVED    SURVIVED    the privilege drop is removed (child keeps root)
+M5           KILLED      -           the wrong-account refusal is removed
+M6           SURVIVED    SURVIVED    netns isolation dropped for the privileged path
+M12          KILLED      -           netns isolation dropped for the unprivileged path (single-account)
+M7           KILLED      -           a replacement supersedes nothing (behaves as a join)
+M8           KILLED      -           an unknown operation is accepted
+M9           KILLED      -           an empty value is accepted
+
+attempted:                          13
+viable:                             11
+survived their own package's tests: 5
+survived the entire suite:          2
+
+tree clean after restore: YES

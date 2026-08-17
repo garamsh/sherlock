@@ -36,14 +36,45 @@ func (f *fakeExecutor) Run(_ context.Context, req shell.Request) (shell.Result, 
 	return f.result, f.err
 }
 
+// privilegedRun reports whether this run promised to reach the privileged
+// boundary. `make test-privileged` sets the variable; a guard that would
+// otherwise skip fails instead, because a privileged case that quietly
+// skips inside a run commissioned to exercise it is the defect #604
+// reports, one layer up.
+func privilegedRun() bool {
+	return os.Getenv("GAGENT_PRIVILEGED_TESTS") != ""
+}
+
 // requireRoot skips the test when the current effective user cannot drop
 // to the agent UID. The remaining branches still run; we just cannot
-// exercise fork+exec without root.
+// exercise fork+exec without root. In a run that declared itself
+// privileged there is nothing to fall back to, so the absent privilege is
+// the result.
 func requireRoot(t *testing.T) {
 	t.Helper()
-	if os.Geteuid() != 0 {
-		t.Skip("setuid path requires root; run with `sudo -E go test ./internal/workspace/shell/...` to exercise fork+exec")
+	if os.Geteuid() == 0 {
+		return
 	}
+	if privilegedRun() {
+		t.Fatalf("GAGENT_PRIVILEGED_TESTS is set but this run has euid %d: the privileged family cannot be exercised and must not report as if it were",
+			os.Geteuid())
+	}
+	t.Skip("setuid path requires root; run `make test-privileged` to exercise fork+exec")
+}
+
+// execAccountDir returns a directory the child's account can traverse.
+// `t.TempDir` roots its per-test tree at mode 0700 owned by the test's own
+// account, so a child dropped to another UID cannot enter it and fails on
+// the permission rather than on what the case is about. A privileged
+// workspace has the same problem and solves it by handing the workspace
+// directory to the exec account (ADR 0008); these tests hold no workspace,
+// so they open the path instead.
+func execAccountDir(t *testing.T) string {
+	t.Helper()
+	dir := t.TempDir()
+	require.NoError(t, os.Chmod(filepath.Dir(dir), 0o755), "open the per-test root")
+	require.NoError(t, os.Chmod(dir, 0o755), "open the directory itself")
+	return dir
 }
 
 func TestProcessExecutor_Success(t *testing.T) {
@@ -232,6 +263,30 @@ func TestProcessExecutor_TrustedGoBinaryRuns(t *testing.T) {
 		"the Go helper runs to completion as a trusted child")
 }
 
+// TestProcessExecutor_PrivilegedDropRunsAsExecUID pins the ADR 0008 drop
+// itself: a privileged executor's child runs as the configured exec
+// account and not as the account the executor runs as. Nothing else in
+// this package can pin it. The single-account case below asserts the
+// child's uid too, but there the two accounts are one number, so its
+// assertion holds whether or not the drop happens — which is how deleting
+// the drop left the whole suite green (#604).
+func TestProcessExecutor_PrivilegedDropRunsAsExecUID(t *testing.T) {
+	requireRoot(t)
+	exec := shell.NewProcessExecutor(testExecUID, 5*time.Second)
+
+	res, err := exec.Run(context.Background(), shell.Request{Command: "id -u; id -g"})
+
+	require.NoError(t, err)
+	// The child's own output is in the message for the reason the
+	// single-account case gives: a child that ran as the wrong account and
+	// a child that never ran look identical without it (issue #522).
+	assert.Equal(t, fmt.Sprintf("%d\n%d\n", testExecUID, testExecUID), res.Stdout,
+		"the child drops to the exec account and does not keep the executor's (exit=%d, stderr=%q)",
+		res.ExitCode, res.Stderr)
+	assert.NotEqual(t, os.Geteuid(), testExecUID,
+		"this case is only meaningful when the two accounts differ")
+}
+
 // TestProcessExecutor_SingleAccountRunsAsOwnUID pins the single-account
 // mode (ADR 0008): with AgentUID equal to the process euid, an
 // unprivileged executor runs children as its own account — no privilege
@@ -263,7 +318,7 @@ func TestProcessExecutor_DefaultTimeoutRejectsZero(t *testing.T) {
 
 func TestProcessExecutor_RunsInWorkspace(t *testing.T) {
 	requireRoot(t)
-	root := t.TempDir()
+	root := execAccountDir(t)
 	require.NoError(t, os.WriteFile(root+"/marker.txt", []byte("in-workspace"), 0o644))
 	exec := shell.NewProcessExecutor(testExecUID, 5*time.Second)
 

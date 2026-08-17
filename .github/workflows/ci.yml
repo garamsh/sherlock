@@ -26,6 +26,25 @@ jobs:
       - run: make proto
       - run: make ci
 
+  # The executor's privileged family (ADR 0008, ADR 0010) asserts the drop to
+  # the exec UID and the empty network namespace. Neither can be observed
+  # without euid 0 and CAP_SYS_ADMIN, so on the default runner every one of
+  # those cases skips and `go test` still prints ok — which is how deleting
+  # the drop left the suite green (#604). A step cannot ask for a capability,
+  # so the job runs in a container that holds one: the same pairing the
+  # deployment gives the workspace container (deploy/local/).
+  privileged:
+    runs-on: ubuntu-latest
+    container:
+      image: golang:1.26@sha256:0d1d3a794be25f809dd2cb3160d8c73276c4056a9f8242a138e908ddeee7b6b6
+      options: --cap-add=SYS_ADMIN
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # The image carries the toolchain, so no setup step runs here; the
+      # target refuses to run at all without root, and the family reports an
+      # unreachable boundary instead of skipping past it.
+      - run: make test-privileged
+
   docker:
     runs-on: ubuntu-latest
     steps:

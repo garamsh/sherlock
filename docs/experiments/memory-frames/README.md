@@ -147,7 +147,7 @@ The rows fall into families, and what separates a family from the rest is larger
 
 ## `shipped` — `internal/memory` as it ran
 
-`internal/memory` as it ran when these results were committed: the SQLite store, hybrid search over embeddings and FTS, the one ranking function, supersession on insert, and the two passes `internal/gateway/queue.go` runs after a completed turn, threshold consolidation and tiered retention. Supersession on insert has since been removed (#529) and the salience constants have moved to `internal/memory/ranking.go`; the figures are pinned to what ran (§Limits). `Recall` is what it puts in the context, bounded by the shipped token budget.
+`internal/memory` as it ran when these results were committed: the SQLite store, hybrid search over embeddings and FTS, the one ranking function, supersession on insert, and the two passes `internal/gateway/runner.go` runs after a completed turn, threshold consolidation and tiered retention. Supersession on insert has since been removed (#529) and the salience constants have moved to `internal/memory/ranking.go`; the figures are pinned to what ran (§Limits). `Recall` is what it puts in the context, bounded by the shipped token budget.
 
 **What these figures say.**
 

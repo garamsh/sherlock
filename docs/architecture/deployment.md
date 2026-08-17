@@ -194,7 +194,7 @@ Everything else in this document is **descriptive**: true, useful, and free to c
 | The bind gate | no `tls:` ⇒ loopback binds only, enforced at startup | `internal/config/loopback.go` | Their CRD decides Service and TLS wiring from it. Relaxing it changes what a pod without `tls:` exposes; tightening it crash-loops pods their CRD used to accept |
 | Owner-only file mode | `0600`/`0400` pass, `0644` fails | `internal/config/owner_only.go` | Their generated Secret volumes set `defaultMode` because of it. Widening it silently loosens their posture; extending the check to more files fails deployments that were valid |
 | `exec-uid` must be a dedicated account | default `1001`; `RLIMIT_NPROC` (64) counts every process of the real uid, and joins only in the privileged drop | `internal/workspace/shell/` | They allocate a uid nothing else on the node uses. If the cap stopped being per-uid, their allocation is unnecessary; if a shared uid became acceptable, their constraint is wrong |
-| `MaxDrainBatch` | `8` | `internal/gateway/queue.go` | How many queued messages one turn takes. Their queue-depth alerting and backlog expectations are derived from it |
+| `MaxDrainBatch` | `8` | `internal/gateway/runner.go` | How many queued messages one turn takes. Their queue-depth alerting and backlog expectations are derived from it |
 | `SubscriberBuffer` | `32` | `internal/gateway/events.go` | A monitoring subscriber loses events past this many undelivered, with nothing in the stream marking the gap (`gateway.md`). Their consumer's reconnect and gap handling assume this number |
 
 ## Open questions

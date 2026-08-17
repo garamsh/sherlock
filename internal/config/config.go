@@ -108,14 +108,17 @@ type TLSConfig struct {
 	ClientCA string `mapstructure:"client-ca"`
 }
 
-// ModelConfig selects a model provider: the chat model under the model:
-// section. The API key itself never appears here: APIKeyEnv names the
-// environment variable holding it (ADR 0003).
+// ModelConfig selects the chat model under the model: section. The API
+// key itself never appears here: APIKeyEnv names the environment
+// variable holding it (ADR 0003).
 type ModelConfig struct {
-	// Provider selects the implementation: "mock" (scripted) or "openai".
+	// Provider selects the wire protocol the endpoint speaks, not the
+	// vendor behind it: "mock" (scripted) or "openai-compatible". One
+	// value serves every endpoint speaking that protocol, so the vendor
+	// is chosen by BaseURL rather than here.
 	Provider string `mapstructure:"provider"`
-	// BaseURL is the provider's API root; any OpenAI-compatible endpoint
-	// (Ollama, vLLM, …) works through the same field.
+	// BaseURL is the endpoint's API root; any OpenAI-compatible endpoint
+	// (MiniMax, Ollama, vLLM, …) works through the same field.
 	BaseURL string `mapstructure:"base-url"`
 	// Model is the model name passed to the provider.
 	Model string `mapstructure:"model"`

@@ -59,8 +59,17 @@ func (c Compactor) Compact(ctx context.Context, history []agent.Message) ([]agen
 	if err != nil {
 		return nil, fmt.Errorf("summarize history: %w", err)
 	}
+	// What ADR 0006 licenses this write on is that the content is
+	// model-generated, not platform capture. A summarizer that did not
+	// summarize returns the evicted turns themselves, so storing it
+	// would put a message the model never stated as a fact into the
+	// searchable store. The turns still leave the window; only the
+	// write is refused.
+	if !summary.Generated {
+		return append([]agent.Message(nil), history[cut:]...), nil
+	}
 	if _, err := c.Svc.Store(ctx, memory.StoreInput{
-		Content:         summary,
+		Content:         summary.Text,
 		Type:            memory.TypeEpisodic,
 		ImportanceScore: contextOverflowImportance,
 		Source:          contextOverflowSource,

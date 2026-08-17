@@ -22,8 +22,10 @@ type ThresholdSummarizer struct {
 
 var _ Summarizer = ThresholdSummarizer{}
 
-// Summarize implements Summarizer.
-func (t ThresholdSummarizer) Summarize(ctx context.Context, contents []string) (string, error) {
+// Summarize implements Summarizer. Each arm reports its own result, so
+// a fallback to Fast carries Generated false however it was reached —
+// below the threshold or after a Quality error.
+func (t ThresholdSummarizer) Summarize(ctx context.Context, contents []string) (Summary, error) {
 	maxLen := t.MaxLen
 	if maxLen <= 0 {
 		maxLen = SummaryMaxLen

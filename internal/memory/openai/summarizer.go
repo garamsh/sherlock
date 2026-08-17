@@ -76,12 +76,13 @@ func NewSummarizer(cfg Config) (*Summarizer, error) {
 }
 
 // Summarize implements memory.Summarizer: one chat-completions request
-// with the contents joined as the user turn. Errors propagate to the
-// caller — the threshold composite falls back to the concat summarizer
-// when the model is unavailable.
-func (s *Summarizer) Summarize(ctx context.Context, contents []string) (string, error) {
+// with the contents joined as the user turn. The result reports
+// Generated true — a model wrote it. Errors propagate to the caller —
+// the threshold composite falls back to the concat summarizer when the
+// model is unavailable, and that fallback reports Generated false.
+func (s *Summarizer) Summarize(ctx context.Context, contents []string) (memory.Summary, error) {
 	if len(contents) == 0 {
-		return "", fmt.Errorf("summarize: %w: no contents", memory.ErrInvalidInput)
+		return memory.Summary{}, fmt.Errorf("summarize: %w: no contents", memory.ErrInvalidInput)
 	}
 	body, err := json.Marshal(summarizerRequest{
 		Model: s.model,
@@ -91,35 +92,35 @@ func (s *Summarizer) Summarize(ctx context.Context, contents []string) (string, 
 		},
 	})
 	if err != nil {
-		return "", fmt.Errorf("encode request: %w", err)
+		return memory.Summary{}, fmt.Errorf("encode request: %w", err)
 	}
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, s.endpoint, bytes.NewReader(body))
 	if err != nil {
-		return "", fmt.Errorf("build request: %w", err)
+		return memory.Summary{}, fmt.Errorf("build request: %w", err)
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+s.apiKey)
 
 	resp, err := s.http.Do(req)
 	if err != nil {
-		return "", fmt.Errorf("chat completions: %w", err)
+		return memory.Summary{}, fmt.Errorf("chat completions: %w", err)
 	}
 	defer func() { _ = resp.Body.Close() }()
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		snippet, _ := io.ReadAll(io.LimitReader(resp.Body, maxErrorBody))
-		return "", &APIError{StatusCode: resp.StatusCode, Body: string(snippet)}
+		return memory.Summary{}, &APIError{StatusCode: resp.StatusCode, Body: string(snippet)}
 	}
 	var decoded summarizerResponse
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
-		return "", fmt.Errorf("decode response: %w", err)
+		return memory.Summary{}, fmt.Errorf("decode response: %w", err)
 	}
 	if len(decoded.Choices) == 0 {
-		return "", errNoChoices
+		return memory.Summary{}, errNoChoices
 	}
 	out := decoded.Choices[0].Message.Content
 	if out == "" {
-		return "", errors.New("openai summarizer: empty response content")
+		return memory.Summary{}, errors.New("openai summarizer: empty response content")
 	}
-	return out, nil
+	return memory.Summary{Text: out, Generated: true}, nil
 }

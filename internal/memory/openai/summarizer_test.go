@@ -86,8 +86,10 @@ func TestSummarize_RoundTrip(t *testing.T) {
 	out, err := s.Summarize(context.Background(),
 		[]string{"the cat sat", "the dog ran", "the bird flew"})
 	require.NoError(t, err)
-	assert.Equal(t, "a coherent summary of all facts", out,
+	assert.Equal(t, "a coherent summary of all facts", out.Text,
 		"the summarizer returns the model's first choice content")
+	assert.True(t, out.Generated,
+		"a model wrote it, which is what lets the caller store it (ADR 0004, ADR 0006)")
 	assert.Equal(t, "Bearer sk-test", provider.auth,
 		"the API key authenticates as a Bearer token")
 	assert.Equal(t, "test-model", provider.model)

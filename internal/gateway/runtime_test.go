@@ -8,7 +8,6 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
-	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -312,7 +311,21 @@ func compactionModel(_ string) agent.Model {
 	)
 }
 
-func TestFactory_HistoryOverflowCompactsIntoSearchableEpisodicMemory(t *testing.T) {
+// generatedSummarizer stands in for a model-backed summarizer: it
+// reports Generated true, which is what licenses the context-overflow
+// write (ADR 0006, ADR 0004).
+type generatedSummarizer struct{ text string }
+
+func (g generatedSummarizer) Summarize(_ context.Context, _ []string) (memory.Summary, error) {
+	return memory.Summary{Text: g.text, Generated: true}, nil
+}
+
+// TestFactory_HistoryOverflowStoresNothingWithoutARealSummarizer pins
+// the shipped default: no summarizer is configured, so compaction holds
+// a join of the evicted turns rather than a summary, and stores none of
+// it. Until #541 this test asserted the opposite — that the evicted
+// user text was searchable — which is how the defect survived.
+func TestFactory_HistoryOverflowStoresNothingWithoutARealSummarizer(t *testing.T) {
 	root := t.TempDir()
 	sink := &recordingSink{}
 	factory := &gateway.Factory{
@@ -331,7 +344,8 @@ func TestFactory_HistoryOverflowCompactsIntoSearchableEpisodicMemory(t *testing.
 	require.NoError(t, err)
 	assert.Equal(t, "First reply.", first)
 	assert.Contains(t, second, "Second reply.")
-	assert.LessOrEqual(t, len(rt.Session.History()), factory.MaxHistoryMessages+1)
+	assert.LessOrEqual(t, len(rt.Session.History()), factory.MaxHistoryMessages+1,
+		"the turns still leave the window; only the write is refused")
 
 	require.NoError(t, rt.Close(context.Background()))
 	store, err := sqlite.Open(memoryPath(root))
@@ -342,16 +356,54 @@ func TestFactory_HistoryOverflowCompactsIntoSearchableEpisodicMemory(t *testing.
 	svc := memory.NewService(store, memory.NewHashingEmbedder(), memory.NewConcatSummarizer())
 	found, err := svc.Search(context.Background(), "first overflowing task", 10)
 	require.NoError(t, err)
+	for _, candidate := range found {
+		assert.NotEqual(t, "context-overflow", candidate.Source,
+			"an inbound message the model never stated as a fact stays out of the store (ADR 0006)")
+	}
+}
+
+// TestFactory_HistoryOverflowStoresAModelSummary pins the other half at
+// the wiring level: with a summarizer that reports a generated summary,
+// the episodic memory ADR 0006 describes is written and searchable.
+func TestFactory_HistoryOverflowStoresAModelSummary(t *testing.T) {
+	root := t.TempDir()
+	sink := &recordingSink{}
+	factory := &gateway.Factory{
+		MemoryPath: memoryPath(root),
+		NewModel:   compactionModel,
+
+		Tools:              mouthClientSink(sink),
+		MaxHistoryMessages: 4,
+		Summarizer:         generatedSummarizer{text: "the session opened with an overflowing task"},
+	}
+	rt, err := factory.New(context.Background(), "env-1", nil)
+	require.NoError(t, err)
+
+	_, err = rt.Session.Run(context.Background(), "first overflowing task")
+	require.NoError(t, err)
+	_, err = rt.Session.Run(context.Background(), "second task continues")
+	require.NoError(t, err)
+
+	require.NoError(t, rt.Close(context.Background()))
+	store, err := sqlite.Open(memoryPath(root))
+	require.NoError(t, err)
+	defer func() {
+		assert.NoError(t, store.Close())
+	}()
+	svc := memory.NewService(store, memory.NewHashingEmbedder(), memory.NewConcatSummarizer())
+	found, err := svc.Search(context.Background(), "overflowing task", 10)
+	require.NoError(t, err)
 	var overflow memory.ScoredMemory
 	for _, candidate := range found {
-		if candidate.Source == "context-overflow" && strings.Contains(candidate.Content, "first overflowing task") {
+		if candidate.Source == "context-overflow" {
 			overflow = candidate
 			break
 		}
 	}
 	require.NotZero(t, overflow.ID)
 	assert.Equal(t, memory.TypeEpisodic, overflow.Type)
-	assert.Contains(t, overflow.Content, "first overflowing task")
+	assert.Equal(t, "the session opened with an overflowing task", overflow.Content,
+		"what is stored is the summary, not the turns it was made from")
 }
 
 // stubClient is a minimal platform-tool-client stand-in for tests

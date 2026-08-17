@@ -13,6 +13,8 @@ How branches, commits, and PR titles are written, and what survives a merge.
 
 One task, one branch. Branch from `main`; never commit to `main` directly.
 
+A host namespace in front of the prefix satisfies the rule as written: `fix/dockerignore-env` and `sauce-git/fix/dockerignore-env` both carry it. What is required is the type prefix on the branch's own name, wherever the host puts that name.
+
 ## Commits
 
 Only the PR title reaches `main`. A branch's commits are squashed away at merge, so they are a working record for the reviewer reading the branch, not the permanent history.

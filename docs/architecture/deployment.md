@@ -23,11 +23,12 @@ One pod per agent, two containers (ADR 0017). Both are the same binary under dif
 |---|---|---|
 | Command | `gagent agent` | `gagent workspace` |
 | Image built from | `build/agent.Dockerfile` | `build/workspace.Dockerfile` |
-| Base | `gcr.io/distroless/static-debian12:nonroot` | `debian:12-slim` |
 | Runs as | `nonroot`, uid 65532 | root |
 | Shell in the image | none | yes |
 | Serves | the HTTP gateway | the gRPC data plane (Read, Write, List, Exec) |
 | Config file read | `gagent.yaml` | `workspace.yaml` |
+
+**Neither base image is named here.** Each is pinned by digest in the Dockerfile the *Image built from* row names, and that is the only copy (§Images and tags). A row that restated the versions went stale the last time a base moved, and was read as current because its other cell still was (#591); what an operator plans around is the consequence below rather than the version.
 
 Two consequences an operator plans around:
 
@@ -215,7 +216,7 @@ Everything else in this document is **descriptive**: true, useful, and free to c
 
 ## Open questions
 
-- **What moves a base-image digest when the tag does not.** A digest receives no security patch; a tag does, and pinning gave that up deliberately. `.github/dependabot.yml` raises a pull request when a base image's tag moves to a new version, which is the covered half. The other half is not covered: Dependabot's docker ecosystem offers version updates and no security-update channel, and a digest refresh under an *unchanged* tag is conditional rather than promised. So a `debian:12-slim` republished with a CVE fix under the same tag may raise nothing, and the fallback is re-resolving the digest by hand. Determined on 2026-08-17 from GitHub's supported-ecosystems table and `dependabot-core`'s `docker/lib/dependabot/docker/update_checker.rb`; re-check it before relying on the covered half.
+- **What moves a base-image digest when the tag does not.** A digest receives no security patch; a tag does, and pinning gave that up deliberately. `.github/dependabot.yml` raises a pull request when a base image's tag moves to a new version, which is the covered half. The other half is not covered: Dependabot's docker ecosystem offers version updates and no security-update channel, and a digest refresh under an *unchanged* tag is conditional rather than promised. So a base republished with a CVE fix under the same tag may raise nothing, and the fallback is re-resolving the digest by hand. Determined on 2026-08-17 from GitHub's supported-ecosystems table and `dependabot-core`'s `docker/lib/dependabot/docker/update_checker.rb`; re-check it before relying on the covered half.
 - **Who refreshes the ECR pull credential on-prem.** Relayed to us and unverified on both sides: the deployment target is an on-premises Talos cluster, ECR authorization tokens expire after 12 hours, and with no IRSA path on-prem the refresher is unassigned. Not this repository's to solve, but an image URI without a way for the cluster to authenticate is half an instruction.
 - **Agent-to-sidecar authentication.** The workspace's gRPC listener ships pod-local and unauthenticated, which is what forces the loopback-only rule above (`security.md`, `environment.md`).
 - **Whether an accepted message survives a restart.** The gateway's 202 says the message is queued in this process and nothing more (`gateway.md`, #492); an operator draining a pod cannot currently know what a restart drops.

@@ -180,6 +180,8 @@ GAGENT_MUTATE_SUITE_CMD='<a privileged make test-privileged>' \
   python3 hand_mutants.py M4 M6
 ```
 
+Since #620 `make test-privileged` narrows itself to the capability set the deployment grants the workspace, read from `deploy/local/docker-compose.yml`, so a boundary cannot be checked under more privilege than it ships with. Every privileged figure in this record was taken before that and under a wider set — the runtime's default plus `SYS_ADMIN` — which is what the runs named in §What ran say.
+
 `make test-privileged` needs root and CAP_SYS_ADMIN. The privileged job gets
 both from its container; a contributor with neither cannot run it, and the
 target says so rather than running a family that would skip. `results/` holds

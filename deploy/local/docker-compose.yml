@@ -52,6 +52,11 @@ services:
     # was given (#612). The executor refuses every call rather than accept
     # that, so removing this line stops exec working instead of quietly
     # unbounding it. Nothing else.
+    #
+    # This list has a second reader: `make test-privileged` narrows itself to
+    # it before running the executor's boundary cases, so the check cannot hold
+    # privilege the deployment does not (#620). Editing the list moves the
+    # check with it; there is no copy to keep in step.
     cap_drop: ["ALL"]
     cap_add: ["SETUID", "SETGID", "CHOWN", "SYS_ADMIN", "KILL"]
     environment:

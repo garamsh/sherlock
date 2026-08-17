@@ -56,10 +56,6 @@ const (
 	// docs/experiments/memory-frames/ reads it as such.
 	SalienceAddEpisodic = 0.5
 
-	// DefaultForgetThreshold is the lifecycle score below which Forget
-	// archives a memory when the caller passes no threshold.
-	DefaultForgetThreshold = 0.15
-
 	// DefaultRecallTokenBudget bounds the tokens Recall injects, and is
 	// the only bound on what a recall returns: the count varies with the
 	// budget (ADR 0006 §Decision step 2), so no row limit applies to it.

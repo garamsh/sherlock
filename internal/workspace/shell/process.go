@@ -6,15 +6,6 @@ import (
 	"time"
 )
 
-// DefaultAgentUID is the default account the workspace's exec children
-// run under after the platform drops privileges (ADR 0008, ADR 0010). A
-// privileged workspace switches to it; an unprivileged workspace runs
-// children only when the configured exec-uid equals its own euid
-// (single-account mode) — the platform binary must otherwise be
-// installed setuid-root, or run under a supervisor with the privilege
-// to switch UID.
-const DefaultAgentUID = 1001
-
 // ErrAgentUIDUnavailable is returned by ProcessExecutor.Run when the
 // child cannot run as AgentUID: AgentUID differs from the euid and the
 // process lacks the privilege to switch (typically: not running as root

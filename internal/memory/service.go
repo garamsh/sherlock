@@ -82,9 +82,6 @@ type Service interface {
 	// semantic parents — the summary is chunked so each parent stays
 	// within SummaryMaxLen — and archives the originals.
 	Compress(ctx context.Context, ids []int64) (CompressResult, error)
-	// Forget archives active memories whose lifecycle score falls below
-	// threshold. A non-positive threshold uses DefaultForgetThreshold.
-	Forget(ctx context.Context, threshold float64) ([]int64, error)
 	// Consolidate compresses the active episodic cluster into one or more
 	// semantic parents once it reaches ConsolidationMinCluster; the
 	// platform calls it on shutdown (ADR 0011).

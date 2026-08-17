@@ -396,6 +396,42 @@ func (m *toolCapturingModel) Chat(_ context.Context, _ []agent.Message, tools []
 	return agent.Response{ToolCalls: []agent.ToolCall{writebackCall(replyOnly("done"))}}, nil
 }
 
+// TestSessionRun_HistoryLeavesNoUnansweredToolCall pins what a rolling
+// session hands the provider on its next turn. The writeback call is a
+// turn's last act and nothing answers it, so keeping it in history
+// leaves a tool call with no result — which MiniMax rejects with HTTP
+// 400 "tool call result does not follow tool call", making a session
+// unusable past its first turn (#630). History keeps the reply instead.
+func TestSessionRun_HistoryLeavesNoUnansweredToolCall(t *testing.T) {
+	model := agent.NewScriptedModel(
+		agent.ScriptedStep{
+			Content:   "checking",
+			ToolCalls: []agent.ToolCall{{Name: "echo", Input: json.RawMessage(`{"text":"hi"}`)}},
+		},
+		finalStep("done"),
+	)
+	s := agent.NewSession(model, newFakeClientWith(newEchoTool()), agent.Options{})
+
+	_, err := s.Run(context.Background(), "task")
+	require.NoError(t, err)
+
+	history := s.History()
+	answered := map[string]bool{}
+	for _, m := range history {
+		if m.Role == agent.RoleTool {
+			answered[m.ToolCallID] = true
+		}
+	}
+	for i, m := range history {
+		for _, call := range m.ToolCalls {
+			assert.True(t, answered[call.ID],
+				"history[%d] requests %q and nothing answers it", i, call.Name)
+		}
+	}
+	assert.Equal(t, "done", history[len(history)-1].Content,
+		"the turn's last message is the reply, not the call that carried it")
+}
+
 // TestSessionRun_TheTwoEmptinessesReachTheModelApart is ADR 0019's
 // split held where it matters: what the model is told. A question memory
 // could not place is not a question memory had no answer to, and a model

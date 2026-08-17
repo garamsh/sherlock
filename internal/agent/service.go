@@ -184,14 +184,14 @@ func (s *session) Run(ctx context.Context, task string) (response string, err er
 			return "", fmt.Errorf("model chat: %w", err)
 		}
 		write, calls := splitWriteback(resp.ToolCalls)
+		if write != nil {
+			return s.finish(ctx, *write)
+		}
 		s.history = append(s.history, Message{
 			Role:      RoleAssistant,
 			Content:   resp.Content,
 			ToolCalls: resp.ToolCalls,
 		})
-		if write != nil {
-			return s.finish(ctx, *write)
-		}
 		if len(calls) == 0 {
 			// The model tried to end the turn without writing. It is
 			// not ended: a turn that returns a reply and stores
@@ -257,11 +257,18 @@ func splitWriteback(calls []ToolCall) (*ToolCall, []ToolCall) {
 // here where a malformed response was once a warn: the arguments are the
 // only place the turn's reply and its facts arrive, so there is nothing
 // to hand back and nothing to store (issue #615).
+// A turn's history keeps the reply rather than the call that carried
+// it. The writeback call is the turn's last act and nothing answers it,
+// so leaving it in history leaves a tool call with no result — which a
+// provider rejects on the next turn, and did: MiniMax returns HTTP 400
+// "tool call result does not follow tool call" on the turn after the
+// first, which made a rolling session unusable past turn one (#630).
 func (s *session) finish(ctx context.Context, call ToolCall) (string, error) {
 	reply, ops, parseWarn, err := ParseWriteback(string(call.Input))
 	if err != nil {
 		return "", err
 	}
+	s.history = append(s.history, Message{Role: RoleAssistant, Content: reply})
 	if parseWarn != nil {
 		s.emit(ctx, Event{Kind: EventWritebackError, Turn: s.turn, Error: parseWarn.Error()})
 		return "", parseWarn

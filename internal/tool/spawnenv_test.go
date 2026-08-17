@@ -18,16 +18,18 @@ import (
 func TestSetSpawnEnv_PublishesWhatTheToolsRead(t *testing.T) {
 	t.Setenv(tool.WorkspaceAddrEnv, "")
 	t.Setenv(tool.OutboxDirEnv, "")
+	t.Setenv(tool.AgentIDEnv, "")
 
-	require.NoError(t, tool.SetSpawnEnv("127.0.0.1:9091", "/srv/agent/outbox"))
+	require.NoError(t, tool.SetSpawnEnv("127.0.0.1:9091", "/srv/agent/outbox", "agent-7"))
 
 	assert.Equal(t, "127.0.0.1:9091", os.Getenv(tool.WorkspaceAddrEnv))
 	assert.Equal(t, "/srv/agent/outbox", os.Getenv(tool.OutboxDirEnv))
+	assert.Equal(t, "agent-7", os.Getenv(tool.AgentIDEnv))
 }
 
 // TestSetSpawnEnv_CoversTheShippedManifests reads what the shipped
-// tools declare they need and holds the platform's two constants
-// against it. A manifest that starts declaring a third variable is
+// tools declare they need and holds the platform's own constants
+// against it. A manifest that starts declaring another variable is
 // either one the operator supplies, like the github token, or one this
 // function must set — and this is where that decision surfaces instead
 // of becoming a tool that starts up without its value.
@@ -38,6 +40,7 @@ func TestSetSpawnEnv_CoversTheShippedManifests(t *testing.T) {
 	platformSet := map[string]bool{
 		tool.WorkspaceAddrEnv: true,
 		tool.OutboxDirEnv:     true,
+		tool.AgentIDEnv:       true,
 	}
 
 	declared := map[string]string{}

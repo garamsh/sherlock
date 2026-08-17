@@ -78,6 +78,11 @@ func TestEndToEnd_MVPScenario(t *testing.T) {
 			if err := json.Unmarshal(input, &msg); err != nil {
 				return nil, err
 			}
+			// The real tool stamps the sender from its environment
+			// rather than taking it from the call (ADR 0016,
+			// tools/message_send). The stub does the same so the
+			// delivered file has the shape a reader meets.
+			msg.AgentID = agentID
 			if err := outbox.Send(context.Background(), msg); err != nil {
 				return nil, err
 			}
@@ -158,6 +163,8 @@ func runMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	replies := outboxMessages(t, root)
 	require.Len(t, replies, 1)
 	assert.Equal(t, "42", replies[0].Content)
+	assert.Equal(t, agentID, replies[0].AgentID,
+		"a delivered message names the agent that sent it (ADR 0016)")
 	assert.Equal(t, "http", replies[0].Channel)
 	assert.Equal(t, "sender", replies[0].Target)
 }

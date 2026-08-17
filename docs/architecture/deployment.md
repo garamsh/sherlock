@@ -75,7 +75,7 @@ Settings resolve in one precedence: **flags > `GAGENT_*` environment > config fi
 Two exceptions a pod spec meets immediately:
 
 - **Both commands name their listener `addr`**, so a single `GAGENT_ADDR` set on the pod retargets both containers. Set it per container, or leave the workspace at its default.
-- **`--agent-id` is a flag only.** It is read straight off the command line rather than through the settings layers, so `GAGENT_AGENT_ID` does nothing. The agent ID must appear in the container's args.
+- **`--agent-id` is a flag only.** It is read straight off the command line rather than through the settings layers, so setting `GAGENT_AGENT_ID` in the pod spec does not choose the agent's ID. The agent ID must appear in the container's args. The agent then publishes the ID it resolved under that same name for the tools it spawns, so a value already in the environment is replaced rather than read — `message_send` reads it there to stamp each delivered message (ADR 0016).
 - **`tools.pins` has no environment form.** It is a nested map reachable through the config file only.
 
 **The model API key never appears in configuration** (ADR 0003). `model.api-key-env` and `embedder.api-key-env` name the *environment variable* that holds it, defaulting to `OPENAI_API_KEY`. The key reaches the process through the environment and nowhere else, so it is injected as a Secret-backed environment variable rather than a mounted file.

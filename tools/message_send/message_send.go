@@ -2,7 +2,8 @@
 // script-tool runner's stdio protocol (ADR 0009 §Decision): one JSON
 // object on stdin (the validated input), one JSON object on stdout
 // (the validated output), non-zero exit on failure. The tool writes
-// the outbound message to the file outbox at GAGENT_OUTBOX_DIR; the
+// the outbound message to the file outbox at GAGENT_OUTBOX_DIR, stamped
+// with the sending agent's ID from GAGENT_AGENT_ID (ADR 0016); the
 // platform's message_send plumbing delivers the queue.
 package main
 
@@ -14,6 +15,8 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/garamsh/gagent/internal/message"
 )
 
 type callInput struct {
@@ -38,12 +41,21 @@ func run() error {
 	if outboxDir == "" {
 		return errors.New("GAGENT_OUTBOX_DIR is empty")
 	}
+	agentID := os.Getenv("GAGENT_AGENT_ID")
+	if agentID == "" {
+		return errors.New("GAGENT_AGENT_ID is empty")
+	}
 	dec := json.NewDecoder(bufio.NewReader(os.Stdin))
 	var in callInput
 	if err := dec.Decode(&in); err != nil {
 		return fmt.Errorf("decode input: %w", err)
 	}
-	if err := writeOutbox(outboxDir, in); err != nil {
+	if err := writeOutbox(outboxDir, message.Message{
+		AgentID: agentID,
+		Channel: in.Channel,
+		Target:  in.Target,
+		Content: in.Content,
+	}); err != nil {
 		return fmt.Errorf("outbox write failed: %w", err)
 	}
 	return json.NewEncoder(os.Stdout).Encode(callOutput{Status: "queued"})
@@ -53,7 +65,7 @@ func run() error {
 // directory is the agent's default file outbox; the agent reads the
 // same directory, so the message lands on the same delivery queue
 // the in-process sink used.
-func writeOutbox(dir string, msg callInput) error {
+func writeOutbox(dir string, msg message.Message) error {
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return err
 	}

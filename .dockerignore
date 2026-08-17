@@ -8,3 +8,9 @@ bin/
 deploy/
 build/
 .dockerignore
+
+# Credentials, matching .gitignore. The build reads no env file, so these
+# are excluded outright rather than re-including .env.example: a stage
+# that copies a file holds it in a layer whichever stage discards it.
+.env
+.env.*

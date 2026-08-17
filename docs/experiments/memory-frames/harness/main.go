@@ -44,11 +44,11 @@ const embedderName = "hashing"
 // replaced the shipped store, and the four constants that were the
 // sentence store's read path — the vector and keyword weights, the
 // supersession threshold and the consolidation trigger — are declared
-// nowhere now, so they are not fields. The committed results still carry
-// them as keys and this struct ignores them; §Limits is where the record
-// says which of its figures were taken under them.
+// nowhere now, so they are not fields; #411 took the recency half-life
+// the same way, when eviction stopped ordering by a score. The committed
+// results still carry them as keys and this struct ignores them; §Limits
+// is where the record says which of its figures were taken under them.
 type Config struct {
-	RecencyHalfLifeHours  float64 `json:"recency_half_life_hours"`
 	RetentionKeepSalience float64 `json:"retention_keep_salience"`
 	RetentionDropSalience float64 `json:"retention_drop_salience"`
 	RetentionWindowHours  float64 `json:"retention_window_hours"`
@@ -76,7 +76,6 @@ type Config struct {
 // harness's own since the addressed store stopped declaring them.
 func shippedConfig() Config {
 	return Config{
-		RecencyHalfLifeHours:  memory.RecencyHalfLife.Hours(),
 		RetentionKeepSalience: memory.RetentionKeepSalience,
 		RetentionDropSalience: memory.RetentionDropSalience,
 		RetentionWindowHours:  memory.RetentionWindow.Hours(),

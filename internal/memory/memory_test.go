@@ -263,7 +263,10 @@ func TestAt_RecordsAccess(t *testing.T) {
 	assert.Equal(t, now, active[0].LastAccessed)
 }
 
-func TestStore_EvictsLowestScoreBeyondCapacity(t *testing.T) {
+// Nothing has read this store, so every memory carries the same last-read
+// time and the tie-break is the whole of the order. It is the ID, so which
+// memory leaves does not depend on the sort.
+func TestStore_EvictsBeyondCapacityWithTheIDBreakingTheTie(t *testing.T) {
 	svc := newService(t,
 		memory.WithClock(func() time.Time { return now }),
 		memory.WithCapacity(3))
@@ -279,7 +282,35 @@ func TestStore_EvictsLowestScoreBeyondCapacity(t *testing.T) {
 	require.NoError(t, err)
 	assert.Len(t, held, 3, "the active index stays within capacity")
 	assert.NotContains(t, values(held), "value-0",
-		"the lowest-scoring memory is the one that left")
+		"the lowest ID is the one that left")
+}
+
+// The bound bites, and what it takes is decided by use: the memory a read
+// touched survives, and the never-read one written after it goes, though
+// it is both newer and the higher salience (ADR 0018 §Forgetting is
+// decided by use). Never-read counts as read longest ago, which is the
+// rule paying for what it saves out of the newest facts.
+func TestStore_EvictsANeverReadMemoryBeforeAnOlderOneThatWasRead(t *testing.T) {
+	clock := now
+	svc := newService(t,
+		memory.WithClock(func() time.Time { return clock }),
+		memory.WithCapacity(2))
+	team := memory.Address{Subject: "Alma", Question: "which team does she sit on"}
+	desk := memory.Address{Subject: "Alma", Question: "where does she sit"}
+
+	write(t, svc, almaProject, "amber-quarry", memory.OpJoin)
+	clock = now.Add(time.Hour)
+	require.Equal(t, []string{"amber-quarry"}, valuesAt(t, svc, almaProject))
+	clock = now.Add(2 * time.Hour)
+	newer := write(t, svc, team, "platform", memory.OpReplace)
+	clock = now.Add(3 * time.Hour)
+	res := write(t, svc, desk, "north-wing", memory.OpJoin)
+
+	assert.Equal(t, []int64{newer.ID}, res.EvictedIDs)
+	held, err := svc.UnderSubject(context.Background(), "Alma")
+	require.NoError(t, err)
+	assert.ElementsMatch(t, []string{"amber-quarry", "north-wing"}, values(held),
+		"the oldest memory in the store stays because a read reached it")
 }
 
 // A negative capacity is clamped rather than read as a cap the eviction

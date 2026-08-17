@@ -1,7 +1,7 @@
 # ADR 0008: Agent-influenced sub-processes run dropped to the unprivileged UID
 
 > Status: accepted
-> Date: 2026-07-30 (revised in place 2026-08-13; 2026-08-16)
+> Date: 2026-07-30 (revised in place 2026-08-13; 2026-08-16; 2026-08-17)
 
 ## Context
 
@@ -18,9 +18,10 @@ Mechanism:
 - The executor forks, sets the child to the exec UID, drops Linux capabilities, applies resource limits, and execs the command.
 - Network isolation is per-request (`NoNetwork`): the child lands in a fresh, empty network namespace (a privileged unshare, or an unprivileged user+network namespace in single-account mode, ADR 0010); in the pod topology the pod network layer is an additional mechanism.
 - The child cannot reach the agent's memory or the platform's runtime material — kernel DAC either way. In single-account mode this one axis intentionally does not hold — the child shares the workspace's account; the remaining axes (scrubbed environment, resource limits, optional network isolation) are unchanged.
-- The child has a configurable timeout; on expiry it is SIGKILLed and the result carries `timed_out: true` — a normal outcome crossing the wire, not an RPC error.
+- The child has a configurable timeout; on expiry its whole process group is SIGKILLed and the result carries `timed_out: true` — a normal outcome crossing the wire, not an RPC error. The group, not the child alone: the child is the shim, which execs a shell, which execs the command, and each inherits the pipe the executor drains, so killing only the first leaves the caller waiting for the last.
+- That kill crosses the drop, so it needs a capability the drop does not: signalling a process that owns neither of the executor's uids requires `CAP_KILL`, and root is no substitute once the capability has left the bounding set. **The claim above holds only where the workspace holds `CAP_KILL`** — single-account mode excepted, where the child owns the executor's own uid. A privileged executor without it reports `agent_uid unavailable` per call rather than running a command whose deadline it could not enforce (#612).
 - When the platform cannot run the child as the configured account, the executor reports `agent_uid unavailable` instead of silently upgrading.
-- When the platform cannot apply one of the child's resource limits, the executor fails the call instead of running the child uncapped.
+- When the platform cannot apply one of the child's resource limits, the executor fails the call instead of running the child uncapped. The same holds for the one bound the executor owns rather than the child: a deadline it could not enforce fails the call.
 
 Threat model (honest):
 
@@ -36,6 +37,7 @@ What exec is NOT:
 
 - The `internal/workspace/shell/` package holds the executor; the Executor interface is the only thing the workspace server uses, so added hardening (chroot, seccomp, more rlimits) is a swap, not a rewrite. `shell_exec` is an independent tool server (ADR 0017) that calls the workspace's Exec RPC; it knows only the workspace gRPC client.
 - Two deployment modes run real workloads. The privileged drop: a workspace process with UID-switch privilege (setuid-root binary, supervisor, or container capabilities) runs children as the configured exec UID. The single-account mode: the exec UID set to the process's own UID needs no privilege at all — the operator declares the account explicitly; there is no implicit fallback to the current UID. An unprivileged process with any other exec UID reports `agent_uid unavailable`.
+- The privileged drop needs a capability set, not just privilege: `SETUID`/`SETGID` for the credential drop, `CHOWN` for the workspace-directory handover, `SYS_ADMIN` for the netns unshare, and `KILL` for the deadline. `deployment.md` §Capabilities holds the operator-facing table and what dropping each one costs.
 - Exec children share the workspace directory's ownership story: a privileged workspace chowns the workspace directory to the exec UID, keeps the directory's write bit for its own group, and gives every file the gRPC contract writes to the same UID — so files written by tools through the gRPC contract and by exec'd children share one owner, without the workspace holding a capability over every file in its container.
 - The unauthenticated Exec listener is a remote shell into the workspace, so the loopback-only fail-closed posture (ADR 0012) is what stands until contract authentication exists.
 

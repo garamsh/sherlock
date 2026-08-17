@@ -96,17 +96,22 @@ The workspace's Exec children are unaffected: they get a scrubbed environment (A
 
 ## Capabilities
 
-The workspace container needs four, and they divide on a line that decides the pod's Pod Security Standard:
+The workspace container needs five, and they divide on a line that decides the pod's Pod Security Standard:
 
 | Capability | For | PSS `baseline` |
 |---|---|---|
 | `SETUID`, `SETGID` | dropping the Exec child to `exec-uid` | allowed |
 | `CHOWN` | handing the workspace directory to `exec-uid` | allowed |
+| `KILL` | signalling that child on expiry — the drop leaves it owning neither of the workspace's uids | allowed |
 | `SYS_ADMIN` | `unshare(CLONE_NEWNET)` — the fresh, empty network namespace an Exec child gets per call | **not allowed** |
 
 **`SYS_ADMIN` is netns creation, and it cannot be moved to an initContainer.** The unshare happens inside each Exec child immediately before the credential drop, not once at startup (`internal/workspace/shell/`), so the workspace container holds the capability for its whole life.
 
 **Dropping it does not fail the pod.** Without `SYS_ADMIN` the workspace starts normally and every network-isolated Exec call fails closed with `agent_uid unavailable`. The only signal is a WARN at startup — `CAP_SYS_ADMIN missing; netns-isolated children will report agent_uid unavailable`. Nothing in the pod's status reports it, so an operator who drops the capability to reach `baseline` gets a running agent that cannot execute anything. That is the fail-closed posture ADR 0008 and ADR 0010 choose deliberately: a capability that is unavailable is better than one silently upgraded.
+
+**`KILL` is the deadline, and it is the one that looks removable.** It grants nothing over the node: the container holds its own PID namespace, so the only processes it can reach are the workspace and the children it started. What it buys is the ability to signal them at all. `kill(2)` permits a signal only when the sender's real or effective uid matches the target's real or saved-set uid, or the sender holds `CAP_KILL`, and the drop leaves the child owning neither of the workspace's uids — being root is no substitute once the capability has left the bounding set. Until #612 the shipped set omitted it, and the consequence was invisible: the SIGKILL on expiry did nothing, `Wait` ran until the command finished on its own, and a 100ms deadline took as long as the command did. Single-account mode never needed it, which is part of why it went unnoticed — there the child owns the workspace's own uid.
+
+**Dropping `KILL` now fails every Exec, by choice.** A privileged workspace that cannot signal its child refuses the call with `agent_uid unavailable` and a message naming the capability, rather than running a command whose deadline would pass unenforced. It warns at startup too — `CAP_KILL missing; every Exec will report agent_uid unavailable`. The alternative was to keep serving with an unenforceable bound, which is the shape the defect had.
 
 ## Startup: what kills the pod and what degrades it
 
@@ -147,13 +152,14 @@ Every fatal path exits **1** and prints `Error: <message>`; nothing distinguishe
 | No `tools.pins` section | Drift pinning is off; the tree loads unreviewed. WARN: `tool drift pinning disabled: no pin set configured` |
 | No `tls:` section on a loopback bind | The gateway serves unauthenticated on localhost. INFO field only: `auth="none: loopback binds only"` |
 | `SYS_ADMIN` absent | Network-isolated Exec fails closed. WARN at startup, nothing afterwards |
+| `KILL` absent, and `exec-uid` is not the workspace's own uid | **Every Exec fails closed** with `agent_uid unavailable: CAP_KILL is absent, …`. WARN at startup |
 | `exec-uid` unreachable — the workspace runs unprivileged and `exec-uid` is not its own uid | **Every Exec fails closed** with `agent_uid unavailable`. No startup check, no warning |
 | `exec-timeout: 0` | Every Exec without a per-call timeout fails: `shell: timeout is required`. No startup check |
 | `workspace-addr` wrong or unreachable | Nothing dials it at startup; tools fail when first called |
 | A tool's `command` names a missing executable | Startup is clean; the call fails |
 | A directory in the tools tree without a `manifest.json` | Skipped silently, with no log line |
 
-Two traps in that second table are worth naming separately, because they produce a healthy-looking pod that cannot work: **an unreachable `exec-uid`** and **a missing `SYS_ADMIN`**. Either leaves exec dead with nothing in pod status to show it. Run the workspace privileged, or set `exec-uid` exactly equal to the container's `runAsUser`.
+Two traps in that second table are worth naming separately, because they produce a healthy-looking pod that cannot work: **an unreachable `exec-uid`** and **a missing `SYS_ADMIN`**. Either leaves exec dead with nothing in pod status to show it. Run the workspace privileged, or set `exec-uid` exactly equal to the container's `runAsUser`. A missing `KILL` used to be a third and worse one, because it left exec *working* with its deadline unenforced; it now fails closed like the others.
 
 **Choose `exec-uid` as a uid nothing else on the node runs as.** Containers share the node's uid space and `RLIMIT_NPROC` counts every process of the real uid, so a shared account spends the child's 64-process budget on processes that are not the child's. The code default is `1001`, which is the login user on many hosts; the sample deployment overrides it to `10001` for exactly this reason (`deploy/local/docker-compose.yml`).
 

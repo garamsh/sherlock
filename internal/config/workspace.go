@@ -3,6 +3,7 @@ package config
 import (
 	"time"
 
+	"github.com/go-viper/mapstructure/v2"
 	"github.com/spf13/pflag"
 )
 
@@ -72,12 +73,15 @@ func ResolveWorkspace(fs *pflag.FlagSet) (WorkspaceConfig, error) {
 	if err != nil {
 		return WorkspaceConfig{}, err
 	}
-	if err := readConfigFile(v, configFile, "workspace", "workspace.yaml"); err != nil {
+	loaded, err := readConfigFile(v, configFile, "workspace", "workspace.yaml")
+	if err != nil {
 		return WorkspaceConfig{}, err
 	}
 	var cfg WorkspaceConfig
-	if err := v.Unmarshal(&cfg); err != nil {
+	var used mapstructure.Metadata
+	if err := v.Unmarshal(&cfg, recordKeys(&used)); err != nil {
 		return WorkspaceConfig{}, err
 	}
+	reportUnknownKeys(loaded, used.Unused)
 	return cfg, nil
 }

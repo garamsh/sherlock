@@ -1,6 +1,8 @@
 package config_test
 
 import (
+	"bytes"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"testing"
@@ -379,4 +381,110 @@ func TestResolveConfig_InvalidConfigFileFails(t *testing.T) {
 
 	_, err := config.Resolve(agentFlags(t))
 	assert.Error(t, err)
+}
+
+// captureSlog swaps slog.Default() to a text handler writing into the
+// returned buffer for the lifetime of the test, and returns a cleanup
+// that restores the previous default.
+func captureSlog(t *testing.T) (*bytes.Buffer, func()) {
+	t.Helper()
+	buf := &bytes.Buffer{}
+	prev := slog.Default()
+	slog.SetDefault(slog.New(slog.NewTextHandler(buf, &slog.HandlerOptions{Level: slog.LevelWarn})))
+	return buf, func() { slog.SetDefault(prev) }
+}
+
+// writeAgentConfig writes an owner-only gagent.yaml into the current
+// directory and returns its path.
+func writeAgentConfig(t *testing.T, dir, body string) string {
+	t.Helper()
+	path := filepath.Join(dir, "gagent.yaml")
+	require.NoError(t, os.WriteFile(path, []byte(body), 0o600))
+	return path
+}
+
+func TestResolveConfig_UnknownFileKeyIsReported(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	path := writeAgentConfig(t, dir, "addr: \"127.0.0.1:9000\"\nnonsense-key: 42\n")
+	buf, restore := captureSlog(t)
+	defer restore()
+
+	_, err := config.Resolve(agentFlags(t))
+	require.NoError(t, err)
+
+	assert.Contains(t, buf.String(), "key=nonsense-key",
+		"the warning names the key so an operator knows what to fix")
+	assert.Contains(t, buf.String(), "file="+path,
+		"the warning names the file the key came from")
+}
+
+func TestResolveConfig_UnknownSectionIsReportedByItsRoot(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	writeAgentConfig(t, dir, "console:\n  url: \"http://127.0.0.1:9099\"\n")
+	buf, restore := captureSlog(t)
+	defer restore()
+
+	_, err := config.Resolve(agentFlags(t))
+	require.NoError(t, err)
+
+	assert.Contains(t, buf.String(), "key=console",
+		"a section no setting reads is reported at the section, not once per leaf")
+}
+
+func TestResolveConfig_PinnedToolNamesAreNotUnknownKeys(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	writeAgentConfig(t, dir, "tools:\n  pins:\n    message_send: \"abc123\"\n")
+	buf, restore := captureSlog(t)
+	defer restore()
+
+	cfg, err := config.Resolve(agentFlags(t))
+	require.NoError(t, err)
+
+	assert.Equal(t, tool.ManifestPins{"message_send": "abc123"}, cfg.Tools.Pins)
+	assert.NotContains(t, buf.String(), "unknown config key",
+		"the tool names inside the pin set are the operator's, not keys the platform declares")
+}
+
+func TestResolveConfig_PinsTypoIsReportedByName(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	writeAgentConfig(t, dir, "tools:\n  pin:\n    message_send: \"abc123\"\n")
+	buf, restore := captureSlog(t)
+	defer restore()
+
+	cfg, err := config.Resolve(agentFlags(t))
+	require.NoError(t, err)
+
+	assert.Empty(t, cfg.Tools.Pins,
+		"pin: is not pins:, so the pin set is empty and drift pinning is off")
+	assert.Contains(t, buf.String(), "key=tools.pin",
+		"the key's own name is what separates an unread pin set from an absent one (ADR 0009)")
+}
+
+func TestResolveConfig_KnownKeysAndFlagsAreNotReported(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	writeAgentConfig(t, dir, "addr: \"127.0.0.1:9000\"\nmemory-path: \"data/memory.db\"\ntls:\n  cert: \"c.pem\"\n")
+	buf, restore := captureSlog(t)
+	defer restore()
+
+	_, err := config.Resolve(agentFlags(t))
+	require.NoError(t, err)
+
+	assert.NotContains(t, buf.String(), "unknown config key",
+		"the command's own flags share the viper and name no setting; only the file's keys are the operator's to fix")
+}
+
+func TestResolveConfig_NoConfigFileReportsNothing(t *testing.T) {
+	t.Chdir(t.TempDir())
+	buf, restore := captureSlog(t)
+	defer restore()
+
+	_, err := config.Resolve(agentFlags(t))
+	require.NoError(t, err)
+
+	assert.NotContains(t, buf.String(), "unknown config key")
 }

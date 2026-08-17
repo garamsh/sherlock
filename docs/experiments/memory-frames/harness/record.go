@@ -209,7 +209,7 @@ func section(name string, r Run, renderers ...func(*strings.Builder, Run)) Secti
 // a row a reader finds empty.
 var (
 	frameHolds = map[string]string{
-		frameShipped:           "sentences, with an embedding and a keyword index over them",
+		frameShipped:           "an address and a value, and nothing else",
 		frameDocument:          "one bounded document of the most recent turns' text",
 		frameAttributeSingle:   "one value at `(subject, attribute)`",
 		frameAttributeMulti:    "every value ever written at `(subject, attribute)`",
@@ -228,7 +228,7 @@ var (
 		frameMem0Nearest:       "one extracted fact per memory, with an embedding over it",
 	}
 	frameDecides = map[string]string{
-		frameShipped:           "supersession from similarity on insert; retention and consolidation after a turn",
+		frameShipped:           "the write states it, at the address it computes; retention after a turn",
 		frameDocument:          "the oldest text goes when the document passes its limit",
 		frameAttributeSingle:   "a write replaces what is at the address",
 		frameAttributeMulti:    "a write never replaces",

@@ -6,7 +6,7 @@ Seventeen ways of holding a memory over a decade of turns, compared: what each s
 - The structures compared
 - What would be chosen today
 - What the comparison shows
-- `shipped` — `internal/memory` as it ran
+- `shipped` — `internal/memory` as it runs
 - `document` — one bounded document and no store
 - `attribute-single` — one value at an address
 - `attribute-multi` — every value at an address
@@ -51,7 +51,7 @@ Four rows are not candidates. `attribute-declared`, `question-declared` and `int
 
 | structure | what it holds | how it decides | recall | carried | replaced | reverted | parallel | refined | fresh | stale returned | context chars | units read | stored KB |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| `shipped` | sentences, with an embedding and a keyword index over them | supersession from similarity on insert; retention and consolidation after a turn | 0.923 ±0.030 | 0.900 ±0.094 | 0.875 ±0.104 | 1.000 ±0.000 | 0.925 ±0.066 | 0.838 ±0.081 | 1.000 ±0.000 | 0.838 ±0.081 | 2160 ±2 | 783.0 ±0.0 | 8112.0 |
+| `shipped` | an address and a value, and nothing else | the write states it, at the address it computes; retention after a turn | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 34 ±2 | 1.3 ±0.1 | 120.0 |
 | `document` | one bounded document of the most recent turns' text | the oldest text goes when the document passes its limit | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 2047 ±0 | 1.0 ±0.0 | 2.0 |
 | `attribute-single` | one value at `(subject, attribute)` | a write replaces what is at the address | 0.833 ±0.030 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 25 ±0 | 1.0 ±0.0 | 14.9 |
 | `attribute-multi` | every value ever written at `(subject, attribute)` | a write never replaces | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 48 ±2 | 1.8 ±0.1 | 19.9 |
@@ -96,7 +96,7 @@ The programme moves from measuring to deciding after this round, so this is wher
 
 **The alternative is the design this record already measures, and it is a worse trade rather than an unmeasured one.** A store that ranks text against the question needs no step in front of it, and the same rows say what that buys and costs: it finds nearly as much of a person, it reads its whole index to do it, it returns a superseded value on most subjects, and its footprint is orders of magnitude larger because it keeps the sentences. Nor is its read path free of a call — it embeds the question before it ranks, which on the hosted embedder is a call per read (#435). So the comparison is not a call against no call; it is one call that returns an address against one call that returns a vector, and everything downstream of them differs. A design that wanted both would pay for both stores, which the byte columns price.
 
-**A question spanning many addresses is where the choice starts to cost, and nothing in the structure decides it.** Asked what it knows about a person, an addressed store returns every address under that subject: no ranking, no threshold, and no budget either. Where the relevant set is larger than the read budget it returns it anyway, and at the tightest budget swept it already does on half the subjects for the arm that keeps every value. The only structure here that chooses what to leave out is the shipped one, and it chooses with the hybrid score's constants — the mechanism this programme disqualified when the question was arity. So the choice is between a structure that overflows and a ranking with constants nobody calibrated, and this round declines to put the second inside the first. Where an ordering would have to live, if one is wanted, is the read step that already reads the question: it knows what was asked, and a step that can turn a question into an address can turn it into fewer addresses. That is a design to specify and measure, not a constant to fit, and it is not in this record.
+**A question spanning many addresses is where the choice starts to cost, and nothing in the structure decides it.** Asked what it knows about a person, an addressed store returns every address under that subject: no ranking, no threshold, and no budget either. Where the relevant set is larger than the read budget it returns it anyway, and at the tightest budget swept it already does on half the subjects for the arm that keeps every value. The structures that choose what to leave out choose with a ranking's constants — the mechanism this programme disqualified when the question was arity. The shipped store was one of them and is not since `46bd83d`; it is now on the overflowing side. So the choice is between a structure that overflows and a ranking with constants nobody calibrated, and this round declines to put the second inside the first. Where an ordering would have to live, if one is wanted, is the read step that already reads the question: it knows what was asked, and a step that can turn a question into an address can turn it into fewer addresses. That is a design to specify and measure, not a constant to fit, and it is not in this record.
 
 **The `operation` field survives, and it is smaller than it was.** The address was the one part of the design this record had never varied, and varying it recovers half of what the write was being asked to supply: a statement that narrows the question asks its own question, so it gets its own address and nothing has to decide between it and the value it stands beside. What no address form recovers is the other half — a second value added by a conjunction answers the question the first one answered, so the two share an address whatever the address is made of. A question-shaped address with no declaration therefore lands exactly where the cue rule lands and fails on the class the cue rule passes, and only the declaration reaches everything. So the field stays, and what is asked of a writeback narrows from a replace-or-join on every assertion to one on the additions that leave the question alone.
 
@@ -126,7 +126,7 @@ The rows fall into families, and what separates a family from the rest is larger
 
 **Addressing by question.** The same store with the address formed differently: the subject and the question a fact answers, restricted by whatever the sentence restricts it with, in place of the subject and a topic noun. It is `memory-creation/`'s question-shaped key measured on this record's store shape, and it exists to ask whether an address can carry the arity every row above has to decide or be told. It is a claim about how the family that stores facts addresses them, so it sits inside the boundary the published designs drew rather than across it. `question` reads the arity off the address and `question-declared` is its ceiling; §Whether the address carries the arity is the evidence and §`question` is what the rows come to.
 
-**A stream, ranked at read time.** Three of the published designs decide nothing when a turn arrives: every observation becomes a record, and what separates them is what a read ranks on and whether anything is ever dropped. `generative-agents` drops nothing and ranks on recency, importance and relevance together; `reflection` is the same store with a synthesized record written over recent ones; `memorybank` is the same ranking with a forgetting curve removing what no read has returned lately. All three fill the shipped recall budget by ranking, which is the shipped design's read path under a different score — so their rows are where a reader sees what a score is worth once the store's shape is held constant.
+**A stream, ranked at read time.** Three of the published designs decide nothing when a turn arrives: every observation becomes a record, and what separates them is what a read ranks on and whether anything is ever dropped. `generative-agents` drops nothing and ranks on recency, importance and relevance together; `reflection` is the same store with a synthesized record written over recent ones; `memorybank` is the same ranking with a forgetting curve removing what no read has returned lately. All three fill the record's recall budget by ranking, which is the read path the shipped design had until `46bd83d` under a different score — so their rows are where a reader sees what a score is worth once the store's shape is held constant.
 
 **Searching for the memory to update, rather than computing where it is.** `mem0` is the only structure here that takes the write's operation and still has to find what the operation applies to. Every other structure that updates computes the address, and every structure that does not compute an address does not update at all. That makes the pair `mem0` and `attribute-declared` the one comparison in this record where arity is held constant and identity is the variable, and §What a similarity-located write has to separate is the evidence about whether the variable can be resolved on this workload at all.
 
@@ -134,29 +134,30 @@ The rows fall into families, and what separates a family from the rest is larger
 
 **What these figures say.**
 
-- **Addressing removes the baseline's failure outright and exposes a different one.** Every addressed arm answers `replaced` and `reverted` in full at every year, where the shipped structure returns a superseded value on most revised threads from the first replacement onward. Identity at an address is not a better inference than identity from similarity; it is no inference, so there is nothing left to be wrong.
-- **An addressed structure is inert without an extractor.** In the `text` arm every addressed arm holds nothing and answers nothing at every year: there is nowhere to put a sentence it cannot address, and nowhere to look when a question cannot be addressed either. The shipped structure keeps a floor there and this one has none, which is the sharper form of the same dependency.
-- **Holding facts rather than sentences costs orders of magnitude less than the shipped store, and injecting an address costs orders of magnitude less than filling a budget.** At the last year the attribute arms hold a comparable number of things to the shipped active index and store a small fraction of its bytes, because an address and a value are all they keep — no sentence, no vector, no keyword index. What they put in the context is a line or two rather than a filled token budget, and their recall is measured against that.
+- **Addressing removes the baseline's failure outright and exposes a different one.** Every addressed arm answers `replaced` and `reverted` in full at every year, where the sentence store this record was written against returned a superseded value on most revised threads from the first replacement onward — `stale returned` `0.838` at the last year. Identity at an address is not a better inference than identity from similarity; it is no inference, so there is nothing left to be wrong. The `shipped` row no longer shows that contrast because #582 acted on it: what ships is addressed, and §`shipped` says what the row measured before.
+- **An addressed structure is inert without an extractor.** In the `text` arm every addressed arm holds nothing and answers nothing at every year: there is nowhere to put a sentence it cannot address, and nowhere to look when a question cannot be addressed either. The sentence store kept a floor there and an addressed one has none, which is the sharper form of the same dependency — and since #582 it is the shipped design's dependency, because the `shipped` row is an addressed arm.
+- **Holding facts rather than sentences costs orders of magnitude less, and injecting an address costs orders of magnitude less than filling a budget.** At the last year the attribute arms hold a comparable number of things to the sentence store's active index and store a small fraction of its bytes, because an address and a value are all they keep — no sentence, no vector, no keyword index. What they put in the context is a line or two rather than a filled token budget, and their recall is measured against that. The `shipped` row is on the cheap side of that comparison since #582 rather than the expensive one.
 - **The whole distance between every self-deciding structure and a perfect one is arity.** `attribute-declared` answers every class at every year and returns a superseded value on nothing, because the write states what the store would otherwise have to infer. No arm here is short of it for any other reason: the addressing is the same, the workload is the same, and the gap is the one decision the seam withholds.
 - **The store shape does not change the answer; the arity rule does.** `attribute-single`, `interval` and `log` are three different stores taking one arity decision, and their recall and stale figures are identical at every year and every class. Whatever else is chosen between an addressed store, a store of spans and a log with a projection, it is not chosen on what the memory answers.
 - **What they can be asked and what they cost differ, and that is the whole of the comparison.** The interval store and the log each keep a row for every assertion and hold more than the plain addressed store, which keeps a row for every value that is still true. The log reads every event it has ever kept to answer one question and the addressed stores read one address, and the gap between those two columns widens every year while the answers stay equal.
 - **What a structure stores separates the table further than how it decides.** Every structure that stores what a turn asserted answers most of what it is asked; every structure that stores the turn answers a small fraction of it, whatever it ranks on and whether or not it forgets. The gap between those two groups is an order of magnitude and it is wider than any gap inside either. The arity question, the destroying error and the eviction rule are all questions asked inside the first group; they do not arise in the second, because a structure holding sentences has nowhere to take those decisions.
 - **The published designs' failures are not the failures this record has been cataloguing.** They do not decide arity wrongly — `generative-agents` answers nothing at all on `replaced`, because three sentences about one attribute sit in the store and a ranking has no notion of which is current. They do not evict wrongly — `memorybank` evicts on a curve written in days and a decade is thousands of them. And one of them fails in a way no structure invented here can: `mem0` is short on every class including `carried`, a fact asserted once and never revised, because a write meant for one address ended a value at another.
 - **A store of everything is unreachable before it is full.** `generative-agents` and `reflection` freeze four fifths and seven tenths of what they hold, and reach the active-index capacity inside a second decade where every fact-holding structure is twelve decades away. Both are consequences of storing the conversation rather than what it asserted, and the first arrives long before the second.
-- **A structure that reads everything it holds does not survive a decade, whatever its recall says.** The shipped design ranks its whole active index on every recall, and the units it reads to answer one question rise with the store across the span. The log's projection rises the same way, for the same reason: it is derived rather than stored. `attribute-learned` is the third, and this is a cost #453 did not see — its rule reads every address it holds to decide how many values one of them returns, so answering one question touches all of them while every other addressed arm touches one.
+- **A structure that reads everything it holds does not survive a decade, whatever its recall says.** The sentence store ranked its whole active index on every recall, and the units it read to answer one question rose with the store across the span; #582 took the shipped design out of that family and the `shipped` row now reads one address. The log's projection rises the same way, for the same reason: it is derived rather than stored. `attribute-learned` is the third, and this is a cost #453 did not see — its rule reads every address it holds to decide how many values one of them returns, so answering one question touches all of them while every other addressed arm touches one.
 
-## `shipped` — `internal/memory` as it ran
+## `shipped` — `internal/memory` as it runs
 
-`internal/memory` as it ran when these results were committed: the SQLite store, hybrid search over embeddings and FTS, the one ranking function, supersession on insert, and the two passes `internal/gateway/runner.go` runs after a completed turn, threshold consolidation and tiered retention. Supersession on insert has since been removed (#529) and the salience constants have moved to `internal/memory/ranking.go`; the figures are pinned to what ran (§Limits). `Recall` is what it puts in the context, bounded by the shipped token budget.
+`internal/memory` as it runs: the SQLite store holding an address and a value, the two addressed reads it answers with, and the tiered retention pass `internal/gateway/runner.go` runs after a completed turn. A value lands at the address the writeback computed and the operation the write states decides what happens to what is held there. Nothing is embedded, nothing is ranked, and no two contents are compared.
+
+**This row measured a different design until `46bd83d`.** Until then `shipped` was the sentence store: text with an embedding and an FTS5 keyword index over it, one hybrid ranking function reading the whole active index on every recall, supersession inferred on insert from a similarity threshold, and threshold consolidation of episodic clusters after a turn. That is the design the rest of this record was written against and compared everything else to. At the last year of the decade, in the `oracle` arm, it posted `recall` `0.923` with `stale returned` `0.838`, put 2160 characters in the context and read 783.0 units to answer one question. #582 replaced it with the addressed store on this record's own evidence (ADR 0018), and the row now reports what replaced it. Every figure under this name, here and in every table above, is the addressed store's; the sentence store's are in the sentence before this one and in git.
 
 **What these figures say.**
 
-- **The shipped structure holds a fact for the whole span and does not remove the one it replaced.** In the `oracle` arm, `carried` — asserted once in the first year and never mentioned again — is answered as often in the last year as in the first, within its interval, while the stale figure is high from the first replacement year onward and does not fall afterwards. Holding and updating are separate abilities, and this structure has the first without the second.
-- **The value it never removed is the value it answers best.** `reverted` is the lowest class of all while the replacement is what is true, and rises to answering every thread in the year each returns to the value it started with — a value the store still held, because nothing had taken it out. `replaced`, where the superseded values have to go, falls across the span instead. A structure that never forgets is punished by a workload that changes its mind and rewarded by one that changes it back.
-- **The writeback decides the outcome and the store barely enters it.** The same store, the same search and the same ranking function are orders of magnitude apart between the two arms. A turn arriving without an extracted fact is an episodic observation, its salience tier expires inside the retention window, and a span of years is a great many windows.
-- **Even the current year's fact is gone by the year's end without the oracle.** `fresh` is asserted in the year it is asked, and is answered almost every time in the `oracle` arm and almost never in the `text` one. The retention window is measured in days and a checkpoint stands at the end of a year.
-- **Both coexistence classes decay, and not together.** `parallel` and `refined` require the same thing — two simultaneously-true values of one attribute surviving — and differ only in how the second is worded. `carried` holds level across the span while both of them fall, and `refined` falls further from the year its second value arrives. Their intervals overlap, so the gap between the two wordings is something to widen the workload for rather than a separation this run makes.
-- **What a decade costs on disk is not what it holds.** Stored bytes run orders of magnitude above content bytes at every checkpoint in both arms, and in the `text` arm they climb while the active index shrinks. The store never hard-deletes, so every turn ever observed is still paid for long after retention has taken it out of every search.
+- **It sits on the ceiling, and the ceiling was only ever a ceiling because nothing shipped stated the operation.** Row for row `shipped` is now `question-declared`, which §The structures compared marks as a ceiling rather than a candidate: the arm handed the decision every other arm has to make for itself. The shipped writeback states that decision, so the arm that stood for what no buildable design could reach is a description of what runs. Two rows agreeing is not a defect in the run; it is this programme's conclusion, built.
+- **`1.000` is what the store does with the address it is handed, and it is not what an agent gets.** Every figure in this section is the `oracle` arm. What bounds the whole of it is whether a question reaches the address its fact was written to, which §Whether a structure can find what it holds measures separately at `reachable` `0.394` — a store cannot answer a question that reaches no address. A reader taking `1.000` as end-to-end behaviour is wrong by more than a factor of two. The step that would close that gap is #336 step 3 and it is not built.
+- **The `text` arm is still zero, and for the reason it always was.** An addressed structure holds nothing it cannot address. What changed under `46bd83d` is that this is now true of the shipped design too: the floor it used to keep there — answering something, from a store of sentences — is gone with the sentences. §What the comparison shows states that dependency and it is now the shipped design's dependency.
+- **The stored bytes are pages, not content.** 120.0 KB against `question-declared`'s 29.5 is the one column where the addressed store looks worse than the arm it matches, and the difference is SQLite: a database file, its write-ahead log and its address index, against an in-memory map holding the same addresses and values. What it holds is the same; what it costs to hold it durably on disk is the difference, and it is two orders of magnitude below the 8112.0 KB the sentence store reached.
+- **What it reads to answer one question no longer rises with the store.** 1.3 units at the last year, where the sentence store read 783.0 and rose across the span. §What the comparison shows names reading everything you hold as the property that does not survive a decade; the shipped design was in that family and is not any more.
 
 ## `document` — one bounded document and no store
 
@@ -326,7 +327,7 @@ Its read is handed the address wherever a question form supplies one, rendered a
 
 Every memory experiment in this tree so far has compared variants inside one frame: a store of rows, an embedding-similarity retrieval step, a per-turn model decision, and a score that ranks rows. This one builds the instrument for comparing frames rather than variants, and measures the shipped design through it. It proposes no new design; the designs are separate issues.
 
-Like `memory-retrieval/`, the shipped design is measured as it runs rather than as a reimplementation of it: the store, the hybrid search, the ranking function and the after-turn lifecycle are `internal/memory`'s own, called through `memory.NewService` and the salience constants beside them (`internal/memory/ranking.go`, moved there by #536). Unlike `memory-retrieval/`, it is one implementation behind an interface rather than the thing the harness is wired to, so the next design is added without the harness changing.
+Like `memory-retrieval/` was, the shipped design is measured as it runs rather than as a reimplementation of it: the store, the reads it answers and the after-turn lifecycle are `internal/memory`'s own, called through `memory.NewService` and the salience constants beside them (`internal/memory/ranking.go`). Unlike `memory-retrieval/`, it is one implementation behind an interface rather than the thing the harness is wired to, which is why replacing that store under `46bd83d` re-measured one row and left the harness standing.
 
 Every figure in this record is produced by `harness/` from the committed results and written into this file between the generated markers. No figure in this record was typed by hand, which is why there is no register of claims here: the project owner has ruled that a record restating result figures should generate them instead. `harness/record_test.go` fails when this file and the committed results disagree.
 
@@ -421,16 +422,16 @@ The comparison table is the last year of this one. Every year is here, class for
 
 | frame | arm | year | asked | recall | carried | replaced | reverted | parallel | refined | fresh | stale returned | context chars | units read |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| `shipped` | `oracle` | 1 | 160 | 0.919 ±0.042 | 0.925 ±0.083 | 0.950 ±0.068 | 0.900 ±0.094 | n/a | n/a | 0.900 ±0.094 | n/a | 2172 ±2 | 168.0 ±0.0 |
-| `shipped` | `oracle` | 2 | 240 | 0.946 ±0.029 | 0.900 ±0.094 | 0.950 ±0.068 | 0.875 ±0.104 | 1.000 ±0.000 | 0.975 ±0.049 | 0.975 ±0.049 | n/a | 2169 ±2 | 272.0 ±0.0 |
-| `shipped` | `oracle` | 3 | 240 | 0.921 ±0.034 | 0.900 ±0.094 | 0.925 ±0.083 | 0.750 ±0.136 | 0.975 ±0.049 | 0.975 ±0.049 | 1.000 ±0.000 | 0.863 ±0.076 | 2159 ±3 | 387.0 ±0.0 |
-| `shipped` | `oracle` | 4 | 240 | 0.908 ±0.037 | 0.900 ±0.094 | 0.900 ±0.094 | 0.750 ±0.136 | 0.975 ±0.049 | 0.950 ±0.068 | 0.975 ±0.049 | 0.850 ±0.079 | 2162 ±3 | 425.0 ±0.0 |
-| `shipped` | `oracle` | 5 | 240 | 0.912 ±0.036 | 0.900 ±0.094 | 0.900 ±0.094 | 0.750 ±0.136 | 0.975 ±0.049 | 0.950 ±0.068 | 1.000 ±0.000 | 0.838 ±0.081 | 2169 ±3 | 461.0 ±0.0 |
-| `shipped` | `oracle` | 6 | 240 | 0.892 ±0.037 | 0.900 ±0.094 | 0.900 ±0.094 | 0.750 ±0.136 | 0.950 ±0.059 | 0.850 ±0.080 | 1.000 ±0.000 | 0.838 ±0.081 | 2161 ±2 | 552.0 ±0.0 |
-| `shipped` | `oracle` | 7 | 240 | 0.927 ±0.029 | 0.900 ±0.094 | 0.875 ±0.104 | 1.000 ±0.000 | 0.938 ±0.063 | 0.850 ±0.080 | 1.000 ±0.000 | 0.838 ±0.081 | 2157 ±2 | 658.0 ±0.0 |
-| `shipped` | `oracle` | 8 | 240 | 0.927 ±0.029 | 0.900 ±0.094 | 0.875 ±0.104 | 1.000 ±0.000 | 0.938 ±0.063 | 0.850 ±0.080 | 1.000 ±0.000 | 0.838 ±0.081 | 2161 ±3 | 698.0 ±0.0 |
-| `shipped` | `oracle` | 9 | 240 | 0.925 ±0.030 | 0.900 ±0.094 | 0.875 ±0.104 | 1.000 ±0.000 | 0.925 ±0.066 | 0.850 ±0.080 | 1.000 ±0.000 | 0.838 ±0.081 | 2159 ±3 | 735.0 ±0.0 |
-| `shipped` | `oracle` | 10 | 240 | 0.923 ±0.030 | 0.900 ±0.094 | 0.875 ±0.104 | 1.000 ±0.000 | 0.925 ±0.066 | 0.838 ±0.081 | 1.000 ±0.000 | 0.838 ±0.081 | 2160 ±2 | 783.0 ±0.0 |
+| `shipped` | `oracle` | 1 | 160 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a | 26 ±0 | 1.0 ±0.0 |
+| `shipped` | `oracle` | 2 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | 25 ±0 | 1.0 ±0.0 |
+| `shipped` | `oracle` | 3 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 26 ±0 | 1.0 ±0.0 |
+| `shipped` | `oracle` | 4 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 26 ±0 | 1.0 ±0.0 |
+| `shipped` | `oracle` | 5 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 26 ±0 | 1.0 ±0.0 |
+| `shipped` | `oracle` | 6 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 34 ±2 | 1.3 ±0.1 |
+| `shipped` | `oracle` | 7 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 34 ±2 | 1.3 ±0.1 |
+| `shipped` | `oracle` | 8 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 34 ±2 | 1.3 ±0.1 |
+| `shipped` | `oracle` | 9 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 34 ±2 | 1.3 ±0.1 |
+| `shipped` | `oracle` | 10 | 240 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 34 ±2 | 1.3 ±0.1 |
 | `document` | `oracle` | 1 | 160 | 0.075 ±0.041 | 0.000 ±0.000 | 0.100 ±0.094 | 0.125 ±0.104 | n/a | n/a | 0.075 ±0.083 | n/a | 2031 ±0 | 1.0 ±0.0 |
 | `document` | `oracle` | 2 | 240 | 0.037 ±0.024 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.100 ±0.094 | 0.050 ±0.068 | 0.075 ±0.083 | n/a | 2008 ±0 | 1.0 ±0.0 |
 | `document` | `oracle` | 3 | 240 | 0.037 ±0.024 | 0.000 ±0.000 | 0.100 ±0.094 | 0.025 ±0.049 | 0.000 ±0.000 | 0.000 ±0.000 | 0.100 ±0.094 | 0.000 ±0.000 | 2037 ±0 | 1.0 ±0.0 |
@@ -591,16 +592,16 @@ The comparison table is the last year of this one. Every year is here, class for
 | `mem0-nearest` | `oracle` | 8 | 240 | 0.265 ±0.052 | 0.000 ±0.000 | 0.200 ±0.126 | 0.300 ±0.144 | 0.150 ±0.072 | 0.163 ±0.073 | 0.775 ±0.131 | 0.000 ±0.000 | 261 ±1 | 82.0 ±0.0 |
 | `mem0-nearest` | `oracle` | 9 | 240 | 0.227 ±0.050 | 0.000 ±0.000 | 0.150 ±0.112 | 0.225 ±0.131 | 0.113 ±0.066 | 0.150 ±0.072 | 0.725 ±0.140 | 0.000 ±0.000 | 262 ±2 | 82.0 ±0.0 |
 | `mem0-nearest` | `oracle` | 10 | 240 | 0.188 ±0.047 | 0.000 ±0.000 | 0.150 ±0.112 | 0.125 ±0.104 | 0.075 ±0.056 | 0.125 ±0.068 | 0.650 ±0.150 | 0.000 ±0.000 | 262 ±2 | 82.0 ±0.0 |
-| `shipped` | `text` | 1 | 160 | 0.056 ±0.036 | 0.000 ±0.000 | 0.075 ±0.083 | 0.075 ±0.083 | n/a | n/a | 0.075 ±0.083 | n/a | 1304 ±0 | 30.0 ±0.0 |
-| `shipped` | `text` | 2 | 240 | 0.017 ±0.016 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.025 ±0.049 | 0.025 ±0.049 | 0.050 ±0.068 | n/a | 610 ±0 | 13.0 ±0.0 |
-| `shipped` | `text` | 3 | 240 | 0.025 ±0.020 | 0.000 ±0.000 | 0.050 ±0.068 | 0.025 ±0.049 | 0.000 ±0.000 | 0.000 ±0.000 | 0.075 ±0.083 | 0.000 ±0.000 | 1263 ±0 | 29.0 ±0.0 |
-| `shipped` | `text` | 4 | 240 | 0.004 ±0.008 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.025 ±0.049 | 0.000 ±0.000 | 1183 ±0 | 26.0 ±0.0 |
-| `shipped` | `text` | 5 | 240 | 0.021 ±0.018 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.125 ±0.104 | 0.000 ±0.000 | 1216 ±0 | 28.0 ±0.0 |
-| `shipped` | `text` | 6 | 240 | 0.013 ±0.013 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.013 ±0.024 | 0.013 ±0.024 | 0.050 ±0.068 | 0.000 ±0.000 | 572 ±0 | 13.0 ±0.0 |
-| `shipped` | `text` | 7 | 240 | 0.013 ±0.014 | 0.000 ±0.000 | 0.050 ±0.068 | 0.025 ±0.049 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 539 ±0 | 12.0 ±0.0 |
-| `shipped` | `text` | 8 | 240 | 0.004 ±0.008 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.025 ±0.049 | 0.000 ±0.000 | 500 ±0 | 11.0 ±0.0 |
-| `shipped` | `text` | 9 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 430 ±0 | 9.0 ±0.0 |
-| `shipped` | `text` | 10 | 240 | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 977 ±0 | 22.0 ±0.0 |
+| `shipped` | `text` | 1 | 160 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | n/a | n/a | 0.000 ±0.000 | n/a | 0 ±0 | 0.0 ±0.0 |
+| `shipped` | `text` | 2 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | n/a | 0 ±0 | 0.0 ±0.0 |
+| `shipped` | `text` | 3 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `shipped` | `text` | 4 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `shipped` | `text` | 5 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `shipped` | `text` | 6 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `shipped` | `text` | 7 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `shipped` | `text` | 8 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `shipped` | `text` | 9 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
+| `shipped` | `text` | 10 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
 | `document` | `text` | 1 | 160 | 0.075 ±0.041 | 0.000 ±0.000 | 0.100 ±0.094 | 0.125 ±0.104 | n/a | n/a | 0.075 ±0.083 | n/a | 2031 ±0 | 1.0 ±0.0 |
 | `document` | `text` | 2 | 240 | 0.037 ±0.024 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.100 ±0.094 | 0.050 ±0.068 | 0.075 ±0.083 | n/a | 2008 ±0 | 1.0 ±0.0 |
 | `document` | `text` | 3 | 240 | 0.037 ±0.024 | 0.000 ±0.000 | 0.100 ±0.094 | 0.025 ±0.049 | 0.000 ±0.000 | 0.000 ±0.000 | 0.100 ±0.094 | 0.000 ±0.000 | 2037 ±0 | 1.0 ±0.0 |
@@ -766,9 +767,9 @@ The comparison table is the last year of this one. Every year is here, class for
 
 | frame | arm | year | units | content KB | stored KB |
 |---|---|---|---|---|---|
-| `shipped` | `oracle` | 1 | 168 | 6.5 | 856.0 |
-| `shipped` | `oracle` | 5 | 461 | 18.2 | 4060.0 |
-| `shipped` | `oracle` | 10 | 783 | 31.6 | 8112.0 |
+| `shipped` | `oracle` | 1 | 160 | 4.0 | 40.0 |
+| `shipped` | `oracle` | 5 | 400 | 10.0 | 80.0 |
+| `shipped` | `oracle` | 10 | 680 | 16.9 | 120.0 |
 | `document` | `oracle` | 1 | 1 | 2.0 | 2.0 |
 | `document` | `oracle` | 5 | 1 | 2.0 | 2.0 |
 | `document` | `oracle` | 10 | 1 | 2.0 | 2.0 |
@@ -817,9 +818,9 @@ The comparison table is the last year of this one. Every year is here, class for
 | `mem0-nearest` | `oracle` | 1 | 2 | 0.1 | 2.1 |
 | `mem0-nearest` | `oracle` | 5 | 2 | 0.0 | 2.0 |
 | `mem0-nearest` | `oracle` | 10 | 82 | 2.0 | 84.0 |
-| `shipped` | `text` | 1 | 30 | 1.2 | 812.0 |
-| `shipped` | `text` | 5 | 28 | 1.2 | 3940.0 |
-| `shipped` | `text` | 10 | 22 | 0.9 | 7844.0 |
+| `shipped` | `text` | 1 | 0 | 0.0 | 20.0 |
+| `shipped` | `text` | 5 | 0 | 0.0 | 20.0 |
+| `shipped` | `text` | 10 | 0 | 0.0 | 20.0 |
 | `document` | `text` | 1 | 1 | 2.0 | 2.0 |
 | `document` | `text` | 5 | 1 | 2.0 | 2.0 |
 | `document` | `text` | 10 | 1 | 2.0 | 2.0 |
@@ -1507,12 +1508,12 @@ Every figure so far reports what a structure *answers*. None reports what it can
 
 - **A write reaches what a read cannot, in one structure and not the other.** Constructed directly: a fact written, never once read back, then corrected among enough facts in the same words that a lookup does not find it alone. The addressed store applies the correction — the address is computed from the sentence, so the write lands whether or not anything ever returned that address. The store that supersedes what its own lookup surfaces does not. Reading and updating are decoupled in one design and coupled in the other, and that is a larger difference between them than any figure this record carried before.
 - **The same store fails to correct even what it can find, which bounds what the coupling explains.** With the row it must correct sitting alone, a correction phrased as a correction still does not land, while a restatement in the same words does: supersession fires on how much the two sentences share, and a correction shares little with what it corrects. So two causes are present and this workload separates them only in the constructed case. The workload-scale column reads backwards for the same reason — on that store a value no read returned is usually a value some unrelated write already archived, so "never reached" and "no longer held" are close to the same event and the column is not evidence about the coupling. The test is the measurement; the column is reported so a reader is not left to find that out.
-- **Nothing is frozen in any structure this project invented.** Every planted value each of those structures holds has been carried into some context at least once. For the addressed stores that is unsurprising: the address asked is the address returned, and every address is asked every year. For the shipped store it is not — it holds hundreds of rows and returns tens per turn, but a decade asks thousands of questions, so the budget cycles through everything many times over.
+- **Nothing is frozen in any structure this project invented.** Every planted value each of those structures holds has been carried into some context at least once. For the addressed stores, `shipped` among them since `46bd83d`, that is unsurprising: the address asked is the address returned, and every address is asked every year. It was not unsurprising for the sentence store this row measured before, which held hundreds of rows and returned tens per turn — a decade asks thousands of questions, so its budget cycled through everything many times over.
 - **Two published designs freeze most of what they hold, which is the prediction this section made arriving.** The earlier round said the frozen share turns positive once what a structure holds outruns what a decade of contexts can carry, and named the ratio as the number to watch. `generative-agents` and `reflection` keep every turn — thousands of records against a context of a few — and by the last year four fifths and seven tenths of the planted values they hold have never once been carried into any context. The share climbs monotonically from the first year in both. What was written as a prediction about a store nobody had built is now a measured property of two published ones, and it was not a property of this workload's size after all: the same workload freezes nothing in a structure that returns the address it was asked for.
 - **What is frozen is not what nothing needs.** At the ninth year `generative-agents` holds hundreds of frozen values that a later checkpoint still asks for, and `reflection` holds a comparable number. These are not stale rows a forgetting rule would be right to drop; they are facts the structure holds, cannot reach, and will be asked about.
-- **The bytes that cannot be reached are the archive, and they are almost all of them.** The frozen share is zero over what a search can reach because the archive is not part of it: the shipped store never hard-deletes, no query reaches an archived row, and at the last year its stored bytes stand at two orders of magnitude above the content its active index holds. Those bytes are held, cannot be read, and cannot be corrected — the case the criterion describes, sitting outside the index rather than inside it.
+- **The bytes that cannot be reached are the archive.** The frozen share is zero over what a read can reach because the archive is not part of it: the shipped store never hard-deletes and no read reaches an archived row. At the last year it stores 120.0 KB against the 16.9 KB of content its active index holds — about seven times, where the sentence store this row measured before stood two orders of magnitude above it. Those bytes are held, cannot be read, and cannot be corrected — the case the criterion describes, sitting outside the index rather than inside it.
 - **A forgetting rule keyed on use has nothing to forget in the structures it was written for, and would gut the two that freeze.** The rule the frozen share would feed — drop what no read has ever reached — is well defined, needs no threshold and no clause for a class, and on the structures this project invented it removes nothing, because nothing qualifies. It cannot be shown safe or unsafe by a run in which it never fires. On `generative-agents` it would fire on most of the store, and the column beside the frozen one says that much of what it would take is still asked for later. The rule is not thereby refuted — a store that cannot reach a value is not answering with it either — but a rule that removes nothing in one structure and most of another is a rule whose safety is a property of the structure it runs in.
-- **A structure that answers the question brings back very little else.** The addressed stores carry about an eighth of what is live about the subject they are asked about; the shipped store carries about half, because a budget filled by ranking sweeps in whatever else scores. Under the criterion this round is for, that is the addressed store's one disadvantage — everything about that subject the context did not carry is outside the reach of that turn's writeback. What the coupling result says is that for an addressed store it does not follow that those facts are unfixable, because a later correction does not need to have read them.
+- **A structure that answers the question brings back very little else.** The addressed stores carry about an eighth of what is live about the subject they are asked about — `0.148` at the last year, and `shipped` posts the same figure as the arms it now matches. A store filling a budget by ranking carried about half, because the budget sweeps in whatever else scores. Under the criterion this round is for, the eighth is the addressed store's one disadvantage — everything about that subject the context did not carry is outside the reach of that turn's writeback. What the coupling result says is that for an addressed store it does not follow that those facts are unfixable, because a later correction does not need to have read them.
 - **The capacity ceiling is a decade away for a structure that keeps every turn and a dozen decades away for one that keeps facts.** Every structure that holds facts adds tens of units a year, and at that rate the active-index capacity is twelve decades off or further. The two designs that keep every observation add hundreds a year and reach the same ceiling inside a second decade. Capacity is not what bounds a decade for the structures this project was choosing between; for a structure that stores the conversation rather than what it asserted, it is the next thing to bind after the reads stop reaching.
 
 <!-- generated by the harness: reach; do not edit between the markers -->
@@ -1521,16 +1522,16 @@ Every figure so far reports what a structure *answers*. None reports what it can
 
 | frame | arm | year | thread reach | subject reach | held | reached | frozen | frozen share | frozen still needed |
 |---|---|---|---|---|---|---|---|---|---|
-| `shipped` | `oracle` | 1 | 0.919 ±0.042 | 0.919 ±0.028 | 147 | 147 | 0 | 0.000 | 0 |
-| `shipped` | `oracle` | 2 | 0.946 ±0.029 | 0.941 ±0.017 | 263 | 263 | 0 | 0.000 | 0 |
-| `shipped` | `oracle` | 3 | 0.921 ±0.034 | 0.881 ±0.024 | 364 | 364 | 0 | 0.000 | 0 |
-| `shipped` | `oracle` | 4 | 0.908 ±0.037 | 0.880 ±0.024 | 400 | 400 | 0 | 0.000 | 0 |
-| `shipped` | `oracle` | 5 | 0.912 ±0.036 | 0.878 ±0.023 | 438 | 438 | 0 | 0.000 | 0 |
-| `shipped` | `oracle` | 6 | 0.892 ±0.037 | 0.750 ±0.031 | 543 | 543 | 0 | 0.000 | 0 |
-| `shipped` | `oracle` | 7 | 0.927 ±0.029 | 0.576 ±0.042 | 619 | 619 | 0 | 0.000 | 0 |
-| `shipped` | `oracle` | 8 | 0.927 ±0.029 | 0.560 ±0.044 | 658 | 658 | 0 | 0.000 | 0 |
-| `shipped` | `oracle` | 9 | 0.925 ±0.030 | 0.518 ±0.044 | 696 | 696 | 0 | 0.000 | 0 |
-| `shipped` | `oracle` | 10 | 0.923 ±0.030 | 0.507 ±0.045 | 733 | 733 | 0 | 0.000 | 0 |
+| `shipped` | `oracle` | 1 | 1.000 ±0.000 | 0.450 ±0.037 | 160 | 160 | 0 | 0.000 | 0 |
+| `shipped` | `oracle` | 2 | 1.000 ±0.000 | 0.269 ±0.021 | 280 | 280 | 0 | 0.000 | 0 |
+| `shipped` | `oracle` | 3 | 1.000 ±0.000 | 0.246 ±0.018 | 320 | 320 | 0 | 0.000 | 0 |
+| `shipped` | `oracle` | 4 | 1.000 ±0.000 | 0.212 ±0.011 | 360 | 360 | 0 | 0.000 | 0 |
+| `shipped` | `oracle` | 5 | 1.000 ±0.000 | 0.194 ±0.010 | 400 | 400 | 0 | 0.000 | 0 |
+| `shipped` | `oracle` | 6 | 1.000 ±0.000 | 0.192 ±0.011 | 520 | 520 | 0 | 0.000 | 0 |
+| `shipped` | `oracle` | 7 | 1.000 ±0.000 | 0.179 ±0.010 | 560 | 560 | 0 | 0.000 | 0 |
+| `shipped` | `oracle` | 8 | 1.000 ±0.000 | 0.169 ±0.009 | 600 | 600 | 0 | 0.000 | 0 |
+| `shipped` | `oracle` | 9 | 1.000 ±0.000 | 0.153 ±0.008 | 640 | 640 | 0 | 0.000 | 0 |
+| `shipped` | `oracle` | 10 | 1.000 ±0.000 | 0.148 ±0.008 | 680 | 680 | 0 | 0.000 | 0 |
 | `document` | `oracle` | 1 | 0.075 ±0.041 | 0.075 ±0.032 | 12 | 12 | 0 | 0.000 | 0 |
 | `document` | `oracle` | 2 | 0.037 ±0.024 | 0.030 ±0.010 | 9 | 9 | 0 | 0.000 | 0 |
 | `document` | `oracle` | 3 | 0.037 ±0.024 | 0.030 ±0.009 | 9 | 9 | 0 | 0.000 | 0 |
@@ -1691,16 +1692,16 @@ Every figure so far reports what a structure *answers*. None reports what it can
 | `mem0-nearest` | `oracle` | 8 | 0.265 ±0.052 | 0.143 ±0.015 | 82 | 82 | 0 | 0.000 | 0 |
 | `mem0-nearest` | `oracle` | 9 | 0.227 ±0.050 | 0.128 ±0.015 | 82 | 82 | 0 | 0.000 | 0 |
 | `mem0-nearest` | `oracle` | 10 | 0.188 ±0.047 | 0.113 ±0.013 | 82 | 82 | 0 | 0.000 | 0 |
-| `shipped` | `text` | 1 | 0.056 ±0.036 | 0.056 ±0.030 | 9 | 9 | 0 | 0.000 | 0 |
-| `shipped` | `text` | 2 | 0.017 ±0.016 | 0.015 ±0.007 | 4 | 4 | 0 | 0.000 | 0 |
-| `shipped` | `text` | 3 | 0.025 ±0.020 | 0.020 ±0.008 | 6 | 6 | 0 | 0.000 | 0 |
-| `shipped` | `text` | 4 | 0.004 ±0.008 | 0.003 ±0.003 | 1 | 1 | 0 | 0.000 | 0 |
-| `shipped` | `text` | 5 | 0.021 ±0.018 | 0.014 ±0.006 | 5 | 5 | 0 | 0.000 | 0 |
-| `shipped` | `text` | 6 | 0.013 ±0.013 | 0.009 ±0.005 | 4 | 4 | 0 | 0.000 | 0 |
-| `shipped` | `text` | 7 | 0.013 ±0.014 | 0.008 ±0.004 | 3 | 3 | 0 | 0.000 | 0 |
-| `shipped` | `text` | 8 | 0.004 ±0.008 | 0.002 ±0.002 | 1 | 1 | 0 | 0.000 | 0 |
+| `shipped` | `text` | 1 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `shipped` | `text` | 2 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `shipped` | `text` | 3 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `shipped` | `text` | 4 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `shipped` | `text` | 5 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `shipped` | `text` | 6 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `shipped` | `text` | 7 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
+| `shipped` | `text` | 8 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
 | `shipped` | `text` | 9 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
-| `shipped` | `text` | 10 | 0.008 ±0.012 | 0.003 ±0.002 | 2 | 2 | 0 | 0.000 | 0 |
+| `shipped` | `text` | 10 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
 | `document` | `text` | 1 | 0.075 ±0.041 | 0.075 ±0.032 | 12 | 12 | 0 | 0.000 | 0 |
 | `document` | `text` | 2 | 0.037 ±0.024 | 0.030 ±0.010 | 9 | 9 | 0 | 0.000 | 0 |
 | `document` | `text` | 3 | 0.037 ±0.024 | 0.030 ±0.009 | 9 | 9 | 0 | 0.000 | 0 |
@@ -1866,7 +1867,7 @@ Every figure so far reports what a structure *answers*. None reports what it can
 
 | frame | arm | corrections whose value a read had returned | applied | corrections whose value no read had returned | applied |
 |---|---|---|---|---|---|
-| `shipped` | `oracle` | 141 | 0.064 ±0.040 | 19 | 1.000 ±0.000 |
+| `shipped` | `oracle` | 160 | 1.000 ±0.000 | 0 | n/a |
 | `document` | `oracle` | 14 | 1.000 ±0.000 | 146 | 1.000 ±0.000 |
 | `attribute-single` | `oracle` | 160 | 1.000 ±0.000 | 0 | n/a |
 | `attribute-multi` | `oracle` | 160 | 0.000 ±0.000 | 0 | n/a |
@@ -1883,7 +1884,7 @@ Every figure so far reports what a structure *answers*. None reports what it can
 | `memorybank` | `oracle` | 4 | 1.000 ±0.000 | 156 | 1.000 ±0.000 |
 | `mem0` | `oracle` | 156 | 0.096 ±0.046 | 4 | 0.500 ±0.566 |
 | `mem0-nearest` | `oracle` | 4 | 1.000 ±0.000 | 156 | 1.000 ±0.000 |
-| `shipped` | `text` | 9 | 1.000 ±0.000 | 151 | 1.000 ±0.000 |
+| `shipped` | `text` | 0 | n/a | 160 | 1.000 ±0.000 |
 | `document` | `text` | 14 | 1.000 ±0.000 | 146 | 1.000 ±0.000 |
 | `attribute-single` | `text` | 0 | n/a | 160 | 1.000 ±0.000 |
 | `attribute-multi` | `text` | 0 | n/a | 160 | 1.000 ±0.000 |
@@ -1905,16 +1906,16 @@ Every figure so far reports what a structure *answers*. None reports what it can
 
 | frame | arm | year | units | content KB | stored KB |
 |---|---|---|---|---|---|
-| `shipped` | `oracle` | 1 | 168 | 6.5 | 856.0 |
-| `shipped` | `oracle` | 2 | 272 | 10.4 | 1656.0 |
-| `shipped` | `oracle` | 3 | 387 | 15.4 | 2480.0 |
-| `shipped` | `oracle` | 4 | 425 | 16.9 | 3288.0 |
-| `shipped` | `oracle` | 5 | 461 | 18.2 | 4060.0 |
-| `shipped` | `oracle` | 6 | 552 | 22.2 | 4892.0 |
-| `shipped` | `oracle` | 7 | 658 | 26.8 | 5700.0 |
-| `shipped` | `oracle` | 8 | 698 | 28.4 | 6496.0 |
-| `shipped` | `oracle` | 9 | 735 | 29.8 | 7312.0 |
-| `shipped` | `oracle` | 10 | 783 | 31.6 | 8112.0 |
+| `shipped` | `oracle` | 1 | 160 | 4.0 | 40.0 |
+| `shipped` | `oracle` | 2 | 280 | 7.0 | 52.0 |
+| `shipped` | `oracle` | 3 | 320 | 8.0 | 68.0 |
+| `shipped` | `oracle` | 4 | 360 | 9.0 | 76.0 |
+| `shipped` | `oracle` | 5 | 400 | 10.0 | 80.0 |
+| `shipped` | `oracle` | 6 | 520 | 13.0 | 92.0 |
+| `shipped` | `oracle` | 7 | 560 | 14.0 | 108.0 |
+| `shipped` | `oracle` | 8 | 600 | 14.9 | 108.0 |
+| `shipped` | `oracle` | 9 | 640 | 15.9 | 112.0 |
+| `shipped` | `oracle` | 10 | 680 | 16.9 | 120.0 |
 | `document` | `oracle` | 1 | 1 | 2.0 | 2.0 |
 | `document` | `oracle` | 2 | 1 | 2.0 | 2.0 |
 | `document` | `oracle` | 3 | 1 | 2.0 | 2.0 |
@@ -2075,16 +2076,16 @@ Every figure so far reports what a structure *answers*. None reports what it can
 | `mem0-nearest` | `oracle` | 8 | 82 | 2.0 | 84.0 |
 | `mem0-nearest` | `oracle` | 9 | 82 | 2.0 | 84.0 |
 | `mem0-nearest` | `oracle` | 10 | 82 | 2.0 | 84.0 |
-| `shipped` | `text` | 1 | 30 | 1.2 | 812.0 |
-| `shipped` | `text` | 2 | 13 | 0.6 | 1592.0 |
-| `shipped` | `text` | 3 | 29 | 1.2 | 2388.0 |
-| `shipped` | `text` | 4 | 26 | 1.1 | 3164.0 |
-| `shipped` | `text` | 5 | 28 | 1.2 | 3940.0 |
-| `shipped` | `text` | 6 | 13 | 0.5 | 4720.0 |
-| `shipped` | `text` | 7 | 12 | 0.5 | 5504.0 |
-| `shipped` | `text` | 8 | 11 | 0.5 | 6280.0 |
-| `shipped` | `text` | 9 | 9 | 0.4 | 7064.0 |
-| `shipped` | `text` | 10 | 22 | 0.9 | 7844.0 |
+| `shipped` | `text` | 1 | 0 | 0.0 | 20.0 |
+| `shipped` | `text` | 2 | 0 | 0.0 | 20.0 |
+| `shipped` | `text` | 3 | 0 | 0.0 | 20.0 |
+| `shipped` | `text` | 4 | 0 | 0.0 | 20.0 |
+| `shipped` | `text` | 5 | 0 | 0.0 | 20.0 |
+| `shipped` | `text` | 6 | 0 | 0.0 | 20.0 |
+| `shipped` | `text` | 7 | 0 | 0.0 | 20.0 |
+| `shipped` | `text` | 8 | 0 | 0.0 | 20.0 |
+| `shipped` | `text` | 9 | 0 | 0.0 | 20.0 |
+| `shipped` | `text` | 10 | 0 | 0.0 | 20.0 |
 | `document` | `text` | 1 | 1 | 2.0 | 2.0 |
 | `document` | `text` | 2 | 1 | 2.0 | 2.0 |
 | `document` | `text` | 3 | 1 | 2.0 | 2.0 |
@@ -2248,7 +2249,7 @@ Every figure so far reports what a structure *answers*. None reports what it can
 
 | frame | arm | units at the last year | units added a year | decades to the active-index capacity |
 |---|---|---|---|---|
-| `shipped` | `oracle` | 783 | 68.3 | 13 |
+| `shipped` | `oracle` | 680 | 57.8 | 16 |
 | `document` | `oracle` | 1 | 0.0 | n/a |
 | `attribute-single` | `oracle` | 600 | 48.9 | 19 |
 | `attribute-multi` | `oracle` | 800 | 71.1 | 13 |
@@ -2265,7 +2266,7 @@ Every figure so far reports what a structure *answers*. None reports what it can
 | `memorybank` | `oracle` | 16 | 0.0 | n/a |
 | `mem0` | `oracle` | 747 | 65.3 | 14 |
 | `mem0-nearest` | `oracle` | 82 | 8.9 | 112 |
-| `shipped` | `text` | 22 | -0.9 | n/a |
+| `shipped` | `text` | 0 | 0.0 | n/a |
 | `document` | `text` | 1 | 0.0 | n/a |
 | `attribute-single` | `text` | 0 | 0.0 | n/a |
 | `attribute-multi` | `text` | 0 | 0.0 | n/a |
@@ -2316,16 +2317,16 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 
 | capacity | frame | year | recall | carried | replaced | reverted | parallel | refined | fresh | stale returned | units | content KB | stored KB |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 800 | `shipped` | 1 | 0.919 ±0.042 | 0.925 ±0.083 | 0.950 ±0.068 | 0.900 ±0.094 | n/a | n/a | 0.900 ±0.094 | n/a | 168 | 6.5 | 856.0 |
-| 800 | `shipped` | 2 | 0.946 ±0.029 | 0.900 ±0.094 | 0.950 ±0.068 | 0.875 ±0.104 | 1.000 ±0.000 | 0.975 ±0.049 | 0.975 ±0.049 | n/a | 272 | 10.4 | 1656.0 |
-| 800 | `shipped` | 3 | 0.921 ±0.034 | 0.900 ±0.094 | 0.925 ±0.083 | 0.750 ±0.136 | 0.975 ±0.049 | 0.975 ±0.049 | 1.000 ±0.000 | 0.863 ±0.076 | 387 | 15.4 | 2480.0 |
-| 800 | `shipped` | 4 | 0.908 ±0.037 | 0.900 ±0.094 | 0.900 ±0.094 | 0.750 ±0.136 | 0.975 ±0.049 | 0.950 ±0.068 | 0.975 ±0.049 | 0.850 ±0.079 | 425 | 16.9 | 3288.0 |
-| 800 | `shipped` | 5 | 0.912 ±0.036 | 0.900 ±0.094 | 0.900 ±0.094 | 0.750 ±0.136 | 0.975 ±0.049 | 0.950 ±0.068 | 1.000 ±0.000 | 0.838 ±0.081 | 461 | 18.2 | 4060.0 |
-| 800 | `shipped` | 6 | 0.892 ±0.037 | 0.900 ±0.094 | 0.900 ±0.094 | 0.750 ±0.136 | 0.950 ±0.059 | 0.850 ±0.080 | 1.000 ±0.000 | 0.838 ±0.081 | 552 | 22.2 | 4892.0 |
-| 800 | `shipped` | 7 | 0.927 ±0.029 | 0.900 ±0.094 | 0.875 ±0.104 | 1.000 ±0.000 | 0.938 ±0.063 | 0.850 ±0.080 | 1.000 ±0.000 | 0.838 ±0.081 | 658 | 26.8 | 5700.0 |
-| 800 | `shipped` | 8 | 0.927 ±0.029 | 0.900 ±0.094 | 0.875 ±0.104 | 1.000 ±0.000 | 0.938 ±0.063 | 0.850 ±0.080 | 1.000 ±0.000 | 0.838 ±0.081 | 698 | 28.4 | 6496.0 |
-| 800 | `shipped` | 9 | 0.925 ±0.030 | 0.900 ±0.094 | 0.875 ±0.104 | 1.000 ±0.000 | 0.925 ±0.066 | 0.850 ±0.080 | 1.000 ±0.000 | 0.838 ±0.081 | 735 | 29.8 | 7312.0 |
-| 800 | `shipped` | 10 | 0.923 ±0.030 | 0.900 ±0.094 | 0.875 ±0.104 | 1.000 ±0.000 | 0.925 ±0.066 | 0.838 ±0.081 | 1.000 ±0.000 | 0.838 ±0.081 | 783 | 31.6 | 8112.0 |
+| 800 | `shipped` | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a | 160 | 4.0 | 40.0 |
+| 800 | `shipped` | 2 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | 280 | 7.0 | 52.0 |
+| 800 | `shipped` | 3 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 320 | 8.0 | 68.0 |
+| 800 | `shipped` | 4 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 360 | 9.0 | 76.0 |
+| 800 | `shipped` | 5 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 400 | 10.0 | 80.0 |
+| 800 | `shipped` | 6 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 520 | 13.0 | 92.0 |
+| 800 | `shipped` | 7 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 560 | 14.0 | 108.0 |
+| 800 | `shipped` | 8 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 600 | 14.9 | 108.0 |
+| 800 | `shipped` | 9 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 640 | 15.9 | 112.0 |
+| 800 | `shipped` | 10 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 680 | 16.9 | 120.0 |
 | 800 | `document` | 1 | 0.075 ±0.041 | 0.000 ±0.000 | 0.100 ±0.094 | 0.125 ±0.104 | n/a | n/a | 0.075 ±0.083 | n/a | 1 | 2.0 | 2.0 |
 | 800 | `document` | 2 | 0.037 ±0.024 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.100 ±0.094 | 0.050 ±0.068 | 0.075 ±0.083 | n/a | 1 | 2.0 | 2.0 |
 | 800 | `document` | 3 | 0.037 ±0.024 | 0.000 ±0.000 | 0.100 ±0.094 | 0.025 ±0.049 | 0.000 ±0.000 | 0.000 ±0.000 | 0.100 ±0.094 | 0.000 ±0.000 | 1 | 2.0 | 2.0 |
@@ -2486,16 +2487,16 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | 800 | `mem0-nearest` | 8 | 0.265 ±0.052 | 0.000 ±0.000 | 0.200 ±0.126 | 0.300 ±0.144 | 0.150 ±0.072 | 0.163 ±0.073 | 0.775 ±0.131 | 0.000 ±0.000 | 82 | 2.0 | 84.0 |
 | 800 | `mem0-nearest` | 9 | 0.227 ±0.050 | 0.000 ±0.000 | 0.150 ±0.112 | 0.225 ±0.131 | 0.113 ±0.066 | 0.150 ±0.072 | 0.725 ±0.140 | 0.000 ±0.000 | 82 | 2.0 | 84.0 |
 | 800 | `mem0-nearest` | 10 | 0.188 ±0.047 | 0.000 ±0.000 | 0.150 ±0.112 | 0.125 ±0.104 | 0.075 ±0.056 | 0.125 ±0.068 | 0.650 ±0.150 | 0.000 ±0.000 | 82 | 2.0 | 84.0 |
-| 200 | `shipped` | 1 | 0.919 ±0.042 | 0.925 ±0.083 | 0.950 ±0.068 | 0.900 ±0.094 | n/a | n/a | 0.900 ±0.094 | n/a | 168 | 6.5 | 856.0 |
-| 200 | `shipped` | 2 | 0.700 ±0.058 | 0.375 ±0.152 | 0.450 ±0.156 | 0.425 ±0.155 | 1.000 ±0.000 | 0.975 ±0.049 | 0.975 ±0.049 | n/a | 200 | 7.7 | 1672.0 |
-| 200 | `shipped` | 3 | 0.642 ±0.061 | 0.000 ±0.000 | 0.925 ±0.083 | 0.725 ±0.140 | 0.600 ±0.154 | 0.600 ±0.154 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 8.2 | 2500.0 |
-| 200 | `shipped` | 4 | 0.504 ±0.063 | 0.000 ±0.000 | 0.875 ±0.104 | 0.725 ±0.140 | 0.300 ±0.144 | 0.150 ±0.112 | 0.975 ±0.049 | 0.000 ±0.000 | 200 | 8.3 | 3284.0 |
-| 200 | `shipped` | 5 | 0.425 ±0.063 | 0.000 ±0.000 | 0.825 ±0.119 | 0.725 ±0.140 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 8.2 | 4056.0 |
-| 200 | `shipped` | 6 | 0.310 ±0.048 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.463 ±0.041 | 0.400 ±0.063 | 1.000 ±0.000 | 0.000 ±0.000 | 194 | 8.1 | 4908.0 |
-| 200 | `shipped` | 7 | 0.450 ±0.053 | 0.000 ±0.000 | 0.850 ±0.112 | 0.000 ±0.000 | 0.463 ±0.041 | 0.388 ±0.066 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 8.5 | 5816.0 |
-| 200 | `shipped` | 8 | 0.408 ±0.055 | 0.000 ±0.000 | 0.850 ±0.112 | 0.000 ±0.000 | 0.300 ±0.077 | 0.300 ±0.077 | 1.000 ±0.000 | 0.000 ±0.000 | 192 | 8.1 | 6616.0 |
-| 200 | `shipped` | 9 | 0.352 ±0.057 | 0.000 ±0.000 | 0.850 ±0.112 | 0.000 ±0.000 | 0.163 ±0.073 | 0.125 ±0.068 | 0.975 ±0.049 | 0.000 ±0.000 | 195 | 8.0 | 7404.0 |
-| 200 | `shipped` | 10 | 0.292 ±0.058 | 0.000 ±0.000 | 0.775 ±0.131 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.975 ±0.049 | 0.000 ±0.000 | 200 | 7.9 | 8208.0 |
+| 200 | `shipped` | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a | 160 | 4.0 | 40.0 |
+| 200 | `shipped` | 2 | 0.729 ±0.056 | 0.425 ±0.155 | 0.475 ±0.157 | 0.475 ±0.157 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | 200 | 5.0 | 56.0 |
+| 200 | `shipped` | 3 | 0.717 ±0.057 | 0.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.675 ±0.147 | 0.625 ±0.152 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 5.0 | 64.0 |
+| 200 | `shipped` | 4 | 0.604 ±0.062 | 0.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.375 ±0.152 | 0.250 ±0.136 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 5.0 | 68.0 |
+| 200 | `shipped` | 5 | 0.500 ±0.063 | 0.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 5.0 | 72.0 |
+| 200 | `shipped` | 6 | 0.333 ±0.047 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 5.0 | 80.0 |
+| 200 | `shipped` | 7 | 0.500 ±0.052 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 5.0 | 88.0 |
+| 200 | `shipped` | 8 | 0.454 ±0.055 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.350 ±0.072 | 0.375 ±0.068 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 88.0 |
+| 200 | `shipped` | 9 | 0.392 ±0.058 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.200 ±0.077 | 0.150 ±0.072 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 92.0 |
+| 200 | `shipped` | 10 | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 96.0 |
 | 200 | `document` | 1 | 0.075 ±0.041 | 0.000 ±0.000 | 0.100 ±0.094 | 0.125 ±0.104 | n/a | n/a | 0.075 ±0.083 | n/a | 1 | 2.0 | 2.0 |
 | 200 | `document` | 2 | 0.037 ±0.024 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.100 ±0.094 | 0.050 ±0.068 | 0.075 ±0.083 | n/a | 1 | 2.0 | 2.0 |
 | 200 | `document` | 3 | 0.037 ±0.024 | 0.000 ±0.000 | 0.100 ±0.094 | 0.025 ±0.049 | 0.000 ±0.000 | 0.000 ±0.000 | 0.100 ±0.094 | 0.000 ±0.000 | 1 | 2.0 | 2.0 |
@@ -2656,16 +2657,16 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | 200 | `mem0-nearest` | 8 | 0.265 ±0.052 | 0.000 ±0.000 | 0.200 ±0.126 | 0.300 ±0.144 | 0.150 ±0.072 | 0.163 ±0.073 | 0.775 ±0.131 | 0.000 ±0.000 | 82 | 2.0 | 84.0 |
 | 200 | `mem0-nearest` | 9 | 0.227 ±0.050 | 0.000 ±0.000 | 0.150 ±0.112 | 0.225 ±0.131 | 0.113 ±0.066 | 0.150 ±0.072 | 0.725 ±0.140 | 0.000 ±0.000 | 82 | 2.0 | 84.0 |
 | 200 | `mem0-nearest` | 10 | 0.188 ±0.047 | 0.000 ±0.000 | 0.150 ±0.112 | 0.125 ±0.104 | 0.075 ±0.056 | 0.125 ±0.068 | 0.650 ±0.150 | 0.000 ±0.000 | 82 | 2.0 | 84.0 |
-| 50 | `shipped` | 1 | 0.188 ±0.061 | 0.100 ±0.094 | 0.200 ±0.126 | 0.225 ±0.131 | n/a | n/a | 0.225 ±0.131 | n/a | 50 | 2.0 | 844.0 |
-| 50 | `shipped` | 2 | 0.171 ±0.048 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.425 ±0.155 | 0.250 ±0.136 | 0.350 ±0.150 | n/a | 50 | 2.0 | 1664.0 |
-| 50 | `shipped` | 3 | 0.121 ±0.041 | 0.000 ±0.000 | 0.300 ±0.144 | 0.225 ±0.131 | 0.000 ±0.000 | 0.000 ±0.000 | 0.200 ±0.126 | 0.000 ±0.000 | 50 | 2.2 | 2496.0 |
-| 50 | `shipped` | 4 | 0.104 ±0.039 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.625 ±0.152 | 0.000 ±0.000 | 50 | 2.0 | 3300.0 |
-| 50 | `shipped` | 5 | 0.121 ±0.041 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.725 ±0.140 | 0.000 ±0.000 | 50 | 2.0 | 4136.0 |
-| 50 | `shipped` | 6 | 0.100 ±0.032 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.175 ±0.075 | 0.125 ±0.068 | 0.300 ±0.144 | 0.000 ±0.000 | 45 | 2.0 | 4984.0 |
-| 50 | `shipped` | 7 | 0.171 ±0.048 | 0.000 ±0.000 | 0.475 ±0.157 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.550 ±0.156 | 0.000 ±0.000 | 50 | 2.1 | 5816.0 |
-| 50 | `shipped` | 8 | 0.133 ±0.043 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.800 ±0.126 | 0.000 ±0.000 | 42 | 1.6 | 6616.0 |
-| 50 | `shipped` | 9 | 0.150 ±0.045 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.900 ±0.094 | 0.000 ±0.000 | 45 | 1.8 | 7428.0 |
-| 50 | `shipped` | 10 | 0.129 ±0.043 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.775 ±0.131 | 0.000 ±0.000 | 50 | 2.0 | 8264.0 |
+| 50 | `shipped` | 1 | 0.312 ±0.072 | 0.150 ±0.112 | 0.325 ±0.147 | 0.375 ±0.152 | n/a | n/a | 0.400 ±0.154 | n/a | 50 | 1.2 | 28.0 |
+| 50 | `shipped` | 2 | 0.208 ±0.051 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.475 ±0.157 | 0.325 ±0.147 | 0.450 ±0.156 | n/a | 50 | 1.2 | 36.0 |
+| 50 | `shipped` | 3 | 0.208 ±0.051 | 0.000 ±0.000 | 0.400 ±0.154 | 0.400 ±0.154 | 0.000 ±0.000 | 0.000 ±0.000 | 0.450 ±0.156 | 0.000 ±0.000 | 50 | 1.2 | 44.0 |
+| 50 | `shipped` | 4 | 0.192 ±0.050 | 0.000 ±0.000 | 0.125 ±0.104 | 0.025 ±0.049 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 50 | 1.3 | 48.0 |
+| 50 | `shipped` | 5 | 0.167 ±0.047 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 50 | 1.2 | 52.0 |
+| 50 | `shipped` | 6 | 0.133 ±0.035 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.225 ±0.078 | 0.225 ±0.078 | 0.350 ±0.150 | 0.000 ±0.000 | 50 | 1.2 | 60.0 |
+| 50 | `shipped` | 7 | 0.208 ±0.051 | 0.000 ±0.000 | 0.625 ±0.152 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.625 ±0.152 | 0.000 ±0.000 | 50 | 1.2 | 68.0 |
+| 50 | `shipped` | 8 | 0.192 ±0.050 | 0.000 ±0.000 | 0.150 ±0.112 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 50 | 1.2 | 68.0 |
+| 50 | `shipped` | 9 | 0.167 ±0.047 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 50 | 1.2 | 76.0 |
+| 50 | `shipped` | 10 | 0.167 ±0.047 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 50 | 1.2 | 76.0 |
 | 50 | `document` | 1 | 0.075 ±0.041 | 0.000 ±0.000 | 0.100 ±0.094 | 0.125 ±0.104 | n/a | n/a | 0.075 ±0.083 | n/a | 1 | 2.0 | 2.0 |
 | 50 | `document` | 2 | 0.037 ±0.024 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.100 ±0.094 | 0.050 ±0.068 | 0.075 ±0.083 | n/a | 1 | 2.0 | 2.0 |
 | 50 | `document` | 3 | 0.037 ±0.024 | 0.000 ±0.000 | 0.100 ±0.094 | 0.025 ±0.049 | 0.000 ±0.000 | 0.000 ±0.000 | 0.100 ±0.094 | 0.000 ±0.000 | 1 | 2.0 | 2.0 |
@@ -2831,7 +2832,7 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 
 | rule | frame | recall | carried | replaced | reverted | parallel | refined | fresh | stale returned | units | content KB | stored KB |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| `oldest` | `shipped` | 0.292 ±0.058 | 0.000 ±0.000 | 0.775 ±0.131 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.975 ±0.049 | 0.000 ±0.000 | 200 | 7.9 | 8208.0 |
+| `oldest` | `shipped` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 96.0 |
 | `oldest` | `document` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 1 | 2.0 | 2.0 |
 | `oldest` | `attribute-single` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
 | `oldest` | `attribute-multi` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
@@ -2848,7 +2849,7 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | `oldest` | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 16 | 0.7 | 16.7 |
 | `oldest` | `mem0` | 0.325 ±0.059 | 0.000 ±0.000 | 0.925 ±0.083 | 0.000 ±0.000 | 0.050 ±0.047 | 0.000 ±0.000 | 0.975 ±0.049 | 0.000 ±0.000 | 200 | 4.9 | 204.9 |
 | `oldest` | `mem0-nearest` | 0.188 ±0.047 | 0.000 ±0.000 | 0.150 ±0.112 | 0.125 ±0.104 | 0.075 ±0.056 | 0.125 ±0.068 | 0.650 ±0.150 | 0.000 ±0.000 | 82 | 2.0 | 84.0 |
-| `least-recently-read` | `shipped` | 0.329 ±0.056 | 0.775 ±0.131 | 0.025 ±0.049 | 0.725 ±0.140 | 0.200 ±0.092 | 0.150 ±0.072 | 0.100 ±0.094 | 0.425 ±0.109 | 200 | 7.9 | 8400.0 |
+| `least-recently-read` | `shipped` | 0.438 ±0.059 | 1.000 ±0.000 | 0.300 ±0.144 | 1.000 ±0.000 | 0.138 ±0.070 | 0.188 ±0.076 | 0.000 ±0.000 | 0.000 ±0.000 | 200 | 5.0 | 96.0 |
 | `least-recently-read` | `document` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 1 | 2.0 | 2.0 |
 | `least-recently-read` | `attribute-single` | 0.425 ±0.060 | 1.000 ±0.000 | 0.300 ±0.144 | 1.000 ±0.000 | 0.087 ±0.060 | 0.163 ±0.073 | 0.000 ±0.000 | 0.000 ±0.000 | 200 | 5.0 | 5.0 |
 | `least-recently-read` | `attribute-multi` | 0.388 ±0.058 | 1.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.138 ±0.070 | 0.188 ±0.076 | 0.000 ±0.000 | 0.500 ±0.110 | 200 | 5.0 | 5.0 |
@@ -2865,7 +2866,7 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | `least-recently-read` | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 16 | 0.7 | 16.7 |
 | `least-recently-read` | `mem0` | 0.398 ±0.058 | 0.950 ±0.068 | 0.050 ±0.068 | 0.975 ±0.049 | 0.163 ±0.073 | 0.175 ±0.075 | 0.075 ±0.083 | 0.400 ±0.108 | 200 | 5.0 | 205.0 |
 | `least-recently-read` | `mem0-nearest` | 0.188 ±0.047 | 0.000 ±0.000 | 0.150 ±0.112 | 0.125 ±0.104 | 0.075 ±0.056 | 0.125 ±0.068 | 0.650 ±0.150 | 0.000 ±0.000 | 82 | 2.0 | 84.0 |
-| `never-read` | `shipped` | 0.342 ±0.056 | 0.850 ±0.112 | 0.000 ±0.000 | 0.800 ±0.126 | 0.225 ±0.078 | 0.150 ±0.072 | 0.025 ±0.049 | 0.375 ±0.107 | 200 | 7.9 | 8088.0 |
+| `never-read` | `shipped` | 0.410 ±0.059 | 0.975 ±0.049 | 0.175 ±0.119 | 1.000 ±0.000 | 0.188 ±0.076 | 0.125 ±0.068 | 0.000 ±0.000 | 0.000 ±0.000 | 200 | 5.0 | 96.0 |
 | `never-read` | `document` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 1 | 2.0 | 2.0 |
 | `never-read` | `attribute-single` | 0.392 ±0.060 | 0.975 ±0.049 | 0.175 ±0.119 | 1.000 ±0.000 | 0.138 ±0.070 | 0.062 ±0.052 | 0.000 ±0.000 | 0.000 ±0.000 | 200 | 5.0 | 5.0 |
 | `never-read` | `attribute-multi` | 0.385 ±0.058 | 1.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.188 ±0.076 | 0.125 ±0.068 | 0.000 ±0.000 | 0.500 ±0.110 | 200 | 5.0 | 5.0 |
@@ -2882,7 +2883,7 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | `never-read` | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 16 | 0.7 | 16.7 |
 | `never-read` | `mem0` | 0.388 ±0.058 | 0.950 ±0.068 | 0.025 ±0.049 | 0.975 ±0.049 | 0.175 ±0.075 | 0.150 ±0.072 | 0.050 ±0.068 | 0.400 ±0.108 | 200 | 5.0 | 205.0 |
 | `never-read` | `mem0-nearest` | 0.188 ±0.047 | 0.000 ±0.000 | 0.150 ±0.112 | 0.125 ±0.104 | 0.075 ±0.056 | 0.125 ±0.068 | 0.650 ±0.150 | 0.000 ±0.000 | 82 | 2.0 | 84.0 |
-| `lowest-salience` | `shipped` | 0.310 ±0.054 | 0.000 ±0.000 | 0.550 ±0.156 | 0.000 ±0.000 | 0.200 ±0.077 | 0.212 ±0.078 | 0.900 ±0.094 | 0.000 ±0.000 | 200 | 8.1 | 8292.0 |
+| `lowest-salience` | `shipped` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 96.0 |
 | `lowest-salience` | `document` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 1 | 2.0 | 2.0 |
 | `lowest-salience` | `attribute-single` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
 | `lowest-salience` | `attribute-multi` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
@@ -2899,7 +2900,7 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | `lowest-salience` | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 16 | 0.7 | 16.7 |
 | `lowest-salience` | `mem0` | 0.325 ±0.059 | 0.000 ±0.000 | 0.925 ±0.083 | 0.000 ±0.000 | 0.050 ±0.047 | 0.000 ±0.000 | 0.975 ±0.049 | 0.000 ±0.000 | 200 | 4.9 | 204.9 |
 | `lowest-salience` | `mem0-nearest` | 0.188 ±0.047 | 0.000 ±0.000 | 0.150 ±0.112 | 0.125 ±0.104 | 0.075 ±0.056 | 0.125 ±0.068 | 0.650 ±0.150 | 0.000 ±0.000 | 82 | 2.0 | 84.0 |
-| `declared-disposable` | `shipped` | 0.310 ±0.054 | 0.000 ±0.000 | 0.550 ±0.156 | 0.000 ±0.000 | 0.200 ±0.077 | 0.212 ±0.078 | 0.900 ±0.094 | 0.000 ±0.000 | 200 | 8.1 | 8292.0 |
+| `declared-disposable` | `shipped` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 96.0 |
 | `declared-disposable` | `document` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 1 | 2.0 | 2.0 |
 | `declared-disposable` | `attribute-single` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
 | `declared-disposable` | `attribute-multi` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 4.9 |
@@ -2921,7 +2922,7 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 
 | budget | frame | recall | stale returned | subject reach | thread reach | context chars |
 |---|---|---|---|---|---|---|
-| 64 | `shipped` | 0.877 ±0.038 | 0.800 ±0.088 | 0.282 ±0.026 | 0.877 ±0.038 | 253 ±2 |
+| 64 | `shipped` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 34 ±2 |
 | 64 | `document` | 0.004 ±0.008 | 0.000 ±0.000 | 0.002 ±0.002 | 0.004 ±0.008 | 252 ±0 |
 | 64 | `attribute-single` | 0.833 ±0.030 | 0.000 ±0.000 | 0.113 ±0.004 | 0.833 ±0.030 | 25 ±0 |
 | 64 | `attribute-multi` | 1.000 ±0.000 | 1.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 48 ±2 |
@@ -2938,7 +2939,7 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | 64 | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.003 ±0.002 | 0.008 ±0.012 | 240 ±2 |
 | 64 | `mem0` | 0.948 ±0.024 | 0.900 ±0.066 | 0.209 ±0.013 | 0.948 ±0.024 | 267 ±2 |
 | 64 | `mem0-nearest` | 0.188 ±0.047 | 0.000 ±0.000 | 0.113 ±0.013 | 0.188 ±0.047 | 262 ±2 |
-| 128 | `shipped` | 0.912 ±0.031 | 0.825 ±0.084 | 0.446 ±0.042 | 0.912 ±0.031 | 524 ±2 |
+| 128 | `shipped` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 34 ±2 |
 | 128 | `document` | 0.008 ±0.012 | 0.000 ±0.000 | 0.003 ±0.002 | 0.008 ±0.012 | 477 ±0 |
 | 128 | `attribute-single` | 0.833 ±0.030 | 0.000 ±0.000 | 0.113 ±0.004 | 0.833 ±0.030 | 25 ±0 |
 | 128 | `attribute-multi` | 1.000 ±0.000 | 1.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 48 ±2 |
@@ -2955,7 +2956,7 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | 128 | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.003 ±0.002 | 0.008 ±0.012 | 483 ±1 |
 | 128 | `mem0` | 0.948 ±0.024 | 0.900 ±0.066 | 0.209 ±0.013 | 0.948 ±0.024 | 267 ±2 |
 | 128 | `mem0-nearest` | 0.188 ±0.047 | 0.000 ±0.000 | 0.113 ±0.013 | 0.188 ±0.047 | 262 ±2 |
-| 256 | `shipped` | 0.919 ±0.031 | 0.838 ±0.081 | 0.487 ±0.046 | 0.919 ±0.031 | 1071 ±2 |
+| 256 | `shipped` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 34 ±2 |
 | 256 | `document` | 0.008 ±0.012 | 0.000 ±0.000 | 0.003 ±0.002 | 0.008 ±0.012 | 1014 ±0 |
 | 256 | `attribute-single` | 0.833 ±0.030 | 0.000 ±0.000 | 0.113 ±0.004 | 0.833 ±0.030 | 25 ±0 |
 | 256 | `attribute-multi` | 1.000 ±0.000 | 1.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 48 ±2 |
@@ -2972,7 +2973,7 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | 256 | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.003 ±0.002 | 0.008 ±0.012 | 688 ±0 |
 | 256 | `mem0` | 0.948 ±0.024 | 0.900 ±0.066 | 0.209 ±0.013 | 0.948 ±0.024 | 267 ±2 |
 | 256 | `mem0-nearest` | 0.188 ±0.047 | 0.000 ±0.000 | 0.113 ±0.013 | 0.188 ±0.047 | 262 ±2 |
-| 512 | `shipped` | 0.923 ±0.030 | 0.838 ±0.081 | 0.507 ±0.045 | 0.923 ±0.030 | 2160 ±2 |
+| 512 | `shipped` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 34 ±2 |
 | 512 | `document` | 0.008 ±0.012 | 0.000 ±0.000 | 0.003 ±0.002 | 0.008 ±0.012 | 2047 ±0 |
 | 512 | `attribute-single` | 0.833 ±0.030 | 0.000 ±0.000 | 0.113 ±0.004 | 0.833 ±0.030 | 25 ±0 |
 | 512 | `attribute-multi` | 1.000 ±0.000 | 1.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 48 ±2 |
@@ -2989,7 +2990,7 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | 512 | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.003 ±0.002 | 0.008 ±0.012 | 688 ±0 |
 | 512 | `mem0` | 0.948 ±0.024 | 0.900 ±0.066 | 0.209 ±0.013 | 0.948 ±0.024 | 267 ±2 |
 | 512 | `mem0-nearest` | 0.188 ±0.047 | 0.000 ±0.000 | 0.113 ±0.013 | 0.188 ±0.047 | 262 ±2 |
-| 1024 | `shipped` | 0.923 ±0.030 | 0.838 ±0.081 | 0.888 ±0.022 | 0.923 ±0.030 | 4336 ±3 |
+| 1024 | `shipped` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 34 ±2 |
 | 1024 | `document` | 0.021 ±0.018 | 0.000 ±0.000 | 0.008 ±0.004 | 0.021 ±0.018 | 4094 ±0 |
 | 1024 | `attribute-single` | 0.833 ±0.030 | 0.000 ±0.000 | 0.113 ±0.004 | 0.833 ±0.030 | 25 ±0 |
 | 1024 | `attribute-multi` | 1.000 ±0.000 | 1.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 48 ±2 |
@@ -3006,7 +3007,7 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | 1024 | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.003 ±0.002 | 0.008 ±0.012 | 688 ±0 |
 | 1024 | `mem0` | 0.948 ±0.024 | 0.900 ±0.066 | 0.209 ±0.013 | 0.948 ±0.024 | 267 ±2 |
 | 1024 | `mem0-nearest` | 0.188 ±0.047 | 0.000 ±0.000 | 0.113 ±0.013 | 0.188 ±0.047 | 262 ±2 |
-| 2048 | `shipped` | 0.925 ±0.030 | 0.838 ±0.081 | 0.931 ±0.011 | 0.925 ±0.030 | 8694 ±4 |
+| 2048 | `shipped` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 34 ±2 |
 | 2048 | `document` | 0.037 ±0.024 | 0.000 ±0.000 | 0.017 ±0.005 | 0.037 ±0.024 | 8167 ±0 |
 | 2048 | `attribute-single` | 0.833 ±0.030 | 0.000 ±0.000 | 0.113 ±0.004 | 0.833 ±0.030 | 25 ±0 |
 | 2048 | `attribute-multi` | 1.000 ±0.000 | 1.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 48 ±2 |
@@ -3057,7 +3058,7 @@ Each varies one thing: `clausal` is the sentence and `packed` is the number of d
 - **A packed message is read whole or not at all.** The share of packed messages with every assertion right stands above the per-assertion rate raised to the assertions a message carries, by a margin its interval barely clears, and the share with every assertion wrong stands far above what the same arithmetic gives. The failures inside a sentence are not independent: it is understood or it is not, and its three decisions go with it. The same number of facts is lost either way, in fewer and larger pieces — which is a different risk to hold than three separate ones and not a smaller one.
 - **An addressed store's answers do not depend on the sentence, except where forming the address reads one.** In the oracle arm every topic-addressed frame, the interval store, the log and both Mem0 arms post identical rows on all three shapes, class for class and figure for figure. For most of them that is not a null result needing explanation: they hold an address and a value, so there is nothing about the sentence left for them to be sensitive to. Two frames read the sentence and only one of them moves. `attribute-cued` reads the whole message for an addition cue, and its rows are identical for the narrower reason that no framing carries such a cue, which a test holds, and that no packed message in this workload puts a cue-carrying assertion beside one without, which nothing holds. Everything else harder language does to any of them has to arrive through the writeback.
 - **The one structure whose address is read out of the sentence pays for the sentence, and only for one of the two shapes.** `question` reads the restriction that narrows its address out of the words standing before an assertion's subject. A subordinate framing sometimes puts its own words there instead — a relative pronoun, a subordinator — and where it does, the rule reads no restriction and a narrowing statement lands at the question it narrows rather than beside it. So the coexistence the addressing recovers is partly given back on the subordinated shape, and given back nowhere on the packed one, where each assertion keeps its own clause. The failure is graceful in the direction that matters: what a hidden restriction costs is the recall a topic-shaped address never had, and the test that ranges over every framing the generator can emit is there to hold the other direction, where an invented restriction would send a correction to an address nothing asks for.
-- **The frames that read text are the frames the language reaches.** `shipped`, `document` and the three memory streams are the frames whose oracle-arm rows move between shapes at all, and `shipped` moves a long way: about a quarter of its recall goes on subordinated sentences, and on packed messages `replaced` falls to a fraction of what it answers on plain ones. Its retrieval matches a question against sentences it kept, and a sentence carrying a housekeeping preamble and two other people's facts matches worse. The streams move for the same reason and by a similar share, from a much lower base. The split is not between designs invented here and designs from the literature; it is between the structures that hold text and the structures that hold what the text asserted, and it falls on both sides of that line.
+- **The frames that read text are the frames the language reaches.** `document` and the three memory streams are the frames whose oracle-arm rows move between shapes at all. Their retrieval matches a question against text they kept, and a sentence carrying a housekeeping preamble and two other people's facts matches worse. The split is not between designs invented here and designs from the literature; it is between the structures that hold text and the structures that hold what the text asserted, and it falls on both sides of that line. `shipped` was on the text side of it and posted a quarter less recall on subordinated sentences; since `46bd83d` it holds an address and a value, so it posts `1.000` on all three shapes like every other addressed arm (§`shipped`).
 - **A real extractor puts an addressed structure close to its ceiling and nothing like the floor.** In the `extracted` arm every addressed frame answers most of what the same frame answers under a perfect oracle, on all three shapes, against nothing at all in the arm with no extraction. The bracket this record has carried since it opened now has a middle and the middle is near the top: the distance from an oracle to a real extractor is small beside the distance from a real extractor to none. What makes an addressed structure buildable is that something extracts, not that something extracts perfectly.
 - **In that arm the shapes do not order.** The addressed frames answer no worse on the harder shapes than on the plain one — on several of them slightly better, because that pass of the extractor happened to miss fewer facts on the harder sentences. What separates the shapes is which failures the extractor makes and not how many, and one pass of one model is too thin a sample for the difference between the shapes to be read as a difference at all.
 - **Under a real extractor the declaration stops paying for itself, and the address starts.** In the `extracted` arm the question address with no declaration answers more than the topic address with the model's declaration on the plain and subordinated shapes, and it returns nothing stale on any of them where the declared frame does on the packed one. The reason is in the extraction table: of the three things a write can get wrong, the operation is the one harder language damages most, so a structure that needs one fewer of them is a structure with one fewer thing to be told wrong. Under the oracle the ordering is the other way round — which is the difference between what a declaration is worth when it is right and what it is worth when a model supplies it.
@@ -3129,7 +3130,7 @@ Each varies one thing: `clausal` is the sentence and `packed` is the number of d
 
 | shape | arm | frame | recall | carried | replaced | reverted | parallel | refined | fresh | stale returned | units |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| `plain` | `oracle` | `shipped` | 0.868 ±0.070 | 0.750 ±0.256 | 0.917 ±0.163 | 0.833 ±0.220 | 0.875 ±0.128 | 0.833 ±0.139 | 1.000 ±0.000 | 0.917 ±0.113 | 222 |
+| `plain` | `oracle` | `shipped` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 204 |
 | `plain` | `oracle` | `document` | 0.056 ±0.053 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.333 ±0.279 | 0.000 ±0.000 | 1 |
 | `plain` | `oracle` | `attribute-single` | 0.833 ±0.055 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 180 |
 | `plain` | `oracle` | `attribute-multi` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 240 |
@@ -3146,7 +3147,7 @@ Each varies one thing: `clausal` is the sentence and `packed` is the number of d
 | `plain` | `oracle` | `memorybank` | 0.014 ±0.027 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.083 ±0.163 | 0.000 ±0.000 | 10 |
 | `plain` | `oracle` | `mem0` | 0.986 ±0.027 | 0.917 ±0.163 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.917 ±0.113 | 231 |
 | `plain` | `oracle` | `mem0-nearest` | 0.236 ±0.091 | 0.000 ±0.000 | 0.250 ±0.256 | 0.250 ±0.256 | 0.208 ±0.146 | 0.125 ±0.128 | 0.583 ±0.291 | 0.000 ±0.000 | 26 |
-| `plain` | `text` | `shipped` | 0.014 ±0.027 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.083 ±0.163 | 0.000 ±0.000 | 8 |
+| `plain` | `text` | `shipped` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `plain` | `text` | `document` | 0.056 ±0.053 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.333 ±0.279 | 0.000 ±0.000 | 1 |
 | `plain` | `text` | `attribute-single` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `plain` | `text` | `attribute-multi` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
@@ -3163,7 +3164,7 @@ Each varies one thing: `clausal` is the sentence and `packed` is the number of d
 | `plain` | `text` | `memorybank` | 0.014 ±0.027 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.083 ±0.163 | 0.000 ±0.000 | 10 |
 | `plain` | `text` | `mem0` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `plain` | `text` | `mem0-nearest` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
-| `plain` | `extracted` | `shipped` | 0.792 ±0.086 | 0.750 ±0.256 | 0.917 ±0.163 | 0.667 ±0.279 | 0.667 ±0.220 | 0.833 ±0.139 | 0.917 ±0.163 | 0.833 ±0.152 | 193 |
+| `plain` | `extracted` | `shipped` | 0.792 ±0.074 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.583 ±0.203 | 0.500 ±0.000 | 0.917 ±0.163 | 0.000 ±0.000 | 160 |
 | `plain` | `extracted` | `document` | 0.056 ±0.053 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.333 ±0.279 | 0.000 ±0.000 | 1 |
 | `plain` | `extracted` | `attribute-single` | 0.764 ±0.075 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.417 ±0.110 | 0.500 ±0.000 | 0.917 ±0.163 | 0.000 ±0.000 | 156 |
 | `plain` | `extracted` | `attribute-multi` | 0.903 ±0.066 | 0.917 ±0.163 | 1.000 ±0.000 | 0.833 ±0.220 | 0.792 ±0.224 | 0.958 ±0.082 | 0.917 ±0.163 | 0.917 ±0.113 | 210 |
@@ -3180,7 +3181,7 @@ Each varies one thing: `clausal` is the sentence and `packed` is the number of d
 | `plain` | `extracted` | `memorybank` | 0.014 ±0.027 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.083 ±0.163 | 0.000 ±0.000 | 10 |
 | `plain` | `extracted` | `mem0` | 0.875 ±0.072 | 0.833 ±0.220 | 1.000 ±0.000 | 0.833 ±0.220 | 0.750 ±0.226 | 0.917 ±0.110 | 0.917 ±0.163 | 0.833 ±0.152 | 196 |
 | `plain` | `extracted` | `mem0-nearest` | 0.069 ±0.059 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.417 ±0.291 | 0.000 ±0.000 | 7 |
-| `clausal` | `oracle` | `shipped` | 0.646 ±0.102 | 0.333 ±0.279 | 0.667 ±0.279 | 0.833 ±0.220 | 0.542 ±0.189 | 0.500 ±0.241 | 1.000 ±0.000 | 0.625 ±0.198 | 166 |
+| `clausal` | `oracle` | `shipped` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 204 |
 | `clausal` | `oracle` | `document` | 0.042 ±0.046 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.250 ±0.256 | 0.000 ±0.000 | 1 |
 | `clausal` | `oracle` | `attribute-single` | 0.833 ±0.055 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 180 |
 | `clausal` | `oracle` | `attribute-multi` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 240 |
@@ -3197,7 +3198,7 @@ Each varies one thing: `clausal` is the sentence and `packed` is the number of d
 | `clausal` | `oracle` | `memorybank` | 0.014 ±0.027 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.083 ±0.163 | 0.000 ±0.000 | 10 |
 | `clausal` | `oracle` | `mem0` | 0.986 ±0.027 | 0.917 ±0.163 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.917 ±0.113 | 231 |
 | `clausal` | `oracle` | `mem0-nearest` | 0.236 ±0.091 | 0.000 ±0.000 | 0.250 ±0.256 | 0.250 ±0.256 | 0.208 ±0.146 | 0.125 ±0.128 | 0.583 ±0.291 | 0.000 ±0.000 | 26 |
-| `clausal` | `text` | `shipped` | 0.014 ±0.027 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.083 ±0.163 | 0.000 ±0.000 | 9 |
+| `clausal` | `text` | `shipped` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `clausal` | `text` | `document` | 0.042 ±0.046 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.250 ±0.256 | 0.000 ±0.000 | 1 |
 | `clausal` | `text` | `attribute-single` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `clausal` | `text` | `attribute-multi` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
@@ -3214,7 +3215,7 @@ Each varies one thing: `clausal` is the sentence and `packed` is the number of d
 | `clausal` | `text` | `memorybank` | 0.014 ±0.027 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.083 ±0.163 | 0.000 ±0.000 | 10 |
 | `clausal` | `text` | `mem0` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `clausal` | `text` | `mem0-nearest` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
-| `clausal` | `extracted` | `shipped` | 0.625 ±0.104 | 0.250 ±0.256 | 0.667 ±0.279 | 0.833 ±0.220 | 0.500 ±0.209 | 0.500 ±0.241 | 1.000 ±0.000 | 0.500 ±0.204 | 147 |
+| `clausal` | `extracted` | `shipped` | 0.861 ±0.056 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.667 ±0.184 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 172 |
 | `clausal` | `extracted` | `document` | 0.042 ±0.046 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.250 ±0.256 | 0.000 ±0.000 | 1 |
 | `clausal` | `extracted` | `attribute-single` | 0.826 ±0.059 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.458 ±0.082 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 167 |
 | `clausal` | `extracted` | `attribute-multi` | 0.965 ±0.035 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.875 ±0.176 | 0.917 ±0.110 | 1.000 ±0.000 | 0.958 ±0.082 | 222 |
@@ -3231,7 +3232,7 @@ Each varies one thing: `clausal` is the sentence and `packed` is the number of d
 | `clausal` | `extracted` | `memorybank` | 0.014 ±0.027 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.083 ±0.163 | 0.000 ±0.000 | 10 |
 | `clausal` | `extracted` | `mem0` | 0.944 ±0.046 | 0.917 ±0.163 | 1.000 ±0.000 | 1.000 ±0.000 | 0.917 ±0.110 | 0.833 ±0.184 | 1.000 ±0.000 | 0.875 ±0.135 | 205 |
 | `clausal` | `extracted` | `mem0-nearest` | 0.243 ±0.095 | 0.000 ±0.000 | 0.083 ±0.163 | 0.500 ±0.295 | 0.208 ±0.146 | 0.000 ±0.000 | 0.667 ±0.279 | 0.000 ±0.000 | 28 |
-| `packed` | `oracle` | `shipped` | 0.792 ±0.086 | 1.000 ±0.000 | 0.250 ±0.256 | 1.000 ±0.000 | 0.875 ±0.128 | 0.625 ±0.213 | 1.000 ±0.000 | 0.750 ±0.177 | 70 |
+| `packed` | `oracle` | `shipped` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 204 |
 | `packed` | `oracle` | `document` | 0.083 ±0.064 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.500 ±0.295 | 0.000 ±0.000 | 1 |
 | `packed` | `oracle` | `attribute-single` | 0.833 ±0.055 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 180 |
 | `packed` | `oracle` | `attribute-multi` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 240 |
@@ -3248,7 +3249,7 @@ Each varies one thing: `clausal` is the sentence and `packed` is the number of d
 | `packed` | `oracle` | `memorybank` | 0.042 ±0.046 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.250 ±0.256 | 0.000 ±0.000 | 10 |
 | `packed` | `oracle` | `mem0` | 0.986 ±0.027 | 0.917 ±0.163 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.958 ±0.082 | 232 |
 | `packed` | `oracle` | `mem0-nearest` | 0.188 ±0.081 | 0.000 ±0.000 | 0.167 ±0.220 | 0.000 ±0.000 | 0.125 ±0.128 | 0.250 ±0.148 | 0.583 ±0.291 | 0.000 ±0.000 | 26 |
-| `packed` | `text` | `shipped` | 0.042 ±0.046 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.250 ±0.256 | 0.000 ±0.000 | 8 |
+| `packed` | `text` | `shipped` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `packed` | `text` | `document` | 0.083 ±0.064 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.500 ±0.295 | 0.000 ±0.000 | 1 |
 | `packed` | `text` | `attribute-single` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `packed` | `text` | `attribute-multi` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
@@ -3265,7 +3266,7 @@ Each varies one thing: `clausal` is the sentence and `packed` is the number of d
 | `packed` | `text` | `memorybank` | 0.042 ±0.046 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.250 ±0.256 | 0.000 ±0.000 | 10 |
 | `packed` | `text` | `mem0` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
 | `packed` | `text` | `mem0-nearest` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 |
-| `packed` | `extracted` | `shipped` | 0.701 ±0.102 | 0.750 ±0.256 | 0.250 ±0.256 | 1.000 ±0.000 | 0.750 ±0.256 | 0.458 ±0.224 | 1.000 ±0.000 | 0.750 ±0.177 | 64 |
+| `packed` | `extracted` | `shipped` | 0.847 ±0.066 | 1.000 ±0.000 | 1.000 ±0.000 | 0.917 ±0.163 | 0.708 ±0.224 | 0.458 ±0.082 | 1.000 ±0.000 | 0.125 ±0.135 | 176 |
 | `packed` | `extracted` | `document` | 0.083 ±0.064 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.500 ±0.295 | 0.000 ±0.000 | 1 |
 | `packed` | `extracted` | `attribute-single` | 0.799 ±0.069 | 1.000 ±0.000 | 1.000 ±0.000 | 0.917 ±0.163 | 0.417 ±0.110 | 0.458 ±0.082 | 1.000 ±0.000 | 0.000 ±0.000 | 165 |
 | `packed` | `extracted` | `attribute-multi` | 0.917 ±0.055 | 1.000 ±0.000 | 1.000 ±0.000 | 0.917 ±0.163 | 0.833 ±0.220 | 0.750 ±0.148 | 1.000 ±0.000 | 0.917 ±0.113 | 218 |
@@ -3306,22 +3307,22 @@ Every figure outside this section was produced with the question already turned 
 
 **What a structure returns when the relevant set does not fit is reported rather than repaired.** The read budget is swept under the multi-address question the way #472 swept it under the single-address one. A structure that fills a budget answers inside whatever budget it is given; a structure that holds an address and a value has no budget to answer inside, so what it returns is everything the partial address reaches, and the table reports how far past the budget that goes rather than cutting it to fit. Cutting it needs an ordering, an ordering is a mechanism those stores do not have, and building one to publish a number is the move this programme has refused before.
 
-**The share inside the budget is a threshold and the multiple is not.** The shipped store bounds its own answer with a per-row token estimate that divides by four and rounds down, so its answers come back a few per cent past the budget in characters and its share-inside reads zero for a reason that has nothing to do with how much it found. The column beside it, what it returned as a multiple of the budget, is where that answer's size is read. An answer that is empty fits trivially, which is why neither column is read without the recall beside it.
+**The share inside the budget is a threshold and the multiple is not.** A structure that bounds its own answer with a per-row token estimate — which is what the sentence store under this name did until `46bd83d`, dividing by four and rounding down — comes back a few per cent past the budget in characters, so its share-inside reads zero for a reason that has nothing to do with how much it found. The column beside it, what it returned as a multiple of the budget, is where that answer's size is read. An answer that is empty fits trivially, which is why neither column is read without the recall beside it.
 
 **What these figures say.**
 
 - **Nothing that holds facts at an address answers a question in words.** In the arm where they hold everything, every addressed structure — the attribute arms, the question arms, the interval store, the log — posts a recall of zero at every year, on the single-address question and on the multi-address one alike, and the units-read column beside it is zero too. That is not a score to be improved. A store whose read path is a lookup has nowhere to look when the question carries no key, and what this record has been measuring for those structures all along is holding and updating. Holding facts is not what costs them the worded question — `mem0` holds facts too and answers it — addressing them is, and the bullets below price that. Changing what the address is made of does not change that: `question` and `question-declared` post the same zero, because a question-shaped address is still an address and a frame handed none has nowhere to go.
-- **The structures the form does not move are the structures that never read an address.** `shipped`, `document` and the three memory streams post identical figures under all three forms, because none of them reads an address: what a question carries reaches only the designs that address. The text arm is form-invariant for the same reason from the other side — a store that holds nothing answers nothing whatever the question carries — and both invariances are in the table rather than asserted.
+- **The structures the form does not move are the structures that never read an address.** `document` and the three memory streams post identical figures under all three forms, because none of them reads an address: what a question carries reaches only the designs that address. The text arm is form-invariant for the same reason from the other side — a store that holds nothing answers nothing whatever the question carries — and both invariances are in the table rather than asserted. `shipped` moved to the other side of this line at `46bd83d`: it answers `1.000` addressed, `1.000` resolved and `0.000` worded, which is the addressed arms' own signature.
 - **One structure holds facts and answers a worded question anyway, and what it costs to do that is the rest of its row.** `mem0` is the only design here that stores what a turn asserted and still has a ranking in front of it. Withhold the address and it keeps most of what it answers on the single-address question, where every addressed store falls to nothing; on the question about a person it keeps under half. That is the trade this section exists to price: an addressed store gives up the worded question entirely and reads one place, and a ranked store keeps the worded question and reads everything it holds, returns a superseded value on nine revised threads in ten, and stores the vectors that make the ranking possible. What separates the two families is not that one can find and the other cannot; it is what finding costs when it is inside the store rather than in front of it.
 - **A resolver in front puts that design back exactly where the address put it.** `mem0` under the resolved form posts its addressed rows to the third decimal, on both questions. The model that recovers everything but one question for the addressed stores recovers the eighth of its recall the worded form took from this one — so the read step in front of the store is worth the same to a design that could already answer without it.
 - **A step in front of the store recovers all of it but one question.** With a model turning the question's words into an address, every addressed structure answers what it answers under the oracle, class for class, at every year but one. The model misplaced a single question of the several hundred it was asked, and the damage is exactly what a misplaced question does: one thread unanswered in the one year it was asked, in the class asked only once.
 - **That is the easiest form of the addressing problem and the figure is a ceiling.** Every question here is written from its attribute's template, so it carries the subject's name and usually the attribute's own noun. A question that only implied what it asked about is where such a step would be tested, and none is asked here.
 - **The finding does not have to live in the store, and putting it in front costs one model call a question.** The paid table below states what that came to in calls and tokens. It is the same kind of cost the write side already pays — a model reading language — once for each question instead of once for each turn, and it buys an answer from a store that still reads one place.
-- **A question about a person spans several addresses by the end of the decade, and an addressed structure answers it by reading them and nothing else.** It touches the addresses under one subject where the shipped store ranks its whole active index and the log projects every event it ever kept, and the gap between those columns is the same one the single-address question opened, widened by nothing.
-- **On that question the structures separate on what they return that is no longer true, not on what they find.** The shipped store finds nearly as much of a person as the addressed store that takes its arity from the write, and returns a superseded value on most subjects while doing it; the addressed store returns none. Ranking against the question's text finds a person's facts, and brings back what has stopped being true along with them.
+- **A question about a person spans several addresses by the end of the decade, and an addressed structure answers it by reading them and nothing else.** It touches the addresses under one subject where a ranking store reads its whole active index and the log projects every event it ever kept, and the gap between those columns is the same one the single-address question opened, widened by nothing. `shipped` is on the addressed side of it since `46bd83d`, at 8.5 units read against the log's projection.
+- **On that question the structures separate on what they return that is no longer true, not on what they find.** A store ranking against the question's text finds nearly as much of a person as an addressed store that takes its arity from the write, and returns a superseded value on most subjects while doing it; the addressed store returns none. Ranking finds a person's facts and brings back what has stopped being true along with them. That was the `shipped` row's result until `46bd83d`; it now returns `0.000` stale, because it is one of the addressed stores.
 - **A structure with no store at all answers almost nothing about a person.** The bounded document holds the most recent turns and a person's facts are spread over a decade, so the multi-address question is the one place in this record where the floor is not close to anything.
 - **The addressed store's insensitivity to the read budget survives the multi-address question, and stops being free.** From the tightest budget swept to the loosest it returns the same characters: at the loosest that is a fraction of what it was allowed, and at the tightest the store that keeps every value is past what it was allowed on half the subjects. #472 read that insensitivity as the addressed store answering the address it was asked for; a question spanning many addresses shows the other face of it — the structure has no budget, so it neither fills one nor stops at one.
-- **What each structure does when the relevant set does not fit, one line each.** The attribute arms, the interval store and the log do not choose: they return every address under the subject whatever the budget, and where that is more than fits, more than fits is what they return. The bounded document chooses by recency — the oldest text goes when the limit is passed — which is a rule with one constant, the limit itself, and on a question about a person what it keeps answers almost none of it. The shipped store chooses by rank, which is a ranking with three constants — the two weights and the half-life — and it pays for the choice: at the tightest budget its answer about a person falls by about a quarter, because a ranked list cut at a budget drops what the ranking put last. `mem0` chooses by rank as well and then stops at a fixed count of memories, which is a fourth answer: it neither overflows nor fills the budget, and on a person spread over many addresses that count is what bounds what comes back rather than the budget. A ranking with constants nobody calibrated is what this programme disqualified when the question was arity, and rankings are the only mechanisms in this table that answer the overflow question at all.
+- **What each structure does when the relevant set does not fit, one line each.** The attribute arms, the interval store and the log do not choose: they return every address under the subject whatever the budget, and where that is more than fits, more than fits is what they return. The bounded document chooses by recency — the oldest text goes when the limit is passed — which is a rule with one constant, the limit itself, and on a question about a person what it keeps answers almost none of it. The sentence store under this name chose by rank until `46bd83d`, which is a ranking with three constants — the two weights and the half-life — and it paid for the choice: at the tightest budget its answer about a person fell by about a quarter, because a ranked list cut at a budget drops what the ranking put last. What ships now is in the first group, and returns more than fits. `mem0` chooses by rank as well and then stops at a fixed count of memories, which is a fourth answer: it neither overflows nor fills the budget, and on a person spread over many addresses that count is what bounds what comes back rather than the budget. A ranking with constants nobody calibrated is what this programme disqualified when the question was arity, and rankings are the only mechanisms in this table that answer the overflow question at all.
 - **What has to fit grows with the span.** A subject spans about two addresses at the end of the first year and about seven and a half at the end of the tenth, and what an addressed structure returns for one grows with it, near enough linearly. The figure to read is that slope rather than the share inside a budget at year ten: a person with more attributes, or a span longer than a decade, reaches any fixed budget on the same line.
 
 <!-- generated by the harness: finding; do not edit between the markers -->
@@ -3330,7 +3331,7 @@ Every figure outside this section was produced with the question already turned 
 
 | question | arm | frame | recall | carried | replaced | reverted | parallel | refined | fresh | stale returned | units read |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| `addressed` | `oracle` | `shipped` | 0.923 ±0.030 | 0.900 ±0.094 | 0.875 ±0.104 | 1.000 ±0.000 | 0.925 ±0.066 | 0.838 ±0.081 | 1.000 ±0.000 | 0.838 ±0.081 | 783.0 ±0.0 |
+| `addressed` | `oracle` | `shipped` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 1.3 ±0.1 |
 | `addressed` | `oracle` | `document` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 1.0 ±0.0 |
 | `addressed` | `oracle` | `attribute-single` | 0.833 ±0.030 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 1.0 ±0.0 |
 | `addressed` | `oracle` | `attribute-multi` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.8 ±0.1 |
@@ -3347,7 +3348,7 @@ Every figure outside this section was produced with the question already turned 
 | `addressed` | `oracle` | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 16.0 ±0.0 |
 | `addressed` | `oracle` | `mem0` | 0.948 ±0.024 | 0.950 ±0.068 | 0.950 ±0.068 | 0.975 ±0.049 | 0.900 ±0.063 | 0.938 ±0.052 | 0.975 ±0.049 | 0.900 ±0.066 | 747.0 ±0.0 |
 | `addressed` | `oracle` | `mem0-nearest` | 0.188 ±0.047 | 0.000 ±0.000 | 0.150 ±0.112 | 0.125 ±0.104 | 0.075 ±0.056 | 0.125 ±0.068 | 0.650 ±0.150 | 0.000 ±0.000 | 82.0 ±0.0 |
-| `addressed` | `text` | `shipped` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 22.0 ±0.0 |
+| `addressed` | `text` | `shipped` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
 | `addressed` | `text` | `document` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 1.0 ±0.0 |
 | `addressed` | `text` | `attribute-single` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
 | `addressed` | `text` | `attribute-multi` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
@@ -3364,7 +3365,7 @@ Every figure outside this section was produced with the question already turned 
 | `addressed` | `text` | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 16.0 ±0.0 |
 | `addressed` | `text` | `mem0` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
 | `addressed` | `text` | `mem0-nearest` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
-| `worded` | `oracle` | `shipped` | 0.923 ±0.030 | 0.900 ±0.094 | 0.875 ±0.104 | 1.000 ±0.000 | 0.925 ±0.066 | 0.838 ±0.081 | 1.000 ±0.000 | 0.838 ±0.081 | 783.0 ±0.0 |
+| `worded` | `oracle` | `shipped` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
 | `worded` | `oracle` | `document` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 1.0 ±0.0 |
 | `worded` | `oracle` | `attribute-single` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
 | `worded` | `oracle` | `attribute-multi` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
@@ -3381,7 +3382,7 @@ Every figure outside this section was produced with the question already turned 
 | `worded` | `oracle` | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 16.0 ±0.0 |
 | `worded` | `oracle` | `mem0` | 0.829 ±0.045 | 0.925 ±0.083 | 0.875 ±0.104 | 0.925 ±0.083 | 0.662 ±0.133 | 0.787 ±0.105 | 0.800 ±0.126 | 0.762 ±0.094 | 747.0 ±0.0 |
 | `worded` | `oracle` | `mem0-nearest` | 0.188 ±0.047 | 0.000 ±0.000 | 0.150 ±0.112 | 0.125 ±0.104 | 0.075 ±0.056 | 0.125 ±0.068 | 0.650 ±0.150 | 0.000 ±0.000 | 82.0 ±0.0 |
-| `worded` | `text` | `shipped` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 22.0 ±0.0 |
+| `worded` | `text` | `shipped` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
 | `worded` | `text` | `document` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 1.0 ±0.0 |
 | `worded` | `text` | `attribute-single` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
 | `worded` | `text` | `attribute-multi` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
@@ -3398,7 +3399,7 @@ Every figure outside this section was produced with the question already turned 
 | `worded` | `text` | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 16.0 ±0.0 |
 | `worded` | `text` | `mem0` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
 | `worded` | `text` | `mem0-nearest` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
-| `resolved` | `oracle` | `shipped` | 0.923 ±0.030 | 0.900 ±0.094 | 0.875 ±0.104 | 1.000 ±0.000 | 0.925 ±0.066 | 0.838 ±0.081 | 1.000 ±0.000 | 0.838 ±0.081 | 783.0 ±0.0 |
+| `resolved` | `oracle` | `shipped` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 1.3 ±0.1 |
 | `resolved` | `oracle` | `document` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 1.0 ±0.0 |
 | `resolved` | `oracle` | `attribute-single` | 0.833 ±0.030 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.500 ±0.000 | 0.500 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 1.0 ±0.0 |
 | `resolved` | `oracle` | `attribute-multi` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.8 ±0.1 |
@@ -3415,7 +3416,7 @@ Every figure outside this section was produced with the question already turned 
 | `resolved` | `oracle` | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 16.0 ±0.0 |
 | `resolved` | `oracle` | `mem0` | 0.948 ±0.024 | 0.950 ±0.068 | 0.950 ±0.068 | 0.975 ±0.049 | 0.900 ±0.063 | 0.938 ±0.052 | 0.975 ±0.049 | 0.900 ±0.066 | 747.0 ±0.0 |
 | `resolved` | `oracle` | `mem0-nearest` | 0.188 ±0.047 | 0.000 ±0.000 | 0.150 ±0.112 | 0.125 ±0.104 | 0.075 ±0.056 | 0.125 ±0.068 | 0.650 ±0.150 | 0.000 ±0.000 | 82.0 ±0.0 |
-| `resolved` | `text` | `shipped` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 22.0 ±0.0 |
+| `resolved` | `text` | `shipped` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
 | `resolved` | `text` | `document` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 1.0 ±0.0 |
 | `resolved` | `text` | `attribute-single` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
 | `resolved` | `text` | `attribute-multi` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
@@ -3437,7 +3438,7 @@ Every figure outside this section was produced with the question already turned 
 
 | question | arm | frame | subjects asked | addresses spanned | recall | stale returned | context chars | of the budget | units read | inside the budget |
 |---|---|---|---|---|---|---|---|---|---|---|
-| `addressed` | `oracle` | `shipped` | 80 | 7.50 ±0.41 | 0.935 ±0.020 | 0.878 ±0.093 | 2160.0 ±3.0 | 1.055 ±0.001 | 783.0 ±0.0 | 0.000 ±0.000 |
+| `addressed` | `oracle` | `shipped` | 80 | 7.50 ±0.41 | 1.000 ±0.000 | 0.000 ±0.000 | 223.9 ±13.8 | 0.109 ±0.007 | 8.5 ±0.5 | 1.000 ±0.000 |
 | `addressed` | `oracle` | `document` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 2047.0 ±0.0 | 1.000 ±0.000 | 1.0 ±0.0 | 1.000 ±0.000 |
 | `addressed` | `oracle` | `attribute-single` | 80 | 7.50 ±0.41 | 0.896 ±0.021 | 0.000 ±0.000 | 197.5 ±10.7 | 0.096 ±0.005 | 7.5 ±0.4 | 1.000 ±0.000 |
 | `addressed` | `oracle` | `attribute-multi` | 80 | 7.50 ±0.41 | 1.000 ±0.000 | 1.000 ±0.000 | 263.8 ±19.6 | 0.129 ±0.010 | 10.0 ±0.8 | 1.000 ±0.000 |
@@ -3454,7 +3455,7 @@ Every figure outside this section was produced with the question already turned 
 | `addressed` | `oracle` | `memorybank` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 688.0 ±0.0 | 0.336 ±0.000 | 16.0 ±0.0 | 1.000 ±0.000 |
 | `addressed` | `oracle` | `mem0` | 80 | 7.50 ±0.41 | 0.728 ±0.067 | 0.857 ±0.099 | 262.9 ±2.2 | 0.128 ±0.001 | 747.0 ±0.0 | 1.000 ±0.000 |
 | `addressed` | `oracle` | `mem0-nearest` | 80 | 7.50 ±0.41 | 0.125 ±0.024 | 0.000 ±0.000 | 257.7 ±0.9 | 0.126 ±0.000 | 82.0 ±0.0 | 1.000 ±0.000 |
-| `addressed` | `text` | `shipped` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 977.0 ±0.0 | 0.477 ±0.000 | 22.0 ±0.0 | 1.000 ±0.000 |
+| `addressed` | `text` | `shipped` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
 | `addressed` | `text` | `document` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 2047.0 ±0.0 | 1.000 ±0.000 | 1.0 ±0.0 | 1.000 ±0.000 |
 | `addressed` | `text` | `attribute-single` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
 | `addressed` | `text` | `attribute-multi` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
@@ -3471,7 +3472,7 @@ Every figure outside this section was produced with the question already turned 
 | `addressed` | `text` | `memorybank` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 688.0 ±0.0 | 0.336 ±0.000 | 16.0 ±0.0 | 1.000 ±0.000 |
 | `addressed` | `text` | `mem0` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
 | `addressed` | `text` | `mem0-nearest` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
-| `worded` | `oracle` | `shipped` | 80 | 7.50 ±0.41 | 0.935 ±0.020 | 0.878 ±0.093 | 2160.0 ±3.0 | 1.055 ±0.001 | 783.0 ±0.0 | 0.000 ±0.000 |
+| `worded` | `oracle` | `shipped` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
 | `worded` | `oracle` | `document` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 2047.0 ±0.0 | 1.000 ±0.000 | 1.0 ±0.0 | 1.000 ±0.000 |
 | `worded` | `oracle` | `attribute-single` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
 | `worded` | `oracle` | `attribute-multi` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
@@ -3488,7 +3489,7 @@ Every figure outside this section was produced with the question already turned 
 | `worded` | `oracle` | `memorybank` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 688.0 ±0.0 | 0.336 ±0.000 | 16.0 ±0.0 | 1.000 ±0.000 |
 | `worded` | `oracle` | `mem0` | 80 | 7.50 ±0.41 | 0.306 ±0.033 | 0.571 ±0.140 | 251.4 ±1.2 | 0.123 ±0.001 | 747.0 ±0.0 | 1.000 ±0.000 |
 | `worded` | `oracle` | `mem0-nearest` | 80 | 7.50 ±0.41 | 0.115 ±0.022 | 0.000 ±0.000 | 258.4 ±0.9 | 0.126 ±0.000 | 82.0 ±0.0 | 1.000 ±0.000 |
-| `worded` | `text` | `shipped` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 977.0 ±0.0 | 0.477 ±0.000 | 22.0 ±0.0 | 1.000 ±0.000 |
+| `worded` | `text` | `shipped` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
 | `worded` | `text` | `document` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 2047.0 ±0.0 | 1.000 ±0.000 | 1.0 ±0.0 | 1.000 ±0.000 |
 | `worded` | `text` | `attribute-single` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
 | `worded` | `text` | `attribute-multi` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
@@ -3505,7 +3506,7 @@ Every figure outside this section was produced with the question already turned 
 | `worded` | `text` | `memorybank` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 688.0 ±0.0 | 0.336 ±0.000 | 16.0 ±0.0 | 1.000 ±0.000 |
 | `worded` | `text` | `mem0` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
 | `worded` | `text` | `mem0-nearest` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
-| `resolved` | `oracle` | `shipped` | 80 | 7.50 ±0.41 | 0.935 ±0.020 | 0.878 ±0.093 | 2160.0 ±3.0 | 1.055 ±0.001 | 783.0 ±0.0 | 0.000 ±0.000 |
+| `resolved` | `oracle` | `shipped` | 80 | 7.50 ±0.41 | 1.000 ±0.000 | 0.000 ±0.000 | 223.9 ±13.8 | 0.109 ±0.007 | 8.5 ±0.5 | 1.000 ±0.000 |
 | `resolved` | `oracle` | `document` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 2047.0 ±0.0 | 1.000 ±0.000 | 1.0 ±0.0 | 1.000 ±0.000 |
 | `resolved` | `oracle` | `attribute-single` | 80 | 7.50 ±0.41 | 0.896 ±0.021 | 0.000 ±0.000 | 197.5 ±10.7 | 0.096 ±0.005 | 7.5 ±0.4 | 1.000 ±0.000 |
 | `resolved` | `oracle` | `attribute-multi` | 80 | 7.50 ±0.41 | 1.000 ±0.000 | 1.000 ±0.000 | 263.8 ±19.6 | 0.129 ±0.010 | 10.0 ±0.8 | 1.000 ±0.000 |
@@ -3522,7 +3523,7 @@ Every figure outside this section was produced with the question already turned 
 | `resolved` | `oracle` | `memorybank` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 688.0 ±0.0 | 0.336 ±0.000 | 16.0 ±0.0 | 1.000 ±0.000 |
 | `resolved` | `oracle` | `mem0` | 80 | 7.50 ±0.41 | 0.728 ±0.067 | 0.857 ±0.099 | 262.9 ±2.2 | 0.128 ±0.001 | 747.0 ±0.0 | 1.000 ±0.000 |
 | `resolved` | `oracle` | `mem0-nearest` | 80 | 7.50 ±0.41 | 0.125 ±0.024 | 0.000 ±0.000 | 257.7 ±0.9 | 0.126 ±0.000 | 82.0 ±0.0 | 1.000 ±0.000 |
-| `resolved` | `text` | `shipped` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 977.0 ±0.0 | 0.477 ±0.000 | 22.0 ±0.0 | 1.000 ±0.000 |
+| `resolved` | `text` | `shipped` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
 | `resolved` | `text` | `document` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 2047.0 ±0.0 | 1.000 ±0.000 | 1.0 ±0.0 | 1.000 ±0.000 |
 | `resolved` | `text` | `attribute-single` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
 | `resolved` | `text` | `attribute-multi` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
@@ -3544,7 +3545,7 @@ Every figure outside this section was produced with the question already turned 
 
 | frame | budget, tokens | recall | context chars | of the budget | inside the budget |
 |---|---|---|---|---|---|
-| `shipped` | 64 | 0.671 ±0.045 | 250.9 ±3.2 | 0.980 ±0.013 | 0.637 ±0.106 |
+| `shipped` | 64 | 1.000 ±0.000 | 223.9 ±13.8 | 0.875 ±0.054 | 0.713 ±0.100 |
 | `document` | 64 | 0.002 ±0.003 | 252.0 ±0.0 | 0.984 ±0.000 | 1.000 ±0.000 |
 | `attribute-single` | 64 | 0.896 ±0.021 | 197.5 ±10.7 | 0.771 ±0.042 | 0.938 ±0.053 |
 | `attribute-multi` | 64 | 1.000 ±0.000 | 263.8 ±19.6 | 1.030 ±0.077 | 0.512 ±0.110 |
@@ -3561,7 +3562,7 @@ Every figure outside this section was produced with the question already turned 
 | `memorybank` | 64 | 0.003 ±0.004 | 248.2 ±3.0 | 0.969 ±0.012 | 1.000 ±0.000 |
 | `mem0` | 64 | 0.728 ±0.067 | 262.9 ±2.2 | 1.027 ±0.009 | 0.275 ±0.098 |
 | `mem0-nearest` | 64 | 0.125 ±0.024 | 257.7 ±0.9 | 1.007 ±0.004 | 0.463 ±0.110 |
-| `shipped` | 128 | 0.906 ±0.024 | 526.6 ±3.2 | 1.028 ±0.006 | 0.175 ±0.084 |
+| `shipped` | 128 | 1.000 ±0.000 | 223.9 ±13.8 | 0.437 ±0.027 | 1.000 ±0.000 |
 | `document` | 128 | 0.003 ±0.004 | 477.0 ±0.0 | 0.932 ±0.000 | 1.000 ±0.000 |
 | `attribute-single` | 128 | 0.896 ±0.021 | 197.5 ±10.7 | 0.386 ±0.021 | 1.000 ±0.000 |
 | `attribute-multi` | 128 | 1.000 ±0.000 | 263.8 ±19.6 | 0.515 ±0.038 | 1.000 ±0.000 |
@@ -3578,7 +3579,7 @@ Every figure outside this section was produced with the question already turned 
 | `memorybank` | 128 | 0.003 ±0.004 | 482.6 ±1.7 | 0.943 ±0.003 | 1.000 ±0.000 |
 | `mem0` | 128 | 0.728 ±0.067 | 262.9 ±2.2 | 0.513 ±0.004 | 1.000 ±0.000 |
 | `mem0-nearest` | 128 | 0.125 ±0.024 | 257.7 ±0.9 | 0.503 ±0.002 | 1.000 ±0.000 |
-| `shipped` | 256 | 0.935 ±0.020 | 1069.8 ±3.3 | 1.045 ±0.003 | 0.000 ±0.000 |
+| `shipped` | 256 | 1.000 ±0.000 | 223.9 ±13.8 | 0.219 ±0.014 | 1.000 ±0.000 |
 | `document` | 256 | 0.003 ±0.004 | 1014.0 ±0.0 | 0.990 ±0.000 | 1.000 ±0.000 |
 | `attribute-single` | 256 | 0.896 ±0.021 | 197.5 ±10.7 | 0.193 ±0.010 | 1.000 ±0.000 |
 | `attribute-multi` | 256 | 1.000 ±0.000 | 263.8 ±19.6 | 0.258 ±0.019 | 1.000 ±0.000 |
@@ -3595,7 +3596,7 @@ Every figure outside this section was produced with the question already turned 
 | `memorybank` | 256 | 0.003 ±0.004 | 688.0 ±0.0 | 0.672 ±0.000 | 1.000 ±0.000 |
 | `mem0` | 256 | 0.728 ±0.067 | 262.9 ±2.2 | 0.257 ±0.002 | 1.000 ±0.000 |
 | `mem0-nearest` | 256 | 0.125 ±0.024 | 257.7 ±0.9 | 0.252 ±0.001 | 1.000 ±0.000 |
-| `shipped` | 512 | 0.935 ±0.020 | 2160.0 ±3.0 | 1.055 ±0.001 | 0.000 ±0.000 |
+| `shipped` | 512 | 1.000 ±0.000 | 223.9 ±13.8 | 0.109 ±0.007 | 1.000 ±0.000 |
 | `document` | 512 | 0.003 ±0.004 | 2047.0 ±0.0 | 1.000 ±0.000 | 1.000 ±0.000 |
 | `attribute-single` | 512 | 0.896 ±0.021 | 197.5 ±10.7 | 0.096 ±0.005 | 1.000 ±0.000 |
 | `attribute-multi` | 512 | 1.000 ±0.000 | 263.8 ±19.6 | 0.129 ±0.010 | 1.000 ±0.000 |
@@ -3612,7 +3613,7 @@ Every figure outside this section was produced with the question already turned 
 | `memorybank` | 512 | 0.003 ±0.004 | 688.0 ±0.0 | 0.336 ±0.000 | 1.000 ±0.000 |
 | `mem0` | 512 | 0.728 ±0.067 | 262.9 ±2.2 | 0.128 ±0.001 | 1.000 ±0.000 |
 | `mem0-nearest` | 512 | 0.125 ±0.024 | 257.7 ±0.9 | 0.126 ±0.000 | 1.000 ±0.000 |
-| `shipped` | 1024 | 0.935 ±0.020 | 4342.1 ±3.0 | 1.060 ±0.001 | 0.000 ±0.000 |
+| `shipped` | 1024 | 1.000 ±0.000 | 223.9 ±13.8 | 0.055 ±0.003 | 1.000 ±0.000 |
 | `document` | 1024 | 0.008 ±0.007 | 4094.0 ±0.0 | 1.000 ±0.000 | 1.000 ±0.000 |
 | `attribute-single` | 1024 | 0.896 ±0.021 | 197.5 ±10.7 | 0.048 ±0.003 | 1.000 ±0.000 |
 | `attribute-multi` | 1024 | 1.000 ±0.000 | 263.8 ±19.6 | 0.064 ±0.005 | 1.000 ±0.000 |
@@ -3629,7 +3630,7 @@ Every figure outside this section was produced with the question already turned 
 | `memorybank` | 1024 | 0.003 ±0.004 | 688.0 ±0.0 | 0.168 ±0.000 | 1.000 ±0.000 |
 | `mem0` | 1024 | 0.728 ±0.067 | 262.9 ±2.2 | 0.064 ±0.001 | 1.000 ±0.000 |
 | `mem0-nearest` | 1024 | 0.125 ±0.024 | 257.7 ±0.9 | 0.063 ±0.000 | 1.000 ±0.000 |
-| `shipped` | 2048 | 0.935 ±0.020 | 8712.1 ±3.0 | 1.063 ±0.000 | 0.000 ±0.000 |
+| `shipped` | 2048 | 1.000 ±0.000 | 223.9 ±13.8 | 0.027 ±0.002 | 1.000 ±0.000 |
 | `document` | 2048 | 0.013 ±0.008 | 8167.0 ±0.0 | 0.997 ±0.000 | 1.000 ±0.000 |
 | `attribute-single` | 2048 | 0.896 ±0.021 | 197.5 ±10.7 | 0.024 ±0.001 | 1.000 ±0.000 |
 | `attribute-multi` | 2048 | 1.000 ±0.000 | 263.8 ±19.6 | 0.032 ±0.002 | 1.000 ±0.000 |
@@ -3731,7 +3732,7 @@ The reason is what a decade puts in a store. Two facts about one subject and att
 
 Established before the run, as issue #443 requires.
 
-No frame calls a model. Every structure measured here decides what it decides from what it was given; the ones that rank a store by similarity — the shipped frame, the three memory streams and the two Mem0 arms — touch an embedder, and it is the deterministic offline one `cmd/gagent` defaults to. The frames, the workload and the error sweep are free, and the model-call count in the first table below is the check on that rather than an assurance.
+No frame calls a model. Every structure measured here decides what it decides from what it was given; the ones that rank a store by similarity — the three memory streams and the two Mem0 arms — touch an embedder, and it is the deterministic offline one this harness holds (`harness/embedding.go`), which `cmd/gagent` defaulted to until `46bd83d` removed the platform's embedder with the store that read it. The frames, the workload and the error sweep are free, and the model-call count in the first table below is the check on that rather than an assurance.
 
 **The published designs raised three counts in that table and moved no figure any of them is read on.** Turns observed and contexts produced are the turn count times the frames times the arms, so both rose with the frames added; the embedder counts rose because five of the new arms embed what they hold and what they are asked. None of the three is a figure about a structure, and every per-frame row committed before this round is unchanged.
 
@@ -3756,7 +3757,7 @@ The figure that matters for the designs coming next is in the cost table below, 
 | model calls | 0 |
 | turns observed, over every frame and arm | 195840 |
 | contexts produced, over every frame and arm | 78880 |
-| embedder calls | 83520 |
+| embedder calls | 55840 |
 | distinct texts embedded | 7616 |
 | tokens those texts estimate to | 97965 |
 | a per-turn model design: calls per run | 5760 |
@@ -3846,8 +3847,8 @@ The figure that matters for the designs coming next is in the cost table below, 
 
 ## Limits
 
-- **The `shipped` row is historical, and it is the only row that is.** Its figures were taken against `internal/memory` as it then ran: sentences with an embedding and a keyword index over them, superseding on insert from similarity, consolidating episodic clusters after a turn. #582 replaced that store with the addressed one ADR 0018 decided, so the row's `what it holds` and `how it decides` cells describe what produced these numbers rather than what the name now points at. Re-measuring it is the step after that one; until then every comparison in this record that reads `shipped` is reading the design as it was.
-- **Two of the run's recorded constants no longer exist to be checked.** §The run lists the configuration a run measured under, and a test holds it against what the code declares (`#546`), so a constant moving fails rather than leaving the record describing a system that has changed. `supersession similarity 0.6` and `consolidation threshold 100` were the sentence store's and are declared nowhere now; they are dropped from that table rather than pinned to nothing, and those are the values the committed run was measured under. The constants that remain are still read from where they are declared — the retention tiers and the capacity from `internal/memory`, and the embedding dimension, context budget and salience tiers from the harness, which owns them since an addressed store stopped declaring them.
+- **The `shipped` row measured a different design before `46bd83d`, and every figure under that name has been re-taken since.** The row means what this repository ships, and what it ships changed: #582 replaced the sentence store with the addressed one this record's evidence chose. §`shipped` states the figures the row carried before, so a reader who remembers `stale returned` `0.838` learns that it was the sentence store's rather than concluding the measurement drifted. Nothing else in the run moved — every other frame is the same code at the same seed.
+- **Two of the run's recorded constants stopped existing rather than moving.** §The run lists the configuration a run measured under, and a test holds it against what the code declares (`#546`), so a constant moving fails rather than leaving the record describing a system that has changed. `supersession similarity 0.6` and `consolidation threshold 100` were the sentence store's; nothing declares them now, so they are dropped from that table rather than pinned to nothing, and those are the values the pre-`46bd83d` figures were measured under. The constants that remain are still read from where they are declared — the retention tiers and the capacity from `internal/memory`, and the embedding dimension, context budget and salience tiers from the harness, which owns them since an addressed store stopped declaring them.
 - **The similarity machinery is the harness's own.** The hashing embedder and the cosine live in `harness/embedding.go` because three of the ported designs model similarity as part of their mechanism and the platform no longer has either. They are unchanged in value and behaviour from the versions `internal/memory` held, so the ported rows are run at the numbers this project shipped.
 - **A published design is ported, not run as its authors run it.** Each is a reimplementation of the paper's mechanism behind this seam, on this workload, under this embedder and with this record's substitutions for whatever the seam withholds. The comparison it belongs to is the one in these tables.
 - **The step that distinguishes two of the ported designs is a model call, and both are substituted.** Reflection's synthesis becomes a concatenation of the window's fact-carrying sentences; Mem0's judgement about which memory a fact updates becomes a similarity gate, at a constant the paper does not state. Both rows bound what the mechanism's shape buys and neither measures what the model would add.

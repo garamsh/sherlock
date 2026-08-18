@@ -50,6 +50,11 @@ func committedRun(t *testing.T) Run {
 	finding := committedFinding(t)
 	result.Finding = &finding
 
+	scale, err := os.ReadFile(filepath.Join("..", "results", "memorybank_scale_seed7.json"))
+	require.NoError(t, err)
+	result.Scale = &ScaleStudy{}
+	require.NoError(t, json.Unmarshal(scale, result.Scale))
+
 	result.Prose, err = readCommittedProse(filepath.Join("..", "results", "prose_seed7.json"))
 	require.NoError(t, err)
 	result.ProseBefore, err = readCommittedProse(filepath.Join("..", "results", "prose_baseline_seed7.json"))

@@ -119,6 +119,15 @@ type Run struct {
 	// its own file for the reason the shapes are, and is folded in here only
 	// to render.
 	Finding *FindingStudy `json:"-"`
+	// Scale is the MemoryBank forgetting-curve sweep (#489), likewise its
+	// own file, folded in only to render.
+	Scale *ScaleStudy `json:"-"`
+}
+
+// ScaleStudy is the MemoryBank retune's evidence: one run per
+// forgetting-curve unit per arm, the published day included.
+type ScaleStudy struct {
+	Runs []FrameResult `json:"runs"`
 }
 
 // runFiles are the files one seed's studies read and write. Their names
@@ -136,6 +145,7 @@ type runFiles struct {
 	constrained  string
 	shapes       string
 	finding      string
+	scale        string
 	record       string
 }
 
@@ -150,6 +160,7 @@ func filesFor(out, record string, seed int64) runFiles {
 		proseBefore: named("prose_baseline"),
 		stability:   named("stability"), resolutions: named("resolutions"),
 		decade: named("decade"), constrained: named("constrained"),
+		scale:  named("memorybank_scale"),
 		shapes: named("harder"), finding: named("finding"), record: record,
 	}
 }
@@ -183,6 +194,8 @@ func run() error {
 		"have a model turn every question into an address. Spends money")
 	resample := flag.Bool("resample", false,
 		"ask the model the consequential assertions several times over, to see whether its answer is settled. Spends money")
+	scale := flag.Bool("memorybank-scale", false,
+		"run MemoryBank across a range of forgetting-curve units instead of the decade measurement. Offline")
 	declarerCache := flag.String("declarer-cache", "",
 		"file the declared operations are cached in, outside the repository")
 	params := Params{}
@@ -202,6 +215,9 @@ func run() error {
 	}
 	if *finding {
 		return runFinding(ctx0(), *seed, params, files, *resolve, *declarerCache)
+	}
+	if *scale {
+		return runMemoryBankScale(context.Background(), *seed, params, files)
 	}
 
 	workload, err := GenerateWorkload(*seed, params)
@@ -627,4 +643,36 @@ func report(r Run) {
 				y.Year, y.Probes, y.Recall.Mean, y.Recall.Half, y.Stale.Mean, y.Stale.Half, y.ContextChars.Mean)
 		}
 	}
+}
+
+// runMemoryBankScale measures MemoryBank across a range of forgetting-curve
+// units (#489). The paper's figure in the decade table is the design at its
+// published unit — a day — over a workload a decade wide, which is a design
+// measured at its defaults. The range around the probe interval is what
+// separates a wrong constant from a failing mechanism: if the mechanism
+// works at any unit, the curve of figures says so, and if it works at none,
+// that is the finding. Offline; the run file is named beside the others.
+func runMemoryBankScale(ctx context.Context, seed int64, params Params, files runFiles) error {
+	w, err := GenerateWorkload(seed, params)
+	if err != nil {
+		return fmt.Errorf("generate workload: %w", err)
+	}
+	counter := NewEmbedCounter()
+	var runs []FrameResult
+	for _, frame := range []string{
+		frameMemoryBank, frameMemoryBankQuarterYear, frameMemoryBankYear, frameMemoryBankFourYears,
+	} {
+		for _, arm := range armNames {
+			measured, err := Measure(ctx, w, frame, arm, counter, nil)
+			if err != nil {
+				return fmt.Errorf("%s in the %s arm: %w", frame, arm, err)
+			}
+			runs = append(runs, measured)
+			fmt.Printf("%s, %s arm: %d probes over %d years\n", frame, arm, len(measured.Probes), len(measured.Years))
+		}
+	}
+	if err := writeJSON(files.scale, ScaleStudy{Runs: runs}); err != nil {
+		return err
+	}
+	return renderRecord(files)
 }

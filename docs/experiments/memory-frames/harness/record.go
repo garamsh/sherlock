@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -39,6 +40,7 @@ const (
 	regionConstraint  = "constraint"
 	regionLanguage    = "language"
 	regionFinding     = "finding"
+	regionScale       = "memorybank-scale"
 	regionLiterature  = "literature"
 	regionCost        = "cost"
 )
@@ -90,6 +92,13 @@ func renderRecord(files runFiles) error {
 	}
 	if len(finding.Frames) > 0 {
 		result.Finding = &finding
+	}
+	var scale ScaleStudy
+	if err := readStudy(files.scale, &scale); err != nil {
+		return err
+	}
+	if len(scale.Runs) > 0 {
+		result.Scale = &scale
 	}
 	record, err := os.ReadFile(files.record)
 	if err != nil {
@@ -188,6 +197,7 @@ func RenderTables(r Run) []Section {
 		section(regionConstraint, r, renderBounds, renderRules, renderBudgets),
 		section(regionLanguage, r, renderLanguage, renderExtraction, renderShapes),
 		section(regionFinding, r, renderFinding),
+		section(regionScale, r, renderScale),
 		section(regionLiterature, r, renderIdentity),
 		section(regionCost, r, renderCost, renderPaid),
 	}
@@ -224,6 +234,7 @@ var (
 		frameGenerativeAgents:  "every turn's text as a record, with an embedding, a time and an importance",
 		frameReflection:        "the same records, plus a synthesis written over the recent ones",
 		frameMemoryBank:        "the same records, minus the ones the forgetting curve has taken",
+		frameMemoryBankYear:    "the same records, minus the ones the forgetting curve has taken",
 		frameMem0:              "one extracted fact per memory, with an embedding over it",
 		frameMem0Nearest:       "one extracted fact per memory, with an embedding over it",
 	}
@@ -243,6 +254,7 @@ var (
 		frameGenerativeAgents:  "nothing is replaced or removed; a read ranks on recency, importance and relevance",
 		frameReflection:        "the same, and the synthesis is a record the same ranking can return",
 		frameMemoryBank:        "the same ranking; a record goes when its retention falls under the curve",
+		frameMemoryBankYear:    "the same ranking and the same curve, its unit rescaled from a day to a year",
 		frameMem0:              "the write states the operation and similarity finds what it applies to",
 		frameMem0Nearest:       "the same, with the similarity gate removed — the far end, not a design",
 	}
@@ -1340,4 +1352,36 @@ func cell(s string) string {
 		return notApplicable
 	}
 	return s
+}
+
+// renderScale is the MemoryBank retune's table: one row per
+// forgetting-curve unit and arm, at the decade's last year, so the figure
+// the mechanism earns is read against the unit it was run at rather than
+// quoted at the paper's default (#489).
+func renderScale(b *strings.Builder, r Run) {
+	if r.Scale == nil {
+		return
+	}
+	labels := map[string]string{
+		frameMemoryBank:            "a day (as published)",
+		frameMemoryBankQuarterYear: "a quarter of the probe interval",
+		frameMemoryBankYear:        "the probe interval",
+		frameMemoryBankFourYears:   "four probe intervals",
+	}
+	fmt.Fprintf(b, "### What the forgetting curve scores across its time constant\n\n")
+	fmt.Fprintf(b, "| the curve's unit | arm | recall | stale returned | units read | records held |\n")
+	fmt.Fprintf(b, "|---|---|---|---|---|---|\n")
+	for _, run := range r.Scale.Runs {
+		if len(run.Years) == 0 {
+			continue
+		}
+		y := run.Years[len(run.Years)-1]
+		held := "n/a"
+		if len(run.Sizes) > 0 {
+			held = strconv.Itoa(run.Sizes[len(run.Sizes)-1].Size.Units)
+		}
+		fmt.Fprintf(b, "| %s | `%s` | %s | %s | %s | %s |\n",
+			labels[run.Frame], run.Arm, figure(y.Recall), figure(y.Stale), figureAt(y.Scanned, 1), held)
+	}
+	fmt.Fprintln(b)
 }

@@ -1,6 +1,6 @@
 # Memory-frames experiment
 
-Seventeen ways of holding a memory over a decade of turns, compared: what each stores, how each decides what to keep, what each answers and what each costs. §The structures compared is that comparison on one page, and §What would be chosen today is what it comes to. The design this project ships is one of the seventeen and is the baseline the rest are read against; five more come from published papers and §Where the published designs came from says what was searched, what was ported and what each design needed that the seam withholds. The seam is what lets structurally different designs sit beside one another at all.
+Eighteen ways of holding a memory over a decade of turns, compared: what each stores, how each decides what to keep, what each answers and what each costs. §The structures compared is that comparison on one page, and §What would be chosen today is what it comes to. The design this project ships is one of the eighteen and is the baseline the rest are read against; five more come from published papers and §Where the published designs came from says what was searched, what was ported and what each design needed that the seam withholds. The seam is what lets structurally different designs sit beside one another at all.
 
 ## Contents
 - The structures compared
@@ -23,6 +23,7 @@ Seventeen ways of holding a memory over a decade of turns, compared: what each s
 - `memorybank` — the stream under a forgetting curve
 - `mem0` — an operation stated by the write, applied to a memory found by similarity
 - `mem0-nearest` — the same design with the judgement removed
+- What a first measurement missed
 - Method
 - The seam
 - The workload
@@ -66,6 +67,7 @@ Four rows are not candidates. `attribute-declared`, `question-declared` and `int
 | `generative-agents` | every turn's text as a record, with an embedding, a time and an importance | nothing is replaced or removed; a read ranks on recency, importance and relevance | 0.108 ±0.037 | 0.200 ±0.126 | 0.000 ±0.000 | 0.175 ±0.119 | 0.050 ±0.047 | 0.100 ±0.072 | 0.125 ±0.104 | 0.087 ±0.062 | 2027 ±1 | 5760.0 ±0.0 | 6004.6 |
 | `reflection` | the same records, plus a synthesis written over the recent ones | the same, and the synthesis is a record the same ranking can return | 0.129 ±0.041 | 0.200 ±0.126 | 0.000 ±0.000 | 0.175 ±0.119 | 0.050 ±0.047 | 0.100 ±0.072 | 0.250 ±0.136 | 0.087 ±0.062 | 2008 ±6 | 5960.0 ±0.0 | 6323.6 |
 | `memorybank` | the same records, minus the ones the forgetting curve has taken | the same ranking; a record goes when its retention falls under the curve | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 688 ±0 | 16.0 ±0.0 | 16.7 |
+| `memorybank-year` | the same records, minus the ones the forgetting curve has taken | the same ranking and the same curve, its unit rescaled from a day to a year | 0.894 ±0.038 | 0.950 ±0.068 | 0.825 ±0.119 | 0.925 ±0.083 | 0.850 ±0.106 | 0.887 ±0.096 | 0.925 ±0.083 | 0.900 ±0.066 | 2029 ±1 | 2561.0 ±0.0 | 2666.0 |
 | `mem0` | one extracted fact per memory, with an embedding over it | the write states the operation and similarity finds what it applies to | 0.948 ±0.024 | 0.950 ±0.068 | 0.950 ±0.068 | 0.975 ±0.049 | 0.900 ±0.063 | 0.938 ±0.052 | 0.975 ±0.049 | 0.900 ±0.066 | 267 ±2 | 747.0 ±0.0 | 765.6 |
 | `mem0-nearest` | one extracted fact per memory, with an embedding over it | the same, with the similarity gate removed — the far end, not a design | 0.188 ±0.047 | 0.000 ±0.000 | 0.150 ±0.112 | 0.125 ±0.104 | 0.075 ±0.056 | 0.125 ±0.068 | 0.650 ±0.150 | 0.000 ±0.000 | 262 ±2 | 82.0 ±0.0 | 84.0 |
 <!-- end generated -->
@@ -130,7 +132,7 @@ The rows fall into families, and what separates a family from the rest is larger
 
 **Searching for the memory to update, rather than computing where it is.** `mem0` is the only structure here that takes the write's operation and still has to find what the operation applies to. Every other structure that updates computes the address, and every structure that does not compute an address does not update at all. That makes the pair `mem0` and `attribute-declared` the one comparison in this record where arity is held constant and identity is the variable, and §What a similarity-located write has to separate is the evidence about whether the variable can be resolved on this workload at all.
 
-**Why three of the seventeen post the same rows.** `attribute-single`, `interval` and `log` take the same arity decision — the newest value at an address is what is true there — in three structurally different stores. They therefore answer identically, class for class and year for year, and the tables below show that. It is the round's result rather than a copy-paste: the store shape does not change the answer, the arity rule does. `harness/measure_test.go` asserts the equality, so it fails if it stops being true. Where they differ is what they hold, what they read to answer, and what they can be asked, and those three columns are where this comparison lives.
+**Why three of the eighteen post the same rows.** `attribute-single`, `interval` and `log` take the same arity decision — the newest value at an address is what is true there — in three structurally different stores. They therefore answer identically, class for class and year for year, and the tables below show that. It is the round's result rather than a copy-paste: the store shape does not change the answer, the arity rule does. `harness/measure_test.go` asserts the equality, so it fails if it stops being true. Where they differ is what they hold, what they read to answer, and what they can be asked, and those three columns are where this comparison lives.
 
 **What these figures say.**
 
@@ -166,6 +168,7 @@ No store at all: one bounded document holding the most recent turns' text, rewri
 **What these figures say.**
 
 - **A structure with no store at all is at or above the shipped structure without its oracle, in every year.** The intervals overlap throughout, so this run does not separate the two. What it does say is that a store its own retention empties is worth no more than one bounded document of the same size.
+- **Asked which of the three failures this is (#489): none of them — there is nothing to tune.** Its one constant is the document's size, and that is this record's own control, set to the shipped budget so every frame fills the same context. It is not a paper's number written for another span, and the floor is where this record keeps it on purpose.
 
 ## `attribute-single` — one value at an address
 
@@ -190,6 +193,7 @@ Arity as a property of the attribute, learned from the attribute's own addresses
 **What these figures say.**
 
 - **`attribute-learned` is `attribute-multi`**, row for row, year for year and class for class, and it pays `attribute-multi`'s storage to get there — a rule that decides at read time cannot have destroyed anything at write time.
+- **Its cost is not intrinsic, and its storage is (#489).** The rule reads every address it holds to decide one question — has any address under this attribute taken a second value — and that answer is one bit per attribute, computable where the second write lands rather than where the read scans. A frame that kept the bit would answer the same rule without touching the store. What no cheaper implementation removes is holding every value, which the rule's one virtue requires: a decision taken at read time cannot have destroyed anything at write time, so the store is `attribute-multi`'s by construction.
 - **It collapses, and §What the addresses look like says why.** Every attribute carries threads from every class, so the share of its addresses ever written a second value falls in one narrow band for all twelve of them. The generator assigns classes to subject-attribute pairs by shuffling every pair, so where inside that band an attribute lands is which threads it happened to be given and not a fact about the attribute — and a threshold set inside the band would separate attributes by that and nothing else. At the weakest threshold every attribute turns multi-valued the moment the first replacement lands, and the arm's rows are `attribute-multi`'s at every year and every class. At a majority threshold none of them ever turns, and it is `attribute-single`. The rule does not decide arity; the threshold does, and nothing calibrates the threshold.
 
 ## `attribute-cued` — arity read off the sentence's wording
@@ -262,6 +266,7 @@ Park et al. 2023, *Generative Agents: Interactive Simulacra of Human Behavior* (
 - **Its stale figure is low, and low for the wrong reason.** it holds every superseded value it ever saw and its ranking mostly fails to surface those too. A structure that answers little returns little that is wrong, and neither number is a credit.
 - **`replaced` is the class it never answers.** It scores nothing on that class at the last year, where it scores something on every other. A thread whose value has been overwritten twice has three sentences in the store saying different things about one attribute, and a ranking with no notion of which of them is current has no way to prefer the last. That is the arity question arriving at a design that does not address facts: it does not decide arity wrongly, it has no place to decide it.
 - **It is the first structure in this record with a frozen share, and it is most of the store.** §What a read cannot reach reports it: four fifths of the planted values it holds have never once reached a context, and hundreds of those are still asked for later. A store that outgrows what its reads can carry is the case the earlier round predicted and could not produce, and keeping every observation produces it.
+- **Asked which of the three failures this is (#489): a missing capability, not a wrong setting.** Its constants are the paper's and the diagnosis gives none of them back — the recency decay already decays less than this span needs, and moving it moves the ranking, not the gap. The gap is `replaced`: three sentences about one attribute and no notion of which is current. The smallest repair is a write that says one value replaces another at an address — and that repair is `attribute-single`. A design that becomes one of this record's own when repaired is a stronger result than a design that loses, and this one becomes the simplest addressed store in the table.
 
 ## `reflection` — the same stream, with a synthesis written back into it
 
@@ -278,6 +283,7 @@ Two properties keep the substitution from eating the structure: a reflection is 
 - **Aggregating observations into a retrievable object buys nothing this run can separate.** Its recall stands a little above `generative-agents`' at the last year and the two intervals overlap, on every class and on the total. What it does buy is measured and negative: half as much content again, more records, and the same stale figure.
 - **What it does move is what a read can reach, and not by enough.** Its frozen share is below `generative-agents`' at every year after the first — a synthesis is one record carrying many values, so returning it reaches values a per-record ranking never surfaced — and it is still seven tenths of what the store holds. Aggregation makes a store of everything a little more reachable and leaves it unreachable.
 - **`memory-architecture/` measured this mechanism winning and this workload does not reproduce that.** That programme found reflection ahead on recall and precision on an eight-category workload. The two runs share no workload, no metric and no instrument, so this is not a contradiction of that result; what it says is that on a decade of one user's threads, with the synthesis rendered as a summarizer rather than an inference, the mechanism does not separate from the stream it is built on.
+- **Asked which of the three failures this is (#489): the same one as the stream it extends.** Its trigger and window are the paper's, and no constant in them addresses what its rows show — a synthesis is one more record in the same ranking, and the ranking has no notion of which value is current. The smallest repair is the one `generative-agents` takes, and it turns the design into the same addressed store.
 
 ## `memorybank` — the stream under a forgetting curve
 
@@ -291,6 +297,32 @@ Zhong et al. 2023, *MemoryBank: Enhancing Large Language Models with Long-Term M
 - **The reason is the span and not the mechanism.** The curve is written in days, because it models a person over days, and a strength of one gives a record about a day. A checkpoint stands a year after the last one, so a record has to be rehearsed hundreds of times to survive between two questions and nothing in the workload rehearses it that often. The structure holds the same small number of records at every checkpoint for the whole decade: it is a recency window with an exponential in front of it.
 - **The idea inside it is one this record has already found working, in another form.** Rehearsal on retrieval is what §What decides the eviction measures as least-recently-read, and that rule keeps `carried` intact where an age-ordered rule loses all of it. What fails here is the time constant, not the signal. A decade-scale version of this design would need the curve rescaled to the span it runs over, and rescaling it is choosing a number the paper does not supply.
 - **It forgets enough to have nothing frozen and nothing to answer with.** Its frozen share is zero at every year for the same reason `document`'s is: a store small enough for every read to cycle through holds nothing a read has not reached.
+
+**The retune the diagnosis owes it (#489).** The diagnosis says the time constant fails and the signal does not, and a design measured once at its defaults has not been measured. The rescaled arm runs the same curve with its unit derived from the workload rather than the paper: one probe interval, a year, so a record read at one checkpoint survives to the next. That number is chosen here and not by the paper — the paper supplies no constant for this span — and the derivation is the cadence, not a score. The table below is the figure across a range around that choice, the published day included, so the row is read as a curve and not as a point that happened to be picked well.
+
+**What the range says.**
+
+- **At the paper's day the design scores the floor**, as the row above records.
+- **At a quarter of the probe interval the mechanism recovers part of the workload, and stale appears with it** — the curve forgets enough to lose facts and keeps enough to serve the superseded ones. That is the transition, and it is where a reader sees the constant doing something at all.
+- **At one probe interval and at four the figures are identical.** Past the cadence the figure stops depending on the constant at all — the curve removes less of the stream and the same recall and stale come back — which is the answer to the fitting objection: the point was derived, and the range around it shows nothing was found by search.
+- **What the rescaled design lands on is the ranking's own ceiling, not the curve's.** It answers most of the workload and returns a superseded value on nine revised threads in ten, because a ranking has no notion of which value is current. That is `generative-agents`' failure arriving at a design whose forgetting no longer fires — so the published figure was a constant written for another scale, and what survives the rescale is a missing capability, the class the next sections take up.
+- **The rescaled row answers far more of the workload than `generative-agents`' over the same ranking**, and the store sizes say why: the curve at this unit still removes about half the stream, and a fixed budget ranks a smaller store better. Forgetting bought recall here, against a design that forgets nothing and fills the same context.
+
+<!-- generated by the harness: memorybank-scale; do not edit between the markers -->
+
+### What the forgetting curve scores across its time constant
+
+| the curve's unit | arm | recall | stale returned | units read | records held |
+|---|---|---|---|---|---|
+| a day (as published) | `oracle` | 0.008 ±0.012 | 0.000 ±0.000 | 16.0 ±0.0 | 16 |
+| a day (as published) | `text` | 0.008 ±0.012 | 0.000 ±0.000 | 16.0 ±0.0 | 16 |
+| a quarter of the probe interval | `oracle` | 0.244 ±0.050 | 0.287 ±0.100 | 1067.0 ±0.0 | 1067 |
+| a quarter of the probe interval | `text` | 0.244 ±0.050 | 0.287 ±0.100 | 1067.0 ±0.0 | 1067 |
+| the probe interval | `oracle` | 0.894 ±0.038 | 0.900 ±0.066 | 2561.0 ±0.0 | 2561 |
+| the probe interval | `text` | 0.894 ±0.038 | 0.900 ±0.066 | 2561.0 ±0.0 | 2561 |
+| four probe intervals | `oracle` | 0.894 ±0.038 | 0.900 ±0.066 | 4468.0 ±0.0 | 4468 |
+| four probe intervals | `text` | 0.894 ±0.038 | 0.900 ±0.066 | 4468.0 ±0.0 | 4468 |
+<!-- end generated -->
 
 ## `mem0` — an operation stated by the write, applied to a memory found by similarity
 
@@ -322,6 +354,15 @@ Its read is handed the address wherever a question form supplies one, rendered a
 - **Removing the judgement destroys the store.** It ends the decade holding a tenth of what was written to it and answering under a fifth of what it is asked, and it answers `carried` on nothing at all: a fact asserted in the first year is ended by some later write about something else long before it is asked in the last. What it does answer is mostly the year's own assertions, which is what a store that has just been written looks like.
 - **Its stale figure is zero, and that is the clearest case in this record of why recall is never reported alone.** It returns no superseded value because it has destroyed nearly everything, including the values that are still true. A column ranking on staleness alone would put this row at the top of the table.
 - **Read against `mem0`, the pair is the confirmation rather than two scores.** One end never updates and keeps everything, so it answers nearly all of it and returns what has stopped being true on nine revised threads in ten. The other updates every time and keeps almost nothing, so it returns nothing stale and answers under a fifth. Neither end is the design; what the pair says is that the whole of the design's behaviour lives in the judgement between them, and that judgement is the model call the seam withholds.
+
+## What a first measurement missed
+
+#489 asked the owner's standing question of every losing design in this record: was it measured, or was it measured at its defaults? Each design's own section carries the argument; this is the classification in one place.
+
+- **Nothing to tune** — `mem0`, closed before this round: the similarity gate's two ends are always-join and destroy-the-store and nothing between is better, which its section proves rather than asserts. `document`, the floor: its one constant is this record's own control, not a paper's number written for another span.
+- **A constant written for another scale** — `memorybank`, and only `memorybank`. The retune is its section's table: the mechanism works once the curve's unit is the workload's cadence, the range around the derived constant is flat, and what the rescaled design lands on is the next class.
+- **A missing capability** — `generative-agents` and `reflection`: a ranking has no notion of which value is current, and the smallest repair that gives it one — a write replacing a value at an address — is `attribute-single`. The repair turns each into a design already in the table, which is the strongest form the answer takes.
+- **Turned inward** — `attribute-learned`'s whole-store read is an implementation choice and not the rule's cost, as its section states; `attribute-cued`'s disqualification stands, being structural and not a measurement.
 
 ## Method
 
@@ -572,6 +613,16 @@ The comparison table is the last year of this one. Every year is here, class for
 | `memorybank` | `oracle` | 8 | 240 | 0.004 ±0.008 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.025 ±0.049 | 0.000 ±0.000 | 758 ±0 | 16.0 ±0.0 |
 | `memorybank` | `oracle` | 9 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 774 ±0 | 16.0 ±0.0 |
 | `memorybank` | `oracle` | 10 | 240 | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 688 ±0 | 16.0 ±0.0 |
+| `memorybank-year` | `oracle` | 1 | 160 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a | 2026 ±2 | 576.0 ±0.0 |
+| `memorybank-year` | `oracle` | 2 | 240 | 0.967 ±0.023 | 0.975 ±0.049 | 1.000 ±0.000 | 1.000 ±0.000 | 0.900 ±0.094 | 0.975 ±0.049 | 0.950 ±0.068 | n/a | 2027 ±2 | 1113.0 ±0.0 |
+| `memorybank-year` | `oracle` | 3 | 240 | 0.929 ±0.033 | 0.975 ±0.049 | 0.975 ±0.049 | 0.875 ±0.104 | 0.875 ±0.104 | 0.950 ±0.068 | 0.925 ±0.083 | 0.988 ±0.024 | 2028 ±2 | 1550.0 ±0.0 |
+| `memorybank-year` | `oracle` | 4 | 240 | 0.883 ±0.041 | 0.975 ±0.049 | 0.825 ±0.119 | 0.850 ±0.112 | 0.825 ±0.119 | 0.900 ±0.094 | 0.925 ±0.083 | 0.988 ±0.024 | 2027 ±1 | 1865.0 ±0.0 |
+| `memorybank-year` | `oracle` | 5 | 240 | 0.879 ±0.041 | 0.975 ±0.049 | 0.825 ±0.119 | 0.850 ±0.112 | 0.825 ±0.119 | 0.900 ±0.094 | 0.900 ±0.094 | 0.975 ±0.034 | 2029 ±2 | 2080.0 ±0.0 |
+| `memorybank-year` | `oracle` | 6 | 240 | 0.894 ±0.038 | 0.975 ±0.049 | 0.825 ±0.119 | 0.825 ±0.119 | 0.850 ±0.106 | 0.887 ±0.096 | 1.000 ±0.000 | 0.950 ±0.048 | 2029 ±2 | 2249.0 ±0.0 |
+| `memorybank-year` | `oracle` | 7 | 240 | 0.898 ±0.038 | 0.975 ±0.049 | 0.825 ±0.119 | 0.925 ±0.083 | 0.850 ±0.106 | 0.887 ±0.096 | 0.925 ±0.083 | 0.900 ±0.066 | 2026 ±2 | 2399.0 ±0.0 |
+| `memorybank-year` | `oracle` | 8 | 240 | 0.885 ±0.040 | 0.950 ±0.068 | 0.825 ±0.119 | 0.925 ±0.083 | 0.850 ±0.106 | 0.887 ±0.096 | 0.875 ±0.104 | 0.900 ±0.066 | 2026 ±2 | 2516.0 ±0.0 |
+| `memorybank-year` | `oracle` | 9 | 240 | 0.890 ±0.039 | 0.950 ±0.068 | 0.825 ±0.119 | 0.925 ±0.083 | 0.850 ±0.106 | 0.887 ±0.096 | 0.900 ±0.094 | 0.900 ±0.066 | 2028 ±1 | 2540.0 ±0.0 |
+| `memorybank-year` | `oracle` | 10 | 240 | 0.894 ±0.038 | 0.950 ±0.068 | 0.825 ±0.119 | 0.925 ±0.083 | 0.850 ±0.106 | 0.887 ±0.096 | 0.925 ±0.083 | 0.900 ±0.066 | 2029 ±1 | 2561.0 ±0.0 |
 | `mem0` | `oracle` | 1 | 160 | 0.988 ±0.017 | 1.000 ±0.000 | 0.975 ±0.049 | 0.975 ±0.049 | n/a | n/a | 1.000 ±0.000 | n/a | 265 ±2 | 159.0 ±0.0 |
 | `mem0` | `oracle` | 2 | 240 | 0.975 ±0.020 | 0.975 ±0.049 | 0.975 ±0.049 | 0.950 ±0.068 | 0.975 ±0.049 | 1.000 ±0.000 | 0.975 ±0.049 | n/a | 266 ±2 | 274.0 ±0.0 |
 | `mem0` | `oracle` | 3 | 240 | 0.975 ±0.020 | 0.975 ±0.049 | 0.975 ±0.049 | 0.975 ±0.049 | 0.950 ±0.068 | 0.975 ±0.049 | 1.000 ±0.000 | 0.887 ±0.070 | 266 ±2 | 384.0 ±0.0 |
@@ -742,6 +793,16 @@ The comparison table is the last year of this one. Every year is here, class for
 | `memorybank` | `text` | 8 | 240 | 0.004 ±0.008 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.025 ±0.049 | 0.000 ±0.000 | 758 ±0 | 16.0 ±0.0 |
 | `memorybank` | `text` | 9 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 774 ±0 | 16.0 ±0.0 |
 | `memorybank` | `text` | 10 | 240 | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 688 ±0 | 16.0 ±0.0 |
+| `memorybank-year` | `text` | 1 | 160 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a | 2026 ±2 | 576.0 ±0.0 |
+| `memorybank-year` | `text` | 2 | 240 | 0.967 ±0.023 | 0.975 ±0.049 | 1.000 ±0.000 | 1.000 ±0.000 | 0.900 ±0.094 | 0.975 ±0.049 | 0.950 ±0.068 | n/a | 2027 ±2 | 1113.0 ±0.0 |
+| `memorybank-year` | `text` | 3 | 240 | 0.929 ±0.033 | 0.975 ±0.049 | 0.975 ±0.049 | 0.875 ±0.104 | 0.875 ±0.104 | 0.950 ±0.068 | 0.925 ±0.083 | 0.988 ±0.024 | 2028 ±2 | 1550.0 ±0.0 |
+| `memorybank-year` | `text` | 4 | 240 | 0.883 ±0.041 | 0.975 ±0.049 | 0.825 ±0.119 | 0.850 ±0.112 | 0.825 ±0.119 | 0.900 ±0.094 | 0.925 ±0.083 | 0.988 ±0.024 | 2027 ±1 | 1865.0 ±0.0 |
+| `memorybank-year` | `text` | 5 | 240 | 0.879 ±0.041 | 0.975 ±0.049 | 0.825 ±0.119 | 0.850 ±0.112 | 0.825 ±0.119 | 0.900 ±0.094 | 0.900 ±0.094 | 0.975 ±0.034 | 2029 ±2 | 2080.0 ±0.0 |
+| `memorybank-year` | `text` | 6 | 240 | 0.894 ±0.038 | 0.975 ±0.049 | 0.825 ±0.119 | 0.825 ±0.119 | 0.850 ±0.106 | 0.887 ±0.096 | 1.000 ±0.000 | 0.950 ±0.048 | 2029 ±2 | 2249.0 ±0.0 |
+| `memorybank-year` | `text` | 7 | 240 | 0.898 ±0.038 | 0.975 ±0.049 | 0.825 ±0.119 | 0.925 ±0.083 | 0.850 ±0.106 | 0.887 ±0.096 | 0.925 ±0.083 | 0.900 ±0.066 | 2026 ±2 | 2399.0 ±0.0 |
+| `memorybank-year` | `text` | 8 | 240 | 0.885 ±0.040 | 0.950 ±0.068 | 0.825 ±0.119 | 0.925 ±0.083 | 0.850 ±0.106 | 0.887 ±0.096 | 0.875 ±0.104 | 0.900 ±0.066 | 2026 ±2 | 2516.0 ±0.0 |
+| `memorybank-year` | `text` | 9 | 240 | 0.890 ±0.039 | 0.950 ±0.068 | 0.825 ±0.119 | 0.925 ±0.083 | 0.850 ±0.106 | 0.887 ±0.096 | 0.900 ±0.094 | 0.900 ±0.066 | 2028 ±1 | 2540.0 ±0.0 |
+| `memorybank-year` | `text` | 10 | 240 | 0.894 ±0.038 | 0.950 ±0.068 | 0.825 ±0.119 | 0.925 ±0.083 | 0.850 ±0.106 | 0.887 ±0.096 | 0.925 ±0.083 | 0.900 ±0.066 | 2029 ±1 | 2561.0 ±0.0 |
 | `mem0` | `text` | 1 | 160 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | n/a | n/a | 0.000 ±0.000 | n/a | 0 ±0 | 0.0 ±0.0 |
 | `mem0` | `text` | 2 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | n/a | 0 ±0 | 0.0 ±0.0 |
 | `mem0` | `text` | 3 | 240 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0 ±0 | 0.0 ±0.0 |
@@ -812,6 +873,9 @@ The comparison table is the last year of this one. Every year is here, class for
 | `memorybank` | `oracle` | 1 | 16 | 0.7 | 16.7 |
 | `memorybank` | `oracle` | 5 | 16 | 0.7 | 16.7 |
 | `memorybank` | `oracle` | 10 | 16 | 0.7 | 16.7 |
+| `memorybank-year` | `oracle` | 1 | 576 | 24.2 | 600.2 |
+| `memorybank-year` | `oracle` | 5 | 2080 | 85.7 | 2165.7 |
+| `memorybank-year` | `oracle` | 10 | 2561 | 105.0 | 2666.0 |
 | `mem0` | `oracle` | 1 | 159 | 4.0 | 163.0 |
 | `mem0` | `oracle` | 5 | 457 | 11.4 | 468.4 |
 | `mem0` | `oracle` | 10 | 747 | 18.6 | 765.6 |
@@ -863,6 +927,9 @@ The comparison table is the last year of this one. Every year is here, class for
 | `memorybank` | `text` | 1 | 16 | 0.7 | 16.7 |
 | `memorybank` | `text` | 5 | 16 | 0.7 | 16.7 |
 | `memorybank` | `text` | 10 | 16 | 0.7 | 16.7 |
+| `memorybank-year` | `text` | 1 | 576 | 24.2 | 600.2 |
+| `memorybank-year` | `text` | 5 | 2080 | 85.7 | 2165.7 |
+| `memorybank-year` | `text` | 10 | 2561 | 105.0 | 2666.0 |
 | `mem0` | `text` | 1 | 0 | 0.0 | 0.0 |
 | `mem0` | `text` | 5 | 0 | 0.0 | 0.0 |
 | `mem0` | `text` | 10 | 0 | 0.0 | 0.0 |
@@ -1672,6 +1739,16 @@ Every figure so far reports what a structure *answers*. None reports what it can
 | `memorybank` | `oracle` | 8 | 0.004 ±0.008 | 0.002 ±0.002 | 1 | 1 | 0 | 0.000 | 0 |
 | `memorybank` | `oracle` | 9 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
 | `memorybank` | `oracle` | 10 | 0.008 ±0.012 | 0.003 ±0.002 | 2 | 2 | 0 | 0.000 | 0 |
+| `memorybank-year` | `oracle` | 1 | 1.000 ±0.000 | 0.881 ±0.034 | 160 | 160 | 0 | 0.000 | 0 |
+| `memorybank-year` | `oracle` | 2 | 0.967 ±0.023 | 0.641 ±0.037 | 280 | 280 | 0 | 0.000 | 0 |
+| `memorybank-year` | `oracle` | 3 | 0.929 ±0.033 | 0.467 ±0.034 | 400 | 396 | 4 | 0.010 | 3 |
+| `memorybank-year` | `oracle` | 4 | 0.883 ±0.041 | 0.408 ±0.032 | 436 | 434 | 2 | 0.005 | 0 |
+| `memorybank-year` | `oracle` | 5 | 0.879 ±0.041 | 0.367 ±0.031 | 474 | 473 | 1 | 0.002 | 0 |
+| `memorybank-year` | `oracle` | 6 | 0.894 ±0.038 | 0.306 ±0.025 | 593 | 583 | 10 | 0.017 | 10 |
+| `memorybank-year` | `oracle` | 7 | 0.898 ±0.038 | 0.288 ±0.022 | 655 | 647 | 8 | 0.012 | 6 |
+| `memorybank-year` | `oracle` | 8 | 0.885 ±0.040 | 0.267 ±0.019 | 684 | 681 | 3 | 0.004 | 0 |
+| `memorybank-year` | `oracle` | 9 | 0.890 ±0.039 | 0.241 ±0.018 | 718 | 714 | 4 | 0.006 | 0 |
+| `memorybank-year` | `oracle` | 10 | 0.894 ±0.038 | 0.229 ±0.016 | 750 | 748 | 2 | 0.003 | 0 |
 | `mem0` | `oracle` | 1 | 0.988 ±0.017 | 0.749 ±0.039 | 159 | 158 | 1 | 0.006 | 1 |
 | `mem0` | `oracle` | 2 | 0.975 ±0.020 | 0.472 ±0.029 | 274 | 273 | 1 | 0.004 | 1 |
 | `mem0` | `oracle` | 3 | 0.975 ±0.020 | 0.337 ±0.026 | 384 | 382 | 2 | 0.005 | 2 |
@@ -1842,6 +1919,16 @@ Every figure so far reports what a structure *answers*. None reports what it can
 | `memorybank` | `text` | 8 | 0.004 ±0.008 | 0.002 ±0.002 | 1 | 1 | 0 | 0.000 | 0 |
 | `memorybank` | `text` | 9 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
 | `memorybank` | `text` | 10 | 0.008 ±0.012 | 0.003 ±0.002 | 2 | 2 | 0 | 0.000 | 0 |
+| `memorybank-year` | `text` | 1 | 1.000 ±0.000 | 0.881 ±0.034 | 160 | 160 | 0 | 0.000 | 0 |
+| `memorybank-year` | `text` | 2 | 0.967 ±0.023 | 0.641 ±0.037 | 280 | 280 | 0 | 0.000 | 0 |
+| `memorybank-year` | `text` | 3 | 0.929 ±0.033 | 0.467 ±0.034 | 400 | 396 | 4 | 0.010 | 3 |
+| `memorybank-year` | `text` | 4 | 0.883 ±0.041 | 0.408 ±0.032 | 436 | 434 | 2 | 0.005 | 0 |
+| `memorybank-year` | `text` | 5 | 0.879 ±0.041 | 0.367 ±0.031 | 474 | 473 | 1 | 0.002 | 0 |
+| `memorybank-year` | `text` | 6 | 0.894 ±0.038 | 0.306 ±0.025 | 593 | 583 | 10 | 0.017 | 10 |
+| `memorybank-year` | `text` | 7 | 0.898 ±0.038 | 0.288 ±0.022 | 655 | 647 | 8 | 0.012 | 6 |
+| `memorybank-year` | `text` | 8 | 0.885 ±0.040 | 0.267 ±0.019 | 684 | 681 | 3 | 0.004 | 0 |
+| `memorybank-year` | `text` | 9 | 0.890 ±0.039 | 0.241 ±0.018 | 718 | 714 | 4 | 0.006 | 0 |
+| `memorybank-year` | `text` | 10 | 0.894 ±0.038 | 0.229 ±0.016 | 750 | 748 | 2 | 0.003 | 0 |
 | `mem0` | `text` | 1 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
 | `mem0` | `text` | 2 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
 | `mem0` | `text` | 3 | 0.000 ±0.000 | 0.000 ±0.000 | 0 | 0 | 0 | 0.000 | 0 |
@@ -1882,6 +1969,7 @@ Every figure so far reports what a structure *answers*. None reports what it can
 | `generative-agents` | `oracle` | 44 | 0.000 ±0.000 | 116 | 0.000 ±0.000 |
 | `reflection` | `oracle` | 59 | 0.000 ±0.000 | 101 | 0.000 ±0.000 |
 | `memorybank` | `oracle` | 4 | 1.000 ±0.000 | 156 | 1.000 ±0.000 |
+| `memorybank-year` | `oracle` | 157 | 0.019 ±0.021 | 3 | 1.000 ±0.000 |
 | `mem0` | `oracle` | 156 | 0.096 ±0.046 | 4 | 0.500 ±0.566 |
 | `mem0-nearest` | `oracle` | 4 | 1.000 ±0.000 | 156 | 1.000 ±0.000 |
 | `shipped` | `text` | 0 | n/a | 160 | 1.000 ±0.000 |
@@ -1899,6 +1987,7 @@ Every figure so far reports what a structure *answers*. None reports what it can
 | `generative-agents` | `text` | 31 | 0.000 ±0.000 | 129 | 0.000 ±0.000 |
 | `reflection` | `text` | 31 | 0.000 ±0.000 | 129 | 0.000 ±0.000 |
 | `memorybank` | `text` | 4 | 1.000 ±0.000 | 156 | 1.000 ±0.000 |
+| `memorybank-year` | `text` | 157 | 0.019 ±0.021 | 3 | 1.000 ±0.000 |
 | `mem0` | `text` | 0 | n/a | 160 | 1.000 ±0.000 |
 | `mem0-nearest` | `text` | 0 | n/a | 160 | 1.000 ±0.000 |
 
@@ -2056,6 +2145,16 @@ Every figure so far reports what a structure *answers*. None reports what it can
 | `memorybank` | `oracle` | 8 | 16 | 0.7 | 16.7 |
 | `memorybank` | `oracle` | 9 | 16 | 0.7 | 16.7 |
 | `memorybank` | `oracle` | 10 | 16 | 0.7 | 16.7 |
+| `memorybank-year` | `oracle` | 1 | 576 | 24.2 | 600.2 |
+| `memorybank-year` | `oracle` | 2 | 1113 | 46.2 | 1159.2 |
+| `memorybank-year` | `oracle` | 3 | 1550 | 64.9 | 1614.9 |
+| `memorybank-year` | `oracle` | 4 | 1865 | 77.2 | 1942.2 |
+| `memorybank-year` | `oracle` | 5 | 2080 | 85.7 | 2165.7 |
+| `memorybank-year` | `oracle` | 6 | 2249 | 93.0 | 2342.0 |
+| `memorybank-year` | `oracle` | 7 | 2399 | 99.0 | 2498.0 |
+| `memorybank-year` | `oracle` | 8 | 2516 | 103.7 | 2619.7 |
+| `memorybank-year` | `oracle` | 9 | 2540 | 104.5 | 2644.5 |
+| `memorybank-year` | `oracle` | 10 | 2561 | 105.0 | 2666.0 |
 | `mem0` | `oracle` | 1 | 159 | 4.0 | 163.0 |
 | `mem0` | `oracle` | 2 | 274 | 6.8 | 280.8 |
 | `mem0` | `oracle` | 3 | 384 | 9.6 | 393.6 |
@@ -2226,6 +2325,16 @@ Every figure so far reports what a structure *answers*. None reports what it can
 | `memorybank` | `text` | 8 | 16 | 0.7 | 16.7 |
 | `memorybank` | `text` | 9 | 16 | 0.7 | 16.7 |
 | `memorybank` | `text` | 10 | 16 | 0.7 | 16.7 |
+| `memorybank-year` | `text` | 1 | 576 | 24.2 | 600.2 |
+| `memorybank-year` | `text` | 2 | 1113 | 46.2 | 1159.2 |
+| `memorybank-year` | `text` | 3 | 1550 | 64.9 | 1614.9 |
+| `memorybank-year` | `text` | 4 | 1865 | 77.2 | 1942.2 |
+| `memorybank-year` | `text` | 5 | 2080 | 85.7 | 2165.7 |
+| `memorybank-year` | `text` | 6 | 2249 | 93.0 | 2342.0 |
+| `memorybank-year` | `text` | 7 | 2399 | 99.0 | 2498.0 |
+| `memorybank-year` | `text` | 8 | 2516 | 103.7 | 2619.7 |
+| `memorybank-year` | `text` | 9 | 2540 | 104.5 | 2644.5 |
+| `memorybank-year` | `text` | 10 | 2561 | 105.0 | 2666.0 |
 | `mem0` | `text` | 1 | 0 | 0.0 | 0.0 |
 | `mem0` | `text` | 2 | 0 | 0.0 | 0.0 |
 | `mem0` | `text` | 3 | 0 | 0.0 | 0.0 |
@@ -2264,6 +2373,7 @@ Every figure so far reports what a structure *answers*. None reports what it can
 | `generative-agents` | `oracle` | 5760 | 576.0 | 1 |
 | `reflection` | `oracle` | 5960 | 595.9 | 1 |
 | `memorybank` | `oracle` | 16 | 0.0 | n/a |
+| `memorybank-year` | `oracle` | 2561 | 220.6 | 3 |
 | `mem0` | `oracle` | 747 | 65.3 | 14 |
 | `mem0-nearest` | `oracle` | 82 | 8.9 | 112 |
 | `shipped` | `text` | 0 | 0.0 | n/a |
@@ -2281,6 +2391,7 @@ Every figure so far reports what a structure *answers*. None reports what it can
 | `generative-agents` | `text` | 5760 | 576.0 | 1 |
 | `reflection` | `text` | 5760 | 576.0 | 1 |
 | `memorybank` | `text` | 16 | 0.0 | n/a |
+| `memorybank-year` | `text` | 2561 | 220.6 | 3 |
 | `mem0` | `text` | 0 | 0.0 | n/a |
 | `mem0-nearest` | `text` | 0 | 0.0 | n/a |
 <!-- end generated -->
@@ -2467,6 +2578,16 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | 800 | `memorybank` | 8 | 0.004 ±0.008 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.025 ±0.049 | 0.000 ±0.000 | 16 | 0.7 | 16.7 |
 | 800 | `memorybank` | 9 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 16 | 0.7 | 16.7 |
 | 800 | `memorybank` | 10 | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 16 | 0.7 | 16.7 |
+| 800 | `memorybank-year` | 1 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | n/a | n/a | 1.000 ±0.000 | n/a | 576 | 24.2 | 600.2 |
+| 800 | `memorybank-year` | 2 | 0.667 ±0.060 | 0.225 ±0.131 | 0.375 ±0.152 | 0.450 ±0.156 | 0.975 ±0.049 | 1.000 ±0.000 | 0.975 ±0.049 | n/a | 800 | 33.3 | 833.3 |
+| 800 | `memorybank-year` | 3 | 0.600 ±0.062 | 0.000 ±0.000 | 0.975 ±0.049 | 0.875 ±0.104 | 0.425 ±0.155 | 0.325 ±0.147 | 1.000 ±0.000 | 0.000 ±0.000 | 800 | 34.0 | 834.0 |
+| 800 | `memorybank-year` | 4 | 0.312 ±0.059 | 0.000 ±0.000 | 0.425 ±0.155 | 0.450 ±0.156 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 800 | 33.8 | 833.8 |
+| 800 | `memorybank-year` | 5 | 0.167 ±0.047 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 800 | 33.6 | 833.6 |
+| 800 | `memorybank-year` | 6 | 0.321 ±0.048 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.475 ±0.034 | 0.450 ±0.047 | 1.000 ±0.000 | 0.000 ±0.000 | 800 | 34.1 | 834.1 |
+| 800 | `memorybank-year` | 7 | 0.440 ±0.055 | 0.000 ±0.000 | 0.950 ±0.068 | 0.000 ±0.000 | 0.338 ±0.073 | 0.350 ±0.072 | 1.000 ±0.000 | 0.000 ±0.000 | 800 | 34.3 | 834.3 |
+| 800 | `memorybank-year` | 8 | 0.263 ±0.056 | 0.000 ±0.000 | 0.600 ±0.154 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.975 ±0.049 | 0.000 ±0.000 | 800 | 34.3 | 834.3 |
+| 800 | `memorybank-year` | 9 | 0.167 ±0.047 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 800 | 34.4 | 834.4 |
+| 800 | `memorybank-year` | 10 | 0.167 ±0.047 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 800 | 34.1 | 834.1 |
 | 800 | `mem0` | 1 | 0.988 ±0.017 | 1.000 ±0.000 | 0.975 ±0.049 | 0.975 ±0.049 | n/a | n/a | 1.000 ±0.000 | n/a | 159 | 4.0 | 163.0 |
 | 800 | `mem0` | 2 | 0.975 ±0.020 | 0.975 ±0.049 | 0.975 ±0.049 | 0.950 ±0.068 | 0.975 ±0.049 | 1.000 ±0.000 | 0.975 ±0.049 | n/a | 274 | 6.8 | 280.8 |
 | 800 | `mem0` | 3 | 0.975 ±0.020 | 0.975 ±0.049 | 0.975 ±0.049 | 0.975 ±0.049 | 0.950 ±0.068 | 0.975 ±0.049 | 1.000 ±0.000 | 0.887 ±0.070 | 384 | 9.6 | 393.6 |
@@ -2637,6 +2758,16 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | 200 | `memorybank` | 8 | 0.004 ±0.008 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.025 ±0.049 | 0.000 ±0.000 | 16 | 0.7 | 16.7 |
 | 200 | `memorybank` | 9 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 16 | 0.7 | 16.7 |
 | 200 | `memorybank` | 10 | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 16 | 0.7 | 16.7 |
+| 200 | `memorybank-year` | 1 | 0.300 ±0.071 | 0.150 ±0.112 | 0.325 ±0.147 | 0.375 ±0.152 | n/a | n/a | 0.350 ±0.150 | n/a | 200 | 8.4 | 208.4 |
+| 200 | `memorybank-year` | 2 | 0.167 ±0.047 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.375 ±0.152 | 0.250 ±0.136 | 0.375 ±0.152 | n/a | 200 | 8.2 | 208.2 |
+| 200 | `memorybank-year` | 3 | 0.175 ±0.048 | 0.000 ±0.000 | 0.400 ±0.154 | 0.325 ±0.147 | 0.000 ±0.000 | 0.000 ±0.000 | 0.325 ±0.147 | 0.000 ±0.000 | 200 | 8.6 | 208.6 |
+| 200 | `memorybank-year` | 4 | 0.058 ±0.030 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.350 ±0.150 | 0.000 ±0.000 | 200 | 8.5 | 208.5 |
+| 200 | `memorybank-year` | 5 | 0.058 ±0.030 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.350 ±0.150 | 0.000 ±0.000 | 200 | 8.3 | 208.3 |
+| 200 | `memorybank-year` | 6 | 0.123 ±0.034 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.212 ±0.078 | 0.200 ±0.077 | 0.325 ±0.147 | 0.000 ±0.000 | 200 | 8.7 | 208.7 |
+| 200 | `memorybank-year` | 7 | 0.146 ±0.045 | 0.000 ±0.000 | 0.400 ±0.154 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.475 ±0.157 | 0.000 ±0.000 | 200 | 8.4 | 208.4 |
+| 200 | `memorybank-year` | 8 | 0.071 ±0.033 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.425 ±0.155 | 0.000 ±0.000 | 200 | 8.8 | 208.8 |
+| 200 | `memorybank-year` | 9 | 0.054 ±0.029 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.325 ±0.147 | 0.000 ±0.000 | 200 | 8.6 | 208.6 |
+| 200 | `memorybank-year` | 10 | 0.046 ±0.027 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.275 ±0.140 | 0.000 ±0.000 | 200 | 8.5 | 208.5 |
 | 200 | `mem0` | 1 | 0.988 ±0.017 | 1.000 ±0.000 | 0.975 ±0.049 | 0.975 ±0.049 | n/a | n/a | 1.000 ±0.000 | n/a | 159 | 4.0 | 163.0 |
 | 200 | `mem0` | 2 | 0.725 ±0.057 | 0.425 ±0.155 | 0.475 ±0.157 | 0.500 ±0.157 | 0.975 ±0.049 | 1.000 ±0.000 | 0.975 ±0.049 | n/a | 200 | 5.0 | 205.0 |
 | 200 | `mem0` | 3 | 0.717 ±0.057 | 0.000 ±0.000 | 0.975 ±0.049 | 0.975 ±0.049 | 0.700 ±0.144 | 0.650 ±0.150 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 5.0 | 205.0 |
@@ -2807,6 +2938,16 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | 50 | `memorybank` | 8 | 0.004 ±0.008 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.025 ±0.049 | 0.000 ±0.000 | 16 | 0.7 | 16.7 |
 | 50 | `memorybank` | 9 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 16 | 0.7 | 16.7 |
 | 50 | `memorybank` | 10 | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 16 | 0.7 | 16.7 |
+| 50 | `memorybank-year` | 1 | 0.075 ±0.041 | 0.000 ±0.000 | 0.100 ±0.094 | 0.125 ±0.104 | n/a | n/a | 0.075 ±0.083 | n/a | 50 | 2.1 | 52.1 |
+| 50 | `memorybank-year` | 2 | 0.037 ±0.024 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.100 ±0.094 | 0.050 ±0.068 | 0.075 ±0.083 | n/a | 50 | 2.1 | 52.1 |
+| 50 | `memorybank-year` | 3 | 0.046 ±0.027 | 0.000 ±0.000 | 0.125 ±0.104 | 0.050 ±0.068 | 0.000 ±0.000 | 0.000 ±0.000 | 0.100 ±0.094 | 0.000 ±0.000 | 50 | 2.1 | 52.1 |
+| 50 | `memorybank-year` | 4 | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 50 | 2.1 | 52.1 |
+| 50 | `memorybank-year` | 5 | 0.025 ±0.020 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.150 ±0.112 | 0.000 ±0.000 | 50 | 2.1 | 52.1 |
+| 50 | `memorybank-year` | 6 | 0.023 ±0.016 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.075 ±0.056 | 0.013 ±0.024 | 0.050 ±0.068 | 0.000 ±0.000 | 50 | 2.2 | 52.2 |
+| 50 | `memorybank-year` | 7 | 0.037 ±0.024 | 0.000 ±0.000 | 0.150 ±0.112 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.075 ±0.083 | 0.000 ±0.000 | 50 | 2.1 | 52.1 |
+| 50 | `memorybank-year` | 8 | 0.025 ±0.020 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.150 ±0.112 | 0.000 ±0.000 | 50 | 2.2 | 52.2 |
+| 50 | `memorybank-year` | 9 | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 50 | 2.1 | 52.1 |
+| 50 | `memorybank-year` | 10 | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 50 | 2.1 | 52.1 |
 | 50 | `mem0` | 1 | 0.312 ±0.072 | 0.150 ±0.112 | 0.325 ±0.147 | 0.375 ±0.152 | n/a | n/a | 0.400 ±0.154 | n/a | 50 | 1.2 | 51.2 |
 | 50 | `mem0` | 2 | 0.208 ±0.051 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.475 ±0.157 | 0.325 ±0.147 | 0.450 ±0.156 | n/a | 50 | 1.2 | 51.2 |
 | 50 | `mem0` | 3 | 0.208 ±0.051 | 0.000 ±0.000 | 0.400 ±0.154 | 0.400 ±0.154 | 0.000 ±0.000 | 0.000 ±0.000 | 0.450 ±0.156 | 0.000 ±0.000 | 50 | 1.2 | 51.2 |
@@ -2847,6 +2988,7 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | `oldest` | `generative-agents` | 0.046 ±0.027 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.275 ±0.140 | 0.000 ±0.000 | 200 | 8.5 | 208.5 |
 | `oldest` | `reflection` | 0.042 ±0.025 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.250 ±0.136 | 0.000 ±0.000 | 200 | 9.1 | 209.1 |
 | `oldest` | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 16 | 0.7 | 16.7 |
+| `oldest` | `memorybank-year` | 0.046 ±0.027 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.275 ±0.140 | 0.000 ±0.000 | 200 | 8.5 | 208.5 |
 | `oldest` | `mem0` | 0.325 ±0.059 | 0.000 ±0.000 | 0.925 ±0.083 | 0.000 ±0.000 | 0.050 ±0.047 | 0.000 ±0.000 | 0.975 ±0.049 | 0.000 ±0.000 | 200 | 4.9 | 204.9 |
 | `oldest` | `mem0-nearest` | 0.188 ±0.047 | 0.000 ±0.000 | 0.150 ±0.112 | 0.125 ±0.104 | 0.075 ±0.056 | 0.125 ±0.068 | 0.650 ±0.150 | 0.000 ±0.000 | 82 | 2.0 | 84.0 |
 | `least-recently-read` | `shipped` | 0.438 ±0.059 | 1.000 ±0.000 | 0.300 ±0.144 | 1.000 ±0.000 | 0.138 ±0.070 | 0.188 ±0.076 | 0.000 ±0.000 | 0.000 ±0.000 | 200 | 5.0 | 96.0 |
@@ -2864,6 +3006,7 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | `least-recently-read` | `generative-agents` | 0.121 ±0.040 | 0.325 ±0.147 | 0.025 ±0.049 | 0.225 ±0.131 | 0.025 ±0.034 | 0.050 ±0.047 | 0.075 ±0.083 | 0.138 ±0.076 | 200 | 8.2 | 208.2 |
 | `least-recently-read` | `reflection` | 0.081 ±0.033 | 0.200 ±0.126 | 0.000 ±0.000 | 0.200 ±0.126 | 0.025 ±0.034 | 0.062 ±0.052 | 0.000 ±0.000 | 0.125 ±0.073 | 200 | 85.0 | 285.0 |
 | `least-recently-read` | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 16 | 0.7 | 16.7 |
+| `least-recently-read` | `memorybank-year` | 0.163 ±0.044 | 0.325 ±0.147 | 0.075 ±0.083 | 0.275 ±0.140 | 0.087 ±0.078 | 0.138 ±0.070 | 0.075 ±0.083 | 0.188 ±0.086 | 200 | 8.2 | 208.2 |
 | `least-recently-read` | `mem0` | 0.398 ±0.058 | 0.950 ±0.068 | 0.050 ±0.068 | 0.975 ±0.049 | 0.163 ±0.073 | 0.175 ±0.075 | 0.075 ±0.083 | 0.400 ±0.108 | 200 | 5.0 | 205.0 |
 | `least-recently-read` | `mem0-nearest` | 0.188 ±0.047 | 0.000 ±0.000 | 0.150 ±0.112 | 0.125 ±0.104 | 0.075 ±0.056 | 0.125 ±0.068 | 0.650 ±0.150 | 0.000 ±0.000 | 82 | 2.0 | 84.0 |
 | `never-read` | `shipped` | 0.410 ±0.059 | 0.975 ±0.049 | 0.175 ±0.119 | 1.000 ±0.000 | 0.188 ±0.076 | 0.125 ±0.068 | 0.000 ±0.000 | 0.000 ±0.000 | 200 | 5.0 | 96.0 |
@@ -2881,6 +3024,7 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | `never-read` | `generative-agents` | 0.071 ±0.031 | 0.075 ±0.083 | 0.025 ±0.049 | 0.200 ±0.126 | 0.037 ±0.041 | 0.037 ±0.041 | 0.050 ±0.068 | 0.188 ±0.086 | 200 | 8.1 | 208.1 |
 | `never-read` | `reflection` | 0.046 ±0.020 | 0.000 ±0.000 | 0.025 ±0.049 | 0.025 ±0.049 | 0.150 ±0.072 | 0.075 ±0.056 | 0.000 ±0.000 | 0.100 ±0.066 | 200 | 119.1 | 319.1 |
 | `never-read` | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 16 | 0.7 | 16.7 |
+| `never-read` | `memorybank-year` | 0.181 ±0.045 | 0.150 ±0.112 | 0.175 ±0.119 | 0.375 ±0.152 | 0.225 ±0.093 | 0.113 ±0.074 | 0.050 ±0.068 | 0.312 ±0.102 | 200 | 8.2 | 208.2 |
 | `never-read` | `mem0` | 0.388 ±0.058 | 0.950 ±0.068 | 0.025 ±0.049 | 0.975 ±0.049 | 0.175 ±0.075 | 0.150 ±0.072 | 0.050 ±0.068 | 0.400 ±0.108 | 200 | 5.0 | 205.0 |
 | `never-read` | `mem0-nearest` | 0.188 ±0.047 | 0.000 ±0.000 | 0.150 ±0.112 | 0.125 ±0.104 | 0.075 ±0.056 | 0.125 ±0.068 | 0.650 ±0.150 | 0.000 ±0.000 | 82 | 2.0 | 84.0 |
 | `lowest-salience` | `shipped` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 96.0 |
@@ -2898,6 +3042,7 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | `lowest-salience` | `generative-agents` | 0.146 ±0.045 | 0.000 ±0.000 | 0.250 ±0.136 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.625 ±0.152 | 0.000 ±0.000 | 200 | 7.9 | 207.9 |
 | `lowest-salience` | `reflection` | 0.100 ±0.038 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.600 ±0.154 | 0.000 ±0.000 | 200 | 87.4 | 287.4 |
 | `lowest-salience` | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 16 | 0.7 | 16.7 |
+| `lowest-salience` | `memorybank-year` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 7.9 | 207.9 |
 | `lowest-salience` | `mem0` | 0.325 ±0.059 | 0.000 ±0.000 | 0.925 ±0.083 | 0.000 ±0.000 | 0.050 ±0.047 | 0.000 ±0.000 | 0.975 ±0.049 | 0.000 ±0.000 | 200 | 4.9 | 204.9 |
 | `lowest-salience` | `mem0-nearest` | 0.188 ±0.047 | 0.000 ±0.000 | 0.150 ±0.112 | 0.125 ±0.104 | 0.075 ±0.056 | 0.125 ±0.068 | 0.650 ±0.150 | 0.000 ±0.000 | 82 | 2.0 | 84.0 |
 | `declared-disposable` | `shipped` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 4.9 | 96.0 |
@@ -2915,6 +3060,7 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | `declared-disposable` | `generative-agents` | 0.146 ±0.045 | 0.000 ±0.000 | 0.250 ±0.136 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.625 ±0.152 | 0.000 ±0.000 | 200 | 7.9 | 207.9 |
 | `declared-disposable` | `reflection` | 0.100 ±0.038 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.600 ±0.154 | 0.000 ±0.000 | 200 | 87.4 | 287.4 |
 | `declared-disposable` | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 16 | 0.7 | 16.7 |
+| `declared-disposable` | `memorybank-year` | 0.333 ±0.060 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 200 | 7.9 | 207.9 |
 | `declared-disposable` | `mem0` | 0.325 ±0.059 | 0.000 ±0.000 | 0.925 ±0.083 | 0.000 ±0.000 | 0.050 ±0.047 | 0.000 ±0.000 | 0.975 ±0.049 | 0.000 ±0.000 | 200 | 4.9 | 204.9 |
 | `declared-disposable` | `mem0-nearest` | 0.188 ±0.047 | 0.000 ±0.000 | 0.150 ±0.112 | 0.125 ±0.104 | 0.075 ±0.056 | 0.125 ±0.068 | 0.650 ±0.150 | 0.000 ±0.000 | 82 | 2.0 | 84.0 |
 
@@ -2937,6 +3083,7 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | 64 | `generative-agents` | 0.025 ±0.020 | 0.013 ±0.024 | 0.015 ±0.005 | 0.025 ±0.020 | 241 ±1 |
 | 64 | `reflection` | 0.029 ±0.021 | 0.000 ±0.000 | 0.012 ±0.005 | 0.029 ±0.021 | 227 ±3 |
 | 64 | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.003 ±0.002 | 0.008 ±0.012 | 240 ±2 |
+| 64 | `memorybank-year` | 0.806 ±0.047 | 0.838 ±0.081 | 0.151 ±0.012 | 0.806 ±0.047 | 233 ±2 |
 | 64 | `mem0` | 0.948 ±0.024 | 0.900 ±0.066 | 0.209 ±0.013 | 0.948 ±0.024 | 267 ±2 |
 | 64 | `mem0-nearest` | 0.188 ±0.047 | 0.000 ±0.000 | 0.113 ±0.013 | 0.188 ±0.047 | 262 ±2 |
 | 128 | `shipped` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 34 ±2 |
@@ -2954,6 +3101,7 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | 128 | `generative-agents` | 0.054 ±0.028 | 0.025 ±0.034 | 0.027 ±0.007 | 0.054 ±0.028 | 498 ±1 |
 | 128 | `reflection` | 0.046 ±0.027 | 0.025 ±0.034 | 0.024 ±0.007 | 0.046 ±0.027 | 475 ±5 |
 | 128 | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.003 ±0.002 | 0.008 ±0.012 | 483 ±1 |
+| 128 | `memorybank-year` | 0.873 ±0.041 | 0.863 ±0.076 | 0.179 ±0.013 | 0.873 ±0.041 | 493 ±2 |
 | 128 | `mem0` | 0.948 ±0.024 | 0.900 ±0.066 | 0.209 ±0.013 | 0.948 ±0.024 | 267 ±2 |
 | 128 | `mem0-nearest` | 0.188 ±0.047 | 0.000 ±0.000 | 0.113 ±0.013 | 0.188 ±0.047 | 262 ±2 |
 | 256 | `shipped` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 34 ±2 |
@@ -2971,6 +3119,7 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | 256 | `generative-agents` | 0.083 ±0.035 | 0.050 ±0.048 | 0.039 ±0.008 | 0.083 ±0.035 | 1009 ±1 |
 | 256 | `reflection` | 0.092 ±0.036 | 0.025 ±0.034 | 0.042 ±0.010 | 0.092 ±0.036 | 991 ±5 |
 | 256 | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.003 ±0.002 | 0.008 ±0.012 | 688 ±0 |
+| 256 | `memorybank-year` | 0.887 ±0.039 | 0.887 ±0.070 | 0.197 ±0.013 | 0.887 ±0.039 | 1006 ±2 |
 | 256 | `mem0` | 0.948 ±0.024 | 0.900 ±0.066 | 0.209 ±0.013 | 0.948 ±0.024 | 267 ±2 |
 | 256 | `mem0-nearest` | 0.188 ±0.047 | 0.000 ±0.000 | 0.113 ±0.013 | 0.188 ±0.047 | 262 ±2 |
 | 512 | `shipped` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 34 ±2 |
@@ -2988,6 +3137,7 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | 512 | `generative-agents` | 0.108 ±0.037 | 0.087 ±0.062 | 0.075 ±0.010 | 0.108 ±0.037 | 2027 ±1 |
 | 512 | `reflection` | 0.129 ±0.041 | 0.087 ±0.062 | 0.074 ±0.012 | 0.129 ±0.041 | 2008 ±6 |
 | 512 | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.003 ±0.002 | 0.008 ±0.012 | 688 ±0 |
+| 512 | `memorybank-year` | 0.894 ±0.038 | 0.900 ±0.066 | 0.229 ±0.016 | 0.894 ±0.038 | 2029 ±1 |
 | 512 | `mem0` | 0.948 ±0.024 | 0.900 ±0.066 | 0.209 ±0.013 | 0.948 ±0.024 | 267 ±2 |
 | 512 | `mem0-nearest` | 0.188 ±0.047 | 0.000 ±0.000 | 0.113 ±0.013 | 0.188 ±0.047 | 262 ±2 |
 | 1024 | `shipped` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 34 ±2 |
@@ -3005,6 +3155,7 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | 1024 | `generative-agents` | 0.185 ±0.048 | 0.163 ±0.081 | 0.144 ±0.020 | 0.185 ±0.048 | 4074 ±1 |
 | 1024 | `reflection` | 0.194 ±0.048 | 0.138 ±0.076 | 0.141 ±0.018 | 0.194 ±0.048 | 4061 ±5 |
 | 1024 | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.003 ±0.002 | 0.008 ±0.012 | 688 ±0 |
+| 1024 | `memorybank-year` | 0.950 ±0.025 | 0.925 ±0.058 | 0.397 ±0.032 | 0.950 ±0.025 | 4077 ±2 |
 | 1024 | `mem0` | 0.948 ±0.024 | 0.900 ±0.066 | 0.209 ±0.013 | 0.948 ±0.024 | 267 ±2 |
 | 1024 | `mem0-nearest` | 0.188 ±0.047 | 0.000 ±0.000 | 0.113 ±0.013 | 0.188 ±0.047 | 262 ±2 |
 | 2048 | `shipped` | 1.000 ±0.000 | 0.000 ±0.000 | 0.148 ±0.008 | 1.000 ±0.000 | 34 ±2 |
@@ -3022,6 +3173,7 @@ The constrained runs use the oracle arm alone: the question is what a structure 
 | 2048 | `generative-agents` | 0.392 ±0.061 | 0.412 ±0.109 | 0.253 ±0.025 | 0.392 ±0.061 | 8175 ±2 |
 | 2048 | `reflection` | 0.308 ±0.057 | 0.212 ±0.090 | 0.216 ±0.025 | 0.308 ±0.057 | 8136 ±8 |
 | 2048 | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.003 ±0.002 | 0.008 ±0.012 | 688 ±0 |
+| 2048 | `memorybank-year` | 0.971 ±0.018 | 0.938 ±0.053 | 0.639 ±0.037 | 0.971 ±0.018 | 8170 ±2 |
 | 2048 | `mem0` | 0.948 ±0.024 | 0.900 ±0.066 | 0.209 ±0.013 | 0.948 ±0.024 | 267 ±2 |
 | 2048 | `mem0-nearest` | 0.188 ±0.047 | 0.000 ±0.000 | 0.113 ±0.013 | 0.188 ±0.047 | 262 ±2 |
 <!-- end generated -->
@@ -3346,6 +3498,7 @@ Every figure outside this section was produced with the question already turned 
 | `addressed` | `oracle` | `generative-agents` | 0.108 ±0.037 | 0.200 ±0.126 | 0.000 ±0.000 | 0.175 ±0.119 | 0.050 ±0.047 | 0.100 ±0.072 | 0.125 ±0.104 | 0.087 ±0.062 | 5760.0 ±0.0 |
 | `addressed` | `oracle` | `reflection` | 0.129 ±0.041 | 0.200 ±0.126 | 0.000 ±0.000 | 0.175 ±0.119 | 0.050 ±0.047 | 0.100 ±0.072 | 0.250 ±0.136 | 0.087 ±0.062 | 5960.0 ±0.0 |
 | `addressed` | `oracle` | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 16.0 ±0.0 |
+| `addressed` | `oracle` | `memorybank-year` | 0.894 ±0.038 | 0.950 ±0.068 | 0.825 ±0.119 | 0.925 ±0.083 | 0.850 ±0.106 | 0.887 ±0.096 | 0.925 ±0.083 | 0.900 ±0.066 | 2561.0 ±0.0 |
 | `addressed` | `oracle` | `mem0` | 0.948 ±0.024 | 0.950 ±0.068 | 0.950 ±0.068 | 0.975 ±0.049 | 0.900 ±0.063 | 0.938 ±0.052 | 0.975 ±0.049 | 0.900 ±0.066 | 747.0 ±0.0 |
 | `addressed` | `oracle` | `mem0-nearest` | 0.188 ±0.047 | 0.000 ±0.000 | 0.150 ±0.112 | 0.125 ±0.104 | 0.075 ±0.056 | 0.125 ±0.068 | 0.650 ±0.150 | 0.000 ±0.000 | 82.0 ±0.0 |
 | `addressed` | `text` | `shipped` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
@@ -3363,6 +3516,7 @@ Every figure outside this section was produced with the question already turned 
 | `addressed` | `text` | `generative-agents` | 0.096 ±0.036 | 0.125 ±0.104 | 0.000 ±0.000 | 0.150 ±0.112 | 0.037 ±0.041 | 0.062 ±0.063 | 0.200 ±0.126 | 0.037 ±0.042 | 5760.0 ±0.0 |
 | `addressed` | `text` | `reflection` | 0.096 ±0.036 | 0.125 ±0.104 | 0.000 ±0.000 | 0.150 ±0.112 | 0.037 ±0.041 | 0.062 ±0.063 | 0.200 ±0.126 | 0.037 ±0.042 | 5760.0 ±0.0 |
 | `addressed` | `text` | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 16.0 ±0.0 |
+| `addressed` | `text` | `memorybank-year` | 0.894 ±0.038 | 0.950 ±0.068 | 0.825 ±0.119 | 0.925 ±0.083 | 0.850 ±0.106 | 0.887 ±0.096 | 0.925 ±0.083 | 0.900 ±0.066 | 2561.0 ±0.0 |
 | `addressed` | `text` | `mem0` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
 | `addressed` | `text` | `mem0-nearest` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
 | `worded` | `oracle` | `shipped` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
@@ -3380,6 +3534,7 @@ Every figure outside this section was produced with the question already turned 
 | `worded` | `oracle` | `generative-agents` | 0.108 ±0.037 | 0.200 ±0.126 | 0.000 ±0.000 | 0.175 ±0.119 | 0.050 ±0.047 | 0.100 ±0.072 | 0.125 ±0.104 | 0.087 ±0.062 | 5760.0 ±0.0 |
 | `worded` | `oracle` | `reflection` | 0.129 ±0.041 | 0.200 ±0.126 | 0.000 ±0.000 | 0.175 ±0.119 | 0.050 ±0.047 | 0.100 ±0.072 | 0.250 ±0.136 | 0.087 ±0.062 | 5960.0 ±0.0 |
 | `worded` | `oracle` | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 16.0 ±0.0 |
+| `worded` | `oracle` | `memorybank-year` | 0.894 ±0.038 | 0.950 ±0.068 | 0.825 ±0.119 | 0.925 ±0.083 | 0.850 ±0.106 | 0.887 ±0.096 | 0.925 ±0.083 | 0.900 ±0.066 | 2561.0 ±0.0 |
 | `worded` | `oracle` | `mem0` | 0.829 ±0.045 | 0.925 ±0.083 | 0.875 ±0.104 | 0.925 ±0.083 | 0.662 ±0.133 | 0.787 ±0.105 | 0.800 ±0.126 | 0.762 ±0.094 | 747.0 ±0.0 |
 | `worded` | `oracle` | `mem0-nearest` | 0.188 ±0.047 | 0.000 ±0.000 | 0.150 ±0.112 | 0.125 ±0.104 | 0.075 ±0.056 | 0.125 ±0.068 | 0.650 ±0.150 | 0.000 ±0.000 | 82.0 ±0.0 |
 | `worded` | `text` | `shipped` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
@@ -3397,6 +3552,7 @@ Every figure outside this section was produced with the question already turned 
 | `worded` | `text` | `generative-agents` | 0.096 ±0.036 | 0.125 ±0.104 | 0.000 ±0.000 | 0.150 ±0.112 | 0.037 ±0.041 | 0.062 ±0.063 | 0.200 ±0.126 | 0.037 ±0.042 | 5760.0 ±0.0 |
 | `worded` | `text` | `reflection` | 0.096 ±0.036 | 0.125 ±0.104 | 0.000 ±0.000 | 0.150 ±0.112 | 0.037 ±0.041 | 0.062 ±0.063 | 0.200 ±0.126 | 0.037 ±0.042 | 5760.0 ±0.0 |
 | `worded` | `text` | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 16.0 ±0.0 |
+| `worded` | `text` | `memorybank-year` | 0.894 ±0.038 | 0.950 ±0.068 | 0.825 ±0.119 | 0.925 ±0.083 | 0.850 ±0.106 | 0.887 ±0.096 | 0.925 ±0.083 | 0.900 ±0.066 | 2561.0 ±0.0 |
 | `worded` | `text` | `mem0` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
 | `worded` | `text` | `mem0-nearest` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
 | `resolved` | `oracle` | `shipped` | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 1.000 ±0.000 | 0.000 ±0.000 | 1.3 ±0.1 |
@@ -3414,6 +3570,7 @@ Every figure outside this section was produced with the question already turned 
 | `resolved` | `oracle` | `generative-agents` | 0.108 ±0.037 | 0.200 ±0.126 | 0.000 ±0.000 | 0.175 ±0.119 | 0.050 ±0.047 | 0.100 ±0.072 | 0.125 ±0.104 | 0.087 ±0.062 | 5760.0 ±0.0 |
 | `resolved` | `oracle` | `reflection` | 0.129 ±0.041 | 0.200 ±0.126 | 0.000 ±0.000 | 0.175 ±0.119 | 0.050 ±0.047 | 0.100 ±0.072 | 0.250 ±0.136 | 0.087 ±0.062 | 5960.0 ±0.0 |
 | `resolved` | `oracle` | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 16.0 ±0.0 |
+| `resolved` | `oracle` | `memorybank-year` | 0.894 ±0.038 | 0.950 ±0.068 | 0.825 ±0.119 | 0.925 ±0.083 | 0.850 ±0.106 | 0.887 ±0.096 | 0.925 ±0.083 | 0.900 ±0.066 | 2561.0 ±0.0 |
 | `resolved` | `oracle` | `mem0` | 0.948 ±0.024 | 0.950 ±0.068 | 0.950 ±0.068 | 0.975 ±0.049 | 0.900 ±0.063 | 0.938 ±0.052 | 0.975 ±0.049 | 0.900 ±0.066 | 747.0 ±0.0 |
 | `resolved` | `oracle` | `mem0-nearest` | 0.188 ±0.047 | 0.000 ±0.000 | 0.150 ±0.112 | 0.125 ±0.104 | 0.075 ±0.056 | 0.125 ±0.068 | 0.650 ±0.150 | 0.000 ±0.000 | 82.0 ±0.0 |
 | `resolved` | `text` | `shipped` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
@@ -3431,6 +3588,7 @@ Every figure outside this section was produced with the question already turned 
 | `resolved` | `text` | `generative-agents` | 0.096 ±0.036 | 0.125 ±0.104 | 0.000 ±0.000 | 0.150 ±0.112 | 0.037 ±0.041 | 0.062 ±0.063 | 0.200 ±0.126 | 0.037 ±0.042 | 5760.0 ±0.0 |
 | `resolved` | `text` | `reflection` | 0.096 ±0.036 | 0.125 ±0.104 | 0.000 ±0.000 | 0.150 ±0.112 | 0.037 ±0.041 | 0.062 ±0.063 | 0.200 ±0.126 | 0.037 ±0.042 | 5760.0 ±0.0 |
 | `resolved` | `text` | `memorybank` | 0.008 ±0.012 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.050 ±0.068 | 0.000 ±0.000 | 16.0 ±0.0 |
+| `resolved` | `text` | `memorybank-year` | 0.894 ±0.038 | 0.950 ±0.068 | 0.825 ±0.119 | 0.925 ±0.083 | 0.850 ±0.106 | 0.887 ±0.096 | 0.925 ±0.083 | 0.900 ±0.066 | 2561.0 ±0.0 |
 | `resolved` | `text` | `mem0` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
 | `resolved` | `text` | `mem0-nearest` | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 |
 
@@ -3453,6 +3611,7 @@ Every figure outside this section was produced with the question already turned 
 | `addressed` | `oracle` | `generative-agents` | 80 | 7.50 ±0.41 | 0.056 ±0.030 | 0.102 ±0.086 | 2028.2 ±0.4 | 0.990 ±0.000 | 5760.0 ±0.0 | 1.000 ±0.000 |
 | `addressed` | `oracle` | `reflection` | 80 | 7.50 ±0.41 | 0.053 ±0.030 | 0.102 ±0.086 | 2025.7 ±0.5 | 0.989 ±0.000 | 5960.0 ±0.0 | 1.000 ±0.000 |
 | `addressed` | `oracle` | `memorybank` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 688.0 ±0.0 | 0.336 ±0.000 | 16.0 ±0.0 | 1.000 ±0.000 |
+| `addressed` | `oracle` | `memorybank-year` | 80 | 7.50 ±0.41 | 0.159 ±0.027 | 0.327 ±0.133 | 2031.4 ±2.3 | 0.992 ±0.001 | 1979.0 ±0.0 | 1.000 ±0.000 |
 | `addressed` | `oracle` | `mem0` | 80 | 7.50 ±0.41 | 0.728 ±0.067 | 0.857 ±0.099 | 262.9 ±2.2 | 0.128 ±0.001 | 747.0 ±0.0 | 1.000 ±0.000 |
 | `addressed` | `oracle` | `mem0-nearest` | 80 | 7.50 ±0.41 | 0.125 ±0.024 | 0.000 ±0.000 | 257.7 ±0.9 | 0.126 ±0.000 | 82.0 ±0.0 | 1.000 ±0.000 |
 | `addressed` | `text` | `shipped` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
@@ -3470,6 +3629,7 @@ Every figure outside this section was produced with the question already turned 
 | `addressed` | `text` | `generative-agents` | 80 | 7.50 ±0.41 | 0.004 ±0.004 | 0.000 ±0.000 | 2043.0 ±0.0 | 0.998 ±0.000 | 5760.0 ±0.0 | 1.000 ±0.000 |
 | `addressed` | `text` | `reflection` | 80 | 7.50 ±0.41 | 0.004 ±0.004 | 0.000 ±0.000 | 2043.0 ±0.0 | 0.998 ±0.000 | 5760.0 ±0.0 | 1.000 ±0.000 |
 | `addressed` | `text` | `memorybank` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 688.0 ±0.0 | 0.336 ±0.000 | 16.0 ±0.0 | 1.000 ±0.000 |
+| `addressed` | `text` | `memorybank-year` | 80 | 7.50 ±0.41 | 0.159 ±0.027 | 0.327 ±0.133 | 2031.4 ±2.3 | 0.992 ±0.001 | 1979.0 ±0.0 | 1.000 ±0.000 |
 | `addressed` | `text` | `mem0` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
 | `addressed` | `text` | `mem0-nearest` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
 | `worded` | `oracle` | `shipped` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
@@ -3487,6 +3647,7 @@ Every figure outside this section was produced with the question already turned 
 | `worded` | `oracle` | `generative-agents` | 80 | 7.50 ±0.41 | 0.056 ±0.030 | 0.102 ±0.086 | 2028.2 ±0.4 | 0.990 ±0.000 | 5760.0 ±0.0 | 1.000 ±0.000 |
 | `worded` | `oracle` | `reflection` | 80 | 7.50 ±0.41 | 0.053 ±0.030 | 0.102 ±0.086 | 2025.7 ±0.5 | 0.989 ±0.000 | 5960.0 ±0.0 | 1.000 ±0.000 |
 | `worded` | `oracle` | `memorybank` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 688.0 ±0.0 | 0.336 ±0.000 | 16.0 ±0.0 | 1.000 ±0.000 |
+| `worded` | `oracle` | `memorybank-year` | 80 | 7.50 ±0.41 | 0.159 ±0.027 | 0.327 ±0.133 | 2031.4 ±2.3 | 0.992 ±0.001 | 1979.0 ±0.0 | 1.000 ±0.000 |
 | `worded` | `oracle` | `mem0` | 80 | 7.50 ±0.41 | 0.306 ±0.033 | 0.571 ±0.140 | 251.4 ±1.2 | 0.123 ±0.001 | 747.0 ±0.0 | 1.000 ±0.000 |
 | `worded` | `oracle` | `mem0-nearest` | 80 | 7.50 ±0.41 | 0.115 ±0.022 | 0.000 ±0.000 | 258.4 ±0.9 | 0.126 ±0.000 | 82.0 ±0.0 | 1.000 ±0.000 |
 | `worded` | `text` | `shipped` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
@@ -3504,6 +3665,7 @@ Every figure outside this section was produced with the question already turned 
 | `worded` | `text` | `generative-agents` | 80 | 7.50 ±0.41 | 0.004 ±0.004 | 0.000 ±0.000 | 2043.0 ±0.0 | 0.998 ±0.000 | 5760.0 ±0.0 | 1.000 ±0.000 |
 | `worded` | `text` | `reflection` | 80 | 7.50 ±0.41 | 0.004 ±0.004 | 0.000 ±0.000 | 2043.0 ±0.0 | 0.998 ±0.000 | 5760.0 ±0.0 | 1.000 ±0.000 |
 | `worded` | `text` | `memorybank` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 688.0 ±0.0 | 0.336 ±0.000 | 16.0 ±0.0 | 1.000 ±0.000 |
+| `worded` | `text` | `memorybank-year` | 80 | 7.50 ±0.41 | 0.159 ±0.027 | 0.327 ±0.133 | 2031.4 ±2.3 | 0.992 ±0.001 | 1979.0 ±0.0 | 1.000 ±0.000 |
 | `worded` | `text` | `mem0` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
 | `worded` | `text` | `mem0-nearest` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
 | `resolved` | `oracle` | `shipped` | 80 | 7.50 ±0.41 | 1.000 ±0.000 | 0.000 ±0.000 | 223.9 ±13.8 | 0.109 ±0.007 | 8.5 ±0.5 | 1.000 ±0.000 |
@@ -3521,6 +3683,7 @@ Every figure outside this section was produced with the question already turned 
 | `resolved` | `oracle` | `generative-agents` | 80 | 7.50 ±0.41 | 0.056 ±0.030 | 0.102 ±0.086 | 2028.2 ±0.4 | 0.990 ±0.000 | 5760.0 ±0.0 | 1.000 ±0.000 |
 | `resolved` | `oracle` | `reflection` | 80 | 7.50 ±0.41 | 0.053 ±0.030 | 0.102 ±0.086 | 2025.7 ±0.5 | 0.989 ±0.000 | 5960.0 ±0.0 | 1.000 ±0.000 |
 | `resolved` | `oracle` | `memorybank` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 688.0 ±0.0 | 0.336 ±0.000 | 16.0 ±0.0 | 1.000 ±0.000 |
+| `resolved` | `oracle` | `memorybank-year` | 80 | 7.50 ±0.41 | 0.159 ±0.027 | 0.327 ±0.133 | 2031.4 ±2.3 | 0.992 ±0.001 | 1979.0 ±0.0 | 1.000 ±0.000 |
 | `resolved` | `oracle` | `mem0` | 80 | 7.50 ±0.41 | 0.728 ±0.067 | 0.857 ±0.099 | 262.9 ±2.2 | 0.128 ±0.001 | 747.0 ±0.0 | 1.000 ±0.000 |
 | `resolved` | `oracle` | `mem0-nearest` | 80 | 7.50 ±0.41 | 0.125 ±0.024 | 0.000 ±0.000 | 257.7 ±0.9 | 0.126 ±0.000 | 82.0 ±0.0 | 1.000 ±0.000 |
 | `resolved` | `text` | `shipped` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
@@ -3538,6 +3701,7 @@ Every figure outside this section was produced with the question already turned 
 | `resolved` | `text` | `generative-agents` | 80 | 7.50 ±0.41 | 0.004 ±0.004 | 0.000 ±0.000 | 2043.0 ±0.0 | 0.998 ±0.000 | 5760.0 ±0.0 | 1.000 ±0.000 |
 | `resolved` | `text` | `reflection` | 80 | 7.50 ±0.41 | 0.004 ±0.004 | 0.000 ±0.000 | 2043.0 ±0.0 | 0.998 ±0.000 | 5760.0 ±0.0 | 1.000 ±0.000 |
 | `resolved` | `text` | `memorybank` | 80 | 7.50 ±0.41 | 0.003 ±0.004 | 0.000 ±0.000 | 688.0 ±0.0 | 0.336 ±0.000 | 16.0 ±0.0 | 1.000 ±0.000 |
+| `resolved` | `text` | `memorybank-year` | 80 | 7.50 ±0.41 | 0.159 ±0.027 | 0.327 ±0.133 | 2031.4 ±2.3 | 0.992 ±0.001 | 1979.0 ±0.0 | 1.000 ±0.000 |
 | `resolved` | `text` | `mem0` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
 | `resolved` | `text` | `mem0-nearest` | 80 | 7.50 ±0.41 | 0.000 ±0.000 | 0.000 ±0.000 | 0.0 ±0.0 | 0.000 ±0.000 | 0.0 ±0.0 | 1.000 ±0.000 |
 
@@ -3560,6 +3724,7 @@ Every figure outside this section was produced with the question already turned 
 | `generative-agents` | 64 | 0.009 ±0.010 | 254.6 ±0.8 | 0.995 ±0.003 | 1.000 ±0.000 |
 | `reflection` | 64 | 0.009 ±0.007 | 232.0 ±0.0 | 0.906 ±0.000 | 1.000 ±0.000 |
 | `memorybank` | 64 | 0.003 ±0.004 | 248.2 ±3.0 | 0.969 ±0.012 | 1.000 ±0.000 |
+| `memorybank-year` | 64 | 0.011 ±0.007 | 232.6 ±2.7 | 0.908 ±0.011 | 1.000 ±0.000 |
 | `mem0` | 64 | 0.728 ±0.067 | 262.9 ±2.2 | 1.027 ±0.009 | 0.275 ±0.098 |
 | `mem0-nearest` | 64 | 0.125 ±0.024 | 257.7 ±0.9 | 1.007 ±0.004 | 0.463 ±0.110 |
 | `shipped` | 128 | 1.000 ±0.000 | 223.9 ±13.8 | 0.437 ±0.027 | 1.000 ±0.000 |
@@ -3577,6 +3742,7 @@ Every figure outside this section was produced with the question already turned 
 | `generative-agents` | 128 | 0.018 ±0.020 | 493.0 ±0.0 | 0.963 ±0.000 | 1.000 ±0.000 |
 | `reflection` | 128 | 0.017 ±0.013 | 490.0 ±0.0 | 0.957 ±0.000 | 1.000 ±0.000 |
 | `memorybank` | 128 | 0.003 ±0.004 | 482.6 ±1.7 | 0.943 ±0.003 | 1.000 ±0.000 |
+| `memorybank-year` | 128 | 0.022 ±0.011 | 490.4 ±2.7 | 0.958 ±0.005 | 1.000 ±0.000 |
 | `mem0` | 128 | 0.728 ±0.067 | 262.9 ±2.2 | 0.513 ±0.004 | 1.000 ±0.000 |
 | `mem0-nearest` | 128 | 0.125 ±0.024 | 257.7 ±0.9 | 0.503 ±0.002 | 1.000 ±0.000 |
 | `shipped` | 256 | 1.000 ±0.000 | 223.9 ±13.8 | 0.219 ±0.014 | 1.000 ±0.000 |
@@ -3594,6 +3760,7 @@ Every figure outside this section was produced with the question already turned 
 | `generative-agents` | 256 | 0.035 ±0.024 | 1013.7 ±0.8 | 0.990 ±0.001 | 1.000 ±0.000 |
 | `reflection` | 256 | 0.034 ±0.024 | 1011.0 ±0.0 | 0.987 ±0.000 | 1.000 ±0.000 |
 | `memorybank` | 256 | 0.003 ±0.004 | 688.0 ±0.0 | 0.672 ±0.000 | 1.000 ±0.000 |
+| `memorybank-year` | 256 | 0.063 ±0.016 | 1007.2 ±2.8 | 0.984 ±0.003 | 1.000 ±0.000 |
 | `mem0` | 256 | 0.728 ±0.067 | 262.9 ±2.2 | 0.257 ±0.002 | 1.000 ±0.000 |
 | `mem0-nearest` | 256 | 0.125 ±0.024 | 257.7 ±0.9 | 0.252 ±0.001 | 1.000 ±0.000 |
 | `shipped` | 512 | 1.000 ±0.000 | 223.9 ±13.8 | 0.109 ±0.007 | 1.000 ±0.000 |
@@ -3611,6 +3778,7 @@ Every figure outside this section was produced with the question already turned 
 | `generative-agents` | 512 | 0.056 ±0.030 | 2028.2 ±0.4 | 0.990 ±0.000 | 1.000 ±0.000 |
 | `reflection` | 512 | 0.053 ±0.030 | 2025.7 ±0.5 | 0.989 ±0.000 | 1.000 ±0.000 |
 | `memorybank` | 512 | 0.003 ±0.004 | 688.0 ±0.0 | 0.336 ±0.000 | 1.000 ±0.000 |
+| `memorybank-year` | 512 | 0.159 ±0.027 | 2031.4 ±2.3 | 0.992 ±0.001 | 1.000 ±0.000 |
 | `mem0` | 512 | 0.728 ±0.067 | 262.9 ±2.2 | 0.128 ±0.001 | 1.000 ±0.000 |
 | `mem0-nearest` | 512 | 0.125 ±0.024 | 257.7 ±0.9 | 0.126 ±0.000 | 1.000 ±0.000 |
 | `shipped` | 1024 | 1.000 ±0.000 | 223.9 ±13.8 | 0.055 ±0.003 | 1.000 ±0.000 |
@@ -3628,6 +3796,7 @@ Every figure outside this section was produced with the question already turned 
 | `generative-agents` | 1024 | 0.110 ±0.034 | 4084.0 ±0.2 | 0.997 ±0.000 | 1.000 ±0.000 |
 | `reflection` | 1024 | 0.081 ±0.032 | 4090.8 ±3.1 | 0.999 ±0.001 | 1.000 ±0.000 |
 | `memorybank` | 1024 | 0.003 ±0.004 | 688.0 ±0.0 | 0.168 ±0.000 | 1.000 ±0.000 |
+| `memorybank-year` | 1024 | 0.238 ±0.032 | 4077.1 ±2.4 | 0.995 ±0.001 | 1.000 ±0.000 |
 | `mem0` | 1024 | 0.728 ±0.067 | 262.9 ±2.2 | 0.064 ±0.001 | 1.000 ±0.000 |
 | `mem0-nearest` | 1024 | 0.125 ±0.024 | 257.7 ±0.9 | 0.063 ±0.000 | 1.000 ±0.000 |
 | `shipped` | 2048 | 1.000 ±0.000 | 223.9 ±13.8 | 0.027 ±0.002 | 1.000 ±0.000 |
@@ -3645,6 +3814,7 @@ Every figure outside this section was produced with the question already turned 
 | `generative-agents` | 2048 | 0.223 ±0.041 | 8166.0 ±0.2 | 0.997 ±0.000 | 1.000 ±0.000 |
 | `reflection` | 2048 | 0.168 ±0.036 | 8180.4 ±4.0 | 0.999 ±0.000 | 1.000 ±0.000 |
 | `memorybank` | 2048 | 0.003 ±0.004 | 688.0 ±0.0 | 0.084 ±0.000 | 1.000 ±0.000 |
+| `memorybank-year` | 2048 | 0.437 ±0.042 | 8172.6 ±2.7 | 0.998 ±0.000 | 1.000 ±0.000 |
 | `mem0` | 2048 | 0.728 ±0.067 | 262.9 ±2.2 | 0.032 ±0.000 | 1.000 ±0.000 |
 | `mem0-nearest` | 2048 | 0.125 ±0.024 | 257.7 ±0.9 | 0.031 ±0.000 | 1.000 ±0.000 |
 
@@ -3755,9 +3925,9 @@ The figure that matters for the designs coming next is in the cost table below, 
 | quantity | value |
 |---|---|
 | model calls | 0 |
-| turns observed, over every frame and arm | 195840 |
-| contexts produced, over every frame and arm | 78880 |
-| embedder calls | 55840 |
+| turns observed, over every frame and arm | 207360 |
+| contexts produced, over every frame and arm | 83520 |
+| embedder calls | 72000 |
 | distinct texts embedded | 7616 |
 | tokens those texts estimate to | 97965 |
 | a per-turn model design: calls per run | 5760 |
@@ -3910,6 +4080,7 @@ The figure that matters for the designs coming next is in the cost table below, 
 - `go run ./docs/experiments/memory-frames/harness -seed 7` — the decade measurement and the tables in this record. Offline, no API key, no cost.
 - `go run ./docs/experiments/memory-frames/harness -harder -seed 7` — the conversation shapes, scored against the committed extractions. Offline, no API key, no cost.
 - `go run ./docs/experiments/memory-frames/harness -finding -seed 7` — the finding study, scored against the committed resolutions. Offline, no API key, no cost.
+- `go run ./docs/experiments/memory-frames/harness -memorybank-scale -seed 7` — the forgetting curve across its time constant, the retune #489 asked for. Offline, no API key, no cost.
 - `go run ./docs/experiments/memory-frames/harness -address -seed 7` — asks a model for the question each of the decade run's assertions answers, and measures the decade as above. It needs `OPENAI_API_KEY` in the environment and spends what §What the paid half cost states. The answers are committed, so every command above scores them without buying them again.
 - `go run ./docs/experiments/memory-frames/harness -prose -seed 7` — puts every assertion through the prompt, schema and parser the platform ships and every probe through the read step, and measures whether a fact lands where its own question looks. It needs `OPENAI_API_KEY` in the environment and spends what §What the paid half cost states. The answers are committed, so `-render` and the tests score them without buying them again.
 - `go run ./docs/experiments/memory-frames/harness -render` — rewrites every generated region of this record from the committed results without measuring anything.

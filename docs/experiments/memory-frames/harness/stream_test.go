@@ -134,3 +134,38 @@ func TestNormalize_ScalesBySpanAndFlattensWhereThereIsNone(t *testing.T) {
 		})
 	}
 }
+
+// The retune (#489): the same curve with its unit rescaled from the
+// paper's day to the workload's probe interval forgets nothing a year
+// apart that the day-unit curve takes inside a week — the difference
+// between the two rows is the constant, not the mechanism.
+func TestStreamFrame_RescaledCurveKeepsWhatTheDayCurveForgets(t *testing.T) {
+	ctx := context.Background()
+	build := func() Frame {
+		frame := newStreamFrameAtUnit(ruleMemoryBank, NewEmbedCounter(), 0, 24*365.25)
+		require.NoError(t, frame.Observe(ctx, observedAt(0, "Alma leads the amber-quarry project.")))
+		return frame
+	}
+	dayCurve := NewStreamFrame(ruleMemoryBank, NewEmbedCounter(), 0)
+	require.NoError(t, dayCurve.Observe(ctx, observedAt(0, "Alma leads the amber-quarry project.")))
+
+	aYearLater := observedAt(365, "a year passes.")
+	yearCurve := build()
+	require.NoError(t, yearCurve.Observe(ctx, aYearLater))
+	require.NoError(t, dayCurve.Observe(ctx, aYearLater))
+
+	heldYear, err := yearCurve.Held(ctx)
+	require.NoError(t, err)
+	heldDay, err := dayCurve.Held(ctx)
+	require.NoError(t, err)
+
+	var yearKept, dayKept bool
+	for _, text := range heldYear {
+		yearKept = yearKept || Mentions(text, "amber-quarry")
+	}
+	for _, text := range heldDay {
+		dayKept = dayKept || Mentions(text, "amber-quarry")
+	}
+	assert.True(t, yearKept, "at the probe interval's scale a record survives to the next checkpoint")
+	assert.False(t, dayKept, "at the paper's day scale the same record is gone inside it")
+}

@@ -106,17 +106,30 @@ type streamFrame struct {
 	// pending is the importance summed since the last reflection, which is
 	// what the reflecting rule triggers on.
 	pending float64
+	// retentionUnitHours is the span of elapsed time the forgetting
+	// curve's unit interval covers. The paper's unit is a day, because it
+	// models a person over days; a run over a decade rescales it (#489).
+	retentionUnitHours float64
 }
 
 // NewStreamFrame returns the memory stream under one published design's
 // rule. A budget of zero takes the shipped default, which is what the
 // document frame takes and what every unconstrained figure is measured at.
 func NewStreamFrame(rule streamRule, counter *EmbedCounter, budget int) Frame {
+	return newStreamFrameAtUnit(rule, counter, budget, 24)
+}
+
+// newStreamFrameAtUnit is the stream with the forgetting curve's time
+// unit set: 24 hours is the paper's day. MemoryBank states the curve and
+// not the scale it runs at, so a workload a decade wide takes the unit as
+// the knob the record names.
+func newStreamFrameAtUnit(rule streamRule, counter *EmbedCounter, budget int, unitHours float64) Frame {
 	limit := documentLimit
 	if budget > 0 {
 		limit = budget * charsPerToken
 	}
-	return &streamFrame{rule: rule, budget: limit, embedder: counter.Wrap(NewHashingEmbedder())}
+	return &streamFrame{rule: rule, budget: limit, embedder: counter.Wrap(NewHashingEmbedder()),
+		retentionUnitHours: unitHours}
 }
 
 // Observe appends the turn as a record, and on the reflecting rule
@@ -203,7 +216,7 @@ func (f *streamFrame) reflect(ctx context.Context, at time.Time) error {
 func (f *streamFrame) forget(at time.Time) {
 	kept := f.items[:0]
 	for _, item := range f.items {
-		if retention(item, at) >= forgettingThreshold {
+		if f.retention(item, at) >= forgettingThreshold {
 			kept = append(kept, item)
 		}
 	}
@@ -211,14 +224,15 @@ func (f *streamFrame) forget(at time.Time) {
 }
 
 // retention is the Ebbinghaus curve MemoryBank keeps a record by: the
-// elapsed days since it was last recalled, over the strength its rehearsals
-// have built.
-func retention(item *streamItem, at time.Time) float64 {
-	days := at.Sub(item.accessed).Hours() / 24
-	if days <= 0 {
+// elapsed curve units since it was last recalled, over the strength its
+// rehearsals have built. What a unit spans is the frame's
+// retentionUnitHours — a day as the paper runs it.
+func (f *streamFrame) retention(item *streamItem, at time.Time) float64 {
+	units := at.Sub(item.accessed).Hours() / f.retentionUnitHours
+	if units <= 0 {
 		return 1
 	}
-	return math.Exp(-days / item.strength)
+	return math.Exp(-units / item.strength)
 }
 
 // Context ranks the whole stream against the turn and returns the top of it

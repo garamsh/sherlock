@@ -171,9 +171,15 @@ const (
 	frameLog               = "log"
 	frameGenerativeAgents  = "generative-agents"
 	frameMemoryBank        = "memorybank"
-	frameReflection        = "reflection"
-	frameMem0              = "mem0"
-	frameMem0Nearest       = "mem0-nearest"
+	frameMemoryBankYear    = "memorybank-year"
+	// The two sweep-only neighbours of memorybank-year: the curve's
+	// sensitivity to the unit is reported across them (#489), and they
+	// are not in frameNames, so no comparison table carries them.
+	frameMemoryBankQuarterYear = "memorybank-quarter-year"
+	frameMemoryBankFourYears   = "memorybank-four-years"
+	frameReflection            = "reflection"
+	frameMem0                  = "mem0"
+	frameMem0Nearest           = "mem0-nearest"
 )
 
 // frameNames is the order every result file and table reports the frames
@@ -184,7 +190,7 @@ var frameNames = []string{
 	frameAttributeSingle, frameAttributeMulti, frameAttributeLearned, frameAttributeCued,
 	frameAttributeDeclared, frameQuestion, frameQuestionDeclared,
 	frameInterval, frameIntervalDeclared, frameLog,
-	frameGenerativeAgents, frameReflection, frameMemoryBank, frameMem0, frameMem0Nearest,
+	frameGenerativeAgents, frameReflection, frameMemoryBank, frameMemoryBankYear, frameMem0, frameMem0Nearest,
 }
 
 // NewFrame builds a frame by name. dir is a directory the frame may keep
@@ -221,6 +227,16 @@ func NewFrame(name, dir string, counter *EmbedCounter, budget int) (Frame, error
 		return NewStreamFrame(ruleReflection, counter, budget), nil
 	case frameMemoryBank:
 		return NewStreamFrame(ruleMemoryBank, counter, budget), nil
+	case frameMemoryBankYear:
+		// The same design with the curve's unit rescaled to the probe
+		// interval: one year, so a record read at one checkpoint
+		// survives to the next. The constant is derived from the
+		// workload's cadence, not fit to a score (#489).
+		return newStreamFrameAtUnit(ruleMemoryBank, counter, budget, 24*365.25), nil
+	case frameMemoryBankQuarterYear:
+		return newStreamFrameAtUnit(ruleMemoryBank, counter, budget, 24*365.25/4), nil
+	case frameMemoryBankFourYears:
+		return newStreamFrameAtUnit(ruleMemoryBank, counter, budget, 4*24*365.25), nil
 	case frameMem0:
 		return NewMem0Frame(counter), nil
 	case frameMem0Nearest:

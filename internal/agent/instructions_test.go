@@ -14,7 +14,7 @@ func TestComposeInstructions_EmbeddedDefaultEgo(t *testing.T) {
 	composed := agent.ComposeInstructions("")
 
 	assert.True(t, strings.HasPrefix(composed, strings.TrimSpace(agent.DefaultEgo)),
-		"empty ego selects the embedded EGO.md")
+		"empty ego selects the embedded ego.md")
 	assert.Contains(t, composed, agent.Contract)
 	assert.Contains(t, composed, "memory_ops", "writeback contract is always present")
 }
@@ -240,7 +240,7 @@ func TestContract_MultiMessageTurn(t *testing.T) {
 }
 
 // TestDefaultEgo_BehaviorGuidance pins the identity + behavior lines the
-// expanded EGO.md carries (issue #96; proposal #94).
+// expanded ego.md carries (issue #96; proposal #94).
 func TestDefaultEgo_BehaviorGuidance(t *testing.T) {
 	assert.Contains(t, agent.DefaultEgo,
 		"one continuous session per environment",

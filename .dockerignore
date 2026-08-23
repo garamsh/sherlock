@@ -5,7 +5,7 @@
 # binaries reached it in #597.
 #
 # The re-includes are directories rather than globs on purpose:
-# internal/agent/instructions.go embeds EGO.md, so a `*.go` allow-list would
+# internal/agent/instructions.go embeds ego.md, so a `*.go` allow-list would
 # drop an embedded asset and break the build.
 *
 !go.mod

@@ -150,7 +150,7 @@ func AddAgentFlags(fs *pflag.FlagSet) {
 	fs.String("workspace-addr", defaultWorkspaceAddr,
 		"gRPC endpoint of the agent's workspace (the data plane the tools call)")
 	fs.String("ego-file", "",
-		"ego file for the agent's instructions (default: embedded EGO.md)")
+		"ego file for the agent's instructions (default: embedded ego.md)")
 }
 
 // Resolve builds the agent's effective Config from fs using viper's

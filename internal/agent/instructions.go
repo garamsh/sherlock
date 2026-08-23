@@ -5,11 +5,11 @@ import (
 	"strings"
 )
 
-// DefaultEgo is the built-in ego: the EGO.md file embedded into the
+// DefaultEgo is the built-in ego: the ego.md file embedded into the
 // binary, used when Options.Ego is empty. The ego is a file like any
 // other — the default is not a special string constant.
 //
-//go:embed EGO.md
+//go:embed ego.md
 var DefaultEgo string
 
 // addressContract is the platform's account of what an address is: the

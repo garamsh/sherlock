@@ -1,7 +1,7 @@
 # ADR 0006: Memory lifecycle — curation-only, salience-tiered retention
 
 > Status: accepted
-> Date: 2026-07-25 (revised in place 2026-08-14; 2026-08-17)
+> Date: 2026-07-25 (revised in place 2026-08-14; 2026-08-17; 2026-08-23)
 
 ## Context
 
@@ -16,7 +16,7 @@ That experiment also produced a mechanism this record no longer carries: superse
 Memory and context are separate stores connected by an automatic loop. Context is organized around the current task; long-term memory flows in and out of it each turn.
 
 1. **Frame** — at each user request the agent articulates the current task in context. The task statement anchors what follows.
-2. **Recall** — the runtime reads the memories held at the address the turn's question resolves to, and injects them. The step that resolves a question into an address is ADR 0018's read step and is not built, so the runtime wires no recall hook and the step contributes nothing to a turn (`memory.md` §Current state). What replaced the hybrid-search query it used to run is not a better query: an addressed store answers nothing asked in words, which is the other face of identity being settled before the read rather than inferred during it (ADR 0018).
+2. **Recall** — the runtime reads the memories held at the address the turn's question resolves to, and injects them. The step that resolves a question into an address is ADR 0018's read step, decided by ADR 0019 and built: the runtime wires it as the session's recall hook, and the turn reports the outcome it reached (`memory.md` §Current state). What replaced the hybrid-search query it used to run is not a better query: an addressed store answers nothing asked in words, which is the other face of identity being settled before the read rather than inferred during it (ADR 0018).
 3. **Act** — the agent executes with the composed context. Accessed memories have `access_count` and `last_accessed` updated automatically.
 4. **Writeback** — a turn ends by calling the reserved writeback tool, and its arguments are the document: the visible reply, and the list of facts the turn states. The list is a field of that document, never a block the model may omit, and an empty list is an answer it states. It travels as a tool rather than as a response format because a response format is a promise a provider can accept and ignore (#615), and because the session can refuse to end a turn without the call where it cannot refuse to accept prose. Each entry is an address, a value, and — where the sentence adds a value that leaves the question alone — an operation (ADR 0018).
 5. **Write-time coherence is removed.** The step retrieved the most similar existing memories and presented them for the model's judgment, so related memories were corrected together instead of drifting into contradiction. That is what a store which could not compute which memory a write was for needed; ADR 0018's address computes it and the operation the write states says what to do about it, so the note has nothing left to ask. It went with the similarity read it was built on (#582).

@@ -1,7 +1,7 @@
 # ADR 0020: The image repositories are immutable, and a consumer references an image by digest
 
 > Status: accepted
-> Date: 2026-08-24
+> Date: 2026-08-24 (revised in place 2026-08-24)
 
 ## Context
 
@@ -9,7 +9,7 @@ gagent publishes two images — `garam/gagent-agent` and `garam/gagent-workspace
 
 That description was load-bearing while it lasted. `garamsh/infra` planned a mutability flip across five ECR repositories, read `IMMUTABLE` here, and restructured the change so each application states its own repository setting instead (2026-08-23). It did that work by being accurate on the day it was read, which is what a description of another project's account cannot be relied on to stay.
 
-What makes immutability a requirement rather than a preference is in this repository. `Makefile` derives `REVISION` from the checked-out commit and does not mark a dirty tree, and both Dockerfiles carry that value into `org.opencontainers.image.revision`. A build of a dirty tree is therefore labelled with a clean commit whose tree was not what was built.
+What makes immutability a requirement rather than a preference is in this repository. `REVISION` is the checked-out commit and marks no dirty tree, and both Dockerfiles carry it into `org.opencontainers.image.revision` while the recipe carries it into the tag — so an image built from a tree that had moved past that commit still reads as the commit's own, in its label and in its name. `make build-images` refuses to make one where that revision is the git default: it compares what docker reads — the build context, the Dockerfile it is handed, and the `.dockerignore` that decides what the context holds — against the commit, and names the paths that differ (#696, #698). The refusal is scoped to the default because an explicit `REVISION=` is a claim its author is making, so a mislabelled image stays something a person can build deliberately and nothing in the artifact marks it as one. What bounds it from there is the repository refusing the second push of a tag.
 
 ## Decision
 
@@ -40,8 +40,8 @@ A tag's stability rests on a repository setting that can be changed retroactivel
 ## Consequences
 
 - **A reader who cannot see the account can act on `deployment.md` §Images and tags, and a reviewer can check it against the account.** The section states what the repositories owe this project; nothing in it goes stale when a setting there changes, because it describes no setting.
-- **Immutability bounds the dirty-tree failure without preventing it.** The refusal fires on the second push of a name, so the first push of a dirty build succeeds and is indistinguishable from a clean one — nothing marks a dirty tree, `REVISION` being the checked-out commit either way.
-- **Nothing produces a tag this rule can be applied to yet.** `make build-images` names what it builds `gagent-agent` and `gagent-workspace`, which is `:latest` — the moving tag this record forbids — so the pushed tag would be invented at the command line. #692 owns that, and the release workflow and its IAM role still do not exist (`deployment.md` §Images and tags).
+- **Immutability bounds the dirty-tree failure, and the build no longer produces one by default.** The repository's refusal fires on the *second* push of a name, so a first push of a mislabelled image would still succeed and read as clean — `REVISION` marks no dirty tree either way. What can still produce one is narrow and named: a build passing its own `REVISION=`, which the guard exempts because a stated revision is a claim its author made, and a change to something the build does not read. The `Makefile` that invokes docker is outside the check deliberately — a guard that refused the build of its own repair is what gets overridden rather than obeyed (#695) — while everything docker itself reads is inside it (#698).
+- **The tag is derived, and nothing pushes it.** `make build-images` tags each image with the same `REVISION` its revision label carries, so a tag cannot name one commit while the label names another, and there is no `:latest` for an immutable repository to take once and refuse after (#693). What does not exist is the release path — no workflow, no IAM role (`deployment.md` §Images and tags) — so the rule these repositories are created under binds nothing here yet and falls on whoever pushes first.
 - **Nothing here enforces any of this**, which is why it is stated as a requirement. The obligations bind whoever creates the repositories and whoever pushes to them; this repository cannot read the setting and does not try.
 - **A bad image at a taken tag is replaced by a new tag, never overwritten.** That cost is accepted: it is the same refusal the record is chosen for.
 - **The account's own hygiene is unconstrained by this record.** It states what gagent requires, not what the account may hold, so a lifecycle or scanning policy `garamsh/infra` adds for reasons of its own contradicts nothing here and needs no change to this document.
@@ -49,7 +49,7 @@ A tag's stability rests on a repository setting that can be changed retroactivel
 ## Rejected alternatives
 
 - **Making the description true** — adding the lifecycle policy so the sentence holds. It leaves a description of another project's account in this document, free to go stale again with nothing here able to notice. The false clause was the visible instance; the form was the defect (#690).
-- **`MUTABLE` repositories with digest-pinned consumers.** A consumer that references the digest is unharmed by a moved tag, so mutability would cost it nothing. Rejected for what it costs elsewhere: the tag stops naming a build for anyone who reads one, and the silent overwrite of a dirty-tree build is a failure nothing else on the path notices.
+- **`MUTABLE` repositories with digest-pinned consumers.** A consumer that references the digest is unharmed by a moved tag, so mutability would cost it nothing. Rejected for what it costs elsewhere: the tag stops naming a build for anyone who reads one, and a silent overwrite is the failure on this path that leaves no trace. The build-time guard refuses the mislabelled image a second push would carry, but only where the revision is the default, and nothing in this repository reaches what a registry does with a tag it already holds.
 - **A moving bring-up tag (`dev`), as garam uses for its own repositories.** It cannot exist in an immutable repository, and the argument for immutability is strongest exactly there, where dirty-tree builds are most likely.
 - **`imagePullPolicy: IfNotPresent`, the orchestrator's default.** It turns a reference that stopped resolving into a per-node stale-cache fault that presents as the node's.
 - **Querying the account to settle what it currently holds.** The required form does not depend on what is there, so the answer would change nothing — and it is not this repository's account to inspect.

@@ -1,7 +1,7 @@
 # ADR 0019: A question becomes an address before the store is read, and a read that finds nothing there widens to the subject
 
 > Status: accepted
-> Date: 2026-08-17
+> Date: 2026-08-17 (revised in place 2026-08-23)
 
 ## Contents
 - Context
@@ -12,13 +12,13 @@
 
 ## Context
 
-`docs/architecture/memory.md` §Current state says the agent recalls nothing. The store holds an address and a value and answers every class in full when handed one; the writeback states an address, a value and an operation in the reserved tool call a turn ends on. What is missing is the half that turns a question into an address: asked in words, an addressed store answers nothing at all, so the finding has to happen in front of it (ADR 0018 §What ships is three parts).
+When this decision was taken, `docs/architecture/memory.md` §Current state said the agent recalled nothing. The store holds an address and a value and answers every class in full when handed one; the writeback states an address, a value and an operation in the reserved tool call a turn ends on. What was missing was the half that turns a question into an address: asked in words, an addressed store answers nothing at all, so the finding has to happen in front of it (ADR 0018 §What ships is three parts).
 
 ADR 0018 named that step and left it unbuilt. It also recorded what nobody has measured about it — the one resolution figure was taken resolving into the topic address space, and "resolution into a question-shaped address space is reasoned about and measured nowhere" (§What is not measured).
 
 Two things the experiment record settles bound what this decision may claim, and both are limits rather than results.
 
-The record had to write its own read step, "because the platform ships none — #336 step 3 is where one lands", and it deliberately gave that step no more than the write had: the write prompt's own two address sentences with "statement" read as "question", no example, no subject list, no attribute list. Its reason is the one this decision inherits — "A read prompt carrying more than the write prompt could place a question the write could not, and the figure would then describe the read prompt" (`docs/experiments/memory-frames/` §Limits).
+The record had to write its own read step, "because the platform shipped none when this round ran" (`docs/experiments/memory-frames/` §Limits), and it deliberately gave that step no more than the write had: the write prompt's own two address sentences with "statement" read as "question", no example, no subject list, no attribute list. Its reason is the one this decision inherits — "A read prompt carrying more than the write prompt could place a question the write could not, and the figure would then describe the read prompt" (§Limits).
 
 And the prose lever is close to exhausted against that workload. Two revisions were measured; the second scored `0.394` against the first's `0.380`, "well inside both intervals", and the record reads further gain as "guessing which interrogative a probe author chose, and that is fitting the workload rather than fixing the prose" (§What the shipped prose produces). A better prompt is not what makes the agent recall.
 
@@ -92,9 +92,9 @@ These are limits of the decision, recorded here rather than left to be discovere
 
 - **A turn gains one model call, before the reasoning loop rather than inside it.** ADR 0018 anticipated this as one call per question; a turn drains up to eight messages and renders them as one input (ADR 0015), so concretely it is one call per turn. The act loop already makes one call per iteration up to its own cap (`internal/agent/`), so the addition is one call beside several — and it is unconditional, paid on turns that need no memory. It is on the critical path: nothing is recalled until it returns.
 - **The nearest measured cost is the record's resolution run** — `680` calls for `98121` prompt and `6977` completion tokens (§What the paid half cost) — and it is not this design's cost: a different model, a shorter prompt, and the topic address space.
-- **`docs/architecture/memory.md`'s account of recall changes when this is implemented, and not before.** This record decides the design; no code changes with it, and the agent still recalls nothing until #336 step 3 is built.
+- **`docs/architecture/memory.md`'s account of recall is this design, built.** #336 step 3 landed it (#634): the recall hook in `internal/agent/memory/` resolves the turn's task into an address, the runtime hands it the session's model, and the agent recalls on every turn. `0.394` is that step's own accuracy on the record's workload, so building it did not raise the figure.
 - **The seams this needs already exist, and no new one is introduced.** `agent.Recaller` is the hook and takes the turn's task statement; `agent.Model` is the model surface (ADR 0004); `internal/memory`'s two addressed reads are exactly the two shapes the step resolves to. What is new is that a recall hook implementation in `internal/agent/memory/` needs the model as well as the store, which is a wiring change in the runtime rather than a boundary.
-- **The recall event gains a reason.** It carries what was injected; it will have to carry which of the two emptinesses produced an empty recall, which is a field rather than a new event.
+- **The recall event carries a reason.** It carries what was injected and, in a field rather than a new event, which of the two emptinesses produced an empty recall.
 - **No new provider configuration.** The step uses the session's own model. A second provider section for a resolver would be the shape #582 deleted when the embedder's went, and nothing here needs a different model from the one the turn already runs on.
 - **The store needs nothing.** `At` answers the address and the restrictions under it; `UnderSubject` answers the widening. Both are built and measured.
 - **The failure mode ADR 0018 inverted stays inverted.** A misaddressed question still answers nothing rather than something superseded; the widening reduces how often that happens without introducing a way to return something wrong.

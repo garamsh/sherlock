@@ -63,12 +63,12 @@ const columns = `id, subject, question, restriction, value, importance_score,
 // sentence is a model call, and the store does not make one.
 var ErrPreAddressedStore = errors.New("memory.db holds the pre-addressed schema")
 
-// Store is the SQLite-backed memory.Store.
+// Store is the SQLite-backed memory.Storer.
 type Store struct {
 	db *sql.DB
 }
 
-var _ memory.Store = (*Store)(nil)
+var _ memory.Storer = (*Store)(nil)
 
 // Open opens (creating on first use) the memory.db at path.
 func Open(path string) (*Store, error) {
@@ -106,10 +106,10 @@ func holdsSentences(db *sql.DB) (bool, error) {
 	return count > 0, nil
 }
 
-// Close implements memory.Store.
+// Close implements memory.Storer.
 func (s *Store) Close() error { return s.db.Close() }
 
-// Write implements memory.Store. A value already active at the address
+// Write implements memory.Storer. A value already active at the address
 // is not stored twice: the write moves its timestamp and returns the row
 // that was already there, so restating a fact holds it once.
 func (s *Store) Write(ctx context.Context, m memory.Memory, supersede []int64, at time.Time) (int64, []int64, error) {
@@ -164,24 +164,24 @@ func (s *Store) Write(ctx context.Context, m memory.Memory, supersede []int64, a
 	return id, archived, nil
 }
 
-// At implements memory.Store.
+// At implements memory.Storer.
 func (s *Store) At(ctx context.Context, a memory.Address) ([]memory.Memory, error) {
 	return s.query(ctx,
 		`WHERE subject = ? AND question = ? AND restriction = ?`,
 		a.Subject, a.Question, a.Restriction)
 }
 
-// UnderQuestion implements memory.Store.
+// UnderQuestion implements memory.Storer.
 func (s *Store) UnderQuestion(ctx context.Context, subject, question string) ([]memory.Memory, error) {
 	return s.query(ctx, `WHERE subject = ? AND question = ?`, subject, question)
 }
 
-// UnderSubject implements memory.Store.
+// UnderSubject implements memory.Storer.
 func (s *Store) UnderSubject(ctx context.Context, subject string) ([]memory.Memory, error) {
 	return s.query(ctx, `WHERE subject = ?`, subject)
 }
 
-// Active implements memory.Store.
+// Active implements memory.Storer.
 func (s *Store) Active(ctx context.Context) ([]memory.Memory, error) {
 	return s.query(ctx, ``)
 }
@@ -210,7 +210,7 @@ func (s *Store) query(ctx context.Context, where string, args ...any) ([]memory.
 	return out, rows.Err()
 }
 
-// Archive implements memory.Store: the row moves to the archive table
+// Archive implements memory.Storer: the row moves to the archive table
 // with superseded_by and valid_to recorded; nothing is hard-deleted.
 func (s *Store) Archive(ctx context.Context, id int64, supersededBy int64, validTo time.Time) error {
 	tx, err := s.db.BeginTx(ctx, nil)
@@ -253,7 +253,7 @@ func archiveTx(ctx context.Context, tx *sql.Tx, id int64, supersededBy int64, va
 	return nil
 }
 
-// RecordAccess implements memory.Store.
+// RecordAccess implements memory.Storer.
 func (s *Store) RecordAccess(ctx context.Context, ids []int64, at time.Time) error {
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {

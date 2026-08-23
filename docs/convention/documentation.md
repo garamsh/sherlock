@@ -1,6 +1,6 @@
 # Documentation Conventions
 
-What makes documentation valid in this project. Applies to every authored Markdown document in the repository — what makes a file authored is that regenerating it changes something — to prose in build and configuration files, and to GitHub artifacts (issues, PRs, comments). Violations are grounds for PR rejection.
+What makes documentation valid in this project. Applies to every Markdown document in this repository, to prose in build and configuration files, and to GitHub artifacts (issues, PRs, comments). Violations are grounds for PR rejection.
 
 ## Keep it maintainable
 

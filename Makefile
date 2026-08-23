@@ -101,8 +101,50 @@ build-tools:
 #
 # The guard fails closed: an empty REVISION builds `gagent-agent:`, and docker
 # reports the reference it was handed rather than the metadata that is missing.
+#
+# The second guard is the tree the label claims. `REVISION` is the checked-out
+# commit and marks nothing, so a dirty tree is labelled and tagged with a
+# commit whose tree was not what was built, and an immutable repository takes
+# that first push rather than refusing it (ADR 0020, #695).
+#
+# What the tree is measured over is the build context — the source the images
+# are built from — so an edit to a document, a test, or this file does not
+# fail the build. The context is an allow-list, `*` and then re-includes, so
+# the paths it admits are the paths $(DOCKERIGNORE) re-includes: read out of
+# the file that owns that list rather than restated here (#591). A file of any
+# other shape reads as no paths at all, and the recipe fails on that rather
+# than checking a pathspec that is not the context.
+DOCKERIGNORE = .dockerignore
+ignore_patterns = $(shell sed -e '/^[[:space:]]*\#/d' -e '/^[[:space:]]*$$/d' $(DOCKERIGNORE) 2>/dev/null)
+allow_list = $(filter *,$(firstword $(ignore_patterns)))
+context_paths = $(if $(allow_list),$(patsubst !%,%,$(filter !%,$(ignore_patterns))))
+
+# Read paths that are not in the tree. They are handed to git as pathspecs,
+# and one git cannot answer for — a leading `/`, a name that moved — matches
+# nothing and reports a clean tree, so the recipe refuses them rather than
+# checking less than it says it checked.
+missing_paths = $(filter-out $(wildcard $(context_paths)),$(context_paths))
+
+# The check runs on the default revision only. An explicit one is a claim its
+# author made about what they are building, and CI makes it every run
+# (.github/workflows/ci.yml); the default is a claim nobody made. Everything
+# the check reads hangs off this, so a caller who passed a commit needs no git
+# metadata and no readable $(DOCKERIGNORE) to build.
+revision_is_default = $(filter file,$(origin REVISION))
+
+# The context paths that differ from what REVISION names, status column cut
+# off so the message names paths. Untracked files are among them: the context
+# admits a path whether git tracks it or not. An empty REVISION is a checkout
+# git could not read at all, which the guard below reports, so nothing asks it
+# a second question here.
+dirty_context = $(if $(and $(REVISION),$(revision_is_default),$(context_paths)),$(shell git status --porcelain -- $(context_paths) | cut -c4-))
+
 build-images:
 	@test -n "$(REVISION)" || { echo "build-images: REVISION is empty, and it is both the tag and the label; the default reads 'git rev-parse HEAD', which a checkout with no git metadata does not answer - pass one: make build-images REVISION=<commit>"; exit 1; }
+	@test -z "$(revision_is_default)" || test -n "$(context_paths)" || { echo "$(DOCKERIGNORE): want '*' and then one '!<path>' per admitted path, read [$(ignore_patterns)]: the tree is checked over the paths this file re-includes, which are the build context only while everything is excluded first"; exit 1; }
+	@test -z "$(revision_is_default)" || test -z "$(missing_paths)" || { echo "$(DOCKERIGNORE): re-includes [$(missing_paths)], which $(CURDIR) does not hold: every admitted path is read as a git pathspec and one that matches nothing reports a clean tree"; exit 1; }
+	@test -z "$(dirty_context)" || { echo "build-images: the build context differs from $(REVISION), which every image built here is labelled and tagged with, at [$(dirty_context)]. Commit those paths, or name what you are building: make build-images REVISION=<commit>"; exit 1; }
+	@echo "build-images: $(if $(revision_is_default),the build context [$(context_paths)] matches $(REVISION),REVISION=$(REVISION) was passed in and the build context is not checked against it)"
 	docker build -f build/agent.Dockerfile --build-arg REVISION="$(REVISION)" -t gagent-agent:$(REVISION) .
 	docker build -f build/workspace.Dockerfile --build-arg REVISION="$(REVISION)" -t gagent-workspace:$(REVISION) .
 

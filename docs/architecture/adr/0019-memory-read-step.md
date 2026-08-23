@@ -18,7 +18,7 @@ ADR 0018 named that step and left it unbuilt. It also recorded what nobody has m
 
 Two things the experiment record settles bound what this decision may claim, and both are limits rather than results.
 
-The record had to write its own read step, "because the platform ships none — #336 step 3 is where one lands", and it deliberately gave that step no more than the write had: the write prompt's own two address sentences with "statement" read as "question", no example, no subject list, no attribute list. Its reason is the one this decision inherits — "A read prompt carrying more than the write prompt could place a question the write could not, and the figure would then describe the read prompt" (`docs/experiments/memory-frames/` §Limits).
+The record had to write its own read step, "because the platform shipped none when this round ran" (`docs/experiments/memory-frames/` §Limits), and it deliberately gave that step no more than the write had: the write prompt's own two address sentences with "statement" read as "question", no example, no subject list, no attribute list. Its reason is the one this decision inherits — "A read prompt carrying more than the write prompt could place a question the write could not, and the figure would then describe the read prompt" (§Limits).
 
 And the prose lever is close to exhausted against that workload. Two revisions were measured; the second scored `0.394` against the first's `0.380`, "well inside both intervals", and the record reads further gain as "guessing which interrogative a probe author chose, and that is fitting the workload rather than fixing the prose" (§What the shipped prose produces). A better prompt is not what makes the agent recall.
 

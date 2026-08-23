@@ -1,8 +1,10 @@
 .PHONY: lint format format-fix test test-privileged build build-tools build-images toolchain-image proto ci hooks
 
-# The revision the images are labelled with. CI passes the commit it built;
-# the default is what a contributor's checkout is sitting on.
-REVISION ?= $(shell git rev-parse HEAD)
+# The revision the images are labelled and tagged with. CI passes the commit it
+# built; the default is what a contributor's checkout is sitting on, and empty
+# where there is no checkout to read. `build-images` reports that case itself,
+# so git's message is dropped rather than repeated once per expansion.
+REVISION ?= $(shell git rev-parse HEAD 2>/dev/null)
 
 # Where `test-privileged` builds the test binary. Not under the repository:
 # the file is written and run by root, and the worktree keeps no root-owned
@@ -90,9 +92,19 @@ build-tools:
 # Builds both platform images (ADR 0017); nothing is pushed and no registry is
 # named here. The build context is the repository root because the build stage
 # copies the module.
+#
+# The tag is $(REVISION), the same value the revision label carries, so an
+# image cannot be tagged one commit and labelled another. It is not `:latest`,
+# which the immutable repositories these images require (deployment.md §Images
+# and tags) take once and never again — leaving the tag to be invented at a
+# push command line, which is where a wrong one enters (#692).
+#
+# The guard fails closed: an empty REVISION builds `gagent-agent:`, and docker
+# reports the reference it was handed rather than the metadata that is missing.
 build-images:
-	docker build -f build/agent.Dockerfile --build-arg REVISION="$(REVISION)" -t gagent-agent .
-	docker build -f build/workspace.Dockerfile --build-arg REVISION="$(REVISION)" -t gagent-workspace .
+	@test -n "$(REVISION)" || { echo "build-images: REVISION is empty, and it is both the tag and the label; the default reads 'git rev-parse HEAD', which a checkout with no git metadata does not answer - pass one: make build-images REVISION=<commit>"; exit 1; }
+	docker build -f build/agent.Dockerfile --build-arg REVISION="$(REVISION)" -t gagent-agent:$(REVISION) .
+	docker build -f build/workspace.Dockerfile --build-arg REVISION="$(REVISION)" -t gagent-workspace:$(REVISION) .
 
 # The toolchain image the privileged CI job runs in, read out of the
 # Dockerfile that owns the pin rather than restated in the workflow (#633).

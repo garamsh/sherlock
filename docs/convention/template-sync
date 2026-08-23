@@ -1,0 +1,33 @@
+# Template sync record
+#
+# What this repository last took from `template/main`, and what it deliberately
+# did not take. Read by a person; no tool parses it.
+#
+# `git log <last-audited>..template/main -- docs/convention/` lists what has not
+# been considered yet. The skip list below is the half that diffing cannot
+# supply: to `git diff main template/main`, a divergence this project chose and
+# an update it never saw are the same hunk.
+
+last-audited: 65e0087
+
+# What that revision covers. This record begins here and does not claim the
+# history below 65e0087 was examined commit by commit — it was adopted without a
+# record of what it skipped. A sync that reaches further back re-establishes
+# that rather than reading coverage into this line.
+audited-paths:
+  docs/convention/documentation.md
+  docs/convention/review.md
+  docs/convention/README.md
+
+# Deliberate divergences. Each names the decision that owns it, so a later sync
+# re-proposes nothing already settled.
+skipped:
+  documentation.md:3 — the build-and-configuration-file clause. Not an upstream
+    omission and not a missed update: no revision of the template's scope line
+    has ever carried it. #454 added it here for #388 (a Dockerfile citing ADR
+    0018 against a log ending at 0017) and #390 (six sites describing a
+    compile-time tool import), defect classes reached by no other rule. The
+    removal in b4872ad is not adopted; the reversed authored test that commit
+    also removed is.
+  stack-go.md, docs/architecture/, README.md — project-owned, per the Update
+    table in the sync-conventions skill. Never taken from the template.

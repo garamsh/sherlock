@@ -61,10 +61,9 @@ type Store interface {
 //
 // Neither read takes a query in words. ADR 0018 §What ships is three
 // parts: asked in words an addressed store answers nothing at all, and
-// the step that reads a question into an address is #336 step 3, in front
-// of this. Until it lands the agent loop calls neither of these — the
-// callers are the tests and the measurement, which supply the address the
-// way the record's figures were produced.
+// the step that reads a question into an address sits in front of this
+// (ADR 0019). That step runs every turn and is how the agent loop
+// reaches either read; tests and the measurement address them directly.
 type Service interface {
 	// Store writes one value at one address. OpReplace supersedes what
 	// is held there; OpJoin leaves it and adds one. It evicts the least

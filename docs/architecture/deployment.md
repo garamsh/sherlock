@@ -52,6 +52,8 @@ The agent finds the workspace through its own `workspace-addr` (default `127.0.0
 
 Serving the gateway beyond localhost means setting the `tls:` section — `cert`, `key` and `client-ca`, all three or none.
 
+**Replacing that material is a restart, and the restart drops the accepted queue.** All three files are read once, while the process starts (`internal/config/tls.go`); nothing re-reads them and no signal reloads them, so new files take effect only when the process starts again. That restart discards every message the gateway accepted and has not yet taken into a turn (§Shutdown and the grace period), so replacing a certificate is not transparent to senders.
+
 ## Volumes and ownership
 
 | What | Setting | Default | Written by |
@@ -187,6 +189,8 @@ Because the monitoring stream is long-lived by design, an agent with a connected
 
 **A draining agent refuses the connection; it does not decline the request.** The queue closes only after the listener is gone, so there is no window in which the pod accepts a post and answers it with a status. A sender posting during shutdown gets TCP connection refused, and one holding an open connection has it closed — neither distinguishable from a pod that crashed. A sender that needs to tell a drain from a failure has to learn it from the orchestrator, because the gateway has no way to say it.
 
+**A restart discards the accepted queue.** Shutdown closes the queue instead of draining it, and the queue is held in memory with nothing writing it down (`internal/gateway/queue.go`, `gateway.md`), so every message accepted but not yet taken into a turn is lost. The sender holds its 202 and learns nothing more, because a message no turn took reaches no monitoring event — so a consumer treating the 202 as an end-to-end acknowledgement is counting messages the agent never read. Every way the process ends costs this: a rolling update, an eviction, a crash, and the `SIGKILL` at the end of the grace period alike. There is no drain-first option; an operator who needs the buffer empty stops posting and lets the agent work it off before the pod is stopped.
+
 **No total shutdown deadline exists** — not as a flag, an environment variable, or a config key. The only explicit bound this repository states is the 10s HTTP drain; everything after it is unbounded, so `SIGKILL` at the end of the orchestrator's grace period is the real bound. Derive `terminationGracePeriodSeconds` from your own `exec-timeout` and provider timeouts rather than copying a number from here, and expect this document to state one when the code does.
 
 ## Images and tags
@@ -219,4 +223,4 @@ Everything else in this document is **descriptive**: true, useful, and free to c
 - **What moves a base-image digest when the tag does not.** A digest receives no security patch; a tag does, and pinning gave that up deliberately. `.github/dependabot.yml` raises a pull request when a base image's tag moves to a new version, which is the covered half. The other half is not covered: Dependabot's docker ecosystem offers version updates and no security-update channel, and a digest refresh under an *unchanged* tag is conditional rather than promised. So a base republished with a CVE fix under the same tag may raise nothing, and the fallback is re-resolving the digest by hand. Determined on 2026-08-17 from GitHub's supported-ecosystems table and `dependabot-core`'s `docker/lib/dependabot/docker/update_checker.rb`; re-check it before relying on the covered half.
 - **Who refreshes the ECR pull credential on-prem.** Relayed to us and unverified on both sides: the deployment target is an on-premises Talos cluster, ECR authorization tokens expire after 12 hours, and with no IRSA path on-prem the refresher is unassigned. Not this repository's to solve, but an image URI without a way for the cluster to authenticate is half an instruction.
 - **Agent-to-sidecar authentication.** The workspace's gRPC listener ships pod-local and unauthenticated, which is what forces the loopback-only rule above (`security.md`, `environment.md`).
-- **Whether an accepted message survives a restart.** The gateway's 202 says the message is queued in this process and nothing more (`gateway.md`, #492); an operator draining a pod cannot currently know what a restart drops.
+- **Whether the gateway should offer a durable accept.** What a restart drops is not open: the queue is held in memory, so a message accepted but not yet drained is lost (§Shutdown and the grace period, `gateway.md`). What is open is whether the 202 should promise more than "queued in this process", and what an accept that survives a restart would cost (#492).

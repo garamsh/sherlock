@@ -6,12 +6,13 @@ import (
 	"github.com/garamsh/gagent/internal/agent"
 )
 
-// DefaultMaxHistoryMessages caps a rolling session's context before the
-// oldest messages are dropped.
+// DefaultMaxHistoryMessages bounds the conversation window a rolling
+// session keeps before the oldest messages are dropped. The leading
+// system message is retained in addition to it.
 const DefaultMaxHistoryMessages = 128
 
-// Compactor keeps the newest messages of a rolling session and drops the
-// rest (ADR 0006).
+// Compactor keeps the leading system message and the newest messages of
+// a rolling session, and drops the rest (ADR 0006).
 //
 // It writes nothing. The step used to summarize the dropped turns into an
 // episodic memory, and an addressed store has nowhere to put a sentence

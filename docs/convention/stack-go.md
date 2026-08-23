@@ -157,6 +157,14 @@ file declares and which depends.
   one kind of thing (`user`, `order`); pluralize only for genuine
   collections (`errors`, `flags`).
 - **Types:** `MixedCaps`, no underscores (`UserService`).
+- **Interfaces:** the behaviour required, in the agent form of its
+  verb (`Storer`, `Mailer`, `Validator`). A dependency that names a
+  thing rather than an action keeps the thing's name — `Model`,
+  `Session`, `Repository` — and most of them do, so the suffix is
+  what a verb takes and not the default: a `Model` does not become a
+  `Modeller`. Where the name would also be one of its own domain's
+  verbs, the agent form breaks the tie, because the verb already owns
+  `<verb>.go` (§1) and the two cannot share it.
 - **Functions / methods:** `MixedCaps`, verb-noun (`GetUser`,
   `ParseToken`).
 - **Constants:** `MixedCaps` (not `MAX_SIZE`). Group in `const ( ... )`.

@@ -107,17 +107,40 @@ build-tools:
 # commit whose tree was not what was built, and an immutable repository takes
 # that first push rather than refusing it (ADR 0020, #695).
 #
-# What the tree is measured over is the build context — the source the images
-# are built from — so an edit to a document, a test, or this file does not
-# fail the build. The context is an allow-list, `*` and then re-includes, so
-# the paths it admits are the paths $(DOCKERIGNORE) re-includes: read out of
-# the file that owns that list rather than restated here (#591). A file of any
-# other shape reads as no paths at all, and the recipe fails on that rather
-# than checking a pathspec that is not the context.
+# What the tree is measured over is what docker reads: the build context — the
+# source the images are built from — together with the Dockerfile it is handed
+# and the $(DOCKERIGNORE) that decides what the context holds. An edit to a
+# document, a test, or this file does not fail the build. This file is the
+# exception on purpose: it invokes docker rather than being read by it, and a
+# guard that refused the build of its own repair is the override-in-a-shell-
+# profile shape #695 names.
+#
+# The context is an allow-list, `*` and then re-includes, so the paths it
+# admits are the paths $(DOCKERIGNORE) re-includes: read out of the file that
+# owns that list rather than restated here (#591). A file of any other shape
+# reads as no paths at all, and the recipe fails on that rather than checking a
+# pathspec that is not the context.
 DOCKERIGNORE = .dockerignore
 ignore_patterns = $(shell sed -e '/^[[:space:]]*\#/d' -e '/^[[:space:]]*$$/d' $(DOCKERIGNORE) 2>/dev/null)
 allow_list = $(filter *,$(firstword $(ignore_patterns)))
 context_paths = $(if $(allow_list),$(patsubst !%,%,$(filter !%,$(ignore_patterns))))
+
+# The two inputs docker reads that the context does not hold. A Dockerfile is
+# handed to `-f` rather than copied, and $(DOCKERIGNORE) decides what the
+# context is, so an edit to either changes the image while leaving the context
+# clean (#698). The Dockerfile names are the values the recipe passes to `-f`,
+# so the guard and the build read one owner rather than two copies (#591), and
+# a name the tree does not hold fails `docker build -f` immediately — which is
+# why these are not in $(missing_paths) beside the context's paths, where a
+# pathspec matching nothing would report clean instead.
+#
+# $(DOCKERIGNORE) is checked for a second reason: the guard derives its own
+# scope from that file, so leaving it out would let an uncommitted edit
+# redefine what the context is for a build the guard then reports clean.
+AGENT_DOCKERFILE = build/agent.Dockerfile
+WORKSPACE_DOCKERFILE = build/workspace.Dockerfile
+build_inputs = $(AGENT_DOCKERFILE) $(WORKSPACE_DOCKERFILE) $(DOCKERIGNORE)
+checked_paths = $(context_paths) $(build_inputs)
 
 # Read paths that are not in the tree. They are handed to git as pathspecs,
 # and one git cannot answer for — a leading `/`, a name that moved — matches
@@ -132,21 +155,21 @@ missing_paths = $(filter-out $(wildcard $(context_paths)),$(context_paths))
 # metadata and no readable $(DOCKERIGNORE) to build.
 revision_is_default = $(filter file,$(origin REVISION))
 
-# The context paths that differ from what REVISION names, status column cut
+# The checked paths that differ from what REVISION names, status column cut
 # off so the message names paths. Untracked files are among them: the context
 # admits a path whether git tracks it or not. An empty REVISION is a checkout
 # git could not read at all, which the guard below reports, so nothing asks it
 # a second question here.
-dirty_context = $(if $(and $(REVISION),$(revision_is_default),$(context_paths)),$(shell git status --porcelain -- $(context_paths) | cut -c4-))
+dirty_inputs = $(if $(and $(REVISION),$(revision_is_default),$(context_paths)),$(shell git status --porcelain -- $(checked_paths) | cut -c4-))
 
 build-images:
 	@test -n "$(REVISION)" || { echo "build-images: REVISION is empty, and it is both the tag and the label; the default reads 'git rev-parse HEAD', which a checkout with no git metadata does not answer - pass one: make build-images REVISION=<commit>"; exit 1; }
 	@test -z "$(revision_is_default)" || test -n "$(context_paths)" || { echo "$(DOCKERIGNORE): want '*' and then one '!<path>' per admitted path, read [$(ignore_patterns)]: the tree is checked over the paths this file re-includes, which are the build context only while everything is excluded first"; exit 1; }
 	@test -z "$(revision_is_default)" || test -z "$(missing_paths)" || { echo "$(DOCKERIGNORE): re-includes [$(missing_paths)], which $(CURDIR) does not hold: every admitted path is read as a git pathspec and one that matches nothing reports a clean tree"; exit 1; }
-	@test -z "$(dirty_context)" || { echo "build-images: the build context differs from $(REVISION), which every image built here is labelled and tagged with, at [$(dirty_context)]. Commit those paths, or name what you are building: make build-images REVISION=<commit>"; exit 1; }
-	@echo "build-images: $(if $(revision_is_default),the build context [$(context_paths)] matches $(REVISION),REVISION=$(REVISION) was passed in and the build context is not checked against it)"
-	docker build -f build/agent.Dockerfile --build-arg REVISION="$(REVISION)" -t gagent-agent:$(REVISION) .
-	docker build -f build/workspace.Dockerfile --build-arg REVISION="$(REVISION)" -t gagent-workspace:$(REVISION) .
+	@test -z "$(dirty_inputs)" || { echo "build-images: what docker reads differs from $(REVISION), which every image built here is labelled and tagged with, at [$(dirty_inputs)]. Commit those paths, or name what you are building: make build-images REVISION=<commit>"; exit 1; }
+	@echo "build-images: $(if $(revision_is_default),what docker reads [$(checked_paths)] matches $(REVISION),REVISION=$(REVISION) was passed in and what docker reads is not checked against it)"
+	docker build -f $(AGENT_DOCKERFILE) --build-arg REVISION="$(REVISION)" -t gagent-agent:$(REVISION) .
+	docker build -f $(WORKSPACE_DOCKERFILE) --build-arg REVISION="$(REVISION)" -t gagent-workspace:$(REVISION) .
 
 # The toolchain image the privileged CI job runs in, read out of the
 # Dockerfile that owns the pin rather than restated in the workflow (#633).

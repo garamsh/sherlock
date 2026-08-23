@@ -116,6 +116,16 @@ The workspace container needs five, and they divide on a line that decides the p
 
 **Dropping `KILL` now fails every Exec, by choice.** A privileged workspace that cannot signal its child refuses the call with `agent_uid unavailable` and a message naming the capability, rather than running a command whose deadline would pass unenforced. It warns at startup too — `CAP_KILL missing; every Exec will report agent_uid unavailable`. The alternative was to keep serving with an unenforceable bound, which is the shape the defect had.
 
+**The five above are the privileged path's, and a second isolation path needs a host rather than a capability.** `internal/workspace/shell/process_linux.go` carries both: where the workspace is root the Exec child unshares `CLONE_NEWNET` while `CAP_SYS_ADMIN` is still held, and where it is not the child clones `CLONE_NEWUSER | CLONE_NEWNET` with the uid mapped to itself (ADR 0010). The second is what makes "drop `SYS_ADMIN`, run unprivileged, keep the isolation" look available. It is not a shape this document supports — the workspace container needs root (§The two processes), and the path exists only in the single-account one, an unprivileged workspace whose `exec-uid` is its own uid, any other value failing closed before the namespace is reached. What follows states what that path would require, not that it is offered.
+
+**It requires a host that permits unprivileged user namespaces.** Creatability without privilege is a property of the syscall and not of every host, so it is checked rather than assumed — checked where the workspace would run, as the account it would run as, under the security context it would run under:
+
+- **`user.max_user_namespaces` reads non-zero.** The sysctl is itself namespaced, so a value read on the node answers for the node and not for the pod.
+- **`unshare --user --net true` succeeds** with no capabilities added. The sysctl is necessary and not sufficient: it answers for the kernel, while a runtime's seccomp or LSM policy can refuse a clone the kernel would permit, so what settles the question is making the call rather than reading a value.
+- **The shell package's single-account netns cases run rather than skip.** They make the call the workspace makes, and the helper they run through turns the fail-closed sentinel into a skip (`internal/workspace/shell/netns_linux_test.go`), so on a host that refuses the clone they skip and `make ci` still passes. A green pipeline is not evidence about this path; those cases running is.
+
+**Unmet, it fails closed as a missing `SYS_ADMIN` does, with one difference.** The clone's `EPERM` becomes the same `agent_uid unavailable` every undeliverable boundary reports, so the call is refused rather than served with the host's network (ADR 0010). The difference is the signal: the `SYS_ADMIN` probe warns at startup only where the workspace is root, so in the single-account shape nothing is probed at startup and the first network-isolated Exec is the first thing to say so.
+
 ## Startup: what kills the pod and what degrades it
 
 The list below is the set an operator can trigger from a pod spec, grouped by cause. It is a selection, not the whole of it: the code carries roughly forty distinct startup error sites, and the ones left out are those no deployment choice reaches — a failed `setenv`, an unresolvable executable path, errors reachable only on a non-Linux build. If a pod fails at boot with a message not below, it is one of those.
@@ -155,6 +165,7 @@ Every fatal path exits **1** and prints `Error: <message>`; nothing distinguishe
 | No `tools.pins` section | Drift pinning is off; the tree loads unreviewed. WARN: `tool drift pinning disabled: no pin set configured` |
 | No `tls:` section on a loopback bind | The gateway serves unauthenticated on localhost. INFO field only: `auth="none: loopback binds only"` |
 | `SYS_ADMIN` absent | Network-isolated Exec fails closed. WARN at startup, nothing afterwards |
+| The host refuses the unprivileged user namespace, and the workspace runs unprivileged | Network-isolated Exec fails closed with `agent_uid unavailable`. No startup check, no warning (§Capabilities) |
 | `KILL` absent, and `exec-uid` is not the workspace's own uid | **Every Exec fails closed** with `agent_uid unavailable: CAP_KILL is absent, …`. WARN at startup |
 | `exec-uid` unreachable — the workspace runs unprivileged and `exec-uid` is not its own uid | **Every Exec fails closed** with `agent_uid unavailable`. No startup check, no warning |
 | `exec-timeout: 0` | Every Exec without a per-call timeout fails: `shell: timeout is required`. No startup check |
@@ -162,7 +173,7 @@ Every fatal path exits **1** and prints `Error: <message>`; nothing distinguishe
 | A tool's `command` names a missing executable | Startup is clean; the call fails |
 | A directory in the tools tree without a `manifest.json` | Skipped silently, with no log line |
 
-Two traps in that second table are worth naming separately, because they produce a healthy-looking pod that cannot work: **an unreachable `exec-uid`** and **a missing `SYS_ADMIN`**. Either leaves exec dead with nothing in pod status to show it. Run the workspace privileged, or set `exec-uid` exactly equal to the container's `runAsUser`. A missing `KILL` used to be a third and worse one, because it left exec *working* with its deadline unenforced; it now fails closed like the others.
+Three traps in that second table are worth naming separately, because they produce a healthy-looking pod that cannot work: **an unreachable `exec-uid`**, **a missing `SYS_ADMIN`**, and **a host that refuses the unprivileged user namespace**. Each leaves exec dead — the third only for the calls that ask for isolation — with nothing in pod status to show it. Run the workspace privileged, or set `exec-uid` exactly equal to the container's `runAsUser`; the second of those is the single-account shape, where isolated Exec then rests on the host permitting unprivileged user namespaces (§Capabilities). A missing `KILL` used to be another and worse one, because it left exec *working* with its deadline unenforced; it now fails closed like the others.
 
 **Choose `exec-uid` as a uid nothing else on the node runs as.** Containers share the node's uid space and `RLIMIT_NPROC` counts every process of the real uid, so a shared account spends the child's 64-process budget on processes that are not the child's. The code default is `1001`, which is the login user on many hosts; the sample deployment overrides it to `10001` for exactly this reason (`deploy/local/docker-compose.yml`).
 

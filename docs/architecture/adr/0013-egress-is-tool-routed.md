@@ -1,7 +1,7 @@
 # ADR 0013: External egress is tool-routed — no dedicated egress proxy
 
 > Status: accepted
-> Date: 2026-08-03 (revised in place 2026-08-13; 2026-08-17)
+> Date: 2026-08-03 (revised in place 2026-08-13; 2026-08-17; 2026-08-23)
 
 ## Context
 
@@ -14,7 +14,7 @@ External access is tool-routed by design; no dedicated egress proxy or egress to
 ## Consequences
 
 - "The only outbound path is the egress tool" is restated as "every outbound destination is one the operator chose" — the guarantee the proxy was built to give survives as a property of who picks the destination, not as a count of channels.
-- The agent cannot reach arbitrary URLs. Granting egress is a configuration decision: a tool server added to the operator's tool list, or the model and embedder base URLs set in the operator's config (ADR 0004) — reviewed like any other configuration, not a runtime capability.
+- The agent cannot reach arbitrary URLs. Granting egress is a configuration decision: a tool server added to the operator's tool list, or the model base URL set in the operator's config (ADR 0004) — reviewed like any other configuration, not a runtime capability.
 - Secret-bearing tools keep secrets out of the agent's domain through per-tool env scoping plus the scrubbed child environment: the secret reaches the trusted tool process only, and the agent sees tool output, never the environment. (The ADR 0003 secret-free posture of executor children is preserved.)
 
 ## Rejected alternatives

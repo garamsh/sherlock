@@ -295,7 +295,14 @@ names.
 the rest of its output; the full output appears on failure, or under
 `-v`. So anything a test binary prints about what it covered is missing
 from exactly the run that needed it. An entry point that has something
-to report prints it itself, before invoking `go test`.
+to report prints it itself, rather than leaving it to the tool it
+invokes.
+
+The same holds wherever a tool reports its findings and not its
+coverage. `gofmt -l .` names the files that are unformatted and never
+how many it read, so a run that walked nothing prints what a clean run
+prints; the count comes from the entry point, which walks the same set
+the tool does and states how it derived the number.
 
 | Task | Command |
 |------|---------|

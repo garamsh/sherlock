@@ -253,7 +253,7 @@ var (
 		frameLog:               "the projection takes the newest value at an address",
 		frameGenerativeAgents:  "nothing is replaced or removed; a read ranks on recency, importance and relevance",
 		frameReflection:        "the same, and the synthesis is a record the same ranking can return",
-		frameMemoryBank:        "the same ranking; a record goes when its retention falls under the curve",
+		frameMemoryBank:        "a read ranks on relevance alone; a record goes when its retention falls under the curve",
 		frameMemoryBankYear:    "the same ranking and the same curve, its unit rescaled from a day to a year",
 		frameMem0:              "the write states the operation and similarity finds what it applies to",
 		frameMem0Nearest:       "the same, with the similarity gate removed — the far end, not a design",

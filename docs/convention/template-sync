@@ -8,26 +8,49 @@
 # supply: to `git diff main template/main`, a divergence this project chose and
 # an update it never saw are the same hunk.
 
-last-audited: 65e0087
+last-audited: d796d58
 
-# What that revision covers. This record begins here and does not claim the
-# history below 65e0087 was examined commit by commit — it was adopted without a
+# What that revision covers. This record begins at 65e0087 and does not claim the
+# history below it was examined commit by commit — it was adopted without a
 # record of what it skipped. A sync that reaches further back re-establishes
 # that rather than reading coverage into this line.
 audited-paths:
+  docs/convention/README.md
   docs/convention/documentation.md
   docs/convention/review.md
-  docs/convention/README.md
 
-# Deliberate divergences. Each names the decision that owns it, so a later sync
-# re-proposes nothing already settled.
+# Never synced, by the sync-conventions skill's own Update table, which places
+# these on the project's side rather than the template's. A change here is a
+# decision this repository makes, not a hunk it adopts.
+project-owned:
+  docs/convention/stack-go.md
+  docs/architecture/
+  README.md
+
+# Deliberate divergences in the files that ARE synced. Each names the decision
+# that owns it, so a later sync re-proposes nothing already settled.
 skipped:
   documentation.md:3 — the build-and-configuration-file clause. Not an upstream
-    omission and not a missed update: no revision of the template's scope line
-    has ever carried it. #454 added it here for #388 (a Dockerfile citing ADR
-    0018 against a log ending at 0017) and #390 (six sites describing a
-    compile-time tool import), defect classes reached by no other rule. The
-    removal in b4872ad is not adopted; the reversed authored test that commit
-    also removed is.
-  stack-go.md, docs/architecture/, README.md — project-owned, per the Update
-    table in the sync-conventions skill. Never taken from the template.
+    omission: no revision of the template's scope line has ever carried it. #454
+    added it here for #388 (a Dockerfile citing ADR 0018 against a log ending at
+    0017) and #390. b4872ad's removal is not adopted.
+  documentation.md — the mockery mandate, removed by #623 ruling 6 from four
+    places at once (the checked-against header, §2's `mocks/` row, the §7
+    subsection, §9's command table) and replaced with hand-written doubles in
+    the package whose test uses them. Upstream still carries it in stack-go.md,
+    which is project-owned here anyway.
+  documentation.md — "an issue that can be met literally while its goal fails is
+    malformed" (#648) is ours and upstream lacks it. Kept.
+  documentation.md — upstream's "a claim about the project that will carry this
+    document" is a template's framing: its documents are copied into consumers.
+    Nothing carries gagent's documents onward, so "a project beyond this one"
+    is the accurate wording here.
+  README.md §Stack-specific — the Extends column and the six-row stack catalogue.
+    This project has one stack file and no derived stack, so the machinery would
+    be a rule for a case that does not exist (`simplicity.md` §Core principle:
+    no speculative abstraction). Revisit if a derived stack ever lands.
+  review.md — `Reviewed at: <commit sha>` and "the review names the commit it
+    read" (#623 ruling 9) are ours; upstream lacks them. Kept.
+  review.md — "where the host cannot produce a result at all, a local run
+    substitutes" (#663) is ours, written for the condition #627 records.
+    Upstream has no equivalent.

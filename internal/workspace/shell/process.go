@@ -43,7 +43,8 @@ type Request struct {
 	// Command is the program to run. With no Args it is interpreted by
 	// `sh -c`; with Args it is the executable and the Args reach it
 	// verbatim. Only the Exec RPC supplies Args
-	// (internal/workspace/server.go); the shipped tools send none.
+	// (internal/workspace/server/server.go); the shipped tools send
+	// none.
 	Command string
 	Args    []string
 	// Stdin, when non-nil, is fed to the child's standard input.

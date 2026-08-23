@@ -31,6 +31,7 @@ The counts below are the survey. This paragraph is the finding.
 - **Hand deletions** for the shape gremlins cannot express. Its operators rewrite an expression; deleting a whole guard is a different edit, and it is the one a security boundary fails as — the shape #586 reports from the garam PM's OAuth CSRF case.
 - **Trees.** The gremlins run and the 13 hand deletions ran at `949ac99`. The two whole-suite survivors in `internal/workspace/shell` were re-run at `b4093e3`, two commits later, and both still survive; neither commit touches that package. That package's 16 gremlins survivors were re-run against the whole suite at `b4093e3` plus the commit adding this harness, which changes no Go code.
 - **#604's trees.** Everything the privileged command reports was run on this branch's code commits over `4e69889`, in the digest-pinned image the workflow's privileged job names, as root with CAP_SYS_ADMIN. The pipeline was failing account-wide while that work happened (#603), so none of it is a CI run and none of it is reported as one.
+- **Line numbers.** Every `file.go:NN` below names the line a site sat on at the tree it was measured at, which is how `results/survivor-retest.txt` and the other result files record it — each names its tree at its head. None is maintained against later edits and several have since moved, so a site is found by what it is rather than by its number: `harness/hand_mutants.py` carries every hand deletion as an exact-string anchor and reports a miss rather than mutating a site that moved.
 - Nothing was fixed by the survey, no test was changed by it, and nothing was added to `make ci`. Every mutant was restored before the next, and the harness refuses to start on a tree it cannot restore into. #604 later changed tests and added an entry point — that is the issue the survey opened, not the survey.
 
 ## The instrument had the defect it was sent to find
@@ -68,7 +69,7 @@ Hand deletions, from `results/hand-mutants.txt`: **13 attempted, 11 viable** (on
 
 Each is its own defect with its own cause. The exact edits are in `harness/hand_mutants.py`, which is the verbatim record — it applies each deletion by exact-string anchor and reports a miss rather than mutating a moved site, so it cannot drift out of agreement with the code the way a transcription in prose would.
 
-### The ADR 0008 privilege drop — `internal/workspace/shell/process_linux.go:145-153`
+### The ADR 0008 privilege drop — the `attr.Credential` assignment in `internal/workspace/shell/process_linux.go`
 
 Deleting the `if euid == 0` block whose body assigns `attr.Credential` leaves `go test ./...` green, and turns `make test-privileged` red. Harness id `M4`; re-confirmed at `b4093e3` before #604 and killed by the privileged command after it.
 
@@ -81,7 +82,7 @@ What the tests asserted instead, which is the finding this section records:
 - The tests that would exercise the drop sit behind `requireRoot` (`process_test.go`), which skips its callers when the euid is not 0. Exactly ten tests skipped in this package on a non-root run at `b4093e3` and every one of them was a `requireRoot` caller; `go test` prints `ok` for the package either way, so the skips are invisible without `-v`. `.github/workflows/ci.yml` ran `ubuntu-latest` with no `container:` and no `sudo`, so no run this repository performed was privileged. Three of the ten name behaviour a survivor in the table below removes: `TestProcessExecutor_DefaultTimeoutRejectsZero`, `TestProcessExecutor_RunsInWorkspace` and `TestProcessExecutor_RequestEnvAppliesOnTop`.
 - The family had also never run anywhere, so nobody had seen that it could not: under root, four of its cases failed for reasons that have nothing to do with the boundary and one production defect surfaced. #604 records what each was.
 
-### ADR 0010 network isolation, privileged path — `internal/workspace/shell/process_linux.go:154-159`
+### ADR 0010 network isolation, privileged path — the `attr.Unshareflags` assignment in `internal/workspace/shell/process_linux.go`
 
 Deleting the `attr.Unshareflags` block survives `go test ./...` for the same reason, and turns `make test-privileged` red. Harness id `M6`; re-confirmed at `b4093e3` before #604 and killed by the privileged command after it.
 
@@ -89,7 +90,7 @@ Here the assertion existed: the netns cases in `internal/workspace/shell/netns_l
 
 The contrast is the useful part: deleting the **unprivileged** path of the same feature (`M12`) is killed by this package's own tests. One feature, two paths, one checked — and the unchecked one was the path the deployment runs, where the workspace container is root and drops to uid 1001 (`deploy/local/`).
 
-### Duplicate tool names — `internal/tool/registry.go:139-141`
+### Duplicate tool names — the duplicate-name rejection in `internal/tool/registry.go`
 
 Deleting the duplicate-name rejection survived both the package's tests and the suite. Harness id `M10`. Nothing anywhere asserted it: the guard's message had one occurrence in the tree, the `return` statement itself.
 
@@ -115,7 +116,7 @@ Only `internal/workspace/shell`'s 16 were re-run. The 13 in `internal/tool` and 
 | Log-only: the mutant inverts which euid gets a warning | `process_linux.go:86` | survives | survives |
 | The case runs under privilege now and the mutant still survives it: with the boundary loosened a zero timeout yields an immediately-expired context, so `TestProcessExecutor_DefaultTimeoutRejectsZero` still gets the error it asserts. It asserts *an* error, not the refusal | `process_linux.go:116` | survives | survives |
 | Unobservable: the mutant rewrites the capacity argument of a zero-length `make` | `limits.go:48` (two mutants) | survives | survives |
-| An untested boundary on an argument shape no caller builds: the shim verb with no arguments, and a program whose `Args` is non-nil and empty, which the Exec RPC cannot produce (`internal/workspace/server.go:66` passes `req.GetArgs()`, nil when the field is empty) | `limits.go:28`, `:65` | survives | survives |
+| An untested boundary on an argument shape no caller builds: the shim verb with no arguments, and a program whose `Args` is non-nil and empty, which the Exec RPC cannot produce (`internal/workspace/server/server.go` passes `req.GetArgs()`, nil when the field is empty) | `limits.go:28`, `:65` | survives | survives |
 
 So of this package's 16: **9 are killed by one command or the other, 2 are equivalent mutants no test can kill, 2 sit on a boundary no shipped caller reaches, and 3 are gaps that remain** — one asserting presence where the value is what matters, one on a warning nothing reads, and one, `:116`, asserting *an* error where the refusal is the point. That last is the sharpest of the three and it only became visible once its case ran.
 
@@ -128,7 +129,7 @@ The two commands are not nested. Four of the kills need the integration suite, f
 
 `internal/memory`'s 17, by inspection only:
 
-- **7 in `internal/memory/ranking.go`**, every one of them, with 0 killed in that file: no test pins the eviction score's ordering.
+- **7 in `internal/memory/ranking.go`**, every one of them, with 0 killed in that file: no test pinned the eviction score's ordering. `e1ff9cf` has since deleted the file, and eviction is ordered by last read instead.
 - **6 in `internal/memory/store.go`** — four on the eviction sort's comparisons, two on a `make` capacity argument, the shape shown unkillable above.
 - **3 in `internal/memory/retain.go`**, all boundary mutants on the retention thresholds: the tests use values away from the boundary.
 - **1 in `internal/memory/sqlite/sqlite.go`**, where the mutant drops the archived IDs a supersession returns.

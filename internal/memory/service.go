@@ -9,14 +9,14 @@ import (
 // DefaultCapacity caps the active (readable) index.
 const DefaultCapacity = 10_000
 
-// Store hides the persistence engine (ADR 0002 escape hatch). It owns
+// Storer hides the persistence engine (ADR 0002 escape hatch). It owns
 // rows and indexes only; what a read reaches is decided by the address it
 // is given, so the store holds no scoring and no ordering over addresses.
 //
 // The three read methods are one hierarchy — an address, the question it
 // asks, the subject it is about — and each is one query. Nothing here
 // scans what the store holds to answer.
-type Store interface {
+type Storer interface {
 	// Write stores m and archives supersede against it, in one
 	// transaction, and returns m's ID and the IDs actually archived. A
 	// value already active at m's address is not stored twice: its
@@ -89,7 +89,7 @@ type Service interface {
 }
 
 type service struct {
-	store    Store
+	store    Storer
 	clock    func() time.Time
 	capacity int
 }
@@ -111,7 +111,7 @@ func WithCapacity(capacity int) Option {
 }
 
 // NewService returns the memory service over the given store.
-func NewService(store Store, opts ...Option) Service {
+func NewService(store Storer, opts ...Option) Service {
 	s := &service{
 		store:    store,
 		clock:    time.Now,

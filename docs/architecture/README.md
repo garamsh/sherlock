@@ -38,7 +38,7 @@ One pod per agent, two containers (ADR 0017): the agent container is the agent's
 - `0001` — Go stack and single-module layout
 - `0002` — per-agent memory in a single SQLite file
 - `0003` — secret-free execution domain
-- `0004` — LLM access behind interfaces, mock for MVP
+- `0004` — model access is one consumer-owned interface, and the wire protocol is configuration
 - `0005` — tools own security; guard models are layers, not boundaries
 - `0006` — memory lifecycle: recall, act, writeback
 - `0007` — gateway I/O: asynchronous ingress, tool-based outbound, separate monitoring

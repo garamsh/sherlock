@@ -13,8 +13,18 @@ lint:
 	go vet ./...
 	golangci-lint run ./...
 
+# gofmt walks the filesystem rather than the module, so a tree holding no Go
+# files prints nothing and exits zero, exactly like a clean run (#653). The
+# count is what tells the two apart, and a count of zero is a failure. The
+# find expression restates gofmt's own rule for what a walk picks up — a
+# non-directory whose name ends in `.go` and does not begin with `.` — so the
+# number reported is the number `gofmt -l .` read.
 format:
-	@test -z "$$(gofmt -l .)" || { gofmt -l .; exit 1; }
+	@checked=$$(find . ! -type d -name '*.go' ! -name '.*' | awk 'END{print NR}'); \
+	test "$$checked" -gt 0 || { echo "format: no Go files under $(CURDIR); the check covered nothing"; exit 1; }; \
+	unformatted=$$(gofmt -l .); \
+	test -z "$$unformatted" || { echo "$$unformatted"; echo "format: $$checked files checked; the files above are not formatted, run 'make format-fix'"; exit 1; }; \
+	echo "format: $$checked files checked, all formatted"
 
 format-fix:
 	@gofmt -w .

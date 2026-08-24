@@ -21,6 +21,8 @@ Two variables must be exported before `docker compose up`:
 - `GAGENT_DATA_DIR`: any absolute host path; the workspace container runs its Exec children as uid 10001 (and chowns `workspace/` to the same uid), so the path must allow both containers. On Docker Desktop it must sit under a shared path (the project directory works).
 - `GAGENT_AGENT_UID`: the gateway refuses a group- or other-readable config file or TLS key, so only their owner can read them — running the agent as that owner is what makes the mounts readable. The workspace container keeps the image's user: it needs root to drop Exec children to the exec uid.
 
+**One root mounted into both containers is this file's convenience, not a requirement of the platform.** The two containers exchange no file — the tools reach the workspace over gRPC — so the agent's paths (`memory.db`, `outbox/`) and the workspace's (`workspace/`) can sit on separate volumes elsewhere. What the workload requires of storage is in `docs/architecture/deployment.md` §Volumes and ownership.
+
 ## Certificates
 
 Generate a throwaway CA, a server certificate, and a client certificate into `./tls` (gitignored; never commit real keys):

@@ -4,7 +4,7 @@
 # The build context is the repository root — the build stage copies the
 # module — and `make build-images` is the entry point that builds both.
 
-FROM golang:1.26@sha256:0d1d3a794be25f809dd2cb3160d8c73276c4056a9f8242a138e908ddeee7b6b6 AS build
+FROM golang:1.27@sha256:65b6f280bf050ec5af12716857e8ea8439d694dbba8f31ceeb7630670071f2bb AS build
 WORKDIR /src
 
 # Layer caching: resolve dependencies before copying source.

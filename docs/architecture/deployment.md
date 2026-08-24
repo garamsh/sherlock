@@ -206,18 +206,20 @@ Because the monitoring stream is long-lived by design, an agent with a connected
 
 ## Images and tags
 
-Registry: **ECR, `ap-northeast-2`, account `486152169996`.** Two repositories:
+Registry: **ECR, `ap-northeast-2`, account `486152169996`.** Four repositories, and the requirements below bind these four and no others:
 
-- `garam/gagent-agent`
-- `garam/gagent-workspace`
+- `garam/gagent-agent`, `garam/gagent-workspace` — production, holding what a release publishes.
+- `garam/gagent-agent-dev`, `garam/gagent-workspace-dev` — bring-up, emptied and removed once a release path publishes.
+
+A `gagent`-prefixed repository in that namespace that is not on this list is not gagent's: `garam/gagent-operator-dev` is the `gagent-operator` project's.
 
 **What gagent requires of those repositories, and what it does not** (ADR 0020). Stated as requirements rather than as settings, because nothing here can read that account and a description of it goes stale with nobody able to notice:
 
-- **Create both `IMMUTABLE`, and never make either mutable.** The setting belongs to the repository rather than to a tag and applies retroactively, and ECR records nothing about the policy a tag was pushed under, so a repository that is ever mutable leaves every tag it holds a label rather than an identifier — the ones pushed while it was immutable included.
-- **Push no moving tag.** A tag names one commit and never moves; there is no `dev` and no `latest`. garam's own bring-up repositories take the opposite choice, and the difference is deliberate.
-- **Neither a lifecycle policy nor image scanning is required.** gagent depends on neither, and this section described both as settings the account holds until ADR 0020 was taken. Either control, run for that account's own hygiene, is its to decide — not this project's to require, and not this document's to describe.
+- **Create all four `IMMUTABLE`, and never make any of them mutable.** The setting belongs to the repository rather than to a tag and applies retroactively, and ECR records nothing about the policy a tag was pushed under, so a repository that is ever mutable leaves every tag it holds a label rather than an identifier — the ones pushed while it was immutable included.
+- **Push no moving tag.** A tag names one commit and never moves; there is no `dev` tag and no `latest`, in the bring-up two as much as in the production two. garam's bring-up repositories for its other applications take the opposite choice, and the difference is deliberate.
+- **Neither a lifecycle policy nor image scanning is required.** gagent depends on neither, and this section described both as settings the account holds until ADR 0020 was taken. Expiry is the wrong behaviour for the production two, which hold released versions, and has nothing to act on in the bring-up two, which are removed outright. Either control, run for that account's own hygiene, is its to decide — not this project's to require, and not this document's to describe.
 
-**A consumer references an image by digest and sets `imagePullPolicy: Always`** (ADR 0020). The digest, because a tag's stability rests on a repository setting a consumer cannot check from outside. `Always`, because these repositories are emptied once a release path publishes, so the failure to be loud about is a reference that stops resolving — which the default `IfNotPresent` turns into a per-node stale-cache fault that presents as the node's.
+**A consumer references an image by digest and sets `imagePullPolicy: Always`** (ADR 0020). The digest, because a tag's stability rests on a repository setting a consumer cannot check from outside. `Always`, because the bring-up two are emptied once a release path publishes, so the failure to be loud about is a reference that stops resolving — which the default `IfNotPresent` turns into a per-node stale-cache fault that presents as the node's.
 
 **Tag scheme, decided and not yet built**: a `v`-prefixed git tag pushed to GitHub is to trigger the release, which will push the image tagged without the `v` — `v0.0.1` in git becoming `0.0.1` in ECR.
 
@@ -225,7 +227,7 @@ Registry: **ECR, `ap-northeast-2`, account `486152169996`.** Two repositories:
 
 **What the local build produces.** `make build-images` tags each image with the same revision it labels it with — `gagent-agent:<commit>` and `gagent-workspace:<commit>`, never `:latest` — so an image cannot be tagged one commit and labelled another (#693). Where that revision is the git default, the build compares what docker reads against it first — the build context, the two Dockerfiles, and `.dockerignore` — and refuses, naming the paths, where they differ; a build that passes its own `REVISION=` is stating its own claim and is not compared (#696, #698). The `docker` job in CI passes one on every run, so the comparison is a contributor's guard rather than a pipeline's.
 
-**The release workflow and its IAM role do not exist yet.** Nothing pushes to these repositories today, and both were empty when this was written. `make build-images` builds both images locally and pushes nothing; the `docker` job in `.github/workflows/ci.yml` builds them as a smoke check and pushes nothing. That workflow triggers on pull requests and pushes to `main` and carries no tag filter, so pushing `v0.0.1` today runs nothing at all. An operator can rely on the names and the tag rule; nothing in this repository has yet pushed an image behind them.
+**The release workflow and its IAM role do not exist yet.** Nothing pushes to these repositories today. `make build-images` builds both images locally and pushes nothing; the `docker` job in `.github/workflows/ci.yml` builds them as a smoke check and pushes nothing. That workflow triggers on pull requests and pushes to `main` and carries no tag filter, so pushing `v0.0.1` today runs nothing at all. An operator can rely on the names and the tag rule; nothing in this repository has yet pushed an image behind them.
 
 ## Load-bearing facts
 

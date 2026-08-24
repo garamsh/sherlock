@@ -35,6 +35,6 @@ A new capability usually answers no to all five, because it is a tool and not Go
 
 ## Open questions
 
-- **The composition root sits outside `cmd/`.** `internal/gateway/runtime.go` calls `sqlite.Open`, `memory.NewService` and `agent.NewSession` and constructs the three `internal/agent/memory/` hooks, which `stack-go.md` §Project envelope reserves for the binary's entry point. `README.md` §Modules records the exception as "#508 owns"; #508 closed as completed on 2026-08-16, so no issue tracks it now.
+- **The composition root sits outside `cmd/`.** `internal/gateway/runtime.go` calls `sqlite.Open`, `memory.NewService` and `agent.NewSession` and constructs the three `internal/agent/memory/` hooks, which `stack-go.md` §Project envelope reserves for the binary's entry point. `README.md` §Modules states it as the current shape; #508 held it as a criterion and closed as completed on 2026-08-16 with that criterion deferred, so no issue tracks it now.
 - **`internal/tool/tooltest/` is produced by none of the three cuts.** It implements no interface `internal/tool/` declares and its consumers are elsewhere — the tests of `internal/gateway/` and `internal/message/`. It nests under the package whose manifests it reads, which is a fourth reason for a sub-package that the rule above does not state.
 - **No ADR states the pod-split import rule.** ADR 0017 decides the two containers. That no agent-side package may import `internal/workspace/` follows from it, and is written down only here and in the import graph.

@@ -173,9 +173,10 @@ build-images:
 
 # The toolchain image the privileged CI job runs in, read out of the
 # Dockerfile that owns the pin rather than restated in the workflow (#633).
-# The workspace image is the one it reads, because the family that job runs
-# is the workspace's boundary (#620) and the toolchain it is checked under
-# should be the toolchain that image is built with.
+# It is read out of $(WORKSPACE_DOCKERFILE) rather than a second literal
+# naming that file (#705), because the family that job runs is the
+# workspace's boundary (#620) and the toolchain it is checked under should
+# be the toolchain that image is built with.
 #
 # One owner means one thing to move: Dependabot's docker ecosystem is scoped
 # to /build, so the digest bump it proposes carries the workflow with it and
@@ -185,7 +186,7 @@ build-images:
 # sits in the recipe for the same reason. It fails closed: an empty read
 # would otherwise hand the job an image field that resolves to something
 # else, and a doubled one would hand it two names.
-TOOLCHAIN_DOCKERFILE = build/workspace.Dockerfile
+TOOLCHAIN_DOCKERFILE = $(WORKSPACE_DOCKERFILE)
 toolchain_image = $(shell sed -n 's/^FROM \([^ ]*\) AS build$$/\1/p' $(TOOLCHAIN_DOCKERFILE))
 
 toolchain-image:

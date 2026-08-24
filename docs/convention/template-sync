@@ -1,12 +1,23 @@
 # Template sync record
 #
-# What this repository last took from `template/main`, and what it deliberately
-# did not take. Read by a person; no tool parses it.
+# Why this repository differs from `template/main` where it does. Read by a
+# person; no tool parses it.
 #
-# `git log <last-audited>..template/main -- docs/convention/` lists what has not
-# been considered yet. The skip list below is the half that diffing cannot
-# supply: to `git diff main template/main`, a divergence this project chose and
-# an update it never saw are the same hunk.
+# THE CHECK IS A DERIVATION, NOT THIS FILE:
+#
+#   for f in docs/convention/*.md; do
+#     git diff --numstat HEAD template/main -- "$f"
+#   done
+#
+# Every file that comes back differing is either named in `skipped` below with
+# the decision that owns it, or has not been considered. That is the whole
+# protocol, and it reads what is true now rather than what was true when
+# somebody last wrote a line here.
+#
+# `last-audited` below is a bookmark and nothing verifies it. It is a
+# convenience for narrowing `git log`, not the check: if it goes stale the
+# derivation still gives the right answer, and a reader who trusts it instead
+# of running the derivation gets the older one.
 
 last-audited: d796d58
 
@@ -19,6 +30,14 @@ audited-paths:
   docs/convention/documentation.md
   docs/convention/review.md
 
+# Differing and NOT yet audited. The derivation reports these; nothing here
+# explains them, which is what "not considered" looks like.
+unaudited:
+  docs/convention/ci.md — 25 lines differ and they are mixed: entry-point
+    bullets this project kept where upstream moved to a code block, and
+    rewordings upstream made that were never weighed here. Separating the two
+    is an audit rather than a record change.
+
 # Never synced, by the sync-conventions skill's own Update table, which places
 # these on the project's side rather than the template's. A change here is a
 # decision this repository makes, not a hunk it adopts.
@@ -30,6 +49,11 @@ project-owned:
 # Deliberate divergences in the files that ARE synced. Each names the decision
 # that owns it, so a later sync re-proposes nothing already settled.
 skipped:
+  git.md §Branches — the host-namespace paragraph ("a host namespace in front of
+    the prefix satisfies the rule as written") is ours, from #623 ruling 2, and
+    upstream has never carried it. Found by the derivation on 2026-08-24, not by
+    the record: it had never been audited, and the record said so only by
+    omitting it from `audited-paths`.
   documentation.md:3 — the build-and-configuration-file clause. Not an upstream
     omission: no revision of the template's scope line has ever carried it. #454
     added it here for #388 (a Dockerfile citing ADR 0018 against a log ending at

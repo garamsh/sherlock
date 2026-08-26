@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -140,4 +141,101 @@ func TestScriptTool_ShellExec_NullTimeoutAccepted(t *testing.T) {
 	require.NoError(t, json.Unmarshal(out, &body))
 	assert.Equal(t, "ok\n", body["stdout"])
 	assert.EqualValues(t, 0, body["exit_code"])
+}
+
+// The two bounds tools/shell_exec states on its Exec RPC: the margin
+// it adds to a command timeout it was handed, and the stall bound it
+// uses when it was handed none. The tool is a main package and cannot
+// be imported, so the values are restated here — changing either there
+// without changing it here fails these tests.
+const (
+	shellExecDispatchMargin = 5 * time.Second
+	shellExecStallTimeout   = time.Hour
+)
+
+// operatorExecTimeout is an exec-timeout an operator configures above
+// the code default, which internal/config/workspace.go exposes as a
+// flag. It is what the fallback bound must not pre-empt.
+const operatorExecTimeout = 60 * time.Second
+
+// TestScriptTool_ShellExec_StalledWorkspaceRefused covers issue #726: a
+// workspace that accepts the connection and then answers nothing is
+// refused within the tool's own bound instead of parking the caller.
+// The answering workspace in the same test is the control — it takes
+// the same tool, input and wiring, so what the second half measures is
+// the stall and not a peer that refused or closed. The per-call
+// timeout is what the tool bounds against, so the call carries one.
+func TestScriptTool_ShellExec_StalledWorkspaceRefused(t *testing.T) {
+	root := t.TempDir()
+	hash := installTool(t, root, "shell_exec")
+
+	answering, _, exec, stop := startFakeWorkspace(t)
+	defer stop()
+	exec.result = shell.Result{Stdout: "hello from exec\n"}
+	stalledAddr, stalled, stopStalled := startStalledWorkspace(t)
+	defer stopStalled()
+
+	reg, err := tool.NewRegistry(tool.RegistryOptions{
+		Dir:      root,
+		Pins:     tool.ManifestPins{"shell_exec": hash},
+		Required: []string{"shell_exec"},
+	})
+	require.NoError(t, err)
+	const commandTimeout = time.Millisecond
+	call := json.RawMessage(`{"command":"echo hello from exec","timeout_nanos":1000000}`)
+
+	t.Setenv("GAGENT_WORKSPACE_ADDR", answering)
+	out, err := reg.Call(context.Background(), "shell_exec", call)
+	require.NoError(t, err, "control: a workspace that answers accepts this exact call")
+	assert.Contains(t, string(out), "hello from exec")
+
+	t.Setenv("GAGENT_WORKSPACE_ADDR", stalledAddr)
+	start := time.Now()
+	_, err = reg.Call(context.Background(), "shell_exec", call)
+	elapsed := time.Since(start)
+
+	require.Error(t, err)
+	assert.ErrorIs(t, err, tool.ErrExecution)
+	assert.GreaterOrEqual(t, elapsed, commandTimeout+shellExecDispatchMargin,
+		"the tool waits its bound out: a peer that refused or closed would have failed fast")
+	assert.Less(t, elapsed, commandTimeout+shellExecDispatchMargin+10*time.Second,
+		"and then refuses, rather than parking the caller")
+	assert.InDelta(t, (commandTimeout + shellExecDispatchMargin).Seconds(),
+		stalled.observedDeadline().Seconds(), 2,
+		"the bound tracks the command's own timeout, not one number for every call")
+}
+
+// TestScriptTool_ShellExec_FallbackLeavesTheCeilingToTheWorkspace pins
+// the other bound. A call naming no timeout is run by the workspace
+// under the operator's exec-timeout, which this tool cannot read, so
+// the tool bounds only against a workspace that stopped answering. A
+// bound derived from a command duration instead — exec-timeout's code
+// default, say — reaches the executor through the call's context and
+// cuts short every command a longer exec-timeout allows.
+func TestScriptTool_ShellExec_FallbackLeavesTheCeilingToTheWorkspace(t *testing.T) {
+	root := t.TempDir()
+	hash := installTool(t, root, "shell_exec")
+
+	addr, _, exec, stop := startFakeWorkspace(t)
+	defer stop()
+	exec.result = shell.Result{Stdout: "ok\n"}
+	exec.defaultTimeout = operatorExecTimeout
+	t.Setenv("GAGENT_WORKSPACE_ADDR", addr)
+
+	reg, err := tool.NewRegistry(tool.RegistryOptions{
+		Dir:      root,
+		Pins:     tool.ManifestPins{"shell_exec": hash},
+		Required: []string{"shell_exec"},
+	})
+	require.NoError(t, err)
+
+	_, err = reg.Call(context.Background(), "shell_exec",
+		json.RawMessage(`{"command":"echo ok"}`))
+	require.NoError(t, err)
+	assert.Zero(t, exec.req.Timeout,
+		"no per-call timeout reaches the executor, so the workspace resolves it against exec-timeout")
+	assert.InDelta(t, operatorExecTimeout.Seconds(), exec.commandBound.Seconds(), 2,
+		"the command runs for as long as exec-timeout allows: the caller's deadline does not pre-empt it")
+	assert.InDelta(t, shellExecStallTimeout.Seconds(), exec.deadline.Seconds(), 2,
+		"and the call is still bounded, against the stall rather than against a command duration")
 }

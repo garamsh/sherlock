@@ -350,6 +350,68 @@ func TestResolveConfig_ToolsSectionWithoutPinsIsAbsent(t *testing.T) {
 	assert.Equal(t, "./elsewhere", cfg.ToolsDir)
 }
 
+// TestResolveConfig_ToolsPinsEnvIsRefused is the case #745 reported.
+// Every key binds to the environment, so GAGENT_TOOLS_PINS made
+// tools.pins present and unmarshalled its scalar to an empty map: an
+// operator who named two tools was told they had named none.
+//
+// The control is the same directory and the same file one step earlier:
+// the pin set resolves, and the neighbouring tools key resolves through
+// the environment, so what the refusal answers is the variable and not
+// the pin set's content or the environment layer.
+func TestResolveConfig_ToolsPinsEnvIsRefused(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
+		[]byte("tools:\n  pins:\n    message_send: 0f9b\n    files: 7c31\n"), 0o600))
+	t.Setenv("GAGENT_TOOLS_DIR", "/opt/gagent/tools")
+
+	cfg, err := config.Resolve(agentFlags(t))
+
+	require.NoError(t, err)
+	require.Equal(t, tool.ManifestPins{"message_send": "0f9b", "files": "7c31"}, cfg.Tools.Pins,
+		"the pin set is accepted from the file: the channel is what the refusal is about, not the content")
+	require.Equal(t, "/opt/gagent/tools", cfg.ToolsDir,
+		"GAGENT_TOOLS_DIR still reaches its setting: the refusal is this key's, not the environment layer's")
+
+	t.Setenv("GAGENT_TOOLS_PINS", "files=7c31,message_send=0f9b")
+
+	_, err = config.Resolve(agentFlags(t))
+
+	require.Error(t, err, "the environment form of the pin set must not resolve")
+	assert.Contains(t, err.Error(), "GAGENT_TOOLS_PINS",
+		"the error names the variable the operator set")
+	assert.Contains(t, err.Error(), "cannot express tools.pins",
+		"the error says the environment cannot carry this key")
+	assert.Contains(t, err.Error(), "config file",
+		"the error names where the pin set goes instead")
+	assert.NotContains(t, err.Error(), "names no tool",
+		"the operator named two tools; #745 is that the empty-section message told them they named none")
+}
+
+// TestResolveConfig_EmptyToolsPinsEnvIsRefused holds the refusal to the
+// variable rather than to its value. An empty one resolved before, and
+// left pinning off for an operator who had named the variable — the
+// state that reads as configured and is not, which is what #562 cost.
+func TestResolveConfig_EmptyToolsPinsEnvIsRefused(t *testing.T) {
+	t.Chdir(t.TempDir())
+
+	cfg, err := config.Resolve(agentFlags(t))
+
+	require.NoError(t, err)
+	require.Nil(t, cfg.Tools.Pins,
+		"with no variable and no section this is the absent state, and it resolves")
+
+	t.Setenv("GAGENT_TOOLS_PINS", "")
+
+	_, err = config.Resolve(agentFlags(t))
+
+	require.Error(t, err, "an empty GAGENT_TOOLS_PINS must not resolve to pinning being off")
+	assert.Contains(t, err.Error(), "GAGENT_TOOLS_PINS")
+	assert.Contains(t, err.Error(), "config file",
+		"the error names where the pin set goes instead")
+}
+
 func TestResolveConfig_ToolsDirDefaults(t *testing.T) {
 	t.Chdir(t.TempDir())
 

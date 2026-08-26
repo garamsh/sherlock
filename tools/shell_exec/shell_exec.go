@@ -24,11 +24,14 @@ import (
 )
 
 const (
-	// workspaceExecTimeout mirrors the workspace's own exec-timeout
-	// default (internal/config/workspace.go). A call carrying no
-	// per-call timeout is bounded against the value the workspace
-	// applies to it, which this tool cannot read.
-	workspaceExecTimeout = 30 * time.Second
+	// stallTimeout bounds a call that names no timeout of its own. It
+	// is deliberately not exec-timeout's default: the ceiling on the
+	// command is the operator's, the workspace applies it, and a copy
+	// enforced from here would cut short every command a longer
+	// exec-timeout allows. What is left for this deadline to catch is
+	// a workspace that stopped answering, so it clears any ceiling
+	// exec-timeout is given.
+	stallTimeout = time.Hour
 
 	// dispatchMargin is what the workspace needs beyond the command's
 	// own bound: gRPC dispatch, killing and reaping a child whose
@@ -85,21 +88,23 @@ func run() error {
 	return json.NewEncoder(os.Stdout).Encode(out)
 }
 
-// dispatch forwards one command to the workspace's Exec RPC, bounded at
-// the command's own timeout plus dispatchMargin. The workspace runs the
-// command that long, so a shorter deadline would cut a legitimate
-// command short.
+// dispatch forwards one command to the workspace's Exec RPC. A call
+// that names its own timeout is bounded at it plus dispatchMargin,
+// because the tool knows how long the command may run; a call that
+// names none leaves that ceiling to the workspace and is bounded
+// against the stall alone.
 func dispatch(ctx context.Context, ws workspace.WorkspaceClient, in callInput) (callOutput, error) {
 	req := &workspace.ExecRequest{
 		Command:   in.Command,
 		NoNetwork: true,
 	}
-	commandTimeout := workspaceExecTimeout
+	bound := stallTimeout
 	if in.TimeoutNanos > 0 {
-		commandTimeout = time.Duration(in.TimeoutNanos)
+		commandTimeout := time.Duration(in.TimeoutNanos)
 		req.TimeoutNanos = commandTimeout.Nanoseconds()
+		bound = commandTimeout + dispatchMargin
 	}
-	ctx, cancel := context.WithTimeout(ctx, commandTimeout+dispatchMargin)
+	ctx, cancel := context.WithTimeout(ctx, bound)
 	defer cancel()
 
 	resp, err := ws.Exec(ctx, req)

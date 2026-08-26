@@ -88,21 +88,43 @@ func startFakeWorkspace(t *testing.T) (string, *files.FS, *fakeExecutor, func())
 }
 
 // fakeExecutor records the shell.Request the server hands the
-// executor, and how long the caller gave the call, and replays a
-// canned result. The script-tool tests only need the executor to
-// return a known result; the real fork+exec code is covered in
-// internal/workspace/shell.
+// executor, what bounded the call, and replays a canned result. The
+// script-tool tests only need the executor to return a known result;
+// the real fork+exec code is covered in internal/workspace/shell.
 type fakeExecutor struct {
-	req      shell.Request
+	req shell.Request
+	// defaultTimeout stands in for the workspace's exec-timeout. The
+	// real executor resolves a request carrying no timeout to its own
+	// default and runs the command under whichever of that and the
+	// caller's deadline is nearer (internal/workspace/shell/process_linux.go),
+	// so a double that ignored it could not show a caller's deadline
+	// pre-empting the operator's ceiling.
+	defaultTimeout time.Duration
+	// deadline is how long the caller gave the whole call, and zero
+	// where the caller gave no deadline at all.
 	deadline time.Duration
-	result   shell.Result
-	err      error
+	// commandBound is how long the command itself would have been
+	// given, which is what an operator's exec-timeout is supposed to
+	// decide.
+	commandBound time.Duration
+	result       shell.Result
+	err          error
 }
 
 func (f *fakeExecutor) Run(ctx context.Context, req shell.Request) (shell.Result, error) {
 	f.req = req
 	if deadline, ok := ctx.Deadline(); ok {
 		f.deadline = time.Until(deadline)
+	}
+	timeout := req.Timeout
+	if timeout <= 0 {
+		timeout = f.defaultTimeout
+	}
+	if timeout > 0 {
+		runCtx, cancel := context.WithTimeout(ctx, timeout)
+		defer cancel()
+		deadline, _ := runCtx.Deadline()
+		f.commandBound = time.Until(deadline)
 	}
 	return f.result, f.err
 }

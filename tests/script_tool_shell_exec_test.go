@@ -143,16 +143,20 @@ func TestScriptTool_ShellExec_NullTimeoutAccepted(t *testing.T) {
 	assert.EqualValues(t, 0, body["exit_code"])
 }
 
-// The two halves of the bound tools/shell_exec states on its Exec RPC:
-// the command timeout it falls back to, and the margin it adds on top
-// of whichever command timeout applies. The tool is a main package and
-// cannot be imported, so the values are restated here — changing
-// either there without changing it here fails these tests, which is
-// what keeps deployment.md's requirement honest.
+// The two bounds tools/shell_exec states on its Exec RPC: the margin
+// it adds to a command timeout it was handed, and the stall bound it
+// uses when it was handed none. The tool is a main package and cannot
+// be imported, so the values are restated here — changing either there
+// without changing it here fails these tests.
 const (
-	shellExecWorkspaceTimeout = 30 * time.Second
-	shellExecDispatchMargin   = 5 * time.Second
+	shellExecDispatchMargin = 5 * time.Second
+	shellExecStallTimeout   = time.Hour
 )
+
+// operatorExecTimeout is an exec-timeout an operator configures above
+// the code default, which internal/config/workspace.go exposes as a
+// flag. It is what the fallback bound must not pre-empt.
+const operatorExecTimeout = 60 * time.Second
 
 // TestScriptTool_ShellExec_StalledWorkspaceRefused covers issue #726: a
 // workspace that accepts the connection and then answers nothing is
@@ -201,19 +205,21 @@ func TestScriptTool_ShellExec_StalledWorkspaceRefused(t *testing.T) {
 		"the bound tracks the command's own timeout, not one number for every call")
 }
 
-// TestScriptTool_ShellExec_DeadlineCoversWorkspaceDefault pins the
-// other half of the bound: a call carrying no per-call timeout is run
-// by the workspace under its own exec-timeout, which this tool cannot
-// read, so the deadline it sets covers that default and the
-// workspace's dispatch on top of it. Below that the tool would abandon
-// commands the workspace is still running.
-func TestScriptTool_ShellExec_DeadlineCoversWorkspaceDefault(t *testing.T) {
+// TestScriptTool_ShellExec_FallbackLeavesTheCeilingToTheWorkspace pins
+// the other bound. A call naming no timeout is run by the workspace
+// under the operator's exec-timeout, which this tool cannot read, so
+// the tool bounds only against a workspace that stopped answering. A
+// bound derived from a command duration instead — exec-timeout's code
+// default, say — reaches the executor through the call's context and
+// cuts short every command a longer exec-timeout allows.
+func TestScriptTool_ShellExec_FallbackLeavesTheCeilingToTheWorkspace(t *testing.T) {
 	root := t.TempDir()
 	hash := installTool(t, root, "shell_exec")
 
 	addr, _, exec, stop := startFakeWorkspace(t)
 	defer stop()
 	exec.result = shell.Result{Stdout: "ok\n"}
+	exec.defaultTimeout = operatorExecTimeout
 	t.Setenv("GAGENT_WORKSPACE_ADDR", addr)
 
 	reg, err := tool.NewRegistry(tool.RegistryOptions{
@@ -227,8 +233,9 @@ func TestScriptTool_ShellExec_DeadlineCoversWorkspaceDefault(t *testing.T) {
 		json.RawMessage(`{"command":"echo ok"}`))
 	require.NoError(t, err)
 	assert.Zero(t, exec.req.Timeout,
-		"no per-call timeout reaches the executor, so the workspace applies exec-timeout")
-	assert.InDelta(t, (shellExecWorkspaceTimeout + shellExecDispatchMargin).Seconds(),
-		exec.deadline.Seconds(), 2,
-		"the deadline covers the workspace's own exec-timeout default plus its dispatch")
+		"no per-call timeout reaches the executor, so the workspace resolves it against exec-timeout")
+	assert.InDelta(t, operatorExecTimeout.Seconds(), exec.commandBound.Seconds(), 2,
+		"the command runs for as long as exec-timeout allows: the caller's deadline does not pre-empt it")
+	assert.InDelta(t, shellExecStallTimeout.Seconds(), exec.deadline.Seconds(), 2,
+		"and the call is still bounded, against the stall rather than against a command duration")
 }

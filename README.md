@@ -199,4 +199,6 @@ Beyond Go and GNU Make, the toolchain is:
 - **buf** — `make proto` lints the proto files, regenerates the workspace gRPC stubs (`buf.yaml` + `buf.gen.yaml`), and fails if a regenerated stub is uncommitted; the CLI version is pinned in `.github/workflows/ci.yml` (1.72.0).
 - **lefthook** — `make hooks` installs the git hooks once after cloning (pre-commit lint/format, pre-push test).
 
+Every target exports `GOTOOLCHAIN` as a minimum built from `go.mod`'s `go` directive, so a go command run through `make` builds each tool it fetches with at least that toolchain — `go install tool@version` otherwise takes the toolchain from the tool's own `go.mod` and can hand you a binary that cannot load this module's packages. A `go install` typed outside `make` is not covered by it and takes the floor from your own environment.
+
 This repository is developed by AI agents under written conventions — see `AGENTS.md` for what a contributor is held to and `docs/convention/` for the rules all code follows. Internal structure and design decisions live in `docs/architecture/`.

@@ -76,9 +76,10 @@ const (
 	proseMeasuredSchema = "0944fae4c3f16b2db3551289c7872aad257e23142491f1df141b84e91ce5b69f"
 )
 
-// proseReadInstruction is the read step, and this round has to supply it:
-// the platform ships a write prompt and no read prompt, because #336 step
-// 3 is where one lands. It is the shipped prose's own two address
+// proseReadInstruction is the read step, and this round had to supply it:
+// the platform shipped a write prompt and no read prompt when these
+// figures were taken. #336 step 3 has since landed one (#634,
+// internal/agent/recall.go). It is the shipped prose's own two address
 // sentences with "statement" read as "question", and nothing else — no
 // example, no subject list, no attribute list. That matters: a read prompt
 // carrying more than the write prompt could place a question the write

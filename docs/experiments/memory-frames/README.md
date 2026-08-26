@@ -396,7 +396,7 @@ A question is a turn too, and in the same arm it also arrives extracted: the add
 
 In the `oracle` arm a fact-carrying turn arrives already extracted, and the shipped frame writes it as the semantic add `internal/agent/memory/writeback.go` derives; every other turn is an episodic observation. In the `text` arm no turn carries an extracted fact, so every turn is an episodic observation. Neither frame is told which arm it is in — the arms differ only in what a turn carries, and a frame that reads only the text cannot tell them apart, which `harness/measure_test.go` checks.
 
-**The `oracle` arm is a ceiling, not a measurement of the shipped design.** It hands the writeback a perfect extractor that never misses a fact and never invents one. No real writeback has come close: `memory-cycle/` measured zero voluntary writeback blocks in fifteen of fifteen responses, and #336 is open on it. A reader who takes the `oracle` row for what the shipped design scores is reading the baseline flattered.
+**The `oracle` arm is a ceiling, not a measurement of the shipped design.** It hands the writeback a perfect extractor that never misses a fact and never invents one. No real writeback has come close: `memory-cycle/` measured zero voluntary writeback blocks in fifteen of fifteen responses. The voluntary block is gone — the writeback is a reserved tool call a turn cannot end without (#628) — and whether a model fills it is unmeasured, which is #336's open step 4. A reader who takes the `oracle` row for what the shipped design scores is reading the baseline flattered.
 
 ## The workload
 
@@ -4007,7 +4007,7 @@ The figure that matters for the designs coming next is in the cost table below, 
 - It does not measure a question about an earlier year. The interval store's extra bytes buy the ability to answer one, and the workload asks none, so what that capability is worth is still unmeasured — the same gap #457 reported, unchanged by this round.
 - It does not rank the structures. `attribute-declared` is a ceiling rather than a design, several arms are the ends of a range rather than candidates, and the best-scoring rule measured is disqualified — so the order of the rows is not an order of preference.
 - It does not say the attribute frame's storage advantage would survive persistence. It is measured as an in-memory structure with no file format, so what it stores is what it holds; a persisted form would add a page layout and an index the shipped store's figure already carries.
-- It does not measure retrieval quality as such. That is `memory-retrieval/`'s subject, and the constants that decide it are #411's.
+- It does not measure retrieval quality as such. That is `memory-retrieval/`'s subject, and the constants that decided it were removed with the ranked read path (#582).
 - It says nothing about latency. No run time is measured, and the frames differ so much in what they do per turn that comparing theirs would compare implementations rather than structures.
 - It does not say what shape real conversation has. Three shapes are measured and a transcript is none of them, so the record says what each shape costs and not which of them a deployment would meet.
 - It does not measure a question that has to be understood before it can be placed. Every question here names its subject and, where it has one, its attribute, so what §Whether a structure can find what it holds measures is a resolution step at its easiest. A question that only implies what it asks about is where such a step would be tested, and none is asked.

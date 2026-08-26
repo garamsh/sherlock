@@ -32,7 +32,7 @@ import (
 )
 
 // embedderName is the embedder every figure is produced under: the
-// deterministic offline one cmd/gagent defaults to. Issue #435 measured
+// deterministic offline one cmd/gagent defaults to. #435 measured
 // what the hosted alternative costs the read path and which conclusions may
 // be quoted across the two; this record does not repeat that measurement.
 const embedderName = "hashing"

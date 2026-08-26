@@ -65,17 +65,18 @@ project-owned:
 # that owns it, so a later sync re-proposes nothing already settled.
 skipped:
   stack-go.md §1 — implementation packaging. The template reversed this at
-    5eb0a31 (#289) to `internal/<domain>/repository/postgres.go`, a package
-    named for the interface, with a clause prohibiting the technology-named
-    form. Not adopted: #685's Out of scope carries the reason, that splitting
-    `internal/agent/memory/` into a package per interface gives Recall a Model
-    dependency the other two lack and leaves three packages with nothing
-    saying they are one seam. #291's naming half WAS taken (#688).
+    5eb0a31 (its #289) to `internal/<domain>/repository/postgres.go`, a
+    package named for the interface, with a clause prohibiting the
+    technology-named form. Not adopted: #685's Out of scope carries the
+    reason, that splitting `internal/agent/memory/` into a package per
+    interface gives Recall a Model dependency the other two lack and leaves
+    three packages with nothing saying they are one seam. The naming half of
+    the template's #291 WAS taken here, by #688.
     The naming half was argued on 2026-08-26 by the template's PM and the
     argument is good for the store case: interface-naming is what says two
     implementations are alternatives for one contract, where sibling
     technology-named packages say nothing about their relationship — which is
-    the same thing this project's own refusal of #289 wanted. It is declined
+    the same thing this project's own refusal of its #289 wanted. It is declined
     anyway, on a measurement rather than a preference. The rule assumes two
     small alternatives: `internal/memory/sqlite/` is 313 shipped lines in 2
     files and fits it. The provider case does not — `internal/agent/openai/`

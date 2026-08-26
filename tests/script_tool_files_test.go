@@ -7,12 +7,16 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sync"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/status"
 
 	"github.com/garamsh/gagent/internal/tool"
 	"github.com/garamsh/gagent/internal/workspace"
@@ -84,18 +88,101 @@ func startFakeWorkspace(t *testing.T) (string, *files.FS, *fakeExecutor, func())
 }
 
 // fakeExecutor records the shell.Request the server hands the
-// executor and replays a canned result. The script-tool tests only
-// need the executor to return a known result; the real fork+exec
-// code is covered in internal/workspace/shell.
+// executor, and how long the caller gave the call, and replays a
+// canned result. The script-tool tests only need the executor to
+// return a known result; the real fork+exec code is covered in
+// internal/workspace/shell.
 type fakeExecutor struct {
-	req    shell.Request
-	result shell.Result
-	err    error
+	req      shell.Request
+	deadline time.Duration
+	result   shell.Result
+	err      error
 }
 
-func (f *fakeExecutor) Run(_ context.Context, req shell.Request) (shell.Result, error) {
+func (f *fakeExecutor) Run(ctx context.Context, req shell.Request) (shell.Result, error) {
 	f.req = req
+	if deadline, ok := ctx.Deadline(); ok {
+		f.deadline = time.Until(deadline)
+	}
 	return f.result, f.err
+}
+
+// stalledWorkspace accepts every RPC and answers none: each handler
+// records how long the caller gave the call and then blocks until the
+// caller gives up. It is the peer a data-plane deadline exists for
+// (issue #726) — one that took the connection and stopped answering —
+// and not one that refuses or closes, which fails fast without a
+// deadline and so proves nothing about it.
+type stalledWorkspace struct {
+	workspace.UnimplementedWorkspaceServer
+
+	// stopped is closed when the test tears the server down. It is what
+	// releases a stalled handler: releasing it on the call's own context
+	// instead would answer the caller with a cancellation the moment the
+	// deadline propagated, and that answer races the caller's own
+	// deadline — a peer under test for never answering must not answer.
+	stopped  chan struct{}
+	mu       sync.Mutex
+	deadline time.Duration
+}
+
+func (s *stalledWorkspace) Read(ctx context.Context, _ *workspace.ReadRequest) (*workspace.ReadResponse, error) {
+	return nil, s.stall(ctx)
+}
+
+func (s *stalledWorkspace) Write(ctx context.Context, _ *workspace.WriteRequest) (*workspace.WriteResponse, error) {
+	return nil, s.stall(ctx)
+}
+
+func (s *stalledWorkspace) List(ctx context.Context, _ *workspace.ListRequest) (*workspace.ListResponse, error) {
+	return nil, s.stall(ctx)
+}
+
+func (s *stalledWorkspace) Exec(ctx context.Context, _ *workspace.ExecRequest) (*workspace.ExecResponse, error) {
+	return nil, s.stall(ctx)
+}
+
+func (s *stalledWorkspace) stall(ctx context.Context) error {
+	if deadline, ok := ctx.Deadline(); ok {
+		s.mu.Lock()
+		s.deadline = time.Until(deadline)
+		s.mu.Unlock()
+	}
+	<-s.stopped
+	return status.Error(codes.Unavailable, "workspace stopped")
+}
+
+// observedDeadline is how long the caller of the last stalled RPC gave
+// it, and zero where the caller gave no deadline at all. gRPC carries
+// the client's deadline to the server, so this is the bound the tool
+// set, read off the wire rather than out of the tool.
+func (s *stalledWorkspace) observedDeadline() time.Duration {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.deadline
+}
+
+// startStalledWorkspace serves the workspace contract on an ephemeral
+// loopback address with every RPC stalled, and returns the address, the
+// server, and its stop function. The listener accepts, the connection
+// stays open and the process stays alive; no call is ever answered.
+func startStalledWorkspace(t *testing.T) (string, *stalledWorkspace, func()) {
+	t.Helper()
+	stalled := &stalledWorkspace{stopped: make(chan struct{})}
+
+	listen, err := net.Listen("tcp", "127.0.0.1:0")
+	require.NoError(t, err)
+	addr := listen.Addr().String()
+
+	srv := grpc.NewServer()
+	workspace.RegisterWorkspaceServer(srv, stalled)
+	go func() { _ = srv.Serve(listen) }()
+
+	stop := func() {
+		close(stalled.stopped)
+		srv.GracefulStop()
+	}
+	return addr, stalled, stop
 }
 
 // TestScriptTool_Files_Integration drops the files tool into a
@@ -233,4 +320,54 @@ func TestScriptTool_Files_NullContentAccepted(t *testing.T) {
 		"null content must pass schema validation and reach the script's dispatch check")
 	assert.NotErrorIs(t, err, tool.ErrValidation,
 		"a null on a manifest-optional property means absence, not a type violation")
+}
+
+// filesCallTimeout is the bound tools/files states on one workspace
+// RPC. The tool is a main package and cannot be imported, so the value
+// is restated here: changing it there without changing it here fails
+// this test, which is what keeps deployment.md's requirement honest.
+const filesCallTimeout = 10 * time.Second
+
+// TestScriptTool_Files_StalledWorkspaceRefused covers issue #726: a
+// workspace that accepts the connection and then answers nothing is
+// refused within the tool's own bound instead of parking the caller.
+// The answering workspace in the same test is the control — it takes
+// the same tool, input and wiring, so what the second half measures is
+// the stall and not a peer that refused or closed.
+func TestScriptTool_Files_StalledWorkspaceRefused(t *testing.T) {
+	root := t.TempDir()
+	hash := installTool(t, root, "files")
+
+	answering, fs, _, stop := startFakeWorkspace(t)
+	defer stop()
+	require.NoError(t, fs.Write("hello.txt", []byte("hi from workspace")))
+	stalledAddr, stalled, stopStalled := startStalledWorkspace(t)
+	defer stopStalled()
+
+	reg, err := tool.NewRegistry(tool.RegistryOptions{
+		Dir:      root,
+		Pins:     tool.ManifestPins{"files": hash},
+		Required: []string{"files"},
+	})
+	require.NoError(t, err)
+	read := json.RawMessage(`{"operation":"read","path":"hello.txt"}`)
+
+	t.Setenv("GAGENT_WORKSPACE_ADDR", answering)
+	out, err := reg.Call(context.Background(), "files", read)
+	require.NoError(t, err, "control: a workspace that answers accepts this exact call")
+	assert.Contains(t, string(out), "hi from workspace")
+
+	t.Setenv("GAGENT_WORKSPACE_ADDR", stalledAddr)
+	start := time.Now()
+	_, err = reg.Call(context.Background(), "files", read)
+	elapsed := time.Since(start)
+
+	require.Error(t, err)
+	assert.ErrorIs(t, err, tool.ErrExecution)
+	assert.GreaterOrEqual(t, elapsed, filesCallTimeout,
+		"the tool waits its bound out: a peer that refused or closed would have failed fast")
+	assert.Less(t, elapsed, filesCallTimeout+10*time.Second,
+		"and then refuses, rather than parking the caller")
+	assert.InDelta(t, filesCallTimeout.Seconds(), stalled.observedDeadline().Seconds(), 2,
+		"the workspace is handed the bound the tool states")
 }

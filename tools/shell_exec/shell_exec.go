@@ -23,6 +23,19 @@ import (
 	"github.com/garamsh/gagent/internal/workspace"
 )
 
+const (
+	// workspaceExecTimeout mirrors the workspace's own exec-timeout
+	// default (internal/config/workspace.go). A call carrying no
+	// per-call timeout is bounded against the value the workspace
+	// applies to it, which this tool cannot read.
+	workspaceExecTimeout = 30 * time.Second
+
+	// dispatchMargin is what the workspace needs beyond the command's
+	// own bound: gRPC dispatch, killing and reaping a child whose
+	// deadline expired, and writing the response.
+	dispatchMargin = 5 * time.Second
+)
+
 type callInput struct {
 	Command      string `json:"command"`
 	TimeoutNanos int64  `json:"timeout_nanos"`
@@ -65,24 +78,40 @@ func run() error {
 	if in.Command == "" {
 		return errors.New("command is required")
 	}
+	out, err := dispatch(context.Background(), ws, in)
+	if err != nil {
+		return err
+	}
+	return json.NewEncoder(os.Stdout).Encode(out)
+}
+
+// dispatch forwards one command to the workspace's Exec RPC, bounded at
+// the command's own timeout plus dispatchMargin. The workspace runs the
+// command that long, so a shorter deadline would cut a legitimate
+// command short.
+func dispatch(ctx context.Context, ws workspace.WorkspaceClient, in callInput) (callOutput, error) {
 	req := &workspace.ExecRequest{
 		Command:   in.Command,
 		NoNetwork: true,
 	}
+	commandTimeout := workspaceExecTimeout
 	if in.TimeoutNanos > 0 {
-		req.TimeoutNanos = time.Duration(in.TimeoutNanos).Nanoseconds()
+		commandTimeout = time.Duration(in.TimeoutNanos)
+		req.TimeoutNanos = commandTimeout.Nanoseconds()
 	}
-	resp, err := ws.Exec(context.Background(), req)
+	ctx, cancel := context.WithTimeout(ctx, commandTimeout+dispatchMargin)
+	defer cancel()
+
+	resp, err := ws.Exec(ctx, req)
 	if err != nil {
-		return grpcError("exec", err)
+		return callOutput{}, grpcError("exec", err)
 	}
-	out := callOutput{
+	return callOutput{
 		Stdout:   resp.GetStdout(),
 		Stderr:   resp.GetStderr(),
 		ExitCode: int(resp.GetExitCode()),
 		TimedOut: resp.GetTimedOut(),
-	}
-	return json.NewEncoder(os.Stdout).Encode(out)
+	}, nil
 }
 
 func grpcError(op string, err error) error {

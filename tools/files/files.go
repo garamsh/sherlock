@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -21,6 +22,11 @@ import (
 
 	"github.com/garamsh/gagent/internal/workspace"
 )
+
+// callTimeout bounds one workspace RPC. Read, Write and List are
+// pod-local filesystem calls with nothing to wait on, so a workspace
+// still answering returns far inside it.
+const callTimeout = 10 * time.Second
 
 type callInput struct {
 	Operation string `json:"operation"`
@@ -74,6 +80,9 @@ func run() error {
 }
 
 func dispatch(ctx context.Context, ws workspace.WorkspaceClient, in callInput) (callOutput, error) {
+	ctx, cancel := context.WithTimeout(ctx, callTimeout)
+	defer cancel()
+
 	switch in.Operation {
 	case "read":
 		resp, err := ws.Read(ctx, &workspace.ReadRequest{Path: in.Path})

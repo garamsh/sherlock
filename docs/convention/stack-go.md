@@ -328,8 +328,8 @@ Every tool the module invokes is built with a toolchain at least the
 module's `go` directive. `go install tool@version` and `go run
 tool@version` take the toolchain from the tool's own `go.mod`, not from
 this module, so a tool whose directive is older yields a binary that
-refuses to load the module's packages, fatally and at package-load time
-(#513). Set that floor once for the module rather than per tool:
+refuses to load the module's packages, fatally and at package-load
+time. Set that floor once for the module rather than per tool:
 `GOTOOLCHAIN` with an `+auto` suffix sets a minimum without stopping a
 tool that needs more.
 

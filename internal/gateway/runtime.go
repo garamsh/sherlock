@@ -16,8 +16,6 @@ import (
 // session holds (the memory store).
 type Runtime struct {
 	Session agent.Session
-	// Tools is the platform tool client the session drives.
-	Tools agent.ToolClient
 	// Close releases the runtime's resources. Called once on queue
 	// shutdown.
 	Close func(ctx context.Context) error
@@ -89,7 +87,6 @@ func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink)
 	})
 	return &Runtime{
 		Session: session,
-		Tools:   f.Tools,
 		Retain: func(ctx context.Context) error {
 			_, err := memSvc.Retain(ctx)
 			return err

@@ -87,7 +87,7 @@ Two exceptions a pod spec meets immediately:
 
 - **Both commands name their listener `addr`**, so a single `GAGENT_ADDR` set on the pod retargets both containers. Set it per container, or leave the workspace at its default.
 - **`--agent-id` is a flag only.** It is read straight off the command line rather than through the settings layers, so setting `GAGENT_AGENT_ID` in the pod spec does not choose the agent's ID. The agent ID must appear in the container's args. The agent then publishes the ID it resolved under that same name for the tools it spawns, so a value already in the environment is replaced rather than read — `message_send` reads it there to stamp each delivered message (ADR 0016).
-- **`tools.pins` has no environment form.** It is a nested map reachable through the config file only.
+- **`tools.pins` has no environment form, and `GAGENT_TOOLS_PINS` fails startup rather than being ignored.** It is a nested map — one variable carries one value — reachable through the config file only. Setting the variable is refused while the config resolves, empty value included, and the refusal names the file to write the pin set in (#745). A per-tool variant such as `GAGENT_TOOLS_PINS_FILES` names no key and is ignored.
 
 **The model API key never appears in configuration** (ADR 0003). `model.api-key-env` names the *environment variable* that holds it, defaulting to `OPENAI_API_KEY`. The key reaches the process through the environment and nowhere else, so it is injected as a Secret-backed environment variable rather than a mounted file.
 
@@ -165,6 +165,7 @@ Every fatal path exits **1** and prints `Error: <message>`; nothing distinguishe
 | A pin set is configured and a tool on disk is not named in it | agent | `unpinned tool "…": not named by the pin set; pin it as <sha256> or remove the tool` |
 | A pin set is configured and a manifest's hash drifted | agent | `descriptor drift for "…": pinned=<sha256> fetched=<sha256>` |
 | `tools.pins` present and naming no tool | agent | `config: tools.pins is present and names no tool; a pin set is the tools the operator accepted, so an empty one accepts nothing and no agent can start under it` |
+| `GAGENT_TOOLS_PINS` set, with any value | agent | `config: GAGENT_TOOLS_PINS is set, and the environment cannot express tools.pins: a pin set maps each tool name to its manifest SHA-256, and one variable carries one value` |
 | `message_send` is absent from the tools tree | agent | `tool registry: required tools missing: [message_send]` |
 | `memory-path`'s directory cannot be created, or the store cannot be opened | agent | `mkdir …: read-only file system` / `open "…": …` |
 | Workspace directory cannot be created, chowned or chmodded | workspace | `create workspace root "…": …` / `chown "…" to uid 1001: …` |

@@ -79,7 +79,7 @@ Agent keys (`gagent agent`; see `gagent.yaml` for an example):
 | `memory-path` | `--memory-path` | `data/memory.db` (the agent's SQLite memory file, created on first use) |
 | `workspace-addr` | `--workspace-addr` | `127.0.0.1:8081` (gRPC endpoint of the agent's workspace. The agent does not dial it; it publishes the value as `GAGENT_WORKSPACE_ADDR` to every tool it spawns, and the tools that need files or exec dial it themselves. A wrong address surfaces at the first tool call, not at startup — the agent's only workspace setting) |
 | `tools-dir` | — | `./tools` (the directory manifests are read from at startup) |
-| `tools.pins` | — | unset (the accepted tool set, one manifest SHA-256 per tool name — see §Adding tools. Unset loads the tree unpinned and warns; present and naming no tool fails startup) |
+| `tools.pins` | — | unset (the accepted tool set, one manifest SHA-256 per tool name — see §Adding tools. Unset loads the tree unpinned and warns; present and naming no tool fails startup. Config file only: one variable carries one value, so `GAGENT_TOOLS_PINS` is refused at startup rather than read) |
 | `model.provider` | — | `mock` (scripted, offline), `openai-compatible` (the chat-completions protocol) or `anthropic-compatible` (the Messages protocol). It names the wire protocol the endpoint speaks, not the vendor: one value serves every endpoint speaking it, and `model.base-url` is what picks between them |
 | `model.base-url` | — | `https://api.openai.com/v1` (any OpenAI-compatible endpoint, e.g. MiniMax/Ollama/vLLM — see §Endpoints, and how far each is verified) |
 | `model.model` | — | `gpt-4o-mini` |

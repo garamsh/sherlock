@@ -90,7 +90,8 @@ type ToolsConfig struct {
 	// neither, and Resolve rejects it — checkToolPins says why.
 	//
 	// Nil therefore means the operator wrote no section, and never that
-	// they wrote an empty one.
+	// they wrote an empty one. The config file is the only layer that
+	// can write one: checkToolPinsEnv refuses the environment form.
 	Pins tool.ManifestPins `mapstructure:"pins"`
 }
 
@@ -193,6 +194,9 @@ func Resolve(fs *pflag.FlagSet) (Config, error) {
 		return Config{}, err
 	}
 	reportUnknownKeys(loaded, used.Unused)
+	if err := checkToolPinsEnv(); err != nil {
+		return Config{}, err
+	}
 	if err := checkToolPins(v, cfg.Tools.Pins); err != nil {
 		return Config{}, err
 	}
@@ -204,6 +208,39 @@ func Resolve(fs *pflag.FlagSet) (Config, error) {
 // binds it, and the check that an operator who opened the section
 // filled it.
 const toolPinsKey = "tools.pins"
+
+// toolPinsEnv is the environment variable toolPinsKey binds to under the
+// prefix and replacer newConfigViper sets. It is named to be refused.
+const toolPinsEnv = "GAGENT_TOOLS_PINS"
+
+// checkToolPinsEnv refuses the environment form of the pin set.
+//
+// Every key binds to the environment, so this variable makes tools.pins
+// present and unmarshals its scalar to an empty map — the state
+// checkToolPins rejects, which answered an operator who named two tools
+// that they had named none (#745).
+//
+// The refusal covers an empty value too. Naming the variable is the
+// belief that the environment reaches this key, and an empty one would
+// otherwise leave pinning off while reading as configured, which is the
+// shape #562 cost.
+//
+// There is no encoding to give it instead. A pin set maps each tool name
+// to a manifest SHA-256, and a value a shell splits or a pod spec folds
+// stays well-formed: it reaches the registry as descriptor drift, which
+// is what a tampered manifest reaches it as. The config file is also the
+// only layer holding the pin set's custody — it is mode-checked
+// owner-only, where every tool the agent spawns inherits the whole
+// environment.
+func checkToolPinsEnv() error {
+	if _, ok := os.LookupEnv(toolPinsEnv); !ok {
+		return nil
+	}
+	return fmt.Errorf("config: %s is set, and the environment cannot express %s: a pin set maps each "+
+		"tool name to its manifest SHA-256, and one variable carries one value. Write the pin set in "+
+		"the agent's config file (--config <path>, ./gagent.yaml, or the XDG config path) and unset %s",
+		toolPinsEnv, toolPinsKey, toolPinsEnv)
+}
 
 // checkToolPins rejects a pin section that names no tool.
 //

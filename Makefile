@@ -81,8 +81,19 @@ test-privileged:
 	GAGENT_PRIVILEGED_TESTS=1 GAGENT_DEPLOYED_CAPS=$(DEPLOYED_CAP_ADD) \
 		setpriv --bounding-set=$(DEPLOYED_CAP_SET) $(PRIVILEGED_TEST_BIN)
 
+# `go build ./...` prints nothing on success and reports an empty match as a
+# stderr warning rather than an error, so a module holding no packages exits
+# zero exactly like a run that compiled every one (#715, #653). The count is
+# what tells the two apart, and a count of zero is a failure. It comes from
+# `go list ./...`, which resolves the same pattern in the same module, so the
+# number reported is the number `go build ./...` compiled and a module go list
+# cannot read fails here with its own error rather than as an empty tree.
 build:
-	go build ./...
+	@packages=$$(go list ./...) || exit $$?; \
+	built=$$(printf '%s' "$$packages" | awk 'END{print NR}'); \
+	test "$$built" -gt 0 || { echo "build: no packages under $(CURDIR); the build covered nothing"; exit 1; }; \
+	go build ./... || exit $$?; \
+	echo "build: $$built packages built"
 
 build-tools:
 	@for tool in files shell_exec message_send github; do \

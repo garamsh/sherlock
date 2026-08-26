@@ -154,6 +154,7 @@ func TestQueue_CloseClosesTheStore(t *testing.T) {
 	factory := &gateway.Factory{
 		MemoryPath: memoryPath(root),
 		NewModel:   func(string) agent.Model { return agent.NewScriptedModel() },
+		Tools:      noTools(),
 	}
 	q, err := gateway.NewQueue(factory, "env-1", newTestLogger())
 	require.NoError(t, err)
@@ -270,6 +271,13 @@ func (s stubClient) Call(_ context.Context, _ string, _ json.RawMessage) (json.R
 	return json.RawMessage(`{}`), s.err
 }
 
+// noTools is the empty tool surface: nothing installed, and any call
+// refused. A runtime built on it exercises the reasoning loop and the
+// memory hooks with no tool registry behind them.
+func noTools() agent.ToolClient {
+	return stubClient{err: errors.New("no tool installed")}
+}
+
 // outboundSink is what a mouthClient delivers through. It is a test
 // seam and has no production counterpart: outbound delivery is the
 // message_send tool writing a JSON file into the outbox directory, so
@@ -343,18 +351,48 @@ func mouthClientSink(sink outboundSink) agent.ToolClient {
 	}
 }
 
+// toolCapturingModel records the descriptors each model call was shown
+// and runs the scripted turn the rest of this file's factories run.
+type toolCapturingModel struct {
+	inner agent.Model
+	seen  [][]tool.Descriptor
+}
+
+func newToolCapturingModel() *toolCapturingModel {
+	return &toolCapturingModel{inner: agent.NewScriptedModel(
+		resolveStep(),
+		writebackStep(`{"reply":"Replied.","memory_ops":[]}`),
+	)}
+}
+
+func (m *toolCapturingModel) Chat(ctx context.Context, messages []agent.Message, tools []tool.Descriptor) (agent.Response, error) {
+	m.seen = append(m.seen, append([]tool.Descriptor(nil), tools...))
+	return m.inner.Chat(ctx, messages, tools)
+}
+
+// actTools returns the descriptors the act loop was shown: the turn's
+// last model call. The read step makes the first one and is shown the
+// reserved read tool alone (ADR 0019).
+func (m *toolCapturingModel) actTools() []tool.Descriptor {
+	return m.seen[len(m.seen)-1]
+}
+
 // TestFactory_ToolClientDescriptorsReachSession pins the structural
-// move (ADR 0017 §Decision): the agent's runtime surfaces the
-// descriptors the platform tool client fetched, never an in-process
-// map the agent compiled itself.
+// move (ADR 0017 §Decision): the session the factory builds drives the
+// tool client the factory was handed, so the model is shown the
+// descriptors that client fetched and never an in-process map the agent
+// compiled itself. The model is where this is read, because the model
+// is the far end of the wiring under test; reading it back off the
+// runtime asserts only that the factory copied a field.
 func TestFactory_ToolClientDescriptorsReachSession(t *testing.T) {
 	client := stubClient{descriptors: []tool.Descriptor{
 		{Name: "playwright", Description: "browser automation"},
 		{Name: "files", Description: "read/write files"},
 	}}
+	model := newToolCapturingModel()
 	factory := &gateway.Factory{
 		MemoryPath: memoryPath(t.TempDir()),
-		NewModel:   replyModel,
+		NewModel:   func(string) agent.Model { return model },
 		Tools:      client,
 	}
 	rt, err := factory.New(context.Background(), "env-1", nil)
@@ -363,31 +401,21 @@ func TestFactory_ToolClientDescriptorsReachSession(t *testing.T) {
 		assert.NoError(t, rt.Close(context.Background()))
 	}()
 
+	_, err = rt.Session.Run(context.Background(), "hi")
+	require.NoError(t, err)
+
+	require.NotEmpty(t, model.seen, "the turn reaches the model")
 	names := make([]string, 0)
-	for _, d := range rt.Tools.List() {
+	for _, d := range model.actTools() {
+		// The reserved writeback is the platform's addition to what the
+		// model sees, not part of the operator's list.
+		if d.Name == agent.MemoryWriteTool {
+			continue
+		}
 		names = append(names, d.Name)
 	}
 	assert.Equal(t, []string{"files", "playwright"}, names,
 		"the tool client surfaces only what the operator installed; the agent carries no compile-time list")
-}
-
-// TestFactory_NilToolClientIsFatal pins the failure mode: an agent
-// runtime with no tool client configured calls into the no-tool stub
-// and every tool call fails closed.
-func TestFactory_NilToolClientIsFatal(t *testing.T) {
-	factory := &gateway.Factory{
-		MemoryPath: memoryPath(t.TempDir()),
-		NewModel:   replyModel,
-	}
-	rt, err := factory.New(context.Background(), "env-1", nil)
-	require.NoError(t, err)
-	defer func() {
-		assert.NoError(t, rt.Close(context.Background()))
-	}()
-
-	_, err = rt.Tools.Call(context.Background(), "any", json.RawMessage(`{}`))
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "no tool client configured")
 }
 
 // TestMessageSendTool_DescriptionAndSchemaSatisfyOpenAISubset reads the

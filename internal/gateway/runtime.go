@@ -2,8 +2,6 @@ package gateway
 
 import (
 	"context"
-	"encoding/json"
-	"errors"
 	"os"
 	"path/filepath"
 
@@ -11,7 +9,6 @@ import (
 	agentmemory "github.com/garamsh/gagent/internal/agent/memory"
 	"github.com/garamsh/gagent/internal/memory"
 	"github.com/garamsh/gagent/internal/memory/sqlite"
-	"github.com/garamsh/gagent/internal/tool"
 )
 
 // Runtime is everything the agent needs to process queued messages: its
@@ -19,9 +16,6 @@ import (
 // session holds (the memory store).
 type Runtime struct {
 	Session agent.Session
-	// Tools is the platform tool client the session drives; nil means
-	// an empty tool surface (tests).
-	Tools agent.ToolClient
 	// Close releases the runtime's resources. Called once on queue
 	// shutdown.
 	Close func(ctx context.Context) error
@@ -52,8 +46,8 @@ type Factory struct {
 	// Zero selects that default; a negative value is clamped to zero,
 	// which disables context compaction.
 	MaxHistoryMessages int
-	// Tools is the platform tool client. Nil means the agent runs
-	// without tools (tests).
+	// Tools is the platform tool client. Required: the session calls it
+	// on every turn.
 	Tools agent.ToolClient
 }
 
@@ -77,18 +71,13 @@ func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink)
 	}
 	memSvc := memory.NewService(store)
 
-	tools := f.Tools
-	if tools == nil {
-		tools = nullClient{}
-	}
-
 	// One model, both places. The reasoning loop and the read step run
 	// on the same provider: nothing about resolving a question into an
 	// address needs a different one, and a second provider section for
 	// a resolver would be the shape #582 deleted (ADR 0019).
 	model := f.NewModel(agentID)
 
-	session := agent.NewSession(model, tools, agent.Options{
+	session := agent.NewSession(model, f.Tools, agent.Options{
 		Recaller:           agentmemory.Recall{Svc: memSvc, Model: model},
 		Writeback:          agentmemory.Writeback{Svc: memSvc},
 		Events:             events,
@@ -98,7 +87,6 @@ func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink)
 	})
 	return &Runtime{
 		Session: session,
-		Tools:   tools,
 		Retain: func(ctx context.Context) error {
 			_, err := memSvc.Retain(ctx)
 			return err
@@ -111,17 +99,4 @@ func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink)
 			return memSvc.Close()
 		},
 	}, nil
-}
-
-// nullClient is the no-tool tool client used by test runtimes that
-// only exercise the reasoning loop. List returns an empty slice; Call
-// always fails with an unknown-tool error.
-type nullClient struct{}
-
-// List implements agent.ToolClient.
-func (nullClient) List() []tool.Descriptor { return nil }
-
-// Call implements agent.ToolClient.
-func (nullClient) Call(_ context.Context, name string, _ json.RawMessage) (json.RawMessage, error) {
-	return nil, errors.New("agent: no tool client configured: " + name)
 }

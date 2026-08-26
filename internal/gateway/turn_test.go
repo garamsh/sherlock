@@ -64,6 +64,7 @@ func turnFactory(t *testing.T, steps ...agent.ScriptedStep) (*gateway.Factory, s
 		NewModel: func(string) agent.Model {
 			return agent.NewScriptedModel(append([]agent.ScriptedStep{resolveStep()}, steps...)...)
 		},
+		Tools: noTools(),
 	}, memoryPath
 }
 
@@ -86,6 +87,7 @@ func TestTurn_EchoesResponseAndDeliveredMessages(t *testing.T) {
 	factory := &gateway.Factory{
 		MemoryPath: memoryPath,
 		NewModel:   func(string) agent.Model { return model },
+		Tools:      noTools(),
 	}
 
 	var out bytes.Buffer

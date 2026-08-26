@@ -175,8 +175,8 @@ What each embedder does with the thresholds the project has used:
 
 ## What this record does not say
 
-- It recommends no embedder and no value for any constant. Which embedder ships is a decision, not a finding; sweeping the ranking constants is #411.
-- It does not claim the ranking function's shape is wrong. What it reports is that two of the three terms decide the result on this corpus under both embedders, which is a finding #411 is told to escalate rather than implement.
+- It recommends no embedder and no value for any constant. Which embedder ships is a decision, not a finding; the ranking constants it declines to set were removed with the ranked read path rather than swept (#582), so no sweep is outstanding.
+- It does not claim the ranking function's shape is wrong. What it reports is that two of the three terms decide the result on this corpus under both embedders.
 - It does not measure cost in latency or money beyond the run itself. The `openai` figures come from one provider on one day.
 - It says nothing about the write path. Whether a real agent would have stored these 9,000 facts is `memory-creation/`'s question.
 

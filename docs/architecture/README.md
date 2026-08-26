@@ -32,7 +32,7 @@ One pod per agent, two containers (ADR 0017): the agent container is the agent's
 - `memory.md` — long-term memory: the agent's organ — store, reads, lifecycle
 - `gateway.md` — the agent's ears and eyes: ingress, outbound, monitoring
 - `security.md` — trust domains, secret custody, egress, tool-trust posture
-- `packages.md` — the package partition: the three cuts that produce every package, which way imports run across them, and where a new package goes
+- `packages.md` — the package partition: which `stack-go.md` §1 layout this project is under, the three cuts that produce every package, which way imports run across them, and where a new package goes
 
 ### Decision log
 

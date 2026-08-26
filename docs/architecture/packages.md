@@ -1,6 +1,15 @@
 # Packages
 
-Governs the package partition: what makes a boundary exist, which way imports cross it, and where a new package goes. What each package holds is `README.md` §Modules; this file is how the line around it was drawn. Rationale: ADR 0001, ADR 0017, ADR 0004, ADR 0009.
+Governs the package partition: which `stack-go.md` §1 layout this project is under, what makes a boundary exist, which way imports cross it, and where a new package goes. What each package holds is `README.md` §Modules; this file is how the line around it was drawn. Rationale: ADR 0001, ADR 0017, ADR 0004, ADR 0009.
+
+## The layout this project is under
+
+`stack-go.md` §1 offers three layouts and marks Layout A the default. This project is under **Layout B — domain-rich service**, which is why the choice is recorded here rather than left to that default. Both criteria the file offers agree, and they do not carry equal weight.
+
+- **Shape decides it.** The two layouts list the same implementation at different paths: Layout A as a file in the domain package, Layout B promoted to a sub-package of it, the in-memory implementation promoted the same way. The tree here is Layout B's — `internal/memory/sqlite/` behind `memory.Storer`, `internal/agent/openai/` and `internal/agent/anthropic/` behind `agent.Model`, and `internal/agent/memory/` behind `agent.Recaller`, `agent.WritebackSink` and `agent.Compactor`. `find internal -mindepth 2 -type d` lists the sub-packages, these four among them. Layout A reaches that tree only by taking its own §Single file vs package exception once per implementation; Layout B states the promotion as the shape, and that is the thing the two layouts differ on.
+- **Size agrees and settles nothing.** 7,639 shipped Go lines under `cmd/` and `internal/`, excluding tests and the files carrying the `// Code generated` marker; 17,071 counting tests. Layout B's stated band is 5k–30k. Neither of the other two names a module size at all: Layout A's `~300 LoC` sizes one implementation, not the module. So a measurement inside B's band confirms B and excludes neither of the others, which is why it corroborates the shape above and cannot stand in for it. Reproduce with `find cmd internal -name '*.go' ! -name '*_test.go' | xargs grep -L '^// Code generated' | xargs cat | wc -l`.
+
+The choice decides a rule's scope rather than a style, which is why it is written down: **`service.go`**. Layout A carries it as a bullet every `internal/<domain>/` has; under Layout B it arrives with business behaviour coordinating several dependencies, so a domain that is only types and persistence has none. `stack-go.md` §1 states that condition under Layout B and owns it — a domain package here that has no `service.go` is not, on that fact alone, incomplete.
 
 ## Current decisions
 

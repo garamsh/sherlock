@@ -79,10 +79,24 @@ skipped:
     anyway, on a measurement rather than a preference. The rule assumes two
     small alternatives: `internal/memory/sqlite/` is 313 shipped lines in 2
     files and fits it. The provider case does not — `internal/agent/openai/`
-    is 1,038 shipped lines in 4 files and `internal/agent/anthropic/` is 645
-    in 3, so one interface-named package would hold 1,683 lines across 7.
-    That is a limit of the rule rather than a fault in either tree, and it is
-    reported upstream as such.
+    is 472 shipped lines in 4 files and `internal/agent/anthropic/` is 351 in
+    3. Both are over the ~300 LoC threshold at which THIS file's own
+    `Single file vs package` rule (:70-73) prescribes a package per
+    implementation — which is what the tree has. The template's rule would
+    put both in ONE interface-named package as files, so its copy instructs
+    two things about the same tree at once: each implementation is too big
+    for a file, and all implementations of an interface share a package. That
+    collision is structural rather than a matter of size — it fires the moment
+    two implementations both cross ~300 — and it exists in the template's copy
+    and not in ours, because ours carries no interface-naming rule to collide
+    with :70-73. Adopting the rule would import the collision. Reported
+    upstream as such.
+    Corrected 2026-08-26. The first version of this entry said 1,038 and 645,
+    which were whole-directory counts including tests: the command was
+    `cat <dir>/*.go | grep -v _test | wc -l`, which drops LINES containing
+    `_test` rather than test FILES. The numbers went upstream before the error
+    was found, by a worker who tried to reproduce them for an unrelated issue.
+    The decline stands on the corrected figures; it is 2.6x rather than 5x.
     Blob check 2026-08-26: no matching ancestor in the template's history for
     this path, so the whole file is a local adaptation and not an old copy.
   git.md §Branches — the host-namespace paragraph ("a host namespace in front of

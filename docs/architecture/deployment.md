@@ -28,6 +28,8 @@ One pod per agent, two containers (ADR 0017). Both are the same binary under dif
 | Serves | the HTTP gateway | the gRPC data plane (Read, Write, List, Exec) |
 | Config file read | `gagent.yaml` | `workspace.yaml` |
 
+**The *Runs as* row is what the image sets, not what the pod asserts.** Each cell is that container's Dockerfile `USER`, and an orchestrator admitting the pod reads neither Dockerfile. What a manifest has to assert about these two, and which Pod Security Standard the pair can reach, is §Capabilities.
+
 **Neither base image is named here.** Each is pinned by digest in the Dockerfile the *Image built from* row names, and that is the only copy (§Images and tags). A row that restated the versions went stale the last time a base moved, and was read as current because its other cell still was (#591); what an operator plans around is the consequence below rather than the version.
 
 Two consequences an operator plans around:
@@ -113,6 +115,10 @@ The workspace container needs five, and they divide on a line that decides the p
 | `CHOWN` | handing the workspace directory to `exec-uid` | allowed |
 | `KILL` | signalling that child on expiry — the drop leaves it owning neither of the workspace's uids | allowed |
 | `SYS_ADMIN` | `unshare(CLONE_NEWNET)` — the fresh, empty network namespace an Exec child gets per call | **not allowed** |
+
+**Target `baseline`, and do not target `restricted`.** `restricted` is reached only where every container in the pod runs non-root, and one here does not: the workspace drops Exec children to another uid, which is where ADR 0010 puts the execution boundary, so it runs as root (§The two processes). Admission evaluates the pod and the two containers share one (ADR 0017), so what the agent container could satisfy alone decides nothing — on its own it would pass `restricted`, which is what makes this workload read as one manifest away from a standard it cannot reach. Getting there means moving that boundary, which is a change to ADR 0010 rather than to a manifest, and nothing has proposed one. `baseline` is what is left, and the `SYS_ADMIN` row is what reaching it costs.
+
+**A manifest asserts the agent container's non-root run; the image's `USER` does not.** Set `runAsNonRoot: true` on that container's security context. The *Runs as* row in §The two processes is the image — `build/agent.Dockerfile` declares `USER nonroot` — and an orchestrator enforcing non-root reads what the pod asserts rather than what the image ships, so a manifest that leaves the question to the image is refused at admission with nothing in the image and nothing in this repository having been wrong. A numeric `runAsUser` is not the assertion either: it states which uid to run as and asserts nothing about that uid, so a value that is not zero reads as non-root to a person and to nothing else.
 
 **`SYS_ADMIN` is netns creation, and it cannot be moved to an initContainer.** The unshare happens inside each Exec child immediately before the credential drop, not once at startup (`internal/workspace/shell/`), so the workspace container holds the capability for its whole life.
 

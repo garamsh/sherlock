@@ -81,7 +81,7 @@ Serving the gateway beyond localhost means setting the `tls:` section — `cert`
 
 Settings resolve in one precedence: **flags > `GAGENT_*` environment > config file > defaults.** The environment name is the setting with dashes and dots replaced by underscores, so `tools-dir` is `GAGENT_TOOLS_DIR` and `model.base-url` is `GAGENT_MODEL_BASE_URL`.
 
-**A config-file key no setting reads is reported, not refused.** Both processes warn once per unread key, naming the key and the file, and start anyway — so a renamed key does not reject an operator's whole file. The warning is the only signal, and it reaches a log inside the container and nothing else (#476).
+**A config-file key no setting reads is reported, not refused.** Both processes warn once per unread key, naming the key and the file, and start anyway — so a renamed key does not reject an operator's whole file. The warning is the only signal, and it reaches a log inside the container and nothing else.
 
 Two exceptions a pod spec meets immediately:
 

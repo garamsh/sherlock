@@ -70,14 +70,12 @@ type messagesResponse struct {
 // and maps the content blocks back to an agent.Response: text blocks
 // concatenate into Content, tool_use blocks become ToolCalls.
 //
-// The request carries no response schema. The Messages API has no
-// response_format field, so the writeback document is what the contract
-// prose asks for rather than what the wire constrains — unlike
-// chat-completions, where agent.ResponseSchema is enforced (ADR 0018).
-// How the writeback should request structured output on a protocol that
-// cannot constrain it is issue #615's decision, not this package's, so
-// this implements what the seam already gives and states the difference
-// in README.md rather than inventing a mechanism here.
+// The request carries no response schema, and neither does
+// chat-completions: the writeback travels as the reserved tool's
+// arguments on both protocols (issue #615), and this package forwards
+// that descriptor with every other tool. The Messages API's missing
+// response_format field therefore costs the writeback nothing, and this
+// package needs no mechanism of its own.
 func (m *Model) Chat(ctx context.Context, messages []agent.Message, tools []tool.Descriptor) (agent.Response, error) {
 	system, wire := toWireMessages(messages)
 	if len(wire) == 0 {

@@ -15,11 +15,11 @@ import (
 // references ($ref), or dependent schemas (dependentSchemas); the
 // sanitizer drops every entry here so the API never sees them. The API
 // also requires top-level type "object" (enforced separately inside
-// sanitizeToolParameters). Issues #54, #55, #313; prior fixes #297,
-// #298, #307 moved the per-operation branches from allOf to oneOf and
-// then removed oneOf from the subset — keeping the forbidden list
-// current with the API guards every future tool against the same
-// regression.
+// sanitizeToolParameters). Every keyword is here because the API
+// rejected it: issues #49, #55, #297 and #298 are the reports behind
+// the list, and #313 is why oneOf is on it after PR #307 took it off.
+// Keeping the list current with the API guards every future tool
+// against the same regression.
 var OpenAITopLevelForbidden = []string{
 	"allOf",
 	"anyOf",

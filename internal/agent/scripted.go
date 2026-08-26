@@ -8,14 +8,15 @@ import (
 	"github.com/garamsh/gagent/internal/tool"
 )
 
-// ScriptedStep is one canned model reply: either tool-call requests or a
-// final response whose Content is the document ResponseSchema describes,
-// mirroring the real model contract (ADR 0004).
+// ScriptedStep is one canned model reply, mirroring the real model
+// contract (ADR 0004). A turn ends on the reserved writeback call, so a
+// terminal step is one that requests it.
 type ScriptedStep struct {
-	// Content is the raw response text: the schema's JSON document.
+	// Content is the raw response text the step returns beside its
+	// tool calls.
 	Content string
-	// ToolCalls requests tool execution; empty means this is a final
-	// response. IDs may be left empty — the model assigns call-<n>.
+	// ToolCalls requests tool execution. IDs may be left empty — the
+	// model assigns call-<n>.
 	ToolCalls []ToolCall
 	// Err, when non-nil, is returned instead of a response.
 	Err error

@@ -144,7 +144,7 @@ Three differences from the chat-completions protocol are handled in the client r
 | Response schema on the reply | enforced via `response_format` | accepted and ignored (#615) | no such field in the protocol |
 | Verified by | in use | probed 2026-08-17 | nothing yet — no key, no live call |
 
-The response-schema row is the one that decides how much the writeback can rely on the wire. Only the first column constrains it; the second silently does not, and the third has no mechanism to. **#615 owns what the writeback should do about a protocol that cannot constrain the reply** — this table records the difference rather than resolving it.
+The response-schema row decided how much the writeback could rely on the wire until it stopped travelling that way. The writeback is a reserved tool call (#615), so it rests on the tool-calling row above instead; the response-schema row records a protocol difference the agent no longer depends on.
 
 ### Agent ego
 

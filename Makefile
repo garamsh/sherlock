@@ -95,10 +95,21 @@ build:
 	go build ./... || exit $$?; \
 	echo "build: $$built packages built"
 
+# A `for` loop's status is its last iteration's, so a tool that failed to
+# compile left the target at exit 0 having written fewer executables than it
+# names (#720). Each build exits the recipe on failure now, whatever its
+# position, and what it wrote is checked for the execute bit, because
+# `go build -o` also returns zero for a package that is not `main` and writes
+# an archive the platform cannot spawn. The counter advances past both, so the
+# number printed is the number of executables written (#653, #715).
 build-tools:
-	@for tool in files shell_exec message_send github; do \
-		CGO_ENABLED=0 go build -o tools/$$tool/$$tool ./tools/$$tool/; \
-	done
+	@built=0; \
+	for tool in files shell_exec message_send github; do \
+		CGO_ENABLED=0 go build -o tools/$$tool/$$tool ./tools/$$tool/ || exit $$?; \
+		test -x tools/$$tool/$$tool || { echo "build-tools: go build wrote tools/$$tool/$$tool without the execute bit; ./tools/$$tool/ must be a main package"; exit 1; }; \
+		built=$$((built + 1)); \
+	done; \
+	echo "build-tools: $$built tools built"
 
 # Builds both platform images (ADR 0017); nothing is pushed and no registry is
 # named here. The build context is the repository root because the build stage

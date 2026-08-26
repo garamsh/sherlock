@@ -38,8 +38,8 @@ type Message struct {
 }
 
 // Response is one model reply: visible content plus optional tool calls.
-// Content is the schema's document; the session parses the reply out of
-// it.
+// The reply the person reads travels in the reserved writeback call's
+// arguments, not in Content.
 type Response struct {
 	Content   string
 	ToolCalls []ToolCall
@@ -129,14 +129,14 @@ const (
 	// memory entered the context each turn (issue #325). Sessions
 	// without a Recaller emit nothing.
 	EventRecall EventKind = "recall"
-	// EventWriteback fires after each model response's memory block is
-	// parsed and handed to the sink.
+	// EventWriteback fires once per turn, after the writeback call's
+	// operations reach the sink.
 	EventWriteback EventKind = "writeback"
-	// EventWritebackError fires when a model response was not the
-	// document the response schema describes, so the parser could not
-	// turn it into operations. The turn itself continues; the warning
-	// records what the model missed so subscribers can detect it. Issue
-	// #93.
+	// EventWritebackError fires when a turn's writeback did not
+	// arrive: the model called no writeback tool (issue #615), or
+	// called it with arguments that are not the document (issue #93).
+	// The first is not terminal — the session says what is missing and
+	// asks again — and the second fails the turn.
 	EventWritebackError EventKind = "writeback_error"
 	// EventToolCall fires after each tool execution.
 	EventToolCall EventKind = "tool_call"
@@ -194,11 +194,9 @@ var (
 	ErrLoopExhausted = errors.New("act loop exceeded max iterations")
 )
 
-// ErrMalformedWriteback marks a model response the writeback contract
-// refuses: a JSON parse error or a schema violation. It is surfaced as a
-// fatal error only for schema violations (the model emitted a contract
-// the platform refuses to apply). JSON parse failures — the response was
-// not the document the schema describes — are recorded as warnings, not
-// fatal errors, so a single bad writeback does not abort an
-// otherwise-successful turn (issue #93).
+// ErrMalformedWriteback marks writeback arguments the contract refuses:
+// a JSON parse error or a schema violation. Both fail the turn. The
+// leniency issue #93 asked for is gone: the arguments are the only place
+// the reply and the facts arrive, so a malformed one leaves nothing to
+// hand back and nothing to store (issue #615).
 var ErrMalformedWriteback = errors.New("malformed memory writeback")

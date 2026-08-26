@@ -112,12 +112,11 @@ const ResponseSchema = `{
 }`
 
 // WritebackError reports a memory write that could not be applied. It
-// matches ErrMalformedWriteback via errors.Is. Parse failures — a
-// response that is not the schema's document — are returned as warnings:
-// the visible reply still reaches the user and the turn's memory update
-// is dropped (issue #93). Schema violations (a write with no address or
-// no value) are fatal: the platform refuses to apply a
-// contract-violating writeback.
+// matches ErrMalformedWriteback via errors.Is. ParseWriteback reports a
+// parse failure as its warn result and a schema violation (a write with
+// no address or no value) as its err result, and the session fails the
+// turn on either — the leniency issue #93 asked for ended when the reply
+// moved into the same call as the facts (issue #615).
 type WritebackError struct {
 	Err error
 }

@@ -252,6 +252,80 @@ func TestFactory_WritebackReachesTheStoreAtItsAddress(t *testing.T) {
 	assert.Equal(t, active[0].Value, held[0].Value)
 }
 
+// TestFactory_RetainReachesMemoryServiceRetain holds the wiring nothing
+// held until #734: Runtime.Retain runs memory.Service.Retain over the
+// store the factory opened. A Retain that returns without reaching the
+// service leaves the runtime looking healthy — the agent still answers
+// and the pass is simply absent — so this asserts the store change only
+// that pass makes.
+//
+// Both rows are written through the store rather than by a turn, because
+// no operation a writeback can state carries a salience below the keep
+// tier (internal/memory's TestRetain_DropsNothingAWritebackWrote), so a
+// turn would leave the pass nothing to archive. The kept row is the
+// control that separates the pass from anything that would empty the
+// store, and it carries the salience a real replacement writes.
+func TestFactory_RetainReachesMemoryServiceRetain(t *testing.T) {
+	// Below the drop tier, which the pass archives whatever the
+	// timestamp says — the mid tier is the one that waits out a window.
+	// The factory's service takes no clock and runs on time.Now, so
+	// salience rather than age is what puts a row in reach here.
+	const dropTier = memory.RetentionDropSalience / 2
+	require.Less(t, dropTier, memory.RetentionDropSalience,
+		"the seeded row must sit below the drop tier, or the pass has "+
+			"nothing to archive and this test cannot fail")
+
+	root := t.TempDir()
+	seed, err := sqlite.Open(memoryPath(root))
+	require.NoError(t, err)
+	written := time.Now()
+	dropped, _, err := seed.Write(context.Background(), memory.Memory{
+		Address:         memory.Address{Subject: "the test channel", Question: "what has expired"},
+		Value:           "a value below the drop tier",
+		ImportanceScore: dropTier,
+		Timestamp:       written,
+		Source:          "test",
+	}, nil, written)
+	require.NoError(t, err)
+	kept, _, err := seed.Write(context.Background(), memory.Memory{
+		Address:         memory.Address{Subject: "the test channel", Question: "what was corrected"},
+		Value:           "a value at the salience a replacement writes",
+		ImportanceScore: memory.SalienceReplace,
+		Timestamp:       written,
+		Source:          "test",
+	}, nil, written)
+	require.NoError(t, err)
+	require.NoError(t, seed.Close())
+
+	factory := &gateway.Factory{
+		MemoryPath: memoryPath(root),
+		NewModel:   func(string) agent.Model { return agent.NewScriptedModel() },
+		Tools:      noTools(),
+	}
+	rt, err := factory.New(context.Background(), "env-1", nil)
+	require.NoError(t, err)
+	require.NotNil(t, rt.Retain,
+		"the runner skips a nil Retain, so an unwired pass reaches no log line")
+	require.NoError(t, rt.Retain(context.Background()))
+	require.NoError(t, rt.Close(context.Background()))
+
+	store, err := sqlite.Open(memoryPath(root))
+	require.NoError(t, err)
+	defer func() { assert.NoError(t, store.Close()) }()
+	active, err := store.Active(context.Background())
+	require.NoError(t, err)
+	ids := make([]int64, 0, len(active))
+	for _, m := range active {
+		ids = append(ids, m.ID)
+	}
+	assert.NotContains(t, ids, dropped,
+		"the below-tier row leaves the active index, which is what "+
+			"memory.Service.Retain does and nothing else on this path does")
+	assert.Contains(t, ids, kept,
+		"the keep tier survives: the row moved to the archive, and the "+
+			"store was not emptied by something other than the pass")
+}
+
 // stubClient is a minimal platform-tool-client stand-in for tests
 // that don't exercise the protocol: a static descriptor list and a
 // single call handler. The shape matches the agent.ToolClient interface

@@ -14,6 +14,21 @@
 # protocol, and it reads what is true now rather than what was true when
 # somebody last wrote a line here.
 #
+# A DIFFERING FILE IS NOT AUTOMATICALLY A STALE ONE. Before treating any
+# difference as an update to take, ask whether the file was ever a template
+# copy at all:
+#
+#   git hash-object docs/convention/<file>
+#   for c in $(git rev-list template/main -- docs/convention/<file>); do
+#     git rev-parse "$c:docs/convention/<file>"
+#   done
+#
+# A matching blob anywhere in that list means the file IS an older template
+# copy and the difference is staleness. NO match means it is a local
+# adaptation, and a checkout from the template would overwrite decisions
+# nobody has enumerated while reporting success. The diff cannot tell those
+# apart: both look like lines that differ.
+#
 # `last-audited` below is a bookmark and nothing verifies it. It is a
 # convenience for narrowing `git log`, not the check: if it goes stale the
 # derivation still gives the right answer, and a reader who trusts it instead
@@ -49,6 +64,27 @@ project-owned:
 # Deliberate divergences in the files that ARE synced. Each names the decision
 # that owns it, so a later sync re-proposes nothing already settled.
 skipped:
+  stack-go.md §1 — implementation packaging. The template reversed this at
+    5eb0a31 (#289) to `internal/<domain>/repository/postgres.go`, a package
+    named for the interface, with a clause prohibiting the technology-named
+    form. Not adopted: #685's Out of scope carries the reason, that splitting
+    `internal/agent/memory/` into a package per interface gives Recall a Model
+    dependency the other two lack and leaves three packages with nothing
+    saying they are one seam. #291's naming half WAS taken (#688).
+    The naming half was argued on 2026-08-26 by the template's PM and the
+    argument is good for the store case: interface-naming is what says two
+    implementations are alternatives for one contract, where sibling
+    technology-named packages say nothing about their relationship — which is
+    the same thing this project's own refusal of #289 wanted. It is declined
+    anyway, on a measurement rather than a preference. The rule assumes two
+    small alternatives: `internal/memory/sqlite/` is 313 shipped lines in 2
+    files and fits it. The provider case does not — `internal/agent/openai/`
+    is 1,038 shipped lines in 4 files and `internal/agent/anthropic/` is 645
+    in 3, so one interface-named package would hold 1,683 lines across 7.
+    That is a limit of the rule rather than a fault in either tree, and it is
+    reported upstream as such.
+    Blob check 2026-08-26: no matching ancestor in the template's history for
+    this path, so the whole file is a local adaptation and not an old copy.
   git.md §Branches — the host-namespace paragraph ("a host namespace in front of
     the prefix satisfies the rule as written") is ours, from #623 ruling 2, and
     upstream has never carried it. Found by the derivation on 2026-08-24, not by

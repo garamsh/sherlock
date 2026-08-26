@@ -17,9 +17,23 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"time"
 )
 
 const defaultAPIBase = "https://api.github.com"
+
+// requestTimeout bounds one GitHub API call end to end. Every
+// operation this tool offers is a single small REST write over a
+// remote round trip, so a call the endpoint answers at all returns far
+// inside it. Nothing else bounds one: no operator setting reaches this
+// call, and an endpoint that accepts the connection and then answers
+// nothing is by definition enforcing no limit of its own.
+const requestTimeout = 30 * time.Second
+
+// httpClient carries requestTimeout on every call. http.DefaultClient
+// sets no Timeout, so a call made on it waits until the process exits
+// (issue #739).
+var httpClient = &http.Client{Timeout: requestTimeout}
 
 type callInput struct {
 	Operation string   `json:"operation"`
@@ -193,7 +207,7 @@ func githubRequest(method, owner, repo, path string, body []byte) (*apiResponse,
 	if body != nil {
 		req.Header.Set("Content-Type", "application/json")
 	}
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := httpClient.Do(req)
 	if err != nil {
 		return nil, err
 	}

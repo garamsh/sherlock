@@ -247,3 +247,81 @@ func TestScriptTool_GitHub_NullBodyAccepted(t *testing.T) {
 	assert.Equal(t, "opened", body["status"])
 	assert.EqualValues(t, 43, body["number"])
 }
+
+// githubRequestTimeout restates the bound tools/github sets on one API
+// call. The tool is package main and cannot be imported, so the value
+// is repeated here; changing one without the other fails the test
+// below.
+const githubRequestTimeout = 30 * time.Second
+
+// startStalledGitHub serves the GitHub API base on an ephemeral
+// loopback address and answers nothing: the handler blocks until the
+// test tears the server down. It is the endpoint a bound exists for
+// (issue #739) — one that took the connection and stopped answering —
+// and not one that refuses or closes, which fails fast without a bound
+// and so proves nothing about it.
+//
+// The handler is released on stopped and never on the request's own
+// context: net/http cancels that context the moment the client gives
+// up, so a handler waiting on it would answer at exactly the bound
+// under test, and a peer under test for never answering must not
+// answer. A peer that closes is refused in milliseconds with no bound
+// at all, which is what the elapsed assertion below rejects.
+func startStalledGitHub(t *testing.T) string {
+	t.Helper()
+	stopped := make(chan struct{})
+	server := httptest.NewServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
+		<-stopped
+	}))
+	t.Cleanup(func() {
+		close(stopped)
+		server.Close()
+	})
+	return server.URL
+}
+
+// TestScriptTool_GitHub_StalledEndpointRefused covers issue #739: an
+// endpoint that accepts the connection and then answers nothing is
+// refused within the tool's own bound instead of parking the caller.
+// The answering endpoint in the same test is the control — it takes
+// the same tool, input and wiring — so what the second half measures
+// is the stall and not an endpoint that refused or closed.
+func TestScriptTool_GitHub_StalledEndpointRefused(t *testing.T) {
+	root := t.TempDir()
+	hash := installTool(t, root, "github")
+
+	answering := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"html_url":"https://github.com/example/widget/issues/44","number":44}`))
+	}))
+	t.Cleanup(answering.Close)
+	stalled := startStalledGitHub(t)
+
+	t.Setenv("GH_TOKEN", "fake-test-token")
+
+	reg, err := tool.NewRegistry(tool.RegistryOptions{
+		Dir:      root,
+		Pins:     tool.ManifestPins{"github": hash},
+		Required: []string{"github"},
+	})
+	require.NoError(t, err)
+	openIssue := json.RawMessage(
+		`{"operation":"open_issue","owner":"example","repo":"widget","title":"found a bug"}`)
+
+	t.Setenv("GITHUB_API_BASE", answering.URL)
+	out, err := reg.Call(context.Background(), "github", openIssue)
+	require.NoError(t, err, "control: an endpoint that answers accepts this exact call")
+	assert.Contains(t, string(out), `"opened"`)
+
+	t.Setenv("GITHUB_API_BASE", stalled)
+	start := time.Now()
+	_, err = reg.Call(context.Background(), "github", openIssue)
+	elapsed := time.Since(start)
+
+	require.Error(t, err)
+	assert.ErrorIs(t, err, tool.ErrExecution)
+	assert.GreaterOrEqual(t, elapsed, githubRequestTimeout,
+		"the tool waits its bound out: an endpoint that refused or closed would have failed fast")
+	assert.Less(t, elapsed, githubRequestTimeout+10*time.Second,
+		"and then refuses, rather than parking the caller")
+}

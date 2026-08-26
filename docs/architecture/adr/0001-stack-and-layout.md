@@ -1,11 +1,11 @@
 # ADR 0001: Go stack and single-module layout
 
 > Status: accepted
-> Date: 2026-07-25 (revised in place 2026-08-13, again 2026-08-14)
+> Date: 2026-07-25 (revised in place 2026-08-13, again 2026-08-14, again 2026-08-26)
 
 ## Context
 
-The system's components — gateway, agent, tools — each invite a top-level folder of their own, while `docs/convention/stack-go.md` mandates Layout A (`cmd/<binary>` + `internal/<domain>`) with a banned-name list. The two shapes must be reconciled without adding layers.
+The system's components — gateway, agent, tools — each invite a top-level folder of their own, while `docs/convention/stack-go.md` §1 offers three layouts, the two service ones shaped `cmd/<binary>` + `internal/<domain>`, under a banned-name list. The two shapes must be reconciled without adding layers.
 
 ## Decision
 

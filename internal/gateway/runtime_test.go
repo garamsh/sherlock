@@ -154,6 +154,7 @@ func TestQueue_CloseClosesTheStore(t *testing.T) {
 	factory := &gateway.Factory{
 		MemoryPath: memoryPath(root),
 		NewModel:   func(string) agent.Model { return agent.NewScriptedModel() },
+		Tools:      noTools(),
 	}
 	q, err := gateway.NewQueue(factory, "env-1", newTestLogger())
 	require.NoError(t, err)
@@ -268,6 +269,13 @@ func (s stubClient) List() []tool.Descriptor {
 }
 func (s stubClient) Call(_ context.Context, _ string, _ json.RawMessage) (json.RawMessage, error) {
 	return json.RawMessage(`{}`), s.err
+}
+
+// noTools is the empty tool surface: nothing installed, and any call
+// refused. A runtime built on it exercises the reasoning loop and the
+// memory hooks with no tool registry behind them.
+func noTools() agent.ToolClient {
+	return stubClient{err: errors.New("no tool installed")}
 }
 
 // outboundSink is what a mouthClient delivers through. It is a test
@@ -408,25 +416,6 @@ func TestFactory_ToolClientDescriptorsReachSession(t *testing.T) {
 	}
 	assert.Equal(t, []string{"files", "playwright"}, names,
 		"the tool client surfaces only what the operator installed; the agent carries no compile-time list")
-}
-
-// TestFactory_NilToolClientIsFatal pins the failure mode: an agent
-// runtime with no tool client configured calls into the no-tool stub
-// and every tool call fails closed.
-func TestFactory_NilToolClientIsFatal(t *testing.T) {
-	factory := &gateway.Factory{
-		MemoryPath: memoryPath(t.TempDir()),
-		NewModel:   replyModel,
-	}
-	rt, err := factory.New(context.Background(), "env-1", nil)
-	require.NoError(t, err)
-	defer func() {
-		assert.NoError(t, rt.Close(context.Background()))
-	}()
-
-	_, err = rt.Tools.Call(context.Background(), "any", json.RawMessage(`{}`))
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "no tool client configured")
 }
 
 // TestMessageSendTool_DescriptionAndSchemaSatisfyOpenAISubset reads the

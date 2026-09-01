@@ -129,3 +129,14 @@ skipped:
   review.md — "where the host cannot produce a result at all, a local run
     substitutes" (#663) is ours, written for the condition #627 records.
     Upstream has no equivalent.
+  AGENTS.md §Who contributes — "Nothing reaches `dev` or `main` except through a
+    pull request" is ours. Upstream says `main` alone, because upstream has one
+    long-lived branch. This project took a second on 2026-09-01 (#753): tasks land
+    on `dev` and `main` takes `dev` in batches, so a rule naming only `main` would
+    leave every task branch and every task PR unbound by it. The change is the
+    branch names and nothing else — the rule it states is upstream's.
+  git.md §Branches and §Commits — the `dev`/`main` split, same decision (#753).
+    Upstream branches from `main` and merges to it, which is right for one branch
+    and wrong here. Not a disagreement with the rule: a pipeline scoped to `main`
+    is what makes a task branch free, and upstream's pipeline is not scoped that
+    way.

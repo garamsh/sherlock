@@ -11,13 +11,20 @@ How branches, commits, and PR titles are written, and what survives a merge.
 - `refactor/<short-name>` — behavior-preserving restructure
 - `test/<short-name>` — test-only changes
 
-One task, one branch. Branch from `main`; never commit to `main` directly.
+One task, one branch. Branch from `dev`, which is the default branch and where
+every task's pull request lands; never commit to `dev` or `main` directly.
+
+`main` receives `dev` in batches, through a pull request a maintainer opens when
+a batch is ready. Nothing else reaches it. The pipeline is scoped to `main`
+(`.github/workflows/ci.yml`), so a task branch triggers no run and a batch costs
+one — which is the reason for the split, and the reason promotion is not
+automated: a promotion that fires per merge puts the cost straight back.
 
 A host namespace in front of the prefix satisfies the rule as written: `fix/dockerignore-env` and `sauce-git/fix/dockerignore-env` both carry it. What is required is the type prefix on the branch's own name, wherever the host puts that name.
 
 ## Commits
 
-Only the PR title reaches `main`, together with the trailer naming the squashed commits' authors. A branch's commit messages are otherwise a working record for the reviewer reading the branch, not the permanent history.
+Only the PR title reaches `dev`, together with the trailer naming the squashed commits' authors, and reaches `main` unchanged when `dev` is promoted. A branch's commit messages are otherwise a working record for the reviewer reading the branch, not the permanent history.
 
 Format: `<type>: <imperative summary>`
 
@@ -31,6 +38,6 @@ Format: `<type>: <imperative summary>`
 
 ## PRs
 
-- Title follows the commit format: `<type>: <imperative summary>`. It becomes the commit on `main`, so it is the permanent record of the change.
+- Title follows the commit format: `<type>: <imperative summary>`. It becomes the commit on `dev`, and reaches `main` with the promotion, so it is the permanent record of the change.
 - Body follows `.github/PULL_REQUEST_TEMPLATE.md`.
-- PRs are squash-merged. Branch commits do not appear on `main`; do not rewrite them to be pretty.
+- PRs are squash-merged. Branch commits appear on neither `dev` nor `main`; do not rewrite them to be pretty.

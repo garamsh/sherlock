@@ -18,10 +18,10 @@ When two conventions genuinely disagree, stop and report it. Choosing one yourse
 
 ## Who contributes
 
-Work is divided between a PM on `main`, workers on task branches, and a QA agent that files findings and fixes nothing. The role definitions live on the machine that runs the agents, not in this repository, and a session is bound to one of them at launch — so what a PM or a worker is, is not stated here and not this file's to state. One party may hold more than one of them; the rules do not relax when it does. What follows from that division here:
+Work is divided between a PM on the default branch, workers on task branches, and a QA agent that files findings and fixes nothing. The role definitions live on the machine that runs the agents, not in this repository, and a session is bound to one of them at launch — so what a PM or a worker is, is not stated here and not this file's to state. One party may hold more than one of them; the rules do not relax when it does. What follows from that division here:
 
 - `docs/convention/` and `.github/` belong to the PM. Anyone else changes one only when the issue they were assigned says so explicitly.
-- Nothing reaches `main` except through a pull request, documentation included.
+- Nothing reaches `dev` or `main` except through a pull request, documentation included. `dev` is the default branch and takes every task; `main` takes `dev` in batches (`git.md` §Branches).
 
 ## What this file outranks
 

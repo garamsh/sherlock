@@ -1,0 +1,143 @@
+name: release
+
+# Action pins take the form ci.md §Pinning states — a full commit SHA, with the
+# version it resolved to beside it — and .github/dependabot.yml is what moves
+# them.
+#
+# The trigger is the release tag and nothing else: no branch, no pull request.
+# A tag filter is a glob and cannot spell `vX.Y.Z`, so `v*` is as narrow as the
+# trigger itself goes. It is also exactly the ref the push role admits — its
+# trust policy matches the subject
+# `repo:garamsh@307152666/gagent@1311139677:ref:refs/tags/v*` — so a run on any
+# other ref receives no credential even if something else starts one. What `v*`
+# admits and the scheme does not is refused by the first step below, before any
+# AWS call: both repositories are IMMUTABLE and a wrong name is permanent.
+#
+# Nothing here creates a tag. The tag is pushed by hand and this workflow reads
+# it.
+on:
+  push:
+    tags: ["v*"]
+
+permissions: read-all
+
+# No concurrency group, and the absence is the guard rather than an omission. A
+# group cancels a queued run when a newer one arrives, whichever way
+# `cancel-in-progress` is set, so a `vX.Y.Z` tag could publish nothing; and a
+# run cancelled between the two pushes leaves the version half-published, which
+# no re-push repairs because the name is already taken.
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      # A job's block replaces the workflow's rather than adding to it, so the
+      # read the checkout needs is written here beside the federated push
+      # credential — the one job that needs write holds it (ci.md §Security
+      # baseline). This job writes nothing back to the repository.
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # deployment.md §Images and tags: a `v`-prefixed git tag publishes the
+      # image tagged without the `v`. This step stands before the credential
+      # exists, so a tag the scheme does not name costs nothing at all. The tag
+      # name reaches the shell through the environment rather than being
+      # interpolated into the command text (ci.md §Security baseline).
+      - id: version
+        env:
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          if ! printf '%s' "$REF_NAME" | grep -Eq '^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$'; then
+            echo "tag $REF_NAME is not vX.Y.Z: nothing published" >&2
+            exit 1
+          fi
+          echo "version=${REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      # Both images are built before either is pushed, and one command builds
+      # both. That is the binding constraint of this workflow (#758): the two
+      # are a pair that has to agree (ADR 0017), both repositories are
+      # IMMUTABLE, and a version whose second image failed after the first was
+      # pushed is repaired only by abandoning the name. Building through
+      # `docker/build-push-action` with `push: true`, once per image, is the
+      # shape that cannot hold that property, so this workflow does not use it.
+      #
+      # The name invoked is the one a contributor invokes and the `docker` job
+      # in ci.yml already invokes (ci.md §One entry point per task); the
+      # Makefile owns the commands behind it and pushes nothing.
+      #
+      # No buildx builder is set up, deliberately: `docker build` on the
+      # default driver writes each image into the local image store, which is
+      # where the push below finds it. Selecting a `docker-container` builder
+      # would leave the result in a build cache with nothing for `docker push`
+      # to take. That what it writes is one manifest and not an index is the
+      # Makefile's doing — it turns off the attestations buildx attaches by
+      # default, which would otherwise be carried in an index over the image —
+      # and the last step of this job reads the registry back to check it.
+      #
+      # REVISION is passed, so each image is labelled and tagged with the
+      # commit the tag points at, and the Makefile's dirty-tree comparison —
+      # a contributor's guard, not a pipeline's — does not run (deployment.md
+      # §Images and tags).
+      - run: make build-images REVISION="$GITHUB_SHA"
+
+      # Every step above this line is reversible, so the credential is obtained
+      # after them: a build that fails, on either image, fails before this
+      # workflow is able to push anything.
+      - uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # v6.2.4
+        with:
+          role-to-assume: arn:aws:iam::486152169996:role/garam-dev-gagent-ecr-push
+          aws-region: ap-northeast-2
+
+      - id: ecr
+        uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd # v2.1.7
+
+      # The only irreversible step. Both local images are renamed first, so a
+      # reference this cannot form fails before any upload begins.
+      #
+      # `gagent-agent:<revision>` and `gagent-workspace:<revision>` are the
+      # names the Makefile writes. They are not re-derived here: a rename there
+      # leaves `docker tag` with no such image, which fails this step rather
+      # than pushing something else.
+      - env:
+          REGISTRY: ${{ steps.ecr.outputs.registry }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          for image in agent workspace; do
+            docker tag "gagent-$image:$GITHUB_SHA" "$REGISTRY/garam/gagent-$image:$VERSION"
+          done
+          for image in agent workspace; do
+            docker push "$REGISTRY/garam/gagent-$image:$VERSION"
+          done
+
+      # What the registry holds, read back from the registry rather than from a
+      # local rebuild (#756). Two things: the digest each reference resolves to,
+      # which is what a consumer pins (ADR 0020) and what this run has no other
+      # place to publish; and that the object behind it is a single manifest and
+      # not an index, so that digest names the image.
+      #
+      # It necessarily runs after the irreversible step, because there is
+      # nothing to read before it. A failure here therefore reads "the registry
+      # does not hold what this run meant to publish", never "nothing was
+      # published": the version is already taken and the repair is the next one.
+      - env:
+          REGISTRY: ${{ steps.ecr.outputs.registry }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          for image in agent workspace; do
+            ref="$REGISTRY/garam/gagent-$image:$VERSION"
+            media=$(docker buildx imagetools inspect "$ref" --format '{{.Manifest.MediaType}}')
+            digest=$(docker buildx imagetools inspect "$ref" --format '{{.Manifest.Digest}}')
+            case "$media" in
+              application/vnd.docker.distribution.manifest.v2+json | application/vnd.oci.image.manifest.v1+json) ;;
+              *)
+                echo "$ref: the registry holds $media, so that digest names an index and not the image" >&2
+                exit 1
+                ;;
+            esac
+            printf '%s@%s\n' "$ref" "$digest"
+            printf -- '- `%s@%s`\n' "$ref" "$digest" >> "$GITHUB_STEP_SUMMARY"
+          done

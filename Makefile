@@ -197,14 +197,27 @@ revision_is_default = $(filter file,$(origin REVISION))
 # a second question here.
 dirty_inputs = $(if $(and $(REVISION),$(revision_is_default),$(context_paths)),$(shell git status --porcelain -- $(checked_paths) | cut -c4-))
 
+# BUILDX_NO_DEFAULT_ATTESTATIONS turns off the provenance and SBOM attestations
+# buildx attaches by default. An attestation is carried as a manifest of its own
+# beside the image's and referenced from an index, so attaching one makes the
+# build export an index — and a consumer pinning the digest then pins that index
+# rather than the image (ADR 0020, deployment.md §Images and tags). Whether the
+# default applies at all depends on the host: a daemon on the classic image store
+# cannot hold an index and drops them, one on the containerd store keeps them, so
+# the same command produces different objects on two contributors' machines. It
+# is set as an environment variable rather than as `--provenance=false
+# --sbom=false` because a builder that does not know it ignores it, where the
+# flags would fail the build.
+BUILD_ENV = BUILDX_NO_DEFAULT_ATTESTATIONS=1
+
 build-images:
 	@test -n "$(REVISION)" || { echo "build-images: REVISION is empty, and it is both the tag and the label; the default reads 'git rev-parse HEAD', which a checkout with no git metadata does not answer - pass one: make build-images REVISION=<commit>"; exit 1; }
 	@test -z "$(revision_is_default)" || test -n "$(context_paths)" || { echo "$(DOCKERIGNORE): want '*' and then one '!<path>' per admitted path, read [$(ignore_patterns)]: the tree is checked over the paths this file re-includes, which are the build context only while everything is excluded first"; exit 1; }
 	@test -z "$(revision_is_default)" || test -z "$(missing_paths)" || { echo "$(DOCKERIGNORE): re-includes [$(missing_paths)], which $(CURDIR) does not hold: every admitted path is read as a git pathspec and one that matches nothing reports a clean tree"; exit 1; }
 	@test -z "$(dirty_inputs)" || { echo "build-images: what docker reads differs from $(REVISION), which every image built here is labelled and tagged with, at [$(dirty_inputs)]. Commit those paths, or name what you are building: make build-images REVISION=<commit>"; exit 1; }
 	@echo "build-images: $(if $(revision_is_default),what docker reads [$(checked_paths)] matches $(REVISION),REVISION=$(REVISION) was passed in and what docker reads is not checked against it)"
-	docker build -f $(AGENT_DOCKERFILE) --build-arg REVISION="$(REVISION)" -t gagent-agent:$(REVISION) .
-	docker build -f $(WORKSPACE_DOCKERFILE) --build-arg REVISION="$(REVISION)" -t gagent-workspace:$(REVISION) .
+	$(BUILD_ENV) docker build -f $(AGENT_DOCKERFILE) --build-arg REVISION="$(REVISION)" -t gagent-agent:$(REVISION) .
+	$(BUILD_ENV) docker build -f $(WORKSPACE_DOCKERFILE) --build-arg REVISION="$(REVISION)" -t gagent-workspace:$(REVISION) .
 
 # The toolchain image the privileged CI job runs in, read out of the
 # Dockerfile that owns the pin rather than restated in the workflow (#633).

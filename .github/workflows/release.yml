@@ -11,7 +11,8 @@ name: release
 # `repo:garamsh@307152666/gagent@1311139677:ref:refs/tags/v*` — so a run on any
 # other ref receives no credential even if something else starts one. What `v*`
 # admits and the scheme does not is refused by the first step below, before any
-# AWS call: both repositories are IMMUTABLE and a wrong name is permanent.
+# AWS call: every repository pushed to here is IMMUTABLE and a wrong name is
+# permanent.
 #
 # Nothing here creates a tag. The tag is pushed by hand and this workflow reads
 # it.
@@ -24,8 +25,8 @@ permissions: read-all
 # No concurrency group, and the absence is the guard rather than an omission. A
 # group cancels a queued run when a newer one arrives, whichever way
 # `cancel-in-progress` is set, so a `vX.Y.Z` tag could publish nothing; and a
-# run cancelled between the two pushes leaves the version half-published, which
-# no re-push repairs because the name is already taken.
+# run cancelled between the pushes leaves the version part-published, which no
+# re-push repairs because the name is already taken.
 
 jobs:
   publish:
@@ -55,13 +56,15 @@ jobs:
           fi
           echo "version=${REF_NAME#v}" >> "$GITHUB_OUTPUT"
 
-      # Both images are built before either is pushed, and one command builds
-      # both. That is the binding constraint of this workflow (#758): the two
-      # are a pair that has to agree (ADR 0017), both repositories are
-      # IMMUTABLE, and a version whose second image failed after the first was
-      # pushed is repaired only by abandoning the name. Building through
-      # `docker/build-push-action` with `push: true`, once per image, is the
-      # shape that cannot hold that property, so this workflow does not use it.
+      # Every image is built before any is pushed, and one command builds them
+      # all. That is the binding constraint of this workflow (#758, #770): the
+      # three are a set that has to agree (ADR 0017, and the tools image an
+      # agent mounts is built from the same revision as the agent that reads
+      # it), every repository is IMMUTABLE, and a version whose later image
+      # failed after an earlier one was pushed is repaired only by abandoning
+      # the name. Building through `docker/build-push-action` with `push: true`,
+      # once per image, is the shape that cannot hold that property, so this
+      # workflow does not use it.
       #
       # The name invoked is the one a contributor invokes and the `docker` job
       # in ci.yml already invokes (ci.md §One entry point per task); the
@@ -83,7 +86,7 @@ jobs:
       - run: make build-images REVISION="$GITHUB_SHA"
 
       # Every step above this line is reversible, so the credential is obtained
-      # after them: a build that fails, on either image, fails before this
+      # after them: a build that fails, on any image, fails before this
       # workflow is able to push anything.
       - uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # v6.2.4
         with:
@@ -93,22 +96,22 @@ jobs:
       - id: ecr
         uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd # v2.1.7
 
-      # The only irreversible step. Both local images are renamed first, so a
+      # The only irreversible step. Every local image is renamed first, so a
       # reference this cannot form fails before any upload begins.
       #
-      # `gagent-agent:<revision>` and `gagent-workspace:<revision>` are the
-      # names the Makefile writes. They are not re-derived here: a rename there
-      # leaves `docker tag` with no such image, which fails this step rather
-      # than pushing something else.
+      # `gagent-<image>:<revision>` is the name the Makefile writes for each of
+      # the three. They are not re-derived here: a rename there leaves
+      # `docker tag` with no such image, which fails this step rather than
+      # pushing something else.
       - env:
           REGISTRY: ${{ steps.ecr.outputs.registry }}
           VERSION: ${{ steps.version.outputs.version }}
         run: |
           set -euo pipefail
-          for image in agent workspace; do
+          for image in agent workspace tools; do
             docker tag "gagent-$image:$GITHUB_SHA" "$REGISTRY/garam/gagent-$image:$VERSION"
           done
-          for image in agent workspace; do
+          for image in agent workspace tools; do
             docker push "$REGISTRY/garam/gagent-$image:$VERSION"
           done
 
@@ -127,7 +130,7 @@ jobs:
           VERSION: ${{ steps.version.outputs.version }}
         run: |
           set -euo pipefail
-          for image in agent workspace; do
+          for image in agent workspace tools; do
             ref="$REGISTRY/garam/gagent-$image:$VERSION"
             media=$(docker buildx imagetools inspect "$ref" --format '{{.Manifest.MediaType}}')
             digest=$(docker buildx imagetools inspect "$ref" --format '{{.Manifest.Digest}}')

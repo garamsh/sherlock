@@ -1,0 +1,30 @@
+# The build context for build/tools.Dockerfile. BuildKit reads the ignore
+# file named after the Dockerfile in preference to the root .dockerignore,
+# so this image's context is what this image needs and the other two
+# images' contexts are unchanged by the tool sources this one compiles
+# (#597: four gitignored tool binaries rode into both contexts, and the
+# allow-list below is the shape that fix chose).
+#
+# Same allow-list as the root file and for the same reason: everything is
+# excluded and only what `go build ./tools/<name>/` reads is admitted, so
+# the next file added at the root stays out until someone admits it (#594,
+# #597). `cmd` is not admitted, because no tool imports it.
+#
+# The re-includes are directories rather than globs, as at the root: a
+# `*.go` allow-list would drop an embedded asset — internal/agent
+# embeds ego.md — and break the build. The cost of admitting `tools`
+# whole is that a contributor who has run `make build-tools` transfers
+# the four executables it wrote there into this context. They are bloat
+# and never ship: build/tools.Dockerfile compiles into /out and copies
+# nothing from tools/<name>/<name>.
+*
+!go.mod
+!go.sum
+!internal
+!tools
+
+# Final deny, placed after the re-includes because the last matching
+# pattern wins: a credential stays out of the context whatever a later
+# re-include admits (#594).
+.env
+.env.*

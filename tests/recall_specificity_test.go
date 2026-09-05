@@ -53,8 +53,9 @@ const (
 // curve over the script.
 const recallRunEnv = "GAGENT_PAID_MODEL_TESTS"
 
-// recallResultsDir is where the run commits what it bought, relative to
-// the module root.
+// recallResultsDir is where the run writes what it bought, relative to
+// the module root. The run creates it; the tree holds it once a run has
+// produced results to put in it.
 const recallResultsDir = "docs/experiments/recall-specificity/results"
 
 // recallTurnCallGuard is how many model calls the first plant turn may
@@ -202,9 +203,10 @@ type probeRow struct {
 //
 // It is the experiment's run and not a guard on behaviour. It spends the
 // operator's tokens, so it needs GAGENT_PAID_MODEL_TESTS and a key, and
-// `make ci` sets neither; the numbers it produces are committed under
-// docs/experiments/recall-specificity/ so scoring reads them instead of
-// buying them again.
+// `make ci` sets neither. It writes every figure, every scored probe and
+// every answer it bought into recallResultsDir, so the record written
+// from them, and any later scoring of them, reads what the run bought
+// rather than buying it again.
 //
 // Every turn is its own agent process against one memory file. A rolling
 // session would let a probe answer out of the turn that planted the

@@ -38,7 +38,8 @@ func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
 
 	_, workspaceAddr, _ := startWorkspaceBinary(t, binary,
 		workspaceDir, emptyConfig(t, "workspace.yaml"))
-	cmd, baseURL, exited := startAgentBinary(t, binary, root, workspaceAddr)
+	cmd, baseURL, exited := startAgentBinary(t, binary, root, workspaceAddr,
+		emptyConfig(t, "gagent.yaml"))
 
 	runBinaryMVPScenario(t, baseURL, root, binaryAgentID)
 
@@ -238,7 +239,8 @@ func TestEndToEnd_ServedTurnFailedToolCallCarriesOn(t *testing.T) {
 	binary := buildGagentBinary(t)
 	root := t.TempDir()
 
-	cmd, baseURL, exited := startAgentBinary(t, binary, root, closedLoopbackAddr(t))
+	cmd, baseURL, exited := startAgentBinary(t, binary, root, closedLoopbackAddr(t),
+		emptyConfig(t, "gagent.yaml"))
 
 	events := subscribeSSE(t, baseURL+"/agents/"+binaryAgentID+"/events")
 	resp := postJSON(t, baseURL+"/agents/"+binaryAgentID+"/messages",
@@ -347,13 +349,14 @@ func emptyConfig(t *testing.T, name string) string {
 // startAgentBinary starts "gagent agent" as a subprocess on a free
 // loopback port, dialing workspaceAddr as the agent's workspace gRPC
 // endpoint, with root holding the memory file and the outbox, and the
-// default mock model provider. The agent executes nothing itself — the
-// workspace runs shell_exec children in single-account mode
-// (startWorkspaceBinary passes the test process's own UID). It waits
-// until the agent serves HTTP and returns the process handle, the base
-// URL, and a channel receiving the process's exit result. Test cleanup
-// kills the process if it is still running.
-func startAgentBinary(t *testing.T, binary, root, workspaceAddr string) (*exec.Cmd, string, <-chan error) {
+// model provider configPath selects — an empty config file leaves the
+// default mock. The agent executes nothing itself — the workspace runs
+// shell_exec children in single-account mode (startWorkspaceBinary
+// passes the test process's own UID). It waits until the agent serves
+// HTTP and returns the process handle, the base URL, and a channel
+// receiving the process's exit result. Test cleanup kills the process
+// if it is still running.
+func startAgentBinary(t *testing.T, binary, root, workspaceAddr, configPath string) (*exec.Cmd, string, <-chan error) {
 	t.Helper()
 
 	listen, err := net.Listen("tcp", "127.0.0.1:0")
@@ -368,7 +371,7 @@ func startAgentBinary(t *testing.T, binary, root, workspaceAddr string) (*exec.C
 	t.Cleanup(func() { logFile.Close() })
 
 	cmd := exec.Command(binary, "agent",
-		"--config", emptyConfig(t, "gagent.yaml"),
+		"--config", configPath,
 		"--addr", addr,
 		"--agent-id", binaryAgentID,
 		"--memory-path", filepath.Join(root, "memory.db"),
@@ -417,15 +420,22 @@ func startAgentBinary(t *testing.T, binary, root, workspaceAddr string) (*exec.C
 
 // toolsDirForTest returns the absolute path to the module-root tools/
 // directory so subprocess-driven test runs find the shipped tools'
-// manifests regardless of cwd. The test process chdir's around, so
-// resolving from the test binary's location is the only reliable way.
+// manifests regardless of cwd.
 func toolsDirForTest(t *testing.T) string {
+	t.Helper()
+	return filepath.Join(moduleRoot(t), "tools")
+}
+
+// moduleRoot returns the directory holding go.mod. The test process
+// chdir's around, so walking up from the working directory is the only
+// reliable way to reach a path stated relative to the module.
+func moduleRoot(t *testing.T) string {
 	t.Helper()
 	wd, err := os.Getwd()
 	require.NoError(t, err)
 	for {
 		if _, err := os.Stat(filepath.Join(wd, "go.mod")); err == nil {
-			return filepath.Join(wd, "tools")
+			return wd
 		}
 		parent := filepath.Dir(wd)
 		if parent == wd {

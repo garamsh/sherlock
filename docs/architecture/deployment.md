@@ -158,7 +158,7 @@ Every fatal path exits **1** and prints `Error: <message>`; nothing distinguishe
 | `provider: openai-compatible` with the named key variable unset or empty | agent | `model.provider "openai-compatible": environment variable OPENAI_API_KEY is not set or is empty` |
 | Unknown `model.provider` value | agent | `unknown model.provider "…" (want "mock", or "openai-compatible" for any endpoint speaking the OpenAI chat-completions wire protocol)` |
 | `provider: openai`, the value retired by #613 | agent | `model.provider "openai" names a vendor where it selects a wire protocol: set it to "openai-compatible", which is the same protocol and the same wiring` |
-| Tools directory missing or unreadable | agent | `tool registry: tools directory "./tools" does not exist` |
+| Tools directory missing or unreadable | agent | `tool registry: tools directory "./tools" does not exist (resolved to /home/nonroot/tools)` |
 | A manifest is unreadable, is not JSON, carries an unknown field, or omits `name`/`command` | agent | `load tools/foo/manifest.json: parse manifest: …` |
 | A manifest carries the removed `env` field (#550) | agent | `load tools/foo/manifest.json: parse manifest: json: unknown field "env"` |
 | Two manifests declaring the same name | agent | `duplicate tool name "files"` |

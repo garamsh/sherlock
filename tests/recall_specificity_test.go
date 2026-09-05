@@ -57,6 +57,13 @@ const recallRunEnv = "GAGENT_PAID_MODEL_TESTS"
 // the module root.
 const recallResultsDir = "docs/experiments/recall-specificity/results"
 
+// recallTurnCallGuard is how many model calls the first plant turn may
+// take before the run stops. Three is the working shape — resolve the
+// address, act, end on the writeback — and a turn past this has found a
+// call pattern that is not working, which is reported rather than
+// repeated forty times.
+const recallTurnCallGuard = 6
+
 // recallTurnTimeout bounds one turn end to end. A reasoning model
 // answering three calls behind a 300-second per-call ceiling is the
 // worst case this has to sit above.
@@ -244,10 +251,23 @@ func runRecallSpecificity(t *testing.T, meter *spendMeter, probes []recallProbe,
 	plantRoot := t.TempDir()
 	plants := make([]turnRecord, 0, len(probes))
 	for i, probe := range probes {
-		meter.Label(fmt.Sprintf("plant/%s", probe.Subject))
+		label := fmt.Sprintf("plant/%s", probe.Subject)
+		meter.Label(label)
 		record := runRecallTurn(t, binary, plantRoot, workspaceAddr, configPath, probe.Statement)
 		require.Empty(t, record.Failed, "plant turn %d (%s) failed", i, probe.Subject)
 		plants = append(plants, record)
+		if i == 0 {
+			// The first turn is where a call pattern that does not work
+			// shows: a provider answering in prose never reaches the
+			// reserved writeback, and the act loop spends its whole
+			// iteration budget finding that out (issue #615). One turn
+			// is what this run is willing to pay to learn it.
+			require.LessOrEqual(t, meter.CallsFor(label), recallTurnCallGuard,
+				"the first plant turn took %d calls: the loop is not ending on the writeback, so the run stops here rather than repeating it forty times",
+				meter.CallsFor(label))
+			require.NotEmpty(t, readPlantedStore(t, plantRoot),
+				"the first plant turn stored nothing: the write path is not reaching the store, and every probe below would be scored against an empty one")
+		}
 	}
 	held := readPlantedStore(t, plantRoot)
 	writeJSON(t, filepath.Join(resultsDir, "plants_minimax-m2.json"), map[string]any{
@@ -389,7 +409,7 @@ func runRecallTurn(t *testing.T, binary, root, workspaceAddr, configPath, messag
 
 	resp := postJSON(t, baseURL+"/agents/"+binaryAgentID+"/messages",
 		`{"content":`+strconvQuote(message)+`}`)
-	require.Equal(t, 202, resp.StatusCode)
+	require.Equal(t, http.StatusAccepted, resp.StatusCode)
 	resp.Body.Close()
 
 	record := turnRecord{Message: message}

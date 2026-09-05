@@ -322,6 +322,20 @@ func (m *spendMeter) ReadAddress(label string) string {
 	return ""
 }
 
+// CallsFor counts the calls one labelled turn made, which is what says
+// a turn is looping before the run has spent enough to find out.
+func (m *spendMeter) CallsFor(label string) int {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	n := 0
+	for _, c := range m.calls {
+		if c.Label == label && c.Refused == "" {
+			n++
+		}
+	}
+	return n
+}
+
 // WriteTranscript commits the calls the run bought.
 func (m *spendMeter) WriteTranscript(t *testing.T, path string) {
 	t.Helper()

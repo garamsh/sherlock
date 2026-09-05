@@ -1,0 +1,464 @@
+[
+  {
+    "level": "L1",
+    "subject": "Sarah",
+    "question": "Where does Sarah live now?",
+    "value": "Lisbon",
+    "placed": true,
+    "recall_outcome": "widened",
+    "read_address": "{\"subject\": \"Sarah\", \"question\": \"where does Sarah live now\"}",
+    "recalled_count": 1,
+    "planted_injected": true,
+    "answer_carries_value": true,
+    "response": "Sarah lives in Lisbon now. She moved there last month.",
+    "recalled_ids": [
+      "1"
+    ]
+  },
+  {
+    "level": "L1",
+    "subject": "Marcus",
+    "question": "Which company does Marcus work for now?",
+    "value": "Kestrel Robotics",
+    "placed": true,
+    "recall_outcome": "widened",
+    "read_address": "{\"subject\": \"Marcus\", \"question\": \"which company does Marcus work for\"}",
+    "recalled_count": 1,
+    "planted_injected": false,
+    "answer_carries_value": true,
+    "response": "Based on my memories, I only have information that Marcus started at Kestrel Robotics in March — but I don't have any information about his current employer. The workspace is empty and there's no other data available to determine where he works now.\n\nCould you clarify which Marcus you're asking about, or do you have additional context about his current role?",
+    "recalled_ids": [
+      "2"
+    ]
+  },
+  {
+    "level": "L1",
+    "subject": "Priya",
+    "question": "What does Priya research now?",
+    "value": "glaciology",
+    "placed": true,
+    "recall_outcome": "widened",
+    "read_address": "{\"subject\": \"Priya\", \"question\": \"what does Priya research now\"}",
+    "recalled_count": 1,
+    "planted_injected": true,
+    "answer_carries_value": true,
+    "response": "Priya now researches glaciology — she switched to this field this year.",
+    "recalled_ids": [
+      "3"
+    ]
+  },
+  {
+    "level": "L1",
+    "subject": "Tomas",
+    "question": "Which instrument does Tomas play now?",
+    "value": "double bass",
+    "placed": true,
+    "recall_outcome": "widened",
+    "read_address": "{\"subject\": \"Tomas\", \"question\": \"which instrument does Tomas play\"}",
+    "recalled_count": 1,
+    "planted_injected": true,
+    "answer_carries_value": true,
+    "response": "Based on the information I have, Tomas took up the double bass in April, so that's likely the instrument he plays now unless he's since changed instruments.",
+    "recalled_ids": [
+      "4"
+    ]
+  },
+  {
+    "level": "L1",
+    "subject": "Noor",
+    "question": "What pet does Noor have now?",
+    "value": "greyhound",
+    "placed": true,
+    "recall_outcome": "widened",
+    "read_address": "{\"subject\": \"Noor\", \"question\": \"what pet does Noor have now?\"}",
+    "recalled_count": 1,
+    "planted_injected": true,
+    "answer_carries_value": true,
+    "response": "Based on the information I have, Noor adopted a greyhound in February, so Noor now has a greyhound as a pet.",
+    "recalled_ids": [
+      "5"
+    ]
+  },
+  {
+    "level": "L1",
+    "subject": "Elias",
+    "question": "What car does Elias drive now?",
+    "value": "Vanguard",
+    "placed": true,
+    "recall_outcome": "widened",
+    "read_address": "{\"subject\": \"Elias\", \"question\": \"what car does Elias drive\"}",
+    "recalled_count": 1,
+    "planted_injected": true,
+    "answer_carries_value": true,
+    "response": "Based on the information I have, Elias drives a Vanguard estate car (which he bought in January).",
+    "recalled_ids": [
+      "6"
+    ]
+  },
+  {
+    "level": "L1",
+    "subject": "Hana",
+    "question": "Which language is Hana learning now?",
+    "value": "Finnish",
+    "placed": true,
+    "recall_outcome": "widened",
+    "read_address": "{\"subject\": \"Hana\", \"question\": \"which language is Hana learning\"}",
+    "recalled_count": 1,
+    "planted_injected": false,
+    "answer_carries_value": true,
+    "response": "I don't have enough information to answer that. My only memory about Hana is that she started learning Finnish in September, but that doesn't tell us what language she's learning now.",
+    "recalled_ids": [
+      "7"
+    ]
+  },
+  {
+    "level": "L1",
+    "subject": "Rafael",
+    "question": "Which team is Rafael on now?",
+    "value": "Halcyon",
+    "placed": true,
+    "recall_outcome": "widened",
+    "read_address": "{\"subject\": \"Rafael\", \"question\": \"which team is Rafael on\"}",
+    "recalled_count": 1,
+    "planted_injected": true,
+    "answer_carries_value": true,
+    "response": "Rafael is currently on the Halcyon team.",
+    "recalled_ids": [
+      "8"
+    ]
+  },
+  {
+    "level": "L1",
+    "subject": "Ingrid",
+    "question": "What is Ingrid studying now?",
+    "value": "naval architecture",
+    "placed": true,
+    "recall_outcome": "widened",
+    "read_address": "{\"subject\": \"Ingrid\", \"question\": \"what is Ingrid studying\"}",
+    "recalled_count": 1,
+    "planted_injected": true,
+    "answer_carries_value": true,
+    "response": "Ingrid is studying naval architecture. This is the course she enrolled in back in August.",
+    "recalled_ids": [
+      "9"
+    ]
+  },
+  {
+    "level": "L1",
+    "subject": "Yusuf",
+    "question": "Which rowing club did Yusuf join?",
+    "value": "Thameside",
+    "placed": true,
+    "recall_outcome": "widened",
+    "read_address": "{\"subject\": \"Yusuf\", \"question\": \"which rowing club did Yusuf join\"}",
+    "recalled_count": 2,
+    "planted_injected": true,
+    "answer_carries_value": true,
+    "response": "Yusuf joined the Thameside club for rowing.",
+    "recalled_ids": [
+      "10",
+      "11"
+    ]
+  },
+  {
+    "level": "L2",
+    "subject": "Sarah",
+    "question": "Has anything changed for Sarah?",
+    "value": "Lisbon",
+    "placed": true,
+    "recall_outcome": "widened",
+    "read_address": "{\"subject\": \"Sarah\", \"question\": \"\"}",
+    "recalled_count": 1,
+    "planted_injected": true,
+    "answer_carries_value": true,
+    "response": "Based on my memory, Sarah moved to Lisbon last month. However, I don't have any information about recent changes beyond that. Could you clarify what specific changes you're asking about, or would you like to share any updates about Sarah?",
+    "recalled_ids": [
+      "1"
+    ]
+  },
+  {
+    "level": "L2",
+    "subject": "Marcus",
+    "question": "Has anything changed for Marcus?",
+    "value": "Kestrel Robotics",
+    "placed": true,
+    "recall_outcome": "widened",
+    "read_address": "{\"subject\": \"Marcus\", \"question\": \"what changed for Marcus\"}",
+    "recalled_count": 1,
+    "planted_injected": false,
+    "answer_carries_value": true,
+    "response": "I only have one piece of information about Marcus: that he started at Kestrel Robotics in March. Could you clarify what kind of changes you're asking about? For example, are you asking about changes to his role or position, employment status updates, or something else specific? With more context, I can help check for relevant updates.",
+    "recalled_ids": [
+      "2"
+    ]
+  },
+  {
+    "level": "L2",
+    "subject": "Priya",
+    "question": "Has anything changed for Priya?",
+    "value": "glaciology",
+    "placed": true,
+    "recall_outcome": "widened",
+    "read_address": "{\"subject\": \"Priya\", \"question\": \"\"}",
+    "recalled_count": 1,
+    "planted_injected": true,
+    "answer_carries_value": true,
+    "response": "Yes, Priya switched to glaciology this year.",
+    "recalled_ids": [
+      "3"
+    ]
+  },
+  {
+    "level": "L2",
+    "subject": "Tomas",
+    "question": "Has anything changed for Tomas?",
+    "value": "double bass",
+    "placed": true,
+    "recall_outcome": "widened",
+    "read_address": "{\"subject\": \"Tomas\", \"question\": \"\"}",
+    "recalled_count": 1,
+    "planted_injected": true,
+    "answer_carries_value": true,
+    "response": "I have a memory that Tomas took up the double bass in April, but I don't have any additional context about what might have changed. Could you clarify what you'd like to know specifically about Tomas?",
+    "recalled_ids": [
+      "4"
+    ]
+  },
+  {
+    "level": "L2",
+    "subject": "Noor",
+    "question": "Has anything changed for Noor?",
+    "value": "greyhound",
+    "placed": true,
+    "recall_outcome": "widened",
+    "read_address": "{\"subject\": \"Noor\", \"question\": \"\"}",
+    "recalled_count": 1,
+    "planted_injected": true,
+    "answer_carries_value": true,
+    "response": "Based on my memory, the only information I have about Noor is that she adopted a greyhound in February. Is there something specific you'd like me to check or update about Noor?",
+    "recalled_ids": [
+      "5"
+    ]
+  },
+  {
+    "level": "L2",
+    "subject": "Elias",
+    "question": "Has anything changed for Elias?",
+    "value": "Vanguard",
+    "placed": true,
+    "recall_outcome": "widened",
+    "read_address": "{\"subject\": \"Elias\", \"question\": \"\"}",
+    "recalled_count": 1,
+    "planted_injected": true,
+    "answer_carries_value": true,
+    "response": "Based on my memory, the only information I have about Elias is that he bought a Vanguard estate car in January. I don't have enough context to determine if anything has changed — I'd need to know what previous state you're comparing against. Could you clarify what you'd like me to check for changes?",
+    "recalled_ids": [
+      "6"
+    ]
+  },
+  {
+    "level": "L2",
+    "subject": "Hana",
+    "question": "Has anything changed for Hana?",
+    "value": "Finnish",
+    "placed": true,
+    "recall_outcome": "widened",
+    "read_address": "{\"subject\": \"Hana\", \"question\": \"\"}",
+    "recalled_count": 1,
+    "planted_injected": false,
+    "answer_carries_value": true,
+    "response": "From what I have recorded, the only thing I know about Hana is that she started learning Finnish in September. I don't have any information about any changes since then. Is there something specific about Hana you're asking about?",
+    "recalled_ids": [
+      "7"
+    ]
+  },
+  {
+    "level": "L2",
+    "subject": "Rafael",
+    "question": "Has anything changed for Rafael?",
+    "value": "Halcyon",
+    "placed": true,
+    "recall_outcome": "widened",
+    "read_address": "{\"subject\": \"Rafael\", \"question\": \"\"}",
+    "recalled_count": 1,
+    "planted_injected": true,
+    "answer_carries_value": true,
+    "response": "Based on my records, Rafael transferred to the Halcyon team in June. I don't have any information about changes since then — is there something specific you're looking for?",
+    "recalled_ids": [
+      "8"
+    ]
+  },
+  {
+    "level": "L2",
+    "subject": "Ingrid",
+    "question": "Has anything changed for Ingrid?",
+    "value": "naval architecture",
+    "placed": true,
+    "recall_outcome": "widened",
+    "read_address": "{\"subject\": \"Ingrid\", \"question\": \"\"}",
+    "recalled_count": 1,
+    "planted_injected": true,
+    "answer_carries_value": true,
+    "response": "I don't have enough context to determine if anything has changed for Ingrid. My memory shows she enrolled in a naval architecture course in August, but I don't have a previous state to compare against. Could you clarify what you'd like me to track or what previous information you have about Ingrid?",
+    "recalled_ids": [
+      "9"
+    ]
+  },
+  {
+    "level": "L2",
+    "subject": "Yusuf",
+    "question": "Has anything changed for Yusuf?",
+    "value": "Thameside",
+    "placed": true,
+    "recall_outcome": "widened",
+    "read_address": "{\"subject\": \"Yusuf\", \"question\": \"\"}",
+    "recalled_count": 2,
+    "planted_injected": true,
+    "answer_carries_value": true,
+    "response": "Based on the current workspace and the memories I have, I don't have any information about changes for Yusuf. The only details I have are from earlier memories: Yusuf started rowing with Thameside club in May. If there's been a change or update about Yusuf that you'd like me to know, please share that information.",
+    "recalled_ids": [
+      "10",
+      "11"
+    ]
+  },
+  {
+    "level": "L3",
+    "subject": "Sarah",
+    "question": "Didn't someone move to a new city recently?",
+    "value": "Lisbon",
+    "placed": true,
+    "recall_outcome": "empty",
+    "read_address": "{\"subject\": \"person\", \"question\": \"who moved to a new city recently\"}",
+    "recalled_count": 0,
+    "planted_injected": false,
+    "answer_carries_value": false,
+    "response": "I don't have any record of someone moving to a new city in my memory. If you'd like me to remember that someone moved, let me know who moved and to which city.",
+    "recalled_ids": []
+  },
+  {
+    "level": "L3",
+    "subject": "Marcus",
+    "question": "Didn't someone start at a new company recently?",
+    "value": "Kestrel Robotics",
+    "placed": true,
+    "recall_outcome": "empty",
+    "read_address": "{\"subject\": \"someone\", \"question\": \"\"}",
+    "recalled_count": 0,
+    "planted_injected": false,
+    "answer_carries_value": false,
+    "response": "I don't have any information about people starting at new companies — my workspace is empty. Could you give me more context about who you're asking about?",
+    "recalled_ids": []
+  },
+  {
+    "level": "L3",
+    "subject": "Priya",
+    "question": "Didn't someone change their research field recently?",
+    "value": "glaciology",
+    "placed": true,
+    "recall_outcome": "empty",
+    "read_address": "{\"subject\": \"researcher\", \"question\": \"who changed their research field recently\"}",
+    "recalled_count": 0,
+    "planted_injected": false,
+    "answer_carries_value": false,
+    "response": "I don't have information about who changed their research field. The workspace is empty and I don't have access to any external databases or tools to look up research field changes. Could you provide more context about who you're asking about?",
+    "recalled_ids": []
+  },
+  {
+    "level": "L3",
+    "subject": "Tomas",
+    "question": "Didn't someone take up an instrument recently?",
+    "value": "double bass",
+    "placed": true,
+    "recall_outcome": "empty",
+    "read_address": "{\"subject\": \"someone\", \"question\": \"who took up an instrument\"}",
+    "recalled_count": 0,
+    "planted_injected": false,
+    "answer_carries_value": false,
+    "response": "I don't have enough context to answer that. Could you clarify who you're referring to and what instrument you mean (musical, scientific, etc.)? I don't have any recent information about people taking up instruments in my memory.",
+    "recalled_ids": []
+  },
+  {
+    "level": "L3",
+    "subject": "Noor",
+    "question": "Didn't someone adopt a pet recently?",
+    "value": "greyhound",
+    "placed": true,
+    "recall_outcome": "empty",
+    "read_address": "{\"subject\": \"someone\", \"question\": \"who adopted a pet recently\"}",
+    "recalled_count": 0,
+    "planted_injected": false,
+    "answer_carries_value": false,
+    "response": "I don't have access to that information. My memory shows no relevant memories about anyone adopting a pet, and the workspace is empty, so I can't check any files either. Could you provide more context about who you're asking about?",
+    "recalled_ids": []
+  },
+  {
+    "level": "L3",
+    "subject": "Elias",
+    "question": "Didn't someone buy a new car recently?",
+    "value": "Vanguard",
+    "placed": true,
+    "recall_outcome": "empty",
+    "read_address": "{\"subject\": \"someone\", \"question\": \"who bought a new car recently\"}",
+    "recalled_count": 0,
+    "planted_injected": false,
+    "answer_carries_value": false,
+    "response": "I don't have any record of a recent car purchase in my memory or workspace. Could you clarify who you're asking about? Or if this is something someone mentioned in a conversation, let me know the context and I can help track it down.",
+    "recalled_ids": []
+  },
+  {
+    "level": "L3",
+    "subject": "Hana",
+    "question": "Didn't someone start learning a language recently?",
+    "value": "Finnish",
+    "placed": true,
+    "recall_outcome": "empty",
+    "read_address": "{\"subject\": \"someone\", \"question\": \"who started learning a language recently\"}",
+    "recalled_count": 0,
+    "planted_injected": false,
+    "answer_carries_value": false,
+    "response": "I'm not sure who you're referring to. Could you clarify which person recently started learning a language? I don't have that information in my memory.",
+    "recalled_ids": []
+  },
+  {
+    "level": "L3",
+    "subject": "Rafael",
+    "question": "Didn't someone transfer to a different team recently?",
+    "value": "Halcyon",
+    "placed": true,
+    "recall_outcome": "empty",
+    "read_address": "{\"subject\": \"employee\", \"question\": \"who transferred to a different team\"}",
+    "recalled_count": 0,
+    "planted_injected": false,
+    "answer_carries_value": false,
+    "response": "I don't have any information about recent team transfers. The workspace is empty and I have no prior context about your organization's personnel changes. Could you provide more details about who you're asking about, or would you like to share the information so I can remember it?",
+    "recalled_ids": []
+  },
+  {
+    "level": "L3",
+    "subject": "Ingrid",
+    "question": "Didn't someone enrol in a course recently?",
+    "value": "naval architecture",
+    "placed": true,
+    "recall_outcome": "empty",
+    "read_address": "{\"subject\": \"someone\", \"question\": \"who enrolled in a course recently\"}",
+    "recalled_count": 0,
+    "planted_injected": false,
+    "answer_carries_value": false,
+    "response": "I don't have any records about a recent course enrollment. This appears to be the start of our conversation, and I don't have information about any course enrollments yet. Could you provide more details about who enrolled in what course?",
+    "recalled_ids": []
+  },
+  {
+    "level": "L3",
+    "subject": "Yusuf",
+    "question": "Didn't someone join a sports club recently?",
+    "value": "Thameside",
+    "placed": true,
+    "recall_outcome": "empty",
+    "read_address": "{\"subject\": \"someone\", \"question\": \"who joined a sports club recently\"}",
+    "recalled_count": 0,
+    "planted_injected": false,
+    "answer_carries_value": false,
+    "response": "I don't have any information about someone joining a sports club recently. The workspace is empty and I don't have any prior context about this. Could you provide more details about who you're asking about?",
+    "recalled_ids": []
+  }
+]

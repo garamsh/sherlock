@@ -1,0 +1,264 @@
+{
+  "held": [
+    {
+      "id": 2,
+      "subject": "Marcus",
+      "question": "when did Marcus start at Kestrel Robotics",
+      "value": "in March"
+    },
+    {
+      "id": 7,
+      "subject": "Hana",
+      "question": "when did Hana start learning Finnish",
+      "value": "September"
+    },
+    {
+      "id": 10,
+      "subject": "Yusuf",
+      "question": "which club did Yusuf start rowing with",
+      "value": "Thameside club"
+    },
+    {
+      "id": 11,
+      "subject": "Yusuf",
+      "question": "when did Yusuf start rowing with the Thameside club",
+      "value": "May"
+    },
+    {
+      "id": 4,
+      "subject": "Tomas",
+      "question": "what instrument did Tomas take up",
+      "restriction": "in April",
+      "value": "the double bass"
+    },
+    {
+      "id": 9,
+      "subject": "Ingrid",
+      "question": "what course did Ingrid enroll in",
+      "restriction": "in August",
+      "value": "a naval architecture course"
+    },
+    {
+      "id": 5,
+      "subject": "Noor",
+      "question": "what kind of dog did Noor adopt",
+      "restriction": "in February",
+      "value": "a greyhound"
+    },
+    {
+      "id": 6,
+      "subject": "Elias",
+      "question": "what car did Elias buy",
+      "restriction": "in January",
+      "value": "a Vanguard estate car"
+    },
+    {
+      "id": 8,
+      "subject": "Rafael",
+      "question": "which team did Rafael transfer to",
+      "restriction": "in June",
+      "value": "the Halcyon team"
+    },
+    {
+      "id": 1,
+      "subject": "Sarah",
+      "question": "where did Sarah move to",
+      "restriction": "last month",
+      "value": "Lisbon"
+    },
+    {
+      "id": 3,
+      "subject": "Priya",
+      "question": "what field did Priya switch to this year",
+      "restriction": "this year",
+      "value": "glaciology"
+    }
+  ],
+  "turns": [
+    {
+      "message": "Sarah moved to Lisbon last month.",
+      "recall_outcome": "empty",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "Got it, I'll remember that Sarah moved to Lisbon last month.",
+      "ops": [
+        {
+          "address": {
+            "question": "where did Sarah move to",
+            "restriction": "last month",
+            "subject": "Sarah"
+          },
+          "operation": "join",
+          "value": "Lisbon"
+        }
+      ]
+    },
+    {
+      "message": "Marcus started at Kestrel Robotics in March.",
+      "recall_outcome": "unplaced",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "Noted. I'll remember that Marcus started at Kestrel Robotics in March.",
+      "ops": [
+        {
+          "address": {
+            "question": "when did Marcus start at Kestrel Robotics",
+            "subject": "Marcus"
+          },
+          "operation": "join",
+          "value": "in March"
+        }
+      ]
+    },
+    {
+      "message": "Priya switched her research to glaciology this year.",
+      "recall_outcome": "empty",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "Noted. Priya switched her research to glaciology this year.",
+      "ops": [
+        {
+          "address": {
+            "question": "what field did Priya switch to this year",
+            "restriction": "this year",
+            "subject": "Priya"
+          },
+          "operation": "replace",
+          "value": "glaciology"
+        }
+      ]
+    },
+    {
+      "message": "Tomas took up the double bass in April.",
+      "recall_outcome": "empty",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "Noted.",
+      "ops": [
+        {
+          "address": {
+            "question": "what instrument did Tomas take up",
+            "restriction": "in April",
+            "subject": "Tomas"
+          },
+          "operation": "join",
+          "value": "the double bass"
+        }
+      ]
+    },
+    {
+      "message": "Noor adopted a greyhound in February.",
+      "recall_outcome": "empty",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "Noted — I'll remember that Noor adopted a greyhound in February.",
+      "ops": [
+        {
+          "address": {
+            "question": "what kind of dog did Noor adopt",
+            "restriction": "in February",
+            "subject": "Noor"
+          },
+          "operation": "join",
+          "value": "a greyhound"
+        }
+      ]
+    },
+    {
+      "message": "Elias bought a Vanguard estate car in January.",
+      "recall_outcome": "empty",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "Noted. I'll remember that Elias bought a Vanguard estate car in January.",
+      "ops": [
+        {
+          "address": {
+            "question": "what car did Elias buy",
+            "restriction": "in January",
+            "subject": "Elias"
+          },
+          "operation": "join",
+          "value": "a Vanguard estate car"
+        }
+      ]
+    },
+    {
+      "message": "Hana started learning Finnish in September.",
+      "recall_outcome": "empty",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "Noted, I'll remember that Hana started learning Finnish in September.",
+      "ops": [
+        {
+          "address": {
+            "question": "when did Hana start learning Finnish",
+            "subject": "Hana"
+          },
+          "operation": "join",
+          "value": "September"
+        }
+      ]
+    },
+    {
+      "message": "Rafael transferred to the Halcyon team in June.",
+      "recall_outcome": "empty",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "Got it. I'll remember that Rafael transferred to the Halcyon team in June.",
+      "ops": [
+        {
+          "address": {
+            "question": "which team did Rafael transfer to",
+            "restriction": "in June",
+            "subject": "Rafael"
+          },
+          "operation": "join",
+          "value": "the Halcyon team"
+        }
+      ]
+    },
+    {
+      "message": "Ingrid enrolled in a naval architecture course in August.",
+      "recall_outcome": "empty",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "Noted. I'll remember that Ingrid enrolled in a naval architecture course in August.",
+      "ops": [
+        {
+          "address": {
+            "question": "what course did Ingrid enroll in",
+            "restriction": "in August",
+            "subject": "Ingrid"
+          },
+          "operation": "join",
+          "value": "a naval architecture course"
+        }
+      ]
+    },
+    {
+      "message": "Yusuf started rowing with the Thameside club in May.",
+      "recall_outcome": "empty",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "Got it — I'll remember that Yusuf started rowing with the Thameside club in May.",
+      "ops": [
+        {
+          "address": {
+            "question": "which club did Yusuf start rowing with",
+            "subject": "Yusuf"
+          },
+          "operation": "join",
+          "value": "Thameside club"
+        },
+        {
+          "address": {
+            "question": "when did Yusuf start rowing with the Thameside club",
+            "subject": "Yusuf"
+          },
+          "operation": "join",
+          "value": "May"
+        }
+      ]
+    }
+  ]
+}

@@ -254,6 +254,7 @@ func runRecallSpecificity(t *testing.T, meter *spendMeter, probes []recallProbe,
 		label := fmt.Sprintf("plant/%s", probe.Subject)
 		meter.Label(label)
 		record := runRecallTurn(t, binary, plantRoot, workspaceAddr, configPath, probe.Statement)
+		t.Logf("%s: outcome=%q ops=%d spend=%+v", label, record.RecallOutcome, len(record.Ops), meter.Spend())
 		require.Empty(t, record.Failed, "plant turn %d (%s) failed", i, probe.Subject)
 		plants = append(plants, record)
 		if i == 0 {
@@ -294,8 +295,12 @@ func runRecallSpecificity(t *testing.T, meter *spendMeter, probes []recallProbe,
 			meter.Label(label)
 			question := level.ask(probe)
 			record := runRecallTurn(t, binary, root, workspaceAddr, configPath, question)
-			rows = append(rows, scoreProbe(level.name, probe, question, record,
-				plantedIDs(held, probe), meter.ReadAddress(label)))
+			row := scoreProbe(level.name, probe, question, record,
+				plantedIDs(held, probe), meter.ReadAddress(label))
+			t.Logf("%s: outcome=%q recalled=%d injected=%v carries=%v spend=%+v",
+				label, row.RecallOutcome, row.RecalledCount, row.PlantedInjected,
+				row.AnswerCarries, meter.Spend())
+			rows = append(rows, row)
 		}
 	}
 	writeJSON(t, filepath.Join(resultsDir, "probes_minimax-m2.json"), rows)

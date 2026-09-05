@@ -231,7 +231,7 @@ Registry: **ECR, `ap-northeast-2`, account `486152169996`.** Five repositories, 
 - `garam/gagent-agent`, `garam/gagent-workspace`, `garam/gagent-tools` — production, holding what a release publishes. One repository per image.
 - `garam/gagent-agent-dev`, `garam/gagent-workspace-dev` — bring-up. A release path to the production repositories now exists, and is described at the end of this section; what these two hold from here was left open when that was decided (#758), and this document does not guess at it.
 
-`garam/gagent-tools` does not exist yet and has no bring-up counterpart. `garamsh/infra#219` requests the repository and the push-role scope that reaches it; until that lands, the release workflow's push step has nothing to push to, and this repository can neither create it nor read whether it was created.
+`garam/gagent-tools` has no bring-up counterpart. `garamsh/infra#219` asked for the repository and for the push-role scope that reaches it, and both are in place: the repository exists and the push role's grant names it. Read from the account 2026-09-05T20:47+09:00; nothing here re-checks it.
 
 A `gagent`-prefixed repository in that namespace that is not on this list is not gagent's: `garam/gagent-operator-dev` is the `gagent-operator` project's.
 
@@ -255,7 +255,7 @@ A `gagent`-prefixed repository in that namespace that is not on this list is not
 
 **The release workflow.** `.github/workflows/release.yml` is what publishes to the production three, and it is the only thing that does. It triggers on a pushed tag and on nothing else — no branch, no pull request — refuses a tag that is not `vX.Y.Z` before it reaches AWS, builds all three images through `make build-images`, and only then pushes them. Every one is built before any is pushed, because the three are a set that has to agree (ADR 0017) and a version whose later image failed after an earlier one was pushed cannot be repaired under an immutable name, only abandoned. It then reads each pushed reference back from the registry and reports the digest, so what a consumer pins is what the registry holds rather than what a local rebuild would produce.
 
-It reaches the registry as `arn:aws:iam::486152169996:role/garam-dev-gagent-ecr-push`, assumed by OIDC. That role's trust policy admits one subject — `repo:garamsh@307152666/gagent@1311139677:ref:refs/tags/v*` — and its grant reaches `garam/gagent-agent` and `garam/gagent-workspace` and no others, so no branch, no pull request and no other repository obtains a credential for them. Read from the account 2026-09-03T09:38+09:00; nothing here re-checks it. Widening that grant to `garam/gagent-tools` is the second half of `garamsh/infra#219`, and until it lands the push of the tools image is the step that fails.
+It reaches the registry as `arn:aws:iam::486152169996:role/garam-dev-gagent-ecr-push`, assumed by OIDC. That role's trust policy admits one subject — `repo:garamsh@307152666/gagent@1311139677:ref:refs/tags/v*` — and its grant reaches the production three and no others, so no branch, no pull request and no other repository obtains a credential for them. Read from the account 2026-09-05T20:47+09:00; nothing here re-checks it.
 
 **Nothing creates the tag.** The workflow reads a tag that was pushed by hand and creates none, and no other automation in this repository creates one either. Until someone pushes one, `make build-images` still builds all three images locally and pushes nothing, and the `docker` job in `.github/workflows/ci.yml` still builds them as a smoke check and pushes nothing.
 

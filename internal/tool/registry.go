@@ -116,9 +116,9 @@ func (r *Registry) loadTools(dir string) error {
 	entries, err := os.ReadDir(dir)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return fmt.Errorf("tools directory %q does not exist", dir)
+			return fmt.Errorf("tools directory %q does not exist (resolved to %s)", dir, resolvedToolsDir(dir))
 		}
-		return fmt.Errorf("read tools directory %q: %w", dir, err)
+		return fmt.Errorf("read tools directory %q (resolved to %s): %w", dir, resolvedToolsDir(dir), err)
 	}
 	for _, entry := range entries {
 		if !entry.IsDir() {
@@ -154,6 +154,20 @@ func (r *Registry) loadTools(dir string) error {
 		)
 	}
 	return nil
+}
+
+// resolvedToolsDir is the absolute path dir names, so a message says
+// where the registry looked and not only what was configured: a relative
+// dir resolves against the process working directory, which this
+// repository sets nowhere and the agent image takes from its base. Where
+// that directory is unreadable there is nothing to resolve against, and
+// the marker says so rather than repeating dir.
+func resolvedToolsDir(dir string) string {
+	abs, err := filepath.Abs(dir)
+	if err != nil {
+		return fmt.Sprintf("<unresolved: %v>", err)
+	}
+	return abs
 }
 
 // checkPin holds the loaded manifest against the operator's accepted

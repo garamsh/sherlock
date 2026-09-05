@@ -140,3 +140,27 @@ skipped:
     and wrong here. Not a disagreement with the rule: a pipeline scoped to `main`
     is what makes a task branch free, and upstream's pipeline is not scoped that
     way.
+  .github/workflows/ci.yml — the `pull_request` trigger's `branches: [main]`
+    filter. Upstream added a ci.yml at a6a2355 (its #323) whose `pull_request:`
+    carries no filter at all, so it fires on every pull request whatever its
+    base. Adopting that file would undo #753: the filter matches the BASE
+    branch, which is what makes a task pull request against `dev` cost zero
+    runs and a `dev` promotion cost one. A sync that takes this path verbatim
+    puts the entire bill back while reporting success, which is the failure
+    `git.md` §Branches already names from the other side ("upstream's pipeline
+    is not scoped that way") without naming the file.
+    Blob check 2026-09-05: ours is a49f65a8; the only blob in the template's
+    history for this path is 6bad2b03, introduced by a6a2355 itself. No
+    matching ancestor, so this file is a local adaptation and has never been a
+    template copy — the derivation's own test for "not stale".
+    The Update table does not name workflows on either side. Settled the way
+    Bootstrap step 5 settles them, which writes the workflow from the project's
+    real commands: authored per project, like the `Makefile`, not adopted.
+  .github/PULL_REQUEST_TEMPLATE.md — three hunks differ and only one is
+    upstream's to give. The header clause ("Leave no field empty"), §Conventions
+    consulted's reviewer-checks-this sentence, and §Convention concerns' gap
+    clause are all ours and richer; upstream has never carried them. The fourth,
+    §Verification naming `make ci` as the entry point, is a genuine upstream
+    improvement and this repository has that target (`Makefile`:244). Not taken
+    here — it changes what a contributor must state, so it travels as its own
+    change rather than riding a record update. Filed as #768.

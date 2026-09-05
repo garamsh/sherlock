@@ -68,7 +68,7 @@ The rules above bind. This section does not: it is one toolchain — Make for th
 ### Entry points as a Makefile
 
 - **Entry points**: `make lint`, `make format`, `make test`, `make build`, and `make ci` for the whole set. `make build-images` builds the container images; it is not one of the checks, so `make ci` does not run it. The `Makefile` holds the commands behind each name; a contributor and the workflow both invoke the name.
-- **Publishing an image is not one of them.** The release workflow builds through `make build-images` — the same name, reused, and one invocation for both images — and pushes them with steps of its own. Nothing names the push, because a name here is a name on a contributor's machine, and the repositories it would push to are immutable: a version published by hand is a version nobody can take back.
+- **Publishing an image is not one of them.** The release workflow builds through `make build-images` — the same name, reused, and one invocation for every image — and pushes them with steps of its own. Nothing names the push, because a name here is a name on a contributor's machine, and the repositories it would push to are immutable: a version published by hand is a version nobody can take back.
 - **Before pushing**: `make ci` by hand, or `make hooks` once after cloning to have lefthook run lint and format on commit and test on push.
 
 ### GitHub Actions specifics

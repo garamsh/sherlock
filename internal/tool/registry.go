@@ -92,6 +92,12 @@ func NewRegistry(opts RegistryOptions) (*Registry, error) {
 	if err := reg.loadTools(dir); err != nil {
 		return nil, err
 	}
+	logger.Info("tool registry loaded",
+		"op", "tool.load",
+		"tools_dir", dir,
+		"tools_dir_resolved", resolvedToolsDir(dir),
+		"tools", len(reg.tools),
+	)
 	if opts.Pins == nil {
 		// The hash of every loaded manifest is on the lines above
 		// this one, which is where the operator copies the pin set

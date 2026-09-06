@@ -98,11 +98,10 @@ func relativeToolsDir(t *testing.T) (root string) {
 
 // TestNewRegistry_MissingDirNamesResolvedPath holds the failure to the
 // path it actually looked at. A relative tools directory means nothing
-// without the working directory the process runs in, and nothing in this
-// repository sets one — the agent image takes it from its distroless
-// base — so an operator reading `tools directory "./tools" does not
-// exist` cannot tell whether the tree is missing or the process started
-// somewhere unexpected (issue #771).
+// without the working directory the process runs in, so an operator
+// reading `tools directory "./tools" does not exist` cannot tell whether
+// the tree is missing or the process started somewhere unexpected
+// (issue #771).
 //
 // The configured value is relative and the working directory is not the
 // resolved path's parent, so the resolved path is a string the

@@ -144,6 +144,8 @@ The list below is the set an operator can trigger from a pod spec, grouped by ca
 
 Every fatal path exits **1** and prints `Error: <message>`; nothing distinguishes them by exit code, so the message is the only diagnosis.
 
+**The resolved path in the tools-directory row is the agent image's working directory.** `build/agent.Dockerfile` declares `WORKDIR /home/nonroot`, and every relative path the agent resolves — `tools-dir`'s `./tools`, `memory-path`'s `data/memory.db` — lands under the working directory the container runs with, so a pod that sets `workingDir` moves all of them at once and a pod that does not gets the Dockerfile's value.
+
 **Kills the process at startup:**
 
 | Cause | Process | Message shape |

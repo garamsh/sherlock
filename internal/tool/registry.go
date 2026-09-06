@@ -164,10 +164,9 @@ func (r *Registry) loadTools(dir string) error {
 
 // resolvedToolsDir is the absolute path dir names, so a message says
 // where the registry looked and not only what was configured: a relative
-// dir resolves against the process working directory, which this
-// repository sets nowhere and the agent image takes from its base. Where
-// that directory is unreadable there is nothing to resolve against, and
-// the marker says so rather than repeating dir.
+// dir resolves against the process working directory. Where that
+// directory is unreadable there is nothing to resolve against, and the
+// marker says so rather than repeating dir.
 func resolvedToolsDir(dir string) string {
 	abs, err := filepath.Abs(dir)
 	if err != nil {

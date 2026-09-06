@@ -34,6 +34,10 @@ COPY --from=build /out/gagent /gagent
 COPY --from=build --chown=65532:65532 /out/data /data
 
 USER nonroot
+# Relative config paths resolve here: `tools-dir`'s default `./tools` is
+# /home/nonroot/tools. The base sets the same value; stating it means a
+# base digest bump cannot move it.
+WORKDIR /home/nonroot
 # Config comes from GAGENT_* env vars or a mounted config file
 # (`--config <path>`); no config is baked in.
 ENTRYPOINT ["/gagent"]

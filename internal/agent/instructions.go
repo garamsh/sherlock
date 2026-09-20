@@ -92,6 +92,9 @@ A fact is held at the address of the question it answers. Each entry gives:
   join is repaired by the next correct value at that address, and a wrong
   replacement is repaired by nothing.
 
+Both examples below assume the current-work account is idle. An unrelated fact
+must preserve an existing work account, including its status and constraints.
+
 When the user says "my favorite telescope is the Kepler-9 refractor":
 
 {"reply":"Noted.","working_context":{"status":"idle","goal":"","constraints":"","decisions":"","progress":"","remaining":"","uncertainty":"","reconciliation":""},"memory_ops":[{"address":{"subject":"user","question":"what is the user's favorite telescope","restriction":null},"value":"the Kepler-9 refractor","operation":null}]}

@@ -1,0 +1,8 @@
+=== RUN   TestFileOperations
+=== RUN   TestFileOperations/1
+=== RUN   TestFileOperations/2
+--- PASS: TestFileOperations (81.71s)
+    --- PASS: TestFileOperations/1 (43.04s)
+    --- PASS: TestFileOperations/2 (37.56s)
+PASS
+ok  	github.com/garamsh/gagent/tests	81.716s

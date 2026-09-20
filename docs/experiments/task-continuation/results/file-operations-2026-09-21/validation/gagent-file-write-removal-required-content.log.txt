@@ -1,0 +1,74 @@
+2026/09/21 03:33:35 INFO tool manifest loaded op=tool.load name=file_list hash=14ee40e538ab6423ddeb27f9a908bb1ae0d8076c836e1ea08aae0ca9de9e100c
+2026/09/21 03:33:35 INFO tool manifest loaded op=tool.load name=file_read hash=ca780606ae0994489db1f223c584c6cb295e6766ed19b4374f51439614b446bc
+2026/09/21 03:33:35 INFO tool manifest loaded op=tool.load name=file_write hash=df24afa61c4f61159d4803d9279be0e6c7940dff25488d6d25ecd81977b4907f
+2026/09/21 03:33:35 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_Files_InvalidInputPreservesContent420507300/001 tools_dir_resolved=/tmp/TestScriptTool_Files_InvalidInputPreservesContent420507300/001 tools=3
+--- FAIL: TestScriptTool_Files_InvalidInputPreservesContent (1.45s)
+    --- FAIL: TestScriptTool_Files_InvalidInputPreservesContent/{"path":"held.txt"} (0.00s)
+        script_tool_files_test.go:273: 
+            	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/script_tool_files_test.go:273
+            	Error:      	Target error should be in err chain:
+            	            	expected: "tool input validation failed"
+            	            	in chain: "tool \"file_write\": exit status 1 (stderr: file_write: content is required)"
+            	            		"exit status 1 (stderr: file_write: content is required)"
+            	            		"exit status 1"
+            	Test:       	TestScriptTool_Files_InvalidInputPreservesContent/{"path":"held.txt"}
+    --- FAIL: TestScriptTool_Files_InvalidInputPreservesContent/{"path":"held.txt","content":null} (0.00s)
+        script_tool_files_test.go:273: 
+            	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/script_tool_files_test.go:273
+            	Error:      	Target error should be in err chain:
+            	            	expected: "tool input validation failed"
+            	            	in chain: "tool \"file_write\": exit status 1 (stderr: file_write: content is required)"
+            	            		"exit status 1 (stderr: file_write: content is required)"
+            	            		"exit status 1"
+            	Test:       	TestScriptTool_Files_InvalidInputPreservesContent/{"path":"held.txt","content":null}
+2026/09/21 03:33:36 INFO tool manifest loaded op=tool.load name=file_list hash=14ee40e538ab6423ddeb27f9a908bb1ae0d8076c836e1ea08aae0ca9de9e100c
+2026/09/21 03:33:36 INFO tool manifest loaded op=tool.load name=file_read hash=ca780606ae0994489db1f223c584c6cb295e6766ed19b4374f51439614b446bc
+2026/09/21 03:33:36 INFO tool manifest loaded op=tool.load name=file_write hash=df24afa61c4f61159d4803d9279be0e6c7940dff25488d6d25ecd81977b4907f
+2026/09/21 03:33:36 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_Files_ProviderExposure2997974087/001 tools_dir_resolved=/tmp/TestScriptTool_Files_ProviderExposure2997974087/001 tools=3
+2026/09/21 03:33:36 WARN openai provider: tool schema property promoted to required op=sanitize_tool_parameters tool=file_write property=content
+--- FAIL: TestScriptTool_Files_ProviderExposure (1.54s)
+    --- FAIL: TestScriptTool_Files_ProviderExposure/openai (0.01s)
+        script_tool_files_test.go:380: 
+            	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/script_tool_files_test.go:380
+            	Error:      	Not equal: 
+            	            	expected: map[string]interface {}{"type":"string"}
+            	            	actual  : map[string]interface {}{"type":[]interface {}{"string", "null"}}
+            	            	
+            	            	Diff:
+            	            	--- Expected
+            	            	+++ Actual
+            	            	@@ -1,3 +1,6 @@
+            	            	 (map[string]interface {}) (len=1) {
+            	            	- (string) (len=4) "type": (string) (len=6) "string"
+            	            	+ (string) (len=4) "type": ([]interface {}) (len=2) {
+            	            	+  (string) (len=6) "string",
+            	            	+  (string) (len=4) "null"
+            	            	+ }
+            	            	 }
+            	Test:       	TestScriptTool_Files_ProviderExposure/openai
+    --- FAIL: TestScriptTool_Files_ProviderExposure/anthropic (0.01s)
+        script_tool_files_test.go:382: 
+            	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/script_tool_files_test.go:382
+            	Error:      	elements differ
+            	            	
+            	            	extra elements in list A:
+            	            	([]interface {}) (len=1) {
+            	            	 (string) (len=7) "content"
+            	            	}
+            	            	
+            	            	
+            	            	listA:
+            	            	([]string) (len=2) {
+            	            	 (string) (len=4) "path",
+            	            	 (string) (len=7) "content"
+            	            	}
+            	            	
+            	            	
+            	            	listB:
+            	            	([]string) (len=1) {
+            	            	 (string) (len=4) "path"
+            	            	}
+            	Test:       	TestScriptTool_Files_ProviderExposure/anthropic
+FAIL
+FAIL	github.com/garamsh/gagent/tests	3.001s
+FAIL

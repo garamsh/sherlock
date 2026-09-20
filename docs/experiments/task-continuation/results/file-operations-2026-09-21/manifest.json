@@ -1,0 +1,423 @@
+{
+  "owner": "task-continuation/README.md",
+  "measured_sources": {
+    "baseline": "ca65571319c15294cb987a5c4121da92d4b4e64b",
+    "candidate": "842faeb11ecce07fa1a8281b0cd02628d536440d"
+  },
+  "entries": [
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/baseline/collection/1-1.json",
+      "sha256": "c95485ff04f859a4c6506ea9d795809287f3b852c4c5d9957800f31f4178987e",
+      "bytes": 5325,
+      "published": "baseline/collection/1-1.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/baseline/collection/1-2.json",
+      "sha256": "6155b0fec8a563ddfe118170660fc6930e3d9e9e978257ff76752385d27974f7",
+      "bytes": 5858,
+      "published": "baseline/collection/1-2.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/baseline/collection/1-3.json",
+      "sha256": "691870831a66b4c9f5abff9e16aab203756d38810b056b8e66784579fda10c86",
+      "bytes": 6692,
+      "published": "baseline/collection/1-3.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/baseline/collection/1-4.json",
+      "sha256": "627be8de265629859e3ee5796414a2cd2e6e7fc7a3e8314a31a6db70280cdcfd",
+      "bytes": 4185,
+      "published": "baseline/collection/1-4.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/baseline/collection/2-1.json",
+      "sha256": "3e77d16a902c8d730db8d921f84c2b0a90d721c5b1188c0b7f27fb829751cf6a",
+      "bytes": 4599,
+      "published": "baseline/collection/2-1.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/baseline/collection/2-2.json",
+      "sha256": "ac8bc1c4196bacae1e6ef166c6da51089c43ec1552459f13838dd5bfcbe33fe9",
+      "bytes": 4592,
+      "published": "baseline/collection/2-2.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/baseline/collection/2-3.json",
+      "sha256": "41a8ca6ca08a1d029b98008b4c65e243d17d1ee2ab110a247ce5cc3610a10b5c",
+      "bytes": 4561,
+      "published": "baseline/collection/2-3.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/baseline/collection/2-4.json",
+      "sha256": "cce4f37aaa1f1faa0f5c15c13d49bcd9021d5954732bbc398eee25609ad6bbe0",
+      "bytes": 4299,
+      "published": "baseline/collection/2-4.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/baseline/collection/calls.json",
+      "sha256": "d279918ae4d71780d5f51a7f32cc49065bec6a17c6132195ff033c2b3e384ba4",
+      "bytes": 1722489,
+      "published": "baseline/collection/calls.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/baseline/collection/process-1356182.log",
+      "sha256": "c57545426df66260a4b716727a730ee723b23e5d3c65adab3ffdf47da6bf1086",
+      "bytes": 243,
+      "published": "baseline/collection/process-1356182.log.txt"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/baseline/collection/process-1362698.log",
+      "sha256": "c189f30970e52cc23d161ba33e219ff69fd1f9c6dd9514a26d4f207596d9458f",
+      "bytes": 243,
+      "published": "baseline/collection/process-1362698.log.txt"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/baseline/collection/run.json",
+      "sha256": "0d1afde60d64235b7a20daa3491028861e65ad72060ecc08be63d4495983a59d",
+      "bytes": 45466,
+      "published": "baseline/collection/run.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/baseline/collection/source.json",
+      "sha256": "3f9bdacdff2c0ecfe5ef2c6e039fdabb7a1e3433d87fe0c37e92427708bd57de",
+      "bytes": 1461,
+      "published": "baseline/collection/source.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/baseline/exit.json",
+      "sha256": "b4449384b98b601929f68cc2aa07b06d4e4ab9396408199210be17c559994292",
+      "bytes": 185,
+      "published": "baseline/exit.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/baseline/gagent-measured",
+      "sha256": "11e968f7026c068d0283369582ef591e4214f3a6cf4d8d5ce4b4ef397ed27e1d",
+      "bytes": 28636495,
+      "published": null
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/baseline/invocation.json",
+      "sha256": "267d9c115c6adfb103ef90ab61436445ca72bd6661835660b7901bedd4019e41",
+      "bytes": 974,
+      "published": "baseline/invocation.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/baseline/run.log",
+      "sha256": "21ae69669d99d23d27f0aa9db587621644915833bfc70228a0e93b6dea3bbedc",
+      "bytes": 269,
+      "published": "baseline/run.log.txt"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/candidate/collection/1-1.json",
+      "sha256": "b5fd44b34fc802f4cec47689ce2b94cc3298051b1ec0da34097552e1bf34c500",
+      "bytes": 3314,
+      "published": "candidate/collection/1-1.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/candidate/collection/1-2.json",
+      "sha256": "1ced134cdd4ad72a50023460d66a3f04cee7e384c7b29261590e7a06172793db",
+      "bytes": 2481,
+      "published": "candidate/collection/1-2.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/candidate/collection/1-3.json",
+      "sha256": "a4e6e899c50c2e7e05f9ac7eda1a0f9db3727b98b39ace1707d190927e24e18e",
+      "bytes": 2866,
+      "published": "candidate/collection/1-3.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/candidate/collection/1-4.json",
+      "sha256": "a4c8016d9c1ee7bad31927b8de72a7872323ddfff7f634d01fe9f7c563354aa8",
+      "bytes": 2776,
+      "published": "candidate/collection/1-4.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/candidate/collection/2-1.json",
+      "sha256": "15a53d1f42337647969004785c9afde55247b78baa5f36366f4d99bb9561df83",
+      "bytes": 3247,
+      "published": "candidate/collection/2-1.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/candidate/collection/2-2.json",
+      "sha256": "53a52507f22fdb752beb223680a91e3065772f28476a73e12239623155480dfd",
+      "bytes": 2772,
+      "published": "candidate/collection/2-2.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/candidate/collection/2-3.json",
+      "sha256": "935cae495194e35e137f641c901a04b54dfaa3c46a78cf4194504627c66cc1dc",
+      "bytes": 2927,
+      "published": "candidate/collection/2-3.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/candidate/collection/2-4.json",
+      "sha256": "9c673163514d7161fa8d1d5d1d70a9fa8d5fd92a447dcee7f01a1f86536119bb",
+      "bytes": 2740,
+      "published": "candidate/collection/2-4.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/candidate/collection/calls.json",
+      "sha256": "236fbcc5bfdf9008ec9921487be2ad9ee9020b04b5428d6fa6d3bcb083c61c12",
+      "bytes": 812186,
+      "published": "candidate/collection/calls.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/candidate/collection/process-1369162.log",
+      "sha256": "be6182639b0230feb08dba8549c4874b2422bcd647a15cb939fca05150beab02",
+      "bytes": 243,
+      "published": "candidate/collection/process-1369162.log.txt"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/candidate/collection/process-1372260.log",
+      "sha256": "37b37f6a64527d51276305326782fb07b7ede0115f4ddc825f38a4a2fb20c395",
+      "bytes": 243,
+      "published": "candidate/collection/process-1372260.log.txt"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/candidate/collection/run.json",
+      "sha256": "5a5f5036f0fc47c7d81e7dcffcbf001df7d03daaeaf30fe4af986bf40c7b1de4",
+      "bytes": 26594,
+      "published": "candidate/collection/run.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/candidate/collection/source.json",
+      "sha256": "708defb90c5a1908a1eafecb66df42dbd81c917b4d582cb5f99d9986387d0c16",
+      "bytes": 1566,
+      "published": "candidate/collection/source.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/candidate/exit.json",
+      "sha256": "47a57bd39db8ae2662753602ee1d2d22c517ea9a1d9ae0eba32ff3fd06a6db43",
+      "bytes": 184,
+      "published": "candidate/exit.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/candidate/gagent-measured",
+      "sha256": "4b6ae92005c677d29deaf0dc7e2618ca42c9aca89a35947fc4d24a5f9e5de085",
+      "bytes": 28640495,
+      "published": null
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/candidate/invocation.json",
+      "sha256": "fae705287265f8b6d09530daaa950ab2f5a75465df5a42a13f49e9be78dd5daf",
+      "bytes": 880,
+      "published": "candidate/invocation.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/candidate/run.log",
+      "sha256": "c8a872bad2c158b72b681fb3221ddf404dbe221f8e04b25b5abbccac9330d948",
+      "bytes": 267,
+      "published": "candidate/run.log.txt"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/sha256.json",
+      "sha256": "e383cfeb3f18880d8ecd3c3c9848f200c5cd22a8935a19a5384caceba1c26f31",
+      "bytes": 3482,
+      "published": "original-sha256.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/811-review/baseline-overlay.json",
+      "sha256": "ef1a0f663ff877fe7b5b721100ec4bc651a2cb7e441e5b9bb82951cc9232f583",
+      "bytes": 187,
+      "published": "validation/baseline-overlay.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/811-review/checkpoint-hashes.json",
+      "sha256": "78012b5b5ad4d26693f8c287b36ccd00f2406923054dd4dbb17e2e09ac453256",
+      "bytes": 3358,
+      "published": "validation/checkpoint-hashes.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/811-review/file_operations_test.go",
+      "sha256": "82905adb0c6013b73c025876d8f39f08eeeb7b39b271e14472ac70544749c75b",
+      "bytes": 13246,
+      "published": "validation/file_operations_test.go.txt"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/811-review/gagent-file-write-build-tools.log",
+      "sha256": "ce7451895fafb008f9f79a2ae6e4a57de02247cbc831522c5daedaa1a392e0bb",
+      "bytes": 27,
+      "published": "validation/gagent-file-write-build-tools.log.txt"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/811-review/gagent-file-write-ci-frozen.log",
+      "sha256": "bbd2042927026eaa04bc48db04f9b02c7446dce536b3fbd20e2bdc9ec4764356",
+      "bytes": 1512,
+      "published": "validation/gagent-file-write-ci-frozen.log.txt"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/811-review/gagent-file-write-ci.log",
+      "sha256": "d17bf98bada708dbf3e5ef4a07878e38e78922eb3150ccfe74cb93aa4ba0883b",
+      "bytes": 53061,
+      "published": "validation/gagent-file-write-ci.log.txt"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/811-review/gagent-file-write-instrument-removals.json",
+      "sha256": "53ce5ede027a8e14c021621d8e4850808ad280ba050ae7939b3eb21b361192a3",
+      "bytes": 286,
+      "published": "validation/gagent-file-write-instrument-removals.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/811-review/gagent-file-write-manifest.json",
+      "sha256": "78012b5b5ad4d26693f8c287b36ccd00f2406923054dd4dbb17e2e09ac453256",
+      "bytes": 3358,
+      "published": "validation/gagent-file-write-manifest.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/811-review/gagent-file-write-precommit.log",
+      "sha256": "0a5e24ccec8503d58b654aa7c0cc712d68bbd6e4a86d79663de7be5b4f8d84ba",
+      "bytes": 88,
+      "published": "validation/gagent-file-write-precommit.log.txt"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/811-review/gagent-file-write-removal-missing-file.log",
+      "sha256": "87017cedb4c732c88dd6beaed79707677f184a5c6a38991be06aba998bfa6152",
+      "bytes": 2534,
+      "published": "validation/gagent-file-write-removal-missing-file.log.txt"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/811-review/gagent-file-write-removal-overwrite-premise.log",
+      "sha256": "06bcac0acb594f6e4d2040745ceee99e49c82a883845ba5048ff06e6160ffd28",
+      "bytes": 1789,
+      "published": "validation/gagent-file-write-removal-overwrite-premise.log.txt"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/811-review/gagent-file-write-removal-required-content.log",
+      "sha256": "c9afe21c4c7d5cff877c933ff472a8c81bb86219b5b890753a4ed249db68b4cb",
+      "bytes": 5193,
+      "published": "validation/gagent-file-write-removal-required-content.log.txt"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/811-review/gagent-file-write-removal-stdin-absence.log",
+      "sha256": "229d48e43058146dcf2b5b6ab0e93cb4eabe2da523e10017774dd748d9de8f20",
+      "bytes": 5083,
+      "published": "validation/gagent-file-write-removal-stdin-absence.log.txt"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/811-review/gagent-file-write-removal-write-effect.log",
+      "sha256": "52ed5889ab64e965ea0d05b435c9b69ce92ffe5b99edcefe76dac6b1bc09c3e7",
+      "bytes": 2817,
+      "published": "validation/gagent-file-write-removal-write-effect.log.txt"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/811-review/gagent-file-write-removal-write-verification.log",
+      "sha256": "15527228d3fca572bf00a6e519d14ee04384c1906c3ef63ea91ee5c9f952f1ca",
+      "bytes": 1082,
+      "published": "validation/gagent-file-write-removal-write-verification.log.txt"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/811-review/gagent-file-write-removals.json",
+      "sha256": "46b449b513db23c91d723ed74caf1f7b0a16faa81f48da97bebec7b67e8b7532",
+      "bytes": 280,
+      "published": "validation/gagent-file-write-removals.json"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/811-review/gagent-file-write-removals.py",
+      "sha256": "c076ade8b46d8374514110bfb11dde53f6b05e8e8cd6feaac14f80ef0c5c3014",
+      "bytes": 1633,
+      "published": "validation/gagent-file-write-removals.py.txt"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/811-review/gagent-file-write-restored.log",
+      "sha256": "76a36a5f0bab6c9e6d4c38362fb48aa91b7d74deec0fc4834f763643c0f336ae",
+      "bytes": 44,
+      "published": "validation/gagent-file-write-restored.log.txt"
+    },
+    {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/811-review/gagent-file-write-tests.log",
+      "sha256": "b6c20ae8cec98545104f5248e0340aea8128dc1f86dfd94ce74e61d59784b5ff",
+      "bytes": 52901,
+      "published": "validation/gagent-file-write-tests.log.txt"
+    },
+    {
+      "original": "/tmp/gagent-file-write-free-1/1-1.json",
+      "sha256": "ed06cd80d30a4eed2cad5bc8cea84395f747c63e56c5a9c14061f66948e3896e",
+      "bytes": 2931,
+      "published": "validation/free/1-1.json"
+    },
+    {
+      "original": "/tmp/gagent-file-write-free-1/1-2.json",
+      "sha256": "6bfc1fe8cf65f0806b46fbf942250dad4e8cea4b1d80fac0710571de9193c1fb",
+      "bytes": 2230,
+      "published": "validation/free/1-2.json"
+    },
+    {
+      "original": "/tmp/gagent-file-write-free-1/1-3.json",
+      "sha256": "abf64a249d3930b16b2954d0ff6359a83c100ed54c8ab442aa63b19cf8388620",
+      "bytes": 2615,
+      "published": "validation/free/1-3.json"
+    },
+    {
+      "original": "/tmp/gagent-file-write-free-1/1-4.json",
+      "sha256": "34c92bd82b376982f2ea4e1a9f44d2141c07ef77c9c32c279bd7d85ab6dff9ed",
+      "bytes": 2160,
+      "published": "validation/free/1-4.json"
+    },
+    {
+      "original": "/tmp/gagent-file-write-free-1/2-1.json",
+      "sha256": "dc4404ecbcc3818d1f843ac23a4fd3d4f54de182b3a26dd1029e67813bd39890",
+      "bytes": 2931,
+      "published": "validation/free/2-1.json"
+    },
+    {
+      "original": "/tmp/gagent-file-write-free-1/2-2.json",
+      "sha256": "4010138c0b7284769d67dea49d792fa6872ec0a4ea6d4ee257aec59532bc1bcc",
+      "bytes": 2230,
+      "published": "validation/free/2-2.json"
+    },
+    {
+      "original": "/tmp/gagent-file-write-free-1/2-3.json",
+      "sha256": "a617820c7e595379f3b38907479ed1a22afd6bac56453d326932527c456f7a47",
+      "bytes": 2615,
+      "published": "validation/free/2-3.json"
+    },
+    {
+      "original": "/tmp/gagent-file-write-free-1/2-4.json",
+      "sha256": "074a3c25f1d7ae8c2c793148fa3009e5eb4b2aaa34a821c236bf5d7991235e0b",
+      "bytes": 2160,
+      "published": "validation/free/2-4.json"
+    },
+    {
+      "original": "/tmp/gagent-file-write-free-1/calls.json",
+      "sha256": "dd8d2126146a5e1f8622fd9ef8ded3281cb8a554db91cb10d889b50a867cc985",
+      "bytes": 701626,
+      "published": "validation/free/calls.json"
+    },
+    {
+      "original": "/tmp/gagent-file-write-free-1/process-4036.log",
+      "sha256": "6b8b783ae1fc76b8df6d7c3e90f8b807ce6981d5973879362dbbf6bbc1efa46c",
+      "bytes": 247,
+      "published": "validation/free/process-4036.log.txt"
+    },
+    {
+      "original": "/tmp/gagent-file-write-free-1/process-4164.log",
+      "sha256": "288fe171bda34ce631f57790cf6dc8921db768110824076d64b0c37ebb8f6ba2",
+      "bytes": 248,
+      "published": "validation/free/process-4164.log.txt"
+    },
+    {
+      "original": "/tmp/gagent-file-write-free-1/run.json",
+      "sha256": "c1511edf41b1613b610d60b333e9fefd7d94613be80b2e8dd60b1714bc0d4578",
+      "bytes": 23188,
+      "published": "validation/free/run.json"
+    },
+    {
+      "original": "/tmp/gagent-file-write-free-1/source.json",
+      "sha256": "46522ff3f735c001bb456483b66765f130e3eeb4d24cd9e20717913e1c05c02c",
+      "bytes": 1561,
+      "published": "validation/free/source.json"
+    },
+    {
+      "original": "/tmp/gagent-file-write-ci-frozen.log",
+      "sha256": "bbd2042927026eaa04bc48db04f9b02c7446dce536b3fbd20e2bdc9ec4764356",
+      "bytes": 1512,
+      "published": null
+    },
+    {
+      "original": "/tmp/gagent-file-write-report.md",
+      "sha256": "5627676e2f7b4013a75fb2c9edda877aa6bbe992f0921c9a67ea1ecee4b1b30a",
+      "bytes": 4417,
+      "published": null
+    }
+  ]
+}

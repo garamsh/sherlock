@@ -1,0 +1,16 @@
+{
+  "binary_sha256": {
+    "grounded": "203e2e81ad3fd816b50f0007dc11e1648bb93f10ab48d3cb44f2a5fabf4dc929",
+    "history": "79d0ca34414cc3392d2f8f4050b2eb1e0ce0bef11c60fd6d40bde8ee50dc2d5b",
+    "names": "3bd571274e0ce84e0eae2f114e2085dcda37b79df5cc863f4425ad99cc6dc40f",
+    "task": "7e189463889de1eb11e9a9a2388833fab236c63bff1e41ca3f4bf28644c351f6"
+  },
+  "instrument_sha256": {
+    "tests/model_spend_meter_test.go": "8fcb6e7064234565104b22c3bfa9db7e15a2d175f05faee490da52912f28ed18",
+    "tests/recall_information_test.go": "a27592ff750f98cb1028e72e098be75e3e70c971595deb3a919fb332fcee3538",
+    "tests/recall_specificity_test.go": "b23838edbd1e7faaffebaf3df75aef09c16c46164e65b197f93aeb769693fbc4"
+  },
+  "model": "MiniMax-M2",
+  "revision": "ca121754269b582853784b63f5e12cd0c92fcb8f",
+  "variants": "task: checkout; history: session transcript to resolver; grounded: same history plus all active IDs/subjects/questions/restrictions/values to resolver; names: same history plus IDs/subjects only"
+}

@@ -1,0 +1,3144 @@
+[
+  {
+    "catalogue_question_contains_finnish": false,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      },
+      {
+        "id": 2,
+        "subject": "Yusuf",
+        "question": "when did Yusuf join the Thameside rowing club",
+        "value": "May"
+      },
+      {
+        "id": 3,
+        "subject": "Mira",
+        "question": "which club did Mira join",
+        "restriction": "in June",
+        "value": "the Hilltop chess club"
+      }
+    ],
+    "case": {
+      "Name": "1/task/explicit",
+      "Arm": "task",
+      "Question": "What language did Hana start learning?",
+      "Cue": "",
+      "Empty": false
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-15cb1f15916d733a9e48dcf4faebdd13] unknown: What language did Hana start learning?",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "widened",
+          "recalled_count": 1,
+          "recalled_ids": [
+            "1"
+          ],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [
+            {
+              "address": {
+                "question": "what language did Hana start learning",
+                "subject": "Hana"
+              },
+              "operation": "join",
+              "value": "Finnish"
+            }
+          ],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-15cb1f15916d733a9e48dcf4faebdd13"
+          ],
+          "ops": null,
+          "response": "Hana started learning Finnish.",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 8996,
+      "message": "What language did Hana start learning?",
+      "recall_outcome": "widened",
+      "recalled_ids": [
+        "1"
+      ],
+      "recalled_count": 1,
+      "response": "Hana started learning Finnish.",
+      "ops": [
+        {
+          "address": {
+            "question": "what language did Hana start learning",
+            "subject": "Hana"
+          },
+          "operation": "join",
+          "value": "Finnish"
+        }
+      ]
+    },
+    "read_address": "{\"subject\": \"Hana\", \"question\": \"which language did Hana start learning\"}",
+    "catalogue_bytes": 0,
+    "read_input_tokens_including_catalogue": 804,
+    "whole_record_ids": [
+      "1"
+    ],
+    "value_only_ids": null,
+    "whole_record_injected": true,
+    "value_only_injected": false,
+    "answer_contains_finnish": true,
+    "resolver_contains_target": false,
+    "catalogue_contains_target": false,
+    "act_contains_target": true,
+    "invalid_reasons": null,
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": false,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      },
+      {
+        "id": 2,
+        "subject": "Yusuf",
+        "question": "when did Yusuf join the Thameside rowing club",
+        "value": "May"
+      },
+      {
+        "id": 4,
+        "subject": "user",
+        "question": "who does the user refer to in the next question",
+        "value": "Hana"
+      },
+      {
+        "id": 3,
+        "subject": "Mira",
+        "question": "which club did Mira join",
+        "restriction": "in June",
+        "value": "the Hilltop chess club"
+      }
+    ],
+    "case": {
+      "Name": "1/task/referent",
+      "Arm": "task",
+      "Question": "What language did she start learning?",
+      "Cue": "For the next question, she refers to Hana. Please acknowledge only.",
+      "Empty": false
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-f6f590248d5ef378fcb4e74029329b2f] unknown: What language did she start learning?",
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "empty",
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "error": "model ended a turn without calling memory_write",
+          "kind": "writeback_error",
+          "ops": null,
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-f6f590248d5ef378fcb4e74029329b2f"
+          ],
+          "ops": null,
+          "response": "I don't have information about Hana or what language she started learning. There's no context in my current memories or session that provides this detail. Could you share more information about who Hana is or the language you're asking about?",
+          "turn": 2
+        }
+      ],
+      "duration_ms": 11412,
+      "message": "What language did she start learning?",
+      "recall_outcome": "empty",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "I don't have information about Hana or what language she started learning. There's no context in my current memories or session that provides this detail. Could you share more information about who Hana is or the language you're asking about?"
+    },
+    "cue": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-0e9eb7c20d5e4c7715468b14756eeb96] unknown: For the next question, she refers to Hana. Please acknowledge only.",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "unplaced",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [
+            {
+              "address": {
+                "question": "who does the user refer to in the next question",
+                "subject": "user"
+              },
+              "operation": "join",
+              "value": "Hana"
+            }
+          ],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-0e9eb7c20d5e4c7715468b14756eeb96"
+          ],
+          "ops": null,
+          "response": "Acknowledged.",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 4429,
+      "message": "For the next question, she refers to Hana. Please acknowledge only.",
+      "recall_outcome": "unplaced",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "Acknowledged.",
+      "ops": [
+        {
+          "address": {
+            "question": "who does the user refer to in the next question",
+            "subject": "user"
+          },
+          "operation": "join",
+          "value": "Hana"
+        }
+      ]
+    },
+    "read_address": "{\"subject\": \"she\", \"question\": \"what language did she start learning\"}",
+    "catalogue_bytes": 0,
+    "read_input_tokens_including_catalogue": 803,
+    "whole_record_ids": [
+      "1"
+    ],
+    "value_only_ids": null,
+    "whole_record_injected": false,
+    "value_only_injected": false,
+    "answer_contains_finnish": false,
+    "resolver_contains_target": false,
+    "catalogue_contains_target": false,
+    "act_contains_target": false,
+    "invalid_reasons": [
+      "cue changed frozen records"
+    ],
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": false,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      },
+      {
+        "id": 2,
+        "subject": "Yusuf",
+        "question": "when did Yusuf join the Thameside rowing club",
+        "value": "May"
+      },
+      {
+        "id": 3,
+        "subject": "Mira",
+        "question": "which club did Mira join",
+        "restriction": "in June",
+        "value": "the Hilltop chess club"
+      }
+    ],
+    "case": {
+      "Name": "1/task/anonymous",
+      "Arm": "task",
+      "Question": "Who started learning a language, and which language was it?",
+      "Cue": "",
+      "Empty": false
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-d1bdeb635b3ff53db482f2a7c3de6bc5] unknown: Who started learning a language, and which language was it?",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "empty",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "operation": "list",
+            "path": "."
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"\",\"bytes_written\":0,\"entries\":[]}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "command": "ls -la",
+            "timeout_nanos": 10000000000
+          },
+          "tool_name": "shell_exec",
+          "tool_result": "{\"stdout\":\"total 0\\ndrwxr-xr-x 2 sauce sauce 40 Sep 21 01:00 .\\ndrwxrwxr-x 3 sauce sauce 60 Sep 21 01:00 ..\\n\",\"stderr\":\"\",\"exit_code\":0,\"timed_out\":false}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-d1bdeb635b3ff53db482f2a7c3de6bc5"
+          ],
+          "ops": null,
+          "response": "I couldn't find information about who started learning a language. The workspace is empty, and I don't have access to any files or other sources that would contain this information. Could you provide more context or point me to where this information might be?",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 29331,
+      "message": "Who started learning a language, and which language was it?",
+      "recall_outcome": "empty",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "I couldn't find information about who started learning a language. The workspace is empty, and I don't have access to any files or other sources that would contain this information. Could you provide more context or point me to where this information might be?"
+    },
+    "read_address": "{\"subject\": \"person\", \"question\": \"\"}",
+    "catalogue_bytes": 0,
+    "read_input_tokens_including_catalogue": 810,
+    "whole_record_ids": [
+      "1"
+    ],
+    "value_only_ids": null,
+    "whole_record_injected": false,
+    "value_only_injected": false,
+    "answer_contains_finnish": false,
+    "resolver_contains_target": false,
+    "catalogue_contains_target": false,
+    "act_contains_target": false,
+    "invalid_reasons": null,
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": false,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      },
+      {
+        "id": 2,
+        "subject": "Yusuf",
+        "question": "when did Yusuf join the Thameside rowing club",
+        "value": "May"
+      },
+      {
+        "id": 3,
+        "subject": "Mira",
+        "question": "which club did Mira join",
+        "restriction": "in June",
+        "value": "the Hilltop chess club"
+      }
+    ],
+    "case": {
+      "Name": "1/task/absent",
+      "Arm": "task",
+      "Question": "Who won a fencing tournament?",
+      "Cue": "",
+      "Empty": false
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-ebef819bbb04bd6124a6dee044313546] unknown: Who won a fencing tournament?",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "empty",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-ebef819bbb04bd6124a6dee044313546"
+          ],
+          "ops": null,
+          "response": "Your question is too vague — there are many fencing tournaments. Could you specify which one you're asking about (e.g., the name, location, year, or competition)?",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 9787,
+      "message": "Who won a fencing tournament?",
+      "recall_outcome": "empty",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "Your question is too vague — there are many fencing tournaments. Could you specify which one you're asking about (e.g., the name, location, year, or competition)?"
+    },
+    "read_address": "{\"subject\": \"fencing tournament\", \"question\": \"\"}",
+    "catalogue_bytes": 0,
+    "read_input_tokens_including_catalogue": 798,
+    "whole_record_ids": null,
+    "value_only_ids": null,
+    "whole_record_injected": false,
+    "value_only_injected": false,
+    "answer_contains_finnish": false,
+    "resolver_contains_target": false,
+    "catalogue_contains_target": false,
+    "act_contains_target": false,
+    "invalid_reasons": null,
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": false,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      },
+      {
+        "id": 2,
+        "subject": "Yusuf",
+        "question": "when did Yusuf join the Thameside rowing club",
+        "value": "May"
+      },
+      {
+        "id": 3,
+        "subject": "Mira",
+        "question": "which club did Mira join",
+        "restriction": "in June",
+        "value": "the Hilltop chess club"
+      }
+    ],
+    "case": {
+      "Name": "1/history/explicit",
+      "Arm": "history",
+      "Question": "What language did Hana start learning?",
+      "Cue": "",
+      "Empty": false
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-ff83e0d2b34cd964bd1beba14bbd7db7] unknown: What language did Hana start learning?",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "widened",
+          "recalled_count": 1,
+          "recalled_ids": [
+            "1"
+          ],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-ff83e0d2b34cd964bd1beba14bbd7db7"
+          ],
+          "ops": null,
+          "response": "Hana started learning Finnish.",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 4726,
+      "message": "What language did Hana start learning?",
+      "recall_outcome": "widened",
+      "recalled_ids": [
+        "1"
+      ],
+      "recalled_count": 1,
+      "response": "Hana started learning Finnish."
+    },
+    "read_address": "{\"subject\": \"Hana\", \"question\": \"what language did Hana start learning\"}",
+    "catalogue_bytes": 0,
+    "read_input_tokens_including_catalogue": 810,
+    "whole_record_ids": [
+      "1"
+    ],
+    "value_only_ids": null,
+    "whole_record_injected": true,
+    "value_only_injected": false,
+    "answer_contains_finnish": true,
+    "resolver_contains_target": false,
+    "catalogue_contains_target": false,
+    "act_contains_target": true,
+    "invalid_reasons": null,
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": false,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      },
+      {
+        "id": 2,
+        "subject": "Yusuf",
+        "question": "when did Yusuf join the Thameside rowing club",
+        "value": "May"
+      },
+      {
+        "id": 3,
+        "subject": "Mira",
+        "question": "which club did Mira join",
+        "restriction": "in June",
+        "value": "the Hilltop chess club"
+      }
+    ],
+    "case": {
+      "Name": "1/history/referent",
+      "Arm": "history",
+      "Question": "What language did she start learning?",
+      "Cue": "For the next question, she refers to Hana. Please acknowledge only.",
+      "Empty": false
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-83cd57c0118f2523ddc34cb875871bcf] unknown: What language did she start learning?",
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "widened",
+          "recalled_count": 1,
+          "recalled_ids": [
+            "1"
+          ],
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [
+            {
+              "address": {
+                "question": "what language did Hana start learning",
+                "subject": "Hana"
+              },
+              "operation": "join",
+              "value": "Finnish"
+            }
+          ],
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-83cd57c0118f2523ddc34cb875871bcf"
+          ],
+          "ops": null,
+          "response": "She started learning Finnish.",
+          "turn": 2
+        }
+      ],
+      "duration_ms": 7775,
+      "message": "What language did she start learning?",
+      "recall_outcome": "widened",
+      "recalled_ids": [
+        "1"
+      ],
+      "recalled_count": 1,
+      "response": "She started learning Finnish.",
+      "ops": [
+        {
+          "address": {
+            "question": "what language did Hana start learning",
+            "subject": "Hana"
+          },
+          "operation": "join",
+          "value": "Finnish"
+        }
+      ]
+    },
+    "cue": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-cdf25ea321b20e4e66e242db1da854d9] unknown: For the next question, she refers to Hana. Please acknowledge only.",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "unplaced",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-cdf25ea321b20e4e66e242db1da854d9"
+          ],
+          "ops": null,
+          "response": "Acknowledged.",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 5048,
+      "message": "For the next question, she refers to Hana. Please acknowledge only.",
+      "recall_outcome": "unplaced",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "Acknowledged."
+    },
+    "read_address": "{\"subject\": \"Hana\", \"question\": \"what language did she start learning\"}",
+    "catalogue_bytes": 0,
+    "read_input_tokens_including_catalogue": 915,
+    "whole_record_ids": [
+      "1"
+    ],
+    "value_only_ids": null,
+    "whole_record_injected": true,
+    "value_only_injected": false,
+    "answer_contains_finnish": true,
+    "resolver_contains_target": false,
+    "catalogue_contains_target": false,
+    "act_contains_target": true,
+    "invalid_reasons": null,
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": false,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      },
+      {
+        "id": 2,
+        "subject": "Yusuf",
+        "question": "when did Yusuf join the Thameside rowing club",
+        "value": "May"
+      },
+      {
+        "id": 3,
+        "subject": "Mira",
+        "question": "which club did Mira join",
+        "restriction": "in June",
+        "value": "the Hilltop chess club"
+      }
+    ],
+    "case": {
+      "Name": "1/history/anonymous",
+      "Arm": "history",
+      "Question": "Who started learning a language, and which language was it?",
+      "Cue": "",
+      "Empty": false
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-f0c8e620f2f38c299d2c7091e4c40c49] unknown: Who started learning a language, and which language was it?",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "unplaced",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-f0c8e620f2f38c299d2c7091e4c40c49"
+          ],
+          "ops": null,
+          "response": "I don't have enough context to answer this question. The message appears to be asking about who started learning a language and which language it was, but I don't have any prior conversation or information about a specific person. Could you provide more context about who you're asking about?",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 17331,
+      "message": "Who started learning a language, and which language was it?",
+      "recall_outcome": "unplaced",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "I don't have enough context to answer this question. The message appears to be asking about who started learning a language and which language it was, but I don't have any prior conversation or information about a specific person. Could you provide more context about who you're asking about?"
+    },
+    "read_address": "{\"subject\": \"\", \"question\": \"\"}",
+    "catalogue_bytes": 0,
+    "read_input_tokens_including_catalogue": 817,
+    "whole_record_ids": [
+      "1"
+    ],
+    "value_only_ids": null,
+    "whole_record_injected": false,
+    "value_only_injected": false,
+    "answer_contains_finnish": false,
+    "resolver_contains_target": false,
+    "catalogue_contains_target": false,
+    "act_contains_target": false,
+    "invalid_reasons": null,
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": false,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      },
+      {
+        "id": 2,
+        "subject": "Yusuf",
+        "question": "when did Yusuf join the Thameside rowing club",
+        "value": "May"
+      },
+      {
+        "id": 3,
+        "subject": "Mira",
+        "question": "which club did Mira join",
+        "restriction": "in June",
+        "value": "the Hilltop chess club"
+      }
+    ],
+    "case": {
+      "Name": "1/history/absent",
+      "Arm": "history",
+      "Question": "Who won a fencing tournament?",
+      "Cue": "",
+      "Empty": false
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-c05435904803deec70764e46ac93a730] unknown: Who won a fencing tournament?",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "empty",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-c05435904803deec70764e46ac93a730"
+          ],
+          "ops": null,
+          "response": "Your question is very general - there are many fencing tournaments (World Cup, Olympics, World Championships, etc.). Could you please specify which tournament you're asking about? For example: \"Who won the 2024 Olympics women's sabre?\" or \"Who won the 2023 World Cup in men's foil?\"",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 11617,
+      "message": "Who won a fencing tournament?",
+      "recall_outcome": "empty",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "Your question is very general - there are many fencing tournaments (World Cup, Olympics, World Championships, etc.). Could you please specify which tournament you're asking about? For example: \"Who won the 2024 Olympics women's sabre?\" or \"Who won the 2023 World Cup in men's foil?\""
+    },
+    "read_address": "{\"subject\": \"the winner\", \"question\": \"\"}",
+    "catalogue_bytes": 0,
+    "read_input_tokens_including_catalogue": 803,
+    "whole_record_ids": null,
+    "value_only_ids": null,
+    "whole_record_injected": false,
+    "value_only_injected": false,
+    "answer_contains_finnish": false,
+    "resolver_contains_target": false,
+    "catalogue_contains_target": false,
+    "act_contains_target": false,
+    "invalid_reasons": null,
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": true,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      },
+      {
+        "id": 2,
+        "subject": "Yusuf",
+        "question": "when did Yusuf join the Thameside rowing club",
+        "value": "May"
+      },
+      {
+        "id": 3,
+        "subject": "Mira",
+        "question": "which club did Mira join",
+        "restriction": "in June",
+        "value": "the Hilltop chess club"
+      }
+    ],
+    "case": {
+      "Name": "1/grounded/explicit",
+      "Arm": "grounded",
+      "Question": "What language did Hana start learning?",
+      "Cue": "",
+      "Empty": false
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-d2f75cf2f070bbef76ca8a4ff485a825] unknown: What language did Hana start learning?",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "unplaced",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "operation": "list",
+            "path": "."
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"\",\"bytes_written\":0,\"entries\":[]}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-d2f75cf2f070bbef76ca8a4ff485a825"
+          ],
+          "ops": null,
+          "response": "I don't have information about who Hana is or what language they started learning. The workspace is empty and this question doesn't match any facts in my memory. Could you provide more context about which Hana you're asking about?",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 12500,
+      "message": "What language did Hana start learning?",
+      "recall_outcome": "unplaced",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "I don't have information about who Hana is or what language they started learning. The workspace is empty and this question doesn't match any facts in my memory. Could you provide more context about which Hana you're asking about?"
+    },
+    "read_address": "{\"subject\": \"Hana\", \"question\": \"what language did Hana start learning\"}",
+    "catalogue_bytes": 411,
+    "read_input_tokens_including_catalogue": 428,
+    "whole_record_ids": [
+      "1"
+    ],
+    "value_only_ids": null,
+    "whole_record_injected": false,
+    "value_only_injected": false,
+    "answer_contains_finnish": false,
+    "resolver_contains_target": true,
+    "catalogue_contains_target": true,
+    "act_contains_target": false,
+    "invalid_reasons": null,
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": true,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      },
+      {
+        "id": 2,
+        "subject": "Yusuf",
+        "question": "when did Yusuf join the Thameside rowing club",
+        "value": "May"
+      },
+      {
+        "id": 3,
+        "subject": "Mira",
+        "question": "which club did Mira join",
+        "restriction": "in June",
+        "value": "the Hilltop chess club"
+      }
+    ],
+    "case": {
+      "Name": "1/grounded/referent",
+      "Arm": "grounded",
+      "Question": "What language did she start learning?",
+      "Cue": "For the next question, she refers to Hana. Please acknowledge only.",
+      "Empty": false
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-6aecc027f09f07b17611b8f4ecc47b93] unknown: What language did she start learning?",
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "addressed",
+          "recalled_count": 1,
+          "recalled_ids": [
+            "1"
+          ],
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "channel": "unknown",
+            "content": "She started learning Finnish.",
+            "target": "unknown"
+          },
+          "tool_name": "message_send",
+          "tool_result": "{\"status\":\"queued\"}",
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [
+            {
+              "address": {
+                "question": "what language did she start learning",
+                "subject": "Hana"
+              },
+              "operation": "join",
+              "value": "Finnish"
+            }
+          ],
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-6aecc027f09f07b17611b8f4ecc47b93"
+          ],
+          "ops": null,
+          "response": "She started learning Finnish.",
+          "turn": 2
+        }
+      ],
+      "duration_ms": 10439,
+      "message": "What language did she start learning?",
+      "recall_outcome": "addressed",
+      "recalled_ids": [
+        "1"
+      ],
+      "recalled_count": 1,
+      "response": "She started learning Finnish.",
+      "ops": [
+        {
+          "address": {
+            "question": "what language did she start learning",
+            "subject": "Hana"
+          },
+          "operation": "join",
+          "value": "Finnish"
+        }
+      ]
+    },
+    "cue": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-4e27e5232877ad316ec3f0ac50bbf84b] unknown: For the next question, she refers to Hana. Please acknowledge only.",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "unplaced",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-4e27e5232877ad316ec3f0ac50bbf84b"
+          ],
+          "ops": null,
+          "response": "Acknowledged.",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 6667,
+      "message": "For the next question, she refers to Hana. Please acknowledge only.",
+      "recall_outcome": "unplaced",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "Acknowledged."
+    },
+    "read_address": "{\"subject\": \"Hana\", \"question\": \"when did Hana start learning Finnish\"}",
+    "catalogue_bytes": 411,
+    "read_input_tokens_including_catalogue": 539,
+    "whole_record_ids": [
+      "1"
+    ],
+    "value_only_ids": null,
+    "whole_record_injected": true,
+    "value_only_injected": false,
+    "answer_contains_finnish": true,
+    "resolver_contains_target": true,
+    "catalogue_contains_target": true,
+    "act_contains_target": true,
+    "invalid_reasons": null,
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": true,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      },
+      {
+        "id": 2,
+        "subject": "Yusuf",
+        "question": "when did Yusuf join the Thameside rowing club",
+        "value": "May"
+      },
+      {
+        "id": 3,
+        "subject": "Mira",
+        "question": "which club did Mira join",
+        "restriction": "in June",
+        "value": "the Hilltop chess club"
+      }
+    ],
+    "case": {
+      "Name": "1/grounded/anonymous",
+      "Arm": "grounded",
+      "Question": "Who started learning a language, and which language was it?",
+      "Cue": "",
+      "Empty": false
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-84494adde35fe6ceb9e17a137ec2d676] unknown: Who started learning a language, and which language was it?",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "addressed",
+          "recalled_count": 1,
+          "recalled_ids": [
+            "1"
+          ],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [
+            {
+              "address": {
+                "question": "which language did Hana start learning",
+                "subject": "Hana"
+              },
+              "operation": "join",
+              "value": "Finnish"
+            },
+            {
+              "address": {
+                "question": "when did Hana start learning Finnish",
+                "subject": "Hana"
+              },
+              "operation": "join",
+              "value": "September"
+            }
+          ],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-84494adde35fe6ceb9e17a137ec2d676"
+          ],
+          "ops": null,
+          "response": "Hana started learning Finnish.",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 6479,
+      "message": "Who started learning a language, and which language was it?",
+      "recall_outcome": "addressed",
+      "recalled_ids": [
+        "1"
+      ],
+      "recalled_count": 1,
+      "response": "Hana started learning Finnish.",
+      "ops": [
+        {
+          "address": {
+            "question": "which language did Hana start learning",
+            "subject": "Hana"
+          },
+          "operation": "join",
+          "value": "Finnish"
+        },
+        {
+          "address": {
+            "question": "when did Hana start learning Finnish",
+            "subject": "Hana"
+          },
+          "operation": "join",
+          "value": "September"
+        }
+      ]
+    },
+    "read_address": "{\"subject\": \"Hana\", \"question\": \"when did Hana start learning Finnish\"}",
+    "catalogue_bytes": 411,
+    "read_input_tokens_including_catalogue": 432,
+    "whole_record_ids": [
+      "1"
+    ],
+    "value_only_ids": null,
+    "whole_record_injected": true,
+    "value_only_injected": false,
+    "answer_contains_finnish": true,
+    "resolver_contains_target": true,
+    "catalogue_contains_target": true,
+    "act_contains_target": true,
+    "invalid_reasons": null,
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": true,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      },
+      {
+        "id": 2,
+        "subject": "Yusuf",
+        "question": "when did Yusuf join the Thameside rowing club",
+        "value": "May"
+      },
+      {
+        "id": 3,
+        "subject": "Mira",
+        "question": "which club did Mira join",
+        "restriction": "in June",
+        "value": "the Hilltop chess club"
+      }
+    ],
+    "case": {
+      "Name": "1/grounded/absent",
+      "Arm": "grounded",
+      "Question": "Who won a fencing tournament?",
+      "Cue": "",
+      "Empty": false
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-38756be2a73c85f2de79ea9967a4c152] unknown: Who won a fencing tournament?",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "unplaced",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "operation": "list",
+            "path": "."
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"\",\"bytes_written\":0,\"entries\":[]}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-38756be2a73c85f2de79ea9967a4c152"
+          ],
+          "ops": null,
+          "response": "The workspace is empty, so I don't have context about which fencing tournament you're asking about. Could you please specify which tournament (e.g., name, date, location, or competition level) you'd like to know the winner of?",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 8349,
+      "message": "Who won a fencing tournament?",
+      "recall_outcome": "unplaced",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "The workspace is empty, so I don't have context about which fencing tournament you're asking about. Could you please specify which tournament (e.g., name, date, location, or competition level) you'd like to know the winner of?"
+    },
+    "read_address": "",
+    "catalogue_bytes": 411,
+    "read_input_tokens_including_catalogue": 428,
+    "whole_record_ids": null,
+    "value_only_ids": null,
+    "whole_record_injected": false,
+    "value_only_injected": false,
+    "answer_contains_finnish": false,
+    "resolver_contains_target": true,
+    "catalogue_contains_target": true,
+    "act_contains_target": false,
+    "invalid_reasons": null,
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": false,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      },
+      {
+        "id": 2,
+        "subject": "Yusuf",
+        "question": "when did Yusuf join the Thameside rowing club",
+        "value": "May"
+      },
+      {
+        "id": 3,
+        "subject": "Mira",
+        "question": "which club did Mira join",
+        "restriction": "in June",
+        "value": "the Hilltop chess club"
+      }
+    ],
+    "case": {
+      "Name": "2/task/explicit",
+      "Arm": "task",
+      "Question": "What language did Hana start learning?",
+      "Cue": "",
+      "Empty": false
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-5ce822279e87db2757ae6e6b3abea1b2] unknown: What language did Hana start learning?",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "widened",
+          "recalled_count": 1,
+          "recalled_ids": [
+            "1"
+          ],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-5ce822279e87db2757ae6e6b3abea1b2"
+          ],
+          "ops": null,
+          "response": "Hana started learning Finnish.",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 10107,
+      "message": "What language did Hana start learning?",
+      "recall_outcome": "widened",
+      "recalled_ids": [
+        "1"
+      ],
+      "recalled_count": 1,
+      "response": "Hana started learning Finnish."
+    },
+    "read_address": "{\"subject\": \"Hana\", \"question\": \"what language did Hana start learning\"}",
+    "catalogue_bytes": 0,
+    "read_input_tokens_including_catalogue": 805,
+    "whole_record_ids": [
+      "1"
+    ],
+    "value_only_ids": null,
+    "whole_record_injected": true,
+    "value_only_injected": false,
+    "answer_contains_finnish": true,
+    "resolver_contains_target": false,
+    "catalogue_contains_target": false,
+    "act_contains_target": true,
+    "invalid_reasons": null,
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": false,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      },
+      {
+        "id": 2,
+        "subject": "Yusuf",
+        "question": "when did Yusuf join the Thameside rowing club",
+        "value": "May"
+      },
+      {
+        "id": 4,
+        "subject": "next question",
+        "question": "who does the next question refer to",
+        "value": "Hana"
+      },
+      {
+        "id": 3,
+        "subject": "Mira",
+        "question": "which club did Mira join",
+        "restriction": "in June",
+        "value": "the Hilltop chess club"
+      }
+    ],
+    "case": {
+      "Name": "2/task/referent",
+      "Arm": "task",
+      "Question": "What language did she start learning?",
+      "Cue": "For the next question, she refers to Hana. Please acknowledge only.",
+      "Empty": false
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-12a134e47bcd1258c0e89c02259744fa] unknown: What language did she start learning?",
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "empty",
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-12a134e47bcd1258c0e89c02259744fa"
+          ],
+          "ops": null,
+          "response": "I don't have information about what language Hana started learning. I haven't been told that detail yet.",
+          "turn": 2
+        }
+      ],
+      "duration_ms": 10646,
+      "message": "What language did she start learning?",
+      "recall_outcome": "empty",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "I don't have information about what language Hana started learning. I haven't been told that detail yet."
+    },
+    "cue": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-1f0ba8b359d44ed6565776f62bb835d6] unknown: For the next question, she refers to Hana. Please acknowledge only.",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "unplaced",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [
+            {
+              "address": {
+                "question": "who does the next question refer to",
+                "subject": "next question"
+              },
+              "operation": "join",
+              "value": "Hana"
+            }
+          ],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-1f0ba8b359d44ed6565776f62bb835d6"
+          ],
+          "ops": null,
+          "response": "Acknowledged. The next question will involve Hana.",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 3555,
+      "message": "For the next question, she refers to Hana. Please acknowledge only.",
+      "recall_outcome": "unplaced",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "Acknowledged. The next question will involve Hana.",
+      "ops": [
+        {
+          "address": {
+            "question": "who does the next question refer to",
+            "subject": "next question"
+          },
+          "operation": "join",
+          "value": "Hana"
+        }
+      ]
+    },
+    "read_address": "{\"subject\": \"she\", \"question\": \"what language did she start learning\"}",
+    "catalogue_bytes": 0,
+    "read_input_tokens_including_catalogue": 803,
+    "whole_record_ids": [
+      "1"
+    ],
+    "value_only_ids": null,
+    "whole_record_injected": false,
+    "value_only_injected": false,
+    "answer_contains_finnish": false,
+    "resolver_contains_target": false,
+    "catalogue_contains_target": false,
+    "act_contains_target": false,
+    "invalid_reasons": [
+      "cue changed frozen records"
+    ],
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": false,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      },
+      {
+        "id": 2,
+        "subject": "Yusuf",
+        "question": "when did Yusuf join the Thameside rowing club",
+        "value": "May"
+      },
+      {
+        "id": 3,
+        "subject": "Mira",
+        "question": "which club did Mira join",
+        "restriction": "in June",
+        "value": "the Hilltop chess club"
+      }
+    ],
+    "case": {
+      "Name": "2/task/anonymous",
+      "Arm": "task",
+      "Question": "Who started learning a language, and which language was it?",
+      "Cue": "",
+      "Empty": false
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-b52ae68fba517daf9faf924099dd06ee] unknown: Who started learning a language, and which language was it?",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "empty",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "operation": "list",
+            "path": "."
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"\",\"bytes_written\":0,\"entries\":[]}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-b52ae68fba517daf9faf924099dd06ee"
+          ],
+          "ops": null,
+          "response": "I don't have any context about who started learning a language or which language it was. Could you provide more details about who you're asking about?",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 12081,
+      "message": "Who started learning a language, and which language was it?",
+      "recall_outcome": "empty",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "I don't have any context about who started learning a language or which language it was. Could you provide more details about who you're asking about?"
+    },
+    "read_address": "{\"subject\": \"unknown\", \"question\": \"what language did they start learning\"}",
+    "catalogue_bytes": 0,
+    "read_input_tokens_including_catalogue": 806,
+    "whole_record_ids": [
+      "1"
+    ],
+    "value_only_ids": null,
+    "whole_record_injected": false,
+    "value_only_injected": false,
+    "answer_contains_finnish": false,
+    "resolver_contains_target": false,
+    "catalogue_contains_target": false,
+    "act_contains_target": false,
+    "invalid_reasons": null,
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": false,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      },
+      {
+        "id": 2,
+        "subject": "Yusuf",
+        "question": "when did Yusuf join the Thameside rowing club",
+        "value": "May"
+      },
+      {
+        "id": 3,
+        "subject": "Mira",
+        "question": "which club did Mira join",
+        "restriction": "in June",
+        "value": "the Hilltop chess club"
+      }
+    ],
+    "case": {
+      "Name": "2/task/absent",
+      "Arm": "task",
+      "Question": "Who won a fencing tournament?",
+      "Cue": "",
+      "Empty": false
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-5dad21b722e317e690ccc33fe5b517e8] unknown: Who won a fencing tournament?",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "empty",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-5dad21b722e317e690ccc33fe5b517e8"
+          ],
+          "ops": null,
+          "response": "Your question is quite broad - there are many fencing tournaments. Could you please specify which tournament you're asking about? For example: which year, location/country, competition (e.g., Olympics, World Championships), or category (men's/women's, individual/team, weapon type - foil, epee, sabre)?",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 11370,
+      "message": "Who won a fencing tournament?",
+      "recall_outcome": "empty",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "Your question is quite broad - there are many fencing tournaments. Could you please specify which tournament you're asking about? For example: which year, location/country, competition (e.g., Olympics, World Championships), or category (men's/women's, individual/team, weapon type - foil, epee, sabre)?"
+    },
+    "read_address": "{\"subject\": \"fencing tournament\", \"question\": \"\"}",
+    "catalogue_bytes": 0,
+    "read_input_tokens_including_catalogue": 801,
+    "whole_record_ids": null,
+    "value_only_ids": null,
+    "whole_record_injected": false,
+    "value_only_injected": false,
+    "answer_contains_finnish": false,
+    "resolver_contains_target": false,
+    "catalogue_contains_target": false,
+    "act_contains_target": false,
+    "invalid_reasons": null,
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": false,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      },
+      {
+        "id": 2,
+        "subject": "Yusuf",
+        "question": "when did Yusuf join the Thameside rowing club",
+        "value": "May"
+      },
+      {
+        "id": 3,
+        "subject": "Mira",
+        "question": "which club did Mira join",
+        "restriction": "in June",
+        "value": "the Hilltop chess club"
+      }
+    ],
+    "case": {
+      "Name": "2/history/explicit",
+      "Arm": "history",
+      "Question": "What language did Hana start learning?",
+      "Cue": "",
+      "Empty": false
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-8e33427467a5d24e616d3aac06dc83e6] unknown: What language did Hana start learning?",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "widened",
+          "recalled_count": 1,
+          "recalled_ids": [
+            "1"
+          ],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-8e33427467a5d24e616d3aac06dc83e6"
+          ],
+          "ops": null,
+          "response": "Based on the recalled memory, Hana started learning Finnish. The memory indicates she began learning it in September.",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 7441,
+      "message": "What language did Hana start learning?",
+      "recall_outcome": "widened",
+      "recalled_ids": [
+        "1"
+      ],
+      "recalled_count": 1,
+      "response": "Based on the recalled memory, Hana started learning Finnish. The memory indicates she began learning it in September."
+    },
+    "read_address": "{\"subject\": \"Hana\", \"question\": \"what language did Hana start learning\"}",
+    "catalogue_bytes": 0,
+    "read_input_tokens_including_catalogue": 810,
+    "whole_record_ids": [
+      "1"
+    ],
+    "value_only_ids": null,
+    "whole_record_injected": true,
+    "value_only_injected": false,
+    "answer_contains_finnish": true,
+    "resolver_contains_target": false,
+    "catalogue_contains_target": false,
+    "act_contains_target": true,
+    "invalid_reasons": null,
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": false,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      },
+      {
+        "id": 2,
+        "subject": "Yusuf",
+        "question": "when did Yusuf join the Thameside rowing club",
+        "value": "May"
+      },
+      {
+        "id": 3,
+        "subject": "Mira",
+        "question": "which club did Mira join",
+        "restriction": "in June",
+        "value": "the Hilltop chess club"
+      }
+    ],
+    "case": {
+      "Name": "2/history/referent",
+      "Arm": "history",
+      "Question": "What language did she start learning?",
+      "Cue": "For the next question, she refers to Hana. Please acknowledge only.",
+      "Empty": false
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-99e05dab52d01d1719424c8cf4dd8b9b] unknown: What language did she start learning?",
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "widened",
+          "recalled_count": 1,
+          "recalled_ids": [
+            "1"
+          ],
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [
+            {
+              "address": {
+                "question": "what language did Hana start learning",
+                "subject": "Hana"
+              },
+              "operation": "join",
+              "value": "Finnish"
+            }
+          ],
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-99e05dab52d01d1719424c8cf4dd8b9b"
+          ],
+          "ops": null,
+          "response": "She started learning Finnish.",
+          "turn": 2
+        }
+      ],
+      "duration_ms": 6918,
+      "message": "What language did she start learning?",
+      "recall_outcome": "widened",
+      "recalled_ids": [
+        "1"
+      ],
+      "recalled_count": 1,
+      "response": "She started learning Finnish.",
+      "ops": [
+        {
+          "address": {
+            "question": "what language did Hana start learning",
+            "subject": "Hana"
+          },
+          "operation": "join",
+          "value": "Finnish"
+        }
+      ]
+    },
+    "cue": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-052511e55605de7386b4fa13ce03313c] unknown: For the next question, she refers to Hana. Please acknowledge only.",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "unplaced",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-052511e55605de7386b4fa13ce03313c"
+          ],
+          "ops": null,
+          "response": "Acknowledged.",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 4003,
+      "message": "For the next question, she refers to Hana. Please acknowledge only.",
+      "recall_outcome": "unplaced",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "Acknowledged."
+    },
+    "read_address": "{\"subject\": \"Hana\", \"question\": \"what language did Hana start learning\"}",
+    "catalogue_bytes": 0,
+    "read_input_tokens_including_catalogue": 915,
+    "whole_record_ids": [
+      "1"
+    ],
+    "value_only_ids": null,
+    "whole_record_injected": true,
+    "value_only_injected": false,
+    "answer_contains_finnish": true,
+    "resolver_contains_target": false,
+    "catalogue_contains_target": false,
+    "act_contains_target": true,
+    "invalid_reasons": null,
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": false,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      },
+      {
+        "id": 2,
+        "subject": "Yusuf",
+        "question": "when did Yusuf join the Thameside rowing club",
+        "value": "May"
+      },
+      {
+        "id": 3,
+        "subject": "Mira",
+        "question": "which club did Mira join",
+        "restriction": "in June",
+        "value": "the Hilltop chess club"
+      }
+    ],
+    "case": {
+      "Name": "2/history/anonymous",
+      "Arm": "history",
+      "Question": "Who started learning a language, and which language was it?",
+      "Cue": "",
+      "Empty": false
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-e511dd47c297d448bbc087863a053776] unknown: Who started learning a language, and which language was it?",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "empty",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "operation": "list",
+            "path": "."
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"\",\"bytes_written\":0,\"entries\":[]}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-e511dd47c297d448bbc087863a053776"
+          ],
+          "ops": null,
+          "response": "I don't have any context about who you're asking regarding starting to learn a language. Could you provide more details about the person or situation you're referring to?",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 11532,
+      "message": "Who started learning a language, and which language was it?",
+      "recall_outcome": "empty",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "I don't have any context about who you're asking regarding starting to learn a language. Could you provide more details about the person or situation you're referring to?"
+    },
+    "read_address": "{\"subject\": \"person\", \"question\": \"which language did they start learning\"}",
+    "catalogue_bytes": 0,
+    "read_input_tokens_including_catalogue": 809,
+    "whole_record_ids": [
+      "1"
+    ],
+    "value_only_ids": null,
+    "whole_record_injected": false,
+    "value_only_injected": false,
+    "answer_contains_finnish": false,
+    "resolver_contains_target": false,
+    "catalogue_contains_target": false,
+    "act_contains_target": false,
+    "invalid_reasons": null,
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": false,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      },
+      {
+        "id": 2,
+        "subject": "Yusuf",
+        "question": "when did Yusuf join the Thameside rowing club",
+        "value": "May"
+      },
+      {
+        "id": 3,
+        "subject": "Mira",
+        "question": "which club did Mira join",
+        "restriction": "in June",
+        "value": "the Hilltop chess club"
+      }
+    ],
+    "case": {
+      "Name": "2/history/absent",
+      "Arm": "history",
+      "Question": "Who won a fencing tournament?",
+      "Cue": "",
+      "Empty": false
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-e678cd2d497cfda03cfbe2d57c1cba6c] unknown: Who won a fencing tournament?",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "empty",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-e678cd2d497cfda03cfbe2d57c1cba6c"
+          ],
+          "ops": null,
+          "response": "Could you please specify which fencing tournament you're asking about? There are many fencing tournaments held around the world (e.g., Olympic Games, World Championships, regional events, etc.), and I'd need more details to provide the correct winner.",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 10735,
+      "message": "Who won a fencing tournament?",
+      "recall_outcome": "empty",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "Could you please specify which fencing tournament you're asking about? There are many fencing tournaments held around the world (e.g., Olympic Games, World Championships, regional events, etc.), and I'd need more details to provide the correct winner."
+    },
+    "read_address": "{\"subject\": \"a fencing tournament\", \"question\": \"\"}",
+    "catalogue_bytes": 0,
+    "read_input_tokens_including_catalogue": 808,
+    "whole_record_ids": null,
+    "value_only_ids": null,
+    "whole_record_injected": false,
+    "value_only_injected": false,
+    "answer_contains_finnish": false,
+    "resolver_contains_target": false,
+    "catalogue_contains_target": false,
+    "act_contains_target": false,
+    "invalid_reasons": null,
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": true,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      },
+      {
+        "id": 2,
+        "subject": "Yusuf",
+        "question": "when did Yusuf join the Thameside rowing club",
+        "value": "May"
+      },
+      {
+        "id": 3,
+        "subject": "Mira",
+        "question": "which club did Mira join",
+        "restriction": "in June",
+        "value": "the Hilltop chess club"
+      }
+    ],
+    "case": {
+      "Name": "2/grounded/explicit",
+      "Arm": "grounded",
+      "Question": "What language did Hana start learning?",
+      "Cue": "",
+      "Empty": false
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-d02f80dec0029be64ed91e024a96e253] unknown: What language did Hana start learning?",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "unplaced",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "operation": "list",
+            "path": "."
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"\",\"bytes_written\":0,\"entries\":[]}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-d02f80dec0029be64ed91e024a96e253"
+          ],
+          "ops": null,
+          "response": "I don't have any information about who Hana is or what language they started learning. Could you provide more context about who Hana is, or is this a fact you'd like me to remember once you share it?",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 28698,
+      "message": "What language did Hana start learning?",
+      "recall_outcome": "unplaced",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "I don't have any information about who Hana is or what language they started learning. Could you provide more context about who Hana is, or is this a fact you'd like me to remember once you share it?"
+    },
+    "read_address": "",
+    "catalogue_bytes": 411,
+    "read_input_tokens_including_catalogue": 426,
+    "whole_record_ids": [
+      "1"
+    ],
+    "value_only_ids": null,
+    "whole_record_injected": false,
+    "value_only_injected": false,
+    "answer_contains_finnish": false,
+    "resolver_contains_target": true,
+    "catalogue_contains_target": true,
+    "act_contains_target": false,
+    "invalid_reasons": null,
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": true,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      },
+      {
+        "id": 2,
+        "subject": "Yusuf",
+        "question": "when did Yusuf join the Thameside rowing club",
+        "value": "May"
+      },
+      {
+        "id": 3,
+        "subject": "Mira",
+        "question": "which club did Mira join",
+        "restriction": "in June",
+        "value": "the Hilltop chess club"
+      }
+    ],
+    "case": {
+      "Name": "2/grounded/referent",
+      "Arm": "grounded",
+      "Question": "What language did she start learning?",
+      "Cue": "For the next question, she refers to Hana. Please acknowledge only.",
+      "Empty": false
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-7e5c20a7272789a045da23c30e0cb10c] unknown: What language did she start learning?",
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "addressed",
+          "recalled_count": 1,
+          "recalled_ids": [
+            "1"
+          ],
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "error": "model ended a turn without calling memory_write",
+          "kind": "writeback_error",
+          "ops": null,
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [
+            {
+              "address": {
+                "question": "what language did Hana start learning",
+                "subject": "Hana"
+              },
+              "operation": "join",
+              "value": "Finnish"
+            }
+          ],
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-7e5c20a7272789a045da23c30e0cb10c"
+          ],
+          "ops": null,
+          "response": "She started learning Finnish.",
+          "turn": 2
+        }
+      ],
+      "duration_ms": 10190,
+      "message": "What language did she start learning?",
+      "recall_outcome": "addressed",
+      "recalled_ids": [
+        "1"
+      ],
+      "recalled_count": 1,
+      "response": "She started learning Finnish.",
+      "ops": [
+        {
+          "address": {
+            "question": "what language did Hana start learning",
+            "subject": "Hana"
+          },
+          "operation": "join",
+          "value": "Finnish"
+        }
+      ]
+    },
+    "cue": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-7955fd23a1d7dcb7425be9d281feefb7] unknown: For the next question, she refers to Hana. Please acknowledge only.",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "unplaced",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-7955fd23a1d7dcb7425be9d281feefb7"
+          ],
+          "ops": null,
+          "response": "Acknowledged.",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 11758,
+      "message": "For the next question, she refers to Hana. Please acknowledge only.",
+      "recall_outcome": "unplaced",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "Acknowledged."
+    },
+    "read_address": "{\"subject\": \"Hana\", \"question\": \"when did Hana start learning Finnish\"}",
+    "catalogue_bytes": 411,
+    "read_input_tokens_including_catalogue": 542,
+    "whole_record_ids": [
+      "1"
+    ],
+    "value_only_ids": null,
+    "whole_record_injected": true,
+    "value_only_injected": false,
+    "answer_contains_finnish": true,
+    "resolver_contains_target": true,
+    "catalogue_contains_target": true,
+    "act_contains_target": true,
+    "invalid_reasons": null,
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": true,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      },
+      {
+        "id": 2,
+        "subject": "Yusuf",
+        "question": "when did Yusuf join the Thameside rowing club",
+        "value": "May"
+      },
+      {
+        "id": 3,
+        "subject": "Mira",
+        "question": "which club did Mira join",
+        "restriction": "in June",
+        "value": "the Hilltop chess club"
+      }
+    ],
+    "case": {
+      "Name": "2/grounded/anonymous",
+      "Arm": "grounded",
+      "Question": "Who started learning a language, and which language was it?",
+      "Cue": "",
+      "Empty": false
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-a97d663c18162f66993bb48f883c92a7] unknown: Who started learning a language, and which language was it?",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "addressed",
+          "recalled_count": 1,
+          "recalled_ids": [
+            "1"
+          ],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [
+            {
+              "address": {
+                "question": "which language did Hana start learning",
+                "subject": "Hana"
+              },
+              "operation": "join",
+              "value": "Finnish"
+            }
+          ],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-a97d663c18162f66993bb48f883c92a7"
+          ],
+          "ops": null,
+          "response": "Hana started learning Finnish.",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 21258,
+      "message": "Who started learning a language, and which language was it?",
+      "recall_outcome": "addressed",
+      "recalled_ids": [
+        "1"
+      ],
+      "recalled_count": 1,
+      "response": "Hana started learning Finnish.",
+      "ops": [
+        {
+          "address": {
+            "question": "which language did Hana start learning",
+            "subject": "Hana"
+          },
+          "operation": "join",
+          "value": "Finnish"
+        }
+      ]
+    },
+    "read_address": "{\"subject\": \"Hana\", \"question\": \"when did Hana start learning Finnish\"}",
+    "catalogue_bytes": 411,
+    "read_input_tokens_including_catalogue": 432,
+    "whole_record_ids": [
+      "1"
+    ],
+    "value_only_ids": null,
+    "whole_record_injected": true,
+    "value_only_injected": false,
+    "answer_contains_finnish": true,
+    "resolver_contains_target": true,
+    "catalogue_contains_target": true,
+    "act_contains_target": true,
+    "invalid_reasons": null,
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": true,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      },
+      {
+        "id": 2,
+        "subject": "Yusuf",
+        "question": "when did Yusuf join the Thameside rowing club",
+        "value": "May"
+      },
+      {
+        "id": 3,
+        "subject": "Mira",
+        "question": "which club did Mira join",
+        "restriction": "in June",
+        "value": "the Hilltop chess club"
+      }
+    ],
+    "case": {
+      "Name": "2/grounded/absent",
+      "Arm": "grounded",
+      "Question": "Who won a fencing tournament?",
+      "Cue": "",
+      "Empty": false
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-078a9b3c9f5a6d1b6b9262c87cb95eda] unknown: Who won a fencing tournament?",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "unplaced",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-078a9b3c9f5a6d1b6b9262c87cb95eda"
+          ],
+          "ops": null,
+          "response": "Your question is very vague, I need more context to answer it. There are many fencing tournaments held throughout the year at various levels (local, national, international) and in different locations. Could you please clarify:\n- Which tournament are you asking about (e.g., Olympics, World Championships, a specific national tournament)?\n- What year?\n- What location?\nThis will help me provide you with an accurate answer.",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 8384,
+      "message": "Who won a fencing tournament?",
+      "recall_outcome": "unplaced",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "Your question is very vague, I need more context to answer it. There are many fencing tournaments held throughout the year at various levels (local, national, international) and in different locations. Could you please clarify:\n- Which tournament are you asking about (e.g., Olympics, World Championships, a specific national tournament)?\n- What year?\n- What location?\nThis will help me provide you with an accurate answer."
+    },
+    "read_address": "{\"subject\": \"fencing tournament\", \"question\": \"who won\"}",
+    "catalogue_bytes": 411,
+    "read_input_tokens_including_catalogue": 432,
+    "whole_record_ids": null,
+    "value_only_ids": null,
+    "whole_record_injected": false,
+    "value_only_injected": false,
+    "answer_contains_finnish": false,
+    "resolver_contains_target": true,
+    "catalogue_contains_target": true,
+    "act_contains_target": false,
+    "invalid_reasons": null,
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": false,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      }
+    ],
+    "case": {
+      "Name": "control/history-empty",
+      "Arm": "history",
+      "Question": "What language did she start learning?",
+      "Cue": "Hana started learning Finnish in September. For the next question, she refers to Hana.",
+      "Empty": true
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-604fce3a3401f20b8046115dc82e0d9f] unknown: What language did she start learning?",
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "widened",
+          "recalled_count": 1,
+          "recalled_ids": [
+            "1"
+          ],
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "error": "model ended a turn without calling memory_write",
+          "kind": "writeback_error",
+          "ops": null,
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-604fce3a3401f20b8046115dc82e0d9f"
+          ],
+          "ops": null,
+          "response": "She started learning Finnish.",
+          "turn": 2
+        }
+      ],
+      "duration_ms": 8399,
+      "message": "What language did she start learning?",
+      "recall_outcome": "widened",
+      "recalled_ids": [
+        "1"
+      ],
+      "recalled_count": 1,
+      "response": "She started learning Finnish."
+    },
+    "cue": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-670e47b0dd97bcc51a6c1af68a5031be] unknown: Hana started learning Finnish in September. For the next question, she refers to Hana.",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "empty",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [
+            {
+              "address": {
+                "question": "when did Hana start learning Finnish",
+                "subject": "Hana"
+              },
+              "operation": "join",
+              "value": "September"
+            }
+          ],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-670e47b0dd97bcc51a6c1af68a5031be"
+          ],
+          "ops": null,
+          "response": "Noted. I'll remember that Hana started learning Finnish in September.",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 10948,
+      "message": "Hana started learning Finnish in September. For the next question, she refers to Hana.",
+      "recall_outcome": "empty",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "Noted. I'll remember that Hana started learning Finnish in September.",
+      "ops": [
+        {
+          "address": {
+            "question": "when did Hana start learning Finnish",
+            "subject": "Hana"
+          },
+          "operation": "join",
+          "value": "September"
+        }
+      ]
+    },
+    "read_address": "{\"subject\": \"Hana\", \"question\": \"what language did she start learning\"}",
+    "catalogue_bytes": 0,
+    "read_input_tokens_including_catalogue": 928,
+    "whole_record_ids": [
+      "1"
+    ],
+    "value_only_ids": null,
+    "whole_record_injected": true,
+    "value_only_injected": false,
+    "answer_contains_finnish": true,
+    "resolver_contains_target": true,
+    "catalogue_contains_target": false,
+    "act_contains_target": true,
+    "invalid_reasons": [
+      "empty-store cue wrote records"
+    ],
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": false,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [],
+    "case": {
+      "Name": "control/anonymous-empty",
+      "Arm": "grounded",
+      "Question": "Who started learning a language, and which language was it?",
+      "Cue": "",
+      "Empty": true
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-2182fde98ceaa939a5b7497ad7515a33] unknown: Who started learning a language, and which language was it?",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "unplaced",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "operation": "list",
+            "path": "."
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"\",\"bytes_written\":0,\"entries\":[]}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-2182fde98ceaa939a5b7497ad7515a33"
+          ],
+          "ops": null,
+          "response": "I don't have enough context to answer this question. The workspace is empty and there's no prior conversation history that would tell me who started learning a language or which language it was. Could you provide more context about what you're referring to?",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 9047,
+      "message": "Who started learning a language, and which language was it?",
+      "recall_outcome": "unplaced",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "I don't have enough context to answer this question. The workspace is empty and there's no prior conversation history that would tell me who started learning a language or which language it was. Could you provide more context about what you're referring to?"
+    },
+    "read_address": "",
+    "catalogue_bytes": 210,
+    "read_input_tokens_including_catalogue": 382,
+    "whole_record_ids": null,
+    "value_only_ids": null,
+    "whole_record_injected": false,
+    "value_only_injected": false,
+    "answer_contains_finnish": false,
+    "resolver_contains_target": false,
+    "catalogue_contains_target": false,
+    "act_contains_target": false,
+    "invalid_reasons": null,
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": true,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      },
+      {
+        "id": 2,
+        "subject": "Yusuf",
+        "question": "when did Yusuf join the Thameside rowing club",
+        "value": "May"
+      },
+      {
+        "id": 3,
+        "subject": "Mira",
+        "question": "which club did Mira join",
+        "restriction": "in June",
+        "value": "the Hilltop chess club"
+      }
+    ],
+    "case": {
+      "Name": "control/ambiguous",
+      "Arm": "grounded",
+      "Question": "Who joined a club?",
+      "Cue": "",
+      "Empty": false
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-cdc3b9b11a9224dcd7782fbaef5e024a] unknown: Who joined a club?",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "addressed",
+          "recalled_count": 1,
+          "recalled_ids": [
+            "3"
+          ],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-cdc3b9b11a9224dcd7782fbaef5e024a"
+          ],
+          "ops": null,
+          "response": "Mira joined a club — the Hilltop chess club (in June).",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 7525,
+      "message": "Who joined a club?",
+      "recall_outcome": "addressed",
+      "recalled_ids": [
+        "3"
+      ],
+      "recalled_count": 1,
+      "response": "Mira joined a club — the Hilltop chess club (in June)."
+    },
+    "read_address": "{\"subject\": \"Mira\", \"question\": \"which club did Mira join\"}",
+    "catalogue_bytes": 411,
+    "read_input_tokens_including_catalogue": 428,
+    "whole_record_ids": [
+      "2",
+      "3"
+    ],
+    "value_only_ids": null,
+    "whole_record_injected": true,
+    "value_only_injected": false,
+    "answer_contains_finnish": false,
+    "resolver_contains_target": true,
+    "catalogue_contains_target": true,
+    "act_contains_target": false,
+    "invalid_reasons": null,
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  },
+  {
+    "catalogue_question_contains_finnish": false,
+    "catalogue_value_contains_finnish": false,
+    "held_before_probe": [
+      {
+        "id": 1,
+        "subject": "Hana",
+        "question": "when did Hana start learning Finnish",
+        "value": "September"
+      },
+      {
+        "id": 2,
+        "subject": "Yusuf",
+        "question": "when did Yusuf join the Thameside rowing club",
+        "value": "May"
+      },
+      {
+        "id": 3,
+        "subject": "Mira",
+        "question": "which club did Mira join",
+        "restriction": "in June",
+        "value": "the Hilltop chess club"
+      }
+    ],
+    "case": {
+      "Name": "control/names-only",
+      "Arm": "names",
+      "Question": "Who started learning a language, and which language was it?",
+      "Cue": "",
+      "Empty": false
+    },
+    "turn": {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-733f186731baf4b10693a04d28a1c23a] unknown: Who started learning a language, and which language was it?",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "widened",
+          "recalled_count": 1,
+          "recalled_ids": [
+            "3"
+          ],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "operation": "list",
+            "path": "."
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"\",\"bytes_written\":0,\"entries\":[]}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-733f186731baf4b10693a04d28a1c23a"
+          ],
+          "ops": null,
+          "response": "I don't have any information about who started learning a language. The only fact I have is about Mira joining the Hilltop chess club in June, which doesn't relate to language learning. Could you provide more context about your question?",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 18376,
+      "message": "Who started learning a language, and which language was it?",
+      "recall_outcome": "widened",
+      "recalled_ids": [
+        "3"
+      ],
+      "recalled_count": 1,
+      "response": "I don't have any information about who started learning a language. The only fact I have is about Mira joining the Hilltop chess club in June, which doesn't relate to language learning. Could you provide more context about your question?"
+    },
+    "read_address": "{\"subject\": \"Mira\", \"question\": \"\"}",
+    "catalogue_bytes": 204,
+    "read_input_tokens_including_catalogue": 386,
+    "whole_record_ids": [
+      "1"
+    ],
+    "value_only_ids": null,
+    "whole_record_injected": false,
+    "value_only_injected": false,
+    "answer_contains_finnish": false,
+    "resolver_contains_target": false,
+    "catalogue_contains_target": false,
+    "act_contains_target": false,
+    "invalid_reasons": null,
+    "semantic_correctness": "pending human review",
+    "unsupported_claims": "pending human review"
+  }
+]

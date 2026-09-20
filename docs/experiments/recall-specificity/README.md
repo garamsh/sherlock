@@ -14,7 +14,7 @@ What the running agent recalls when the question says less than the fact it is l
 - What this record does not say
 - Limits
 - Reproducing
-- Information comparison prototype (issue 803)
+- Information comparison (issue 803)
 
 ## The bound, stated before the run
 
@@ -184,11 +184,11 @@ Two checks in the same package cost nothing and do run in `make ci`:
 - `TestRecallFromImpliedInput_AgainstAScriptedEndpoint` drives the whole procedure — process per turn, snapshot, three levels, scoring, the result files — against an endpoint answering from a script, so what the paid run depends on is exercised before it is paid for.
 - `TestSpendMeter_RefusesPastEachCeiling` is the evidence that the bound is a bound: each of the four ceilings refuses the call that would pass it, each paired with the control that admits the same calls under a wider ceiling.
 
-## Information comparison prototype (issue 803)
+## Information comparison (issue 803)
 
-This round instruments a later comparison; it reports no paid candidate result and adopts no architecture. The historical files in `results/` remain the earlier run's evidence. The PM's separate baseline at `fc5fca4c885e8bf015bab1a889042f091ff8ce53` is preserved at `/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-baseline/`; its whole-record audit motivates keeping the original value-only score alongside the complete-record score.
+The paid comparison completed 28 probes on 2026-09-21: 25 valid and three invalid. C fails both explicit positive probes and the multi-actor completeness control; this is evidence publication, not an adoption result. The wider owner goal remains incomplete. The historical files in `results/` remain the earlier run's evidence. The PM's separate baseline at `fc5fca4c885e8bf015bab1a889042f091ff8ce53` is preserved at `/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-baseline/`; its whole-record audit motivates keeping the original value-only score alongside the complete-record score.
 
-`tests/recall_information_test.go` builds the actual agent using Go compiler overlays. The checkout's shipped source remains unchanged. Each run records its checked-out revision, instrument file hashes and binary hashes in `source.json`, and retains the overlay inputs. The prototype was developed against `4a86d0d58e232ee968d15e664afc4439686706b9`.
+`tests/recall_information_test.go` builds the actual agent using Go compiler overlays. The checkout's shipped source remains unchanged. Each run records its checked-out revision, instrument file hashes and binary hashes in `source.json`, and retains the overlay inputs. The prototype was developed against `4a86d0d58e232ee968d15e664afc4439686706b9`; all source measured in this paid collection is pinned to `ca121754269b582853784b63f5e12cd0c92fcb8f`, as recorded in [source.json](results/information-2026-09-21/source.json). Publication does not change that source.
 
 | Variant | Resolver input and selection |
 |---|---|
@@ -197,9 +197,9 @@ This round instruments a later comparison; it reports no paid candidate result a
 | `grounded` (C) | The same conversation as B, plus every active row's ID, subject, question, restriction **and value**. A selection-specific system instruction requires verbatim offered keys, including questions that contain an answer; it replaces the shipped address-construction instruction only in this candidate. The resolver must select an offered subject/question pair; a fabricated key places nothing. The existing addressed read injects matching rows. |
 | `names` (control) | The same conversation, but only active IDs and subject names. Its selection-specific system instruction asks for an offered subject and an empty question; selection must name an offered subject. Compare its anonymous probe with C's matched anonymous probes. |
 
-The catalogue is a full-record offer, not an identities-only offer. Question and value disclosure are reported separately from selected-row injection. It is linear in the deliberately small active fixture, with no shortlist, ranking, embeddings or additional cache. `catalogue_bytes` records the actual offer's bytes; `read_input_tokens_including_catalogue` records provider-reported input tokens for the entire resolver request. The provider does not attribute tokens to prompt substrings, so this is the token cost of making the offer in context, not an independently measured marginal catalogue token count.
+The catalogue is a full-record offer, not an identities-only offer. Question and value disclosure are reported separately from selected-row injection. It is linear in the deliberately small active fixture, with no shortlist, ranking, embeddings or additional cache. `catalogue_bytes` records the extracted offer plus the exposure helper's appended newline; `read_input_tokens_including_catalogue` records provider-reported input tokens for the entire resolver request. The provider does not attribute tokens to prompt substrings, so this is the token cost of making the offer in context, not an independently measured marginal catalogue token count.
 
-The run plants three statements through the unmodified real agent: Hana learning Finnish, Yusuf joining Thameside rowing club and Mira joining Hilltop chess club. It verifies complete-record evidence for all three before probing, and preserves the plant turns, active rows and SQLite snapshot under `frozen/`. A failure to store a required fact stops the run as partial. Each probe starts a fresh agent and workspace, using a copy of that same frozen store (or an empty store for the two empty-store controls).
+The run plants three statements through the unmodified real agent: Hana learning Finnish, Yusuf joining Thameside rowing club and Mira joining Hilltop chess club. It verifies complete-record evidence for all three before probing, and preserves the plant turns, active rows and SQLite snapshot under `frozen/`. A failure to store a required fact stops the run as partial. Each probe starts a fresh agent and workspace, initially using a copy of that same frozen store (or an empty store for the two empty-store controls). The post-cue checks below found three probes whose stores no longer met that condition.
 
 | Scored probes | Input |
 |---|---|
@@ -211,7 +211,7 @@ A cue is a real turn and may itself recall or write. The instrument checks its a
 
 `calls.json` retains complete model requests and responses, including tool-result messages, calls/tokens, read/act stage durations and refusals. `plants.json`, `held.json` and `probes.json` retain plant evidence, pre-probe stores, terminal events, tool events, selected keys, recalled IDs and replies. `run.json` distinguishes partial runs, invalid conditions and completed collections awaiting semantic review; its elapsed time includes building and preparation. A new output directory is mandatory, so this run cannot overwrite a previous result.
 
-The automatic `answer_contains_finnish` field is only a word-boundary containment observation. Complete-record injection checks actual subject/question/restriction/value identities rather than just the value. For the absent event there are no target IDs; for the ambiguous control the target IDs cover both actors, and the boolean injection field means **any**, not all, of those IDs. Review every response against the actual stored evidence: assign semantic correctness and unsupported claims independently, checking absence/uncertainty for fencing and both supported possibilities or an explicit ambiguity for clubs. These adjudications deliberately remain `pending human review`; a successful harness exit is not successful recall or semantic correctness. The scripted endpoint checks instrumentation and has no behavioral score.
+The automatic `answer_contains_finnish` field is only a word-boundary containment observation. Complete-record injection checks actual subject/question/restriction/value identities rather than just the value. For the absent event there are no target IDs; for the ambiguous control the target IDs cover both actors, and the boolean injection field means **any**, not all, of those IDs. Review every response against the actual stored evidence: assign semantic correctness and unsupported claims independently, checking absence/uncertainty for fencing and both supported possibilities or an explicit ambiguity for clubs. The original JSON adjudication fields remain `pending human review` byte-for-byte; the separately attributed semantic judgments below complete the review without rewriting collection evidence. A successful harness exit is not successful recall or semantic correctness. The scripted endpoint checks instrumentation and has no behavioral score.
 
 Free reproduction, with no credential or network model required:
 
@@ -230,7 +230,7 @@ GAGENT_PAID_MODEL_TESTS=1 GAGENT_INFORMATION_RESULTS=/absolute/new-run-directory
   go test ./tests -run '^TestRecallInformation$' -count=1 -timeout=90m -v
 ```
 
-The existing MiniMax-M2 configuration and meter ceilings apply; historical USD rates remain accounting assumptions. All arms share the model, wording and frozen agent-written store. An interrupted process can leave only the incrementally written evidence; inspect its row count and terminal records before treating it as complete. No result here establishes scalable retrieval, sustained work, correction/withdrawal, effective forgetting or learning from failed experience. Those sequences remain follow-up evidence for the wider owner goal.
+The existing MiniMax-M2 configuration and meter ceilings apply; historical USD rates remain accounting assumptions. The design shares model, wording and the initial frozen agent-written store across arms; post-cue store equality must be checked rather than assumed. An interrupted process can leave only the incrementally written evidence; inspect its row count and terminal records before treating it as complete. No result here establishes scalable retrieval, sustained work, correction/withdrawal, effective forgetting or learning from failed experience. Those sequences remain follow-up evidence for the wider owner goal.
 
 Instrumentation validation on the prototype: the restored free run completed 28 probes, three plants and seven cues (76 scripted calls, 7,600 synthetic input tokens and 1,520 synthetic output tokens, zero USD and no refusals). These are fixture-supplied usage counts, not a provider cost measurement. Five independent compiler-overlay removals were observed to fail their assertions:
 
@@ -243,3 +243,104 @@ Instrumentation validation on the prototype: the restored free run completed 28 
 | Complete request capture | `TestSpendMeter_RetainsCompleteExposure`: the original messages and tool result cannot be recovered. |
 
 The removal runs changed only temporary compiler inputs and were restored before the passing run. The same tests run under `make ci`; the paid test remains skipped without opt-in.
+
+### Paid evidence and attribution
+
+- Published raw evidence: [calls.json](results/information-2026-09-21/calls.json), [plants.json](results/information-2026-09-21/plants.json), [held.json](results/information-2026-09-21/held.json), [probes.json](results/information-2026-09-21/probes.json), [run.json](results/information-2026-09-21/run.json), [source.json](results/information-2026-09-21/source.json) and [frozen/memory.db](results/information-2026-09-21/frozen/memory.db). [sha256.txt](results/information-2026-09-21/sha256.txt) pins all seven copies; run `sha256sum -c sha256.txt` from that directory.
+- Copied byte-for-byte from PM-owned `/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-information-ca12175/`. The original `run.json.status` remains `invalid conditions; semantic review pending`; collection completion and semantic success are separate.
+- Semantic judgments below are the independent adjudication accepted by the PM in [issue 803's publication instruction](https://github.com/garamsh/gagent/issues/803#issuecomment-5750998207), checked again against the raw requests, final replies, terminal events and pre-probe records for publication. They are authored interpretations, not model-generated scores. Attribution source: `/home/sauce/Workspace/garam/gagent/.local/research/information-adjudication-803.md`, SHA-256 `c2a089c27aeb4de550da3648b548ad6343cd2984d8df651bfd688c6369d74209`. This experiment record is the repository home for those judgments and conclusions.
+- The fixed criteria require the Hana/Finnish relation for explicit/referent probes, both person and language for anonymous probes, supported uncertainty for absent/empty probes, and both supported club actors or explicit recognition of ambiguity for the club control. Positive misses fail even when uncertainty is supported by the act input. Unsupported assertions are assessed separately from correctness and literal containment.
+- Source attribution: all three instrument hashes in `source.json` match the files at the measured revision. The retained history/grounded/names binaries match its hashes; the task binary hash is recorded but its binary was not retained for independent rehash. Compiler overlay inputs and binaries stay in the PM raw directory and are not duplicated here; the pinned test source defines their construction.
+- Plant writebacks and the immutable SQLite snapshot agree with all three complete records in `held.json`; archive is empty. Finnish occurs in Hana's question, Thameside rowing club in Yusuf's question, and Hilltop chess club in Mira's value, with June as a restriction. The original historical result files remain unchanged.
+- All 28 probes, three plants and seven cues have `turn_finished` evidence. All 89 recorded requests name `MiniMax-M2`, return HTTP 200 and reconcile with the flattened usage and response fields. No terminal failure was observed; HTTP success alone was not the completion criterion. PM's accepted collection report records test exit 0 in 433.70 seconds; `run.json.elapsed_ms` is 433,694.
+
+### Paid cost and terminal behavior
+
+| Phase | Turns | Calls | Input tokens | Output tokens | Sum of model-call durations (ms) |
+|---|---:|---:|---:|---:|---:|
+| Plant | 3 | 6 | 11,397 | 3,534 | 49,188 |
+| Cue | 7 | 14 | 26,039 | 2,936 | 46,383 |
+| Probe | 28 | 69 | 145,688 | 25,331 | 331,236 |
+| Total | 38 | 89 | 183,124 | 31,801 | 426,807 |
+
+Resolver stage: 38 calls, 246,087 ms summed; act stage: 51 calls, 180,720 ms summed. Run elapsed includes build/preparation and is not just model latency. Meter cost is $0.0930984 at its recorded $0.30/$1.20 per million input/output rates, an accounting estimate rather than an invoice. Ceilings were 150 calls, 1,200,000 input tokens, 300,000 output tokens and $0.29.
+
+Latency is summed per-call duration, not a distribution or parallel wall time. Token totals are provider-reported usage from the full requests in `calls.json`, whose recorded meter rates are the cost basis; no current price or invoice is inferred.
+
+- Actual tool-result messages and events show eight successful empty `files list .` results, one successful `shell_exec ls -la` with only directory entries, and one `message_send` queued to `unknown`/`unknown`; queueing does not prove external delivery. Inspection found no tool execution error in these ten outcomes.
+- Three act calls stopped without writeback (`1/task/referent`, `2/grounded/referent`, `control/history-empty`); each emitted `writeback_error`, received the required-writeback notice and completed. `run.json.refusals` is null and all 89 calls were admitted. Inspection of recorded response text found no provider safety refusal; no-selection and unknown answers are different observations.
+
+### Per-case semantic judgments
+
+`Literal` means final-reply Finnish containment only. `Injection` lists actual recalled IDs; IDs 1/2/3 denote Hana/Yusuf/Mira. `Catalogue` describes resolver disclosure, not act exposure: `Q` is Finnish in question only (never value), `names` has no event, `empty` has no rows, and `none` has no catalogue. Every `Q` catalogue contains all three frozen records. `Correct unknown` passes the absent/empty criterion without establishing exhaustive memory search. A positive miss remains a semantic failure even when uncertainty is sensible from the act input. `None` in unsupported claims means no unsupported assertion found in the final reply under this fixture; scope cautions are explicit below.
+
+| Case | Validity | Literal | Injection | Catalogue | Semantic verdict | Unsupported claims / qualification | Raw call sequences |
+|---|---|---|---|---|---|---|---|
+| 1/task/explicit | Valid | yes | 1 | none | Correct Hana/Finnish relation | None | 7,8 |
+| 1/task/referent | Invalid: cue changed frozen records | no | none | none | Miss: no requested positive answer | No invented fact; lack-of-context claim applies to current act/session only | 11,12,13 |
+| 1/task/anonymous | Valid | no | none | none | Miss: no requested positive answer | Scope caution: no other sources is broader than the workspace search | 14,15,16,17 |
+| 1/task/absent | Valid | no | none | none | Correct unknown / clarification | None | 18,19 |
+| 1/history/explicit | Valid | yes | 1 | none | Correct Hana/Finnish relation | None | 20,21 |
+| 1/history/referent | Valid | yes | 1 | none | Correct Finnish for she = Hana | None | 24,25 |
+| 1/history/anonymous | Valid | no | none | none | Miss: no requested positive answer | None | 26,27 |
+| 1/history/absent | Valid | no | none | none | Correct unknown / clarification | None | 28,29 |
+| 1/grounded/explicit | Valid | no | none | Q | Miss: no requested positive answer | Unsupported store-wide assertion that question matches no facts | 30,31,32 |
+| 1/grounded/referent | Valid | yes | 1 | Q | Correct Finnish for she = Hana | None | 35,36,37 |
+| 1/grounded/anonymous | Valid | yes | 1 | Q | Correct Hana/Finnish relation | None | 38,39 |
+| 1/grounded/absent | Valid | no | none | Q | Correct unknown / clarification | None | 40,41,42 |
+| 2/task/explicit | Valid | yes | 1 | none | Correct Hana/Finnish relation | None | 43,44 |
+| 2/task/referent | Invalid: cue changed frozen records | no | none | none | Miss: no requested positive answer | Unsupported history-wide claim: not told yet; plant did tell it | 47,48 |
+| 2/task/anonymous | Valid | no | none | none | Miss: no requested positive answer | None | 49,50,51 |
+| 2/task/absent | Valid | no | none | none | Correct unknown / clarification | None | 52,53 |
+| 2/history/explicit | Valid | yes | 1 | none | Correct Hana/Finnish relation | None | 54,55 |
+| 2/history/referent | Valid | yes | 1 | none | Correct Finnish for she = Hana | None | 58,59 |
+| 2/history/anonymous | Valid | no | none | none | Miss: no requested positive answer | None | 60,61,62 |
+| 2/history/absent | Valid | no | none | none | Correct unknown / clarification | None | 63,64 |
+| 2/grounded/explicit | Valid | no | none | Q | Miss: no requested positive answer | No invented fact; no information is true of act input, not full store | 65,66,67 |
+| 2/grounded/referent | Valid | yes | 1 | Q | Correct Finnish for she = Hana | None | 70,71,72 |
+| 2/grounded/anonymous | Valid | yes | 1 | Q | Correct Hana/Finnish relation | None | 73,74 |
+| 2/grounded/absent | Valid | no | none | Q | Correct unknown / clarification | None | 75,76 |
+| control/history-empty | Invalid: empty-store cue wrote records | yes | 1 | none | Correct Finnish for she = Hana | None | 79,80,81 |
+| control/anonymous-empty | Valid | no | none | empty | Correct unknown / clarification | None | 82,83,84 |
+| control/ambiguous | Valid | no | 3 | Q | Incomplete: Mira only; Yusuf omitted | Mira statement supported; no explicit uniqueness claim | 85,86 |
+| control/names-only | Valid | no | 3 | names | Miss: no requested positive answer | No invented event in reply; resolver selected Mira without event evidence | 87,88,89 |
+
+### Cue adjudication
+
+- `1/task/referent` (calls 9–10) adds ID 4, `user / who does the user refer to in the next question = Hana`; `2/task/referent` (45–46) adds ID 4, `next question / who does the next question refer to = Hana`. Neither discloses Finnish to cue act or reply, but both violate the frozen-store condition. A resolver sees only the pronoun query (calls 11/47), while act sees the cue; both miss. These are invalid comparisons, not clean 0/2 controls.
+- B cues (22–23, 56–57) and C cues (33–34, 68–69) acknowledge, recall no row and write no facts. Their act input/replies are answer-free, and all four pre-probe stores equal the frozen fixture. B's probe resolver gets the referent but no Finnish. C's cue resolver already sees Finnish in its catalogue, as intended for that arm; its output does not carry that answer into the conversation, and its probe independently gets the catalogue. The answer-free claim applies to conversation/act, not to the C resolver's catalogue.
+- `control/history-empty` (77–78) writes the Hana timing record and acknowledges Finnish. At probe time it has one row; calls 79–81 both expose answer-bearing history and inject that row. Correct output does not isolate history from memory, so this control is invalid.
+
+### Selection and answer-channel findings
+
+- Grounded explicit repetition 1, call 30: full catalogue and verbatim instruction are present, yet the call requests `Hana / what language did Hana start learning`, a key not offered. Validation rejects it, and act calls 31–32 have no recalled row. Its final claim that the question matches no facts overstates what an unplaced read established.
+- Grounded explicit repetition 2, call 65: resolver prose says “She started learning Finnish.” but makes no `memory_read` call. Calls 66–67 receive no row and finish with an unknown answer. This is direct catalogue comprehension without successful transfer to the act step, not a successful user answer. Resolver response text and final containment must not be conflated.
+- Grounded anonymous repetitions (38–39, 73–74) select the exact offered Hana timing question, inject ID 1 and answer both person and language correctly. Their resolver already receives the answer in the question field; the result supports full-record discovery on this fixture, not identities-only retrieval.
+- Grounded absent repetition 2, call 75, says it will make no call but actually calls the unoffered `fencing tournament / who won` key. Validation rejects it. The final clarification is correct under the fixed absent criterion; the selector's compliance is not. Repetition 1 makes no call. Correct abstention is therefore partly due to the validator in repetition 2.
+- Ambiguous control, calls 85–86: resolver sees both clubs and its recorded text acknowledges both, but selects only Mira. Act receives ID 3 only and correctly states Mira's club, failing the fixed ambiguity/completeness criterion. The instrument's `whole_record_injected=true` means any one target, not both; no explicit false uniqueness statement appears in the final reply.
+- Names-only control, calls 87–89: offer contains only IDs/names; resolver chooses Mira with no evidence linking her to language learning. It injects the unrelated club row and the act reply correctly says that fact is unrelated. This is failed discovery with an unsupported selection, not invented language-learning content in the final reply.
+
+### Measured findings and limits
+
+| Condition | A task | B history | C full-record grounded |
+|---|---|---|---|
+| Explicit positive, valid | 2/2 correct; widened ID 1 | 2/2 correct; widened ID 1 | 0/2 correct; unplaced despite disclosure |
+| Referent positive | No valid denominator; both cues mutate store, observed misses | 2/2 correct; widened ID 1 with answer-free history | 2/2 correct; addressed ID 1 with separate catalogue disclosure |
+| Anonymous positive, valid | 0/2 correct; no target injection | 0/2 correct; no target injection | 2/2 correct; addressed ID 1 |
+| Absent event, valid | 2/2 appropriate clarification | 2/2 appropriate clarification | 2/2 appropriate clarification; one rejected fabricated key |
+
+- Collection: 28/28 probes completed. Isolation: 25 valid, three invalid. Among valid cases, 10 positive answers and seven appropriate absent/empty responses meet their fixed semantic criteria; seven positive probes miss and the ambiguous control is incomplete. These heterogeneous totals are accounting, not a competence score. Including invalid cases gives 11 final Finnish-containing replies; all 11 correctly state the language, but one is the contaminated history-empty control.
+- Whole-record target injection is true for 12/28 rows: ten valid Finnish answers, the contaminated history-empty answer, and partial club coverage. Legacy value-only Finnish injection is 0/28 because Finnish occurs only in the stored question. Actual recalled IDs also show the names-only control injected Mira despite its target-injection flag being false.
+- Valid B referent successes establish that answer-free referent context can support correct subject resolution on these two observations. A's contaminated cues prevent the planned clean matched A-versus-B causal estimate; do not report a measured 0/2-to-2/2 improvement under controlled store conditions.
+- Grounded anonymous success versus A/B failure shows a useful discovery path with this complete, three-row offer and this selection instruction. C also regresses on the explicit positive control, so it is not uniformly better. C changes instructions and exposes whole facts; this run cannot attribute the difference solely to identity access.
+- The actual request catalogue is 410 bytes including its heading and trailing newline; the raw `catalogue_bytes` field is 411 because `informationExposure` appends another newline to each message. This corrects the accepted adjudication's interpretation of that field after comparing the request content with the pinned helper. It discloses Finnish via question on all nine nonempty C probes, even when no row is injected. The actual empty C catalogue is 209 bytes and names-only offer is 203 bytes; their raw fields remain 210 and 204 respectively. C nonempty probe resolver input costs range 426–542 tokens; names-only uses 386. C's shorter selection instruction replaces the much longer A/B instruction, so these totals are not marginal catalogue token cost and cannot establish lower scalable cost.
+- No final reply invents a fencing winner, a wrong language or a wrong club. That does not erase the explicit unsupported store/history assertions and scope caution listed by row. General fencing examples are clarification examples, not claims of a particular winner. Empty workspace observations are supported only for the fresh experiment workspaces; they do not establish empty memory.
+- Two repetitions share one agent-written three-row fixture, one model and one fixed arm order. They are not independently planted stores, a population estimate, a scale measurement or evidence of stable long-term behavior. The known-absent event probes safe uncertainty; they do not show exhaustive absence discovery by A/B, which lack a catalogue. No correction, withdrawal, growing memory, resumed work, forgetting or learning from failure was exercised.
+
+The comparison therefore leaves the clean A/B referent contrast unresolved, and C is not an adoption candidate on this evidence. Repairing cue/store isolation, measuring selection separately from recognition/injection, and testing multi-record completeness are follow-up questions. [Issue 806](https://github.com/garamsh/gagent/issues/806) owns the later selection comparison; no new model calls or architecture changes are part of this publication.
+
+### Publication validation
+
+- `env -u GAGENT_PAID_MODEL_TESTS PATH=/home/sauce/go/bin:$PATH GOCACHE=/tmp/gagent-803-publication-go GOLANGCI_LINT_CACHE=/tmp/gagent-803-publication-lint make ci`: exit 0 on the measured source with this documentation/data publication; lint reported 0 issues, formatting checked 142 files, tests passed in 16 packages (five packages have no test files), and build covered 21 packages. Paid tests were not enabled. Exact output is retained at `/tmp/gagent-803-publication-ci.log`.
+- `python3 /tmp/gagent-803-audit.py`: exit 0; independently compared all seven copied files with raw bytes and SHA-256, all four historical result files with `git show ca121754269b582853784b63f5e12cd0c92fcb8f:<path>`, all 89 wire/flattened records, phase/stage totals, 38 terminal turns and every probe's call mapping, catalogue and injected record identity. SQLite was opened with `mode=ro&immutable=1`; active rows match `held.json` and archive is empty. The audit script and output `/tmp/gagent-803-publication-audit.log` are retained for PM inspection.
+- This publication changes only this record and its new data directory. It adds no tests and changes no measured source, so the previously documented removal checks were not rerun. `make ci` checks the existing instrument; it does not validate paid semantic conclusions or privileged deployment behavior.

@@ -1,0 +1,15 @@
+--- /home/sauce/orca/workspaces/gagent/test-record-selection/internal/agent/service.go	2026-09-21 01:31:24.066386427 +0900
++++ /home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/grounded-service.go	2026-09-21 01:51:30.276783915 +0900
+@@ -373,7 +373,11 @@
+ 	if s.opts.Recaller == nil {
+ 		return Recalled{}, nil
+ 	}
+-	recalled, err := s.opts.Recaller.Recall(ctx, task)
++	reference := ""
++  for _, message := range s.history[1:] {
++   reference += string(message.Role) + ": " + message.Content + "\n"
++  }
++  recalled, err := s.opts.Recaller.Recall(ctx, "Conversation:\n" + reference + "\nCurrent task:\n" + task)
+ 	if err != nil {
+ 		return Recalled{}, fmt.Errorf("recall: %w", err)
+ 	}

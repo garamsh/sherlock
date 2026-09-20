@@ -1,0 +1,91 @@
+{
+  "measured_revision": "efd0fdec7912ac0ba3dc076ee66ffa70fab0ed7e",
+  "files": {
+    "calls.json": {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/calls.json",
+      "sha256": "8a56ab7a0485e1158a7f8abe04040f30318df0a2a6b450afbf4ac8517371fb62"
+    },
+    "grounded-overlay.json": {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/grounded-overlay.json",
+      "sha256": "193f6ef119610249edd34014215791453031d75ac594100d535e13ff1a84d058"
+    },
+    "grounded-recall.go.txt": {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/grounded-recall.go",
+      "sha256": "81cba67a55a7e3a8f0ae3e0cb9630f21fc5d501b764a2a69a6d02d2b52333bc0"
+    },
+    "grounded-runtime.go.txt": {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/grounded-runtime.go",
+      "sha256": "485e85a49f895b5e8192abf26a14afeea5722ef9d504dde3747c6e407101fc60"
+    },
+    "grounded-service.go.txt": {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/grounded-service.go",
+      "sha256": "ca8d42fbe6e2a30589d0b586952ba7c5fe42fa6caf64f8d5d72dde9808585e7c"
+    },
+    "held.json": {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/held.json",
+      "sha256": "98aeede830bda61739fbc5796f60d749d72cec3453afdc50583f3b067766f320"
+    },
+    "history.diff": {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/history.diff",
+      "sha256": "f86bda9edac2fda1279084f4572cc70d83ddea91a54798abf67f6bd1939c7697"
+    },
+    "keys-recall.diff": {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/keys-recall.diff",
+      "sha256": "d68fa83a4af9d45a7b29b59112fd362fdb295ab511d8910caeccb94a680c82ab"
+    },
+    "probes.json": {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/probes.json",
+      "sha256": "5c1dbed36806a6d01e19434190cf6c44471ebe380bd4d330b85dab1609adf252"
+    },
+    "records-overlay.json": {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/records-overlay.json",
+      "sha256": "40545ff5afda740611187b9032a8e4538d63977ee9660b51935775285adf3029"
+    },
+    "records-recall.go.txt": {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/records-recall.go",
+      "sha256": "c6d5d6fe10e978dd5c7503eb43aad631eae4303a3b3aac5c56fcf507f80e0954"
+    },
+    "records-versus-keys.diff": {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/records-versus-keys.diff",
+      "sha256": "1f12e68d8c1e3be72067d287afc8b753a4a35c28f4ef9c5315ac31e0b93cc787"
+    },
+    "run.json": {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/run.json",
+      "sha256": "3db380b685d8af71bd727753fd5e1456eeab1dd756d8998cb47b47c6ad4f485d"
+    },
+    "sha256.txt": {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/sha256.txt",
+      "sha256": "f18e62af323fbe0d0134c851cb27267173b2d64929cf10c1c88870303a8b42df"
+    },
+    "source.json": {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/source.json",
+      "sha256": "f9180a0997859c300d903c8d820023ca57de1c590f893f08ef65bd2049aff5ee"
+    },
+    "store-wiring.diff": {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/store-wiring.diff",
+      "sha256": "96080a4f51c12ff5a9ecb2256d49625948b18036ac46e300619c064cca246bdb"
+    },
+    "invocation.json": {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/invocation.json",
+      "sha256": "bc6211e9e82f9a1651ba3815892a37c429fdf8a9980dd8f699d756372244a039"
+    },
+    "exit.json": {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/exit.json",
+      "sha256": "3efb2dba62c2c231cf674314c629f867ae1e7971c97176167a3c5a6fe4388fda"
+    },
+    "run.log": {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/run.log",
+      "sha256": "a01e5797c99ce403ffea320d0ebebeccacf6b09c7467d7116f6e13d75043c4cc"
+    }
+  },
+  "retained_binaries": {
+    "gagent-grounded": {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/gagent-grounded",
+      "sha256": "eb2d72a2fbe7dcc754c5a3c42eee98f562a75311df374f572f9b390361e7d80a"
+    },
+    "gagent-records": {
+      "original": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/gagent-records",
+      "sha256": "781e35705e7f924363f9267363374fde3006712d10af907a4b8e8aad7c1815b6"
+    }
+  }
+}

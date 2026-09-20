@@ -349,10 +349,10 @@ The comparison therefore leaves the clean A/B referent contrast unresolved, and 
 
 ## Record selection comparison (issue 806)
 
-Instrument only: `tests/record_selection_test.go` compares the existing offered-key
-candidate with selection by existing record ID. No paid record-selection result has
-been collected. `record-selection-2026-09-21` is reserved for the future reviewed run;
-the published information comparison and all historical result bytes are preserved.
+`tests/record_selection_test.go` compares the existing offered-key candidate with
+selection by existing record ID. The single PM-authorized run is now collected
+and independently adjudicated below; the published information comparison and all
+historical result bytes are preserved.
 
 ### Method and premises
 
@@ -409,7 +409,7 @@ convert literal containment or synthetic endpoint replies into model competence.
 Explicit recognition of club ambiguity may satisfy the answer criterion while
 incomplete evidence selection still fails its separate coverage criterion.
 
-### Free validation and future execution
+### Instrument validation and execution
 
 The free tests substitute only the external model endpoint. Real workspace and
 agent binaries, SQLite, gateway events and act prompts execute. The scripted model
@@ -430,7 +430,7 @@ prose-only and HTTP failure responses are paired with a valid ID response.
 - Final free run: `env -u GAGENT_PAID_MODEL_TESTS GOCACHE=/tmp/gagent-806-go GAGENT_SELECTION_FREE_RESULTS=/tmp/gagent-806-reviewed-results go test ./tests -run '^Test(RecordSelection_(Free|RejectsInvalidSelections)|SpendMeter_RetainsFailureBody)$' -count=1 -v` exited 0 in 7.395 seconds. Its eighteen-probe transcript again contains 36 synthetic calls, 3,600/720 tokens, zero USD and no refusals; every probe reached act and finished. The seven accepted/failure controls and two failure-body cases also passed. Output: `/tmp/gagent-806-reviewed-free.log`.
 - `python3 /tmp/gagent-806-audit.py` exited 0: all twelve historical result files match their bytes at `dcc252b8171ac5d889369eb9a65dc84f3d682da7`; all 89 historical wire usage records reconcile; the two explicit failure catalogues and club catalogue contain every frozen record. The final free transcript has eighteen rows, complete record-arm selections and no invalid premises. Output: `/tmp/gagent-806-audit.log`.
 
-After PM instrument review, the opt-in command is
+The reviewed instrument used this opt-in command shape:
 `GAGENT_PAID_MODEL_TESTS=1 GAGENT_SELECTION_RESULTS=/absolute/new/record-selection-2026-09-21 go test ./tests -run '^TestRecordSelection$' -count=1 -v`,
 with the existing MiniMax key supplied by the operator through the environment.
 The result directory must be nonempty, absolute and not already exist; the assigned
@@ -438,13 +438,189 @@ name belongs to this round, while the instrument also permits later named reruns
 1,200,000 input tokens, 300,000 output tokens and $0.29 estimated at the recorded
 $0.30/$1.20 per-million rates; they are accounting assumptions, not a current price
 quote. A token/USD limit can be exceeded by the last admitted call's unknown usage.
-This implementation round read no credentials and made no paid calls.
+The instrument implementation round read no credentials and made no paid calls;
+the subsequent authorized PM run is recorded below.
 
-### What a result could decide
+### Collected result and provenance
 
-A successful ID candidate could remove read-side question reconstruction,
+The PM agent ran the authorized collection once on 2026-09-21 at measured source
+`efd0fdec7912ac0ba3dc076ee66ffa70fab0ed7e`, using MiniMax-M2. An independent
+worker agent (Orca task `task_cd751602d36d`, dispatch `ctx_958482918ea3`), who did
+not author the instrument, adjudicated the raw requests, responses and events below.
+For the subsequent PM agent publication review, see
+[PR 808](https://github.com/garamsh/gagent/pull/808); these are agent reviews,
+not human adjudication. The publication commit is separate from the measured source and is
+identified in that PR's body after committing.
+
+- [Raw publication](results/record-selection-2026-09-21/) contains unchanged
+  `run.json`, `probes.json`, `calls.json`, `held.json`, `source.json`, both overlay
+  JSON files, original `sha256.txt`, invocation/exit JSON and run log, four source
+  differences and four exact compiler sources. Compiler sources have `.go.txt`
+  suffixes so archival inputs do not become build/format targets; their bytes are
+  unchanged. `publication-manifest.json` maps all nineteen copies to original
+  paths and SHA-256 values. Original absolute overlay paths remain unchanged.
+- Original evidence and both binaries remain under
+  `/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/`.
+  The verified binary SHA-256 values are keys
+  `eb2d72a2fbe7dcc754c5a3c42eee98f562a75311df374f572f9b390361e7d80a`
+  and records `781e35705e7f924363f9267363374fde3006712d10af907a4b8e8aad7c1815b6`.
+  Binaries are retained locally, not duplicated in git. All eight source hashes in
+  `source.json` match both the measured commit and the publication checkout.
+- `invocation.json` records `go test ./tests -run '^TestRecordSelection$' -count=1 -v -timeout 45m`;
+  `exit.json` reports exit 0. This proves completed collection, not semantic success.
+  The raw pending semantic fields stay untouched; this section owns adjudication.
+- The instrument checkpoint, restored free/CI logs and four exact removal
+  mutations/logs were read at
+  `/home/sauce/Workspace/garam/gagent/.local/verification/806-review/`.
+  Candidate distinction, plural coverage, unknown-ID rejection and response-byte
+  capture removals each failed their named assertion; these are instrument checks,
+  not additional paid observations. This publication round made no paid calls and
+  read no credentials.
+
+### Premise audit
+
+All eighteen comparisons have valid setup premises. The prior plant messages and
+writebacks establish Hana/Finnish/September, Yusuf/Thameside rowing/May and
+Mira/Hilltop chess/June; an immutable read-only SQLite query confirms exactly those
+three active records and an empty archive. All sixteen nonempty pre-probe snapshots
+match them; the two empty snapshots contain zero records. Every resolver request
+has an empty conversation, its intended question, the correct arm's actual tool
+schema, and exactly the full catalogue (or no rows for the empty controls). No
+preparation turn or prior answer contaminates these probes.
+
+The actual key schema requires `subject` and `question`; the record schema requires
+an integer `record_ids` array with unique items. Both prohibit extra properties.
+Every request exposes only `memory_read` to the resolver. All eighteen responses
+contain one selection call: six offered and three unoffered keys, six nonempty ID
+arrays and three empty ID arrays. There are no paid unknown-ID, duplicate-ID,
+malformed-argument or resolver-prose-only cases. All forty responses are HTTP 200,
+with no recorded transport error or spend refusal; decoded response bytes match
+parsed responses, flattened arguments and provider usage on every call. Thus no
+selection failure here is explained by transport or missing catalogue evidence.
+
+All eighteen turns reach act and emit `turn_finished`. Actual act requests contain
+only the selected complete rows, never the resolver's full catalogue. The key
+club cases expose only Mira; the record club cases expose both actors, including
+Yusuf's club in the question and Mira's June restriction. Empty evidence in a
+negative control is the expected exposure, independently of whether selection
+obeyed the contract.
+
+### Per-case adjudication
+
+Call numbers refer to `calls.json`'s one-based `seq`; the first call in each row is
+the resolver and all remaining calls are act. `H` is offered Hana key / ID 1;
+`M` is offered Mira key / ID 3; `Y+M` is IDs 2 and 3. Coverage means exact expected
+IDs and complete record content in every act request. All rows have valid premises,
+reach act and finish. Each final reply was checked independently for unsupported
+person/language/club/winner and store/history claims: none was found in these final
+replies. Generic tournament examples are requests for clarification, not asserted
+winners; incomplete club replies do not explicitly claim uniqueness.
+
+| Case | Calls | Selection validity and completeness | Act coverage | Final semantic decision |
+|---|---|---|---|---|
+| 1/keys/explicit | 1–2 | H: valid, complete | Complete: 1 | Pass: Hana/Finnish |
+| 1/keys/anonymous | 3–4 | H: valid, complete | Complete: 1 | Pass: Hana/Finnish/September |
+| 1/keys/absent | 5–6 | Unoffered key: invalid, incomplete | Expected none | Pass: uncertainty and clarification |
+| 1/keys/club | 7–8 | M: valid, incomplete | Incomplete: 3 only | Fail: Mira only, no ambiguity acknowledged |
+| 1/records/explicit | 9–10 | ID 1: valid, complete | Complete: 1 | Pass: Hana/Finnish |
+| 1/records/anonymous | 11–12 | ID 1: valid, complete | Complete: 1 | Pass: Hana/Finnish/September |
+| 1/records/absent | 13–14 | Empty array: valid, complete | Expected none | Pass: uncertainty and clarification |
+| 1/records/club | 15–16 | Y+M: valid, complete | Complete: 2,3 | Pass: both actors, clubs and months |
+| 2/keys/explicit | 17–20 | H: valid, complete | Complete: 1 | Pass after writeback correction: Hana/Finnish |
+| 2/keys/anonymous | 21–22 | H: valid, complete | Complete: 1 | Pass: Hana/Finnish |
+| 2/keys/absent | 23–24 | Unoffered key: invalid, incomplete | Expected none | Pass: uncertainty and clarification |
+| 2/keys/club | 25–26 | M: valid, incomplete | Incomplete: 3 only | Fail: Mira only, no ambiguity acknowledged |
+| 2/records/explicit | 27–28 | ID 1: valid, complete | Complete: 1 | Pass: Hana/Finnish |
+| 2/records/anonymous | 29–30 | ID 1: valid, complete | Complete: 1 | Pass: Hana/Finnish |
+| 2/records/absent | 31–32 | Empty array: valid, complete | Expected none | Pass: clarification without a winner claim |
+| 2/records/club | 33–34 | Y+M: valid, complete | Complete: 2,3 | Pass: both actors, clubs and months |
+| control/keys/empty | 35–37 | Unoffered key: invalid, incomplete | Expected none | Pass: context absent; requests clarification |
+| control/records/empty | 38–40 | Empty array: valid, complete | Expected none | Pass: uncertainty; requests clarification |
+
+- Calls 5 and 23 explicitly recognize no relevant fencing record but nevertheless
+  call `Mira / who won a fencing tournament` and `fencing tournament / who won`.
+  Call 35 mistakes the current task's `unknown` sender for a candidate and calls
+  `unknown / Who started learning a language, and which language was it?` despite
+  an empty catalogue. All three are rejected as unoffered. Their act input says
+  memory was not consulted, so correct final uncertainty is validator-mediated,
+  not compliant key-arm abstention. The ID controls select `[]` in calls 13,31,38.
+- Club resolver text in calls 7 and 25 recognizes both actors before selecting
+  Mira alone. That comprehension is neither complete selection nor a final answer.
+  The final replies in calls 8 and 26 omit Yusuf and acknowledge no ambiguity;
+  they fail the fixed answer criterion while making supported Mira statements.
+- Call 19 answers in prose and prints a JSON-like writeback without calling
+  `memory_write`. A `writeback_error` event records this; call 20 receives the
+  correction instruction and completes the writeback. It is a recovered act
+  protocol error, not a transport failure or resolver failure. The terminal reply
+  meets the answer criterion; collection exit alone would hide this intermediate
+  failure. Calls 18,36 list empty workspaces; call 39 runs `ls -la` successfully.
+  These extra tools supply no target fact and do not establish memory-store absence.
+- Six final writebacks contain memory operations (calls 2,10,20,22,26,30): four
+  express Hana/Finnish under language questions, call 22 repeats her September
+  timing fact, and call 26 writes a Mira-only club answer. These writes occur
+  after selection inside disposable probe stores, so they do not contaminate the
+  next verified fixture copy. This is neither a read-only nor a fixed two-call
+  workflow; consequences of retaining those new addresses across turns are unmeasured.
+
+### Counts, costs and observed differences
+
+| Dimension | Keys (9 probes) | Records (9 probes) |
+|---|---|---|
+| Valid selection under own contract | 6/9 (66.7%) | 9/9 (100%) |
+| Complete valid selection | 4/9 (44.4%) | 9/9 (100%) |
+| Expected act evidence coverage, including empty controls | 7/9 (77.8%) | 9/9 (100%) |
+| Explicit / anonymous final answers | 2/2 / 2/2 | 2/2 / 2/2 |
+| Club coverage and final adequacy | 0/2 / 0/2 | 2/2 / 2/2 |
+| Absent plus empty compliant selection / adequate final uncertainty | 0/3 / 3/3 | 3/3 / 3/3 |
+| Adequate final replies across these mixed cases | 7/9 (77.8%) | 9/9 (100%) |
+| Act reached / terminal finished | 9/9 / 9/9 | 9/9 / 9/9 |
+
+These mixed-case totals account for this collection; they are not a general
+competence rate. No final unsupported target or store/history claim was found in
+18/18 inspected replies, within the scope defined above. This does not make the
+three rejected keys valid or the two partial club replies complete.
+
+| Calls | Count | Input tokens | Output tokens | Estimated USD | Sum of call latency (ms) | Min / median / max call latency (ms) |
+|---|---|---|---|---|---|---|
+| Keys | 21 | 40,728 | 8,598 | 0.022536 | 105,413 | 1,651 / 3,442 / 21,592 |
+| Records | 19 | 33,632 | 3,987 | 0.014874 | 56,281 | 1,479 / 2,742 / 5,238 |
+| Resolver | 18 | 7,071 | 7,496 | 0.0111165 | 90,173 | 2,039 / 2,929 / 21,592 |
+| Act | 22 | 67,289 | 5,089 | 0.0262935 | 71,521 | 1,479 / 2,978.5 / 6,924 |
+| Total | 40 | 74,360 | 12,585 | 0.037410 | 161,694 | 1,479 / 2,929 / 21,592 |
+
+Costs use the retained meter assumptions of $0.30/$1.20 per million input/output
+tokens, not an invoice or current price claim. Every wire usage record reconciles
+with the flattened counts and both aggregate spend records. No ceiling refused a
+call. `run.json` elapsed time is 165,766 ms (including setup/build); invocation to
+process exit is 188.576647 seconds. Per-call latency and each turn's duration are
+retained separately, not substituted for wall time.
+
+Compared with the prior #805 information run at
+`ca121754269b582853784b63f5e12cd0c92fcb8f`, the key candidate's explicit failures
+(calls 30 and 65 there) did not repeat: it now selects Hana correctly twice.
+Anonymous success repeats in both arms. The earlier single Mira club selection
+(call 85 there) repeats twice in the key arm, while the ID contract selects and
+transfers both actors twice. Earlier grounded absent probes included one no-call
+abstention and one rejected key (call 75); this run's two key absent probes and
+its empty control all submit rejected keys. This is evidence of observed contract
+behavior, not proof that explicit-key failure was repaired: the key instruction
+and schema remain the same. The complete catalogue still discloses the answers.
+
+The new run removes preparation cues, compares only these two candidates, repeats
+the club case and tests fresh empty stores in each arm. It does not retest the
+prior A/B referent comparison or resolve its contaminated controls. All twelve
+historical result files were compared byte-for-byte against measured commit
+`efd0fdec7912ac0ba3dc076ee66ffa70fab0ed7e` and remain unchanged. The shorter ID
+requests and lower observed time/cost do not isolate an ID effect: instructions,
+schema, plural selection, abstention and failure contracts change together;
+fixed order, output length and the key arm's extra act calls also differ.
+
+### What this result leaves undecided
+
+The measured ID candidate removes read-side question reconstruction,
 verbatim key copying, single-subject selection and address-to-subject widening
-from the candidate read path. It does not establish that question-shaped writes
+from the candidate read path. Its complete selection and supported answers on these
+nine cases do not establish that question-shaped writes
 or the store's current schema should be removed. Failure to retain abstention or
 multi-record coverage prevents adoption even if key reconstruction disappears.
 
@@ -459,3 +635,10 @@ conversational-reference isolation, corrections/withdrawals, retention under gro
 resumed complex work and experience transfer remain untested. No accepted
 architecture decision changes, and no result of these eighteen probes would alone
 establish reliable continuation or learning.
+
+### Publication verification
+
+- `env -u GAGENT_PAID_MODEL_TESTS PATH=/home/sauce/go/bin:$PATH GOCACHE=/tmp/gagent-806-publication-go GOLANGCI_LINT_CACHE=/tmp/gagent-806-publication-lint make ci` exited 0: lint 0 issues, format 143 Go files, tests passed in 16 packages with five having no test files, build 21 packages. Log: `/tmp/gagent-806-publication-ci.log`. Paid opt-in was absent; this checks the instrument, not semantic judgments or privileged deployment.
+- `python3 /tmp/gagent-806-publication-audit.py` exited 0: eighteen request/schema/catalogue/pre-store/selection/act/event mappings, forty response-byte/parsed-response/argument/usage reconciliations, eight measured source hashes, two retained binary hashes, seven original manifest entries and nineteen publication copies. The twelve historical files match the measured head byte-for-byte. SQLite was opened with `mode=ro&immutable=1`. The script initially assumed recall lived in the first system message; inspecting the actual message list corrected the audit to inspect all system messages. No evidence was changed. Log: `/tmp/gagent-806-publication-audit.log`.
+- `GOCACHE=/tmp/gagent-806-publication-go go mod tidy` and `git diff --check` passed without module changes. This publication changes no test or product source; the instrument's four removal checks were inspected, not rerun. PM checkpoint/free/removal/CI evidence remains at the path above.
+- GitHub reported draft PR 808 at the measured head with no check suites. `.github/workflows/ci.yml` targets only `main`, so this task PR targeting `dev` has no host run; local `make ci` is the reported check, not a claim of hosted verification. Publication-head state is recorded in the PR.

@@ -1,166 +1,57 @@
 # Template sync record
-#
-# Why this repository differs from `template/main` where it does. Read by a
-# person; no tool parses it.
-#
-# THE CHECK IS A DERIVATION, NOT THIS FILE:
-#
-#   for f in docs/convention/*.md; do
-#     git diff --numstat HEAD template/main -- "$f"
-#   done
-#
-# Every file that comes back differing is either named in `skipped` below with
-# the decision that owns it, or has not been considered. That is the whole
-# protocol, and it reads what is true now rather than what was true when
-# somebody last wrote a line here.
-#
-# A DIFFERING FILE IS NOT AUTOMATICALLY A STALE ONE. Before treating any
-# difference as an update to take, ask whether the file was ever a template
-# copy at all:
-#
-#   git hash-object docs/convention/<file>
-#   for c in $(git rev-list template/main -- docs/convention/<file>); do
-#     git rev-parse "$c:docs/convention/<file>"
-#   done
-#
-# A matching blob anywhere in that list means the file IS an older template
-# copy and the difference is staleness. NO match means it is a local
-# adaptation, and a checkout from the template would overwrite decisions
-# nobody has enumerated while reporting success. The diff cannot tell those
-# apart: both look like lines that differ.
-#
-# `last-audited` below is a bookmark and nothing verifies it. It is a
-# convenience for narrowing `git log`, not the check: if it goes stale the
-# derivation still gives the right answer, and a reader who trusts it instead
-# of running the derivation gets the older one.
+# Deliberate differences from the template remote; the PR records each audit.
+# Derive the baseline for every path from blob equality in template/main history.
+# A file matching no historical blob is adapted or project-owned, not a stale copy.
+# Read upstream commits for matched copies and every diff hunk for adapted ones.
+# This record is not a version pin and does not replace that comparison.
 
-last-audited: d796d58
-
-# What that revision covers. This record begins at 65e0087 and does not claim the
-# history below it was examined commit by commit — it was adopted without a
-# record of what it skipped. A sync that reaches further back re-establishes
-# that rather than reading coverage into this line.
-audited-paths:
-  docs/convention/README.md
-  docs/convention/documentation.md
-  docs/convention/review.md
-
-# Differing and NOT yet audited. The derivation reports these; nothing here
-# explains them, which is what "not considered" looks like.
-unaudited:
-  docs/convention/ci.md — 25 lines differ and they are mixed: entry-point
-    bullets this project kept where upstream moved to a code block, and
-    rewordings upstream made that were never weighed here. Separating the two
-    is an audit rather than a record change.
-
-# Never synced, by the sync-conventions skill's own Update table, which places
-# these on the project's side rather than the template's. A change here is a
-# decision this repository makes, not a hunk it adopts.
 project-owned:
-  docs/convention/stack-go.md
-  docs/architecture/
-  README.md
+  README.md, Makefile, .gitignore, .github/CODEOWNERS, .github/dependabot.yml,
+    .github/workflows/ and docs/architecture/ hold this project's content.
+    The template's placeholder CI, ownership and architecture indices cannot
+    replace it. check-contents-list.sh belongs to the template's checks;
+    this project has its own entry points.
 
-# Deliberate divergences in the files that ARE synced. Each names the decision
-# that owns it, so a later sync re-proposes nothing already settled.
-skipped:
-  stack-go.md §1 — implementation packaging. The template reversed this at
-    5eb0a31 (its #289) to `internal/<domain>/repository/postgres.go`, a
-    package named for the interface, with a clause prohibiting the
-    technology-named form. Not adopted: #685's Out of scope carries the
-    reason, that splitting `internal/agent/memory/` into a package per
-    interface gives Recall a Model dependency the other two lack and leaves
-    three packages with nothing saying they are one seam. The naming half of
-    the template's #291 WAS taken here, by #688.
-    The naming half was argued on 2026-08-26 by the template's PM and the
-    argument is good for the store case: interface-naming is what says two
-    implementations are alternatives for one contract, where sibling
-    technology-named packages say nothing about their relationship — which is
-    the same thing this project's own refusal of its #289 wanted. It is declined
-    anyway, on a measurement rather than a preference. The rule assumes two
-    small alternatives: `internal/memory/sqlite/` is 313 shipped lines in 2
-    files and fits it. The provider case does not — `internal/agent/openai/`
-    is 472 shipped lines in 4 files and `internal/agent/anthropic/` is 351 in
-    3. Both are over the ~300 LoC threshold at which THIS file's own
-    `Single file vs package` rule (:70-73) prescribes a package per
-    implementation — which is what the tree has. The template's rule would
-    put both in ONE interface-named package as files, so its copy instructs
-    two things about the same tree at once: each implementation is too big
-    for a file, and all implementations of an interface share a package. That
-    collision is structural rather than a matter of size — it fires the moment
-    two implementations both cross ~300 — and it exists in the template's copy
-    and not in ours, because ours carries no interface-naming rule to collide
-    with :70-73. Adopting the rule would import the collision. Reported
-    upstream as such.
-    Corrected 2026-08-26. The first version of this entry said 1,038 and 645,
-    which were whole-directory counts including tests: the command was
-    `cat <dir>/*.go | grep -v _test | wc -l`, which drops LINES containing
-    `_test` rather than test FILES. The numbers went upstream before the error
-    was found, by a worker who tried to reproduce them for an unrelated issue.
-    The decline stands on the corrected figures; it is 2.6x rather than 5x.
-    Blob check 2026-08-26: no matching ancestor in the template's history for
-    this path, so the whole file is a local adaptation and not an old copy.
-  git.md §Branches — the host-namespace paragraph ("a host namespace in front of
-    the prefix satisfies the rule as written") is ours, from #623 ruling 2, and
-    upstream has never carried it. Found by the derivation on 2026-08-24, not by
-    the record: it had never been audited, and the record said so only by
-    omitting it from `audited-paths`.
-  documentation.md:3 — the build-and-configuration-file clause. Not an upstream
-    omission: no revision of the template's scope line has ever carried it. #454
-    added it here for #388 (a Dockerfile citing ADR 0018 against a log ending at
-    0017) and #390. b4872ad's removal is not adopted.
-  documentation.md — the mockery mandate, removed by #623 ruling 6 from four
-    places at once (the checked-against header, §2's `mocks/` row, the §7
-    subsection, §9's command table) and replaced with hand-written doubles in
-    the package whose test uses them. Upstream still carries it in stack-go.md,
-    which is project-owned here anyway.
-  documentation.md — "an issue that can be met literally while its goal fails is
-    malformed" (#648) is ours and upstream lacks it. Kept.
-  documentation.md — upstream's "a claim about the project that will carry this
-    document" is a template's framing: its documents are copied into consumers.
-    Nothing carries gagent's documents onward, so "a project beyond this one"
-    is the accurate wording here.
-  README.md §Stack-specific — the Extends column and the six-row stack catalogue.
-    This project has one stack file and no derived stack, so the machinery would
-    be a rule for a case that does not exist (`simplicity.md` §Core principle:
-    no speculative abstraction). Revisit if a derived stack ever lands.
-  review.md — `Reviewed at: <commit sha>` and "the review names the commit it
-    read" (#623 ruling 9) are ours; upstream lacks them. Kept.
-  review.md — "where the host cannot produce a result at all, a local run
-    substitutes" (#663) is ours, written for the condition #627 records.
-    Upstream has no equivalent.
-  AGENTS.md §Who contributes — "Nothing reaches `dev` or `main` except through a
-    pull request" is ours. Upstream says `main` alone, because upstream has one
-    long-lived branch. This project took a second on 2026-09-01 (#753): tasks land
-    on `dev` and `main` takes `dev` in batches, so a rule naming only `main` would
-    leave every task branch and every task PR unbound by it. The change is the
-    branch names and nothing else — the rule it states is upstream's.
-  git.md §Branches and §Commits — the `dev`/`main` split, same decision (#753).
-    Upstream branches from `main` and merges to it, which is right for one branch
-    and wrong here. Not a disagreement with the rule: a pipeline scoped to `main`
-    is what makes a task branch free, and upstream's pipeline is not scoped that
-    way.
-  .github/workflows/ci.yml — the `pull_request` trigger's `branches: [main]`
-    filter. Upstream added a ci.yml at a6a2355 (its #323) whose `pull_request:`
-    carries no filter at all, so it fires on every pull request whatever its
-    base. Adopting that file would undo #753: the filter matches the BASE
-    branch, which is what makes a task pull request against `dev` cost zero
-    runs and a `dev` promotion cost one. A sync that takes this path verbatim
-    puts the entire bill back while reporting success, which is the failure
-    `git.md` §Branches already names from the other side ("upstream's pipeline
-    is not scoped that way") without naming the file.
-    Blob check 2026-09-05: ours is a49f65a8; the only blob in the template's
-    history for this path is 6bad2b03, introduced by a6a2355 itself. No
-    matching ancestor, so this file is a local adaptation and has never been a
-    template copy — the derivation's own test for "not stale".
-    The Update table does not name workflows on either side. Settled the way
-    Bootstrap step 5 settles them, which writes the workflow from the project's
-    real commands: authored per project, like the `Makefile`, not adopted.
-  .github/PULL_REQUEST_TEMPLATE.md — three hunks differ and only one is
-    upstream's to give. The header clause ("Leave no field empty"), §Conventions
-    consulted's reviewer-checks-this sentence, and §Convention concerns' gap
-    clause are all ours and richer; upstream has never carried them. The fourth,
-    §Verification naming `make ci` as the entry point, is a genuine upstream
-    improvement and this repository has that target (`Makefile`:244). Not taken
-    here — it changes what a contributor must state, so it travels as its own
-    change rather than riding a record update. Filed as #768.
+selection:
+  All stack-neutral conventions are kept. Go and container images are the
+    applicable stack files. FastAPI, NestJS, Next.js and Tailwind are absent.
+  No derived stack is selected, so the Extends column and inheritance rules
+    remain absent. Revisit if a derived stack is introduced (#684).
+  docs/architecture/structures/ supplies alternatives for a structural choice,
+    not additional project rules. It is not copied into an existing system
+    whose partition is already described by packages.md. A change to that
+    partition requires a project decision and paired architecture updates.
+
+deliberate-differences:
+  AGENTS.md keeps host-defined PM/worker/QA roles, the dev/main rule, secret
+    custody and conversation-language requirements. The template's role
+    definitions and template-wide rule-admission policy do not replace them.
+  git.md keeps tasks based on dev, batch promotion to main (#753), and the
+    host-namespace prefix interpretation (#623). The author-preservation
+    obligation is adapted to task squash merges into dev; it does not decide
+    the unresolved promotion merge method (#763).
+  documentation.md keeps its build/configuration prose scope (#454), the
+    issue-completeness rule (#648), and wording about projects beyond this
+    one rather than projects consuming this template.
+  ci.md keeps the project's prose entry-point description, release separation,
+    hooks and same-tag digest-refresh requirement. It does not import a
+    placeholder Makefile. The selection-reporting addition in template
+    cccfb36 is deferred: current targets print counts without that selection
+    description, so adopting it needs a change to the entry points too.
+  review.md keeps the reviewed SHA, negative-result method, conditional local
+    substitution and its retirement condition, expanded head-check explanation,
+    and the two project-specific Verification examples (#623, #663).
+  .github/PULL_REQUEST_TEMPLATE.md keeps the no-empty-fields instruction,
+    consultation evidence and the instruction to surface unnamed cases.
+    The whole-check entry point and Restructure rejected fields are adopted.
+  stack-go.md remains adapted: hand-written test doubles (#623), implementation
+    sub-packages, current Layout B selection and project verification details.
+    Upstream 37be164 removed the mandatory interface-named package that this
+    project declined (#685); that old objection no longer describes upstream.
+    New service/library layouts and composition-site rules are deferred with
+    their dependent packages.md and architecture-index claims, including #710.
+    Updating the rule alone would leave those documents describing the old rule.
+  docs/architecture/README.md and adr/0000-template.md retain living records
+    and continuous numbering. Upstream freezes ADR bodies and adds errata and
+    supersession. That changes the project's decision-history policy, so it is
+    not adopted as a template wording correction.

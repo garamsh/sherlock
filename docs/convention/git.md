@@ -24,7 +24,7 @@ A host namespace in front of the prefix satisfies the rule as written: `fix/dock
 
 ## Commits
 
-Only the PR title reaches `dev`, together with the trailer naming the squashed commits' authors, and reaches `main` unchanged when `dev` is promoted. A branch's commit messages are otherwise a working record for the reviewer reading the branch, not the permanent history.
+A task's squash merge puts the PR title on `dev` and drops the authors of the commits behind it. Whoever merges ensures the commit that reaches `dev` carries a `Co-authored-by:` trailer for each of them, and confirms it by reading that commit against the commits it squashed rather than assuming the merge carried them over. The title and author attribution reach `main` unchanged when `dev` is promoted. A branch's commit messages are otherwise a working record for the reviewer reading the branch, not the permanent history.
 
 Format: `<type>: <imperative summary>`
 
@@ -32,7 +32,7 @@ Format: `<type>: <imperative summary>`
 - Summary: imperative mood, lowercase, no trailing period. `fix: reject empty tokens`, not `fixed some bugs`.
 - One concern per commit. If a change needs "and" to describe it, split it.
 - Omit the body unless the reason for the change is invisible in the diff. A body never restates what changed.
-- The message contains only what the project put there — no line a tool appended unasked. A `Co-authored-by:` naming an author of the squashed commits is not such a line: squash drops those authors and the trailer is where they survive.
+- The message contains only what the project put there — no line a tool appended unasked. A `Co-authored-by:` naming an author of the squashed commits is not such a line: the project asks for it.
 - Reversing an earlier decision mid-branch is an ordinary commit describing the new state. Earlier commits are not rewritten to hide that the decision changed.
 - A point about a commit message is fixed in the commit that carries it — amend or rebase, then force-push the same branch. A later commit cannot remove text from an earlier one, so it cannot carry that fix. This is the one case where rewriting a branch commit is right.
 

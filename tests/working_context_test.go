@@ -278,6 +278,13 @@ func TestWorkingContext_ProcessInterruption(t *testing.T) {
 	artifact, err := os.ReadFile(path + ".marker")
 	require.NoError(t, err)
 	require.Equal(t, "released once", string(artifact), "effect happened before process death")
+	persisted, err := sqlite.Open(path)
+	require.NoError(t, err)
+	interrupted, err := persisted.LoadWorkingContext(context.Background())
+	require.NoError(t, err)
+	require.Len(t, interrupted.Attempts, 1, "effect must have durable attempt evidence before recovery dispatch")
+	assert.Nil(t, interrupted.Attempts[0].Result)
+	require.NoError(t, persisted.Close())
 
 	account := currentAccount(memory.WorkActive, "write release marker", "verify marker before any repeat")
 	completed := currentAccount(memory.WorkCompleted, account.Progress, "")

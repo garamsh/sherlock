@@ -164,3 +164,11 @@ func (s *service) recordAccess(ctx context.Context, held []Memory) error {
 	}
 	return nil
 }
+
+// WorkingContextStorer persists the session's account separately from facts.
+type WorkingContextStorer interface {
+	LoadWorkingContext(context.Context) (WorkingContext, error)
+	// SaveWorkingContext atomically replaces the expected revision or returns
+	// ErrStaleWorkingContext; the returned revision belongs to the saved value.
+	SaveWorkingContext(context.Context, WorkingContext) (int64, error)
+}

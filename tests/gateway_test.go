@@ -62,6 +62,7 @@ func replyScript(replies ...string) *agent.ScriptedModel {
 	for _, reply := range replies {
 		steps = append(steps,
 			resolveStep(),
+			fixtureCheckpoint("active"),
 			agent.ScriptedStep{ToolCalls: []agent.ToolCall{{
 				Name: "message_send",
 				Input: json.RawMessage(
@@ -338,6 +339,7 @@ func outboxMessages(t *testing.T, root string) []message.Message {
 // writebackStep scripts the call a turn ends with: the reserved
 // writeback tool carrying the response document (issue #615).
 func writebackStep(document string) agent.ScriptedStep {
+	document = strings.TrimSuffix(document, "}") + `,"working_context":` + string(fixtureCheckpoint("active").ToolCalls[0].Input) + `}`
 	return agent.ScriptedStep{ToolCalls: []agent.ToolCall{{
 		Name:  agent.MemoryWriteTool,
 		Input: json.RawMessage(document),

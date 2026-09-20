@@ -388,6 +388,9 @@ func startScriptedEndpoint(t *testing.T, answer scriptedAnswer) string {
 			name, arguments = "memory_read", fmt.Sprintf(`{"subject":%s,"question":%s}`,
 				strconvQuote(answer.Subject), strconvQuote(answer.Question))
 		}
+		if name == "memory_write" {
+			arguments = string(writebackStep(arguments).ToolCalls[0].Input)
+		}
 		w.Header().Set("Content-Type", "application/json")
 		fmt.Fprintf(w, `{"choices":[{"message":{"content":"","tool_calls":[{"id":"call-1","type":"function","function":{"name":%s,"arguments":%s}}]},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":100,"completion_tokens":20}}`,
 			strconvQuote(name), strconvQuote(arguments))

@@ -89,7 +89,16 @@ func Open(path string) (*Store, error) {
 		db.Close()
 		return nil, fmt.Errorf("create schema: %w", err)
 	}
-	return &Store{db: db}, nil
+	if err := createWorkingContext(db); err != nil {
+		db.Close()
+		return nil, err
+	}
+	store := &Store{db: db}
+	if _, err := store.LoadWorkingContext(context.Background()); err != nil {
+		db.Close()
+		return nil, err
+	}
+	return store, nil
 }
 
 // holdsSentences reports whether the file already carries the sentence

@@ -34,7 +34,7 @@ const MemoryWriteTool = "memory_write"
 const memoryWriteDescription = "Deliver your reply and record what this turn stated. " +
 	"Every turn ends with this call and no turn ends without it: the reply you pass here " +
 	"is what the person reads, and memory_ops is the list of facts the turn stated — " +
-	"the empty list is your answer that it stated none."
+	"the empty list is your answer that it stated none. working_context is the complete final work account."
 
 // MemoryWriteDescriptor is the reserved tool as the model sees it. Its
 // parameters are ResponseSchema, so what the write carries is the same
@@ -62,6 +62,7 @@ func MemoryWriteDescriptor() tool.Descriptor {
 const ResponseSchema = `{
   "type": "object",
   "properties": {
+    "working_context": ` + workingContextSchema + `,
     "reply": {
       "type": "string",
       "description": "Everything the person reads. The memory field is not shown to them."
@@ -107,7 +108,7 @@ const ResponseSchema = `{
       }
     }
   },
-  "required": ["reply", "memory_ops"],
+  "required": ["reply", "memory_ops", "working_context"],
   "additionalProperties": false
 }`
 

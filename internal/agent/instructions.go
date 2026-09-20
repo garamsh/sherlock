@@ -76,8 +76,8 @@ address replies per message through message_send. A later message may
 retract an earlier one; when it does, do not start the retracted work.
 
 ## Memory writeback
-End every turn by calling ` + "`memory_write`" + `. Its arguments are ` + "`reply`" + ` and
-` + "`memory_ops`" + `. ` + "`reply`" + ` is what the person reads — nothing else reaches them.
+End every turn by calling ` + "`memory_write`" + `. Its arguments are ` + "`reply`" + `,
+` + "`memory_ops`" + ` and the complete final ` + "`working_context`" + ` account. ` + "`reply`" + ` is what the person reads — nothing else reaches them.
 ` + "`memory_ops`" + ` is the list of facts this turn states, and it is never omitted:
 an empty list is your answer that the turn stated none. A turn is not finished
 until you make that call, so make it even when you have nothing to record.
@@ -94,12 +94,12 @@ A fact is held at the address of the question it answers. Each entry gives:
 
 When the user says "my favorite telescope is the Kepler-9 refractor":
 
-{"reply":"Noted.","memory_ops":[{"address":{"subject":"user","question":"what is the user's favorite telescope","restriction":null},"value":"the Kepler-9 refractor","operation":null}]}
+{"reply":"Noted.","working_context":{"status":"idle","goal":"","constraints":"","decisions":"","progress":"","remaining":"","uncertainty":"","reconciliation":""},"memory_ops":[{"address":{"subject":"user","question":"what is the user's favorite telescope","restriction":null},"value":"the Kepler-9 refractor","operation":null}]}
 
 A statement about someone else, carrying a restriction, works the same way.
 When the user says "In winter Dmitri flies with the northern-arc airline":
 
-{"reply":"Noted.","memory_ops":[{"address":{"subject":"Dmitri","question":"which airline does Dmitri fly with","restriction":"in winter"},"value":"the northern-arc airline","operation":null}]}
+{"reply":"Noted.","working_context":{"status":"idle","goal":"","constraints":"","decisions":"","progress":"","remaining":"","uncertainty":"","reconciliation":""},"memory_ops":[{"address":{"subject":"Dmitri","question":"which airline does Dmitri fly with","restriction":"in winter"},"value":"the northern-arc airline","operation":null}]}
 
 The subject is Dmitri because the statement is about him; the question asks
 for an airline because the statement says that is what the answer is; "in
@@ -158,3 +158,24 @@ func ComposeInstructions(ego string) string {
 	}
 	return strings.TrimSpace(ego) + "\n\n" + Contract
 }
+
+const workingContextContract = `## Durable current work
+The current-work record supplied with each reasoning call is authoritative across
+restart and compaction. Recalled facts and old conversation do not authorize work.
+Call working_context alone before the first operator tool calls of a turn.
+End the turn with memory_write, carrying the complete final account in its
+working_context field; no separate final checkpoint is needed. Supply a complete replacement account of the actual goal,
+constraints, decisions, verified progress, remaining work and uncertainty.
+Incorporate every pending input in order: newer intent supersedes older intent.
+Keep unfinished work active when a turn merely pauses or awaits an event. Record
+canceled or completed work with its goal and no remaining work. A neutral arrival
+notification does not authorize restarting terminal work; only an explicit new
+authorization does. Idle means no work was authorized, not lost or canceled work.
+Tool attempts with no result may already have changed the world. Verify surviving
+artifacts before repeating effects. A returned error may also hide a partial effect.
+Do not claim completion from an intended action or an absent result. Reconciliation
+must name observed evidence resolving ALL unknown attempts; leave it empty until
+that evidence exists. Unknown attempts then remain visible across checkpoints.
+Do not copy every old event into the account. Keep only what continuation needs;
+write distinct useful long-term facts through memory_write as usual.
+`

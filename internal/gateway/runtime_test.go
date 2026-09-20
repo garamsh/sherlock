@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -49,6 +50,7 @@ func (s *recordingSink) messages() []message.Message {
 func replyModel(_ string) agent.Model {
 	return agent.NewScriptedModel(
 		resolveStep(),
+		checkpointStep("active"),
 		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{
 			Name:  "message_send",
 			Input: json.RawMessage(`{"channel":"test","target":"sender","content":"Message received."}`),
@@ -167,8 +169,10 @@ func TestQueue_CloseClosesTheStore(t *testing.T) {
 func compactionModel(_ string) agent.Model {
 	return agent.NewScriptedModel(
 		resolveStep(),
+		checkpointStep("active"),
 		writebackStep(`{"reply":"First reply.","memory_ops":[]}`),
 		resolveStep(),
+		checkpointStep("active"),
 		writebackStep(`{"reply":"Second reply.","memory_ops":[]}`),
 	)
 }
@@ -435,6 +439,7 @@ type toolCapturingModel struct {
 func newToolCapturingModel() *toolCapturingModel {
 	return &toolCapturingModel{inner: agent.NewScriptedModel(
 		resolveStep(),
+		checkpointStep("active"),
 		writebackStep(`{"reply":"Replied.","memory_ops":[]}`),
 	)}
 }
@@ -483,7 +488,7 @@ func TestFactory_ToolClientDescriptorsReachSession(t *testing.T) {
 	for _, d := range model.actTools() {
 		// The reserved writeback is the platform's addition to what the
 		// model sees, not part of the operator's list.
-		if d.Name == agent.MemoryWriteTool {
+		if d.Name == agent.MemoryWriteTool || d.Name == agent.WorkingContextTool {
 			continue
 		}
 		names = append(names, d.Name)
@@ -511,6 +516,7 @@ func TestMessageSendTool_DescriptionAndSchemaSatisfyOpenAISubset(t *testing.T) {
 // writebackStep scripts the call a turn ends with: the reserved
 // writeback tool carrying the response document (issue #615).
 func writebackStep(document string) agent.ScriptedStep {
+	document = strings.TrimSuffix(document, "}") + `,"working_context":` + string(checkpointStep("active").ToolCalls[0].Input) + `}`
 	return agent.ScriptedStep{ToolCalls: []agent.ToolCall{{
 		Name:  agent.MemoryWriteTool,
 		Input: json.RawMessage(document),
@@ -523,4 +529,13 @@ func writebackStep(document string) agent.ScriptedStep {
 // stored fact resolves to.
 func resolveStep() agent.ScriptedStep {
 	return agent.ScriptedStep{Content: "no address"}
+}
+
+// checkpointStep gives the offline wiring scenario an explicit work account.
+func checkpointStep(status string) agent.ScriptedStep {
+	remaining := ""
+	if status == "active" {
+		remaining = "finish the scripted reply"
+	}
+	return agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.WorkingContextTool, Input: json.RawMessage(fmt.Sprintf(`{"status":%q,"goal":"acknowledge the test message","constraints":"use the test channel","decisions":"follow the scripted scenario","progress":"","remaining":%q,"uncertainty":"","reconciliation":""}`, status, remaining))}}}
 }

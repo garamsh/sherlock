@@ -11,7 +11,7 @@ The memory system had two write paths: the memory tool's `store` op and the writ
 
 The model decides content; the platform runs the mechanics.
 
-- The writeback is the single write path. What a write carries is an address, a value, and — where the sentence adds a value that leaves the question alone — an operation (ADR 0018). It does not name a recalled ID: a write computes the address it lands on, so it lands whether or not a read ever returned it.
+- The writeback is the single addressed-fact write path. Current work has a separate lifecycle under ADR 0006: checkpoints and terminal writeback replace the same account, never add a second fact-writing surface. What a write carries is an address, a value, and — where the sentence adds a value that leaves the question alone — an operation (ADR 0018). It does not name a recalled ID: a write computes the address it lands on, so it lands whether or not a read ever returned it.
 - The model's memory surface is read-only search — and in the pod topology memory stops being a tool at all (ADR 0017): recall injection covers the need.
 - Maintenance is platform-owned and threshold-triggered: eviction archives by score threshold; consolidation runs on store-size threshold (evaluated after a completed turn, never mid-turn) or shutdown, never as a model-invoked op.
 - The model can still correct deliberately through the writeback itself: write the current value at the same address, stating `replace`. No dedicated op is needed.

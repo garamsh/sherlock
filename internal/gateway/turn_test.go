@@ -25,22 +25,27 @@ import (
 // while the turn is running: it delivers on its first Chat, which is
 // after Turn.Run has taken its snapshot, then answers.
 type deliveringModel struct {
-	t         *testing.T
-	dir, name string
-	msg       message.Message
-	answer    string
-	delivered bool
+	t            *testing.T
+	dir, name    string
+	msg          message.Message
+	answer       string
+	delivered    bool
+	checkpointed bool
 }
 
-func (m *deliveringModel) Chat(context.Context, []agent.Message, []tool.Descriptor) (agent.Response, error) {
+func (m *deliveringModel) Chat(_ context.Context, _ []agent.Message, descriptors []tool.Descriptor) (agent.Response, error) {
+	if len(descriptors) == 1 && descriptors[0].Name == agent.MemoryReadTool {
+		return agent.Response{Content: "no address"}, nil
+	}
+	if !m.checkpointed {
+		m.checkpointed = true
+		return agent.Response{ToolCalls: checkpointStep("active").ToolCalls}, nil
+	}
 	if !m.delivered {
 		deliver(m.t, m.dir, m.name, m.msg)
 		m.delivered = true
 	}
-	return agent.Response{ToolCalls: []agent.ToolCall{{
-		Name:  agent.MemoryWriteTool,
-		Input: json.RawMessage(`{"reply":` + strconv.Quote(m.answer) + `,"memory_ops":[]}`),
-	}}}, nil
+	return agent.Response{ToolCalls: writebackStep(`{"reply":` + strconv.Quote(m.answer) + `,"memory_ops":[]}`).ToolCalls}, nil
 }
 
 // deliver writes one message into dir the way the message_send tool
@@ -62,7 +67,9 @@ func turnFactory(t *testing.T, steps ...agent.ScriptedStep) (*gateway.Factory, s
 	return &gateway.Factory{
 		MemoryPath: memoryPath,
 		NewModel: func(string) agent.Model {
-			return agent.NewScriptedModel(append([]agent.ScriptedStep{resolveStep()}, steps...)...)
+			script := []agent.ScriptedStep{resolveStep(), checkpointStep("active")}
+			script = append(script, steps...)
+			return agent.NewScriptedModel(script...)
 		},
 		Tools: noTools(),
 	}, memoryPath

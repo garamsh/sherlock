@@ -13,15 +13,8 @@ const DefaultMaxHistoryMessages = 128
 
 // Compactor keeps the leading system message and the newest messages of
 // a rolling session, and drops the rest (ADR 0006).
-//
-// It writes nothing. The step used to summarize the dropped turns into an
-// episodic memory, and an addressed store has nowhere to put a sentence
-// it cannot address (ADR 0018): the store holds an address and a value,
-// and a summary of a conversation answers no question a read can ask for.
-// On the configuration this repository ships the write already never
-// happened — it was refused unless a model generated the summary, and the
-// deterministic stand-in does not (#549) — so what an operator running
-// that configuration keeps is unchanged.
+// The session supplies durable current work independently of this window;
+// discarded conversation does not become addressed facts.
 type Compactor struct {
 	MaxHistoryMessages int
 }

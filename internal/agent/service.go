@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log/slog"
 
+	"github.com/garamsh/gagent/internal/memory"
 	"github.com/garamsh/gagent/internal/tool"
 )
 
@@ -87,10 +88,12 @@ type Session interface {
 
 // Options wires the session's hook points. Nil interfaces are no-ops.
 type Options struct {
-	Recaller  Recaller
-	Writeback WritebackSink
-	Events    EventSink
-	Compactor Compactor
+	// WorkingContext persists the current work; nil is an in-memory test session.
+	WorkingContext memory.WorkingContextStorer
+	Recaller       Recaller
+	Writeback      WritebackSink
+	Events         EventSink
+	Compactor      Compactor
 	// Ego is the identity/behavior half of the session instructions;
 	// empty selects the embedded DefaultEgo. The platform Contract is
 	// always appended (see ComposeInstructions).
@@ -102,9 +105,11 @@ type Options struct {
 }
 
 type session struct {
-	model Model
-	tools ToolClient
-	opts  Options
+	work      memory.WorkingContext
+	workReady bool
+	model     Model
+	tools     ToolClient
+	opts      Options
 	// instructions is the composed ego + contract, injected once as the
 	// first system message of a fresh session.
 	instructions string
@@ -159,9 +164,17 @@ func (s *session) Run(ctx context.Context, task string) (response string, err er
 	s.emit(ctx, Event{Kind: EventTurnStarted, Turn: s.turn, Task: task})
 	defer func() {
 		if err != nil {
+			// A failed batch may leave unanswered tool calls; resume from durable work.
+			if s.opts.WorkingContext != nil {
+				s.history = nil
+			}
 			s.emit(ctx, Event{Kind: EventTurnFailed, Turn: s.turn, Error: err.Error()})
 		}
 	}()
+
+	if err := s.beginWork(ctx, task); err != nil {
+		return "", err
+	}
 
 	if len(s.history) == 0 {
 		s.history = append(s.history, Message{Role: RoleSystem, Content: s.instructions})
@@ -179,11 +192,36 @@ func (s *session) Run(ctx context.Context, task string) (response string, err er
 		if err := s.compact(ctx); err != nil {
 			return "", err
 		}
-		resp, err := s.model.Chat(ctx, s.history, s.modelTools())
+		messages, err := s.reasoningContext()
+		if err != nil {
+			return "", err
+		}
+		resp, err := s.model.Chat(ctx, messages, s.modelTools())
 		if err != nil {
 			return "", fmt.Errorf("model chat: %w", err)
 		}
 		write, calls := splitWriteback(resp.ToolCalls)
+		if s.opts.WorkingContext != nil {
+			if len(resp.ToolCalls) == 1 && resp.ToolCalls[0].Name == WorkingContextTool {
+				if err := s.checkpoint(ctx, resp.ToolCalls[0]); err != nil {
+					return "", err
+				}
+				s.history = append(s.history,
+					Message{Role: RoleAssistant, ToolCalls: resp.ToolCalls},
+					Message{Role: RoleTool, Name: WorkingContextTool, ToolCallID: resp.ToolCalls[0].ID, Content: "Checkpoint saved. Continue with operator tools or finish with memory_write."},
+				)
+				continue
+			}
+			if !s.workReady && write == nil {
+				s.history = append(s.history, Message{Role: RoleSystem, Content: "No calls executed. Call working_context alone before operator tools, or memory_write with the final current-work account."})
+				continue
+			}
+			for _, call := range resp.ToolCalls {
+				if call.Name == WorkingContextTool {
+					return "", fmt.Errorf("working_context must be called alone")
+				}
+			}
+		}
 		if write != nil {
 			return s.finish(ctx, *write)
 		}
@@ -203,7 +241,9 @@ func (s *session) Run(ctx context.Context, task string) (response string, err er
 			continue
 		}
 		for _, call := range calls {
-			s.execute(ctx, call)
+			if err := s.execute(ctx, call); err != nil {
+				return "", err
+			}
 		}
 	}
 	return "", fmt.Errorf("%w (%d)", ErrLoopExhausted, s.opts.MaxIterations)
@@ -218,7 +258,7 @@ func (s *session) modelTools() []tool.Descriptor {
 	installed := s.tools.List()
 	out := make([]tool.Descriptor, 0, len(installed)+1)
 	for _, d := range installed {
-		if d.Name == MemoryWriteTool {
+		if d.Name == MemoryWriteTool || (s.opts.WorkingContext != nil && d.Name == WorkingContextTool) {
 			// An operator tool cannot take the reserved name: the
 			// session would route its calls to the writeback and the
 			// operator's tool would never run. Dropping it is visible
@@ -228,6 +268,9 @@ func (s *session) modelTools() []tool.Descriptor {
 			continue
 		}
 		out = append(out, d)
+	}
+	if s.opts.WorkingContext != nil {
+		out = append(out, workingContextDescriptor())
 	}
 	return append(out, MemoryWriteDescriptor())
 }
@@ -268,14 +311,32 @@ func (s *session) finish(ctx context.Context, call ToolCall) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	s.history = append(s.history, Message{Role: RoleAssistant, Content: reply})
 	if parseWarn != nil {
 		s.emit(ctx, Event{Kind: EventWritebackError, Turn: s.turn, Error: parseWarn.Error()})
 		return "", parseWarn
 	}
+	var work memory.WorkingContext
+	if s.opts.WorkingContext != nil {
+		var doc struct {
+			WorkingContext json.RawMessage `json:"working_context"`
+		}
+		if err := json.Unmarshal(call.Input, &doc); err != nil {
+			return "", fmt.Errorf("decode terminal working context: %v", err)
+		}
+		work, err = s.prepareCheckpoint(doc.WorkingContext)
+		if err != nil {
+			return "", err
+		}
+	}
 	if err := s.applyWriteback(ctx, ops); err != nil {
 		return "", err
 	}
+	if s.opts.WorkingContext != nil {
+		if err := s.saveWork(ctx, work); err != nil {
+			return "", err
+		}
+	}
+	s.history = append(s.history, Message{Role: RoleAssistant, Content: reply})
 	s.emit(ctx, Event{Kind: EventTurnFinished, Turn: s.turn, Response: reply})
 	return reply, nil
 }
@@ -285,7 +346,7 @@ func (s *session) finish(ctx context.Context, call ToolCall) (string, error) {
 // descriptor already carries.
 func writebackRequiredNotice() string {
 	return "Your turn is not finished. Call " + MemoryWriteTool +
-		" with your reply and the facts this turn stated; the empty list is a valid answer."
+		" with your reply, final working_context and the facts this turn stated; the empty list is a valid answer."
 }
 
 // execute runs one tool call through the protocol client and feeds the
@@ -294,7 +355,7 @@ func writebackRequiredNotice() string {
 // instead of executing, so a stall cannot consume the whole iteration
 // budget: a call past the per-tool call budget, and a call that already
 // failed twice this turn with the identical error.
-func (s *session) execute(ctx context.Context, call ToolCall) {
+func (s *session) execute(ctx context.Context, call ToolCall) error {
 	event := Event{Kind: EventToolCall, Turn: s.turn, ToolName: call.Name, ToolInput: call.Input}
 	var result string
 	key := call.Name + "\x00" + string(call.Input)
@@ -309,7 +370,17 @@ func (s *session) execute(ctx context.Context, call ToolCall) {
 		result = repeatedCallNotice(call.Name, known.err)
 		event.ToolFailed = true
 	default:
+		if s.opts.WorkingContext != nil {
+			if err := s.recordAttempt(ctx, call); err != nil {
+				return err
+			}
+		}
 		result, event.ToolFailed = s.invoke(ctx, call)
+		if s.opts.WorkingContext != nil {
+			if err := s.recordResult(ctx, result, event.ToolFailed); err != nil {
+				return err
+			}
+		}
 		if event.ToolFailed {
 			s.failures[key] = failedCall{err: result, repeated: ok && known.err == result}
 		}
@@ -322,6 +393,7 @@ func (s *session) execute(ctx context.Context, call ToolCall) {
 		Content:    result,
 	})
 	s.emit(ctx, event)
+	return nil
 }
 
 // invoke dispatches one tool call through the protocol client, returning
@@ -373,7 +445,15 @@ func (s *session) recall(ctx context.Context, task string) (Recalled, error) {
 	if s.opts.Recaller == nil {
 		return Recalled{}, nil
 	}
-	recalled, err := s.opts.Recaller.Recall(ctx, task)
+	query := task
+	if s.opts.WorkingContext != nil {
+		data, err := json.Marshal(s.work)
+		if err != nil {
+			return Recalled{}, fmt.Errorf("encode recall context: %v", err)
+		}
+		query += "\nCurrent-work record (terminal work is not authorization to resume):\n" + string(data)
+	}
+	recalled, err := s.opts.Recaller.Recall(ctx, query)
 	if err != nil {
 		return Recalled{}, fmt.Errorf("recall: %w", err)
 	}

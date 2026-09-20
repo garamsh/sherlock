@@ -89,11 +89,11 @@ func buildInformationBinary(t *testing.T, arm, dir string) string {
 		replacements[original] = destination
 	}
 	if arm != "task" {
-		replace("internal/agent/service.go", "recalled, err := s.opts.Recaller.Recall(ctx, task)", `reference := ""
+		replace("internal/agent/service.go", "recalled, err := s.opts.Recaller.Recall(ctx, query)", `reference := ""
   for _, message := range s.history[1:] {
    reference += string(message.Role) + ": " + message.Content + "\n"
   }
-  recalled, err := s.opts.Recaller.Recall(ctx, "Conversation:\n" + reference + "\nCurrent task:\n" + task)`)
+  recalled, err := s.opts.Recaller.Recall(ctx, "Conversation:\n" + reference + "\nCurrent task:\n" + query)`)
 	}
 	if arm == "grounded" || arm == "names" {
 		replace("internal/gateway/runtime.go", "agentmemory.Recall{Svc: memSvc, Model: model}", "agentmemory.Recall{Svc: memSvc, Model: model, Store: store}")
@@ -398,6 +398,7 @@ func TestRecallInformation_Free(t *testing.T) {
 		var request struct {
 			Messages []struct {
 				Content string `json:"content"`
+				Role    string `json:"role"`
 			} `json:"messages"`
 			Tools []struct {
 				Function struct {
@@ -410,6 +411,11 @@ func TestRecallInformation_Free(t *testing.T) {
 			return
 		}
 		last := request.Messages[len(request.Messages)-1].Content
+		for _, message := range request.Messages {
+			if message.Role == "user" {
+				last = message.Content
+			}
+		}
 		all := ""
 		for _, m := range request.Messages {
 			all += m.Content + "\n"
@@ -438,6 +444,9 @@ func TestRecallInformation_Free(t *testing.T) {
 			args = fmt.Sprintf(`{"reply":"Recorded.","memory_ops":[{"address":{"subject":%q,"question":"which club","restriction":null},"value":%q,"operation":null}]}`, subject, value)
 		} else if !strings.Contains(last, "acknowledge only") && strings.Contains(all, "Finnish") {
 			args = `{"reply":"Hana started learning Finnish.","memory_ops":[]}`
+		}
+		if name == "memory_write" {
+			args = string(writebackStep(args).ToolCalls[0].Input)
 		}
 		w.Header().Set("Content-Type", "application/json")
 		fmt.Fprintf(w, `{"choices":[{"message":{"tool_calls":[{"id":"1","type":"function","function":{"name":%q,"arguments":%q}}]},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":100,"completion_tokens":20}}`, name, args)

@@ -1,6 +1,7 @@
 package memory
 
 import (
+	"encoding/json"
 	"errors"
 	"time"
 )
@@ -51,3 +52,64 @@ type Memory struct {
 	SupersededBy    int64
 	ValidTo         time.Time
 }
+
+// WorkStatus distinguishes current authorization from a terminal work account.
+type WorkStatus string
+
+const (
+	// WorkActive permits continuation of unfinished work.
+	WorkActive WorkStatus = "active"
+	// WorkCompleted records achieved work without authorizing replay.
+	WorkCompleted WorkStatus = "completed"
+	// WorkCanceled records withdrawn authorization.
+	WorkCanceled WorkStatus = "canceled"
+	// WorkIdle records that no work has been authorized.
+	WorkIdle WorkStatus = "idle"
+)
+
+// WorkAccount is the model's complete account of the one current work item.
+type WorkAccount struct {
+	Status      WorkStatus `json:"status"`
+	Goal        string     `json:"goal"`
+	Constraints string     `json:"constraints"`
+	Decisions   string     `json:"decisions"`
+	Progress    string     `json:"progress"`
+	Remaining   string     `json:"remaining"`
+	Uncertainty string     `json:"uncertainty"`
+}
+
+// WorkAttempt records an invocation whose effect may outlive its caller.
+// A nil result means no result was durably observed, never that nothing ran.
+type WorkAttempt struct {
+	Name   string          `json:"name"`
+	Input  json.RawMessage `json:"input"`
+	Result *WorkResult     `json:"result"`
+}
+
+// WorkingContext is the single durable current-work authority.
+// Inputs and attempts remain until a checkpoint incorporates them.
+type WorkingContext struct {
+	Revision int64         `json:"-"`
+	Account  WorkAccount   `json:"account"`
+	Inputs   []string      `json:"inputs"`
+	Attempts []WorkAttempt `json:"attempts"`
+}
+
+// ErrStaleWorkingContext refuses a writer whose durable revision changed.
+var ErrStaleWorkingContext = errors.New("stale working context")
+
+// WorkResult is an observed return, not proof that an arbitrary effect completed.
+type WorkResult struct {
+	Outcome WorkOutcome `json:"outcome"`
+	Content string      `json:"content"`
+}
+
+// WorkOutcome distinguishes a returned value from a possibly partial failure.
+type WorkOutcome string
+
+const (
+	// WorkReturned means the client returned a value.
+	WorkReturned WorkOutcome = "returned"
+	// WorkFailed means the client returned an error and effects need reconciliation.
+	WorkFailed WorkOutcome = "failed"
+)

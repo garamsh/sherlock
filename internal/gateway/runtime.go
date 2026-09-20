@@ -78,6 +78,7 @@ func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink)
 	model := f.NewModel(agentID)
 
 	session := agent.NewSession(model, f.Tools, agent.Options{
+		WorkingContext:     store,
 		Recaller:           agentmemory.Recall{Svc: memSvc, Model: model},
 		Writeback:          agentmemory.Writeback{Svc: memSvc},
 		Events:             events,

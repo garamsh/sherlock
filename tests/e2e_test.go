@@ -42,6 +42,7 @@ const e2eQuestion = "what is 6 * 7?"
 func mvpScript() *agent.ScriptedModel {
 	return agent.NewScriptedModel(
 		resolveStep(),
+		fixtureCheckpoint("active"),
 		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{
 			Name: "message_send",
 			Input: json.RawMessage(

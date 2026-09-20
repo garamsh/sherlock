@@ -34,13 +34,10 @@ type spendCeiling struct {
 	OutputUSDPerMillion float64
 }
 
-// meteredCall is one chat-completions request the meter handled, kept so
-// scoring reads what the run bought instead of buying it again. The
-// prompts are not kept: every request carries the same instructions and
-// the same tool schemas, which the tree already holds, so what is
-// recorded is the model's side plus enough of the request to say which
-// step made it.
+// meteredCall retains the complete wire input and output for exposure audits.
 type meteredCall struct {
+	Request          json.RawMessage   `json:"request"`
+	Response         json.RawMessage   `json:"response,omitempty"`
 	Seq              int               `json:"seq"`
 	Label            string            `json:"label"`
 	Step             string            `json:"step"`
@@ -192,11 +189,15 @@ func (m *spendMeter) record(body, answer []byte, status int, took time.Duration,
 // the lock.
 func (m *spendMeter) entryLocked(body, answer []byte, status int, took time.Duration, failure string) meteredCall {
 	entry := meteredCall{
+		Request:    append(json.RawMessage(nil), body...),
 		Seq:        len(m.calls) + 1,
 		Label:      m.label,
 		Status:     status,
 		DurationMS: took.Milliseconds(),
 		Refused:    failure,
+	}
+	if json.Valid(answer) {
+		entry.Response = append(json.RawMessage(nil), answer...)
 	}
 	var request struct {
 		Model    string `json:"model"`
@@ -398,4 +399,18 @@ func postThreeMeteredCalls(t *testing.T, upstream string, ceiling spendCeiling) 
 		resp.Body.Close()
 	}
 	return got
+}
+
+func TestSpendMeter_RetainsCompleteExposure(t *testing.T) {
+	upstream := startScriptedEndpoint(t, scriptedAnswer{Subject: "Hana", Question: "language", Value: "Finnish", Reply: "Recorded."})
+	meter := startSpendMeter(t, upstream, "scripted", spendCeiling{Calls: 10, InputTokens: 10000, OutputTokens: 10000, USD: 1})
+	body := `{"model":"scripted","messages":[{"role":"system","content":"Reference: Hana"},{"role":"assistant","content":"","tool_calls":[{"id":"files-1","type":"function","function":{"name":"files","arguments":"{}"}}]},{"role":"tool","tool_call_id":"files-1","content":"File not found"},{"role":"user","content":"What language?"}]}`
+	response := postJSON(t, meter.BaseURL()+"/chat/completions", body)
+	defer response.Body.Close()
+	require.Equal(t, http.StatusOK, response.StatusCode)
+	calls := informationCalls(meter)
+	require.Len(t, calls, 1)
+	require.JSONEq(t, body, string(calls[0].Request))
+	require.Contains(t, string(calls[0].Response), "memory_write")
+	require.Equal(t, "What language?", calls[0].LastMessage)
 }

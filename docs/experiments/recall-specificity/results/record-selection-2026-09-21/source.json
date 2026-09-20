@@ -1,0 +1,20 @@
+{
+  "binary_sha256": {
+    "keys": "eb2d72a2fbe7dcc754c5a3c42eee98f562a75311df374f572f9b390361e7d80a",
+    "records": "781e35705e7f924363f9267363374fde3006712d10af907a4b8e8aad7c1815b6"
+  },
+  "fixture": "docs/experiments/recall-specificity/results/information-2026-09-21",
+  "model": "MiniMax-M2",
+  "revision": "efd0fdec7912ac0ba3dc076ee66ffa70fab0ed7e",
+  "source_sha256": {
+    "internal/agent/memory/recall.go": "904267b95fc4cebe345140bb0c6fe0cfe4ede9343a1c798b8f0e6c6d56947d37",
+    "internal/agent/service.go": "136e29c1f500d099d30231a9f3ab715715ec47a49977e20231bd208be6223868",
+    "internal/gateway/runtime.go": "5049fbf3eba356bf6d42cffa74a3f6bd56787703ca5222b2e92c38e8aac9be12",
+    "tests/model_spend_meter_test.go": "e0737715d9e9221a4a6bb2ae1c77bf4a1c38bdb7144e4ca7c5aae52186237ed1",
+    "tests/recall_information_test.go": "a27592ff750f98cb1028e72e098be75e3e70c971595deb3a919fb332fcee3538",
+    "tests/recall_specificity_test.go": "b23838edbd1e7faaffebaf3df75aef09c16c46164e65b197f93aeb769693fbc4",
+    "tests/record_selection_test.go": "370f82c75b0803d12fb144fef1da794ff301754a1a187ccfa33f6590ac7eac9a",
+    "tests/testdata/record-selection-recall.txt": "bf1fae6371a72ea89467ab5f85215d9e76fcac880deda0984c8d93420c153a04"
+  },
+  "variants": "keys: existing grounded overlay; records: same history and complete record rows, record_ids schema/instruction/validation and direct selected-record render; exact compiler inputs retained beside this file"
+}

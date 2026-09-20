@@ -1,0 +1,40 @@
+=== RUN   TestRecordSelection
+=== RUN   TestRecordSelection/1/keys/explicit
+=== RUN   TestRecordSelection/1/keys/anonymous
+=== RUN   TestRecordSelection/1/keys/absent
+=== RUN   TestRecordSelection/1/keys/club
+=== RUN   TestRecordSelection/1/records/explicit
+=== RUN   TestRecordSelection/1/records/anonymous
+=== RUN   TestRecordSelection/1/records/absent
+=== RUN   TestRecordSelection/1/records/club
+=== RUN   TestRecordSelection/2/keys/explicit
+=== RUN   TestRecordSelection/2/keys/anonymous
+=== RUN   TestRecordSelection/2/keys/absent
+=== RUN   TestRecordSelection/2/keys/club
+=== RUN   TestRecordSelection/2/records/explicit
+=== RUN   TestRecordSelection/2/records/anonymous
+=== RUN   TestRecordSelection/2/records/absent
+=== RUN   TestRecordSelection/2/records/club
+=== RUN   TestRecordSelection/control/keys/empty
+=== RUN   TestRecordSelection/control/records/empty
+--- PASS: TestRecordSelection (165.79s)
+    --- PASS: TestRecordSelection/1/keys/explicit (6.78s)
+    --- PASS: TestRecordSelection/1/keys/anonymous (5.12s)
+    --- PASS: TestRecordSelection/1/keys/absent (5.92s)
+    --- PASS: TestRecordSelection/1/keys/club (8.62s)
+    --- PASS: TestRecordSelection/1/records/explicit (5.50s)
+    --- PASS: TestRecordSelection/1/records/anonymous (6.28s)
+    --- PASS: TestRecordSelection/1/records/absent (6.28s)
+    --- PASS: TestRecordSelection/1/records/club (5.40s)
+    --- PASS: TestRecordSelection/2/keys/explicit (30.11s)
+    --- PASS: TestRecordSelection/2/keys/anonymous (11.11s)
+    --- PASS: TestRecordSelection/2/keys/absent (7.40s)
+    --- PASS: TestRecordSelection/2/keys/club (17.49s)
+    --- PASS: TestRecordSelection/2/records/explicit (7.76s)
+    --- PASS: TestRecordSelection/2/records/anonymous (5.33s)
+    --- PASS: TestRecordSelection/2/records/absent (6.85s)
+    --- PASS: TestRecordSelection/2/records/club (5.90s)
+    --- PASS: TestRecordSelection/control/keys/empty (13.38s)
+    --- PASS: TestRecordSelection/control/records/empty (7.51s)
+PASS
+ok  	github.com/garamsh/gagent/tests	165.797s

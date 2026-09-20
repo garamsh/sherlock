@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 	"testing"
@@ -37,6 +38,7 @@ type spendCeiling struct {
 // meteredCall retains the complete wire input and output for exposure audits.
 type meteredCall struct {
 	Request          json.RawMessage   `json:"request"`
+	ResponseBytes    []byte            `json:"response_bytes,omitempty"`
 	Response         json.RawMessage   `json:"response,omitempty"`
 	Seq              int               `json:"seq"`
 	Label            string            `json:"label"`
@@ -141,6 +143,7 @@ func (m *spendMeter) serve(w http.ResponseWriter, r *http.Request) {
 	defer func() { _ = resp.Body.Close() }()
 	answer, err := io.ReadAll(resp.Body)
 	if err != nil {
+		m.record(body, answer, resp.StatusCode, time.Since(started), err.Error())
 		http.Error(w, err.Error(), http.StatusBadGateway)
 		return
 	}
@@ -189,12 +192,13 @@ func (m *spendMeter) record(body, answer []byte, status int, took time.Duration,
 // the lock.
 func (m *spendMeter) entryLocked(body, answer []byte, status int, took time.Duration, failure string) meteredCall {
 	entry := meteredCall{
-		Request:    append(json.RawMessage(nil), body...),
-		Seq:        len(m.calls) + 1,
-		Label:      m.label,
-		Status:     status,
-		DurationMS: took.Milliseconds(),
-		Refused:    failure,
+		Request:       append(json.RawMessage(nil), body...),
+		ResponseBytes: append([]byte(nil), answer...),
+		Seq:           len(m.calls) + 1,
+		Label:         m.label,
+		Status:        status,
+		DurationMS:    took.Milliseconds(),
+		Refused:       failure,
 	}
 	if json.Valid(answer) {
 		entry.Response = append(json.RawMessage(nil), answer...)
@@ -413,4 +417,24 @@ func TestSpendMeter_RetainsCompleteExposure(t *testing.T) {
 	require.JSONEq(t, body, string(calls[0].Request))
 	require.Contains(t, string(calls[0].Response), "memory_write")
 	require.Equal(t, "What language?", calls[0].LastMessage)
+}
+
+func TestSpendMeter_RetainsFailureBody(t *testing.T) {
+	for _, body := range []string{`{"error":"unavailable"}`, "upstream unavailable\n"} {
+		t.Run(body, func(t *testing.T) {
+			upstream := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(http.StatusServiceUnavailable)
+				_, _ = w.Write([]byte(body))
+			}))
+			t.Cleanup(upstream.Close)
+			meter := startSpendMeter(t, upstream.URL, "scripted", spendCeiling{Calls: 2, InputTokens: 1000, OutputTokens: 1000, USD: 1})
+			response := postJSON(t, meter.BaseURL()+"/chat/completions", `{"model":"scripted","messages":[]}`)
+			defer response.Body.Close()
+			require.Equal(t, http.StatusServiceUnavailable, response.StatusCode)
+			calls := informationCalls(meter)
+			require.Len(t, calls, 1)
+			require.Equal(t, []byte(body), calls[0].ResponseBytes)
+			meter.WriteTranscript(t, filepath.Join(t.TempDir(), "calls.json"))
+		})
+	}
 }

@@ -1,0 +1,17 @@
+{
+  "head": "efd0fdec7912ac0ba3dc076ee66ffa70fab0ed7e",
+  "cwd": "/home/sauce/orca/workspaces/gagent/test-record-selection",
+  "command": [
+    "go",
+    "test",
+    "./tests",
+    "-run",
+    "^TestRecordSelection$",
+    "-count=1",
+    "-v",
+    "-timeout",
+    "45m"
+  ],
+  "results": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21",
+  "started_at": 1789923067.5443501
+}

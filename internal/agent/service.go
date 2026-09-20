@@ -105,11 +105,10 @@ type Options struct {
 }
 
 type session struct {
-	work      memory.WorkingContext
-	workReady bool
-	model     Model
-	tools     ToolClient
-	opts      Options
+	work  memory.WorkingContext
+	model Model
+	tools ToolClient
+	opts  Options
 	// instructions is the composed ego + contract, injected once as the
 	// first system message of a fresh session.
 	instructions string
@@ -210,10 +209,6 @@ func (s *session) Run(ctx context.Context, task string) (response string, err er
 					Message{Role: RoleAssistant, ToolCalls: resp.ToolCalls},
 					Message{Role: RoleTool, Name: WorkingContextTool, ToolCallID: resp.ToolCalls[0].ID, Content: "Checkpoint saved. Continue with operator tools or finish with memory_write."},
 				)
-				continue
-			}
-			if !s.workReady && write == nil {
-				s.history = append(s.history, Message{Role: RoleSystem, Content: "No calls executed. Call working_context alone before operator tools, or memory_write with the final current-work account."})
 				continue
 			}
 			for _, call := range resp.ToolCalls {

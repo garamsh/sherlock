@@ -45,15 +45,16 @@ func (m *workProbe) Chat(ctx context.Context, messages []agent.Message, descript
 }
 
 func currentAccount(status memory.WorkStatus, goal, remaining string) memory.WorkAccount {
-	return memory.WorkAccount{Status: status, Goal: goal, Constraints: "use supplier Cedar; release only on arrival", Decisions: "retain the approved design", Progress: "design independently verified", Remaining: remaining, Uncertainty: "delivery time unknown"}
+	return memory.WorkAccount{Status: status, Progress: goal + "; " + remaining}
+
 }
 
 func workCheckpoint(t *testing.T, account memory.WorkAccount, reconciliation string) agent.ScriptedStep {
 	t.Helper()
-	doc := struct {
-		memory.WorkAccount
-		Reconciliation string `json:"reconciliation"`
-	}{account, reconciliation}
+	doc := map[string]any{"status": account.Status, "progress": account.Progress, "inputs": []any{}, "resolved_attempts": []any{}}
+	if reconciliation != "" {
+		doc["resolved_attempts"] = []any{map[string]any{"id": 3, "evidence": reconciliation}}
+	}
 	data, err := json.Marshal(doc)
 	require.NoError(t, err)
 	return agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.WorkingContextTool, Input: data}}}
@@ -82,89 +83,157 @@ func workRecord(t *testing.T, messages []agent.Message) memory.WorkingContext {
 	return memory.WorkingContext{}
 }
 
+// workUpdate supplies protocol operations without retranscribing owner instructions.
+func workUpdate(t *testing.T, terminal bool, update string) agent.ScriptedStep {
+	t.Helper()
+	name := agent.WorkingContextTool
+	if terminal {
+		name = agent.MemoryWriteTool
+		update = `{"reply":"recorded","memory_ops":[],"working_context":` + update + `}`
+	}
+	return agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: name, Input: json.RawMessage(update)}}}
+}
+
 func TestWorkingContext_RestartAndCompaction(t *testing.T) {
 	ctx := context.Background()
 	path := filepath.Join(t.TempDir(), "memory.db")
-	account := currentAccount(memory.WorkActive, "deliver the approved fixture", "await arrival, then release")
-	var steps []agent.ScriptedStep
-	for range 4 {
-		steps = append(steps, agent.ScriptedStep{Content: "no address"}, workCheckpoint(t, account, ""), workFinish(t, account, ""))
+	original := `Deliver using supplier Cedar only after arrival. Output exactly {"supplier":"Cedar","units":7}; write a receipt; never repeat a released order.`
+	// Deliberately omit every exact output and no-repeat constraint from progress.
+	steps := []agent.ScriptedStep{{Content: "no address"}, workUpdate(t, false, `{"status":"active","progress":"waiting","inputs":[{"index":0,"action":"amend"}]}`), workUpdate(t, true, `{}`)}
+	for range 3 {
+		steps = append(steps, agent.ScriptedStep{Content: "no address"}, workUpdate(t, true, `{"inputs":[{"index":0,"action":"dismiss"}]}`))
 	}
 	probe := &workProbe{inner: agent.NewScriptedModel(steps...)}
 	runtime, err := workFactory(path, probe, workTools{}).New(ctx, "test", nil)
 	require.NoError(t, err)
-	original := "Deliver the approved fixture using supplier Cedar; release only on arrival."
 	_, err = runtime.Session.Run(ctx, original)
 	require.NoError(t, err)
-	for _, arrival := range []string{"still waiting", "weather update", "schedule unchanged"} {
-		_, err = runtime.Session.Run(ctx, arrival)
+	for _, input := range []string{"still waiting", "weather update", "schedule unchanged"} {
+		_, err = runtime.Session.Run(ctx, input)
 		require.NoError(t, err)
 	}
 	for _, message := range runtime.Session.History() {
-		require.NotContains(t, message.Content, original, "original task has left the real conversation window")
+		require.NotContains(t, message.Content, original)
 	}
 	require.LessOrEqual(t, len(runtime.Session.History()), 5)
 	latest := workRecord(t, probe.reasoning[len(probe.reasoning)-1])
-	assert.Equal(t, account, latest.Account)
+	assert.Equal(t, []string{original}, latest.Source)
+	assert.Equal(t, "waiting", latest.Account.Progress)
 	require.NoError(t, runtime.Close(ctx))
-
-	restoredProbe := &workProbe{inner: agent.NewScriptedModel(agent.ScriptedStep{Content: "no address"}, workCheckpoint(t, account, ""), workFinish(t, account, ""))}
-	restarted, err := workFactory(path, restoredProbe, workTools{}).New(ctx, "test", nil)
+	effects := 0
+	resumed := &workProbe{inner: workModel(func(messages []agent.Message, descriptors []tool.Descriptor) agent.Response {
+		if !hasWorkTool(descriptors) {
+			return agent.Response{Content: "no address"}
+		}
+		current := workRecord(t, messages)
+		require.Equal(t, []string{original}, current.Source)
+		require.Equal(t, "waiting", current.Account.Progress)
+		require.Equal(t, []string{"arrival notification"}, current.Inputs)
+		if effects == 0 {
+			return agent.Response{ToolCalls: []agent.ToolCall{{Name: "artifact", Input: json.RawMessage(`{"supplier":"Cedar","units":7}`)}}}
+		}
+		return agent.Response{ToolCalls: workUpdate(t, true, `{"status":"completed","progress":"receipt verified","inputs":[{"index":0,"action":"dismiss"}]}`).ToolCalls}
+	})}
+	restarted, err := workFactory(path, resumed, workTools{call: func(_ string, input json.RawMessage) (json.RawMessage, error) {
+		effects++
+		require.JSONEq(t, `{"supplier":"Cedar","units":7}`, string(input))
+		return json.RawMessage(`{"receipt":"one order"}`), nil
+	}}).New(ctx, "test", nil)
 	require.NoError(t, err)
 	defer restarted.Close(ctx)
-	require.Empty(t, restarted.Session.History(), "new process-session history has no original messages")
+	require.Empty(t, restarted.Session.History())
 	_, err = restarted.Session.Run(ctx, "arrival notification")
 	require.NoError(t, err)
-	restored := workRecord(t, restoredProbe.reasoning[0])
-	assert.Equal(t, account, restored.Account)
-	assert.Equal(t, []string{"arrival notification"}, restored.Inputs)
-	require.Len(t, restoredProbe.recall, 1)
-	recallJSON, err := json.Marshal(restoredProbe.recall[0])
+	assert.Equal(t, 1, effects)
+	recallJSON, err := json.Marshal(resumed.recall)
 	require.NoError(t, err)
-	assert.Contains(t, string(recallJSON), account.Goal, "recall resolution also receives current work")
-	assert.Contains(t, string(recallJSON), "supplier Cedar")
+	assert.Contains(t, string(recallJSON), "never repeat a released order")
+}
+
+type workModel func([]agent.Message, []tool.Descriptor) agent.Response
+
+func (m workModel) Chat(_ context.Context, messages []agent.Message, descriptors []tool.Descriptor) (agent.Response, error) {
+	return m(messages, descriptors), nil
+}
+func hasWorkTool(descriptors []tool.Descriptor) bool {
+	for _, d := range descriptors {
+		if d.Name == agent.MemoryWriteTool {
+			return true
+		}
+	}
+	return false
 }
 
 func TestWorkingContext_LatestIntentAndTerminalControls(t *testing.T) {
-	for _, status := range []memory.WorkStatus{memory.WorkCanceled, memory.WorkCompleted} {
-		t.Run(string(status), func(t *testing.T) {
+	for _, status := range []string{"canceled", "completed"} {
+		t.Run(status, func(t *testing.T) {
 			ctx := context.Background()
 			path := filepath.Join(t.TempDir(), "memory.db")
-			original := currentAccount(memory.WorkActive, "prepare the old fixture", "await arrival")
-			changed := currentAccount(memory.WorkActive, "prepare the replacement fixture", "await inspection")
-			terminal := currentAccount(status, changed.Goal, "")
-			for _, step := range []struct {
-				input   string
-				account memory.WorkAccount
-			}{
-				{"prepare old fixture", original}, {"replace the task with the replacement fixture", changed}, {"owner terminates this work", terminal},
-			} {
-				model := agent.NewScriptedModel(agent.ScriptedStep{Content: "no address"}, workCheckpoint(t, step.account, ""), workFinish(t, step.account, ""))
-				runtime, err := workFactory(path, model, workTools{}).New(ctx, "test", nil)
+			original := "Use Cedar; output JSON with units and supplier; issue one receipt; never repeat release."
+			amendment := "Change supplier to Maple only."
+			replacement := "Replace the task: inspect a new fixture and return text."
+			terminal := "Cancel this fixture."
+			if status == "completed" {
+				terminal = "The fixture is delivered; record completion."
+			}
+			expectedSource := []string{}
+			effects := 0
+			run := func(input, update string, want []string, effect bool) {
+				t.Helper()
+				probe := &workProbe{inner: workModel(func(messages []agent.Message, descriptors []tool.Descriptor) agent.Response {
+					if !hasWorkTool(descriptors) {
+						return agent.Response{Content: "no address"}
+					}
+					current := workRecord(t, messages)
+					require.Equal(t, expectedSource, append([]string{}, current.Source...))
+					require.Equal(t, []string{input}, current.Inputs)
+					return agent.Response{ToolCalls: workUpdate(t, false, update).ToolCalls}
+				})}
+				// The scripted decision is conditional on the actual supplied record, not an enum round trip.
+				checked := false
+				first := probe.inner
+				probe.inner = workModel(func(messages []agent.Message, descriptors []tool.Descriptor) agent.Response {
+					if !hasWorkTool(descriptors) || !checked {
+						response, _ := first.Chat(ctx, messages, descriptors)
+						if hasWorkTool(descriptors) {
+							checked = true
+						}
+						return response
+					}
+					current := workRecord(t, messages)
+					require.Equal(t, want, current.Source)
+					require.Empty(t, current.Inputs)
+					if effect {
+						effect = false
+						return agent.Response{ToolCalls: []agent.ToolCall{{Name: "artifact", Input: json.RawMessage(`{"inspect":"new fixture"}`)}}}
+					}
+					return agent.Response{ToolCalls: workUpdate(t, true, `{}`).ToolCalls}
+				})
+				runtime, err := workFactory(path, probe, workTools{call: func(_ string, input json.RawMessage) (json.RawMessage, error) {
+					effects++
+					require.JSONEq(t, `{"inspect":"new fixture"}`, string(input))
+					return json.RawMessage(`{}`), nil
+				}}).New(ctx, "test", nil)
 				require.NoError(t, err)
-				_, err = runtime.Session.Run(ctx, step.input)
+				require.Empty(t, runtime.Session.History())
+				_, err = runtime.Session.Run(ctx, input)
 				require.NoError(t, err)
 				require.NoError(t, runtime.Close(ctx))
+				expectedSource = want
 			}
-			probe := &workProbe{inner: agent.NewScriptedModel(agent.ScriptedStep{Content: "no address"}, workCheckpoint(t, terminal, ""), workFinish(t, terminal, ""))}
-			runtime, err := workFactory(path, probe, workTools{}).New(ctx, "test", nil)
+			run(original, `{"status":"active","progress":"waiting","inputs":[{"index":0,"action":"amend"}]}`, []string{original}, false)
+			run(amendment, `{"inputs":[{"index":0,"action":"amend"}]}`, []string{original, amendment}, false)
+			run(terminal, `{"status":"`+status+`","progress":"None - terminal","inputs":[{"index":0,"action":"amend"}]}`, []string{original, amendment, terminal}, false)
+			run("arrival notification", `{"inputs":[{"index":0,"action":"dismiss"}]}`, expectedSource, false)
+			require.Zero(t, effects, "terminal identity and governing cancellation were supplied; no effect requested")
+			st, err := sqlite.Open(path)
 			require.NoError(t, err)
-			_, err = runtime.Session.Run(ctx, "arrival notification")
+			saved, err := st.LoadWorkingContext(ctx)
 			require.NoError(t, err)
-			got := workRecord(t, probe.reasoning[0])
-			assert.Equal(t, terminal, got.Account, "terminal identity survives; this is not an empty-context refusal")
-			assert.NotEqual(t, original.Goal, got.Account.Goal)
-			require.NoError(t, runtime.Close(ctx))
-
-			authorized := currentAccount(memory.WorkActive, "newly authorized fixture", "inspect the new fixture")
-			probe = &workProbe{inner: agent.NewScriptedModel(agent.ScriptedStep{Content: "no address"}, workCheckpoint(t, authorized, ""), workFinish(t, authorized, ""))}
-			runtime, err = workFactory(path, probe, workTools{}).New(ctx, "test", nil)
-			require.NoError(t, err)
-			_, err = runtime.Session.Run(ctx, "I authorize a new fixture now")
-			require.NoError(t, err)
-			assert.Equal(t, terminal, workRecord(t, probe.reasoning[0]).Account)
-			assert.Equal(t, authorized, workRecord(t, probe.reasoning[1]).Account)
-			require.NoError(t, runtime.Close(ctx))
+			assert.Equal(t, memory.WorkStatus(status), saved.Account.Status)
+			require.NoError(t, st.Close())
+			run(replacement, `{"status":"active","progress":"inspect new fixture","inputs":[{"index":0,"action":"replace"}]}`, []string{replacement}, true)
+			assert.Equal(t, 1, effects, "only genuinely new scripted work acts")
 		})
 	}
 }
@@ -211,7 +280,7 @@ func TestWorkingContext_ProcessInterruption(t *testing.T) {
 	require.Equal(t, "released once", string(artifact), "effect happened before process death")
 
 	account := currentAccount(memory.WorkActive, "write release marker", "verify marker before any repeat")
-	completed := currentAccount(memory.WorkCompleted, account.Goal, "")
+	completed := currentAccount(memory.WorkCompleted, account.Progress, "")
 	probe := &workProbe{inner: agent.NewScriptedModel(
 		agent.ScriptedStep{Content: "no address"}, workCheckpoint(t, account, ""),
 		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: "artifact", Input: json.RawMessage(`{"action":"read"}`)}}},
@@ -242,8 +311,10 @@ func TestWorkingContext_ProcessInterruption(t *testing.T) {
 	defer stored.Close()
 	final, err := stored.LoadWorkingContext(context.Background())
 	require.NoError(t, err)
-	assert.Empty(t, final.Attempts)
-	assert.Contains(t, final.Account.Decisions, "Read release marker")
+	require.Len(t, final.Attempts, 1, "unmentioned successful verification remains evidence")
+	require.NotNil(t, final.Attempts[0].Result)
+	assert.Equal(t, memory.WorkReturned, final.Attempts[0].Result.Outcome)
+	assert.Contains(t, final.Account.Progress, "Read release marker")
 	assert.Equal(t, memory.WorkCompleted, final.Account.Status)
 	assert.Equal(t, 1, calls, "only the explicit verification ran")
 }
@@ -263,7 +334,7 @@ func (s *workFailure) SaveWorkingContext(ctx context.Context, work memory.Workin
 }
 
 func TestWorkingContext_FailedWritesStopEffectsAndSuccess(t *testing.T) {
-	for _, failAt := range []int{0, 1, 2, 3, 4, 5, 6, 7} {
+	for _, failAt := range []int{0, 1, 2, 3, 4, 5, 6} {
 		t.Run(string(rune('0'+failAt)), func(t *testing.T) {
 			ctx := context.Background()
 			store, err := sqlite.Open(filepath.Join(t.TempDir(), "memory.db"))
@@ -271,7 +342,7 @@ func TestWorkingContext_FailedWritesStopEffectsAndSuccess(t *testing.T) {
 			defer store.Close()
 			boundary := &workFailure{WorkingContextStorer: store, failAt: failAt}
 			account := currentAccount(memory.WorkActive, "write marker", "verify marker")
-			model := agent.NewScriptedModel(workCheckpoint(t, account, ""), agent.ScriptedStep{ToolCalls: []agent.ToolCall{{ID: "first", Name: "artifact", Input: json.RawMessage(`{}`)}, {ID: "second", Name: "artifact", Input: json.RawMessage(`{"second":true}`)}}}, workFinish(t, account, ""))
+			model := agent.NewScriptedModel(agent.ScriptedStep{ToolCalls: []agent.ToolCall{{ID: "first", Name: "artifact", Input: json.RawMessage(`{}`)}, {ID: "second", Name: "artifact", Input: json.RawMessage(`{"second":true}`)}}}, workFinish(t, account, ""))
 			effects := 0
 			probe := &workProbe{inner: model}
 			session := agent.NewSession(probe, workTools{call: func(string, json.RawMessage) (json.RawMessage, error) { effects++; return json.RawMessage(`{}`), nil }}, agent.Options{WorkingContext: boundary, Compactor: agentmemory.Compactor{MaxHistoryMessages: 100}, MaxHistoryMessages: 100})
@@ -284,14 +355,14 @@ func TestWorkingContext_FailedWritesStopEffectsAndSuccess(t *testing.T) {
 			}
 			require.ErrorContains(t, err, "injected durable write failure")
 			assert.Empty(t, reply, "no false success")
-			assert.Equal(t, max(0, (failAt-2)/2), effects)
+			assert.Equal(t, max(0, (failAt-1)/2), effects)
 			saved, err := store.LoadWorkingContext(ctx)
 			require.NoError(t, err)
-			if failAt == 4 {
+			if failAt == 3 {
 				require.Len(t, saved.Attempts, 1)
 				assert.Nil(t, saved.Attempts[0].Result)
 			}
-			if failAt == 5 {
+			if failAt == 4 {
 				require.Len(t, saved.Attempts, 1)
 				require.NotNil(t, saved.Attempts[0].Result)
 			}
@@ -311,7 +382,7 @@ func TestWorkingContext_FailedWritesStopEffectsAndSuccess(t *testing.T) {
 				}
 			}
 			assert.Empty(t, pending, "failed batch leaves no unanswered protocol calls, including siblings")
-			if failAt == 4 {
+			if failAt == 3 {
 				require.Len(t, workRecord(t, recovered).Attempts, 1)
 				assert.Nil(t, workRecord(t, recovered).Attempts[0].Result)
 			}
@@ -322,18 +393,14 @@ func TestWorkingContext_FailedWritesStopEffectsAndSuccess(t *testing.T) {
 
 // fixtureCheckpoint states the work in the existing offline messaging scenarios.
 func fixtureCheckpoint(status string) agent.ScriptedStep {
-	remaining := ""
-	if status == "active" {
-		remaining = "send the scripted reply"
-	}
-	return agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.WorkingContextTool, Input: json.RawMessage(`{"status":"` + status + `","goal":"reply to the test sender","constraints":"use the test channel","decisions":"follow the scripted scenario","progress":"","remaining":"` + remaining + `","uncertainty":"","reconciliation":""}`)}}}
+	return agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.WorkingContextTool, Input: json.RawMessage(`{"status":"` + status + `","progress":"follow the scripted scenario","inputs":[],"resolved_attempts":[]}`)}}}
 }
 
 func TestWorkingContext_PendingIntentSurvivesBeforeInterpretation(t *testing.T) {
 	ctx := context.Background()
 	path := filepath.Join(t.TempDir(), "memory.db")
 	account := currentAccount(memory.WorkActive, "prepare fixture", "await authorization")
-	runtime, err := workFactory(path, agent.NewScriptedModel(agent.ScriptedStep{Content: "no address"}, workFinish(t, account, "")), workTools{}).New(ctx, "test", nil)
+	runtime, err := workFactory(path, agent.NewScriptedModel(agent.ScriptedStep{Content: "no address"}, workUpdate(t, true, `{"status":"active","progress":"prepare fixture; await authorization","inputs":[{"index":0,"action":"amend"}]}`)), workTools{}).New(ctx, "test", nil)
 	require.NoError(t, err)
 	_, err = runtime.Session.Run(ctx, "prepare fixture")
 	require.NoError(t, err)
@@ -345,7 +412,7 @@ func TestWorkingContext_PendingIntentSurvivesBeforeInterpretation(t *testing.T) 
 		require.ErrorContains(t, err, "interrupted before interpreting intent")
 		require.NoError(t, runtime.Close(ctx))
 	}
-	canceled := currentAccount(memory.WorkCanceled, account.Goal, "")
+	canceled := currentAccount(memory.WorkCanceled, account.Progress, "")
 	probe := &workProbe{inner: agent.NewScriptedModel(agent.ScriptedStep{Content: "no address"}, workFinish(t, canceled, ""))}
 	runtime, err = workFactory(path, probe, workTools{}).New(ctx, "test", nil)
 	require.NoError(t, err)
@@ -380,7 +447,7 @@ func TestWorkingContext_CheckpointFeedbackAndRequiredFinalAccount(t *testing.T) 
 			} else {
 				require.NoError(t, err)
 			}
-			assert.Equal(t, 1, effects, "the call before checkpoint was refused; the later authorized call ran")
+			assert.Equal(t, 2, effects, "direct calls run after durable source and attempt persistence")
 			require.Len(t, probe.reasoning, 4)
 			feedback := probe.reasoning[2]
 			found := false
@@ -394,7 +461,7 @@ func TestWorkingContext_CheckpointFeedbackAndRequiredFinalAccount(t *testing.T) 
 				}
 			}
 			require.True(t, found, "checkpoint receives coherent tool feedback")
-			assert.Contains(t, feedback[len(feedback)-1].Content, "Checkpoint saved; continue acting or finish.")
+			assert.Contains(t, feedback[len(feedback)-1].Content, "Source contains")
 		})
 	}
 }
@@ -409,14 +476,14 @@ func TestWorkingContext_UncertainEffectsCannotBecomeCompleted(t *testing.T) {
 			work, err := store.LoadWorkingContext(ctx)
 			require.NoError(t, err)
 			work.Account = currentAccount(memory.WorkActive, "release fixture", "verify effect")
-			attempt := memory.WorkAttempt{Name: "artifact", Input: json.RawMessage(`{"action":"release"}`)}
+			attempt := memory.WorkAttempt{ID: 3, Name: "artifact", Input: json.RawMessage(`{"action":"release"}`)}
 			if outcome != "" {
 				attempt.Result = &memory.WorkResult{Outcome: outcome, Content: "timeout after possible effect"}
 			}
 			work.Attempts = []memory.WorkAttempt{attempt}
 			_, err = store.SaveWorkingContext(ctx, work)
 			require.NoError(t, err)
-			completed := currentAccount(memory.WorkCompleted, work.Account.Goal, "")
+			completed := currentAccount(memory.WorkCompleted, work.Account.Progress, "")
 			probe := &workProbe{inner: agent.NewScriptedModel(workFinish(t, completed, ""))}
 			session := agent.NewSession(probe, workTools{}, agent.Options{WorkingContext: store})
 			_, err = session.Run(ctx, "arrival notification")
@@ -434,4 +501,154 @@ func TestWorkingContext_UncertainEffectsCannotBecomeCompleted(t *testing.T) {
 			assert.Empty(t, saved.Attempts)
 		})
 	}
+}
+
+func TestWorkingContext_IndividualRetirementAndInvalidReferences(t *testing.T) {
+	ctx := context.Background()
+	store, err := sqlite.Open(filepath.Join(t.TempDir(), "memory.db"))
+	require.NoError(t, err)
+	defer store.Close()
+	work, err := store.LoadWorkingContext(ctx)
+	require.NoError(t, err)
+	work.Account = memory.WorkAccount{Status: memory.WorkActive, Progress: "two effects need verification"}
+	work.Source = []string{"Release two independent artifacts once."}
+	work.Attempts = []memory.WorkAttempt{{ID: 1, Name: "artifact", Input: json.RawMessage(`{"path":"one"}`)}, {ID: 2, Name: "artifact", Input: json.RawMessage(`{"path":"two"}`)}}
+	_, err = store.SaveWorkingContext(ctx, work)
+	require.NoError(t, err)
+	run := func(update string) error {
+		t.Helper()
+		session := agent.NewSession(agent.NewScriptedModel(workUpdate(t, true, update)), workTools{}, agent.Options{WorkingContext: store})
+		_, err := session.Run(ctx, "inspection notification")
+		return err
+	}
+	require.NoError(t, run(`{"resolved_attempts":[{"id":1,"evidence":"read artifact one; receipt present"}]}`))
+	saved, err := store.LoadWorkingContext(ctx)
+	require.NoError(t, err)
+	require.Len(t, saved.Attempts, 1)
+	assert.EqualValues(t, 2, saved.Attempts[0].ID)
+	assert.Nil(t, saved.Attempts[0].Result)
+	assert.Contains(t, saved.Account.Progress, "artifact one")
+	for _, update := range []string{
+		`{"status":"completed"}`,
+		`{"resolved_attempts":[{"id":1,"evidence":"already retired"}]}`,
+		`{"resolved_attempts":[{"id":999,"evidence":"unrelated"}]}`,
+		`{"resolved_attempts":[{"evidence":"missing ID"}]}`,
+		`{"resolved_attempts":[{"id":null,"evidence":"null ID"}]}`,
+		`{"resolved_attempts":[{"id":2,"evidence":""}]}`,
+		`{"resolved_attempts":[{"id":2,"evidence":"read two"},{"id":2,"evidence":"duplicate"}]}`,
+	} {
+		t.Run(update, func(t *testing.T) {
+			require.Error(t, run(update))
+			after, err := store.LoadWorkingContext(ctx)
+			require.NoError(t, err)
+			assert.Equal(t, saved.Attempts, after.Attempts)
+			assert.Equal(t, saved.Account, after.Account)
+		})
+	}
+	require.NoError(t, run(`{"status":"completed","resolved_attempts":[{"id":2,"evidence":"read artifact two; distinct receipt present"}]}`))
+	after, err := store.LoadWorkingContext(ctx)
+	require.NoError(t, err)
+	assert.Empty(t, after.Attempts)
+	assert.Equal(t, memory.WorkCompleted, after.Account.Status)
+	require.Error(t, run(`{"resolved_attempts":[{"id":2,"evidence":"repeated retirement"}]}`))
+}
+
+func TestWorkingContext_InputReferencesAndReplacement(t *testing.T) {
+	for _, update := range []string{
+		`{"inputs":[{"action":"dismiss"}]}`,
+		`{"inputs":[{"index":null,"action":"dismiss"}]}`,
+		`{"inputs":[{"index":-1,"action":"dismiss"}]}`,
+		`{"inputs":[{"index":1,"action":"dismiss"}]}`,
+		`{"inputs":[{"index":0}]}`,
+		`{"inputs":[{"index":0,"action":"dismiss"},{"index":0,"action":"dismiss"}]}`,
+		`{"status":"active"}`,
+		`{"status":"idle"}`,
+		`null`,
+	} {
+		t.Run(update, func(t *testing.T) {
+			ctx := context.Background()
+			store, err := sqlite.Open(filepath.Join(t.TempDir(), "memory.db"))
+			require.NoError(t, err)
+			defer store.Close()
+			work, err := store.LoadWorkingContext(ctx)
+			require.NoError(t, err)
+			work.Account = memory.WorkAccount{Status: memory.WorkCanceled, Progress: "old canceled task; stale plans"}
+			work.Source = []string{"old task", "cancel old task"}
+			work.Attempts = []memory.WorkAttempt{{ID: 1, Name: "artifact", Input: json.RawMessage(`{"old":true}`)}}
+			_, err = store.SaveWorkingContext(ctx, work)
+			require.NoError(t, err)
+			session := agent.NewSession(agent.NewScriptedModel(workUpdate(t, true, update)), workTools{}, agent.Options{WorkingContext: store})
+			_, err = session.Run(ctx, "Authorize a new fixture.")
+			require.Error(t, err)
+			saved, err := store.LoadWorkingContext(ctx)
+			require.NoError(t, err)
+			assert.Equal(t, work.Source, saved.Source)
+			assert.Equal(t, work.Account, saved.Account)
+			assert.Equal(t, work.Attempts, saved.Attempts)
+			require.Equal(t, []string{"Authorize a new fixture."}, saved.Inputs)
+			// The accepted reference names that preserved input; the new arrival is neutral.
+			probe := &workProbe{inner: agent.NewScriptedModel(workUpdate(t, false, `{"status":"active","inputs":[{"index":0,"action":"replace"},{"index":1,"action":"dismiss"}]}`), workUpdate(t, true, `{}`))}
+			session = agent.NewSession(probe, workTools{}, agent.Options{WorkingContext: store})
+			_, err = session.Run(ctx, "weather notification")
+			require.NoError(t, err)
+			after := workRecord(t, probe.reasoning[1])
+			assert.Equal(t, []string{"Authorize a new fixture."}, after.Source)
+			assert.Empty(t, after.Inputs)
+			assert.Empty(t, after.Account.Progress, "replacement retires stale subordinate progress")
+			assert.Equal(t, work.Attempts, after.Attempts, "new work cannot erase an old uncertain effect")
+		})
+	}
+}
+
+func TestWorkingContext_OmittedCurationPreservesSource(t *testing.T) {
+	ctx := context.Background()
+	store, err := sqlite.Open(filepath.Join(t.TempDir(), "memory.db"))
+	require.NoError(t, err)
+	defer store.Close()
+	source := `Output exactly {"ok":true}, retain receipt, never repeat.`
+	probe := &workProbe{inner: agent.NewScriptedModel(workUpdate(t, false, `{"progress":"working"}`), workUpdate(t, true, `{}`))}
+	session := agent.NewSession(probe, workTools{}, agent.Options{WorkingContext: store})
+	_, err = session.Run(ctx, source)
+	require.NoError(t, err)
+	supplied := workRecord(t, probe.reasoning[1])
+	assert.Equal(t, []string{source}, supplied.Inputs)
+	assert.Equal(t, "working", supplied.Account.Progress)
+	saved, err := store.LoadWorkingContext(ctx)
+	require.NoError(t, err)
+	assert.Equal(t, []string{source}, saved.Inputs)
+}
+
+func TestWorkingContext_NoOpPreservesReturnedEvidenceOnRestart(t *testing.T) {
+	ctx := context.Background()
+	path := filepath.Join(t.TempDir(), "memory.db")
+	artifact := filepath.Join(t.TempDir(), "receipt")
+	model := agent.NewScriptedModel(agent.ScriptedStep{Content: "no address"}, agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: "artifact", Input: json.RawMessage(`{"write":"receipt"}`)}}}, workUpdate(t, false, `{"status":null,"progress":null,"inputs":[],"resolved_attempts":[]}`), workUpdate(t, true, `{}`))
+	runtime, err := workFactory(path, model, workTools{call: func(_ string, _ json.RawMessage) (json.RawMessage, error) {
+		err := os.WriteFile(artifact, []byte("released once"), 0o600)
+		return json.RawMessage(`{"receipt":"released once"}`), err
+	}}).New(ctx, "test", nil)
+	require.NoError(t, err)
+	_, err = runtime.Session.Run(ctx, "Release once and retain receipt.")
+	require.NoError(t, err)
+	require.NoError(t, runtime.Close(ctx))
+	bytes, err := os.ReadFile(artifact)
+	require.NoError(t, err)
+	require.Equal(t, "released once", string(bytes))
+	probe := &workProbe{inner: agent.NewScriptedModel(agent.ScriptedStep{Content: "no address"}, workUpdate(t, true, `{"status":"completed","resolved_attempts":[{"id":2,"evidence":"saved tool result contains receipt released once"}]}`))}
+	runtime, err = workFactory(path, probe, workTools{}).New(ctx, "test", nil)
+	require.NoError(t, err)
+	defer runtime.Close(ctx)
+	require.Empty(t, runtime.Session.History())
+	_, err = runtime.Session.Run(ctx, "status notification")
+	require.NoError(t, err)
+	initial := workRecord(t, probe.reasoning[0])
+	require.Len(t, initial.Attempts, 1)
+	require.NotNil(t, initial.Attempts[0].Result)
+	assert.Contains(t, initial.Attempts[0].Result.Content, "released once")
+	store, err := sqlite.Open(path)
+	require.NoError(t, err)
+	defer store.Close()
+	final, err := store.LoadWorkingContext(ctx)
+	require.NoError(t, err)
+	assert.Empty(t, final.Attempts)
 }

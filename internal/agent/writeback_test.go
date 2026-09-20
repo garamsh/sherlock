@@ -303,7 +303,7 @@ func TestResponseSchema_ShapeIsEnforceable(t *testing.T) {
 	assert.False(t, schema.AdditionalProperties,
 		"strict mode rejects a response carrying anything else")
 	assert.Equal(t, "array", schema.Properties.MemoryOps.Type)
-	assert.ElementsMatch(t, []string{"status", "goal", "constraints", "decisions", "progress", "remaining", "uncertainty", "reconciliation"}, schema.Properties.WorkingContext.Required)
+	assert.ElementsMatch(t, []string{"status", "progress", "inputs", "resolved_attempts"}, schema.Properties.WorkingContext.Required)
 	assert.False(t, schema.Properties.WorkingContext.AdditionalProperties)
 
 	item := schema.Properties.MemoryOps.Items

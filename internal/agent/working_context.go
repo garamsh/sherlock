@@ -12,27 +12,28 @@ import (
 	"github.com/garamsh/gagent/internal/tool"
 )
 
-// WorkingContextTool replaces the one current-work account without ending a turn.
+// WorkingContextTool curates the current-work record without ending a turn.
 const WorkingContextTool = "working_context"
 
 const workingContextSchema = `{
  "type":"object",
  "properties":{
-  "status":{"type":"string","enum":["idle","active","completed","canceled"]},
-  "goal":{"type":"string"},
-  "constraints":{"type":"string"},
-  "decisions":{"type":"string"},
-  "progress":{"type":"string"},
-  "remaining":{"type":"string"},
-  "uncertainty":{"type":"string"},
-  "reconciliation":{"type":"string","description":"Evidence from surviving artifacts resolving ALL unknown attempts, or empty to keep them unresolved."}
+  "status":{"type":["string","null"],"enum":["idle","active","completed","canceled",null],"description":"Null preserves lifecycle status."},
+  "progress":{"type":["string","null"],"description":"Subordinate notes: decisions, verified progress, remaining work and uncertainty. Null preserves existing notes."},
+  "inputs":{"type":"array","items":{"type":"object","properties":{
+   "index":{"type":"integer","minimum":0},
+   "action":{"type":"string","enum":["amend","replace","dismiss"]}
+  },"required":["index","action"],"additionalProperties":false},"description":"Classify a prefix of pending inputs by zero-based index in arrival order. Amend retains exact words; replace retires prior source for explicit new/replacement work; dismiss removes neutral input. Unmentioned inputs survive."},
+  "resolved_attempts":{"type":"array","items":{"type":"object","properties":{
+   "id":{"type":"integer"},"evidence":{"type":"string"}
+  },"required":["id","evidence"],"additionalProperties":false},"description":"Retire only these attempt IDs, with observed evidence. Empty preserves all attempts."}
  },
- "required":["status","goal","constraints","decisions","progress","remaining","uncertainty","reconciliation"],
+ "required":["status","progress","inputs","resolved_attempts"],
  "additionalProperties":false
 }`
 
 func workingContextDescriptor() tool.Descriptor {
-	return tool.Descriptor{Name: WorkingContextTool, Description: "Checkpoint the complete current work account before effects and after observations. This call does not end the turn.", InputSchema: json.RawMessage(workingContextSchema)}
+	return tool.Descriptor{Name: WorkingContextTool, Description: "Optionally curate current work. Source instructions govern progress; no transcription is required before tools. This call does not end the turn.", InputSchema: json.RawMessage(workingContextSchema)}
 }
 
 func (s *session) beginWork(ctx context.Context, task string) error {
@@ -44,7 +45,6 @@ func (s *session) beginWork(ctx context.Context, task string) error {
 		return err
 	}
 	s.work = work
-	s.workReady = false
 	work.Inputs = append(append([]string(nil), work.Inputs...), task)
 	return s.saveWork(ctx, work)
 }
@@ -67,55 +67,96 @@ func (s *session) reasoningContext() ([]Message, error) {
 	if err != nil {
 		return nil, fmt.Errorf("encode reasoning context: %v", err)
 	}
-	phase := "Checkpoint saved; continue acting or finish."
-	if !s.workReady {
-		phase = "Checkpoint required before operator tools; memory_write may finish directly with the final account."
-	}
 	messages := append([]Message(nil), s.history...)
-	return append(messages, Message{Role: RoleSystem, Content: workingContextContract + "\n" + phase + "\nCurrent-work record:\n" + string(data)}), nil
+	return append(messages, Message{Role: RoleSystem, Content: workingContextContract + "\nCurrent-work record:\n" + string(data)}), nil
 }
 
 func (s *session) prepareCheckpoint(input json.RawMessage) (memory.WorkingContext, error) {
+	if len(bytes.TrimSpace(input)) == 0 || bytes.TrimSpace(input)[0] != '{' {
+		return memory.WorkingContext{}, fmt.Errorf("working context update must be an object")
+	}
 	var doc struct {
-		memory.WorkAccount
-		Reconciliation string `json:"reconciliation"`
+		Status   *memory.WorkStatus `json:"status"`
+		Progress *string            `json:"progress"`
+		Inputs   []struct {
+			Index  *int   `json:"index"`
+			Action string `json:"action"`
+		} `json:"inputs"`
+		Resolved []struct {
+			ID       int64  `json:"id"`
+			Evidence string `json:"evidence"`
+		} `json:"resolved_attempts"`
 	}
 	dec := json.NewDecoder(bytes.NewReader(input))
 	dec.DisallowUnknownFields()
 	if err := dec.Decode(&doc); err != nil {
-		return memory.WorkingContext{}, fmt.Errorf("decode working context checkpoint: %v", err)
+		return memory.WorkingContext{}, fmt.Errorf("decode working context update: %v", err)
 	}
 	if err := dec.Decode(new(json.RawMessage)); err != io.EOF {
-		return memory.WorkingContext{}, fmt.Errorf("checkpoint has trailing data")
-	}
-	var fields map[string]json.RawMessage
-	if err := json.Unmarshal(input, &fields); err != nil {
-		return memory.WorkingContext{}, fmt.Errorf("checkpoint fields: %v", err)
-	}
-	for _, name := range []string{"status", "goal", "constraints", "decisions", "progress", "remaining", "uncertainty", "reconciliation"} {
-		value, ok := fields[name]
-		if !ok || bytes.Equal(value, []byte("null")) {
-			return memory.WorkingContext{}, fmt.Errorf("checkpoint requires %s", name)
-		}
-	}
-	if err := doc.Validate(); err != nil {
-		return memory.WorkingContext{}, err
+		return memory.WorkingContext{}, fmt.Errorf("working context update has trailing data")
 	}
 	work := s.work
-	work.Account = doc.WorkAccount
+	work.Source = append([]string(nil), work.Source...)
 	work.Inputs = nil
 	work.Attempts = nil
-	if strings.TrimSpace(doc.Reconciliation) == "" {
-		for _, attempt := range s.work.Attempts {
+	if doc.Status != nil {
+		work.Account.Status = *doc.Status
+	}
+	if doc.Progress != nil {
+		work.Account.Progress = *doc.Progress
+	}
+	if err := work.Account.Validate(); err != nil {
+		return work, err
+	}
+	previous := -1
+	replaced := false
+	for _, edit := range doc.Inputs {
+		if edit.Index == nil || *edit.Index != previous+1 || *edit.Index >= len(s.work.Inputs) {
+			return work, fmt.Errorf("input references must be a valid ordered prefix without duplicates")
+		}
+		switch edit.Action {
+		case "amend":
+			work.Source = append(work.Source, s.work.Inputs[*edit.Index])
+		case "replace":
+			work.Source = []string{s.work.Inputs[*edit.Index]}
+			if doc.Progress == nil {
+				work.Account.Progress = ""
+			}
+			replaced = true
+		case "dismiss":
+		default:
+			return work, fmt.Errorf("invalid input action %q", edit.Action)
+		}
+		previous = *edit.Index
+	}
+	work.Inputs = append(work.Inputs, s.work.Inputs[previous+1:]...)
+	if (s.work.Account.Status == memory.WorkCanceled || s.work.Account.Status == memory.WorkCompleted) && (work.Account.Status == memory.WorkActive || work.Account.Status == memory.WorkIdle) && !replaced {
+		return work, fmt.Errorf("terminal work requires explicit replacement input to reactivate")
+	}
+	resolved := map[int64]string{}
+	for _, resolution := range doc.Resolved {
+		if resolution.ID <= 0 || strings.TrimSpace(resolution.Evidence) == "" || resolved[resolution.ID] != "" {
+			return work, fmt.Errorf("attempt resolution requires unique ID and evidence")
+		}
+		resolved[resolution.ID] = resolution.Evidence
+	}
+	for _, attempt := range s.work.Attempts {
+		if evidence, ok := resolved[attempt.ID]; ok {
+			work.Account.Progress += fmt.Sprintf("\nAttempt %d resolved: %s", attempt.ID, evidence)
+			delete(resolved, attempt.ID)
+		} else {
+			work.Attempts = append(work.Attempts, attempt)
+		}
+	}
+	if len(resolved) != 0 {
+		return work, fmt.Errorf("resolution references an unknown or retired attempt")
+	}
+	if work.Account.Status == memory.WorkCompleted {
+		for _, attempt := range work.Attempts {
 			if attempt.Result == nil || attempt.Result.Outcome == memory.WorkFailed {
-				work.Attempts = append(work.Attempts, attempt)
+				return work, fmt.Errorf("completed work requires reconciliation of uncertain attempts")
 			}
 		}
-	} else {
-		work.Account.Decisions += "\nReconciliation: " + doc.Reconciliation
-	}
-	if work.Account.Status == memory.WorkCompleted && len(work.Attempts) > 0 {
-		return memory.WorkingContext{}, fmt.Errorf("completed work requires reconciliation of uncertain attempts")
 	}
 	return work, nil
 }
@@ -125,16 +166,12 @@ func (s *session) checkpoint(ctx context.Context, call ToolCall) error {
 	if err != nil {
 		return err
 	}
-	if err := s.saveWork(ctx, work); err != nil {
-		return err
-	}
-	s.workReady = true
-	return nil
+	return s.saveWork(ctx, work)
 }
 
 func (s *session) recordAttempt(ctx context.Context, call ToolCall) error {
 	work := s.work
-	work.Attempts = append(append([]memory.WorkAttempt(nil), work.Attempts...), memory.WorkAttempt{Name: call.Name, Input: call.Input})
+	work.Attempts = append(append([]memory.WorkAttempt(nil), work.Attempts...), memory.WorkAttempt{ID: work.Revision + 1, Name: call.Name, Input: call.Input})
 	return s.saveWork(ctx, work)
 }
 

@@ -67,30 +67,27 @@ const (
 	WorkIdle WorkStatus = "idle"
 )
 
-// WorkAccount is the model's complete account of the one current work item.
+// WorkAccount holds lifecycle status and subordinate continuation notes.
 type WorkAccount struct {
-	Status      WorkStatus `json:"status"`
-	Goal        string     `json:"goal"`
-	Constraints string     `json:"constraints"`
-	Decisions   string     `json:"decisions"`
-	Progress    string     `json:"progress"`
-	Remaining   string     `json:"remaining"`
-	Uncertainty string     `json:"uncertainty"`
+	Status   WorkStatus `json:"status"`
+	Progress string     `json:"progress"`
 }
 
 // WorkAttempt records an invocation whose effect may outlive its caller.
 // A nil result means no result was durably observed, never that nothing ran.
 type WorkAttempt struct {
+	ID     int64           `json:"id"`
 	Name   string          `json:"name"`
 	Input  json.RawMessage `json:"input"`
 	Result *WorkResult     `json:"result"`
 }
 
 // WorkingContext is the single durable current-work authority.
-// Inputs and attempts remain until a checkpoint incorporates them.
+// Source governs progress; unclassified inputs and unmentioned attempts survive curation.
 type WorkingContext struct {
 	Revision int64         `json:"-"`
 	Account  WorkAccount   `json:"account"`
+	Source   []string      `json:"source"`
 	Inputs   []string      `json:"inputs"`
 	Attempts []WorkAttempt `json:"attempts"`
 }

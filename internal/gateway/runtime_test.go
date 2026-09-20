@@ -533,9 +533,5 @@ func resolveStep() agent.ScriptedStep {
 
 // checkpointStep gives the offline wiring scenario an explicit work account.
 func checkpointStep(status string) agent.ScriptedStep {
-	remaining := ""
-	if status == "active" {
-		remaining = "finish the scripted reply"
-	}
-	return agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.WorkingContextTool, Input: json.RawMessage(fmt.Sprintf(`{"status":%q,"goal":"acknowledge the test message","constraints":"use the test channel","decisions":"follow the scripted scenario","progress":"","remaining":%q,"uncertainty":"","reconciliation":""}`, status, remaining))}}}
+	return agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.WorkingContextTool, Input: json.RawMessage(fmt.Sprintf(`{"status":%q,"progress":"follow the scripted scenario","inputs":[],"resolved_attempts":[]}`, status))}}}
 }

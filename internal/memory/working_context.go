@@ -23,7 +23,7 @@ func ParseWorkingContext(data []byte) (WorkingContext, error) {
 	if err := json.Unmarshal(data, &document); err != nil {
 		return work, fmt.Errorf("working context fields: %v", err)
 	}
-	for _, name := range []string{"account", "inputs", "attempts"} {
+	for _, name := range []string{"account", "source", "inputs", "attempts"} {
 		if _, ok := document[name]; !ok {
 			return work, fmt.Errorf("working context requires %s", name)
 		}
@@ -32,7 +32,7 @@ func ParseWorkingContext(data []byte) (WorkingContext, error) {
 	if err := json.Unmarshal(document["account"], &account); err != nil {
 		return work, fmt.Errorf("working account fields: %v", err)
 	}
-	for _, name := range []string{"status", "goal", "constraints", "decisions", "progress", "remaining", "uncertainty"} {
+	for _, name := range []string{"status", "progress"} {
 		value, ok := account[name]
 		if !ok || bytes.Equal(value, []byte("null")) {
 			return work, fmt.Errorf("working account requires %s", name)
@@ -41,7 +41,12 @@ func ParseWorkingContext(data []byte) (WorkingContext, error) {
 	if err := work.Account.Validate(); err != nil {
 		return work, err
 	}
+	seen := map[int64]bool{}
 	for _, attempt := range work.Attempts {
+		if attempt.ID <= 0 || seen[attempt.ID] {
+			return work, fmt.Errorf("invalid or repeated attempt ID")
+		}
+		seen[attempt.ID] = true
 		if attempt.Result != nil && attempt.Result.Outcome != WorkReturned && attempt.Result.Outcome != WorkFailed {
 			return work, fmt.Errorf("invalid working context result outcome")
 		}
@@ -55,24 +60,9 @@ func ParseWorkingContext(data []byte) (WorkingContext, error) {
 // Validate checks an account at the model or storage boundary.
 func (a WorkAccount) Validate() error {
 	switch a.Status {
-	case WorkActive:
-		if strings.TrimSpace(a.Remaining) == "" {
-			return fmt.Errorf("active work requires remaining work")
-		}
-	case WorkCompleted, WorkCanceled:
-		if strings.TrimSpace(a.Remaining) != "" {
-			return fmt.Errorf("terminal work cannot carry remaining work")
-		}
-	case WorkIdle:
-		if a.Goal != "" || a.Remaining != "" {
-			return fmt.Errorf("idle work cannot carry a goal or remaining work")
-		}
+	case WorkActive, WorkCompleted, WorkCanceled, WorkIdle:
 		return nil
 	default:
 		return fmt.Errorf("invalid working context status %q", a.Status)
 	}
-	if strings.TrimSpace(a.Goal) == "" {
-		return fmt.Errorf("working context requires a goal")
-	}
-	return nil
 }

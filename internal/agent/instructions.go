@@ -78,7 +78,7 @@ retract an earlier one; when it does, do not start the retracted work.
 
 ## Memory writeback
 End every turn by calling ` + "`memory_write`" + `. Its arguments are ` + "`reply`" + `,
-` + "`memory_ops`" + ` and the complete final ` + "`working_context`" + ` account. ` + "`reply`" + ` is what the person reads — nothing else reaches them.
+` + "`memory_ops`" + ` and a ` + "`working_context`" + ` update. ` + "`reply`" + ` is what the person reads — nothing else reaches them.
 ` + "`memory_ops`" + ` is the list of facts this turn states, and it is never omitted:
 an empty list is your answer that the turn stated none. A turn is not finished
 until you make that call, so make it even when you have nothing to record.
@@ -94,16 +94,16 @@ A fact is held at the address of the question it answers. Each entry gives:
   replacement is repaired by nothing.
 
 Both examples below assume the current-work account is idle. An unrelated fact
-must preserve an existing work account, including its status and constraints.
+must preserve an existing work account, including its lifecycle status and source.
 
 When the user says "my favorite telescope is the Kepler-9 refractor":
 
-{"reply":"Noted.","working_context":{"status":"idle","goal":"","constraints":"","decisions":"","progress":"","remaining":"","uncertainty":"","reconciliation":""},"memory_ops":[{"address":{"subject":"user","question":"what is the user's favorite telescope","restriction":null},"value":"the Kepler-9 refractor","operation":null}]}
+{"reply":"Noted.","working_context":{"status":null,"progress":null,"inputs":[{"index":0,"action":"dismiss"}],"resolved_attempts":[]},"memory_ops":[{"address":{"subject":"user","question":"what is the user's favorite telescope","restriction":null},"value":"the Kepler-9 refractor","operation":null}]}
 
 A statement about someone else, carrying a restriction, works the same way.
 When the user says "In winter Dmitri flies with the northern-arc airline":
 
-{"reply":"Noted.","working_context":{"status":"idle","goal":"","constraints":"","decisions":"","progress":"","remaining":"","uncertainty":"","reconciliation":""},"memory_ops":[{"address":{"subject":"Dmitri","question":"which airline does Dmitri fly with","restriction":"in winter"},"value":"the northern-arc airline","operation":null}]}
+{"reply":"Noted.","working_context":{"status":null,"progress":null,"inputs":[{"index":0,"action":"dismiss"}],"resolved_attempts":[]},"memory_ops":[{"address":{"subject":"Dmitri","question":"which airline does Dmitri fly with","restriction":"in winter"},"value":"the northern-arc airline","operation":null}]}
 
 The subject is Dmitri because the statement is about him; the question asks
 for an airline because the statement says that is what the answer is; "in
@@ -164,22 +164,35 @@ func ComposeInstructions(ego string) string {
 }
 
 const workingContextContract = `## Durable current work
-The current-work record supplied with each reasoning call is authoritative across
-restart and compaction. Recalled facts and old conversation do not authorize work.
-Call working_context alone before the first operator tool calls of a turn.
-End the turn with memory_write, carrying the complete final account in its
-working_context field; no separate final checkpoint is needed. Supply a complete replacement account of the actual goal,
-constraints, decisions, verified progress, remaining work and uncertainty.
-Incorporate every pending input in order: newer intent supersedes older intent.
-Keep unfinished work active when a turn merely pauses or awaits an event. Record
-canceled or completed work with its goal and no remaining work. A neutral arrival
-notification does not authorize restarting terminal work; only an explicit new
-authorization does. Idle means no work was authorized, not lost or canceled work.
-Tool attempts with no result may already have changed the world. Verify surviving
-artifacts before repeating effects. A returned error may also hide a partial effect.
-Do not claim completion from an intended action or an absent result. Reconciliation
-must name observed evidence resolving ALL unknown attempts; leave it empty until
-that evidence exists. Unknown attempts then remain visible across checkpoints.
-Do not copy every old event into the account. Keep only what continuation needs;
-write distinct useful long-term facts through memory_write as usual.
+The current-work record is supplied independently of history on every reasoning
+call. Source contains the owner's exact governing instructions, in arrival order.
+Pending inputs are newer, unclassified intent: consider ALL of them before acting,
+including cancellation. Progress is subordinate interpretation, never authority
+to repeal source. A partial correction changes only the clauses it addresses;
+untouched instructions still govern. Old conversation and recalled facts do not
+authorize work over this record.
+Source and attempts are persisted by the runtime before effects. You may act
+directly; working_context is optional curation, not a prerequisite tool call.
+End with memory_write and its working_context update. Null status/progress keep
+those fields; empty lists change no input or uncertain attempt. Do not transcribe
+source. Classify pending inputs by their current zero-based indexes in arrival
+order: amend retains the exact input alongside existing source, replace starts
+explicitly new/replacement work and retires prior source, dismiss removes neutral
+notifications or unrelated conversation. Unmentioned inputs remain pending.
+Never dismiss governing intent to shorten context. Cancellation amends source and
+sets canceled; completion sets completed only on evidence. Both retain source as
+terminal identity until explicit replacement work. Neutral arrivals preserve
+terminal status and do not authorize repeating effects. New authorization needs
+replace and active together; partial corrections normally use amend. Idle means
+no current work, not canceled, completed, or forgotten work.
+Keep useful decisions, verified progress, remaining work and uncertainty in one
+progress note; its wording does not decide lifecycle status. Every unmentioned attempt, including a successful return, survives curation.
+Retire observations by ID only after incorporating what continuation still needs.
+Attempts with no result or a failed result may already have changed the world.
+Verify surviving artifacts before repeating effects. Resolve each individual
+attempt by its ID and observed evidence; one resolution cannot retire another.
+Unresolved attempts prevent completed status, survive replacement/cancellation,
+and never trigger automatic replay. An ID proves which attempt, not truth of the
+evidence or exactly-once execution. Source and unresolved evidence are not silently
+truncated: if they exhaust model context, report the failure rather than guessing.
 `

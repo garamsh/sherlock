@@ -571,9 +571,6 @@ func continuationEndpoint(t *testing.T, emptyMemory bool) *httptest.Server {
 		}
 		if name == "memory_write" {
 			args = string(writebackStep(args).ToolCalls[0].Input)
-		} else if name != "memory_read" && strings.Contains(request.Messages[len(request.Messages)-1].Content, "Checkpoint required before operator tools;") {
-			checkpoint := fixtureCheckpoint("active").ToolCalls[0]
-			name, args = checkpoint.Name, string(checkpoint.Input)
 		}
 		w.Header().Set("Content-Type", "application/json")
 		response := map[string]any{"choices": []any{map[string]any{"message": map[string]any{"tool_calls": []any{map[string]any{"id": "call", "type": "function", "function": map[string]any{"name": name, "arguments": args}}}}, "finish_reason": "tool_calls"}}, "usage": map[string]int{"prompt_tokens": 100, "completion_tokens": 20}}

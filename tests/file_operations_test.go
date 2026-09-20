@@ -264,9 +264,6 @@ func TestFileOperations_Free(t *testing.T) {
 		}
 		if name == "memory_write" {
 			arguments = string(writebackStep(arguments).ToolCalls[0].Input)
-		} else if name != "memory_read" && strings.Contains(request.Messages[len(request.Messages)-1].Content, "Checkpoint required before operator tools;") {
-			checkpoint := fixtureCheckpoint("active").ToolCalls[0]
-			name, arguments = checkpoint.Name, string(checkpoint.Input)
 		}
 		w.Header().Set("Content-Type", "application/json")
 		_, _ = fmt.Fprintf(w, `{"choices":[{"message":{"tool_calls":[{"id":"call-1","type":"function","function":{"name":%q,"arguments":%q}}]},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":100,"completion_tokens":20}}`, name, arguments)

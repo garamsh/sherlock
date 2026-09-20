@@ -34,7 +34,7 @@ func TestComposeInstructions_CustomEgo(t *testing.T) {
 // example appears verbatim so the model can copy the shape — address,
 // value and operation — without guessing.
 func TestContract_ExampleMemoryBlock(t *testing.T) {
-	const example = `{"reply":"Noted.","working_context":{"status":"idle","goal":"","constraints":"","decisions":"","progress":"","remaining":"","uncertainty":"","reconciliation":""},"memory_ops":[{"address":{"subject":"user",` +
+	const example = `{"reply":"Noted.","working_context":{"status":null,"progress":null,"inputs":[{"index":0,"action":"dismiss"}],"resolved_attempts":[]},"memory_ops":[{"address":{"subject":"user",` +
 		`"question":"what is the user's favorite telescope","restriction":null},` +
 		`"value":"the Kepler-9 refractor","operation":null}]}`
 

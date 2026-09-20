@@ -34,7 +34,7 @@ const MemoryWriteTool = "memory_write"
 const memoryWriteDescription = "Deliver your reply and record what this turn stated. " +
 	"Every turn ends with this call and no turn ends without it: the reply you pass here " +
 	"is what the person reads, and memory_ops is the list of facts the turn stated — " +
-	"the empty list is your answer that it stated none. working_context is the complete final work account."
+	"the empty list is your answer that it stated none. working_context updates current work without retranscribing source."
 
 // MemoryWriteDescriptor is the reserved tool as the model sees it. Its
 // parameters are ResponseSchema, so what the write carries is the same

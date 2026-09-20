@@ -23,7 +23,6 @@ func mockModel(_ string) agent.Model {
 		// scenario's first turn asks a question the empty store holds
 		// nothing for.
 		agent.ScriptedStep{Content: "no address"},
-		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.WorkingContextTool, Input: json.RawMessage(`{"status":"active","goal":"compute six times seven and send the result","constraints":"write and read question.txt","decisions":"use the installed workspace tools","progress":"","remaining":"compute, read, send and record the answer","uncertainty":"","reconciliation":""}`)}}},
 		agent.ScriptedStep{
 			ToolCalls: []agent.ToolCall{{
 				Name: "shell_exec",
@@ -52,7 +51,7 @@ func mockModel(_ string) agent.Model {
 			ToolCalls: []agent.ToolCall{{
 				Name: agent.MemoryWriteTool,
 				Input: json.RawMessage(
-					`{"reply":"Replied via message_send and recorded the answer.","working_context":{"status":"active","goal":"compute six times seven and send the result","constraints":"write and read question.txt","decisions":"used installed workspace tools","progress":"issued the scripted tool calls","remaining":"verify the tool results; the mock does not interpret them","uncertainty":"tool failures require reconciliation","reconciliation":""},` +
+					`{"reply":"Replied via message_send and recorded the answer.","working_context":{"status":"active","progress":"issued scripted calls; verify results because the mock does not interpret them","inputs":[{"index":0,"action":"amend"}],"resolved_attempts":[]},` +
 						`"memory_ops":[{"address":{"subject":"user",` +
 						`"question":"what is 6 * 7","restriction":null},` +
 						`"value":"42","operation":null}]}`,

@@ -30,8 +30,8 @@ deliberate-differences:
     host-namespace prefix interpretation (#623). The author-preservation
     obligation is adapted to task squash merges into dev; it does not decide
     the unresolved promotion merge method (#763).
-  documentation.md owns claim evidence and negative-result methods for all
-    GitHub artifacts, including reviews (#746); review.md keeps review procedure
+  documentation.md owns claim evidence and negative-result methods for documents
+    and GitHub artifacts, including reviews (#746); review.md keeps review procedure
     without repeating those general rules.
   documentation.md keeps its build/configuration prose scope (#454), the
     issue-completeness rule (#648), and wording about projects beyond this

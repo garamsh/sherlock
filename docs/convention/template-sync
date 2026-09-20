@@ -30,6 +30,9 @@ deliberate-differences:
     host-namespace prefix interpretation (#623). The author-preservation
     obligation is adapted to task squash merges into dev; it does not decide
     the unresolved promotion merge method (#763).
+  documentation.md owns claim evidence and negative-result methods for documents
+    and GitHub artifacts, including reviews (#746); review.md keeps review procedure
+    without repeating those general rules.
   documentation.md keeps its build/configuration prose scope (#454), the
     issue-completeness rule (#648), and wording about projects beyond this
     one rather than projects consuming this template.
@@ -38,7 +41,7 @@ deliberate-differences:
     placeholder Makefile. The selection-reporting addition in template
     cccfb36 is deferred: current targets print counts without that selection
     description, so adopting it needs a change to the entry points too.
-  review.md keeps the reviewed SHA, negative-result method, conditional local
+  review.md keeps the reviewed SHA, conditional local
     substitution and its retirement condition, expanded head-check explanation,
     and the two project-specific Verification examples (#623, #663).
   .github/PULL_REQUEST_TEMPLATE.md keeps the no-empty-fields instruction,

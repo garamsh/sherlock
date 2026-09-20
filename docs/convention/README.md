@@ -28,8 +28,8 @@ What makes anything generated is that regenerating it changes nothing. What nobo
 | `git.md` | Branches, commits, PR titles, merging |
 | `style.md` | Naming and pattern consistency in code |
 | `simplicity.md` | Whether to add or to change the shape; when an abstraction earns its place |
-| `review.md` | What a review must carry to be valid, and how an author responds |
-| `documentation.md` | What makes a document or a GitHub artifact valid, review comments included |
+| `review.md` | Review procedure, verdicts, required checks and author responses |
+| `documentation.md` | Authored prose and claim evidence in documents and GitHub artifacts, reviews included |
 
 Every project keeps all of these. They are the floor, and bootstrap prunes only the table below.
 

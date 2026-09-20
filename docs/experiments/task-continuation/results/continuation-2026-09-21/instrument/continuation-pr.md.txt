@@ -1,0 +1,37 @@
+## Summary
+
+Refs #807. Add a bounded unchanged-product continuation instrument for one local replenishment assignment, with a conversation-only supplier constraint, two dependent artifacts and a non-idempotent local release receipt. Fix two repetitions of seven cases before any paid execution; this PR reports free instrument checks and makes no real-model capability claim.
+
+## Changes
+
+- Add `tests/continuation_test.go`, reusing the real-binary, spend, transcript and memory helpers without changing shared test files or production source.
+- Compare the continuous process, actual restart and identical-workspace/empty-memory treatment; cover changed, canceled and completed intent, and a separately verified effect-before-writeback process kill.
+- Preserve actual agent-written state, source/instrument/binary identity, complete model/tool/event evidence, snapshots, process logs, costs and artifact judgments; independent agent and PM semantic adjudication remains pending.
+- Retain empty curation as an observed product outcome, with a dedicated free control, rather than aborting continuations as invalid. Confirm only a failed file read, an affirmative root listing, or exact shell inspection forms alongside verified absence; keep other methods pending independent adjudication and reject writes/unrelated shell substrings. Document the canceled-case generic-continue ambiguity.
+- Refresh the task base to dev d9331dccbfcf47039bdbcb0b187cc26befe965e2 to inherit the shared meter raw-byte capture without duplicating it.
+- Add the focused experiment record and index entry with fixed task/case/run counts, criteria, future run namespace `continuation-2026-09-21`, spend ceilings and explicit limits. No paid requests, credentials read, extra agents/worktrees, deployment or external task messaging.
+
+## Verification
+
+- `GOCACHE=/tmp/continuation-go-cache go mod tidy`: passed; module files unchanged.
+- `go test ./tests -run '^TestContinuation_(Free|RejectsBrokenEvidence|EmptyPreparationRemainsObservable)$' -count=1 -timeout=90s -v`: passed with a disposable writable Go cache. Normal free control: 14 rows, 94 local model responses, expected artifact outcomes in every case, no refusals and USD 0. Empty-curation control: all 14 rows retained, 98 local responses, expected continuous success and observable restart/cancellation failures, no refusals and USD 0.
+- Removal runs of `TestContinuation_RejectsBrokenEvidence`: each exited 1 after individually removing shortage validation, post-writeback/terminal exclusion, and exact receipt checking. Two additional removals admitting a failed write or unrelated shell command as inspection also exited 1. All five were restored; their failure logs are retained in `/tmp/continuation-removals.json` and `/tmp/continuation-removal-*.log`.
+- `PATH=/home/sauce/go/bin:$PATH GOCACHE=/tmp/continuation-go-cache GOLANGCI_LINT_CACHE=/tmp/continuation-lint-cache make ci`: passed (exit 0): vet/lint, formatting, all package tests, and 21-package build; final log `/tmp/continuation-ci-refreshed.log`. The installed linter needed its existing directory on PATH; initial shared-cache and PATH failures were environmental, not silently counted as passes.
+- `git diff --check`: passed. Full evidence paths and file hashes are in `/tmp/continuation-delivery.md`.
+- Limits: free responses are scripted instrument controls, not agent cognition; one task/two repetitions/one model, no paid result, compaction, scale or learning claim. Missing semantic understanding is not automatically a retrieval failure; weak/empty memory contrasts, invalid stages or an unproven interruption are identified before interpretation. The local ledger does not provide exactly-once external effects.
+
+## Conventions consulted
+
+Opened and applied `docs/convention/README.md`, `testing.md`, `stack-go.md`, `style.md`, `simplicity.md`, `runtime-safety.md`, `code-comments.md`, `ci.md`, `git.md`, `documentation.md` and `review.md`. Also opened `AGENTS.md`, `docs/architecture/README.md`, `agent.md`, `memory.md`, `gateway.md`, the PR template, the experiment index, the assigned owner goal and research report.
+
+## Defaults not taken
+
+The free endpoint is an external-model substitute driving the actual binaries; its results are described as instrument controls, not an E2E real-model result. The future paid path is separately gated and was not invoked. No production architectural decision changed, so accepted architecture documents remain unchanged.
+
+## Restructure rejected
+
+A production checkpoint or a second simulated agent could encode the continuation being measured and erase the unchanged-product baseline. Instead, this one task-specific test owns its fixtures, observation barrier and judgments, reusing existing process/spend/state APIs; no shared harness restructure or additional framework is introduced.
+
+## Convention concerns
+
+The testing conventions do not classify a free external-model substitute around built binaries as a distinct layer; this PR follows the existing real-binary experiment idiom and explicitly limits the free result to instrument validation. Semantic task judgments are retained as pending identified independent agent and PM adjudication instead of equating a successful test process or artifact check with general task competence.

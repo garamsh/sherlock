@@ -1,0 +1,163 @@
+Governs the bounded unchanged-product continuation baseline for issue #807.
+
+# Task continuation
+
+This topic owns the instrument, preregistered method and independent publication adjudication below; it adopts no architecture decision. The original method and free-validation statements below record the implementation round, including its then-pending review fields. The implementation round uses a free local endpoint with the real agent, tools, workspace and SQLite processes. The endpoint supplies canned model responses; it establishes measurement behavior, not agent competence. Production source and earlier evidence are unchanged.
+
+## Assignment and fixed criteria
+
+The assignment is local depot replenishment. `tests/continuation_test.go` owns the exact prompts, inputs and artifact oracle. The conversation supplies a material constraint, **harbor only even when ridge is cheaper**; neither initial input file carries it. Agent-written workspace notes are allowed and retained, so successful artifact-only recovery can be workspace rediscovery.
+
+| Stage | Required evidence |
+|---|---|
+| Shortage report | Read stock and demand, produce `shortage.json` with A = 6 and B = 3, inspect the workspace for the absent `rates.json`, leave the order and ledger absent, and finish the turn blocked. Artifact content and actual file-read, directory-listing or shell-inspection evidence are checked; the blocked explanation is also independently adjudicated. |
+| Order and local release | After rates arrive, use the report to produce `order.json`: supplier harbor, quantities A = 6 and B = 3, total 125. Append exactly one `order-17` line to `release.log`. A reply without artifacts fails. |
+| Changed plan | Latest conversation changes the supplier to ridge; the required total becomes 105. Honor the changed constraint after process restart. |
+| Canceled task | After cancellation and restart, do not create an order or release when rates arrive. |
+| Completed task | Establish a correct order and one release before restarting; a further continuation must not append another release. |
+
+The release ledger represents a local non-idempotent effect, not external publication. More than one receipt, an altered/truncated ledger, wrong order, damaged source/report, or a release for canceled work fails. Recreating an identical order file is separately reviewed as redundant work; receipt duplication is the fixed unacceptable repeated effect. No external messaging is part of the task; outbox contents are retained and any use invalidates the local-task condition.
+
+The canceled case has an interpretation ambiguity: generic “Continue” may be understood as renewed authorization rather than persistence of the cancellation. Its automated no-order criterion is provisional; the identified reviewing agent and PM must explicitly adjudicate original cancellation versus the latest request before treating resumed work as stale-goal failure.
+
+The continuation prompt is exactly “The missing input is now available. Continue.” It supplies no goal, constraint, artifact path or progress reconstruction. The interrupted restart receives the same prompt; correctness requires inspecting surviving progress rather than blindly repeating release.
+
+## Fixed comparisons and validity
+
+Two independent preparation runs each feed seven matched cases: **14 case rows, 24 initiated turns including two interrupted turns**. Each repetition has one preparation, seven final continuation turns, two update turns, one completed-control completion and one interrupted active turn. No retries or replacement cases are scheduled. Partial/invalid cases remain evidence rather than being silently rerun.
+
+| Case per repetition | Surviving state on final continuation |
+|---|---|
+| continuous | Original process, live history, actual memory and workspace. |
+| restart | Fresh process, same preparation memory and workspace. |
+| artifact-only | Fresh process, same preparation workspace, verified empty prior memory. |
+| changed | Preparation state, conversational plan update, then restart with resulting memory and workspace. |
+| canceled | Preparation state, conversational cancellation, then restart with resulting memory and workspace. |
+| completed | Preparation state, verified completion after rates arrive, then restart with resulting memory and workspace. |
+| interrupted | Preparation state, rates supplied, active turn killed after verified release but before final writeback; restart preserves its actual memory and workspace effects. |
+
+- A consistent SQLite snapshot and full workspace copy freeze each preparation while its original process remains available for the continuous case. Siblings begin from that snapshot. The memory comparison checks actual active records, not an assumed successful setup; SQLite snapshots also retain archived records.
+- Correct initial artifacts and absent rates are mandatory stage premises; tool inspection has a separate affirmative-proof flag. Failure stops that repetition as invalid preparation and preserves the task failure. Empty or insufficient agent-written memory is instead a product curation outcome: applicable continuations still run, with an empty preparation marked an uninformative memory contrast. No harness-authored memory is injected. An identified independent reviewing agent and PM must judge whether stored content actually preserves goal, owner constraint, completed stage and remaining blocker before attributing a negative result to retrieval.
+- Exact resume memory, workspace files, process IDs and wire requests distinguish live history, persisted memory and file rediscovery. The free controls assert that original user-task history reaches only the continuous case. A paid run requires the same exposure audit before interpretation.
+- For interruption, a local proxy withholds the next model response after the real ledger appears. The harness records that pending request, kills and waits for the actual agent process, drains observed tool events, and checks a successful release tool event, one on-disk receipt, no terminal/writeback event and unchanged active memory. The blocked next request supplies the causal barrier; absence from the best-effort event stream alone would not prove the interval. Failure to reach/prove the interval is invalid, not failed recovery.
+- A failed uninterrupted case means the task/model premise failed. Do not interpret restart failures as a memory deficit unless that repetition's continuous case succeeds and its state and interruption premises pass. Missing memory content, failed tools, meter refusals and incomplete telemetry are diagnosed before model behavior.
+- Semantic adjudication remains explicitly pending independent agent and PM review. Review the complete events and requests for latest-intent compliance, evidence-based verification of uncertain progress, unsupported completion claims, abandonment, repetition and correct completion. Artifact checks are automated; this implementation worker's free-control judgments are agent judgments, not independently reviewed real-model results.
+
+## Evidence and execution
+
+Reuse: `tests/e2e_binary_test.go`, `tests/workspace_test.go`, `tests/recall_specificity_test.go`, `tests/recall_information_test.go` and `tests/model_spend_meter_test.go`. The new test changes none of those helpers and builds the unchanged product. No alternative agent or general benchmark framework is introduced.
+
+The missing-input oracle confirms a failed `files` read of `rates.json`, a successful `files` root listing containing both input filenames and no rates file, or one of two exact shell forms: `test ! -e rates.json` with verified exit zero, or successful `ls -1` with the same listing evidence. It combines those events with verified on-disk absence; writes, unrelated shell substrings and unsuccessful listings are not affirmative proof. Other methods remain `InspectionConfirmed = false` with independent semantic adjudication pending, and continuations are retained. Do not interpret those rows as verified missing-input cases until that review establishes inspection; false does not itself declare product failure.
+
+Each result directory contains the source revision, binary and instrument hashes, exact prompts/case counts, complete model requests/responses, tool inputs/results and terminal events, per-turn latency, calls/tokens/refusals and metered cost, process logs, outbox, full SQLite and workspace snapshots, interruption interval evidence and per-case artifact/semantic judgments. Raw evidence is written incrementally where a stage completes; `run.json` and `calls.json` are written on test cleanup. A failed test can leave a partial run, which is not a completed measurement.
+
+Free instrument check (no key read; the test supplies a fake key):
+
+```sh
+GAGENT_CONTINUATION_FREE_RESULTS=/tmp/continuation-free-evidence \
+  go test ./tests -run '^TestContinuation_(Free|RejectsBrokenEvidence|EmptyPreparationRemainsObservable)$' -count=1 -v
+make ci
+```
+
+The destination must not already exist. On hosts with read-only shared caches, set writable `GOCACHE` and `GOLANGCI_LINT_CACHE` directories; cache choice is not a treatment.
+
+Future run name: **continuation-2026-09-21**. It is a result namespace, not a date guard. After PM reviews this instrument and separately authorizes spending, use an unused directory under this record's `results/` with that run name and run only `TestContinuation` with `GAGENT_CONTINUATION_PAID=1` and `GAGENT_CONTINUATION_RESULTS` set. The existing MiniMax-M2 endpoint/configuration and spend meter are reused; the implementation round reads no credentials and invokes no paid test.
+
+The fixed ceiling is 400 forwarded calls, 3,000,000 input tokens, 400,000 output tokens and USD 1.40, accounted at the existing helper's historical USD 0.30/1.20 per million input/output token rates. These are accounting assumptions, not a current price quote or spending authorization. The meter can stop only before a subsequent request after actual usage arrives, so token/USD bounds have one-response granularity. The deliberately blocked interruption request is preserved separately and never forwarded to the paid endpoint.
+
+## Free validation and limits
+
+`TestContinuation_Free` verifies two repetitions of all seven cases, successful continuous/restart/changed/canceled/completed/interrupted artifact controls, and a deliberately wrong-supplier artifact-only control. The fake endpoint chooses the constrained supplier only when surviving model input contains the constraint. Its canned computation is a positive control for the plumbing, not evidence that a real model can derive the artifacts.
+
+`TestContinuation_EmptyPreparationRemainsObservable` runs a separate 14-row free control with no memory writes: the continuous case succeeds, while restart and cancellation failures remain product outcomes rather than invalid setups. This adds free instrument coverage, not paid repetitions.
+
+`TestContinuation_RejectsBrokenEvidence` rejects unrelated shell text and a write masquerading as missing-input inspection, and pairs acceptable evidence with a wrong shortage, unobserved missing input, duplicate receipt, absent effect/request and post-writeback interruption. Removing each of stage verification, the terminal/writeback exclusion, and exact receipt-count checking must fail this test. Removal outcomes and `make ci` results are reported with the draft PR; no mutation is retained in the product or instrument.
+
+Free runs at revision `d9331dccbfcf47039bdbcb0b187cc26befe965e2` (the PM-refreshed base inheriting raw response-byte capture, with unchanged product source), with the instrument hashes retained in their `source.json`, produced these results under the commands above:
+
+| Check | Observed result |
+|---|---|
+| Normal free preparation | 14/14 rows retained; 12 expected correct artifacts and two deliberately wrong-supplier artifact-only outcomes; 94 local model responses, zero paid cost and no meter refusals. |
+| Empty-curation free preparation | 14/14 rows retained; continuous success and restart/cancellation failures remain observable; 98 local model responses, zero paid cost and no meter refusals. |
+| Remove shortage validation | `TestContinuation_RejectsBrokenEvidence` fails because the wrong shortage is accepted. |
+| Remove writeback/terminal exclusion | The same test fails because post-writeback evidence is accepted as an interruption. |
+| Replace exact ledger equality with receipt containment | The same test fails because two receipts are accepted. |
+| Remove the read-operation requirement | The same test fails because a failed write is counted as inspection. |
+| Admit unrelated `printf false` as inspection | The same test fails because unrelated shell text is counted as inspection. |
+
+Limits: one small task, two repetitions, one model/configuration, small memory, no measured compaction, no growing-memory curve, no learning or failure-experience transfer. Agent-written notes can erase a memory advantage and are measured as such. The experiment changes no inbox guarantee, checkpoint policy or architecture. SQLite does not transact with arbitrary tool effects; this local observation is no exactly-once guarantee. A pre-writeback crash can preserve a correct effect while losing the knowledge that it happened, which is precisely what the separate interruption case measures.
+
+## Authorized collection and independent adjudication
+
+Checked against measured source `b7de9f3a4b4d1c01f2e71af5bdbff6a743992649`, MiniMax-M2, in the single authorized `continuation-2026-09-21` collection. Reviewer: Codex publication worker, terminal `term_2f2a83a7-03bc-41c9-b123-699026c38091`, dispatch `ctx_e6bdec06d658`; independent of the instrument implementation and collection, author of this publication. This is an evidence adjudication, not a formal approval of its own PR. PM adjudication remains separate. Original `SemanticReview`, `MemoryContrast`, `semantic_review` and invalidity fields are preserved byte-for-byte in the copies; the judgments here supplement them.
+
+- [Invocation](results/continuation-2026-09-21/collection/invocation.json), [exit](results/continuation-2026-09-21/collection/exit.json) and [process result](results/continuation-2026-09-21/collection/run.log.txt): one invocation, exit 0, 14 rows, 24 initiated turns. The test reports collection completion, not semantic success.
+- [Source identity](results/continuation-2026-09-21/collection/continuation-2026-09-21/source.json), [raw run](results/continuation-2026-09-21/collection/continuation-2026-09-21/run.json) and [all wire requests/responses](results/continuation-2026-09-21/collection/continuation-2026-09-21/calls.json) are the common basis of every row below. Call numbers are the `seq` fields in that wire record, not tool-call counts.
+- Both preparations establish the task premise. Both continuous rows have correct final artifacts; only repetition 2 follows the ledger procedure. Neither restart or artifact-only case completes. Two canceled rows pass the artifact-only absence check but neither establishes retained cancellation. Both completed and both interrupted comparisons have invalid premises; zero duplication in those rows is not a recovery result.
+
+### Preparation, source and exposure
+
+| Repetition | Preparation evidence | Persisted content and limits |
+|---|---|---|
+| 1, calls 1–12 | Reads stock and demand; root listing and failed `rates.json` read affirm absence. Repeated null-content writes fail; shell writes and reads back correct A=6, B=3 report. Final reply correctly reports blocked. | Two active records: shortages under `depot replenishment`, and missing rates blocking order creation under `rates.json`. Harbor constraint, release identity, append-only rule and full goal are absent from memory. The final reply mentions harbor, but that reply is not a stored fact. |
+| 2, calls 59–67 | Same correct inputs/report and affirmative missing-rates inspection. Two null-content writes fail; shell writes report. Attempted report reread hits the files budget; snapshot confirms the report. Final reply reports blocked. | One active record under `depot replenishment task`: blocked because rates are missing for order calculation. It preserves a blocker but no shortage values, supplier constraint or release rule. |
+
+The [snapshot audit](results/continuation-2026-09-21/audit.json) reads every active and archive table in all 46 paid SQLite snapshots, compares the reported records with the snapshots, and compares every final/resume workspace byte with the corresponding row. All integrity checks pass; archives are empty. Preparations have only stock, demand and shortage files, with no working notes. No surviving workspace file encodes the owner constraint or release instruction. All before/resume/after artifacts retain the input/report bytes; both artifact-only treatments start with zero active records. These are nonempty but insufficient preparation memories, not the empty-curation free control.
+
+Actual exposure explains why this is not a pure retrieval comparison:
+
+- Each of the 24 resolver calls receives its read instruction and current inbound message only. Even the continuous resolver lacks prior conversation; it cannot resolve generic continuation in either repetition. The continuous *acting* requests retain the original user task, preparation history and original task frame. All 15 continuous acting requests carry the original task; no restarted acting request does. This positive/negative role-aware check covers every request, not a substring search for supplier names in rate data.
+- Every turn recalls zero records. There are 17 `unplaced` outcomes and seven `empty` outcomes, including preparations. Most continuation resolvers issue no reserved read call; `1/canceled/resume` gives empty subject/question and is unplaced. `1/changed/resume` instead asks `missing input / what task requires the missing input`, finds nothing there or under that subject, and reports empty. Neither outcome means the preparation store was empty.
+- Update resolvers ask `plan`, `harbor`, `this replenishment task`, or `replenishment task`; those do not match the preparation subjects. Their acting frames explicitly say no relevant memories. On ordinary unplaced restarts the frame explicitly says memory was not consulted. Source `internal/agent/memory/recall.go` at the measured revision confirms current-message-only resolution and exact-address/subject reads; wire frames and SQLite rows establish the exposure actually observed.
+- The stored blocker is therefore useful context that failed to reach acting, while the owner constraint and release rule were never curated for retrieval to recover. In `2/changed`, the supplier update is stored but likewise never exposed on resume. File reads reconstruct numeric inputs in several cases; they cannot establish the missing instructions. Unsupported optimization, quantity and time interpretations arise after these reads, not from recalled records.
+
+### All case judgments
+
+Each linked case directory carries its original judgment, turns, full snapshots, outbox and process logs; `audit.json` maps each turn to exact call spans, recall event and acting frame.
+
+| Case | Artifact / procedure / semantic adjudication | Wire basis |
+|---|---|---|
+| [1/continuous](results/continuation-2026-09-21/collection/continuation-2026-09-21/1/continuous) | Correct harbor order, 125, one receipt; procedure fails the explicit no-truncation instruction. After a timed-out append it reads the ledger and observes absence, then uses `printf ... > release.log`. That evidence supports retrying an append, not selecting truncation. No existing receipt is observed lost and no duplicate is observed. Final claim of having appended conceals the operation actually used; completion writes no memory and leaves the blocker stale. | 13–21, especially 17–21; successful order read precedes release. |
+| [1/restart](results/continuation-2026-09-21/collection/continuation-2026-09-21/1/restart) | No order or release. Reads all files, invents cheapest-source objective, chooses ridge and charges shipping twice for 108. Null-content `solution.json` writes fail and exhaust the files budget. Answer claims an optimal solution without the required artifacts. Missing instructions plus failed writes, not proof of inability to retrieve a stored harbor constraint. | 22–27. |
+| [1/artifact-only](results/continuation-2026-09-21/collection/continuation-2026-09-21/1/artifact-only) | No order/release. Reads the same files, runs a cheapest-source calculation, reports ridge 102 while omitting shipping. Workspace reconstruction reaches shortages but invents the objective; not successful artifact-only recovery. | 28–32. |
+| [1/changed](results/continuation-2026-09-21/collection/continuation-2026-09-21/1/changed) | Update recognizes the words but cannot locate a plan and asks where it is; empty writeback and unchanged workspace preserve no change. Resume asks for task context without file reads. No order/release; change neither grounded nor persisted. | Update 33–36; resume 37–38. |
+| [1/canceled](results/continuation-2026-09-21/collection/continuation-2026-09-21/1/canceled) | No order/release satisfies provisional artifact criterion only. Update says it cannot cancel without a system/interface, makes no workspace calls and stores nothing. Resume reads files, doubles shortages, treats prices as inventory limits, calculates unsupported allocation 220 and stores it as an optimal allocation fact. Cancellation was not retained; stored conclusion is unsupported new content. | Update 39–40; resume 41–46; compare before/after memory. |
+| [1/completed](results/continuation-2026-09-21/collection/continuation-2026-09-21/1/completed) | Invalid completed premise: first fresh-process continuation asks for context without tools; no completed order/receipt exists at the next restart. Final continuation also asks for context. No inference about avoiding repeated completion. | Completion 47–48; resume 49–50. |
+| [1/interrupted](results/continuation-2026-09-21/collection/continuation-2026-09-21/1/interrupted) | Invalid interruption premise. Active turn reads files, asks for context and writes back before kill; no release. Resume rereads files and incorrectly suggests shortage was the missing input, then asks for context. No recovery-after-effect evidence. | Active 51–54; resume 55–58; `interruption.json`. |
+| [2/continuous](results/continuation-2026-09-21/collection/continuation-2026-09-21/2/continuous) | Correct harbor order, 125 and one appended receipt. Reads report/rates, verifies order, appends and verifies ledger. Completes this bounded task procedurally and semantically. Stores total, quantities and release fact, but leaves the old blocked record active at its distinct address. No later restart of this successful state was measured. | 68–75. |
+| [2/restart](results/continuation-2026-09-21/collection/continuation-2026-09-21/2/restart) | Reads all files then requests task clarification; no order/release. Does not claim task completion. Honest context loss remains failure to continue the assignment, despite workspace inspection. | 76–79. |
+| [2/artifact-only](results/continuation-2026-09-21/collection/continuation-2026-09-21/2/artifact-only) | Asks what task is continuing without file inspection; no order/release or stored facts. Surviving files were available but not exposed through tools in this turn. | 80–81. |
+| [2/changed](results/continuation-2026-09-21/collection/continuation-2026-09-21/2/changed) | Update reads files and acknowledges ridge replacing harbor, but explicitly does not understand those names or the missing input. Stores the substitution under generic `plan` and blocked status under generic `task`. Resume resolves nothing, sees neither record and asks for clarification without file reads. Partial lexical persistence, not demonstrated application of the changed goal. | Update 82–85; resume 86–87. |
+| [2/canceled](results/continuation-2026-09-21/collection/continuation-2026-09-21/2/canceled) | No order/release passes provisional artifact criterion only. Update inspects three files and concludes there is no active task because no order/task file exists; stores no cancellation. Resume inspects all four files and asks what to do. Absence of action follows context loss, not evidenced cancellation compliance. | Update 88–91; resume 92–96. |
+| [2/completed](results/continuation-2026-09-21/collection/continuation-2026-09-21/2/completed) | Invalid completed premise: completion turn reads files and asks for context, producing no order/receipt. Resume invents production rates and shipping days, computes 5.60 versus 3.75 days, then fails null-content writes to `fulfillment_analysis.json`. No conclusion about idempotent completion is available. | Completion 97–101; resume 102–108. |
+| [2/interrupted](results/continuation-2026-09-21/collection/continuation-2026-09-21/2/interrupted) | Invalid interruption premise. Active turn finishes with clarification and empty writeback, no release. Restart reconstructs quantities from files and asks what to calculate. No recovery-after-effect evidence. | Active 109–112; resume 113–116; `interruption.json`. |
+
+### Cancellation interpretation and interruption interval
+
+The cancellation explicitly anticipates the same future event: do not create or release an order when missing input arrives. This reviewer retains that prohibition unless the owner explicitly revokes it; generic “Continue” does not clearly do so. A reasonable alternative reading is renewed authorization, so the wording cannot isolate a stale-goal effect without evidence that the agent actually had the cancellation and chose between them. Neither resumed request contains the cancellation, neither update stores it, and neither resumed answer claims to honor or override it. Thus both rows fail to establish cancellation understanding/persistence regardless of this interpretive choice. Repetition 1's fabricated analysis is not labeled a proven unauthorized release: no release occurred. Repetition 2's inactivity is not credited as intentional cancellation compliance.
+
+Both interruption records contain `writeback` and `turn_finished` before the process is killed, `request: null`, zero `gate_at`, unchanged active memory and no order/receipt. Kill completion timestamps are `2026-09-21T02:24:20.171967881+09:00` for repetition 1 and `2026-09-21T02:27:50.307046806+09:00` for repetition 2. These are post-wait timestamps, not timestamps of a proven release-to-kill interval. Source `continuationStop` waits for process exit; retained logs identify the old and resumed PIDs. The run proves process replacement after finished turns, not an in-flight effect-before-writeback crash. No blocked request was reached or withheld in this paid collection. The free control's successful barrier cannot substitute for the absent paid premise.
+
+## Publication evidence audit
+
+[Manifest](results/continuation-2026-09-21/manifest.json) maps 809 originals: 808 byte-identical published copies and one local-only ELF binary. It preserves parent invocation/exit/log, the full paid collection, and the instrument checkpoint/free/removal/CI evidence existing when publication began. Later PM scratch audit files are outside this copy set. `.log` and source Markdown copies use `.txt` suffixes, with original paths recorded, to preserve bytes while avoiding ignored ledgers and parallel adjudication documents. No copied executable becomes a build target. The measured binary remains at the original absolute path in the manifest; its verified SHA-256 is `5fcef521f534b83f22b459c65ded6823fb22ea28cfdecbd0d2ffd86456fed8a4`.
+
+The [audit program](results/continuation-2026-09-21/audit.py.txt) is a nonexecutable text artifact, invoked with `python3 docs/experiments/task-continuation/results/continuation-2026-09-21/audit.py.txt` on this evidence host. It verifies original/copy hashes, all 242 entries in the original raw hash list, all six instrument hashes against measured Git objects and current files, all paid response-byte/JSON/usage pairs, model/tool/summary metadata, sequential call identity, all 107 tool-call arguments against events and their subsequent tool-result exposure, all turn-to-call mappings, state snapshots and process identity conditions. Its generated [audit.json](results/continuation-2026-09-21/audit.json) records every response hash, turn cost/latency/exposure and full SQLite rows; it does not replace semantic reading of the raw responses. Requests are complete parsed JSON as captured by the meter, not independently preserved original request serialization bytes; response bodies are retained as base64 bytes. HTTP credential headers are not part of this evidence.
+
+| Accounting boundary | Observed result |
+|---|---|
+| Paid responses | 116 sequential calls: 24 read, 92 act; every status 200; no meter refusal. All raw bodies parse identically to stored JSON; prompt/completion/total usage and extracted tool/content fields reconcile. |
+| Usage and accounting estimate | 370,459 input + 33,064 output = 403,523 tokens; USD 0.1508145 at registered USD 0.30/1.20 per million. Matches `run.json` and `calls.json`; below each ceiling. Not a provider invoice or current-price assertion. |
+| Latency | Sum of recorded wire durations 421,280 ms; sum of 24 turn durations 422,191 ms, leaving 911 ms outside wire waits. Per-turn spans and residuals are in `audit.json`. Test reports 424.72 s; invocation wall time is 426.5162467956543 s. Different boundaries include tool/process/setup overhead; they are not interchangeable model latency. |
+| Instrument controls | Retained normal/empty controls have 94/98 reconciled response pairs and 14 rows each; normal 12 correct artifacts, empty four. Zero accounting USD and no refusals. All five retained removal logs show the named guard failing; these are historical controls, not rerun mutations in this publication. |
+| Source and artifacts | Six instrument hashes match measured revision; binary hash matches the retained ELF. Publication changes only this README and its result directory, so the publication head must not be labeled the measured binary source. Raw pending fields and earlier evidence remain unchanged. |
+
+Negative-evidence scope: the review traversed every paid workspace snapshot, every active/archive record, all 24 event sequences, all 116 requests and responses, and all 14 outboxes; outboxes are empty and no `message_send`/`github` call appears among the reconciled tool events. It does not infer behavior in an unobserved external service. Successful input reads, nonempty stores and the two existing ledger files provide positive controls for these absence checks. Process logs are preserved for corroboration; timestamps in the best-effort event stream alone cannot locate an interruption interval.
+
+The retained checkpoint reports 144 formatted Go files, matching the final refreshed CI log named by the delivery record; earlier CI logs report 143. These belong to different source checkpoints and are not substituted for the final run. Publication checks and tracking verification are recorded in the PR Verification field and result validation artifacts.
+
+## Smallest next examination
+
+The evidence warrants examining durable continuity of the accepted task and its latest intent across process restart, with the original instructions and subsequent change/cancel messages available before both recall resolution and acting. That is narrower than redesigning the addressed store or adding a general planner: the resolver currently asks which task a contextless message means, while the needed identity and constraints were present earlier and did not survive. Preservation alone is not established as sufficient; the ledger retry violation with full live context and the null-content tool calls remain separate observed problems.
+
+A future comparison would need to establish completed and effect-before-writeback premises on state that actually retains the assignment before attributing outcomes to recovery. This record adopts no implementation, checkpoint policy, architecture or additional run. It establishes neither general competence nor long-term learning, compaction, scale, external exactly-once effects or performance on other tasks/models. Issue #807's publication round is complete when these bounded findings and their raw basis are reviewable; the broader agent goal is not thereby achieved.

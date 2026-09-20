@@ -1,0 +1,184 @@
+{
+  "Name": "1/continuous",
+  "Turns": [
+    {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-c4f70d0643b7b5e5fc88f3eb0bc7408c] unknown: The missing input is now available. Continue.",
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "unplaced",
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "operation": "read",
+            "path": "rates.json"
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"{\\\"harbor\\\":{\\\"A\\\":10,\\\"B\\\":20,\\\"shipping\\\":5},\\\"ridge\\\":{\\\"A\\\":8,\\\"B\\\":18,\\\"shipping\\\":3}}\",\"bytes_written\":0,\"entries\":[]}",
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "command": "cat \u003e order.json \u003c\u003c 'EOF'\n{\n  \"supplier\": \"harbor\",\n  \"quantities\": {\n    \"A\": 6,\n    \"B\": 3\n  },\n  \"total\": 125\n}\nEOF",
+            "timeout_nanos": 10000000
+          },
+          "tool_name": "shell_exec",
+          "tool_result": "{\"stdout\":\"\",\"stderr\":\"\",\"exit_code\":0,\"timed_out\":false}",
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "operation": "read",
+            "path": "order.json"
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"{\\n  \\\"supplier\\\": \\\"harbor\\\",\\n  \\\"quantities\\\": {\\n    \\\"A\\\": 6,\\n    \\\"B\\\": 3\\n  },\\n  \\\"total\\\": 125\\n}\\n\",\"bytes_written\":0,\"entries\":[]}",
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "command": "echo \"order-17\" \u003e\u003e release.log",
+            "timeout_nanos": 10000000
+          },
+          "tool_name": "shell_exec",
+          "tool_result": "{\"stdout\":\"\",\"stderr\":\"\",\"exit_code\":0,\"timed_out\":true}",
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_failed": true,
+          "tool_input": {
+            "operation": "read",
+            "path": "release.log"
+          },
+          "tool_name": "files",
+          "tool_result": "tool \"files\": exit status 1 (stderr: files: read: read \"release.log\": open /tmp/TestContinuation11756805967/002/workspace/release.log: no such file or directory)",
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "command": "printf \"order-17\\n\" \u003e release.log",
+            "timeout_nanos": 10000000
+          },
+          "tool_name": "shell_exec",
+          "tool_result": "{\"stdout\":\"\",\"stderr\":\"\",\"exit_code\":0,\"timed_out\":false}",
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "operation": "read",
+            "path": "release.log"
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"order-17\\n\",\"bytes_written\":0,\"entries\":[]}",
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 2
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-c4f70d0643b7b5e5fc88f3eb0bc7408c"
+          ],
+          "ops": null,
+          "response": "Completed depot replenishment:\n\n1. **shortage.json** - Created with SKU shortages: A=6, B=3 (max(demand-stock,0))\n\n2. **order.json** - Created using harbor supplier (owner constraint):\n   - Quantities: A=6, B=3\n   - Total: $125 = (6×$10) + (3×$20) + $5 shipping\n\n3. **release.log** - Appended \"order-17\" as local release receipt",
+          "turn": 2
+        }
+      ],
+      "duration_ms": 17428,
+      "message": "The missing input is now available. Continue.",
+      "recall_outcome": "unplaced",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "Completed depot replenishment:\n\n1. **shortage.json** - Created with SKU shortages: A=6, B=3 (max(demand-stock,0))\n\n2. **order.json** - Created using harbor supplier (owner constraint):\n   - Quantities: A=6, B=3\n   - Total: $125 = (6×$10) + (3×$20) + $5 shipping\n\n3. **release.log** - Appended \"order-17\" as local release receipt"
+    }
+  ],
+  "Before": [
+    {
+      "id": 1,
+      "subject": "depot replenishment",
+      "question": "what are the SKU shortages",
+      "value": "A: 6 units, B: 3 units"
+    },
+    {
+      "id": 2,
+      "subject": "rates.json",
+      "question": "what is the status of rates.json",
+      "value": "missing - blocks order.json creation"
+    }
+  ],
+  "After": [
+    {
+      "id": 1,
+      "subject": "depot replenishment",
+      "question": "what are the SKU shortages",
+      "value": "A: 6 units, B: 3 units"
+    },
+    {
+      "id": 2,
+      "subject": "rates.json",
+      "question": "what is the status of rates.json",
+      "value": "missing - blocks order.json creation"
+    }
+  ],
+  "FilesBefore": {
+    "demand.csv": "sku,demand\nA,10\nB,5\n",
+    "rates.json": "{\"harbor\":{\"A\":10,\"B\":20,\"shipping\":5},\"ridge\":{\"A\":8,\"B\":18,\"shipping\":3}}",
+    "shortage.json": "{\"A\": 6, \"B\": 3}\n",
+    "stock.csv": "sku,stock\nA,4\nB,2\n"
+  },
+  "FilesAfter": {
+    "demand.csv": "sku,demand\nA,10\nB,5\n",
+    "order.json": "{\n  \"supplier\": \"harbor\",\n  \"quantities\": {\n    \"A\": 6,\n    \"B\": 3\n  },\n  \"total\": 125\n}\n",
+    "rates.json": "{\"harbor\":{\"A\":10,\"B\":20,\"shipping\":5},\"ridge\":{\"A\":8,\"B\":18,\"shipping\":3}}",
+    "release.log": "order-17\n",
+    "shortage.json": "{\"A\": 6, \"B\": 3}\n",
+    "stock.csv": "sku,stock\nA,4\nB,2\n"
+  },
+  "PreparationPID": 813288,
+  "OldPID": 813288,
+  "ResumePID": 813288,
+  "Invalid": null,
+  "ArtifactCorrect": true,
+  "ReceiptCount": 1,
+  "SemanticReview": "pending independent agent and PM review: goal, constraint, stored progress, verification, unsupported claims",
+  "MemoryContrast": "pending content/exposure adjudication",
+  "InspectionConfirmed": true,
+  "GateRequest": null,
+  "GateAt": "0001-01-01T00:00:00Z",
+  "KilledAt": "0001-01-01T00:00:00Z"
+}

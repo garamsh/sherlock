@@ -1,0 +1,167 @@
+[
+  {
+    "events": [
+      {
+        "agent_id": "e2e-bin",
+        "kind": "turn_started",
+        "ops": null,
+        "task": "[msg-2f80fae7316cce77793a37e6d582dad8] unknown: The missing input is now available. Continue.",
+        "turn": 2
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "recall",
+        "ops": null,
+        "recall_outcome": "unplaced",
+        "turn": 2
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "tool_call",
+        "ops": null,
+        "tool_input": {
+          "operation": "read",
+          "path": "rates.json"
+        },
+        "tool_name": "files",
+        "tool_result": "{\"content\":\"{\\\"harbor\\\":{\\\"A\\\":10,\\\"B\\\":20,\\\"shipping\\\":5},\\\"ridge\\\":{\\\"A\\\":8,\\\"B\\\":18,\\\"shipping\\\":3}}\",\"bytes_written\":0,\"entries\":[]}",
+        "turn": 2
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "tool_call",
+        "ops": null,
+        "tool_input": {
+          "operation": "read",
+          "path": "shortage.json"
+        },
+        "tool_name": "files",
+        "tool_result": "{\"content\":\"{\\\"A\\\": 6, \\\"B\\\": 3}\\n\",\"bytes_written\":0,\"entries\":[]}",
+        "turn": 2
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "tool_call",
+        "ops": null,
+        "tool_input": {
+          "command": "echo '{\"supplier\": \"harbor\", \"quantities\": {\"A\": 6, \"B\": 3}, \"total\": 125}' \u003e order.json",
+          "timeout_nanos": 10000000
+        },
+        "tool_name": "shell_exec",
+        "tool_result": "{\"stdout\":\"\",\"stderr\":\"\",\"exit_code\":0,\"timed_out\":false}",
+        "turn": 2
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "tool_call",
+        "ops": null,
+        "tool_input": {
+          "operation": "read",
+          "path": "order.json"
+        },
+        "tool_name": "files",
+        "tool_result": "{\"content\":\"{\\\"supplier\\\": \\\"harbor\\\", \\\"quantities\\\": {\\\"A\\\": 6, \\\"B\\\": 3}, \\\"total\\\": 125}\\n\",\"bytes_written\":0,\"entries\":[]}",
+        "turn": 2
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "tool_call",
+        "ops": null,
+        "tool_input": {
+          "command": "echo \"order-17\" \u003e\u003e release.log",
+          "timeout_nanos": 10000000
+        },
+        "tool_name": "shell_exec",
+        "tool_result": "{\"stdout\":\"\",\"stderr\":\"\",\"exit_code\":0,\"timed_out\":false}",
+        "turn": 2
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "tool_call",
+        "ops": null,
+        "tool_input": {
+          "operation": "read",
+          "path": "release.log"
+        },
+        "tool_name": "files",
+        "tool_result": "{\"content\":\"order-17\\n\",\"bytes_written\":0,\"entries\":[]}",
+        "turn": 2
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "writeback",
+        "ops": [
+          {
+            "address": {
+              "question": "what was the order total",
+              "restriction": "harbor supplier",
+              "subject": "depot replenishment"
+            },
+            "operation": "join",
+            "value": "$125"
+          },
+          {
+            "address": {
+              "question": "what SKUs were ordered",
+              "subject": "depot replenishment"
+            },
+            "operation": "join",
+            "value": "A: 6 units, B: 3 units"
+          },
+          {
+            "address": {
+              "question": "what release was logged",
+              "subject": "depot replenishment"
+            },
+            "operation": "join",
+            "value": "order-17"
+          }
+        ],
+        "turn": 2
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "turn_finished",
+        "message_ids": [
+          "msg-2f80fae7316cce77793a37e6d582dad8"
+        ],
+        "ops": null,
+        "response": "Completed depot replenishment: shortage.json written (A=6, B=3), order.json written with harbor supplier, total $125, and release.log appended with order-17.",
+        "turn": 2
+      }
+    ],
+    "duration_ms": 14714,
+    "message": "The missing input is now available. Continue.",
+    "recall_outcome": "unplaced",
+    "recalled_ids": [],
+    "recalled_count": 0,
+    "response": "Completed depot replenishment: shortage.json written (A=6, B=3), order.json written with harbor supplier, total $125, and release.log appended with order-17.",
+    "ops": [
+      {
+        "address": {
+          "question": "what was the order total",
+          "restriction": "harbor supplier",
+          "subject": "depot replenishment"
+        },
+        "operation": "join",
+        "value": "$125"
+      },
+      {
+        "address": {
+          "question": "what SKUs were ordered",
+          "subject": "depot replenishment"
+        },
+        "operation": "join",
+        "value": "A: 6 units, B: 3 units"
+      },
+      {
+        "address": {
+          "question": "what release was logged",
+          "subject": "depot replenishment"
+        },
+        "operation": "join",
+        "value": "order-17"
+      }
+    ]
+  }
+]

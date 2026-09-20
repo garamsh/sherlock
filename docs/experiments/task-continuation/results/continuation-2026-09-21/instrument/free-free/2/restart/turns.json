@@ -1,0 +1,104 @@
+[
+  {
+    "events": [
+      {
+        "agent_id": "e2e-bin",
+        "kind": "turn_started",
+        "ops": null,
+        "task": "[msg-49bd56e7b932c702ba15997599576cfc] unknown: The missing input is now available. Continue.",
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "recall",
+        "ops": null,
+        "recall_outcome": "addressed",
+        "recalled_count": 1,
+        "recalled_ids": [
+          "1"
+        ],
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "tool_call",
+        "ops": null,
+        "tool_input": {
+          "command": "cat shortage.json rates.json; if test -f release.log; then cat release.log; fi",
+          "timeout_nanos": 5000000000
+        },
+        "tool_name": "shell_exec",
+        "tool_result": "{\"stdout\":\"{\\\"A\\\":6,\\\"B\\\":3}{\\\"harbor\\\":{\\\"A\\\":10,\\\"B\\\":20,\\\"shipping\\\":5},\\\"ridge\\\":{\\\"A\\\":8,\\\"B\\\":18,\\\"shipping\\\":3}}\",\"stderr\":\"\",\"exit_code\":0,\"timed_out\":false}",
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "tool_call",
+        "ops": null,
+        "tool_input": {
+          "content": "{\"supplier\":\"harbor\",\"quantities\":{\"A\":6,\"B\":3},\"total\":125}",
+          "operation": "write",
+          "path": "order.json"
+        },
+        "tool_name": "files",
+        "tool_result": "{\"content\":\"\",\"bytes_written\":60,\"entries\":[]}",
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "tool_call",
+        "ops": null,
+        "tool_input": {
+          "command": "printf 'order-17\\n' \u003e\u003e release.log",
+          "timeout_nanos": 5000000000
+        },
+        "tool_name": "shell_exec",
+        "tool_result": "{\"stdout\":\"\",\"stderr\":\"\",\"exit_code\":0,\"timed_out\":false}",
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "writeback",
+        "ops": [
+          {
+            "address": {
+              "question": "status",
+              "subject": "replenishment"
+            },
+            "operation": "replace",
+            "value": "completed; order-17 released; verify ledger before any continuation"
+          }
+        ],
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "turn_finished",
+        "message_ids": [
+          "msg-49bd56e7b932c702ba15997599576cfc"
+        ],
+        "ops": null,
+        "response": "Order completed and released locally.",
+        "turn": 1
+      }
+    ],
+    "duration_ms": 50,
+    "message": "The missing input is now available. Continue.",
+    "recall_outcome": "addressed",
+    "recalled_ids": [
+      "1"
+    ],
+    "recalled_count": 1,
+    "response": "Order completed and released locally.",
+    "ops": [
+      {
+        "address": {
+          "question": "status",
+          "subject": "replenishment"
+        },
+        "operation": "replace",
+        "value": "completed; order-17 released; verify ledger before any continuation"
+      }
+    ]
+  }
+]

@@ -1,0 +1,71 @@
+{
+  "Name": "2/artifact-only",
+  "Turns": [
+    {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-1e2443017fd6402e62cdc88e2bd42c34] unknown: The missing input is now available. Continue.",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "unplaced",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-1e2443017fd6402e62cdc88e2bd42c34"
+          ],
+          "ops": null,
+          "response": "I don't have context about what task we're continuing. The message indicates \"the missing input is now available\" but I don't have information about what previous task this refers to.",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 11186,
+      "message": "The missing input is now available. Continue.",
+      "recall_outcome": "unplaced",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "I don't have context about what task we're continuing. The message indicates \"the missing input is now available\" but I don't have information about what previous task this refers to."
+    }
+  ],
+  "Before": [],
+  "After": [],
+  "FilesBefore": {
+    "demand.csv": "sku,demand\nA,10\nB,5\n",
+    "rates.json": "{\"harbor\":{\"A\":10,\"B\":20,\"shipping\":5},\"ridge\":{\"A\":8,\"B\":18,\"shipping\":3}}",
+    "shortage.json": "{\"A\": 6, \"B\": 3}\n",
+    "stock.csv": "sku,stock\nA,4\nB,2\n"
+  },
+  "FilesAfter": {
+    "demand.csv": "sku,demand\nA,10\nB,5\n",
+    "rates.json": "{\"harbor\":{\"A\":10,\"B\":20,\"shipping\":5},\"ridge\":{\"A\":8,\"B\":18,\"shipping\":3}}",
+    "shortage.json": "{\"A\": 6, \"B\": 3}\n",
+    "stock.csv": "sku,stock\nA,4\nB,2\n"
+  },
+  "PreparationPID": 832503,
+  "OldPID": 836454,
+  "ResumePID": 836454,
+  "Invalid": null,
+  "ArtifactCorrect": false,
+  "ReceiptCount": 0,
+  "SemanticReview": "pending independent agent and PM review: goal, constraint, stored progress, verification, unsupported claims",
+  "MemoryContrast": "pending content/exposure adjudication",
+  "InspectionConfirmed": true,
+  "GateRequest": null,
+  "GateAt": "0001-01-01T00:00:00Z",
+  "KilledAt": "0001-01-01T00:00:00Z"
+}

@@ -1,0 +1,36 @@
+=== RUN   TestContinuation
+=== RUN   TestContinuation/1
+=== RUN   TestContinuation/1/continuous
+=== RUN   TestContinuation/1/restart
+=== RUN   TestContinuation/1/artifact-only
+=== RUN   TestContinuation/1/changed
+=== RUN   TestContinuation/1/canceled
+=== RUN   TestContinuation/1/completed
+=== RUN   TestContinuation/1/interrupted
+=== RUN   TestContinuation/2
+=== RUN   TestContinuation/2/continuous
+=== RUN   TestContinuation/2/restart
+=== RUN   TestContinuation/2/artifact-only
+=== RUN   TestContinuation/2/changed
+=== RUN   TestContinuation/2/canceled
+=== RUN   TestContinuation/2/completed
+=== RUN   TestContinuation/2/interrupted
+--- PASS: TestContinuation (424.72s)
+    --- PASS: TestContinuation/1 (209.36s)
+        --- PASS: TestContinuation/1/continuous (17.44s)
+        --- PASS: TestContinuation/1/restart (25.03s)
+        --- PASS: TestContinuation/1/artifact-only (23.83s)
+        --- PASS: TestContinuation/1/changed (19.85s)
+        --- PASS: TestContinuation/1/canceled (48.62s)
+        --- PASS: TestContinuation/1/completed (18.49s)
+        --- PASS: TestContinuation/1/interrupted (30.47s)
+    --- PASS: TestContinuation/2 (213.58s)
+        --- PASS: TestContinuation/2/continuous (14.73s)
+        --- PASS: TestContinuation/2/restart (17.60s)
+        --- PASS: TestContinuation/2/artifact-only (11.22s)
+        --- PASS: TestContinuation/2/changed (29.00s)
+        --- PASS: TestContinuation/2/canceled (36.73s)
+        --- PASS: TestContinuation/2/completed (49.02s)
+        --- PASS: TestContinuation/2/interrupted (37.61s)
+PASS
+ok  	github.com/garamsh/gagent/tests	424.736s

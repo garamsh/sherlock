@@ -1,0 +1,110 @@
+from pathlib import Path
+import json,hashlib,base64,sqlite3,collections,subprocess
+p=Path(__file__).resolve().parent
+root=p.parents[4]
+r=p/'collection/continuation-2026-09-21'
+def read(f): return json.loads(f.read_text())
+def sha(b):return hashlib.sha256(b).hexdigest()
+manifest=read(p/'manifest.json');copy_count=0
+for e in manifest['entries']:
+ b=Path(e['original']).read_bytes();assert sha(b)==e['sha256'] and len(b)==e['bytes'],e['original']
+ if e['published']:
+  assert (p/e['published']).read_bytes()==b,e['published'];copy_count+=1
+source=read(r/'source.json')
+for f,h in source['instrument_sha256'].items():
+ assert sha(subprocess.check_output(['git','show',source['revision']+':'+f],cwd=root))==h,f
+ assert sha((root/f).read_bytes())==h,f
+assert sha(Path('/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-continuation-b7de9f3/continuation-2026-09-21/gagent-measured').read_bytes())==source['binary_sha256']
+raw_hashes=0
+for line in (r/'sha256.txt').read_text().splitlines():
+ h,f=line.split('  ',1);actual=Path('/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-continuation-b7de9f3/continuation-2026-09-21')/f
+ assert sha(actual.read_bytes())==h,f;raw_hashes+=1
+calls=read(r/'calls.json');run=read(r/'run.json');wire=[];groups=collections.defaultdict(list)
+for c in calls['calls']:
+ b=base64.b64decode(c['response_bytes'],validate=True);d=json.loads(b);assert d==c['response'],c['seq']
+ u=d['usage'];assert u['prompt_tokens']==c['prompt_tokens'] and u['completion_tokens']==c['completion_tokens'];assert u['total_tokens']==u['prompt_tokens']+u['completion_tokens']
+ choice=d['choices'][0];assert choice['finish_reason']==c['finish_reason'];assert choice['message'].get('content','')==c.get('content','')
+ assert [{'name':t['function']['name'],'arguments':t['function']['arguments']} for t in choice['message'].get('tool_calls',[])]==c.get('tool_calls',[])
+ assert c['request']['model']==c['model']==source['model'];assert [t['function']['name'] for t in c['request']['tools']]==c['tools'];assert c['request']['messages'][-1].get('content','')==c.get('last_message','')
+ assert c['status']==200 and not c.get('refused');assert c['duration_ms']>=0
+ assert c['seq']==len(wire)+1
+ wire.append({'seq':c['seq'],'label':c['label'],'step':c['step'],'response_sha256':sha(b),'response_bytes':len(b),'input_tokens':u['prompt_tokens'],'output_tokens':u['completion_tokens'],'duration_ms':c['duration_ms'],'original_task_in_user_history':any(m['role']=='user' and source['task'] in (m.get('content') or '') for m in c['request']['messages'])})
+ groups[c['label']].append(c)
+sp={'calls':len(wire),'input_tokens':sum(c['input_tokens'] for c in wire),'output_tokens':sum(c['output_tokens'] for c in wire)};sp['usd']=sp['input_tokens']*.3/1e6+sp['output_tokens']*1.2/1e6
+for s in [calls['spend'],run['spend']]:
+ for k,v in sp.items():assert abs(s[k]-v)<1e-10
+assert not run['refusals']
+dbs=[]
+for f in sorted(r.rglob('memory.db')):
+ with sqlite3.connect('file:'+str(f)+'?immutable=1',uri=True) as db:
+  assert db.execute('pragma integrity_check').fetchall()==[('ok',)]
+  db.row_factory=sqlite3.Row
+  tables={t:[dict(x) for x in db.execute('select * from '+t+' order by id')] for t in ['memories_active','memories_archive']}
+ dbs.append({'path':str(f.relative_to(r)),**tables})
+def mem(f):
+ d=next(x for x in dbs if x['path']==f)
+ return sorted([{k:v for k,v in x.items() if k in ['id','subject','question','restriction','value'] and (k!='restriction' or v)} for x in d['memories_active']],key=lambda x:x['id'])
+def files(f):
+ return {str(x.relative_to(f)).removesuffix('.txt') if x.name.endswith('.log.txt') else str(x.relative_to(f)):x.read_text() for x in f.rglob('*') if x.is_file()}
+turns={};out=[]
+for rep in ['1','2']:
+ prep=read(r/rep/'preparation.json');assert prep['files']==files(r/rep/'frozen/workspace')
+ assert sorted(prep['memory'],key=lambda x:x['id'])==mem(rep+'/frozen/memory.db')
+ turns[rep+'/preparation']=prep['turn']
+for row in run['rows']:
+ name=row['Name'];d=r/name
+ assert read(d/'judgment.json')==row
+ assert read(d/'turns.json')==row['Turns'];assert not read(d/'outbox.json')
+ for stage,mk,fk in [('resume','Before','FilesBefore'),('after','After','FilesAfter')]:
+  assert mem(name+'/'+stage+'/memory.db')==sorted(row[mk],key=lambda x:x['id']),(name,stage)
+  assert files(d/stage/'workspace')==row[fk],(name,stage)
+ ts=row['Turns'];suffix=name.split('/')[1]
+ labels=['update','resume'] if suffix in ['changed','canceled'] else ['completion','resume'] if suffix=='completed' else ['active','resume'] if suffix=='interrupted' else ['resume']
+ for lab,t in zip(labels,ts): turns[name+'/'+lab]=t
+ if suffix=='continuous': assert row['PreparationPID']==row['ResumePID']
+ else: assert row['PreparationPID']!=row['ResumePID']
+ if suffix in ['changed','canceled','completed','interrupted']:assert row['OldPID']!=row['ResumePID']
+ if suffix=='artifact-only':assert not row['Before']
+ if suffix=='interrupted':
+  i=read(d/'interruption.json');assert i['request'] is None and i['gate_at'].startswith('0001-');assert any(e['kind']=='turn_finished' for e in i['events']);assert any(e['kind']=='writeback' for e in i['events']);assert 'release.log' not in i['files']
+  assert i['memory']==row['Before'] and i['files']==row['FilesBefore'];assert mem(name+'/interrupted/memory.db')==sorted(i['memory'],key=lambda x:x['id'])
+ assert row['FilesAfter']['stock.csv']=='sku,stock\nA,4\nB,2\n' and row['FilesAfter']['demand.csv']=='sku,demand\nA,10\nB,5\n'
+ assert json.loads(row['FilesAfter']['shortage.json'])=={'A':6,'B':3}
+for label,cs in groups.items():
+ t=turns[label];events=t['events'];rec=[e for e in events if e['kind']=='recall'];assert len(rec)==1
+ assert sum(c['step']=='read' for c in cs)==1
+ history=[c['seq'] for c in cs if c['step']=='act' and any(m['role']=='user' and source['task'] in (m.get('content') or '') for m in c['request']['messages'])]
+ assert bool(history)==(label.endswith('/preparation') or '/continuous/' in label),label
+ assert all(not any(source['task'] in (m.get('content') or '') for m in c['request']['messages']) for c in cs if c['step']=='read' and not label.endswith('/preparation'))
+ tools=[e for e in events if e['kind']=='tool_call']; terminals=[e for e in events if e['kind'] in ['turn_finished','turn_failed']]
+ assert len(terminals)==1
+ read_calls=[c for c in cs if c['step']=='read']
+ first_act=next(c for c in cs if c['step']=='act')
+ out.append({'label':label,'seq_first':cs[0]['seq'],'seq_last':cs[-1]['seq'],'calls':len(cs),'input_tokens':sum(c['prompt_tokens'] for c in cs),'output_tokens':sum(c['completion_tokens'] for c in cs),'wire_duration_ms':sum(c['duration_ms'] for c in cs),'turn_duration_ms':t['duration_ms'],'nonwire_duration_ms':t['duration_ms']-sum(c['duration_ms'] for c in cs),'recall_event':rec[0],'resolver_calls':read_calls[0].get('tool_calls',[]),'first_act_system_context':first_act['request']['messages'][1]['content'],'history_calls':history,'tool_events':len(tools),'failed_tool_events':sum(bool(e.get('tool_failed')) for e in tools),'terminal_response':terminals[0].get('response'),'outcome':terminals[0]['kind']})
+ assert out[-1]['nonwire_duration_ms']>=0
+assert set(turns)==set(groups) and len(turns)==24
+result={'verified_copies':copy_count,'local_binary_count':1,'original_hash_list_entries':raw_hashes,'measured_source':source['revision'],'binary_sha256':source['binary_sha256'],'spend':sp,'wire_duration_ms':sum(c['duration_ms'] for c in wire),'turn_duration_ms':sum(t['duration_ms'] for t in turns.values()),'calls':wire,'turns':out,'snapshots':dbs}
+(p/'audit.json').write_text(json.dumps(result,indent=2)+'\n')
+print(json.dumps({k:v for k,v in result.items() if k not in ['calls','turns','snapshots']},indent=2));print('SQLite snapshots',len(dbs),'archive rows',sum(len(x['memories_archive']) for x in dbs));print('labels:')
+for x in out: print(x['label'],x['seq_first'],x['seq_last'],x['calls'],x['input_tokens'],x['output_tokens'],x['wire_duration_ms'],x['turn_duration_ms'],x['recall_event'].get('recall_outcome'))
+
+checks=[]
+for label,cs in groups.items():
+ ev=[e for e in turns[label]['events'] if e['kind']=='tool_call']
+ tc=[t for c in cs if c['step']=='act' for t in c.get('tool_calls',[]) if t['name']!='memory_write']
+ assert len(ev)==len(tc),(label,len(ev),len(tc))
+ for e,t in zip(ev,tc):
+  assert e['tool_name']==t['name'];assert json.loads(t['arguments'])==e['tool_input'],(label,t)
+ msgs=[m for c in cs for m in c['request']['messages'] if m['role']=='tool']
+ for e in ev:assert any(m['content']==e['tool_result'] for m in msgs),(label,e)
+ checks.append({'label':label,'wire_tool_calls_matched_to_events':len(ev),'tool_results_exposed':len(ev)})
+free=[]
+for label in ['free-free','free-empty']:
+ d=p/'instrument'/label;c=read(d/'calls.json');rn=read(d/'run.json')
+ for x in c['calls']:
+  assert json.loads(base64.b64decode(x['response_bytes']))==x['response']
+  assert x['prompt_tokens']==x['response']['usage']['prompt_tokens']
+  assert x['completion_tokens']==x['response']['usage']['completion_tokens']
+ free.append({'name':label,'calls':len(c['calls']),'rows':len(rn['rows']),'artifacts_correct':sum(x['ArtifactCorrect'] for x in rn['rows']),'spend':rn['spend'],'refusals':rn['refusals']})
+result['event_wire_checks']=checks;result['free_controls']=free
+(p/'audit.json').write_text(json.dumps(result,indent=2)+'\n');print('wire-event checks',sum(x['tool_results_exposed'] for x in checks));print(free)

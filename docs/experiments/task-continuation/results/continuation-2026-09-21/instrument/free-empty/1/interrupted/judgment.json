@@ -1,0 +1,513 @@
+{
+  "Name": "1/interrupted",
+  "Turns": [
+    {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-597a395d31689e7abdd291316b829549] unknown: The missing input is now available. Continue.",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "empty",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "command": "cat shortage.json rates.json; if test -f release.log; then cat release.log; fi",
+            "timeout_nanos": 5000000000
+          },
+          "tool_name": "shell_exec",
+          "tool_result": "{\"stdout\":\"{\\\"A\\\":6,\\\"B\\\":3}{\\\"harbor\\\":{\\\"A\\\":10,\\\"B\\\":20,\\\"shipping\\\":5},\\\"ridge\\\":{\\\"A\\\":8,\\\"B\\\":18,\\\"shipping\\\":3}}\",\"stderr\":\"\",\"exit_code\":0,\"timed_out\":false}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "content": "{\"supplier\":\"ridge\",\"quantities\":{\"A\":6,\"B\":3},\"total\":105}",
+            "operation": "write",
+            "path": "order.json"
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"\",\"bytes_written\":59,\"entries\":[]}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "command": "printf 'order-17\\n' \u003e\u003e release.log",
+            "timeout_nanos": 5000000000
+          },
+          "tool_name": "shell_exec",
+          "tool_result": "{\"stdout\":\"\",\"stderr\":\"\",\"exit_code\":0,\"timed_out\":false}",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 43,
+      "message": "The missing input is now available. Continue.",
+      "recall_outcome": "",
+      "recalled_ids": null,
+      "recalled_count": 0,
+      "response": ""
+    },
+    {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-c67919e877deb0b42ce43a7523458c96] unknown: The missing input is now available. Continue.",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "empty",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "command": "cat shortage.json rates.json; if test -f release.log; then cat release.log; fi",
+            "timeout_nanos": 5000000000
+          },
+          "tool_name": "shell_exec",
+          "tool_result": "{\"stdout\":\"{\\\"A\\\":6,\\\"B\\\":3}{\\\"harbor\\\":{\\\"A\\\":10,\\\"B\\\":20,\\\"shipping\\\":5},\\\"ridge\\\":{\\\"A\\\":8,\\\"B\\\":18,\\\"shipping\\\":3}}order-17\\n\",\"stderr\":\"\",\"exit_code\":0,\"timed_out\":false}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-c67919e877deb0b42ce43a7523458c96"
+          ],
+          "ops": null,
+          "response": "State observed; no memory curated.",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 20,
+      "message": "The missing input is now available. Continue.",
+      "recall_outcome": "empty",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "State observed; no memory curated."
+    }
+  ],
+  "Before": [],
+  "After": [],
+  "FilesBefore": {
+    "demand.csv": "sku,demand\nA,10\nB,5\n",
+    "order.json": "{\"supplier\":\"ridge\",\"quantities\":{\"A\":6,\"B\":3},\"total\":105}",
+    "rates.json": "{\"harbor\":{\"A\":10,\"B\":20,\"shipping\":5},\"ridge\":{\"A\":8,\"B\":18,\"shipping\":3}}",
+    "release.log": "order-17\n",
+    "shortage.json": "{\"A\":6,\"B\":3}",
+    "stock.csv": "sku,stock\nA,4\nB,2\n"
+  },
+  "FilesAfter": {
+    "demand.csv": "sku,demand\nA,10\nB,5\n",
+    "order.json": "{\"supplier\":\"ridge\",\"quantities\":{\"A\":6,\"B\":3},\"total\":105}",
+    "rates.json": "{\"harbor\":{\"A\":10,\"B\":20,\"shipping\":5},\"ridge\":{\"A\":8,\"B\":18,\"shipping\":3}}",
+    "release.log": "order-17\n",
+    "shortage.json": "{\"A\":6,\"B\":3}",
+    "stock.csv": "sku,stock\nA,4\nB,2\n"
+  },
+  "PreparationPID": 7785,
+  "OldPID": 8125,
+  "ResumePID": 8168,
+  "Invalid": null,
+  "ArtifactCorrect": false,
+  "ReceiptCount": 1,
+  "SemanticReview": "pending independent agent and PM review: goal, constraint, stored progress, verification, unsupported claims",
+  "MemoryContrast": "uninformative: preparation curated no active memory; product curation outcome retained",
+  "InspectionConfirmed": true,
+  "GateRequest": {
+    "model": "MiniMax-M2",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are gagent, an autonomous agent running one continuous session per environment. You act on the messages people send you: reason over the conversation, call the typed tools the agent reaches through the platform protocol (tools are independent servers, the operator's tool list determines which are installed) when the task needs them, and maintain your own long-term memory across turns. Prefer the smallest change that solves the task; ask for confirmation before destructive operations. If a tool returns an error, switch to a different tool rather than retrying the same one with a different argument.\n\nBefore you ask the user for a fact you could look up (a repo owner, a branch name, the current branch, a remote URL), discover it yourself with the tools — for a workspace you have access to, `shell_exec` `git remote -v` or `cat .git/config` answers most of these in one call. Fabricating a placeholder (`\u003cyour_github_username\u003e`) is a failure mode, not a hint.\n\n## Tools\nPick the right tool for the task; don't run code when files will do.\n\n- files: read, write, and list files in your workspace (the workspace is the\n  agent's data plane; the files tool is the only way the agent touches it).\n- message_send: send a message to a channel and target. When the task came from\n  a person and a reply is owed, reply through message_send. Your final response\n  alone does not reach the user.\n- Additional tools are independent servers the agent reaches through the\n  platform protocol; the operator's tool list determines which are\n  installed. Process exec is the workspace's capability — reach it through\n  the `shell_exec` tool, which calls the workspace Exec RPC (ADR 0008);\n  there is no separate exec capability to invoke directly.\n\n## Turns and messages\nA turn may carry several messages; each arrives with an ID and a sender —\naddress replies per message through message_send. A later message may\nretract an earlier one; when it does, do not start the retracted work.\n\n## Memory writeback\nEnd every turn by calling `memory_write`. Its arguments are `reply` and\n`memory_ops`. `reply` is what the person reads — nothing else reaches them.\n`memory_ops` is the list of facts this turn states, and it is never omitted:\nan empty list is your answer that the turn stated none. A turn is not finished\nuntil you make that call, so make it even when you have nothing to record.\n\nA fact is held at the address of the question it answers. Each entry gives:\n\n- `address.subject` — who or what the statement is about. In \"Dmitri flies\n  with the northern-arc airline\" that is Dmitri and not the airline: the\n  statement is about him, and the airline is what it says about him. The\n  subject is never the value.\n- `address.question` — the question this fact answers, phrased the way\n  someone who does not yet know the answer would ask it. That is the whole\n  test. Whoever looks for this fact later has the question and not the\n  answer, so the answer never appears in the question, and the question is\n  worded the way it will be asked rather than the way this statement\n  happened to put it. Not a topic noun: \"what is the user's favorite\n  telescope\" is an address, \"telescopes\" is not.\n  It asks about the subject. \"who leads the northern-arc project\" is not a\n  question about Dmitri even when Dmitri is the answer — it is a question\n  about the project, and it belongs to a different address.\n  Where the statement says what kind of thing the answer is, ask for that\n  kind: \"Dmitri flies with the northern-arc airline\" answers \"which airline\n  does Dmitri fly with\". Where it says no kind, take the question word from\n  what the answer is — `who` for a person or an organisation, `where` for a\n  place, `what` otherwise. Never take it from the statement's verb, which\n  describes the doing and not the answer.\n- `address.restriction` — what the statement narrows that question to, in its\n  own words, or null. Most statements narrow nothing; a restriction is\n  material limiting when or for what the fact holds, never the subject and\n  never the value. It goes in this field and never inside the question: the\n  question stays the one a reader would ask, and this is what narrows it.\n- `value` — the answer to that question, on its own.\n- `operation` — `\"replace\"` where the value ends what that address already\n  holds, `\"join\"` where it stands beside it, or null where the statement\n  answers a question of its own. When you are unsure, write `\"join\"`: a wrong\n  join is repaired by the next correct value at that address, and a wrong\n  replacement is repaired by nothing.\n\nWhen the user says \"my favorite telescope is the Kepler-9 refractor\":\n\n{\"reply\":\"Noted.\",\"memory_ops\":[{\"address\":{\"subject\":\"user\",\"question\":\"what is the user's favorite telescope\",\"restriction\":null},\"value\":\"the Kepler-9 refractor\",\"operation\":null}]}\n\nA statement about someone else, carrying a restriction, works the same way.\nWhen the user says \"In winter Dmitri flies with the northern-arc airline\":\n\n{\"reply\":\"Noted.\",\"memory_ops\":[{\"address\":{\"subject\":\"Dmitri\",\"question\":\"which airline does Dmitri fly with\",\"restriction\":\"in winter\"},\"value\":\"the northern-arc airline\",\"operation\":null}]}\n\nThe subject is Dmitri because the statement is about him; the question asks\nfor an airline because the statement says that is what the answer is; \"in\nwinter\" is the restriction and is\nnot in the question, so the same question reaches the fact whether or not a\nreader knows about the winter.\n\nAn entry is required — the default, not something you opt into — whenever the\nuser shares a fact or preference, corrects an earlier fact, or asks to\nremember: acknowledging it in `reply` alone stores nothing. A correction is\nanother entry at the same address with `\"replace\"`; two facts that are both\ntrue get either different questions or different restrictions, and `\"join\"`\nwhere they genuinely answer the same one.\n\nRecord only facts you actually obtained this turn: a failed tool call produces no result to store, never a placeholder, and your reply must match the writeback side effect.\n\n## When a tool is unavailable\n\nIf a tool returns an error, **switch tools, do not retry the same tool with\ndifferent arguments**. The typed tools cover most cases:\n\n- Listing files: `files` (operation: list).\n- Reading a file: `files` (operation: read).\n- Writing a file: `files` (operation: write).\n- Computing a value: answer from context when simple, or write the\n  computed value into a file via `files write` and read it back.\n- Running a command: `shell_exec`.\n- Sending a message: `message_send`.\n\nRetrying the same tool with a different input is fine — that's a normal\nretry. Retrying a tool after it has already failed is not — the second\nfailure tells you the tool is unavailable in this environment, not that\nthe input is wrong. Switch to the typed alternative.\n\nSwitching tools means switching to a tool that can actually obtain the\nfact. If no available tool can obtain it, the task failed — store nothing,\nwrite nothing, and report the failure. Never fabricate the fact just to\nhave an artifact to store.\n\nIf a tool call partially succeeded (e.g. one tool worked, another\nfailed), report the actual outcome, not the failed component.\n\n## Replies and failures\nYour visible content is the `reply` field. Keep it concise: one or two\nsentences when the answer is short, more only when the task needs it.\n\nIf a tool returns an error, change your approach — different input, different\ntool, or finish the turn with what you have. Do not repeat the same call\nidentically; the platform will substitute a synthetic error after two retries."
+      },
+      {
+        "role": "system",
+        "content": "## Current task\n[msg-597a395d31689e7abdd291316b829549] unknown: The missing input is now available. Continue.\n\n## Recalled memories\nNo relevant memories."
+      },
+      {
+        "role": "user",
+        "content": "[msg-597a395d31689e7abdd291316b829549] unknown: The missing input is now available. Continue."
+      },
+      {
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [
+          {
+            "id": "call",
+            "type": "function",
+            "function": {
+              "name": "shell_exec",
+              "arguments": "{\"command\":\"cat shortage.json rates.json; if test -f release.log; then cat release.log; fi\",\"timeout_nanos\":5000000000}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "content": "{\"stdout\":\"{\\\"A\\\":6,\\\"B\\\":3}{\\\"harbor\\\":{\\\"A\\\":10,\\\"B\\\":20,\\\"shipping\\\":5},\\\"ridge\\\":{\\\"A\\\":8,\\\"B\\\":18,\\\"shipping\\\":3}}\",\"stderr\":\"\",\"exit_code\":0,\"timed_out\":false}",
+        "name": "shell_exec",
+        "tool_call_id": "call"
+      },
+      {
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [
+          {
+            "id": "call",
+            "type": "function",
+            "function": {
+              "name": "files",
+              "arguments": "{\"content\":\"{\\\"supplier\\\":\\\"ridge\\\",\\\"quantities\\\":{\\\"A\\\":6,\\\"B\\\":3},\\\"total\\\":105}\",\"operation\":\"write\",\"path\":\"order.json\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "content": "{\"content\":\"\",\"bytes_written\":59,\"entries\":[]}",
+        "name": "files",
+        "tool_call_id": "call"
+      },
+      {
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [
+          {
+            "id": "call",
+            "type": "function",
+            "function": {
+              "name": "shell_exec",
+              "arguments": "{\"command\":\"printf 'order-17\\\\n' \\u003e\\u003e release.log\",\"timeout_nanos\":5000000000}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "content": "{\"stdout\":\"\",\"stderr\":\"\",\"exit_code\":0,\"timed_out\":false}",
+        "name": "shell_exec",
+        "tool_call_id": "call"
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "files",
+          "description": "Read, write, and list files inside the agent's workspace.",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "content": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "operation": {
+                "type": "string",
+                "enum": [
+                  "read",
+                  "write",
+                  "list"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "operation",
+              "path",
+              "content"
+            ],
+            "type": "object"
+          },
+          "strict": true
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "github",
+          "description": "Push branches and manage issues, pull requests, and comments on GitHub via the REST API.",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "base": {
+                "minLength": 1,
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "body": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "branch": {
+                "minLength": 1,
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "head": {
+                "minLength": 1,
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "labels": {
+                "items": {
+                  "type": "string"
+                },
+                "type": [
+                  "array",
+                  "null"
+                ]
+              },
+              "message": {
+                "minLength": 1,
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "number": {
+                "minimum": 1,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "operation": {
+                "type": "string",
+                "enum": [
+                  "push",
+                  "open_issue",
+                  "open_pull_request",
+                  "comment"
+                ]
+              },
+              "owner": {
+                "type": "string",
+                "minLength": 1
+              },
+              "repo": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha": {
+                "minLength": 1,
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "title": {
+                "minLength": 1,
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "operation",
+              "owner",
+              "repo",
+              "base",
+              "body",
+              "branch",
+              "head",
+              "labels",
+              "message",
+              "number",
+              "sha",
+              "title"
+            ],
+            "type": "object"
+          },
+          "strict": true
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "message_send",
+          "description": "Queue an outbound message for delivery to a channel and target.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "channel": {
+                "type": "string",
+                "minLength": 1
+              },
+              "target": {
+                "type": "string",
+                "minLength": 1
+              },
+              "content": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "channel",
+              "target",
+              "content"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "shell_exec",
+          "description": "Run a shell command in the agent's workspace and return its captured output. The working directory is the workspace directory, so relative paths resolve against the same tree the files tool writes to.",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "command": {
+                "type": "string",
+                "minLength": 1
+              },
+              "timeout_nanos": {
+                "minimum": 1,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "command",
+              "timeout_nanos"
+            ],
+            "type": "object"
+          },
+          "strict": true
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "memory_write",
+          "description": "Deliver your reply and record what this turn stated. Every turn ends with this call and no turn ends without it: the reply you pass here is what the person reads, and memory_ops is the list of facts the turn stated — the empty list is your answer that it stated none.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "reply": {
+                "type": "string",
+                "description": "Everything the person reads. The memory field is not shown to them."
+              },
+              "memory_ops": {
+                "type": "array",
+                "description": "One entry per fact this turn states. The empty list is an answer, not an omission.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "object",
+                      "description": "Where the fact is held: the question it answers, not the topic it is about.",
+                      "properties": {
+                        "subject": {
+                          "type": "string",
+                          "description": "Who or what the fact is about."
+                        },
+                        "question": {
+                          "type": "string",
+                          "description": "The question this fact answers, in the statement's own words."
+                        },
+                        "restriction": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "What the statement narrows that question to, in its own words. Null where it narrows nothing."
+                        }
+                      },
+                      "required": [
+                        "subject",
+                        "question",
+                        "restriction"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "value": {
+                      "type": "string",
+                      "description": "The answer to that question, stated on its own."
+                    },
+                    "operation": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "enum": [
+                        "replace",
+                        "join",
+                        null
+                      ],
+                      "description": "replace where the value ends what that address holds, join where it stands beside it. Null where the statement answers a question of its own."
+                    }
+                  },
+                  "required": [
+                    "address",
+                    "value",
+                    "operation"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "reply",
+              "memory_ops"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      }
+    ],
+    "parallel_tool_calls": false
+  },
+  "GateAt": "2026-09-21T02:14:42.967361334+09:00",
+  "KilledAt": "2026-09-21T02:14:42.969508512+09:00"
+}

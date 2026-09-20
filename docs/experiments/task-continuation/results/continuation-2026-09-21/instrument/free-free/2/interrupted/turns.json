@@ -1,0 +1,144 @@
+[
+  {
+    "events": [
+      {
+        "agent_id": "e2e-bin",
+        "kind": "turn_started",
+        "ops": null,
+        "task": "[msg-92859b1a77916aeaa1ccc3606836718d] unknown: The missing input is now available. Continue.",
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "recall",
+        "ops": null,
+        "recall_outcome": "addressed",
+        "recalled_count": 1,
+        "recalled_ids": [
+          "1"
+        ],
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "tool_call",
+        "ops": null,
+        "tool_input": {
+          "command": "cat shortage.json rates.json; if test -f release.log; then cat release.log; fi",
+          "timeout_nanos": 5000000000
+        },
+        "tool_name": "shell_exec",
+        "tool_result": "{\"stdout\":\"{\\\"A\\\":6,\\\"B\\\":3}{\\\"harbor\\\":{\\\"A\\\":10,\\\"B\\\":20,\\\"shipping\\\":5},\\\"ridge\\\":{\\\"A\\\":8,\\\"B\\\":18,\\\"shipping\\\":3}}\",\"stderr\":\"\",\"exit_code\":0,\"timed_out\":false}",
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "tool_call",
+        "ops": null,
+        "tool_input": {
+          "content": "{\"supplier\":\"harbor\",\"quantities\":{\"A\":6,\"B\":3},\"total\":125}",
+          "operation": "write",
+          "path": "order.json"
+        },
+        "tool_name": "files",
+        "tool_result": "{\"content\":\"\",\"bytes_written\":60,\"entries\":[]}",
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "tool_call",
+        "ops": null,
+        "tool_input": {
+          "command": "printf 'order-17\\n' \u003e\u003e release.log",
+          "timeout_nanos": 5000000000
+        },
+        "tool_name": "shell_exec",
+        "tool_result": "{\"stdout\":\"\",\"stderr\":\"\",\"exit_code\":0,\"timed_out\":false}",
+        "turn": 1
+      }
+    ],
+    "duration_ms": 43,
+    "message": "The missing input is now available. Continue.",
+    "recall_outcome": "",
+    "recalled_ids": null,
+    "recalled_count": 0,
+    "response": ""
+  },
+  {
+    "events": [
+      {
+        "agent_id": "e2e-bin",
+        "kind": "turn_started",
+        "ops": null,
+        "task": "[msg-52c0ec07b4c00032a238aeb1dd1f6d68] unknown: The missing input is now available. Continue.",
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "recall",
+        "ops": null,
+        "recall_outcome": "addressed",
+        "recalled_count": 1,
+        "recalled_ids": [
+          "1"
+        ],
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "tool_call",
+        "ops": null,
+        "tool_input": {
+          "command": "cat shortage.json rates.json; if test -f release.log; then cat release.log; fi",
+          "timeout_nanos": 5000000000
+        },
+        "tool_name": "shell_exec",
+        "tool_result": "{\"stdout\":\"{\\\"A\\\":6,\\\"B\\\":3}{\\\"harbor\\\":{\\\"A\\\":10,\\\"B\\\":20,\\\"shipping\\\":5},\\\"ridge\\\":{\\\"A\\\":8,\\\"B\\\":18,\\\"shipping\\\":3}}order-17\\n\",\"stderr\":\"\",\"exit_code\":0,\"timed_out\":false}",
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "writeback",
+        "ops": [
+          {
+            "address": {
+              "question": "status",
+              "subject": "replenishment"
+            },
+            "operation": "replace",
+            "value": "harbor only; shortage.json done; waiting for rates.json; create order.json then append order-17 once to release.log"
+          }
+        ],
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "turn_finished",
+        "message_ids": [
+          "msg-52c0ec07b4c00032a238aeb1dd1f6d68"
+        ],
+        "ops": null,
+        "response": "No release needed.",
+        "turn": 1
+      }
+    ],
+    "duration_ms": 24,
+    "message": "The missing input is now available. Continue.",
+    "recall_outcome": "addressed",
+    "recalled_ids": [
+      "1"
+    ],
+    "recalled_count": 1,
+    "response": "No release needed.",
+    "ops": [
+      {
+        "address": {
+          "question": "status",
+          "subject": "replenishment"
+        },
+        "operation": "replace",
+        "value": "harbor only; shortage.json done; waiting for rates.json; create order.json then append order-17 once to release.log"
+      }
+    ]
+  }
+]

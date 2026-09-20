@@ -1,0 +1,11 @@
+# Continuation instrument checkpoint
+
+PM inspected source and revised controls at b7de9f3a4b4d1c01f2e71af5bdbff6a743992649, after reading the current conventions and architecture. Draft PR #809 has no hosted checks, expected for dev per git.md and the authored main-only workflow.
+
+- make ci log inspected: exit 0, 144 Go files, 16 tested and 21 built packages.
+- Five removal controls fail the intended stage, interval, receipt, inspection-operation and unrelated-command assertions; restored source is hash-verified.
+- PM checked both retained free runs: 14 rows each, 94/98 response-byte/JSON pairs reconcile; all source hashes match committed files. Normal 12 correct and two deliberate artifact-only failures; empty curation preserves restart/cancellation failures and flags unestablished completed controls. Scripted outputs establish measurement behavior only.
+- Verified stage artifacts, actual SQLite snapshots, process termination/restart, separate withheld-response interruption barrier, exact ledger oracle, and empty-memory handling. Noncanonical missing-input inspection stays pending semantic adjudication. Generic Continue after cancellation is a known interpretation ambiguity, explicitly tagged.
+- Production source is unchanged; no architecture adoption or long-term competence claim. Before publishing model conclusions, independently audit all actual requests, surviving state, outcomes, interruptions and costs.
+
+The bounded paid collection is authorized under the active owner goal and fixed instrument ceilings. This checkpoint is not a final PR approval or a paid result.

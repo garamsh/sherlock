@@ -1,0 +1,139 @@
+{
+  "Name": "1/completed",
+  "Turns": [
+    {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-2d5211ea18d072a14de5c41299bcf881] unknown: The missing input is now available. Continue.",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "unplaced",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-2d5211ea18d072a14de5c41299bcf881"
+          ],
+          "ops": null,
+          "response": "I don't have context from a previous conversation about what task or missing input you're referring to. Could you please clarify what you'd like me to continue working on? For example:\n- What project or task are we working on?\n- What was the missing input that is now available?\n- What was I supposed to do with it?\n\nWith more details, I can help you complete the task.",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 10167,
+      "message": "The missing input is now available. Continue.",
+      "recall_outcome": "unplaced",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "I don't have context from a previous conversation about what task or missing input you're referring to. Could you please clarify what you'd like me to continue working on? For example:\n- What project or task are we working on?\n- What was the missing input that is now available?\n- What was I supposed to do with it?\n\nWith more details, I can help you complete the task."
+    },
+    {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-44520a9dc1184b41e0cd73b619f800fe] unknown: The missing input is now available. Continue.",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "unplaced",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-44520a9dc1184b41e0cd73b619f800fe"
+          ],
+          "ops": null,
+          "response": "I don't have context about the task that needs to continue. The message indicates \"the missing input is now available\" but there's no record of what task or input we're referring to. I've asked for clarification.",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 8267,
+      "message": "The missing input is now available. Continue.",
+      "recall_outcome": "unplaced",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "I don't have context about the task that needs to continue. The message indicates \"the missing input is now available\" but there's no record of what task or input we're referring to. I've asked for clarification."
+    }
+  ],
+  "Before": [
+    {
+      "id": 1,
+      "subject": "depot replenishment",
+      "question": "what are the SKU shortages",
+      "value": "A: 6 units, B: 3 units"
+    },
+    {
+      "id": 2,
+      "subject": "rates.json",
+      "question": "what is the status of rates.json",
+      "value": "missing - blocks order.json creation"
+    }
+  ],
+  "After": [
+    {
+      "id": 1,
+      "subject": "depot replenishment",
+      "question": "what are the SKU shortages",
+      "value": "A: 6 units, B: 3 units"
+    },
+    {
+      "id": 2,
+      "subject": "rates.json",
+      "question": "what is the status of rates.json",
+      "value": "missing - blocks order.json creation"
+    }
+  ],
+  "FilesBefore": {
+    "demand.csv": "sku,demand\nA,10\nB,5\n",
+    "rates.json": "{\"harbor\":{\"A\":10,\"B\":20,\"shipping\":5},\"ridge\":{\"A\":8,\"B\":18,\"shipping\":3}}",
+    "shortage.json": "{\"A\": 6, \"B\": 3}\n",
+    "stock.csv": "sku,stock\nA,4\nB,2\n"
+  },
+  "FilesAfter": {
+    "demand.csv": "sku,demand\nA,10\nB,5\n",
+    "rates.json": "{\"harbor\":{\"A\":10,\"B\":20,\"shipping\":5},\"ridge\":{\"A\":8,\"B\":18,\"shipping\":3}}",
+    "shortage.json": "{\"A\": 6, \"B\": 3}\n",
+    "stock.csv": "sku,stock\nA,4\nB,2\n"
+  },
+  "PreparationPID": 813288,
+  "OldPID": 829554,
+  "ResumePID": 829746,
+  "Invalid": [
+    "completed control never completed"
+  ],
+  "ArtifactCorrect": false,
+  "ReceiptCount": 0,
+  "SemanticReview": "pending independent agent and PM review: goal, constraint, stored progress, verification, unsupported claims",
+  "MemoryContrast": "pending content/exposure adjudication",
+  "InspectionConfirmed": true,
+  "GateRequest": null,
+  "GateAt": "0001-01-01T00:00:00Z",
+  "KilledAt": "0001-01-01T00:00:00Z"
+}

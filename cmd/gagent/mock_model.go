@@ -9,7 +9,7 @@ import (
 // mockModel is the MVP placeholder model (ADR 0004): a canned script
 // that drives a fixed scenario through the agent's installed tools —
 // shell_exec to write a note into the workspace and compute the answer
-// through the workspace's Exec RPC, files to read that note back
+// through the workspace's Exec RPC, file_read to read that note back
 // through the gRPC contract, message_send for the mouth, then a
 // structured response recording the answer at its address. The scenario
 // creates what it reads, so it runs clean in any workspace. It exhausts
@@ -34,9 +34,9 @@ func mockModel(_ string) agent.Model {
 		},
 		agent.ScriptedStep{
 			ToolCalls: []agent.ToolCall{{
-				Name: "files",
+				Name: "file_read",
 				Input: json.RawMessage(
-					`{"operation":"read","path":"question.txt","content":null}`,
+					`{"path":"question.txt"}`,
 				),
 			}},
 		},

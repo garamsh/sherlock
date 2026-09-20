@@ -1,0 +1,123 @@
+"""Verify the retained file-operation evidence; emit JSON to stdout."""
+import base64
+from collections import Counter
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+import sys
+
+ROOT = Path(__file__).resolve().parent
+REPO = ROOT.parents[4]
+ORIGINALS = '--originals' in sys.argv
+
+
+def digest(body):
+    return hashlib.sha256(body).hexdigest()
+
+
+def read(path):
+    return json.loads(path.read_bytes())
+
+
+manifest = read(ROOT / 'manifest.json')
+for entry in manifest['entries']:
+    if entry['published']:
+        body = (ROOT / entry['published']).read_bytes()
+        assert len(body) == entry['bytes'] and digest(body) == entry['sha256'], entry
+    if ORIGINALS:
+        body = Path(entry['original']).read_bytes()
+        assert len(body) == entry['bytes'] and digest(body) == entry['sha256'], entry
+original_hashes = read(ROOT / 'original-sha256.json')
+for path, expected in original_hashes.items():
+    entries = [e for e in manifest['entries'] if e['original'].endswith('/2026-09-21-file-operations-842faeb/' + path)]
+    assert len(entries) == 1 and entries[0]['sha256'] == expected, path
+
+seed = 'first line\n한글 second line\n'
+states = [
+    {'seed.txt': seed},
+    {'seed.txt': seed, 'copy.txt': seed},
+    {'seed.txt': seed, 'copy.txt': 'replacement\n'},
+    {'seed.txt': seed, 'copy.txt': 'replacement\n', 'empty.txt': ''},
+    {'seed.txt': seed, 'copy.txt': '', 'empty.txt': ''},
+]
+output = {'manifest_entries': len(manifest['entries']), 'original_hash_entries': len(original_hashes), 'arms': {}}
+for arm, relative in [('baseline', 'baseline/collection'), ('candidate', 'candidate/collection'), ('free', 'validation/free')]:
+    directory = ROOT / relative
+    source, ledger, run = [read(directory / name) for name in ['source.json', 'calls.json', 'run.json']]
+    for path, expected in source['sha256'].items():
+        if path.endswith('/gagent'):
+            if arm != 'free':
+                entry = next(e for e in manifest['entries'] if e['original'].endswith('/' + arm + '/gagent-measured'))
+                assert entry['sha256'] == expected
+            continue
+        if path.endswith('/file_operations_test.go'):
+            body = (ROOT / 'validation/file_operations_test.go.txt').read_bytes()
+        else:
+            body = subprocess.check_output(['git', 'show', source['revision'] + ':tests/' + Path(path).name], cwd=REPO)
+        assert digest(body) == expected, path
+    calls = ledger['calls']
+    responses = []
+    for seq, call in enumerate(calls, 1):
+        assert call['seq'] == seq and call['status'] == 200
+        raw = base64.b64decode(call['response_bytes'], validate=True)
+        response = json.loads(raw)
+        assert response == call['response']
+        usage = response['usage']
+        assert usage['prompt_tokens'] == call['prompt_tokens']
+        assert usage['completion_tokens'] == call['completion_tokens']
+        if 'total_tokens' in usage:
+            assert usage['total_tokens'] == usage['prompt_tokens'] + usage['completion_tokens']
+        choice = response['choices'][0]
+        assert choice['finish_reason'] == call['finish_reason']
+        msg = choice['message']
+        assert msg.get('content', '') == call.get('content', '')
+        extracted = [{'name': t['function']['name'], 'arguments': t['function']['arguments']} for t in msg.get('tool_calls', [])]
+        assert extracted == (call.get('tool_calls') or [])
+        assert call['request']['model'] == call['model']
+        assert [t['function']['name'] for t in call['request'].get('tools', [])] == call['tools']
+        responses.append({'seq': seq, 'label': call['label'], 'step': call['step'], 'sha256': digest(raw), 'bytes': len(raw)})
+    spend = {'calls': len(calls), 'input_tokens': sum(c['prompt_tokens'] for c in calls), 'output_tokens': sum(c['completion_tokens'] for c in calls)}
+    rates = ledger['ceiling']
+    spend['usd'] = (spend['input_tokens'] * rates.get('InputUSDPerMillion', 0) + spend['output_tokens'] * rates.get('OutputUSDPerMillion', 0)) / 1000000
+    for recorded in [ledger['spend'], run['spend']]:
+        for key, value in spend.items():
+            assert abs(recorded[key] - value) < 1e-10
+    assert spend['calls'] <= rates['Calls'] and spend['input_tokens'] <= rates['InputTokens'] and spend['output_tokens'] <= rates['OutputTokens'] and spend['usd'] <= rates['USD']
+    assert not run['refusals']
+    rows = []
+    for repetition in [1, 2]:
+        for stage in range(1, 5):
+            row = read(directory / f'{repetition}-{stage}.json')
+            assert row == run['rows'][(repetition - 1) * 4 + stage - 1]
+            assert not row['invalid'] and not row['outbox'] and not row['turn'].get('failed')
+            assert row['before'] == states[stage - 1] and row['after'] == states[stage]
+            events = [e for e in row['turn']['events'] if e['kind'] == 'tool_call']
+            assert all(e['tool_name'] in ['files', 'file_read', 'file_write', 'file_list', 'shell_exec'] for e in events)
+            span = [c for c in calls if c['label'] == f'{repetition}/{stage}']
+            acting = [c for c in span if c['step'] == 'act']
+            pending = iter(events)
+            mappings = []
+            for index, call in enumerate(acting):
+                for tool in call['response']['choices'][0]['message'].get('tool_calls', []):
+                    name = tool['function']['name']
+                    args = json.loads(tool['function']['arguments'])
+                    if name == 'memory_write':
+                        assert args['reply'] == row['turn']['response'] and args['memory_ops'] == []
+                        continue
+                    event = next(pending)
+                    assert name == event['tool_name'] and args == event['tool_input']
+                    future = [m for m in acting[index + 1]['request']['messages'] if m['role'] == 'tool' and m.get('tool_call_id') == tool['id']]
+                    if arm == 'free':
+                        future = future[-1:]  # The scripted endpoint reuses call-1.
+                    assert future and all(m['content'] == event['tool_result'] for m in future), (arm, call['seq'], name)
+                    mappings.append({'seq': call['seq'], 'name': name, 'id': tool['id']})
+            assert next(pending, None) is None
+            counts = dict(Counter(e['tool_name'] for e in events))
+            failures = sum(e.get('tool_failed', False) for e in events)
+            budget = sum('budget of' in e['tool_result'] for e in events if e.get('tool_failed'))
+            assert counts == row['calls_by_tool'] and failures == row['unsuccessful_calls'] and budget == row['budget_refusals']
+            shell_nonzero = [json.loads(e['tool_result']) for e in events if e['tool_name'] == 'shell_exec' and not e.get('tool_failed') and json.loads(e['tool_result'])['exit_code'] != 0]
+            rows.append({'row': f'{repetition}/{stage}', 'calls': [c['seq'] for c in span], 'steps': dict(Counter(c['step'] for c in span)), 'tool_mappings': mappings, 'calls_by_tool': counts, 'tool_failed': failures, 'budget_refusals': budget, 'shell_nonzero': shell_nonzero, 'before': {p: {'bytes': len(v.encode()), 'sha256': digest(v.encode())} for p, v in row['before'].items()}, 'after': {p: {'bytes': len(v.encode()), 'sha256': digest(v.encode())} for p, v in row['after'].items()}, 'wire_duration_ms': sum(c['duration_ms'] for c in span), 'turn_duration_ms': row['turn']['duration_ms']})
+    output['arms'][arm] = {'revision': source['revision'], 'spend': spend, 'steps': dict(Counter(c['step'] for c in calls)), 'responses': responses, 'rows': rows}
+print(json.dumps(output, indent=2))

@@ -59,8 +59,9 @@ const addressContract = `- ` + "`address.subject`" + ` — who or what the state
 const Contract = `## Tools
 Pick the right tool for the task; don't run code when files will do.
 
-- files: read, write, and list files in your workspace (the workspace is the
-  agent's data plane; the files tool is the only way the agent touches it).
+- file_read: read a file in your workspace.
+- file_write: create or replace a file in your workspace.
+- file_list: list a directory in your workspace.
 - message_send: send a message to a channel and target. When the task came from
   a person and a reply is owed, reply through message_send. Your final response
   alone does not reach the user.
@@ -124,11 +125,11 @@ Record only facts you actually obtained this turn: a failed tool call produces n
 If a tool returns an error, **switch tools, do not retry the same tool with
 different arguments**. The typed tools cover most cases:
 
-- Listing files: ` + "`files`" + ` (operation: list).
-- Reading a file: ` + "`files`" + ` (operation: read).
-- Writing a file: ` + "`files`" + ` (operation: write).
+- Listing files: ` + "`file_list`" + `.
+- Reading a file: ` + "`file_read`" + `.
+- Writing a file: ` + "`file_write`" + `.
 - Computing a value: answer from context when simple, or write the
-  computed value into a file via ` + "`files write`" + ` and read it back.
+  computed value into a file via ` + "`file_write`" + ` and read it back.
 - Running a command: ` + "`shell_exec`" + `.
 - Sending a message: ` + "`message_send`" + `.
 

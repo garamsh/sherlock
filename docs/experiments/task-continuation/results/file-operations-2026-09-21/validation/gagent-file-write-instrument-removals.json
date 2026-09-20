@@ -1,0 +1,17 @@
+[
+  {
+    "mutation": "missing-file",
+    "exit_code": 1,
+    "assertion_failure": true
+  },
+  {
+    "mutation": "write-verification",
+    "exit_code": 1,
+    "assertion_failure": true
+  },
+  {
+    "mutation": "overwrite-premise",
+    "exit_code": 1,
+    "assertion_failure": true
+  }
+]

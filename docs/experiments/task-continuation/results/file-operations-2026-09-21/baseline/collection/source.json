@@ -1,0 +1,17 @@
+{
+  "budget_note": "six calls per tool per turn; split tools have separate allowances",
+  "model": "MiniMax-M2",
+  "repetitions": 2,
+  "revision": "ca65571319c15294cb987a5c4121da92d4b4e64b",
+  "sha256": {
+    "/home/sauce/Workspace/garam/gagent/.local/verification/811-review/file_operations_test.go": "82905adb0c6013b73c025876d8f39f08eeeb7b39b271e14472ac70544749c75b",
+    "/home/sauce/Workspace/garam/gagent/tests/continuation_test.go": "546572340e23fdd57c5409739900023e44c12ef94f4ca8ac66d2c5445e74ed9c",
+    "/home/sauce/Workspace/garam/gagent/tests/e2e_binary_test.go": "3d8e76fea7d522eb941c378d1b3ff16e15e6681a9422f389189ba160a78fcbe3",
+    "/home/sauce/Workspace/garam/gagent/tests/gateway_test.go": "7e1f84bfff572004d9e67b6cc668bbddf445179887c9e4978f684ddaa4366df0",
+    "/home/sauce/Workspace/garam/gagent/tests/model_spend_meter_test.go": "e0737715d9e9221a4a6bb2ae1c77bf4a1c38bdb7144e4ca7c5aae52186237ed1",
+    "/home/sauce/Workspace/garam/gagent/tests/recall_information_test.go": "a27592ff750f98cb1028e72e098be75e3e70c971595deb3a919fb332fcee3538",
+    "/home/sauce/Workspace/garam/gagent/tests/recall_specificity_test.go": "b23838edbd1e7faaffebaf3df75aef09c16c46164e65b197f93aeb769693fbc4",
+    "/home/sauce/Workspace/garam/gagent/tests/workspace_test.go": "a5d4a3712b07280e8170d22825ffbef7bc69399b724c5296b2e891cfc8288100",
+    "/tmp/TestFileOperations2650170375/001/gagent": "11e968f7026c068d0283369582ef591e4214f3a6cf4d8d5ce4b4ef397ed27e1d"
+  }
+}

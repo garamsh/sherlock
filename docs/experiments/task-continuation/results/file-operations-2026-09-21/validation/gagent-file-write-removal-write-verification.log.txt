@@ -1,0 +1,20 @@
+--- FAIL: TestFileOperations_RejectsMissingEvidence (0.00s)
+    file_operations_test.go:202: 
+        	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/file_operations_test.go:202
+        	Error:      	Should be false
+        	Test:       	TestFileOperations_RejectsMissingEvidence
+    file_operations_test.go:202: 
+        	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/file_operations_test.go:202
+        	Error:      	Should be false
+        	Test:       	TestFileOperations_RejectsMissingEvidence
+    file_operations_test.go:202: 
+        	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/file_operations_test.go:202
+        	Error:      	Should be false
+        	Test:       	TestFileOperations_RejectsMissingEvidence
+    file_operations_test.go:202: 
+        	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/file_operations_test.go:202
+        	Error:      	Should be false
+        	Test:       	TestFileOperations_RejectsMissingEvidence
+FAIL
+FAIL	github.com/garamsh/gagent/tests	0.009s
+FAIL

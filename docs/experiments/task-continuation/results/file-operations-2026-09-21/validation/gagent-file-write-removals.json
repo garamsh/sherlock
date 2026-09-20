@@ -1,0 +1,17 @@
+[
+  {
+    "mutation": "write-effect",
+    "exit_code": 1,
+    "assertion_failure": true
+  },
+  {
+    "mutation": "required-content",
+    "exit_code": 1,
+    "assertion_failure": true
+  },
+  {
+    "mutation": "stdin-absence",
+    "exit_code": 1,
+    "assertion_failure": true
+  }
+]

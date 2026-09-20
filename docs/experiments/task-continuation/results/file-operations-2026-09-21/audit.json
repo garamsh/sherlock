@@ -1,0 +1,2776 @@
+{
+  "manifest_entries": 69,
+  "original_hash_entries": 34,
+  "arms": {
+    "baseline": {
+      "revision": "ca65571319c15294cb987a5c4121da92d4b4e64b",
+      "spend": {
+        "calls": 71,
+        "input_tokens": 226162,
+        "output_tokens": 9160,
+        "usd": 0.0788406
+      },
+      "steps": {
+        "read": 8,
+        "act": 63
+      },
+      "responses": [
+        {
+          "seq": 1,
+          "label": "1/1",
+          "step": "read",
+          "sha256": "4c0298b86afefc89e0f65b5c8c56c17f24586c02a31f151705307a052d236eff",
+          "bytes": 936
+        },
+        {
+          "seq": 2,
+          "label": "1/1",
+          "step": "act",
+          "sha256": "aa599140b9c56742924f3db61fc1998c977d8d6038c4679f7c75fcde2420a3d7",
+          "bytes": 898
+        },
+        {
+          "seq": 3,
+          "label": "1/1",
+          "step": "act",
+          "sha256": "5772d5e1660832a6612a6d7f02e3b4234571fa6d4ef4ce8cf01efd7c87fb680d",
+          "bytes": 818
+        },
+        {
+          "seq": 4,
+          "label": "1/1",
+          "step": "act",
+          "sha256": "4d2f4ed4613a23c5a7c829e90fa2cb677cfb0439d87b55f26feaae63dfd6a6f8",
+          "bytes": 812
+        },
+        {
+          "seq": 5,
+          "label": "1/1",
+          "step": "act",
+          "sha256": "c4ccc82ab6928a6a6b3a5ec32510ad03ce59cc510d833680df61b7c331796217",
+          "bytes": 887
+        },
+        {
+          "seq": 6,
+          "label": "1/1",
+          "step": "act",
+          "sha256": "82cc2958f3454e4304028b19dfab8b03e06877be430838df432a29f5d6decd44",
+          "bytes": 887
+        },
+        {
+          "seq": 7,
+          "label": "1/1",
+          "step": "act",
+          "sha256": "0ab72dbde84e42bba0897b2be5661fb9c1e81d7787ffa5a9315a90297e9a0849",
+          "bytes": 966
+        },
+        {
+          "seq": 8,
+          "label": "1/1",
+          "step": "act",
+          "sha256": "e89159523ab278dc53a99c5c225bf4442fbd63950b09383ed8a37394259ab8cd",
+          "bytes": 926
+        },
+        {
+          "seq": 9,
+          "label": "1/1",
+          "step": "act",
+          "sha256": "47a24ce58900b2ce73276c20b8095f6809cc969e918928e4297b6f15c902a81b",
+          "bytes": 1374
+        },
+        {
+          "seq": 10,
+          "label": "1/2",
+          "step": "read",
+          "sha256": "f89b2b372d9ff8ad9290859d51d5dfa55e5e1bd5f30451f4eb7641eee2520611",
+          "bytes": 3846
+        },
+        {
+          "seq": 11,
+          "label": "1/2",
+          "step": "act",
+          "sha256": "d9eb8d5259e7e2a87835e56c5556cb92b06507979009476dd132d6774391cafb",
+          "bytes": 992
+        },
+        {
+          "seq": 12,
+          "label": "1/2",
+          "step": "act",
+          "sha256": "703f8269d64cd9503f46bf8b2222193a50a6be34ef0eea049cc57312232ed7bb",
+          "bytes": 820
+        },
+        {
+          "seq": 13,
+          "label": "1/2",
+          "step": "act",
+          "sha256": "3bc65ce80c8f634253ececb026f40fccb9909e19a750b78254828df7a1fd0be3",
+          "bytes": 818
+        },
+        {
+          "seq": 14,
+          "label": "1/2",
+          "step": "act",
+          "sha256": "b2c260db315f707e97b088b913cb87ae17c9086ed8049690cfe15927fa7c4158",
+          "bytes": 813
+        },
+        {
+          "seq": 15,
+          "label": "1/2",
+          "step": "act",
+          "sha256": "277db9166acf1d356b33d991b54966edfff1a5ecabbbb29eb9810762980a94d0",
+          "bytes": 911
+        },
+        {
+          "seq": 16,
+          "label": "1/2",
+          "step": "act",
+          "sha256": "6e63b087f9d89a7fe4e7d92a10cfd350b16198ce14d6055e719b825c3534e1e6",
+          "bytes": 1280
+        },
+        {
+          "seq": 17,
+          "label": "1/2",
+          "step": "act",
+          "sha256": "397ab92ca26be0777639c890e319609dce484684e99fc497bfe4d4ac513e827d",
+          "bytes": 1540
+        },
+        {
+          "seq": 18,
+          "label": "1/2",
+          "step": "act",
+          "sha256": "57c26b3442eb860d65bed16bef99a5e7a6b910e879a2084a75f4a284a592bb42",
+          "bytes": 758
+        },
+        {
+          "seq": 19,
+          "label": "1/2",
+          "step": "act",
+          "sha256": "28ae854398dabc1799f2d7106f9bd4fa10d8e58d1ebc389f73b67abb3e894227",
+          "bytes": 848
+        },
+        {
+          "seq": 20,
+          "label": "1/2",
+          "step": "act",
+          "sha256": "8a0e1ac7c619c1d14d1a3f6d08b17431d1abea2d8b20d4dea7d96df0a0a29989",
+          "bytes": 1052
+        },
+        {
+          "seq": 21,
+          "label": "1/3",
+          "step": "read",
+          "sha256": "097c0e96c3d0c34d10417f5bd7fbf9c7e8f585473ee675267e5a365f4240185c",
+          "bytes": 6729
+        },
+        {
+          "seq": 22,
+          "label": "1/3",
+          "step": "act",
+          "sha256": "5567a7e10857905eeef2b5c392bc807374c9e337df5c8e426e97bff383f1cd9f",
+          "bytes": 995
+        },
+        {
+          "seq": 23,
+          "label": "1/3",
+          "step": "act",
+          "sha256": "98ee34696f61aa131db34932c473611045f12f135e740e8840dae2067eb4a325",
+          "bytes": 798
+        },
+        {
+          "seq": 24,
+          "label": "1/3",
+          "step": "act",
+          "sha256": "72c392243b84fb80e527bc4337afa228b2a0737148ba86cbf3a9c18d92986d15",
+          "bytes": 808
+        },
+        {
+          "seq": 25,
+          "label": "1/3",
+          "step": "act",
+          "sha256": "bbee232f815efb217960b6d8ab4994a2468c4d3ba0e0acaae67f0e4478c33995",
+          "bytes": 802
+        },
+        {
+          "seq": 26,
+          "label": "1/3",
+          "step": "act",
+          "sha256": "5606e0e35048b6676ec46fcf60649907fbed1f445576b025530d849e32d35326",
+          "bytes": 901
+        },
+        {
+          "seq": 27,
+          "label": "1/3",
+          "step": "act",
+          "sha256": "3d352fb3f85670af3686f6ea3ec6c5652a3b5f55a97daeca99ead976502bc4d8",
+          "bytes": 966
+        },
+        {
+          "seq": 28,
+          "label": "1/3",
+          "step": "act",
+          "sha256": "ed64bab186b91d268a26b6e97eeb1f2fd023834272d0e6efc6d4f4d28ac34128",
+          "bytes": 961
+        },
+        {
+          "seq": 29,
+          "label": "1/3",
+          "step": "act",
+          "sha256": "4aa20751f6fc2e86bc25dfc0274dc5e63fe5c4afb06bb1fd447223c5a4549c5a",
+          "bytes": 840
+        },
+        {
+          "seq": 30,
+          "label": "1/3",
+          "step": "act",
+          "sha256": "92a9312f120d915e1c0ef07581a124399f53df71e2d5b751cd568359272b71fe",
+          "bytes": 796
+        },
+        {
+          "seq": 31,
+          "label": "1/3",
+          "step": "act",
+          "sha256": "1cfae216564c9ad58790dc75a2b81252b2cfeb563d66c7cdf7aa03ec02ad8e23",
+          "bytes": 841
+        },
+        {
+          "seq": 32,
+          "label": "1/3",
+          "step": "act",
+          "sha256": "b936e77666026c52e79e02417ceccd54c583073399bdbb40cb5063544ecde25f",
+          "bytes": 1004
+        },
+        {
+          "seq": 33,
+          "label": "1/4",
+          "step": "read",
+          "sha256": "5db5f7131ecb93957845bbf67e7865883171458da3168feee408a1982c452068",
+          "bytes": 1092
+        },
+        {
+          "seq": 34,
+          "label": "1/4",
+          "step": "act",
+          "sha256": "1dfcaee17fc001f3d1714f78a4da3da9eb7ec0e8e71260465adf590334eb59b2",
+          "bytes": 1074
+        },
+        {
+          "seq": 35,
+          "label": "1/4",
+          "step": "act",
+          "sha256": "f4ebb434a01fe7fb5b031d1c44383e07fcf9d3d7bbcffaade121668161c5c853",
+          "bytes": 791
+        },
+        {
+          "seq": 36,
+          "label": "1/4",
+          "step": "act",
+          "sha256": "31ee2963224917f6ec50278a1d55988314a9e0b41f05b957037f21edd67851a6",
+          "bytes": 826
+        },
+        {
+          "seq": 37,
+          "label": "1/4",
+          "step": "act",
+          "sha256": "638f2fb5aca5e2e83ded02c1c0c65c1ebb70e601ec5dba25aab88dfffa288d42",
+          "bytes": 812
+        },
+        {
+          "seq": 38,
+          "label": "1/4",
+          "step": "act",
+          "sha256": "49ca19c4cec9602f4b5f9a06e694300bcbadcb60341158afc319eaa1ef290a79",
+          "bytes": 782
+        },
+        {
+          "seq": 39,
+          "label": "1/4",
+          "step": "act",
+          "sha256": "fabfa4ec655b975e20b899680a5c6cc1611013535f15a3ac045cfea216f49ac6",
+          "bytes": 987
+        },
+        {
+          "seq": 40,
+          "label": "1/4",
+          "step": "act",
+          "sha256": "9830f39e220416e3a06c946fffae1b00e15c1f36705e120f6318dacd70ca8932",
+          "bytes": 1097
+        },
+        {
+          "seq": 41,
+          "label": "2/1",
+          "step": "read",
+          "sha256": "4779f0b440dd91a74d8f0f49868ce7b431cb0d67493feb82fb72b4ba7bcfe4cd",
+          "bytes": 2343
+        },
+        {
+          "seq": 42,
+          "label": "2/1",
+          "step": "act",
+          "sha256": "1b3d27fa9efedf84f9ffb8fc2a8a6533cd9a7f688060a792a2d8f6034c7e8e96",
+          "bytes": 904
+        },
+        {
+          "seq": 43,
+          "label": "2/1",
+          "step": "act",
+          "sha256": "267e073a98188021da852fb66996828e1178a41092ca3f4fba034a6455c6f966",
+          "bytes": 869
+        },
+        {
+          "seq": 44,
+          "label": "2/1",
+          "step": "act",
+          "sha256": "94542f2f7ac112ea0517d4cc60dc7e996fbafe82be24fbeaf2e8a7656ad46ebd",
+          "bytes": 812
+        },
+        {
+          "seq": 45,
+          "label": "2/1",
+          "step": "act",
+          "sha256": "847d8bd7d648b2ecc4cc25f3e03f5977a5baf34fbd2e234c16e2cdd576bc6925",
+          "bytes": 900
+        },
+        {
+          "seq": 46,
+          "label": "2/1",
+          "step": "act",
+          "sha256": "2408d14dce2a10e978f0569820ef5d3cb3a26987017ddd92e2573b97ec3e537d",
+          "bytes": 796
+        },
+        {
+          "seq": 47,
+          "label": "2/1",
+          "step": "act",
+          "sha256": "ff75756fd4e5fab6b8c4b5669224fab39025555a11120dba3936e708c0676698",
+          "bytes": 956
+        },
+        {
+          "seq": 48,
+          "label": "2/1",
+          "step": "act",
+          "sha256": "16a956b4c9c1498d4212cb3e79da6577fe596ef049efe02e7171ff6c691bfd43",
+          "bytes": 1133
+        },
+        {
+          "seq": 49,
+          "label": "2/2",
+          "step": "read",
+          "sha256": "ae04ed11bab15eb7427051d2a399184658de887dbb5cd110fdcb13278e6d7c85",
+          "bytes": 1973
+        },
+        {
+          "seq": 50,
+          "label": "2/2",
+          "step": "act",
+          "sha256": "21e841f8c45aa86629b1cbf18f323440de23fa5e5179cfb769541ab8426ef637",
+          "bytes": 1011
+        },
+        {
+          "seq": 51,
+          "label": "2/2",
+          "step": "act",
+          "sha256": "03de5769da96e7379f0c6361f173b8579576df12d4e6a4e75912d06ccd46396c",
+          "bytes": 828
+        },
+        {
+          "seq": 52,
+          "label": "2/2",
+          "step": "act",
+          "sha256": "5b4f855a9f2972051a90aba857aaa3aa0094edc1cf4a5db4a8884066cda67ec6",
+          "bytes": 876
+        },
+        {
+          "seq": 53,
+          "label": "2/2",
+          "step": "act",
+          "sha256": "2b07afbdb774cd7dc779325633bd80af05aa2cbcdcd11bec4c41ae131a9416c3",
+          "bytes": 848
+        },
+        {
+          "seq": 54,
+          "label": "2/2",
+          "step": "act",
+          "sha256": "cfbfe8b7f3c3482d0dca8dcbd6744ec07f88bb0ff83bcc332f492f8ec7d675ec",
+          "bytes": 930
+        },
+        {
+          "seq": 55,
+          "label": "2/2",
+          "step": "act",
+          "sha256": "79b2c0e04394dcedbe98fad59e4b6b15342d5c116da86130ac2c437032f4bd83",
+          "bytes": 757
+        },
+        {
+          "seq": 56,
+          "label": "2/2",
+          "step": "act",
+          "sha256": "3362d1654904b826b2f92ae4ae0f35d2c0141ee751fe41090f0e916c373b923d",
+          "bytes": 930
+        },
+        {
+          "seq": 57,
+          "label": "2/3",
+          "step": "read",
+          "sha256": "954604019e9ee280c296a3d32533e5e67f63a0d85222426e949155032e139aae",
+          "bytes": 2091
+        },
+        {
+          "seq": 58,
+          "label": "2/3",
+          "step": "act",
+          "sha256": "fdbffc2603a5b2043d8ec36c7b8c1c01d7ba1ce475b24b5147fd98c4ffb5efd6",
+          "bytes": 954
+        },
+        {
+          "seq": 59,
+          "label": "2/3",
+          "step": "act",
+          "sha256": "462789f76f976a358a7c9228e4779679bd4d976b28f6860614659668caa82eb4",
+          "bytes": 792
+        },
+        {
+          "seq": 60,
+          "label": "2/3",
+          "step": "act",
+          "sha256": "b4394d378544290a6e262f23706f8e164bf60dcd962e0b596d2afed428f97e8a",
+          "bytes": 785
+        },
+        {
+          "seq": 61,
+          "label": "2/3",
+          "step": "act",
+          "sha256": "87b3b74856d04299a2338e69155f2f83b1b3acb8de30814dfff59e7d6c11a2f6",
+          "bytes": 823
+        },
+        {
+          "seq": 62,
+          "label": "2/3",
+          "step": "act",
+          "sha256": "a71f65724c1e80c76cd9d452f03c4b2d9744a8035769c1337ebfffbd07c8c378",
+          "bytes": 994
+        },
+        {
+          "seq": 63,
+          "label": "2/3",
+          "step": "act",
+          "sha256": "3bb37ac265e46d18573debd94466cc2272e68fbfc4233bbac010ad0df71ab1d8",
+          "bytes": 1001
+        },
+        {
+          "seq": 64,
+          "label": "2/4",
+          "step": "read",
+          "sha256": "6ed913391d2ce5ca7001864fe78a62b402f0cef6df9078e3358d591f46bfd23f",
+          "bytes": 3074
+        },
+        {
+          "seq": 65,
+          "label": "2/4",
+          "step": "act",
+          "sha256": "b58a8e4f60d18b55940a4f1c3557d512f52379ddacb3373579854d4f6afd8177",
+          "bytes": 916
+        },
+        {
+          "seq": 66,
+          "label": "2/4",
+          "step": "act",
+          "sha256": "a579cb574ca94853f6e3943ed11e264dab303d1b63a529f7653a694965b0575e",
+          "bytes": 849
+        },
+        {
+          "seq": 67,
+          "label": "2/4",
+          "step": "act",
+          "sha256": "d72519c3c27229ccf145a658e75e0f0454cb1b3c3b5888d22af38a62ac52995a",
+          "bytes": 813
+        },
+        {
+          "seq": 68,
+          "label": "2/4",
+          "step": "act",
+          "sha256": "67c91dc5b68c43f483b44ff249e7ccfc4b5237436da8fd0dca5ec7e736ced5ab",
+          "bytes": 814
+        },
+        {
+          "seq": 69,
+          "label": "2/4",
+          "step": "act",
+          "sha256": "9602661e6d96c982a38645646d18b100f973ff8910b7323f391293ee143fd872",
+          "bytes": 799
+        },
+        {
+          "seq": 70,
+          "label": "2/4",
+          "step": "act",
+          "sha256": "8fad327e7a29203c1c769d4f081ba82c62711ecf27a652984cc0787540e0f99d",
+          "bytes": 793
+        },
+        {
+          "seq": 71,
+          "label": "2/4",
+          "step": "act",
+          "sha256": "99d6dee30a1aaa01e3a8089b6c2908fc6283311a15020f918cca02b2a9ff86cc",
+          "bytes": 1189
+        }
+      ],
+      "rows": [
+        {
+          "row": "1/1",
+          "calls": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "steps": {
+            "read": 1,
+            "act": 8
+          },
+          "tool_mappings": [
+            {
+              "seq": 2,
+              "name": "files",
+              "id": "call_function_4hyu8yhkbfnn_1"
+            },
+            {
+              "seq": 3,
+              "name": "files",
+              "id": "call_function_yj1gnqyujebn_1"
+            },
+            {
+              "seq": 4,
+              "name": "files",
+              "id": "call_function_xpyso46p8gwy_1"
+            },
+            {
+              "seq": 5,
+              "name": "files",
+              "id": "call_function_wpbgp0ix2hbb_1"
+            },
+            {
+              "seq": 6,
+              "name": "files",
+              "id": "call_function_v6zwyq61tv5v_1"
+            },
+            {
+              "seq": 7,
+              "name": "shell_exec",
+              "id": "call_function_vjynkt85z4jk_1"
+            },
+            {
+              "seq": 8,
+              "name": "files",
+              "id": "call_function_hvzjehjlzial_1"
+            },
+            {
+              "seq": 8,
+              "name": "files",
+              "id": "call_function_hvzjehjlzial_2"
+            }
+          ],
+          "calls_by_tool": {
+            "files": 7,
+            "shell_exec": 1
+          },
+          "tool_failed": 5,
+          "budget_refusals": 1,
+          "shell_nonzero": [],
+          "before": {
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "after": {
+            "copy.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "wire_duration_ms": 14212,
+          "turn_duration_ms": 14260
+        },
+        {
+          "row": "1/2",
+          "calls": [
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20
+          ],
+          "steps": {
+            "read": 1,
+            "act": 10
+          },
+          "tool_mappings": [
+            {
+              "seq": 11,
+              "name": "files",
+              "id": "call_function_j4y4e4u40uq7_1"
+            },
+            {
+              "seq": 12,
+              "name": "files",
+              "id": "call_function_jxh0ya021j4e_1"
+            },
+            {
+              "seq": 13,
+              "name": "files",
+              "id": "call_function_n45iu60kl6pn_1"
+            },
+            {
+              "seq": 14,
+              "name": "files",
+              "id": "call_function_n94mec9lt4vx_1"
+            },
+            {
+              "seq": 15,
+              "name": "files",
+              "id": "call_function_sdw8vz0j4zfv_1"
+            },
+            {
+              "seq": 16,
+              "name": "files",
+              "id": "call_function_ylxcfwocp2z6_1"
+            },
+            {
+              "seq": 17,
+              "name": "shell_exec",
+              "id": "call_function_34dj91yzzn81_1"
+            },
+            {
+              "seq": 18,
+              "name": "files",
+              "id": "call_function_7kabq2gak923_1"
+            },
+            {
+              "seq": 19,
+              "name": "shell_exec",
+              "id": "call_function_4j311oq758at_1"
+            }
+          ],
+          "calls_by_tool": {
+            "files": 7,
+            "shell_exec": 2
+          },
+          "tool_failed": 6,
+          "budget_refusals": 1,
+          "shell_nonzero": [
+            {
+              "stdout": "replacement\n---END---\n",
+              "stderr": "sh: 1: xxd: not found\n",
+              "exit_code": 127,
+              "timed_out": false
+            }
+          ],
+          "before": {
+            "copy.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "after": {
+            "copy.txt": {
+              "bytes": 12,
+              "sha256": "1d054714357ce5ee01723ed91fcaa69206e221faaf9c1fad64f73be2e5d051da"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "wire_duration_ms": 25240,
+          "turn_duration_ms": 25296
+        },
+        {
+          "row": "1/3",
+          "calls": [
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32
+          ],
+          "steps": {
+            "read": 1,
+            "act": 11
+          },
+          "tool_mappings": [
+            {
+              "seq": 22,
+              "name": "files",
+              "id": "call_function_55yy777ngiya_1"
+            },
+            {
+              "seq": 23,
+              "name": "files",
+              "id": "call_function_bsdxc8n6cjas_1"
+            },
+            {
+              "seq": 24,
+              "name": "files",
+              "id": "call_function_swxr7r421r9e_1"
+            },
+            {
+              "seq": 25,
+              "name": "files",
+              "id": "call_function_xbwjurk7ppjd_1"
+            },
+            {
+              "seq": 26,
+              "name": "files",
+              "id": "call_function_9wnykszazay9_1"
+            },
+            {
+              "seq": 27,
+              "name": "files",
+              "id": "call_function_m2avrtemrq8m_1"
+            },
+            {
+              "seq": 28,
+              "name": "shell_exec",
+              "id": "call_function_854qbr0dx0ia_1"
+            },
+            {
+              "seq": 29,
+              "name": "files",
+              "id": "call_function_gz43o0tqzk4r_1"
+            },
+            {
+              "seq": 30,
+              "name": "shell_exec",
+              "id": "call_function_7c9tuxcm4332_1"
+            },
+            {
+              "seq": 31,
+              "name": "shell_exec",
+              "id": "call_function_ugvsqq13nept_1"
+            }
+          ],
+          "calls_by_tool": {
+            "files": 7,
+            "shell_exec": 3
+          },
+          "tool_failed": 7,
+          "budget_refusals": 1,
+          "shell_nonzero": [],
+          "before": {
+            "copy.txt": {
+              "bytes": 12,
+              "sha256": "1d054714357ce5ee01723ed91fcaa69206e221faaf9c1fad64f73be2e5d051da"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "after": {
+            "copy.txt": {
+              "bytes": 12,
+              "sha256": "1d054714357ce5ee01723ed91fcaa69206e221faaf9c1fad64f73be2e5d051da"
+            },
+            "empty.txt": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "wire_duration_ms": 30535,
+          "turn_duration_ms": 30605
+        },
+        {
+          "row": "1/4",
+          "calls": [
+            33,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40
+          ],
+          "steps": {
+            "read": 1,
+            "act": 7
+          },
+          "tool_mappings": [
+            {
+              "seq": 34,
+              "name": "shell_exec",
+              "id": "call_function_fgjbmed3n4vs_1"
+            },
+            {
+              "seq": 35,
+              "name": "files",
+              "id": "call_function_5ie73jr0mge9_1"
+            },
+            {
+              "seq": 36,
+              "name": "files",
+              "id": "call_function_p21ozdcva024_1"
+            },
+            {
+              "seq": 37,
+              "name": "shell_exec",
+              "id": "call_function_2pnz2w57jw2a_1"
+            },
+            {
+              "seq": 38,
+              "name": "files",
+              "id": "call_function_v2k8yj0zyyg9_1"
+            },
+            {
+              "seq": 39,
+              "name": "shell_exec",
+              "id": "call_function_uuqh1sn7kboy_1"
+            }
+          ],
+          "calls_by_tool": {
+            "shell_exec": 3,
+            "files": 3
+          },
+          "tool_failed": 1,
+          "budget_refusals": 0,
+          "shell_nonzero": [],
+          "before": {
+            "copy.txt": {
+              "bytes": 12,
+              "sha256": "1d054714357ce5ee01723ed91fcaa69206e221faaf9c1fad64f73be2e5d051da"
+            },
+            "empty.txt": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "after": {
+            "copy.txt": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "empty.txt": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "wire_duration_ms": 12668,
+          "turn_duration_ms": 12729
+        },
+        {
+          "row": "2/1",
+          "calls": [
+            41,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47,
+            48
+          ],
+          "steps": {
+            "read": 1,
+            "act": 7
+          },
+          "tool_mappings": [
+            {
+              "seq": 42,
+              "name": "files",
+              "id": "call_function_njfufr25vxvh_1"
+            },
+            {
+              "seq": 43,
+              "name": "files",
+              "id": "call_function_rcybt2rfklso_1"
+            },
+            {
+              "seq": 44,
+              "name": "files",
+              "id": "call_function_wmpf6ydr7oaf_1"
+            },
+            {
+              "seq": 45,
+              "name": "files",
+              "id": "call_function_8v093pvmz59w_1"
+            },
+            {
+              "seq": 46,
+              "name": "shell_exec",
+              "id": "call_function_8snfj4gpez3b_1"
+            },
+            {
+              "seq": 47,
+              "name": "files",
+              "id": "call_function_h2nicv8w68e0_1"
+            },
+            {
+              "seq": 47,
+              "name": "files",
+              "id": "call_function_h2nicv8w68e0_2"
+            }
+          ],
+          "calls_by_tool": {
+            "files": 6,
+            "shell_exec": 1
+          },
+          "tool_failed": 3,
+          "budget_refusals": 0,
+          "shell_nonzero": [],
+          "before": {
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "after": {
+            "copy.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "wire_duration_ms": 15036,
+          "turn_duration_ms": 15088
+        },
+        {
+          "row": "2/2",
+          "calls": [
+            49,
+            50,
+            51,
+            52,
+            53,
+            54,
+            55,
+            56
+          ],
+          "steps": {
+            "read": 1,
+            "act": 7
+          },
+          "tool_mappings": [
+            {
+              "seq": 50,
+              "name": "files",
+              "id": "call_function_u1g9wopur6po_1"
+            },
+            {
+              "seq": 51,
+              "name": "files",
+              "id": "call_function_5qdum3zwp06q_1"
+            },
+            {
+              "seq": 52,
+              "name": "files",
+              "id": "call_function_2vvqdfqo7x8e_1"
+            },
+            {
+              "seq": 53,
+              "name": "files",
+              "id": "call_function_mkvvlxr6ylvz_1"
+            },
+            {
+              "seq": 54,
+              "name": "shell_exec",
+              "id": "call_function_gr856oloz7re_1"
+            },
+            {
+              "seq": 55,
+              "name": "files",
+              "id": "call_function_2d3n8o0b1aoh_1"
+            }
+          ],
+          "calls_by_tool": {
+            "files": 5,
+            "shell_exec": 1
+          },
+          "tool_failed": 4,
+          "budget_refusals": 0,
+          "shell_nonzero": [],
+          "before": {
+            "copy.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "after": {
+            "copy.txt": {
+              "bytes": 12,
+              "sha256": "1d054714357ce5ee01723ed91fcaa69206e221faaf9c1fad64f73be2e5d051da"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "wire_duration_ms": 13109,
+          "turn_duration_ms": 13142
+        },
+        {
+          "row": "2/3",
+          "calls": [
+            57,
+            58,
+            59,
+            60,
+            61,
+            62,
+            63
+          ],
+          "steps": {
+            "read": 1,
+            "act": 6
+          },
+          "tool_mappings": [
+            {
+              "seq": 58,
+              "name": "files",
+              "id": "call_function_hgas33z946rk_1"
+            },
+            {
+              "seq": 59,
+              "name": "files",
+              "id": "call_function_5egd42gfdt8u_1"
+            },
+            {
+              "seq": 60,
+              "name": "files",
+              "id": "call_function_ee4vlrf6xqmp_1"
+            },
+            {
+              "seq": 61,
+              "name": "shell_exec",
+              "id": "call_function_ztexu67ov3ht_1"
+            },
+            {
+              "seq": 62,
+              "name": "files",
+              "id": "call_function_keq0uqp9v18m_1"
+            },
+            {
+              "seq": 62,
+              "name": "files",
+              "id": "call_function_keq0uqp9v18m_2"
+            }
+          ],
+          "calls_by_tool": {
+            "files": 5,
+            "shell_exec": 1
+          },
+          "tool_failed": 3,
+          "budget_refusals": 0,
+          "shell_nonzero": [],
+          "before": {
+            "copy.txt": {
+              "bytes": 12,
+              "sha256": "1d054714357ce5ee01723ed91fcaa69206e221faaf9c1fad64f73be2e5d051da"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "after": {
+            "copy.txt": {
+              "bytes": 12,
+              "sha256": "1d054714357ce5ee01723ed91fcaa69206e221faaf9c1fad64f73be2e5d051da"
+            },
+            "empty.txt": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "wire_duration_ms": 12210,
+          "turn_duration_ms": 12252
+        },
+        {
+          "row": "2/4",
+          "calls": [
+            64,
+            65,
+            66,
+            67,
+            68,
+            69,
+            70,
+            71
+          ],
+          "steps": {
+            "read": 1,
+            "act": 7
+          },
+          "tool_mappings": [
+            {
+              "seq": 65,
+              "name": "files",
+              "id": "call_function_546b635jedr0_1"
+            },
+            {
+              "seq": 66,
+              "name": "files",
+              "id": "call_function_nzxm0f7qia40_1"
+            },
+            {
+              "seq": 67,
+              "name": "files",
+              "id": "call_function_y4xkibm3ig3j_1"
+            },
+            {
+              "seq": 68,
+              "name": "files",
+              "id": "call_function_z2m96bugrdgs_1"
+            },
+            {
+              "seq": 69,
+              "name": "shell_exec",
+              "id": "call_function_g86l6bjgz4li_1"
+            },
+            {
+              "seq": 70,
+              "name": "files",
+              "id": "call_function_hvigndysobg1_1"
+            }
+          ],
+          "calls_by_tool": {
+            "files": 5,
+            "shell_exec": 1
+          },
+          "tool_failed": 3,
+          "budget_refusals": 0,
+          "shell_nonzero": [],
+          "before": {
+            "copy.txt": {
+              "bytes": 12,
+              "sha256": "1d054714357ce5ee01723ed91fcaa69206e221faaf9c1fad64f73be2e5d051da"
+            },
+            "empty.txt": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "after": {
+            "copy.txt": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "empty.txt": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "wire_duration_ms": 16496,
+          "turn_duration_ms": 16535
+        }
+      ]
+    },
+    "candidate": {
+      "revision": "842faeb11ecce07fa1a8281b0cd02628d536440d",
+      "spend": {
+        "calls": 37,
+        "input_tokens": 102063,
+        "output_tokens": 5642,
+        "usd": 0.03738929999999999
+      },
+      "steps": {
+        "read": 8,
+        "act": 29
+      },
+      "responses": [
+        {
+          "seq": 1,
+          "label": "1/1",
+          "step": "read",
+          "sha256": "f5673b5391d056ed77db0a243361e9a941b383f1d6d64d02cc6533e5bf8972d5",
+          "bytes": 2158
+        },
+        {
+          "seq": 2,
+          "label": "1/1",
+          "step": "act",
+          "sha256": "e03cf75600eb39daf91483d3187c3de2c8a30e6b981c852111530ed1745c6c03",
+          "bytes": 879
+        },
+        {
+          "seq": 3,
+          "label": "1/1",
+          "step": "act",
+          "sha256": "21a5d8d31eb19cc608c597cbc7cea6976375ae65977120d71bd6324d309c7506",
+          "bytes": 937
+        },
+        {
+          "seq": 4,
+          "label": "1/1",
+          "step": "act",
+          "sha256": "5a01914e3bfdf4f2497c55b94ca21a7b0090c655cbae25169df81278786704d5",
+          "bytes": 937
+        },
+        {
+          "seq": 5,
+          "label": "1/1",
+          "step": "act",
+          "sha256": "d1860ef1d0eb731f3a715b6cf4718b6ebd4e6708a07e57d5d88c54730dee579f",
+          "bytes": 1677
+        },
+        {
+          "seq": 6,
+          "label": "1/2",
+          "step": "read",
+          "sha256": "6e038181a88c1199a5f561a260a7454963daa3d604eca4a6afaa18a93caf3331",
+          "bytes": 3104
+        },
+        {
+          "seq": 7,
+          "label": "1/2",
+          "step": "act",
+          "sha256": "f91b5f0a39368bc95ccff148e55d7722a5e3d1ab543bc3d69bb992b76cc7dbae",
+          "bytes": 1089
+        },
+        {
+          "seq": 8,
+          "label": "1/2",
+          "step": "act",
+          "sha256": "f4d71d194aa51e71eecce3e0f62df20f4f764b018460906ae1fe14b8947cef41",
+          "bytes": 808
+        },
+        {
+          "seq": 9,
+          "label": "1/2",
+          "step": "act",
+          "sha256": "cb03417611178fdb806ac98ec0581ef0ef826962dd9fcb68aacc269012afe2d2",
+          "bytes": 1041
+        },
+        {
+          "seq": 10,
+          "label": "1/3",
+          "step": "read",
+          "sha256": "d8f10da870682c60c20fb27eaea3697db80699db6d90b580be32524185d8f511",
+          "bytes": 3737
+        },
+        {
+          "seq": 11,
+          "label": "1/3",
+          "step": "act",
+          "sha256": "77be5b3a5f9e5da0707fc05cc626f729c6565ffd845db1f07df7712b9664581e",
+          "bytes": 942
+        },
+        {
+          "seq": 12,
+          "label": "1/3",
+          "step": "act",
+          "sha256": "c84f34cc40643eedef756e8b20898a511834c99b5fdad2ed0933ecfd67682a84",
+          "bytes": 937
+        },
+        {
+          "seq": 13,
+          "label": "1/3",
+          "step": "act",
+          "sha256": "0e47a780212dc257925e2de82826d85c1daadea61cd091b5f0e38db97d134018",
+          "bytes": 1069
+        },
+        {
+          "seq": 14,
+          "label": "1/4",
+          "step": "read",
+          "sha256": "dbaec390fd3cb900c549ebf6ea98085760c144c93b197fc66d591d2404a7aca5",
+          "bytes": 1584
+        },
+        {
+          "seq": 15,
+          "label": "1/4",
+          "step": "act",
+          "sha256": "21606a10c02c994f0182f8d4735befc8cbcb5cbb382e59a32df1e07497ef7c88",
+          "bytes": 975
+        },
+        {
+          "seq": 16,
+          "label": "1/4",
+          "step": "act",
+          "sha256": "1a0e9041f94e7822d5e2701a0ae55c56f8825909e74430d27b9efe50df129f30",
+          "bytes": 809
+        },
+        {
+          "seq": 17,
+          "label": "1/4",
+          "step": "act",
+          "sha256": "93e8956c4439eeb7668082cb688e3eabbc399b113e8db5b4be5ee90c394b3c83",
+          "bytes": 759
+        },
+        {
+          "seq": 18,
+          "label": "1/4",
+          "step": "act",
+          "sha256": "47cdc589673820d8aea698db1b9af6e241a7e1d620bdb469a6862263f78e051a",
+          "bytes": 991
+        },
+        {
+          "seq": 19,
+          "label": "2/1",
+          "step": "read",
+          "sha256": "0c9044c6e88c1dae7827af4340e23305977e9386dc183d0fa6cde04393177d35",
+          "bytes": 943
+        },
+        {
+          "seq": 20,
+          "label": "2/1",
+          "step": "act",
+          "sha256": "01c8100f4a53c6ff4951c814446b4b29392142bfa01fc527916d74ed57725d19",
+          "bytes": 887
+        },
+        {
+          "seq": 21,
+          "label": "2/1",
+          "step": "act",
+          "sha256": "a90810254e8541c56bdb00a8d43653c26c917a7b4a0e50807ec3ac7ca09dad5d",
+          "bytes": 936
+        },
+        {
+          "seq": 22,
+          "label": "2/1",
+          "step": "act",
+          "sha256": "cb1c3c4cc09de8307da648171548aea44488035906d0b10cf094b0e7d321948c",
+          "bytes": 884
+        },
+        {
+          "seq": 23,
+          "label": "2/1",
+          "step": "act",
+          "sha256": "9f42dcbe97af9758ae6181062b515a577d7d69659b02597025d281a3eb40d691",
+          "bytes": 1316
+        },
+        {
+          "seq": 24,
+          "label": "2/2",
+          "step": "read",
+          "sha256": "dbef851c927a22e7cc53a070a2a5dcdeb2810037c35b32d9ee677448e7481c54",
+          "bytes": 3631
+        },
+        {
+          "seq": 25,
+          "label": "2/2",
+          "step": "act",
+          "sha256": "0457574402e35b006d940f849e45829454f73ad01e00ee79b86c147e3c3706e8",
+          "bytes": 913
+        },
+        {
+          "seq": 26,
+          "label": "2/2",
+          "step": "act",
+          "sha256": "9553b1ac5e7972cc23f756af8be967e8bebc32dd1782c69634f76aa290f15e10",
+          "bytes": 819
+        },
+        {
+          "seq": 27,
+          "label": "2/2",
+          "step": "act",
+          "sha256": "08777f8beac84408e942eb481befbdd3cb911f9ab0dc27126b142cc6c8c02a2f",
+          "bytes": 972
+        },
+        {
+          "seq": 28,
+          "label": "2/2",
+          "step": "act",
+          "sha256": "491530eedf590742168867c97cb90467ff05b3be42b4c7df0daf5398a5e9ecb0",
+          "bytes": 1018
+        },
+        {
+          "seq": 29,
+          "label": "2/3",
+          "step": "read",
+          "sha256": "7bd2a3c89cdf9397c9a32de1987b5129737ef9e385694019e75ce01f1ad6b5c6",
+          "bytes": 2473
+        },
+        {
+          "seq": 30,
+          "label": "2/3",
+          "step": "act",
+          "sha256": "ef99e95c7b85b72a57ef6439196204c25eae9378f9ac7fb57f256c76730bee92",
+          "bytes": 957
+        },
+        {
+          "seq": 31,
+          "label": "2/3",
+          "step": "act",
+          "sha256": "d1fcdd523a584eb0372020b76663b4c8d7e5be38cbc3b914ed9c8e5e885ebf25",
+          "bytes": 940
+        },
+        {
+          "seq": 32,
+          "label": "2/3",
+          "step": "act",
+          "sha256": "d754bda69c32fedcaf96fc33127060c8b7009af4017f9ada56a3cf6720004fc2",
+          "bytes": 1038
+        },
+        {
+          "seq": 33,
+          "label": "2/4",
+          "step": "read",
+          "sha256": "8e79f56e0788dd1d1bb9c7a98f18ba29229f24a3dd4a4d7120f1d90a08e39513",
+          "bytes": 1161
+        },
+        {
+          "seq": 34,
+          "label": "2/4",
+          "step": "act",
+          "sha256": "664af92f7820833bc6eb155d0fdef925a03f000a63908d6ceffdcaff08077df3",
+          "bytes": 865
+        },
+        {
+          "seq": 35,
+          "label": "2/4",
+          "step": "act",
+          "sha256": "1041be363d0a507c7dda5977b29d0b64185b0e4be4b606995a2f0e324115d371",
+          "bytes": 825
+        },
+        {
+          "seq": 36,
+          "label": "2/4",
+          "step": "act",
+          "sha256": "75612b31658707a44ef0b0e0222c11c579cbdc4bc963445b6ccc2093e81d9c0e",
+          "bytes": 780
+        },
+        {
+          "seq": 37,
+          "label": "2/4",
+          "step": "act",
+          "sha256": "637230fcb0830f1ff016db673ac94a4232929a31b4d93dc6da029608fba440fe",
+          "bytes": 907
+        }
+      ],
+      "rows": [
+        {
+          "row": "1/1",
+          "calls": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "steps": {
+            "read": 1,
+            "act": 4
+          },
+          "tool_mappings": [
+            {
+              "seq": 2,
+              "name": "file_read",
+              "id": "call_function_erfh1lqckb0e_1"
+            },
+            {
+              "seq": 3,
+              "name": "file_write",
+              "id": "call_function_mbjhe6kp1m0h_1"
+            },
+            {
+              "seq": 4,
+              "name": "file_read",
+              "id": "call_function_ijq597ufndvb_1"
+            },
+            {
+              "seq": 4,
+              "name": "file_list",
+              "id": "call_function_ijq597ufndvb_2"
+            }
+          ],
+          "calls_by_tool": {
+            "file_read": 2,
+            "file_write": 1,
+            "file_list": 1
+          },
+          "tool_failed": 0,
+          "budget_refusals": 0,
+          "shell_nonzero": [],
+          "before": {
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "after": {
+            "copy.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "wire_duration_ms": 12413,
+          "turn_duration_ms": 12438
+        },
+        {
+          "row": "1/2",
+          "calls": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "steps": {
+            "read": 1,
+            "act": 3
+          },
+          "tool_mappings": [
+            {
+              "seq": 7,
+              "name": "file_write",
+              "id": "call_function_rkkhgsrwvte3_1"
+            },
+            {
+              "seq": 8,
+              "name": "file_read",
+              "id": "call_function_j2xfgevms7po_1"
+            }
+          ],
+          "calls_by_tool": {
+            "file_write": 1,
+            "file_read": 1
+          },
+          "tool_failed": 0,
+          "budget_refusals": 0,
+          "shell_nonzero": [],
+          "before": {
+            "copy.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "after": {
+            "copy.txt": {
+              "bytes": 12,
+              "sha256": "1d054714357ce5ee01723ed91fcaa69206e221faaf9c1fad64f73be2e5d051da"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "wire_duration_ms": 10027,
+          "turn_duration_ms": 10042
+        },
+        {
+          "row": "1/3",
+          "calls": [
+            10,
+            11,
+            12,
+            13
+          ],
+          "steps": {
+            "read": 1,
+            "act": 3
+          },
+          "tool_mappings": [
+            {
+              "seq": 11,
+              "name": "file_write",
+              "id": "call_function_2c4uirhd9xpr_1"
+            },
+            {
+              "seq": 12,
+              "name": "file_read",
+              "id": "call_function_45x74s5o0r5z_1"
+            },
+            {
+              "seq": 12,
+              "name": "file_list",
+              "id": "call_function_45x74s5o0r5z_2"
+            }
+          ],
+          "calls_by_tool": {
+            "file_write": 1,
+            "file_read": 1,
+            "file_list": 1
+          },
+          "tool_failed": 0,
+          "budget_refusals": 0,
+          "shell_nonzero": [],
+          "before": {
+            "copy.txt": {
+              "bytes": 12,
+              "sha256": "1d054714357ce5ee01723ed91fcaa69206e221faaf9c1fad64f73be2e5d051da"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "after": {
+            "copy.txt": {
+              "bytes": 12,
+              "sha256": "1d054714357ce5ee01723ed91fcaa69206e221faaf9c1fad64f73be2e5d051da"
+            },
+            "empty.txt": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "wire_duration_ms": 12395,
+          "turn_duration_ms": 12411
+        },
+        {
+          "row": "1/4",
+          "calls": [
+            14,
+            15,
+            16,
+            17,
+            18
+          ],
+          "steps": {
+            "read": 1,
+            "act": 4
+          },
+          "tool_mappings": [
+            {
+              "seq": 15,
+              "name": "file_list",
+              "id": "call_function_5c31dgetvqrf_1"
+            },
+            {
+              "seq": 16,
+              "name": "file_write",
+              "id": "call_function_r7n3qus5ztz5_1"
+            },
+            {
+              "seq": 17,
+              "name": "file_read",
+              "id": "call_function_jut71tg18xk5_1"
+            }
+          ],
+          "calls_by_tool": {
+            "file_list": 1,
+            "file_write": 1,
+            "file_read": 1
+          },
+          "tool_failed": 0,
+          "budget_refusals": 0,
+          "shell_nonzero": [],
+          "before": {
+            "copy.txt": {
+              "bytes": 12,
+              "sha256": "1d054714357ce5ee01723ed91fcaa69206e221faaf9c1fad64f73be2e5d051da"
+            },
+            "empty.txt": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "after": {
+            "copy.txt": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "empty.txt": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "wire_duration_ms": 8012,
+          "turn_duration_ms": 8030
+        },
+        {
+          "row": "2/1",
+          "calls": [
+            19,
+            20,
+            21,
+            22,
+            23
+          ],
+          "steps": {
+            "read": 1,
+            "act": 4
+          },
+          "tool_mappings": [
+            {
+              "seq": 20,
+              "name": "file_read",
+              "id": "call_function_obvsl11ttn3n_1"
+            },
+            {
+              "seq": 21,
+              "name": "file_write",
+              "id": "call_function_xq9rw22ggpo0_1"
+            },
+            {
+              "seq": 22,
+              "name": "file_read",
+              "id": "call_function_4llaa30lksey_1"
+            },
+            {
+              "seq": 22,
+              "name": "file_list",
+              "id": "call_function_4llaa30lksey_2"
+            }
+          ],
+          "calls_by_tool": {
+            "file_read": 2,
+            "file_write": 1,
+            "file_list": 1
+          },
+          "tool_failed": 0,
+          "budget_refusals": 0,
+          "shell_nonzero": [],
+          "before": {
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "after": {
+            "copy.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "wire_duration_ms": 7254,
+          "turn_duration_ms": 7282
+        },
+        {
+          "row": "2/2",
+          "calls": [
+            24,
+            25,
+            26,
+            27,
+            28
+          ],
+          "steps": {
+            "read": 1,
+            "act": 4
+          },
+          "tool_mappings": [
+            {
+              "seq": 25,
+              "name": "file_list",
+              "id": "call_function_oapy000ct2so_1"
+            },
+            {
+              "seq": 26,
+              "name": "file_write",
+              "id": "call_function_eklr4bsfiahy_1"
+            },
+            {
+              "seq": 27,
+              "name": "file_read",
+              "id": "call_function_4uw9ceicfted_1"
+            }
+          ],
+          "calls_by_tool": {
+            "file_list": 1,
+            "file_write": 1,
+            "file_read": 1
+          },
+          "tool_failed": 0,
+          "budget_refusals": 0,
+          "shell_nonzero": [],
+          "before": {
+            "copy.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "after": {
+            "copy.txt": {
+              "bytes": 12,
+              "sha256": "1d054714357ce5ee01723ed91fcaa69206e221faaf9c1fad64f73be2e5d051da"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "wire_duration_ms": 13953,
+          "turn_duration_ms": 13971
+        },
+        {
+          "row": "2/3",
+          "calls": [
+            29,
+            30,
+            31,
+            32
+          ],
+          "steps": {
+            "read": 1,
+            "act": 3
+          },
+          "tool_mappings": [
+            {
+              "seq": 30,
+              "name": "file_write",
+              "id": "call_function_0lgs7p83fy5b_1"
+            },
+            {
+              "seq": 31,
+              "name": "file_read",
+              "id": "call_function_58d2ldeb6iaw_1"
+            },
+            {
+              "seq": 31,
+              "name": "file_list",
+              "id": "call_function_58d2ldeb6iaw_2"
+            }
+          ],
+          "calls_by_tool": {
+            "file_write": 1,
+            "file_read": 1,
+            "file_list": 1
+          },
+          "tool_failed": 0,
+          "budget_refusals": 0,
+          "shell_nonzero": [],
+          "before": {
+            "copy.txt": {
+              "bytes": 12,
+              "sha256": "1d054714357ce5ee01723ed91fcaa69206e221faaf9c1fad64f73be2e5d051da"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "after": {
+            "copy.txt": {
+              "bytes": 12,
+              "sha256": "1d054714357ce5ee01723ed91fcaa69206e221faaf9c1fad64f73be2e5d051da"
+            },
+            "empty.txt": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "wire_duration_ms": 8864,
+          "turn_duration_ms": 8883
+        },
+        {
+          "row": "2/4",
+          "calls": [
+            33,
+            34,
+            35,
+            36,
+            37
+          ],
+          "steps": {
+            "read": 1,
+            "act": 4
+          },
+          "tool_mappings": [
+            {
+              "seq": 34,
+              "name": "file_list",
+              "id": "call_function_bakwkwu4jlo2_1"
+            },
+            {
+              "seq": 35,
+              "name": "file_write",
+              "id": "call_function_ixtcqt5flrec_1"
+            },
+            {
+              "seq": 36,
+              "name": "file_read",
+              "id": "call_function_azyezaeh4auu_1"
+            }
+          ],
+          "calls_by_tool": {
+            "file_list": 1,
+            "file_write": 1,
+            "file_read": 1
+          },
+          "tool_failed": 0,
+          "budget_refusals": 0,
+          "shell_nonzero": [],
+          "before": {
+            "copy.txt": {
+              "bytes": 12,
+              "sha256": "1d054714357ce5ee01723ed91fcaa69206e221faaf9c1fad64f73be2e5d051da"
+            },
+            "empty.txt": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "after": {
+            "copy.txt": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "empty.txt": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "wire_duration_ms": 7286,
+          "turn_duration_ms": 7305
+        }
+      ]
+    },
+    "free": {
+      "revision": "842faeb11ecce07fa1a8281b0cd02628d536440d",
+      "spend": {
+        "calls": 38,
+        "input_tokens": 3800,
+        "output_tokens": 760,
+        "usd": 0.0
+      },
+      "steps": {
+        "read": 8,
+        "act": 30
+      },
+      "responses": [
+        {
+          "seq": 1,
+          "label": "1/1",
+          "step": "read",
+          "sha256": "6a0c38de5a7b6a6aa72ce2f8ce6e5a6c019e0e960720025e6ef25d9251556c50",
+          "bytes": 255
+        },
+        {
+          "seq": 2,
+          "label": "1/1",
+          "step": "act",
+          "sha256": "f4ced369ac3623b4f31e9efc7de52af76a68ef2132ae4fb8b06a531fe38466c4",
+          "bytes": 228
+        },
+        {
+          "seq": 3,
+          "label": "1/1",
+          "step": "act",
+          "sha256": "10e6acfb39ddcb894ff29803a9e4d1729ea9b41422fe62b795a9a4e81849e248",
+          "bytes": 280
+        },
+        {
+          "seq": 4,
+          "label": "1/1",
+          "step": "act",
+          "sha256": "b81f50f5000e561951f9b0f87af03a7668b700f91b64e665677ed3c1c5ea3af2",
+          "bytes": 228
+        },
+        {
+          "seq": 5,
+          "label": "1/1",
+          "step": "act",
+          "sha256": "ba160d272821a4b6c3f20153653343908d2393de6d8e71b478c9c10a20b44c44",
+          "bytes": 221
+        },
+        {
+          "seq": 6,
+          "label": "1/1",
+          "step": "act",
+          "sha256": "c837c9df0565906d22f3bf67d54b1e8ef2b20c23a90908c63c5ad9feeea79f62",
+          "bytes": 251
+        },
+        {
+          "seq": 7,
+          "label": "1/2",
+          "step": "read",
+          "sha256": "6a0c38de5a7b6a6aa72ce2f8ce6e5a6c019e0e960720025e6ef25d9251556c50",
+          "bytes": 255
+        },
+        {
+          "seq": 8,
+          "label": "1/2",
+          "step": "act",
+          "sha256": "0e2d11ac9aee806496bc802e53559bef24209a4380bd519d75684310b8ce07fa",
+          "bytes": 260
+        },
+        {
+          "seq": 9,
+          "label": "1/2",
+          "step": "act",
+          "sha256": "b81f50f5000e561951f9b0f87af03a7668b700f91b64e665677ed3c1c5ea3af2",
+          "bytes": 228
+        },
+        {
+          "seq": 10,
+          "label": "1/2",
+          "step": "act",
+          "sha256": "c837c9df0565906d22f3bf67d54b1e8ef2b20c23a90908c63c5ad9feeea79f62",
+          "bytes": 251
+        },
+        {
+          "seq": 11,
+          "label": "1/3",
+          "step": "read",
+          "sha256": "6a0c38de5a7b6a6aa72ce2f8ce6e5a6c019e0e960720025e6ef25d9251556c50",
+          "bytes": 255
+        },
+        {
+          "seq": 12,
+          "label": "1/3",
+          "step": "act",
+          "sha256": "790742fcbe0dc89f02182a123f15e641ed0ab4687ec3d6630f7c2808a5cb4d4b",
+          "bytes": 247
+        },
+        {
+          "seq": 13,
+          "label": "1/3",
+          "step": "act",
+          "sha256": "6d74ac0bb7c466da088101f98d559c17758364f002b64ddcf9b869f40ce0c05a",
+          "bytes": 229
+        },
+        {
+          "seq": 14,
+          "label": "1/3",
+          "step": "act",
+          "sha256": "ba160d272821a4b6c3f20153653343908d2393de6d8e71b478c9c10a20b44c44",
+          "bytes": 221
+        },
+        {
+          "seq": 15,
+          "label": "1/3",
+          "step": "act",
+          "sha256": "c837c9df0565906d22f3bf67d54b1e8ef2b20c23a90908c63c5ad9feeea79f62",
+          "bytes": 251
+        },
+        {
+          "seq": 16,
+          "label": "1/4",
+          "step": "read",
+          "sha256": "6a0c38de5a7b6a6aa72ce2f8ce6e5a6c019e0e960720025e6ef25d9251556c50",
+          "bytes": 255
+        },
+        {
+          "seq": 17,
+          "label": "1/4",
+          "step": "act",
+          "sha256": "6b6468bb47ee3fb4d9d89778bfd72ecd60624427e8ff761c6f8f691ecdb4f3ec",
+          "bytes": 246
+        },
+        {
+          "seq": 18,
+          "label": "1/4",
+          "step": "act",
+          "sha256": "b81f50f5000e561951f9b0f87af03a7668b700f91b64e665677ed3c1c5ea3af2",
+          "bytes": 228
+        },
+        {
+          "seq": 19,
+          "label": "1/4",
+          "step": "act",
+          "sha256": "c837c9df0565906d22f3bf67d54b1e8ef2b20c23a90908c63c5ad9feeea79f62",
+          "bytes": 251
+        },
+        {
+          "seq": 20,
+          "label": "2/1",
+          "step": "read",
+          "sha256": "6a0c38de5a7b6a6aa72ce2f8ce6e5a6c019e0e960720025e6ef25d9251556c50",
+          "bytes": 255
+        },
+        {
+          "seq": 21,
+          "label": "2/1",
+          "step": "act",
+          "sha256": "f4ced369ac3623b4f31e9efc7de52af76a68ef2132ae4fb8b06a531fe38466c4",
+          "bytes": 228
+        },
+        {
+          "seq": 22,
+          "label": "2/1",
+          "step": "act",
+          "sha256": "10e6acfb39ddcb894ff29803a9e4d1729ea9b41422fe62b795a9a4e81849e248",
+          "bytes": 280
+        },
+        {
+          "seq": 23,
+          "label": "2/1",
+          "step": "act",
+          "sha256": "b81f50f5000e561951f9b0f87af03a7668b700f91b64e665677ed3c1c5ea3af2",
+          "bytes": 228
+        },
+        {
+          "seq": 24,
+          "label": "2/1",
+          "step": "act",
+          "sha256": "ba160d272821a4b6c3f20153653343908d2393de6d8e71b478c9c10a20b44c44",
+          "bytes": 221
+        },
+        {
+          "seq": 25,
+          "label": "2/1",
+          "step": "act",
+          "sha256": "c837c9df0565906d22f3bf67d54b1e8ef2b20c23a90908c63c5ad9feeea79f62",
+          "bytes": 251
+        },
+        {
+          "seq": 26,
+          "label": "2/2",
+          "step": "read",
+          "sha256": "6a0c38de5a7b6a6aa72ce2f8ce6e5a6c019e0e960720025e6ef25d9251556c50",
+          "bytes": 255
+        },
+        {
+          "seq": 27,
+          "label": "2/2",
+          "step": "act",
+          "sha256": "0e2d11ac9aee806496bc802e53559bef24209a4380bd519d75684310b8ce07fa",
+          "bytes": 260
+        },
+        {
+          "seq": 28,
+          "label": "2/2",
+          "step": "act",
+          "sha256": "b81f50f5000e561951f9b0f87af03a7668b700f91b64e665677ed3c1c5ea3af2",
+          "bytes": 228
+        },
+        {
+          "seq": 29,
+          "label": "2/2",
+          "step": "act",
+          "sha256": "c837c9df0565906d22f3bf67d54b1e8ef2b20c23a90908c63c5ad9feeea79f62",
+          "bytes": 251
+        },
+        {
+          "seq": 30,
+          "label": "2/3",
+          "step": "read",
+          "sha256": "6a0c38de5a7b6a6aa72ce2f8ce6e5a6c019e0e960720025e6ef25d9251556c50",
+          "bytes": 255
+        },
+        {
+          "seq": 31,
+          "label": "2/3",
+          "step": "act",
+          "sha256": "790742fcbe0dc89f02182a123f15e641ed0ab4687ec3d6630f7c2808a5cb4d4b",
+          "bytes": 247
+        },
+        {
+          "seq": 32,
+          "label": "2/3",
+          "step": "act",
+          "sha256": "6d74ac0bb7c466da088101f98d559c17758364f002b64ddcf9b869f40ce0c05a",
+          "bytes": 229
+        },
+        {
+          "seq": 33,
+          "label": "2/3",
+          "step": "act",
+          "sha256": "ba160d272821a4b6c3f20153653343908d2393de6d8e71b478c9c10a20b44c44",
+          "bytes": 221
+        },
+        {
+          "seq": 34,
+          "label": "2/3",
+          "step": "act",
+          "sha256": "c837c9df0565906d22f3bf67d54b1e8ef2b20c23a90908c63c5ad9feeea79f62",
+          "bytes": 251
+        },
+        {
+          "seq": 35,
+          "label": "2/4",
+          "step": "read",
+          "sha256": "6a0c38de5a7b6a6aa72ce2f8ce6e5a6c019e0e960720025e6ef25d9251556c50",
+          "bytes": 255
+        },
+        {
+          "seq": 36,
+          "label": "2/4",
+          "step": "act",
+          "sha256": "6b6468bb47ee3fb4d9d89778bfd72ecd60624427e8ff761c6f8f691ecdb4f3ec",
+          "bytes": 246
+        },
+        {
+          "seq": 37,
+          "label": "2/4",
+          "step": "act",
+          "sha256": "b81f50f5000e561951f9b0f87af03a7668b700f91b64e665677ed3c1c5ea3af2",
+          "bytes": 228
+        },
+        {
+          "seq": 38,
+          "label": "2/4",
+          "step": "act",
+          "sha256": "c837c9df0565906d22f3bf67d54b1e8ef2b20c23a90908c63c5ad9feeea79f62",
+          "bytes": 251
+        }
+      ],
+      "rows": [
+        {
+          "row": "1/1",
+          "calls": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "steps": {
+            "read": 1,
+            "act": 5
+          },
+          "tool_mappings": [
+            {
+              "seq": 2,
+              "name": "file_read",
+              "id": "call-1"
+            },
+            {
+              "seq": 3,
+              "name": "file_write",
+              "id": "call-1"
+            },
+            {
+              "seq": 4,
+              "name": "file_read",
+              "id": "call-1"
+            },
+            {
+              "seq": 5,
+              "name": "file_list",
+              "id": "call-1"
+            }
+          ],
+          "calls_by_tool": {
+            "file_read": 2,
+            "file_write": 1,
+            "file_list": 1
+          },
+          "tool_failed": 0,
+          "budget_refusals": 0,
+          "shell_nonzero": [],
+          "before": {
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "after": {
+            "copy.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "wire_duration_ms": 0,
+          "turn_duration_ms": 25
+        },
+        {
+          "row": "1/2",
+          "calls": [
+            7,
+            8,
+            9,
+            10
+          ],
+          "steps": {
+            "read": 1,
+            "act": 3
+          },
+          "tool_mappings": [
+            {
+              "seq": 8,
+              "name": "file_write",
+              "id": "call-1"
+            },
+            {
+              "seq": 9,
+              "name": "file_read",
+              "id": "call-1"
+            }
+          ],
+          "calls_by_tool": {
+            "file_write": 1,
+            "file_read": 1
+          },
+          "tool_failed": 0,
+          "budget_refusals": 0,
+          "shell_nonzero": [],
+          "before": {
+            "copy.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "after": {
+            "copy.txt": {
+              "bytes": 12,
+              "sha256": "1d054714357ce5ee01723ed91fcaa69206e221faaf9c1fad64f73be2e5d051da"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "wire_duration_ms": 0,
+          "turn_duration_ms": 10
+        },
+        {
+          "row": "1/3",
+          "calls": [
+            11,
+            12,
+            13,
+            14,
+            15
+          ],
+          "steps": {
+            "read": 1,
+            "act": 4
+          },
+          "tool_mappings": [
+            {
+              "seq": 12,
+              "name": "file_write",
+              "id": "call-1"
+            },
+            {
+              "seq": 13,
+              "name": "file_read",
+              "id": "call-1"
+            },
+            {
+              "seq": 14,
+              "name": "file_list",
+              "id": "call-1"
+            }
+          ],
+          "calls_by_tool": {
+            "file_write": 1,
+            "file_read": 1,
+            "file_list": 1
+          },
+          "tool_failed": 0,
+          "budget_refusals": 0,
+          "shell_nonzero": [],
+          "before": {
+            "copy.txt": {
+              "bytes": 12,
+              "sha256": "1d054714357ce5ee01723ed91fcaa69206e221faaf9c1fad64f73be2e5d051da"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "after": {
+            "copy.txt": {
+              "bytes": 12,
+              "sha256": "1d054714357ce5ee01723ed91fcaa69206e221faaf9c1fad64f73be2e5d051da"
+            },
+            "empty.txt": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "wire_duration_ms": 0,
+          "turn_duration_ms": 16
+        },
+        {
+          "row": "1/4",
+          "calls": [
+            16,
+            17,
+            18,
+            19
+          ],
+          "steps": {
+            "read": 1,
+            "act": 3
+          },
+          "tool_mappings": [
+            {
+              "seq": 17,
+              "name": "file_write",
+              "id": "call-1"
+            },
+            {
+              "seq": 18,
+              "name": "file_read",
+              "id": "call-1"
+            }
+          ],
+          "calls_by_tool": {
+            "file_write": 1,
+            "file_read": 1
+          },
+          "tool_failed": 0,
+          "budget_refusals": 0,
+          "shell_nonzero": [],
+          "before": {
+            "copy.txt": {
+              "bytes": 12,
+              "sha256": "1d054714357ce5ee01723ed91fcaa69206e221faaf9c1fad64f73be2e5d051da"
+            },
+            "empty.txt": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "after": {
+            "copy.txt": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "empty.txt": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "wire_duration_ms": 0,
+          "turn_duration_ms": 13
+        },
+        {
+          "row": "2/1",
+          "calls": [
+            20,
+            21,
+            22,
+            23,
+            24,
+            25
+          ],
+          "steps": {
+            "read": 1,
+            "act": 5
+          },
+          "tool_mappings": [
+            {
+              "seq": 21,
+              "name": "file_read",
+              "id": "call-1"
+            },
+            {
+              "seq": 22,
+              "name": "file_write",
+              "id": "call-1"
+            },
+            {
+              "seq": 23,
+              "name": "file_read",
+              "id": "call-1"
+            },
+            {
+              "seq": 24,
+              "name": "file_list",
+              "id": "call-1"
+            }
+          ],
+          "calls_by_tool": {
+            "file_read": 2,
+            "file_write": 1,
+            "file_list": 1
+          },
+          "tool_failed": 0,
+          "budget_refusals": 0,
+          "shell_nonzero": [],
+          "before": {
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "after": {
+            "copy.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "wire_duration_ms": 0,
+          "turn_duration_ms": 22
+        },
+        {
+          "row": "2/2",
+          "calls": [
+            26,
+            27,
+            28,
+            29
+          ],
+          "steps": {
+            "read": 1,
+            "act": 3
+          },
+          "tool_mappings": [
+            {
+              "seq": 27,
+              "name": "file_write",
+              "id": "call-1"
+            },
+            {
+              "seq": 28,
+              "name": "file_read",
+              "id": "call-1"
+            }
+          ],
+          "calls_by_tool": {
+            "file_write": 1,
+            "file_read": 1
+          },
+          "tool_failed": 0,
+          "budget_refusals": 0,
+          "shell_nonzero": [],
+          "before": {
+            "copy.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "after": {
+            "copy.txt": {
+              "bytes": 12,
+              "sha256": "1d054714357ce5ee01723ed91fcaa69206e221faaf9c1fad64f73be2e5d051da"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "wire_duration_ms": 0,
+          "turn_duration_ms": 12
+        },
+        {
+          "row": "2/3",
+          "calls": [
+            30,
+            31,
+            32,
+            33,
+            34
+          ],
+          "steps": {
+            "read": 1,
+            "act": 4
+          },
+          "tool_mappings": [
+            {
+              "seq": 31,
+              "name": "file_write",
+              "id": "call-1"
+            },
+            {
+              "seq": 32,
+              "name": "file_read",
+              "id": "call-1"
+            },
+            {
+              "seq": 33,
+              "name": "file_list",
+              "id": "call-1"
+            }
+          ],
+          "calls_by_tool": {
+            "file_write": 1,
+            "file_read": 1,
+            "file_list": 1
+          },
+          "tool_failed": 0,
+          "budget_refusals": 0,
+          "shell_nonzero": [],
+          "before": {
+            "copy.txt": {
+              "bytes": 12,
+              "sha256": "1d054714357ce5ee01723ed91fcaa69206e221faaf9c1fad64f73be2e5d051da"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "after": {
+            "copy.txt": {
+              "bytes": 12,
+              "sha256": "1d054714357ce5ee01723ed91fcaa69206e221faaf9c1fad64f73be2e5d051da"
+            },
+            "empty.txt": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "wire_duration_ms": 0,
+          "turn_duration_ms": 19
+        },
+        {
+          "row": "2/4",
+          "calls": [
+            35,
+            36,
+            37,
+            38
+          ],
+          "steps": {
+            "read": 1,
+            "act": 3
+          },
+          "tool_mappings": [
+            {
+              "seq": 36,
+              "name": "file_write",
+              "id": "call-1"
+            },
+            {
+              "seq": 37,
+              "name": "file_read",
+              "id": "call-1"
+            }
+          ],
+          "calls_by_tool": {
+            "file_write": 1,
+            "file_read": 1
+          },
+          "tool_failed": 0,
+          "budget_refusals": 0,
+          "shell_nonzero": [],
+          "before": {
+            "copy.txt": {
+              "bytes": 12,
+              "sha256": "1d054714357ce5ee01723ed91fcaa69206e221faaf9c1fad64f73be2e5d051da"
+            },
+            "empty.txt": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "after": {
+            "copy.txt": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "empty.txt": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "seed.txt": {
+              "bytes": 30,
+              "sha256": "16646a2f7c9a24eeae068ed4eaf9398c383a043709fbc15f0f8681934b2a0f76"
+            }
+          },
+          "wire_duration_ms": 0,
+          "turn_duration_ms": 11
+        }
+      ]
+    }
+  }
+}

@@ -27,7 +27,7 @@ One CLI binary, `gagent`, runs both processes of an agent pod (ADR 0017): the wo
 go run ./cmd/gagent <subcommand>   # or: go build -o gagent ./cmd/gagent
 ```
 
-Start the workspace first: the agent's `files` and `shell_exec` tools dial it when the model first calls one, and a tool that finds nothing listening fails that call. With the default mock model this runs fully offline. The repository-root example configs are picked up automatically and must be owner-only first:
+Start the workspace first: the agent's file tools and `shell_exec` tools dial it when the model first calls one, and a tool that finds nothing listening fails that call. With the default mock model this runs fully offline. The repository-root example configs are picked up automatically and must be owner-only first:
 
 ```sh
 chmod 0600 gagent.yaml workspace.yaml     # config files must be owner-only
@@ -169,7 +169,7 @@ every destructive action before taking it.
 
 Tools are stand-alone executables behind the script-tool contract (ADR 0017, ADR 0009). The agent binary does not import them; the script-tool runtime (`internal/tool`) reads each tool's `manifest.json` from the `tools/` directory at startup and spawns the binary as a one-shot stdio process. To add a tool:
 
-- drop a directory under `tools/<name>/` containing `manifest.json` (name, description, `command` path relative to the manifest's dir, and the `input_schema` and `output_schema` JSON Schemas) and the executable the manifest names. First-party tools ship in place: `files`, `shell_exec`, `message_send`, `github` — `make build-tools` rebuilds them. A tool that needs files or exec dials the workspace's gRPC listener itself at `GAGENT_WORKSPACE_ADDR`, which the agent sets for every tool it spawns; a tool that needs an external API calls it directly. The default install is the four shipped tools; override the directory with the `tools-dir` key (or `GAGENT_TOOLS_DIR`, the same setting through the environment; default `./tools`) or remove a manifest to drop a tool from the agent's surface. The script-tool runtime validates the required tool set at startup and refuses to load a tool whose manifest hash drifts from the pin you gave it.
+- drop a directory under `tools/<name>/` containing `manifest.json` (name, description, `command` path relative to the manifest's dir, and the `input_schema` and `output_schema` JSON Schemas) and the executable the manifest names. First-party tools ship in place: `file_read`, `file_write`, `file_list`, `shell_exec`, `message_send`, `github` — `make build-tools` rebuilds them. A tool that needs files or exec dials the workspace's gRPC listener itself at `GAGENT_WORKSPACE_ADDR`, which the agent sets for every tool it spawns; a tool that needs an external API calls it directly. The default install is the six shipped tools; override the directory with the `tools-dir` key (or `GAGENT_TOOLS_DIR`, the same setting through the environment; default `./tools`) or remove a manifest to drop a tool from the agent's surface. The script-tool runtime validates the required tool set at startup and refuses to load a tool whose manifest hash drifts from the pin you gave it.
 
 Tools inherit the agent's environment, including its credentials; see [Security](docs/architecture/security.md) for the tool trust boundary.
 
@@ -179,14 +179,14 @@ The pin set is yours to write, because only you can say which manifest you revie
 tools:
   pins:
     message_send: 3f0a…
-    files: 8c21…
+    file_read: 8c21…
 ```
 
 Each hash is on the `tool manifest loaded` line the agent logs for that tool, and a refusal quotes the hash you would pin to accept what is on disk. Once the section exists it is the whole accepted set: a manifest that changed under a pin is refused, and so is a tool directory the set does not name — a drop you did not review is otherwise indistinguishable from one you did. Adding a tool is then a directory drop plus its hash. Leave the section out and the agent loads the tree unpinned, warning at startup that it has no record to check drift against.
 
 Example configs in the repository root: `gagent.yaml` (agent) and `workspace.yaml` (workspace).
 
-With the default `mock` provider the agent wires the scripted mock model, which answers the first message with a canned run of the full loop: it computes through `shell_exec` (the call crosses the wire to the workspace's Exec RPC and runs in the workspace directory), reads the result back through `files`, replies via `message_send`, and writes the answer to an address in `memory_ops`. The script covers the first message per process; a later message fails its turn with `script exhausted` (a `turn_failed` event) — the mock is a wiring demo, not a conversation partner. With `provider: openai-compatible` it runs against a real chat model; a missing API key env var fails at startup. To work on the codebase you need Go and GNU Make — `make test` runs the Go tests. The standard checks are:
+With the default `mock` provider the agent wires the scripted mock model, which answers the first message with a canned run of the full loop: it computes through `shell_exec` (the call crosses the wire to the workspace's Exec RPC and runs in the workspace directory), reads the result back through `file_read`, replies via `message_send`, and writes the answer to an address in `memory_ops`. The script covers the first message per process; a later message fails its turn with `script exhausted` (a `turn_failed` event) — the mock is a wiring demo, not a conversation partner. With `provider: openai-compatible` it runs against a real chat model; a missing API key env var fails at startup. To work on the codebase you need Go and GNU Make — `make test` runs the Go tests. The standard checks are:
 
 ```sh
 make ci      # lint + format check + test + build (same as CI)

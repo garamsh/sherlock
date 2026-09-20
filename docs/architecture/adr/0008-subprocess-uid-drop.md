@@ -11,7 +11,7 @@ The agent needs general-purpose exec for real workloads: "run the project's test
 
 When the workspace's executor (`internal/workspace/shell`, ADR 0017) spawns a child for agent-influenced work, the child runs dropped to the unprivileged exec UID. The file side of the same boundary stands in the same process: workspace writes and exec'd children share the workspace directory's ownership story.
 
-The model-facing surface is a tool: `shell_exec` is an independent tool server (ADR 0017, ADR 0009) that wraps the workspace's Exec RPC. The model reaches exec through the same tool-call channel as every other capability. The agent itself executes nothing — the tool calls the workspace over the gRPC client. Exec children work in the workspace directory by default, so an exec'd program sees the same files the files tool sees natively — the workspace execs children in its own directory and no shared-mount trick is needed.
+The model-facing surface is a tool: `shell_exec` is an independent tool server (ADR 0017, ADR 0009) that wraps the workspace's Exec RPC. The model reaches exec through the same tool-call channel as every other capability. The agent itself executes nothing — the tool calls the workspace over the gRPC client. Exec children work in the workspace directory by default, so an exec'd program sees the same files the file tools sees natively — the workspace execs children in its own directory and no shared-mount trick is needed.
 
 Mechanism:
 

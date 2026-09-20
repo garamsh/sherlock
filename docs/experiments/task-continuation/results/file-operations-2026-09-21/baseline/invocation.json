@@ -1,0 +1,28 @@
+{
+  "arm": "baseline",
+  "source": "ca65571319c15294cb987a5c4121da92d4b4e64b",
+  "cwd": "/home/sauce/Workspace/garam/gagent",
+  "argv": [
+    "go",
+    "test",
+    "-overlay",
+    "/home/sauce/Workspace/garam/gagent/.local/verification/811-review/baseline-overlay.json",
+    "./tests",
+    "-run",
+    "^TestFileOperations$",
+    "-count=1",
+    "-v",
+    "-timeout",
+    "45m"
+  ],
+  "results": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/baseline/collection",
+  "started_at": "2026-09-20T18:37:47.492499+00:00",
+  "instrument_sha256": "82905adb0c6013b73c025876d8f39f08eeeb7b39b271e14472ac70544749c75b",
+  "ceilings": {
+    "calls": 96,
+    "input_tokens": 800000,
+    "output_tokens": 80000,
+    "historical_estimated_usd": 0.4
+  },
+  "limits": "Fixed baseline-then-candidate order, two repetitions; per-tool budget allocation changes with split tools. Typed verification and shell fallback require separate adjudication."
+}

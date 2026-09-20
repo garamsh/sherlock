@@ -185,11 +185,11 @@ func continuationInspection(record turnRecord) bool {
 		if !ok || !hasResult || result == "" {
 			continue
 		}
-		if event["tool_name"] == "files" {
-			if input["operation"] == "read" && input["path"] == "rates.json" && event["tool_failed"] == true {
+		if event["tool_name"] == "file_read" || event["tool_name"] == "file_list" {
+			if event["tool_name"] == "file_read" && input["path"] == "rates.json" && event["tool_failed"] == true {
 				return true
 			}
-			if input["operation"] != "list" || input["path"] != "." || event["tool_failed"] == true {
+			if event["tool_name"] != "file_list" || input["path"] != "." || event["tool_failed"] == true {
 				continue
 			}
 			var listing struct{ Entries []struct{ Name string } }
@@ -523,8 +523,12 @@ func continuationEndpoint(t *testing.T, emptyMemory bool) *httptest.Server {
 			name = "memory_write"
 			args = fmt.Sprintf(`{"reply":%q,"memory_ops":[{"address":{"subject":"replenishment","question":"status","restriction":null},"value":%q,"operation":"replace"}]}`, reply, state)
 			fileCall := func(operation, path, content string) {
-				name = "files"
-				body, _ := json.Marshal(map[string]any{"operation": operation, "path": path, "content": content})
+				name = "file_" + operation
+				input := map[string]any{"path": path}
+				if operation == "write" {
+					input["content"] = content
+				}
+				body, _ := json.Marshal(input)
 				args = string(body)
 			}
 			shellCall := func(command string) {
@@ -626,9 +630,9 @@ func TestContinuation_Free(t *testing.T) {
 
 func TestContinuation_RejectsBrokenEvidence(t *testing.T) {
 	files := map[string]string{"shortage.json": `{"A":6,"B":3}`}
-	record := turnRecord{Events: []map[string]any{{"kind": "tool_call", "tool_name": "files", "tool_failed": true, "tool_result": "rates.json: unavailable", "tool_input": map[string]any{"operation": "read", "path": "rates.json"}}}}
+	record := turnRecord{Events: []map[string]any{{"kind": "tool_call", "tool_name": "file_read", "tool_failed": true, "tool_result": "rates.json: unavailable", "tool_input": map[string]any{"path": "rates.json"}}}}
 	require.Empty(t, continuationStage(files, record))
-	listed := turnRecord{Events: []map[string]any{{"kind": "tool_call", "tool_name": "files", "tool_input": map[string]any{"operation": "list", "path": "."}, "tool_result": `{"entries":[{"name":"stock.csv","dir":false},{"name":"demand.csv","dir":false}]}`}}}
+	listed := turnRecord{Events: []map[string]any{{"kind": "tool_call", "tool_name": "file_list", "tool_input": map[string]any{"path": "."}, "tool_result": `{"entries":[{"name":"stock.csv","dir":false},{"name":"demand.csv","dir":false}]}`}}}
 	require.Empty(t, continuationStage(files, listed))
 	require.True(t, continuationInspection(record))
 	require.True(t, continuationInspection(listed))
@@ -638,9 +642,9 @@ func TestContinuation_RejectsBrokenEvidence(t *testing.T) {
 		shell.Events[0]["tool_input"] = map[string]any{"command": command}
 		require.False(t, continuationInspection(shell), command)
 	}
-	record.Events[0]["tool_input"] = map[string]any{"operation": "write", "path": "rates.json"}
+	record.Events[0]["tool_name"] = "file_write"
 	require.False(t, continuationInspection(record), "a failed write is not inspection")
-	record.Events[0]["tool_input"] = map[string]any{"operation": "read", "path": "rates.json"}
+	record.Events[0]["tool_name"] = "file_read"
 	files["shortage.json"] = `{"A":5,"B":3}`
 	require.Contains(t, continuationStage(files, record), "stage one artifact incorrect")
 	files["shortage.json"] = `{"A":6,"B":3}`

@@ -1,0 +1,1 @@
+{"time":"2026-09-21T03:39:13.310113425+09:00","level":"INFO","msg":"workspace listening","op":"startup","addr":"127.0.0.1:39641","workspace":"/tmp/TestFileOperations23397038371/002/workspace","warning":"no authentication: pod-local listener"}

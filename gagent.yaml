@@ -23,8 +23,8 @@ model:
 #   model: MiniMax-M2
 #   api-key-env: MINIMAX_KEY
 # Tools: the agent reads ./tools/<name>/manifest.json at startup
-# (ADR 0009 §Decision). The four first-party tools (files, shell_exec,
-# message_send, github) ship in place under tools/; a `make build-tools`
+# (ADR 0009 §Decision). The six first-party tools (file_read, file_write,
+# file_list, shell_exec, message_send, github) ship in place under tools/; a `make build-tools`
 # compile keeps the binaries current. Override the directory with the
 # tools-dir key, or drop a custom tool into ./tools/<name>/ with its own
 # manifest.json and binary. The github tool rejects startup without
@@ -44,4 +44,6 @@ model:
 # tools:
 #   pins:
 #     message_send: <sha256 of tools/message_send/manifest.json>
-#     files: <sha256 of tools/files/manifest.json>
+#     file_read: <sha256 of tools/file_read/manifest.json>
+#     file_write: <sha256 of tools/file_write/manifest.json>
+#     file_list: <sha256 of tools/file_list/manifest.json>

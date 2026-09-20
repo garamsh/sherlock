@@ -35,7 +35,9 @@ func TestToolDependencies_AreTheDeclaredOnes(t *testing.T) {
 		tool string
 		want []string
 	}{
-		{tool: "files", want: []string{"internal/workspace"}},
+		{tool: "file_read", want: []string{"internal/workspace"}},
+		{tool: "file_write", want: []string{"internal/workspace"}},
+		{tool: "file_list", want: []string{"internal/workspace"}},
 		{tool: "shell_exec", want: []string{"internal/workspace"}},
 		// message_send links internal/message and nothing else: that
 		// package is the delivered record's one declaration, which the

@@ -95,9 +95,6 @@ type WorkingContext struct {
 	Attempts []WorkAttempt `json:"attempts"`
 }
 
-// ErrStaleWorkingContext refuses a writer whose durable revision changed.
-var ErrStaleWorkingContext = errors.New("stale working context")
-
 // WorkResult is an observed return, not proof that an arbitrary effect completed.
 type WorkResult struct {
 	Outcome WorkOutcome `json:"outcome"`

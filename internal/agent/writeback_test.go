@@ -266,7 +266,11 @@ func TestResponseSchema_ShapeIsEnforceable(t *testing.T) {
 		Required             []string `json:"required"`
 		AdditionalProperties bool     `json:"additionalProperties"`
 		Properties           struct {
-			Reply     json.RawMessage `json:"reply"`
+			Reply          json.RawMessage `json:"reply"`
+			WorkingContext struct {
+				Required             []string `json:"required"`
+				AdditionalProperties bool     `json:"additionalProperties"`
+			} `json:"working_context"`
 			MemoryOps struct {
 				Type  string `json:"type"`
 				Items struct {
@@ -294,11 +298,13 @@ func TestResponseSchema_ShapeIsEnforceable(t *testing.T) {
 		"the schema the provider sends must be valid JSON")
 
 	assert.Equal(t, "object", schema.Type)
-	assert.ElementsMatch(t, []string{"reply", "memory_ops"}, schema.Required,
+	assert.ElementsMatch(t, []string{"reply", "memory_ops", "working_context"}, schema.Required,
 		"the memory field has no shape in which it is absent")
 	assert.False(t, schema.AdditionalProperties,
 		"strict mode rejects a response carrying anything else")
 	assert.Equal(t, "array", schema.Properties.MemoryOps.Type)
+	assert.ElementsMatch(t, []string{"status", "goal", "constraints", "decisions", "progress", "remaining", "uncertainty", "reconciliation"}, schema.Properties.WorkingContext.Required)
+	assert.False(t, schema.Properties.WorkingContext.AdditionalProperties)
 
 	item := schema.Properties.MemoryOps.Items
 	assert.ElementsMatch(t, []string{"address", "value", "operation"}, item.Required)

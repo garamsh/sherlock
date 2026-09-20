@@ -34,7 +34,7 @@ func TestWorkingContext_RoundTripAndStaleWriter(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, work, restored)
 	_, err = st.SaveWorkingContext(ctx, initial)
-	require.ErrorIs(t, err, memory.ErrStaleWorkingContext)
+	require.ErrorContains(t, err, "stale working context")
 	after, err := st.LoadWorkingContext(ctx)
 	require.NoError(t, err)
 	assert.Equal(t, work, after)

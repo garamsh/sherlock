@@ -69,7 +69,7 @@ func (s *Store) SaveWorkingContext(ctx context.Context, work memory.WorkingConte
 		return 0, fmt.Errorf("save working context count: %v", err)
 	}
 	if changed != 1 {
-		return 0, memory.ErrStaleWorkingContext
+		return 0, fmt.Errorf("stale working context")
 	}
 	return work.Revision + 1, nil
 }

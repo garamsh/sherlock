@@ -22,7 +22,7 @@ import (
 )
 
 // deliveringModel stands in for a turn whose message_send call lands
-// while the turn is running: it delivers on its first Chat, which is
+// while the turn is running: it delivers after recall and checkpoint,
 // after Turn.Run has taken its snapshot, then answers.
 type deliveringModel struct {
 	t            *testing.T

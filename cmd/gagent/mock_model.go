@@ -52,7 +52,7 @@ func mockModel(_ string) agent.Model {
 			ToolCalls: []agent.ToolCall{{
 				Name: agent.MemoryWriteTool,
 				Input: json.RawMessage(
-					`{"reply":"Replied via message_send and recorded the answer.","working_context":{"status":"completed","goal":"compute six times seven and send the result","constraints":"write and read question.txt","decisions":"used installed workspace tools","progress":"computed 42, read the question and sent the answer","remaining":"","uncertainty":"","reconciliation":""},` +
+					`{"reply":"Replied via message_send and recorded the answer.","working_context":{"status":"active","goal":"compute six times seven and send the result","constraints":"write and read question.txt","decisions":"used installed workspace tools","progress":"issued the scripted tool calls","remaining":"verify the tool results; the mock does not interpret them","uncertainty":"tool failures require reconciliation","reconciliation":""},` +
 						`"memory_ops":[{"address":{"subject":"user",` +
 						`"question":"what is 6 * 7","restriction":null},` +
 						`"value":"42","operation":null}]}`,

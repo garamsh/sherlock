@@ -3,10 +3,14 @@ package tests
 import (
 	"context"
 	"encoding/json"
+	"io"
 	"net"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -18,6 +22,9 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 
+	"github.com/garamsh/gagent/internal/agent"
+	"github.com/garamsh/gagent/internal/agent/anthropic"
+	"github.com/garamsh/gagent/internal/agent/openai"
 	"github.com/garamsh/gagent/internal/tool"
 	"github.com/garamsh/gagent/internal/workspace"
 	"github.com/garamsh/gagent/internal/workspace/files"
@@ -207,189 +214,213 @@ func startStalledWorkspace(t *testing.T) (string, *stalledWorkspace, func()) {
 	return addr, stalled, stop
 }
 
-// TestScriptTool_Files_Integration drops the files tool into a
-// tmpdir, wires it to a stub workspace gRPC server, and asserts one
-// happy-path call (read, then write, then list) plus an error path
-// (the workspace rejects the read with a non-OK gRPC code).
+func installFileTools(t *testing.T) *tool.Registry {
+	t.Helper()
+	root := t.TempDir()
+	pins := tool.ManifestPins{}
+	for _, name := range []string{"file_read", "file_write", "file_list"} {
+		pins[name] = installTool(t, root, name)
+	}
+	reg, err := tool.NewRegistry(tool.RegistryOptions{Dir: root, Pins: pins, Required: []string{}})
+	require.NoError(t, err)
+	return reg
+}
+
 func TestScriptTool_Files_Integration(t *testing.T) {
-	root := t.TempDir()
-	hash := installTool(t, root, "files")
-
-	addr, fs, _, stop := startFakeWorkspace(t)
-	defer stop()
-	require.NoError(t, fs.Write("hello.txt", []byte("hi from workspace")))
-
-	// The manifest's env lists GAGENT_WORKSPACE_ADDR; the runner
-	// forwards the parent's env to the spawned tool, so the test
-	// sets the variable to the stub server's address before the
-	// registry spawns the tool.
-	t.Setenv("GAGENT_WORKSPACE_ADDR", addr)
-
-	reg, err := tool.NewRegistry(tool.RegistryOptions{
-		Dir:      root,
-		Pins:     tool.ManifestPins{"files": hash},
-		Required: []string{"files"},
-	})
-	require.NoError(t, err)
-
-	// Read: the registry calls the files tool, which dials the
-	// stub workspace and returns the file's contents.
-	out, err := reg.Call(context.Background(), "files",
-		json.RawMessage(`{"operation":"read","path":"hello.txt"}`))
-	require.NoError(t, err)
-	assert.Contains(t, string(out), "hi from workspace")
-
-	// Write: round-trip a write and read it back.
-	_, err = reg.Call(context.Background(), "files",
-		json.RawMessage(`{"operation":"write","path":"new.txt","content":"written"}`))
-	require.NoError(t, err)
-	content, err := fs.Read("new.txt")
-	require.NoError(t, err)
-	assert.Equal(t, []byte("written"), content)
-
-	// List: the workspace returns one entry for the file we wrote.
-	out, err = reg.Call(context.Background(), "files",
-		json.RawMessage(`{"operation":"list","path":"."}`))
-	require.NoError(t, err)
-	assert.Contains(t, string(out), "new.txt")
-}
-
-// TestScriptTool_Files_InputRejected pins the boundary: the registry
-// refuses an input that does not match the manifest's input schema,
-// so the script never runs.
-func TestScriptTool_Files_InputRejected(t *testing.T) {
-	root := t.TempDir()
-	hash := installTool(t, root, "files")
-	addr, _, _, stop := startFakeWorkspace(t)
-	defer stop()
-	t.Setenv("GAGENT_WORKSPACE_ADDR", addr)
-
-	reg, err := tool.NewRegistry(tool.RegistryOptions{
-		Dir:      root,
-		Pins:     tool.ManifestPins{"files": hash},
-		Required: []string{"files"},
-	})
-	require.NoError(t, err)
-
-	// Missing path: the manifest requires "path", so the
-	// registry rejects before the script runs.
-	_, err = reg.Call(context.Background(), "files",
-		json.RawMessage(`{"operation":"read"}`))
-	require.Error(t, err)
-	assert.ErrorIs(t, err, tool.ErrValidation)
-}
-
-// TestScriptTool_Files_WriteRequiresContent covers the runtime check
-// that replaced the previous top-level oneOf (issue #313): the
-// strict-mode subset does not accept oneOf, so the conditional
-// requirement that write needs non-empty content moved into the
-// script. The registry's schema validation no longer rejects this
-// case (content is now optional at the schema level); the runtime
-// returns an execution error and the workspace never sees the call.
-func TestScriptTool_Files_WriteRequiresContent(t *testing.T) {
-	root := t.TempDir()
-	hash := installTool(t, root, "files")
+	reg := installFileTools(t)
 	addr, fs, _, stop := startFakeWorkspace(t)
 	defer stop()
 	t.Setenv("GAGENT_WORKSPACE_ADDR", addr)
-
-	reg, err := tool.NewRegistry(tool.RegistryOptions{
-		Dir:      root,
-		Pins:     tool.ManifestPins{"files": hash},
-		Required: []string{"files"},
-	})
+	call := func(name, input, expected string) {
+		t.Helper()
+		out, err := reg.Call(t.Context(), name, json.RawMessage(input))
+		require.NoError(t, err)
+		assert.JSONEq(t, expected, string(out))
+	}
+	call("file_list", `{"path":"."}`, `{"entries":[]}`)
+	call("file_write", `{"path":"notes/new.txt","content":"hello 한글\n"}`, `{"bytes_written":13}`)
+	body, err := fs.Read("notes/new.txt")
 	require.NoError(t, err)
-
-	// Empty content: the runtime check in dispatch returns an
-	// error before gRPC is called.
-	_, err = reg.Call(context.Background(), "files",
-		json.RawMessage(`{"operation":"write","path":"new.txt","content":""}`))
-	require.Error(t, err)
-	assert.ErrorIs(t, err, tool.ErrExecution)
-
-	// The workspace must not have seen the call: the directory
-	// listing should not contain new.txt.
-	_, listErr := fs.List(".")
-	require.NoError(t, listErr)
+	assert.Equal(t, "hello 한글\n", string(body))
+	call("file_read", `{"path":"notes/new.txt"}`, `{"content":"hello 한글\n"}`)
+	call("file_list", `{"path":"."}`, `{"entries":[{"name":"notes","dir":true}]}`)
+	call("file_list", `{"path":"notes"}`, `{"entries":[{"name":"new.txt","dir":false}]}`)
+	call("file_write", `{"path":"notes/new.txt","content":"replacement"}`, `{"bytes_written":11}`)
+	call("file_read", `{"path":"notes/new.txt"}`, `{"content":"replacement"}`)
+	call("file_write", `{"path":"empty.txt","content":""}`, `{"bytes_written":0}`)
+	call("file_read", `{"path":"empty.txt"}`, `{"content":""}`)
+	call("file_write", `{"path":"notes/new.txt","content":""}`, `{"bytes_written":0}`)
+	call("file_read", `{"path":"notes/new.txt"}`, `{"content":""}`)
+	_, err = reg.Call(t.Context(), "file_read", json.RawMessage(`{"path":"missing"}`))
+	require.ErrorIs(t, err, tool.ErrExecution)
 }
 
-// TestScriptTool_Files_NullContentAccepted pins the boundary fix from
-// issue #319 against the manifest gate: `content` is optional in the
-// manifest, the model-facing projection promotes it to required +
-// nullable (the strict-mode API only accepts required+nullable, never
-// optional), so `content: null` must read as absence and pass. The
-// script's own dispatch check (issue #313) then rejects the empty
-// content, surfacing ErrExecution — proving the schema validation
-// passed and the rejection came from the script body, not the runtime.
-func TestScriptTool_Files_NullContentAccepted(t *testing.T) {
-	root := t.TempDir()
-	hash := installTool(t, root, "files")
-	addr, _, _, stop := startFakeWorkspace(t)
+func TestScriptTool_Files_InvalidInputPreservesContent(t *testing.T) {
+	reg := installFileTools(t)
+	addr, fs, _, stop := startFakeWorkspace(t)
 	defer stop()
 	t.Setenv("GAGENT_WORKSPACE_ADDR", addr)
-
-	reg, err := tool.NewRegistry(tool.RegistryOptions{
-		Dir:      root,
-		Pins:     tool.ManifestPins{"files": hash},
-		Required: []string{"files"},
-	})
+	_, err := reg.Call(t.Context(), "file_write", json.RawMessage(`{"path":"held.txt","content":"keep"}`))
 	require.NoError(t, err)
-
-	_, err = reg.Call(context.Background(), "files",
-		json.RawMessage(`{"operation":"write","path":"new.txt","content":null}`))
-	require.Error(t, err)
-	assert.ErrorIs(t, err, tool.ErrExecution,
-		"null content must pass schema validation and reach the script's dispatch check")
-	assert.NotErrorIs(t, err, tool.ErrValidation,
-		"a null on a manifest-optional property means absence, not a type violation")
+	for _, input := range []string{
+		`{"path":"held.txt"}`, `{"path":"held.txt","content":null}`,
+		`{"path":"held.txt","content":42}`, `{"path":"held.txt","content":false}`,
+		`{"path":"held.txt","content":{}}`, `{"content":"bad"}`,
+		`{"path":"","content":"bad"}`, `{"path":"held.txt","content":"bad","operation":"write"}`,
+	} {
+		t.Run(input, func(t *testing.T) {
+			_, err := reg.Call(t.Context(), "file_write", json.RawMessage(input))
+			require.ErrorIs(t, err, tool.ErrValidation)
+			body, err := fs.Read("held.txt")
+			require.NoError(t, err)
+			assert.Equal(t, "keep", string(body))
+		})
+	}
+	for _, name := range []string{"file_read", "file_list"} {
+		_, err := reg.Call(t.Context(), name, json.RawMessage(`{"path":"." ,"content":null}`))
+		require.ErrorIs(t, err, tool.ErrValidation)
+	}
+	_, err = reg.Call(t.Context(), "file_write", json.RawMessage(`{"path":"../escape","content":"bad"}`))
+	require.ErrorIs(t, err, tool.ErrExecution)
+	entries, err := fs.List(".")
+	require.NoError(t, err)
+	require.Len(t, entries, 1)
+	assert.Equal(t, "held.txt", entries[0].Name)
 }
 
-// filesCallTimeout is the bound tools/files states on one workspace
-// RPC. The tool is a main package and cannot be imported, so the value
-// is restated here: changing it there without changing it here fails
-// this test, which is what keeps deployment.md's requirement honest.
-const filesCallTimeout = 10 * time.Second
-
-// TestScriptTool_Files_StalledWorkspaceRefused covers issue #726: a
-// workspace that accepts the connection and then answers nothing is
-// refused within the tool's own bound instead of parking the caller.
-// The answering workspace in the same test is the control — it takes
-// the same tool, input and wiring, so what the second half measures is
-// the stall and not a peer that refused or closed.
 func TestScriptTool_Files_StalledWorkspaceRefused(t *testing.T) {
-	root := t.TempDir()
-	hash := installTool(t, root, "files")
-
+	reg := installFileTools(t)
 	answering, fs, _, stop := startFakeWorkspace(t)
 	defer stop()
-	require.NoError(t, fs.Write("hello.txt", []byte("hi from workspace")))
+	require.NoError(t, fs.Write("hello.txt", []byte("hello")))
 	stalledAddr, stalled, stopStalled := startStalledWorkspace(t)
 	defer stopStalled()
+	for _, tc := range []struct{ name, input string }{
+		{"file_read", `{"path":"hello.txt"}`},
+		{"file_write", `{"path":"hello.txt","content":"hello"}`},
+		{"file_list", `{"path":"."}`},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Setenv("GAGENT_WORKSPACE_ADDR", answering)
+			_, err := reg.Call(t.Context(), tc.name, json.RawMessage(tc.input))
+			require.NoError(t, err)
+			t.Setenv("GAGENT_WORKSPACE_ADDR", stalledAddr)
+			start := time.Now()
+			_, err = reg.Call(t.Context(), tc.name, json.RawMessage(tc.input))
+			elapsed := time.Since(start)
+			require.ErrorIs(t, err, tool.ErrExecution)
+			assert.GreaterOrEqual(t, elapsed, 10*time.Second)
+			assert.Less(t, elapsed, 20*time.Second)
+			assert.InDelta(t, 10, stalled.observedDeadline().Seconds(), 2)
+		})
+	}
+}
 
-	reg, err := tool.NewRegistry(tool.RegistryOptions{
-		Dir:      root,
-		Pins:     tool.ManifestPins{"files": hash},
-		Required: []string{"files"},
-	})
+func TestScriptTool_Files_ProviderExposure(t *testing.T) {
+	reg := installFileTools(t)
+	addr, fs, _, stop := startFakeWorkspace(t)
+	defer stop()
+	t.Setenv("GAGENT_WORKSPACE_ADDR", addr)
+	for _, protocol := range []string{"openai", "anthropic"} {
+		t.Run(protocol, func(t *testing.T) {
+			requests := make(chan map[string]json.RawMessage, 1)
+			endpoint := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				var request map[string]json.RawMessage
+				if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+					http.Error(w, err.Error(), 400)
+					return
+				}
+				requests <- request
+				w.Header().Set("Content-Type", "application/json")
+				if protocol == "openai" {
+					_, _ = io.WriteString(w, `{"choices":[{"finish_reason":"tool_calls","message":{"role":"assistant","tool_calls":[{"id":"write","type":"function","function":{"name":"file_write","arguments":"{\"path\":\"provider.txt\",\"content\":\"wire bytes\"}"}}]}}]}`)
+				} else {
+					_, _ = io.WriteString(w, `{"stop_reason":"tool_use","content":[{"type":"tool_use","id":"write","name":"file_write","input":{"path":"provider.txt","content":"wire bytes"}}]}`)
+				}
+			}))
+			defer endpoint.Close()
+			var model agent.Model
+			if protocol == "openai" {
+				client, err := openai.New(openai.Config{BaseURL: endpoint.URL, Model: "test", APIKey: "test"})
+				require.NoError(t, err)
+				model = client
+			} else {
+				client, err := anthropic.New(anthropic.Config{BaseURL: endpoint.URL, Model: "test", APIKey: "test"})
+				require.NoError(t, err)
+				model = client
+			}
+			response, err := model.Chat(t.Context(), []agent.Message{{Role: agent.RoleUser, Content: "Write a file."}}, reg.List())
+			require.NoError(t, err)
+			request := <-requests
+			var exposed []struct {
+				Name        string          `json:"name"`
+				InputSchema json.RawMessage `json:"input_schema"`
+				Function    struct {
+					Name       string
+					Parameters json.RawMessage
+					Strict     bool
+				} `json:"function"`
+			}
+			require.NoError(t, json.Unmarshal(request["tools"], &exposed))
+			require.Len(t, exposed, 3)
+			for _, descriptor := range exposed {
+				name, raw := descriptor.Name, descriptor.InputSchema
+				if protocol == "openai" {
+					name, raw = descriptor.Function.Name, descriptor.Function.Parameters
+					assert.True(t, descriptor.Function.Strict)
+				}
+				var schema struct {
+					Properties map[string]json.RawMessage
+					Required   []string
+				}
+				require.NoError(t, json.Unmarshal(raw, &schema))
+				expected := []string{"path"}
+				if name == "file_write" {
+					expected = append(expected, "content")
+					assert.JSONEq(t, `{"type":"string"}`, string(schema.Properties["content"]))
+				}
+				assert.ElementsMatch(t, expected, schema.Required)
+				assert.Len(t, schema.Properties, len(expected))
+				assert.Contains(t, []string{"file_read", "file_write", "file_list"}, name)
+			}
+			require.Len(t, response.ToolCalls, 1)
+			call := response.ToolCalls[0]
+			out, err := reg.Call(t.Context(), call.Name, call.Input)
+			require.NoError(t, err)
+			assert.JSONEq(t, `{"bytes_written":10}`, string(out))
+			body, err := fs.Read("provider.txt")
+			require.NoError(t, err)
+			assert.Equal(t, "wire bytes", string(body))
+		})
+	}
+}
+
+func TestScriptTool_FileWrite_StdinPreservesContent(t *testing.T) {
+	binary := buildToolBinary(t, t.TempDir(), "file_write")
+	addr, fs, _, stop := startFakeWorkspace(t)
+	defer stop()
+	t.Setenv("GAGENT_WORKSPACE_ADDR", addr)
+	invoke := func(input string) error {
+		t.Helper()
+		command := exec.Command(binary)
+		command.Stdin = strings.NewReader(input)
+		return command.Run()
+	}
+	require.NoError(t, invoke(`{"path":"held.txt","content":"keep"}`))
+	for _, input := range []string{
+		`{"path":"held.txt"}`, `{"path":"held.txt","content":null}`,
+		`{"path":"held.txt","content":42}`, `{"path":"held.txt","content":"bad","extra":true}`,
+		`{"path":"held.txt","content":"bad"} {}`, `null`, `{`, ``,
+	} {
+		t.Run(input, func(t *testing.T) {
+			require.Error(t, invoke(input))
+			body, err := fs.Read("held.txt")
+			require.NoError(t, err)
+			assert.Equal(t, "keep", string(body))
+		})
+	}
+	require.NoError(t, invoke(`{"path":"held.txt","content":""}`))
+	body, err := fs.Read("held.txt")
 	require.NoError(t, err)
-	read := json.RawMessage(`{"operation":"read","path":"hello.txt"}`)
-
-	t.Setenv("GAGENT_WORKSPACE_ADDR", answering)
-	out, err := reg.Call(context.Background(), "files", read)
-	require.NoError(t, err, "control: a workspace that answers accepts this exact call")
-	assert.Contains(t, string(out), "hi from workspace")
-
-	t.Setenv("GAGENT_WORKSPACE_ADDR", stalledAddr)
-	start := time.Now()
-	_, err = reg.Call(context.Background(), "files", read)
-	elapsed := time.Since(start)
-
-	require.Error(t, err)
-	assert.ErrorIs(t, err, tool.ErrExecution)
-	assert.GreaterOrEqual(t, elapsed, filesCallTimeout,
-		"the tool waits its bound out: a peer that refused or closed would have failed fast")
-	assert.Less(t, elapsed, filesCallTimeout+10*time.Second,
-		"and then refuses, rather than parking the caller")
-	assert.InDelta(t, filesCallTimeout.Seconds(), stalled.observedDeadline().Seconds(), 2,
-		"the workspace is handed the bound the tool states")
+	assert.Empty(t, body)
 }

@@ -84,7 +84,9 @@ func TestContract_ToolSelectionGuidance(t *testing.T) {
 		tool     string
 		fragment string
 	}{
-		{"files", "read, write, and list files in your workspace"},
+		{"file_read", "read a file in your workspace"},
+		{"file_write", "create or replace a file in your workspace"},
+		{"file_list", "list a directory in your workspace"},
 		{"message_send", "reply through message_send"},
 		{"shell_exec", "Running a command"},
 	}
@@ -271,9 +273,9 @@ func TestContract_ToolUnavailableFallbackSection(t *testing.T) {
 		"the contract carries the fallback section header")
 	// The four typed-tool alternatives must each be named.
 	for _, frag := range []string{
-		"`files` (operation: list)",
-		"`files` (operation: read)",
-		"`files` (operation: write)",
+		"`file_list`",
+		"`file_read`",
+		"`file_write`",
 		"`message_send`",
 	} {
 		assert.Contains(t, contract, frag,

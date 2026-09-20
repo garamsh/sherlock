@@ -106,7 +106,7 @@ func TestCheck_RequiredReferencesMissingPropertyFails(t *testing.T) {
 // TestCheck_ThenInheritsParentProperties confirms the inheritance rule:
 // a `then` block without its own `properties` may reference a property
 // declared in the parent. JSON Schema applies `then` to the same
-// instance, so the property is in scope. The files tool's input schema
+// instance, so the property is in scope. An operation-dependent input schema
 // uses this pattern; the check must not reject it.
 func TestCheck_ThenInheritsParentProperties(t *testing.T) {
 	schema := []byte(`{
@@ -133,7 +133,7 @@ func TestCheck_ThenInheritsParentProperties(t *testing.T) {
 // conformance check extracts the input_schema and output_schema from
 // each manifest.json, which is the only copy of a tool's contract.
 func TestCheckSchema_AcceptsEveryBuiltinDocument(t *testing.T) {
-	for _, name := range []string{"files", "github", "message_send", "shell_exec"} {
+	for _, name := range []string{"file_read", "file_write", "file_list", "github", "message_send", "shell_exec"} {
 		t.Run(name, func(t *testing.T) {
 			input, output := tooltest.ManifestSchemas(t, tooltest.ReadManifest(t, name))
 			tooltest.CheckSchema(t, name+"-input", input)

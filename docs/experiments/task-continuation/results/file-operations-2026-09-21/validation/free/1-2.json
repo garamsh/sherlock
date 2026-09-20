@@ -1,0 +1,87 @@
+{
+  "invalid": null,
+  "outbox": null,
+  "repetition": 1,
+  "stage": 2,
+  "turn": {
+    "events": [
+      {
+        "agent_id": "e2e-bin",
+        "kind": "turn_started",
+        "ops": null,
+        "task": "[msg-4646dd4fde8bc94ba14fa51b185fe6bf] unknown: Replace copy.txt with exactly replacement followed by a newline, then read it to verify the result. Do not send external messages.",
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "recall",
+        "ops": null,
+        "recall_outcome": "empty",
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "tool_call",
+        "ops": null,
+        "tool_input": {
+          "content": "replacement\n",
+          "path": "copy.txt"
+        },
+        "tool_name": "file_write",
+        "tool_result": "{\"bytes_written\":12}",
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "tool_call",
+        "ops": null,
+        "tool_input": {
+          "path": "copy.txt"
+        },
+        "tool_name": "file_read",
+        "tool_result": "{\"content\":\"replacement\\n\"}",
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "writeback",
+        "ops": [],
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "turn_finished",
+        "message_ids": [
+          "msg-4646dd4fde8bc94ba14fa51b185fe6bf"
+        ],
+        "ops": null,
+        "response": "Verified.",
+        "turn": 1
+      }
+    ],
+    "duration_ms": 10,
+    "message": "Replace copy.txt with exactly replacement followed by a newline, then read it to verify the result. Do not send external messages.",
+    "recall_outcome": "empty",
+    "recalled_ids": [],
+    "recalled_count": 0,
+    "response": "Verified."
+  },
+  "before": {
+    "copy.txt": "first line\n한글 second line\n",
+    "seed.txt": "first line\n한글 second line\n"
+  },
+  "after": {
+    "copy.txt": "replacement\n",
+    "seed.txt": "first line\n한글 second line\n"
+  },
+  "artifact_correct": true,
+  "verified_read": true,
+  "verified_list": false,
+  "successful_writes": 1,
+  "unsuccessful_calls": 0,
+  "budget_refusals": 0,
+  "calls_by_tool": {
+    "file_read": 1,
+    "file_write": 1
+  }
+}

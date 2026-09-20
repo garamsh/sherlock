@@ -180,7 +180,7 @@ func TestSanitizeToolParameters_DropsTopLevelOneOf(t *testing.T) {
 // key, the sanitizer must promote the key into `required` and rewrite
 // its `type` from a single primitive (`"string"`) to `["<original>",
 // "null"]` so the model can emit null when there is no value to send.
-// The first-party `files` and `github` manifests violate the rule; the
+// The first-party `github` manifest violates the rule; the
 // rewrite is the boundary posture (runtime-safety.md §Trust boundaries).
 func TestSanitizeToolParameters_PromotesMissingRequiredToNullable(t *testing.T) {
 	quietLogger(t)

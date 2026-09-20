@@ -117,7 +117,7 @@ build:
 # number printed is the number of executables written (#653, #715).
 build-tools:
 	@built=0; \
-	for tool in files shell_exec message_send github; do \
+	for tool in file_read file_write file_list shell_exec message_send github; do \
 		CGO_ENABLED=0 go build -o tools/$$tool/$$tool ./tools/$$tool/ || exit $$?; \
 		test -x tools/$$tool/$$tool || { echo "build-tools: go build wrote tools/$$tool/$$tool without the execute bit; ./tools/$$tool/ must be a main package"; exit 1; }; \
 		built=$$((built + 1)); \

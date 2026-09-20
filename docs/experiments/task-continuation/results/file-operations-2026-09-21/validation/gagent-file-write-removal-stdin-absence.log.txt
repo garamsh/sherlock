@@ -1,0 +1,98 @@
+--- FAIL: TestScriptTool_FileWrite_StdinPreservesContent (0.54s)
+    --- FAIL: TestScriptTool_FileWrite_StdinPreservesContent/{"path":"held.txt"} (0.00s)
+        script_tool_files_test.go:416: 
+            	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/script_tool_files_test.go:416
+            	Error:      	An error is expected but got nil.
+            	Test:       	TestScriptTool_FileWrite_StdinPreservesContent/{"path":"held.txt"}
+    --- FAIL: TestScriptTool_FileWrite_StdinPreservesContent/{"path":"held.txt","content":null} (0.00s)
+        script_tool_files_test.go:416: 
+            	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/script_tool_files_test.go:416
+            	Error:      	An error is expected but got nil.
+            	Test:       	TestScriptTool_FileWrite_StdinPreservesContent/{"path":"held.txt","content":null}
+    --- FAIL: TestScriptTool_FileWrite_StdinPreservesContent/{"path":"held.txt","content":42} (0.00s)
+        script_tool_files_test.go:419: 
+            	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/script_tool_files_test.go:419
+            	Error:      	Not equal: 
+            	            	expected: "keep"
+            	            	actual  : ""
+            	            	
+            	            	Diff:
+            	            	--- Expected
+            	            	+++ Actual
+            	            	@@ -1 +1 @@
+            	            	-keep
+            	            	+
+            	Test:       	TestScriptTool_FileWrite_StdinPreservesContent/{"path":"held.txt","content":42}
+    --- FAIL: TestScriptTool_FileWrite_StdinPreservesContent/{"path":"held.txt","content":"bad","extra":true} (0.00s)
+        script_tool_files_test.go:419: 
+            	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/script_tool_files_test.go:419
+            	Error:      	Not equal: 
+            	            	expected: "keep"
+            	            	actual  : ""
+            	            	
+            	            	Diff:
+            	            	--- Expected
+            	            	+++ Actual
+            	            	@@ -1 +1 @@
+            	            	-keep
+            	            	+
+            	Test:       	TestScriptTool_FileWrite_StdinPreservesContent/{"path":"held.txt","content":"bad","extra":true}
+    --- FAIL: TestScriptTool_FileWrite_StdinPreservesContent/{"path":"held.txt","content":"bad"}_{} (0.00s)
+        script_tool_files_test.go:419: 
+            	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/script_tool_files_test.go:419
+            	Error:      	Not equal: 
+            	            	expected: "keep"
+            	            	actual  : ""
+            	            	
+            	            	Diff:
+            	            	--- Expected
+            	            	+++ Actual
+            	            	@@ -1 +1 @@
+            	            	-keep
+            	            	+
+            	Test:       	TestScriptTool_FileWrite_StdinPreservesContent/{"path":"held.txt","content":"bad"}_{}
+    --- FAIL: TestScriptTool_FileWrite_StdinPreservesContent/null (0.00s)
+        script_tool_files_test.go:419: 
+            	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/script_tool_files_test.go:419
+            	Error:      	Not equal: 
+            	            	expected: "keep"
+            	            	actual  : ""
+            	            	
+            	            	Diff:
+            	            	--- Expected
+            	            	+++ Actual
+            	            	@@ -1 +1 @@
+            	            	-keep
+            	            	+
+            	Test:       	TestScriptTool_FileWrite_StdinPreservesContent/null
+    --- FAIL: TestScriptTool_FileWrite_StdinPreservesContent/{ (0.00s)
+        script_tool_files_test.go:419: 
+            	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/script_tool_files_test.go:419
+            	Error:      	Not equal: 
+            	            	expected: "keep"
+            	            	actual  : ""
+            	            	
+            	            	Diff:
+            	            	--- Expected
+            	            	+++ Actual
+            	            	@@ -1 +1 @@
+            	            	-keep
+            	            	+
+            	Test:       	TestScriptTool_FileWrite_StdinPreservesContent/{
+    --- FAIL: TestScriptTool_FileWrite_StdinPreservesContent/#00 (0.00s)
+        script_tool_files_test.go:419: 
+            	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/script_tool_files_test.go:419
+            	Error:      	Not equal: 
+            	            	expected: "keep"
+            	            	actual  : ""
+            	            	
+            	            	Diff:
+            	            	--- Expected
+            	            	+++ Actual
+            	            	@@ -1 +1 @@
+            	            	-keep
+            	            	+
+            	Test:       	TestScriptTool_FileWrite_StdinPreservesContent/#00
+FAIL
+FAIL	github.com/garamsh/gagent/tests	0.545s
+FAIL

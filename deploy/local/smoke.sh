@@ -79,7 +79,7 @@ docker compose exec -T agent /gagent agent \
 
 # ADR 0008's file side: a write over the gRPC contract and a write by an
 # exec'd child land under one owner, so either can pick up what the other
-# left. The check writes through the deployment's own files tool, reads
+# left. The check writes through the deployment's own file_write tool, reads
 # the owner from the workspace container, and then has an exec'd child
 # modify that file and the contract overwrite the child's.
 echo "==> a gRPC write lands in the workspace under the exec account"
@@ -87,9 +87,9 @@ call_tool() {
   docker compose exec -T -e GAGENT_WORKSPACE_ADDR=127.0.0.1:8081 \
     agent "/opt/gagent/tools/$1/$1" || true
 }
-written=$(call_tool files <<<'{"operation":"write","path":"contract-write.txt","content":"written over the contract\n"}')
+written=$(call_tool file_write <<<'{"path":"contract-write.txt","content":"written over the contract\n"}')
 if ! grep -q '"bytes_written"' <<<"$written"; then
-  echo "the files tool could not write into the workspace: ${written:-no output}" >&2
+  echo "the file_write tool could not write into the workspace: ${written:-no output}" >&2
   exit 1
 fi
 
@@ -131,7 +131,7 @@ if ! grep -q 'appended' <<<"$appended"; then
   exit 1
 fi
 
-overwritten=$(call_tool files <<<'{"operation":"write","path":"question.txt","content":"6 * 7 = 42\n"}')
+overwritten=$(call_tool file_write <<<'{"path":"question.txt","content":"6 * 7 = 42\n"}')
 if ! grep -q '"bytes_written"' <<<"$overwritten"; then
   echo "the contract could not overwrite the exec child's file: ${overwritten:-no output}" >&2
   exit 1

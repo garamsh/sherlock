@@ -1,0 +1,29 @@
+go vet ./...
+golangci-lint run ./...
+0 issues.
+format: 147 files checked, all formatted
+go test ./...
+ok  	github.com/garamsh/gagent/cmd/gagent	(cached)
+ok  	github.com/garamsh/gagent/internal/agent	(cached)
+ok  	github.com/garamsh/gagent/internal/agent/anthropic	(cached)
+ok  	github.com/garamsh/gagent/internal/agent/memory	(cached)
+ok  	github.com/garamsh/gagent/internal/agent/openai	(cached)
+ok  	github.com/garamsh/gagent/internal/config	(cached)
+ok  	github.com/garamsh/gagent/internal/gateway	(cached)
+ok  	github.com/garamsh/gagent/internal/memory	(cached)
+ok  	github.com/garamsh/gagent/internal/memory/sqlite	(cached)
+ok  	github.com/garamsh/gagent/internal/message	(cached)
+ok  	github.com/garamsh/gagent/internal/tool	0.045s
+ok  	github.com/garamsh/gagent/internal/tool/tooltest	0.010s
+?   	github.com/garamsh/gagent/internal/workspace	[no test files]
+ok  	github.com/garamsh/gagent/internal/workspace/files	(cached)
+ok  	github.com/garamsh/gagent/internal/workspace/server	(cached)
+ok  	github.com/garamsh/gagent/internal/workspace/shell	(cached)
+ok  	github.com/garamsh/gagent/tests	104.492s
+?   	github.com/garamsh/gagent/tools/file_list	[no test files]
+?   	github.com/garamsh/gagent/tools/file_read	[no test files]
+?   	github.com/garamsh/gagent/tools/file_write	[no test files]
+?   	github.com/garamsh/gagent/tools/github	[no test files]
+?   	github.com/garamsh/gagent/tools/message_send	[no test files]
+?   	github.com/garamsh/gagent/tools/shell_exec	[no test files]
+build: 23 packages built

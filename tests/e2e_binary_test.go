@@ -23,7 +23,7 @@ const binaryAgentID = "e2e-bin"
 // the tools it loaded from its tools directory (ADR 0017). The mock
 // model computes through shell_exec, which crosses the wire to the
 // workspace's Exec RPC and runs in the workspace directory, reads its
-// note back through the files tool, replies through message_send, and
+// note back through the file_read tool, replies through message_send, and
 // closes with a memory write.
 func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
 	binary := buildGagentBinary(t)
@@ -31,7 +31,7 @@ func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
 
 	// The workspace directory: the workspace serves it over gRPC and
 	// execs children in it, so the file the exec'd child writes is the
-	// file the files tool reads. The workspace creates the directory on
+	// file the file_read tool reads. The workspace creates the directory on
 	// first use and the run writes its own content, so the test seeds
 	// nothing.
 	workspaceDir := filepath.Join(t.TempDir(), "workspace")
@@ -44,7 +44,7 @@ func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
 	runBinaryMVPScenario(t, baseURL, root, binaryAgentID)
 
 	// The exec'd child wrote into the workspace's own directory, where
-	// the files tool read it back over the gRPC contract.
+	// the file_read tool read it back over the gRPC contract.
 	written, err := os.ReadFile(filepath.Join(workspaceDir, "question.txt"))
 	require.NoError(t, err)
 	assert.Equal(t, "6 * 7\n", string(written))
@@ -66,7 +66,7 @@ func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
 // runBinaryMVPScenario is the binary test's variant of
 // runMVPScenario. The canned loop drives the agent through shell_exec
 // (writing a note into the workspace and computing through the
-// workspace's Exec RPC), files (reading that note back), message_send,
+// workspace's Exec RPC), file_read (reading that note back), message_send,
 // and a memory write.
 func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	t.Helper()
@@ -78,7 +78,7 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
 	resp.Body.Close()
 
-	// Four-step scenario: shell_exec, files, message_send, then the
+	// Four-step scenario: shell_exec, file_read, message_send, then the
 	// final writeback — a writeback event follows every model response.
 	got := collectEvents(t, events, 7)
 	var kinds []string
@@ -105,11 +105,11 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 		"the canned run computes through the shell")
 
 	// Files tool: the same file, read back through the gRPC contract —
-	// the exec'd child and the files tool see one workspace directory.
-	assert.Equal(t, "files", got[3]["tool_name"])
+	// the exec'd child and the file_read tool see one workspace directory.
+	assert.Equal(t, "file_read", got[3]["tool_name"])
 	assert.NotContains(t, got[3], "tool_failed")
 	assert.Contains(t, got[3]["tool_result"], "6 * 7",
-		"the files tool reads back what the exec'd child wrote, through the workspace gRPC client")
+		"the file_read tool reads back what the exec'd child wrote, through the workspace gRPC client")
 
 	assert.Equal(t, "message_send", got[4]["tool_name"])
 	assert.NotContains(t, got[4], "tool_failed")
@@ -126,7 +126,7 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 
 // TestEndToEnd_OneShotAgentTurnAgainstWorkspace runs "gagent agent
 // --message" against a running workspace: the one-shot mode runs the
-// canned turn — shell_exec, files, message_send via the protocol
+// canned turn — shell_exec, file_read, message_send via the protocol
 // client, plus a memory write — and exits. The outbound message
 // lands in the file outbox (the same dir the serving mode uses); the
 // one-shot runner echoes it to stdout after the turn lands.
@@ -174,7 +174,7 @@ func TestEndToEnd_OneShotAgentTurnAgainstWorkspace(t *testing.T) {
 
 // The next two tests are a pair, and the pair is the point: the same
 // broken deployment — an agent whose workspace is not listening, so
-// shell_exec and files fail at the boundary — is run down each of the
+// shell_exec and file_read fail at the boundary — is run down each of the
 // agent's two paths, and they are meant to end differently.
 //
 // A served turn hands the failure to the model, which gets another
@@ -214,7 +214,7 @@ func TestEndToEnd_OneShotAgentTurnFailedToolCallExitsNonZero(t *testing.T) {
 	assert.NotZero(t, exitErr.ExitCode())
 	assert.Contains(t, string(out), "tool call(s) failed",
 		"the run names what failed rather than only setting a status")
-	for _, name := range []string{"shell_exec", "files"} {
+	for _, name := range []string{"shell_exec", "file_read"} {
 		assert.Contains(t, string(out), name,
 			"the run names every tool that failed at the workspace boundary")
 	}
@@ -263,7 +263,7 @@ func TestEndToEnd_ServedTurnFailedToolCallCarriesOn(t *testing.T) {
 	// failure was fed back to the model as a tool result.
 	assert.Equal(t, "shell_exec", got[2]["tool_name"])
 	assert.Equal(t, true, got[2]["tool_failed"])
-	assert.Equal(t, "files", got[3]["tool_name"])
+	assert.Equal(t, "file_read", got[3]["tool_name"])
 	assert.Equal(t, true, got[3]["tool_failed"])
 
 	// message_send needs no workspace, so the mouth still worked and
@@ -311,7 +311,7 @@ func closedLoopbackAddr(t *testing.T) string {
 // buildGagentBinary compiles the gagent CLI binary into a temp
 // directory and builds each first-party tool into the module's
 // tools/<name>/<name> so the script-tool registry can resolve it
-// through GAGENT_TOOLS_DIR. The four tools are built in place (the
+// through GAGENT_TOOLS_DIR. The six tools are built in place (the
 // same shape `make build-tools` produces), and the agent binary is
 // the only thing copied to the tempdir; the test sets GAGENT_TOOLS_DIR
 // to the module root's tools/ dir so the run doesn't depend on
@@ -325,7 +325,7 @@ func buildGagentBinary(t *testing.T) string {
 	require.NoError(t, err, "go build failed: %s", out)
 
 	toolsDir := toolsDirForTest(t)
-	for _, tool := range []string{"files", "shell_exec", "message_send", "github"} {
+	for _, tool := range []string{"file_read", "file_write", "file_list", "shell_exec", "message_send", "github"} {
 		toolBuild := exec.Command("go", "build", "-o",
 			filepath.Join(toolsDir, tool, tool), "./tools/"+tool)
 		toolBuild.Dir = ".." // the module root

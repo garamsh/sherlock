@@ -1,0 +1,761 @@
+go vet ./...
+golangci-lint run ./...
+0 issues.
+format: 147 files checked, all formatted
+go test ./...
+ok  	github.com/garamsh/gagent/cmd/gagent	(cached)
+ok  	github.com/garamsh/gagent/internal/agent	(cached)
+ok  	github.com/garamsh/gagent/internal/agent/anthropic	(cached)
+ok  	github.com/garamsh/gagent/internal/agent/memory	(cached)
+ok  	github.com/garamsh/gagent/internal/agent/openai	(cached)
+ok  	github.com/garamsh/gagent/internal/config	(cached)
+ok  	github.com/garamsh/gagent/internal/gateway	(cached)
+ok  	github.com/garamsh/gagent/internal/memory	(cached)
+ok  	github.com/garamsh/gagent/internal/memory/sqlite	(cached)
+ok  	github.com/garamsh/gagent/internal/message	(cached)
+ok  	github.com/garamsh/gagent/internal/tool	0.077s
+ok  	github.com/garamsh/gagent/internal/tool/tooltest	(cached)
+?   	github.com/garamsh/gagent/internal/workspace	[no test files]
+ok  	github.com/garamsh/gagent/internal/workspace/files	(cached)
+ok  	github.com/garamsh/gagent/internal/workspace/server	0.036s
+ok  	github.com/garamsh/gagent/internal/workspace/shell	0.258s
+--- FAIL: TestContinuation_Free (1.45s)
+    continuation_test.go:590: 
+        	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/continuation_test.go:274
+        	            				/home/sauce/orca/workspaces/gagent/fix-file-write/tests/continuation_test.go:590
+        	Error:      	Should be empty, but was M cmd/gagent/mock_model.go
+        	            	 M internal/agent/instructions.go
+        	            	 M internal/agent/instructions_test.go
+        	            	 M internal/agent/openai/schema_test.go
+        	            	 M internal/tool/tooltest/conformance_test.go
+        	            	 D tools/files/files.go
+        	            	 D tools/files/manifest.json
+        	            	?? tools/file_list/
+        	            	?? tools/file_read/
+        	            	?? tools/file_write/
+        	Test:       	TestContinuation_Free
+        	Messages:   	product sources differ from revision
+--- FAIL: TestContinuation_EmptyPreparationRemainsObservable (1.51s)
+    continuation_test.go:670: 
+        	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/continuation_test.go:274
+        	            				/home/sauce/orca/workspaces/gagent/fix-file-write/tests/continuation_test.go:670
+        	Error:      	Should be empty, but was M cmd/gagent/mock_model.go
+        	            	 M internal/agent/instructions.go
+        	            	 M internal/agent/instructions_test.go
+        	            	 M internal/agent/openai/schema_test.go
+        	            	 M internal/tool/tooltest/conformance_test.go
+        	            	 D tools/files/files.go
+        	            	 D tools/files/manifest.json
+        	            	?? tools/file_list/
+        	            	?? tools/file_read/
+        	            	?? tools/file_write/
+        	Test:       	TestContinuation_EmptyPreparationRemainsObservable
+        	Messages:   	product sources differ from revision
+--- FAIL: TestRecallInformation_Free (0.01s)
+    recall_information_test.go:452: 
+        	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/recall_information_test.go:208
+        	            				/home/sauce/orca/workspaces/gagent/fix-file-write/tests/recall_information_test.go:452
+        	Error:      	Received unexpected error:
+        	            	exit status 1
+        	Test:       	TestRecallInformation_Free
+        	Messages:   	product sources differ from revision: diff --git a/cmd/gagent/mock_model.go b/cmd/gagent/mock_model.go
+        	            	index e7c17ad..5edf17f 100644
+        	            	--- a/cmd/gagent/mock_model.go
+        	            	+++ b/cmd/gagent/mock_model.go
+        	            	@@ -9,7 +9,7 @@ import (
+        	            	 // mockModel is the MVP placeholder model (ADR 0004): a canned script
+        	            	 // that drives a fixed scenario through the agent's installed tools —
+        	            	 // shell_exec to write a note into the workspace and compute the answer
+        	            	-// through the workspace's Exec RPC, files to read that note back
+        	            	+// through the workspace's Exec RPC, file_read to read that note back
+        	            	 // through the gRPC contract, message_send for the mouth, then a
+        	            	 // structured response recording the answer at its address. The scenario
+        	            	 // creates what it reads, so it runs clean in any workspace. It exhausts
+        	            	@@ -33,9 +33,9 @@ func mockModel(_ string) agent.Model {
+        	            	 		},
+        	            	 		agent.ScriptedStep{
+        	            	 			ToolCalls: []agent.ToolCall{{
+        	            	-				Name: "files",
+        	            	+				Name: "file_read",
+        	            	 				Input: json.RawMessage(
+        	            	-					`{"operation":"read","path":"question.txt","content":null}`,
+        	            	+					`{"path":"question.txt"}`,
+        	            	 				),
+        	            	 			}},
+        	            	 		},
+        	            	diff --git a/internal/agent/instructions.go b/internal/agent/instructions.go
+        	            	index c10c2ec..50350ee 100644
+        	            	--- a/internal/agent/instructions.go
+        	            	+++ b/internal/agent/instructions.go
+        	            	@@ -59,8 +59,9 @@ const addressContract = `- ` + "`address.subject`" + ` — who or what the state
+        	            	 const Contract = `## Tools
+        	            	 Pick the right tool for the task; don't run code when files will do.
+        	            	 
+        	            	-- files: read, write, and list files in your workspace (the workspace is the
+        	            	-  agent's data plane; the files tool is the only way the agent touches it).
+        	            	+- file_read: read a file in your workspace.
+        	            	+- file_write: create or replace a file in your workspace.
+        	            	+- file_list: list a directory in your workspace.
+        	            	 - message_send: send a message to a channel and target. When the task came from
+        	            	   a person and a reply is owed, reply through message_send. Your final response
+        	            	   alone does not reach the user.
+        	            	@@ -121,11 +122,11 @@ Record only facts you actually obtained this turn: a failed tool call produces n
+        	            	 If a tool returns an error, **switch tools, do not retry the same tool with
+        	            	 different arguments**. The typed tools cover most cases:
+        	            	 
+        	            	-- Listing files: ` + "`files`" + ` (operation: list).
+        	            	-- Reading a file: ` + "`files`" + ` (operation: read).
+        	            	-- Writing a file: ` + "`files`" + ` (operation: write).
+        	            	+- Listing files: ` + "`file_list`" + `.
+        	            	+- Reading a file: ` + "`file_read`" + `.
+        	            	+- Writing a file: ` + "`file_write`" + `.
+        	            	 - Computing a value: answer from context when simple, or write the
+        	            	-  computed value into a file via ` + "`files write`" + ` and read it back.
+        	            	+  computed value into a file via ` + "`file_write`" + ` and read it back.
+        	            	 - Running a command: ` + "`shell_exec`" + `.
+        	            	 - Sending a message: ` + "`message_send`" + `.
+        	            	 
+        	            	diff --git a/internal/agent/instructions_test.go b/internal/agent/instructions_test.go
+        	            	index a0b2039..00548f9 100644
+        	            	--- a/internal/agent/instructions_test.go
+        	            	+++ b/internal/agent/instructions_test.go
+        	            	@@ -84,7 +84,9 @@ func TestContract_ToolSelectionGuidance(t *testing.T) {
+        	            	 		tool     string
+        	            	 		fragment string
+        	            	 	}{
+        	            	-		{"files", "read, write, and list files in your workspace"},
+        	            	+		{"file_read", "read a file in your workspace"},
+        	            	+		{"file_write", "create or replace a file in your workspace"},
+        	            	+		{"file_list", "list a directory in your workspace"},
+        	            	 		{"message_send", "reply through message_send"},
+        	            	 		{"shell_exec", "Running a command"},
+        	            	 	}
+        	            	@@ -271,9 +273,9 @@ func TestContract_ToolUnavailableFallbackSection(t *testing.T) {
+        	            	 		"the contract carries the fallback section header")
+        	            	 	// The four typed-tool alternatives must each be named.
+        	            	 	for _, frag := range []string{
+        	            	-		"`files` (operation: list)",
+        	            	-		"`files` (operation: read)",
+        	            	-		"`files` (operation: write)",
+        	            	+		"`file_list`",
+        	            	+		"`file_read`",
+        	            	+		"`file_write`",
+        	            	 		"`message_send`",
+        	            	 	} {
+        	            	 		assert.Contains(t, contract, frag,
+        	            	diff --git a/internal/agent/openai/schema_test.go b/internal/agent/openai/schema_test.go
+        	            	index 3a0e590..cbcc0dc 100644
+        	            	--- a/internal/agent/openai/schema_test.go
+        	            	+++ b/internal/agent/openai/schema_test.go
+        	            	@@ -180,7 +180,7 @@ func TestSanitizeToolParameters_DropsTopLevelOneOf(t *testing.T) {
+        	            	 // key, the sanitizer must promote the key into `required` and rewrite
+        	            	 // its `type` from a single primitive (`"string"`) to `["<original>",
+        	            	 // "null"]` so the model can emit null when there is no value to send.
+        	            	-// The first-party `files` and `github` manifests violate the rule; the
+        	            	+// The first-party `github` manifest violates the rule; the
+        	            	 // rewrite is the boundary posture (runtime-safety.md §Trust boundaries).
+        	            	 func TestSanitizeToolParameters_PromotesMissingRequiredToNullable(t *testing.T) {
+        	            	 	quietLogger(t)
+        	            	diff --git a/internal/tool/tooltest/conformance_test.go b/internal/tool/tooltest/conformance_test.go
+        	            	index 339526a..5e297f4 100644
+        	            	--- a/internal/tool/tooltest/conformance_test.go
+        	            	+++ b/internal/tool/tooltest/conformance_test.go
+        	            	@@ -106,7 +106,7 @@ func TestCheck_RequiredReferencesMissingPropertyFails(t *testing.T) {
+        	            	 // TestCheck_ThenInheritsParentProperties confirms the inheritance rule:
+        	            	 // a `then` block without its own `properties` may reference a property
+        	            	 // declared in the parent. JSON Schema applies `then` to the same
+        	            	-// instance, so the property is in scope. The files tool's input schema
+        	            	+// instance, so the property is in scope. An operation-dependent input schema
+        	            	 // uses this pattern; the check must not reject it.
+        	            	 func TestCheck_ThenInheritsParentProperties(t *testing.T) {
+        	            	 	schema := []byte(`{
+        	            	@@ -133,7 +133,7 @@ func TestCheck_ThenInheritsParentProperties(t *testing.T) {
+        	            	 // conformance check extracts the input_schema and output_schema from
+        	            	 // each manifest.json, which is the only copy of a tool's contract.
+        	            	 func TestCheckSchema_AcceptsEveryBuiltinDocument(t *testing.T) {
+        	            	-	for _, name := range []string{"files", "github", "message_send", "shell_exec"} {
+        	            	+	for _, name := range []string{"file_read", "file_write", "file_list", "github", "message_send", "shell_exec"} {
+        	            	 		t.Run(name, func(t *testing.T) {
+        	            	 			input, output := tooltest.ManifestSchemas(t, tooltest.ReadManifest(t, name))
+        	            	 			tooltest.CheckSchema(t, name+"-input", input)
+        	            	diff --git a/tools/files/files.go b/tools/files/files.go
+        	            	deleted file mode 100644
+        	            	index 378b19e..0000000
+        	            	--- a/tools/files/files.go
+        	            	+++ /dev/null
+        	            	@@ -1,141 +0,0 @@
+        	            	-// files is the platform's files tool. It implements the script-tool
+        	            	-// runner's stdio protocol (ADR 0009 §Decision): one JSON object on
+        	            	-// stdin (the validated input), one JSON object on stdout (the
+        	            	-// validated output), non-zero exit on failure. The tool dials the
+        	            	-// workspace gRPC client at GAGENT_WORKSPACE_ADDR and routes the
+        	            	-// operation (read, write, list) to the matching RPC.
+        	            	-package main
+        	            	-
+        	            	-import (
+        	            	-	"bufio"
+        	            	-	"context"
+        	            	-	"encoding/json"
+        	            	-	"errors"
+        	            	-	"fmt"
+        	            	-	"io"
+        	            	-	"os"
+        	            	-	"time"
+        	            	-
+        	            	-	"google.golang.org/grpc"
+        	            	-	"google.golang.org/grpc/credentials/insecure"
+        	            	-	"google.golang.org/grpc/status"
+        	            	-
+        	            	-	"github.com/garamsh/gagent/internal/workspace"
+        	            	-)
+        	            	-
+        	            	-// callTimeout bounds one workspace RPC. Read, Write and List are
+        	            	-// pod-local filesystem calls with nothing to wait on, so a workspace
+        	            	-// still answering returns far inside it.
+        	            	-const callTimeout = 10 * time.Second
+        	            	-
+        	            	-type callInput struct {
+        	            	-	Operation string `json:"operation"`
+        	            	-	Path      string `json:"path"`
+        	            	-	Content   string `json:"content"`
+        	            	-}
+        	            	-
+        	            	-type entry struct {
+        	            	-	Name string `json:"name"`
+        	            	-	Dir  bool   `json:"dir"`
+        	            	-}
+        	            	-
+        	            	-type callOutput struct {
+        	            	-	Content      string  `json:"content"`
+        	            	-	BytesWritten int     `json:"bytes_written"`
+        	            	-	Entries      []entry `json:"entries"`
+        	            	-}
+        	            	-
+        	            	-func main() {
+        	            	-	if err := run(); err != nil {
+        	            	-		writeError(err)
+        	            	-		os.Exit(1)
+        	            	-	}
+        	            	-}
+        	            	-
+        	            	-func run() error {
+        	            	-	addr := os.Getenv("GAGENT_WORKSPACE_ADDR")
+        	            	-	if addr == "" {
+        	            	-		return errors.New("GAGENT_WORKSPACE_ADDR is required")
+        	            	-	}
+        	            	-	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+        	            	-	if err != nil {
+        	            	-		return fmt.Errorf("dial workspace: %w", err)
+        	            	-	}
+        	            	-	defer conn.Close()
+        	            	-	ws := workspace.NewWorkspaceClient(conn)
+        	            	-
+        	            	-	dec := json.NewDecoder(bufio.NewReader(os.Stdin))
+        	            	-	var in callInput
+        	            	-	if err := dec.Decode(&in); err != nil {
+        	            	-		if errors.Is(err, io.EOF) {
+        	            	-			return nil
+        	            	-		}
+        	            	-		return fmt.Errorf("decode input: %w", err)
+        	            	-	}
+        	            	-	out, err := dispatch(context.Background(), ws, in)
+        	            	-	if err != nil {
+        	            	-		return err
+        	            	-	}
+        	            	-	return json.NewEncoder(os.Stdout).Encode(out)
+        	            	-}
+        	            	-
+        	            	-func dispatch(ctx context.Context, ws workspace.WorkspaceClient, in callInput) (callOutput, error) {
+        	            	-	ctx, cancel := context.WithTimeout(ctx, callTimeout)
+        	            	-	defer cancel()
+        	            	-
+        	            	-	switch in.Operation {
+        	            	-	case "read":
+        	            	-		resp, err := ws.Read(ctx, &workspace.ReadRequest{Path: in.Path})
+        	            	-		if err != nil {
+        	            	-			return callOutput{}, grpcError("read", err)
+        	            	-		}
+        	            	-		// BytesWritten and Entries are not produced by read, and the
+        	            	-		// struct carries no omitempty, so every key is emitted
+        	            	-		// regardless. Entries must be an empty slice rather than nil:
+        	            	-		// nil marshals to null, which fails the manifest's
+        	            	-		// "entries": {"type": "array"} at the registry's output gate
+        	            	-		// (issue #319).
+        	            	-		return callOutput{
+        	            	-			Content: string(resp.GetContent()),
+        	            	-			Entries: []entry{},
+        	            	-		}, nil
+        	            	-	case "write":
+        	            	-		// The input schema cannot carry this conditional under the
+        	            	-		// strict-mode subset (oneOf is rejected at the top level,
+        	            	-		// issue #313); the runtime enforces it instead.
+        	            	-		if in.Content == "" {
+        	            	-			return callOutput{}, errors.New("content is required for write")
+        	            	-		}
+        	            	-		if _, err := ws.Write(ctx, &workspace.WriteRequest{Path: in.Path, Content: []byte(in.Content)}); err != nil {
+        	            	-			return callOutput{}, grpcError("write", err)
+        	            	-		}
+        	            	-		return callOutput{
+        	            	-			BytesWritten: len(in.Content),
+        	            	-			Entries:      []entry{},
+        	            	-		}, nil
+        	            	-	case "list":
+        	            	-		resp, err := ws.List(ctx, &workspace.ListRequest{Path: in.Path})
+        	            	-		if err != nil {
+        	            	-			return callOutput{}, grpcError("list", err)
+        	            	-		}
+        	            	-		entries := make([]entry, 0, len(resp.GetEntries()))
+        	            	-		for _, e := range resp.GetEntries() {
+        	            	-			entries = append(entries, entry{Name: e.GetName(), Dir: e.GetDir()})
+        	            	-		}
+        	            	-		return callOutput{Entries: entries}, nil
+        	            	-	default:
+        	            	-		return callOutput{}, fmt.Errorf("unknown operation: %s", in.Operation)
+        	            	-	}
+        	            	-}
+        	            	-
+        	            	-func grpcError(op string, err error) error {
+        	            	-	st, _ := status.FromError(err)
+        	            	-	if st != nil && st.Message() != "" {
+        	            	-		return fmt.Errorf("%s: %s", op, st.Message())
+        	            	-	}
+        	            	-	return fmt.Errorf("%s: %w", op, err)
+        	            	-}
+        	            	-
+        	            	-func writeError(err error) {
+        	            	-	fmt.Fprintln(os.Stderr, "files:", err)
+        	            	-}
+        	            	diff --git a/tools/files/manifest.json b/tools/files/manifest.json
+        	            	deleted file mode 100644
+        	            	index 5b89248..0000000
+        	            	--- a/tools/files/manifest.json
+        	            	+++ /dev/null
+        	            	@@ -1,35 +0,0 @@
+        	            	-{
+        	            	-	"name": "files",
+        	            	-	"description": "Read, write, and list files inside the agent's workspace.",
+        	            	-	"command": "files",
+        	            	-	"input_schema": {
+        	            	-		"type": "object",
+        	            	-		"properties": {
+        	            	-			"operation": {"type": "string", "enum": ["read", "write", "list"]},
+        	            	-			"path": {"type": "string", "minLength": 1},
+        	            	-			"content": {"type": "string"}
+        	            	-		},
+        	            	-		"required": ["operation", "path"],
+        	            	-		"additionalProperties": false
+        	            	-	},
+        	            	-	"output_schema": {
+        	            	-		"type": "object",
+        	            	-		"properties": {
+        	            	-			"content": {"type": "string"},
+        	            	-			"bytes_written": {"type": "integer"},
+        	            	-			"entries": {
+        	            	-				"type": "array",
+        	            	-				"items": {
+        	            	-					"type": "object",
+        	            	-					"properties": {
+        	            	-						"name": {"type": "string"},
+        	            	-						"dir": {"type": "boolean"}
+        	            	-					},
+        	            	-					"required": ["name", "dir"],
+        	            	-					"additionalProperties": false
+        	            	-				}
+        	            	-			}
+        	            	-		},
+        	            	-		"additionalProperties": false
+        	            	-	}
+        	            	-}
+--- FAIL: TestRecordSelection_Free (0.01s)
+    record_selection_test.go:439: 
+        	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/record_selection_test.go:298
+        	            				/home/sauce/orca/workspaces/gagent/fix-file-write/tests/record_selection_test.go:439
+        	Error:      	Received unexpected error:
+        	            	exit status 1
+        	Test:       	TestRecordSelection_Free
+        	Messages:   	diff --git a/cmd/gagent/mock_model.go b/cmd/gagent/mock_model.go
+        	            	index e7c17ad..5edf17f 100644
+        	            	--- a/cmd/gagent/mock_model.go
+        	            	+++ b/cmd/gagent/mock_model.go
+        	            	@@ -9,7 +9,7 @@ import (
+        	            	 // mockModel is the MVP placeholder model (ADR 0004): a canned script
+        	            	 // that drives a fixed scenario through the agent's installed tools —
+        	            	 // shell_exec to write a note into the workspace and compute the answer
+        	            	-// through the workspace's Exec RPC, files to read that note back
+        	            	+// through the workspace's Exec RPC, file_read to read that note back
+        	            	 // through the gRPC contract, message_send for the mouth, then a
+        	            	 // structured response recording the answer at its address. The scenario
+        	            	 // creates what it reads, so it runs clean in any workspace. It exhausts
+        	            	@@ -33,9 +33,9 @@ func mockModel(_ string) agent.Model {
+        	            	 		},
+        	            	 		agent.ScriptedStep{
+        	            	 			ToolCalls: []agent.ToolCall{{
+        	            	-				Name: "files",
+        	            	+				Name: "file_read",
+        	            	 				Input: json.RawMessage(
+        	            	-					`{"operation":"read","path":"question.txt","content":null}`,
+        	            	+					`{"path":"question.txt"}`,
+        	            	 				),
+        	            	 			}},
+        	            	 		},
+        	            	diff --git a/internal/agent/instructions.go b/internal/agent/instructions.go
+        	            	index c10c2ec..50350ee 100644
+        	            	--- a/internal/agent/instructions.go
+        	            	+++ b/internal/agent/instructions.go
+        	            	@@ -59,8 +59,9 @@ const addressContract = `- ` + "`address.subject`" + ` — who or what the state
+        	            	 const Contract = `## Tools
+        	            	 Pick the right tool for the task; don't run code when files will do.
+        	            	 
+        	            	-- files: read, write, and list files in your workspace (the workspace is the
+        	            	-  agent's data plane; the files tool is the only way the agent touches it).
+        	            	+- file_read: read a file in your workspace.
+        	            	+- file_write: create or replace a file in your workspace.
+        	            	+- file_list: list a directory in your workspace.
+        	            	 - message_send: send a message to a channel and target. When the task came from
+        	            	   a person and a reply is owed, reply through message_send. Your final response
+        	            	   alone does not reach the user.
+        	            	@@ -121,11 +122,11 @@ Record only facts you actually obtained this turn: a failed tool call produces n
+        	            	 If a tool returns an error, **switch tools, do not retry the same tool with
+        	            	 different arguments**. The typed tools cover most cases:
+        	            	 
+        	            	-- Listing files: ` + "`files`" + ` (operation: list).
+        	            	-- Reading a file: ` + "`files`" + ` (operation: read).
+        	            	-- Writing a file: ` + "`files`" + ` (operation: write).
+        	            	+- Listing files: ` + "`file_list`" + `.
+        	            	+- Reading a file: ` + "`file_read`" + `.
+        	            	+- Writing a file: ` + "`file_write`" + `.
+        	            	 - Computing a value: answer from context when simple, or write the
+        	            	-  computed value into a file via ` + "`files write`" + ` and read it back.
+        	            	+  computed value into a file via ` + "`file_write`" + ` and read it back.
+        	            	 - Running a command: ` + "`shell_exec`" + `.
+        	            	 - Sending a message: ` + "`message_send`" + `.
+        	            	 
+        	            	diff --git a/internal/agent/instructions_test.go b/internal/agent/instructions_test.go
+        	            	index a0b2039..00548f9 100644
+        	            	--- a/internal/agent/instructions_test.go
+        	            	+++ b/internal/agent/instructions_test.go
+        	            	@@ -84,7 +84,9 @@ func TestContract_ToolSelectionGuidance(t *testing.T) {
+        	            	 		tool     string
+        	            	 		fragment string
+        	            	 	}{
+        	            	-		{"files", "read, write, and list files in your workspace"},
+        	            	+		{"file_read", "read a file in your workspace"},
+        	            	+		{"file_write", "create or replace a file in your workspace"},
+        	            	+		{"file_list", "list a directory in your workspace"},
+        	            	 		{"message_send", "reply through message_send"},
+        	            	 		{"shell_exec", "Running a command"},
+        	            	 	}
+        	            	@@ -271,9 +273,9 @@ func TestContract_ToolUnavailableFallbackSection(t *testing.T) {
+        	            	 		"the contract carries the fallback section header")
+        	            	 	// The four typed-tool alternatives must each be named.
+        	            	 	for _, frag := range []string{
+        	            	-		"`files` (operation: list)",
+        	            	-		"`files` (operation: read)",
+        	            	-		"`files` (operation: write)",
+        	            	+		"`file_list`",
+        	            	+		"`file_read`",
+        	            	+		"`file_write`",
+        	            	 		"`message_send`",
+        	            	 	} {
+        	            	 		assert.Contains(t, contract, frag,
+        	            	diff --git a/internal/agent/openai/schema_test.go b/internal/agent/openai/schema_test.go
+        	            	index 3a0e590..cbcc0dc 100644
+        	            	--- a/internal/agent/openai/schema_test.go
+        	            	+++ b/internal/agent/openai/schema_test.go
+        	            	@@ -180,7 +180,7 @@ func TestSanitizeToolParameters_DropsTopLevelOneOf(t *testing.T) {
+        	            	 // key, the sanitizer must promote the key into `required` and rewrite
+        	            	 // its `type` from a single primitive (`"string"`) to `["<original>",
+        	            	 // "null"]` so the model can emit null when there is no value to send.
+        	            	-// The first-party `files` and `github` manifests violate the rule; the
+        	            	+// The first-party `github` manifest violates the rule; the
+        	            	 // rewrite is the boundary posture (runtime-safety.md §Trust boundaries).
+        	            	 func TestSanitizeToolParameters_PromotesMissingRequiredToNullable(t *testing.T) {
+        	            	 	quietLogger(t)
+        	            	diff --git a/internal/tool/tooltest/conformance_test.go b/internal/tool/tooltest/conformance_test.go
+        	            	index 339526a..5e297f4 100644
+        	            	--- a/internal/tool/tooltest/conformance_test.go
+        	            	+++ b/internal/tool/tooltest/conformance_test.go
+        	            	@@ -106,7 +106,7 @@ func TestCheck_RequiredReferencesMissingPropertyFails(t *testing.T) {
+        	            	 // TestCheck_ThenInheritsParentProperties confirms the inheritance rule:
+        	            	 // a `then` block without its own `properties` may reference a property
+        	            	 // declared in the parent. JSON Schema applies `then` to the same
+        	            	-// instance, so the property is in scope. The files tool's input schema
+        	            	+// instance, so the property is in scope. An operation-dependent input schema
+        	            	 // uses this pattern; the check must not reject it.
+        	            	 func TestCheck_ThenInheritsParentProperties(t *testing.T) {
+        	            	 	schema := []byte(`{
+        	            	@@ -133,7 +133,7 @@ func TestCheck_ThenInheritsParentProperties(t *testing.T) {
+        	            	 // conformance check extracts the input_schema and output_schema from
+        	            	 // each manifest.json, which is the only copy of a tool's contract.
+        	            	 func TestCheckSchema_AcceptsEveryBuiltinDocument(t *testing.T) {
+        	            	-	for _, name := range []string{"files", "github", "message_send", "shell_exec"} {
+        	            	+	for _, name := range []string{"file_read", "file_write", "file_list", "github", "message_send", "shell_exec"} {
+        	            	 		t.Run(name, func(t *testing.T) {
+        	            	 			input, output := tooltest.ManifestSchemas(t, tooltest.ReadManifest(t, name))
+        	            	 			tooltest.CheckSchema(t, name+"-input", input)
+        	            	diff --git a/tools/files/files.go b/tools/files/files.go
+        	            	deleted file mode 100644
+        	            	index 378b19e..0000000
+        	            	--- a/tools/files/files.go
+        	            	+++ /dev/null
+        	            	@@ -1,141 +0,0 @@
+        	            	-// files is the platform's files tool. It implements the script-tool
+        	            	-// runner's stdio protocol (ADR 0009 §Decision): one JSON object on
+        	            	-// stdin (the validated input), one JSON object on stdout (the
+        	            	-// validated output), non-zero exit on failure. The tool dials the
+        	            	-// workspace gRPC client at GAGENT_WORKSPACE_ADDR and routes the
+        	            	-// operation (read, write, list) to the matching RPC.
+        	            	-package main
+        	            	-
+        	            	-import (
+        	            	-	"bufio"
+        	            	-	"context"
+        	            	-	"encoding/json"
+        	            	-	"errors"
+        	            	-	"fmt"
+        	            	-	"io"
+        	            	-	"os"
+        	            	-	"time"
+        	            	-
+        	            	-	"google.golang.org/grpc"
+        	            	-	"google.golang.org/grpc/credentials/insecure"
+        	            	-	"google.golang.org/grpc/status"
+        	            	-
+        	            	-	"github.com/garamsh/gagent/internal/workspace"
+        	            	-)
+        	            	-
+        	            	-// callTimeout bounds one workspace RPC. Read, Write and List are
+        	            	-// pod-local filesystem calls with nothing to wait on, so a workspace
+        	            	-// still answering returns far inside it.
+        	            	-const callTimeout = 10 * time.Second
+        	            	-
+        	            	-type callInput struct {
+        	            	-	Operation string `json:"operation"`
+        	            	-	Path      string `json:"path"`
+        	            	-	Content   string `json:"content"`
+        	            	-}
+        	            	-
+        	            	-type entry struct {
+        	            	-	Name string `json:"name"`
+        	            	-	Dir  bool   `json:"dir"`
+        	            	-}
+        	            	-
+        	            	-type callOutput struct {
+        	            	-	Content      string  `json:"content"`
+        	            	-	BytesWritten int     `json:"bytes_written"`
+        	            	-	Entries      []entry `json:"entries"`
+        	            	-}
+        	            	-
+        	            	-func main() {
+        	            	-	if err := run(); err != nil {
+        	            	-		writeError(err)
+        	            	-		os.Exit(1)
+        	            	-	}
+        	            	-}
+        	            	-
+        	            	-func run() error {
+        	            	-	addr := os.Getenv("GAGENT_WORKSPACE_ADDR")
+        	            	-	if addr == "" {
+        	            	-		return errors.New("GAGENT_WORKSPACE_ADDR is required")
+        	            	-	}
+        	            	-	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+        	            	-	if err != nil {
+        	            	-		return fmt.Errorf("dial workspace: %w", err)
+        	            	-	}
+        	            	-	defer conn.Close()
+        	            	-	ws := workspace.NewWorkspaceClient(conn)
+        	            	-
+        	            	-	dec := json.NewDecoder(bufio.NewReader(os.Stdin))
+        	            	-	var in callInput
+        	            	-	if err := dec.Decode(&in); err != nil {
+        	            	-		if errors.Is(err, io.EOF) {
+        	            	-			return nil
+        	            	-		}
+        	            	-		return fmt.Errorf("decode input: %w", err)
+        	            	-	}
+        	            	-	out, err := dispatch(context.Background(), ws, in)
+        	            	-	if err != nil {
+        	            	-		return err
+        	            	-	}
+        	            	-	return json.NewEncoder(os.Stdout).Encode(out)
+        	            	-}
+        	            	-
+        	            	-func dispatch(ctx context.Context, ws workspace.WorkspaceClient, in callInput) (callOutput, error) {
+        	            	-	ctx, cancel := context.WithTimeout(ctx, callTimeout)
+        	            	-	defer cancel()
+        	            	-
+        	            	-	switch in.Operation {
+        	            	-	case "read":
+        	            	-		resp, err := ws.Read(ctx, &workspace.ReadRequest{Path: in.Path})
+        	            	-		if err != nil {
+        	            	-			return callOutput{}, grpcError("read", err)
+        	            	-		}
+        	            	-		// BytesWritten and Entries are not produced by read, and the
+        	            	-		// struct carries no omitempty, so every key is emitted
+        	            	-		// regardless. Entries must be an empty slice rather than nil:
+        	            	-		// nil marshals to null, which fails the manifest's
+        	            	-		// "entries": {"type": "array"} at the registry's output gate
+        	            	-		// (issue #319).
+        	            	-		return callOutput{
+        	            	-			Content: string(resp.GetContent()),
+        	            	-			Entries: []entry{},
+        	            	-		}, nil
+        	            	-	case "write":
+        	            	-		// The input schema cannot carry this conditional under the
+        	            	-		// strict-mode subset (oneOf is rejected at the top level,
+        	            	-		// issue #313); the runtime enforces it instead.
+        	            	-		if in.Content == "" {
+        	            	-			return callOutput{}, errors.New("content is required for write")
+        	            	-		}
+        	            	-		if _, err := ws.Write(ctx, &workspace.WriteRequest{Path: in.Path, Content: []byte(in.Content)}); err != nil {
+        	            	-			return callOutput{}, grpcError("write", err)
+        	            	-		}
+        	            	-		return callOutput{
+        	            	-			BytesWritten: len(in.Content),
+        	            	-			Entries:      []entry{},
+        	            	-		}, nil
+        	            	-	case "list":
+        	            	-		resp, err := ws.List(ctx, &workspace.ListRequest{Path: in.Path})
+        	            	-		if err != nil {
+        	            	-			return callOutput{}, grpcError("list", err)
+        	            	-		}
+        	            	-		entries := make([]entry, 0, len(resp.GetEntries()))
+        	            	-		for _, e := range resp.GetEntries() {
+        	            	-			entries = append(entries, entry{Name: e.GetName(), Dir: e.GetDir()})
+        	            	-		}
+        	            	-		return callOutput{Entries: entries}, nil
+        	            	-	default:
+        	            	-		return callOutput{}, fmt.Errorf("unknown operation: %s", in.Operation)
+        	            	-	}
+        	            	-}
+        	            	-
+        	            	-func grpcError(op string, err error) error {
+        	            	-	st, _ := status.FromError(err)
+        	            	-	if st != nil && st.Message() != "" {
+        	            	-		return fmt.Errorf("%s: %s", op, st.Message())
+        	            	-	}
+        	            	-	return fmt.Errorf("%s: %w", op, err)
+        	            	-}
+        	            	-
+        	            	-func writeError(err error) {
+        	            	-	fmt.Fprintln(os.Stderr, "files:", err)
+        	            	-}
+        	            	diff --git a/tools/files/manifest.json b/tools/files/manifest.json
+        	            	deleted file mode 100644
+        	            	index 5b89248..0000000
+        	            	--- a/tools/files/manifest.json
+        	            	+++ /dev/null
+        	            	@@ -1,35 +0,0 @@
+        	            	-{
+        	            	-	"name": "files",
+        	            	-	"description": "Read, write, and list files inside the agent's workspace.",
+        	            	-	"command": "files",
+        	            	-	"input_schema": {
+        	            	-		"type": "object",
+        	            	-		"properties": {
+        	            	-			"operation": {"type": "string", "enum": ["read", "write", "list"]},
+        	            	-			"path": {"type": "string", "minLength": 1},
+        	            	-			"content": {"type": "string"}
+        	            	-		},
+        	            	-		"required": ["operation", "path"],
+        	            	-		"additionalProperties": false
+        	            	-	},
+        	            	-	"output_schema": {
+        	            	-		"type": "object",
+        	            	-		"properties": {
+        	            	-			"content": {"type": "string"},
+        	            	-			"bytes_written": {"type": "integer"},
+        	            	-			"entries": {
+        	            	-				"type": "array",
+        	            	-				"items": {
+        	            	-					"type": "object",
+        	            	-					"properties": {
+        	            	-						"name": {"type": "string"},
+        	            	-						"dir": {"type": "boolean"}
+        	            	-					},
+        	            	-					"required": ["name", "dir"],
+        	            	-					"additionalProperties": false
+        	            	-				}
+        	            	-			}
+        	            	-		},
+        	            	-		"additionalProperties": false
+        	            	-	}
+        	            	-}
+2026/09/21 03:31:13 INFO tool manifest loaded op=tool.load name=file_list hash=14ee40e538ab6423ddeb27f9a908bb1ae0d8076c836e1ea08aae0ca9de9e100c
+2026/09/21 03:31:13 INFO tool manifest loaded op=tool.load name=file_read hash=ca780606ae0994489db1f223c584c6cb295e6766ed19b4374f51439614b446bc
+2026/09/21 03:31:13 INFO tool manifest loaded op=tool.load name=file_write hash=5cff46091c4978845afd85e289a8cb4664e79c6a02edc3d2a532afd844196f51
+2026/09/21 03:31:13 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_Files_Integration249287752/001 tools_dir_resolved=/tmp/TestScriptTool_Files_Integration249287752/001 tools=3
+2026/09/21 03:31:15 INFO tool manifest loaded op=tool.load name=file_list hash=14ee40e538ab6423ddeb27f9a908bb1ae0d8076c836e1ea08aae0ca9de9e100c
+2026/09/21 03:31:15 INFO tool manifest loaded op=tool.load name=file_read hash=ca780606ae0994489db1f223c584c6cb295e6766ed19b4374f51439614b446bc
+2026/09/21 03:31:15 INFO tool manifest loaded op=tool.load name=file_write hash=5cff46091c4978845afd85e289a8cb4664e79c6a02edc3d2a532afd844196f51
+2026/09/21 03:31:15 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_Files_InvalidInputPreservesContent1376041406/001 tools_dir_resolved=/tmp/TestScriptTool_Files_InvalidInputPreservesContent1376041406/001 tools=3
+2026/09/21 03:31:17 INFO tool manifest loaded op=tool.load name=file_list hash=14ee40e538ab6423ddeb27f9a908bb1ae0d8076c836e1ea08aae0ca9de9e100c
+2026/09/21 03:31:17 INFO tool manifest loaded op=tool.load name=file_read hash=ca780606ae0994489db1f223c584c6cb295e6766ed19b4374f51439614b446bc
+2026/09/21 03:31:17 INFO tool manifest loaded op=tool.load name=file_write hash=5cff46091c4978845afd85e289a8cb4664e79c6a02edc3d2a532afd844196f51
+2026/09/21 03:31:17 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_Files_StalledWorkspaceRefused1273037846/001 tools_dir_resolved=/tmp/TestScriptTool_Files_StalledWorkspaceRefused1273037846/001 tools=3
+2026/09/21 03:31:49 INFO tool manifest loaded op=tool.load name=file_list hash=14ee40e538ab6423ddeb27f9a908bb1ae0d8076c836e1ea08aae0ca9de9e100c
+2026/09/21 03:31:49 INFO tool manifest loaded op=tool.load name=file_read hash=ca780606ae0994489db1f223c584c6cb295e6766ed19b4374f51439614b446bc
+2026/09/21 03:31:49 INFO tool manifest loaded op=tool.load name=file_write hash=5cff46091c4978845afd85e289a8cb4664e79c6a02edc3d2a532afd844196f51
+2026/09/21 03:31:49 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_Files_ProviderExposure1823683522/001 tools_dir_resolved=/tmp/TestScriptTool_Files_ProviderExposure1823683522/001 tools=3
+2026/09/21 03:31:50 INFO tool manifest loaded op=tool.load name=github hash=3527d3a66550d10b234c1994b2c52f1e1c6db915daeb221ca8dfc7b4f79b9c9e
+2026/09/21 03:31:50 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_GitHub_Integration765731076/001 tools_dir_resolved=/tmp/TestScriptTool_GitHub_Integration765731076/001 tools=1
+2026/09/21 03:31:51 INFO tool manifest loaded op=tool.load name=github hash=3527d3a66550d10b234c1994b2c52f1e1c6db915daeb221ca8dfc7b4f79b9c9e
+2026/09/21 03:31:51 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_GitHub_MissingToken660959725/001 tools_dir_resolved=/tmp/TestScriptTool_GitHub_MissingToken660959725/001 tools=1
+2026/09/21 03:31:51 INFO tool manifest loaded op=tool.load name=github hash=3527d3a66550d10b234c1994b2c52f1e1c6db915daeb221ca8dfc7b4f79b9c9e
+2026/09/21 03:31:51 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_GitHub_PushRequiresBranchAndSha1671384276/001 tools_dir_resolved=/tmp/TestScriptTool_GitHub_PushRequiresBranchAndSha1671384276/001 tools=1
+2026/09/21 03:31:52 INFO tool manifest loaded op=tool.load name=github hash=3527d3a66550d10b234c1994b2c52f1e1c6db915daeb221ca8dfc7b4f79b9c9e
+2026/09/21 03:31:52 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_GitHub_InputRejected3523332591/001 tools_dir_resolved=/tmp/TestScriptTool_GitHub_InputRejected3523332591/001 tools=1
+2026/09/21 03:31:52 INFO tool manifest loaded op=tool.load name=github hash=3527d3a66550d10b234c1994b2c52f1e1c6db915daeb221ca8dfc7b4f79b9c9e
+2026/09/21 03:31:52 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_GitHub_NullBodyAccepted1615777159/001 tools_dir_resolved=/tmp/TestScriptTool_GitHub_NullBodyAccepted1615777159/001 tools=1
+2026/09/21 03:31:52 INFO tool manifest loaded op=tool.load name=github hash=3527d3a66550d10b234c1994b2c52f1e1c6db915daeb221ca8dfc7b4f79b9c9e
+2026/09/21 03:31:52 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_GitHub_StalledEndpointRefused3630886465/001 tools_dir_resolved=/tmp/TestScriptTool_GitHub_StalledEndpointRefused3630886465/001 tools=1
+2026/09/21 03:32:23 INFO tool manifest loaded op=tool.load name=message_send hash=d82eca7432cd9718d7051fe657ed16711fe0313d69b9affc44c9dee30f59ce56
+2026/09/21 03:32:23 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_MessageSend_Integration3649945924/001 tools_dir_resolved=/tmp/TestScriptTool_MessageSend_Integration3649945924/001 tools=1
+2026/09/21 03:32:23 INFO tool manifest loaded op=tool.load name=message_send hash=d82eca7432cd9718d7051fe657ed16711fe0313d69b9affc44c9dee30f59ce56
+2026/09/21 03:32:23 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_MessageSend_MissingOutboxDir1744388923/001 tools_dir_resolved=/tmp/TestScriptTool_MessageSend_MissingOutboxDir1744388923/001 tools=1
+2026/09/21 03:32:23 INFO tool manifest loaded op=tool.load name=message_send hash=d82eca7432cd9718d7051fe657ed16711fe0313d69b9affc44c9dee30f59ce56
+2026/09/21 03:32:23 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_MessageSend_InputRejected3870403407/001 tools_dir_resolved=/tmp/TestScriptTool_MessageSend_InputRejected3870403407/001 tools=1
+2026/09/21 03:32:23 INFO tool manifest loaded op=tool.load name=shell_exec hash=caa871163624db5c38b5e4db6ae4afe92c89966b8556e0b5ba3040a7afc24492
+2026/09/21 03:32:23 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_ShellExec_Integration1150230819/001 tools_dir_resolved=/tmp/TestScriptTool_ShellExec_Integration1150230819/001 tools=1
+2026/09/21 03:32:24 INFO tool manifest loaded op=tool.load name=shell_exec hash=caa871163624db5c38b5e4db6ae4afe92c89966b8556e0b5ba3040a7afc24492
+2026/09/21 03:32:24 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_ShellExec_TimeoutSurfacesTrue3288814097/001 tools_dir_resolved=/tmp/TestScriptTool_ShellExec_TimeoutSurfacesTrue3288814097/001 tools=1
+2026/09/21 03:32:24 INFO tool manifest loaded op=tool.load name=shell_exec hash=caa871163624db5c38b5e4db6ae4afe92c89966b8556e0b5ba3040a7afc24492
+2026/09/21 03:32:24 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_ShellExec_InputRejected2290335714/001 tools_dir_resolved=/tmp/TestScriptTool_ShellExec_InputRejected2290335714/001 tools=1
+2026/09/21 03:32:25 INFO tool manifest loaded op=tool.load name=shell_exec hash=caa871163624db5c38b5e4db6ae4afe92c89966b8556e0b5ba3040a7afc24492
+2026/09/21 03:32:25 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_ShellExec_NullTimeoutAccepted3114626340/001 tools_dir_resolved=/tmp/TestScriptTool_ShellExec_NullTimeoutAccepted3114626340/001 tools=1
+2026/09/21 03:32:26 INFO tool manifest loaded op=tool.load name=shell_exec hash=caa871163624db5c38b5e4db6ae4afe92c89966b8556e0b5ba3040a7afc24492
+2026/09/21 03:32:26 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_ShellExec_StalledWorkspaceRefused2330522716/001 tools_dir_resolved=/tmp/TestScriptTool_ShellExec_StalledWorkspaceRefused2330522716/001 tools=1
+2026/09/21 03:32:31 INFO tool manifest loaded op=tool.load name=shell_exec hash=caa871163624db5c38b5e4db6ae4afe92c89966b8556e0b5ba3040a7afc24492
+2026/09/21 03:32:31 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_ShellExec_FallbackLeavesTheCeilingToTheWorkspace420525135/001 tools_dir_resolved=/tmp/TestScriptTool_ShellExec_FallbackLeavesTheCeilingToTheWorkspace420525135/001 tools=1
+2026/09/21 03:32:31 INFO tool manifest loaded op=tool.load name=echo hash=b992e3ce21e7c50fc54557a13bdbbfba1d71f57a8e746ca149c52127a6d92e33
+2026/09/21 03:32:31 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_RoundTripIntegration801136575/001 tools_dir_resolved=/tmp/TestScriptTool_RoundTripIntegration801136575/001 tools=1
+2026/09/21 03:32:31 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_RequiredMissingFailsClosed2685994987/001 tools_dir_resolved=/tmp/TestScriptTool_RequiredMissingFailsClosed2685994987/001 tools=0
+2026/09/21 03:32:31 WARN tool drift pinning disabled: no pin set configured op=tool.load tools_dir=/tmp/TestScriptTool_RequiredMissingFailsClosed2685994987/001
+2026/09/21 03:32:31 INFO tool manifest loaded op=tool.load name=demo hash=fc62b0a961506b136723d880143a8117d5afe7fc27a21c9924fac86a38aaaad0
+2026/09/21 03:32:31 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_ManifestGateAcceptsOmittedOptionalInput992089277/001 tools_dir_resolved=/tmp/TestScriptTool_ManifestGateAcceptsOmittedOptionalInput992089277/001 tools=1
+2026/09/21 03:32:31 INFO tool manifest loaded op=tool.load name=demo hash=fc62b0a961506b136723d880143a8117d5afe7fc27a21c9924fac86a38aaaad0
+2026/09/21 03:32:31 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_ManifestGateReadsNullAsAbsent1764542134/001 tools_dir_resolved=/tmp/TestScriptTool_ManifestGateReadsNullAsAbsent1764542134/001 tools=1
+2026/09/21 03:32:31 INFO tool manifest loaded op=tool.load name=demo hash=fc62b0a961506b136723d880143a8117d5afe7fc27a21c9924fac86a38aaaad0
+2026/09/21 03:32:31 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_ManifestGateRejectsNullOnRequiredInput1284979139/001 tools_dir_resolved=/tmp/TestScriptTool_ManifestGateRejectsNullOnRequiredInput1284979139/001 tools=1
+2026/09/21 03:32:31 INFO tool manifest loaded op=tool.load name=demo hash=fc62b0a961506b136723d880143a8117d5afe7fc27a21c9924fac86a38aaaad0
+2026/09/21 03:32:31 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_ManifestGateAcceptsOmittedOptionalOutput2666876941/001 tools_dir_resolved=/tmp/TestScriptTool_ManifestGateAcceptsOmittedOptionalOutput2666876941/001 tools=1
+2026/09/21 03:32:31 INFO tool manifest loaded op=tool.load name=demo hash=fc62b0a961506b136723d880143a8117d5afe7fc27a21c9924fac86a38aaaad0
+2026/09/21 03:32:31 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_DescriptorCarriesManifestSchemas555538856/001 tools_dir_resolved=/tmp/TestScriptTool_DescriptorCarriesManifestSchemas555538856/001 tools=1
+2026/09/21 03:32:31 INFO tool manifest loaded op=tool.load name=echo hash=b992e3ce21e7c50fc54557a13bdbbfba1d71f57a8e746ca149c52127a6d92e33
+2026/09/21 03:32:31 INFO tool manifest loaded op=tool.load name=echo hash=b992e3ce21e7c50fc54557a13bdbbfba1d71f57a8e746ca149c52127a6d92e33
+2026/09/21 03:32:31 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_InputRejection2009194402/001 tools_dir_resolved=/tmp/TestScriptTool_InputRejection2009194402/001 tools=1
+2026/09/21 03:32:31 INFO tool manifest loaded op=tool.load name=broken hash=22100382013617ea801bd7fb2bb24b1ade141c9c29ae621c999c0773d8b26d34
+2026/09/21 03:32:31 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_NonConformingOutputFailsTheCallAndTheToolStays248208856/001 tools_dir_resolved=/tmp/TestScriptTool_NonConformingOutputFailsTheCallAndTheToolStays248208856/001 tools=1
+2026/09/21 03:32:31 INFO tool manifest loaded op=tool.load name=echo hash=3a2fa47fdc31e360a26c1dc998eb47b1c328d687087c17233b4dc06e4b3a6e1c
+2026/09/21 03:32:31 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_ManifestFixtureSchemaConforms651332592/001 tools_dir_resolved=/tmp/TestScriptTool_ManifestFixtureSchemaConforms651332592/001 tools=1
+2026/09/21 03:32:31 WARN tool drift pinning disabled: no pin set configured op=tool.load tools_dir=/tmp/TestScriptTool_ManifestFixtureSchemaConforms651332592/001
+FAIL
+FAIL	github.com/garamsh/gagent/tests	98.566s
+?   	github.com/garamsh/gagent/tools/file_list	[no test files]
+?   	github.com/garamsh/gagent/tools/file_read	[no test files]
+?   	github.com/garamsh/gagent/tools/file_write	[no test files]
+?   	github.com/garamsh/gagent/tools/github	[no test files]
+?   	github.com/garamsh/gagent/tools/message_send	[no test files]
+?   	github.com/garamsh/gagent/tools/shell_exec	[no test files]
+FAIL
+make: *** [Makefile:48: test] Error 1

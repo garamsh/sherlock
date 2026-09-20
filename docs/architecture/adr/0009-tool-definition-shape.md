@@ -42,6 +42,6 @@ The platform's invariants around the tool:
 - The structural minimum is one manifest format plus a stdio runner (JSON in, JSON out, exit code). No protocol framing, no registration ceremony, no capability negotiation.
 - The shape replaces both the previous in-process tools-as-packages model and the protocol-server model; both histories live in git.
 - The platform's `internal/tool/` is the manifest parser, the stdio runner, the registry, and the hash pinner — a few hundred lines, no third-party dependency.
-- The first-party tool set (files, shell_exec, message_send, github) ships as scripts under `tools/` with one manifest each; the language is the tool author's choice. The historical Go-binary form (`cmd/<tool>/`) is gone.
+- The first-party tool set (file_read, file_write, file_list, shell_exec, message_send, github) ships as scripts under `tools/` with one manifest each; the language is the tool author's choice. The historical Go-binary form (`cmd/<tool>/`) is gone.
 - For the operator, granting new egress is dropping a script directory in the tool tree. For the tool author, building a tool is writing a function in their preferred language plus a small JSON contract.
 - Permissions policy is not part of the platform. The tool runs with the operator's process privileges; the operator is the gate, by directory placement.

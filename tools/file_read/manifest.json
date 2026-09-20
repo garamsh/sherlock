@@ -1,0 +1,30 @@
+{
+	"name": "file_read",
+	"description": "Read a file inside the agent's workspace.",
+	"command": "file_read",
+	"input_schema": {
+		"type": "object",
+		"properties": {
+			"path": {
+				"type": "string",
+				"minLength": 1
+			}
+		},
+		"required": [
+			"path"
+		],
+		"additionalProperties": false
+	},
+	"output_schema": {
+		"type": "object",
+		"properties": {
+			"content": {
+				"type": "string"
+			}
+		},
+		"required": [
+			"content"
+		],
+		"additionalProperties": false
+	}
+}

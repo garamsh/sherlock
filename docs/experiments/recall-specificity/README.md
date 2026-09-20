@@ -14,6 +14,7 @@ What the running agent recalls when the question says less than the fact it is l
 - What this record does not say
 - Limits
 - Reproducing
+- Information comparison prototype (issue 803)
 
 ## The bound, stated before the run
 
@@ -182,3 +183,63 @@ Two checks in the same package cost nothing and do run in `make ci`:
 
 - `TestRecallFromImpliedInput_AgainstAScriptedEndpoint` drives the whole procedure — process per turn, snapshot, three levels, scoring, the result files — against an endpoint answering from a script, so what the paid run depends on is exercised before it is paid for.
 - `TestSpendMeter_RefusesPastEachCeiling` is the evidence that the bound is a bound: each of the four ceilings refuses the call that would pass it, each paired with the control that admits the same calls under a wider ceiling.
+
+## Information comparison prototype (issue 803)
+
+This round instruments a later comparison; it reports no paid candidate result and adopts no architecture. The historical files in `results/` remain the earlier run's evidence. The PM's separate baseline at `fc5fca4c885e8bf015bab1a889042f091ff8ce53` is preserved at `/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-baseline/`; its whole-record audit motivates keeping the original value-only score alongside the complete-record score.
+
+`tests/recall_information_test.go` builds the actual agent using Go compiler overlays. The checkout's shipped source remains unchanged. Each run records its checked-out revision, instrument file hashes and binary hashes in `source.json`, and retains the overlay inputs. The prototype was developed against `4a86d0d58e232ee968d15e664afc4439686706b9`.
+
+| Variant | Resolver input and selection |
+|---|---|
+| `task` (A) | Shipped task-only resolver and addressed read/widening. |
+| `history` (B) | The same resolver with the live session's conversation before the current task. |
+| `grounded` (C) | The same conversation as B, plus every active row's ID, subject, question, restriction **and value**. A selection-specific system instruction requires verbatim offered keys, including questions that contain an answer; it replaces the shipped address-construction instruction only in this candidate. The resolver must select an offered subject/question pair; a fabricated key places nothing. The existing addressed read injects matching rows. |
+| `names` (control) | The same conversation, but only active IDs and subject names. Its selection-specific system instruction asks for an offered subject and an empty question; selection must name an offered subject. Compare its anonymous probe with C's matched anonymous probes. |
+
+The catalogue is a full-record offer, not an identities-only offer. Question and value disclosure are reported separately from selected-row injection. It is linear in the deliberately small active fixture, with no shortlist, ranking, embeddings or additional cache. `catalogue_bytes` records the actual offer's bytes; `read_input_tokens_including_catalogue` records provider-reported input tokens for the entire resolver request. The provider does not attribute tokens to prompt substrings, so this is the token cost of making the offer in context, not an independently measured marginal catalogue token count.
+
+The run plants three statements through the unmodified real agent: Hana learning Finnish, Yusuf joining Thameside rowing club and Mira joining Hilltop chess club. It verifies complete-record evidence for all three before probing, and preserves the plant turns, active rows and SQLite snapshot under `frozen/`. A failure to store a required fact stops the run as partial. Each probe starts a fresh agent and workspace, using a copy of that same frozen store (or an empty store for the two empty-store controls).
+
+| Scored probes | Input |
+|---|---|
+| 24 matched probes | Four conditions × A/B/C × two repetitions: explicit Hana/language question; answer-free cue identifying “she” as Hana followed by the same pronoun question; anonymous language-learning event after restart; known-absent fencing event after restart. |
+| Four controls | Answer-bearing history with empty store; anonymous empty-store query; ambiguous club event supported by both Yusuf and Mira; names-only anonymous discovery. |
+| Preparation, counted separately | Three plant turns and seven cue turns. Cues run in the same process as their probe; every other probe starts without conversation. |
+
+A cue is a real turn and may itself recall or write. The instrument checks its actual act inputs and final reply for the target, compares the records immediately before the probe with the frozen fixture, and verifies that an empty-store control remains empty. Contaminated conditions are marked invalid, including when a cue introduces the answer or writes it into an initially empty store. The actual pre-probe rows and recalled IDs remain visible in invalid cases. This detects the fixture's literal target; paraphrased disclosure still requires transcript review.
+
+`calls.json` retains complete model requests and responses, including tool-result messages, calls/tokens, read/act stage durations and refusals. `plants.json`, `held.json` and `probes.json` retain plant evidence, pre-probe stores, terminal events, tool events, selected keys, recalled IDs and replies. `run.json` distinguishes partial runs, invalid conditions and completed collections awaiting semantic review; its elapsed time includes building and preparation. A new output directory is mandatory, so this run cannot overwrite a previous result.
+
+The automatic `answer_contains_finnish` field is only a word-boundary containment observation. Complete-record injection checks actual subject/question/restriction/value identities rather than just the value. For the absent event there are no target IDs; for the ambiguous control the target IDs cover both actors, and the boolean injection field means **any**, not all, of those IDs. Review every response against the actual stored evidence: assign semantic correctness and unsupported claims independently, checking absence/uncertainty for fencing and both supported possibilities or an explicit ambiguity for clubs. These adjudications deliberately remain `pending human review`; a successful harness exit is not successful recall or semantic correctness. The scripted endpoint checks instrumentation and has no behavioral score.
+
+Free reproduction, with no credential or network model required:
+
+```sh
+env -u GAGENT_PAID_MODEL_TESTS PATH=/home/sauce/go/bin:$PATH \
+  GOCACHE=/tmp/gagent-803-go GOLANGCI_LINT_CACHE=/tmp/gagent-803-lint \
+  go test ./tests -run '^TestRecallInformation_(Free|RejectsContaminatedControls)$' -count=1 -timeout=10m -v
+```
+
+Set `GAGENT_INFORMATION_FREE_RESULTS` to a new absolute directory to retain the free run's artifacts. The free checks exercise the real binaries and verify that reference input, full-record offers, question-field disclosure, selected IDs and empty-store controls are observable. Paired contamination checks reject answer-bearing cue inputs, answer-bearing cue replies and post-cue store changes while admitting clean counterparts.
+
+Only after PM instrumentation review and separate spending authorization, reproduce the paid collection with an environment-provided key and a new absolute `GAGENT_INFORMATION_RESULTS` path:
+
+```sh
+GAGENT_PAID_MODEL_TESTS=1 GAGENT_INFORMATION_RESULTS=/absolute/new-run-directory \
+  go test ./tests -run '^TestRecallInformation$' -count=1 -timeout=90m -v
+```
+
+The existing MiniMax-M2 configuration and meter ceilings apply; historical USD rates remain accounting assumptions. All arms share the model, wording and frozen agent-written store. An interrupted process can leave only the incrementally written evidence; inspect its row count and terminal records before treating it as complete. No result here establishes scalable retrieval, sustained work, correction/withdrawal, effective forgetting or learning from failed experience. Those sequences remain follow-up evidence for the wider owner goal.
+
+Instrumentation validation on the prototype: the restored free run completed 28 probes, three plants and seven cues (76 scripted calls, 7,600 synthetic input tokens and 1,520 synthetic output tokens, zero USD and no refusals). These are fixture-supplied usage counts, not a provider cost measurement. Five independent compiler-overlay removals were observed to fail their assertions:
+
+| Removed mechanism | Failing free check |
+|---|---|
+| Full catalogue offered to C | `TestRecallInformation_Free`: the anonymous grounded probe no longer injects the target. |
+| Conversation forwarded to B/C resolver | `TestRecallInformation_Free`: actual read input no longer contains the referent. |
+| Whole-record injection replaced by legacy value-only injection | `TestRecallInformation_Free`: the question-carried target is no longer credited. |
+| Contamination verdicts | `TestRecallInformation_RejectsContaminatedControls`: an answer-bearing cue is incorrectly admitted. |
+| Complete request capture | `TestSpendMeter_RetainsCompleteExposure`: the original messages and tool result cannot be recovered. |
+
+The removal runs changed only temporary compiler inputs and were restored before the passing run. The same tests run under `make ci`; the paid test remains skipped without opt-in.

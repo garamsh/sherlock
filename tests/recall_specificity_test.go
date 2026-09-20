@@ -160,13 +160,15 @@ var recallProbes = []recallProbe{
 // turnRecord is what one turn against the running agent produced, read
 // off the monitoring stream (ADR 0007) rather than reconstructed.
 type turnRecord struct {
-	Message       string   `json:"message"`
-	RecallOutcome string   `json:"recall_outcome"`
-	RecalledIDs   []string `json:"recalled_ids"`
-	RecalledCount int      `json:"recalled_count"`
-	Response      string   `json:"response"`
-	Ops           []any    `json:"ops,omitempty"`
-	Failed        string   `json:"failed,omitempty"`
+	Events        []map[string]any `json:"events,omitempty"`
+	DurationMS    int64            `json:"duration_ms"`
+	Message       string           `json:"message"`
+	RecallOutcome string           `json:"recall_outcome"`
+	RecalledIDs   []string         `json:"recalled_ids"`
+	RecalledCount int              `json:"recalled_count"`
+	Response      string           `json:"response"`
+	Ops           []any            `json:"ops,omitempty"`
+	Failed        string           `json:"failed,omitempty"`
 }
 
 // heldMemory is one row the store held after the plant phase, read
@@ -414,6 +416,20 @@ func runRecallTurn(t *testing.T, binary, root, workspaceAddr, configPath, messag
 	cmd, baseURL, exited := startAgentBinary(t, binary, root, workspaceAddr, configPath)
 	events := subscribeSSE(t, baseURL+"/agents/"+binaryAgentID+"/events")
 
+	record := collectRecallTurn(t, baseURL, events, message)
+
+	require.NoError(t, cmd.Process.Signal(syscall.SIGTERM))
+	select {
+	case <-exited:
+	case <-time.After(30 * time.Second):
+		t.Fatal("agent did not exit on SIGTERM")
+	}
+	return record
+}
+
+func collectRecallTurn(t *testing.T, baseURL string, events <-chan map[string]any, message string) turnRecord {
+	t.Helper()
+	started := time.Now()
 	resp := postJSON(t, baseURL+"/agents/"+binaryAgentID+"/messages",
 		`{"content":`+strconvQuote(message)+`}`)
 	require.Equal(t, http.StatusAccepted, resp.StatusCode)
@@ -425,6 +441,7 @@ func runRecallTurn(t *testing.T, binary, root, workspaceAddr, configPath, messag
 		select {
 		case event, open := <-events:
 			require.True(t, open, "event stream closed before the turn ended")
+			record.Events = append(record.Events, event)
 			switch event["kind"] {
 			case "recall":
 				record.RecallOutcome, _ = event["recall_outcome"].(string)
@@ -445,12 +462,7 @@ func runRecallTurn(t *testing.T, binary, root, workspaceAddr, configPath, messag
 		}
 	}
 
-	require.NoError(t, cmd.Process.Signal(syscall.SIGTERM))
-	select {
-	case <-exited:
-	case <-time.After(30 * time.Second):
-		t.Fatal("agent did not exit on SIGTERM")
-	}
+	record.DurationMS = time.Since(started).Milliseconds()
 	return record
 }
 

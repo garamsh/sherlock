@@ -41,6 +41,7 @@ These apply only when the project uses that stack. The bootstrap process keeps t
 
 | File | Governs |
 |---|---|
+| `stack-container.md` | Container images the project builds |
 | `stack-go.md` | Go modules and services |
 
 A stack file states the concrete form of what a stack-neutral file governs: the test client and file placement behind `testing.md`, the comment syntax behind `code-comments.md`, the commands behind an entry-point name in `ci.md`. It never restates the rule itself. This table and the one above are where that split is recorded — the files do not point at each other.

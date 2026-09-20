@@ -15,6 +15,7 @@ What the running agent recalls when the question says less than the fact it is l
 - Limits
 - Reproducing
 - Information comparison (issue 803)
+- Record selection comparison (issue 806)
 
 ## The bound, stated before the run
 
@@ -344,3 +345,117 @@ The comparison therefore leaves the clean A/B referent contrast unresolved, and 
 - `env -u GAGENT_PAID_MODEL_TESTS PATH=/home/sauce/go/bin:$PATH GOCACHE=/tmp/gagent-803-publication-go GOLANGCI_LINT_CACHE=/tmp/gagent-803-publication-lint make ci`: exit 0 on the measured source with this documentation/data publication; lint reported 0 issues, formatting checked 142 files, tests passed in 16 packages (five packages have no test files), and build covered 21 packages. Paid tests were not enabled. Exact output is retained at `/tmp/gagent-803-publication-ci.log`.
 - `python3 /tmp/gagent-803-audit.py`: exit 0; independently compared all seven copied files with raw bytes and SHA-256, all four historical result files with `git show ca121754269b582853784b63f5e12cd0c92fcb8f:<path>`, all 89 wire/flattened records, phase/stage totals, 38 terminal turns and every probe's call mapping, catalogue and injected record identity. SQLite was opened with `mode=ro&immutable=1`; active rows match `held.json` and archive is empty. The audit script and output `/tmp/gagent-803-publication-audit.log` are retained for PM inspection.
 - This publication changes only this record and its new data directory. It adds no tests and changes no measured source, so the previously documented removal checks were not rerun. `make ci` checks the existing instrument; it does not validate paid semantic conclusions or privileged deployment behavior.
+
+
+## Record selection comparison (issue 806)
+
+Instrument only: `tests/record_selection_test.go` compares the existing offered-key
+candidate with selection by existing record ID. No paid record-selection result has
+been collected. `record-selection-2026-09-21` is reserved for the future reviewed run;
+the published information comparison and all historical result bytes are preserved.
+
+### Method and premises
+
+- Reuse the published `information-2026-09-21/frozen/memory.db`, never plant again.
+  Check the published file hashes, read a disposable copy through the real store,
+  compare it with `held.json`, and assert all three complete agent-written facts:
+  Hana/Finnish/September, Yusuf/Thameside rowing/May and Mira/Hilltop chess/June.
+  Finnish and Thameside occur in questions, so value-only matching is insufficient.
+- Run two repetitions of explicit language, anonymous language, absent fencing and
+  multi-actor club questions per candidate, then one fresh empty-store anonymous
+  control per candidate: eighteen probes. Each probe gets a fresh agent, workspace
+  and store copy, with its actual active records checked before the question. There
+  are no preparation turns. Both candidates retain the same history forwarding,
+  but fresh sessions contain no prior conversational evidence.
+- `keys` is the existing grounded compiler overlay: complete record catalogue,
+  exact offered subject/question selection, and the existing addressed read. It
+  retains its original instruction and single-address limitation. `records` changes
+  the read instruction, tool schema, validation and retrieval to select an array of
+  existing IDs and render exactly those rows. Both still advertise `memory_read`;
+  its actual parameter schema distinguishes them. An empty array is explicit
+  abstention; all relevant actors can be selected together. Prose without a call,
+  malformed arguments, duplicate IDs and unknown IDs fail this candidate's turn.
+- Build real binaries using temporary Go compiler overlays. Product files stay
+  unchanged. Retain the overlay inputs, source diffs (including records versus
+  keys), source and binary hashes, model name and checkout revision. This compares
+  two candidate contracts, not the isolated effect of integer IDs: instruction,
+  schema, abstention representation and failure handling also differ.
+- Retain complete requests and responses, actual selection arguments, every act
+  exposure, pre-probe records and terminal events. The meter also retains response
+  bytes as base64, including non-JSON failures and partial bodies on read errors.
+  Tokens, calls, per-call latency, elapsed time, spend estimates and refusals remain
+  in the raw evidence. A collection can finish while individual turns fail.
+- Missing/wrong selection schemas, missing catalogue rows or missing resolver
+  telemetry invalidate the measurement premise. Missing fixture semantics aborts
+  before probing. Inspect these before interpreting a null result; a transport or
+  spend failure is not an empty selection. Interrupted runs remain partial and
+  write their collected transcript during cleanup.
+
+### Scoring and adjudication
+
+| Dimension | Criterion |
+|---|---|
+| Selection | Classify offered key, unoffered key, existing records, empty selection, prose without selection, invalid arguments, unknown/duplicate ID or transport/spend failure from actual responses. Keep raw arguments even when rejected. |
+| Selection completeness | Exact expected ID coverage: Hana for language, Yusuf and Mira for club, none for absent/empty. Key-arm no-call abstention is scored under its own contract. |
+| Evidence reaching act | Score recalled IDs separately from selection; one club actor is incomplete. Keep actual act requests to verify the complete records reached act. |
+| Task behavior | Require an act request and `turn_finished`; a correct resolver-only answer is never a successful user answer. |
+| Semantic correctness | Adjudicate the final reply against Hana/Finnish for explicit, both person/language for anonymous, both club actors or explicit recognition of ambiguity for club, and supported uncertainty for absent/empty. |
+| Unsupported claims | Judge independently, including claims about the whole store that the act input does not establish. |
+
+Semantic fields remain `pending adjudication` until an identified reviewer examines
+requests, selections, exposures and final replies. Publish those judgments in this
+record with per-case call references and reviewer attribution; do not silently
+convert literal containment or synthetic endpoint replies into model competence.
+Explicit recognition of club ambiguity may satisfy the answer criterion while
+incomplete evidence selection still fails its separate coverage criterion.
+
+### Free validation and future execution
+
+The free tests substitute only the external model endpoint. Real workspace and
+agent binaries, SQLite, gateway events and act prompts execute. The scripted model
+returns one key versus two IDs for club, so the accepted plural case is paired with
+an incomplete single-actor case. Unknown-ID, duplicate-ID, null, key-shaped,
+prose-only and HTTP failure responses are paired with a valid ID response.
+
+- `env -u GAGENT_PAID_MODEL_TESTS GOCACHE=/tmp/gagent-806-go GAGENT_SELECTION_FREE_RESULTS=/tmp/gagent-806-free-results go test ./tests -run '^Test(RecordSelection_(Free|RejectsInvalidSelections)|SpendMeter_RetainsFailureBody)$' -count=1 -v` passed the initial restored instrument; its synthetic eighteen-probe transcript contains 36 calls, 3,600 input tokens, 720 output tokens, zero USD and no refusals. These counts are scripted, not provider usage. The final instrument is validated below.
+- `python3 /tmp/gagent-806-removals.py` ran four temporary source removals and restored each file in `finally`. Each underlying `go test` exited 1: mapping the record candidate to the key binary failed `wrong selection contract`; replacing complete coverage with any-match failed `one club actor is incomplete`; ignoring unknown IDs failed the invalid-selection turn-failure assertion; removing response-byte capture failed both JSON and non-JSON failure-body assertions. The script and `/tmp/gagent-806-removal-*.log` retain exact mutations and commands for PM review.
+- The first free run (`env -u GAGENT_PAID_MODEL_TESTS GOCACHE=/tmp/gagent-806-go go test ./tests -run '^TestRecordSelection_(Free|RejectsInvalidSelections)$' -count=1 -v`, `/tmp/gagent-806-free.log`, exit 1) failed because the new observer read event `type` instead of
+  the actual `kind`; both terminal-success assertions caught it. The first
+  `make ci` reached lint and failed on numeric HTTP 503 in the new endpoint;
+  it now uses the named constant (`/tmp/gagent-806-ci.log`, exit 2, same `make ci` command as the passing run). A plain `go mod tidy` failed on the read-only
+  default Go cache; `GOCACHE=/tmp/gagent-806-go go mod tidy` passed without module
+  changes. These are instrument/environment failures, not model observations.
+
+- `env -u GAGENT_PAID_MODEL_TESTS PATH=/home/sauce/go/bin:$PATH GOCACHE=/tmp/gagent-806-go GOLANGCI_LINT_CACHE=/tmp/gagent-806-lint make ci` exited 0: lint reported 0 issues, formatting checked 143 Go files, tests passed in 16 packages (five have no test files), and build covered 21 packages. The final log is `/tmp/gagent-806-ci-reviewed.log`; paid tests remained disabled.
+- Final free run: `env -u GAGENT_PAID_MODEL_TESTS GOCACHE=/tmp/gagent-806-go GAGENT_SELECTION_FREE_RESULTS=/tmp/gagent-806-reviewed-results go test ./tests -run '^Test(RecordSelection_(Free|RejectsInvalidSelections)|SpendMeter_RetainsFailureBody)$' -count=1 -v` exited 0 in 7.395 seconds. Its eighteen-probe transcript again contains 36 synthetic calls, 3,600/720 tokens, zero USD and no refusals; every probe reached act and finished. The seven accepted/failure controls and two failure-body cases also passed. Output: `/tmp/gagent-806-reviewed-free.log`.
+- `python3 /tmp/gagent-806-audit.py` exited 0: all twelve historical result files match their bytes at `dcc252b8171ac5d889369eb9a65dc84f3d682da7`; all 89 historical wire usage records reconcile; the two explicit failure catalogues and club catalogue contain every frozen record. The final free transcript has eighteen rows, complete record-arm selections and no invalid premises. Output: `/tmp/gagent-806-audit.log`.
+
+After PM instrument review, the opt-in command is
+`GAGENT_PAID_MODEL_TESTS=1 GAGENT_SELECTION_RESULTS=/absolute/new/record-selection-2026-09-21 go test ./tests -run '^TestRecordSelection$' -count=1 -v`,
+with the existing MiniMax key supplied by the operator through the environment.
+The result directory must be nonempty, absolute and not already exist; the assigned
+name belongs to this round, while the instrument also permits later named reruns. The existing ceilings remain 150 calls,
+1,200,000 input tokens, 300,000 output tokens and $0.29 estimated at the recorded
+$0.30/$1.20 per-million rates; they are accounting assumptions, not a current price
+quote. A token/USD limit can be exceeded by the last admitted call's unknown usage.
+This implementation round read no credentials and made no paid calls.
+
+### What a result could decide
+
+A successful ID candidate could remove read-side question reconstruction,
+verbatim key copying, single-subject selection and address-to-subject widening
+from the candidate read path. It does not establish that question-shaped writes
+or the store's current schema should be removed. Failure to retain abstention or
+multi-record coverage prevents adoption even if key reconstruction disappears.
+
+The ID candidate reads `Store.Active` and renders selected rows directly, bypassing
+`memory.Service` access recording. It neither preserves nor measures last-used/access
+bookkeeping and cannot establish retention equivalence with addressed reads.
+
+The full three-record catalogue already discloses answers to the resolver. This
+experiment measures selecting and transferring that evidence, not scalable search.
+Two repetitions share one frozen store, one model and fixed arm order. Clean
+conversational-reference isolation, corrections/withdrawals, retention under growth,
+resumed complex work and experience transfer remain untested. No accepted
+architecture decision changes, and no result of these eighteen probes would alone
+establish reliable continuation or learning.

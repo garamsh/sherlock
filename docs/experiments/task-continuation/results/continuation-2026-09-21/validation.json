@@ -1,0 +1,43 @@
+{
+  "measured_source": "b7de9f3a4b4d1c01f2e71af5bdbff6a743992649",
+  "publication_worker": "term_2f2a83a7-03bc-41c9-b123-699026c38091",
+  "checks": {
+    "make_ci": {
+      "exit": 0,
+      "log": "publication-ci.log.txt",
+      "formatted_go_files": 144,
+      "tested_packages": 16,
+      "built_packages": 21
+    },
+    "audit": {
+      "exit": 0,
+      "output": "audit.json"
+    },
+    "go_mod_tidy": {
+      "exit": 0,
+      "module_files_changed": false
+    },
+    "git_diff_check": {
+      "exit": 0
+    },
+    "git_check_ignore": {
+      "ignored_publication_paths": 0
+    },
+    "credential_pattern_scan": {
+      "findings": 0,
+      "scope": "all publication bytes; private-key headers, GitHub token, sk- token and long Bearer patterns; not a general credential detector"
+    }
+  },
+  "git_add": {
+    "exit": 128,
+    "error": "Unable to create /home/sauce/Workspace/garam/gagent/.git/worktrees/test-continuation/index.lock: Read-only file system",
+    "next": "PM commit unchanged files after publication-files.sha256 verification"
+  },
+  "resources": {
+    "new_worktrees": 0,
+    "new_agents": 0,
+    "paid_calls": 0,
+    "started_long_running_processes_remaining": 0,
+    "retained": "assigned worktree and original evidence roots; measured binary stays local"
+  }
+}

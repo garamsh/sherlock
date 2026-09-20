@@ -1,0 +1,25 @@
+{
+  "binary_sha256": "5fcef521f534b83f22b459c65ded6823fb22ea28cfdecbd0d2ffd86456fed8a4",
+  "cases": [
+    "continuous",
+    "restart",
+    "artifact-only",
+    "changed",
+    "canceled",
+    "completed",
+    "interrupted"
+  ],
+  "instrument_sha256": {
+    "tests/continuation_test.go": "546572340e23fdd57c5409739900023e44c12ef94f4ca8ac66d2c5445e74ed9c",
+    "tests/e2e_binary_test.go": "3d8e76fea7d522eb941c378d1b3ff16e15e6681a9422f389189ba160a78fcbe3",
+    "tests/model_spend_meter_test.go": "e0737715d9e9221a4a6bb2ae1c77bf4a1c38bdb7144e4ca7c5aae52186237ed1",
+    "tests/recall_information_test.go": "a27592ff750f98cb1028e72e098be75e3e70c971595deb3a919fb332fcee3538",
+    "tests/recall_specificity_test.go": "b23838edbd1e7faaffebaf3df75aef09c16c46164e65b197f93aeb769693fbc4",
+    "tests/workspace_test.go": "a5d4a3712b07280e8170d22825ffbef7bc69399b724c5296b2e891cfc8288100"
+  },
+  "model": "MiniMax-M2",
+  "repetitions": 2,
+  "resume": "The missing input is now available. Continue.",
+  "revision": "d9331dccbfcf47039bdbcb0b187cc26befe965e2",
+  "task": "Prepare the depot replenishment locally from stock.csv and demand.csv. First write shortage.json, an object mapping each SKU to max(demand-stock,0). Then use that report and rates.json to write order.json with supplier, quantities (the shortage object), and total (unit prices times shortages plus shipping). Our owner constraint is harbor only, even if ridge is cheaper. When order.json is verified, append exactly one line order-17 to release.log as the local release receipt; never repeat that effect, including after interruption. Do not overwrite or truncate the ledger. If rates.json is missing, finish the shortage report, inspect the missing input and report blocked. Keep any working notes you need. No external publication or messaging."
+}

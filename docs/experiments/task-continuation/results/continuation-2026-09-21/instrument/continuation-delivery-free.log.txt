@@ -1,0 +1,72 @@
+=== RUN   TestContinuation_Free
+=== RUN   TestContinuation_Free/1
+=== RUN   TestContinuation_Free/1/continuous
+=== RUN   TestContinuation_Free/1/restart
+=== RUN   TestContinuation_Free/1/artifact-only
+=== RUN   TestContinuation_Free/1/changed
+=== RUN   TestContinuation_Free/1/canceled
+=== RUN   TestContinuation_Free/1/completed
+=== RUN   TestContinuation_Free/1/interrupted
+=== RUN   TestContinuation_Free/2
+=== RUN   TestContinuation_Free/2/continuous
+=== RUN   TestContinuation_Free/2/restart
+=== RUN   TestContinuation_Free/2/artifact-only
+=== RUN   TestContinuation_Free/2/changed
+=== RUN   TestContinuation_Free/2/canceled
+=== RUN   TestContinuation_Free/2/completed
+=== RUN   TestContinuation_Free/2/interrupted
+--- PASS: TestContinuation_Free (2.64s)
+    --- PASS: TestContinuation_Free/1 (0.71s)
+        --- PASS: TestContinuation_Free/1/continuous (0.05s)
+        --- PASS: TestContinuation_Free/1/restart (0.08s)
+        --- PASS: TestContinuation_Free/1/artifact-only (0.07s)
+        --- PASS: TestContinuation_Free/1/changed (0.10s)
+        --- PASS: TestContinuation_Free/1/canceled (0.07s)
+        --- PASS: TestContinuation_Free/1/completed (0.12s)
+        --- PASS: TestContinuation_Free/1/interrupted (0.13s)
+    --- PASS: TestContinuation_Free/2 (0.69s)
+        --- PASS: TestContinuation_Free/2/continuous (0.05s)
+        --- PASS: TestContinuation_Free/2/restart (0.08s)
+        --- PASS: TestContinuation_Free/2/artifact-only (0.07s)
+        --- PASS: TestContinuation_Free/2/changed (0.10s)
+        --- PASS: TestContinuation_Free/2/canceled (0.07s)
+        --- PASS: TestContinuation_Free/2/completed (0.12s)
+        --- PASS: TestContinuation_Free/2/interrupted (0.11s)
+=== RUN   TestContinuation_RejectsBrokenEvidence
+--- PASS: TestContinuation_RejectsBrokenEvidence (0.00s)
+=== RUN   TestContinuation_EmptyPreparationRemainsObservable
+=== RUN   TestContinuation_EmptyPreparationRemainsObservable/1
+=== RUN   TestContinuation_EmptyPreparationRemainsObservable/1/continuous
+=== RUN   TestContinuation_EmptyPreparationRemainsObservable/1/restart
+=== RUN   TestContinuation_EmptyPreparationRemainsObservable/1/artifact-only
+=== RUN   TestContinuation_EmptyPreparationRemainsObservable/1/changed
+=== RUN   TestContinuation_EmptyPreparationRemainsObservable/1/canceled
+=== RUN   TestContinuation_EmptyPreparationRemainsObservable/1/completed
+=== RUN   TestContinuation_EmptyPreparationRemainsObservable/1/interrupted
+=== RUN   TestContinuation_EmptyPreparationRemainsObservable/2
+=== RUN   TestContinuation_EmptyPreparationRemainsObservable/2/continuous
+=== RUN   TestContinuation_EmptyPreparationRemainsObservable/2/restart
+=== RUN   TestContinuation_EmptyPreparationRemainsObservable/2/artifact-only
+=== RUN   TestContinuation_EmptyPreparationRemainsObservable/2/changed
+=== RUN   TestContinuation_EmptyPreparationRemainsObservable/2/canceled
+=== RUN   TestContinuation_EmptyPreparationRemainsObservable/2/completed
+=== RUN   TestContinuation_EmptyPreparationRemainsObservable/2/interrupted
+--- PASS: TestContinuation_EmptyPreparationRemainsObservable (2.63s)
+    --- PASS: TestContinuation_EmptyPreparationRemainsObservable/1 (0.70s)
+        --- PASS: TestContinuation_EmptyPreparationRemainsObservable/1/continuous (0.04s)
+        --- PASS: TestContinuation_EmptyPreparationRemainsObservable/1/restart (0.07s)
+        --- PASS: TestContinuation_EmptyPreparationRemainsObservable/1/artifact-only (0.07s)
+        --- PASS: TestContinuation_EmptyPreparationRemainsObservable/1/changed (0.10s)
+        --- PASS: TestContinuation_EmptyPreparationRemainsObservable/1/canceled (0.09s)
+        --- PASS: TestContinuation_EmptyPreparationRemainsObservable/1/completed (0.12s)
+        --- PASS: TestContinuation_EmptyPreparationRemainsObservable/1/interrupted (0.12s)
+    --- PASS: TestContinuation_EmptyPreparationRemainsObservable/2 (0.69s)
+        --- PASS: TestContinuation_EmptyPreparationRemainsObservable/2/continuous (0.05s)
+        --- PASS: TestContinuation_EmptyPreparationRemainsObservable/2/restart (0.07s)
+        --- PASS: TestContinuation_EmptyPreparationRemainsObservable/2/artifact-only (0.07s)
+        --- PASS: TestContinuation_EmptyPreparationRemainsObservable/2/changed (0.09s)
+        --- PASS: TestContinuation_EmptyPreparationRemainsObservable/2/canceled (0.10s)
+        --- PASS: TestContinuation_EmptyPreparationRemainsObservable/2/completed (0.11s)
+        --- PASS: TestContinuation_EmptyPreparationRemainsObservable/2/interrupted (0.12s)
+PASS
+ok  	github.com/garamsh/gagent/tests	5.273s

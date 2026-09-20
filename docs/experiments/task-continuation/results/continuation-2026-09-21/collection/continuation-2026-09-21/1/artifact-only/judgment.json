@@ -1,0 +1,143 @@
+{
+  "Name": "1/artifact-only",
+  "Turns": [
+    {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-bfb48c208f94c2074298e8a5a5996b11] unknown: The missing input is now available. Continue.",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "unplaced",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "operation": "list",
+            "path": "."
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"\",\"bytes_written\":0,\"entries\":[{\"name\":\"demand.csv\",\"dir\":false},{\"name\":\"rates.json\",\"dir\":false},{\"name\":\"shortage.json\",\"dir\":false},{\"name\":\"stock.csv\",\"dir\":false}]}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "operation": "read",
+            "path": "demand.csv"
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"sku,demand\\nA,10\\nB,5\\n\",\"bytes_written\":0,\"entries\":[]}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "operation": "read",
+            "path": "rates.json"
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"{\\\"harbor\\\":{\\\"A\\\":10,\\\"B\\\":20,\\\"shipping\\\":5},\\\"ridge\\\":{\\\"A\\\":8,\\\"B\\\":18,\\\"shipping\\\":3}}\",\"bytes_written\":0,\"entries\":[]}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "operation": "read",
+            "path": "shortage.json"
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"{\\\"A\\\": 6, \\\"B\\\": 3}\\n\",\"bytes_written\":0,\"entries\":[]}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "operation": "read",
+            "path": "stock.csv"
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"sku,stock\\nA,4\\nB,2\\n\",\"bytes_written\":0,\"entries\":[]}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "command": "python3 \u003c\u003c 'EOF'\nimport json\n\n# Load data\nwith open('rates.json') as f:\n    rates = json.load(f)\n    \nwith open('shortage.json') as f:\n    shortage = json.load(f)\n\n# Calculate optimal fulfillment\nresults = {}\nfor sku in shortage:\n    needed = shortage[sku]\n    harbor_cost = rates['harbor'].get(sku, float('inf'))\n    ridge_cost = rates['ridge'].get(sku, float('inf'))\n    \n    # Choose cheapest source\n    if harbor_cost \u003c= ridge_cost:\n        source = 'harbor'\n        cost = harbor_cost\n    else:\n        source = 'ridge'\n        cost = ridge_cost\n    \n    results[sku] = {\n        'needed': needed,\n        'source': source,\n        'cost_per_unit': cost,\n        'total_cost': needed * cost\n    }\n\nprint(\"Optimal Fulfillment Plan:\")\nprint(\"-\" * 40)\ntotal = 0\nfor sku, data in results.items():\n    print(f\"SKU {sku}: {data['needed']} units from {data['source']} @ ${data['cost_per_unit']}/unit = ${data['total_cost']}\")\n    total += data['total_cost']\nprint(\"-\" * 40)\nprint(f\"Total shipping cost: ${total}\")\nEOF",
+            "timeout_nanos": 10000000000
+          },
+          "tool_name": "shell_exec",
+          "tool_result": "{\"stdout\":\"Optimal Fulfillment Plan:\\n----------------------------------------\\nSKU A: 6 units from ridge @ $8/unit = $48\\nSKU B: 3 units from ridge @ $18/unit = $54\\n----------------------------------------\\nTotal shipping cost: $102\\n\",\"stderr\":\"\",\"exit_code\":0,\"timed_out\":false}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-bfb48c208f94c2074298e8a5a5996b11"
+          ],
+          "ops": null,
+          "response": "The optimal fulfillment plan based on the now-available rates.json:\n\n- **SKU A**: 6 units from Ridge @ $8/unit = $48\n- **SKU B**: 3 units from Ridge @ $18/unit = $54\n- **Total shipping cost**: $102\n\nBoth SKUs are cheapest to source from the Ridge warehouse.",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 23790,
+      "message": "The missing input is now available. Continue.",
+      "recall_outcome": "unplaced",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "The optimal fulfillment plan based on the now-available rates.json:\n\n- **SKU A**: 6 units from Ridge @ $8/unit = $48\n- **SKU B**: 3 units from Ridge @ $18/unit = $54\n- **Total shipping cost**: $102\n\nBoth SKUs are cheapest to source from the Ridge warehouse."
+    }
+  ],
+  "Before": [],
+  "After": [],
+  "FilesBefore": {
+    "demand.csv": "sku,demand\nA,10\nB,5\n",
+    "rates.json": "{\"harbor\":{\"A\":10,\"B\":20,\"shipping\":5},\"ridge\":{\"A\":8,\"B\":18,\"shipping\":3}}",
+    "shortage.json": "{\"A\": 6, \"B\": 3}\n",
+    "stock.csv": "sku,stock\nA,4\nB,2\n"
+  },
+  "FilesAfter": {
+    "demand.csv": "sku,demand\nA,10\nB,5\n",
+    "rates.json": "{\"harbor\":{\"A\":10,\"B\":20,\"shipping\":5},\"ridge\":{\"A\":8,\"B\":18,\"shipping\":3}}",
+    "shortage.json": "{\"A\": 6, \"B\": 3}\n",
+    "stock.csv": "sku,stock\nA,4\nB,2\n"
+  },
+  "PreparationPID": 813288,
+  "OldPID": 821893,
+  "ResumePID": 821893,
+  "Invalid": null,
+  "ArtifactCorrect": false,
+  "ReceiptCount": 0,
+  "SemanticReview": "pending independent agent and PM review: goal, constraint, stored progress, verification, unsupported claims",
+  "MemoryContrast": "pending content/exposure adjudication",
+  "InspectionConfirmed": true,
+  "GateRequest": null,
+  "GateAt": "0001-01-01T00:00:00Z",
+  "KilledAt": "0001-01-01T00:00:00Z"
+}

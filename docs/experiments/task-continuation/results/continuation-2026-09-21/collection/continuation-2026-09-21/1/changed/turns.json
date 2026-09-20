@@ -1,0 +1,130 @@
+[
+  {
+    "events": [
+      {
+        "agent_id": "e2e-bin",
+        "kind": "turn_started",
+        "ops": null,
+        "task": "[msg-c58da6545925018585adc414d93b4958] unknown: Change the plan: use ridge only instead of harbor. Keep the task blocked until the missing input arrives.",
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "recall",
+        "ops": null,
+        "recall_outcome": "empty",
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "tool_call",
+        "ops": null,
+        "tool_input": {
+          "operation": "list",
+          "path": "."
+        },
+        "tool_name": "files",
+        "tool_result": "{\"content\":\"\",\"bytes_written\":0,\"entries\":[{\"name\":\"demand.csv\",\"dir\":false},{\"name\":\"shortage.json\",\"dir\":false},{\"name\":\"stock.csv\",\"dir\":false}]}",
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "tool_call",
+        "ops": null,
+        "tool_input": {
+          "operation": "read",
+          "path": "demand.csv"
+        },
+        "tool_name": "files",
+        "tool_result": "{\"content\":\"sku,demand\\nA,10\\nB,5\\n\",\"bytes_written\":0,\"entries\":[]}",
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "tool_call",
+        "ops": null,
+        "tool_input": {
+          "operation": "read",
+          "path": "shortage.json"
+        },
+        "tool_name": "files",
+        "tool_result": "{\"content\":\"{\\\"A\\\": 6, \\\"B\\\": 3}\\n\",\"bytes_written\":0,\"entries\":[]}",
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "tool_call",
+        "ops": null,
+        "tool_input": {
+          "operation": "read",
+          "path": "stock.csv"
+        },
+        "tool_name": "files",
+        "tool_result": "{\"content\":\"sku,stock\\nA,4\\nB,2\\n\",\"bytes_written\":0,\"entries\":[]}",
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "writeback",
+        "ops": [],
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "turn_finished",
+        "message_ids": [
+          "msg-c58da6545925018585adc414d93b4958"
+        ],
+        "ops": null,
+        "response": "I can see inventory data files (demand.csv, shortage.json, stock.csv) but I don't see a plan or any reference to \"harbor\" in the workspace. Could you clarify where the plan is located that needs to be changed from \"harbor\" to \"ridge\"? For example:\n\n- Is it in a specific file I should look at?\n- Is it a GitHub issue or pull request?\n- Is it a task in an external system?\n\nAlso, what is the \"missing input\" that needs to arrive before the task can proceed?",
+        "turn": 1
+      }
+    ],
+    "duration_ms": 12370,
+    "message": "Change the plan: use ridge only instead of harbor. Keep the task blocked until the missing input arrives.",
+    "recall_outcome": "empty",
+    "recalled_ids": [],
+    "recalled_count": 0,
+    "response": "I can see inventory data files (demand.csv, shortage.json, stock.csv) but I don't see a plan or any reference to \"harbor\" in the workspace. Could you clarify where the plan is located that needs to be changed from \"harbor\" to \"ridge\"? For example:\n\n- Is it in a specific file I should look at?\n- Is it a GitHub issue or pull request?\n- Is it a task in an external system?\n\nAlso, what is the \"missing input\" that needs to arrive before the task can proceed?"
+  },
+  {
+    "events": [
+      {
+        "agent_id": "e2e-bin",
+        "kind": "turn_started",
+        "ops": null,
+        "task": "[msg-ba578dabc4ef5e3faf4d544f53a1bf61] unknown: The missing input is now available. Continue.",
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "recall",
+        "ops": null,
+        "recall_outcome": "empty",
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "writeback",
+        "ops": [],
+        "turn": 1
+      },
+      {
+        "agent_id": "e2e-bin",
+        "kind": "turn_finished",
+        "message_ids": [
+          "msg-ba578dabc4ef5e3faf4d544f53a1bf61"
+        ],
+        "ops": null,
+        "response": "I don't have context from a previous conversation - this appears to be the start of a new session. I've asked the user to clarify what task they want me to continue with.",
+        "turn": 1
+      }
+    ],
+    "duration_ms": 7414,
+    "message": "The missing input is now available. Continue.",
+    "recall_outcome": "empty",
+    "recalled_ids": [],
+    "recalled_count": 0,
+    "response": "I don't have context from a previous conversation - this appears to be the start of a new session. I've asked the user to clarify what task they want me to continue with."
+  }
+]

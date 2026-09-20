@@ -1,0 +1,9 @@
+--- FAIL: TestContinuation_RejectsBrokenEvidence (0.00s)
+    continuation_test.go:633: 
+        	Error Trace:	/home/sauce/orca/workspaces/gagent/test-continuation/tests/continuation_test.go:633
+        	Error:      	Should be false
+        	Test:       	TestContinuation_RejectsBrokenEvidence
+        	Messages:   	printf false
+FAIL
+FAIL	github.com/garamsh/gagent/tests	0.008s
+FAIL

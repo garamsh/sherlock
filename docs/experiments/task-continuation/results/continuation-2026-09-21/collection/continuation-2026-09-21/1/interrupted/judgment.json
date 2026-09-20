@@ -1,0 +1,260 @@
+{
+  "Name": "1/interrupted",
+  "Turns": [
+    {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-f744eaccc5088f060a025a67787ff199] unknown: The missing input is now available. Continue.",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "unplaced",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "operation": "list",
+            "path": "."
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"\",\"bytes_written\":0,\"entries\":[{\"name\":\"demand.csv\",\"dir\":false},{\"name\":\"rates.json\",\"dir\":false},{\"name\":\"shortage.json\",\"dir\":false},{\"name\":\"stock.csv\",\"dir\":false}]}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "operation": "read",
+            "path": "rates.json"
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"{\\\"harbor\\\":{\\\"A\\\":10,\\\"B\\\":20,\\\"shipping\\\":5},\\\"ridge\\\":{\\\"A\\\":8,\\\"B\\\":18,\\\"shipping\\\":3}}\",\"bytes_written\":0,\"entries\":[]}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "operation": "read",
+            "path": "demand.csv"
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"sku,demand\\nA,10\\nB,5\\n\",\"bytes_written\":0,\"entries\":[]}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "operation": "read",
+            "path": "stock.csv"
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"sku,stock\\nA,4\\nB,2\\n\",\"bytes_written\":0,\"entries\":[]}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "operation": "read",
+            "path": "shortage.json"
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"{\\\"A\\\": 6, \\\"B\\\": 3}\\n\",\"bytes_written\":0,\"entries\":[]}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-f744eaccc5088f060a025a67787ff199"
+          ],
+          "ops": null,
+          "response": "I found an inventory/fulfillment optimization project in the workspace with demand (10 A, 5 B), stock (4 A, 2 B), and shipping rates from two warehouses (Harbor and Ridge). However, I don't have context about what specific task needs to be continued. Could you clarify what you'd like me to do with this data?",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 14974,
+      "message": "The missing input is now available. Continue.",
+      "recall_outcome": "",
+      "recalled_ids": null,
+      "recalled_count": 0,
+      "response": ""
+    },
+    {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-f4fc5742cb566c3b56908541f3d25ef1] unknown: The missing input is now available. Continue.",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "unplaced",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "operation": "list",
+            "path": "."
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"\",\"bytes_written\":0,\"entries\":[{\"name\":\"demand.csv\",\"dir\":false},{\"name\":\"rates.json\",\"dir\":false},{\"name\":\"shortage.json\",\"dir\":false},{\"name\":\"stock.csv\",\"dir\":false}]}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "operation": "read",
+            "path": "demand.csv"
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"sku,demand\\nA,10\\nB,5\\n\",\"bytes_written\":0,\"entries\":[]}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "operation": "read",
+            "path": "rates.json"
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"{\\\"harbor\\\":{\\\"A\\\":10,\\\"B\\\":20,\\\"shipping\\\":5},\\\"ridge\\\":{\\\"A\\\":8,\\\"B\\\":18,\\\"shipping\\\":3}}\",\"bytes_written\":0,\"entries\":[]}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "operation": "read",
+            "path": "shortage.json"
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"{\\\"A\\\": 6, \\\"B\\\": 3}\\n\",\"bytes_written\":0,\"entries\":[]}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "operation": "read",
+            "path": "stock.csv"
+          },
+          "tool_name": "files",
+          "tool_result": "{\"content\":\"sku,stock\\nA,4\\nB,2\\n\",\"bytes_written\":0,\"entries\":[]}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-f4fc5742cb566c3b56908541f3d25ef1"
+          ],
+          "ops": null,
+          "response": "I found 4 files in the workspace: demand.csv (demands for A and B), stock.csv (current stock levels), shortage.json (shortages: A=6, B=3), and rates.json (shipping rates for harbor and ridge). The shortage.json appears to be the \"missing input\" that is now available. I need more context about what task to continue - please clarify what you'd like me to do with this data.",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 15432,
+      "message": "The missing input is now available. Continue.",
+      "recall_outcome": "unplaced",
+      "recalled_ids": [],
+      "recalled_count": 0,
+      "response": "I found 4 files in the workspace: demand.csv (demands for A and B), stock.csv (current stock levels), shortage.json (shortages: A=6, B=3), and rates.json (shipping rates for harbor and ridge). The shortage.json appears to be the \"missing input\" that is now available. I need more context about what task to continue - please clarify what you'd like me to do with this data."
+    }
+  ],
+  "Before": [
+    {
+      "id": 1,
+      "subject": "depot replenishment",
+      "question": "what are the SKU shortages",
+      "value": "A: 6 units, B: 3 units"
+    },
+    {
+      "id": 2,
+      "subject": "rates.json",
+      "question": "what is the status of rates.json",
+      "value": "missing - blocks order.json creation"
+    }
+  ],
+  "After": [
+    {
+      "id": 1,
+      "subject": "depot replenishment",
+      "question": "what are the SKU shortages",
+      "value": "A: 6 units, B: 3 units"
+    },
+    {
+      "id": 2,
+      "subject": "rates.json",
+      "question": "what is the status of rates.json",
+      "value": "missing - blocks order.json creation"
+    }
+  ],
+  "FilesBefore": {
+    "demand.csv": "sku,demand\nA,10\nB,5\n",
+    "rates.json": "{\"harbor\":{\"A\":10,\"B\":20,\"shipping\":5},\"ridge\":{\"A\":8,\"B\":18,\"shipping\":3}}",
+    "shortage.json": "{\"A\": 6, \"B\": 3}\n",
+    "stock.csv": "sku,stock\nA,4\nB,2\n"
+  },
+  "FilesAfter": {
+    "demand.csv": "sku,demand\nA,10\nB,5\n",
+    "rates.json": "{\"harbor\":{\"A\":10,\"B\":20,\"shipping\":5},\"ridge\":{\"A\":8,\"B\":18,\"shipping\":3}}",
+    "shortage.json": "{\"A\": 6, \"B\": 3}\n",
+    "stock.csv": "sku,stock\nA,4\nB,2\n"
+  },
+  "PreparationPID": 813288,
+  "OldPID": 829842,
+  "ResumePID": 831134,
+  "Invalid": [
+    "turn ended before interruption",
+    "unproven effect-before-writeback interval"
+  ],
+  "ArtifactCorrect": false,
+  "ReceiptCount": 0,
+  "SemanticReview": "pending independent agent and PM review: goal, constraint, stored progress, verification, unsupported claims",
+  "MemoryContrast": "pending content/exposure adjudication",
+  "InspectionConfirmed": true,
+  "GateRequest": null,
+  "GateAt": "0001-01-01T00:00:00Z",
+  "KilledAt": "2026-09-21T02:24:20.171967881+09:00"
+}

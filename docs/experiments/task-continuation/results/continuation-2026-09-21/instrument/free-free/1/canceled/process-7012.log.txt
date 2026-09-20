@@ -1,0 +1,34 @@
+{"time":"2026-09-21T02:14:39.986866924+09:00","level":"INFO","msg":"tool manifest loaded","op":"tool.load","name":"files","hash":"8f095f112c301169f6a941dbb4876b97a4101ce7f314371003ad37362384fdf1"}
+{"time":"2026-09-21T02:14:39.987305447+09:00","level":"INFO","msg":"tool manifest loaded","op":"tool.load","name":"github","hash":"3527d3a66550d10b234c1994b2c52f1e1c6db915daeb221ca8dfc7b4f79b9c9e"}
+{"time":"2026-09-21T02:14:39.987464417+09:00","level":"INFO","msg":"tool manifest loaded","op":"tool.load","name":"message_send","hash":"d82eca7432cd9718d7051fe657ed16711fe0313d69b9affc44c9dee30f59ce56"}
+{"time":"2026-09-21T02:14:39.987635089+09:00","level":"INFO","msg":"tool manifest loaded","op":"tool.load","name":"shell_exec","hash":"caa871163624db5c38b5e4db6ae4afe92c89966b8556e0b5ba3040a7afc24492"}
+{"time":"2026-09-21T02:14:39.987646719+09:00","level":"INFO","msg":"tool registry loaded","op":"tool.load","tools_dir":"/home/sauce/orca/workspaces/gagent/test-continuation/tools","tools_dir_resolved":"/home/sauce/orca/workspaces/gagent/test-continuation/tools","tools":4}
+{"time":"2026-09-21T02:14:39.98765057+09:00","level":"WARN","msg":"tool drift pinning disabled: no pin set configured","op":"tool.load","tools_dir":"/home/sauce/orca/workspaces/gagent/test-continuation/tools"}
+{"time":"2026-09-21T02:14:39.988719116+09:00","level":"INFO","msg":"agent listening","op":"startup","addr":"127.0.0.1:42667","agent_id":"e2e-bin","memory_path":"/tmp/TestContinuation_Free1canceled1847300810/001/memory.db","workspace_addr":"127.0.0.1:35625","tools_dir":"/home/sauce/orca/workspaces/gagent/test-continuation/tools","auth":"none: loopback binds only"}
+{"time":"2026-09-21T02:14:39.997461058+09:00","level":"INFO","msg":"http request","trace_id":"trace-bab7b1825c2fcacdc784eda4d8adf0a3","op":"GET /","status":404,"duration_ms":0}
+{"time":"2026-09-21T02:14:40.000912289+09:00","level":"INFO","msg":"message enqueued","op":"enqueue","agent_id":"e2e-bin","message_id":"msg-43966e29579d48a55fcd31ff3ef32e24"}
+{"time":"2026-09-21T02:14:40.000945364+09:00","level":"INFO","msg":"http request","trace_id":"trace-56b238d00fa6ae1384ed056ac22f85ae","op":"POST /agents/e2e-bin/messages","status":202,"duration_ms":0}
+{"time":"2026-09-21T02:14:40.002286136+09:00","level":"WARN","msg":"openai provider: tool schema property promoted to required","op":"sanitize_tool_parameters","tool":"files","property":"content"}
+{"time":"2026-09-21T02:14:40.002331838+09:00","level":"WARN","msg":"openai provider: tool schema property promoted to required","op":"sanitize_tool_parameters","tool":"github","property":"base"}
+{"time":"2026-09-21T02:14:40.002336344+09:00","level":"WARN","msg":"openai provider: tool schema property promoted to required","op":"sanitize_tool_parameters","tool":"github","property":"body"}
+{"time":"2026-09-21T02:14:40.002340229+09:00","level":"WARN","msg":"openai provider: tool schema property promoted to required","op":"sanitize_tool_parameters","tool":"github","property":"branch"}
+{"time":"2026-09-21T02:14:40.002343809+09:00","level":"WARN","msg":"openai provider: tool schema property promoted to required","op":"sanitize_tool_parameters","tool":"github","property":"head"}
+{"time":"2026-09-21T02:14:40.002348019+09:00","level":"WARN","msg":"openai provider: tool schema property promoted to required","op":"sanitize_tool_parameters","tool":"github","property":"labels"}
+{"time":"2026-09-21T02:14:40.002352365+09:00","level":"WARN","msg":"openai provider: tool schema property promoted to required","op":"sanitize_tool_parameters","tool":"github","property":"message"}
+{"time":"2026-09-21T02:14:40.002356164+09:00","level":"WARN","msg":"openai provider: tool schema property promoted to required","op":"sanitize_tool_parameters","tool":"github","property":"number"}
+{"time":"2026-09-21T02:14:40.002359614+09:00","level":"WARN","msg":"openai provider: tool schema property promoted to required","op":"sanitize_tool_parameters","tool":"github","property":"sha"}
+{"time":"2026-09-21T02:14:40.002363219+09:00","level":"WARN","msg":"openai provider: tool schema property promoted to required","op":"sanitize_tool_parameters","tool":"github","property":"title"}
+{"time":"2026-09-21T02:14:40.002402029+09:00","level":"WARN","msg":"openai provider: tool schema property promoted to required","op":"sanitize_tool_parameters","tool":"shell_exec","property":"timeout_nanos"}
+{"time":"2026-09-21T02:14:40.018921057+09:00","level":"WARN","msg":"openai provider: tool schema property promoted to required","op":"sanitize_tool_parameters","tool":"files","property":"content"}
+{"time":"2026-09-21T02:14:40.019043215+09:00","level":"WARN","msg":"openai provider: tool schema property promoted to required","op":"sanitize_tool_parameters","tool":"github","property":"base"}
+{"time":"2026-09-21T02:14:40.019051907+09:00","level":"WARN","msg":"openai provider: tool schema property promoted to required","op":"sanitize_tool_parameters","tool":"github","property":"body"}
+{"time":"2026-09-21T02:14:40.019055989+09:00","level":"WARN","msg":"openai provider: tool schema property promoted to required","op":"sanitize_tool_parameters","tool":"github","property":"branch"}
+{"time":"2026-09-21T02:14:40.019059747+09:00","level":"WARN","msg":"openai provider: tool schema property promoted to required","op":"sanitize_tool_parameters","tool":"github","property":"head"}
+{"time":"2026-09-21T02:14:40.019071918+09:00","level":"WARN","msg":"openai provider: tool schema property promoted to required","op":"sanitize_tool_parameters","tool":"github","property":"labels"}
+{"time":"2026-09-21T02:14:40.019077043+09:00","level":"WARN","msg":"openai provider: tool schema property promoted to required","op":"sanitize_tool_parameters","tool":"github","property":"message"}
+{"time":"2026-09-21T02:14:40.019081006+09:00","level":"WARN","msg":"openai provider: tool schema property promoted to required","op":"sanitize_tool_parameters","tool":"github","property":"number"}
+{"time":"2026-09-21T02:14:40.019086265+09:00","level":"WARN","msg":"openai provider: tool schema property promoted to required","op":"sanitize_tool_parameters","tool":"github","property":"sha"}
+{"time":"2026-09-21T02:14:40.019091983+09:00","level":"WARN","msg":"openai provider: tool schema property promoted to required","op":"sanitize_tool_parameters","tool":"github","property":"title"}
+{"time":"2026-09-21T02:14:40.019131403+09:00","level":"WARN","msg":"openai provider: tool schema property promoted to required","op":"sanitize_tool_parameters","tool":"shell_exec","property":"timeout_nanos"}
+{"time":"2026-09-21T02:14:40.020576521+09:00","level":"INFO","msg":"run finished","agent_id":"e2e-bin","op":"run","message_ids":["msg-43966e29579d48a55fcd31ff3ef32e24"]}
+{"time":"2026-09-21T02:14:40.021015464+09:00","level":"INFO","msg":"http request","trace_id":"trace-450f307401af9ae9d28a189af1a2d69b","op":"GET /agents/e2e-bin/events","status":200,"duration_ms":23}

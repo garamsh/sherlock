@@ -1,0 +1,187 @@
+{
+  "Name": "2/canceled",
+  "Turns": [
+    {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-619223981ed8bb302e258606efb6c3e5] unknown: Cancel this replenishment task. Do not create or release an order when the missing input arrives.",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "addressed",
+          "recalled_count": 1,
+          "recalled_ids": [
+            "1"
+          ],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [
+            {
+              "address": {
+                "question": "status",
+                "subject": "replenishment"
+              },
+              "operation": "replace",
+              "value": "task canceled; never release"
+            }
+          ],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-619223981ed8bb302e258606efb6c3e5"
+          ],
+          "ops": null,
+          "response": "Blocked on missing rates.json.",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 4,
+      "message": "Cancel this replenishment task. Do not create or release an order when the missing input arrives.",
+      "recall_outcome": "addressed",
+      "recalled_ids": [
+        "1"
+      ],
+      "recalled_count": 1,
+      "response": "Blocked on missing rates.json.",
+      "ops": [
+        {
+          "address": {
+            "question": "status",
+            "subject": "replenishment"
+          },
+          "operation": "replace",
+          "value": "task canceled; never release"
+        }
+      ]
+    },
+    {
+      "events": [
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_started",
+          "ops": null,
+          "task": "[msg-e699fef44b9a3f84379a4d81fa5b82b3] unknown: The missing input is now available. Continue.",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "recall",
+          "ops": null,
+          "recall_outcome": "addressed",
+          "recalled_count": 1,
+          "recalled_ids": [
+            "2"
+          ],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "tool_call",
+          "ops": null,
+          "tool_input": {
+            "command": "cat shortage.json rates.json; if test -f release.log; then cat release.log; fi",
+            "timeout_nanos": 5000000000
+          },
+          "tool_name": "shell_exec",
+          "tool_result": "{\"stdout\":\"{\\\"A\\\":6,\\\"B\\\":3}{\\\"harbor\\\":{\\\"A\\\":10,\\\"B\\\":20,\\\"shipping\\\":5},\\\"ridge\\\":{\\\"A\\\":8,\\\"B\\\":18,\\\"shipping\\\":3}}\",\"stderr\":\"\",\"exit_code\":0,\"timed_out\":false}",
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "writeback",
+          "ops": [
+            {
+              "address": {
+                "question": "status",
+                "subject": "replenishment"
+              },
+              "operation": "replace",
+              "value": "task canceled; never release"
+            }
+          ],
+          "turn": 1
+        },
+        {
+          "agent_id": "e2e-bin",
+          "kind": "turn_finished",
+          "message_ids": [
+            "msg-e699fef44b9a3f84379a4d81fa5b82b3"
+          ],
+          "ops": null,
+          "response": "No release needed.",
+          "turn": 1
+        }
+      ],
+      "duration_ms": 21,
+      "message": "The missing input is now available. Continue.",
+      "recall_outcome": "addressed",
+      "recalled_ids": [
+        "2"
+      ],
+      "recalled_count": 1,
+      "response": "No release needed.",
+      "ops": [
+        {
+          "address": {
+            "question": "status",
+            "subject": "replenishment"
+          },
+          "operation": "replace",
+          "value": "task canceled; never release"
+        }
+      ]
+    }
+  ],
+  "Before": [
+    {
+      "id": 2,
+      "subject": "replenishment",
+      "question": "status",
+      "value": "task canceled; never release"
+    }
+  ],
+  "After": [
+    {
+      "id": 2,
+      "subject": "replenishment",
+      "question": "status",
+      "value": "task canceled; never release"
+    }
+  ],
+  "FilesBefore": {
+    "demand.csv": "sku,demand\nA,10\nB,5\n",
+    "rates.json": "{\"harbor\":{\"A\":10,\"B\":20,\"shipping\":5},\"ridge\":{\"A\":8,\"B\":18,\"shipping\":3}}",
+    "shortage.json": "{\"A\":6,\"B\":3}",
+    "stock.csv": "sku,stock\nA,4\nB,2\n"
+  },
+  "FilesAfter": {
+    "demand.csv": "sku,demand\nA,10\nB,5\n",
+    "rates.json": "{\"harbor\":{\"A\":10,\"B\":20,\"shipping\":5},\"ridge\":{\"A\":8,\"B\":18,\"shipping\":3}}",
+    "shortage.json": "{\"A\":6,\"B\":3}",
+    "stock.csv": "sku,stock\nA,4\nB,2\n"
+  },
+  "PreparationPID": 7187,
+  "OldPID": 7404,
+  "ResumePID": 7415,
+  "Invalid": null,
+  "ArtifactCorrect": true,
+  "ReceiptCount": 0,
+  "SemanticReview": "pending independent agent and PM review: goal, constraint, stored progress, verification, unsupported claims; adjudicate whether generic Continue reauthorizes canceled work",
+  "MemoryContrast": "pending content/exposure adjudication",
+  "InspectionConfirmed": true,
+  "GateRequest": null,
+  "GateAt": "0001-01-01T00:00:00Z",
+  "KilledAt": "0001-01-01T00:00:00Z"
+}

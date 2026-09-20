@@ -1,0 +1,37 @@
+Records the delivery state for worker dispatch ctx_e699e8746e41 and issue #807.
+
+# Continuation instrument delivery
+
+- Assigned branch: `test/continuation`; original product base: `dcc252b8171ac5d889369eb9a65dc84f3d682da7`; PM-refreshed branch base: `d9331dccbfcf47039bdbcb0b187cc26befe965e2`.
+- Changed files: `tests/continuation_test.go`, `docs/experiments/task-continuation/README.md`, `docs/experiments/README.md` only.
+- Commit message and draft PR title: `test: measure real-task continuation from surviving state`.
+- PR body: `/tmp/continuation-pr.md`; target `dev`; draft required; no reviewers/assignees requested.
+- Shared Git staging failed with `Unable to create .../.git/worktrees/test-continuation/index.lock: Read-only file system`. No permission escalation was attempted; PM committed and pushed the exact files below as b7de9f3a4b4d1c01f2e71af5bdbff6a743992649.
+- No paid calls or credentials read, no extra agents/worktrees, no production/shared-test/convention/architecture edits, no external task messaging or deployment.
+
+## Evidence
+
+- `/tmp/continuation-refreshed-free/`: final normal free run, full wire transcript, snapshots, process logs, interruption events and judgments.
+- `/tmp/continuation-refreshed-empty/`: final empty-curation free run, retaining all 14 rows and observed task failures.
+- `/tmp/continuation-refreshed-free.log`: all three focused free/control tests.
+- `/tmp/continuation-ci-refreshed.log`: final `make ci` invocation against delivered source.
+- `/tmp/continuation-removals.json` and `/tmp/continuation-removal-stage-verification.log`, `/tmp/continuation-removal-interruption-isolation.log`, `/tmp/continuation-removal-duplicate-detection.log`: five guard removals, each observed exit 1; restored code.
+- `/tmp/continuation-files.sha256`: exact files for PM publication.
+
+## Limits and adjudication
+
+Free scripted endpoint controls establish instrument behavior, not real model task competence. Fixed future paid scope is seven cases by two repetitions (14 rows, 24 initiated turns including two interruptions), run namespace continuation-2026-09-21. Independent agent and PM semantic adjudication remains pending; there is no compaction, growing-memory, learning or general sustained-work claim. The release ledger is a local repeat-effect probe, not an external exactly-once guarantee.
+
+## Process ownership
+
+Tests own and stop their agent/workspace subprocesses; endpoint servers and subscriptions use cleanup. No monitors, extra terminals or worktrees were launched. Disposable Go/lint caches were removed after final checks; the evidence and PR material above are deliberately retained for PM review.
+
+## Exact delivered file hashes
+
+546572340e23fdd57c5409739900023e44c12ef94f4ca8ac66d2c5445e74ed9c  tests/continuation_test.go
+650fa7ff035e175402ac5cfcf3b4195dca4964d1d082277fe1520297dd69be63  docs/experiments/task-continuation/README.md
+c7dbf07e53f5bb606a8e53e94ebade8aef8bb3eb462337cc0572112fcb5d64dc  docs/experiments/README.md
+
+Final refreshed validation: focused free/empty/evidence tests exited 0 (6.576 seconds); make ci exited 0 with vet/lint, formatting, every package test and 21-package build. All 192 local model responses carry inherited raw response bytes; refreshed evidence source hashes equal delivered source. Five removal checks each exited 1 and were restored.
+
+Publication: draft PR https://github.com/garamsh/gagent/pull/809 is OPEN against dev, head test/continuation at b7de9f3a4b4d1c01f2e71af5bdbff6a743992649; host statusCheckRollup is empty (local make ci is the validation evidence). All three final file hashes verified after commit; worktree clean. Task is in review, semantic/paid measurements remain future PM-owned work, and no processes or extra worktrees are retained.

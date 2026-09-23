@@ -22,7 +22,7 @@ func createWorkingContext(db *sql.DB) error {
 	}
 	if count == 0 {
 		if _, err := tx.Exec(`CREATE TABLE working_context (id INTEGER PRIMARY KEY CHECK (id = 1), version INTEGER NOT NULL, revision INTEGER NOT NULL, document BLOB NOT NULL);
-   INSERT INTO working_context VALUES (1, 3, 0, '{"account":{"status":"idle","progress":""},"source":[],"inputs":[],"attempts":[]}');`); err != nil {
+   INSERT INTO working_context VALUES (1, 4, 0, '{"account":{"status":"idle","progress":""},"source":[],"arrival":null,"attempts":[]}');`); err != nil {
 			return fmt.Errorf("create working context: %v", err)
 		}
 	}
@@ -40,7 +40,7 @@ func (s *Store) LoadWorkingContext(ctx context.Context) (memory.WorkingContext, 
 	if err := s.db.QueryRowContext(ctx, `SELECT version, revision, document FROM working_context WHERE id = 1`).Scan(&version, &revision, &data); err != nil {
 		return memory.WorkingContext{}, fmt.Errorf("load working context: %v", err)
 	}
-	if version != 3 || revision < 0 {
+	if version != 4 || revision < 0 {
 		return memory.WorkingContext{}, fmt.Errorf("invalid working context version or revision: %d/%d", version, revision)
 	}
 	work, err := memory.ParseWorkingContext(data)
@@ -60,7 +60,7 @@ func (s *Store) SaveWorkingContext(ctx context.Context, work memory.WorkingConte
 	if _, err := memory.ParseWorkingContext(data); err != nil {
 		return 0, err
 	}
-	result, err := s.db.ExecContext(ctx, `UPDATE working_context SET document = ?, revision = revision + 1 WHERE id = 1 AND revision = ? AND version = 3`, data, work.Revision)
+	result, err := s.db.ExecContext(ctx, `UPDATE working_context SET document = ?, revision = revision + 1 WHERE id = 1 AND revision = ? AND version = 4`, data, work.Revision)
 	if err != nil {
 		return 0, fmt.Errorf("save working context: %v", err)
 	}

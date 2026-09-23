@@ -23,7 +23,7 @@ func ParseWorkingContext(data []byte) (WorkingContext, error) {
 	if err := json.Unmarshal(data, &document); err != nil {
 		return work, fmt.Errorf("working context fields: %v", err)
 	}
-	for _, name := range []string{"account", "source", "inputs", "attempts"} {
+	for _, name := range []string{"account", "source", "arrival", "attempts"} {
 		if _, ok := document[name]; !ok {
 			return work, fmt.Errorf("working context requires %s", name)
 		}
@@ -65,4 +65,9 @@ func (a WorkAccount) Validate() error {
 	default:
 		return fmt.Errorf("invalid working context status %q", a.Status)
 	}
+}
+
+// Terminal reports whether work has ended and requires new authorization.
+func (s WorkStatus) Terminal() bool {
+	return s == WorkCanceled || s == WorkCompleted
 }

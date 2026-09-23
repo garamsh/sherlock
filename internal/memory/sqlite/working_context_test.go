@@ -23,7 +23,8 @@ func TestWorkingContext_RoundTripAndStaleWriter(t *testing.T) {
 	work := initial
 	work.Account = memory.WorkAccount{Status: memory.WorkActive, Progress: "build verified; await approval; signing time unknown"}
 	work.Source = []string{"prepare release with owner approval"}
-	work.Inputs = []string{"keep the original supplier"}
+	arrival := "keep the original supplier"
+	work.Arrival = &arrival
 	work.Attempts = []memory.WorkAttempt{{ID: 1, Name: "publish", Input: json.RawMessage(`{"path":"release"}`)}}
 	revision, err := st.SaveWorkingContext(ctx, work)
 	require.NoError(t, err)
@@ -152,6 +153,28 @@ func TestWorkingContext_RejectsOptionalSourceWithoutRewritingEvidence(t *testing
 	require.NoError(t, raw.QueryRow(`SELECT version, revision, document FROM working_context`).Scan(&version, &revision, &document))
 	assert.Equal(t, 2, version)
 	assert.Equal(t, 9, revision)
+	assert.Equal(t, original, document)
+	require.NoError(t, raw.QueryRow(`SELECT value FROM memories_active`).Scan(&fact))
+	assert.Equal(t, "retained fact", fact)
+}
+
+func TestWorkingContext_RejectsIndexedInputWithoutRewritingEvidence(t *testing.T) {
+	st, path := openStore(t)
+	writeOne(t, st, sample(project, "retained fact"))
+	raw, err := sql.Open("sqlite", path)
+	require.NoError(t, err)
+	defer raw.Close()
+	original := `{"account":{"status":"canceled","progress":"canceled before neutral arrival"},"source":["original exact instruction"],"inputs":[],"attempts":[]}`
+	_, err = raw.Exec(`UPDATE working_context SET version = 3, revision = 14, document = ?`, original)
+	require.NoError(t, err)
+	reopened, err := sqlite.Open(path)
+	require.ErrorContains(t, err, "working context version")
+	require.Nil(t, reopened)
+	var document, fact string
+	var version, revision int
+	require.NoError(t, raw.QueryRow(`SELECT version, revision, document FROM working_context`).Scan(&version, &revision, &document))
+	assert.Equal(t, 3, version)
+	assert.Equal(t, 14, revision)
 	assert.Equal(t, original, document)
 	require.NoError(t, raw.QueryRow(`SELECT value FROM memories_active`).Scan(&fact))
 	assert.Equal(t, "retained fact", fact)

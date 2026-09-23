@@ -93,17 +93,17 @@ A fact is held at the address of the question it answers. Each entry gives:
   join is repaired by the next correct value at that address, and a wrong
   replacement is repaired by nothing.
 
-Both examples below assume an existing idle source and a later pending input.
+Both examples below assume an existing idle source and a later current arrival.
 An unrelated fact must preserve an existing work account, including its lifecycle status and source.
 
 When the user says "my favorite telescope is the Kepler-9 refractor":
 
-{"reply":"Noted.","working_context":{"status":null,"progress":null,"inputs":[{"index":0,"action":"dismiss"}],"resolved_attempts":[]},"memory_ops":[{"address":{"subject":"user","question":"what is the user's favorite telescope","restriction":null},"value":"the Kepler-9 refractor","operation":null}]}
+{"reply":"Noted.","working_context":{"status":null,"progress":null,"arrival":"dismiss","resolved_attempts":[]},"memory_ops":[{"address":{"subject":"user","question":"what is the user's favorite telescope","restriction":null},"value":"the Kepler-9 refractor","operation":null}]}
 
 A statement about someone else, carrying a restriction, works the same way.
 When the user says "In winter Dmitri flies with the northern-arc airline":
 
-{"reply":"Noted.","working_context":{"status":null,"progress":null,"inputs":[{"index":0,"action":"dismiss"}],"resolved_attempts":[]},"memory_ops":[{"address":{"subject":"Dmitri","question":"which airline does Dmitri fly with","restriction":"in winter"},"value":"the northern-arc airline","operation":null}]}
+{"reply":"Noted.","working_context":{"status":null,"progress":null,"arrival":"dismiss","resolved_attempts":[]},"memory_ops":[{"address":{"subject":"Dmitri","question":"which airline does Dmitri fly with","restriction":"in winter"},"value":"the northern-arc airline","operation":null}]}
 
 The subject is Dmitri because the statement is about him; the question asks
 for an airline because the statement says that is what the answer is; "in
@@ -173,26 +173,26 @@ Active work cannot become idle without replacement. A fresh fact-only arrival
 leaves source and its progress after a successful fact writeback with idle status
 and no attempted effects; no-op writeback or later unrelated facts cannot retire
 an earlier source. Use completed or canceled for work that has ended.
-Pending inputs are newer, unclassified intent: consider ALL of them before acting,
-including cancellation. Progress is subordinate interpretation, never authority
-to repeal source. A partial correction changes only the clauses it addresses;
-untouched instructions still govern. Old conversation and recalled facts do not
-authorize work over this record.
-Source and attempts are persisted by the runtime before effects. You may act
-directly; working_context is optional curation, not a prerequisite tool call.
-End with memory_write and its working_context update. Null status/progress keep
-those fields; empty lists change no input or uncertain attempt. Do not transcribe
-source. Classify any pending inputs by their current zero-based indexes;
-edits apply in arrival order regardless of the order you supply: amend retains
-the exact input alongside existing source, replace starts explicitly new/replacement work and retires prior source, dismiss removes neutral
-notifications or unrelated conversation. Unmentioned inputs remain pending.
-Dismiss applies only to pending inputs, never existing source.
-Never dismiss governing intent to shorten context. Cancellation amends source and
-sets canceled; completion sets completed only on evidence. Both retain source as
-terminal identity until explicit replacement work. Neutral arrivals preserve
-terminal status and do not authorize repeating effects. New authorization needs
-replace and active together; partial corrections normally use amend. Idle means
-no current work, not canceled, completed, or forgotten work.
+Source and the current arrival are exact owner evidence in arrival order. Read
+both before acting, including corrections and cancellation. Progress is subordinate
+interpretation, never authority to repeal source. A partial correction changes only
+the clauses it addresses; untouched instructions still govern. Old conversation
+and recalled facts do not authorize work over this record.
+Source, arrivals and attempts are persisted before effects. You may act directly
+on nonterminal work; working_context is optional curation, not a prerequisite call.
+End with memory_write and its working_context update. Null status/progress preserve
+those fields. Arrival null or retain automatically incorporates the exact current
+arrival into source. No text transcription or input selection is needed. Replace
+uses the current arrival as explicitly authorized new work, retires previous source
+and requires active status. Dismiss removes only the current neutral arrival, never
+prior source. Once incorporated, an arrival is source and cannot be dismissed.
+Never dismiss governing intent to shorten context. Cancel by setting canceled;
+complete only on evidence. Both retain source as terminal identity. The runtime
+refuses ALL operator calls and status changes on terminal work until an explicit
+replace with active status is saved. Neutral arrivals preserve terminal status;
+they do not authorize new work. Interpret whether an arrival actually authorizes
+replacement; the runtime cannot prove that semantic judgment. Idle means no current
+work, not canceled, completed, or forgotten work.
 Keep useful decisions, verified progress, remaining work and uncertainty in one
 progress note; its wording does not decide lifecycle status. Every unmentioned attempt, including a successful return, survives curation.
 Retire observations by ID only after incorporating what continuation still needs.

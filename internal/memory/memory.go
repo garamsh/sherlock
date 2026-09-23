@@ -83,13 +83,13 @@ type WorkAttempt struct {
 }
 
 // WorkingContext is the single durable current-work authority.
-// Source retains the first arrival and amendments; idle source is not authorization.
-// Pending inputs and unmentioned attempts survive curation.
+// Source and the current arrival retain exact intent; progress is subordinate.
+// Unmentioned attempts survive curation.
 type WorkingContext struct {
 	Revision int64         `json:"-"`
 	Account  WorkAccount   `json:"account"`
 	Source   []string      `json:"source"`
-	Inputs   []string      `json:"inputs"`
+	Arrival  *string       `json:"arrival"`
 	Attempts []WorkAttempt `json:"attempts"`
 }
 

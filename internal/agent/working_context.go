@@ -20,15 +20,12 @@ const workingContextSchema = `{
  "properties":{
   "status":{"type":["string","null"],"enum":["idle","active","completed","canceled",null],"description":"Null preserves lifecycle status."},
   "progress":{"type":["string","null"],"description":"Subordinate notes: decisions, verified progress, remaining work and uncertainty. Null preserves existing notes."},
-  "inputs":{"type":"array","items":{"type":"object","properties":{
-   "index":{"type":"integer","minimum":0},
-   "action":{"type":"string","enum":["amend","replace","dismiss"]}
-  },"required":["index","action"],"additionalProperties":false},"description":"Classify any pending inputs by their current zero-based indexes. Edits are applied in arrival order, regardless of their supplied order. Amend retains exact words; replace retires prior source for explicit new/replacement work; dismiss removes neutral input. Unmentioned inputs survive."},
+  "arrival":{"type":["string","null"],"enum":["retain","replace","dismiss",null],"description":"Apply to the current arrival, without selecting or copying text. Null or retain preserves it as exact source. Replace starts explicitly authorized new work and retires previous source; use active status. Dismiss removes only a neutral current arrival, never prior source."},
   "resolved_attempts":{"type":"array","items":{"type":"object","properties":{
    "id":{"type":"integer"},"evidence":{"type":"string"}
   },"required":["id","evidence"],"additionalProperties":false},"description":"Retire only these attempt IDs, with observed evidence. Empty preserves all attempts."}
  },
- "required":["status","progress","inputs","resolved_attempts"],
+ "required":["status","progress","arrival","resolved_attempts"],
  "additionalProperties":false
 }`
 
@@ -45,11 +42,14 @@ func (s *session) beginWork(ctx context.Context, task string) (bool, error) {
 		return false, err
 	}
 	s.work = work
-	initialSource := len(work.Source) == 0 && len(work.Inputs) == 0
+	initialSource := len(work.Source) == 0 && work.Arrival == nil
 	if initialSource {
 		work.Source = []string{task}
 	} else {
-		work.Inputs = append(append([]string(nil), work.Inputs...), task)
+		if work.Arrival != nil {
+			work.Source = append(append([]string(nil), work.Source...), *work.Arrival)
+		}
+		work.Arrival = &task
 	}
 	return initialSource, s.saveWork(ctx, work)
 }
@@ -83,10 +83,7 @@ func (s *session) prepareCheckpoint(input json.RawMessage) (memory.WorkingContex
 	var doc struct {
 		Status   *memory.WorkStatus `json:"status"`
 		Progress *string            `json:"progress"`
-		Inputs   []struct {
-			Index  *int   `json:"index"`
-			Action string `json:"action"`
-		} `json:"inputs"`
+		Arrival  *string            `json:"arrival"`
 		Resolved []struct {
 			ID       int64  `json:"id"`
 			Evidence string `json:"evidence"`
@@ -102,7 +99,7 @@ func (s *session) prepareCheckpoint(input json.RawMessage) (memory.WorkingContex
 	}
 	work := s.work
 	work.Source = append([]string(nil), work.Source...)
-	work.Inputs = nil
+	work.Arrival = nil
 	work.Attempts = nil
 	if doc.Status != nil {
 		work.Account.Status = *doc.Status
@@ -113,38 +110,34 @@ func (s *session) prepareCheckpoint(input json.RawMessage) (memory.WorkingContex
 	if err := work.Account.Validate(); err != nil {
 		return work, err
 	}
-	edits := make(map[int]string, len(doc.Inputs))
-	for _, edit := range doc.Inputs {
-		if edit.Index == nil || *edit.Index < 0 || *edit.Index >= len(s.work.Inputs) || edits[*edit.Index] != "" {
-			return work, fmt.Errorf("input references require valid distinct indexes")
-		}
-		switch edit.Action {
-		case "amend", "replace", "dismiss":
-			edits[*edit.Index] = edit.Action
-		default:
-			return work, fmt.Errorf("invalid input action %q", edit.Action)
-		}
+	action := "retain"
+	if doc.Arrival != nil {
+		action = *doc.Arrival
 	}
-	replaced := false
-	for index, input := range s.work.Inputs {
-		switch edits[index] {
-		case "amend":
-			work.Source = append(work.Source, input)
-		case "replace":
-			work.Source = []string{input}
-			if doc.Progress == nil {
-				work.Account.Progress = ""
-			}
-			replaced = true
-		case "dismiss":
-		default:
-			work.Inputs = append(work.Inputs, input)
+	switch action {
+	case "retain":
+		if s.work.Arrival != nil {
+			work.Source = append(work.Source, *s.work.Arrival)
 		}
+	case "replace":
+		if s.work.Arrival == nil || doc.Status == nil || *doc.Status != memory.WorkActive {
+			return work, fmt.Errorf("replacement requires a current arrival and active status")
+		}
+		work.Source = []string{*s.work.Arrival}
+		if doc.Progress == nil {
+			work.Account.Progress = ""
+		}
+	case "dismiss":
+		if s.work.Arrival == nil {
+			return work, fmt.Errorf("no current arrival to dismiss; source cannot be dismissed")
+		}
+	default:
+		return work, fmt.Errorf("invalid arrival action %q", action)
 	}
-	if (s.work.Account.Status == memory.WorkCanceled || s.work.Account.Status == memory.WorkCompleted) && (work.Account.Status == memory.WorkActive || work.Account.Status == memory.WorkIdle) && !replaced {
-		return work, fmt.Errorf("terminal work requires explicit replacement input to reactivate")
+	if s.work.Account.Status.Terminal() && work.Account.Status != s.work.Account.Status && action != "replace" {
+		return work, fmt.Errorf("terminal work requires explicit replacement arrival to change status")
 	}
-	if s.work.Account.Status == memory.WorkActive && work.Account.Status == memory.WorkIdle && !replaced {
+	if s.work.Account.Status == memory.WorkActive && work.Account.Status == memory.WorkIdle && action != "replace" {
 		return work, fmt.Errorf("active work cannot become idle without replacement")
 	}
 	resolved := map[int64]string{}
@@ -185,6 +178,9 @@ func (s *session) checkpoint(ctx context.Context, call ToolCall) error {
 
 func (s *session) recordAttempt(ctx context.Context, call ToolCall) error {
 	work := s.work
+	if work.Account.Status.Terminal() {
+		return fmt.Errorf("terminal work requires explicit replacement arrival before operator calls")
+	}
 	if work.Account.Status == memory.WorkIdle {
 		work.Account.Status = memory.WorkActive
 	}

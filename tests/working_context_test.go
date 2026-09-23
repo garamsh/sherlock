@@ -51,7 +51,7 @@ func currentAccount(status memory.WorkStatus, goal, remaining string) memory.Wor
 
 func workCheckpoint(t *testing.T, account memory.WorkAccount, reconciliation string) agent.ScriptedStep {
 	t.Helper()
-	doc := map[string]any{"status": account.Status, "progress": account.Progress, "inputs": []any{}, "resolved_attempts": []any{}}
+	doc := map[string]any{"status": account.Status, "progress": account.Progress, "arrival": nil, "resolved_attempts": []any{}}
 	if reconciliation != "" {
 		doc["resolved_attempts"] = []any{map[string]any{"id": 3, "evidence": reconciliation}}
 	}
@@ -103,7 +103,7 @@ func TestWorkingContext_RestartAndCompaction(t *testing.T) {
 		// Deliberately omit every exact output and no-repeat constraint from progress.
 		steps := []agent.ScriptedStep{{Content: "no address"}, workUpdate(t, false, `{"status":"active","progress":"waiting"}`), workUpdate(t, true, `{}`)}
 		for range 3 {
-			steps = append(steps, agent.ScriptedStep{Content: "no address"}, workUpdate(t, true, `{"inputs":[{"index":0,"action":"dismiss"}]}`))
+			steps = append(steps, agent.ScriptedStep{Content: "no address"}, workUpdate(t, true, `{"arrival":"dismiss"}`))
 		}
 		probe := &workProbe{inner: agent.NewScriptedModel(steps...)}
 		runtime, err := workFactory(path, probe, workTools{}).New(ctx, "test", nil)
@@ -138,11 +138,11 @@ func TestWorkingContext_RestartAndCompaction(t *testing.T) {
 		current := workRecord(t, messages)
 		require.Equal(t, []string{original}, current.Source)
 		require.Equal(t, "waiting", current.Account.Progress)
-		require.Equal(t, []string{"arrival notification"}, current.Inputs)
+		require.Equal(t, "arrival notification", *current.Arrival)
 		if effects == 0 {
 			return agent.Response{ToolCalls: []agent.ToolCall{{Name: "artifact", Input: json.RawMessage(`{"supplier":"Cedar","units":7}`)}}}
 		}
-		return agent.Response{ToolCalls: workUpdate(t, true, `{"status":"completed","progress":"receipt verified","inputs":[{"index":0,"action":"dismiss"}]}`).ToolCalls}
+		return agent.Response{ToolCalls: workUpdate(t, true, `{"status":"completed","progress":"receipt verified","arrival":"dismiss"}`).ToolCalls}
 	})}
 	restarted, err := workFactory(path, resumed, workTools{call: func(_ string, input json.RawMessage) (json.RawMessage, error) {
 		effects++
@@ -199,10 +199,10 @@ func TestWorkingContext_LatestIntentAndTerminalControls(t *testing.T) {
 					current := workRecord(t, messages)
 					if len(expectedSource) == 0 {
 						require.Equal(t, []string{input}, current.Source)
-						require.Empty(t, current.Inputs)
+						require.Empty(t, current.Arrival)
 					} else {
 						require.Equal(t, expectedSource, current.Source)
-						require.Equal(t, []string{input}, current.Inputs)
+						require.Equal(t, input, *current.Arrival)
 					}
 					return agent.Response{ToolCalls: workUpdate(t, false, update).ToolCalls}
 				})}
@@ -219,7 +219,7 @@ func TestWorkingContext_LatestIntentAndTerminalControls(t *testing.T) {
 					}
 					current := workRecord(t, messages)
 					require.Equal(t, want, current.Source)
-					require.Empty(t, current.Inputs)
+					require.Empty(t, current.Arrival)
 					if effect {
 						effect = false
 						return agent.Response{ToolCalls: []agent.ToolCall{{Name: "artifact", Input: json.RawMessage(`{"inspect":"new fixture"}`)}}}
@@ -239,9 +239,9 @@ func TestWorkingContext_LatestIntentAndTerminalControls(t *testing.T) {
 				expectedSource = want
 			}
 			run(original, `{"status":"active","progress":"waiting"}`, []string{original}, false)
-			run(amendment, `{"inputs":[{"index":0,"action":"amend"}]}`, []string{original, amendment}, false)
-			run(terminal, `{"status":"`+status+`","progress":"None - terminal","inputs":[{"index":0,"action":"amend"}]}`, []string{original, amendment, terminal}, false)
-			run("arrival notification", `{"inputs":[{"index":0,"action":"dismiss"}]}`, expectedSource, false)
+			run(amendment, `{"arrival":"retain"}`, []string{original, amendment}, false)
+			run(terminal, `{"status":"`+status+`","progress":"None - terminal","arrival":"retain"}`, []string{original, amendment, terminal}, false)
+			run("arrival notification", `{"arrival":"dismiss"}`, expectedSource, false)
 			require.Zero(t, effects, "terminal identity and governing cancellation were supplied; no effect requested")
 			st, err := sqlite.Open(path)
 			require.NoError(t, err)
@@ -249,7 +249,7 @@ func TestWorkingContext_LatestIntentAndTerminalControls(t *testing.T) {
 			require.NoError(t, err)
 			assert.Equal(t, memory.WorkStatus(status), saved.Account.Status)
 			require.NoError(t, st.Close())
-			run(replacement, `{"status":"active","progress":"inspect new fixture","inputs":[{"index":0,"action":"replace"}]}`, []string{replacement}, true)
+			run(replacement, `{"status":"active","progress":"inspect new fixture","arrival":"replace"}`, []string{replacement}, true)
 			assert.Equal(t, 1, effects, "only genuinely new scripted work acts")
 		})
 	}
@@ -417,7 +417,7 @@ func TestWorkingContext_FailedWritesStopEffectsAndSuccess(t *testing.T) {
 
 // fixtureCheckpoint states the work in the existing offline messaging scenarios.
 func fixtureCheckpoint(status string) agent.ScriptedStep {
-	return agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.WorkingContextTool, Input: json.RawMessage(`{"status":"` + status + `","progress":"follow the scripted scenario","inputs":[],"resolved_attempts":[]}`)}}}
+	return agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.WorkingContextTool, Input: json.RawMessage(`{"status":"` + status + `","progress":"follow the scripted scenario","arrival":null,"resolved_attempts":[]}`)}}}
 }
 
 func TestWorkingContext_PendingIntentSurvivesBeforeInterpretation(t *testing.T) {
@@ -445,7 +445,8 @@ func TestWorkingContext_PendingIntentSurvivesBeforeInterpretation(t *testing.T) 
 	require.NoError(t, err)
 	current := workRecord(t, probe.reasoning[0])
 	assert.Equal(t, account, current.Account)
-	assert.Equal(t, []string{"cancel the fixture", "do not send anything", "arrival notification"}, current.Inputs)
+	assert.Equal(t, []string{"prepare fixture", "cancel the fixture", "do not send anything"}, current.Source)
+	assert.Equal(t, "arrival notification", *current.Arrival)
 }
 
 func TestWorkingContext_CheckpointFeedbackAndRequiredFinalAccount(t *testing.T) {
@@ -577,16 +578,15 @@ func TestWorkingContext_IndividualRetirementAndInvalidReferences(t *testing.T) {
 	require.Error(t, run(`{"resolved_attempts":[{"id":2,"evidence":"repeated retirement"}]}`))
 }
 
-func TestWorkingContext_InputReferencesAndReplacement(t *testing.T) {
+func TestWorkingContext_ArrivalAndReplacement(t *testing.T) {
 	for _, update := range []string{
-		`{"inputs":[{"action":"dismiss"}]}`,
-		`{"inputs":[{"index":null,"action":"dismiss"}]}`,
-		`{"inputs":[{"index":-1,"action":"dismiss"}]}`,
-		`{"inputs":[{"index":1,"action":"dismiss"}]}`,
-		`{"inputs":[{"index":0}]}`,
-		`{"inputs":[{"index":0,"action":"dismiss"},{"index":0,"action":"dismiss"}]}`,
+		`{"arrival":"invalid"}`,
+		`{"arrival":[]}`,
+		`{"arrival":"replace"}`,
+		`{"status":"idle","arrival":"replace"}`,
 		`{"status":"active"}`,
 		`{"status":"idle"}`,
+		`{"status":"completed"}`,
 		`null`,
 	} {
 		t.Run(update, func(t *testing.T) {
@@ -609,15 +609,15 @@ func TestWorkingContext_InputReferencesAndReplacement(t *testing.T) {
 			assert.Equal(t, work.Source, saved.Source)
 			assert.Equal(t, work.Account, saved.Account)
 			assert.Equal(t, work.Attempts, saved.Attempts)
-			require.Equal(t, []string{"Authorize a new fixture."}, saved.Inputs)
-			// The accepted reference names that preserved input; the new arrival is neutral.
-			probe := &workProbe{inner: agent.NewScriptedModel(workUpdate(t, false, `{"status":"active","inputs":[{"index":0,"action":"replace"},{"index":1,"action":"dismiss"}]}`), workUpdate(t, true, `{}`))}
+			require.Equal(t, "Authorize a new fixture.", *saved.Arrival)
+			// A fresh explicit authorization can replace terminal work.
+			probe := &workProbe{inner: agent.NewScriptedModel(workUpdate(t, false, `{"status":"active","arrival":"replace"}`), workUpdate(t, true, `{}`))}
 			session = agent.NewSession(probe, workTools{}, agent.Options{WorkingContext: store})
-			_, err = session.Run(ctx, "weather notification")
+			_, err = session.Run(ctx, "Authorize a new fixture.")
 			require.NoError(t, err)
 			after := workRecord(t, probe.reasoning[1])
 			assert.Equal(t, []string{"Authorize a new fixture."}, after.Source)
-			assert.Empty(t, after.Inputs)
+			assert.Empty(t, after.Arrival)
 			assert.Empty(t, after.Account.Progress, "replacement retires stale subordinate progress")
 			assert.Equal(t, work.Attempts, after.Attempts, "new work cannot erase an old uncertain effect")
 		})
@@ -636,19 +636,19 @@ func TestWorkingContext_OmittedCurationPreservesSource(t *testing.T) {
 	require.NoError(t, err)
 	supplied := workRecord(t, probe.reasoning[1])
 	assert.Equal(t, []string{source}, supplied.Source)
-	assert.Empty(t, supplied.Inputs)
+	assert.Empty(t, supplied.Arrival)
 	assert.Equal(t, "working", supplied.Account.Progress)
 	saved, err := store.LoadWorkingContext(ctx)
 	require.NoError(t, err)
 	assert.Equal(t, []string{source}, saved.Source)
-	assert.Empty(t, saved.Inputs)
+	assert.Empty(t, saved.Arrival)
 }
 
 func TestWorkingContext_NoOpPreservesReturnedEvidenceOnRestart(t *testing.T) {
 	ctx := context.Background()
 	path := filepath.Join(t.TempDir(), "memory.db")
 	artifact := filepath.Join(t.TempDir(), "receipt")
-	model := agent.NewScriptedModel(agent.ScriptedStep{Content: "no address"}, agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: "artifact", Input: json.RawMessage(`{"write":"receipt"}`)}}}, workUpdate(t, false, `{"status":null,"progress":null,"inputs":[],"resolved_attempts":[]}`), workUpdate(t, true, `{}`))
+	model := agent.NewScriptedModel(agent.ScriptedStep{Content: "no address"}, agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: "artifact", Input: json.RawMessage(`{"write":"receipt"}`)}}}, workUpdate(t, false, `{"status":null,"progress":null,"arrival":null,"resolved_attempts":[]}`), workUpdate(t, true, `{}`))
 	runtime, err := workFactory(path, model, workTools{call: func(_ string, _ json.RawMessage) (json.RawMessage, error) {
 		err := os.WriteFile(artifact, []byte("released once"), 0o600)
 		return json.RawMessage(`{"receipt":"released once"}`), err
@@ -685,26 +685,26 @@ func TestWorkingContext_FirstSourceCannotBeDismissed(t *testing.T) {
 	require.NoError(t, err)
 	defer store.Close()
 	original := "Use Cedar only; write exactly seven units and one receipt."
-	probe := &workProbe{inner: agent.NewScriptedModel(workUpdate(t, true, `{"progress":"waiting","inputs":[{"index":0,"action":"dismiss"}]}`))}
+	probe := &workProbe{inner: agent.NewScriptedModel(workUpdate(t, true, `{"progress":"waiting","arrival":"dismiss"}`))}
 	session := agent.NewSession(probe, workTools{}, agent.Options{WorkingContext: store})
 	_, err = session.Run(ctx, original)
-	require.ErrorContains(t, err, "input references")
+	require.ErrorContains(t, err, "source cannot be dismissed")
 	assert.Equal(t, []string{original}, workRecord(t, probe.reasoning[0]).Source)
 	saved, err := store.LoadWorkingContext(ctx)
 	require.NoError(t, err)
 	assert.Equal(t, []string{original}, saved.Source)
-	assert.Empty(t, saved.Inputs)
+	assert.Empty(t, saved.Arrival)
 
-	probe.inner = agent.NewScriptedModel(workUpdate(t, true, `{"progress":"still waiting","inputs":[{"index":0,"action":"dismiss"}]}`))
+	probe.inner = agent.NewScriptedModel(workUpdate(t, true, `{"progress":"still waiting","arrival":"dismiss"}`))
 	_, err = session.Run(ctx, "weather notification")
 	require.NoError(t, err, "dismissal can retire later neutral input")
 	saved, err = store.LoadWorkingContext(ctx)
 	require.NoError(t, err)
 	assert.Equal(t, []string{original}, saved.Source)
-	assert.Empty(t, saved.Inputs)
+	assert.Empty(t, saved.Arrival)
 }
 
-func TestWorkingContext_NonPrefixIntentChanges(t *testing.T) {
+func TestWorkingContext_ArrivalRetentionNeedsNoSelection(t *testing.T) {
 	for _, status := range []string{"active", "canceled"} {
 		t.Run(status, func(t *testing.T) {
 			ctx := context.Background()
@@ -724,22 +724,22 @@ func TestWorkingContext_NonPrefixIntentChanges(t *testing.T) {
 			if status == "canceled" {
 				change = "Cancel release; do not issue a receipt."
 			}
-			run(change, `{"status":"`+status+`","inputs":[{"index":1,"action":"amend"}]}`)
+			run(change, `{"status":"`+status+`","arrival":"retain"}`)
 			store, err := sqlite.Open(path)
 			require.NoError(t, err)
 			defer store.Close()
 			saved, err := store.LoadWorkingContext(ctx)
 			require.NoError(t, err)
-			assert.Equal(t, []string{original, change}, saved.Source)
-			assert.Equal(t, []string{"unclassified weather"}, saved.Inputs)
+			assert.Equal(t, []string{original, "unclassified weather", change}, saved.Source)
+			assert.Nil(t, saved.Arrival)
 			assert.Equal(t, memory.WorkStatus(status), saved.Account.Status)
-			// Supplied order differs from arrival order; the later amendment governs the replacement.
-			run("Authorize a new task.", `{}`)
-			run("For that new task, use Birch.", `{"status":"active","inputs":[{"index":2,"action":"amend"},{"index":1,"action":"replace"},{"index":0,"action":"dismiss"}]}`)
+			// Replacement retires prior source; a partial correction keeps new instructions.
+			run("Authorize a new task.", `{"status":"active","arrival":"replace"}`)
+			run("For that new task, use Birch.", `{}`)
 			saved, err = store.LoadWorkingContext(ctx)
 			require.NoError(t, err)
 			assert.Equal(t, []string{"Authorize a new task.", "For that new task, use Birch."}, saved.Source)
-			assert.Empty(t, saved.Inputs)
+			assert.Empty(t, saved.Arrival)
 			assert.Empty(t, saved.Account.Progress)
 		})
 	}
@@ -821,7 +821,7 @@ func TestWorkingContext_LaterFactCannotRetireUndecidedSource(t *testing.T) {
 	ctx := context.Background()
 	path := filepath.Join(t.TempDir(), "memory.db")
 	original := "Deliver seven units using Cedar after arrival."
-	for index, step := range []agent.ScriptedStep{workUpdate(t, true, `{}`), workFactFinish(`{"status":"idle","progress":"","inputs":[{"index":0,"action":"dismiss"}]}`)} {
+	for index, step := range []agent.ScriptedStep{workUpdate(t, true, `{}`), workFactFinish(`{"status":"idle","progress":"","arrival":"dismiss"}`)} {
 		input := original
 		if index == 1 {
 			input = "My telescope serial is lens-7391."
@@ -877,7 +877,7 @@ func TestWorkingContext_FailedEffectsRequireSeparateObservedReconciliation(t *te
 		require.Equal(t, memory.WorkFailed, attempt.Result.Outcome)
 	}
 	// A new session cannot turn unrelated progress or new authorization into effect evidence.
-	for _, update := range []string{`{"progress":"weather is clear"}`, `{"status":"canceled"}`, `{"status":"active","inputs":[{"index":2,"action":"replace"}]}`} {
+	for _, update := range []string{`{"progress":"weather is clear"}`, `{"status":"canceled"}`, `{"status":"active","arrival":"replace"}`} {
 		session := agent.NewSession(agent.NewScriptedModel(workUpdate(t, true, update)), workTools{}, agent.Options{WorkingContext: store})
 		_, err = session.Run(ctx, "Authorize a different inspection.")
 		require.NoError(t, err)
@@ -960,6 +960,117 @@ func TestWorkingContext_FactRetirementRequiresPersistedWrite(t *testing.T) {
 			} else {
 				assert.Empty(t, held)
 			}
+		})
+	}
+}
+
+func TestWorkingContext_CorrectionSurvivesProcessAndCompaction(t *testing.T) {
+	ctx := context.Background()
+	original := `Use Cedar only; output exactly seven units and append one receipt, never twice.`
+	correction := `Change only supplier to Maple; keep all other instructions.`
+	path := filepath.Join(t.TempDir(), "memory.db")
+	if childPath := os.Getenv("GAGENT_WORK_CORRECTION"); childPath != "" {
+		path = childPath
+		probe := &workProbe{inner: agent.NewScriptedModel(
+			agent.ScriptedStep{Content: "no address"}, workUpdate(t, true, `{"status":"active","progress":"waiting"}`),
+			agent.ScriptedStep{Content: "no address"}, workUpdate(t, true, `{"progress":"still waiting"}`),
+			agent.ScriptedStep{Content: "no address"}, workUpdate(t, true, `{"arrival":"dismiss"}`),
+			agent.ScriptedStep{Content: "no address"}, workUpdate(t, true, `{"arrival":"dismiss"}`),
+		)}
+		runtime, err := workFactory(path, probe, workTools{}).New(ctx, "test", nil)
+		require.NoError(t, err)
+		for _, input := range []string{original, correction, "weather", "schedule notification"} {
+			_, err = runtime.Session.Run(ctx, input)
+			require.NoError(t, err)
+		}
+		for _, message := range runtime.Session.History() {
+			require.NotContains(t, message.Content, original)
+			require.NotContains(t, message.Content, correction)
+		}
+		latest := workRecord(t, probe.reasoning[len(probe.reasoning)-1])
+		require.Equal(t, []string{original, correction}, latest.Source)
+		require.Equal(t, "still waiting", latest.Account.Progress)
+		require.NoError(t, runtime.Close(ctx))
+		return
+	}
+	executable, err := os.Executable()
+	require.NoError(t, err)
+	child := exec.Command(executable, "-test.run=^TestWorkingContext_CorrectionSurvivesProcessAndCompaction$")
+	child.Env = []string{"GAGENT_WORK_CORRECTION=" + path}
+	output, err := child.CombinedOutput()
+	require.NoError(t, err, string(output))
+	artifact := filepath.Join(t.TempDir(), "order.json")
+	probe := &workProbe{inner: workModel(func(messages []agent.Message, descriptors []tool.Descriptor) agent.Response {
+		if !hasWorkTool(descriptors) {
+			return agent.Response{Content: "no address"}
+		}
+		work := workRecord(t, messages)
+		require.Equal(t, []string{original, correction}, work.Source)
+		if len(work.Attempts) != 0 {
+			return agent.Response{ToolCalls: workUpdate(t, true, `{"status":"completed","arrival":"dismiss"}`).ToolCalls}
+		}
+		return agent.Response{ToolCalls: []agent.ToolCall{{Name: "artifact", Input: json.RawMessage(`{"supplier":"Maple","units":7}`)}}}
+	})}
+	runtime, err := workFactory(path, probe, workTools{call: func(_ string, input json.RawMessage) (json.RawMessage, error) {
+		return json.RawMessage(`{"receipt":"one"}`), os.WriteFile(artifact, input, 0o600)
+	}}).New(ctx, "test", nil)
+	require.NoError(t, err)
+	defer runtime.Close(ctx)
+	require.Empty(t, runtime.Session.History())
+	_, err = runtime.Session.Run(ctx, "arrival notification")
+	require.NoError(t, err)
+	data, err := os.ReadFile(artifact)
+	require.NoError(t, err)
+	assert.JSONEq(t, `{"supplier":"Maple","units":7}`, string(data))
+}
+
+func TestWorkingContext_TerminalAuthorityBeforeEffects(t *testing.T) {
+	for _, status := range []memory.WorkStatus{memory.WorkCanceled, memory.WorkCompleted} {
+		t.Run(string(status), func(t *testing.T) {
+			ctx := context.Background()
+			path := filepath.Join(t.TempDir(), "memory.db")
+			store, err := sqlite.Open(path)
+			require.NoError(t, err)
+			defer store.Close()
+			session := agent.NewSession(agent.NewScriptedModel(workUpdate(t, true, `{"status":"`+string(status)+`"}`)), workTools{}, agent.Options{WorkingContext: store})
+			_, err = session.Run(ctx, "Prepare the local order once.")
+			require.NoError(t, err)
+			before, err := store.LoadWorkingContext(ctx)
+			require.NoError(t, err)
+			require.Equal(t, status, before.Account.Status)
+			artifact := filepath.Join(t.TempDir(), "receipt")
+			client := workTools{call: func(_ string, _ json.RawMessage) (json.RawMessage, error) {
+				return json.RawMessage(`{}`), os.WriteFile(artifact, []byte("released"), 0o600)
+			}}
+			effect := agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: "artifact", Input: json.RawMessage(`{}`)}}}
+			for _, step := range []agent.ScriptedStep{effect, workUpdate(t, true, `{"status":"active"}`), workUpdate(t, true, `{"status":"idle"}`), workUpdate(t, true, `{"status":"`+map[memory.WorkStatus]string{memory.WorkCanceled: "completed", memory.WorkCompleted: "canceled"}[status]+`"}`)} {
+				session = agent.NewSession(agent.NewScriptedModel(step), client, agent.Options{WorkingContext: store})
+				_, err = session.Run(ctx, "The missing input is available. Continue.")
+				require.ErrorContains(t, err, "terminal work")
+				saved, err := store.LoadWorkingContext(ctx)
+				require.NoError(t, err)
+				assert.Equal(t, status, saved.Account.Status)
+				assert.Empty(t, saved.Attempts, "refusal precedes even attempt persistence")
+				_, err = os.Stat(artifact)
+				require.ErrorIs(t, err, os.ErrNotExist)
+			}
+			// A neutral response remains possible, and neither status nor tools revive.
+			session = agent.NewSession(agent.NewScriptedModel(workUpdate(t, true, `{"arrival":"dismiss"}`)), client, agent.Options{WorkingContext: store})
+			_, err = session.Run(ctx, "Weather notification.")
+			require.NoError(t, err)
+			// The same tool can run after a persisted explicit new authorization.
+			session = agent.NewSession(agent.NewScriptedModel(workUpdate(t, false, `{"status":"active","arrival":"replace"}`), effect, workUpdate(t, true, `{"status":"completed"}`)), client, agent.Options{WorkingContext: store})
+			_, err = session.Run(ctx, "Authorize a new order and receipt.")
+			require.NoError(t, err)
+			data, err := os.ReadFile(artifact)
+			require.NoError(t, err)
+			assert.Equal(t, "released", string(data))
+			saved, err := store.LoadWorkingContext(ctx)
+			require.NoError(t, err)
+			assert.Equal(t, []string{"Authorize a new order and receipt."}, saved.Source)
+			assert.Equal(t, memory.WorkCompleted, saved.Account.Status)
+			require.Len(t, saved.Attempts, 1)
+			require.NotNil(t, saved.Attempts[0].Result)
 		})
 	}
 }

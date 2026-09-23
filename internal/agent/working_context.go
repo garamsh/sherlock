@@ -23,7 +23,7 @@ const workingContextSchema = `{
   "inputs":{"type":"array","items":{"type":"object","properties":{
    "index":{"type":"integer","minimum":0},
    "action":{"type":"string","enum":["amend","replace","dismiss"]}
-  },"required":["index","action"],"additionalProperties":false},"description":"Classify a prefix of pending inputs by zero-based index in arrival order. Amend retains exact words; replace retires prior source for explicit new/replacement work; dismiss removes neutral input. Unmentioned inputs survive."},
+  },"required":["index","action"],"additionalProperties":false},"description":"Classify any pending inputs by their current zero-based indexes. Edits are applied in arrival order, regardless of their supplied order. Amend retains exact words; replace retires prior source for explicit new/replacement work; dismiss removes neutral input. Unmentioned inputs survive."},
   "resolved_attempts":{"type":"array","items":{"type":"object","properties":{
    "id":{"type":"integer"},"evidence":{"type":"string"}
   },"required":["id","evidence"],"additionalProperties":false},"description":"Retire only these attempt IDs, with observed evidence. Empty preserves all attempts."}
@@ -45,7 +45,11 @@ func (s *session) beginWork(ctx context.Context, task string) error {
 		return err
 	}
 	s.work = work
-	work.Inputs = append(append([]string(nil), work.Inputs...), task)
+	if len(work.Source) == 0 && len(work.Inputs) == 0 {
+		work.Source = []string{task}
+	} else {
+		work.Inputs = append(append([]string(nil), work.Inputs...), task)
+	}
 	return s.saveWork(ctx, work)
 }
 
@@ -108,28 +112,34 @@ func (s *session) prepareCheckpoint(input json.RawMessage) (memory.WorkingContex
 	if err := work.Account.Validate(); err != nil {
 		return work, err
 	}
-	previous := -1
-	replaced := false
+	edits := make(map[int]string, len(doc.Inputs))
 	for _, edit := range doc.Inputs {
-		if edit.Index == nil || *edit.Index != previous+1 || *edit.Index >= len(s.work.Inputs) {
-			return work, fmt.Errorf("input references must be a valid ordered prefix without duplicates")
+		if edit.Index == nil || *edit.Index < 0 || *edit.Index >= len(s.work.Inputs) || edits[*edit.Index] != "" {
+			return work, fmt.Errorf("input references require valid distinct indexes")
 		}
 		switch edit.Action {
+		case "amend", "replace", "dismiss":
+			edits[*edit.Index] = edit.Action
+		default:
+			return work, fmt.Errorf("invalid input action %q", edit.Action)
+		}
+	}
+	replaced := false
+	for index, input := range s.work.Inputs {
+		switch edits[index] {
 		case "amend":
-			work.Source = append(work.Source, s.work.Inputs[*edit.Index])
+			work.Source = append(work.Source, input)
 		case "replace":
-			work.Source = []string{s.work.Inputs[*edit.Index]}
+			work.Source = []string{input}
 			if doc.Progress == nil {
 				work.Account.Progress = ""
 			}
 			replaced = true
 		case "dismiss":
 		default:
-			return work, fmt.Errorf("invalid input action %q", edit.Action)
+			work.Inputs = append(work.Inputs, input)
 		}
-		previous = *edit.Index
 	}
-	work.Inputs = append(work.Inputs, s.work.Inputs[previous+1:]...)
 	if (s.work.Account.Status == memory.WorkCanceled || s.work.Account.Status == memory.WorkCompleted) && (work.Account.Status == memory.WorkActive || work.Account.Status == memory.WorkIdle) && !replaced {
 		return work, fmt.Errorf("terminal work requires explicit replacement input to reactivate")
 	}

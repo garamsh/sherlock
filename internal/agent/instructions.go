@@ -93,8 +93,8 @@ A fact is held at the address of the question it answers. Each entry gives:
   join is repaired by the next correct value at that address, and a wrong
   replacement is repaired by nothing.
 
-Both examples below assume the current-work account is idle. An unrelated fact
-must preserve an existing work account, including its lifecycle status and source.
+Both examples below assume an existing idle source and a later pending input.
+An unrelated fact must preserve an existing work account, including its lifecycle status and source.
 
 When the user says "my favorite telescope is the Kepler-9 refractor":
 
@@ -165,7 +165,11 @@ func ComposeInstructions(ego string) string {
 
 const workingContextContract = `## Durable current work
 The current-work record is supplied independently of history on every reasoning
-call. Source contains the owner's exact governing instructions, in arrival order.
+call. Source contains exact owner text in arrival order. The runtime preserves
+its first arrival here before any model decision; it cannot be dismissed.
+An idle source is evidence to interpret, not authorization to perform effects:
+set active only for authorized work. A fact-only first arrival stays idle until
+explicit replacement and must not be treated as a task to resume.
 Pending inputs are newer, unclassified intent: consider ALL of them before acting,
 including cancellation. Progress is subordinate interpretation, never authority
 to repeal source. A partial correction changes only the clauses it addresses;
@@ -175,10 +179,11 @@ Source and attempts are persisted by the runtime before effects. You may act
 directly; working_context is optional curation, not a prerequisite tool call.
 End with memory_write and its working_context update. Null status/progress keep
 those fields; empty lists change no input or uncertain attempt. Do not transcribe
-source. Classify pending inputs by their current zero-based indexes in arrival
-order: amend retains the exact input alongside existing source, replace starts
-explicitly new/replacement work and retires prior source, dismiss removes neutral
+source. Classify any pending inputs by their current zero-based indexes;
+edits apply in arrival order regardless of the order you supply: amend retains
+the exact input alongside existing source, replace starts explicitly new/replacement work and retires prior source, dismiss removes neutral
 notifications or unrelated conversation. Unmentioned inputs remain pending.
+Dismiss applies only to pending inputs, never existing source.
 Never dismiss governing intent to shorten context. Cancellation amends source and
 sets canceled; completion sets completed only on evidence. Both retain source as
 terminal identity until explicit replacement work. Neutral arrivals preserve

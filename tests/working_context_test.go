@@ -98,28 +98,38 @@ func TestWorkingContext_RestartAndCompaction(t *testing.T) {
 	ctx := context.Background()
 	path := filepath.Join(t.TempDir(), "memory.db")
 	original := `Deliver using supplier Cedar only after arrival. Output exactly {"supplier":"Cedar","units":7}; write a receipt; never repeat a released order.`
-	// Deliberately omit every exact output and no-repeat constraint from progress.
-	steps := []agent.ScriptedStep{{Content: "no address"}, workUpdate(t, false, `{"status":"active","progress":"waiting","inputs":[{"index":0,"action":"amend"}]}`), workUpdate(t, true, `{}`)}
-	for range 3 {
-		steps = append(steps, agent.ScriptedStep{Content: "no address"}, workUpdate(t, true, `{"inputs":[{"index":0,"action":"dismiss"}]}`))
-	}
-	probe := &workProbe{inner: agent.NewScriptedModel(steps...)}
-	runtime, err := workFactory(path, probe, workTools{}).New(ctx, "test", nil)
-	require.NoError(t, err)
-	_, err = runtime.Session.Run(ctx, original)
-	require.NoError(t, err)
-	for _, input := range []string{"still waiting", "weather update", "schedule unchanged"} {
-		_, err = runtime.Session.Run(ctx, input)
+	if childPath := os.Getenv("GAGENT_WORK_PREPARE"); childPath != "" {
+		path = childPath
+		// Deliberately omit every exact output and no-repeat constraint from progress.
+		steps := []agent.ScriptedStep{{Content: "no address"}, workUpdate(t, false, `{"status":"active","progress":"waiting"}`), workUpdate(t, true, `{}`)}
+		for range 3 {
+			steps = append(steps, agent.ScriptedStep{Content: "no address"}, workUpdate(t, true, `{"inputs":[{"index":0,"action":"dismiss"}]}`))
+		}
+		probe := &workProbe{inner: agent.NewScriptedModel(steps...)}
+		runtime, err := workFactory(path, probe, workTools{}).New(ctx, "test", nil)
 		require.NoError(t, err)
+		_, err = runtime.Session.Run(ctx, original)
+		require.NoError(t, err)
+		for _, input := range []string{"still waiting", "weather update", "schedule unchanged"} {
+			_, err = runtime.Session.Run(ctx, input)
+			require.NoError(t, err)
+		}
+		for _, message := range runtime.Session.History() {
+			require.NotContains(t, message.Content, original)
+		}
+		require.LessOrEqual(t, len(runtime.Session.History()), 5)
+		latest := workRecord(t, probe.reasoning[len(probe.reasoning)-1])
+		assert.Equal(t, []string{original}, latest.Source)
+		assert.Equal(t, "waiting", latest.Account.Progress)
+		require.NoError(t, runtime.Close(ctx))
+		return
 	}
-	for _, message := range runtime.Session.History() {
-		require.NotContains(t, message.Content, original)
-	}
-	require.LessOrEqual(t, len(runtime.Session.History()), 5)
-	latest := workRecord(t, probe.reasoning[len(probe.reasoning)-1])
-	assert.Equal(t, []string{original}, latest.Source)
-	assert.Equal(t, "waiting", latest.Account.Progress)
-	require.NoError(t, runtime.Close(ctx))
+	executable, err := os.Executable()
+	require.NoError(t, err)
+	child := exec.Command(executable, "-test.run=^TestWorkingContext_RestartAndCompaction$")
+	child.Env = []string{"GAGENT_WORK_PREPARE=" + path}
+	output, err := child.CombinedOutput()
+	require.NoError(t, err, string(output))
 	effects := 0
 	resumed := &workProbe{inner: workModel(func(messages []agent.Message, descriptors []tool.Descriptor) agent.Response {
 		if !hasWorkTool(descriptors) {
@@ -187,8 +197,13 @@ func TestWorkingContext_LatestIntentAndTerminalControls(t *testing.T) {
 						return agent.Response{Content: "no address"}
 					}
 					current := workRecord(t, messages)
-					require.Equal(t, expectedSource, append([]string{}, current.Source...))
-					require.Equal(t, []string{input}, current.Inputs)
+					if len(expectedSource) == 0 {
+						require.Equal(t, []string{input}, current.Source)
+						require.Empty(t, current.Inputs)
+					} else {
+						require.Equal(t, expectedSource, current.Source)
+						require.Equal(t, []string{input}, current.Inputs)
+					}
 					return agent.Response{ToolCalls: workUpdate(t, false, update).ToolCalls}
 				})}
 				// The scripted decision is conditional on the actual supplied record, not an enum round trip.
@@ -223,7 +238,7 @@ func TestWorkingContext_LatestIntentAndTerminalControls(t *testing.T) {
 				require.NoError(t, runtime.Close(ctx))
 				expectedSource = want
 			}
-			run(original, `{"status":"active","progress":"waiting","inputs":[{"index":0,"action":"amend"}]}`, []string{original}, false)
+			run(original, `{"status":"active","progress":"waiting"}`, []string{original}, false)
 			run(amendment, `{"inputs":[{"index":0,"action":"amend"}]}`, []string{original, amendment}, false)
 			run(terminal, `{"status":"`+status+`","progress":"None - terminal","inputs":[{"index":0,"action":"amend"}]}`, []string{original, amendment, terminal}, false)
 			run("arrival notification", `{"inputs":[{"index":0,"action":"dismiss"}]}`, expectedSource, false)
@@ -409,7 +424,7 @@ func TestWorkingContext_PendingIntentSurvivesBeforeInterpretation(t *testing.T) 
 	ctx := context.Background()
 	path := filepath.Join(t.TempDir(), "memory.db")
 	account := currentAccount(memory.WorkActive, "prepare fixture", "await authorization")
-	runtime, err := workFactory(path, agent.NewScriptedModel(agent.ScriptedStep{Content: "no address"}, workUpdate(t, true, `{"status":"active","progress":"prepare fixture; await authorization","inputs":[{"index":0,"action":"amend"}]}`)), workTools{}).New(ctx, "test", nil)
+	runtime, err := workFactory(path, agent.NewScriptedModel(agent.ScriptedStep{Content: "no address"}, workUpdate(t, true, `{"status":"active","progress":"prepare fixture; await authorization"}`)), workTools{}).New(ctx, "test", nil)
 	require.NoError(t, err)
 	_, err = runtime.Session.Run(ctx, "prepare fixture")
 	require.NoError(t, err)
@@ -620,11 +635,13 @@ func TestWorkingContext_OmittedCurationPreservesSource(t *testing.T) {
 	_, err = session.Run(ctx, source)
 	require.NoError(t, err)
 	supplied := workRecord(t, probe.reasoning[1])
-	assert.Equal(t, []string{source}, supplied.Inputs)
+	assert.Equal(t, []string{source}, supplied.Source)
+	assert.Empty(t, supplied.Inputs)
 	assert.Equal(t, "working", supplied.Account.Progress)
 	saved, err := store.LoadWorkingContext(ctx)
 	require.NoError(t, err)
-	assert.Equal(t, []string{source}, saved.Inputs)
+	assert.Equal(t, []string{source}, saved.Source)
+	assert.Empty(t, saved.Inputs)
 }
 
 func TestWorkingContext_NoOpPreservesReturnedEvidenceOnRestart(t *testing.T) {
@@ -660,4 +677,163 @@ func TestWorkingContext_NoOpPreservesReturnedEvidenceOnRestart(t *testing.T) {
 	final, err := store.LoadWorkingContext(ctx)
 	require.NoError(t, err)
 	assert.Empty(t, final.Attempts)
+}
+
+func TestWorkingContext_FirstSourceCannotBeDismissed(t *testing.T) {
+	ctx := context.Background()
+	store, err := sqlite.Open(filepath.Join(t.TempDir(), "memory.db"))
+	require.NoError(t, err)
+	defer store.Close()
+	original := "Use Cedar only; write exactly seven units and one receipt."
+	probe := &workProbe{inner: agent.NewScriptedModel(workUpdate(t, true, `{"progress":"waiting","inputs":[{"index":0,"action":"dismiss"}]}`))}
+	session := agent.NewSession(probe, workTools{}, agent.Options{WorkingContext: store})
+	_, err = session.Run(ctx, original)
+	require.ErrorContains(t, err, "input references")
+	assert.Equal(t, []string{original}, workRecord(t, probe.reasoning[0]).Source)
+	saved, err := store.LoadWorkingContext(ctx)
+	require.NoError(t, err)
+	assert.Equal(t, []string{original}, saved.Source)
+	assert.Empty(t, saved.Inputs)
+
+	probe.inner = agent.NewScriptedModel(workUpdate(t, true, `{"progress":"still waiting","inputs":[{"index":0,"action":"dismiss"}]}`))
+	_, err = session.Run(ctx, "weather notification")
+	require.NoError(t, err, "dismissal can retire later neutral input")
+	saved, err = store.LoadWorkingContext(ctx)
+	require.NoError(t, err)
+	assert.Equal(t, []string{original}, saved.Source)
+	assert.Empty(t, saved.Inputs)
+}
+
+func TestWorkingContext_NonPrefixIntentChanges(t *testing.T) {
+	for _, status := range []string{"active", "canceled"} {
+		t.Run(status, func(t *testing.T) {
+			ctx := context.Background()
+			path := filepath.Join(t.TempDir(), "memory.db")
+			run := func(input, update string) {
+				t.Helper()
+				runtime, err := workFactory(path, agent.NewScriptedModel(agent.ScriptedStep{Content: "no address"}, workUpdate(t, true, update)), workTools{}).New(ctx, "test", nil)
+				require.NoError(t, err)
+				_, err = runtime.Session.Run(ctx, input)
+				require.NoError(t, err)
+				require.NoError(t, runtime.Close(ctx))
+			}
+			original := "Use Cedar; preserve output format and a single receipt."
+			run(original, `{"status":"active","progress":"waiting"}`)
+			run("unclassified weather", `{}`)
+			change := "Change only supplier to Maple."
+			if status == "canceled" {
+				change = "Cancel release; do not issue a receipt."
+			}
+			run(change, `{"status":"`+status+`","inputs":[{"index":1,"action":"amend"}]}`)
+			store, err := sqlite.Open(path)
+			require.NoError(t, err)
+			defer store.Close()
+			saved, err := store.LoadWorkingContext(ctx)
+			require.NoError(t, err)
+			assert.Equal(t, []string{original, change}, saved.Source)
+			assert.Equal(t, []string{"unclassified weather"}, saved.Inputs)
+			assert.Equal(t, memory.WorkStatus(status), saved.Account.Status)
+			// Supplied order differs from arrival order; the later amendment governs the replacement.
+			run("Authorize a new task.", `{}`)
+			run("For that new task, use Birch.", `{"status":"active","inputs":[{"index":2,"action":"amend"},{"index":1,"action":"replace"},{"index":0,"action":"dismiss"}]}`)
+			saved, err = store.LoadWorkingContext(ctx)
+			require.NoError(t, err)
+			assert.Equal(t, []string{"Authorize a new task.", "For that new task, use Birch."}, saved.Source)
+			assert.Empty(t, saved.Inputs)
+			assert.Empty(t, saved.Account.Progress)
+		})
+	}
+}
+
+func TestWorkingContext_FactOnlySourceDoesNotAuthorizeOrExpandRecall(t *testing.T) {
+	ctx := context.Background()
+	path := filepath.Join(t.TempDir(), "memory.db")
+	fact := "My favorite telescope is the Kepler-9 refractor."
+	probe := &workProbe{inner: agent.NewScriptedModel(agent.ScriptedStep{Content: "no address"}, workUpdate(t, true, `{}`))}
+	runtime, err := workFactory(path, probe, workTools{}).New(ctx, "test", nil)
+	require.NoError(t, err)
+	_, err = runtime.Session.Run(ctx, fact)
+	require.NoError(t, err)
+	assert.Equal(t, memory.WorkIdle, workRecord(t, probe.reasoning[0]).Account.Status)
+	require.NoError(t, runtime.Close(ctx))
+	probe = &workProbe{inner: agent.NewScriptedModel(agent.ScriptedStep{Content: "no address"}, workUpdate(t, true, `{"inputs":[{"index":0,"action":"dismiss"}]}`))}
+	runtime, err = workFactory(path, probe, workTools{}).New(ctx, "test", nil)
+	require.NoError(t, err)
+	defer runtime.Close(ctx)
+	_, err = runtime.Session.Run(ctx, "arrival notification")
+	require.NoError(t, err)
+	current := workRecord(t, probe.reasoning[0])
+	assert.Equal(t, []string{fact}, current.Source)
+	assert.Equal(t, memory.WorkIdle, current.Account.Status)
+	require.Len(t, probe.recall, 1)
+	assert.Equal(t, []agent.Message{{Role: agent.RoleSystem, Content: agent.ReadInstruction}, {Role: agent.RoleUser, Content: "arrival notification"}}, probe.recall[0])
+}
+
+func TestWorkingContext_FailedEffectsRequireSeparateObservedReconciliation(t *testing.T) {
+	ctx := context.Background()
+	path := filepath.Join(t.TempDir(), "memory.db")
+	artifacts := t.TempDir()
+	probe := &workProbe{inner: agent.NewScriptedModel(agent.ScriptedStep{Content: "no address"}, agent.ScriptedStep{ToolCalls: []agent.ToolCall{
+		{Name: "artifact", Input: json.RawMessage(`{"path":"one"}`)},
+		{Name: "artifact", Input: json.RawMessage(`{"path":"two"}`)},
+	}}, workUpdate(t, true, `{"status":"active","progress":"both deliveries uncertain"}`))}
+	calls := 0
+	runtime, err := workFactory(path, probe, workTools{call: func(_ string, input json.RawMessage) (json.RawMessage, error) {
+		calls++
+		var doc struct{ Path string }
+		require.NoError(t, json.Unmarshal(input, &doc))
+		require.NoError(t, os.WriteFile(filepath.Join(artifacts, doc.Path), []byte("delivered"), 0o600))
+		return nil, errors.New("connection lost after write")
+	}}).New(ctx, "test", nil)
+	require.NoError(t, err)
+	_, err = runtime.Session.Run(ctx, "Deliver two artifacts once each.")
+	require.NoError(t, err)
+	require.Equal(t, 2, calls)
+	require.NoError(t, runtime.Close(ctx))
+	store, err := sqlite.Open(path)
+	require.NoError(t, err)
+	defer store.Close()
+	before, err := store.LoadWorkingContext(ctx)
+	require.NoError(t, err)
+	require.Len(t, before.Attempts, 2)
+	for _, attempt := range before.Attempts {
+		require.NotNil(t, attempt.Result)
+		require.Equal(t, memory.WorkFailed, attempt.Result.Outcome)
+	}
+	// A new session cannot turn unrelated progress or new authorization into effect evidence.
+	for _, update := range []string{`{"progress":"weather is clear"}`, `{"status":"canceled"}`, `{"status":"active","inputs":[{"index":2,"action":"replace"}]}`} {
+		session := agent.NewSession(agent.NewScriptedModel(workUpdate(t, true, update)), workTools{}, agent.Options{WorkingContext: store})
+		_, err = session.Run(ctx, "Authorize a different inspection.")
+		require.NoError(t, err)
+		saved, err := store.LoadWorkingContext(ctx)
+		require.NoError(t, err)
+		assert.Equal(t, before.Attempts, saved.Attempts)
+	}
+	resolve := func(id int64, evidence, status string) error {
+		t.Helper()
+		update, err := json.Marshal(map[string]any{"status": status, "resolved_attempts": []any{map[string]any{"id": id, "evidence": evidence}}})
+		require.NoError(t, err)
+		session := agent.NewSession(agent.NewScriptedModel(workUpdate(t, true, string(update))), workTools{}, agent.Options{WorkingContext: store})
+		_, err = session.Run(ctx, "inspection result")
+		return err
+	}
+	one, err := os.ReadFile(filepath.Join(artifacts, "one"))
+	require.NoError(t, err)
+	require.Equal(t, "delivered", string(one))
+	require.NoError(t, resolve(before.Attempts[0].ID, "Read artifact one: "+string(one), "active"))
+	saved, err := store.LoadWorkingContext(ctx)
+	require.NoError(t, err)
+	require.Len(t, saved.Attempts, 1)
+	assert.Equal(t, before.Attempts[1], saved.Attempts[0])
+	session := agent.NewSession(agent.NewScriptedModel(workUpdate(t, true, `{"status":"completed","progress":"one was delivered"}`)), workTools{}, agent.Options{WorkingContext: store})
+	_, err = session.Run(ctx, "status notification")
+	require.ErrorContains(t, err, "reconciliation")
+	two, err := os.ReadFile(filepath.Join(artifacts, "two"))
+	require.NoError(t, err)
+	require.Equal(t, "delivered", string(two))
+	require.NoError(t, resolve(before.Attempts[1].ID, "Read artifact two: "+string(two), "completed"))
+	saved, err = store.LoadWorkingContext(ctx)
+	require.NoError(t, err)
+	assert.Empty(t, saved.Attempts)
+	assert.Equal(t, memory.WorkCompleted, saved.Account.Status)
 }

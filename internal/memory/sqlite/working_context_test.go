@@ -134,3 +134,25 @@ func TestWorkingContext_RejectsExperimentalSummaryWithoutInventingSource(t *test
 	require.NoError(t, raw.QueryRow(`SELECT value FROM memories_archive`).Scan(&archived))
 	assert.Equal(t, "archived fact", archived)
 }
+
+func TestWorkingContext_RejectsOptionalSourceWithoutRewritingEvidence(t *testing.T) {
+	st, path := openStore(t)
+	writeOne(t, st, sample(project, "retained fact"))
+	raw, err := sql.Open("sqlite", path)
+	require.NoError(t, err)
+	defer raw.Close()
+	original := `{"account":{"status":"idle","progress":"waiting after omitted task"},"source":[],"inputs":[],"attempts":[]}`
+	_, err = raw.Exec(`UPDATE working_context SET version = 2, revision = 9, document = ?`, original)
+	require.NoError(t, err)
+	reopened, err := sqlite.Open(path)
+	require.ErrorContains(t, err, "working context version")
+	require.Nil(t, reopened)
+	var document, fact string
+	var version, revision int
+	require.NoError(t, raw.QueryRow(`SELECT version, revision, document FROM working_context`).Scan(&version, &revision, &document))
+	assert.Equal(t, 2, version)
+	assert.Equal(t, 9, revision)
+	assert.Equal(t, original, document)
+	require.NoError(t, raw.QueryRow(`SELECT value FROM memories_active`).Scan(&fact))
+	assert.Equal(t, "retained fact", fact)
+}

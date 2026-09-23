@@ -447,8 +447,23 @@ func TestRecallInformation_Free(t *testing.T) {
 		}
 		if name == "memory_write" {
 			if strings.HasSuffix(last, "Hana started learning Finnish in September.") || strings.Contains(last, "joined the") {
-				// Fact planting leaves no continuing task or governing source.
-				args = strings.TrimSuffix(args, "}") + `,"working_context":{"status":"idle","progress":"","inputs":[{"index":0,"action":"dismiss"}],"resolved_attempts":[]}}`
+				// The first fact stays idle source; later facts can leave pending input.
+				inputs := `[]`
+				for _, message := range request.Messages {
+					if _, data, ok := strings.Cut(message.Content, "Current-work record:\n"); ok {
+						var work struct {
+							Inputs []string `json:"inputs"`
+						}
+						if err := json.Unmarshal([]byte(data), &work); err != nil {
+							http.Error(w, err.Error(), http.StatusBadRequest)
+							return
+						}
+						if len(work.Inputs) > 0 {
+							inputs = `[{"index":0,"action":"dismiss"}]`
+						}
+					}
+				}
+				args = strings.TrimSuffix(args, "}") + `,"working_context":{"status":"idle","progress":"","inputs":` + inputs + `,"resolved_attempts":[]}}`
 			} else {
 				args = string(writebackStep(args).ToolCalls[0].Input)
 			}

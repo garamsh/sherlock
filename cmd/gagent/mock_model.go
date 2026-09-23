@@ -51,7 +51,7 @@ func mockModel(_ string) agent.Model {
 			ToolCalls: []agent.ToolCall{{
 				Name: agent.MemoryWriteTool,
 				Input: json.RawMessage(
-					`{"reply":"Replied via message_send and recorded the answer.","working_context":{"status":"active","progress":"issued scripted calls; verify results because the mock does not interpret them","inputs":[{"index":0,"action":"amend"}],"resolved_attempts":[]},` +
+					`{"reply":"Replied via message_send and recorded the answer.","working_context":{"status":"active","progress":"issued scripted calls; verify results because the mock does not interpret them","inputs":[],"resolved_attempts":[]},` +
 						`"memory_ops":[{"address":{"subject":"user",` +
 						`"question":"what is 6 * 7","restriction":null},` +
 						`"value":"42","operation":null}]}`,

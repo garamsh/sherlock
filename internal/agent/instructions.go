@@ -167,9 +167,12 @@ const workingContextContract = `## Durable current work
 The current-work record is supplied independently of history on every reasoning
 call. Source contains exact owner text in arrival order. The runtime preserves
 its first arrival here before any model decision; it cannot be dismissed.
-An idle source is evidence to interpret, not authorization to perform effects:
-set active only for authorized work. A fact-only first arrival stays idle until
-explicit replacement and must not be treated as a task to resume.
+An idle source is evidence to interpret, not authorization to perform effects.
+An attempted operator call makes idle work active; progress wording never sets status.
+Active work cannot become idle without replacement. A fresh fact-only arrival
+leaves source and its progress after a successful fact writeback with idle status
+and no attempted effects; no-op writeback or later unrelated facts cannot retire
+an earlier source. Use completed or canceled for work that has ended.
 Pending inputs are newer, unclassified intent: consider ALL of them before acting,
 including cancellation. Progress is subordinate interpretation, never authority
 to repeal source. A partial correction changes only the clauses it addresses;

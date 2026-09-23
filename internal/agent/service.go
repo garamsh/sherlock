@@ -171,7 +171,8 @@ func (s *session) Run(ctx context.Context, task string) (response string, err er
 		}
 	}()
 
-	if err := s.beginWork(ctx, task); err != nil {
+	initialSource, err := s.beginWork(ctx, task)
+	if err != nil {
 		return "", err
 	}
 
@@ -218,7 +219,7 @@ func (s *session) Run(ctx context.Context, task string) (response string, err er
 			}
 		}
 		if write != nil {
-			return s.finish(ctx, *write)
+			return s.finish(ctx, *write, initialSource)
 		}
 		s.history = append(s.history, Message{
 			Role:      RoleAssistant,
@@ -301,7 +302,7 @@ func splitWriteback(calls []ToolCall) (*ToolCall, []ToolCall) {
 // provider rejects on the next turn, and did: MiniMax returns HTTP 400
 // "tool call result does not follow tool call" on the turn after the
 // first, which made a rolling session unusable past turn one (#630).
-func (s *session) finish(ctx context.Context, call ToolCall) (string, error) {
+func (s *session) finish(ctx context.Context, call ToolCall, initialSource bool) (string, error) {
 	reply, ops, parseWarn, err := ParseWriteback(string(call.Input))
 	if err != nil {
 		return "", err
@@ -327,6 +328,11 @@ func (s *session) finish(ctx context.Context, call ToolCall) (string, error) {
 		return "", err
 	}
 	if s.opts.WorkingContext != nil {
+		// Only a fresh, otherwise idle fact write can retire its initial source.
+		if initialSource && s.opts.Writeback != nil && len(ops) > 0 && work.Account.Status == memory.WorkIdle && len(work.Attempts) == 0 {
+			work.Source = nil
+			work.Account.Progress = ""
+		}
 		if err := s.saveWork(ctx, work); err != nil {
 			return "", err
 		}

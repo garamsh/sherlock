@@ -36,21 +36,22 @@ func workingContextDescriptor() tool.Descriptor {
 	return tool.Descriptor{Name: WorkingContextTool, Description: "Optionally curate current work. Source instructions govern progress; no transcription is required before tools. This call does not end the turn.", InputSchema: json.RawMessage(workingContextSchema)}
 }
 
-func (s *session) beginWork(ctx context.Context, task string) error {
+func (s *session) beginWork(ctx context.Context, task string) (bool, error) {
 	if s.opts.WorkingContext == nil {
-		return nil
+		return false, nil
 	}
 	work, err := s.opts.WorkingContext.LoadWorkingContext(ctx)
 	if err != nil {
-		return err
+		return false, err
 	}
 	s.work = work
-	if len(work.Source) == 0 && len(work.Inputs) == 0 {
+	initialSource := len(work.Source) == 0 && len(work.Inputs) == 0
+	if initialSource {
 		work.Source = []string{task}
 	} else {
 		work.Inputs = append(append([]string(nil), work.Inputs...), task)
 	}
-	return s.saveWork(ctx, work)
+	return initialSource, s.saveWork(ctx, work)
 }
 
 func (s *session) saveWork(ctx context.Context, work memory.WorkingContext) error {
@@ -143,6 +144,9 @@ func (s *session) prepareCheckpoint(input json.RawMessage) (memory.WorkingContex
 	if (s.work.Account.Status == memory.WorkCanceled || s.work.Account.Status == memory.WorkCompleted) && (work.Account.Status == memory.WorkActive || work.Account.Status == memory.WorkIdle) && !replaced {
 		return work, fmt.Errorf("terminal work requires explicit replacement input to reactivate")
 	}
+	if s.work.Account.Status == memory.WorkActive && work.Account.Status == memory.WorkIdle && !replaced {
+		return work, fmt.Errorf("active work cannot become idle without replacement")
+	}
 	resolved := map[int64]string{}
 	for _, resolution := range doc.Resolved {
 		if resolution.ID <= 0 || strings.TrimSpace(resolution.Evidence) == "" || resolved[resolution.ID] != "" {
@@ -181,6 +185,9 @@ func (s *session) checkpoint(ctx context.Context, call ToolCall) error {
 
 func (s *session) recordAttempt(ctx context.Context, call ToolCall) error {
 	work := s.work
+	if work.Account.Status == memory.WorkIdle {
+		work.Account.Status = memory.WorkActive
+	}
 	work.Attempts = append(append([]memory.WorkAttempt(nil), work.Attempts...), memory.WorkAttempt{ID: work.Revision + 1, Name: call.Name, Input: call.Input})
 	return s.saveWork(ctx, work)
 }

@@ -447,7 +447,7 @@ func TestRecallInformation_Free(t *testing.T) {
 		}
 		if name == "memory_write" {
 			if strings.HasSuffix(last, "Hana started learning Finnish in September.") || strings.Contains(last, "joined the") {
-				// The first fact stays idle source; later facts can leave pending input.
+				// Fact planting retires fresh idle source; later pending facts can be dismissed.
 				inputs := `[]`
 				for _, message := range request.Messages {
 					if _, data, ok := strings.Cut(message.Content, "Current-work record:\n"); ok {

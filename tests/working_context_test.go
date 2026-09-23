@@ -745,28 +745,104 @@ func TestWorkingContext_NonPrefixIntentChanges(t *testing.T) {
 	}
 }
 
-func TestWorkingContext_FactOnlySourceDoesNotAuthorizeOrExpandRecall(t *testing.T) {
+func workFactFinish(update string) agent.ScriptedStep {
+	return agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.MemoryWriteTool, Input: json.RawMessage(`{"reply":"recorded","working_context":` + update + `,"memory_ops":[{"address":{"subject":"user","question":"what is the telescope serial","restriction":null},"value":"lens-7391","operation":null}]}`)}}}
+}
+
+func TestWorkingContext_FactOnlySourceLeavesReasoningAfterWrite(t *testing.T) {
 	ctx := context.Background()
 	path := filepath.Join(t.TempDir(), "memory.db")
-	fact := "My favorite telescope is the Kepler-9 refractor."
-	probe := &workProbe{inner: agent.NewScriptedModel(agent.ScriptedStep{Content: "no address"}, workUpdate(t, true, `{}`))}
+	fact := "My telescope serial is lens-7391."
+	probe := &workProbe{inner: agent.NewScriptedModel(agent.ScriptedStep{Content: "no address"}, workFactFinish(`{"status":"idle","progress":"Stored telescope serial lens-7391 as a fact."}`))}
 	runtime, err := workFactory(path, probe, workTools{}).New(ctx, "test", nil)
 	require.NoError(t, err)
 	_, err = runtime.Session.Run(ctx, fact)
 	require.NoError(t, err)
+	assert.Equal(t, []string{fact}, workRecord(t, probe.reasoning[0]).Source)
 	assert.Equal(t, memory.WorkIdle, workRecord(t, probe.reasoning[0]).Account.Status)
 	require.NoError(t, runtime.Close(ctx))
-	probe = &workProbe{inner: agent.NewScriptedModel(agent.ScriptedStep{Content: "no address"}, workUpdate(t, true, `{"inputs":[{"index":0,"action":"dismiss"}]}`))}
+	store, err := sqlite.Open(path)
+	require.NoError(t, err)
+	defer store.Close()
+	held, err := store.At(ctx, memory.Address{Subject: "user", Question: "what is the telescope serial"})
+	require.NoError(t, err)
+	require.Len(t, held, 1)
+	assert.Equal(t, "lens-7391", held[0].Value)
+	saved, err := store.LoadWorkingContext(ctx)
+	require.NoError(t, err)
+	assert.Empty(t, saved.Source)
+	assert.Empty(t, saved.Account.Progress)
+	assert.Equal(t, memory.WorkIdle, saved.Account.Status)
+	probe = &workProbe{inner: agent.NewScriptedModel(agent.ScriptedStep{Content: "no address"}, workUpdate(t, true, `{}`))}
 	runtime, err = workFactory(path, probe, workTools{}).New(ctx, "test", nil)
 	require.NoError(t, err)
 	defer runtime.Close(ctx)
 	_, err = runtime.Session.Run(ctx, "arrival notification")
 	require.NoError(t, err)
-	current := workRecord(t, probe.reasoning[0])
-	assert.Equal(t, []string{fact}, current.Source)
-	assert.Equal(t, memory.WorkIdle, current.Account.Status)
+	assert.Equal(t, []string{"arrival notification"}, workRecord(t, probe.reasoning[0]).Source)
+	for _, message := range probe.reasoning[0] {
+		assert.NotContains(t, message.Content, "lens-7391", "a fact not recalled must not leak through current work")
+	}
 	require.Len(t, probe.recall, 1)
 	assert.Equal(t, []agent.Message{{Role: agent.RoleSystem, Content: agent.ReadInstruction}, {Role: agent.RoleUser, Content: "arrival notification"}}, probe.recall[0])
+}
+
+func TestWorkingContext_StatusAndEffectsProtectUnfinishedSource(t *testing.T) {
+	for _, evidence := range []string{"active status with empty progress", "effect"} {
+		t.Run(evidence, func(t *testing.T) {
+			ctx := context.Background()
+			path := filepath.Join(t.TempDir(), "memory.db")
+			step := workUpdate(t, false, `{"status":"active","progress":""}`)
+			if evidence == "effect" {
+				step = agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: "artifact", Input: json.RawMessage(`{}`)}}}
+			}
+			probe := &workProbe{inner: agent.NewScriptedModel(agent.ScriptedStep{Content: "no address"}, step, workFactFinish(`{"status":"idle","progress":""}`))}
+			runtime, err := workFactory(path, probe, workTools{call: func(string, json.RawMessage) (json.RawMessage, error) {
+				return json.RawMessage(`{"waiting":true}`), nil
+			}}).New(ctx, "test", nil)
+			require.NoError(t, err)
+			original := "Deliver seven units using Cedar; preserve one receipt."
+			_, err = runtime.Session.Run(ctx, original)
+			require.ErrorContains(t, err, "active work cannot become idle")
+			assert.Equal(t, memory.WorkActive, workRecord(t, probe.reasoning[1]).Account.Status)
+			require.NoError(t, runtime.Close(ctx))
+			store, err := sqlite.Open(path)
+			require.NoError(t, err)
+			defer store.Close()
+			saved, err := store.LoadWorkingContext(ctx)
+			require.NoError(t, err)
+			assert.Equal(t, []string{original}, saved.Source)
+			assert.Equal(t, memory.WorkActive, saved.Account.Status)
+		})
+	}
+}
+
+func TestWorkingContext_LaterFactCannotRetireUndecidedSource(t *testing.T) {
+	ctx := context.Background()
+	path := filepath.Join(t.TempDir(), "memory.db")
+	original := "Deliver seven units using Cedar after arrival."
+	for index, step := range []agent.ScriptedStep{workUpdate(t, true, `{}`), workFactFinish(`{"status":"idle","progress":"","inputs":[{"index":0,"action":"dismiss"}]}`)} {
+		input := original
+		if index == 1 {
+			input = "My telescope serial is lens-7391."
+		}
+		runtime, err := workFactory(path, agent.NewScriptedModel(agent.ScriptedStep{Content: "no address"}, step), workTools{}).New(ctx, "test", nil)
+		require.NoError(t, err)
+		_, err = runtime.Session.Run(ctx, input)
+		require.NoError(t, err)
+		require.NoError(t, runtime.Close(ctx))
+	}
+	store, err := sqlite.Open(path)
+	require.NoError(t, err)
+	defer store.Close()
+	saved, err := store.LoadWorkingContext(ctx)
+	require.NoError(t, err)
+	assert.Equal(t, []string{original}, saved.Source)
+	assert.Equal(t, memory.WorkIdle, saved.Account.Status)
+	held, err := store.At(ctx, memory.Address{Subject: "user", Question: "what is the telescope serial"})
+	require.NoError(t, err)
+	require.Len(t, held, 1)
+	assert.Equal(t, "lens-7391", held[0].Value)
 }
 
 func TestWorkingContext_FailedEffectsRequireSeparateObservedReconciliation(t *testing.T) {
@@ -836,4 +912,54 @@ func TestWorkingContext_FailedEffectsRequireSeparateObservedReconciliation(t *te
 	require.NoError(t, err)
 	assert.Empty(t, saved.Attempts)
 	assert.Equal(t, memory.WorkCompleted, saved.Account.Status)
+}
+
+type workFactSink func(context.Context, []agent.WritebackOp) error
+
+func (f workFactSink) Apply(ctx context.Context, ops []agent.WritebackOp) error {
+	return f(ctx, ops)
+}
+
+func TestWorkingContext_FactRetirementRequiresPersistedWrite(t *testing.T) {
+	for _, boundary := range []string{"accepted", "missing fact sink", "failed fact write", "failed current-work save"} {
+		t.Run(boundary, func(t *testing.T) {
+			ctx := context.Background()
+			store, err := sqlite.Open(filepath.Join(t.TempDir(), "memory.db"))
+			require.NoError(t, err)
+			defer store.Close()
+			var work memory.WorkingContextStorer = store
+			var sink agent.WritebackSink = agentmemory.Writeback{Svc: memory.NewService(store)}
+			switch boundary {
+			case "missing fact sink":
+				sink = nil
+			case "failed fact write":
+				sink = workFactSink(func(context.Context, []agent.WritebackOp) error { return errors.New("fact write unavailable") })
+			case "failed current-work save":
+				work = &workFailure{WorkingContextStorer: store, failAt: 2}
+			}
+			session := agent.NewSession(agent.NewScriptedModel(workFactFinish(`{"status":"idle","progress":""}`)), workTools{}, agent.Options{WorkingContext: work, Writeback: sink})
+			fact := "My telescope serial is lens-7391."
+			_, err = session.Run(ctx, fact)
+			if strings.HasPrefix(boundary, "failed") {
+				require.Error(t, err)
+			} else {
+				require.NoError(t, err)
+			}
+			saved, err := store.LoadWorkingContext(ctx)
+			require.NoError(t, err)
+			if boundary == "accepted" {
+				assert.Empty(t, saved.Source)
+			} else {
+				assert.Equal(t, []string{fact}, saved.Source)
+			}
+			held, err := store.At(ctx, memory.Address{Subject: "user", Question: "what is the telescope serial"})
+			require.NoError(t, err)
+			if boundary == "accepted" || boundary == "failed current-work save" {
+				require.Len(t, held, 1)
+				assert.Equal(t, "lens-7391", held[0].Value)
+			} else {
+				assert.Empty(t, held)
+			}
+		})
+	}
 }

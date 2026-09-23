@@ -446,7 +446,12 @@ func TestRecallInformation_Free(t *testing.T) {
 			args = `{"reply":"Hana started learning Finnish.","memory_ops":[]}`
 		}
 		if name == "memory_write" {
-			args = string(writebackStep(args).ToolCalls[0].Input)
+			if strings.HasSuffix(last, "Hana started learning Finnish in September.") || strings.Contains(last, "joined the") {
+				// Fact planting leaves no continuing task or governing source.
+				args = strings.TrimSuffix(args, "}") + `,"working_context":{"status":"idle","progress":"","inputs":[{"index":0,"action":"dismiss"}],"resolved_attempts":[]}}`
+			} else {
+				args = string(writebackStep(args).ToolCalls[0].Input)
+			}
 		}
 		w.Header().Set("Content-Type", "application/json")
 		fmt.Fprintf(w, `{"choices":[{"message":{"tool_calls":[{"id":"1","type":"function","function":{"name":%q,"arguments":%q}}]},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":100,"completion_tokens":20}}`, name, args)

@@ -3,6 +3,7 @@ package agent
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log/slog"
 
@@ -219,7 +220,7 @@ func (s *session) Run(ctx context.Context, task string) (response string, err er
 			}
 		}
 		if write != nil {
-			return s.finish(ctx, *write, initialSource)
+			return s.finishOrRepair(ctx, resp, *write, initialSource)
 		}
 		s.history = append(s.history, Message{
 			Role:      RoleAssistant,
@@ -291,11 +292,38 @@ func splitWriteback(calls []ToolCall) (*ToolCall, []ToolCall) {
 	return write, rest
 }
 
+// finishOrRepair allows one terminal-only correction without reopening operator execution.
+func (s *session) finishOrRepair(ctx context.Context, response Response, call ToolCall, initialSource bool) (string, error) {
+	reply, err := s.finish(ctx, call, initialSource)
+	if !errors.Is(err, ErrMalformedWriteback) {
+		return reply, err
+	}
+	s.emit(ctx, Event{Kind: EventWritebackError, Turn: s.turn, Error: err.Error()})
+	s.history = append(s.history, Message{Role: RoleAssistant, ToolCalls: response.ToolCalls})
+	for _, attempted := range response.ToolCalls {
+		result := "Not executed: terminal writeback repair permits no operator calls."
+		if attempted.ID == call.ID {
+			result = "Writeback rejected; no facts were written: " + err.Error() + ". One correction is allowed: call memory_write alone with reply and an explicit memory_ops array. Optional working_context may be omitted. Do not repeat operator effects."
+		}
+		s.history = append(s.history, Message{Role: RoleTool, Name: attempted.Name, ToolCallID: attempted.ID, Content: result})
+	}
+	messages, contextErr := s.reasoningContext()
+	if contextErr != nil {
+		return "", contextErr
+	}
+	repaired, repairErr := s.model.Chat(ctx, messages, []tool.Descriptor{MemoryWriteDescriptor()})
+	if repairErr != nil {
+		return "", fmt.Errorf("%w; terminal repair failed: %v", err, repairErr)
+	}
+	if len(repaired.ToolCalls) != 1 || repaired.ToolCalls[0].Name != MemoryWriteTool {
+		return "", fmt.Errorf("%w; terminal repair requires memory_write alone; no operator calls executed", err)
+	}
+	return s.finish(ctx, repaired.ToolCalls[0], initialSource)
+}
+
 // finish applies the writeback the model ended the turn with and returns
-// its reply. A writeback whose arguments are not the document is fatal
-// here where a malformed response was once a warn: the arguments are the
-// only place the turn's reply and its facts arrive, so there is nothing
-// to hand back and nothing to store (issue #615).
+// its reply. Malformed reply or fact data is rejected before persistence;
+// finishOrRepair owns the single correction opportunity.
 // A turn's history keeps the reply rather than the call that carried
 // it. The writeback call is the turn's last act and nothing answers it,
 // so leaving it in history leaves a tool call with no result — which a
@@ -308,8 +336,10 @@ func (s *session) finish(ctx context.Context, call ToolCall, initialSource bool)
 		return "", err
 	}
 	if parseWarn != nil {
-		s.emit(ctx, Event{Kind: EventWritebackError, Turn: s.turn, Error: parseWarn.Error()})
 		return "", parseWarn
+	}
+	if ops == nil {
+		return "", &WritebackError{Err: errors.New("reply and memory_ops are required")}
 	}
 	var work memory.WorkingContext
 	if s.opts.WorkingContext != nil {
@@ -319,9 +349,13 @@ func (s *session) finish(ctx context.Context, call ToolCall, initialSource bool)
 		if err := json.Unmarshal(call.Input, &doc); err != nil {
 			return "", fmt.Errorf("decode terminal working context: %v", err)
 		}
-		work, err = s.prepareCheckpoint(doc.WorkingContext)
+		var warning error
+		work, warning, err = s.prepareCheckpoint(doc.WorkingContext)
 		if err != nil {
 			return "", err
+		}
+		if warning != nil {
+			s.emit(ctx, Event{Kind: EventWorkingContextError, Turn: s.turn, Error: warning.Error()})
 		}
 	}
 	if err := s.applyWriteback(ctx, ops); err != nil {
@@ -347,7 +381,7 @@ func (s *session) finish(ctx context.Context, call ToolCall, initialSource bool)
 // descriptor already carries.
 func writebackRequiredNotice() string {
 	return "Your turn is not finished. Call " + MemoryWriteTool +
-		" with your reply, final working_context and the facts this turn stated; the empty list is a valid answer."
+		" with your reply and the facts this turn stated; the empty list is a valid answer."
 }
 
 // execute runs one tool call through the protocol client and feeds the

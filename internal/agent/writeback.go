@@ -18,12 +18,11 @@ import (
 //
 // It carries the writeback because a response format does not. MiniMax
 // accepts `response_format: json_schema` with HTTP 200 and ignores it on
-// every model tried, which returned the write path to the 0.00 that
+// the models tried, which returned the write path to the 0.00 that
 // #336 step 1 exists to remove — silently, because a response that is
 // not the document parses to no operations and the turn otherwise
 // succeeds (issue #615). Tool calls are honoured where the response
-// format is not, and they are the same constrained decoding each tool's
-// parameters already run under.
+// format is not; runtime validation still owns conformance of the returned arguments.
 const MemoryWriteTool = "memory_write"
 
 // memoryWriteDescription tells the model what the tool is for and that
@@ -34,7 +33,7 @@ const MemoryWriteTool = "memory_write"
 const memoryWriteDescription = "Deliver your reply and record what this turn stated. " +
 	"Every turn ends with this call and no turn ends without it: the reply you pass here " +
 	"is what the person reads, and memory_ops is the list of facts the turn stated — " +
-	"the empty list is your answer that it stated none. working_context updates current work without retranscribing source."
+	"the empty list is your answer that it stated none. working_context optionally curates current work; omit it to preserve durable evidence."
 
 // MemoryWriteDescriptor is the reserved tool as the model sees it. Its
 // parameters are ResponseSchema, so what the write carries is the same
@@ -52,9 +51,8 @@ func MemoryWriteDescriptor() tool.Descriptor {
 // reads what the model puts in them, so the schema and the parser are
 // one contract and are kept together.
 //
-// Three properties carry the decision. The memory field is required, so
-// a response has no shape in which it is absent and an empty list is an
-// answer the model states rather than a field it omits. The address is
+// Reply and facts are required; current-work curation is optional. An empty
+// fact list is an answer the model states rather than a field it omits. The address is
 // the subject and the question the fact answers — not the subject and a
 // topic noun — with the restriction the sentence puts on that question.
 // The operation is nullable, because a statement that narrows its own
@@ -108,16 +106,15 @@ const ResponseSchema = `{
       }
     }
   },
-  "required": ["reply", "memory_ops", "working_context"],
+  "required": ["reply", "memory_ops"],
   "additionalProperties": false
 }`
 
 // WritebackError reports a memory write that could not be applied. It
 // matches ErrMalformedWriteback via errors.Is. ParseWriteback reports a
 // parse failure as its warn result and a schema violation (a write with
-// no address or no value) as its err result, and the session fails the
-// turn on either — the leniency issue #93 asked for ended when the reply
-// moved into the same call as the facts (issue #615).
+// no address or no value) as its err result. Both reject the write before
+// persistence; the session permits one terminal-only repair.
 type WritebackError struct {
 	Err error
 }
@@ -139,7 +136,7 @@ func (e *WritebackError) Is(target error) bool { return target == ErrMalformedWr
 // left undecoded because no JSON value in it may fail the document —
 // whatever it holds that is not a readable declaration joins.
 type writebackJSON struct {
-	Reply string `json:"reply"`
+	Reply *string `json:"reply"`
 	Ops   []struct {
 		Address struct {
 			Subject     string  `json:"subject"`
@@ -173,13 +170,16 @@ func ParseWriteback(content string) (visible string, ops []WritebackOp, warn err
 	if err != nil {
 		return "", nil, nil, err
 	}
-	return strings.TrimSpace(doc.Reply), ops, nil, nil
+	return strings.TrimSpace(*doc.Reply), ops, nil, nil
 }
 
 // ops turns the decoded response into the writes the sink applies. An
 // address missing its subject or its question cannot be landed on and a
 // write with no value holds nothing, so both are contract violations.
 func (b *writebackJSON) ops() ([]WritebackOp, error) {
+	if b.Reply == nil || b.Ops == nil {
+		return nil, &WritebackError{Err: errors.New("reply must be a string and memory_ops must be an explicit array")}
+	}
 	ops := make([]WritebackOp, 0, len(b.Ops))
 	for _, o := range b.Ops {
 		subject := strings.TrimSpace(o.Address.Subject)

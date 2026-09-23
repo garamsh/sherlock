@@ -136,8 +136,10 @@ const (
 	// arrive: the model called no writeback tool (issue #615), or
 	// called it with arguments that are not the document (issue #93).
 	// The first is not terminal — the session says what is missing and
-	// asks again — and the second fails the turn.
+	// asks again — and the second permits one terminal-only correction.
 	EventWritebackError EventKind = "writeback_error"
+	// EventWorkingContextError reports optional curation rejected while durable work is retained.
+	EventWorkingContextError EventKind = "working_context_error"
 	// EventToolCall fires after each tool execution.
 	EventToolCall EventKind = "tool_call"
 	// EventTurnFinished fires once per Run with the final response.
@@ -151,7 +153,7 @@ const (
 // Which fields are set depends on Kind: Task on turn_started,
 // RecalledIDs and RecalledCount on recall, Ops on writeback, the Tool*
 // fields on tool_call, Response on turn_finished, Error on turn_failed
-// and writeback_error.
+// and writeback_error or working_context_error.
 type Event struct {
 	Kind       EventKind
 	Turn       int
@@ -195,7 +197,7 @@ var (
 )
 
 // ErrMalformedWriteback marks writeback arguments the contract refuses:
-// a JSON parse error or a schema violation. Both fail the turn. The
+// a JSON parse error or a schema violation. One terminal-only repair is allowed. The
 // leniency issue #93 asked for is gone: the arguments are the only place
 // the reply and the facts arrive, so a malformed one leaves nothing to
 // hand back and nothing to store (issue #615).

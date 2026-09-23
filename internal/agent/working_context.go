@@ -76,9 +76,9 @@ func (s *session) reasoningContext() ([]Message, error) {
 	return append(messages, Message{Role: RoleSystem, Content: workingContextContract + "\nCurrent-work record:\n" + string(data)}), nil
 }
 
-func (s *session) prepareCheckpoint(input json.RawMessage) (memory.WorkingContext, error) {
+func (s *session) prepareCheckpoint(input json.RawMessage) (prepared memory.WorkingContext, warning error, err error) {
 	if len(bytes.TrimSpace(input)) == 0 || bytes.TrimSpace(input)[0] != '{' {
-		return memory.WorkingContext{}, fmt.Errorf("working context update must be an object")
+		return s.work, fmt.Errorf("working context update must be an object"), nil
 	}
 	var doc struct {
 		Status   *memory.WorkStatus `json:"status"`
@@ -92,10 +92,10 @@ func (s *session) prepareCheckpoint(input json.RawMessage) (memory.WorkingContex
 	dec := json.NewDecoder(bytes.NewReader(input))
 	dec.DisallowUnknownFields()
 	if err := dec.Decode(&doc); err != nil {
-		return memory.WorkingContext{}, fmt.Errorf("decode working context update: %v", err)
+		return s.work, fmt.Errorf("decode working context update: %v", err), nil
 	}
 	if err := dec.Decode(new(json.RawMessage)); err != io.EOF {
-		return memory.WorkingContext{}, fmt.Errorf("working context update has trailing data")
+		return s.work, fmt.Errorf("working context update has trailing data"), nil
 	}
 	work := s.work
 	work.Source = append([]string(nil), work.Source...)
@@ -108,7 +108,7 @@ func (s *session) prepareCheckpoint(input json.RawMessage) (memory.WorkingContex
 		work.Account.Progress = *doc.Progress
 	}
 	if err := work.Account.Validate(); err != nil {
-		return work, err
+		return work, nil, err
 	}
 	action := "retain"
 	if doc.Arrival != nil {
@@ -121,7 +121,7 @@ func (s *session) prepareCheckpoint(input json.RawMessage) (memory.WorkingContex
 		}
 	case "replace":
 		if s.work.Arrival == nil || doc.Status == nil || *doc.Status != memory.WorkActive {
-			return work, fmt.Errorf("replacement requires a current arrival and active status")
+			return work, nil, fmt.Errorf("replacement requires a current arrival and active status")
 		}
 		work.Source = []string{*s.work.Arrival}
 		if doc.Progress == nil {
@@ -129,21 +129,21 @@ func (s *session) prepareCheckpoint(input json.RawMessage) (memory.WorkingContex
 		}
 	case "dismiss":
 		if s.work.Arrival == nil {
-			return work, fmt.Errorf("no current arrival to dismiss; source cannot be dismissed")
+			warning = fmt.Errorf("no current arrival to dismiss; source retained")
 		}
 	default:
-		return work, fmt.Errorf("invalid arrival action %q", action)
+		return work, nil, fmt.Errorf("invalid arrival action %q", action)
 	}
 	if s.work.Account.Status.Terminal() && work.Account.Status != s.work.Account.Status && action != "replace" {
-		return work, fmt.Errorf("terminal work requires explicit replacement arrival to change status")
+		return work, nil, fmt.Errorf("terminal work requires explicit replacement arrival to change status")
 	}
 	if s.work.Account.Status == memory.WorkActive && work.Account.Status == memory.WorkIdle && action != "replace" {
-		return work, fmt.Errorf("active work cannot become idle without replacement")
+		warning = fmt.Errorf("active work cannot become idle without replacement; current work retained")
 	}
 	resolved := map[int64]string{}
 	for _, resolution := range doc.Resolved {
 		if resolution.ID <= 0 || strings.TrimSpace(resolution.Evidence) == "" || resolved[resolution.ID] != "" {
-			return work, fmt.Errorf("attempt resolution requires unique ID and evidence")
+			return work, nil, fmt.Errorf("attempt resolution requires unique ID and evidence")
 		}
 		resolved[resolution.ID] = resolution.Evidence
 	}
@@ -156,22 +156,28 @@ func (s *session) prepareCheckpoint(input json.RawMessage) (memory.WorkingContex
 		}
 	}
 	if len(resolved) != 0 {
-		return work, fmt.Errorf("resolution references an unknown or retired attempt")
+		return work, nil, fmt.Errorf("resolution references an unknown or retired attempt")
 	}
 	if work.Account.Status == memory.WorkCompleted {
 		for _, attempt := range work.Attempts {
 			if attempt.Result == nil || attempt.Result.Outcome == memory.WorkFailed {
-				return work, fmt.Errorf("completed work requires reconciliation of uncertain attempts")
+				return work, nil, fmt.Errorf("completed work requires reconciliation of uncertain attempts")
 			}
 		}
 	}
-	return work, nil
+	if warning != nil {
+		return s.work, warning, nil
+	}
+	return work, nil, nil
 }
 
 func (s *session) checkpoint(ctx context.Context, call ToolCall) error {
-	work, err := s.prepareCheckpoint(call.Input)
+	work, warning, err := s.prepareCheckpoint(call.Input)
 	if err != nil {
 		return err
+	}
+	if warning != nil {
+		return warning
 	}
 	return s.saveWork(ctx, work)
 }

@@ -298,7 +298,7 @@ func TestResponseSchema_ShapeIsEnforceable(t *testing.T) {
 		"the schema the provider sends must be valid JSON")
 
 	assert.Equal(t, "object", schema.Type)
-	assert.ElementsMatch(t, []string{"reply", "memory_ops", "working_context"}, schema.Required,
+	assert.ElementsMatch(t, []string{"reply", "memory_ops"}, schema.Required,
 		"the memory field has no shape in which it is absent")
 	assert.False(t, schema.AdditionalProperties,
 		"strict mode rejects a response carrying anything else")

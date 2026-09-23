@@ -78,7 +78,7 @@ retract an earlier one; when it does, do not start the retracted work.
 
 ## Memory writeback
 End every turn by calling ` + "`memory_write`" + `. Its arguments are ` + "`reply`" + `,
-` + "`memory_ops`" + ` and a ` + "`working_context`" + ` update. ` + "`reply`" + ` is what the person reads — nothing else reaches them.
+` + "`memory_ops`" + ` and an optional ` + "`working_context`" + ` update. ` + "`reply`" + ` is what the person reads — nothing else reaches them.
 ` + "`memory_ops`" + ` is the list of facts this turn states, and it is never omitted:
 an empty list is your answer that the turn stated none. A turn is not finished
 until you make that call, so make it even when you have nothing to record.
@@ -98,12 +98,12 @@ An unrelated fact must preserve an existing work account, including its lifecycl
 
 When the user says "my favorite telescope is the Kepler-9 refractor":
 
-{"reply":"Noted.","working_context":{"status":null,"progress":null,"arrival":"dismiss","resolved_attempts":[]},"memory_ops":[{"address":{"subject":"user","question":"what is the user's favorite telescope","restriction":null},"value":"the Kepler-9 refractor","operation":null}]}
+{"reply":"Noted.","memory_ops":[{"address":{"subject":"user","question":"what is the user's favorite telescope","restriction":null},"value":"the Kepler-9 refractor","operation":null}]}
 
 A statement about someone else, carrying a restriction, works the same way.
 When the user says "In winter Dmitri flies with the northern-arc airline":
 
-{"reply":"Noted.","working_context":{"status":null,"progress":null,"arrival":"dismiss","resolved_attempts":[]},"memory_ops":[{"address":{"subject":"Dmitri","question":"which airline does Dmitri fly with","restriction":"in winter"},"value":"the northern-arc airline","operation":null}]}
+{"reply":"Noted.","memory_ops":[{"address":{"subject":"Dmitri","question":"which airline does Dmitri fly with","restriction":"in winter"},"value":"the northern-arc airline","operation":null}]}
 
 The subject is Dmitri because the statement is about him; the question asks
 for an airline because the statement says that is what the answer is; "in
@@ -180,7 +180,12 @@ the clauses it addresses; untouched instructions still govern. Old conversation
 and recalled facts do not authorize work over this record.
 Source, arrivals and attempts are persisted before effects. You may act directly
 on nonterminal work; working_context is optional curation, not a prerequisite call.
-End with memory_write and its working_context update. Null status/progress preserve
+End with memory_write; its working_context update is optional. Omission or unreadable
+curation preserves durable work with a diagnostic. A dismiss with no current arrival
+or an idle proposal for active work preserves the whole record, including attempts.
+Malformed reply or fact data permits one terminal-only repair, never more operator
+calls. Invalid replacement, terminal revival and attempt resolution still fail.
+Null status/progress preserve
 those fields. Arrival null or retain automatically incorporates the exact current
 arrival into source. No text transcription or input selection is needed. Replace
 uses the current arrival as explicitly authorized new work, retires previous source

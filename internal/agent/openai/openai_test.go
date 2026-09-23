@@ -183,10 +183,24 @@ func TestChat_ReservedWritebackToolIsAdvertisedStrict(t *testing.T) {
 	require.Len(t, fake.request.Tools, 1)
 	fn := fake.request.Tools[0].Function
 	assert.Equal(t, agent.MemoryWriteTool, fn.Name)
-	assert.True(t, fn.Strict, "strict mode is what constrains the document")
+	assert.True(t, fn.Strict, "the provider is asked for constrained decoding")
 	assert.NotEmpty(t, fn.Description, "the tool carries its own contract")
-	assert.JSONEq(t, agent.ResponseSchema, string(fn.Parameters),
-		"the schema sent is the one ParseWriteback reads")
+	var expected map[string]json.RawMessage
+	require.NoError(t, json.Unmarshal([]byte(agent.ResponseSchema), &expected))
+	expected["required"] = json.RawMessage(`["reply","memory_ops","working_context"]`)
+	var properties map[string]json.RawMessage
+	require.NoError(t, json.Unmarshal(expected["properties"], &properties))
+	var curation map[string]json.RawMessage
+	require.NoError(t, json.Unmarshal(properties["working_context"], &curation))
+	curation["type"] = json.RawMessage(`["object","null"]`)
+	properties["working_context"], err = json.Marshal(curation)
+	require.NoError(t, err)
+	expected["properties"], err = json.Marshal(properties)
+	require.NoError(t, err)
+	projected, err := json.Marshal(expected)
+	require.NoError(t, err)
+	assert.JSONEq(t, string(projected), string(fn.Parameters),
+		"optional curation is required and nullable on the wire; reply and fact schemas are unchanged")
 }
 
 func TestChat_ToolCallRoundTrip(t *testing.T) {

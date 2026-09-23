@@ -145,9 +145,11 @@ func TestWorkingContext_RestartAndCompaction(t *testing.T) {
 	_, err = restarted.Session.Run(ctx, "arrival notification")
 	require.NoError(t, err)
 	assert.Equal(t, 1, effects)
-	recallJSON, err := json.Marshal(resumed.recall)
-	require.NoError(t, err)
-	assert.Contains(t, string(recallJSON), "never repeat a released order")
+	require.Len(t, resumed.recall, 1)
+	assert.Equal(t, []agent.Message{
+		{Role: agent.RoleSystem, Content: agent.ReadInstruction},
+		{Role: agent.RoleUser, Content: "arrival notification"},
+	}, resumed.recall[0], "current work reaches reasoning without changing task-only fact resolution")
 }
 
 type workModel func([]agent.Message, []tool.Descriptor) agent.Response

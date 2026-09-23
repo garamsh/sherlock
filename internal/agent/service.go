@@ -441,13 +441,6 @@ func (s *session) recall(ctx context.Context, task string) (Recalled, error) {
 		return Recalled{}, nil
 	}
 	query := task
-	if s.opts.WorkingContext != nil {
-		data, err := json.Marshal(s.work)
-		if err != nil {
-			return Recalled{}, fmt.Errorf("encode recall context: %v", err)
-		}
-		query += "\nCurrent-work record (terminal work is not authorization to resume):\n" + string(data)
-	}
 	recalled, err := s.opts.Recaller.Recall(ctx, query)
 	if err != nil {
 		return Recalled{}, fmt.Errorf("recall: %w", err)

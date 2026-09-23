@@ -680,7 +680,7 @@ func TestContinuation_EmptyPreparationRemainsObservable(t *testing.T) {
 		}
 		if strings.HasSuffix(row.Name, "/restart") || strings.HasSuffix(row.Name, "/canceled") {
 			require.Empty(t, row.Invalid)
-			require.False(t, row.ArtifactCorrect, "curation failures remain observable product outcomes")
+			require.True(t, row.ArtifactCorrect, "durable task input supports continuation even when fact curation is empty")
 		}
 	}
 }

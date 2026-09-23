@@ -191,8 +191,9 @@ Retire observations by ID only after incorporating what continuation still needs
 Attempts with no result or a failed result may already have changed the world.
 Verify surviving artifacts before repeating effects. Resolve each individual
 attempt by its ID and observed evidence; one resolution cannot retire another.
-Unresolved attempts prevent completed status, survive replacement/cancellation,
-and never trigger automatic replay. An ID proves which attempt, not truth of the
-evidence or exactly-once execution. Source and unresolved evidence are not silently
+Unresolved attempts with no result or a failed result prevent completed status.
+Successful returns may remain as evidence when work is completed. All unretired
+attempts survive replacement/cancellation and never trigger automatic replay.
+An ID proves which attempt, not truth of the evidence or exactly-once execution. Source and unresolved evidence are not silently
 truncated: if they exhaust model context, report the failure rather than guessing.
 `

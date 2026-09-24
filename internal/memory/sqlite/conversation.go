@@ -108,8 +108,8 @@ func (s *Store) Recent(ctx context.Context, limit int) ([]agent.SourceMessage, e
 	return out, rows.Err()
 }
 
-// Search matches words supplied by the read step and ranks matches ahead of
-// recency. The bounded limit applies before content enters the model context.
+// Search matches words supplied by the read step and orders recent matches
+// first. The bounded limit applies before content enters model context.
 func (s *Store) Search(ctx context.Context, terms []string, limit int) ([]agent.ConversationHit, error) {
 	if limit <= 0 {
 		return nil, nil
@@ -118,7 +118,7 @@ func (s *Store) Search(ctx context.Context, terms []string, limit int) ([]agent.
 	seen := map[string]bool{}
 	for _, term := range terms {
 		for _, word := range strings.FieldsFunc(strings.ToLower(term), func(r rune) bool { return !unicode.IsLetter(r) && !unicode.IsNumber(r) }) {
-			if len([]rune(word)) < 3 || seen[word] || searchStopWords[word] {
+			if len([]rune(word)) < 2 || seen[word] || searchStopWords[word] {
 				continue
 			}
 			seen[word] = true

@@ -1,5 +1,7 @@
 Governs the bounded continuation baseline for issue #807 and the measured file-operation comparison for issue #811.
 
+This record describes the addressed-memory instrument at the revision it measured. Issue #823 replaced the active runtime with source-linked conversational memory and retired the addressed free and paid entry points from `tests/`; commands naming those entry points are historical and require a new instrument before reuse.
+
 # Task continuation
 
 This topic owns the instrument, preregistered method and independent publication adjudication below; it adopts no architecture decision. The original method and free-validation statements below record the implementation round, including its then-pending review fields. The implementation round uses a free local endpoint with the real agent, tools, workspace and SQLite processes. The endpoint supplies canned model responses; it establishes measurement behavior, not agent competence. The continuation evidence remains an unchanged-product baseline. The file-operation section compares the subsequent boundary correction; publication changes neither measured source nor earlier evidence.

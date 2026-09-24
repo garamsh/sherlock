@@ -17,7 +17,6 @@ import (
 
 	"github.com/garamsh/gagent/internal/agent"
 	"github.com/garamsh/gagent/internal/gateway"
-	"github.com/garamsh/gagent/internal/memory"
 	"github.com/garamsh/gagent/internal/memory/sqlite"
 	"github.com/garamsh/gagent/internal/message"
 	"github.com/garamsh/gagent/internal/tool"
@@ -173,31 +172,23 @@ func runMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	assert.Equal(t, "sender", replies[0].Target)
 }
 
-// assertMemoryStore opens the agent's memory store and confirms the
-// writeback is still readable after shutdown, at the address it was
-// written to. With curation-only storage (ADR 0006) nothing is
-// auto-stored before the turn, so the turn's one write is the only
-// memory.
-//
-// The address is supplied here rather than found. Asked in words an
-// addressed store answers nothing at all (ADR 0018), and the step that
-// reads a question into an address is #336 step 3 — so this asserts what
-// the store can do, which is answer the address it is given.
+// assertMemoryStore verifies that the delivered assistant text is linked to a
+// short summary and an exact source after shutdown.
 func assertMemoryStore(t *testing.T, root string) {
 	t.Helper()
-	store, err := sqlite.Open(filepath.Join(root, "memory.db"))
+	store, err := sqlite.OpenConversation(filepath.Join(root, "memory.db"))
 	require.NoError(t, err)
 	t.Cleanup(func() { store.Close() })
-
-	svc := memory.NewService(store)
-	held, err := svc.At(context.Background(), memory.Address{
-		Subject:  "user",
-		Question: "what is 6 * 7",
-	})
+	hits, err := store.Search(context.Background(), []string{"42"}, 5)
 	require.NoError(t, err)
-
-	require.Len(t, held, 1,
-		"the turn's one write is readable at its address after shutdown, got: %v", held)
-	assert.Equal(t, "42", held[0].Value)
-	assert.Equal(t, "agent", held[0].Source)
+	require.NotEmpty(t, hits)
+	var delivered bool
+	for _, hit := range hits {
+		short, err := store.Short(context.Background(), hit.ShortID)
+		require.NoError(t, err)
+		source, err := store.Source(context.Background(), short.SourceID)
+		require.NoError(t, err)
+		delivered = delivered || source.Role == agent.RoleAssistant && source.Content == "42"
+	}
+	assert.True(t, delivered, "the outbound reply is inspectable through its source link")
 }

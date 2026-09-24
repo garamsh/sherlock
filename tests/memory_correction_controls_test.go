@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
+	"math"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -187,52 +188,88 @@ func TestMemoryCorrection_RejectsBrokenEvidence(t *testing.T) {
 }
 
 func TestMemoryCorrection_SpendGate(t *testing.T) {
-	calls := 0
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		calls++
-		_, err := io.Copy(io.Discard, r.Body)
-		require.NoError(t, err)
-		_, err = w.Write([]byte(`{"usage":{"prompt_tokens":1,"completion_tokens":1}}`))
-		require.NoError(t, err)
-	})
-	proxy := &correctionProxy{handler: handler}
-	body := []byte(`{"messages":[]}`)
-	for i := 0; i < 2; i++ {
-		if i == 1 {
-			proxy.reserved = correctionUSD
-		}
-		response := httptest.NewRecorder()
-		proxy.ServeHTTP(response, httptest.NewRequest("POST", "/chat/completions", bytes.NewReader(body)))
-		require.Equal(t, []int{200, 402}[i], response.Code)
+	tests := []struct {
+		name      string
+		bodyBytes int
+		accepted  int
+	}{
+		{"request ceiling", 24000, 333},
+		{"monetary ceiling", 60000, 184},
 	}
-	require.Equal(t, 1, calls, "rejected request must not reach upstream")
-	require.Equal(t, body, proxy.calls[0].Request)
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			body := []byte(`{"messages":[],"padding":"` + strings.Repeat("x", test.bodyBytes-len(`{"messages":[],"padding":""}`)) + `"}`)
+			require.Len(t, body, test.bodyBytes)
+			reservation := float64(len(body)+4096)*0.30/1e6 + 2048*1.20/1e6
+			require.Equal(t, test.accepted, min(333, int(math.Floor(4.00/reservation))))
+			calls := 0
+			original := []byte("{ \"usage\": {\"prompt_tokens\":1,\"completion_tokens\":1} }\n")
+			upstream := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				calls++
+				_, err := io.Copy(io.Discard, r.Body)
+				require.NoError(t, err)
+				_, err = w.Write(original)
+				require.NoError(t, err)
+			}))
+			defer upstream.Close()
+			proxy := &correctionProxy{upstream: upstream.URL, key: "inert-control"}
+			for i := 0; i < test.accepted+2; i++ {
+				response := httptest.NewRecorder()
+				proxy.ServeHTTP(response, httptest.NewRequest("POST", "/chat/completions", bytes.NewReader(body)))
+				if i < test.accepted {
+					require.Equal(t, http.StatusOK, response.Code, "call %d", i+1)
+					require.Equal(t, original, response.Body.Bytes())
+					require.Equal(t, original, proxy.calls[i].Response)
+					require.Empty(t, proxy.calls[i].Failure)
+				} else {
+					require.Equal(t, http.StatusPaymentRequired, response.Code, "call %d", i+1)
+					require.Equal(t, "preflight spend ceiling", proxy.calls[i].Failure)
+					require.Equal(t, body, proxy.calls[i].Request)
+				}
+			}
+			require.Equal(t, test.accepted, calls, "rejected requests must not reach upstream")
+		})
+	}
 }
 
 func TestMemoryCorrection_ProxyCapsOutputAndStopsOnUnverifiableUsage(t *testing.T) {
-	upstreamCalls := 0
-	upstream := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		upstreamCalls++
-		var request struct {
-			MaxTokens int `json:"max_tokens"`
-		}
-		require.NoError(t, json.NewDecoder(r.Body).Decode(&request))
-		require.Equal(t, correctionOutput, request.MaxTokens)
-		require.Equal(t, "Bearer inert-control", r.Header.Get("Authorization"))
-		_, err := w.Write([]byte(`{"choices":[]}`))
-		require.NoError(t, err)
-	}))
-	defer upstream.Close()
-	proxy := &correctionProxy{upstream: upstream.URL, key: "inert-control"}
-	for _, want := range []int{200, 402} {
-		recorder := httptest.NewRecorder()
-		proxy.ServeHTTP(recorder, httptest.NewRequest("POST", "/chat/completions", strings.NewReader(`{"messages":[]}`)))
-		require.Equal(t, want, recorder.Code)
+	tests := []struct {
+		name, response string
+	}{
+		{"missing usage", `{"choices":[]}`},
+		{"input exceeds reservation", `{"usage":{"prompt_tokens":100000,"completion_tokens":1}}`},
+		{"output exceeds cap", `{"usage":{"prompt_tokens":1,"completion_tokens":2049}}`},
 	}
-	require.Equal(t, 1, upstreamCalls)
-	require.Equal(t, "usage absent or reservation premise invalid", proxy.calls[0].Failure)
-	require.JSONEq(t, `{"messages":[],"max_tokens":2048}`, string(proxy.calls[0].Request))
-	require.Equal(t, `{"choices":[]}`, string(proxy.calls[0].Response))
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			upstreamCalls := 0
+			upstream := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				upstreamCalls++
+				var request struct {
+					MaxTokens int `json:"max_tokens"`
+				}
+				require.NoError(t, json.NewDecoder(r.Body).Decode(&request))
+				require.Equal(t, correctionOutput, request.MaxTokens)
+				require.Equal(t, "Bearer inert-control", r.Header.Get("Authorization"))
+				_, err := w.Write([]byte(test.response))
+				require.NoError(t, err)
+			}))
+			defer upstream.Close()
+			proxy := &correctionProxy{upstream: upstream.URL, key: "inert-control"}
+			for _, want := range []int{200, 402} {
+				recorder := httptest.NewRecorder()
+				proxy.ServeHTTP(recorder, httptest.NewRequest("POST", "/chat/completions", strings.NewReader(`{"messages":[]}`)))
+				require.Equal(t, want, recorder.Code)
+				if want == 200 {
+					require.Equal(t, test.response, recorder.Body.String())
+				}
+			}
+			require.Equal(t, 1, upstreamCalls)
+			require.Equal(t, "usage absent or reservation premise invalid", proxy.calls[0].Failure)
+			require.JSONEq(t, `{"messages":[],"max_tokens":2048}`, string(proxy.calls[0].Request))
+			require.Equal(t, test.response, string(proxy.calls[0].Response))
+		})
+	}
 }
 
 func TestMemoryCorrection_UnstatedProbeRejectsInventedMemory(t *testing.T) {

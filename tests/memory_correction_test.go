@@ -28,8 +28,8 @@ import (
 )
 
 const correctionFillers = 48
-const correctionCalls = 260
-const correctionUSD = 2.00
+const correctionCalls = 333
+const correctionUSD = 4.00
 const correctionOutput = 2048
 
 var correctionPlants = []string{

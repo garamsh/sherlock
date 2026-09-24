@@ -36,7 +36,7 @@ The pod split is two processes today. `gagent workspace` serves one workspace (c
 - The workspace operator sets `exec-network` (default false) and `exec-env` (default empty, names only). Startup resolves exactly those names from the workspace process environment and refuses invalid or missing names. Values are never loaded from agent settings or RPC-selected environment names. Exec still starts with minimal PATH/HOME/LANG, plus caller literals and the operator grants; grants win duplicate names.
 - Provision repository credentials only to the isolated workspace, never model keys, agent memory/configuration volumes, or host home. Every workspace process can read its granted credential and use its actual external authority. Repository and branch instructions are task constraints, not an enforced command allowlist; enforce external authority through credential scope and forge protections.
 - The workspace image includes Git, GitHub CLI and CA certificates. Install any project-specific compiler/dependencies separately. The agent decides which validation commands to run; there is no platform publication gate or rollback for Git/PR effects.
-- The existing installed `github` tool retains issue/comment operations with its own agent-side credential if an operator needs that separate capability. Its raw push and PR operations are retired in favor of CLI work; refresh affected manifest pins. CLI-only agents can omit that optional tool.
+- All GitHub operations, including issues and comments, use ordinary `gh` commands. The former installed `github` tool is removed; operators remove its installed directory and pin, refresh the `shell_exec` manifest pin, and move repository credentials from the agent to the workspace.
 
 ## Open questions
 

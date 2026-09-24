@@ -33,7 +33,7 @@ var getenvCall = regexp.MustCompile(`os\.Getenv\("([A-Z0-9_]+)"\)`)
 // TestSetSpawnEnv_CoversWhatTheShippedToolsRead holds the platform's
 // constants against what the shipped tools actually read. A tool that
 // starts reading another variable is either one the operator supplies,
-// like the github token, or one this function must set — and this is
+// or one this function must set — and this is
 // where that decision surfaces instead of becoming a tool that starts
 // up without its value.
 //
@@ -45,12 +45,8 @@ var getenvCall = regexp.MustCompile(`os\.Getenv\("([A-Z0-9_]+)"\)`)
 // Reading the calls cannot drift from the code the way a hand-maintained
 // declaration did.
 func TestSetSpawnEnv_CoversWhatTheShippedToolsRead(t *testing.T) {
-	// Installed agent-side tools receive operator-provisioned credentials;
-	// workspace grants are resolved separately at that boundary.
-	operatorSupplied := map[string]bool{
-		"GH_TOKEN":        true,
-		"GITHUB_API_BASE": true,
-	}
+	// No shipped tool requires operator credentials; workspace grants are separate.
+	operatorSupplied := map[string]bool{}
 	platformSet := map[string]bool{
 		tool.WorkspaceAddrEnv: true,
 		tool.OutboxDirEnv:     true,

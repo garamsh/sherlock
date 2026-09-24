@@ -130,13 +130,10 @@ func startAgentMTLS(t *testing.T, binary, root, configPath, workspaceAddr string
 		"--workspace-addr", workspaceAddr)
 	// The script-tool registry reads ./tools by default; the in-tree
 	// location `make build-tools` populates in place, so point the env
-	// at the repo root's tools/ dir explicitly. The github manifest
-	// also requires GH_TOKEN at startup, even though this scenario
-	// never invokes github.
+	// at the repo root's tools/ dir explicitly.
 	toolsDir := toolsDirForTest(t)
 	cmd.Env = append(os.Environ(),
 		"GAGENT_TOOLS_DIR="+toolsDir,
-		"GH_TOKEN=fake-test-token",
 	)
 	cmd.Stdout = logFile
 	cmd.Stderr = logFile

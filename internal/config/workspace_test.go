@@ -130,6 +130,7 @@ func TestResolveWorkspaceConfig_UnknownFileKeyIsReported(t *testing.T) {
 func TestResolveWorkspaceConfig_ExecutionGrants(t *testing.T) {
 	t.Chdir(t.TempDir())
 	t.Setenv("GAGENT_EXEC_ENV", "")
+	t.Setenv("GAGENT_EXEC_NETWORK", "")
 	fs := workspaceFlags(t)
 	cfg, err := config.ResolveWorkspace(fs)
 	require.NoError(t, err)

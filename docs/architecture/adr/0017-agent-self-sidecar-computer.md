@@ -64,7 +64,7 @@ There is no compile-time tool registry, no runtime plugin loader, no wire protoc
 
 ### What tools look like in this repository
 
-- **First-party tools** we ship (`file_read`, `file_write`, `file_list`, `shell_exec`, `message_send`, `github`, and any new tool the architecture implies) live as `tools/<name>/` directories under this repository: each contains `manifest.json` and an executable that implements the manifest's contract. The language is the tool author's choice. The platform's stdio runner spawns the executable on demand.
+- **First-party tools** we ship (`file_read`, `file_write`, `file_list`, `shell_exec`, `message_send`, and any new tool the architecture implies) live as `tools/<name>/` directories under this repository: each contains `manifest.json` and an executable that implements the manifest's contract. The language is the tool author's choice. The platform's stdio runner spawns the executable on demand.
 - **Third-party tools** follow the same shape; nothing in the platform's treatment distinguishes them structurally from first-party tools.
 
 ### Required tools

@@ -145,13 +145,10 @@ func TestEndToEnd_OneShotAgentTurnAgainstWorkspace(t *testing.T) {
 		"--message", e2eQuestion)
 	// The script-tool registry reads ./tools by default; the in-tree
 	// location `make build-tools` populates in place, so point the env
-	// at the repo root's tools/ dir explicitly. The github manifest
-	// also requires GH_TOKEN at startup, even though this scenario
-	// never invokes github.
+	// at the repo root's tools/ dir explicitly.
 	toolsDir := toolsDirForTest(t)
 	cmd.Env = append(os.Environ(),
 		"GAGENT_TOOLS_DIR="+toolsDir,
-		"GH_TOKEN=fake-test-token",
 	)
 	out, err := cmd.CombinedOutput()
 	require.NoError(t, err, "one-shot agent turn must exit cleanly: %s", out)
@@ -204,7 +201,6 @@ func TestEndToEnd_OneShotAgentTurnFailedToolCallExitsNonZero(t *testing.T) {
 		"--message", e2eQuestion)
 	cmd.Env = append(os.Environ(),
 		"GAGENT_TOOLS_DIR="+toolsDirForTest(t),
-		"GH_TOKEN=fake-test-token",
 	)
 	out, err := cmd.CombinedOutput()
 
@@ -311,7 +307,7 @@ func closedLoopbackAddr(t *testing.T) string {
 // buildGagentBinary compiles the gagent CLI binary into a temp
 // directory and builds each first-party tool into the module's
 // tools/<name>/<name> so the script-tool registry can resolve it
-// through GAGENT_TOOLS_DIR. The six tools are built in place (the
+// through GAGENT_TOOLS_DIR. The five tools are built in place (the
 // same shape `make build-tools` produces), and the agent binary is
 // the only thing copied to the tempdir; the test sets GAGENT_TOOLS_DIR
 // to the module root's tools/ dir so the run doesn't depend on
@@ -325,7 +321,7 @@ func buildGagentBinary(t *testing.T) string {
 	require.NoError(t, err, "go build failed: %s", out)
 
 	toolsDir := toolsDirForTest(t)
-	for _, tool := range []string{"file_read", "file_write", "file_list", "shell_exec", "message_send", "github"} {
+	for _, tool := range []string{"file_read", "file_write", "file_list", "shell_exec", "message_send"} {
 		toolBuild := exec.Command("go", "build", "-o",
 			filepath.Join(toolsDir, tool, tool), "./tools/"+tool)
 		toolBuild.Dir = ".." // the module root
@@ -382,7 +378,6 @@ func startAgentBinary(t *testing.T, binary, root, workspaceAddr, configPath stri
 	toolsDir := toolsDirForTest(t)
 	cmd.Env = append(os.Environ(),
 		"GAGENT_TOOLS_DIR="+toolsDir,
-		"GH_TOKEN=fake-test-token",
 	)
 	cmd.Stdout = logFile
 	cmd.Stderr = logFile

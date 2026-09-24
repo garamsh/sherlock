@@ -403,6 +403,7 @@ func TestGreeting(t *testing.T) {
 			})
 			require.NoError(t, err)
 			require.Equal(t, 0, res.ExitCode, "cache cleanup: %s", res.Stderr)
+			require.NoError(t, os.Chown(root, os.Geteuid(), os.Getegid()))
 		})
 	}
 	req := shell.Request{

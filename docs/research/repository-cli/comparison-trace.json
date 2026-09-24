@@ -1,0 +1,102 @@
+[
+  {
+    "id": "call_function_6u7rhjohujaf_1",
+    "name": "shell_exec",
+    "arguments": {
+      "command": "cd /workspace && git clone https://github.com/garamsh/agent-test.git repo && cd repo && git log -1 --oneline",
+      "timeout_nanos": 60000000000
+    },
+    "result": {
+      "exit_code": 128,
+      "timed_out": false,
+      "payload": "raw local evidence; private repository contents omitted"
+    }
+  },
+  {
+    "id": "call_function_xwjilufizh77_1",
+    "name": "shell_exec",
+    "arguments": {
+      "command": "cd /workspace && gh repo clone garamsh/agent-test repo",
+      "timeout_nanos": 60000000000
+    },
+    "result": {
+      "exit_code": 2,
+      "timed_out": false,
+      "payload": "raw local evidence; private repository contents omitted",
+      "diagnostic": "pthread_create Resource temporarily unavailable; 26673 stderr bytes"
+    }
+  },
+  {
+    "id": "call_function_ysveoba7j9wc_1",
+    "name": "shell_exec",
+    "arguments": {
+      "command": "ls -la /workspace/",
+      "timeout_nanos": 10000000000
+    },
+    "result": {
+      "exit_code": 0,
+      "timed_out": false,
+      "payload": "raw local evidence; private repository contents omitted"
+    }
+  },
+  {
+    "id": "call_function_zzt3z5i82uws_1",
+    "name": "shell_exec",
+    "arguments": {
+      "command": "gh auth setup-git 2>&1 || true",
+      "timeout_nanos": 30000000000
+    },
+    "result": {
+      "exit_code": 0,
+      "timed_out": false,
+      "payload": "raw local evidence; private repository contents omitted"
+    }
+  },
+  {
+    "id": "call_function_bhos77l6merl_1",
+    "name": "shell_exec",
+    "arguments": {
+      "command": "cd /workspace && git clone https://github.com/garamsh/agent-test.git repo 2>&1",
+      "timeout_nanos": 60000000000
+    },
+    "result": {
+      "exit_code": 0,
+      "timed_out": false,
+      "payload": "raw local evidence; private repository contents omitted"
+    }
+  },
+  {
+    "id": "call_function_qgm6exim4ssv_1",
+    "name": "shell_exec",
+    "arguments": {
+      "command": "cd /workspace/repo && git log -1 --oneline && echo \"---\" && git branch -a",
+      "timeout_nanos": 10000000000
+    },
+    "result": {
+      "exit_code": 0,
+      "timed_out": false,
+      "payload": "raw local evidence; private repository contents omitted"
+    }
+  },
+  {
+    "id": "call_function_vweifd1o8p2c_1",
+    "name": "file_list",
+    "arguments": {
+      "path": "/workspace/repo"
+    },
+    "result": {
+      "failure": "tool \"file_list\": exit status 1 (stderr: file_list: list: path escapes workspace: \"/workspace/repo\")"
+    }
+  },
+  {
+    "id": "call_function_n65dhxajcys1_1",
+    "name": "shell_exec",
+    "arguments": {
+      "command": "ls -la /workspace/repo",
+      "timeout_nanos": 10000000000
+    },
+    "result": {
+      "limitation": "final tool result was in the refused model request, which the measurement harness did not retain"
+    }
+  }
+]

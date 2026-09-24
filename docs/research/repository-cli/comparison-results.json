@@ -1,0 +1,51 @@
+{
+  "revision": "a0cbffbd144fbaa95699d930bcb23f590f4186c4",
+  "last_accounted_meter": {
+    "calls": 9,
+    "input_tokens": 105727,
+    "output_tokens": 1034,
+    "usd": 0.0329589,
+    "stopped": false,
+    "limits": {
+      "calls": 40,
+      "input": 150000,
+      "output": 20000,
+      "usd": 0.1
+    }
+  },
+  "terminal_meter_stopped": true,
+  "stop_reason": "next conservative input reservation refused (HTTP 402); last-accounted meter file predates refusal",
+  "outcome": "failed: no chosen change, target edit, validation, new branch, commit, push or PR",
+  "target": {
+    "rev-parse HEAD": "550dd5239c9cc42648ef116c3b9c772e1a483c66",
+    "status --porcelain": "",
+    "branch --format=%(refname:short)": "main"
+  },
+  "secret_scan": {
+    "exact_secret_match_files": [],
+    "files_scanned": 94,
+    "git_object_content_scanned": true,
+    "processes_exited": true,
+    "container_removed": true
+  },
+  "images": [
+    {
+      "tags": [
+        "gagent-agent:a0cbffbd144fbaa95699d930bcb23f590f4186c4"
+      ],
+      "id": "sha256:704bf118d9ab2f9d1e1901ba87089d656379a6655b5744aa82d01c20062fe5e0"
+    },
+    {
+      "tags": [
+        "gagent-workspace:a0cbffbd144fbaa95699d930bcb23f590f4186c4"
+      ],
+      "id": "sha256:0ba3a4a810e27031c14b99d39a98a8a53fa6c1adfd5d20ad6c5f65e3e2597e8e"
+    },
+    {
+      "tags": [
+        "gagent-tools:a0cbffbd144fbaa95699d930bcb23f590f4186c4"
+      ],
+      "id": "sha256:9eb2c831ee7ef0b360b36ce9f32bb65ce71062807fa2ea48601c6f32ac0326b6"
+    }
+  ]
+}

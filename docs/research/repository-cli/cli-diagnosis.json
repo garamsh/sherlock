@@ -1,0 +1,110 @@
+{
+  "method": "direct built-image resource shim, UID 10001, identical runtime caps, synthetic enterprise host token; no model or target repository requests",
+  "rows": [
+    {
+      "setting": "default",
+      "attempt": 0,
+      "exit": 1,
+      "pthread_failure": false,
+      "output_bytes": 106
+    },
+    {
+      "setting": "default",
+      "attempt": 1,
+      "exit": 1,
+      "pthread_failure": false,
+      "output_bytes": 106
+    },
+    {
+      "setting": "default",
+      "attempt": 2,
+      "exit": 1,
+      "pthread_failure": false,
+      "output_bytes": 106
+    },
+    {
+      "setting": "default",
+      "attempt": 3,
+      "exit": 1,
+      "pthread_failure": false,
+      "output_bytes": 106
+    },
+    {
+      "setting": "default",
+      "attempt": 4,
+      "exit": 1,
+      "pthread_failure": false,
+      "output_bytes": 106
+    },
+    {
+      "setting": "GOMAXPROCS=2",
+      "attempt": 0,
+      "exit": 1,
+      "pthread_failure": false,
+      "output_bytes": 106
+    },
+    {
+      "setting": "GOMAXPROCS=2",
+      "attempt": 1,
+      "exit": 1,
+      "pthread_failure": false,
+      "output_bytes": 106
+    },
+    {
+      "setting": "GOMAXPROCS=2",
+      "attempt": 2,
+      "exit": 1,
+      "pthread_failure": false,
+      "output_bytes": 106
+    },
+    {
+      "setting": "GOMAXPROCS=2",
+      "attempt": 3,
+      "exit": 1,
+      "pthread_failure": false,
+      "output_bytes": 106
+    },
+    {
+      "setting": "GOMAXPROCS=2",
+      "attempt": 4,
+      "exit": 1,
+      "pthread_failure": false,
+      "output_bytes": 106
+    },
+    {
+      "setting": "MALLOC_ARENA_MAX=2",
+      "attempt": 0,
+      "exit": 1,
+      "pthread_failure": false,
+      "output_bytes": 106
+    },
+    {
+      "setting": "MALLOC_ARENA_MAX=2",
+      "attempt": 1,
+      "exit": 1,
+      "pthread_failure": false,
+      "output_bytes": 106
+    },
+    {
+      "setting": "MALLOC_ARENA_MAX=2",
+      "attempt": 2,
+      "exit": 1,
+      "pthread_failure": false,
+      "output_bytes": 106
+    },
+    {
+      "setting": "MALLOC_ARENA_MAX=2",
+      "attempt": 3,
+      "exit": 1,
+      "pthread_failure": false,
+      "output_bytes": 106
+    },
+    {
+      "setting": "MALLOC_ARENA_MAX=2",
+      "attempt": 4,
+      "exit": 1,
+      "pthread_failure": false,
+      "output_bytes": 106
+    }
+  ]
+}

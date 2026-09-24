@@ -43,6 +43,8 @@ The superseded API trial remains a separate failed measurement at `d6a21e8789ec5
 
 The CLI trial is under `.local/verification/github-840-cli/`; its `live/`, `preflight/`, failed free setup directories, build/test logs, measured harness and checksum index must be retained before deleting this worktree. [The custody index](evidence-index.json) records absolute paths and index hashes. Neither private target contents nor root credentials are copied into committed evidence.
 
+The separately authorized [comparison after removing the per-tool allowance](comparison.md) preserves this result and records its own source, task differences and failure.
+
 ## Reproduction and limits
 
 - Read the current [operator grant decision](../../architecture/adr/0003-secret-free-execution-domain.md) and [deployment guidance](../../architecture/deployment.md). Workspace code deliberately receives repository credentials and networking; repository scope was not audited or proven here.

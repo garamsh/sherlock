@@ -1,0 +1,12 @@
+{
+  "local_root": "/home/sauce/orca/workspaces/gagent/feat-github-repo-work-840/.local/verification/github-840-comparison",
+  "sha256_index": "sha256.json",
+  "sha256_index_digest": "964a10fd2bb510f0a251a8c9d617b6fc4a9b02648a883b052784f4ae15377fbd",
+  "file_count": 249,
+  "original_accounting_hashes": {
+    "meter.json": "fdf2c83ef360ff0d9536d21aeaad0a2529a83ae5a7923599c150291a7775c8b6",
+    "live-summary.log": "54cbb604f3a32131111ced1b1bb8bcf9e52b9a1977b4c7a7527e3267173330be",
+    "qa-measured.py": "b31421b9be6d7fa94442270a723938245feb98a94635dbb176e80d3c4959250c"
+  },
+  "policy": "Retain this directory with the two earlier evidence roots before worktree cleanup; private target raw content is not committed."
+}

@@ -144,7 +144,7 @@ func runFileOperations(t *testing.T, meter *spendMeter, dir string) []fileOperat
 		require.NoError(t, err)
 		hashes[path] = fmt.Sprintf("%x", sha256.Sum256(body))
 	}
-	writeJSON(t, filepath.Join(dir, "source.json"), map[string]any{"revision": strings.TrimSpace(string(revision)), "sha256": hashes, "model": recallModelName, "repetitions": 2, "budget_note": "six calls per tool per turn; split tools have separate allowances"})
+	writeJSON(t, filepath.Join(dir, "source.json"), map[string]any{"revision": strings.TrimSpace(string(revision)), "sha256": hashes, "model": recallModelName, "repetitions": 2, "budget_note": "16 model iterations per turn; no per-tool call allowance"})
 
 	var rows []fileOperationRow
 	t.Cleanup(func() {

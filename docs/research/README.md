@@ -13,7 +13,7 @@ Research records the questions, methods, evidence, conclusions, and limits behin
 - [Memory retrieval](memory-retrieval/README.md) — retrieval and supersession behavior of the former store.
 - [Mutation survey](mutation-survey/README.md) — behavior that the repository's tests did or did not catch.
 - [Recall specificity](recall-specificity/README.md) — the former agent's answers to questions at three levels of specificity.
-- [Repository CLI](repository-cli/README.md) — operator-granted workspace CLI checks and a failed bounded live repository task.
+- [Repository CLI](repository-cli/README.md) — operator-granted workspace CLI checks and two separately bounded failed live repository tasks.
 - [Task continuation](task-continuation/README.md) — continuation across live history, process restart, and artifacts alone.
 
 ## Recording a study

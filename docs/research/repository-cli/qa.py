@@ -1,6 +1,6 @@
 """Issue 840 study harness: built product loop, isolated CLI workspace, metered model.
 
-Run from the repository root: python3 docs/research/repository-cli/qa.py preflight|live
+Run from the repository root: python3 docs/research/repository-cli/qa.py preflight|live|comparison-preflight|comparison-live
 Requires make build-images at the checked-out revision and Docker Desktop host access.
 The live mode is single-use; its directory must not already exist. Never retry it.
 """
@@ -22,8 +22,9 @@ import urllib.error
 import urllib.request
 
 REPO = Path(__file__).resolve().parents[3]
-ROOT = REPO / '.local/verification/github-840-cli'
-MODE = sys.argv[1]
+COMPARISON = sys.argv[1].startswith('comparison-')
+ROOT = REPO / ('.local/verification/github-840-comparison' if COMPARISON else '.local/verification/github-840-cli')
+MODE = sys.argv[1].removeprefix('comparison-')
 assert MODE in ('preflight', 'live')
 OUT = ROOT / MODE
 OUT.mkdir(mode=0o700)
@@ -34,6 +35,11 @@ LIMIT = {'calls': 40, 'input': 150000, 'output': 20000, 'usd': 0.10}
 BRANCH = 'docs/gagent-cli-840-20260925'
 REVISION = subprocess.check_output(['git', 'rev-parse', 'HEAD'], env=BASE, cwd=REPO, text=True).strip()
 TASK = '''Complete one bounded repository task on garamsh/agent-test using ordinary git and gh through shell_exec and the installed file tools. Clone the repository into /workspace/repo, inspect its actual starting revision and applicable contributor instructions, and independently choose ONE small substantive permitted documentation improvement grounded in the repository. Respect all ownership and contributor restrictions; this task grants no ownership override or bootstrap authority. If no permitted change can be made, report that accurately and stop without mutation. Otherwise create the fresh non-default branch docs/gagent-cli-840-20260925, make your chosen improvement, validate offline with sh /validator.sh from the checkout plus any appropriate specific checks, inspect your diff, commit, push only that branch, and use gh to open a DRAFT pull request describing the change, actual checks and limitations. Never push the default branch, merge, create issues/comments, change conventions, or mutate another repository. Do not print credentials or environment contents; the workspace deliberately has repository credentials and networking, but no model keys or agent memory. You have at most six calls per tool in this turn: batch related shell operations and use file_read/file_write where useful; this is a normal runtime limit, not permission to skip instruction reads or validation. GITHUB_REPOSITORY=garamsh/agent-test and GITHUB_BRANCH=docs/gagent-cli-840-20260925 are operator-provided. For HTTPS authentication, gh auth setup-git configures normal git credential helpers; do not embed credentials in URLs or files. Report starting revision, selected change, exact checks and their results, branch and draft PR URL, or the concrete blocker. No paid retry or task broadening is available.'''
+if COMPARISON:
+    new_branch = 'docs/gagent-cli-840-comparison-20260925'
+    TASK = TASK.replace(BRANCH, new_branch)
+    BRANCH = new_branch
+    TASK = TASK.replace('You have at most six calls per tool in this turn: batch related shell operations and use file_read/file_write where useful; this is a normal runtime limit, not permission to skip instruction reads or validation.', 'The whole turn has a 16-iteration ceiling; identical failing calls are suppressed.')
 (OUT / 'task.json').write_text(json.dumps({'task': TASK, 'revision': REVISION, 'limits': LIMIT, 'model': 'MiniMax-M2', 'rates_per_million_usd': [0.3, 1.2], 'rate_source': 'https://www.minimax.io/news/minimax-m2', 'branch': BRANCH, 'repository': 'garamsh/agent-test'}, indent=2))
 (OUT / 'workspace').mkdir(mode=0o777)
 (OUT / 'workspace').chmod(0o777)
@@ -101,6 +107,13 @@ assert not allowed(0, 0, 0, 4096, 3072, True)
 (OUT/'budget-controls.json').write_text(json.dumps({'accepted_usage_and_reservation': True, 'refused_missing_boolean_negative_string_usage': True, 'refused_call_input_output_and_stopped_ceiling': True}))
 
 
+def meter_snapshot(meter_class):
+    return {'calls': meter_class.calls, 'input_tokens': meter_class.inputs,
+            'output_tokens': meter_class.outputs,
+            'usd': (meter_class.inputs * .3 + meter_class.outputs * 1.2) / 1e6,
+            'stopped': meter_class.stopped, 'limits': LIMIT}
+
+
 class Meter(http.server.BaseHTTPRequestHandler):
     calls = inputs = outputs = step = 0
     stopped = False
@@ -129,6 +142,7 @@ class Meter(http.server.BaseHTTPRequestHandler):
             maximum = min(3072, LIMIT['output'] - cls.outputs)
             if not allowed(cls.calls, cls.inputs, cls.outputs, reserve, maximum, cls.stopped):
                 cls.stopped = True
+                (OUT/'refused-request.json').write_bytes(data)
                 self.send_response(402)
                 self.end_headers()
                 self.wfile.write(b'{"error":"hard budget reservation refused"}')
@@ -172,7 +186,7 @@ class Meter(http.server.BaseHTTPRequestHandler):
             cls.calls += 1
             (OUT / f'request-{cls.calls:02d}.json').write_bytes(data)
             (OUT / f'response-{cls.calls:02d}.json').write_bytes(result)
-        (OUT / 'meter.json').write_text(json.dumps({'calls': cls.calls, 'input_tokens': cls.inputs, 'output_tokens': cls.outputs, 'usd': (cls.inputs * .3 + cls.outputs * 1.2)/1e6, 'stopped': cls.stopped, 'limits': LIMIT}, indent=2))
+        (OUT / 'meter.json').write_text(json.dumps(meter_snapshot(cls), indent=2))
         self.send_response(status)
         self.send_header('Content-Type', 'application/json')
         self.end_headers()
@@ -236,8 +250,14 @@ git switch -c qa-fixture'''}),
         ('memory_write', {'reply': 'Deterministic CLI fixture completed; inspect trace for success, nonzero command and timeout controls.', 'memory_ops': []}),
     ]
 
+if COMPARISON and MODE == 'preflight':
+    STEPS[-1:-1] = [
+        ('shell_exec', {'command': "git -C /workspace/repo status --porcelain; printf 'seventh shell call executed\\n'"}),
+        ('shell_exec', {'command': "git -C /workspace/repo log -1 --format=%s; printf 'eighth shell call executed\\n'"}),
+    ]
+
 wp = port()
-name = 'gagent-cli-840-' + MODE
+name = ('gagent-cli-840-comparison-' if COMPARISON else 'gagent-cli-840-') + MODE
 workspace_env = BASE | {'GH_TOKEN': credentials.get('GH_TOKEN', 'repository-marker'), 'GITHUB_REPOSITORY': 'garamsh/agent-test', 'GITHUB_BRANCH': BRANCH, 'GIT_AUTHOR_NAME': 'Gagent QA', 'GIT_AUTHOR_EMAIL': 'gagent-qa@users.noreply.github.com', 'GIT_COMMITTER_NAME': 'Gagent QA', 'GIT_COMMITTER_EMAIL': 'gagent-qa@users.noreply.github.com'}
 keys = [k for k in workspace_env if k not in BASE]
 if MODE == 'preflight':
@@ -287,6 +307,7 @@ finally:
         subprocess.run(['docker', 'rm', '-f', name], env=BASE, stdout=subprocess.DEVNULL, check=True)
     meter.shutdown()
     meter.server_close()
+    (OUT/'meter-final.json').write_text(json.dumps(meter_snapshot(Meter), indent=2))
     if fixture:
         fixture.shutdown()
         fixture.server_close()

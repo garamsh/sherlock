@@ -9,7 +9,7 @@ An agent needs durable memory that stays with its own data. The earlier addresse
 
 ## Decision
 
-Each agent owns one configured `memory.db` SQLite file. The source archive, short summaries, mid memories, and FTS5 index share it. The store interface keeps SQLite behind the memory boundary. Source, short, and mid rows for a completed turn commit in one transaction. The old addressed tables remain in existing files; the source-linked runtime refuses a file with active or archived addressed rows instead of deleting or treating them as source-backed evidence.
+Each agent owns one configured `memory.db` SQLite file. The source archive, mid episodes, and FTS5 index share it. The store interface keeps SQLite behind the memory boundary. Completed sources commit before synthesis; each mid episode and its processing interval commit atomically (ADR 0011). The old addressed tables remain in existing files; the source-linked runtime refuses a file with active or archived addressed rows instead of deleting or treating them as source-backed evidence. Populated extractive source-linked schemas likewise require an explicit operator decision; `memory.md` records the fresh-path procedure that preserves the old archive.
 
 ## Consequences
 

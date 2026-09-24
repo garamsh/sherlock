@@ -9,7 +9,9 @@ The former addressed store could answer an exact address but did not retain the 
 
 ## Decision
 
-Each searchable mid memory links to one short summary, which links to one visible user or assistant source message. Retrieval presents bounded candidates with their linked short IDs. The reserved inspection call reads a short summary or source ID; exact wording is answered from a source message, not from a clipped search candidate. Newer candidates are offered before older candidates, while both remain inspectable so a correction is not mistaken for erasure of history.
+Each immutable mid episode records the inclusive interval of original visible messages that produced it. Retrieval carries that source interval and the episode ID. The reserved inspection call reads exact original messages by source ID directly; there is no intermediate short-summary inspection hop.
+
+Recent and relevant episodes are distinct candidate sets, deduplicated by episode ID. Pending source previews are labelled separately. A summary is a retrieval hint, never verified source text. Corrections within a batch are synthesized as corrections; across batches, both episodes and original messages remain inspectable, and the model must compare chronology rather than treating an older assertion as current.
 
 ## Consequences
 

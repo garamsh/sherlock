@@ -11,7 +11,9 @@ The addressed-only lifecycle dropped old conversation when the rolling context c
 
 - Keep the newest session messages up to the configured context bound. Restore recent visible user and assistant messages from the store after restart.
 - Persist each completed inbound user message with its gateway ID and visible assistant outputs as source records. System instructions, tool results, hidden reasoning, and credentials do not become memory sources.
-- Create bounded short summaries linked to source IDs and searchable mid memories linked to short IDs. These are extractive and bounded; no extra model call writes them.
+- Use the rolling recent-message window as short memory. A separate short-summary tier adds no independent responsibility.
+- Synthesize each full bounded cross-turn source batch into one immutable mid episode, with direct links to its original message interval. Episodes are independent: the model receives the batch, not every previous mid summary.
+- Preserve partial batches durably and offer pending source previews alongside recalled episodes so compaction cannot hide the interval before a checkpoint.
 - Recall bounded candidates before the act loop. The agent may inspect linked summaries and original messages through its reserved memory boundary when detail matters.
 
 ## Consequences
@@ -20,9 +22,11 @@ The addressed-only lifecycle dropped old conversation when the rolling context c
 
 - Compaction removes old messages from the current prompt but not from the durable source archive.
 - The archive and summaries have one SQLite owner. There is no separate long-term memory writer competing with source capture.
-- The live-model quality of summary selection and answer grounding remains unverified. The offline prototype in issue #821 measured reachability on hand-authored summaries, not model answer quality.
+- Cross-turn grouping amortizes model cost. A correction enters an episode when its batch fills and remains visible as pending source evidence sooner.
+- Summary fidelity and answer grounding require measurement; deterministic model fixtures cannot establish them. The offline prototype in issue #821 measured reachability on hand-authored summaries, not model answer quality.
 
 ## Rejected alternatives
 
 - Keeping every source message in the rolling prompt would remove the context bound.
+- Recursively summarizing every prior mid state would make episodes less specific to lexical search and propagate earlier synthesis errors.
 - Using the old addressed writeback as another active authority would let an unlinked value compete with inspectable source evidence.

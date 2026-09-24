@@ -92,6 +92,7 @@ type Options struct {
 	Events         EventSink
 	Compactor      Compactor
 	Conversation   ConversationMemory
+	Summarizer     ConversationSummarizer
 	InitialHistory []Message
 	// Ego is the identity/behavior half of the session instructions;
 	// empty selects the embedded DefaultEgo. The platform Contract is
@@ -285,7 +286,7 @@ func (s *session) finish(ctx context.Context, call ToolCall) (string, error) {
 		return "", err
 	}
 	if s.opts.Conversation != nil {
-		if err := s.opts.Conversation.RecordTurn(ctx, append(append([]SourceMessage(nil), s.sources...), SourceMessage{Role: RoleAssistant, Content: reply})); err != nil {
+		if err := s.opts.Conversation.RecordTurn(ctx, append(append([]SourceMessage(nil), s.sources...), SourceMessage{Role: RoleAssistant, Content: reply}), s.opts.Summarizer); err != nil {
 			return "", fmt.Errorf("record conversation: %w", err)
 		}
 	}

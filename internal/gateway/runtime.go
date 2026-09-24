@@ -51,12 +51,18 @@ type Factory struct {
 // New builds the agent runtime: it opens (creating on first use) the
 // memory store and the session, then wires source-linked recall, inspection,
 // event, and context-compaction hooks.
-func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink) (*Runtime, error) {
+func (f *Factory) New(ctx context.Context, agentID string, events agent.EventSink) (*Runtime, error) {
 	if err := os.MkdirAll(filepath.Dir(f.MemoryPath), 0o755); err != nil {
 		return nil, err
 	}
 	store, err := sqlite.OpenConversation(f.MemoryPath)
 	if err != nil {
+		return nil, err
+	}
+	model := f.NewModel(agentID)
+	summarizer := agentmemory.ConversationSummary{Model: model}
+	if err := store.Accumulate(ctx, summarizer); err != nil {
+		store.Close()
 		return nil, err
 	}
 	maxHistoryMessages := f.MaxHistoryMessages
@@ -71,7 +77,7 @@ func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink)
 		// Disabled compaction also restores the full visible conversation.
 		restoreLimit = -1
 	}
-	recent, err := store.Recent(context.Background(), restoreLimit)
+	recent, err := store.Recent(ctx, restoreLimit)
 	if err != nil {
 		store.Close()
 		return nil, err
@@ -80,13 +86,10 @@ func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink)
 	for _, m := range recent {
 		initial = append(initial, agent.Message{Role: m.Role, Content: m.Content})
 	}
-
-	// Search wording and the reasoning loop use the same configured model.
-	model := f.NewModel(agentID)
-
 	session := agent.NewSession(model, f.Tools, agent.Options{
 		Recaller:           agentmemory.ConversationRecall{Store: store, Model: model},
 		Conversation:       store,
+		Summarizer:         summarizer,
 		InitialHistory:     initial,
 		Events:             events,
 		Compactor:          agentmemory.Compactor{MaxHistoryMessages: maxHistoryMessages},

@@ -92,7 +92,7 @@ func Open(path string) (*Store, error) {
 		db.Close()
 		return nil, fmt.Errorf("create schema: %w", err)
 	}
-	if _, err := db.Exec(conversationSchema); err != nil {
+	if err := prepareConversation(db); err != nil {
 		db.Close()
 		return nil, fmt.Errorf("create conversation schema: %w", err)
 	}

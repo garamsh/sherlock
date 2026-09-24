@@ -56,7 +56,7 @@ func TestShimCommandLine_CarriesEveryCapAndTheResolvedProgram(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, []string{
 		self, ShimCommand,
-		"cpu=60", "as=536870912", "fsize=104857600", "nofile=1024", "nproc=64",
+		"cpu=60", "as=2147483648", "fsize=104857600", "nofile=1024", "nproc=64",
 		"--", sh, "sh", "-c", "echo hi",
 	}, line)
 }

@@ -34,8 +34,8 @@ type rlimits struct {
 func DefaultRlimits() rlimits {
 	return rlimits{
 		CPU:          60 * time.Second,
-		AddressSpace: 512 * 1024 * 1024, // 512 MiB virtual memory.
-		FileSize:     100 * 1024 * 1024, // 100 MiB per output file.
+		AddressSpace: 2 * 1024 * 1024 * 1024, // 2 GiB virtual memory, including Go runtime reservations.
+		FileSize:     100 * 1024 * 1024,      // 100 MiB per output file.
 		OpenFiles:    1024,
 		Processes:    64,
 	}

@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"syscall"
 	"testing"
 	"time"
@@ -151,8 +152,8 @@ func TestProcessExecutor_UntrustedChildCarriesDefaultCaps(t *testing.T) {
 
 	res, err := exec.Run(context.Background(), shell.Request{Command: "ulimit -v"})
 	require.NoError(t, err)
-	assert.Equal(t, "524288\n", res.Stdout,
-		"the untrusted child carries the 512MiB address-space cap")
+	assert.Equal(t, "2097152\n", res.Stdout,
+		"the untrusted child carries the 2GiB address-space cap")
 }
 
 // TestProcessExecutor_UntrustedChildCarriesEveryCap reads the caps from
@@ -167,7 +168,7 @@ func TestProcessExecutor_UntrustedChildCarriesEveryCap(t *testing.T) {
 	require.NoError(t, err)
 	for _, want := range []string{
 		`Max cpu time +60 +60 `,
-		`Max address space +536870912 +536870912 `,
+		`Max address space +2147483648 +2147483648 `,
 		`Max file size +104857600 +104857600 `,
 		`Max open files +1024 +1024 `,
 	} {
@@ -247,10 +248,7 @@ func buildGoHelper(t *testing.T) string {
 }
 
 // TestProcessExecutor_TrustedGoBinaryRuns is the issue #225 acceptance
-// case: a Go binary runs as a trusted (script-tool-class) child. The
-// untrusted-path death under the 512MiB cap is not asserted — it depends
-// on the runner's Go runtime reservation behavior (issue #244); the caps
-// themselves are pinned by the ulimit tests above.
+// case: a Go binary runs as a trusted (script-tool-class) child.
 func TestProcessExecutor_TrustedGoBinaryRuns(t *testing.T) {
 	requireUnprivileged(t)
 	helper := buildGoHelper(t)
@@ -369,4 +367,68 @@ func TestFakeExecutor_NoNetworkPassesThrough(t *testing.T) {
 	require.NoError(t, err)
 	assert.True(t, exec.req.NoNetwork,
 		"the executor carries the caller's NoNetwork flag")
+}
+
+func TestProcessExecutor_LocalGoTest(t *testing.T) {
+	uid := os.Geteuid()
+	if uid == 0 {
+		uid = testExecUID
+	}
+	root := execAccountDir(t)
+	if os.Geteuid() == 0 {
+		require.NoError(t, os.Chown(root, uid, uid))
+	}
+	t.Setenv("GAGENT_TEST_PLATFORM_SECRET", "must-not-reach-test")
+	goRoot, err := exec.Command("go", "env", "GOROOT").Output()
+	require.NoError(t, err, "locate the test runner toolchain")
+	goBinary := filepath.Join(strings.TrimSpace(string(goRoot)), "bin", "go")
+	source := fmt.Sprintf(`package sample
+import (
+    "os"
+    "testing"
+)
+func TestGreeting(t *testing.T) {
+    if os.Getuid() != %d { t.Fatalf("unexpected uid: %%d", os.Getuid()) }
+    if os.Getenv("GAGENT_TEST_PLATFORM_SECRET") != "" { t.Fatal("platform environment leaked") }
+    if greeting() != "hello" { t.Fatal("wrong greeting") }
+    t.Log("workspace-test-ran")
+}
+`, uid)
+	require.NoError(t, os.WriteFile(filepath.Join(root, "greeting_test.go"), []byte(source), 0o644))
+	program := filepath.Join(root, "greeting.go")
+	require.NoError(t, os.WriteFile(program, []byte("package sample\nfunc greeting() string { return \"hello\" }\n"), 0o644))
+	executor := shell.NewProcessExecutor(uid, 2*time.Minute)
+	req := shell.Request{
+		Command: goBinary,
+		Args:    []string{"test", "-p=1", "-count=1", "-v"},
+		Workdir: root,
+		Env:     []string{"GO111MODULE=off", "GOTOOLCHAIN=local", "GOENV=off", "CGO_ENABLED=0", "GOMAXPROCS=2", "GOCACHE=" + filepath.Join(root, "cache")},
+	}
+	t.Run("control without resource caps", func(t *testing.T) {
+		control := req
+		control.Trusted = true
+		control.Env = append(append([]string{}, req.Env...), "GOCACHE="+filepath.Join(root, "control-cache"))
+		res, err := executor.Run(context.Background(), control)
+		require.NoError(t, err)
+		require.Equal(t, 0, res.ExitCode, "stdout=%s stderr=%s", res.Stdout, res.Stderr)
+		require.Contains(t, res.Stdout, "--- PASS: TestGreeting")
+	})
+	for _, noNetwork := range []bool{false, true} {
+		t.Run(fmt.Sprintf("bounded no-network=%t", noNetwork), func(t *testing.T) {
+			req.NoNetwork = noNetwork
+			res := runProbe(t, executor, req)
+			require.Equal(t, 0, res.ExitCode, "stdout=%s stderr=%s", res.Stdout, res.Stderr)
+			require.Contains(t, res.Stdout, "workspace-test-ran")
+			require.Contains(t, res.Stdout, "--- PASS: TestGreeting")
+		})
+	}
+	t.Run("failing test reports failure", func(t *testing.T) {
+		require.NoError(t, os.WriteFile(program, []byte("package sample\nfunc greeting() string { return \"wrong\" }\n"), 0o644))
+		req.NoNetwork = false
+		res, err := executor.Run(context.Background(), req)
+		require.NoError(t, err)
+		require.Equal(t, 1, res.ExitCode, "stdout=%s stderr=%s", res.Stdout, res.Stderr)
+		require.Contains(t, res.Stdout, "--- FAIL: TestGreeting")
+		require.Contains(t, res.Stdout, "wrong greeting")
+	})
 }

@@ -1,0 +1,18 @@
+{
+  "task": "Complete one bounded repository task on garamsh/agent-test using ordinary git and gh through shell_exec and the installed file tools. Clone the repository into /workspace/repo, inspect its actual starting revision and applicable contributor instructions, and independently choose ONE small substantive permitted documentation improvement grounded in the repository. Respect all ownership and contributor restrictions; this task grants no ownership override or bootstrap authority. If no permitted change can be made, report that accurately and stop without mutation. Otherwise create the fresh non-default branch docs/gagent-cli-840-20260925, make your chosen improvement, validate offline with sh /validator.sh from the checkout plus any appropriate specific checks, inspect your diff, commit, push only that branch, and use gh to open a DRAFT pull request describing the change, actual checks and limitations. Never push the default branch, merge, create issues/comments, change conventions, or mutate another repository. Do not print credentials or environment contents; the workspace deliberately has repository credentials and networking, but no model keys or agent memory. You have at most six calls per tool in this turn: batch related shell operations and use file_read/file_write where useful; this is a normal runtime limit, not permission to skip instruction reads or validation. GITHUB_REPOSITORY=garamsh/agent-test and GITHUB_BRANCH=docs/gagent-cli-840-20260925 are operator-provided. For HTTPS authentication, gh auth setup-git configures normal git credential helpers; do not embed credentials in URLs or files. Report starting revision, selected change, exact checks and their results, branch and draft PR URL, or the concrete blocker. No paid retry or task broadening is available.",
+  "revision": "09c278b5c7c57c2f926c88896fee7178b7334847",
+  "limits": {
+    "calls": 40,
+    "input": 150000,
+    "output": 20000,
+    "usd": 0.1
+  },
+  "model": "MiniMax-M2",
+  "rates_per_million_usd": [
+    0.3,
+    1.2
+  ],
+  "rate_source": "https://www.minimax.io/news/minimax-m2",
+  "branch": "docs/gagent-cli-840-20260925",
+  "repository": "garamsh/agent-test"
+}

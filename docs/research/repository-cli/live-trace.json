@@ -1,0 +1,140 @@
+[
+  {
+    "name": "shell_exec",
+    "arguments": {
+      "command": "cd /workspace && git clone https://github.com/garamsh/agent-test.git repo && cd repo && git log -1 --oneline",
+      "timeout_nanos": 60000000000
+    },
+    "result": {
+      "exit_code": 128,
+      "timed_out": false,
+      "payload": "local raw evidence; repository contents omitted"
+    }
+  },
+  {
+    "name": "shell_exec",
+    "arguments": {
+      "command": "gh auth setup-git 2>&1 || true && gh repo clone garamsh/agent-test /workspace/repo 2>&1",
+      "timeout_nanos": 60000000000
+    },
+    "result": {
+      "exit_code": 0,
+      "timed_out": false,
+      "payload": "local raw evidence; repository contents omitted"
+    }
+  },
+  {
+    "name": "shell_exec",
+    "arguments": {
+      "command": "cd /workspace/repo && git log -1 --oneline && ls -la",
+      "timeout_nanos": 30000000000
+    },
+    "result": {
+      "exit_code": 0,
+      "timed_out": false,
+      "payload": "local raw evidence; repository contents omitted"
+    }
+  },
+  {
+    "name": "file_read",
+    "arguments": {
+      "path": "/workspace/repo/AGENTS.md"
+    },
+    "result": {
+      "failure": "tool \"file_read\": exit status 1 (stderr: file_read: read: path escapes workspace: \"/workspace/repo/AGENTS.md\")"
+    }
+  },
+  {
+    "name": "file_read",
+    "arguments": {
+      "path": "/workspace/repo/CLAUDE.md"
+    },
+    "result": {
+      "failure": "tool \"file_read\": exit status 1 (stderr: file_read: read: path escapes workspace: \"/workspace/repo/CLAUDE.md\")"
+    }
+  },
+  {
+    "name": "file_list",
+    "arguments": {
+      "path": "/workspace/repo/.github"
+    },
+    "result": {
+      "failure": "tool \"file_list\": exit status 1 (stderr: file_list: list: path escapes workspace: \"/workspace/repo/.github\")"
+    }
+  },
+  {
+    "name": "shell_exec",
+    "arguments": {
+      "command": "cd /workspace/repo && cat AGENTS.md CLAUDE.md",
+      "timeout_nanos": 30000000000
+    },
+    "result": {
+      "exit_code": 0,
+      "timed_out": false,
+      "payload": "local raw evidence; repository contents omitted"
+    }
+  },
+  {
+    "name": "shell_exec",
+    "arguments": {
+      "command": "cd /workspace/repo && ls -la docs/ && cat docs/convention/documentation.md 2>/dev/null || echo \"No docs/convention/documentation.md\"",
+      "timeout_nanos": 30000000000
+    },
+    "result": {
+      "exit_code": 0,
+      "timed_out": false,
+      "payload": "local raw evidence; repository contents omitted"
+    }
+  },
+  {
+    "name": "shell_exec",
+    "arguments": {
+      "command": "cd /workspace/repo && find docs -type f -name \"*.md\" | head -20",
+      "timeout_nanos": 30000000000
+    },
+    "result": {
+      "exit_code": 0,
+      "timed_out": false,
+      "payload": "local raw evidence; repository contents omitted"
+    }
+  },
+  {
+    "name": "shell_exec",
+    "arguments": {
+      "command": "cd /workspace/repo && cat docs/convention/README.md",
+      "timeout_nanos": 30000000000
+    },
+    "result": {
+      "failure": "Not executed: you have reached this turn's budget of 6 calls to \"shell_exec\". The tool is exhausted for this turn \u2014 proceed with the results you already have or finish the turn."
+    }
+  },
+  {
+    "name": "file_read",
+    "arguments": {
+      "path": "/workspace/repo/docs/convention/README.md"
+    },
+    "result": {
+      "failure": "tool \"file_read\": exit status 1 (stderr: file_read: read: path escapes workspace: \"/workspace/repo/docs/convention/README.md\")"
+    }
+  },
+  {
+    "name": "shell_exec",
+    "arguments": {
+      "command": "ls -la /workspace/repo/docs/ && cat /workspace/repo/docs/convention/README.md",
+      "timeout_nanos": 30000000000
+    },
+    "result": {
+      "failure": "Not executed: you have reached this turn's budget of 6 calls to \"shell_exec\". The tool is exhausted for this turn \u2014 proceed with the results you already have or finish the turn."
+    }
+  },
+  {
+    "name": "shell_exec",
+    "arguments": {
+      "command": "cat /workspace/repo/docs/ai/adoption.md",
+      "timeout_nanos": 30000000000
+    },
+    "result": {
+      "failure": "Not executed: you have reached this turn's budget of 6 calls to \"shell_exec\". The tool is exhausted for this turn \u2014 proceed with the results you already have or finish the turn."
+    }
+  }
+]

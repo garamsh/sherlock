@@ -7,14 +7,14 @@
 
 An unauthenticated gateway is a remote shell into the environment, so exposure beyond localhost needs auth before anything else. The planned use is an external orchestration layer driving platforms through the call model — `POST /agents/{id}/messages` for delivery and `GET /agents/{id}/events` for state — machine-to-machine traffic with a small fixed peer set and long-lived SSE connections. Orchestration itself (CA operation, certificate issuance, fleet lifecycle) is explicitly outside this project's responsibility.
 
-Bearer tokens were considered and rejected: they put a shared secret into every platform's config (against ADR 0003's secret-custody posture), they carry no per-caller identity, and token expiry interacts badly with long-lived SSE streams.
+Bearer tokens were considered and rejected: they put a shared secret into every platform's config instead of keeping only public caller material at the verifier, they carry no per-caller identity, and token expiry interacts badly with long-lived SSE streams.
 
 ## Decision
 
 The gateway authenticates callers with mTLS, terminated in the agent container itself (`crypto/tls`) — no separate TLS proxy component.
 
 - A `tls:` config section carries the server certificate/key and the client CA path. When set, the gateway requires and verifies client certificates against that CA.
-- When `tls:` is unset, the gateway serves loopback binds only; a non-loopback bind without TLS fails startup. The dev loop on localhost is unchanged.
+- When `tls:` is unset, the gateway serves loopback binds only; a non-loopback bind without TLS fails startup. This blocks remote exposure, not workspace callers sharing the pod network. With operator-granted workspace networking (#840), serving deployments must configure mTLS and keep client credentials outside the workspace even for loopback; one-shot `--message` runs expose no gateway.
 - Certificate issuance, CA operation, and fleet lifecycle belong to the operator or the orchestration layer, not this project.
 
 ## Consequences

@@ -52,7 +52,7 @@ The agent finds the workspace through its own `workspace-addr` (default `127.0.0
 - **Gateway, no `tls:` section, loopback `addr`** — starts, and a Service in front of it reaches nothing. Nothing in the pod's status says so; the startup log carries `auth="none: loopback binds only"` at INFO.
 - **Workspace, non-loopback `addr`** — refuses at startup, with no TLS escape hatch: its gRPC listener is unauthenticated until contract authentication exists. **The workspace can never be fronted by a Service.** It is a same-pod sidecar reached over localhost, which is what makes the shared network namespace part of the deployment rather than a convenience.
 
-Serving the gateway beyond localhost means setting the `tls:` section — `cert`, `key` and `client-ca`, all three or none.
+Serving the gateway beyond localhost means setting the `tls:` section — `cert`, `key` and `client-ca`, all three or none. A network-enabled workspace shares that localhost too: configure gateway mTLS even on loopback and keep client keys outside the workspace, or use a one-shot agent with no serving gateway. The loopback gate alone provides no authentication against workspace code.
 
 **Replacing that material is a restart, and the restart drops the accepted queue.** All three files are read once, while the process starts (`internal/config/tls.go`); nothing re-reads them and no signal reloads them, so new files take effect only when the process starts again. That restart discards every message the gateway accepted and has not yet taken into a turn (§Shutdown and the grace period), so replacing a certificate is not transparent to senders.
 

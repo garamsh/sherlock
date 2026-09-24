@@ -1,0 +1,54 @@
+{
+  "revision": "09c278b5c7c57c2f926c88896fee7178b7334847",
+  "live": {
+    "calls": 13,
+    "input_tokens": 58054,
+    "output_tokens": 2376,
+    "usd": 0.0202674,
+    "stopped": false,
+    "limits": {
+      "calls": 40,
+      "input": 150000,
+      "output": 20000,
+      "usd": 0.1
+    }
+  },
+  "target": {
+    "rev-parse HEAD": "550dd5239c9cc42648ef116c3b9c772e1a483c66",
+    "status --porcelain": "",
+    "branch --format=%(refname:short)": "main",
+    "log -1 --format=%H": "550dd5239c9cc42648ef116c3b9c772e1a483c66"
+  },
+  "secret_scan": {
+    "exact_secret_match_files": [],
+    "files_scanned": 102,
+    "git_object_content_scanned": true,
+    "processes_exited": true,
+    "container_removed": true
+  },
+  "images": [
+    {
+      "tags": [
+        "gagent-agent:09c278b5c7c57c2f926c88896fee7178b7334847"
+      ],
+      "id": "sha256:f9ed873113b6c7ec843fde7a1e9fbc39bac63ab3e4ad7cb7a8f07b87cde649a8",
+      "revision": "09c278b5c7c57c2f926c88896fee7178b7334847"
+    },
+    {
+      "tags": [
+        "gagent-workspace:09c278b5c7c57c2f926c88896fee7178b7334847"
+      ],
+      "id": "sha256:174b6319ef63c7065ae008f4a160cd4c173e4876319d4b8474c77435b18cfac3",
+      "revision": "09c278b5c7c57c2f926c88896fee7178b7334847"
+    },
+    {
+      "tags": [
+        "gagent-tools:09c278b5c7c57c2f926c88896fee7178b7334847"
+      ],
+      "id": "sha256:0cc1671cd61f7b51e40a4a2dec874a4740f568b72780fd97fb97fae6276ff934",
+      "revision": "09c278b5c7c57c2f926c88896fee7178b7334847"
+    }
+  ],
+  "outcome": "failed: no chosen change, validation, new branch, commit, push or PR",
+  "preflight": "passed: six shell calls, synthetic local repository and TLS GitHub fixture; not autonomous change selection"
+}

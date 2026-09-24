@@ -1,0 +1,10 @@
+{
+  "local_root": "/home/sauce/orca/workspaces/gagent/feat-github-repo-work-840/.local/verification/github-840-cli",
+  "sha256_index": "sha256.json",
+  "sha256_index_digest": "5c228f0ac8a0ad38577c4a524df2a098ff51fcd51d1fba99f4fa5d19221434e5",
+  "file_count": 482,
+  "previous_api_root": "/home/sauce/orca/workspaces/gagent/feat-github-repo-work-840/.local/verification/github-840",
+  "previous_api_sha256_index": "sha256.json",
+  "previous_api_index_digest": "c547c2573e37a493062673afec7d6a7db6a7290db9099b69949856ce1975f773",
+  "raw_evidence_policy": "Retain both local directories before worktree cleanup. They contain private target content and are not committed."
+}

@@ -12,12 +12,6 @@ import (
 // DefaultMaxIterations caps the act loop when Options.MaxIterations is zero.
 const DefaultMaxIterations = 16
 
-// maxToolCallsPerTurn is the per-tool call budget: calls to the same tool
-// past this count within one turn are not executed. Six preserves the
-// observed normal range (successful turns use up to six searches) while
-// cutting pathological loops (issue #160) well short of the iteration cap.
-const maxToolCallsPerTurn = 6
-
 // Model is the agent's narrow view of a chat model (ADR 0004): it receives
 // the conversation plus the registered tool schemas and returns either a
 // final response or tool-call requests. A turn ends when the model calls
@@ -117,9 +111,6 @@ type session struct {
 	// failures records this turn's failed tool calls, keyed by name and
 	// input bytes; it resets on every Run.
 	failures map[string]failedCall
-	// toolCalls counts this turn's calls per tool name for the per-tool
-	// call budget; it resets on every Run.
-	toolCalls map[string]int
 }
 
 // failedCall is one tool call that failed in the current turn: the error
@@ -160,7 +151,6 @@ func (s *session) Run(ctx context.Context, task string) (response string, err er
 	s.turn++
 	s.sources = inboundSources(ctx, task)
 	s.failures = make(map[string]failedCall)
-	s.toolCalls = make(map[string]int)
 	s.emit(ctx, Event{Kind: EventTurnStarted, Turn: s.turn, Task: task})
 	defer func() {
 		if err != nil {
@@ -304,21 +294,15 @@ func writebackRequiredNotice() string {
 
 // execute runs one tool call through the protocol client and feeds the
 // result back into history. Tool failures become tool messages so the
-// model can recover. Two per-turn guards substitute a synthetic result
-// instead of executing, so a stall cannot consume the whole iteration
-// budget: a call past the per-tool call budget, and a call that already
-// failed twice this turn with the identical error.
+// model can recover. An identical failure repeated twice this turn receives
+// a synthetic result; successful calls have no per-tool allowance. The
+// whole-turn iteration ceiling remains the backstop.
 func (s *session) execute(ctx context.Context, call ToolCall) {
 	event := Event{Kind: EventToolCall, Turn: s.turn, ToolName: call.Name, ToolInput: call.Input}
 	var result string
 	key := call.Name + "\x00" + string(call.Input)
-	s.toolCalls[call.Name]++
 	known, ok := s.failures[key]
 	switch {
-	case s.toolCalls[call.Name] > maxToolCallsPerTurn:
-		description := descriptorDescription(s.modelTools(), call.Name)
-		result = toolBudgetNotice(call.Name, description)
-		event.ToolFailed = true
 	case ok && known.repeated:
 		result = repeatedCallNotice(call.Name, known.err)
 		event.ToolFailed = true
@@ -363,39 +347,12 @@ func (s *session) invoke(ctx context.Context, call ToolCall) (string, bool) {
 	return string(out), false
 }
 
-// descriptorDescription finds the named descriptor in descriptors and
-// returns its description. The empty string is returned when the tool
-// is not installed; the budget notice consumes it.
-func descriptorDescription(descriptors []tool.Descriptor, name string) string {
-	for _, d := range descriptors {
-		if d.Name == name {
-			return d.Description
-		}
-	}
-	return ""
-}
-
 // repeatedCallNotice is the synthetic result substituted for a tool call
 // already known to fail identically in this turn.
 func repeatedCallNotice(name, err string) string {
 	return fmt.Sprintf("Not executed: you already made this exact call to %q in this turn "+
 		"and it failed identically every time: %s. Repeating it will not change the outcome — "+
 		"change your approach or finish the turn with what you have.", name, err)
-}
-
-// toolBudgetNotice is the synthetic result substituted for a tool call past
-// this turn's per-tool call budget. It restates the tool's advertised
-// description so an exhausted model is steered by the tool's own contract at
-// the decision point (issue #164: an exhausted memory budget must redirect
-// to the writeback block, which the description already states).
-func toolBudgetNotice(name, description string) string {
-	notice := fmt.Sprintf("Not executed: you have reached this turn's budget of %d calls to %q. "+
-		"The tool is exhausted for this turn — proceed with the results you already have "+
-		"or finish the turn.", maxToolCallsPerTurn, name)
-	if description != "" {
-		notice += fmt.Sprintf(" (tool description: %s)", description)
-	}
-	return notice
 }
 
 func (s *session) recall(ctx context.Context, task string) (Recalled, error) {

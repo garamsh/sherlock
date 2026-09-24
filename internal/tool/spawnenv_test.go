@@ -51,8 +51,11 @@ func TestSetSpawnEnv_CoversWhatTheShippedToolsRead(t *testing.T) {
 	// the operator's too — it retargets the API for an enterprise host,
 	// and the default is the public one.
 	operatorSupplied := map[string]bool{
-		"GH_TOKEN":        true,
-		"GITHUB_API_BASE": true,
+		"GH_TOKEN":                true,
+		"GITHUB_API_BASE":         true,
+		"GITHUB_REPOSITORY":       true,
+		"GITHUB_BRANCH":           true,
+		"GITHUB_VALIDATE_COMMAND": true,
 	}
 	platformSet := map[string]bool{
 		tool.WorkspaceAddrEnv: true,

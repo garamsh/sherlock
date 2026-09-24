@@ -1,11 +1,4 @@
-// github is the platform's github tool. It implements the
-// script-tool runner's stdio protocol (ADR 0009 §Decision): one JSON
-// object on stdin (the validated input), one JSON object on stdout
-// (the validated output), non-zero exit on failure. The tool reads
-// GH_TOKEN from its environment (the platform's per-tool env
-// contract), calls the GitHub REST API with stdlib net/http, and
-// returns a structured summary. The token is never returned to the
-// model.
+// github provides scoped repository work over the stdio tool contract.
 package main
 
 import (
@@ -17,57 +10,49 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"regexp"
+	"strings"
 	"time"
 )
 
 const defaultAPIBase = "https://api.github.com"
-
-// requestTimeout bounds one GitHub API call end to end. Every
-// operation this tool offers is a single small REST write over a
-// remote round trip, so a call the endpoint answers at all returns far
-// inside it. Nothing else bounds one: no operator setting reaches this
-// call, and an endpoint that accepts the connection and then answers
-// nothing is by definition enforcing no limit of its own.
 const requestTimeout = 30 * time.Second
 
-// httpClient carries requestTimeout on every call. http.DefaultClient
-// sets no Timeout, so a call made on it waits until the process exits
-// (issue #739).
-var httpClient = &http.Client{Timeout: requestTimeout}
+var httpClient = &http.Client{Timeout: requestTimeout, CheckRedirect: func(*http.Request, []*http.Request) error {
+	return errors.New("redirect refused")
+}}
+var repositoryName = regexp.MustCompile(`^[A-Za-z0-9_-]+/[A-Za-z0-9_.-]+$`)
+var objectID = regexp.MustCompile(`^[0-9a-f]{40}$`)
 
 type callInput struct {
 	Operation string   `json:"operation"`
 	Owner     string   `json:"owner"`
 	Repo      string   `json:"repo"`
-	Branch    string   `json:"branch"`
 	SHA       string   `json:"sha"`
+	Path      string   `json:"path"`
+	Files     []string `json:"files"`
 	Title     string   `json:"title"`
 	Body      string   `json:"body"`
 	Labels    []string `json:"labels"`
-	Head      string   `json:"head"`
-	Base      string   `json:"base"`
 	Number    int      `json:"number"`
 	Message   string   `json:"message"`
 }
 
 type callOutput struct {
-	Status string `json:"status"`
-	URL    string `json:"url"`
-	Number int    `json:"number"`
-	ID     int64  `json:"id"`
-}
-
-type errorBody struct {
-	Message string `json:"message"`
+	Status string   `json:"status"`
+	URL    string   `json:"url,omitempty"`
+	Number int      `json:"number,omitempty"`
+	ID     int64    `json:"id,omitempty"`
+	SHA    string   `json:"sha,omitempty"`
+	Branch string   `json:"branch,omitempty"`
+	Paths  []string `json:"paths,omitempty"`
 }
 
 type apiResponse struct {
 	HTMLURL string `json:"html_url"`
 	Number  int    `json:"number"`
 	ID      int64  `json:"id"`
-	Object  *struct {
-		URL string `json:"url"`
-	} `json:"object"`
+	SHA     string `json:"sha"`
 }
 
 func main() {
@@ -82,40 +67,43 @@ func run() error {
 		return errors.New("GH_TOKEN is required")
 	}
 	dec := json.NewDecoder(bufio.NewReader(os.Stdin))
+	dec.DisallowUnknownFields()
 	var in callInput
 	if err := dec.Decode(&in); err != nil {
-		return fmt.Errorf("decode input: %w", err)
+		return errors.New("invalid input JSON")
 	}
-	if in.Owner == "" || in.Repo == "" {
-		return errors.New("owner and repo are required")
+	if err := dec.Decode(new(any)); !errors.Is(err, io.EOF) {
+		return errors.New("input must be one JSON object")
 	}
-	var (
-		out callOutput
-		err error
-	)
+	target := in.Owner + "/" + in.Repo
+	if !repositoryName.MatchString(target) || target != os.Getenv("GITHUB_REPOSITORY") || in.Repo == "." || in.Repo == ".." {
+		return errors.New("repository is not authorized by GITHUB_REPOSITORY")
+	}
+	var out callOutput
+	var err error
 	switch in.Operation {
-	case "push":
-		if in.Branch == "" || in.SHA == "" {
-			return errors.New("branch and sha are required for push")
-		}
-		out, err = doPush(in)
+	case "inspect", "import_file", "publish":
+		out, err = repositoryWork(in)
 	case "open_issue":
 		if in.Title == "" {
 			return errors.New("title is required for open_issue")
 		}
-		out, err = doOpenIssue(in)
-	case "open_pull_request":
-		if in.Head == "" || in.Base == "" || in.Title == "" {
-			return errors.New("head, base, and title are required for open_pull_request")
+		body := map[string]any{"title": in.Title, "body": in.Body}
+		if in.Labels != nil {
+			body["labels"] = in.Labels
 		}
-		out, err = doOpenPullRequest(in)
+		var resp apiResponse
+		err = githubRequest(http.MethodPost, in, "/issues", body, &resp)
+		out = callOutput{Status: "opened", URL: resp.HTMLURL, Number: resp.Number}
 	case "comment":
 		if in.Number <= 0 || in.Message == "" {
 			return errors.New("number and message are required for comment")
 		}
-		out, err = doComment(in)
+		var resp apiResponse
+		err = githubRequest(http.MethodPost, in, fmt.Sprintf("/issues/%d/comments", in.Number), map[string]string{"body": in.Message}, &resp)
+		out = callOutput{Status: "commented", URL: resp.HTMLURL, ID: resp.ID}
 	default:
-		return fmt.Errorf("unknown operation: %s", in.Operation)
+		return errors.New("unsupported operation")
 	}
 	if err != nil {
 		return err
@@ -123,85 +111,28 @@ func run() error {
 	return json.NewEncoder(os.Stdout).Encode(out)
 }
 
-func apiBase() string {
-	if v := os.Getenv("GITHUB_API_BASE"); v != "" {
-		return v
+func githubRequest(method string, in callInput, path string, body any, out any) error {
+	var data []byte
+	var err error
+	if body != nil {
+		data, err = json.Marshal(body)
+		if err != nil {
+			return errors.New("encode GitHub request")
+		}
 	}
-	return defaultAPIBase
-}
-
-func doPush(in callInput) (callOutput, error) {
-	body, err := json.Marshal(map[string]string{
-		"ref": "refs/heads/" + in.Branch,
-		"sha": in.SHA,
-	})
+	base := os.Getenv("GITHUB_API_BASE")
+	if base == "" {
+		base = defaultAPIBase
+	}
+	req, err := http.NewRequest(method, base+"/repos/"+in.Owner+"/"+in.Repo+path, bytes.NewReader(data))
 	if err != nil {
-		return callOutput{}, err
+		return errors.New("invalid GitHub API address")
 	}
-	resp, err := githubRequest(http.MethodPost, in.Owner, in.Repo,
-		"/git/refs/heads/"+in.Branch, body)
-	if err != nil {
-		return callOutput{}, err
+	token := os.Getenv("GH_TOKEN")
+	if bytes.Contains(data, []byte(token)) {
+		return errors.New("credential in request refused")
 	}
-	return callOutput{Status: "pushed", URL: resp.Object.URL}, nil
-}
-
-func doOpenIssue(in callInput) (callOutput, error) {
-	body := map[string]any{
-		"title": in.Title,
-		"body":  in.Body,
-	}
-	if in.Labels != nil {
-		body["labels"] = in.Labels
-	}
-	marshaled, err := json.Marshal(body)
-	if err != nil {
-		return callOutput{}, err
-	}
-	resp, err := githubRequest(http.MethodPost, in.Owner, in.Repo, "/issues", marshaled)
-	if err != nil {
-		return callOutput{}, err
-	}
-	return callOutput{Status: "opened", URL: resp.HTMLURL, Number: resp.Number}, nil
-}
-
-func doOpenPullRequest(in callInput) (callOutput, error) {
-	body, err := json.Marshal(map[string]any{
-		"title": in.Title,
-		"body":  in.Body,
-		"head":  in.Head,
-		"base":  in.Base,
-	})
-	if err != nil {
-		return callOutput{}, err
-	}
-	resp, err := githubRequest(http.MethodPost, in.Owner, in.Repo, "/pulls", body)
-	if err != nil {
-		return callOutput{}, err
-	}
-	return callOutput{Status: "opened", URL: resp.HTMLURL, Number: resp.Number}, nil
-}
-
-func doComment(in callInput) (callOutput, error) {
-	body, err := json.Marshal(map[string]any{"body": in.Message})
-	if err != nil {
-		return callOutput{}, err
-	}
-	resp, err := githubRequest(http.MethodPost, in.Owner, in.Repo,
-		fmt.Sprintf("/issues/%d/comments", in.Number), body)
-	if err != nil {
-		return callOutput{}, err
-	}
-	return callOutput{Status: "commented", URL: resp.HTMLURL, ID: resp.ID}, nil
-}
-
-func githubRequest(method, owner, repo, path string, body []byte) (*apiResponse, error) {
-	url := apiBase() + "/repos/" + owner + "/" + repo + path
-	req, err := http.NewRequest(method, url, bytes.NewReader(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Authorization", "Bearer "+os.Getenv("GH_TOKEN"))
+	req.Header.Set("Authorization", "Bearer "+token)
 	req.Header.Set("Accept", "application/vnd.github+json")
 	req.Header.Set("X-GitHub-Api-Version", "2022-11-28")
 	if body != nil {
@@ -209,28 +140,43 @@ func githubRequest(method, owner, repo, path string, body []byte) (*apiResponse,
 	}
 	resp, err := httpClient.Do(req)
 	if err != nil {
-		return nil, err
+		return errors.New("GitHub request failed")
 	}
 	defer resp.Body.Close()
-	respBody, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
+	// API errors and transport URLs can reflect credentials; never return them.
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		var er errorBody
-		_ = json.Unmarshal(respBody, &er)
-		msg := er.Message
-		if msg == "" {
-			msg = fmt.Sprintf("status %d", resp.StatusCode)
+		return fmt.Errorf("GitHub returned status %d", resp.StatusCode)
+	}
+	data, err = io.ReadAll(io.LimitReader(resp.Body, 8*1024*1024+1))
+	if err != nil || len(data) > 8*1024*1024 {
+		return errors.New("GitHub response unreadable or too large")
+	}
+	if bytes.Contains(data, []byte(token)) {
+		return errors.New("credential in response refused")
+	}
+	if err := json.Unmarshal(data, out); err != nil {
+		return errors.New("invalid GitHub response")
+	}
+	normalized, err := json.Marshal(out)
+	if err != nil || bytes.Contains(normalized, []byte(token)) {
+		return errors.New("credential or invalid data in response refused")
+	}
+	return nil
+}
+
+func validBranch(branch string) bool {
+	for _, r := range branch {
+		if r < 32 || r == 127 {
+			return false
 		}
-		return nil, fmt.Errorf("%s: %s", path, msg)
 	}
-	if len(respBody) == 0 {
-		return &apiResponse{}, nil
+	if branch == "" || strings.HasPrefix(branch, "-") || strings.ContainsAny(branch, " ~^:?*[\\\x00\r\n\t") || strings.Contains(branch, "..") || strings.Contains(branch, "@{") || branch == "@" {
+		return false
 	}
-	var out apiResponse
-	if err := json.Unmarshal(respBody, &out); err != nil {
-		return nil, fmt.Errorf("%s: decode response: %w", path, err)
+	for _, part := range strings.Split(branch, "/") {
+		if part == "" || strings.HasPrefix(part, ".") || strings.HasSuffix(part, ".") || strings.HasSuffix(part, ".lock") {
+			return false
+		}
 	}
-	return &out, nil
+	return true
 }

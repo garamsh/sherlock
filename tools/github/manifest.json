@@ -1,22 +1,21 @@
 {
 	"name": "github",
-	"description": "Push branches and manage issues, pull requests, and comments on GitHub via the REST API.",
+	"description": "Inspect the authorized repository, import selected UTF-8 files into the workspace, and publish validated workspace files to the operator-selected new branch and draft PR. Use inspect first, import_file with its sha/path, file_read/file_write to edit, then publish with sha/files/title. Also manage issues and comments.",
 	"command": "github",
 	"input_schema": {
 		"type": "object",
 		"properties": {
-			"operation": {"type": "string", "enum": ["push", "open_issue", "open_pull_request", "comment"]},
+			"operation": {"type": "string", "enum": ["inspect", "import_file", "publish", "open_issue", "comment"]},
 			"owner": {"type": "string", "minLength": 1},
 			"repo": {"type": "string", "minLength": 1},
-			"branch": {"type": "string", "minLength": 1},
 			"sha": {"type": "string", "minLength": 1},
 			"title": {"type": "string", "minLength": 1},
 			"body": {"type": "string"},
 			"labels": {"type": "array", "items": {"type": "string"}},
-			"head": {"type": "string", "minLength": 1},
-			"base": {"type": "string", "minLength": 1},
 			"number": {"type": "integer", "minimum": 1},
-			"message": {"type": "string", "minLength": 1}
+			"message": {"type": "string", "minLength": 1},
+			"path": {"type": "string", "minLength": 1},
+			"files": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1, "maxItems": 100}
 		},
 		"required": ["operation", "owner", "repo"],
 		"additionalProperties": false
@@ -27,7 +26,10 @@
 			"status": {"type": "string"},
 			"url": {"type": "string"},
 			"number": {"type": "integer"},
-			"id": {"type": "integer"}
+			"id": {"type": "integer"},
+			"sha": {"type": "string"},
+			"branch": {"type": "string"},
+			"paths": {"type": "array", "items": {"type": "string"}}
 		},
 		"required": ["status"],
 		"additionalProperties": false

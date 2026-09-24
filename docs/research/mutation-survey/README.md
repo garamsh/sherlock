@@ -168,7 +168,7 @@ go install github.com/go-gremlins/gremlins/cmd/gremlins@v0.6.0
 gremlins unleash --timeout-coefficient 200 ./internal/tool
 gremlins unleash --timeout-coefficient 200 ./internal/workspace/shell
 gremlins unleash --timeout-coefficient 200 ./internal/memory
-cd docs/experiments/mutation-survey/harness
+cd docs/research/mutation-survey/harness
 python3 hand_mutants.py
 python3 survivor_retest.py
 ```

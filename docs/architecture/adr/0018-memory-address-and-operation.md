@@ -5,7 +5,7 @@
 
 ## Context
 
-The former addressed store could answer an exact address but did not retain the original message. Correction and paraphrase probes exposed that finding the right address was fragile (`docs/experiments/recall-specificity/`). Issue #823 requires multiple searchable memories and a route back to the source.
+The former addressed store could answer an exact address but did not retain the original message. Correction and paraphrase probes exposed that finding the right address was fragile (`docs/research/recall-specificity/`). Issue #823 requires multiple searchable memories and a route back to the source.
 
 ## Decision
 

@@ -179,10 +179,10 @@ def findings():
           BY_SYSTEM["N3-platform-extraction"]["context_recall"], 2)
 
 
-# --- What the experiments index quotes ------------------------------------
+# --- What the research index quotes ------------------------------------
 
 def index():
-    part = "the experiments index"
+    part = "the research index"
     a = Anchor(r"the voluntary writeback is the root failure \((\d+\.\d+) context-recall\)",
                INDEX)
     check(part, "N1 quoted in the index", a.one(),

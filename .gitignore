@@ -41,12 +41,12 @@ data/
 !/tools/*/*.json
 
 # Binaries a direct build writes at the repository root, each under its package's
-# name: cmd/gagent, and every harness package under docs/experiments/. Only these
+# name: cmd/gagent, and every harness package under docs/research/. Only these
 # two names; a binary built under any other name is not covered.
 /gagent
 /harness
 
-# Python (experiment harnesses under docs/experiments/)
+# Python (experiment harnesses under docs/research/)
 __pycache__/
 *.pyc
 .embed_cache*.json

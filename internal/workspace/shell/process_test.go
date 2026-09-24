@@ -375,9 +375,6 @@ func TestProcessExecutor_LocalGoTest(t *testing.T) {
 		uid = testExecUID
 	}
 	root := execAccountDir(t)
-	if os.Geteuid() == 0 {
-		require.NoError(t, os.Chown(root, uid, uid))
-	}
 	t.Setenv("GAGENT_TEST_PLATFORM_SECRET", "must-not-reach-test")
 	goRoot, err := exec.Command("go", "env", "GOROOT").Output()
 	require.NoError(t, err, "locate the test runner toolchain")
@@ -398,6 +395,16 @@ func TestGreeting(t *testing.T) {
 	program := filepath.Join(root, "greeting.go")
 	require.NoError(t, os.WriteFile(program, []byte("package sample\nfunc greeting() string { return \"hello\" }\n"), 0o644))
 	executor := shell.NewProcessExecutor(uid, 2*time.Minute)
+	if os.Geteuid() == 0 {
+		require.NoError(t, os.Chown(root, uid, uid))
+		t.Cleanup(func() {
+			res, err := executor.Run(context.Background(), shell.Request{
+				Command: "rm -rf cache control-cache", Workdir: root, Trusted: true,
+			})
+			require.NoError(t, err)
+			require.Equal(t, 0, res.ExitCode, "cache cleanup: %s", res.Stderr)
+		})
+	}
 	req := shell.Request{
 		Command: goBinary,
 		Args:    []string{"test", "-p=1", "-count=1", "-v"},

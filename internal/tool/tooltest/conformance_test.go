@@ -133,7 +133,7 @@ func TestCheck_ThenInheritsParentProperties(t *testing.T) {
 // conformance check extracts the input_schema and output_schema from
 // each manifest.json, which is the only copy of a tool's contract.
 func TestCheckSchema_AcceptsEveryBuiltinDocument(t *testing.T) {
-	for _, name := range []string{"file_read", "file_write", "file_list", "github", "message_send", "shell_exec"} {
+	for _, name := range []string{"file_read", "file_write", "file_list", "message_send", "shell_exec"} {
 		t.Run(name, func(t *testing.T) {
 			input, output := tooltest.ManifestSchemas(t, tooltest.ReadManifest(t, name))
 			tooltest.CheckSchema(t, name+"-input", input)

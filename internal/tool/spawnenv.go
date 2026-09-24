@@ -34,12 +34,9 @@ const (
 // platform's environment (runner.go), so setting them here is what puts
 // them in front of every tool the registry loads.
 //
-// A tool's credentials are not among them: a secret reaches its tool
-// through the environment the operator already gave the platform, never
-// through a value the platform materializes (ADR 0003, ADR 0013). The
-// github tool's GH_TOKEN is the standing example — the platform never
-// sets it, and a tool that needs one and does not find one fails on its
-// own terms.
+// Installed tools inherit operator-provisioned agent credentials whole; this
+// function only sets platform addresses and identity. Workspace credentials
+// are provisioned separately and selected by its Exec grants (ADR 0003).
 func SetSpawnEnv(workspaceAddr, outboxDir, agentID string) error {
 	for _, v := range []struct{ name, value string }{
 		{WorkspaceAddrEnv, workspaceAddr},

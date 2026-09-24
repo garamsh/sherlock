@@ -10,11 +10,11 @@ The addressed-only lifecycle dropped old conversation when the rolling context c
 ## Decision
 
 - Keep the newest session messages up to the configured context bound. Restore recent visible user and assistant messages from the store after restart.
-- Persist each completed inbound user message with its gateway ID and visible assistant outputs as source records. System instructions, tool results, hidden reasoning, and credentials do not become memory sources.
+- Commit each completed inbound user message with its gateway ID and visible assistant outputs as source records before synthesis. Synthesis failure leaves sources durable for retry at the next completion or startup. System instructions, tool results, hidden reasoning, and credentials do not become memory sources.
 - Use the rolling recent-message window as short memory. A separate short-summary tier adds no independent responsibility.
-- Synthesize each full bounded cross-turn source batch into one immutable mid episode, with direct links to its original message interval. Episodes are independent: the model receives the batch, not every previous mid summary.
+- Synthesize each full eight-message cross-turn source batch into one immutable mid episode, with direct links to its original message interval. Episodes are independent: the model receives the batch, not every previous mid summary.
 - Preserve partial batches durably and offer pending source previews alongside recalled episodes so compaction cannot hide the interval before a checkpoint.
-- Recall bounded candidates before the act loop. The agent may inspect linked summaries and original messages through its reserved memory boundary when detail matters.
+- Before the act loop, recall the two most recent mid episodes and up to five distinct older relevant episodes, alongside up to eight pending source previews. The reserved memory boundary inspects only original source messages by ID when detail matters.
 
 ## Consequences
 

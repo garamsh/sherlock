@@ -1,0 +1,87 @@
+## Kestrel Export Feature Implementation
+
+### Complete Implementation
+
+```python
+"""
+Kestrel Export Module
+Provides CSV export functionality following the Quartz contract.
+"""
+
+import csv
+import io
+
+
+def render_export(rows):
+    """
+    Render export rows to CSV text.
+    
+    Args:
+        rows: Iterable of (label, count) tuples
+        
+    Returns:
+        CSV formatted string
+    """
+    output = io.StringIO()
+    writer = csv.writer(output)
+    
+    # Header following Quartz contract
+    writer.writerow(['label', 'total'])
+    
+    # Write data rows
+    for label, count in rows:
+        writer.writerow([label, count])
+    
+    return output.getvalue()
+
+
+def validate_export(rows, schema):
+    """
+    Validate export data against Quartz contract schema.
+    
+    Args:
+        rows: Data rows to validate
+        schema: Expected schema definition
+        
+    Returns:
+        tuple: (is_valid, errors)
+    """
+    errors = []
+    
+    for idx, (label, count) in enumerate(rows):
+        if not isinstance(label, str):
+            errors.append(f"Row {idx}: label must be string")
+        if not isinstance(count, (int, float)):
+            errors.append(f"Row {idx}: count must be numeric")
+    
+    return (len(errors) == 0, errors)
+```
+
+### Example Output
+
+```python
+# Sample data
+inventory = [
+    ("pencils", 150),
+    ("erasers", 75),
+    ("notebooks", 42),
+    ("pens", 200),
+]
+
+# Generate export
+csv_output = render_export(inventory)
+print(csv_output)
+```
+
+**Output:**
+```
+label,total
+pencils,150
+erasers,75
+notebooks,42
+pens,200
+```
+
+### Sources
+- **ID 33**: "Kestrel export takes rows of label and count. Implement Python render_export(rows) returning CSV text. Its review follows the Quartz contract."
+- **ID 57**: "Correction: the Kestrel CSV header is label,total. The former header label,count is obsolete; values still come from each row count."

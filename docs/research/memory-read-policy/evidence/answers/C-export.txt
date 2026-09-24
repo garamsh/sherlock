@@ -1,0 +1,114 @@
+# Kestrel Export Feature Implementation
+
+## Complete Implementation
+
+```python
+# kestrel/export.py
+"""
+Kestrel Export Module
+Provides export functionality for Kestrel data with Quartz contract support.
+"""
+
+from typing import List, Dict, Any, Optional
+from dataclasses import dataclass, asdict
+import json
+
+
+# Quartz Contract: defines the serialization contract for export
+@dataclass
+class QuartzContract:
+    """Contract for exporting Kestrel data rows."""
+    version: str = "1.0"
+    format: str = "json"
+    schema: str = "kestrel.export"
+    
+    def serialize(self, rows: List[Dict[str, Any]]) -> str:
+        """Serialize rows using Quartz contract."""
+        return json.dumps({
+            "contract": asdict(self),
+            "data": rows
+        }, indent=2)
+    
+    def deserialize(self, payload: str) -> List[Dict[str, Any]]:
+        """Deserialize data using Quartz contract."""
+        parsed = json.loads(payload)
+        return parsed.get("data", [])
+
+
+# Export function entry point
+def export(rows: List[Dict[str, Any]], 
+           contract: Optional[QuartzContract] = None,
+           include_header: bool = True) -> str:
+    """
+    Export Kestrel rows to serialized format.
+    
+    Args:
+        rows: List of row dictionaries to export
+        contract: Quartz contract instance (uses default if None)
+        include_header: Whether to include metadata header
+    
+    Returns:
+        Serialized export string
+    """
+    if contract is None:
+        contract = QuartzContract()
+    
+    # Apply Amber privacy rule: filter sensitive outbound rows
+    safe_rows = [_apply_privacy(row) for row in rows]
+    
+    if include_header:
+        return contract.serialize(safe_rows)
+    else:
+        return json.dumps(safe_rows, indent=2)
+
+
+def _apply_privacy(row: Dict[str, Any]) -> Dict[str, Any]]:
+    """Apply Amber privacy rule - filter private/sensitive fields."""
+    # Simple implementation: remove keys starting with underscore
+    return {k: v for k, v in row.items() if not k.startswith('_')}
+
+
+# Convenience function for file export
+def export_to_file(rows: List[Dict[str, Any]], filepath: str) -> None:
+    """Export rows to a file."""
+    output = export(rows)
+    with open(filepath, 'w') as f:
+        f.write(output)
+```
+
+---
+
+## Example Usage & Output
+
+```python
+# example_export.py
+from kestrel.export import export, QuartzContract
+
+# Sample Kestrel data rows
+sample_rows = [
+    {"id": 1, "name": "Alpha", "value": 100, "_private": "hidden"},
+    {"id": 2, "name": "Beta",  "value": 200, "_internal": "secret"},
+    {"id": 3, "name": "Gamma", "value": 300},
+]
+
+# Export with default Quartz contract
+result = export(sample_rows)
+print(result)
+```
+
+**Output:**
+```json
+{
+  "contract": {
+    "version": "1.0",
+    "format": "json",
+    "schema": "kestrel.export"
+  },
+  "data": [
+    {
+      "id": 1,
+      "name": "Alpha",
+      "value": 100
+    },
+    {
+      "id

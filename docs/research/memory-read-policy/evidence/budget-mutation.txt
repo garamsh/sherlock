@@ -1,0 +1,46 @@
+test_context_refuses_with_small_request_control (run_test.BudgetTest.test_context_refuses_with_small_request_control) ... FAIL
+test_reservation_refuses_before_http_with_accepted_control (run_test.BudgetTest.test_reservation_refuses_before_http_with_accepted_control) ... 
+  test_reservation_refuses_before_http_with_accepted_control (run_test.BudgetTest.test_reservation_refuses_before_http_with_accepted_control) (field='input') ... FAIL
+  test_reservation_refuses_before_http_with_accepted_control (run_test.BudgetTest.test_reservation_refuses_before_http_with_accepted_control) (field='completion') ... FAIL
+  test_reservation_refuses_before_http_with_accepted_control (run_test.BudgetTest.test_reservation_refuses_before_http_with_accepted_control) (field='calls') ... FAIL
+
+======================================================================
+FAIL: test_context_refuses_with_small_request_control (run_test.BudgetTest.test_context_refuses_with_small_request_control)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp_ed957j7/run_test.py", line 46, in test_context_refuses_with_small_request_control
+    with self.assertRaisesRegex(RuntimeError, 'reservation refused'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+======================================================================
+FAIL: test_reservation_refuses_before_http_with_accepted_control (run_test.BudgetTest.test_reservation_refuses_before_http_with_accepted_control) (field='input')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp_ed957j7/run_test.py", line 35, in test_reservation_refuses_before_http_with_accepted_control
+    with self.assertRaisesRegex(RuntimeError, 'reservation refused'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+======================================================================
+FAIL: test_reservation_refuses_before_http_with_accepted_control (run_test.BudgetTest.test_reservation_refuses_before_http_with_accepted_control) (field='completion')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp_ed957j7/run_test.py", line 35, in test_reservation_refuses_before_http_with_accepted_control
+    with self.assertRaisesRegex(RuntimeError, 'reservation refused'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+======================================================================
+FAIL: test_reservation_refuses_before_http_with_accepted_control (run_test.BudgetTest.test_reservation_refuses_before_http_with_accepted_control) (field='calls')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp_ed957j7/run_test.py", line 35, in test_reservation_refuses_before_http_with_accepted_control
+    with self.assertRaisesRegex(RuntimeError, 'reservation refused'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.005s
+
+FAILED (failures=4)

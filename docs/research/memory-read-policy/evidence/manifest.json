@@ -1,0 +1,15 @@
+{
+  "hashes": {
+    "run.py": "cf277de3a503a9207d57dc0fd3e7c6e6b3b8e2eed025bf342703f2a4caf9a0a5",
+    "store.go": "a38f1406f1b378f4aeed43806ad65ba04b960d0f965168308a79cd0f713d07ed",
+    "corpus.json": "039de651619239be3d342fd4ea62b810fffbb1c90723a6e40367eb6943b8a9ae",
+    "tasks.json": "57844a8d9aed47acb8ed759a8641c8d3052f919c0785d14046a1ad27ee83b3c9",
+    "preregistration.md": "11bf99ec7089adedb92a4bd0ae3a745c7887a0b1cbad4c1a4b6cd517ac94b708"
+  },
+  "source_revision": "e131226313ebe0e61e2f2a338b0371959aac87b7",
+  "endpoint": "https://api.minimax.io/v1/chat/completions",
+  "model": "MiniMax-M2",
+  "runtime": "3.13.5 (main, Aug 10 2026, 12:06:59) [GCC 14.2.0]",
+  "system": "Complete the user task using relevant older conversation. Memory summaries are hints, not evidence: inspect original sources before applying their facts or rules. Later corrections supersede earlier claims. Apply relevant cross-project rules. Cite source IDs and short exact quotations after the finished artifact. Do not invent unavailable facts. Use tools economically and batch inspections. Keep reasoning brief and deliver the artifact within the available calls.",
+  "rewrite": "Give up to four short search phrases for the older conversation that could answer this task. Include alternate wording and each topic separately. Call memory_search_terms; do not answer the task."
+}

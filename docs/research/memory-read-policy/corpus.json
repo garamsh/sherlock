@@ -1,0 +1,158 @@
+[
+  {
+    "summary": "Alder reservoir project: capacity, drought resilience and household demand. Publications use the Lantern method.",
+    "sources": [
+      "Alder buffers drought interruptions. Its reservoir holds 40 megalitres. Publications about this project follow the Lantern method.",
+      "Routine acknowledgement 1.1.",
+      "Routine acknowledgement 1.2.",
+      "Routine acknowledgement 1.3.",
+      "Routine acknowledgement 1.4.",
+      "Routine acknowledgement 1.5.",
+      "Routine acknowledgement 1.6.",
+      "Routine acknowledgement 1.7."
+    ]
+  },
+  {
+    "summary": "Lantern composition method: writing structure, audience and terminology.",
+    "sources": [
+      "Lantern method: begin with a concrete household scene, then explain the mechanism, then end with a limitation. Address residents; avoid the word revolutionary.",
+      "Routine acknowledgement 2.1.",
+      "Routine acknowledgement 2.2.",
+      "Routine acknowledgement 2.3.",
+      "Routine acknowledgement 2.4.",
+      "Routine acknowledgement 2.5.",
+      "Routine acknowledgement 2.6.",
+      "Routine acknowledgement 2.7."
+    ]
+  },
+  {
+    "summary": "Cobalt disclosure rule: public communication and uncertainties.",
+    "sources": [
+      "All public prose follows Cobalt disclosure: state that the pilot has no measured health outcomes. Never imply that water storage proves a health benefit.",
+      "Routine acknowledgement 3.1.",
+      "Routine acknowledgement 3.2.",
+      "Routine acknowledgement 3.3.",
+      "Routine acknowledgement 3.4.",
+      "Routine acknowledgement 3.5.",
+      "Routine acknowledgement 3.6.",
+      "Routine acknowledgement 3.7."
+    ]
+  },
+  {
+    "summary": "Alder reservoir correction: revised capacity replaces earlier estimate.",
+    "sources": [
+      "Correction: Alder reservoir capacity is 28 megalitres, not 40. The earlier estimate is obsolete; use 28 in all current material.",
+      "Routine acknowledgement 4.1.",
+      "Routine acknowledgement 4.2.",
+      "Routine acknowledgement 4.3.",
+      "Routine acknowledgement 4.4.",
+      "Routine acknowledgement 4.5.",
+      "Routine acknowledgement 4.6.",
+      "Routine acknowledgement 4.7."
+    ]
+  },
+  {
+    "summary": "Kestrel export feature: rows, function entry point and Quartz contract.",
+    "sources": [
+      "Kestrel export takes rows of label and count. Implement Python render_export(rows) returning CSV text. Its review follows the Quartz contract.",
+      "Routine acknowledgement 5.1.",
+      "Routine acknowledgement 5.2.",
+      "Routine acknowledgement 5.3.",
+      "Routine acknowledgement 5.4.",
+      "Routine acknowledgement 5.5.",
+      "Routine acknowledgement 5.6.",
+      "Routine acknowledgement 5.7."
+    ]
+  },
+  {
+    "summary": "Quartz coding conventions: serialization, dependencies and row order.",
+    "sources": [
+      "Quartz contract: use Python standard-library csv.writer with io.StringIO, preserve input row order, and terminate each record with LF rather than CRLF.",
+      "Routine acknowledgement 6.1.",
+      "Routine acknowledgement 6.2.",
+      "Routine acknowledgement 6.3.",
+      "Routine acknowledgement 6.4.",
+      "Routine acknowledgement 6.5.",
+      "Routine acknowledgement 6.6.",
+      "Routine acknowledgement 6.7."
+    ]
+  },
+  {
+    "summary": "Amber privacy rule for data publication and outbound rows.",
+    "sources": [
+      "All tabular exports follow Amber privacy: omit any row whose label starts with underscore. This includes internal labels even when the count is positive.",
+      "Routine acknowledgement 7.1.",
+      "Routine acknowledgement 7.2.",
+      "Routine acknowledgement 7.3.",
+      "Routine acknowledgement 7.4.",
+      "Routine acknowledgement 7.5.",
+      "Routine acknowledgement 7.6.",
+      "Routine acknowledgement 7.7."
+    ]
+  },
+  {
+    "summary": "Kestrel export correction: header naming change.",
+    "sources": [
+      "Correction: the Kestrel CSV header is label,total. The former header label,count is obsolete; values still come from each row count.",
+      "Routine acknowledgement 8.1.",
+      "Routine acknowledgement 8.2.",
+      "Routine acknowledgement 8.3.",
+      "Routine acknowledgement 8.4.",
+      "Routine acknowledgement 8.5.",
+      "Routine acknowledgement 8.6.",
+      "Routine acknowledgement 8.7."
+    ]
+  },
+  {
+    "summary": "Cobalt and Amber policy registry: writing and coding responsibilities.",
+    "sources": [
+      "For public prose consult Cobalt disclosure; for tabular exports consult Amber privacy. These apply across all projects.",
+      "Routine acknowledgement 9.1.",
+      "Routine acknowledgement 9.2.",
+      "Routine acknowledgement 9.3.",
+      "Routine acknowledgement 9.4.",
+      "Routine acknowledgement 9.5.",
+      "Routine acknowledgement 9.6.",
+      "Routine acknowledgement 9.7."
+    ]
+  },
+  {
+    "summary": "Orchid garden maintenance: watering schedule.",
+    "sources": [
+      "Orchid beds are watered on Tuesdays.",
+      "Routine acknowledgement 10.1.",
+      "Routine acknowledgement 10.2.",
+      "Routine acknowledgement 10.3.",
+      "Routine acknowledgement 10.4.",
+      "Routine acknowledgement 10.5.",
+      "Routine acknowledgement 10.6.",
+      "Routine acknowledgement 10.7."
+    ]
+  },
+  {
+    "summary": "Lunch preference: soup.",
+    "sources": [
+      "Lunch preference is tomato soup.",
+      "Routine acknowledgement 11.1.",
+      "Routine acknowledgement 11.2.",
+      "Routine acknowledgement 11.3.",
+      "Routine acknowledgement 11.4.",
+      "Routine acknowledgement 11.5.",
+      "Routine acknowledgement 11.6.",
+      "Routine acknowledgement 11.7."
+    ]
+  },
+  {
+    "summary": "Stationery inventory: pencils.",
+    "sources": [
+      "The stationery cupboard contains six pencils.",
+      "Routine acknowledgement 12.1.",
+      "Routine acknowledgement 12.2.",
+      "Routine acknowledgement 12.3.",
+      "Routine acknowledgement 12.4.",
+      "Routine acknowledgement 12.5.",
+      "Routine acknowledgement 12.6.",
+      "Routine acknowledgement 12.7."
+    ]
+  }
+]

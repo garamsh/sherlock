@@ -1,0 +1,390 @@
+{
+  "revision": "a39315d0fe11e73fc29960fb51ab400a1fd513e8",
+  "direct": {
+    "essay": {
+      "Memories": [
+        {
+          "ID": "12",
+          "Content": "Stationery inventory: pencils. [mid:12 sources:89-96; summary, not verified source text]",
+          "Age": "recent"
+        },
+        {
+          "ID": "11",
+          "Content": "Lunch preference: soup. [mid:11 sources:81-88; summary, not verified source text]",
+          "Age": "recent"
+        },
+        {
+          "ID": "4",
+          "Content": "Alder reservoir correction: revised capacity replaces earlier estimate. [mid:4 sources:25-32; summary, not verified source text]",
+          "Age": "historical"
+        },
+        {
+          "ID": "1",
+          "Content": "Alder reservoir project: capacity, drought resilience and household demand. Publications use the Lantern method. [mid:1 sources:1-8; summary, not verified source text]",
+          "Age": "historical"
+        }
+      ],
+      "Outcome": "addressed"
+    },
+    "export": {
+      "Memories": [
+        {
+          "ID": "12",
+          "Content": "Stationery inventory: pencils. [mid:12 sources:89-96; summary, not verified source text]",
+          "Age": "recent"
+        },
+        {
+          "ID": "11",
+          "Content": "Lunch preference: soup. [mid:11 sources:81-88; summary, not verified source text]",
+          "Age": "recent"
+        },
+        {
+          "ID": "5",
+          "Content": "Kestrel export feature: rows, function entry point and Quartz contract. [mid:5 sources:33-40; summary, not verified source text]",
+          "Age": "historical"
+        },
+        {
+          "ID": "8",
+          "Content": "Kestrel export correction: header naming change. [mid:8 sources:57-64; summary, not verified source text]",
+          "Age": "historical"
+        }
+      ],
+      "Outcome": "addressed"
+    },
+    "exact": {
+      "Memories": [
+        {
+          "ID": "12",
+          "Content": "Stationery inventory: pencils. [mid:12 sources:89-96; summary, not verified source text]",
+          "Age": "recent"
+        },
+        {
+          "ID": "11",
+          "Content": "Lunch preference: soup. [mid:11 sources:81-88; summary, not verified source text]",
+          "Age": "recent"
+        },
+        {
+          "ID": "4",
+          "Content": "Alder reservoir correction: revised capacity replaces earlier estimate. [mid:4 sources:25-32; summary, not verified source text]",
+          "Age": "historical"
+        },
+        {
+          "ID": "1",
+          "Content": "Alder reservoir project: capacity, drought resilience and household demand. Publications use the Lantern method. [mid:1 sources:1-8; summary, not verified source text]",
+          "Age": "historical"
+        },
+        {
+          "ID": "8",
+          "Content": "Kestrel export correction: header naming change. [mid:8 sources:57-64; summary, not verified source text]",
+          "Age": "historical"
+        }
+      ],
+      "Outcome": "addressed"
+    },
+    "absent": {
+      "Memories": [
+        {
+          "ID": "12",
+          "Content": "Stationery inventory: pencils. [mid:12 sources:89-96; summary, not verified source text]",
+          "Age": "recent"
+        },
+        {
+          "ID": "11",
+          "Content": "Lunch preference: soup. [mid:11 sources:81-88; summary, not verified source text]",
+          "Age": "recent"
+        }
+      ],
+      "Outcome": "addressed"
+    }
+  },
+  "facets": [
+    {
+      "task": "essay",
+      "name": "household-mechanism-limitation",
+      "source": {
+        "ID": 9,
+        "ExternalID": "",
+        "Role": "user",
+        "Content": "Lantern method: begin with a concrete household scene, then explain the mechanism, then end with a limitation. Address residents; avoid the word revolutionary."
+      },
+      "query": "Lantern composition method",
+      "candidates": {
+        "Memories": [
+          {
+            "ID": "12",
+            "Content": "Stationery inventory: pencils. [mid:12 sources:89-96; summary, not verified source text]",
+            "Age": "recent"
+          },
+          {
+            "ID": "11",
+            "Content": "Lunch preference: soup. [mid:11 sources:81-88; summary, not verified source text]",
+            "Age": "recent"
+          },
+          {
+            "ID": "2",
+            "Content": "Lantern composition method: writing structure, audience and terminology. [mid:2 sources:9-16; summary, not verified source text]",
+            "Age": "historical"
+          },
+          {
+            "ID": "1",
+            "Content": "Alder reservoir project: capacity, drought resilience and household demand. Publications use the Lantern method. [mid:1 sources:1-8; summary, not verified source text]",
+            "Age": "historical"
+          }
+        ],
+        "Outcome": "addressed"
+      }
+    },
+    {
+      "task": "essay",
+      "name": "health-uncertainty",
+      "source": {
+        "ID": 17,
+        "ExternalID": "",
+        "Role": "user",
+        "Content": "All public prose follows Cobalt disclosure: state that the pilot has no measured health outcomes. Never imply that water storage proves a health benefit."
+      },
+      "query": "Cobalt disclosure",
+      "candidates": {
+        "Memories": [
+          {
+            "ID": "12",
+            "Content": "Stationery inventory: pencils. [mid:12 sources:89-96; summary, not verified source text]",
+            "Age": "recent"
+          },
+          {
+            "ID": "11",
+            "Content": "Lunch preference: soup. [mid:11 sources:81-88; summary, not verified source text]",
+            "Age": "recent"
+          },
+          {
+            "ID": "3",
+            "Content": "Cobalt disclosure rule: public communication and uncertainties. [mid:3 sources:17-24; summary, not verified source text]",
+            "Age": "historical"
+          },
+          {
+            "ID": "9",
+            "Content": "Cobalt and Amber policy registry: writing and coding responsibilities. [mid:9 sources:65-72; summary, not verified source text]",
+            "Age": "historical"
+          }
+        ],
+        "Outcome": "addressed"
+      }
+    },
+    {
+      "task": "essay",
+      "name": "current-capacity",
+      "source": {
+        "ID": 25,
+        "ExternalID": "",
+        "Role": "user",
+        "Content": "Correction: Alder reservoir capacity is 28 megalitres, not 40. The earlier estimate is obsolete; use 28 in all current material."
+      },
+      "query": "Alder reservoir correction",
+      "candidates": {
+        "Memories": [
+          {
+            "ID": "12",
+            "Content": "Stationery inventory: pencils. [mid:12 sources:89-96; summary, not verified source text]",
+            "Age": "recent"
+          },
+          {
+            "ID": "11",
+            "Content": "Lunch preference: soup. [mid:11 sources:81-88; summary, not verified source text]",
+            "Age": "recent"
+          },
+          {
+            "ID": "4",
+            "Content": "Alder reservoir correction: revised capacity replaces earlier estimate. [mid:4 sources:25-32; summary, not verified source text]",
+            "Age": "historical"
+          },
+          {
+            "ID": "1",
+            "Content": "Alder reservoir project: capacity, drought resilience and household demand. Publications use the Lantern method. [mid:1 sources:1-8; summary, not verified source text]",
+            "Age": "historical"
+          },
+          {
+            "ID": "8",
+            "Content": "Kestrel export correction: header naming change. [mid:8 sources:57-64; summary, not verified source text]",
+            "Age": "historical"
+          }
+        ],
+        "Outcome": "addressed"
+      }
+    },
+    {
+      "task": "export",
+      "name": "csv-standard-library-order-lf",
+      "source": {
+        "ID": 41,
+        "ExternalID": "",
+        "Role": "user",
+        "Content": "Quartz contract: use Python standard-library csv.writer with io.StringIO, preserve input row order, and terminate each record with LF rather than CRLF."
+      },
+      "query": "Quartz coding conventions",
+      "candidates": {
+        "Memories": [
+          {
+            "ID": "12",
+            "Content": "Stationery inventory: pencils. [mid:12 sources:89-96; summary, not verified source text]",
+            "Age": "recent"
+          },
+          {
+            "ID": "11",
+            "Content": "Lunch preference: soup. [mid:11 sources:81-88; summary, not verified source text]",
+            "Age": "recent"
+          },
+          {
+            "ID": "6",
+            "Content": "Quartz coding conventions: serialization, dependencies and row order. [mid:6 sources:41-48; summary, not verified source text]",
+            "Age": "historical"
+          },
+          {
+            "ID": "9",
+            "Content": "Cobalt and Amber policy registry: writing and coding responsibilities. [mid:9 sources:65-72; summary, not verified source text]",
+            "Age": "historical"
+          },
+          {
+            "ID": "5",
+            "Content": "Kestrel export feature: rows, function entry point and Quartz contract. [mid:5 sources:33-40; summary, not verified source text]",
+            "Age": "historical"
+          }
+        ],
+        "Outcome": "addressed"
+      }
+    },
+    {
+      "task": "export",
+      "name": "private-row-filter",
+      "source": {
+        "ID": 49,
+        "ExternalID": "",
+        "Role": "user",
+        "Content": "All tabular exports follow Amber privacy: omit any row whose label starts with underscore. This includes internal labels even when the count is positive."
+      },
+      "query": "Amber privacy",
+      "candidates": {
+        "Memories": [
+          {
+            "ID": "12",
+            "Content": "Stationery inventory: pencils. [mid:12 sources:89-96; summary, not verified source text]",
+            "Age": "recent"
+          },
+          {
+            "ID": "11",
+            "Content": "Lunch preference: soup. [mid:11 sources:81-88; summary, not verified source text]",
+            "Age": "recent"
+          },
+          {
+            "ID": "7",
+            "Content": "Amber privacy rule for data publication and outbound rows. [mid:7 sources:49-56; summary, not verified source text]",
+            "Age": "historical"
+          },
+          {
+            "ID": "9",
+            "Content": "Cobalt and Amber policy registry: writing and coding responsibilities. [mid:9 sources:65-72; summary, not verified source text]",
+            "Age": "historical"
+          }
+        ],
+        "Outcome": "addressed"
+      }
+    },
+    {
+      "task": "export",
+      "name": "current-header",
+      "source": {
+        "ID": 57,
+        "ExternalID": "",
+        "Role": "user",
+        "Content": "Correction: the Kestrel CSV header is label,total. The former header label,count is obsolete; values still come from each row count."
+      },
+      "query": "Kestrel export correction",
+      "candidates": {
+        "Memories": [
+          {
+            "ID": "12",
+            "Content": "Stationery inventory: pencils. [mid:12 sources:89-96; summary, not verified source text]",
+            "Age": "recent"
+          },
+          {
+            "ID": "11",
+            "Content": "Lunch preference: soup. [mid:11 sources:81-88; summary, not verified source text]",
+            "Age": "recent"
+          },
+          {
+            "ID": "8",
+            "Content": "Kestrel export correction: header naming change. [mid:8 sources:57-64; summary, not verified source text]",
+            "Age": "historical"
+          },
+          {
+            "ID": "5",
+            "Content": "Kestrel export feature: rows, function entry point and Quartz contract. [mid:5 sources:33-40; summary, not verified source text]",
+            "Age": "historical"
+          },
+          {
+            "ID": "4",
+            "Content": "Alder reservoir correction: revised capacity replaces earlier estimate. [mid:4 sources:25-32; summary, not verified source text]",
+            "Age": "historical"
+          }
+        ],
+        "Outcome": "addressed"
+      }
+    },
+    {
+      "task": "exact",
+      "name": "current-capacity-and-quote",
+      "source": {
+        "ID": 25,
+        "ExternalID": "",
+        "Role": "user",
+        "Content": "Correction: Alder reservoir capacity is 28 megalitres, not 40. The earlier estimate is obsolete; use 28 in all current material."
+      },
+      "query": "Alder reservoir capacity",
+      "candidates": {
+        "Memories": [
+          {
+            "ID": "12",
+            "Content": "Stationery inventory: pencils. [mid:12 sources:89-96; summary, not verified source text]",
+            "Age": "recent"
+          },
+          {
+            "ID": "11",
+            "Content": "Lunch preference: soup. [mid:11 sources:81-88; summary, not verified source text]",
+            "Age": "recent"
+          },
+          {
+            "ID": "4",
+            "Content": "Alder reservoir correction: revised capacity replaces earlier estimate. [mid:4 sources:25-32; summary, not verified source text]",
+            "Age": "historical"
+          },
+          {
+            "ID": "1",
+            "Content": "Alder reservoir project: capacity, drought resilience and household demand. Publications use the Lantern method. [mid:1 sources:1-8; summary, not verified source text]",
+            "Age": "historical"
+          }
+        ],
+        "Outcome": "addressed"
+      }
+    }
+  ],
+  "controls": {
+    "absent_only_recent": {
+      "Memories": [
+        {
+          "ID": "12",
+          "Content": "Stationery inventory: pencils. [mid:12 sources:89-96; summary, not verified source text]",
+          "Age": "recent"
+        },
+        {
+          "ID": "11",
+          "Content": "Lunch preference: soup. [mid:11 sources:81-88; summary, not verified source text]",
+          "Age": "recent"
+        }
+      ],
+      "Outcome": "addressed"
+    },
+    "unretrieved_refused": true,
+    "retrieved_source_accepted": true,
+    "summary_removal_loses_required_source": true,
+    "production_stopword_usability": true
+  }
+}

@@ -1,0 +1,112 @@
+Publication verification at 21f1d6a696aee4e4f6ee5f5875f4888da477623c, 2026-09-24
+
+Command: env -u MINIMAX_KEY -u GAGENT_CORRECTION_PAID GOCACHE=/tmp/gagent-815-go-cache GAGENT_CORRECTION_FREE_RESULTS=/tmp/memory-publication-815/free go test ./tests -run '^TestMemoryCorrection_' -count=1 -v
+Exit: 0
+
+=== RUN   TestMemoryCorrection_Free
+=== RUN   TestMemoryCorrection_Free/intact
+    memory_correction_controls_test.go:154: intact: map[accepted:10], 222 model calls (scripted; USD 0)
+=== RUN   TestMemoryCorrection_Free/recall-removed
+    memory_correction_controls_test.go:154: recall-removed: map[accepted:2 recall failure:8], 222 model calls (scripted; USD 0)
+=== RUN   TestMemoryCorrection_Free/write-omitted
+    memory_correction_controls_test.go:154: write-omitted: map[invalid premise:10], 222 model calls (scripted; USD 0)
+--- PASS: TestMemoryCorrection_Free (9.19s)
+    --- PASS: TestMemoryCorrection_Free/intact (0.83s)
+    --- PASS: TestMemoryCorrection_Free/recall-removed (3.43s)
+    --- PASS: TestMemoryCorrection_Free/write-omitted (0.91s)
+=== RUN   TestMemoryCorrection_RejectsBrokenEvidence
+=== RUN   TestMemoryCorrection_RejectsBrokenEvidence/answer_from_history
+=== RUN   TestMemoryCorrection_RejectsBrokenEvidence/oracle_answer_without_recall_event
+=== RUN   TestMemoryCorrection_RejectsBrokenEvidence/oracle_answer_without_stored_fact
+=== RUN   TestMemoryCorrection_RejectsBrokenEvidence/incorrect_answer
+=== RUN   TestMemoryCorrection_RejectsBrokenEvidence/missing_model_input
+--- PASS: TestMemoryCorrection_RejectsBrokenEvidence (0.00s)
+    --- PASS: TestMemoryCorrection_RejectsBrokenEvidence/answer_from_history (0.00s)
+    --- PASS: TestMemoryCorrection_RejectsBrokenEvidence/oracle_answer_without_recall_event (0.00s)
+    --- PASS: TestMemoryCorrection_RejectsBrokenEvidence/oracle_answer_without_stored_fact (0.00s)
+    --- PASS: TestMemoryCorrection_RejectsBrokenEvidence/incorrect_answer (0.00s)
+    --- PASS: TestMemoryCorrection_RejectsBrokenEvidence/missing_model_input (0.00s)
+=== RUN   TestMemoryCorrection_SpendGate
+=== RUN   TestMemoryCorrection_SpendGate/request_ceiling
+=== RUN   TestMemoryCorrection_SpendGate/monetary_ceiling
+--- PASS: TestMemoryCorrection_SpendGate (0.53s)
+    --- PASS: TestMemoryCorrection_SpendGate/request_ceiling (0.29s)
+    --- PASS: TestMemoryCorrection_SpendGate/monetary_ceiling (0.23s)
+=== RUN   TestMemoryCorrection_ProxyCapsOutputAndStopsOnUnverifiableUsage
+=== RUN   TestMemoryCorrection_ProxyCapsOutputAndStopsOnUnverifiableUsage/missing_usage
+=== RUN   TestMemoryCorrection_ProxyCapsOutputAndStopsOnUnverifiableUsage/input_exceeds_reservation
+=== RUN   TestMemoryCorrection_ProxyCapsOutputAndStopsOnUnverifiableUsage/output_exceeds_cap
+--- PASS: TestMemoryCorrection_ProxyCapsOutputAndStopsOnUnverifiableUsage (0.00s)
+    --- PASS: TestMemoryCorrection_ProxyCapsOutputAndStopsOnUnverifiableUsage/missing_usage (0.00s)
+    --- PASS: TestMemoryCorrection_ProxyCapsOutputAndStopsOnUnverifiableUsage/input_exceeds_reservation (0.00s)
+    --- PASS: TestMemoryCorrection_ProxyCapsOutputAndStopsOnUnverifiableUsage/output_exceeds_cap (0.00s)
+=== RUN   TestMemoryCorrection_UnstatedProbeRejectsInventedMemory
+=== RUN   TestMemoryCorrection_UnstatedProbeRejectsInventedMemory/missing_recall_event
+=== RUN   TestMemoryCorrection_UnstatedProbeRejectsInventedMemory/invented_active_fact
+=== RUN   TestMemoryCorrection_UnstatedProbeRejectsInventedMemory/recalled_invented_fact
+=== RUN   TestMemoryCorrection_UnstatedProbeRejectsInventedMemory/injected_fact_without_recall_IDs
+--- PASS: TestMemoryCorrection_UnstatedProbeRejectsInventedMemory (0.00s)
+    --- PASS: TestMemoryCorrection_UnstatedProbeRejectsInventedMemory/missing_recall_event (0.00s)
+    --- PASS: TestMemoryCorrection_UnstatedProbeRejectsInventedMemory/invented_active_fact (0.00s)
+    --- PASS: TestMemoryCorrection_UnstatedProbeRejectsInventedMemory/recalled_invented_fact (0.00s)
+    --- PASS: TestMemoryCorrection_UnstatedProbeRejectsInventedMemory/injected_fact_without_recall_IDs (0.00s)
+=== RUN   TestMemoryCorrection_Paid
+    memory_correction_test.go:656: PM-only paid measurement is disabled
+--- SKIP: TestMemoryCorrection_Paid (0.00s)
+PASS
+ok  	github.com/garamsh/gagent/tests	9.731s
+
+Command: env -u MINIMAX_KEY -u GAGENT_CORRECTION_PAID PATH=/home/sauce/go/bin:$PATH GOCACHE=/tmp/gagent-815-go-cache GOLANGCI_LINT_CACHE=/tmp/gagent-815-lint-cache make ci
+Exit: 0
+
+go vet ./...
+golangci-lint run ./...
+0 issues.
+format: 149 files checked, all formatted
+go test ./...
+ok  	github.com/garamsh/gagent/cmd/gagent	2.017s
+ok  	github.com/garamsh/gagent/internal/agent	0.018s
+ok  	github.com/garamsh/gagent/internal/agent/anthropic	0.016s
+ok  	github.com/garamsh/gagent/internal/agent/memory	0.044s
+ok  	github.com/garamsh/gagent/internal/agent/openai	0.017s
+ok  	github.com/garamsh/gagent/internal/config	0.032s
+ok  	github.com/garamsh/gagent/internal/gateway	0.117s
+ok  	github.com/garamsh/gagent/internal/memory	0.078s
+ok  	github.com/garamsh/gagent/internal/memory/sqlite	0.046s
+ok  	github.com/garamsh/gagent/internal/message	0.011s
+ok  	github.com/garamsh/gagent/internal/tool	0.060s
+ok  	github.com/garamsh/gagent/internal/tool/tooltest	0.013s
+?   	github.com/garamsh/gagent/internal/workspace	[no test files]
+ok  	github.com/garamsh/gagent/internal/workspace/files	0.006s
+ok  	github.com/garamsh/gagent/internal/workspace/server	0.025s
+ok  	github.com/garamsh/gagent/internal/workspace/shell	0.162s
+ok  	github.com/garamsh/gagent/tests	100.175s
+?   	github.com/garamsh/gagent/tools/file_list	[no test files]
+?   	github.com/garamsh/gagent/tools/file_read	[no test files]
+?   	github.com/garamsh/gagent/tools/file_write	[no test files]
+?   	github.com/garamsh/gagent/tools/github	[no test files]
+?   	github.com/garamsh/gagent/tools/message_send	[no test files]
+?   	github.com/garamsh/gagent/tools/shell_exec	[no test files]
+build: 23 packages built
+
+Archive audit method: enumerate regular files from each original run directory and its explicit supervisor logs, exit codes and timestamps; archive original bytes without rewriting. Read each archive back, compare member set/size/SHA256 to manifest, and compare each paid member byte-for-byte to its source_path. Verify all instrument hashes with git show at source revision (historical free capture compared against bf619b7 because its recorded revision precedes its instrument edits). Compare aggregate calls with per-turn calls as complete-record multisets, decode response JSON and compare token pairs, and check max_tokens on every HTTP-200 request. Open every captured SQLite file read-only on a temporary copy and run PRAGMA integrity_check. Compare all four restart Before records per phase. Scan every member as bytes and every decoded request/response for the patterns below, with positive synthetic controls; no credentials or .env read.
+
+attempt-1-bf619b7-originals.tar.gz 73 members: archive/member/source hashes, source instrument identities and safe member paths PASS
+  Recorded turns: 55 failed: 0 status counts: {200: 139} input/output: 592067 33888
+attempt-2-bf619b7-originals.tar.gz 129 members: archive/member/source hashes, source instrument identities and safe member paths PASS
+  Recorded turns: 89 failed: 6 status counts: {200: 222, 402: 6} input/output: 905505 60109
+attempt-3-21f1d6a-originals.tar.gz 152 members: archive/member/source hashes, source instrument identities and safe member paths PASS
+  Recorded turns: 111 failed: 0 status counts: {200: 280} input/output: 1105985 71173
+  Four restart Before snapshots per phase: identical PASS
+free-controls.tar.gz 438 members: archive/member/source hashes, source instrument identities and safe member paths PASS
+free-controls-21f1d6a.tar.gz 440 members: archive/member/source hashes, source instrument identities and safe member paths PASS
+Original free archive unchanged: PASS
+SQLite integrity checks: 17 PASS; member byte scans: 1232 decoded payload scans: 7626 pattern candidates: 0
+Pattern controls: all four synthetic credential families detected. Scan covers raw member bytes (including SQLite/logs) and base64-decoded request/response bodies, across new and original archives; no private key or .env was read. Pattern absence does not exclude an unrecognized credential format or prove equality against the actual key.
+Patterns: ['(?i)authorization["\\s:]+(?:bearer|basic)\\s+[A-Za-z0-9+/_.=-]{12,}', '-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----', '\\b(?:sk-[A-Za-z0-9_-]{20,}|gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})', '(?i)(?:MINIMAX_KEY|api_key|api-key|password)["\\s:=]+["\\x27]?[A-Za-z0-9+/_.=-]{24,}']
+
+Additional complete-run review: all ten initial reasoning requests contain no planted tokens before the current frame (excluding static system instructions); all ten turns contain an observed recall event. Each Neri probe records failed file_list and shell_exec calls, four failures total, because no workspace service runs. The full responses and events remain in the originals.
+
+Command: git diff --check
+Exit: 0; no output.
+Scope: README and new results only; original free-controls.tar.gz and checks.txt unchanged; experiment index unchanged because no path/link changed. No product, tests, conventions, historical originals, commits or pushes changed.

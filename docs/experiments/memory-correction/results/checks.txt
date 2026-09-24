@@ -1,0 +1,57 @@
+Free controls after Neri-specific premise review, 2026-09-24
+Command: GOCACHE=/tmp/gagent-815-go-cache GAGENT_CORRECTION_FREE_RESULTS=/tmp/correction-evidence-neri-final go test ./tests -run '^TestMemoryCorrection_' -count=1 -v
+Exit: 0
+
+=== RUN   TestMemoryCorrection_Free
+=== RUN   TestMemoryCorrection_Free/intact
+    memory_correction_controls_test.go:153: intact: map[accepted:10], 222 model calls (scripted; USD 0)
+=== RUN   TestMemoryCorrection_Free/recall-removed
+    memory_correction_controls_test.go:153: recall-removed: map[accepted:2 recall failure:8], 222 model calls (scripted; USD 0)
+=== RUN   TestMemoryCorrection_Free/write-omitted
+    memory_correction_controls_test.go:153: write-omitted: map[invalid premise:10], 222 model calls (scripted; USD 0)
+--- PASS: TestMemoryCorrection_Free (6.17s)
+    --- PASS: TestMemoryCorrection_Free/intact (0.49s)
+    --- PASS: TestMemoryCorrection_Free/recall-removed (2.86s)
+    --- PASS: TestMemoryCorrection_Free/write-omitted (0.48s)
+=== RUN   TestMemoryCorrection_RejectsBrokenEvidence
+=== RUN   TestMemoryCorrection_RejectsBrokenEvidence/answer_from_history
+=== RUN   TestMemoryCorrection_RejectsBrokenEvidence/oracle_answer_without_recall_event
+=== RUN   TestMemoryCorrection_RejectsBrokenEvidence/oracle_answer_without_stored_fact
+=== RUN   TestMemoryCorrection_RejectsBrokenEvidence/incorrect_answer
+=== RUN   TestMemoryCorrection_RejectsBrokenEvidence/missing_model_input
+--- PASS: TestMemoryCorrection_RejectsBrokenEvidence (0.00s)
+    --- PASS: TestMemoryCorrection_RejectsBrokenEvidence/answer_from_history (0.00s)
+    --- PASS: TestMemoryCorrection_RejectsBrokenEvidence/oracle_answer_without_recall_event (0.00s)
+    --- PASS: TestMemoryCorrection_RejectsBrokenEvidence/oracle_answer_without_stored_fact (0.00s)
+    --- PASS: TestMemoryCorrection_RejectsBrokenEvidence/incorrect_answer (0.00s)
+    --- PASS: TestMemoryCorrection_RejectsBrokenEvidence/missing_model_input (0.00s)
+=== RUN   TestMemoryCorrection_SpendGate
+--- PASS: TestMemoryCorrection_SpendGate (0.00s)
+=== RUN   TestMemoryCorrection_ProxyCapsOutputAndStopsOnUnverifiableUsage
+--- PASS: TestMemoryCorrection_ProxyCapsOutputAndStopsOnUnverifiableUsage (0.00s)
+=== RUN   TestMemoryCorrection_UnstatedProbeRejectsInventedMemory
+=== RUN   TestMemoryCorrection_UnstatedProbeRejectsInventedMemory/missing_recall_event
+=== RUN   TestMemoryCorrection_UnstatedProbeRejectsInventedMemory/invented_active_fact
+=== RUN   TestMemoryCorrection_UnstatedProbeRejectsInventedMemory/recalled_invented_fact
+=== RUN   TestMemoryCorrection_UnstatedProbeRejectsInventedMemory/injected_fact_without_recall_IDs
+--- PASS: TestMemoryCorrection_UnstatedProbeRejectsInventedMemory (0.00s)
+    --- PASS: TestMemoryCorrection_UnstatedProbeRejectsInventedMemory/missing_recall_event (0.00s)
+    --- PASS: TestMemoryCorrection_UnstatedProbeRejectsInventedMemory/invented_active_fact (0.00s)
+    --- PASS: TestMemoryCorrection_UnstatedProbeRejectsInventedMemory/recalled_invented_fact (0.00s)
+    --- PASS: TestMemoryCorrection_UnstatedProbeRejectsInventedMemory/injected_fact_without_recall_IDs (0.00s)
+=== RUN   TestMemoryCorrection_Paid
+    memory_correction_test.go:656: PM-only paid measurement is disabled
+--- SKIP: TestMemoryCorrection_Paid (0.00s)
+PASS
+ok  	github.com/garamsh/gagent/tests	6.180s
+
+Command: PATH=/home/sauce/go/bin:$PATH GOCACHE=/tmp/gagent-815-go-cache GOLANGCI_LINT_CACHE=/tmp/gagent-815-lint-cache make lint format build
+Exit: 0
+go vet ./...
+golangci-lint run ./...
+0 issues.
+format: 149 files checked, all formatted
+build: 23 packages built
+
+Module tidy: GOCACHE=/tmp/gagent-815-go-cache go mod tidy; exit 0; no go.mod/go.sum changes.
+Archive source hashes verified against both instrument files.

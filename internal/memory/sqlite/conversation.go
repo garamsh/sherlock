@@ -134,18 +134,21 @@ func (s *Store) Search(ctx context.Context, terms []string, limit int) ([]agent.
 	}
 	rows, err := s.db.QueryContext(ctx, `SELECT m.id,m.summary,m.source_first,m.source_last FROM conversation_mid_fts f JOIN conversation_mid m ON m.id=f.rowid WHERE conversation_mid_fts MATCH ? ORDER BY bm25(conversation_mid_fts), m.id DESC LIMIT ?`, strings.Join(tokens, " OR "), limit)
 	if err != nil {
-		return nil, fmt.Errorf("search conversation: %w", err)
+		return nil, fmt.Errorf("search conversation: %v", err)
 	}
 	defer rows.Close()
 	var out []agent.ConversationHit
 	for rows.Next() {
 		var hit agent.ConversationHit
 		if err := rows.Scan(&hit.ID, &hit.Summary, &hit.SourceFirst, &hit.SourceLast); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("read conversation candidates: %v", err)
 		}
 		out = append(out, hit)
 	}
-	return out, rows.Err()
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("read conversation candidates: %v", err)
+	}
+	return out, nil
 }
 
 // RecentMid returns newest episodes independently of lexical relevance.
@@ -155,18 +158,21 @@ func (s *Store) RecentMid(ctx context.Context, limit int) ([]agent.ConversationH
 	}
 	rows, err := s.db.QueryContext(ctx, `SELECT id,summary,source_first,source_last FROM conversation_mid ORDER BY id DESC LIMIT ?`, limit)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("read conversation candidates: %v", err)
 	}
 	defer rows.Close()
 	var out []agent.ConversationHit
 	for rows.Next() {
 		var m agent.ConversationHit
 		if err := rows.Scan(&m.ID, &m.Summary, &m.SourceFirst, &m.SourceLast); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("read conversation candidates: %v", err)
 		}
 		out = append(out, m)
 	}
-	return out, rows.Err()
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("read conversation candidates: %v", err)
+	}
+	return out, nil
 }
 
 func (s *Store) Source(ctx context.Context, id int64) (agent.SourceMessage, error) {
@@ -205,11 +211,11 @@ func OpenConversation(path string) (*Store, error) {
 		}
 		var oldSchema, populated int
 		if err := old.QueryRow(`SELECT count(*) FROM pragma_table_info('conversation_short') WHERE name='source_id'`).Scan(&oldSchema); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("inspect conversation schema: %v", err)
 		}
 		if oldSchema > 0 {
 			if err := old.QueryRow(`SELECT count(*) FROM conversation_sources`).Scan(&populated); err != nil {
-				return nil, err
+				return nil, fmt.Errorf("inspect conversation sources: %v", err)
 			}
 			if populated > 0 {
 				return nil, fmt.Errorf("%q: extractive conversation schema; preserve this database and its WAL, use the previous binary to inspect it, and select a new memory-path for episodic memory (docs/architecture/memory.md, Existing databases)", path)

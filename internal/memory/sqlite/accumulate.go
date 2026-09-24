@@ -39,7 +39,7 @@ func (s *Store) Accumulate(ctx context.Context, summarizer agent.ConversationSum
 		}
 		count, err := result.RowsAffected()
 		if err != nil {
-			return err
+			return fmt.Errorf("read episode commit result: %v", err)
 		}
 		if count != 1 {
 			return errors.New("episode checkpoint changed; retry maintenance")
@@ -50,25 +50,28 @@ func (s *Store) Accumulate(ctx context.Context, summarizer agent.ConversationSum
 func (s *Store) sourcesAfter(ctx context.Context, after int64) ([]agent.SourceMessage, error) {
 	rows, err := s.db.QueryContext(ctx, `SELECT id,external_id,role,content FROM conversation_sources WHERE id>? ORDER BY id LIMIT 8`, after)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("read pending sources: %v", err)
 	}
 	defer rows.Close()
 	var out []agent.SourceMessage
 	for rows.Next() {
 		var source agent.SourceMessage
 		if err := rows.Scan(&source.ID, &source.ExternalID, &source.Role, &source.Content); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("read pending sources: %v", err)
 		}
 		out = append(out, source)
 	}
-	return out, rows.Err()
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("read pending sources: %v", err)
+	}
+	return out, nil
 }
 
 // PendingSources returns a bounded page of sources beyond the last mid checkpoint.
 func (s *Store) PendingSources(ctx context.Context) ([]agent.SourceMessage, error) {
 	var lastSource int64
 	if err := s.db.QueryRowContext(ctx, `SELECT COALESCE(MAX(source_last),0) FROM conversation_mid`).Scan(&lastSource); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("read pending sources: %v", err)
 	}
 	return s.sourcesAfter(ctx, lastSource)
 }

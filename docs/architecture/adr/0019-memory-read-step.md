@@ -21,7 +21,7 @@ Recent episodes remain available even when lexical search finds nothing. Up to e
 
 - `TestConversationRecall_RecentCorrectionAndOlderRelevantEpisode` compares the two-set selection against relevance-only and recent-only controls: a weak-overlap recent correction survives while an older discriminative episode remains reachable past generic intervening episodes. This is deterministic reachability, not model answer quality.
 
-- The opt-in `GAGENT_EPISODIC_MEMORY_PROBE=1 go test ./tests -run '^TestEpisodicMemory_LiveProbe$' -count=1 -v` ran at `2589be1` on 2026-09-24 against MiniMax-M2: 4 HTTP calls, 4,301 input tokens, 684 output tokens, no runtime failure. Scripted setup supplied 56 earlier sources; the runtime synthesized the next eight-source correction batch live, retrieved its episode, inspected the correction source, and answered with the current value. This single fixture measures those observed steps, not general summary fidelity or implicit-association quality.
+- The opt-in `GAGENT_EPISODIC_MEMORY_PROBE=1 go test ./tests -run '^TestEpisodicMemory_LiveProbe$' -count=1 -v` ran at `2589be1` on 2026-09-24 against MiniMax-M2: 4 HTTP calls, 4,301 input tokens, 684 output tokens, no runtime failure. Scripted setup supplied 56 earlier sources; the runtime synthesized the next eight-source correction batch live, retrieved its episode, inspected the correction source, and produced a final response containing the corrected name. The answer check is lexical containment, not a semantic or exact-quotation adjudication. This single fixture measures those observed steps, not general summary fidelity or implicit-association quality.
 
 ## Consequences
 

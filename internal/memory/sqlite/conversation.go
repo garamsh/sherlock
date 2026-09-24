@@ -109,8 +109,8 @@ func (s *Store) Recent(ctx context.Context, limit int) ([]agent.SourceMessage, e
 	return out, rows.Err()
 }
 
-// Search matches words supplied by the read step and orders recent matches
-// first. The bounded limit applies before content enters model context.
+// Search ranks matching words by relevance, using recency to break ties.
+// The bounded limit applies before content enters model context.
 func (s *Store) Search(ctx context.Context, terms []string, limit int) ([]agent.ConversationHit, error) {
 	if limit <= 0 {
 		return nil, nil
@@ -129,7 +129,7 @@ func (s *Store) Search(ctx context.Context, terms []string, limit int) ([]agent.
 	if len(tokens) == 0 {
 		return nil, nil
 	}
-	rows, err := s.db.QueryContext(ctx, `SELECT m.id,m.summary,m.short_id FROM conversation_mid_fts f JOIN conversation_mid m ON m.id=f.rowid WHERE conversation_mid_fts MATCH ? ORDER BY m.id DESC, bm25(conversation_mid_fts) LIMIT ?`, strings.Join(tokens, " OR "), limit)
+	rows, err := s.db.QueryContext(ctx, `SELECT m.id,m.summary,m.short_id FROM conversation_mid_fts f JOIN conversation_mid m ON m.id=f.rowid WHERE conversation_mid_fts MATCH ? ORDER BY bm25(conversation_mid_fts), m.id DESC LIMIT ?`, strings.Join(tokens, " OR "), limit)
 	if err != nil {
 		return nil, fmt.Errorf("search conversation: %w", err)
 	}

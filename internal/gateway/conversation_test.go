@@ -66,8 +66,16 @@ func TestConversation_ParaphraseCorrectionAndExactSource(t *testing.T) {
 	hits, err := store.Search(ctx, []string{"preferred telescope"}, 5)
 	require.NoError(t, err)
 	require.GreaterOrEqual(t, len(hits), 2)
-	assert.Contains(t, hits[0].Summary, "Vega-2", "the correction is offered first")
-	short, err := store.Short(ctx, hits[0].ShortID)
+	require.LessOrEqual(t, len(hits), 5)
+	var correction agent.ConversationHit
+	for _, hit := range hits {
+		if strings.Contains(hit.Summary, "Vega-2") {
+			correction = hit
+			break
+		}
+	}
+	require.NotZero(t, correction.ID, "the correction is offered among the candidates")
+	short, err := store.Short(ctx, correction.ShortID)
 	require.NoError(t, err)
 	source, err := store.Source(ctx, short.SourceID)
 	require.NoError(t, err)

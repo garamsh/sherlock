@@ -5,7 +5,7 @@
 
 ## Context
 
-The prior read step resolved a question to a model-written address and widened to a subject on a miss. The running measurement in `docs/experiments/recall-specificity/` found no addressed hits in 30 probes; every answer that carried the planted value came from widening. Source-linked summaries need a read that can find several topics and survive paraphrase without claiming that a candidate is an answer.
+The prior read step resolved a question to a model-written address and widened to a subject on a miss. The running measurement in `docs/research/recall-specificity/` found no addressed hits in 30 probes; every answer that carried the planted value came from widening. Source-linked summaries need a read that can find several topics and survive paraphrase without claiming that a candidate is an answer.
 
 ## Decision
 

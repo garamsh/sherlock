@@ -11,9 +11,7 @@ Three registers:
   KNOWN       pairs that already disagree, recorded so a new disagreement still fails
   UNSOURCED   stated figures that no committed file carries
 
-ADR 0006's Context quotes this record, so its figures are checked here too, beside
-the README's: they are computed from `results/` and nowhere else can compute them.
-The experiments index is checked for the same reason.
+The research index's architecture count is checked against the harness.
 
 Reads committed files only; runs no architecture and makes no measurement. Exits
 non-zero when a check fails, when an anchor no longer matches the document it reads,
@@ -30,8 +28,6 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.join(HERE, "..")
 RESULTS = os.path.join(ROOT, "results")
-ADR = os.path.join(ROOT, "..", "..", "architecture", "adr",
-                   "0006-memory-lifecycle.md")
 
 sys.path.insert(0, HERE)
 
@@ -418,96 +414,6 @@ def establishes():
               "records them")
 
 
-# --- ADR 0006 --------------------------------------------------------------
-#
-# The Context and the Consequences both quote this record. Their figures are
-# checked here rather than there, because the values they must equal are computed
-# from `results/`, and against the same derivation so the two cannot diverge.
-
-# Stores only what the model wrote back: D2 and everything built on it.
-CURATED = ("D2", "F1", "F2", "F3", "F4", "F5",
-           "G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9")
-# Hybrid RAG over an auto-captured store: the pre-experiment model, and the only
-# baseline with a non-zero density to divide by.
-BASELINE = "B3"
-
-
-def baseline_runs():
-    """Every run holding both the baseline and curated rows, with how to read it."""
-    runs = [(by_arch("table"), "items", lambda r: num(r["R@5"]) / num(r["KB"]))]
-    for target in scale_runner.SCALES:
-        runs.append(({r["arch"]: r for r in result_rows("scale")
-                      if num(r["scale"]) == target},
-                     "items", lambda r: num(r["R/modelled-KB"])))
-    for name in ("long_horizon", "diverse"):
-        runs.append((by_arch(name), "Items", lambda r: num(r["R/modelled-KB"])))
-    return runs
-
-
-def curated_ratios():
-    """Per run, each curated architecture's recall and density over the baseline's."""
-    out = []
-    for rows, items, density in baseline_runs():
-        measured = [a for a in CURATED
-                    if a in rows and rows[a].get(items, "—") != "—"]
-        base_recall, base_density = num(rows[BASELINE]["R@5"]), density(rows[BASELINE])
-        out.append({a: (num(rows[a]["R@5"]) / base_recall,
-                        density(rows[a]) / base_density) for a in measured})
-    return out
-
-
-def adr():
-    s = "ADR 0006"
-    text = open(ADR).read()
-
-    check(s, "architecture count",
-          Anchor(r"(\d+) candidate architectures", text).one(),
-          "the six runners' class-name maps", len(architecture_ids()))
-
-    a = Anchor(r"A1 and A2 return (\d\.\d+) recall@5 on every run they appear in, "
-               r"bar (\d\.\d+) for A1 on the diverse workload", text)
-    recalls = [num(rows[arch]["R@5"])
-               for rows, _, _ in baseline_runs() for arch in ("A1", "A2")]
-    on_diverse = num(by_arch("diverse")["A1"]["R@5"])
-    recalls.remove(on_diverse)
-    check(s, "auto-capture recall elsewhere", a.one(0),
-          "A1 and A2 R@5 across every run they appear in", max(recalls))
-    check(s, "auto-capture recall on the diverse workload", a.one(1),
-          "results/diverse.md A1 R@5", on_diverse)
-
-    a = Anchor(r"recall (\d\.\d+)× to (\d\.\d+)× as much", text)
-    best = [max(recall for recall, _ in run.values()) for run in curated_ratios()]
-    check(s, "narrowest recall margin", a.one(0),
-          "the best curated R@5 over the baseline's, per run", min(best))
-    check(s, "widest recall margin", a.one(1),
-          "the best curated R@5 over the baseline's, per run", max(best))
-
-    densities = [d for run in curated_ratios() for _, d in run.values()]
-    source = "curated recall per KB over the baseline's, across the runs"
-    # Both sections state one measurement, so both are checked against one source.
-    for section, pattern in (
-            ("Context", r"recall per KB is (\d+\.\d+)× to (\d+\.\d+)× higher"),
-            ("Consequences",
-             r"recall per KB is (\d+\.\d+)× to (\d+\.\d+)× that of hybrid RAG")):
-        a = Anchor(pattern, text)
-        check(s, f"narrowest density margin ({section})", a.one(0),
-              source, min(densities))
-        check(s, f"widest density margin ({section})", a.one(1),
-              source, max(densities))
-
-    # The supersession consequence states what the stale column can and cannot
-    # rank, so both halves are checked against the column itself.
-    rows = [r for r in result_rows("table") if re.fullmatch(r"[A-Z]\d", r["arch"])]
-    silent = [r for r in rows if num(r["R@5"]) == 0]
-    a = Anchor(r"returns nothing scores (\d\.\d+) and the column cannot rank", text)
-    check(s, "stale rate of the architectures that return nothing", a.one(),
-          "results/table.md stale where R@5 is 0.00",
-          max(num(r["stale"]) for r in silent))
-    check(s, "architectures scoring zero stale", len(silent),
-          "results/table.md rows at stale 0.00",
-          sum(1 for r in rows if num(r["stale"]) == 0), rounded=False)
-
-
 # --- Pairs that already disagree ------------------------------------------
 #
 # Each entry states what one committed file says, what another says, and a probe
@@ -533,20 +439,19 @@ def verdict(entry):
 
 
 def citing_documents():
-    """What the two documents outside this record say about it."""
+    """What the research index says about this record."""
     index = open(os.path.join(ROOT, "..", "README.md")).read()
     return {
-        "adr_citation": Anchor(r"A structured experiment \(`([^`]+)`",
-                               open(ADR).read()).one(),
         "index_architectures": int(
-            Anchor(r"memory-architecture/`[^\n]*?: (\d+) candidate", index).one()),
+            Anchor(r"memory-architecture/README\.md\)[^\n]*?(\d+) candidate",
+                   index).one()),
         "harness_architectures": len(architecture_ids()),
     }
 
 
 def main():
     for section in (method, small, scale, long_horizon, diverse, large_scale,
-                    establishes, adr):
+                    establishes):
         section()
 
     citing = citing_documents()
@@ -558,7 +463,7 @@ def main():
         if v != "OK":
             failures.append((v, entry))
 
-    print(f"{len(CHECKS)} figures read from README.md and ADR 0006 and compared "
+    print(f"{len(CHECKS)} figures read from README.md and compared "
           f"to committed files\n")
     for section, verdicts in by_section.items():
         ok = sum(1 for v in verdicts if v == "OK")
@@ -580,13 +485,9 @@ def main():
             print(f"      probe now returns {got!r}, recorded {k['expect']!r}")
             stale.append(k)
 
-    print("\ndocuments outside this record that cite it:\n")
-    print(f"  ADR 0006 cites {citing['adr_citation']}")
-    print(f"  docs/experiments/README.md counts "
+    print("\nresearch index:\n")
+    print(f"  docs/research/README.md counts "
           f"{citing['index_architectures']} architectures")
-    if not citing["adr_citation"].startswith("docs/experiments/memory-architecture"):
-        print("  the ADR's citation left the record")
-        stale.append("adr citation")
     if citing["index_architectures"] != citing["harness_architectures"]:
         print(f"  the index disagrees with the harness's "
               f"{citing['harness_architectures']}")

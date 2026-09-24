@@ -77,7 +77,7 @@ The write path moves from a prompt convention to an API-enforced response schema
 ## Reproducing
 
 ```
-cd docs/experiments/memory-cycle
+cd docs/research/memory-cycle
 python3 harness/system_runner.py            # runs, rewrites results_raw.json and the table above
 python3 harness/system_runner.py --render   # rewrites the table above from the committed run
 python3 harness/claim_sources.py            # checks the figures generation does not reach

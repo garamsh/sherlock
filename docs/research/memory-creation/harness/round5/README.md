@@ -51,7 +51,7 @@ A fourth bullet is answered by the match rule: a value credited on a substring i
 ## Running
 
 ```
-cd docs/experiments/memory-creation
+cd docs/research/memory-creation
 python3 harness/round5/dataset_check.py
 python3 harness/round5/runner.py DeciderNeighbors
 SEED=11 python3 harness/round5/runner.py DeciderNeighbors

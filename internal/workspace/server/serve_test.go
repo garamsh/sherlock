@@ -146,7 +146,7 @@ func TestServe_EnvironmentGrantFailures(t *testing.T) {
 	}, slog.New(slog.DiscardHandler)))
 	for _, name := range []string{"INVALID=literal", "QA_UNSET_WORKSPACE_GRANT_840"} {
 		t.Run(name, func(t *testing.T) {
-			err := server.Serve(context.Background(), server.ServeOptions{ExecEnv: []string{name}}, slog.New(slog.DiscardHandler))
+			err := server.Serve(ctx, server.ServeOptions{ExecEnv: []string{name}}, slog.New(slog.DiscardHandler))
 			require.Error(t, err)
 			assert.Contains(t, err.Error(), "exec-env")
 			assert.NotContains(t, err.Error(), "literal")

@@ -16,7 +16,7 @@ The model-facing surface is a tool: `shell_exec` is an independent tool server (
 Mechanism:
 
 - The executor forks, sets the child to the exec UID, drops Linux capabilities, applies resource limits, and execs the command.
-- Network isolation is per-request (`NoNetwork`): the child lands in a fresh, empty network namespace (a privileged unshare, or an unprivileged user+network namespace in single-account mode, ADR 0010); in the pod topology the pod network layer is an additional mechanism.
+- The workspace denies network by default; `exec-network` grants it and a request may only narrow the grant (`NoNetwork`): the child lands in a fresh, empty network namespace (a privileged unshare, or an unprivileged user+network namespace in single-account mode, ADR 0010); in the pod topology the pod network layer is an additional mechanism.
 - The child cannot reach the agent's memory or the platform's runtime material — kernel DAC either way. In single-account mode this one axis intentionally does not hold — the child shares the workspace's account; the remaining axes (scrubbed environment, resource limits, optional network isolation) are unchanged.
 - The child has a configurable timeout; on expiry its whole process group is SIGKILLed and the result carries `timed_out: true` — a normal outcome crossing the wire, not an RPC error. The group, not the child alone: the child is the shim, which execs a shell, which execs the command, and each inherits the pipe the executor drains, so killing only the first leaves the caller waiting for the last.
 - That kill crosses the drop, so it needs a capability the drop does not: signalling a process that owns neither of the executor's uids requires `CAP_KILL`, and root is no substitute once the capability has left the bounding set. **The claim above holds only where the workspace holds `CAP_KILL`** — single-account mode excepted, where the child owns the executor's own uid. A privileged executor without it reports `agent_uid unavailable` per call rather than running a command whose deadline it could not enforce (#612).
@@ -26,7 +26,7 @@ Mechanism:
 Threat model (honest):
 
 - A child can read everything under the workspace (this is its purpose) and can leak workspace contents through covert channels; containers do not fix that.
-- A child **cannot** read secrets (ADR 0003), modify the tool runtime, or make network requests unless the operator sanctioned egress — enforced structurally.
+- A child can read every credential deliberately provisioned to its workspace (ADR 0003). Agent secrets, memory and tool runtime remain outside its container; network access requires an operator grant. A cwd alone does not isolate a host process from host files.
 
 What exec is NOT:
 

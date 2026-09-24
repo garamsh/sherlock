@@ -45,17 +45,11 @@ var getenvCall = regexp.MustCompile(`os\.Getenv\("([A-Z0-9_]+)"\)`)
 // Reading the calls cannot drift from the code the way a hand-maintained
 // declaration did.
 func TestSetSpawnEnv_CoversWhatTheShippedToolsRead(t *testing.T) {
-	// Set by the operator, never by the platform: a materialized secret
-	// is a stolen secret (ADR 0003, ADR 0013), and the platform does not
-	// dispatch secrets (ADR 0009). GITHUB_API_BASE is not a secret but is
-	// the operator's too — it retargets the API for an enterprise host,
-	// and the default is the public one.
+	// Installed agent-side tools receive operator-provisioned credentials;
+	// workspace grants are resolved separately at that boundary.
 	operatorSupplied := map[string]bool{
-		"GH_TOKEN":                true,
-		"GITHUB_API_BASE":         true,
-		"GITHUB_REPOSITORY":       true,
-		"GITHUB_BRANCH":           true,
-		"GITHUB_VALIDATE_COMMAND": true,
+		"GH_TOKEN":        true,
+		"GITHUB_API_BASE": true,
 	}
 	platformSet := map[string]bool{
 		tool.WorkspaceAddrEnv: true,

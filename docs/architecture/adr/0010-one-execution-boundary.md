@@ -9,11 +9,11 @@ Two paths carry agent-influenced effects: file writes through the workspace data
 
 ## Decision
 
-All agent-influenced effects land under the unprivileged UID; only operator-sanctioned tools reach the network.
+All agent-influenced effects land under the unprivileged UID; workspace network and environment grants belong to the operator (#840).
 
 - **File writes** run under the sidecar's own UID with kernel-enforced ownership (DAC), not filters — the data plane is the action site for files (ADR 0017). Performing a write and owning the result are separate: which account a contract-written file ends up under is ADR 0008's, not this record's.
-- **Executor children** carry the UID drop, scrubbed environment, and resource limits of ADR 0008. Network isolation is per-request (`NoNetwork`): a fresh, empty network namespace (a privileged unshare, or a user namespace with the workspace's UID mapped to itself in single-account mode — no capability required; a host without unprivileged user namespaces fails closed). In the pod topology the pod network layer is an additional mechanism (ADR 0017).
-- **Resource caps bind untrusted code only.** Agent-influenced, untrusted children carry the executor's rlimits (CPU, address space, file size, open files, NPROC in the privileged drop). Operator-chosen tool packages run without them: their bound is the deployment's container/pod resource policy (the orchestration layer owns that policy, ADR 0014/ADR 0017), not in-process rlimits. The trust class is explicit in the executor's request, never inferred from the network axis.
+- **Executor children** carry the UID drop, scrubbed environment, and resource limits of ADR 0008. Network isolation is mandatory unless the workspace operator grants access; requests may narrow that grant (`NoNetwork`): a fresh, empty network namespace (a privileged unshare, or a user namespace with the workspace's UID mapped to itself in single-account mode — no capability required; a host without unprivileged user namespaces fails closed). In the pod topology the pod network layer is an additional mechanism (ADR 0017).
+- **Resource caps bind untrusted code only.** Agent-influenced, untrusted children carry the executor's rlimits (CPU, address space, file size, open files, NPROC in the privileged drop). Operator-chosen tool packages run without them: their bound is the deployment's container/pod resource policy (the orchestration layer owns that policy, ADR 0014/ADR 0017), not in-process rlimits. The workspace RPC always selects the untrusted class, ignoring caller attempts to bypass caps; the lower-level executor retains its explicit trust class for operator-owned internal callers. Network access never upgrades trust.
 - When the platform cannot run a child as the configured account, the executor reports `agent_uid unavailable`; it never silently upgrades. A silent privilege upgrade is worse than an unavailable capability.
 
 ## Consequences

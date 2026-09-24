@@ -9,3 +9,7 @@ addr: "127.0.0.1:8081"
 workspace: data/workspace
 # exec-uid: 1001      # default; UID exec children run as (single-account mode: the workspace's own UID)
 # exec-timeout: 30s   # default; per-call ceiling for Exec commands
+
+# Network and credential grants are operator-owned; never pass model keys here.
+# exec-network: true
+# exec-env: [GH_TOKEN] # read only these names from the workspace process environment

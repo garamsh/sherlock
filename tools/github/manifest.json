@@ -1,37 +1,73 @@
 {
 	"name": "github",
-	"description": "Inspect the authorized repository, import selected UTF-8 files into the workspace, and publish validated workspace files to the operator-selected new branch and draft PR. Use inspect first, import_file with its sha/path, file_read/file_write to edit, then publish with sha/files/title. Also manage issues and comments.",
+	"description": "Open issues and add comments on GitHub. Repository checkout, testing, commits and pull requests use ordinary git/gh commands through shell_exec in an operator-provisioned workspace.",
 	"command": "github",
 	"input_schema": {
 		"type": "object",
 		"properties": {
-			"operation": {"type": "string", "enum": ["inspect", "import_file", "publish", "open_issue", "comment"]},
-			"owner": {"type": "string", "minLength": 1},
-			"repo": {"type": "string", "minLength": 1},
-			"sha": {"type": "string", "minLength": 1},
-			"title": {"type": "string", "minLength": 1},
-			"body": {"type": "string"},
-			"labels": {"type": "array", "items": {"type": "string"}},
-			"number": {"type": "integer", "minimum": 1},
-			"message": {"type": "string", "minLength": 1},
-			"path": {"type": "string", "minLength": 1},
-			"files": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1, "maxItems": 100}
+			"operation": {
+				"type": "string",
+				"enum": [
+					"open_issue",
+					"comment"
+				]
+			},
+			"owner": {
+				"type": "string",
+				"minLength": 1
+			},
+			"repo": {
+				"type": "string",
+				"minLength": 1
+			},
+			"title": {
+				"type": "string",
+				"minLength": 1
+			},
+			"body": {
+				"type": "string"
+			},
+			"labels": {
+				"type": "array",
+				"items": {
+					"type": "string"
+				}
+			},
+			"number": {
+				"type": "integer",
+				"minimum": 1
+			},
+			"message": {
+				"type": "string",
+				"minLength": 1
+			}
 		},
-		"required": ["operation", "owner", "repo"],
+		"required": [
+			"operation",
+			"owner",
+			"repo"
+		],
 		"additionalProperties": false
 	},
 	"output_schema": {
 		"type": "object",
 		"properties": {
-			"status": {"type": "string"},
-			"url": {"type": "string"},
-			"number": {"type": "integer"},
-			"id": {"type": "integer"},
-			"sha": {"type": "string"},
-			"branch": {"type": "string"},
-			"paths": {"type": "array", "items": {"type": "string"}}
+			"status": {
+				"type": "string"
+			},
+			"url": {
+				"type": "string"
+			},
+			"number": {
+				"type": "integer"
+			},
+			"id": {
+				"type": "integer"
+			}
 		},
-		"required": ["status"],
+		"required": [
+			"status"
+		],
 		"additionalProperties": false
 	}
 }

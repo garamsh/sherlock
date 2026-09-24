@@ -234,3 +234,27 @@ func TestServer_Exec(t *testing.T) {
 			"the fail-closed privilege drop crosses the wire")
 	})
 }
+
+func TestServer_ExecGrantsAreOperatorOwned(t *testing.T) {
+	fs, err := files.Open(t.TempDir())
+	require.NoError(t, err)
+	exec := &fakeExecutor{}
+	s := &server.Server{FS: fs, Executor: exec}
+	request := &workspace.ExecRequest{Command: "true", Trusted: true, Env: []string{"QA_TOKEN=caller"}}
+	_, err = s.Exec(context.Background(), request)
+	require.NoError(t, err)
+	assert.True(t, exec.req.NoNetwork, "an RPC cannot grant network access")
+	assert.False(t, exec.req.Trusted, "an RPC cannot remove resource limits")
+
+	s.ExecNetwork = true
+	s.ExecEnv = []string{"QA_TOKEN=operator"}
+	_, err = s.Exec(context.Background(), request)
+	require.NoError(t, err)
+	assert.False(t, exec.req.NoNetwork)
+	assert.False(t, exec.req.Trusted)
+	assert.Equal(t, []string{"QA_TOKEN=caller", "QA_TOKEN=operator"}, exec.req.Env)
+	request.NoNetwork = true
+	_, err = s.Exec(context.Background(), request)
+	require.NoError(t, err)
+	assert.True(t, exec.req.NoNetwork, "a caller may narrow the network grant")
+}

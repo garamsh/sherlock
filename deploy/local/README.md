@@ -15,13 +15,15 @@ Two variables must be exported before `docker compose up`:
 
 | Variable | Value | Why |
 |---|---|---|
-| `GAGENT_DATA_DIR` | absolute host path for agent data | bind-mounted into both containers at the same absolute path; holds `memory.db`, `outbox/`, and `workspace/` |
+| `GAGENT_DATA_DIR` | absolute host path for agent data | holds agent memory/outbox and a workspace subdirectory; only that subdirectory is mounted into the workspace service |
 | `GAGENT_AGENT_UID` | `$(id -u)` | the uid the agent container runs as, so it can read the owner-only config file and server key |
 
 - `GAGENT_DATA_DIR`: any absolute host path; the workspace container runs its Exec children as uid 10001 (and chowns `workspace/` to the same uid), so the path must allow both containers. On Docker Desktop it must sit under a shared path (the project directory works).
 - `GAGENT_AGENT_UID`: the gateway refuses a group- or other-readable config file or TLS key, so only their owner can read them — running the agent as that owner is what makes the mounts readable. The workspace container keeps the image's user: it needs root to drop Exec children to the exec uid.
 
-**One root mounted into both containers is this file's convenience, not a requirement of the platform.** The two containers exchange no file — the tools reach the workspace over gRPC — so the agent's paths (`memory.db`, `outbox/`) and the workspace's (`workspace/`) can sit on separate volumes elsewhere. What the workload requires of storage is in `docs/architecture/deployment.md` §Volumes and ownership.
+**The workspace mount excludes agent state.** The workspace service receives only `$GAGENT_DATA_DIR/workspace`, not its parent, TLS files, tools or host home. Do not broaden that mount when enabling repository access.
+
+For repository CLI work, set `GAGENT_WORKSPACE_NETWORK=true`, `GAGENT_WORKSPACE_ENV=GH_TOKEN` and provision `GAGENT_WORKSPACE_GH_TOKEN` through your secret manager or protected operator environment. Compose passes that token only to the workspace as `GH_TOKEN`; it does not source an `.env` file into either container. Leave these variables unset for the default offline fixture. Do not print token values or put them in Git remotes. All workspace code can read the token: verify its actual repository/permission scope and use forge protections. Agent model keys and memory/configuration must stay outside this environment. The image carries `git`, `gh` and CA certificates, while project-specific validators/toolchains remain operator-installed.
 
 ## Certificates
 

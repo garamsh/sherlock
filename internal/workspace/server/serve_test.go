@@ -37,9 +37,12 @@ func TestServe_ContractEndToEnd(t *testing.T) {
 	addr := listen.Addr().String()
 	require.NoError(t, listen.Close())
 
+	t.Setenv("QA_WORKSPACE_TOKEN", "operator-marker")
+	t.Setenv("MINIMAX_KEY", "model-marker")
 	opts := server.ServeOptions{
-		Addr: addr,
-		Dir:  filepath.Join(t.TempDir(), "workspace"),
+		ExecEnv: []string{"QA_WORKSPACE_TOKEN"},
+		Addr:    addr,
+		Dir:     filepath.Join(t.TempDir(), "workspace"),
 		// Single-account mode: exec children run as the test process's
 		// own UID, so no privilege is needed.
 		ExecUID:     os.Geteuid(),
@@ -90,6 +93,13 @@ func TestServe_ContractEndToEnd(t *testing.T) {
 	assert.Zero(t, execResp.GetExitCode())
 	assert.Contains(t, execResp.GetStdout(), "sub",
 		"exec children work in the workspace directory by default")
+	execResp, err = client.Exec(ctxRPC, &workspace.ExecRequest{
+		Command: `printf '%s|%s' "$QA_WORKSPACE_TOKEN" "${MINIMAX_KEY-unset}"`,
+		Env:     []string{"QA_WORKSPACE_TOKEN=caller-marker"},
+	})
+	require.NoError(t, err)
+	assert.Zero(t, execResp.GetExitCode())
+	assert.Equal(t, "operator-marker|unset", execResp.GetStdout())
 }
 
 // waitForWorkspaceListener polls until the workspace's listener accepts
@@ -122,4 +132,15 @@ func dialWorkspace(t *testing.T, addr string) (workspace.WorkspaceClient, func()
 	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	require.NoError(t, err)
 	return workspace.NewWorkspaceClient(conn), func() { _ = conn.Close() }
+}
+
+func TestServe_EnvironmentGrantFailures(t *testing.T) {
+	for _, name := range []string{"INVALID=literal", "QA_UNSET_WORKSPACE_GRANT_840"} {
+		t.Run(name, func(t *testing.T) {
+			err := server.Serve(context.Background(), server.ServeOptions{ExecEnv: []string{name}}, slog.New(slog.DiscardHandler))
+			require.Error(t, err)
+			assert.Contains(t, err.Error(), "exec-env")
+			assert.NotContains(t, err.Error(), "literal")
+		})
+	}
 }

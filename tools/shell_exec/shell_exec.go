@@ -95,8 +95,7 @@ func run() error {
 // against the stall alone.
 func dispatch(ctx context.Context, ws workspace.WorkspaceClient, in callInput) (callOutput, error) {
 	req := &workspace.ExecRequest{
-		Command:   in.Command,
-		NoNetwork: true,
+		Command: in.Command,
 	}
 	bound := stallTimeout
 	if in.TimeoutNanos > 0 {

@@ -51,7 +51,6 @@ func TestScriptTool_GitHub_Integration(t *testing.T) {
 	t.Cleanup(server.Close)
 
 	t.Setenv("GH_TOKEN", "fake-test-token")
-	t.Setenv("GITHUB_REPOSITORY", "example/widget")
 	t.Setenv("GITHUB_API_BASE", server.URL)
 
 	reg, err := tool.NewRegistry(tool.RegistryOptions{
@@ -124,7 +123,7 @@ func TestScriptTool_GitHub_MissingToken(t *testing.T) {
 	require.NoError(t, err)
 
 	_, err = reg.Call(context.Background(), "github",
-		json.RawMessage(`{"operation":"inspect","owner":"example","repo":"widget"}`))
+		json.RawMessage(`{"operation":"open_issue","owner":"example","repo":"widget","title":"test"}`))
 	require.Error(t, err)
 	assert.ErrorIs(t, err, tool.ErrExecution)
 }
@@ -135,7 +134,6 @@ func TestScriptTool_GitHub_InputRejected(t *testing.T) {
 	root := t.TempDir()
 	hash := installTool(t, root, "github")
 	t.Setenv("GH_TOKEN", "fake-test-token")
-	t.Setenv("GITHUB_REPOSITORY", "example/widget")
 
 	reg, err := tool.NewRegistry(tool.RegistryOptions{
 		Dir:      root,
@@ -185,7 +183,6 @@ func TestScriptTool_GitHub_NullBodyAccepted(t *testing.T) {
 	t.Cleanup(server.Close)
 
 	t.Setenv("GH_TOKEN", "fake-test-token")
-	t.Setenv("GITHUB_REPOSITORY", "example/widget")
 	t.Setenv("GITHUB_API_BASE", server.URL)
 
 	reg, err := tool.NewRegistry(tool.RegistryOptions{
@@ -201,8 +198,8 @@ func TestScriptTool_GitHub_NullBodyAccepted(t *testing.T) {
 	// exercises.
 	out, err := reg.Call(context.Background(), "github", json.RawMessage(
 		`{"operation":"open_issue","owner":"example","repo":"widget","title":"a bug",`+
-			`"body":null,"sha":null,"labels":null,`+
-			`"files":null,"path":null,"number":null,"message":null}`))
+			`"body":null,"labels":null,`+
+			`"number":null,"message":null}`))
 	require.NoError(t, err, "null body must pass schema validation and reach the GitHub request")
 	var body map[string]any
 	require.NoError(t, json.Unmarshal(out, &body))
@@ -260,7 +257,6 @@ func TestScriptTool_GitHub_StalledEndpointRefused(t *testing.T) {
 	stalled := startStalledGitHub(t)
 
 	t.Setenv("GH_TOKEN", "fake-test-token")
-	t.Setenv("GITHUB_REPOSITORY", "example/widget")
 
 	reg, err := tool.NewRegistry(tool.RegistryOptions{
 		Dir:      root,

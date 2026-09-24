@@ -38,7 +38,7 @@ One pod per agent, two containers (ADR 0017): the agent container is the agent's
 
 - `0001` — Go stack and single-module layout
 - `0002` — per-agent memory in a single SQLite file
-- `0003` — secret-free execution domain
+- `0003` — keep agent secrets outside operator-provisioned workspaces
 - `0004` — model access is one consumer-owned interface, and the wire protocol is configuration
 - `0005` — tools own security; guard models are layers, not boundaries
 - `0006` — preserve recent context and source-linked older conversation
@@ -48,7 +48,7 @@ One pod per agent, two containers (ADR 0017): the agent container is the agent's
 - `0010` — one execution boundary: agent-influenced effects under the unprivileged UID
 - `0011` — persist sources before atomic summary checkpoints
 - `0012` — gateway authentication via mTLS
-- `0013` — external egress is tool-routed
+- `0013` — operators grant egress without a dedicated proxy
 - `0014` — scope boundaries: authorization above the platform, no mid-run intervention
 - `0015` — the turn drains the queue
 - `0016` — the identity is the agent ID
@@ -74,7 +74,7 @@ One pod per agent, two containers (ADR 0017): the agent container is the agent's
 | `internal/memory/sqlite/` | Own `memory.db`: the source archive, immutable mid episodes, FTS5 index, resumable cross-turn batching, atomic checkpoints, linked reads, and the legacy addressed tables. Refuse populated old data at runtime without changing it. | `memory.md` |
 | `internal/message/` | The outbound message type — channel, target, content. It is the shape of the JSON the `message_send` tool writes into the outbox directory and the shape a reader of that directory decodes; the tool that writes one ships separately under `tools/message_send/` (ADR 0017). The package carries no delivery code, because delivery is that write. | `gateway.md` |
 | `internal/workspace/` | The gRPC data plane's wire: the proto and the generated stubs, and nothing else — a tool that needs the workspace imports this package and links no backend (#525). | `environment.md` |
-| `internal/workspace/server/` | The data plane's server side: the `Server` wrapping the workspace filesystem backend for Read/Write/List and `internal/workspace/shell.Executor` for Exec (ADR 0017), and the listener's lifecycle — bind, serve, graceful stop, the single-account environ protection and the root handover to the exec account. It relabels every filesystem error as `InvalidArgument` and turns an executor timeout into a normal response. No tool hosting. | `environment.md` |
+| `internal/workspace/server/` | The data plane's server side: the `Server` wrapping the workspace filesystem backend for Read/Write/List and `internal/workspace/shell.Executor` for Exec (ADR 0017), and the listener's lifecycle — bind, serve, graceful stop, the single-account environ protection the root handover to the exec account, and operator-owned network/environment grants. It relabels every filesystem error as `InvalidArgument` and turns an executor timeout into a normal response. No tool hosting. | `environment.md` |
 | `internal/workspace/shell/` | The workspace's exec backend behind the Exec RPC: fork+exec+setuid dropped to the exec UID (ADR 0008), scrubbed child environment (ADR 0003), per-request network isolation, and the trust class that decides whether resource caps bind at all (ADR 0010); two fail-closed sentinels, `agent_uid unavailable` and `resource limits unavailable`. It owns two things that are not behind the RPC: `ProtectEnviron`, which marks the workspace process itself non-dumpable (ADR 0003), and the `exec-limits` shim — an argv verb of the platform binary, dispatched in `cmd/gagent/` before the command tree, that caps itself and execs the child. | `environment.md` |
 | `internal/workspace/files/` | The workspace's filesystem backend (single-consumer of the sidecar; lives here per the layout rules): an FS rooted at the workspace directory which enforces the lexical confinement itself, and the ownership handling exec children need (ADR 0008, ADR 0010) — handing the root to the exec account with a shared-group write bit, writing through a temp file and an atomic rename so a file that account owns can still be replaced, and propagating ownership to the directories it creates. | `environment.md` |
 | `tools/` | The tool set the operator installed. Each tool is a directory `tools/<name>/` holding `manifest.json` (the contract) and a Go package (the implementation); `make build-tools` compiles the executable the platform spawns into that directory, where `.gitignore` keeps it out of the tree. First-party tools ship here, and `build/tools.Dockerfile` compiles the same set into the image an operator mounts as an agent's tree (`deployment.md` §Images and tags). | `agent.md`, `environment.md` |

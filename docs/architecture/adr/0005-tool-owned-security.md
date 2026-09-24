@@ -11,12 +11,10 @@ Security enforcement needs a home consistent with the component model. Two candi
 
 Each tool owns and enforces the security policy of its own domain. No separate security layer exists.
 
-- **Trust-domain invariant**: a tool that executes agent-influenced code runs with no reachable secrets; a tool that holds secrets never executes agent-influenced code and accepts only schema-validated structured input. In the pod topology (ADR 0017) the two domains land on the two containers: the secret-free workspace data plane in the sidecar, secrets and the tools that hold them in the agent container.
-- **External access is tool-routed by principle.** Services are reached through tool calls; raw network egress from executed code exists only through operator-sanctioned tools (ADR 0003, ADR 0013).
+- **Trust-domain invariant**: agent model credentials and memory/configuration stay outside the workspace. The owner may provision workspace credentials to agent-influenced code, accepting their exposure there (ADR 0003, #840). The workspace enforces operator grants; installing agent-side tools remains a separate trust decision.
+- **External access is tool-routed by principle.** Services are reached through tool calls; raw network egress from executed code requires an operator workspace grant (ADR 0003, ADR 0013).
 - **Guard models are adopted as defense-in-depth**: command risk classification before execution, secret scanning of tool outputs. They catch accidents and provide audit value. They are documented as *not* a security boundary — model judgment is probabilistic and bypassable by obfuscation; boundaries are structural only (file ownership, secret absence, network policy).
 - **Light confinement inside the execution domain**: the file tool is rooted at the workspace with path-traversal validation, separating working data from the tool runtime itself. This is convenience, not a trust boundary.
-
-The GitHub repository workflow is a concrete instance of this policy. The operator supplies an exact repository, a new branch and a validation command in the trusted environment; the tool enforces those choices independently of the model. The tool imports selected files through the workspace contract and validates there with untrusted network-isolated Exec before publishing their captured contents through GitHub's Git database API. Raw ref publication and standalone PR creation are not exposed alongside that path, because either would bypass the validation gate. A Git clone/push inside Exec would require network and credentials in the untrusted domain; executing repository hooks or checks inside the trusted tool would invert the other boundary, so neither is adopted.
 
 ## Consequences
 

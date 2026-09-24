@@ -46,7 +46,8 @@ func TestToolDependencies_AreTheDeclaredOnes(t *testing.T) {
 		// backend — the property #525 established for
 		// internal/workspace.
 		{tool: "message_send", want: []string{"internal/message"}},
-		{tool: "github", want: []string{"internal/workspace"}},
+		// A tool that needs nothing of the platform links nothing.
+		{tool: "github", want: []string{}},
 	} {
 		t.Run(tc.tool, func(t *testing.T) {
 			assert.Equal(t, tc.want, inModuleDeps(t, module+"tools/"+tc.tool))

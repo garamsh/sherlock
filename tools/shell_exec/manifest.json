@@ -1,6 +1,6 @@
 {
 	"name": "shell_exec",
-	"description": "Run a shell command in the agent's workspace and return its captured output. The working directory is the workspace directory, so relative paths resolve against the same tree the files tool writes to.",
+	"description": "Run a shell command in the agent's workspace and return its captured output. Network access and inherited credentials are controlled by the workspace operator, not by tool arguments. The working directory is the workspace directory, so relative paths resolve against the same tree the files tool writes to.",
 	"command": "shell_exec",
 	"input_schema": {
 		"type": "object",

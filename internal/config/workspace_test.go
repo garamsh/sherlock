@@ -126,3 +126,23 @@ func TestResolveWorkspaceConfig_UnknownFileKeyIsReported(t *testing.T) {
 		"the workspace resolves the same way, so it reports the same way")
 	assert.Contains(t, buf.String(), "file="+path)
 }
+
+func TestResolveWorkspaceConfig_ExecutionGrants(t *testing.T) {
+	t.Chdir(t.TempDir())
+	t.Setenv("GAGENT_EXEC_ENV", "")
+	fs := workspaceFlags(t)
+	cfg, err := config.ResolveWorkspace(fs)
+	require.NoError(t, err)
+	assert.False(t, cfg.ExecNetwork)
+	assert.Empty(t, cfg.ExecEnv)
+	t.Setenv("GAGENT_EXEC_NETWORK", "true")
+	require.NoError(t, fs.Set("exec-env", "QA_REPOSITORY_TOKEN,QA_IDENTITY"))
+	cfg, err = config.ResolveWorkspace(fs)
+	require.NoError(t, err)
+	assert.True(t, cfg.ExecNetwork)
+	assert.Equal(t, []string{"QA_REPOSITORY_TOKEN", "QA_IDENTITY"}, cfg.ExecEnv)
+	require.NoError(t, fs.Set("exec-network", "false"))
+	cfg, err = config.ResolveWorkspace(fs)
+	require.NoError(t, err)
+	assert.False(t, cfg.ExecNetwork)
+}

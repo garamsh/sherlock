@@ -11,7 +11,6 @@ import (
 	"net/http"
 	"os"
 	"regexp"
-	"strings"
 	"time"
 )
 
@@ -22,15 +21,11 @@ var httpClient = &http.Client{Timeout: requestTimeout, CheckRedirect: func(*http
 	return errors.New("redirect refused")
 }}
 var repositoryName = regexp.MustCompile(`^[A-Za-z0-9_-]+/[A-Za-z0-9_.-]+$`)
-var objectID = regexp.MustCompile(`^[0-9a-f]{40}$`)
 
 type callInput struct {
 	Operation string   `json:"operation"`
 	Owner     string   `json:"owner"`
 	Repo      string   `json:"repo"`
-	SHA       string   `json:"sha"`
-	Path      string   `json:"path"`
-	Files     []string `json:"files"`
 	Title     string   `json:"title"`
 	Body      string   `json:"body"`
 	Labels    []string `json:"labels"`
@@ -39,20 +34,16 @@ type callInput struct {
 }
 
 type callOutput struct {
-	Status string   `json:"status"`
-	URL    string   `json:"url,omitempty"`
-	Number int      `json:"number,omitempty"`
-	ID     int64    `json:"id,omitempty"`
-	SHA    string   `json:"sha,omitempty"`
-	Branch string   `json:"branch,omitempty"`
-	Paths  []string `json:"paths,omitempty"`
+	Status string `json:"status"`
+	URL    string `json:"url,omitempty"`
+	Number int    `json:"number,omitempty"`
+	ID     int64  `json:"id,omitempty"`
 }
 
 type apiResponse struct {
 	HTMLURL string `json:"html_url"`
 	Number  int    `json:"number"`
 	ID      int64  `json:"id"`
-	SHA     string `json:"sha"`
 }
 
 func main() {
@@ -76,14 +67,12 @@ func run() error {
 		return errors.New("input must be one JSON object")
 	}
 	target := in.Owner + "/" + in.Repo
-	if !repositoryName.MatchString(target) || target != os.Getenv("GITHUB_REPOSITORY") || in.Repo == "." || in.Repo == ".." {
-		return errors.New("repository is not authorized by GITHUB_REPOSITORY")
+	if !repositoryName.MatchString(target) || in.Repo == "." || in.Repo == ".." {
+		return errors.New("invalid repository name")
 	}
 	var out callOutput
 	var err error
 	switch in.Operation {
-	case "inspect", "import_file", "publish":
-		out, err = repositoryWork(in)
 	case "open_issue":
 		if in.Title == "" {
 			return errors.New("title is required for open_issue")
@@ -162,21 +151,4 @@ func githubRequest(method string, in callInput, path string, body any, out any) 
 		return errors.New("credential or invalid data in response refused")
 	}
 	return nil
-}
-
-func validBranch(branch string) bool {
-	for _, r := range branch {
-		if r < 32 || r == 127 {
-			return false
-		}
-	}
-	if branch == "" || strings.HasPrefix(branch, "-") || strings.ContainsAny(branch, " ~^:?*[\\\x00\r\n\t") || strings.Contains(branch, "..") || strings.Contains(branch, "@{") || branch == "@" {
-		return false
-	}
-	for _, part := range strings.Split(branch, "/") {
-		if part == "" || strings.HasPrefix(part, ".") || strings.HasSuffix(part, ".") || strings.HasSuffix(part, ".lock") {
-			return false
-		}
-	}
-	return true
 }

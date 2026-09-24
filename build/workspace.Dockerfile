@@ -36,7 +36,10 @@ LABEL org.opencontainers.image.title="gagent-workspace" \
 # from the passwd package, which ships setuid helpers, so the hygiene
 # strip runs after it (security.md: no setuid/setgid binaries at all —
 # the privilege drop is the executor's job, not a suid helper's).
-RUN useradd --system --uid 1001 --no-create-home agent \
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates git gh \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd --system --uid 1001 --no-create-home agent \
     && find / -xdev -type f -perm /6000 -exec chmod a-s {} +
 
 COPY --from=build /out/gagent /gagent
@@ -44,9 +47,9 @@ COPY --from=build /out/gagent /gagent
 # workspace volume here.
 COPY --from=build /out/data /data
 
-# Root with four capabilities (deploy/local/docker-compose.yml):
+# Root with five capabilities (deploy/local/docker-compose.yml):
 # SETUID/SETGID for the child credential drop, CHOWN for the workspace
-# directory handover, SYS_ADMIN for the netns unshare (ADR 0010). On
+# directory handover, SYS_ADMIN for netns unshare and KILL for deadlines (ADR 0010). On
 # single-account runs the workspace runs as its own UID and the drop is
 # a no-op.
 USER root

@@ -1,23 +1,21 @@
-# ADR 0013: External egress is tool-routed — no dedicated egress proxy
+# ADR 0013: Operators grant egress without a dedicated proxy
 
 > Status: accepted
-> Date: 2026-08-03 (revised in place 2026-08-13; 2026-08-17; 2026-08-23)
+> Date: 2026-08-03
 
 ## Context
 
-An early design carried a deferred "egress tool/proxy": a component meant to be the only outbound path from the execution domain — terminating TLS, resolving secret references at bound destinations, and redacting responses. Later decisions absorbed its purposes. The execution boundary record (ADR 0010) network-isolates executor children on request, closing the raw-egress hole the proxy was meant to guard. The tool-shape record (ADR 0009, ADR 0017) makes tool servers — independent processes the operator installs via the platform protocol — the only operator-sanctioned egress channels that keep network by operator choice. Scrubbed child environments plus per-tool env scoping give an explicit, operator-chosen path for secrets into trusted tools; the agent sees only structured tool output.
+The earlier tool-only-egress policy prevented ordinary repository CLI work. On 2026-09-24 the owner selected direct `git`/`gh` in the isolated workspace and accepted network and repository-token access by workspace code (#840).
 
 ## Decision
 
-External access is tool-routed by design; no dedicated egress proxy or egress tool is built. The operator chooses every outbound destination and the model chooses none: replies leave through `message_send`, capabilities through the operator-installed tool servers (network-keeping by operator choice), and the reasoning loop's and memory's model traffic through the operator-configured base URLs (ADR 0004). Executor children are network-isolated on request (`NoNetwork`, ADR 0008). Destination allowlists, response redaction, and secret-reference bindings land only when a concrete use case needs them, inside the tool that needs them (`docs/convention/simplicity.md`).
+- Installed agent-side tools retain their own egress and inherit the agent environment; the model endpoint remains operator-configured.
+- Workspace egress is disabled by default. Its operator can grant network access to all executed code through `exec-network`; model arguments cannot enable it. An RPC can request a narrower isolated execution.
+- Once enabled, CLI commands choose destinations subject to deployment network policy. External authority comes from actual credential scope and forge protections. Repository/branch task instructions are not an egress boundary.
+- No dedicated broker/proxy, GitHub-specific command rewriter, or secret-reference service is introduced. Workspace credentials arrive directly in its environment, and `exec-env` selects which names reach children (ADR 0003).
 
 ## Consequences
 
-- "The only outbound path is the egress tool" is restated as "every outbound destination is one the operator chose" — the guarantee the proxy was built to give survives as a property of who picks the destination, not as a count of channels.
-- The agent cannot reach arbitrary URLs. Granting egress is a configuration decision: a tool server added to the operator's tool list, or the model base URL set in the operator's config (ADR 0004) — reviewed like any other configuration, not a runtime capability.
-- Secret-bearing tools keep secrets out of the agent's domain through per-tool env scoping plus the scrubbed child environment: the secret reaches the trusted tool process only, and the agent sees tool output, never the environment. (The ADR 0003 secret-free posture of executor children is preserved.)
-
-## Rejected alternatives
-
-- **Dedicated egress proxy with TLS termination and CA provisioning** — a second network component to run and secure, built ahead of a use case; tool servers already provide sanctioned egress with less machinery.
-- **Secret references (`secret://name`) resolved by a platform resolver** — adds a resolution layer and reflection-leak surface; per-tool env scoping achieves custody with no new concept.
+- Workspace code can reach external services and expose its intentionally granted credentials. The operator accepts and scopes that authority.
+- Agent secrets and memory/configuration remain outside the workspace container. Network policy and gateway authentication must account for a network-enabled workspace.
+- A domain tool remains useful where its contract adds value; ordinary repository work uses CLI tools rather than a second API publication workflow.

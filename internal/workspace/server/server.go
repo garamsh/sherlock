@@ -27,6 +27,9 @@ type Server struct {
 	workspace.UnimplementedWorkspaceServer
 	FS       *files.FS
 	Executor shell.Executor
+	// ExecNetwork and ExecEnv are operator grants, never caller-selected.
+	ExecNetwork bool
+	ExecEnv     []string
 }
 
 func (s *Server) Read(_ context.Context, req *workspace.ReadRequest) (*workspace.ReadResponse, error) {
@@ -73,9 +76,9 @@ func (s *Server) Exec(ctx context.Context, req *workspace.ExecRequest) (*workspa
 		Stdin:     req.GetStdin(),
 		Timeout:   time.Duration(req.GetTimeoutNanos()),
 		Workdir:   workdir,
-		Env:       req.GetEnv(),
-		NoNetwork: req.GetNoNetwork(),
-		Trusted:   req.GetTrusted(),
+		Env:       append(append([]string{}, req.GetEnv()...), s.ExecEnv...),
+		NoNetwork: !s.ExecNetwork || req.GetNoNetwork(),
+		Trusted:   false,
 	})
 	if errors.Is(err, shell.ErrTimedOut) {
 		result.TimedOut = true

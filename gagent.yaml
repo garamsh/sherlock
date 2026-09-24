@@ -27,10 +27,9 @@ model:
 # file_list, shell_exec, message_send, github) ship in place under tools/; a `make build-tools`
 # compile keeps the binaries current. Override the directory with the
 # tools-dir key, or drop a custom tool into ./tools/<name>/ with its own
-# manifest.json and binary. GitHub calls require GH_TOKEN and
-# GITHUB_REPOSITORY in the trusted agent environment; publication also
-# requires GITHUB_BRANCH and GITHUB_VALIDATE_COMMAND. See docs/architecture/deployment.md
-# for setup, or remove tools/github/ to omit the capability.
+# manifest.json and binary. The github tool rejects startup without
+# GH_TOKEN, so either set GH_TOKEN in the agent's env or remove
+# tools/github/ to run without it.
 # tools-dir: ./tools
 #
 # tools.pins is the accepted tool set: the SHA-256 of each manifest you

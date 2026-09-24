@@ -59,5 +59,7 @@ func serveWorkspace(ctx context.Context, cfg config.WorkspaceConfig) error {
 		Dir:         cfg.Workspace,
 		ExecUID:     cfg.ExecUID,
 		ExecTimeout: cfg.ExecTimeout,
+		ExecNetwork: cfg.ExecNetwork,
+		ExecEnv:     cfg.ExecEnv,
 	}, logger)
 }

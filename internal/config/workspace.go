@@ -27,6 +27,8 @@ const (
 // not a shadow of a shared one — only --config is shared — and its
 // default listener is 8081, not the gateway's 8080.
 func AddWorkspaceFlags(fs *pflag.FlagSet) {
+	fs.Bool("exec-network", false, "allow Exec children to use the workspace network")
+	fs.StringSlice("exec-env", nil, "workspace environment variable names explicitly granted to Exec children")
 	fs.String("addr", defaultWorkspaceAddr, "gRPC listen address for the workspace contract")
 	fs.String("workspace", defaultWorkspace, "workspace directory (created on first use)")
 	fs.Int("exec-uid", defaultExecUID,
@@ -41,6 +43,10 @@ func AddWorkspaceFlags(fs *pflag.FlagSet) {
 // owns the workspace directory and serves the gRPC contract — Read,
 // Write, List, Exec — and nothing else. No tools, no plugin loader.
 type WorkspaceConfig struct {
+	// ExecNetwork grants the workspace network to Exec children.
+	ExecNetwork bool `mapstructure:"exec-network"`
+	// ExecEnv names workspace environment variables granted to Exec children.
+	ExecEnv []string `mapstructure:"exec-env"`
 	// Addr is the gRPC workspace listener's address.
 	Addr string `mapstructure:"addr"`
 	// Workspace is the workspace directory, created on first use.

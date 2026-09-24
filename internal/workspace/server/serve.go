@@ -3,9 +3,11 @@ package server
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log/slog"
 	"net"
 	"os"
+	"regexp"
 	"time"
 
 	"google.golang.org/grpc"
@@ -20,6 +22,10 @@ import (
 // is a boundary, and a boundary states its own surface instead of
 // depending on the layer that composes the system.
 type ServeOptions struct {
+	// ExecNetwork grants network access independently of the caller.
+	ExecNetwork bool
+	// ExecEnv names variables read from the workspace environment at startup.
+	ExecEnv []string
 	// Addr is the gRPC listener's address. It must already be one the
 	// caller has decided may be served — the listener carries no
 	// authentication in this phase, so a non-loopback bind is a remote
@@ -33,6 +39,8 @@ type ServeOptions struct {
 	ExecTimeout time.Duration
 }
 
+var environmentName = regexp.MustCompile(`^[A-Za-z_][A-Za-z0-9_]*$`)
+
 // Serve runs the workspace's gRPC listener until ctx is done.
 //
 // The workspace is the data plane (ADR 0017): it owns the workspace
@@ -41,6 +49,17 @@ type ServeOptions struct {
 // to the exec UID when privileged, so files written through the gRPC
 // contract and by exec'd children share one owner.
 func Serve(ctx context.Context, opts ServeOptions, logger *slog.Logger) error {
+	execEnv := make([]string, 0, len(opts.ExecEnv))
+	for _, name := range opts.ExecEnv {
+		if !environmentName.MatchString(name) {
+			return fmt.Errorf("exec-env must contain environment variable names, not values")
+		}
+		value, ok := os.LookupEnv(name)
+		if !ok {
+			return fmt.Errorf("exec-env variable %s is not set in the workspace", name)
+		}
+		execEnv = append(execEnv, name+"="+value)
+	}
 	// Single-account custody (ADR 0003): when exec-uid is the
 	// workspace's own account, exec children share it, so the
 	// workspace's /proc environ would be readable to them — close that
@@ -65,8 +84,10 @@ func Serve(ctx context.Context, opts ServeOptions, logger *slog.Logger) error {
 	}
 	grpcServer := grpc.NewServer()
 	workspace.RegisterWorkspaceServer(grpcServer, &Server{
-		FS:       workspaceFS,
-		Executor: shell.NewProcessExecutor(opts.ExecUID, opts.ExecTimeout),
+		FS:          workspaceFS,
+		ExecNetwork: opts.ExecNetwork,
+		ExecEnv:     execEnv,
+		Executor:    shell.NewProcessExecutor(opts.ExecUID, opts.ExecTimeout),
 	})
 
 	go func() {

@@ -135,6 +135,15 @@ func dialWorkspace(t *testing.T, addr string) (workspace.WorkspaceClient, func()
 }
 
 func TestServe_EnvironmentGrantFailures(t *testing.T) {
+	t.Setenv("QA_UNSET_WORKSPACE_GRANT_840", "")
+	require.NoError(t, os.Unsetenv("QA_UNSET_WORKSPACE_GRANT_840"))
+	t.Setenv("QA_VALID_WORKSPACE_GRANT_840", "marker")
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	require.NoError(t, server.Serve(ctx, server.ServeOptions{
+		Addr: "127.0.0.1:0", Dir: t.TempDir(), ExecUID: os.Getuid(),
+		ExecEnv: []string{"QA_VALID_WORKSPACE_GRANT_840"},
+	}, slog.New(slog.DiscardHandler)))
 	for _, name := range []string{"INVALID=literal", "QA_UNSET_WORKSPACE_GRANT_840"} {
 		t.Run(name, func(t *testing.T) {
 			err := server.Serve(context.Background(), server.ServeOptions{ExecEnv: []string{name}}, slog.New(slog.DiscardHandler))

@@ -1,5 +1,3 @@
-// Package memory implements the agent's long-term memory: the addressed
-// store, the two addressed reads, and the write behind the writeback
-// block per docs/architecture/memory.md. Memory is a layer, never a tool
-// (ADR 0017): the model touches it only through the lifecycle.
+// Package memory holds the legacy addressed memory domain. The source-linked
+// runtime uses the same SQLite file without writing these addressed tables.
 package memory

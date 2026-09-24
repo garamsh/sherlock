@@ -1,5 +1,7 @@
 # Correction and retention across restart
 
+This record describes the addressed-memory instrument at the revision it measured. Issue #823 replaced the active runtime with source-linked conversational memory and retired the addressed free and paid entry points from `tests/`; commands naming those entry points are historical and require a new instrument before reuse.
+
 Publishes the correction and valid-old-fact retention measurement for issue #815, checked against `bf619b716b42edebf9f4dce03c501219f4d6c3ef` (attempts 1–2) and `21f1d6a696aee4e4f6ee5f5875f4888da477623c` (attempt 3). The complete MiniMax-M2 run produced **1 accepted / 4 exact-output reasoning failures / 5 invalid premises / 0 recall failures**; it did not successfully retire the intervening weekday value at reversal.
 
 ## Method

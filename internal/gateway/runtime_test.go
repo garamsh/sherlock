@@ -218,112 +218,94 @@ func TestFactory_HistoryOverflowStoresNothing(t *testing.T) {
 	}
 }
 
-// TestFactory_WritebackReachesTheStoreAtItsAddress is the wiring case
-// the configured-embedder test used to be: one scripted turn writes
-// back, and the value is readable at the address the write stated.
-func TestFactory_WritebackReachesTheStoreAtItsAddress(t *testing.T) {
+// A completed turn is available as source-backed history after restart, while
+// addressed rows are not a second active memory authority.
+func TestFactory_ConversationSurvivesRestart(t *testing.T) {
 	root := t.TempDir()
-	sink := &recordingSink{}
-	factory := &gateway.Factory{
-		MemoryPath: memoryPath(root),
-		NewModel:   replyModel,
-		Tools:      mouthClientSink(sink),
-	}
+	factory := &gateway.Factory{MemoryPath: memoryPath(root), NewModel: func(string) agent.Model {
+		return agent.NewScriptedModel(resolveStep(), writebackStep(`{"reply":"The observatory closes at dusk.","memory_ops":[]}`))
+	}, Tools: noTools(), MaxHistoryMessages: 2}
 	rt, err := factory.New(context.Background(), "env-1", nil)
 	require.NoError(t, err)
-
-	_, err = rt.Session.Run(context.Background(), "hi")
+	_, err = rt.Session.Run(context.Background(), "When does the observatory close?")
 	require.NoError(t, err)
 	require.NoError(t, rt.Close(context.Background()))
-
 	store, err := sqlite.Open(memoryPath(root))
 	require.NoError(t, err)
-	defer func() { assert.NoError(t, store.Close()) }()
-	active, err := store.Active(context.Background())
+	sources, err := store.Recent(context.Background(), 10)
 	require.NoError(t, err)
-	require.Len(t, active, 1, "the scripted turn writes back exactly one memory")
-	assert.NotEmpty(t, active[0].Address.Subject)
-	assert.NotEmpty(t, active[0].Address.Question)
-	assert.NotEmpty(t, active[0].Value)
-
-	held, err := memory.NewService(store).At(context.Background(), active[0].Address)
+	require.Len(t, sources, 2)
+	assert.Equal(t, agent.RoleUser, sources[0].Role)
+	assert.Equal(t, "The observatory closes at dusk.", sources[1].Content)
+	hits, err := store.Search(context.Background(), []string{"observatory closing"}, 5)
 	require.NoError(t, err)
-	require.Len(t, held, 1, "the value is readable at the address it was written to")
-	assert.Equal(t, active[0].Value, held[0].Value)
+	require.NotEmpty(t, hits)
+	short, err := store.Short(context.Background(), hits[0].ShortID)
+	require.NoError(t, err)
+	source, err := store.Source(context.Background(), short.SourceID)
+	require.NoError(t, err)
+	assert.Contains(t, source.Content, "observatory")
+	require.NoError(t, store.Close())
+	restarted, err := factory.New(context.Background(), "env-1", nil)
+	require.NoError(t, err)
+	defer restarted.Close(context.Background())
+	assert.Contains(t, restarted.Session.History(), agent.Message{Role: agent.RoleUser, Content: "When does the observatory close?"})
 }
 
-// TestFactory_RetainReachesMemoryServiceRetain holds the wiring nothing
-// held until #734: Runtime.Retain runs memory.Service.Retain over the
-// store the factory opened. A Retain that returns without reaching the
-// service leaves the runtime looking healthy — the agent still answers
-// and the pass is simply absent — so this asserts the store change only
-// that pass makes.
-//
-// Both rows are written through the store rather than by a turn, because
-// no operation a writeback can state carries a salience below the keep
-// tier (internal/memory's TestRetain_DropsNothingAWritebackWrote), so a
-// turn would leave the pass nothing to archive. The kept row is the
-// control that separates the pass from anything that would empty the
-// store, and it carries the salience a real replacement writes.
-func TestFactory_RetainReachesMemoryServiceRetain(t *testing.T) {
-	// Below the drop tier, which the pass archives whatever the
-	// timestamp says — the mid tier is the one that waits out a window.
-	// The factory's service takes no clock and runs on time.Now, so
-	// salience rather than age is what puts a row in reach here.
-	const dropTier = memory.RetentionDropSalience / 2
-	require.Less(t, dropTier, memory.RetentionDropSalience,
-		"the seeded row must sit below the drop tier, or the pass has "+
-			"nothing to archive and this test cannot fail")
+func TestFactory_DisabledCompactionRestoresAllHistory(t *testing.T) {
+	for _, tc := range []struct {
+		name  string
+		limit int
+		want  []string
+	}{
+		{name: "disabled", limit: -1, want: []string{"First question?", "Second question?"}},
+		{name: "bounded", limit: 2, want: []string{"Second question?"}},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			root := t.TempDir()
+			factory := &gateway.Factory{MemoryPath: memoryPath(root), NewModel: func(string) agent.Model {
+				return agent.NewScriptedModel(resolveStep(), writebackStep(`{"reply":"Answer.","memory_ops":[]}`))
+			}, Tools: noTools(), MaxHistoryMessages: tc.limit}
+			for _, question := range []string{"First question?", "Second question?"} {
+				runtime, err := factory.New(context.Background(), "env-1", nil)
+				require.NoError(t, err)
+				_, err = runtime.Session.Run(context.Background(), question)
+				require.NoError(t, err)
+				require.NoError(t, runtime.Close(context.Background()))
+			}
+			restarted, err := factory.New(context.Background(), "env-1", nil)
+			require.NoError(t, err)
+			defer restarted.Close(context.Background())
+			var got []string
+			for _, message := range restarted.Session.History() {
+				if message.Role == agent.RoleUser {
+					got = append(got, message.Content)
+				}
+			}
+			assert.Equal(t, tc.want, got)
+		})
+	}
+}
 
+func TestFactory_RefusesAddressedStoreWithoutChangingIt(t *testing.T) {
 	root := t.TempDir()
+	ctx := context.Background()
 	seed, err := sqlite.Open(memoryPath(root))
 	require.NoError(t, err)
 	written := time.Now()
-	dropped, _, err := seed.Write(context.Background(), memory.Memory{
-		Address:         memory.Address{Subject: "the test channel", Question: "what has expired"},
-		Value:           "a value below the drop tier",
-		ImportanceScore: dropTier,
-		Timestamp:       written,
-		Source:          "test",
-	}, nil, written)
-	require.NoError(t, err)
-	kept, _, err := seed.Write(context.Background(), memory.Memory{
-		Address:         memory.Address{Subject: "the test channel", Question: "what was corrected"},
-		Value:           "a value at the salience a replacement writes",
-		ImportanceScore: memory.SalienceReplace,
-		Timestamp:       written,
-		Source:          "test",
-	}, nil, written)
+	_, _, err = seed.Write(ctx, memory.Memory{Address: memory.Address{Subject: "user", Question: "what is the favorite telescope"}, Value: "Kepler", ImportanceScore: memory.SalienceJoin, Timestamp: written, Source: "old"}, nil, written)
 	require.NoError(t, err)
 	require.NoError(t, seed.Close())
-
-	factory := &gateway.Factory{
-		MemoryPath: memoryPath(root),
-		NewModel:   func(string) agent.Model { return agent.NewScriptedModel() },
-		Tools:      noTools(),
-	}
-	rt, err := factory.New(context.Background(), "env-1", nil)
+	factory := &gateway.Factory{MemoryPath: memoryPath(root), NewModel: func(string) agent.Model { return agent.NewScriptedModel() }, Tools: noTools()}
+	_, err = factory.New(ctx, "env-1", nil)
+	require.ErrorIs(t, err, sqlite.ErrAddressedStore)
+	reopened, err := sqlite.Open(memoryPath(root))
 	require.NoError(t, err)
-	require.NotNil(t, rt.Retain,
-		"the runner skips a nil Retain, so an unwired pass reaches no log line")
-	require.NoError(t, rt.Retain(context.Background()))
-	require.NoError(t, rt.Close(context.Background()))
-
-	store, err := sqlite.Open(memoryPath(root))
+	defer reopened.Close()
+	held, err := reopened.Active(ctx)
 	require.NoError(t, err)
-	defer func() { assert.NoError(t, store.Close()) }()
-	active, err := store.Active(context.Background())
-	require.NoError(t, err)
-	ids := make([]int64, 0, len(active))
-	for _, m := range active {
-		ids = append(ids, m.ID)
-	}
-	assert.NotContains(t, ids, dropped,
-		"the below-tier row leaves the active index, which is what "+
-			"memory.Service.Retain does and nothing else on this path does")
-	assert.Contains(t, ids, kept,
-		"the keep tier survives: the row moved to the archive, and the "+
-			"store was not emptied by something other than the pass")
+	require.Len(t, held, 1)
+	assert.Equal(t, "Kepler", held[0].Value)
 }
 
 // stubClient is a minimal platform-tool-client stand-in for tests
@@ -483,7 +465,7 @@ func TestFactory_ToolClientDescriptorsReachSession(t *testing.T) {
 	for _, d := range model.actTools() {
 		// The reserved writeback is the platform's addition to what the
 		// model sees, not part of the operator's list.
-		if d.Name == agent.MemoryWriteTool {
+		if d.Name == agent.MemoryWriteTool || d.Name == agent.MemoryInspectTool {
 			continue
 		}
 		names = append(names, d.Name)

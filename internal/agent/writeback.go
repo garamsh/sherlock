@@ -32,9 +32,8 @@ const MemoryWriteTool = "memory_write"
 // contract, and because what a caller may decline is not settled by
 // prose: the session will not end a turn without this call.
 const memoryWriteDescription = "Deliver your reply and record what this turn stated. " +
-	"Every turn ends with this call and no turn ends without it: the reply you pass here " +
-	"is what the person reads, and memory_ops is the list of facts the turn stated — " +
-	"the empty list is your answer that it stated none."
+	"Every turn ends with this call and no turn ends without it. The reply is what the person reads. " +
+	"For source-linked memory, pass an empty memory_ops list; the runtime saves visible conversation separately."
 
 // MemoryWriteDescriptor is the reserved tool as the model sees it. Its
 // parameters are ResponseSchema, so what the write carries is the same

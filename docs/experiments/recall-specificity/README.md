@@ -1,5 +1,7 @@
 # Recall-specificity experiment
 
+This record measures the addressed-memory runtime at its recorded revision. Issue #823 retired the addressed recall, information, and record-selection test entry points from `tests/`; the results remain historical evidence, and new live-model evaluation must use a source-linked instrument.
+
 What the running agent recalls when the question says less than the fact it is looking for, measured against the built binaries and the store its own turns wrote.
 
 ## Contents

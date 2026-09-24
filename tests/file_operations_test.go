@@ -136,7 +136,7 @@ func runFileOperations(t *testing.T, meter *spendMeter, dir string) []fileOperat
 	}
 	hashes := map[string]string{}
 	paths := []string{binary, instrument}
-	for _, name := range []string{"model_spend_meter", "e2e_binary", "workspace", "recall_specificity", "continuation", "recall_information", "gateway"} {
+	for _, name := range []string{"model_spend_meter", "e2e_binary", "workspace", "experiment_helpers", "continuation", "gateway"} {
 		paths = append(paths, filepath.Join(moduleRoot(t), "tests/"+name+"_test.go"))
 	}
 	for _, path := range paths {

@@ -9,11 +9,13 @@ The prior read step resolved a question to a model-written address and widened t
 
 ## Decision
 
-The session model supplies up to four search phrases, including alternate wording and separate topics. The store tokenizes those phrases and searches bounded mid summaries through SQLite FTS5, returning at most five candidates newest first. If the model supplies no usable phrases, the task text is the fallback. An empty result injects no claimed evidence. The agent can inspect linked short summaries and sources during its act loop.
+The session model supplies up to four search phrases, including alternate wording and separate topics. The store tokenizes those phrases and searches bounded mid summaries through SQLite FTS5, returning at most five candidates ranked by lexical relevance, with recency breaking ties. If the model supplies no usable phrases, the task text is the fallback. An empty result injects no claimed evidence. The agent can inspect linked short summaries and sources during its act loop.
 
-## What is not measured
+## Evidence and limits
 
-The model's phrase selection, summary fidelity, and grounded answer quality have no live-model result for this design. The issue #821 prototype's 7/7 candidate reachability used hand-authored summaries and cannot establish these properties. FTS5 lexical matching and a bounded result set can miss a relevant source.
+- The bounded local live-model A/B replay recorded in [PR #834's review at bfbc756](https://github.com/garamsh/gagent/pull/834#pullrequestreview-5304675916) used the same 201-source correction fixture from [issue #832](https://github.com/garamsh/gagent/issues/832): two generic-query baseline failures and two correct relevance-first answers. This supports replacing newest-first ordering for the observed crowding failure.
+- That single fixture does not establish general search-phrase quality, summary fidelity, correction handling, or grounded answer accuracy. The issue #821 prototype's 7/7 candidate reachability used hand-authored summaries and cannot establish these properties either.
+- FTS5 lexical matching and the five-candidate bound can still omit a correction. Relevance rank does not establish current truth; the agent must inspect the linked evidence.
 
 ## Consequences
 

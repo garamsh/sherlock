@@ -29,7 +29,7 @@ func (q *Queue) run(events *batchEvents) {
 			batch := drain(q.inbox, msg)
 			ids := messageIDs(batch)
 			events.setBatch(ids)
-			_, err := q.runtime.Session.Run(q.ctx, renderBatch(batch))
+			_, err := q.runtime.Session.Run(agent.WithInboundSources(q.ctx, sourceBatch(batch)), renderBatch(batch))
 			events.setBatch(nil)
 			if err != nil {
 				logger.Error("run failed",
@@ -117,4 +117,12 @@ func (s *batchEvents) Emit(ctx context.Context, e agent.Event) {
 		s.mu.Unlock()
 	}
 	s.inner.Emit(ctx, e)
+}
+
+func sourceBatch(batch []Inbound) []agent.SourceMessage {
+	out := make([]agent.SourceMessage, 0, len(batch))
+	for _, m := range batch {
+		out = append(out, agent.SourceMessage{ExternalID: m.ID, Role: agent.RoleUser, Content: m.Content})
+	}
+	return out
 }

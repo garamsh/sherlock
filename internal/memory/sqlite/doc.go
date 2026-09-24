@@ -1,3 +1,3 @@
-// Package sqlite implements memory.Storer on a single per-agent
-// memory.db file (ADR 0002) via modernc.org/sqlite (pure Go, no cgo).
+// Package sqlite owns the per-agent memory.db, including source-linked
+// conversation records and the legacy addressed tables (ADR 0002).
 package sqlite

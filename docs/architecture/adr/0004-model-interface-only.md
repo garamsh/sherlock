@@ -7,7 +7,7 @@
 
 The agent's reasoning loop needs a chat model with tool-calling semantics. The project has to be buildable before a vendor is picked and runnable without reaching a network. Endpoints serving comparable models differ in wire protocol — where the system prompt sits, how a tool call and its result are encoded, whether a token ceiling is required — so which endpoint to call and which protocol it speaks are two questions rather than one.
 
-Memory needed embeddings when this record was first written. It no longer does: a fact is held at the address of the question it answers instead of being scored for likeness (ADR 0018, ADR 0002), and #582 removed the embedder along with the interface that consumed it.
+Memory needed embeddings when this record was first written. The source-linked read now asks the session model for search phrases and queries an FTS5 index in the per-agent SQLite file (ADR 0019, ADR 0002); no separate embedding provider is wired.
 
 ## Decision
 

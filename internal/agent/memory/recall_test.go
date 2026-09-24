@@ -194,29 +194,6 @@ func TestRecall_ShowsTheModelTheReservedReadToolAndNothingElse(t *testing.T) {
 	assert.Equal(t, "which telescope do I like?", model.sent[1].Content)
 }
 
-// TestReadInstruction_CarriesTheWriteSAddressRulesVerbatim is the
-// ADR's governing property held mechanically. The read prompt and the
-// writeback section embed one constant, so neither half can grow an
-// address rule the other lacks; this checks the sentences that decide an
-// address appear in both, word for word.
-func TestReadInstruction_CarriesTheWriteSAddressRulesVerbatim(t *testing.T) {
-	rules := []string{
-		"who or what the statement is about",
-		"the question this fact answers, phrased the way",
-		"Not a topic noun",
-		"take the question word from",
-		"what the statement narrows that question to",
-	}
-	for _, rule := range rules {
-		assert.Contains(t, agent.Contract, rule, "the write states this rule")
-		assert.Contains(t, agent.ReadInstruction, rule,
-			"the read step reads the same rule; a read prompt that carried more "+
-				"could place a question the write never wrote (ADR 0019)")
-	}
-	assert.NotContains(t, agent.ReadInstruction, "memory_ops",
-		"the read step carries the address rules, not the write's own protocol")
-}
-
 // TestParseReadAddress_ReadsTheReservedCallOnly pins what counts as a
 // placed address.
 func TestParseReadAddress_ReadsTheReservedCallOnly(t *testing.T) {

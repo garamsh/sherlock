@@ -7,7 +7,6 @@ import (
 
 	"github.com/garamsh/gagent/internal/agent"
 	agentmemory "github.com/garamsh/gagent/internal/agent/memory"
-	"github.com/garamsh/gagent/internal/memory"
 	"github.com/garamsh/gagent/internal/memory/sqlite"
 )
 
@@ -19,10 +18,8 @@ type Runtime struct {
 	// Close releases the runtime's resources. Called once on queue
 	// shutdown.
 	Close func(ctx context.Context) error
-	// Retain is the tiered retention pass (ADR 0006) and the only pass
-	// the runner evaluates after a completed turn; a failure logs at
-	// WARN and never fails a turn. Nil means no retention pass (test
-	// runtimes).
+	// Retain is an optional legacy maintenance hook; the source-linked
+	// runtime leaves it nil because source records are not evicted.
 	Retain func(ctx context.Context) error
 }
 
@@ -52,13 +49,13 @@ type Factory struct {
 }
 
 // New builds the agent runtime: it opens (creating on first use) the
-// memory store and the session, then wires the session's recall, writeback,
+// memory store and the session, then wires source-linked recall, inspection,
 // event, and context-compaction hooks.
 func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink) (*Runtime, error) {
 	if err := os.MkdirAll(filepath.Dir(f.MemoryPath), 0o755); err != nil {
 		return nil, err
 	}
-	store, err := sqlite.Open(f.MemoryPath)
+	store, err := sqlite.OpenConversation(f.MemoryPath)
 	if err != nil {
 		return nil, err
 	}
@@ -69,17 +66,23 @@ func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink)
 	if maxHistoryMessages < 0 {
 		maxHistoryMessages = 0
 	}
-	memSvc := memory.NewService(store)
+	recent, err := store.Recent(context.Background(), maxHistoryMessages)
+	if err != nil {
+		store.Close()
+		return nil, err
+	}
+	initial := make([]agent.Message, 0, len(recent))
+	for _, m := range recent {
+		initial = append(initial, agent.Message{Role: m.Role, Content: m.Content})
+	}
 
-	// One model, both places. The reasoning loop and the read step run
-	// on the same provider: nothing about resolving a question into an
-	// address needs a different one, and a second provider section for
-	// a resolver would be the shape #582 deleted (ADR 0019).
+	// Search wording and the reasoning loop use the same configured model.
 	model := f.NewModel(agentID)
 
 	session := agent.NewSession(model, f.Tools, agent.Options{
-		Recaller:           agentmemory.Recall{Svc: memSvc, Model: model},
-		Writeback:          agentmemory.Writeback{Svc: memSvc},
+		Recaller:           agentmemory.ConversationRecall{Store: store, Model: model},
+		Conversation:       store,
+		InitialHistory:     initial,
 		Events:             events,
 		Compactor:          agentmemory.Compactor{MaxHistoryMessages: maxHistoryMessages},
 		Ego:                f.Ego,
@@ -87,16 +90,12 @@ func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink)
 	})
 	return &Runtime{
 		Session: session,
-		Retain: func(ctx context.Context) error {
-			_, err := memSvc.Retain(ctx)
-			return err
-		},
 		Close: func(context.Context) error {
 			// The store opens in WAL mode, so an unclosed handle
 			// leaves the `-wal` and `-shm` files beside `memory.db`
 			// with the last checkpoint unrun, and that file is what
 			// the next agent starts from (`deployment.md`).
-			return memSvc.Close()
+			return store.Close()
 		},
 	}, nil
 }

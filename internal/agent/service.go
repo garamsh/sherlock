@@ -87,10 +87,12 @@ type Session interface {
 
 // Options wires the session's hook points. Nil interfaces are no-ops.
 type Options struct {
-	Recaller  Recaller
-	Writeback WritebackSink
-	Events    EventSink
-	Compactor Compactor
+	Recaller       Recaller
+	Writeback      WritebackSink
+	Events         EventSink
+	Compactor      Compactor
+	Conversation   ConversationMemory
+	InitialHistory []Message
 	// Ego is the identity/behavior half of the session instructions;
 	// empty selects the embedded DefaultEgo. The platform Contract is
 	// always appended (see ComposeInstructions).
@@ -109,6 +111,8 @@ type session struct {
 	// first system message of a fresh session.
 	instructions string
 	history      []Message
+	currentTask  string
+	sources      []SourceMessage
 	turn         int
 	// failures records this turn's failed tool calls, keyed by name and
 	// input bytes; it resets on every Run.
@@ -139,6 +143,7 @@ func NewSession(model Model, tools ToolClient, opts Options) Session {
 		tools:        tools,
 		opts:         opts,
 		instructions: ComposeInstructions(opts.Ego),
+		history:      append([]Message(nil), opts.InitialHistory...),
 	}
 }
 
@@ -147,13 +152,14 @@ func (s *session) History() []Message {
 	return append([]Message(nil), s.history...)
 }
 
-// Run executes one turn of the memory lifecycle: frame the task, recall
-// memories into context, act (model ↔ tools until a final response), and
-// write back memory operations from every model response. Every turn ends
+// Run executes one turn: frame the task, recall linked candidates, act,
+// and persist visible conversation after the terminal response. Every turn ends
 // with exactly one terminal event: turn_finished on success, turn_failed
 // on error.
 func (s *session) Run(ctx context.Context, task string) (response string, err error) {
 	s.turn++
+	s.currentTask = task
+	s.sources = inboundSources(ctx, task)
 	s.failures = make(map[string]failedCall)
 	s.toolCalls = make(map[string]int)
 	s.emit(ctx, Event{Kind: EventTurnStarted, Turn: s.turn, Task: task})
@@ -163,8 +169,8 @@ func (s *session) Run(ctx context.Context, task string) (response string, err er
 		}
 	}()
 
-	if len(s.history) == 0 {
-		s.history = append(s.history, Message{Role: RoleSystem, Content: s.instructions})
+	if len(s.history) == 0 || s.history[0].Role != RoleSystem {
+		s.history = append([]Message{{Role: RoleSystem, Content: s.instructions}}, s.history...)
 	}
 	recalled, err := s.recall(ctx, task)
 	if err != nil {
@@ -216,9 +222,9 @@ func (s *session) Run(ctx context.Context, task string) (response string, err er
 // name.
 func (s *session) modelTools() []tool.Descriptor {
 	installed := s.tools.List()
-	out := make([]tool.Descriptor, 0, len(installed)+1)
+	out := make([]tool.Descriptor, 0, len(installed)+2)
 	for _, d := range installed {
-		if d.Name == MemoryWriteTool {
+		if d.Name == MemoryWriteTool || d.Name == MemoryInspectTool {
 			// An operator tool cannot take the reserved name: the
 			// session would route its calls to the writeback and the
 			// operator's tool would never run. Dropping it is visible
@@ -229,7 +235,11 @@ func (s *session) modelTools() []tool.Descriptor {
 		}
 		out = append(out, d)
 	}
-	return append(out, MemoryWriteDescriptor())
+	out = append(out, MemoryWriteDescriptor())
+	if s.opts.Conversation != nil {
+		out = append(out, MemoryInspectDescriptor())
+	}
+	return out
 }
 
 // splitWriteback separates the reserved writeback call from the tool
@@ -276,6 +286,11 @@ func (s *session) finish(ctx context.Context, call ToolCall) (string, error) {
 	if err := s.applyWriteback(ctx, ops); err != nil {
 		return "", err
 	}
+	if s.opts.Conversation != nil {
+		if err := s.opts.Conversation.RecordTurn(ctx, append(append([]SourceMessage(nil), s.sources...), SourceMessage{Role: RoleAssistant, Content: reply})); err != nil {
+			return "", fmt.Errorf("record conversation: %w", err)
+		}
+	}
 	s.emit(ctx, Event{Kind: EventTurnFinished, Turn: s.turn, Response: reply})
 	return reply, nil
 }
@@ -302,7 +317,7 @@ func (s *session) execute(ctx context.Context, call ToolCall) {
 	known, ok := s.failures[key]
 	switch {
 	case s.toolCalls[call.Name] > maxToolCallsPerTurn:
-		description := descriptorDescription(s.tools.List(), call.Name)
+		description := descriptorDescription(s.modelTools(), call.Name)
 		result = toolBudgetNotice(call.Name, description)
 		event.ToolFailed = true
 	case ok && known.repeated:
@@ -312,6 +327,14 @@ func (s *session) execute(ctx context.Context, call ToolCall) {
 		result, event.ToolFailed = s.invoke(ctx, call)
 		if event.ToolFailed {
 			s.failures[key] = failedCall{err: result, repeated: ok && known.err == result}
+		}
+	}
+	if !event.ToolFailed && call.Name == "message_send" {
+		var sent struct {
+			Content string `json:"content"`
+		}
+		if json.Unmarshal(call.Input, &sent) == nil && sent.Content != "" {
+			s.sources = append(s.sources, SourceMessage{Role: RoleAssistant, Content: sent.Content})
 		}
 	}
 	event.ToolResult = result
@@ -327,6 +350,13 @@ func (s *session) execute(ctx context.Context, call ToolCall) {
 // invoke dispatches one tool call through the protocol client, returning
 // the result or the error text together with whether the call failed.
 func (s *session) invoke(ctx context.Context, call ToolCall) (string, bool) {
+	if call.Name == MemoryInspectTool && s.opts.Conversation != nil {
+		out, err := inspectMemory(ctx, s.opts.Conversation, call.Input)
+		if err != nil {
+			return err.Error(), true
+		}
+		return out, false
+	}
 	out, err := s.tools.Call(ctx, call.Name, call.Input)
 	if err != nil {
 		return err.Error(), true

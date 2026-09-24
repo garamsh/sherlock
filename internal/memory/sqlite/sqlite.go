@@ -63,6 +63,9 @@ const columns = `id, subject, question, restriction, value, importance_score,
 // sentence is a model call, and the store does not make one.
 var ErrPreAddressedStore = errors.New("memory.db holds the pre-addressed schema")
 
+// ErrAddressedStore requires an explicit migration before source-linked recall.
+var ErrAddressedStore = errors.New("memory.db holds addressed memories without source links")
+
 // Store is the SQLite-backed memory.Storer.
 type Store struct {
 	db *sql.DB
@@ -88,6 +91,10 @@ func Open(path string) (*Store, error) {
 	if _, err := db.Exec(schema); err != nil {
 		db.Close()
 		return nil, fmt.Errorf("create schema: %w", err)
+	}
+	if _, err := db.Exec(conversationSchema); err != nil {
+		db.Close()
+		return nil, fmt.Errorf("create conversation schema: %w", err)
 	}
 	return &Store{db: db}, nil
 }

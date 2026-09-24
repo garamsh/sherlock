@@ -25,7 +25,7 @@ type evidenceModel struct {
 
 func (m *evidenceModel) Chat(ctx context.Context, messages []agent.Message, tools []tool.Descriptor) (agent.Response, error) {
 	m.calls++
-	if m.calls == 4 {
+	if m.calls == 3 {
 		found := false
 		for _, message := range messages {
 			if message.Role == agent.RoleTool && message.Name == agent.MemoryInspectTool && strings.Contains(message.Content, "Correction: my preferred telescope is the Vega-2 reflector.") {
@@ -46,7 +46,7 @@ func (s *conversationEvents) Emit(_ context.Context, e agent.Event) { s.events =
 func TestConversation_ParaphraseCorrectionAndExactSource(t *testing.T) {
 	ctx := context.Background()
 	path := filepath.Join(t.TempDir(), "memory.db")
-	first := agent.NewScriptedModel(
+	first := summaryScript(
 		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: "memory_search_terms", Input: json.RawMessage(`{"phrases":["telescope"]}`)}}},
 		writebackStep(`{"reply":"Noted.","memory_ops":[]}`),
 		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: "memory_search_terms", Input: json.RawMessage(`{"phrases":["telescope"]}`)}}},
@@ -55,9 +55,9 @@ func TestConversation_ParaphraseCorrectionAndExactSource(t *testing.T) {
 	f := &gateway.Factory{MemoryPath: path, NewModel: func(string) agent.Model { return first }, Tools: noTools(), MaxHistoryMessages: 2}
 	rt, err := f.New(ctx, "a", nil)
 	require.NoError(t, err)
-	_, err = rt.Session.Run(ctx, "My preferred telescope is the Kepler-9 refractor.")
+	_, err = rt.Session.Run(agent.WithInboundSources(ctx, checkpointSources("My preferred telescope is the Kepler-9 refractor.", 7)), "Remember the telescope preference.")
 	require.NoError(t, err)
-	_, err = rt.Session.Run(ctx, "Correction: my preferred telescope is the Vega-2 reflector.")
+	_, err = rt.Session.Run(agent.WithInboundSources(ctx, checkpointSources("Correction: my preferred telescope is the Vega-2 reflector.", 7)), "Remember the correction.")
 	require.NoError(t, err)
 	require.LessOrEqual(t, len(rt.Session.History()), 4)
 	require.NoError(t, rt.Close(ctx))
@@ -75,17 +75,14 @@ func TestConversation_ParaphraseCorrectionAndExactSource(t *testing.T) {
 		}
 	}
 	require.NotZero(t, correction.ID, "the correction is offered among the candidates")
-	short, err := store.Short(ctx, correction.ShortID)
-	require.NoError(t, err)
-	source, err := store.Source(ctx, short.SourceID)
+	source, err := store.Source(ctx, correction.SourceFirst)
 	require.NoError(t, err)
 	assert.Equal(t, "Correction: my preferred telescope is the Vega-2 reflector.", source.Content)
 	require.NoError(t, store.Close())
 
-	model := agent.NewScriptedModel(
+	model := summaryScript(
 		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: "memory_search_terms", Input: json.RawMessage(`{"phrases":["preferred telescope","Vega reflector"]}`)}}},
-		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.MemoryInspectTool, Input: json.RawMessage(`{"kind":"short","id":3}`)}}},
-		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.MemoryInspectTool, Input: json.RawMessage(`{"kind":"source","id":3}`)}}},
+		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.MemoryInspectTool, Input: json.RawMessage(`{"id":9}`)}}},
 		writebackStep(`{"reply":"You corrected it to the Vega-2 reflector; your exact words were: 'Correction: my preferred telescope is the Vega-2 reflector.'","memory_ops":[]}`),
 	)
 	events := &conversationEvents{}
@@ -103,14 +100,14 @@ func TestConversation_ParaphraseCorrectionAndExactSource(t *testing.T) {
 			inspections++
 		}
 	}
-	assert.Equal(t, 2, inspections, "the source-inspection tool actually ran")
+	assert.Equal(t, 1, inspections, "the source-inspection tool actually ran")
 	require.NoError(t, restarted.Close(ctx))
 }
 
 func TestConversation_UnsupportedQuestionHasNoEvidence(t *testing.T) {
 	ctx := context.Background()
 	path := filepath.Join(t.TempDir(), "memory.db")
-	model := agent.NewScriptedModel(
+	model := summaryScript(
 		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: "memory_search_terms", Input: json.RawMessage(`{"phrases":["lunar launch date"]}`)}}},
 		writebackStep(`{"reply":"I don't have a source for that.","memory_ops":[]}`),
 	)
@@ -136,8 +133,8 @@ func TestConversation_SearchesMultipleTopics(t *testing.T) {
 	store, err := sqlite.Open(filepath.Join(t.TempDir(), "memory.db"))
 	require.NoError(t, err)
 	defer store.Close()
-	require.NoError(t, store.RecordTurn(ctx, []agent.SourceMessage{{Role: agent.RoleUser, Content: "I prefer cedar tea."}, {Role: agent.RoleAssistant, Content: "Noted."}}))
-	require.NoError(t, store.RecordTurn(ctx, []agent.SourceMessage{{Role: agent.RoleUser, Content: "My desk is beside the east window."}, {Role: agent.RoleAssistant, Content: "Noted."}}))
+	require.NoError(t, store.RecordTurn(ctx, checkpointSources("I prefer cedar tea.", 8), firstSummary{}))
+	require.NoError(t, store.RecordTurn(ctx, checkpointSources("My desk is beside the east window.", 8), firstSummary{}))
 	hits, err := store.Search(ctx, []string{"cedar tea", "east window"}, 5)
 	require.NoError(t, err)
 	var cedar, window bool
@@ -153,7 +150,7 @@ func contains(s, part string) bool { return strings.Contains(s, part) }
 func TestConversation_QueuePreservesOriginalInboundID(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "memory.db")
 	factory := &gateway.Factory{MemoryPath: path, NewModel: func(string) agent.Model {
-		return agent.NewScriptedModel(
+		return summaryScript(
 			agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: "memory_search_terms", Input: json.RawMessage(`{"phrases":["cedar"]}`)}}},
 			writebackStep(`{"reply":"Noted.","memory_ops":[]}`),
 		)
@@ -185,9 +182,9 @@ func TestConversation_RelatedCandidateDoesNotSupportMissingDate(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "memory.db")
 	seed, err := sqlite.Open(path)
 	require.NoError(t, err)
-	require.NoError(t, seed.RecordTurn(ctx, []agent.SourceMessage{{Role: agent.RoleUser, Content: "The lunar mission uses the Aurora capsule."}, {Role: agent.RoleAssistant, Content: "Noted."}}))
+	require.NoError(t, seed.RecordTurn(ctx, []agent.SourceMessage{{Role: agent.RoleUser, Content: "The lunar mission uses the Aurora capsule."}, {Role: agent.RoleAssistant, Content: "Noted."}}, firstSummary{}))
 	require.NoError(t, seed.Close())
-	model := agent.NewScriptedModel(
+	model := summaryScript(
 		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: "memory_search_terms", Input: json.RawMessage(`{"phrases":["lunar mission launch date"]}`)}}},
 		writebackStep(`{"reply":"I found the capsule name but no launch date in the available source.","memory_ops":[]}`),
 	)
@@ -205,4 +202,49 @@ func TestConversation_RelatedCandidateDoesNotSupportMissingDate(t *testing.T) {
 	}
 	assert.Greater(t, count, 0, "a related candidate was retrieved, so this is an answer control, not an empty-search case")
 	require.NoError(t, rt.Close(ctx))
+}
+
+// firstSummary isolates store linking and search from synthesis quality.
+type firstSummary struct{}
+
+func (firstSummary) Summarize(_ context.Context, updates []string) (string, error) {
+	return updates[0], nil
+}
+
+// summaryScript preserves each scenario's act replies while supplying summary fixtures.
+func summaryScript(steps ...agent.ScriptedStep) agent.Model {
+	return &summaryModel{inner: agent.NewScriptedModel(steps...)}
+}
+
+type summaryModel struct{ inner agent.Model }
+
+func (m *summaryModel) Chat(ctx context.Context, messages []agent.Message, descriptors []tool.Descriptor) (agent.Response, error) {
+	if len(descriptors) == 1 && descriptors[0].Name == "memory_summary" {
+		var input struct {
+			Updates []string `json:"updates"`
+		}
+		if err := json.Unmarshal([]byte(messages[1].Content), &input); err != nil {
+			return agent.Response{}, err
+		}
+		summary := ""
+		for _, update := range input.Updates {
+			if strings.Contains(update, "preferred telescope") {
+				summary = update
+			}
+		}
+		if summary == "" {
+			summary = input.Updates[0]
+		}
+		data, err := json.Marshal(map[string]string{"summary": summary})
+		return agent.Response{ToolCalls: []agent.ToolCall{{Name: "memory_summary", Input: data}}}, err
+	}
+	return m.inner.Chat(ctx, messages, descriptors)
+}
+
+func checkpointSources(content string, count int) []agent.SourceMessage {
+	var sources []agent.SourceMessage
+	for i := 0; i < count; i++ {
+		sources = append(sources, agent.SourceMessage{Role: agent.RoleUser, Content: content})
+	}
+	return sources
 }

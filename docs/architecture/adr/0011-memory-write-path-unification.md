@@ -1,4 +1,4 @@
-# ADR 0011: Commit source and summary links together
+# ADR 0011: Persist sources before atomic summary checkpoints
 
 > Status: accepted
 > Date: 2026-08-02 (revised in place 2026-09-24)
@@ -9,7 +9,9 @@ The earlier decision unified model-chosen writes through the reserved `memory_wr
 
 ## Decision
 
-A completed turn records visible user and assistant source messages and their linked short and mid summaries in one SQLite transaction. A failure rolls back the whole turn's durable memory work; no separate processed cursor is advanced. The reserved `memory_write` call still ends the turn and carries the visible reply, but its addressed `memory_ops` do not write the legacy addressed tables in the source-linked runtime.
+A completed response archives its visible source messages in one transaction before model synthesis. Each full cross-turn batch creates an immutable mid episode with its direct source interval. The last committed interval is the only processing checkpoint. Model calls happen outside write transactions; a checkpoint comparison refuses a stale concurrent synthesis.
+
+A failure preserves completed sources and any earlier committed episodes. Startup and subsequent completions resume from the persisted intervals without skipping pending input. Gateway IDs identify a replay of the same completed batch; ID/content conflicts and partially overlapping batches fail explicitly. The reserved `memory_write` response still carries the reply, while its addressed `memory_ops` do not write the legacy tables.
 
 ## Consequences
 
@@ -19,4 +21,5 @@ A completed turn records visible user and assistant source messages and their li
 
 ## Rejected alternatives
 
-- Writing sources and summaries in separate commits could strand a source without its search path and silently skip it on later maintenance.
+- Keeping remote synthesis inside the source transaction would lose completed messages on a model failure and hold the write lock during network latency. Persisted pending intervals and bounded pending context make separate source capture recoverable.
+- An independent mutable cursor could advance without the summary it describes. Deriving progress from committed summary intervals avoids that failure state.

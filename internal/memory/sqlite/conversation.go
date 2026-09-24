@@ -8,8 +8,6 @@ import (
 	"os"
 	"regexp"
 	"strings"
-	"unicode"
-	"unicode/utf8"
 
 	"github.com/garamsh/gagent/internal/agent"
 )
@@ -21,14 +19,11 @@ CREATE TABLE IF NOT EXISTS conversation_sources (
  external_id TEXT,
  content TEXT NOT NULL
 );
-CREATE TABLE IF NOT EXISTS conversation_short (
- id INTEGER PRIMARY KEY AUTOINCREMENT,
- source_id INTEGER NOT NULL UNIQUE REFERENCES conversation_sources(id),
- summary TEXT NOT NULL
-);
+CREATE UNIQUE INDEX IF NOT EXISTS conversation_external_id ON conversation_sources(external_id) WHERE external_id <> '';
 CREATE TABLE IF NOT EXISTS conversation_mid (
  id INTEGER PRIMARY KEY AUTOINCREMENT,
- short_id INTEGER NOT NULL UNIQUE REFERENCES conversation_short(id),
+ source_first INTEGER NOT NULL UNIQUE REFERENCES conversation_sources(id),
+ source_last INTEGER NOT NULL UNIQUE REFERENCES conversation_sources(id),
  summary TEXT NOT NULL
 );
 CREATE VIRTUAL TABLE IF NOT EXISTS conversation_mid_fts USING fts5(summary, content='conversation_mid', content_rowid='id', tokenize='porter unicode61');
@@ -39,53 +34,68 @@ END;
 
 var ErrSourceNotFound = errors.New("conversation source not found")
 
-// RecordTurn commits source messages and their two linked summaries together.
-// A failed transaction cannot leave a processed source or an advanced cursor.
-func (s *Store) RecordTurn(ctx context.Context, sources []agent.SourceMessage) error {
+// RecordTurn archives completed messages before retryable summary maintenance.
+func (s *Store) RecordTurn(ctx context.Context, sources []agent.SourceMessage, summarizer agent.ConversationSummarizer) error {
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
-		return fmt.Errorf("begin conversation: %w", err)
+		return fmt.Errorf("begin conversation: %v", err)
 	}
 	defer tx.Rollback()
+	matched, identified := 0, 0
 	for _, part := range sources {
-		if part.Role != agent.RoleUser && part.Role != agent.RoleAssistant {
+		if part.ExternalID == "" {
 			continue
 		}
-		content := redactSecrets(part.Content)
-		if strings.TrimSpace(content) == "" {
+		identified++
+		var role, content string
+		err := tx.QueryRowContext(ctx, `SELECT role,content FROM conversation_sources WHERE external_id=?`, part.ExternalID).Scan(&role, &content)
+		if errors.Is(err, sql.ErrNoRows) {
 			continue
 		}
-		result, err := tx.ExecContext(ctx, `INSERT INTO conversation_sources(role,external_id,content) VALUES (?,?,?)`, part.Role, part.ExternalID, content)
 		if err != nil {
-			return fmt.Errorf("record source: %w", err)
+			return fmt.Errorf("check source retry: %v", err)
 		}
-		sourceID, err := result.LastInsertId()
-		if err != nil {
-			return err
+		if role != string(part.Role) || content != redactSecrets(part.Content) {
+			return errors.New("source ID reused with different content")
 		}
-		summary := boundedSummary(content, 400)
-		result, err = tx.ExecContext(ctx, `INSERT INTO conversation_short(source_id,summary) VALUES (?,?)`, sourceID, summary)
-		if err != nil {
-			return fmt.Errorf("record short summary: %w", err)
-		}
-		shortID, err := result.LastInsertId()
-		if err != nil {
-			return err
-		}
-		_, err = tx.ExecContext(ctx, `INSERT INTO conversation_mid(short_id,summary) VALUES (?,?)`, shortID, boundedSummary(summary, 220))
-		if err != nil {
-			return fmt.Errorf("record mid memory: %w", err)
+		matched++
+	}
+	if matched > 0 && matched != identified {
+		return errors.New("turn overlaps previously committed source IDs; retry the original batch")
+	}
+	if matched == 0 {
+		for _, part := range sources {
+			if part.Role != agent.RoleUser && part.Role != agent.RoleAssistant {
+				continue
+			}
+			content := redactSecrets(part.Content)
+			if strings.TrimSpace(content) == "" {
+				continue
+			}
+			if _, err := tx.ExecContext(ctx, `INSERT INTO conversation_sources(role,external_id,content) VALUES (?,?,?)`, part.Role, part.ExternalID, content); err != nil {
+				return fmt.Errorf("record source: %v", err)
+			}
 		}
 	}
-	return tx.Commit()
+	if err := tx.Commit(); err != nil {
+		return fmt.Errorf("commit sources: %v", err)
+	}
+	return s.Accumulate(ctx, summarizer)
 }
 
-func boundedSummary(text string, limit int) string {
-	text = strings.Join(strings.Fields(text), " ")
-	if utf8.RuneCountInString(text) <= limit {
-		return text
+func summarize(ctx context.Context, summarizer agent.ConversationSummarizer, updates []string) (string, error) {
+	if summarizer == nil {
+		return "", errors.New("conversation requires a summarizer")
 	}
-	return string([]rune(text)[:limit]) + "…"
+	summary, err := summarizer.Summarize(ctx, updates)
+	if err != nil {
+		return "", fmt.Errorf("synthesize conversation: %v", err)
+	}
+	summary = strings.TrimSpace(redactSecrets(summary))
+	if summary == "" || len([]rune(summary)) > 2000 {
+		return "", errors.New("conversation summary must contain 1 to 2000 characters")
+	}
+	return summary, nil
 }
 
 func (s *Store) Recent(ctx context.Context, limit int) ([]agent.SourceMessage, error) {
@@ -115,44 +125,56 @@ func (s *Store) Search(ctx context.Context, terms []string, limit int) ([]agent.
 	if limit <= 0 {
 		return nil, nil
 	}
-	var tokens []string
-	seen := map[string]bool{}
-	for _, term := range terms {
-		for _, word := range strings.FieldsFunc(strings.ToLower(term), func(r rune) bool { return !unicode.IsLetter(r) && !unicode.IsNumber(r) }) {
-			if len([]rune(word)) < 2 || seen[word] || searchStopWords[word] {
-				continue
-			}
-			seen[word] = true
-			tokens = append(tokens, `"`+word+`"`)
-		}
-	}
+	tokens := agent.SearchTokens(terms)
 	if len(tokens) == 0 {
 		return nil, nil
 	}
-	rows, err := s.db.QueryContext(ctx, `SELECT m.id,m.summary,m.short_id FROM conversation_mid_fts f JOIN conversation_mid m ON m.id=f.rowid WHERE conversation_mid_fts MATCH ? ORDER BY bm25(conversation_mid_fts), m.id DESC LIMIT ?`, strings.Join(tokens, " OR "), limit)
+	for i, token := range tokens {
+		tokens[i] = `"` + token + `"`
+	}
+	rows, err := s.db.QueryContext(ctx, `SELECT m.id,m.summary,m.source_first,m.source_last FROM conversation_mid_fts f JOIN conversation_mid m ON m.id=f.rowid WHERE conversation_mid_fts MATCH ? ORDER BY bm25(conversation_mid_fts), m.id DESC LIMIT ?`, strings.Join(tokens, " OR "), limit)
 	if err != nil {
-		return nil, fmt.Errorf("search conversation: %w", err)
+		return nil, fmt.Errorf("search conversation: %v", err)
 	}
 	defer rows.Close()
 	var out []agent.ConversationHit
 	for rows.Next() {
 		var hit agent.ConversationHit
-		if err := rows.Scan(&hit.ID, &hit.Summary, &hit.ShortID); err != nil {
-			return nil, err
+		if err := rows.Scan(&hit.ID, &hit.Summary, &hit.SourceFirst, &hit.SourceLast); err != nil {
+			return nil, fmt.Errorf("read conversation candidates: %v", err)
 		}
 		out = append(out, hit)
 	}
-	return out, rows.Err()
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("read conversation candidates: %v", err)
+	}
+	return out, nil
 }
 
-func (s *Store) Short(ctx context.Context, id int64) (agent.ShortMemory, error) {
-	var m agent.ShortMemory
-	err := s.db.QueryRowContext(ctx, `SELECT id,summary,source_id FROM conversation_short WHERE id=?`, id).Scan(&m.ID, &m.Summary, &m.SourceID)
-	if errors.Is(err, sql.ErrNoRows) {
-		return m, ErrSourceNotFound
+// RecentMid returns newest episodes independently of lexical relevance.
+func (s *Store) RecentMid(ctx context.Context, limit int) ([]agent.ConversationHit, error) {
+	if limit <= 0 {
+		return nil, nil
 	}
-	return m, err
+	rows, err := s.db.QueryContext(ctx, `SELECT id,summary,source_first,source_last FROM conversation_mid ORDER BY id DESC LIMIT ?`, limit)
+	if err != nil {
+		return nil, fmt.Errorf("read conversation candidates: %v", err)
+	}
+	defer rows.Close()
+	var out []agent.ConversationHit
+	for rows.Next() {
+		var m agent.ConversationHit
+		if err := rows.Scan(&m.ID, &m.Summary, &m.SourceFirst, &m.SourceLast); err != nil {
+			return nil, fmt.Errorf("read conversation candidates: %v", err)
+		}
+		out = append(out, m)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("read conversation candidates: %v", err)
+	}
+	return out, nil
 }
+
 func (s *Store) Source(ctx context.Context, id int64) (agent.SourceMessage, error) {
 	var m agent.SourceMessage
 	err := s.db.QueryRowContext(ctx, `SELECT id,external_id,role,content FROM conversation_sources WHERE id=?`, id).Scan(&m.ID, &m.ExternalID, &m.Role, &m.Content)
@@ -187,6 +209,19 @@ func OpenConversation(path string) (*Store, error) {
 				return nil, fmt.Errorf("%q: %w", path, ErrAddressedStore)
 			}
 		}
+		var oldSchema, populated int
+		if err := old.QueryRow(`SELECT count(*) FROM pragma_table_info('conversation_short') WHERE name='source_id'`).Scan(&oldSchema); err != nil {
+			return nil, fmt.Errorf("inspect conversation schema: %v", err)
+		}
+		if oldSchema > 0 {
+			if err := old.QueryRow(`SELECT count(*) FROM conversation_sources`).Scan(&populated); err != nil {
+				return nil, fmt.Errorf("inspect conversation sources: %v", err)
+			}
+			if populated > 0 {
+				return nil, fmt.Errorf("%q: extractive conversation schema; preserve this database and its WAL, use the previous binary to inspect it, and select a new memory-path for episodic memory (docs/architecture/memory.md, Existing databases)", path)
+			}
+		}
+
 	} else if !errors.Is(err, os.ErrNotExist) {
 		return nil, err
 	}
@@ -203,4 +238,31 @@ func redactSecrets(text string) string {
 	return apiToken.ReplaceAllString(text, "[redacted credential]")
 }
 
-var searchStopWords = map[string]bool{"the": true, "and": true, "for": true, "was": true, "what": true, "when": true, "where": true, "who": true, "which": true, "this": true, "that": true, "with": true, "from": true, "about": true, "does": true, "did": true, "have": true, "has": true, "are": true, "you": true, "your": true, "user": true, "assistant": true}
+func prepareConversation(db *sql.DB) error {
+	var old int
+	if err := db.QueryRow(`SELECT count(*) FROM pragma_table_info('conversation_short') WHERE name='source_id'`).Scan(&old); err != nil {
+		return err
+	}
+	tx, err := db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	if old > 0 {
+		var count int
+		if err := tx.QueryRow(`SELECT count(*) FROM conversation_sources`).Scan(&count); err != nil {
+			return err
+		}
+		if count > 0 {
+			return errors.New("extractive conversation schema; open with the previous binary or select a new memory-path; see docs/architecture/memory.md")
+		}
+		if _, err := tx.Exec(`DROP TRIGGER IF EXISTS conversation_mid_insert; DROP TABLE IF EXISTS conversation_mid_fts; DROP TABLE conversation_mid; DROP TABLE conversation_short`); err != nil {
+			return err
+		}
+	}
+	_, err = tx.Exec(conversationSchema)
+	if err != nil {
+		return err
+	}
+	return tx.Commit()
+}

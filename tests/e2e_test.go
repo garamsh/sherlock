@@ -172,23 +172,20 @@ func runMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	assert.Equal(t, "sender", replies[0].Target)
 }
 
-// assertMemoryStore verifies that the delivered assistant text is linked to a
-// short summary and an exact source after shutdown.
+// assertMemoryStore verifies that an incomplete batch keeps the delivered
+// assistant text reachable as an exact source after shutdown.
 func assertMemoryStore(t *testing.T, root string) {
 	t.Helper()
 	store, err := sqlite.OpenConversation(filepath.Join(root, "memory.db"))
 	require.NoError(t, err)
 	t.Cleanup(func() { store.Close() })
-	hits, err := store.Search(context.Background(), []string{"42"}, 5)
+	pending, err := store.PendingSources(context.Background())
 	require.NoError(t, err)
-	require.NotEmpty(t, hits)
 	var delivered bool
-	for _, hit := range hits {
-		short, err := store.Short(context.Background(), hit.ShortID)
-		require.NoError(t, err)
-		source, err := store.Source(context.Background(), short.SourceID)
+	for _, preview := range pending {
+		source, err := store.Source(context.Background(), preview.ID)
 		require.NoError(t, err)
 		delivered = delivered || source.Role == agent.RoleAssistant && source.Content == "42"
 	}
-	assert.True(t, delivered, "the outbound reply is inspectable through its source link")
+	assert.True(t, delivered, "the pending outbound reply remains inspectable before a summary batch fills")
 }

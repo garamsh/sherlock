@@ -36,7 +36,7 @@ func (r ConversationRecall) Recall(ctx context.Context, task string) (agent.Reca
 				var v struct {
 					Phrases []string `json:"phrases"`
 				}
-				if json.Unmarshal(call.Input, &v) == nil && len(v.Phrases) > 0 {
+				if json.Unmarshal(call.Input, &v) == nil && len(agent.SearchTokens(v.Phrases[:min(4, len(v.Phrases))])) > 0 {
 					terms = v.Phrases
 					if len(terms) > 4 {
 						terms = terms[:4]
@@ -46,16 +46,43 @@ func (r ConversationRecall) Recall(ctx context.Context, task string) (agent.Reca
 			}
 		}
 	}
-	hits, err := r.Store.Search(ctx, terms, maxRecalled)
+	recent, err := r.Store.RecentMid(ctx, 2)
 	if err != nil {
 		return agent.Recalled{}, err
 	}
-	if len(hits) == 0 {
-		return agent.Recalled{Outcome: agent.RecallEmpty}, nil
+	hits, err := r.Store.Search(ctx, terms, maxRecalled+len(recent))
+	if err != nil {
+		return agent.Recalled{}, err
 	}
-	out := make([]agent.RecalledMemory, 0, len(hits))
-	for _, hit := range hits {
-		out = append(out, agent.RecalledMemory{ID: strconv.FormatInt(hit.ID, 10), Content: strings.TrimSpace(hit.Summary) + fmt.Sprintf(" [short:%d]", hit.ShortID), Age: "historical"})
+	out := make([]agent.RecalledMemory, 0, maxRecalled+len(recent))
+	seen := map[int64]bool{}
+	for i, hit := range append(recent, hits...) {
+		if seen[hit.ID] {
+			continue
+		}
+		seen[hit.ID] = true
+		age := "historical"
+		if i < len(recent) {
+			age = "recent"
+		}
+		out = append(out, agent.RecalledMemory{ID: strconv.FormatInt(hit.ID, 10), Content: strings.TrimSpace(hit.Summary) + fmt.Sprintf(" [mid:%d sources:%d-%d; summary, not verified source text]", hit.ID, hit.SourceFirst, hit.SourceLast), Age: age})
+		if len(out) == maxRecalled+len(recent) {
+			break
+		}
+	}
+	pending, err := r.Store.PendingSources(ctx)
+	if err != nil {
+		return agent.Recalled{}, err
+	}
+	for _, source := range pending {
+		preview := []rune(source.Content)
+		if len(preview) > 2000 {
+			preview = preview[:2000]
+		}
+		out = append(out, agent.RecalledMemory{ID: fmt.Sprintf("source:%d", source.ID), Content: string(preview) + fmt.Sprintf(" [source:%d; pending %s message preview; inspect source for full text]", source.ID, source.Role), Age: "pending"})
+	}
+	if len(out) == 0 {
+		return agent.Recalled{Outcome: agent.RecallEmpty}, nil
 	}
 	return agent.Recalled{Memories: out, Outcome: agent.RecallAddressed}, nil
 }

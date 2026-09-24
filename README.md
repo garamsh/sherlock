@@ -26,10 +26,10 @@ One CLI binary, `gagent`, runs both processes of an agent pod (ADR 0017): the wo
 go run ./cmd/gagent <subcommand>   # or: go build -o gagent ./cmd/gagent
 ```
 
-Start the workspace first: the agent's file tools and `shell_exec` tools dial it when the model first calls one, and a tool that finds nothing listening fails that call. With the default mock model this runs fully offline. The repository-root example configs are picked up automatically and must be owner-only first:
+Start the workspace first: the agent's file tools and `shell_exec` tools dial it when the model first calls one, and a tool that finds nothing listening fails that call. With the default mock model this runs fully offline. The example configs under `configs/` are picked up automatically when running from the repository root and must be owner-only first:
 
 ```sh
-chmod 0600 gagent.yaml workspace.yaml     # config files must be owner-only
+chmod 0600 configs/gagent.yaml configs/workspace.yaml     # config files must be owner-only
 gagent workspace &                        # serves the workspace on 127.0.0.1:8081
 gagent agent --message "hello"            # runs one turn and exits
 gagent agent                             # or: serve the agent's gateway
@@ -65,13 +65,13 @@ gagent workspace
 
 - The workspace owns the workspace directory (`workspace` key, created on first use); Exec children work in it by default, so they see workspace files natively. Exec children drop to the exec UID (`exec-uid` key, default 1001; single-account mode: the workspace's own UID — any other unprivileged value fails closed with `agent_uid unavailable`). When privileged the workspace chowns the directory to the exec UID, so files written through the gRPC contract and by exec'd children share one owner.
 - The listener carries no authentication in this phase, so it serves loopback binds only — a non-loopback `--addr` fails startup (ADR 0012, same posture as the gateway).
-- Its config file resolves in order: `--config <path>`, then `./workspace.yaml`, then the XDG config path (`~/.config/gagent/workspace.yaml` on Linux). Keys: `addr` (default `127.0.0.1:8081`), `workspace` (default `data/workspace`), `exec-uid` (default `1001`), `exec-timeout` (default `30s`). There is no `tools:` config — tools live in the agent.
+- Its config file resolves in order: `--config <path>`, then `./configs/workspace.yaml`, then the XDG config path (`~/.config/gagent/workspace.yaml` on Linux). Keys: `addr` (default `127.0.0.1:8081`), `workspace` (default `data/workspace`), `exec-uid` (default `1001`), `exec-timeout` (default `30s`). There is no `tools:` config — tools live in the agent.
 
 ### Configuration
 
-Settings resolve in order: **flags > environment variables > config file > defaults**. Environment variables use the `GAGENT_` prefix (`GAGENT_MEMORY_PATH`, `GAGENT_WORKSPACE_ADDR`, …). The agent's config file resolves in order: `--config <path>`, then `./gagent.yaml`, then the XDG config path (`~/.config/gagent/config.yaml` on Linux); the workspace's resolves the same way with `workspace.yaml`. A missing file is an error only when `--config` names it explicitly. A loaded config file must be owner-only (`0600` or `0400`); a group/other-readable file fails startup (docs/architecture/security.md). A key the file carries that no setting reads — a typo, a renamed key, a block left from a removed feature — is reported at startup by a WARN naming the key and the file, and does not stop the process: the file keeps working when a key is renamed, and `tools.pin` for `tools.pins` says so instead of reading as an absent pin set.
+Settings resolve in order: **flags > environment variables > config file > defaults**. Environment variables use the `GAGENT_` prefix (`GAGENT_MEMORY_PATH`, `GAGENT_WORKSPACE_ADDR`, …). The agent's config file resolves in order: `--config <path>`, then `./configs/gagent.yaml`, then the XDG config path (`~/.config/gagent/config.yaml` on Linux); the workspace's resolves the same way with `workspace.yaml`. A missing file is an error only when `--config` names it explicitly. A loaded config file must be owner-only (`0600` or `0400`); a group/other-readable file fails startup (docs/architecture/security.md). A key the file carries that no setting reads — a typo, a renamed key, a block left from a removed feature — is reported at startup by a WARN naming the key and the file, and does not stop the process: the file keeps working when a key is renamed, and `tools.pin` for `tools.pins` says so instead of reading as an absent pin set.
 
-Agent keys (`gagent agent`; see `gagent.yaml` for an example):
+Agent keys (`gagent agent`; see `configs/gagent.yaml` for an example):
 
 | Key | Flag | Default |
 |---|---|---|
@@ -89,7 +89,7 @@ Agent keys (`gagent agent`; see `gagent.yaml` for an example):
 | `tls.key` | — | unset (server certificate's private key, PEM) |
 | `tls.client-ca` | — | unset (CA bundle, PEM, that client certificates are verified against) |
 
-Workspace keys (`gagent workspace`; see `workspace.yaml` for an example):
+Workspace keys (`gagent workspace`; see `configs/workspace.yaml` for an example):
 
 | Key | Flag | Default |
 |---|---|---|
@@ -183,7 +183,7 @@ tools:
 
 Each hash is on the `tool manifest loaded` line the agent logs for that tool, and a refusal quotes the hash you would pin to accept what is on disk. Once the section exists it is the whole accepted set: a manifest that changed under a pin is refused, and so is a tool directory the set does not name — a drop you did not review is otherwise indistinguishable from one you did. Adding a tool is then a directory drop plus its hash. Leave the section out and the agent loads the tree unpinned, warning at startup that it has no record to check drift against.
 
-Example configs in the repository root: `gagent.yaml` (agent) and `workspace.yaml` (workspace).
+Example configs under `configs/`: `configs/gagent.yaml` (agent) and `configs/workspace.yaml` (workspace).
 
 With the default `mock` provider the agent wires the scripted mock model, which answers the first message with a canned run of the full loop: it computes through `shell_exec` (the call crosses the wire to the workspace's Exec RPC and runs in the workspace directory), reads the result back through `file_read`, and replies via `message_send`. Its terminal response includes the legacy `memory_ops` field required by the response format, but the source-linked runtime does not apply those addressed operations. The completed turn is saved as source-linked conversation memory. The script covers the first message per process; a later message fails its turn with `script exhausted` (a `turn_failed` event) — the mock is a wiring demo, not a conversation partner. With `provider: openai-compatible` it runs against a real chat model; a missing API key env var fails at startup. To work on the codebase you need Go and GNU Make — `make test` runs the Go tests. The standard checks are:
 

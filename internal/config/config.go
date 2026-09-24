@@ -139,7 +139,7 @@ type ModelConfig struct {
 // resolution the caller can only reach with the right flag set is one
 // the caller can get wrong.
 func AddSharedFlags(fs *pflag.FlagSet) {
-	fs.String("config", "", "config file path (default: ./gagent.yaml, ./workspace.yaml for the workspace, then the XDG config dir)")
+	fs.String("config", "", "config file path (default: ./configs/gagent.yaml, ./configs/workspace.yaml for the workspace, then the XDG config dir)")
 }
 
 // AddAgentFlags registers the agent's settings as flags on fs. The
@@ -157,7 +157,7 @@ func AddAgentFlags(fs *pflag.FlagSet) {
 // Resolve builds the agent's effective Config from fs using viper's
 // built-in precedence: flags > GAGENT_* environment variables > config
 // file > defaults. The config file resolves via --config <path>, then
-// ./gagent.yaml, then os.UserConfigDir()/gagent/config.yaml (XDG;
+// ./configs/gagent.yaml, then os.UserConfigDir()/gagent/config.yaml (XDG;
 // ~/.config/gagent/config.yaml on Linux). A missing file is an error only
 // when --config named it explicitly.
 func Resolve(fs *pflag.FlagSet) (Config, error) {
@@ -238,7 +238,7 @@ func checkToolPinsEnv() error {
 	}
 	return fmt.Errorf("config: %s is set, and the environment cannot express %s: a pin set maps each "+
 		"tool name to its manifest SHA-256, and one variable carries one value. Write the pin set in "+
-		"the agent's config file (--config <path>, ./gagent.yaml, or the XDG config path) and unset %s",
+		"the agent's config file (--config <path>, ./configs/gagent.yaml, or the XDG config path) and unset %s",
 		toolPinsEnv, toolPinsKey, toolPinsEnv)
 }
 
@@ -280,7 +280,7 @@ func newConfigViper() *viper.Viper {
 }
 
 // readConfigFile loads the config file into v following the resolution
-// order: an explicit --config path, then ./<cwdName>.yaml, then
+// order: an explicit --config path, then ./configs/<cwdName>.yaml, then
 // os.UserConfigDir()/gagent/<xdgName> (XDG; ~/.config/gagent/ on Linux).
 // A missing file is an error only for the explicit flag path. A loaded
 // file must be owner-only (docs/architecture/security.md). It returns
@@ -374,7 +374,7 @@ func loadConfigFile(v *viper.Viper, flagPath, cwdName, xdgName string) (string, 
 		return flagPath, v.ReadInConfig()
 	}
 	v.SetConfigName(cwdName)
-	v.AddConfigPath(".")
+	v.AddConfigPath("./configs")
 	var notFound viper.ConfigFileNotFoundError
 	if err := v.ReadInConfig(); !errors.As(err, &notFound) {
 		return v.ConfigFileUsed(), err

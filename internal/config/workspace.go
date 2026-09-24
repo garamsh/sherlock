@@ -60,7 +60,7 @@ type WorkspaceConfig struct {
 // ResolveWorkspace builds the workspace's effective WorkspaceConfig
 // from fs with the same precedence as the agent's: flags > GAGENT_*
 // environment variables > config file > defaults. The workspace's
-// config file resolves via --config <path>, then ./workspace.yaml,
+// config file resolves via --config <path>, then ./configs/workspace.yaml,
 // then os.UserConfigDir()/gagent/workspace.yaml (XDG).
 func ResolveWorkspace(fs *pflag.FlagSet) (WorkspaceConfig, error) {
 	v := newConfigViper()

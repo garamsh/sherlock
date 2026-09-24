@@ -9,7 +9,7 @@ The prior read step resolved a question to a model-written address and widened t
 
 ## Decision
 
-The session model supplies up to four search phrases, including alternate wording and separate topics. The store tokenizes those phrases and searches bounded mid summaries through SQLite FTS5, returning at most five candidates ranked by lexical relevance, with recency breaking ties. If the model supplies no usable phrases, the task text is the fallback. An empty result injects no claimed evidence. The agent can inspect linked short summaries and sources during its act loop.
+The session model supplies up to four search phrases, including alternate wording and separate topics. The store tokenizes those phrases and searches bounded mid summaries through SQLite FTS5, returning at most five candidates ranked by lexical relevance, with recency breaking ties. The intended fallback when the model supplies no usable phrases is the task text; currently, an empty list preserves it, but a nonempty list containing only unusable phrases suppresses it ([issue #836](https://github.com/garamsh/gagent/issues/836)). An empty result injects no claimed evidence. The agent can inspect linked short summaries and sources during its act loop.
 
 ## Evidence and limits
 

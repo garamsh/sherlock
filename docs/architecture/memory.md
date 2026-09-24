@@ -19,6 +19,7 @@ The `memory_write` transport still requires `memory_ops` because current provide
 
 ## Open questions
 
+- Task-text fallback is intended when generated phrases are unusable, but nonempty lists containing only unusable phrases currently suppress it ([issue #836](https://github.com/garamsh/gagent/issues/836)); an empty list preserves the fallback.
 - General search-phrase quality, correction handling, and grounded answer accuracy remain open. A bounded local live-model A/B replay on one 201-source fixture supports relevance-first ordering for the observed correction loss, not a general quality claim; [ADR 0019](adr/0019-memory-read-step.md#evidence-and-limits) records the evidence and its limits. Lexical mismatch and the five-candidate bound can still omit corrections. The deterministic tests check candidate reachability, source inspection, and scripted answer controls separately.
 - Extractive summaries may omit a fact beyond their bounds. A model-generated summarizer would need its own fidelity and cost evaluation; this implementation makes no claim that it has one.
 - Credential redaction recognizes common labelled and bearer forms, not every possible secret syntax. Deployments should avoid sending credentials in conversation.

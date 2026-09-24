@@ -1,0 +1,60 @@
+[
+  {
+    "id": "essay",
+    "prompt": "Deliver a short essay about Alder for residents, at most 120 words.",
+    "facets": [
+      {
+        "name": "household-mechanism-limitation",
+        "source": 9,
+        "query": "Lantern composition method"
+      },
+      {
+        "name": "health-uncertainty",
+        "source": 17,
+        "query": "Cobalt disclosure"
+      },
+      {
+        "name": "current-capacity",
+        "source": 25,
+        "query": "Alder reservoir correction"
+      }
+    ]
+  },
+  {
+    "id": "export",
+    "prompt": "Add the export feature for Kestrel. Deliver the complete implementation and one small example showing its output.",
+    "facets": [
+      {
+        "name": "csv-standard-library-order-lf",
+        "source": 41,
+        "query": "Quartz coding conventions"
+      },
+      {
+        "name": "private-row-filter",
+        "source": 49,
+        "query": "Amber privacy"
+      },
+      {
+        "name": "current-header",
+        "source": 57,
+        "query": "Kestrel export correction"
+      }
+    ]
+  },
+  {
+    "id": "exact",
+    "prompt": "What is the current Alder reservoir capacity? State the current value and quote the exact correction.",
+    "facets": [
+      {
+        "name": "current-capacity-and-quote",
+        "source": 25,
+        "query": "Alder reservoir capacity"
+      }
+    ]
+  },
+  {
+    "id": "absent",
+    "prompt": "What is the approved Zephyr launch date? Give a date only if the conversation evidence establishes it; otherwise say it is unavailable.",
+    "facets": []
+  }
+]

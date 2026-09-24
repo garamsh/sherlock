@@ -1,0 +1,38 @@
+Here's the complete implementation of the Kestrel export feature:
+
+```python
+import csv
+import io
+
+def render_export(rows):
+    """
+    Render export rows (label, count) as CSV text.
+    Follows the Quartz contract for Kestrel export.
+    """
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["label", "count"])  # Header per Quartz contract
+    for label, count in rows:
+        writer.writerow([label, count])
+    return output.getvalue()
+
+
+# Example usage and output
+if __name__ == "__main__":
+    sample_rows = [
+        ("pencils", 150),
+        ("erasers", 75),
+        ("notebooks", 30)
+    ]
+    
+    result = render_export(sample_rows)
+    print(result)
+```
+
+**Output:**
+```
+label,count
+pencils,150
+erasers,75
+notebooks,30
+```

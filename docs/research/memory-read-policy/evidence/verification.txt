@@ -1,0 +1,47 @@
+Verification for issue #842
+
+Command: PATH=/home/sauce/go/bin:$PATH make ci
+Exit code: 0
+go vet ./...
+golangci-lint run ./...
+0 issues.
+format: 158 files checked, all formatted
+go test ./...
+ok  	github.com/garamsh/gagent/cmd/gagent	(cached)
+?   	github.com/garamsh/gagent/docs/research/memory-read-policy	[no test files]
+ok  	github.com/garamsh/gagent/internal/agent	(cached)
+ok  	github.com/garamsh/gagent/internal/agent/anthropic	(cached)
+ok  	github.com/garamsh/gagent/internal/agent/memory	(cached)
+ok  	github.com/garamsh/gagent/internal/agent/openai	(cached)
+ok  	github.com/garamsh/gagent/internal/config	(cached)
+ok  	github.com/garamsh/gagent/internal/gateway	(cached)
+ok  	github.com/garamsh/gagent/internal/memory	(cached)
+ok  	github.com/garamsh/gagent/internal/memory/sqlite	(cached)
+ok  	github.com/garamsh/gagent/internal/message	(cached)
+ok  	github.com/garamsh/gagent/internal/tool	0.034s
+ok  	github.com/garamsh/gagent/internal/tool/tooltest	(cached)
+?   	github.com/garamsh/gagent/internal/workspace	[no test files]
+ok  	github.com/garamsh/gagent/internal/workspace/files	(cached)
+ok  	github.com/garamsh/gagent/internal/workspace/server	(cached)
+ok  	github.com/garamsh/gagent/internal/workspace/shell	(cached)
+ok  	github.com/garamsh/gagent/tests	(cached)
+?   	github.com/garamsh/gagent/tools/file_list	[no test files]
+?   	github.com/garamsh/gagent/tools/file_read	[no test files]
+?   	github.com/garamsh/gagent/tools/file_write	[no test files]
+?   	github.com/garamsh/gagent/tools/github	[no test files]
+?   	github.com/garamsh/gagent/tools/message_send	[no test files]
+?   	github.com/garamsh/gagent/tools/shell_exec	[no test files]
+build: 24 packages built
+
+Command: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s docs/research/memory-read-policy -p "*_test.py" -v
+Exit code: 0; 3 tests passed.
+
+Command: python3 docs/research/memory-read-policy/run.py preflight docs/research/memory-read-policy/evidence
+Exit code: 0; before payment, 7 facet-source paths, 4 direct queries, 5 controls.
+
+Command: PYTHONDONTWRITEBYTECODE=1 python3 docs/research/memory-read-policy/score.py
+Exit code: 0; 12 cells scored; A/B export functions executed, C export SyntaxError recorded.
+
+Mutation checks: deleting reservation refusal made both budget tests fail; replacing privacy scoring with unconditional success made the artifact test fail. Temporary copies were deleted, and no HTTP call was made.
+
+Initial bare-path make ci failed because golangci-lint was outside PATH; installed tool at /home/sauce/go/bin/golangci-lint was used in passing runs. No dependencies changed after go mod tidy.

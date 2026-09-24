@@ -1,0 +1,551 @@
+[
+  {
+    "cell": "A-essay",
+    "status": "completed",
+    "applied": [
+      false,
+      false,
+      true
+    ],
+    "artifact_complete": true,
+    "quotes": {},
+    "failure_categories": [
+      "retrieval_miss",
+      "unsupported_inference"
+    ],
+    "rationale": "Opening is a general reservoir description, not a household scene; final contact advice is not a limitation; health uncertainty omitted. Capacity 28 is applied but no source quotation or citation is supplied. Lantern is falsely described as a water-management method.",
+    "facets": [
+      {
+        "name": "household-mechanism-limitation",
+        "source": 9,
+        "exposed": false,
+        "inspected": false,
+        "exact_quote": "",
+        "verified": false,
+        "applied": false
+      },
+      {
+        "name": "health-uncertainty",
+        "source": 17,
+        "exposed": false,
+        "inspected": false,
+        "exact_quote": "",
+        "verified": false,
+        "applied": false
+      },
+      {
+        "name": "current-capacity",
+        "source": 25,
+        "exposed": true,
+        "inspected": true,
+        "exact_quote": "",
+        "verified": false,
+        "applied": true
+      }
+    ],
+    "full_success": false,
+    "code_check": null,
+    "inspection_refusals": 1,
+    "followup_searches": 0,
+    "calls": 4,
+    "input_tokens": 3521,
+    "output_tokens": 590,
+    "cost_usd": 0.0017643,
+    "http_seconds": 9.5480993040037
+  },
+  {
+    "cell": "B-essay",
+    "status": "completed",
+    "applied": [
+      false,
+      false,
+      false
+    ],
+    "artifact_complete": true,
+    "quotes": {},
+    "failure_categories": [
+      "retrieval_miss",
+      "incomplete_source_inspection",
+      "obsolete_memory_use"
+    ],
+    "rationale": "Method and disclosure facets are missing. The correction candidate was exposed but only old source 1 was inspected; answer asserts obsolete 40-megalitre capacity. First overlong inspection consumed an act call, and B then had to finalize.",
+    "facets": [
+      {
+        "name": "household-mechanism-limitation",
+        "source": 9,
+        "exposed": false,
+        "inspected": false,
+        "exact_quote": "",
+        "verified": false,
+        "applied": false
+      },
+      {
+        "name": "health-uncertainty",
+        "source": 17,
+        "exposed": true,
+        "inspected": false,
+        "exact_quote": "",
+        "verified": false,
+        "applied": false
+      },
+      {
+        "name": "current-capacity",
+        "source": 25,
+        "exposed": true,
+        "inspected": false,
+        "exact_quote": "",
+        "verified": false,
+        "applied": false
+      }
+    ],
+    "full_success": false,
+    "code_check": null,
+    "inspection_refusals": 1,
+    "followup_searches": 0,
+    "calls": 4,
+    "input_tokens": 2565,
+    "output_tokens": 849,
+    "cost_usd": 0.0017883,
+    "http_seconds": 12.487601737004297
+  },
+  {
+    "cell": "C-essay",
+    "status": "completed",
+    "applied": [
+      false,
+      false,
+      false
+    ],
+    "artifact_complete": true,
+    "quotes": {},
+    "failure_categories": [
+      "retrieval_miss",
+      "failure_to_search_again",
+      "unverified_summary_use",
+      "unsupported_inference"
+    ],
+    "rationale": "No tools used despite the source-inspection instruction; no method or disclosure evidence retrieved. Capacity stays unspecified and Lantern is falsely described as a planning and management method.",
+    "facets": [
+      {
+        "name": "household-mechanism-limitation",
+        "source": 9,
+        "exposed": false,
+        "inspected": false,
+        "exact_quote": "",
+        "verified": false,
+        "applied": false
+      },
+      {
+        "name": "health-uncertainty",
+        "source": 17,
+        "exposed": false,
+        "inspected": false,
+        "exact_quote": "",
+        "verified": false,
+        "applied": false
+      },
+      {
+        "name": "current-capacity",
+        "source": 25,
+        "exposed": true,
+        "inspected": false,
+        "exact_quote": "",
+        "verified": false,
+        "applied": false
+      }
+    ],
+    "full_success": false,
+    "code_check": null,
+    "inspection_refusals": 0,
+    "followup_searches": 0,
+    "calls": 1,
+    "input_tokens": 551,
+    "output_tokens": 306,
+    "cost_usd": 0.0005325,
+    "http_seconds": 5.457918838998012
+  },
+  {
+    "cell": "A-export",
+    "status": "completed",
+    "applied": [
+      false,
+      false,
+      true
+    ],
+    "artifact_complete": true,
+    "quotes": {
+      "57": "Correction: the Kestrel CSV header is label,total. The former header label,count is obsolete; values still come from each row count."
+    },
+    "failure_categories": [
+      "retrieval_miss"
+    ],
+    "rationale": "Runnable function with standard-library CSV, order and escaping, but default CRLF and private rows retained. Current header is correct and source 57 is quoted; other rules never retrieved. Extra validate_export is not required and is not exercised.",
+    "facets": [
+      {
+        "name": "csv-standard-library-order-lf",
+        "source": 41,
+        "exposed": false,
+        "inspected": false,
+        "exact_quote": "",
+        "verified": false,
+        "applied": false
+      },
+      {
+        "name": "private-row-filter",
+        "source": 49,
+        "exposed": false,
+        "inspected": false,
+        "exact_quote": "",
+        "verified": false,
+        "applied": false
+      },
+      {
+        "name": "current-header",
+        "source": 57,
+        "exposed": true,
+        "inspected": true,
+        "exact_quote": "Correction: the Kestrel CSV header is label,total. The former header label,count is obsolete; values still come from each row count.",
+        "verified": true,
+        "applied": true
+      }
+    ],
+    "full_success": false,
+    "code_check": {
+      "runnable": true,
+      "input": [
+        [
+          "z,west",
+          3
+        ],
+        [
+          "_private",
+          8
+        ],
+        [
+          "a\"east",
+          2
+        ],
+        [
+          "middle",
+          0
+        ]
+      ],
+      "output": "label,total\r\n\"z,west\",3\r\n_private,8\r\n\"a\"\"east\",2\r\nmiddle,0\r\n",
+      "current_header": true,
+      "privacy": false,
+      "order_and_quoting": true,
+      "lf_only": false,
+      "stdlib_csv_and_stringio": true
+    },
+    "inspection_refusals": 1,
+    "followup_searches": 0,
+    "calls": 4,
+    "input_tokens": 3500,
+    "output_tokens": 919,
+    "cost_usd": 0.0021528000000000003,
+    "http_seconds": 11.303816930005269
+  },
+  {
+    "cell": "B-export",
+    "status": "completed",
+    "applied": [
+      false,
+      false,
+      false
+    ],
+    "artifact_complete": true,
+    "quotes": {},
+    "failure_categories": [
+      "retrieval_miss",
+      "incomplete_source_inspection",
+      "obsolete_memory_use"
+    ],
+    "rationale": "Runnable CSV preserves order and escaping, but CRLF and private rows remain. Correction candidate exposed but uninspected; obsolete label,count header used.",
+    "facets": [
+      {
+        "name": "csv-standard-library-order-lf",
+        "source": 41,
+        "exposed": false,
+        "inspected": false,
+        "exact_quote": "",
+        "verified": false,
+        "applied": false
+      },
+      {
+        "name": "private-row-filter",
+        "source": 49,
+        "exposed": true,
+        "inspected": false,
+        "exact_quote": "",
+        "verified": false,
+        "applied": false
+      },
+      {
+        "name": "current-header",
+        "source": 57,
+        "exposed": true,
+        "inspected": false,
+        "exact_quote": "",
+        "verified": false,
+        "applied": false
+      }
+    ],
+    "full_success": false,
+    "code_check": {
+      "runnable": true,
+      "input": [
+        [
+          "z,west",
+          3
+        ],
+        [
+          "_private",
+          8
+        ],
+        [
+          "a\"east",
+          2
+        ],
+        [
+          "middle",
+          0
+        ]
+      ],
+      "output": "label,count\r\n\"z,west\",3\r\n_private,8\r\n\"a\"\"east\",2\r\nmiddle,0\r\n",
+      "current_header": false,
+      "privacy": false,
+      "order_and_quoting": true,
+      "lf_only": false,
+      "stdlib_csv_and_stringio": true
+    },
+    "inspection_refusals": 1,
+    "followup_searches": 0,
+    "calls": 4,
+    "input_tokens": 2393,
+    "output_tokens": 597,
+    "cost_usd": 0.0014343,
+    "http_seconds": 8.804594945002464
+  },
+  {
+    "cell": "C-export",
+    "status": "output_limit",
+    "applied": [
+      false,
+      false,
+      false
+    ],
+    "artifact_complete": false,
+    "quotes": {},
+    "failure_categories": [
+      "failure_to_inspect_sources",
+      "unsupported_inference",
+      "resource_truncation"
+    ],
+    "rationale": "Two follow-up searches expose rule summaries, but the sole inspection uses episode IDs outside allowed source intervals. Final call invents a JSON contract and filters fields rather than rows, misses render_export, has a SyntaxError and truncates the output example.",
+    "facets": [
+      {
+        "name": "csv-standard-library-order-lf",
+        "source": 41,
+        "exposed": true,
+        "inspected": false,
+        "exact_quote": "",
+        "verified": false,
+        "applied": false
+      },
+      {
+        "name": "private-row-filter",
+        "source": 49,
+        "exposed": true,
+        "inspected": false,
+        "exact_quote": "",
+        "verified": false,
+        "applied": false
+      },
+      {
+        "name": "current-header",
+        "source": 57,
+        "exposed": true,
+        "inspected": false,
+        "exact_quote": "",
+        "verified": false,
+        "applied": false
+      }
+    ],
+    "full_success": false,
+    "code_check": {
+      "runnable": false,
+      "reason": "SyntaxError line 60: unmatched ']'"
+    },
+    "inspection_refusals": 1,
+    "followup_searches": 2,
+    "calls": 4,
+    "input_tokens": 3714,
+    "output_tokens": 1276,
+    "cost_usd": 0.0026454,
+    "http_seconds": 16.454061623000598
+  },
+  {
+    "cell": "A-exact",
+    "status": "completed",
+    "applied": [
+      true
+    ],
+    "artifact_complete": true,
+    "quotes": {
+      "25": "Correction: Alder reservoir capacity is 28 megalitres, not 40. The earlier estimate is obsolete; use 28 in all current material."
+    },
+    "failure_categories": [],
+    "rationale": "Current 28 and entire original correction quoted with source 25 after inspection.",
+    "facets": [
+      {
+        "name": "current-capacity-and-quote",
+        "source": 25,
+        "exposed": true,
+        "inspected": true,
+        "exact_quote": "Correction: Alder reservoir capacity is 28 megalitres, not 40. The earlier estimate is obsolete; use 28 in all current material.",
+        "verified": true,
+        "applied": true
+      }
+    ],
+    "full_success": true,
+    "code_check": null,
+    "inspection_refusals": 0,
+    "followup_searches": 0,
+    "calls": 2,
+    "input_tokens": 1452,
+    "output_tokens": 277,
+    "cost_usd": 0.000768,
+    "http_seconds": 5.086131577998458
+  },
+  {
+    "cell": "B-exact",
+    "status": "completed",
+    "applied": [
+      false
+    ],
+    "artifact_complete": true,
+    "quotes": {
+      "25": "Alder reservoir capacity is 28 megalitres, not 40. The earlier estimate is obsolete; use 28 in all current material."
+    },
+    "failure_categories": [
+      "reasoning_application_quotation_mismatch"
+    ],
+    "rationale": "Current 28 is correct and source 25 was inspected, but the response omits the original Correction: prefix. Under the preregistered exact original correction requirement, this partial exact substring fails the whole correction quotation facet.",
+    "facets": [
+      {
+        "name": "current-capacity-and-quote",
+        "source": 25,
+        "exposed": true,
+        "inspected": true,
+        "exact_quote": "Alder reservoir capacity is 28 megalitres, not 40. The earlier estimate is obsolete; use 28 in all current material.",
+        "verified": true,
+        "applied": false
+      }
+    ],
+    "full_success": false,
+    "code_check": null,
+    "inspection_refusals": 0,
+    "followup_searches": 0,
+    "calls": 4,
+    "input_tokens": 2634,
+    "output_tokens": 815,
+    "cost_usd": 0.0017681999999999997,
+    "http_seconds": 12.933772751006472
+  },
+  {
+    "cell": "C-exact",
+    "status": "completed",
+    "applied": [
+      true
+    ],
+    "artifact_complete": true,
+    "quotes": {
+      "25": "Correction: Alder reservoir capacity is 28 megalitres, not 40. The earlier estimate is obsolete; use 28 in all current material."
+    },
+    "failure_categories": [],
+    "rationale": "Current 28 and entire correction quoted with source 25 after a follow-up search and inspection.",
+    "facets": [
+      {
+        "name": "current-capacity-and-quote",
+        "source": 25,
+        "exposed": true,
+        "inspected": true,
+        "exact_quote": "Correction: Alder reservoir capacity is 28 megalitres, not 40. The earlier estimate is obsolete; use 28 in all current material.",
+        "verified": true,
+        "applied": true
+      }
+    ],
+    "full_success": true,
+    "code_check": null,
+    "inspection_refusals": 0,
+    "followup_searches": 1,
+    "calls": 4,
+    "input_tokens": 4053,
+    "output_tokens": 504,
+    "cost_usd": 0.0018206999999999997,
+    "http_seconds": 8.814641376004147
+  },
+  {
+    "cell": "A-absent",
+    "status": "completed",
+    "applied": [],
+    "artifact_complete": true,
+    "quotes": {},
+    "failure_categories": [
+      "unavailable_fact"
+    ],
+    "rationale": "Explicitly reports unavailability without inventing a date, after inspecting irrelevant recent sources.",
+    "facets": [],
+    "full_success": true,
+    "code_check": null,
+    "inspection_refusals": 1,
+    "followup_searches": 0,
+    "calls": 4,
+    "input_tokens": 3210,
+    "output_tokens": 723,
+    "cost_usd": 0.0018306,
+    "http_seconds": 11.082185217004735
+  },
+  {
+    "cell": "B-absent",
+    "status": "completed",
+    "applied": [],
+    "artifact_complete": true,
+    "quotes": {},
+    "failure_categories": [
+      "unavailable_fact"
+    ],
+    "rationale": "Explicitly reports unavailability without inventing a date; no source inspection. Abstention needs no supporting positive fact.",
+    "facets": [],
+    "full_success": true,
+    "code_check": null,
+    "inspection_refusals": 0,
+    "followup_searches": 0,
+    "calls": 2,
+    "input_tokens": 636,
+    "output_tokens": 339,
+    "cost_usd": 0.0005976,
+    "http_seconds": 5.348059283998737
+  },
+  {
+    "cell": "C-absent",
+    "status": "completed",
+    "applied": [],
+    "artifact_complete": true,
+    "quotes": {},
+    "failure_categories": [
+      "unavailable_fact"
+    ],
+    "rationale": "Explicitly reports unavailability without inventing a date; no source inspection or follow-up search. Abstention needs no supporting positive fact.",
+    "facets": [],
+    "full_success": true,
+    "code_check": null,
+    "inspection_refusals": 0,
+    "followup_searches": 0,
+    "calls": 1,
+    "input_tokens": 466,
+    "output_tokens": 191,
+    "cost_usd": 0.000369,
+    "http_seconds": 2.884178388005239
+  }
+]

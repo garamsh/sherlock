@@ -1,0 +1,16 @@
+test_detects_missing_contract_facets (score_test.ArtifactTest.test_detects_missing_contract_facets) ... 
+  test_detects_missing_contract_facets (score_test.ArtifactTest.test_detects_missing_contract_facets) (field='privacy') ... FAIL
+
+======================================================================
+FAIL: test_detects_missing_contract_facets (score_test.ArtifactTest.test_detects_missing_contract_facets) (field='privacy')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp35ottwvb/score_test.py", line 36, in test_detects_missing_contract_facets
+    self.assertFalse(broken[field])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+----------------------------------------------------------------------
+Ran 1 test in 0.089s
+
+FAILED (failures=1)

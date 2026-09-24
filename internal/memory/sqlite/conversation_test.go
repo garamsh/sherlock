@@ -6,10 +6,11 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/garamsh/gagent/internal/agent"
-	"github.com/garamsh/gagent/internal/memory/sqlite"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/garamsh/gagent/internal/agent"
+	"github.com/garamsh/gagent/internal/memory/sqlite"
 )
 
 func TestConversation_FailedSummaryLeavesNoSourceOrCheckpoint(t *testing.T) {

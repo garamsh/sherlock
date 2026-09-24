@@ -4,9 +4,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/garamsh/gagent/internal/agent"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/garamsh/gagent/internal/agent"
 )
 
 func TestComposeInstructionsKeepsThePlatformContract(t *testing.T) {

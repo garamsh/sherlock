@@ -2,13 +2,14 @@ package tests
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/require"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"syscall"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/require"
 )
 
 func continuationFiles(t *testing.T, root string) map[string]string {

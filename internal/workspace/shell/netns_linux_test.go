@@ -133,13 +133,6 @@ func TestProcessExecutor_NoNetworkBlocksLoopback(t *testing.T) {
 		Env:     []string{"GAGENT_NETNS_PROBE_ADDR=" + ln.Addr().String()},
 	}
 	executor := shell.NewProcessExecutor(testExecUID, 5*time.Second)
-	// The probe is this test binary, and a Go runtime reserves more address
-	// space at startup than the default cap allows — under it the child dies
-	// in `mallocinit` before it dials anything, which is a run that says
-	// nothing about the network. The cap is not what this case is about, so
-	// it is raised rather than worked around; that the caps bind at all is
-	// pinned by the ulimit cases in process_test.go.
-	executor.RLimits.AddressSpace = 4 * 1024 * 1024 * 1024
 
 	res := runProbe(t, executor, shell.Request{
 		Command:   req.Command,
@@ -225,9 +218,7 @@ func splitNetObservation(t *testing.T, res shell.Result) (devices, routes []stri
 }
 
 // pythonProbe returns a python3 one-liner connecting to addr and exiting
-// 0 on success, 1 on failure. The single-account tests probe with python
-// rather than the Go test binary: the executor's RLIMIT_AS cap is sized
-// for shell commands, not a Go runtime.
+// 0 on success, 1 on failure.
 func pythonProbe(addr string) string {
 	host, port, _ := net.SplitHostPort(addr)
 	return fmt.Sprintf(

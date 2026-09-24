@@ -3,7 +3,7 @@
 // session, memory, the mouth, and the tool client that spawns the
 // operator's installed tools — and "gagent workspace" serves the
 // agent's workspace, the gRPC data plane (files and exec). Settings
-// come from flags, GAGENT_* environment variables, and gagent.yaml
+// come from flags, GAGENT_* environment variables, and configs/gagent.yaml
 // through viper.
 package main
 

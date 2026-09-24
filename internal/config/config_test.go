@@ -50,13 +50,14 @@ func TestResolveConfig_Defaults(t *testing.T) {
 func TestResolveConfig_ModelSection(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
+	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
 	contents := "model:\n" +
 		"  provider: openai-compatible\n" +
 		"  base-url: http://localhost:11434/v1\n" +
 		"  model: llama3.2\n" +
 		"  api-key-env: OLLAMA_KEY\n" +
 		"  timeout: 120s\n"
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o600))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "gagent.yaml"), []byte(contents), 0o600))
 
 	cfg, err := config.Resolve(agentFlags(t))
 	require.NoError(t, err)
@@ -71,7 +72,8 @@ func TestResolveConfig_ModelSection(t *testing.T) {
 func TestResolveConfig_ModelTimeoutEnvOverridesFile(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
+	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "gagent.yaml"),
 		[]byte("model:\n  timeout: 30s\n"), 0o600))
 	t.Setenv("GAGENT_MODEL_TIMEOUT", "5m")
 
@@ -85,10 +87,11 @@ func TestResolveConfig_ModelTimeoutEnvOverridesFile(t *testing.T) {
 func TestResolveConfig_ConfigFile(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
+	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
 	contents := "addr: \":9090\"\n" +
 		"memory-path: /from-file/memory.db\n" +
 		"workspace-addr: 127.0.0.1:9081\n"
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o600))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "gagent.yaml"), []byte(contents), 0o600))
 
 	cfg, err := config.Resolve(agentFlags(t))
 	require.NoError(t, err)
@@ -102,7 +105,8 @@ func TestResolveConfig_ConfigFile(t *testing.T) {
 func TestResolveConfig_EnvOverridesFile(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
+	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "gagent.yaml"),
 		[]byte("memory-path: /from-file/memory.db\n"), 0o600))
 	t.Setenv("GAGENT_MEMORY_PATH", "/from-env/memory.db")
 
@@ -156,8 +160,9 @@ func TestResolveConfig_XDGConfigFile(t *testing.T) {
 func TestResolveConfig_CwdBeatsXDG(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
+	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
 	xdg := t.TempDir()
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "gagent.yaml"),
 		[]byte("memory-path: /from-cwd/memory.db\n"), 0o600))
 	require.NoError(t, os.MkdirAll(filepath.Join(xdg, "gagent"), 0o755))
 	require.NoError(t, os.WriteFile(filepath.Join(xdg, "gagent", "config.yaml"),
@@ -174,8 +179,9 @@ func TestResolveConfig_CwdBeatsXDG(t *testing.T) {
 func TestResolveConfig_ConfigFlag(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
-	// A cwd file exists but the flag path wins; the flag path is arbitrary.
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
+	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
+	// A configs/gagent.yaml file exists but the flag path wins; the flag path is arbitrary.
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "gagent.yaml"),
 		[]byte("memory-path: /from-cwd/memory.db\n"), 0o600))
 	custom := filepath.Join(t.TempDir(), "custom.yaml")
 	require.NoError(t, os.WriteFile(custom, []byte("memory-path: /from-flag/memory.db\n"), 0o600))
@@ -200,11 +206,12 @@ func TestResolveConfig_ConfigFlagMissingFileFails(t *testing.T) {
 func TestResolveConfig_TLSSection(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
+	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
 	contents := "tls:\n" +
 		"  cert: /srv/tls/server.pem\n" +
 		"  key: /srv/tls/server-key.pem\n" +
 		"  client-ca: /srv/tls/ca.pem\n"
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o600))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "gagent.yaml"), []byte(contents), 0o600))
 
 	cfg, err := config.Resolve(agentFlags(t))
 	require.NoError(t, err)
@@ -219,7 +226,8 @@ func TestResolveConfig_TLSSection(t *testing.T) {
 func TestResolveConfig_TLSSectionEnvOverridesFile(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
+	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "gagent.yaml"),
 		[]byte("tls:\n  cert: /from-file.pem\n"), 0o600))
 	t.Setenv("GAGENT_TLS_CERT", "/from-env.pem")
 
@@ -263,7 +271,8 @@ func TestResolveConfig_NoTLSSection(t *testing.T) {
 func TestResolveConfig_ConfigFileMustBeOwnerOnly(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
-	path := filepath.Join(dir, "gagent.yaml")
+	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
+	path := filepath.Join(dir, "configs", "gagent.yaml")
 	require.NoError(t, os.WriteFile(path, []byte("addr: 127.0.0.1:9090\n"), 0o600))
 
 	_, err := config.Resolve(agentFlags(t))
@@ -282,11 +291,12 @@ func TestResolveConfig_ConfigFileMustBeOwnerOnly(t *testing.T) {
 func TestResolveConfig_ToolsPinsSection(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
+	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
 	contents := "tools:\n" +
 		"  pins:\n" +
 		"    message_send: 0f9b\n" +
 		"    files: 7c31\n"
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"), []byte(contents), 0o600))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "gagent.yaml"), []byte(contents), 0o600))
 
 	cfg, err := config.Resolve(agentFlags(t))
 	require.NoError(t, err)
@@ -324,7 +334,8 @@ func TestResolveConfig_NoToolsSection(t *testing.T) {
 func TestResolveConfig_EmptyToolsPinsSectionFails(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
+	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "gagent.yaml"),
 		[]byte("tools:\n  pins: {}\n"), 0o600))
 
 	_, err := config.Resolve(agentFlags(t))
@@ -340,7 +351,8 @@ func TestResolveConfig_EmptyToolsPinsSectionFails(t *testing.T) {
 func TestResolveConfig_ToolsSectionWithoutPinsIsAbsent(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
+	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "gagent.yaml"),
 		[]byte("tools-dir: ./elsewhere\n"), 0o600))
 
 	cfg, err := config.Resolve(agentFlags(t))
@@ -362,7 +374,8 @@ func TestResolveConfig_ToolsSectionWithoutPinsIsAbsent(t *testing.T) {
 func TestResolveConfig_ToolsPinsEnvIsRefused(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
+	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "gagent.yaml"),
 		[]byte("tools:\n  pins:\n    message_send: 0f9b\n    files: 7c31\n"), 0o600))
 	t.Setenv("GAGENT_TOOLS_DIR", "/opt/gagent/tools")
 
@@ -447,7 +460,8 @@ func TestResolveConfig_ToolsDirEnvOverridesDefault(t *testing.T) {
 func TestResolveConfig_InvalidConfigFileFails(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "gagent.yaml"),
+	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "gagent.yaml"),
 		[]byte("addr: [unclosed\n"), 0o600))
 
 	_, err := config.Resolve(agentFlags(t))
@@ -465,11 +479,12 @@ func captureSlog(t *testing.T) (*bytes.Buffer, func()) {
 	return buf, func() { slog.SetDefault(prev) }
 }
 
-// writeAgentConfig writes an owner-only gagent.yaml into the current
-// directory and returns its path.
+// writeAgentConfig writes an owner-only gagent.yaml under the current
+// directory's configs/ and returns its path.
 func writeAgentConfig(t *testing.T, dir, body string) string {
 	t.Helper()
-	path := filepath.Join(dir, "gagent.yaml")
+	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
+	path := filepath.Join(dir, "configs", "gagent.yaml")
 	require.NoError(t, os.WriteFile(path, []byte(body), 0o600))
 	return path
 }
@@ -558,4 +573,63 @@ func TestResolveConfig_NoConfigFileReportsNothing(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.NotContains(t, buf.String(), "unknown config key")
+}
+
+func TestResolveConfig_FileLookupPrecedence(t *testing.T) {
+	tests := []struct {
+		name     string
+		filename string
+		xdgName  string
+		flags    func(*testing.T) *pflag.FlagSet
+		resolve  func(*pflag.FlagSet) (string, error)
+	}{
+		{"agent", "gagent.yaml", "config.yaml", agentFlags, func(fs *pflag.FlagSet) (string, error) {
+			cfg, err := config.Resolve(fs)
+			return cfg.Addr, err
+		}},
+		{"workspace", "workspace.yaml", "workspace.yaml", workspaceFlags, func(fs *pflag.FlagSet) (string, error) {
+			cfg, err := config.ResolveWorkspace(fs)
+			return cfg.Addr, err
+		}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dir := t.TempDir()
+			t.Chdir(dir)
+			fs := tt.flags(t)
+			xdg := t.TempDir()
+			t.Setenv("XDG_CONFIG_HOME", xdg)
+			require.NoError(t, os.MkdirAll(filepath.Join(xdg, "gagent"), 0o755))
+			require.NoError(t, os.WriteFile(filepath.Join(xdg, "gagent", tt.xdgName),
+				[]byte("addr: 127.0.0.1:9101\n"), 0o600))
+			require.NoError(t, os.MkdirAll("configs", 0o755))
+			local := filepath.Join("configs", tt.filename)
+			require.NoError(t, os.WriteFile(local, []byte("addr: 127.0.0.1:9102\n"), 0o600))
+			custom := filepath.Join(dir, "custom.yaml")
+			require.NoError(t, os.WriteFile(custom, []byte("addr: 127.0.0.1:9103\n"), 0o600))
+			require.NoError(t, fs.Set("config", custom))
+
+			addr, err := tt.resolve(fs)
+			require.NoError(t, err)
+			assert.Equal(t, "127.0.0.1:9103", addr)
+
+			require.NoError(t, os.Remove(custom))
+			_, err = tt.resolve(fs)
+			require.Error(t, err, "a missing explicit path must not fall back")
+
+			require.NoError(t, fs.Set("config", ""))
+			addr, err = tt.resolve(fs)
+			require.NoError(t, err)
+			assert.Equal(t, "127.0.0.1:9102", addr)
+
+			require.NoError(t, os.WriteFile(local, []byte("addr: [unclosed\n"), 0o600))
+			_, err = tt.resolve(fs)
+			require.Error(t, err, "an invalid automatic file must not fall back")
+
+			require.NoError(t, os.Remove(local))
+			addr, err = tt.resolve(fs)
+			require.NoError(t, err)
+			assert.Equal(t, "127.0.0.1:9101", addr)
+		})
+	}
 }

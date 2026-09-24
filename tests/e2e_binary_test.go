@@ -337,7 +337,7 @@ func buildGagentBinary(t *testing.T) string {
 }
 
 // emptyConfig writes an empty config file — it keeps a binary run
-// hermetic against ./gagent.yaml, ./workspace.yaml, and XDG config
+// hermetic against ./configs/gagent.yaml, ./configs/workspace.yaml, and XDG config
 // files on the host — and returns its path.
 func emptyConfig(t *testing.T, name string) string {
 	t.Helper()

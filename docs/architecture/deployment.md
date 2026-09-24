@@ -26,7 +26,7 @@ One pod per agent, two containers (ADR 0017). Both are the same binary under dif
 | Runs as | `nonroot`, uid 65532 | root |
 | Shell in the image | none | yes |
 | Serves | the HTTP gateway | the gRPC data plane (Read, Write, List, Exec) |
-| Config file read | `gagent.yaml` | `workspace.yaml` |
+| Repository example | `configs/gagent.yaml` | `configs/workspace.yaml` |
 
 **The *Runs as* row is what the image sets, not what the pod asserts.** Each cell is that container's Dockerfile `USER`, and an orchestrator admitting the pod reads neither Dockerfile. What a manifest has to assert about these two, and which Pod Security Standard the pair can reach, is §Capabilities.
 
@@ -80,6 +80,8 @@ Serving the gateway beyond localhost means setting the `tls:` section — `cert`
 ## Configuration and secrets
 
 Settings resolve in one precedence: **flags > `GAGENT_*` environment > config file > defaults.** The environment name is the setting with dashes and dots replaced by underscores, so `tools-dir` is `GAGENT_TOOLS_DIR` and `model.base-url` is `GAGENT_MODEL_BASE_URL`.
+
+Config files resolve in order: explicit `--config <path>`, then `./configs/gagent.yaml` for the agent or `./configs/workspace.yaml` for the workspace, then `os.UserConfigDir()/gagent/config.yaml` or `os.UserConfigDir()/gagent/workspace.yaml`, respectively (`internal/config/`). Missing automatic files fall through to defaults; a missing explicit path fails startup. From the repository root, run `chmod 0600 configs/gagent.yaml configs/workspace.yaml` before starting either process: Git does not preserve owner-only modes. Relative settings still resolve from the process working directory. The local Compose deployment keeps its separate `deploy/local/gagent.yaml`, mounted and selected explicitly as `/etc/gagent/config.yaml` (`deploy/local/docker-compose.yml`).
 
 **A config-file key no setting reads is reported, not refused.** Both processes warn once per unread key, naming the key and the file, and start anyway — so a renamed key does not reject an operator's whole file. The warning is the only signal, and it reaches a log inside the container and nothing else.
 

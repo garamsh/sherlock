@@ -89,7 +89,8 @@ func boundedSummary(text string, limit int) string {
 }
 
 func (s *Store) Recent(ctx context.Context, limit int) ([]agent.SourceMessage, error) {
-	if limit <= 0 {
+	// SQLite treats a negative LIMIT as unbounded for disabled compaction.
+	if limit == 0 {
 		return nil, nil
 	}
 	rows, err := s.db.QueryContext(ctx, `SELECT id,external_id,role,content FROM (SELECT id,external_id,role,content FROM conversation_sources ORDER BY id DESC LIMIT ?) ORDER BY id`, limit)

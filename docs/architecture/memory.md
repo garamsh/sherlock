@@ -4,7 +4,7 @@ Governs the agent's source-linked conversation memory and its lifecycle. Rationa
 
 ## Current decisions
 
-- The rolling session keeps the newest visible conversation for current work. It is bounded by the configured message limit; `internal/agent/memory/compaction.go` keeps the leading instruction and trims the oldest window entries.
+- The rolling session keeps the newest visible conversation for current work. It is bounded by the configured message limit; `internal/agent/memory/compaction.go` keeps the leading instruction and trims the oldest window entries. A negative limit disables compaction and restores all saved visible messages after restart.
 - Completed turns write each original inbound user message with its gateway ID, successful outbound `message_send` content, and the terminal assistant reply to the agent's SQLite file. System instructions, tool results, hidden reasoning, and credentials are outside the durable source boundary. Credential patterns are redacted before persistence; a redacted original cannot be recovered verbatim (ADR 0006).
 - Each stored source has a bounded extractive short summary. Each short summary has a bounded, searchable mid memory. IDs link mid to short to the original source. The three records for a completed turn commit together, so failed maintenance leaves no processed source or advanced cursor (ADR 0011).
 - Recall asks the session model for up to four search phrases, then retrieves at most five matching mid memories from SQLite FTS5. Matching candidates are ordered newest first. Search terms and candidates are hints, not proof of an answer; an empty search injects no evidence (ADR 0019).

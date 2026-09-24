@@ -66,7 +66,12 @@ func (f *Factory) New(_ context.Context, agentID string, events agent.EventSink)
 	if maxHistoryMessages < 0 {
 		maxHistoryMessages = 0
 	}
-	recent, err := store.Recent(context.Background(), maxHistoryMessages)
+	restoreLimit := maxHistoryMessages
+	if f.MaxHistoryMessages < 0 {
+		// Disabled compaction also restores the full visible conversation.
+		restoreLimit = -1
+	}
+	recent, err := store.Recent(context.Background(), restoreLimit)
 	if err != nil {
 		store.Close()
 		return nil, err

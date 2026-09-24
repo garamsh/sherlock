@@ -252,6 +252,41 @@ func TestFactory_ConversationSurvivesRestart(t *testing.T) {
 	assert.Contains(t, restarted.Session.History(), agent.Message{Role: agent.RoleUser, Content: "When does the observatory close?"})
 }
 
+func TestFactory_DisabledCompactionRestoresAllHistory(t *testing.T) {
+	for _, tc := range []struct {
+		name  string
+		limit int
+		want  []string
+	}{
+		{name: "disabled", limit: -1, want: []string{"First question?", "Second question?"}},
+		{name: "bounded", limit: 2, want: []string{"Second question?"}},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			root := t.TempDir()
+			factory := &gateway.Factory{MemoryPath: memoryPath(root), NewModel: func(string) agent.Model {
+				return agent.NewScriptedModel(resolveStep(), writebackStep(`{"reply":"Answer.","memory_ops":[]}`))
+			}, Tools: noTools(), MaxHistoryMessages: tc.limit}
+			for _, question := range []string{"First question?", "Second question?"} {
+				runtime, err := factory.New(context.Background(), "env-1", nil)
+				require.NoError(t, err)
+				_, err = runtime.Session.Run(context.Background(), question)
+				require.NoError(t, err)
+				require.NoError(t, runtime.Close(context.Background()))
+			}
+			restarted, err := factory.New(context.Background(), "env-1", nil)
+			require.NoError(t, err)
+			defer restarted.Close(context.Background())
+			var got []string
+			for _, message := range restarted.Session.History() {
+				if message.Role == agent.RoleUser {
+					got = append(got, message.Content)
+				}
+			}
+			assert.Equal(t, tc.want, got)
+		})
+	}
+}
+
 func TestFactory_RefusesAddressedStoreWithoutChangingIt(t *testing.T) {
 	root := t.TempDir()
 	ctx := context.Background()

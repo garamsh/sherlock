@@ -4,6 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"net/http"
+	"net/http/httptest"
+	"os"
 	"strings"
 	"sync"
 	"testing"
@@ -13,6 +16,8 @@ import (
 
 	"github.com/garamsh/gagent/internal/agent"
 	agentmemory "github.com/garamsh/gagent/internal/agent/memory"
+	"github.com/garamsh/gagent/internal/agent/openai"
+	"github.com/garamsh/gagent/internal/memory"
 	"github.com/garamsh/gagent/internal/tool"
 )
 
@@ -1051,4 +1056,244 @@ func TestSessionRun_InstructionsSurviveCompaction(t *testing.T) {
 	assert.Equal(t, agent.RoleSystem, last[0].Role)
 	assert.Equal(t, agent.ComposeInstructions(""), last[0].Content,
 		"the instructions still lead the history the model sees after a compaction")
+}
+
+type currentWorkStore struct {
+	work    memory.WorkingContext
+	saveErr error
+}
+
+func (s *currentWorkStore) LoadWorkingContext(context.Context) (memory.WorkingContext, error) {
+	return s.work, nil
+}
+
+func (s *currentWorkStore) SaveWorkingContext(_ context.Context, work memory.WorkingContext) (int64, error) {
+	if s.saveErr != nil {
+		return 0, s.saveErr
+	}
+	data, err := json.Marshal(work)
+	if err != nil {
+		return 0, err
+	}
+	var saved memory.WorkingContext
+	if err := json.Unmarshal(data, &saved); err != nil {
+		return 0, err
+	}
+	saved.Revision = work.Revision + 1
+	s.work = saved
+	return saved.Revision, nil
+}
+
+type sessionModelFunc func(context.Context, []agent.Message, []tool.Descriptor) (agent.Response, error)
+
+func (f sessionModelFunc) Chat(ctx context.Context, messages []agent.Message, tools []tool.Descriptor) (agent.Response, error) {
+	return f(ctx, messages, tools)
+}
+
+func TestSession_TerminalAuthority(t *testing.T) {
+	for _, status := range []memory.WorkStatus{memory.WorkCanceled, memory.WorkCompleted} {
+		for _, behavior := range []string{"explain", "illegal call", "replacement"} {
+			t.Run(string(status)+"/"+behavior, func(t *testing.T) {
+				store := &currentWorkStore{work: memory.WorkingContext{Account: memory.WorkAccount{Status: status}, Source: []string{"Original work ended."}}}
+				client := newFakeClient()
+				effect := &fakeTool{name: "artifact", inputSchema: json.RawMessage(`{"type":"object"}`), response: json.RawMessage(`{}`)}
+				client.register(effect)
+				requests := 0
+				model := sessionModelFunc(func(_ context.Context, _ []agent.Message, tools []tool.Descriptor) (agent.Response, error) {
+					requests++
+					names := []string{}
+					for _, d := range tools {
+						names = append(names, d.Name)
+					}
+					if requests == 1 {
+						assert.ElementsMatch(t, []string{agent.WorkingContextTool, agent.MemoryWriteTool}, names)
+						switch behavior {
+						case "illegal call":
+							return agent.Response{ToolCalls: []agent.ToolCall{{Name: "artifact", Input: json.RawMessage(`{}`)}}}, nil
+						case "replacement":
+							return agent.Response{ToolCalls: []agent.ToolCall{{Name: agent.WorkingContextTool, Input: json.RawMessage(`{"arrival":"replace","status":"active"}`)}}}, nil
+						}
+					} else {
+						assert.Contains(t, names, "artifact", "saved replacement reopens the tool surface")
+						if requests == 2 {
+							return agent.Response{ToolCalls: []agent.ToolCall{{Name: "artifact", Input: json.RawMessage(`{}`)}}}, nil
+						}
+					}
+					return agent.Response{ToolCalls: []agent.ToolCall{writebackCall(replyOnly("Original work remains ended."))}}, nil
+				})
+				session := agent.NewSession(model, client, agent.Options{WorkingContext: store})
+				reply, err := session.Run(context.Background(), "Start new authorized work.")
+				if behavior == "illegal call" {
+					require.ErrorContains(t, err, "terminal work requires explicit replacement")
+					assert.Empty(t, reply)
+				} else {
+					require.NoError(t, err)
+					assert.NotEmpty(t, reply)
+				}
+				if behavior == "replacement" {
+					assert.Equal(t, 1, effect.calls)
+					assert.Equal(t, []string{"Start new authorized work."}, store.work.Source)
+					assert.Equal(t, memory.WorkActive, store.work.Account.Status)
+				} else {
+					assert.Zero(t, effect.calls)
+					assert.Equal(t, status, store.work.Account.Status)
+					assert.Equal(t, []string{"Original work ended."}, store.work.Source)
+					assert.Empty(t, store.work.Attempts)
+				}
+			})
+		}
+	}
+}
+
+// These bytes and reasoning records come from 70a839c MiniMax calls.json,
+// SHA256 552f52e9ce8cc0fdf24fefc95340852363b501325b30c38072b4259fa8d00d61.
+func TestSession_RecordedTerminalCuration(t *testing.T) {
+	data, err := os.ReadFile("testdata/terminal-curation-minimax.json")
+	require.NoError(t, err)
+	var records []struct {
+		Seq      int
+		Label    string
+		Response []byte
+		Work     memory.WorkingContext
+	}
+	require.NoError(t, json.Unmarshal(data, &records))
+	require.Len(t, records, 4)
+	for _, record := range records {
+		behaviors := []string{"corrected", "omitted", "repeated", "unsupported retirement", "malformed facts", "operator call", "mixed calls", "storage failure"}
+		if record.Work.Account.Status.Terminal() {
+			behaviors = []string{"illegal call"}
+		}
+		for _, behavior := range behaviors {
+			t.Run(record.Label+"/"+behavior, func(t *testing.T) {
+				ctx := context.Background()
+				server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					w.Header().Set("Content-Type", "application/json")
+					_, writeErr := w.Write(record.Response)
+					assert.NoError(t, writeErr)
+				}))
+				defer server.Close()
+				provider, err := openai.New(openai.Config{BaseURL: server.URL, Model: "MiniMax-M2", APIKey: "offline-test"})
+				require.NoError(t, err)
+				store := &currentWorkStore{work: record.Work}
+				// Dismiss the test-only arrival before replaying the recorded final boundary.
+				store.work.Arrival = nil
+				store.work.Revision = 100
+				client := newFakeClient()
+				effect := &fakeTool{name: "file_list", inputSchema: json.RawMessage(`{"type":"object"}`), response: json.RawMessage(`{}`)}
+				client.register(effect)
+				sink := &fakeWriteback{}
+				events := &fakeEvents{}
+				requests := 0
+				var rejected agent.Response
+				model := sessionModelFunc(func(ctx context.Context, messages []agent.Message, tools []tool.Descriptor) (agent.Response, error) {
+					requests++
+					if requests == 1 {
+						return agent.Response{ToolCalls: []agent.ToolCall{{Name: agent.WorkingContextTool, Input: json.RawMessage(`{"arrival":"dismiss"}`)}}}, nil
+					}
+					if requests == 2 {
+						assert.Equal(t, record.Work.Source, store.work.Source)
+						assert.Equal(t, record.Work.Attempts, store.work.Attempts)
+						assert.Equal(t, record.Work.Account, store.work.Account)
+						assert.Nil(t, store.work.Arrival)
+						var callErr error
+						rejected, callErr = provider.Chat(ctx, messages, tools)
+						return rejected, callErr
+					}
+					require.Equal(t, 3, requests, "only one correction may be requested")
+					require.Len(t, tools, 1)
+					assert.Equal(t, agent.MemoryWriteTool, tools[0].Name)
+					assert.Empty(t, sink.batches, "rejected curation must not write facts")
+					assert.Equal(t, record.Work.Attempts, store.work.Attempts)
+					assert.Equal(t, record.Work.Source, store.work.Source)
+					assert.Equal(t, record.Work.Account, store.work.Account)
+					matched := false
+					for _, message := range messages {
+						if message.Role == agent.RoleTool && message.ToolCallID == rejected.ToolCalls[0].ID {
+							assert.Contains(t, message.Content, "Writeback rejected; no facts were written")
+							matched = true
+						}
+					}
+					assert.True(t, matched, "provider receives a matched rejection")
+					if behavior == "repeated" {
+						return rejected, nil
+					}
+					correction := map[string]any{"reply": "Corrected final account", "memory_ops": []agent.WritebackOp{}}
+					switch behavior {
+					case "corrected":
+						resolutions := []map[string]any{}
+						for _, attempt := range record.Work.Attempts {
+							if attempt.Result == nil || attempt.Result.Outcome == memory.WorkFailed {
+								resolutions = append(resolutions, map[string]any{"id": attempt.ID, "evidence": "Later recorded reads verify the resulting order and receipt; the earlier failed read is superseded."})
+							}
+						}
+						correction["working_context"] = map[string]any{"status": "completed", "arrival": "retain", "resolved_attempts": resolutions}
+					case "unsupported retirement":
+						correction["working_context"] = map[string]any{"resolved_attempts": []map[string]any{{"id": 9999, "evidence": "unsupported"}}}
+					case "omitted":
+						correction["reply"] = "Current work remains active; final curation was not applied."
+					case "malformed facts":
+						correction["memory_ops"] = []map[string]any{{"value": "missing address"}}
+					case "storage failure":
+						store.saveErr = errors.New("store unavailable")
+					}
+					input, err := json.Marshal(correction)
+					require.NoError(t, err)
+					calls := []agent.ToolCall{{Name: agent.MemoryWriteTool, Input: input}}
+					if behavior == "operator call" {
+						calls = nil
+					}
+					if behavior == "operator call" || behavior == "mixed calls" {
+						calls = append(calls, agent.ToolCall{Name: "file_list", Input: json.RawMessage(`{}`)})
+					}
+					return agent.Response{ToolCalls: calls}, nil
+				})
+				session := agent.NewSession(model, client, agent.Options{WorkingContext: store, Writeback: sink, Events: events})
+				reply, err := session.Run(ctx, "Test-only neutral arrival.")
+				success := behavior == "corrected" || behavior == "omitted"
+				if success {
+					require.NoError(t, err)
+					if behavior == "omitted" {
+						assert.Equal(t, "Current work remains active; final curation was not applied.", reply)
+						assert.Equal(t, memory.WorkActive, store.work.Account.Status)
+					} else {
+						assert.Equal(t, "Corrected final account", reply)
+					}
+					require.Len(t, sink.batches, 1)
+					assert.Contains(t, events.kinds(), agent.EventTurnFinished)
+				} else {
+					require.Error(t, err)
+					assert.Empty(t, reply)
+					assert.NotContains(t, events.kinds(), agent.EventTurnFinished)
+				}
+				assert.Zero(t, effect.calls, "neither refused terminal calls nor corrections execute effects")
+				assert.Equal(t, record.Work.Source, store.work.Source)
+				if behavior == "corrected" {
+					assert.Equal(t, memory.WorkCompleted, store.work.Account.Status)
+					retained := []memory.WorkAttempt{}
+					for _, attempt := range record.Work.Attempts {
+						if attempt.Result != nil && attempt.Result.Outcome == memory.WorkReturned {
+							retained = append(retained, attempt)
+						}
+					}
+					assert.Equal(t, retained, store.work.Attempts, "each unmentioned successful attempt survives")
+				} else {
+					assert.Equal(t, record.Work.Account, store.work.Account)
+					assert.Equal(t, record.Work.Attempts, store.work.Attempts)
+				}
+				if behavior == "illegal call" {
+					assert.Equal(t, 2, requests)
+					require.ErrorContains(t, err, "terminal work requires explicit replacement")
+				} else {
+					assert.Equal(t, 3, requests)
+					assert.Contains(t, events.kinds(), agent.EventWorkingContextError)
+				}
+				if !success && behavior != "storage failure" {
+					assert.Empty(t, sink.batches)
+				}
+				if behavior == "repeated" {
+					assert.Contains(t, err.Error(), "terminal working context rejected")
+				}
+			})
+		}
+	}
 }

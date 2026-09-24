@@ -202,3 +202,6 @@ var (
 // the reply and the facts arrive, so a malformed one leaves nothing to
 // hand back and nothing to store (issue #615).
 var ErrMalformedWriteback = errors.New("malformed memory writeback")
+
+// errRejectedCuration marks an unsafe final update rejected before any write.
+var errRejectedCuration = errors.New("terminal working context rejected")

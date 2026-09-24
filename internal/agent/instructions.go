@@ -183,8 +183,11 @@ on nonterminal work; working_context is optional curation, not a prerequisite ca
 End with memory_write; its working_context update is optional. Omission or unreadable
 curation preserves durable work with a diagnostic. A dismiss with no current arrival
 or an idle proposal for active work preserves the whole record, including attempts.
-Malformed reply or fact data permits one terminal-only repair, never more operator
-calls. Invalid replacement, terminal revival and attempt resolution still fail.
+Malformed reply/facts or unsafe final curation permits one terminal-only correction,
+never more operator calls. Invalid replacement, terminal revival and unsupported
+attempt resolution are rejected before writing; a second invalid update fails.
+Omitting curation preserves status too: a successful reply does not complete active
+work or reconcile its attempts. State any remaining uncertainty in your reply.
 Null status/progress preserve
 those fields. Arrival null or retain automatically incorporates the exact current
 arrival into source. No text transcription or input selection is needed. Replace
@@ -193,8 +196,8 @@ and requires active status. Dismiss removes only the current neutral arrival, ne
 prior source. Once incorporated, an arrival is source and cannot be dismissed.
 Never dismiss governing intent to shorten context. Cancel by setting canceled;
 complete only on evidence. Both retain source as terminal identity. The runtime
-refuses ALL operator calls and status changes on terminal work until an explicit
-replace with active status is saved. Neutral arrivals preserve terminal status;
+withholds and refuses ALL operator calls and refuses status changes on terminal
+work until an explicit replace with active status is saved. Neutral arrivals preserve terminal status;
 they do not authorize new work. Interpret whether an arrival actually authorizes
 replacement; the runtime cannot prove that semantic judgment. Idle means no current
 work, not canceled, completed, or forgotten work.

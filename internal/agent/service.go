@@ -246,13 +246,14 @@ func (s *session) Run(ctx context.Context, task string) (response string, err er
 	return "", fmt.Errorf("%w (%d)", ErrLoopExhausted, s.opts.MaxIterations)
 }
 
-// modelTools is what the model is shown: the operator's tools plus the
-// reserved writeback. The reserved descriptor is added here rather than
-// by a provider so every provider advertises it the same way, and it is
-// not in the tool client, so no operator tool can be reached by that
-// name.
+// modelTools advertises reserved tools and the operator tools permitted by
+// persisted terminal authority. Providers share this surface; reserved
+// tools never route through the operator's client.
 func (s *session) modelTools() []tool.Descriptor {
 	installed := s.tools.List()
+	if s.opts.WorkingContext != nil && s.work.Account.Status.Terminal() {
+		installed = nil
+	}
 	out := make([]tool.Descriptor, 0, len(installed)+1)
 	for _, d := range installed {
 		if d.Name == MemoryWriteTool || (s.opts.WorkingContext != nil && d.Name == WorkingContextTool) {
@@ -295,15 +296,19 @@ func splitWriteback(calls []ToolCall) (*ToolCall, []ToolCall) {
 // finishOrRepair allows one terminal-only correction without reopening operator execution.
 func (s *session) finishOrRepair(ctx context.Context, response Response, call ToolCall, initialSource bool) (string, error) {
 	reply, err := s.finish(ctx, call, initialSource)
-	if !errors.Is(err, ErrMalformedWriteback) {
+	if !errors.Is(err, ErrMalformedWriteback) && !errors.Is(err, errRejectedCuration) {
 		return reply, err
 	}
-	s.emit(ctx, Event{Kind: EventWritebackError, Turn: s.turn, Error: err.Error()})
+	kind := EventWritebackError
+	if errors.Is(err, errRejectedCuration) {
+		kind = EventWorkingContextError
+	}
+	s.emit(ctx, Event{Kind: kind, Turn: s.turn, Error: err.Error()})
 	s.history = append(s.history, Message{Role: RoleAssistant, ToolCalls: response.ToolCalls})
 	for _, attempted := range response.ToolCalls {
 		result := "Not executed: terminal writeback repair permits no operator calls."
 		if attempted.ID == call.ID {
-			result = "Writeback rejected; no facts were written: " + err.Error() + ". One correction is allowed: call memory_write alone with reply and an explicit memory_ops array. Optional working_context may be omitted. Do not repeat operator effects."
+			result = "Writeback rejected; no facts were written: " + err.Error() + ". One correction is allowed: call memory_write alone with reply and an explicit memory_ops array. Correct working_context against the supplied current-work record, or omit it to preserve all source and attempts. Resolve attempts only with observed evidence. Do not repeat operator effects."
 		}
 		s.history = append(s.history, Message{Role: RoleTool, Name: attempted.Name, ToolCallID: attempted.ID, Content: result})
 	}
@@ -352,7 +357,7 @@ func (s *session) finish(ctx context.Context, call ToolCall, initialSource bool)
 		var warning error
 		work, warning, err = s.prepareCheckpoint(doc.WorkingContext)
 		if err != nil {
-			return "", err
+			return "", fmt.Errorf("%w: %v", errRejectedCuration, err)
 		}
 		if warning != nil {
 			s.emit(ctx, Event{Kind: EventWorkingContextError, Turn: s.turn, Error: warning.Error()})

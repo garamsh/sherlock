@@ -111,7 +111,6 @@ type session struct {
 	// first system message of a fresh session.
 	instructions string
 	history      []Message
-	currentTask  string
 	sources      []SourceMessage
 	turn         int
 	// failures records this turn's failed tool calls, keyed by name and
@@ -158,7 +157,6 @@ func (s *session) History() []Message {
 // on error.
 func (s *session) Run(ctx context.Context, task string) (response string, err error) {
 	s.turn++
-	s.currentTask = task
 	s.sources = inboundSources(ctx, task)
 	s.failures = make(map[string]failedCall)
 	s.toolCalls = make(map[string]int)

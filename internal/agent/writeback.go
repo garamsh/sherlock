@@ -2,9 +2,7 @@ package agent
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
-	"log/slog"
 	"strings"
 
 	"github.com/garamsh/sherlock/internal/tool"
@@ -31,9 +29,9 @@ const MemoryWriteTool = "memory_write"
 // session instructions because a tool the model is shown carries its own
 // contract, and because what a caller may decline is not settled by
 // prose: the session will not end a turn without this call.
-const memoryWriteDescription = "Deliver your reply and record what this turn stated. " +
-	"Every turn ends with this call and no turn ends without it. The reply is what the person reads. " +
-	"For source-linked memory, pass an empty memory_ops list; the runtime saves visible conversation separately."
+const memoryWriteDescription = "Deliver your reply and your whole note. " +
+	"Every turn ends with this call and no turn ends without it. The reply is what the person reads; " +
+	"the note is restated in full every turn. The runtime saves visible conversation separately."
 
 // MemoryWriteDescriptor is the reserved tool as the model sees it. Its
 // parameters are ResponseSchema, so what the write carries is the same
@@ -46,76 +44,41 @@ func MemoryWriteDescriptor() tool.Descriptor {
 	}
 }
 
-// ResponseSchema is the JSON Schema the writeback is constrained to
-// (ADR 0018). It is the reserved tool's parameters, and ParseWriteback
-// reads what the model puts in them, so the schema and the parser are
-// one contract and are kept together.
+// MaxNoteLength bounds the note in characters. A note that outgrows it
+// is refused, so the model consolidates it instead of the runtime
+// cutting it.
+const MaxNoteLength = 2000
+
+// ResponseSchema is the JSON Schema the terminal call is constrained to.
+// It is the reserved tool's parameters, and ParseWriteback reads what the
+// model puts in them, so the schema and the parser are one contract and
+// are kept together.
 //
-// Three properties carry the decision. The memory field is required, so
-// a response has no shape in which it is absent and an empty list is an
-// answer the model states rather than a field it omits. The address is
-// the subject and the question the fact answers — not the subject and a
-// topic noun — with the restriction the sentence puts on that question.
-// The operation is nullable, because a statement that narrows its own
-// question gets its own address and declares nothing.
+// The note is a required string the model restates whole every turn, so
+// keeping an instruction is an act the model takes each time. A nullable
+// note that meant "unchanged" was left null on every turn by MiniMax-M2,
+// even after a standing instruction (issue #862's pilot).
 const ResponseSchema = `{
   "type": "object",
   "properties": {
     "reply": {
       "type": "string",
-      "description": "Everything the person reads. The memory field is not shown to them."
+      "description": "Everything the person reads. The note is not shown to them."
     },
-    "memory_ops": {
-      "type": "array",
-      "description": "One entry per fact this turn states. The empty list is an answer, not an omission.",
-      "items": {
-        "type": "object",
-        "properties": {
-          "address": {
-            "type": "object",
-            "description": "Where the fact is held: the question it answers, not the topic it is about.",
-            "properties": {
-              "subject": {
-                "type": "string",
-                "description": "Who or what the fact is about."
-              },
-              "question": {
-                "type": "string",
-                "description": "The question this fact answers, in the statement's own words."
-              },
-              "restriction": {
-                "type": ["string", "null"],
-                "description": "What the statement narrows that question to, in its own words. Null where it narrows nothing."
-              }
-            },
-            "required": ["subject", "question", "restriction"],
-            "additionalProperties": false
-          },
-          "value": {
-            "type": "string",
-            "description": "The answer to that question, stated on its own."
-          },
-          "operation": {
-            "type": ["string", "null"],
-            "enum": ["replace", "join", null],
-            "description": "replace where the value ends what that address holds, join where it stands beside it. Null where the statement answers a question of its own."
-          }
-        },
-        "required": ["address", "value", "operation"],
-        "additionalProperties": false
-      }
+    "note": {
+      "type": "string",
+      "maxLength": 2000,
+      "description": "Your whole note as it stands after this turn: every standing instruction and preference the person has given, and the current work with its goal, constraints, status and next step. Copy it unchanged when nothing in it changed; add what this turn stated."
     }
   },
-  "required": ["reply", "memory_ops"],
+  "required": ["reply", "note"],
   "additionalProperties": false
 }`
 
-// WritebackError reports a memory write that could not be applied. It
-// matches ErrMalformedWriteback via errors.Is. ParseWriteback reports a
-// parse failure as its warn result and a schema violation (a write with
-// no address or no value) as its err result, and the session fails the
-// turn on either — the leniency issue #93 asked for ended when the reply
-// moved into the same call as the facts (issue #615).
+// WritebackError reports terminal-call arguments that are not the
+// document. It matches ErrMalformedWriteback via errors.Is, and the
+// session fails the turn on it: the arguments are the only place the
+// reply arrives (issue #615).
 type WritebackError struct {
 	Err error
 }
@@ -131,113 +94,32 @@ func (e *WritebackError) Unwrap() error { return e.Err }
 // Is reports whether target is ErrMalformedWriteback.
 func (e *WritebackError) Is(target error) bool { return target == ErrMalformedWriteback }
 
-// writebackJSON is the wire shape of a model response: the visible reply
-// and the memory writes the turn states. Restriction is a pointer
-// because a statement that narrows nothing states null; Operation is
-// left undecoded because no JSON value in it may fail the document —
-// whatever it holds that is not a readable declaration joins.
+// writebackJSON is the wire shape of the terminal call: the visible reply
+// and the note, null when unchanged.
 type writebackJSON struct {
-	Reply string `json:"reply"`
-	Ops   []struct {
-		Address struct {
-			Subject     string  `json:"subject"`
-			Question    string  `json:"question"`
-			Restriction *string `json:"restriction"`
-		} `json:"address"`
-		Value     string          `json:"value"`
-		Operation json.RawMessage `json:"operation"`
-	} `json:"memory_ops"`
+	Reply string  `json:"reply"`
+	Note  *string `json:"note"`
 }
 
-// ParseWriteback splits a model response into its visible reply and the
-// memory writes it states. A response with no content at all — the step
-// that only requests tool calls — states nothing and returns no
-// operations; a response that parses returns a non-nil, possibly empty
-// ops slice, so the event stream can tell an empty writeback from a
-// missing one (issue #193). Failures are reported as *WritebackError:
-// parse failures as warn, schema violations as the fatal err.
-func ParseWriteback(content string) (visible string, ops []WritebackOp, warn error, err error) {
-	trimmed := strings.TrimSpace(content)
-	if trimmed == "" {
-		return "", nil, nil, nil
-	}
+// ParseWriteback splits the terminal call's arguments into the visible
+// reply and the note. A note the call leaves out or sends as null leaves
+// the saved one unchanged. Arguments
+// that are not JSON fail with *WritebackError, and a note longer than
+// MaxNoteLength with ErrNoteTooLong, which the session hands back to the
+// model rather than failing the turn.
+func ParseWriteback(content string) (reply string, note *string, err error) {
 	var doc writebackJSON
-	if jsonErr := json.Unmarshal([]byte(trimmed), &doc); jsonErr != nil {
-		parseWarn := &WritebackError{Err: fmt.Errorf("invalid JSON: %s", jsonErrorMessage(jsonErr))}
-		slog.Warn("agent: writeback dropped", "op", "parse_writeback", "reason", parseWarn.Error())
-		return trimmed, nil, parseWarn, nil
+	if jsonErr := json.Unmarshal([]byte(strings.TrimSpace(content)), &doc); jsonErr != nil {
+		return "", nil, &WritebackError{Err: fmt.Errorf("invalid JSON: %s", jsonErrorMessage(jsonErr))}
 	}
-	ops, err = doc.ops()
-	if err != nil {
-		return "", nil, nil, err
-	}
-	return strings.TrimSpace(doc.Reply), ops, nil, nil
-}
-
-// ops turns the decoded response into the writes the sink applies. An
-// address missing its subject or its question cannot be landed on and a
-// write with no value holds nothing, so both are contract violations.
-func (b *writebackJSON) ops() ([]WritebackOp, error) {
-	ops := make([]WritebackOp, 0, len(b.Ops))
-	for _, o := range b.Ops {
-		subject := strings.TrimSpace(o.Address.Subject)
-		question := strings.TrimSpace(o.Address.Question)
-		value := strings.TrimSpace(o.Value)
-		if subject == "" || question == "" || value == "" {
-			return nil, &WritebackError{
-				Err: errors.New("memory op requires a subject, a question and a value"),
-			}
+	if doc.Note != nil {
+		trimmed := strings.TrimSpace(*doc.Note)
+		if n := len([]rune(trimmed)); n > MaxNoteLength {
+			return "", nil, fmt.Errorf("%w: %d characters, at most %d", ErrNoteTooLong, n, MaxNoteLength)
 		}
-		ops = append(ops, WritebackOp{
-			Address: MemoryAddress{
-				Subject:     subject,
-				Question:    question,
-				Restriction: trimPointer(o.Address.Restriction),
-			},
-			Value:     value,
-			Operation: parseOperation(o.Operation),
-		})
+		doc.Note = &trimmed
 	}
-	return ops, nil
-}
-
-// parseOperation reads the operation a write declares. Only "replace"
-// destroys; every other answer — the field absent, null, empty, a word
-// the contract does not name, or a JSON value that is not a string at
-// all — joins (ADR 0018 §Where a writeback must err). Nothing here
-// fails: a declaration the parser cannot read is the case the join
-// default exists for. What was stated and could not be read is logged,
-// because the join it falls back to is otherwise indistinguishable from
-// a declared one.
-func parseOperation(declared json.RawMessage) MemoryOperation {
-	if len(declared) == 0 {
-		return OpJoin
-	}
-	var word string
-	if err := json.Unmarshal(declared, &word); err != nil {
-		slog.Warn("agent: writeback operation unreadable, joined",
-			"op", "parse_writeback", "declared", string(declared))
-		return OpJoin
-	}
-	switch strings.ToLower(strings.TrimSpace(word)) {
-	case string(OpReplace):
-		return OpReplace
-	case string(OpJoin), "":
-		return OpJoin
-	default:
-		slog.Warn("agent: writeback operation unreadable, joined",
-			"op", "parse_writeback", "declared", word)
-		return OpJoin
-	}
-}
-
-// trimPointer returns the trimmed string a pointer holds, or the empty
-// string when it holds none.
-func trimPointer(s *string) string {
-	if s == nil {
-		return ""
-	}
-	return strings.TrimSpace(*s)
+	return strings.TrimSpace(doc.Reply), doc.Note, nil
 }
 
 // jsonErrorMessage returns a model-facing message for a JSON unmarshal

@@ -26,12 +26,19 @@ func TestContract_SourceInspectionAndUnsupportedAnswer(t *testing.T) {
 	assert.Contains(t, contract, "explicit\ncorrection")
 }
 
-func TestContract_TerminalReplyKeepsLegacyFieldInactive(t *testing.T) {
+func TestContract_TerminalCallCarriesReplyAndNote(t *testing.T) {
 	contract := agent.Contract
 	require.Contains(t, contract, "memory_write")
-	assert.Contains(t, contract, "memory_ops")
-	assert.Contains(t, contract, "does not apply addressed operations")
-	assert.Contains(t, contract, "Pass an empty list")
+	assert.Contains(t, contract, "`note`")
+	assert.Contains(t, contract, "copy it\nunchanged when nothing in it changed")
+	assert.Contains(t, contract, "at most 2000 characters")
+	assert.NotContains(t, contract, "memory_ops")
+}
+
+func TestContract_SearchResolvesReferences(t *testing.T) {
+	contract := agent.Contract
+	assert.Contains(t, contract, "memory_search")
+	assert.Contains(t, contract, "standalone query")
 }
 
 func TestContract_ToolAndFailureGuidanceRemain(t *testing.T) {

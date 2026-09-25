@@ -3,6 +3,7 @@ package memory_test
 import (
 	"context"
 	"encoding/json"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -12,8 +13,25 @@ import (
 	"github.com/garamsh/sherlock/internal/agent"
 	agentmemory "github.com/garamsh/sherlock/internal/agent/memory"
 	"github.com/garamsh/sherlock/internal/memory"
+	"github.com/garamsh/sherlock/internal/memory/sqlite"
 	"github.com/garamsh/sherlock/internal/tool"
 )
+
+func telescopeAddress() memory.Address {
+	return memory.Address{
+		Subject:  "user",
+		Question: "what is the user's favorite telescope",
+	}
+}
+
+func newMemoryService(t *testing.T) memory.Service {
+	t.Helper()
+	st, err := sqlite.Open(filepath.Join(t.TempDir(), "memory.db"))
+	require.NoError(t, err)
+	svc := memory.NewService(st)
+	t.Cleanup(func() { assert.NoError(t, svc.Close()) })
+	return svc
+}
 
 // resolvingModel answers the read step's one call with a scripted
 // address, and records what it was shown.

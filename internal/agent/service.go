@@ -3,6 +3,7 @@ package agent
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log/slog"
 
@@ -48,18 +49,6 @@ type Recaller interface {
 	Recall(ctx context.Context, task string) (Recalled, error)
 }
 
-// WritebackSink receives the memory operations the turn ended with. A
-// nil sink means ops are discarded.
-//
-// It returns no coherence set. ADR 0006 step 5 showed the model the
-// memories most similar to what it had just written, which #582 removed
-// from the shipped sink when the address made similarity decide nothing;
-// a turn now ends on the writeback, so there is no later call within it
-// that could have read one.
-type WritebackSink interface {
-	Apply(ctx context.Context, ops []WritebackOp) error
-}
-
 // EventSink receives loop events in emission order. Nil means events are
 // discarded.
 type EventSink interface {
@@ -88,7 +77,6 @@ type Session interface {
 // Options wires the session's hook points. Nil interfaces are no-ops.
 type Options struct {
 	Recaller       Recaller
-	Writeback      WritebackSink
 	Events         EventSink
 	Compactor      Compactor
 	Conversation   ConversationMemory
@@ -108,8 +96,8 @@ type session struct {
 	model Model
 	tools ToolClient
 	opts  Options
-	// instructions is the composed ego + contract, injected once as the
-	// first system message of a fresh session.
+	// instructions is the composed ego + contract; lead puts it, with
+	// the saved note, at the head of history every turn.
 	instructions string
 	history      []Message
 	sources      []SourceMessage
@@ -168,8 +156,8 @@ func (s *session) Run(ctx context.Context, task string) (response string, err er
 		}
 	}()
 
-	if len(s.history) == 0 || s.history[0].Role != RoleSystem {
-		s.history = append([]Message{{Role: RoleSystem, Content: s.instructions}}, s.history...)
+	if err := s.lead(ctx); err != nil {
+		return "", err
 	}
 	recalled, err := s.recall(ctx, task)
 	if err != nil {
@@ -190,7 +178,21 @@ func (s *session) Run(ctx context.Context, task string) (response string, err er
 		}
 		write, calls := splitWriteback(resp.ToolCalls)
 		if write != nil {
-			return s.finish(ctx, *write)
+			reply, note, err := ParseWriteback(string(write.Input))
+			if errors.Is(err, ErrNoteTooLong) {
+				// The reply is not lost to an overgrown note: the call
+				// gets its refusal as a result and the model asks again.
+				s.emit(ctx, Event{Kind: EventWritebackError, Turn: s.turn, Error: err.Error()})
+				s.history = append(s.history,
+					Message{Role: RoleAssistant, Content: resp.Content, ToolCalls: []ToolCall{*write}},
+					Message{Role: RoleTool, Name: write.Name, ToolCallID: write.ID, Content: err.Error() + "; shorten the note and call " + MemoryWriteTool + " again"},
+				)
+				continue
+			}
+			if err != nil {
+				return "", err
+			}
+			return s.finish(ctx, reply, note)
 		}
 		s.history = append(s.history, Message{
 			Role:      RoleAssistant,
@@ -223,7 +225,7 @@ func (s *session) modelTools() []tool.Descriptor {
 	installed := s.tools.List()
 	out := make([]tool.Descriptor, 0, len(installed)+2)
 	for _, d := range installed {
-		if d.Name == MemoryWriteTool || d.Name == MemoryInspectTool {
+		if d.Name == MemoryWriteTool || d.Name == MemoryInspectTool || d.Name == MemorySearchTool {
 			// An operator tool cannot take the reserved name: the
 			// session would route its calls to the writeback and the
 			// operator's tool would never run. Dropping it is visible
@@ -236,7 +238,7 @@ func (s *session) modelTools() []tool.Descriptor {
 	}
 	out = append(out, MemoryWriteDescriptor())
 	if s.opts.Conversation != nil {
-		out = append(out, MemoryInspectDescriptor())
+		out = append(out, MemoryInspectDescriptor(), MemorySearchDescriptor())
 	}
 	return out
 }
@@ -261,35 +263,29 @@ func splitWriteback(calls []ToolCall) (*ToolCall, []ToolCall) {
 	return write, rest
 }
 
-// finish applies the writeback the model ended the turn with and returns
-// its reply. A writeback whose arguments are not the document is fatal
-// here where a malformed response was once a warn: the arguments are the
-// only place the turn's reply and its facts arrive, so there is nothing
-// to hand back and nothing to store (issue #615).
+// finish records the turn the model ended with its reply and note.
 // A turn's history keeps the reply rather than the call that carried
 // it. The writeback call is the turn's last act and nothing answers it,
 // so leaving it in history leaves a tool call with no result — which a
 // provider rejects on the next turn, and did: MiniMax returns HTTP 400
 // "tool call result does not follow tool call" on the turn after the
 // first, which made a rolling session unusable past turn one (#630).
-func (s *session) finish(ctx context.Context, call ToolCall) (string, error) {
-	reply, ops, parseWarn, err := ParseWriteback(string(call.Input))
-	if err != nil {
-		return "", err
-	}
+//
+// The sources are saved before the note, so a failed note write leaves
+// the turn's conversation durable and the previous note in place.
+func (s *session) finish(ctx context.Context, reply string, note *string) (string, error) {
 	s.history = append(s.history, Message{Role: RoleAssistant, Content: reply})
-	if parseWarn != nil {
-		s.emit(ctx, Event{Kind: EventWritebackError, Turn: s.turn, Error: parseWarn.Error()})
-		return "", parseWarn
-	}
-	if err := s.applyWriteback(ctx, ops); err != nil {
-		return "", err
-	}
 	if s.opts.Conversation != nil {
 		if err := s.opts.Conversation.RecordTurn(ctx, append(append([]SourceMessage(nil), s.sources...), SourceMessage{Role: RoleAssistant, Content: reply}), s.opts.Summarizer); err != nil {
 			return "", fmt.Errorf("record conversation: %w", err)
 		}
+		if note != nil {
+			if err := s.opts.Conversation.SetNote(ctx, *note); err != nil {
+				return "", fmt.Errorf("save note: %w", err)
+			}
+		}
 	}
+	s.emit(ctx, Event{Kind: EventWriteback, Turn: s.turn, Note: note})
 	s.emit(ctx, Event{Kind: EventTurnFinished, Turn: s.turn, Response: reply})
 	return reply, nil
 }
@@ -299,7 +295,7 @@ func (s *session) finish(ctx context.Context, call ToolCall) (string, error) {
 // descriptor already carries.
 func writebackRequiredNotice() string {
 	return "Your turn is not finished. Call " + MemoryWriteTool +
-		" with your reply and the facts this turn stated; the empty list is a valid answer."
+		" with your reply, and your note or null when it did not change."
 }
 
 // execute runs one tool call through the protocol client and feeds the
@@ -351,6 +347,13 @@ func (s *session) execute(ctx context.Context, call ToolCall) {
 func (s *session) invoke(ctx context.Context, call ToolCall) (string, bool) {
 	if call.Name == MemoryInspectTool && s.opts.Conversation != nil {
 		out, err := inspectMemory(ctx, s.opts.Conversation, call.Input)
+		if err != nil {
+			return err.Error(), true
+		}
+		return out, false
+	}
+	if call.Name == MemorySearchTool && s.opts.Conversation != nil {
+		out, err := searchMemory(ctx, s.opts.Conversation, call.Input)
 		if err != nil {
 			return err.Error(), true
 		}
@@ -420,18 +423,34 @@ func (s *session) recall(ctx context.Context, task string) (Recalled, error) {
 	return recalled, nil
 }
 
-// applyWriteback applies the parsed ops the turn ended with. The
-// coherence set the sink returns is no longer read: a turn ends on the
-// writeback, so there is no later model call in it to judge one, and
-// #582 already left the shipped sink returning none.
-func (s *session) applyWriteback(ctx context.Context, ops []WritebackOp) error {
-	if s.opts.Writeback != nil {
-		if err := s.opts.Writeback.Apply(ctx, ops); err != nil {
-			return fmt.Errorf("writeback: %w", err)
+// lead puts the instructions, followed by the saved note, at the head of
+// history. It runs every turn, because the note can change between turns
+// and a restored or compacted history must not keep a stale one.
+func (s *session) lead(ctx context.Context) error {
+	content := s.instructions
+	if s.opts.Conversation != nil {
+		note, err := s.opts.Conversation.Note(ctx)
+		if err != nil {
+			return fmt.Errorf("read note: %w", err)
 		}
+		content += noteSection(note)
 	}
-	s.emit(ctx, Event{Kind: EventWriteback, Turn: s.turn, Ops: ops})
+	if len(s.history) > 0 && s.history[0].Role == RoleSystem {
+		s.history[0].Content = content
+		return nil
+	}
+	s.history = append([]Message{{Role: RoleSystem, Content: content}}, s.history...)
 	return nil
+}
+
+// noteSection renders the saved note under the instructions, stating an
+// empty note apart so the model knows it has none rather than that it is
+// missing.
+func noteSection(note string) string {
+	if note == "" {
+		return "\n\n## Your note\n(empty)"
+	}
+	return "\n\n## Your note\n" + note
 }
 
 func (s *session) compact(ctx context.Context) error {

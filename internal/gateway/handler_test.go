@@ -255,11 +255,10 @@ func TestServer_EventsStreamsTurnFailed(t *testing.T) {
 	assert.Contains(t, terminal["error"], "model chat")
 }
 
-// TestServer_EventsWritebackOpsDistinguishable pins the issue #193
-// observability fix: the writeback event always carries an ops field, so
-// an empty memory list (`[]`) is distinguishable from a missing one
-// (`null`) in the monitoring stream.
-func TestServer_EventsWritebackOpsDistinguishable(t *testing.T) {
+// TestServer_EventsWritebackNoteDistinguishable pins what the monitoring
+// stream says about the note: a cleared note arrives as an empty string,
+// and an unchanged one carries no note field at all.
+func TestServer_EventsWritebackNoteDistinguishable(t *testing.T) {
 	srv := newTestServer(t, func(_ string, events agent.EventSink) (*gateway.Runtime, error) {
 		return &gateway.Runtime{
 			Session: &writebackSession{events: events},
@@ -273,47 +272,45 @@ func TestServer_EventsWritebackOpsDistinguishable(t *testing.T) {
 	resp.Body.Close()
 	require.Equal(t, http.StatusAccepted, resp.StatusCode)
 
-	empty, missing := readWritebackEvents(t, received)
-	assert.Equal(t, []any{}, empty["ops"],
-		"an empty memory list serializes as an empty ops array")
-	assert.Nil(t, missing["ops"],
-		"a missing memory block serializes as null")
+	cleared, unchanged := readWritebackEvents(t, received)
+	assert.Equal(t, "", cleared["note"], "a cleared note serializes as an empty string")
+	_, present := unchanged["note"]
+	assert.False(t, present, "an unchanged note carries no note field")
 }
 
-// readWritebackEvents drains events until the empty-block and
-// missing-block writeback events have both arrived.
-func readWritebackEvents(t *testing.T, received <-chan map[string]any) (empty, missing map[string]any) {
+// readWritebackEvents drains events until the cleared-note and
+// unchanged-note writeback events have both arrived.
+func readWritebackEvents(t *testing.T, received <-chan map[string]any) (cleared, unchanged map[string]any) {
 	t.Helper()
 	deadline := time.After(5 * time.Second)
-	for empty == nil || missing == nil {
+	for cleared == nil || unchanged == nil {
 		select {
 		case e := <-received:
 			if e["kind"] != string(agent.EventWriteback) {
 				continue
 			}
-			ops, present := e["ops"]
-			require.True(t, present, "the writeback event always carries ops")
-			if ops == nil {
-				missing = e
+			if _, present := e["note"]; present {
+				cleared = e
 			} else {
-				empty = e
+				unchanged = e
 			}
 		case <-deadline:
 			t.Fatal("timed out waiting for both writeback events")
 		}
 	}
-	return empty, missing
+	return cleared, unchanged
 }
 
 // writebackSession emits the two writeback shapes a real session
-// produces: an empty parsed block and a missing block.
+// produces: a note saved as empty, and a note left unchanged.
 type writebackSession struct {
 	events agent.EventSink
 }
 
 func (s *writebackSession) Run(ctx context.Context, task string) (string, error) {
+	empty := ""
 	s.events.Emit(ctx, agent.Event{Kind: agent.EventTurnStarted, Turn: 1, Task: task})
-	s.events.Emit(ctx, agent.Event{Kind: agent.EventWriteback, Turn: 1, Ops: []agent.WritebackOp{}})
+	s.events.Emit(ctx, agent.Event{Kind: agent.EventWriteback, Turn: 1, Note: &empty})
 	s.events.Emit(ctx, agent.Event{Kind: agent.EventWriteback, Turn: 1})
 	s.events.Emit(ctx, agent.Event{Kind: agent.EventTurnFinished, Turn: 1, Response: "done"})
 	return "done", nil

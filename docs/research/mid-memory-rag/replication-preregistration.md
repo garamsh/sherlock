@@ -111,3 +111,13 @@ Per family and primary:
 - The power simulation above.
 - The unit tests.
 - A no-network dry run of `assemble`, `rank` and the scorer on synthetic stand-in items: templated sentences and a 15-word vocabulary, written only to crash-test the pipeline. It is not kept as evidence, and no measured corpus existed then.
+
+## Amendment 1, before any conversation or retrieval
+
+Committed after the design phase and its deterministic item checks, and before any conversation call. No chat, summary or ranking of the replication corpus existed at the time.
+
+- The item checks passed exact 73 of 90, paraphrase 68 of 130, implicit 67 of 160, correction 73 of 90, and absent 33 of 40. That leaves paraphrase and implicit below 70 before any chat-level check, and no family with the margin those checks need.
+- A supplementary design round is added: exact 40, paraphrase 80, implicit 100, correction 40, absent 10 items. It uses the same prompts, with domains drawn by seed 866, and its calls are appended after the original calls. Every original item keeps its place in design order, so the round can only add candidates after them.
+- The conversation caps become exact 100, paraphrase 100, implicit 100, correction 100, absent 38, filler 140.
+- Nothing else changes: checks, selection, arms, controls, power and the decision rule stay as preregistered.
+

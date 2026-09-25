@@ -18,7 +18,9 @@ PRIMARY = ['exact', 'paraphrase', 'implicit', 'correction']
 PER_FAMILY, ABSENT = 70, 30
 DESIGN_ITEMS = {'exact': 90, 'paraphrase': 130, 'implicit': 160, 'correction': 90, 'absent': 40}
 # Chats are written for the first passing items only; selection order makes a later raise change nothing earlier.
-CONVERSE_CAP = {'exact': 84, 'paraphrase': 98, 'implicit': 105, 'correction': 84, 'absent': 36, 'filler': 140}
+CONVERSE_CAP = {'exact': 100, 'paraphrase': 100, 'implicit': 100, 'correction': 100, 'absent': 38, 'filler': 140}
+# Amendment 1: a supplementary round with the same prompts, appended after the original calls.
+SUPPLEMENT_ITEMS = {'exact': 40, 'paraphrase': 80, 'implicit': 100, 'correction': 40, 'absent': 10}
 FILLER_TOPICS = 240
 ITEMS_PER_CALL = 10
 BATCHES = [4, 8, 16]
@@ -196,6 +198,11 @@ def design_calls():
     for i in range(FILLER_TOPICS // 20):
         calls.append((f'filler-{i:02d}', 'filler', 'filler', DOMAINS[i % len(DOMAINS)] + ' and ' +
                       DOMAINS[(i * 7 + 3) % len(DOMAINS)]))
+    supplement = random.Random(SEED + 10)
+    for family, count in SUPPLEMENT_ITEMS.items():
+        kind = {'exact': 'fact', 'paraphrase': 'fact'}.get(family, family)
+        for i in range(count // ITEMS_PER_CALL):
+            calls.append((f'{family}-s{i:02d}', family, kind, supplement.choice(DOMAINS)))
     return calls
 
 

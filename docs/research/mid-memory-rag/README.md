@@ -155,13 +155,21 @@ The #854 sections above are unchanged, and their evidence files are byte-identic
 
 ### Method
 
-- **Revisions.** Source revision `2b27bac` (origin/dev, #855 merged). The preregistration was committed and pushed as `45c0d91` before the run's first paid call, the embedding probe. Four amendments were each committed before the calls they govern:
+- **Revisions.** Source revision `2b27bac` (origin/dev, #855 merged). The preregistration was committed and pushed as `45c0d91` before the run's first paid call, the embedding probe. Four amendments were committed before any response they govern was used:
   - `e731c8e` added a supplementary design round;
   - `cb05702` narrowed the leak rule and added paraphrase supply;
   - `4d26d7c` applied the leak test to filler;
-  - `a587211` raised the ceiling from USD 2.90 to 2.99, reordered the n = 16 synthesis, and fixed the phrase decode.
+  - `a587211` (17:48:06Z) raised the ceiling from USD 2.90 to 2.99, reordered the n = 16 synthesis, and fixed the phrase decode.
 
-  The corpus was frozen in `d1e7fab` before any synthesis. No ranking, and no score on the replication corpus, existed before any of these commits. The amendments were prompted only by counts from design and assembly, and by spend.
+  `a587211` does not precede all n = 16 synthesis. Four n = 16 requests, for batches 1 to 4, started at 17:40:34Z and were stopped in flight with no recorded response. They are charged at reservation (USD 0.0166). The same batches were re-requested at 17:48:20Z, and only those responses are used.
+
+  The corpus was frozen in `d1e7fab` before any synthesis. No ranking and no score of the replication corpus existed before any of the four amendments. The amendments were prompted only by counts from design and assembly, and by spend.
+
+  After all collection ended, the harness commit `5b827a7` (18:10:36Z) changed how the n = 8 store is replayed: the batch is handed over redacted, as production stores it (the Synthesis bullet below). Two `rank` runs of the replication corpus came before that commit:
+  - The first, before the change, stopped in the store build at batch 56, when the replay check refused the unredacted batch. It wrote no `rankings.json` and no score.
+  - The second ran the working tree that `5b827a7` then committed, unchanged in `replication.py`. It wrote the committed `rankings.json` at 18:07:18Z, and `replication_score.py` then produced the primary counts reported below.
+
+  So the only ranking and score of the replication corpus are the ones reported; there is no earlier count to set beside them. `5b827a7`'s other changes are in `replication_score.py` and add only the cost fields and the power-at-ψ option. The #857 review's independent `rank` at `0e19b36` reproduced the committed `rankings.json`, timing fields aside.
 - **Runtime and models.** Go 1.26.5, Python 3.13.5, uv 0.12.13 with `fastembed==0.7.3`. Chat model `MiniMax-M2` for design, conversations, synthesis and phrase calls. Embedder `BAAI/bge-base-en-v1.5`, as in #854. The [embo-01 probe](evidence/replication/embedding-probe.json) again got `base_resp.status_code` 1002, `rate limit exceeded(RPM)`, with no vectors.
 - **Corpus.** The model designed 880 items, of which 506 passed the item checks, and 240 filler topics. It then wrote 839 chats in their own topics, with the evidence sentence said by the user inside a longer message. 79 chats were rejected three times, all for wrong length.
   - [`replication.py assemble`](replication.py) selected, deterministically, 70 each of exact, paraphrase, implicit and correction, plus 30 absent. 18 items were banned for restating another selected item. 115 filler chats and one authored closing chat fill a 4,800-message stream of 496 chats ([assembly](evidence/replication/assembly.json), [corpus](evidence/replication/corpus.json), [queries](evidence/replication/queries.json)).

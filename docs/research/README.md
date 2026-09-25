@@ -11,6 +11,7 @@ Research records the questions, methods, evidence, conclusions, and limits behin
 - [Memory frames](memory-frames/README.md) — memory structures measured over a decade of turns.
 - [Memory read policy](memory-read-policy/README.md) — direct, rewritten and iterative retrieval on two implicit tasks and exact/absent controls; source inspection and application remain limiting.
 - [Memory retrieval](memory-retrieval/README.md) — retrieval and supersession behavior of the former store.
+- [Mid-memory retrieval](mid-memory-rag/README.md) — shipped phrase-call FTS recall against separate embedding-similarity and recency lists over 300 synthesized mids; 29 against 27 of 40 primary queries, undetermined at p = 0.69, and adoption grows the code.
 - [Mutation survey](mutation-survey/README.md) — behavior that the repository's tests did or did not catch.
 - [Recall specificity](recall-specificity/README.md) — the former agent's answers to questions at three levels of specificity.
 - [Task continuation](task-continuation/README.md) — continuation across live history, process restart, and artifacts alone.

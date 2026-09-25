@@ -1,0 +1,12726 @@
+{
+ "controls": {
+  "real_store": {
+   "oracle_sample": [
+    18,
+    35,
+    48,
+    56,
+    72,
+    74,
+    86,
+    118,
+    129,
+    151,
+    152,
+    160,
+    162,
+    197,
+    207,
+    215,
+    250,
+    265,
+    275,
+    289
+   ],
+   "oracle_reach": {
+    "A": 20,
+    "A0": 20,
+    "B": 20,
+    "C": 20,
+    "D": 20
+   },
+   "similarity_top2_equals_recency": 0,
+   "distinct_similarity_top1": 46,
+   "queries": 55
+  }
+ },
+ "recent": [
+  300,
+  299
+ ],
+ "mids": [
+  {
+   "ID": 1,
+   "SourceFirst": 1,
+   "SourceLast": 8
+  },
+  {
+   "ID": 2,
+   "SourceFirst": 9,
+   "SourceLast": 16
+  },
+  {
+   "ID": 3,
+   "SourceFirst": 17,
+   "SourceLast": 24
+  },
+  {
+   "ID": 4,
+   "SourceFirst": 25,
+   "SourceLast": 32
+  },
+  {
+   "ID": 5,
+   "SourceFirst": 33,
+   "SourceLast": 40
+  },
+  {
+   "ID": 6,
+   "SourceFirst": 41,
+   "SourceLast": 48
+  },
+  {
+   "ID": 7,
+   "SourceFirst": 49,
+   "SourceLast": 56
+  },
+  {
+   "ID": 8,
+   "SourceFirst": 57,
+   "SourceLast": 64
+  },
+  {
+   "ID": 9,
+   "SourceFirst": 65,
+   "SourceLast": 72
+  },
+  {
+   "ID": 10,
+   "SourceFirst": 73,
+   "SourceLast": 80
+  },
+  {
+   "ID": 11,
+   "SourceFirst": 81,
+   "SourceLast": 88
+  },
+  {
+   "ID": 12,
+   "SourceFirst": 89,
+   "SourceLast": 96
+  },
+  {
+   "ID": 13,
+   "SourceFirst": 97,
+   "SourceLast": 104
+  },
+  {
+   "ID": 14,
+   "SourceFirst": 105,
+   "SourceLast": 112
+  },
+  {
+   "ID": 15,
+   "SourceFirst": 113,
+   "SourceLast": 120
+  },
+  {
+   "ID": 16,
+   "SourceFirst": 121,
+   "SourceLast": 128
+  },
+  {
+   "ID": 17,
+   "SourceFirst": 129,
+   "SourceLast": 136
+  },
+  {
+   "ID": 18,
+   "SourceFirst": 137,
+   "SourceLast": 144
+  },
+  {
+   "ID": 19,
+   "SourceFirst": 145,
+   "SourceLast": 152
+  },
+  {
+   "ID": 20,
+   "SourceFirst": 153,
+   "SourceLast": 160
+  },
+  {
+   "ID": 21,
+   "SourceFirst": 161,
+   "SourceLast": 168
+  },
+  {
+   "ID": 22,
+   "SourceFirst": 169,
+   "SourceLast": 176
+  },
+  {
+   "ID": 23,
+   "SourceFirst": 177,
+   "SourceLast": 184
+  },
+  {
+   "ID": 24,
+   "SourceFirst": 185,
+   "SourceLast": 192
+  },
+  {
+   "ID": 25,
+   "SourceFirst": 193,
+   "SourceLast": 200
+  },
+  {
+   "ID": 26,
+   "SourceFirst": 201,
+   "SourceLast": 208
+  },
+  {
+   "ID": 27,
+   "SourceFirst": 209,
+   "SourceLast": 216
+  },
+  {
+   "ID": 28,
+   "SourceFirst": 217,
+   "SourceLast": 224
+  },
+  {
+   "ID": 29,
+   "SourceFirst": 225,
+   "SourceLast": 232
+  },
+  {
+   "ID": 30,
+   "SourceFirst": 233,
+   "SourceLast": 240
+  },
+  {
+   "ID": 31,
+   "SourceFirst": 241,
+   "SourceLast": 248
+  },
+  {
+   "ID": 32,
+   "SourceFirst": 249,
+   "SourceLast": 256
+  },
+  {
+   "ID": 33,
+   "SourceFirst": 257,
+   "SourceLast": 264
+  },
+  {
+   "ID": 34,
+   "SourceFirst": 265,
+   "SourceLast": 272
+  },
+  {
+   "ID": 35,
+   "SourceFirst": 273,
+   "SourceLast": 280
+  },
+  {
+   "ID": 36,
+   "SourceFirst": 281,
+   "SourceLast": 288
+  },
+  {
+   "ID": 37,
+   "SourceFirst": 289,
+   "SourceLast": 296
+  },
+  {
+   "ID": 38,
+   "SourceFirst": 297,
+   "SourceLast": 304
+  },
+  {
+   "ID": 39,
+   "SourceFirst": 305,
+   "SourceLast": 312
+  },
+  {
+   "ID": 40,
+   "SourceFirst": 313,
+   "SourceLast": 320
+  },
+  {
+   "ID": 41,
+   "SourceFirst": 321,
+   "SourceLast": 328
+  },
+  {
+   "ID": 42,
+   "SourceFirst": 329,
+   "SourceLast": 336
+  },
+  {
+   "ID": 43,
+   "SourceFirst": 337,
+   "SourceLast": 344
+  },
+  {
+   "ID": 44,
+   "SourceFirst": 345,
+   "SourceLast": 352
+  },
+  {
+   "ID": 45,
+   "SourceFirst": 353,
+   "SourceLast": 360
+  },
+  {
+   "ID": 46,
+   "SourceFirst": 361,
+   "SourceLast": 368
+  },
+  {
+   "ID": 47,
+   "SourceFirst": 369,
+   "SourceLast": 376
+  },
+  {
+   "ID": 48,
+   "SourceFirst": 377,
+   "SourceLast": 384
+  },
+  {
+   "ID": 49,
+   "SourceFirst": 385,
+   "SourceLast": 392
+  },
+  {
+   "ID": 50,
+   "SourceFirst": 393,
+   "SourceLast": 400
+  },
+  {
+   "ID": 51,
+   "SourceFirst": 401,
+   "SourceLast": 408
+  },
+  {
+   "ID": 52,
+   "SourceFirst": 409,
+   "SourceLast": 416
+  },
+  {
+   "ID": 53,
+   "SourceFirst": 417,
+   "SourceLast": 424
+  },
+  {
+   "ID": 54,
+   "SourceFirst": 425,
+   "SourceLast": 432
+  },
+  {
+   "ID": 55,
+   "SourceFirst": 433,
+   "SourceLast": 440
+  },
+  {
+   "ID": 56,
+   "SourceFirst": 441,
+   "SourceLast": 448
+  },
+  {
+   "ID": 57,
+   "SourceFirst": 449,
+   "SourceLast": 456
+  },
+  {
+   "ID": 58,
+   "SourceFirst": 457,
+   "SourceLast": 464
+  },
+  {
+   "ID": 59,
+   "SourceFirst": 465,
+   "SourceLast": 472
+  },
+  {
+   "ID": 60,
+   "SourceFirst": 473,
+   "SourceLast": 480
+  },
+  {
+   "ID": 61,
+   "SourceFirst": 481,
+   "SourceLast": 488
+  },
+  {
+   "ID": 62,
+   "SourceFirst": 489,
+   "SourceLast": 496
+  },
+  {
+   "ID": 63,
+   "SourceFirst": 497,
+   "SourceLast": 504
+  },
+  {
+   "ID": 64,
+   "SourceFirst": 505,
+   "SourceLast": 512
+  },
+  {
+   "ID": 65,
+   "SourceFirst": 513,
+   "SourceLast": 520
+  },
+  {
+   "ID": 66,
+   "SourceFirst": 521,
+   "SourceLast": 528
+  },
+  {
+   "ID": 67,
+   "SourceFirst": 529,
+   "SourceLast": 536
+  },
+  {
+   "ID": 68,
+   "SourceFirst": 537,
+   "SourceLast": 544
+  },
+  {
+   "ID": 69,
+   "SourceFirst": 545,
+   "SourceLast": 552
+  },
+  {
+   "ID": 70,
+   "SourceFirst": 553,
+   "SourceLast": 560
+  },
+  {
+   "ID": 71,
+   "SourceFirst": 561,
+   "SourceLast": 568
+  },
+  {
+   "ID": 72,
+   "SourceFirst": 569,
+   "SourceLast": 576
+  },
+  {
+   "ID": 73,
+   "SourceFirst": 577,
+   "SourceLast": 584
+  },
+  {
+   "ID": 74,
+   "SourceFirst": 585,
+   "SourceLast": 592
+  },
+  {
+   "ID": 75,
+   "SourceFirst": 593,
+   "SourceLast": 600
+  },
+  {
+   "ID": 76,
+   "SourceFirst": 601,
+   "SourceLast": 608
+  },
+  {
+   "ID": 77,
+   "SourceFirst": 609,
+   "SourceLast": 616
+  },
+  {
+   "ID": 78,
+   "SourceFirst": 617,
+   "SourceLast": 624
+  },
+  {
+   "ID": 79,
+   "SourceFirst": 625,
+   "SourceLast": 632
+  },
+  {
+   "ID": 80,
+   "SourceFirst": 633,
+   "SourceLast": 640
+  },
+  {
+   "ID": 81,
+   "SourceFirst": 641,
+   "SourceLast": 648
+  },
+  {
+   "ID": 82,
+   "SourceFirst": 649,
+   "SourceLast": 656
+  },
+  {
+   "ID": 83,
+   "SourceFirst": 657,
+   "SourceLast": 664
+  },
+  {
+   "ID": 84,
+   "SourceFirst": 665,
+   "SourceLast": 672
+  },
+  {
+   "ID": 85,
+   "SourceFirst": 673,
+   "SourceLast": 680
+  },
+  {
+   "ID": 86,
+   "SourceFirst": 681,
+   "SourceLast": 688
+  },
+  {
+   "ID": 87,
+   "SourceFirst": 689,
+   "SourceLast": 696
+  },
+  {
+   "ID": 88,
+   "SourceFirst": 697,
+   "SourceLast": 704
+  },
+  {
+   "ID": 89,
+   "SourceFirst": 705,
+   "SourceLast": 712
+  },
+  {
+   "ID": 90,
+   "SourceFirst": 713,
+   "SourceLast": 720
+  },
+  {
+   "ID": 91,
+   "SourceFirst": 721,
+   "SourceLast": 728
+  },
+  {
+   "ID": 92,
+   "SourceFirst": 729,
+   "SourceLast": 736
+  },
+  {
+   "ID": 93,
+   "SourceFirst": 737,
+   "SourceLast": 744
+  },
+  {
+   "ID": 94,
+   "SourceFirst": 745,
+   "SourceLast": 752
+  },
+  {
+   "ID": 95,
+   "SourceFirst": 753,
+   "SourceLast": 760
+  },
+  {
+   "ID": 96,
+   "SourceFirst": 761,
+   "SourceLast": 768
+  },
+  {
+   "ID": 97,
+   "SourceFirst": 769,
+   "SourceLast": 776
+  },
+  {
+   "ID": 98,
+   "SourceFirst": 777,
+   "SourceLast": 784
+  },
+  {
+   "ID": 99,
+   "SourceFirst": 785,
+   "SourceLast": 792
+  },
+  {
+   "ID": 100,
+   "SourceFirst": 793,
+   "SourceLast": 800
+  },
+  {
+   "ID": 101,
+   "SourceFirst": 801,
+   "SourceLast": 808
+  },
+  {
+   "ID": 102,
+   "SourceFirst": 809,
+   "SourceLast": 816
+  },
+  {
+   "ID": 103,
+   "SourceFirst": 817,
+   "SourceLast": 824
+  },
+  {
+   "ID": 104,
+   "SourceFirst": 825,
+   "SourceLast": 832
+  },
+  {
+   "ID": 105,
+   "SourceFirst": 833,
+   "SourceLast": 840
+  },
+  {
+   "ID": 106,
+   "SourceFirst": 841,
+   "SourceLast": 848
+  },
+  {
+   "ID": 107,
+   "SourceFirst": 849,
+   "SourceLast": 856
+  },
+  {
+   "ID": 108,
+   "SourceFirst": 857,
+   "SourceLast": 864
+  },
+  {
+   "ID": 109,
+   "SourceFirst": 865,
+   "SourceLast": 872
+  },
+  {
+   "ID": 110,
+   "SourceFirst": 873,
+   "SourceLast": 880
+  },
+  {
+   "ID": 111,
+   "SourceFirst": 881,
+   "SourceLast": 888
+  },
+  {
+   "ID": 112,
+   "SourceFirst": 889,
+   "SourceLast": 896
+  },
+  {
+   "ID": 113,
+   "SourceFirst": 897,
+   "SourceLast": 904
+  },
+  {
+   "ID": 114,
+   "SourceFirst": 905,
+   "SourceLast": 912
+  },
+  {
+   "ID": 115,
+   "SourceFirst": 913,
+   "SourceLast": 920
+  },
+  {
+   "ID": 116,
+   "SourceFirst": 921,
+   "SourceLast": 928
+  },
+  {
+   "ID": 117,
+   "SourceFirst": 929,
+   "SourceLast": 936
+  },
+  {
+   "ID": 118,
+   "SourceFirst": 937,
+   "SourceLast": 944
+  },
+  {
+   "ID": 119,
+   "SourceFirst": 945,
+   "SourceLast": 952
+  },
+  {
+   "ID": 120,
+   "SourceFirst": 953,
+   "SourceLast": 960
+  },
+  {
+   "ID": 121,
+   "SourceFirst": 961,
+   "SourceLast": 968
+  },
+  {
+   "ID": 122,
+   "SourceFirst": 969,
+   "SourceLast": 976
+  },
+  {
+   "ID": 123,
+   "SourceFirst": 977,
+   "SourceLast": 984
+  },
+  {
+   "ID": 124,
+   "SourceFirst": 985,
+   "SourceLast": 992
+  },
+  {
+   "ID": 125,
+   "SourceFirst": 993,
+   "SourceLast": 1000
+  },
+  {
+   "ID": 126,
+   "SourceFirst": 1001,
+   "SourceLast": 1008
+  },
+  {
+   "ID": 127,
+   "SourceFirst": 1009,
+   "SourceLast": 1016
+  },
+  {
+   "ID": 128,
+   "SourceFirst": 1017,
+   "SourceLast": 1024
+  },
+  {
+   "ID": 129,
+   "SourceFirst": 1025,
+   "SourceLast": 1032
+  },
+  {
+   "ID": 130,
+   "SourceFirst": 1033,
+   "SourceLast": 1040
+  },
+  {
+   "ID": 131,
+   "SourceFirst": 1041,
+   "SourceLast": 1048
+  },
+  {
+   "ID": 132,
+   "SourceFirst": 1049,
+   "SourceLast": 1056
+  },
+  {
+   "ID": 133,
+   "SourceFirst": 1057,
+   "SourceLast": 1064
+  },
+  {
+   "ID": 134,
+   "SourceFirst": 1065,
+   "SourceLast": 1072
+  },
+  {
+   "ID": 135,
+   "SourceFirst": 1073,
+   "SourceLast": 1080
+  },
+  {
+   "ID": 136,
+   "SourceFirst": 1081,
+   "SourceLast": 1088
+  },
+  {
+   "ID": 137,
+   "SourceFirst": 1089,
+   "SourceLast": 1096
+  },
+  {
+   "ID": 138,
+   "SourceFirst": 1097,
+   "SourceLast": 1104
+  },
+  {
+   "ID": 139,
+   "SourceFirst": 1105,
+   "SourceLast": 1112
+  },
+  {
+   "ID": 140,
+   "SourceFirst": 1113,
+   "SourceLast": 1120
+  },
+  {
+   "ID": 141,
+   "SourceFirst": 1121,
+   "SourceLast": 1128
+  },
+  {
+   "ID": 142,
+   "SourceFirst": 1129,
+   "SourceLast": 1136
+  },
+  {
+   "ID": 143,
+   "SourceFirst": 1137,
+   "SourceLast": 1144
+  },
+  {
+   "ID": 144,
+   "SourceFirst": 1145,
+   "SourceLast": 1152
+  },
+  {
+   "ID": 145,
+   "SourceFirst": 1153,
+   "SourceLast": 1160
+  },
+  {
+   "ID": 146,
+   "SourceFirst": 1161,
+   "SourceLast": 1168
+  },
+  {
+   "ID": 147,
+   "SourceFirst": 1169,
+   "SourceLast": 1176
+  },
+  {
+   "ID": 148,
+   "SourceFirst": 1177,
+   "SourceLast": 1184
+  },
+  {
+   "ID": 149,
+   "SourceFirst": 1185,
+   "SourceLast": 1192
+  },
+  {
+   "ID": 150,
+   "SourceFirst": 1193,
+   "SourceLast": 1200
+  },
+  {
+   "ID": 151,
+   "SourceFirst": 1201,
+   "SourceLast": 1208
+  },
+  {
+   "ID": 152,
+   "SourceFirst": 1209,
+   "SourceLast": 1216
+  },
+  {
+   "ID": 153,
+   "SourceFirst": 1217,
+   "SourceLast": 1224
+  },
+  {
+   "ID": 154,
+   "SourceFirst": 1225,
+   "SourceLast": 1232
+  },
+  {
+   "ID": 155,
+   "SourceFirst": 1233,
+   "SourceLast": 1240
+  },
+  {
+   "ID": 156,
+   "SourceFirst": 1241,
+   "SourceLast": 1248
+  },
+  {
+   "ID": 157,
+   "SourceFirst": 1249,
+   "SourceLast": 1256
+  },
+  {
+   "ID": 158,
+   "SourceFirst": 1257,
+   "SourceLast": 1264
+  },
+  {
+   "ID": 159,
+   "SourceFirst": 1265,
+   "SourceLast": 1272
+  },
+  {
+   "ID": 160,
+   "SourceFirst": 1273,
+   "SourceLast": 1280
+  },
+  {
+   "ID": 161,
+   "SourceFirst": 1281,
+   "SourceLast": 1288
+  },
+  {
+   "ID": 162,
+   "SourceFirst": 1289,
+   "SourceLast": 1296
+  },
+  {
+   "ID": 163,
+   "SourceFirst": 1297,
+   "SourceLast": 1304
+  },
+  {
+   "ID": 164,
+   "SourceFirst": 1305,
+   "SourceLast": 1312
+  },
+  {
+   "ID": 165,
+   "SourceFirst": 1313,
+   "SourceLast": 1320
+  },
+  {
+   "ID": 166,
+   "SourceFirst": 1321,
+   "SourceLast": 1328
+  },
+  {
+   "ID": 167,
+   "SourceFirst": 1329,
+   "SourceLast": 1336
+  },
+  {
+   "ID": 168,
+   "SourceFirst": 1337,
+   "SourceLast": 1344
+  },
+  {
+   "ID": 169,
+   "SourceFirst": 1345,
+   "SourceLast": 1352
+  },
+  {
+   "ID": 170,
+   "SourceFirst": 1353,
+   "SourceLast": 1360
+  },
+  {
+   "ID": 171,
+   "SourceFirst": 1361,
+   "SourceLast": 1368
+  },
+  {
+   "ID": 172,
+   "SourceFirst": 1369,
+   "SourceLast": 1376
+  },
+  {
+   "ID": 173,
+   "SourceFirst": 1377,
+   "SourceLast": 1384
+  },
+  {
+   "ID": 174,
+   "SourceFirst": 1385,
+   "SourceLast": 1392
+  },
+  {
+   "ID": 175,
+   "SourceFirst": 1393,
+   "SourceLast": 1400
+  },
+  {
+   "ID": 176,
+   "SourceFirst": 1401,
+   "SourceLast": 1408
+  },
+  {
+   "ID": 177,
+   "SourceFirst": 1409,
+   "SourceLast": 1416
+  },
+  {
+   "ID": 178,
+   "SourceFirst": 1417,
+   "SourceLast": 1424
+  },
+  {
+   "ID": 179,
+   "SourceFirst": 1425,
+   "SourceLast": 1432
+  },
+  {
+   "ID": 180,
+   "SourceFirst": 1433,
+   "SourceLast": 1440
+  },
+  {
+   "ID": 181,
+   "SourceFirst": 1441,
+   "SourceLast": 1448
+  },
+  {
+   "ID": 182,
+   "SourceFirst": 1449,
+   "SourceLast": 1456
+  },
+  {
+   "ID": 183,
+   "SourceFirst": 1457,
+   "SourceLast": 1464
+  },
+  {
+   "ID": 184,
+   "SourceFirst": 1465,
+   "SourceLast": 1472
+  },
+  {
+   "ID": 185,
+   "SourceFirst": 1473,
+   "SourceLast": 1480
+  },
+  {
+   "ID": 186,
+   "SourceFirst": 1481,
+   "SourceLast": 1488
+  },
+  {
+   "ID": 187,
+   "SourceFirst": 1489,
+   "SourceLast": 1496
+  },
+  {
+   "ID": 188,
+   "SourceFirst": 1497,
+   "SourceLast": 1504
+  },
+  {
+   "ID": 189,
+   "SourceFirst": 1505,
+   "SourceLast": 1512
+  },
+  {
+   "ID": 190,
+   "SourceFirst": 1513,
+   "SourceLast": 1520
+  },
+  {
+   "ID": 191,
+   "SourceFirst": 1521,
+   "SourceLast": 1528
+  },
+  {
+   "ID": 192,
+   "SourceFirst": 1529,
+   "SourceLast": 1536
+  },
+  {
+   "ID": 193,
+   "SourceFirst": 1537,
+   "SourceLast": 1544
+  },
+  {
+   "ID": 194,
+   "SourceFirst": 1545,
+   "SourceLast": 1552
+  },
+  {
+   "ID": 195,
+   "SourceFirst": 1553,
+   "SourceLast": 1560
+  },
+  {
+   "ID": 196,
+   "SourceFirst": 1561,
+   "SourceLast": 1568
+  },
+  {
+   "ID": 197,
+   "SourceFirst": 1569,
+   "SourceLast": 1576
+  },
+  {
+   "ID": 198,
+   "SourceFirst": 1577,
+   "SourceLast": 1584
+  },
+  {
+   "ID": 199,
+   "SourceFirst": 1585,
+   "SourceLast": 1592
+  },
+  {
+   "ID": 200,
+   "SourceFirst": 1593,
+   "SourceLast": 1600
+  },
+  {
+   "ID": 201,
+   "SourceFirst": 1601,
+   "SourceLast": 1608
+  },
+  {
+   "ID": 202,
+   "SourceFirst": 1609,
+   "SourceLast": 1616
+  },
+  {
+   "ID": 203,
+   "SourceFirst": 1617,
+   "SourceLast": 1624
+  },
+  {
+   "ID": 204,
+   "SourceFirst": 1625,
+   "SourceLast": 1632
+  },
+  {
+   "ID": 205,
+   "SourceFirst": 1633,
+   "SourceLast": 1640
+  },
+  {
+   "ID": 206,
+   "SourceFirst": 1641,
+   "SourceLast": 1648
+  },
+  {
+   "ID": 207,
+   "SourceFirst": 1649,
+   "SourceLast": 1656
+  },
+  {
+   "ID": 208,
+   "SourceFirst": 1657,
+   "SourceLast": 1664
+  },
+  {
+   "ID": 209,
+   "SourceFirst": 1665,
+   "SourceLast": 1672
+  },
+  {
+   "ID": 210,
+   "SourceFirst": 1673,
+   "SourceLast": 1680
+  },
+  {
+   "ID": 211,
+   "SourceFirst": 1681,
+   "SourceLast": 1688
+  },
+  {
+   "ID": 212,
+   "SourceFirst": 1689,
+   "SourceLast": 1696
+  },
+  {
+   "ID": 213,
+   "SourceFirst": 1697,
+   "SourceLast": 1704
+  },
+  {
+   "ID": 214,
+   "SourceFirst": 1705,
+   "SourceLast": 1712
+  },
+  {
+   "ID": 215,
+   "SourceFirst": 1713,
+   "SourceLast": 1720
+  },
+  {
+   "ID": 216,
+   "SourceFirst": 1721,
+   "SourceLast": 1728
+  },
+  {
+   "ID": 217,
+   "SourceFirst": 1729,
+   "SourceLast": 1736
+  },
+  {
+   "ID": 218,
+   "SourceFirst": 1737,
+   "SourceLast": 1744
+  },
+  {
+   "ID": 219,
+   "SourceFirst": 1745,
+   "SourceLast": 1752
+  },
+  {
+   "ID": 220,
+   "SourceFirst": 1753,
+   "SourceLast": 1760
+  },
+  {
+   "ID": 221,
+   "SourceFirst": 1761,
+   "SourceLast": 1768
+  },
+  {
+   "ID": 222,
+   "SourceFirst": 1769,
+   "SourceLast": 1776
+  },
+  {
+   "ID": 223,
+   "SourceFirst": 1777,
+   "SourceLast": 1784
+  },
+  {
+   "ID": 224,
+   "SourceFirst": 1785,
+   "SourceLast": 1792
+  },
+  {
+   "ID": 225,
+   "SourceFirst": 1793,
+   "SourceLast": 1800
+  },
+  {
+   "ID": 226,
+   "SourceFirst": 1801,
+   "SourceLast": 1808
+  },
+  {
+   "ID": 227,
+   "SourceFirst": 1809,
+   "SourceLast": 1816
+  },
+  {
+   "ID": 228,
+   "SourceFirst": 1817,
+   "SourceLast": 1824
+  },
+  {
+   "ID": 229,
+   "SourceFirst": 1825,
+   "SourceLast": 1832
+  },
+  {
+   "ID": 230,
+   "SourceFirst": 1833,
+   "SourceLast": 1840
+  },
+  {
+   "ID": 231,
+   "SourceFirst": 1841,
+   "SourceLast": 1848
+  },
+  {
+   "ID": 232,
+   "SourceFirst": 1849,
+   "SourceLast": 1856
+  },
+  {
+   "ID": 233,
+   "SourceFirst": 1857,
+   "SourceLast": 1864
+  },
+  {
+   "ID": 234,
+   "SourceFirst": 1865,
+   "SourceLast": 1872
+  },
+  {
+   "ID": 235,
+   "SourceFirst": 1873,
+   "SourceLast": 1880
+  },
+  {
+   "ID": 236,
+   "SourceFirst": 1881,
+   "SourceLast": 1888
+  },
+  {
+   "ID": 237,
+   "SourceFirst": 1889,
+   "SourceLast": 1896
+  },
+  {
+   "ID": 238,
+   "SourceFirst": 1897,
+   "SourceLast": 1904
+  },
+  {
+   "ID": 239,
+   "SourceFirst": 1905,
+   "SourceLast": 1912
+  },
+  {
+   "ID": 240,
+   "SourceFirst": 1913,
+   "SourceLast": 1920
+  },
+  {
+   "ID": 241,
+   "SourceFirst": 1921,
+   "SourceLast": 1928
+  },
+  {
+   "ID": 242,
+   "SourceFirst": 1929,
+   "SourceLast": 1936
+  },
+  {
+   "ID": 243,
+   "SourceFirst": 1937,
+   "SourceLast": 1944
+  },
+  {
+   "ID": 244,
+   "SourceFirst": 1945,
+   "SourceLast": 1952
+  },
+  {
+   "ID": 245,
+   "SourceFirst": 1953,
+   "SourceLast": 1960
+  },
+  {
+   "ID": 246,
+   "SourceFirst": 1961,
+   "SourceLast": 1968
+  },
+  {
+   "ID": 247,
+   "SourceFirst": 1969,
+   "SourceLast": 1976
+  },
+  {
+   "ID": 248,
+   "SourceFirst": 1977,
+   "SourceLast": 1984
+  },
+  {
+   "ID": 249,
+   "SourceFirst": 1985,
+   "SourceLast": 1992
+  },
+  {
+   "ID": 250,
+   "SourceFirst": 1993,
+   "SourceLast": 2000
+  },
+  {
+   "ID": 251,
+   "SourceFirst": 2001,
+   "SourceLast": 2008
+  },
+  {
+   "ID": 252,
+   "SourceFirst": 2009,
+   "SourceLast": 2016
+  },
+  {
+   "ID": 253,
+   "SourceFirst": 2017,
+   "SourceLast": 2024
+  },
+  {
+   "ID": 254,
+   "SourceFirst": 2025,
+   "SourceLast": 2032
+  },
+  {
+   "ID": 255,
+   "SourceFirst": 2033,
+   "SourceLast": 2040
+  },
+  {
+   "ID": 256,
+   "SourceFirst": 2041,
+   "SourceLast": 2048
+  },
+  {
+   "ID": 257,
+   "SourceFirst": 2049,
+   "SourceLast": 2056
+  },
+  {
+   "ID": 258,
+   "SourceFirst": 2057,
+   "SourceLast": 2064
+  },
+  {
+   "ID": 259,
+   "SourceFirst": 2065,
+   "SourceLast": 2072
+  },
+  {
+   "ID": 260,
+   "SourceFirst": 2073,
+   "SourceLast": 2080
+  },
+  {
+   "ID": 261,
+   "SourceFirst": 2081,
+   "SourceLast": 2088
+  },
+  {
+   "ID": 262,
+   "SourceFirst": 2089,
+   "SourceLast": 2096
+  },
+  {
+   "ID": 263,
+   "SourceFirst": 2097,
+   "SourceLast": 2104
+  },
+  {
+   "ID": 264,
+   "SourceFirst": 2105,
+   "SourceLast": 2112
+  },
+  {
+   "ID": 265,
+   "SourceFirst": 2113,
+   "SourceLast": 2120
+  },
+  {
+   "ID": 266,
+   "SourceFirst": 2121,
+   "SourceLast": 2128
+  },
+  {
+   "ID": 267,
+   "SourceFirst": 2129,
+   "SourceLast": 2136
+  },
+  {
+   "ID": 268,
+   "SourceFirst": 2137,
+   "SourceLast": 2144
+  },
+  {
+   "ID": 269,
+   "SourceFirst": 2145,
+   "SourceLast": 2152
+  },
+  {
+   "ID": 270,
+   "SourceFirst": 2153,
+   "SourceLast": 2160
+  },
+  {
+   "ID": 271,
+   "SourceFirst": 2161,
+   "SourceLast": 2168
+  },
+  {
+   "ID": 272,
+   "SourceFirst": 2169,
+   "SourceLast": 2176
+  },
+  {
+   "ID": 273,
+   "SourceFirst": 2177,
+   "SourceLast": 2184
+  },
+  {
+   "ID": 274,
+   "SourceFirst": 2185,
+   "SourceLast": 2192
+  },
+  {
+   "ID": 275,
+   "SourceFirst": 2193,
+   "SourceLast": 2200
+  },
+  {
+   "ID": 276,
+   "SourceFirst": 2201,
+   "SourceLast": 2208
+  },
+  {
+   "ID": 277,
+   "SourceFirst": 2209,
+   "SourceLast": 2216
+  },
+  {
+   "ID": 278,
+   "SourceFirst": 2217,
+   "SourceLast": 2224
+  },
+  {
+   "ID": 279,
+   "SourceFirst": 2225,
+   "SourceLast": 2232
+  },
+  {
+   "ID": 280,
+   "SourceFirst": 2233,
+   "SourceLast": 2240
+  },
+  {
+   "ID": 281,
+   "SourceFirst": 2241,
+   "SourceLast": 2248
+  },
+  {
+   "ID": 282,
+   "SourceFirst": 2249,
+   "SourceLast": 2256
+  },
+  {
+   "ID": 283,
+   "SourceFirst": 2257,
+   "SourceLast": 2264
+  },
+  {
+   "ID": 284,
+   "SourceFirst": 2265,
+   "SourceLast": 2272
+  },
+  {
+   "ID": 285,
+   "SourceFirst": 2273,
+   "SourceLast": 2280
+  },
+  {
+   "ID": 286,
+   "SourceFirst": 2281,
+   "SourceLast": 2288
+  },
+  {
+   "ID": 287,
+   "SourceFirst": 2289,
+   "SourceLast": 2296
+  },
+  {
+   "ID": 288,
+   "SourceFirst": 2297,
+   "SourceLast": 2304
+  },
+  {
+   "ID": 289,
+   "SourceFirst": 2305,
+   "SourceLast": 2312
+  },
+  {
+   "ID": 290,
+   "SourceFirst": 2313,
+   "SourceLast": 2320
+  },
+  {
+   "ID": 291,
+   "SourceFirst": 2321,
+   "SourceLast": 2328
+  },
+  {
+   "ID": 292,
+   "SourceFirst": 2329,
+   "SourceLast": 2336
+  },
+  {
+   "ID": 293,
+   "SourceFirst": 2337,
+   "SourceLast": 2344
+  },
+  {
+   "ID": 294,
+   "SourceFirst": 2345,
+   "SourceLast": 2352
+  },
+  {
+   "ID": 295,
+   "SourceFirst": 2353,
+   "SourceLast": 2360
+  },
+  {
+   "ID": 296,
+   "SourceFirst": 2361,
+   "SourceLast": 2368
+  },
+  {
+   "ID": 297,
+   "SourceFirst": 2369,
+   "SourceLast": 2376
+  },
+  {
+   "ID": 298,
+   "SourceFirst": 2377,
+   "SourceLast": 2384
+  },
+  {
+   "ID": 299,
+   "SourceFirst": 2385,
+   "SourceLast": 2392
+  },
+  {
+   "ID": 300,
+   "SourceFirst": 2393,
+   "SourceLast": 2400
+  }
+ ],
+ "embedding": {
+  "model": "BAAI/bge-base-en-v1.5",
+  "package": "fastembed==0.7.3",
+  "summary_embed_seconds": 20.95645344299919,
+  "source_embed_seconds": 24.071477000001323
+ },
+ "rows": [
+  {
+   "id": "correction-01",
+   "family": "correction",
+   "terms": [
+    "When is the Norland project kickoff?"
+   ],
+   "phrases_usable": false,
+   "embed_seconds_per_text": 0.02594307449999178,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      44,
+      181,
+      68,
+      92,
+      233
+     ],
+     "relevant": [
+      44,
+      181,
+      68,
+      92,
+      233,
+      158,
+      293,
+      173,
+      137,
+      9,
+      33,
+      188,
+      195,
+      152,
+      89,
+      149,
+      4,
+      198,
+      43,
+      110
+     ],
+     "bridge_seconds": 0.013
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      44,
+      181,
+      68,
+      92,
+      233
+     ],
+     "relevant": [
+      44,
+      181,
+      68,
+      92,
+      233,
+      158,
+      293,
+      173,
+      137,
+      9,
+      33,
+      188,
+      195,
+      152,
+      89,
+      149,
+      4,
+      198,
+      43,
+      110
+     ],
+     "bridge_seconds": 0.009
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      181,
+      44,
+      137,
+      195,
+      59
+     ],
+     "relevant": [
+      181,
+      44,
+      137,
+      195,
+      59,
+      75,
+      180,
+      199,
+      255,
+      154,
+      286,
+      298,
+      30,
+      285,
+      210,
+      60,
+      34,
+      92,
+      82,
+      107
+     ],
+     "top_scores": [
+      0.5739,
+      0.5213,
+      0.4546,
+      0.4504,
+      0.4296,
+      0.4279,
+      0.4278
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      181,
+      44,
+      137,
+      195,
+      59
+     ],
+     "relevant": [
+      181,
+      44,
+      137,
+      195,
+      59,
+      75,
+      180,
+      199,
+      255,
+      154,
+      286,
+      298,
+      30,
+      285,
+      210,
+      60,
+      34,
+      92,
+      82,
+      107
+     ],
+     "top_scores": [
+      0.5739,
+      0.5213,
+      0.4546,
+      0.4504,
+      0.4296,
+      0.4279,
+      0.4278
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      181,
+      44,
+      59,
+      137,
+      58
+     ],
+     "relevant": [
+      181,
+      44,
+      59,
+      137,
+      58,
+      60,
+      255,
+      195,
+      286,
+      254,
+      124,
+      180,
+      285,
+      270,
+      298,
+      210,
+      149,
+      229,
+      75,
+      34
+     ],
+     "top_scores": [
+      0.5049,
+      0.4648,
+      0.4137,
+      0.4007,
+      0.397,
+      0.3919,
+      0.3894
+     ]
+    }
+   }
+  },
+  {
+   "id": "correction-02",
+   "family": "correction",
+   "terms": [
+    "work phone extension",
+    "phone extension",
+    "work contact number",
+    "office phone"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.014074317400081781,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      95,
+      252,
+      248,
+      256,
+      179
+     ],
+     "relevant": [
+      95,
+      252,
+      248,
+      256,
+      179,
+      49,
+      126,
+      61,
+      69,
+      83,
+      211,
+      176,
+      118,
+      294,
+      293,
+      173,
+      174,
+      296,
+      249,
+      79
+     ],
+     "bridge_seconds": 0.01
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      95,
+      252,
+      248,
+      83,
+      293
+     ],
+     "relevant": [
+      95,
+      252,
+      248,
+      83,
+      293,
+      173,
+      54,
+      38,
+      263,
+      148,
+      203,
+      128,
+      1
+     ],
+     "bridge_seconds": 0.008
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      95,
+      135,
+      92,
+      240,
+      150
+     ],
+     "relevant": [
+      95,
+      135,
+      92,
+      240,
+      150,
+      252,
+      24,
+      29,
+      208,
+      163,
+      175,
+      57,
+      107,
+      62,
+      54,
+      114,
+      133,
+      145,
+      297,
+      177
+     ],
+     "top_scores": [
+      0.5462,
+      0.4987,
+      0.4666,
+      0.4613,
+      0.4561,
+      0.4537,
+      0.4472
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      95,
+      240,
+      174,
+      220,
+      1
+     ],
+     "relevant": [
+      95,
+      240,
+      174,
+      220,
+      1,
+      279,
+      135,
+      70,
+      252,
+      115,
+      150,
+      160,
+      145,
+      234,
+      114,
+      39,
+      249,
+      130,
+      69,
+      211
+     ],
+     "top_scores": [
+      0.5905,
+      0.5372,
+      0.521,
+      0.5148,
+      0.5067,
+      0.4988,
+      0.4988
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      95,
+      135,
+      240,
+      92,
+      62
+     ],
+     "relevant": [
+      95,
+      135,
+      240,
+      92,
+      62,
+      107,
+      175,
+      54,
+      150,
+      300,
+      29,
+      24,
+      145,
+      234,
+      279,
+      265,
+      141,
+      140,
+      297,
+      2
+     ],
+     "top_scores": [
+      0.5174,
+      0.4956,
+      0.4744,
+      0.4683,
+      0.4646,
+      0.4639,
+      0.4607
+     ]
+    }
+   }
+  },
+  {
+   "id": "correction-03",
+   "family": "correction",
+   "terms": [
+    "Okafors Friday meeting",
+    "Okafors Friday plans",
+    "meeting Okafors Friday location",
+    "Okafors dinner Friday"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.011047590599991964,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      274,
+      153,
+      243,
+      61,
+      75
+     ],
+     "relevant": [
+      274,
+      153,
+      243,
+      61,
+      75,
+      89,
+      184,
+      74,
+      119,
+      245,
+      275,
+      30,
+      260,
+      285,
+      270,
+      228,
+      7,
+      205,
+      290,
+      172
+     ],
+     "bridge_seconds": 0.01
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      61,
+      274,
+      75,
+      245,
+      275
+     ],
+     "relevant": [
+      61,
+      274,
+      75,
+      245,
+      275,
+      30,
+      260,
+      243,
+      285,
+      270,
+      228,
+      7,
+      205,
+      290,
+      153,
+      172,
+      117,
+      195,
+      272,
+      212
+     ],
+     "bridge_seconds": 0.009
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      274,
+      209,
+      74,
+      61,
+      119
+     ],
+     "relevant": [
+      274,
+      209,
+      74,
+      61,
+      119,
+      194,
+      75,
+      89,
+      254,
+      284,
+      30,
+      104,
+      154,
+      44,
+      236,
+      46,
+      149,
+      59,
+      120,
+      179
+     ],
+     "top_scores": [
+      0.5858,
+      0.5122,
+      0.4987,
+      0.4939,
+      0.4819,
+      0.4799,
+      0.475
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      274,
+      243,
+      61,
+      108,
+      228
+     ],
+     "relevant": [
+      274,
+      243,
+      61,
+      108,
+      228,
+      209,
+      75,
+      153,
+      198,
+      277,
+      74,
+      30,
+      194,
+      119,
+      183,
+      254,
+      284,
+      154,
+      104,
+      82
+     ],
+     "top_scores": [
+      0.6555,
+      0.5774,
+      0.5448,
+      0.5196,
+      0.5157,
+      0.5108,
+      0.5084
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      274,
+      61,
+      209,
+      119,
+      74
+     ],
+     "relevant": [
+      274,
+      61,
+      209,
+      119,
+      74,
+      89,
+      194,
+      254,
+      104,
+      44,
+      154,
+      284,
+      149,
+      236,
+      191,
+      50,
+      23,
+      289,
+      59,
+      134
+     ],
+     "top_scores": [
+      0.519,
+      0.5085,
+      0.4867,
+      0.4773,
+      0.4739,
+      0.4663,
+      0.4653
+     ]
+    }
+   }
+  },
+  {
+   "id": "correction-04",
+   "family": "correction",
+   "terms": [
+    "Leo pickup time",
+    "Leo's pickup schedule",
+    "when is Leo's pickup",
+    "Leo pickup"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.013487798999994994,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      213,
+      144,
+      110,
+      224,
+      44
+     ],
+     "relevant": [
+      213,
+      144,
+      110,
+      224,
+      44,
+      277,
+      75,
+      214,
+      228,
+      210,
+      199,
+      263,
+      241,
+      125,
+      250,
+      63,
+      83,
+      15,
+      240,
+      34
+     ],
+     "bridge_seconds": 0.011
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      144,
+      213,
+      82,
+      123,
+      277
+     ],
+     "relevant": [
+      144,
+      213,
+      82,
+      123,
+      277,
+      227,
+      110,
+      243,
+      209,
+      224,
+      27,
+      64,
+      44,
+      49,
+      179,
+      247,
+      89,
+      206,
+      75,
+      293
+     ],
+     "bridge_seconds": 0.009
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      213,
+      74,
+      284,
+      144,
+      136
+     ],
+     "relevant": [
+      213,
+      74,
+      284,
+      144,
+      136,
+      209,
+      211,
+      256,
+      134,
+      254,
+      1,
+      181,
+      46,
+      5,
+      226,
+      151,
+      179,
+      276,
+      271,
+      259
+     ],
+     "top_scores": [
+      0.6029,
+      0.5716,
+      0.5579,
+      0.5531,
+      0.5528,
+      0.5385,
+      0.5385
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      213,
+      271,
+      256,
+      151,
+      74
+     ],
+     "relevant": [
+      213,
+      271,
+      256,
+      151,
+      74,
+      284,
+      136,
+      144,
+      211,
+      276,
+      1,
+      209,
+      210,
+      181,
+      254,
+      194,
+      134,
+      226,
+      5,
+      106
+     ],
+     "top_scores": [
+      0.5753,
+      0.561,
+      0.5598,
+      0.5582,
+      0.5426,
+      0.5405,
+      0.5388
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      209,
+      74,
+      136,
+      284,
+      134
+     ],
+     "relevant": [
+      209,
+      74,
+      136,
+      284,
+      134,
+      213,
+      241,
+      211,
+      256,
+      181,
+      226,
+      1,
+      194,
+      271,
+      151,
+      46,
+      144,
+      179,
+      254,
+      205
+     ],
+     "top_scores": [
+      0.5645,
+      0.5558,
+      0.5464,
+      0.533,
+      0.5296,
+      0.5272,
+      0.5233
+     ]
+    }
+   }
+  },
+  {
+   "id": "correction-05",
+   "family": "correction",
+   "terms": [
+    "audit folder shared drive",
+    "shared drive audit folder name",
+    "audit folder naming convention",
+    "shared drive folder audit"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.01141904380019696,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      155,
+      112,
+      140,
+      27,
+      102
+     ],
+     "relevant": [
+      155,
+      112,
+      140,
+      27,
+      102,
+      267,
+      125,
+      147,
+      237,
+      297,
+      72,
+      87,
+      57,
+      25,
+      55,
+      115,
+      85,
+      282,
+      228,
+      181
+     ],
+     "bridge_seconds": 0.013
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      112,
+      155,
+      150,
+      29,
+      240
+     ],
+     "relevant": [
+      112,
+      155,
+      150,
+      29,
+      240,
+      135,
+      25,
+      55,
+      115,
+      85,
+      282,
+      95,
+      181,
+      228,
+      290,
+      296,
+      222,
+      258,
+      148,
+      103
+     ],
+     "bridge_seconds": 0.013
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      155,
+      112,
+      216,
+      76,
+      47
+     ],
+     "relevant": [
+      155,
+      112,
+      216,
+      76,
+      47,
+      13,
+      237,
+      182,
+      163,
+      176,
+      133,
+      206,
+      57,
+      283,
+      92,
+      145,
+      75,
+      272,
+      180,
+      26
+     ],
+     "top_scores": [
+      0.5666,
+      0.5419,
+      0.4682,
+      0.4466,
+      0.4421,
+      0.4412,
+      0.4282
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      155,
+      112,
+      47,
+      244,
+      13
+     ],
+     "relevant": [
+      155,
+      112,
+      47,
+      244,
+      13,
+      299,
+      237,
+      76,
+      87,
+      212,
+      92,
+      133,
+      216,
+      57,
+      145,
+      39,
+      176,
+      152,
+      182,
+      75
+     ],
+     "top_scores": [
+      0.6209,
+      0.5579,
+      0.5363,
+      0.4767,
+      0.4591,
+      0.4535,
+      0.4462
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      112,
+      155,
+      140,
+      216,
+      283
+     ],
+     "relevant": [
+      112,
+      155,
+      140,
+      216,
+      283,
+      76,
+      47,
+      237,
+      206,
+      141,
+      133,
+      105,
+      13,
+      236,
+      31,
+      26,
+      144,
+      117,
+      92,
+      143
+     ],
+     "top_scores": [
+      0.6065,
+      0.5409,
+      0.4345,
+      0.4324,
+      0.4319,
+      0.4306,
+      0.43
+     ]
+    }
+   }
+  },
+  {
+   "id": "correction-06",
+   "family": "correction",
+   "terms": [
+    "amlodipine dosage prescription",
+    "blood pressure medication amlodipine dose",
+    "amlodipine medication amount"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.014364388749982027,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      40,
+      214,
+      115,
+      111,
+      106
+     ],
+     "relevant": [
+      40,
+      214,
+      115,
+      111,
+      106,
+      246,
+      25,
+      297,
+      55,
+      235,
+      51,
+      160,
+      220,
+      190,
+      70,
+      130,
+      295,
+      100,
+      280,
+      205
+     ],
+     "bridge_seconds": 0.01
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      214,
+      40,
+      154,
+      256,
+      27
+     ],
+     "relevant": [
+      214,
+      40,
+      154,
+      256,
+      27,
+      136,
+      220,
+      287,
+      66,
+      44,
+      288,
+      126,
+      276,
+      181,
+      36,
+      229,
+      246,
+      48,
+      21,
+      169
+     ],
+     "bridge_seconds": 0.009
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      214,
+      40,
+      235,
+      160,
+      130
+     ],
+     "relevant": [
+      214,
+      40,
+      235,
+      160,
+      130,
+      100,
+      220,
+      12,
+      115,
+      252,
+      295,
+      217,
+      237,
+      5,
+      205,
+      230,
+      35,
+      265,
+      280,
+      117
+     ],
+     "top_scores": [
+      0.7014,
+      0.6705,
+      0.4881,
+      0.4626,
+      0.4574,
+      0.4568,
+      0.4497
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      40,
+      214,
+      235,
+      160,
+      220
+     ],
+     "relevant": [
+      40,
+      214,
+      235,
+      160,
+      220,
+      70,
+      130,
+      295,
+      35,
+      115,
+      100,
+      55,
+      265,
+      25,
+      237,
+      66,
+      57,
+      280,
+      145,
+      12
+     ],
+     "top_scores": [
+      0.7538,
+      0.7218,
+      0.5439,
+      0.5325,
+      0.5323,
+      0.5111,
+      0.5099
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      40,
+      214,
+      235,
+      55,
+      115
+     ],
+     "relevant": [
+      40,
+      214,
+      235,
+      55,
+      115,
+      160,
+      130,
+      100,
+      295,
+      12,
+      280,
+      205,
+      252,
+      217,
+      25,
+      220,
+      265,
+      204,
+      35,
+      145
+     ],
+     "top_scores": [
+      0.6373,
+      0.6298,
+      0.4724,
+      0.4642,
+      0.4627,
+      0.4532,
+      0.4502
+     ]
+    }
+   }
+  },
+  {
+   "id": "correction-07",
+   "family": "correction",
+   "terms": [
+    "Fennick contract",
+    "Fennick contract worth",
+    "Fennick salary",
+    "Fennick hockey contract"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.012586988600014592,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      290,
+      19
+     ],
+     "relevant": [
+      290,
+      19
+     ],
+     "bridge_seconds": 0.009
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      290,
+      19,
+      89,
+      149,
+      4
+     ],
+     "relevant": [
+      290,
+      19,
+      89,
+      149,
+      4,
+      198,
+      43,
+      110,
+      144,
+      266,
+      153,
+      148,
+      79,
+      31,
+      269,
+      189,
+      44,
+      221,
+      73,
+      49
+     ],
+     "bridge_seconds": 0.009
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      19,
+      290,
+      55,
+      23,
+      158
+     ],
+     "relevant": [
+      19,
+      290,
+      55,
+      23,
+      158,
+      103,
+      223,
+      187,
+      99,
+      253,
+      98,
+      202,
+      249,
+      24,
+      286,
+      260,
+      173,
+      261,
+      120,
+      144
+     ],
+     "top_scores": [
+      0.7074,
+      0.5616,
+      0.4542,
+      0.4474,
+      0.4461,
+      0.4416,
+      0.439
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      19,
+      290,
+      158,
+      187,
+      23
+     ],
+     "relevant": [
+      19,
+      290,
+      158,
+      187,
+      23,
+      24,
+      103,
+      202,
+      98,
+      55,
+      47,
+      223,
+      253,
+      219,
+      273,
+      173,
+      157,
+      99,
+      232,
+      66
+     ],
+     "top_scores": [
+      0.7151,
+      0.5771,
+      0.4735,
+      0.4667,
+      0.4644,
+      0.4636,
+      0.4632
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      19,
+      290,
+      99,
+      187,
+      249
+     ],
+     "relevant": [
+      19,
+      290,
+      99,
+      187,
+      249,
+      264,
+      24,
+      90,
+      23,
+      59,
+      161,
+      158,
+      286,
+      20,
+      84,
+      253,
+      120,
+      244,
+      54,
+      66
+     ],
+     "top_scores": [
+      0.6256,
+      0.5158,
+      0.4321,
+      0.429,
+      0.4248,
+      0.4245,
+      0.424
+     ]
+    }
+   }
+  },
+  {
+   "id": "correction-08",
+   "family": "correction",
+   "terms": [
+    "wifi network name",
+    "wireless network",
+    "wifi password",
+    "network SSID"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.009843962200102396,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      125,
+      29,
+      155,
+      102,
+      267
+     ],
+     "relevant": [
+      125,
+      29,
+      155,
+      102,
+      267,
+      147,
+      140,
+      237,
+      297,
+      72,
+      87,
+      57,
+      27
+     ],
+     "bridge_seconds": 0.01
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      29,
+      125,
+      150,
+      240,
+      135
+     ],
+     "relevant": [
+      29,
+      125,
+      150,
+      240,
+      135,
+      112,
+      89,
+      149,
+      4,
+      198,
+      43,
+      110,
+      144,
+      266,
+      153,
+      148,
+      79,
+      31,
+      269,
+      189
+     ],
+     "bridge_seconds": 0.009
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      29,
+      125,
+      297,
+      147,
+      57
+     ],
+     "relevant": [
+      29,
+      125,
+      297,
+      147,
+      57,
+      237,
+      252,
+      165,
+      75,
+      9,
+      128,
+      42,
+      175,
+      192,
+      23,
+      62,
+      150,
+      208,
+      104,
+      176
+     ],
+     "top_scores": [
+      0.568,
+      0.5535,
+      0.4588,
+      0.4453,
+      0.4378,
+      0.4043,
+      0.4022
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      29,
+      125,
+      297,
+      147,
+      237
+     ],
+     "relevant": [
+      29,
+      125,
+      297,
+      147,
+      237,
+      57,
+      62,
+      142,
+      122,
+      127,
+      47,
+      107,
+      227,
+      176,
+      268,
+      9,
+      104,
+      128,
+      75,
+      175
+     ],
+     "top_scores": [
+      0.5791,
+      0.573,
+      0.4611,
+      0.4582,
+      0.4446,
+      0.4441,
+      0.4375
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      125,
+      29,
+      222,
+      297,
+      23
+     ],
+     "relevant": [
+      125,
+      29,
+      222,
+      297,
+      23,
+      140,
+      192,
+      128,
+      237,
+      147,
+      133,
+      194,
+      31,
+      282,
+      9,
+      62,
+      104,
+      42,
+      206,
+      229
+     ],
+     "top_scores": [
+      0.559,
+      0.5422,
+      0.4256,
+      0.42,
+      0.4172,
+      0.4083,
+      0.407
+     ]
+    }
+   }
+  },
+  {
+   "id": "correction-09",
+   "family": "correction",
+   "terms": [
+    "garden party guests",
+    "garden party attendance",
+    "number of guests garden party",
+    "party guest count"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.011889195800176822,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      104,
+      229,
+      199,
+      184,
+      27
+     ],
+     "relevant": [
+      104,
+      229,
+      199,
+      184,
+      27,
+      169,
+      64,
+      234,
+      39,
+      204,
+      187,
+      264,
+      69,
+      294,
+      174,
+      22,
+      249,
+      279,
+      9,
+      189
+     ],
+     "bridge_seconds": 0.014
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      104,
+      229,
+      27,
+      64,
+      84
+     ],
+     "relevant": [
+      104,
+      229,
+      27,
+      64,
+      84,
+      199,
+      112,
+      264,
+      184,
+      214,
+      247,
+      210,
+      74,
+      226,
+      208,
+      255,
+      38,
+      67,
+      28,
+      169
+     ],
+     "bridge_seconds": 0.013
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      229,
+      104,
+      184,
+      199,
+      64
+     ],
+     "relevant": [
+      229,
+      104,
+      184,
+      199,
+      64,
+      139,
+      34,
+      49,
+      169,
+      4,
+      154,
+      150,
+      27,
+      15,
+      225,
+      51,
+      222,
+      78,
+      94,
+      50
+     ],
+     "top_scores": [
+      0.611,
+      0.5489,
+      0.547,
+      0.5339,
+      0.5015,
+      0.5012,
+      0.498
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      229,
+      104,
+      184,
+      199,
+      139
+     ],
+     "relevant": [
+      229,
+      104,
+      184,
+      199,
+      139,
+      34,
+      49,
+      27,
+      64,
+      15,
+      4,
+      225,
+      169,
+      51,
+      150,
+      154,
+      78,
+      105,
+      264,
+      222
+     ],
+     "top_scores": [
+      0.6555,
+      0.5862,
+      0.5726,
+      0.5706,
+      0.5396,
+      0.527,
+      0.5179
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      229,
+      104,
+      27,
+      139,
+      49
+     ],
+     "relevant": [
+      229,
+      104,
+      27,
+      139,
+      49,
+      150,
+      199,
+      64,
+      222,
+      34,
+      184,
+      33,
+      225,
+      50,
+      15,
+      78,
+      90,
+      109,
+      94,
+      95
+     ],
+     "top_scores": [
+      0.5991,
+      0.5266,
+      0.5147,
+      0.5042,
+      0.4915,
+      0.4912,
+      0.4898
+     ]
+    }
+   }
+  },
+  {
+   "id": "correction-10",
+   "family": "correction",
+   "terms": [
+    "Which gym am I a member of?"
+   ],
+   "phrases_usable": false,
+   "embed_seconds_per_text": 0.013425439499769709,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      154,
+      256,
+      27,
+      175,
+      136
+     ],
+     "relevant": [
+      154,
+      256,
+      27,
+      175,
+      136,
+      128,
+      202,
+      220,
+      287,
+      66,
+      44,
+      288,
+      126,
+      276,
+      40,
+      181,
+      36,
+      229,
+      246,
+      48
+     ],
+     "bridge_seconds": 0.012
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      154,
+      256,
+      27,
+      175,
+      136
+     ],
+     "relevant": [
+      154,
+      256,
+      27,
+      175,
+      136,
+      128,
+      202,
+      220,
+      287,
+      66,
+      44,
+      288,
+      126,
+      276,
+      40,
+      181,
+      36,
+      229,
+      246,
+      48
+     ],
+     "bridge_seconds": 0.012
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      175,
+      128,
+      52,
+      154,
+      26
+     ],
+     "relevant": [
+      175,
+      128,
+      52,
+      154,
+      26,
+      216,
+      85,
+      247,
+      176,
+      86,
+      206,
+      262,
+      67,
+      82,
+      205,
+      177,
+      190,
+      232,
+      202,
+      292
+     ],
+     "top_scores": [
+      0.5603,
+      0.5155,
+      0.4992,
+      0.4822,
+      0.4797,
+      0.4743,
+      0.473
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      175,
+      128,
+      52,
+      154,
+      26
+     ],
+     "relevant": [
+      175,
+      128,
+      52,
+      154,
+      26,
+      216,
+      85,
+      247,
+      176,
+      86,
+      206,
+      262,
+      67,
+      82,
+      205,
+      177,
+      190,
+      232,
+      202,
+      292
+     ],
+     "top_scores": [
+      0.5603,
+      0.5155,
+      0.4992,
+      0.4822,
+      0.4797,
+      0.4743,
+      0.473
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      175,
+      128,
+      154,
+      52,
+      82
+     ],
+     "relevant": [
+      175,
+      128,
+      154,
+      52,
+      82,
+      262,
+      67,
+      172,
+      216,
+      85,
+      26,
+      7,
+      292,
+      62,
+      160,
+      206,
+      232,
+      190,
+      97,
+      202
+     ],
+     "top_scores": [
+      0.5577,
+      0.5198,
+      0.5071,
+      0.4997,
+      0.4989,
+      0.4979,
+      0.4816
+     ]
+    }
+   }
+  },
+  {
+   "id": "exact-01",
+   "family": "exact",
+   "terms": [
+    "Harrow Street storage unit gate code",
+    "storage unit access code Harrow Street",
+    "Harrow Street self storage code"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.015160250999997515,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      1,
+      124,
+      196,
+      289,
+      94
+     ],
+     "relevant": [
+      1,
+      124,
+      196,
+      289,
+      94,
+      250,
+      47
+     ],
+     "bridge_seconds": 0.01
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      1,
+      124,
+      196,
+      289,
+      94
+     ],
+     "relevant": [
+      1,
+      124,
+      196,
+      289,
+      94,
+      250,
+      47,
+      89,
+      149,
+      4,
+      198,
+      43,
+      110,
+      144,
+      266,
+      153,
+      148,
+      79,
+      31,
+      269
+     ],
+     "bridge_seconds": 0.009
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      1,
+      136,
+      196,
+      289,
+      124
+     ],
+     "relevant": [
+      1,
+      300,
+      136,
+      196,
+      289,
+      124,
+      26,
+      211,
+      59,
+      177,
+      222,
+      145,
+      89,
+      285,
+      4,
+      185,
+      232,
+      284,
+      6,
+      247
+     ],
+     "top_scores": [
+      0.7999,
+      0.5009,
+      0.4566,
+      0.4548,
+      0.4464,
+      0.4447,
+      0.4378
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      1,
+      136,
+      196,
+      211,
+      185
+     ],
+     "relevant": [
+      1,
+      300,
+      136,
+      196,
+      211,
+      185,
+      6,
+      70,
+      222,
+      289,
+      232,
+      4,
+      128,
+      190,
+      26,
+      176,
+      145,
+      177,
+      247,
+      124
+     ],
+     "top_scores": [
+      0.796,
+      0.5145,
+      0.4932,
+      0.4871,
+      0.4799,
+      0.4673,
+      0.4644
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      1,
+      289,
+      196,
+      222,
+      136
+     ],
+     "relevant": [
+      1,
+      300,
+      289,
+      196,
+      222,
+      136,
+      124,
+      23,
+      211,
+      89,
+      128,
+      8,
+      6,
+      194,
+      284,
+      166,
+      119,
+      82,
+      285,
+      104
+     ],
+     "top_scores": [
+      0.7225,
+      0.473,
+      0.4491,
+      0.449,
+      0.4365,
+      0.4314,
+      0.4278
+     ]
+    }
+   }
+  },
+  {
+   "id": "exact-02",
+   "family": "exact",
+   "terms": [
+    "Odile flight Terminal 3 arrival",
+    "Odile landing time Terminal 3",
+    "Odile's flight arrival Terminal 3",
+    "Odile flight schedule Terminal 3"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.02381015339997248,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      23,
+      179,
+      254,
+      209,
+      149
+     ],
+     "relevant": [
+      23,
+      179,
+      254,
+      209,
+      149,
+      74,
+      104,
+      110,
+      186,
+      134,
+      224,
+      291,
+      44,
+      216,
+      277,
+      75,
+      214,
+      228,
+      213,
+      210
+     ],
+     "bridge_seconds": 0.011
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      23,
+      254,
+      179,
+      74,
+      104
+     ],
+     "relevant": [
+      23,
+      254,
+      179,
+      74,
+      104,
+      134,
+      240,
+      211,
+      210,
+      136,
+      160,
+      120,
+      154,
+      52,
+      85,
+      31,
+      196,
+      56,
+      11,
+      289
+     ],
+     "bridge_seconds": 0.011
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      23,
+      74,
+      254,
+      179,
+      209
+     ],
+     "relevant": [
+      23,
+      74,
+      254,
+      179,
+      209,
+      134,
+      149,
+      284,
+      104,
+      224,
+      89,
+      30,
+      119,
+      60,
+      269,
+      5,
+      219,
+      44,
+      159,
+      135
+     ],
+     "top_scores": [
+      0.5861,
+      0.5346,
+      0.5276,
+      0.5214,
+      0.5193,
+      0.4836,
+      0.4661
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      23,
+      209,
+      179,
+      74,
+      149
+     ],
+     "relevant": [
+      23,
+      209,
+      179,
+      74,
+      149,
+      254,
+      134,
+      224,
+      284,
+      269,
+      194,
+      5,
+      104,
+      89,
+      210,
+      10,
+      60,
+      44,
+      277,
+      151
+     ],
+     "top_scores": [
+      0.6078,
+      0.566,
+      0.5429,
+      0.5401,
+      0.5378,
+      0.5259,
+      0.5162
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      209,
+      23,
+      74,
+      134,
+      284
+     ],
+     "relevant": [
+      209,
+      23,
+      74,
+      134,
+      284,
+      179,
+      194,
+      254,
+      164,
+      149,
+      44,
+      269,
+      104,
+      119,
+      224,
+      136,
+      274,
+      210,
+      114,
+      110
+     ],
+     "top_scores": [
+      0.5142,
+      0.5112,
+      0.5026,
+      0.4699,
+      0.4612,
+      0.4485,
+      0.4458
+     ]
+    }
+   }
+  },
+  {
+   "id": "exact-03",
+   "family": "exact",
+   "terms": [
+    "Brightwater invoice number",
+    "Brightwater invoice",
+    "Brightwater",
+    "invoice number"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.010952226799781783,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      69,
+      24,
+      174,
+      39,
+      114
+     ],
+     "relevant": [
+      69,
+      24,
+      174,
+      39,
+      114,
+      159,
+      99,
+      144,
+      84,
+      294,
+      249,
+      279,
+      234,
+      9,
+      204,
+      189
+     ],
+     "bridge_seconds": 0.012
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      69,
+      24,
+      174,
+      39,
+      114
+     ],
+     "relevant": [
+      69,
+      24,
+      174,
+      39,
+      114,
+      159,
+      99,
+      144,
+      84,
+      294,
+      249,
+      279,
+      234,
+      9,
+      189,
+      204,
+      89,
+      149,
+      4,
+      198
+     ],
+     "bridge_seconds": 0.009
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      24,
+      69,
+      39,
+      174,
+      144
+     ],
+     "relevant": [
+      24,
+      69,
+      39,
+      174,
+      144,
+      114,
+      111,
+      6,
+      84,
+      159,
+      244,
+      142,
+      99,
+      240,
+      150,
+      167,
+      246,
+      202,
+      201,
+      145
+     ],
+     "top_scores": [
+      0.6033,
+      0.5246,
+      0.4908,
+      0.479,
+      0.4741,
+      0.4741,
+      0.4724
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      69,
+      24,
+      39,
+      174,
+      114
+     ],
+     "relevant": [
+      69,
+      24,
+      39,
+      174,
+      114,
+      84,
+      159,
+      99,
+      144,
+      189,
+      240,
+      6,
+      111,
+      150,
+      249,
+      51,
+      279,
+      167,
+      234,
+      202
+     ],
+     "top_scores": [
+      0.6521,
+      0.642,
+      0.6272,
+      0.616,
+      0.5662,
+      0.5602,
+      0.5525
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      24,
+      69,
+      39,
+      144,
+      114
+     ],
+     "relevant": [
+      24,
+      69,
+      39,
+      144,
+      114,
+      84,
+      174,
+      99,
+      159,
+      6,
+      111,
+      240,
+      265,
+      150,
+      246,
+      244,
+      167,
+      135,
+      197,
+      234
+     ],
+     "top_scores": [
+      0.6467,
+      0.4932,
+      0.4918,
+      0.4847,
+      0.4821,
+      0.4817,
+      0.4776
+     ]
+    }
+   }
+  },
+  {
+   "id": "exact-04",
+   "family": "exact",
+   "terms": [
+    "How much rye flour do I feed the sourdough starter?"
+   ],
+   "phrases_usable": false,
+   "embed_seconds_per_text": 0.015995677999853797,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      66,
+      79,
+      288,
+      21,
+      12
+     ],
+     "relevant": [
+      66,
+      79,
+      288,
+      21,
+      12,
+      48,
+      258,
+      37,
+      42,
+      236,
+      58,
+      27,
+      18,
+      93,
+      62,
+      214,
+      210,
+      74,
+      208,
+      84
+     ],
+     "bridge_seconds": 0.013
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      66,
+      79,
+      288,
+      21,
+      12
+     ],
+     "relevant": [
+      66,
+      79,
+      288,
+      21,
+      12,
+      48,
+      258,
+      37,
+      42,
+      236,
+      58,
+      27,
+      18,
+      93,
+      62,
+      214,
+      210,
+      74,
+      208,
+      84
+     ],
+     "bridge_seconds": 0.009
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      66,
+      18,
+      93,
+      288,
+      48
+     ],
+     "relevant": [
+      66,
+      18,
+      93,
+      288,
+      48,
+      63,
+      228,
+      258,
+      123,
+      178,
+      27,
+      273,
+      3,
+      168,
+      138,
+      169,
+      260,
+      157,
+      298,
+      14
+     ],
+     "top_scores": [
+      0.7209,
+      0.608,
+      0.6007,
+      0.5955,
+      0.5337,
+      0.5114,
+      0.5084
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      66,
+      18,
+      93,
+      288,
+      48
+     ],
+     "relevant": [
+      66,
+      18,
+      93,
+      288,
+      48,
+      63,
+      228,
+      258,
+      123,
+      178,
+      27,
+      273,
+      3,
+      168,
+      138,
+      169,
+      260,
+      157,
+      298,
+      14
+     ],
+     "top_scores": [
+      0.7209,
+      0.608,
+      0.6007,
+      0.5955,
+      0.5337,
+      0.5114,
+      0.5084
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      66,
+      18,
+      288,
+      93,
+      48
+     ],
+     "relevant": [
+      66,
+      18,
+      288,
+      93,
+      48,
+      63,
+      258,
+      138,
+      123,
+      273,
+      228,
+      33,
+      3,
+      78,
+      12,
+      183,
+      157,
+      252,
+      243,
+      210
+     ],
+     "top_scores": [
+      0.6411,
+      0.6221,
+      0.6026,
+      0.5865,
+      0.5517,
+      0.545,
+      0.5349
+     ]
+    }
+   }
+  },
+  {
+   "id": "exact-05",
+   "family": "exact",
+   "terms": [
+    "Quillon repository",
+    "Quillon deploy credentials",
+    "Quillon deployment credentials",
+    "Quillon repository credential"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.01591332039970439,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      140,
+      47,
+      197,
+      17,
+      107
+     ],
+     "relevant": [
+      140,
+      47,
+      197,
+      17,
+      107,
+      152
+     ],
+     "bridge_seconds": 0.01
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      140,
+      17,
+      47,
+      197,
+      152
+     ],
+     "relevant": [
+      140,
+      17,
+      47,
+      197,
+      152
+     ],
+     "bridge_seconds": 0.012
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      140,
+      17,
+      137,
+      197,
+      287
+     ],
+     "relevant": [
+      140,
+      17,
+      137,
+      197,
+      287,
+      165,
+      77,
+      26,
+      2,
+      285,
+      47,
+      125,
+      272,
+      175,
+      255,
+      195,
+      176,
+      152,
+      206,
+      167
+     ],
+     "top_scores": [
+      0.6796,
+      0.4968,
+      0.4723,
+      0.4637,
+      0.4578,
+      0.4573,
+      0.4472
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      140,
+      17,
+      197,
+      47,
+      137
+     ],
+     "relevant": [
+      140,
+      17,
+      197,
+      47,
+      137,
+      77,
+      279,
+      148,
+      287,
+      285,
+      106,
+      29,
+      262,
+      2,
+      57,
+      210,
+      172,
+      219,
+      62,
+      167
+     ],
+     "top_scores": [
+      0.7099,
+      0.5279,
+      0.4911,
+      0.4848,
+      0.473,
+      0.47,
+      0.4661
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      140,
+      17,
+      77,
+      137,
+      285
+     ],
+     "relevant": [
+      140,
+      17,
+      77,
+      137,
+      285,
+      165,
+      152,
+      195,
+      227,
+      222,
+      60,
+      125,
+      270,
+      255,
+      272,
+      287,
+      197,
+      182,
+      2,
+      219
+     ],
+     "top_scores": [
+      0.6323,
+      0.4932,
+      0.4662,
+      0.4561,
+      0.4374,
+      0.4327,
+      0.423
+     ]
+    }
+   }
+  },
+  {
+   "id": "exact-06",
+   "family": "exact",
+   "terms": [
+    "physiotherapy sessions Dr. Venkataraman",
+    "physiotherapy appointments",
+    "Dr. Venkataraman appointments",
+    "physiotherapy schedule"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.018490581000150996,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      62,
+      130,
+      265,
+      241,
+      175
+     ],
+     "relevant": [
+      62,
+      130,
+      265,
+      241,
+      175,
+      250,
+      263,
+      220,
+      172,
+      145,
+      41,
+      295,
+      297,
+      85,
+      7,
+      10,
+      40,
+      86,
+      211,
+      112
+     ],
+     "bridge_seconds": 0.014
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      62,
+      175,
+      130,
+      172,
+      145
+     ],
+     "relevant": [
+      62,
+      175,
+      130,
+      172,
+      145,
+      265,
+      7,
+      86,
+      112,
+      251,
+      281,
+      11,
+      168,
+      116,
+      296,
+      161,
+      232,
+      78,
+      41,
+      262
+     ],
+     "bridge_seconds": 0.009
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      62,
+      85,
+      235,
+      22,
+      52
+     ],
+     "relevant": [
+      62,
+      85,
+      235,
+      22,
+      52,
+      97,
+      160,
+      175,
+      250,
+      127,
+      41,
+      296,
+      172,
+      205,
+      211,
+      82,
+      217,
+      5,
+      10,
+      130
+     ],
+     "top_scores": [
+      0.5604,
+      0.5476,
+      0.5255,
+      0.5049,
+      0.4968,
+      0.4966,
+      0.4791
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      85,
+      235,
+      160,
+      250,
+      62
+     ],
+     "relevant": [
+      85,
+      235,
+      160,
+      250,
+      62,
+      10,
+      97,
+      220,
+      70,
+      52,
+      127,
+      40,
+      22,
+      295,
+      217,
+      115,
+      277,
+      45,
+      205,
+      25
+     ],
+     "top_scores": [
+      0.6452,
+      0.6415,
+      0.6309,
+      0.6211,
+      0.5978,
+      0.5644,
+      0.5617
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      62,
+      160,
+      85,
+      235,
+      52
+     ],
+     "relevant": [
+      62,
+      160,
+      85,
+      235,
+      52,
+      97,
+      22,
+      175,
+      250,
+      127,
+      10,
+      41,
+      40,
+      142,
+      217,
+      146,
+      82,
+      157,
+      131,
+      145
+     ],
+     "top_scores": [
+      0.6225,
+      0.5281,
+      0.5176,
+      0.5116,
+      0.5079,
+      0.5052,
+      0.5021
+     ]
+    }
+   }
+  },
+  {
+   "id": "exact-07",
+   "family": "exact",
+   "terms": [
+    "book club November selection",
+    "book club pick November",
+    "November book club choice",
+    "book club reading November"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.013610303599853069,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      180,
+      37,
+      67,
+      187,
+      268
+     ],
+     "relevant": [
+      180,
+      37,
+      67,
+      187,
+      268,
+      292,
+      278,
+      68,
+      299,
+      73,
+      83,
+      113,
+      253,
+      208,
+      133,
+      238,
+      188,
+      182,
+      245,
+      136
+     ],
+     "bridge_seconds": 0.012
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      180,
+      37,
+      67,
+      187,
+      268
+     ],
+     "relevant": [
+      180,
+      37,
+      67,
+      187,
+      268,
+      292,
+      73,
+      83,
+      253,
+      208,
+      133,
+      238,
+      245,
+      136,
+      232,
+      29,
+      91,
+      205,
+      134,
+      183
+     ],
+     "bridge_seconds": 0.012
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      180,
+      178,
+      43,
+      298,
+      223
+     ],
+     "relevant": [
+      180,
+      178,
+      43,
+      298,
+      223,
+      238,
+      58,
+      73,
+      30,
+      103,
+      13,
+      243,
+      209,
+      148,
+      264,
+      28,
+      64,
+      170,
+      294,
+      50
+     ],
+     "top_scores": [
+      0.5316,
+      0.4998,
+      0.4856,
+      0.4733,
+      0.473,
+      0.4717,
+      0.4505
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      180,
+      43,
+      178,
+      223,
+      58
+     ],
+     "relevant": [
+      180,
+      43,
+      178,
+      223,
+      58,
+      298,
+      238,
+      103,
+      73,
+      28,
+      30,
+      13,
+      148,
+      243,
+      209,
+      230,
+      154,
+      170,
+      262,
+      64
+     ],
+     "top_scores": [
+      0.6,
+      0.5757,
+      0.5734,
+      0.5463,
+      0.5325,
+      0.5319,
+      0.528
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      178,
+      238,
+      103,
+      223,
+      180
+     ],
+     "relevant": [
+      178,
+      238,
+      103,
+      223,
+      180,
+      43,
+      73,
+      298,
+      163,
+      148,
+      58,
+      28,
+      110,
+      13,
+      283,
+      37,
+      213,
+      64,
+      33,
+      208
+     ],
+     "top_scores": [
+      0.4925,
+      0.4815,
+      0.4766,
+      0.4755,
+      0.4754,
+      0.4742,
+      0.4657
+     ]
+    }
+   }
+  },
+  {
+   "id": "exact-08",
+   "family": "exact",
+   "terms": [
+    "boiler service booking",
+    "boiler service appointment",
+    "boiler service scheduled date",
+    "boiler service when"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.011626393199912854,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      241,
+      48,
+      40,
+      211,
+      220
+     ],
+     "relevant": [
+      241,
+      48,
+      40,
+      211,
+      220,
+      257,
+      121,
+      167,
+      265,
+      136,
+      250,
+      1,
+      47,
+      181,
+      226,
+      25,
+      263,
+      45,
+      197,
+      130
+     ],
+     "bridge_seconds": 0.01
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      48,
+      121,
+      167,
+      136,
+      226
+     ],
+     "relevant": [
+      48,
+      121,
+      167,
+      136,
+      226,
+      257,
+      197,
+      241,
+      1,
+      47,
+      181,
+      211,
+      2,
+      245,
+      232,
+      29,
+      91,
+      205,
+      134,
+      183
+     ],
+     "bridge_seconds": 0.011
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      45,
+      199,
+      48,
+      181,
+      44
+     ],
+     "relevant": [
+      45,
+      199,
+      48,
+      181,
+      44,
+      241,
+      104,
+      75,
+      250,
+      139,
+      134,
+      263,
+      285,
+      211,
+      31,
+      108,
+      5,
+      154,
+      209,
+      284
+     ],
+     "top_scores": [
+      0.6006,
+      0.56,
+      0.5541,
+      0.5509,
+      0.5487,
+      0.5462,
+      0.5444
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      241,
+      199,
+      45,
+      250,
+      181
+     ],
+     "relevant": [
+      241,
+      199,
+      45,
+      250,
+      181,
+      220,
+      48,
+      257,
+      139,
+      5,
+      75,
+      211,
+      234,
+      13,
+      210,
+      160,
+      248,
+      235,
+      226,
+      10
+     ],
+     "top_scores": [
+      0.6069,
+      0.5925,
+      0.5915,
+      0.5857,
+      0.5651,
+      0.5634,
+      0.5621
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      48,
+      139,
+      211,
+      104,
+      44
+     ],
+     "relevant": [
+      48,
+      139,
+      211,
+      104,
+      44,
+      250,
+      134,
+      241,
+      45,
+      121,
+      13,
+      254,
+      160,
+      119,
+      64,
+      2,
+      193,
+      38,
+      53,
+      181
+     ],
+     "top_scores": [
+      0.5466,
+      0.5353,
+      0.5352,
+      0.534,
+      0.5215,
+      0.5171,
+      0.5088
+     ]
+    }
+   }
+  },
+  {
+   "id": "exact-09",
+   "family": "exact",
+   "terms": [
+    "Tamsin Park allotment plot number",
+    "my allotment plot Tamsin Park",
+    "Tamsin Park allotment garden"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.01158323699974062,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      222,
+      229,
+      104,
+      264,
+      69
+     ],
+     "relevant": [
+      222,
+      229,
+      104,
+      264,
+      300,
+      69,
+      294,
+      174,
+      196,
+      249,
+      279,
+      234,
+      289,
+      89,
+      39,
+      9,
+      82,
+      204,
+      189,
+      113
+     ],
+     "bridge_seconds": 0.009
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      222,
+      69,
+      294,
+      174,
+      196
+     ],
+     "relevant": [
+      222,
+      300,
+      69,
+      294,
+      174,
+      196,
+      249,
+      279,
+      234,
+      289,
+      89,
+      9,
+      39,
+      82,
+      189,
+      204,
+      59,
+      113,
+      166,
+      114
+     ],
+     "bridge_seconds": 0.008
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      222,
+      113,
+      154,
+      184,
+      59
+     ],
+     "relevant": [
+      222,
+      300,
+      113,
+      154,
+      184,
+      59,
+      75,
+      52,
+      82,
+      68,
+      289,
+      176,
+      252,
+      88,
+      180,
+      95,
+      285,
+      196,
+      4,
+      264
+     ],
+     "top_scores": [
+      0.7447,
+      0.4992,
+      0.4587,
+      0.4543,
+      0.4506,
+      0.4493,
+      0.4457
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      222,
+      184,
+      59,
+      113,
+      52
+     ],
+     "relevant": [
+      222,
+      300,
+      184,
+      59,
+      113,
+      52,
+      289,
+      4,
+      75,
+      264,
+      82,
+      180,
+      154,
+      229,
+      94,
+      196,
+      285,
+      68,
+      8,
+      85
+     ],
+     "top_scores": [
+      0.7658,
+      0.4828,
+      0.4608,
+      0.4596,
+      0.4536,
+      0.4509,
+      0.4496
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      222,
+      196,
+      289,
+      166,
+      88
+     ],
+     "relevant": [
+      222,
+      300,
+      196,
+      289,
+      166,
+      88,
+      8,
+      229,
+      82,
+      94,
+      98,
+      158,
+      154,
+      33,
+      250,
+      29,
+      68,
+      1,
+      286,
+      113
+     ],
+     "top_scores": [
+      0.6995,
+      0.4684,
+      0.4525,
+      0.45,
+      0.4358,
+      0.4287,
+      0.4286
+     ]
+    }
+   }
+  },
+  {
+   "id": "exact-10",
+   "family": "exact",
+   "terms": [
+    "Carrow Mill wedding venue guest capacity",
+    "Carrow Mill wedding venue maximum guests",
+    "Carrow Mill venue guest list cap",
+    "Carrow Mill wedding venue capacity limits"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.015974753800037433,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      27,
+      184,
+      199,
+      104,
+      264
+     ],
+     "relevant": [
+      27,
+      184,
+      199,
+      104,
+      264,
+      229,
+      4,
+      244
+     ],
+     "bridge_seconds": 0.012
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      27,
+      184,
+      264,
+      229,
+      4
+     ],
+     "relevant": [
+      27,
+      184,
+      264,
+      229,
+      4,
+      199,
+      104,
+      244
+     ],
+     "bridge_seconds": 0.008
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      27,
+      184,
+      4,
+      50,
+      94
+     ],
+     "relevant": [
+      27,
+      184,
+      4,
+      50,
+      94,
+      64,
+      289,
+      154,
+      104,
+      109,
+      199,
+      274,
+      224,
+      44,
+      201,
+      75,
+      170,
+      260,
+      91,
+      239
+     ],
+     "top_scores": [
+      0.5647,
+      0.4972,
+      0.495,
+      0.4809,
+      0.4674,
+      0.4637,
+      0.4419
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      27,
+      184,
+      4,
+      199,
+      50
+     ],
+     "relevant": [
+      27,
+      184,
+      4,
+      199,
+      50,
+      94,
+      196,
+      109,
+      104,
+      64,
+      82,
+      281,
+      224,
+      161,
+      229,
+      289,
+      202,
+      187,
+      139,
+      222
+     ],
+     "top_scores": [
+      0.6528,
+      0.6071,
+      0.5352,
+      0.5182,
+      0.5179,
+      0.5118,
+      0.5109
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      27,
+      4,
+      64,
+      184,
+      104
+     ],
+     "relevant": [
+      27,
+      4,
+      64,
+      184,
+      104,
+      94,
+      289,
+      50,
+      24,
+      245,
+      170,
+      229,
+      154,
+      78,
+      33,
+      250,
+      274,
+      222,
+      44,
+      82
+     ],
+     "top_scores": [
+      0.5327,
+      0.4367,
+      0.4363,
+      0.4307,
+      0.4276,
+      0.4213,
+      0.4208
+     ]
+    }
+   }
+  },
+  {
+   "id": "paraphrase-01",
+   "family": "paraphrase",
+   "terms": [
+    "kid braces check-up appointment",
+    "child orthodontist appointment braces",
+    "dental braces check-up date",
+    "orthodontist appointment for child"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.0143088283999532,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      171,
+      241,
+      40,
+      72,
+      280
+     ],
+     "relevant": [
+      171,
+      241,
+      40,
+      72,
+      280,
+      117,
+      147,
+      238,
+      130,
+      295,
+      235,
+      97,
+      10,
+      102,
+      31,
+      211,
+      217,
+      57,
+      221,
+      265
+     ],
+     "bridge_seconds": 0.011
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      72,
+      253,
+      57,
+      132,
+      194
+     ],
+     "relevant": [
+      72,
+      253,
+      57,
+      132,
+      194,
+      222,
+      117,
+      147,
+      177,
+      161,
+      18,
+      111,
+      73,
+      271,
+      207,
+      103,
+      264,
+      203,
+      238,
+      51
+     ],
+     "bridge_seconds": 0.012
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      171,
+      54,
+      214,
+      130,
+      24
+     ],
+     "relevant": [
+      171,
+      54,
+      214,
+      130,
+      24,
+      100,
+      145,
+      175,
+      265,
+      205,
+      234,
+      255,
+      250,
+      235,
+      115,
+      5,
+      144,
+      31,
+      149,
+      294
+     ],
+     "top_scores": [
+      0.5775,
+      0.5609,
+      0.5463,
+      0.5369,
+      0.5322,
+      0.528,
+      0.522
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      130,
+      54,
+      171,
+      295,
+      265
+     ],
+     "relevant": [
+      130,
+      54,
+      171,
+      295,
+      265,
+      220,
+      145,
+      250,
+      25,
+      115,
+      10,
+      100,
+      24,
+      234,
+      40,
+      70,
+      160,
+      175,
+      205,
+      241
+     ],
+     "top_scores": [
+      0.6139,
+      0.6106,
+      0.604,
+      0.602,
+      0.6008,
+      0.5976,
+      0.5927
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      171,
+      205,
+      145,
+      54,
+      175
+     ],
+     "relevant": [
+      171,
+      205,
+      145,
+      54,
+      175,
+      265,
+      100,
+      234,
+      130,
+      214,
+      5,
+      147,
+      10,
+      255,
+      24,
+      40,
+      250,
+      35,
+      115,
+      144
+     ],
+     "top_scores": [
+      0.5842,
+      0.5391,
+      0.5311,
+      0.5293,
+      0.5271,
+      0.5262,
+      0.5258
+     ]
+    }
+   }
+  },
+  {
+   "id": "paraphrase-02",
+   "family": "paraphrase",
+   "terms": [
+    "station wagon sale price",
+    "offloading station wagon",
+    "selling station wagon",
+    "station wagon transaction"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.014843142999961857,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      49,
+      244
+     ],
+     "relevant": [
+      49,
+      244
+     ],
+     "bridge_seconds": 0.012
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      37,
+      242,
+      136,
+      220,
+      154
+     ],
+     "relevant": [
+      37,
+      242,
+      136,
+      220,
+      154,
+      215,
+      256,
+      27,
+      214,
+      210,
+      74,
+      208,
+      84,
+      285,
+      130,
+      20,
+      100,
+      227,
+      114,
+      96
+     ],
+     "bridge_seconds": 0.009
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      226,
+      121,
+      66,
+      51,
+      111
+     ],
+     "relevant": [
+      226,
+      121,
+      66,
+      51,
+      111,
+      291,
+      286,
+      223,
+      14,
+      61,
+      256,
+      86,
+      166,
+      35,
+      201,
+      55,
+      264,
+      95,
+      28,
+      241
+     ],
+     "top_scores": [
+      0.5368,
+      0.5241,
+      0.5047,
+      0.5035,
+      0.5027,
+      0.5018,
+      0.4932
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      226,
+      121,
+      20,
+      106,
+      35
+     ],
+     "relevant": [
+      226,
+      121,
+      20,
+      106,
+      35,
+      231,
+      241,
+      61,
+      215,
+      185,
+      216,
+      256,
+      128,
+      136,
+      239,
+      291,
+      9,
+      151,
+      268,
+      55
+     ],
+     "top_scores": [
+      0.5471,
+      0.5429,
+      0.5308,
+      0.5243,
+      0.5131,
+      0.5119,
+      0.511
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      20,
+      66,
+      14,
+      226,
+      121
+     ],
+     "relevant": [
+      20,
+      66,
+      14,
+      226,
+      121,
+      291,
+      241,
+      161,
+      286,
+      187,
+      264,
+      256,
+      28,
+      215,
+      86,
+      290,
+      185,
+      136,
+      19,
+      51
+     ],
+     "top_scores": [
+      0.5098,
+      0.5062,
+      0.5003,
+      0.4969,
+      0.4929,
+      0.4907,
+      0.4832
+     ]
+    }
+   }
+  },
+  {
+   "id": "paraphrase-03",
+   "family": "paraphrase",
+   "terms": [
+    "tradesman fix dripping faucet cost",
+    "plumber repair faucet sink price estimate",
+    "faucet repair cost conversation",
+    "tradesman quote faucet fix"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.018573487200046656,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      285,
+      98,
+      203,
+      49,
+      53
+     ],
+     "relevant": [
+      285,
+      98,
+      203,
+      49,
+      53,
+      278,
+      36,
+      38,
+      261,
+      244,
+      188,
+      173,
+      233,
+      156,
+      267,
+      6,
+      67,
+      81,
+      83,
+      231
+     ],
+     "bridge_seconds": 0.01
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      251,
+      6,
+      139,
+      218,
+      249
+     ],
+     "relevant": [
+      251,
+      6,
+      139,
+      218,
+      249,
+      55,
+      261,
+      231,
+      10,
+      285,
+      118,
+      195,
+      126,
+      36,
+      38,
+      84,
+      180,
+      296,
+      163,
+      112
+     ],
+     "bridge_seconds": 0.012
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      203,
+      98,
+      128,
+      143,
+      285
+     ],
+     "relevant": [
+      203,
+      98,
+      128,
+      143,
+      285,
+      38,
+      248,
+      53,
+      83,
+      188,
+      173,
+      233,
+      278,
+      16,
+      158,
+      291,
+      61,
+      23,
+      263,
+      55
+     ],
+     "top_scores": [
+      0.6113,
+      0.5827,
+      0.5497,
+      0.5472,
+      0.5463,
+      0.5444,
+      0.5113
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      203,
+      98,
+      285,
+      188,
+      150
+     ],
+     "relevant": [
+      203,
+      98,
+      285,
+      188,
+      150,
+      143,
+      118,
+      38,
+      128,
+      16,
+      53,
+      202,
+      139,
+      35,
+      142,
+      248,
+      208,
+      218,
+      24,
+      138
+     ],
+     "top_scores": [
+      0.5996,
+      0.5955,
+      0.5753,
+      0.5513,
+      0.5509,
+      0.5447,
+      0.5446
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      203,
+      53,
+      38,
+      143,
+      263
+     ],
+     "relevant": [
+      203,
+      53,
+      38,
+      143,
+      263,
+      98,
+      8,
+      128,
+      188,
+      83,
+      248,
+      278,
+      158,
+      285,
+      113,
+      23,
+      233,
+      66,
+      173,
+      231
+     ],
+     "top_scores": [
+      0.5639,
+      0.531,
+      0.5304,
+      0.5284,
+      0.5272,
+      0.5183,
+      0.5036
+     ]
+    }
+   }
+  },
+  {
+   "id": "paraphrase-04",
+   "family": "paraphrase",
+   "terms": [
+    "team retreat",
+    "next quarter retreat location",
+    "company retreat planning",
+    "retreat schedule quarter"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.009713155400095274,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      277,
+      247,
+      45,
+      110,
+      14
+     ],
+     "relevant": [
+      277,
+      247,
+      45,
+      110,
+      14,
+      240,
+      222,
+      89,
+      75,
+      236,
+      184,
+      124,
+      224,
+      74,
+      119,
+      153,
+      83,
+      188,
+      34,
+      85
+     ],
+     "bridge_seconds": 0.009
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      14,
+      247,
+      277,
+      124,
+      110
+     ],
+     "relevant": [
+      14,
+      247,
+      277,
+      124,
+      110,
+      289,
+      240,
+      133,
+      222,
+      201,
+      216,
+      260,
+      70,
+      204,
+      287,
+      58,
+      236,
+      188,
+      76,
+      292
+     ],
+     "bridge_seconds": 0.008
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      45,
+      247,
+      59,
+      52,
+      44
+     ],
+     "relevant": [
+      45,
+      247,
+      59,
+      52,
+      44,
+      75,
+      154,
+      120,
+      30,
+      165,
+      286,
+      195,
+      259,
+      119,
+      60,
+      89,
+      285,
+      284,
+      281,
+      79
+     ],
+     "top_scores": [
+      0.4796,
+      0.4738,
+      0.4715,
+      0.4618,
+      0.4589,
+      0.4586,
+      0.4561
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      52,
+      97,
+      176,
+      75,
+      5
+     ],
+     "relevant": [
+      52,
+      97,
+      176,
+      75,
+      5,
+      45,
+      59,
+      286,
+      44,
+      26,
+      165,
+      195,
+      120,
+      85,
+      221,
+      13,
+      234,
+      180,
+      175,
+      154
+     ],
+     "top_scores": [
+      0.5405,
+      0.5187,
+      0.5184,
+      0.5176,
+      0.5139,
+      0.5133,
+      0.5117
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      154,
+      44,
+      285,
+      52,
+      59
+     ],
+     "relevant": [
+      154,
+      44,
+      285,
+      52,
+      59,
+      255,
+      179,
+      247,
+      286,
+      165,
+      112,
+      34,
+      224,
+      229,
+      45,
+      277,
+      89,
+      97,
+      119,
+      236
+     ],
+     "top_scores": [
+      0.4368,
+      0.4284,
+      0.4149,
+      0.4115,
+      0.4039,
+      0.3953,
+      0.3947
+     ]
+    }
+   }
+  },
+  {
+   "id": "paraphrase-05",
+   "family": "paraphrase",
+   "terms": [
+    "puppy weight loss recommendation animal clinic",
+    "veterinary advice puppy weight goal",
+    "how much weight should puppy lose clinic",
+    "puppy weight management vet visit"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.01090988460018707,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      37,
+      170,
+      14,
+      237,
+      158
+     ],
+     "relevant": [
+      37,
+      170,
+      14,
+      237,
+      158,
+      217,
+      177,
+      292,
+      40,
+      262,
+      65,
+      132,
+      218,
+      250,
+      141,
+      11,
+      239,
+      110,
+      216,
+      5
+     ],
+     "bridge_seconds": 0.01
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      228,
+      86,
+      40,
+      177,
+      218
+     ],
+     "relevant": [
+      228,
+      86,
+      40,
+      177,
+      218,
+      112,
+      250,
+      251,
+      226,
+      211,
+      136,
+      160,
+      46,
+      223,
+      158,
+      281,
+      11,
+      256,
+      247,
+      293
+     ],
+     "bridge_seconds": 0.009
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      207,
+      117,
+      237,
+      57,
+      72
+     ],
+     "relevant": [
+      207,
+      117,
+      237,
+      57,
+      72,
+      177,
+      14,
+      102,
+      282,
+      132,
+      12,
+      40,
+      250,
+      192,
+      226,
+      297,
+      147,
+      235,
+      211,
+      160
+     ],
+     "top_scores": [
+      0.585,
+      0.5571,
+      0.5419,
+      0.5331,
+      0.528,
+      0.4999,
+      0.4988
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      117,
+      237,
+      207,
+      72,
+      57
+     ],
+     "relevant": [
+      117,
+      237,
+      207,
+      72,
+      57,
+      177,
+      14,
+      192,
+      132,
+      102,
+      235,
+      297,
+      217,
+      250,
+      160,
+      190,
+      85,
+      147,
+      175,
+      12
+     ],
+     "top_scores": [
+      0.6021,
+      0.585,
+      0.5832,
+      0.5762,
+      0.5647,
+      0.5553,
+      0.5494
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      207,
+      57,
+      117,
+      102,
+      237
+     ],
+     "relevant": [
+      207,
+      57,
+      117,
+      102,
+      237,
+      12,
+      250,
+      40,
+      132,
+      14,
+      10,
+      72,
+      42,
+      147,
+      282,
+      160,
+      177,
+      235,
+      62,
+      267
+     ],
+     "top_scores": [
+      0.6021,
+      0.583,
+      0.5674,
+      0.5206,
+      0.519,
+      0.4913,
+      0.4897
+     ]
+    }
+   }
+  },
+  {
+   "id": "paraphrase-06",
+   "family": "paraphrase",
+   "terms": [
+    "jogging days schedule",
+    "exercise routine running",
+    "weekly workout days",
+    "jogging habit routine"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.01053658640012145,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      137,
+      228,
+      15,
+      122,
+      287
+     ],
+     "relevant": [
+      137,
+      228,
+      15,
+      122,
+      287,
+      272,
+      227,
+      2,
+      193,
+      119,
+      182,
+      254,
+      184,
+      17,
+      70,
+      286,
+      162,
+      124,
+      185,
+      274
+     ],
+     "bridge_seconds": 0.009
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      79,
+      124,
+      126,
+      276,
+      37
+     ],
+     "relevant": [
+      79,
+      124,
+      126,
+      276,
+      37,
+      228,
+      236,
+      58,
+      123,
+      48,
+      15,
+      193,
+      63,
+      119,
+      254,
+      137,
+      184,
+      17,
+      70,
+      286
+     ],
+     "bridge_seconds": 0.009
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      52,
+      97,
+      228,
+      217,
+      119
+     ],
+     "relevant": [
+      52,
+      97,
+      228,
+      217,
+      119,
+      104,
+      182,
+      87,
+      242,
+      13,
+      22,
+      254,
+      127,
+      126,
+      211,
+      230,
+      37,
+      124,
+      92,
+      46
+     ],
+     "top_scores": [
+      0.5409,
+      0.5327,
+      0.5283,
+      0.526,
+      0.511,
+      0.5089,
+      0.5049
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      97,
+      37,
+      217,
+      228,
+      127
+     ],
+     "relevant": [
+      97,
+      37,
+      217,
+      228,
+      127,
+      22,
+      82,
+      277,
+      235,
+      52,
+      250,
+      7,
+      62,
+      5,
+      157,
+      199,
+      202,
+      13,
+      298,
+      242
+     ],
+     "top_scores": [
+      0.5621,
+      0.5588,
+      0.5572,
+      0.5439,
+      0.5374,
+      0.529,
+      0.5287
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      52,
+      217,
+      97,
+      254,
+      127
+     ],
+     "relevant": [
+      52,
+      217,
+      97,
+      254,
+      127,
+      142,
+      119,
+      104,
+      37,
+      22,
+      262,
+      82,
+      92,
+      179,
+      154,
+      124,
+      277,
+      44,
+      62,
+      289
+     ],
+     "top_scores": [
+      0.5373,
+      0.5284,
+      0.5261,
+      0.5246,
+      0.5204,
+      0.5128,
+      0.5091
+     ]
+    }
+   }
+  },
+  {
+   "id": "paraphrase-07",
+   "family": "paraphrase",
+   "terms": [
+    "apartment insurance cost",
+    "yearly cover cost apartment",
+    "apartment insurance premium",
+    "renters insurance cost"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.017733765600132755,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      90,
+      297,
+      172,
+      197,
+      264
+     ],
+     "relevant": [
+      90,
+      297,
+      172,
+      197,
+      264,
+      134,
+      296,
+      241,
+      196,
+      281,
+      247,
+      139,
+      116,
+      226,
+      61,
+      253,
+      121,
+      118,
+      178,
+      249
+     ],
+     "bridge_seconds": 0.009
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      297,
+      241,
+      172,
+      197,
+      264
+     ],
+     "relevant": [
+      297,
+      241,
+      172,
+      197,
+      264,
+      286,
+      112,
+      296,
+      196,
+      281,
+      247,
+      139,
+      116,
+      226,
+      61,
+      253,
+      121,
+      118,
+      178,
+      249
+     ],
+     "bridge_seconds": 0.01
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      90,
+      166,
+      196,
+      103,
+      253
+     ],
+     "relevant": [
+      90,
+      166,
+      196,
+      103,
+      253,
+      187,
+      246,
+      286,
+      247,
+      128,
+      83,
+      121,
+      61,
+      112,
+      76,
+      81,
+      186,
+      28,
+      86,
+      16
+     ],
+     "top_scores": [
+      0.6289,
+      0.5035,
+      0.5029,
+      0.4926,
+      0.4701,
+      0.467,
+      0.4658
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      90,
+      196,
+      25,
+      166,
+      61
+     ],
+     "relevant": [
+      90,
+      196,
+      25,
+      166,
+      61,
+      187,
+      139,
+      103,
+      121,
+      226,
+      49,
+      76,
+      16,
+      253,
+      112,
+      128,
+      83,
+      291,
+      232,
+      241
+     ],
+     "top_scores": [
+      0.6099,
+      0.4873,
+      0.48,
+      0.4759,
+      0.4756,
+      0.4722,
+      0.4711
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      90,
+      253,
+      187,
+      161,
+      268
+     ],
+     "relevant": [
+      90,
+      253,
+      187,
+      161,
+      268,
+      190,
+      232,
+      263,
+      81,
+      59,
+      247,
+      51,
+      25,
+      86,
+      291,
+      103,
+      112,
+      23,
+      264,
+      28
+     ],
+     "top_scores": [
+      0.5628,
+      0.5066,
+      0.5042,
+      0.4852,
+      0.4823,
+      0.4772,
+      0.4742
+     ]
+    }
+   }
+  },
+  {
+   "id": "paraphrase-08",
+   "family": "paraphrase",
+   "terms": [
+    "travel document expiration date",
+    "passport expiry date",
+    "travel document validity",
+    "passport expiration"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.009176703000048293,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      76,
+      237,
+      242,
+      134,
+      30
+     ],
+     "relevant": [
+      76,
+      237,
+      242,
+      134,
+      30,
+      86,
+      60,
+      97,
+      31,
+      221,
+      194,
+      83,
+      90,
+      276,
+      173,
+      40,
+      186,
+      181,
+      59,
+      36
+     ],
+     "bridge_seconds": 0.009
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      134,
+      287,
+      227,
+      237,
+      242
+     ],
+     "relevant": [
+      134,
+      287,
+      227,
+      237,
+      242,
+      228,
+      137,
+      122,
+      272,
+      2,
+      182,
+      254,
+      92,
+      126,
+      276,
+      7,
+      255,
+      246,
+      28,
+      135
+     ],
+     "bridge_seconds": 0.008
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      134,
+      76,
+      256,
+      104,
+      276
+     ],
+     "relevant": [
+      134,
+      76,
+      256,
+      104,
+      276,
+      167,
+      51,
+      242,
+      13,
+      254,
+      151,
+      212,
+      141,
+      32,
+      284,
+      60,
+      126,
+      195,
+      89,
+      220
+     ],
+     "top_scores": [
+      0.5705,
+      0.5412,
+      0.5396,
+      0.5369,
+      0.5363,
+      0.5269,
+      0.5216
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      76,
+      134,
+      268,
+      220,
+      237
+     ],
+     "relevant": [
+      76,
+      134,
+      268,
+      220,
+      237,
+      95,
+      151,
+      194,
+      156,
+      167,
+      141,
+      105,
+      124,
+      242,
+      29,
+      209,
+      256,
+      57,
+      13,
+      155
+     ],
+     "top_scores": [
+      0.5786,
+      0.5319,
+      0.5132,
+      0.5072,
+      0.5015,
+      0.4942,
+      0.4941
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      284,
+      134,
+      194,
+      167,
+      92
+     ],
+     "relevant": [
+      284,
+      134,
+      194,
+      167,
+      92,
+      224,
+      104,
+      74,
+      76,
+      119,
+      254,
+      179,
+      89,
+      268,
+      51,
+      21,
+      77,
+      226,
+      44,
+      149
+     ],
+     "top_scores": [
+      0.5534,
+      0.5445,
+      0.5399,
+      0.5395,
+      0.5389,
+      0.5378,
+      0.5364
+     ]
+    }
+   }
+  },
+  {
+   "id": "paraphrase-09",
+   "family": "paraphrase",
+   "terms": [
+    "Which kind of sweetener goes on top of Nana's citrus loaf?"
+   ],
+   "phrases_usable": false,
+   "embed_seconds_per_text": 0.018915773499429633,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      81,
+      51,
+      246,
+      171,
+      156
+     ],
+     "relevant": [
+      81,
+      51,
+      246,
+      171,
+      156,
+      141,
+      213,
+      3,
+      168,
+      287,
+      66,
+      44,
+      288,
+      126,
+      276,
+      40,
+      181,
+      36,
+      229,
+      48
+     ],
+     "bridge_seconds": 0.009
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      81,
+      51,
+      246,
+      171,
+      156
+     ],
+     "relevant": [
+      81,
+      51,
+      246,
+      171,
+      156,
+      141,
+      213,
+      3,
+      168,
+      287,
+      66,
+      44,
+      288,
+      126,
+      276,
+      40,
+      181,
+      36,
+      229,
+      48
+     ],
+     "bridge_seconds": 0.009
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      123,
+      288,
+      258,
+      18,
+      78
+     ],
+     "relevant": [
+      123,
+      288,
+      258,
+      18,
+      78,
+      63,
+      33,
+      198,
+      153,
+      138,
+      93,
+      178,
+      108,
+      66,
+      243,
+      145,
+      260,
+      213,
+      87,
+      3
+     ],
+     "top_scores": [
+      0.5368,
+      0.4915,
+      0.4885,
+      0.4721,
+      0.462,
+      0.4521,
+      0.4506
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      123,
+      288,
+      258,
+      18,
+      78
+     ],
+     "relevant": [
+      123,
+      288,
+      258,
+      18,
+      78,
+      63,
+      33,
+      198,
+      153,
+      138,
+      93,
+      178,
+      108,
+      66,
+      243,
+      145,
+      260,
+      213,
+      87,
+      3
+     ],
+     "top_scores": [
+      0.5368,
+      0.4915,
+      0.4885,
+      0.4721,
+      0.462,
+      0.4521,
+      0.4506
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      288,
+      63,
+      123,
+      18,
+      258
+     ],
+     "relevant": [
+      288,
+      63,
+      123,
+      18,
+      258,
+      138,
+      33,
+      78,
+      153,
+      198,
+      93,
+      213,
+      3,
+      273,
+      243,
+      108,
+      260,
+      228,
+      183,
+      48
+     ],
+     "top_scores": [
+      0.5088,
+      0.4969,
+      0.4968,
+      0.4954,
+      0.4889,
+      0.475,
+      0.464
+     ]
+    }
+   }
+  },
+  {
+   "id": "paraphrase-10",
+   "family": "paraphrase",
+   "terms": [
+    "bookkeeper expense paperwork deadline study",
+    "study expense paperwork deadline bookkeeper",
+    "deadline handing expense paperwork bookkeeper study",
+    "expense paperwork submission deadline study"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.020507343399731325,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      233,
+      164,
+      158,
+      173,
+      249
+     ],
+     "relevant": [
+      233,
+      164,
+      158,
+      173,
+      249
+     ],
+     "bridge_seconds": 0.009
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      233,
+      164,
+      158,
+      173,
+      249
+     ],
+     "relevant": [
+      233,
+      164,
+      158,
+      173,
+      249,
+      89,
+      149,
+      4,
+      198,
+      43,
+      110,
+      144,
+      266,
+      153,
+      148,
+      79,
+      31,
+      269,
+      189,
+      44
+     ],
+     "bridge_seconds": 0.011
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      13,
+      276,
+      163,
+      126,
+      234
+     ],
+     "relevant": [
+      13,
+      276,
+      163,
+      126,
+      234,
+      189,
+      24,
+      148,
+      114,
+      298,
+      156,
+      30,
+      256,
+      144,
+      54,
+      223,
+      254,
+      296,
+      295,
+      131
+     ],
+     "top_scores": [
+      0.5839,
+      0.5683,
+      0.5651,
+      0.5578,
+      0.5569,
+      0.5537,
+      0.5532
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      148,
+      195,
+      163,
+      13,
+      180
+     ],
+     "relevant": [
+      148,
+      195,
+      163,
+      13,
+      180,
+      266,
+      298,
+      230,
+      24,
+      16,
+      223,
+      202,
+      181,
+      233,
+      114,
+      234,
+      155,
+      156,
+      296,
+      105
+     ],
+     "top_scores": [
+      0.5872,
+      0.5528,
+      0.545,
+      0.5448,
+      0.5427,
+      0.5406,
+      0.5369
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      163,
+      276,
+      144,
+      54,
+      114
+     ],
+     "relevant": [
+      163,
+      276,
+      144,
+      54,
+      114,
+      99,
+      80,
+      234,
+      254,
+      220,
+      185,
+      219,
+      148,
+      24,
+      21,
+      189,
+      126,
+      167,
+      174,
+      30
+     ],
+     "top_scores": [
+      0.5925,
+      0.5727,
+      0.5718,
+      0.5669,
+      0.5659,
+      0.5566,
+      0.5499
+     ]
+    }
+   }
+  },
+  {
+   "id": "implicit-01",
+   "family": "implicit",
+   "terms": [
+    "photo renaming script by date",
+    "bulk rename photos EXIF metadata",
+    "organize holiday photos by date",
+    "Python script rename image files"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.012789783799962606,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      155,
+      47,
+      184,
+      110,
+      5
+     ],
+     "relevant": [
+      155,
+      300,
+      47,
+      184,
+      110,
+      5,
+      276,
+      248,
+      200,
+      16,
+      195,
+      198,
+      170,
+      297,
+      215,
+      244,
+      71,
+      163,
+      105,
+      158
+     ],
+     "bridge_seconds": 0.01
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      155,
+      40,
+      71,
+      97,
+      173
+     ],
+     "relevant": [
+      155,
+      300,
+      40,
+      71,
+      97,
+      173,
+      119,
+      57,
+      234,
+      50,
+      72,
+      207,
+      33,
+      218,
+      263,
+      93,
+      201,
+      195,
+      182,
+      53
+     ],
+     "bridge_seconds": 0.009
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      155,
+      181,
+      13,
+      230,
+      180
+     ],
+     "relevant": [
+      155,
+      181,
+      13,
+      230,
+      180,
+      97,
+      195,
+      220,
+      298,
+      108,
+      156,
+      45,
+      205,
+      209,
+      34,
+      163,
+      171,
+      60,
+      10,
+      219
+     ],
+     "top_scores": [
+      0.5414,
+      0.5125,
+      0.5093,
+      0.4876,
+      0.4842,
+      0.4725,
+      0.4721
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      155,
+      13,
+      230,
+      34,
+      180
+     ],
+     "relevant": [
+      155,
+      13,
+      230,
+      34,
+      180,
+      108,
+      163,
+      181,
+      298,
+      237,
+      24,
+      47,
+      287,
+      31,
+      275,
+      57,
+      87,
+      97,
+      156,
+      170
+     ],
+     "top_scores": [
+      0.5817,
+      0.5215,
+      0.5102,
+      0.5005,
+      0.4931,
+      0.4888,
+      0.4851
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      155,
+      230,
+      220,
+      95,
+      254
+     ],
+     "relevant": [
+      155,
+      230,
+      220,
+      95,
+      254,
+      13,
+      275,
+      181,
+      185,
+      265,
+      54,
+      24,
+      280,
+      193,
+      33,
+      212,
+      283,
+      78,
+      45,
+      274
+     ],
+     "top_scores": [
+      0.5405,
+      0.506,
+      0.4986,
+      0.4827,
+      0.4795,
+      0.4778,
+      0.476
+     ]
+    }
+   }
+  },
+  {
+   "id": "implicit-02",
+   "family": "implicit",
+   "terms": [
+    "Suggest a menu for Saturday's dinner party."
+   ],
+   "phrases_usable": false,
+   "embed_seconds_per_text": 0.010290401500242297,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      274,
+      243,
+      104,
+      64,
+      229
+     ],
+     "relevant": [
+      274,
+      243,
+      104,
+      64,
+      229,
+      153,
+      233,
+      210,
+      214,
+      191,
+      193,
+      160,
+      298,
+      127,
+      15,
+      173,
+      108,
+      141,
+      136,
+      279
+     ],
+     "bridge_seconds": 0.009
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      274,
+      243,
+      104,
+      64,
+      229
+     ],
+     "relevant": [
+      274,
+      243,
+      104,
+      64,
+      229,
+      153,
+      233,
+      210,
+      214,
+      191,
+      193,
+      160,
+      298,
+      127,
+      15,
+      173,
+      108,
+      141,
+      136,
+      279
+     ],
+     "bridge_seconds": 0.008
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      243,
+      183,
+      198,
+      230,
+      108
+     ],
+     "relevant": [
+      243,
+      183,
+      198,
+      230,
+      108,
+      153,
+      50,
+      15,
+      274,
+      199,
+      33,
+      64,
+      228,
+      210,
+      299,
+      78,
+      123,
+      139,
+      298,
+      229
+     ],
+     "top_scores": [
+      0.6013,
+      0.5318,
+      0.5287,
+      0.5202,
+      0.5158,
+      0.4992,
+      0.4984
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      243,
+      183,
+      198,
+      230,
+      108
+     ],
+     "relevant": [
+      243,
+      183,
+      198,
+      230,
+      108,
+      153,
+      50,
+      15,
+      274,
+      199,
+      33,
+      64,
+      228,
+      210,
+      299,
+      78,
+      123,
+      139,
+      298,
+      229
+     ],
+     "top_scores": [
+      0.6013,
+      0.5318,
+      0.5287,
+      0.5202,
+      0.5158,
+      0.4992,
+      0.4984
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      198,
+      243,
+      153,
+      33,
+      183
+     ],
+     "relevant": [
+      198,
+      243,
+      153,
+      33,
+      183,
+      273,
+      50,
+      108,
+      78,
+      27,
+      229,
+      64,
+      230,
+      228,
+      138,
+      93,
+      213,
+      104,
+      4,
+      199
+     ],
+     "top_scores": [
+      0.5418,
+      0.5379,
+      0.5281,
+      0.5217,
+      0.5116,
+      0.5059,
+      0.5025
+     ]
+    }
+   }
+  },
+  {
+   "id": "implicit-03",
+   "family": "implicit",
+   "terms": [
+    "Hallam customer shipment delay",
+    "Hallam order delivery",
+    "Hallam company shipping",
+    "Hallam client communication"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.013643046599827357,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      129,
+      189,
+      61,
+      294,
+      16
+     ],
+     "relevant": [
+      129,
+      189,
+      61,
+      294,
+      16,
+      240,
+      150,
+      299,
+      135,
+      221,
+      244,
+      59
+     ],
+     "bridge_seconds": 0.009
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      135,
+      257,
+      240,
+      115,
+      150
+     ],
+     "relevant": [
+      135,
+      257,
+      240,
+      115,
+      150,
+      202,
+      251,
+      165,
+      238,
+      229,
+      164,
+      100,
+      10,
+      177,
+      152,
+      213,
+      151,
+      292,
+      2,
+      21
+     ],
+     "bridge_seconds": 0.009
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      13,
+      220,
+      105,
+      114,
+      234
+     ],
+     "relevant": [
+      13,
+      220,
+      105,
+      114,
+      234,
+      24,
+      135,
+      9,
+      97,
+      113,
+      22,
+      127,
+      300,
+      39,
+      240,
+      230,
+      54,
+      160,
+      215,
+      80
+     ],
+     "top_scores": [
+      0.56,
+      0.5482,
+      0.5463,
+      0.5424,
+      0.54,
+      0.536,
+      0.5315
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      167,
+      135,
+      24,
+      129,
+      189
+     ],
+     "relevant": [
+      167,
+      135,
+      24,
+      129,
+      189,
+      221,
+      181,
+      195,
+      54,
+      184,
+      294,
+      220,
+      234,
+      70,
+      257,
+      115,
+      32,
+      105,
+      113,
+      238
+     ],
+     "top_scores": [
+      0.5457,
+      0.545,
+      0.5373,
+      0.5367,
+      0.5303,
+      0.5178,
+      0.5136
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      24,
+      54,
+      234,
+      99,
+      9
+     ],
+     "relevant": [
+      300,
+      24,
+      54,
+      234,
+      99,
+      9,
+      240,
+      226,
+      114,
+      220,
+      105,
+      135,
+      129,
+      185,
+      174,
+      275,
+      144,
+      233,
+      200,
+      236
+     ],
+     "top_scores": [
+      0.5752,
+      0.5688,
+      0.5597,
+      0.558,
+      0.5517,
+      0.5486,
+      0.548
+     ]
+    }
+   }
+  },
+  {
+   "id": "implicit-04",
+   "family": "implicit",
+   "terms": [
+    "Hebrides long weekend itinerary",
+    "Scottish Hebrides travel guide",
+    "Isle of Skye Hebrides weekend trip",
+    "Hebrides islands itinerary planning"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.016045539200058558,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      44,
+      29,
+      179,
+      89,
+      104
+     ],
+     "relevant": [
+      44,
+      29,
+      179,
+      89,
+      104,
+      119,
+      164,
+      149,
+      242,
+      134,
+      74,
+      269,
+      41,
+      112,
+      288,
+      14,
+      21,
+      169,
+      76,
+      258
+     ],
+     "bridge_seconds": 0.01
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      21,
+      44,
+      179,
+      87,
+      29
+     ],
+     "relevant": [
+      21,
+      44,
+      179,
+      87,
+      29,
+      130,
+      22,
+      100,
+      227,
+      114,
+      168,
+      19,
+      163,
+      13,
+      81,
+      177,
+      298,
+      190,
+      214,
+      210
+     ],
+     "bridge_seconds": 0.011
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      108,
+      44,
+      179,
+      149,
+      37
+     ],
+     "relevant": [
+      108,
+      44,
+      179,
+      149,
+      37,
+      242,
+      277,
+      50,
+      13,
+      210,
+      82,
+      74,
+      127,
+      224,
+      262,
+      209,
+      269,
+      202,
+      134,
+      180
+     ],
+     "top_scores": [
+      0.4913,
+      0.4861,
+      0.4832,
+      0.4677,
+      0.4671,
+      0.4587,
+      0.4531
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      44,
+      179,
+      149,
+      108,
+      74
+     ],
+     "relevant": [
+      44,
+      179,
+      149,
+      108,
+      74,
+      242,
+      239,
+      224,
+      89,
+      209,
+      269,
+      104,
+      91,
+      37,
+      153,
+      119,
+      60,
+      277,
+      127,
+      262
+     ],
+     "top_scores": [
+      0.549,
+      0.54,
+      0.5043,
+      0.4969,
+      0.4939,
+      0.4862,
+      0.4849
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      179,
+      44,
+      149,
+      224,
+      89
+     ],
+     "relevant": [
+      179,
+      44,
+      149,
+      224,
+      89,
+      269,
+      104,
+      74,
+      37,
+      254,
+      239,
+      284,
+      194,
+      14,
+      5,
+      29,
+      119,
+      50,
+      110,
+      108
+     ],
+     "top_scores": [
+      0.5107,
+      0.5105,
+      0.4711,
+      0.4592,
+      0.4563,
+      0.452,
+      0.4514
+     ]
+    }
+   }
+  },
+  {
+   "id": "implicit-05",
+   "family": "implicit",
+   "terms": [
+    "backyard shrubs recommendations",
+    "garden hose recommendations",
+    "best shrubs for home garden",
+    "watering hose for yard"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.013368822399934288,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      125,
+      66,
+      229,
+      104,
+      90
+     ],
+     "relevant": [
+      125,
+      66,
+      229,
+      104,
+      90,
+      264,
+      248,
+      256,
+      183,
+      196,
+      158,
+      15,
+      219,
+      34,
+      4,
+      226,
+      253,
+      121,
+      283,
+      246
+     ],
+     "bridge_seconds": 0.013
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      109,
+      71,
+      202,
+      127,
+      69
+     ],
+     "relevant": [
+      109,
+      71,
+      202,
+      127,
+      69,
+      191,
+      95,
+      294,
+      174,
+      249,
+      279,
+      234,
+      39,
+      9,
+      204,
+      189,
+      162,
+      196,
+      158,
+      114
+     ],
+     "bridge_seconds": 0.008
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      8,
+      188,
+      128,
+      275,
+      38
+     ],
+     "relevant": [
+      8,
+      188,
+      128,
+      275,
+      38,
+      222,
+      192,
+      299,
+      237,
+      98,
+      300,
+      58,
+      283,
+      230,
+      158,
+      127,
+      268,
+      57,
+      285,
+      262
+     ],
+     "top_scores": [
+      0.5011,
+      0.4906,
+      0.4659,
+      0.4658,
+      0.4635,
+      0.4625,
+      0.4609
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      222,
+      8,
+      188,
+      192,
+      237
+     ],
+     "relevant": [
+      222,
+      8,
+      299,
+      188,
+      300,
+      192,
+      237,
+      278,
+      12,
+      38,
+      264,
+      275,
+      297,
+      46,
+      58,
+      128,
+      57,
+      285,
+      127,
+      252
+     ],
+     "top_scores": [
+      0.5068,
+      0.5004,
+      0.4939,
+      0.4912,
+      0.489,
+      0.4657,
+      0.4621
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      8,
+      188,
+      222,
+      98,
+      166
+     ],
+     "relevant": [
+      8,
+      188,
+      222,
+      98,
+      166,
+      91,
+      53,
+      203,
+      128,
+      38,
+      46,
+      196,
+      263,
+      283,
+      158,
+      58,
+      299,
+      192,
+      147,
+      143
+     ],
+     "top_scores": [
+      0.5519,
+      0.5391,
+      0.5144,
+      0.507,
+      0.4926,
+      0.4896,
+      0.4862
+     ]
+    }
+   }
+  },
+  {
+   "id": "implicit-06",
+   "family": "implicit",
+   "terms": [
+    "customer lookup surname database",
+    "database customer query function",
+    "SQL customer search by last name",
+    "Python database customer lookup"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.011106287400252768,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      124,
+      152,
+      47,
+      99,
+      155
+     ],
+     "relevant": [
+      124,
+      152,
+      47,
+      99,
+      155,
+      240,
+      150,
+      135,
+      122,
+      212,
+      22,
+      177,
+      102,
+      267,
+      125,
+      147,
+      140,
+      237,
+      297,
+      72
+     ],
+     "bridge_seconds": 0.01
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      135,
+      124,
+      240,
+      158,
+      150
+     ],
+     "relevant": [
+      135,
+      124,
+      240,
+      158,
+      150,
+      47,
+      71,
+      273,
+      111,
+      119,
+      155,
+      102,
+      252,
+      251,
+      141,
+      156,
+      171,
+      197,
+      293,
+      76
+     ],
+     "bridge_seconds": 0.013
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      124,
+      47,
+      152,
+      244,
+      280
+     ],
+     "relevant": [
+      124,
+      47,
+      152,
+      244,
+      280,
+      155,
+      70,
+      245,
+      190,
+      205,
+      114,
+      167,
+      198,
+      216,
+      220,
+      55,
+      69,
+      86,
+      189,
+      115
+     ],
+     "top_scores": [
+      0.5001,
+      0.4764,
+      0.4686,
+      0.4659,
+      0.4583,
+      0.4519,
+      0.4495
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      47,
+      124,
+      167,
+      152,
+      174
+     ],
+     "relevant": [
+      47,
+      124,
+      167,
+      152,
+      174,
+      240,
+      114,
+      70,
+      190,
+      280,
+      268,
+      220,
+      202,
+      96,
+      163,
+      115,
+      2,
+      55,
+      216,
+      205
+     ],
+     "top_scores": [
+      0.5911,
+      0.5743,
+      0.55,
+      0.5398,
+      0.5351,
+      0.5291,
+      0.5272
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      124,
+      155,
+      47,
+      152,
+      244
+     ],
+     "relevant": [
+      124,
+      155,
+      47,
+      152,
+      244,
+      245,
+      240,
+      9,
+      283,
+      150,
+      70,
+      230,
+      25,
+      220,
+      204,
+      206,
+      167,
+      141,
+      80,
+      39
+     ],
+     "top_scores": [
+      0.4996,
+      0.4961,
+      0.4889,
+      0.4743,
+      0.4737,
+      0.4671,
+      0.4645
+     ]
+    }
+   }
+  },
+  {
+   "id": "implicit-07",
+   "family": "implicit",
+   "terms": [
+    "monthly spending by category",
+    "expense data",
+    "budget categories",
+    "spending breakdown"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.014427778599929298,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      180,
+      120,
+      14,
+      164,
+      230
+     ],
+     "relevant": [
+      180,
+      120,
+      14,
+      164,
+      230,
+      224,
+      75,
+      59,
+      30,
+      65,
+      50,
+      264,
+      71,
+      163,
+      105,
+      158,
+      56,
+      179,
+      11,
+      145
+     ],
+     "bridge_seconds": 0.012
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      258,
+      18,
+      138,
+      126,
+      276
+     ],
+     "relevant": [
+      258,
+      18,
+      138,
+      126,
+      276,
+      273,
+      156,
+      63,
+      269,
+      300,
+      256,
+      53,
+      71,
+      287,
+      163,
+      105,
+      66,
+      158,
+      56,
+      179
+     ],
+     "bridge_seconds": 0.008
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      187,
+      118,
+      112,
+      120,
+      180
+     ],
+     "relevant": [
+      187,
+      118,
+      112,
+      120,
+      180,
+      66,
+      51,
+      83,
+      35,
+      202,
+      232,
+      81,
+      156,
+      178,
+      50,
+      36,
+      90,
+      195,
+      139,
+      246
+     ],
+     "top_scores": [
+      0.4892,
+      0.4791,
+      0.4747,
+      0.4669,
+      0.4663,
+      0.4651,
+      0.464
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      35,
+      291,
+      230,
+      66,
+      187
+     ],
+     "relevant": [
+      35,
+      291,
+      230,
+      66,
+      187,
+      51,
+      253,
+      65,
+      118,
+      120,
+      202,
+      180,
+      112,
+      47,
+      223,
+      103,
+      197,
+      86,
+      216,
+      178
+     ],
+     "top_scores": [
+      0.548,
+      0.5463,
+      0.5369,
+      0.5365,
+      0.5358,
+      0.5348,
+      0.5342
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      187,
+      90,
+      253,
+      180,
+      75
+     ],
+     "relevant": [
+      187,
+      90,
+      253,
+      180,
+      75,
+      30,
+      112,
+      120,
+      36,
+      81,
+      51,
+      190,
+      195,
+      59,
+      118,
+      264,
+      55,
+      66,
+      32,
+      35
+     ],
+     "top_scores": [
+      0.4991,
+      0.4792,
+      0.4692,
+      0.468,
+      0.4672,
+      0.4671,
+      0.4647
+     ]
+    }
+   }
+  },
+  {
+   "id": "implicit-08",
+   "family": "implicit",
+   "terms": [
+    "mum birthday",
+    "mother birthday letter",
+    "birthday wishes mum",
+    "family birthday"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.012074807399767452,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      33,
+      78,
+      213,
+      260,
+      230
+     ],
+     "relevant": [
+      33,
+      78,
+      213,
+      260,
+      230,
+      237,
+      155,
+      160,
+      220,
+      70,
+      295,
+      100,
+      280,
+      115,
+      145
+     ],
+     "bridge_seconds": 0.009
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      33,
+      78,
+      213,
+      230,
+      155
+     ],
+     "relevant": [
+      33,
+      78,
+      213,
+      230,
+      155,
+      160,
+      220,
+      70,
+      295,
+      100,
+      280,
+      115,
+      145
+     ],
+     "bridge_seconds": 0.008
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      230,
+      95,
+      155,
+      237,
+      160
+     ],
+     "relevant": [
+      230,
+      95,
+      155,
+      237,
+      160,
+      220,
+      65,
+      244,
+      170,
+      50,
+      87,
+      4,
+      70,
+      13,
+      245,
+      198,
+      64,
+      78,
+      33,
+      108
+     ],
+     "top_scores": [
+      0.5374,
+      0.5279,
+      0.5034,
+      0.4871,
+      0.4829,
+      0.4787,
+      0.4782
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      155,
+      230,
+      95,
+      78,
+      237
+     ],
+     "relevant": [
+      155,
+      230,
+      95,
+      78,
+      237,
+      65,
+      4,
+      33,
+      50,
+      275,
+      215,
+      160,
+      170,
+      243,
+      260,
+      199,
+      213,
+      220,
+      35,
+      245
+     ],
+     "top_scores": [
+      0.5649,
+      0.5617,
+      0.5461,
+      0.5212,
+      0.5165,
+      0.5029,
+      0.4996
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      230,
+      155,
+      95,
+      33,
+      170
+     ],
+     "relevant": [
+      230,
+      155,
+      95,
+      33,
+      170,
+      65,
+      245,
+      78,
+      260,
+      50,
+      110,
+      220,
+      213,
+      275,
+      64,
+      244,
+      290,
+      200,
+      80,
+      185
+     ],
+     "top_scores": [
+      0.6096,
+      0.5694,
+      0.5692,
+      0.5455,
+      0.5375,
+      0.5371,
+      0.5259
+     ]
+    }
+   }
+  },
+  {
+   "id": "implicit-09",
+   "family": "implicit",
+   "terms": [
+    "weekly progress update",
+    "project status this week",
+    "work accomplishments recent",
+    "team progress update"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.014718145600272691,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      148,
+      293,
+      173,
+      128,
+      175
+     ],
+     "relevant": [
+      148,
+      293,
+      173,
+      128,
+      175,
+      111,
+      158,
+      247,
+      248,
+      68,
+      279,
+      144,
+      277,
+      236,
+      213,
+      70,
+      12,
+      169,
+      31,
+      147
+     ],
+     "bridge_seconds": 0.011
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      169,
+      217,
+      148,
+      262,
+      286
+     ],
+     "relevant": [
+      169,
+      217,
+      148,
+      262,
+      286,
+      5,
+      196,
+      158,
+      132,
+      111,
+      99,
+      34,
+      228,
+      139,
+      253,
+      255,
+      275,
+      235,
+      67,
+      166
+     ],
+     "bridge_seconds": 0.008
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      293,
+      155,
+      157,
+      219,
+      255
+     ],
+     "relevant": [
+      293,
+      155,
+      157,
+      219,
+      255,
+      285,
+      234,
+      264,
+      240,
+      13,
+      5,
+      135,
+      200,
+      117,
+      105,
+      37,
+      62,
+      88,
+      195,
+      68
+     ],
+     "top_scores": [
+      0.5296,
+      0.5245,
+      0.4994,
+      0.4992,
+      0.4978,
+      0.496,
+      0.495
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      68,
+      158,
+      255,
+      248,
+      293
+     ],
+     "relevant": [
+      68,
+      158,
+      255,
+      248,
+      293,
+      243,
+      62,
+      165,
+      234,
+      285,
+      135,
+      180,
+      219,
+      24,
+      217,
+      148,
+      157,
+      298,
+      195,
+      13
+     ],
+     "top_scores": [
+      0.6381,
+      0.6287,
+      0.6162,
+      0.6083,
+      0.6049,
+      0.5987,
+      0.5962
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      255,
+      144,
+      285,
+      195,
+      155
+     ],
+     "relevant": [
+      255,
+      144,
+      285,
+      195,
+      155,
+      180,
+      200,
+      219,
+      135,
+      248,
+      5,
+      75,
+      292,
+      159,
+      264,
+      270,
+      105,
+      30,
+      240,
+      68
+     ],
+     "top_scores": [
+      0.4923,
+      0.4823,
+      0.4806,
+      0.4761,
+      0.4756,
+      0.4715,
+      0.4713
+     ]
+    }
+   }
+  },
+  {
+   "id": "implicit-10",
+   "family": "implicit",
+   "terms": [
+    "GP surgery intake form",
+    "new patient registration form",
+    "medical intake form",
+    "patient details form surgery"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.013255349000246497,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      297,
+      10,
+      14,
+      106,
+      214
+     ],
+     "relevant": [
+      297,
+      10,
+      14,
+      106,
+      214,
+      40,
+      190,
+      69,
+      249,
+      39,
+      70,
+      189,
+      175,
+      85,
+      191,
+      95,
+      294,
+      174,
+      145,
+      279
+     ],
+     "bridge_seconds": 0.009
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      10,
+      14,
+      162,
+      70,
+      145
+     ],
+     "relevant": [
+      10,
+      14,
+      162,
+      70,
+      145,
+      175,
+      85,
+      190,
+      42,
+      177,
+      69,
+      191,
+      95,
+      294,
+      174,
+      249,
+      279,
+      234,
+      39,
+      9
+     ],
+     "bridge_seconds": 0.008
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      70,
+      190,
+      220,
+      205,
+      160
+     ],
+     "relevant": [
+      70,
+      190,
+      220,
+      205,
+      160,
+      10,
+      295,
+      280,
+      115,
+      235,
+      25,
+      85,
+      250,
+      69,
+      55,
+      265,
+      202,
+      100,
+      130,
+      35
+     ],
+     "top_scores": [
+      0.6104,
+      0.6093,
+      0.562,
+      0.56,
+      0.5583,
+      0.558,
+      0.551
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      190,
+      70,
+      205,
+      10,
+      220
+     ],
+     "relevant": [
+      190,
+      70,
+      205,
+      10,
+      220,
+      160,
+      85,
+      130,
+      115,
+      145,
+      235,
+      280,
+      35,
+      250,
+      5,
+      265,
+      175,
+      295,
+      25,
+      55
+     ],
+     "top_scores": [
+      0.6287,
+      0.6174,
+      0.6103,
+      0.5851,
+      0.5842,
+      0.5826,
+      0.5813
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      190,
+      70,
+      175,
+      145,
+      280
+     ],
+     "relevant": [
+      190,
+      70,
+      175,
+      145,
+      280,
+      85,
+      235,
+      220,
+      10,
+      295,
+      160,
+      205,
+      250,
+      35,
+      25,
+      130,
+      55,
+      69,
+      95,
+      5
+     ],
+     "top_scores": [
+      0.5905,
+      0.5869,
+      0.5714,
+      0.5674,
+      0.5668,
+      0.5626,
+      0.5615
+     ]
+    }
+   }
+  },
+  {
+   "id": "absent-01",
+   "family": "absent",
+   "terms": [
+    "Harrow Street bike shed gate code",
+    "bike shed access code Harrow Street",
+    "Harrow Street bicycle storage code",
+    "gate code bike shed Harrow"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.009361604000150691,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      1,
+      124,
+      278,
+      68,
+      158
+     ],
+     "relevant": [
+      1,
+      124,
+      278,
+      68,
+      158,
+      289,
+      94,
+      98,
+      47
+     ],
+     "bridge_seconds": 0.008
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      1,
+      124,
+      278,
+      68,
+      158
+     ],
+     "relevant": [
+      1,
+      124,
+      278,
+      68,
+      158,
+      289,
+      94,
+      98,
+      47,
+      89,
+      149,
+      4,
+      198,
+      43,
+      110,
+      144,
+      266,
+      153,
+      148,
+      79
+     ],
+     "bridge_seconds": 0.008
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      1,
+      136,
+      124,
+      158,
+      196
+     ],
+     "relevant": [
+      1,
+      300,
+      136,
+      124,
+      158,
+      196,
+      289,
+      128,
+      8,
+      91,
+      89,
+      222,
+      284,
+      177,
+      68,
+      211,
+      29,
+      59,
+      67,
+      82
+     ],
+     "top_scores": [
+      0.7191,
+      0.5013,
+      0.4865,
+      0.4772,
+      0.4721,
+      0.47,
+      0.4667
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      1,
+      136,
+      67,
+      158,
+      128
+     ],
+     "relevant": [
+      1,
+      136,
+      67,
+      158,
+      300,
+      128,
+      196,
+      211,
+      68,
+      289,
+      91,
+      119,
+      222,
+      292,
+      104,
+      194,
+      124,
+      37,
+      89,
+      176
+     ],
+     "top_scores": [
+      0.7177,
+      0.5273,
+      0.5256,
+      0.5238,
+      0.511,
+      0.5013,
+      0.4953
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      1,
+      196,
+      289,
+      136,
+      222
+     ],
+     "relevant": [
+      1,
+      196,
+      289,
+      136,
+      300,
+      222,
+      124,
+      119,
+      128,
+      8,
+      82,
+      158,
+      194,
+      67,
+      89,
+      46,
+      29,
+      211,
+      44,
+      284
+     ],
+     "top_scores": [
+      0.6523,
+      0.4692,
+      0.4679,
+      0.4668,
+      0.4637,
+      0.4569,
+      0.4522
+     ]
+    }
+   }
+  },
+  {
+   "id": "absent-02",
+   "family": "absent",
+   "terms": [
+    "Odile return flight",
+    "Odile flight departure",
+    "Odile travel plans",
+    "Odile trip return"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.009611642800155095,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      89,
+      224,
+      44,
+      23,
+      179
+     ],
+     "relevant": [
+      89,
+      224,
+      44,
+      23,
+      179,
+      104,
+      119,
+      254,
+      14,
+      164,
+      149,
+      123,
+      29,
+      242,
+      134,
+      258,
+      265,
+      76,
+      196,
+      126
+     ],
+     "bridge_seconds": 0.009
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      23,
+      179,
+      254,
+      265,
+      224
+     ],
+     "relevant": [
+      23,
+      179,
+      254,
+      265,
+      224,
+      196,
+      126,
+      111,
+      139,
+      88,
+      118,
+      141,
+      123,
+      48,
+      220,
+      180,
+      258,
+      14,
+      236,
+      147
+     ],
+     "bridge_seconds": 0.007
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      179,
+      23,
+      254,
+      74,
+      284
+     ],
+     "relevant": [
+      179,
+      23,
+      254,
+      74,
+      284,
+      209,
+      134,
+      224,
+      269,
+      256,
+      54,
+      30,
+      9,
+      89,
+      80,
+      283,
+      13,
+      60,
+      119,
+      44
+     ],
+     "top_scores": [
+      0.5406,
+      0.5292,
+      0.5133,
+      0.4996,
+      0.4833,
+      0.4751,
+      0.4721
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      23,
+      224,
+      179,
+      284,
+      209
+     ],
+     "relevant": [
+      23,
+      224,
+      179,
+      284,
+      209,
+      269,
+      254,
+      74,
+      262,
+      149,
+      134,
+      50,
+      104,
+      164,
+      283,
+      59,
+      95,
+      29,
+      30,
+      9
+     ],
+     "top_scores": [
+      0.5764,
+      0.5357,
+      0.5339,
+      0.5297,
+      0.5095,
+      0.4985,
+      0.4979
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      179,
+      209,
+      74,
+      284,
+      23
+     ],
+     "relevant": [
+      179,
+      209,
+      74,
+      284,
+      23,
+      134,
+      44,
+      224,
+      194,
+      110,
+      80,
+      269,
+      89,
+      254,
+      119,
+      54,
+      149,
+      164,
+      95,
+      104
+     ],
+     "top_scores": [
+      0.4974,
+      0.4909,
+      0.4888,
+      0.4787,
+      0.4721,
+      0.4636,
+      0.4549
+     ]
+    }
+   }
+  },
+  {
+   "id": "absent-03",
+   "family": "absent",
+   "terms": [
+    "Norland project budget",
+    "Norland project",
+    "project budget Norland",
+    "Norland funding"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.012225772000238066,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      44,
+      181,
+      120,
+      68,
+      180
+     ],
+     "relevant": [
+      44,
+      181,
+      120,
+      68,
+      180,
+      230,
+      224,
+      92,
+      233,
+      75,
+      158,
+      59,
+      293,
+      173,
+      30,
+      65,
+      14,
+      50,
+      137,
+      264
+     ],
+     "bridge_seconds": 0.008
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      44,
+      181,
+      120,
+      68,
+      180
+     ],
+     "relevant": [
+      44,
+      181,
+      120,
+      68,
+      180,
+      230,
+      224,
+      92,
+      233,
+      75,
+      158,
+      59,
+      293,
+      173,
+      30,
+      65,
+      14,
+      50,
+      137,
+      264
+     ],
+     "bridge_seconds": 0.007
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      59,
+      44,
+      181,
+      180,
+      75
+     ],
+     "relevant": [
+      59,
+      44,
+      181,
+      180,
+      75,
+      195,
+      285,
+      224,
+      90,
+      201,
+      264,
+      120,
+      173,
+      112,
+      19,
+      83,
+      51,
+      66,
+      178,
+      290
+     ],
+     "top_scores": [
+      0.5044,
+      0.4912,
+      0.4865,
+      0.4684,
+      0.4626,
+      0.4586,
+      0.4542
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      181,
+      59,
+      44,
+      180,
+      75
+     ],
+     "relevant": [
+      181,
+      59,
+      44,
+      180,
+      75,
+      224,
+      195,
+      264,
+      285,
+      90,
+      201,
+      173,
+      202,
+      50,
+      120,
+      30,
+      83,
+      19,
+      112,
+      14
+     ],
+     "top_scores": [
+      0.5202,
+      0.5006,
+      0.4994,
+      0.4745,
+      0.4698,
+      0.461,
+      0.4531
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      59,
+      181,
+      75,
+      224,
+      180
+     ],
+     "relevant": [
+      59,
+      181,
+      75,
+      224,
+      180,
+      90,
+      44,
+      120,
+      30,
+      14,
+      264,
+      285,
+      112,
+      195,
+      19,
+      60,
+      187,
+      222,
+      161,
+      270
+     ],
+     "top_scores": [
+      0.5042,
+      0.4673,
+      0.4619,
+      0.449,
+      0.4473,
+      0.4417,
+      0.4415
+     ]
+    }
+   }
+  },
+  {
+   "id": "absent-04",
+   "family": "absent",
+   "terms": [
+    "What colour did we choose for the nursery walls?"
+   ],
+   "phrases_usable": false,
+   "embed_seconds_per_text": 0.01358836049985257,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      172,
+      112,
+      6,
+      7,
+      232
+     ],
+     "relevant": [
+      172,
+      112,
+      6,
+      7,
+      232
+     ],
+     "bridge_seconds": 0.009
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      172,
+      112,
+      6,
+      7,
+      232
+     ],
+     "relevant": [
+      172,
+      112,
+      6,
+      7,
+      232
+     ],
+     "bridge_seconds": 0.008
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      83,
+      113,
+      218,
+      278,
+      68
+     ],
+     "relevant": [
+      83,
+      299,
+      113,
+      218,
+      278,
+      68,
+      6,
+      232,
+      184,
+      222,
+      263,
+      221,
+      5,
+      185,
+      285,
+      264,
+      169,
+      170,
+      293,
+      33
+     ],
+     "top_scores": [
+      0.5762,
+      0.5725,
+      0.515,
+      0.485,
+      0.4838,
+      0.4785,
+      0.4637
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      83,
+      113,
+      218,
+      278,
+      68
+     ],
+     "relevant": [
+      83,
+      299,
+      113,
+      218,
+      278,
+      68,
+      6,
+      232,
+      184,
+      222,
+      263,
+      221,
+      5,
+      185,
+      285,
+      264,
+      169,
+      170,
+      293,
+      33
+     ],
+     "top_scores": [
+      0.5762,
+      0.5725,
+      0.515,
+      0.485,
+      0.4838,
+      0.4785,
+      0.4637
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      113,
+      83,
+      218,
+      68,
+      222
+     ],
+     "relevant": [
+      299,
+      113,
+      83,
+      218,
+      68,
+      222,
+      184,
+      110,
+      278,
+      169,
+      6,
+      65,
+      23,
+      109,
+      170,
+      33,
+      232,
+      4,
+      188,
+      233
+     ],
+     "top_scores": [
+      0.591,
+      0.5819,
+      0.5692,
+      0.5221,
+      0.5003,
+      0.4838,
+      0.4788
+     ]
+    }
+   }
+  },
+  {
+   "id": "absent-05",
+   "family": "absent",
+   "terms": [
+    "Biscuit microchip number",
+    "Biscuit pet microchip",
+    "dog named Biscuit microchip",
+    "Biscuit puppy identification"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.009023191199958092,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      14,
+      237,
+      57,
+      72,
+      192
+     ],
+     "relevant": [
+      14,
+      237,
+      57,
+      72,
+      192,
+      222,
+      207,
+      117,
+      69,
+      294,
+      174,
+      249,
+      279,
+      234,
+      39,
+      9,
+      155,
+      102,
+      204,
+      189
+     ],
+     "bridge_seconds": 0.009
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      14,
+      69,
+      294,
+      174,
+      249
+     ],
+     "relevant": [
+      14,
+      69,
+      294,
+      174,
+      249,
+      279,
+      234,
+      9,
+      39,
+      189,
+      204,
+      114,
+      89,
+      149,
+      4,
+      198,
+      43,
+      110,
+      144,
+      266
+     ],
+     "bridge_seconds": 0.008
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      237,
+      57,
+      252,
+      102,
+      14
+     ],
+     "relevant": [
+      237,
+      57,
+      252,
+      102,
+      14,
+      213,
+      117,
+      198,
+      297,
+      192,
+      69,
+      39,
+      147,
+      294,
+      29,
+      27,
+      3,
+      76,
+      9,
+      225
+     ],
+     "top_scores": [
+      0.4771,
+      0.4644,
+      0.4505,
+      0.4437,
+      0.4431,
+      0.4318,
+      0.4248
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      237,
+      57,
+      14,
+      102,
+      192
+     ],
+     "relevant": [
+      237,
+      57,
+      14,
+      102,
+      192,
+      177,
+      117,
+      297,
+      147,
+      198,
+      39,
+      207,
+      252,
+      213,
+      76,
+      69,
+      27,
+      72,
+      225,
+      3
+     ],
+     "top_scores": [
+      0.5565,
+      0.5377,
+      0.5257,
+      0.5196,
+      0.5037,
+      0.4844,
+      0.4765
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      213,
+      102,
+      225,
+      252,
+      237
+     ],
+     "relevant": [
+      213,
+      102,
+      225,
+      252,
+      237,
+      140,
+      3,
+      39,
+      192,
+      222,
+      155,
+      57,
+      12,
+      117,
+      27,
+      15,
+      294,
+      48,
+      177,
+      288
+     ],
+     "top_scores": [
+      0.4533,
+      0.4315,
+      0.4293,
+      0.426,
+      0.4255,
+      0.4206,
+      0.4126
+     ]
+    }
+   }
+  },
+  {
+   "id": "absent-06",
+   "family": "absent",
+   "terms": [
+    "Lisbon hotel booking",
+    "hotel Lisbon reservation",
+    "Lisbon accommodation booked",
+    "trip to Lisbon hotel"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.00862612220007577,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      29,
+      134,
+      104,
+      14,
+      164
+     ],
+     "relevant": [
+      29,
+      134,
+      104,
+      14,
+      164,
+      286,
+      89,
+      119,
+      245,
+      136,
+      232,
+      44,
+      91,
+      205,
+      183,
+      233,
+      31,
+      105,
+      196,
+      149
+     ],
+     "bridge_seconds": 0.009
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      286,
+      196,
+      136,
+      232,
+      31
+     ],
+     "relevant": [
+      286,
+      196,
+      136,
+      232,
+      31,
+      268,
+      91,
+      48,
+      192,
+      218,
+      45,
+      245,
+      22,
+      29,
+      51,
+      205,
+      134,
+      183,
+      233,
+      105
+     ],
+     "bridge_seconds": 0.007
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      286,
+      89,
+      209,
+      134,
+      194
+     ],
+     "relevant": [
+      286,
+      89,
+      209,
+      134,
+      194,
+      59,
+      164,
+      74,
+      284,
+      104,
+      232,
+      44,
+      269,
+      149,
+      119,
+      165,
+      224,
+      254,
+      274,
+      10
+     ],
+     "top_scores": [
+      0.5425,
+      0.5219,
+      0.5196,
+      0.5141,
+      0.5118,
+      0.5055,
+      0.4943
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      286,
+      59,
+      199,
+      134,
+      209
+     ],
+     "relevant": [
+      286,
+      59,
+      199,
+      134,
+      209,
+      89,
+      269,
+      10,
+      75,
+      170,
+      45,
+      44,
+      74,
+      149,
+      224,
+      284,
+      50,
+      220,
+      4,
+      82
+     ],
+     "top_scores": [
+      0.5735,
+      0.5591,
+      0.5512,
+      0.5506,
+      0.5469,
+      0.5352,
+      0.5337
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      89,
+      194,
+      209,
+      74,
+      134
+     ],
+     "relevant": [
+      89,
+      194,
+      209,
+      74,
+      134,
+      269,
+      284,
+      239,
+      164,
+      104,
+      286,
+      119,
+      59,
+      29,
+      27,
+      44,
+      254,
+      149,
+      250,
+      170
+     ],
+     "top_scores": [
+      0.5359,
+      0.5339,
+      0.5164,
+      0.514,
+      0.5114,
+      0.5091,
+      0.5042
+     ]
+    }
+   }
+  },
+  {
+   "id": "absent-07",
+   "family": "absent",
+   "terms": [
+    "Leo football match score",
+    "Leo soccer game result",
+    "Leo football team score",
+    "Leo match outcome football"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.009000080600162618,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      7,
+      247,
+      144,
+      213,
+      277
+     ],
+     "relevant": [
+      7,
+      247,
+      144,
+      213,
+      277,
+      124,
+      22
+     ],
+     "bridge_seconds": 0.009
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      144,
+      213,
+      287,
+      66,
+      44
+     ],
+     "relevant": [
+      144,
+      213,
+      287,
+      66,
+      44,
+      288,
+      126,
+      276,
+      40,
+      181,
+      36,
+      229,
+      246,
+      48,
+      21,
+      169,
+      261,
+      241,
+      234,
+      137
+     ],
+     "bridge_seconds": 0.007
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      274,
+      277,
+      247,
+      154,
+      205
+     ],
+     "relevant": [
+      274,
+      277,
+      247,
+      154,
+      205,
+      236,
+      58,
+      62,
+      144,
+      209,
+      207,
+      52,
+      216,
+      131,
+      198,
+      74,
+      111,
+      276,
+      213,
+      243
+     ],
+     "top_scores": [
+      0.4498,
+      0.4337,
+      0.4135,
+      0.4131,
+      0.411,
+      0.4103,
+      0.4103
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      277,
+      274,
+      209,
+      292,
+      62
+     ],
+     "relevant": [
+      277,
+      274,
+      209,
+      292,
+      62,
+      154,
+      205,
+      37,
+      214,
+      236,
+      198,
+      276,
+      58,
+      213,
+      144,
+      284,
+      262,
+      19,
+      216,
+      252
+     ],
+     "top_scores": [
+      0.4734,
+      0.4481,
+      0.4369,
+      0.4368,
+      0.4357,
+      0.4353,
+      0.4331
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      277,
+      274,
+      247,
+      254,
+      236
+     ],
+     "relevant": [
+      277,
+      274,
+      247,
+      254,
+      236,
+      154,
+      213,
+      181,
+      209,
+      153,
+      198,
+      74,
+      284,
+      33,
+      67,
+      292,
+      164,
+      155,
+      177,
+      222
+     ],
+     "top_scores": [
+      0.4587,
+      0.4529,
+      0.4215,
+      0.4212,
+      0.415,
+      0.4079,
+      0.4075
+     ]
+    }
+   }
+  },
+  {
+   "id": "absent-08",
+   "family": "absent",
+   "terms": [
+    "Carrow Mill wedding caterer",
+    "Carrow Mill wedding catering",
+    "Carrow Mill wedding food",
+    "Carrow Mill event caterer"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.009582115399825852,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      27,
+      4,
+      243,
+      139,
+      229
+     ],
+     "relevant": [
+      27,
+      4,
+      243,
+      139,
+      229,
+      199,
+      109,
+      154,
+      50,
+      259,
+      21
+     ],
+     "bridge_seconds": 0.009
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      27,
+      45
+     ],
+     "relevant": [
+      27,
+      45
+     ],
+     "bridge_seconds": 0.008
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      27,
+      4,
+      173,
+      184,
+      94
+     ],
+     "relevant": [
+      27,
+      4,
+      173,
+      184,
+      94,
+      64,
+      289,
+      109,
+      273,
+      33,
+      239,
+      219,
+      264,
+      8,
+      50,
+      123,
+      154,
+      15,
+      108,
+      199
+     ],
+     "top_scores": [
+      0.5165,
+      0.4529,
+      0.4441,
+      0.4402,
+      0.4336,
+      0.4281,
+      0.426
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      27,
+      123,
+      4,
+      94,
+      93
+     ],
+     "relevant": [
+      27,
+      123,
+      4,
+      94,
+      93,
+      33,
+      184,
+      153,
+      178,
+      108,
+      288,
+      14,
+      18,
+      50,
+      289,
+      258,
+      243,
+      78,
+      198,
+      109
+     ],
+     "top_scores": [
+      0.5905,
+      0.5002,
+      0.4967,
+      0.4949,
+      0.4908,
+      0.4803,
+      0.4769
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      27,
+      78,
+      33,
+      184,
+      289
+     ],
+     "relevant": [
+      27,
+      78,
+      33,
+      184,
+      289,
+      273,
+      108,
+      64,
+      170,
+      94,
+      109,
+      4,
+      213,
+      183,
+      219,
+      239,
+      153,
+      124,
+      104,
+      244
+     ],
+     "top_scores": [
+      0.4674,
+      0.4333,
+      0.4177,
+      0.4074,
+      0.402,
+      0.3962,
+      0.3957
+     ]
+    }
+   }
+  },
+  {
+   "id": "absent-09",
+   "family": "absent",
+   "terms": [
+    "book club hosting December",
+    "book club December host",
+    "December book club event",
+    "who is hosting book club December"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.012521567000294453,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      180,
+      37,
+      67,
+      187,
+      263
+     ],
+     "relevant": [
+      180,
+      37,
+      67,
+      187,
+      263,
+      292,
+      4,
+      109,
+      181,
+      243,
+      2,
+      139,
+      262,
+      199,
+      229,
+      154,
+      21,
+      50,
+      259,
+      245
+     ],
+     "bridge_seconds": 0.01
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      180,
+      37,
+      67,
+      187,
+      263
+     ],
+     "relevant": [
+      180,
+      37,
+      67,
+      187,
+      263,
+      292,
+      262,
+      181,
+      2,
+      196,
+      136,
+      232,
+      31,
+      268,
+      91,
+      48,
+      192,
+      218,
+      45,
+      245
+     ],
+     "bridge_seconds": 0.009
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      180,
+      30,
+      178,
+      73,
+      64
+     ],
+     "relevant": [
+      180,
+      30,
+      178,
+      73,
+      64,
+      274,
+      43,
+      184,
+      154,
+      58,
+      238,
+      223,
+      103,
+      59,
+      75,
+      165,
+      4,
+      209,
+      298,
+      181
+     ],
+     "top_scores": [
+      0.4978,
+      0.493,
+      0.4839,
+      0.4759,
+      0.4659,
+      0.4631,
+      0.4623
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      180,
+      43,
+      30,
+      238,
+      178
+     ],
+     "relevant": [
+      180,
+      43,
+      30,
+      238,
+      178,
+      73,
+      64,
+      181,
+      223,
+      58,
+      139,
+      199,
+      243,
+      103,
+      50,
+      37,
+      262,
+      274,
+      184,
+      298
+     ],
+     "top_scores": [
+      0.5612,
+      0.5483,
+      0.5385,
+      0.538,
+      0.5324,
+      0.5255,
+      0.5241
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      73,
+      178,
+      103,
+      180,
+      223
+     ],
+     "relevant": [
+      73,
+      178,
+      103,
+      180,
+      223,
+      43,
+      238,
+      59,
+      64,
+      58,
+      50,
+      110,
+      298,
+      4,
+      95,
+      13,
+      260,
+      163,
+      28,
+      193
+     ],
+     "top_scores": [
+      0.4572,
+      0.4539,
+      0.4499,
+      0.4374,
+      0.4372,
+      0.4347,
+      0.4332
+     ]
+    }
+   }
+  },
+  {
+   "id": "absent-10",
+   "family": "absent",
+   "terms": [
+    "Fennick account manager",
+    "Fennick company account manager",
+    "Fennick business account manager contact",
+    "who is the account manager at Fennick"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.009386147400073241,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      216,
+      290,
+      291,
+      19,
+      179
+     ],
+     "relevant": [
+      216,
+      290,
+      291,
+      19,
+      179,
+      211,
+      256,
+      141,
+      61,
+      296,
+      79,
+      24,
+      49,
+      57,
+      126,
+      118,
+      176,
+      125,
+      240,
+      210
+     ],
+     "bridge_seconds": 0.01
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      216,
+      57,
+      291,
+      256,
+      290
+     ],
+     "relevant": [
+      216,
+      57,
+      291,
+      256,
+      290,
+      19,
+      141,
+      72,
+      27,
+      155,
+      102,
+      267,
+      125,
+      147,
+      140,
+      237,
+      297,
+      87,
+      287,
+      66
+     ],
+     "bridge_seconds": 0.007
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      19,
+      216,
+      24,
+      96,
+      21
+     ],
+     "relevant": [
+      19,
+      216,
+      24,
+      96,
+      21,
+      290,
+      189,
+      142,
+      47,
+      174,
+      54,
+      99,
+      163,
+      133,
+      176,
+      157,
+      201,
+      270,
+      120,
+      146
+     ],
+     "top_scores": [
+      0.4803,
+      0.4211,
+      0.42,
+      0.4004,
+      0.3932,
+      0.3888,
+      0.3807
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      19,
+      24,
+      96,
+      174,
+      157
+     ],
+     "relevant": [
+      19,
+      24,
+      96,
+      174,
+      157,
+      240,
+      82,
+      21,
+      202,
+      146,
+      114,
+      176,
+      99,
+      290,
+      144,
+      115,
+      127,
+      210,
+      216,
+      167
+     ],
+     "top_scores": [
+      0.533,
+      0.5209,
+      0.4865,
+      0.4862,
+      0.4804,
+      0.4746,
+      0.4665
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      19,
+      24,
+      165,
+      244,
+      54
+     ],
+     "relevant": [
+      19,
+      24,
+      165,
+      244,
+      54,
+      96,
+      265,
+      270,
+      210,
+      36,
+      201,
+      155,
+      99,
+      234,
+      141,
+      140,
+      84,
+      279,
+      255,
+      174
+     ],
+     "top_scores": [
+      0.4624,
+      0.4097,
+      0.4017,
+      0.3967,
+      0.3906,
+      0.3901,
+      0.3879
+     ]
+    }
+   }
+  },
+  {
+   "id": "recent-01",
+   "family": "recent",
+   "terms": [
+    "cupboards decision",
+    "kitchen cupboards choice",
+    "cupboard option settled",
+    "cupboard selection decided"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.009445662800135323,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      182,
+      188,
+      143,
+      113,
+      218
+     ],
+     "relevant": [
+      299,
+      182,
+      188,
+      143,
+      113,
+      218,
+      156,
+      8,
+      68,
+      293,
+      173,
+      95,
+      285,
+      180,
+      17,
+      277,
+      65,
+      278,
+      233,
+      171
+     ],
+     "bridge_seconds": 0.009
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      156,
+      205,
+      277,
+      65,
+      188
+     ],
+     "relevant": [
+      156,
+      205,
+      277,
+      65,
+      188,
+      171,
+      218,
+      182,
+      257,
+      251,
+      89,
+      219,
+      99,
+      193,
+      8,
+      150,
+      74,
+      284,
+      187,
+      267
+     ],
+     "bridge_seconds": 0.008
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      198,
+      183,
+      178,
+      170,
+      165
+     ],
+     "relevant": [
+      299,
+      198,
+      183,
+      178,
+      170,
+      165,
+      230,
+      153,
+      185,
+      168,
+      87,
+      204,
+      50,
+      83,
+      75,
+      65,
+      216,
+      30,
+      35,
+      23
+     ],
+     "top_scores": [
+      0.5239,
+      0.4704,
+      0.462,
+      0.4598,
+      0.4517,
+      0.4485,
+      0.4449
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      156,
+      198,
+      170,
+      185,
+      232
+     ],
+     "relevant": [
+      299,
+      156,
+      198,
+      170,
+      185,
+      232,
+      204,
+      178,
+      294,
+      128,
+      168,
+      220,
+      243,
+      158,
+      75,
+      5,
+      216,
+      183,
+      87,
+      30
+     ],
+     "top_scores": [
+      0.6212,
+      0.548,
+      0.5435,
+      0.5416,
+      0.5299,
+      0.5199,
+      0.5181
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      30,
+      113,
+      50,
+      23,
+      243
+     ],
+     "relevant": [
+      299,
+      30,
+      113,
+      50,
+      23,
+      243,
+      153,
+      198,
+      180,
+      75,
+      238,
+      263,
+      123,
+      138,
+      83,
+      79,
+      72,
+      162,
+      119,
+      204
+     ],
+     "top_scores": [
+      0.5137,
+      0.4578,
+      0.4558,
+      0.4536,
+      0.4531,
+      0.4513,
+      0.4511
+     ]
+    }
+   }
+  },
+  {
+   "id": "recent-02",
+   "family": "recent",
+   "terms": [
+    "cabinet pulls finish selection",
+    "drawer pulls hardware finish",
+    "kitchen cabinet hardware choices",
+    "pulls finish picked"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.010380484599954798,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      68,
+      293,
+      83,
+      113,
+      188
+     ],
+     "relevant": [
+      299,
+      68,
+      293,
+      83,
+      113,
+      188,
+      278,
+      173,
+      73,
+      143,
+      253,
+      285,
+      208,
+      133,
+      158,
+      268,
+      238,
+      180,
+      38,
+      248
+     ],
+     "bridge_seconds": 0.009
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      83,
+      158,
+      73,
+      113,
+      268
+     ],
+     "relevant": [
+      83,
+      158,
+      73,
+      113,
+      268,
+      68,
+      253,
+      208,
+      293,
+      218,
+      188,
+      133,
+      238,
+      38,
+      248,
+      278,
+      3,
+      53,
+      4,
+      30
+     ],
+     "bridge_seconds": 0.008
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      68,
+      293,
+      113,
+      278,
+      9
+     ],
+     "relevant": [
+      68,
+      299,
+      293,
+      113,
+      278,
+      9,
+      173,
+      24,
+      83,
+      218,
+      144,
+      158,
+      58,
+      96,
+      92,
+      163,
+      148,
+      262,
+      188,
+      159
+     ],
+     "top_scores": [
+      0.5625,
+      0.5214,
+      0.4935,
+      0.4816,
+      0.476,
+      0.4675,
+      0.4632
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      198,
+      293,
+      68,
+      83,
+      155
+     ],
+     "relevant": [
+      299,
+      198,
+      293,
+      68,
+      83,
+      155,
+      262,
+      9,
+      276,
+      202,
+      113,
+      37,
+      157,
+      242,
+      58,
+      87,
+      158,
+      298,
+      92,
+      96
+     ],
+     "top_scores": [
+      0.6619,
+      0.5208,
+      0.5161,
+      0.5073,
+      0.5072,
+      0.4867,
+      0.4755
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      68,
+      83,
+      113,
+      173,
+      293
+     ],
+     "relevant": [
+      68,
+      299,
+      83,
+      113,
+      173,
+      293,
+      158,
+      188,
+      148,
+      278,
+      144,
+      219,
+      159,
+      238,
+      54,
+      283,
+      136,
+      218,
+      172,
+      23
+     ],
+     "top_scores": [
+      0.509,
+      0.5086,
+      0.5066,
+      0.4976,
+      0.4812,
+      0.4726,
+      0.4687
+     ]
+    }
+   }
+  },
+  {
+   "id": "recent-03",
+   "family": "recent",
+   "terms": [
+    "penalty notice reference number",
+    "penalty notice discussed",
+    "fine reference number",
+    "penalty notice"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.01414306980004767,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      234,
+      9,
+      69,
+      294,
+      174
+     ],
+     "relevant": [
+      234,
+      9,
+      69,
+      294,
+      174,
+      249,
+      279,
+      39,
+      204,
+      189,
+      114,
+      300,
+      194,
+      153,
+      292,
+      278,
+      297,
+      183,
+      57,
+      102
+     ],
+     "bridge_seconds": 0.01
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      234,
+      9,
+      69,
+      294,
+      174
+     ],
+     "relevant": [
+      234,
+      9,
+      69,
+      294,
+      174,
+      249,
+      279,
+      39,
+      204,
+      189,
+      114,
+      57,
+      33,
+      272,
+      72,
+      205,
+      43,
+      133,
+      119,
+      194
+     ],
+     "bridge_seconds": 0.009
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      189,
+      279,
+      174,
+      249,
+      39
+     ],
+     "relevant": [
+      189,
+      279,
+      174,
+      249,
+      300,
+      39,
+      9,
+      114,
+      252,
+      69,
+      234,
+      135,
+      205,
+      57,
+      220,
+      294,
+      13,
+      6,
+      157,
+      117
+     ],
+     "top_scores": [
+      0.5485,
+      0.5449,
+      0.5399,
+      0.5386,
+      0.5326,
+      0.5256,
+      0.5188
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      279,
+      249,
+      157,
+      57,
+      189
+     ],
+     "relevant": [
+      300,
+      279,
+      249,
+      157,
+      57,
+      189,
+      237,
+      69,
+      174,
+      220,
+      39,
+      13,
+      97,
+      180,
+      115,
+      101,
+      292,
+      55,
+      82,
+      283
+     ],
+     "top_scores": [
+      0.6143,
+      0.5723,
+      0.5511,
+      0.5433,
+      0.536,
+      0.5293,
+      0.5279
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      249,
+      234,
+      279,
+      189,
+      174
+     ],
+     "relevant": [
+      300,
+      249,
+      234,
+      279,
+      189,
+      174,
+      9,
+      204,
+      39,
+      114,
+      166,
+      294,
+      286,
+      236,
+      24,
+      69,
+      226,
+      222,
+      220,
+      196
+     ],
+     "top_scores": [
+      0.5706,
+      0.5348,
+      0.5274,
+      0.5227,
+      0.5151,
+      0.5014,
+      0.497
+     ]
+    }
+   }
+  },
+  {
+   "id": "recent-04",
+   "family": "recent",
+   "terms": [
+    "send it off",
+    "when to send",
+    "sending timeline",
+    "will send"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.01272870199973113,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      15,
+      201,
+      278,
+      197,
+      226
+     ],
+     "relevant": [
+      15,
+      201,
+      300,
+      278,
+      197,
+      226,
+      256,
+      113,
+      46,
+      163,
+      84,
+      99,
+      185,
+      174,
+      54,
+      264,
+      279,
+      118,
+      16,
+      211
+     ],
+     "bridge_seconds": 0.009
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      84,
+      201,
+      15,
+      251,
+      99
+     ],
+     "relevant": [
+      84,
+      201,
+      15,
+      251,
+      99,
+      300,
+      218,
+      174,
+      54,
+      264,
+      279,
+      219,
+      132,
+      74,
+      256,
+      139,
+      226,
+      211,
+      151,
+      128
+     ],
+     "bridge_seconds": 0.008
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      13,
+      87,
+      54,
+      22,
+      114
+     ],
+     "relevant": [
+      13,
+      87,
+      54,
+      22,
+      114,
+      9,
+      129,
+      135,
+      283,
+      163,
+      230,
+      205,
+      99,
+      46,
+      252,
+      219,
+      101,
+      139,
+      208,
+      156
+     ],
+     "top_scores": [
+      0.5626,
+      0.5521,
+      0.5456,
+      0.544,
+      0.5417,
+      0.5405,
+      0.5381
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      276,
+      126,
+      135,
+      13,
+      97
+     ],
+     "relevant": [
+      276,
+      126,
+      135,
+      13,
+      97,
+      22,
+      230,
+      215,
+      129,
+      127,
+      95,
+      163,
+      80,
+      298,
+      142,
+      32,
+      104,
+      87,
+      63,
+      209
+     ],
+     "top_scores": [
+      0.6026,
+      0.5944,
+      0.5875,
+      0.5855,
+      0.5806,
+      0.5739,
+      0.5708
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      30,
+      275,
+      99,
+      134,
+      185
+     ],
+     "relevant": [
+      30,
+      275,
+      99,
+      134,
+      185,
+      226,
+      54,
+      13,
+      200,
+      9,
+      45,
+      241,
+      220,
+      279,
+      276,
+      174,
+      284,
+      215,
+      80,
+      129
+     ],
+     "top_scores": [
+      0.5694,
+      0.5685,
+      0.5652,
+      0.5585,
+      0.5584,
+      0.5581,
+      0.5552
+     ]
+    }
+   }
+  },
+  {
+   "id": "recent-05",
+   "family": "recent",
+   "terms": [
+    "nudge reminder",
+    "remind me to",
+    "follow up reminder",
+    "task reminder nudge"
+   ],
+   "phrases_usable": true,
+   "embed_seconds_per_text": 0.013789624199853278,
+   "arms": {
+    "A": {
+     "delivered": [
+      300,
+      299,
+      230,
+      12,
+      60,
+      117,
+      155
+     ],
+     "relevant": [
+      230,
+      12,
+      60,
+      117,
+      155,
+      56,
+      103,
+      293,
+      129,
+      296,
+      217,
+      172,
+      13,
+      244,
+      212,
+      115,
+      300,
+      10,
+      96,
+      262
+     ],
+     "bridge_seconds": 0.009
+    },
+    "A0": {
+     "delivered": [
+      300,
+      299,
+      103,
+      197,
+      146,
+      139,
+      294
+     ],
+     "relevant": [
+      103,
+      197,
+      146,
+      139,
+      294,
+      88,
+      61,
+      225,
+      210,
+      121,
+      255,
+      118,
+      235,
+      104,
+      135,
+      119,
+      208,
+      166,
+      98,
+      291
+     ],
+     "bridge_seconds": 0.01
+    },
+    "B": {
+     "delivered": [
+      300,
+      299,
+      208,
+      114,
+      65,
+      238,
+      58
+     ],
+     "relevant": [
+      208,
+      114,
+      65,
+      238,
+      58,
+      87,
+      223,
+      273,
+      22,
+      230,
+      260,
+      10,
+      198,
+      177,
+      218,
+      138,
+      13,
+      135,
+      244,
+      142
+     ],
+     "top_scores": [
+      0.5258,
+      0.5239,
+      0.5216,
+      0.5092,
+      0.4997,
+      0.4994,
+      0.4994
+     ]
+    },
+    "C": {
+     "delivered": [
+      300,
+      299,
+      13,
+      129,
+      115,
+      34,
+      230
+     ],
+     "relevant": [
+      13,
+      129,
+      115,
+      34,
+      230,
+      117,
+      255,
+      283,
+      88,
+      9,
+      135,
+      97,
+      240,
+      210,
+      220,
+      252,
+      237,
+      262,
+      234,
+      174
+     ],
+     "top_scores": [
+      0.6559,
+      0.6297,
+      0.6212,
+      0.6169,
+      0.615,
+      0.6124,
+      0.6111
+     ]
+    },
+    "D": {
+     "delivered": [
+      300,
+      299,
+      265,
+      7,
+      198,
+      260,
+      45
+     ],
+     "relevant": [
+      265,
+      7,
+      198,
+      260,
+      45,
+      132,
+      273,
+      138,
+      33,
+      243,
+      31,
+      170,
+      282,
+      153,
+      208,
+      206,
+      200,
+      172,
+      78,
+      95
+     ],
+     "top_scores": [
+      0.5383,
+      0.5347,
+      0.532,
+      0.5304,
+      0.5278,
+      0.5269,
+      0.5268
+     ]
+    }
+   }
+  }
+ ]
+}

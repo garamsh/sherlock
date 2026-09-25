@@ -1,0 +1,20 @@
+== run.py: replaced `raise RuntimeError('pre-request global budget reservation refused')` with `pass`
+FAIL: test_reservation_refuses_before_http_with_accepted_control (run_test.MeterTest.test_reservation_refuses_before_http_with_accepted_control) (field='input')
+FAIL: test_reservation_refuses_before_http_with_accepted_control (run_test.MeterTest.test_reservation_refuses_before_http_with_accepted_control) (field='output')
+Ran 7 tests in 0.008s
+FAILED (failures=2)
+== score.py: replaced `any(a <= s <= b for a, b in spans)` with `bool(spans)`
+FAIL: test_reach_credits_only_sources_inside_returned_intervals (score_test.ScoreTest.test_reach_credits_only_sources_inside_returned_intervals)
+Ran 7 tests in 0.005s
+FAILED (failures=1)
+== run.py: replaced `for m in recent + relevant:` with `for m in relevant + recent:`
+FAIL: test_merge_puts_recent_first_dedupes_and_caps (run_test.MergeTest.test_merge_puts_recent_first_dedupes_and_caps)
+Ran 7 tests in 0.005s
+FAILED (failures=1)
+== score.py: replaced `elif wins > losses and p < 0.05 and guard:` with `elif wins > losses and guard:`
+FAIL: test_verdict_follows_paired_counts_and_controls (score_test.ScoreTest.test_verdict_follows_paired_counts_and_controls)
+Ran 7 tests in 0.006s
+FAILED (failures=1)
+== unmodified
+Ran 7 tests in 0.006s
+OK

@@ -305,7 +305,7 @@ Does the shipped recall, as #858 built it, reproduce the replication's B4 result
 
 ### Method
 
-- **Revision.** The harness and the production code it runs are at `cfc5606`, the implementation commit of #858 on its branch. Go 1.26.5.
+- **Revision.** The harness and the production code it runs are at `cfc5606`, the implementation commit of #858 on the branch of PR #859. Go 1.26.5.
 - **Harness.** [`parity/main.go`](parity/main.go) calls only production code for the store and recall: `sqlite.OpenConversation`, `RecordTurn`, `memory.ConversationSummary`, `memory.ConversationRecall`, the `internal/agent/openai` chat client, and the `internal/agent/openai` embedder.
   - It records the replication's 4,800 messages one per `RecordTurn`, so the store's own batching forms the 1,200 batches of four.
   - Each synthesis request goes through the chat client to a local replay server. The server answers with the recorded n = 4 response for the next batch ([synthesis-n4.jsonl](evidence/replication/synthesis-n4.jsonl)), and the production summarizer decodes it. No paid call was made.
@@ -319,7 +319,7 @@ Does the shipped recall, as #858 built it, reproduce the replication's B4 result
 
 - The store built 1,200 mids from 1,200 replayed synthesis calls. Each mid covers exactly one recorded batch of four, or the harness stops.
 - Two stored summaries differ from the recorded text. Those are the store's credential redaction, as §Replication Synthesis describes.
-- A second run at `cfc5606`, and a third at `68f294c` after a refactor of the store's row closing, wrote byte-identical [rankings](evidence/production-parity/rankings.json).
+- A second run at `cfc5606`, and a third at `68f294c` (both PR #859) after a refactor of the store's row closing, wrote byte-identical [rankings](evidence/production-parity/rankings.json).
 
 ### Results
 
@@ -344,7 +344,7 @@ Does the shipped recall, as #858 built it, reproduce the replication's B4 result
 
 ### Reproduction
 
-From the repository root at `cfc5606` or later, with Docker:
+From the repository root at `cfc5606` (PR #859) or later, with Docker:
 
 ```sh
 docker run -d --name tei-858 -p 127.0.0.1:8090:80 \

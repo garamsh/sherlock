@@ -30,6 +30,7 @@ The `memory_write` transport still requires `memory_ops` because current provide
 ## Open questions
 
 - Recall runs once, before the act loop, and has no threshold, so it cannot report that nothing relevant exists. The act loop has only source inspection and cannot repeat retrieval. Implicit associations and iterative search policy require a separate discriminating evaluation (ADR 0019).
+- Recall reads every embedded episode on each turn and ranks them in process, so its cost grows linearly with stored episodes, one per four messages; no index bounds it.
 - The batch is its own constant of four messages, independent of the rolling window's message limit. Whether one size should set both is with the owner.
 - Synthesis can omit facts or mishandle corrections; an episode summary is model output, not verified truth. Bounded similarity retrieval can also omit evidence. Deterministic tests exercise persistence, correction fixtures, linking, and context bounds; they do not establish general model fidelity.
 - Pending source previews are bounded; unusually long messages require exact source inspection. A persistent model failure prevents startup catch-up until the provider recovers, while completed sources remain intact.

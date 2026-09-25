@@ -319,7 +319,7 @@ Does the shipped recall, as #858 built it, reproduce the replication's B4 result
 
 - The store built 1,200 mids from 1,200 replayed synthesis calls. Each mid covers exactly one recorded batch of four, or the harness stops.
 - Two stored summaries differ from the recorded text. Those are the store's credential redaction, as §Replication Synthesis describes.
-- A second run from the same commit wrote byte-identical [rankings](evidence/production-parity/rankings.json).
+- A second run at `cfc5606`, and a third at `68f294c` after a refactor of the store's row closing, wrote byte-identical [rankings](evidence/production-parity/rankings.json).
 
 ### Results
 

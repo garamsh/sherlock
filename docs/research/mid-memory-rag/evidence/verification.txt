@@ -1,0 +1,11 @@
+PATH=/home/sauce/go/bin:$PATH make ci   (2026-09-26, tree at the report commit before indexing) -> exit 0
+go vet ./...
+golangci-lint run ./...
+0 issues.
+format: 160 files checked, all formatted
+go test ./...: 16 packages ok, 0 FAIL lines
+build: 25 packages built
+
+python3 -m unittest discover -s docs/research/mid-memory-rag -p '*_test.py' -> Ran 7 tests, OK
+run.py rank into a fresh directory from committed synthesis.json and phrases.json -> rows equal True, controls equal True (timing fields excluded)
+MINIMAX_KEY value searched in every evidence/*.json with grep -F: no match; control: the same search matches the base .env

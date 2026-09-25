@@ -1,0 +1,92 @@
+{
+ "manifest": {
+  "revision": "a659ee8f4258d03360347a6e25a3a79ce890cce3",
+  "inputs": {
+   "corpus.py": "36c3175b4fcbd468a99fd756b058f60e07145ed9cfe7507bb4e7f99b97f8f6a3",
+   "corpus.json": "e609d6fc283203a21e071484a6bb499186146466cb2ebbbd00662309ae171209",
+   "queries.json": "cf4a7e8e7d270d0b0160837f5110cd2f64b1db99c2d576050bdf63f849fe6c9e",
+   "bridge.go": "cdd296d2590940db463055533efbf0bf374c95b29ab59eacca9101475a81473d",
+   "embed.py": "1e5f0752d1118e8fe43c100a71c9db32ca7570c15d283fba83b502e3ecb9dd5d",
+   "run.py": "8812c0360e9a88d443caf33cdd54f5911e0aca9bfa5c7e22ca2d19ac44f704b4",
+   "score.py": "f3a769292ceea47583692cda1737501a370cdf1949358d3e151c9bdc9484d1e2",
+   "run_test.py": "dfd449a2716123305bbddc37c381c642ac79e4ec584105499a382f8070dfffb7",
+   "score_test.py": "3f47739e773ca3433cef67d4be5a29cb9777761e4b66b79f89accbf3efcf7613",
+   "preregistration.md": "9335a17719147e89273412d2f57b4e03cedebbdba01fecb430aadefe92da830b"
+  }
+ },
+ "implicit_overlap": {
+  "implicit-01": {
+   "query_hits": 0,
+   "evidence_self_hits": 1
+  },
+  "implicit-02": {
+   "query_hits": 0,
+   "evidence_self_hits": 1
+  },
+  "implicit-03": {
+   "query_hits": 0,
+   "evidence_self_hits": 1
+  },
+  "implicit-04": {
+   "query_hits": 0,
+   "evidence_self_hits": 1
+  },
+  "implicit-05": {
+   "query_hits": 0,
+   "evidence_self_hits": 1
+  },
+  "implicit-06": {
+   "query_hits": 0,
+   "evidence_self_hits": 1
+  },
+  "implicit-07": {
+   "query_hits": 0,
+   "evidence_self_hits": 1
+  },
+  "implicit-08": {
+   "query_hits": 0,
+   "evidence_self_hits": 1
+  },
+  "implicit-09": {
+   "query_hits": 0,
+   "evidence_self_hits": 1
+  },
+  "implicit-10": {
+   "query_hits": 0,
+   "evidence_self_hits": 1
+  }
+ },
+ "standin": {
+  "oracle_sample": [
+   18,
+   35,
+   48,
+   56,
+   72,
+   74,
+   86,
+   118,
+   129,
+   151,
+   152,
+   160,
+   162,
+   197,
+   207,
+   215,
+   250,
+   265,
+   275,
+   289
+  ],
+  "oracle_reach": {
+   "A": 20,
+   "A0": 20,
+   "B": 20,
+   "C": 20
+  },
+  "similarity_top2_equals_recency": 0,
+  "distinct_similarity_top1": 48,
+  "queries": 55
+ }
+}

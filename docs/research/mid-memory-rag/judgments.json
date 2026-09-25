@@ -1,0 +1,14 @@
+{
+ "A-exact-01": "success: inspected source 1, answered 4471 with the 9pm limit",
+ "B-exact-01": "success: inspected source 1, answered 4471 with the 9pm limit",
+ "A-paraphrase-01": "no answer: inspected one ID per call; reached evidence 1367 on the fourth and last call, so the loop ended on a tool result",
+ "B-paraphrase-01": "no answer: evidence delivered (episode 171) but inspected 1361-1364 one per call and never reached 1367",
+ "A-implicit-01": "rule applied: inspected 369 and indented the script with tabs; the script imports a nonexistent module 'Pillow', which the rule does not cover",
+ "B-implicit-01": "rule not applied: evidence episode not delivered; the script is indented with spaces",
+ "A-correction-01": "no answer: evidence delivered (episode 181) but inspected 1441-1444 one per call and never reached 1445",
+ "B-correction-01": "no answer: inspected 1445 on the third call, then spent the last call on an unrelated source",
+ "A-absent-01": "fabricated: gave the storage-unit code 4471 as the bike-shed code without inspecting anything",
+ "B-absent-01": "fabricated: inspected source 1 (storage unit) and gave 4471 as the bike-shed code",
+ "A-recent-01": "no answer: inspected 2385-2388 one per call; 2387 holds the decision but the loop ended on a tool result",
+ "B-recent-01": "no answer: inspected 2385-2388 one per call; 2387 holds the decision but the loop ended on a tool result"
+}

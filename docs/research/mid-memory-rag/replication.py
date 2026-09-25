@@ -27,7 +27,8 @@ ITEMS_PER_CALL = 10
 BATCHES = [4, 8, 16]
 STREAM = 4800
 CONCURRENCY = 4
-LIMITS = {'calls': 4200, 'input': 6_000_000, 'output': 2_600_000, 'usd': 2.90}
+# Amendment 4 raised the ceiling from USD 2.90, still under the issue's USD 3.00.
+LIMITS = {'calls': 4200, 'input': 6_000_000, 'output': 2_600_000, 'usd': 2.99}
 MAX_TOKENS = {'design': 6000, 'converse': 4096, 'synthesis': 2048, 'phrase': 1024}
 BACKOFF = [10, 30, 60]
 SYNTHESIS_ATTEMPTS = 5
@@ -567,21 +568,37 @@ def synthesize(output=OUT):
         parallel([lambda i=i, b=b, j=job: j(i, b) for i, b in enumerate(batches(stream, n), 1) if i not in done])
 
 
+def decode_calls(response):
+    """Tool calls as production decodes them; arguments that are not JSON stay a string, which production recall
+    treats as unusable phrases and answers from the task text."""
+    message = (response.get('choices') or [{}])[0].get('message') or {}
+    calls = []
+    for call in message.get('tool_calls') or []:
+        raw = call['function'].get('arguments') or '{}'
+        try:
+            value = json.loads(raw)
+        except ValueError:
+            value = raw
+        calls.append({'id': call.get('id', ''), 'name': call['function']['name'], 'input': value})
+    return calls
+
+
 def phrases(output=OUT):
     meter = Meter(output, LIMITS)
     path = output / 'phrases.jsonl'
     done = {r['id'] for r in jsonl(path)}
+    recorded = {c['cell'].split('#')[0]: c for c in meter.calls if c['cell'].startswith('phrase-') and 'response' in c}
+
     def job(q):
         db = output / f'capture-{q["id"]}.db'
         wire = run.bridge(mode='recall', db=str(db), task=q['text'])['requests'][0]
         db.unlink(missing_ok=True)
-        entry = meter.call(f'phrase-{q["id"]}', wire, MAX_TOKENS['phrase'])
+        # A response recorded by an interrupted run is used as is rather than paid for twice.
+        entry = recorded.get(f'phrase-{q["id"]}') or meter.call(f'phrase-{q["id"]}', wire, MAX_TOKENS['phrase'])
         if 'response' not in entry:
             raise RuntimeError(f'phrase {q["id"]} failed')
-        decoded = run.bridge(mode='chat', messages=[{'role': 'user', 'content': 'decode'}], tools=[],
-                             responses=[entry['response']])['result']
         append(path, {'id': q['id'], 'request_sha256': sha(wire), 'response': entry['response'],
-                      'tool_calls': decoded['ToolCalls'], 'seconds': entry['seconds'],
+                      'tool_calls': decode_calls(entry['response']), 'seconds': entry['seconds'],
                       'usage': entry['response'].get('usage')})
 
     parallel([lambda q=q: job(q) for q in queries() if q['id'] not in done])

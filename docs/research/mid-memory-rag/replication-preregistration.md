@@ -137,3 +137,12 @@ Committed after the second `assemble` attempt failed, and before any synthesis, 
 - A filler chat is now dropped only when it restates a selected item under the amendment-2 test: a message carrying the key and at least two of the item sentence's other long search tokens.
 - Nothing else changes.
 
+## Amendment 4, before n = 16 synthesis and any ranking
+
+Committed after the n = 4 and n = 8 syntheses and the phrase calls, and before any n = 16 synthesis or any ranking.
+
+- **Spend.** It stood at USD 2.617: conversations cost USD 1.27 (1,161 calls including rejected attempts) against about USD 0.7 planned. n = 8 synthesis cost USD 0.00067 per call, so the 300 n = 16 calls are expected to bring the total to about USD 2.92, above the preregistered USD 2.90 ceiling.
+- **Ceiling.** It becomes USD 2.99, which stays under the issue's USD 3.00 cap. If the ceiling still refuses a request, the n = 16 batches not yet synthesized become empty, unreachable summaries and are counted in the report, as for rejected batches.
+- **Phase order.** n = 16 synthesis ran after the phrase calls rather than before, so the two deciding arms could not be starved of budget. Four n = 16 requests in flight when that run was stopped are charged at their full reservation.
+- **Phrase decode.** One phrase response had its tool arguments cut off by `max_tokens` (`{"phrases": `). The bridge cannot re-encode such input, so the harness now decodes phrase tool calls in Python and keeps non-JSON arguments as a string. Production recall treats that string as unusable and searches the task text. This decode equals the bridge's on the 313 other recorded responses, and the truncated response was reused without a second call.
+

@@ -45,6 +45,19 @@ class MergeTest(unittest.TestCase):
         self.assertEqual(len(R.deliver(recent, longer)), 7)
 
 
+class PhraseTest(unittest.TestCase):
+    def test_truncated_phrase_arguments_fall_back_to_task_text_like_production(self):
+        response = {'choices': [{'message': {'tool_calls': [{'id': 'c', 'function': {
+            'name': 'memory_search_terms', 'arguments': '{"phrases": '}}]}}]}
+        calls = R.decode_calls(response)
+        self.assertEqual(calls[0]['input'], '{"phrases": ')
+        with patch.object(R.run, 'bridge', return_value={'result': ['brand']}):
+            self.assertEqual(R.run.phrases_used(calls, 'task text'), (['task text'], False))
+            good = R.decode_calls({'choices': [{'message': {'tool_calls': [{'id': 'c', 'function': {
+                'name': 'memory_search_terms', 'arguments': '{"phrases": ["brand refresh"]}'}}]}}]})
+            self.assertEqual(R.run.phrases_used(good, 'task text'), (['brand refresh'], True))
+
+
 class RuleTest(unittest.TestCase):
     def test_paired_interval_matches_exact_binomial(self):
         low, high = S.paired_interval(10, 0, 100)

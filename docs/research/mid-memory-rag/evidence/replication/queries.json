@@ -1,0 +1,3554 @@
+[
+ {
+  "id": "exact-01",
+  "family": "exact",
+  "item": "exact-00-00",
+  "evidence": [
+   2528,
+   2529,
+   2530
+  ],
+  "obsolete": [],
+  "text": "What does your parrot Kiwi say when you open the fridge?"
+ },
+ {
+  "id": "exact-02",
+  "family": "exact",
+  "item": "exact-00-01",
+  "evidence": [
+   355
+  ],
+  "obsolete": [],
+  "text": "How much do you spend on grain-free food for your rabbit?"
+ },
+ {
+  "id": "exact-03",
+  "family": "exact",
+  "item": "exact-00-02",
+  "evidence": [
+   797,
+   798
+  ],
+  "obsolete": [],
+  "text": "How old is your German Shepherd Max?"
+ },
+ {
+  "id": "exact-04",
+  "family": "exact",
+  "item": "exact-00-03",
+  "evidence": [
+   4183,
+   4184
+  ],
+  "obsolete": [],
+  "text": "When did you adopt your tabby cat Luna?"
+ },
+ {
+  "id": "exact-05",
+  "family": "exact",
+  "item": "exact-00-04",
+  "evidence": [
+   774,
+   775,
+   776
+  ],
+  "obsolete": [],
+  "text": "What size tank does your goldfish Bubbles live in?"
+ },
+ {
+  "id": "exact-06",
+  "family": "exact",
+  "item": "exact-00-05",
+  "evidence": [
+   2375
+  ],
+  "obsolete": [],
+  "text": "What medication does your Pug Waffles take for allergies?"
+ },
+ {
+  "id": "exact-07",
+  "family": "exact",
+  "item": "exact-00-06",
+  "evidence": [
+   2245
+  ],
+  "obsolete": [],
+  "text": "What is your indoor cat's microchip number?"
+ },
+ {
+  "id": "exact-08",
+  "family": "exact",
+  "item": "exact-00-07",
+  "evidence": [
+   1939
+  ],
+  "obsolete": [],
+  "text": "What type of bedding does your Syrian hamster prefer?"
+ },
+ {
+  "id": "exact-09",
+  "family": "exact",
+  "item": "exact-00-08",
+  "evidence": [
+   665
+  ],
+  "obsolete": [],
+  "text": "How long does it take your Border Collie to destroy the Kong Classic?"
+ },
+ {
+  "id": "exact-10",
+  "family": "exact",
+  "item": "exact-00-09",
+  "evidence": [
+   4033,
+   4034,
+   4038
+  ],
+  "obsolete": [],
+  "text": "How far do you walk your Beagle Scout every morning?"
+ },
+ {
+  "id": "exact-11",
+  "family": "exact",
+  "item": "exact-01-02",
+  "evidence": [
+   3183
+  ],
+  "obsolete": [],
+  "text": "What was your highest Scrabble score?"
+ },
+ {
+  "id": "exact-12",
+  "family": "exact",
+  "item": "exact-01-06",
+  "evidence": [
+   3245
+  ],
+  "obsolete": [],
+  "text": "How much did you win from the poker pot?"
+ },
+ {
+  "id": "exact-13",
+  "family": "exact",
+  "item": "exact-01-09",
+  "evidence": [
+   1755,
+   1756
+  ],
+  "obsolete": [],
+  "text": "What was the answer to the riddle?"
+ },
+ {
+  "id": "exact-14",
+  "family": "exact",
+  "item": "exact-02-00",
+  "evidence": [
+   1633,
+   1634,
+   1635,
+   1637,
+   1640
+  ],
+  "obsolete": [],
+  "text": "What is the title of the mystery novel you're writing?"
+ },
+ {
+  "id": "exact-15",
+  "family": "exact",
+  "item": "exact-02-01",
+  "evidence": [
+   1161
+  ],
+  "obsolete": [],
+  "text": "When is your deadline for the anthology?"
+ },
+ {
+  "id": "exact-16",
+  "family": "exact",
+  "item": "exact-02-02",
+  "evidence": [
+   657,
+   658
+  ],
+  "obsolete": [],
+  "text": "What is the name of your story's main character?"
+ },
+ {
+  "id": "exact-17",
+  "family": "exact",
+  "item": "exact-02-03",
+  "evidence": [
+   243,
+   244
+  ],
+  "obsolete": [],
+  "text": "How many words are you aiming for in this draft?"
+ },
+ {
+  "id": "exact-18",
+  "family": "exact",
+  "item": "exact-02-04",
+  "evidence": [
+   251,
+   252,
+   256,
+   258,
+   260
+  ],
+  "obsolete": [],
+  "text": "Where does your story take place?"
+ },
+ {
+  "id": "exact-19",
+  "family": "exact",
+  "item": "exact-02-05",
+  "evidence": [
+   1551
+  ],
+  "obsolete": [],
+  "text": "Which publisher did you submit your manuscript to?"
+ },
+ {
+  "id": "exact-20",
+  "family": "exact",
+  "item": "exact-02-06",
+  "evidence": [
+   1595,
+   1602
+  ],
+  "obsolete": [],
+  "text": "What is the title of your space opera?"
+ },
+ {
+  "id": "exact-21",
+  "family": "exact",
+  "item": "exact-02-08",
+  "evidence": [
+   3289
+  ],
+  "obsolete": [],
+  "text": "Which writing application do you use?"
+ },
+ {
+  "id": "exact-22",
+  "family": "exact",
+  "item": "exact-02-09",
+  "evidence": [
+   3861
+  ],
+  "obsolete": [],
+  "text": "Who are you co-authoring the screenplay with?"
+ },
+ {
+  "id": "exact-23",
+  "family": "exact",
+  "item": "exact-03-02",
+  "evidence": [
+   1881,
+   1882
+  ],
+  "obsolete": [],
+  "text": "What type of paints do you prefer for landscape paintings?"
+ },
+ {
+  "id": "exact-24",
+  "family": "exact",
+  "item": "exact-03-03",
+  "evidence": [
+   1921,
+   1922
+  ],
+  "obsolete": [],
+  "text": "What material did you use to carve a chess set?"
+ },
+ {
+  "id": "exact-25",
+  "family": "exact",
+  "item": "exact-03-04",
+  "evidence": [
+   715
+  ],
+  "obsolete": [],
+  "text": "What level pottery class are you taking on Tuesdays?"
+ },
+ {
+  "id": "exact-26",
+  "family": "exact",
+  "item": "exact-03-08",
+  "evidence": [
+   4531,
+   4532,
+   4535,
+   4536
+  ],
+  "obsolete": [],
+  "text": "What type of dye do you use for fabric projects?"
+ },
+ {
+  "id": "exact-27",
+  "family": "exact",
+  "item": "exact-03-09",
+  "evidence": [
+   369,
+   370
+  ],
+  "obsolete": [],
+  "text": "What kind of guitar pick do you prefer?"
+ },
+ {
+  "id": "exact-28",
+  "family": "exact",
+  "item": "exact-04-00",
+  "evidence": [
+   3763
+  ],
+  "obsolete": [],
+  "text": "How long did it take you to solve the Crystal Maze last Saturday?"
+ },
+ {
+  "id": "exact-29",
+  "family": "exact",
+  "item": "exact-04-01",
+  "evidence": [
+   4119
+  ],
+  "obsolete": [],
+  "text": "How many attempts did it take you to beat level 9 in Candy Crush?"
+ },
+ {
+  "id": "exact-30",
+  "family": "exact",
+  "item": "exact-04-02",
+  "evidence": [
+   1759
+  ],
+  "obsolete": [],
+  "text": "How many points did you score on the pinball machine at the arcade?"
+ },
+ {
+  "id": "exact-31",
+  "family": "exact",
+  "item": "exact-04-03",
+  "evidence": [
+   275,
+   276
+  ],
+  "obsolete": [],
+  "text": "How long did it take you to complete the 1000-word crossword puzzle?"
+ },
+ {
+  "id": "exact-32",
+  "family": "exact",
+  "item": "exact-04-04",
+  "evidence": [
+   283
+  ],
+  "obsolete": [],
+  "text": "How much money did you have left when you won the Monopoly game?"
+ },
+ {
+  "id": "exact-33",
+  "family": "exact",
+  "item": "exact-04-05",
+  "evidence": [
+   3209
+  ],
+  "obsolete": [],
+  "text": "How many coins did you find in world 8-4 of Super Mario Bros.?"
+ },
+ {
+  "id": "exact-34",
+  "family": "exact",
+  "item": "exact-04-06",
+  "evidence": [
+   785
+  ],
+  "obsolete": [],
+  "text": "How long did it take you to solve the Rubik's Cube at the competition?"
+ },
+ {
+  "id": "exact-35",
+  "family": "exact",
+  "item": "exact-04-07",
+  "evidence": [
+   4711
+  ],
+  "obsolete": [],
+  "text": "How much time did you have left when you escaped the mystery room?"
+ },
+ {
+  "id": "exact-36",
+  "family": "exact",
+  "item": "exact-04-08",
+  "evidence": [
+   1929,
+   1930
+  ],
+  "obsolete": [],
+  "text": "What hand did you win the poker tournament with?"
+ },
+ {
+  "id": "exact-37",
+  "family": "exact",
+  "item": "exact-04-09",
+  "evidence": [
+   89,
+   90,
+   92
+  ],
+  "obsolete": [],
+  "text": "How long did it take you to finish the Eiffel Tower jigsaw puzzle?"
+ },
+ {
+  "id": "exact-38",
+  "family": "exact",
+  "item": "exact-05-00",
+  "evidence": [
+   951,
+   952
+  ],
+  "obsolete": [],
+  "text": "Which composer's preludes do you practice in the morning?"
+ },
+ {
+  "id": "exact-39",
+  "family": "exact",
+  "item": "exact-05-01",
+  "evidence": [
+   1775
+  ],
+  "obsolete": [],
+  "text": "What time do you always practice?"
+ },
+ {
+  "id": "exact-40",
+  "family": "exact",
+  "item": "exact-05-02",
+  "evidence": [
+   1765
+  ],
+  "obsolete": [],
+  "text": "What instrument needs new strings?"
+ },
+ {
+  "id": "exact-41",
+  "family": "exact",
+  "item": "exact-05-04",
+  "evidence": [
+   33
+  ],
+  "obsolete": [],
+  "text": "How many minutes a day do you practice?"
+ },
+ {
+  "id": "exact-42",
+  "family": "exact",
+  "item": "exact-05-05",
+  "evidence": [
+   3049
+  ],
+  "obsolete": [],
+  "text": "What piano model was tuned last month?"
+ },
+ {
+  "id": "exact-43",
+  "family": "exact",
+  "item": "exact-05-06",
+  "evidence": [
+   4081
+  ],
+  "obsolete": [],
+  "text": "Which composer can't you play without sheet music?"
+ },
+ {
+  "id": "exact-44",
+  "family": "exact",
+  "item": "exact-05-07",
+  "evidence": [
+   2101
+  ],
+  "obsolete": [],
+  "text": "What day is your violin lesson?"
+ },
+ {
+  "id": "exact-45",
+  "family": "exact",
+  "item": "exact-05-09",
+  "evidence": [
+   165,
+   174
+  ],
+  "obsolete": [],
+  "text": "How long have you been playing?"
+ },
+ {
+  "id": "exact-46",
+  "family": "exact",
+  "item": "exact-06-01",
+  "evidence": [
+   3475,
+   3476
+  ],
+  "obsolete": [],
+  "text": "What is your project code?"
+ },
+ {
+  "id": "exact-47",
+  "family": "exact",
+  "item": "exact-06-02",
+  "evidence": [
+   1645
+  ],
+  "obsolete": [],
+  "text": "Where did you sit during the meeting?"
+ },
+ {
+  "id": "exact-48",
+  "family": "exact",
+  "item": "exact-06-03",
+  "evidence": [
+   3155
+  ],
+  "obsolete": [],
+  "text": "What is the budget for Q3?"
+ },
+ {
+  "id": "exact-49",
+  "family": "exact",
+  "item": "exact-06-04",
+  "evidence": [
+   1199
+  ],
+  "obsolete": [],
+  "text": "Which floor is your desk on?"
+ },
+ {
+  "id": "exact-50",
+  "family": "exact",
+  "item": "exact-06-05",
+  "evidence": [
+   15,
+   16
+  ],
+  "obsolete": [],
+  "text": "Who is the client you're presenting to?"
+ },
+ {
+  "id": "exact-51",
+  "family": "exact",
+  "item": "exact-06-07",
+  "evidence": [
+   3925
+  ],
+  "obsolete": [],
+  "text": "What is the access code?"
+ },
+ {
+  "id": "exact-52",
+  "family": "exact",
+  "item": "exact-06-08",
+  "evidence": [
+   1247
+  ],
+  "obsolete": [],
+  "text": "Who is your manager?"
+ },
+ {
+  "id": "exact-53",
+  "family": "exact",
+  "item": "exact-06-09",
+  "evidence": [
+   985
+  ],
+  "obsolete": [],
+  "text": "What is the file number you're looking for?"
+ },
+ {
+  "id": "exact-54",
+  "family": "exact",
+  "item": "exact-07-00",
+  "evidence": [
+   2651,
+   2652,
+   2656
+  ],
+  "obsolete": [],
+  "text": "Who from the cricket team have you been friends with for years?"
+ },
+ {
+  "id": "exact-55",
+  "family": "exact",
+  "item": "exact-07-04",
+  "evidence": [
+   3275,
+   3276
+  ],
+  "obsolete": [],
+  "text": "What racket do you use that the club recommends?"
+ },
+ {
+  "id": "exact-56",
+  "family": "exact",
+  "item": "exact-07-05",
+  "evidence": [
+   3945,
+   3946
+  ],
+  "obsolete": [],
+  "text": "Who helped your team win the regional championship?"
+ },
+ {
+  "id": "exact-57",
+  "family": "exact",
+  "item": "exact-07-08",
+  "evidence": [
+   1571
+  ],
+  "obsolete": [],
+  "text": "Who started swimming lessons here last month?"
+ },
+ {
+  "id": "exact-58",
+  "family": "exact",
+  "item": "exact-07-09",
+  "evidence": [
+   213,
+   214
+  ],
+  "obsolete": [],
+  "text": "Where do you always store your bag?"
+ },
+ {
+  "id": "exact-59",
+  "family": "exact",
+  "item": "exact-08-00",
+  "evidence": [
+   3167,
+   3168
+  ],
+  "obsolete": [],
+  "text": "How many hours of volunteering have you completed?"
+ },
+ {
+  "id": "exact-60",
+  "family": "exact",
+  "item": "exact-08-01",
+  "evidence": [
+   4343
+  ],
+  "obsolete": [],
+  "text": "Where do you walk dogs every Saturday?"
+ },
+ {
+  "id": "exact-61",
+  "family": "exact",
+  "item": "exact-08-02",
+  "evidence": [
+   2345
+  ],
+  "obsolete": [],
+  "text": "When did you start volunteering at the community center?"
+ },
+ {
+  "id": "exact-62",
+  "family": "exact",
+  "item": "exact-08-03",
+  "evidence": [
+   889
+  ],
+  "obsolete": [],
+  "text": "Where do you clean up four times a year?"
+ },
+ {
+  "id": "exact-63",
+  "family": "exact",
+  "item": "exact-08-04",
+  "evidence": [
+   2201,
+   2202
+  ],
+  "obsolete": [],
+  "text": "Who do you mentor through the Big Sisters program?"
+ },
+ {
+  "id": "exact-64",
+  "family": "exact",
+  "item": "exact-08-05",
+  "evidence": [
+   585
+  ],
+  "obsolete": [],
+  "text": "How much money did you help raise for the children's hospital?"
+ },
+ {
+  "id": "exact-65",
+  "family": "exact",
+  "item": "exact-08-06",
+  "evidence": [
+   2775
+  ],
+  "obsolete": [],
+  "text": "What skills do you use at the legal aid clinic?"
+ },
+ {
+  "id": "exact-66",
+  "family": "exact",
+  "item": "exact-08-07",
+  "evidence": [
+   2449
+  ],
+  "obsolete": [],
+  "text": "What event did you organize the volunteer booth at last year?"
+ },
+ {
+  "id": "exact-67",
+  "family": "exact",
+  "item": "exact-08-08",
+  "evidence": [
+   3635
+  ],
+  "obsolete": [],
+  "text": "What do you drive to deliver meals to seniors every Tuesday?"
+ },
+ {
+  "id": "exact-68",
+  "family": "exact",
+  "item": "exact-08-09",
+  "evidence": [
+   3339
+  ],
+  "obsolete": [],
+  "text": "What ages of children do you read to at the library?"
+ },
+ {
+  "id": "exact-69",
+  "family": "exact",
+  "item": "exact-s00-03",
+  "evidence": [
+   3231
+  ],
+  "obsolete": [],
+  "text": "What writing software do you currently use?"
+ },
+ {
+  "id": "exact-70",
+  "family": "exact",
+  "item": "exact-s00-06",
+  "evidence": [
+   1213
+  ],
+  "obsolete": [],
+  "text": "What is the title of your romance novel and which chapter are you writing?"
+ },
+ {
+  "id": "paraphrase-01",
+  "family": "paraphrase",
+  "item": "paraphrase-00-00",
+  "evidence": [
+   635
+  ],
+  "obsolete": [],
+  "text": "What was the total cost of your climate control equipment?"
+ },
+ {
+  "id": "paraphrase-02",
+  "family": "paraphrase",
+  "item": "paraphrase-00-02",
+  "evidence": [
+   1809,
+   1810
+  ],
+  "obsolete": [],
+  "text": "What sum do you save regularly for government assessments?"
+ },
+ {
+  "id": "paraphrase-03",
+  "family": "paraphrase",
+  "item": "paraphrase-00-04",
+  "evidence": [
+   3779
+  ],
+  "obsolete": [],
+  "text": "How much was the overdue penalty you overlooked?"
+ },
+ {
+  "id": "paraphrase-04",
+  "family": "paraphrase",
+  "item": "paraphrase-00-09",
+  "evidence": [
+   3997
+  ],
+  "obsolete": [],
+  "text": "How much goes toward tuition financing every cycle?"
+ },
+ {
+  "id": "paraphrase-05",
+  "family": "paraphrase",
+  "item": "paraphrase-01-01",
+  "evidence": [
+   4319
+  ],
+  "obsolete": [],
+  "text": "What venue accommodated the relatives gathering during summer?"
+ },
+ {
+  "id": "paraphrase-06",
+  "family": "paraphrase",
+  "item": "paraphrase-01-04",
+  "evidence": [
+   185
+  ],
+  "obsolete": [],
+  "text": "Which academic discipline earned recognition at the ceremony?"
+ },
+ {
+  "id": "paraphrase-07",
+  "family": "paraphrase",
+  "item": "paraphrase-02-00",
+  "evidence": [
+   2759
+  ],
+  "obsolete": [],
+  "text": "Which piano was used for that classical piece?"
+ },
+ {
+  "id": "paraphrase-08",
+  "family": "paraphrase",
+  "item": "paraphrase-02-02",
+  "evidence": [
+   607
+  ],
+  "obsolete": [],
+  "text": "What duration is required each day for the performance?"
+ },
+ {
+  "id": "paraphrase-09",
+  "family": "paraphrase",
+  "item": "paraphrase-02-03",
+  "evidence": [
+   385
+  ],
+  "obsolete": [],
+  "text": "Which online instructor demonstrated that technique?"
+ },
+ {
+  "id": "paraphrase-10",
+  "family": "paraphrase",
+  "item": "paraphrase-03-02",
+  "evidence": [
+   1687
+  ],
+  "obsolete": [],
+  "text": "What is the validity end date for your state identification?"
+ },
+ {
+  "id": "paraphrase-11",
+  "family": "paraphrase",
+  "item": "paraphrase-03-09",
+  "evidence": [
+   4067
+  ],
+  "obsolete": [],
+  "text": "What product guarantee identifier did you receive?"
+ },
+ {
+  "id": "paraphrase-12",
+  "family": "paraphrase",
+  "item": "paraphrase-04-00",
+  "evidence": [
+   3033
+  ],
+  "obsolete": [],
+  "text": "What monetary value was provided in exchange for that device?"
+ },
+ {
+  "id": "paraphrase-13",
+  "family": "paraphrase",
+  "item": "paraphrase-04-02",
+  "evidence": [
+   3981
+  ],
+  "obsolete": [],
+  "text": "What calendar date involved that outerwear purchase?"
+ },
+ {
+  "id": "paraphrase-14",
+  "family": "paraphrase",
+  "item": "paraphrase-04-03",
+  "evidence": [
+   685
+  ],
+  "obsolete": [],
+  "text": "What shipping identifier delivered those audio devices so quickly?"
+ },
+ {
+  "id": "paraphrase-15",
+  "family": "paraphrase",
+  "item": "paraphrase-04-05",
+  "evidence": [
+   677
+  ],
+  "obsolete": [],
+  "text": "What compensation amount was sought for that damaged computer case?"
+ },
+ {
+  "id": "paraphrase-16",
+  "family": "paraphrase",
+  "item": "paraphrase-04-08",
+  "evidence": [
+   313
+  ],
+  "obsolete": [],
+  "text": "What was the issue with that garment's sizing and appearance?"
+ },
+ {
+  "id": "paraphrase-17",
+  "family": "paraphrase",
+  "item": "paraphrase-06-00",
+  "evidence": [
+   4213,
+   4214,
+   4218
+  ],
+  "obsolete": [],
+  "text": "What do you drive?"
+ },
+ {
+  "id": "paraphrase-18",
+  "family": "paraphrase",
+  "item": "paraphrase-06-03",
+  "evidence": [
+   3813
+  ],
+  "obsolete": [],
+  "text": "How much did you spend on gasoline?"
+ },
+ {
+  "id": "paraphrase-19",
+  "family": "paraphrase",
+  "item": "paraphrase-06-06",
+  "evidence": [
+   2735
+  ],
+  "obsolete": [],
+  "text": "What is the duration of your daily trip?"
+ },
+ {
+  "id": "paraphrase-20",
+  "family": "paraphrase",
+  "item": "paraphrase-06-07",
+  "evidence": [
+   3021,
+   3022
+  ],
+  "obsolete": [],
+  "text": "When did you acquire that sedan?"
+ },
+ {
+  "id": "paraphrase-21",
+  "family": "paraphrase",
+  "item": "paraphrase-06-08",
+  "evidence": [
+   1515
+  ],
+  "obsolete": [],
+  "text": "What is the fee for that crossing?"
+ },
+ {
+  "id": "paraphrase-22",
+  "family": "paraphrase",
+  "item": "paraphrase-07-03",
+  "evidence": [
+   3559,
+   3560
+  ],
+  "obsolete": [],
+  "text": "Which environmental group receives your efforts?"
+ },
+ {
+  "id": "paraphrase-23",
+  "family": "paraphrase",
+  "item": "paraphrase-07-08",
+  "evidence": [
+   1791
+  ],
+  "obsolete": [],
+  "text": "In what year did your community service begin?"
+ },
+ {
+  "id": "paraphrase-24",
+  "family": "paraphrase",
+  "item": "paraphrase-08-05",
+  "evidence": [
+   1977
+  ],
+  "obsolete": [],
+  "text": "What are the dimensions of your pet's running exercise equipment?"
+ },
+ {
+  "id": "paraphrase-25",
+  "family": "paraphrase",
+  "item": "paraphrase-08-06",
+  "evidence": [
+   755
+  ],
+  "obsolete": [],
+  "text": "What is your feline's preferred resting location?"
+ },
+ {
+  "id": "paraphrase-26",
+  "family": "paraphrase",
+  "item": "paraphrase-08-08",
+  "evidence": [
+   2121
+  ],
+  "obsolete": [],
+  "text": "What distance do you cover during daily outings with your pooch?"
+ },
+ {
+  "id": "paraphrase-27",
+  "family": "paraphrase",
+  "item": "paraphrase-09-00",
+  "evidence": [
+   975
+  ],
+  "obsolete": [],
+  "text": "Which calendar date marks the beginning of your youngster's educational journey?"
+ },
+ {
+  "id": "paraphrase-28",
+  "family": "paraphrase",
+  "item": "paraphrase-09-01",
+  "evidence": [
+   2111
+  ],
+  "obsolete": [],
+  "text": "What financial amount covers weekly childcare services?"
+ },
+ {
+  "id": "paraphrase-29",
+  "family": "paraphrase",
+  "item": "paraphrase-09-06",
+  "evidence": [
+   1915
+  ],
+  "obsolete": [],
+  "text": "What emergency medication addresses severe reactions in that little one?"
+ },
+ {
+  "id": "paraphrase-30",
+  "family": "paraphrase",
+  "item": "paraphrase-09-07",
+  "evidence": [
+   2821,
+   2822
+  ],
+  "obsolete": [],
+  "text": "Which rubber animal does that infant enjoy chewing?"
+ },
+ {
+  "id": "paraphrase-31",
+  "family": "paraphrase",
+  "item": "paraphrase-10-00",
+  "evidence": [
+   3963
+  ],
+  "obsolete": [],
+  "text": "What date does your grandma celebrate her eightieth trip around the sun?"
+ },
+ {
+  "id": "paraphrase-32",
+  "family": "paraphrase",
+  "item": "paraphrase-10-04",
+  "evidence": [
+   2905
+  ],
+  "obsolete": [],
+  "text": "What European capital city did you visit for your marriage milestone?"
+ },
+ {
+  "id": "paraphrase-33",
+  "family": "paraphrase",
+  "item": "paraphrase-10-05",
+  "evidence": [
+   4589
+  ],
+  "obsolete": [],
+  "text": "What West Coast institution awarded your sibling his diploma?"
+ },
+ {
+  "id": "paraphrase-34",
+  "family": "paraphrase",
+  "item": "paraphrase-10-09",
+  "evidence": [
+   4247,
+   4248
+  ],
+  "obsolete": [],
+  "text": "Which maritime route did your relatives travel during their summer voyage?"
+ },
+ {
+  "id": "paraphrase-35",
+  "family": "paraphrase",
+  "item": "paraphrase-11-02",
+  "evidence": [
+   3747
+  ],
+  "obsolete": [],
+  "text": "Which week days are reserved for your six-string work?"
+ },
+ {
+  "id": "paraphrase-36",
+  "family": "paraphrase",
+  "item": "paraphrase-11-06",
+  "evidence": [
+   1865,
+   1870
+  ],
+  "obsolete": [],
+  "text": "Which instructional material did your string mentor select?"
+ },
+ {
+  "id": "paraphrase-37",
+  "family": "paraphrase",
+  "item": "paraphrase-11-09",
+  "evidence": [
+   2807,
+   2808
+  ],
+  "obsolete": [],
+  "text": "Which tonal center must you learn for your upcoming performance?"
+ },
+ {
+  "id": "paraphrase-38",
+  "family": "paraphrase",
+  "item": "paraphrase-12-01",
+  "evidence": [
+   321
+  ],
+  "obsolete": [],
+  "text": "What's the deadline for the quarterly summary?"
+ },
+ {
+  "id": "paraphrase-39",
+  "family": "paraphrase",
+  "item": "paraphrase-12-07",
+  "evidence": [
+   1037
+  ],
+  "obsolete": [],
+  "text": "What's your designated vehicle location?"
+ },
+ {
+  "id": "paraphrase-40",
+  "family": "paraphrase",
+  "item": "paraphrase-12-08",
+  "evidence": [
+   4421
+  ],
+  "obsolete": [],
+  "text": "What's the access code for your daily video call?"
+ },
+ {
+  "id": "paraphrase-41",
+  "family": "paraphrase",
+  "item": "paraphrase-s00-05",
+  "evidence": [
+   2997
+  ],
+  "obsolete": [],
+  "text": "What is the typical charge every two months for utilities?"
+ },
+ {
+  "id": "paraphrase-42",
+  "family": "paraphrase",
+  "item": "paraphrase-s00-09",
+  "evidence": [
+   3375
+  ],
+  "obsolete": [],
+  "text": "What is the monthly charge for cellular service?"
+ },
+ {
+  "id": "paraphrase-43",
+  "family": "paraphrase",
+  "item": "paraphrase-s02-03",
+  "evidence": [
+   1855
+  ],
+  "obsolete": [],
+  "text": "What numeric password opens the neighborhood entrance?"
+ },
+ {
+  "id": "paraphrase-44",
+  "family": "paraphrase",
+  "item": "paraphrase-s02-05",
+  "evidence": [
+   4577
+  ],
+  "obsolete": [],
+  "text": "What vehicle do you own?"
+ },
+ {
+  "id": "paraphrase-45",
+  "family": "paraphrase",
+  "item": "paraphrase-s02-09",
+  "evidence": [
+   2947
+  ],
+  "obsolete": [],
+  "text": "Which nearby resident lent you the equipment?"
+ },
+ {
+  "id": "paraphrase-46",
+  "family": "paraphrase",
+  "item": "paraphrase-s03-01",
+  "evidence": [
+   1841,
+   1842
+  ],
+  "obsolete": [],
+  "text": "Which particular paint shade was applied to that room?"
+ },
+ {
+  "id": "paraphrase-47",
+  "family": "paraphrase",
+  "item": "paraphrase-s03-07",
+  "evidence": [
+   3769,
+   3772
+  ],
+  "obsolete": [],
+  "text": "Which manufacturer produced the electrical device you set up?"
+ },
+ {
+  "id": "paraphrase-48",
+  "family": "paraphrase",
+  "item": "paraphrase-s05-00",
+  "evidence": [
+   2621
+  ],
+  "obsolete": [],
+  "text": "What vehicle do you use for your daily commute?"
+ },
+ {
+  "id": "paraphrase-49",
+  "family": "paraphrase",
+  "item": "paraphrase-s05-03",
+  "evidence": [
+   3585
+  ],
+  "obsolete": [],
+  "text": "What are the final characters on your vehicle registration?"
+ },
+ {
+  "id": "paraphrase-50",
+  "family": "paraphrase",
+  "item": "paraphrase-s05-07",
+  "evidence": [
+   413,
+   414,
+   423
+  ],
+  "obsolete": [],
+  "text": "What shade was selected for your vehicle when purchased?"
+ },
+ {
+  "id": "paraphrase-51",
+  "family": "paraphrase",
+  "item": "paraphrase-s07-00",
+  "evidence": [
+   177
+  ],
+  "obsolete": [],
+  "text": "What venue hosted your sibling's unexpected celebration?"
+ },
+ {
+  "id": "paraphrase-52",
+  "family": "paraphrase",
+  "item": "paraphrase-s07-02",
+  "evidence": [
+   427
+  ],
+  "obsolete": [],
+  "text": "Which establishment did you choose for your marriage milestone meal?"
+ },
+ {
+  "id": "paraphrase-53",
+  "family": "paraphrase",
+  "item": "paraphrase-s07-05",
+  "evidence": [
+   4141,
+   4142,
+   4144
+  ],
+  "obsolete": [],
+  "text": "How was your seasonal party styled this time around?"
+ },
+ {
+  "id": "paraphrase-54",
+  "family": "paraphrase",
+  "item": "paraphrase-s07-06",
+  "evidence": [
+   697
+  ],
+  "obsolete": [],
+  "text": "Which entertainment venue became the location for your unexpected celebration?"
+ },
+ {
+  "id": "paraphrase-55",
+  "family": "paraphrase",
+  "item": "paraphrase-t00-00",
+  "evidence": [
+   3875,
+   3876
+  ],
+  "obsolete": [],
+  "text": "Which patron requested a brand refresh during spring?"
+ },
+ {
+  "id": "paraphrase-56",
+  "family": "paraphrase",
+  "item": "paraphrase-t00-05",
+  "evidence": [
+   3063
+  ],
+  "obsolete": [],
+  "text": "What date marks the project completion deadline?"
+ },
+ {
+  "id": "paraphrase-57",
+  "family": "paraphrase",
+  "item": "paraphrase-t01-01",
+  "evidence": [
+   827
+  ],
+  "obsolete": [],
+  "text": "What chemical product removed the blockage near the washbasin?"
+ },
+ {
+  "id": "paraphrase-58",
+  "family": "paraphrase",
+  "item": "paraphrase-t01-02",
+  "evidence": [
+   4401
+  ],
+  "obsolete": [],
+  "text": "What matte coating covered the main sleeping space?"
+ },
+ {
+  "id": "paraphrase-59",
+  "family": "paraphrase",
+  "item": "paraphrase-t01-03",
+  "evidence": [
+   923
+  ],
+  "obsolete": [],
+  "text": "What wooden boards restored the rear property boundary?"
+ },
+ {
+  "id": "paraphrase-60",
+  "family": "paraphrase",
+  "item": "paraphrase-t01-06",
+  "evidence": [
+   4393
+  ],
+  "obsolete": [],
+  "text": "What hex wrench secured the unstable office seat?"
+ },
+ {
+  "id": "paraphrase-61",
+  "family": "paraphrase",
+  "item": "paraphrase-t01-07",
+  "evidence": [
+   5
+  ],
+  "obsolete": [],
+  "text": "What safety receptacle was installed near the washroom wall?"
+ },
+ {
+  "id": "paraphrase-62",
+  "family": "paraphrase",
+  "item": "paraphrase-t01-08",
+  "evidence": [
+   2365
+  ],
+  "obsolete": [],
+  "text": "What motorized device removed debris from the entrance landscape?"
+ },
+ {
+  "id": "paraphrase-63",
+  "family": "paraphrase",
+  "item": "paraphrase-t01-09",
+  "evidence": [
+   1503
+  ],
+  "obsolete": [],
+  "text": "What plumbing component stopped the water wastage in the bathroom?"
+ },
+ {
+  "id": "paraphrase-64",
+  "family": "paraphrase",
+  "item": "paraphrase-t02-03",
+  "evidence": [
+   3041
+  ],
+  "obsolete": [],
+  "text": "What ancient Incan site provided those stunning morning photographs?"
+ },
+ {
+  "id": "paraphrase-65",
+  "family": "paraphrase",
+  "item": "paraphrase-t04-01",
+  "evidence": [
+   1909
+  ],
+  "obsolete": [],
+  "text": "At which location was the cutting tool purchased?"
+ },
+ {
+  "id": "paraphrase-66",
+  "family": "paraphrase",
+  "item": "paraphrase-t04-04",
+  "evidence": [
+   2855,
+   2856
+  ],
+  "obsolete": [],
+  "text": "What organic amendment enhances earth quality?"
+ },
+ {
+  "id": "paraphrase-67",
+  "family": "paraphrase",
+  "item": "paraphrase-t05-01",
+  "evidence": [
+   2955
+  ],
+  "obsolete": [],
+  "text": "What date marks the end of your appliance coverage?"
+ },
+ {
+  "id": "paraphrase-68",
+  "family": "paraphrase",
+  "item": "paraphrase-t05-02",
+  "evidence": [
+   75
+  ],
+  "obsolete": [],
+  "text": "What was the price of the special timepiece?"
+ },
+ {
+  "id": "paraphrase-69",
+  "family": "paraphrase",
+  "item": "paraphrase-t05-06",
+  "evidence": [
+   3757
+  ],
+  "obsolete": [],
+  "text": "Which old clothing piece arrived with a rip?"
+ },
+ {
+  "id": "paraphrase-70",
+  "family": "paraphrase",
+  "item": "paraphrase-t05-07",
+  "evidence": [
+   3521
+  ],
+  "obsolete": [],
+  "text": "What reduction rate was applied to your order?"
+ },
+ {
+  "id": "implicit-01",
+  "family": "implicit",
+  "item": "implicit-00-00",
+  "evidence": [
+   3383
+  ],
+  "obsolete": [],
+  "text": "What should be verified prior to a switch?"
+ },
+ {
+  "id": "implicit-02",
+  "family": "implicit",
+  "item": "implicit-00-03",
+  "evidence": [
+   3675
+  ],
+  "obsolete": [],
+  "text": "What expectation exists regarding new foods?"
+ },
+ {
+  "id": "implicit-03",
+  "family": "implicit",
+  "item": "implicit-01-03",
+  "evidence": [
+   4097
+  ],
+  "obsolete": [],
+  "text": "Develop three main characters showing clear weaknesses."
+ },
+ {
+  "id": "implicit-04",
+  "family": "implicit",
+  "item": "implicit-01-04",
+  "evidence": [
+   3281,
+   3282
+  ],
+  "obsolete": [],
+  "text": "Compose a scene using only he/she/they perspective."
+ },
+ {
+  "id": "implicit-05",
+  "family": "implicit",
+  "item": "implicit-01-05",
+  "evidence": [
+   4693
+  ],
+  "obsolete": [],
+  "text": "Rewrite this paragraph stripping out modifier words."
+ },
+ {
+  "id": "implicit-06",
+  "family": "implicit",
+  "item": "implicit-02-00",
+  "evidence": [
+   3501
+  ],
+  "obsolete": [],
+  "text": "Schedule my checkup for early hours when alertness peaks."
+ },
+ {
+  "id": "implicit-07",
+  "family": "implicit",
+  "item": "implicit-03-01",
+  "evidence": [
+   4451
+  ],
+  "obsolete": [],
+  "text": "Transform this capture into monochrome with dramatic tonal range"
+ },
+ {
+  "id": "implicit-08",
+  "family": "implicit",
+  "item": "implicit-04-00",
+  "evidence": [
+   2683
+  ],
+  "obsolete": [],
+  "text": "Create a schedule for afternoon gatherings"
+ },
+ {
+  "id": "implicit-09",
+  "family": "implicit",
+  "item": "implicit-04-01",
+  "evidence": [
+   1025
+  ],
+  "obsolete": [],
+  "text": "Suggest refreshments for a street celebration"
+ },
+ {
+  "id": "implicit-10",
+  "family": "implicit",
+  "item": "implicit-04-02",
+  "evidence": [
+   1359
+  ],
+  "obsolete": [],
+  "text": "Recommend equipment for yard maintenance"
+ },
+ {
+  "id": "implicit-11",
+  "family": "implicit",
+  "item": "implicit-04-04",
+  "evidence": [
+   3315
+  ],
+  "obsolete": [],
+  "text": "Discuss vehicle placement strategies"
+ },
+ {
+  "id": "implicit-12",
+  "family": "implicit",
+  "item": "implicit-04-05",
+  "evidence": [
+   1441
+  ],
+  "obsolete": [],
+  "text": "Talk about communication methods"
+ },
+ {
+  "id": "implicit-13",
+  "family": "implicit",
+  "item": "implicit-04-06",
+  "evidence": [
+   2877
+  ],
+  "obsolete": [],
+  "text": "Recommend yard care approaches"
+ },
+ {
+  "id": "implicit-14",
+  "family": "implicit",
+  "item": "implicit-04-07",
+  "evidence": [
+   1413
+  ],
+  "obsolete": [],
+  "text": "Suggest seasonal events"
+ },
+ {
+  "id": "implicit-15",
+  "family": "implicit",
+  "item": "implicit-04-09",
+  "evidence": [
+   1745
+  ],
+  "obsolete": [],
+  "text": "Plan food options for gatherings"
+ },
+ {
+  "id": "implicit-16",
+  "family": "implicit",
+  "item": "implicit-05-00",
+  "evidence": [
+   541
+  ],
+  "obsolete": [],
+  "text": "What options exist besides drawing samples?"
+ },
+ {
+  "id": "implicit-17",
+  "family": "implicit",
+  "item": "implicit-05-01",
+  "evidence": [
+   2295
+  ],
+  "obsolete": [],
+  "text": "Draft bullet points covering concerns before seeing the physician"
+ },
+ {
+  "id": "implicit-18",
+  "family": "implicit",
+  "item": "implicit-05-07",
+  "evidence": [
+   2863,
+   2864
+  ],
+  "obsolete": [],
+  "text": "Arrange consultation with another specialist"
+ },
+ {
+  "id": "implicit-19",
+  "family": "implicit",
+  "item": "implicit-06-00",
+  "evidence": [
+   805
+  ],
+  "obsolete": [],
+  "text": "Find a laptop brand offering a 36-month protection plan."
+ },
+ {
+  "id": "implicit-20",
+  "family": "implicit",
+  "item": "implicit-06-01",
+  "evidence": [
+   2967
+  ],
+  "obsolete": [],
+  "text": "What should someone do with an unwanted delivery that doesn't fit?"
+ },
+ {
+  "id": "implicit-21",
+  "family": "implicit",
+  "item": "implicit-06-03",
+  "evidence": [
+   1169
+  ],
+  "obsolete": [],
+  "text": "How can a customer send back shoes without spending money?"
+ },
+ {
+  "id": "implicit-22",
+  "family": "implicit",
+  "item": "implicit-06-05",
+  "evidence": [
+   3513
+  ],
+  "obsolete": [],
+  "text": "Where can someone get the best deal on identical products?"
+ },
+ {
+  "id": "implicit-23",
+  "family": "implicit",
+  "item": "implicit-06-06",
+  "evidence": [
+   1717
+  ],
+  "obsolete": [],
+  "text": "What should be researched before purchasing a new blender?"
+ },
+ {
+  "id": "implicit-24",
+  "family": "implicit",
+  "item": "implicit-06-09",
+  "evidence": [
+   1875
+  ],
+  "obsolete": [],
+  "text": "How many shops should be checked before buying a television?"
+ },
+ {
+  "id": "implicit-25",
+  "family": "implicit",
+  "item": "implicit-07-00",
+  "evidence": [
+   149
+  ],
+  "obsolete": [],
+  "text": "Find a Saturday shift available."
+ },
+ {
+  "id": "implicit-26",
+  "family": "implicit",
+  "item": "implicit-07-02",
+  "evidence": [
+   1525
+  ],
+  "obsolete": [],
+  "text": "Sign up for a call center position."
+ },
+ {
+  "id": "implicit-27",
+  "family": "implicit",
+  "item": "implicit-07-07",
+  "evidence": [
+   2141
+  ],
+  "obsolete": [],
+  "text": "Mentor teenagers at the youth center."
+ },
+ {
+  "id": "implicit-28",
+  "family": "implicit",
+  "item": "implicit-07-08",
+  "evidence": [
+   2443
+  ],
+  "obsolete": [],
+  "text": "Tutor students indoors at the library."
+ },
+ {
+  "id": "implicit-29",
+  "family": "implicit",
+  "item": "implicit-07-10",
+  "evidence": [
+   4563
+  ],
+  "obsolete": [],
+  "text": "Order pepperoni pizza for the volunteers."
+ },
+ {
+  "id": "implicit-30",
+  "family": "implicit",
+  "item": "implicit-08-03",
+  "evidence": [
+   3351
+  ],
+  "obsolete": [],
+  "text": "What are the patient rights regarding chaperones?"
+ },
+ {
+  "id": "implicit-31",
+  "family": "implicit",
+  "item": "implicit-09-00",
+  "evidence": [
+   2061
+  ],
+  "obsolete": [],
+  "text": "Draft a contract with full payment due upon completion."
+ },
+ {
+  "id": "implicit-32",
+  "family": "implicit",
+  "item": "implicit-09-01",
+  "evidence": [
+   1709
+  ],
+  "obsolete": [],
+  "text": "Respond to a client asking for same-day delivery at standard rates."
+ },
+ {
+  "id": "implicit-33",
+  "family": "implicit",
+  "item": "implicit-09-07",
+  "evidence": [
+   3201
+  ],
+  "obsolete": [],
+  "text": "Deliver final artwork in JPG format only."
+ },
+ {
+  "id": "implicit-34",
+  "family": "implicit",
+  "item": "implicit-10-00",
+  "evidence": [
+   3647
+  ],
+  "obsolete": [],
+  "text": "Create a color-coded system for identifying where each container should go in the new property."
+ },
+ {
+  "id": "implicit-35",
+  "family": "implicit",
+  "item": "implicit-12-00",
+  "evidence": [
+   2081
+  ],
+  "obsolete": [],
+  "text": "Register me for 6am placement this weekend."
+ },
+ {
+  "id": "implicit-36",
+  "family": "implicit",
+  "item": "implicit-12-03",
+  "evidence": [
+   4435
+  ],
+  "obsolete": [],
+  "text": "Assign kitchen duties involving vegetables only."
+ },
+ {
+  "id": "implicit-37",
+  "family": "implicit",
+  "item": "implicit-12-04",
+  "evidence": [
+   57
+  ],
+  "obsolete": [],
+  "text": "Choose locations with ramp entrances only."
+ },
+ {
+  "id": "implicit-38",
+  "family": "implicit",
+  "item": "implicit-12-05",
+  "evidence": [
+   849
+  ],
+  "obsolete": [],
+  "text": "Register name exclusively during JuneJulyAugust period."
+ },
+ {
+  "id": "implicit-39",
+  "family": "implicit",
+  "item": "implicit-12-06",
+  "evidence": [
+   473
+  ],
+  "obsolete": [],
+  "text": "Send all notifications through digital messaging platforms."
+ },
+ {
+  "id": "implicit-40",
+  "family": "implicit",
+  "item": "implicit-12-09",
+  "evidence": [
+   1497
+  ],
+  "obsolete": [],
+  "text": "Assign locker room companions identifying as women only."
+ },
+ {
+  "id": "implicit-41",
+  "family": "implicit",
+  "item": "implicit-13-00",
+  "evidence": [
+   1427
+  ],
+  "obsolete": [],
+  "text": "What format works for this novel?"
+ },
+ {
+  "id": "implicit-42",
+  "family": "implicit",
+  "item": "implicit-15-02",
+  "evidence": [
+   4759
+  ],
+  "obsolete": [],
+  "text": "Suggest uncomplicated meal option for hurried evenings."
+ },
+ {
+  "id": "implicit-43",
+  "family": "implicit",
+  "item": "implicit-15-03",
+  "evidence": [
+   4721
+  ],
+  "obsolete": [],
+  "text": "What weekend ritual involves fresh loaves?"
+ },
+ {
+  "id": "implicit-44",
+  "family": "implicit",
+  "item": "implicit-15-07",
+  "evidence": [
+   4331
+  ],
+  "obsolete": [],
+  "text": "How do certain chefs prepare food without exact quantities?"
+ },
+ {
+  "id": "implicit-45",
+  "family": "implicit",
+  "item": "implicit-s00-00",
+  "evidence": [
+   2675
+  ],
+  "obsolete": [],
+  "text": "Suggest materials suitable for weathering."
+ },
+ {
+  "id": "implicit-46",
+  "family": "implicit",
+  "item": "implicit-s00-04",
+  "evidence": [
+   1625
+  ],
+  "obsolete": [],
+  "text": "What accommodations help crafters with vision difficulties?"
+ },
+ {
+  "id": "implicit-47",
+  "family": "implicit",
+  "item": "implicit-s00-07",
+  "evidence": [
+   4275,
+   4276,
+   4277
+  ],
+  "obsolete": [],
+  "text": "Compare traditional versus automated textile decoration techniques."
+ },
+ {
+  "id": "implicit-48",
+  "family": "implicit",
+  "item": "implicit-s00-08",
+  "evidence": [
+   627
+  ],
+  "obsolete": [],
+  "text": "What competition formats support post-processing techniques?"
+ },
+ {
+  "id": "implicit-49",
+  "family": "implicit",
+  "item": "implicit-s00-09",
+  "evidence": [
+   23
+  ],
+  "obsolete": [],
+  "text": "What storage solutions preserve moist art supplies?"
+ },
+ {
+  "id": "implicit-50",
+  "family": "implicit",
+  "item": "implicit-s01-03",
+  "evidence": [
+   3009,
+   3013,
+   3014
+  ],
+  "obsolete": [],
+  "text": "Please assign a male physician."
+ },
+ {
+  "id": "implicit-51",
+  "family": "implicit",
+  "item": "implicit-s01-04",
+  "evidence": [
+   3223,
+   3224
+  ],
+  "obsolete": [],
+  "text": "What food options exist here?"
+ },
+ {
+  "id": "implicit-52",
+  "family": "implicit",
+  "item": "implicit-s01-09",
+  "evidence": [
+   109
+  ],
+  "obsolete": [],
+  "text": "What morning slots exist?"
+ },
+ {
+  "id": "implicit-53",
+  "family": "implicit",
+  "item": "implicit-s02-04",
+  "evidence": [
+   591,
+   592,
+   599
+  ],
+  "obsolete": [],
+  "text": "Record audio comments about the draft."
+ },
+ {
+  "id": "implicit-54",
+  "family": "implicit",
+  "item": "implicit-s03-04",
+  "evidence": [
+   3215
+  ],
+  "obsolete": [],
+  "text": "What snacks are safest for birds with sensitive systems?"
+ },
+ {
+  "id": "implicit-55",
+  "family": "implicit",
+  "item": "implicit-s04-02",
+  "evidence": [
+   3687
+  ],
+  "obsolete": [],
+  "text": "Respond to a request for additional changes after delivery."
+ },
+ {
+  "id": "implicit-56",
+  "family": "implicit",
+  "item": "implicit-s04-03",
+  "evidence": [
+   2641,
+   2642
+  ],
+  "obsolete": [],
+  "text": "Arrange a discussion about deliverables next week."
+ },
+ {
+  "id": "implicit-57",
+  "family": "implicit",
+  "item": "implicit-s04-04",
+  "evidence": [
+   2175,
+   2176
+  ],
+  "obsolete": [],
+  "text": "Prepare final assets for client handover."
+ },
+ {
+  "id": "implicit-58",
+  "family": "implicit",
+  "item": "implicit-s04-07",
+  "evidence": [
+   2437
+  ],
+  "obsolete": [],
+  "text": "Start working on a newly hired client's assignment."
+ },
+ {
+  "id": "implicit-59",
+  "family": "implicit",
+  "item": "implicit-s04-08",
+  "evidence": [
+   4787
+  ],
+  "obsolete": [],
+  "text": "Follow up after sending completed work."
+ },
+ {
+  "id": "implicit-60",
+  "family": "implicit",
+  "item": "implicit-s05-00",
+  "evidence": [
+   1783
+  ],
+  "obsolete": [],
+  "text": "Send reminder about overdue balance for Project Alpha"
+ },
+ {
+  "id": "implicit-61",
+  "family": "implicit",
+  "item": "implicit-s06-00",
+  "evidence": [
+   2583
+  ],
+  "obsolete": [],
+  "text": "What options exist for measuring before ordering pants online?"
+ },
+ {
+  "id": "implicit-62",
+  "family": "implicit",
+  "item": "implicit-s06-04",
+  "evidence": [
+   141
+  ],
+  "obsolete": [],
+  "text": "What's the deadline for sending back unwanted goods?"
+ },
+ {
+  "id": "implicit-63",
+  "family": "implicit",
+  "item": "implicit-s06-05",
+  "evidence": [
+   3139
+  ],
+  "obsolete": [],
+  "text": "What protection plans exist for expensive gadgets?"
+ },
+ {
+  "id": "implicit-64",
+  "family": "implicit",
+  "item": "implicit-s07-00",
+  "evidence": [
+   2333
+  ],
+  "obsolete": [],
+  "text": "draft informal letter"
+ },
+ {
+  "id": "implicit-65",
+  "family": "implicit",
+  "item": "implicit-s08-00",
+  "evidence": [
+   3175
+  ],
+  "obsolete": [],
+  "text": "Suggest some titles suitable for Saturday afternoon entertainment"
+ },
+ {
+  "id": "implicit-66",
+  "family": "implicit",
+  "item": "implicit-s08-01",
+  "evidence": [
+   505
+  ],
+  "obsolete": [],
+  "text": "Recommend resources someone could consult when stuck"
+ },
+ {
+  "id": "implicit-67",
+  "family": "implicit",
+  "item": "implicit-s08-03",
+  "evidence": [
+   2073
+  ],
+  "obsolete": [],
+  "text": "Suggest some titles that work well for pairs"
+ },
+ {
+  "id": "implicit-68",
+  "family": "implicit",
+  "item": "implicit-s08-06",
+  "evidence": [
+   861
+  ],
+  "obsolete": [],
+  "text": "Recommend challenging brain teasers"
+ },
+ {
+  "id": "implicit-69",
+  "family": "implicit",
+  "item": "implicit-s08-08",
+  "evidence": [
+   3487
+  ],
+  "obsolete": [],
+  "text": "Schedule entertainment appropriate for brief breaks"
+ },
+ {
+  "id": "implicit-70",
+  "family": "implicit",
+  "item": "implicit-s08-09",
+  "evidence": [
+   295
+  ],
+  "obsolete": [],
+  "text": "Give advice for maintaining challenge among companions"
+ },
+ {
+  "id": "correction-01",
+  "family": "correction",
+  "item": "correction-00-00",
+  "evidence": [
+   3095,
+   3096
+  ],
+  "obsolete": [
+   733
+  ],
+  "text": "What is your current router password?"
+ },
+ {
+  "id": "correction-02",
+  "family": "correction",
+  "item": "correction-00-01",
+  "evidence": [
+   2485
+  ],
+  "obsolete": [
+   905
+  ],
+  "text": "What is your current WiFi network name?"
+ },
+ {
+  "id": "correction-03",
+  "family": "correction",
+  "item": "correction-00-02",
+  "evidence": [
+   4613,
+   4615,
+   4616,
+   4617,
+   4618
+  ],
+  "obsolete": [
+   2419
+  ],
+  "text": "What is your current smart lock code?"
+ },
+ {
+  "id": "correction-04",
+  "family": "correction",
+  "item": "correction-00-03",
+  "evidence": [
+   4355,
+   4356
+  ],
+  "obsolete": [
+   1185
+  ],
+  "text": "What is your printer's current IP address?"
+ },
+ {
+  "id": "correction-05",
+  "family": "correction",
+  "item": "correction-00-04",
+  "evidence": [
+   3933
+  ],
+  "obsolete": [
+   1321
+  ],
+  "text": "What is your current Netflix password?"
+ },
+ {
+  "id": "correction-06",
+  "family": "correction",
+  "item": "correction-00-05",
+  "evidence": [
+   4543,
+   4544
+  ],
+  "obsolete": [
+   1697,
+   1698,
+   1700
+  ],
+  "text": "What temperature is your thermostat currently set to?"
+ },
+ {
+  "id": "correction-07",
+  "family": "correction",
+  "item": "correction-00-06",
+  "evidence": [
+   3453,
+   3454
+  ],
+  "obsolete": [
+   2133,
+   2134
+  ],
+  "text": "What is your security camera's current IP address?"
+ },
+ {
+  "id": "correction-08",
+  "family": "correction",
+  "item": "correction-00-07",
+  "evidence": [
+   2811,
+   2812
+  ],
+  "obsolete": [
+   1099,
+   1100,
+   1101,
+   1102,
+   1103,
+   1104
+  ],
+  "text": "What is your current voice assistant wake word?"
+ },
+ {
+  "id": "correction-09",
+  "family": "correction",
+  "item": "correction-00-08",
+  "evidence": [
+   3391,
+   3392,
+   3394
+  ],
+  "obsolete": [
+   1453,
+   1454
+  ],
+  "text": "What is your smart plug currently named?"
+ },
+ {
+  "id": "correction-10",
+  "family": "correction",
+  "item": "correction-00-09",
+  "evidence": [
+   2211,
+   2212
+  ],
+  "obsolete": [
+   577
+  ],
+  "text": "What is your current VPN server address?"
+ },
+ {
+  "id": "correction-11",
+  "family": "correction",
+  "item": "correction-01-00",
+  "evidence": [
+   3825,
+   3826,
+   3831,
+   3832
+  ],
+  "obsolete": [
+   2225,
+   2226
+  ],
+  "text": "What Node version are you using?"
+ },
+ {
+  "id": "correction-12",
+  "family": "correction",
+  "item": "correction-01-01",
+  "evidence": [
+   3641,
+   3642
+  ],
+  "obsolete": [
+   2274,
+   2275,
+   2276,
+   2277,
+   2278,
+   2280,
+   2282
+  ],
+  "text": "What database does your app connect to?"
+ },
+ {
+  "id": "correction-13",
+  "family": "correction",
+  "item": "correction-01-02",
+  "evidence": [
+   2713,
+   2714,
+   2715,
+   2716
+  ],
+  "obsolete": [
+   836,
+   839,
+   840,
+   844
+  ],
+  "text": "What API version is available?"
+ },
+ {
+  "id": "correction-14",
+  "family": "correction",
+  "item": "correction-01-03",
+  "evidence": [
+   4547,
+   4548,
+   4549
+  ],
+  "obsolete": [
+   2255,
+   2256
+  ],
+  "text": "What framework are you building with?"
+ },
+ {
+  "id": "correction-15",
+  "family": "correction",
+  "item": "correction-01-04",
+  "evidence": [
+   2391,
+   2392
+  ],
+  "obsolete": [
+   564,
+   565,
+   566,
+   567,
+   568,
+   570,
+   571,
+   572
+  ],
+  "text": "What library do you use for utilities?"
+ },
+ {
+  "id": "correction-16",
+  "family": "correction",
+  "item": "correction-01-05",
+  "evidence": [
+   4055,
+   4056
+  ],
+  "obsolete": [
+   2409
+  ],
+  "text": "What port does the dev server run on?"
+ },
+ {
+  "id": "correction-17",
+  "family": "correction",
+  "item": "correction-01-06",
+  "evidence": [
+   4225,
+   4226
+  ],
+  "obsolete": [
+   2426,
+   2427,
+   2428,
+   2431
+  ],
+  "text": "Where are config files stored?"
+ },
+ {
+  "id": "correction-18",
+  "family": "correction",
+  "item": "correction-01-07",
+  "evidence": [
+   3787,
+   3788,
+   3790,
+   3792
+  ],
+  "obsolete": [
+   2183,
+   2184
+  ],
+  "text": "What env variable stores credentials?"
+ },
+ {
+  "id": "correction-19",
+  "family": "correction",
+  "item": "correction-01-08",
+  "evidence": [
+   2797
+  ],
+  "obsolete": [
+   397
+  ],
+  "text": "Is Redis caching enabled?"
+ },
+ {
+  "id": "correction-20",
+  "family": "correction",
+  "item": "correction-01-09",
+  "evidence": [
+   4517,
+   4518,
+   4520,
+   4522,
+   4523,
+   4524
+  ],
+  "obsolete": [
+   64,
+   65,
+   66,
+   68
+  ],
+  "text": "What Python runtime version is used?"
+ },
+ {
+  "id": "correction-21",
+  "family": "correction",
+  "item": "correction-02-01",
+  "evidence": [
+   3357
+  ],
+  "obsolete": [
+   1271
+  ],
+  "text": "How long does my home warranty cover appliances?"
+ },
+ {
+  "id": "correction-22",
+  "family": "correction",
+  "item": "correction-02-02",
+  "evidence": [
+   4777,
+   4778,
+   4781
+  ],
+  "obsolete": [
+   2009,
+   2010
+  ],
+  "text": "What is the term length of my life insurance policy?"
+ },
+ {
+  "id": "correction-23",
+  "family": "correction",
+  "item": "correction-02-04",
+  "evidence": [
+   4371,
+   4372
+  ],
+  "obsolete": [
+   347
+  ],
+  "text": "How long is my extended laptop warranty?"
+ },
+ {
+  "id": "correction-24",
+  "family": "correction",
+  "item": "correction-02-05",
+  "evidence": [
+   3621,
+   3622,
+   3626
+  ],
+  "obsolete": [
+   2023
+  ],
+  "text": "What is my current safe driver discount?"
+ },
+ {
+  "id": "correction-25",
+  "family": "correction",
+  "item": "correction-02-06",
+  "evidence": [
+   4745,
+   4746
+  ],
+  "obsolete": [
+   1889,
+   1890
+  ],
+  "text": "What is my current renters insurance personal property coverage?"
+ },
+ {
+  "id": "correction-26",
+  "family": "correction",
+  "item": "correction-02-07",
+  "evidence": [
+   3459,
+   3460,
+   3466
+  ],
+  "obsolete": [
+   2237,
+   2238
+  ],
+  "text": "What percentage of veterinary costs does my pet insurance reimburse?"
+ },
+ {
+  "id": "correction-27",
+  "family": "correction",
+  "item": "correction-02-09",
+  "evidence": [
+   4457
+  ],
+  "obsolete": [
+   379,
+   380
+  ],
+  "text": "What is the maximum trip duration covered by my travel insurance?"
+ },
+ {
+  "id": "correction-28",
+  "family": "correction",
+  "item": "correction-03-01",
+  "evidence": [
+   4505,
+   4506
+  ],
+  "obsolete": [
+   709,
+   710
+  ],
+  "text": "How much flour do you use in your chocolate chip cookies?"
+ },
+ {
+  "id": "correction-29",
+  "family": "correction",
+  "item": "correction-03-04",
+  "evidence": [
+   4305,
+   4306
+  ],
+  "obsolete": [
+   2033,
+   2034,
+   2040
+  ],
+  "text": "How much cinnamon do you add to your apple pie?"
+ },
+ {
+  "id": "correction-30",
+  "family": "correction",
+  "item": "correction-03-05",
+  "evidence": [
+   2567,
+   2568
+  ],
+  "obsolete": [
+   879
+  ],
+  "text": "How many people does your soup recipe serve?"
+ },
+ {
+  "id": "correction-31",
+  "family": "correction",
+  "item": "correction-03-06",
+  "evidence": [
+   1731,
+   1732
+  ],
+  "obsolete": [
+   447
+  ],
+  "text": "At what heat setting do you sauté vegetables?"
+ },
+ {
+  "id": "correction-32",
+  "family": "correction",
+  "item": "correction-03-07",
+  "evidence": [
+   4555,
+   4556
+  ],
+  "obsolete": [
+   1261
+  ],
+  "text": "How long should the pasta cook?"
+ },
+ {
+  "id": "correction-33",
+  "family": "correction",
+  "item": "correction-03-08",
+  "evidence": [
+   2937
+  ],
+  "obsolete": [
+   268,
+   269
+  ],
+  "text": "How much sugar do you use in your frosting?"
+ },
+ {
+  "id": "correction-34",
+  "family": "correction",
+  "item": "correction-03-09",
+  "evidence": [
+   4731,
+   4732
+  ],
+  "obsolete": [
+   2287
+  ],
+  "text": "At what temperature should the cake bake?"
+ },
+ {
+  "id": "correction-35",
+  "family": "correction",
+  "item": "correction-04-00",
+  "evidence": [
+   3889
+  ],
+  "obsolete": [
+   1953
+  ],
+  "text": "How much does the user pay monthly for auto insurance?"
+ },
+ {
+  "id": "correction-36",
+  "family": "correction",
+  "item": "correction-04-02",
+  "evidence": [
+   3545,
+   3546
+  ],
+  "obsolete": [
+   2267,
+   2268,
+   2270,
+   2272
+  ],
+  "text": "What is the deductible on the user's homeowners insurance?"
+ },
+ {
+  "id": "correction-37",
+  "family": "correction",
+  "item": "correction-04-03",
+  "evidence": [
+   4685,
+   4686,
+   4687
+  ],
+  "obsolete": [
+   1123,
+   1124,
+   1128
+  ],
+  "text": "What is the term length of the user's car insurance policy?"
+ },
+ {
+  "id": "correction-38",
+  "family": "correction",
+  "item": "correction-04-04",
+  "evidence": [
+   4481,
+   4482
+  ],
+  "obsolete": [
+   223
+  ],
+  "text": "What is the current status of the user's insurance claim?"
+ },
+ {
+  "id": "correction-39",
+  "family": "correction",
+  "item": "correction-04-06",
+  "evidence": [
+   4171
+  ],
+  "obsolete": [
+   263
+  ],
+  "text": "Who is the beneficiary on the user's life insurance policy?"
+ },
+ {
+  "id": "correction-40",
+  "family": "correction",
+  "item": "correction-05-00",
+  "evidence": [
+   3577,
+   3578
+  ],
+  "obsolete": [
+   2015,
+   2018
+  ],
+  "text": "What variety of tomatoes did I plant?"
+ },
+ {
+  "id": "correction-41",
+  "family": "correction",
+  "item": "correction-05-02",
+  "evidence": [
+   2299
+  ],
+  "obsolete": [
+   619
+  ],
+  "text": "What are the dimensions of my vegetable garden?"
+ },
+ {
+  "id": "correction-42",
+  "family": "correction",
+  "item": "correction-05-03",
+  "evidence": [
+   3793,
+   3794,
+   3797
+  ],
+  "obsolete": [
+   335,
+   336
+  ],
+  "text": "When did I start planting my flowers?"
+ },
+ {
+  "id": "correction-43",
+  "family": "correction",
+  "item": "correction-05-04",
+  "evidence": [
+   3531
+  ],
+  "obsolete": [
+   480,
+   481
+  ],
+  "text": "How many rose bushes did I buy?"
+ },
+ {
+  "id": "correction-44",
+  "family": "correction",
+  "item": "correction-05-05",
+  "evidence": [
+   2829
+  ],
+  "obsolete": [
+   869
+  ],
+  "text": "How often do I use organic fertilizer on my lawn?"
+ },
+ {
+  "id": "correction-45",
+  "family": "correction",
+  "item": "correction-05-06",
+  "evidence": [
+   2765,
+   2766,
+   2768
+  ],
+  "obsolete": [
+   1389,
+   1390,
+   1394
+  ],
+  "text": "What is my favorite herb to grow?"
+ },
+ {
+  "id": "correction-46",
+  "family": "correction",
+  "item": "correction-05-07",
+  "evidence": [
+   4149,
+   4151
+  ],
+  "obsolete": [
+   329
+  ],
+  "text": "Which direction is my sunflower fence?"
+ },
+ {
+  "id": "correction-47",
+  "family": "correction",
+  "item": "correction-05-08",
+  "evidence": [
+   2593,
+   2594
+  ],
+  "obsolete": [
+   1007,
+   1008
+  ],
+  "text": "When do I harvest my strawberries?"
+ },
+ {
+  "id": "correction-48",
+  "family": "correction",
+  "item": "correction-06-01",
+  "evidence": [
+   4325,
+   4326,
+   4327,
+   4328
+  ],
+  "obsolete": [
+   1817
+  ],
+  "text": "How many cousins do you have on your mother's side?"
+ },
+ {
+  "id": "correction-49",
+  "family": "correction",
+  "item": "correction-06-02",
+  "evidence": [
+   3989,
+   3990,
+   3992
+  ],
+  "obsolete": [
+   2353,
+   2354
+  ],
+  "text": "What was your family cat's name?"
+ },
+ {
+  "id": "correction-50",
+  "family": "correction",
+  "item": "correction-06-03",
+  "evidence": [
+   2573
+  ],
+  "obsolete": [
+   1177
+  ],
+  "text": "Which grandmother taught you to make apple pie?"
+ },
+ {
+  "id": "correction-51",
+  "family": "correction",
+  "item": "correction-06-05",
+  "evidence": [
+   4229,
+   4230,
+   4232
+  ],
+  "obsolete": [
+   1565,
+   1566
+  ],
+  "text": "What color did you paint your house?"
+ },
+ {
+  "id": "correction-52",
+  "family": "correction",
+  "item": "correction-06-06",
+  "evidence": [
+   4773,
+   4774
+  ],
+  "obsolete": [
+   1365
+  ],
+  "text": "Who gave a speech at your wedding?"
+ },
+ {
+  "id": "correction-53",
+  "family": "correction",
+  "item": "correction-06-07",
+  "evidence": [
+   4623,
+   4624,
+   4626
+  ],
+  "obsolete": [
+   232,
+   233
+  ],
+  "text": "What holiday does your family gather for?"
+ },
+ {
+  "id": "correction-54",
+  "family": "correction",
+  "item": "correction-06-08",
+  "evidence": [
+   3807
+  ],
+  "obsolete": [
+   815
+  ],
+  "text": "What was your first car?"
+ },
+ {
+  "id": "correction-55",
+  "family": "correction",
+  "item": "correction-06-09",
+  "evidence": [
+   4599,
+   4600
+  ],
+  "obsolete": [
+   1613,
+   1614,
+   1618
+  ],
+  "text": "What dish do you bring to holiday dinners?"
+ },
+ {
+  "id": "correction-56",
+  "family": "correction",
+  "item": "correction-07-02",
+  "evidence": [
+   2723,
+   2724
+  ],
+  "obsolete": [
+   1375
+  ],
+  "text": "When is the community meeting?"
+ },
+ {
+  "id": "correction-57",
+  "family": "correction",
+  "item": "correction-07-09",
+  "evidence": [
+   3367
+  ],
+  "obsolete": [
+   1477
+  ],
+  "text": "How long have you lived in this neighborhood?"
+ },
+ {
+  "id": "correction-58",
+  "family": "correction",
+  "item": "correction-08-01",
+  "evidence": [
+   3731
+  ],
+  "obsolete": [
+   896,
+   897,
+   898,
+   899,
+   902
+  ],
+  "text": "What medium do you paint with on canvas?"
+ },
+ {
+  "id": "correction-59",
+  "family": "correction",
+  "item": "correction-08-02",
+  "evidence": [
+   3535,
+   3536,
+   3538,
+   3540
+  ],
+  "obsolete": [
+   1045,
+   1046
+  ],
+  "text": "What is your favorite yarn brand?"
+ },
+ {
+  "id": "correction-60",
+  "family": "correction",
+  "item": "correction-08-03",
+  "evidence": [
+   2705
+  ],
+  "obsolete": [
+   1297
+  ],
+  "text": "What year did you learn to play the ukulele?"
+ },
+ {
+  "id": "correction-61",
+  "family": "correction",
+  "item": "correction-08-05",
+  "evidence": [
+   2869,
+   2870
+  ],
+  "obsolete": [
+   195,
+   196,
+   200
+  ],
+  "text": "What is your favorite bread to bake?"
+ },
+ {
+  "id": "correction-62",
+  "family": "correction",
+  "item": "correction-08-06",
+  "evidence": [
+   4207
+  ],
+  "obsolete": [
+   1535,
+   1536,
+   1538,
+   1540
+  ],
+  "text": "Where do you go birdwatching in spring?"
+ },
+ {
+  "id": "correction-63",
+  "family": "correction",
+  "item": "correction-08-07",
+  "evidence": [
+   1583
+  ],
+  "obsolete": [
+   159
+  ],
+  "text": "What do you carve as a hobby?"
+ },
+ {
+  "id": "correction-64",
+  "family": "correction",
+  "item": "correction-08-08",
+  "evidence": [
+   3843,
+   3844,
+   3845,
+   3848,
+   3852
+  ],
+  "obsolete": [
+   1399,
+   1400
+  ],
+  "text": "What wax do you use for candle-making?"
+ },
+ {
+  "id": "correction-65",
+  "family": "correction",
+  "item": "correction-08-09",
+  "evidence": [
+   3701
+  ],
+  "obsolete": [
+   2381,
+   2382,
+   2384
+  ],
+  "text": "What scale are your model trains?"
+ },
+ {
+  "id": "correction-66",
+  "family": "correction",
+  "item": "correction-s00-00",
+  "evidence": [
+   4021
+  ],
+  "obsolete": [
+   1653
+  ],
+  "text": "What are the names of your children?"
+ },
+ {
+  "id": "correction-67",
+  "family": "correction",
+  "item": "correction-s00-01",
+  "evidence": [
+   4159
+  ],
+  "obsolete": [
+   1895
+  ],
+  "text": "How old is your youngest child?"
+ },
+ {
+  "id": "correction-68",
+  "family": "correction",
+  "item": "correction-s00-02",
+  "evidence": [
+   4679,
+   4680
+  ],
+  "obsolete": [
+   1903
+  ],
+  "text": "What time do your children go to bed?"
+ },
+ {
+  "id": "correction-69",
+  "family": "correction",
+  "item": "correction-s00-03",
+  "evidence": [
+   3905,
+   3906,
+   3908
+  ],
+  "obsolete": [
+   1543,
+   1544
+  ],
+  "text": "What brand of diapers do you use?"
+ },
+ {
+  "id": "correction-70",
+  "family": "correction",
+  "item": "correction-s00-04",
+  "evidence": [
+   4629,
+   4630
+  ],
+  "obsolete": [
+   1681
+  ],
+  "text": "Who is your children's doctor?"
+ },
+ {
+  "id": "absent-01",
+  "family": "absent",
+  "item": "absent-00-00",
+  "evidence": [],
+  "obsolete": [],
+  "text": "How long did it take them to finish the entire book?",
+  "near_miss": [
+   1557,
+   1558
+  ]
+ },
+ {
+  "id": "absent-02",
+  "family": "absent",
+  "item": "absent-00-01",
+  "evidence": [],
+  "obsolete": [],
+  "text": "How many episodes were in the entire series?",
+  "near_miss": [
+   911
+  ]
+ },
+ {
+  "id": "absent-03",
+  "family": "absent",
+  "item": "absent-00-02",
+  "evidence": [],
+  "obsolete": [],
+  "text": "In what city did they purchase the book?",
+  "near_miss": [
+   2977,
+   2978
+  ]
+ },
+ {
+  "id": "absent-04",
+  "family": "absent",
+  "item": "absent-00-03",
+  "evidence": [],
+  "obsolete": [],
+  "text": "What is the name of the podcast?",
+  "near_miss": [
+   4007,
+   4008
+  ]
+ },
+ {
+  "id": "absent-05",
+  "family": "absent",
+  "item": "absent-00-04",
+  "evidence": [],
+  "obsolete": [],
+  "text": "Who is the author of this book?",
+  "near_miss": [
+   3737
+  ]
+ },
+ {
+  "id": "absent-06",
+  "family": "absent",
+  "item": "absent-00-05",
+  "evidence": [],
+  "obsolete": [],
+  "text": "How many episodes have been released so far?",
+  "near_miss": [
+   497
+  ]
+ },
+ {
+  "id": "absent-07",
+  "family": "absent",
+  "item": "absent-00-06",
+  "evidence": [],
+  "obsolete": [],
+  "text": "When was the book first published?",
+  "near_miss": [
+   1996,
+   1997,
+   1998
+  ]
+ },
+ {
+  "id": "absent-08",
+  "family": "absent",
+  "item": "absent-00-07",
+  "evidence": [],
+  "obsolete": [],
+  "text": "What is the episode number?",
+  "near_miss": [
+   4131,
+   4132
+  ]
+ },
+ {
+  "id": "absent-09",
+  "family": "absent",
+  "item": "absent-00-08",
+  "evidence": [],
+  "obsolete": [],
+  "text": "What is the author's name?",
+  "near_miss": [
+   3707
+  ]
+ },
+ {
+  "id": "absent-10",
+  "family": "absent",
+  "item": "absent-00-09",
+  "evidence": [],
+  "obsolete": [],
+  "text": "What mode of transportation do they use?",
+  "near_miss": [
+   1113,
+   1114
+  ]
+ },
+ {
+  "id": "absent-11",
+  "family": "absent",
+  "item": "absent-01-00",
+  "evidence": [],
+  "obsolete": [],
+  "text": "What temperature does the user proof their bread at?",
+  "near_miss": [
+   1233
+  ]
+ },
+ {
+  "id": "absent-12",
+  "family": "absent",
+  "item": "absent-01-01",
+  "evidence": [],
+  "obsolete": [],
+  "text": "How long does the user simmer their sauce?",
+  "near_miss": [
+   3147
+  ]
+ },
+ {
+  "id": "absent-13",
+  "family": "absent",
+  "item": "absent-01-06",
+  "evidence": [],
+  "obsolete": [],
+  "text": "What type of rice does the user cook?",
+  "near_miss": [
+   301
+  ]
+ },
+ {
+  "id": "absent-14",
+  "family": "absent",
+  "item": "absent-01-08",
+  "evidence": [],
+  "obsolete": [],
+  "text": "What cheese does the user add to their omelet?",
+  "near_miss": [
+   2607
+  ]
+ },
+ {
+  "id": "absent-15",
+  "family": "absent",
+  "item": "absent-01-09",
+  "evidence": [],
+  "obsolete": [],
+  "text": "What does the user add to the steaming water for flavor?",
+  "near_miss": [
+   2509
+  ]
+ },
+ {
+  "id": "absent-16",
+  "family": "absent",
+  "item": "absent-02-00",
+  "evidence": [],
+  "obsolete": [],
+  "text": "What type of soil did they use for the tomatoes?",
+  "near_miss": [
+   1287
+  ]
+ },
+ {
+  "id": "absent-17",
+  "family": "absent",
+  "item": "absent-02-01",
+  "evidence": [],
+  "obsolete": [],
+  "text": "How long does each watering session last?",
+  "near_miss": [
+   2631,
+   2632,
+   2636
+  ]
+ },
+ {
+  "id": "absent-18",
+  "family": "absent",
+  "item": "absent-02-02",
+  "evidence": [],
+  "obsolete": [],
+  "text": "Where did they purchase this tool?",
+  "near_miss": [
+   205
+  ]
+ },
+ {
+  "id": "absent-19",
+  "family": "absent",
+  "item": "absent-02-03",
+  "evidence": [],
+  "obsolete": [],
+  "text": "How often do they apply the pest treatment?",
+  "near_miss": [
+   3571,
+   3572
+  ]
+ },
+ {
+  "id": "absent-20",
+  "family": "absent",
+  "item": "absent-02-04",
+  "evidence": [],
+  "obsolete": [],
+  "text": "What is the carbon to nitrogen ratio in their compost?",
+  "near_miss": [
+   1225
+  ]
+ },
+ {
+  "id": "absent-21",
+  "family": "absent",
+  "item": "absent-02-05",
+  "evidence": [],
+  "obsolete": [],
+  "text": "What pruning technique do they use?",
+  "near_miss": [
+   405,
+   406
+  ]
+ },
+ {
+  "id": "absent-22",
+  "family": "absent",
+  "item": "absent-02-06",
+  "evidence": [],
+  "obsolete": [],
+  "text": "What was the seed germination rate?",
+  "near_miss": [
+   4491,
+   4492
+  ]
+ },
+ {
+  "id": "absent-23",
+  "family": "absent",
+  "item": "absent-02-07",
+  "evidence": [],
+  "obsolete": [],
+  "text": "What is the total square footage of the garden?",
+  "near_miss": [
+   791
+  ]
+ },
+ {
+  "id": "absent-24",
+  "family": "absent",
+  "item": "absent-02-09",
+  "evidence": [],
+  "obsolete": [],
+  "text": "What time of day do they typically harvest?",
+  "near_miss": [
+   2913
+  ]
+ },
+ {
+  "id": "absent-25",
+  "family": "absent",
+  "item": "absent-03-01",
+  "evidence": [],
+  "obsolete": [],
+  "text": "What specific printer model is causing the paper jam problem?",
+  "near_miss": [
+   647,
+   648,
+   650,
+   654
+  ]
+ },
+ {
+  "id": "absent-26",
+  "family": "absent",
+  "item": "absent-03-02",
+  "evidence": [],
+  "obsolete": [],
+  "text": "What year model is the television that cannot access streaming services?",
+  "near_miss": [
+   1327
+  ]
+ },
+ {
+  "id": "absent-27",
+  "family": "absent",
+  "item": "absent-03-04",
+  "evidence": [],
+  "obsolete": [],
+  "text": "What specific model of laptop is exhibiting the hard drive noise?",
+  "near_miss": [
+   4191,
+   4193
+  ]
+ },
+ {
+  "id": "absent-28",
+  "family": "absent",
+  "item": "absent-s00-00",
+  "evidence": [],
+  "obsolete": [],
+  "text": "How many questions were on the final exam?",
+  "near_miss": [
+   1061
+  ]
+ },
+ {
+  "id": "absent-29",
+  "family": "absent",
+  "item": "absent-s00-01",
+  "evidence": [],
+  "obsolete": [],
+  "text": "What was the lab report about?",
+  "near_miss": [
+   3259
+  ]
+ },
+ {
+  "id": "absent-30",
+  "family": "absent",
+  "item": "absent-s00-02",
+  "evidence": [],
+  "obsolete": [],
+  "text": "How many pages was the essay required to be?",
+  "near_miss": [
+   2553
+  ]
+ },
+ {
+  "id": "recent-01",
+  "family": "recent",
+  "item": "recent",
+  "text": "Who did I say is coming to do that job?",
+  "evidence": [
+   4795,
+   4796
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "recent-02",
+  "family": "recent",
+  "item": "recent",
+  "text": "Which ones did we end up choosing?",
+  "evidence": [
+   4797,
+   4798
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "recent-03",
+  "family": "recent",
+  "item": "recent",
+  "text": "What did I need to do the night before?",
+  "evidence": [
+   4795,
+   4796
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "recent-04",
+  "family": "recent",
+  "item": "recent",
+  "text": "What was I supposed to cancel afterwards?",
+  "evidence": [
+   4799,
+   4800
+  ],
+  "obsolete": []
+ }
+]

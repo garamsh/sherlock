@@ -1,0 +1,85 @@
+{
+ "counts": {
+  "exact": 70,
+  "paraphrase": 70,
+  "implicit": 70,
+  "correction": 70,
+  "absent": 30
+ },
+ "dropped": [
+  {
+   "id": "absent-01-02",
+   "reason": "key appears in another selected chat"
+  },
+  {
+   "id": "absent-01-07",
+   "reason": "key appears in another selected chat"
+  },
+  {
+   "id": "absent-03-00",
+   "reason": "key appears in another selected chat"
+  },
+  {
+   "id": "correction-02-03",
+   "reason": "key appears in another selected chat"
+  },
+  {
+   "id": "correction-03-00",
+   "reason": "key appears in another selected chat"
+  },
+  {
+   "id": "correction-05-01",
+   "reason": "key appears in another selected chat"
+  },
+  {
+   "id": "correction-05-09",
+   "reason": "key appears in another selected chat"
+  },
+  {
+   "id": "correction-07-04",
+   "reason": "key appears in another selected chat"
+  },
+  {
+   "id": "correction-07-06",
+   "reason": "key appears in another selected chat"
+  },
+  {
+   "id": "correction-08-04",
+   "reason": "key appears in another selected chat"
+  },
+  {
+   "id": "exact-03-00",
+   "reason": "key appears in another selected chat"
+  },
+  {
+   "id": "exact-03-05",
+   "reason": "key appears in another selected chat"
+  },
+  {
+   "id": "exact-07-03",
+   "reason": "key appears in another selected chat"
+  },
+  {
+   "id": "implicit-s02-00",
+   "reason": "key appears in another selected chat"
+  },
+  {
+   "id": "implicit-s06-02",
+   "reason": "key appears in another selected chat"
+  },
+  {
+   "id": "paraphrase-02-09",
+   "reason": "key appears in another selected chat"
+  },
+  {
+   "id": "paraphrase-04-09",
+   "reason": "key appears in another selected chat"
+  },
+  {
+   "id": "paraphrase-t05-04",
+   "reason": "key appears in another selected chat"
+  }
+ ],
+ "filler_used": 115,
+ "messages": 4800
+}

@@ -13,11 +13,11 @@ import (
 const (
 	// WorkspaceAddrEnv names the workspace's gRPC endpoint, which the
 	// files and shell_exec tools dial.
-	WorkspaceAddrEnv = "GAGENT_WORKSPACE_ADDR"
+	WorkspaceAddrEnv = "SHERLOCK_WORKSPACE_ADDR"
 
 	// OutboxDirEnv names the directory the message_send tool delivers
 	// into.
-	OutboxDirEnv = "GAGENT_OUTBOX_DIR"
+	OutboxDirEnv = "SHERLOCK_OUTBOX_DIR"
 
 	// AgentIDEnv names the ID of the agent this process serves, which
 	// message_send stamps on every message it delivers so a reader of
@@ -26,7 +26,7 @@ const (
 	// It carries the ID the agent resolved, not one an operator sets:
 	// --agent-id is a flag and this value is published after it is
 	// read, so a value already in the environment is replaced.
-	AgentIDEnv = "GAGENT_AGENT_ID"
+	AgentIDEnv = "SHERLOCK_AGENT_ID"
 )
 
 // SetSpawnEnv publishes the values the shipped tools read from their

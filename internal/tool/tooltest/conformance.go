@@ -14,7 +14,7 @@ import (
 // schemaResourceURI names the compiled schema resource. It is absolute and
 // cwd-independent so failure messages never embed a host filesystem path,
 // matching the internal/tool validation convention.
-const schemaResourceURI = "https://gagent.local/schema/tooltest.json"
+const schemaResourceURI = "https://sherlock.local/schema/tooltest.json"
 
 // CheckSchema inspects a tool's JSON Schema document and fails the test on
 // the four build-time errors the issue calls out: non-UTF-8 input,

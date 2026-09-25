@@ -5,7 +5,7 @@
 --- FAIL: TestScriptTool_Files_InvalidInputPreservesContent (1.45s)
     --- FAIL: TestScriptTool_Files_InvalidInputPreservesContent/{"path":"held.txt"} (0.00s)
         script_tool_files_test.go:273: 
-            	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/script_tool_files_test.go:273
+            	Error Trace:	/home/sauce/orca/workspaces/sherlock/fix-file-write/tests/script_tool_files_test.go:273
             	Error:      	Target error should be in err chain:
             	            	expected: "tool input validation failed"
             	            	in chain: "tool \"file_write\": exit status 1 (stderr: file_write: content is required)"
@@ -14,7 +14,7 @@
             	Test:       	TestScriptTool_Files_InvalidInputPreservesContent/{"path":"held.txt"}
     --- FAIL: TestScriptTool_Files_InvalidInputPreservesContent/{"path":"held.txt","content":null} (0.00s)
         script_tool_files_test.go:273: 
-            	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/script_tool_files_test.go:273
+            	Error Trace:	/home/sauce/orca/workspaces/sherlock/fix-file-write/tests/script_tool_files_test.go:273
             	Error:      	Target error should be in err chain:
             	            	expected: "tool input validation failed"
             	            	in chain: "tool \"file_write\": exit status 1 (stderr: file_write: content is required)"
@@ -29,7 +29,7 @@
 --- FAIL: TestScriptTool_Files_ProviderExposure (1.54s)
     --- FAIL: TestScriptTool_Files_ProviderExposure/openai (0.01s)
         script_tool_files_test.go:380: 
-            	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/script_tool_files_test.go:380
+            	Error Trace:	/home/sauce/orca/workspaces/sherlock/fix-file-write/tests/script_tool_files_test.go:380
             	Error:      	Not equal: 
             	            	expected: map[string]interface {}{"type":"string"}
             	            	actual  : map[string]interface {}{"type":[]interface {}{"string", "null"}}
@@ -48,7 +48,7 @@
             	Test:       	TestScriptTool_Files_ProviderExposure/openai
     --- FAIL: TestScriptTool_Files_ProviderExposure/anthropic (0.01s)
         script_tool_files_test.go:382: 
-            	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/script_tool_files_test.go:382
+            	Error Trace:	/home/sauce/orca/workspaces/sherlock/fix-file-write/tests/script_tool_files_test.go:382
             	Error:      	elements differ
             	            	
             	            	extra elements in list A:
@@ -70,5 +70,5 @@
             	            	}
             	Test:       	TestScriptTool_Files_ProviderExposure/anthropic
 FAIL
-FAIL	github.com/garamsh/gagent/tests	3.001s
+FAIL	github.com/garamsh/sherlock/tests	3.001s
 FAIL

@@ -4,7 +4,7 @@
   "files": {
     "Makefile": "e9ac392f610bc5e5a55073248f0c8af3c93d80cec6568e5b773d014896478b9b",
     "README.md": "9bb9a7328b684205d2a50653c4c7e8fdf62a46a6b77bf1eef232b7d227f113ef",
-    "cmd/gagent/mock_model.go": "de37f89e40eb84b256bbe06eb24492324cd973aa5e87656284c67e247c813737",
+    "cmd/sherlock/mock_model.go": "de37f89e40eb84b256bbe06eb24492324cd973aa5e87656284c67e247c813737",
     "deploy/local/README.md": "84de0ca252945151d53716f7ae1d6acbd3a5696c25f58c51fbf06977cc2a3d67",
     "deploy/local/smoke.sh": "b3a3d5a1e6efd37bbd417380ed1c81a431f250e45a7b2d1208392cd4465c4d27",
     "docs/architecture/adr/0008-subprocess-uid-drop.md": "8abe873552f5769532d9604538362ef1f99e4fbadc57f5c59ca8a7d196dceead",
@@ -16,7 +16,7 @@
     "docs/architecture/packages.md": "8e464153328bab40e4ff891fb205d2755362445f964ebe75158c8d3c2c6fb636",
     "docs/architecture/security.md": "8c5b2323facaf67c0e0693a432ac535117bc15e739fa5ed1eaee7600c59a37ec",
     "docs/experiments/task-continuation/README.md": "573be3c8f4c8b62b69aaa5a7383fb88f43683d69d34834eb3d2700dc1ebada9d",
-    "gagent.yaml": "ffe4d28ad990591ab908ccd218b1f6dab9d001b75771e20a44ff2fad5d99c931",
+    "agent.yaml": "ffe4d28ad990591ab908ccd218b1f6dab9d001b75771e20a44ff2fad5d99c931",
     "internal/agent/instructions.go": "3750a06311edb9214501de01dd26f688f60ff8c35e3fefdcb4f54f47ec65ec18",
     "internal/agent/instructions_test.go": "92b4b738e7f0b1e171bdc9e017b429ec7f0500ebd95252a7e3694770089e6e39",
     "internal/agent/openai/schema_test.go": "d6c05a9e5ed9356c120849a75209816fa9882ed6cb0a7c8d18a5af56457e4344",

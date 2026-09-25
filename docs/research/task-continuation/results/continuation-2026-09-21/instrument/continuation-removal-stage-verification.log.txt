@@ -1,8 +1,8 @@
 --- FAIL: TestContinuation_RejectsBrokenEvidence (0.00s)
     continuation_test.go:639: 
-        	Error Trace:	/home/sauce/orca/workspaces/gagent/test-continuation/tests/continuation_test.go:639
+        	Error Trace:	/home/sauce/orca/workspaces/sherlock/test-continuation/tests/continuation_test.go:639
         	Error:      	[]string(nil) does not contain "stage one artifact incorrect"
         	Test:       	TestContinuation_RejectsBrokenEvidence
 FAIL
-FAIL	github.com/garamsh/gagent/tests	0.009s
+FAIL	github.com/garamsh/sherlock/tests	0.009s
 FAIL

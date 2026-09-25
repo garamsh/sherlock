@@ -15,11 +15,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/agent"
-	"github.com/garamsh/gagent/internal/gateway"
-	"github.com/garamsh/gagent/internal/memory/sqlite"
-	"github.com/garamsh/gagent/internal/message"
-	"github.com/garamsh/gagent/internal/tool"
+	"github.com/garamsh/sherlock/internal/agent"
+	"github.com/garamsh/sherlock/internal/gateway"
+	"github.com/garamsh/sherlock/internal/memory/sqlite"
+	"github.com/garamsh/sherlock/internal/message"
+	"github.com/garamsh/sherlock/internal/tool"
 )
 
 // e2eAgentID is this scenario's own agent ID.
@@ -34,7 +34,7 @@ const e2eQuestion = "what is 6 * 7?"
 // mvpScript drives the canned MVP scenario through the scripted mock
 // model: reply to the sender through message_send, then close the
 // turn with a memory write recording the answer. It is narrower than
-// cmd/gagent's shipped mock, which also calls shell_exec and files:
+// cmd/sherlock's shipped mock, which also calls shell_exec and files:
 // this harness stubs message_send alone, so the scenario stays free of
 // a real workspace, its gRPC listener and a fork+exec. That is the
 // harness's scope, not a statement about which tools exist.

@@ -7,7 +7,7 @@ import (
 	"log/slog"
 	"strings"
 
-	"github.com/garamsh/gagent/internal/tool"
+	"github.com/garamsh/sherlock/internal/tool"
 )
 
 // MemoryWriteTool is the reserved tool a turn ends by calling. It is the

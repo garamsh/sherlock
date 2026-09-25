@@ -8,7 +8,7 @@ name: release
 # A tag filter is a glob and cannot spell `vX.Y.Z`, so `v*` is as narrow as the
 # trigger itself goes. It is also exactly the ref the push role admits — its
 # trust policy matches the subject
-# `repo:garamsh@307152666/gagent@1311139677:ref:refs/tags/v*` — so a run on any
+# `repo:garamsh@307152666/sherlock@1311139677:ref:refs/tags/v*` — so a run on any
 # other ref receives no credential even if something else starts one. What `v*`
 # admits and the scheme does not is refused by the first step below, before any
 # AWS call: every repository pushed to here is IMMUTABLE and a wrong name is
@@ -90,7 +90,7 @@ jobs:
       # workflow is able to push anything.
       - uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # v6.2.4
         with:
-          role-to-assume: arn:aws:iam::486152169996:role/garam-dev-gagent-ecr-push
+          role-to-assume: arn:aws:iam::486152169996:role/garam-dev-sherlock-ecr-push
           aws-region: ap-northeast-2
 
       - id: ecr
@@ -99,7 +99,7 @@ jobs:
       # The only irreversible step. Every local image is renamed first, so a
       # reference this cannot form fails before any upload begins.
       #
-      # `gagent-<image>:<revision>` is the name the Makefile writes for each of
+      # `sherlock-<image>:<revision>` is the name the Makefile writes for each of
       # the three. They are not re-derived here: a rename there leaves
       # `docker tag` with no such image, which fails this step rather than
       # pushing something else.
@@ -109,10 +109,10 @@ jobs:
         run: |
           set -euo pipefail
           for image in agent workspace tools; do
-            docker tag "gagent-$image:$GITHUB_SHA" "$REGISTRY/garam/gagent-$image:$VERSION"
+            docker tag "sherlock-$image:$GITHUB_SHA" "$REGISTRY/sherlock/$image:$VERSION"
           done
           for image in agent workspace tools; do
-            docker push "$REGISTRY/garam/gagent-$image:$VERSION"
+            docker push "$REGISTRY/sherlock/$image:$VERSION"
           done
 
       # What the registry holds, read back from the registry rather than from a
@@ -131,7 +131,7 @@ jobs:
         run: |
           set -euo pipefail
           for image in agent workspace tools; do
-            ref="$REGISTRY/garam/gagent-$image:$VERSION"
+            ref="$REGISTRY/sherlock/$image:$VERSION"
             media=$(docker buildx imagetools inspect "$ref" --format '{{.Manifest.MediaType}}')
             digest=$(docker buildx imagetools inspect "$ref" --format '{{.Manifest.Digest}}')
             case "$media" in

@@ -544,7 +544,7 @@ const file_internal_workspace_workspace_proto_rawDesc = "" +
 	"\x04Read\x12\x16.workspace.ReadRequest\x1a\x17.workspace.ReadResponse\x12:\n" +
 	"\x05Write\x12\x17.workspace.WriteRequest\x1a\x18.workspace.WriteResponse\x127\n" +
 	"\x04List\x12\x16.workspace.ListRequest\x1a\x17.workspace.ListResponse\x127\n" +
-	"\x04Exec\x12\x16.workspace.ExecRequest\x1a\x17.workspace.ExecResponseB8Z6github.com/garamsh/gagent/internal/workspace;workspaceb\x06proto3"
+	"\x04Exec\x12\x16.workspace.ExecRequest\x1a\x17.workspace.ExecResponseB:Z8github.com/garamsh/sherlock/internal/workspace;workspaceb\x06proto3"
 
 var (
 	file_internal_workspace_workspace_proto_rawDescOnce sync.Once

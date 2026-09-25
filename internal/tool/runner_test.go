@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/tool"
+	"github.com/garamsh/sherlock/internal/tool"
 )
 
 // tinyScript writes a small sh script to a temp directory and returns
@@ -151,12 +151,12 @@ exit 0`)
 // A green test over a form of the field nothing used is how three
 // documents came to describe a per-tool scope that never existed.
 func TestRunner_ToolGetsNothingTheAgentDoesNotHold(t *testing.T) {
-	t.Setenv("GAGENT_TEST_AGENT_HOLDS", "from-the-agent")
+	t.Setenv("SHERLOCK_TEST_AGENT_HOLDS", "from-the-agent")
 
 	// Deliberately never set: it stands for the credential an operator
 	// might want to give one tool and not the agent. Nothing can.
 	script := tinyScript(t,
-		`echo "{\"inherited\":\"$GAGENT_TEST_AGENT_HOLDS\",\"scoped\":\"$GAGENT_TEST_TOOL_ONLY\"}"`)
+		`echo "{\"inherited\":\"$SHERLOCK_TEST_AGENT_HOLDS\",\"scoped\":\"$SHERLOCK_TEST_TOOL_ONLY\"}"`)
 	manifest := tool.Manifest{
 		Name:         "envprobe",
 		Description:  "envprobe",
@@ -330,9 +330,9 @@ echo "{\"len\":\"${#line}\"}"`)
 // Nothing pinned this before, which is how the document and the code
 // drifted apart with neither wrong on its own terms.
 func TestRunner_ToolInheritsTheAgentEnvironment(t *testing.T) {
-	t.Setenv("GAGENT_TEST_AGENT_SECRET", "the-model-key")
+	t.Setenv("SHERLOCK_TEST_AGENT_SECRET", "the-model-key")
 	script := tinyScript(t, `cat >/dev/null
-printf '{"seen":"%s"}\n' "$GAGENT_TEST_AGENT_SECRET"`)
+printf '{"seen":"%s"}\n' "$SHERLOCK_TEST_AGENT_SECRET"`)
 	manifest := tool.Manifest{
 		Name:         "inherits",
 		Description:  "inherits",

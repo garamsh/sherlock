@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/garamsh/gagent/internal/tool"
+	"github.com/garamsh/sherlock/internal/tool"
 )
 
 const MemoryInspectTool = "memory_inspect"

@@ -1,5 +1,5 @@
 Free controls after Neri-specific premise review, 2026-09-24
-Command: GOCACHE=/tmp/gagent-815-go-cache GAGENT_CORRECTION_FREE_RESULTS=/tmp/correction-evidence-neri-final go test ./tests -run '^TestMemoryCorrection_' -count=1 -v
+Command: GOCACHE=/tmp/sherlock-815-go-cache SHERLOCK_CORRECTION_FREE_RESULTS=/tmp/correction-evidence-neri-final go test ./tests -run '^TestMemoryCorrection_' -count=1 -v
 Exit: 0
 
 === RUN   TestMemoryCorrection_Free
@@ -43,9 +43,9 @@ Exit: 0
     memory_correction_test.go:656: PM-only paid measurement is disabled
 --- SKIP: TestMemoryCorrection_Paid (0.00s)
 PASS
-ok  	github.com/garamsh/gagent/tests	6.180s
+ok  	github.com/garamsh/sherlock/tests	6.180s
 
-Command: PATH=/home/sauce/go/bin:$PATH GOCACHE=/tmp/gagent-815-go-cache GOLANGCI_LINT_CACHE=/tmp/gagent-815-lint-cache make lint format build
+Command: PATH=/home/sauce/go/bin:$PATH GOCACHE=/tmp/sherlock-815-go-cache GOLANGCI_LINT_CACHE=/tmp/sherlock-815-lint-cache make lint format build
 Exit: 0
 go vet ./...
 golangci-lint run ./...
@@ -53,5 +53,5 @@ golangci-lint run ./...
 format: 149 files checked, all formatted
 build: 23 packages built
 
-Module tidy: GOCACHE=/tmp/gagent-815-go-cache go mod tidy; exit 0; no go.mod/go.sum changes.
+Module tidy: GOCACHE=/tmp/sherlock-815-go-cache go mod tidy; exit 0; no go.mod/go.sum changes.
 Archive source hashes verified against both instrument files.

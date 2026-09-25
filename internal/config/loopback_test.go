@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/garamsh/gagent/internal/config"
+	"github.com/garamsh/sherlock/internal/config"
 )
 
 func TestIsLoopbackAddr(t *testing.T) {

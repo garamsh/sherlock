@@ -1,7 +1,7 @@
 {
   "Replace": {
-    "/home/sauce/orca/workspaces/gagent/test-record-selection/internal/agent/memory/recall.go": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/grounded-recall.go",
-    "/home/sauce/orca/workspaces/gagent/test-record-selection/internal/agent/service.go": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/grounded-service.go",
-    "/home/sauce/orca/workspaces/gagent/test-record-selection/internal/gateway/runtime.go": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/grounded-runtime.go"
+    "/home/sauce/orca/workspaces/sherlock/test-record-selection/internal/agent/memory/recall.go": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/grounded-recall.go",
+    "/home/sauce/orca/workspaces/sherlock/test-record-selection/internal/agent/service.go": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/grounded-service.go",
+    "/home/sauce/orca/workspaces/sherlock/test-record-selection/internal/gateway/runtime.go": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/grounded-runtime.go"
   }
 }

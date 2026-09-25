@@ -1,6 +1,6 @@
 Publication verification at 21f1d6a696aee4e4f6ee5f5875f4888da477623c, 2026-09-24
 
-Command: env -u MINIMAX_KEY -u GAGENT_CORRECTION_PAID GOCACHE=/tmp/gagent-815-go-cache GAGENT_CORRECTION_FREE_RESULTS=/tmp/memory-publication-815/free go test ./tests -run '^TestMemoryCorrection_' -count=1 -v
+Command: env -u MINIMAX_KEY -u SHERLOCK_CORRECTION_PAID GOCACHE=/tmp/sherlock-815-go-cache SHERLOCK_CORRECTION_FREE_RESULTS=/tmp/memory-publication-815/free go test ./tests -run '^TestMemoryCorrection_' -count=1 -v
 Exit: 0
 
 === RUN   TestMemoryCorrection_Free
@@ -54,9 +54,9 @@ Exit: 0
     memory_correction_test.go:656: PM-only paid measurement is disabled
 --- SKIP: TestMemoryCorrection_Paid (0.00s)
 PASS
-ok  	github.com/garamsh/gagent/tests	9.731s
+ok  	github.com/garamsh/sherlock/tests	9.731s
 
-Command: env -u MINIMAX_KEY -u GAGENT_CORRECTION_PAID PATH=/home/sauce/go/bin:$PATH GOCACHE=/tmp/gagent-815-go-cache GOLANGCI_LINT_CACHE=/tmp/gagent-815-lint-cache make ci
+Command: env -u MINIMAX_KEY -u SHERLOCK_CORRECTION_PAID PATH=/home/sauce/go/bin:$PATH GOCACHE=/tmp/sherlock-815-go-cache GOLANGCI_LINT_CACHE=/tmp/sherlock-815-lint-cache make ci
 Exit: 0
 
 go vet ./...
@@ -64,29 +64,29 @@ golangci-lint run ./...
 0 issues.
 format: 149 files checked, all formatted
 go test ./...
-ok  	github.com/garamsh/gagent/cmd/gagent	2.017s
-ok  	github.com/garamsh/gagent/internal/agent	0.018s
-ok  	github.com/garamsh/gagent/internal/agent/anthropic	0.016s
-ok  	github.com/garamsh/gagent/internal/agent/memory	0.044s
-ok  	github.com/garamsh/gagent/internal/agent/openai	0.017s
-ok  	github.com/garamsh/gagent/internal/config	0.032s
-ok  	github.com/garamsh/gagent/internal/gateway	0.117s
-ok  	github.com/garamsh/gagent/internal/memory	0.078s
-ok  	github.com/garamsh/gagent/internal/memory/sqlite	0.046s
-ok  	github.com/garamsh/gagent/internal/message	0.011s
-ok  	github.com/garamsh/gagent/internal/tool	0.060s
-ok  	github.com/garamsh/gagent/internal/tool/tooltest	0.013s
-?   	github.com/garamsh/gagent/internal/workspace	[no test files]
-ok  	github.com/garamsh/gagent/internal/workspace/files	0.006s
-ok  	github.com/garamsh/gagent/internal/workspace/server	0.025s
-ok  	github.com/garamsh/gagent/internal/workspace/shell	0.162s
-ok  	github.com/garamsh/gagent/tests	100.175s
-?   	github.com/garamsh/gagent/tools/file_list	[no test files]
-?   	github.com/garamsh/gagent/tools/file_read	[no test files]
-?   	github.com/garamsh/gagent/tools/file_write	[no test files]
-?   	github.com/garamsh/gagent/tools/github	[no test files]
-?   	github.com/garamsh/gagent/tools/message_send	[no test files]
-?   	github.com/garamsh/gagent/tools/shell_exec	[no test files]
+ok  	github.com/garamsh/sherlock/cmd/sherlock	2.017s
+ok  	github.com/garamsh/sherlock/internal/agent	0.018s
+ok  	github.com/garamsh/sherlock/internal/agent/anthropic	0.016s
+ok  	github.com/garamsh/sherlock/internal/agent/memory	0.044s
+ok  	github.com/garamsh/sherlock/internal/agent/openai	0.017s
+ok  	github.com/garamsh/sherlock/internal/config	0.032s
+ok  	github.com/garamsh/sherlock/internal/gateway	0.117s
+ok  	github.com/garamsh/sherlock/internal/memory	0.078s
+ok  	github.com/garamsh/sherlock/internal/memory/sqlite	0.046s
+ok  	github.com/garamsh/sherlock/internal/message	0.011s
+ok  	github.com/garamsh/sherlock/internal/tool	0.060s
+ok  	github.com/garamsh/sherlock/internal/tool/tooltest	0.013s
+?   	github.com/garamsh/sherlock/internal/workspace	[no test files]
+ok  	github.com/garamsh/sherlock/internal/workspace/files	0.006s
+ok  	github.com/garamsh/sherlock/internal/workspace/server	0.025s
+ok  	github.com/garamsh/sherlock/internal/workspace/shell	0.162s
+ok  	github.com/garamsh/sherlock/tests	100.175s
+?   	github.com/garamsh/sherlock/tools/file_list	[no test files]
+?   	github.com/garamsh/sherlock/tools/file_read	[no test files]
+?   	github.com/garamsh/sherlock/tools/file_write	[no test files]
+?   	github.com/garamsh/sherlock/tools/github	[no test files]
+?   	github.com/garamsh/sherlock/tools/message_send	[no test files]
+?   	github.com/garamsh/sherlock/tools/shell_exec	[no test files]
 build: 23 packages built
 
 Archive audit method: enumerate regular files from each original run directory and its explicit supervisor logs, exit codes and timestamps; archive original bytes without rewriting. Read each archive back, compare member set/size/SHA256 to manifest, and compare each paid member byte-for-byte to its source_path. Verify all instrument hashes with git show at source revision (historical free capture compared against bf619b7 because its recorded revision precedes its instrument edits). Compare aggregate calls with per-turn calls as complete-record multisets, decode response JSON and compare token pairs, and check max_tokens on every HTTP-200 request. Open every captured SQLite file read-only on a temporary copy and run PRAGMA integrity_check. Compare all four restart Before records per phase. Scan every member as bytes and every decoded request/response for the patterns below, with positive synthetic controls; no credentials or .env read.

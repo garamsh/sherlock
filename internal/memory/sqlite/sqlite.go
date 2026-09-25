@@ -9,7 +9,7 @@ import (
 
 	_ "modernc.org/sqlite"
 
-	"github.com/garamsh/gagent/internal/memory"
+	"github.com/garamsh/sherlock/internal/memory"
 )
 
 // schema holds the DDL. The active table is readable; the archive table

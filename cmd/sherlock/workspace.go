@@ -10,11 +10,11 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/garamsh/gagent/internal/config"
-	"github.com/garamsh/gagent/internal/workspace/server"
+	"github.com/garamsh/sherlock/internal/config"
+	"github.com/garamsh/sherlock/internal/workspace/server"
 )
 
-// newWorkspaceCommand returns the "gagent workspace" subcommand: it
+// newWorkspaceCommand returns the "sherlock workspace" subcommand: it
 // serves the workspace's gRPC contract (ADR 0017) — the filesystem and
 // process execution. Its addr flag is its own, not the agent's: sibling
 // subcommands register the same name on separate flag sets, and the

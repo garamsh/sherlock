@@ -10,7 +10,7 @@ failing account-wide (#603) — so no run below is a CI run, and none is reporte
 as one. The workflow change itself is therefore UNVERIFIED on the host.
 
   docker run --rm --cap-add=SYS_ADMIN -v "$PWD:/src" -w /src \
-    -v gagent-gocache:/root/.cache/go-build -v gagent-gomod:/go/pkg/mod \
+    -v sherlock-gocache:/root/.cache/go-build -v sherlock-gomod:/go/pkg/mod \
     golang:1.26@sha256:0d1d3a794be25f809dd2cb3160d8c73276c4056a9f8242a138e908ddeee7b6b6 \
     make test-privileged
 
@@ -20,7 +20,7 @@ which still cannot reach the boundary and still reports SURVIVED. The suite
 column is the privileged command.
 
 HEAD: 210a0c1
-suite command: docker run --rm --cap-add=SYS_ADMIN -v "$PWD:/src" -w /src -v gagent-gocache:/root/.cache/go-build -v gagent-gomod:/go/pkg/mod golang:1.26@sha256:0d1d3a794be25f809dd2cb3160d8c73276c4056a9f8242a138e908ddeee7b6b6 make test-privileged
+suite command: docker run --rm --cap-add=SYS_ADMIN -v "$PWD:/src" -w /src -v sherlock-gocache:/root/.cache/go-build -v sherlock-gomod:/go/pkg/mod golang:1.26@sha256:0d1d3a794be25f809dd2cb3160d8c73276c4056a9f8242a138e908ddeee7b6b6 make test-privileged
 M4: package=SURVIVED suite=KILLED  (the privilege drop is removed (child keeps root))
 M6: package=SURVIVED suite=KILLED  (netns isolation dropped for the privileged path)
 
@@ -39,8 +39,8 @@ tree clean after restore: YES
 === 2. clean tree, root with CAP_SYS_ADMIN: green ===
 exit 0
 
-go test -c -o /tmp/gagent-privileged.test ./internal/workspace/shell/
-GAGENT_PRIVILEGED_TESTS=1 /tmp/gagent-privileged.test
+go test -c -o /tmp/sherlock-privileged.test ./internal/workspace/shell/
+SHERLOCK_PRIVILEGED_TESTS=1 /tmp/sherlock-privileged.test
 PASS
 
 === 3. clean tree, root without CAP_SYS_ADMIN: red, not skipped ===
@@ -49,16 +49,16 @@ cases skipped and the run printed ok; the declaration makes the absence the
 result.
 exit 2
 
-go test -c -o /tmp/gagent-privileged.test ./internal/workspace/shell/
-GAGENT_PRIVILEGED_TESTS=1 /tmp/gagent-privileged.test
+go test -c -o /tmp/sherlock-privileged.test ./internal/workspace/shell/
+SHERLOCK_PRIVILEGED_TESTS=1 /tmp/sherlock-privileged.test
 2026/08/17 06:31:39 WARN shell: CAP_SYS_ADMIN missing; netns-isolated children will report agent_uid unavailable reason="unshare(CLONE_NEWNET) requires CAP_SYS_ADMIN"
 2026/08/17 06:31:39 WARN shell: CAP_SYS_ADMIN missing; netns-isolated children will report agent_uid unavailable reason="unshare(CLONE_NEWNET) requires CAP_SYS_ADMIN"
 2026/08/17 06:31:39 WARN shell: CAP_SYS_ADMIN missing; netns-isolated children will report agent_uid unavailable reason="unshare(CLONE_NEWNET) requires CAP_SYS_ADMIN"
 2026/08/17 06:31:39 WARN shell: CAP_SYS_ADMIN missing; netns-isolated children will report agent_uid unavailable reason="unshare(CLONE_NEWNET) requires CAP_SYS_ADMIN"
 --- FAIL: TestProcessExecutor_NoNetworkBlocksLoopback (0.03s)
-    netns_linux_test.go:141: GAGENT_PRIVILEGED_TESTS is set but this host cannot create the isolation namespace, so the run cannot report on it: shell: agent_uid unavailable
+    netns_linux_test.go:141: SHERLOCK_PRIVILEGED_TESTS is set but this host cannot create the isolation namespace, so the run cannot report on it: shell: agent_uid unavailable
 --- FAIL: TestProcessExecutor_NamespaceCarriesNoNetwork (0.00s)
-    netns_linux_test.go:181: GAGENT_PRIVILEGED_TESTS is set but this host cannot create the isolation namespace, so the run cannot report on it: shell: agent_uid unavailable
+    netns_linux_test.go:181: SHERLOCK_PRIVILEGED_TESTS is set but this host cannot create the isolation namespace, so the run cannot report on it: shell: agent_uid unavailable
 2026/08/17 06:31:39 WARN shell: CAP_SYS_ADMIN missing; netns-isolated children will report agent_uid unavailable reason="unshare(CLONE_NEWNET) requires CAP_SYS_ADMIN"
 2026/08/17 06:31:39 WARN shell: CAP_SYS_ADMIN missing; netns-isolated children will report agent_uid unavailable reason="unshare(CLONE_NEWNET) requires CAP_SYS_ADMIN"
 2026/08/17 06:31:39 WARN shell: CAP_SYS_ADMIN missing; netns-isolated children will report agent_uid unavailable reason="unshare(CLONE_NEWNET) requires CAP_SYS_ADMIN"
@@ -83,31 +83,31 @@ go: downloading github.com/davecgh/go-spew v1.1.1
 go: downloading gopkg.in/yaml.v3 v3.0.1
 go: downloading github.com/pmezard/go-difflib v1.0.0
 --- FAIL: TestProcessExecutor_RootWithoutCapSysAdminReportsAgentUIDUnavailable (0.00s)
-    process_linux_test.go:147: GAGENT_PRIVILEGED_TESTS is set but this run has euid 1000
+    process_linux_test.go:147: SHERLOCK_PRIVILEGED_TESTS is set but this run has euid 1000
 --- FAIL: TestProcessExecutor_NoNetworkBlocksLoopback (0.00s)
-    netns_linux_test.go:114: GAGENT_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
+    netns_linux_test.go:114: SHERLOCK_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
 --- FAIL: TestProcessExecutor_NamespaceCarriesNoNetwork (0.00s)
-    netns_linux_test.go:177: GAGENT_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
+    netns_linux_test.go:177: SHERLOCK_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
 --- FAIL: TestProcessExecutor_SingleAccountNoNetworkBlocksLoopback (0.00s)
-    netns_linux_test.go:269: GAGENT_PRIVILEGED_TESTS is set but this host cannot create the isolation namespace, so the run cannot report on it: shell: agent_uid unavailable
+    netns_linux_test.go:269: SHERLOCK_PRIVILEGED_TESTS is set but this host cannot create the isolation namespace, so the run cannot report on it: shell: agent_uid unavailable
 --- FAIL: TestProcessExecutor_SingleAccountLoopbackDownInNamespace (0.00s)
-    netns_linux_test.go:294: GAGENT_PRIVILEGED_TESTS is set but this host cannot create the isolation namespace, so the run cannot report on it: shell: agent_uid unavailable
+    netns_linux_test.go:294: SHERLOCK_PRIVILEGED_TESTS is set but this host cannot create the isolation namespace, so the run cannot report on it: shell: agent_uid unavailable
 --- FAIL: TestProcessExecutor_Success (0.00s)
-    process_test.go:81: GAGENT_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
+    process_test.go:81: SHERLOCK_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
 --- FAIL: TestProcessExecutor_NonZeroExit (0.00s)
-    process_test.go:93: GAGENT_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
+    process_test.go:93: SHERLOCK_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
 --- FAIL: TestProcessExecutor_Timeout (0.00s)
-    process_test.go:103: GAGENT_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
+    process_test.go:103: SHERLOCK_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
 --- FAIL: TestProcessExecutor_PrivilegedDropRunsAsExecUID (0.00s)
-    process_test.go:274: GAGENT_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
+    process_test.go:274: SHERLOCK_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
 --- FAIL: TestProcessExecutor_DefaultTimeoutRejectsZero (0.00s)
-    process_test.go:311: GAGENT_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
+    process_test.go:311: SHERLOCK_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
 --- FAIL: TestProcessExecutor_RunsInWorkspace (0.00s)
-    process_test.go:320: GAGENT_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
+    process_test.go:320: SHERLOCK_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
 --- FAIL: TestProcessExecutor_ScrubsPlatformEnv (0.00s)
-    process_test.go:335: GAGENT_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
+    process_test.go:335: SHERLOCK_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
 --- FAIL: TestProcessExecutor_RequestEnvAppliesOnTop (0.00s)
-    process_test.go:348: GAGENT_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
+    process_test.go:348: SHERLOCK_PRIVILEGED_TESTS is set but this run has euid 1000: the privileged family cannot be exercised and must not report as if it were
 FAIL
 
 === 5. clean tree, not root, declaration unset: skips and passes ===

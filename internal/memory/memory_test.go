@@ -11,8 +11,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/memory"
-	"github.com/garamsh/gagent/internal/memory/sqlite"
+	"github.com/garamsh/sherlock/internal/memory"
+	"github.com/garamsh/sherlock/internal/memory/sqlite"
 )
 
 var now = time.Date(2026, 7, 25, 12, 0, 0, 0, time.UTC)

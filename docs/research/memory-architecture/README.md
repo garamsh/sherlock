@@ -13,7 +13,7 @@ One question, answered with numbers: **what memory architecture should a years-l
 
 ## The question
 
-gagent's agent lives for years and talks to its owner continuously. It needs long-term memory that:
+sherlock's agent lives for years and talks to its owner continuously. It needs long-term memory that:
 
 - remembers what matters and recalls it correctly,
 - keeps the newest version of a fact, not a pile of stale copies,
@@ -46,14 +46,14 @@ A fifth run replays the small workload's queries against stores padded toward 1,
 **Baselines (what not to do)**
 
 - **A0 No memory** — nothing is stored; every turn starts blank.
-- **A1 Auto-capture uniform** — every turn stored at the same low weight; the newest few are returned. This was gagent's pre-experiment behavior, introduced by ADR 0006's earlier revision.
+- **A1 Auto-capture uniform** — every turn stored at the same low weight; the newest few are returned. This was sherlock's pre-experiment behavior, introduced by ADR 0006's earlier revision.
 - **A2 Full-text log** — everything verbatim; last-N return.
 
 **Classic retrieval**
 
 - **B1 Keyword-only** — TF-IDF cosine over words. No semantics.
 - **B2 Semantic-only** — embedding cosine only.
-- **B3 Hybrid RAG** — keyword + semantic blended with a relevance/recency/importance/access score. The pre-experiment gagent model.
+- **B3 Hybrid RAG** — keyword + semantic blended with a relevance/recency/importance/access score. The pre-experiment sherlock model.
 - **C3 Ebbinghaus decay** — B3 plus a flat time-decay on importance.
 
 **Curation and cognition**

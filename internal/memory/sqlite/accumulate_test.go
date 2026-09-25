@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/memory/sqlite"
+	"github.com/garamsh/sherlock/internal/memory/sqlite"
 )
 
 func TestAccumulate_RollbackDoesNotAdvanceCheckpointOrIndex(t *testing.T) {

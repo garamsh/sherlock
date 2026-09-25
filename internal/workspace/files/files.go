@@ -137,7 +137,7 @@ func (f *FS) Write(path string, content []byte) error {
 	if err := f.mkdirAll(dir); err != nil {
 		return fmt.Errorf("create parent of %q: %w", path, err)
 	}
-	tmp, err := os.CreateTemp(dir, ".gagent-write-*")
+	tmp, err := os.CreateTemp(dir, ".sherlock-write-*")
 	if err != nil {
 		return fmt.Errorf("write %q: %w", path, err)
 	}

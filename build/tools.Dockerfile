@@ -1,10 +1,10 @@
 # The tools image (ADR 0017, #767). The agent and workspace images are
 # separate files beside this one, and the three stay separate images.
 #
-# This image is never run. It is mounted: `gagent-operator` names it in
+# This image is never run. It is mounted: `sherlock-operator` names it in
 # `--agent-tools-image`, the kubelet mounts it into the agent Pod as a
 # read-only image volume, and the whole of this filesystem appears at the
-# mount path with `GAGENT_TOOLS_DIR` pointing there. So the image root *is*
+# mount path with `SHERLOCK_TOOLS_DIR` pointing there. So the image root *is*
 # the tools directory `internal/tool`'s registry walks — `<name>/<name>`
 # beside `<name>/manifest.json`, and nothing else at the root, because
 # every other top-level entry would appear inside that directory.
@@ -70,8 +70,8 @@ RUN chmod -R a=rX /out
 # nothing here to run, and the image is mounted rather than started.
 FROM scratch AS tools
 ARG REVISION=unknown
-LABEL org.opencontainers.image.title="gagent-tools" \
-      org.opencontainers.image.source="https://github.com/garamsh/gagent" \
+LABEL org.opencontainers.image.title="sherlock-tools" \
+      org.opencontainers.image.source="https://github.com/garamsh/sherlock" \
       org.opencontainers.image.revision="${REVISION}"
 
 COPY --from=build /out/ /

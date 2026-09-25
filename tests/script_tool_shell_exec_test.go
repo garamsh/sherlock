@@ -9,8 +9,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/tool"
-	"github.com/garamsh/gagent/internal/workspace/shell"
+	"github.com/garamsh/sherlock/internal/tool"
+	"github.com/garamsh/sherlock/internal/workspace/shell"
 )
 
 // TestScriptTool_ShellExec_Integration drops the shell_exec tool
@@ -30,7 +30,7 @@ func TestScriptTool_ShellExec_Integration(t *testing.T) {
 		ExitCode: 0,
 		TimedOut: false,
 	}
-	t.Setenv("GAGENT_WORKSPACE_ADDR", addr)
+	t.Setenv("SHERLOCK_WORKSPACE_ADDR", addr)
 
 	reg, err := tool.NewRegistry(tool.RegistryOptions{
 		Dir:      root,
@@ -66,7 +66,7 @@ func TestScriptTool_ShellExec_TimeoutSurfacesTrue(t *testing.T) {
 		ExitCode: 137,
 		TimedOut: true,
 	}
-	t.Setenv("GAGENT_WORKSPACE_ADDR", addr)
+	t.Setenv("SHERLOCK_WORKSPACE_ADDR", addr)
 
 	reg, err := tool.NewRegistry(tool.RegistryOptions{
 		Dir:      root,
@@ -93,7 +93,7 @@ func TestScriptTool_ShellExec_InputRejected(t *testing.T) {
 	hash := installTool(t, root, "shell_exec")
 	addr, _, _, stop := startFakeWorkspace(t)
 	defer stop()
-	t.Setenv("GAGENT_WORKSPACE_ADDR", addr)
+	t.Setenv("SHERLOCK_WORKSPACE_ADDR", addr)
 
 	reg, err := tool.NewRegistry(tool.RegistryOptions{
 		Dir:      root,
@@ -125,7 +125,7 @@ func TestScriptTool_ShellExec_NullTimeoutAccepted(t *testing.T) {
 		ExitCode: 0,
 		TimedOut: false,
 	}
-	t.Setenv("GAGENT_WORKSPACE_ADDR", addr)
+	t.Setenv("SHERLOCK_WORKSPACE_ADDR", addr)
 
 	reg, err := tool.NewRegistry(tool.RegistryOptions{
 		Dir:      root,
@@ -184,12 +184,12 @@ func TestScriptTool_ShellExec_StalledWorkspaceRefused(t *testing.T) {
 	const commandTimeout = time.Millisecond
 	call := json.RawMessage(`{"command":"echo hello from exec","timeout_nanos":1000000}`)
 
-	t.Setenv("GAGENT_WORKSPACE_ADDR", answering)
+	t.Setenv("SHERLOCK_WORKSPACE_ADDR", answering)
 	out, err := reg.Call(context.Background(), "shell_exec", call)
 	require.NoError(t, err, "control: a workspace that answers accepts this exact call")
 	assert.Contains(t, string(out), "hello from exec")
 
-	t.Setenv("GAGENT_WORKSPACE_ADDR", stalledAddr)
+	t.Setenv("SHERLOCK_WORKSPACE_ADDR", stalledAddr)
 	start := time.Now()
 	_, err = reg.Call(context.Background(), "shell_exec", call)
 	elapsed := time.Since(start)
@@ -220,7 +220,7 @@ func TestScriptTool_ShellExec_FallbackLeavesTheCeilingToTheWorkspace(t *testing.
 	defer stop()
 	exec.result = shell.Result{Stdout: "ok\n"}
 	exec.defaultTimeout = operatorExecTimeout
-	t.Setenv("GAGENT_WORKSPACE_ADDR", addr)
+	t.Setenv("SHERLOCK_WORKSPACE_ADDR", addr)
 
 	reg, err := tool.NewRegistry(tool.RegistryOptions{
 		Dir:      root,

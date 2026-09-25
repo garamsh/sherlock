@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/agent"
+	"github.com/garamsh/sherlock/internal/agent"
 )
 
 func TestParseWriteback_Operations(t *testing.T) {

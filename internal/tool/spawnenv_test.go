@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/tool"
+	"github.com/garamsh/sherlock/internal/tool"
 )
 
 // TestSetSpawnEnv_PublishesWhatTheToolsRead holds the spawn contract

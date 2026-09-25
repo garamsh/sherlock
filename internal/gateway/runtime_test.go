@@ -15,14 +15,14 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/agent"
-	"github.com/garamsh/gagent/internal/agent/openai"
-	"github.com/garamsh/gagent/internal/gateway"
-	"github.com/garamsh/gagent/internal/memory"
-	"github.com/garamsh/gagent/internal/memory/sqlite"
-	"github.com/garamsh/gagent/internal/message"
-	"github.com/garamsh/gagent/internal/tool"
-	"github.com/garamsh/gagent/internal/tool/tooltest"
+	"github.com/garamsh/sherlock/internal/agent"
+	"github.com/garamsh/sherlock/internal/agent/openai"
+	"github.com/garamsh/sherlock/internal/gateway"
+	"github.com/garamsh/sherlock/internal/memory"
+	"github.com/garamsh/sherlock/internal/memory/sqlite"
+	"github.com/garamsh/sherlock/internal/message"
+	"github.com/garamsh/sherlock/internal/tool"
+	"github.com/garamsh/sherlock/internal/tool/tooltest"
 )
 
 // recordingSink captures outbound messages.

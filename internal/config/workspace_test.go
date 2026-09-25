@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/config"
+	"github.com/garamsh/sherlock/internal/config"
 )
 
 // workspaceFlags returns the flag set the workspace subcommand resolves
@@ -60,7 +60,7 @@ func TestResolveWorkspaceConfig_EnvOverridesFile(t *testing.T) {
 	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
 	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "workspace.yaml"),
 		[]byte("workspace: /from-file\n"), 0o600))
-	t.Setenv("GAGENT_WORKSPACE", "/from-env")
+	t.Setenv("SHERLOCK_WORKSPACE", "/from-env")
 
 	cfg, err := config.ResolveWorkspace(workspaceFlags(t))
 	require.NoError(t, err)
@@ -70,7 +70,7 @@ func TestResolveWorkspaceConfig_EnvOverridesFile(t *testing.T) {
 
 func TestResolveWorkspaceConfig_FlagOverridesEnv(t *testing.T) {
 	t.Chdir(t.TempDir())
-	t.Setenv("GAGENT_WORKSPACE", "/from-env")
+	t.Setenv("SHERLOCK_WORKSPACE", "/from-env")
 	fs := workspaceFlags(t)
 	require.NoError(t, fs.Set("workspace", "/from-flag"))
 
@@ -83,8 +83,8 @@ func TestResolveWorkspaceConfig_FlagOverridesEnv(t *testing.T) {
 func TestResolveWorkspaceConfig_XDGConfigFile(t *testing.T) {
 	t.Chdir(t.TempDir())
 	xdg := t.TempDir()
-	require.NoError(t, os.MkdirAll(filepath.Join(xdg, "gagent"), 0o755))
-	require.NoError(t, os.WriteFile(filepath.Join(xdg, "gagent", "workspace.yaml"),
+	require.NoError(t, os.MkdirAll(filepath.Join(xdg, "sherlock"), 0o755))
+	require.NoError(t, os.WriteFile(filepath.Join(xdg, "sherlock", "workspace.yaml"),
 		[]byte("workspace: /from-xdg\n"), 0o600))
 	fs := workspaceFlags(t)
 	t.Setenv("XDG_CONFIG_HOME", xdg)

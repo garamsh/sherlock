@@ -15,7 +15,7 @@ import (
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 
-	"github.com/garamsh/gagent/internal/tool"
+	"github.com/garamsh/sherlock/internal/tool"
 )
 
 // Default settings, overridable by config file, environment, or flags.
@@ -29,7 +29,7 @@ const (
 
 	// defaultWorkspaceAddr is the gRPC endpoint of the agent's
 	// workspace (ADR 0017): the agent passes it to tools as
-	// GAGENT_WORKSPACE_ADDR and they dial it. Plain host:port, no
+	// SHERLOCK_WORKSPACE_ADDR and they dial it. Plain host:port, no
 	// scheme — the workspace listener is unauthenticated in this phase.
 	defaultWorkspaceAddr = "127.0.0.1:8081"
 
@@ -71,8 +71,8 @@ type Config struct {
 	Tools ToolsConfig `mapstructure:"tools"`
 	// ToolsDir is the directory the script-tool registry reads
 	// manifests from (ADR 0009). It resolves through the same four
-	// layers as every other setting, so GAGENT_TOOLS_DIR reaches it
-	// the way GAGENT_MEMORY_PATH reaches MemoryPath.
+	// layers as every other setting, so SHERLOCK_TOOLS_DIR reaches it
+	// the way SHERLOCK_MEMORY_PATH reaches MemoryPath.
 	ToolsDir string `mapstructure:"tools-dir"`
 }
 
@@ -139,7 +139,7 @@ type ModelConfig struct {
 // resolution the caller can only reach with the right flag set is one
 // the caller can get wrong.
 func AddSharedFlags(fs *pflag.FlagSet) {
-	fs.String("config", "", "config file path (default: ./configs/gagent.yaml, ./configs/workspace.yaml for the workspace, then the XDG config dir)")
+	fs.String("config", "", "config file path (default: ./configs/agent.yaml, ./configs/workspace.yaml for the workspace, then the XDG config dir)")
 }
 
 // AddAgentFlags registers the agent's settings as flags on fs. The
@@ -155,10 +155,10 @@ func AddAgentFlags(fs *pflag.FlagSet) {
 }
 
 // Resolve builds the agent's effective Config from fs using viper's
-// built-in precedence: flags > GAGENT_* environment variables > config
+// built-in precedence: flags > SHERLOCK_* environment variables > config
 // file > defaults. The config file resolves via --config <path>, then
-// ./configs/gagent.yaml, then os.UserConfigDir()/gagent/config.yaml (XDG;
-// ~/.config/gagent/config.yaml on Linux). A missing file is an error only
+// ./configs/agent.yaml, then os.UserConfigDir()/sherlock/config.yaml (XDG;
+// ~/.config/sherlock/config.yaml on Linux). A missing file is an error only
 // when --config named it explicitly.
 func Resolve(fs *pflag.FlagSet) (Config, error) {
 	v := newConfigViper()
@@ -172,7 +172,7 @@ func Resolve(fs *pflag.FlagSet) (Config, error) {
 	v.SetDefault("model.api-key-env", defaultModelKeyEnv)
 	v.SetDefault("model.timeout", defaultModelTimeout)
 	// Keys with neither a flag nor a default still get an empty default,
-	// so the env layer (GAGENT_TLS_CERT, …) reaches Unmarshal when the
+	// so the env layer (SHERLOCK_TLS_CERT, …) reaches Unmarshal when the
 	// key is absent from the config file (issue #228).
 	v.SetDefault("tls.cert", "")
 	v.SetDefault("tls.key", "")
@@ -184,7 +184,7 @@ func Resolve(fs *pflag.FlagSet) (Config, error) {
 	if err != nil {
 		return Config{}, err
 	}
-	loaded, err := readConfigFile(v, configFile, "gagent", "config.yaml")
+	loaded, err := readConfigFile(v, configFile, "agent", "config.yaml")
 	if err != nil {
 		return Config{}, err
 	}
@@ -211,7 +211,7 @@ const toolPinsKey = "tools.pins"
 
 // toolPinsEnv is the environment variable toolPinsKey binds to under the
 // prefix and replacer newConfigViper sets. It is named to be refused.
-const toolPinsEnv = "GAGENT_TOOLS_PINS"
+const toolPinsEnv = "SHERLOCK_TOOLS_PINS"
 
 // checkToolPinsEnv refuses the environment form of the pin set.
 //
@@ -238,7 +238,7 @@ func checkToolPinsEnv() error {
 	}
 	return fmt.Errorf("config: %s is set, and the environment cannot express %s: a pin set maps each "+
 		"tool name to its manifest SHA-256, and one variable carries one value. Write the pin set in "+
-		"the agent's config file (--config <path>, ./configs/gagent.yaml, or the XDG config path) and unset %s",
+		"the agent's config file (--config <path>, ./configs/agent.yaml, or the XDG config path) and unset %s",
 		toolPinsEnv, toolPinsKey, toolPinsEnv)
 }
 
@@ -269,11 +269,11 @@ func checkToolPins(v *viper.Viper, pins tool.ManifestPins) error {
 }
 
 // newConfigViper returns a viper with the shared resolution layer both
-// entry-point families use: GAGENT_* environment variables with dashes
+// entry-point families use: SHERLOCK_* environment variables with dashes
 // and dots mapped to underscores.
 func newConfigViper() *viper.Viper {
 	v := viper.New()
-	v.SetEnvPrefix("GAGENT")
+	v.SetEnvPrefix("SHERLOCK")
 	v.SetEnvKeyReplacer(strings.NewReplacer("-", "_", ".", "_"))
 	v.AutomaticEnv()
 	return v
@@ -281,7 +281,7 @@ func newConfigViper() *viper.Viper {
 
 // readConfigFile loads the config file into v following the resolution
 // order: an explicit --config path, then ./configs/<cwdName>.yaml, then
-// os.UserConfigDir()/gagent/<xdgName> (XDG; ~/.config/gagent/ on Linux).
+// os.UserConfigDir()/sherlock/<xdgName> (XDG; ~/.config/sherlock/ on Linux).
 // A missing file is an error only for the explicit flag path. A loaded
 // file must be owner-only (docs/architecture/security.md). It returns
 // the path it loaded, or "" when no file exists.
@@ -383,7 +383,7 @@ func loadConfigFile(v *viper.Viper, flagPath, cwdName, xdgName string) (string, 
 	if err != nil {
 		return "", nil
 	}
-	path := filepath.Join(configDir, "gagent", xdgName)
+	path := filepath.Join(configDir, "sherlock", xdgName)
 	v.SetConfigFile(path)
 	if err := v.ReadInConfig(); err != nil {
 		if errors.Is(err, fs.ErrNotExist) {

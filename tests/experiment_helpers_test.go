@@ -39,7 +39,7 @@ type turnRecord struct {
 
 func writeMeteredConfig(t *testing.T, baseURL string) string {
 	t.Helper()
-	path := filepath.Join(t.TempDir(), "gagent.yaml")
+	path := filepath.Join(t.TempDir(), "agent.yaml")
 	body := fmt.Sprintf("model:\n  provider: %s\n  base-url: %s\n  model: %s\n  api-key-env: %s\n  timeout: 300s\n", recallProvider, baseURL, recallModelName, recallKeyEnv)
 	require.NoError(t, os.WriteFile(path, []byte(body), 0o600))
 	return path

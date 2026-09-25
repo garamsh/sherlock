@@ -12,10 +12,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/agent"
-	"github.com/garamsh/gagent/internal/gateway"
-	"github.com/garamsh/gagent/internal/memory/sqlite"
-	"github.com/garamsh/gagent/internal/tool"
+	"github.com/garamsh/sherlock/internal/agent"
+	"github.com/garamsh/sherlock/internal/gateway"
+	"github.com/garamsh/sherlock/internal/memory/sqlite"
+	"github.com/garamsh/sherlock/internal/tool"
 )
 
 type evidenceModel struct {

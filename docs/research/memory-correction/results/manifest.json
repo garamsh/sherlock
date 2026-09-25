@@ -11,439 +11,439 @@
           "path": "exit-code",
           "bytes": 2,
           "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/exit-code"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/exit-code"
         },
         {
           "path": "finished-at",
           "bytes": 19,
           "sha256": "93ea7c0ed49e22f4ab552df57e7649a5034d13a18d440297456b20ddb646177b",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/finished-at"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/finished-at"
         },
         {
           "path": "run/phase-0/compacted-old.json",
           "bytes": 60873,
           "sha256": "bad8521ecc0949914181651410e260bd157246ac4160b5f1736bdb825b7a1bdf",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/compacted-old.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/compacted-old.json"
         },
         {
           "path": "run/phase-0/filler-00.json",
           "bytes": 57398,
           "sha256": "358d1972b208558ed64057669ef6f2c182e01d6db767827097690e385cf2bf5e",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-00.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-00.json"
         },
         {
           "path": "run/phase-0/filler-01.json",
           "bytes": 59126,
           "sha256": "db87a0bfbca167588a02d7bbeaec531823c0c6e8edebe72a07e0d0c894931b38",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-01.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-01.json"
         },
         {
           "path": "run/phase-0/filler-02.json",
           "bytes": 37614,
           "sha256": "83b7562b45cf7012589bff86801f4a79acf4b2fa45c02d4e7531b5d8344a7c97",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-02.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-02.json"
         },
         {
           "path": "run/phase-0/filler-03.json",
           "bytes": 62923,
           "sha256": "947241da8d93ae06cc37382b84388ceb7c3c13df3c17cada519459be33107e9c",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-03.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-03.json"
         },
         {
           "path": "run/phase-0/filler-04.json",
           "bytes": 65972,
           "sha256": "20757e9e7970f665f34248cf9567cda7e0017df7397a54f0b8ad6320a19a26cf",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-04.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-04.json"
         },
         {
           "path": "run/phase-0/filler-05.json",
           "bytes": 39772,
           "sha256": "94a88ef63ab3b70d8662bd406c0b06f4bb034e75969d219ee15397d436305cb5",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-05.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-05.json"
         },
         {
           "path": "run/phase-0/filler-06.json",
           "bytes": 70104,
           "sha256": "21e897b7c905011a0821622da877a93ec2f3ce2d9df486b51ee4fc3dd5cc76a0",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-06.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-06.json"
         },
         {
           "path": "run/phase-0/filler-07.json",
           "bytes": 69987,
           "sha256": "41e535ac25273653d30e160f01075a05a94a3e81266761bbfc941055db1bdbee",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-07.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-07.json"
         },
         {
           "path": "run/phase-0/filler-08.json",
           "bytes": 73964,
           "sha256": "fa214fbbfcc3778f7605affdc0e8e1c27f8c2656db8358c99d36530b2bf7bbf1",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-08.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-08.json"
         },
         {
           "path": "run/phase-0/filler-09.json",
           "bytes": 77007,
           "sha256": "2082f73fccfcac84a6e4bd215ca451b9bf0b69d47822e7d475a58093a587994d",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-09.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-09.json"
         },
         {
           "path": "run/phase-0/filler-10.json",
           "bytes": 46407,
           "sha256": "c5e9ca966d60165163761b9122ccaff966d59d607cf8e5ac6e334fa37b5622a3",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-10.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-10.json"
         },
         {
           "path": "run/phase-0/filler-11.json",
           "bytes": 46807,
           "sha256": "bc4f5a3c380ed72cca40047b2821506d1d72a3a4192b3f1a76605f70a418c456",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-11.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-11.json"
         },
         {
           "path": "run/phase-0/filler-12.json",
           "bytes": 80345,
           "sha256": "403bddc191ab78557975efaaaee9aa7867f43e5482c69db9310d5dc79358a1d5",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-12.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-12.json"
         },
         {
           "path": "run/phase-0/filler-13.json",
           "bytes": 84482,
           "sha256": "c093740665749a9534f98446916df0a6fd8b27aac8b7166dc00f6a0211551d44",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-13.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-13.json"
         },
         {
           "path": "run/phase-0/filler-14.json",
           "bytes": 87812,
           "sha256": "edefaf0466a34a7465dac030ec335e737daef6111ab7245e4abc93628cb0e394",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-14.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-14.json"
         },
         {
           "path": "run/phase-0/filler-15.json",
           "bytes": 51477,
           "sha256": "8e53e23efa927cc9ee23d1abbbdc0494f9e78aed9cd41248c8ac223edbfc5e54",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-15.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-15.json"
         },
         {
           "path": "run/phase-0/filler-16.json",
           "bytes": 51147,
           "sha256": "d816d48aabe35e1c19e7c075f96df4b7f3243da62aa3ba76327e8eb54c739252",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-16.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-16.json"
         },
         {
           "path": "run/phase-0/filler-17.json",
           "bytes": 91614,
           "sha256": "45865d0706333b86879c4f90179591e292c0c3686d9d476e967b78606f686cb2",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-17.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-17.json"
         },
         {
           "path": "run/phase-0/filler-18.json",
           "bytes": 52832,
           "sha256": "4e488f396406b714786161074a2e92fc7e642f4ec9f32d6bc4056a695e72d7c5",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-18.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-18.json"
         },
         {
           "path": "run/phase-0/filler-19.json",
           "bytes": 96138,
           "sha256": "f2d1f644740de97116d20f16e8df38a8e21241fe59db90e35cd4bea79b8e22f0",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-19.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-19.json"
         },
         {
           "path": "run/phase-0/filler-20.json",
           "bytes": 100083,
           "sha256": "0c53a69a9f37c6081cb7206e911fb2619460c3508f8cba685c1d93532afe7c17",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-20.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-20.json"
         },
         {
           "path": "run/phase-0/filler-21.json",
           "bytes": 57944,
           "sha256": "1a91b38ef6700a01c6a1374fa3ed2f1e7194e87cf76b8a369d48482fd4e9cd8b",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-21.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-21.json"
         },
         {
           "path": "run/phase-0/filler-22.json",
           "bytes": 58473,
           "sha256": "3ccb183b3947d7df800ff6a84d030155cb3477a19d2c4d5412fe09e1208e3566",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-22.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-22.json"
         },
         {
           "path": "run/phase-0/filler-23.json",
           "bytes": 102469,
           "sha256": "eb4c50efc55a3019b8aeb65f8c556f482c8af1d7fd1f73d03df6a4ddca40c473",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-23.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-23.json"
         },
         {
           "path": "run/phase-0/filler-24.json",
           "bytes": 109253,
           "sha256": "84b9d8bbf591401abf3b381c3877bfc08e76ff8306d94042022e61fac36670ff",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-24.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-24.json"
         },
         {
           "path": "run/phase-0/filler-25.json",
           "bytes": 110315,
           "sha256": "0bf29e1f8290d55b4889b5c5a93edf196bc98fd75b0688ca5e1a947230218b87",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-25.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-25.json"
         },
         {
           "path": "run/phase-0/filler-26.json",
           "bytes": 113130,
           "sha256": "1e33b66f197f926c7875677717480bc4da9b600da90d210d132b075b869989b4",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-26.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-26.json"
         },
         {
           "path": "run/phase-0/filler-27.json",
           "bytes": 112686,
           "sha256": "8a9cb8b1dd9785ed611679108a64b74e1e77df85b1850905ca2f5cf0d8c062c1",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-27.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-27.json"
         },
         {
           "path": "run/phase-0/filler-28.json",
           "bytes": 112447,
           "sha256": "4d300fa41cc4c412abe531257e09e36b90a4d57c2eb15410383cc9d7f127ab05",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-28.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-28.json"
         },
         {
           "path": "run/phase-0/filler-29.json",
           "bytes": 64083,
           "sha256": "8aa1ca8b6989345ae52de22680bdd5571f685dd05ddda4bdb1ae1e67ee611a78",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-29.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-29.json"
         },
         {
           "path": "run/phase-0/filler-30.json",
           "bytes": 63553,
           "sha256": "c0e584ef28db47eb4c25a4c647f34cb43c10c4b3f99a245198dd6e6399c43f79",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-30.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-30.json"
         },
         {
           "path": "run/phase-0/filler-31.json",
           "bytes": 110749,
           "sha256": "117cc64e6a9262198912df8d2d2cd7ca9c11310cf9c2d82bc0151b1ab6c615d5",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-31.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-31.json"
         },
         {
           "path": "run/phase-0/filler-32.json",
           "bytes": 64316,
           "sha256": "70b325abca4a4c4c4b9859179f23ef0ce94e853d31a5351827bc7395bdc47f47",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-32.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-32.json"
         },
         {
           "path": "run/phase-0/filler-33.json",
           "bytes": 63007,
           "sha256": "3942099f1158d49661b3f817cf3f34c1fc3ebf8364f485728936d9e39b42f7df",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-33.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-33.json"
         },
         {
           "path": "run/phase-0/filler-34.json",
           "bytes": 60842,
           "sha256": "70de589b2884fb7a4ed0142e2bbb8d28540764318734225faca1fa6f87f8ce20",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-34.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-34.json"
         },
         {
           "path": "run/phase-0/filler-35.json",
           "bytes": 112442,
           "sha256": "fd38ed1e2327e5898dbd4840b303cd7391332e466b0ed7187ceea488991a5e18",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-35.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-35.json"
         },
         {
           "path": "run/phase-0/filler-36.json",
           "bytes": 62639,
           "sha256": "c7172e564d17c13ecfcffecd3365add22e13dbda74ff39b63dcaea6937539828",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-36.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-36.json"
         },
         {
           "path": "run/phase-0/filler-37.json",
           "bytes": 61695,
           "sha256": "37716430142467cedfbb8e673846830a2c6bc93c59ed31f3dba91505458877ca",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-37.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-37.json"
         },
         {
           "path": "run/phase-0/filler-38.json",
           "bytes": 61507,
           "sha256": "504699b0a1d156cdf1235c85a81c443c80f13ea2a01edc9b1d2fca33520ea959",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-38.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-38.json"
         },
         {
           "path": "run/phase-0/filler-39.json",
           "bytes": 109989,
           "sha256": "936c9d4efcb68b5fb39ea06610cea89910c28844988c32f12b736964e68c461d",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-39.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-39.json"
         },
         {
           "path": "run/phase-0/filler-40.json",
           "bytes": 111270,
           "sha256": "a855ad5d1d9f136857406d2fe05f1ec211f15161d982c4e0844928b3f1790da0",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-40.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-40.json"
         },
         {
           "path": "run/phase-0/filler-41.json",
           "bytes": 63413,
           "sha256": "94e292a47510ff044f6d202903b8c4ef0e77a108bd1d54650dc9ce6f2aa08318",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-41.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-41.json"
         },
         {
           "path": "run/phase-0/filler-42.json",
           "bytes": 61511,
           "sha256": "66913c3d48db4ea2dbcd0587ddd9742e7b6b2208f6475e12556e803561d8a414",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-42.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-42.json"
         },
         {
           "path": "run/phase-0/filler-43.json",
           "bytes": 110641,
           "sha256": "25823c161e296266c09de52b0040ba51a1f95308876f2654f98e81871a3fc582",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-43.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-43.json"
         },
         {
           "path": "run/phase-0/filler-44.json",
           "bytes": 111289,
           "sha256": "57cb29c1cd55a9814cec44d457cad1a09755d0afdcfc9b0d1646912f7cdec4d2",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-44.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-44.json"
         },
         {
           "path": "run/phase-0/filler-45.json",
           "bytes": 62977,
           "sha256": "b5702bed00ca2edc2b2e879a0c169008f118df4a6df9dfbee53524c2098be20d",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-45.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-45.json"
         },
         {
           "path": "run/phase-0/filler-46.json",
           "bytes": 64017,
           "sha256": "e3dece2abfaf90114eda18161c282e9ce2b00876660c32de2e957b1c0f8d08f0",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-46.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-46.json"
         },
         {
           "path": "run/phase-0/filler-47.json",
           "bytes": 158952,
           "sha256": "d94687da621d560c73c185aab70ed38eddbfe1d982618afc1035a103a99d6dea",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-47.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/filler-47.json"
         },
         {
           "path": "run/phase-0/frozen/memory.db",
           "bytes": 20480,
           "sha256": "eb105ca31bcf4ff01a204ade1fc6120f68308b997cfa9dab5e1ae60306eba3ab",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/frozen/memory.db"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/frozen/memory.db"
         },
         {
           "path": "run/phase-0/restart-coexisting/agent.yaml",
           "bytes": 144,
           "sha256": "6c3a0d21f518de1fd28cd1dd2dc3532ea549402e349fd33e16eb293a0f78be7e",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/restart-coexisting/agent.yaml"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/restart-coexisting/agent.yaml"
         },
         {
           "path": "run/phase-0/restart-coexisting/ego.md",
           "bytes": 212,
           "sha256": "404163f02227ec72b821f5fbca5f815d887b7afa68d4444ce29093cd3954b011",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/restart-coexisting/ego.md"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/restart-coexisting/ego.md"
         },
         {
           "path": "run/phase-0/restart-coexisting/process.log",
           "bytes": 4723,
           "sha256": "4e94aaa21d1529a3d2d686b7b97854a20678920821500f689405523634d2f387",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/restart-coexisting/process.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/restart-coexisting/process.log"
         },
         {
           "path": "run/phase-0/restart-coexisting.json",
           "bytes": 31150,
           "sha256": "03140e72f6d02fdc5ad478fa8c18c0272269e3fe176380ce6cb06496b91a3d4e",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/restart-coexisting.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/restart-coexisting.json"
         },
         {
           "path": "run/phase-0/restart-corrected/agent.yaml",
           "bytes": 144,
           "sha256": "6c3a0d21f518de1fd28cd1dd2dc3532ea549402e349fd33e16eb293a0f78be7e",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/restart-corrected/agent.yaml"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/restart-corrected/agent.yaml"
         },
         {
           "path": "run/phase-0/restart-corrected/ego.md",
           "bytes": 212,
           "sha256": "404163f02227ec72b821f5fbca5f815d887b7afa68d4444ce29093cd3954b011",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/restart-corrected/ego.md"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/restart-corrected/ego.md"
         },
         {
           "path": "run/phase-0/restart-corrected/process.log",
           "bytes": 4930,
           "sha256": "081e00b0c05d4aa12c35a8b7ea0485a8313d08ba8cb50b6a5bc5036499b7b4d3",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/restart-corrected/process.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/restart-corrected/process.log"
         },
         {
           "path": "run/phase-0/restart-corrected.json",
           "bytes": 35949,
           "sha256": "e08d99d9a13c7872b3fd1d0cb206e269e7940eeb7ab58c2c48d643c7fc85a297",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/restart-corrected.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/restart-corrected.json"
         },
         {
           "path": "run/phase-0/restart-old/agent.yaml",
           "bytes": 144,
           "sha256": "6c3a0d21f518de1fd28cd1dd2dc3532ea549402e349fd33e16eb293a0f78be7e",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/restart-old/agent.yaml"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/restart-old/agent.yaml"
         },
         {
           "path": "run/phase-0/restart-old/ego.md",
           "bytes": 212,
           "sha256": "404163f02227ec72b821f5fbca5f815d887b7afa68d4444ce29093cd3954b011",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/restart-old/ego.md"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/restart-old/ego.md"
         },
         {
           "path": "run/phase-0/restart-old/process.log",
           "bytes": 5019,
           "sha256": "7d1485489e7e6e389312f0a03a793ada7895750d077d4f5b065e9fdb11d91c23",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/restart-old/process.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/phase-0/restart-old/process.log"
         },
         {
           "path": "run/plant-0.json",
           "bytes": 26256,
           "sha256": "6cb40ba023304ba24af123dfb9d0066262d5f0bfeac9174daa69f9bdd1f8e69d",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/plant-0.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/plant-0.json"
         },
         {
           "path": "run/plant-1.json",
           "bytes": 30226,
           "sha256": "c6402cfd9d3f569e72a050d55748fb1b34bff40325cd1c442f57c11543f7dd54",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/plant-1.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/plant-1.json"
         },
         {
           "path": "run/plant-2.json",
           "bytes": 32516,
           "sha256": "5dbfe01a0d6771c87c0340096b0e44e644430781062100e2b03097d70a770cfb",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/plant-2.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/plant-2.json"
         },
         {
           "path": "run/plant-3.json",
           "bytes": 54687,
           "sha256": "3168b2e88878cc884b2df37d4ca372676453204d261316736b4d19bc9a431b02",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/plant-3.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/plant-3.json"
         },
         {
           "path": "run/prepare/agent.yaml",
           "bytes": 144,
           "sha256": "6c3a0d21f518de1fd28cd1dd2dc3532ea549402e349fd33e16eb293a0f78be7e",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/prepare/agent.yaml"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/prepare/agent.yaml"
         },
         {
           "path": "run/prepare/ego.md",
           "bytes": 212,
           "sha256": "404163f02227ec72b821f5fbca5f815d887b7afa68d4444ce29093cd3954b011",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/prepare/ego.md"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/prepare/ego.md"
         },
         {
           "path": "run/prepare/process.log",
           "bytes": 193206,
           "sha256": "2698ca23a6bcb9ecada610d32e54497c07c95b1e831591362d0bd46f0007dc70",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/prepare/process.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/prepare/process.log"
         },
         {
           "path": "run/source.json",
           "bytes": 1667,
           "sha256": "9cb9e68ee62fbb981d34eae95cfe86ffdfa4e9c9399cc1f8f418d8c6bdefec55",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run/source.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run/source.json"
         },
         {
           "path": "started-at",
           "bytes": 19,
           "sha256": "202e5c6e40507dbe2590ccdd6fc20c8dceddeb24a9a069cfa59f7cb9b50c123b",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/started-at"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/started-at"
         },
         {
           "path": "test.log",
           "bytes": 17654,
           "sha256": "0dd877800e67368ad244ef55b9c12fb8981f7c2c42e0fb4c82ca0c2fee2364c9",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/test.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/test.log"
         }
       ]
     },
@@ -456,775 +456,775 @@
           "path": "exit-code-2",
           "bytes": 2,
           "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/exit-code-2"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/exit-code-2"
         },
         {
           "path": "finished-at-2",
           "bytes": 19,
           "sha256": "ba6f7ea1b951fe71ae61e33ced1cf6e188fdc5f63f38f34f6cf3a08f4ab707af",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/finished-at-2"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/finished-at-2"
         },
         {
           "path": "run-2/calls.json",
           "bytes": 5900849,
           "sha256": "152996ca984e044b568c41ef3834448166d75cfb57055c8737afb4c617a650a1",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/calls.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/calls.json"
         },
         {
           "path": "run-2/judgments.json",
           "bytes": 4058,
           "sha256": "b163a26c98d3112cde851fad055df3f48c90f8c52e9472e7815f047fe118f905",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/judgments.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/judgments.json"
         },
         {
           "path": "run-2/phase-0/compacted-old.json",
           "bytes": 63694,
           "sha256": "53e00cad9ef1482d008d1e0c240e9eb9703c54561e1ab869aa2750c04c0076ef",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/compacted-old.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/compacted-old.json"
         },
         {
           "path": "run-2/phase-0/filler-00.json",
           "bytes": 35833,
           "sha256": "ac2d5969d08ea6f0a8a86e8d030104dbe383cfbcdd96f1c63d6c6b8db0982ad7",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-00.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-00.json"
         },
         {
           "path": "run-2/phase-0/filler-01.json",
           "bytes": 34593,
           "sha256": "8bb85ec2678960aae36a5fff51f68f91c13a9efc01b09850c96bdc8516be0843",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-01.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-01.json"
         },
         {
           "path": "run-2/phase-0/filler-02.json",
           "bytes": 58114,
           "sha256": "cf7ef748a1913a04c7db833d154b969bc4be62edf33157c158336ae31133383c",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-02.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-02.json"
         },
         {
           "path": "run-2/phase-0/filler-03.json",
           "bytes": 61772,
           "sha256": "f9dbd5aa80563c0afdf8066203bff03bba9ba2a04d2e4911aad031faa7a6bf47",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-03.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-03.json"
         },
         {
           "path": "run-2/phase-0/filler-04.json",
           "bytes": 65112,
           "sha256": "81c1ec24149b3eec89891f510f855f47fed326e69c631ad405f43676076292d4",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-04.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-04.json"
         },
         {
           "path": "run-2/phase-0/filler-05.json",
           "bytes": 40776,
           "sha256": "4af7cbef9bcd3904fc22da60050ad443a53901e97d134f8bf7c27f7232849f42",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-05.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-05.json"
         },
         {
           "path": "run-2/phase-0/filler-06.json",
           "bytes": 40503,
           "sha256": "b008e675b404840f4fcc4471214905121260482718813cdba5eba6106344eaad",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-06.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-06.json"
         },
         {
           "path": "run-2/phase-0/filler-07.json",
           "bytes": 68100,
           "sha256": "05294858975ece9a750f0863d8a47e4424f547f44cf12a5886281d129fd82347",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-07.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-07.json"
         },
         {
           "path": "run-2/phase-0/filler-08.json",
           "bytes": 72117,
           "sha256": "49f20edc40c30bff92e6b6ab2a8acf943ba42b6a16b5858729de53e80799bc29",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-08.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-08.json"
         },
         {
           "path": "run-2/phase-0/filler-09.json",
           "bytes": 72684,
           "sha256": "9ea86fa1618e446fa0b466aed8251c55bb847e8cdcbdb0350113dafe5fac23f6",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-09.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-09.json"
         },
         {
           "path": "run-2/phase-0/filler-10.json",
           "bytes": 42563,
           "sha256": "c46e6a3d681baa143894ac2a8f575d9fd3dfd6c8402bd805329df723782c7238",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-10.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-10.json"
         },
         {
           "path": "run-2/phase-0/filler-11.json",
           "bytes": 45008,
           "sha256": "fbd90b96d1a285b206ed331ed9a9a63207053503c7dcc98e141c44f62d189e5e",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-11.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-11.json"
         },
         {
           "path": "run-2/phase-0/filler-12.json",
           "bytes": 77871,
           "sha256": "bface655525a0cc0d799988775dcc3199df0492af7a58d817b2d6eb6ec3b53bf",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-12.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-12.json"
         },
         {
           "path": "run-2/phase-0/filler-13.json",
           "bytes": 82235,
           "sha256": "b79a75cc98cb79864c035f6d6157db362460daf8445f600d025b0660910480fc",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-13.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-13.json"
         },
         {
           "path": "run-2/phase-0/filler-14.json",
           "bytes": 48428,
           "sha256": "7219125d0a3168b5247d177e0843698eb52680c28b78f7fc225e642c7d741693",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-14.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-14.json"
         },
         {
           "path": "run-2/phase-0/filler-15.json",
           "bytes": 49492,
           "sha256": "2b9f41d0a5e41e4414ee790aa1bf23b5fd783a4f78025d3223bda9a6b64ef17b",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-15.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-15.json"
         },
         {
           "path": "run-2/phase-0/filler-16.json",
           "bytes": 84917,
           "sha256": "37722e2a6fad1ed4532a814de01c7a45fafc67fdc712a318fe462e4493547fba",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-16.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-16.json"
         },
         {
           "path": "run-2/phase-0/filler-17.json",
           "bytes": 127369,
           "sha256": "b271a70e1b7110c01aa5375a553c6b21fb66b7f9dccbe8b0a044ea57320d9db7",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-17.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-17.json"
         },
         {
           "path": "run-2/phase-0/filler-18.json",
           "bytes": 93170,
           "sha256": "dc7420eb7fbf8cee0b580d3c428e208419d65adaf53c2688068158a899c93269",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-18.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-18.json"
         },
         {
           "path": "run-2/phase-0/filler-19.json",
           "bytes": 94505,
           "sha256": "12297d338336455c73a298ba376a5acadb708689fa1398de94cc6719c92a70aa",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-19.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-19.json"
         },
         {
           "path": "run-2/phase-0/filler-20.json",
           "bytes": 100263,
           "sha256": "fe569a52393e7b4269c0c3cb51193f5c262fcfa0ae51637d72e86557e1fa99b9",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-20.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-20.json"
         },
         {
           "path": "run-2/phase-0/filler-21.json",
           "bytes": 102326,
           "sha256": "4ce98c00877dce4fadd65302db3ed5833f56c2e2ad723cbcda6bf381a1e64be8",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-21.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-21.json"
         },
         {
           "path": "run-2/phase-0/filler-22.json",
           "bytes": 102894,
           "sha256": "356434040bb6464441a15afc3b3adad1cfbe995f7f11116e062ef3286c631421",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-22.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-22.json"
         },
         {
           "path": "run-2/phase-0/filler-23.json",
           "bytes": 60785,
           "sha256": "5d0e6d9a7d062375f4fcc5f7c60976d8729deab5f131a14a3164b1bc8c16126b",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-23.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-23.json"
         },
         {
           "path": "run-2/phase-0/filler-24.json",
           "bytes": 108070,
           "sha256": "0e4630c56b9319adf02a1ba42e067dcf9857b4c8fa290dc2d0ec6addde0d7877",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-24.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-24.json"
         },
         {
           "path": "run-2/phase-0/filler-25.json",
           "bytes": 62081,
           "sha256": "66e334837f5b4d4b77fd6718a18b85194366b7d8b080d9bdd63d833fb355af43",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-25.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-25.json"
         },
         {
           "path": "run-2/phase-0/filler-26.json",
           "bytes": 110446,
           "sha256": "9f29657e63a930c3489031cada0fe81aec664a7ce0d6b060b680ff86be8d7149",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-26.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-26.json"
         },
         {
           "path": "run-2/phase-0/filler-27.json",
           "bytes": 61995,
           "sha256": "e93314de88f6c30e185e8e9d9faddd321408e7a8e5fa5a7b02e939a621b5427e",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-27.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-27.json"
         },
         {
           "path": "run-2/phase-0/filler-28.json",
           "bytes": 211259,
           "sha256": "e81887c4f5ff09dc0a549d3fe561b06c5799c9da56028fe3ac5a25124c2c5167",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-28.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-28.json"
         },
         {
           "path": "run-2/phase-0/filler-29.json",
           "bytes": 112213,
           "sha256": "0a1dbf53c532c05597e8fddfb338b87c5d23ea1e4ea8dc07e8a74bee39f14d90",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-29.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-29.json"
         },
         {
           "path": "run-2/phase-0/filler-30.json",
           "bytes": 63564,
           "sha256": "f78648a410f88db56db9302debfa5d2c5ab6290f68fbb7dd5d0709b5815ecd8a",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-30.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-30.json"
         },
         {
           "path": "run-2/phase-0/filler-31.json",
           "bytes": 63572,
           "sha256": "ff444d03e4af86f9864e66ed9c3dae9247fafa60c5a63891f3f3c8c21bb2d365",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-31.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-31.json"
         },
         {
           "path": "run-2/phase-0/filler-32.json",
           "bytes": 113178,
           "sha256": "667c93cfba7b282da6f2d63c27cb922984055a965801da134fe9317ba3cde530",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-32.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-32.json"
         },
         {
           "path": "run-2/phase-0/filler-33.json",
           "bytes": 64176,
           "sha256": "71df26798bb1d724c7c737da3b01f8d3d10a7eb7fce797395015002443918238",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-33.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-33.json"
         },
         {
           "path": "run-2/phase-0/filler-34.json",
           "bytes": 113443,
           "sha256": "d52a056c624f7e4bac0cc47c20394fb694bb82f1ec5324ad107daa006d3c313d",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-34.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-34.json"
         },
         {
           "path": "run-2/phase-0/filler-35.json",
           "bytes": 63900,
           "sha256": "023962ced31d8235b9308f37d341f149f29a9f8c0ff5f5ea93f39853b10cd1ca",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-35.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-35.json"
         },
         {
           "path": "run-2/phase-0/filler-36.json",
           "bytes": 113119,
           "sha256": "64cf4ce291c31ab701a21fa254f5f7eca9c19ba296c7bdb2f5bb9f1667490f8b",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-36.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-36.json"
         },
         {
           "path": "run-2/phase-0/filler-37.json",
           "bytes": 267675,
           "sha256": "021d09dfb53b80d918f9ae4bea9823f9f715d9f0ccbf30dcf48cdf232c6e4c55",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-37.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-37.json"
         },
         {
           "path": "run-2/phase-0/filler-38.json",
           "bytes": 117186,
           "sha256": "87528b81a7b170513e5109094a2cb2ccdf7ebb28069ec6ad55062c41fe05b8eb",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-38.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-38.json"
         },
         {
           "path": "run-2/phase-0/filler-39.json",
           "bytes": 116787,
           "sha256": "d06aef384232f2fc2bc0179accf2a23d2b948c31063c7ec162c3e3a889dfca45",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-39.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-39.json"
         },
         {
           "path": "run-2/phase-0/filler-40.json",
           "bytes": 116551,
           "sha256": "27b6c290beae5e4eb8debd5f71d2c63d1ea7c3ccae68ab27c4b9676532f5c854",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-40.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-40.json"
         },
         {
           "path": "run-2/phase-0/filler-41.json",
           "bytes": 116393,
           "sha256": "a5f4d5f85ecdf8111ea43b0b669d9ad776e691ec0054a59f4ef1750197c06ed7",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-41.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-41.json"
         },
         {
           "path": "run-2/phase-0/filler-42.json",
           "bytes": 65719,
           "sha256": "9dc85aaa31cb55a4047372fd5123955ac6565ddeb3c63b71d7db4ef9f94c40cc",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-42.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-42.json"
         },
         {
           "path": "run-2/phase-0/filler-43.json",
           "bytes": 65207,
           "sha256": "0da9257b45de0904ad3e03f2740812c5bb6b9b3c36d1d8431123c6b6de124e92",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-43.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-43.json"
         },
         {
           "path": "run-2/phase-0/filler-44.json",
           "bytes": 65580,
           "sha256": "314cb06485a4ff64d128e4f511de6db1bb0f07396e663025a92829f91478256b",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-44.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-44.json"
         },
         {
           "path": "run-2/phase-0/filler-45.json",
           "bytes": 65140,
           "sha256": "95e47abe125df4e1c21aae725dc3f56c71a64bda2fa1d4e4d0f5a0cf7a1eb643",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-45.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-45.json"
         },
         {
           "path": "run-2/phase-0/filler-46.json",
           "bytes": 166489,
           "sha256": "50db3ef64ada69af3e9a2d10f28132f3d1e10e7e6e4581b3b2517fd6ecfa8b5e",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-46.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-46.json"
         },
         {
           "path": "run-2/phase-0/filler-47.json",
           "bytes": 166876,
           "sha256": "089f29451474214ec9c57c6adb84122c5f34a9587a69fe6fc1cb10ceec01b089",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-47.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/filler-47.json"
         },
         {
           "path": "run-2/phase-0/frozen/memory.db",
           "bytes": 20480,
           "sha256": "78947262b7a790404653f7bd2a13eb0e04f1f928b6f45a553fe3fac3ce0b9b81",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/frozen/memory.db"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/frozen/memory.db"
         },
         {
           "path": "run-2/phase-0/restart-coexisting/agent.yaml",
           "bytes": 144,
           "sha256": "12fa05185b287c109d526c41e261772d966680452e20f3ce67d38a9f8c6a951c",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-coexisting/agent.yaml"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-coexisting/agent.yaml"
         },
         {
           "path": "run-2/phase-0/restart-coexisting/ego.md",
           "bytes": 212,
           "sha256": "404163f02227ec72b821f5fbca5f815d887b7afa68d4444ce29093cd3954b011",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-coexisting/ego.md"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-coexisting/ego.md"
         },
         {
           "path": "run-2/phase-0/restart-coexisting/process.log",
           "bytes": 4725,
           "sha256": "a7411be038cd441980f9724064c8acfeb8e25213092df61d53702a78fcfd4de9",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-coexisting/process.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-coexisting/process.log"
         },
         {
           "path": "run-2/phase-0/restart-coexisting.json",
           "bytes": 40349,
           "sha256": "c0880c1d9436910d183669b72b2d6cf0ff054362740bd64b3f4c992eb4f534e9",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-coexisting.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-coexisting.json"
         },
         {
           "path": "run-2/phase-0/restart-corrected/agent.yaml",
           "bytes": 144,
           "sha256": "12fa05185b287c109d526c41e261772d966680452e20f3ce67d38a9f8c6a951c",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-corrected/agent.yaml"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-corrected/agent.yaml"
         },
         {
           "path": "run-2/phase-0/restart-corrected/ego.md",
           "bytes": 212,
           "sha256": "404163f02227ec72b821f5fbca5f815d887b7afa68d4444ce29093cd3954b011",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-corrected/ego.md"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-corrected/ego.md"
         },
         {
           "path": "run-2/phase-0/restart-corrected/process.log",
           "bytes": 4721,
           "sha256": "04334bbd285bdb7779bb7cf2266b6490a866a59cc0fe600d8dcd0c48abaa36d2",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-corrected/process.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-corrected/process.log"
         },
         {
           "path": "run-2/phase-0/restart-corrected.json",
           "bytes": 31431,
           "sha256": "b7de2b08435d7fa932f029da9dbd052e376482742e9d2462ab61e251e39b8551",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-corrected.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-corrected.json"
         },
         {
           "path": "run-2/phase-0/restart-old/agent.yaml",
           "bytes": 144,
           "sha256": "12fa05185b287c109d526c41e261772d966680452e20f3ce67d38a9f8c6a951c",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-old/agent.yaml"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-old/agent.yaml"
         },
         {
           "path": "run-2/phase-0/restart-old/ego.md",
           "bytes": 212,
           "sha256": "404163f02227ec72b821f5fbca5f815d887b7afa68d4444ce29093cd3954b011",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-old/ego.md"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-old/ego.md"
         },
         {
           "path": "run-2/phase-0/restart-old/process.log",
           "bytes": 4724,
           "sha256": "4bac5655061fe2c42fe5b9e0727e6566b24503105068c34151181e1fc64846f4",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-old/process.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-old/process.log"
         },
         {
           "path": "run-2/phase-0/restart-old.json",
           "bytes": 31553,
           "sha256": "817c4177d8867f4ac133b1b1e4a59af986cc14d6f714cf16a433aeb3f516a137",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-old.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-old.json"
         },
         {
           "path": "run-2/phase-0/restart-unstated/agent.yaml",
           "bytes": 144,
           "sha256": "12fa05185b287c109d526c41e261772d966680452e20f3ce67d38a9f8c6a951c",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-unstated/agent.yaml"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-unstated/agent.yaml"
         },
         {
           "path": "run-2/phase-0/restart-unstated/ego.md",
           "bytes": 212,
           "sha256": "404163f02227ec72b821f5fbca5f815d887b7afa68d4444ce29093cd3954b011",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-unstated/ego.md"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-unstated/ego.md"
         },
         {
           "path": "run-2/phase-0/restart-unstated/process.log",
           "bytes": 10844,
           "sha256": "98209c150e7299d4a9a9dc325464009df3611808977360a41068f0f1900f209f",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-unstated/process.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-unstated/process.log"
         },
         {
           "path": "run-2/phase-0/restart-unstated.json",
           "bytes": 91970,
           "sha256": "f3a10611880c2e6cbbf7d9e47c13f4e453d3c83c87ce4eec89a40113c4faf0ae",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-unstated.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-0/restart-unstated.json"
         },
         {
           "path": "run-2/phase-1/compacted-corrected.json",
           "bytes": 13044,
           "sha256": "4a7d8e5c6a066674ee2f1adbf11d142cc54b60dc2e5f2062f5276ae7648200c9",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/compacted-corrected.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/compacted-corrected.json"
         },
         {
           "path": "run-2/phase-1/filler-00.json",
           "bytes": 36092,
           "sha256": "f4d13ff7e27ff26d3932b08d16a874c0079aff6ae24bd5ad6fce0e935ff69061",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-00.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-00.json"
         },
         {
           "path": "run-2/phase-1/filler-01.json",
           "bytes": 53498,
           "sha256": "1cc6603e26ed93bdea8759f38db453c34ce76e0d08bf3cb1385983749190ec72",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-01.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-01.json"
         },
         {
           "path": "run-2/phase-1/filler-02.json",
           "bytes": 38812,
           "sha256": "dca1c40f760404ea6c0d3201a6215db393b934ef01f3a0e4012f9e10b2fb1272",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-02.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-02.json"
         },
         {
           "path": "run-2/phase-1/filler-03.json",
           "bytes": 37658,
           "sha256": "1678930e868485e47dbfb9a24af188ff993aeadec0e324b738cc476670c1a20e",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-03.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-03.json"
         },
         {
           "path": "run-2/phase-1/filler-04.json",
           "bytes": 38065,
           "sha256": "266a1b33a400e59eaa45a21f5aa97b8e8fb2e8589aaf1f393910446971f9c732",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-04.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-04.json"
         },
         {
           "path": "run-2/phase-1/filler-05.json",
           "bytes": 37069,
           "sha256": "1a67ef18a16f1a3b3b782ea7ee3c7cfedc9581990f64a46fe4e62ad997649dcd",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-05.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-05.json"
         },
         {
           "path": "run-2/phase-1/filler-06.json",
           "bytes": 39338,
           "sha256": "7393792917fd956f202cd98bba0b125173142dbb4bc13e0796c3f313b1005d5b",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-06.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-06.json"
         },
         {
           "path": "run-2/phase-1/filler-07.json",
           "bytes": 65149,
           "sha256": "d05202781436b6c14b890ffab2c44712b1436ffff035a8937dc4d6cb292e71e3",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-07.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-07.json"
         },
         {
           "path": "run-2/phase-1/filler-08.json",
           "bytes": 43771,
           "sha256": "2fe060ec3e6d40963b5f14ffa4677dcb98e157ca2b1256591c26167c3240d679",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-08.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-08.json"
         },
         {
           "path": "run-2/phase-1/filler-09.json",
           "bytes": 44073,
           "sha256": "758c24946e31207231549c8e1e8e0e7ba0631f310e708204165927eb6304a5b1",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-09.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-09.json"
         },
         {
           "path": "run-2/phase-1/filler-10.json",
           "bytes": 45070,
           "sha256": "7043f41cb78c3868f5e12a7d0d37d786539e86bb13d4d879671d2bca5181f680",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-10.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-10.json"
         },
         {
           "path": "run-2/phase-1/filler-11.json",
           "bytes": 45191,
           "sha256": "e1e80aa84398cd355ac57e42dd46d41950fb463b99e21bd181668380ca5db90d",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-11.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-11.json"
         },
         {
           "path": "run-2/phase-1/filler-12.json",
           "bytes": 74601,
           "sha256": "fe0a57ba025335171f40f94ef7392865a887e0c5118c6648b236391e39e34937",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-12.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-12.json"
         },
         {
           "path": "run-2/phase-1/filler-13.json",
           "bytes": 78500,
           "sha256": "88211933f7cf4dacc0cb050387a39d9181ceb46efb7616b02dc156f97e5fad1c",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-13.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-13.json"
         },
         {
           "path": "run-2/phase-1/filler-14.json",
           "bytes": 81558,
           "sha256": "d89ec78ede110ef8a2c1c91d86dbeb5eb53b44b05e85393f86813567af4ff2dd",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-14.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-14.json"
         },
         {
           "path": "run-2/phase-1/filler-15.json",
           "bytes": 117235,
           "sha256": "9d96c030d6fcc490d92acedbe76faa16537a62b37c05eec4ba5def69b2841cbc",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-15.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-15.json"
         },
         {
           "path": "run-2/phase-1/filler-16.json",
           "bytes": 88194,
           "sha256": "e2e626e5912426e98fa878ad05b03fa9b5922f102c2642ce4b8eb8581f7928cb",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-16.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-16.json"
         },
         {
           "path": "run-2/phase-1/filler-17.json",
           "bytes": 52349,
           "sha256": "769a26d656237cfee7e2194a6517ae1b1d4742b76272a5f56183a308b573a6bd",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-17.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-17.json"
         },
         {
           "path": "run-2/phase-1/filler-18.json",
           "bytes": 93509,
           "sha256": "054650aeba097f4c39abf7d7e6add7f96dc4c830491cec750e7b469090c0adf8",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-18.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-18.json"
         },
         {
           "path": "run-2/phase-1/filler-19.json",
           "bytes": 56023,
           "sha256": "47a2b9668e24a7fac457f1786da231b6352df14eaf8a8775d15374d936132a78",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-19.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-19.json"
         },
         {
           "path": "run-2/phase-1/filler-20.json",
           "bytes": 57679,
           "sha256": "2c3dba4f65591288018d33184f70718f668fefc3d91b7ef7046d222eac5d5902",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-20.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-20.json"
         },
         {
           "path": "run-2/phase-1/filler-21.json",
           "bytes": 56974,
           "sha256": "a3086e1aa09486f21a6bdf8b377d123e23d60c3a28c34feca195f22f3bbacbf6",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-21.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-21.json"
         },
         {
           "path": "run-2/phase-1/filler-22.json",
           "bytes": 58423,
           "sha256": "0e833b61e6a38e717eb7c55b50e9ecb6d87e32b2c9e60b68ea74e93c5171828d",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-22.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-22.json"
         },
         {
           "path": "run-2/phase-1/filler-23.json",
           "bytes": 143612,
           "sha256": "da3423ba2c277f9526978777bec45cb83fa04a775ffe2423f0b45767ad49558f",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-23.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-23.json"
         },
         {
           "path": "run-2/phase-1/filler-24.json",
           "bytes": 196850,
           "sha256": "1b55b5d8056bdf0b40e6189b09612c1d83ff91ea286d1f36b8985df7a00fafa7",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-24.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-24.json"
         },
         {
           "path": "run-2/phase-1/filler-25.json",
           "bytes": 63014,
           "sha256": "3364b148fe30d04e8ca6d660869c2942946a07dd87b0c568b8ec5cb5e484b018",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-25.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/filler-25.json"
         },
         {
           "path": "run-2/phase-1/frozen/memory.db",
           "bytes": 20480,
           "sha256": "0bc8b9bdc64467e71fc59308b77e3578528d4831451611368f2a8775d380bd26",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/frozen/memory.db"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/frozen/memory.db"
         },
         {
           "path": "run-2/phase-1/restart-coexisting/agent.yaml",
           "bytes": 144,
           "sha256": "12fa05185b287c109d526c41e261772d966680452e20f3ce67d38a9f8c6a951c",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-coexisting/agent.yaml"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-coexisting/agent.yaml"
         },
         {
           "path": "run-2/phase-1/restart-coexisting/ego.md",
           "bytes": 212,
           "sha256": "404163f02227ec72b821f5fbca5f815d887b7afa68d4444ce29093cd3954b011",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-coexisting/ego.md"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-coexisting/ego.md"
         },
         {
           "path": "run-2/phase-1/restart-coexisting/process.log",
           "bytes": 3042,
           "sha256": "e275e936ccef42a02cc74e88cb25bc954c691c5772b74025e20ab72fb454925b",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-coexisting/process.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-coexisting/process.log"
         },
         {
           "path": "run-2/phase-1/restart-coexisting.json",
           "bytes": 13040,
           "sha256": "c88f88be0484ec34a5efbaccdad12a7edc95a9a334911878f44d421295054543",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-coexisting.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-coexisting.json"
         },
         {
           "path": "run-2/phase-1/restart-corrected/agent.yaml",
           "bytes": 144,
           "sha256": "12fa05185b287c109d526c41e261772d966680452e20f3ce67d38a9f8c6a951c",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-corrected/agent.yaml"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-corrected/agent.yaml"
         },
         {
           "path": "run-2/phase-1/restart-corrected/ego.md",
           "bytes": 212,
           "sha256": "404163f02227ec72b821f5fbca5f815d887b7afa68d4444ce29093cd3954b011",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-corrected/ego.md"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-corrected/ego.md"
         },
         {
           "path": "run-2/phase-1/restart-corrected/process.log",
           "bytes": 3041,
           "sha256": "37ec915f25faaef97c894a6e29cb1eabba7c6f57ea8c42de9fff9168b7e347f6",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-corrected/process.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-corrected/process.log"
         },
         {
           "path": "run-2/phase-1/restart-corrected.json",
           "bytes": 13038,
           "sha256": "565905c143c7840abdb3245d1182642f79f0bd9dff453cc101db28b8227be33f",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-corrected.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-corrected.json"
         },
         {
           "path": "run-2/phase-1/restart-old/agent.yaml",
           "bytes": 144,
           "sha256": "12fa05185b287c109d526c41e261772d966680452e20f3ce67d38a9f8c6a951c",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-old/agent.yaml"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-old/agent.yaml"
         },
         {
           "path": "run-2/phase-1/restart-old/ego.md",
           "bytes": 212,
           "sha256": "404163f02227ec72b821f5fbca5f815d887b7afa68d4444ce29093cd3954b011",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-old/ego.md"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-old/ego.md"
         },
         {
           "path": "run-2/phase-1/restart-old/process.log",
           "bytes": 3040,
           "sha256": "a273215d2e336ee8891144b0c6a94474c6325748445a95dc4aacc76e1803f2d9",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-old/process.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-old/process.log"
         },
         {
           "path": "run-2/phase-1/restart-old.json",
           "bytes": 12986,
           "sha256": "1785b2f7311ce6747c0e0c90a9916803cf89cd5baf8fb639fc32682c7c32facf",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-old.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-old.json"
         },
         {
           "path": "run-2/phase-1/restart-unstated/agent.yaml",
           "bytes": 144,
           "sha256": "12fa05185b287c109d526c41e261772d966680452e20f3ce67d38a9f8c6a951c",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-unstated/agent.yaml"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-unstated/agent.yaml"
         },
         {
           "path": "run-2/phase-1/restart-unstated/ego.md",
           "bytes": 212,
           "sha256": "404163f02227ec72b821f5fbca5f815d887b7afa68d4444ce29093cd3954b011",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-unstated/ego.md"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-unstated/ego.md"
         },
         {
           "path": "run-2/phase-1/restart-unstated/process.log",
           "bytes": 3041,
           "sha256": "63cab7e54ccb358c2868e23a08bd8857d0739ed53cfd8195febdb9354b5870c9",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-unstated/process.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-unstated/process.log"
         },
         {
           "path": "run-2/phase-1/restart-unstated.json",
           "bytes": 12998,
           "sha256": "3168ec17fe845ee00ad5ad442699d9827619dafaa956295957d0724f3186a027",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-unstated.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/phase-1/restart-unstated.json"
         },
         {
           "path": "run-2/plant-0.json",
           "bytes": 25984,
           "sha256": "536330fdebf233545dc417ed1769aaf1affa13f861c40704ad5aa0e83df0f1d7",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/plant-0.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/plant-0.json"
         },
         {
           "path": "run-2/plant-1.json",
           "bytes": 30310,
           "sha256": "ccce30974587a6bacc7b367434dd398fbed92891d2a690000a069a547c12e8e1",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/plant-1.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/plant-1.json"
         },
         {
           "path": "run-2/plant-2.json",
           "bytes": 31912,
           "sha256": "d265d06ccd2711b66950a0242a14e411c05144d888e37724a2e7def231d2e77e",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/plant-2.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/plant-2.json"
         },
         {
           "path": "run-2/plant-3.json",
           "bytes": 53839,
           "sha256": "c80cf58beecb863f82382591c00e59ba48ff877fa162bb3af45285e84e1f918d",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/plant-3.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/plant-3.json"
         },
         {
           "path": "run-2/prepare/agent.yaml",
           "bytes": 144,
           "sha256": "12fa05185b287c109d526c41e261772d966680452e20f3ce67d38a9f8c6a951c",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/prepare/agent.yaml"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/prepare/agent.yaml"
         },
         {
           "path": "run-2/prepare/ego.md",
           "bytes": 212,
           "sha256": "404163f02227ec72b821f5fbca5f815d887b7afa68d4444ce29093cd3954b011",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/prepare/ego.md"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/prepare/ego.md"
         },
         {
           "path": "run-2/prepare/process.log",
           "bytes": 210964,
           "sha256": "e601b48fc083fa1a9c7af9101c4d65c601a1954381053e9f04b4e0428e49f85e",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/prepare/process.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/prepare/process.log"
         },
         {
           "path": "run-2/reversal/agent.yaml",
           "bytes": 144,
           "sha256": "12fa05185b287c109d526c41e261772d966680452e20f3ce67d38a9f8c6a951c",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/reversal/agent.yaml"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/reversal/agent.yaml"
         },
         {
           "path": "run-2/reversal/ego.md",
           "bytes": 212,
           "sha256": "404163f02227ec72b821f5fbca5f815d887b7afa68d4444ce29093cd3954b011",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/reversal/ego.md"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/reversal/ego.md"
         },
         {
           "path": "run-2/reversal/process.log",
           "bytes": 98904,
           "sha256": "94d9e06af0cbdba9b6767e246a51b8ce89bd73b711d97eb651d7d4c1bf3b92fe",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/reversal/process.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/reversal/process.log"
         },
         {
           "path": "run-2/reversal.json",
           "bytes": 35428,
           "sha256": "c6e0cd0de243cb06551808c8c960da62c16fd55d6fe02e1ff59a7fbc5834303f",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/reversal.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/reversal.json"
         },
         {
           "path": "run-2/source.json",
           "bytes": 1667,
           "sha256": "9cb9e68ee62fbb981d34eae95cfe86ffdfa4e9c9399cc1f8f418d8c6bdefec55",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/source.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/run-2/source.json"
         },
         {
           "path": "started-at-2",
           "bytes": 19,
           "sha256": "223c94cd762c9666e242e05b887e39f9b29f9e84dafada5be1dd1901cc6f00b8",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/started-at-2"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/started-at-2"
         },
         {
           "path": "supervisor-2.log",
           "bytes": 0,
           "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/supervisor-2.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/supervisor-2.log"
         },
         {
           "path": "test-2.log",
           "bytes": 235,
           "sha256": "cc650bbf0fe424e8011df7d5fc779b2ea70842890458393bdc8a8ac8eaa529bf",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-bf619b7/test-2.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-bf619b7/test-2.log"
         }
       ]
     },
@@ -1237,913 +1237,913 @@
           "path": "audit.md",
           "bytes": 4805,
           "sha256": "07aa01ff5616733502dc9b5d48e7695689e9853b3e8b5ce35af8f5edb6f5347d",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/audit.md"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/audit.md"
         },
         {
           "path": "exit-code",
           "bytes": 2,
           "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/exit-code"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/exit-code"
         },
         {
           "path": "finished-at",
           "bytes": 19,
           "sha256": "3621282e09a692bb6cb4a08f2c158f5d7f75cf1706fd38f4ab20a63d12a08d73",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/finished-at"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/finished-at"
         },
         {
           "path": "run/calls.json",
           "bytes": 7080218,
           "sha256": "57f3810bbb3ad4a1dbbe8791f1de2a45771ad56c9914e5cc34004cdcefbdff27",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/calls.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/calls.json"
         },
         {
           "path": "run/judgments.json",
           "bytes": 4529,
           "sha256": "7cfec11e5ba2e3f56bd370a3c8776af12fa24b7b407054a277af194f512cb1eb",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/judgments.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/judgments.json"
         },
         {
           "path": "run/phase-0/compacted-old.json",
           "bytes": 58772,
           "sha256": "3e17c6f2fe1d23cf89ac4179d46f7fb4bae66fc7ed3f09d257e524071e100a3c",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/compacted-old.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/compacted-old.json"
         },
         {
           "path": "run/phase-0/filler-00.json",
           "bytes": 56798,
           "sha256": "b472747dc5e7174068d876d09d92a6f68a8af3b4e13f5a15257bcefa1de68fee",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-00.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-00.json"
         },
         {
           "path": "run/phase-0/filler-01.json",
           "bytes": 35617,
           "sha256": "3479e8eab011a3e395ca29bd1a5058534dd54659b18d63a61a646e631791a42d",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-01.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-01.json"
         },
         {
           "path": "run/phase-0/filler-02.json",
           "bytes": 37326,
           "sha256": "904a954b00b60b28c6dacba50f2cec5670ab21ac6d6f230eac278f1347181ac7",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-02.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-02.json"
         },
         {
           "path": "run/phase-0/filler-03.json",
           "bytes": 37253,
           "sha256": "bac664907bfd46b817a4e45a1c155cdddbc8e5e4159ce168e033c1464a8b0424",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-03.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-03.json"
         },
         {
           "path": "run/phase-0/filler-04.json",
           "bytes": 38458,
           "sha256": "03141d3aee4e3e062f28f48d1466159838079a4449fe7cb844eea62781765c38",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-04.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-04.json"
         },
         {
           "path": "run/phase-0/filler-05.json",
           "bytes": 37291,
           "sha256": "4e834092bb2d456bdfc66e08e6272df05d58c1315987c1685b4398dc95ea8cc3",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-05.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-05.json"
         },
         {
           "path": "run/phase-0/filler-06.json",
           "bytes": 38961,
           "sha256": "c0daada4253fa898238d0e84457a666ffb632ec6da023a05929fd487d64ca931",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-06.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-06.json"
         },
         {
           "path": "run/phase-0/filler-07.json",
           "bytes": 39004,
           "sha256": "9219a7e2707a975948d58f5b8b8c54e4e4977e5cd17f4817bbcfb88fe86b55bf",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-07.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-07.json"
         },
         {
           "path": "run/phase-0/filler-08.json",
           "bytes": 37992,
           "sha256": "ec5d4470fa6303a56a64a4fdf99160812e1aab3ceb931ce8e563678958c23a1e",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-08.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-08.json"
         },
         {
           "path": "run/phase-0/filler-09.json",
           "bytes": 40434,
           "sha256": "0bfaf8dc152bd700a1316ad1136dbf898f93b49b412fa30df061220e0d760e03",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-09.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-09.json"
         },
         {
           "path": "run/phase-0/filler-10.json",
           "bytes": 66120,
           "sha256": "3efcc59cbe97218f3c815d9423813b117699e7a19589675cb71b4a1802bc9afc",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-10.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-10.json"
         },
         {
           "path": "run/phase-0/filler-11.json",
           "bytes": 39914,
           "sha256": "b68e84086a7ac9e8cdb3f592e32269dc5486f09e6abfcd25feb332f959719a9a",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-11.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-11.json"
         },
         {
           "path": "run/phase-0/filler-12.json",
           "bytes": 42815,
           "sha256": "a971804747b677006d45aacb4d0564a9945db02588d5f44252e8740d9fc3cdea",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-12.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-12.json"
         },
         {
           "path": "run/phase-0/filler-13.json",
           "bytes": 41470,
           "sha256": "0d72d8bdf2e775767041916cf8fa8d8c7e324806e169ead3c91bc036da1159b4",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-13.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-13.json"
         },
         {
           "path": "run/phase-0/filler-14.json",
           "bytes": 72064,
           "sha256": "13f13180418ba265f6809da2e72d0c9b9b78cba757ef4578aa35a99fb1193c9b",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-14.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-14.json"
         },
         {
           "path": "run/phase-0/filler-15.json",
           "bytes": 75101,
           "sha256": "bb35fa0b506b568c4977eefd8810e34bb2be60629e854d1a8043d9634e35e3f7",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-15.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-15.json"
         },
         {
           "path": "run/phase-0/filler-16.json",
           "bytes": 44609,
           "sha256": "e7246899d24f376b40f2682d5849a78b82786b5fc37b680d1897f78a4106fb1d",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-16.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-16.json"
         },
         {
           "path": "run/phase-0/filler-17.json",
           "bytes": 44589,
           "sha256": "9ae025c574edcb5cf75f0bd91b6aa57e4ec5e2048c374c746b0f5dbd2e1acdd6",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-17.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-17.json"
         },
         {
           "path": "run/phase-0/filler-18.json",
           "bytes": 45381,
           "sha256": "b2296414aa4f3514d951567cf08a81c496095254d4292ce805ea5f3a2e6133df",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-18.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-18.json"
         },
         {
           "path": "run/phase-0/filler-19.json",
           "bytes": 80868,
           "sha256": "cff4c6f3d9384f0bcf0e694061b0df74c2a0bae8323c2aae2e73a04a1672d289",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-19.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-19.json"
         },
         {
           "path": "run/phase-0/filler-20.json",
           "bytes": 48699,
           "sha256": "aec1ce33f247f421b35eeffcaffb0080ed7a3e591165890e16a1f94e8fed9308",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-20.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-20.json"
         },
         {
           "path": "run/phase-0/filler-21.json",
           "bytes": 83864,
           "sha256": "7b0c9f91036b364e59fe419cf753298e871366341deb3496dc1b3294c9f0f93d",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-21.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-21.json"
         },
         {
           "path": "run/phase-0/filler-22.json",
           "bytes": 86241,
           "sha256": "c34f4f67b236f43bd684deaaff4eaf9fcd96b43cbf75ab000493d492b9533744",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-22.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-22.json"
         },
         {
           "path": "run/phase-0/filler-23.json",
           "bytes": 51311,
           "sha256": "2167f324365597b230e8051acad54464547af65a34e637544d17beb4ac4e7fef",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-23.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-23.json"
         },
         {
           "path": "run/phase-0/filler-24.json",
           "bytes": 50981,
           "sha256": "08b0ac51a818d16885b804cced54f0a5d50a7964e479688d99da510266f0e3a5",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-24.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-24.json"
         },
         {
           "path": "run/phase-0/filler-25.json",
           "bytes": 91805,
           "sha256": "5ee7e282c889209e2f764358d47f9076402f2808db3d60b54bb75a0afb48a74d",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-25.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-25.json"
         },
         {
           "path": "run/phase-0/filler-26.json",
           "bytes": 93890,
           "sha256": "6ee4b43f6313949edfce1227d5e393d082d25c2a3df866958429bd211f4f0589",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-26.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-26.json"
         },
         {
           "path": "run/phase-0/filler-27.json",
           "bytes": 53074,
           "sha256": "595b5b581b9810bb0cb73ec88972e68f1fa84660b775b140ecaf557d886eb53b",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-27.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-27.json"
         },
         {
           "path": "run/phase-0/filler-28.json",
           "bytes": 95939,
           "sha256": "cfc98b0577942bfb5f1f917b3749649b231a37dcf9d21edefc1d7c84bb649d9d",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-28.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-28.json"
         },
         {
           "path": "run/phase-0/filler-29.json",
           "bytes": 100069,
           "sha256": "272aaf9dd290b9fb78efbb5689f64a6aea13cc8f6f03f427c290bc91e1b32203",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-29.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-29.json"
         },
         {
           "path": "run/phase-0/filler-30.json",
           "bytes": 56925,
           "sha256": "cc97d8269984f8b69cb682b77ebfb665da7bfce834254fababd2601ec1d7b97b",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-30.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-30.json"
         },
         {
           "path": "run/phase-0/filler-31.json",
           "bytes": 58775,
           "sha256": "ebf030e99f165f551d44faf05409a43e9b30eae86aae2a2643218cd2bee89c69",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-31.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-31.json"
         },
         {
           "path": "run/phase-0/filler-32.json",
           "bytes": 102237,
           "sha256": "ed3375162f46affb77fcdd538356afb6aa10dce59b2ec6fd3bf10c85f5110c2c",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-32.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-32.json"
         },
         {
           "path": "run/phase-0/filler-33.json",
           "bytes": 102761,
           "sha256": "7926b60dd32e46ce0c46ee13a2071980703fcee6e4f4a0ee0cfd07b52db792e6",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-33.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-33.json"
         },
         {
           "path": "run/phase-0/filler-34.json",
           "bytes": 56615,
           "sha256": "2c95ce3377cf6fb95a23073799d1284dfdf08ae2bc5f91f7155f84f339bc9597",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-34.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-34.json"
         },
         {
           "path": "run/phase-0/filler-35.json",
           "bytes": 144223,
           "sha256": "a213f93b0fb8bad3bdc68eda2b58f4815d69e947770a8417a0141c6759184c2c",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-35.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-35.json"
         },
         {
           "path": "run/phase-0/filler-36.json",
           "bytes": 57610,
           "sha256": "c13f0e2600be2dfe1b2676f87418bd82028b547b1fc57ac16a7e7526e4f76994",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-36.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-36.json"
         },
         {
           "path": "run/phase-0/filler-37.json",
           "bytes": 102857,
           "sha256": "c07f16b6af3fad2b25e4f164812293855c5475baeca6b5b97fe27d46eeef42d9",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-37.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-37.json"
         },
         {
           "path": "run/phase-0/filler-38.json",
           "bytes": 57554,
           "sha256": "992b18ab9a2a66694643419779645c9360c5969bf367e9ca716f735b17ac8603",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-38.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-38.json"
         },
         {
           "path": "run/phase-0/filler-39.json",
           "bytes": 102561,
           "sha256": "83969ed6bf6e071ef11f78ae6b6c55c12e8df4f06a45b64448983eb95c275a85",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-39.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-39.json"
         },
         {
           "path": "run/phase-0/filler-40.json",
           "bytes": 103378,
           "sha256": "4fc8dc847a378c45f12b9b1d596664d82da4dfcbb2fe1dceb20e5bcb75b9e8e9",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-40.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-40.json"
         },
         {
           "path": "run/phase-0/filler-41.json",
           "bytes": 59660,
           "sha256": "c57821688bd9ac673bfd72a46c11c2cad9ae64d0c0d6ac351a11edb81ffd0d4a",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-41.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-41.json"
         },
         {
           "path": "run/phase-0/filler-42.json",
           "bytes": 102500,
           "sha256": "571d05928f5bc324d3c619f10d0e35c326d25034ad756d485420e48b7ca44905",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-42.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-42.json"
         },
         {
           "path": "run/phase-0/filler-43.json",
           "bytes": 58735,
           "sha256": "9f0a4244fe0c17e5d13a8ef54ce2b97b487e639b433ccbfc5d5ea3912d819bbf",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-43.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-43.json"
         },
         {
           "path": "run/phase-0/filler-44.json",
           "bytes": 104584,
           "sha256": "6667f5119ef2058291c373a410ae4ed8e798a49828386d66423e92c58ac498fe",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-44.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-44.json"
         },
         {
           "path": "run/phase-0/filler-45.json",
           "bytes": 104373,
           "sha256": "14f58de89a4b5d6a64f28d43651d083595c10d65c60b7bfc0938111b4adf3153",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-45.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-45.json"
         },
         {
           "path": "run/phase-0/filler-46.json",
           "bytes": 58562,
           "sha256": "69e61b41231128bceaa44bc16a74ae94ec455cc6b784ead784c9917c121fb2b2",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-46.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-46.json"
         },
         {
           "path": "run/phase-0/filler-47.json",
           "bytes": 152808,
           "sha256": "a4299bcebf466c1f43fd8db5d4392422283922041378b4cf92d42009df6796f7",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-47.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/filler-47.json"
         },
         {
           "path": "run/phase-0/frozen/memory.db",
           "bytes": 20480,
           "sha256": "6ead51d5fd5472f77ef96661d48aa904aeb4e6394f377c0dea8a43d6580c629f",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/frozen/memory.db"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/frozen/memory.db"
         },
         {
           "path": "run/phase-0/restart-coexisting/agent.yaml",
           "bytes": 144,
           "sha256": "42b91b620aee9ddb99b0032118cc0f5d33f9d34c802d4060e9b616b9cfadfe07",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-coexisting/agent.yaml"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-coexisting/agent.yaml"
         },
         {
           "path": "run/phase-0/restart-coexisting/ego.md",
           "bytes": 212,
           "sha256": "404163f02227ec72b821f5fbca5f815d887b7afa68d4444ce29093cd3954b011",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-coexisting/ego.md"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-coexisting/ego.md"
         },
         {
           "path": "run/phase-0/restart-coexisting/process.log",
           "bytes": 4725,
           "sha256": "ccfd6adadf170050adbd389d82bb02272c28a5d1f7bb226c5194c4940781849d",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-coexisting/process.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-coexisting/process.log"
         },
         {
           "path": "run/phase-0/restart-coexisting.json",
           "bytes": 32289,
           "sha256": "e14f5b49ed415c18df6a0e051fac1198e91d1d335efd593446d7a97db7ec8dae",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-coexisting.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-coexisting.json"
         },
         {
           "path": "run/phase-0/restart-corrected/agent.yaml",
           "bytes": 144,
           "sha256": "42b91b620aee9ddb99b0032118cc0f5d33f9d34c802d4060e9b616b9cfadfe07",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-corrected/agent.yaml"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-corrected/agent.yaml"
         },
         {
           "path": "run/phase-0/restart-corrected/ego.md",
           "bytes": 212,
           "sha256": "404163f02227ec72b821f5fbca5f815d887b7afa68d4444ce29093cd3954b011",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-corrected/ego.md"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-corrected/ego.md"
         },
         {
           "path": "run/phase-0/restart-corrected/process.log",
           "bytes": 4930,
           "sha256": "37ed71f847ffd1271ebb06cbcc7ebb2909f89c48abb79aad6449cf002b8cd04a",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-corrected/process.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-corrected/process.log"
         },
         {
           "path": "run/phase-0/restart-corrected.json",
           "bytes": 32370,
           "sha256": "5791ff33a839130f40524c5597d4219f46722fdaf4884f46906a07b5d650cabe",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-corrected.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-corrected.json"
         },
         {
           "path": "run/phase-0/restart-old/agent.yaml",
           "bytes": 144,
           "sha256": "42b91b620aee9ddb99b0032118cc0f5d33f9d34c802d4060e9b616b9cfadfe07",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-old/agent.yaml"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-old/agent.yaml"
         },
         {
           "path": "run/phase-0/restart-old/ego.md",
           "bytes": 212,
           "sha256": "404163f02227ec72b821f5fbca5f815d887b7afa68d4444ce29093cd3954b011",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-old/ego.md"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-old/ego.md"
         },
         {
           "path": "run/phase-0/restart-old/process.log",
           "bytes": 4725,
           "sha256": "6da198338dcf36c3d29561ea157b7d13741366e69bfe8e19bcbec23ed01791d4",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-old/process.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-old/process.log"
         },
         {
           "path": "run/phase-0/restart-old.json",
           "bytes": 29343,
           "sha256": "765349aebbf8a6d040c3023471a3919424054a336fff556ec608b263798e6460",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-old.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-old.json"
         },
         {
           "path": "run/phase-0/restart-unstated/agent.yaml",
           "bytes": 144,
           "sha256": "42b91b620aee9ddb99b0032118cc0f5d33f9d34c802d4060e9b616b9cfadfe07",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-unstated/agent.yaml"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-unstated/agent.yaml"
         },
         {
           "path": "run/phase-0/restart-unstated/ego.md",
           "bytes": 212,
           "sha256": "404163f02227ec72b821f5fbca5f815d887b7afa68d4444ce29093cd3954b011",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-unstated/ego.md"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-unstated/ego.md"
         },
         {
           "path": "run/phase-0/restart-unstated/process.log",
           "bytes": 8874,
           "sha256": "bb5ddcd15b22b593dea9bb798ce9a185d3e5cc13f02fb7445a356b839a482279",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-unstated/process.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-unstated/process.log"
         },
         {
           "path": "run/phase-0/restart-unstated.json",
           "bytes": 70300,
           "sha256": "9abf4cc78bde4c28467035ef4785e6e787d81c0f767b47b6de15a1749f1ffc20",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-unstated.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-0/restart-unstated.json"
         },
         {
           "path": "run/phase-1/compacted-corrected.json",
           "bytes": 69080,
           "sha256": "a4c5a452fdaa4b7f4470ff9d022f0b4722197c1f1254b095cc9a2c0a2273cfd2",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/compacted-corrected.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/compacted-corrected.json"
         },
         {
           "path": "run/phase-1/filler-00.json",
           "bytes": 32848,
           "sha256": "9c83945c2d6007fc00491993f1a25ec3c8d35839a1d84bdde200a5eea3321eb3",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-00.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-00.json"
         },
         {
           "path": "run/phase-1/filler-01.json",
           "bytes": 32652,
           "sha256": "0f265cf897dd0fcd2117be03308b2cae3ed52b779fbb2c27924bf30f1ea61ab0",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-01.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-01.json"
         },
         {
           "path": "run/phase-1/filler-02.json",
           "bytes": 57718,
           "sha256": "09e4bf65ec7b7dc6afcc11d7c81caa2d6849695e7d6e10f0ab80f9d8a36f88cb",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-02.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-02.json"
         },
         {
           "path": "run/phase-1/filler-03.json",
           "bytes": 34311,
           "sha256": "a48f43d8cb87a2e16f34fbab94b90d10b34f5ddcc1e8c61688897b78e24b7e6a",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-03.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-03.json"
         },
         {
           "path": "run/phase-1/filler-04.json",
           "bytes": 36689,
           "sha256": "55b540d6491286be96bbe7c15269061aaf724e4cb2a97e42008d300d07ac144b",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-04.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-04.json"
         },
         {
           "path": "run/phase-1/filler-05.json",
           "bytes": 59191,
           "sha256": "9d3299ff63293d701226e50202a40eea1d672a5197b2e597cf36547a1fe1c406",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-05.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-05.json"
         },
         {
           "path": "run/phase-1/filler-06.json",
           "bytes": 59525,
           "sha256": "4e2b2fa12a06de213c80f520d70b86c426bf8f5da321198b34c7ffa37ae646d9",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-06.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-06.json"
         },
         {
           "path": "run/phase-1/filler-07.json",
           "bytes": 39850,
           "sha256": "c993f201a4179fb070c8cab0416eb92cacf460cd3835aab3bdac7a1cc7bc5c35",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-07.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-07.json"
         },
         {
           "path": "run/phase-1/filler-08.json",
           "bytes": 37868,
           "sha256": "0e337dea3fe5fd9f6cc6290ca30d95f2e0e55af79c45a85b03f1835a3cc70b08",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-08.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-08.json"
         },
         {
           "path": "run/phase-1/filler-09.json",
           "bytes": 40172,
           "sha256": "f1b57264eeb4c7a01052e3645831e922bec9a62c0d8fd75ae3b0ddca9edd1f72",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-09.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-09.json"
         },
         {
           "path": "run/phase-1/filler-10.json",
           "bytes": 41108,
           "sha256": "6f28688c2beadc8f18e272075503fa32217dc086cd06e1bc0be7b4296af4f566",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-10.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-10.json"
         },
         {
           "path": "run/phase-1/filler-11.json",
           "bytes": 96544,
           "sha256": "17ba3159be7c2313854a69f039e607f99ba0cd8c2a9c4c2ccf9c0f268af50545",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-11.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-11.json"
         },
         {
           "path": "run/phase-1/filler-12.json",
           "bytes": 72203,
           "sha256": "0ff2877b0e809f4d0fd8bb1ccb9166d81bb479f47bb34b6ae5a2c8c7ec8eaf34",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-12.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-12.json"
         },
         {
           "path": "run/phase-1/filler-13.json",
           "bytes": 43905,
           "sha256": "1ae0a4cb2c67536dbdce6cb7a44f00fdd849fd41aef15a15a78bb08e8138c1a3",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-13.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-13.json"
         },
         {
           "path": "run/phase-1/filler-14.json",
           "bytes": 77579,
           "sha256": "037f755cddb7eab2861779c7af5dc45cd72a05b3179fc424accce9c9a1fec2c1",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-14.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-14.json"
         },
         {
           "path": "run/phase-1/filler-15.json",
           "bytes": 46382,
           "sha256": "fe89c97766f0992183e3b1e913aff4c7673a4a93e91151b3c4f992b146b619d4",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-15.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-15.json"
         },
         {
           "path": "run/phase-1/filler-16.json",
           "bytes": 80604,
           "sha256": "ef55cc9e5e3c7aea91911403341762b15274d2907d39686dc8a19991df26573f",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-16.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-16.json"
         },
         {
           "path": "run/phase-1/filler-17.json",
           "bytes": 82204,
           "sha256": "685436c2b098c1c8aa61edef4ab77fbad142696557eded3b3e05897a5bec8543",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-17.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-17.json"
         },
         {
           "path": "run/phase-1/filler-18.json",
           "bytes": 159418,
           "sha256": "81d795f771e231f3a50b3b182f00cb58c915176f2a93932a1830feb0f4994b20",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-18.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-18.json"
         },
         {
           "path": "run/phase-1/filler-19.json",
           "bytes": 92741,
           "sha256": "f521ee2e6a26a74700a914e71dbcb3a44e893bf36718b034c7bbecbad4596fb1",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-19.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-19.json"
         },
         {
           "path": "run/phase-1/filler-20.json",
           "bytes": 94025,
           "sha256": "d52deaadb4ab9be910cb2dc02d14669044498f0eab4f452762a3c7e9cb59009c",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-20.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-20.json"
         },
         {
           "path": "run/phase-1/filler-21.json",
           "bytes": 137967,
           "sha256": "456f9fece8426c8786d0b7bb5a169421349d0f7fa68cb37e5523239a72e0a133",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-21.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-21.json"
         },
         {
           "path": "run/phase-1/filler-22.json",
           "bytes": 98256,
           "sha256": "09b17cb1e8333591a766468455646c27c00bdb0cd016ea32bec6090af68a0e45",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-22.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-22.json"
         },
         {
           "path": "run/phase-1/filler-23.json",
           "bytes": 101377,
           "sha256": "9c6f007231b49d54d4cc04cf5f06b4a76289ccc59f36ea7d3ffdf836c2565353",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-23.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-23.json"
         },
         {
           "path": "run/phase-1/filler-24.json",
           "bytes": 149663,
           "sha256": "c114eb60e6e2671ab0d6a464a0b46e05dec64678619b8872d13015fa21a03423",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-24.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-24.json"
         },
         {
           "path": "run/phase-1/filler-25.json",
           "bytes": 109645,
           "sha256": "290d830ee822ee9fb41bafef492705514e64db4811187f84303e98aba15eacf5",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-25.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-25.json"
         },
         {
           "path": "run/phase-1/filler-26.json",
           "bytes": 162997,
           "sha256": "0f687d8fb87482e759f48b57fae1efecf6258768872c4a84b9ec699603083db6",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-26.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-26.json"
         },
         {
           "path": "run/phase-1/filler-27.json",
           "bytes": 113265,
           "sha256": "3dff5587d1c693e9a9c007ac07889d3f7a393b307bed7b1efea5f451239f82a5",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-27.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-27.json"
         },
         {
           "path": "run/phase-1/filler-28.json",
           "bytes": 112900,
           "sha256": "53227170486befa3303887dfc5a69bab73e268dcf8f592291f41806c924605a4",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-28.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-28.json"
         },
         {
           "path": "run/phase-1/filler-29.json",
           "bytes": 165588,
           "sha256": "26e8fca2ab274ac0d39efe269cda4d132f636c781b3a195eecfe3af058a3fe20",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-29.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-29.json"
         },
         {
           "path": "run/phase-1/filler-30.json",
           "bytes": 117862,
           "sha256": "14cb128944971c8b23ae19441c5e0d0bdc19d92a9f4e9ab46c4d7be1e21eef17",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-30.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-30.json"
         },
         {
           "path": "run/phase-1/filler-31.json",
           "bytes": 64649,
           "sha256": "180038e18fd20428e8d01e7ec31cd4abc673447f9c16661a1421ccbdf5c258e0",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-31.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-31.json"
         },
         {
           "path": "run/phase-1/filler-32.json",
           "bytes": 66544,
           "sha256": "66109680603bf1e4662b6452c1e21e2991692620117bf1c093699aa949729700",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-32.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-32.json"
         },
         {
           "path": "run/phase-1/filler-33.json",
           "bytes": 65217,
           "sha256": "afa4c06f79d0fdc312ff824f4cc28b6a92f71b43eed3af29c38f3b47e6917bec",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-33.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-33.json"
         },
         {
           "path": "run/phase-1/filler-34.json",
           "bytes": 66584,
           "sha256": "105e3953390ab929eb61f6643ca90eeb38cb0a010fa041528960da2aa7cccac6",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-34.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-34.json"
         },
         {
           "path": "run/phase-1/filler-35.json",
           "bytes": 117961,
           "sha256": "5563f373d80242423d3bb5fdcdcdd80c2477eba9d09802bcf1a1dcee6c9947f6",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-35.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-35.json"
         },
         {
           "path": "run/phase-1/filler-36.json",
           "bytes": 67204,
           "sha256": "da0f730d1a2a33bffde4705b1700ca92c48a1ac4f23d6ff5fe158386f1c94c54",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-36.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-36.json"
         },
         {
           "path": "run/phase-1/filler-37.json",
           "bytes": 64706,
           "sha256": "5faf7f86a9075b294b49aa1f24a7977e78639c4fbe98a4b51667693965f423b2",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-37.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-37.json"
         },
         {
           "path": "run/phase-1/filler-38.json",
           "bytes": 64082,
           "sha256": "a50baa90649d557b7922516c1017c27405d65bc7164f1b5b66ebcd6fbeeca79b",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-38.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-38.json"
         },
         {
           "path": "run/phase-1/filler-39.json",
           "bytes": 65375,
           "sha256": "232e86d056af248b5e2560f2e52ca86ce1898d67598eb77882befb9961869ef0",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-39.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-39.json"
         },
         {
           "path": "run/phase-1/filler-40.json",
           "bytes": 64261,
           "sha256": "0345eb6bdf9cf4e2ab4ce4c68d91810a5f9fe2fad8dab9fc600cba0a0b09eced",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-40.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-40.json"
         },
         {
           "path": "run/phase-1/filler-41.json",
           "bytes": 64358,
           "sha256": "d0f1735556da6f97b61543a96d9452beb48a395ff481f0ac0da646859afdbe85",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-41.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-41.json"
         },
         {
           "path": "run/phase-1/filler-42.json",
           "bytes": 113757,
           "sha256": "4125fb8deffb8f37c3f30ec0d11fffb85d71b53be8cb574afff64b73c54ada86",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-42.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-42.json"
         },
         {
           "path": "run/phase-1/filler-43.json",
           "bytes": 63945,
           "sha256": "2479b1e445bdd8ca55a8c40e46a2c54201fbae4895a939f097f578d0c96cf1e2",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-43.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-43.json"
         },
         {
           "path": "run/phase-1/filler-44.json",
           "bytes": 114160,
           "sha256": "d9cec333ac82e8eb48bd1e66734b054c3f04f7fa86cea1c85726e98bd32f3e99",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-44.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-44.json"
         },
         {
           "path": "run/phase-1/filler-45.json",
           "bytes": 63858,
           "sha256": "705960b63ac7d58075de7ce529c2a94474974fd22c624411f867bbf9a3b05c72",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-45.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-45.json"
         },
         {
           "path": "run/phase-1/filler-46.json",
           "bytes": 64102,
           "sha256": "a562c02a764783e773462581d5bcffcec45f6c581b222805193dd1244af4c9f5",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-46.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-46.json"
         },
         {
           "path": "run/phase-1/filler-47.json",
           "bytes": 62386,
           "sha256": "7b1788a3be5524b2a01f236a0039286e3930645e9289986b0fe73bdccafc77f6",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-47.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/filler-47.json"
         },
         {
           "path": "run/phase-1/frozen/memory.db",
           "bytes": 20480,
           "sha256": "19c323f7584a5e2d6c812cea9e3bcafbcdd4ab635ca54005e8a04cc6b6fe20a9",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/frozen/memory.db"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/frozen/memory.db"
         },
         {
           "path": "run/phase-1/restart-coexisting/agent.yaml",
           "bytes": 144,
           "sha256": "42b91b620aee9ddb99b0032118cc0f5d33f9d34c802d4060e9b616b9cfadfe07",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-coexisting/agent.yaml"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-coexisting/agent.yaml"
         },
         {
           "path": "run/phase-1/restart-coexisting/ego.md",
           "bytes": 212,
           "sha256": "404163f02227ec72b821f5fbca5f815d887b7afa68d4444ce29093cd3954b011",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-coexisting/ego.md"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-coexisting/ego.md"
         },
         {
           "path": "run/phase-1/restart-coexisting/process.log",
           "bytes": 4726,
           "sha256": "b0bac46ee0fe15a4d5e9ebae87e668284cdbfc51134b74cd63f514cb4abed2d2",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-coexisting/process.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-coexisting/process.log"
         },
         {
           "path": "run/phase-1/restart-coexisting.json",
           "bytes": 32054,
           "sha256": "871c8b21157eb5047c8d2f6fa72ce5a3d48db3a21c6a0c1ace739d8ce75bb3e0",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-coexisting.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-coexisting.json"
         },
         {
           "path": "run/phase-1/restart-corrected/agent.yaml",
           "bytes": 144,
           "sha256": "42b91b620aee9ddb99b0032118cc0f5d33f9d34c802d4060e9b616b9cfadfe07",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-corrected/agent.yaml"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-corrected/agent.yaml"
         },
         {
           "path": "run/phase-1/restart-corrected/ego.md",
           "bytes": 212,
           "sha256": "404163f02227ec72b821f5fbca5f815d887b7afa68d4444ce29093cd3954b011",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-corrected/ego.md"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-corrected/ego.md"
         },
         {
           "path": "run/phase-1/restart-corrected/process.log",
           "bytes": 4925,
           "sha256": "9aa1fa13fc9d31d9de5bf9ea61a3206709f88f7d02635acb04935368c2f88bf9",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-corrected/process.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-corrected/process.log"
         },
         {
           "path": "run/phase-1/restart-corrected.json",
           "bytes": 31537,
           "sha256": "913cd0d97c7376d93bde74339c28fe4a788d4f748174a8105e1fffe14ee8181d",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-corrected.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-corrected.json"
         },
         {
           "path": "run/phase-1/restart-old/agent.yaml",
           "bytes": 144,
           "sha256": "42b91b620aee9ddb99b0032118cc0f5d33f9d34c802d4060e9b616b9cfadfe07",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-old/agent.yaml"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-old/agent.yaml"
         },
         {
           "path": "run/phase-1/restart-old/ego.md",
           "bytes": 212,
           "sha256": "404163f02227ec72b821f5fbca5f815d887b7afa68d4444ce29093cd3954b011",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-old/ego.md"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-old/ego.md"
         },
         {
           "path": "run/phase-1/restart-old/process.log",
           "bytes": 4929,
           "sha256": "a824fd7c33a282ba6aee501b3546e47279446af1518470fb6eff22b54746d7bb",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-old/process.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-old/process.log"
         },
         {
           "path": "run/phase-1/restart-old.json",
           "bytes": 32659,
           "sha256": "a570afddea2c7f777305967dde6448e81fa9392ca189361da9837e91f2864052",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-old.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-old.json"
         },
         {
           "path": "run/phase-1/restart-unstated/agent.yaml",
           "bytes": 144,
           "sha256": "42b91b620aee9ddb99b0032118cc0f5d33f9d34c802d4060e9b616b9cfadfe07",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-unstated/agent.yaml"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-unstated/agent.yaml"
         },
         {
           "path": "run/phase-1/restart-unstated/ego.md",
           "bytes": 212,
           "sha256": "404163f02227ec72b821f5fbca5f815d887b7afa68d4444ce29093cd3954b011",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-unstated/ego.md"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-unstated/ego.md"
         },
         {
           "path": "run/phase-1/restart-unstated/process.log",
           "bytes": 8875,
           "sha256": "ba0f360d48a254a4327334254a7047c3055ec5579ea172917c431dff8de0e9a6",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-unstated/process.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-unstated/process.log"
         },
         {
           "path": "run/phase-1/restart-unstated.json",
           "bytes": 76427,
           "sha256": "1d0a94440e4425ee3ea5edf89549d5f7f348703b21822c8499d7d6498ddf6902",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-unstated.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/phase-1/restart-unstated.json"
         },
         {
           "path": "run/plant-0.json",
           "bytes": 27095,
           "sha256": "223879e352d226d26ed82058375109984017f03c75c4572b853c6635fff1d764",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/plant-0.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/plant-0.json"
         },
         {
           "path": "run/plant-1.json",
           "bytes": 30309,
           "sha256": "2abb45a26868f93c14eb5fff991ee691540e4322741202c0ae6ac7a673dc1985",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/plant-1.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/plant-1.json"
         },
         {
           "path": "run/plant-2.json",
           "bytes": 33330,
           "sha256": "0646f10ea50537fd5de4438562762c94d4e736f429eaaa0736fa1c87f3ea0c61",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/plant-2.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/plant-2.json"
         },
         {
           "path": "run/plant-3.json",
           "bytes": 35860,
           "sha256": "c1e1daae7392863ec465dafca687cab5d20b3dfbf2efed7e798a1d30257578a4",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/plant-3.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/plant-3.json"
         },
         {
           "path": "run/prepare/agent.yaml",
           "bytes": 144,
           "sha256": "42b91b620aee9ddb99b0032118cc0f5d33f9d34c802d4060e9b616b9cfadfe07",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/prepare/agent.yaml"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/prepare/agent.yaml"
         },
         {
           "path": "run/prepare/ego.md",
           "bytes": 212,
           "sha256": "404163f02227ec72b821f5fbca5f815d887b7afa68d4444ce29093cd3954b011",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/prepare/ego.md"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/prepare/ego.md"
         },
         {
           "path": "run/prepare/process.log",
           "bytes": 181383,
           "sha256": "25947de724ca6a978b9ad8bacf24d3ae1f78575ec67552cae3dd907789a4f138",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/prepare/process.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/prepare/process.log"
         },
         {
           "path": "run/reversal/agent.yaml",
           "bytes": 144,
           "sha256": "42b91b620aee9ddb99b0032118cc0f5d33f9d34c802d4060e9b616b9cfadfe07",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/reversal/agent.yaml"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/reversal/agent.yaml"
         },
         {
           "path": "run/reversal/ego.md",
           "bytes": 212,
           "sha256": "404163f02227ec72b821f5fbca5f815d887b7afa68d4444ce29093cd3954b011",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/reversal/ego.md"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/reversal/ego.md"
         },
         {
           "path": "run/reversal/process.log",
           "bytes": 189586,
           "sha256": "4d6c4feaae8fde5891f680681ba43e8f28eca040cda1cc8a9abfc60b5258ad77",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/reversal/process.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/reversal/process.log"
         },
         {
           "path": "run/reversal.json",
           "bytes": 36397,
           "sha256": "719c2beacde5620dd07677ef0a779ea7a74baf07d71b2a428943ad14ef02cead",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/reversal.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/reversal.json"
         },
         {
           "path": "run/source.json",
           "bytes": 1667,
           "sha256": "f348a0f09cfcf72df840fce306a088b6ba2b5bc83a343b30ef7eb9f21c7f943f",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/run/source.json"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/run/source.json"
         },
         {
           "path": "started-at",
           "bytes": 19,
           "sha256": "541208d7154a3cf66909ff8120fbb3597312cda249b911bb7cd4016bf6b39253",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/started-at"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/started-at"
         },
         {
           "path": "supervisor.log",
           "bytes": 0,
           "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/supervisor.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/supervisor.log"
         },
         {
           "path": "test.log",
           "bytes": 235,
           "sha256": "fb78023afacccb1284c5d3425d1c7025b8758963edc01a3141c1f1451435c4d1",
-          "source_path": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-24-memory-correction-21f1d6a/test.log"
+          "source_path": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-24-memory-correction-21f1d6a/test.log"
         }
       ]
     },

@@ -1,28 +1,28 @@
 --- FAIL: TestFileOperations_RequiresExistingReplacement (0.00s)
     file_operations_test.go:320: 
-        	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/file_operations_test.go:320
+        	Error Trace:	/home/sauce/orca/workspaces/sherlock/fix-file-write/tests/file_operations_test.go:320
         	Error:      	Should NOT be empty, but was []
         	Test:       	TestFileOperations_RequiresExistingReplacement
     file_operations_test.go:322: 
-        	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/file_operations_test.go:322
+        	Error Trace:	/home/sauce/orca/workspaces/sherlock/fix-file-write/tests/file_operations_test.go:322
         	Error:      	Should NOT be empty, but was []
         	Test:       	TestFileOperations_RequiresExistingReplacement
     file_operations_test.go:327: 
-        	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/file_operations_test.go:327
+        	Error Trace:	/home/sauce/orca/workspaces/sherlock/fix-file-write/tests/file_operations_test.go:327
         	Error:      	Should be empty, but was [replacement target lacks expected nonempty content]
         	Test:       	TestFileOperations_RequiresExistingReplacement
     file_operations_test.go:320: 
-        	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/file_operations_test.go:320
+        	Error Trace:	/home/sauce/orca/workspaces/sherlock/fix-file-write/tests/file_operations_test.go:320
         	Error:      	Should NOT be empty, but was []
         	Test:       	TestFileOperations_RequiresExistingReplacement
     file_operations_test.go:322: 
-        	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/file_operations_test.go:322
+        	Error Trace:	/home/sauce/orca/workspaces/sherlock/fix-file-write/tests/file_operations_test.go:322
         	Error:      	Should NOT be empty, but was []
         	Test:       	TestFileOperations_RequiresExistingReplacement
     file_operations_test.go:327: 
-        	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/file_operations_test.go:327
+        	Error Trace:	/home/sauce/orca/workspaces/sherlock/fix-file-write/tests/file_operations_test.go:327
         	Error:      	Should be empty, but was [replacement target lacks expected nonempty content]
         	Test:       	TestFileOperations_RequiresExistingReplacement
 FAIL
-FAIL	github.com/garamsh/gagent/tests	0.008s
+FAIL	github.com/garamsh/sherlock/tests	0.008s
 FAIL

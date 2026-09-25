@@ -7,7 +7,7 @@ Publishes the correction and valid-old-fact retention measurement for issue #815
 ## Method
 
 - Instrument: `tests/memory_correction_test.go`; free controls: `tests/memory_correction_controls_test.go`. They own their helpers and change no product source or existing experiment helper.
-- The built `gagent agent` runs its HTTP gateway, rolling session, model protocol, writeback, SQLite store and recall. A local scripted HTTP model substitutes for the external provider in free controls. Workspace tools are built and registered and the operator instructs the model not to use them; no workspace process runs. Attempt 3 nevertheless tried `file_list` and `shell_exec` on each Neri probe, and all four tool calls failed with connection refused (`run/phase-{0,1}/restart-unstated.json`). The resulting qualified abstentions do not test successful workspace search.
+- The built `sherlock agent` runs its HTTP gateway, rolling session, model protocol, writeback, SQLite store and recall. A local scripted HTTP model substitutes for the external provider in free controls. Workspace tools are built and registered and the operator instructs the model not to use them; no workspace process runs. Attempt 3 nevertheless tried `file_list` and `shell_exec` on each Neri probe, and all four tool calls failed with connection refused (`run/phase-{0,1}/restart-unstated.json`). The resulting qualified abstentions do not test successful workspace search.
 - Plants, in order: Ivo's locker code `LARCH-731`; Mira's weekday office `CEDAR-214`; her coexisting weekend office `QUARTZ-806`; a correction of only the weekday office to `BASALT-592`. The second phase reverses the weekday office to `CEDAR-214`.
 - Each phase adds 48 transient conversation turns. Phase zero asks the old unrelated fact in the same process; phase one asks the corrected fact in the same process. Each phase also asks four probes in separate restarted processes: weekday office, weekend office, old locker code, and Neri's never-stated locker code. There are ten scored cases and one sequence, not ten independent samples.
 - Probes contain subjects and questions, never answer values. The operator ego asks for only a value or `UNKNOWN`; it supplies no facts, addresses or expected answers. The exact prompts and source hashes are retained in each `source.json`.
@@ -21,8 +21,8 @@ Publishes the correction and valid-old-fact retention measurement for issue #815
 The reproducible command is:
 
 ```sh
-env -u MINIMAX_KEY -u GAGENT_CORRECTION_PAID \
-  GAGENT_CORRECTION_FREE_RESULTS=/tmp/correction-free \
+env -u MINIMAX_KEY -u SHERLOCK_CORRECTION_PAID \
+  SHERLOCK_CORRECTION_FREE_RESULTS=/tmp/correction-free \
   go test ./tests -run '^TestMemoryCorrection_' -count=1 -v
 ```
 
@@ -74,7 +74,7 @@ PYVERIFY
 
 ## Measured attempts
 
-All three attempts used MiniMax-M2 through `https://api.minimax.io/v1`. These are successive attempts at the same fixed sequence, not independent success-rate samples. The [PM publication adjudication](https://github.com/garamsh/gagent/issues/815#issuecomment-5807775994) and attempt 3's archived `audit.md` are the interpretation basis; the originals are the measurement basis.
+All three attempts used MiniMax-M2 through `https://api.minimax.io/v1`. These are successive attempts at the same fixed sequence, not independent success-rate samples. The [PM publication adjudication](https://github.com/garamsh/sherlock/issues/815#issuecomment-5807775994) and attempt 3's archived `audit.md` are the interpretation basis; the originals are the measurement basis.
 
 | Attempt | Go exit | Recorded turns | HTTP records | Reported input / output tokens | Assumed-rate USD | Limit reached |
 |---|---:|---:|---|---:|---:|---|

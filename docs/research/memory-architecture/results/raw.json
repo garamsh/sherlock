@@ -1041,7 +1041,7 @@
         "RetrievalResult(turn_id='domain-knowledge.01', role='user', content='The agent holds a capability token; it never executes directly.', score=1.4197073984718547, metadata={'salience': 0.7, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='project-conventions.03', role='user', content='Python style: PEP 8 with 100-char line limit, type hints everywhere.', score=1.3703887607885794, metadata={'salience': 0.6, 'kind': 'preference'})",
         "RetrievalResult(turn_id='supersession.00', role='user', content='For Python projects, I prefer 2-space indentation.', score=1.353208700016347, metadata={'salience': 0.7, 'kind': 'preference'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=1.3452943688794061, metadata={'salience': 0.7, 'kind': 'knowledge'})"
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=1.3452943688794061, metadata={'salience': 0.7, 'kind': 'knowledge'})"
       ],
       "pref-pinning": [
         "RetrievalResult(turn_id='supersession.04', role='user', content='Actually, change of plan. Use 4-space indent for Python, not 2.', score=1.299999980979777, metadata={'salience': 0.8, 'kind': 'preference-correction'})",
@@ -1059,7 +1059,7 @@
       ],
       "exec-uid": [
         "RetrievalResult(turn_id='task-progress.00', role='user', content='Audit the message_sender for the new architecture.', score=1.3664635706832904, metadata={'salience': 0.6, 'kind': 'task'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=1.3321702472955999, metadata={'salience': 0.7, 'kind': 'knowledge'})",
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=1.3321702472955999, metadata={'salience': 0.7, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='project-conventions.01', role='user', content='Always run the test suite before committing any change.', score=1.3310802821130867, metadata={'salience': 0.6, 'kind': 'preference'})",
         "RetrievalResult(turn_id='repetition.05', role='user', content='FYI the deployment uses Helm charts.', score=1.3303348241664534, metadata={'salience': 0.7, 'kind': 'fact'})",
         "RetrievalResult(turn_id='repetition.00', role='user', content='The deployment uses Helm charts. Remember this fact.', score=1.3128732637297291, metadata={'salience': 0.7, 'kind': 'fact'})"
@@ -1135,7 +1135,7 @@
         "RetrievalResult(turn_id='correction.00', role='user', content='Use tabs everywhere.', score=1.436076413504422, metadata={'salience': 0.5, 'kind': 'preference'})"
       ],
       "noise-weather": [
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=1.403607957247619, metadata={'salience': 0.7, 'kind': 'knowledge'})",
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=1.403607957247619, metadata={'salience': 0.7, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='task-progress.00', role='user', content='Audit the message_sender for the new architecture.', score=1.3887809108233629, metadata={'salience': 0.6, 'kind': 'task'})",
         "RetrievalResult(turn_id='repetition.05', role='user', content='FYI the deployment uses Helm charts.', score=1.3864072598172854, metadata={'salience': 0.7, 'kind': 'fact'})",
         "RetrievalResult(turn_id='repetition.00', role='user', content='The deployment uses Helm charts. Remember this fact.', score=1.3614334128706405, metadata={'salience': 0.7, 'kind': 'fact'})",
@@ -1144,14 +1144,14 @@
       "noise-joke": [
         "RetrievalResult(turn_id='project-conventions.04', role='user', content=\"Initialize a new Python project named 'metrics' with pyproject.toml.\", score=1.437170755354848, metadata={'salience': 0.7, 'kind': 'task'})",
         "RetrievalResult(turn_id='domain-knowledge.01', role='user', content='The agent holds a capability token; it never executes directly.', score=1.430282598018107, metadata={'salience': 0.7, 'kind': 'knowledge'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=1.4165062821693195, metadata={'salience': 0.7, 'kind': 'knowledge'})",
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=1.4165062821693195, metadata={'salience': 0.7, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='domain-knowledge.04', role='user', content='Exec children get a scrubbed environment; never inherit the agent env.', score=1.3261334401133678, metadata={'salience': 0.6, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='domain-knowledge.03', role='user', content='The workspace is a separate container; per-request netns isolates exec.', score=1.3261334399469924, metadata={'salience': 0.6, 'kind': 'knowledge'})"
       ],
       "sup-final-indent": [
         "RetrievalResult(turn_id='supersession.00', role='user', content='For Python projects, I prefer 2-space indentation.', score=1.5237210221093083, metadata={'salience': 0.7, 'kind': 'preference'})",
         "RetrievalResult(turn_id='supersession.04', role='user', content='Actually, change of plan. Use 4-space indent for Python, not 2.', score=1.4260726247895876, metadata={'salience': 0.8, 'kind': 'preference-correction'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=1.3479056776119103, metadata={'salience': 0.7, 'kind': 'knowledge'})",
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=1.3479056776119103, metadata={'salience': 0.7, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='project-conventions.04', role='user', content=\"Initialize a new Python project named 'metrics' with pyproject.toml.\", score=1.33810564293808, metadata={'salience': 0.7, 'kind': 'task'})",
         "RetrievalResult(turn_id='domain-knowledge.01', role='user', content='The agent holds a capability token; it never executes directly.', score=1.3091088706196379, metadata={'salience': 0.7, 'kind': 'knowledge'})"
       ],
@@ -1613,7 +1613,7 @@
         "RetrievalResult(turn_id='task-progress.00', role='user', content='Audit the message_sender for the new architecture.', score=1.694400729970172, metadata={'salience': 0.6, 'kind': 'task'})",
         "RetrievalResult(turn_id='project-conventions.01', role='user', content='Always run the test suite before committing any change.', score=1.6484216416523962, metadata={'salience': 0.6, 'kind': 'preference'})",
         "RetrievalResult(turn_id='repetition.05', role='user', content='FYI the deployment uses Helm charts.', score=1.5483679350572574, metadata={'salience': 0.7, 'kind': 'fact'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=1.5304785836399393, metadata={'salience': 0.7, 'kind': 'knowledge'})",
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=1.5304785836399393, metadata={'salience': 0.7, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='repetition.00', role='user', content='The deployment uses Helm charts. Remember this fact.', score=1.528490304160089, metadata={'salience': 0.7, 'kind': 'fact'})"
       ],
       "agent-token": [
@@ -1690,7 +1690,7 @@
         "RetrievalResult(turn_id='task-progress.00', role='user', content='Audit the message_sender for the new architecture.', score=1.6777094835166486, metadata={'salience': 0.6, 'kind': 'task'})",
         "RetrievalResult(turn_id='repetition.05', role='user', content='FYI the deployment uses Helm charts.', score=1.57926037920593, metadata={'salience': 0.7, 'kind': 'fact'})",
         "RetrievalResult(turn_id='repetition.00', role='user', content='The deployment uses Helm charts. Remember this fact.', score=1.555243919402538, metadata={'salience': 0.7, 'kind': 'fact'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=1.549022222989135, metadata={'salience': 0.7, 'kind': 'knowledge'})",
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=1.549022222989135, metadata={'salience': 0.7, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='project-conventions.01', role='user', content='Always run the test suite before committing any change.', score=1.538409817775568, metadata={'salience': 0.6, 'kind': 'preference'})"
       ],
       "noise-joke": [
@@ -1698,14 +1698,14 @@
         "RetrievalResult(turn_id='domain-knowledge.04', role='user', content='Exec children get a scrubbed environment; never inherit the agent env.', score=1.5397966343262401, metadata={'salience': 0.6, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='domain-knowledge.03', role='user', content='The workspace is a separate container; per-request netns isolates exec.', score=1.5397966342926734, metadata={'salience': 0.6, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='domain-knowledge.01', role='user', content='The agent holds a capability token; it never executes directly.', score=1.5397318347235829, metadata={'salience': 0.7, 'kind': 'knowledge'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=1.533845047344219, metadata={'salience': 0.7, 'kind': 'knowledge'})"
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=1.533845047344219, metadata={'salience': 0.7, 'kind': 'knowledge'})"
       ],
       "sup-final-indent": [
         "RetrievalResult(turn_id='supersession.00', role='user', content='For Python projects, I prefer 2-space indentation.', score=1.6590393324036254, metadata={'salience': 0.7, 'kind': 'preference'})",
         "RetrievalResult(turn_id='project-conventions.00', role='user', content='Use tabs for indentation, not spaces. Tabs only.', score=1.5189581734277353, metadata={'salience': 0.6, 'kind': 'preference'})",
         "RetrievalResult(turn_id='project-conventions.04', role='user', content=\"Initialize a new Python project named 'metrics' with pyproject.toml.\", score=1.5127325936466876, metadata={'salience': 0.7, 'kind': 'task'})",
         "RetrievalResult(turn_id='domain-knowledge.01', role='user', content='The agent holds a capability token; it never executes directly.', score=1.5091079927927835, metadata={'salience': 0.7, 'kind': 'knowledge'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=1.5085933755213914, metadata={'salience': 0.7, 'kind': 'knowledge'})"
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=1.5085933755213914, metadata={'salience': 0.7, 'kind': 'knowledge'})"
       ],
       "sup-final-hints": [
         "RetrievalResult(turn_id='supersession.02', role='user', content='Use type hints throughout.', score=1.8138690933720363, metadata={'salience': 0.6, 'kind': 'preference'})",
@@ -1797,7 +1797,7 @@
         "RetrievalResult(turn_id='task-progress.00', role='user', content='Audit the message_sender for the new architecture.', score=1.694400735712612, metadata={'salience': 0.6, 'kind': 'task'})",
         "RetrievalResult(turn_id='project-conventions.01', role='user', content='Always run the test suite before committing any change.', score=1.648421647303577, metadata={'salience': 0.6, 'kind': 'preference'})",
         "RetrievalResult(turn_id='repetition.05', role='user', content='FYI the deployment uses Helm charts.', score=1.5483679408210511, metadata={'salience': 0.7, 'kind': 'fact'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=1.5304785893065869, metadata={'salience': 0.7, 'kind': 'knowledge'})",
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=1.5304785893065869, metadata={'salience': 0.7, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='repetition.00', role='user', content='The deployment uses Helm charts. Remember this fact.', score=1.5284903099640792, metadata={'salience': 0.7, 'kind': 'fact'})"
       ],
       "agent-token": [
@@ -1874,7 +1874,7 @@
         "RetrievalResult(turn_id='task-progress.00', role='user', content='Audit the message_sender for the new architecture.', score=1.677709479956233, metadata={'salience': 0.6, 'kind': 'task'})",
         "RetrievalResult(turn_id='repetition.05', role='user', content='FYI the deployment uses Helm charts.', score=1.5792603756668677, metadata={'salience': 0.7, 'kind': 'fact'})",
         "RetrievalResult(turn_id='repetition.00', role='user', content='The deployment uses Helm charts. Remember this fact.', score=1.5552439159036722, metadata={'salience': 0.7, 'kind': 'fact'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=1.5490222193529273, metadata={'salience': 0.7, 'kind': 'knowledge'})",
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=1.5490222193529273, metadata={'salience': 0.7, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='project-conventions.01', role='user', content='Always run the test suite before committing any change.', score=1.5384098141238938, metadata={'salience': 0.6, 'kind': 'preference'})"
       ],
       "noise-joke": [
@@ -1882,14 +1882,14 @@
         "RetrievalResult(turn_id='domain-knowledge.04', role='user', content='Exec children get a scrubbed environment; never inherit the agent env.', score=1.539796631491217, metadata={'salience': 0.6, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='domain-knowledge.03', role='user', content='The workspace is a separate container; per-request netns isolates exec.', score=1.539796631457379, metadata={'salience': 0.6, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='domain-knowledge.01', role='user', content='The agent holds a capability token; it never executes directly.', score=1.5397318318848983, metadata={'salience': 0.7, 'kind': 'knowledge'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=1.533845044491235, metadata={'salience': 0.7, 'kind': 'knowledge'})"
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=1.533845044491235, metadata={'salience': 0.7, 'kind': 'knowledge'})"
       ],
       "sup-final-indent": [
         "RetrievalResult(turn_id='supersession.00', role='user', content='For Python projects, I prefer 2-space indentation.', score=1.6590393251358975, metadata={'salience': 0.7, 'kind': 'preference'})",
         "RetrievalResult(turn_id='project-conventions.00', role='user', content='Use tabs for indentation, not spaces. Tabs only.', score=1.5189581657384303, metadata={'salience': 0.6, 'kind': 'preference'})",
         "RetrievalResult(turn_id='project-conventions.04', role='user', content=\"Initialize a new Python project named 'metrics' with pyproject.toml.\", score=1.5127325859566285, metadata={'salience': 0.7, 'kind': 'task'})",
         "RetrievalResult(turn_id='domain-knowledge.01', role='user', content='The agent holds a capability token; it never executes directly.', score=1.5091079851333788, metadata={'salience': 0.7, 'kind': 'knowledge'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=1.5085933678476875, metadata={'salience': 0.7, 'kind': 'knowledge'})"
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=1.5085933678476875, metadata={'salience': 0.7, 'kind': 'knowledge'})"
       ],
       "sup-final-hints": [
         "RetrievalResult(turn_id='supersession.02', role='user', content='Use type hints throughout.', score=1.8138690860068223, metadata={'salience': 0.6, 'kind': 'preference'})",
@@ -1982,7 +1982,7 @@
         "RetrievalResult(turn_id='project-conventions.06', role='user', content='Add a README describing the metrics service and how to run it.', score=0.9597702188548947, metadata={'salience': 0.4, 'kind': 'task'})",
         "RetrievalResult(turn_id='task-progress.00', role='user', content='Audit the message_sender for the new architecture.', score=0.9537619305917637, metadata={'salience': 0.6, 'kind': 'task'})",
         "RetrievalResult(turn_id='project-conventions.01', role='user', content='Always run the test suite before committing any change.', score=0.9183786437226771, metadata={'salience': 0.6, 'kind': 'preference'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=0.8505002870099736, metadata={'salience': 0.7, 'kind': 'knowledge'})"
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=0.8505002870099736, metadata={'salience': 0.7, 'kind': 'knowledge'})"
       ],
       "agent-token": [
         "RetrievalResult(turn_id='domain-knowledge.01', role='user', content='The agent holds a capability token; it never executes directly.', score=1.0622310328128681, metadata={'salience': 0.7, 'kind': 'knowledge'})",
@@ -2056,7 +2056,7 @@
       ],
       "noise-weather": [
         "RetrievalResult(turn_id='task-progress.00', role='user', content='Audit the message_sender for the new architecture.', score=0.9760792999552124, metadata={'salience': 0.6, 'kind': 'task'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=0.9219380261853687, metadata={'salience': 0.7, 'kind': 'knowledge'})",
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=0.9219380261853687, metadata={'salience': 0.7, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='repetition.05', role='user', content='FYI the deployment uses Helm charts.', score=0.9047373224150553, metadata={'salience': 0.7, 'kind': 'fact'})",
         "RetrievalResult(turn_id='task-progress.02', role='user', content='Compare against the previous MCP binary and the new script-tool shape.', score=0.8976178176663854, metadata={'salience': 0.5, 'kind': 'task'})",
         "RetrievalResult(turn_id='repetition.00', role='user', content='The deployment uses Helm charts. Remember this fact.', score=0.8797634772299315, metadata={'salience': 0.7, 'kind': 'fact'})"
@@ -2064,14 +2064,14 @@
       "noise-joke": [
         "RetrievalResult(turn_id='project-conventions.04', role='user', content=\"Initialize a new Python project named 'metrics' with pyproject.toml.\", score=0.9555008288840542, metadata={'salience': 0.7, 'kind': 'task'})",
         "RetrievalResult(turn_id='domain-knowledge.01', role='user', content='The agent holds a capability token; it never executes directly.', score=0.94861267109974, metadata={'salience': 0.7, 'kind': 'knowledge'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=0.9348363553745083, metadata={'salience': 0.7, 'kind': 'knowledge'})",
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=0.9348363553745083, metadata={'salience': 0.7, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='domain-knowledge.04', role='user', content='Exec children get a scrubbed environment; never inherit the agent env.', score=0.9134318342617125, metadata={'salience': 0.6, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='domain-knowledge.03', role='user', content='The workspace is a separate container; per-request netns isolates exec.', score=0.9134318342452825, metadata={'salience': 0.6, 'kind': 'knowledge'})"
       ],
       "sup-final-indent": [
         "RetrievalResult(turn_id='supersession.00', role='user', content='For Python projects, I prefer 2-space indentation.', score=1.042051097412358, metadata={'salience': 0.7, 'kind': 'preference'})",
         "RetrievalResult(turn_id='supersession.04', role='user', content='Actually, change of plan. Use 4-space indent for Python, not 2.', score=0.8732862817709759, metadata={'salience': 0.8, 'kind': 'preference-correction'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=0.866235756287888, metadata={'salience': 0.7, 'kind': 'knowledge'})",
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=0.866235756287888, metadata={'salience': 0.7, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='project-conventions.04', role='user', content=\"Initialize a new Python project named 'metrics' with pyproject.toml.\", score=0.856435721938075, metadata={'salience': 0.7, 'kind': 'task'})",
         "RetrievalResult(turn_id='project-conventions.00', role='user', content='Use tabs for indentation, not spaces. Tabs only.', score=0.838737555232229, metadata={'salience': 0.6, 'kind': 'preference'})"
       ],
@@ -2243,19 +2243,19 @@
         "RetrievalResult(turn_id='correction.02', role='user', content='Format the code with the auto-formatter on save.', score=0.7604989436638967, metadata={'salience': 0.4, 'kind': 'instruction'})",
         "RetrievalResult(turn_id='task-progress.02', role='user', content='Compare against the previous MCP binary and the new script-tool shape.', score=0.7416159485698137, metadata={'salience': 0.5, 'kind': 'task'})",
         "RetrievalResult(turn_id='correction.06', role='user', content='Why did you change it? Document the reason in the commit message.', score=0.7329853351925952, metadata={'salience': 0.3, 'kind': 'instruction'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=0.704199951768727, metadata={'salience': 0.7, 'kind': 'knowledge'})"
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=0.704199951768727, metadata={'salience': 0.7, 'kind': 'knowledge'})"
       ],
       "noise-joke": [
         "RetrievalResult(turn_id='project-conventions.04', role='user', content=\"Initialize a new Python project named 'metrics' with pyproject.toml.\", score=0.7371707329547936, metadata={'salience': 0.7, 'kind': 'task'})",
         "RetrievalResult(turn_id='domain-knowledge.01', role='user', content='The agent holds a capability token; it never executes directly.', score=0.730282576861317, metadata={'salience': 0.7, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='domain-knowledge.04', role='user', content='Exec children get a scrubbed environment; never inherit the agent env.', score=0.726133419909675, metadata={'salience': 0.6, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='domain-knowledge.03', role='user', content='The workspace is a separate container; per-request netns isolates exec.', score=0.7261334192442619, metadata={'salience': 0.6, 'kind': 'knowledge'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=0.7165062606165611, metadata={'salience': 0.7, 'kind': 'knowledge'})"
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=0.7165062606165611, metadata={'salience': 0.7, 'kind': 'knowledge'})"
       ],
       "sup-final-indent": [
         "RetrievalResult(turn_id='supersession.00', role='user', content='For Python projects, I prefer 2-space indentation.', score=0.8233455561923149, metadata={'salience': 0.7, 'kind': 'preference'})",
         "RetrievalResult(turn_id='project-conventions.00', role='user', content='Use tabs for indentation, not spaces. Tabs only.', score=0.6514354043989083, metadata={'salience': 0.6, 'kind': 'preference'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=0.6481401802133047, metadata={'salience': 0.7, 'kind': 'knowledge'})",
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=0.6481401802133047, metadata={'salience': 0.7, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='project-conventions.04', role='user', content=\"Initialize a new Python project named 'metrics' with pyproject.toml.\", score=0.6377735315026326, metadata={'salience': 0.7, 'kind': 'task'})",
         "RetrievalResult(turn_id='supersession.04', role='user', content='Actually, change of plan. Use 4-space indent for Python, not 2.', score=0.6257694654685638, metadata={'salience': 0.8, 'kind': 'preference-correction'})"
       ],
@@ -2430,7 +2430,7 @@
         "RetrievalResult(turn_id='project-conventions.08', role='user', content='Pin the deps: requests==2.31.0, pydantic==2.5.0.', score=1.118219686286976, metadata={'salience': 0.5, 'kind': 'preference'})"
       ],
       "noise-joke": [
-        "RetrievalResult(turn_id='domain-knowledge.summary-2', role='summary', content=\"[summary of 5 items] user: gagent's executor uses setuid to drop into a configured exec UID. | user: The agent holds a capability token; it never executes directly. | user: The workspace is a separate container; per-request netns isolates exec. | user: Exec children get a scrubbed environment; never inherit the agent env. | user: Resource caps bind untrusted exec; agent tools run without them.\", score=1.0212608637101626, metadata={'salience': 0.5, 'kind': 'summary'})",
+        "RetrievalResult(turn_id='domain-knowledge.summary-2', role='summary', content=\"[summary of 5 items] user: sherlock's executor uses setuid to drop into a configured exec UID. | user: The agent holds a capability token; it never executes directly. | user: The workspace is a separate container; per-request netns isolates exec. | user: Exec children get a scrubbed environment; never inherit the agent env. | user: Resource caps bind untrusted exec; agent tools run without them.\", score=1.0212608637101626, metadata={'salience': 0.5, 'kind': 'summary'})",
         "RetrievalResult(turn_id='repetition.09', role='user', content=\"Last time I'll say this: deployment uses Helm charts.\", score=0.9999999713830263, metadata={'salience': 0.7, 'kind': 'fact'})",
         "RetrievalResult(turn_id='supersession.06', role='user', content='Keep type hints. Actually, only on public functions, not internal ones.', score=0.9999999672186561, metadata={'salience': 0.6, 'kind': 'preference-correction'})",
         "RetrievalResult(turn_id='supersession.04', role='user', content='Actually, change of plan. Use 4-space indent for Python, not 2.', score=0.9999999669516542, metadata={'salience': 0.8, 'kind': 'preference-correction'})",
@@ -2519,7 +2519,7 @@
         "RetrievalResult(turn_id='task-progress.04', role='user', content='Map the deletions to the rationale. Why are tests/e2e_github_test.go and cmd/<tool>/ gone?', score=0.5312553363634258, metadata={'salience': 0.5, 'kind': 'task'})",
         "RetrievalResult(turn_id='supersession.04', role='user', content='Actually, change of plan. Use 4-space indent for Python, not 2.', score=0.4472135954999579, metadata={'salience': 0.8, 'kind': 'preference-correction'})",
         "RetrievalResult(turn_id='project-conventions.04', role='user', content=\"Initialize a new Python project named 'metrics' with pyproject.toml.\", score=0.4183300132670378, metadata={'salience': 0.7, 'kind': 'task'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=0.4183300132670378, metadata={'salience': 0.7, 'kind': 'knowledge'})",
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=0.4183300132670378, metadata={'salience': 0.7, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='domain-knowledge.01', role='user', content='The agent holds a capability token; it never executes directly.', score=0.4183300132670378, metadata={'salience': 0.7, 'kind': 'knowledge'})"
       ],
       "last-action": [
@@ -2534,7 +2534,7 @@
         "RetrievalResult(turn_id='project-conventions.06', role='user', content='Add a README describing the metrics service and how to run it.', score=0.6597702362898588, metadata={'salience': 0.4, 'kind': 'task'})",
         "RetrievalResult(turn_id='task-progress.00', role='user', content='Audit the message_sender for the new architecture.', score=0.6537619339160119, metadata={'salience': 0.6, 'kind': 'task'})",
         "RetrievalResult(turn_id='project-conventions.01', role='user', content='Always run the test suite before committing any change.', score=0.6183786472554162, metadata={'salience': 0.6, 'kind': 'preference'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=0.5505002904640275, metadata={'salience': 0.7, 'kind': 'knowledge'})"
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=0.5505002904640275, metadata={'salience': 0.7, 'kind': 'knowledge'})"
       ],
       "agent-token": [
         "RetrievalResult(turn_id='domain-knowledge.01', role='user', content='The agent holds a capability token; it never executes directly.', score=0.762231036681078, metadata={'salience': 0.7, 'kind': 'knowledge'})",
@@ -2608,7 +2608,7 @@
       ],
       "noise-weather": [
         "RetrievalResult(turn_id='task-progress.00', role='user', content='Audit the message_sender for the new architecture.', score=0.676079308277327, metadata={'salience': 0.6, 'kind': 'task'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=0.6219380346372891, metadata={'salience': 0.7, 'kind': 'knowledge'})",
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=0.6219380346372891, metadata={'salience': 0.7, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='repetition.05', role='user', content='FYI the deployment uses Helm charts.', score=0.6047373302126241, metadata={'salience': 0.7, 'kind': 'fact'})",
         "RetrievalResult(turn_id='task-progress.02', role='user', content='Compare against the previous MCP binary and the new script-tool shape.', score=0.5976178591637805, metadata={'salience': 0.5, 'kind': 'task'})",
         "RetrievalResult(turn_id='repetition.00', role='user', content='The deployment uses Helm charts. Remember this fact.', score=0.579763485193213, metadata={'salience': 0.7, 'kind': 'fact'})"
@@ -2616,14 +2616,14 @@
       "noise-joke": [
         "RetrievalResult(turn_id='project-conventions.04', role='user', content=\"Initialize a new Python project named 'metrics' with pyproject.toml.\", score=0.6555008377796663, metadata={'salience': 0.7, 'kind': 'task'})",
         "RetrievalResult(turn_id='domain-knowledge.01', role='user', content='The agent holds a capability token; it never executes directly.', score=0.64861267992416, metadata={'salience': 0.7, 'kind': 'knowledge'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=0.6348363642131474, metadata={'salience': 0.7, 'kind': 'knowledge'})",
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=0.6348363642131474, metadata={'salience': 0.7, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='domain-knowledge.03', role='user', content='The workspace is a separate container; per-request netns isolates exec.', score=0.6134318430540644, metadata={'salience': 0.6, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='domain-knowledge.04', role='user', content='Exec children get a scrubbed environment; never inherit the agent env.', score=0.6134318430540644, metadata={'salience': 0.6, 'kind': 'knowledge'})"
       ],
       "sup-final-indent": [
         "RetrievalResult(turn_id='supersession.00', role='user', content='For Python projects, I prefer 2-space indentation.', score=0.7420511062734725, metadata={'salience': 0.7, 'kind': 'preference'})",
         "RetrievalResult(turn_id='supersession.04', role='user', content='Actually, change of plan. Use 4-space indent for Python, not 2.', score=0.5732862905741434, metadata={'salience': 0.8, 'kind': 'preference-correction'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=0.5662357655150814, metadata={'salience': 0.7, 'kind': 'knowledge'})",
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=0.5662357655150814, metadata={'salience': 0.7, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='project-conventions.04', role='user', content=\"Initialize a new Python project named 'metrics' with pyproject.toml.\", score=0.5564357312222413, metadata={'salience': 0.7, 'kind': 'task'})",
         "RetrievalResult(turn_id='project-conventions.00', role='user', content='Use tabs for indentation, not spaces. Tabs only.', score=0.5387375645507061, metadata={'salience': 0.6, 'kind': 'preference'})"
       ],
@@ -2703,7 +2703,7 @@
         "RetrievalResult(turn_id='task-progress.04', role='user', content='Map the deletions to the rationale. Why are tests/e2e_github_test.go and cmd/<tool>/ gone?', score=0.5312553363634258, metadata={'salience': 0.5, 'kind': 'task'})",
         "RetrievalResult(turn_id='supersession.04', role='user', content='Actually, change of plan. Use 4-space indent for Python, not 2.', score=0.4472135954999579, metadata={'salience': 0.8, 'kind': 'preference-correction'})",
         "RetrievalResult(turn_id='project-conventions.04', role='user', content=\"Initialize a new Python project named 'metrics' with pyproject.toml.\", score=0.4183300132670378, metadata={'salience': 0.7, 'kind': 'task'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=0.4183300132670378, metadata={'salience': 0.7, 'kind': 'knowledge'})",
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=0.4183300132670378, metadata={'salience': 0.7, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='domain-knowledge.01', role='user', content='The agent holds a capability token; it never executes directly.', score=0.4183300132670378, metadata={'salience': 0.7, 'kind': 'knowledge'})"
       ],
       "last-action": [
@@ -2718,7 +2718,7 @@
         "RetrievalResult(turn_id='project-conventions.06', role='user', content='Add a README describing the metrics service and how to run it.', score=0.6589697383542994, metadata={'salience': 0.4, 'kind': 'task'})",
         "RetrievalResult(turn_id='task-progress.00', role='user', content='Audit the message_sender for the new architecture.', score=0.6519857918270088, metadata={'salience': 0.6, 'kind': 'task'})",
         "RetrievalResult(turn_id='project-conventions.01', role='user', content='Always run the test suite before committing any change.', score=0.6172663942093752, metadata={'salience': 0.6, 'kind': 'preference'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=0.5506630319217763, metadata={'salience': 0.7, 'kind': 'knowledge'})"
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=0.5506630319217763, metadata={'salience': 0.7, 'kind': 'knowledge'})"
       ],
       "agent-token": [
         "RetrievalResult(turn_id='domain-knowledge.01', role='user', content='The agent holds a capability token; it never executes directly.', score=0.7616430354154862, metadata={'salience': 0.7, 'kind': 'knowledge'})",
@@ -2792,7 +2792,7 @@
       ],
       "noise-weather": [
         "RetrievalResult(turn_id='task-progress.00', role='user', content='Audit the message_sender for the new architecture.', score=0.6731822760829198, metadata={'salience': 0.6, 'kind': 'task'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=0.6225300528133527, metadata={'salience': 0.7, 'kind': 'knowledge'})",
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=0.6225300528133527, metadata={'salience': 0.7, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='repetition.05', role='user', content='FYI the deployment uses Helm charts.', score=0.6028673039722298, metadata={'salience': 0.7, 'kind': 'fact'})",
         "RetrievalResult(turn_id='task-progress.02', role='user', content='Compare against the previous MCP binary and the new script-tool shape.', score=0.5951694200785917, metadata={'salience': 0.5, 'kind': 'task'})",
         "RetrievalResult(turn_id='repetition.00', role='user', content='The deployment uses Helm charts. Remember this fact.', score=0.578143994963288, metadata={'salience': 0.7, 'kind': 'fact'})"
@@ -2800,14 +2800,14 @@
       "noise-joke": [
         "RetrievalResult(turn_id='project-conventions.04', role='user', content=\"Initialize a new Python project named 'metrics' with pyproject.toml.\", score=0.6555008377796663, metadata={'salience': 0.7, 'kind': 'task'})",
         "RetrievalResult(turn_id='domain-knowledge.01', role='user', content='The agent holds a capability token; it never executes directly.', score=0.64861267992416, metadata={'salience': 0.7, 'kind': 'knowledge'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=0.6348363642131474, metadata={'salience': 0.7, 'kind': 'knowledge'})",
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=0.6348363642131474, metadata={'salience': 0.7, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='domain-knowledge.03', role='user', content='The workspace is a separate container; per-request netns isolates exec.', score=0.6134318430540644, metadata={'salience': 0.6, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='domain-knowledge.04', role='user', content='Exec children get a scrubbed environment; never inherit the agent env.', score=0.6134318430540644, metadata={'salience': 0.6, 'kind': 'knowledge'})"
       ],
       "sup-final-indent": [
         "RetrievalResult(turn_id='supersession.00', role='user', content='For Python projects, I prefer 2-space indentation.', score=0.7416756449251486, metadata={'salience': 0.7, 'kind': 'preference'})",
         "RetrievalResult(turn_id='supersession.04', role='user', content='Actually, change of plan. Use 4-space indent for Python, not 2.', score=0.5729831331900845, metadata={'salience': 0.8, 'kind': 'preference-correction'})",
-        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"gagent's executor uses setuid to drop into a configured exec UID.\", score=0.5664702864291805, metadata={'salience': 0.7, 'kind': 'knowledge'})",
+        "RetrievalResult(turn_id='domain-knowledge.00', role='user', content=\"sherlock's executor uses setuid to drop into a configured exec UID.\", score=0.5664702864291805, metadata={'salience': 0.7, 'kind': 'knowledge'})",
         "RetrievalResult(turn_id='project-conventions.04', role='user', content=\"Initialize a new Python project named 'metrics' with pyproject.toml.\", score=0.5561036389467948, metadata={'salience': 0.7, 'kind': 'task'})",
         "RetrievalResult(turn_id='project-conventions.00', role='user', content='Use tabs for indentation, not spaces. Tabs only.', score=0.5387338339870422, metadata={'salience': 0.6, 'kind': 'preference'})"
       ],

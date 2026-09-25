@@ -2,8 +2,8 @@
 // script-tool runner's stdio protocol (ADR 0009 §Decision): one JSON
 // object on stdin (the validated input), one JSON object on stdout
 // (the validated output), non-zero exit on failure. The tool writes
-// the outbound message to the file outbox at GAGENT_OUTBOX_DIR, stamped
-// with the sending agent's ID from GAGENT_AGENT_ID (ADR 0016); the
+// the outbound message to the file outbox at SHERLOCK_OUTBOX_DIR, stamped
+// with the sending agent's ID from SHERLOCK_AGENT_ID (ADR 0016); the
 // platform's message_send plumbing delivers the queue.
 package main
 
@@ -16,7 +16,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/garamsh/gagent/internal/message"
+	"github.com/garamsh/sherlock/internal/message"
 )
 
 type callInput struct {
@@ -37,13 +37,13 @@ func main() {
 }
 
 func run() error {
-	outboxDir := os.Getenv("GAGENT_OUTBOX_DIR")
+	outboxDir := os.Getenv("SHERLOCK_OUTBOX_DIR")
 	if outboxDir == "" {
-		return errors.New("GAGENT_OUTBOX_DIR is empty")
+		return errors.New("SHERLOCK_OUTBOX_DIR is empty")
 	}
-	agentID := os.Getenv("GAGENT_AGENT_ID")
+	agentID := os.Getenv("SHERLOCK_AGENT_ID")
 	if agentID == "" {
-		return errors.New("GAGENT_AGENT_ID is empty")
+		return errors.New("SHERLOCK_AGENT_ID is empty")
 	}
 	dec := json.NewDecoder(bufio.NewReader(os.Stdin))
 	var in callInput
@@ -62,7 +62,7 @@ func run() error {
 }
 
 // writeOutbox writes a single message to the outbox directory named by
-// GAGENT_OUTBOX_DIR. That write is the delivery: nothing forwards the
+// SHERLOCK_OUTBOX_DIR. That write is the delivery: nothing forwards the
 // file onward, so whatever consumes the agent's replies reads this
 // directory (ADR 0007).
 func writeOutbox(dir string, msg message.Message) error {

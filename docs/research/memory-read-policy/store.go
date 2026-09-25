@@ -7,9 +7,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/garamsh/gagent/internal/agent"
-	"github.com/garamsh/gagent/internal/agent/memory"
-	"github.com/garamsh/gagent/internal/memory/sqlite"
+	"github.com/garamsh/sherlock/internal/agent"
+	"github.com/garamsh/sherlock/internal/agent/memory"
+	"github.com/garamsh/sherlock/internal/memory/sqlite"
 )
 
 type episode struct {

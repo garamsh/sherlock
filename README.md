@@ -1,6 +1,6 @@
-# gagent
+# sherlock
 
-gagent is an autonomous agent platform written in Go. It runs AI agents that can reason over multi-turn conversations, call tools, and manage their own long-term memory.
+sherlock is an autonomous agent platform written in Go. It runs AI agents that can reason over multi-turn conversations, call tools, and manage their own long-term memory.
 
 ## Contents
 - Principles
@@ -20,24 +20,24 @@ Developers who want to build and operate autonomous agents on a minimal, explici
 
 ## Running
 
-One CLI binary, `gagent`, runs both processes of an agent pod (ADR 0017): the workspace and the agent. Build or run it from source:
+One CLI binary, `sherlock`, runs both processes of an agent pod (ADR 0017): the workspace and the agent. Build or run it from source:
 
 ```sh
-go run ./cmd/gagent <subcommand>   # or: go build -o gagent ./cmd/gagent
+go run ./cmd/sherlock <subcommand>   # or: go build -o sherlock ./cmd/sherlock
 ```
 
 Start the workspace first: the agent's file tools and `shell_exec` tools dial it when the model first calls one, and a tool that finds nothing listening fails that call. With the default mock model this runs fully offline. The example configs under `configs/` are picked up automatically when running from the repository root and must be owner-only first:
 
 ```sh
-chmod 0600 configs/gagent.yaml configs/workspace.yaml     # config files must be owner-only
-gagent workspace &                        # serves the workspace on 127.0.0.1:8081
-gagent agent --message "hello"            # runs one turn and exits
-gagent agent                             # or: serve the agent's gateway
+chmod 0600 configs/agent.yaml configs/workspace.yaml     # config files must be owner-only
+sherlock workspace &                        # serves the workspace on 127.0.0.1:8081
+sherlock agent --message "hello"            # runs one turn and exits
+sherlock agent                             # or: serve the agent's gateway
 ```
 
 To try the platform in Docker instead: `make build-images` builds all three images — distroless agent (`build/agent.Dockerfile`), debian-slim workspace (`build/workspace.Dockerfile`), and the tool tree an operator mounts (`build/tools.Dockerfile`) — and `deploy/local/` holds the local compose setup.
 
-### gagent agent
+### sherlock agent
 
 Runs the agent's self: the rolling session, memory, the mouth, and the HTTP gateway for the one agent this process serves (`--agent-id`, default `default`). Without `--message` it serves until interrupted:
 
@@ -48,38 +48,38 @@ Runs the agent's self: the rolling session, memory, the mouth, and the HTTP gate
 With `--message` the agent runs one turn against the same operator-installed tool list and exits; outbound `message_send` content and the final response print to stdout (logs go to stderr):
 
 ```sh
-gagent agent --agent-id my-agent --message "hello"
+sherlock agent --agent-id my-agent --message "hello"
 ```
 
 A one-shot run exits non-zero if any tool call in the turn failed, naming the tools that failed on stderr — the turn's output still prints first. A failed tool call does not end the turn (the model is told and gets another iteration), so the exit status is where a caller that is no longer watching learns the run was not clean. The serving path differs on purpose: there the failure goes to the model and the `tool_call` event, the turn still ends `turn_finished`, and the gateway keeps serving.
 
 **Warning: an unauthenticated gateway is a remote shell into the agent.** The gateway authenticates callers with mTLS when the `tls:` config section is set (server certificate/key plus a client CA — callers must present a certificate from that CA; ADR 0012). Without `tls:` the gateway serves loopback binds only, and a non-loopback `--addr` fails startup. Certificate issuance and CA operation are operator scope; rotation is a restart with new files.
 
-### gagent workspace
+### sherlock workspace
 
 Serves the agent's workspace (ADR 0017) — the computer: a gRPC data plane over loopback serving the filesystem (Read, Write, List) and process execution (Exec) in the workspace directory. The workspace owns the workspace directory and the executor; it holds no tools and no plugin loader. Nothing in the agent process dials it — the tools that need files or exec dial it themselves (§Adding tools), so the agent itself executes nothing.
 
 ```sh
-gagent workspace
+sherlock workspace
 ```
 
 - The workspace owns the workspace directory (`workspace` key, created on first use); Exec children work in it by default, so they see workspace files natively. Exec children drop to the exec UID (`exec-uid` key, default 1001; single-account mode: the workspace's own UID — any other unprivileged value fails closed with `agent_uid unavailable`). When privileged the workspace chowns the directory to the exec UID, so files written through the gRPC contract and by exec'd children share one owner.
 - The listener carries no authentication in this phase, so it serves loopback binds only — a non-loopback `--addr` fails startup (ADR 0012, same posture as the gateway).
-- Its config file resolves in order: `--config <path>`, then `./configs/workspace.yaml`, then the XDG config path (`~/.config/gagent/workspace.yaml` on Linux). Keys: `addr` (default `127.0.0.1:8081`), `workspace` (default `data/workspace`), `exec-uid` (default `1001`), `exec-timeout` (default `30s`). There is no `tools:` config — tools live in the agent.
+- Its config file resolves in order: `--config <path>`, then `./configs/workspace.yaml`, then the XDG config path (`~/.config/sherlock/workspace.yaml` on Linux). Keys: `addr` (default `127.0.0.1:8081`), `workspace` (default `data/workspace`), `exec-uid` (default `1001`), `exec-timeout` (default `30s`). There is no `tools:` config — tools live in the agent.
 
 ### Configuration
 
-Settings resolve in order: **flags > environment variables > config file > defaults**. Environment variables use the `GAGENT_` prefix (`GAGENT_MEMORY_PATH`, `GAGENT_WORKSPACE_ADDR`, …). The agent's config file resolves in order: `--config <path>`, then `./configs/gagent.yaml`, then the XDG config path (`~/.config/gagent/config.yaml` on Linux); the workspace's resolves the same way with `workspace.yaml`. A missing file is an error only when `--config` names it explicitly. A loaded config file must be owner-only (`0600` or `0400`); a group/other-readable file fails startup (docs/architecture/security.md). A key the file carries that no setting reads — a typo, a renamed key, a block left from a removed feature — is reported at startup by a WARN naming the key and the file, and does not stop the process: the file keeps working when a key is renamed, and `tools.pin` for `tools.pins` says so instead of reading as an absent pin set.
+Settings resolve in order: **flags > environment variables > config file > defaults**. Environment variables use the `SHERLOCK_` prefix (`SHERLOCK_MEMORY_PATH`, `SHERLOCK_WORKSPACE_ADDR`, …). The agent's config file resolves in order: `--config <path>`, then `./configs/agent.yaml`, then the XDG config path (`~/.config/sherlock/config.yaml` on Linux); the workspace's resolves the same way with `workspace.yaml`. A missing file is an error only when `--config` names it explicitly. A loaded config file must be owner-only (`0600` or `0400`); a group/other-readable file fails startup (docs/architecture/security.md). A key the file carries that no setting reads — a typo, a renamed key, a block left from a removed feature — is reported at startup by a WARN naming the key and the file, and does not stop the process: the file keeps working when a key is renamed, and `tools.pin` for `tools.pins` says so instead of reading as an absent pin set.
 
-Agent keys (`gagent agent`; see `configs/gagent.yaml` for an example):
+Agent keys (`sherlock agent`; see `configs/agent.yaml` for an example):
 
 | Key | Flag | Default |
 |---|---|---|
 | `addr` | `--addr` | `127.0.0.1:8080` (gateway listen address; loopback-only unless `tls:` is set) |
 | `memory-path` | `--memory-path` | `data/memory.db` (the agent's SQLite memory file, created on first use) |
-| `workspace-addr` | `--workspace-addr` | `127.0.0.1:8081` (gRPC endpoint of the agent's workspace. The agent does not dial it; it publishes the value as `GAGENT_WORKSPACE_ADDR` to every tool it spawns, and the tools that need files or exec dial it themselves. A wrong address surfaces at the first tool call, not at startup — the agent's only workspace setting) |
+| `workspace-addr` | `--workspace-addr` | `127.0.0.1:8081` (gRPC endpoint of the agent's workspace. The agent does not dial it; it publishes the value as `SHERLOCK_WORKSPACE_ADDR` to every tool it spawns, and the tools that need files or exec dial it themselves. A wrong address surfaces at the first tool call, not at startup — the agent's only workspace setting) |
 | `tools-dir` | — | `./tools` (the directory manifests are read from at startup) |
-| `tools.pins` | — | unset (the accepted tool set, one manifest SHA-256 per tool name — see §Adding tools. Unset loads the tree unpinned and warns; present and naming no tool fails startup. Config file only: one variable carries one value, so `GAGENT_TOOLS_PINS` is refused at startup rather than read) |
+| `tools.pins` | — | unset (the accepted tool set, one manifest SHA-256 per tool name — see §Adding tools. Unset loads the tree unpinned and warns; present and naming no tool fails startup. Config file only: one variable carries one value, so `SHERLOCK_TOOLS_PINS` is refused at startup rather than read) |
 | `model.provider` | — | `mock` (scripted, offline), `openai-compatible` (the chat-completions protocol) or `anthropic-compatible` (the Messages protocol). It names the wire protocol the endpoint speaks, not the vendor: one value serves every endpoint speaking it, and `model.base-url` is what picks between them |
 | `model.base-url` | — | `https://api.openai.com/v1` (any OpenAI-compatible endpoint, e.g. MiniMax/Ollama/vLLM — see §Endpoints, and how far each is verified) |
 | `model.model` | — | `gpt-4o-mini` |
@@ -89,7 +89,7 @@ Agent keys (`gagent agent`; see `configs/gagent.yaml` for an example):
 | `tls.key` | — | unset (server certificate's private key, PEM) |
 | `tls.client-ca` | — | unset (CA bundle, PEM, that client certificates are verified against) |
 
-Workspace keys (`gagent workspace`; see `configs/workspace.yaml` for an example):
+Workspace keys (`sherlock workspace`; see `configs/workspace.yaml` for an example):
 
 | Key | Flag | Default |
 |---|---|---|
@@ -153,7 +153,7 @@ The agent's instructions are composed of two parts: an **ego** (identity and beh
 The ego is a Markdown file, resolved in order: `--ego-file <path>`, then the embedded default (`internal/agent/ego.md`). There is no config key for it, and a missing or unreadable file fails at startup. Changes apply on restart; the file is not hot-reloaded.
 
 ```sh
-gagent agent --ego-file ./EGO.md --message "hello"
+sherlock agent --ego-file ./EGO.md --message "hello"
 ```
 
 An ego file describes who the agent is and how it behaves — not the protocol. Example:
@@ -168,7 +168,7 @@ every destructive action before taking it.
 
 Tools are stand-alone executables behind the script-tool contract (ADR 0017, ADR 0009). The agent binary does not import them; the script-tool runtime (`internal/tool`) reads each tool's `manifest.json` from the `tools/` directory at startup and spawns the binary as a one-shot stdio process. To add a tool:
 
-- drop a directory under `tools/<name>/` containing `manifest.json` (name, description, `command` path relative to the manifest's dir, and the `input_schema` and `output_schema` JSON Schemas) and the executable the manifest names. First-party tools ship in place: `file_read`, `file_write`, `file_list`, `shell_exec`, `message_send`, `github` — `make build-tools` rebuilds them. A tool that needs files or exec dials the workspace's gRPC listener itself at `GAGENT_WORKSPACE_ADDR`, which the agent sets for every tool it spawns; a tool that needs an external API calls it directly. The default install is the six shipped tools; override the directory with the `tools-dir` key (or `GAGENT_TOOLS_DIR`, the same setting through the environment; default `./tools`) or remove a manifest to drop a tool from the agent's surface. The script-tool runtime validates the required tool set at startup and refuses to load a tool whose manifest hash drifts from the pin you gave it.
+- drop a directory under `tools/<name>/` containing `manifest.json` (name, description, `command` path relative to the manifest's dir, and the `input_schema` and `output_schema` JSON Schemas) and the executable the manifest names. First-party tools ship in place: `file_read`, `file_write`, `file_list`, `shell_exec`, `message_send`, `github` — `make build-tools` rebuilds them. A tool that needs files or exec dials the workspace's gRPC listener itself at `SHERLOCK_WORKSPACE_ADDR`, which the agent sets for every tool it spawns; a tool that needs an external API calls it directly. The default install is the six shipped tools; override the directory with the `tools-dir` key (or `SHERLOCK_TOOLS_DIR`, the same setting through the environment; default `./tools`) or remove a manifest to drop a tool from the agent's surface. The script-tool runtime validates the required tool set at startup and refuses to load a tool whose manifest hash drifts from the pin you gave it.
 
 Tools inherit the agent's environment, including its credentials; see [Security](docs/architecture/security.md) for the tool trust boundary.
 
@@ -183,7 +183,7 @@ tools:
 
 Each hash is on the `tool manifest loaded` line the agent logs for that tool, and a refusal quotes the hash you would pin to accept what is on disk. Once the section exists it is the whole accepted set: a manifest that changed under a pin is refused, and so is a tool directory the set does not name — a drop you did not review is otherwise indistinguishable from one you did. Adding a tool is then a directory drop plus its hash. Leave the section out and the agent loads the tree unpinned, warning at startup that it has no record to check drift against.
 
-Example configs under `configs/`: `configs/gagent.yaml` (agent) and `configs/workspace.yaml` (workspace).
+Example configs under `configs/`: `configs/agent.yaml` (agent) and `configs/workspace.yaml` (workspace).
 
 With the default `mock` provider the agent wires the scripted mock model, which answers the first message with a canned run of the full loop: it computes through `shell_exec` (the call crosses the wire to the workspace's Exec RPC and runs in the workspace directory), reads the result back through `file_read`, and replies via `message_send`. Its terminal response includes the legacy `memory_ops` field required by the response format, but the source-linked runtime does not apply those addressed operations. The completed turn is saved as source-linked conversation memory. The script covers the first message per process; a later message fails its turn with `script exhausted` (a `turn_failed` event) — the mock is a wiring demo, not a conversation partner. With `provider: openai-compatible` it runs against a real chat model; a missing API key env var fails at startup. To work on the codebase you need Go and GNU Make — `make test` runs the Go tests. The standard checks are:
 

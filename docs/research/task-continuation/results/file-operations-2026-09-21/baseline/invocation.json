@@ -1,12 +1,12 @@
 {
   "arm": "baseline",
   "source": "ca65571319c15294cb987a5c4121da92d4b4e64b",
-  "cwd": "/home/sauce/Workspace/garam/gagent",
+  "cwd": "/home/sauce/Workspace/garam/sherlock",
   "argv": [
     "go",
     "test",
     "-overlay",
-    "/home/sauce/Workspace/garam/gagent/.local/verification/811-review/baseline-overlay.json",
+    "/home/sauce/Workspace/garam/sherlock/.local/verification/811-review/baseline-overlay.json",
     "./tests",
     "-run",
     "^TestFileOperations$",
@@ -15,7 +15,7 @@
     "-timeout",
     "45m"
   ],
-  "results": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/baseline/collection",
+  "results": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-21-file-operations-842faeb/baseline/collection",
   "started_at": "2026-09-20T18:37:47.492499+00:00",
   "instrument_sha256": "82905adb0c6013b73c025876d8f39f08eeeb7b39b271e14472ac70544749c75b",
   "ceilings": {

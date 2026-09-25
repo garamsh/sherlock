@@ -11,11 +11,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/tool"
+	"github.com/garamsh/sherlock/internal/tool"
 )
 
 // TestScriptTool_MessageSend_Integration drops the message_send tool
-// into a tmpdir, points GAGENT_OUTBOX_DIR at a tmpdir, and asserts
+// into a tmpdir, points SHERLOCK_OUTBOX_DIR at a tmpdir, and asserts
 // the tool writes the outbound message to the outbox and returns
 // the queued status. The delivered file carries the sending agent
 // (ADR 0016), which the tool takes from its environment rather than
@@ -25,8 +25,8 @@ func TestScriptTool_MessageSend_Integration(t *testing.T) {
 	hash := installTool(t, root, "message_send")
 
 	outbox := t.TempDir()
-	t.Setenv("GAGENT_OUTBOX_DIR", outbox)
-	t.Setenv("GAGENT_AGENT_ID", "agent-7")
+	t.Setenv("SHERLOCK_OUTBOX_DIR", outbox)
+	t.Setenv("SHERLOCK_AGENT_ID", "agent-7")
 
 	reg, err := tool.NewRegistry(tool.RegistryOptions{
 		Dir:      root,
@@ -67,7 +67,7 @@ func TestScriptTool_MessageSend_MissingOutboxDir(t *testing.T) {
 	// Explicitly clear the env; t.Setenv with empty would set
 	// the variable to the empty string, which is the failure
 	// we want to test.
-	t.Setenv("GAGENT_OUTBOX_DIR", "")
+	t.Setenv("SHERLOCK_OUTBOX_DIR", "")
 
 	reg, err := tool.NewRegistry(tool.RegistryOptions{
 		Dir:      root,
@@ -88,8 +88,8 @@ func TestScriptTool_MessageSend_InputRejected(t *testing.T) {
 	root := t.TempDir()
 	hash := installTool(t, root, "message_send")
 	outbox := t.TempDir()
-	t.Setenv("GAGENT_OUTBOX_DIR", outbox)
-	t.Setenv("GAGENT_AGENT_ID", "agent-7")
+	t.Setenv("SHERLOCK_OUTBOX_DIR", outbox)
+	t.Setenv("SHERLOCK_AGENT_ID", "agent-7")
 
 	reg, err := tool.NewRegistry(tool.RegistryOptions{
 		Dir:      root,

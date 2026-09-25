@@ -1,6 +1,6 @@
 import os,subprocess,json
 from pathlib import Path
-env=dict(os.environ,GOCACHE='/tmp/gagent-file-write-go-cache')
+env=dict(os.environ,GOCACHE='/tmp/sherlock-file-write-go-cache')
 source=Path('tools/file_write/file_write.go');manifest=Path('tools/file_write/manifest.json')
 original=source.read_text();schema=manifest.read_text()
 mutations=[('write-effect',source,original.replace('\tif _, err := ws.Write(ctx, &workspace.WriteRequest{Path: in.Path, Content: []byte(in.Content)}); err != nil {\n\t\treturn callOutput{}, grpcError("write", err)\n\t}\n',''),'TestScriptTool_Files_(Integration|ProviderExposure)$'),('required-content',manifest,schema.replace('"path",\n\t\t\t"content"','"path"'),'TestScriptTool_Files_(InvalidInputPreservesContent|ProviderExposure)$'),('stdin-absence',source,original.replace('return errors.New("content is required")','input.Content = new(string)'),'TestScriptTool_FileWrite_StdinPreservesContent$')]
@@ -10,11 +10,11 @@ try:
   assert mutant != path.read_text(),name
   path.write_text(mutant)
   run=subprocess.run(['go','test','./tests','-run','^'+pattern,'-count=1'],env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True)
-  Path('/tmp/gagent-file-write-removal-'+name+'.log').write_text(run.stdout)
+  Path('/tmp/sherlock-file-write-removal-'+name+'.log').write_text(run.stdout)
   results.append({'mutation':name,'exit_code':run.returncode,'assertion_failure':'Error Trace:' in run.stdout})
   source.write_text(original);manifest.write_text(schema)
 finally:
  source.write_text(original);manifest.write_text(schema)
-Path('/tmp/gagent-file-write-removals.json').write_text(json.dumps(results,indent=2))
+Path('/tmp/sherlock-file-write-removals.json').write_text(json.dumps(results,indent=2))
 print(json.dumps(results))
 assert all(r['exit_code'] and r['assertion_failure'] for r in results)

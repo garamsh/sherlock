@@ -9,9 +9,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/garamsh/gagent/internal/agent"
-	"github.com/garamsh/gagent/internal/memory"
-	"github.com/garamsh/gagent/internal/tool"
+	"github.com/garamsh/sherlock/internal/agent"
+	"github.com/garamsh/sherlock/internal/memory"
+	"github.com/garamsh/sherlock/internal/tool"
 )
 
 // Recall is the read step (ADR 0019, #336 step 3): it turns the turn's

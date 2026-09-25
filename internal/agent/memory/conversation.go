@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/garamsh/gagent/internal/agent"
-	"github.com/garamsh/gagent/internal/tool"
+	"github.com/garamsh/sherlock/internal/agent"
+	"github.com/garamsh/sherlock/internal/tool"
 )
 
 const maxRecalled = 5

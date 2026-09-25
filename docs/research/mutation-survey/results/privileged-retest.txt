@@ -16,7 +16,7 @@ in that image, not because the run is privileged — on a host where LANG is set
 the same mutant survives both commands.
 
 HEAD: 210a0c1
-suite command: docker run --rm --cap-add=SYS_ADMIN -v "$PWD:/src" -w /src -v gagent-gocache:/root/.cache/go-build -v gagent-gomod:/go/pkg/mod golang:1.26@sha256:0d1d3a794be25f809dd2cb3160d8c73276c4056a9f8242a138e908ddeee7b6b6 make test-privileged
+suite command: docker run --rm --cap-add=SYS_ADMIN -v "$PWD:/src" -w /src -v sherlock-gocache:/root/.cache/go-build -v sherlock-gomod:/go/pkg/mod golang:1.26@sha256:0d1d3a794be25f809dd2cb3160d8c73276c4056a9f8242a138e908ddeee7b6b6 make test-privileged
 childenv:11: package=SURVIVED suite=SURVIVED  (CONDITIONALS_NEGATION: the PATH fallback fires when PATH is set)
 childenv:15: package=SURVIVED suite=KILLED  (CONDITIONALS_NEGATION: the LANG fallback fires when LANG is set)
 limits:28: package=SURVIVED suite=SURVIVED  (CONDITIONALS_BOUNDARY: the shim verb is ignored at exactly two args)

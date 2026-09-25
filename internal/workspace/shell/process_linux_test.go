@@ -143,8 +143,8 @@ func requireRoot(t *testing.T) {
 	if os.Geteuid() == 0 {
 		return
 	}
-	if os.Getenv("GAGENT_PRIVILEGED_TESTS") != "" {
-		t.Fatalf("GAGENT_PRIVILEGED_TESTS is set but this run has euid %d", os.Geteuid())
+	if os.Getenv("SHERLOCK_PRIVILEGED_TESTS") != "" {
+		t.Fatalf("SHERLOCK_PRIVILEGED_TESTS is set but this run has euid %d", os.Geteuid())
 	}
 	t.Skip("this case needs root; run `make test-privileged`")
 }
@@ -168,25 +168,25 @@ var capBits = map[string]int{
 // time. `make test-privileged` narrows this process to the capability set
 // deploy/local/docker-compose.yml grants the workspace, reading that list
 // rather than repeating it, and names what it narrowed to in
-// GAGENT_DEPLOYED_CAPS.
+// SHERLOCK_DEPLOYED_CAPS.
 //
 // This case is what makes the narrowing load-bearing. Without it a recipe that
 // dropped the setpriv line would run every other case under whatever the host
 // granted and pass, which is the state #620 reports.
 func TestPrivilegedRunCarriesTheDeployedCapabilities(t *testing.T) {
-	declared := os.Getenv("GAGENT_DEPLOYED_CAPS")
+	declared := os.Getenv("SHERLOCK_DEPLOYED_CAPS")
 	if declared == "" {
-		if os.Getenv("GAGENT_PRIVILEGED_TESTS") != "" {
-			t.Fatal("this run declared itself privileged but not narrowed: `make test-privileged` narrows to the deployment's capability set and names it in GAGENT_DEPLOYED_CAPS, and a boundary checked under more privilege than the deployment holds cannot fail the way the deployment fails (#620)")
+		if os.Getenv("SHERLOCK_PRIVILEGED_TESTS") != "" {
+			t.Fatal("this run declared itself privileged but not narrowed: `make test-privileged` narrows to the deployment's capability set and names it in SHERLOCK_DEPLOYED_CAPS, and a boundary checked under more privilege than the deployment holds cannot fail the way the deployment fails (#620)")
 		}
-		t.Skip("not a deployed-capability run; `make test-privileged` sets GAGENT_DEPLOYED_CAPS")
+		t.Skip("not a deployed-capability run; `make test-privileged` sets SHERLOCK_DEPLOYED_CAPS")
 	}
 
 	var want uint64
 	for _, name := range strings.Split(declared, ",") {
 		bit, known := capBits[name]
 		require.True(t, known,
-			"GAGENT_DEPLOYED_CAPS names %q, which capBits does not map; add it rather than let the mask be wrong", name)
+			"SHERLOCK_DEPLOYED_CAPS names %q, which capBits does not map; add it rather than let the mask be wrong", name)
 		want |= 1 << bit
 	}
 

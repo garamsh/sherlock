@@ -1,1 +1,1 @@
-ok  	github.com/garamsh/gagent/tests	5.071s
+ok  	github.com/garamsh/sherlock/tests	5.071s

@@ -15,10 +15,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/agent"
-	"github.com/garamsh/gagent/internal/gateway"
-	"github.com/garamsh/gagent/internal/message"
-	"github.com/garamsh/gagent/internal/tool"
+	"github.com/garamsh/sherlock/internal/agent"
+	"github.com/garamsh/sherlock/internal/gateway"
+	"github.com/garamsh/sherlock/internal/message"
+	"github.com/garamsh/sherlock/internal/tool"
 )
 
 // deliveringModel stands in for a turn whose message_send call lands
@@ -119,7 +119,7 @@ func assertStoreCheckpointed(t *testing.T, path string) {
 	}
 }
 
-// TestTurn_ClosesTheStore pins the one-shot path: `gagent agent
+// TestTurn_ClosesTheStore pins the one-shot path: `sherlock agent
 // --message` opens a store per run, so a run that leaks the handle
 // leaves the WAL sidecars behind on every invocation (#568).
 func TestTurn_ClosesTheStore(t *testing.T) {
@@ -174,7 +174,7 @@ func TestTurn_MissingOutboxIsNotAFailure(t *testing.T) {
 
 // TestDirFor pins the one definition of the outbox path. It is computed
 // here and nowhere else: the value reaches the message_send tool as
-// GAGENT_OUTBOX_DIR and this package reads back what the tool wrote
+// SHERLOCK_OUTBOX_DIR and this package reads back what the tool wrote
 // there, so writer and reader agree by naming one function rather than
 // by both spelling the same join.
 func TestDirFor(t *testing.T) {

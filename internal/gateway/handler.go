@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/garamsh/gagent/internal/agent"
+	"github.com/garamsh/sherlock/internal/agent"
 )
 
 // maxMessageBody caps inbound message bodies so a sender cannot exhaust

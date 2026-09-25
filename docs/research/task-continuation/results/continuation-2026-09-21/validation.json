@@ -30,7 +30,7 @@
   },
   "git_add": {
     "exit": 128,
-    "error": "Unable to create /home/sauce/Workspace/garam/gagent/.git/worktrees/test-continuation/index.lock: Read-only file system",
+    "error": "Unable to create /home/sauce/Workspace/garam/sherlock/.git/worktrees/test-continuation/index.lock: Read-only file system",
     "next": "PM commit unchanged files after publication-files.sha256 verification"
   },
   "resources": {

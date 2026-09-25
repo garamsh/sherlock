@@ -16,15 +16,15 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	"github.com/garamsh/gagent/internal/workspace"
+	"github.com/garamsh/sherlock/internal/workspace"
 )
 
-// TestEndToEnd_WorkspaceServesContract drives "gagent workspace" as a
+// TestEndToEnd_WorkspaceServesContract drives "sherlock workspace" as a
 // subprocess — real binary, real gRPC, nothing mocked: the agent's
 // tools (or a test driver) dial the workspace gRPC and call
 // Read/Write/List (ADR 0017).
 func TestEndToEnd_WorkspaceServesContract(t *testing.T) {
-	binary := buildGagentBinary(t)
+	binary := buildSherlockBinary(t)
 	workspaceDir := filepath.Join(t.TempDir(), "workspace")
 
 	cmd, addr, exited := startWorkspaceBinary(t, binary, workspaceDir, emptyConfig(t, "workspace.yaml"))
@@ -71,7 +71,7 @@ func TestEndToEnd_WorkspaceServesContract(t *testing.T) {
 // loopback-only requirement — an unauthenticated gRPC listener is a
 // remote shell into the workspace (ADR 0012, issue #209).
 func TestEndToEnd_WorkspaceNonLoopbackFailsStartup(t *testing.T) {
-	binary := buildGagentBinary(t)
+	binary := buildSherlockBinary(t)
 	configPath := emptyConfig(t, "workspace.yaml")
 
 	for _, addr := range []string{"0.0.0.0:8081", ":8081"} {
@@ -85,7 +85,7 @@ func TestEndToEnd_WorkspaceNonLoopbackFailsStartup(t *testing.T) {
 	}
 }
 
-// startWorkspaceBinary starts "gagent workspace" as a subprocess on a
+// startWorkspaceBinary starts "sherlock workspace" as a subprocess on a
 // free loopback port with workspace as the workspace directory and
 // exec-uid set to the test process's own UID (single-account mode,
 // ADR 0008), waits until it serves gRPC, and returns the process

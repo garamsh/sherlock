@@ -12,8 +12,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/config"
-	"github.com/garamsh/gagent/internal/tool"
+	"github.com/garamsh/sherlock/internal/config"
+	"github.com/garamsh/sherlock/internal/tool"
 )
 
 // pinnedToolTree installs a minimal manifest for the one required tool
@@ -21,10 +21,10 @@ import (
 // caller points Config.ToolsDir at it. The tool needs no executable:
 // every assertion here is about startup, which never spawns one.
 //
-// tool.SetSpawnEnv writes GAGENT_WORKSPACE_ADDR, GAGENT_OUTBOX_DIR and
-// GAGENT_AGENT_ID through os.Setenv on the way, so the helper claims the
+// tool.SetSpawnEnv writes SHERLOCK_WORKSPACE_ADDR, SHERLOCK_OUTBOX_DIR and
+// SHERLOCK_AGENT_ID through os.Setenv on the way, so the helper claims the
 // first two through t.Setenv first and the framework restores them.
-// GAGENT_AGENT_ID is not claimed and outlives the test.
+// SHERLOCK_AGENT_ID is not claimed and outlives the test.
 func pinnedToolTree(t *testing.T) (dir, hash string) {
 	t.Helper()
 	dir = t.TempDir()
@@ -44,8 +44,8 @@ func pinnedToolTree(t *testing.T) (dir, hash string) {
 	manifestPath := filepath.Join(toolDir, "manifest.json")
 	require.NoError(t, os.WriteFile(manifestPath, manifest, 0o644))
 
-	t.Setenv("GAGENT_WORKSPACE_ADDR", "")
-	t.Setenv("GAGENT_OUTBOX_DIR", "")
+	t.Setenv("SHERLOCK_WORKSPACE_ADDR", "")
+	t.Setenv("SHERLOCK_OUTBOX_DIR", "")
 
 	hash, err := tool.ManifestHashOfFile(manifestPath)
 	require.NoError(t, err)

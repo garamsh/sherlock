@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/garamsh/gagent/internal/tool"
+	"github.com/garamsh/sherlock/internal/tool"
 )
 
 // ScriptedStep is one canned model reply, mirroring the real model

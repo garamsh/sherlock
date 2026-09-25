@@ -14,7 +14,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/workspace/shell"
+	"github.com/garamsh/sherlock/internal/workspace/shell"
 )
 
 // testExecUID is the account these tests ask the executor to drop to.
@@ -43,7 +43,7 @@ func (f *fakeExecutor) Run(_ context.Context, req shell.Request) (shell.Result, 
 // skips inside a run commissioned to exercise it is the defect #604
 // reports, one layer up.
 func privilegedRun() bool {
-	return os.Getenv("GAGENT_PRIVILEGED_TESTS") != ""
+	return os.Getenv("SHERLOCK_PRIVILEGED_TESTS") != ""
 }
 
 // requireRoot skips the test when the current effective user cannot drop
@@ -57,7 +57,7 @@ func requireRoot(t *testing.T) {
 		return
 	}
 	if privilegedRun() {
-		t.Fatalf("GAGENT_PRIVILEGED_TESTS is set but this run has euid %d: the privileged family cannot be exercised and must not report as if it were",
+		t.Fatalf("SHERLOCK_PRIVILEGED_TESTS is set but this run has euid %d: the privileged family cannot be exercised and must not report as if it were",
 			os.Geteuid())
 	}
 	t.Skip("setuid path requires root; run `make test-privileged` to exercise fork+exec")
@@ -331,13 +331,13 @@ func TestProcessExecutor_RunsInWorkspace(t *testing.T) {
 
 func TestProcessExecutor_ScrubsPlatformEnv(t *testing.T) {
 	requireRoot(t)
-	t.Setenv("GAGENT_TEST_PLATFORM_SECRET", "hunter2")
+	t.Setenv("SHERLOCK_TEST_PLATFORM_SECRET", "hunter2")
 	exec := shell.NewProcessExecutor(testExecUID, 5*time.Second)
 
 	res, err := exec.Run(context.Background(), shell.Request{Command: "env"})
 
 	require.NoError(t, err)
-	assert.NotContains(t, res.Stdout, "GAGENT_TEST_PLATFORM_SECRET",
+	assert.NotContains(t, res.Stdout, "SHERLOCK_TEST_PLATFORM_SECRET",
 		"platform variables must not reach child processes (ADR 0003)")
 	assert.Contains(t, res.Stdout, "PATH=", "the minimal basics still reach the child")
 }
@@ -347,8 +347,8 @@ func TestProcessExecutor_RequestEnvAppliesOnTop(t *testing.T) {
 	exec := shell.NewProcessExecutor(testExecUID, 5*time.Second)
 
 	res, err := exec.Run(context.Background(), shell.Request{
-		Command: "printf %s \"$GAGENT_TEST_REQUEST_VAR\"",
-		Env:     []string{"GAGENT_TEST_REQUEST_VAR=from-request"},
+		Command: "printf %s \"$SHERLOCK_TEST_REQUEST_VAR\"",
+		Env:     []string{"SHERLOCK_TEST_REQUEST_VAR=from-request"},
 	})
 
 	require.NoError(t, err)
@@ -375,7 +375,7 @@ func TestProcessExecutor_LocalGoTest(t *testing.T) {
 		uid = testExecUID
 	}
 	root := execAccountDir(t)
-	t.Setenv("GAGENT_TEST_PLATFORM_SECRET", "must-not-reach-test")
+	t.Setenv("SHERLOCK_TEST_PLATFORM_SECRET", "must-not-reach-test")
 	goRoot, err := exec.Command("go", "env", "GOROOT").Output()
 	require.NoError(t, err, "locate the test runner toolchain")
 	goBinary := filepath.Join(strings.TrimSpace(string(goRoot)), "bin", "go")
@@ -386,7 +386,7 @@ import (
 )
 func TestGreeting(t *testing.T) {
     if os.Getuid() != %d { t.Fatalf("unexpected uid: %%d", os.Getuid()) }
-    if os.Getenv("GAGENT_TEST_PLATFORM_SECRET") != "" { t.Fatal("platform environment leaked") }
+    if os.Getenv("SHERLOCK_TEST_PLATFORM_SECRET") != "" { t.Fatal("platform environment leaked") }
     if greeting() != "hello" { t.Fatal("wrong greeting") }
     t.Log("workspace-test-ran")
 }

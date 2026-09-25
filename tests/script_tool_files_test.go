@@ -22,14 +22,14 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 
-	"github.com/garamsh/gagent/internal/agent"
-	"github.com/garamsh/gagent/internal/agent/anthropic"
-	"github.com/garamsh/gagent/internal/agent/openai"
-	"github.com/garamsh/gagent/internal/tool"
-	"github.com/garamsh/gagent/internal/workspace"
-	"github.com/garamsh/gagent/internal/workspace/files"
-	"github.com/garamsh/gagent/internal/workspace/server"
-	"github.com/garamsh/gagent/internal/workspace/shell"
+	"github.com/garamsh/sherlock/internal/agent"
+	"github.com/garamsh/sherlock/internal/agent/anthropic"
+	"github.com/garamsh/sherlock/internal/agent/openai"
+	"github.com/garamsh/sherlock/internal/tool"
+	"github.com/garamsh/sherlock/internal/workspace"
+	"github.com/garamsh/sherlock/internal/workspace/files"
+	"github.com/garamsh/sherlock/internal/workspace/server"
+	"github.com/garamsh/sherlock/internal/workspace/shell"
 )
 
 // buildToolBinary compiles the tool named by name into its directory
@@ -67,7 +67,7 @@ func installTool(t *testing.T, root, name string) string {
 // startFakeWorkspace spins up the workspace gRPC server on an
 // ephemeral loopback address and returns the address, the seeded
 // fs, and the executor the server execs through. The address is what
-// the script tool's GAGENT_WORKSPACE_ADDR must point at.
+// the script tool's SHERLOCK_WORKSPACE_ADDR must point at.
 func startFakeWorkspace(t *testing.T) (string, *files.FS, *fakeExecutor, func()) {
 	t.Helper()
 	root := t.TempDir()
@@ -230,7 +230,7 @@ func TestScriptTool_Files_Integration(t *testing.T) {
 	reg := installFileTools(t)
 	addr, fs, _, stop := startFakeWorkspace(t)
 	defer stop()
-	t.Setenv("GAGENT_WORKSPACE_ADDR", addr)
+	t.Setenv("SHERLOCK_WORKSPACE_ADDR", addr)
 	call := func(name, input, expected string) {
 		t.Helper()
 		out, err := reg.Call(t.Context(), name, json.RawMessage(input))
@@ -259,7 +259,7 @@ func TestScriptTool_Files_InvalidInputPreservesContent(t *testing.T) {
 	reg := installFileTools(t)
 	addr, fs, _, stop := startFakeWorkspace(t)
 	defer stop()
-	t.Setenv("GAGENT_WORKSPACE_ADDR", addr)
+	t.Setenv("SHERLOCK_WORKSPACE_ADDR", addr)
 	_, err := reg.Call(t.Context(), "file_write", json.RawMessage(`{"path":"held.txt","content":"keep"}`))
 	require.NoError(t, err)
 	for _, input := range []string{
@@ -301,10 +301,10 @@ func TestScriptTool_Files_StalledWorkspaceRefused(t *testing.T) {
 		{"file_list", `{"path":"."}`},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			t.Setenv("GAGENT_WORKSPACE_ADDR", answering)
+			t.Setenv("SHERLOCK_WORKSPACE_ADDR", answering)
 			_, err := reg.Call(t.Context(), tc.name, json.RawMessage(tc.input))
 			require.NoError(t, err)
-			t.Setenv("GAGENT_WORKSPACE_ADDR", stalledAddr)
+			t.Setenv("SHERLOCK_WORKSPACE_ADDR", stalledAddr)
 			start := time.Now()
 			_, err = reg.Call(t.Context(), tc.name, json.RawMessage(tc.input))
 			elapsed := time.Since(start)
@@ -320,7 +320,7 @@ func TestScriptTool_Files_ProviderExposure(t *testing.T) {
 	reg := installFileTools(t)
 	addr, fs, _, stop := startFakeWorkspace(t)
 	defer stop()
-	t.Setenv("GAGENT_WORKSPACE_ADDR", addr)
+	t.Setenv("SHERLOCK_WORKSPACE_ADDR", addr)
 	for _, protocol := range []string{"openai", "anthropic"} {
 		t.Run(protocol, func(t *testing.T) {
 			requests := make(chan map[string]json.RawMessage, 1)
@@ -399,7 +399,7 @@ func TestScriptTool_FileWrite_StdinPreservesContent(t *testing.T) {
 	binary := buildToolBinary(t, t.TempDir(), "file_write")
 	addr, fs, _, stop := startFakeWorkspace(t)
 	defer stop()
-	t.Setenv("GAGENT_WORKSPACE_ADDR", addr)
+	t.Setenv("SHERLOCK_WORKSPACE_ADDR", addr)
 	invoke := func(input string) error {
 		t.Helper()
 		command := exec.Command(binary)

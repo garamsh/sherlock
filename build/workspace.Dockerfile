@@ -14,7 +14,7 @@ RUN go mod download
 COPY . .
 # All dependencies are CGO-free (modernc.org/sqlite is pure Go), so the
 # binary is fully static.
-RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/gagent ./cmd/gagent \
+RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/sherlock ./cmd/sherlock \
     && mkdir -p /out/data
 
 # Workspace image: the agent's data plane — serves the gRPC contract
@@ -28,8 +28,8 @@ RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/gagent ./cmd/gagen
 # startup and drops Exec children to it (ADR 0008).
 FROM debian:13-slim@sha256:d7e12182ce18b85b93007c1dedf31f2d29e01ccf3182cc4017c709b6259bc132 AS workspace
 ARG REVISION=unknown
-LABEL org.opencontainers.image.title="gagent-workspace" \
-      org.opencontainers.image.source="https://github.com/garamsh/gagent" \
+LABEL org.opencontainers.image.title="sherlock-workspace" \
+      org.opencontainers.image.source="https://github.com/garamsh/sherlock" \
       org.opencontainers.image.revision="${REVISION}"
 
 # The unprivileged UID exec children drop to (ADR 0008). useradd comes
@@ -39,7 +39,7 @@ LABEL org.opencontainers.image.title="gagent-workspace" \
 RUN useradd --system --uid 1001 --no-create-home agent \
     && find / -xdev -type f -perm /6000 -exec chmod a-s {} +
 
-COPY --from=build /out/gagent /gagent
+COPY --from=build /out/sherlock /sherlock
 # Scratch space for the default workspace (data/workspace); mount the
 # workspace volume here.
 COPY --from=build /out/data /data
@@ -50,5 +50,5 @@ COPY --from=build /out/data /data
 # single-account runs the workspace runs as its own UID and the drop is
 # a no-op.
 USER root
-ENTRYPOINT ["/gagent"]
+ENTRYPOINT ["/sherlock"]
 CMD ["workspace"]

@@ -9,10 +9,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/agent"
-	agentmemory "github.com/garamsh/gagent/internal/agent/memory"
-	"github.com/garamsh/gagent/internal/memory"
-	"github.com/garamsh/gagent/internal/tool"
+	"github.com/garamsh/sherlock/internal/agent"
+	agentmemory "github.com/garamsh/sherlock/internal/agent/memory"
+	"github.com/garamsh/sherlock/internal/memory"
+	"github.com/garamsh/sherlock/internal/tool"
 )
 
 // resolvingModel answers the read step's one call with a scripted

@@ -5,9 +5,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/garamsh/gagent/internal/agent"
-	agentmemory "github.com/garamsh/gagent/internal/agent/memory"
-	"github.com/garamsh/gagent/internal/memory/sqlite"
+	"github.com/garamsh/sherlock/internal/agent"
+	agentmemory "github.com/garamsh/sherlock/internal/agent/memory"
+	"github.com/garamsh/sherlock/internal/memory/sqlite"
 )
 
 // Runtime is everything the agent needs to process queued messages: its

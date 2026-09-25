@@ -8,8 +8,8 @@ import (
 	"io"
 	"strings"
 
-	"github.com/garamsh/gagent/internal/agent"
-	"github.com/garamsh/gagent/internal/tool"
+	"github.com/garamsh/sherlock/internal/agent"
+	"github.com/garamsh/sherlock/internal/tool"
 )
 
 // ConversationSummary synthesizes a source-linked episode with the runtime's model.

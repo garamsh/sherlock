@@ -10,8 +10,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/message"
-	"github.com/garamsh/gagent/internal/tool/tooltest"
+	"github.com/garamsh/sherlock/internal/message"
+	"github.com/garamsh/sherlock/internal/tool/tooltest"
 )
 
 // TestMessage_CarriesTheSenderTheManifestDoesNotAskFor is the

@@ -1,4 +1,4 @@
 # The rules are owned by the PM; changes to these paths require PM review.
-/AGENTS.md @gagent-pm
-/docs/convention/ @gagent-pm
-/.github/ @gagent-pm
+/AGENTS.md @sherlock-pm
+/docs/convention/ @sherlock-pm
+/.github/ @sherlock-pm

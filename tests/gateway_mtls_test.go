@@ -106,7 +106,7 @@ func mtlsClient(t *testing.T, caPEM []byte, certPath, keyPath string) *http.Clie
 	return &http.Client{Transport: &http.Transport{TLSClientConfig: cfg}}
 }
 
-// startAgentMTLS starts "gagent agent" over mTLS on a free loopback
+// startAgentMTLS starts "sherlock agent" over mTLS on a free loopback
 // port, dialing workspaceAddr as the agent's workspace gRPC endpoint,
 // waits until the probe client is served, and returns the process
 // handle, the base URL, the exit channel, and the agent log path.
@@ -135,7 +135,7 @@ func startAgentMTLS(t *testing.T, binary, root, configPath, workspaceAddr string
 	// never invokes github.
 	toolsDir := toolsDirForTest(t)
 	cmd.Env = append(os.Environ(),
-		"GAGENT_TOOLS_DIR="+toolsDir,
+		"SHERLOCK_TOOLS_DIR="+toolsDir,
 		"GH_TOKEN=fake-test-token",
 	)
 	cmd.Stdout = logFile
@@ -209,7 +209,7 @@ func subscribeSSEClient(t *testing.T, client *http.Client, url string) chan map[
 // client certified by the configured CA gets 202 on POST and the SSE
 // stream — with the caller identity in the request log.
 func TestGatewayMTLS_AuthenticatesCallers(t *testing.T) {
-	binary := buildGagentBinary(t)
+	binary := buildSherlockBinary(t)
 	root := t.TempDir()
 	dir := t.TempDir()
 
@@ -224,7 +224,7 @@ func TestGatewayMTLS_AuthenticatesCallers(t *testing.T) {
 	foreignCert, foreignKey := foreign.issue(t, dir, "foreign", "intruder",
 		x509.ExtKeyUsageClientAuth, nil, nil)
 
-	configPath := filepath.Join(dir, "gagent.yaml")
+	configPath := filepath.Join(dir, "agent.yaml")
 	require.NoError(t, os.WriteFile(configPath, []byte(
 		"tls:\n"+
 			"  cert: "+serverCert+"\n"+
@@ -272,9 +272,9 @@ func TestGatewayMTLS_AuthenticatesCallers(t *testing.T) {
 // a non-loopback --addr and no tls: section: startup must fail with a
 // clear error instead of serving an unauthenticated port (ADR 0012).
 func TestAgent_NonLoopbackWithoutTLSFailsStartup(t *testing.T) {
-	binary := buildGagentBinary(t)
+	binary := buildSherlockBinary(t)
 	root := t.TempDir()
-	configPath := filepath.Join(t.TempDir(), "gagent.yaml")
+	configPath := filepath.Join(t.TempDir(), "agent.yaml")
 	require.NoError(t, os.WriteFile(configPath, nil, 0o600))
 
 	for _, addr := range []string{"0.0.0.0:18080", ":18080"} {

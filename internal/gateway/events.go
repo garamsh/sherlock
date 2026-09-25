@@ -4,7 +4,7 @@ import (
 	"context"
 	"sync"
 
-	"github.com/garamsh/gagent/internal/agent"
+	"github.com/garamsh/sherlock/internal/agent"
 )
 
 // SubscriberBuffer bounds how many undelivered events one SSE subscriber

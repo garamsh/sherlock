@@ -14,7 +14,7 @@ than applied, so a moved line can never silently mutate a different site.
 
 Two knobs, both for asking the same question of a different command. Naming
 mutant ids on the command line runs only those, so one boundary can be checked
-without paying for twelve others. `GAGENT_MUTATE_SUITE_CMD` replaces the
+without paying for twelve others. `SHERLOCK_MUTATE_SUITE_CMD` replaces the
 whole-suite command, which is what a boundary reachable only under privilege
 needs: `go test ./...` cannot execute it, so the mutant survives that and is
 killed by the command that can. The command used is printed with the results,
@@ -28,7 +28,7 @@ import sys
 REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                     "..", "..", "..", ".."))
 
-SUITE_CMD = os.environ.get("GAGENT_MUTATE_SUITE_CMD", "go test -count=1 ./...")
+SUITE_CMD = os.environ.get("SHERLOCK_MUTATE_SUITE_CMD", "go test -count=1 ./...")
 
 
 def run(cmd, timeout=1800):

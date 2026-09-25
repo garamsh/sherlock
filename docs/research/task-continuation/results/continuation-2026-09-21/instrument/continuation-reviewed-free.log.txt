@@ -69,4 +69,4 @@
         --- PASS: TestContinuation_EmptyPreparationRemainsObservable/2/completed (0.10s)
         --- PASS: TestContinuation_EmptyPreparationRemainsObservable/2/interrupted (0.11s)
 PASS
-ok  	github.com/garamsh/gagent/tests	4.649s
+ok  	github.com/garamsh/sherlock/tests	4.649s

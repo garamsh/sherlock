@@ -8,10 +8,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/agent"
-	agentmemory "github.com/garamsh/gagent/internal/agent/memory"
-	"github.com/garamsh/gagent/internal/memory"
-	"github.com/garamsh/gagent/internal/memory/sqlite"
+	"github.com/garamsh/sherlock/internal/agent"
+	agentmemory "github.com/garamsh/sherlock/internal/agent/memory"
+	"github.com/garamsh/sherlock/internal/memory"
+	"github.com/garamsh/sherlock/internal/memory/sqlite"
 )
 
 // telescope is the address a user's stated preference lands on, in the

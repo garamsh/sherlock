@@ -9,6 +9,7 @@ Research records the questions, methods, evidence, conclusions, and limits behin
 - [Memory creation](memory-creation/README.md) — creation, correction, and retirement of memory entries.
 - [Memory cycle](memory-cycle/README.md) — the write path, read path, and store policy measured together; the voluntary writeback is the root failure (0.00 context-recall).
 - [Memory frames](memory-frames/README.md) — memory structures measured over a decade of turns.
+- [Mid-memory retrieval](mid-memory-rag/README.md) — shipped phrase-call FTS recall against separate embedding-similarity and recency lists over 300 synthesized mids; 29 against 27 of 40 primary queries, undetermined at p = 0.69, and adoption grows the code.
 - [Memory read policy](memory-read-policy/README.md) — direct, rewritten and iterative retrieval on two implicit tasks and exact/absent controls; source inspection and application remain limiting.
 - [Memory retrieval](memory-retrieval/README.md) — retrieval and supersession behavior of the former store.
 - [Mutation survey](mutation-survey/README.md) — behavior that the repository's tests did or did not catch.

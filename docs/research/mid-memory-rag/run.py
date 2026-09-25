@@ -55,8 +55,6 @@ def tool_response(name, arguments):
         'name': name, 'arguments': json.dumps(arguments)}}]}}]}
 
 
-# ---- stores ----------------------------------------------------------------
-
 def build_store(db, synthesis):
     """Rebuild the production store from recorded synthesis exchanges."""
     Path(db).unlink(missing_ok=True)
@@ -80,8 +78,6 @@ def standin_synthesis(summaries):
 def source_text(episode):
     return '\n'.join(updates(episode))
 
-
-# ---- retrieval arms --------------------------------------------------------
 
 def covered(mids, ids):
     return [m for m in mids if any(m['SourceFirst'] <= i <= m['SourceLast'] for i in ids)]
@@ -131,8 +127,6 @@ def phrases_used(phrase_response, text):
     return [text], False
 
 
-# ---- embeddings ------------------------------------------------------------
-
 def embed(items, scratch):
     source, target = Path(scratch) / 'embed-in.json', Path(scratch) / 'embed-out.json'
     write(source, {'items': items})
@@ -142,8 +136,6 @@ def embed(items, scratch):
     target.unlink()
     return result
 
-
-# ---- metering --------------------------------------------------------------
 
 class Meter:
     def __init__(self, output):
@@ -200,8 +192,6 @@ class Meter:
             raise RuntimeError(f'chat call failed: {entry.get("status")} {entry.get("error")}')
         return entry
 
-
-# ---- phases ----------------------------------------------------------------
 
 def manifest():
     names = ['corpus.py', 'corpus.json', 'queries.json', 'bridge.go', 'embed.py', 'run.py', 'score.py',

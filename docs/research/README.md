@@ -4,6 +4,7 @@ Research records the questions, methods, evidence, conclusions, and limits behin
 
 ## Studies
 
+- [Agent context](agent-context/README.md) — source survey of how Claude Code, Codex CLI, Hermes Agent, OpenClaw and opencode understand input and compose context; three candidate structures for sherlock's query understanding and full-context layer, the smallest being a search call during work and a bounded note carried by the terminal call, and the experiment plan to test them against the shipped recall.
 - [Memory architecture](memory-architecture/README.md) — 38 candidate memory-store and retrieval architectures measured across four workloads.
 - [Memory correction](memory-correction/README.md) — a recorded correction and reversal run.
 - [Memory creation](memory-creation/README.md) — creation, correction, and retirement of memory entries.

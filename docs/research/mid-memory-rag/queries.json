@@ -1,0 +1,497 @@
+[
+ {
+  "id": "correction-01",
+  "family": "correction",
+  "text": "When is the Norland project kickoff?",
+  "obsolete": [
+   351
+  ],
+  "evidence": [
+   1445
+  ]
+ },
+ {
+  "id": "correction-02",
+  "family": "correction",
+  "text": "What's my work phone extension?",
+  "obsolete": [
+   757
+  ],
+  "evidence": [
+   2013
+  ]
+ },
+ {
+  "id": "correction-03",
+  "family": "correction",
+  "text": "Where are we meeting the Okafors on Friday?",
+  "obsolete": [
+   481
+  ],
+  "evidence": [
+   2189
+  ]
+ },
+ {
+  "id": "correction-04",
+  "family": "correction",
+  "text": "What time is Leo's pickup?",
+  "obsolete": [
+   1151
+  ],
+  "evidence": [
+   1699
+  ]
+ },
+ {
+  "id": "correction-05",
+  "family": "correction",
+  "text": "What is the audit folder on the shared drive called?",
+  "obsolete": [
+   891
+  ],
+  "evidence": [
+   1239
+  ]
+ },
+ {
+  "id": "correction-06",
+  "family": "correction",
+  "text": "What dose of amlodipine am I on?",
+  "obsolete": [
+   313
+  ],
+  "evidence": [
+   1705
+  ]
+ },
+ {
+  "id": "correction-07",
+  "family": "correction",
+  "text": "What is the Fennick contract worth?",
+  "obsolete": [
+   145
+  ],
+  "evidence": [
+   2317
+  ]
+ },
+ {
+  "id": "correction-08",
+  "family": "correction",
+  "text": "What is our wifi network called?",
+  "obsolete": [
+   225
+  ],
+  "evidence": [
+   995
+  ]
+ },
+ {
+  "id": "correction-09",
+  "family": "correction",
+  "text": "How many guests are coming to the garden party?",
+  "obsolete": [
+   831
+  ],
+  "evidence": [
+   1829
+  ]
+ },
+ {
+  "id": "correction-10",
+  "family": "correction",
+  "text": "Which gym am I a member of?",
+  "obsolete": [
+   1021
+  ],
+  "evidence": [
+   1393
+  ]
+ },
+ {
+  "id": "exact-01",
+  "family": "exact",
+  "text": "What is the gate code for the Harrow Street storage unit?",
+  "evidence": [
+   1
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "exact-02",
+  "family": "exact",
+  "text": "When does Odile's flight land at Terminal 3?",
+  "evidence": [
+   181
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "exact-03",
+  "family": "exact",
+  "text": "What is the Brightwater invoice number?",
+  "evidence": [
+   185
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "exact-04",
+  "family": "exact",
+  "text": "How much rye flour do I feed the sourdough starter?",
+  "evidence": [
+   523
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "exact-05",
+  "family": "exact",
+  "text": "Where does the Quillon repository deploy credential live?",
+  "evidence": [
+   1115
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "exact-06",
+  "family": "exact",
+  "text": "When are my physiotherapy sessions with Dr. Venkataraman?",
+  "evidence": [
+   489
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "exact-07",
+  "family": "exact",
+  "text": "Which book did the book club pick for November?",
+  "evidence": [
+   1435
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "exact-08",
+  "family": "exact",
+  "text": "When is the boiler service booked?",
+  "evidence": [
+   381
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "exact-09",
+  "family": "exact",
+  "text": "What is my Tamsin Park allotment plot number?",
+  "evidence": [
+   1769
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "exact-10",
+  "family": "exact",
+  "text": "What guest list cap does the Carrow Mill wedding venue have?",
+  "evidence": [
+   209
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "paraphrase-01",
+  "family": "paraphrase",
+  "text": "When is my kid's braces check-up now?",
+  "evidence": [
+   1367
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "paraphrase-02",
+  "family": "paraphrase",
+  "text": "How much am I getting for the station wagon I am offloading?",
+  "evidence": [
+   153
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "paraphrase-03",
+  "family": "paraphrase",
+  "text": "What did the tradesman say it would cost to fix the dripping faucet by the sink?",
+  "evidence": [
+   2279
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "paraphrase-04",
+  "family": "paraphrase",
+  "text": "Where is the team retreat happening next quarter?",
+  "evidence": [
+   2281
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "paraphrase-05",
+  "family": "paraphrase",
+  "text": "How much weight should my pup drop, per the animal clinic?",
+  "evidence": [
+   109
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "paraphrase-06",
+  "family": "paraphrase",
+  "text": "Which days do I usually go jogging?",
+  "evidence": [
+   1821
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "paraphrase-07",
+  "family": "paraphrase",
+  "text": "What's the yearly cost of cover for my apartment?",
+  "evidence": [
+   713
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "paraphrase-08",
+  "family": "paraphrase",
+  "text": "When does my travel document run out?",
+  "evidence": [
+   607
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "paraphrase-09",
+  "family": "paraphrase",
+  "text": "Which kind of sweetener goes on top of Nana's citrus loaf?",
+  "evidence": [
+   2061
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "paraphrase-10",
+  "family": "paraphrase",
+  "text": "When is the deadline for handing my bookkeeper the expense paperwork for my study?",
+  "evidence": [
+   2047
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "implicit-01",
+  "family": "implicit",
+  "text": "Draft a script that renames my holiday photos by the date they were taken.",
+  "evidence": [
+   369
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "implicit-02",
+  "family": "implicit",
+  "text": "Suggest a menu for Saturday's dinner party.",
+  "evidence": [
+   1423
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "implicit-03",
+  "family": "implicit",
+  "text": "Compose a note for the Hallam customer letting them know the shipment slipped a week.",
+  "evidence": [
+   1947
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "implicit-04",
+  "family": "implicit",
+  "text": "Put together an itinerary for a long weekend on the Hebrides.",
+  "evidence": [
+   1931
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "implicit-05",
+  "family": "implicit",
+  "text": "Recommend some shrubs and a new hose for the backyard.",
+  "evidence": [
+   2107
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "implicit-06",
+  "family": "implicit",
+  "text": "Write a function that looks up customers by surname in the database.",
+  "evidence": [
+   987
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "implicit-07",
+  "family": "implicit",
+  "text": "Make a graph of my monthly spending by category.",
+  "evidence": [
+   45
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "implicit-08",
+  "family": "implicit",
+  "text": "Format a birthday letter for Mum.",
+  "evidence": [
+   1895
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "implicit-09",
+  "family": "implicit",
+  "text": "Recap this week's progress for the boss.",
+  "evidence": [
+   1125
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "implicit-10",
+  "family": "implicit",
+  "text": "Fill in the intake form for the new GP surgery.",
+  "evidence": [
+   843
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "absent-01",
+  "family": "absent",
+  "text": "What is the gate code for the Harrow Street bike shed?",
+  "evidence": [],
+  "obsolete": []
+ },
+ {
+  "id": "absent-02",
+  "family": "absent",
+  "text": "When does Odile's return flight leave?",
+  "evidence": [],
+  "obsolete": []
+ },
+ {
+  "id": "absent-03",
+  "family": "absent",
+  "text": "What's the Norland project budget?",
+  "evidence": [],
+  "obsolete": []
+ },
+ {
+  "id": "absent-04",
+  "family": "absent",
+  "text": "What colour did we choose for the nursery walls?",
+  "evidence": [],
+  "obsolete": []
+ },
+ {
+  "id": "absent-05",
+  "family": "absent",
+  "text": "What is Biscuit's microchip number?",
+  "evidence": [],
+  "obsolete": []
+ },
+ {
+  "id": "absent-06",
+  "family": "absent",
+  "text": "Which hotel did we book in Lisbon?",
+  "evidence": [],
+  "obsolete": []
+ },
+ {
+  "id": "absent-07",
+  "family": "absent",
+  "text": "What was the score of Leo's football match?",
+  "evidence": [],
+  "obsolete": []
+ },
+ {
+  "id": "absent-08",
+  "family": "absent",
+  "text": "Which caterer did we hire for the Carrow Mill wedding?",
+  "evidence": [],
+  "obsolete": []
+ },
+ {
+  "id": "absent-09",
+  "family": "absent",
+  "text": "Who is hosting the book club in December?",
+  "evidence": [],
+  "obsolete": []
+ },
+ {
+  "id": "absent-10",
+  "family": "absent",
+  "text": "What's the name of the Fennick account manager?",
+  "evidence": [],
+  "obsolete": []
+ },
+ {
+  "id": "recent-01",
+  "family": "recent",
+  "text": "Which option did we just settle on for the cupboards?",
+  "evidence": [
+   2387
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "recent-02",
+  "family": "recent",
+  "text": "What finish did I pick for the pulls in the end?",
+  "evidence": [
+   2389
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "recent-03",
+  "family": "recent",
+  "text": "What reference number was on that penalty notice we were just discussing?",
+  "evidence": [
+   2395
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "recent-04",
+  "family": "recent",
+  "text": "When did I say I would send it off?",
+  "evidence": [
+   2397
+  ],
+  "obsolete": []
+ },
+ {
+  "id": "recent-05",
+  "family": "recent",
+  "text": "What did I ask you to nudge me about?",
+  "evidence": [
+   2399
+  ],
+  "obsolete": []
+ }
+]

@@ -612,14 +612,29 @@ def summaries(n, output=OUT):
     return records
 
 
+# Copies of the three patterns in internal/memory/sqlite/conversation.go (redactSecrets). The store redacts
+# sources before synthesis; build_n8 hands the bridge the redacted batch, so the production store refuses the
+# build if a copy ever diverges.
+REDACTIONS = [re.compile(r'(?i)(password|secret|api[_-]?key|token)\s*(?:[:=]|is)\s*\S+'),
+              re.compile(r'(?i)bearer\s+\S+'), re.compile(r'\bsk-[A-Za-z0-9_-]{12,}\b')]
+
+
+def redact(text):
+    for pattern in REDACTIONS:
+        text = pattern.sub('[redacted credential]', text)
+    return text
+
+
 def build_n8(output, stream):
-    """Production store over the n=8 batches; each replayed request must hash to the recorded one."""
+    """Production store over the n=8 batches. Each recorded request must hash to its unredacted batch, and the
+    store's own redacted batch must equal the redacted copy handed to the replay check."""
     records = summaries(8, output)
     corpus8 = []
     for record, batch in zip(records, batches(stream, 8)):
         ep = {'sources': [{'role': m['role'], 'content': m['content']} for m in batch]}
-        request = run.bridge(mode='synthesize', updates=run.updates(ep))['requests'][0]
-        assert sha(request) == record['request_sha256'], record['batch']
+        assert sha(run.bridge(mode='synthesize', updates=run.updates(ep))['requests'][0]) == record['request_sha256']
+        stored = {'sources': [dict(m, content=redact(m['content'])) for m in ep['sources']]}
+        request = run.bridge(mode='synthesize', updates=run.updates(stored))['requests'][0]
         corpus8.append(dict(ep, request=request, response=record['response']))
     db = output / 'store.db'
     db.unlink(missing_ok=True)
@@ -659,7 +674,9 @@ def rank(output=OUT):
     db, mids = build_n8(output, stream)
     span8 = {m['ID']: [m['SourceFirst'], m['SourceLast']] for m in mids}
     recent8 = [span8[m['ID']] for m in run.bridge(mode='recent', db=str(db), limit=run.RECENT)['result']]
-    texts = {n: [r['summary'] for r in summaries(n, output)] for n in BATCHES}
+    # Every arm reads summaries as the production store keeps them: redacted and trimmed.
+    texts = {n: [redact(r['summary']).strip() for r in summaries(n, output)] for n in BATCHES}
+    assert texts[8] == [m['Summary'] for m in mids]
     spans = {n: [[i * n + 1, (i + 1) * n] for i in range(STREAM // n)] for n in BATCHES}
     evidence_batch = {n: {} for n in BATCHES}
     for q in qs:

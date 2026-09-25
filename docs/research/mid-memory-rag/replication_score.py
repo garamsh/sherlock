@@ -55,10 +55,10 @@ def decide(wins, losses, n, guard, controls):
     return 'undetermined', 'the interval admits both no gain and a gain of the detectable size'
 
 
-def power(n=280, reps=3000, seed=856):
+def power(n=280, reps=3000, seed=856, psis=(0.15, 0.20, 0.25, 0.30)):
     """Simulated probability of each verdict at discordance psi and true difference d, under the rule above."""
     table = []
-    for psi in [0.15, 0.20, 0.25, 0.30]:
+    for psi in psis:
         for d in [0.0, 0.05, 0.07, 0.08, 0.09, 0.10]:
             rng, counts, cache = random.Random(seed), {'valid': 0, 'not valid': 0, 'undetermined': 0}, {}
             for _ in range(reps):
@@ -176,7 +176,8 @@ def cost(output, rankings):
         record = json.loads(line)
         if 'charged_input' not in record:
             continue
-        kind = record['cell'].split('-')[0]
+        kind = record['cell'].split('-')[0] + ('-' + record['cell'].split('-')[1] if record['cell'].startswith(
+            'synthesis-') else '')
         g = groups.setdefault(kind, {'calls': 0, 'input': 0, 'output': 0, 'seconds': 0.0})
         g['calls'] += 1
         g['input'] += record['charged_input']
@@ -184,6 +185,15 @@ def cost(output, rankings):
         g['seconds'] = round(g['seconds'] + record.get('seconds', 0), 3)
     total = {k: sum(g[k] for g in groups.values()) for k in ['calls', 'input', 'output']}
     total['usd'] = round((total['input'] * 0.30 + total['output'] * 1.20) / 1e6, 5)
+    # Requests stopped in flight never settled; the meter charges them at their reservation.
+    starts = {}
+    for line in (output / 'calls.jsonl').read_text().splitlines():
+        record = json.loads(line)
+        starts.setdefault(record['index'], {}).update(record)
+    unsettled = [r for r in starts.values() if 'charged_input' not in r]
+    total['unsettled_calls'] = len(unsettled)
+    total['usd_with_unsettled_reservations'] = round(total['usd'] + sum(
+        r['reserved_input'] * 0.30 + r['reserved_output'] * 1.20 for r in unsettled) / 1e6, 5)
     phrase = groups.get('phrase', {'calls': 1, 'input': 0, 'output': 0, 'seconds': 0})
     n = phrase['calls']
     embed = rankings['embedding']['seconds_per_text']
@@ -216,6 +226,6 @@ def main(output):
 
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == 'power':
-        print(json.dumps(power(), indent=1))
+        print(json.dumps(power(psis=[float(x) for x in sys.argv[2:]] or (0.15, 0.20, 0.25, 0.30)), indent=1))
     else:
         main(sys.argv[1] if len(sys.argv) > 1 else OUT)

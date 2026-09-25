@@ -58,6 +58,12 @@ class PhraseTest(unittest.TestCase):
             self.assertEqual(R.run.phrases_used(good, 'task text'), (['brand refresh'], True))
 
 
+class RedactionTest(unittest.TestCase):
+    def test_redaction_copy_masks_labelled_credentials_and_leaves_plain_text(self):
+        self.assertEqual(R.redact('the wifi password is Netgear123. ok'), 'the wifi [redacted credential] ok')
+        self.assertEqual(R.redact('the secret ingredient'), 'the secret ingredient')
+
+
 class RuleTest(unittest.TestCase):
     def test_paired_interval_matches_exact_binomial(self):
         low, high = S.paired_interval(10, 0, 100)

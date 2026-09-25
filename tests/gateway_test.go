@@ -54,14 +54,23 @@ func (m *gatedModel) Chat(ctx context.Context, msgs []agent.Message, tools []too
 	return m.inner.Chat(ctx, msgs, tools)
 }
 
-// replyScript scripts one full turn per message: the read step's call,
-// message_send with the given reply, then the reserved writeback the
-// turn ends on.
+// summarizing answers each mid-episode synthesis call itself, so a script
+// covers only the act loop.
+type summarizing struct{ agent.Model }
+
+func (m summarizing) Chat(ctx context.Context, messages []agent.Message, tools []tool.Descriptor) (agent.Response, error) {
+	if len(tools) == 1 && tools[0].Name == "memory_summary" {
+		return agent.Response{ToolCalls: []agent.ToolCall{{Name: "memory_summary", Input: json.RawMessage(`{"summary":"An episode."}`)}}}, nil
+	}
+	return m.Model.Chat(ctx, messages, tools)
+}
+
+// replyScript scripts one full turn per message: message_send with the
+// given reply, then the reserved writeback the turn ends on.
 func replyScript(replies ...string) *agent.ScriptedModel {
 	var steps []agent.ScriptedStep
 	for _, reply := range replies {
 		steps = append(steps,
-			resolveStep(),
 			agent.ScriptedStep{ToolCalls: []agent.ToolCall{{
 				Name: "message_send",
 				Input: json.RawMessage(
@@ -90,7 +99,8 @@ func newGatewayQueue(t *testing.T, root string, newModel func(string) agent.Mode
 	outbox := newOutboxWriter(root)
 	factory := &gateway.Factory{
 		MemoryPath: filepath.Join(root, "memory.db"),
-		NewModel:   newModel,
+		NewModel:   func(id string) agent.Model { return summarizing{newModel(id)} },
+		Embedder:   tiedEmbedder{},
 		Tools: stubClient_{descriptors: []tool.Descriptor{
 			{Name: "message_send", Description: "queue an outbound message"},
 		}, callFn: func(_ context.Context, name string, input json.RawMessage) (json.RawMessage, error) {
@@ -342,12 +352,4 @@ func writebackStep(document string) agent.ScriptedStep {
 		Name:  agent.MemoryWriteTool,
 		Input: json.RawMessage(document),
 	}}}
-}
-
-// resolveStep scripts the read step's model call, which every turn now
-// makes before the act loop (ADR 0019). Content and no tool call is the
-// step placing no address, which is what a turn whose task names no
-// stored fact resolves to.
-func resolveStep() agent.ScriptedStep {
-	return agent.ScriptedStep{Content: "no address"}
 }

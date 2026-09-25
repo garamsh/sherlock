@@ -3,10 +3,13 @@ package sqlite
 import (
 	"context"
 	"database/sql"
+	"encoding/binary"
 	"errors"
 	"fmt"
+	"math"
 	"os"
 	"regexp"
+	"sort"
 	"strings"
 
 	"github.com/garamsh/sherlock/internal/agent"
@@ -24,12 +27,11 @@ CREATE TABLE IF NOT EXISTS conversation_mid (
  id INTEGER PRIMARY KEY AUTOINCREMENT,
  source_first INTEGER NOT NULL UNIQUE REFERENCES conversation_sources(id),
  source_last INTEGER NOT NULL UNIQUE REFERENCES conversation_sources(id),
- summary TEXT NOT NULL
+ summary TEXT NOT NULL,
+ embedding BLOB
 );
-CREATE VIRTUAL TABLE IF NOT EXISTS conversation_mid_fts USING fts5(summary, content='conversation_mid', content_rowid='id', tokenize='porter unicode61');
-CREATE TRIGGER IF NOT EXISTS conversation_mid_insert AFTER INSERT ON conversation_mid BEGIN
- INSERT INTO conversation_mid_fts(rowid, summary) VALUES (new.id, new.summary);
-END;
+DROP TRIGGER IF EXISTS conversation_mid_insert;
+DROP TABLE IF EXISTS conversation_mid_fts;
 `
 
 var ErrSourceNotFound = errors.New("conversation source not found")
@@ -119,39 +121,82 @@ func (s *Store) Recent(ctx context.Context, limit int) ([]agent.SourceMessage, e
 	return out, rows.Err()
 }
 
-// Search ranks matching words by relevance, using recency to break ties.
-// The bounded limit applies before content enters model context.
-func (s *Store) Search(ctx context.Context, terms []string, limit int) ([]agent.ConversationHit, error) {
+// Search ranks embedded mid episodes by cosine similarity to the query, newest
+// first among equals. The bounded limit applies before content enters model context.
+func (s *Store) Search(ctx context.Context, query string, limit int) ([]agent.ConversationHit, error) {
 	if limit <= 0 {
 		return nil, nil
 	}
-	tokens := agent.SearchTokens(terms)
-	if len(tokens) == 0 {
-		return nil, nil
-	}
-	for i, token := range tokens {
-		tokens[i] = `"` + token + `"`
-	}
-	rows, err := s.db.QueryContext(ctx, `SELECT m.id,m.summary,m.source_first,m.source_last FROM conversation_mid_fts f JOIN conversation_mid m ON m.id=f.rowid WHERE conversation_mid_fts MATCH ? ORDER BY bm25(conversation_mid_fts), m.id DESC LIMIT ?`, strings.Join(tokens, " OR "), limit)
+	rows, err := s.db.QueryContext(ctx, `SELECT id,summary,source_first,source_last,embedding FROM conversation_mid WHERE embedding IS NOT NULL ORDER BY id DESC`)
 	if err != nil {
 		return nil, fmt.Errorf("search conversation: %v", err)
 	}
 	defer rows.Close()
-	var out []agent.ConversationHit
+	var hits []agent.ConversationHit
+	var vectors [][]byte
 	for rows.Next() {
 		var hit agent.ConversationHit
-		if err := rows.Scan(&hit.ID, &hit.Summary, &hit.SourceFirst, &hit.SourceLast); err != nil {
+		var vector []byte
+		if err := rows.Scan(&hit.ID, &hit.Summary, &hit.SourceFirst, &hit.SourceLast, &vector); err != nil {
 			return nil, fmt.Errorf("read conversation candidates: %v", err)
 		}
-		out = append(out, hit)
+		hits, vectors = append(hits, hit), append(vectors, vector)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("read conversation candidates: %v", err)
 	}
-	return out, nil
+	if len(hits) == 0 {
+		return nil, nil
+	}
+	target, err := s.embed(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	scores := make(map[int64]float64, len(hits))
+	for i, hit := range hits {
+		if len(vectors[i]) != 4*len(target) {
+			return nil, fmt.Errorf("mid %d embedding has %d dimensions and the query %d: the embedding model changed", hit.ID, len(vectors[i])/4, len(target))
+		}
+		scores[hit.ID] = cosine(target, vectors[i])
+	}
+	sort.SliceStable(hits, func(i, j int) bool { return scores[hits[i].ID] > scores[hits[j].ID] })
+	return hits[:min(limit, len(hits))], nil
 }
 
-// RecentMid returns newest episodes independently of lexical relevance.
+func (s *Store) embed(ctx context.Context, text string) ([]float32, error) {
+	if s.embedder == nil {
+		return nil, errors.New("conversation requires an embedder")
+	}
+	vector, err := s.embedder.Embed(ctx, text)
+	if err != nil {
+		return nil, fmt.Errorf("embed conversation: %v", err)
+	}
+	return vector, nil
+}
+
+func encodeVector(vector []float32) []byte {
+	out := make([]byte, 4*len(vector))
+	for i, x := range vector {
+		binary.LittleEndian.PutUint32(out[4*i:], math.Float32bits(x))
+	}
+	return out
+}
+
+// cosine compares a vector with an encoded one of the same length; a zero
+// vector is similar to nothing.
+func cosine(a []float32, encoded []byte) float64 {
+	var dot, na, nb float64
+	for i, x := range a {
+		y := float64(math.Float32frombits(binary.LittleEndian.Uint32(encoded[4*i:])))
+		dot, na, nb = dot+float64(x)*y, na+float64(x)*float64(x), nb+y*y
+	}
+	if na == 0 || nb == 0 {
+		return 0
+	}
+	return dot / math.Sqrt(na*nb)
+}
+
+// RecentMid returns newest episodes independently of similarity.
 func (s *Store) RecentMid(ctx context.Context, limit int) ([]agent.ConversationHit, error) {
 	if limit <= 0 {
 		return nil, nil
@@ -185,8 +230,9 @@ func (s *Store) Source(ctx context.Context, id int64) (agent.SourceMessage, erro
 }
 
 // OpenConversation checks existing addressed rows read-only before opening the
-// source-linked schema, so refusal leaves the old file unchanged.
-func OpenConversation(path string) (*Store, error) {
+// source-linked schema, so refusal leaves the old file unchanged. The embedder
+// ranks episodes for Search and embeds each new one.
+func OpenConversation(path string, embedder agent.Embedder) (*Store, error) {
 	if _, err := os.Stat(path); err == nil {
 		old, err := sql.Open("sqlite", path+"?mode=ro")
 		if err != nil {
@@ -225,7 +271,12 @@ func OpenConversation(path string) (*Store, error) {
 	} else if !errors.Is(err, os.ErrNotExist) {
 		return nil, err
 	}
-	return Open(path)
+	store, err := Open(path)
+	if err != nil {
+		return nil, err
+	}
+	store.embedder = embedder
+	return store, nil
 }
 
 var secretLabel = regexp.MustCompile(`(?i)(password|secret|api[_-]?key|token)\s*(?:[:=]|is)\s*\S+`)
@@ -263,6 +314,16 @@ func prepareConversation(db *sql.DB) error {
 	_, err = tx.Exec(conversationSchema)
 	if err != nil {
 		return err
+	}
+	var embedded int
+	if err := tx.QueryRow(`SELECT count(*) FROM pragma_table_info('conversation_mid') WHERE name='embedding'`).Scan(&embedded); err != nil {
+		return err
+	}
+	// A file from before embeddings gains the column; Accumulate fills it.
+	if embedded == 0 {
+		if _, err := tx.Exec(`ALTER TABLE conversation_mid ADD COLUMN embedding BLOB`); err != nil {
+			return err
+		}
 	}
 	return tx.Commit()
 }

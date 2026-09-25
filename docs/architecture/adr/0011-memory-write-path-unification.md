@@ -1,7 +1,7 @@
 # ADR 0011: Persist sources before atomic summary checkpoints
 
 > Status: accepted
-> Date: 2026-08-02 (revised in place 2026-09-24)
+> Date: 2026-08-02 (revised in place 2026-09-26)
 
 ## Context
 
@@ -9,7 +9,7 @@ The earlier decision unified model-chosen writes through the reserved `memory_wr
 
 ## Decision
 
-A completed response archives its visible source messages in one transaction before model synthesis. Each full cross-turn batch creates an immutable mid episode with its direct source interval. The last committed interval is the only processing checkpoint. Model calls happen outside write transactions; a checkpoint comparison refuses a stale concurrent synthesis.
+A completed response archives its visible source messages in one transaction before model synthesis. Each full cross-turn batch creates an immutable mid episode with its direct source interval. The last committed interval is the only processing checkpoint. Model calls happen outside write transactions; a checkpoint comparison refuses a stale concurrent synthesis. An episode's embedding is written after the episode commits, also outside any transaction; an episode still without one is embedded at the next completion or startup and is left out of similarity ranking until then.
 
 A failure preserves completed sources and any earlier committed episodes. Startup and subsequent completions resume from the persisted intervals without skipping pending input. Gateway IDs identify a replay of the same completed batch; ID/content conflicts and partially overlapping batches fail explicitly. The reserved `memory_write` response still carries the reply, while its addressed `memory_ops` do not write the legacy tables.
 

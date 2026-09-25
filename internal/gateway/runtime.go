@@ -36,6 +36,8 @@ type Factory struct {
 	MemoryPath string
 	// NewModel returns the chat model for the agent's session.
 	NewModel func(agentID string) agent.Model
+	// Embedder ranks mid episodes by similarity for recall.
+	Embedder agent.Embedder
 	// Ego is the session ego; empty selects the agent package's embedded
 	// default (the platform contract is appended regardless).
 	Ego string
@@ -55,7 +57,7 @@ func (f *Factory) New(ctx context.Context, agentID string, events agent.EventSin
 	if err := os.MkdirAll(filepath.Dir(f.MemoryPath), 0o755); err != nil {
 		return nil, err
 	}
-	store, err := sqlite.OpenConversation(f.MemoryPath)
+	store, err := sqlite.OpenConversation(f.MemoryPath, f.Embedder)
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +89,7 @@ func (f *Factory) New(ctx context.Context, agentID string, events agent.EventSin
 		initial = append(initial, agent.Message{Role: m.Role, Content: m.Content})
 	}
 	session := agent.NewSession(model, f.Tools, agent.Options{
-		Recaller:           agentmemory.ConversationRecall{Store: store, Model: model},
+		Recaller:           agentmemory.ConversationRecall{Store: store},
 		Conversation:       store,
 		Summarizer:         summarizer,
 		InitialHistory:     initial,

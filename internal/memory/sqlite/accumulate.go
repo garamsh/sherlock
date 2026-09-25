@@ -8,8 +8,12 @@ import (
 	"github.com/garamsh/sherlock/internal/agent"
 )
 
+// batchMessages is how many completed visible messages make one mid episode.
+const batchMessages = 4
+
 // Accumulate creates one immutable mid episode per full cross-turn message batch.
-// The source checkpoint commits with the episode, after remote synthesis returns.
+// The source checkpoint commits with the episode, after remote synthesis returns;
+// embedding follows once no full batch remains.
 func (s *Store) Accumulate(ctx context.Context, summarizer agent.ConversationSummarizer) error {
 	for {
 		var lastSource int64
@@ -20,8 +24,8 @@ func (s *Store) Accumulate(ctx context.Context, summarizer agent.ConversationSum
 		if err != nil {
 			return err
 		}
-		if len(sources) < 8 {
-			return nil
+		if len(sources) < batchMessages {
+			return s.embedMids(ctx)
 		}
 		updates := make([]string, 0, len(sources))
 		for _, source := range sources {
@@ -48,7 +52,7 @@ func (s *Store) Accumulate(ctx context.Context, summarizer agent.ConversationSum
 }
 
 func (s *Store) sourcesAfter(ctx context.Context, after int64) ([]agent.SourceMessage, error) {
-	rows, err := s.db.QueryContext(ctx, `SELECT id,external_id,role,content FROM conversation_sources WHERE id>? ORDER BY id LIMIT 8`, after)
+	rows, err := s.db.QueryContext(ctx, `SELECT id,external_id,role,content FROM conversation_sources WHERE id>? ORDER BY id LIMIT ?`, after, batchMessages)
 	if err != nil {
 		return nil, fmt.Errorf("read pending sources: %v", err)
 	}
@@ -74,4 +78,35 @@ func (s *Store) PendingSources(ctx context.Context) ([]agent.SourceMessage, erro
 		return nil, fmt.Errorf("read pending sources: %v", err)
 	}
 	return s.sourcesAfter(ctx, lastSource)
+}
+
+// embedMids stores an embedding for every mid episode that lacks one: a new
+// episode, one whose embedding failed before, or one written before embeddings.
+func (s *Store) embedMids(ctx context.Context) error {
+	rows, err := s.db.QueryContext(ctx, `SELECT id,summary FROM conversation_mid WHERE embedding IS NULL ORDER BY id`)
+	if err != nil {
+		return fmt.Errorf("read unembedded episodes: %v", err)
+	}
+	defer rows.Close()
+	var mids []agent.ConversationHit
+	for rows.Next() {
+		var mid agent.ConversationHit
+		if err := rows.Scan(&mid.ID, &mid.Summary); err != nil {
+			return fmt.Errorf("read unembedded episodes: %v", err)
+		}
+		mids = append(mids, mid)
+	}
+	if err := rows.Err(); err != nil {
+		return fmt.Errorf("read unembedded episodes: %v", err)
+	}
+	for _, mid := range mids {
+		vector, err := s.embed(ctx, mid.Summary)
+		if err != nil {
+			return err
+		}
+		if _, err := s.db.ExecContext(ctx, `UPDATE conversation_mid SET embedding=? WHERE id=?`, encodeVector(vector), mid.ID); err != nil {
+			return fmt.Errorf("store episode embedding: %v", err)
+		}
+	}
+	return nil
 }

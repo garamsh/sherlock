@@ -1,7 +1,7 @@
 # ADR 0006: Preserve recent context and source-linked older conversation
 
 > Status: accepted
-> Date: 2026-07-25 (revised in place 2026-09-24)
+> Date: 2026-07-25 (revised in place 2026-09-26)
 
 ## Context
 
@@ -12,9 +12,9 @@ The addressed-only lifecycle dropped old conversation when the rolling context c
 - Keep the newest session messages up to the configured context bound. Restore recent visible user and assistant messages from the store after restart.
 - Commit each completed inbound user message with its gateway ID and visible assistant outputs as source records before synthesis. Synthesis failure leaves sources durable for retry at the next completion or startup. System instructions, tool results, hidden reasoning, and credentials do not become memory sources.
 - Use the rolling recent-message window as short memory. A separate short-summary tier adds no independent responsibility.
-- Synthesize each full eight-message cross-turn source batch into one immutable mid episode, with direct links to its original message interval. Episodes are independent: the model receives the batch, not every previous mid summary.
+- Synthesize each full four-message cross-turn source batch into one immutable mid episode, with direct links to its original message interval. Episodes are independent: the model receives the batch, not every previous mid summary.
 - Preserve partial batches durably and offer pending source previews alongside recalled episodes so compaction cannot hide the interval before a checkpoint.
-- Before the act loop, recall the two most recent mid episodes and up to five distinct older relevant episodes, alongside up to eight pending source previews. The reserved memory boundary inspects only original source messages by ID when detail matters.
+- Before the act loop, recall the two most recent mid episodes and up to five more most similar to the task (ADR 0019), alongside up to four pending source previews. The reserved memory boundary inspects only original source messages by ID when detail matters.
 
 ## Consequences
 
@@ -28,5 +28,5 @@ The addressed-only lifecycle dropped old conversation when the rolling context c
 ## Rejected alternatives
 
 - Keeping every source message in the rolling prompt would remove the context bound.
-- Recursively summarizing every prior mid state would make episodes less specific to lexical search and propagate earlier synthesis errors.
+- Recursively summarizing every prior mid state would make episodes less specific to retrieval and propagate earlier synthesis errors.
 - Using the old addressed writeback as another active authority would let an unlinked value compete with inspectable source evidence.

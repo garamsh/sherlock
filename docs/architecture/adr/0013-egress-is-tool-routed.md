@@ -1,7 +1,7 @@
 # ADR 0013: External egress is tool-routed — no dedicated egress proxy
 
 > Status: accepted
-> Date: 2026-08-03 (revised in place 2026-08-13; 2026-08-17; 2026-08-23)
+> Date: 2026-08-03 (revised in place 2026-08-13; 2026-08-17; 2026-08-23; 2026-09-26)
 
 ## Context
 
@@ -9,12 +9,13 @@ An early design carried a deferred "egress tool/proxy": a component meant to be 
 
 ## Decision
 
-External access is tool-routed by design; no dedicated egress proxy or egress tool is built. The operator chooses every outbound destination and the model chooses none: replies leave through `message_send`, capabilities through the operator-installed tool servers (network-keeping by operator choice), and the reasoning loop's and memory's model traffic through the operator-configured base URLs (ADR 0004). Executor children are network-isolated on request (`NoNetwork`, ADR 0008). Destination allowlists, response redaction, and secret-reference bindings land only when a concrete use case needs them, inside the tool that needs them (`docs/convention/simplicity.md`).
+External access is tool-routed by design; no dedicated egress proxy or egress tool is built. The operator chooses every outbound destination and the model chooses none: replies leave through `message_send`, capabilities through the operator-installed tool servers (network-keeping by operator choice), and the reasoning loop's and memory's model and embedding traffic through the operator-configured base URLs (ADR 0004). The embeddings base URL receives each turn's task text and every mid-episode summary (ADR 0019), and it need not be the chat model's vendor. Executor children are network-isolated on request (`NoNetwork`, ADR 0008). Destination allowlists, response redaction, and secret-reference bindings land only when a concrete use case needs them, inside the tool that needs them (`docs/convention/simplicity.md`).
 
 ## Consequences
 
 - "The only outbound path is the egress tool" is restated as "every outbound destination is one the operator chose" — the guarantee the proxy was built to give survives as a property of who picks the destination, not as a count of channels.
-- The agent cannot reach arbitrary URLs. Granting egress is a configuration decision: a tool server added to the operator's tool list, or the model base URL set in the operator's config (ADR 0004) — reviewed like any other configuration, not a runtime capability.
+- The agent cannot reach arbitrary URLs. Granting egress is a configuration decision: a tool server added to the operator's tool list, or the model or embeddings base URL set in the operator's config (ADR 0004) — reviewed like any other configuration, not a runtime capability.
+- Conversation content leaves the pod for every endpoint the operator configures: the chat endpoint receives the prompt, and the embeddings endpoint receives task text and summaries. Pointing the embeddings base URL at a local server keeps that content inside the operator's network.
 - Secret-bearing tools keep secrets out of the agent's domain through per-tool env scoping plus the scrubbed child environment: the secret reaches the trusted tool process only, and the agent sees tool output, never the environment. (The ADR 0003 secret-free posture of executor children is preserved.)
 
 ## Rejected alternatives

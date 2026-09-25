@@ -69,6 +69,24 @@ func TestResolveConfig_ModelSection(t *testing.T) {
 	assert.Equal(t, 120*time.Second, cfg.Model.Timeout)
 }
 
+func TestResolveConfig_EmbeddingSectionAndEnv(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "agent.yaml"),
+		[]byte("embedding:\n  base-url: http://127.0.0.1:8090/v1\n  model: BAAI/bge-base-en-v1.5\n"), 0o600))
+	t.Setenv("SHERLOCK_EMBEDDING_API_KEY_ENV", "EMBED_KEY")
+
+	cfg, err := config.Resolve(agentFlags(t))
+	require.NoError(t, err)
+
+	assert.Equal(t, config.EmbeddingConfig{
+		BaseURL:   "http://127.0.0.1:8090/v1",
+		Model:     "BAAI/bge-base-en-v1.5",
+		APIKeyEnv: "EMBED_KEY",
+	}, cfg.Embedding, "the file sets the endpoint and SHERLOCK_EMBEDDING_API_KEY_ENV, absent from it, reaches the key")
+}
+
 func TestResolveConfig_ModelTimeoutEnvOverridesFile(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)

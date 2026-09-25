@@ -22,6 +22,14 @@ model:
 #   base-url: https://api.minimax.io/v1
 #   model: MiniMax-M2
 #   api-key-env: MINIMAX_KEY
+# embedding: ranks older conversation for recall. The mock provider embeds
+# offline and ignores it; every other provider needs an OpenAI-compatible
+# /embeddings endpoint here (README.md §Embeddings). A local server needs no
+# key, so api-key-env stays unset for one:
+# embedding:
+#   base-url: http://127.0.0.1:8090/v1
+#   model: BAAI/bge-base-en-v1.5
+#   api-key-env: EMBEDDING_KEY            # for a hosted endpoint
 # Tools: the agent reads ./tools/<name>/manifest.json at startup
 # (ADR 0009 §Decision). The six first-party tools (file_read, file_write,
 # file_list, shell_exec, message_send, github) ship in place under tools/; a `make build-tools`

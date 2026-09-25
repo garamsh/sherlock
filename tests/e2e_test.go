@@ -40,7 +40,6 @@ const e2eQuestion = "what is 6 * 7?"
 // harness's scope, not a statement about which tools exist.
 func mvpScript() *agent.ScriptedModel {
 	return agent.NewScriptedModel(
-		resolveStep(),
 		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{
 			Name: "message_send",
 			Input: json.RawMessage(
@@ -176,7 +175,7 @@ func runMVPScenario(t *testing.T, baseURL, root, agentID string) {
 // assistant text reachable as an exact source after shutdown.
 func assertMemoryStore(t *testing.T, root string) {
 	t.Helper()
-	store, err := sqlite.OpenConversation(filepath.Join(root, "memory.db"))
+	store, err := sqlite.OpenConversation(filepath.Join(root, "memory.db"), nil)
 	require.NoError(t, err)
 	t.Cleanup(func() { store.Close() })
 	pending, err := store.PendingSources(context.Background())

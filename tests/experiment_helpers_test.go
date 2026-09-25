@@ -37,10 +37,17 @@ type turnRecord struct {
 	Failed        string           `json:"failed,omitempty"`
 }
 
+// writeMeteredConfig points the chat model at baseURL and embeddings at a
+// local endpoint that gives every text the same vector: these tests measure
+// file operations, not recall, so recall falls back to recency.
 func writeMeteredConfig(t *testing.T, baseURL string) string {
 	t.Helper()
+	embeddings := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		_, _ = w.Write([]byte(`{"data":[{"embedding":[1]}]}`))
+	}))
+	t.Cleanup(embeddings.Close)
 	path := filepath.Join(t.TempDir(), "agent.yaml")
-	body := fmt.Sprintf("model:\n  provider: %s\n  base-url: %s\n  model: %s\n  api-key-env: %s\n  timeout: 300s\n", recallProvider, baseURL, recallModelName, recallKeyEnv)
+	body := fmt.Sprintf("model:\n  provider: %s\n  base-url: %s\n  model: %s\n  api-key-env: %s\n  timeout: 300s\nembedding:\n  base-url: %s\n  model: tied\n", recallProvider, baseURL, recallModelName, recallKeyEnv, embeddings.URL)
 	require.NoError(t, os.WriteFile(path, []byte(body), 0o600))
 	return path
 }
@@ -134,10 +141,6 @@ func startScriptedEndpoint(t *testing.T, answer scriptedAnswer) string {
 		}
 		require.NoError(t, json.NewDecoder(r.Body).Decode(&request))
 		name, arguments := "memory_write", fmt.Sprintf(`{"reply":%s,"memory_ops":[{"address":{"subject":%s,"question":%s,"restriction":null},"value":%s,"operation":null}]}`, strconvQuote(answer.Reply), strconvQuote(answer.Subject), strconvQuote(answer.Question), strconvQuote(answer.Value))
-		if len(request.Tools) == 1 && request.Tools[0].Function.Name == "memory_search_terms" {
-			name = "memory_search_terms"
-			arguments = `{"phrases":["` + answer.Subject + `"]}`
-		}
 		w.Header().Set("Content-Type", "application/json")
 		fmt.Fprintf(w, `{"choices":[{"message":{"content":"","tool_calls":[{"id":"call-1","type":"function","function":{"name":%s,"arguments":%s}}]},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":100,"completion_tokens":20}}`, strconvQuote(name), strconvQuote(arguments))
 	}))

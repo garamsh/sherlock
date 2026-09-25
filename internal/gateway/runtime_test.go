@@ -48,7 +48,6 @@ func (s *recordingSink) messages() []message.Message {
 // response carrying a writeback block.
 func replyModel(_ string) agent.Model {
 	return agent.NewScriptedModel(
-		resolveStep(),
 		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{
 			Name:  "message_send",
 			Input: json.RawMessage(`{"channel":"test","target":"sender","content":"Message received."}`),
@@ -165,10 +164,8 @@ func TestQueue_CloseClosesTheStore(t *testing.T) {
 }
 
 func compactionModel(_ string) agent.Model {
-	return agent.NewScriptedModel(
-		resolveStep(),
+	return summaryScript(
 		writebackStep(`{"reply":"First reply.","memory_ops":[]}`),
-		resolveStep(),
 		writebackStep(`{"reply":"Second reply.","memory_ops":[]}`),
 	)
 }
@@ -186,6 +183,7 @@ func TestFactory_HistoryOverflowStoresNothing(t *testing.T) {
 	factory := &gateway.Factory{
 		MemoryPath: memoryPath(root),
 		NewModel:   compactionModel,
+		Embedder:   wordEmbedder{},
 
 		Tools:              mouthClientSink(sink),
 		MaxHistoryMessages: 4,
@@ -223,7 +221,7 @@ func TestFactory_HistoryOverflowStoresNothing(t *testing.T) {
 func TestFactory_ConversationSurvivesRestart(t *testing.T) {
 	root := t.TempDir()
 	factory := &gateway.Factory{MemoryPath: memoryPath(root), NewModel: func(string) agent.Model {
-		return agent.NewScriptedModel(resolveStep(), writebackStep(`{"reply":"The observatory closes at dusk.","memory_ops":[]}`))
+		return agent.NewScriptedModel(writebackStep(`{"reply":"The observatory closes at dusk.","memory_ops":[]}`))
 	}, Tools: noTools(), MaxHistoryMessages: 2}
 	rt, err := factory.New(context.Background(), "env-1", nil)
 	require.NoError(t, err)
@@ -260,8 +258,8 @@ func TestFactory_DisabledCompactionRestoresAllHistory(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			root := t.TempDir()
 			factory := &gateway.Factory{MemoryPath: memoryPath(root), NewModel: func(string) agent.Model {
-				return agent.NewScriptedModel(resolveStep(), writebackStep(`{"reply":"Answer.","memory_ops":[]}`))
-			}, Tools: noTools(), MaxHistoryMessages: tc.limit}
+				return summaryScript(writebackStep(`{"reply":"Answer.","memory_ops":[]}`))
+			}, Embedder: wordEmbedder{}, Tools: noTools(), MaxHistoryMessages: tc.limit}
 			for _, question := range []string{"First question?", "Second question?"} {
 				runtime, err := factory.New(context.Background(), "env-1", nil)
 				require.NoError(t, err)
@@ -412,7 +410,6 @@ type toolCapturingModel struct {
 
 func newToolCapturingModel() *toolCapturingModel {
 	return &toolCapturingModel{inner: agent.NewScriptedModel(
-		resolveStep(),
 		writebackStep(`{"reply":"Replied.","memory_ops":[]}`),
 	)}
 }
@@ -423,8 +420,7 @@ func (m *toolCapturingModel) Chat(ctx context.Context, messages []agent.Message,
 }
 
 // actTools returns the descriptors the act loop was shown: the turn's
-// last model call. The read step makes the first one and is shown the
-// reserved read tool alone (ADR 0019).
+// last model call.
 func (m *toolCapturingModel) actTools() []tool.Descriptor {
 	return m.seen[len(m.seen)-1]
 }
@@ -493,12 +489,4 @@ func writebackStep(document string) agent.ScriptedStep {
 		Name:  agent.MemoryWriteTool,
 		Input: json.RawMessage(document),
 	}}}
-}
-
-// resolveStep scripts the read step's model call, which every turn now
-// makes before the act loop (ADR 0019). Content and no tool call is the
-// step placing no address, which is what a turn whose task names no
-// stored fact resolves to.
-func resolveStep() agent.ScriptedStep {
-	return agent.ScriptedStep{Content: "no address"}
 }

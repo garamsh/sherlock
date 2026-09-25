@@ -84,40 +84,6 @@ type Recalled struct {
 	Outcome  RecallOutcome
 }
 
-// MemoryAddress is where a fact is held (ADR 0018): the subject it is
-// about, the question it answers, and whatever restriction the sentence
-// puts on that question. A statement that narrows its question narrows
-// its address with it, so the two values coexist instead of one
-// destroying the other.
-type MemoryAddress struct {
-	Subject     string `json:"subject"`
-	Question    string `json:"question"`
-	Restriction string `json:"restriction,omitempty"`
-}
-
-// MemoryOperation is what a value does to the values already at its
-// address: end them, or stand beside them (ADR 0018).
-type MemoryOperation string
-
-const (
-	// OpReplace supersedes the values already at the address.
-	OpReplace MemoryOperation = "replace"
-	// OpJoin leaves them where they are and adds one.
-	OpJoin MemoryOperation = "join"
-)
-
-// WritebackOp is one memory write parsed from a model response: the
-// address the fact lands on, the value held there, and the operation the
-// write states (ADR 0018). A write whose operation the response leaves
-// unstated or unreadable parses as OpJoin, because a wrong join is
-// repaired by the next correct replacement at that address and a wrong
-// replacement is repaired by nothing.
-type WritebackOp struct {
-	Address   MemoryAddress   `json:"address"`
-	Value     string          `json:"value"`
-	Operation MemoryOperation `json:"operation"`
-}
-
 // EventKind identifies a loop lifecycle event.
 type EventKind string
 
@@ -129,14 +95,14 @@ const (
 	// memory entered the context each turn (issue #325). Sessions
 	// without a Recaller emit nothing.
 	EventRecall EventKind = "recall"
-	// EventWriteback fires once per turn, after the writeback call's
-	// operations reach the sink.
+	// EventWriteback fires once per completed turn, after the terminal
+	// call's note, if it wrote one, is saved.
 	EventWriteback EventKind = "writeback"
 	// EventWritebackError fires when a turn's writeback did not
-	// arrive: the model called no writeback tool (issue #615), or
-	// called it with arguments that are not the document (issue #93).
-	// The first is not terminal — the session says what is missing and
-	// asks again — and the second fails the turn.
+	// arrive: the model called no writeback tool (issue #615), wrote a
+	// note past MaxNoteLength, or called it with arguments that are not
+	// JSON (issue #93). The first two are not terminal — the session
+	// says what is wrong and asks again — and the third fails the turn.
 	EventWritebackError EventKind = "writeback_error"
 	// EventToolCall fires after each tool execution.
 	EventToolCall EventKind = "tool_call"
@@ -149,14 +115,16 @@ const (
 
 // Event is one structured loop event for the gateway monitoring stream.
 // Which fields are set depends on Kind: Task on turn_started,
-// RecalledIDs and RecalledCount on recall, Ops on writeback, the Tool*
+// RecalledIDs and RecalledCount on recall, Note on writeback, the Tool*
 // fields on tool_call, Response on turn_finished, Error on turn_failed
 // and writeback_error.
 type Event struct {
-	Kind       EventKind
-	Turn       int
-	Task       string
-	Ops        []WritebackOp
+	Kind EventKind
+	Turn int
+	Task string
+	// Note is the note a writeback saved; nil means the turn left it
+	// unchanged.
+	Note       *string
 	ToolName   string
 	ToolInput  json.RawMessage
 	ToolResult string
@@ -194,9 +162,12 @@ var (
 	ErrLoopExhausted = errors.New("act loop exceeded max iterations")
 )
 
-// ErrMalformedWriteback marks writeback arguments the contract refuses:
-// a JSON parse error or a schema violation. Both fail the turn. The
-// leniency issue #93 asked for is gone: the arguments are the only place
-// the reply and the facts arrive, so a malformed one leaves nothing to
-// hand back and nothing to store (issue #615).
+// ErrMalformedWriteback marks terminal-call arguments that are not JSON.
+// It fails the turn: the arguments are the only place the reply arrives,
+// so a malformed one leaves nothing to hand back (issue #615).
 var ErrMalformedWriteback = errors.New("malformed memory writeback")
+
+// ErrNoteTooLong marks a note past MaxNoteLength. It does not fail the
+// turn: the session returns it to the model as the call's result and asks
+// for a shorter note.
+var ErrNoteTooLong = errors.New("note too long")

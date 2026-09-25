@@ -338,3 +338,36 @@ CREATE TRIGGER conversation_mid_insert AFTER INSERT ON conversation_mid BEGIN IN
 	require.NoError(t, raw.QueryRow(`SELECT count(*) FROM sqlite_master WHERE name IN ('conversation_mid_fts','conversation_mid_insert')`).Scan(&fts))
 	assert.Zero(t, fts)
 }
+
+func TestNote_EmptyUntilSetThenReplacedAndReopened(t *testing.T) {
+	ctx := context.Background()
+	path := filepath.Join(t.TempDir(), "memory.db")
+	store, err := sqlite.OpenConversation(path, wordEmbedder{})
+	require.NoError(t, err)
+	note, err := store.Note(ctx)
+	require.NoError(t, err)
+	assert.Empty(t, note, "a store no note was written to has an empty note")
+
+	require.NoError(t, store.SetNote(ctx, "Indent code with tabs."))
+	require.NoError(t, store.SetNote(ctx, "Indent code with tabs. Current work: the Oslo packing list."))
+	require.NoError(t, store.Close())
+
+	reopened, err := sqlite.OpenConversation(path, wordEmbedder{})
+	require.NoError(t, err)
+	defer reopened.Close()
+	note, err = reopened.Note(ctx)
+	require.NoError(t, err)
+	assert.Equal(t, "Indent code with tabs. Current work: the Oslo packing list.", note, "the latest note replaces the earlier one and survives a restart")
+}
+
+func TestNote_CredentialsAreNotPersisted(t *testing.T) {
+	ctx := context.Background()
+	store, err := sqlite.OpenConversation(filepath.Join(t.TempDir(), "memory.db"), wordEmbedder{})
+	require.NoError(t, err)
+	defer store.Close()
+	require.NoError(t, store.SetNote(ctx, "Deploy with password: hunter22 to the staging host."))
+	note, err := store.Note(ctx)
+	require.NoError(t, err)
+	assert.NotContains(t, note, "hunter22")
+	assert.Contains(t, note, "staging host", "the rest of the note is kept")
+}

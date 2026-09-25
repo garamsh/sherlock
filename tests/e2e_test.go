@@ -46,9 +46,7 @@ func mvpScript() *agent.ScriptedModel {
 				`{"channel":"http","target":"sender","content":"42"}`,
 			),
 		}}},
-		writebackStep(`{"reply":"Replied via message_send and stored the result.",`+
-			`"memory_ops":[{"address":{"subject":"user","question":"what is 6 * 7",`+
-			`"restriction":null},"value":"42","operation":null}]}`),
+		writebackStep(`{"reply":"Replied via message_send and stored the result.","note":null}`),
 	)
 }
 

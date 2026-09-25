@@ -30,6 +30,10 @@ CREATE TABLE IF NOT EXISTS conversation_mid (
  summary TEXT NOT NULL,
  embedding BLOB
 );
+CREATE TABLE IF NOT EXISTS conversation_note (
+ id INTEGER PRIMARY KEY CHECK(id = 1),
+ content TEXT NOT NULL
+);
 DROP TRIGGER IF EXISTS conversation_mid_insert;
 DROP TABLE IF EXISTS conversation_mid_fts;
 `
@@ -220,6 +224,28 @@ func (s *Store) RecentMid(ctx context.Context, limit int) ([]agent.ConversationH
 	return out, nil
 }
 
+// Note returns the agent's note, empty when none has been saved.
+func (s *Store) Note(ctx context.Context) (string, error) {
+	var content string
+	err := s.db.QueryRowContext(ctx, `SELECT content FROM conversation_note WHERE id=1`).Scan(&content)
+	if errors.Is(err, sql.ErrNoRows) {
+		return "", nil
+	}
+	if err != nil {
+		return "", fmt.Errorf("read note: %v", err)
+	}
+	return content, nil
+}
+
+// SetNote replaces the agent's note. Credentials are redacted before it is
+// saved, as they are from sources.
+func (s *Store) SetNote(ctx context.Context, content string) error {
+	if _, err := s.db.ExecContext(ctx, `INSERT INTO conversation_note(id,content) VALUES (1,?) ON CONFLICT(id) DO UPDATE SET content=excluded.content`, redactSecrets(content)); err != nil {
+		return fmt.Errorf("save note: %v", err)
+	}
+	return nil
+}
+
 func (s *Store) Source(ctx context.Context, id int64) (agent.SourceMessage, error) {
 	var m agent.SourceMessage
 	err := s.db.QueryRowContext(ctx, `SELECT id,external_id,role,content FROM conversation_sources WHERE id=?`, id).Scan(&m.ID, &m.ExternalID, &m.Role, &m.Content)
@@ -307,7 +333,11 @@ func prepareConversation(db *sql.DB) error {
 		if count > 0 {
 			return errors.New("extractive conversation schema; open with the previous binary or select a new memory-path; see docs/architecture/memory.md")
 		}
-		if _, err := tx.Exec(`DROP TRIGGER IF EXISTS conversation_mid_insert; DROP TABLE IF EXISTS conversation_mid_fts; DROP TABLE conversation_mid; DROP TABLE conversation_short`); err != nil {
+		if _, err := tx.Exec(`CREATE TABLE IF NOT EXISTS conversation_note (
+ id INTEGER PRIMARY KEY CHECK(id = 1),
+ content TEXT NOT NULL
+);
+DROP TRIGGER IF EXISTS conversation_mid_insert; DROP TABLE IF EXISTS conversation_mid_fts; DROP TABLE conversation_mid; DROP TABLE conversation_short`); err != nil {
 			return err
 		}
 	}

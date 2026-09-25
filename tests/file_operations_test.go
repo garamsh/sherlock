@@ -246,7 +246,7 @@ func TestFileOperations_Free(t *testing.T) {
 			if stage == 0 || stage == 2 {
 				sequence = append(sequence, call{"list", ".", ""})
 			}
-			name, arguments = "memory_write", `{"reply":"Verified.","memory_ops":[]}`
+			name, arguments = "memory_write", `{"reply":"Verified.","note":null}`
 			if count < len(sequence) {
 				next := sequence[count]
 				name = "file_" + next.operation

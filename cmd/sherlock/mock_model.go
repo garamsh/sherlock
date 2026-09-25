@@ -11,12 +11,10 @@ import (
 // that drives a fixed scenario through the agent's installed tools —
 // shell_exec to write a note into the workspace and compute the answer
 // through the workspace's Exec RPC, file_read to read that note back
-// through the gRPC contract, message_send for the mouth, then a
-// structured response recording the answer at its address. The scenario
-// creates what it reads, so it runs clean in any workspace. It exhausts
-// after one message; a real model replaces it without interface changes.
-// The writeback is the single write path: memory is a layer, never a
-// tool (ADR 0011, ADR 0017).
+// through the gRPC contract, message_send for the mouth, then the reply
+// with the note unchanged. The scenario creates what it reads, so it runs
+// clean in any workspace. It exhausts after one message; a real model
+// replaces it without interface changes.
 func mockModel(_ string) agent.Model {
 	return agent.NewScriptedModel(
 		agent.ScriptedStep{
@@ -47,10 +45,7 @@ func mockModel(_ string) agent.Model {
 			ToolCalls: []agent.ToolCall{{
 				Name: agent.MemoryWriteTool,
 				Input: json.RawMessage(
-					`{"reply":"Replied via message_send and recorded the answer.",` +
-						`"memory_ops":[{"address":{"subject":"user",` +
-						`"question":"what is 6 * 7","restriction":null},` +
-						`"value":"42","operation":null}]}`,
+					`{"reply":"Replied via message_send and recorded the answer.","note":null}`,
 				),
 			}},
 		},

@@ -121,3 +121,12 @@ Committed after the design phase and its deterministic item checks, and before a
 - The conversation caps become exact 100, paraphrase 100, implicit 100, correction 100, absent 38, filler 140.
 - Nothing else changes: checks, selection, arms, controls, power and the decision rule stay as preregistered.
 
+## Amendment 2, before any synthesis or retrieval
+
+Committed after the first `assemble` attempt failed, and before any synthesis, phrase call or ranking of the replication corpus. That attempt ([its counts](evidence/replication/assembly-attempt-1.json)) selected exact 70, paraphrase 47, implicit 60, correction 42 and absent 16. It banned 117 items for key leaks, and the stream was 1,194 messages short of filler.
+
+- **Leak rule.** Most bans came from generic keys ("72", "v1", "Tuesdays") that appear in unrelated chats. A chat that merely mentions such a key does not state the item's fact, so it does not make the evidence ambiguous. An item now leaks only when a message of another selected chat carries its key and at least two more of the item sentence's production search tokens, counting only tokens of four or more characters that are not part of the key. Short function words and the key itself do not tie a chat to the fact.
+- **Paraphrase supply.** Only 56 of 91 paraphrase items survived the chat-level FTS check. A second supplementary round adds 100 paraphrase items with the same prompt, domains drawn by seed 876, and calls appended after all earlier calls.
+- **Caps.** Paraphrase becomes 160, implicit 120 and filler 240, so every passing item and filler topic gets a chat.
+- Selection order, checks, arms, controls, power and the decision rule are unchanged. If a family still ends below 70, the report states its size, and the power is recomputed at the realized primary count.
+

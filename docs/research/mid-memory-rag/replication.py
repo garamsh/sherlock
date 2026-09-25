@@ -18,9 +18,10 @@ PRIMARY = ['exact', 'paraphrase', 'implicit', 'correction']
 PER_FAMILY, ABSENT = 70, 30
 DESIGN_ITEMS = {'exact': 90, 'paraphrase': 130, 'implicit': 160, 'correction': 90, 'absent': 40}
 # Chats are written for the first passing items only; selection order makes a later raise change nothing earlier.
-CONVERSE_CAP = {'exact': 100, 'paraphrase': 100, 'implicit': 100, 'correction': 100, 'absent': 38, 'filler': 140}
-# Amendment 1: a supplementary round with the same prompts, appended after the original calls.
+CONVERSE_CAP = {'exact': 100, 'paraphrase': 160, 'implicit': 120, 'correction': 100, 'absent': 38, 'filler': 240}
+# Amendments 1 and 2: supplementary rounds with the same prompts, appended after the original calls.
 SUPPLEMENT_ITEMS = {'exact': 40, 'paraphrase': 80, 'implicit': 100, 'correction': 40, 'absent': 10}
+SECOND_SUPPLEMENT_ITEMS = {'paraphrase': 100}
 FILLER_TOPICS = 240
 ITEMS_PER_CALL = 10
 BATCHES = [4, 8, 16]
@@ -203,6 +204,10 @@ def design_calls():
         kind = {'exact': 'fact', 'paraphrase': 'fact'}.get(family, family)
         for i in range(count // ITEMS_PER_CALL):
             calls.append((f'{family}-s{i:02d}', family, kind, supplement.choice(DOMAINS)))
+    second = random.Random(SEED + 20)
+    for family, count in SECOND_SUPPLEMENT_ITEMS.items():
+        for i in range(count // ITEMS_PER_CALL):
+            calls.append((f'{family}-t{i:02d}', family, 'fact', second.choice(DOMAINS)))
     return calls
 
 
@@ -410,9 +415,23 @@ def usable(family, item, chats):
     return True
 
 
-def select(items, chats):
-    """First passing items per family in design order; an item whose key leaks into another selected chat is
-    banned and the next one taken, until no key leaks."""
+def sentence_of(family, item):
+    return {'correction': item.get('new_sentence'), 'implicit': item.get('rule_sentence'),
+            'absent': item.get('near_miss_sentence')}.get(family) or item['fact_sentence']
+
+
+def select(items, chats, token_set=tokens):
+    """First passing items per family in design order. An item leaks when a message of another selected chat
+    carries its key and at least two of its sentence's other search tokens of four or more characters
+    (amendment 2); a leaking item is
+    banned and the next one taken, until none leaks."""
+    cache = {}
+
+    def message_tokens(text):
+        if text not in cache:
+            cache[text] = token_set(text)
+        return cache[text]
+
     candidates = {f: [i for i in items.get(f, []) if i['failure'] is None and usable(f, i, chats)]
                   for f in PRIMARY + ['absent']}
     banned, dropped = set(), []
@@ -424,8 +443,10 @@ def select(items, chats):
         for f, chosen in selected.items():
             for item in chosen:
                 for key in keys_of(f, item):
+                    own = {t for t in token_set(sentence_of(f, item)) - token_set(key) if len(t) >= 4}
                     for cid, iid in owner.items():
-                        if iid != item['id'] and contains(' '.join(m['content'] for m in chats[cid]['messages']), key):
+                        if iid != item['id'] and any(contains(m['content'], key) and len(
+                                own & message_tokens(m['content'])) >= 2 for m in chats[cid]['messages']):
                             leaks.add(item['id'])
         if not leaks:
             return selected, dropped

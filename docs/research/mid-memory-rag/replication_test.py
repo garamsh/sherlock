@@ -1,5 +1,6 @@
 """Check the replication's selection, hybrid merge, interval, decision rule and call log."""
 import json
+import re
 from pathlib import Path
 import tempfile
 import unittest
@@ -17,12 +18,16 @@ class SelectionTest(unittest.TestCase):
 
     def test_key_leaking_into_another_chat_bans_the_item_and_takes_the_next(self):
         def item(i):
-            return {'id': f'exact-{i}', 'failure': None, 'key': f'K{i}Z'}
-        chats = {f'exact-{i}': {'messages': [{'content': f'my value is K{i}Z'}]} for i in range(4)}
-        chats['exact-1']['messages'].append({'content': 'and K0Z again'})
-        with patch.object(R, 'PER_FAMILY', 2):
-            selected, dropped = R.select({'exact': [item(i) for i in range(4)]}, chats)
-        self.assertEqual([i['id'] for i in selected['exact']], ['exact-1', 'exact-2'])
+            return {'id': f'exact-{i}', 'failure': None, 'key': f'K{i}Z', 'fact_sentence': f'the locker code number is K{i}Z'}
+        chats = {f'exact-{i}': {'messages': [{'content': f'the locker code is K{i}Z'}]} for i in range(5)}
+        # exact-1 restates exact-0's fact: a leak. exact-3 and exact-4 carry a key with at most one other long word.
+        chats['exact-1']['messages'].append({'content': 'the old locker code was K0Z'})
+        chats['exact-4']['messages'].append({'content': 'is K3Z the code'})
+        chats['exact-3']['messages'].append({'content': 'K2Z'})
+        words = lambda text: set(re.findall(r'[a-z0-9]+', text.lower())) - {'the', 'is', 'was'}
+        with patch.object(R, 'PER_FAMILY', 3):
+            selected, dropped = R.select({'exact': [item(i) for i in range(5)]}, chats, words)
+        self.assertEqual([i['id'] for i in selected['exact']], ['exact-1', 'exact-2', 'exact-3'])
         self.assertEqual(dropped, [{'id': 'exact-0', 'reason': 'key appears in another selected chat'}])
 
 

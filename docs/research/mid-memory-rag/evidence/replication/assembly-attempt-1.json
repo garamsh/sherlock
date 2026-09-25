@@ -1,0 +1,1 @@
+{"counts": {"exact": 70, "paraphrase": 47, "implicit": 60, "correction": 42, "absent": 16}, "dropped_for_leaks": 117, "filler_short_messages": 1194, "note": "first assemble attempt, before amendment 2; recomputed from design.jsonl and conversations.jsonl with the amendment-1 select rule"}

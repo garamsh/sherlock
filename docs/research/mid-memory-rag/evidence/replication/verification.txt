@@ -1,0 +1,11 @@
+PATH=/home/sauce/go/bin:$PATH make ci   (tree at the replication report commit) -> exit 0
+go vet ./...
+golangci-lint run ./...
+0 issues.
+format: 160 files checked, all formatted
+build: 25 packages built
+go test ./...: 16 packages ok, 0 FAIL lines
+
+python3 -m unittest discover -s docs/research/mid-memory-rag -p '*_test.py' -> Ran 17 tests, OK
+git diff --stat 2b27bac -- docs/research/mid-memory-rag/evidence ':!docs/research/mid-memory-rag/evidence/replication' -> empty: #854 evidence byte-identical
+MINIMAX_KEY value searched with rg --no-ignore --hidden -l -F over the worktree: no file; control: the same search matches the base .env once

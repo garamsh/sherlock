@@ -1,0 +1,9 @@
+{
+ "status": 200,
+ "base_resp": {
+  "status_code": 1002,
+  "status_msg": "rate limit exceeded(RPM)"
+ },
+ "usable": false,
+ "error_body": null
+}

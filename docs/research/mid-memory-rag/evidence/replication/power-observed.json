@@ -1,0 +1,86 @@
+[
+ {
+  "psi": 0.33,
+  "d": 0.0,
+  "valid": 0.016,
+  "not valid": 0.817,
+  "undetermined": 0.167
+ },
+ {
+  "psi": 0.33,
+  "d": 0.05,
+  "valid": 0.276,
+  "not valid": 0.292,
+  "undetermined": 0.432
+ },
+ {
+  "psi": 0.33,
+  "d": 0.07,
+  "valid": 0.5,
+  "not valid": 0.133,
+  "undetermined": 0.367
+ },
+ {
+  "psi": 0.33,
+  "d": 0.08,
+  "valid": 0.617,
+  "not valid": 0.083,
+  "undetermined": 0.301
+ },
+ {
+  "psi": 0.33,
+  "d": 0.09,
+  "valid": 0.73,
+  "not valid": 0.045,
+  "undetermined": 0.225
+ },
+ {
+  "psi": 0.33,
+  "d": 0.1,
+  "valid": 0.817,
+  "not valid": 0.025,
+  "undetermined": 0.158
+ },
+ {
+  "psi": 0.1536,
+  "d": 0.0,
+  "valid": 0.02,
+  "not valid": 0.979,
+  "undetermined": 0.002
+ },
+ {
+  "psi": 0.1536,
+  "d": 0.05,
+  "valid": 0.52,
+  "not valid": 0.472,
+  "undetermined": 0.008
+ },
+ {
+  "psi": 0.1536,
+  "d": 0.07,
+  "valid": 0.837,
+  "not valid": 0.162,
+  "undetermined": 0.001
+ },
+ {
+  "psi": 0.1536,
+  "d": 0.08,
+  "valid": 0.923,
+  "not valid": 0.076,
+  "undetermined": 0.001
+ },
+ {
+  "psi": 0.1536,
+  "d": 0.09,
+  "valid": 0.976,
+  "not valid": 0.024,
+  "undetermined": 0.0
+ },
+ {
+  "psi": 0.1536,
+  "d": 0.1,
+  "valid": 0.996,
+  "not valid": 0.004,
+  "undetermined": 0.0
+ }
+]

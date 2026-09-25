@@ -8,6 +8,7 @@ import random
 import re
 import subprocess
 import sys
+import threading
 import time
 import urllib.error
 import urllib.request
@@ -138,23 +139,48 @@ def embed(items, scratch):
 
 
 class Meter:
-    def __init__(self, output):
-        self.path = Path(output) / 'calls.json'
-        self.calls = json.loads(self.path.read_text()) if self.path.exists() else []
-        self.input = sum(c.get('charged_input', 0) for c in self.calls)
-        self.output = sum(c.get('charged_output', 0) for c in self.calls)
+    """Reserves every request against global ceilings before HTTP; safe to share across threads."""
+
+    def __init__(self, output, limits=LIMITS):
+        self.limits = limits
+        self.lock = threading.Lock()
+        self.pending_input = self.pending_output = 0
+        self.calls = self.load(Path(output))
+        self.input = sum(c.get('charged_input', c.get('reserved_input', 0)) for c in self.calls)
+        self.output = sum(c.get('charged_output', c.get('reserved_output', 0)) for c in self.calls)
+
+    def load(self, output):
+        self.path = output / 'calls.json'
+        return json.loads(self.path.read_text()) if self.path.exists() else []
+
+    def save(self, entry):
+        write(self.path, self.calls)
 
     def usd(self, extra_in=0, extra_out=0):
         return ((self.input + extra_in) * PRICE_IN + (self.output + extra_out) * PRICE_OUT) / 1e6
 
+    def reserve(self, cell, url, body, reserve_in, reserve_out):
+        with self.lock:
+            need_in = self.pending_input + reserve_in
+            need_out = self.pending_output + reserve_out
+            if (len(self.calls) >= self.limits['calls'] or self.input + need_in > self.limits['input']
+                    or self.output + need_out > self.limits['output']
+                    or self.usd(need_in, need_out) > self.limits['usd']):
+                raise RuntimeError('pre-request global budget reservation refused')
+            entry = {'cell': cell, 'url': url, 'request': body, 'reserved_input': reserve_in,
+                     'reserved_output': reserve_out,
+                     'started_utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}
+            self.calls.append(entry)
+            self.pending_input += reserve_in
+            self.pending_output += reserve_out
+            self.save(entry)
+            return entry
+
     def post(self, cell, url, body, reserve_in, reserve_out):
-        if (len(self.calls) >= LIMITS['calls'] or self.input + reserve_in > LIMITS['input']
-                or self.output + reserve_out > LIMITS['output'] or self.usd(reserve_in, reserve_out) > LIMITS['usd']):
-            raise RuntimeError('pre-request global budget reservation refused')
-        entry = {'cell': cell, 'url': url, 'request': body, 'reserved_input': reserve_in,
-                 'reserved_output': reserve_out, 'started_utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}
-        self.calls.append(entry)
-        write(self.path, self.calls)
+        return self.send(self.reserve(cell, url, body, reserve_in, reserve_out), url, body, reserve_in, reserve_out)
+
+    def send(self, entry, url, body, reserve_in, reserve_out):
+        """Sends one reserved request and settles its usage against the ceilings."""
         started = time.monotonic()
         request = urllib.request.Request(url, data=json.dumps(body).encode(), headers={
             'Authorization': 'Bearer ' + os.environ['MINIMAX_KEY'], 'Content-Type': 'application/json'})
@@ -178,9 +204,12 @@ class Meter:
         else:
             # Unknown usage is charged at its full reservation.
             entry['charged_input'], entry['charged_output'] = reserve_in, reserve_out
-        self.input += entry['charged_input']
-        self.output += entry['charged_output']
-        write(self.path, self.calls)
+        with self.lock:
+            self.pending_input -= reserve_in
+            self.pending_output -= reserve_out
+            self.input += entry['charged_input']
+            self.output += entry['charged_output']
+            self.save(entry)
         if entry['charged_input'] > reserve_in or entry['charged_output'] > reserve_out:
             raise RuntimeError('provider exceeded reserved token allowance')
         return entry

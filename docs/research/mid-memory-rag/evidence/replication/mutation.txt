@@ -1,0 +1,35 @@
+== replication.py: replaced `if any(contains(m['content'], key) and len(own & words(m['content'])) >= 2 for m in messages):` with `if False:`
+FAIL: test_key_leaking_into_another_chat_bans_the_item_and_takes_the_next (replication_test.SelectionTest.test_key_leaking_into_another_chat_bans_the_item_and_takes_the_next)
+Ran 10 tests in 0.009s
+FAILED (failures=1)
+== replication.py: replaced `        for span in pair:` with `        for span in pair[::-1]:`
+FAIL: test_hybrid_alternates_starting_with_shipped_and_dedupes (replication_test.MergeTest.test_hybrid_alternates_starting_with_shipped_and_dedupes)
+Ran 10 tests in 0.009s
+FAILED (failures=1)
+== replication_score.py: replaced `    if low > 0 and guard:` with `    if low > -1 and guard:`
+FAIL: test_decision_separates_gain_null_and_ambiguity (replication_test.RuleTest.test_decision_separates_gain_null_and_ambiguity)
+Ran 10 tests in 0.006s
+FAILED (failures=1)
+== replication.py: replaced `or base.get('status_code') == 1002` with `or False`
+FAIL: test_rate_limited_answer_is_retried_then_refused_by_the_ceiling (replication_test.MeterTest.test_rate_limited_answer_is_retried_then_refused_by_the_ceiling)
+Ran 10 tests in 0.008s
+FAILED (failures=1)
+== replication.py: replaced `if entry['cell'].startswith(('synthesis-', 'phrase-')):` with `if entry['cell'].startswith(('none-',)):`
+FAIL: test_jsonl_log_resumes_usage_and_hides_regenerable_requests (replication_test.MeterTest.test_jsonl_log_resumes_usage_and_hides_regenerable_requests)
+Ran 10 tests in 0.016s
+FAILED (failures=1)
+== replication.py: replaced `return re.search(r'(?<![A-Za-z0-9])' + re.escape(normalize(key).lower()) + r'(?![A-Za-z0-9])',` with `return re.search(re.escape(normalize(key).lower()),`
+FAIL: test_contains_respects_value_boundaries (replication_test.SelectionTest.test_contains_respects_value_boundaries)
+Ran 10 tests in 0.009s
+FAILED (failures=1)
+== replication.py: replaced `            value = raw` with `            value = {}`
+FAIL: test_truncated_phrase_arguments_fall_back_to_task_text_like_production (replication_test.PhraseTest.test_truncated_phrase_arguments_fall_back_to_task_text_like_production)
+Ran 10 tests in 0.009s
+FAILED (failures=1)
+== replication.py: replaced `        text = pattern.sub('[redacted credential]', text)` with `        text = text`
+FAIL: test_redaction_copy_masks_labelled_credentials_and_leaves_plain_text (replication_test.RedactionTest.test_redaction_copy_masks_labelled_credentials_and_leaves_plain_text)
+Ran 10 tests in 0.009s
+FAILED (failures=1)
+== unmodified
+Ran 17 tests in 0.011s
+OK

@@ -95,14 +95,19 @@ const (
 	// memory entered the context each turn (issue #325). Sessions
 	// without a Recaller emit nothing.
 	EventRecall EventKind = "recall"
+	// EventUnderstood fires once per Run of a session with conversation
+	// memory, after the understanding step: Task carries the restatement,
+	// Queries the searches, Note the rewritten note (nil when unchanged),
+	// and Error why the step placed nothing or its note was refused.
+	EventUnderstood EventKind = "understood"
 	// EventWriteback fires once per completed turn, after the terminal
-	// call's note, if it wrote one, is saved.
+	// call's reply is recorded.
 	EventWriteback EventKind = "writeback"
 	// EventWritebackError fires when a turn's writeback did not
-	// arrive: the model called no writeback tool (issue #615), wrote a
-	// note past MaxNoteLength, or called it with arguments that are not
-	// JSON (issue #93). The first two are not terminal — the session
-	// says what is wrong and asks again — and the third fails the turn.
+	// arrive: the model called no writeback tool (issue #615), or
+	// called it with arguments that are not JSON (issue #93). The first
+	// is not terminal — the session says what is missing and asks
+	// again — and the second fails the turn.
 	EventWritebackError EventKind = "writeback_error"
 	// EventToolCall fires after each tool execution.
 	EventToolCall EventKind = "tool_call"
@@ -115,15 +120,18 @@ const (
 
 // Event is one structured loop event for the gateway monitoring stream.
 // Which fields are set depends on Kind: Task on turn_started,
-// RecalledIDs and RecalledCount on recall, Note on writeback, the Tool*
+// RecalledIDs and RecalledCount on recall, Task, Queries and Note on
+// understood, the Tool*
 // fields on tool_call, Response on turn_finished, Error on turn_failed
 // and writeback_error.
 type Event struct {
 	Kind EventKind
 	Turn int
 	Task string
-	// Note is the note a writeback saved; nil means the turn left it
-	// unchanged.
+	// Queries are the searches the understanding step wrote.
+	Queries []string
+	// Note is the note the understanding step saved; nil means the turn
+	// left it unchanged.
 	Note       *string
 	ToolName   string
 	ToolInput  json.RawMessage
@@ -168,6 +176,5 @@ var (
 var ErrMalformedWriteback = errors.New("malformed memory writeback")
 
 // ErrNoteTooLong marks a note past MaxNoteLength. It does not fail the
-// turn: the session returns it to the model as the call's result and asks
-// for a shorter note.
+// turn: the note stays as it was and the refusal is reported.
 var ErrNoteTooLong = errors.New("note too long")

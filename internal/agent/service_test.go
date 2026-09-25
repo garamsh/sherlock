@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"strconv"
 	"strings"
 	"sync"
 	"testing"
@@ -18,11 +17,10 @@ import (
 )
 
 // replyOnly renders the response document (agent.ResponseSchema) for a
-// turn that leaves the note unchanged.
+// turn.
 func replyOnly(text string) string {
 	out, err := json.Marshal(struct {
-		Reply string  `json:"reply"`
-		Note  *string `json:"note"`
+		Reply string `json:"reply"`
 	}{Reply: text})
 	if err != nil {
 		panic(err)
@@ -187,7 +185,7 @@ func TestSessionRun_ScriptedMultiTurnScenario(t *testing.T) {
 			},
 		},
 		agent.ScriptedStep{
-			ToolCalls: []agent.ToolCall{writebackCall(`{"reply":"The echo said hi.","note":null}`)},
+			ToolCalls: []agent.ToolCall{writebackCall(`{"reply":"The echo said hi."}`)},
 		},
 	)
 	recaller := &fakeRecaller{memories: []agent.RecalledMemory{
@@ -528,7 +526,7 @@ func TestSessionRun_ProseForeverFailsTheTurn(t *testing.T) {
 // that was never written down.
 func TestSessionRun_MalformedWritebackArgumentsFailTheTurn(t *testing.T) {
 	model := agent.NewScriptedModel(
-		agent.ScriptedStep{ToolCalls: []agent.ToolCall{writebackCall(`{"reply":"still useful","note":`)}},
+		agent.ScriptedStep{ToolCalls: []agent.ToolCall{writebackCall(`{"reply":"still useful"`)}},
 	)
 	events := &fakeEvents{}
 	s := agent.NewSession(model, newFakeClient(), agent.Options{Events: events})
@@ -980,61 +978,47 @@ func TestSessionRun_InstructionsSurviveCompaction(t *testing.T) {
 		"the instructions still lead the history the model sees after a compaction")
 }
 
-func TestSessionRun_NoteLeadsEveryTurnAndIsReplaced(t *testing.T) {
-	store := &noteStore{}
-	model := &recordingModel{inner: agent.NewScriptedModel(
-		agent.ScriptedStep{ToolCalls: []agent.ToolCall{writebackCall(`{"reply":"Noted.","note":"Indent code with tabs."}`)}},
-		finalStep("Here it is."),
-	)}
-	events := &fakeEvents{}
-	s := agent.NewSession(model, newFakeClient(), agent.Options{Conversation: store, Events: events})
-
-	_, err := s.Run(context.Background(), "Always indent code with tabs.")
-	require.NoError(t, err)
-	_, err = s.Run(context.Background(), "Write me a loop.")
-	require.NoError(t, err)
-
-	assert.Equal(t, agent.ComposeInstructions("")+"\n\n## Your note\n(empty)", model.seen[0][0].Content, "an unwritten note is stated as empty")
-	assert.Equal(t, agent.ComposeInstructions("")+"\n\n## Your note\nIndent code with tabs.", model.seen[1][0].Content, "the next turn leads with the saved note")
-	assert.Equal(t, []string{"Indent code with tabs."}, store.setNotes, "a null note saves nothing")
-	require.Len(t, store.turns, 2, "sources are recorded on both turns")
-
-	var notes []*string
-	for _, e := range events.events {
-		if e.Kind == agent.EventWriteback {
-			notes = append(notes, e.Note)
-		}
-	}
-	require.Len(t, notes, 2)
-	require.NotNil(t, notes[0])
-	assert.Equal(t, "Indent code with tabs.", *notes[0])
-	assert.Nil(t, notes[1], "an unchanged note is reported as unchanged")
+// noteStore is a stateful conversation store: it keeps the note, the
+// recorded turns and every search query, and answers searches with fixed
+// hits.
+type noteStore struct {
+	agent.ConversationMemory
+	note     string
+	setNotes []string
+	turns    [][]agent.SourceMessage
+	queries  []string
+	limits   []int
+	hits     []agent.ConversationHit
 }
 
-// TestSessionRun_OvergrownNoteIsHandedBack keeps the reply when the note is
-// too long: the call is refused as its own result and the model tries
-// again, where a malformed call would fail the turn.
-func TestSessionRun_OvergrownNoteIsHandedBack(t *testing.T) {
-	long := make([]byte, agent.MaxNoteLength+1)
-	for i := range long {
-		long[i] = 'x'
-	}
-	store := &noteStore{}
-	model := &recordingModel{inner: agent.NewScriptedModel(
-		agent.ScriptedStep{ToolCalls: []agent.ToolCall{writebackCall(`{"reply":"Done.","note":` + strconv.Quote(string(long)) + `}`)}},
-		agent.ScriptedStep{ToolCalls: []agent.ToolCall{writebackCall(`{"reply":"Done.","note":"short"}`)}},
-	)}
-	events := &fakeEvents{}
-	s := agent.NewSession(model, newFakeClient(), agent.Options{Conversation: store, Events: events})
+func (s *noteStore) Note(context.Context) (string, error) { return s.note, nil }
 
-	reply, err := s.Run(context.Background(), "task")
-	require.NoError(t, err)
-	assert.Equal(t, "Done.", reply)
-	assert.Equal(t, []string{"short"}, store.setNotes, "only the note within the bound is saved")
-	assert.Contains(t, events.kinds(), agent.EventWritebackError)
+func (s *noteStore) SetNote(_ context.Context, note string) error {
+	s.note = note
+	s.setNotes = append(s.setNotes, note)
+	return nil
+}
 
-	refusal := model.seen[1][len(model.seen[1])-1]
-	assert.Equal(t, agent.RoleTool, refusal.Role)
-	assert.Contains(t, refusal.Content, "note too long")
-	assert.Equal(t, model.seen[1][len(model.seen[1])-2].ToolCalls[0].ID, refusal.ToolCallID, "the refusal answers the call that carried the note")
+func (s *noteStore) RecordTurn(_ context.Context, sources []agent.SourceMessage, _ agent.ConversationSummarizer) error {
+	s.turns = append(s.turns, sources)
+	return nil
+}
+
+func (s *noteStore) Search(_ context.Context, query string, limit int) ([]agent.ConversationHit, error) {
+	s.queries = append(s.queries, query)
+	s.limits = append(s.limits, limit)
+	return s.hits, nil
+}
+
+// recordingModel scripts responses and keeps what each call was shown.
+type recordingModel struct {
+	inner *agent.ScriptedModel
+	seen  [][]agent.Message
+	tools [][]tool.Descriptor
+}
+
+func (m *recordingModel) Chat(ctx context.Context, messages []agent.Message, tools []tool.Descriptor) (agent.Response, error) {
+	m.seen = append(m.seen, append([]agent.Message(nil), messages...))
+	m.tools = append(m.tools, tools)
+	return m.inner.Chat(ctx, messages, tools)
 }

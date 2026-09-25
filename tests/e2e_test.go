@@ -46,7 +46,7 @@ func mvpScript() *agent.ScriptedModel {
 				`{"channel":"http","target":"sender","content":"42"}`,
 			),
 		}}},
-		writebackStep(`{"reply":"Replied via message_send and stored the result.","note":null}`),
+		writebackStep(`{"reply":"Replied via message_send and stored the result."}`),
 	)
 }
 
@@ -63,7 +63,7 @@ func TestEndToEnd_MVPScenario(t *testing.T) {
 	factory := &gateway.Factory{
 		MemoryPath: filepath.Join(root, "memory.db"),
 		NewModel: func(string) agent.Model {
-			return mvpScript()
+			return summarizing{mvpScript()}
 		},
 		Tools: stubClient_{descriptors: []tool.Descriptor{
 			{Name: "message_send", Description: "queue an outbound message"},
@@ -134,17 +134,16 @@ func runMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	// Monitoring: the full turn lifecycle was published, in order: one
 	// turn with one tool call (message_send) and a writeback after
 	// every model response.
-	got := collectEvents(t, events, 5)
+	got := collectEvents(t, events, 6)
 	var kinds []string
 	for _, e := range got {
 		kinds = append(kinds, e["kind"].(string))
 	}
-	// The recall event is back: #630 wired the read step, so every turn
-	// resolves the task into an address before the act loop (ADR 0019).
-	// The writeback fires once per turn, when the turn ends on the
-	// reserved call, rather than once per model response (issue #615).
+	// Every turn is understood and then recalled before the act loop
+	// (ADR 0019). The writeback fires once per turn, when the turn ends on
+	// the reserved call, rather than once per model response (issue #615).
 	assert.Equal(t, []string{
-		"turn_started", "recall",
+		"turn_started", "understood", "recall",
 		"tool_call", "writeback", "turn_finished",
 	}, kinds)
 	assert.Contains(t, got[0]["task"], "] unknown: "+e2eQuestion,
@@ -153,8 +152,8 @@ func runMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	// The agent replied via message_send. The final writeback records
 	// the answer at the address of the question it answers (ADR 0011:
 	// the writeback is the single write path; ADR 0018).
-	assert.Equal(t, "message_send", got[2]["tool_name"])
-	assert.NotContains(t, got[2], "tool_failed")
+	assert.Equal(t, "message_send", got[3]["tool_name"])
+	assert.NotContains(t, got[3], "tool_failed")
 
 	// Reply: message_send output landed in the agent's outbox.
 	require.Eventually(t, func() bool {

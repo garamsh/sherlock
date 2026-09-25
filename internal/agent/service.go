@@ -156,15 +156,19 @@ func (s *session) Run(ctx context.Context, task string) (response string, err er
 		}
 	}()
 
+	understood, err := s.understand(ctx, task)
+	if err != nil {
+		return "", err
+	}
 	if err := s.lead(ctx); err != nil {
 		return "", err
 	}
-	recalled, err := s.recall(ctx, task)
+	recalled, err := s.recall(ctx, understood.recallText())
 	if err != nil {
 		return "", err
 	}
 	s.history = append(s.history,
-		Message{Role: RoleSystem, Content: frameContext(task, recalled)},
+		Message{Role: RoleSystem, Content: frameContext(task, understood.Restatement, recalled)},
 		Message{Role: RoleUser, Content: task},
 	)
 
@@ -178,21 +182,11 @@ func (s *session) Run(ctx context.Context, task string) (response string, err er
 		}
 		write, calls := splitWriteback(resp.ToolCalls)
 		if write != nil {
-			reply, note, err := ParseWriteback(string(write.Input))
-			if errors.Is(err, ErrNoteTooLong) {
-				// The reply is not lost to an overgrown note: the call
-				// gets its refusal as a result and the model asks again.
-				s.emit(ctx, Event{Kind: EventWritebackError, Turn: s.turn, Error: err.Error()})
-				s.history = append(s.history,
-					Message{Role: RoleAssistant, Content: resp.Content, ToolCalls: []ToolCall{*write}},
-					Message{Role: RoleTool, Name: write.Name, ToolCallID: write.ID, Content: err.Error() + "; shorten the note and call " + MemoryWriteTool + " again"},
-				)
-				continue
-			}
+			reply, err := ParseWriteback(string(write.Input))
 			if err != nil {
 				return "", err
 			}
-			return s.finish(ctx, reply, note)
+			return s.finish(ctx, reply)
 		}
 		s.history = append(s.history, Message{
 			Role:      RoleAssistant,
@@ -225,7 +219,7 @@ func (s *session) modelTools() []tool.Descriptor {
 	installed := s.tools.List()
 	out := make([]tool.Descriptor, 0, len(installed)+2)
 	for _, d := range installed {
-		if d.Name == MemoryWriteTool || d.Name == MemoryInspectTool || d.Name == MemorySearchTool {
+		if d.Name == MemoryWriteTool || d.Name == MemoryInspectTool || d.Name == MemoryUnderstandTool {
 			// An operator tool cannot take the reserved name: the
 			// session would route its calls to the writeback and the
 			// operator's tool would never run. Dropping it is visible
@@ -238,7 +232,7 @@ func (s *session) modelTools() []tool.Descriptor {
 	}
 	out = append(out, MemoryWriteDescriptor())
 	if s.opts.Conversation != nil {
-		out = append(out, MemoryInspectDescriptor(), MemorySearchDescriptor())
+		out = append(out, MemoryInspectDescriptor())
 	}
 	return out
 }
@@ -263,29 +257,21 @@ func splitWriteback(calls []ToolCall) (*ToolCall, []ToolCall) {
 	return write, rest
 }
 
-// finish records the turn the model ended with its reply and note.
+// finish records the turn the model ended with its reply.
 // A turn's history keeps the reply rather than the call that carried
 // it. The writeback call is the turn's last act and nothing answers it,
 // so leaving it in history leaves a tool call with no result — which a
 // provider rejects on the next turn, and did: MiniMax returns HTTP 400
 // "tool call result does not follow tool call" on the turn after the
 // first, which made a rolling session unusable past turn one (#630).
-//
-// The sources are saved before the note, so a failed note write leaves
-// the turn's conversation durable and the previous note in place.
-func (s *session) finish(ctx context.Context, reply string, note *string) (string, error) {
+func (s *session) finish(ctx context.Context, reply string) (string, error) {
 	s.history = append(s.history, Message{Role: RoleAssistant, Content: reply})
 	if s.opts.Conversation != nil {
 		if err := s.opts.Conversation.RecordTurn(ctx, append(append([]SourceMessage(nil), s.sources...), SourceMessage{Role: RoleAssistant, Content: reply}), s.opts.Summarizer); err != nil {
 			return "", fmt.Errorf("record conversation: %w", err)
 		}
-		if note != nil {
-			if err := s.opts.Conversation.SetNote(ctx, *note); err != nil {
-				return "", fmt.Errorf("save note: %w", err)
-			}
-		}
 	}
-	s.emit(ctx, Event{Kind: EventWriteback, Turn: s.turn, Note: note})
+	s.emit(ctx, Event{Kind: EventWriteback, Turn: s.turn})
 	s.emit(ctx, Event{Kind: EventTurnFinished, Turn: s.turn, Response: reply})
 	return reply, nil
 }
@@ -295,7 +281,7 @@ func (s *session) finish(ctx context.Context, reply string, note *string) (strin
 // descriptor already carries.
 func writebackRequiredNotice() string {
 	return "Your turn is not finished. Call " + MemoryWriteTool +
-		" with your reply, and your note or null when it did not change."
+		" with your reply."
 }
 
 // execute runs one tool call through the protocol client and feeds the
@@ -347,13 +333,6 @@ func (s *session) execute(ctx context.Context, call ToolCall) {
 func (s *session) invoke(ctx context.Context, call ToolCall) (string, bool) {
 	if call.Name == MemoryInspectTool && s.opts.Conversation != nil {
 		out, err := inspectMemory(ctx, s.opts.Conversation, call.Input)
-		if err != nil {
-			return err.Error(), true
-		}
-		return out, false
-	}
-	if call.Name == MemorySearchTool && s.opts.Conversation != nil {
-		out, err := searchMemory(ctx, s.opts.Conversation, call.Input)
 		if err != nil {
 			return err.Error(), true
 		}
@@ -423,6 +402,37 @@ func (s *session) recall(ctx context.Context, task string) (Recalled, error) {
 	return recalled, nil
 }
 
+// understand runs the understanding step before recall and saves the note
+// it rewrote. A session without conversation memory has no note and no
+// older conversation, so it skips the step and recall reads the raw input.
+// A step that places nothing, or writes an overgrown note, is reported and
+// the turn goes on without what it lacked; a failed model call fails the
+// turn as any other would.
+func (s *session) understand(ctx context.Context, task string) (Understanding, error) {
+	if s.opts.Conversation == nil {
+		return Understanding{Restatement: task}, nil
+	}
+	note, err := s.opts.Conversation.Note(ctx)
+	if err != nil {
+		return Understanding{}, fmt.Errorf("read note: %w", err)
+	}
+	understood, err := understand(ctx, s.model, note, s.history, task)
+	event := Event{Kind: EventUnderstood, Turn: s.turn, Task: understood.Restatement, Queries: understood.Queries, Note: understood.Note}
+	switch {
+	case errors.Is(err, ErrUnderstandingNotCalled) || errors.Is(err, ErrNoteTooLong):
+		event.Error = err.Error()
+	case err != nil:
+		return Understanding{}, err
+	}
+	if understood.Note != nil {
+		if err := s.opts.Conversation.SetNote(ctx, *understood.Note); err != nil {
+			return Understanding{}, fmt.Errorf("save note: %w", err)
+		}
+	}
+	s.emit(ctx, event)
+	return understood, nil
+}
+
 // lead puts the instructions, followed by the saved note, at the head of
 // history. It runs every turn, because the note can change between turns
 // and a restored or compacted history must not keep a stale one.
@@ -473,14 +483,19 @@ func (s *session) emit(ctx context.Context, e Event) {
 }
 
 // frameContext composes the per-turn system block: the task statement
-// (frame) followed by the recalled memories, with an explicit statement
-// when recall came back empty (ADR 0006 step 2).
+// (frame), what the understanding step made of it when that differs, and
+// the recalled memories, with an explicit statement when recall came back
+// empty (ADR 0006 step 2).
 // frameContext renders the turn's task and what recall reached. The two
 // emptinesses are stated apart (ADR 0019): a question memory could not
 // place is not a question memory had no answer to, and a model told the
 // second when the first happened is being told something false.
-func frameContext(task string, recalled Recalled) string {
-	out := "## Current task\n" + task + "\n\n## Recalled memories\n"
+func frameContext(task, restatement string, recalled Recalled) string {
+	out := "## Current task\n" + task + "\n\n"
+	if restatement != task {
+		out += "## Understood as\n" + restatement + "\n\n"
+	}
+	out += "## Recalled memories\n"
 	if len(recalled.Memories) == 0 {
 		switch recalled.Outcome {
 		case RecallUnplaced:

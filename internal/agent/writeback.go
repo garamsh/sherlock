@@ -29,9 +29,9 @@ const MemoryWriteTool = "memory_write"
 // session instructions because a tool the model is shown carries its own
 // contract, and because what a caller may decline is not settled by
 // prose: the session will not end a turn without this call.
-const memoryWriteDescription = "Deliver your reply and your whole note. " +
+const memoryWriteDescription = "Deliver your reply. " +
 	"Every turn ends with this call and no turn ends without it. The reply is what the person reads; " +
-	"the note is restated in full every turn. The runtime saves visible conversation separately."
+	"the runtime saves visible conversation separately."
 
 // MemoryWriteDescriptor is the reserved tool as the model sees it. Its
 // parameters are ResponseSchema, so what the write carries is the same
@@ -44,34 +44,19 @@ func MemoryWriteDescriptor() tool.Descriptor {
 	}
 }
 
-// MaxNoteLength bounds the note in characters. A note that outgrows it
-// is refused, so the model consolidates it instead of the runtime
-// cutting it.
-const MaxNoteLength = 2000
-
 // ResponseSchema is the JSON Schema the terminal call is constrained to.
 // It is the reserved tool's parameters, and ParseWriteback reads what the
 // model puts in them, so the schema and the parser are one contract and
 // are kept together.
-//
-// The note is a required string the model restates whole every turn, so
-// keeping an instruction is an act the model takes each time. A nullable
-// note that meant "unchanged" was left null on every turn by MiniMax-M2,
-// even after a standing instruction (issue #862's pilot).
 const ResponseSchema = `{
   "type": "object",
   "properties": {
     "reply": {
       "type": "string",
-      "description": "Everything the person reads. The note is not shown to them."
-    },
-    "note": {
-      "type": "string",
-      "maxLength": 2000,
-      "description": "Your whole note as it stands after this turn: every standing instruction and preference the person has given, and the current work with its goal, constraints, status and next step. Copy it unchanged when nothing in it changed; add what this turn stated."
+      "description": "Everything the person reads."
     }
   },
-  "required": ["reply", "note"],
+  "required": ["reply"],
   "additionalProperties": false
 }`
 
@@ -94,32 +79,19 @@ func (e *WritebackError) Unwrap() error { return e.Err }
 // Is reports whether target is ErrMalformedWriteback.
 func (e *WritebackError) Is(target error) bool { return target == ErrMalformedWriteback }
 
-// writebackJSON is the wire shape of the terminal call: the visible reply
-// and the note, null when unchanged.
+// writebackJSON is the wire shape of the terminal call.
 type writebackJSON struct {
-	Reply string  `json:"reply"`
-	Note  *string `json:"note"`
+	Reply string `json:"reply"`
 }
 
-// ParseWriteback splits the terminal call's arguments into the visible
-// reply and the note. A note the call leaves out or sends as null leaves
-// the saved one unchanged. Arguments
-// that are not JSON fail with *WritebackError, and a note longer than
-// MaxNoteLength with ErrNoteTooLong, which the session hands back to the
-// model rather than failing the turn.
-func ParseWriteback(content string) (reply string, note *string, err error) {
+// ParseWriteback reads the visible reply out of the terminal call's
+// arguments. Arguments that are not JSON fail with *WritebackError.
+func ParseWriteback(content string) (string, error) {
 	var doc writebackJSON
-	if jsonErr := json.Unmarshal([]byte(strings.TrimSpace(content)), &doc); jsonErr != nil {
-		return "", nil, &WritebackError{Err: fmt.Errorf("invalid JSON: %s", jsonErrorMessage(jsonErr))}
+	if err := json.Unmarshal([]byte(strings.TrimSpace(content)), &doc); err != nil {
+		return "", &WritebackError{Err: fmt.Errorf("invalid JSON: %s", jsonErrorMessage(err))}
 	}
-	if doc.Note != nil {
-		trimmed := strings.TrimSpace(*doc.Note)
-		if n := len([]rune(trimmed)); n > MaxNoteLength {
-			return "", nil, fmt.Errorf("%w: %d characters, at most %d", ErrNoteTooLong, n, MaxNoteLength)
-		}
-		doc.Note = &trimmed
-	}
-	return strings.TrimSpace(doc.Reply), doc.Note, nil
+	return strings.TrimSpace(doc.Reply), nil
 }
 
 // jsonErrorMessage returns a model-facing message for a JSON unmarshal

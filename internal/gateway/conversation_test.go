@@ -25,6 +25,10 @@ type evidenceModel struct {
 }
 
 func (m *evidenceModel) Chat(ctx context.Context, messages []agent.Message, tools []tool.Descriptor) (agent.Response, error) {
+	if len(tools) == 1 {
+		// Understanding and synthesis are not act calls.
+		return m.inner.Chat(ctx, messages, tools)
+	}
 	m.calls++
 	if m.calls == 2 {
 		found := false
@@ -48,8 +52,8 @@ func TestConversation_ParaphraseCorrectionAndExactSource(t *testing.T) {
 	ctx := context.Background()
 	path := filepath.Join(t.TempDir(), "memory.db")
 	first := summaryScript(
-		writebackStep(`{"reply":"Noted.","note":null}`),
-		writebackStep(`{"reply":"Corrected.","note":null}`),
+		writebackStep(`{"reply":"Noted."}`),
+		writebackStep(`{"reply":"Corrected."}`),
 	)
 	f := &gateway.Factory{MemoryPath: path, NewModel: func(string) agent.Model { return first }, Embedder: wordEmbedder{}, Tools: noTools(), MaxHistoryMessages: 2}
 	rt, err := f.New(ctx, "a", nil)
@@ -81,7 +85,7 @@ func TestConversation_ParaphraseCorrectionAndExactSource(t *testing.T) {
 
 	model := summaryScript(
 		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.MemoryInspectTool, Input: json.RawMessage(`{"id":5}`)}}},
-		writebackStep(`{"reply":"You corrected it to the Vega-2 reflector; your exact words were: 'Correction: my preferred telescope is the Vega-2 reflector.'","note":null}`),
+		writebackStep(`{"reply":"You corrected it to the Vega-2 reflector; your exact words were: 'Correction: my preferred telescope is the Vega-2 reflector.'"}`),
 	)
 	events := &conversationEvents{}
 	f.NewModel = func(string) agent.Model { return &evidenceModel{inner: model} }
@@ -106,7 +110,7 @@ func TestConversation_UnsupportedQuestionHasNoEvidence(t *testing.T) {
 	ctx := context.Background()
 	path := filepath.Join(t.TempDir(), "memory.db")
 	model := summaryScript(
-		writebackStep(`{"reply":"I don't have a source for that.","note":null}`),
+		writebackStep(`{"reply":"I don't have a source for that."}`),
 	)
 	events := &conversationEvents{}
 	rt, err := (&gateway.Factory{MemoryPath: path, NewModel: func(string) agent.Model { return model }, Tools: noTools()}).New(ctx, "a", events)
@@ -129,7 +133,7 @@ func TestConversation_QueuePreservesOriginalInboundID(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "memory.db")
 	factory := &gateway.Factory{MemoryPath: path, NewModel: func(string) agent.Model {
 		return summaryScript(
-			writebackStep(`{"reply":"Noted.","note":null}`),
+			writebackStep(`{"reply":"Noted."}`),
 		)
 	}, Tools: noTools()}
 	queue, err := gateway.NewQueue(factory, "a", nil)
@@ -162,7 +166,7 @@ func TestConversation_RelatedCandidateDoesNotSupportMissingDate(t *testing.T) {
 	require.NoError(t, seed.RecordTurn(ctx, []agent.SourceMessage{{Role: agent.RoleUser, Content: "The lunar mission uses the Aurora capsule."}, {Role: agent.RoleAssistant, Content: "Noted."}}, firstSummary{}))
 	require.NoError(t, seed.Close())
 	model := summaryScript(
-		writebackStep(`{"reply":"I found the capsule name but no launch date in the available source.","note":null}`),
+		writebackStep(`{"reply":"I found the capsule name but no launch date in the available source."}`),
 	)
 	events := &conversationEvents{}
 	rt, err := (&gateway.Factory{MemoryPath: path, NewModel: func(string) agent.Model { return model }, Embedder: wordEmbedder{}, Tools: noTools()}).New(ctx, "a", events)
@@ -206,9 +210,18 @@ func summaryScript(steps ...agent.ScriptedStep) agent.Model {
 	return &summaryModel{inner: agent.NewScriptedModel(steps...)}
 }
 
-type summaryModel struct{ inner agent.Model }
+// summaryModel answers synthesis calls itself and, unless the script holds
+// its own understanding steps, restates each input unchanged, so a script
+// lists only the act loop's steps.
+type summaryModel struct {
+	inner                 agent.Model
+	scriptedUnderstanding bool
+}
 
 func (m *summaryModel) Chat(ctx context.Context, messages []agent.Message, descriptors []tool.Descriptor) (agent.Response, error) {
+	if !m.scriptedUnderstanding && len(descriptors) == 1 && descriptors[0].Name == agent.MemoryUnderstandTool {
+		return restate(messages)
+	}
 	if len(descriptors) == 1 && descriptors[0].Name == "memory_summary" {
 		var input struct {
 			Updates []string `json:"updates"`
@@ -231,6 +244,36 @@ func (m *summaryModel) Chat(ctx context.Context, messages []agent.Message, descr
 	return m.inner.Chat(ctx, messages, descriptors)
 }
 
+// restate answers an understanding call with the input as its own
+// restatement and query, and the note unchanged.
+func restate(messages []agent.Message) (agent.Response, error) {
+	var doc struct {
+		Input string `json:"input"`
+	}
+	if err := json.Unmarshal([]byte(messages[len(messages)-1].Content), &doc); err != nil {
+		return agent.Response{}, err
+	}
+	data, err := json.Marshal(map[string]any{"restatement": doc.Input, "queries": []string{doc.Input}, "note": nil})
+	return agent.Response{ToolCalls: []agent.ToolCall{{Name: agent.MemoryUnderstandTool, Input: data}}}, err
+}
+
+// restating wraps a scripted model so understanding calls restate the input
+// and never consume a scripted step.
+func restating(inner agent.Model) agent.Model { return restatingModel{inner} }
+
+type restatingModel struct{ inner agent.Model }
+
+func (m restatingModel) Chat(ctx context.Context, messages []agent.Message, descriptors []tool.Descriptor) (agent.Response, error) {
+	if len(descriptors) == 1 && descriptors[0].Name == agent.MemoryUnderstandTool {
+		return restate(messages)
+	}
+	return m.inner.Chat(ctx, messages, descriptors)
+}
+
+func understandStep(document string) agent.ScriptedStep {
+	return agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.MemoryUnderstandTool, Input: json.RawMessage(document)}}}
+}
+
 func checkpointSources(content string, count int) []agent.SourceMessage {
 	var sources []agent.SourceMessage
 	for i := 0; i < count; i++ {
@@ -243,29 +286,28 @@ func checkpointSources(content string, count int) []agent.SourceMessage {
 type leadingModel struct {
 	inner   agent.Model
 	leading []string
-	results []string
 }
 
 func (m *leadingModel) Chat(ctx context.Context, messages []agent.Message, descriptors []tool.Descriptor) (agent.Response, error) {
-	if len(descriptors) != 1 || descriptors[0].Name != "memory_summary" {
+	if len(descriptors) != 1 {
 		m.leading = append(m.leading, messages[0].Content)
-		if last := messages[len(messages)-1]; last.Role == agent.RoleTool {
-			m.results = append(m.results, last.Content)
-		}
 	}
 	return m.inner.Chat(ctx, messages, descriptors)
 }
 
-// TestConversation_NoteSurvivesCompactionAndRestart writes a note on the
-// first turn, lets the two-message window drop that turn, and restarts: the
-// note still leads the context, where the turn that stated it does not.
+// TestConversation_NoteSurvivesCompactionAndRestart has the understanding
+// step write a note on the first turn, lets the two-message window drop
+// that turn, and restarts: the note still leads the context, where the
+// turn that stated it does not.
 func TestConversation_NoteSurvivesCompactionAndRestart(t *testing.T) {
 	ctx := context.Background()
 	path := filepath.Join(t.TempDir(), "memory.db")
-	model := &leadingModel{inner: summaryScript(
-		writebackStep(`{"reply":"Noted.","note":"Standing instruction: indent code with tabs."}`),
-		writebackStep(`{"reply":"Filler answered.","note":null}`),
-	)}
+	model := &leadingModel{inner: &summaryModel{scriptedUnderstanding: true, inner: agent.NewScriptedModel(
+		understandStep(`{"restatement":"Always indent code with tabs.","queries":["code indentation"],"note":"Standing instruction: indent code with tabs."}`),
+		writebackStep(`{"reply":"Noted."}`),
+		understandStep(`{"restatement":"Unrelated filler question.","queries":["filler"]}`),
+		writebackStep(`{"reply":"Filler answered."}`),
+	)}}
 	f := &gateway.Factory{MemoryPath: path, NewModel: func(string) agent.Model { return model }, Embedder: wordEmbedder{}, Tools: noTools(), MaxHistoryMessages: 2}
 	rt, err := f.New(ctx, "a", nil)
 	require.NoError(t, err)
@@ -275,7 +317,10 @@ func TestConversation_NoteSurvivesCompactionAndRestart(t *testing.T) {
 	require.NoError(t, err)
 	require.NoError(t, rt.Close(ctx))
 
-	restartedModel := &leadingModel{inner: summaryScript(writebackStep(`{"reply":"Tabs.","note":null}`))}
+	restartedModel := &leadingModel{inner: &summaryModel{scriptedUnderstanding: true, inner: agent.NewScriptedModel(
+		understandStep(`{"restatement":"Write me a loop.","queries":["loop"]}`),
+		writebackStep(`{"reply":"Tabs."}`),
+	)}}
 	f.NewModel = func(string) agent.Model { return restartedModel }
 	restarted, err := f.New(ctx, "a", nil)
 	require.NoError(t, err)
@@ -284,39 +329,11 @@ func TestConversation_NoteSurvivesCompactionAndRestart(t *testing.T) {
 	require.NoError(t, err)
 
 	require.Len(t, model.leading, 2)
-	assert.Contains(t, model.leading[0], "## Your note\n(empty)", "the control: no note before one is written")
+	assert.Contains(t, model.leading[0], "## Your note\nStanding instruction: indent code with tabs.", "the note written before the act leads it")
 	assert.Contains(t, model.leading[1], "## Your note\nStanding instruction: indent code with tabs.")
 	require.Len(t, restartedModel.leading, 1)
 	assert.Contains(t, restartedModel.leading[0], "## Your note\nStanding instruction: indent code with tabs.")
 	for _, m := range restarted.Session.History() {
 		assert.NotEqual(t, "Always indent code with tabs.", m.Content, "the window no longer holds the turn that stated the rule")
 	}
-}
-
-// TestConversation_SearchReturnsTheEpisodeForTheModelsQuery searches with the
-// query the model wrote and hands back the episode with its interval.
-func TestConversation_SearchReturnsTheEpisodeForTheModelsQuery(t *testing.T) {
-	ctx := context.Background()
-	path := filepath.Join(t.TempDir(), "memory.db")
-	first := summaryScript(writebackStep(`{"reply":"Noted.","note":null}`))
-	f := &gateway.Factory{MemoryPath: path, NewModel: func(string) agent.Model { return first }, Embedder: wordEmbedder{}, Tools: noTools(), MaxHistoryMessages: 2}
-	rt, err := f.New(ctx, "a", nil)
-	require.NoError(t, err)
-	_, err = rt.Session.Run(agent.WithInboundSources(ctx, checkpointSources("My preferred telescope is the Kepler-9 refractor.", 3)), "Remember the telescope preference.")
-	require.NoError(t, err)
-	require.NoError(t, rt.Close(ctx))
-
-	model := &leadingModel{inner: summaryScript(
-		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.MemorySearchTool, Input: json.RawMessage(`{"query":"preferred telescope"}`)}}},
-		writebackStep(`{"reply":"The Kepler-9 refractor.","note":null}`),
-	)}
-	f.NewModel = func(string) agent.Model { return model }
-	restarted, err := f.New(ctx, "a", nil)
-	require.NoError(t, err)
-	defer restarted.Close(ctx)
-	_, err = restarted.Session.Run(ctx, "Which one did I pick?")
-	require.NoError(t, err)
-	require.Len(t, model.results, 1)
-	assert.Contains(t, model.results[0], "Kepler-9 refractor", "the search result carries the episode")
-	assert.Contains(t, model.results[0], `"source_first":1`)
 }

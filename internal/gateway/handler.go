@@ -100,13 +100,14 @@ func (h *handler) postMessage(w http.ResponseWriter, r *http.Request) {
 }
 
 // eventPayload is the wire form of one loop event on the SSE stream.
-// Which fields are set depends on Kind (see agent.Event). Note is set on a
-// writeback event that saved one; its absence means the note is unchanged.
+// Which fields are set depends on Kind (see agent.Event). Note is set on an
+// understood event that saved one; its absence means the note is unchanged.
 type eventPayload struct {
 	AgentID    string          `json:"agent_id"`
 	Kind       agent.EventKind `json:"kind"`
 	Turn       int             `json:"turn"`
 	Task       string          `json:"task,omitempty"`
+	Queries    []string        `json:"queries,omitempty"`
 	Note       *string         `json:"note,omitempty"`
 	ToolName   string          `json:"tool_name,omitempty"`
 	ToolInput  json.RawMessage `json:"tool_input,omitempty"`
@@ -163,6 +164,7 @@ func (h *handler) events(w http.ResponseWriter, r *http.Request) {
 				Kind:          e.Kind,
 				Turn:          e.Turn,
 				Task:          e.Task,
+				Queries:       e.Queries,
 				Note:          e.Note,
 				ToolName:      e.ToolName,
 				ToolInput:     e.ToolInput,

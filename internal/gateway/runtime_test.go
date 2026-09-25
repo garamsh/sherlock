@@ -47,13 +47,13 @@ func (s *recordingSink) messages() []message.Message {
 // replyModel scripts one full turn: a message_send tool call, then a final
 // response carrying a writeback block.
 func replyModel(_ string) agent.Model {
-	return agent.NewScriptedModel(
+	return restating(agent.NewScriptedModel(
 		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{
 			Name:  "message_send",
 			Input: json.RawMessage(`{"channel":"test","target":"sender","content":"Message received."}`),
 		}}},
-		writebackStep(`{"reply":"Replied.","note":null}`),
-	)
+		writebackStep(`{"reply":"Replied."}`),
+	))
 }
 
 // memoryPath returns the memory file path inside root the test factories
@@ -163,8 +163,8 @@ func TestQueue_CloseClosesTheStore(t *testing.T) {
 
 func compactionModel(_ string) agent.Model {
 	return summaryScript(
-		writebackStep(`{"reply":"First reply.","note":null}`),
-		writebackStep(`{"reply":"Second reply.","note":null}`),
+		writebackStep(`{"reply":"First reply."}`),
+		writebackStep(`{"reply":"Second reply."}`),
 	)
 }
 
@@ -219,7 +219,7 @@ func TestFactory_HistoryOverflowStoresNothing(t *testing.T) {
 func TestFactory_ConversationSurvivesRestart(t *testing.T) {
 	root := t.TempDir()
 	factory := &gateway.Factory{MemoryPath: memoryPath(root), NewModel: func(string) agent.Model {
-		return agent.NewScriptedModel(writebackStep(`{"reply":"The observatory closes at dusk.","note":null}`))
+		return restating(agent.NewScriptedModel(writebackStep(`{"reply":"The observatory closes at dusk."}`)))
 	}, Tools: noTools(), MaxHistoryMessages: 2}
 	rt, err := factory.New(context.Background(), "env-1", nil)
 	require.NoError(t, err)
@@ -256,7 +256,7 @@ func TestFactory_DisabledCompactionRestoresAllHistory(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			root := t.TempDir()
 			factory := &gateway.Factory{MemoryPath: memoryPath(root), NewModel: func(string) agent.Model {
-				return summaryScript(writebackStep(`{"reply":"Answer.","note":null}`))
+				return summaryScript(writebackStep(`{"reply":"Answer."}`))
 			}, Embedder: wordEmbedder{}, Tools: noTools(), MaxHistoryMessages: tc.limit}
 			for _, question := range []string{"First question?", "Second question?"} {
 				runtime, err := factory.New(context.Background(), "env-1", nil)
@@ -407,9 +407,9 @@ type toolCapturingModel struct {
 }
 
 func newToolCapturingModel() *toolCapturingModel {
-	return &toolCapturingModel{inner: agent.NewScriptedModel(
-		writebackStep(`{"reply":"Replied.","note":null}`),
-	)}
+	return &toolCapturingModel{inner: restating(agent.NewScriptedModel(
+		writebackStep(`{"reply":"Replied."}`),
+	))}
 }
 
 func (m *toolCapturingModel) Chat(ctx context.Context, messages []agent.Message, tools []tool.Descriptor) (agent.Response, error) {
@@ -455,7 +455,7 @@ func TestFactory_ToolClientDescriptorsReachSession(t *testing.T) {
 	for _, d := range model.actTools() {
 		// The reserved calls are the platform's addition to what the
 		// model sees, not part of the operator's list.
-		if d.Name == agent.MemoryWriteTool || d.Name == agent.MemoryInspectTool || d.Name == agent.MemorySearchTool {
+		if d.Name == agent.MemoryWriteTool || d.Name == agent.MemoryInspectTool || d.Name == agent.MemoryUnderstandTool {
 			continue
 		}
 		names = append(names, d.Name)

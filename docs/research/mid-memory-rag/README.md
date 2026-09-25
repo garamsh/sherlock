@@ -1,6 +1,8 @@
 # Mid-memory retrieval with separate similarity and recency lists
 
-Records the preregistered comparison for issue #854 between the shipped recall and the owner's mid-memory structure over 300 synthesized mid memories, and its powered replication for issue #856 (§Replication), which turns #854's undetermined verdict into a decided one. It makes no production decision.
+Records the preregistered comparison for issue #854 between the shipped recall and the owner's mid-memory structure over 300 synthesized mid memories, its powered replication for issue #856 (§Replication), which turns #854's undetermined verdict into a decided one, and the production parity check for issue #858 (§Production parity). The study itself makes no production decision; ADR 0019 records the one #858 took.
+
+The Go bridge `bridge.go` that both collections ran was deleted by #858, which removed the phrase call and FTS5 search it called. Its last working revision is `b898867`; `git log -- docs/research/mid-memory-rag/bridge.go` reaches it. Every evidence file and figure below is unchanged, and §Reproduction separates what still runs at head from what needs that revision.
 
 ## Question and method
 
@@ -8,7 +10,7 @@ Does the owner's structure deliver the evidence for a query about older conversa
 
 - Source revision: `35e79b5` (origin/dev). The [preregistration](preregistration.md) and harness were committed as `a659ee8f4258d03360347a6e25a3a79ce890cce3` and pushed at 2026-09-25 14:40:53 UTC. The first paid call, the embedding probe, followed at 14:41:59 UTC. The [preflight manifest](evidence/preflight.json) records the SHA-256 of every input at that revision. No input changed after it; `diagnose.py` and `judgments.json` were added after collection and score no arm. One post-collection wording change in `preregistration.md` (review of #855): the embedding-endpoint sentence now names the page read; the arms, rule and budgets are unchanged.
 - Runtime: Go 1.26.5. Python 3.13.5 runs the study loop. uv 0.12.13 runs `fastembed==0.7.3`.
-- [`bridge.go`](bridge.go) runs production code: `sqlite.OpenConversation`, `RecordTurn`, `Accumulate`, `Search`, `RecentMid`, `Source`, `memory.ConversationRecall`, `memory.ConversationSummary`, and the `internal/agent/openai` client. The client is pointed at a local capture server, so every paid request is the exact production wire body, with only `max_tokens` added, and every response goes back through production decoding and validation.
+- `bridge.go` ran production code: `sqlite.OpenConversation`, `RecordTurn`, `Accumulate`, `Search`, `RecentMid`, `Source`, `memory.ConversationRecall`, `memory.ConversationSummary`, and the `internal/agent/openai` client. The client is pointed at a local capture server, so every paid request is the exact production wire body, with only `max_tokens` added, and every response goes back through production decoding and validation.
 - Chat model: `MiniMax-M2` at `https://api.minimax.io/v1/chat/completions`, requested and returned. It is a provider alias with no immutable weight revision.
 - Embedding model: `BAAI/bge-base-en-v1.5` through fastembed, which serves the quantized ONNX export `qdrant/bge-base-en-v1.5-onnx-q`, snapshot `199291fdd1aa89faf9c20b722dc72ad5e17aa0d0`, `model_optimized.onnx` SHA-256 `4e556722bc4f65716c544c8a931f1e90fb3f866e5741fd93a96f051d673339c7`. It is local and free. The model card's retrieval instruction is prefixed to queries. It is primary because the preregistered [MiniMax embedding probe](evidence/embedding-probe.json) (`embo-01`, one text) got HTTP 200 with `base_resp.status_code` 1002, `rate limit exceeded(RPM)`, and no vectors. That was the key's first embedding request, and MiniMax's API overview (https://platform.minimax.io/docs/api-reference/api-overview, read 2026-09-25) lists no embedding endpoint.
 - Corpus: [`corpus.py`](corpus.py) generates 300 episodes of 8 messages (2,400 sources) from seed 854. The first 298 are templated filler over 15 domains with shared attributes; the newest two are authored whole. The production summarizer synthesized all 300 mids live from their sources, each on its first attempt ([synthesis](evidence/synthesis.json)). A post-hoc check ([`diagnose.py`](diagnose.py), [output](evidence/summary-fidelity.json)) found that all 45 evidence summaries keep their planted value, so no miss below is a synthesis omission.
@@ -297,19 +299,84 @@ This is read from the files at `2b27bac`, as in #854 §Code-size estimate. Nothi
 - **The embedder is local and quantized, as in #854.** H's rule (alternate, A first) is one of several possible fusions, and no other was measured.
 - **Amendments.** All four were committed before the data they govern existed. They still widened selection after the first design and assembly counts were known.
 
+## Production parity (issue #858)
+
+Does the shipped recall, as #858 built it, reproduce the replication's B4 result: at least 200 of the 280 primary queries at batch 4? It delivers 212. Evidence is under [evidence/production-parity](evidence/production-parity/).
+
+### Method
+
+- **Revision.** The harness and the production code it runs are at `cfc5606`, the implementation commit of #858 on its branch. Go 1.26.5.
+- **Harness.** [`parity/main.go`](parity/main.go) calls only production code for the store and recall: `sqlite.OpenConversation`, `RecordTurn`, `memory.ConversationSummary`, `memory.ConversationRecall`, the `internal/agent/openai` chat client, and the `internal/agent/openai` embedder.
+  - It records the replication's 4,800 messages one per `RecordTurn`, so the store's own batching forms the 1,200 batches of four.
+  - Each synthesis request goes through the chat client to a local replay server. The server answers with the recorded n = 4 response for the next batch ([synthesis-n4.jsonl](evidence/replication/synthesis-n4.jsonl)), and the production summarizer decodes it. No paid call was made.
+  - The store embeds each summary through the embedder, and recall embeds each query's raw text. There is no instruction prefix.
+  - A query is a delivered hit when an evidence source lies inside a delivered mid's interval, the replication's rule.
+- **Embedding server.** Hugging Face text-embeddings-inference 1.9.4 on CPU, image `ghcr.io/huggingface/text-embeddings-inference@sha256:2538ea1c9640d3763b15af668039d24172d063b42337b0c27796fc2be180c78d`, serving `BAAI/bge-base-en-v1.5` at revision `a5beb1e3e68b9ab74eb54cfd186867f64f240e1a`. It reports float32 weights and CLS pooling ([server info](evidence/production-parity/tei-info.json)). The only network traffic was the image and model download.
+
+### Controls
+
+[Scores](evidence/production-parity/scores.json) `run` holds these.
+
+- The store built 1,200 mids from 1,200 replayed synthesis calls. Each mid covers exactly one recorded batch of four, or the harness stops.
+- Two stored summaries differ from the recorded text. Those are the store's credential redaction, as §Replication Synthesis describes.
+- A second run from the same commit wrote byte-identical [rankings](evidence/production-parity/rankings.json).
+
+### Results
+
+| Family (n) | Production | B4 | Both | Production only | B4 only |
+|---|---:|---:|---:|---:|---:|
+| exact (70) | 63 | 64 | 63 | 0 | 1 |
+| paraphrase (70) | 56 | 52 | 52 | 4 | 0 |
+| implicit (70) | 27 | 28 | 25 | 2 | 3 |
+| correction, newer (70) | 66 | 65 | 65 | 1 | 0 |
+| **primary (280)** | **212** | **209** | **205** | **7** | **4** |
+| recent (4) | 4 | 4 | 4 | 0 | 0 |
+
+- The production recall meets the criterion: 212 of 280, against B4's 209.
+- The two disagree on 11 queries. They differ in three ways: B4 prefixed queries with the model card's retrieval instruction, used fastembed's quantized ONNX export, and broke similarity ties oldest first. Production embeds the raw text with float32 weights and breaks ties newest first. Which of these moves which query was not measured.
+- Building the store took 260 s, including 1,200 embedding calls. Recall took 0.079 s per query on this CPU, including one embedding call and the in-process ranking over 1,200 stored vectors.
+
+### Limits
+
+- The corpus, its selection toward lexical misses, and the recorded syntheses are the replication's, so §Replication limits apply unchanged.
+- One embedding server, one model and one CPU host were measured. A hosted embedder was not.
+- The run replays synthesis rather than calling a model. So it measures retrieval over fixed summaries, not the live synthesis at batch 4.
+
+### Reproduction
+
+From the repository root at `cfc5606` or later, with Docker:
+
+```sh
+docker run -d --name tei-858 -p 127.0.0.1:8090:80 \
+  ghcr.io/huggingface/text-embeddings-inference@sha256:2538ea1c9640d3763b15af668039d24172d063b42337b0c27796fc2be180c78d \
+  --model-id BAAI/bge-base-en-v1.5 --revision a5beb1e3e68b9ab74eb54cfd186867f64f240e1a
+curl -s 127.0.0.1:8090/info                         # once it answers, the model is loaded
+go run ./docs/research/mid-memory-rag/parity        # writes evidence/production-parity/{rankings,scores}.json
+docker rm -f tei-858
+```
+
+The timing fields in `scores.json` vary between runs; every other field and `rankings.json` do not.
+
 ## Reproduction
 
-From the repository root:
+At head, from the repository root, these run without the bridge and leave the committed files unchanged:
+
+```sh
+python3 docs/research/mid-memory-rag/corpus.py            # regenerates corpus.json and queries.json byte-identically
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s docs/research/mid-memory-rag -p '*_test.py' -v
+python3 docs/research/mid-memory-rag/score.py docs/research/mid-memory-rag/evidence
+python3 docs/research/mid-memory-rag/diagnose.py docs/research/mid-memory-rag/evidence
+python3 docs/research/mid-memory-rag/replication_score.py                  # offline; regenerates replication/scores.json
+python3 docs/research/mid-memory-rag/replication_score.py power            # the preregistered power table
+```
+
+Everything that calls the bridge runs from a checkout of `b898867`:
 
 ```sh
 go build -o /tmp/mid-rag-854-bridge ./docs/research/mid-memory-rag
-python3 docs/research/mid-memory-rag/corpus.py            # regenerates corpus.json and queries.json byte-identically
 python3 docs/research/mid-memory-rag/run.py preflight /tmp/mid-rag-854-preflight
-PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s docs/research/mid-memory-rag -p '*_test.py' -v
 mkdir -p /tmp/mid-rag-854-rank && cp docs/research/mid-memory-rag/evidence/{synthesis,phrases}.json /tmp/mid-rag-854-rank/
 python3 docs/research/mid-memory-rag/run.py rank /tmp/mid-rag-854-rank   # offline: rebuilds the store and rankings from recorded exchanges
-python3 docs/research/mid-memory-rag/score.py docs/research/mid-memory-rag/evidence
-python3 docs/research/mid-memory-rag/diagnose.py docs/research/mid-memory-rag/evidence
 PATH=/home/sauce/go/bin:$PATH make ci
 ```
 
@@ -317,17 +384,14 @@ PATH=/home/sauce/go/bin:$PATH make ci
 - Paid phases run in the order `probe`, `synthesize`, `phrases`, `live`, each with `run.py <phase> <fresh directory>`. They need `MINIMAX_KEY` in the process environment and are a new study run with their own budget. The original run exported only `MINIMAX_KEY` from the base checkout's `.env`, with GitHub tokens unset. A phase resumes after its last recorded result.
 - `make ci` runs lint, format, test and build; [verification](evidence/verification.txt) records its result for this collection.
 
-Replication, from the repository root:
+Replication, from a checkout of `b898867`, since `rank` calls the bridge:
 
 ```sh
 go build -o /tmp/mid-rag-854-bridge ./docs/research/mid-memory-rag
-PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s docs/research/mid-memory-rag -p '*_test.py' -v
-python3 docs/research/mid-memory-rag/replication_score.py power            # the preregistered power table
 python3 docs/research/mid-memory-rag/replication.py rank                   # offline; rebuilds the store and rankings.json
-python3 docs/research/mid-memory-rag/replication_score.py                  # offline; regenerates scores.json
 ```
 
 - `rank` rebuilds `store.db`, `scratch/` and `rankings.json` from the recorded synthesis and phrase exchanges, under `evidence/replication/`; neither `store.db` nor `scratch/` is committed. It needs `uv` and downloads the embedding model on first use.
-- `assemble` is also offline. It regenerates `corpus.json` and `queries.json` from `design.jsonl` and `conversations.jsonl`, and caches the item checks in `items.json`.
+- `assemble` is also offline, and also runs at `b898867`, because its lexical checks call the bridge. It regenerates `corpus.json` and `queries.json` from `design.jsonl` and `conversations.jsonl`, and caches the item checks in `items.json`.
 - [Verification](evidence/replication/verification.txt) records `make ci`, the unit tests, the byte-identity check of the #854 evidence and the credential search.
 - The paid phases run in the order `probe`, `design`, `converse`, `synthesize` and `phrases`, as `replication.py <phase>`, and need `MINIMAX_KEY` in the process environment. Each resumes after its last recorded result, so re-running one against the committed evidence sends nothing new. A fresh run needs a fresh output directory and its own budget.

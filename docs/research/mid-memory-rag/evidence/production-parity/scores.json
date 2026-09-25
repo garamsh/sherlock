@@ -1,0 +1,61 @@
+{
+  "families": {
+    "correction": {
+      "hits": 66,
+      "queries": 70,
+      "b4_hits": 65,
+      "both": 65,
+      "parity_only": 1,
+      "b4_only": 0
+    },
+    "exact": {
+      "hits": 63,
+      "queries": 70,
+      "b4_hits": 64,
+      "both": 63,
+      "parity_only": 0,
+      "b4_only": 1
+    },
+    "implicit": {
+      "hits": 27,
+      "queries": 70,
+      "b4_hits": 28,
+      "both": 25,
+      "parity_only": 2,
+      "b4_only": 3
+    },
+    "paraphrase": {
+      "hits": 56,
+      "queries": 70,
+      "b4_hits": 52,
+      "both": 52,
+      "parity_only": 4,
+      "b4_only": 0
+    },
+    "recent": {
+      "hits": 4,
+      "queries": 4,
+      "b4_hits": 4,
+      "both": 4,
+      "parity_only": 0,
+      "b4_only": 0
+    }
+  },
+  "primary": {
+    "hits": 212,
+    "queries": 280,
+    "b4_hits": 209,
+    "both": 205,
+    "parity_only": 7,
+    "b4_only": 4
+  },
+  "run": {
+    "build_seconds": 260.294258032,
+    "embed_model": "BAAI/bge-base-en-v1.5",
+    "embed_url": "http://127.0.0.1:8090/v1",
+    "mids": 1200,
+    "recall_seconds_per_query": 0.07922946267515923,
+    "summaries_differing_from_recorded_text": 2,
+    "synthesis_calls_replayed": 1200
+  }
+}

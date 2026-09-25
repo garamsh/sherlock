@@ -37,10 +37,17 @@ type turnRecord struct {
 	Failed        string           `json:"failed,omitempty"`
 }
 
+// writeMeteredConfig points the chat model at baseURL and embeddings at a
+// local endpoint that gives every text the same vector: these tests measure
+// file operations, not recall, so recall falls back to recency.
 func writeMeteredConfig(t *testing.T, baseURL string) string {
 	t.Helper()
+	embeddings := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		_, _ = w.Write([]byte(`{"data":[{"embedding":[1]}]}`))
+	}))
+	t.Cleanup(embeddings.Close)
 	path := filepath.Join(t.TempDir(), "agent.yaml")
-	body := fmt.Sprintf("model:\n  provider: %s\n  base-url: %s\n  model: %s\n  api-key-env: %s\n  timeout: 300s\n", recallProvider, baseURL, recallModelName, recallKeyEnv)
+	body := fmt.Sprintf("model:\n  provider: %s\n  base-url: %s\n  model: %s\n  api-key-env: %s\n  timeout: 300s\nembedding:\n  base-url: %s\n  model: tied\n", recallProvider, baseURL, recallModelName, recallKeyEnv, embeddings.URL)
 	require.NoError(t, os.WriteFile(path, []byte(body), 0o600))
 	return path
 }

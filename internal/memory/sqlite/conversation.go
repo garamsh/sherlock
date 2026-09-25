@@ -197,7 +197,7 @@ func cosine(a []float32, encoded []byte) float64 {
 	return dot / math.Sqrt(na*nb)
 }
 
-// RecentMid returns newest episodes independently of lexical relevance.
+// RecentMid returns newest episodes independently of similarity.
 func (s *Store) RecentMid(ctx context.Context, limit int) ([]agent.ConversationHit, error) {
 	if limit <= 0 {
 		return nil, nil

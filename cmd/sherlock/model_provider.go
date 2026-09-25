@@ -65,3 +65,24 @@ func newModelFunc(cfg config.ModelConfig) (func(agentID string) agent.Model, err
 			cfg.Provider, "mock", "openai-compatible", "anthropic-compatible")
 	}
 }
+
+// newEmbedder resolves the embedding: section recall ranks mid episodes with
+// (ADR 0004). The mock model provider runs offline, so it takes the mock
+// embedder and never reads the section. An empty api-key-env sends no key; a
+// named variable that is unset or empty fails here, at startup.
+func newEmbedder(cfg config.Config) (agent.Embedder, error) {
+	if cfg.Model.Provider == "mock" {
+		return mockEmbedder{}, nil
+	}
+	var key string
+	if cfg.Embedding.APIKeyEnv != "" {
+		if key = os.Getenv(cfg.Embedding.APIKeyEnv); key == "" {
+			return nil, fmt.Errorf("embedding: environment variable %s is not set or is empty", cfg.Embedding.APIKeyEnv)
+		}
+	}
+	embedder, err := openai.NewEmbedder(openai.Config{BaseURL: cfg.Embedding.BaseURL, Model: cfg.Embedding.Model, APIKey: key})
+	if err != nil {
+		return nil, fmt.Errorf("embedding (required with model.provider %q): %w", cfg.Model.Provider, err)
+	}
+	return embedder, nil
+}

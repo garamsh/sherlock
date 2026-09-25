@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 
 	"github.com/garamsh/sherlock/internal/agent"
@@ -18,11 +19,6 @@ import (
 // tool (ADR 0011, ADR 0017).
 func mockModel(_ string) agent.Model {
 	return agent.NewScriptedModel(
-		// The read step's call, which every turn makes before the act
-		// loop (ADR 0019). This one places no address: the canned
-		// scenario's first turn asks a question the empty store holds
-		// nothing for.
-		agent.ScriptedStep{Content: "no address"},
 		agent.ScriptedStep{
 			ToolCalls: []agent.ToolCall{{
 				Name: "shell_exec",
@@ -60,3 +56,9 @@ func mockModel(_ string) agent.Model {
 		},
 	)
 }
+
+// mockEmbedder stands in for an embeddings endpoint offline: every text gets
+// the same vector, so similarity ties and recall falls back to recency.
+type mockEmbedder struct{}
+
+func (mockEmbedder) Embed(context.Context, string) ([]float32, error) { return []float32{1}, nil }

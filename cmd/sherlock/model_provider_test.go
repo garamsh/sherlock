@@ -140,3 +140,31 @@ func TestNewModelFunc_OpenAICompatibleConfiguredTimeoutReachesModel(t *testing.T
 	assert.Less(t, elapsed, time.Second,
 		"the configured timeout must bound the request; elapsed=%s", elapsed)
 }
+
+func TestNewEmbedder(t *testing.T) {
+	t.Setenv("SHERLOCK_TEST_EMBED_KEY", "")
+	endpoint := config.EmbeddingConfig{BaseURL: "http://127.0.0.1:8090/v1", Model: "BAAI/bge-base-en-v1.5"}
+	for _, tc := range []struct {
+		name    string
+		cfg     config.Config
+		wantErr string
+	}{
+		{name: "mock model runs offline without the section", cfg: config.Config{Model: config.ModelConfig{Provider: "mock"}}},
+		{name: "live model with an endpoint and no key", cfg: config.Config{Model: config.ModelConfig{Provider: "openai-compatible"}, Embedding: endpoint}},
+		{name: "live model without the section", cfg: config.Config{Model: config.ModelConfig{Provider: "openai-compatible"}},
+			wantErr: "base URL and model name are required"},
+		{name: "named key variable unset", cfg: config.Config{Model: config.ModelConfig{Provider: "anthropic-compatible"},
+			Embedding: config.EmbeddingConfig{BaseURL: endpoint.BaseURL, Model: endpoint.Model, APIKeyEnv: "SHERLOCK_TEST_EMBED_KEY"}},
+			wantErr: "SHERLOCK_TEST_EMBED_KEY is not set or is empty"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			embedder, err := newEmbedder(tc.cfg)
+			if tc.wantErr != "" {
+				require.ErrorContains(t, err, tc.wantErr)
+				return
+			}
+			require.NoError(t, err)
+			assert.NotNil(t, embedder)
+		})
+	}
+}

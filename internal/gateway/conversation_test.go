@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"hash/fnv"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -25,7 +26,7 @@ type evidenceModel struct {
 
 func (m *evidenceModel) Chat(ctx context.Context, messages []agent.Message, tools []tool.Descriptor) (agent.Response, error) {
 	m.calls++
-	if m.calls == 3 {
+	if m.calls == 2 {
 		found := false
 		for _, message := range messages {
 			if message.Role == agent.RoleTool && message.Name == agent.MemoryInspectTool && strings.Contains(message.Content, "Correction: my preferred telescope is the Vega-2 reflector.") {
@@ -47,23 +48,21 @@ func TestConversation_ParaphraseCorrectionAndExactSource(t *testing.T) {
 	ctx := context.Background()
 	path := filepath.Join(t.TempDir(), "memory.db")
 	first := summaryScript(
-		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: "memory_search_terms", Input: json.RawMessage(`{"phrases":["telescope"]}`)}}},
 		writebackStep(`{"reply":"Noted.","memory_ops":[]}`),
-		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: "memory_search_terms", Input: json.RawMessage(`{"phrases":["telescope"]}`)}}},
 		writebackStep(`{"reply":"Corrected.","memory_ops":[]}`),
 	)
-	f := &gateway.Factory{MemoryPath: path, NewModel: func(string) agent.Model { return first }, Tools: noTools(), MaxHistoryMessages: 2}
+	f := &gateway.Factory{MemoryPath: path, NewModel: func(string) agent.Model { return first }, Embedder: wordEmbedder{}, Tools: noTools(), MaxHistoryMessages: 2}
 	rt, err := f.New(ctx, "a", nil)
 	require.NoError(t, err)
-	_, err = rt.Session.Run(agent.WithInboundSources(ctx, checkpointSources("My preferred telescope is the Kepler-9 refractor.", 7)), "Remember the telescope preference.")
+	_, err = rt.Session.Run(agent.WithInboundSources(ctx, checkpointSources("My preferred telescope is the Kepler-9 refractor.", 3)), "Remember the telescope preference.")
 	require.NoError(t, err)
-	_, err = rt.Session.Run(agent.WithInboundSources(ctx, checkpointSources("Correction: my preferred telescope is the Vega-2 reflector.", 7)), "Remember the correction.")
+	_, err = rt.Session.Run(agent.WithInboundSources(ctx, checkpointSources("Correction: my preferred telescope is the Vega-2 reflector.", 3)), "Remember the correction.")
 	require.NoError(t, err)
 	require.LessOrEqual(t, len(rt.Session.History()), 4)
 	require.NoError(t, rt.Close(ctx))
-	store, err := sqlite.Open(path)
+	store, err := sqlite.OpenConversation(path, wordEmbedder{})
 	require.NoError(t, err)
-	hits, err := store.Search(ctx, []string{"preferred telescope"}, 5)
+	hits, err := store.Search(ctx, "preferred telescope", 5)
 	require.NoError(t, err)
 	require.GreaterOrEqual(t, len(hits), 2)
 	require.LessOrEqual(t, len(hits), 5)
@@ -81,8 +80,7 @@ func TestConversation_ParaphraseCorrectionAndExactSource(t *testing.T) {
 	require.NoError(t, store.Close())
 
 	model := summaryScript(
-		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: "memory_search_terms", Input: json.RawMessage(`{"phrases":["preferred telescope","Vega reflector"]}`)}}},
-		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.MemoryInspectTool, Input: json.RawMessage(`{"id":9}`)}}},
+		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.MemoryInspectTool, Input: json.RawMessage(`{"id":5}`)}}},
 		writebackStep(`{"reply":"You corrected it to the Vega-2 reflector; your exact words were: 'Correction: my preferred telescope is the Vega-2 reflector.'","memory_ops":[]}`),
 	)
 	events := &conversationEvents{}
@@ -108,7 +106,6 @@ func TestConversation_UnsupportedQuestionHasNoEvidence(t *testing.T) {
 	ctx := context.Background()
 	path := filepath.Join(t.TempDir(), "memory.db")
 	model := summaryScript(
-		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: "memory_search_terms", Input: json.RawMessage(`{"phrases":["lunar launch date"]}`)}}},
 		writebackStep(`{"reply":"I don't have a source for that.","memory_ops":[]}`),
 	)
 	events := &conversationEvents{}
@@ -128,30 +125,10 @@ func TestConversation_UnsupportedQuestionHasNoEvidence(t *testing.T) {
 	require.NoError(t, rt.Close(ctx))
 }
 
-func TestConversation_SearchesMultipleTopics(t *testing.T) {
-	ctx := context.Background()
-	store, err := sqlite.Open(filepath.Join(t.TempDir(), "memory.db"))
-	require.NoError(t, err)
-	defer store.Close()
-	require.NoError(t, store.RecordTurn(ctx, checkpointSources("I prefer cedar tea.", 8), firstSummary{}))
-	require.NoError(t, store.RecordTurn(ctx, checkpointSources("My desk is beside the east window.", 8), firstSummary{}))
-	hits, err := store.Search(ctx, []string{"cedar tea", "east window"}, 5)
-	require.NoError(t, err)
-	var cedar, window bool
-	for _, h := range hits {
-		cedar = cedar || contains(h.Summary, "cedar")
-		window = window || contains(h.Summary, "window")
-	}
-	assert.True(t, cedar)
-	assert.True(t, window)
-}
-func contains(s, part string) bool { return strings.Contains(s, part) }
-
 func TestConversation_QueuePreservesOriginalInboundID(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "memory.db")
 	factory := &gateway.Factory{MemoryPath: path, NewModel: func(string) agent.Model {
 		return summaryScript(
-			agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: "memory_search_terms", Input: json.RawMessage(`{"phrases":["cedar"]}`)}}},
 			writebackStep(`{"reply":"Noted.","memory_ops":[]}`),
 		)
 	}, Tools: noTools()}
@@ -185,11 +162,10 @@ func TestConversation_RelatedCandidateDoesNotSupportMissingDate(t *testing.T) {
 	require.NoError(t, seed.RecordTurn(ctx, []agent.SourceMessage{{Role: agent.RoleUser, Content: "The lunar mission uses the Aurora capsule."}, {Role: agent.RoleAssistant, Content: "Noted."}}, firstSummary{}))
 	require.NoError(t, seed.Close())
 	model := summaryScript(
-		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: "memory_search_terms", Input: json.RawMessage(`{"phrases":["lunar mission launch date"]}`)}}},
 		writebackStep(`{"reply":"I found the capsule name but no launch date in the available source.","memory_ops":[]}`),
 	)
 	events := &conversationEvents{}
-	rt, err := (&gateway.Factory{MemoryPath: path, NewModel: func(string) agent.Model { return model }, Tools: noTools()}).New(ctx, "a", events)
+	rt, err := (&gateway.Factory{MemoryPath: path, NewModel: func(string) agent.Model { return model }, Embedder: wordEmbedder{}, Tools: noTools()}).New(ctx, "a", events)
 	require.NoError(t, err)
 	reply, err := rt.Session.Run(ctx, "When is the lunar mission launching?")
 	require.NoError(t, err)
@@ -202,6 +178,20 @@ func TestConversation_RelatedCandidateDoesNotSupportMissingDate(t *testing.T) {
 	}
 	assert.Greater(t, count, 0, "a related candidate was retrieved, so this is an answer control, not an empty-search case")
 	require.NoError(t, rt.Close(ctx))
+}
+
+// wordEmbedder counts each word into a hashed dimension, so texts sharing
+// words are similar and texts sharing none are orthogonal.
+type wordEmbedder struct{}
+
+func (wordEmbedder) Embed(_ context.Context, text string) ([]float32, error) {
+	vector := make([]float32, 4096)
+	for _, word := range strings.Fields(strings.ToLower(text)) {
+		hash := fnv.New32a()
+		_, _ = hash.Write([]byte(strings.Trim(word, ".,;:?!")))
+		vector[hash.Sum32()%4096]++
+	}
+	return vector, nil
 }
 
 // firstSummary isolates store linking and search from synthesis quality.

@@ -2,9 +2,10 @@ package memory_test
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"hash/fnv"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -21,52 +22,67 @@ func (firstSummary) Summarize(_ context.Context, updates []string) (string, erro
 	return updates[0], nil
 }
 
-func TestConversationRecall_UnusablePhrasesFallBackButMissesDoNot(t *testing.T) {
-	ctx := context.Background()
-	store, err := sqlite.OpenConversation(filepath.Join(t.TempDir(), "memory.db"))
-	require.NoError(t, err)
-	defer store.Close()
-	require.NoError(t, store.RecordTurn(ctx, checkpoint("The launch codename is cobalt"), firstSummary{}))
-	for i := 0; i < 9; i++ {
-		require.NoError(t, store.RecordTurn(ctx, checkpoint(fmt.Sprintf("Routine event %d", i)), firstSummary{}))
-	}
-	tests := []struct {
-		name, phrases string
-		wantOld       bool
-	}{
-		{"empty list", `[]`, true}, {"empty", `[""]`, true}, {"whitespace", `["   "]`, true}, {"punctuation", `["!!!"]`, true}, {"stop words", `["the","and"]`, true},
-		{"usable miss", `["violet submarine"]`, false}, {"mixed", `["!","cobalt"]`, true}, {"bounded phrases", `["!","!","!","!","violet"]`, true},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			model := agent.NewScriptedModel(agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: "memory_search_terms", Input: json.RawMessage(`{"phrases":` + tt.phrases + `}`)}}})
-			result, err := (agentmemory.ConversationRecall{Store: store, Model: model}).Recall(ctx, "launch codename cobalt")
-			require.NoError(t, err)
-			require.GreaterOrEqual(t, len(result.Memories), 2)
-			assert.Equal(t, "10", result.Memories[0].ID)
-			assert.Equal(t, "recent", result.Memories[0].Age)
-			found := false
-			for _, m := range result.Memories {
-				found = found || m.ID == "1"
-			}
-			assert.Equal(t, tt.wantOld, found)
-		})
-	}
-	result, err := (agentmemory.ConversationRecall{Store: store}).Recall(ctx, "routine event")
-	require.NoError(t, err)
-	require.Len(t, result.Memories, 7)
-	seen := map[string]bool{}
-	for _, m := range result.Memories {
-		assert.False(t, seen[m.ID])
-		seen[m.ID] = true
-		assert.Contains(t, m.Content, "summary, not verified source text")
+// wordEmbedder counts each word into a hashed dimension, so texts sharing
+// words are similar and texts sharing none are orthogonal.
+type wordEmbedder struct{}
 
+func (wordEmbedder) Embed(_ context.Context, text string) ([]float32, error) {
+	vector := make([]float32, 4096)
+	for _, word := range strings.Fields(strings.ToLower(text)) {
+		hash := fnv.New32a()
+		_, _ = hash.Write([]byte(strings.Trim(word, ".,;:?!")))
+		vector[hash.Sum32()%4096]++
 	}
+	return vector, nil
+}
+
+// rankedStore is a conversation store whose recent and similar episodes are
+// fixed, recording what Search was asked. Search ignores the limit, so the
+// bound under test is Recall's own.
+type rankedStore struct {
+	agent.ConversationMemory
+	recent, similar []agent.ConversationHit
+	query           string
+	limit           int
+}
+
+func (s *rankedStore) RecentMid(_ context.Context, limit int) ([]agent.ConversationHit, error) {
+	return s.recent[:min(limit, len(s.recent))], nil
+}
+
+func (s *rankedStore) Search(_ context.Context, query string, limit int) ([]agent.ConversationHit, error) {
+	s.query, s.limit = query, limit
+	return s.similar, nil
+}
+
+func (s *rankedStore) PendingSources(context.Context) ([]agent.SourceMessage, error) { return nil, nil }
+
+func mids(ids ...int64) []agent.ConversationHit {
+	var out []agent.ConversationHit
+	for _, id := range ids {
+		out = append(out, agent.ConversationHit{ID: id, Summary: fmt.Sprintf("episode %d", id), SourceFirst: 4*id - 3, SourceLast: 4 * id})
+	}
+	return out
+}
+
+func TestConversationRecall_RecentFirstThenSimilarDeduplicatedAndBounded(t *testing.T) {
+	store := &rankedStore{recent: mids(20, 19, 18), similar: mids(19, 3, 11, 7, 20, 5, 9, 2, 14)}
+	result, err := (agentmemory.ConversationRecall{Store: store}).Recall(context.Background(), "launch codename")
+	require.NoError(t, err)
+	assert.Equal(t, "launch codename", store.query, "the task text itself is embedded")
+	assert.Equal(t, 7, store.limit)
+	var ids, ages []string
+	for _, m := range result.Memories {
+		ids, ages = append(ids, m.ID), append(ages, m.Age)
+		assert.Contains(t, m.Content, "summary, not verified source text")
+	}
+	assert.Equal(t, []string{"20", "19", "3", "11", "7", "5", "9"}, ids)
+	assert.Equal(t, []string{"recent", "recent", "historical", "historical", "historical", "historical", "historical"}, ages)
 }
 
 func checkpoint(content string) []agent.SourceMessage {
 	var messages []agent.SourceMessage
-	for i := 0; i < 8; i++ {
+	for i := 0; i < 4; i++ {
 		messages = append(messages, agent.SourceMessage{Role: agent.RoleUser, Content: content})
 	}
 	return messages
@@ -74,10 +90,10 @@ func checkpoint(content string) []agent.SourceMessage {
 
 func TestConversationRecall_PendingSourcesRemainReachable(t *testing.T) {
 	ctx := context.Background()
-	store, err := sqlite.OpenConversation(filepath.Join(t.TempDir(), "memory.db"))
+	store, err := sqlite.OpenConversation(filepath.Join(t.TempDir(), "memory.db"), wordEmbedder{})
 	require.NoError(t, err)
 	defer store.Close()
-	for i := 0; i < 7; i++ {
+	for i := 0; i < 3; i++ {
 		require.NoError(t, store.RecordTurn(ctx, []agent.SourceMessage{{Role: agent.RoleUser, Content: fmt.Sprintf("Pending fact %d", i)}}, firstSummary{}))
 	}
 	recent, err := store.Recent(ctx, 2)
@@ -86,7 +102,7 @@ func TestConversationRecall_PendingSourcesRemainReachable(t *testing.T) {
 	assert.NotContains(t, recent[0].Content, "fact 0")
 	recalled, err := (agentmemory.ConversationRecall{Store: store}).Recall(ctx, "unsupported")
 	require.NoError(t, err)
-	require.Len(t, recalled.Memories, 7)
+	require.Len(t, recalled.Memories, 3)
 	assert.Equal(t, "source:1", recalled.Memories[0].ID)
 	assert.Contains(t, recalled.Memories[0].Content, "fact 0")
 	source, err := store.Source(ctx, 1)
@@ -96,7 +112,7 @@ func TestConversationRecall_PendingSourcesRemainReachable(t *testing.T) {
 
 func TestConversationRecall_RecentCorrectionAndOlderRelevantEpisode(t *testing.T) {
 	ctx := context.Background()
-	store, err := sqlite.OpenConversation(filepath.Join(t.TempDir(), "memory.db"))
+	store, err := sqlite.OpenConversation(filepath.Join(t.TempDir(), "memory.db"), wordEmbedder{})
 	require.NoError(t, err)
 	defer store.Close()
 	require.NoError(t, store.RecordTurn(ctx, checkpoint("The current project codename is Blue Cedar."), firstSummary{}))
@@ -105,7 +121,7 @@ func TestConversationRecall_RecentCorrectionAndOlderRelevantEpisode(t *testing.T
 	}
 	require.NoError(t, store.RecordTurn(ctx, checkpoint("Correction: use Silver Pine in place of Blue Cedar. This is final."), firstSummary{}))
 	// Relevance alone finds the old assertion and misses the weak-overlap correction.
-	hits, err := store.Search(ctx, []string{"current project codename"}, 5)
+	hits, err := store.Search(ctx, "current project codename", 5)
 	require.NoError(t, err)
 	require.Len(t, hits, 5)
 	assert.EqualValues(t, 1, hits[0].ID)
@@ -123,18 +139,8 @@ func TestConversationRecall_RecentCorrectionAndOlderRelevantEpisode(t *testing.T
 	}
 	assert.True(t, old, "recent-only selection would lose the older relevant episode")
 	assert.Contains(t, result.Memories[0].Content, "Silver Pine")
-	assert.Contains(t, result.Memories[0].Content, "sources:81-88")
-	source, err := store.Source(ctx, 81)
+	assert.Contains(t, result.Memories[0].Content, "sources:41-44")
+	source, err := store.Source(ctx, 41)
 	require.NoError(t, err)
 	assert.Equal(t, "Correction: use Silver Pine in place of Blue Cedar. This is final.", source.Content)
-	// No overlap supplies only recent context, never a fabricated relevance match.
-	hits, err = store.Search(ctx, []string{"orbital submarine"}, 5)
-	require.NoError(t, err)
-	assert.Empty(t, hits)
-	result, err = (agentmemory.ConversationRecall{Store: store}).Recall(ctx, "orbital submarine")
-	require.NoError(t, err)
-	require.Len(t, result.Memories, 2)
-	for _, m := range result.Memories {
-		assert.Equal(t, "recent", m.Age)
-	}
 }

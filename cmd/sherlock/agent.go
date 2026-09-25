@@ -79,6 +79,10 @@ func newAgentFactory(cfg config.Config, agentID, ego string, logger *slog.Logger
 	if err != nil {
 		return nil, err
 	}
+	embedder, err := newEmbedder(cfg)
+	if err != nil {
+		return nil, err
+	}
 	registry, err := buildToolRegistry(cfg, agentID, logger)
 	if err != nil {
 		return nil, err
@@ -86,6 +90,7 @@ func newAgentFactory(cfg config.Config, agentID, ego string, logger *slog.Logger
 	return &gateway.Factory{
 		MemoryPath: cfg.MemoryPath,
 		NewModel:   newModel,
+		Embedder:   embedder,
 		Ego:        ego,
 		Tools:      registry,
 	}, nil

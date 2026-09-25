@@ -2,6 +2,8 @@
 
 Records the bounded, preregistered comparison for issue #842; it makes no production read-policy decision.
 
+The Go bridge `store.go` was deleted by #858, which removed the FTS5 search and phrase recall it called; `git log -- docs/research/memory-read-policy/store.go` reaches it. Its last working revision is `b898867`. It last matched the [manifest](evidence/manifest.json) hash at `ad7a4d8`, the study's merge, before #850 renamed the module path inside it. The evidence and figures below are unchanged.
+
 ## Question and method
 
 Can task-text retrieval, one pre-turn model reinterpretation, or repeatable search during work recover implicit requirements and apply verified originals in a finished artifact?
@@ -84,12 +86,17 @@ This collection provides no measured benefit for a mandatory reinterpretation ca
 
 ## Reproduction and verification
 
-From the repository root:
+At head, from the repository root, only the unit tests run:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s docs/research/memory-read-policy -p '*_test.py' -v
+```
+
+`score.py` checks every manifest hash, including `store.go`'s, and preflight and collection call the bridge. They run from a checkout of `ad7a4d8`:
 
 ```sh
 go build -o /tmp/recall-842-store ./docs/research/memory-read-policy
 python3 docs/research/memory-read-policy/run.py preflight /tmp/recall-842-preflight
-PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s docs/research/memory-read-policy -p '*_test.py' -v
 PYTHONDONTWRITEBYTECODE=1 python3 docs/research/memory-read-policy/score.py
 PATH=/home/sauce/go/bin:$PATH make ci
 ```

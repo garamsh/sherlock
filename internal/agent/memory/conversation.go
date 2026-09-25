@@ -2,55 +2,28 @@ package memory
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
 
 	"github.com/garamsh/sherlock/internal/agent"
-	"github.com/garamsh/sherlock/internal/tool"
 )
 
 const maxRecalled = 5
 
-// ConversationRecall asks the model for search wording, then reads bounded
-// candidates from the source-linked index. Search wording is a hint, never
-// evidence; an empty result remains empty.
+// ConversationRecall reads the newest mid episodes and the ones whose summaries
+// are most similar to the task, with no model call. A candidate is a hint,
+// never evidence; an empty result remains empty.
 type ConversationRecall struct {
 	Store agent.ConversationMemory
-	Model agent.Model
 }
 
 func (r ConversationRecall) Recall(ctx context.Context, task string) (agent.Recalled, error) {
-	terms := []string{task}
-	if r.Model != nil {
-		resp, err := r.Model.Chat(ctx, []agent.Message{
-			{Role: agent.RoleSystem, Content: "Give up to four short search phrases for the older conversation that could answer this task. Include alternate wording and each topic separately. Call memory_search_terms; do not answer the task."},
-			{Role: agent.RoleUser, Content: task},
-		}, []tool.Descriptor{{Name: "memory_search_terms", Description: "Supply search phrases for older conversation", InputSchema: json.RawMessage(`{"type":"object","properties":{"phrases":{"type":"array","items":{"type":"string"}}},"required":["phrases"],"additionalProperties":false}`)}})
-		if err != nil {
-			return agent.Recalled{}, fmt.Errorf("search wording: %w", err)
-		}
-		for _, call := range resp.ToolCalls {
-			if call.Name == "memory_search_terms" {
-				var v struct {
-					Phrases []string `json:"phrases"`
-				}
-				if json.Unmarshal(call.Input, &v) == nil && len(agent.SearchTokens(v.Phrases[:min(4, len(v.Phrases))])) > 0 {
-					terms = v.Phrases
-					if len(terms) > 4 {
-						terms = terms[:4]
-					}
-				}
-				break
-			}
-		}
-	}
 	recent, err := r.Store.RecentMid(ctx, 2)
 	if err != nil {
 		return agent.Recalled{}, err
 	}
-	hits, err := r.Store.Search(ctx, terms, maxRecalled+len(recent))
+	hits, err := r.Store.Search(ctx, task, maxRecalled+len(recent))
 	if err != nil {
 		return agent.Recalled{}, err
 	}

@@ -134,10 +134,6 @@ func startScriptedEndpoint(t *testing.T, answer scriptedAnswer) string {
 		}
 		require.NoError(t, json.NewDecoder(r.Body).Decode(&request))
 		name, arguments := "memory_write", fmt.Sprintf(`{"reply":%s,"memory_ops":[{"address":{"subject":%s,"question":%s,"restriction":null},"value":%s,"operation":null}]}`, strconvQuote(answer.Reply), strconvQuote(answer.Subject), strconvQuote(answer.Question), strconvQuote(answer.Value))
-		if len(request.Tools) == 1 && request.Tools[0].Function.Name == "memory_search_terms" {
-			name = "memory_search_terms"
-			arguments = `{"phrases":["` + answer.Subject + `"]}`
-		}
 		w.Header().Set("Content-Type", "application/json")
 		fmt.Fprintf(w, `{"choices":[{"message":{"content":"","tool_calls":[{"id":"call-1","type":"function","function":{"name":%s,"arguments":%s}}]},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":100,"completion_tokens":20}}`, strconvQuote(name), strconvQuote(arguments))
 	}))

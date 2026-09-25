@@ -9,6 +9,7 @@ import (
 
 	_ "modernc.org/sqlite"
 
+	"github.com/garamsh/sherlock/internal/agent"
 	"github.com/garamsh/sherlock/internal/memory"
 )
 
@@ -68,7 +69,8 @@ var ErrAddressedStore = errors.New("memory.db holds addressed memories without s
 
 // Store is the SQLite-backed memory.Storer.
 type Store struct {
-	db *sql.DB
+	db       *sql.DB
+	embedder agent.Embedder
 }
 
 var _ memory.Storer = (*Store)(nil)

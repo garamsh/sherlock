@@ -46,6 +46,12 @@ func (e *episodicEvents) Emit(_ context.Context, event agent.Event) {
 	}
 }
 
+// tiedEmbedder gives every text the same vector. The probe measures synthesis
+// and inspection, not similarity, so recall falls back to recency.
+type tiedEmbedder struct{}
+
+func (tiedEmbedder) Embed(context.Context, string) ([]float32, error) { return []float32{1}, nil }
+
 type episodicNoTools struct{}
 
 func (episodicNoTools) List() []tool.Descriptor { return nil }
@@ -65,7 +71,7 @@ func TestEpisodicMemory_LiveProbe(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 	defer cancel()
 	path := filepath.Join(t.TempDir(), "memory.db")
-	store, err := sqlite.OpenConversation(path)
+	store, err := sqlite.OpenConversation(path, tiedEmbedder{})
 	require.NoError(t, err)
 	var seed []agent.SourceMessage
 	for i := 0; i < 56; i++ {
@@ -77,7 +83,7 @@ func TestEpisodicMemory_LiveProbe(t *testing.T) {
 	}
 	require.NoError(t, store.RecordTurn(ctx, seed, episodicSeed{}))
 	seed = nil
-	for i := 0; i < 8; i++ {
+	for i := 0; i < 4; i++ {
 		content := "Routine status check."
 		if i == 0 {
 			content = "Correction: the current project codename is Silver Pine. Blue Cedar is obsolete."
@@ -127,14 +133,14 @@ func TestEpisodicMemory_LiveProbe(t *testing.T) {
 	model, err := openai.New(openai.Config{BaseURL: limiter.URL, Model: recallModelName, APIKey: "local-probe", Timeout: 90 * time.Second})
 	require.NoError(t, err)
 	events := &episodicEvents{}
-	factory := gateway.Factory{MemoryPath: path, NewModel: func(string) agent.Model { return model }, Tools: episodicNoTools{}, MaxHistoryMessages: 2}
+	factory := gateway.Factory{MemoryPath: path, NewModel: func(string) agent.Model { return model }, Embedder: tiedEmbedder{}, Tools: episodicNoTools{}, MaxHistoryMessages: 2}
 	runtime, runErr := factory.New(ctx, "probe", events)
 	reply := ""
 	if runErr == nil {
 		reply, runErr = runtime.Session.Run(ctx, "What is the current project codename? Inspect the linked memory evidence and quote the exact correction message, then answer through memory_write. If the evidence is unavailable, say so.")
 		require.NoError(t, runtime.Close(ctx))
 	}
-	store, err = sqlite.OpenConversation(path)
+	store, err = sqlite.OpenConversation(path, tiedEmbedder{})
 	require.NoError(t, err)
 	defer store.Close()
 	mids, err := store.RecentMid(ctx, 1)
@@ -142,7 +148,7 @@ func TestEpisodicMemory_LiveProbe(t *testing.T) {
 	pending, err := store.PendingSources(ctx)
 	require.NoError(t, err)
 	midCorrected := len(mids) == 1 && strings.Contains(mids[0].Summary, "Silver Pine")
-	report := map[string]any{"model": recallModelName, "scripted_setup_sources": 56, "pending_correction_sources": 8, "spend": meter.Spend(), "mid_contains_correction": midCorrected, "retrieved_ids": events.retrieved, "exact_correction_source_inspected": events.inspectedSource, "answer_contains_current_value": strings.Contains(reply, "Silver Pine"), "runtime_failed": runErr != nil, "pending_source_count": len(pending), "limits": "8 calls, 20000 input tokens, 4000 output tokens, no retries; byte-based input reservation may stop early"}
+	report := map[string]any{"model": recallModelName, "scripted_setup_sources": 56, "pending_correction_sources": 4, "spend": meter.Spend(), "mid_contains_correction": midCorrected, "retrieved_ids": events.retrieved, "exact_correction_source_inspected": events.inspectedSource, "answer_contains_current_value": strings.Contains(reply, "Silver Pine"), "runtime_failed": runErr != nil, "pending_source_count": len(pending), "limits": "8 calls, 20000 input tokens, 4000 output tokens, no retries; byte-based input reservation may stop early"}
 	if destination := os.Getenv("SHERLOCK_EPISODIC_MEMORY_REPORT"); destination != "" {
 		writeJSON(t, destination, report)
 	}

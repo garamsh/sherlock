@@ -62,6 +62,9 @@ type Config struct {
 	WorkspaceAddr string `mapstructure:"workspace-addr"`
 	// Model selects the chat model provider (ADR 0004).
 	Model ModelConfig `mapstructure:"model"`
+	// Embedding selects the embeddings endpoint recall ranks mid episodes
+	// with (ADR 0004). The mock model provider ignores it.
+	Embedding EmbeddingConfig `mapstructure:"embedding"`
 	// TLS carries the gateway's mTLS material (ADR 0012). When unset,
 	// the gateway serves loopback binds only.
 	TLS TLSConfig `mapstructure:"tls"`
@@ -133,6 +136,15 @@ type ModelConfig struct {
 	Timeout time.Duration `mapstructure:"timeout"`
 }
 
+// EmbeddingConfig selects an OpenAI-compatible /embeddings endpoint under
+// the embedding: section. APIKeyEnv names the environment variable holding
+// the key (ADR 0003); empty sends none, as a local server needs none.
+type EmbeddingConfig struct {
+	BaseURL   string `mapstructure:"base-url"`
+	Model     string `mapstructure:"model"`
+	APIKeyEnv string `mapstructure:"api-key-env"`
+}
+
 // AddSharedFlags registers the flags every subcommand resolves through,
 // on fs. The flag layer is the top of this package's precedence, so the
 // flags it reads are registered here rather than at the call site: a
@@ -174,6 +186,9 @@ func Resolve(fs *pflag.FlagSet) (Config, error) {
 	// Keys with neither a flag nor a default still get an empty default,
 	// so the env layer (SHERLOCK_TLS_CERT, …) reaches Unmarshal when the
 	// key is absent from the config file (issue #228).
+	v.SetDefault("embedding.base-url", "")
+	v.SetDefault("embedding.model", "")
+	v.SetDefault("embedding.api-key-env", "")
 	v.SetDefault("tls.cert", "")
 	v.SetDefault("tls.key", "")
 	v.SetDefault("tls.client-ca", "")

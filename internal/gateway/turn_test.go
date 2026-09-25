@@ -62,7 +62,7 @@ func turnFactory(t *testing.T, steps ...agent.ScriptedStep) (*gateway.Factory, s
 	return &gateway.Factory{
 		MemoryPath: memoryPath,
 		NewModel: func(string) agent.Model {
-			return agent.NewScriptedModel(append([]agent.ScriptedStep{resolveStep()}, steps...)...)
+			return agent.NewScriptedModel(steps...)
 		},
 		Tools: noTools(),
 	}, memoryPath

@@ -12,7 +12,7 @@ sherlock is an autonomous agent platform written in Go. It runs AI agents that c
 
 - **Two processes per agent: self and workspace.** The agent process holds the gateway (message ingress and the monitoring stream), the reasoning loop, long-term memory, the mouth (outbound messaging), and the script-tool runtime (`internal/tool`) that loads each tool from `tools/<name>/manifest.json` and dispatches calls as one-shot stdio processes (ADR 0017, ADR 0009). The workspace process is the computer: a gRPC server for the filesystem (Read, Write, List) and process execution (Exec) in the workspace directory. Tools are stand-alone executables behind a fixed stdio contract; the agent binary hosts no tool behavior.
 - **The workspace enforces permissions at the action site.** Agent-influenced file writes run under the workspace's own UID, and workspace ownership is kernel-enforced (ADR 0008, ADR 0010). Process exec is the workspace's capability (ADR 0017), surfaced to the model as the `shell_exec` tool: the tool calls the workspace's Exec RPC, and children drop to the configured exec UID and run in the workspace directory, so exec'd programs see the files the tools see. The agent executes nothing. The orchestration layer manages the pod boundary (network egress, mounts, lifecycle).
-- **Memory is source-linked.** Completed turns save visible user and assistant messages before synthesis. Short memory is the rolling recent conversation; each full eight-message batch produces a searchable mid episode. Recall combines two recent episodes with up to five older relevant episodes and pending source previews; the agent can inspect saved source messages when it needs exact wording. See [Memory](docs/architecture/memory.md) for recall and context compaction.
+- **Memory is source-linked.** Completed turns save visible user and assistant messages before synthesis. Short memory is the rolling recent conversation; each full four-message batch produces a mid episode stored with its summary's embedding. Recall combines two recent episodes with up to five more most similar to the task and pending source previews, with no model call; the agent can inspect saved source messages when it needs exact wording. See [Memory](docs/architecture/memory.md) for recall and context compaction.
 
 ## Who it is for
 
@@ -85,6 +85,9 @@ Agent keys (`sherlock agent`; see `configs/agent.yaml` for an example):
 | `model.model` | — | `gpt-4o-mini` |
 | `model.api-key-env` | — | `OPENAI_API_KEY` (name of the env var holding the key — the key itself never goes in the config file) |
 | `model.timeout` | — | `60s` (one chat-completions request; raise for slow local endpoints like CPU-served Ollama/vLLM) |
+| `embedding.base-url` | — | unset (an OpenAI-compatible `/embeddings` API root, hosted or local — see §Embeddings. Required unless `model.provider` is `mock`, which embeds offline and reads no `embedding:` key) |
+| `embedding.model` | — | unset (embedding model name, e.g. `BAAI/bge-base-en-v1.5`) |
+| `embedding.api-key-env` | — | unset (name of the env var holding the embeddings key; unset sends no key, as a local server needs none) |
 | `tls.cert` | — | unset (gateway server certificate, PEM; all three `tls:` keys together enable mTLS) |
 | `tls.key` | — | unset (server certificate's private key, PEM) |
 | `tls.client-ca` | — | unset (CA bundle, PEM, that client certificates are verified against) |
@@ -119,6 +122,18 @@ The key never goes in the file — `api-key-env` names the environment variable 
 Models the endpoint lists: `MiniMax-M3`, `MiniMax-M2.7`, `MiniMax-M2.7-highspeed`, `MiniMax-M2.5`, `MiniMax-M2.5-highspeed`, `MiniMax-M2.1`, `MiniMax-M2.1-highspeed`, `MiniMax-M2`. `https://api.minimaxi.com/v1` and `https://api.minimax.chat/v1` both answer 401; only `api.minimax.io` authenticates.
 
 **One asymmetry an operator has to know, because "OpenAI-compatible" does not imply it.** On this endpoint a *tool* schema is enforced — a call returns the declared function with well-formed JSON arguments — while a *response* schema is not: `response_format: json_schema` is accepted with HTTP 200 and ignored. Tool calling holds; the response schema is decoration. The agent no longer sends a response format at all: the memory writeback travels as a reserved tool call and a turn does not end until the model makes it (#615), so this asymmetry costs an operator nothing here. It is recorded because it is the kind of difference that is met after a turn rather than at the config line. Probed 2026-08-17 on `MiniMax-M2`, `MiniMax-M2.1`, `MiniMax-M2.5-highspeed` and `MiniMax-M3`; re-check against the endpoint before relying on either half.
+
+#### Embeddings
+
+Recall ranks mid episodes by embedding similarity, so every provider but `mock` also needs an `embedding:` section naming an OpenAI-compatible `/embeddings` endpoint. It is separate from `model:` because the chat endpoint need not serve embeddings, and the embedder speaks only the OpenAI-compatible protocol whatever `model.provider` names. The model the replication and the parity run measured, `BAAI/bge-base-en-v1.5`, runs locally in Hugging Face's text-embeddings-inference server (`docs/research/mid-memory-rag/README.md` §Production parity):
+
+```yaml
+embedding:
+  base-url: http://127.0.0.1:8090/v1
+  model: BAAI/bge-base-en-v1.5
+```
+
+Keep one embedding model per memory file: stored vectors belong to the model that wrote them (`docs/architecture/memory.md` §Existing databases).
 
 #### Anthropic, on `anthropic-compatible`
 

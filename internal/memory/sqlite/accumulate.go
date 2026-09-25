@@ -87,16 +87,15 @@ func (s *Store) embedMids(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("read unembedded episodes: %v", err)
 	}
+	defer rows.Close()
 	var mids []agent.ConversationHit
 	for rows.Next() {
 		var mid agent.ConversationHit
 		if err := rows.Scan(&mid.ID, &mid.Summary); err != nil {
-			rows.Close()
 			return fmt.Errorf("read unembedded episodes: %v", err)
 		}
 		mids = append(mids, mid)
 	}
-	rows.Close()
 	if err := rows.Err(); err != nil {
 		return fmt.Errorf("read unembedded episodes: %v", err)
 	}

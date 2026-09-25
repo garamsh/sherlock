@@ -131,18 +131,17 @@ func (s *Store) Search(ctx context.Context, query string, limit int) ([]agent.Co
 	if err != nil {
 		return nil, fmt.Errorf("search conversation: %v", err)
 	}
+	defer rows.Close()
 	var hits []agent.ConversationHit
 	var vectors [][]byte
 	for rows.Next() {
 		var hit agent.ConversationHit
 		var vector []byte
 		if err := rows.Scan(&hit.ID, &hit.Summary, &hit.SourceFirst, &hit.SourceLast, &vector); err != nil {
-			rows.Close()
 			return nil, fmt.Errorf("read conversation candidates: %v", err)
 		}
 		hits, vectors = append(hits, hit), append(vectors, vector)
 	}
-	rows.Close()
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("read conversation candidates: %v", err)
 	}
@@ -312,7 +311,8 @@ func prepareConversation(db *sql.DB) error {
 			return err
 		}
 	}
-	if _, err := tx.Exec(conversationSchema); err != nil {
+	_, err = tx.Exec(conversationSchema)
+	if err != nil {
 		return err
 	}
 	var embedded int

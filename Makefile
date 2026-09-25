@@ -184,8 +184,7 @@ shapeless_ignores = $(strip $(foreach file,$(dockerignores),$(if $(call context_
 # redefine what a context is for a build the guard then reports clean.
 AGENT_DOCKERFILE = build/agent.Dockerfile
 WORKSPACE_DOCKERFILE = build/workspace.Dockerfile
-TOOLS_DOCKERFILE = build/tools.Dockerfile
-build_inputs = $(AGENT_DOCKERFILE) $(WORKSPACE_DOCKERFILE) $(TOOLS_DOCKERFILE) $(dockerignores)
+build_inputs = $(AGENT_DOCKERFILE) $(WORKSPACE_DOCKERFILE) $(dockerignores)
 checked_paths = $(context_paths) $(build_inputs)
 
 # Read paths that are not in the tree. They are handed to git as pathspecs,
@@ -229,7 +228,6 @@ build-images:
 	@echo "build-images: $(if $(revision_is_default),what docker reads [$(checked_paths)] matches $(REVISION),REVISION=$(REVISION) was passed in and what docker reads is not checked against it)"
 	$(BUILD_ENV) docker build -f $(AGENT_DOCKERFILE) --build-arg REVISION="$(REVISION)" -t sherlock-agent:$(REVISION) .
 	$(BUILD_ENV) docker build -f $(WORKSPACE_DOCKERFILE) --build-arg REVISION="$(REVISION)" -t sherlock-workspace:$(REVISION) .
-	$(BUILD_ENV) docker build -f $(TOOLS_DOCKERFILE) --build-arg REVISION="$(REVISION)" -t sherlock-tools:$(REVISION) .
 
 # The toolchain image the privileged CI job runs in, read out of the
 # Dockerfile that owns the pin rather than restated in the workflow (#633).

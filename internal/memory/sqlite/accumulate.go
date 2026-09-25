@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/garamsh/gagent/internal/agent"
+	"github.com/garamsh/sherlock/internal/agent"
 )
 
 // Accumulate creates one immutable mid episode per full cross-turn message batch.

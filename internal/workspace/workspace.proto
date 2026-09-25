@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package workspace;
-option go_package = "github.com/garamsh/gagent/internal/workspace;workspace";
+option go_package = "github.com/garamsh/sherlock/internal/workspace;workspace";
 
 // Workspace is the data plane the agent uses for its working environment
 // (ADR 0017): it serves the filesystem (Read, Write, List) and runs

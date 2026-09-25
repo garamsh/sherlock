@@ -1,9 +1,9 @@
-// Command gagent is the CLI entry point for one agent pod (ADR 0017):
-// "gagent agent" runs the agent's self — the HTTP gateway, the rolling
+// Command sherlock is the CLI entry point for one agent pod (ADR 0017):
+// "sherlock agent" runs the agent's self — the HTTP gateway, the rolling
 // session, memory, the mouth, and the tool client that spawns the
-// operator's installed tools — and "gagent workspace" serves the
+// operator's installed tools — and "sherlock workspace" serves the
 // agent's workspace, the gRPC data plane (files and exec). Settings
-// come from flags, GAGENT_* environment variables, and configs/gagent.yaml
+// come from flags, SHERLOCK_* environment variables, and configs/agent.yaml
 // through viper.
 package main
 
@@ -12,8 +12,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/garamsh/gagent/internal/config"
-	"github.com/garamsh/gagent/internal/workspace/shell"
+	"github.com/garamsh/sherlock/internal/config"
+	"github.com/garamsh/sherlock/internal/workspace/shell"
 )
 
 func main() {
@@ -27,11 +27,11 @@ func main() {
 	}
 }
 
-// newRootCommand builds the gagent command tree with the shared config
+// newRootCommand builds the sherlock command tree with the shared config
 // flags available to every subcommand.
 func newRootCommand() *cobra.Command {
 	root := &cobra.Command{
-		Use:   "gagent",
+		Use:   "sherlock",
 		Short: "Run one agent pod: the agent process or its workspace data plane",
 	}
 	config.AddSharedFlags(root.PersistentFlags())

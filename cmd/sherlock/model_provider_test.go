@@ -9,8 +9,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/agent"
-	"github.com/garamsh/gagent/internal/config"
+	"github.com/garamsh/sherlock/internal/agent"
+	"github.com/garamsh/sherlock/internal/config"
 )
 
 func TestNewModelFunc_MockKeepsScriptedModel(t *testing.T) {
@@ -37,7 +37,7 @@ func TestNewModelFunc_RetiredOpenAIValueNamesItsReplacement(t *testing.T) {
 		Provider:  "openai",
 		BaseURL:   "http://localhost:1234/v1",
 		Model:     "test-model",
-		APIKeyEnv: "GAGENT_TEST_KEY",
+		APIKeyEnv: "SHERLOCK_TEST_KEY",
 	})
 	require.Error(t, err, "the retired value must not silently keep working")
 	assert.Contains(t, err.Error(), "openai-compatible",
@@ -48,12 +48,12 @@ func TestNewModelFunc_RetiredOpenAIValueNamesItsReplacement(t *testing.T) {
 // protocol reaching its own package (#621): selecting it must not fall
 // through to the OpenAI-compatible client, which cannot speak it.
 func TestNewModelFunc_AnthropicCompatibleBuildsClient(t *testing.T) {
-	t.Setenv("GAGENT_TEST_KEY", "test-key")
+	t.Setenv("SHERLOCK_TEST_KEY", "test-key")
 	newModel, err := newModelFunc(config.ModelConfig{
 		Provider:  "anthropic-compatible",
 		BaseURL:   "https://api.anthropic.com/v1",
 		Model:     "claude-test",
-		APIKeyEnv: "GAGENT_TEST_KEY",
+		APIKeyEnv: "SHERLOCK_TEST_KEY",
 	})
 	require.NoError(t, err)
 	assert.NotNil(t, newModel("any-env"))
@@ -63,47 +63,47 @@ func TestNewModelFunc_AnthropicCompatibleBuildsClient(t *testing.T) {
 // the new protocol fails at startup on a missing key exactly as the
 // other one does, rather than on the first turn.
 func TestNewModelFunc_AnthropicCompatibleMissingKeyEnvFailsFast(t *testing.T) {
-	t.Setenv("GAGENT_TEST_UNSET_KEY", "")
+	t.Setenv("SHERLOCK_TEST_UNSET_KEY", "")
 	_, err := newModelFunc(config.ModelConfig{
 		Provider:  "anthropic-compatible",
 		BaseURL:   "https://api.anthropic.com/v1",
 		Model:     "claude-test",
-		APIKeyEnv: "GAGENT_TEST_UNSET_KEY",
+		APIKeyEnv: "SHERLOCK_TEST_UNSET_KEY",
 	})
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), "GAGENT_TEST_UNSET_KEY")
+	assert.Contains(t, err.Error(), "SHERLOCK_TEST_UNSET_KEY")
 }
 
 func TestNewModelFunc_OpenAICompatibleMissingKeyEnvFailsFast(t *testing.T) {
-	t.Setenv("GAGENT_TEST_UNSET_KEY", "")
+	t.Setenv("SHERLOCK_TEST_UNSET_KEY", "")
 	_, err := newModelFunc(config.ModelConfig{
 		Provider:  "openai-compatible",
 		BaseURL:   "http://localhost:1234/v1",
 		Model:     "test-model",
-		APIKeyEnv: "GAGENT_TEST_UNSET_KEY",
+		APIKeyEnv: "SHERLOCK_TEST_UNSET_KEY",
 	})
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), "GAGENT_TEST_UNSET_KEY")
+	assert.Contains(t, err.Error(), "SHERLOCK_TEST_UNSET_KEY")
 }
 
 func TestNewModelFunc_OpenAICompatibleBuildsClient(t *testing.T) {
-	t.Setenv("GAGENT_TEST_KEY", "sk-test")
+	t.Setenv("SHERLOCK_TEST_KEY", "sk-test")
 	newModel, err := newModelFunc(config.ModelConfig{
 		Provider:  "openai-compatible",
 		BaseURL:   "http://localhost:1234/v1",
 		Model:     "test-model",
-		APIKeyEnv: "GAGENT_TEST_KEY",
+		APIKeyEnv: "SHERLOCK_TEST_KEY",
 	})
 	require.NoError(t, err)
 	assert.NotNil(t, newModel("any-env"))
 }
 
 func TestNewModelFunc_OpenAICompatibleIncompleteSettingsFail(t *testing.T) {
-	t.Setenv("GAGENT_TEST_KEY", "sk-test")
+	t.Setenv("SHERLOCK_TEST_KEY", "sk-test")
 	_, err := newModelFunc(config.ModelConfig{
 		Provider:  "openai-compatible",
 		Model:     "test-model",
-		APIKeyEnv: "GAGENT_TEST_KEY",
+		APIKeyEnv: "SHERLOCK_TEST_KEY",
 	})
 	assert.Error(t, err, "empty base URL is rejected at startup")
 }
@@ -120,12 +120,12 @@ func TestNewModelFunc_OpenAICompatibleConfiguredTimeoutReachesModel(t *testing.T
 	}))
 	defer slow.Close()
 
-	t.Setenv("GAGENT_TEST_KEY", "sk-test")
+	t.Setenv("SHERLOCK_TEST_KEY", "sk-test")
 	newModel, err := newModelFunc(config.ModelConfig{
 		Provider:  "openai-compatible",
 		BaseURL:   slow.URL + "/v1",
 		Model:     "test-model",
-		APIKeyEnv: "GAGENT_TEST_KEY",
+		APIKeyEnv: "SHERLOCK_TEST_KEY",
 		Timeout:   50 * time.Millisecond,
 	})
 	require.NoError(t, err)

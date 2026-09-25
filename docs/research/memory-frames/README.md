@@ -3904,7 +3904,7 @@ The reason is what a decade puts in a store. Two facts about one subject and att
 
 Established before the run, as issue #443 requires.
 
-No frame calls a model. Every structure measured here decides what it decides from what it was given; the ones that rank a store by similarity — the three memory streams and the two Mem0 arms — touch an embedder, and it is the deterministic offline one this harness holds (`harness/embedding.go`), which `cmd/gagent` defaulted to until `46bd83d` removed the platform's embedder with the store that read it. The frames, the workload and the error sweep are free, and the model-call count in the first table below is the check on that rather than an assurance.
+No frame calls a model. Every structure measured here decides what it decides from what it was given; the ones that rank a store by similarity — the three memory streams and the two Mem0 arms — touch an embedder, and it is the deterministic offline one this harness holds (`harness/embedding.go`), which `cmd/sherlock` defaulted to until `46bd83d` removed the platform's embedder with the store that read it. The frames, the workload and the error sweep are free, and the model-call count in the first table below is the check on that rather than an assurance.
 
 **The published designs raised three counts in that table and moved no figure any of them is read on.** Turns observed and contexts produced are the turn count times the frames times the arms, so both rose with the frames added; the embedder counts rose because five of the new arms embed what they hold and what they are asked. None of the three is a figure about a structure, and every per-frame row committed before this round is unchanged.
 

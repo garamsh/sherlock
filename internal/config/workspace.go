@@ -58,10 +58,10 @@ type WorkspaceConfig struct {
 }
 
 // ResolveWorkspace builds the workspace's effective WorkspaceConfig
-// from fs with the same precedence as the agent's: flags > GAGENT_*
+// from fs with the same precedence as the agent's: flags > SHERLOCK_*
 // environment variables > config file > defaults. The workspace's
 // config file resolves via --config <path>, then ./configs/workspace.yaml,
-// then os.UserConfigDir()/gagent/workspace.yaml (XDG).
+// then os.UserConfigDir()/sherlock/workspace.yaml (XDG).
 func ResolveWorkspace(fs *pflag.FlagSet) (WorkspaceConfig, error) {
 	v := newConfigViper()
 	v.SetDefault("addr", defaultWorkspaceAddr)

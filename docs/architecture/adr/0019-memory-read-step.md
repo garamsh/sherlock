@@ -15,13 +15,13 @@ Recent episodes remain available even when lexical search finds nothing. Up to e
 
 ## Evidence and limits
 
-- The bounded local live-model A/B replay recorded in [PR #834's review at bfbc756](https://github.com/garamsh/gagent/pull/834#pullrequestreview-5304675916) used the same 201-source correction fixture from [issue #832](https://github.com/garamsh/gagent/issues/832): two generic-query baseline failures and two correct relevance-first answers. This supports replacing newest-first ordering for the observed crowding failure.
+- The bounded local live-model A/B replay recorded in [PR #834's review at bfbc756](https://github.com/garamsh/sherlock/pull/834#pullrequestreview-5304675916) used the same 201-source correction fixture from [issue #832](https://github.com/garamsh/sherlock/issues/832): two generic-query baseline failures and two correct relevance-first answers. This supports replacing newest-first ordering for the observed crowding failure.
 - That single fixture does not establish general search-phrase quality, summary fidelity, correction handling, or grounded answer accuracy. The issue #821 prototype's 7/7 candidate reachability used hand-authored summaries and cannot establish these properties either.
 - FTS5 lexical matching and the older-candidate bound can still omit evidence. Recent episodes can also omit facts through synthesis. Neither ranking nor recency establishes truth; the agent must inspect the linked evidence.
 
 - `TestConversationRecall_RecentCorrectionAndOlderRelevantEpisode` compares the two-set selection against relevance-only and recent-only controls: a weak-overlap recent correction survives while an older discriminative episode remains reachable past generic intervening episodes. This is deterministic reachability, not model answer quality.
 
-- The opt-in `GAGENT_EPISODIC_MEMORY_PROBE=1 go test ./tests -run '^TestEpisodicMemory_LiveProbe$' -count=1 -v` ran at `2589be1` on 2026-09-24 against MiniMax-M2: 4 HTTP calls, 4,301 input tokens, 684 output tokens, no runtime failure. Scripted setup supplied 56 earlier sources; the runtime synthesized the next eight-source correction batch live, retrieved its episode, inspected the correction source, and produced a final response containing the corrected name. The answer check is lexical containment, not a semantic or exact-quotation adjudication. This single fixture measures those observed steps, not general summary fidelity or implicit-association quality.
+- The opt-in `SHERLOCK_EPISODIC_MEMORY_PROBE=1 go test ./tests -run '^TestEpisodicMemory_LiveProbe$' -count=1 -v` ran at `2589be1` on 2026-09-24 against MiniMax-M2: 4 HTTP calls, 4,301 input tokens, 684 output tokens, no runtime failure. Scripted setup supplied 56 earlier sources; the runtime synthesized the next eight-source correction batch live, retrieved its episode, inspected the correction source, and produced a final response containing the corrected name. The answer check is lexical containment, not a semantic or exact-quotation adjudication. This single fixture measures those observed steps, not general summary fidelity or implicit-association quality.
 
 ## Consequences
 

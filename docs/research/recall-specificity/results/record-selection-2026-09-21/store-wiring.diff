@@ -1,5 +1,5 @@
---- /home/sauce/orca/workspaces/gagent/test-record-selection/internal/gateway/runtime.go	2026-09-21 01:31:24.066386427 +0900
-+++ /home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/grounded-runtime.go	2026-09-21 01:51:30.280783979 +0900
+--- /home/sauce/orca/workspaces/sherlock/test-record-selection/internal/gateway/runtime.go	2026-09-21 01:31:24.066386427 +0900
++++ /home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/grounded-runtime.go	2026-09-21 01:51:30.280783979 +0900
 @@ -78,7 +78,7 @@
  	model := f.NewModel(agentID)
  

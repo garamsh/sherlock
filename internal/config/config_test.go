@@ -12,8 +12,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/config"
-	"github.com/garamsh/gagent/internal/tool"
+	"github.com/garamsh/sherlock/internal/config"
+	"github.com/garamsh/sherlock/internal/tool"
 )
 
 // agentFlags returns the flag set the agent subcommand resolves
@@ -21,7 +21,7 @@ import (
 // Resolve with the flag layer the entry point actually supplies.
 func agentFlags(t *testing.T) *pflag.FlagSet {
 	t.Helper()
-	// Isolate the test from a real XDG/home gagent config.
+	// Isolate the test from a real XDG/home sherlock config.
 	t.Setenv("HOME", t.TempDir())
 	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
 	fs := pflag.NewFlagSet("test", pflag.ContinueOnError)
@@ -57,7 +57,7 @@ func TestResolveConfig_ModelSection(t *testing.T) {
 		"  model: llama3.2\n" +
 		"  api-key-env: OLLAMA_KEY\n" +
 		"  timeout: 120s\n"
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "gagent.yaml"), []byte(contents), 0o600))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "agent.yaml"), []byte(contents), 0o600))
 
 	cfg, err := config.Resolve(agentFlags(t))
 	require.NoError(t, err)
@@ -73,15 +73,15 @@ func TestResolveConfig_ModelTimeoutEnvOverridesFile(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
 	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "gagent.yaml"),
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "agent.yaml"),
 		[]byte("model:\n  timeout: 30s\n"), 0o600))
-	t.Setenv("GAGENT_MODEL_TIMEOUT", "5m")
+	t.Setenv("SHERLOCK_MODEL_TIMEOUT", "5m")
 
 	cfg, err := config.Resolve(agentFlags(t))
 	require.NoError(t, err)
 
 	assert.Equal(t, 5*time.Minute, cfg.Model.Timeout,
-		"GAGENT_MODEL_TIMEOUT must override the config-file value")
+		"SHERLOCK_MODEL_TIMEOUT must override the config-file value")
 }
 
 func TestResolveConfig_ConfigFile(t *testing.T) {
@@ -91,7 +91,7 @@ func TestResolveConfig_ConfigFile(t *testing.T) {
 	contents := "addr: \":9090\"\n" +
 		"memory-path: /from-file/memory.db\n" +
 		"workspace-addr: 127.0.0.1:9081\n"
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "gagent.yaml"), []byte(contents), 0o600))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "agent.yaml"), []byte(contents), 0o600))
 
 	cfg, err := config.Resolve(agentFlags(t))
 	require.NoError(t, err)
@@ -106,9 +106,9 @@ func TestResolveConfig_EnvOverridesFile(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
 	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "gagent.yaml"),
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "agent.yaml"),
 		[]byte("memory-path: /from-file/memory.db\n"), 0o600))
-	t.Setenv("GAGENT_MEMORY_PATH", "/from-env/memory.db")
+	t.Setenv("SHERLOCK_MEMORY_PATH", "/from-env/memory.db")
 
 	cfg, err := config.Resolve(agentFlags(t))
 	require.NoError(t, err)
@@ -118,7 +118,7 @@ func TestResolveConfig_EnvOverridesFile(t *testing.T) {
 
 func TestResolveConfig_FlagOverridesEnv(t *testing.T) {
 	t.Chdir(t.TempDir())
-	t.Setenv("GAGENT_MEMORY_PATH", "/from-env/memory.db")
+	t.Setenv("SHERLOCK_MEMORY_PATH", "/from-env/memory.db")
 	fs := agentFlags(t)
 	require.NoError(t, fs.Set("memory-path", "/from-flag/memory.db"))
 
@@ -144,8 +144,8 @@ func TestResolveConfig_XDGConfigFile(t *testing.T) {
 	t.Chdir(t.TempDir())
 	xdg := t.TempDir()
 	t.Setenv("XDG_CONFIG_HOME", xdg)
-	require.NoError(t, os.MkdirAll(filepath.Join(xdg, "gagent"), 0o755))
-	require.NoError(t, os.WriteFile(filepath.Join(xdg, "gagent", "config.yaml"),
+	require.NoError(t, os.MkdirAll(filepath.Join(xdg, "sherlock"), 0o755))
+	require.NoError(t, os.WriteFile(filepath.Join(xdg, "sherlock", "config.yaml"),
 		[]byte("memory-path: /from-xdg/memory.db\n"), 0o600))
 
 	fs := pflag.NewFlagSet("test", pflag.ContinueOnError)
@@ -162,10 +162,10 @@ func TestResolveConfig_CwdBeatsXDG(t *testing.T) {
 	t.Chdir(dir)
 	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
 	xdg := t.TempDir()
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "gagent.yaml"),
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "agent.yaml"),
 		[]byte("memory-path: /from-cwd/memory.db\n"), 0o600))
-	require.NoError(t, os.MkdirAll(filepath.Join(xdg, "gagent"), 0o755))
-	require.NoError(t, os.WriteFile(filepath.Join(xdg, "gagent", "config.yaml"),
+	require.NoError(t, os.MkdirAll(filepath.Join(xdg, "sherlock"), 0o755))
+	require.NoError(t, os.WriteFile(filepath.Join(xdg, "sherlock", "config.yaml"),
 		[]byte("memory-path: /from-xdg/memory.db\n"), 0o600))
 	fs := agentFlags(t)
 	t.Setenv("XDG_CONFIG_HOME", xdg)
@@ -180,8 +180,8 @@ func TestResolveConfig_ConfigFlag(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
 	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
-	// A configs/gagent.yaml file exists but the flag path wins; the flag path is arbitrary.
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "gagent.yaml"),
+	// A configs/agent.yaml file exists but the flag path wins; the flag path is arbitrary.
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "agent.yaml"),
 		[]byte("memory-path: /from-cwd/memory.db\n"), 0o600))
 	custom := filepath.Join(t.TempDir(), "custom.yaml")
 	require.NoError(t, os.WriteFile(custom, []byte("memory-path: /from-flag/memory.db\n"), 0o600))
@@ -211,7 +211,7 @@ func TestResolveConfig_TLSSection(t *testing.T) {
 		"  cert: /srv/tls/server.pem\n" +
 		"  key: /srv/tls/server-key.pem\n" +
 		"  client-ca: /srv/tls/ca.pem\n"
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "gagent.yaml"), []byte(contents), 0o600))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "agent.yaml"), []byte(contents), 0o600))
 
 	cfg, err := config.Resolve(agentFlags(t))
 	require.NoError(t, err)
@@ -227,25 +227,25 @@ func TestResolveConfig_TLSSectionEnvOverridesFile(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
 	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "gagent.yaml"),
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "agent.yaml"),
 		[]byte("tls:\n  cert: /from-file.pem\n"), 0o600))
-	t.Setenv("GAGENT_TLS_CERT", "/from-env.pem")
+	t.Setenv("SHERLOCK_TLS_CERT", "/from-env.pem")
 
 	cfg, err := config.Resolve(agentFlags(t))
 	require.NoError(t, err)
 
 	assert.Equal(t, "/from-env.pem", cfg.TLS.Cert,
-		"GAGENT_TLS_CERT must override the config-file value")
+		"SHERLOCK_TLS_CERT must override the config-file value")
 }
 
-// TestResolveConfig_TLSSectionEnvOnly pins issue #228: the GAGENT_TLS_*
+// TestResolveConfig_TLSSectionEnvOnly pins issue #228: the SHERLOCK_TLS_*
 // variables resolve with no config file at all — the env layer reaches
 // Unmarshal for keys that have neither a flag nor a real default.
 func TestResolveConfig_TLSSectionEnvOnly(t *testing.T) {
 	t.Chdir(t.TempDir())
-	t.Setenv("GAGENT_TLS_CERT", "/from-env/server.pem")
-	t.Setenv("GAGENT_TLS_KEY", "/from-env/server-key.pem")
-	t.Setenv("GAGENT_TLS_CLIENT_CA", "/from-env/ca.pem")
+	t.Setenv("SHERLOCK_TLS_CERT", "/from-env/server.pem")
+	t.Setenv("SHERLOCK_TLS_KEY", "/from-env/server-key.pem")
+	t.Setenv("SHERLOCK_TLS_CLIENT_CA", "/from-env/ca.pem")
 
 	cfg, err := config.Resolve(agentFlags(t))
 	require.NoError(t, err)
@@ -272,7 +272,7 @@ func TestResolveConfig_ConfigFileMustBeOwnerOnly(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
 	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
-	path := filepath.Join(dir, "configs", "gagent.yaml")
+	path := filepath.Join(dir, "configs", "agent.yaml")
 	require.NoError(t, os.WriteFile(path, []byte("addr: 127.0.0.1:9090\n"), 0o600))
 
 	_, err := config.Resolve(agentFlags(t))
@@ -296,7 +296,7 @@ func TestResolveConfig_ToolsPinsSection(t *testing.T) {
 		"  pins:\n" +
 		"    message_send: 0f9b\n" +
 		"    files: 7c31\n"
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "gagent.yaml"), []byte(contents), 0o600))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "agent.yaml"), []byte(contents), 0o600))
 
 	cfg, err := config.Resolve(agentFlags(t))
 	require.NoError(t, err)
@@ -324,7 +324,7 @@ func TestResolveConfig_NoToolsSection(t *testing.T) {
 // TestResolveConfig_ToolsDirDefaults pins the tools directory to the
 // same resolution every other setting gets. The empty-environment case
 // is the one that could have changed silently: the hand-rolled lookup
-// this replaced treated an empty GAGENT_TOOLS_DIR as unset, and viper
+// this replaced treated an empty SHERLOCK_TOOLS_DIR as unset, and viper
 // has to agree or a deployment that exports the variable empty would
 // start reading manifests from "".
 // TestResolveConfig_EmptyToolsPinsSectionFails is the case #562
@@ -335,7 +335,7 @@ func TestResolveConfig_EmptyToolsPinsSectionFails(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
 	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "gagent.yaml"),
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "agent.yaml"),
 		[]byte("tools:\n  pins: {}\n"), 0o600))
 
 	_, err := config.Resolve(agentFlags(t))
@@ -352,7 +352,7 @@ func TestResolveConfig_ToolsSectionWithoutPinsIsAbsent(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
 	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "gagent.yaml"),
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "agent.yaml"),
 		[]byte("tools-dir: ./elsewhere\n"), 0o600))
 
 	cfg, err := config.Resolve(agentFlags(t))
@@ -363,7 +363,7 @@ func TestResolveConfig_ToolsSectionWithoutPinsIsAbsent(t *testing.T) {
 }
 
 // TestResolveConfig_ToolsPinsEnvIsRefused is the case #745 reported.
-// Every key binds to the environment, so GAGENT_TOOLS_PINS made
+// Every key binds to the environment, so SHERLOCK_TOOLS_PINS made
 // tools.pins present and unmarshalled its scalar to an empty map: an
 // operator who named two tools was told they had named none.
 //
@@ -375,24 +375,24 @@ func TestResolveConfig_ToolsPinsEnvIsRefused(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
 	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "gagent.yaml"),
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "agent.yaml"),
 		[]byte("tools:\n  pins:\n    message_send: 0f9b\n    files: 7c31\n"), 0o600))
-	t.Setenv("GAGENT_TOOLS_DIR", "/opt/gagent/tools")
+	t.Setenv("SHERLOCK_TOOLS_DIR", "/opt/sherlock/tools")
 
 	cfg, err := config.Resolve(agentFlags(t))
 
 	require.NoError(t, err)
 	require.Equal(t, tool.ManifestPins{"message_send": "0f9b", "files": "7c31"}, cfg.Tools.Pins,
 		"the pin set is accepted from the file: the channel is what the refusal is about, not the content")
-	require.Equal(t, "/opt/gagent/tools", cfg.ToolsDir,
-		"GAGENT_TOOLS_DIR still reaches its setting: the refusal is this key's, not the environment layer's")
+	require.Equal(t, "/opt/sherlock/tools", cfg.ToolsDir,
+		"SHERLOCK_TOOLS_DIR still reaches its setting: the refusal is this key's, not the environment layer's")
 
-	t.Setenv("GAGENT_TOOLS_PINS", "files=7c31,message_send=0f9b")
+	t.Setenv("SHERLOCK_TOOLS_PINS", "files=7c31,message_send=0f9b")
 
 	_, err = config.Resolve(agentFlags(t))
 
 	require.Error(t, err, "the environment form of the pin set must not resolve")
-	assert.Contains(t, err.Error(), "GAGENT_TOOLS_PINS",
+	assert.Contains(t, err.Error(), "SHERLOCK_TOOLS_PINS",
 		"the error names the variable the operator set")
 	assert.Contains(t, err.Error(), "cannot express tools.pins",
 		"the error says the environment cannot carry this key")
@@ -415,12 +415,12 @@ func TestResolveConfig_EmptyToolsPinsEnvIsRefused(t *testing.T) {
 	require.Nil(t, cfg.Tools.Pins,
 		"with no variable and no section this is the absent state, and it resolves")
 
-	t.Setenv("GAGENT_TOOLS_PINS", "")
+	t.Setenv("SHERLOCK_TOOLS_PINS", "")
 
 	_, err = config.Resolve(agentFlags(t))
 
-	require.Error(t, err, "an empty GAGENT_TOOLS_PINS must not resolve to pinning being off")
-	assert.Contains(t, err.Error(), "GAGENT_TOOLS_PINS")
+	require.Error(t, err, "an empty SHERLOCK_TOOLS_PINS must not resolve to pinning being off")
+	assert.Contains(t, err.Error(), "SHERLOCK_TOOLS_PINS")
 	assert.Contains(t, err.Error(), "config file",
 		"the error names where the pin set goes instead")
 }
@@ -437,31 +437,31 @@ func TestResolveConfig_ToolsDirDefaults(t *testing.T) {
 func TestResolveConfig_ToolsDirEmptyEnvFallsBack(t *testing.T) {
 	t.Chdir(t.TempDir())
 	fs := agentFlags(t)
-	t.Setenv("GAGENT_TOOLS_DIR", "")
+	t.Setenv("SHERLOCK_TOOLS_DIR", "")
 
 	cfg, err := config.Resolve(fs)
 	require.NoError(t, err)
 
 	assert.Equal(t, "./tools", cfg.ToolsDir,
-		"an empty GAGENT_TOOLS_DIR is unset, not a directory named the empty string")
+		"an empty SHERLOCK_TOOLS_DIR is unset, not a directory named the empty string")
 }
 
 func TestResolveConfig_ToolsDirEnvOverridesDefault(t *testing.T) {
 	t.Chdir(t.TempDir())
 	fs := agentFlags(t)
-	t.Setenv("GAGENT_TOOLS_DIR", "/opt/gagent/tools")
+	t.Setenv("SHERLOCK_TOOLS_DIR", "/opt/sherlock/tools")
 
 	cfg, err := config.Resolve(fs)
 	require.NoError(t, err)
 
-	assert.Equal(t, "/opt/gagent/tools", cfg.ToolsDir)
+	assert.Equal(t, "/opt/sherlock/tools", cfg.ToolsDir)
 }
 
 func TestResolveConfig_InvalidConfigFileFails(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
 	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "gagent.yaml"),
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "agent.yaml"),
 		[]byte("addr: [unclosed\n"), 0o600))
 
 	_, err := config.Resolve(agentFlags(t))
@@ -479,12 +479,12 @@ func captureSlog(t *testing.T) (*bytes.Buffer, func()) {
 	return buf, func() { slog.SetDefault(prev) }
 }
 
-// writeAgentConfig writes an owner-only gagent.yaml under the current
+// writeAgentConfig writes an owner-only agent.yaml under the current
 // directory's configs/ and returns its path.
 func writeAgentConfig(t *testing.T, dir, body string) string {
 	t.Helper()
 	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
-	path := filepath.Join(dir, "configs", "gagent.yaml")
+	path := filepath.Join(dir, "configs", "agent.yaml")
 	require.NoError(t, os.WriteFile(path, []byte(body), 0o600))
 	return path
 }
@@ -583,7 +583,7 @@ func TestResolveConfig_FileLookupPrecedence(t *testing.T) {
 		flags    func(*testing.T) *pflag.FlagSet
 		resolve  func(*pflag.FlagSet) (string, error)
 	}{
-		{"agent", "gagent.yaml", "config.yaml", agentFlags, func(fs *pflag.FlagSet) (string, error) {
+		{"agent", "agent.yaml", "config.yaml", agentFlags, func(fs *pflag.FlagSet) (string, error) {
 			cfg, err := config.Resolve(fs)
 			return cfg.Addr, err
 		}},
@@ -599,8 +599,8 @@ func TestResolveConfig_FileLookupPrecedence(t *testing.T) {
 			fs := tt.flags(t)
 			xdg := t.TempDir()
 			t.Setenv("XDG_CONFIG_HOME", xdg)
-			require.NoError(t, os.MkdirAll(filepath.Join(xdg, "gagent"), 0o755))
-			require.NoError(t, os.WriteFile(filepath.Join(xdg, "gagent", tt.xdgName),
+			require.NoError(t, os.MkdirAll(filepath.Join(xdg, "sherlock"), 0o755))
+			require.NoError(t, os.WriteFile(filepath.Join(xdg, "sherlock", tt.xdgName),
 				[]byte("addr: 127.0.0.1:9101\n"), 0o600))
 			require.NoError(t, os.MkdirAll("configs", 0o755))
 			local := filepath.Join("configs", tt.filename)

@@ -16,7 +16,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/message"
+	"github.com/garamsh/sherlock/internal/message"
 )
 
 var fileOperationTasks = []struct{ message, path, content string }{
@@ -106,10 +106,10 @@ func scoreFileOperations(row *fileOperationRow, path, content string) {
 
 // TestFileOperations collects real-agent evidence; a completed collection is not a model-success verdict.
 func TestFileOperations(t *testing.T) {
-	if os.Getenv("GAGENT_FILE_OPERATIONS_PAID") != "1" {
+	if os.Getenv("SHERLOCK_FILE_OPERATIONS_PAID") != "1" {
 		t.Skip("file operation collection requires separate explicit opt-in")
 	}
-	dir := os.Getenv("GAGENT_FILE_OPERATIONS_RESULTS")
+	dir := os.Getenv("SHERLOCK_FILE_OPERATIONS_RESULTS")
 	require.NotEmpty(t, dir)
 	require.NoError(t, os.Mkdir(dir, 0700), "refuse to replace evidence")
 	key := os.Getenv(recallKeyEnv)
@@ -129,8 +129,8 @@ func runFileOperations(t *testing.T, meter *spendMeter, dir string) []fileOperat
 	command.Dir = moduleRoot(t)
 	revision, err := command.Output()
 	require.NoError(t, err)
-	binary := buildGagentBinary(t)
-	instrument := os.Getenv("GAGENT_FILE_OPERATIONS_INSTRUMENT")
+	binary := buildSherlockBinary(t)
+	instrument := os.Getenv("SHERLOCK_FILE_OPERATIONS_INSTRUMENT")
 	if instrument == "" {
 		instrument = filepath.Join(moduleRoot(t), "tests/file_operations_test.go")
 	}
@@ -268,7 +268,7 @@ func TestFileOperations_Free(t *testing.T) {
 	defer endpoint.Close()
 	meter := startSpendMeter(t, endpoint.URL, "scripted", spendCeiling{Calls: 96, InputTokens: 800_000, OutputTokens: 80_000, USD: .4})
 	dir := t.TempDir()
-	if destination := os.Getenv("GAGENT_FILE_OPERATIONS_FREE_RESULTS"); destination != "" {
+	if destination := os.Getenv("SHERLOCK_FILE_OPERATIONS_FREE_RESULTS"); destination != "" {
 		require.NoError(t, os.Mkdir(destination, 0700))
 		dir = destination
 	}

@@ -16,11 +16,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/agent"
-	"github.com/garamsh/gagent/internal/agent/openai"
-	"github.com/garamsh/gagent/internal/gateway"
-	"github.com/garamsh/gagent/internal/memory/sqlite"
-	"github.com/garamsh/gagent/internal/tool"
+	"github.com/garamsh/sherlock/internal/agent"
+	"github.com/garamsh/sherlock/internal/agent/openai"
+	"github.com/garamsh/sherlock/internal/gateway"
+	"github.com/garamsh/sherlock/internal/memory/sqlite"
+	"github.com/garamsh/sherlock/internal/tool"
 )
 
 type episodicSeed struct{ interrupted bool }
@@ -57,7 +57,7 @@ func (episodicNoTools) Call(context.Context, string, json.RawMessage) (json.RawM
 // TestEpisodicMemory_LiveProbe uses scripted history only to reach a batch
 // boundary; startup synthesis, recall, inspection decisions, and answer are live.
 func TestEpisodicMemory_LiveProbe(t *testing.T) {
-	if os.Getenv("GAGENT_EPISODIC_MEMORY_PROBE") != "1" {
+	if os.Getenv("SHERLOCK_EPISODIC_MEMORY_PROBE") != "1" {
 		t.Skip("live episodic probe requires explicit opt-in")
 	}
 	key := os.Getenv(recallKeyEnv)
@@ -143,7 +143,7 @@ func TestEpisodicMemory_LiveProbe(t *testing.T) {
 	require.NoError(t, err)
 	midCorrected := len(mids) == 1 && strings.Contains(mids[0].Summary, "Silver Pine")
 	report := map[string]any{"model": recallModelName, "scripted_setup_sources": 56, "pending_correction_sources": 8, "spend": meter.Spend(), "mid_contains_correction": midCorrected, "retrieved_ids": events.retrieved, "exact_correction_source_inspected": events.inspectedSource, "answer_contains_current_value": strings.Contains(reply, "Silver Pine"), "runtime_failed": runErr != nil, "pending_source_count": len(pending), "limits": "8 calls, 20000 input tokens, 4000 output tokens, no retries; byte-based input reservation may stop early"}
-	if destination := os.Getenv("GAGENT_EPISODIC_MEMORY_REPORT"); destination != "" {
+	if destination := os.Getenv("SHERLOCK_EPISODIC_MEMORY_REPORT"); destination != "" {
 		writeJSON(t, destination, report)
 	}
 	encoded, err := json.Marshal(report)

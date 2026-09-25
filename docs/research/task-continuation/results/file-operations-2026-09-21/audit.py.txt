@@ -46,9 +46,9 @@ for arm, relative in [('baseline', 'baseline/collection'), ('candidate', 'candid
     directory = ROOT / relative
     source, ledger, run = [read(directory / name) for name in ['source.json', 'calls.json', 'run.json']]
     for path, expected in source['sha256'].items():
-        if path.endswith('/gagent'):
+        if path.endswith('/sherlock'):
             if arm != 'free':
-                entry = next(e for e in manifest['entries'] if e['original'].endswith('/' + arm + '/gagent-measured'))
+                entry = next(e for e in manifest['entries'] if e['original'].endswith('/' + arm + '/sherlock-measured'))
                 assert entry['sha256'] == expected
             continue
         if path.endswith('/file_operations_test.go'):

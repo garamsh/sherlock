@@ -18,7 +18,7 @@ import (
 const binaryAgentID = "e2e-bin"
 
 // TestEndToEnd_BinaryMVPScenario drives the canned MVP scenario
-// against the built gagent binary run as two processes — the workspace
+// against the built sherlock binary run as two processes — the workspace
 // serving the gRPC contract (files and exec) and the agent spawning
 // the tools it loaded from its tools directory (ADR 0017). The mock
 // model computes through shell_exec, which crosses the wire to the
@@ -26,7 +26,7 @@ const binaryAgentID = "e2e-bin"
 // note back through the file_read tool, replies through message_send, and
 // closes with a memory write.
 func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
-	binary := buildGagentBinary(t)
+	binary := buildSherlockBinary(t)
 	root := t.TempDir()
 
 	// The workspace directory: the workspace serves it over gRPC and
@@ -39,7 +39,7 @@ func TestEndToEnd_BinaryMVPScenario(t *testing.T) {
 	_, workspaceAddr, _ := startWorkspaceBinary(t, binary,
 		workspaceDir, emptyConfig(t, "workspace.yaml"))
 	cmd, baseURL, exited := startAgentBinary(t, binary, root, workspaceAddr,
-		emptyConfig(t, "gagent.yaml"))
+		emptyConfig(t, "agent.yaml"))
 
 	runBinaryMVPScenario(t, baseURL, root, binaryAgentID)
 
@@ -124,21 +124,21 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	assert.Equal(t, "sender", replies[0].Target)
 }
 
-// TestEndToEnd_OneShotAgentTurnAgainstWorkspace runs "gagent agent
+// TestEndToEnd_OneShotAgentTurnAgainstWorkspace runs "sherlock agent
 // --message" against a running workspace: the one-shot mode runs the
 // canned turn — shell_exec, file_read, message_send via the protocol
 // client, plus a memory write — and exits. The outbound message
 // lands in the file outbox (the same dir the serving mode uses); the
 // one-shot runner echoes it to stdout after the turn lands.
 func TestEndToEnd_OneShotAgentTurnAgainstWorkspace(t *testing.T) {
-	binary := buildGagentBinary(t)
+	binary := buildSherlockBinary(t)
 	root := t.TempDir()
 
 	_, workspaceAddr, _ := startWorkspaceBinary(t, binary,
 		filepath.Join(t.TempDir(), "workspace"), emptyConfig(t, "workspace.yaml"))
 
 	cmd := exec.Command(binary, "agent",
-		"--config", emptyConfig(t, "gagent.yaml"),
+		"--config", emptyConfig(t, "agent.yaml"),
 		"--agent-id", binaryAgentID,
 		"--memory-path", filepath.Join(root, "memory.db"),
 		"--workspace-addr", workspaceAddr,
@@ -150,7 +150,7 @@ func TestEndToEnd_OneShotAgentTurnAgainstWorkspace(t *testing.T) {
 	// never invokes github.
 	toolsDir := toolsDirForTest(t)
 	cmd.Env = append(os.Environ(),
-		"GAGENT_TOOLS_DIR="+toolsDir,
+		"SHERLOCK_TOOLS_DIR="+toolsDir,
 		"GH_TOKEN=fake-test-token",
 	)
 	out, err := cmd.CombinedOutput()
@@ -193,17 +193,17 @@ func TestEndToEnd_OneShotAgentTurnAgainstWorkspace(t *testing.T) {
 // turn — so the turn's own result cannot carry the failure, and
 // exiting 0 here would report a clean run that did not happen.
 func TestEndToEnd_OneShotAgentTurnFailedToolCallExitsNonZero(t *testing.T) {
-	binary := buildGagentBinary(t)
+	binary := buildSherlockBinary(t)
 	root := t.TempDir()
 
 	cmd := exec.Command(binary, "agent",
-		"--config", emptyConfig(t, "gagent.yaml"),
+		"--config", emptyConfig(t, "agent.yaml"),
 		"--agent-id", binaryAgentID,
 		"--memory-path", filepath.Join(root, "memory.db"),
 		"--workspace-addr", closedLoopbackAddr(t),
 		"--message", e2eQuestion)
 	cmd.Env = append(os.Environ(),
-		"GAGENT_TOOLS_DIR="+toolsDirForTest(t),
+		"SHERLOCK_TOOLS_DIR="+toolsDirForTest(t),
 		"GH_TOKEN=fake-test-token",
 	)
 	out, err := cmd.CombinedOutput()
@@ -236,11 +236,11 @@ func TestEndToEnd_OneShotAgentTurnFailedToolCallExitsNonZero(t *testing.T) {
 // the loop working, and this path must not acquire the one-shot's
 // exit contract.
 func TestEndToEnd_ServedTurnFailedToolCallCarriesOn(t *testing.T) {
-	binary := buildGagentBinary(t)
+	binary := buildSherlockBinary(t)
 	root := t.TempDir()
 
 	cmd, baseURL, exited := startAgentBinary(t, binary, root, closedLoopbackAddr(t),
-		emptyConfig(t, "gagent.yaml"))
+		emptyConfig(t, "agent.yaml"))
 
 	events := subscribeSSE(t, baseURL+"/agents/"+binaryAgentID+"/events")
 	resp := postJSON(t, baseURL+"/agents/"+binaryAgentID+"/messages",
@@ -308,18 +308,18 @@ func closedLoopbackAddr(t *testing.T) string {
 	return addr
 }
 
-// buildGagentBinary compiles the gagent CLI binary into a temp
+// buildSherlockBinary compiles the sherlock CLI binary into a temp
 // directory and builds each first-party tool into the module's
 // tools/<name>/<name> so the script-tool registry can resolve it
-// through GAGENT_TOOLS_DIR. The six tools are built in place (the
+// through SHERLOCK_TOOLS_DIR. The six tools are built in place (the
 // same shape `make build-tools` produces), and the agent binary is
-// the only thing copied to the tempdir; the test sets GAGENT_TOOLS_DIR
+// the only thing copied to the tempdir; the test sets SHERLOCK_TOOLS_DIR
 // to the module root's tools/ dir so the run doesn't depend on
 // `go install`.
-func buildGagentBinary(t *testing.T) string {
+func buildSherlockBinary(t *testing.T) string {
 	t.Helper()
 	dir := t.TempDir()
-	build := exec.Command("go", "build", "-o", filepath.Join(dir, "gagent"), "./cmd/gagent")
+	build := exec.Command("go", "build", "-o", filepath.Join(dir, "sherlock"), "./cmd/sherlock")
 	build.Dir = ".." // the module root; the test binary runs in tests/
 	out, err := build.CombinedOutput()
 	require.NoError(t, err, "go build failed: %s", out)
@@ -333,11 +333,11 @@ func buildGagentBinary(t *testing.T) string {
 			t.Fatalf("build %s: %v\n%s", tool, err, toolOut)
 		}
 	}
-	return filepath.Join(dir, "gagent")
+	return filepath.Join(dir, "sherlock")
 }
 
 // emptyConfig writes an empty config file — it keeps a binary run
-// hermetic against ./configs/gagent.yaml, ./configs/workspace.yaml, and XDG config
+// hermetic against ./configs/agent.yaml, ./configs/workspace.yaml, and XDG config
 // files on the host — and returns its path.
 func emptyConfig(t *testing.T, name string) string {
 	t.Helper()
@@ -346,7 +346,7 @@ func emptyConfig(t *testing.T, name string) string {
 	return configPath
 }
 
-// startAgentBinary starts "gagent agent" as a subprocess on a free
+// startAgentBinary starts "sherlock agent" as a subprocess on a free
 // loopback port, dialing workspaceAddr as the agent's workspace gRPC
 // endpoint, with root holding the memory file and the outbox, and the
 // model provider configPath selects — an empty config file leaves the
@@ -381,7 +381,7 @@ func startAgentBinary(t *testing.T, binary, root, workspaceAddr, configPath stri
 	// repo root's tools/ dir explicitly.
 	toolsDir := toolsDirForTest(t)
 	cmd.Env = append(os.Environ(),
-		"GAGENT_TOOLS_DIR="+toolsDir,
+		"SHERLOCK_TOOLS_DIR="+toolsDir,
 		"GH_TOKEN=fake-test-token",
 	)
 	cmd.Stdout = logFile

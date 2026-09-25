@@ -47,7 +47,7 @@ SESSIONS: list[Session] = [
     Session(
         id="domain-knowledge",
         turns=[
-            ("user", "gagent's executor uses setuid to drop into a configured exec UID.", {"salience": 0.7, "kind": "knowledge"}),
+            ("user", "sherlock's executor uses setuid to drop into a configured exec UID.", {"salience": 0.7, "kind": "knowledge"}),
             ("user", "The agent holds a capability token; it never executes directly.", {"salience": 0.7, "kind": "knowledge"}),
             ("assistant", "Recorded. setuid + capability token.", {"salience": 0.0}),
             ("user", "The workspace is a separate container; per-request netns isolates exec.", {"salience": 0.6, "kind": "knowledge"}),

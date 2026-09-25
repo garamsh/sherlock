@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/garamsh/gagent/internal/agent"
-	"github.com/garamsh/gagent/internal/memory"
+	"github.com/garamsh/sherlock/internal/agent"
+	"github.com/garamsh/sherlock/internal/memory"
 )
 
 // Writeback adapts the agent loop's memory writeback (ADR 0006 step 4) to

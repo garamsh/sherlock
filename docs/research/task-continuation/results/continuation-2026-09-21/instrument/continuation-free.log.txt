@@ -35,4 +35,4 @@
 === RUN   TestContinuation_RejectsBrokenEvidence
 --- PASS: TestContinuation_RejectsBrokenEvidence (0.00s)
 PASS
-ok  	github.com/garamsh/gagent/tests	2.495s
+ok  	github.com/garamsh/sherlock/tests	2.495s

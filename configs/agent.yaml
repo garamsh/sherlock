@@ -40,7 +40,7 @@ model:
 # invariant 2). Left out here so a fresh checkout runs before its
 # manifests have been reviewed. The pin set is a config-file key only:
 # a pin set is a map and one environment variable carries one value, so
-# GAGENT_TOOLS_PINS is refused at startup rather than read (#745).
+# SHERLOCK_TOOLS_PINS is refused at startup rather than read (#745).
 # tools:
 #   pins:
 #     message_send: <sha256 of tools/message_send/manifest.json>

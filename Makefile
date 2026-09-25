@@ -22,7 +22,7 @@ REVISION ?= $(shell git rev-parse HEAD 2>/dev/null)
 # Where `test-privileged` builds the test binary. Not under the repository:
 # the file is written and run by root, and the worktree keeps no root-owned
 # artifacts.
-PRIVILEGED_TEST_BIN ?= /tmp/gagent-privileged.test
+PRIVILEGED_TEST_BIN ?= /tmp/sherlock-privileged.test
 
 lint:
 	go vet ./...
@@ -74,7 +74,7 @@ DEPLOYED_CAP_SET = -all,+$(subst $(COMMA),$(COMMA)+,$(DEPLOYED_CAP_ADD))
 # The binary is built rather than run through `go test` because the child
 # execs it: an untrusted child runs the platform binary as its resource-limit
 # shim, and `go test` puts that binary in a private directory the child's own
-# account cannot enter. GAGENT_PRIVILEGED_TESTS then makes every guard in the
+# account cannot enter. SHERLOCK_PRIVILEGED_TESTS then makes every guard in the
 # family report an absent privilege instead of skipping past it, so a run
 # that cannot reach the boundary says so.
 #
@@ -83,7 +83,7 @@ DEPLOYED_CAP_SET = -all,+$(subst $(COMMA),$(COMMA)+,$(DEPLOYED_CAP_ADD))
 # fail the way the deployment fails, which is how #612 was true in production
 # and green in CI at once (#620). The narrowing only ever drops, so whatever
 # the runner granted, what the tests see is the deployment's set — and
-# GAGENT_DEPLOYED_CAPS names it, so a run that skipped this line is a failure
+# SHERLOCK_DEPLOYED_CAPS names it, so a run that skipped this line is a failure
 # rather than a quieter pass.
 test-privileged:
 	@test "$(words $(DEPLOYED_CAP_ADD)) $(words $(DEPLOYED_CAP_DROP))" = "1 1" || { echo "$(DEPLOYED_COMPOSE): want one cap_add and one cap_drop in the flow-sequence form, read $(words $(DEPLOYED_CAP_ADD)) and $(words $(DEPLOYED_CAP_DROP))"; exit 1; }
@@ -91,7 +91,7 @@ test-privileged:
 	@test "$$(id -u)" = 0 || { echo "test-privileged needs root: the drop to the exec UID is what it exercises (ADR 0008)"; exit 1; }
 	go test -c -o $(PRIVILEGED_TEST_BIN) ./internal/workspace/shell/
 	@chmod 0755 $(PRIVILEGED_TEST_BIN)
-	GAGENT_PRIVILEGED_TESTS=1 GAGENT_DEPLOYED_CAPS=$(DEPLOYED_CAP_ADD) \
+	SHERLOCK_PRIVILEGED_TESTS=1 SHERLOCK_DEPLOYED_CAPS=$(DEPLOYED_CAP_ADD) \
 		setpriv --bounding-set=$(DEPLOYED_CAP_SET) $(PRIVILEGED_TEST_BIN)
 
 # `go build ./...` prints nothing on success and reports an empty match as a
@@ -134,7 +134,7 @@ build-tools:
 # and tags) take once and never again — leaving the tag to be invented at a
 # push command line, which is where a wrong one enters (#692).
 #
-# The guard fails closed: an empty REVISION builds `gagent-agent:`, and docker
+# The guard fails closed: an empty REVISION builds `sherlock-agent:`, and docker
 # reports the reference it was handed rather than the metadata that is missing.
 #
 # The second guard is the tree the label claims. `REVISION` is the checked-out
@@ -227,9 +227,9 @@ build-images:
 	@test -z "$(revision_is_default)" || test -z "$(missing_paths)" || { echo "[$(dockerignores)]: re-include [$(missing_paths)], which $(CURDIR) does not hold: every admitted path is read as a git pathspec and one that matches nothing reports a clean tree"; exit 1; }
 	@test -z "$(dirty_inputs)" || { echo "build-images: what docker reads differs from $(REVISION), which every image built here is labelled and tagged with, at [$(dirty_inputs)]. Commit those paths, or name what you are building: make build-images REVISION=<commit>"; exit 1; }
 	@echo "build-images: $(if $(revision_is_default),what docker reads [$(checked_paths)] matches $(REVISION),REVISION=$(REVISION) was passed in and what docker reads is not checked against it)"
-	$(BUILD_ENV) docker build -f $(AGENT_DOCKERFILE) --build-arg REVISION="$(REVISION)" -t gagent-agent:$(REVISION) .
-	$(BUILD_ENV) docker build -f $(WORKSPACE_DOCKERFILE) --build-arg REVISION="$(REVISION)" -t gagent-workspace:$(REVISION) .
-	$(BUILD_ENV) docker build -f $(TOOLS_DOCKERFILE) --build-arg REVISION="$(REVISION)" -t gagent-tools:$(REVISION) .
+	$(BUILD_ENV) docker build -f $(AGENT_DOCKERFILE) --build-arg REVISION="$(REVISION)" -t sherlock-agent:$(REVISION) .
+	$(BUILD_ENV) docker build -f $(WORKSPACE_DOCKERFILE) --build-arg REVISION="$(REVISION)" -t sherlock-workspace:$(REVISION) .
+	$(BUILD_ENV) docker build -f $(TOOLS_DOCKERFILE) --build-arg REVISION="$(REVISION)" -t sherlock-tools:$(REVISION) .
 
 # The toolchain image the privileged CI job runs in, read out of the
 # Dockerfile that owns the pin rather than restated in the workflow (#633).

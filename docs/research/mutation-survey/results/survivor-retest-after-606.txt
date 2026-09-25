@@ -9,7 +9,7 @@ their own package and 11 still survive the suite.
 
 The last line reports the tree unclean after restore. That is not a failed
 restore: tests/question.txt is an untracked artefact the e2e binary test leaves
-behind (cmd/gagent/mock_model.go writes it through the workspace), and it
+behind (cmd/sherlock/mock_model.go writes it through the workspace), and it
 matters here because the harness refuses to start on a dirty tree, so a run
 that follows an e2e run stops until it is removed.
 

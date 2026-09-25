@@ -1,17 +1,17 @@
 # Sample agent config for the local Docker deployment (deploy/local/README.md).
 # The mock provider is scripted and needs no API key, so this runs offline.
-# The memory path comes from GAGENT_MEMORY_PATH, which the compose file sets
-# to the host-bind data directory (GAGENT_DATA_DIR); the workspace serves
+# The memory path comes from SHERLOCK_MEMORY_PATH, which the compose file sets
+# to the host-bind data directory (SHERLOCK_DATA_DIR); the workspace serves
 # the gRPC data plane (files and exec) in this container's network
 # namespace, so the default loopback workspace-addr reaches it.
-# The agent executes nothing itself: GAGENT_EXEC_UID is set on the
+# The agent executes nothing itself: SHERLOCK_EXEC_UID is set on the
 # workspace container, where shell_exec children run as uid 10001.
 # The container publishes the port beyond its own loopback, so the gateway
 # requires mTLS (ADR 0012): throwaway certs live in ./tls (see README.md).
 addr: ":8080"
 tls:
-  cert: /etc/gagent/tls/server.pem
-  key: /etc/gagent/tls/server-key.pem
-  client-ca: /etc/gagent/tls/ca.pem
+  cert: /etc/sherlock/tls/server.pem
+  key: /etc/sherlock/tls/server-key.pem
+  client-ca: /etc/sherlock/tls/ca.pem
 model:
   provider: mock

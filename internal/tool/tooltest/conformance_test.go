@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/garamsh/gagent/internal/tool/tooltest"
+	"github.com/garamsh/sherlock/internal/tool/tooltest"
 )
 
 // TestCheck_NonUTF8Fails covers the first build-time error: bytes that

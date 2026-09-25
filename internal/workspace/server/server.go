@@ -12,9 +12,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/garamsh/gagent/internal/workspace"
-	"github.com/garamsh/gagent/internal/workspace/files"
-	"github.com/garamsh/gagent/internal/workspace/shell"
+	"github.com/garamsh/sherlock/internal/workspace"
+	"github.com/garamsh/sherlock/internal/workspace/files"
+	"github.com/garamsh/sherlock/internal/workspace/shell"
 )
 
 // Server is the gRPC workspace backend: Read, Write, and List against

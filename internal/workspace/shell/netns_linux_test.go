@@ -17,14 +17,14 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/workspace/shell"
+	"github.com/garamsh/sherlock/internal/workspace/shell"
 )
 
 // TestNetnsProbeHelper is the child process the netns test execs: it
 // dials the listener address handed over via the environment and exits
 // 0 on success, 1 on failure. The env gate keeps it inert under `go test`.
 func TestNetnsProbeHelper(t *testing.T) {
-	addr := os.Getenv("GAGENT_NETNS_PROBE_ADDR")
+	addr := os.Getenv("SHERLOCK_NETNS_PROBE_ADDR")
 	if addr == "" {
 		return
 	}
@@ -79,7 +79,7 @@ func runProbe(t *testing.T, executor shell.Executor, req shell.Request) shell.Re
 	// wording names the class and lets the error name the cause.
 	if errors.Is(err, shell.ErrAgentUIDUnavailable) {
 		if privilegedRun() {
-			t.Fatalf("GAGENT_PRIVILEGED_TESTS is set but this host cannot provide what an isolated call needs, so the run cannot report on it: %v", err)
+			t.Fatalf("SHERLOCK_PRIVILEGED_TESTS is set but this host cannot provide what an isolated call needs, so the run cannot report on it: %v", err)
 		}
 		t.Skipf("this host cannot provide what an isolated call needs: %v", err)
 	}
@@ -130,7 +130,7 @@ func TestProcessExecutor_NoNetworkBlocksLoopback(t *testing.T) {
 
 	req := shell.Request{
 		Command: fmt.Sprintf("%s -test.run=TestNetnsProbeHelper", probeBinary(t)),
-		Env:     []string{"GAGENT_NETNS_PROBE_ADDR=" + ln.Addr().String()},
+		Env:     []string{"SHERLOCK_NETNS_PROBE_ADDR=" + ln.Addr().String()},
 	}
 	executor := shell.NewProcessExecutor(testExecUID, 5*time.Second)
 

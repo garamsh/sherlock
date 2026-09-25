@@ -7,8 +7,8 @@ set -euo pipefail
 
 cd "$(dirname "$0")"
 
-export GAGENT_DATA_DIR="${GAGENT_DATA_DIR:-$PWD/data}"
-export GAGENT_AGENT_UID="${GAGENT_AGENT_UID:-$(id -u)}"
+export SHERLOCK_DATA_DIR="${SHERLOCK_DATA_DIR:-$PWD/data}"
+export SHERLOCK_AGENT_UID="${SHERLOCK_AGENT_UID:-$(id -u)}"
 
 # Compose logs are the diagnosis when a step fails, so print them before
 # tearing the deployment down.
@@ -29,7 +29,7 @@ echo "==> throwaway mTLS material"
 rm -rf tls
 install -d tls
 openssl req -x509 -newkey rsa:2048 -nodes -days 1 \
-  -subj "/CN=gagent-local-ca" -keyout tls/ca-key.pem -out tls/ca.pem
+  -subj "/CN=sherlock-local-ca" -keyout tls/ca-key.pem -out tls/ca.pem
 openssl req -newkey rsa:2048 -nodes -subj "/CN=localhost" \
   -keyout tls/server-key.pem -out tls/server.csr
 openssl x509 -req -days 1 -CA tls/ca.pem -CAkey tls/ca-key.pem \
@@ -39,17 +39,17 @@ openssl req -newkey rsa:2048 -nodes -subj "/CN=local-tester" \
   -keyout tls/client-key.pem -out tls/client.csr
 openssl x509 -req -days 1 -CA tls/ca.pem -CAkey tls/ca-key.pem \
   -in tls/client.csr -out tls/client.pem
-chmod 0600 tls/*key* gagent.yaml
+chmod 0600 tls/*key* agent.yaml
 
 # --wait holds until compose reports both services up, so the readiness
 # wait is compose's rather than a retry loop here.
 echo "==> deployment"
-install -d -m 0777 "$GAGENT_DATA_DIR"
+install -d -m 0777 "$SHERLOCK_DATA_DIR"
 docker compose build
 docker compose up -d --wait
 
 # The ingress wiring this deployment is assembled from: the certificates
-# generated above, the client CA gagent.yaml names, and the port compose
+# generated above, the client CA agent.yaml names, and the port compose
 # publishes. A wrong-but-loadable client-ca starts clean and rejects
 # every real caller, so startup cannot catch it and neither can a Go test
 # holding its own certificates — only a real request over this port can.
@@ -74,8 +74,8 @@ fi
 # so a one-shot run reports it in its exit status instead, and that
 # status is this check. Nothing here parses the monitoring stream.
 echo "==> the canned run completes with every tool call succeeding"
-docker compose exec -T agent /gagent agent \
-  --config /etc/gagent/config.yaml --agent-id demo --message "hello"
+docker compose exec -T agent /sherlock agent \
+  --config /etc/sherlock/config.yaml --agent-id demo --message "hello"
 
 # ADR 0008's file side: a write over the gRPC contract and a write by an
 # exec'd child land under one owner, so either can pick up what the other
@@ -84,8 +84,8 @@ docker compose exec -T agent /gagent agent \
 # modify that file and the contract overwrite the child's.
 echo "==> a gRPC write lands in the workspace under the exec account"
 call_tool() {
-  docker compose exec -T -e GAGENT_WORKSPACE_ADDR=127.0.0.1:8081 \
-    agent "/opt/gagent/tools/$1/$1" || true
+  docker compose exec -T -e SHERLOCK_WORKSPACE_ADDR=127.0.0.1:8081 \
+    agent "/opt/sherlock/tools/$1/$1" || true
 }
 written=$(call_tool file_write <<<'{"path":"contract-write.txt","content":"written over the contract\n"}')
 if ! grep -q '"bytes_written"' <<<"$written"; then
@@ -97,9 +97,9 @@ fi
 # there — and an empty value compared against a uid reports a wrong owner
 # for a file that was never read. Each is checked before it is compared,
 # so "could not read it" and "it is the wrong uid" stay separate failures.
-exec_uid=$(docker compose exec -T workspace printenv GAGENT_EXEC_UID | tr -d '\r\n' || true)
+exec_uid=$(docker compose exec -T workspace printenv SHERLOCK_EXEC_UID | tr -d '\r\n' || true)
 if [ -z "$exec_uid" ]; then
-  echo "could not read GAGENT_EXEC_UID from the workspace container" >&2
+  echo "could not read SHERLOCK_EXEC_UID from the workspace container" >&2
   exit 1
 fi
 
@@ -112,16 +112,16 @@ fi
 # returns the real one. Both agree on a native bind mount, so this is the
 # read that is correct in CI and on a developer machine alike.
 owner=$(docker compose exec -T workspace \
-  find "$GAGENT_DATA_DIR/workspace" -maxdepth 1 -name contract-write.txt \
+  find "$SHERLOCK_DATA_DIR/workspace" -maxdepth 1 -name contract-write.txt \
   -printf '%U' | tr -d '\r\n' || true)
 if [ -z "$owner" ]; then
   echo "could not read the owner of contract-write.txt in the workspace" >&2
-  docker compose exec -T workspace ls -ln "$GAGENT_DATA_DIR/workspace" >&2 || true
+  docker compose exec -T workspace ls -ln "$SHERLOCK_DATA_DIR/workspace" >&2 || true
   exit 1
 fi
 if [ "$owner" != "$exec_uid" ]; then
   echo "the contract's file is owned by uid $owner, not the exec account $exec_uid" >&2
-  docker compose exec -T workspace ls -ln "$GAGENT_DATA_DIR/workspace" >&2 || true
+  docker compose exec -T workspace ls -ln "$SHERLOCK_DATA_DIR/workspace" >&2 || true
   exit 1
 fi
 
@@ -143,8 +143,8 @@ echo "both writers share the workspace: uid $exec_uid owns what either one write
 # deployment's own Exec RPC, and reads the caps from the kernel's view
 # of the child rather than from a log line.
 echo "==> Exec children carry every resource cap"
-limits=$(docker compose exec -T -e GAGENT_WORKSPACE_ADDR=127.0.0.1:8081 \
-  agent /opt/gagent/tools/shell_exec/shell_exec \
+limits=$(docker compose exec -T -e SHERLOCK_WORKSPACE_ADDR=127.0.0.1:8081 \
+  agent /opt/sherlock/tools/shell_exec/shell_exec \
   <<<'{"command":"cat /proc/self/limits"}' || true)
 missing=0
 while IFS='|' read -r label value; do

@@ -10,7 +10,7 @@ import (
 
 // schemaResourceURI names the compiled schema resource. It is absolute and
 // cwd-independent so validation errors never embed a host filesystem path.
-const schemaResourceURI = "https://gagent.local/schema/tool-input.json"
+const schemaResourceURI = "https://sherlock.local/schema/tool-input.json"
 
 // validate checks input against a JSON Schema document. An empty schema
 // accepts any input. The schema is compiled with the same library the

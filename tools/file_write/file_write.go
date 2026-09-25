@@ -15,7 +15,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 
-	"github.com/garamsh/gagent/internal/workspace"
+	"github.com/garamsh/sherlock/internal/workspace"
 )
 
 // callTimeout bounds one workspace RPC. Read, Write and List are
@@ -40,9 +40,9 @@ func main() {
 }
 
 func run() error {
-	addr := os.Getenv("GAGENT_WORKSPACE_ADDR")
+	addr := os.Getenv("SHERLOCK_WORKSPACE_ADDR")
 	if addr == "" {
-		return errors.New("GAGENT_WORKSPACE_ADDR is required")
+		return errors.New("SHERLOCK_WORKSPACE_ADDR is required")
 	}
 	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {

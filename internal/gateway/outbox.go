@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"sort"
 
-	"github.com/garamsh/gagent/internal/message"
+	"github.com/garamsh/sherlock/internal/message"
 )
 
 // OutboxDir is the subdirectory next to the memory file the

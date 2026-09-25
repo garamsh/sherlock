@@ -27,7 +27,7 @@ Every figure names the embedder that produced it, and every result file carries 
 
 | embedder | dimensions | what it is |
 |---|---|---|
-| `hashing` | 256 | the deterministic offline embedder `cmd/gagent` then defaulted to, since moved to `docs/experiments/memory-frames/harness/embedding.go` |
+| `hashing` | 256 | the deterministic offline embedder `cmd/sherlock` then defaulted to, since moved to `docs/experiments/memory-frames/harness/embedding.go` |
 | `openai` | 1536 | the memory-side OpenAI embedder against `text-embedding-3-small`, as it then shipped |
 
 The provider sends no `dimensions` parameter, so the model answers at its native 1536. Every committed `memory-creation` figure was measured at 512, which that experiment asked for explicitly. Where a figure here sits beside one of theirs, the two are at different dimensions and are marked as such; the third column below exists so the comparison has a like-for-like row.

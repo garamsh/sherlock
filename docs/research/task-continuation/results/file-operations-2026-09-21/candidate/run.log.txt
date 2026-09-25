@@ -5,4 +5,4 @@
     --- PASS: TestFileOperations/1 (43.04s)
     --- PASS: TestFileOperations/2 (37.56s)
 PASS
-ok  	github.com/garamsh/gagent/tests	81.716s
+ok  	github.com/garamsh/sherlock/tests	81.716s

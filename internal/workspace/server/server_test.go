@@ -13,10 +13,10 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 
-	"github.com/garamsh/gagent/internal/workspace"
-	"github.com/garamsh/gagent/internal/workspace/files"
-	"github.com/garamsh/gagent/internal/workspace/server"
-	"github.com/garamsh/gagent/internal/workspace/shell"
+	"github.com/garamsh/sherlock/internal/workspace"
+	"github.com/garamsh/sherlock/internal/workspace/files"
+	"github.com/garamsh/sherlock/internal/workspace/server"
+	"github.com/garamsh/sherlock/internal/workspace/shell"
 )
 
 // fakeExecutor records the shell.Request the server hands the executor

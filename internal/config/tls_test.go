@@ -16,7 +16,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/config"
+	"github.com/garamsh/sherlock/internal/config"
 )
 
 // writeSelfSignedCert writes a throwaway self-signed certificate/key

@@ -177,7 +177,7 @@ The privileged command's answers come from the same two scripts with the suite
 command replaced, and mutant ids narrow the run to the boundary in question:
 
 ```
-GAGENT_MUTATE_SUITE_CMD='<a privileged make test-privileged>' \
+SHERLOCK_MUTATE_SUITE_CMD='<a privileged make test-privileged>' \
   python3 hand_mutants.py M4 M6
 ```
 

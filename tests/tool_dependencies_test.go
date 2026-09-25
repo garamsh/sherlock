@@ -11,7 +11,7 @@ import (
 )
 
 // module is this repository's import path prefix.
-const module = "github.com/garamsh/gagent/"
+const module = "github.com/garamsh/sherlock/"
 
 // TestToolDependencies_AreTheDeclaredOnes pins how a tool reaches the
 // workspace. A tool that needs files or exec dials the workspace's gRPC

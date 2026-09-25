@@ -33,4 +33,4 @@
         --- PASS: TestContinuation/2/completed (49.02s)
         --- PASS: TestContinuation/2/interrupted (37.61s)
 PASS
-ok  	github.com/garamsh/gagent/tests	424.736s
+ok  	github.com/garamsh/sherlock/tests	424.736s

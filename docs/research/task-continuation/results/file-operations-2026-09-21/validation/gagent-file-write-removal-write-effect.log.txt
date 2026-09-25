@@ -4,7 +4,7 @@
 2026/09/21 03:33:31 INFO tool registry loaded op=tool.load tools_dir=/tmp/TestScriptTool_Files_Integration2870736658/001 tools_dir_resolved=/tmp/TestScriptTool_Files_Integration2870736658/001 tools=3
 --- FAIL: TestScriptTool_Files_Integration (1.44s)
     script_tool_files_test.go:243: 
-        	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/script_tool_files_test.go:243
+        	Error Trace:	/home/sauce/orca/workspaces/sherlock/fix-file-write/tests/script_tool_files_test.go:243
         	Error:      	Received unexpected error:
         	            	read "notes/new.txt": open /tmp/TestScriptTool_Files_Integration2870736658/002/notes/new.txt: no such file or directory
         	Test:       	TestScriptTool_Files_Integration
@@ -15,16 +15,16 @@
 --- FAIL: TestScriptTool_Files_ProviderExposure (1.36s)
     --- FAIL: TestScriptTool_Files_ProviderExposure/openai (0.00s)
         script_tool_files_test.go:392: 
-            	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/script_tool_files_test.go:392
+            	Error Trace:	/home/sauce/orca/workspaces/sherlock/fix-file-write/tests/script_tool_files_test.go:392
             	Error:      	Received unexpected error:
             	            	read "provider.txt": open /tmp/TestScriptTool_Files_ProviderExposure2041223190/002/provider.txt: no such file or directory
             	Test:       	TestScriptTool_Files_ProviderExposure/openai
     --- FAIL: TestScriptTool_Files_ProviderExposure/anthropic (0.00s)
         script_tool_files_test.go:392: 
-            	Error Trace:	/home/sauce/orca/workspaces/gagent/fix-file-write/tests/script_tool_files_test.go:392
+            	Error Trace:	/home/sauce/orca/workspaces/sherlock/fix-file-write/tests/script_tool_files_test.go:392
             	Error:      	Received unexpected error:
             	            	read "provider.txt": open /tmp/TestScriptTool_Files_ProviderExposure2041223190/002/provider.txt: no such file or directory
             	Test:       	TestScriptTool_Files_ProviderExposure/anthropic
 FAIL
-FAIL	github.com/garamsh/gagent/tests	2.804s
+FAIL	github.com/garamsh/sherlock/tests	2.804s
 FAIL

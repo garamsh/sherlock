@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 
-	"github.com/garamsh/gagent/internal/agent"
+	"github.com/garamsh/sherlock/internal/agent"
 )
 
 // mockModel is the MVP placeholder model (ADR 0004): a canned script

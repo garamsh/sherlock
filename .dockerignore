@@ -1,5 +1,5 @@
 # The build context is an allow-list: everything is excluded, and only what
-# `go build ./cmd/gagent` reads is admitted. A deny-list admits every new
+# `go build ./cmd/sherlock` reads is admitted. A deny-list admits every new
 # file at the root until someone remembers to exclude it, which is how a
 # credential reached the build stage in #594 and how the compiled tool
 # binaries reached it in #597.

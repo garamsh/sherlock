@@ -14,10 +14,10 @@ source=read(r/'source.json')
 for f,h in source['instrument_sha256'].items():
  assert sha(subprocess.check_output(['git','show',source['revision']+':'+f],cwd=root))==h,f
  assert sha((root/f).read_bytes())==h,f
-assert sha(Path('/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-continuation-b7de9f3/continuation-2026-09-21/gagent-measured').read_bytes())==source['binary_sha256']
+assert sha(Path('/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-21-continuation-b7de9f3/continuation-2026-09-21/sherlock-measured').read_bytes())==source['binary_sha256']
 raw_hashes=0
 for line in (r/'sha256.txt').read_text().splitlines():
- h,f=line.split('  ',1);actual=Path('/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-continuation-b7de9f3/continuation-2026-09-21')/f
+ h,f=line.split('  ',1);actual=Path('/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-21-continuation-b7de9f3/continuation-2026-09-21')/f
  assert sha(actual.read_bytes())==h,f;raw_hashes+=1
 calls=read(r/'calls.json');run=read(r/'run.json');wire=[];groups=collections.defaultdict(list)
 for c in calls['calls']:

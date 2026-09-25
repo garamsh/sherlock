@@ -37,4 +37,4 @@
     --- PASS: TestRecordSelection/control/keys/empty (13.38s)
     --- PASS: TestRecordSelection/control/records/empty (7.51s)
 PASS
-ok  	github.com/garamsh/gagent/tests	165.797s
+ok  	github.com/garamsh/sherlock/tests	165.797s

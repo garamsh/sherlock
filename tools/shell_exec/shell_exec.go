@@ -2,7 +2,7 @@
 // script-tool runner's stdio protocol (ADR 0009 §Decision): one JSON
 // object on stdin (the validated input), one JSON object on stdout
 // (the validated output), non-zero exit on failure. The tool dials
-// the workspace gRPC client at GAGENT_WORKSPACE_ADDR and forwards
+// the workspace gRPC client at SHERLOCK_WORKSPACE_ADDR and forwards
 // the command to the workspace's Exec RPC.
 package main
 
@@ -20,7 +20,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 
-	"github.com/garamsh/gagent/internal/workspace"
+	"github.com/garamsh/sherlock/internal/workspace"
 )
 
 const (
@@ -59,9 +59,9 @@ func main() {
 }
 
 func run() error {
-	addr := os.Getenv("GAGENT_WORKSPACE_ADDR")
+	addr := os.Getenv("SHERLOCK_WORKSPACE_ADDR")
 	if addr == "" {
-		return errors.New("GAGENT_WORKSPACE_ADDR is required")
+		return errors.New("SHERLOCK_WORKSPACE_ADDR is required")
 	}
 	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {

@@ -10,9 +10,9 @@ import (
 
 	"google.golang.org/grpc"
 
-	"github.com/garamsh/gagent/internal/workspace"
-	"github.com/garamsh/gagent/internal/workspace/files"
-	"github.com/garamsh/gagent/internal/workspace/shell"
+	"github.com/garamsh/sherlock/internal/workspace"
+	"github.com/garamsh/sherlock/internal/workspace/files"
+	"github.com/garamsh/sherlock/internal/workspace/shell"
 )
 
 // ServeOptions is what serving the data plane needs, declared here

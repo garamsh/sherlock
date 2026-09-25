@@ -12,12 +12,12 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
-	"github.com/garamsh/gagent/internal/config"
-	"github.com/garamsh/gagent/internal/gateway"
-	"github.com/garamsh/gagent/internal/tool"
+	"github.com/garamsh/sherlock/internal/config"
+	"github.com/garamsh/sherlock/internal/gateway"
+	"github.com/garamsh/sherlock/internal/tool"
 )
 
-// newAgentCommand returns the "gagent agent" subcommand: it runs the
+// newAgentCommand returns the "sherlock agent" subcommand: it runs the
 // agent's self (ADR 0017) — the gateway, the rolling session, memory,
 // the mouth, and the platform tool client over the operator's tool
 // list. With --message it runs one turn against the same tool set and
@@ -93,8 +93,8 @@ func newAgentFactory(cfg config.Config, agentID, ego string, logger *slog.Logger
 
 // buildToolRegistry loads the operator's tools directory through the
 // script-tool registry (ADR 0009 §Decision). The directory is a resolved
-// setting like every other one, so GAGENT_TOOLS_DIR reaches it through
-// the layer that carries GAGENT_MEMORY_PATH rather than through a second
+// setting like every other one, so SHERLOCK_TOOLS_DIR reaches it through
+// the layer that carries SHERLOCK_MEMORY_PATH rather than through a second
 // read of the environment. The registry holds each manifest's SHA-256
 // against the
 // operator's tools.pins set and refuses a tool that drifted from its

@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/memory"
+	"github.com/garamsh/sherlock/internal/memory"
 )
 
 // retentionRecord is ADR 0006, the record the retention pass implements.

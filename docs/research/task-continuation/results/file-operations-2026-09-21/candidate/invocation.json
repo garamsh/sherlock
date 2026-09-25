@@ -1,7 +1,7 @@
 {
   "arm": "candidate",
   "source": "842faeb11ecce07fa1a8281b0cd02628d536440d",
-  "cwd": "/home/sauce/orca/workspaces/gagent/fix-file-write",
+  "cwd": "/home/sauce/orca/workspaces/sherlock/fix-file-write",
   "argv": [
     "go",
     "test",
@@ -13,7 +13,7 @@
     "-timeout",
     "45m"
   ],
-  "results": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-file-operations-842faeb/candidate/collection",
+  "results": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-21-file-operations-842faeb/candidate/collection",
   "started_at": "2026-09-20T18:40:11.479484+00:00",
   "instrument_sha256": "82905adb0c6013b73c025876d8f39f08eeeb7b39b271e14472ac70544749c75b",
   "ceilings": {

@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/garamsh/gagent/internal/agent"
+	"github.com/garamsh/sherlock/internal/agent"
 )
 
 // DefaultQueueCapacity bounds the inbox. Enqueue blocks when

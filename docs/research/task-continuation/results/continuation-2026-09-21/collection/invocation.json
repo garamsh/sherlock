@@ -1,6 +1,6 @@
 {
   "source": "b7de9f3a4b4d1c01f2e71af5bdbff6a743992649",
-  "cwd": "/home/sauce/orca/workspaces/gagent/test-continuation",
+  "cwd": "/home/sauce/orca/workspaces/sherlock/test-continuation",
   "argv": [
     "go",
     "test",
@@ -12,7 +12,7 @@
     "-timeout",
     "45m"
   ],
-  "results": "/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-continuation-b7de9f3/continuation-2026-09-21",
+  "results": "/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-21-continuation-b7de9f3/continuation-2026-09-21",
   "started_at": "2026-09-20T17:21:02.754700+00:00",
   "ceilings": {
     "calls": 400,

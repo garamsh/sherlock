@@ -9,7 +9,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/garamsh/gagent/internal/agent"
+	"github.com/garamsh/sherlock/internal/agent"
 )
 
 const conversationSchema = `

@@ -7,8 +7,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/gagent/internal/agent"
-	agentmemory "github.com/garamsh/gagent/internal/agent/memory"
+	"github.com/garamsh/sherlock/internal/agent"
+	agentmemory "github.com/garamsh/sherlock/internal/agent/memory"
 )
 
 // history returns n user messages with distinguishable content.

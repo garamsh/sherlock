@@ -1,4 +1,4 @@
-module github.com/garamsh/gagent
+module github.com/garamsh/sherlock
 
 go 1.26.5
 

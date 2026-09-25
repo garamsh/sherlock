@@ -1,5 +1,5 @@
 # Local testing only: trusted host, throwaway mTLS certs in ./tls.
-# Requires GAGENT_DATA_DIR; see README.md in this directory.
+# Requires SHERLOCK_DATA_DIR; see README.md in this directory.
 # Two services, one pod shape (ADR 0017): the agent serves its gateway;
 # the workspace shares the agent's network namespace so the
 # unauthenticated gRPC listener stays on loopback (#209).
@@ -16,22 +16,22 @@ services:
     # The gateway refuses a group- or other-readable config file or
     # server key, so only their owner can read them: the container runs
     # as the host user who generated them.
-    user: "${GAGENT_AGENT_UID:?export GAGENT_AGENT_UID per README.md}"
+    user: "${SHERLOCK_AGENT_UID:?export SHERLOCK_AGENT_UID per README.md}"
     environment:
       # The memory file sits at the same absolute path on host and
       # container so it is valid from either side.
-      GAGENT_MEMORY_PATH: "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}/memory.db"
+      SHERLOCK_MEMORY_PATH: "${SHERLOCK_DATA_DIR:?export SHERLOCK_DATA_DIR per README.md}/memory.db"
       # The tool set is the operator's choice (ADR 0017); this operator
       # installs the repository's first-party tools by mounting them.
-      GAGENT_TOOLS_DIR: /opt/gagent/tools
+      SHERLOCK_TOOLS_DIR: /opt/sherlock/tools
     volumes:
-      - "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}:${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}"
-      - ./gagent.yaml:/etc/gagent/config.yaml:ro
-      - ./tls:/etc/gagent/tls:ro
+      - "${SHERLOCK_DATA_DIR:?export SHERLOCK_DATA_DIR per README.md}:${SHERLOCK_DATA_DIR:?export SHERLOCK_DATA_DIR per README.md}"
+      - ./agent.yaml:/etc/sherlock/config.yaml:ro
+      - ./tls:/etc/sherlock/tls:ro
       # `make build-tools` at the repository root populates this
       # directory with the executable each manifest names.
-      - ../../tools:/opt/gagent/tools:ro
-    command: ["agent", "--config", "/etc/gagent/config.yaml", "--agent-id", "demo"]
+      - ../../tools:/opt/sherlock/tools:ro
+    command: ["agent", "--config", "/etc/sherlock/config.yaml", "--agent-id", "demo"]
   workspace:
     build:
       context: ../..
@@ -60,13 +60,13 @@ services:
     cap_drop: ["ALL"]
     cap_add: ["SETUID", "SETGID", "CHOWN", "SYS_ADMIN", "KILL"]
     environment:
-      GAGENT_WORKSPACE: "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}/workspace"
+      SHERLOCK_WORKSPACE: "${SHERLOCK_DATA_DIR:?export SHERLOCK_DATA_DIR per README.md}/workspace"
       # The exec UID must be an account nothing else on the host runs
       # as: containers share the host's UID space, and RLIMIT_NPROC
       # counts every process of the real UID (ADR 0010), so a shared
       # account starves the child of its process budget. 1001 is the
       # login user on many hosts; this one is not.
-      GAGENT_EXEC_UID: "10001"
+      SHERLOCK_EXEC_UID: "10001"
     volumes:
-      - "${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}:${GAGENT_DATA_DIR:?export GAGENT_DATA_DIR per README.md}"
+      - "${SHERLOCK_DATA_DIR:?export SHERLOCK_DATA_DIR per README.md}:${SHERLOCK_DATA_DIR:?export SHERLOCK_DATA_DIR per README.md}"
     command: ["workspace"]

@@ -1,22 +1,22 @@
 {
   "stage-verification": {
     "exit": 1,
-    "output": "--- FAIL: TestContinuation_RejectsBrokenEvidence (0.00s)\n    continuation_test.go:639: \n        \tError Trace:\t/home/sauce/orca/workspaces/gagent/test-continuation/tests/continuation_test.go:639\n        \tError:      \t[]string(nil) does not contain \"stage one artifact incorrect\"\n        \tTest:       \tTestContinuation_RejectsBrokenEvidence\nFAIL\nFAIL\tgithub.com/garamsh/gagent/tests\t0.009s\nFAIL\n"
+    "output": "--- FAIL: TestContinuation_RejectsBrokenEvidence (0.00s)\n    continuation_test.go:639: \n        \tError Trace:\t/home/sauce/orca/workspaces/sherlock/test-continuation/tests/continuation_test.go:639\n        \tError:      \t[]string(nil) does not contain \"stage one artifact incorrect\"\n        \tTest:       \tTestContinuation_RejectsBrokenEvidence\nFAIL\nFAIL\tgithub.com/garamsh/sherlock/tests\t0.009s\nFAIL\n"
   },
   "interruption-isolation": {
     "exit": 1,
-    "output": "--- FAIL: TestContinuation_RejectsBrokenEvidence (0.00s)\n    continuation_test.go:651: \n        \tError Trace:\t/home/sauce/orca/workspaces/gagent/test-continuation/tests/continuation_test.go:651\n        \tError:      \tShould be false\n        \tTest:       \tTestContinuation_RejectsBrokenEvidence\nFAIL\nFAIL\tgithub.com/garamsh/gagent/tests\t0.009s\nFAIL\n"
+    "output": "--- FAIL: TestContinuation_RejectsBrokenEvidence (0.00s)\n    continuation_test.go:651: \n        \tError Trace:\t/home/sauce/orca/workspaces/sherlock/test-continuation/tests/continuation_test.go:651\n        \tError:      \tShould be false\n        \tTest:       \tTestContinuation_RejectsBrokenEvidence\nFAIL\nFAIL\tgithub.com/garamsh/sherlock/tests\t0.009s\nFAIL\n"
   },
   "duplicate-detection": {
     "exit": 1,
-    "output": "--- FAIL: TestContinuation_RejectsBrokenEvidence (0.00s)\n    continuation_test.go:646: \n        \tError Trace:\t/home/sauce/orca/workspaces/gagent/test-continuation/tests/continuation_test.go:646\n        \tError:      \tShould be false\n        \tTest:       \tTestContinuation_RejectsBrokenEvidence\nFAIL\nFAIL\tgithub.com/garamsh/gagent/tests\t0.009s\nFAIL\n"
+    "output": "--- FAIL: TestContinuation_RejectsBrokenEvidence (0.00s)\n    continuation_test.go:646: \n        \tError Trace:\t/home/sauce/orca/workspaces/sherlock/test-continuation/tests/continuation_test.go:646\n        \tError:      \tShould be false\n        \tTest:       \tTestContinuation_RejectsBrokenEvidence\nFAIL\nFAIL\tgithub.com/garamsh/sherlock/tests\t0.009s\nFAIL\n"
   },
   "inspection-operation": {
     "exit": 1,
-    "output": "--- FAIL: TestContinuation_RejectsBrokenEvidence (0.00s)\n    continuation_test.go:636: \n        \tError Trace:\t/home/sauce/orca/workspaces/gagent/test-continuation/tests/continuation_test.go:636\n        \tError:      \tShould be false\n        \tTest:       \tTestContinuation_RejectsBrokenEvidence\n        \tMessages:   \ta failed write is not inspection\nFAIL\nFAIL\tgithub.com/garamsh/gagent/tests\t0.008s\nFAIL\n"
+    "output": "--- FAIL: TestContinuation_RejectsBrokenEvidence (0.00s)\n    continuation_test.go:636: \n        \tError Trace:\t/home/sauce/orca/workspaces/sherlock/test-continuation/tests/continuation_test.go:636\n        \tError:      \tShould be false\n        \tTest:       \tTestContinuation_RejectsBrokenEvidence\n        \tMessages:   \ta failed write is not inspection\nFAIL\nFAIL\tgithub.com/garamsh/sherlock/tests\t0.008s\nFAIL\n"
   },
   "inspection-command": {
     "exit": 1,
-    "output": "--- FAIL: TestContinuation_RejectsBrokenEvidence (0.00s)\n    continuation_test.go:633: \n        \tError Trace:\t/home/sauce/orca/workspaces/gagent/test-continuation/tests/continuation_test.go:633\n        \tError:      \tShould be false\n        \tTest:       \tTestContinuation_RejectsBrokenEvidence\n        \tMessages:   \tprintf false\nFAIL\nFAIL\tgithub.com/garamsh/gagent/tests\t0.008s\nFAIL\n"
+    "output": "--- FAIL: TestContinuation_RejectsBrokenEvidence (0.00s)\n    continuation_test.go:633: \n        \tError Trace:\t/home/sauce/orca/workspaces/sherlock/test-continuation/tests/continuation_test.go:633\n        \tError:      \tShould be false\n        \tTest:       \tTestContinuation_RejectsBrokenEvidence\n        \tMessages:   \tprintf false\nFAIL\nFAIL\tgithub.com/garamsh/sherlock/tests\t0.008s\nFAIL\n"
   }
 }

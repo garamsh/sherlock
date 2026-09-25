@@ -7,30 +7,30 @@ golangci-lint run ./...
 0 issues.
 format: 158 files checked, all formatted
 go test ./...
-ok  	github.com/garamsh/gagent/cmd/gagent	(cached)
-?   	github.com/garamsh/gagent/docs/research/memory-read-policy	[no test files]
-ok  	github.com/garamsh/gagent/internal/agent	(cached)
-ok  	github.com/garamsh/gagent/internal/agent/anthropic	(cached)
-ok  	github.com/garamsh/gagent/internal/agent/memory	(cached)
-ok  	github.com/garamsh/gagent/internal/agent/openai	(cached)
-ok  	github.com/garamsh/gagent/internal/config	(cached)
-ok  	github.com/garamsh/gagent/internal/gateway	(cached)
-ok  	github.com/garamsh/gagent/internal/memory	(cached)
-ok  	github.com/garamsh/gagent/internal/memory/sqlite	(cached)
-ok  	github.com/garamsh/gagent/internal/message	(cached)
-ok  	github.com/garamsh/gagent/internal/tool	0.034s
-ok  	github.com/garamsh/gagent/internal/tool/tooltest	(cached)
-?   	github.com/garamsh/gagent/internal/workspace	[no test files]
-ok  	github.com/garamsh/gagent/internal/workspace/files	(cached)
-ok  	github.com/garamsh/gagent/internal/workspace/server	(cached)
-ok  	github.com/garamsh/gagent/internal/workspace/shell	(cached)
-ok  	github.com/garamsh/gagent/tests	(cached)
-?   	github.com/garamsh/gagent/tools/file_list	[no test files]
-?   	github.com/garamsh/gagent/tools/file_read	[no test files]
-?   	github.com/garamsh/gagent/tools/file_write	[no test files]
-?   	github.com/garamsh/gagent/tools/github	[no test files]
-?   	github.com/garamsh/gagent/tools/message_send	[no test files]
-?   	github.com/garamsh/gagent/tools/shell_exec	[no test files]
+ok  	github.com/garamsh/sherlock/cmd/sherlock	(cached)
+?   	github.com/garamsh/sherlock/docs/research/memory-read-policy	[no test files]
+ok  	github.com/garamsh/sherlock/internal/agent	(cached)
+ok  	github.com/garamsh/sherlock/internal/agent/anthropic	(cached)
+ok  	github.com/garamsh/sherlock/internal/agent/memory	(cached)
+ok  	github.com/garamsh/sherlock/internal/agent/openai	(cached)
+ok  	github.com/garamsh/sherlock/internal/config	(cached)
+ok  	github.com/garamsh/sherlock/internal/gateway	(cached)
+ok  	github.com/garamsh/sherlock/internal/memory	(cached)
+ok  	github.com/garamsh/sherlock/internal/memory/sqlite	(cached)
+ok  	github.com/garamsh/sherlock/internal/message	(cached)
+ok  	github.com/garamsh/sherlock/internal/tool	0.034s
+ok  	github.com/garamsh/sherlock/internal/tool/tooltest	(cached)
+?   	github.com/garamsh/sherlock/internal/workspace	[no test files]
+ok  	github.com/garamsh/sherlock/internal/workspace/files	(cached)
+ok  	github.com/garamsh/sherlock/internal/workspace/server	(cached)
+ok  	github.com/garamsh/sherlock/internal/workspace/shell	(cached)
+ok  	github.com/garamsh/sherlock/tests	(cached)
+?   	github.com/garamsh/sherlock/tools/file_list	[no test files]
+?   	github.com/garamsh/sherlock/tools/file_read	[no test files]
+?   	github.com/garamsh/sherlock/tools/file_write	[no test files]
+?   	github.com/garamsh/sherlock/tools/github	[no test files]
+?   	github.com/garamsh/sherlock/tools/message_send	[no test files]
+?   	github.com/garamsh/sherlock/tools/shell_exec	[no test files]
 build: 24 packages built
 
 Command: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s docs/research/memory-read-policy -p "*_test.py" -v

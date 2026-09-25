@@ -37,7 +37,7 @@ The granularity is one call: a ceiling already reached refuses the next request,
 
 ## Method
 
-Every previous round in this tree measured a port of the design. This one drives the two shipped binaries — `gagent workspace` serving the gRPC data plane and `gagent agent` serving its gateway, both built by `go build` inside the run — through `tests/`' own helpers (`buildGagentBinary`, `startWorkspaceBinary`, `startAgentBinary`, `emptyConfig`). The loop, the tool registry, the prompt and the memory service are the shipped ones. What the run supplies is the facts, the questions, and the meter.
+Every previous round in this tree measured a port of the design. This one drives the two shipped binaries — `sherlock workspace` serving the gRPC data plane and `sherlock agent` serving its gateway, both built by `go build` inside the run — through `tests/`' own helpers (`buildSherlockBinary`, `startWorkspaceBinary`, `startAgentBinary`, `emptyConfig`). The loop, the tool registry, the prompt and the memory service are the shipped ones. What the run supplies is the facts, the questions, and the meter.
 
 **Every turn is its own agent process, against one memory file.** The agent's session is rolling, so a probe asked in the process that planted the fact could answer out of its own history instead of the store. A fresh process per turn removes that: the only thing a probe turn shares with a plant turn is `memory.db`.
 
@@ -165,14 +165,14 @@ Two notes on the endpoint, both of them things this run was warned about:
 - **L3's subjects are unreachable by construction, not by accident.** The design guarantees each L3 question has one answer in the store, so the zero is the read step failing to reach it — but it is one design of L3. A question implying its subject strongly enough to be named ("didn't my sister move recently") is a different case and is not here.
 - **`answer carries the value` is a containment test.** It credits a reply for holding the token on a word boundary; it does not verify the rest of the sentence. The replies were read for L1 and L2 and are correct, but that reading is not a measurement.
 - **Plant turns are also turns.** Each ran a read step against a store that did not yet hold what it was about, which is why nine of ten plants report `empty`; the tenth is the `unplaced` read described under §What the run cost. Nothing downstream reads those outcomes, and they are not part of the curve.
-- **Nothing in `make ci` re-measures this.** The run needs `GAGENT_PAID_MODEL_TESTS=1` and a key, and CI sets neither. What CI does check is the procedure and the bound, through the two free tests named below.
+- **Nothing in `make ci` re-measures this.** The run needs `SHERLOCK_PAID_MODEL_TESTS=1` and a key, and CI sets neither. What CI does check is the procedure and the bound, through the two free tests named below.
 
 ## Reproducing
 
-The run is `TestRecallFromImpliedInput` in `tests/`. It skips unless `GAGENT_PAID_MODEL_TESTS=1` and `MINIMAX_KEY` are both set, so `make ci` buys nothing:
+The run is `TestRecallFromImpliedInput` in `tests/`. It skips unless `SHERLOCK_PAID_MODEL_TESTS=1` and `MINIMAX_KEY` are both set, so `make ci` buys nothing:
 
 ```
-GAGENT_PAID_MODEL_TESTS=1 go test ./tests/ -run '^TestRecallFromImpliedInput$' -timeout 90m -v
+SHERLOCK_PAID_MODEL_TESTS=1 go test ./tests/ -run '^TestRecallFromImpliedInput$' -timeout 90m -v
 ```
 
 The 10-minute `go test` default is far too short for 40 turns. The run rewrites every file under `results/`; the committed ones are what the run above produced, and the figures in this record are pinned to them.
@@ -189,7 +189,7 @@ Two checks in the same package cost nothing and do run in `make ci`:
 
 ## Information comparison (issue 803)
 
-The paid comparison completed 28 probes on 2026-09-21: 25 valid and three invalid. C fails both explicit positive probes and the multi-actor completeness control; this is evidence publication, not an adoption result. The wider owner goal remains incomplete. The historical files in `results/` remain the earlier run's evidence. The PM's separate baseline at `fc5fca4c885e8bf015bab1a889042f091ff8ce53` is preserved at `/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-baseline/`; its whole-record audit motivates keeping the original value-only score alongside the complete-record score.
+The paid comparison completed 28 probes on 2026-09-21: 25 valid and three invalid. C fails both explicit positive probes and the multi-actor completeness control; this is evidence publication, not an adoption result. The wider owner goal remains incomplete. The historical files in `results/` remain the earlier run's evidence. The PM's separate baseline at `fc5fca4c885e8bf015bab1a889042f091ff8ce53` is preserved at `/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-21-baseline/`; its whole-record audit motivates keeping the original value-only score alongside the complete-record score.
 
 `tests/recall_information_test.go` builds the actual agent using Go compiler overlays. The checkout's shipped source remains unchanged. Each run records its checked-out revision, instrument file hashes and binary hashes in `source.json`, and retains the overlay inputs. The prototype was developed against `4a86d0d58e232ee968d15e664afc4439686706b9`; all source measured in this paid collection is pinned to `ca121754269b582853784b63f5e12cd0c92fcb8f`, as recorded in [source.json](results/information-2026-09-21/source.json). Publication does not change that source.
 
@@ -219,17 +219,17 @@ The automatic `answer_contains_finnish` field is only a word-boundary containmen
 Free reproduction, with no credential or network model required:
 
 ```sh
-env -u GAGENT_PAID_MODEL_TESTS PATH=/home/sauce/go/bin:$PATH \
-  GOCACHE=/tmp/gagent-803-go GOLANGCI_LINT_CACHE=/tmp/gagent-803-lint \
+env -u SHERLOCK_PAID_MODEL_TESTS PATH=/home/sauce/go/bin:$PATH \
+  GOCACHE=/tmp/sherlock-803-go GOLANGCI_LINT_CACHE=/tmp/sherlock-803-lint \
   go test ./tests -run '^TestRecallInformation_(Free|RejectsContaminatedControls)$' -count=1 -timeout=10m -v
 ```
 
-Set `GAGENT_INFORMATION_FREE_RESULTS` to a new absolute directory to retain the free run's artifacts. The free checks exercise the real binaries and verify that reference input, full-record offers, question-field disclosure, selected IDs and empty-store controls are observable. Paired contamination checks reject answer-bearing cue inputs, answer-bearing cue replies and post-cue store changes while admitting clean counterparts.
+Set `SHERLOCK_INFORMATION_FREE_RESULTS` to a new absolute directory to retain the free run's artifacts. The free checks exercise the real binaries and verify that reference input, full-record offers, question-field disclosure, selected IDs and empty-store controls are observable. Paired contamination checks reject answer-bearing cue inputs, answer-bearing cue replies and post-cue store changes while admitting clean counterparts.
 
-Only after PM instrumentation review and separate spending authorization, reproduce the paid collection with an environment-provided key and a new absolute `GAGENT_INFORMATION_RESULTS` path:
+Only after PM instrumentation review and separate spending authorization, reproduce the paid collection with an environment-provided key and a new absolute `SHERLOCK_INFORMATION_RESULTS` path:
 
 ```sh
-GAGENT_PAID_MODEL_TESTS=1 GAGENT_INFORMATION_RESULTS=/absolute/new-run-directory \
+SHERLOCK_PAID_MODEL_TESTS=1 SHERLOCK_INFORMATION_RESULTS=/absolute/new-run-directory \
   go test ./tests -run '^TestRecallInformation$' -count=1 -timeout=90m -v
 ```
 
@@ -250,8 +250,8 @@ The removal runs changed only temporary compiler inputs and were restored before
 ### Paid evidence and attribution
 
 - Published raw evidence: [calls.json](results/information-2026-09-21/calls.json), [plants.json](results/information-2026-09-21/plants.json), [held.json](results/information-2026-09-21/held.json), [probes.json](results/information-2026-09-21/probes.json), [run.json](results/information-2026-09-21/run.json), [source.json](results/information-2026-09-21/source.json) and [frozen/memory.db](results/information-2026-09-21/frozen/memory.db). [sha256.txt](results/information-2026-09-21/sha256.txt) pins all seven copies; run `sha256sum -c sha256.txt` from that directory.
-- Copied byte-for-byte from PM-owned `/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-information-ca12175/`. The original `run.json.status` remains `invalid conditions; semantic review pending`; collection completion and semantic success are separate.
-- Semantic judgments below are the independent adjudication accepted by the PM in [issue 803's publication instruction](https://github.com/garamsh/gagent/issues/803#issuecomment-5750998207), checked again against the raw requests, final replies, terminal events and pre-probe records for publication. They are independent agent judgments reviewed by the PM agent, distinct from automatic harness scores; no human adjudicated this run. Attribution source: `/home/sauce/Workspace/garam/gagent/.local/research/information-adjudication-803.md`, SHA-256 `c2a089c27aeb4de550da3648b548ad6343cd2984d8df651bfd688c6369d74209`. This experiment record is the repository home for those judgments and conclusions.
+- Copied byte-for-byte from PM-owned `/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-21-information-ca12175/`. The original `run.json.status` remains `invalid conditions; semantic review pending`; collection completion and semantic success are separate.
+- Semantic judgments below are the independent adjudication accepted by the PM in [issue 803's publication instruction](https://github.com/garamsh/sherlock/issues/803#issuecomment-5750998207), checked again against the raw requests, final replies, terminal events and pre-probe records for publication. They are independent agent judgments reviewed by the PM agent, distinct from automatic harness scores; no human adjudicated this run. Attribution source: `/home/sauce/Workspace/garam/sherlock/.local/research/information-adjudication-803.md`, SHA-256 `c2a089c27aeb4de550da3648b548ad6343cd2984d8df651bfd688c6369d74209`. This experiment record is the repository home for those judgments and conclusions.
 - The fixed criteria require the Hana/Finnish relation for explicit/referent probes, both person and language for anonymous probes, supported uncertainty for absent/empty probes, and both supported club actors or explicit recognition of ambiguity for the club control. Positive misses fail even when uncertainty is supported by the act input. Unsupported assertions are assessed separately from correctness and literal containment.
 - Source attribution: all three instrument hashes in `source.json` match the files at the measured revision. The retained history/grounded/names binaries match its hashes; the task binary hash is recorded but its binary was not retained for independent rehash. Compiler overlay inputs and binaries stay in the PM raw directory and are not duplicated here; the pinned test source defines their construction.
 - Plant writebacks and the immutable SQLite snapshot agree with all three complete records in `held.json`; archive is empty. Finnish occurs in Hana's question, Thameside rowing club in Yusuf's question, and Hilltop chess club in Mira's value, with June as a restriction. The original historical result files remain unchanged.
@@ -340,12 +340,12 @@ Latency is summed per-call duration, not a distribution or parallel wall time. T
 - No final reply invents a fencing winner, a wrong language or a wrong club. That does not erase the explicit unsupported store/history assertions and scope caution listed by row. General fencing examples are clarification examples, not claims of a particular winner. Empty workspace observations are supported only for the fresh experiment workspaces; they do not establish empty memory.
 - Two repetitions share one agent-written three-row fixture, one model and one fixed arm order. They are not independently planted stores, a population estimate, a scale measurement or evidence of stable long-term behavior. The known-absent event probes safe uncertainty; they do not show exhaustive absence discovery by A/B, which lack a catalogue. No correction, withdrawal, growing memory, resumed work, forgetting or learning from failure was exercised.
 
-The comparison therefore leaves the clean A/B referent contrast unresolved, and C is not an adoption candidate on this evidence. Repairing cue/store isolation, measuring selection separately from recognition/injection, and testing multi-record completeness are follow-up questions. [Issue 806](https://github.com/garamsh/gagent/issues/806) owns the later selection comparison; no new model calls or architecture changes are part of this publication.
+The comparison therefore leaves the clean A/B referent contrast unresolved, and C is not an adoption candidate on this evidence. Repairing cue/store isolation, measuring selection separately from recognition/injection, and testing multi-record completeness are follow-up questions. [Issue 806](https://github.com/garamsh/sherlock/issues/806) owns the later selection comparison; no new model calls or architecture changes are part of this publication.
 
 ### Publication validation
 
-- `env -u GAGENT_PAID_MODEL_TESTS PATH=/home/sauce/go/bin:$PATH GOCACHE=/tmp/gagent-803-publication-go GOLANGCI_LINT_CACHE=/tmp/gagent-803-publication-lint make ci`: exit 0 on the measured source with this documentation/data publication; lint reported 0 issues, formatting checked 142 files, tests passed in 16 packages (five packages have no test files), and build covered 21 packages. Paid tests were not enabled. Exact output is retained at `/tmp/gagent-803-publication-ci.log`.
-- `python3 /tmp/gagent-803-audit.py`: exit 0; independently compared all seven copied files with raw bytes and SHA-256, all four historical result files with `git show ca121754269b582853784b63f5e12cd0c92fcb8f:<path>`, all 89 wire/flattened records, phase/stage totals, 38 terminal turns and every probe's call mapping, catalogue and injected record identity. SQLite was opened with `mode=ro&immutable=1`; active rows match `held.json` and archive is empty. The audit script and output `/tmp/gagent-803-publication-audit.log` are retained for PM inspection.
+- `env -u SHERLOCK_PAID_MODEL_TESTS PATH=/home/sauce/go/bin:$PATH GOCACHE=/tmp/sherlock-803-publication-go GOLANGCI_LINT_CACHE=/tmp/sherlock-803-publication-lint make ci`: exit 0 on the measured source with this documentation/data publication; lint reported 0 issues, formatting checked 142 files, tests passed in 16 packages (five packages have no test files), and build covered 21 packages. Paid tests were not enabled. Exact output is retained at `/tmp/sherlock-803-publication-ci.log`.
+- `python3 /tmp/sherlock-803-audit.py`: exit 0; independently compared all seven copied files with raw bytes and SHA-256, all four historical result files with `git show ca121754269b582853784b63f5e12cd0c92fcb8f:<path>`, all 89 wire/flattened records, phase/stage totals, 38 terminal turns and every probe's call mapping, catalogue and injected record identity. SQLite was opened with `mode=ro&immutable=1`; active rows match `held.json` and archive is empty. The audit script and output `/tmp/sherlock-803-publication-audit.log` are retained for PM inspection.
 - This publication changes only this record and its new data directory. It adds no tests and changes no measured source, so the previously documented removal checks were not rerun. `make ci` checks the existing instrument; it does not validate paid semantic conclusions or privileged deployment behavior.
 
 
@@ -419,21 +419,21 @@ returns one key versus two IDs for club, so the accepted plural case is paired w
 an incomplete single-actor case. Unknown-ID, duplicate-ID, null, key-shaped,
 prose-only and HTTP failure responses are paired with a valid ID response.
 
-- `env -u GAGENT_PAID_MODEL_TESTS GOCACHE=/tmp/gagent-806-go GAGENT_SELECTION_FREE_RESULTS=/tmp/gagent-806-free-results go test ./tests -run '^Test(RecordSelection_(Free|RejectsInvalidSelections)|SpendMeter_RetainsFailureBody)$' -count=1 -v` passed the initial restored instrument; its synthetic eighteen-probe transcript contains 36 calls, 3,600 input tokens, 720 output tokens, zero USD and no refusals. These counts are scripted, not provider usage. The final instrument is validated below.
-- `python3 /tmp/gagent-806-removals.py` ran four temporary source removals and restored each file in `finally`. Each underlying `go test` exited 1: mapping the record candidate to the key binary failed `wrong selection contract`; replacing complete coverage with any-match failed `one club actor is incomplete`; ignoring unknown IDs failed the invalid-selection turn-failure assertion; removing response-byte capture failed both JSON and non-JSON failure-body assertions. The script and `/tmp/gagent-806-removal-*.log` retain exact mutations and commands for PM review.
-- The first free run (`env -u GAGENT_PAID_MODEL_TESTS GOCACHE=/tmp/gagent-806-go go test ./tests -run '^TestRecordSelection_(Free|RejectsInvalidSelections)$' -count=1 -v`, `/tmp/gagent-806-free.log`, exit 1) failed because the new observer read event `type` instead of
+- `env -u SHERLOCK_PAID_MODEL_TESTS GOCACHE=/tmp/sherlock-806-go SHERLOCK_SELECTION_FREE_RESULTS=/tmp/sherlock-806-free-results go test ./tests -run '^Test(RecordSelection_(Free|RejectsInvalidSelections)|SpendMeter_RetainsFailureBody)$' -count=1 -v` passed the initial restored instrument; its synthetic eighteen-probe transcript contains 36 calls, 3,600 input tokens, 720 output tokens, zero USD and no refusals. These counts are scripted, not provider usage. The final instrument is validated below.
+- `python3 /tmp/sherlock-806-removals.py` ran four temporary source removals and restored each file in `finally`. Each underlying `go test` exited 1: mapping the record candidate to the key binary failed `wrong selection contract`; replacing complete coverage with any-match failed `one club actor is incomplete`; ignoring unknown IDs failed the invalid-selection turn-failure assertion; removing response-byte capture failed both JSON and non-JSON failure-body assertions. The script and `/tmp/sherlock-806-removal-*.log` retain exact mutations and commands for PM review.
+- The first free run (`env -u SHERLOCK_PAID_MODEL_TESTS GOCACHE=/tmp/sherlock-806-go go test ./tests -run '^TestRecordSelection_(Free|RejectsInvalidSelections)$' -count=1 -v`, `/tmp/sherlock-806-free.log`, exit 1) failed because the new observer read event `type` instead of
   the actual `kind`; both terminal-success assertions caught it. The first
   `make ci` reached lint and failed on numeric HTTP 503 in the new endpoint;
-  it now uses the named constant (`/tmp/gagent-806-ci.log`, exit 2, same `make ci` command as the passing run). A plain `go mod tidy` failed on the read-only
-  default Go cache; `GOCACHE=/tmp/gagent-806-go go mod tidy` passed without module
+  it now uses the named constant (`/tmp/sherlock-806-ci.log`, exit 2, same `make ci` command as the passing run). A plain `go mod tidy` failed on the read-only
+  default Go cache; `GOCACHE=/tmp/sherlock-806-go go mod tidy` passed without module
   changes. These are instrument/environment failures, not model observations.
 
-- `env -u GAGENT_PAID_MODEL_TESTS PATH=/home/sauce/go/bin:$PATH GOCACHE=/tmp/gagent-806-go GOLANGCI_LINT_CACHE=/tmp/gagent-806-lint make ci` exited 0: lint reported 0 issues, formatting checked 143 Go files, tests passed in 16 packages (five have no test files), and build covered 21 packages. The final log is `/tmp/gagent-806-ci-reviewed.log`; paid tests remained disabled.
-- Final free run: `env -u GAGENT_PAID_MODEL_TESTS GOCACHE=/tmp/gagent-806-go GAGENT_SELECTION_FREE_RESULTS=/tmp/gagent-806-reviewed-results go test ./tests -run '^Test(RecordSelection_(Free|RejectsInvalidSelections)|SpendMeter_RetainsFailureBody)$' -count=1 -v` exited 0 in 7.395 seconds. Its eighteen-probe transcript again contains 36 synthetic calls, 3,600/720 tokens, zero USD and no refusals; every probe reached act and finished. The seven accepted/failure controls and two failure-body cases also passed. Output: `/tmp/gagent-806-reviewed-free.log`.
-- `python3 /tmp/gagent-806-audit.py` exited 0: all twelve historical result files match their bytes at `dcc252b8171ac5d889369eb9a65dc84f3d682da7`; all 89 historical wire usage records reconcile; the two explicit failure catalogues and club catalogue contain every frozen record. The final free transcript has eighteen rows, complete record-arm selections and no invalid premises. Output: `/tmp/gagent-806-audit.log`.
+- `env -u SHERLOCK_PAID_MODEL_TESTS PATH=/home/sauce/go/bin:$PATH GOCACHE=/tmp/sherlock-806-go GOLANGCI_LINT_CACHE=/tmp/sherlock-806-lint make ci` exited 0: lint reported 0 issues, formatting checked 143 Go files, tests passed in 16 packages (five have no test files), and build covered 21 packages. The final log is `/tmp/sherlock-806-ci-reviewed.log`; paid tests remained disabled.
+- Final free run: `env -u SHERLOCK_PAID_MODEL_TESTS GOCACHE=/tmp/sherlock-806-go SHERLOCK_SELECTION_FREE_RESULTS=/tmp/sherlock-806-reviewed-results go test ./tests -run '^Test(RecordSelection_(Free|RejectsInvalidSelections)|SpendMeter_RetainsFailureBody)$' -count=1 -v` exited 0 in 7.395 seconds. Its eighteen-probe transcript again contains 36 synthetic calls, 3,600/720 tokens, zero USD and no refusals; every probe reached act and finished. The seven accepted/failure controls and two failure-body cases also passed. Output: `/tmp/sherlock-806-reviewed-free.log`.
+- `python3 /tmp/sherlock-806-audit.py` exited 0: all twelve historical result files match their bytes at `dcc252b8171ac5d889369eb9a65dc84f3d682da7`; all 89 historical wire usage records reconcile; the two explicit failure catalogues and club catalogue contain every frozen record. The final free transcript has eighteen rows, complete record-arm selections and no invalid premises. Output: `/tmp/sherlock-806-audit.log`.
 
 The reviewed instrument used this opt-in command shape:
-`GAGENT_PAID_MODEL_TESTS=1 GAGENT_SELECTION_RESULTS=/absolute/new/record-selection-2026-09-21 go test ./tests -run '^TestRecordSelection$' -count=1 -v`,
+`SHERLOCK_PAID_MODEL_TESTS=1 SHERLOCK_SELECTION_RESULTS=/absolute/new/record-selection-2026-09-21 go test ./tests -run '^TestRecordSelection$' -count=1 -v`,
 with the existing MiniMax key supplied by the operator through the environment.
 The result directory must be nonempty, absolute and not already exist; the assigned
 name belongs to this round, while the instrument also permits later named reruns. The existing ceilings remain 150 calls,
@@ -450,7 +450,7 @@ The PM agent ran the authorized collection once on 2026-09-21 at measured source
 worker agent (Orca task `task_cd751602d36d`, dispatch `ctx_958482918ea3`), who did
 not author the instrument, adjudicated the raw requests, responses and events below.
 For the subsequent PM agent publication review, see
-[PR 808](https://github.com/garamsh/gagent/pull/808); these are agent reviews,
+[PR 808](https://github.com/garamsh/sherlock/pull/808); these are agent reviews,
 not human adjudication. The publication commit is separate from the measured source and is
 identified in that PR's body after committing.
 
@@ -462,7 +462,7 @@ identified in that PR's body after committing.
   unchanged. `publication-manifest.json` maps all nineteen copies to original
   paths and SHA-256 values. Original absolute overlay paths remain unchanged.
 - Original evidence and both binaries remain under
-  `/home/sauce/Workspace/garam/gagent/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/`.
+  `/home/sauce/Workspace/garam/sherlock/.local/verification/2026-09-21-selection-efd0fde/record-selection-2026-09-21/`.
   The verified binary SHA-256 values are keys
   `eb2d72a2fbe7dcc754c5a3c42eee98f562a75311df374f572f9b390361e7d80a`
   and records `781e35705e7f924363f9267363374fde3006712d10af907a4b8e8aad7c1815b6`.
@@ -473,7 +473,7 @@ identified in that PR's body after committing.
   The raw pending semantic fields stay untouched; this section owns adjudication.
 - The instrument checkpoint, restored free/CI logs and four exact removal
   mutations/logs were read at
-  `/home/sauce/Workspace/garam/gagent/.local/verification/806-review/`.
+  `/home/sauce/Workspace/garam/sherlock/.local/verification/806-review/`.
   Candidate distinction, plural coverage, unknown-ID rejection and response-byte
   capture removals each failed their named assertion; these are instrument checks,
   not additional paid observations. This publication round made no paid calls and
@@ -640,7 +640,7 @@ establish reliable continuation or learning.
 
 ### Publication verification
 
-- `env -u GAGENT_PAID_MODEL_TESTS PATH=/home/sauce/go/bin:$PATH GOCACHE=/tmp/gagent-806-publication-go GOLANGCI_LINT_CACHE=/tmp/gagent-806-publication-lint make ci` exited 0: lint 0 issues, format 143 Go files, tests passed in 16 packages with five having no test files, build 21 packages. Log: `/tmp/gagent-806-publication-ci.log`. Paid opt-in was absent; this checks the instrument, not semantic judgments or privileged deployment.
-- `python3 /tmp/gagent-806-publication-audit.py` exited 0: eighteen request/schema/catalogue/pre-store/selection/act/event mappings, forty response-byte/parsed-response/argument/usage reconciliations, eight measured source hashes, two retained binary hashes, seven original manifest entries and nineteen publication copies. The twelve historical files match the measured head byte-for-byte. SQLite was opened with `mode=ro&immutable=1`. The script initially assumed recall lived in the first system message; inspecting the actual message list corrected the audit to inspect all system messages. No evidence was changed. Log: `/tmp/gagent-806-publication-audit.log`.
-- `GOCACHE=/tmp/gagent-806-publication-go go mod tidy` and `git diff --check` passed without module changes. This publication changes no test or product source; the instrument's four removal checks were inspected, not rerun. PM checkpoint/free/removal/CI evidence remains at the path above.
+- `env -u SHERLOCK_PAID_MODEL_TESTS PATH=/home/sauce/go/bin:$PATH GOCACHE=/tmp/sherlock-806-publication-go GOLANGCI_LINT_CACHE=/tmp/sherlock-806-publication-lint make ci` exited 0: lint 0 issues, format 143 Go files, tests passed in 16 packages with five having no test files, build 21 packages. Log: `/tmp/sherlock-806-publication-ci.log`. Paid opt-in was absent; this checks the instrument, not semantic judgments or privileged deployment.
+- `python3 /tmp/sherlock-806-publication-audit.py` exited 0: eighteen request/schema/catalogue/pre-store/selection/act/event mappings, forty response-byte/parsed-response/argument/usage reconciliations, eight measured source hashes, two retained binary hashes, seven original manifest entries and nineteen publication copies. The twelve historical files match the measured head byte-for-byte. SQLite was opened with `mode=ro&immutable=1`. The script initially assumed recall lived in the first system message; inspecting the actual message list corrected the audit to inspect all system messages. No evidence was changed. Log: `/tmp/sherlock-806-publication-audit.log`.
+- `GOCACHE=/tmp/sherlock-806-publication-go go mod tidy` and `git diff --check` passed without module changes. This publication changes no test or product source; the instrument's four removal checks were inspected, not rerun. PM checkpoint/free/removal/CI evidence remains at the path above.
 - GitHub reported draft PR 808 at the measured head with no check suites. `.github/workflows/ci.yml` targets only `main`, so this task PR targeting `dev` has no host run; local `make ci` is the reported check, not a claim of hosted verification. Publication-head state is recorded in the PR.

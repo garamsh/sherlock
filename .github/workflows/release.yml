@@ -58,13 +58,22 @@ jobs:
 
       # Every image is built before any is pushed, and one command builds them
       # all. That is the binding constraint of this workflow (#758, #770): the
-      # three are a set that has to agree (ADR 0017, and the tools image an
-      # agent mounts is built from the same revision as the agent that reads
-      # it), every repository is IMMUTABLE, and a version whose later image
-      # failed after an earlier one was pushed is repaired only by abandoning
-      # the name. Building through `docker/build-push-action` with `push: true`,
-      # once per image, is the shape that cannot hold that property, so this
-      # workflow does not use it.
+      # two are a set that has to agree (ADR 0017, ADR 0021), every repository
+      # is IMMUTABLE, and a version whose later image failed after an earlier one
+      # was pushed is repaired only by abandoning the name. Building through
+      # `docker/buildx-push-action` with `push: true`, once per image, is the
+      # shape that cannot hold that property, so this workflow does not use it.
+      #
+      # The agent image carries the first-party tools at /opt/sherlock/tools/
+      # (ADR 0021); there is no separate sherlock/tools image and no third
+      # image to push. The workspace image is unchanged.
+      #
+      # Every image lands under `garam/` in the registry, the convention
+      # the account's other applications follow. Production tags are
+      # semver (`0.1.0`, `0.1.1`, ...) — release tags from a `v`-prefixed
+      # git tag with the `v` stripped. Development tags are the commit
+      # short SHA; those go in by hand, not through this workflow
+      # (deployment.md §Images and tags).
       #
       # The name invoked is the one a contributor invokes and the `docker` job
       # in ci.yml already invokes (ci.md §One entry point per task); the
@@ -99,8 +108,8 @@ jobs:
       # The only irreversible step. Every local image is renamed first, so a
       # reference this cannot form fails before any upload begins.
       #
-      # `sherlock-<image>:<revision>` is the name the Makefile writes for each of
-      # the three. They are not re-derived here: a rename there leaves
+      # `sherlock-<image>:<revision>` is the name the Makefile writes for each
+      # of the two. They are not re-derived here: a rename there leaves
       # `docker tag` with no such image, which fails this step rather than
       # pushing something else.
       - env:
@@ -108,11 +117,11 @@ jobs:
           VERSION: ${{ steps.version.outputs.version }}
         run: |
           set -euo pipefail
-          for image in agent workspace tools; do
-            docker tag "sherlock-$image:$GITHUB_SHA" "$REGISTRY/sherlock/$image:$VERSION"
+          for image in agent workspace; do
+            docker tag "sherlock-$image:$GITHUB_SHA" "$REGISTRY/garam/sherlock-$image:$VERSION"
           done
-          for image in agent workspace tools; do
-            docker push "$REGISTRY/sherlock/$image:$VERSION"
+          for image in agent workspace; do
+            docker push "$REGISTRY/garam/sherlock-$image:$VERSION"
           done
 
       # What the registry holds, read back from the registry rather than from a
@@ -130,8 +139,8 @@ jobs:
           VERSION: ${{ steps.version.outputs.version }}
         run: |
           set -euo pipefail
-          for image in agent workspace tools; do
-            ref="$REGISTRY/sherlock/$image:$VERSION"
+          for image in agent workspace; do
+            ref="$REGISTRY/garam/sherlock-$image:$VERSION"
             media=$(docker buildx imagetools inspect "$ref" --format '{{.Manifest.MediaType}}')
             digest=$(docker buildx imagetools inspect "$ref" --format '{{.Manifest.Digest}}')
             case "$media" in

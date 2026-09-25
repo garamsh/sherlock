@@ -124,7 +124,7 @@ build-tools:
 	done; \
 	echo "build-tools: $$built tools built"
 
-# Builds the three platform images (ADR 0017, #767); nothing is pushed and no
+# Builds the two platform images (ADR 0017, ADR 0021); nothing is pushed and no
 # registry is named here. Each build context is the repository root because
 # each build stage copies the module; what each context holds is $(dockerignores).
 #
@@ -156,15 +156,11 @@ build-tools:
 # as no paths at all, and the recipe fails on that rather than checking a
 # pathspec that is not the context.
 #
-# There are two such files, because the three images do not share one context.
-# BuildKit reads the ignore file named after the Dockerfile in preference to
-# the root one, so build/tools.Dockerfile takes the tool sources it compiles
-# without putting them into the other two images' contexts (#597). Both are
-# read, and the union is what the tree is checked over: an image is built from
-# whichever admits its sources.
+# There is one ignore file, because the two images share one context: the
+# tools are baked into the agent image at build time (ADR 0021), so a path
+# the tool sources need is a path the agent image's build reads.
 DOCKERIGNORE = .dockerignore
-TOOLS_DOCKERIGNORE = $(TOOLS_DOCKERFILE).dockerignore
-dockerignores = $(DOCKERIGNORE) $(TOOLS_DOCKERIGNORE)
+dockerignores = $(DOCKERIGNORE)
 ignore_patterns = $(shell sed -e '/^[[:space:]]*\#/d' -e '/^[[:space:]]*$$/d' $(1) 2>/dev/null)
 context_paths_of = $(if $(filter *,$(firstword $(call ignore_patterns,$(1)))),$(patsubst !%,%,$(filter !%,$(call ignore_patterns,$(1)))))
 context_paths = $(sort $(foreach file,$(dockerignores),$(call context_paths_of,$(file))))
@@ -184,8 +180,7 @@ shapeless_ignores = $(strip $(foreach file,$(dockerignores),$(if $(call context_
 # redefine what a context is for a build the guard then reports clean.
 AGENT_DOCKERFILE = build/agent.Dockerfile
 WORKSPACE_DOCKERFILE = build/workspace.Dockerfile
-TOOLS_DOCKERFILE = build/tools.Dockerfile
-build_inputs = $(AGENT_DOCKERFILE) $(WORKSPACE_DOCKERFILE) $(TOOLS_DOCKERFILE) $(dockerignores)
+build_inputs = $(AGENT_DOCKERFILE) $(WORKSPACE_DOCKERFILE) $(dockerignores)
 checked_paths = $(context_paths) $(build_inputs)
 
 # Read paths that are not in the tree. They are handed to git as pathspecs,
@@ -229,7 +224,6 @@ build-images:
 	@echo "build-images: $(if $(revision_is_default),what docker reads [$(checked_paths)] matches $(REVISION),REVISION=$(REVISION) was passed in and what docker reads is not checked against it)"
 	$(BUILD_ENV) docker build -f $(AGENT_DOCKERFILE) --build-arg REVISION="$(REVISION)" -t sherlock-agent:$(REVISION) .
 	$(BUILD_ENV) docker build -f $(WORKSPACE_DOCKERFILE) --build-arg REVISION="$(REVISION)" -t sherlock-workspace:$(REVISION) .
-	$(BUILD_ENV) docker build -f $(TOOLS_DOCKERFILE) --build-arg REVISION="$(REVISION)" -t sherlock-tools:$(REVISION) .
 
 # The toolchain image the privileged CI job runs in, read out of the
 # Dockerfile that owns the pin rather than restated in the workflow (#633).

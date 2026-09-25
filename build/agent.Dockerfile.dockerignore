@@ -1,0 +1,16 @@
+# The agent image's build context: an allow-list, `*` and then re-includes,
+# because the agent Dockerfile now compiles every tools/<name>/<name>
+# executable in its build stage (ADR 0021). The workspace image does not
+# need the tool sources and reads the same allow-list the root .dockerignore
+# carries; BuildKit prefers this file to the root one when the build context
+# is the directory that holds both (#597).
+#
+# Re-includes are directories rather than globs on purpose:
+# internal/agent/instructions.go embeds ego.md, so a `*.go` allow-list would
+# drop an embedded asset and break the build.
+*
+!go.mod
+!go.sum
+!cmd
+!internal
+!tools

@@ -21,15 +21,20 @@ services:
       # The memory file sits at the same absolute path on host and
       # container so it is valid from either side.
       SHERLOCK_MEMORY_PATH: "${SHERLOCK_DATA_DIR:?export SHERLOCK_DATA_DIR per README.md}/memory.db"
-      # The tool set is the operator's choice (ADR 0017); this operator
-      # installs the repository's first-party tools by mounting them.
+      # The agent image carries the first-party tools baked at
+      # /opt/sherlock/tools/ (ADR 0021); `make build-tools` populates
+      # the host directory the compose mounts on top of that path, so a
+      # contributor's edit to `tools/<name>/<name>` or `manifest.json`
+      # is reflected on the next container restart without rebuilding
+      # the image. Removing this mount leaves the baked-in set in place.
       SHERLOCK_TOOLS_DIR: /opt/sherlock/tools
     volumes:
       - "${SHERLOCK_DATA_DIR:?export SHERLOCK_DATA_DIR per README.md}:${SHERLOCK_DATA_DIR:?export SHERLOCK_DATA_DIR per README.md}"
       - ./agent.yaml:/etc/sherlock/config.yaml:ro
       - ./tls:/etc/sherlock/tls:ro
-      # `make build-tools` at the repository root populates this
-      # directory with the executable each manifest names.
+      # Local-dev override: the host's `tools/` mounted read-only at
+      # /opt/sherlock/tools. Inode-for-inode override of the image's baked
+      # tools (ADR 0021).
       - ../../tools:/opt/sherlock/tools:ro
     command: ["agent", "--config", "/etc/sherlock/config.yaml", "--agent-id", "demo"]
   workspace:

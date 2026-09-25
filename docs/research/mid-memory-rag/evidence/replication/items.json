@@ -4593,6 +4593,1006 @@
    "key": "28",
    "exact_query": "How many years at the company before your retirement party?",
    "paraphrase_query": "What duration of employment preceded your work farewell gathering?"
+  },
+  {
+   "id": "paraphrase-t00-00",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "freelance_clients",
+   "fact_sentence": "My client SamanthaHuang commissioned a logo redesign last March.",
+   "key": "SamanthaHuang",
+   "exact_query": "Who commissioned a logo redesign last March?",
+   "paraphrase_query": "Which patron requested a brand refresh during spring?"
+  },
+  {
+   "id": "paraphrase-t00-01",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "freelance_clients",
+   "fact_sentence": "The Q3-2024-BUDGET project finally got approved on September 15th.",
+   "key": "Q3-2024-BUDGET",
+   "exact_query": "What project got approved on September 15th?",
+   "paraphrase_query": "Which initiative received authorization in mid-September?"
+  },
+  {
+   "id": "paraphrase-t00-02",
+   "family": "paraphrase",
+   "failure": "key repeated",
+   "topic": "freelance_clients",
+   "fact_sentence": "I invoiced $4,750 for the website overhaul project.",
+   "key": "$4,750",
+   "exact_query": "How much was invoiced for the website overhaul?",
+   "paraphrase_query": "What sum was charged for the site reconstruction?"
+  },
+  {
+   "id": "paraphrase-t00-03",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "freelance_clients",
+   "fact_sentence": "The client wants me to use AdobeCreativeSuite2024 for the campaign.",
+   "key": "AdobeCreativeSuite2024",
+   "exact_query": "What software should be used for the campaign?",
+   "paraphrase_query": "Which design program is required for the marketing effort?"
+  },
+  {
+   "id": "paraphrase-t00-04",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "freelance_clients",
+   "fact_sentence": "Our team met at the BrooklynLoft office for the strategy session.",
+   "key": "BrooklynLoft",
+   "exact_query": "Where did the team meet for the strategy session?",
+   "paraphrase_query": "At which location did collaboration occur for planning?"
+  },
+  {
+   "id": "paraphrase-t00-05",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "freelance_clients",
+   "fact_sentence": "The final deliverable is due on the twentieth of December.",
+   "key": "twentieth",
+   "exact_query": "When is the final deliverable due?",
+   "paraphrase_query": "What date marks the project completion deadline?"
+  },
+  {
+   "id": "paraphrase-t00-06",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "freelance_clients",
+   "fact_sentence": "I've been working with the MitchellGroup for three years now.",
+   "key": "MitchellGroup",
+   "exact_query": "Who have you been working with for three years?",
+   "paraphrase_query": "Which organization has been your collaborator for that duration?"
+  },
+  {
+   "id": "paraphrase-t00-07",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "freelance_clients",
+   "fact_sentence": "The branding package includes a $7,500 fee for full identity design.",
+   "key": "$7,500",
+   "exact_query": "How much is the fee for the full identity design?",
+   "paraphrase_query": "What amount covers comprehensive visual identity creation?"
+  },
+  {
+   "id": "paraphrase-t00-08",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "freelance_clients",
+   "fact_sentence": "The client requested ShopifyPlus for their new e-commerce platform.",
+   "key": "ShopifyPlus",
+   "exact_query": "What platform did the client request?",
+   "paraphrase_query": "Which e-commerce system was specified for the online store?"
+  },
+  {
+   "id": "paraphrase-t00-09",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "freelance_clients",
+   "fact_sentence": "The kickoff meeting took place at The Hive co-working space.",
+   "key": "The Hive",
+   "exact_query": "Where did the kickoff meeting take place?",
+   "paraphrase_query": "At which venue did the initial client discussion occur?"
+  },
+  {
+   "id": "paraphrase-t01-00",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "household repairs",
+   "fact_sentence": "I fixed the kitchen faucet leak using plumber's tape",
+   "key": "plumber's tape",
+   "exact_query": "Did you use plumber's tape to fix the kitchen faucet leak?",
+   "paraphrase_query": "What sealing material stopped the sink area from dripping?"
+  },
+  {
+   "id": "paraphrase-t01-01",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "household chores",
+   "fact_sentence": "I unclogged the bathroom sink with PVC drain cleaner",
+   "key": "PVC drain cleaner",
+   "exact_query": "Did PVC drain cleaner unclog the bathroom sink?",
+   "paraphrase_query": "What chemical product removed the blockage near the washbasin?"
+  },
+  {
+   "id": "paraphrase-t01-02",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "household repairs",
+   "fact_sentence": "I painted the master bedroom with eggshell white paint",
+   "key": "eggshell white",
+   "exact_query": "Did you use eggshell white paint for the master bedroom?",
+   "paraphrase_query": "What matte coating covered the main sleeping space?"
+  },
+  {
+   "id": "paraphrase-t01-03",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "household repairs",
+   "fact_sentence": "I repaired the backyard fence with cedar planks",
+   "key": "cedar planks",
+   "exact_query": "Did cedar planks repair the backyard fence?",
+   "paraphrase_query": "What wooden boards restored the rear property boundary?"
+  },
+  {
+   "id": "paraphrase-t01-04",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "household repairs",
+   "fact_sentence": "I fixed the broken patio door glass with a UV glass patch kit",
+   "key": "UV glass patch kit",
+   "exact_query": "Did a UV glass patch kit fix the broken patio door glass?",
+   "paraphrase_query": "What adhesive product repaired the outdoor entrance panel?"
+  },
+  {
+   "id": "paraphrase-t01-05",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "household chores",
+   "fact_sentence": "I deep cleaned the garage floor with industrial degreaser",
+   "key": "industrial degreaser",
+   "exact_query": "Did industrial degreaser deep clean the garage floor?",
+   "paraphrase_query": "What heavy-duty cleaner restored the workshop concrete surface?"
+  },
+  {
+   "id": "paraphrase-t01-06",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "household repairs",
+   "fact_sentence": "I tightened the wobbly desk chair using an Allen key",
+   "key": "Allen key",
+   "exact_query": "Did an Allen key tighten the wobbly desk chair?",
+   "paraphrase_query": "What hex wrench secured the unstable office seat?"
+  },
+  {
+   "id": "paraphrase-t01-07",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "household repairs",
+   "fact_sentence": "I replaced the bathroom outlet with a GFCI electrical outlet",
+   "key": "GFCI electrical outlet",
+   "exact_query": "Did you replace the bathroom outlet with a GFCI electrical outlet?",
+   "paraphrase_query": "What safety receptacle was installed near the washroom wall?"
+  },
+  {
+   "id": "paraphrase-t01-08",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "household chores",
+   "fact_sentence": "I cleared the front yard gutters with a gas-powered leaf blower",
+   "key": "gas-powered leaf blower",
+   "exact_query": "Did a gas-powered leaf blower clear the front yard gutters?",
+   "paraphrase_query": "What motorized device removed debris from the entrance landscape?"
+  },
+  {
+   "id": "paraphrase-t01-09",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "household repairs",
+   "fact_sentence": "I fixed the running toilet by replacing the flange",
+   "key": "the flange",
+   "exact_query": "Did replacing the flange fix the running toilet?",
+   "paraphrase_query": "What plumbing component stopped the water wastage in the bathroom?"
+  },
+  {
+   "id": "paraphrase-t02-00",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "camera equipment",
+   "fact_sentence": "My Nikon D850 has been my trusted companion for five years.",
+   "key": "D850",
+   "exact_query": "How long have you had your Nikon D850?",
+   "paraphrase_query": "What camera have you been using for around half a decade?"
+  },
+  {
+   "id": "paraphrase-t02-01",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "film photography",
+   "fact_sentence": "I shot an entire roll of Kodak Portra 400 during my trip to Portugal.",
+   "key": "Kodak Portra 400",
+   "exact_query": "What film stock did you use in Portugal?",
+   "paraphrase_query": "Which photographic film did you use while traveling?"
+  },
+  {
+   "id": "paraphrase-t02-02",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "aperture settings",
+   "fact_sentence": "I always shoot at f/1.8 for that beautiful bokeh effect.",
+   "key": "f/1.8",
+   "exact_query": "What aperture do you use for bokeh?",
+   "paraphrase_query": "What opening do you prefer for shallow depth of field?"
+  },
+  {
+   "id": "paraphrase-t02-03",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "landscape photography",
+   "fact_sentence": "The sunrise at Machu Picchu produced the most incredible golden hour light.",
+   "key": "Machu Picchu",
+   "exact_query": "Where did you capture that golden hour shot?",
+   "paraphrase_query": "What ancient Incan site provided those stunning morning photographs?"
+  },
+  {
+   "id": "paraphrase-t02-04",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "wildlife photography",
+   "fact_sentence": "I used a 1/1000 second shutter to freeze the hummingbird in flight.",
+   "key": "1/1000",
+   "exact_query": "What shutter speed freezes fast-moving birds?",
+   "paraphrase_query": "What exposure time stops a bird's wings mid-flap?"
+  },
+  {
+   "id": "paraphrase-t02-05",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "portrait photography",
+   "fact_sentence": "My 85mm portrait lens creates perfect compression for headshots.",
+   "key": "85mm",
+   "exact_query": "Which focal length works best for portraits?",
+   "paraphrase_query": "What millimeter lens flatters facial features in close-ups?"
+  },
+  {
+   "id": "paraphrase-t02-06",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "low light photography",
+   "fact_sentence": "I pushed my ISO to 6400 to capture the concert without a flash.",
+   "key": "6400",
+   "exact_query": "What ISO allowed you to shoot in low light without flash?",
+   "paraphrase_query": "What sensitivity setting compensated for dark venue conditions?"
+  },
+  {
+   "id": "paraphrase-t02-07",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "post-processing",
+   "fact_sentence": "I process all my RAW files in Capture One for its superior color grading.",
+   "key": "Capture One",
+   "exact_query": "Which software do you use for RAW processing?",
+   "paraphrase_query": "What program handles your unprocessed image files?"
+  },
+  {
+   "id": "paraphrase-t02-08",
+   "family": "paraphrase",
+   "failure": "key repeated",
+   "topic": "camera technology",
+   "fact_sentence": "I bought my first mirrorless camera back in 2018.",
+   "key": "2018",
+   "exact_query": "When did you switch to mirrorless technology?",
+   "paraphrase_query": "What year marked your transition from DSLRs?"
+  },
+  {
+   "id": "paraphrase-t02-09",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "storage equipment",
+   "fact_sentence": "I carry a 256GB card to store all my high-resolution RAW images.",
+   "key": "256GB",
+   "exact_query": "How much storage do you need for RAW photography?",
+   "paraphrase_query": "What capacity memory card holds your uncompressed photos?"
+  },
+  {
+   "id": "paraphrase-t03-00",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "family_event",
+   "fact_sentence": "My aunt's name is Aurora and she visits every summer.",
+   "key": "Aurora",
+   "exact_query": "What is my aunt's name?",
+   "paraphrase_query": "How does my relative who comes in summer go by?"
+  },
+  {
+   "id": "paraphrase-t03-01",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "family_event",
+   "fact_sentence": "We hold our annual reunion at the Blue Ridge cabin.",
+   "key": "Blue Ridge",
+   "exact_query": "Where do we have our family reunion?",
+   "paraphrase_query": "What location serves as the gathering spot for our yearly family meetup?"
+  },
+  {
+   "id": "paraphrase-t03-02",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "family_event",
+   "fact_sentence": "My grandmother has been making her famous Cinnamon bread for sixty years.",
+   "key": "Cinnamon",
+   "exact_query": "What ingredient is in my grandmother's famous bread?",
+   "paraphrase_query": "What spice flavors the traditional loaf my elderly relative prepares annually?"
+  },
+  {
+   "id": "paraphrase-t03-03",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "family_event",
+   "fact_sentence": "Our family celebrates on June 23rd with a big barbecue.",
+   "key": "June 23rd",
+   "exact_query": "When does our family have its celebration?",
+   "paraphrase_query": "What summer date marks our annual gathering with grilled food?"
+  },
+  {
+   "id": "paraphrase-t03-04",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "family_event",
+   "fact_sentence": "Our dog Willow sleeps in the living room every night.",
+   "key": "Willow",
+   "exact_query": "What is our dog's name?",
+   "paraphrase_query": "What does the family pet answer to?"
+  },
+  {
+   "id": "paraphrase-t03-05",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "family_event",
+   "fact_sentence": "Every Thanksgiving we watch movies on the Porch.",
+   "key": "Porch",
+   "exact_query": "Where do we watch movies on Thanksgiving?",
+   "paraphrase_query": "What outdoor area do we use during the holiday film tradition?"
+  },
+  {
+   "id": "paraphrase-t03-06",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "family_event",
+   "fact_sentence": "My cousin got married at the Rooftop venue in downtown.",
+   "key": "Rooftop",
+   "exact_query": "Where did my cousin have her wedding?",
+   "paraphrase_query": "What elevated location served as the setting for my relative's marriage ceremony?"
+  },
+  {
+   "id": "paraphrase-t03-07",
+   "family": "paraphrase",
+   "failure": "key repeated",
+   "topic": "family_event",
+   "fact_sentence": "My parents celebrated their Ruby anniversary last month.",
+   "key": "Ruby",
+   "exact_query": "What anniversary did my parents celebrate?",
+   "paraphrase_query": "What milestone occasion did my mother and father mark recently?"
+  },
+  {
+   "id": "paraphrase-t03-08",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "family_event",
+   "fact_sentence": "I learned to bake pie from my great-aunt Saffron.",
+   "key": "Saffron",
+   "exact_query": "Who taught me to bake pie?",
+   "paraphrase_query": "Which elderly relative passed down the pastry recipe to me?"
+  },
+  {
+   "id": "paraphrase-t03-09",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "family_event",
+   "fact_sentence": "We always exchange ornaments on the Terrace each December.",
+   "key": "Terrace",
+   "exact_query": "Where do we exchange ornaments?",
+   "paraphrase_query": "What outdoor space serves as our holiday ornament exchange location?"
+  },
+  {
+   "id": "paraphrase-t04-00",
+   "family": "paraphrase",
+   "failure": "key repeated",
+   "topic": "gardening",
+   "fact_sentence": "I grew Cherokee Purple tomatoes last summer.",
+   "key": "Cherokee Purple",
+   "exact_query": "What variety of tomatoes did you grow last summer?",
+   "paraphrase_query": "Which heirloom type did you plant during the warm season?"
+  },
+  {
+   "id": "paraphrase-t04-01",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "gardening",
+   "fact_sentence": "I bought my pruners from the hardware store on Maple Street.",
+   "key": "Maple Street",
+   "exact_query": "Where did you buy your pruners?",
+   "paraphrase_query": "At which location was the cutting tool purchased?"
+  },
+  {
+   "id": "paraphrase-t04-02",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "gardening",
+   "fact_sentence": "I feed my tomatoes with a 5-10-10 fertilizer every two weeks.",
+   "key": "5-10-10",
+   "exact_query": "What nutrient mixture do you use for your tomatoes?",
+   "paraphrase_query": "What feeding regimen does your vegetable patch receive?"
+  },
+  {
+   "id": "paraphrase-t04-03",
+   "family": "paraphrase",
+   "failure": "key not in sentence",
+   "topic": "gardening",
+   "fact_sentence": "My vegetable bed measures 4 feet by 8 feet.",
+   "key": "4x8",
+   "exact_query": "What are the dimensions of your vegetable bed?",
+   "paraphrase_query": "What size is your rectangular growing area?"
+  },
+  {
+   "id": "paraphrase-t04-04",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "gardening",
+   "fact_sentence": "I added worm castings to improve my soil.",
+   "key": "worm castings",
+   "exact_query": "What did you add to improve your soil?",
+   "paraphrase_query": "What organic amendment enhances earth quality?"
+  },
+  {
+   "id": "paraphrase-t04-05",
+   "family": "paraphrase",
+   "failure": "key not in sentence",
+   "topic": "gardening",
+   "fact_sentence": "I planted a rare rainbow rose in 2021.",
+   "key": "彩虹玫瑰",
+   "exact_query": "What unusual rose variety did you plant in 2021?",
+   "paraphrase_query": "Which multicolored flower was added during that year?"
+  },
+  {
+   "id": "paraphrase-t04-06",
+   "family": "paraphrase",
+   "failure": "key repeated",
+   "topic": "gardening",
+   "fact_sentence": "I planted 15 sunflower seeds in the backyard.",
+   "key": "15",
+   "exact_query": "How many sunflower seeds did you plant in the backyard?",
+   "paraphrase_query": "What quantity of flower seeds were positioned in the rear outdoor area?"
+  },
+  {
+   "id": "paraphrase-t04-07",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "gardening",
+   "fact_sentence": "My garden fork is a Spear & Jackson with a wooden handle.",
+   "key": "Spear & Jackson",
+   "exact_query": "What brand is your garden fork?",
+   "paraphrase_query": "Which manufacturer makes the tool with the timber grip?"
+  },
+  {
+   "id": "paraphrase-t04-08",
+   "family": "paraphrase",
+   "failure": "key repeated",
+   "topic": "gardening",
+   "fact_sentence": "I reserve plot number 7 at the community garden.",
+   "key": "7",
+   "exact_query": "Which plot number do you reserve at the community garden?",
+   "paraphrase_query": "What assigned space is held at the neighbourhood growing area?"
+  },
+  {
+   "id": "paraphrase-t04-09",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "gardening",
+   "fact_sentence": "I planted my basil seeds 1 inch deep in the herb pot.",
+   "key": "1 inch",
+   "exact_query": "How deep did you plant your basil seeds?",
+   "paraphrase_query": "What is the planting depth for those herb seeds?"
+  },
+  {
+   "id": "paraphrase-t05-00",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "shopping and returns",
+   "fact_sentence": "I exchanged my receipt number 847291 for store credit at Macy's.",
+   "key": "847291",
+   "exact_query": "What receipt number did you exchange for store credit?",
+   "paraphrase_query": "Which numeric slip did you swap for in-store currency?"
+  },
+  {
+   "id": "paraphrase-t05-01",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "shopping and returns",
+   "fact_sentence": "The warranty on my Samsung refrigerator expires on March 15, 2027.",
+   "key": "March 15, 2027",
+   "exact_query": "When does your Samsung refrigerator warranty expire?",
+   "paraphrase_query": "What date marks the end of your appliance coverage?"
+  },
+  {
+   "id": "paraphrase-t05-02",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "shopping and returns",
+   "fact_sentence": "I bought the limited edition watch for $299.99 during the Black Friday sale.",
+   "key": "$299.99",
+   "exact_query": "How much did you pay for the limited edition watch?",
+   "paraphrase_query": "What was the price of the special timepiece?"
+  },
+  {
+   "id": "paraphrase-t05-03",
+   "family": "paraphrase",
+   "failure": "key repeated",
+   "topic": "shopping and returns",
+   "fact_sentence": "The UPS tracking code for my online order is 1Z999AA10123456784.",
+   "key": "1Z999AA10123456784",
+   "exact_query": "What is the UPS tracking code for your order?",
+   "paraphrase_query": "Which courier number tracks your shipment?"
+  },
+  {
+   "id": "paraphrase-t05-04",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "shopping and returns",
+   "fact_sentence": "I waited 45 days to return the headphones, but the store still accepted them.",
+   "key": "45 days",
+   "exact_query": "How long did you wait to return the headphones?",
+   "paraphrase_query": "What period elapsed before you brought back the earphones?"
+  },
+  {
+   "id": "paraphrase-t05-05",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "shopping and returns",
+   "fact_sentence": "My Amazon order arrived in damaged packaging, so I'm filing a claim.",
+   "key": "Amazon",
+   "exact_query": "Which retailer sent the damaged package?",
+   "paraphrase_query": "From which company did the harmed goods arrive?"
+  },
+  {
+   "id": "paraphrase-t05-06",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "shopping and returns",
+   "fact_sentence": "The vintage jacket I purchased has a small tear in the lining.",
+   "key": "vintage jacket",
+   "exact_query": "What item has damage to its lining?",
+   "paraphrase_query": "Which old clothing piece arrived with a rip?"
+  },
+  {
+   "id": "paraphrase-t05-07",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "shopping and returns",
+   "fact_sentence": "I used a 20% off coupon on my purchase of $150 or more.",
+   "key": "20%",
+   "exact_query": "What discount percentage did you apply to your purchase?",
+   "paraphrase_query": "What reduction rate was applied to your order?"
+  },
+  {
+   "id": "paraphrase-t05-08",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "shopping and returns",
+   "fact_sentence": "The clearance items are located in aisle 7 at the local Walmart.",
+   "key": "aisle 7",
+   "exact_query": "Where are the clearance items located at Walmart?",
+   "paraphrase_query": "In which section can discounted products be found?"
+  },
+  {
+   "id": "paraphrase-t05-09",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "shopping and returns",
+   "fact_sentence": "I ordered the ergonomic keyboard with free shipping from Best Buy.",
+   "key": "ergonomic keyboard",
+   "exact_query": "What item did you order with free shipping?",
+   "paraphrase_query": "Which computing device came with complimentary delivery?"
+  },
+  {
+   "id": "paraphrase-t06-00",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "office_work",
+   "fact_sentence": "I need to remember that the project code for the Johnson account is PROJ-2847.",
+   "key": "PROJ-2847",
+   "exact_query": "What is the project code for the Johnson account?",
+   "paraphrase_query": "Which identifier was assigned to the client work for that company?"
+  },
+  {
+   "id": "paraphrase-t06-01",
+   "family": "paraphrase",
+   "failure": "key repeated",
+   "topic": "office_work",
+   "fact_sentence": "The quarterly budget review is scheduled for March 15th in Building C, Room 112.",
+   "key": "March 15th",
+   "exact_query": "When is the quarterly budget review scheduled?",
+   "paraphrase_query": "What date is set aside for the financial planning session?"
+  },
+  {
+   "id": "paraphrase-t06-02",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "meetings",
+   "fact_sentence": "Don't forget we have a client call at 4:15 PM, the Zoom meeting ID is 892-451-0067.",
+   "key": "892-451-0067",
+   "exact_query": "What is the Zoom meeting ID for the client call?",
+   "paraphrase_query": "Which virtual room number should I use to join that discussion?"
+  },
+  {
+   "id": "paraphrase-t06-03",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "office_work",
+   "fact_sentence": "I left the finished report on my desk, the file is named Q4_Analysis_FINAL_v3.pdf.",
+   "key": "Q4_Analysis_FINAL_v3.pdf",
+   "exact_query": "What is the filename of the report on the desk?",
+   "paraphrase_query": "How is that document labeled in the folder?"
+  },
+  {
+   "id": "paraphrase-t06-04",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "meetings",
+   "fact_sentence": "The conference room projector is broken, we'll need to use the backup unit in Storage Unit 7.",
+   "key": "Storage Unit 7",
+   "exact_query": "Where is the backup projector located?",
+   "paraphrase_query": "From which location should the spare display equipment be retrieved?"
+  },
+  {
+   "id": "paraphrase-t06-05",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "office_work",
+   "fact_sentence": "My employee ID for the new HR portal is EMP-55291, I keep forgetting it.",
+   "key": "EMP-55291",
+   "exact_query": "What is my employee ID for the HR portal?",
+   "paraphrase_query": "Which personal identifier do I need to access the people systems?"
+  },
+  {
+   "id": "paraphrase-t06-06",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "meetings",
+   "fact_sentence": "We're hosting the vendor summit at the downtown location, the address is 742 Commerce Street.",
+   "key": "742 Commerce Street",
+   "exact_query": "What is the address for the vendor summit?",
+   "paraphrase_query": "Where in the city center will that supplier event take place?"
+  },
+  {
+   "id": "paraphrase-t06-07",
+   "family": "paraphrase",
+   "failure": "key repeated",
+   "topic": "office_work",
+   "fact_sentence": "The access code for the executive floor is 1847, don't share it with anyone.",
+   "key": "1847",
+   "exact_query": "What is the access code for the executive floor?",
+   "paraphrase_query": "Which security number opens the senior leadership level?"
+  },
+  {
+   "id": "paraphrase-t06-08",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "meetings",
+   "fact_sentence": "Our department lunch is next Friday at noon at the new Italian place on Fifth, called Bella Napoli.",
+   "key": "Bella Napoli",
+   "exact_query": "What is the name of the restaurant for the department lunch?",
+   "paraphrase_query": "Which eatery was selected for the team meal next week?"
+  },
+  {
+   "id": "paraphrase-t06-09",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "office_work",
+   "fact_sentence": "I promised to send the contract amendment by EOD today, our reference number is CTR-2024-0083.",
+   "key": "CTR-2024-0083",
+   "exact_query": "What is the reference number for the contract amendment?",
+   "paraphrase_query": "Which case code needs to be delivered before closing time?"
+  },
+  {
+   "id": "paraphrase-t07-00",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "prescription medication",
+   "fact_sentence": "I take Metformin 500mg twice daily for my diabetes.",
+   "key": "500mg",
+   "exact_query": "What dosage of Metformin do you take?",
+   "paraphrase_query": "What is the strength of the medication you use for blood sugar?"
+  },
+  {
+   "id": "paraphrase-t07-01",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "doctor appointment",
+   "fact_sentence": "My cardiologist Dr. Martinez scheduled me for a stress test next Tuesday.",
+   "key": "Martinez",
+   "exact_query": "Which doctor scheduled you for a stress test?",
+   "paraphrase_query": "What specialist ordered your cardiac examination?"
+  },
+  {
+   "id": "paraphrase-t07-02",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "medical diagnosis",
+   "fact_sentence": "The MRI showed a small herniated disc in my L4-L5 region.",
+   "key": "L4-L5",
+   "exact_query": "Where is the herniated disc located?",
+   "paraphrase_query": "Which spine area has the disc problem?"
+  },
+  {
+   "id": "paraphrase-t07-03",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "hospital/medical facility",
+   "fact_sentence": "I'm going to the Cleveland Clinic for my upcoming surgery.",
+   "key": "Cleveland Clinic",
+   "exact_query": "Where are you having your surgery?",
+   "paraphrase_query": "What medical center will perform your procedure?"
+  },
+  {
+   "id": "paraphrase-t07-04",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "symptom/condition",
+   "fact_sentence": "I've been dealing with chronic migraines that happen about three times per week.",
+   "key": "three times per week",
+   "exact_query": "How often do your migraines occur?",
+   "paraphrase_query": "What is the frequency of your severe headaches?"
+  },
+  {
+   "id": "paraphrase-t07-05",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "follow-up care",
+   "fact_sentence": "I need to schedule a follow-up with my oncologist in six months.",
+   "key": "six months",
+   "exact_query": "When do you need to see your oncologist again?",
+   "paraphrase_query": "What is the interval before your next cancer specialist visit?"
+  },
+  {
+   "id": "paraphrase-t07-06",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "vaccination",
+   "fact_sentence": "My primary care doctor recommended I get the new RSV vaccine this fall.",
+   "key": "RSV",
+   "exact_query": "Which vaccine did your doctor recommend?",
+   "paraphrase_query": "What immunization was suggested for respiratory protection?"
+  },
+  {
+   "id": "paraphrase-t07-07",
+   "family": "paraphrase",
+   "failure": "key not in sentence",
+   "topic": "family medical history",
+   "fact_sentence": "My sister was diagnosed with breast cancer at age 42.",
+   "key": "42",
+   "exact_query": "At what age was your sister diagnosed with breast cancer?",
+   "paraphrase_query": "How old was your sibling when cancer was found?"
+  },
+  {
+   "id": "paraphrase-t07-08",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "medical billing",
+   "fact_sentence": "My insurance covered most of the colonoscopy but I still owed a $200 copay.",
+   "key": "$200",
+   "exact_query": "How much did you owe for the colonoscopy?",
+   "paraphrase_query": "What was your out-of-pocket expense for the intestinal examination?"
+  },
+  {
+   "id": "paraphrase-t07-09",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "medical examination",
+   "fact_sentence": "The dermatologist found a suspicious mole during my full-body skin check.",
+   "key": "full-body skin check",
+   "exact_query": "What type of examination revealed the suspicious mole?",
+   "paraphrase_query": "What screening detected the concerning skin lesion?"
+  },
+  {
+   "id": "paraphrase-t08-00",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "doctor visit",
+   "fact_sentence": "I see Dr. Martinez every three months for my blood pressure checks.",
+   "key": "Dr. Martinez",
+   "exact_query": "Who is the doctor you see for blood pressure?",
+   "paraphrase_query": "Which physician monitors your cardiovascular readings regularly?"
+  },
+  {
+   "id": "paraphrase-t08-01",
+   "family": "paraphrase",
+   "failure": "key repeated",
+   "topic": "doctor visit",
+   "fact_sentence": "My total bill after insurance was $247 for the office visit.",
+   "key": "$247",
+   "exact_query": "How much did you pay after insurance?",
+   "paraphrase_query": "What was the out-of-pocket expense for that consultation?"
+  },
+  {
+   "id": "paraphrase-t08-02",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "doctor visit",
+   "fact_sentence": "I need to schedule my colonoscopy screening before my 50th birthday.",
+   "key": "50th birthday",
+   "exact_query": "When do you need to have your colonoscopy?",
+   "paraphrase_query": "By what age must the diagnostic procedure be completed?"
+  },
+  {
+   "id": "paraphrase-t08-03",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "doctor visit",
+   "fact_sentence": "The doctor prescribed me a 10-day course of Amoxicillin for my infection.",
+   "key": "10-day",
+   "exact_query": "How long is your antibiotic treatment?",
+   "paraphrase_query": "What is the duration of the medication regimen you received?"
+  },
+  {
+   "id": "paraphrase-t08-04",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "doctor visit",
+   "fact_sentence": "My MRI is scheduled for next Tuesday at 2pm at City General Hospital.",
+   "key": "next Tuesday",
+   "exact_query": "When is your MRI appointment?",
+   "paraphrase_query": "On which day does the imaging test take place?"
+  },
+  {
+   "id": "paraphrase-t08-05",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "doctor visit",
+   "fact_sentence": "I received the Fluzone vaccine shot during my annual physical exam.",
+   "key": "Fluzone",
+   "exact_query": "Which flu vaccine did you get?",
+   "paraphrase_query": "What influenza immunization was administered?"
+  },
+  {
+   "id": "paraphrase-t08-06",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "doctor visit",
+   "fact_sentence": "My cholesterol level dropped to 180 after six months on the new diet.",
+   "key": "180",
+   "exact_query": "What is your current cholesterol number?",
+   "paraphrase_query": "What lipid reading resulted from dietary changes?"
+  },
+  {
+   "id": "paraphrase-t08-07",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "doctor visit",
+   "fact_sentence": "The dermatologist used liquid nitrogen to remove the suspicious mole on my arm.",
+   "key": "liquid nitrogen",
+   "exact_query": "What did the dermatologist use to treat the mole?",
+   "paraphrase_query": "Which freezing compound treated the skin growth?"
+  },
+  {
+   "id": "paraphrase-t08-08",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "doctor visit",
+   "fact_sentence": "I was told to avoid heavy lifting for two weeks after the back surgery.",
+   "key": "two weeks",
+   "exact_query": "How long must you refrain from heavy lifting?",
+   "paraphrase_query": "What period of recovery was prescribed post-operation?"
+  },
+  {
+   "id": "paraphrase-t08-09",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "doctor visit",
+   "fact_sentence": "My glucose monitor is the FreeStyle Libre model that scans automatically.",
+   "key": "FreeStyle Libre",
+   "exact_query": "Which glucose monitoring device do you use?",
+   "paraphrase_query": "What continuous scanning blood sugar device do you have?"
+  },
+  {
+   "id": "paraphrase-t09-00",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "music_piece",
+   "fact_sentence": "I've been working on the Chopin Ballade No. 1 for three months now",
+   "key": "Chopin Ballade No. 1",
+   "exact_query": "What piece have you been working on?",
+   "paraphrase_query": "Which composition has occupied your practice sessions recently?"
+  },
+  {
+   "id": "paraphrase-t09-01",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "instructor",
+   "fact_sentence": "My trumpet teacher is Professor Henderson",
+   "key": "Professor Henderson",
+   "exact_query": "Who is your trumpet teacher?",
+   "paraphrase_query": "Who instructs you on your brass instrument?"
+  },
+  {
+   "id": "paraphrase-t09-02",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "location",
+   "fact_sentence": "I practice in the basement studio on Elm Street",
+   "key": "Elm Street",
+   "exact_query": "Where do you practice?",
+   "paraphrase_query": "In what location do you rehearse?"
+  },
+  {
+   "id": "paraphrase-t09-03",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "tempo",
+   "fact_sentence": "I set my metronome to 138 BPM for that passage",
+   "key": "138 BPM",
+   "exact_query": "What metronome tempo do you use?",
+   "paraphrase_query": "At what speed do you set your tempo device?"
+  },
+  {
+   "id": "paraphrase-t09-04",
+   "family": "paraphrase",
+   "failure": "key repeated",
+   "topic": "instrument",
+   "fact_sentence": "My piano is a 1987 Steinway Model B",
+   "key": "Steinway Model B",
+   "exact_query": "What piano do you have?",
+   "paraphrase_query": "Which grand instrument do you own?"
+  },
+  {
+   "id": "paraphrase-t09-05",
+   "family": "paraphrase",
+   "failure": "paraphrase query reaches its sentence lexically",
+   "topic": "duration",
+   "fact_sentence": "I practiced for 4.5 hours yesterday",
+   "key": "4.5 hours",
+   "exact_query": "How long did you practice yesterday?",
+   "paraphrase_query": "What was the length of your most recent practice session?"
+  },
+  {
+   "id": "paraphrase-t09-06",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "performance_date",
+   "fact_sentence": "I'm preparing for my spring recital on May 15th",
+   "key": "May 15th",
+   "exact_query": "When is your recital?",
+   "paraphrase_query": "What date is your upcoming performance?"
+  },
+  {
+   "id": "paraphrase-t09-07",
+   "family": "paraphrase",
+   "failure": "key repeated",
+   "topic": "technique",
+   "fact_sentence": "I've mastered the D minor scale at 200 BPM",
+   "key": "D minor",
+   "exact_query": "What scale have you mastered?",
+   "paraphrase_query": "Which musical key have you conquered at high speed?"
+  },
+  {
+   "id": "paraphrase-t09-08",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "method_book",
+   "fact_sentence": "My Suzuki Method books are from Volume 4",
+   "key": "Volume 4",
+   "exact_query": "What volume of Suzuki books are you using?",
+   "paraphrase_query": "Which level of your beginner repertoire series are you studying?"
+  },
+  {
+   "id": "paraphrase-t09-09",
+   "family": "paraphrase",
+   "failure": null,
+   "topic": "music_piece",
+   "fact_sentence": "I'm working on the Paganini Caprice No. 24",
+   "key": "Paganini Caprice No. 24",
+   "exact_query": "What are you currently practicing?",
+   "paraphrase_query": "Which challenging showpiece are you learning?"
   }
  ],
  "implicit": [

@@ -420,18 +420,24 @@ def sentence_of(family, item):
             'absent': item.get('near_miss_sentence')}.get(family) or item['fact_sentence']
 
 
-def select(items, chats, token_set=tokens):
-    """First passing items per family in design order. An item leaks when a message of another selected chat
-    carries its key and at least two of its sentence's other search tokens of four or more characters
-    (amendment 2); a leaking item is
-    banned and the next one taken, until none leaks."""
-    cache = {}
-
-    def message_tokens(text):
+def restates(family, item, messages, token_set, cache):
+    """A message carries one of the item's keys and at least two of its sentence's other search tokens of four or
+    more characters (amendment 2): enough to tie the message to the item's fact, not merely to its value."""
+    def words(text):
         if text not in cache:
             cache[text] = token_set(text)
         return cache[text]
+    for key in keys_of(family, item):
+        own = {t for t in words(sentence_of(family, item)) - words(key) if len(t) >= 4}
+        if any(contains(m['content'], key) and len(own & words(m['content'])) >= 2 for m in messages):
+            return True
+    return False
 
+
+def select(items, chats, token_set=tokens):
+    """First passing items per family in design order. An item leaks when another selected chat restates it; a
+    leaking item is banned and the next one taken, until none leaks."""
+    cache = {}
     candidates = {f: [i for i in items.get(f, []) if i['failure'] is None and usable(f, i, chats)]
                   for f in PRIMARY + ['absent']}
     banned, dropped = set(), []
@@ -439,15 +445,9 @@ def select(items, chats, token_set=tokens):
         selected = {f: [i for i in candidates[f] if i['id'] not in banned][:PER_FAMILY if f in PRIMARY else ABSENT]
                     for f in candidates}
         owner = {cid: i['id'] for f, chosen in selected.items() for i in chosen for cid in chat_ids(f, i)}
-        leaks = set()
-        for f, chosen in selected.items():
-            for item in chosen:
-                for key in keys_of(f, item):
-                    own = {t for t in token_set(sentence_of(f, item)) - token_set(key) if len(t) >= 4}
-                    for cid, iid in owner.items():
-                        if iid != item['id'] and any(contains(m['content'], key) and len(
-                                own & message_tokens(m['content'])) >= 2 for m in chats[cid]['messages']):
-                            leaks.add(item['id'])
+        leaks = {item['id'] for f, chosen in selected.items() for item in chosen
+                 if any(iid != item['id'] and restates(f, item, chats[cid]['messages'], token_set, cache)
+                        for cid, iid in owner.items())}
         if not leaks:
             return selected, dropped
         banned |= leaks
@@ -459,10 +459,11 @@ def assemble(output=OUT):
     chats = {r['id']: r for r in jsonl(output / 'conversations.jsonl') if 'messages' in r}
     rng = random.Random(SEED + 2)
     selected, dropped = select(items, chats)
-    keys = {k for f, chosen in selected.items() for i in chosen for k in keys_of(f, i)}
+    # Amendment 3: a filler chat is dropped when it restates a selected item, by the amendment-2 test.
+    cache = {}
     filler = sorted((c for c in chats.values() if c['id'].startswith('filler-')
-                     and not any(contains(' '.join(m['content'] for m in c['messages']), k) for k in keys)),
-                    key=lambda c: c['id'])
+                     and not any(restates(f, i, c['messages'], tokens, cache)
+                                 for f, chosen in selected.items() for i in chosen)), key=lambda c: c['id'])
     # Placement ranks in [0, 1); a correction's newer chat sits at least a quarter of the stream after the older.
     placed = []
     for family, chosen in selected.items():

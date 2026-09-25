@@ -130,3 +130,10 @@ Committed after the first `assemble` attempt failed, and before any synthesis, p
 - **Caps.** Paraphrase becomes 160, implicit 120 and filler 240, so every passing item and filler topic gets a chat.
 - Selection order, checks, arms, controls, power and the decision rule are unchanged. If a family still ends below 70, the report states its size, and the power is recomputed at the realized primary count.
 
+## Amendment 3, before any synthesis or retrieval
+
+Committed after the second `assemble` attempt failed, and before any synthesis, phrase call or ranking. That attempt filled every family (exact, paraphrase, implicit and correction 70 each, absent 30), but the stream was 724 messages short of filler. Of 180 filler chats, 138 were dropped because some message contained a selected key; most of those keys are generic values that the chat does not tie to the item's fact.
+
+- A filler chat is now dropped only when it restates a selected item under the amendment-2 test: a message carrying the key and at least two of the item sentence's other long search tokens.
+- Nothing else changes.
+

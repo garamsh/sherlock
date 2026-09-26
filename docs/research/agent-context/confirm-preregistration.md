@@ -98,3 +98,19 @@ Committed before the first paid call of this run. SHA-256 of the inputs:
 - `score.py`: `b359466ad07c5d8dd30ea2322baf4154c3b166e001698f2351be214ae7c3a6cd`
 - `corpus.py`: `34eab91fa60042b5de4be530becc6ffc5b9f3c68bb60e423d0fe9815391d529a`
 - harness binaries: S `a825c8d1330884e8c8a474f818a6f3d9c84e46d0c18a940e5b4fba4612447def`, A `1573391ab96f808c8a02cbf80a4a5f9e66eb95622177ce2733374c26ce074869`, built from S `2e28064` and A `61f4e4c` with `harness/` from `8cb0b1b`.
+
+## Amendment 1 (2026-09-26, before resuming)
+
+Committed after collection stopped and before any further run call. It changes only collection; the arms, harness, episodes, oracle, metrics, controls, decision rule and budget stand.
+
+- **What happened.** Collection started at 03:52 UTC. From about 04:05 UTC every non-cached request got HTTP 429 "Token Plan usage limit reached: Upgrade your Token Plan or purchase Credits for more usage. (2056)". That is a quota on the key, not a request rate. Collection was stopped at 04:23 UTC, with USD 0.3010 spent.
+  - S had recorded 50 episodes, 25 of them failed on that 429 during seeding.
+  - A had recorded 51 episodes, 26 of them failed.
+  - A failed seed produces no probe.
+- **Probes.** One minimal request a minute through the ledger, then one every 15 minutes: 429 at 04:28 and 04:45 UTC, 200 at 05:00:53 UTC.
+- **Re-runs.** Every episode whose seeding or turn failed on HTTP 429, 5xx or a transport error is re-run from scratch. It is re-run as often as that takes while the key answers, and only its completed run is scored, so it is counted once.
+  - The failed records move to `results-attempt1.jsonl` and are not scored.
+  - The report gives the number of re-run episodes per arm.
+  - This replaces §Collection's "re-run once".
+- **Concurrency.** Two episodes at a time per arm, not four.
+- **If the usage limit returns,** collection stops again and the key is probed every 15 minutes until 10:30 UTC. If no probe succeeds by then, the run is reported incomplete and the verdict is undetermined.

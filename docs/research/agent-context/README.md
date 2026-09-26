@@ -1,6 +1,6 @@
 # How agents understand input and compose context
 
-Records the source survey for issue #860: how five established agents understand a user's input and assemble their context, and the candidate structures for sherlock's query understanding and full-context layer that follow from it. It makes no production decision. §Experiment plan was the input to issue #862's preregistration; §Experiment (issue #862) and §Confirmatory run (issue #864) record the runs.
+Records the source survey for issue #860: how five established agents understand a user's input and assemble their context, and the candidate structures for sherlock's query understanding and full-context layer that follow from it. It makes no production decision. §Experiment plan was the input to issue #862's preregistration; §Experiment (issue #862), §Confirmatory run (issue #864) and §Unmixed-batch run (issue #870) record the runs.
 
 ## Contents
 - Question and method
@@ -11,6 +11,7 @@ Records the source survey for issue #860: how five established agents understand
 - Experiment plan
 - Experiment (issue #862)
 - Confirmatory run (issue #864)
+- Unmixed-batch run (issue #870)
 - Position on #810 and #812
 - Limits
 
@@ -513,6 +514,79 @@ As §Experiment (issue #862) §Reproduction, with these differences:
 - the base store is #862's (SHA-256 in the preregistration);
 - runs pass `-keep-stores <dir>`, and the proxy starts from `evidence/stage2/ledger/synthesis-cache.jsonl`;
 - scoring is `python3 docs/research/agent-context/score.py confirm docs/research/agent-context/evidence/confirm docs/research/agent-context/confirm-episodes.json`, which regenerates `scores.json` unchanged.
+
+## Unmixed-batch run (issue #870)
+
+A third run of A against S, on a corpus the oracle control fits, preregistered in [unmixed-preregistration.md](unmixed-preregistration.md) (`42cd349`, before the first paid call). Evidence is under [evidence/unmixed/](evidence/unmixed/). Earlier evidence is unchanged.
+
+### What changed from #864
+
+- **Arms.** S is `d045c0f` (origin/dev; production code as `4e84d2c`). A is `61f4e4c` on `sauce-git/feat/agent-context-arm-a`, which draft PR #867 carries. The harness is `aa56020`.
+- **One corpus rule.** Every evidence statement's exchange fills one four-message batch alone.
+  - A seeded statement is followed by a same-topic pair.
+  - A live statement is closed by an `align` step, which seeds as many same-topic messages as the batch needs, however many messages the turn stored. The align steps replace the pad pairs that followed live turns in #864.
+- **Checks of the rule.** `corpus_test.py` checks it statically. At run time the harness checks every stored evidence batch (`unmixedBatch`), and that is a new control.
+- **Seed** 870; families and sizes as #864. Two workers per arm, with #864's re-run rule adopted up front.
+
+### Collection
+
+- One ledgered probe at 09:46:50 UTC returned 200 ([probes](evidence/unmixed/ledger/probes.log)).
+- Collection ran from 09:47 to 11:45 UTC. The key's quota never stopped it: 21 HTTP 429s, all recovered within their retries.
+- **No episode failed on 429, 5xx or a transport error, so none was re-run** (S 0, A 0).
+- Three S episodes (`I-09`, `I-31`, `I-37`) ended their rule turn on a malformed terminal call. The rule was never stored, and the three count as not applied.
+
+### Controls
+
+| Control | Required | S | A |
+|---|---|---:|---:|
+| Oracle reach, source level, of 280 primary | 266 | 277 | 279 |
+| Unmixed evidence batches, of the evidence stored | all | 277 of 277 | 280 of 280 |
+| `memory_search` called in G probes, of 70 | 14 | — | 23 |
+| Note non-empty after the I rule turn, of 70 | 35 | — | 62 |
+| Every mutation breaks a test ([mutation](evidence/unmixed/mutation.txt)) | 13 of 13 | pass | pass |
+
+Every control passes.
+
+**Oracle misses.**
+- S's 3 are the three I episodes whose rule was never stored.
+- A's one is a ranking miss. In `I-36` the batch is unmixed and its summary states the rule ("all future replies must start with the word 'Ahoy!'"), but it also recounts other content and ranks 49th.
+- No miss is a reworded summary.
+
+### Results
+
+*Applied* with its Wilson 95% interval, then *reached* and *inspected*:
+
+| Family (n) | S | A |
+|---|---|---|
+| F (70) | 70 [0.95, 1.00]; 70, 1 | 70 [0.95, 1.00]; 70, 0 |
+| G (70) | 31 [0.33, 0.56]; 32, 2 | 53 [0.65, 0.84]; 54, 5 |
+| I (70) | 1 [0.00, 0.08]; 4, 0 | 19 [0.18, 0.39]; 57, 0 |
+| K (70) | 69 [0.92, 1.00]; 69, 0 | 70 [0.95, 1.00]; 70, 0 |
+| **primary (280)** | **171 [0.55, 0.67]** | **212 [0.70, 0.80]** |
+| E (30) | 27 [0.74, 0.97] | 27 [0.74, 0.97] |
+| N, abstained (30) | 15 [0.33, 0.67] | 17 [0.39, 0.73] |
+| R (30) | 18 [0.42, 0.75] | 26 [0.70, 0.95] |
+
+- **A against S.** Over the 280 primary probes, exact McNemar: A only 42, S only 1, difference +0.146, p = 1.0e-11.
+- **Guardrails hold.** No primary family loses to S; E is 0 and N +2 for A; no cancelled case is resumed where S did not resume it.
+- **R by case** (continue, changed, cancelled): S 10, 8, 0; A 10, 10, 6.
+- **Layer fidelity (K).** A's note stated the obsolete value without the current one in 0 of 70 episodes, and the current value in 69.
+- **Unmixed batches help S too.** Its G rose from 4 (#864) to 31 of 70 and its K from 46 to 69, because a mid holding only the evidence ranks higher. A's gain narrows accordingly, but stays in G (+22) and I (+18).
+- **Cost.** USD 4.8412 in total: S 2.3839 and A 2.4572, USD 0.0038 and 0.0039 per live turn, plus USD 0.0001 of probe. The ledger holds 22,572 entries: 17,457 cached syntheses, 21 HTTP 429s and 82 syntheses re-requested for lacking a `memory_summary` call.
+
+### Verdict
+
+**Valid**, under the preregistered rule. Every control passes and every guardrail holds. A applies the evidence more often than S on the primary families: 212 against 171 of 280, A only 42 against S only 1, p = 1.0e-11.
+
+This is the result the preregistered rule required for adopting A: the change in draft PR #867, whose merge waited on it. Across the three runs A led by 85, 70 and 41 discordant probes. The first two were undetermined because their oracle controls measured the corpus, not the arms.
+
+### Reproduction
+
+As §Confirmatory run (issue #864) §Reproduction, with these differences:
+- the corpus is `corpus.py unmixed`;
+- the binaries are built from `d045c0f` (S) and `61f4e4c` (A) with `harness/` from `aa56020`;
+- the proxy starts from `evidence/confirm/ledger/synthesis-cache.jsonl`;
+- scoring is `python3 docs/research/agent-context/score.py confirm docs/research/agent-context/evidence/unmixed docs/research/agent-context/unmixed-episodes.json`, which regenerates `scores.json` unchanged.
 
 ## Position on #810 and #812
 

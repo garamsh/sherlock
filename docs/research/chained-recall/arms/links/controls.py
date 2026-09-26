@@ -2,8 +2,9 @@
 
     python3 docs/research/chained-recall/arms/links/controls.py [ledger calls.jsonl]
 
-Reads evidence/offline/L/<setting>/ as study.Offline writes them and
-writes evidence/controls.json beside this file. The thresholds are the
+Reads evidence/offline/<setting>/ beside this file, the records study.Offline
+writes under the study's evidence/offline/L/, and writes evidence/controls.json
+beside this file. The thresholds are the
 ones README.md §Controls fixed before the first offline run. With a ledger,
 it also pairs each entities-b4 call with its batch's recorded synthesis.
 """
@@ -79,7 +80,7 @@ def added_tokens(ledger, base_usage, n=4):
 def main():
     corpus = json.load(open(STUDY / "corpus.json"))
     result = {}
-    for setting in sorted((STUDY / "evidence" / "offline" / "L").iterdir()):
+    for setting in sorted((HERE / "evidence" / "offline").iterdir()):
         if not (setting / "probes.jsonl").exists():
             continue
         result[setting.name] = controls(corpus, json.load(open(setting / "built.json")),

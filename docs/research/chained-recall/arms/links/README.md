@@ -58,9 +58,88 @@ Fixed before the first offline run. A setting whose control fails is reported as
 
 ## Results
 
-Pending: the shared stores need #874's stream synthesis.
+Measured on 2026-09-27 at the revision this file is committed with.
+
+- **Stores.** The shared stores were built with `harness build -batch 4|8` into a scratch directory, from #874's recorded stream syntheses. They deliver S's committed records exactly: `diff` of `evidence/offline/S/b{4,8}/{probes,oracle}.jsonl` at `4590259` against S run on these stores, without the `seconds` field, shows no difference.
+- **Records.** They are in `evidence/offline/<setting>/`, as `study.Offline` writes them under the study's `evidence/offline/L/`. The figures below are from `score.py offline` run over them beside S's committed records, and from `controls.py` (`evidence/controls.json`).
+
+### Controls
+
+| Setting | Mids with entities | Seeded and walked | Walk delivered beyond similar | Also beyond the seeds' mids | Oracle | Passed |
+|---|---:|---:|---:|---:|---:|---|
+| `b4` (rule) | 88.1% | 150/150 | 150/150 | 28 | 405/405 | no: entities under 90% |
+| `b8` (rule) | 96.3% | 150/150 | 150/150 | 31 | 401/405 | yes |
+| `b4-model` | 97.4% | 150/150 | 142/150 | 108 | 405/405 | yes |
+
+- The `b4` setting fails its entity control, so its reach is not read as L's result. It is reported below for comparison with `b4-model`.
+- `b4-model`: batch 509–512 has no entities. Its one real call returned `entities` as a string. The shared proxy caches a well-formed `memory_summary` call even when this study's `entities` field has the wrong type, so every retry returned the same answer and no retry could recover it. The ledger rows are arm `L`, episode `b4-00128`, 2026-09-26 15:44:35Z to 16:29:26Z. The #874 harness fix at `367d0b1` covers only the summary's bound. The mid stays unlinked, which is 1 of 1,624. The batch lies in the base, and no chain hop or guard evidence is in it (`corpus.json`).
+
+### Chain reach, offline
+
+A chain is reached when every hop's mid is delivered with both of the hop's entities stated (`../../score.py`). "Clean" is the 114-chain set #874's live preregistration fixes.
+
+| Arm/setting | k ≥ 2 | Clean | k = 1 | k = 2 | k = 3 | vs S b4: arm only / S only, Holm p |
+|---|---:|---:|---:|---:|---:|---|
+| S b4 | 0/150 | 0/114 | 29/30 | 0/75 | 0/75 | — |
+| S b8 | 2/150 | 0/114 | 26/30 | 2/75 | 0/75 | 2 / 0, 0.5 |
+| L `b4` (rule) | 23/150 | 18/114 | 30/30 | 23/75 | 0/75 | 23 / 0, 7.2e-7 |
+| L `b8` (rule) | 10/150 | 5/114 | 30/30 | 10/75 | 0/75 | 10 / 0, 0.0039 |
+| L `b4-model` | 74/150 | 51/114 | 30/30 | 53/75 | 21/75 | 74 / 0, 4.2e-22 |
+
+The Holm correction here runs over these four comparisons only. #874's scoring of all arms together replaces it.
+
+### Per hop and per family (hops reached, in order)
+
+| Family | S b4 | L `b4` | L `b8` | L `b4-model` |
+|---|---|---|---|---|
+| C1 (30) | 29 | 30 | 30 | 30 |
+| C2 (50) | 46, 0 | 47, 23 | 50, 10 | 50, 50 |
+| C3 (50) | 43, 0, 2 | 50, 4, 1 | 50, 5, 1 | 50, 37, 17 |
+| IC2 (25) | 10, 0 | 25, 0 | 21, 0 | 25, 3 |
+| IC3 (25) | 21, 0, 0 | 25, 0, 0 | 12, 0, 0 | 25, 17, 4 |
+
+Guards, reached of 20: E 17 and K 16 at batch 4 for S and every L setting. At batch 8, S reaches E 11 and K 14, and L reaches E 12 and K 14. When a guard query names no stored entity, L's recall is S's recall.
+
+### Compression and context
+
+| Arm/setting | Stored chars per source char | Context chars per turn |
+|---|---:|---:|
+| S b4 | 0.705 | 3,498 |
+| S b8 | 0.466 | 4,009 |
+| L `b4` | 0.740 | 3,840 |
+| L `b8` | 0.497 | 4,379 |
+| L `b4-model` | 0.782 | 3,576 |
+
+- L delivers the same number of mids as S. Its context differs only by which mids fill the slots.
+- It stores the entity names on top of S's summaries: 4,245 links over 2,335 names at `b4`, and 6,419 links over 4,694 names at `b4-model` (`built.json`).
+
+### Added synthesis tokens (`b4-model`)
+
+- Paired with each batch's recorded synthesis over all 1,624 batches, the extended call wrote a mean of 62.8 more output tokens (median 54) and read 61.0 more input tokens (median 61) (`controls.py` over the proxy's `evidence/ledger/calls.jsonl`, 2,753 rows, SHA-256 `4eb364c0…211f`).
+- The phase used 773,840 input and 568,626 output tokens over 1,661 ledgered attempts, 1,632 of them answered by the provider.
+
+### Where rule entities lose hops
+
+At `b4` the trace's seeds show common words as entities: "build" and "rodend" for C3-01, and "kidrar", "note", "office" and "write" for IC2-01 (`evidence/offline/b4/probes.jsonl`). A sentence-initial common word in a summary becomes a name. A seed on such a word takes one of the walk's two slots with an unrelated mid. For hop 1 of C3-01, `b4-model` recorded only "Rodend" and "Gebind Components" (`evidence/entities-b4.jsonl`, first source 6301). Its walk seeds on "rodend" alone and reaches three mids, and hop 2 reach on C3 rises from 4 to 37. C3-01 still misses hop 3, because the walk has only two slots and hop 1 takes one of them.
+
+### Production estimate, measured
+
+Non-blank, non-comment Go lines in this arm that a production port carries, with the study's tracing and the rule extractor left out:
+
+| Part | Lines |
+|---|---:|
+| The walk and graph (`walk.go` without `namesAny`) | 109 |
+| Name normalization (`entities.go` without `ruleEntities`) | 52 |
+| The entity table, written and read (`main.go` `entitySchema`, `writeEntities`, `readEntities`) | 50 |
+| Recall and search filling slots from both lists (`memory.go` `list`, `next`, `take`, with `alternate` untraced) | about 43 |
+| The extended synthesis call, over production's `Summarize` (37 against 33), plus returning entities through the store | about 15 |
+
+- The measured total is about +270 lines, against the survey's +135 to +210.
+- The survey's existing-database path, +15 to +25, is not built here.
 
 ## Limits
+
+- **Preview stores.** The shared stores were built in this worker's scratch directory, not taken from #874's. They are shown equal only through S's records.
 
 - **Rule entities are not the model's.** At `b4` and `b8` the entities come from capitalization in the recorded summaries. A name the summary writes in lowercase is missed. So is a sentence-initial word that is not a stopword, which starts a spurious entity. `b4-model` measures the model's own list at batch 4 only.
 - **Names must match exactly.** A query that names an entity differently from the summary seeds nothing. This is the failure the survey predicts from HippoRAG. The corpus reuses each entity's exact name across hops and query, so this study cannot measure that failure.

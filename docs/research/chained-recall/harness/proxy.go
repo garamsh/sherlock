@@ -20,6 +20,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"unicode/utf8"
 )
 
 // Prices are MiniMax-M2's standard rates, the ones the earlier studies used.
@@ -318,15 +319,18 @@ func backoff(n int) time.Duration {
 	return min(5*time.Second<<(n-1), time.Minute)
 }
 
-// summarized reports whether a synthesis response carries exactly one
-// memory_summary call, the only answer the production summarizer accepts.
+// summarized reports whether a synthesis response is one the production
+// summarizer accepts (internal/agent/memory/summary.go): exactly one
+// memory_summary call whose summary is not blank and holds at most 2,000
+// characters. Anything else is re-requested and never cached.
 func summarized(resp []byte) bool {
 	var doc struct {
 		Choices []struct {
 			Message struct {
 				ToolCalls []struct {
 					Function struct {
-						Name string `json:"name"`
+						Name      string `json:"name"`
+						Arguments string `json:"arguments"`
 					} `json:"function"`
 				} `json:"tool_calls"`
 			} `json:"message"`
@@ -336,7 +340,16 @@ func summarized(resp []byte) bool {
 		return false
 	}
 	calls := doc.Choices[0].Message.ToolCalls
-	return len(calls) == 1 && calls[0].Function.Name == "memory_summary"
+	if len(calls) != 1 || calls[0].Function.Name != "memory_summary" {
+		return false
+	}
+	var args struct {
+		Summary string `json:"summary"`
+	}
+	if json.Unmarshal([]byte(calls[0].Function.Arguments), &args) != nil {
+		return false
+	}
+	return strings.TrimSpace(args.Summary) != "" && utf8.RuneCountInString(args.Summary) <= 2000
 }
 
 // forward sends one request, retrying on a transport error, rate limit or

@@ -28,6 +28,8 @@ MUTATIONS = [
      ["go", "test", "./docs/research/chained-recall/harness/"], "the usage-limit code test"),
     ("harness/quota.go", "\t\t\tg.closed = false\n", "",
      ["go", "test", "./docs/research/chained-recall/harness/"], "reopening after a successful probe"),
+    ("harness/proxy.go", "utf8.RuneCountInString(args.Summary) <= 2000", "utf8.RuneCountInString(args.Summary) >= 0",
+     ["go", "test", "./docs/research/chained-recall/harness/"], "the summary length bound on what the proxy caches"),
     ("score.py", 'return bool(holding), any(states(it["text"], hop["key"]) for it in holding)', 'return bool(holding), bool(holding)',
      ["python3", "-m", "unittest", "score_test"], "the entity check of a reached hop"),
     ("score.py", 'return states(text, check["value"])', "return True",

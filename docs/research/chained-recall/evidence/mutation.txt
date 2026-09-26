@@ -6,6 +6,7 @@ FAILS  study/live.go: the arm's recall in the live session
 FAILS  study/live.go: the arm's instruction in the live session
 FAILS  harness/quota.go: the usage-limit code test
 FAILS  harness/quota.go: reopening after a successful probe
+FAILS  harness/proxy.go: the summary length bound on what the proxy caches
 FAILS  score.py: the entity check of a reached hop
 FAILS  score.py: the answer check of the live stage
 FAILS  corpus.py: the rule that later hop words stay out of the query

@@ -77,7 +77,7 @@ func upstream(t *testing.T, failures int, status int) (*httptest.Server, *atomic
 			http.Error(w, "busy", status)
 			return
 		}
-		_, _ = w.Write([]byte(`{"id":"r1","model":"MiniMax-M2","choices":[{"finish_reason":"stop","message":{"content":"ok"}}],"usage":{"prompt_tokens":1000,"completion_tokens":100}}`))
+		_, _ = w.Write([]byte(`{"id":"r1","model":"MiniMax-M2","choices":[{"finish_reason":"tool_calls","message":{"content":"","tool_calls":[{"function":{"name":"memory_summary","arguments":"{}"}}]}}],"usage":{"prompt_tokens":1000,"completion_tokens":100}}`))
 	}))
 	t.Cleanup(srv.Close)
 	return srv, &n, &bodies
@@ -166,4 +166,26 @@ func TestWorkspace_KeepsFilesAndSendsPerTake(t *testing.T) {
 	assert.Empty(t, written, "a take returns only what came after the previous one")
 	_, err = ws.Call(ctx, "shell_exec", json.RawMessage(`{}`))
 	assert.ErrorContains(t, err, "not found")
+}
+
+func TestProxy_ReRequestsASynthesisTheSummarizerWouldRefuse(t *testing.T) {
+	var n atomic.Int32
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if n.Add(1) == 1 {
+			_, _ = w.Write([]byte(`{"choices":[{"message":{"content":"a summary in prose"}}],"usage":{"prompt_tokens":10,"completion_tokens":10}}`))
+			return
+		}
+		_, _ = w.Write([]byte(`{"choices":[{"message":{"tool_calls":[{"function":{"name":"memory_summary","arguments":"{}"}}]}}],"usage":{"prompt_tokens":10,"completion_tokens":10}}`))
+	}))
+	t.Cleanup(srv.Close)
+	p, log := newTestProxy(t, srv.URL, 1)
+	synthesis := `{"messages":[],"tools":[{"function":{"name":"memory_summary"}}]}`
+	w := post(p, "/S/E-01/seed/v1/chat/completions", synthesis)
+	require.Equal(t, http.StatusOK, w.Code)
+	assert.True(t, summarized(w.Body.Bytes()), "the caller gets the usable answer")
+	assert.Equal(t, int32(2), n.Load())
+	assert.Contains(t, log.String(), "synthesis without exactly one memory_summary call")
+	post(p, "/S/E-01/seed/v1/chat/completions", synthesis)
+	assert.Equal(t, int32(2), n.Load(), "only the usable answer was cached")
+	assert.False(t, summarized([]byte(`{"choices":[{"message":{"content":"prose"}}]}`)), "the control: prose is not a summary")
 }

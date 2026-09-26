@@ -176,7 +176,9 @@ func loadCache(path string) (map[string][]byte, error) {
 		if err := json.Unmarshal(scanner.Bytes(), &e); err != nil {
 			return nil, err
 		}
-		out[e.Key] = e.Response
+		if summarized(e.Response) {
+			out[e.Key] = e.Response
+		}
 	}
 	return out, scanner.Err()
 }
@@ -249,7 +251,7 @@ func (p *proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	status, resp := p.forward(r.Context(), base, out)
-	if kind == "synthesis" && status == http.StatusOK {
+	if kind == "synthesis" && status == http.StatusOK && summarized(resp) {
 		p.store(base.RequestSHA256, resp)
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -292,17 +294,48 @@ func (p *proxy) store(key string, resp []byte) {
 	_, _ = p.cacheLog.Write(append(line, '\n'))
 }
 
-// retryable is a status worth one more attempt: rate limiting and server
+// attempts bounds how often one request is sent.
+const attempts = 6
+
+// retryable is a status worth another attempt: rate limiting and server
 // faults, never a refusal of the request itself.
 func retryable(status int) bool { return status == http.StatusTooManyRequests || status >= 500 }
 
-// forward sends one request, retrying twice on a transport error, rate
-// limit or server fault. Every attempt is reserved first and logged.
+// backoff is the wait before attempt n+1: 5 s doubling, at most a minute.
+func backoff(n int) time.Duration {
+	return min(5*time.Second<<(n-1), time.Minute)
+}
+
+// summarized reports whether a synthesis response carries exactly one
+// memory_summary call, the only answer the production summarizer accepts.
+func summarized(resp []byte) bool {
+	var doc struct {
+		Choices []struct {
+			Message struct {
+				ToolCalls []struct {
+					Function struct {
+						Name string `json:"name"`
+					} `json:"function"`
+				} `json:"tool_calls"`
+			} `json:"message"`
+		} `json:"choices"`
+	}
+	if json.Unmarshal(resp, &doc) != nil || len(doc.Choices) != 1 {
+		return false
+	}
+	calls := doc.Choices[0].Message.ToolCalls
+	return len(calls) == 1 && calls[0].Function.Name == "memory_summary"
+}
+
+// forward sends one request, retrying on a transport error, rate limit or
+// server fault, and re-requesting a synthesis the summarizer would refuse,
+// as production retries a failed synthesis at the next completion. Every
+// attempt is reserved first and logged.
 func (p *proxy) forward(ctx context.Context, base call, body []byte) (int, []byte) {
 	reserve := reservation(body, maxTokens[base.Kind])
 	var status int
 	var resp []byte
-	for attempt := 1; attempt <= 3; attempt++ {
+	for attempt := 1; attempt <= attempts; attempt++ {
 		rec := base
 		rec.Attempt, rec.ReservedUSD = attempt, reserve
 		if err := p.ledger.reserve(reserve); err != nil {
@@ -340,16 +373,27 @@ func (p *proxy) forward(ctx context.Context, base call, body []byte) (int, []byt
 		} else if status != http.StatusOK {
 			rec.Error = strings.TrimSpace(string(resp))
 		}
+		unusable := base.Kind == "synthesis" && status == http.StatusOK && !summarized(resp)
+		if unusable {
+			rec.Error = "synthesis without exactly one memory_summary call"
+		}
 		rec.USD = cost(rec.PromptTokens, rec.CompletionTokens)
 		p.ledger.settle(reserve, rec.USD)
 		p.record(rec)
-		if !retryable(status) {
+		if !retryable(status) && !unusable {
 			return status, resp
+		}
+		if attempt == attempts {
+			break
+		}
+		wait := backoff(attempt)
+		if unusable {
+			wait = 0
 		}
 		select {
 		case <-ctx.Done():
 			return status, resp
-		case <-time.After(time.Duration(attempt*attempt) * 3 * time.Second):
+		case <-time.After(wait):
 		}
 	}
 	return status, resp

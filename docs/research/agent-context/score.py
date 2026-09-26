@@ -298,7 +298,7 @@ def compute_controls(episodes, results, rows, ids, fam):
         out[f"note_after_rule_{a}"] = {"value": nonempty, "of": len(rule_eps), "required": math.ceil(0.5 * len(rule_eps)), "pass": nonempty >= math.ceil(0.5 * len(rule_eps))}
     understood = called = 0
     for i in ids:
-        for t in results["B"][i].get("turns", []):
+        for t in results["B"][i].get("turns") or []:
             if t.get("understood") is not None:
                 understood += 1
                 called += bool(t["understood"].get("called"))

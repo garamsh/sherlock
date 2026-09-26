@@ -1,0 +1,41 @@
+A: memory_search no longer reaches the store
+  commit 443142f, internal/agent/service.go
+  unmutated: pass; mutated: fail; failing: TestConversation_SearchReturnsTheEpisodeForTheModelsQuery, TestSessionRun_SearchRanksWithTheModelsQuery
+
+A: the note is not injected into the leading message
+  commit 443142f, internal/agent/service.go
+  unmutated: pass; mutated: fail; failing: TestConversation_NoteSurvivesCompactionAndRestart, TestSessionRun_NoteLeadsEveryTurnAndIsReplaced
+
+A: the terminal call's note is not saved
+  commit 443142f, internal/agent/service.go
+  unmutated: pass; mutated: fail; failing: TestSessionRun_NoteLeadsEveryTurnAndIsReplaced, TestSessionRun_OvergrownNoteIsHandedBack
+
+A: the note bound is not enforced
+  commit 443142f, internal/agent/writeback.go
+  unmutated: pass; mutated: fail; failing: TestSessionRun_OvergrownNoteIsHandedBack
+
+B: the understanding call is skipped
+  commit 2d43eec, internal/agent/service.go
+  unmutated: pass; mutated: fail; failing: TestConversation_NoteSurvivesCompactionAndRestart, TestSessionRun_UnderstandingResolvesBeforeRecall
+
+B: recall ranks by the raw input
+  commit 2d43eec, internal/agent/service.go
+  unmutated: pass; mutated: fail; failing: TestSessionRun_OvergrownNoteIsRefused, TestSessionRun_UnderstandingResolvesBeforeRecall
+
+B: the understanding call's note is not saved
+  commit 2d43eec, internal/agent/service.go
+  unmutated: pass; mutated: fail; failing: TestSessionRun_UnderstandingResolvesBeforeRecall
+
+B: the understanding step is not bounded to 16 messages
+  commit 2d43eec, internal/agent/understand.go
+  unmutated: pass; mutated: fail; failing: TestSessionRun_UnderstandingSeesRecentVisibleConversation
+
+harness: the ledger does not refuse past the ceiling
+  commit 6b14e96, docs/research/agent-context/harness/proxy.go
+  unmutated: pass; mutated: fail; failing: TestLedger_RefusesPastTheCeilingAndSettlesAtUsage, TestProxy_RetriesARateLimitAndRefusesPastTheCeiling
+
+harness: identical syntheses are not cached
+  commit 6b14e96, docs/research/agent-context/harness/proxy.go
+  unmutated: pass; mutated: fail; failing: TestProxy_SynthesisIsAnsweredOnceThenFromTheCache
+
+every mutation broke a test

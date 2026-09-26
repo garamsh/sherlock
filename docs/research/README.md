@@ -4,7 +4,7 @@ Research records the questions, methods, evidence, conclusions, and limits behin
 
 ## Studies
 
-- [Agent context](agent-context/README.md) — source survey of how Claude Code, Codex CLI, Hermes Agent, OpenClaw and opencode understand input and compose context; three candidate structures for sherlock's query understanding and full-context layer, the smallest being a search call during work and a bounded note carried by the terminal call, and the experiment plan to test them against the shipped recall.
+- [Agent context](agent-context/README.md) — source survey of how Claude Code, Codex CLI, Hermes Agent, OpenClaw and opencode understand input and compose context, and three candidate structures for sherlock; the preregistered test of two (#862) applies the evidence in 209 (search during work with a note) and 214 (understand first with a note) of 280 primary probes against the shipped recall's 124, but is undetermined because the oracle-reach control failed for the shipped arm and the search arm.
 - [Memory architecture](memory-architecture/README.md) — 38 candidate memory-store and retrieval architectures measured across four workloads.
 - [Memory correction](memory-correction/README.md) — a recorded correction and reversal run.
 - [Memory creation](memory-creation/README.md) — creation, correction, and retirement of memory entries.

@@ -211,9 +211,10 @@ def load(run_dir, episodes_path):
                 r = json.loads(line)
                 results[arm][r["episode"]] = r
     calls = []
-    ledger = Path(run_dir) / "ledger" / "calls.jsonl"
-    if ledger.exists():
-        calls = [json.loads(line) for line in open(ledger)]
+    for ledger in (Path(run_dir) / "ledger" / "calls.jsonl", Path(run_dir) / "calls.jsonl"):
+        if ledger.exists():
+            calls = [json.loads(line) for line in open(ledger)]
+            break
     return episodes, results, calls
 
 

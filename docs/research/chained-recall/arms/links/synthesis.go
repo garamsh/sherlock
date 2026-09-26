@@ -67,11 +67,14 @@ func synthesizeEntities(ctx context.Context, model agent.Model, updates []string
 	return result.Entities, nil
 }
 
-// batchEntities is one batch's recorded entities.
+// batchEntities is one batch's recorded entities. Failed records why a
+// batch has none: a failure no retry can recover, recorded by hand, keeps
+// its mid unlinked and is not sent again.
 type batchEntities struct {
 	First    int64    `json:"first"`
 	Last     int64    `json:"last"`
 	Entities []string `json:"entities"`
+	Failed   string   `json:"failed,omitempty"`
 }
 
 // entitiesPath is where the entities written at batch n are recorded.

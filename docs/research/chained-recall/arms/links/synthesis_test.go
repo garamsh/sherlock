@@ -100,16 +100,16 @@ func TestRecordEntities_SendsOnlyUnrecordedBatchesAndRecordsThem(t *testing.T) {
 	env := &study.Env{Corpus: &study.Corpus{Base: messages}, Dir: t.TempDir(), Proxy: server.URL, Arm: "L"}
 	path := entitiesPath(env, 4)
 	require.NoError(t, os.MkdirAll(filepath.Dir(path), 0o755))
-	require.NoError(t, os.WriteFile(path, []byte(`{"first":5,"last":8,"entities":["Gebind"]}`+"\n"), 0o644))
+	require.NoError(t, os.WriteFile(path, []byte(`{"first":5,"last":8,"entities":["Gebind"]}`+"\n"+`{"first":9,"last":12,"entities":null,"failed":"cached malformed answer"}`+"\n"), 0o644))
 
 	got, err := recordEntities(context.Background(), env, 4)
 	require.NoError(t, err)
-	assert.Equal(t, int32(2), calls.Load(), "batches 1 and 3 are sent; batch 2 is recorded")
-	assert.Equal(t, map[int64][]string{1: {"Rodend"}, 5: {"Gebind"}, 9: {"Rodend"}}, got)
-	assert.ElementsMatch(t, []string{"/L/b4-00001/entities-b4/v1/chat/completions", "/L/b4-00003/entities-b4/v1/chat/completions"}, []string{<-routes, <-routes})
+	assert.Equal(t, int32(1), calls.Load(), "only batch 1 is sent; batch 2 is recorded and batch 3 recorded as failed")
+	assert.Equal(t, map[int64][]string{1: {"Rodend"}, 5: {"Gebind"}, 9: nil}, got)
+	assert.Equal(t, "/L/b4-00001/entities-b4/v1/chat/completions", <-routes)
 
 	again, err := recordEntities(context.Background(), env, 4)
 	require.NoError(t, err)
 	assert.Equal(t, got, again)
-	assert.Equal(t, int32(2), calls.Load(), "a complete recording makes no call")
+	assert.Equal(t, int32(1), calls.Load(), "a complete recording makes no call")
 }

@@ -116,5 +116,22 @@ class ConfirmTest(unittest.TestCase):
         self.assertEqual(score.oracle_misses({"S": {"I-01": {}}}, ["I-01"], ["S"]), {}, "no detail, no classes")
 
 
+class UnmixedControlTest(unittest.TestCase):
+    def test_every_checked_batch_must_be_unmixed(self):
+        eps = {"I-01": {"family": "I"}, "G-01": {"family": "G"}}
+        rows = {a: {i: {"oracle": True, "searched": False} for i in eps} for a in ["S", "A"]}
+        fam = lambda f: [i for i in eps if eps[i]["family"] == f]
+        def results(flag):
+            return {a: {"I-01": {"oracle_detail": {"reached": True, "unmixed": True}},
+                        "G-01": {"oracle_detail": {"reached": True, "unmixed": flag}}} for a in ["S", "A"]}
+        ok = score.compute_controls(eps, results(True), rows, list(eps), fam, ["S", "A"], ["A"])
+        self.assertTrue(ok["unmixed_batches_S"]["pass"])
+        bad = score.compute_controls(eps, results(False), rows, list(eps), fam, ["S", "A"], ["A"])
+        self.assertFalse(bad["unmixed_batches_A"]["pass"])
+        self.assertEqual(bad["unmixed_batches_A"]["value"], 1)
+        none = {a: {i: {"oracle_detail": {"reached": True}} for i in eps} for a in ["S", "A"]}
+        self.assertNotIn("unmixed_batches_S", score.compute_controls(eps, none, rows, list(eps), fam, ["S", "A"], ["A"]))
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -7,6 +7,7 @@ running this again writes byte-identical files.
     python3 docs/research/agent-context/corpus.py          # the stage-2 episodes
     python3 docs/research/agent-context/corpus.py pilot    # the stage-1 pilot, drawn apart
     python3 docs/research/agent-context/corpus.py confirm  # issue #864's confirmatory run
+    python3 docs/research/agent-context/corpus.py unmixed  # issue #870's run on unmixed evidence batches
 """
 
 import json
@@ -24,6 +25,8 @@ RUNS = {
     "stage2": {"seed": 862, "out": "episodes.json", "F": 70, "G": 70, "I": 70, "K": 70, "E": 30, "N": 30, "R": 10},
     "pilot": {"seed": 8620, "out": "pilot-episodes.json", "F": 8, "G": 8, "I": 8, "K": 8, "E": 3, "N": 3, "R": 1},
     "confirm": {"seed": 864, "out": "confirm-episodes.json", "F": 70, "G": 70, "I": 70, "K": 70, "E": 30, "N": 30, "R": 10},
+    # Issue #870: every evidence statement's exchange fills one batch alone.
+    "unmixed": {"seed": 870, "out": "unmixed-episodes.json", "F": 70, "G": 70, "I": 70, "K": 70, "E": 30, "N": 30, "R": 10, "unmixed": True},
 }
 WINDOW = 32
 BLOCK_CHATS = 5  # a filler block is five 8-message chats: 40 messages
@@ -124,6 +127,20 @@ def live(content):
     return {"kind": "live", "content": content}
 
 
+def align(user, assistant, again):
+    """Close the batch a live turn opened: the harness seeds as many of these
+    same-topic messages as the stored messages leave to a multiple of four,
+    so the turn's exchange fills its batch alone and what follows starts a
+    batch of its own."""
+    return {"kind": "align", "messages": [{"role": "user", "content": user}, {"role": "assistant", "content": assistant},
+                                          {"role": "user", "content": again}]}
+
+
+def follow(user, assistant):
+    """A seeded same-topic pair that completes a seeded statement's batch."""
+    return [{"role": "user", "content": user}, {"role": "assistant", "content": assistant}]
+
+
 def build(run):
     rng = random.Random(run["seed"])
     corpus = json.load(open(REPLICATION / "corpus.json"))
@@ -187,15 +204,21 @@ def build(run):
                    {"role": "assistant", "content": f"Sure. What would you like to do next for {target}?"}]
             probe = f"What {attr} did I give you for it?"
             b = blocks_for(2)
+            thanks = [{"role": "user", "content": "Thanks, that's all the details for now."}, {"role": "assistant", "content": "You're welcome."}]
+            unmixed = run.get("unmixed")
+            evidence = [referent]
+            if unmixed:
+                evidence.append(follow(f"That's the one detail about {target} I need you to hold.", f"Understood, I'll hold it for {target}."))
             if family == "G":
-                mixed = distractors[:]
-                mixed.insert(rng.randrange(len(mixed) + 1), referent)
+                mixed = distractors[:] + ([thanks] if unmixed else [])
+                at = rng.randrange(len(mixed) // 2 + 1) * 2 if unmixed else rng.randrange(len(mixed) + 1)
+                mixed[at:at] = evidence
                 steps = [b[0], seed(mixed), b[1], seed([cue]), live(probe)]
             else:
-                steps = [b[0], seed(distractors + [[{"role": "user", "content": "Thanks, that's all the details for now."}, {"role": "assistant", "content": "You're welcome."}]]),
-                         b[1], seed([referent]), pad(), pad(), pad(), seed([cue]), live(probe)]
+                steps = [b[0], seed(distractors + [thanks]), b[1], seed(evidence), pad(), pad(), pad(), seed([cue]), live(probe)]
             episodes.append({"id": f"{family}-{i + 1:02d}", "family": family, "steps": steps,
-                             "check": {"kind": "contains", "value": value}, "reach": [value], "oracle": referent[0]["content"]})
+                             "check": {"kind": "contains", "value": value}, "reach": [value], "oracle": referent[0]["content"],
+                             **({"followups": [evidence[1][0]["content"]]} if unmixed else {})})
 
     # I: a standing rule stated once in a live turn, pushed beyond the window.
     tasks = [(r, t) for r in range(len(RULES)) for t in range(len(RULES[r]["tasks"]))]
@@ -205,8 +228,11 @@ def build(run):
         rule = RULES[r]
         b = blocks_for(2)
         statement = f"A standing preference for everything you write for me from now on: {rule['rule']}."
-        steps = [b[0], live(statement), pad(), b[1], live(rule["tasks"][t])]
-        episodes.append({"id": f"I-{n + 1:02d}", "family": "I", "rule": r, "steps": steps, "check": rule["check"], "reach": [rule["key"]], "oracle": statement})
+        after = align("Please apply that to everything from here on.", "Understood, I'll apply that preference from now on.",
+                      "Thanks.") if run.get("unmixed") else pad()
+        steps = [b[0], live(statement), after, b[1], live(rule["tasks"][t])]
+        episodes.append({"id": f"I-{n + 1:02d}", "family": "I", "rule": r, "steps": steps, "check": rule["check"], "reach": [rule["key"]], "oracle": statement,
+                         **({"followups": [m["content"] for m in after["messages"] if m["role"] == "user"]} if run.get("unmixed") else {})})
 
     # K: an original statement and its correction, both live, both pushed out.
     for i in range(run["K"]):
@@ -216,12 +242,18 @@ def build(run):
             if old != new and absent_in_base(old, new):
                 break
         b = blocks_for(3)
-        steps = [b[0], live(f"Just so you know, {subject} is {old}."), pad(), b[1],
-                 live(f"Correction: {subject} is actually {new}, not {old}."), pad(), b[2],
+        if run.get("unmixed"):
+            first = align("Keep that in mind.", "Noted.", "Thanks.")
+            second = align("Please use the corrected one from now on.", "Understood, I'll use the corrected one.", "Thanks.")
+        else:
+            first, second = pad(), pad()
+        steps = [b[0], live(f"Just so you know, {subject} is {old}."), first, b[1],
+                 live(f"Correction: {subject} is actually {new}, not {old}."), second, b[2],
                  live(f"What is {subject}?")]
         episodes.append({"id": f"K-{i + 1:02d}", "family": "K", "steps": steps,
                          "check": {"kind": "correction", "new": new, "old": old}, "reach": [new],
-                         "oracle": f"Correction: {subject} is actually {new}, not {old}."})
+                         "oracle": f"Correction: {subject} is actually {new}, not {old}.",
+                         **({"followups": [m["content"] for m in second["messages"] if m["role"] == "user"]} if run.get("unmixed") else {})})
 
     # E: a stated fact beyond the window, asked for exactly.
     exacts = [e for e in items["exact"] + items["paraphrase"] if e["id"] not in used and e.get("failure") is None
@@ -230,11 +262,13 @@ def build(run):
     if len(exacts) < run["E"]:
         raise SystemExit(f"only {len(exacts)} exact items qualify")
     for i, e in enumerate(exacts[:run["E"]]):
-        fact = [[{"role": "user", "content": e["fact_sentence"]}, {"role": "assistant", "content": "Thanks for telling me."}], pad_pair()]
+        fact = [[{"role": "user", "content": e["fact_sentence"]}, {"role": "assistant", "content": "Thanks for telling me."}],
+                follow("Just so you have it for later.", "Noted, I'll remember it.") if run.get("unmixed") else pad_pair()]
         b = blocks_for(2)
         steps = [b[0], seed(fact), b[1], live(e["exact_query"])]
         episodes.append({"id": f"E-{i + 1:02d}", "family": "E", "steps": steps, "item": e["id"],
-                         "check": {"kind": "contains", "value": e["key"]}, "reach": [e["key"]], "oracle": e["fact_sentence"]})
+                         "check": {"kind": "contains", "value": e["key"]}, "reach": [e["key"]], "oracle": e["fact_sentence"],
+                         **({"followups": [fact[1][0]["content"]]} if run.get("unmixed") else {})})
 
     # N: the replication's absent queries; nothing answering them was said.
     absent = [{"item": q["item"], "text": q["text"]} for q in queries if q["family"] == "absent"]
@@ -256,20 +290,25 @@ def build(run):
                  f"When I say 'that's everyone', write all the names into a file called {first}, one name per line. "
                  f"First two: {names[0]} and {names[1]}.")
         b = blocks_for(2)
-        steps = [b[0], live(start), pad()]
+        unmixed = run.get("unmixed")
+        opened = align("I'll send the rest soon.", "Sounds good, I'll wait for 'that's everyone'.", "Thanks.") if unmixed else pad()
+        steps = [b[0], live(start), opened]
         if case == "changed":
-            steps += [live(f"Change of plan for the {event} RSVPs: when I say that's everyone, put the names in {second} instead of {first}, sorted alphabetically."), pad()]
+            steps += [live(f"Change of plan for the {event} RSVPs: when I say that's everyone, put the names in {second} instead of {first}, sorted alphabetically."),
+                      align("Just so the plan is clear.", "Understood.", "Thanks.") if unmixed else pad()]
         if case == "canceled":
-            steps += [live(f"Scrap the RSVP list for {event}: the event is cancelled, so don't write any file for it."), pad()]
+            steps += [live(f"Scrap the RSVP list for {event}: the event is cancelled, so don't write any file for it."),
+                      align("Just so the plan is clear.", "Understood.", "Thanks.") if unmixed else pad()]
         steps += [b[1], live(f"Two more RSVPs: {names[2]} and {names[3]}. That's everyone.")]
         episodes.append({"id": f"R-{i + 1:02d}", "family": "R", "case": case, "steps": steps,
                          "check": {"kind": "rsvp", "case": case, "names": names, "file": first, "changed_file": second},
-                         "reach": [names[0]], "oracle": start})
+                         "reach": [names[0]], "oracle": start,
+                         **({"followups": [m["content"] for m in opened["messages"] if m["role"] == "user"]} if unmixed else {})})
     return blocks, pads, episodes
 
 
 def main():
-    run = RUNS[sys.argv[1] if sys.argv[1:] in (["pilot"], ["confirm"]) else "stage2"]
+    run = RUNS[sys.argv[1] if sys.argv[1:] in (["pilot"], ["confirm"], ["unmixed"]) else "stage2"]
     blocks, pads, episodes = build(run)
     out = HERE / run["out"]
     out.write_text(json.dumps({"window": WINDOW, "blocks": blocks, "pads": pads, "episodes": episodes}, indent=1, ensure_ascii=False) + "\n")

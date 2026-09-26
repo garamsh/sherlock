@@ -251,20 +251,26 @@ def live():
         for setting_dir in sorted(p for p in arm_dir.iterdir() if p.is_dir()):
             if (setting_dir / "results.jsonl").exists():
                 per[f"{arm_dir.name}/{setting_dir.name}"] = score_live_setting(corpus, load_jsonl(setting_dir / "results.jsonl"))
+    clean = clean_chains()
     summary = {}
     for name, rows in per.items():
         fam = defaultdict(list)
         for row in rows.values():
             fam[row["family"]].append(row)
-        primary = [r for f in PRIMARY_FAMILIES for r in fam[f]]
+        # The primary set is the clean chains of k >= 2 (live-preregistration.md);
+        # every chain of k >= 2 is reported beside it.
+        every = [r for f in PRIMARY_FAMILIES for r in fam[f]]
+        primary = [r for i, r in rows.items() if r["family"] in PRIMARY_FAMILIES and i in clean]
         summary[name] = {
             "families": {f: {"n": len(rs), "applied": sum(r["applied"] for r in rs),
                              "all_seen": sum(r.get("all_seen", False) for r in rs) if f.startswith(("C", "IC")) else None}
                          for f, rs in sorted(fam.items())},
             "primary": {"n": len(primary), "applied": sum(r["applied"] for r in primary), "wilson": wilson(sum(r["applied"] for r in primary), len(primary)),
                         "all_seen": sum(r["all_seen"] for r in primary)},
+            "every_k2": {"n": len(every), "applied": sum(r["applied"] for r in every), "all_seen": sum(r["all_seen"] for r in every)},
             "searches_per_probe": round(sum(r["searches"] for r in rows.values()) / max(len(rows), 1), 2),
             "probes_following_a_name": sum(r.get("followed", 0) > 0 for r in rows.values()),
+            "primary_following_a_name": sum(r.get("followed", 0) > 0 for r in primary),
             "rerun": sum(r["attempt"] > 1 for r in rows.values()),
             "errors": sum(bool(r["error"]) for r in rows.values()),
         }
@@ -273,7 +279,7 @@ def live():
         others = [n for n in per if n != "S/b4"]
         ps = []
         for n in others:
-            ids = sorted(i for i, r in base.items() if r["family"] in PRIMARY_FAMILIES and i in per[n])
+            ids = sorted(i for i, r in base.items() if r["family"] in PRIMARY_FAMILIES and i in clean and i in per[n])
             b, c, p = mcnemar([per[n][i]["applied"] for i in ids], [base[i]["applied"] for i in ids])
             guard = {}
             for f in ("C1", "E", "K", "N"):

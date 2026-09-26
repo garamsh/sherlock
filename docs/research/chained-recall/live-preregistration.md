@@ -77,3 +77,7 @@ A failed control makes the live verdict undetermined, and the report names it.
   - **Budget.** The shared proxy on port 8091 serves the L and H workers' synthesis and cannot be restarted under them. So the live stage runs through its own proxy on `127.0.0.1:8092`, with its own ledger (`evidence/ledger-live/`) and the USD 12.00 list-price guard.
     - Its 2056 pause is the same code.
     - `score.py tokens` reads both ledgers.
+- **2.** Committed after S's collection and before M's results existed.
+  - As committed, `score.py live` took every k ≥ 2 chain as its primary set, against this file's primary set of the 114 clean chains.
+  - The code now takes the clean chains as primary, reports every k ≥ 2 chain beside them, and counts M's name-following control over the primary probes.
+  - The endpoints, test and rules above are unchanged. S's figures were read only on the old set, and no comparison had been computed.

@@ -306,11 +306,27 @@ def live():
     print("smallest valid arm:", decision)
 
 
+# The ledger routes L and L+A under arm L, so their live calls are told
+# apart by time (evidence/live/run.log, local time UTC+9): the smoke run
+# ended before S's first probe at 04:10:09, and L's last probe was logged at
+# 04:57:34, before the L+A process started.
+SMOKE_END = "2026-09-26T19:10:00"
+L_END = "2026-09-26T19:57:34"
+
+
+def phase_of(c):
+    if c["arm"] == "L" and c["phase"] == "live":
+        if c["time"] < SMOKE_END:
+            return "L+A/live-smoke"
+        return "L/live" if c["time"] < L_END else "L+A/live"
+    return f"{c['arm']}/{c['phase']}"
+
+
 def tokens():
     """Tokens per arm and phase, from this run's ledger."""
     agg = defaultdict(lambda: {"calls": 0, "cached": 0, "status_429": 0, "prompt_tokens": 0, "completion_tokens": 0})
     for c in load_jsonl(HERE / "evidence" / "ledger" / "calls.jsonl"):
-        a = agg[f"{c['arm']}/{c['phase']}"]
+        a = agg[phase_of(c)]
         a["calls"] += 1
         a["cached"] += bool(c.get("cached"))
         a["status_429"] += c.get("status") == 429

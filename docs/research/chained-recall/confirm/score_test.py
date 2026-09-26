@@ -51,6 +51,14 @@ class DecisionTest(unittest.TestCase):
         self.assertIsNone(score.smallest_valid(c))
 
 
+class TokensTest(unittest.TestCase):
+    def test_l_live_calls_split_by_time(self):
+        self.assertEqual(score.phase_of({"arm": "L", "phase": "live", "time": "2026-09-26T19:09:30Z"}), "L+A/live-smoke")
+        self.assertEqual(score.phase_of({"arm": "L", "phase": "live", "time": "2026-09-26T19:40:00Z"}), "L/live")
+        self.assertEqual(score.phase_of({"arm": "L", "phase": "live", "time": "2026-09-26T20:00:00Z"}), "L+A/live")
+        self.assertEqual(score.phase_of({"arm": "L", "phase": "entities-b4", "time": "2026-09-26T20:00:00Z"}), "L/entities-b4", "the control: another phase")
+
+
 class LabelTest(unittest.TestCase):
     def test_every_walk_line_must_carry_the_label(self):
         good = "- [4] (historical): a\n- [9] (associated): " + score.LABEL + ' "x", not matched to the question: b [mid:9 sources:1-4]'

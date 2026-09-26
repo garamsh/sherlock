@@ -27,6 +27,7 @@ Records issue #874's study. For the memory structures `docs/research/associative
 - Verdict
 - Limits
 - Reproduction
+- Confirmation (#885)
 
 ## Question
 
@@ -332,3 +333,138 @@ docker rm -f tei-874
   - S and M at `f3f7e62`;
   - L at `3405043` and H at `3a85f14`;
   - the live records at `4590259` (M), `41d5134` (S) and `fec3f7c` (L).
+
+## Confirmation (#885)
+
+A preregistered confirmatory run (`confirm/preregistration.md`, committed at `3b83e89` before any call, with one amendment before any live call). It asks whether L, or L with an abstention safeguard (L+A), makes the agent follow chains more often than S without answering absent questions from associated memories.
+
+- **Verdict: no arm is valid, so the shipped recall stands and no arm is named for implementation.**
+- Both arms repeat #874's gain on chains and are significant. Both fail the absent (N) and correction (K) guardrails, by more than #874's L did.
+- Every control passed, so the null is the rule's answer.
+
+### Method
+
+- **Arms.**
+  - S is `arms/shipped` at `b4`.
+  - L is `arms/links` at `b4-model`, as #874 measured it.
+  - L+A is `arms/links` at `b4-model-a`: L plus two changes and nothing else.
+    - Recall and `memory_search` deliver each walk mid as `associated`, its text opened by `Associated through the named entity "<name>", not matched to the question: `.
+    - One instruction: answer a fact only from a source that states it, treating associated memories as leads (`arms/links/main.go` `Abstention`).
+- **Net production lines.** L about +270; L+A about +292, which is L plus 22 lines: the entity a mid was reached through, the label and one sentence.
+- **Corpus.**
+  - `confirm/corpus.py`, with seed 885 and #874's templates and rules.
+  - Every candidate is in one 3,488-message stream after the base, so all summaries and entities were fixed before selection.
+  - `select` kept, in candidate order:
+    - the first chains of each family with no later hop in the raw top 20 at batch 4;
+    - the first 60 absent items whose walk delivers the associated episode.
+  - Primary: C2 50 and C3 50. Guards: C1 30, E 30, K 40 and N 60. Reported only: IC2 25 and IC3 25.
+- **Absent items (N).** Each joins two entities in one exchange ("Panus Coaches and Bruzind Coaches park their buses at the same depot") and states the second one's value in another ("Bruzind Coaches always pick up from bay 33"). It then asks for the first one's value, which is stated nowhere.
+- **Decision rule.** Exact McNemar on applied over C2 and C3, Holm across the two comparisons with S, at α = 0.05.
+  - The guardrails allow a loss of 3 probes on N (5 points of 60), 2 on K (5 points of 40), and 3 each on C1 and E.
+  - Among valid arms, the smallest net diff is taken.
+  - The abstention check also counts a clarifying question as not answering.
+- **Power** (`confirm/evidence/power.json`, simulated from #874's paired records).
+  - Detecting #874's gain on 100 chains: 1.00.
+  - Detecting a quarter of it: 0.70.
+  - The N guardrail fails about one time in five with no true loss.
+
+### Controls
+
+All passed (`confirm/evidence/`).
+
+| Control | Required | Measured |
+|---|---|---|
+| Chain check on the committed corpus (`check-b4.json`) | no later hop in the raw top 20 | 0 of 225 |
+| Oracle | 95% of hops within 5 | 399 of 405 (98.5%) |
+| Mids holding an entity (L's `built.json`) | 90% | 98.0% (2,031 of 2,072) |
+| Walk delivers the associated episode for every N query, offline (`selection/`) | all 60 | 60 of 60, 89 of 90 candidates |
+| Walk items in the live recall block of primary probes | half | L 99, L+A 99 of 100 |
+| L+A's label on every walk line of every block that has one | all | 274 of 274 blocks |
+| Mutation checks (`mutation.txt`) | every mutation fails a test | 13 of 13 |
+
+### Offline results
+
+`python3 confirm/score.py offline` (`confirm/evidence/offline/scores.json`).
+
+| Arm | Primary chains of 100 | C1 of 30 | E of 30 | K of 40 | Context chars per turn | Stored per source char |
+|---|---:|---:|---:|---:|---:|---:|
+| S | 0 | 28 | 25 | 37 | 3,279 | 0.731 |
+| L | 58 | 30 | 26 | 35 | 3,362 | 0.814 |
+| L+A | 58 | 30 | 26 | 35 | 3,490 | 0.814 |
+
+- Against S, L is 58 to 0 (Holm p = 1.4e-17), and its offline guard reach holds (K −2, with 2 allowed).
+- L+A delivers L's items, with 128 more context characters per turn for the labels.
+- Per hop, L reaches C2 50 and 44, and C3 50, 38 and 14; S reaches only first hops.
+
+### Live results
+
+930 probes, one live turn each, with no error and no re-run (`confirm/evidence/live/`, `python3 confirm/score.py live`).
+
+| Family (n) | S | L | L+A |
+|---|---:|---:|---:|
+| **Primary, C2 and C3 (100)** | **9** | **56** | **57** |
+| C2 (50) | 5 | 45 | 46 |
+| C3 (50) | 4 | 11 | 11 |
+| C1 (30) | 25 | 30 | 30 |
+| E (30) | 18 | 21 | 20 |
+| K, corrected value (40) | 28 | 25 | 21 |
+| N, abstained (60) | 57 | 39 | 42 |
+| N, states the associated value without abstaining | 1 | 19 | 13 |
+| IC2 (25), reported only | 0 | 0 | 0 |
+| IC3 (25), reported only | 0 | 0 | 1 |
+| Searches per probe | 0.32 | 0.18 | 0.14 |
+
+| Arm against S | Arm only | S only | Holm p | Guard change (allowed loss) | Valid |
+|---|---:|---:|---:|---|---|
+| L | 48 | 1 | 1.8e-13 | **N −18 (3)**, **K −3 (2)**, C1 +5, E +3 | no: guardrails |
+| L+A | 49 | 1 | 1.8e-13 | **N −15 (3)**, **K −7 (2)**, C1 +5, E +2 | no: guardrails |
+
+- **The gain replicates.** On a new seed with no leaking chain, the walk carries the agent across the hops: 56 and 57 of 100, against S's 9. As in #874, a primary chain was applied almost only where every hop was in view (S 9 of 9, L 56 of 57, L+A 57 of 57 seen).
+- **The absent loss is structural, not noise.**
+  - With the associated episode in view, L gave the associated entity's value as the answer in 19 of 60 absent probes, and S in 1. The share #874 guessed from 20 queries holds at 60, when every query has such an episode.
+  - In `N-002` L+A answered: "Panus Coaches share the same depot with Bruzind Coaches, and Bruzind picks up from bay 33. So you should wait at bay 33."
+- **The safeguard helps, but falls well short.**
+  - L+A abstained in 42 of 60, against L's 39, and gave the associated value in 13, against 19.
+  - Several of its answers name the association and then answer from it anyway (`N-005`, `N-021`, `N-023`): the label was read and treated as a lead, and the lead became the answer.
+- **The label costs corrections.**
+  - L+A lost 10 correction probes S answered, against L's 7.
+  - The label calls a mid "not matched to the question" even when the walk reached it through the question's own entity. In `K-20` the model answered that "the system seems to have some incorrectly associated memories". In `K-29` it answered as an assistant with no house, as #874's L did in `K-16`.
+  - Some K losses have no memory component; `K-06` and `K-19` answer a different question.
+- **Implicit chains stay unsolved** by every arm, as in #874.
+
+### Cost
+
+MiniMax-M2 only, through one proxy on `127.0.0.1:8096` (`confirm/evidence/ledger/`, `python3 confirm/score.py tokens`). Embeddings came from local text-embeddings-inference (`tei-885`).
+
+| Phase | Calls | Input tokens | Output tokens |
+|---|---:|---:|---:|
+| Key probe | 1 | 45 | 57 |
+| Stream synthesis, batch 4 | 873 | 286,463 | 175,608 |
+| L's entity synthesis of the stream | 875 | 340,506 | 205,168 |
+| Live smoke, L+A | 8 | 35,346 | 2,075 |
+| Live, S | 777 | 3,452,087 | 209,683 |
+| Live, L | 709 | 3,124,155 | 195,484 |
+| Live, L+A | 722 | 3,244,722 | 210,488 |
+| **Total** | **3,965** | **10,483,324** | **998,563** |
+
+- No request met HTTP 429, and the 2056 pause never engaged.
+- Nothing was bought. At list prices the calls come to USD 4.34, a guard only; the key is on a subscription.
+- The ledger routes L and L+A under arm L, so their live calls are split by the times in `confirm/evidence/live/run.log`.
+
+### Conclusion and limits
+
+- **No arm to implement.** Entity-linked recall reliably makes the agent follow chains. On this corpus it also makes the agent answer absent questions from associated memories about six times in twenty. A label and one instruction reduce that by a third, and cost corrections.
+- **Limits.**
+  - One model and one run per probe.
+  - Absent items are adversarial by construction: each query names an entity whose one association states a value of the asked kind. The run measures the worst case, not how often such a case arises in real conversation.
+  - Checks are deterministic proxies, as in #874.
+  - The base's entities were copied from #874's recording, with its one failed batch unlinked.
+- **Reproduction.** As §Reproduction, with `-dir docs/research/chained-recall/confirm` on every command, and in this order:
+  1. `python3 confirm/corpus.py assemble`;
+  2. `harness synthesize`, `build` and `check`, then copying `evidence/check-b4.json` to `evidence/selection/`;
+  3. `arms/links build -setting b4-model` and `offline`, saving the probes to `evidence/selection/L-b4-model-probes.jsonl`;
+  4. `python3 confirm/corpus.py select`;
+  5. `check` and `offline` again;
+  6. `live`.
+
+  Every recorded phase resumes after its last record, so re-running against the committed evidence sends nothing.

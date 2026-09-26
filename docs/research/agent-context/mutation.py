@@ -13,7 +13,7 @@ import tempfile
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[3]
-A, B, HARNESS = "443142f", "2d43eec", "6b14e96"
+A, B, HARNESS = "61f4e4c", "b5bc7ed", "7c670ec"
 
 MUTATIONS = [
     (A, "internal/agent/service.go", "if call.Name == MemorySearchTool && s.opts.Conversation != nil {",

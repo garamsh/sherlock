@@ -24,11 +24,17 @@ class ValueTest(unittest.TestCase):
 
 
 class CheckTest(unittest.TestCase):
-    def test_correction_needs_the_new_value_without_the_old(self):
+    def test_correction_needs_the_new_value(self):
         spec = {"kind": "correction", "new": "locker 134", "old": "locker 496"}
         self.assertTrue(score.check(spec, turn("Your locker is 134.")))
-        self.assertFalse(score.check(spec, turn("It was 496, now 134.")))
+        self.assertTrue(score.check(spec, turn("It is 134; you corrected it from 496.")))
         self.assertFalse(score.check(spec, turn("Your locker is 496.")))
+
+    def test_formats_of_the_same_value(self):
+        self.assertTrue(score.states("March 22nd at 2:45 PM", "22 March at 14:45"))
+        self.assertTrue(score.states("June 2nd", "2 June"))
+        self.assertFalse(score.states("March 22nd at 3:45 PM", "22 March at 14:45"))
+        self.assertFalse(score.states("June 12th", "2 June"))
 
     def test_primary_text_prefers_what_was_sent(self):
         spec = {"kind": "starts_with", "text": "ahoy"}

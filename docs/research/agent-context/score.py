@@ -62,9 +62,21 @@ def value_tokens(value):
     return [t.lower() for t in tokens]
 
 
+def token_pattern(token):
+    """A token as an answer may write it: a number may carry an ordinal
+    suffix (2nd), and a 24-hour time may be written on the 12-hour clock."""
+    pattern = re.escape(token)
+    if token.isdigit():
+        pattern += r"(?:st|nd|rd|th)?"
+    clock = re.fullmatch(r"(\d{1,2}):(\d{2})", token)
+    if clock and int(clock.group(1)) > 12:
+        pattern = f"(?:{pattern}|{int(clock.group(1)) - 12}:{clock.group(2)}\\s*(?:pm|p\\.m\\.))"
+    return r"(?<![a-z0-9])" + pattern + r"(?![a-z0-9])"
+
+
 def states(text, value):
     norm = normalize(text)
-    return all(re.search(r"(?<![a-z0-9])" + re.escape(t) + r"(?![a-z0-9])", norm) for t in value_tokens(value))
+    return all(re.search(token_pattern(t), norm) for t in value_tokens(value))
 
 
 # ---- checks -----------------------------------------------------------------
@@ -87,8 +99,9 @@ def check(spec, turn):
     if kind == "contains":
         return states(all_text(turn), spec["value"])
     if kind == "correction":
-        full = all_text(turn)
-        return states(full, spec["new"]) and not states(full, spec["old"])
+        # The current value applies the correction; naming the old one as
+        # what was corrected does not undo it.
+        return states(all_text(turn), spec["new"])
     if kind == "roman_list":
         return bool(re.search(r"(?m)^\W*I[.)]\s", text)) and bool(re.search(r"(?m)^\W*II[.)]\s", text))
     if kind == "celsius":

@@ -1,0 +1,6466 @@
+{
+ "controls": {
+  "note_after_rule_A": {
+   "of": 70,
+   "pass": true,
+   "required": 35,
+   "value": 62
+  },
+  "oracle_reach_A": {
+   "of": 280,
+   "pass": true,
+   "required": 266,
+   "value": 279
+  },
+  "oracle_reach_S": {
+   "of": 280,
+   "pass": true,
+   "required": 266,
+   "value": 277
+  },
+  "search_rate_A_in_G": {
+   "of": 70,
+   "pass": true,
+   "required": 14,
+   "value": 23
+  },
+  "unmixed_batches_A": {
+   "of": 280,
+   "pass": true,
+   "required": 280,
+   "value": 280
+  },
+  "unmixed_batches_S": {
+   "of": 277,
+   "pass": true,
+   "required": 277,
+   "value": 277
+  }
+ },
+ "cost": {
+  "by_arm": {
+   "A": {
+    "cached": 8767,
+    "calls": 11294,
+    "completion_tokens": 561092,
+    "live_turns": 630,
+    "prompt_tokens": 5946265,
+    "usd": 2.4572,
+    "usd_per_live_turn": 0.0039
+   },
+   "S": {
+    "cached": 8690,
+    "calls": 11277,
+    "completion_tokens": 534248,
+    "live_turns": 630,
+    "prompt_tokens": 5809299,
+    "usd": 2.3839,
+    "usd_per_live_turn": 0.00378
+   },
+   "probe": {
+    "cached": 0,
+    "calls": 1,
+    "completion_tokens": 59,
+    "live_turns": 630,
+    "prompt_tokens": 46,
+    "usd": 0.0001,
+    "usd_per_live_turn": 0.0
+   }
+  },
+  "per_family_usd": {
+   "E": {
+    "A": 0.0969,
+    "S": 0.1016
+   },
+   "F": {
+    "A": 0.3784,
+    "S": 0.3795
+   },
+   "G": {
+    "A": 0.423,
+    "S": 0.3996
+   },
+   "I": {
+    "A": 0.4958,
+    "S": 0.4604
+   },
+   "K": {
+    "A": 0.6794,
+    "S": 0.6244
+   },
+   "N": {
+    "A": 0.1138,
+    "S": 0.1284
+   },
+   "R": {
+    "A": 0.27,
+    "S": 0.2901
+   }
+  },
+  "total_usd": 4.8412
+ },
+ "episodes": 370,
+ "families": {
+  "E": {
+   "A": {
+    "applied": 27,
+    "applied_ci": [
+     0.7438,
+     0.9654
+    ],
+    "failed": 0,
+    "inspected": 1,
+    "n": 30,
+    "reached": 29
+   },
+   "S": {
+    "applied": 27,
+    "applied_ci": [
+     0.7438,
+     0.9654
+    ],
+    "failed": 0,
+    "inspected": 1,
+    "n": 30,
+    "reached": 29
+   }
+  },
+  "F": {
+   "A": {
+    "applied": 70,
+    "applied_ci": [
+     0.948,
+     1.0
+    ],
+    "failed": 0,
+    "inspected": 0,
+    "n": 70,
+    "reached": 70
+   },
+   "S": {
+    "applied": 70,
+    "applied_ci": [
+     0.948,
+     1.0
+    ],
+    "failed": 0,
+    "inspected": 1,
+    "n": 70,
+    "reached": 70
+   }
+  },
+  "G": {
+   "A": {
+    "applied": 53,
+    "applied_ci": [
+     0.645,
+     0.8425
+    ],
+    "failed": 0,
+    "inspected": 5,
+    "n": 70,
+    "reached": 54
+   },
+   "S": {
+    "applied": 31,
+    "applied_ci": [
+     0.3325,
+     0.5592
+    ],
+    "failed": 0,
+    "inspected": 2,
+    "n": 70,
+    "reached": 32
+   }
+  },
+  "I": {
+   "A": {
+    "applied": 19,
+    "applied_ci": [
+     0.1812,
+     0.3854
+    ],
+    "failed": 0,
+    "inspected": 0,
+    "n": 70,
+    "reached": 57
+   },
+   "S": {
+    "applied": 1,
+    "applied_ci": [
+     0.0025,
+     0.0766
+    ],
+    "failed": 3,
+    "inspected": 0,
+    "n": 70,
+    "reached": 4
+   }
+  },
+  "K": {
+   "A": {
+    "applied": 70,
+    "applied_ci": [
+     0.948,
+     1.0
+    ],
+    "failed": 0,
+    "inspected": 0,
+    "n": 70,
+    "note_current": 69,
+    "note_obsolete": 0,
+    "reached": 70
+   },
+   "S": {
+    "applied": 69,
+    "applied_ci": [
+     0.9234,
+     0.9975
+    ],
+    "failed": 0,
+    "inspected": 0,
+    "n": 70,
+    "note_current": 0,
+    "note_obsolete": 0,
+    "reached": 69
+   }
+  },
+  "N": {
+   "A": {
+    "abstained": 17,
+    "applied": 17,
+    "applied_ci": [
+     0.392,
+     0.7262
+    ],
+    "failed": 0,
+    "inspected": 0,
+    "n": 30,
+    "reached": 0
+   },
+   "S": {
+    "abstained": 15,
+    "applied": 15,
+    "applied_ci": [
+     0.3315,
+     0.6685
+    ],
+    "failed": 0,
+    "inspected": 0,
+    "n": 30,
+    "reached": 0
+   }
+  },
+  "R": {
+   "A": {
+    "applied": 26,
+    "applied_ci": [
+     0.7032,
+     0.9469
+    ],
+    "canceled": 6,
+    "changed": 10,
+    "continue": 10,
+    "failed": 0,
+    "inspected": 0,
+    "n": 30,
+    "reached": 30
+   },
+   "S": {
+    "applied": 18,
+    "applied_ci": [
+     0.4232,
+     0.7541
+    ],
+    "canceled": 0,
+    "changed": 8,
+    "continue": 10,
+    "failed": 0,
+    "inspected": 0,
+    "n": 30,
+    "reached": 30
+   }
+  }
+ },
+ "guardrails": {
+  "A": {
+   "canceled_resumed_where_S_did_not": [],
+   "control_losses": {
+    "E": 0,
+    "N": -2
+   },
+   "hold": true,
+   "primary_losses": {
+    "F": 0,
+    "G": -22,
+    "I": -18,
+    "K": -1
+   }
+  }
+ },
+ "oracle_misses": {
+  "A": {
+   "ranking miss": [
+    {
+     "episode": "I-36",
+     "key_stated": true,
+     "rank": 49
+    }
+   ]
+  }
+ },
+ "per_episode": {
+  "A": {
+   "E-01": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-02": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-03": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-04": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-05": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-06": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-07": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-08": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-09": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-10": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-11": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": true
+   },
+   "E-12": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-13": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-14": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-15": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-16": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-17": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-18": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-19": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-20": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-21": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-22": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-23": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-24": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-25": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "E-26": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-27": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-28": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-29": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-30": {
+    "applied": true,
+    "failed": false,
+    "inspected": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-01": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-02": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-03": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-04": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-05": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-06": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-07": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-08": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-09": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-10": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-11": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-12": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-13": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-14": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-15": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-16": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-17": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-18": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-19": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-20": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-21": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-22": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-23": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-24": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-25": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-26": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-27": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-28": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-29": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-30": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-31": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-32": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-33": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-34": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-35": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-36": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-37": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-38": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-39": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-40": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-41": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-42": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-43": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-44": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-45": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-46": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-47": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-48": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-49": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-50": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-51": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-52": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-53": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-54": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-55": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-56": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-57": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-58": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-59": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-60": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-61": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-62": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-63": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-64": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-65": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-66": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-67": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-68": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-69": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-70": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-01": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-02": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-03": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": true
+   },
+   "G-04": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": true
+   },
+   "G-05": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": true
+   },
+   "G-06": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-07": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-08": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-09": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": true
+   },
+   "G-10": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-11": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": true
+   },
+   "G-12": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-13": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-14": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": true
+   },
+   "G-15": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-16": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": true
+   },
+   "G-17": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-18": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-19": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": true
+   },
+   "G-20": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-21": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-22": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-23": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-24": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": true
+   },
+   "G-25": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-26": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-27": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-28": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-29": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-30": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-31": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-32": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-33": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-34": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-35": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-36": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-37": {
+    "applied": true,
+    "failed": false,
+    "inspected": true,
+    "oracle": true,
+    "reached": true,
+    "searched": true
+   },
+   "G-38": {
+    "applied": true,
+    "failed": false,
+    "inspected": true,
+    "oracle": true,
+    "reached": true,
+    "searched": true
+   },
+   "G-39": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": true
+   },
+   "G-40": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-41": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-42": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-43": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": true
+   },
+   "G-44": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-45": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-46": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-47": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-48": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": true
+   },
+   "G-49": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": true
+   },
+   "G-50": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-51": {
+    "applied": true,
+    "failed": false,
+    "inspected": true,
+    "oracle": true,
+    "reached": true,
+    "searched": true
+   },
+   "G-52": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-53": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-54": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-55": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-56": {
+    "applied": true,
+    "failed": false,
+    "inspected": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-57": {
+    "applied": true,
+    "failed": false,
+    "inspected": true,
+    "oracle": true,
+    "reached": true,
+    "searched": true
+   },
+   "G-58": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": true
+   },
+   "G-59": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": true
+   },
+   "G-60": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-61": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-62": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-63": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-64": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-65": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": true
+   },
+   "G-66": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-67": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": true
+   },
+   "G-68": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": true
+   },
+   "G-69": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": true
+   },
+   "G-70": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-01": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-02": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-03": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-04": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-05": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-06": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-07": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-08": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-09": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-10": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-11": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-12": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-13": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-14": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-15": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-16": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-17": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-18": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-19": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-20": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-21": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-22": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-23": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-24": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-25": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-26": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-27": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-28": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-29": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-30": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-31": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-32": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-33": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-34": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-35": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-36": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": false,
+    "reached": false,
+    "searched": false
+   },
+   "I-37": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-38": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-39": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-40": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-41": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-42": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-43": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-44": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-45": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-46": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-47": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-48": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-49": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-50": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-51": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-52": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-53": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-54": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-55": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-56": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-57": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-58": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-59": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-60": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-61": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-62": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-63": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-64": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-65": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-66": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-67": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-68": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-69": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-70": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_after_rule": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-01": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-02": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-03": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-04": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-05": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": false,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-06": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-07": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-08": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-09": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-10": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-11": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-12": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-13": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-14": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-15": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-16": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-17": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-18": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-19": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-20": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-21": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-22": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-23": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-24": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-25": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-26": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-27": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-28": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-29": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-30": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-31": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-32": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-33": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-34": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-35": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-36": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-37": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-38": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-39": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-40": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-41": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-42": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-43": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-44": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-45": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-46": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-47": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-48": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-49": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-50": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-51": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-52": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-53": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-54": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-55": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-56": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-57": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-58": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-59": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-60": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-61": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-62": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-63": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-64": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-65": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-66": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-67": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-68": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-69": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-70": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "note_current": true,
+    "note_obsolete": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "N-01": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-02": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-03": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": true
+   },
+   "N-04": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-05": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-06": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-07": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-08": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-09": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-10": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-11": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-12": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-13": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-14": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-15": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-16": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-17": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-18": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": true
+   },
+   "N-19": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-20": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-21": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-22": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-23": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-24": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-25": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-26": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-27": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-28": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-29": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-30": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "R-01": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-02": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-03": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-04": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-05": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-06": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-07": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-08": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-09": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-10": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-11": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-12": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-13": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-14": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-15": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-16": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-17": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-18": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-19": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-20": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-21": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-22": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-23": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-24": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-25": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-26": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-27": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-28": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-29": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-30": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   }
+  },
+  "S": {
+   "E-01": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-02": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-03": {
+    "applied": true,
+    "failed": false,
+    "inspected": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-04": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-05": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-06": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-07": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-08": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-09": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-10": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-11": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-12": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-13": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-14": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-15": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-16": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-17": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-18": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-19": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-20": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-21": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-22": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-23": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-24": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-25": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "E-26": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-27": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-28": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-29": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "E-30": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-01": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-02": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-03": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-04": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-05": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-06": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-07": {
+    "applied": true,
+    "failed": false,
+    "inspected": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-08": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-09": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-10": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-11": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-12": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-13": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-14": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-15": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-16": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-17": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-18": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-19": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-20": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-21": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-22": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-23": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-24": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-25": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-26": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-27": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-28": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-29": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-30": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-31": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-32": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-33": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-34": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-35": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-36": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-37": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-38": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-39": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-40": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-41": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-42": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-43": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-44": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-45": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-46": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-47": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-48": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-49": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-50": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-51": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-52": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-53": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-54": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-55": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-56": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-57": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-58": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-59": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-60": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-61": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-62": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-63": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-64": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-65": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-66": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-67": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-68": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-69": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "F-70": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-01": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-02": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-03": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-04": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-05": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-06": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-07": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-08": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-09": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-10": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-11": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-12": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-13": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-14": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-15": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-16": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-17": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-18": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-19": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-20": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-21": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-22": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-23": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-24": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-25": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-26": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-27": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-28": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-29": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-30": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-31": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-32": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-33": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-34": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-35": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-36": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-37": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-38": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-39": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-40": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-41": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-42": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-43": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-44": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-45": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-46": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-47": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-48": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-49": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-50": {
+    "applied": true,
+    "failed": false,
+    "inspected": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-51": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-52": {
+    "applied": true,
+    "failed": false,
+    "inspected": true,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-53": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-54": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-55": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-56": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-57": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-58": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-59": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-60": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-61": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-62": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-63": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-64": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-65": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-66": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "G-67": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-68": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-69": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "G-70": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-01": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-02": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-03": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-04": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-05": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-06": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-07": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-08": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-09": {
+    "applied": false,
+    "failed": true,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "I-10": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-11": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-12": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-13": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-14": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-15": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-16": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-17": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-18": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-19": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-20": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-21": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-22": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-23": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-24": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-25": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-26": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-27": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-28": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-29": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-30": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-31": {
+    "applied": false,
+    "failed": true,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "I-32": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-33": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-34": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-35": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-36": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-37": {
+    "applied": false,
+    "failed": true,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "I-38": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-39": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-40": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-41": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-42": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-43": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-44": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-45": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-46": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-47": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-48": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-49": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-50": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-51": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-52": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-53": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-54": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-55": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-56": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-57": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-58": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-59": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "I-60": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-61": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-62": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-63": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-64": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-65": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-66": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-67": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-68": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-69": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "I-70": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "K-01": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-02": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-03": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-04": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-05": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-06": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-07": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-08": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-09": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-10": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-11": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-12": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-13": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-14": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-15": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-16": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": false,
+    "searched": false
+   },
+   "K-17": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-18": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-19": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-20": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-21": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-22": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-23": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-24": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-25": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-26": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-27": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-28": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-29": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-30": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-31": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-32": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-33": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-34": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-35": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-36": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-37": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-38": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-39": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-40": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-41": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-42": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-43": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-44": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-45": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-46": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-47": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-48": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-49": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-50": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-51": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-52": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-53": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-54": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-55": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-56": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-57": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-58": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-59": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-60": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-61": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-62": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-63": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-64": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-65": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-66": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-67": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-68": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-69": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "K-70": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "N-01": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-02": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-03": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-04": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-05": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-06": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-07": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-08": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-09": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-10": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-11": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-12": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-13": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-14": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-15": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-16": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-17": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-18": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-19": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-20": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-21": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-22": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-23": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-24": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-25": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-26": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-27": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-28": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-29": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "N-30": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": null,
+    "reached": false,
+    "searched": false
+   },
+   "R-01": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-02": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-03": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-04": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-05": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-06": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-07": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-08": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-09": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-10": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-11": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-12": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-13": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-14": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-15": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-16": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-17": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-18": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-19": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-20": {
+    "applied": true,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-21": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-22": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-23": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-24": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-25": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-26": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-27": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-28": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-29": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   },
+   "R-30": {
+    "applied": false,
+    "failed": false,
+    "inspected": false,
+    "oracle": true,
+    "reached": true,
+    "searched": false
+   }
+  }
+ },
+ "tests": {
+  "A": {
+   "candidate_only": 42,
+   "difference": 0.1464,
+   "discordance": 0.1536,
+   "n": 280,
+   "p": 1.000444171950221e-11,
+   "p_holm": 1.000444171950221e-11,
+   "shipped_only": 1
+  }
+ },
+ "verdict": {
+  "outcome": "valid: A; take A",
+  "valid": [
+   "A"
+  ],
+  "winner": "A"
+ }
+}

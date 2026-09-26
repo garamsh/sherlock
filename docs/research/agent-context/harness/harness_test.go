@@ -260,7 +260,7 @@ func TestOracle_ReachesTheSourceThroughItsMidsInterval(t *testing.T) {
 	ctx := context.Background()
 
 	reached := oracleStore(t, [][4]string{{statement, "ok", "fine", "sure"}, {"weather talk", "rain", "sun", "wind"}})
-	check, err := r.oracle(ctx, reached, statement, []string{"4,100"})
+	check, err := r.oracle(ctx, reached, statement, []string{"4,100"}, nil)
 	require.NoError(t, err)
 	assert.True(t, check.Reached, "the control: a mid holding the source ranks first")
 	assert.Equal(t, []int64{1}, check.Sources)
@@ -275,7 +275,7 @@ func TestOracle_ReachesTheSourceThroughItsMidsInterval(t *testing.T) {
 	}
 	batches = append(batches, [4]string{"garden hose repair", "hmm", statement, "noted"})
 	reworded := oracleStore(t, batches)
-	check, err = r.oracle(ctx, reworded, statement, []string{"4,100"})
+	check, err = r.oracle(ctx, reworded, statement, []string{"4,100"}, nil)
 	require.NoError(t, err)
 	assert.False(t, check.Reached)
 	assert.Equal(t, 7, check.Rank)
@@ -283,11 +283,70 @@ func TestOracle_ReachesTheSourceThroughItsMidsInterval(t *testing.T) {
 
 	batches[6] = [4]string{"garden hose 4,100 repair", "hmm", statement, "noted"}
 	ranking := oracleStore(t, batches)
-	check, err = r.oracle(ctx, ranking, statement, []string{"4,100"})
+	check, err = r.oracle(ctx, ranking, statement, []string{"4,100"}, nil)
 	require.NoError(t, err)
 	assert.False(t, check.Reached)
 	assert.Equal(t, "ranking miss", check.Class, "the summary states the key and still ranks below five")
 
-	_, err = r.oracle(ctx, ranking, "a sentence nobody said", []string{"x"})
+	_, err = r.oracle(ctx, ranking, "a sentence nobody said", []string{"x"}, nil)
 	assert.Error(t, err, "an evidence statement missing from the store is a harness error, not a miss")
+}
+
+// recordMessages records each message as its own completed turn and
+// returns the store's path.
+func recordMessages(t *testing.T, messages []agent.SourceMessage) string {
+	t.Helper()
+	path := t.TempDir() + "/memory.db"
+	store, err := sqlite.OpenConversation(path, wordEmbedder{})
+	require.NoError(t, err)
+	for _, m := range messages {
+		require.NoError(t, store.RecordTurn(context.Background(), []agent.SourceMessage{m}, firstUpdate{}))
+	}
+	require.NoError(t, store.Close())
+	return path
+}
+
+func user(s string) agent.SourceMessage { return agent.SourceMessage{Role: agent.RoleUser, Content: s} }
+func assistant(s string) agent.SourceMessage {
+	return agent.SourceMessage{Role: agent.RoleAssistant, Content: s}
+}
+
+func TestOracle_UnmixedBatchHoldsOnlyTheEvidenceExchange(t *testing.T) {
+	statement, follow := "Always indent code with tabs.", "Please apply that to everything from here on."
+	r := &runner{embedder: wordEmbedder{}}
+	ctx := context.Background()
+	for name, tc := range map[string]struct {
+		messages []agent.SourceMessage
+		want     bool
+	}{
+		"its own exchange fills the batch": {[]agent.SourceMessage{user(statement), assistant("Noted."), user(follow), assistant("Will do.")}, true},
+		"the agent's own messages fill it": {[]agent.SourceMessage{user(statement), assistant("sent"), assistant("Noted."), user(follow)}, true},
+		"a neighbouring exchange mixes in": {[]agent.SourceMessage{user(statement), assistant("Noted."), user("How do I fix a tap?"), assistant("Turn off the water.")}, false},
+		"the statement opens no batch":     {[]agent.SourceMessage{user("hi"), user(statement), assistant("Noted."), user(follow)}, false},
+	} {
+		t.Run(name, func(t *testing.T) {
+			check, err := r.oracle(ctx, recordMessages(t, tc.messages), statement, []string{"tabs"}, []string{follow})
+			require.NoError(t, err)
+			require.NotNil(t, check.Unmixed)
+			assert.Equal(t, tc.want, *check.Unmixed)
+		})
+	}
+	check, err := r.oracle(ctx, recordMessages(t, []agent.SourceMessage{user(statement), assistant("Noted."), user(follow), assistant("Will do.")}), statement, []string{"tabs"}, nil)
+	require.NoError(t, err)
+	assert.Nil(t, check.Unmixed, "an episode that declares no follow-ups is not checked")
+}
+
+func TestAlign_ClosesTheOpenBatch(t *testing.T) {
+	for stored, want := range map[int]int{4800: 0, 4801: 3, 4802: 2, 4803: 1} {
+		need, err := alignNeed(stored, 3)
+		require.NoError(t, err)
+		assert.Equal(t, want, need, "%d stored", stored)
+		assert.Zero(t, (stored+need)%batchSize, "the next statement opens a batch")
+	}
+	_, err := alignNeed(4801, 2)
+	assert.Error(t, err, "a step that cannot close the batch is refused")
+
+	r := &runner{embedder: wordEmbedder{}, proxy: "http://127.0.0.1:1"}
+	path := recordMessages(t, []agent.SourceMessage{user("a"), user("b"), user("c"), user("d")})
+	require.NoError(t, r.align(context.Background(), "E-01", path, pair{{Role: "user", Content: "x"}}), "an aligned store seeds nothing, so no model is called")
 }

@@ -37,6 +37,9 @@ type step struct {
 	Index   int    `json:"index"`
 	Pairs   []pair `json:"pairs"`
 	Content string `json:"content"`
+	// Messages are an align step's same-topic messages, of which the
+	// harness seeds as many as close the current batch.
+	Messages pair `json:"messages"`
 }
 
 type episode struct {
@@ -46,6 +49,9 @@ type episode struct {
 	Check  json.RawMessage `json:"check"`
 	Reach  []string        `json:"reach"`
 	Oracle string          `json:"oracle"`
+	// Followups are the user messages an unmixed episode puts in its
+	// evidence batch beside the statement (issue #870).
+	Followups []string `json:"followups"`
 }
 
 type corpusFile struct {
@@ -335,6 +341,17 @@ func (r *runner) episode(ctx context.Context, e episode) (result, []map[string]a
 		case "seed":
 			pending = append(pending, s.Pairs...)
 			continue
+		case "align":
+			if err := r.seed(ctx, e.ID, path, pending); err != nil {
+				res.Error = fmt.Sprintf("seed before step %d: %v", i, err)
+				return res, transcript
+			}
+			pending = nil
+			if err := r.align(ctx, e.ID, path, s.Messages); err != nil {
+				res.Error = fmt.Sprintf("align at step %d: %v", i, err)
+				return res, transcript
+			}
+			continue
 		}
 		if err := r.seed(ctx, e.ID, path, pending); err != nil {
 			res.Error = fmt.Sprintf("seed before step %d: %v", i, err)
@@ -357,7 +374,7 @@ func (r *runner) episode(ctx context.Context, e episode) (result, []map[string]a
 		res.Turns = append(res.Turns, t)
 	}
 	if e.Oracle != "" {
-		check, err := r.oracle(ctx, path, e.Oracle, e.Reach)
+		check, err := r.oracle(ctx, path, e.Oracle, e.Reach, e.Followups)
 		if err != nil {
 			res.Error = fmt.Sprintf("oracle: %v", err)
 		} else {
@@ -391,12 +408,54 @@ type oracleCheck struct {
 	// summary" (the holding mid's summary does not state the key) or
 	// "ranking miss" (it does, and still ranks below five).
 	Class string `json:"class,omitempty"`
+	// Unmixed, for an episode that declares its follow-ups, says whether
+	// the evidence source's batch holds only its own exchange.
+	Unmixed *bool `json:"unmixed,omitempty"`
+}
+
+// unmixedBatch reports whether the batch holding source is the evidence
+// exchange alone: a mid spans exactly the source and the three messages
+// after it, and each of those is an assistant message or one of the
+// episode's declared same-topic follow-ups.
+func unmixedBatch(ctx context.Context, db *sql.DB, source int64, followups []string) (bool, error) {
+	var first, last int64
+	err := db.QueryRowContext(ctx, `SELECT source_first, source_last FROM conversation_mid WHERE source_first <= ? AND source_last >= ?`, source, source).Scan(&first, &last)
+	if errors.Is(err, sql.ErrNoRows) {
+		return false, nil
+	}
+	if err != nil {
+		return false, err
+	}
+	if first != source || last != source+batchSize-1 {
+		return false, nil
+	}
+	allowed := map[string]bool{}
+	for _, f := range followups {
+		allowed[f] = true
+	}
+	rows, err := db.QueryContext(ctx, `SELECT role, content FROM conversation_sources WHERE id > ? AND id <= ? ORDER BY id`, first, last)
+	if err != nil {
+		return false, err
+	}
+	defer rows.Close()
+	n := 0
+	for rows.Next() {
+		var role, content string
+		if err := rows.Scan(&role, &content); err != nil {
+			return false, err
+		}
+		n++
+		if role != "assistant" && !allowed[content] {
+			return false, nil
+		}
+	}
+	return n == batchSize-1, rows.Err()
 }
 
 // oracleTop is how many mids a reached evidence source may rank within.
 const oracleTop = 5
 
-func (r *runner) oracle(ctx context.Context, path, statement string, keys []string) (oracleCheck, error) {
+func (r *runner) oracle(ctx context.Context, path, statement string, keys, followups []string) (oracleCheck, error) {
 	var out oracleCheck
 	db, err := sql.Open("sqlite", path+"?mode=ro")
 	if err != nil {
@@ -417,10 +476,19 @@ func (r *runner) oracle(ctx context.Context, path, statement string, keys []stri
 		out.Sources = append(out.Sources, id)
 	}
 	rows.Close()
-	db.Close()
 	if len(out.Sources) == 0 {
+		db.Close()
 		return out, fmt.Errorf("no stored source is the evidence statement %q", statement)
 	}
+	if followups != nil {
+		unmixed, err := unmixedBatch(ctx, db, out.Sources[len(out.Sources)-1], followups)
+		if err != nil {
+			db.Close()
+			return out, err
+		}
+		out.Unmixed = &unmixed
+	}
+	db.Close()
 	store, err := sqlite.OpenConversation(path, r.embedder)
 	if err != nil {
 		return out, err
@@ -453,6 +521,40 @@ func (r *runner) oracle(ctx context.Context, path, statement string, keys []stri
 	out.Class = "unsummarized"
 	return out, nil
 }
+
+// align seeds as many of messages as close the batch the stored sources
+// leave open, in one completed turn, so a live turn's exchange fills its
+// batch alone whatever number of messages the turn stored.
+func (r *runner) align(ctx context.Context, episode, path string, messages pair) error {
+	db, err := sql.Open("sqlite", path+"?mode=ro")
+	if err != nil {
+		return err
+	}
+	var stored int
+	err = db.QueryRowContext(ctx, `SELECT count(*) FROM conversation_sources`).Scan(&stored)
+	db.Close()
+	if err != nil {
+		return err
+	}
+	need, err := alignNeed(stored, len(messages))
+	if err != nil || need == 0 {
+		return err
+	}
+	return r.seed(ctx, episode, path, []pair{messages[:need]})
+}
+
+// alignNeed is how many messages close the batch that stored sources
+// leave open.
+func alignNeed(stored, offered int) (int, error) {
+	need := (batchSize - stored%batchSize) % batchSize
+	if need > offered {
+		return 0, fmt.Errorf("batch needs %d messages, the step offers %d", need, offered)
+	}
+	return need, nil
+}
+
+// batchSize is the store's batch, four completed messages since #859.
+const batchSize = 4
 
 func (r *runner) seed(ctx context.Context, episode, path string, pairs []pair) error {
 	if len(pairs) == 0 {

@@ -18,6 +18,8 @@ REPO = Path(__file__).resolve().parents[3]
 A, B, HARNESS = "61f4e4c", "b5bc7ed", "44e34e0"
 # ORACLE carries the source-level oracle of issue #864.
 ORACLE = "8cb0b1b"
+# UNMIXED carries issue #870's align step and unmixed-batch check.
+UNMIXED = "aa56020"
 
 MUTATIONS = [
     (A, "internal/agent/service.go", "if call.Name == MemorySearchTool && s.opts.Conversation != nil {",
@@ -59,6 +61,14 @@ MUTATIONS = [
      "held = held || (h.SourceFirst <= id && id <= h.SourceLast && false)",
      "./docs/research/agent-context/harness/", "TestOracle_ReachesTheSourceThroughItsMidsInterval",
      "harness: the oracle no longer finds the source in a mid's interval"),
+    (UNMIXED, "docs/research/agent-context/harness/run.go", "if role != \"assistant\" && !allowed[content] {",
+     "if false && role != \"assistant\" && !allowed[content] {",
+     "./docs/research/agent-context/harness/", "TestOracle_UnmixedBatchHoldsOnlyTheEvidenceExchange",
+     "harness: the unmixed check accepts a neighbouring exchange"),
+    (UNMIXED, "docs/research/agent-context/harness/run.go", "need := (batchSize - stored%batchSize) % batchSize",
+     "need := (batchSize - stored%batchSize) % batchSize / 2",
+     "./docs/research/agent-context/harness/", "TestAlign_ClosesTheOpenBatch",
+     "harness: align leaves the batch open"),
 ]
 
 

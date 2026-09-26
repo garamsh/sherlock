@@ -329,6 +329,13 @@ def compute_controls(episodes, results, rows, ids, fam, arms, candidates):
     for a in candidates:
         nonempty = sum(rows[a][i].get("note_after_rule", False) for i in rule_eps)
         out[f"note_after_rule_{a}"] = {"value": nonempty, "of": len(rule_eps), "required": math.ceil(0.5 * len(rule_eps)), "pass": nonempty >= math.ceil(0.5 * len(rule_eps))}
+    # Issue #870: every stored evidence batch holds only its own exchange.
+    for a in arms:
+        checked = [results[a][i]["oracle_detail"] for i in primary_ids
+                   if (results[a][i].get("oracle_detail") or {}).get("unmixed") is not None]
+        if checked:
+            unmixed = sum(d["unmixed"] for d in checked)
+            out[f"unmixed_batches_{a}"] = {"value": unmixed, "of": len(checked), "required": len(checked), "pass": unmixed == len(checked)}
     if "B" not in arms:
         return out
     understood = called = 0

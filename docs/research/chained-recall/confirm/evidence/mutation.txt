@@ -1,0 +1,14 @@
+FAILS  arms/links/memory.go: L+A's associated kind on walk-delivered mids
+FAILS  arms/links/memory.go: L+A's label naming the entity
+FAILS  arms/links/walk.go: the entity a walk mid was reached through
+FAILS  arms/links/main.go: L+A's instruction
+FAILS  study/live.go: the setting's instruction in the live session
+FAILS  study/env.go: finding docs/research from a corpus below the study
+FAILS  harness/proxy.go: refusing malformed entities before caching
+FAILS  confirm/score.py: the guardrails
+FAILS  confirm/score.py: the label control
+FAILS  confirm/score.py: taking the smallest valid arm
+FAILS  confirm/corpus.py: keeping F's value out of the query and the joining exchange
+FAILS  confirm/corpus.py: keeping E out of F's episode
+FAILS  confirm/corpus.py: leaving leaking chains out of the selection
+control: every unmutated test passes

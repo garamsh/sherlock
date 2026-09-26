@@ -34,7 +34,7 @@ func (e *Env) Syntheses(n int) ([]Synthesis, error) {
 		Batch   int    `json:"batch"`
 		Summary string `json:"summary"`
 	}
-	base, err := ReadJSONL[recorded](filepath.Join(e.Dir, "..", "mid-memory-rag", "evidence", "replication", fmt.Sprintf("synthesis-n%d.jsonl", n)))
+	base, err := ReadJSONL[recorded](filepath.Join(ResearchDir(e.Dir), "mid-memory-rag", "evidence", "replication", fmt.Sprintf("synthesis-n%d.jsonl", n)))
 	if err != nil {
 		return nil, err
 	}

@@ -145,7 +145,11 @@ func liveOnce(ctx context.Context, env *Env, arm Arm, setting string, p LiveProb
 		initial = append(initial, agent.Message{Role: m.Role, Content: m.Content})
 	}
 	ego := ""
-	if extra := arm.Instructions(); extra != "" {
+	extra := arm.Instructions()
+	if si, ok := arm.(SettingInstructor); ok {
+		extra = si.InstructionsFor(setting)
+	}
+	if extra != "" {
 		ego = agent.DefaultEgo + "\n\n" + extra
 	}
 	events := &eventLog{}
@@ -219,7 +223,7 @@ func Live(ctx context.Context, env *Env, arm Arm, setting string, workers int, o
 			done[r.Probe] = true
 		}
 	}
-	descriptors, err := loadDescriptors(filepath.Join(env.Dir, "..", "..", "..", "tools"))
+	descriptors, err := loadDescriptors(filepath.Join(ResearchDir(env.Dir), "..", "..", "tools"))
 	if err != nil {
 		return err
 	}

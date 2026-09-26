@@ -17,7 +17,8 @@ type Env struct {
 	// Embedder is the local text-embeddings-inference server serving
 	// BAAI/bge-base-en-v1.5; the only embedder any arm uses.
 	Embedder agent.Embedder
-	// Dir is the study directory, docs/research/chained-recall.
+	// Dir is the study directory: docs/research/chained-recall, or a
+	// corpus beneath it such as #885's confirm/.
 	Dir string
 	// Work is the study's scratch root, outside the repository: shared
 	// stores under shared/, arm builds under builds/<arm>/<setting>/.
@@ -54,6 +55,24 @@ func (e *Env) SharedStore(batch int) (string, error) {
 		return "", fmt.Errorf("shared store at batch %d: %w (build it with harness build -batch %d)", batch, err, batch)
 	}
 	return dir, nil
+}
+
+// ResearchDir is docs/research as a study directory reaches it: the
+// nearest ancestor of dir that holds the replication (mid-memory-rag/).
+// The #874 corpus is one level below it and #885's two, and both read the
+// replication's base and the shipped tool manifests from there.
+func ResearchDir(dir string) string {
+	d := filepath.Clean(dir)
+	for {
+		parent := filepath.Dir(d)
+		if _, err := os.Stat(filepath.Join(parent, "mid-memory-rag")); err == nil {
+			return parent
+		}
+		if parent == d {
+			return filepath.Join(dir, "..")
+		}
+		d = parent
+	}
 }
 
 // CopyDir copies the regular files of a store directory into another,

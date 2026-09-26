@@ -322,7 +322,10 @@ func backoff(n int) time.Duration {
 // summarized reports whether a synthesis response is one the production
 // summarizer accepts (internal/agent/memory/summary.go): exactly one
 // memory_summary call whose summary is not blank and holds at most 2,000
-// characters. Anything else is re-requested and never cached.
+// characters. Arm L's extended call adds an entities array, and one that
+// holds anything but an array of strings is refused too (#885), since a
+// cached one would answer every retry. Anything else is re-requested and
+// never cached.
 func summarized(resp []byte) bool {
 	var doc struct {
 		Choices []struct {
@@ -344,10 +347,17 @@ func summarized(resp []byte) bool {
 		return false
 	}
 	var args struct {
-		Summary string `json:"summary"`
+		Summary  string          `json:"summary"`
+		Entities json.RawMessage `json:"entities"`
 	}
 	if json.Unmarshal([]byte(calls[0].Function.Arguments), &args) != nil {
 		return false
+	}
+	if args.Entities != nil {
+		var names []string
+		if json.Unmarshal(args.Entities, &names) != nil || names == nil {
+			return false
+		}
 	}
 	return strings.TrimSpace(args.Summary) != "" && utf8.RuneCountInString(args.Summary) <= 2000
 }

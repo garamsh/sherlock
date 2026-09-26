@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/garamsh/sherlock/docs/research/chained-recall/study"
 	"github.com/garamsh/sherlock/internal/agent"
@@ -21,6 +22,16 @@ type memory struct {
 	store *sqlite.Store
 	graph *graph
 	trace map[string]any
+	// associate is L+A's label: a walk-delivered mid is delivered as
+	// "associated", its text opened by the entity it was reached through.
+	associate bool
+}
+
+// associatedLabel opens the text of a mid L+A's walk delivered, so the
+// model reads it as reached through an entity rather than matched to the
+// question.
+func associatedLabel(entity string) string {
+	return fmt.Sprintf("Associated through the named entity %q, not matched to the question: ", entity)
 }
 
 // Recall returns the two newest mids, then fills the shipped recall's five
@@ -55,15 +66,23 @@ func (m *memory) Search(ctx context.Context, query string, limit int) ([]study.I
 // reached, and which delivered mids came from it, lay outside the similar
 // list, and named no seed.
 func (m *memory) alternate(query string, slots int, seen map[int64]bool, similar []agent.ConversationHit) []study.Item {
-	linked, seeds, steps := m.graph.linked(query)
+	linked, seeds, steps, via := m.graph.linked(query)
 	items := take(slots, seen, &list{"historical", similar}, &list{"linked", linked})
+	if m.associate {
+		for i, it := range items {
+			if it.Kind == "linked" {
+				items[i].Kind = "associated"
+				items[i].Text = associatedLabel(via[it.ID]) + it.Text
+			}
+		}
+	}
 	inSimilar := map[int64]bool{}
 	for _, h := range similar {
 		inSimilar[h.ID] = true
 	}
 	delivered, beyond, far := []int64{}, []int64{}, []int64{}
 	for _, it := range items {
-		if it.Kind != "linked" {
+		if it.Kind != "linked" && it.Kind != "associated" {
 			continue
 		}
 		delivered = append(delivered, it.ID)

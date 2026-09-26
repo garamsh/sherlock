@@ -89,6 +89,48 @@ func TestLiveOnce_RunsAProbeThroughTheProductionSessionWithTheArmsRecallAndSearc
 	assert.Equal(t, "the answer is 4471", recent[1].Content)
 }
 
+// settingArm instructs by setting, as L and L+A do.
+type settingArm struct{ ShippedArm }
+
+func (settingArm) InstructionsFor(setting string) string {
+	if setting == "b4-a" {
+		return "ANSWER ONLY FROM A SOURCE."
+	}
+	return ""
+}
+
+func TestLiveOnce_AppendsTheSettingsInstruction(t *testing.T) {
+	ctx := context.Background()
+	for _, setting := range []string{"b4-a", "b4"} {
+		work := t.TempDir()
+		build := filepath.Join(work, "builds", "L", setting)
+		require.NoError(t, os.MkdirAll(build, 0o755))
+		store, err := sqlite.OpenConversation(filepath.Join(build, "memory.db"), wordEmbedder{})
+		require.NoError(t, err)
+		for i := range 4 {
+			require.NoError(t, store.RecordTurn(ctx, []agent.SourceMessage{{Role: agent.RoleUser, Content: "apple fact " + string(rune('a'+i))}}, recordingSummary{}))
+		}
+		require.NoError(t, store.Close())
+		var calls atomic.Int32
+		var shown []string
+		server := fakeProvider(t, &calls, &shown)
+		proxy := httptest.NewServer(http.StripPrefix("/L/N-01/live", server.Config.Handler))
+		env := &Env{Corpus: &Corpus{Window: 32}, Embedder: wordEmbedder{}, Work: work, Proxy: proxy.URL, Arm: "L"}
+		arm := settingArm{ShippedArm{ArmName: "L", Instruction: "THE ARM-WIDE TEXT.", Batches: []string{"b4", "b4-a"}}}
+		descriptors, err := loadDescriptors(filepath.Join("..", "..", "..", "..", "tools"))
+		require.NoError(t, err)
+
+		r := liveOnce(ctx, env, arm, setting, LiveProbe{ID: "N-01", Family: "N", Query: "what about apple?"}, descriptors)
+		proxy.Close()
+		server.Close()
+
+		require.Empty(t, r.Error)
+		all := strings.Join(shown, "\n")
+		assert.Equal(t, setting == "b4-a", strings.Contains(all, "ANSWER ONLY FROM A SOURCE."), setting)
+		assert.NotContains(t, all, "THE ARM-WIDE TEXT.", "the setting's instruction replaces the arm-wide one")
+	}
+}
+
 func TestInfrastructure_SeparatesProviderFailuresFromTheArmsOwn(t *testing.T) {
 	assert.True(t, infrastructure(LiveResult{CallErrors: []string{"chat: status 429: usage limit (2056)"}}))
 	assert.True(t, infrastructure(LiveResult{Error: "Post \"http://127.0.0.1:8091\": connection refused"}))

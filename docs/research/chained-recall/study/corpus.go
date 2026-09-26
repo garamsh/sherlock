@@ -88,7 +88,7 @@ func LoadCorpus(studyDir string) (*Corpus, error) {
 	if err := readJSON(filepath.Join(studyDir, "corpus.json"), &c); err != nil {
 		return nil, err
 	}
-	if err := readJSON(filepath.Join(studyDir, "..", "mid-memory-rag", "evidence", "replication", "corpus.json"), &c.Base); err != nil {
+	if err := readJSON(filepath.Join(ResearchDir(studyDir), "mid-memory-rag", "evidence", "replication", "corpus.json"), &c.Base); err != nil {
 		return nil, err
 	}
 	for i, m := range c.Messages() {

@@ -68,7 +68,92 @@ Required before H's offline comparison is read as a result:
 
 ## Results
 
-Pending: the batch-4 shared store and the group synthesis.
+Offline stage over the committed corpus, local embedder only.
+- **Builds.** `go run ./docs/research/chained-recall/arms/levels build -work <scratch> -proxy http://127.0.0.1:8091`, then `... offline -work <scratch>`.
+- **Build basis.** A copy of the batch-4 shared store the #874 worker built, SHA-256 `d2b2bf29705cc87584ecf21274c298063c29591a6ca22432cd963b400010222e`.
+- **Scoring.** `python3 score.py offline` at `367d0b1`, with S's records as committed there. The scorer's `scores.json` is left to #874 to regenerate.
+- **Records.** `../../evidence/offline/H/g{4,8}/`, and the recorded groups in `evidence/groups-g{4,8}.jsonl`.
+
+### Controls
+
+| Control | Threshold | g4 | g8 |
+|---|---|---:|---:|
+| Groups stored, one per complete window | 406 / 203, none ungrouped | 406, 0 ungrouped | 203, 0 ungrouped |
+| Group intervals equal their window's union | all | all | all |
+| Probes whose Recall delivers a group | at least 24 of 240 (10%) | 87 | 44 |
+| Oracle: hop's statement held by a top-5 Search item | at least 385 of 405 | 404 | 404 |
+| Recalls over S's characters for the probe | 0 | 0 | 0 |
+
+- **Every control passes.** The interval check reads each build's `level_group` rows against its mids.
+- **The groups do the work they are counted for.** At g4, 106 of 1,471 recalled items are groups. In 9 hop deliveries only a group holds the hop's statement (6 at g8).
+- **Mutation checks:** as preregistered, each mutation failed the tests named there, run on this branch before the paid phase.
+
+### Chain reach at equal context characters
+
+k ≥ 2 is the 150 primary chains. S is batch 4 and 8 as recorded at `367d0b1`.
+
+| Arm | Chains k ≥ 2 | C1 | E | K | Context chars per turn | Stored chars per source char | Vectors |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S b4 | 0 | 29/30 | 17/20 | 16/20 | 3,497.5 | 0.705 | 1,624 |
+| S b8 | 2 | 26/30 | 11/20 | 14/20 | 4,008.9 | 0.466 | 812 |
+| H g4 | 0 | 29/30 | 17/20 | 16/20 | 3,320.8 | 1.107 | 2,030 |
+| H g8 | 2 | 28/30 | 17/20 | 16/20 | 3,324.5 | 0.943 | 1,827 |
+
+- **Per family and hop** (hops reached with both entities stated; S b4 in brackets):
+
+  | Family | g4 | g8 |
+  |---|---|---|
+  | C2 | 47 / 0 (46 / 0) | 45 / 2 |
+  | C3 | 44 / 0 / 2 (43 / 0 / 2) | 44 / 0 / 2 |
+  | IC2 | 10 / 0 (10 / 0) | 10 / 0 |
+  | IC3 | 21 / 0 / 0 (21 / 0 / 0) | 21 / 0 / 0 |
+
+  Later hops are reached almost never, by S or H, as the chain check predicted.
+- **Against S b4 on k ≥ 2**, exact McNemar:
+  - g4: 0 discordant, p = 1.0;
+  - g8: 2 chains H alone, 0 S alone, p = 0.5 and Holm p = 1.0.
+- **The budget reproduces S.** H's mean budget is 3,497.5 characters, S b4's measured context per turn. H delivers 5% less because the list stops at the first item that does not fit.
+- **Group synthesis** (the proxy's `calls.jsonl`, arm `H`):
+
+  | Phase | Groups | Upstream attempts | Input tokens | Output tokens |
+  |---|---:|---:|---:|---:|
+  | synth-g4 | 406 | 414 | 260,597 | 213,375 |
+  | synth-g8 | 203 | 214 | 216,720 | 133,339 |
+
+  Both are below the preregistered estimate of 0.75M input and 0.45M output.
+  - Group summaries average 969 characters at g4 and 1,148 at g8.
+  - The group level alone stores 0.402 characters per source character at g4 and 0.238 at g8. That is 0.57 and 0.34 of the mid summaries it covers; RAPTOR reports 0.28.
+
+### Against the hypothesis and the margin
+
+- **Chaining: as predicted, no gain.** H does not raise k ≥ 2 reach beyond S: 0 and 2 of 150, where S b4 reaches 0.
+- **Live-stage margin: within it.** H trails S b4 by 0.0 points at g4 and leads by 1.3 at g8, against a 5-point margin. By the margin, H is eligible for the live stage. Whether it goes is #874's choice between L and H, on offline k ≥ 2 reach.
+- **Single hop: reached.** H reaches single-hop evidence at least as often as S b8: C1 29 and 28 against 26, E 17 against 11, K 16 against 14.
+- **Compression: the stored-characters prediction fails.** H keeps every mid, so it stores more than S b4, not less than S b8: 1.107 and 0.943 against 0.466.
+  - The compression H buys is in context, not storage. Recall holds at most S's characters and still reaches what S reaches.
+  - A version that stored only groups would store 0.40 or 0.24. It would not be the collapsed tree measured here.
+- **ADR 0006.** Each group is written once, over a closed window of G immutable mids, and never re-summarized. No group is an input to another. That is not "recursively summarizing every prior mid state", the running form the ADR rejects. The ADR does not say so, and would have to before H ships.
+
+### Deviations from the preregistration
+
+- **Window 263 at g4 (sources 4193 to 4208) was re-requested after a harness fix.**
+  - Its first answer exceeded 2,000 characters and was rejected by the summarizer. The proxy had cached it, so a re-run got the same answer.
+  - `367d0b1` makes the proxy cache only summaries the production summarizer accepts, and removed that entry. The window was then re-requested and recorded.
+- **The proxy re-sends a failed attempt itself.** After `367d0b1`, 11 over-length answers at g8 were re-sent within the proxy's attempt bound, not by a re-run as the preregistration says. At g4, 6 answers of HTTP 429 `rate_limit_error` were retried the same way. Every window has one recorded summary, and every attempt is in the token table.
+
+## Production estimate
+
+The estimate is read from this arm's code (non-blank, non-comment lines of `build.go` and `memory.go`), dropping what only the study needs: the replay recording, S's budget and the trace.
+
+- **Write, +40 to +55.**
+  - After every G mids, one summarizer call over their summaries, bounded and redacted like a mid. The arm's call and window loop come to 25 lines without recording.
+  - The group row and its embedding: 15 lines.
+- **Read, +30 to +45.**
+  - One list over mids and groups in the store's search: the arm's `rank` is 20 lines, half of which the shipped search already has.
+  - A level on each hit, and recall's label for a group: 5 to 10 lines.
+  - Recall filled to a fixed character budget in place of the fixed five: 10 to 15 lines.
+- **Schema and existing databases, +15 to +25.** The group table, and groups written for mids that predate it.
+- **Net +85 to +125**, above the survey's +70 to +115.
 
 ## Limits
 

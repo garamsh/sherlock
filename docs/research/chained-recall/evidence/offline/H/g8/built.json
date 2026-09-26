@@ -1,0 +1,22 @@
+{
+  "arm": "H",
+  "build_seconds": 1625.656191577,
+  "built": {
+    "stored_chars": 924363,
+    "vectors": 1827,
+    "units": {
+      "group": 203,
+      "mid": 1624
+    },
+    "notes": {
+      "group_size": 8,
+      "groups": 203,
+      "synthesis_calls_this_build": 203,
+      "ungrouped_mids": 0,
+      "windows": 203
+    }
+  },
+  "setting": "g8",
+  "source_chars": 979988,
+  "stored_chars_per_source": 0.9432391008869496
+}

@@ -129,21 +129,34 @@ def clean_chains():
     return {c["id"] for c in corpus["chains"] if c["id"] not in leaky}
 
 
+def offline_records():
+    """(arm/setting, directory) of every arm's offline records: those under
+    evidence/offline/<arm>/<setting>/, and those an arm keeps under its own
+    arms/<dir>/evidence/offline/<setting>/, named by built.json's arm."""
+    found = {}
+    dirs = [d for a in OFFLINE.iterdir() if a.is_dir() for d in a.iterdir() if d.is_dir()]
+    dirs += [d for d in (HERE / "arms").glob("*/evidence/offline/*") if d.is_dir()]
+    for d in dirs:
+        if (d / "probes.jsonl").exists() and (d / "built.json").exists():
+            arm = json.load(open(d / "built.json"))["arm"]
+            name = f"{arm}/{d.name}"
+            if name in found:
+                raise SystemExit(f"{name} is recorded twice: {found[name]} and {d}")
+            found[name] = d
+    return sorted(found.items())
+
+
 def offline():
     corpus = json.load(open(HERE / "corpus.json"))
     clean = clean_chains()
     results = {}
     per_chain = {}
-    for arm_dir in sorted(p for p in OFFLINE.iterdir() if p.is_dir()):
-        for setting_dir in sorted(p for p in arm_dir.iterdir() if p.is_dir()):
-            if not (setting_dir / "probes.jsonl").exists():
-                continue
-            built = json.load(open(setting_dir / "built.json"))
-            chains, guards = score_setting(corpus, load_jsonl(setting_dir / "probes.jsonl"), load_jsonl(setting_dir / "oracle.jsonl"))
-            name = f"{arm_dir.name}/{setting_dir.name}"
-            results[name] = summarize(chains, guards, built)
-            results[name]["clean"] = summarize({i: c for i, c in chains.items() if i in clean}, guards, built)["primary"]
-            per_chain[name] = {"chains": chains, "guards": guards}
+    for name, setting_dir in offline_records():
+        built = json.load(open(setting_dir / "built.json"))
+        chains, guards = score_setting(corpus, load_jsonl(setting_dir / "probes.jsonl"), load_jsonl(setting_dir / "oracle.jsonl"))
+        results[name] = summarize(chains, guards, built)
+        results[name]["clean"] = summarize({i: c for i, c in chains.items() if i in clean}, guards, built)["primary"]
+        per_chain[name] = {"chains": chains, "guards": guards}
     base = per_chain.get("/".join(BASELINE))
     if base:
         ids = sorted(i for i, c in base["chains"].items() if c["k"] >= 2)

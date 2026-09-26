@@ -1,0 +1,25 @@
+{
+ "primary_n": 100,
+ "alpha_first_holm_step": 0.0125,
+ "from_885": {
+  "arm_only": 0.48,
+  "s_only": 0.01
+ },
+ "primary": {
+  "885 L against S": {
+   "arm_only": 0.48,
+   "s_only": 0.01,
+   "power": 1.0
+  },
+  "half that gain": {
+   "arm_only": 0.245,
+   "s_only": 0.01,
+   "power": 0.99805
+  },
+  "a quarter of that gain": {
+   "arm_only": 0.1275,
+   "s_only": 0.01,
+   "power": 0.7664
+  }
+ }
+}

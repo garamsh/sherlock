@@ -32,9 +32,9 @@ func ids(hits []agent.ConversationHit) []int64 {
 
 func TestSeeds_MatchesWholeNamesInTheQueryWeightedBySpecificity(t *testing.T) {
 	g := chainGraph()
-	_, seeds, _, _ := g.linked("Who handles Gebind Components for the Rodend build?")
+	_, seeds, _, _, _ := g.linked("Who handles Gebind Components for the Rodend build?")
 	assert.Equal(t, []string{"gebind components", "rodend"}, seeds)
-	_, seeds, _, _ = g.linked("Who handles Gebind for the build?")
+	_, seeds, _, _, _ = g.linked("Who handles Gebind for the build?")
 	assert.Empty(t, seeds, "the control: part of a name is no seed")
 	weights := g.seeds("rodend office")
 	require.Len(t, weights, 2)
@@ -45,12 +45,12 @@ func TestSeeds_MatchesWholeNamesInTheQueryWeightedBySpecificity(t *testing.T) {
 
 func TestLinked_FollowsTheChainPastTheSeeds(t *testing.T) {
 	g := chainGraph()
-	hits, seeds, steps, _ := g.linked("What number do I dial about the Rodend build?")
+	hits, seeds, steps, _, _ := g.linked("What number do I dial about the Rodend build?")
 	assert.Equal(t, []string{"rodend"}, seeds)
 	assert.Greater(t, steps, 1)
 	assert.Equal(t, []int64{1, 2, 4, 3}, ids(hits), "the seed's mid first, then one entity away, then two")
 	assert.False(t, g.namesAny(3, seeds), "mid 3 names no seed: the walk crossed two entities to reach it")
-	none, _, noSteps, _ := g.linked("What number do I dial?")
+	none, _, noSteps, _, _ := g.linked("What number do I dial?")
 	assert.Empty(t, none, "the control: a query naming no stored entity reaches nothing")
 	assert.Zero(t, noSteps)
 }
@@ -64,4 +64,15 @@ func TestWalk_KeepsTheScoresADistribution(t *testing.T) {
 	}
 	assert.InDelta(t, 1, total, 1e-9)
 	assert.Zero(t, score[4], "mid 5 is not connected to the seed")
+}
+
+func TestLinked_ReturnsEachReachedMidsWalkScore(t *testing.T) {
+	g := chainGraph()
+	hits, _, _, _, scores := g.linked("What number do I dial about the Rodend build?")
+	score, _ := g.walk(g.seeds("rodend"))
+	require.Len(t, scores, len(hits))
+	for _, h := range hits {
+		assert.Equal(t, score[g.index[h.ID]], scores[h.ID], "mid %d", h.ID)
+	}
+	assert.Greater(t, scores[2], scores[3], "the control: a farther mid scores lower")
 }

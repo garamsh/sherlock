@@ -154,6 +154,9 @@ func liveOnce(ctx context.Context, env *Env, arm Arm, setting string, p LiveProb
 	}
 	events := &eventLog{}
 	ws := newWorkspace(descriptors)
+	if a, ok := memory.(Associator); ok {
+		ws.associate = a
+	}
 	session := agent.NewSession(rec, ws, agent.Options{
 		Recaller:           recaller{memory: memory},
 		Conversation:       conversation{ConversationMemory: store, memory: memory},

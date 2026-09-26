@@ -29,8 +29,13 @@ func (arm) Name() string { return "L" }
 // Settings: entities extracted by rule from the recorded summaries at batch
 // 4 and 8, and entities written by the extended synthesis call at batch 4.
 // b4-model-a is L+A (#885): b4-model with walk-delivered mids labelled as
-// associated and the Abstention instruction.
-func (arm) Settings() []string { return []string{"b4", "b8", "b4-model", "b4-model-a"} }
+// associated and the Abstention instruction. #888's read-time variants of
+// b4-model are b4-model-g (L+G: walk mids pass a gate), b4-model-t (L-T:
+// the walk only as memory_associate) and b4-model-v (L+V: a linked fact
+// only after memory_inspect read its source).
+func (arm) Settings() []string {
+	return []string{"b4", "b8", "b4-model", "b4-model-a", "b4-model-g", "b4-model-t", "b4-model-v"}
+}
 
 func (arm) Instructions() string { return "" }
 
@@ -39,10 +44,23 @@ func (arm) Instructions() string { return "" }
 // the ego, as M's instruction was.
 const Abstention = "Answer a fact only from a memory or source that states that fact about the thing the task asks about. A memory labelled associated was reached through a named entity, not matched to the question: treat it as a lead to search or inspect, never as the answer itself."
 
-// InstructionsFor gives L+A its instruction and every other setting none.
+// OnCall is L-T's one contract instruction, pointing the model at the call
+// that now carries the walk.
+const OnCall = "When the task depends on someone or something a memory names and the answer is not in view, call memory_associate with that name to find the episodes linked to it."
+
+// Verify is L+V's one contract instruction.
+const Verify = "A memory marked linked was reached through a name it shares with the task, not by matching the question. Before you state a fact taken from a linked memory, call memory_inspect on the source that states it in this turn, and state only what that source says."
+
+// InstructionsFor gives L+A, L-T and L+V their instruction and every other
+// setting none.
 func (arm) InstructionsFor(setting string) string {
-	if associates(setting) {
+	switch {
+	case associates(setting):
 		return Abstention
+	case setting == "b4-model-t":
+		return OnCall
+	case setting == "b4-model-v":
+		return Verify
 	}
 	return ""
 }
@@ -56,7 +74,7 @@ func parseSetting(setting string) (batch int, fromModel bool, err error) {
 		return 4, false, nil
 	case "b8":
 		return 8, false, nil
-	case "b4-model", "b4-model-a":
+	case "b4-model", "b4-model-a", "b4-model-g", "b4-model-t", "b4-model-v":
 		return 4, true, nil
 	}
 	return 0, false, fmt.Errorf("unknown setting %q", setting)
@@ -229,5 +247,9 @@ func (arm) Open(ctx context.Context, env *study.Env, setting, dir string) (study
 	if err != nil {
 		return nil, err
 	}
-	return &memory{store: store, graph: newGraph(mids, entities), associate: associates(setting)}, nil
+	m := &memory{store: store, graph: newGraph(mids, entities), associate: associates(setting), gated: setting == "b4-model-g"}
+	if setting == "b4-model-t" {
+		return associating{m}, nil
+	}
+	return m, nil
 }

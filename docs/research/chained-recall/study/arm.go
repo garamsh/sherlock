@@ -71,6 +71,14 @@ type Memory interface {
 	Close() error
 }
 
+// Associator is implemented by a Memory that answers memory_associate,
+// the call through which L-T (#888) exposes its walk during work. The live
+// session then offers the call beside memory_search, with its bounds: at
+// most AssociateLimit items per call, and the session's per-tool budget.
+type Associator interface {
+	Associate(ctx context.Context, query string, limit int) ([]Item, error)
+}
+
 // Tracer is implemented by a Memory whose mechanism leaves evidence per
 // call, which the arm's control reads: walk steps taken, entities seeded,
 // groups delivered. The runner records LastTrace after every Recall and

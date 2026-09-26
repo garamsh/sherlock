@@ -1,0 +1,10 @@
+committed records at HEAD, against a scratch re-run with this code
+EQUAL  S/b4/built.json: 1 committed, 1 re-recorded, 0 differing apart from timing
+EQUAL  S/b4/probes.jsonl: 310 committed, 310 re-recorded, 0 differing apart from timing
+EQUAL  S/b4/oracle.jsonl: 405 committed, 405 re-recorded, 0 differing apart from timing
+EQUAL  L/b4-model/built.json: 1 committed, 1 re-recorded, 0 differing apart from timing
+EQUAL  L/b4-model/probes.jsonl: 310 committed, 310 re-recorded, 0 differing apart from timing
+EQUAL  L/b4-model/oracle.jsonl: 405 committed, 405 re-recorded, 0 differing apart from timing
+EQUAL  L/b4-model-a/built.json: 1 committed, 1 re-recorded, 0 differing apart from timing
+EQUAL  L/b4-model-a/probes.jsonl: 310 committed, 310 re-recorded, 0 differing apart from timing
+EQUAL  L/b4-model-a/oracle.jsonl: 405 committed, 405 re-recorded, 0 differing apart from timing

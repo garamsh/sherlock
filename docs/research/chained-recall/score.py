@@ -234,6 +234,13 @@ def followed(result):
 PROBE_NAMES = {}
 
 
+def arm_items(result):
+    """Whether the recall block holds an item only an arm's mechanism
+    delivers: a linked mid (L) or a group (H)."""
+    recall = result.get("recall") or ""
+    return "] (linked):" in recall or "[group:" in recall
+
+
 def score_live_setting(corpus, results):
     by_probe = {r["probe"]: r for r in results}
     out = {}
@@ -247,7 +254,8 @@ def score_live_setting(corpus, results):
         hops = [any(states(v, h["key"]) for v in views) for h in c["hops"]]
         out[c["id"]] = {"family": c["family"], "k": c["k"], "applied": applied(c["check"], r), "hops_seen": hops,
                         "all_seen": all(hops), "searches": sum(t["name"] == "memory_search" for t in r.get("tools") or []),
-                        "followed": followed(r), "error": r.get("error", ""), "attempt": r.get("attempt", 1)}
+                        "followed": followed(r), "error": r.get("error", ""), "attempt": r.get("attempt", 1),
+                        "arm_items": arm_items(r)}
     for g in corpus["guards"]:
         r = by_probe.get(g["id"])
         if r is None:
@@ -284,6 +292,7 @@ def live():
             "searches_per_probe": round(sum(r["searches"] for r in rows.values()) / max(len(rows), 1), 2),
             "probes_following_a_name": sum(r.get("followed", 0) > 0 for r in rows.values()),
             "primary_following_a_name": sum(r.get("followed", 0) > 0 for r in primary),
+            "primary_with_arm_items_in_recall": sum(r.get("arm_items", False) for r in primary),
             "rerun": sum(r["attempt"] > 1 for r in rows.values()),
             "errors": sum(bool(r["error"]) for r in rows.values()),
         }

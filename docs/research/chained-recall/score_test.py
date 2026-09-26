@@ -58,6 +58,11 @@ class LiveTest(unittest.TestCase):
             {"name": "memory_search", "input": {"query": "Pavel Kobri keys"}, "result": "[]"}]}
         self.assertEqual(score.followed(result), 1)
 
+    def test_arm_items_are_linked_or_group_lines_of_the_recall_block(self):
+        self.assertTrue(score.arm_items({"recall": "- [12] (linked): a summary"}))
+        self.assertTrue(score.arm_items({"recall": "- [group:3] (historical): a group"}))
+        self.assertFalse(score.arm_items({"recall": "- [12] (historical): a summary"}), "the control: a shipped line")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -6,13 +6,10 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
-	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/garamsh/sherlock/docs/research/chained-recall/study"
 	"github.com/garamsh/sherlock/internal/agent"
@@ -171,46 +168,16 @@ func entityBatch(ctx context.Context, env *study.Env, n int, batch []study.Messa
 	}
 	var last error
 	for attempt := 1; attempt <= 3; {
-		waitWhilePaused(ctx, env.Proxy)
+		study.WaitWhilePaused(ctx, env.Proxy)
 		entities, err := synthesizeEntities(ctx, model, updates)
 		if err == nil {
 			return batchEntities{First: batch[0].ID, Last: batch[len(batch)-1].ID, Entities: entities}, nil
 		}
 		last = err
-		if pausedNow(env.Proxy) {
+		if study.Paused(env.Proxy) {
 			continue
 		}
 		attempt++
 	}
 	return batchEntities{}, last
-}
-
-// pausedNow asks the study proxy whether it is paused on the usage limit.
-func pausedNow(proxy string) bool {
-	resp, err := http.Get(strings.TrimSuffix(proxy, "/") + "/budget")
-	if err != nil {
-		return false
-	}
-	defer resp.Body.Close()
-	var state struct {
-		Paused bool `json:"paused"`
-	}
-	return json.NewDecoder(resp.Body).Decode(&state) == nil && state.Paused
-}
-
-// waitWhilePaused blocks while the proxy is paused, reading its state once
-// a minute; the proxy alone probes the provider.
-func waitWhilePaused(ctx context.Context, proxy string) {
-	logged := false
-	for pausedNow(proxy) {
-		if !logged {
-			log.Print("proxy paused on the usage limit; waiting")
-			logged = true
-		}
-		select {
-		case <-ctx.Done():
-			return
-		case <-time.After(time.Minute):
-		}
-	}
 }

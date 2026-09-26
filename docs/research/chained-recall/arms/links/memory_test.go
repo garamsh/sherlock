@@ -95,16 +95,12 @@ func itemIDs(items []study.Item) []int64 {
 	return out
 }
 
-// shipped is the shipped recall over the same store: two recent mids and
-// five similar ones.
+// shipped is arm S's recall over the same store.
 func shipped(t *testing.T, m *memory, task string) []int64 {
 	t.Helper()
-	ctx := context.Background()
-	recent, err := m.store.RecentMid(ctx, recentMids)
+	items, err := study.ShippedMemory{Conversation: m.store}.Recall(context.Background(), task)
 	require.NoError(t, err)
-	similar, err := m.store.Search(ctx, task, historicalSlots+len(recent))
-	require.NoError(t, err)
-	return itemIDs(take(recentMids+historicalSlots, map[int64]bool{}, &list{"", append(recent, similar...)}))
+	return itemIDs(items)
 }
 
 func TestRecall_DeliversEveryHopWithinTheShippedBudget(t *testing.T) {

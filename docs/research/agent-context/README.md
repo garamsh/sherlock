@@ -1,6 +1,6 @@
 # How agents understand input and compose context
 
-Records the source survey for issue #860: how five established agents understand a user's input and assemble their context, and the candidate structures for sherlock's query understanding and full-context layer that follow from it. It makes no production decision. §Experiment plan was the input to issue #862's preregistration, and §Experiment (issue #862) records that run.
+Records the source survey for issue #860: how five established agents understand a user's input and assemble their context, and the candidate structures for sherlock's query understanding and full-context layer that follow from it. It makes no production decision. §Experiment plan was the input to issue #862's preregistration; §Experiment (issue #862) and §Confirmatory run (issue #864) record the runs.
 
 ## Contents
 - Question and method
@@ -10,6 +10,7 @@ Records the source survey for issue #860: how five established agents understand
 - Candidate structures for sherlock
 - Experiment plan
 - Experiment (issue #862)
+- Confirmatory run (issue #864)
 - Position on #810 and #812
 - Limits
 
@@ -423,6 +424,95 @@ python3 docs/research/agent-context/mutation.py                                 
 - The proxy is `harness proxy -ceiling <USD> -dir <ledger>`, with `MINIMAX_KEY` in its environment only.
 - Each arm runs `harness run -arm <S|A|B> -base base.db -out <dir> -proxy http://127.0.0.1:8091`.
 - The paid phases are a new run with their own budget; the ledger stays in the directory given to the proxy, and a run resumes after its last recorded episode.
+
+## Confirmatory run (issue #864)
+
+A against S only, with the oracle moved to the source level, preregistered in [confirm-preregistration.md](confirm-preregistration.md). It was committed as `a466bf3` before the first paid call and amended in `e391516` before collection resumed. Evidence is under [evidence/confirm/](evidence/confirm/). #862's evidence is unchanged.
+
+### What changed from #862
+
+- **Arms.** S is `2e28064` (origin/dev; its production code is `4e84d2c`'s). A is `61f4e4c` on `sauce-git/feat/agent-context-arm-a`. The harness is `8cb0b1b`, which adds the source-level oracle, `-keep-stores` and `score.py confirm`.
+- **Oracle.** A primary episode is reached when a mid whose source interval holds the evidence statement's stored message ranks among the top five for that statement, through the arm's own store.
+  - Each miss is classified from the same store as unsummarized, reworded summary (the holding mid's summary lacks the key), or ranking miss (the summary states the key and still ranks below five).
+  - Every episode's store was kept until scoring; stores are not committed.
+- **Episodes.** `corpus.py confirm`, seed 864, same families and sizes. F, G and K are new. I repeats #862's 70 rule-task pairs, which the generator cannot vary, around new filler. N repeats the replication's absent queries. 12 of the 30 E facts recur.
+- **One comparison** at α = 0.05; B and C were not run.
+
+### Collection
+
+- Collection started at 03:52 UTC. From about 04:05 UTC every non-cached request got HTTP 429 "Token Plan usage limit reached … (2056)", a quota on the key rather than a request rate.
+- It was stopped at 04:23 UTC, with USD 0.3010 spent. At that point 25 of S's 50 recorded episodes and 26 of A's 51 had failed while seeding.
+- One ledgered probe every 15 minutes returned 429 at 04:28 and 04:45 and 200 at 05:00:53 ([probes](evidence/confirm/ledger/probes.log)).
+- The amendment was committed before collection resumed. It re-runs every episode that failed on 429, 5xx or a transport error from scratch, scores it once, and halves concurrency to two episodes per arm.
+- **Re-run episodes: S 25, A 26,** every one of them a 429 failure. Their first records are in `results-attempt1.jsonl`; after the re-runs no episode failed on 429 again.
+- Two S probes failed on a malformed terminal call and count as not applied: `R-15`, and `I-43`, where the failure hit the rule turn itself, so the rule never entered the store.
+- Collection ended at 07:42 UTC.
+
+### Controls
+
+From [scores](evidence/confirm/scores.json) `controls`:
+
+| Control | Required | S | A |
+|---|---|---:|---:|
+| Oracle reach, source level, of 280 primary | 266 | **257** | **257** |
+| `memory_search` called in G probes, of 70 | 14 | — | 39 |
+| Note non-empty after the I rule turn, of 70 | 35 | — | 60 |
+| Every mutation breaks a test ([mutation](evidence/confirm/mutation.txt)) | 11 of 11 | pass | pass |
+
+The oracle-reach control fails in both arms, 257 against the 266 required.
+
+| Class of miss | S | A |
+|---|---:|---:|
+| Ranking miss: the holding mid's summary states the key but ranks below five | 22 (F 8, I 9, K 5) | 23 (F 8, I 12, K 3) |
+| Reworded summary | 0 | 0 |
+| Unsummarized | 0 | 0 |
+| Not stored: the turn that states the evidence failed | 1 (`I-43`) | 0 |
+
+- **No miss is a reworded summary.** Every holding mid states the evidence key; it ranks 6th to 851st (`scores.json` `oracle_misses`).
+- **Why it ranks low.** Each evidence message shares its four-message batch with a neighbouring filler or pad pair, so the summary carries two topics. `F-05`'s mid reads "Two separate topics discussed: (1) Lena's charity run has 185 people … (2) … utility costs for a rental", and ranks 6th. `I-24`'s mixes the lowercase rule with an nginx configuration and ranks 70th.
+- **F is structural.** Its referent sits among 21 same-attribute statements whose mids hold nothing else, so a mixed referent mid ranks below them. The oracle counts only mids, even though every F referent is in the restored window, where every arm applied it (70 of 70).
+- **Without F**, oracle reach is 195 of 210 in both arms, again short of 95%.
+
+### Results
+
+*Applied* with its Wilson 95% interval, then *reached* and *inspected*:
+
+| Family (n) | S | A |
+|---|---|---|
+| F (70) | 70 [0.95, 1.00]; 70, 3 | 70 [0.95, 1.00]; 70, 0 |
+| G (70) | 4 [0.02, 0.14]; 7, 0 | 40 [0.45, 0.68]; 41, 10 |
+| I (70) | 2 [0.01, 0.10]; 4, 0 | 17 [0.16, 0.36]; 54, 0 |
+| K (70) | 46 [0.54, 0.76]; 48, 1 | 65 [0.84, 0.97]; 70, 1 |
+| **primary (280)** | **122 [0.38, 0.49]** | **192 [0.63, 0.74]** |
+| E (30) | 13 [0.27, 0.61] | 14 [0.30, 0.64] |
+| N, abstained (30) | 20 [0.49, 0.81] | 20 [0.49, 0.81] |
+| R (30) | 11 [0.22, 0.54] | 23 [0.59, 0.88] |
+
+- **A against S.** Over the 280 primary probes, exact McNemar: A only 74, S only 4, difference +0.250, p = 1.0e-17.
+- **Guardrails hold.** No primary family loses to S; E is +1 and N is 0 for A; no cancelled case is resumed where S did not resume it.
+- **R by case** (continue, changed, cancelled): S 7, 3, 1; A 10, 9, 4.
+- **Layer fidelity (K).** A's note stated the obsolete value without the current one in 0 of 70 episodes, and the current value in 69.
+- **Cost.** USD 5.1781 in total, including the stopped run and USD 0.0001 of probes. S cost 2.5303 and A 2.6477, which is USD 0.0040 and 0.0042 per live turn. The ledger holds 23,574 entries: 18,009 cached syntheses, 357 HTTP 429s and 70 syntheses re-requested for lacking a `memory_summary` call.
+
+### Verdict
+
+**Undetermined**, under the preregistered rule: the source-level oracle reached 257 of 280 in each arm, against the 266 required.
+
+What the run adds to #862's:
+- **The oracle failure is not reworded summaries.** Every miss is a ranking miss of a mid that states the key, from batches that mix the evidence with a neighbouring exchange, plus one S episode whose rule turn failed. Neither the #862 keyword oracle nor this source-level one measures whether the evidence was reachable during a probe. The probe's own path for F is the window, and for G, I and K it is search, the note or recall of the probe's words, not of the evidence's sentence.
+- **The effect replicates on a new seed.** A applied the evidence in 192 of 280 primary probes against S's 122. #862's figures were 209 against 124. The gain sits in the same families, G, I and K, and A's guardrails hold again.
+- **Excluding the 29 primary episodes either arm missed the oracle on,** A leads 66 to 4 over 251 (p = 1.7e-15). This is a sensitivity check, not the preregistered endpoint.
+
+A control that can pass whether the arms differ or not has to fit the corpus. Batches that do not mix evidence with filler, or an oracle over the probe's own retrieval, would fit this one. Choosing either is a design decision for the owner, not a result of this run.
+
+### Reproduction
+
+As §Experiment (issue #862) §Reproduction, with these differences:
+- the corpus is `corpus.py confirm`;
+- the binaries are built from `2e28064` (S) and `61f4e4c` (A) with `harness/` from `8cb0b1b`;
+- the base store is #862's (SHA-256 in the preregistration);
+- runs pass `-keep-stores <dir>`, and the proxy starts from `evidence/stage2/ledger/synthesis-cache.jsonl`;
+- scoring is `python3 docs/research/agent-context/score.py confirm docs/research/agent-context/evidence/confirm docs/research/agent-context/confirm-episodes.json`, which regenerates `scores.json` unchanged.
 
 ## Position on #810 and #812
 

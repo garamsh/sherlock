@@ -31,7 +31,7 @@ def _agent_context_score():
 
 
 AC = _agent_context_score()
-states, wilson, mcnemar = AC.states, AC.wilson, AC.mcnemar
+states, wilson, mcnemar, holm = AC.states, AC.wilson, AC.mcnemar, AC.holm
 
 
 def load_jsonl(path):
@@ -136,6 +136,9 @@ def offline():
             shipped = [base["chains"][i]["chain"] for i in ids]
             b, c, p = mcnemar(arm, shipped)
             r["against_S_b4"] = {"arm_only": b, "S_only": c, "p": p}
+        compared = [r for n, r in results.items() if "against_S_b4" in r]
+        for r, adjusted in zip(compared, holm([r["against_S_b4"]["p"] for r in compared])):
+            r["against_S_b4"]["holm_p"] = adjusted
     out = {"baseline": "/".join(BASELINE), "results": results, "per_chain": per_chain}
     (OFFLINE / "scores.json").write_text(json.dumps(out, indent=1) + "\n")
     for name, r in results.items():

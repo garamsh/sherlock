@@ -285,6 +285,8 @@ def live():
             for f in ("C1", "E", "K", "N"):
                 fid = [i for i, r in base.items() if r["family"] == f and i in per[n]]
                 guard[f] = sum(per[n][i]["applied"] for i in fid) - sum(base[i]["applied"] for i in fid)
+            recalls = {a: {r["probe"]: r["recall"] for r in load_jsonl(LIVE / a / "results.jsonl")} for a in ("S/b4", n)}
+            summary[n]["recall_blocks_differing_from_S"] = sum(recalls[n].get(i) != recalls["S/b4"][i] for i in recalls["S/b4"])
             summary[n]["against_S_b4"] = {"arm_only": b, "S_only": c, "p": p, "guard_change": guard,
                                           "guardrails_hold": all(v >= -GUARD_LOSS for v in guard.values())}
             ps.append(p)

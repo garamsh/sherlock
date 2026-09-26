@@ -116,8 +116,22 @@ def summarize(chains, guards, built):
     return out
 
 
+def clean_chains():
+    """Chains none of whose later hops ranks within the check's top 20 at
+    batch 4 or 8 (preregistration.md Amendment 2); fixed from the check
+    alone."""
+    leaky = set()
+    for n in (4, 8):
+        check = json.load(open(HERE / "evidence" / f"check-b{n}.json"))
+        top = check["summary"]["top"]
+        leaky |= {r["id"] for r in check["chains"] if any(x <= top for x in r["raw"][1:])}
+    corpus = json.load(open(HERE / "corpus.json"))
+    return {c["id"] for c in corpus["chains"] if c["id"] not in leaky}
+
+
 def offline():
     corpus = json.load(open(HERE / "corpus.json"))
+    clean = clean_chains()
     results = {}
     per_chain = {}
     for arm_dir in sorted(p for p in OFFLINE.iterdir() if p.is_dir()):
@@ -128,6 +142,7 @@ def offline():
             chains, guards = score_setting(corpus, load_jsonl(setting_dir / "probes.jsonl"), load_jsonl(setting_dir / "oracle.jsonl"))
             name = f"{arm_dir.name}/{setting_dir.name}"
             results[name] = summarize(chains, guards, built)
+            results[name]["clean"] = summarize({i: c for i, c in chains.items() if i in clean}, guards, built)["primary"]
             per_chain[name] = {"chains": chains, "guards": guards}
     base = per_chain.get("/".join(BASELINE))
     if base:
@@ -139,14 +154,17 @@ def offline():
             shipped = [base["chains"][i]["chain"] for i in ids]
             b, c, p = mcnemar(arm, shipped)
             r["against_S_b4"] = {"arm_only": b, "S_only": c, "p": p}
+            clean_ids = [i for i in ids if i in clean]
+            b, c, p = mcnemar([per_chain[name]["chains"][i]["chain"] for i in clean_ids], [base["chains"][i]["chain"] for i in clean_ids])
+            r["clean_against_S_b4"] = {"arm_only": b, "S_only": c, "p": p}
         compared = [r for n, r in results.items() if "against_S_b4" in r]
         for r, adjusted in zip(compared, holm([r["against_S_b4"]["p"] for r in compared])):
             r["against_S_b4"]["holm_p"] = adjusted
-    out = {"baseline": "/".join(BASELINE), "results": results, "per_chain": per_chain}
+    out = {"baseline": "/".join(BASELINE), "clean_chains": sorted(clean), "results": results, "per_chain": per_chain}
     (OFFLINE / "scores.json").write_text(json.dumps(out, indent=1) + "\n")
     for name, r in results.items():
         vs = r.get("against_S_b4", {})
-        print(f"{name:14s} chain k>=2 {r['primary']['chain']:3d}/{r['primary']['n']}  k1 {r['by_k']['1']['chain']:2d} k2 {r['by_k']['2']['chain']:2d} k3 {r['by_k']['3']['chain']:2d}"
+        print(f"{name:14s} chain k>=2 {r['primary']['chain']:3d}/{r['primary']['n']} clean {r['clean']['chain']:3d}/{r['clean']['n']}  k1 {r['by_k']['1']['chain']:2d} k2 {r['by_k']['2']['chain']:2d} k3 {r['by_k']['3']['chain']:2d}"
               f"  ctx {r['context_chars_per_turn']:7.0f}  stored/src {r['stored_chars_per_source']:.3f}  oracle {r['oracle']['reached']}/{r['oracle']['hops']}  {vs}")
 
 

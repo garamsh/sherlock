@@ -100,12 +100,13 @@ type result struct {
 	Turns     []turn `json:"turns"`
 	Reached   bool   `json:"reached"`
 	Inspected bool   `json:"inspected"`
-	// Oracle says whether the evidence was reachable at the probe: in the
-	// restored window, or in a mid the evidence statement itself ranks
-	// among the top five. Nil where the episode has no evidence.
-	Oracle  *bool   `json:"oracle,omitempty"`
-	Error   string  `json:"error,omitempty"`
-	Seconds float64 `json:"seconds"`
+	// Oracle says whether the evidence source was reachable at the probe
+	// (oracleCheck); OracleDetail says how. Nil where the episode has no
+	// evidence.
+	Oracle       *bool        `json:"oracle,omitempty"`
+	OracleDetail *oracleCheck `json:"oracle_detail,omitempty"`
+	Error        string       `json:"error,omitempty"`
+	Seconds      float64      `json:"seconds"`
 }
 
 type eventLog struct {
@@ -135,6 +136,9 @@ type runner struct {
 	embedder    agent.Embedder
 	descriptors []tool.Descriptor
 	scratch     string
+	// keep, when set, is where each episode's store is copied after its
+	// probe, for diagnosis before scoring.
+	keep string
 }
 
 func runArm(args []string) error {
@@ -149,6 +153,7 @@ func runArm(args []string) error {
 	toolsDir := fs.String("tools", "tools", "directory holding the shipped tool manifests")
 	only := fs.String("only", "", "comma-separated episode IDs to run; empty runs all")
 	workers := fs.Int("workers", 4, "episodes run at once")
+	keep := fs.String("keep-stores", "", "directory to copy each episode's store into after its probe")
 	_ = fs.Parse(args)
 	if *arm == "" || *base == "" || *out == "" {
 		return errors.New("run needs -arm, -base and -out")
@@ -193,7 +198,12 @@ func runArm(args []string) error {
 		return err
 	}
 	defer os.RemoveAll(scratch)
-	r := &runner{arm: *arm, corpus: &corpus, base: *base, proxy: strings.TrimSuffix(*proxyURL, "/"), embedder: embedder, descriptors: descriptors, scratch: scratch}
+	r := &runner{arm: *arm, corpus: &corpus, base: *base, proxy: strings.TrimSuffix(*proxyURL, "/"), embedder: embedder, descriptors: descriptors, scratch: scratch, keep: *keep}
+	if r.keep != "" {
+		if err := os.MkdirAll(r.keep, 0o755); err != nil {
+			return err
+		}
+	}
 
 	results, err := os.OpenFile(filepath.Join(*out, "results.jsonl"), os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0o644)
 	if err != nil {
@@ -347,45 +357,101 @@ func (r *runner) episode(ctx context.Context, e episode) (result, []map[string]a
 		res.Turns = append(res.Turns, t)
 	}
 	if e.Oracle != "" {
-		ok, err := r.oracle(ctx, path, e.Oracle, e.Reach)
+		check, err := r.oracle(ctx, path, e.Oracle, e.Reach)
 		if err != nil {
 			res.Error = fmt.Sprintf("oracle: %v", err)
 		} else {
-			res.Oracle = &ok
+			res.Oracle, res.OracleDetail = &check.Reached, &check
+		}
+		if r.keep != "" {
+			if err := copyFile(path, filepath.Join(r.keep, e.ID+".db")); err != nil && res.Error == "" {
+				res.Error = fmt.Sprintf("keep store: %v", err)
+			}
 		}
 	}
 	res.Seconds = time.Since(started).Seconds()
 	return res, transcript
 }
 
-// oracle checks the evidence is reachable at all through this arm's store:
-// a search with the evidence statement's own words ranks a mid holding it
-// among the top five, or the window a restart restores holds it.
-func (r *runner) oracle(ctx context.Context, path, statement string, keys []string) (bool, error) {
+// oracleCheck says whether the evidence was reachable through the arm's
+// own store, at the level of sources: a mid whose interval holds the
+// evidence source ranks among the top five for the evidence's own
+// sentence. A miss is classified from the same store: no mid holds the
+// source yet, or the mid that holds it ranks lower and its summary does
+// or does not state the key.
+type oracleCheck struct {
+	Reached bool    `json:"reached"`
+	Sources []int64 `json:"sources"`
+	Mid     int64   `json:"mid,omitempty"`
+	Rank    int     `json:"rank,omitempty"`
+	Summary string  `json:"summary,omitempty"`
+	// KeyStated says whether the holding mid's summary states the key.
+	KeyStated bool `json:"key_stated"`
+	// Class is empty when reached, else "unsummarized", "reworded
+	// summary" (the holding mid's summary does not state the key) or
+	// "ranking miss" (it does, and still ranks below five).
+	Class string `json:"class,omitempty"`
+}
+
+// oracleTop is how many mids a reached evidence source may rank within.
+const oracleTop = 5
+
+func (r *runner) oracle(ctx context.Context, path, statement string, keys []string) (oracleCheck, error) {
+	var out oracleCheck
+	db, err := sql.Open("sqlite", path+"?mode=ro")
+	if err != nil {
+		return out, err
+	}
+	rows, err := db.QueryContext(ctx, `SELECT id FROM conversation_sources WHERE role='user' AND content=? ORDER BY id`, statement)
+	if err != nil {
+		db.Close()
+		return out, err
+	}
+	for rows.Next() {
+		var id int64
+		if err := rows.Scan(&id); err != nil {
+			rows.Close()
+			db.Close()
+			return out, err
+		}
+		out.Sources = append(out.Sources, id)
+	}
+	rows.Close()
+	db.Close()
+	if len(out.Sources) == 0 {
+		return out, fmt.Errorf("no stored source is the evidence statement %q", statement)
+	}
 	store, err := sqlite.OpenConversation(path, r.embedder)
 	if err != nil {
-		return false, err
+		return out, err
 	}
 	defer store.Close()
-	hits, err := store.Search(ctx, statement, 5)
+	ranked, err := store.Search(ctx, statement, 1<<20)
 	if err != nil {
-		return false, err
+		return out, err
 	}
-	for _, h := range hits {
-		if containsAny(h.Summary, keys) {
-			return true, nil
+	for i, h := range ranked {
+		held := false
+		for _, id := range out.Sources {
+			held = held || (h.SourceFirst <= id && id <= h.SourceLast)
 		}
-	}
-	recent, err := store.Recent(ctx, r.corpus.Window)
-	if err != nil {
-		return false, err
-	}
-	for _, m := range recent {
-		if containsAny(m.Content, keys) {
-			return true, nil
+		if !held {
+			continue
 		}
+		out.Mid, out.Rank, out.Summary = h.ID, i+1, h.Summary
+		out.KeyStated = containsAny(h.Summary, keys)
+		out.Reached = out.Rank <= oracleTop
+		switch {
+		case out.Reached:
+		case out.KeyStated:
+			out.Class = "ranking miss"
+		default:
+			out.Class = "reworded summary"
+		}
+		return out, nil
 	}
-	return false, nil
+	out.Class = "unsummarized"
+	return out, nil
 }
 
 func (r *runner) seed(ctx context.Context, episode, path string, pairs []pair) error {

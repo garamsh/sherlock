@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -16,6 +17,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/garamsh/sherlock/internal/agent"
+	"github.com/garamsh/sherlock/internal/memory/sqlite"
 )
 
 func TestLedger_RefusesPastTheCeilingAndSettlesAtUsage(t *testing.T) {
@@ -210,4 +212,82 @@ func TestContainsAny_MatchesAsTheScorerDoes(t *testing.T) {
 	} {
 		assert.Equal(t, tc.want, containsAny(tc.text, []string{tc.key}), "%q in %q", tc.key, tc.text)
 	}
+}
+
+// wordEmbedder counts each word into a hashed dimension, so texts sharing
+// words are similar and texts sharing none are orthogonal.
+type wordEmbedder struct{}
+
+func (wordEmbedder) Embed(_ context.Context, text string) ([]float32, error) {
+	v := make([]float32, 512)
+	for _, w := range strings.Fields(strings.ToLower(text)) {
+		h := 0
+		for _, c := range strings.Trim(w, ".,:;?!") {
+			h = h*31 + int(c)
+		}
+		v[(h%512+512)%512]++
+	}
+	return v, nil
+}
+
+// firstUpdate summarizes a batch by its first message, so a test controls
+// what each mid's summary says.
+type firstUpdate struct{}
+
+func (firstUpdate) Summarize(_ context.Context, updates []string) (string, error) {
+	return updates[0], nil
+}
+
+// oracleStore records the given batches of four user messages each and
+// returns the store's path.
+func oracleStore(t *testing.T, batches [][4]string) string {
+	t.Helper()
+	path := t.TempDir() + "/memory.db"
+	store, err := sqlite.OpenConversation(path, wordEmbedder{})
+	require.NoError(t, err)
+	for _, b := range batches {
+		for _, m := range b {
+			require.NoError(t, store.RecordTurn(context.Background(), []agent.SourceMessage{{Role: agent.RoleUser, Content: m}}, firstUpdate{}))
+		}
+	}
+	require.NoError(t, store.Close())
+	return path
+}
+
+func TestOracle_ReachesTheSourceThroughItsMidsInterval(t *testing.T) {
+	statement := "The budget for Mara's offsite is 4,100 euros."
+	r := &runner{embedder: wordEmbedder{}}
+	ctx := context.Background()
+
+	reached := oracleStore(t, [][4]string{{statement, "ok", "fine", "sure"}, {"weather talk", "rain", "sun", "wind"}})
+	check, err := r.oracle(ctx, reached, statement, []string{"4,100"})
+	require.NoError(t, err)
+	assert.True(t, check.Reached, "the control: a mid holding the source ranks first")
+	assert.Equal(t, []int64{1}, check.Sources)
+	assert.Equal(t, 1, check.Rank)
+	assert.Empty(t, check.Class)
+
+	// Six mids echo the statement's words ahead of the one holding it,
+	// whose summary is about something else.
+	var batches [][4]string
+	for i := range 6 {
+		batches = append(batches, [4]string{fmt.Sprintf("The budget for Mara's offsite is a question %d", i), "a", "b", "c"})
+	}
+	batches = append(batches, [4]string{"garden hose repair", "hmm", statement, "noted"})
+	reworded := oracleStore(t, batches)
+	check, err = r.oracle(ctx, reworded, statement, []string{"4,100"})
+	require.NoError(t, err)
+	assert.False(t, check.Reached)
+	assert.Equal(t, 7, check.Rank)
+	assert.Equal(t, "reworded summary", check.Class, "the holding mid's summary never states the key")
+
+	batches[6] = [4]string{"garden hose 4,100 repair", "hmm", statement, "noted"}
+	ranking := oracleStore(t, batches)
+	check, err = r.oracle(ctx, ranking, statement, []string{"4,100"})
+	require.NoError(t, err)
+	assert.False(t, check.Reached)
+	assert.Equal(t, "ranking miss", check.Class, "the summary states the key and still ranks below five")
+
+	_, err = r.oracle(ctx, ranking, "a sentence nobody said", []string{"x"})
+	assert.Error(t, err, "an evidence statement missing from the store is a harness error, not a miss")
 }

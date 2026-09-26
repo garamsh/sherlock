@@ -95,5 +95,26 @@ class StatsTest(unittest.TestCase):
         self.assertTrue(0.39 < lo < 0.40 and 0.89 < hi < 0.90)
 
 
+class ConfirmTest(unittest.TestCase):
+    def test_one_candidate_is_decided_on_its_own_p(self):
+        tests = {"A": {"difference": 0.3, "p": 0.01, "p_holm": score.holm([0.01])[0]}}
+        guard = {"A": {"hold": True}}
+        self.assertEqual(tests["A"]["p_holm"], 0.01, "a single comparison is not adjusted")
+        self.assertEqual(score.decide(tests, guard, {}, ["A"])["valid"], ["A"])
+        self.assertEqual(score.decide(dict(A=dict(tests["A"], p_holm=0.06)), guard, {}, ["A"])["valid"], [])
+        failed = {"oracle_reach_S": {"pass": False}}
+        self.assertEqual(score.decide(tests, guard, failed, ["A"])["outcome"], "undetermined")
+
+    def test_oracle_misses_are_grouped_by_class(self):
+        results = {"S": {"I-01": {"oracle_detail": {"reached": False, "class": "reworded summary", "rank": 9, "key_stated": False}},
+                         "G-01": {"oracle_detail": {"reached": True}}},
+                   "A": {"I-01": {"oracle_detail": {"reached": False, "class": "ranking miss", "rank": 6, "key_stated": True}},
+                         "G-01": {}}}
+        misses = score.oracle_misses(results, ["I-01", "G-01"], ["S", "A"])
+        self.assertEqual(misses["S"], {"reworded summary": [{"episode": "I-01", "rank": 9, "key_stated": False}]})
+        self.assertEqual(list(misses["A"]), ["ranking miss"])
+        self.assertEqual(score.oracle_misses({"S": {"I-01": {}}}, ["I-01"], ["S"]), {}, "no detail, no classes")
+
+
 if __name__ == "__main__":
     unittest.main()

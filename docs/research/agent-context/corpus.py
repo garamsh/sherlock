@@ -6,6 +6,7 @@ running this again writes byte-identical files.
 
     python3 docs/research/agent-context/corpus.py          # the stage-2 episodes
     python3 docs/research/agent-context/corpus.py pilot    # the stage-1 pilot, drawn apart
+    python3 docs/research/agent-context/corpus.py confirm  # issue #864's confirmatory run
 """
 
 import json
@@ -22,6 +23,7 @@ REPLICATION = HERE.parent / "mid-memory-rag" / "evidence" / "replication"
 RUNS = {
     "stage2": {"seed": 862, "out": "episodes.json", "F": 70, "G": 70, "I": 70, "K": 70, "E": 30, "N": 30, "R": 10},
     "pilot": {"seed": 8620, "out": "pilot-episodes.json", "F": 8, "G": 8, "I": 8, "K": 8, "E": 3, "N": 3, "R": 1},
+    "confirm": {"seed": 864, "out": "confirm-episodes.json", "F": 70, "G": 70, "I": 70, "K": 70, "E": 30, "N": 30, "R": 10},
 }
 WINDOW = 32
 BLOCK_CHATS = 5  # a filler block is five 8-message chats: 40 messages
@@ -267,7 +269,7 @@ def build(run):
 
 
 def main():
-    run = RUNS["pilot" if sys.argv[1:] == ["pilot"] else "stage2"]
+    run = RUNS[sys.argv[1] if sys.argv[1:] in (["pilot"], ["confirm"]) else "stage2"]
     blocks, pads, episodes = build(run)
     out = HERE / run["out"]
     out.write_text(json.dumps({"window": WINDOW, "blocks": blocks, "pads": pads, "episodes": episodes}, indent=1, ensure_ascii=False) + "\n")

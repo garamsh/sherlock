@@ -199,11 +199,11 @@ def power(n, psi, delta, alpha):
 
 # ---- scoring ----------------------------------------------------------------
 
-def load(run_dir, episodes_path):
+def load(run_dir, episodes_path, arms=ARMS):
     corpus = json.load(open(episodes_path))
     episodes = {e["id"]: e for e in corpus["episodes"]}
     results = {}
-    for arm in ARMS:
+    for arm in arms:
         path = Path(run_dir) / arm / "results.jsonl"
         results[arm] = {}
         if path.exists():
@@ -237,17 +237,19 @@ def score_episode(e, r):
     return row
 
 
-def score(run_dir, episodes_path):
-    episodes, results, calls = load(run_dir, episodes_path)
-    ids = [i for i in episodes if all(i in results[a] for a in ARMS)]
-    rows = {a: {i: score_episode(episodes[i], results[a][i]) for i in ids} for a in ARMS}
+def score(run_dir, episodes_path, arms=ARMS, candidates=CANDIDATES):
+    """Score a run of the given arms; S is always the comparator, and a
+    single candidate's p is its own Holm-adjusted p."""
+    episodes, results, calls = load(run_dir, episodes_path, arms)
+    ids = [i for i in episodes if all(i in results[a] for a in arms)]
+    rows = {a: {i: score_episode(episodes[i], results[a][i]) for i in ids} for a in arms}
     fam = lambda f: [i for i in ids if episodes[i]["family"] == f]
 
     families = {}
     for f in PRIMARY + GUARD:
         ep = fam(f)
         families[f] = {}
-        for a in ARMS:
+        for a in arms:
             k = sum(rows[a][i]["applied"] for i in ep)
             entry = {"n": len(ep), "applied": k, "applied_ci": wilson(k, len(ep)),
                      "reached": sum(rows[a][i]["reached"] for i in ep), "inspected": sum(rows[a][i]["inspected"] for i in ep),
@@ -265,18 +267,18 @@ def score(run_dir, episodes_path):
 
     primary_ids = [i for f in PRIMARY for i in fam(f)]
     tests = {}
-    for c in CANDIDATES:
+    for c in candidates:
         cand = [rows[c][i]["applied"] for i in primary_ids]
         ship = [rows["S"][i]["applied"] for i in primary_ids]
         b, d, p = mcnemar(cand, ship)
         n = len(primary_ids)
         tests[c] = {"n": n, "candidate_only": b, "shipped_only": d, "difference": round((b - d) / n, 4) if n else None,
                     "discordance": round((b + d) / n, 4) if n else None, "p": p}
-    for c, adj in zip(CANDIDATES, holm([tests[c]["p"] for c in CANDIDATES])):
+    for c, adj in zip(candidates, holm([tests[c]["p"] for c in candidates])):
         tests[c]["p_holm"] = adj
 
     guardrails = {}
-    for c in CANDIDATES:
+    for c in candidates:
         losses = {f: families[f]["S"]["applied"] - families[f][c]["applied"] for f in PRIMARY}
         control = {f: families[f]["S"]["applied"] - families[f][c]["applied"] for f in ("E", "N")}
         canceled = [i for i in fam("R") if episodes[i]["case"] == "canceled"]
@@ -284,20 +286,37 @@ def score(run_dir, episodes_path):
         guardrails[c] = {"primary_losses": losses, "control_losses": control, "canceled_resumed_where_S_did_not": resumed,
                          "hold": all(v <= GUARD_PRIMARY_LOSS for v in losses.values()) and all(v <= GUARD_CONTROL_LOSS for v in control.values()) and not resumed}
 
-    controls = compute_controls(episodes, results, rows, ids, fam)
+    controls = compute_controls(episodes, results, rows, ids, fam, arms, candidates)
     costs = cost_summary(calls, episodes, ids)
-    b, d, p = mcnemar([rows["B"][i]["applied"] for i in primary_ids], [rows["A"][i]["applied"] for i in primary_ids])
-    tests["B_over_A"] = {"B_only": b, "A_only": d, "p": p}
-    verdict = decide(tests, guardrails, controls)
-    return {"episodes": len(ids), "families": families, "tests": tests, "guardrails": guardrails,
-            "controls": controls, "cost": costs, "verdict": verdict,
-            "per_episode": {a: rows[a] for a in ARMS}}
+    if "B" in arms:
+        b, d, p = mcnemar([rows["B"][i]["applied"] for i in primary_ids], [rows["A"][i]["applied"] for i in primary_ids])
+        tests["B_over_A"] = {"B_only": b, "A_only": d, "p": p}
+    verdict = decide(tests, guardrails, controls, candidates)
+    out = {"episodes": len(ids), "families": families, "tests": tests, "guardrails": guardrails,
+           "controls": controls, "cost": costs, "verdict": verdict,
+           "per_episode": {a: rows[a] for a in arms}}
+    misses = oracle_misses(results, primary_ids, arms)
+    if misses:
+        out["oracle_misses"] = misses
+    return out
 
 
-def compute_controls(episodes, results, rows, ids, fam):
+def oracle_misses(results, primary_ids, arms):
+    """Each primary oracle miss by class, where the harness classified it."""
+    out = {}
+    for a in arms:
+        for i in primary_ids:
+            detail = results[a][i].get("oracle_detail")
+            if detail and not detail["reached"]:
+                out.setdefault(a, {}).setdefault(detail["class"], []).append(
+                    {"episode": i, "rank": detail.get("rank"), "key_stated": detail.get("key_stated")})
+    return out
+
+
+def compute_controls(episodes, results, rows, ids, fam, arms, candidates):
     primary_ids = [i for f in PRIMARY for i in fam(f)]
     out = {}
-    for a in ARMS:
+    for a in arms:
         reach = sum(bool(rows[a][i]["oracle"]) for i in primary_ids)
         out[f"oracle_reach_{a}"] = {"value": reach, "of": len(primary_ids), "required": math.ceil(0.95 * len(primary_ids)), "pass": reach >= math.ceil(0.95 * len(primary_ids))}
     g = fam("G")
@@ -307,9 +326,11 @@ def compute_controls(episodes, results, rows, ids, fam):
     rules = defaultdict(list)
     for i in rule_eps:
         rules[episodes[i].get("rule", i)].append(i)
-    for a in CANDIDATES:
+    for a in candidates:
         nonempty = sum(rows[a][i].get("note_after_rule", False) for i in rule_eps)
         out[f"note_after_rule_{a}"] = {"value": nonempty, "of": len(rule_eps), "required": math.ceil(0.5 * len(rule_eps)), "pass": nonempty >= math.ceil(0.5 * len(rule_eps))}
+    if "B" not in arms:
+        return out
     understood = called = 0
     for i in ids:
         for t in results["B"][i].get("turns") or []:
@@ -343,11 +364,11 @@ def cost_summary(calls, episodes, ids):
             "per_family_usd": {f: {a: round(v, 4) for a, v in d.items()} for f, d in per_family.items()}}
 
 
-def decide(tests, guardrails, controls):
+def decide(tests, guardrails, controls, candidates=CANDIDATES):
     failed = [k for k, v in controls.items() if not v["pass"]]
     if failed:
         return {"outcome": "undetermined", "failed_controls": failed}
-    valid = [c for c in CANDIDATES if tests[c]["difference"] and tests[c]["difference"] > 0 and tests[c]["p_holm"] < ALPHA and guardrails[c]["hold"]]
+    valid = [c for c in candidates if tests[c]["difference"] and tests[c]["difference"] > 0 and tests[c]["p_holm"] < ALPHA and guardrails[c]["hold"]]
     if not valid:
         return {"outcome": "shipped structure stands", "valid": []}
     # A has the smaller production diff; B is taken over it only by beating it.
@@ -398,9 +419,14 @@ def main():
         since = dict(arg.split("=", 1) for arg in sys.argv[5:])
         print(json.dumps(project(Path(sys.argv[2]), Path(sys.argv[3]), Path(sys.argv[4]), since), indent=1))
         return
+    arms, candidates = ARMS, CANDIDATES
+    if sys.argv[1] == "confirm":
+        # Issue #864: S against A only, one comparison.
+        arms, candidates = ["S", "A"], ["A"]
+        sys.argv.pop(1)
     run_dir = Path(sys.argv[1])
     episodes = Path(sys.argv[2]) if len(sys.argv) > 2 else HERE / "episodes.json"
-    out = score(run_dir, episodes)
+    out = score(run_dir, episodes, arms, candidates)
     (run_dir / "scores.json").write_text(json.dumps(out, indent=1, sort_keys=True) + "\n")
     for f, arms in out["families"].items():
         print(f, {a: f"{v['applied']}/{v['n']}" for a, v in arms.items()})

@@ -16,6 +16,8 @@ REPO = Path(__file__).resolve().parents[3]
 # A and B are the tips of sauce-git/feat/agent-context-arm-a and -arm-b;
 # fetch them first. HARNESS carries the proxy the record names as 7c670ec.
 A, B, HARNESS = "61f4e4c", "b5bc7ed", "44e34e0"
+# ORACLE carries the source-level oracle of issue #864.
+ORACLE = "8cb0b1b"
 
 MUTATIONS = [
     (A, "internal/agent/service.go", "if call.Name == MemorySearchTool && s.opts.Conversation != nil {",
@@ -53,6 +55,10 @@ MUTATIONS = [
      "if cached, done := []byte(nil), func() {}; cached != nil {",
      "./docs/research/agent-context/harness/", "TestProxy_SynthesisIsAnsweredOnceThenFromTheCache",
      "harness: identical syntheses are not cached"),
+    (ORACLE, "docs/research/agent-context/harness/run.go", "held = held || (h.SourceFirst <= id && id <= h.SourceLast)",
+     "held = held || (h.SourceFirst <= id && id <= h.SourceLast && false)",
+     "./docs/research/agent-context/harness/", "TestOracle_ReachesTheSourceThroughItsMidsInterval",
+     "harness: the oracle no longer finds the source in a mid's interval"),
 ]
 
 

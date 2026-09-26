@@ -45,6 +45,13 @@ type Arm interface {
 	Instructions() string
 }
 
+// SettingInstructor is implemented by an arm whose instruction differs
+// between its settings, such as L and L+A (#885). The live session then
+// appends InstructionsFor(setting) in place of Instructions.
+type SettingInstructor interface {
+	InstructionsFor(setting string) string
+}
+
 // Memory is an opened arm memory.
 type Memory interface {
 	// Recall is what the arm puts into context before the act loop for a

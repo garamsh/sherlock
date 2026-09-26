@@ -21,3 +21,17 @@ func TestSummarized_AcceptsOnlyWhatTheProductionSummarizerAccepts(t *testing.T) 
 	assert.False(t, summarized([]byte(`{"choices":[{"message":{"tool_calls":[{"function":{"name":"memory_summary","arguments":"not json"}}]}}]}`)))
 	assert.False(t, summarized([]byte(`{"choices":[{"message":{"tool_calls":[{"function":{"name":"memory_write","arguments":"{}"}}]}}]}`)))
 }
+
+func entityResponse(entities string) []byte {
+	args := `{"summary":"s","entities":` + entities + `}`
+	call, _ := json.Marshal(map[string]any{"id": "c", "type": "function", "function": map[string]string{"name": "memory_summary", "arguments": args}})
+	return []byte(`{"choices":[{"message":{"role":"assistant","tool_calls":[` + string(call) + `]}}]}`)
+}
+
+func TestSummarized_RefusesEntitiesThatAreNotAnArrayOfStrings(t *testing.T) {
+	assert.True(t, summarized(entityResponse(`["Rodend","Gebind Components"]`)), "the control: arm L's extended answer")
+	assert.True(t, summarized(entityResponse(`[]`)), "the control: a batch naming nothing")
+	assert.False(t, summarized(entityResponse(`"Rodend, Gebind Components"`)), "entities as a string, as in episode b4-00128")
+	assert.False(t, summarized(entityResponse(`null`)))
+	assert.False(t, summarized(entityResponse(`[1,2]`)))
+}

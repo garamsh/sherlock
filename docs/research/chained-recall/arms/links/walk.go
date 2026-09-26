@@ -104,8 +104,10 @@ func (g *graph) walk(seeds map[int]float64) ([]float64, int) {
 
 // linked is the walk's ranking of mids for a query: every mid the walk
 // reached, highest score first, newer first on a tie. It also returns the
-// seeds' names and the iterations taken, for the trace.
-func (g *graph) linked(query string) ([]agent.ConversationHit, []string, int) {
+// seeds' names and the iterations taken, for the trace, and for each
+// reached mid the entity it was reached through: the one it names with the
+// highest score, which L+A's label shows.
+func (g *graph) linked(query string) ([]agent.ConversationHit, []string, int, map[int64]string) {
 	seeds := g.seeds(query)
 	score, steps := g.walk(seeds)
 	var reached []int
@@ -121,15 +123,25 @@ func (g *graph) linked(query string) ([]agent.ConversationHit, []string, int) {
 		return g.mids[reached[a]].ID > g.mids[reached[b]].ID
 	})
 	out := make([]agent.ConversationHit, len(reached))
+	via := map[int64]string{}
 	for i, n := range reached {
 		out[i] = g.mids[n]
+		best := -1
+		for _, e := range g.adj[n] {
+			if best < 0 || score[e] > score[best] {
+				best = e
+			}
+		}
+		if best >= 0 {
+			via[g.mids[n].ID] = g.name(best)
+		}
 	}
 	named := []string{}
 	for n := range seeds {
 		named = append(named, g.name(n))
 	}
 	sort.Strings(named)
-	return out, named, steps
+	return out, named, steps, via
 }
 
 // namesAny reports whether a mid names one of the given entities.

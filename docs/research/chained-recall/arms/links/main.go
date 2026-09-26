@@ -28,9 +28,27 @@ func (arm) Name() string { return "L" }
 
 // Settings: entities extracted by rule from the recorded summaries at batch
 // 4 and 8, and entities written by the extended synthesis call at batch 4.
-func (arm) Settings() []string { return []string{"b4", "b8", "b4-model"} }
+// b4-model-a is L+A (#885): b4-model with walk-delivered mids labelled as
+// associated and the Abstention instruction.
+func (arm) Settings() []string { return []string{"b4", "b8", "b4-model", "b4-model-a"} }
 
 func (arm) Instructions() string { return "" }
+
+// Abstention is L+A's one contract instruction. Production would carry it
+// in the platform contract's §Source-linked memory; the study appends it to
+// the ego, as M's instruction was.
+const Abstention = "Answer a fact only from a memory or source that states that fact about the thing the task asks about. A memory labelled associated was reached through a named entity, not matched to the question: treat it as a lead to search or inspect, never as the answer itself."
+
+// InstructionsFor gives L+A its instruction and every other setting none.
+func (arm) InstructionsFor(setting string) string {
+	if associates(setting) {
+		return Abstention
+	}
+	return ""
+}
+
+// associates reports whether a setting is L+A.
+func associates(setting string) bool { return setting == "b4-model-a" }
 
 func parseSetting(setting string) (batch int, fromModel bool, err error) {
 	switch setting {
@@ -38,7 +56,7 @@ func parseSetting(setting string) (batch int, fromModel bool, err error) {
 		return 4, false, nil
 	case "b8":
 		return 8, false, nil
-	case "b4-model":
+	case "b4-model", "b4-model-a":
 		return 4, true, nil
 	}
 	return 0, false, fmt.Errorf("unknown setting %q", setting)
@@ -211,5 +229,5 @@ func (arm) Open(ctx context.Context, env *study.Env, setting, dir string) (study
 	if err != nil {
 		return nil, err
 	}
-	return &memory{store: store, graph: newGraph(mids, entities)}, nil
+	return &memory{store: store, graph: newGraph(mids, entities), associate: associates(setting)}, nil
 }

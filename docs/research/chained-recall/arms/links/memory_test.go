@@ -156,3 +156,41 @@ func TestBuild_LeavesTheSharedStoreUnchanged(t *testing.T) {
 	_, err = readEntities(context.Background(), path)
 	assert.Error(t, err, "the shared store holds no entity table")
 }
+
+func TestRecall_LabelsWalkDeliveredMidsAsAssociatedInLPlusA(t *testing.T) {
+	env := sharedStore(t)
+	ctx := context.Background()
+	dir := filepath.Join(env.Work, "builds", "L", "b4-model-a")
+	require.NoError(t, study.CopyDir(filepath.Join(env.Work, "shared", "b4"), dir))
+	path := filepath.Join(dir, "memory.db")
+	require.NoError(t, writeEntities(ctx, path, map[int64][]string{
+		1: {"rodend", "gebind components"}, 2: {"gebind components", "mateo deatreal"}, 3: {"mateo deatreal"},
+	}))
+	opened, err := New().Open(ctx, env, "b4-model-a", dir)
+	require.NoError(t, err)
+	defer opened.Close()
+	m := opened.(*memory)
+	items, err := m.Recall(ctx, chainQuery)
+	require.NoError(t, err)
+	byID := map[int64]study.Item{}
+	for _, it := range items {
+		byID[it.ID] = it
+	}
+	assert.Equal(t, "associated", byID[2].Kind)
+	assert.Equal(t, associatedLabel("gebind components")+chainSummaries[1], byID[2].Text)
+	assert.Equal(t, associatedLabel("mateo deatreal")+chainSummaries[2], byID[3].Text)
+	assert.Equal(t, "historical", byID[1].Kind, "the control: a similar mid carries no label")
+	assert.Equal(t, chainSummaries[0], byID[1].Text)
+	assert.Equal(t, []int64{2, 3}, m.LastTrace()["linked"], "the trace still counts the walk's mids")
+	hits, err := m.Search(ctx, chainQuery, 5)
+	require.NoError(t, err)
+	labelled := 0
+	for _, it := range hits {
+		if strings.HasPrefix(it.Text, "Associated through") {
+			labelled++
+		}
+	}
+	assert.Equal(t, 2, labelled, "memory_search labels the walk's mids too")
+	assert.Equal(t, Abstention, New().(study.SettingInstructor).InstructionsFor("b4-model-a"))
+	assert.Empty(t, New().(study.SettingInstructor).InstructionsFor("b4-model"), "the control: L has no instruction")
+}

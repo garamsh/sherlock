@@ -156,3 +156,15 @@ func TestCopyDir_RefusesOnlyAWriteAheadLogHoldingFrames(t *testing.T) {
 	require.NoError(t, os.WriteFile(filepath.Join(from, "memory.db-wal"), []byte("frames"), 0o644))
 	assert.Error(t, CopyDir(from, t.TempDir()))
 }
+
+func TestResearchDir_FindsTheReplicationFromEitherDepth(t *testing.T) {
+	root := t.TempDir()
+	research := filepath.Join(root, "docs", "research")
+	require.NoError(t, os.MkdirAll(filepath.Join(research, "mid-memory-rag"), 0o755))
+	require.NoError(t, os.MkdirAll(filepath.Join(research, "chained-recall", "confirm"), 0o755))
+	assert.Equal(t, research, ResearchDir(filepath.Join(research, "chained-recall")))
+	assert.Equal(t, research, ResearchDir(filepath.Join(research, "chained-recall", "confirm")))
+	// The control: with no replication above it, the directory's parent.
+	elsewhere := filepath.Join(root, "other", "study")
+	assert.Equal(t, filepath.Join(root, "other"), filepath.Clean(ResearchDir(elsewhere)))
+}

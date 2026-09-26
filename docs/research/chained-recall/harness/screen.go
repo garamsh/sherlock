@@ -128,7 +128,7 @@ func screen(ctx context.Context, dir, work string, embedder agent.Embedder) erro
 	type recorded struct {
 		Summary string `json:"summary"`
 	}
-	base, err := study.ReadJSONL[recorded](filepath.Join(dir, "..", "mid-memory-rag", "evidence", "replication", "synthesis-n4.jsonl"))
+	base, err := study.ReadJSONL[recorded](filepath.Join(study.ResearchDir(dir), "mid-memory-rag", "evidence", "replication", "synthesis-n4.jsonl"))
 	if err != nil {
 		return err
 	}

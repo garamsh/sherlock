@@ -1,0 +1,68 @@
+{
+ "primary_n": 100,
+ "alpha_first_holm_step": 0.025,
+ "from_874": {
+  "arm_only": 0.61,
+  "s_only": 0.05,
+  "n": 100
+ },
+ "primary": {
+  "874 L against S on C2 and C3": {
+   "arm_only": 0.61,
+   "s_only": 0.05,
+   "power": 1.0
+  },
+  "a quarter of that gain": {
+   "arm_only": 0.19,
+   "s_only": 0.05,
+   "power": 0.70105
+  },
+  "a tenth of that gain": {
+   "arm_only": 0.106,
+   "s_only": 0.05,
+   "power": 0.14335
+  },
+  "smallest arm-only rate with 80% power": {
+   "arm_only": 0.21,
+   "s_only": 0.05
+  }
+ },
+ "guards": {
+  "N": {
+   "n": 60,
+   "allowed_loss": 3,
+   "discordant_share_874_M_vs_S": 0.25,
+   "failure_with_no_true_loss": 0.1816,
+   "discordant_share_874_L_vs_S": 0.2,
+   "net_loss_share_874_L": 0.2,
+   "failure_at_874_L_net_loss": 0.99915
+  },
+  "K": {
+   "n": 40,
+   "allowed_loss": 2,
+   "discordant_share_874_M_vs_S": 0.05,
+   "failure_with_no_true_loss": 0.03585,
+   "discordant_share_874_L_vs_S": 0.2,
+   "net_loss_share_874_L": 0.1,
+   "failure_at_874_L_net_loss": 0.7085
+  },
+  "C1": {
+   "n": 30,
+   "allowed_loss": 3,
+   "discordant_share_874_M_vs_S": 0.05,
+   "failure_with_no_true_loss": 0.00305,
+   "discordant_share_874_L_vs_S": 0.1,
+   "net_loss_share_874_L": -0.1,
+   "failure_at_874_L_net_loss": 0.0193
+  },
+  "E": {
+   "n": 30,
+   "allowed_loss": 3,
+   "discordant_share_874_M_vs_S": 0.1,
+   "failure_with_no_true_loss": 0.0193,
+   "discordant_share_874_L_vs_S": 0.15,
+   "net_loss_share_874_L": -0.05,
+   "failure_at_874_L_net_loss": 0.04835
+  }
+ }
+}

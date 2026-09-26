@@ -27,15 +27,19 @@ A failure preserves completed sources and any earlier committed episodes. Startu
 
 ## Evidence and limits
 
-The note was tested with the search call of ADR 0019, as candidate A in `docs/research/agent-context/`, against the shipped structure. Both runs were preregistered and live, on MiniMax-M2:
+The note was tested with the search call of ADR 0019, as candidate A in `docs/research/agent-context/`, against the shipped structure. All three runs were preregistered and live, on MiniMax-M2:
 
 - **Issue #862.** On 280 primary probes, A applied the evidence in 209 and the shipped structure in 124 (A only 86, shipped only 1).
 - **Issue #864.** On a new seed, A applied it in 192 and the shipped structure in 122 (74 to 4). The exact-query, absent-query and continuation guardrails held.
 - **Where the note shows.** In #864, A's note stated the obsolete value after a correction in 0 of 70 episodes, and held a standing instruction after it was given in 60 of 70. Implicit-rule application rose from 2 to 17 of 70, with the rule in view in 54.
-- **Both verdicts are undetermined under their own rules.** The oracle control, which asks whether the evidence was reachable through the store at all, failed in both runs:
+- **The first two verdicts are undetermined under their own rules.** The oracle control, which asks whether the evidence was reachable through the store at all, failed in both:
   - #862 counted a mid summary holding a key word, and summaries reworded it (S 261, A 264, against 266 required).
   - #864 counted a top-five mid holding the evidence source. Every miss was a mid that states the key but mixes the evidence with a neighbouring exchange, and so ranks lower (257 in both arms).
-- **Adoption goes beyond both preregistered rules.** It is the owner's acceptance of the evidence above, not a valid verdict.
+- **Issue #870 (PR #873): valid.** Each evidence exchange was placed in a batch of its own, so the oracle could pass or fail on ranking alone.
+  - Every control passed: oracle reach 277 and 279 of 280, every stored evidence batch unmixed, A's note non-empty after a standing rule in 62 of 70, and every mutation check.
+  - A applied the evidence in 212 of 280 against the shipped structure's 171 (A only 42, shipped only 1, p = 1.0e-11), and its guardrails held.
+  - Its note stated no obsolete value after a correction in any of 70 episodes.
+  - This preregistered verdict is the basis for adopting the note.
 - **The first design failed.** A nullable note meant "unchanged" was left null by MiniMax-M2 on every turn, even after a standing instruction, in #862's pilot; the note is required for that reason.
 
 ## Rejected alternatives

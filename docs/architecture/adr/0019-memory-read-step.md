@@ -29,8 +29,8 @@ Recent episodes remain available whatever the ranking. Pending source previews k
 - **Search during work.** `docs/research/agent-context/` tested the search call with the bounded note of ADR 0011, as candidate A, against the shipped structure.
   - Issue #862: A applied the evidence in 209 of 280 primary probes and the shipped structure in 124 (A only 86, shipped only 1). Follow-ups whose referent lay beyond the window went from 9 to 49 of 70.
   - Issue #864, on a new seed: 192 against 122 (74 to 4), and those follow-ups from 4 to 40.
-  - Both preregistered verdicts are undetermined, because the oracle control failed. In #862 it counted a key word in a summary, which summaries reworded. In #864 it counted a top-five mid holding the evidence source; every miss was a mid that mixes the evidence with a neighbouring exchange and so ranks lower (257 of 280, 266 required, in both arms).
-  - Adopting the search is the owner's acceptance of that evidence, beyond the preregistered rules.
+  - Both of those verdicts are undetermined, because the oracle control failed. In #862 it counted a key word in a summary, which summaries reworded. In #864 it counted a top-five mid holding the evidence source; every miss was a mid that mixes the evidence with a neighbouring exchange and so ranks lower (257 of 280, 266 required, in both arms).
+  - Issue #870 (PR #873) placed each evidence exchange in a batch of its own, so the oracle could pass or fail on ranking alone. Every control passed: oracle reach 277 and 279 of 280, and every stored evidence batch unmixed. A applied the evidence in 212 against 171 (42 to 1, p = 1.0e-11), with its guardrails holding, and those follow-ups went from 31 to 53 of 70. **The preregistered verdict is valid**, and it is the basis for adopting the search call.
 
 ## Consequences
 
@@ -41,7 +41,7 @@ Recent episodes remain available whatever the ranking. Pending source previews k
 
 ## Read-policy limits
 
-- Pre-turn recall runs once, with the raw task text. What the model later searches for, and whether it searches at all, is the model's choice: in #862 and #864 it searched in 39 of 70 probes whose referent lay beyond the window.
+- Pre-turn recall runs once, with the raw task text. What the model later searches for, and whether it searches at all, is the model's choice: it searched in 39, 39 and 23 of 70 probes whose referent lay beyond the window in #862, #864 and #870.
 - Neither similarity nor recency reliably exposes implicit needs such as writing methods or coding conventions: the best arm reached 28 of 70 implicit queries. Iterative model-directed search remains separate experimental work.
 - Without a threshold, recall cannot tell the agent that nothing relevant exists; the replication's top-1 cosine separated present from absent queries only partly.
 

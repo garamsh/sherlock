@@ -1,0 +1,45 @@
+A: memory_search no longer reaches the store
+  commit 61f4e4c, internal/agent/service.go
+  unmutated: pass; mutated: fail; failing: TestConversation_SearchReturnsTheEpisodeForTheModelsQuery, TestSessionRun_SearchRanksWithTheModelsQuery
+
+A: the note is not injected into the leading message
+  commit 61f4e4c, internal/agent/service.go
+  unmutated: pass; mutated: fail; failing: TestConversation_NoteSurvivesCompactionAndRestart, TestSessionRun_NoteLeadsEveryTurnAndIsReplaced
+
+A: the terminal call's note is not saved
+  commit 61f4e4c, internal/agent/service.go
+  unmutated: pass; mutated: fail; failing: TestSessionRun_NoteLeadsEveryTurnAndIsReplaced, TestSessionRun_OvergrownNoteIsHandedBack
+
+A: the note bound is not enforced
+  commit 61f4e4c, internal/agent/writeback.go
+  unmutated: pass; mutated: fail; failing: TestSessionRun_OvergrownNoteIsHandedBack
+
+B: the understanding call is skipped
+  commit b5bc7ed, internal/agent/service.go
+  unmutated: pass; mutated: fail; failing: TestConversation_NoteSurvivesCompactionAndRestart, TestSessionRun_UnderstandingResolvesBeforeRecall
+
+B: recall ranks by the raw input
+  commit b5bc7ed, internal/agent/service.go
+  unmutated: pass; mutated: fail; failing: TestSessionRun_OvergrownNoteIsRefused, TestSessionRun_UnderstandingResolvesBeforeRecall
+
+B: the understanding call's note is not saved
+  commit b5bc7ed, internal/agent/service.go
+  unmutated: pass; mutated: fail; failing: TestSessionRun_UnderstandingResolvesBeforeRecall
+
+B: the understanding step is not bounded to 16 messages
+  commit b5bc7ed, internal/agent/understand.go
+  unmutated: pass; mutated: fail; failing: TestSessionRun_UnderstandingSeesRecentVisibleConversation
+
+harness: the ledger does not refuse past the ceiling
+  commit 44e34e0, docs/research/agent-context/harness/proxy.go
+  unmutated: pass; mutated: fail; failing: TestLedger_RefusesPastTheCeilingAndSettlesAtUsage, TestProxy_RetriesARateLimitAndRefusesPastTheCeiling
+
+harness: identical syntheses are not cached
+  commit 44e34e0, docs/research/agent-context/harness/proxy.go
+  unmutated: pass; mutated: fail; failing: TestProxy_SynthesisIsAnsweredOnceThenFromTheCache
+
+harness: the oracle no longer finds the source in a mid's interval
+  commit 8cb0b1b, docs/research/agent-context/harness/run.go
+  unmutated: pass; mutated: fail; failing: TestOracle_ReachesTheSourceThroughItsMidsInterval
+
+every mutation broke a test

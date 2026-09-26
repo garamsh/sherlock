@@ -13,7 +13,9 @@ import tempfile
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[3]
-A, B, HARNESS = "61f4e4c", "b5bc7ed", "7c670ec"
+# A and B are the tips of sauce-git/feat/agent-context-arm-a and -arm-b;
+# fetch them first. HARNESS carries the proxy the record names as 7c670ec.
+A, B, HARNESS = "61f4e4c", "b5bc7ed", "44e34e0"
 
 MUTATIONS = [
     (A, "internal/agent/service.go", "if call.Name == MemorySearchTool && s.opts.Conversation != nil {",

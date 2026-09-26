@@ -287,7 +287,7 @@ For the next issue to preregister. Figures marked "estimate" are to be fixed in 
 
 ## Experiment (issue #862)
 
-The live test of candidates A and B against the shipped recall S, preregistered in [preregistration.md](preregistration.md) and committed at `b0d71c1` before the first stage-2 request. Evidence is under [evidence/](evidence/). Candidate C was not run: its running summary is the recursive synthesis ADR 0006 rejects, re-opening that decision is the owner's, and it was the most expensive arm.
+The live test of candidates A and B against the shipped recall S, preregistered in [preregistration.md](preregistration.md) and pushed as `b0d71c1` before the first stage-2 request (author date 00:41:11Z; §Reproduction names the commit that carries it now). Evidence is under [evidence/](evidence/). Candidate C was not run: its running summary is the recursive synthesis ADR 0006 rejects, re-opening that decision is the owner's, and it was the most expensive arm.
 
 ### What differs from §Experiment plan
 
@@ -378,6 +378,10 @@ What the collection shows, outside the rule:
 
 ### Code
 
+The arms are not part of this study's branch. Each stays on its own branch, kept until a confirmatory run decides:
+- A is `61f4e4c`, the tip of `sauce-git/feat/agent-context-arm-a`.
+- B is `b5bc7ed`, the tip of `sauce-git/feat/agent-context-arm-b`, built on A.
+
 Net production lines against S, read with `git diff --numstat 4e84d2c <commit>` over non-test files:
 - **A, `61f4e4c`:** +264 −351, net **−87**. The preregistration's tie-break quotes −91, the count before the note became a required string. The ordering the rule uses is unchanged.
 - **B, `b5bc7ed`:** +375 −361, net **+14** against S; it is built on A's note and replaces A's search call.
@@ -405,6 +409,14 @@ python3 docs/research/agent-context/score.py docs/research/agent-context/evidenc
 python3 docs/research/agent-context/mutation.py                                            # offline; the mutation record
 ```
 
+- **The arms' trees.** S is `4e84d2c` on `dev`. A and B come from their own branches: `git fetch origin sauce-git/feat/agent-context-arm-a sauce-git/feat/agent-context-arm-b`, then `git archive 61f4e4c` and `git archive b5bc7ed`.
+- **The study commits were rebuilt onto `dev`** after review, so this branch carries no arm code. `docs/research/` is byte-identical to the collected tip `d49acd1`, and author dates are kept. Old SHAs cited in committed files map as follows:
+  - `f32ba3a` → `8ae1f9b`, the harness, corpus and scorer.
+  - `7c670ec` → `44e34e0`, the proxy fix. `evidence/mutation.txt` names `7c670ec`; `mutation.py` now archives `44e34e0`, whose `harness/` tree is identical.
+  - `c095201` → `01b24d4`, the correction scoring.
+  - `1cf6751` → `93ddc1f`, the key matching. The preregistration names `1cf6751` as the harness the binaries were built with; `93ddc1f`'s `harness/` tree is identical.
+  - `b0d71c1` → `b8c1378`, the preregistration.
+  - `d49acd1` → `e8cc29e`, the results.
 - Collection needs the TEI container of §Production parity in the mid-memory study on `127.0.0.1:8090`.
 - Each arm's binary is built from `git archive <commit>` with `docs/research/agent-context/harness/` copied in, as `go build ./docs/research/agent-context/harness`.
 - The base store is `harness base -out base.db`.

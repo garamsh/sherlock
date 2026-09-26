@@ -33,7 +33,7 @@ type turnRecord struct {
 	RecalledIDs   []string         `json:"recalled_ids"`
 	RecalledCount int              `json:"recalled_count"`
 	Response      string           `json:"response"`
-	Ops           []any            `json:"ops,omitempty"`
+	Note          *string          `json:"note,omitempty"`
 	Failed        string           `json:"failed,omitempty"`
 }
 
@@ -99,7 +99,9 @@ func collectRecallTurn(t *testing.T, baseURL string, events <-chan map[string]an
 				record.RecalledCount = intField(event["recalled_count"])
 				record.RecalledIDs = stringsField(event["recalled_ids"])
 			case "writeback":
-				record.Ops, _ = event["ops"].([]any)
+				if note, ok := event["note"].(string); ok {
+					record.Note = &note
+				}
 			case "turn_finished":
 				record.Response, _ = event["response"].(string)
 				done = true
@@ -140,7 +142,8 @@ func startScriptedEndpoint(t *testing.T, answer scriptedAnswer) string {
 			} `json:"tools"`
 		}
 		require.NoError(t, json.NewDecoder(r.Body).Decode(&request))
-		name, arguments := "memory_write", fmt.Sprintf(`{"reply":%s,"memory_ops":[{"address":{"subject":%s,"question":%s,"restriction":null},"value":%s,"operation":null}]}`, strconvQuote(answer.Reply), strconvQuote(answer.Subject), strconvQuote(answer.Question), strconvQuote(answer.Value))
+		note := fmt.Sprintf("%s — %s: %s", answer.Subject, answer.Question, answer.Value)
+		name, arguments := "memory_write", fmt.Sprintf(`{"reply":%s,"note":%s}`, strconvQuote(answer.Reply), strconvQuote(note))
 		w.Header().Set("Content-Type", "application/json")
 		fmt.Fprintf(w, `{"choices":[{"message":{"content":"","tool_calls":[{"id":"call-1","type":"function","function":{"name":%s,"arguments":%s}}]},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":100,"completion_tokens":20}}`, strconvQuote(name), strconvQuote(arguments))
 	}))

@@ -48,8 +48,8 @@ func TestConversation_ParaphraseCorrectionAndExactSource(t *testing.T) {
 	ctx := context.Background()
 	path := filepath.Join(t.TempDir(), "memory.db")
 	first := summaryScript(
-		writebackStep(`{"reply":"Noted.","memory_ops":[]}`),
-		writebackStep(`{"reply":"Corrected.","memory_ops":[]}`),
+		writebackStep(`{"reply":"Noted.","note":null}`),
+		writebackStep(`{"reply":"Corrected.","note":null}`),
 	)
 	f := &gateway.Factory{MemoryPath: path, NewModel: func(string) agent.Model { return first }, Embedder: wordEmbedder{}, Tools: noTools(), MaxHistoryMessages: 2}
 	rt, err := f.New(ctx, "a", nil)
@@ -81,7 +81,7 @@ func TestConversation_ParaphraseCorrectionAndExactSource(t *testing.T) {
 
 	model := summaryScript(
 		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.MemoryInspectTool, Input: json.RawMessage(`{"id":5}`)}}},
-		writebackStep(`{"reply":"You corrected it to the Vega-2 reflector; your exact words were: 'Correction: my preferred telescope is the Vega-2 reflector.'","memory_ops":[]}`),
+		writebackStep(`{"reply":"You corrected it to the Vega-2 reflector; your exact words were: 'Correction: my preferred telescope is the Vega-2 reflector.'","note":null}`),
 	)
 	events := &conversationEvents{}
 	f.NewModel = func(string) agent.Model { return &evidenceModel{inner: model} }
@@ -106,7 +106,7 @@ func TestConversation_UnsupportedQuestionHasNoEvidence(t *testing.T) {
 	ctx := context.Background()
 	path := filepath.Join(t.TempDir(), "memory.db")
 	model := summaryScript(
-		writebackStep(`{"reply":"I don't have a source for that.","memory_ops":[]}`),
+		writebackStep(`{"reply":"I don't have a source for that.","note":null}`),
 	)
 	events := &conversationEvents{}
 	rt, err := (&gateway.Factory{MemoryPath: path, NewModel: func(string) agent.Model { return model }, Tools: noTools()}).New(ctx, "a", events)
@@ -129,7 +129,7 @@ func TestConversation_QueuePreservesOriginalInboundID(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "memory.db")
 	factory := &gateway.Factory{MemoryPath: path, NewModel: func(string) agent.Model {
 		return summaryScript(
-			writebackStep(`{"reply":"Noted.","memory_ops":[]}`),
+			writebackStep(`{"reply":"Noted.","note":null}`),
 		)
 	}, Tools: noTools()}
 	queue, err := gateway.NewQueue(factory, "a", nil)
@@ -162,7 +162,7 @@ func TestConversation_RelatedCandidateDoesNotSupportMissingDate(t *testing.T) {
 	require.NoError(t, seed.RecordTurn(ctx, []agent.SourceMessage{{Role: agent.RoleUser, Content: "The lunar mission uses the Aurora capsule."}, {Role: agent.RoleAssistant, Content: "Noted."}}, firstSummary{}))
 	require.NoError(t, seed.Close())
 	model := summaryScript(
-		writebackStep(`{"reply":"I found the capsule name but no launch date in the available source.","memory_ops":[]}`),
+		writebackStep(`{"reply":"I found the capsule name but no launch date in the available source.","note":null}`),
 	)
 	events := &conversationEvents{}
 	rt, err := (&gateway.Factory{MemoryPath: path, NewModel: func(string) agent.Model { return model }, Embedder: wordEmbedder{}, Tools: noTools()}).New(ctx, "a", events)
@@ -237,4 +237,86 @@ func checkpointSources(content string, count int) []agent.SourceMessage {
 		sources = append(sources, agent.SourceMessage{Role: agent.RoleUser, Content: content})
 	}
 	return sources
+}
+
+// leadingModel records the leading system message of every act call.
+type leadingModel struct {
+	inner   agent.Model
+	leading []string
+	results []string
+}
+
+func (m *leadingModel) Chat(ctx context.Context, messages []agent.Message, descriptors []tool.Descriptor) (agent.Response, error) {
+	if len(descriptors) != 1 || descriptors[0].Name != "memory_summary" {
+		m.leading = append(m.leading, messages[0].Content)
+		if last := messages[len(messages)-1]; last.Role == agent.RoleTool {
+			m.results = append(m.results, last.Content)
+		}
+	}
+	return m.inner.Chat(ctx, messages, descriptors)
+}
+
+// TestConversation_NoteSurvivesCompactionAndRestart writes a note on the
+// first turn, lets the two-message window drop that turn, and restarts: the
+// note still leads the context, where the turn that stated it does not.
+func TestConversation_NoteSurvivesCompactionAndRestart(t *testing.T) {
+	ctx := context.Background()
+	path := filepath.Join(t.TempDir(), "memory.db")
+	model := &leadingModel{inner: summaryScript(
+		writebackStep(`{"reply":"Noted.","note":"Standing instruction: indent code with tabs."}`),
+		writebackStep(`{"reply":"Filler answered.","note":null}`),
+	)}
+	f := &gateway.Factory{MemoryPath: path, NewModel: func(string) agent.Model { return model }, Embedder: wordEmbedder{}, Tools: noTools(), MaxHistoryMessages: 2}
+	rt, err := f.New(ctx, "a", nil)
+	require.NoError(t, err)
+	_, err = rt.Session.Run(ctx, "Always indent code with tabs.")
+	require.NoError(t, err)
+	_, err = rt.Session.Run(ctx, "Unrelated filler question.")
+	require.NoError(t, err)
+	require.NoError(t, rt.Close(ctx))
+
+	restartedModel := &leadingModel{inner: summaryScript(writebackStep(`{"reply":"Tabs.","note":null}`))}
+	f.NewModel = func(string) agent.Model { return restartedModel }
+	restarted, err := f.New(ctx, "a", nil)
+	require.NoError(t, err)
+	defer restarted.Close(ctx)
+	_, err = restarted.Session.Run(ctx, "Write me a loop.")
+	require.NoError(t, err)
+
+	require.Len(t, model.leading, 2)
+	assert.Contains(t, model.leading[0], "## Your note\n(empty)", "the control: no note before one is written")
+	assert.Contains(t, model.leading[1], "## Your note\nStanding instruction: indent code with tabs.")
+	require.Len(t, restartedModel.leading, 1)
+	assert.Contains(t, restartedModel.leading[0], "## Your note\nStanding instruction: indent code with tabs.")
+	for _, m := range restarted.Session.History() {
+		assert.NotEqual(t, "Always indent code with tabs.", m.Content, "the window no longer holds the turn that stated the rule")
+	}
+}
+
+// TestConversation_SearchReturnsTheEpisodeForTheModelsQuery searches with the
+// query the model wrote and hands back the episode with its interval.
+func TestConversation_SearchReturnsTheEpisodeForTheModelsQuery(t *testing.T) {
+	ctx := context.Background()
+	path := filepath.Join(t.TempDir(), "memory.db")
+	first := summaryScript(writebackStep(`{"reply":"Noted.","note":null}`))
+	f := &gateway.Factory{MemoryPath: path, NewModel: func(string) agent.Model { return first }, Embedder: wordEmbedder{}, Tools: noTools(), MaxHistoryMessages: 2}
+	rt, err := f.New(ctx, "a", nil)
+	require.NoError(t, err)
+	_, err = rt.Session.Run(agent.WithInboundSources(ctx, checkpointSources("My preferred telescope is the Kepler-9 refractor.", 3)), "Remember the telescope preference.")
+	require.NoError(t, err)
+	require.NoError(t, rt.Close(ctx))
+
+	model := &leadingModel{inner: summaryScript(
+		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.MemorySearchTool, Input: json.RawMessage(`{"query":"preferred telescope"}`)}}},
+		writebackStep(`{"reply":"The Kepler-9 refractor.","note":null}`),
+	)}
+	f.NewModel = func(string) agent.Model { return model }
+	restarted, err := f.New(ctx, "a", nil)
+	require.NoError(t, err)
+	defer restarted.Close(ctx)
+	_, err = restarted.Session.Run(ctx, "Which one did I pick?")
+	require.NoError(t, err)
+	require.Len(t, model.results, 1)
+	assert.Contains(t, model.results[0], "Kepler-9 refractor", "the search result carries the episode")
+	assert.Contains(t, model.results[0], `"source_first":1`)
 }

@@ -76,9 +76,7 @@ func replyScript(replies ...string) *agent.ScriptedModel {
 				Input: json.RawMessage(
 					`{"channel":"http","target":"sender","content":` + strconvQuote(reply) + `}`),
 			}}},
-			writebackStep(`{"reply":"Replied.","memory_ops":[{"address":{`+
-				`"subject":"the http channel","question":"what did the http channel ask for",`+
-				`"restriction":null},"value":"an acknowledgement","operation":null}]}`),
+			writebackStep(`{"reply":"Replied.","note":null}`),
 		)
 	}
 	return agent.NewScriptedModel(steps...)

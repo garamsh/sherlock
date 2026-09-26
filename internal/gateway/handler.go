@@ -100,21 +100,20 @@ func (h *handler) postMessage(w http.ResponseWriter, r *http.Request) {
 }
 
 // eventPayload is the wire form of one loop event on the SSE stream.
-// Which fields are set depends on Kind (see agent.Event). Ops is always
-// serialized: on a writeback event, `[]` means the model sent an empty
-// memory block while `null` means it sent none (issue #193).
+// Which fields are set depends on Kind (see agent.Event). Note is set on a
+// writeback event that saved one; its absence means the note is unchanged.
 type eventPayload struct {
-	AgentID    string              `json:"agent_id"`
-	Kind       agent.EventKind     `json:"kind"`
-	Turn       int                 `json:"turn"`
-	Task       string              `json:"task,omitempty"`
-	Ops        []agent.WritebackOp `json:"ops"`
-	ToolName   string              `json:"tool_name,omitempty"`
-	ToolInput  json.RawMessage     `json:"tool_input,omitempty"`
-	ToolResult string              `json:"tool_result,omitempty"`
-	ToolFailed bool                `json:"tool_failed,omitempty"`
-	Response   string              `json:"response,omitempty"`
-	Error      string              `json:"error,omitempty"`
+	AgentID    string          `json:"agent_id"`
+	Kind       agent.EventKind `json:"kind"`
+	Turn       int             `json:"turn"`
+	Task       string          `json:"task,omitempty"`
+	Note       *string         `json:"note,omitempty"`
+	ToolName   string          `json:"tool_name,omitempty"`
+	ToolInput  json.RawMessage `json:"tool_input,omitempty"`
+	ToolResult string          `json:"tool_result,omitempty"`
+	ToolFailed bool            `json:"tool_failed,omitempty"`
+	Response   string          `json:"response,omitempty"`
+	Error      string          `json:"error,omitempty"`
 	// RecalledIDs and RecalledCount carry the recall event's injected
 	// memories (issue #325); RecallOutcome says how the read step
 	// reached them, so a question memory could not place is
@@ -164,7 +163,7 @@ func (h *handler) events(w http.ResponseWriter, r *http.Request) {
 				Kind:          e.Kind,
 				Turn:          e.Turn,
 				Task:          e.Task,
-				Ops:           e.Ops,
+				Note:          e.Note,
 				ToolName:      e.ToolName,
 				ToolInput:     e.ToolInput,
 				ToolResult:    e.ToolResult,

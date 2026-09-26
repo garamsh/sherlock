@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"strconv"
 	"strings"
 	"sync"
 	"testing"
@@ -17,12 +18,12 @@ import (
 )
 
 // replyOnly renders the response document (agent.ResponseSchema) for a
-// turn whose reply states no memory writes.
+// turn that leaves the note unchanged.
 func replyOnly(text string) string {
 	out, err := json.Marshal(struct {
-		Reply string              `json:"reply"`
-		Ops   []agent.WritebackOp `json:"memory_ops"`
-	}{Reply: text, Ops: []agent.WritebackOp{}})
+		Reply string  `json:"reply"`
+		Note  *string `json:"note"`
+	}{Reply: text})
 	if err != nil {
 		panic(err)
 	}
@@ -61,16 +62,6 @@ func (f *fakeRecaller) Recall(_ context.Context, task string) (agent.Recalled, e
 		outcome = agent.RecallAddressed
 	}
 	return agent.Recalled{Memories: f.memories, Outcome: outcome}, nil
-}
-
-// fakeWriteback records every batch of parsed memory operations.
-type fakeWriteback struct {
-	batches [][]agent.WritebackOp
-}
-
-func (f *fakeWriteback) Apply(_ context.Context, ops []agent.WritebackOp) error {
-	f.batches = append(f.batches, ops)
-	return nil
 }
 
 // fakeEvents records the emitted events in order.
@@ -186,8 +177,8 @@ func newFakeClientWith(t *fakeTool) *fakeClient {
 
 func TestSessionRun_ScriptedMultiTurnScenario(t *testing.T) {
 	// Script: the model requests the echo tool, then ends the turn on the
-	// reserved writeback carrying both facts it stated. A turn writes
-	// once, when it ends, rather than once per model response.
+	// reserved writeback. A turn writes once, when it ends, rather than
+	// once per model response.
 	model := agent.NewScriptedModel(
 		agent.ScriptedStep{
 			Content: "Let me check.",
@@ -196,24 +187,17 @@ func TestSessionRun_ScriptedMultiTurnScenario(t *testing.T) {
 			},
 		},
 		agent.ScriptedStep{
-			ToolCalls: []agent.ToolCall{writebackCall(
-				`{"reply":"The echo said hi.","memory_ops":[{"address":{"subject":"user",` +
-					`"question":"which drinks does the user like","restriction":null},` +
-					`"value":"tea","operation":"join"},{"address":{"subject":"user",` +
-					`"question":"which team does the user sit with","restriction":"since june"},` +
-					`"value":"platform","operation":"replace"}]}`)},
+			ToolCalls: []agent.ToolCall{writebackCall(`{"reply":"The echo said hi.","note":null}`)},
 		},
 	)
 	recaller := &fakeRecaller{memories: []agent.RecalledMemory{
 		{ID: "m1", Content: "user drinks tea", Age: "2d"},
 	}}
-	writeback := &fakeWriteback{}
 	events := &fakeEvents{}
 
 	s := agent.NewSession(model, newFakeClientWith(newEchoTool()), agent.Options{
-		Recaller:  recaller,
-		Writeback: writeback,
-		Events:    events,
+		Recaller: recaller,
+		Events:   events,
 	})
 
 	final, err := s.Run(context.Background(), "what did the echo say?")
@@ -240,30 +224,6 @@ func TestSessionRun_ScriptedMultiTurnScenario(t *testing.T) {
 	assert.Equal(t, `{"echo":"hi"}`, history[4].Content)
 	assert.Equal(t, history[3].ToolCalls[0].ID, history[4].ToolCallID)
 	assert.Equal(t, agent.RoleAssistant, history[5].Role)
-
-	// The turn's memory writes reached the sink, in one batch: the
-	// writeback is the call the turn ends on.
-	require.Equal(t, [][]agent.WritebackOp{
-		{
-			{
-				Address: agent.MemoryAddress{
-					Subject:  "user",
-					Question: "which drinks does the user like",
-				},
-				Value:     "tea",
-				Operation: agent.OpJoin,
-			},
-			{
-				Address: agent.MemoryAddress{
-					Subject:     "user",
-					Question:    "which team does the user sit with",
-					Restriction: "since june",
-				},
-				Value:     "platform",
-				Operation: agent.OpReplace,
-			},
-		},
-	}, writeback.batches)
 
 	// Events fired in order within the turn.
 	require.Equal(t, []agent.EventKind{
@@ -506,18 +466,14 @@ func TestSessionRun_ProseInsteadOfAWritebackDoesNotEndTheTurn(t *testing.T) {
 		finalStep("Hello!"),
 	)
 	events := &fakeEvents{}
-	writeback := &fakeWriteback{}
-	s := agent.NewSession(model, newFakeClient(), agent.Options{
-		Events:    events,
-		Writeback: writeback,
-	})
+	s := agent.NewSession(model, newFakeClient(), agent.Options{Events: events})
 
 	final, err := s.Run(context.Background(), "hello")
 	require.NoError(t, err, "the model complied on the second call")
 	assert.Equal(t, "Hello!", final)
 
 	// The turn wrote, because it ended the only way a turn can.
-	require.Len(t, writeback.batches, 1)
+	assert.Contains(t, events.kinds(), agent.EventWriteback)
 
 	// The refusal is on the stream, so a provider that does this is
 	// visible rather than silent.
@@ -550,10 +506,8 @@ func TestSessionRun_ProseForeverFailsTheTurn(t *testing.T) {
 		steps[i] = agent.ScriptedStep{Content: "prose, no call"}
 	}
 	events := &fakeEvents{}
-	writeback := &fakeWriteback{}
 	s := agent.NewSession(agent.NewScriptedModel(steps...), newFakeClient(), agent.Options{
 		Events:        events,
-		Writeback:     writeback,
 		MaxIterations: 4,
 	})
 
@@ -561,7 +515,7 @@ func TestSessionRun_ProseForeverFailsTheTurn(t *testing.T) {
 	require.Error(t, err, "a turn that never writes fails rather than replying")
 	assert.True(t, errors.Is(err, agent.ErrLoopExhausted))
 	assert.Empty(t, final)
-	assert.Empty(t, writeback.batches)
+	assert.NotContains(t, events.kinds(), agent.EventWriteback)
 
 	terminal := events.events[len(events.events)-1]
 	assert.Equal(t, agent.EventTurnFailed, terminal.Kind)
@@ -569,39 +523,12 @@ func TestSessionRun_ProseForeverFailsTheTurn(t *testing.T) {
 
 // TestSessionRun_MalformedWritebackArgumentsFailTheTurn pins where the
 // leniency issue #93 asked for now sits. The arguments are the only
-// place the reply and the facts arrive, so arguments that are not the
-// document leave nothing to hand back and nothing to store: the turn
-// fails rather than returning a reply that was never written down.
+// place the reply arrives, so arguments that are not the document leave
+// nothing to hand back: the turn fails rather than returning a reply
+// that was never written down.
 func TestSessionRun_MalformedWritebackArgumentsFailTheTurn(t *testing.T) {
 	model := agent.NewScriptedModel(
-		agent.ScriptedStep{ToolCalls: []agent.ToolCall{writebackCall(`{"reply":"still useful","memory_ops":[`)}},
-	)
-	events := &fakeEvents{}
-	writeback := &fakeWriteback{}
-	s := agent.NewSession(model, newFakeClient(), agent.Options{
-		Events:    events,
-		Writeback: writeback,
-	})
-
-	_, err := s.Run(context.Background(), "task")
-	require.Error(t, err)
-	assert.True(t, errors.Is(err, agent.ErrMalformedWriteback))
-	assert.Empty(t, writeback.batches)
-
-	terminal := events.events[len(events.events)-1]
-	assert.Equal(t, agent.EventTurnFailed, terminal.Kind)
-}
-
-// TestSessionRun_StrictWritebackSchema is the contract-strict sibling
-// to TestSessionRun_LenientWritebackParse: a writeback whose JSON parses
-// but states a write with nowhere to land still fails the turn, so the
-// model learns the contract (issue #93).
-func TestSessionRun_StrictWritebackSchema(t *testing.T) {
-	model := agent.NewScriptedModel(
-		agent.ScriptedStep{ToolCalls: []agent.ToolCall{writebackCall(
-			`{"reply":"broken","memory_ops":[{"address":` +
-				`{"subject":"","question":"","restriction":null},` +
-				`"value":"","operation":null}]}`)}},
+		agent.ScriptedStep{ToolCalls: []agent.ToolCall{writebackCall(`{"reply":"still useful","note":`)}},
 	)
 	events := &fakeEvents{}
 	s := agent.NewSession(model, newFakeClient(), agent.Options{Events: events})
@@ -609,10 +536,10 @@ func TestSessionRun_StrictWritebackSchema(t *testing.T) {
 	_, err := s.Run(context.Background(), "task")
 	require.Error(t, err)
 	assert.True(t, errors.Is(err, agent.ErrMalformedWriteback))
+	assert.NotContains(t, events.kinds(), agent.EventWriteback)
 
 	terminal := events.events[len(events.events)-1]
-	assert.Equal(t, agent.EventTurnFailed, terminal.Kind,
-		"schema violations still terminate the turn")
+	assert.Equal(t, agent.EventTurnFailed, terminal.Kind)
 }
 
 func TestSessionRun_UnknownToolFeedsErrorBack(t *testing.T) {
@@ -1051,4 +978,64 @@ func TestSessionRun_InstructionsSurviveCompaction(t *testing.T) {
 	assert.Equal(t, agent.RoleSystem, last[0].Role)
 	assert.Equal(t, agent.ComposeInstructions(""), last[0].Content,
 		"the instructions still lead the history the model sees after a compaction")
+}
+
+func TestSessionRun_NoteLeadsEveryTurnAndIsReplaced(t *testing.T) {
+	store := &noteStore{}
+	model := &recordingModel{inner: agent.NewScriptedModel(
+		agent.ScriptedStep{ToolCalls: []agent.ToolCall{writebackCall(`{"reply":"Noted.","note":"Indent code with tabs."}`)}},
+		finalStep("Here it is."),
+	)}
+	events := &fakeEvents{}
+	s := agent.NewSession(model, newFakeClient(), agent.Options{Conversation: store, Events: events})
+
+	_, err := s.Run(context.Background(), "Always indent code with tabs.")
+	require.NoError(t, err)
+	_, err = s.Run(context.Background(), "Write me a loop.")
+	require.NoError(t, err)
+
+	assert.Equal(t, agent.ComposeInstructions("")+"\n\n## Your note\n(empty)", model.seen[0][0].Content, "an unwritten note is stated as empty")
+	assert.Equal(t, agent.ComposeInstructions("")+"\n\n## Your note\nIndent code with tabs.", model.seen[1][0].Content, "the next turn leads with the saved note")
+	assert.Equal(t, []string{"Indent code with tabs."}, store.setNotes, "a null note saves nothing")
+	require.Len(t, store.turns, 2, "sources are recorded on both turns")
+
+	var notes []*string
+	for _, e := range events.events {
+		if e.Kind == agent.EventWriteback {
+			notes = append(notes, e.Note)
+		}
+	}
+	require.Len(t, notes, 2)
+	require.NotNil(t, notes[0])
+	assert.Equal(t, "Indent code with tabs.", *notes[0])
+	assert.Nil(t, notes[1], "an unchanged note is reported as unchanged")
+}
+
+// TestSessionRun_OvergrownNoteIsHandedBack keeps the reply when the note is
+// too long: the call is refused as its own result and the model tries
+// again, where a malformed call would fail the turn.
+func TestSessionRun_OvergrownNoteIsHandedBack(t *testing.T) {
+	long := make([]byte, agent.MaxNoteLength+1)
+	for i := range long {
+		long[i] = 'x'
+	}
+	store := &noteStore{}
+	model := &recordingModel{inner: agent.NewScriptedModel(
+		agent.ScriptedStep{ToolCalls: []agent.ToolCall{writebackCall(`{"reply":"Done.","note":` + strconv.Quote(string(long)) + `}`)}},
+		agent.ScriptedStep{ToolCalls: []agent.ToolCall{writebackCall(`{"reply":"Done.","note":"short"}`)}},
+	)}
+	events := &fakeEvents{}
+	s := agent.NewSession(model, newFakeClient(), agent.Options{Conversation: store, Events: events})
+
+	reply, err := s.Run(context.Background(), "task")
+	require.NoError(t, err)
+	assert.Equal(t, "Done.", reply)
+	assert.Equal(t, []string{"short"}, store.setNotes, "only the note within the bound is saved")
+	assert.Contains(t, events.kinds(), agent.EventWritebackError)
+
+	require.Len(t, model.seen, 2, "the overgrown note is refused and the model is asked again")
+	refusal := model.seen[1][len(model.seen[1])-1]
+	assert.Equal(t, agent.RoleTool, refusal.Role)
+	assert.Contains(t, refusal.Content, "note too long")
+	assert.Equal(t, model.seen[1][len(model.seen[1])-2].ToolCalls[0].ID, refusal.ToolCallID, "the refusal answers the call that carried the note")
 }

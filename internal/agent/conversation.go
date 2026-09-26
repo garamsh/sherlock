@@ -19,6 +19,10 @@ type ConversationMemory interface {
 	PendingSources(context.Context) ([]SourceMessage, error)
 	RecentMid(context.Context, int) ([]ConversationHit, error)
 	Source(context.Context, int64) (SourceMessage, error)
+	// Note returns the saved note, empty when none has been written.
+	Note(context.Context) (string, error)
+	// SetNote replaces the saved note.
+	SetNote(context.Context, string) error
 }
 
 // ConversationSummarizer synthesizes one bounded episode from new messages.

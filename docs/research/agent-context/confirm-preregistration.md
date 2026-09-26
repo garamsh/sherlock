@@ -107,7 +107,7 @@ Committed after collection stopped and before any further run call. It changes o
   - S had recorded 50 episodes, 25 of them failed on that 429 during seeding.
   - A had recorded 51 episodes, 26 of them failed.
   - A failed seed produces no probe.
-- **Probes.** One minimal request a minute through the ledger, then one every 15 minutes: 429 at 04:28 and 04:45 UTC, 200 at 05:00:53 UTC.
+- **Probes.** One minimal request through the ledger every 15 minutes: 429 at 04:28 and 04:45 UTC, 200 at 05:00:53 UTC.
 - **Re-runs.** Every episode whose seeding or turn failed on HTTP 429, 5xx or a transport error is re-run from scratch. It is re-run as often as that takes while the key answers, and only its completed run is scored, so it is counted once.
   - The failed records move to `results-attempt1.jsonl` and are not scored.
   - The report gives the number of re-run episodes per arm.

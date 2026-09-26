@@ -11,6 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/garamsh/sherlock/internal/agent"
+	"github.com/garamsh/sherlock/internal/agent/memory"
 	"github.com/garamsh/sherlock/internal/memory/sqlite"
 )
 
@@ -98,4 +99,47 @@ func TestRecaller_AppendsPendingPreviewsAfterTheArmsItems(t *testing.T) {
 	empty, err := recaller{memory: fakeMemory{ConversationMemory: store}}.Recall(ctx, "task")
 	require.NoError(t, err)
 	assert.Len(t, empty.Memories, 1, "the control: with no items only the pending preview remains")
+}
+
+// recordingSummary summarizes every batch with its messages joined, so a
+// test can search for a batch by its words.
+type recordingSummary struct{}
+
+func (recordingSummary) Summarize(_ context.Context, updates []string) (string, error) {
+	return strings.Join(updates, " / "), nil
+}
+
+// wordEmbedder embeds text by which of a few words it holds.
+type wordEmbedder struct{}
+
+func (wordEmbedder) Embed(_ context.Context, text string) ([]float32, error) {
+	words := []string{"apple", "boat", "cedar", "delta", "ember", "flint"}
+	v := make([]float32, len(words)+1)
+	v[len(words)] = 0.1
+	for i, w := range words {
+		if strings.Contains(strings.ToLower(text), w) {
+			v[i] = 1
+		}
+	}
+	return v, nil
+}
+
+func TestShippedMemory_RecallsWhatProductionRecalls(t *testing.T) {
+	ctx := context.Background()
+	store, err := sqlite.OpenConversation(filepath.Join(t.TempDir(), "memory.db"), wordEmbedder{})
+	require.NoError(t, err)
+	defer store.Close()
+	for i, w := range []string{"apple", "boat", "cedar", "delta", "ember", "flint", "apple boat", "cedar", "delta", "ember"} {
+		for j := range 4 {
+			require.NoError(t, store.RecordTurn(ctx, []agent.SourceMessage{{Role: agent.RoleUser, Content: fmt.Sprintf("%s note %d-%d", w, i, j)}}, recordingSummary{}))
+		}
+	}
+	for _, task := range []string{"apple", "flint boat", "nothing"} {
+		items, err := ShippedMemory{Conversation: store}.Recall(ctx, task)
+		require.NoError(t, err)
+		production, err := memory.ConversationRecall{Store: store}.Recall(ctx, task)
+		require.NoError(t, err)
+		require.NotEmpty(t, items, "the control: the store has mids to recall")
+		assert.Equal(t, production.Memories, Recalled(items), task)
+	}
 }

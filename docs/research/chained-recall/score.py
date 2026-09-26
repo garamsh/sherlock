@@ -1,6 +1,8 @@
 """Score the #874 offline stage per hop, for every arm and setting.
 
     python3 docs/research/chained-recall/score.py offline
+    python3 docs/research/chained-recall/score.py live
+    python3 docs/research/chained-recall/score.py tokens
 
 Reads evidence/offline/<arm>/<setting>/{built.json,probes.jsonl,oracle.jsonl}
 as study.Offline writes them and writes evidence/offline/scores.json.
@@ -14,6 +16,7 @@ is. Values are matched as the agent-context scorer matches them.
 
 import importlib.util
 import json
+import re
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -147,5 +150,142 @@ def offline():
               f"  ctx {r['context_chars_per_turn']:7.0f}  stored/src {r['stored_chars_per_source']:.3f}  oracle {r['oracle']['reached']}/{r['oracle']['hops']}  {vs}")
 
 
+# ---- live -------------------------------------------------------------------
+
+LIVE = HERE / "evidence" / "live"
+PRIMARY_FAMILIES = ("C2", "C3", "IC2", "IC3")
+GUARD_LOSS = 3
+
+
+def artifact(result):
+    """Everything the turn produced for the person: the reply, the messages
+    sent and the files written."""
+    return "\n".join([result.get("reply") or ""] + list(result.get("sent") or []) + list((result.get("written") or {}).values()))
+
+
+def applied(check, result):
+    text = artifact(result)
+    kind = check["kind"]
+    if kind == "contains":
+        return states(text, check["value"])
+    if kind == "correction":
+        return states(text, check["new"])
+    if kind == "abstain":
+        visible = "\n".join(list(result.get("sent") or [])) or (result.get("reply") or "")
+        return bool(re.search(check["pattern"], visible, re.I))
+    raise ValueError(kind)
+
+
+def seen(result):
+    """What the turn had in view from memory: the recall block and every
+    memory tool result."""
+    return [result.get("recall") or ""] + [t["result"] for t in result.get("tools") or [] if t["name"] in ("memory_search", "memory_inspect")]
+
+
+def followed(result):
+    """memory_search calls whose query names something the query of the
+    turn did not and an earlier view did: the model following a name."""
+    views = [result.get("recall") or ""]
+    count = 0
+    for t in result.get("tools") or []:
+        if t["name"] == "memory_search":
+            try:
+                q = json.loads(t["input"]).get("query", "") if isinstance(t["input"], str) else t["input"].get("query", "")
+            except (ValueError, AttributeError):
+                q = ""
+            names = {w for w in re.findall(r"[A-Z][a-z]+", q)}
+            if any(any(re.search(r"\b" + n + r"\b", v) for v in views) for n in names - PROBE_NAMES.get(result["probe"], set())):
+                count += 1
+        views.append(t.get("result") or "")
+    return count
+
+
+PROBE_NAMES = {}
+
+
+def score_live_setting(corpus, results):
+    by_probe = {r["probe"]: r for r in results}
+    out = {}
+    for c in corpus["chains"]:
+        PROBE_NAMES[c["id"]] = set(re.findall(r"[A-Z][a-z]+", c["query"]))
+    for c in corpus["chains"]:
+        r = by_probe.get(c["id"])
+        if r is None:
+            continue
+        views = seen(r)
+        hops = [any(states(v, h["key"]) for v in views) for h in c["hops"]]
+        out[c["id"]] = {"family": c["family"], "k": c["k"], "applied": applied(c["check"], r), "hops_seen": hops,
+                        "all_seen": all(hops), "searches": sum(t["name"] == "memory_search" for t in r.get("tools") or []),
+                        "followed": followed(r), "error": r.get("error", ""), "attempt": r.get("attempt", 1)}
+    for g in corpus["guards"]:
+        r = by_probe.get(g["id"])
+        if r is None:
+            continue
+        out[g["id"]] = {"family": g["family"], "applied": applied(g["check"], r), "error": r.get("error", ""), "attempt": r.get("attempt", 1),
+                        "searches": sum(t["name"] == "memory_search" for t in r.get("tools") or [])}
+    return out
+
+
+def live():
+    corpus = json.load(open(HERE / "corpus.json"))
+    per = {}
+    for arm_dir in sorted(p for p in LIVE.iterdir() if p.is_dir()):
+        for setting_dir in sorted(p for p in arm_dir.iterdir() if p.is_dir()):
+            if (setting_dir / "results.jsonl").exists():
+                per[f"{arm_dir.name}/{setting_dir.name}"] = score_live_setting(corpus, load_jsonl(setting_dir / "results.jsonl"))
+    summary = {}
+    for name, rows in per.items():
+        fam = defaultdict(list)
+        for row in rows.values():
+            fam[row["family"]].append(row)
+        primary = [r for f in PRIMARY_FAMILIES for r in fam[f]]
+        summary[name] = {
+            "families": {f: {"n": len(rs), "applied": sum(r["applied"] for r in rs),
+                             "all_seen": sum(r.get("all_seen", False) for r in rs) if f.startswith(("C", "IC")) else None}
+                         for f, rs in sorted(fam.items())},
+            "primary": {"n": len(primary), "applied": sum(r["applied"] for r in primary), "wilson": wilson(sum(r["applied"] for r in primary), len(primary)),
+                        "all_seen": sum(r["all_seen"] for r in primary)},
+            "searches_per_probe": round(sum(r["searches"] for r in rows.values()) / max(len(rows), 1), 2),
+            "probes_following_a_name": sum(r.get("followed", 0) > 0 for r in rows.values()),
+            "rerun": sum(r["attempt"] > 1 for r in rows.values()),
+            "errors": sum(bool(r["error"]) for r in rows.values()),
+        }
+    base = per.get("S/b4")
+    if base:
+        others = [n for n in per if n != "S/b4"]
+        ps = []
+        for n in others:
+            ids = sorted(i for i, r in base.items() if r["family"] in PRIMARY_FAMILIES and i in per[n])
+            b, c, p = mcnemar([per[n][i]["applied"] for i in ids], [base[i]["applied"] for i in ids])
+            guard = {}
+            for f in ("C1", "E", "K", "N"):
+                fid = [i for i, r in base.items() if r["family"] == f and i in per[n]]
+                guard[f] = sum(per[n][i]["applied"] for i in fid) - sum(base[i]["applied"] for i in fid)
+            summary[n]["against_S_b4"] = {"arm_only": b, "S_only": c, "p": p, "guard_change": guard,
+                                          "guardrails_hold": all(v >= -GUARD_LOSS for v in guard.values())}
+            ps.append(p)
+        for n, adjusted in zip(others, holm(ps)):
+            summary[n]["against_S_b4"]["holm_p"] = adjusted
+    (LIVE / "scores.json").write_text(json.dumps({"summary": summary, "per_probe": per}, indent=1) + "\n")
+    for n, s in summary.items():
+        print(n, json.dumps({k: v for k, v in s.items() if k != "families"}))
+
+
+def tokens():
+    """Tokens per arm and phase, from the ledger."""
+    agg = defaultdict(lambda: {"calls": 0, "cached": 0, "status_429": 0, "prompt_tokens": 0, "completion_tokens": 0})
+    for c in load_jsonl(HERE / "evidence" / "ledger" / "calls.jsonl"):
+        a = agg[f"{c['arm']}/{c['phase']}"]
+        a["calls"] += 1
+        a["cached"] += bool(c.get("cached"))
+        a["status_429"] += c.get("status") == 429
+        a["prompt_tokens"] += c.get("prompt_tokens", 0)
+        a["completion_tokens"] += c.get("completion_tokens", 0)
+    out = dict(sorted(agg.items()))
+    (HERE / "evidence" / "tokens.json").write_text(json.dumps(out, indent=1) + "\n")
+    for k, v in out.items():
+        print(k, v)
+
+
 if __name__ == "__main__":
-    {"offline": offline}[sys.argv[1] if len(sys.argv) > 1 else "offline"]()
+    {"offline": offline, "live": live, "tokens": tokens}[sys.argv[1] if len(sys.argv) > 1 else "offline"]()

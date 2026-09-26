@@ -44,5 +44,20 @@ class ChainTest(unittest.TestCase):
         self.assertTrue(chains["C2-01"]["chain"])
 
 
+
+class LiveTest(unittest.TestCase):
+    def test_applied_reads_the_reply_messages_and_files(self):
+        check = {"kind": "contains", "value": "REF-KQZA418"}
+        self.assertTrue(score.applied(check, {"reply": "done", "written": {"note.txt": "Ref REF-KQZA418\nOn schedule."}}))
+        self.assertFalse(score.applied(check, {"reply": "On schedule."}), "the control: an artifact without the reference")
+
+    def test_following_counts_searches_for_a_name_an_earlier_view_showed(self):
+        score.PROBE_NAMES["C2-01"] = {"Hourer", "Motors"}
+        result = {"probe": "C2-01", "recall": "At Hourer Motors the mechanic is Pavel Kobri.", "tools": [
+            {"name": "memory_search", "input": {"query": "Hourer Motors mechanic"}, "result": "[]"},
+            {"name": "memory_search", "input": {"query": "Pavel Kobri keys"}, "result": "[]"}]}
+        self.assertEqual(score.followed(result), 1)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -11,6 +11,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strings"
 	"time"
 
 	"github.com/garamsh/sherlock/internal/agent/openai"
@@ -24,6 +25,7 @@ const OracleTop = 5
 //
 //	<arm> build   -work <dir> [-setting b4] [-proxy URL]   # Build every setting, or one
 //	<arm> offline -work <dir> [-setting b4]                # record what each setting delivers
+//	<arm> live -work <dir> -setting b4 -proxy URL          # one live turn per probe
 //
 // Every command reads corpus.json from -dir, embeds with the TEI server at
 // -embed-url, and writes under -dir/evidence/offline/<arm>/<setting>/:
@@ -36,7 +38,7 @@ func Main(arm Arm) {
 
 func run(ctx context.Context, arm Arm, args []string) error {
 	if len(args) < 1 {
-		return errors.New("usage: <arm> build|offline [flags]")
+		return errors.New("usage: <arm> build|offline|live [flags]")
 	}
 	fs := flag.NewFlagSet(args[0], flag.ExitOnError)
 	dir := fs.String("dir", "docs/research/chained-recall", "study directory")
@@ -45,6 +47,8 @@ func run(ctx context.Context, arm Arm, args []string) error {
 	embedURL := fs.String("embed-url", "http://127.0.0.1:8090/v1", "OpenAI-compatible embeddings base URL (local TEI)")
 	embedModel := fs.String("embed-model", "BAAI/bge-base-en-v1.5", "embedding model")
 	setting := fs.String("setting", "", "one setting; empty runs every setting")
+	workers := fs.Int("workers", 2, "live probes at once")
+	onlyList := fs.String("only", "", "comma-separated live probe IDs; empty runs all")
 	_ = fs.Parse(args[1:])
 	if *work == "" {
 		return errors.New("-work is required")
@@ -72,6 +76,17 @@ func run(ctx context.Context, arm Arm, args []string) error {
 			err = build(ctx, env, arm, s)
 		case "offline":
 			err = Offline(ctx, env, arm, s)
+		case "live":
+			if env.Proxy == "" {
+				return errNoProxy
+			}
+			only := map[string]bool{}
+			for _, id := range strings.Split(*onlyList, ",") {
+				if id = strings.TrimSpace(id); id != "" {
+					only[id] = true
+				}
+			}
+			err = Live(ctx, env, arm, s, *workers, only)
 		default:
 			err = fmt.Errorf("unknown command %q", args[0])
 		}

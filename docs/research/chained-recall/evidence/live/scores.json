@@ -1,0 +1,9727 @@
+{
+ "summary": {
+  "L/b4-model": {
+   "families": {
+    "C1": {
+     "n": 30,
+     "applied": 30,
+     "all_seen": 30
+    },
+    "C2": {
+     "n": 50,
+     "applied": 50,
+     "all_seen": 50
+    },
+    "C3": {
+     "n": 50,
+     "applied": 16,
+     "all_seen": 16
+    },
+    "E": {
+     "n": 20,
+     "applied": 13,
+     "all_seen": null
+    },
+    "IC2": {
+     "n": 25,
+     "applied": 0,
+     "all_seen": 0
+    },
+    "IC3": {
+     "n": 25,
+     "applied": 4,
+     "all_seen": 4
+    },
+    "K": {
+     "n": 20,
+     "applied": 14,
+     "all_seen": null
+    },
+    "N": {
+     "n": 20,
+     "applied": 11,
+     "all_seen": null
+    }
+   },
+   "primary": {
+    "n": 114,
+    "applied": 47,
+    "wilson": [
+     0.3262,
+     0.5041
+    ],
+    "all_seen": 47
+   },
+   "every_k2": {
+    "n": 150,
+    "applied": 70,
+    "all_seen": 70
+   },
+   "searches_per_probe": 0.03,
+   "probes_following_a_name": 2,
+   "primary_following_a_name": 2,
+   "primary_with_arm_items_in_recall": 107,
+   "rerun": 0,
+   "errors": 0,
+   "recall_blocks_differing_from_S": 195,
+   "against_S_b4": {
+    "arm_only": 46,
+    "S_only": 3,
+    "p": 6.981082378842984e-11,
+    "guard_change": {
+     "C1": 3,
+     "E": 1,
+     "K": -2,
+     "N": -4
+    },
+    "guardrails_hold": false,
+    "holm_p": 1.3962164757685969e-10
+   }
+  },
+  "M/b4": {
+   "families": {
+    "C1": {
+     "n": 30,
+     "applied": 28,
+     "all_seen": 28
+    },
+    "C2": {
+     "n": 50,
+     "applied": 8,
+     "all_seen": 8
+    },
+    "C3": {
+     "n": 50,
+     "applied": 12,
+     "all_seen": 11
+    },
+    "E": {
+     "n": 20,
+     "applied": 12,
+     "all_seen": null
+    },
+    "IC2": {
+     "n": 25,
+     "applied": 0,
+     "all_seen": 0
+    },
+    "IC3": {
+     "n": 25,
+     "applied": 0,
+     "all_seen": 0
+    },
+    "K": {
+     "n": 20,
+     "applied": 17,
+     "all_seen": null
+    },
+    "N": {
+     "n": 20,
+     "applied": 14,
+     "all_seen": null
+    }
+   },
+   "primary": {
+    "n": 114,
+    "applied": 10,
+    "wilson": [
+     0.0483,
+     0.154
+    ],
+    "all_seen": 10
+   },
+   "every_k2": {
+    "n": 150,
+    "applied": 20,
+    "all_seen": 19
+   },
+   "searches_per_probe": 0.45,
+   "probes_following_a_name": 26,
+   "primary_following_a_name": 17,
+   "primary_with_arm_items_in_recall": 0,
+   "rerun": 0,
+   "errors": 0,
+   "recall_blocks_differing_from_S": 0,
+   "against_S_b4": {
+    "arm_only": 8,
+    "S_only": 2,
+    "p": 0.109375,
+    "guard_change": {
+     "C1": 1,
+     "E": 0,
+     "K": 1,
+     "N": -1
+    },
+    "guardrails_hold": true,
+    "holm_p": 0.109375
+   }
+  },
+  "S/b4": {
+   "families": {
+    "C1": {
+     "n": 30,
+     "applied": 27,
+     "all_seen": 27
+    },
+    "C2": {
+     "n": 50,
+     "applied": 3,
+     "all_seen": 3
+    },
+    "C3": {
+     "n": 50,
+     "applied": 7,
+     "all_seen": 6
+    },
+    "E": {
+     "n": 20,
+     "applied": 12,
+     "all_seen": null
+    },
+    "IC2": {
+     "n": 25,
+     "applied": 0,
+     "all_seen": 0
+    },
+    "IC3": {
+     "n": 25,
+     "applied": 0,
+     "all_seen": 0
+    },
+    "K": {
+     "n": 20,
+     "applied": 16,
+     "all_seen": null
+    },
+    "N": {
+     "n": 20,
+     "applied": 15,
+     "all_seen": null
+    }
+   },
+   "primary": {
+    "n": 114,
+    "applied": 4,
+    "wilson": [
+     0.0137,
+     0.0868
+    ],
+    "all_seen": 4
+   },
+   "every_k2": {
+    "n": 150,
+    "applied": 10,
+    "all_seen": 9
+   },
+   "searches_per_probe": 0.27,
+   "probes_following_a_name": 10,
+   "primary_following_a_name": 6,
+   "primary_with_arm_items_in_recall": 0,
+   "rerun": 0,
+   "errors": 0
+  }
+ },
+ "per_probe": {
+  "L/b4-model": {
+   "C1-01": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-02": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-03": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C1-04": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-05": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-06": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C1-07": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C1-08": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-09": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C1-10": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-11": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-12": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-13": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-14": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-15": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-16": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-17": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C1-18": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-19": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C1-20": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-21": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-22": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-23": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C1-24": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C1-25": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-26": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-27": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-28": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-29": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-30": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-01": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-02": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-03": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-04": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-05": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-06": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 1,
+    "followed": 1,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-07": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-08": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-09": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-10": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-11": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-12": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-13": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-14": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-15": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-16": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-17": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-18": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-19": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-20": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-21": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-22": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-23": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-24": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-25": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-26": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-27": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-28": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-29": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-30": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-31": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-32": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-33": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-34": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-35": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-36": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-37": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-38": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-39": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-40": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-41": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-42": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-43": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-44": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-45": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-46": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-47": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-48": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-49": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C2-50": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-01": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-02": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-03": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-04": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-05": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 1,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-06": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-07": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-08": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-09": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-10": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-11": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-12": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-13": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-14": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-15": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-16": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-17": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-18": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-19": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-20": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-21": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-22": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-23": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-24": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-25": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-26": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-27": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-28": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-29": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-30": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-31": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 2,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-32": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-33": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-34": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-35": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-36": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-37": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-38": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-39": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-40": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-41": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-42": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-43": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-44": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-45": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-46": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-47": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-48": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-49": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "C3-50": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC2-01": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC2-02": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC2-03": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC2-04": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC2-05": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC2-06": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC2-07": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC2-08": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC2-09": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC2-10": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC2-11": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC2-12": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC2-13": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC2-14": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC2-15": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC2-16": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC2-17": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC2-18": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC2-19": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC2-20": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC2-21": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC2-22": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC2-23": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC2-24": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC2-25": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC3-01": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC3-02": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC3-03": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-04": {
+    "family": "IC3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC3-05": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-06": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC3-07": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC3-08": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC3-09": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC3-10": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC3-11": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC3-12": {
+    "family": "IC3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC3-13": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-14": {
+    "family": "IC3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC3-15": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC3-16": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC3-17": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-18": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-19": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC3-20": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-21": {
+    "family": "IC3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC3-22": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC3-23": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC3-24": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "IC3-25": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": true
+   },
+   "E-01": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-02": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-03": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-04": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-05": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-06": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-07": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-08": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-09": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-10": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-11": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-12": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-13": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-14": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-15": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-16": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-17": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-18": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-19": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-20": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-01": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-02": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-03": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-04": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-05": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-06": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-07": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-08": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-09": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-10": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-11": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-12": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-13": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-14": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-15": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-16": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-17": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-18": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-19": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-20": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-01": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-02": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-03": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-04": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-05": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-06": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-07": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-08": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-09": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-10": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-11": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-12": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-13": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-14": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-15": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-16": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-17": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-18": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-19": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-20": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   }
+  },
+  "M/b4": {
+   "C1-01": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-02": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-03": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-04": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-05": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-06": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-07": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-08": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-09": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-10": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-11": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-12": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-13": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-14": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-15": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-16": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-17": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-18": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-19": {
+    "family": "C1",
+    "k": 1,
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-20": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-21": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-22": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-23": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-24": {
+    "family": "C1",
+    "k": 1,
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-25": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-26": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-27": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-28": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-29": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-30": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-01": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-02": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-03": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-04": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-05": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-06": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-07": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-08": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-09": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-10": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-11": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-12": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-13": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-14": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-15": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-16": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-17": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-18": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-19": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-20": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-21": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-22": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 1,
+    "followed": 1,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-23": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-24": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-25": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-26": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-27": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 2,
+    "followed": 1,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-28": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-29": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-30": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 3,
+    "followed": 1,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-31": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-32": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-33": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-34": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "followed": 1,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-35": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-36": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-37": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-38": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-39": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 1,
+    "followed": 1,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-40": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-41": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-42": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-43": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 1,
+    "followed": 1,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-44": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-45": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-46": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 3,
+    "followed": 1,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-47": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-48": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-49": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-50": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 3,
+    "followed": 1,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-01": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-02": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 4,
+    "followed": 1,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-03": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-04": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 2,
+    "followed": 2,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-05": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-06": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 1,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-07": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-08": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 4,
+    "followed": 3,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-09": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 1,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-10": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-11": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-12": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-13": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-14": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 4,
+    "followed": 2,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-15": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 3,
+    "followed": 3,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-16": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-17": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 2,
+    "followed": 2,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-18": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-19": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-20": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-21": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-22": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 4,
+    "followed": 1,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-23": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-24": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-25": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-26": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-27": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-28": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 1,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-29": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 3,
+    "followed": 2,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-30": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 2,
+    "followed": 1,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-31": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     true
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-32": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-33": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-34": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-35": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 4,
+    "followed": 1,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-36": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-37": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 4,
+    "followed": 1,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-38": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-39": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "followed": 1,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-40": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-41": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     false,
+     true
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-42": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-43": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-44": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-45": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-46": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-47": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-48": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 2,
+    "followed": 2,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-49": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-50": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 2,
+    "followed": 2,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-01": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-02": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-03": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-04": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-05": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-06": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-07": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-08": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-09": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-10": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-11": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-12": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-13": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-14": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-15": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-16": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-17": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-18": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-19": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-20": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-21": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-22": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-23": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-24": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-25": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-01": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-02": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-03": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-04": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-05": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-06": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-07": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-08": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-09": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-10": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-11": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-12": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-13": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-14": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-15": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-16": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-17": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-18": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-19": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-20": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-21": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-22": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 5,
+    "followed": 3,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-23": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-24": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-25": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "E-01": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-02": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-03": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-04": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-05": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-06": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-07": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-08": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-09": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-10": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-11": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-12": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-13": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-14": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-15": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-16": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-17": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-18": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-19": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-20": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-01": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-02": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-03": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-04": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-05": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-06": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-07": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-08": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-09": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-10": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-11": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 2
+   },
+   "K-12": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-13": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1
+   },
+   "K-14": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-15": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-16": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-17": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-18": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-19": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-20": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-01": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-02": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-03": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-04": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-05": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-06": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-07": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-08": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-09": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-10": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-11": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-12": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-13": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-14": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-15": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-16": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-17": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 2
+   },
+   "N-18": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-19": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1
+   },
+   "N-20": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   }
+  },
+  "S/b4": {
+   "C1-01": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-02": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-03": {
+    "family": "C1",
+    "k": 1,
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-04": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-05": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-06": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-07": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-08": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-09": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-10": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-11": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-12": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-13": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-14": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-15": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-16": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-17": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-18": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-19": {
+    "family": "C1",
+    "k": 1,
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-20": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-21": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-22": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-23": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-24": {
+    "family": "C1",
+    "k": 1,
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-25": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-26": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-27": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-28": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-29": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C1-30": {
+    "family": "C1",
+    "k": 1,
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-01": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-02": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-03": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-04": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-05": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-06": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-07": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-08": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-09": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-10": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-11": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-12": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-13": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "followed": 1,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-14": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-15": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-16": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 1,
+    "followed": 1,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-17": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-18": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-19": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-20": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-21": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-22": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-23": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-24": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-25": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-26": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-27": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 3,
+    "followed": 1,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-28": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-29": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-30": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-31": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-32": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-33": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-34": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-35": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-36": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-37": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-38": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-39": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-40": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-41": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-42": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-43": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-44": {
+    "family": "C2",
+    "k": 2,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-45": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-46": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-47": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-48": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-49": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C2-50": {
+    "family": "C2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-01": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-02": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-03": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-04": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-05": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-06": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 2,
+    "followed": 2,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-07": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 2,
+    "followed": 2,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-08": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-09": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-10": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-11": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-12": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-13": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-14": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-15": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-16": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-17": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-18": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-19": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-20": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-21": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 1,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-22": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "followed": 1,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-23": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-24": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-25": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 4,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-26": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-27": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-28": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-29": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 3,
+    "followed": 3,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-30": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-31": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 4,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-32": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-33": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-34": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-35": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 3,
+    "followed": 1,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-36": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-37": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     true
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-38": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-39": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-40": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-41": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     false,
+     false,
+     true
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-42": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-43": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-44": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-45": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-46": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-47": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-48": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-49": {
+    "family": "C3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 3,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "C3-50": {
+    "family": "C3",
+    "k": 3,
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 2,
+    "followed": 2,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-01": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-02": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-03": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-04": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-05": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-06": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-07": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-08": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-09": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-10": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-11": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-12": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-13": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-14": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-15": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-16": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-17": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-18": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-19": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-20": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-21": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-22": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-23": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-24": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC2-25": {
+    "family": "IC2",
+    "k": 2,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-01": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-02": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-03": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-04": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-05": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-06": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-07": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-08": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-09": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-10": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-11": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-12": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-13": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-14": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-15": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-16": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-17": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-18": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-19": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-20": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-21": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-22": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-23": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-24": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "IC3-25": {
+    "family": "IC3",
+    "k": 3,
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "followed": 0,
+    "error": "",
+    "attempt": 1,
+    "arm_items": false
+   },
+   "E-01": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-02": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-03": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-04": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-05": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-06": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-07": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-08": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-09": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-10": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-11": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-12": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-13": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-14": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1
+   },
+   "E-15": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-16": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-17": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-18": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-19": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-20": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-01": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-02": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-03": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-04": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-05": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-06": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-07": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-08": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-09": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-10": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-11": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 2
+   },
+   "K-12": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-13": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-14": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-15": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-16": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-17": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-18": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-19": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-20": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-01": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-02": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 3
+   },
+   "N-03": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-04": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-05": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-06": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-07": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-08": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-09": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-10": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-11": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-12": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-13": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-14": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-15": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-16": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-17": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-18": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-19": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-20": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   }
+  }
+ }
+}

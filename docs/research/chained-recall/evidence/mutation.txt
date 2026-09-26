@@ -1,0 +1,13 @@
+FAILS  study/store.go: the copied bearer-token redaction
+FAILS  study/shipped.go: the shipped recall's two recent mids
+FAILS  study/adapt.go: the pending previews after an arm's items
+FAILS  study/adapt.go: the level label on a search result that is not a mid
+FAILS  study/live.go: the arm's recall in the live session
+FAILS  study/live.go: the arm's instruction in the live session
+FAILS  harness/quota.go: the usage-limit code test
+FAILS  harness/quota.go: reopening after a successful probe
+FAILS  harness/proxy.go: the summary length bound on what the proxy caches
+FAILS  score.py: the entity check of a reached hop
+FAILS  score.py: the answer check of the live stage
+FAILS  corpus.py: the rule that later hop words stay out of the query
+control: every unmutated test passes

@@ -1,0 +1,14 @@
+{
+  "arm": "M",
+  "build_seconds": 0.01806551,
+  "built": {
+    "stored_chars": 691232,
+    "vectors": 1624,
+    "units": {
+      "mid": 1624
+    }
+  },
+  "setting": "b4",
+  "source_chars": 979988,
+  "stored_chars_per_source": 0.7053474124172949
+}

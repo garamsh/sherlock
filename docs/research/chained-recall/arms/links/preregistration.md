@@ -22,7 +22,7 @@ Fixes arm L's one paid phase before its first model call. The phase has the synt
 
 - The replication's batch-4 syntheses averaged 440.9 input and 314.1 output tokens (`../../../mid-memory-rag/evidence/replication/synthesis-n4.jsonl`, `response.usage` of all 1,200). The longer prompt and schema, and the entity list, are estimated to add up to 100 tokens to each side.
 - So the phase is estimated at about 0.9M input and 0.7M output tokens.
-- At the proxy's list prices that is about USD 1.10. The proxy's ceiling is USD 1.00 in all, and #874's stream synthesis draws on the same ceiling (`../../preregistration.md` §Paid phase 1). The phase therefore starts only once the PM has set a ceiling that covers it. The key is on a subscription, and the report states tokens, not dollars.
+- At the proxy's list prices that is about USD 1.10. The PM raised the shared ledger's ceiling from USD 1.00 to 3.00 to cover L's and H's synthesis phases too (`../../preregistration.md` §Amendments, 1). #874's stream synthesis draws on the same ceiling. The key is on a subscription, and the report states tokens, not dollars.
 
 ## Pacing and the usage limit
 

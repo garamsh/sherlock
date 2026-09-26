@@ -2,8 +2,12 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"regexp"
+	"strconv"
 	"strings"
 	"sync"
+	"unicode"
 
 	"github.com/garamsh/sherlock/internal/agent"
 	"github.com/garamsh/sherlock/internal/tool"
@@ -96,12 +100,82 @@ func reached(exchanges []exchange, input string, keys []string) bool {
 	return false
 }
 
+// containsAny reports whether text states any key, matched the way the
+// scorer matches a value (score.py value_tokens and states): every token
+// with a digit, every capitalized word and every month must appear as a
+// whole word, or, for a key with none of those, every word but connectives.
+// A number may carry an ordinal suffix and may drop its thousands commas;
+// a 24-hour time may appear on the 12-hour clock.
 func containsAny(text string, keys []string) bool {
-	lower := strings.ToLower(text)
+	norm := normalizeText(text)
 	for _, k := range keys {
-		if k != "" && strings.Contains(lower, strings.ToLower(k)) {
+		tokens := keyTokens(k)
+		if len(tokens) == 0 {
+			continue
+		}
+		all := true
+		for _, t := range tokens {
+			if !tokenPattern(t).MatchString(norm) {
+				all = false
+				break
+			}
+		}
+		if all {
 			return true
 		}
 	}
 	return false
+}
+
+var (
+	thousands = regexp.MustCompile(`(\d),(\d{3})`)
+	rawToken  = regexp.MustCompile(`[A-Za-z0-9]+(?::[0-9]+)?`)
+	hasDigit  = regexp.MustCompile(`\d`)
+	clock     = regexp.MustCompile(`^(\d{1,2}):(\d{2})$`)
+	months    = map[string]bool{"january": true, "february": true, "march": true, "april": true, "may": true, "june": true, "july": true, "august": true, "september": true, "october": true, "november": true, "december": true}
+	stopWords = map[string]bool{"with": true, "the": true, "a": true, "an": true, "of": true, "and": true}
+)
+
+func dropThousands(s string) string {
+	for {
+		next := thousands.ReplaceAllString(s, "$1$2")
+		if next == s {
+			return s
+		}
+		s = next
+	}
+}
+
+func normalizeText(s string) string {
+	s = dropThousands(strings.ToLower(s))
+	return strings.NewReplacer("€", " ", "$", " ").Replace(s)
+}
+
+func keyTokens(key string) []string {
+	raw := rawToken.FindAllString(dropThousands(key), -1)
+	var marked, rest []string
+	for _, t := range raw {
+		if hasDigit.MatchString(t) || unicode.IsUpper([]rune(t)[0]) || months[strings.ToLower(t)] {
+			marked = append(marked, strings.ToLower(t))
+		} else if !stopWords[strings.ToLower(t)] {
+			rest = append(rest, strings.ToLower(t))
+		}
+	}
+	if len(marked) > 0 {
+		return marked
+	}
+	return rest
+}
+
+func tokenPattern(t string) *regexp.Regexp {
+	p := regexp.QuoteMeta(t)
+	if _, err := strconv.Atoi(t); err == nil {
+		p += `(?:st|nd|rd|th)?`
+	}
+	if m := clock.FindStringSubmatch(t); m != nil {
+		if h, _ := strconv.Atoi(m[1]); h > 12 {
+			p = fmt.Sprintf(`(?:%s|%d:%s\s*(?:pm|p\.m\.))`, p, h-12, m[2])
+		}
+	}
+	return regexp.MustCompile(`(?:^|[^a-z0-9])` + p + `(?:$|[^a-z0-9])`)
 }

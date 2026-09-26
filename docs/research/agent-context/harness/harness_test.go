@@ -189,3 +189,25 @@ func TestProxy_ReRequestsASynthesisTheSummarizerWouldRefuse(t *testing.T) {
 	assert.Equal(t, int32(2), n.Load(), "only the usable answer was cached")
 	assert.False(t, summarized([]byte(`{"choices":[{"message":{"content":"prose"}}]}`)), "the control: prose is not a summary")
 }
+
+// TestContainsAny_MatchesAsTheScorerDoes pins the examples score_test.py
+// pins for states, so reach and application are judged alike.
+func TestContainsAny_MatchesAsTheScorerDoes(t *testing.T) {
+	for _, tc := range []struct {
+		text, key string
+		want      bool
+	}{
+		{"The budget is 14,100 euros.", "€14,100", true},
+		{"The budget is 141,000 euros.", "€14,100", false},
+		{"Book the Arden hall.", "the Arden Hall", true},
+		{"Book the Arden loft.", "the Arden Hall", false},
+		{"March 22nd at 2:45 PM", "22 March at 14:45", true},
+		{"March 22nd at 3:45 PM", "22 March at 14:45", false},
+		{"June 2nd", "2 June", true},
+		{"June 12th", "2 June", false},
+		{"User stays at Tsuki House in Kyoto.", "the Tsuki House", true},
+		{"Kit size is M8.", "size M8", true},
+	} {
+		assert.Equal(t, tc.want, containsAny(tc.text, []string{tc.key}), "%q in %q", tc.key, tc.text)
+	}
+}

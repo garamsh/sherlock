@@ -357,7 +357,46 @@ def decide(tests, guardrails, controls):
     return {"outcome": f"valid: {', '.join(valid)}; take {winner}", "valid": valid, "winner": winner}
 
 
+def project(pilot_dir, pilot_episodes, stage_episodes, since=None):
+    """Project stage 2 from the pilot: its cost per episode in each family
+    and arm, scaled to stage 2's family sizes, and the power the pilot's
+    discordance leaves at stage 2's primary size. `since` maps an arm to the
+    UTC time its scored run started, leaving out calls of an earlier run of
+    that arm from the per-episode cost; every call counts as spent."""
+    episodes, results, all_calls = load(pilot_dir, pilot_episodes)
+    since = since or {}
+    calls = [c for c in all_calls if c["time"] >= since.get(c["arm"], "")]
+    stage = json.load(open(stage_episodes))["episodes"]
+    per = defaultdict(float)
+    counts = defaultdict(int)
+    for c in calls:
+        e = episodes.get(c["episode"])
+        if e:
+            per[(e["family"], c["arm"])] += c.get("usd", 0.0)
+    for e in episodes.values():
+        counts[e["family"]] += 1
+    sizes = defaultdict(int)
+    for e in stage:
+        sizes[e["family"]] += 1
+    by_family = {f: {a: per[(f, a)] / counts[f] for a in ARMS} for f in counts}
+    stage_usd = sum(sizes[f] * sum(by_family[f].values()) for f in sizes)
+    spent = sum(c.get("usd", 0.0) for c in all_calls)
+    scored = score(pilot_dir, pilot_episodes)
+    n = sum(sizes[f] for f in PRIMARY)
+    powers = {}
+    for c in CANDIDATES:
+        psi = scored["tests"][c]["discordance"] or 0.0
+        powers[c] = {"discordance": psi, "power_10_points": round(power(n, max(psi, 0.101), 0.10, ALPHA / 2), 3)}
+    return {"pilot_usd": round(spent, 4), "stage2_usd": round(stage_usd, 4), "total_usd": round(spent + stage_usd, 4),
+            "usd_per_episode": {f: {a: round(v, 4) for a, v in d.items()} for f, d in by_family.items()},
+            "stage2_sizes": dict(sizes), "primary_n": n, "power": powers}
+
+
 def main():
+    if sys.argv[1] == "project":
+        since = dict(arg.split("=", 1) for arg in sys.argv[5:])
+        print(json.dumps(project(Path(sys.argv[2]), Path(sys.argv[3]), Path(sys.argv[4]), since), indent=1))
+        return
     run_dir = Path(sys.argv[1])
     episodes = Path(sys.argv[2]) if len(sys.argv) > 2 else HERE / "episodes.json"
     out = score(run_dir, episodes)

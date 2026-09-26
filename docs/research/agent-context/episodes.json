@@ -42361,7 +42361,7 @@
     "kind": "celsius"
    },
    "reach": [
-    "Celsius only"
+    "Celsius"
    ],
    "oracle": "A standing preference for everything you write for me from now on: always give temperatures in Celsius only, never Fahrenheit."
   },
@@ -42395,7 +42395,7 @@
     "kind": "celsius"
    },
    "reach": [
-    "Celsius only"
+    "Celsius"
    ],
    "oracle": "A standing preference for everything you write for me from now on: always give temperatures in Celsius only, never Fahrenheit."
   },
@@ -42429,7 +42429,7 @@
     "kind": "celsius"
    },
    "reach": [
-    "Celsius only"
+    "Celsius"
    ],
    "oracle": "A standing preference for everything you write for me from now on: always give temperatures in Celsius only, never Fahrenheit."
   },
@@ -42463,7 +42463,7 @@
     "kind": "celsius"
    },
    "reach": [
-    "Celsius only"
+    "Celsius"
    ],
    "oracle": "A standing preference for everything you write for me from now on: always give temperatures in Celsius only, never Fahrenheit."
   },
@@ -42497,7 +42497,7 @@
     "kind": "celsius"
    },
    "reach": [
-    "Celsius only"
+    "Celsius"
    ],
    "oracle": "A standing preference for everything you write for me from now on: always give temperatures in Celsius only, never Fahrenheit."
   },
@@ -42531,7 +42531,7 @@
     "kind": "celsius"
    },
    "reach": [
-    "Celsius only"
+    "Celsius"
    ],
    "oracle": "A standing preference for everything you write for me from now on: always give temperatures in Celsius only, never Fahrenheit."
   },
@@ -42565,7 +42565,7 @@
     "kind": "celsius"
    },
    "reach": [
-    "Celsius only"
+    "Celsius"
    ],
    "oracle": "A standing preference for everything you write for me from now on: always give temperatures in Celsius only, never Fahrenheit."
   },
@@ -43082,7 +43082,7 @@
     "kind": "tab_indent"
    },
    "reach": [
-    "indent it with tabs"
+    "tabs"
    ],
    "oracle": "A standing preference for everything you write for me from now on: whenever you write code for me, indent it with tabs, never spaces."
   },
@@ -43116,7 +43116,7 @@
     "kind": "tab_indent"
    },
    "reach": [
-    "indent it with tabs"
+    "tabs"
    ],
    "oracle": "A standing preference for everything you write for me from now on: whenever you write code for me, indent it with tabs, never spaces."
   },
@@ -43150,7 +43150,7 @@
     "kind": "tab_indent"
    },
    "reach": [
-    "indent it with tabs"
+    "tabs"
    ],
    "oracle": "A standing preference for everything you write for me from now on: whenever you write code for me, indent it with tabs, never spaces."
   },
@@ -43184,7 +43184,7 @@
     "kind": "tab_indent"
    },
    "reach": [
-    "indent it with tabs"
+    "tabs"
    ],
    "oracle": "A standing preference for everything you write for me from now on: whenever you write code for me, indent it with tabs, never spaces."
   },
@@ -43218,7 +43218,7 @@
     "kind": "tab_indent"
    },
    "reach": [
-    "indent it with tabs"
+    "tabs"
    ],
    "oracle": "A standing preference for everything you write for me from now on: whenever you write code for me, indent it with tabs, never spaces."
   },
@@ -43252,7 +43252,7 @@
     "kind": "tab_indent"
    },
    "reach": [
-    "indent it with tabs"
+    "tabs"
    ],
    "oracle": "A standing preference for everything you write for me from now on: whenever you write code for me, indent it with tabs, never spaces."
   },
@@ -43286,7 +43286,7 @@
     "kind": "tab_indent"
    },
    "reach": [
-    "indent it with tabs"
+    "tabs"
    ],
    "oracle": "A standing preference for everything you write for me from now on: whenever you write code for me, indent it with tabs, never spaces."
   },
@@ -43565,7 +43565,7 @@
     "kind": "euro"
    },
    "reach": [
-    "€ sign"
+    "euros"
    ],
    "oracle": "A standing preference for everything you write for me from now on: give every amount of money in euros, with the € sign before the number."
   },
@@ -43599,7 +43599,7 @@
     "kind": "euro"
    },
    "reach": [
-    "€ sign"
+    "euros"
    ],
    "oracle": "A standing preference for everything you write for me from now on: give every amount of money in euros, with the € sign before the number."
   },
@@ -43633,7 +43633,7 @@
     "kind": "euro"
    },
    "reach": [
-    "€ sign"
+    "euros"
    ],
    "oracle": "A standing preference for everything you write for me from now on: give every amount of money in euros, with the € sign before the number."
   },
@@ -43667,7 +43667,7 @@
     "kind": "euro"
    },
    "reach": [
-    "€ sign"
+    "euros"
    ],
    "oracle": "A standing preference for everything you write for me from now on: give every amount of money in euros, with the € sign before the number."
   },
@@ -43701,7 +43701,7 @@
     "kind": "euro"
    },
    "reach": [
-    "€ sign"
+    "euros"
    ],
    "oracle": "A standing preference for everything you write for me from now on: give every amount of money in euros, with the € sign before the number."
   },
@@ -43735,7 +43735,7 @@
     "kind": "euro"
    },
    "reach": [
-    "€ sign"
+    "euros"
    ],
    "oracle": "A standing preference for everything you write for me from now on: give every amount of money in euros, with the € sign before the number."
   },
@@ -43769,7 +43769,7 @@
     "kind": "euro"
    },
    "reach": [
-    "€ sign"
+    "euros"
    ],
    "oracle": "A standing preference for everything you write for me from now on: give every amount of money in euros, with the € sign before the number."
   },
@@ -44048,7 +44048,7 @@
     "kind": "clock24"
    },
    "reach": [
-    "24-hour clock"
+    "24-hour"
    ],
    "oracle": "A standing preference for everything you write for me from now on: whenever you mention a time of day, use the 24-hour clock like 14:30, never am or pm."
   },
@@ -44082,7 +44082,7 @@
     "kind": "clock24"
    },
    "reach": [
-    "24-hour clock"
+    "24-hour"
    ],
    "oracle": "A standing preference for everything you write for me from now on: whenever you mention a time of day, use the 24-hour clock like 14:30, never am or pm."
   },
@@ -44116,7 +44116,7 @@
     "kind": "clock24"
    },
    "reach": [
-    "24-hour clock"
+    "24-hour"
    ],
    "oracle": "A standing preference for everything you write for me from now on: whenever you mention a time of day, use the 24-hour clock like 14:30, never am or pm."
   },
@@ -44150,7 +44150,7 @@
     "kind": "clock24"
    },
    "reach": [
-    "24-hour clock"
+    "24-hour"
    ],
    "oracle": "A standing preference for everything you write for me from now on: whenever you mention a time of day, use the 24-hour clock like 14:30, never am or pm."
   },
@@ -44184,7 +44184,7 @@
     "kind": "clock24"
    },
    "reach": [
-    "24-hour clock"
+    "24-hour"
    ],
    "oracle": "A standing preference for everything you write for me from now on: whenever you mention a time of day, use the 24-hour clock like 14:30, never am or pm."
   },
@@ -44218,7 +44218,7 @@
     "kind": "clock24"
    },
    "reach": [
-    "24-hour clock"
+    "24-hour"
    ],
    "oracle": "A standing preference for everything you write for me from now on: whenever you mention a time of day, use the 24-hour clock like 14:30, never am or pm."
   },
@@ -44252,7 +44252,7 @@
     "kind": "clock24"
    },
    "reach": [
-    "24-hour clock"
+    "24-hour"
    ],
    "oracle": "A standing preference for everything you write for me from now on: whenever you mention a time of day, use the 24-hour clock like 14:30, never am or pm."
   },

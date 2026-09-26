@@ -48,4 +48,4 @@ Fixes arm L's one paid phase before its first model call. The phase has the synt
 
 ## Revision
 
-- Arm code: `3deb6ab`.
+- Arm code: `8985519`.

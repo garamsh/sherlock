@@ -3,6 +3,7 @@ package study
 import (
 	"context"
 	"fmt"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -142,4 +143,16 @@ func TestShippedMemory_RecallsWhatProductionRecalls(t *testing.T) {
 		require.NotEmpty(t, items, "the control: the store has mids to recall")
 		assert.Equal(t, production.Memories, Recalled(items), task)
 	}
+}
+
+func TestCopyDir_RefusesOnlyAWriteAheadLogHoldingFrames(t *testing.T) {
+	from, to := t.TempDir(), t.TempDir()
+	require.NoError(t, os.WriteFile(filepath.Join(from, "memory.db"), []byte("db"), 0o644))
+	require.NoError(t, os.WriteFile(filepath.Join(from, "memory.db-wal"), nil, 0o644))
+	require.NoError(t, os.WriteFile(filepath.Join(from, "memory.db-shm"), []byte("index"), 0o644))
+	require.NoError(t, CopyDir(from, to), "the control: an empty log is what a closed reader leaves")
+	_, err := os.Stat(filepath.Join(to, "memory.db-shm"))
+	assert.True(t, os.IsNotExist(err), "sidecars are not copied")
+	require.NoError(t, os.WriteFile(filepath.Join(from, "memory.db-wal"), []byte("frames"), 0o644))
+	assert.Error(t, CopyDir(from, t.TempDir()))
 }

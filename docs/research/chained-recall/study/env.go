@@ -56,8 +56,9 @@ func (e *Env) SharedStore(batch int) (string, error) {
 	return dir, nil
 }
 
-// CopyDir copies every regular file of a store directory into another,
-// refusing a directory whose SQLite files were not closed.
+// CopyDir copies the regular files of a store directory into another,
+// leaving out SQLite's sidecar files and refusing a directory whose
+// write-ahead log still holds frames.
 func CopyDir(from, to string) error {
 	entries, err := os.ReadDir(from)
 	if err != nil {
@@ -70,8 +71,21 @@ func CopyDir(from, to string) error {
 		if !e.Type().IsRegular() {
 			continue
 		}
-		if strings.HasSuffix(e.Name(), "-wal") || strings.HasSuffix(e.Name(), "-shm") {
-			return fmt.Errorf("%s holds %s; close the store before copying", from, e.Name())
+		// A reader leaves an empty write-ahead log and its index behind;
+		// only a log holding frames means the main file is not the whole
+		// database.
+		if strings.HasSuffix(e.Name(), "-wal") {
+			info, err := e.Info()
+			if err != nil {
+				return err
+			}
+			if info.Size() > 0 {
+				return fmt.Errorf("%s holds a non-empty %s; close the store before copying", from, e.Name())
+			}
+			continue
+		}
+		if strings.HasSuffix(e.Name(), "-shm") {
+			continue
 		}
 		data, err := os.ReadFile(filepath.Join(from, e.Name()))
 		if err != nil {

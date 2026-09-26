@@ -59,3 +59,15 @@ Every arm's records come from `study.Offline` and are scored by `score.py offlin
   - The proxy restarts to apply it. A batch whose request fails during the restart is re-run under the rule above.
   - `score.py` gained the `live` and `tokens` commands in `f3f7e62`. Its offline functions are unchanged from the SHA-256 above; `git diff 1982942 f3f7e62 -- score.py` shows additions only.
   - The PM fixed H's live-stage margin at 5 percentage points: H goes live only if its chain reach on k ≥ 2, at equal context characters, trails S at batch 4 by no more than 5 points.
+- **2.** Committed after the post-synthesis chain check, and before any arm was built or any arm's records existed.
+  - **The chain-check control failed.** At batch 4, raw-query similarity ranks 26 of the 225 later hops within the top 20, against at most 11 allowed. At batch 8 it ranks 23 (`evidence/check-b4.json`, `check-b8.json`).
+    - All the leaking hops are final hops of explicit chains: C3 14 and C2 12 at batch 4.
+    - Their summaries match the kind of answer the query asks for, not the chain's words. "The food for our event" meets "a catering booking … under reference NW-9992", and "which door" meets "works out of room 385". A query's chain-specific names are absent from them.
+    - Of the 26, 6 rank within the 7 items the shipped recall delivers, and 2 within 5.
+  - **Under this file's rule the offline comparison is therefore reported undetermined, and it will be.**
+  - **Oracle.** It passed: 404 of 405 hops at batch 4.
+  - **Clean subset.** Fixed now, from the check alone and not from any arm's records, for a secondary analysis:
+    - The clean subset is the chains none of whose later hops ranks within the top 20 at batch 4 or at batch 8.
+    - It holds 144 chains: 114 of k ≥ 2 (C2 35, C3 30, IC2 24, IC3 25) and all 30 C1.
+    - `score.py` reports every offline figure for it beside the full set, labelled secondary.
+    - The live stage's preregistration takes the clean subset's k ≥ 2 chains as its primary set, so that the live verdict does not rest on a corpus that fails its own check.

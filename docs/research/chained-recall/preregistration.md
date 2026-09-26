@@ -50,3 +50,12 @@ Every arm's records come from `study.Offline` and are scored by `score.py offlin
   - `score.py`: `8122a7b04f4415f7b1b8b55642385944022e34826bb32a150c1212acf0908257`
   - `corpus.py`: `e830e8742c1d269eeaafdb9cc53d7e73b0ba1c84129b9858e1c86366f5554e74`
   - `evidence/screen.json`: `cf578c3a235283803abc761a0a0b7c29e1f4e90caed3a162c094117a8b609945`
+
+## Amendments
+
+- **1.** Committed during the stream synthesis, before any stream summary was read or scored.
+  - The proxy's list-price ceiling rises from USD 1.00 to 3.00, by the PM's decision. The same shared ledger then covers L's and H's synthesis phases too.
+  - It stays a guard: the Token Plan refuses with 429 code 2056 rather than billing, and the 2056 pause is unchanged.
+  - The proxy restarts to apply it. A batch whose request fails during the restart is re-run under the rule above.
+  - `score.py` gained the `live` and `tokens` commands in `f3f7e62`. Its offline functions are unchanged from the SHA-256 above; `git diff 1982942 f3f7e62 -- score.py` shows additions only.
+  - The PM fixed H's live-stage margin at 5 percentage points: H goes live only if its chain reach on k ≥ 2, at equal context characters, trails S at batch 4 by no more than 5 points.

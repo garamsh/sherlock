@@ -1,0 +1,87 @@
+{
+ "b4": {
+  "entities": {
+   "share": 0.8805,
+   "threshold": 0.9,
+   "passed": false
+  },
+  "walked": {
+   "share": 1.0,
+   "threshold": 0.9,
+   "passed": true
+  },
+  "beyond_similar": {
+   "share": 1.0,
+   "threshold": 0.5,
+   "passed": true
+  },
+  "oracle": {
+   "share": 1.0,
+   "threshold": 0.95,
+   "passed": true
+  },
+  "chains": 150,
+  "hops": 405,
+  "beyond_seeds": 28,
+  "passed": false
+ },
+ "b4-model": {
+  "entities": {
+   "share": 0.9741,
+   "threshold": 0.9,
+   "passed": true
+  },
+  "walked": {
+   "share": 1.0,
+   "threshold": 0.9,
+   "passed": true
+  },
+  "beyond_similar": {
+   "share": 0.9467,
+   "threshold": 0.5,
+   "passed": true
+  },
+  "oracle": {
+   "share": 1.0,
+   "threshold": 0.95,
+   "passed": true
+  },
+  "chains": 150,
+  "hops": 405,
+  "beyond_seeds": 108,
+  "passed": true
+ },
+ "b8": {
+  "entities": {
+   "share": 0.9631,
+   "threshold": 0.9,
+   "passed": true
+  },
+  "walked": {
+   "share": 1.0,
+   "threshold": 0.9,
+   "passed": true
+  },
+  "beyond_similar": {
+   "share": 1.0,
+   "threshold": 0.5,
+   "passed": true
+  },
+  "oracle": {
+   "share": 0.9901,
+   "threshold": 0.95,
+   "passed": true
+  },
+  "chains": 150,
+  "hops": 405,
+  "beyond_seeds": 31,
+  "passed": true
+ },
+ "added_tokens_b4": {
+  "paired": 1624,
+  "output_mean": 62.8,
+  "output_median": 54.0,
+  "input_mean": 61.0,
+  "input_median": 61.0
+ }
+}

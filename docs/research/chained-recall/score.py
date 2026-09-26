@@ -292,8 +292,13 @@ def live():
 def tokens():
     """Tokens per arm and phase, from the ledger."""
     agg = defaultdict(lambda: {"calls": 0, "cached": 0, "status_429": 0, "prompt_tokens": 0, "completion_tokens": 0})
-    for c in load_jsonl(HERE / "evidence" / "ledger" / "calls.jsonl"):
-        a = agg[f"{c['arm']}/{c['phase']}"]
+    rows = []
+    for ledger in ("ledger", "ledger-live"):
+        path = HERE / "evidence" / ledger / "calls.jsonl"
+        if path.exists():
+            rows += [(ledger, c) for c in load_jsonl(path)]
+    for ledger, c in rows:
+        a = agg[f"{ledger}:{c['arm']}/{c['phase']}"]
         a["calls"] += 1
         a["cached"] += bool(c.get("cached"))
         a["status_429"] += c.get("status") == 429

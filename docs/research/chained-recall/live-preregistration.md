@@ -68,3 +68,12 @@ A failed control makes the live verdict undetermined, and the report names it.
 
 - Harness, study and arms at the commit that adds this file.
 - SHA-256: `score.py` `3d41fcf7960948b663133a20f93f6414527a3cc8402bec2c71dc60b5378525cc`; `corpus.json` `034439bafec98e2462e91a0d4ce731aa1a9b3a2d4dd366d3c13cd437ba7c8e47`, as in `preregistration.md`.
+
+## Amendments
+
+- **1.** Committed after the smoke run and before collection.
+  - **Smoke run.** It ran 4 probes of M (`evidence/live-smoke/M/b4/`). It revealed one defect, fixed in `9cfa1a1` before the smoke run: copying a store refused the empty write-ahead log a closed reader leaves.
+    - What the model did is not a defect and changes nothing here. In `C2-01` M named the contact from recall, then answered that it had no number without searching for the name.
+  - **Budget.** The shared proxy on port 8091 serves the L and H workers' synthesis and cannot be restarted under them. So the live stage runs through its own proxy on `127.0.0.1:8092`, with its own ledger (`evidence/ledger-live/`) and the USD 12.00 list-price guard.
+    - Its 2056 pause is the same code.
+    - `score.py tokens` reads both ledgers.

@@ -41,8 +41,9 @@ class CorpusTest(unittest.TestCase):
     def test_later_hop_words_appear_only_in_the_hop_before(self):
         for c in self.corpus["chains"]:
             self.assertTrue(gen.lexical_ok(c), c["id"])
-        # Control: a query naming hop 2's entity breaks the rule.
-        c = next(c for c in self.corpus["chains"] if c["k"] == 2)
+        # Control: a query naming the entity hop 2 leads to, not the
+        # answer, breaks the rule.
+        c = next(c for c in self.corpus["chains"] if c["k"] == 3)
         leaked = dict(c, query=c["query"] + " " + c["hops"][1]["ends"][1])
         self.assertFalse(gen.lexical_ok(leaked))
 

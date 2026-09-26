@@ -12,7 +12,7 @@ import (
 // shell_exec to write a note into the workspace and compute the answer
 // through the workspace's Exec RPC, file_read to read that note back
 // through the gRPC contract, message_send for the mouth, then the reply
-// with the note unchanged. The scenario creates what it reads, so it runs
+// with an empty note. The scenario creates what it reads, so it runs
 // clean in any workspace. It exhausts after one message; a real model
 // replaces it without interface changes.
 func mockModel(_ string) agent.Model {
@@ -45,7 +45,7 @@ func mockModel(_ string) agent.Model {
 			ToolCalls: []agent.ToolCall{{
 				Name: agent.MemoryWriteTool,
 				Input: json.RawMessage(
-					`{"reply":"Replied via message_send and recorded the answer.","note":null}`,
+					`{"reply":"Replied via message_send and recorded the answer.","note":""}`,
 				),
 			}},
 		},

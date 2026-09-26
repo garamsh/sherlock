@@ -333,11 +333,7 @@ func prepareConversation(db *sql.DB) error {
 		if count > 0 {
 			return errors.New("extractive conversation schema; open with the previous binary or select a new memory-path; see docs/architecture/memory.md")
 		}
-		if _, err := tx.Exec(`CREATE TABLE IF NOT EXISTS conversation_note (
- id INTEGER PRIMARY KEY CHECK(id = 1),
- content TEXT NOT NULL
-);
-DROP TRIGGER IF EXISTS conversation_mid_insert; DROP TABLE IF EXISTS conversation_mid_fts; DROP TABLE conversation_mid; DROP TABLE conversation_short`); err != nil {
+		if _, err := tx.Exec(`DROP TRIGGER IF EXISTS conversation_mid_insert; DROP TABLE IF EXISTS conversation_mid_fts; DROP TABLE conversation_mid; DROP TABLE conversation_short`); err != nil {
 			return err
 		}
 	}

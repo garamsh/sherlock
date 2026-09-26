@@ -371,3 +371,37 @@ func TestNote_CredentialsAreNotPersisted(t *testing.T) {
 	assert.NotContains(t, note, "hunter22")
 	assert.Contains(t, note, "staging host", "the rest of the note is kept")
 }
+
+// TestNote_DatabaseFromBeforeTheNoteOpensWithAnEmptyNote opens a file
+// written before the note existed: its conversation survives, the note
+// starts empty, and it can be written.
+func TestNote_DatabaseFromBeforeTheNoteOpensWithAnEmptyNote(t *testing.T) {
+	ctx := context.Background()
+	path := filepath.Join(t.TempDir(), "memory.db")
+	store, err := sqlite.OpenConversation(path, wordEmbedder{})
+	require.NoError(t, err)
+	require.NoError(t, store.RecordTurn(ctx, episodeSources("The telescope is the Kepler-9 refractor."), firstSummary{}))
+	require.NoError(t, store.Close())
+	db, err := sql.Open("sqlite", path)
+	require.NoError(t, err)
+	_, err = db.Exec(`DROP TABLE conversation_note`)
+	require.NoError(t, err)
+	var tables int
+	require.NoError(t, db.QueryRow(`SELECT count(*) FROM sqlite_master WHERE name='conversation_note'`).Scan(&tables))
+	require.Zero(t, tables, "the setup produced a file without the note table")
+	require.NoError(t, db.Close())
+
+	reopened, err := sqlite.OpenConversation(path, wordEmbedder{})
+	require.NoError(t, err)
+	defer reopened.Close()
+	note, err := reopened.Note(ctx)
+	require.NoError(t, err)
+	assert.Empty(t, note)
+	sources, err := reopened.Recent(ctx, 10)
+	require.NoError(t, err)
+	assert.NotEmpty(t, sources, "the conversation from before the note is kept")
+	require.NoError(t, reopened.SetNote(ctx, "Indent code with tabs."))
+	note, err = reopened.Note(ctx)
+	require.NoError(t, err)
+	assert.Equal(t, "Indent code with tabs.", note)
+}

@@ -295,7 +295,7 @@ func (s *session) finish(ctx context.Context, reply string, note *string) (strin
 // descriptor already carries.
 func writebackRequiredNotice() string {
 	return "Your turn is not finished. Call " + MemoryWriteTool +
-		" with your reply, and your note or null when it did not change."
+		" with your reply and your whole note."
 }
 
 // execute runs one tool call through the protocol client and feeds the

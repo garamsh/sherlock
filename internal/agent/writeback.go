@@ -94,19 +94,19 @@ func (e *WritebackError) Unwrap() error { return e.Err }
 // Is reports whether target is ErrMalformedWriteback.
 func (e *WritebackError) Is(target error) bool { return target == ErrMalformedWriteback }
 
-// writebackJSON is the wire shape of the terminal call: the visible reply
-// and the note, null when unchanged.
+// writebackJSON is the wire shape of the terminal call. Note is a pointer
+// so a call that leaves it out, or sends null, is told apart from one that
+// clears it.
 type writebackJSON struct {
 	Reply string  `json:"reply"`
 	Note  *string `json:"note"`
 }
 
 // ParseWriteback splits the terminal call's arguments into the visible
-// reply and the note. A note the call leaves out or sends as null leaves
-// the saved one unchanged. Arguments
-// that are not JSON fail with *WritebackError, and a note longer than
-// MaxNoteLength with ErrNoteTooLong, which the session hands back to the
-// model rather than failing the turn.
+// reply and the note. A note the call leaves out or sends as null keeps
+// the saved one. Arguments that are not JSON fail with *WritebackError,
+// and a note longer than MaxNoteLength with ErrNoteTooLong, which the
+// session hands back to the model rather than failing the turn.
 func ParseWriteback(content string) (reply string, note *string, err error) {
 	var doc writebackJSON
 	if jsonErr := json.Unmarshal([]byte(strings.TrimSpace(content)), &doc); jsonErr != nil {

@@ -1033,6 +1033,7 @@ func TestSessionRun_OvergrownNoteIsHandedBack(t *testing.T) {
 	assert.Equal(t, []string{"short"}, store.setNotes, "only the note within the bound is saved")
 	assert.Contains(t, events.kinds(), agent.EventWritebackError)
 
+	require.Len(t, model.seen, 2, "the overgrown note is refused and the model is asked again")
 	refusal := model.seen[1][len(model.seen[1])-1]
 	assert.Equal(t, agent.RoleTool, refusal.Role)
 	assert.Contains(t, refusal.Content, "note too long")

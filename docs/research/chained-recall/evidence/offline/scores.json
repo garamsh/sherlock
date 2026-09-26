@@ -147,6 +147,346 @@
   "IC3-25"
  ],
  "results": {
+  "H/g4": {
+   "families": {
+    "C1": {
+     "n": 30,
+     "chain": 29,
+     "chain_wilson": [
+      0.8333,
+      0.9941
+     ],
+     "hop_stated": [
+      29
+     ],
+     "hop_interval": [
+      29
+     ],
+     "hop_oracle": [
+      30
+     ]
+    },
+    "C2": {
+     "n": 50,
+     "chain": 0,
+     "chain_wilson": [
+      0.0,
+      0.0713
+     ],
+     "hop_stated": [
+      47,
+      0
+     ],
+     "hop_interval": [
+      48,
+      0
+     ],
+     "hop_oracle": [
+      50,
+      50
+     ]
+    },
+    "C3": {
+     "n": 50,
+     "chain": 0,
+     "chain_wilson": [
+      0.0,
+      0.0713
+     ],
+     "hop_stated": [
+      44,
+      0,
+      2
+     ],
+     "hop_interval": [
+      44,
+      0,
+      2
+     ],
+     "hop_oracle": [
+      50,
+      50,
+      50
+     ]
+    },
+    "IC2": {
+     "n": 25,
+     "chain": 0,
+     "chain_wilson": [
+      0.0,
+      0.1332
+     ],
+     "hop_stated": [
+      10,
+      0
+     ],
+     "hop_interval": [
+      10,
+      0
+     ],
+     "hop_oracle": [
+      25,
+      25
+     ]
+    },
+    "IC3": {
+     "n": 25,
+     "chain": 0,
+     "chain_wilson": [
+      0.0,
+      0.1332
+     ],
+     "hop_stated": [
+      21,
+      0,
+      0
+     ],
+     "hop_interval": [
+      21,
+      0,
+      0
+     ],
+     "hop_oracle": [
+      25,
+      25,
+      24
+     ]
+    }
+   },
+   "by_k": {
+    "1": {
+     "n": 30,
+     "chain": 29
+    },
+    "2": {
+     "n": 75,
+     "chain": 0
+    },
+    "3": {
+     "n": 75,
+     "chain": 0
+    }
+   },
+   "primary": {
+    "n": 150,
+    "chain": 0,
+    "wilson": [
+     0.0,
+     0.025
+    ]
+   },
+   "guards": {
+    "E": {
+     "n": 20,
+     "reached": 17
+    },
+    "K": {
+     "n": 20,
+     "reached": 16
+    },
+    "N": {
+     "n": 20,
+     "reached": null
+    }
+   },
+   "context_chars_per_turn": 3320.8,
+   "stored_chars_per_source": 1.107,
+   "stored_chars": 1084833,
+   "vectors": 2030,
+   "oracle": {
+    "hops": 405,
+    "reached": 404
+   },
+   "clean": {
+    "n": 114,
+    "chain": 0,
+    "wilson": [
+     0.0,
+     0.0326
+    ]
+   },
+   "against_S_b4": {
+    "arm_only": 0,
+    "S_only": 0,
+    "p": 1.0,
+    "holm_p": 1.0
+   },
+   "clean_against_S_b4": {
+    "arm_only": 0,
+    "S_only": 0,
+    "p": 1.0
+   }
+  },
+  "H/g8": {
+   "families": {
+    "C1": {
+     "n": 30,
+     "chain": 28,
+     "chain_wilson": [
+      0.7868,
+      0.9815
+     ],
+     "hop_stated": [
+      28
+     ],
+     "hop_interval": [
+      28
+     ],
+     "hop_oracle": [
+      30
+     ]
+    },
+    "C2": {
+     "n": 50,
+     "chain": 2,
+     "chain_wilson": [
+      0.011,
+      0.1346
+     ],
+     "hop_stated": [
+      45,
+      2
+     ],
+     "hop_interval": [
+      45,
+      2
+     ],
+     "hop_oracle": [
+      50,
+      50
+     ]
+    },
+    "C3": {
+     "n": 50,
+     "chain": 0,
+     "chain_wilson": [
+      0.0,
+      0.0713
+     ],
+     "hop_stated": [
+      44,
+      0,
+      2
+     ],
+     "hop_interval": [
+      44,
+      0,
+      2
+     ],
+     "hop_oracle": [
+      50,
+      50,
+      50
+     ]
+    },
+    "IC2": {
+     "n": 25,
+     "chain": 0,
+     "chain_wilson": [
+      0.0,
+      0.1332
+     ],
+     "hop_stated": [
+      10,
+      0
+     ],
+     "hop_interval": [
+      10,
+      0
+     ],
+     "hop_oracle": [
+      25,
+      25
+     ]
+    },
+    "IC3": {
+     "n": 25,
+     "chain": 0,
+     "chain_wilson": [
+      0.0,
+      0.1332
+     ],
+     "hop_stated": [
+      21,
+      0,
+      0
+     ],
+     "hop_interval": [
+      21,
+      0,
+      0
+     ],
+     "hop_oracle": [
+      25,
+      25,
+      24
+     ]
+    }
+   },
+   "by_k": {
+    "1": {
+     "n": 30,
+     "chain": 28
+    },
+    "2": {
+     "n": 75,
+     "chain": 2
+    },
+    "3": {
+     "n": 75,
+     "chain": 0
+    }
+   },
+   "primary": {
+    "n": 150,
+    "chain": 2,
+    "wilson": [
+     0.0037,
+     0.0473
+    ]
+   },
+   "guards": {
+    "E": {
+     "n": 20,
+     "reached": 17
+    },
+    "K": {
+     "n": 20,
+     "reached": 16
+    },
+    "N": {
+     "n": 20,
+     "reached": null
+    }
+   },
+   "context_chars_per_turn": 3324.5,
+   "stored_chars_per_source": 0.9432,
+   "stored_chars": 924363,
+   "vectors": 1827,
+   "oracle": {
+    "hops": 405,
+    "reached": 404
+   },
+   "clean": {
+    "n": 114,
+    "chain": 1,
+    "wilson": [
+     0.0016,
+     0.048
+    ]
+   },
+   "against_S_b4": {
+    "arm_only": 2,
+    "S_only": 0,
+    "p": 0.5,
+    "holm_p": 1.0
+   },
+   "clean_against_S_b4": {
+    "arm_only": 1,
+    "S_only": 0,
+    "p": 1.0
+   }
+  },
   "L/b4": {
    "families": {
     "C1": {
@@ -309,7 +649,7 @@
     "arm_only": 23,
     "S_only": 0,
     "p": 2.384185791015625e-07,
-    "holm_p": 7.152557373046875e-07
+    "holm_p": 1.1920928955078125e-06
    },
    "clean_against_S_b4": {
     "arm_only": 18,
@@ -479,7 +819,7 @@
     "arm_only": 74,
     "S_only": 0,
     "p": 1.0587911840678754e-22,
-    "holm_p": 4.235164736271502e-22
+    "holm_p": 6.352747104407253e-22
    },
    "clean_against_S_b4": {
     "arm_only": 51,
@@ -649,7 +989,7 @@
     "arm_only": 10,
     "S_only": 0,
     "p": 0.001953125,
-    "holm_p": 0.00390625
+    "holm_p": 0.0078125
    },
    "clean_against_S_b4": {
     "arm_only": 5,
@@ -978,7 +1318,7 @@
     "arm_only": 2,
     "S_only": 0,
     "p": 0.5,
-    "holm_p": 0.5
+    "holm_p": 1.0
    },
    "clean_against_S_b4": {
     "arm_only": 0,
@@ -988,6 +1328,7728 @@
   }
  },
  "per_chain": {
+  "H/g4": {
+   "chains": {
+    "C1-01": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 3195,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-02": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2925,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-03": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2934,
+     "items": 5,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-04": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2957,
+     "items": 6,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-05": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 3028,
+     "items": 6,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-06": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 3071,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-07": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2769,
+     "items": 6,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-08": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 3026,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-09": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2740,
+     "items": 6,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-10": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2914,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-11": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 3226,
+     "items": 6,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-12": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 3050,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-13": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 3102,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-14": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 3077,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-15": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2949,
+     "items": 5,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-16": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2872,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-17": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 3328,
+     "items": 6,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-18": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2843,
+     "items": 5,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-19": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      false
+     ],
+     "stated": [
+      false
+     ],
+     "chain": false,
+     "context_chars": 3038,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-20": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 3077,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-21": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2982,
+     "items": 6,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-22": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2724,
+     "items": 5,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-23": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2902,
+     "items": 5,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-24": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2734,
+     "items": 5,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-25": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 3104,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-26": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 3002,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-27": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2972,
+     "items": 5,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-28": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2890,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-29": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2933,
+     "items": 5,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-30": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2879,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C2-01": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3207,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-02": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3009,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-03": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2850,
+     "items": 5,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-04": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2684,
+     "items": 4,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-05": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2825,
+     "items": 5,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-06": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2850,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-07": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2468,
+     "items": 5,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-08": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3108,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-09": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2973,
+     "items": 5,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-10": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2872,
+     "items": 6,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-11": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2899,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-12": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3143,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-13": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3069,
+     "items": 6,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-14": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3082,
+     "items": 5,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-15": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3048,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-16": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2844,
+     "items": 5,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-17": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2905,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-18": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2739,
+     "items": 5,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-19": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2320,
+     "items": 4,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-20": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3149,
+     "items": 5,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-21": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2532,
+     "items": 5,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-22": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2575,
+     "items": 5,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-23": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3001,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-24": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2730,
+     "items": 6,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-25": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2932,
+     "items": 5,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-26": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2964,
+     "items": 5,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-27": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2892,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-28": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2985,
+     "items": 6,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-29": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2919,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-30": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2978,
+     "items": 6,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-31": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2584,
+     "items": 5,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-32": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2978,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-33": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2902,
+     "items": 5,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-34": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2848,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-35": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2960,
+     "items": 6,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-36": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2693,
+     "items": 5,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-37": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2971,
+     "items": 5,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-38": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2942,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-39": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2996,
+     "items": 6,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-40": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3001,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-41": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3028,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-42": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2330,
+     "items": 4,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-43": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3096,
+     "items": 5,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-44": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2977,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-45": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2926,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-46": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2889,
+     "items": 6,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-47": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2798,
+     "items": 5,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-48": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2346,
+     "items": 4,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-49": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2919,
+     "items": 5,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-50": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2962,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C3-01": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      false,
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3035,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-02": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3025,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-03": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2737,
+     "items": 5,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-04": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2607,
+     "items": 4,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-05": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2853,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-06": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2994,
+     "items": 6,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-07": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2794,
+     "items": 6,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-08": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2903,
+     "items": 5,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-09": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3791,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-10": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2451,
+     "items": 5,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-11": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3021,
+     "items": 6,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-12": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      false,
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3129,
+     "items": 4,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-13": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2608,
+     "items": 5,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-14": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2726,
+     "items": 6,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-15": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3462,
+     "items": 6,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-16": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2853,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-17": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2555,
+     "items": 5,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-18": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2582,
+     "items": 5,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-19": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3827,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-20": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3662,
+     "items": 6,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-21": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2875,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-22": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2767,
+     "items": 6,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-23": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2812,
+     "items": 6,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-24": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2658,
+     "items": 5,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-25": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      false,
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2939,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-26": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3305,
+     "items": 6,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-27": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      false,
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2902,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-28": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2994,
+     "items": 6,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-29": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2994,
+     "items": 5,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-30": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3654,
+     "items": 6,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-31": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      true
+     ],
+     "stated": [
+      true,
+      false,
+      true
+     ],
+     "chain": false,
+     "context_chars": 2922,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-32": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2549,
+     "items": 4,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-33": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2865,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-34": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2998,
+     "items": 6,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-35": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3020,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-36": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2464,
+     "items": 4,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-37": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      true
+     ],
+     "stated": [
+      true,
+      false,
+      true
+     ],
+     "chain": false,
+     "context_chars": 2967,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-38": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3633,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-39": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2843,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-40": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      false,
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2555,
+     "items": 5,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-41": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2565,
+     "items": 5,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-42": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2416,
+     "items": 4,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-43": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      false,
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2914,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-44": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2403,
+     "items": 3,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-45": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2894,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-46": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3280,
+     "items": 6,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-47": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2102,
+     "items": 3,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-48": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3008,
+     "items": 4,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-49": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2946,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-50": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2562,
+     "items": 5,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC2-01": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3848,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-02": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3030,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-03": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2834,
+     "items": 5,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-04": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3742,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-05": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3836,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-06": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3713,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-07": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3389,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-08": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2939,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-09": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3756,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-10": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3388,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-11": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 4129,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-12": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3448,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-13": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3408,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-14": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2993,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-15": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3446,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-16": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 4129,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-17": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3760,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-18": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 4129,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-19": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3325,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-20": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3732,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-21": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3191,
+     "items": 3,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-22": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2987,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-23": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3755,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-24": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3315,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-25": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3453,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC3-01": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3041,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-02": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3087,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-03": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3007,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-04": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3018,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      false
+     ]
+    },
+    "IC3-05": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2995,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-06": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3025,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-07": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2985,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-08": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      false,
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2985,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-09": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3048,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-10": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3013,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-11": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      false,
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 4108,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-12": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3055,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-13": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2998,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-14": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3021,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-15": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      false,
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3058,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-16": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      false,
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2998,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-17": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2985,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-18": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2977,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-19": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3010,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-20": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2991,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-21": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3028,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-22": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3017,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-23": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3051,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-24": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2966,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-25": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3023,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    }
+   },
+   "guards": {
+    "E-01": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 4990
+    },
+    "E-02": {
+     "family": "E",
+     "reached": false,
+     "context_chars": 3827
+    },
+    "E-03": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 3606
+    },
+    "E-04": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 4272
+    },
+    "E-05": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 4182
+    },
+    "E-06": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 4160
+    },
+    "E-07": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 4903
+    },
+    "E-08": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 4083
+    },
+    "E-09": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 4922
+    },
+    "E-10": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 3985
+    },
+    "E-11": {
+     "family": "E",
+     "reached": false,
+     "context_chars": 4122
+    },
+    "E-12": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 4956
+    },
+    "E-13": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 3545
+    },
+    "E-14": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 4229
+    },
+    "E-15": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 3206
+    },
+    "E-16": {
+     "family": "E",
+     "reached": false,
+     "context_chars": 3956
+    },
+    "E-17": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 4517
+    },
+    "E-18": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 4557
+    },
+    "E-19": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 4113
+    },
+    "E-20": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 5106
+    },
+    "K-01": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 4294
+    },
+    "K-02": {
+     "family": "K",
+     "reached": false,
+     "context_chars": 4325
+    },
+    "K-03": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 4150
+    },
+    "K-04": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 4414
+    },
+    "K-05": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 3215
+    },
+    "K-06": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 4688
+    },
+    "K-07": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 4607
+    },
+    "K-08": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 4244
+    },
+    "K-09": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 4055
+    },
+    "K-10": {
+     "family": "K",
+     "reached": false,
+     "context_chars": 3692
+    },
+    "K-11": {
+     "family": "K",
+     "reached": false,
+     "context_chars": 4402
+    },
+    "K-12": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 4471
+    },
+    "K-13": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 4424
+    },
+    "K-14": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 4833
+    },
+    "K-15": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 3463
+    },
+    "K-16": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 3275
+    },
+    "K-17": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 4785
+    },
+    "K-18": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 4037
+    },
+    "K-19": {
+     "family": "K",
+     "reached": false,
+     "context_chars": 5012
+    },
+    "K-20": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 4646
+    },
+    "N-01": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 4471
+    },
+    "N-02": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 4151
+    },
+    "N-03": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 4258
+    },
+    "N-04": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 4089
+    },
+    "N-05": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 3731
+    },
+    "N-06": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 3611
+    },
+    "N-07": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 4167
+    },
+    "N-08": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 5077
+    },
+    "N-09": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 4961
+    },
+    "N-10": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 4766
+    },
+    "N-11": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 4933
+    },
+    "N-12": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 5174
+    },
+    "N-13": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 2981
+    },
+    "N-14": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 4841
+    },
+    "N-15": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 3462
+    },
+    "N-16": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 3709
+    },
+    "N-17": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 3433
+    },
+    "N-18": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 4263
+    },
+    "N-19": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 4769
+    },
+    "N-20": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 3337
+    }
+   }
+  },
+  "H/g8": {
+   "chains": {
+    "C1-01": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 3226,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-02": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2925,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-03": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      false
+     ],
+     "stated": [
+      false
+     ],
+     "chain": false,
+     "context_chars": 2823,
+     "items": 5,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-04": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2993,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-05": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2612,
+     "items": 5,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-06": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 3071,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-07": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2998,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-08": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 3026,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-09": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2316,
+     "items": 4,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-10": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2914,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-11": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2983,
+     "items": 6,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-12": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 3050,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-13": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 3102,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-14": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 3077,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-15": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2638,
+     "items": 5,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-16": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2872,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-17": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 3725,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-18": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2769,
+     "items": 4,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-19": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      false
+     ],
+     "stated": [
+      false
+     ],
+     "chain": false,
+     "context_chars": 3038,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-20": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 3077,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-21": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2573,
+     "items": 5,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-22": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2877,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-23": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2928,
+     "items": 5,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-24": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2908,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-25": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 3104,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-26": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 3002,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-27": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2966,
+     "items": 5,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-28": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2890,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-29": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2293,
+     "items": 4,
+     "oracle": [
+      true
+     ]
+    },
+    "C1-30": {
+     "family": "C1",
+     "k": 1,
+     "interval": [
+      true
+     ],
+     "stated": [
+      true
+     ],
+     "chain": true,
+     "context_chars": 2879,
+     "items": 7,
+     "oracle": [
+      true
+     ]
+    },
+    "C2-01": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3207,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-02": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3009,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-03": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      true
+     ],
+     "stated": [
+      true,
+      true
+     ],
+     "chain": true,
+     "context_chars": 2806,
+     "items": 4,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-04": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2888,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-05": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2767,
+     "items": 6,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-06": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2850,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-07": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2918,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-08": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3108,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-09": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2443,
+     "items": 3,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-10": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2723,
+     "items": 6,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-11": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2899,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-12": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3143,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-13": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3200,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-14": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2805,
+     "items": 4,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-15": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3048,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-16": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2276,
+     "items": 4,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-17": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2905,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-18": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2913,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-19": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2532,
+     "items": 5,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-20": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2441,
+     "items": 4,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-21": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2929,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-22": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2857,
+     "items": 4,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-23": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3001,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-24": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3005,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-25": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2394,
+     "items": 4,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-26": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2671,
+     "items": 4,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-27": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2892,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-28": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2762,
+     "items": 6,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-29": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2919,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-30": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3087,
+     "items": 6,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-31": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3056,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-32": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2978,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-33": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2334,
+     "items": 4,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-34": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2848,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-35": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3004,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-36": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2520,
+     "items": 5,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-37": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2732,
+     "items": 4,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-38": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2942,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-39": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2921,
+     "items": 5,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-40": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3001,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-41": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3028,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-42": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2330,
+     "items": 4,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-43": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      true
+     ],
+     "stated": [
+      true,
+      true
+     ],
+     "chain": true,
+     "context_chars": 2634,
+     "items": 4,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-44": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2977,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-45": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2926,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-46": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2907,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-47": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3047,
+     "items": 6,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-48": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2853,
+     "items": 6,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-49": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2688,
+     "items": 4,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C2-50": {
+     "family": "C2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2962,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "C3-01": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      false,
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3035,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-02": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3025,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-03": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3210,
+     "items": 6,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-04": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2258,
+     "items": 4,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-05": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2853,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-06": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3046,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-07": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2274,
+     "items": 4,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-08": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2659,
+     "items": 4,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-09": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3864,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-10": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2847,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-11": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2555,
+     "items": 5,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-12": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      false,
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3525,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-13": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2907,
+     "items": 5,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-14": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2952,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-15": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3608,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-16": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2853,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-17": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2555,
+     "items": 5,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-18": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3153,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-19": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3365,
+     "items": 6,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-20": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 4064,
+     "items": 6,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-21": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2767,
+     "items": 4,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-22": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3009,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-23": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2812,
+     "items": 6,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-24": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2971,
+     "items": 5,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-25": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      false,
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2939,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-26": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3435,
+     "items": 6,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-27": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      false,
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2902,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-28": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2994,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-29": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3058,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-30": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3555,
+     "items": 5,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-31": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      true
+     ],
+     "stated": [
+      true,
+      false,
+      true
+     ],
+     "chain": false,
+     "context_chars": 2922,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-32": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2649,
+     "items": 4,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-33": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2865,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-34": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2808,
+     "items": 6,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-35": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3020,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-36": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2777,
+     "items": 4,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-37": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      true
+     ],
+     "stated": [
+      true,
+      false,
+      true
+     ],
+     "chain": false,
+     "context_chars": 2967,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-38": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2731,
+     "items": 5,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-39": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2843,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-40": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2858,
+     "items": 4,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-41": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3042,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-42": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2842,
+     "items": 4,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-43": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      false,
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2914,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-44": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      false,
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2303,
+     "items": 3,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-45": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2894,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-46": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3411,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-47": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2102,
+     "items": 3,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-48": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2906,
+     "items": 5,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-49": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2531,
+     "items": 5,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "C3-50": {
+     "family": "C3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3187,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC2-01": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3604,
+     "items": 5,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-02": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3030,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-03": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3733,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-04": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3742,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-05": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3836,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-06": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3713,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-07": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3389,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-08": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2939,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-09": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3756,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-10": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3388,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-11": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 4129,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-12": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3448,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-13": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3408,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-14": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2993,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-15": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3446,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-16": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 4129,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-17": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3760,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-18": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 4129,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-19": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3325,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-20": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3732,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-21": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3392,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-22": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2987,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-23": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3755,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-24": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3315,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC2-25": {
+     "family": "IC2",
+     "k": 2,
+     "interval": [
+      true,
+      false
+     ],
+     "stated": [
+      true,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3453,
+     "items": 7,
+     "oracle": [
+      true,
+      true
+     ]
+    },
+    "IC3-01": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3041,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-02": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3087,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-03": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3007,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-04": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3018,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      false
+     ]
+    },
+    "IC3-05": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2995,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-06": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3025,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-07": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2985,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-08": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      false,
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2985,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-09": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3048,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-10": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3013,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-11": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      false,
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3570,
+     "items": 6,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-12": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3055,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-13": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2998,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-14": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3021,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-15": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      false,
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3058,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-16": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      false,
+      false,
+      false
+     ],
+     "stated": [
+      false,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2998,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-17": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2985,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-18": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2977,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-19": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2784,
+     "items": 6,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-20": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2991,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-21": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2805,
+     "items": 6,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-22": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2761,
+     "items": 6,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-23": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3051,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-24": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 2966,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    },
+    "IC3-25": {
+     "family": "IC3",
+     "k": 3,
+     "interval": [
+      true,
+      false,
+      false
+     ],
+     "stated": [
+      true,
+      false,
+      false
+     ],
+     "chain": false,
+     "context_chars": 3023,
+     "items": 7,
+     "oracle": [
+      true,
+      true,
+      true
+     ]
+    }
+   },
+   "guards": {
+    "E-01": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 4524
+    },
+    "E-02": {
+     "family": "E",
+     "reached": false,
+     "context_chars": 3544
+    },
+    "E-03": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 4496
+    },
+    "E-04": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 4202
+    },
+    "E-05": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 3053
+    },
+    "E-06": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 4727
+    },
+    "E-07": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 5171
+    },
+    "E-08": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 3374
+    },
+    "E-09": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 4922
+    },
+    "E-10": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 5161
+    },
+    "E-11": {
+     "family": "E",
+     "reached": false,
+     "context_chars": 3823
+    },
+    "E-12": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 4956
+    },
+    "E-13": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 3545
+    },
+    "E-14": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 4229
+    },
+    "E-15": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 3206
+    },
+    "E-16": {
+     "family": "E",
+     "reached": false,
+     "context_chars": 3956
+    },
+    "E-17": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 4517
+    },
+    "E-18": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 4846
+    },
+    "E-19": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 4072
+    },
+    "E-20": {
+     "family": "E",
+     "reached": true,
+     "context_chars": 4419
+    },
+    "K-01": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 4294
+    },
+    "K-02": {
+     "family": "K",
+     "reached": false,
+     "context_chars": 4325
+    },
+    "K-03": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 4388
+    },
+    "K-04": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 4414
+    },
+    "K-05": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 3735
+    },
+    "K-06": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 4078
+    },
+    "K-07": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 4607
+    },
+    "K-08": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 4376
+    },
+    "K-09": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 4265
+    },
+    "K-10": {
+     "family": "K",
+     "reached": false,
+     "context_chars": 4583
+    },
+    "K-11": {
+     "family": "K",
+     "reached": false,
+     "context_chars": 4540
+    },
+    "K-12": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 4471
+    },
+    "K-13": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 4224
+    },
+    "K-14": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 4833
+    },
+    "K-15": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 3988
+    },
+    "K-16": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 4270
+    },
+    "K-17": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 4673
+    },
+    "K-18": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 4721
+    },
+    "K-19": {
+     "family": "K",
+     "reached": false,
+     "context_chars": 5012
+    },
+    "K-20": {
+     "family": "K",
+     "reached": true,
+     "context_chars": 3462
+    },
+    "N-01": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 5128
+    },
+    "N-02": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 3785
+    },
+    "N-03": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 4258
+    },
+    "N-04": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 4089
+    },
+    "N-05": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 4152
+    },
+    "N-06": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 3766
+    },
+    "N-07": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 4167
+    },
+    "N-08": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 4637
+    },
+    "N-09": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 4474
+    },
+    "N-10": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 5173
+    },
+    "N-11": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 5080
+    },
+    "N-12": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 5220
+    },
+    "N-13": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 2981
+    },
+    "N-14": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 4841
+    },
+    "N-15": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 4651
+    },
+    "N-16": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 3315
+    },
+    "N-17": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 4002
+    },
+    "N-18": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 2996
+    },
+    "N-19": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 4683
+    },
+    "N-20": {
+     "family": "N",
+     "reached": null,
+     "context_chars": 3337
+    }
+   }
+  },
   "L/b4": {
    "chains": {
     "C1-01": {

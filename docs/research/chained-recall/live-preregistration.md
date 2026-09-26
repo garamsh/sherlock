@@ -81,3 +81,10 @@ A failed control makes the live verdict undetermined, and the report names it.
   - As committed, `score.py live` took every k ≥ 2 chain as its primary set, against this file's primary set of the 114 clean chains.
   - The code now takes the clean chains as primary, reports every k ≥ 2 chain beside them, and counts M's name-following control over the primary probes.
   - The endpoints, test and rules above are unchanged. S's figures were read only on the old set, and no comparison had been computed.
+- **3.** The L-or-H choice, applied as written above, once both arms' records were merged (`3a85f14`) and `score.py offline` regenerated `evidence/offline/scores.json`. The limit on context characters per turn is 1.25 × 3,498 = 4,372.
+  - **L.** `b4-model` passes its controls, at 3,576 characters and 51 of 114 clean chains.
+    - `b8` has 4,379 characters, over the limit.
+    - `b4` fails L's own entity control (88.1% of mids hold an entity, against 90% required), so it is not read as L's result.
+    - L is read at `b4-model`: 51 of 114.
+  - **H.** Both settings qualify, `g4` at 3,321 characters and `g8` at 3,324. `g8` reaches 1 of 114 and `g4` 0, so H is read at `g8`: 1 of 114. That is within its 5-point margin of S's 0.
+  - **L goes live at `b4-model`**, on the same probes, proxy and rules as S and M.

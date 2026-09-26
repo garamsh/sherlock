@@ -1,6 +1,17 @@
 # How agents understand input and compose context
 
-Records the source survey for issue #860: how five established agents understand a user's input and assemble their context, and the candidate structures for sherlock's query understanding and full-context layer that follow from it. It makes no production decision and runs no experiment; §Experiment plan is the input to the next issue's preregistration.
+Records the source survey for issue #860: how five established agents understand a user's input and assemble their context, and the candidate structures for sherlock's query understanding and full-context layer that follow from it. It makes no production decision. §Experiment plan was the input to issue #862's preregistration, and §Experiment (issue #862) records that run.
+
+## Contents
+- Question and method
+- Sherlock at `ebecac8`
+- The agents
+- Comparison
+- Candidate structures for sherlock
+- Experiment plan
+- Experiment (issue #862)
+- Position on #810 and #812
+- Limits
 
 ## Question and method
 
@@ -273,6 +284,145 @@ For the next issue to preregister. Figures marked "estimate" are to be fixed in 
      - no R canceled case is resumed that S did not resume.
   3. Among valid candidates, take the one with the smallest measured net production diff. A larger valid candidate is taken only if it beats the smaller one directly on *applied*, by the same test at α = 0.05.
   4. If no candidate is valid and every control passed, the shipped structure stands. That null is an answer: at this size, neither layer nor search changes whether the agent reaches and applies the evidence.
+
+## Experiment (issue #862)
+
+The live test of candidates A and B against the shipped recall S, preregistered in [preregistration.md](preregistration.md) and pushed as `b0d71c1` before the first stage-2 request (author date 00:41:11Z; §Reproduction names the commit that carries it now). Evidence is under [evidence/](evidence/). Candidate C was not run: its running summary is the recursive synthesis ADR 0006 rejects, re-opening that decision is the owner's, and it was the most expensive arm.
+
+### What differs from §Experiment plan
+
+- **Arms.** S is `4e84d2c`. A (`61f4e4c`) and B (`b5bc7ed`) are their own commits on the study branch, written to production standard. The harness is built inside each arm's source tree and drives each arm through the same `gateway.Factory`, so every arm runs its own session, store, recall and client (`harness/`).
+- **B's recall** ranks by the restatement and the queries joined as one text, not by the maximum cosine over them: the recall interface takes one text.
+- **The note is a required string, restated whole on every terminal call (A) or understanding call (B).** The first pilot offered it as nullable, meaning "unchanged". MiniMax-M2 returned null on every turn in both arms, including right after "start every reply with 'Ahoy!'" (`evidence/pilot/v1-arms/`), so neither layer was exercised. Both commits were changed before the preregistration.
+- **Episodes.** 370 episodes, from `corpus.py`, each starting from the #856 replication's 4,800 messages and 1,200 recorded batch-4 syntheses, replayed without a paid call. Only the inputs of each family's own turns ran live: 630 live turns per arm. Everything else entered the store as completed turns. The window is 32 messages in every arm, and every live input starts from what a restart restores.
+- **Budget.** The plan's USD 40 ceiling became the issue's USD 30 gate. The pilot projected USD 10.49 in total, and the stage-2 ledger ceiling was USD 20.00.
+
+### Pilot
+
+- Every arm ran 41 pilot episodes drawn apart from stage 2 (`pilot-episodes.json`).
+- It found three harness defects, each fixed before the preregistration:
+  - MiniMax "Token Plan" 429s outlasted three attempts. Six attempts with backoff now.
+  - A synthesis response without a `memory_summary` call was cached and failed its seed. It is now re-requested and never cached.
+  - Reach and oracle keys were matched literally, where summaries paraphrase. They are now matched as the scorer matches values; an S re-check of 16 pilot K and I episodes then reached the oracle in all 16.
+- It also found the nullable note above, and a correction checker that failed "68 Alder Road — you corrected it from 94 Garnet Road".
+- The pilot spent USD 1.5911 over 7,253 ledger entries, counting the discarded runs. Its discordance against S on *applied* was 0.34 (A) and 0.44 (B), which leaves 280 primary pairs with 0.71 and 0.59 power for a 10-point gain at Holm's first-step level (`evidence/pilot/projection.json`).
+
+### Controls
+
+From [scores](evidence/stage2/scores.json) `controls`:
+
+| Control | Required | S | A | B |
+|---|---|---:|---:|---:|
+| Oracle reach, of 280 primary | 266 | **261** | **264** | 272 |
+| `memory_search` called in G probes, of 70 | 14 | — | 39 | — |
+| Note non-empty after the I rule turn, of 70 | 35 | — | 58 | 70 |
+| Understanding answered through its reserved call, of 630 live turns | 567 | — | — | 628 |
+| Every mutation breaks a test ([mutation](evidence/mutation.txt)) | 10 of 10 | pass | pass | pass |
+
+The oracle-reach control fails for S and A.
+- Of S's 19 primary misses, 16 are I episodes. Of A's 16, all 16 are I episodes. B misses 8, 7 of them I.
+- An I oracle asks whether a mid summary holding the rule's key word ("lowercase", "tabs", "TL;DR") ranks in the top five for the rule's own sentence. So a summary that rewords the rule counts as a miss.
+- The four E misses (`E-10`, `E-17`, `E-18`, `E-28`) are the same in every arm.
+- The per-episode stores were deleted after each episode, so which misses are reworded summaries and which are ranking misses was not separated.
+
+### Results
+
+[Scores](evidence/stage2/scores.json) hold every per-episode value; *applied* with its Wilson 95% interval, then *reached* and *inspected*:
+
+| Family (n) | S | A | B |
+|---|---|---|---|
+| F, follow-up in window (70) | 70 [0.95, 1.00]; 70, 1 | 70 [0.95, 1.00]; 70, 0 | 70 [0.95, 1.00]; 70, 0 |
+| G, follow-up beyond window (70) | 9 [0.07, 0.23]; 15, 1 | 49 [0.58, 0.79]; 51, 9 | 45 [0.53, 0.75]; 45, 13 |
+| I, implicit need (70) | 1 [0.00, 0.08]; 5, 0 | 20 [0.19, 0.40]; 57, 0 | 35 [0.39, 0.61]; 70, 0 |
+| K, correction (70) | 44 [0.51, 0.73]; 44, 0 | 70 [0.95, 1.00]; 70, 0 | 64 [0.83, 0.96]; 68, 0 |
+| **primary (280)** | **124 [0.39, 0.50]** | **209 [0.69, 0.79]** | **214 [0.71, 0.81]** |
+| E, exact (30) | 16 [0.36, 0.70] | 14 [0.30, 0.64] | 11 [0.22, 0.54] |
+| N, absent: abstained (30) | 20 [0.49, 0.81] | 19 [0.46, 0.78] | 23 [0.59, 0.88] |
+| R, continuation (30) | 13 [0.27, 0.61] | 23 [0.59, 0.88] | 29 [0.83, 0.99] |
+
+- **R by case** (continue, changed, cancelled, of 10 each): S 7, 5, 1; A 9, 10, 4; B 10, 10, 9. After a cancellation, S still wrote a file listing the names in 9 of 10 cases, A in 6, B in 1.
+- **Layer fidelity (K).** After the correction turn, the note stated the obsolete value without the current one in 0 of 70 episodes in both A and B. It stated the current value in 69 (A) and 66 (B).
+- **Reached against applied in I.** B had the rule in view in all 70 I probes and applied it in 35; A had it in view in 57 and applied it in 20. For I, the note is the path: S reached the rule in 5.
+- **Failures.** Two S probes (`I-60`, `I-62`) ended on a malformed terminal call and count as not applied. No turn in any arm failed on an infrastructure error, so nothing was re-run.
+
+Paired against S on the 280 primary probes, exact McNemar, Holm across the two:
+
+| Arm | Arm only | S only | Difference | Holm p | Guardrails |
+|---|---:|---:|---:|---:|---|
+| A | 86 | 1 | +0.304 | 2.3e-24 | hold (E −2, N −1, no cancelled case resumed where S did not) |
+| B | 94 | 4 | +0.321 | 2.4e-23 | **fail**: E loses 5 of 30, above the 3 allowed |
+
+B against A on the primary probes: B only 36, A only 31, p = 0.63.
+
+### Cost per turn
+
+From the [ledger](evidence/stage2/ledger/calls.jsonl), 34,672 attempts in total, of which 26,826 were cached syntheses, 368 were HTTP 429 and later retried, and 90 were syntheses re-requested for lacking a `memory_summary` call:
+
+| Arm | USD, stage 2 | USD per live turn | Act calls per live turn | Mean act latency | Extra calls |
+|---|---:|---:|---:|---:|---|
+| S | 2.4176 | 0.0038 | 2.03 | 3.3 s | — |
+| A | 2.5405 | 0.0040 | 2.08 | 3.7 s | `memory_search` inside act calls |
+| B | 2.8552 | 0.0045 | 2.01 | 3.0 s | one understanding call per turn, 6.3 s mean |
+
+Stage 2 spent USD 7.8132; with the pilot, USD 9.4043.
+
+### Verdict
+
+**Undetermined**, under the preregistered rule. The oracle-reach control fails for S (261 of 280) and A (264 of 280) against the 266 required, and the rule makes the verdict undetermined when any control fails.
+
+What the collection shows, outside the rule:
+- **Both candidates apply the evidence far more often than S** on the primary families: A 209 and B 214 of 280, against S's 124. S alone applied the evidence in 1 primary probe against A and in 4 against B.
+- **The gains are in G, I and K**, the families that need either a search with the conversation in view or a layer that outlives the window. F, where the evidence is in the window, is 70 of 70 in every arm.
+- **Had the oracle control passed,** A would be valid and B would not: B loses 5 of 30 exact queries, and the guardrail allows 3. Under the rule A would then be taken, and B does not beat it (36 against 31, p = 0.63).
+- **Excluding the 24 primary episodes any arm missed the oracle on,** A leads S 79 to 1 and B leads 78 to 3 (256 episodes). This is a sensitivity check, not the preregistered endpoint.
+
+### Code
+
+The arms are not part of this study's branch. Each stays on its own branch, kept until a confirmatory run decides:
+- A is `61f4e4c`, the tip of `sauce-git/feat/agent-context-arm-a`.
+- B is `b5bc7ed`, the tip of `sauce-git/feat/agent-context-arm-b`, built on A.
+
+Net production lines against S, read with `git diff --numstat 4e84d2c <commit>` over non-test files:
+- **A, `61f4e4c`:** +264 −351, net **−87**. The preregistration's tie-break quotes −91, the count before the note became a required string. The ordering the rule uses is unchanged.
+- **B, `b5bc7ed`:** +375 −361, net **+14** against S; it is built on A's note and replaces A's search call.
+
+Neither arm won under the rule. The commits a later implementation PR would take are A's (`61f4e4c`) if the owner accepts the result outside the rule, since A leads on size and B fails a guardrail. The documents that change would change with it: `docs/architecture/agent.md` and `memory.md`, ADR 0011 (`memory_ops`), ADR 0019 (§Read-policy limits) and the `README.md` paragraph on the mock provider's `memory_ops`. They are not edited here.
+
+### Limits
+
+- **One model wrote every live answer.** MiniMax-M2 at a provider alias with no weight revision; every probe ran once, with no variance estimate.
+- **The corpus is templated.** Events, values, rules and corrections come from `corpus.py`, not conversation; filler and the base are the replication's model-written chats. G was built so that the probe alone cannot pick the referent among 22 same-attribute statements, which favours any arm that reads the window.
+- **Only live turns write the note.** Seeded history never passed through the arms' note step, so a real conversation would fill the note with more, and more competing, content.
+- **Every live input starts from a restart.** Frame blocks never accumulate, and the window is 32 messages rather than 128.
+- **Checks are deterministic proxies.** They are pinned in `score_test.py`, but a value in another format than those accepted, or a rule applied in spirit but not to the letter, fails. The abstention check is a pattern.
+- **The synthesis cache** answers byte-identical syntheses from the first answer, so arms share summaries of identical batches. That fixes a source of variance the plan did not name.
+
+### Reproduction
+
+From a checkout of this branch, with Docker and Go 1.26:
+
+```sh
+python3 docs/research/agent-context/corpus.py && python3 docs/research/agent-context/corpus.py pilot   # byte-identical episodes
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s docs/research/agent-context -p '*_test.py'
+go test ./docs/research/agent-context/harness/
+python3 docs/research/agent-context/score.py docs/research/agent-context/evidence/stage2    # offline; rewrites scores.json
+python3 docs/research/agent-context/mutation.py                                            # offline; the mutation record
+```
+
+- **The arms' trees.** S is `4e84d2c` on `dev`. A and B come from their own branches: `git fetch origin sauce-git/feat/agent-context-arm-a sauce-git/feat/agent-context-arm-b`, then `git archive 61f4e4c` and `git archive b5bc7ed`.
+- **The study commits were rebuilt onto `dev`** after review, so this branch carries no arm code. `docs/research/` is byte-identical to the collected tip `d49acd1`, and author dates are kept. Old SHAs cited in committed files map as follows:
+  - `f32ba3a` → `8ae1f9b`, the harness, corpus and scorer.
+  - `7c670ec` → `44e34e0`, the proxy fix. `evidence/mutation.txt` names `7c670ec`; `mutation.py` now archives `44e34e0`, whose `harness/` tree is identical.
+  - `c095201` → `01b24d4`, the correction scoring.
+  - `1cf6751` → `93ddc1f`, the key matching. The preregistration names `1cf6751` as the harness the binaries were built with; `93ddc1f`'s `harness/` tree is identical.
+  - `b0d71c1` → `b8c1378`, the preregistration.
+  - `d49acd1` → `e8cc29e`, the results.
+- Collection needs the TEI container of §Production parity in the mid-memory study on `127.0.0.1:8090`.
+- Each arm's binary is built from `git archive <commit>` with `docs/research/agent-context/harness/` copied in, as `go build ./docs/research/agent-context/harness`.
+- The base store is `harness base -out base.db`.
+- The proxy is `harness proxy -ceiling <USD> -dir <ledger>`, with `MINIMAX_KEY` in its environment only.
+- Each arm runs `harness run -arm <S|A|B> -base base.db -out <dir> -proxy http://127.0.0.1:8091`.
+- The paid phases are a new run with their own budget; the ledger stays in the directory given to the proxy, and a run resumes after its last recorded episode.
 
 ## Position on #810 and #812
 

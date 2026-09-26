@@ -11,9 +11,9 @@ guards. Every candidate's exchanges are in the stream, so the stream, and
 every summary of it, is fixed before anything is selected. `select` keeps,
 in candidate order, the first chains of each family none of whose later
 hops the raw query ranks within the check's top 20 at batch 4
-(evidence/check-b4.json), and the first absent items whose query makes arm
+(evidence/selection/check-b4.json, the check over the candidates), and the first absent items whose query makes arm
 L's recall deliver the associated episode as a walk item
-(../arms/links/... records under evidence/offline/L/b4-model/). Both steps
+(L's offline records over the candidates, evidence/selection/L-b4-model-probes.jsonl). Both steps
 are deterministic: running either again writes byte-identical files.
 
 An absent item joins two entities of one domain's final kind, E and F, in
@@ -255,7 +255,7 @@ def delivers_associated(probe, guard):
 def select():
     candidates_text = (HERE / "candidates.json").read_text()
     candidates = json.loads(candidates_text)
-    check = json.load(open(HERE / "evidence" / "check-b4.json"))
+    check = json.load(open(HERE / "evidence" / "selection" / "check-b4.json"))
     if check["summary"]["top"] != CHECK_TOP:
         raise SystemExit("the check ran at another depth")
     checked = {r["id"] for r in check["chains"]}
@@ -268,7 +268,7 @@ def select():
         if len(passed) < size:
             raise SystemExit(f"{family}: only {len(passed)} of {size} candidates pass the check")
         chains += passed[:size]
-    probes = {p["probe"]: p for p in gen.load_jsonl(HERE / "evidence" / "offline" / "L" / "b4-model" / "probes.jsonl")}
+    probes = {p["probe"]: p for p in gen.load_jsonl(HERE / "evidence" / "selection" / "L-b4-model-probes.jsonl")}
     absent = [g for g in candidates["guards"] if g["family"] == "N"]
     delivered = [g for g in absent if delivers_associated(probes[g["id"]], g)]
     if len(delivered) < GUARDS["N"]:

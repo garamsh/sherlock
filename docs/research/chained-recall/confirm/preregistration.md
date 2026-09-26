@@ -169,3 +169,21 @@ A failed control makes the verdict undetermined, and the report names it.
   - `confirm/corpus.py`: `117ad191d1aca91dea87da21904e267c3d94adf2e8252221ee2c463e631d0f70`
   - `confirm/score.py`: `cdd0ae1d86a6ded7c0abb5fbaed674d28733310d44934e1d3b15d51e4fb3f9bb`
   - `../score.py`: `6b0bf50ce2bfd2642237024a373e908f67b5d2e79ad8c1c6e502af0aa6063d96`
+
+## Amendments
+
+- **1.** Committed after selection and the offline records, and before any live call.
+  - **Where selection reads its inputs.** Re-running the check on the selected corpus rewrote `evidence/check-b4.json`, which `select` read as written above.
+    - The check over the candidates is now kept at `evidence/selection/check-b4.json`.
+    - L's offline records over the candidates are kept at `evidence/selection/L-b4-model-probes.jsonl`, re-recorded from the same build.
+    - `select` and `corpus_test.py` read them from there, and `evidence/check-b4.json` is the check on the committed corpus.
+    - `select` writes the same `corpus.json` from either run (`cmp` shows no difference). `corpus.py` changed in these paths only. Its SHA-256 is now `34df97ae1ef05f7cb0f8a94234c9f021882819b067d57b4fbe8c9f6c809ac83e`. `corpus.json`'s is `d15001efa1feaf95c3f53938a1ab9b55f90f3a84de68d45784917e18bf907190`.
+  - **Mutation checks.** Two mutations first passed the tests:
+    - picking a walk mid's first entity rather than its highest-scoring one;
+    - allowing F's value in the query.
+
+    `memory_test.go` now lists mid 2's farther entity first, and `corpus_test.py` has a control with the value in the query. Every mutation now fails (`evidence/mutation.txt`). No rule, endpoint or control above changes.
+  - **Selection outcome.**
+    - 18 candidate chains leaked; each family filled from the rest.
+    - 89 of the 90 absent candidates have F's episode delivered by L's walk, and the first 60 are kept.
+    - On the committed corpus, 0 of 225 later hops rank within the raw top 20, and the oracle reaches 399 of 405 hops (98.5%).

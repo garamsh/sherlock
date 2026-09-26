@@ -164,7 +164,9 @@ func TestRecall_LabelsWalkDeliveredMidsAsAssociatedInLPlusA(t *testing.T) {
 	require.NoError(t, study.CopyDir(filepath.Join(env.Work, "shared", "b4"), dir))
 	path := filepath.Join(dir, "memory.db")
 	require.NoError(t, writeEntities(ctx, path, map[int64][]string{
-		1: {"rodend", "gebind components"}, 2: {"gebind components", "mateo deatreal"}, 3: {"mateo deatreal"},
+		// Mid 2 names the farther entity first, so only the walk score picks
+		// the one it was reached through.
+		1: {"rodend", "gebind components"}, 2: {"mateo deatreal", "gebind components"}, 3: {"mateo deatreal"},
 	}))
 	opened, err := New().Open(ctx, env, "b4-model-a", dir)
 	require.NoError(t, err)

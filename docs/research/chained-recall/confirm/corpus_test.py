@@ -67,6 +67,8 @@ class CandidatesTest(unittest.TestCase):
         a = self.absent[0]
         stated = dict(a, exchanges=[a["exchanges"][0], dict(a["exchanges"][1], statement=a["exchanges"][1]["statement"] + " " + a["entity"])])
         self.assertFalse(confirm.absent_ok(stated), "the control: E named beside F's value breaks the rule")
+        asked = dict(a, query=a["query"] + " " + a["near_miss"])
+        self.assertFalse(confirm.absent_ok(asked), "F's value in the query breaks the rule")
 
     def test_absent_entity_occurs_only_in_its_joining_exchange(self):
         # E's distinctive word is in the stream only in the joining exchange
@@ -132,14 +134,14 @@ class SelectedTest(unittest.TestCase):
         self.assertEqual(guards, confirm.GUARDS)
 
     def test_no_selected_chain_leaks_in_the_check(self):
-        check = load(HERE / "evidence" / "check-b4.json")
+        check = load(HERE / "evidence" / "selection" / "check-b4.json")
         leaks = confirm.leaking(check)
         self.assertTrue(leaks, "the control: the check found leaking candidates to leave out")
         for c in self.corpus["chains"]:
             self.assertNotIn(c["id"], leaks)
 
     def test_every_absent_query_has_its_associated_episode_delivered(self):
-        probes = {p["probe"]: p for p in gen.load_jsonl(HERE / "evidence" / "offline" / "L" / "b4-model" / "probes.jsonl")}
+        probes = {p["probe"]: p for p in gen.load_jsonl(HERE / "evidence" / "selection" / "L-b4-model-probes.jsonl")}
         for g in self.corpus["guards"]:
             if g["family"] == "N":
                 self.assertTrue(confirm.delivers_associated(probes[g["id"]], g), g["id"])

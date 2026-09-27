@@ -1,0 +1,9 @@
+FAILS  synthesis.go: the messages before the batch
+FAILS  synthesis.go: the context's character bound
+FAILS  synthesis.go: refusing a call without a context
+FAILS  synthesis.go: varying a retried request past the proxy's cache
+FAILS  main.go: embedding the context
+FAILS  main.go: the context before the summary
+FAILS  main.go: storing C's summary
+FAILS  memory.go: showing the context on recall
+FAILS  controls.py: the SC subject control

@@ -1,0 +1,29 @@
+{
+  "arm": "D",
+  "build_seconds": 1109.183041381,
+  "built": {
+    "stored_chars": 805744,
+    "vectors": 2232,
+    "units": {
+      "line": 166,
+      "mid": 2232
+    },
+    "notes": {
+      "applied": {
+        "added": 761,
+        "superseded": 48,
+        "dropped": 595,
+        "rejected": 95,
+        "skipped": 343
+      },
+      "document_chars": 14821,
+      "lines": 166,
+      "partial_passes": 113,
+      "passes": 279,
+      "versions": 1404
+    }
+  },
+  "setting": "b4-doc16k",
+  "source_chars": 1062421,
+  "stored_chars_per_source": 0.7584036836621264
+}

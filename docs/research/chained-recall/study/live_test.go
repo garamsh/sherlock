@@ -237,3 +237,62 @@ func TestWorkspace_RefusesAnEmptyAssociateQuery(t *testing.T) {
 	require.NoError(t, err, "the control: a query naming something is answered")
 	assert.Contains(t, string(out), `"mid":9`)
 }
+
+// windowArm restores three messages and traces its recall.
+type windowArm struct{ ShippedArm }
+
+func (windowArm) WindowFor(string) int { return 3 }
+
+func (a windowArm) Open(ctx context.Context, env *Env, setting, dir string) (Memory, error) {
+	m, err := a.ShippedArm.Open(ctx, env, setting, dir)
+	if err != nil {
+		return nil, err
+	}
+	return tracingMemory{m.(ShippedMemory)}, nil
+}
+
+type tracingMemory struct{ ShippedMemory }
+
+func (tracingMemory) LastTrace() map[string]any { return map[string]any{"loop_calls": 2} }
+
+func TestLiveOnce_RestoresTheArmsWindowAndRecordsItsTrace(t *testing.T) {
+	ctx := context.Background()
+	for _, own := range []bool{true, false} {
+		work := t.TempDir()
+		build := filepath.Join(work, "builds", "W", "b4")
+		require.NoError(t, os.MkdirAll(build, 0o755))
+		store, err := sqlite.OpenConversation(filepath.Join(build, "memory.db"), wordEmbedder{})
+		require.NoError(t, err)
+		for i := range 8 {
+			require.NoError(t, store.RecordTurn(ctx, []agent.SourceMessage{{Role: agent.RoleUser, Content: "apple fact " + string(rune('a'+i))}}, recordingSummary{}))
+		}
+		require.NoError(t, store.Close())
+		var calls atomic.Int32
+		var shown []string
+		server := fakeProvider(t, &calls, &shown)
+		proxy := httptest.NewServer(http.StripPrefix("/W/C2-01/live", server.Config.Handler))
+		env := &Env{Corpus: &Corpus{Window: 32}, Embedder: wordEmbedder{}, Work: work, Proxy: proxy.URL, Arm: "W"}
+		shipped := ShippedArm{ArmName: "W", Batches: []string{"b4"}}
+		var arm Arm = shipped
+		if own {
+			arm = windowArm{shipped}
+		}
+		descriptors, err := loadDescriptors(filepath.Join("..", "..", "..", "..", "tools"))
+		require.NoError(t, err)
+
+		r := liveOnce(ctx, env, arm, "b4", LiveProbe{ID: "C2-01", Family: "C2", Query: "what about apple?"}, descriptors)
+		proxy.Close()
+		server.Close()
+
+		require.Empty(t, r.Error)
+		if own {
+			assert.Equal(t, 3, r.WindowMessages)
+			assert.Equal(t, int64(6), r.WindowFirst)
+			assert.Equal(t, map[string]any{"loop_calls": 2}, r.Trace)
+		} else {
+			assert.Equal(t, 8, r.WindowMessages, "the control: the corpus's window restores every message of eight")
+			assert.Equal(t, int64(1), r.WindowFirst)
+			assert.Nil(t, r.Trace, "the control: a memory that traces nothing records nothing")
+		}
+	}
+}

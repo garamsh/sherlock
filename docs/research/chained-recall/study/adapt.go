@@ -26,9 +26,13 @@ func Recalled(items []Item) []agent.RecalledMemory {
 		if it.Level != "mid" {
 			id = it.Level + ":" + id
 		}
+		label := fmt.Sprintf("[%s:%d sources:%d-%d; summary, not verified source text]", it.Level, it.ID, it.SourceFirst, it.SourceLast)
+		if it.Label != "" {
+			label = it.Label
+		}
 		out = append(out, agent.RecalledMemory{
 			ID:      id,
-			Content: strings.TrimSpace(it.Text) + fmt.Sprintf(" [%s:%d sources:%d-%d; summary, not verified source text]", it.Level, it.ID, it.SourceFirst, it.SourceLast),
+			Content: strings.TrimSpace(it.Text) + " " + label,
 			Age:     it.Kind,
 		})
 	}

@@ -27,7 +27,8 @@ const OracleTop = 5
 //	<arm> offline -work <dir> [-setting b4]                # record what each setting delivers
 //	<arm> live -work <dir> -setting b4 -proxy URL          # one live turn per probe
 //
-// Every command reads corpus.json from -dir, embeds with the TEI server at
+// Every command reads corpus.json from -dir, or from -corpus when the
+// corpus is another study's (#900 reads #890's), embeds with the TEI server at
 // -embed-url, and writes under -dir/evidence/offline/<arm>/<setting>/:
 // built.json from build, probes.jsonl and oracle.jsonl from offline.
 func Main(arm Arm) {
@@ -42,6 +43,7 @@ func run(ctx context.Context, arm Arm, args []string) error {
 	}
 	fs := flag.NewFlagSet(args[0], flag.ExitOnError)
 	dir := fs.String("dir", "docs/research/chained-recall", "study directory")
+	corpusDir := fs.String("corpus", "", "directory holding corpus.json, when another study's; empty reads -dir")
 	work := fs.String("work", "", "scratch root outside the repository")
 	proxy := fs.String("proxy", "", "study proxy base URL, for arms that call the model")
 	embedURL := fs.String("embed-url", "http://127.0.0.1:8090/v1", "OpenAI-compatible embeddings base URL (local TEI)")
@@ -53,7 +55,10 @@ func run(ctx context.Context, arm Arm, args []string) error {
 	if *work == "" {
 		return errors.New("-work is required")
 	}
-	corpus, err := LoadCorpus(*dir)
+	if *corpusDir == "" {
+		*corpusDir = *dir
+	}
+	corpus, err := LoadCorpus(*corpusDir)
 	if err != nil {
 		return err
 	}

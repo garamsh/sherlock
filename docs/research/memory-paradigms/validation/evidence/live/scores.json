@@ -1,0 +1,9714 @@
+{
+ "summary": {
+  "R/b4-agent": {
+   "families": {
+    "C1": {
+     "n": 30,
+     "applied": 26,
+     "near_miss_stated": null,
+     "old_stated": null
+    },
+    "C2": {
+     "n": 50,
+     "applied": 11,
+     "near_miss_stated": null,
+     "old_stated": null
+    },
+    "C3": {
+     "n": 50,
+     "applied": 2,
+     "near_miss_stated": null,
+     "old_stated": null
+    },
+    "E": {
+     "n": 30,
+     "applied": 20,
+     "near_miss_stated": null,
+     "old_stated": null
+    },
+    "IC2": {
+     "n": 25,
+     "applied": 0,
+     "near_miss_stated": null,
+     "old_stated": null
+    },
+    "IC3": {
+     "n": 25,
+     "applied": 0,
+     "near_miss_stated": null,
+     "old_stated": null
+    },
+    "K": {
+     "n": 40,
+     "applied": 27,
+     "near_miss_stated": null,
+     "old_stated": null
+    },
+    "KU": {
+     "n": 30,
+     "applied": 11,
+     "near_miss_stated": null,
+     "old_stated": 11
+    },
+    "N": {
+     "n": 60,
+     "applied": 52,
+     "near_miss_stated": 2,
+     "old_stated": null
+    },
+    "NC": {
+     "n": 30,
+     "applied": 28,
+     "near_miss_stated": 0,
+     "old_stated": null
+    },
+    "SC": {
+     "n": 50,
+     "applied": 0,
+     "near_miss_stated": null,
+     "old_stated": null
+    },
+    "UP": {
+     "n": 50,
+     "applied": 1,
+     "near_miss_stated": null,
+     "old_stated": null
+    }
+   },
+   "searches_per_probe": 0.09,
+   "rerun": 0,
+   "errors": 0,
+   "against_S_b4": {
+    "primary": {
+     "families": [
+      "C2",
+      "C3"
+     ],
+     "n": 100,
+     "arm": 13,
+     "S": 7,
+     "arm_only": 13,
+     "S_only": 7,
+     "p": 0.26317596435546875,
+     "holm_p": 0.26317596435546875
+    },
+    "implicit": {
+     "n": 50,
+     "arm": 0,
+     "S": 0,
+     "arm_only": 0,
+     "S_only": 0,
+     "p": 1.0
+    },
+    "guard_change": {
+     "N": -6,
+     "K": -4,
+     "C1": -3,
+     "E": 0,
+     "NC": -2,
+     "KU": -9
+    },
+    "guardrails_hold": false,
+    "significant": false,
+    "valid": false
+   }
+  },
+  "S/b4": {
+   "families": {
+    "C1": {
+     "n": 30,
+     "applied": 29,
+     "near_miss_stated": null,
+     "old_stated": null
+    },
+    "C2": {
+     "n": 50,
+     "applied": 1,
+     "near_miss_stated": null,
+     "old_stated": null
+    },
+    "C3": {
+     "n": 50,
+     "applied": 6,
+     "near_miss_stated": null,
+     "old_stated": null
+    },
+    "E": {
+     "n": 30,
+     "applied": 20,
+     "near_miss_stated": null,
+     "old_stated": null
+    },
+    "IC2": {
+     "n": 25,
+     "applied": 0,
+     "near_miss_stated": null,
+     "old_stated": null
+    },
+    "IC3": {
+     "n": 25,
+     "applied": 0,
+     "near_miss_stated": null,
+     "old_stated": null
+    },
+    "K": {
+     "n": 40,
+     "applied": 31,
+     "near_miss_stated": null,
+     "old_stated": null
+    },
+    "KU": {
+     "n": 30,
+     "applied": 20,
+     "near_miss_stated": null,
+     "old_stated": 7
+    },
+    "N": {
+     "n": 60,
+     "applied": 58,
+     "near_miss_stated": 3,
+     "old_stated": null
+    },
+    "NC": {
+     "n": 30,
+     "applied": 30,
+     "near_miss_stated": 0,
+     "old_stated": null
+    },
+    "SC": {
+     "n": 50,
+     "applied": 0,
+     "near_miss_stated": null,
+     "old_stated": null
+    },
+    "UP": {
+     "n": 50,
+     "applied": 0,
+     "near_miss_stated": null,
+     "old_stated": null
+    }
+   },
+   "searches_per_probe": 0.39,
+   "rerun": 0,
+   "errors": 0
+  }
+ },
+ "smallest_valid_arm": null,
+ "W_beside_S": null,
+ "per_probe": {
+  "R/b4-agent": {
+   "C1-001": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-002": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-003": {
+    "family": "C1",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-004": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-005": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-006": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-007": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-008": {
+    "family": "C1",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-009": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-010": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-011": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-012": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-013": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-014": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-015": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-016": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-017": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-018": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-019": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-020": {
+    "family": "C1",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-021": {
+    "family": "C1",
+    "applied": false,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-022": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-023": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-024": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-025": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-026": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-027": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-028": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-029": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-030": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-001": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-002": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-003": {
+    "family": "C2",
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 2,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-004": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-005": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-006": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-007": {
+    "family": "C2",
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-008": {
+    "family": "C2",
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-009": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-011": {
+    "family": "C2",
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-012": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-013": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-014": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-015": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-017": {
+    "family": "C2",
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-018": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-019": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-020": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-021": {
+    "family": "C2",
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 3,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-022": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-023": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-024": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-026": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-027": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-029": {
+    "family": "C2",
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-030": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-031": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-032": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-033": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-035": {
+    "family": "C2",
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-036": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-037": {
+    "family": "C2",
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-038": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-039": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-040": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-041": {
+    "family": "C2",
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-042": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-043": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-044": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-045": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-046": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-047": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-048": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-049": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-050": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-053": {
+    "family": "C2",
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-054": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-056": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-057": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-058": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-001": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-002": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-003": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-004": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-005": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-007": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-008": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-009": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-011": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-012": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-013": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-014": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-015": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-017": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-018": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-019": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-021": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-022": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-023": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-024": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-025": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-026": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-027": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-029": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-030": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-031": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-032": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-033": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-034": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-035": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-036": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-037": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-038": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-039": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-041": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-042": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-043": {
+    "family": "C3",
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-045": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-046": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-047": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-048": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-049": {
+    "family": "C3",
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 3,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-050": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-051": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-052": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-053": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-054": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-055": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-056": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-057": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-001": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-002": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-003": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-004": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-005": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-006": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-007": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-008": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-009": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-010": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-011": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-012": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-013": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-014": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-015": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-016": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-017": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-018": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-019": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-020": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-021": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-022": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-023": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-024": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-025": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-001": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-002": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-003": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-004": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-005": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-006": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-007": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-008": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-009": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-010": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-011": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-012": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-013": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-014": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-015": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-016": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-017": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-018": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-019": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-020": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-021": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-022": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-023": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-024": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-025": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-001": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-002": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-003": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-004": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-005": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-006": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-007": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-008": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-009": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-010": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-011": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-012": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-013": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-014": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-015": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-016": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-017": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-018": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-019": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-020": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-021": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-022": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-023": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-024": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-025": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-026": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-027": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-028": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-029": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-030": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-031": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-032": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-033": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-034": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-036": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-037": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-038": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-039": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-040": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-041": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-042": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-043": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-044": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-045": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-046": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-047": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-048": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-049": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-050": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-051": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-001": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-002": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-003": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-004": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-005": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-006": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-007": {
+    "family": "UP",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-008": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-009": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-010": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-011": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-012": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-013": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-014": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-015": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-017": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-018": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-019": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-020": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-021": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-022": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-023": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-024": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-025": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-027": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-029": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-030": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-031": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-033": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-035": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-036": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-037": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-039": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-040": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-041": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-043": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-045": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-046": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-047": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-048": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-049": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-051": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-052": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-053": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-054": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-055": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-056": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-057": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-058": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-059": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "E-01": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-02": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-03": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-04": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-05": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-06": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-07": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-08": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-09": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-10": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-11": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-12": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-13": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-14": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-15": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-16": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-17": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-18": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-19": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-20": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-21": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-22": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-23": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-24": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-25": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-26": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-27": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-28": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-29": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-30": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-01": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-02": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-03": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-04": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-05": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-06": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-07": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-08": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-09": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-10": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-11": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-12": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-13": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-14": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-15": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-16": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-17": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-18": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-19": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-20": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-21": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-22": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-23": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 1
+   },
+   "K-24": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-25": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-26": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-27": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-28": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-29": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-30": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-31": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-32": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-33": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-34": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-35": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-36": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-37": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-38": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-39": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-40": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-001": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-002": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-003": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-004": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-005": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-006": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-007": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-008": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-009": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-010": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": true
+   },
+   "N-011": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-012": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-013": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-014": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-015": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-016": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-017": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-018": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-019": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-020": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-021": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-022": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-023": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-024": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-025": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-026": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-027": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-028": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-029": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-030": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-031": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-032": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-033": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-034": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-035": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-036": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-037": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-038": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-039": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 3,
+    "near_miss_stated": false
+   },
+   "N-040": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-041": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-042": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-043": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-044": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-045": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-046": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-047": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-048": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-049": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-050": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-051": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-052": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 2,
+    "near_miss_stated": false
+   },
+   "N-053": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-054": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-055": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-056": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-057": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-058": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": true
+   },
+   "N-059": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-060": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-001": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-002": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-003": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-004": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-005": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-006": {
+    "family": "NC",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-007": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-008": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-009": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-010": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-011": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-012": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": false
+   },
+   "NC-013": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-014": {
+    "family": "NC",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-015": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-016": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": false
+   },
+   "NC-017": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-018": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-019": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-020": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-021": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-022": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-023": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-024": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-025": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-026": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-027": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-028": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-029": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-030": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "KU-001": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-002": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-003": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": true
+   },
+   "KU-004": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-005": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-006": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-007": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-008": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-009": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": true
+   },
+   "KU-010": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": true
+   },
+   "KU-011": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-012": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-013": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-014": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-015": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": true
+   },
+   "KU-016": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": true
+   },
+   "KU-017": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-018": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-019": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-020": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-021": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": true
+   },
+   "KU-022": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-023": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 2,
+    "old_stated": true
+   },
+   "KU-024": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": true
+   },
+   "KU-025": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-026": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": true
+   },
+   "KU-027": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": true
+   },
+   "KU-028": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-029": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-030": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": true
+   }
+  },
+  "S/b4": {
+   "C1-001": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-002": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-003": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-004": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-005": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-006": {
+    "family": "C1",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-007": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-008": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-009": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-010": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-011": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-012": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-013": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-014": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-015": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-016": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-017": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-018": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-019": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-020": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-021": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-022": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-023": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-024": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-025": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-026": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-027": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-028": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-029": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C1-030": {
+    "family": "C1",
+    "applied": true,
+    "hops_seen": [
+     true
+    ],
+    "all_seen": true,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-001": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-002": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-003": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-004": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-005": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-006": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-007": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-008": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-009": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-011": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-012": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-013": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-014": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-015": {
+    "family": "C2",
+    "applied": true,
+    "hops_seen": [
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-017": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-018": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-019": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-020": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-021": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-022": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-023": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-024": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-026": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-027": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-029": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-030": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-031": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-032": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-033": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-035": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-036": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-037": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-038": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 3,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-039": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-040": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 3,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-041": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-042": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-043": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-044": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-045": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-046": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-047": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-048": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-049": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-050": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-053": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-054": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-056": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-057": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C2-058": {
+    "family": "C2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 4,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-001": {
+    "family": "C3",
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 2,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-002": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-003": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-004": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-005": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-007": {
+    "family": "C3",
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 2,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-008": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-009": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-011": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-012": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-013": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-014": {
+    "family": "C3",
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 4,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-015": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 3,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-017": {
+    "family": "C3",
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 2,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-018": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-019": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-021": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-022": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 3,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-023": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-024": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-025": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-026": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-027": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-029": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-030": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-031": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-032": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-033": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-034": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-035": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-036": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-037": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-038": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-039": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-041": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-042": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-043": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-045": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-046": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 3,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-047": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-048": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-049": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-050": {
+    "family": "C3",
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 3,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-051": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-052": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-053": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-054": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-055": {
+    "family": "C3",
+    "applied": true,
+    "hops_seen": [
+     true,
+     true,
+     true
+    ],
+    "all_seen": true,
+    "searches": 2,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-056": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "C3-057": {
+    "family": "C3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-001": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-002": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-003": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-004": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-005": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-006": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-007": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-008": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-009": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-010": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-011": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-012": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-013": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-014": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-015": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-016": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-017": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-018": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-019": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-020": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-021": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-022": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-023": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-024": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC2-025": {
+    "family": "IC2",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-001": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-002": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-003": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-004": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-005": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-006": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-007": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-008": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-009": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-010": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-011": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-012": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-013": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-014": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-015": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-016": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-017": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-018": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-019": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-020": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-021": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-022": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-023": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-024": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     true,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "IC3-025": {
+    "family": "IC3",
+    "applied": false,
+    "hops_seen": [
+     false,
+     false,
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-001": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-002": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-003": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-004": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 3,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-005": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-006": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-007": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-008": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-009": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-010": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-011": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-012": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-013": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-014": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 3,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-015": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-016": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-017": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-018": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-019": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-020": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-021": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-022": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-023": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-024": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-025": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-026": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 3,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-027": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-028": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 3,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-029": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-030": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-031": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-032": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-033": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 3,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-034": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-036": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-037": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-038": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-039": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-040": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-041": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-042": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-043": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-044": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-045": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-046": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-047": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-048": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-049": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 2,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-050": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "SC-051": {
+    "family": "SC",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 1,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-001": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-002": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-003": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-004": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-005": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-006": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-007": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-008": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-009": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-010": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-011": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-012": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-013": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-014": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-015": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-017": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-018": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-019": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-020": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-021": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-022": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-023": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-024": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-025": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-027": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-029": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-030": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-031": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-033": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-035": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-036": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-037": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-039": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-040": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-041": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-043": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-045": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-046": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-047": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-048": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-049": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-051": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-052": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-053": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-054": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-055": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-056": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-057": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-058": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "UP-059": {
+    "family": "UP",
+    "applied": false,
+    "hops_seen": [
+     false
+    ],
+    "all_seen": false,
+    "searches": 0,
+    "error": "",
+    "attempt": 1
+   },
+   "E-01": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-02": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-03": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-04": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-05": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-06": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-07": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-08": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-09": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-10": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-11": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-12": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-13": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-14": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-15": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-16": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-17": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-18": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-19": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-20": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-21": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-22": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-23": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-24": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-25": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-26": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-27": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-28": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-29": {
+    "family": "E",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "E-30": {
+    "family": "E",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-01": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-02": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-03": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-04": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-05": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-06": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-07": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-08": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-09": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-10": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-11": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-12": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-13": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-14": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-15": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-16": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-17": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-18": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-19": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-20": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-21": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-22": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-23": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-24": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-25": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-26": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-27": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-28": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-29": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-30": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-31": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-32": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-33": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-34": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-35": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-36": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-37": {
+    "family": "K",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-38": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-39": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "K-40": {
+    "family": "K",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0
+   },
+   "N-001": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-002": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-003": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": false
+   },
+   "N-004": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": false
+   },
+   "N-005": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-006": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 2,
+    "near_miss_stated": false
+   },
+   "N-007": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": false
+   },
+   "N-008": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": false
+   },
+   "N-009": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-010": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": false
+   },
+   "N-011": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": false
+   },
+   "N-012": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-013": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-014": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-015": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 2,
+    "near_miss_stated": false
+   },
+   "N-016": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-017": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": false
+   },
+   "N-018": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": false
+   },
+   "N-019": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-020": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": true
+   },
+   "N-021": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 2,
+    "near_miss_stated": false
+   },
+   "N-022": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-023": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 3,
+    "near_miss_stated": false
+   },
+   "N-024": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-025": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": true
+   },
+   "N-026": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": false
+   },
+   "N-027": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 3,
+    "near_miss_stated": false
+   },
+   "N-028": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-029": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 2,
+    "near_miss_stated": false
+   },
+   "N-030": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": false
+   },
+   "N-031": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": false
+   },
+   "N-032": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": false
+   },
+   "N-033": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-034": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": false
+   },
+   "N-035": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": false
+   },
+   "N-036": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 2,
+    "near_miss_stated": false
+   },
+   "N-037": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-038": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": false
+   },
+   "N-039": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-040": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": false
+   },
+   "N-041": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 3,
+    "near_miss_stated": false
+   },
+   "N-042": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 2,
+    "near_miss_stated": false
+   },
+   "N-043": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-044": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 2,
+    "near_miss_stated": false
+   },
+   "N-045": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-046": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": false
+   },
+   "N-047": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-048": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": false
+   },
+   "N-049": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-050": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-051": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-052": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-053": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 2,
+    "near_miss_stated": false
+   },
+   "N-054": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-055": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": false
+   },
+   "N-056": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-057": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 2,
+    "near_miss_stated": false
+   },
+   "N-058": {
+    "family": "N",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 3,
+    "near_miss_stated": true
+   },
+   "N-059": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "N-060": {
+    "family": "N",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-001": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-002": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 2,
+    "near_miss_stated": false
+   },
+   "NC-003": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": false
+   },
+   "NC-004": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 2,
+    "near_miss_stated": false
+   },
+   "NC-005": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": false
+   },
+   "NC-006": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-007": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-008": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-009": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": false
+   },
+   "NC-010": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 3,
+    "near_miss_stated": false
+   },
+   "NC-011": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-012": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 2,
+    "near_miss_stated": false
+   },
+   "NC-013": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 2,
+    "near_miss_stated": false
+   },
+   "NC-014": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-015": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-016": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": false
+   },
+   "NC-017": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-018": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 3,
+    "near_miss_stated": false
+   },
+   "NC-019": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-020": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-021": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-022": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-023": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-024": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 4,
+    "near_miss_stated": false
+   },
+   "NC-025": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-026": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-027": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-028": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-029": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "near_miss_stated": false
+   },
+   "NC-030": {
+    "family": "NC",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 1,
+    "near_miss_stated": false
+   },
+   "KU-001": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-002": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": true
+   },
+   "KU-003": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-004": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": true
+   },
+   "KU-005": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-006": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-007": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-008": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-009": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": true
+   },
+   "KU-010": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-011": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-012": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-013": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-014": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": true
+   },
+   "KU-015": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-016": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-017": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-018": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-019": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-020": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-021": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-022": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-023": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": true
+   },
+   "KU-024": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-025": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-026": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": true
+   },
+   "KU-027": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-028": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-029": {
+    "family": "KU",
+    "applied": true,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": false
+   },
+   "KU-030": {
+    "family": "KU",
+    "applied": false,
+    "error": "",
+    "attempt": 1,
+    "searches": 0,
+    "old_stated": true
+   }
+  }
+ }
+}

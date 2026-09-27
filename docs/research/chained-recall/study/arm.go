@@ -52,6 +52,14 @@ type SettingInstructor interface {
 	InstructionsFor(setting string) string
 }
 
+// Windower is implemented by an arm whose live window differs from the
+// corpus's, such as W (#900), which restores the newest messages under a
+// token budget. The live session then restores WindowFor(setting) messages
+// and compacts to that bound.
+type Windower interface {
+	WindowFor(setting string) int
+}
+
 // Memory is an opened arm memory.
 type Memory interface {
 	// Recall is what the arm puts into context before the act loop for a
@@ -102,6 +110,10 @@ type Item struct {
 	SourceFirst int64  `json:"first"`
 	SourceLast  int64  `json:"last"`
 	Text        string `json:"text"`
+	// Label, when set, replaces the label the study appends to Text, for an
+	// item that is not a summary of its interval, such as a fact the recall
+	// step read (#900).
+	Label string `json:"label,omitempty"`
 }
 
 // Built reports what an arm stores for one setting. StoredChars counts

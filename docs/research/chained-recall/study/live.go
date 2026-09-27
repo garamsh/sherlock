@@ -60,11 +60,17 @@ type LiveResult struct {
 	Tools   []ToolUse         `json:"tools,omitempty"`
 	// Recall is the turn's recall block, the frame message the session
 	// added before the act loop.
-	Recall     string   `json:"recall"`
-	Calls      int      `json:"calls"`
-	CallErrors []string `json:"call_errors,omitempty"`
-	Error      string   `json:"error,omitempty"`
-	Seconds    float64  `json:"seconds"`
+	Recall string `json:"recall"`
+	// WindowFirst and WindowMessages are the restored window: its oldest
+	// source ID and how many messages it held.
+	WindowFirst    int64 `json:"window_first,omitempty"`
+	WindowMessages int   `json:"window_messages,omitempty"`
+	// Trace is the memory's LastTrace after the turn, when it is a Tracer.
+	Trace      map[string]any `json:"trace,omitempty"`
+	Calls      int            `json:"calls"`
+	CallErrors []string       `json:"call_errors,omitempty"`
+	Error      string         `json:"error,omitempty"`
+	Seconds    float64        `json:"seconds"`
 }
 
 // recorder keeps every exchange a turn made with the model.
@@ -135,10 +141,16 @@ func liveOnce(ctx context.Context, env *Env, arm Arm, setting string, p LiveProb
 	rec := &recorder{inner: inner}
 	store := memory.Store()
 	window := env.Corpus.Window
+	if w, ok := arm.(Windower); ok {
+		window = w.WindowFor(setting)
+	}
 	recent, err := store.Recent(ctx, window)
 	if err != nil {
 		res.Error = err.Error()
 		return res
+	}
+	if len(recent) > 0 {
+		res.WindowFirst, res.WindowMessages = recent[0].ID, len(recent)
 	}
 	initial := make([]agent.Message, 0, len(recent))
 	for _, m := range recent {
@@ -173,6 +185,9 @@ func liveOnce(ctx context.Context, env *Env, arm Arm, setting string, p LiveProb
 		res.Error = err.Error()
 	}
 	res.Reply = reply
+	if t, ok := memory.(Tracer); ok {
+		res.Trace = t.LastTrace()
+	}
 	for _, e := range events.events {
 		if e.Kind == agent.EventToolCall {
 			res.Tools = append(res.Tools, ToolUse{Name: e.ToolName, Input: e.ToolInput, Result: e.ToolResult, Failed: e.ToolFailed})

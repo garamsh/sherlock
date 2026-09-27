@@ -2,13 +2,13 @@
 
 Records issue #901's study: how evidence delivery holds up as the conversation store grows with other conversations, and which way of storing and retrieving keeps it highest for the least stored text, at a fixed context budget per turn.
 
-**Interim.** The reranker arm (R) has not run yet; every other arm and every control is final. R's rows below read pending, and the Holm adjustments and the recommendation will be recomputed with R included.
+**The reranker arm (R) was not run.** Its server was killed for memory three times (§Cost), so R has no result. Holm adjustments run over the arms that did run: six budgeted arms for degradation and five against B4, where the preregistration named seven and six.
 
 - **The largest scale stresses retrieval.** At 3.67× the replication's messages, the shipped recall (S4) delivers 201 of 280 primary queries, against 212 at 1×. It gains none and loses 11, p = 0.001. So the null condition does not apply, and arms are compared at 3.67×.
 - **Keys over compressed values (K) is the arm the rule names.** At 3.67× it delivers 197 against budgeted B4's 203. The paired interval is [−0.042, +0.008], inside the preregistered −0.05 bound. It stores 0.28 characters per source character against B4's 0.68, 59% less text.
 - **Every other arm loses.**
   - B8, B16, the aged tier (T) and the hybrid (X) each deliver significantly less than B4 at 3.67×.
-  - The reranker (R): pending: R has not run yet (interim report).
+  - The reranker (R) was not run; its server could not load within the memory the host could spare.
 - **K's result depends on how recency is delivered.** At 1×, K's two newest units are B16 values, which take 1,591 of the 3,384-character budget, and K delivers 168. With B4-sized recency (exploratory) it delivers 202 against B4's 211.
 - **The owner's drill-down (Amendment 1) holds delivery but stores the most.** Delivering raw messages from the top 5 mids by message score (DR-rel) gives 206 at 1× and 199 at 3.67×. Neither differs significantly from B4. It keeps every raw message beside the mids, so it stores 1.68 characters per source character. Ordering by newest mid (DR-new) loses to B4 at both scales.
 - **Recommendation.** K merits the live answer run, with recency delivered at B4 size. The shipped recall keeps its lead until that run says otherwise.
@@ -95,7 +95,7 @@ Primary hits of 280 ([scores.json](evidence/scores.json) `table`):
 | T | 172 | 118 | 101 | 105 | 112 | 0.472 at s0, 0.280 from s2 |
 | K | 168 | 158 | 176 | 185 | 197 | 0.280 |
 | X | 161 | 152 | 161 | 161 | 168 | 0.684 |
-| R | pending | pending | pending | pending | pending | 0.684 |
+| R | not run | not run | not run | not run | not run | 0.684 |
 | DR-rel (Amendment 1) | 206 | 200 | 200 | 198 | 199 | 1.684 |
 | DR-new (Amendment 1) | 186 | 139 | 149 | 161 | 188 | 1.684 |
 
@@ -110,7 +110,7 @@ Per family at s0 and s4 (exact, paraphrase, implicit, correction; 70 each):
 | T | 47, 40, 20, 65 | 39, 19, 8, 46 |
 | K | 59, 39, 20, 50 | 61, 48, 22, 66 |
 | X | 63, 22, 14, 62 | 62, 26, 17, 63 |
-| R | pending | pending |
+| R | not run | not run |
 | DR-rel | 63, 55, 22, 66 | 61, 49, 23, 66 |
 | DR-new | 54, 45, 21, 66 | 55, 45, 22, 66 |
 
@@ -124,7 +124,7 @@ Per family at s0 and s4 (exact, paraphrase, implicit, correction; 70 each):
   | B16 | 0.300 | 0.554 | 0.800 | 0.246 | 0.432 | 0.611 |
   | K | 0.532 | 0.807 | 0.925 | 0.489 | 0.757 | 0.850 |
   | X | 0.346 | 0.596 | 0.821 | 0.346 | 0.607 | 0.807 |
-  | R | pending | pending | pending | pending | pending | pending |
+  | R | not run | not run | not run | not run | not run | not run |
 
   At @20 every arm's ranking loses ground from s0 to s4. K's value ranking has the highest recall at both scales; each value is reached through the best of its four keys.
 - **Why budgeted arms are not monotone in scale.** Each arm's two newest units are charged to the budget, and from s1 on they are the newest distractor mids, whose length depends on the stream (`study.json` `storage[].recency_chars`):
@@ -137,7 +137,7 @@ Per family at s0 and s4 (exact, paraphrase, implicit, correction; 70 each):
 ## Decision
 
 - **Null condition: it does not apply.** S4 at s4 against s0: 201 against 212, 0 gained, 11 lost, exact p = 0.001, interval [−0.039, −0.017]. 3.67× stresses the shipped recall measurably, so s4 is the decisive scale.
-- **Degradation, s0 to s4** (Holm over the seven budgeted arms):
+- **Degradation, s0 to s4** (Holm over the six budgeted arms that ran; R did not):
 
   | Arm | s0 | s4 | Gained | Lost | Holm p |
   |---|---:|---:|---:|---:|---:|
@@ -147,10 +147,10 @@ Per family at s0 and s4 (exact, paraphrase, implicit, correction; 70 each):
   | T | 172 | 112 | 7 | 67 | < 0.001 |
   | K | 168 | 197 | 35 | 6 | < 0.001 (a gain) |
   | X | 161 | 168 | 10 | 3 | 0.28 |
-  | R | pending | pending | pending | pending | pending |
+  | R | not run | not run | not run | not run | not run |
 
   T degrades by design: as distractors arrive, the whole replication ages into B16. K's gain is the recency effect above: its s0 recency is two B16 values.
-- **Against B4 at s4** (Holm over six):
+- **Against B4 at s4** (Holm over the five arms that ran; R did not):
 
   | Arm | Hits | B4 | Wins | Losses | 95% interval | Holm p | Stored per source char | Reading |
   |---|---:|---:|---:|---:|---|---:|---:|---|
@@ -159,7 +159,7 @@ Per family at s0 and s4 (exact, paraphrase, implicit, correction; 70 each):
   | T | 112 | 203 | 5 | 96 | [−0.349, −0.280] | < 0.001 | 0.280 | delivers less (equals B16 at s4) |
   | **K** | **197** | 203 | 4 | 10 | **[−0.042, +0.008]** | 0.18 | **0.280** | **no worse for less storage** |
   | X | 168 | 203 | 11 | 46 | [−0.163, −0.074] | < 0.001 | 0.684 | delivers less |
-  | R | pending | 203 | pending | pending | pending | pending | 0.684 | pending |
+  | R | not run | 203 | | | | | 0.684 | not run |
 
 - **Recommendation: K.** No arm delivers more than B4. K is the only arm that is no worse for less storage. It stores 59% less replication text and needs no extra server. Its added cost is a second synthesis size: B4 summaries must be written to compute the keys, and then only their vectors are kept.
 
@@ -220,12 +220,18 @@ Added at the owner's proposal after the first ranking of every other arm, and pr
 
 - No MiniMax, OpenAI or other paid call. Every summary is recorded.
 - Embeddings: 5,568 summaries and queries, then 17,600 raw messages for Amendment 1, on `tei-901` (port 8130), this study's own instance, in batches of 16. Ranking every arm at five scales takes about 10 s from the cache.
-- Reranking: pending: R has not run yet (interim report).
-- The reranker instance was stopped after the host ran short of memory, and runs only after #896 and #900 finish their live stages, with a 2 GiB memory cap, at the PM's instruction.
+- Reranking: none. Four attempts to serve `BAAI/bge-reranker-base` on this host ended as follows:
+  - The first instance loaded without a memory cap and held 2.8 GiB. The PM stopped it before any rerank call, because the host had run out of memory and #900 lost its proxy.
+  - After #896 and #900 finished their live stages, the PM allowed it back with nothing else of this study's running.
+  - It was OOM-killed (exit 137) while loading under a 2 GiB cap.
+  - It was OOM-killed again under 2 GiB with `--max-batch-tokens 4096 --max-client-batch-size 8`; batch limits change no score.
+  - It was OOM-killed a third time under a 3 GiB cap with the same limits, right after the model download.
+  - The PM's rule was to report R as not run if the 2 GiB and 3 GiB attempts both failed.
 
 ## Limits
 
 - **One corpus, one embedder, one CPU host.** The replication's limits apply unchanged (`../mid-memory-rag/README.md` §Replication limits). Paraphrase and implicit queries are selected to miss lexically, which works against X.
+- **No cross-encoder was measured.** R did not run, so whether reranking recovers what scale costs the dense ranking is still open.
 - **The distractors are not the replication's kind of conversation.** They are short templated exchanges from four chain studies. Scale is measured in mids; at 3.67× in mids the store holds only 1.59× the replication's source characters.
 - **Distractors are batch 4 in every arm.** A B16 or K store would hold coarser distractors. The one matched measurement (B8c) found no bias, but it covers batch 8 at s1 only.
 - **K is measured offline, and its recency is the open design point.** At s4 its recency units are batch-4 distractors, as every arm's are. A deployed K store would hold its newest conversation as B16 values unless recency is kept at B4. Kr suggests that choice is worth about 34 queries at 1×.
@@ -238,16 +244,14 @@ From the repository root, with Docker and `uv`:
 
 ```sh
 IMG=ghcr.io/huggingface/text-embeddings-inference@sha256:2538ea1c9640d3763b15af668039d24172d063b42337b0c27796fc2be180c78d
-docker run -d --name tei-901 --memory 1.5g -p 127.0.0.1:8130:80 $IMG \
+docker run -d --name tei-901 -p 127.0.0.1:8130:80 $IMG \
   --model-id BAAI/bge-base-en-v1.5 --revision a5beb1e3e68b9ab74eb54cfd186867f64f240e1a
-docker run -d --name tei-901-rerank --memory 2g -p 127.0.0.1:8131:80 $IMG \
-  --model-id BAAI/bge-reranker-base --revision 2cfc18c9415c912f9d8155881c133215df768a70
-uv run --no-project --with numpy==2.3.3 python3 docs/research/memory-scaling/study.py   # writes evidence/rankings.jsonl and study.json
+uv run --no-project --with numpy==2.3.3 python3 docs/research/memory-scaling/study.py --without-rerank   # writes evidence/rankings.jsonl and study.json
 python3 docs/research/memory-scaling/evaluate.py                                       # offline; writes evidence/scores.json
 python3 docs/research/memory-scaling/mutation.py                                       # writes evidence/mutation.txt
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s docs/research/memory-scaling -p '*_test.py'
-docker rm -f tei-901 tei-901-rerank
+docker rm -f tei-901
 ```
 
-- `study.py` caches server answers in `.embed_cache-901*.json` beside itself; `.gitignore` excludes them. `--without-rerank` ranks every arm but R.
-- `rankings.jsonl` and every field of `study.json` except `run` are reproduced by a rerun. `evaluate.py` regenerates `scores.json` from them.
+- `study.py` caches server answers in `.embed_cache-901*.json` beside itself; `.gitignore` excludes them. `--without-rerank` ranks every arm but R, as the committed evidence was produced; without it, R needs the reranker instance on port 8131.
+- `rankings.jsonl` and every field of `study.json` except `run` are reproduced by a rerun; a rerun from the cache with both servers stopped reproduced them byte for byte. `evaluate.py` regenerates `scores.json` from them.

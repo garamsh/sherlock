@@ -1806,7 +1806,7 @@
   "queries_where_distractor_top1_is_higher": 61
  },
  "run": {
-  "rank_seconds": 46.48134469985962,
+  "rank_seconds": 19.42971968650818,
   "rerank_calls": null
  }
 }

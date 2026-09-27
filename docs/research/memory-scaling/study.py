@@ -44,6 +44,7 @@ RECENT = 2
 SHIPPED_TOTAL = 7
 DEPTH = 50
 RERANK_DEPTH = 30
+RERANK_BATCH = 8
 RRF_K = 60
 AGED_WINDOW = 2400
 TAG = ' [mid:{id} sources:{first}-{last}; summary, not verified source text]'
@@ -227,8 +228,15 @@ def post(url, body):
 
 
 def info(url):
-    with urllib.request.urlopen(url + '/info', timeout=30) as response:
-        return json.loads(response.read())
+    """The server's /info, cached beside the answers so a rerun from the cache does not need the server up."""
+    cache = HERE / f'.embed_cache-901-info-{url.rsplit(":", 1)[1]}.json'
+    try:
+        with urllib.request.urlopen(url + '/info', timeout=30) as response:
+            cache.write_bytes(response.read())
+    except OSError:
+        if not cache.exists():
+            raise
+    return json.loads(cache.read_text())
 
 
 def embed_all(texts):
@@ -256,10 +264,11 @@ class Reranker:
     def order(self, query, units):
         missing = [u.text for u in units if json.dumps([query, u.text]) not in self.cache]
         missing = list(dict.fromkeys(missing))
-        if missing:
+        for i in range(0, len(missing), RERANK_BATCH):
+            chunk = missing[i:i + RERANK_BATCH]
             self.calls += 1
-            for row in post(RERANK_URL + '/rerank', {'query': query, 'texts': missing, 'truncate': True}):
-                self.cache[json.dumps([query, missing[row['index']]])] = row['score']
+            for row in post(RERANK_URL + '/rerank', {'query': query, 'texts': chunk, 'truncate': True}):
+                self.cache[json.dumps([query, chunk[row['index']]])] = row['score']
         scores = [self.cache[json.dumps([query, u.text])] for u in units]
         return [u for _, _, u in sorted(zip([-s for s in scores], range(len(units)), units), key=lambda x: x[:2])]
 

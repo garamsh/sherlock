@@ -1,0 +1,148 @@
+{
+ "families": {
+  "C2": {
+   "n": 50,
+   "reach": 34,
+   "s_states": 0,
+   "reach_unbounded": 36,
+   "reach_any_mention": 36,
+   "card_chars_mean": 1141.2,
+   "card_chars_median": 1101.5,
+   "card_chars_max": 1395,
+   "delivered_chars_mean": 2562.0
+  },
+  "C3": {
+   "n": 50,
+   "reach": 0,
+   "s_states": 0,
+   "reach_unbounded": 7,
+   "reach_any_mention": 7,
+   "card_chars_mean": 989.7,
+   "card_chars_median": 1018.0,
+   "card_chars_max": 1285,
+   "delivered_chars_mean": 2685.5
+  },
+  "IC2": {
+   "n": 25,
+   "reach": 1,
+   "s_states": 0,
+   "reach_unbounded": 10,
+   "reach_any_mention": 12,
+   "card_chars_mean": 925.4,
+   "card_chars_median": 910,
+   "card_chars_max": 1076,
+   "delivered_chars_mean": 2779.9
+  },
+  "IC3": {
+   "n": 25,
+   "reach": 0,
+   "s_states": 0,
+   "reach_unbounded": 10,
+   "reach_any_mention": 10,
+   "card_chars_mean": 1158.6,
+   "card_chars_median": 1164,
+   "card_chars_max": 1275,
+   "delivered_chars_mean": 2676.9
+  },
+  "UP": {
+   "n": 50,
+   "reach": 0,
+   "s_states": 0,
+   "reach_unbounded": 48,
+   "reach_any_mention": 48,
+   "card_chars_mean": 836.5,
+   "card_chars_median": 831.0,
+   "card_chars_max": 1278,
+   "delivered_chars_mean": 3029.1
+  },
+  "N": {
+   "n": 60,
+   "confusion": 0,
+   "owner_card_states": 0,
+   "near_miss_attached": 36,
+   "card_chars_mean": 962.7,
+   "card_chars_median": 933.0,
+   "card_chars_max": 1175,
+   "delivered_chars_mean": 2592.4
+  },
+  "NC": {
+   "n": 30,
+   "confusion": 0,
+   "owner_card_states": 0,
+   "near_miss_attached": 0,
+   "card_chars_mean": 963.1,
+   "card_chars_median": 967.5,
+   "card_chars_max": 1120,
+   "delivered_chars_mean": 2564.4
+  },
+  "KU": {
+   "n": 30,
+   "current": 7,
+   "superseded": 9,
+   "stale": 7,
+   "overwrite": {
+    "not replaced": 7,
+    "replaced": 23
+   },
+   "card_chars_mean": 712.3,
+   "card_chars_median": 685.5,
+   "card_chars_max": 986,
+   "delivered_chars_mean": 3385.2
+  }
+ },
+ "size_all": {
+  "n": 320,
+  "card_chars_mean": 964.0,
+  "card_chars_median": 947.0,
+  "card_chars_max": 1395,
+  "delivered_chars_mean": 2763.4
+ },
+ "gate": {
+  "chains_c2_c3": 34,
+  "chain_margin": 10,
+  "up": 0,
+  "up_margin": 5,
+  "ceiling_clears": true,
+  "owner_audit_passed": true,
+  "paid_phase_may_be_proposed": true
+ },
+ "gate_unbounded": {
+  "chains_c2_c3": 43,
+  "chain_margin": 10,
+  "up": 48,
+  "up_margin": 5,
+  "ceiling_clears": true,
+  "owner_audit_passed": true,
+  "paid_phase_may_be_proposed": true
+ },
+ "gate_any_mention": {
+  "chains_c2_c3": 43,
+  "chain_margin": 10,
+  "up": 48,
+  "up_margin": 5,
+  "ceiling_clears": true,
+  "owner_audit_passed": true,
+  "paid_phase_may_be_proposed": true
+ },
+ "controls": {
+  "owner_audit": {
+   "n": 50,
+   "correct": 49,
+   "passed": true
+  },
+  "ku_overwrite": {
+   "replaced": 23,
+   "n": 30,
+   "passed": false
+  }
+ },
+ "counts": {
+  "facts": 1739,
+  "dropped": 17,
+  "replaced": 772,
+  "cards": 713,
+  "user_card_facts": 4,
+  "cut_by_bound": 158,
+  "facts_per_card_mean": 1.11
+ }
+}

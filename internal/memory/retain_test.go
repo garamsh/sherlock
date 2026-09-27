@@ -22,7 +22,7 @@ const retentionRecord = "../../docs/architecture/adr/0006-memory-lifecycle.md"
 var retentionClaim = regexp.MustCompile(`bounded window of wall-clock time — (\d+) days`)
 
 // TestRetentionWindow_RecordAndCodeAgree is the claim register for the
-// retention window, after the registers under docs/research/: the
+// retention window, after the registers under research/: the
 // record states the window a reader is bound by, this package enforces
 // it, and nothing made the two agree. Issue #510 is what that costs —
 // the record said the window was ~100 turns while the code counted

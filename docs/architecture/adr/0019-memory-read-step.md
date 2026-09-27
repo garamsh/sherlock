@@ -5,9 +5,9 @@
 
 ## Context
 
-The prior read step resolved a question to a model-written address and widened to a subject on a miss. The running measurement in `docs/research/recall-specificity/` found no addressed hits in 30 probes; every answer that carried the planted value came from widening. Source-linked summaries need a read that can find several topics and survive paraphrase without claiming that a candidate is an answer.
+The prior read step resolved a question to a model-written address and widened to a subject on a miss. The running measurement in `research/recall-specificity/` found no addressed hits in 30 probes; every answer that carried the planted value came from widening. Source-linked summaries need a read that can find several topics and survive paraphrase without claiming that a candidate is an answer.
 
-The first source-linked read asked the session model for up to four search phrases and ranked mid summaries by FTS5 lexical relevance. The replication in `docs/research/mid-memory-rag/` (§Replication, issue #856) compared it over 280 primary queries with ranking by embedding similarity, at three batch sizes, and with a hybrid of both.
+The first source-linked read asked the session model for up to four search phrases and ranked mid summaries by FTS5 lexical relevance. The replication in `research/mid-memory-rag/` (§Replication, issue #856) compared it over 280 primary queries with ranking by embedding similarity, at three batch sizes, and with a hybrid of both.
 
 ## Decision
 
@@ -21,12 +21,12 @@ Recent episodes remain available whatever the ranking. Pending source previews k
 
 - The replication delivered the evidence for 209 of 280 primary queries at batch 4 (B4), against 168 for the phrase call with FTS5. B4 led in every family: exact 64 against 60, paraphrase 52 against 31, implicit 28 against 19, correction 65 against 58. Batch 8 delivered 194 and batch 16 delivered 164, so smaller batches help similarity.
 - The hybrid, both relevant lists alternated, delivered 203. It keeps the phrase call and the FTS5 path beside the embedding path, so it is not taken.
-- Parity: the production recall, run over the same corpus with the recorded batch-4 syntheses and `BAAI/bge-base-en-v1.5` served over the OpenAI-compatible endpoint, delivered 212 of 280 (`docs/research/mid-memory-rag/` §Production parity).
+- Parity: the production recall, run over the same corpus with the recorded batch-4 syntheses and `BAAI/bge-base-en-v1.5` served over the OpenAI-compatible endpoint, delivered 212 of 280 (`research/mid-memory-rag/` §Production parity).
 - The corpus is model-written, and its paraphrase and implicit families were selected to miss lexically, which favours similarity. A single local embedding model was measured. Neither ranking nor recency establishes truth; the agent must inspect the linked evidence.
 - `TestSessionRun_SearchRanksWithTheModelsQuery` pins the search call's query and bound, and `TestConversation_SearchReturnsTheEpisodeForTheModelsQuery` its result through the store.
 - `TestConversationRecall_RecentFirstThenSimilarDeduplicatedAndBounded` pins the selection, and `TestConversationRecall_RecentCorrectionAndOlderRelevantEpisode` shows a weak-overlap recent correction surviving while an older similar episode stays reachable. This is deterministic reachability, not model answer quality.
 - The opt-in `SHERLOCK_EPISODIC_MEMORY_PROBE=1 go test ./tests -run '^TestEpisodicMemory_LiveProbe$' -count=1 -v` ran at `2589be1` on 2026-09-24 against MiniMax-M2, under the phrase read and batch 8: 4 HTTP calls, 4,301 input tokens, 684 output tokens, no runtime failure. It synthesized a correction batch live, retrieved its episode, inspected the correction source, and answered with the corrected name. It has not been run since this revision.
-- **Search during work.** `docs/research/agent-context/` tested the search call with the bounded note of ADR 0011, as candidate A, against the shipped structure.
+- **Search during work.** `research/agent-context/` tested the search call with the bounded note of ADR 0011, as candidate A, against the shipped structure.
   - Issue #862: A applied the evidence in 209 of 280 primary probes and the shipped structure in 124 (A only 86, shipped only 1). Follow-ups whose referent lay beyond the window went from 9 to 49 of 70.
   - Issue #864, on a new seed: 192 against 122 (74 to 4), and those follow-ups from 4 to 40.
   - Both of those verdicts are undetermined, because the oracle control failed. In #862 it counted a key word in a summary, which summaries reworded. In #864 it counted a top-five mid holding the evidence source; every miss was a mid that mixes the evidence with a neighbouring exchange and so ranks lower (257 of 280, 266 required, in both arms).

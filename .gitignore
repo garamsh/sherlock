@@ -41,12 +41,12 @@ data/
 !/tools/*/*.json
 
 # Binaries a direct build writes at the repository root, each under its package's
-# name: cmd/sherlock, and every harness package under docs/research/. Only these
+# name: cmd/sherlock, and every harness package under research/. Only these
 # two names; a binary built under any other name is not covered.
 /sherlock
 /harness
 
-# Python (experiment harnesses under docs/research/)
+# Python (experiment harnesses under research/)
 __pycache__/
 *.pyc
 .embed_cache*.json

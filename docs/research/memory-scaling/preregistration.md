@@ -13,6 +13,7 @@ This fixes the scales, arms, endpoint, controls and decision rule of issue #901 
 - Decision rule
 - Descriptive measures
 - Cost
+- Amendment 1: mid-to-message drill-down
 
 ## Question
 

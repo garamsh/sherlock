@@ -1,0 +1,19 @@
+{
+  "arm": "C",
+  "build_seconds": 4018.271011488,
+  "built": {
+    "stored_chars": 990971,
+    "vectors": 2232,
+    "units": {
+      "context": 991,
+      "mid": 2232
+    },
+    "notes": {
+      "context_chars": 99747,
+      "mids_with_context": 991
+    }
+  },
+  "setting": "b4-w8",
+  "source_chars": 1062421,
+  "stored_chars_per_source": 0.932747940788068
+}

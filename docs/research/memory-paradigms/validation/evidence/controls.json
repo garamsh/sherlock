@@ -1,0 +1,20 @@
+{
+ "D": {
+  "document_chars": 14821,
+  "bound_held": true,
+  "lines": 166,
+  "lines_citing_a_passed_mid": 166,
+  "versions": 1404,
+  "operations_applied": 1404,
+  "history_complete": true,
+  "up_covered": 14,
+  "up_n": 50,
+  "passes": 279,
+  "partial_passes": 113,
+  "refused_attempts": 286,
+  "rejected_operations": 95,
+  "passed": false
+ },
+ "R": null,
+ "W": null
+}

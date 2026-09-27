@@ -2,12 +2,16 @@
 syntheses, the selected corpus and C's offline oracle, with C's write-call
 tokens against the shipped call's.
 
-    python3 docs/research/memory-encoding/validation/arms/context/controls.py   # evidence/controls.json
+    python3 docs/research/memory-encoding/validation/arms/context/controls.py [ledger calls.jsonl]   # evidence/controls.json
+
+The ledger defaults to the study's evidence/ledger/calls.jsonl; the proxy
+keeps it where its -dir points.
 """
 
 import importlib.util
 import json
 import statistics
+import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -92,7 +96,7 @@ def main():
     if records.exists():
         out["oracle"] = oracle(corpus, S.load_jsonl(records))
         out["passed"] = out["passed"] and out["oracle"]["passed"]
-    ledger = STUDY / "evidence" / "ledger" / "calls.jsonl"
+    ledger = Path(sys.argv[1]) if len(sys.argv) > 1 else STUDY / "evidence" / "ledger" / "calls.jsonl"
     if ledger.exists():
         out["tokens"] = tokens(S.load_jsonl(ledger))
     (HERE / "evidence" / "controls.json").write_text(json.dumps(out, indent=1) + "\n")

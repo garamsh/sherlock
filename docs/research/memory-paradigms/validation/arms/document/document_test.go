@@ -100,3 +100,26 @@ func TestLineItems_LabelEachLineWithTheMidsItCites(t *testing.T) {
 	assert.Equal(t, "[line:0 mids:10; model-written]", items[0].Label)
 	assert.Equal(t, int64(37), items[0].SourceFirst)
 }
+
+func TestApply_PartialPassSkipsSupersedesThatWouldPassTheBound(t *testing.T) {
+	var d Document
+	short := []Op{}
+	for range 16 {
+		short = append(short, Op{Op: "add", Text: strings.Repeat("s", 150), Mids: []int64{10}})
+	}
+	for d.Chars()+16*170 <= Bound {
+		_, err := d.Apply(short, 1, passIntervals, true)
+		require.NoError(t, err)
+	}
+	lines := len(d.Lines)
+	grow := []Op{}
+	for i := 1; i <= 16 && i <= lines; i++ {
+		grow = append(grow, Op{Op: "supersede", Line: i, Text: strings.Repeat("g", lineRunes), Mids: []int64{11}})
+	}
+	grow = append(grow, Op{Op: "supersede", Line: lines, Text: "shorter", Mids: []int64{11}})
+	a, err := d.Apply(grow, 2, passIntervals, false)
+	require.NoError(t, err)
+	assert.LessOrEqual(t, d.Chars(), Bound)
+	assert.Equal(t, 1, a.Superseded, "the control: a supersede that shortens its line is applied")
+	assert.Equal(t, "shorter", d.Lines[lines-1].Text)
+}

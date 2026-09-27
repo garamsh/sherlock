@@ -99,6 +99,16 @@ func joinIDs(ids []int64) string {
 // whole; not strict, drops past the quarter and adds past the bound are
 // skipped, in order. intervals gives each of the pass's mids its sources.
 func (d *Document) Apply(ops []Op, pass int, intervals map[int64][2]int64, strict bool) (Applied, error) {
+	a, err := d.apply(ops, pass, intervals, strict, false)
+	if err != nil && !strict && !errors.Is(err, ErrRefused) {
+		// A partial pass whose supersedes lengthen the document past the
+		// bound is applied once more without them (Amendment 2).
+		return d.apply(ops, pass, intervals, false, true)
+	}
+	return a, err
+}
+
+func (d *Document) apply(ops []Op, pass int, intervals map[int64][2]int64, strict, keepLength bool) (Applied, error) {
 	var a Applied
 	var valid []Op
 	for _, op := range ops {
@@ -135,7 +145,7 @@ func (d *Document) Apply(ops []Op, pass int, intervals map[int64][2]int64, stric
 			a.Dropped++
 		case "supersede":
 			id := byPosition[op.Line-1].ID
-			if gone[id] {
+			if gone[id] || (keepLength && len([]rune(strings.TrimSpace(op.Text))) > len([]rune(byPosition[op.Line-1].Text))) {
 				a.Skipped++
 				continue
 			}

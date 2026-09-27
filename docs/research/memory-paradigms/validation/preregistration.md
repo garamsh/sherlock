@@ -106,3 +106,8 @@ Each is MiniMax-M2 through the one study proxy (`harness proxy`, ledger `evidenc
 - **Change.** A response's `document_update` calls are read as one, their operations concatenated in order, with the bound of 16 operations applied to the total (`consolidate.go` `parseOps`, `TestParseOps_ReadsSeveralDocumentUpdateCallsAsOne`, and a mutation check). An answer with no `document_update` call is still refused. Nothing else changes.
 - **Passes 1 to 48** are unaffected: each was accepted with exactly one call, and replay reads their recorded operations.
 - **Observed before the change, as preregistered.** The document reached its bound at pass 43. From then on most passes were refused twice and applied partially, and adds past the bound were skipped (`passes-b4-doc16k.jsonl`). The run continues under those rules. Three attempts per pass raise the phase's cost above the 1.3M-token estimate, and the report states the phase's tokens.
+
+### Amendment 2, during D's consolidation, before pass 55 was recorded
+
+- **What happened.** Pass 55's third, partial application still left the document at 16,015 characters. The partial rule skipped adds past the bound, but its supersedes lengthened lines the bound did not guard, so the build stopped.
+- **Change.** When a partial application still exceeds the bound, it is applied once more with every supersede that would lengthen its line skipped (`document.go` `Apply`, `TestApply_PartialPassSkipsSupersedesThatWouldPassTheBound`, and a mutation check). A pass the first partial application fits is applied exactly as before, so passes 1 to 54 replay unchanged.

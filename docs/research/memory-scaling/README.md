@@ -34,7 +34,10 @@ Every measured store so far is about 1M source characters, and batch 4 stores 0.
 
 ## Method
 
-[preregistration.md](preregistration.md) fixed everything below before any ranking. It was committed and pushed as `9c9bd5f`, and the harness as `9fa003c`. Both are based on `dev` at `8218189`.
+[preregistration.md](preregistration.md) fixed everything below before any ranking. It is commit `e7f8e15` (authored 17:32:33 +09:00 and pushed then; the SHA is after a rebase onto `dev` at `bb5bd38`, which keeps author times).
+
+- The harness commit `ceb1fb3` (17:38:34) landed while the first ranking run was still embedding, and before any score existed.
+- Every ranking and score was produced from the code at these commits and the later ones listed in the PR.
 
 - **Replication.** The #856 replication (`../mid-memory-rag/evidence/replication/`): 4,800 messages, 280 primary queries, and the recorded syntheses at batch 4, 8 and 16. Summaries are read as the production store keeps them, redacted and trimmed.
 - **Distractors.** Four recorded batch-4 synthesis streams of other conversations: #874, #885, #888 and #890. They are placed newer than the replication, so the queried memory is the old one. Each arm stores the same distractors at batch 4; only the replication part varies by arm.
@@ -174,7 +177,7 @@ Per family at s0 and s4 (exact, paraphrase, implicit, correction; 70 each):
 
 ## Amendment 1: mid-to-message drill-down
 
-Added at the owner's proposal after the first ranking of every other arm, and preregistered as [Amendment 1](preregistration.md) (`54fb3fd`) before any of its rankings. It is secondary and enters neither Holm family nor the recommendation.
+Added at the owner's proposal after the first ranking of every other arm, and preregistered as [Amendment 1](preregistration.md) (`3f28a5c`, 18:57:14 +09:00) before any of its rankings. It is secondary and enters neither Holm family nor the recommendation.
 
 - **Structure.** Rank B4 mids by cosine and take the top 5. Rank the raw source messages inside them against the query, and deliver messages under the same budget and fill rule, after the 2 newest B4 mids.
   - DR-rel orders the messages by score.

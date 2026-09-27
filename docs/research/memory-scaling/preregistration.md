@@ -127,3 +127,17 @@ Exact two-sided McNemar on the 280 paired primary queries at α = 0.05; paired 9
 
 - No MiniMax call, no OpenAI call and no other paid API. Every summary is recorded; only embeddings and reranking are computed.
 - Both servers run locally on this study's own ports (8130 and 8131), not the shared instance or the #896/#900 proxy.
+
+## Amendment 1: mid-to-message drill-down
+
+Added at the owner's proposal, relayed by the PM, after the first ranking of every other arm and before any ranking of this one. The arm is secondary to the decision rule above: it enters neither Holm family nor the recommendation, and the report sets it beside K.
+
+- **Store.** B4 mids as in B4, plus every raw source message beside them: the replication's 4,800 messages and, at each scale, the distractor streams' messages from the same `corpus.json` files whose mids are already used. A message inside a mid the leak check dropped is never reachable, since only a ranked mid opens its messages.
+- **Ranking.** Rank the B4 mids by cosine and take the top M = 5, the number of similar mids the shipped recall delivers beside its 2 newest. Rank every source message inside those 5 mids by cosine between the raw query and the raw message text, embedded on this study's embedding instance (`tei-901`) in batches of 16, with ties broken newest first.
+- **Two orderings.**
+  - **DR-rel**: the messages by score, highest first.
+  - **DR-new**: the messages grouped by mid, the newer mid first, and by score within a mid.
+- **Delivery.** The fill rule and budget C of §Delivery and budget, unchanged: the 2 newest B4 mids first, then the messages, each once, skipping any that would exceed C, at most 50 tried. A delivered message is rendered as its content and the suffix ` [source:<id>; message text]`.
+- **Endpoint.** A hit when a delivered message's source ID, or a source inside a delivered recency mid, is an evidence source. Reported at every scale on the 280 primary queries, with per-family counts.
+- **Storage.** B4 summaries plus the raw messages held beside them, over source characters, for the replication part and the whole store.
+- **Comparison.** Each ordering against B4 at s0 and s4, exact McNemar with its paired interval, reported without adjustment and without entering the recommendation.

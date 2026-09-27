@@ -3,6 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
+	"maps"
+	"math"
+	"slices"
 
 	"github.com/garamsh/sherlock/docs/research/chained-recall/study"
 	"github.com/garamsh/sherlock/internal/agent"
@@ -25,6 +28,30 @@ type memory struct {
 	// associate is L+A's label: a walk-delivered mid is delivered as
 	// "associated", its text opened by the entity it was reached through.
 	associate bool
+	// gated is L+G's gate (#888): a walk mid that names none of the
+	// query's own entities is delivered only when its walk score reaches
+	// gateScore.
+	gated bool
+}
+
+// gateScore is L+G's threshold on a walk mid's Personalized PageRank
+// score, fixed by readtime/preregistration.md from #885's offline records
+// (readtime/evidence/calibration/gate.json). No finite threshold kept the
+// associated episodes of at most 3 of #885's 60 absent queries while
+// keeping a later hop, so the gate passes only walk mids that name one of
+// the query's own entities.
+var gateScore = math.Inf(1)
+
+// gate keeps the walk mids that name one of the query's own entities, and
+// the others whose walk score reaches gateScore, in the walk's order.
+func (m *memory) gate(linked []agent.ConversationHit, seeds []string, scores map[int64]float64) []agent.ConversationHit {
+	var out []agent.ConversationHit
+	for _, h := range linked {
+		if m.graph.namesAny(h.ID, seeds) || scores[h.ID] >= gateScore {
+			out = append(out, h)
+		}
+	}
+	return out
 }
 
 // associatedLabel opens the text of a mid L+A's walk delivered, so the
@@ -66,7 +93,12 @@ func (m *memory) Search(ctx context.Context, query string, limit int) ([]study.I
 // reached, and which delivered mids came from it, lay outside the similar
 // list, and named no seed.
 func (m *memory) alternate(query string, slots int, seen map[int64]bool, similar []agent.ConversationHit) []study.Item {
-	linked, seeds, steps, via := m.graph.linked(query)
+	linked, seeds, steps, via, scores := m.graph.linked(query)
+	var ungated []study.Item
+	if m.gated {
+		ungated = take(slots, maps.Clone(seen), &list{"historical", similar}, &list{"linked", linked})
+		linked = m.gate(linked, seeds, scores)
+	}
 	items := take(slots, seen, &list{"historical", similar}, &list{"linked", linked})
 	if m.associate {
 		for i, it := range items {
@@ -94,7 +126,25 @@ func (m *memory) alternate(query string, slots int, seen map[int64]bool, similar
 		}
 	}
 	m.trace = map[string]any{"seeds": seeds, "steps": steps, "reached": len(linked), "linked": delivered, "beyond_similar": beyond, "beyond_seeds": far}
+	if m.gated {
+		m.trace["gate"] = m.gateTrace(ungated, seeds, scores, delivered)
+	}
 	return items
+}
+
+// gateTrace records, for L+G's control and for choosing gateScore, every
+// walk mid ungated L would deliver: its walk score, whether it names one of
+// the query's entities, and whether the gate dropped it.
+func (m *memory) gateTrace(ungated []study.Item, seeds []string, scores map[int64]float64, delivered []int64) []map[string]any {
+	out := []map[string]any{}
+	for _, it := range ungated {
+		if it.Kind != "linked" {
+			continue
+		}
+		out = append(out, map[string]any{"id": it.ID, "first": it.SourceFirst, "last": it.SourceLast, "score": scores[it.ID],
+			"names_seed": m.graph.namesAny(it.ID, seeds), "dropped": !slices.Contains(delivered, it.ID)})
+	}
+	return out
 }
 
 // list is a ranked list of mids delivered under one kind.
@@ -143,3 +193,31 @@ func (m *memory) LastTrace() map[string]any { return m.trace }
 func (m *memory) Store() agent.ConversationMemory { return m.store }
 
 func (m *memory) Close() error { return m.store.Close() }
+
+// associating is L-T (#888): recall and memory_search are the shipped
+// ones, and the walk answers only memory_associate, a call the model makes
+// during work.
+type associating struct{ *memory }
+
+func (m associating) Recall(ctx context.Context, task string) ([]study.Item, error) {
+	m.trace = nil
+	return study.ShippedMemory{Conversation: m.store}.Recall(ctx, task)
+}
+
+func (m associating) Search(ctx context.Context, query string, limit int) ([]study.Item, error) {
+	m.trace = nil
+	return study.ShippedMemory{Conversation: m.store}.Search(ctx, query, limit)
+}
+
+// Associate is the walk's ranking of mids for a query the model writes, at
+// most limit, each delivered as "linked".
+func (m associating) Associate(_ context.Context, query string, limit int) ([]study.Item, error) {
+	linked, seeds, steps, _, _ := m.graph.linked(query)
+	items := take(limit, map[int64]bool{}, &list{"linked", linked})
+	delivered := []int64{}
+	for _, it := range items {
+		delivered = append(delivered, it.ID)
+	}
+	m.trace = map[string]any{"seeds": seeds, "steps": steps, "reached": len(linked), "linked": delivered}
+	return items, nil
+}

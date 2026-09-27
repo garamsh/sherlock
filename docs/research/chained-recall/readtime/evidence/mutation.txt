@@ -1,0 +1,23 @@
+FAILS  arms/links/memory.go: L+G's gate
+FAILS  arms/links/memory.go: applying L+G's gate to the walk's list
+FAILS  arms/links/memory.go: L+G's trace of what it dropped
+FAILS  arms/links/walk.go: the walk score L+G's gate reads
+FAILS  arms/links/memory.go: L-T's shipped pre-turn recall
+FAILS  arms/links/memory.go: L-T's shipped memory_search
+FAILS  arms/links/memory.go: L-T's walk behind memory_associate
+FAILS  arms/links/main.go: L-T's memory answering memory_associate
+FAILS  arms/links/main.go: L-T's instruction
+FAILS  arms/links/main.go: L+V's instruction
+FAILS  study/live.go: the live session's offer of memory_associate
+FAILS  study/workspace.go: listing memory_associate to the model
+FAILS  study/workspace.go: refusing an empty memory_associate query
+FAILS  readtime/score.py: the N allowance in L+G's threshold rule
+FAILS  readtime/score.py: inspecting the walk mid that holds the fact
+FAILS  readtime/score.py: the order of the inspect and the first statement
+FAILS  readtime/score.py: leaving out facts a similar mid also holds
+FAILS  readtime/score.py: enforcing L+V's check in scoring
+FAILS  readtime/score.py: L-T's call control
+FAILS  readtime/score.py: ranking by failed guardrails
+FAILS  readtime/score.py: counting memory_associate results as seen
+FAILS  readtime/corpus.py: this corpus's seed
+control: every unmutated test passes

@@ -1,0 +1,21 @@
+{
+  "arm": "L",
+  "build_seconds": 0.201905256,
+  "built": {
+    "stored_chars": 843717,
+    "vectors": 2072,
+    "units": {
+      "entity": 5332,
+      "link": 7321,
+      "mid": 2072
+    },
+    "notes": {
+      "entities_from": "model",
+      "mids_with_entities": 2031,
+      "share_with_entities": 0.9802123552123552
+    }
+  },
+  "setting": "b4-model-g",
+  "source_chars": 1038164,
+  "stored_chars_per_source": 0.8127010761305535
+}

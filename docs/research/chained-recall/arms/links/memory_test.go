@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"math"
 	"os"
 	"path/filepath"
 	"strings"
@@ -195,4 +196,95 @@ func TestRecall_LabelsWalkDeliveredMidsAsAssociatedInLPlusA(t *testing.T) {
 	assert.Equal(t, 2, labelled, "memory_search labels the walk's mids too")
 	assert.Equal(t, Abstention, New().(study.SettingInstructor).InstructionsFor("b4-model-a"))
 	assert.Empty(t, New().(study.SettingInstructor).InstructionsFor("b4-model"), "the control: L has no instruction")
+}
+
+// openModel opens a setting over the shared store with the chain's
+// entities written as the synthesis call would write them.
+func openModel(t *testing.T, env *study.Env, setting string) study.Memory {
+	t.Helper()
+	ctx := context.Background()
+	dir := filepath.Join(env.Work, "builds", "L", setting)
+	require.NoError(t, study.CopyDir(filepath.Join(env.Work, "shared", "b4"), dir))
+	require.NoError(t, writeEntities(ctx, filepath.Join(dir, "memory.db"), map[int64][]string{
+		1: {"rodend", "gebind components"}, 2: {"gebind components", "mateo deatreal"}, 3: {"mateo deatreal"},
+	}))
+	m, err := New().Open(ctx, env, setting, dir)
+	require.NoError(t, err)
+	t.Cleanup(func() { m.Close() })
+	return m
+}
+
+func TestRecall_GateDropsWalkMidsNamingNoQueryEntityInLPlusG(t *testing.T) {
+	env := sharedStore(t)
+	ctx := context.Background()
+	ungated, err := openModel(t, env, "b4-model").Recall(ctx, chainQuery)
+	require.NoError(t, err)
+	assert.Contains(t, itemIDs(ungated), int64(2), "the control: L delivers the walk's mids beyond the seed")
+	g := openModel(t, env, "b4-model-g").(*memory)
+	items, err := g.Recall(ctx, chainQuery)
+	require.NoError(t, err)
+	assert.NotContains(t, itemIDs(items), int64(2))
+	assert.NotContains(t, itemIDs(items), int64(3))
+	assert.Len(t, items, len(ungated), "a dropped walk mid gives its slot back to similarity")
+	gate := g.LastTrace()["gate"].([]map[string]any)
+	dropped := map[int64]bool{}
+	for _, w := range gate {
+		dropped[w["id"].(int64)] = w["dropped"].(bool)
+		assert.Contains(t, w, "score")
+	}
+	assert.Equal(t, map[int64]bool{2: true, 3: true}, dropped, "the trace names what ungated L delivers and what the gate dropped")
+	assert.NotContains(t, openModel(t, env, "b4-model").(*memory).LastTrace(), "gate", "the control: L records no gate")
+}
+
+func TestGate_PassesAMidNamingASeedOrScoringAtTheThreshold(t *testing.T) {
+	g := openModel(t, sharedStore(t), "b4-model-g").(*memory)
+	linked := []agent.ConversationHit{{ID: 1}, {ID: 2}, {ID: 3}}
+	below := math.Nextafter(gateScore, 0)
+	kept := g.gate(linked, []string{"rodend"}, map[int64]float64{1: 0, 2: below, 3: gateScore})
+	assert.Equal(t, []int64{1, 3}, []int64{kept[0].ID, kept[1].ID}, "mid 1 names the seed; mid 3 reaches the threshold")
+	assert.Len(t, kept, 2, "mid 2 names no seed and scores below the threshold")
+}
+
+func TestLT_RecallsAsShippedAndWalksOnlyOnCall(t *testing.T) {
+	env := sharedStore(t)
+	ctx := context.Background()
+	m := openModel(t, env, "b4-model-t")
+	a, ok := m.(study.Associator)
+	require.True(t, ok, "L-T answers memory_associate")
+	_, ok = openModel(t, env, "b4-model").(study.Associator)
+	assert.False(t, ok, "the control: L does not")
+	items, err := m.Recall(ctx, chainQuery)
+	require.NoError(t, err)
+	store := m.Store().(*sqlite.Store)
+	shippedItems, err := study.ShippedMemory{Conversation: store}.Recall(ctx, chainQuery)
+	require.NoError(t, err)
+	assert.Equal(t, shippedItems, items, "pre-turn recall is S's")
+	hits, err := m.Search(ctx, chainQuery, 5)
+	require.NoError(t, err)
+	for _, it := range hits {
+		assert.Equal(t, "historical", it.Kind, "memory_search is S's")
+	}
+	walked, err := a.Associate(ctx, "Rodend", 5)
+	require.NoError(t, err)
+	assert.Equal(t, []int64{1, 2, 3}, itemIDs(walked))
+	for _, it := range walked {
+		assert.Equal(t, "linked", it.Kind)
+	}
+	assert.Len(t, must(a.Associate(ctx, "Rodend", 2)), 2, "the call's limit bounds it")
+	assert.Empty(t, must(a.Associate(ctx, "the garden", 5)), "the control: a query naming no stored entity reaches nothing")
+}
+
+func must(items []study.Item, err error) []study.Item {
+	if err != nil {
+		panic(err)
+	}
+	return items
+}
+
+func TestInstructionsFor_GivesEachVariantItsOwnSentence(t *testing.T) {
+	si := New().(study.SettingInstructor)
+	assert.Equal(t, OnCall, si.InstructionsFor("b4-model-t"))
+	assert.Equal(t, Verify, si.InstructionsFor("b4-model-v"))
+	assert.Empty(t, si.InstructionsFor("b4-model-g"), "L+G changes only what recall delivers")
+	assert.Empty(t, si.InstructionsFor("b4-model"), "the control: L has none")
 }

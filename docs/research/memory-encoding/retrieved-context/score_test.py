@@ -140,6 +140,14 @@ class Links(unittest.TestCase):
         self.assertEqual(got["C2"], {"pairs": 3, "by_message": 1, "by_mid": 1, "either": 2}, "hops listed in either order")
         self.assertEqual(got["KU"]["either"], 1)
 
+    def test_a_chain_counts_only_when_every_pair_is_linked(self):
+        hop = lambda s: {"source": s}
+        c = {"chains": [{"id": "C3-1", "family": "C3", "hops": [hop(5001), hop(7001), hop(9001)]},
+                        {"id": "C3-2", "family": "C3", "hops": [hop(5101), hop(7101), hop(9101)]}]}
+        recorded = {7001: rec(7001, [5001], []), 9001: rec(9001, [], [(9, 7001, 7004)]),
+                    7101: rec(7101, [5101], []), 9101: rec(9101, [], [])}
+        self.assertEqual(S.chains_linked(c, recorded)["C3"], {"n": 2, "every_pair": 1})
+
 
 def base_rows(n, reached):
     return {f"C2-{i}": {"family": "C2", "reached": i < reached} for i in range(n)}

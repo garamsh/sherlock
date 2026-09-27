@@ -54,6 +54,7 @@ MUTATIONS = [
     ("score.py", '    return any(states(it["text"], hop["key"]) for it in items)\n', '    return any(states(it["text"], hop["key"].split()[-1]) for it in items)\n', SCORE, "the carried-reach matcher's both entities"),
     ("score.py", '    return any(it["first"] > change and states(it["text"], guard["obsolete"]) for it in items)\n', '    return any(states(it["text"], guard["obsolete"]) for it in items)\n', SCORE, "the stale rule's mids after the correction"),
     ("score.py", '    return any(it["first"] > change and states(it["text"], guard["obsolete"]) for it in items)\n', '    return False\n', SCORE, "the stale rule"),
+    ("score.py", "        out[ch[\"family\"]][\"every_pair\"] += all(", "        out[ch[\"family\"]][\"every_pair\"] += any(", SCORE, "a chain linked only when every pair is"),
     ("score.py", 'return prim["arm"] - prim["S"] >= MARGIN * prim["n"] and ', "return ", SCORE, "the admission margin"),
     ("score.py", 'a["valid"] = a["significant"] and a["guardrails_hold"] and a["controls_passed"]', 'a["valid"] = a["significant"] and a["guardrails_hold"]', SCORE, "voiding an arm whose control failed"),
     ("score.py", "next((n for n in ORDER if", "next((n for n in reversed(ORDER) if", SCORE, "RW-key named before RW"),

@@ -1,0 +1,65 @@
+{
+ "batches": 1032,
+ "links": {
+  "C2": {
+   "pairs": 50,
+   "by_message": 2,
+   "by_mid": 5,
+   "either": 6
+  },
+  "C3": {
+   "pairs": 100,
+   "by_message": 14,
+   "by_mid": 16,
+   "either": 22
+  },
+  "IC2": {
+   "pairs": 25,
+   "by_message": 0,
+   "by_mid": 1,
+   "either": 1
+  },
+  "IC3": {
+   "pairs": 50,
+   "by_message": 0,
+   "by_mid": 0,
+   "either": 0
+  },
+  "SC": {
+   "pairs": 50,
+   "by_message": 0,
+   "by_mid": 0,
+   "either": 0
+  },
+  "KU": {
+   "pairs": 30,
+   "by_message": 30,
+   "by_mid": 30,
+   "either": 30
+  },
+  "NC": {
+   "pairs": 30,
+   "by_message": 0,
+   "by_mid": 0,
+   "either": 0
+  }
+ },
+ "chains": {
+  "C2": {
+   "n": 50,
+   "every_pair": 6
+  },
+  "C3": {
+   "n": 50,
+   "every_pair": 1
+  },
+  "IC2": {
+   "n": 25,
+   "every_pair": 1
+  },
+  "IC3": {
+   "n": 25,
+   "every_pair": 0
+  }
+ }
+}

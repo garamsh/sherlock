@@ -281,12 +281,33 @@ def links(c, recorded):
     return out
 
 
+def linked(r, earlier):
+    """The search that wrote r found the source earlier, as a message or
+    through a mid covering it."""
+    return earlier in r["messages"] or any(m["first"] <= earlier <= m["last"] for m in r["mids"])
+
+
+def chains_linked(c, recorded):
+    """Per chain family, the chains whose every pair of neighbouring hops is
+    linked: the most chains a mid written with retrieved context can carry,
+    so the ceiling on carried reach through writing alone."""
+    out = {f: {"n": 0, "every_pair": 0} for f in CHAINS}
+    for ch in c["chains"]:
+        if ch["family"] not in CHAINS:
+            continue
+        pairs = [(max(a["source"], b["source"]), min(a["source"], b["source"])) for a, b in zip(ch["hops"], ch["hops"][1:])]
+        out[ch["family"]]["n"] += 1
+        out[ch["family"]]["every_pair"] += all(linked(recorded[4 * ((later - 1) // 4) + 1], earlier) for later, earlier in pairs)
+    return out
+
+
 def screen():
     c = corpus()
     screened = {r["first"]: r for r in load_jsonl(HERE / "arms" / "retrieved" / "evidence" / "screen-b4.jsonl")}
-    out = {"batches": len(screened), "links": links(c, screened)}
+    out = {"batches": len(screened), "links": links(c, screened), "chains": chains_linked(c, screened)}
     (HERE / "evidence" / "screen.json").write_text(json.dumps(out, indent=1) + "\n")
     print(json.dumps(out["links"]))
+    print(json.dumps(out["chains"]))
 
 
 # ---- offline ---------------------------------------------------------------------

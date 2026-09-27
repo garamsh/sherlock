@@ -1,0 +1,2736 @@
+{
+ "store": "shared b4 at the corpus selection",
+ "candidates": 5,
+ "families": {
+  "C2": {
+   "pairs": 50,
+   "given": 8
+  },
+  "C3": {
+   "pairs": 100,
+   "given": 17
+  },
+  "IC2": {
+   "pairs": 25,
+   "given": 1
+  },
+  "IC3": {
+   "pairs": 50,
+   "given": 0
+  }
+ },
+ "pooled": {
+  "pairs": 225,
+  "given": 26
+ },
+ "within": {
+  "5": 26,
+  "10": 49,
+  "20": 91,
+  "50": 154,
+  "100": 194
+ },
+ "median_rank": 28,
+ "pairs": [
+  {
+   "chain": "C2-001",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1416,
+   "later_mid": 1805,
+   "rank": 19,
+   "candidates": 1804
+  },
+  {
+   "chain": "C2-002",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1316,
+   "later_mid": 2008,
+   "rank": 42,
+   "candidates": 2007
+  },
+  {
+   "chain": "C2-003",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1371,
+   "later_mid": 2059,
+   "rank": 268,
+   "candidates": 2058
+  },
+  {
+   "chain": "C2-004",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1583,
+   "later_mid": 2182,
+   "rank": 48,
+   "candidates": 2181
+  },
+  {
+   "chain": "C2-005",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1536,
+   "later_mid": 1988,
+   "rank": 289,
+   "candidates": 1987
+  },
+  {
+   "chain": "C2-006",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1386,
+   "later_mid": 2042,
+   "rank": 46,
+   "candidates": 2041
+  },
+  {
+   "chain": "C2-007",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1476,
+   "later_mid": 2138,
+   "rank": 37,
+   "candidates": 2137
+  },
+  {
+   "chain": "C2-008",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1547,
+   "later_mid": 2136,
+   "rank": 48,
+   "candidates": 2135
+  },
+  {
+   "chain": "C2-009",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1532,
+   "later_mid": 1987,
+   "rank": 15,
+   "candidates": 1986
+  },
+  {
+   "chain": "C2-011",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1475,
+   "later_mid": 1910,
+   "rank": 4,
+   "candidates": 1909
+  },
+  {
+   "chain": "C2-012",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1571,
+   "later_mid": 2208,
+   "rank": 116,
+   "candidates": 2207
+  },
+  {
+   "chain": "C2-013",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1407,
+   "later_mid": 2190,
+   "rank": 56,
+   "candidates": 2189
+  },
+  {
+   "chain": "C2-014",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1585,
+   "later_mid": 2181,
+   "rank": 88,
+   "candidates": 2180
+  },
+  {
+   "chain": "C2-015",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1327,
+   "later_mid": 2000,
+   "rank": 2,
+   "candidates": 1999
+  },
+  {
+   "chain": "C2-017",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1369,
+   "later_mid": 1905,
+   "rank": 35,
+   "candidates": 1904
+  },
+  {
+   "chain": "C2-018",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1556,
+   "later_mid": 2177,
+   "rank": 51,
+   "candidates": 2176
+  },
+  {
+   "chain": "C2-019",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1325,
+   "later_mid": 1827,
+   "rank": 23,
+   "candidates": 1826
+  },
+  {
+   "chain": "C2-020",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1537,
+   "later_mid": 2157,
+   "rank": 26,
+   "candidates": 2156
+  },
+  {
+   "chain": "C2-021",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1448,
+   "later_mid": 2087,
+   "rank": 1,
+   "candidates": 2086
+  },
+  {
+   "chain": "C2-022",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1450,
+   "later_mid": 1859,
+   "rank": 22,
+   "candidates": 1858
+  },
+  {
+   "chain": "C2-023",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1394,
+   "later_mid": 1993,
+   "rank": 10,
+   "candidates": 1992
+  },
+  {
+   "chain": "C2-024",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1569,
+   "later_mid": 2156,
+   "rank": 408,
+   "candidates": 2155
+  },
+  {
+   "chain": "C2-026",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1337,
+   "later_mid": 2013,
+   "rank": 24,
+   "candidates": 2012
+  },
+  {
+   "chain": "C2-027",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1494,
+   "later_mid": 1948,
+   "rank": 8,
+   "candidates": 1947
+  },
+  {
+   "chain": "C2-029",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1322,
+   "later_mid": 1822,
+   "rank": 2,
+   "candidates": 1821
+  },
+  {
+   "chain": "C2-030",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1351,
+   "later_mid": 1778,
+   "rank": 48,
+   "candidates": 1777
+  },
+  {
+   "chain": "C2-031",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1391,
+   "later_mid": 1756,
+   "rank": 123,
+   "candidates": 1755
+  },
+  {
+   "chain": "C2-032",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1432,
+   "later_mid": 1851,
+   "rank": 13,
+   "candidates": 1850
+  },
+  {
+   "chain": "C2-033",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1511,
+   "later_mid": 1944,
+   "rank": 5,
+   "candidates": 1943
+  },
+  {
+   "chain": "C2-035",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1444,
+   "later_mid": 2123,
+   "rank": 37,
+   "candidates": 2122
+  },
+  {
+   "chain": "C2-036",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1492,
+   "later_mid": 1925,
+   "rank": 51,
+   "candidates": 1924
+  },
+  {
+   "chain": "C2-037",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1491,
+   "later_mid": 1945,
+   "rank": 20,
+   "candidates": 1944
+  },
+  {
+   "chain": "C2-038",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1439,
+   "later_mid": 1918,
+   "rank": 29,
+   "candidates": 1917
+  },
+  {
+   "chain": "C2-039",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1474,
+   "later_mid": 1961,
+   "rank": 5,
+   "candidates": 1960
+  },
+  {
+   "chain": "C2-040",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1496,
+   "later_mid": 2129,
+   "rank": 62,
+   "candidates": 2128
+  },
+  {
+   "chain": "C2-041",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1310,
+   "later_mid": 1626,
+   "rank": 13,
+   "candidates": 1625
+  },
+  {
+   "chain": "C2-042",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1332,
+   "later_mid": 1732,
+   "rank": 176,
+   "candidates": 1731
+  },
+  {
+   "chain": "C2-043",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1321,
+   "later_mid": 1977,
+   "rank": 28,
+   "candidates": 1976
+  },
+  {
+   "chain": "C2-044",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1488,
+   "later_mid": 2057,
+   "rank": 30,
+   "candidates": 2056
+  },
+  {
+   "chain": "C2-045",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1566,
+   "later_mid": 2139,
+   "rank": 3,
+   "candidates": 2138
+  },
+  {
+   "chain": "C2-046",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1374,
+   "later_mid": 2122,
+   "rank": 10,
+   "candidates": 2121
+  },
+  {
+   "chain": "C2-047",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1456,
+   "later_mid": 1938,
+   "rank": 11,
+   "candidates": 1937
+  },
+  {
+   "chain": "C2-048",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1414,
+   "later_mid": 1853,
+   "rank": 481,
+   "candidates": 1852
+  },
+  {
+   "chain": "C2-049",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1364,
+   "later_mid": 1872,
+   "rank": 288,
+   "candidates": 1871
+  },
+  {
+   "chain": "C2-050",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1307,
+   "later_mid": 1895,
+   "rank": 43,
+   "candidates": 1894
+  },
+  {
+   "chain": "C2-053",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1529,
+   "later_mid": 2082,
+   "rank": 529,
+   "candidates": 2081
+  },
+  {
+   "chain": "C2-054",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1500,
+   "later_mid": 2186,
+   "rank": 341,
+   "candidates": 2185
+  },
+  {
+   "chain": "C2-056",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1340,
+   "later_mid": 2117,
+   "rank": 32,
+   "candidates": 2116
+  },
+  {
+   "chain": "C2-057",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1318,
+   "later_mid": 1741,
+   "rank": 5,
+   "candidates": 1740
+  },
+  {
+   "chain": "C2-058",
+   "family": "C2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1360,
+   "later_mid": 1689,
+   "rank": 19,
+   "candidates": 1688
+  },
+  {
+   "chain": "C3-001",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1382,
+   "later_mid": 1857,
+   "rank": 11,
+   "candidates": 1856
+  },
+  {
+   "chain": "C3-001",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1219,
+   "later_mid": 1857,
+   "rank": 9,
+   "candidates": 1856
+  },
+  {
+   "chain": "C3-002",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1282,
+   "later_mid": 1534,
+   "rank": 61,
+   "candidates": 1533
+  },
+  {
+   "chain": "C3-002",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1282,
+   "later_mid": 2160,
+   "rank": 185,
+   "candidates": 2159
+  },
+  {
+   "chain": "C3-003",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1225,
+   "later_mid": 2194,
+   "rank": 10,
+   "candidates": 2193
+  },
+  {
+   "chain": "C3-003",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1521,
+   "later_mid": 2194,
+   "rank": 35,
+   "candidates": 2193
+  },
+  {
+   "chain": "C3-004",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1285,
+   "later_mid": 1516,
+   "rank": 92,
+   "candidates": 1515
+  },
+  {
+   "chain": "C3-004",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1516,
+   "later_mid": 1952,
+   "rank": 35,
+   "candidates": 1951
+  },
+  {
+   "chain": "C3-005",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1277,
+   "later_mid": 2041,
+   "rank": 4,
+   "candidates": 2040
+  },
+  {
+   "chain": "C3-005",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1277,
+   "later_mid": 1457,
+   "rank": 50,
+   "candidates": 1456
+  },
+  {
+   "chain": "C3-007",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1224,
+   "later_mid": 1759,
+   "rank": 95,
+   "candidates": 1758
+  },
+  {
+   "chain": "C3-007",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1224,
+   "later_mid": 1383,
+   "rank": 2,
+   "candidates": 1382
+  },
+  {
+   "chain": "C3-008",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1300,
+   "later_mid": 2201,
+   "rank": 26,
+   "candidates": 2200
+  },
+  {
+   "chain": "C3-008",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1586,
+   "later_mid": 2201,
+   "rank": 21,
+   "candidates": 2200
+  },
+  {
+   "chain": "C3-009",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1256,
+   "later_mid": 1855,
+   "rank": 9,
+   "candidates": 1854
+  },
+  {
+   "chain": "C3-009",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1256,
+   "later_mid": 1433,
+   "rank": 1,
+   "candidates": 1432
+  },
+  {
+   "chain": "C3-011",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1587,
+   "later_mid": 2174,
+   "rank": 2,
+   "candidates": 2173
+  },
+  {
+   "chain": "C3-011",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1299,
+   "later_mid": 1587,
+   "rank": 17,
+   "candidates": 1586
+  },
+  {
+   "chain": "C3-012",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1205,
+   "later_mid": 1818,
+   "rank": 1,
+   "candidates": 1817
+  },
+  {
+   "chain": "C3-012",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1205,
+   "later_mid": 1377,
+   "rank": 10,
+   "candidates": 1376
+  },
+  {
+   "chain": "C3-013",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1233,
+   "later_mid": 1760,
+   "rank": 12,
+   "candidates": 1759
+  },
+  {
+   "chain": "C3-013",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1233,
+   "later_mid": 1399,
+   "rank": 7,
+   "candidates": 1398
+  },
+  {
+   "chain": "C3-014",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1345,
+   "later_mid": 1660,
+   "rank": 6,
+   "candidates": 1659
+  },
+  {
+   "chain": "C3-014",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1216,
+   "later_mid": 1660,
+   "rank": 12,
+   "candidates": 1659
+  },
+  {
+   "chain": "C3-015",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1213,
+   "later_mid": 1499,
+   "rank": 8,
+   "candidates": 1498
+  },
+  {
+   "chain": "C3-015",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1213,
+   "later_mid": 1919,
+   "rank": 4,
+   "candidates": 1918
+  },
+  {
+   "chain": "C3-017",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1262,
+   "later_mid": 2206,
+   "rank": 16,
+   "candidates": 2205
+  },
+  {
+   "chain": "C3-017",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1262,
+   "later_mid": 1436,
+   "rank": 72,
+   "candidates": 1435
+  },
+  {
+   "chain": "C3-018",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1245,
+   "later_mid": 2064,
+   "rank": 15,
+   "candidates": 2063
+  },
+  {
+   "chain": "C3-018",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1442,
+   "later_mid": 2064,
+   "rank": 55,
+   "candidates": 2063
+  },
+  {
+   "chain": "C3-019",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1259,
+   "later_mid": 2096,
+   "rank": 10,
+   "candidates": 2095
+  },
+  {
+   "chain": "C3-019",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1259,
+   "later_mid": 1470,
+   "rank": 5,
+   "candidates": 1469
+  },
+  {
+   "chain": "C3-021",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1230,
+   "later_mid": 1471,
+   "rank": 41,
+   "candidates": 1470
+  },
+  {
+   "chain": "C3-021",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1471,
+   "later_mid": 1834,
+   "rank": 1,
+   "candidates": 1833
+  },
+  {
+   "chain": "C3-022",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1203,
+   "later_mid": 1731,
+   "rank": 505,
+   "candidates": 1730
+  },
+  {
+   "chain": "C3-022",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1203,
+   "later_mid": 1415,
+   "rank": 12,
+   "candidates": 1414
+  },
+  {
+   "chain": "C3-023",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1445,
+   "later_mid": 1832,
+   "rank": 4,
+   "candidates": 1831
+  },
+  {
+   "chain": "C3-023",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1222,
+   "later_mid": 1832,
+   "rank": 16,
+   "candidates": 1831
+  },
+  {
+   "chain": "C3-024",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1279,
+   "later_mid": 1531,
+   "rank": 9,
+   "candidates": 1530
+  },
+  {
+   "chain": "C3-024",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1279,
+   "later_mid": 2211,
+   "rank": 51,
+   "candidates": 2210
+  },
+  {
+   "chain": "C3-025",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1207,
+   "later_mid": 2158,
+   "rank": 18,
+   "candidates": 2157
+  },
+  {
+   "chain": "C3-025",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1207,
+   "later_mid": 1348,
+   "rank": 4,
+   "candidates": 1347
+  },
+  {
+   "chain": "C3-026",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1522,
+   "later_mid": 2147,
+   "rank": 28,
+   "candidates": 2146
+  },
+  {
+   "chain": "C3-026",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1235,
+   "later_mid": 2147,
+   "rank": 29,
+   "candidates": 2146
+  },
+  {
+   "chain": "C3-027",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1229,
+   "later_mid": 2209,
+   "rank": 11,
+   "candidates": 2208
+  },
+  {
+   "chain": "C3-027",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1229,
+   "later_mid": 1518,
+   "rank": 2,
+   "candidates": 1517
+  },
+  {
+   "chain": "C3-029",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1208,
+   "later_mid": 1884,
+   "rank": 1,
+   "candidates": 1883
+  },
+  {
+   "chain": "C3-029",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1208,
+   "later_mid": 1449,
+   "rank": 23,
+   "candidates": 1448
+  },
+  {
+   "chain": "C3-030",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1400,
+   "later_mid": 1934,
+   "rank": 10,
+   "candidates": 1933
+  },
+  {
+   "chain": "C3-030",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1214,
+   "later_mid": 1400,
+   "rank": 66,
+   "candidates": 1399
+  },
+  {
+   "chain": "C3-031",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1281,
+   "later_mid": 2089,
+   "rank": 53,
+   "candidates": 2088
+  },
+  {
+   "chain": "C3-031",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1557,
+   "later_mid": 2089,
+   "rank": 358,
+   "candidates": 2088
+  },
+  {
+   "chain": "C3-032",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1420,
+   "later_mid": 1854,
+   "rank": 16,
+   "candidates": 1853
+  },
+  {
+   "chain": "C3-032",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1263,
+   "later_mid": 1854,
+   "rank": 11,
+   "candidates": 1853
+  },
+  {
+   "chain": "C3-033",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1284,
+   "later_mid": 2105,
+   "rank": 9,
+   "candidates": 2104
+  },
+  {
+   "chain": "C3-033",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1284,
+   "later_mid": 1517,
+   "rank": 19,
+   "candidates": 1516
+  },
+  {
+   "chain": "C3-034",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1244,
+   "later_mid": 1365,
+   "rank": 28,
+   "candidates": 1364
+  },
+  {
+   "chain": "C3-034",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1365,
+   "later_mid": 1842,
+   "rank": 39,
+   "candidates": 1841
+  },
+  {
+   "chain": "C3-035",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1552,
+   "later_mid": 2022,
+   "rank": 55,
+   "candidates": 2021
+  },
+  {
+   "chain": "C3-035",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1210,
+   "later_mid": 2022,
+   "rank": 18,
+   "candidates": 2021
+  },
+  {
+   "chain": "C3-036",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1550,
+   "later_mid": 2103,
+   "rank": 7,
+   "candidates": 2102
+  },
+  {
+   "chain": "C3-036",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1227,
+   "later_mid": 1550,
+   "rank": 263,
+   "candidates": 1549
+  },
+  {
+   "chain": "C3-037",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1543,
+   "later_mid": 2014,
+   "rank": 9,
+   "candidates": 2013
+  },
+  {
+   "chain": "C3-037",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1283,
+   "later_mid": 1543,
+   "rank": 59,
+   "candidates": 1542
+  },
+  {
+   "chain": "C3-038",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1238,
+   "later_mid": 1582,
+   "rank": 11,
+   "candidates": 1581
+  },
+  {
+   "chain": "C3-038",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1582,
+   "later_mid": 2214,
+   "rank": 59,
+   "candidates": 2213
+  },
+  {
+   "chain": "C3-039",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1237,
+   "later_mid": 1373,
+   "rank": 8,
+   "candidates": 1372
+  },
+  {
+   "chain": "C3-039",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1237,
+   "later_mid": 2128,
+   "rank": 37,
+   "candidates": 2127
+  },
+  {
+   "chain": "C3-041",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1495,
+   "later_mid": 1949,
+   "rank": 11,
+   "candidates": 1948
+  },
+  {
+   "chain": "C3-041",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1248,
+   "later_mid": 1949,
+   "rank": 22,
+   "candidates": 1948
+  },
+  {
+   "chain": "C3-042",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1375,
+   "later_mid": 1909,
+   "rank": 19,
+   "candidates": 1908
+  },
+  {
+   "chain": "C3-042",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1221,
+   "later_mid": 1909,
+   "rank": 64,
+   "candidates": 1908
+  },
+  {
+   "chain": "C3-043",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1209,
+   "later_mid": 1754,
+   "rank": 4,
+   "candidates": 1753
+  },
+  {
+   "chain": "C3-043",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1314,
+   "later_mid": 1754,
+   "rank": 16,
+   "candidates": 1753
+  },
+  {
+   "chain": "C3-045",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1438,
+   "later_mid": 2121,
+   "rank": 101,
+   "candidates": 2120
+  },
+  {
+   "chain": "C3-045",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1246,
+   "later_mid": 2121,
+   "rank": 22,
+   "candidates": 2120
+  },
+  {
+   "chain": "C3-046",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1453,
+   "later_mid": 2104,
+   "rank": 171,
+   "candidates": 2103
+  },
+  {
+   "chain": "C3-046",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1253,
+   "later_mid": 2104,
+   "rank": 28,
+   "candidates": 2103
+  },
+  {
+   "chain": "C3-047",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1483,
+   "later_mid": 1897,
+   "rank": 1,
+   "candidates": 1896
+  },
+  {
+   "chain": "C3-047",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1276,
+   "later_mid": 1483,
+   "rank": 14,
+   "candidates": 1482
+  },
+  {
+   "chain": "C3-048",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1217,
+   "later_mid": 1440,
+   "rank": 7,
+   "candidates": 1439
+  },
+  {
+   "chain": "C3-048",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1217,
+   "later_mid": 1989,
+   "rank": 377,
+   "candidates": 1988
+  },
+  {
+   "chain": "C3-049",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1218,
+   "later_mid": 1352,
+   "rank": 1,
+   "candidates": 1351
+  },
+  {
+   "chain": "C3-049",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1352,
+   "later_mid": 1675,
+   "rank": 11,
+   "candidates": 1674
+  },
+  {
+   "chain": "C3-050",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1243,
+   "later_mid": 2034,
+   "rank": 21,
+   "candidates": 2033
+  },
+  {
+   "chain": "C3-050",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1551,
+   "later_mid": 2034,
+   "rank": 30,
+   "candidates": 2033
+  },
+  {
+   "chain": "C3-051",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1231,
+   "later_mid": 1960,
+   "rank": 8,
+   "candidates": 1959
+  },
+  {
+   "chain": "C3-051",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1479,
+   "later_mid": 1960,
+   "rank": 3,
+   "candidates": 1959
+  },
+  {
+   "chain": "C3-052",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1419,
+   "later_mid": 2066,
+   "rank": 11,
+   "candidates": 2065
+  },
+  {
+   "chain": "C3-052",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1258,
+   "later_mid": 1419,
+   "rank": 84,
+   "candidates": 1418
+  },
+  {
+   "chain": "C3-053",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1524,
+   "later_mid": 2047,
+   "rank": 27,
+   "candidates": 2046
+  },
+  {
+   "chain": "C3-053",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1288,
+   "later_mid": 2047,
+   "rank": 106,
+   "candidates": 2046
+  },
+  {
+   "chain": "C3-054",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1573,
+   "later_mid": 2124,
+   "rank": 6,
+   "candidates": 2123
+  },
+  {
+   "chain": "C3-054",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1250,
+   "later_mid": 1573,
+   "rank": 155,
+   "candidates": 1572
+  },
+  {
+   "chain": "C3-055",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1242,
+   "later_mid": 1515,
+   "rank": 62,
+   "candidates": 1514
+  },
+  {
+   "chain": "C3-055",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1242,
+   "later_mid": 1970,
+   "rank": 25,
+   "candidates": 1969
+  },
+  {
+   "chain": "C3-056",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1298,
+   "later_mid": 2135,
+   "rank": 30,
+   "candidates": 2134
+  },
+  {
+   "chain": "C3-056",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1579,
+   "later_mid": 2135,
+   "rank": 20,
+   "candidates": 2134
+  },
+  {
+   "chain": "C3-057",
+   "family": "C3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1212,
+   "later_mid": 1803,
+   "rank": 103,
+   "candidates": 1802
+  },
+  {
+   "chain": "C3-057",
+   "family": "C3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1349,
+   "later_mid": 1803,
+   "rank": 2,
+   "candidates": 1802
+  },
+  {
+   "chain": "IC2-001",
+   "family": "IC2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1347,
+   "later_mid": 2197,
+   "rank": 64,
+   "candidates": 2196
+  },
+  {
+   "chain": "IC2-002",
+   "family": "IC2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1355,
+   "later_mid": 1924,
+   "rank": 79,
+   "candidates": 1923
+  },
+  {
+   "chain": "IC2-003",
+   "family": "IC2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1331,
+   "later_mid": 1824,
+   "rank": 51,
+   "candidates": 1823
+  },
+  {
+   "chain": "IC2-004",
+   "family": "IC2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1343,
+   "later_mid": 1990,
+   "rank": 21,
+   "candidates": 1989
+  },
+  {
+   "chain": "IC2-005",
+   "family": "IC2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1358,
+   "later_mid": 1747,
+   "rank": 4,
+   "candidates": 1746
+  },
+  {
+   "chain": "IC2-006",
+   "family": "IC2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1421,
+   "later_mid": 2112,
+   "rank": 13,
+   "candidates": 2111
+  },
+  {
+   "chain": "IC2-007",
+   "family": "IC2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1303,
+   "later_mid": 1762,
+   "rank": 50,
+   "candidates": 1761
+  },
+  {
+   "chain": "IC2-008",
+   "family": "IC2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1392,
+   "later_mid": 1856,
+   "rank": 183,
+   "candidates": 1855
+  },
+  {
+   "chain": "IC2-009",
+   "family": "IC2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1356,
+   "later_mid": 2164,
+   "rank": 62,
+   "candidates": 2163
+  },
+  {
+   "chain": "IC2-010",
+   "family": "IC2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1363,
+   "later_mid": 1815,
+   "rank": 43,
+   "candidates": 1814
+  },
+  {
+   "chain": "IC2-011",
+   "family": "IC2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1497,
+   "later_mid": 1971,
+   "rank": 60,
+   "candidates": 1970
+  },
+  {
+   "chain": "IC2-012",
+   "family": "IC2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1458,
+   "later_mid": 1817,
+   "rank": 51,
+   "candidates": 1816
+  },
+  {
+   "chain": "IC2-013",
+   "family": "IC2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1302,
+   "later_mid": 1780,
+   "rank": 45,
+   "candidates": 1779
+  },
+  {
+   "chain": "IC2-014",
+   "family": "IC2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1429,
+   "later_mid": 1767,
+   "rank": 42,
+   "candidates": 1766
+  },
+  {
+   "chain": "IC2-015",
+   "family": "IC2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1428,
+   "later_mid": 1899,
+   "rank": 92,
+   "candidates": 1898
+  },
+  {
+   "chain": "IC2-016",
+   "family": "IC2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1460,
+   "later_mid": 2215,
+   "rank": 84,
+   "candidates": 2214
+  },
+  {
+   "chain": "IC2-017",
+   "family": "IC2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1376,
+   "later_mid": 1698,
+   "rank": 39,
+   "candidates": 1697
+  },
+  {
+   "chain": "IC2-018",
+   "family": "IC2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1353,
+   "later_mid": 1774,
+   "rank": 37,
+   "candidates": 1773
+  },
+  {
+   "chain": "IC2-019",
+   "family": "IC2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1336,
+   "later_mid": 2148,
+   "rank": 66,
+   "candidates": 2147
+  },
+  {
+   "chain": "IC2-020",
+   "family": "IC2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1323,
+   "later_mid": 1654,
+   "rank": 16,
+   "candidates": 1653
+  },
+  {
+   "chain": "IC2-021",
+   "family": "IC2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1370,
+   "later_mid": 2184,
+   "rank": 39,
+   "candidates": 2183
+  },
+  {
+   "chain": "IC2-022",
+   "family": "IC2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1387,
+   "later_mid": 2111,
+   "rank": 117,
+   "candidates": 2110
+  },
+  {
+   "chain": "IC2-023",
+   "family": "IC2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1406,
+   "later_mid": 2019,
+   "rank": 23,
+   "candidates": 2018
+  },
+  {
+   "chain": "IC2-024",
+   "family": "IC2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1473,
+   "later_mid": 1823,
+   "rank": 31,
+   "candidates": 1822
+  },
+  {
+   "chain": "IC2-025",
+   "family": "IC2",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1467,
+   "later_mid": 2094,
+   "rank": 51,
+   "candidates": 2093
+  },
+  {
+   "chain": "IC3-001",
+   "family": "IC3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1385,
+   "later_mid": 1840,
+   "rank": 17,
+   "candidates": 1839
+  },
+  {
+   "chain": "IC3-001",
+   "family": "IC3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1211,
+   "later_mid": 1840,
+   "rank": 26,
+   "candidates": 1839
+  },
+  {
+   "chain": "IC3-002",
+   "family": "IC3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1267,
+   "later_mid": 1508,
+   "rank": 148,
+   "candidates": 1507
+  },
+  {
+   "chain": "IC3-002",
+   "family": "IC3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1267,
+   "later_mid": 1907,
+   "rank": 161,
+   "candidates": 1906
+  },
+  {
+   "chain": "IC3-003",
+   "family": "IC3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1493,
+   "later_mid": 1900,
+   "rank": 16,
+   "candidates": 1899
+  },
+  {
+   "chain": "IC3-003",
+   "family": "IC3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1252,
+   "later_mid": 1900,
+   "rank": 33,
+   "candidates": 1899
+  },
+  {
+   "chain": "IC3-004",
+   "family": "IC3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1260,
+   "later_mid": 1858,
+   "rank": 29,
+   "candidates": 1857
+  },
+  {
+   "chain": "IC3-004",
+   "family": "IC3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1463,
+   "later_mid": 1858,
+   "rank": 13,
+   "candidates": 1857
+  },
+  {
+   "chain": "IC3-005",
+   "family": "IC3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1287,
+   "later_mid": 1575,
+   "rank": 19,
+   "candidates": 1574
+  },
+  {
+   "chain": "IC3-005",
+   "family": "IC3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1287,
+   "later_mid": 2207,
+   "rank": 23,
+   "candidates": 2206
+  },
+  {
+   "chain": "IC3-006",
+   "family": "IC3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1271,
+   "later_mid": 1539,
+   "rank": 296,
+   "candidates": 1538
+  },
+  {
+   "chain": "IC3-006",
+   "family": "IC3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1271,
+   "later_mid": 2032,
+   "rank": 318,
+   "candidates": 2031
+  },
+  {
+   "chain": "IC3-007",
+   "family": "IC3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1257,
+   "later_mid": 1498,
+   "rank": 347,
+   "candidates": 1497
+  },
+  {
+   "chain": "IC3-007",
+   "family": "IC3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1257,
+   "later_mid": 1923,
+   "rank": 74,
+   "candidates": 1922
+  },
+  {
+   "chain": "IC3-008",
+   "family": "IC3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1291,
+   "later_mid": 2035,
+   "rank": 31,
+   "candidates": 2034
+  },
+  {
+   "chain": "IC3-008",
+   "family": "IC3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1291,
+   "later_mid": 1553,
+   "rank": 41,
+   "candidates": 1552
+  },
+  {
+   "chain": "IC3-009",
+   "family": "IC3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1411,
+   "later_mid": 2131,
+   "rank": 44,
+   "candidates": 2130
+  },
+  {
+   "chain": "IC3-009",
+   "family": "IC3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1202,
+   "later_mid": 1411,
+   "rank": 8,
+   "candidates": 1410
+  },
+  {
+   "chain": "IC3-010",
+   "family": "IC3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1379,
+   "later_mid": 1980,
+   "rank": 51,
+   "candidates": 1979
+  },
+  {
+   "chain": "IC3-010",
+   "family": "IC3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1220,
+   "later_mid": 1379,
+   "rank": 7,
+   "candidates": 1378
+  },
+  {
+   "chain": "IC3-011",
+   "family": "IC3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1389,
+   "later_mid": 1849,
+   "rank": 20,
+   "candidates": 1848
+  },
+  {
+   "chain": "IC3-011",
+   "family": "IC3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1228,
+   "later_mid": 1389,
+   "rank": 16,
+   "candidates": 1388
+  },
+  {
+   "chain": "IC3-012",
+   "family": "IC3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1403,
+   "later_mid": 2107,
+   "rank": 158,
+   "candidates": 2106
+  },
+  {
+   "chain": "IC3-012",
+   "family": "IC3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1261,
+   "later_mid": 1403,
+   "rank": 20,
+   "candidates": 1402
+  },
+  {
+   "chain": "IC3-013",
+   "family": "IC3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1247,
+   "later_mid": 1951,
+   "rank": 35,
+   "candidates": 1950
+  },
+  {
+   "chain": "IC3-013",
+   "family": "IC3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1422,
+   "later_mid": 1951,
+   "rank": 20,
+   "candidates": 1950
+  },
+  {
+   "chain": "IC3-014",
+   "family": "IC3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1293,
+   "later_mid": 1588,
+   "rank": 72,
+   "candidates": 1587
+  },
+  {
+   "chain": "IC3-014",
+   "family": "IC3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1293,
+   "later_mid": 2183,
+   "rank": 55,
+   "candidates": 2182
+  },
+  {
+   "chain": "IC3-015",
+   "family": "IC3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1572,
+   "later_mid": 2180,
+   "rank": 8,
+   "candidates": 2179
+  },
+  {
+   "chain": "IC3-015",
+   "family": "IC3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1269,
+   "later_mid": 2180,
+   "rank": 19,
+   "candidates": 2179
+  },
+  {
+   "chain": "IC3-016",
+   "family": "IC3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1215,
+   "later_mid": 1811,
+   "rank": 666,
+   "candidates": 1810
+  },
+  {
+   "chain": "IC3-016",
+   "family": "IC3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1215,
+   "later_mid": 1390,
+   "rank": 32,
+   "candidates": 1389
+  },
+  {
+   "chain": "IC3-017",
+   "family": "IC3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1589,
+   "later_mid": 2203,
+   "rank": 32,
+   "candidates": 2202
+  },
+  {
+   "chain": "IC3-017",
+   "family": "IC3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1294,
+   "later_mid": 1589,
+   "rank": 29,
+   "candidates": 1588
+  },
+  {
+   "chain": "IC3-018",
+   "family": "IC3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1274,
+   "later_mid": 1482,
+   "rank": 66,
+   "candidates": 1481
+  },
+  {
+   "chain": "IC3-018",
+   "family": "IC3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1482,
+   "later_mid": 2132,
+   "rank": 53,
+   "candidates": 2131
+  },
+  {
+   "chain": "IC3-019",
+   "family": "IC3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1234,
+   "later_mid": 2002,
+   "rank": 25,
+   "candidates": 2001
+  },
+  {
+   "chain": "IC3-019",
+   "family": "IC3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1234,
+   "later_mid": 1372,
+   "rank": 19,
+   "candidates": 1371
+  },
+  {
+   "chain": "IC3-020",
+   "family": "IC3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1297,
+   "later_mid": 2193,
+   "rank": 21,
+   "candidates": 2192
+  },
+  {
+   "chain": "IC3-020",
+   "family": "IC3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1563,
+   "later_mid": 2193,
+   "rank": 60,
+   "candidates": 2192
+  },
+  {
+   "chain": "IC3-021",
+   "family": "IC3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1240,
+   "later_mid": 1562,
+   "rank": 162,
+   "candidates": 1561
+  },
+  {
+   "chain": "IC3-021",
+   "family": "IC3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1240,
+   "later_mid": 2140,
+   "rank": 76,
+   "candidates": 2139
+  },
+  {
+   "chain": "IC3-022",
+   "family": "IC3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1501,
+   "later_mid": 2065,
+   "rank": 13,
+   "candidates": 2064
+  },
+  {
+   "chain": "IC3-022",
+   "family": "IC3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1280,
+   "later_mid": 2065,
+   "rank": 114,
+   "candidates": 2064
+  },
+  {
+   "chain": "IC3-023",
+   "family": "IC3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1289,
+   "later_mid": 2049,
+   "rank": 84,
+   "candidates": 2048
+  },
+  {
+   "chain": "IC3-023",
+   "family": "IC3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1520,
+   "later_mid": 2049,
+   "rank": 68,
+   "candidates": 2048
+  },
+  {
+   "chain": "IC3-024",
+   "family": "IC3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1295,
+   "later_mid": 1992,
+   "rank": 29,
+   "candidates": 1991
+  },
+  {
+   "chain": "IC3-024",
+   "family": "IC3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1295,
+   "later_mid": 1549,
+   "rank": 36,
+   "candidates": 1548
+  },
+  {
+   "chain": "IC3-025",
+   "family": "IC3",
+   "hops": [
+    1,
+    2
+   ],
+   "earlier_mid": 1254,
+   "later_mid": 1881,
+   "rank": 25,
+   "candidates": 1880
+  },
+  {
+   "chain": "IC3-025",
+   "family": "IC3",
+   "hops": [
+    2,
+    3
+   ],
+   "earlier_mid": 1393,
+   "later_mid": 1881,
+   "rank": 66,
+   "candidates": 1880
+  }
+ ]
+}

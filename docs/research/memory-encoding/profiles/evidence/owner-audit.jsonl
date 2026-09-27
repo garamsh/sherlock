@@ -1,0 +1,50 @@
+{"first":4809,"kind":"user","text":"For events at Deaboux Rooms, only Wopum Catering is permitted to cook on the premises.","entities":["Deaboux Rooms","Wopum Catering"],"owner":"deaboux rooms","correct":true,"note":""}
+{"first":6185,"kind":"other","text":"The Koumoul Hotel uses Dodais Coaches to transport guests to the airport.","entities":["Koumoul Hotel","Dodais Coaches"],"owner":"koumoul hotel","correct":true,"note":""}
+{"first":7713,"kind":"user","text":"The user wants information about office location (room 272) saved for future reference.","entities":["room 272"],"owner":"user","correct":true,"note":""}
+{"first":8673,"kind":"user","text":"The user considers the reference number WG-9813 important and wants it remembered.","entities":["WG-9813","caterer"],"owner":"user","correct":true,"note":""}
+{"first":6661,"kind":"user","text":"The user has a locksmith named Oscar Teadork.","entities":["Oscar Teadork","Yusuf Trunourk"],"owner":"user","correct":true,"note":""}
+{"first":5189,"kind":"user","text":"The user will stay at the Bridraim Hotel for the Haidourk trip.","entities":["Haidourk","Bridraim Hotel"],"owner":"user","correct":true,"note":""}
+{"first":8793,"kind":"user","text":"The user wants information about Mara Heamean to be remembered as important.","entities":["Mara Heamean"],"owner":"user","correct":true,"note":""}
+{"first":8305,"kind":"user","text":"The user prefers to keep certain details like catering choices for later reference.","entities":["Grakull Catering"],"owner":"user","correct":true,"note":""}
+{"first":6225,"kind":"user","text":"The user prefers the assistant to remember contact information like phone extensions when asked to hold onto it.","entities":["Anya Gaibreas","extension 4100"],"owner":"user","correct":true,"note":""}
+{"first":6253,"kind":"user","text":"The user wants information about Lugeal Coaches and Gratrer Coaches sharing a depot to be remembered.","entities":["Lugeal Coaches","Gratrer Coaches","depot"],"owner":"user","correct":true,"note":""}
+{"first":6797,"kind":"user","text":"User has a hat made by Ruhen Hatters, and explicitly stated this detail matters and should be remembered.","entities":["Ruhen Hatters"],"owner":"user","correct":true,"note":""}
+{"first":6529,"kind":"user","text":"The user's barber is now Bruno Metum, replacing Yusuf Kaibail.","entities":["Bruno Metum","Yusuf Kaibail"],"owner":"user","correct":true,"note":""}
+{"first":7193,"kind":"other","text":"Sofia Cobell is a person the user was introduced to this morning.","entities":["Sofia Cobell"],"owner":"sofia cobell","correct":true,"note":""}
+{"first":6549,"kind":"user","text":"The user's favourite biscuit brand is Stuwear.","entities":["Stuwear","heating system"],"owner":"user","correct":true,"note":""}
+{"first":7449,"kind":"other","text":"The Febal gala is being held at the Katrim Rooms.","entities":["Febal gala","Katrim Rooms"],"owner":"febal gala","correct":true,"note":""}
+{"first":6837,"kind":"other","text":"Lena Houweam leaves the keys of finished jobs in locker 804.","entities":["Lena Houweam","locker 804"],"owner":"lena houweam","correct":true,"note":""}
+{"first":5605,"kind":"other","text":"Lena Ceteam leaves the keys of finished jobs in locker 537.","entities":["Lena Ceteam","locker 537"],"owner":"lena ceteam","correct":true,"note":""}
+{"first":6573,"kind":"user","text":"User has a dance class at Droucal Studios","entities":["Droucal Studios"],"owner":"user","correct":true,"note":""}
+{"first":5633,"kind":"other","text":"Ines Gronair trained under Mara Limound.","entities":["Ines Gronair","Mara Limound"],"owner":"ines gronair","correct":true,"note":""}
+{"first":8501,"kind":"user","text":"User's favorite ice cream is Waiku ripple.","entities":["Waiku ripple","Stairs"],"owner":"user","correct":true,"note":""}
+{"first":5441,"kind":"user","text":"User considers the service location information important to remember.","entities":["my Zailear van","Steapem Motors"],"owner":"user","correct":true,"note":""}
+{"first":7385,"kind":"other","text":"Nadia Drotun sits at desk Z17.","entities":["Nadia Drotun","desk Z17"],"owner":"nadia drotun","correct":true,"note":""}
+{"first":5013,"kind":"other","text":"Weekly updates on the Coubea build are directed to the Grorear office.","entities":["Coubea build","Grorear office"],"owner":"coubea build","correct":true,"note":""}
+{"first":8049,"kind":"user","text":"The user requests that provided information be remembered for future reference.","entities":["Huleal Hotel","Wavem Coaches"],"owner":"user","correct":true,"note":""}
+{"first":5789,"kind":"other","text":"Isla Zeabell works out of room 172.","entities":["Isla Zeabell","Room 172"],"owner":"isla zeabell","correct":true,"note":""}
+{"first":7033,"kind":"user","text":"The user is working on a build project called Wouvirk.","entities":["Wouvirk build","Ledes Components"],"owner":"user","correct":true,"note":""}
+{"first":7117,"kind":"other","text":"Wimurk house rules mandate that every document must include the reference REF-VOUK398.","entities":["Wimurk","REF-VOUK398"],"owner":"wimurk","correct":true,"note":""}
+{"first":6845,"kind":"other","text":"Mara Dekoul answers on extension 2175.","entities":["Mara Dekoul","extension 2175"],"owner":"mara dekoul","correct":true,"note":""}
+{"first":7041,"kind":"user","text":"User has a charity shop shift at the Muteall Hospice shop","entities":["Muteall Hospice shop","user","assistant"],"owner":"user","correct":true,"note":""}
+{"first":8269,"kind":"other","text":"Pick-ups are made from bay 55.","entities":["bay 55"],"owner":"bay 55","correct":false,"note":"bay 55 is the value, not the subject; the pick-ups belong to a coach firm the fact does not name"}
+{"first":6113,"kind":"other","text":"Lena Grizull leads the Howis team","entities":["Lena Grizull","Howis team"],"owner":"lena grizull","correct":true,"note":""}
+{"first":8653,"kind":"user","text":"The user works under Taizur house rules which govern document requirements.","entities":["Taizur","REF-PERA559"],"owner":"user","correct":true,"note":""}
+{"first":5137,"kind":"other","text":"The Louzill gala is scheduled to take place at the Sustam Rooms.","entities":["Louzill gala","Sustam Rooms"],"owner":"louzill gala","correct":true,"note":""}
+{"first":7461,"kind":"user","text":"The user wants contact information such as phone extensions retained for reference.","entities":["Yusuf Meavou","extension 4162"],"owner":"user","correct":true,"note":""}
+{"first":4945,"kind":"other","text":"Tomas Foboum runs the Grivom lab.","entities":["Tomas Foboum","Grivom lab"],"owner":"tomas foboum","correct":true,"note":""}
+{"first":4961,"kind":"other","text":"The Brazeall house rules require every document to include the reference REF-HABA763.","entities":["Brazeall","REF-HABA763"],"owner":"brazeall","correct":true,"note":""}
+{"first":7973,"kind":"user","text":"The user has a van that they left with Ravi Raideand today.","entities":["Ravi Raideand","van"],"owner":"user","correct":true,"note":""}
+{"first":7265,"kind":"other","text":"Giren house rules require the reference REF-TAPA918 to be included in every document.","entities":["Giren house rules","REF-TAPA918"],"owner":"giren house rules","correct":true,"note":""}
+{"first":8369,"kind":"user","text":"User has started going to bed earlier and finds it helpful for their wellbeing.","entities":["Trehous Rifles"],"owner":"user","correct":true,"note":""}
+{"first":7725,"kind":"other","text":"Vaihil Coaches picks up passengers from bay 24.","entities":["Vaihil Coaches","bay 24"],"owner":"vaihil coaches","correct":true,"note":""}
+{"first":5305,"kind":"user","text":"The user indicated they will need information about the Droquil lab's leadership later.","entities":["Nadia Queman","Droquil lab"],"owner":"user","correct":true,"note":""}
+{"first":5281,"kind":"user","text":"The user indicated this contact information is important and should be remembered","entities":["Isla Cedrar"],"owner":"user","correct":true,"note":""}
+{"first":5069,"kind":"user","text":"The user has a catering booking with Leceax Catering under reference RS-7881.","entities":["Leceax Catering","RS-7881"],"owner":"user","correct":true,"note":""}
+{"first":7961,"kind":"user","text":"The user prefers to keep information on file for reference.","entities":["Oscar Stostas","room 173"],"owner":"user","correct":true,"note":""}
+{"first":5421,"kind":"other","text":"The Dreatrux office operates under Taizur house rules.","entities":["Dreatrux office","Taizur house rules"],"owner":"dreatrux office","correct":true,"note":""}
+{"first":7325,"kind":"other","text":"Bruno Braicea leads the Graivirk team.","entities":["Graivirk","Bruno Braicea"],"owner":"bruno braicea","correct":true,"note":""}
+{"first":8485,"kind":"other","text":"Grousi Rooms is a venue that restricts cooking on its premises to only Mouwem Catering.","entities":["Grousi Rooms","Mouwem Catering"],"owner":"grousi rooms","correct":true,"note":""}
+{"first":7105,"kind":"other","text":"Ravi Listark shares an office with Mateo Poufond.","entities":["Ravi Listark","Mateo Poufond"],"owner":"ravi listark","correct":true,"note":""}
+{"first":7189,"kind":"user","text":"The user emphasizes important procedures and expects them to be remembered.","entities":["locker 137","finished jobs"],"owner":"user","correct":true,"note":""}
+{"first":6321,"kind":"user","text":"The user has a bank adviser named Nadia Rouquaim.","entities":["Nadia Rouquaim"],"owner":"user","correct":true,"note":""}

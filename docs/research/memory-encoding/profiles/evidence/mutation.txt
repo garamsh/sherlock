@@ -1,0 +1,30 @@
+FAILS  screen.py: the owner named earliest
+FAILS  screen.py: the longer name winning a tie
+FAILS  screen.py: excluding participants
+FAILS  screen.py: dropping a leading 'the'
+FAILS  screen.py: the user as a named candidate
+FAILS  screen.py: the user fallback for an unnamed user fact
+FAILS  screen.py: dropping an unowned other fact
+FAILS  screen.py: removing entity names from the key
+FAILS  screen.py: removing user words from the key
+FAILS  screen.py: removing capitalized values from the key
+FAILS  screen.py: removing bookkeeping words from the key
+FAILS  screen.py: the overlap over the smaller key
+FAILS  screen.py: an empty key never overlapping
+FAILS  screen.py: keeping the newest facts
+FAILS  screen.py: the overwrite
+FAILS  screen.py: attaching only owners with a card
+FAILS  screen.py: attaching through the delivered mids only
+FAILS  screen.py: the user's card only on a delivery
+FAILS  screen.py: the user's card
+FAILS  screen.py: reach from the attached cards
+FAILS  screen.py: the stale fact not also stating the current value
+FAILS  screen.py: confusion only on the queried entity's own card
+FAILS  screen.py: confusion only when the card is attached
+FAILS  screen.py: the KU control reading the first statement
+FAILS  screen.py: the chain margin
+FAILS  screen.py: the UP margin
+FAILS  screen.py: either family admitting
+FAILS  screen.py: the audit voiding a pass
+FAILS  screen.py: the audit's pass mark
+control: every unmutated test passes

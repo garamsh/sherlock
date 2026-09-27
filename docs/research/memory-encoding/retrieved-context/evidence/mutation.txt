@@ -1,0 +1,33 @@
+FAILS  arms/retrieved/retrieve.go: reading nothing at or after the batch
+FAILS  arms/retrieved/retrieve.go: the bound on what the search returns
+FAILS  arms/retrieved/retrieve.go: returning what was found in source order
+FAILS  arms/retrieved/main.go: RW searching its own earlier mids
+FAILS  arms/retrieved/main.go: RW resuming after its recorded batches
+FAILS  arms/retrieved/main.go: a failed batch keeping S's mid
+FAILS  arms/retrieved/main.go: RW storing its own summary
+FAILS  arms/retrieved/main.go: RW-key's line in the key
+FAILS  arms/retrieved/main.go: RW-key's line before the summary in the key
+FAILS  arms/retrieved/main.go: RW-key never showing the line
+FAILS  arms/retrieved/synthesis.go: RW's added sentence
+FAILS  arms/retrieved/synthesis.go: sending the retrieved messages
+FAILS  arms/retrieved/synthesis.go: sending the retrieved mids
+FAILS  arms/retrieved/synthesis.go: varying a retried request
+FAILS  arms/retrieved/synthesis.go: dropping a name written nowhere it was sent
+FAILS  arms/retrieved/synthesis.go: dropping a mid that was not retrieved
+FAILS  arms/retrieved/synthesis.go: the bound on names and mids
+FAILS  score.py: carried reach
+FAILS  score.py: the retrieval control's exclusion
+FAILS  score.py: the retrieval control's bounds
+FAILS  score.py: the well-formed share
+FAILS  score.py: the line control
+FAILS  score.py: the shown-text control
+FAILS  score.py: the line never shown
+FAILS  score.py: counting only mids written after the correction
+FAILS  score.py: a link through a mid
+FAILS  score.py: the carried-reach matcher's both entities
+FAILS  score.py: the stale rule's mids after the correction
+FAILS  score.py: the stale rule
+FAILS  score.py: the admission margin
+FAILS  score.py: voiding an arm whose control failed
+FAILS  score.py: RW-key named before RW
+control: every unmutated test passes

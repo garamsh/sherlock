@@ -54,6 +54,26 @@ class OwnerRuleTest(unittest.TestCase):
         self.assertTrue(matcher.judge("**Beanul Coaches** pick up from <strong>bay 42</strong>.", N)["attributed"])
 
 
+class AmendmentOneTest(unittest.TestCase):
+    def test_a_sentence_pointing_back_carries_the_attribution(self):
+        reply = "You'll want to wait at bay 42. That's where Beanul Coaches pick up."
+        self.assertTrue(matcher.judge(reply, N)["owner"])
+        # Control: a following sentence that does not point back carries nothing.
+        self.assertFalse(matcher.judge("You'll want to wait at bay 42. Beanul Coaches share the depot.", N)["attributed"])
+
+    def test_a_surname_misspelt_by_one_letter_is_a_mention(self):
+        reply = "Lena worked with Nadia Dostx, who sits in room 989."
+        self.assertTrue(matcher.judge(reply, NP)["attributed"])
+        # Control: two letters away is no mention.
+        self.assertFalse(matcher.judge("Lena worked with Nadia Dox, who sits in room 989.", NP)["attributed"])
+
+    def test_declining_in_other_words_is_an_abstention_under_the_owners_rule_only(self):
+        j = matcher.judge("I'm not familiar with Vuner Coaches. Could you give me more context?", N)
+        self.assertEqual((j["strict"], j["owner"], j["reading_b"]), (False, True, True))
+        # Control: an answer without those words is not an abstention.
+        self.assertFalse(matcher.judge("Vuner Coaches use bay 42. Tell me if that helps.", N)["owner"])
+
+
 class SubjectTest(unittest.TestCase):
     entity, associate = matcher.parties(NP)
 

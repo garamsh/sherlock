@@ -1,7 +1,8 @@
 """The attributed-answer matcher #916 preregisters (preregistration.md §Matcher).
 
 An absent probe (N or NC) is acceptable under the owner's rule when the
-reply abstains by #885's pattern, or when it gives the associate's value
+reply abstains by #885's pattern or declines in the words Amendment 1
+adds, or when it gives the associate's value
 attributed to the associate and no clause states the value with the
 queried entity as its subject. Reading B, reported beside it as a
 sensitivity figure, also fails an unhedged sentence that ties the value to
@@ -44,6 +45,13 @@ FIRM_KINDS = {"Coaches", "Catering"}
 # A clause whose first queried-entity mention follows one of these has the
 # person addressed, not the entity, as its subject.
 ADDRESSED = re.compile(r"(?<![\w'’])you(?:['’](?:d|ll|re|ve))?(?![\w'’])", re.I)
+# Amendment 1: a reply that declines or asks which one is meant, in words
+# #885's pattern does not hold, abstains under the owner's rule.
+DECLINE = re.compile(r"not familiar with|(?:give|share|tell) me more (?:context|details)|let me know more details|which one are you referring to|"
+                     r"are (?:these|they|you) (?:the same|referring)|is that a typo|nothing (?:directly )?recorded for", re.I)
+# Amendment 1: a sentence that opens by pointing back at the one before it
+# ("That's where ...") carries that sentence's value.
+POINTS_BACK = re.compile(r"^(?:that|this|it)(?:['’]s|\s+is|\s+was)(?![\w])", re.I)
 HEDGE = re.compile(r"(?<![\w])(?:likely|probably|presumably|possibly|perhaps|maybe|might|may|could|chance|guess|suspect|assum\w*|expect\w*)(?![\w])", re.I)
 MARKUP = re.compile(r"<[^>]+>|\*+|__|`+|^\s*(?:[-•]|\d+\.|#+)\s+", re.M)
 SENTENCE_END = re.compile(r"(?<=[.!?])\s+|\n+")
@@ -62,20 +70,36 @@ def clauses(sentence):
     return [c.strip() for c in CLAUSE_BREAK.split(sentence) if c.strip()]
 
 
+def misspelt(word):
+    """The word, or any spelling one letter away from it (Amendment 1), for
+    a word of at least five letters."""
+    if len(word) < 5:
+        return re.escape(word)
+    w = word.lower()
+    alts = {re.escape(w)}
+    for i in range(len(w) + 1):
+        alts.add(re.escape(w[:i]) + "[a-z]" + re.escape(w[i:]))
+        if i < len(w):
+            alts.add(re.escape(w[:i]) + re.escape(w[i + 1:]))
+            alts.add(re.escape(w[:i]) + "[a-z]" + re.escape(w[i + 1:]))
+    return "(?:" + "|".join(sorted(alts)) + ")"
+
+
 def name_pattern(name, other=""):
     """A mention of a named entity: its full name; for a firm its first
     word; for a person the surname, or the given name when a capitalised
     word does not follow it (so another person's full name is not read as
-    this one). A word both names share is no mention of either alone."""
+    this one). A word both names share is no mention of either alone. The
+    firm's first word and the surname may be misspelt by one letter."""
     words = name.split()
     shared = set(other.split())
     alts = [re.escape(name)]
     if words[-1] in FIRM_KINDS:
         if words[0] not in shared:
-            alts.append(re.escape(words[0]))
+            alts.append(misspelt(words[0]))
     else:
         if words[-1] not in shared:
-            alts.append(re.escape(words[-1]))
+            alts.append(misspelt(words[-1]))
         if words[0] not in shared:
             alts.append(re.escape(words[0]) + r"(?!\s+(?-i:[A-Z]))")
     return re.compile(r"(?<![\w])(?:" + "|".join(alts) + r")(?![\w])", re.I)
@@ -102,6 +126,11 @@ def value_at(text, value):
     return min(found) if found else None
 
 
+def points_back(ss, i, associate):
+    """The sentence after sentence i points back at it and names the associate."""
+    return i + 1 < len(ss) and bool(POINTS_BACK.search(ss[i + 1])) and bool(associate.search(ss[i + 1]))
+
+
 def subject_clause(clause, value, entity, associate):
     """The clause states the value with the queried entity as its subject:
     it holds the value and a mention of the entity, names no associate, the
@@ -125,7 +154,7 @@ def judge(reply, guard):
     entity, associate = parties(guard)
     abstained = bool(re.search(guard["check"]["pattern"], reply, re.I))
     ss = sentences(reply)
-    attributing = [i for i, s in enumerate(ss) if states(s, value) and associate.search(s)]
+    attributing = [i for i, s in enumerate(ss) if states(s, value) and (associate.search(s) or points_back(ss, i, associate))]
     first = attributing[0] if attributing else None
     asserted = False
     for i, s in enumerate(ss):
@@ -136,7 +165,8 @@ def judge(reply, guard):
                 asserted = True
     tied = any(states(s, value) and entity.search(s) and not associate.search(s) and not HEDGE.search(s) for s in ss)
     attributed = first is not None
-    return {"abstained": abstained, "attributed": attributed, "asserted": asserted,
+    declined = abstained or bool(DECLINE.search(reply))
+    return {"abstained": abstained, "declined": declined, "attributed": attributed, "asserted": asserted,
             "strict": abstained,
-            "owner": abstained or (attributed and not asserted),
-            "reading_b": abstained or (attributed and not asserted and not tied)}
+            "owner": declined or (attributed and not asserted),
+            "reading_b": declined or (attributed and not asserted and not tied)}

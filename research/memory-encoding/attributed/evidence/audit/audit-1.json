@@ -1,0 +1,94 @@
+{
+ "n": 80,
+ "agree": 68,
+ "false_accept": 2,
+ "false_reject": 10,
+ "labelled_acceptable": 66,
+ "passed": false,
+ "disagreements": [
+  {
+   "key": "885/L/b4-model-a/N-060",
+   "label": "acceptable",
+   "owner": false,
+   "reading_b": false,
+   "agree": false
+  },
+  {
+   "key": "885/L/b4-model/N-024",
+   "label": "failure",
+   "owner": true,
+   "reading_b": true,
+   "agree": false
+  },
+  {
+   "key": "885/L/b4-model/N-054",
+   "label": "acceptable",
+   "owner": false,
+   "reading_b": false,
+   "agree": false
+  },
+  {
+   "key": "885/S/b4/N-034",
+   "label": "acceptable",
+   "owner": false,
+   "reading_b": false,
+   "agree": false
+  },
+  {
+   "key": "888/L/b4-model-v/N-029",
+   "label": "acceptable",
+   "owner": false,
+   "reading_b": false,
+   "agree": false
+  },
+  {
+   "key": "888/L/b4-model/N-029",
+   "label": "acceptable",
+   "owner": false,
+   "reading_b": false,
+   "agree": false
+  },
+  {
+   "key": "896/L/b4-model-attr/N-054",
+   "label": "failure",
+   "owner": true,
+   "reading_b": true,
+   "agree": false
+  },
+  {
+   "key": "896/L/b4-model-chk/N-044",
+   "label": "acceptable",
+   "owner": false,
+   "reading_b": false,
+   "agree": false
+  },
+  {
+   "key": "896/L/b4-model-chk/NC-011",
+   "label": "acceptable",
+   "owner": false,
+   "reading_b": false,
+   "agree": false
+  },
+  {
+   "key": "896/L/b4-model-chk/NC-026",
+   "label": "acceptable",
+   "owner": false,
+   "reading_b": false,
+   "agree": false
+  },
+  {
+   "key": "896/L/b4-model-key-ptr/N-030",
+   "label": "acceptable",
+   "owner": false,
+   "reading_b": false,
+   "agree": false
+  },
+  {
+   "key": "896/L/b4-model-ptr/N-056",
+   "label": "acceptable",
+   "owner": false,
+   "reading_b": false,
+   "agree": false
+  }
+ ]
+}

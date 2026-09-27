@@ -227,3 +227,22 @@ Every probe's store copy is kept outside the repository. Nothing is written unde
 
 - Harness, arms, generator and scorers at the commit that adds this file.
 - SHA-256 of `../validation/corpus.py`: `8a28691e0c192f3e28f493b235068e635cce7cfa742a4b954fe38c4bc3459eef`.
+
+## Amendments
+
+- **1. The matcher, revised once after audit 1 failed.** Made after audit 1's labels were committed (`54af268`) and checked, before the exploratory re-read, any corpus or any paid call, as §Audit allows.
+  - **Audit 1 as preregistered.** 68 of 80 agree, below the 72 required. 2 false accepts, within the 4 allowed (`evidence/audit/audit-1.json`). So it failed.
+  - **The twelve disagreements.**
+    - Six are replies that decline or ask which one is meant, in words #885's pattern does not hold: "I'm not familiar with … could you give me more context?", "is that a typo", "are these the same person", "Which one are you referring to?".
+    - Two name the associate with a surname misspelt by one letter ("Trelind" for "Trealind").
+    - Two give the value and name its holder in the next sentence: "look for locker 593. That's where Dmitri Teapou leaves the keys".
+    - Two are false accepts. Each misstates the link as a fact about the queried entity: "that's where Pavel Baigam leaves the keys for finished jobs from Mara Kudas". No mechanical rule found for them generalises, and they are within the allowance, so they are left as the matcher's known error.
+  - **The revision.**
+    - **Declining.** The owner's rule and reading B also count as abstaining a reply that holds `not familiar with`, `give`, `share` or `tell me more context` or `details`, `let me know more details`, `which one are you referring to`, `are these`, `they` or `you the same` or `referring`, `is that a typo`, or `nothing (directly) recorded for`. The strict rule stays #885's pattern exactly.
+    - **Pointing back.** A sentence holding the value is attributing also when the next sentence opens with `that's`, `this is`, `it's`, `that is` or `that was` (and the like) and names the associate.
+    - **Misspelling.** A firm's first word and a person's surname, of at least five letters, are also mentioned when misspelt by one letter: one inserted, deleted or substituted.
+  - **Its check, as §Audit fixes it.**
+    - 40 further replies from audit 1's 97 unlabelled replies, drawn by `audit.py draw 1b` with `random.Random(919)`.
+    - Labelled and committed before the revised matcher first runs on them.
+    - Passed when at least 36 agree and at most 2 are false accepts.
+  - **Nothing else changes.** No other threshold, endpoint, control or rule moves. The revised matcher's agreement on audit 1's own sample is in-sample, is reported, and gates nothing.

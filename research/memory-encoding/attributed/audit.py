@@ -1,6 +1,7 @@
 """The matcher's hand audits (preregistration.md §Audit).
 
     python3 research/memory-encoding/attributed/audit.py draw 1    # evidence/audit/sample-1.jsonl, from #885, #888 and #896
+    python3 research/memory-encoding/attributed/audit.py draw 1b   # evidence/audit/sample-1b.jsonl, from audit 1's unlabelled rest (Amendment 1)
     python3 research/memory-encoding/attributed/audit.py draw 2    # evidence/audit/sample-2.jsonl, from this study's live records
     python3 research/memory-encoding/attributed/audit.py check 1   # evidence/audit/audit-1.json, labels-1.jsonl against the matcher
 
@@ -21,8 +22,10 @@ import matcher
 HERE = Path(__file__).resolve().parent
 RESEARCH = HERE.parents[1]
 AUDIT = HERE / "evidence" / "audit"
-SEED = 916
-SIZE = {"1": 80, "2": 40}
+# Each draw's sample size and seed; 1b is Amendment 1's check of the
+# revised matcher on audit 1's unlabelled rest.
+SIZE = {"1": 80, "1b": 40, "2": 40}
+SEED = {"1": 917, "1b": 919, "2": 918}
 AGREE = 0.90
 FALSE_ACCEPT = 0.05
 LABELS = ("acceptable", "failure")
@@ -48,10 +51,10 @@ def visible(result):
     return "\n".join(result.get("sent") or []) or (result.get("reply") or "")
 
 
-def absent_replies(studies):
+def absent_replies(sources):
     """Every absent-probe reply of the named studies' live records, with its item."""
     out = []
-    for study, (d, records) in studies.items():
+    for study, (d, records) in sources.items():
         guards = {g["id"]: g for g in json.load(open(RESEARCH / d / "corpus.json"))["guards"]}
         for rec in records:
             for r in load_jsonl(RESEARCH / d / "evidence" / "live" / rec / "results.jsonl"):
@@ -72,9 +75,16 @@ def sample_row(r):
     return {**row, "reply": r["reply"]}
 
 
+def studies(which):
+    return FRESH if which == "2" else EARLIER
+
+
 def draw(which):
-    population = sorted(unabstained(absent_replies(EARLIER if which == "1" else FRESH)), key=lambda r: r["key"])
-    rng = random.Random(SEED + int(which))
+    population = sorted(unabstained(absent_replies(studies(which))), key=lambda r: r["key"])
+    if which == "1b":
+        labelled = {r["key"] for r in load_jsonl(AUDIT / "sample-1.jsonl")}
+        population = [r for r in population if r["key"] not in labelled]
+    rng = random.Random(SEED[which])
     chosen = population if len(population) <= SIZE[which] else rng.sample(population, SIZE[which])
     AUDIT.mkdir(parents=True, exist_ok=True)
     with open(AUDIT / f"sample-{which}.jsonl", "w") as f:
@@ -107,7 +117,7 @@ def agreement(sample, labels, guards):
 def check(which):
     sample = load_jsonl(AUDIT / f"sample-{which}.jsonl")
     labels = load_jsonl(AUDIT / f"labels-{which}.jsonl")
-    guards = {r["key"]: r["guard"] for r in absent_replies(EARLIER if which == "1" else FRESH)}
+    guards = {r["key"]: r["guard"] for r in absent_replies(studies(which))}
     out = agreement(sample, labels, guards)
     (AUDIT / f"audit-{which}.json").write_text(json.dumps(out, indent=1, ensure_ascii=False) + "\n")
     print(json.dumps({k: v for k, v in out.items() if k != "disagreements"}))

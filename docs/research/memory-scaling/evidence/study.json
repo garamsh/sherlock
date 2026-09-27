@@ -1,0 +1,1752 @@
+{
+ "budget": 3383.55,
+ "controls": {
+  "planted_values": 380,
+  "distractors_outside_gold_ids": true,
+  "distractor_messages_with_gold_text": 0,
+  "servers": {
+   "embed": {
+    "model_id": "BAAI/bge-base-en-v1.5",
+    "model_sha": "a5beb1e3e68b9ab74eb54cfd186867f64f240e1a",
+    "model_dtype": "float32",
+    "served_model_name": "BAAI/bge-base-en-v1.5",
+    "model_type": {
+     "embedding": {
+      "pooling": "cls"
+     }
+    },
+    "max_concurrent_requests": 512,
+    "max_input_length": 512,
+    "max_batch_tokens": 16384,
+    "max_batch_requests": 8,
+    "max_client_batch_size": 32,
+    "auto_truncate": true,
+    "tokenization_workers": 11,
+    "version": "1.9.4",
+    "sha": "e80ef225ed0e6cb1717ce632a6a84b6cf211bb67",
+    "docker_label": "sha-e80ef22"
+   },
+   "rerank": null
+  },
+  "reach": {
+   "s0/B4": true,
+   "s0/B8": true,
+   "s0/B16": true,
+   "s0/T": true,
+   "s0/K": true,
+   "s1/B4": true,
+   "s1/B8": true,
+   "s1/B16": true,
+   "s1/T": true,
+   "s1/K": true,
+   "s1/B8m": true,
+   "s1/B8c": true,
+   "s2/B4": true,
+   "s2/B8": true,
+   "s2/B16": true,
+   "s2/T": true,
+   "s2/K": true,
+   "s3/B4": true,
+   "s3/B8": true,
+   "s3/B16": true,
+   "s3/T": true,
+   "s3/K": true,
+   "s4/B4": true,
+   "s4/B8": true,
+   "s4/B16": true,
+   "s4/T": true,
+   "s4/K": true
+  },
+  "parity_identical_deliveries": 314,
+  "parity_differing": []
+ },
+ "pool": [
+  {
+   "stream": "#874",
+   "file": "chained-recall/evidence/synthesis/stream-b4.jsonl",
+   "messages": 1696,
+   "source_chars": 82808,
+   "mids": 424,
+   "kept": 405,
+   "dropped": [
+    {
+     "first": 5069,
+     "last": 5072,
+     "pattern": "(?<![A-Za-z0-9])68(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5189,
+     "last": 5192,
+     "pattern": "(?<![A-Za-z0-9])40(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5349,
+     "last": 5352,
+     "pattern": "(?<![A-Za-z0-9])Pending(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6277,
+     "last": 6280,
+     "pattern": "(?<![A-Za-z0-9])May(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6421,
+     "last": 6424,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6425,
+     "last": 6428,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6429,
+     "last": 6432,
+     "pattern": "(?<![A-Za-z0-9])Paris(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6433,
+     "last": 6436,
+     "pattern": "(?<![A-Za-z0-9])1\\ cup(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6437,
+     "last": 6440,
+     "pattern": "(?<![A-Za-z0-9])30\\ minutes(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6445,
+     "last": 6448,
+     "pattern": "(?<![A-Za-z0-9])40(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6449,
+     "last": 6452,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6453,
+     "last": 6456,
+     "pattern": "(?<![A-Za-z0-9])beginner(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6465,
+     "last": 6468,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6469,
+     "last": 6472,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6473,
+     "last": 6476,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6477,
+     "last": 6480,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6481,
+     "last": 6484,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6485,
+     "last": 6488,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6493,
+     "last": 6496,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    }
+   ]
+  },
+  {
+   "stream": "#885",
+   "file": "chained-recall/confirm/evidence/synthesis/stream-b4.jsonl",
+   "messages": 3488,
+   "source_chars": 141421,
+   "mids": 872,
+   "kept": 853,
+   "dropped": [
+    {
+     "first": 6589,
+     "last": 6592,
+     "pattern": "(?<![A-Za-z0-9])Pending(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6901,
+     "last": 6904,
+     "pattern": "(?<![A-Za-z0-9])Pending(?![A-Za-z0-9])"
+    },
+    {
+     "first": 7429,
+     "last": 7432,
+     "pattern": "(?<![A-Za-z0-9])18(?![A-Za-z0-9])"
+    },
+    {
+     "first": 7485,
+     "last": 7488,
+     "pattern": "(?<![A-Za-z0-9])25(?![A-Za-z0-9])"
+    },
+    {
+     "first": 7637,
+     "last": 7640,
+     "pattern": "(?<![A-Za-z0-9])14(?![A-Za-z0-9])"
+    },
+    {
+     "first": 7789,
+     "last": 7792,
+     "pattern": "(?<![A-Za-z0-9])72(?![A-Za-z0-9])"
+    },
+    {
+     "first": 7981,
+     "last": 7984,
+     "pattern": "(?<![A-Za-z0-9])May(?![A-Za-z0-9])"
+    },
+    {
+     "first": 8305,
+     "last": 8308,
+     "pattern": "(?<![A-Za-z0-9])68(?![A-Za-z0-9])"
+    },
+    {
+     "first": 9289,
+     "last": 9292,
+     "pattern": "(?<![A-Za-z0-9])40(?![A-Za-z0-9])"
+    },
+    {
+     "first": 9937,
+     "last": 9940,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 9941,
+     "last": 9944,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 9945,
+     "last": 9948,
+     "pattern": "(?<![A-Za-z0-9])Paris(?![A-Za-z0-9])"
+    },
+    {
+     "first": 9949,
+     "last": 9952,
+     "pattern": "(?<![A-Za-z0-9])1\\ cup(?![A-Za-z0-9])"
+    },
+    {
+     "first": 9953,
+     "last": 9956,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 9961,
+     "last": 9964,
+     "pattern": "(?<![A-Za-z0-9])40(?![A-Za-z0-9])"
+    },
+    {
+     "first": 9965,
+     "last": 9968,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 9969,
+     "last": 9972,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 9973,
+     "last": 9976,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 9981,
+     "last": 9984,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    }
+   ]
+  },
+  {
+   "stream": "#888",
+   "file": "chained-recall/readtime/evidence/synthesis/stream-b4.jsonl",
+   "messages": 3488,
+   "source_chars": 140984,
+   "mids": 872,
+   "kept": 853,
+   "dropped": [
+    {
+     "first": 10681,
+     "last": 10684,
+     "pattern": "(?<![A-Za-z0-9])May(?![A-Za-z0-9])"
+    },
+    {
+     "first": 10761,
+     "last": 10764,
+     "pattern": "(?<![A-Za-z0-9])May(?![A-Za-z0-9])"
+    },
+    {
+     "first": 10969,
+     "last": 10972,
+     "pattern": "(?<![A-Za-z0-9])Pending(?![A-Za-z0-9])"
+    },
+    {
+     "first": 11189,
+     "last": 11192,
+     "pattern": "(?<![A-Za-z0-9])May(?![A-Za-z0-9])"
+    },
+    {
+     "first": 11205,
+     "last": 11208,
+     "pattern": "(?<![A-Za-z0-9])May(?![A-Za-z0-9])"
+    },
+    {
+     "first": 11669,
+     "last": 11672,
+     "pattern": "(?<![A-Za-z0-9])68(?![A-Za-z0-9])"
+    },
+    {
+     "first": 11885,
+     "last": 11888,
+     "pattern": "(?<![A-Za-z0-9])May(?![A-Za-z0-9])"
+    },
+    {
+     "first": 12033,
+     "last": 12036,
+     "pattern": "(?<![A-Za-z0-9])25(?![A-Za-z0-9])"
+    },
+    {
+     "first": 12053,
+     "last": 12056,
+     "pattern": "(?<![A-Za-z0-9])40(?![A-Za-z0-9])"
+    },
+    {
+     "first": 13425,
+     "last": 13428,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 13429,
+     "last": 13432,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 13433,
+     "last": 13436,
+     "pattern": "(?<![A-Za-z0-9])Paris(?![A-Za-z0-9])"
+    },
+    {
+     "first": 13437,
+     "last": 13440,
+     "pattern": "(?<![A-Za-z0-9])1\\ cup(?![A-Za-z0-9])"
+    },
+    {
+     "first": 13441,
+     "last": 13444,
+     "pattern": "(?<![A-Za-z0-9])30\\ minutes(?![A-Za-z0-9])"
+    },
+    {
+     "first": 13449,
+     "last": 13452,
+     "pattern": "(?<![A-Za-z0-9])40(?![A-Za-z0-9])"
+    },
+    {
+     "first": 13453,
+     "last": 13456,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 13457,
+     "last": 13460,
+     "pattern": "(?<![A-Za-z0-9])beginner(?![A-Za-z0-9])"
+    },
+    {
+     "first": 13461,
+     "last": 13464,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 13469,
+     "last": 13472,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    }
+   ]
+  },
+  {
+   "stream": "#890",
+   "file": "memory-encoding/validation/evidence/synthesis/stream-b4.jsonl",
+   "messages": 4128,
+   "source_chars": 165241,
+   "mids": 1032,
+   "kept": 995,
+   "dropped": [
+    {
+     "first": 14017,
+     "last": 14020,
+     "pattern": "(?<![A-Za-z0-9])25(?![A-Za-z0-9])"
+    },
+    {
+     "first": 15033,
+     "last": 15036,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 15205,
+     "last": 15208,
+     "pattern": "(?<![A-Za-z0-9])18(?![A-Za-z0-9])"
+    },
+    {
+     "first": 15481,
+     "last": 15484,
+     "pattern": "(?<![A-Za-z0-9])blue(?![A-Za-z0-9])"
+    },
+    {
+     "first": 15493,
+     "last": 15496,
+     "pattern": "(?<![A-Za-z0-9])2019(?![A-Za-z0-9])"
+    },
+    {
+     "first": 15505,
+     "last": 15508,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 15545,
+     "last": 15548,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 15621,
+     "last": 15624,
+     "pattern": "(?<![A-Za-z0-9])My\\ sister(?![A-Za-z0-9])"
+    },
+    {
+     "first": 15901,
+     "last": 15904,
+     "pattern": "(?<![A-Za-z0-9])fourth(?![A-Za-z0-9])"
+    },
+    {
+     "first": 16225,
+     "last": 16228,
+     "pattern": "(?<![A-Za-z0-9])May(?![A-Za-z0-9])"
+    },
+    {
+     "first": 16281,
+     "last": 16284,
+     "pattern": "(?<![A-Za-z0-9])blue(?![A-Za-z0-9])"
+    },
+    {
+     "first": 16373,
+     "last": 16376,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 16413,
+     "last": 16416,
+     "pattern": "(?<![A-Za-z0-9])68(?![A-Za-z0-9])"
+    },
+    {
+     "first": 16457,
+     "last": 16460,
+     "pattern": "(?<![A-Za-z0-9])May(?![A-Za-z0-9])"
+    },
+    {
+     "first": 16501,
+     "last": 16504,
+     "pattern": "(?<![A-Za-z0-9])384(?![A-Za-z0-9])"
+    },
+    {
+     "first": 16561,
+     "last": 16564,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 16573,
+     "last": 16576,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 16713,
+     "last": 16716,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 16761,
+     "last": 16764,
+     "pattern": "(?<![A-Za-z0-9])sourdough(?![A-Za-z0-9])"
+    },
+    {
+     "first": 16889,
+     "last": 16892,
+     "pattern": "(?<![A-Za-z0-9])40(?![A-Za-z0-9])"
+    },
+    {
+     "first": 17309,
+     "last": 17312,
+     "pattern": "(?<![A-Za-z0-9])72(?![A-Za-z0-9])"
+    },
+    {
+     "first": 17537,
+     "last": 17540,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 17541,
+     "last": 17544,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 17545,
+     "last": 17548,
+     "pattern": "(?<![A-Za-z0-9])Paris(?![A-Za-z0-9])"
+    },
+    {
+     "first": 17549,
+     "last": 17552,
+     "pattern": "(?<![A-Za-z0-9])1\\ cup(?![A-Za-z0-9])"
+    },
+    {
+     "first": 17553,
+     "last": 17556,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 17557,
+     "last": 17560,
+     "pattern": "(?<![A-Za-z0-9])beginner(?![A-Za-z0-9])"
+    },
+    {
+     "first": 17561,
+     "last": 17564,
+     "pattern": "(?<![A-Za-z0-9])40(?![A-Za-z0-9])"
+    },
+    {
+     "first": 17565,
+     "last": 17568,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 17569,
+     "last": 17572,
+     "pattern": "(?<![A-Za-z0-9])beginner(?![A-Za-z0-9])"
+    },
+    {
+     "first": 17573,
+     "last": 17576,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 17577,
+     "last": 17580,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 17581,
+     "last": 17584,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 17585,
+     "last": 17588,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 17589,
+     "last": 17592,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 17593,
+     "last": 17596,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 17597,
+     "last": 17600,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    }
+   ]
+  },
+  {
+   "stream": "#874 batch 8",
+   "file": "chained-recall/evidence/synthesis/stream-b8.jsonl",
+   "messages": 1696,
+   "source_chars": 82808,
+   "mids": 212,
+   "kept": 48,
+   "dropped": [
+    {
+     "first": 4801,
+     "last": 4808,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 4809,
+     "last": 4816,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 4817,
+     "last": 4824,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 4825,
+     "last": 4832,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 4833,
+     "last": 4840,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 4841,
+     "last": 4848,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 4849,
+     "last": 4856,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 4857,
+     "last": 4864,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 4865,
+     "last": 4872,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 4897,
+     "last": 4904,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 4905,
+     "last": 4912,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 4913,
+     "last": 4920,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 4921,
+     "last": 4928,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 4929,
+     "last": 4936,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 4937,
+     "last": 4944,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 4945,
+     "last": 4952,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 4961,
+     "last": 4968,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 4985,
+     "last": 4992,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 4993,
+     "last": 5000,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5009,
+     "last": 5016,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5025,
+     "last": 5032,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5033,
+     "last": 5040,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5041,
+     "last": 5048,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5057,
+     "last": 5064,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5065,
+     "last": 5072,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5073,
+     "last": 5080,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5081,
+     "last": 5088,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5097,
+     "last": 5104,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5105,
+     "last": 5112,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5113,
+     "last": 5120,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5121,
+     "last": 5128,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5129,
+     "last": 5136,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5153,
+     "last": 5160,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5161,
+     "last": 5168,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5169,
+     "last": 5176,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5177,
+     "last": 5184,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5185,
+     "last": 5192,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5193,
+     "last": 5200,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5209,
+     "last": 5216,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5217,
+     "last": 5224,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5225,
+     "last": 5232,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5233,
+     "last": 5240,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5249,
+     "last": 5256,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5257,
+     "last": 5264,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5265,
+     "last": 5272,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5273,
+     "last": 5280,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5281,
+     "last": 5288,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5289,
+     "last": 5296,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5305,
+     "last": 5312,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5313,
+     "last": 5320,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5321,
+     "last": 5328,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5329,
+     "last": 5336,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5337,
+     "last": 5344,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5345,
+     "last": 5352,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5353,
+     "last": 5360,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5361,
+     "last": 5368,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5369,
+     "last": 5376,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5377,
+     "last": 5384,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5385,
+     "last": 5392,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5401,
+     "last": 5408,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5417,
+     "last": 5424,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5425,
+     "last": 5432,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5441,
+     "last": 5448,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5465,
+     "last": 5472,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5473,
+     "last": 5480,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5481,
+     "last": 5488,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5489,
+     "last": 5496,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5497,
+     "last": 5504,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5505,
+     "last": 5512,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5513,
+     "last": 5520,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5521,
+     "last": 5528,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5529,
+     "last": 5536,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5553,
+     "last": 5560,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5569,
+     "last": 5576,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5577,
+     "last": 5584,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5585,
+     "last": 5592,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5601,
+     "last": 5608,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5609,
+     "last": 5616,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5633,
+     "last": 5640,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5641,
+     "last": 5648,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5649,
+     "last": 5656,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5673,
+     "last": 5680,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5681,
+     "last": 5688,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5689,
+     "last": 5696,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5697,
+     "last": 5704,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5705,
+     "last": 5712,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5713,
+     "last": 5720,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5721,
+     "last": 5728,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5729,
+     "last": 5736,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5745,
+     "last": 5752,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5753,
+     "last": 5760,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5761,
+     "last": 5768,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5769,
+     "last": 5776,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5777,
+     "last": 5784,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5785,
+     "last": 5792,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5793,
+     "last": 5800,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5809,
+     "last": 5816,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5817,
+     "last": 5824,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5825,
+     "last": 5832,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5833,
+     "last": 5840,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5849,
+     "last": 5856,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5857,
+     "last": 5864,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5865,
+     "last": 5872,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5881,
+     "last": 5888,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5905,
+     "last": 5912,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5913,
+     "last": 5920,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5921,
+     "last": 5928,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5953,
+     "last": 5960,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5961,
+     "last": 5968,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5969,
+     "last": 5976,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5985,
+     "last": 5992,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 5993,
+     "last": 6000,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6001,
+     "last": 6008,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6009,
+     "last": 6016,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6017,
+     "last": 6024,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6025,
+     "last": 6032,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6041,
+     "last": 6048,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6049,
+     "last": 6056,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6065,
+     "last": 6072,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6073,
+     "last": 6080,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6097,
+     "last": 6104,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6105,
+     "last": 6112,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6113,
+     "last": 6120,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6121,
+     "last": 6128,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6129,
+     "last": 6136,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6145,
+     "last": 6152,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6153,
+     "last": 6160,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6161,
+     "last": 6168,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6169,
+     "last": 6176,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6185,
+     "last": 6192,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6193,
+     "last": 6200,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6201,
+     "last": 6208,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6209,
+     "last": 6216,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6217,
+     "last": 6224,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6233,
+     "last": 6240,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6241,
+     "last": 6248,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6249,
+     "last": 6256,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6257,
+     "last": 6264,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6273,
+     "last": 6280,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6281,
+     "last": 6288,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6289,
+     "last": 6296,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6297,
+     "last": 6304,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6305,
+     "last": 6312,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6313,
+     "last": 6320,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6321,
+     "last": 6328,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6329,
+     "last": 6336,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6345,
+     "last": 6352,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6353,
+     "last": 6360,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6361,
+     "last": 6368,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6369,
+     "last": 6376,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6377,
+     "last": 6384,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6385,
+     "last": 6392,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6393,
+     "last": 6400,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6409,
+     "last": 6416,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6417,
+     "last": 6424,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6425,
+     "last": 6432,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6433,
+     "last": 6440,
+     "pattern": "(?<![A-Za-z0-9])1\\ cup(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6441,
+     "last": 6448,
+     "pattern": "(?<![A-Za-z0-9])40(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6449,
+     "last": 6456,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6457,
+     "last": 6464,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6465,
+     "last": 6472,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6473,
+     "last": 6480,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6481,
+     "last": 6488,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    },
+    {
+     "first": 6489,
+     "last": 6496,
+     "pattern": "(?<![A-Za-z0-9])2(?![A-Za-z0-9])"
+    }
+   ]
+  }
+ ],
+ "storage": [
+  {
+   "scale": "s0",
+   "arm": "B4",
+   "units": 1200,
+   "replication_units": 1200,
+   "stored_chars": 613922,
+   "replication_stored_chars": 613922,
+   "source_messages": 4800,
+   "source_chars": 897180,
+   "replication_source_chars": 897180,
+   "recency_chars": 606
+  },
+  {
+   "scale": "s0",
+   "arm": "B8",
+   "units": 600,
+   "replication_units": 600,
+   "stored_chars": 403813,
+   "replication_stored_chars": 403813,
+   "source_messages": 4800,
+   "source_chars": 897180,
+   "replication_source_chars": 897180,
+   "recency_chars": 897
+  },
+  {
+   "scale": "s0",
+   "arm": "B16",
+   "units": 300,
+   "replication_units": 300,
+   "stored_chars": 251399,
+   "replication_stored_chars": 251399,
+   "source_messages": 4800,
+   "source_chars": 897180,
+   "replication_source_chars": 897180,
+   "recency_chars": 1591
+  },
+  {
+   "scale": "s0",
+   "arm": "T",
+   "units": 750,
+   "replication_units": 750,
+   "stored_chars": 423885,
+   "replication_stored_chars": 423885,
+   "source_messages": 4800,
+   "source_chars": 897180,
+   "replication_source_chars": 897180,
+   "recency_chars": 604
+  },
+  {
+   "scale": "s0",
+   "arm": "K",
+   "units": 300,
+   "replication_units": 300,
+   "stored_chars": 251399,
+   "replication_stored_chars": 251399,
+   "source_messages": 4800,
+   "source_chars": 897180,
+   "replication_source_chars": 897180,
+   "recency_chars": 1591
+  },
+  {
+   "scale": "s1",
+   "arm": "B4",
+   "units": 1605,
+   "replication_units": 1200,
+   "stored_chars": 680587,
+   "replication_stored_chars": 613922,
+   "source_messages": 6496,
+   "source_chars": 979988,
+   "replication_source_chars": 897180,
+   "recency_chars": 1640
+  },
+  {
+   "scale": "s1",
+   "arm": "B8",
+   "units": 1005,
+   "replication_units": 600,
+   "stored_chars": 470478,
+   "replication_stored_chars": 403813,
+   "source_messages": 6496,
+   "source_chars": 979988,
+   "replication_source_chars": 897180,
+   "recency_chars": 1640
+  },
+  {
+   "scale": "s1",
+   "arm": "B16",
+   "units": 705,
+   "replication_units": 300,
+   "stored_chars": 318064,
+   "replication_stored_chars": 251399,
+   "source_messages": 6496,
+   "source_chars": 979988,
+   "replication_source_chars": 897180,
+   "recency_chars": 1638
+  },
+  {
+   "scale": "s1",
+   "arm": "T",
+   "units": 837,
+   "replication_units": 432,
+   "stored_chars": 364492,
+   "replication_stored_chars": 297827,
+   "source_messages": 6496,
+   "source_chars": 979988,
+   "replication_source_chars": 897180,
+   "recency_chars": 1638
+  },
+  {
+   "scale": "s1",
+   "arm": "K",
+   "units": 705,
+   "replication_units": 300,
+   "stored_chars": 318064,
+   "replication_stored_chars": 251399,
+   "source_messages": 6496,
+   "source_chars": 979988,
+   "replication_source_chars": 897180,
+   "recency_chars": 1638
+  },
+  {
+   "scale": "s1",
+   "arm": "B8m",
+   "units": 648,
+   "replication_units": 600,
+   "stored_chars": 412652,
+   "replication_stored_chars": 403813,
+   "source_messages": 6496,
+   "source_chars": 979988,
+   "replication_source_chars": 897180,
+   "recency_chars": 559
+  },
+  {
+   "scale": "s1",
+   "arm": "B8c",
+   "units": 696,
+   "replication_units": 600,
+   "stored_chars": 418139,
+   "replication_stored_chars": 403813,
+   "source_messages": 6496,
+   "source_chars": 979988,
+   "replication_source_chars": 897180,
+   "recency_chars": 417
+  },
+  {
+   "scale": "s2",
+   "arm": "B4",
+   "units": 2458,
+   "replication_units": 1200,
+   "stored_chars": 817593,
+   "replication_stored_chars": 613922,
+   "source_messages": 9984,
+   "source_chars": 1121409,
+   "replication_source_chars": 897180,
+   "recency_chars": 1430
+  },
+  {
+   "scale": "s2",
+   "arm": "B8",
+   "units": 1858,
+   "replication_units": 600,
+   "stored_chars": 607484,
+   "replication_stored_chars": 403813,
+   "source_messages": 9984,
+   "source_chars": 1121409,
+   "replication_source_chars": 897180,
+   "recency_chars": 1430
+  },
+  {
+   "scale": "s2",
+   "arm": "B16",
+   "units": 1558,
+   "replication_units": 300,
+   "stored_chars": 455070,
+   "replication_stored_chars": 251399,
+   "source_messages": 9984,
+   "source_chars": 1121409,
+   "replication_source_chars": 897180,
+   "recency_chars": 1430
+  },
+  {
+   "scale": "s2",
+   "arm": "T",
+   "units": 1558,
+   "replication_units": 300,
+   "stored_chars": 455070,
+   "replication_stored_chars": 251399,
+   "source_messages": 9984,
+   "source_chars": 1121409,
+   "replication_source_chars": 897180,
+   "recency_chars": 1430
+  },
+  {
+   "scale": "s2",
+   "arm": "K",
+   "units": 1558,
+   "replication_units": 300,
+   "stored_chars": 455070,
+   "replication_stored_chars": 251399,
+   "source_messages": 9984,
+   "source_chars": 1121409,
+   "replication_source_chars": 897180,
+   "recency_chars": 1430
+  },
+  {
+   "scale": "s3",
+   "arm": "B4",
+   "units": 3311,
+   "replication_units": 1200,
+   "stored_chars": 954020,
+   "replication_stored_chars": 613922,
+   "source_messages": 13472,
+   "source_chars": 1262393,
+   "replication_source_chars": 897180,
+   "recency_chars": 1354
+  },
+  {
+   "scale": "s3",
+   "arm": "B8",
+   "units": 2711,
+   "replication_units": 600,
+   "stored_chars": 743911,
+   "replication_stored_chars": 403813,
+   "source_messages": 13472,
+   "source_chars": 1262393,
+   "replication_source_chars": 897180,
+   "recency_chars": 1354
+  },
+  {
+   "scale": "s3",
+   "arm": "B16",
+   "units": 2411,
+   "replication_units": 300,
+   "stored_chars": 591497,
+   "replication_stored_chars": 251399,
+   "source_messages": 13472,
+   "source_chars": 1262393,
+   "replication_source_chars": 897180,
+   "recency_chars": 1354
+  },
+  {
+   "scale": "s3",
+   "arm": "T",
+   "units": 2411,
+   "replication_units": 300,
+   "stored_chars": 591497,
+   "replication_stored_chars": 251399,
+   "source_messages": 13472,
+   "source_chars": 1262393,
+   "replication_source_chars": 897180,
+   "recency_chars": 1354
+  },
+  {
+   "scale": "s3",
+   "arm": "K",
+   "units": 2411,
+   "replication_units": 300,
+   "stored_chars": 591497,
+   "replication_stored_chars": 251399,
+   "source_messages": 13472,
+   "source_chars": 1262393,
+   "replication_source_chars": 897180,
+   "recency_chars": 1354
+  },
+  {
+   "scale": "s4",
+   "arm": "B4",
+   "units": 4306,
+   "replication_units": 1200,
+   "stored_chars": 1116620,
+   "replication_stored_chars": 613922,
+   "source_messages": 17600,
+   "source_chars": 1427634,
+   "replication_source_chars": 897180,
+   "recency_chars": 475
+  },
+  {
+   "scale": "s4",
+   "arm": "B8",
+   "units": 3706,
+   "replication_units": 600,
+   "stored_chars": 906511,
+   "replication_stored_chars": 403813,
+   "source_messages": 17600,
+   "source_chars": 1427634,
+   "replication_source_chars": 897180,
+   "recency_chars": 475
+  },
+  {
+   "scale": "s4",
+   "arm": "B16",
+   "units": 3406,
+   "replication_units": 300,
+   "stored_chars": 754097,
+   "replication_stored_chars": 251399,
+   "source_messages": 17600,
+   "source_chars": 1427634,
+   "replication_source_chars": 897180,
+   "recency_chars": 475
+  },
+  {
+   "scale": "s4",
+   "arm": "T",
+   "units": 3406,
+   "replication_units": 300,
+   "stored_chars": 754097,
+   "replication_stored_chars": 251399,
+   "source_messages": 17600,
+   "source_chars": 1427634,
+   "replication_source_chars": 897180,
+   "recency_chars": 475
+  },
+  {
+   "scale": "s4",
+   "arm": "K",
+   "units": 3406,
+   "replication_units": 300,
+   "stored_chars": 754097,
+   "replication_stored_chars": 251399,
+   "source_messages": 17600,
+   "source_chars": 1427634,
+   "replication_source_chars": 897180,
+   "recency_chars": 475
+  }
+ ],
+ "resemblance": {
+  "filler_mids": 891,
+  "distractor_mids": 3106,
+  "chars_per_source_message": {
+   "replication": 186.9125,
+   "distractors": 41.44171875
+  },
+  "chars_per_summary": {
+   "filler": 529.8260381593715,
+   "distractors": 161.84739214423695
+  },
+  "mean_top1_cosine": {
+   "distractors": 0.5944440461646383,
+   "filler": 0.6581573282970511
+  },
+  "queries_where_distractor_top1_is_higher": 61
+ },
+ "run": {
+  "rank_seconds": 8.312265872955322,
+  "rerank_calls": null
+ }
+}

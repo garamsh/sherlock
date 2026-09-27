@@ -195,8 +195,9 @@ MiniMax-M2 at `https://api.minimax.io/v1/chat/completions` only, through one pro
   - C1 3 of 30 and E 3 of 30.
 - **Valid.** An arm is valid when its difference is positive and significant, every guardrail holds, and every control passed. IC2 and IC3 never gate.
 - **Named.** RW-key if it is valid, else RW if it is valid (`score.py` `decide`).
-  - This follows the PM's primary and secondary order. It replaces #885's "fewest net lines" among valid arms.
-  - Both line estimates are stated above, so the report can say which #885's order would have named.
+- **Stated deviation from #885's rule.** #885 names the valid arm with the fewest net production lines. This run names by the PM's primary and secondary order instead, as the PM accepted on the dispatch channel.
+  - Under #885's order RW (about +75) would be named over RW-key (about +130) if both were valid.
+  - The report states which arm #885's order would have named.
 - **Null.** If no arm is valid and every control passed, the shipped recall stands, and no arm is named for implementation.
 - **Side by side.** The report tables every family for S, C, RW-key and RW, offline:
   - carried and strict reach;

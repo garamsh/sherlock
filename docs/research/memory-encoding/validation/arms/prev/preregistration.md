@@ -59,3 +59,11 @@ Fixed before the first call, computed by `controls.py` into `evidence/controls.j
 ## Measures
 
 `../../score.py offline` scores each setting like every arm: reach per family, context characters per turn, stored characters per source character and vectors, against S at `b4`. Admission to the live stage is `../../preregistration.md` §Offline stage's, on C2 and C3 pooled, for each setting separately.
+
+## Amendments
+
+1. **`b4-k5` is not run; its control is recorded as failed by ceiling.** Made before any paid call of either setting, and approved by the PM on the #892 dispatch.
+   - **Finding.** `lookup.py` (`evidence/lookup-b4-k5.json`) ran `b4-k5`'s candidate lookup on the shared batch-4 store built at `cdb2758`, with the local embedder and no model call. Of the 225 consecutive hop pairs of the chains of two or more hops, the later hop's batch is given the earlier hop's mid in 26: C2 8 of 50, C3 17 of 100, IC2 1 of 25, IC3 0 of 50. The earlier mid's median rank is 28, and 49, 91, 154 and 194 pairs fall within the top 10, 20, 50 and 100.
+   - **Consequence.** The model can link only a mid it is given, so the hop-pair control cannot exceed 26 of 225 (12%) against its 50%, whatever the model chooses. The phase could only confirm the failure, at about 0.86M input tokens.
+   - **Why.** The corpus states each hop in a templated exchange, and the same templates recur across chains ("Our account at X Components is looked after by Y"). A batch's text is nearer to other chains' exchanges of the same template than to the one hop it continues, whose summary shares only the names.
+   - **What changes.** `b4-prev` runs as fixed above. `b4-k5` makes no call and has no offline record, and `controls.py` reports its control as failed from the lookup. A larger k was considered and not taken: at k = 20 the ceiling is 91 of 225, still below 50%, and the input grows fourfold.

@@ -119,6 +119,13 @@ def main():
     ledger = S.load_jsonl(STUDY / "evidence" / "ledger" / "calls.jsonl")
     result = {}
     for setting in SETTINGS:
+        if not (HERE / "evidence" / f"links-{setting}.jsonl").exists():
+            # preregistration.md §Amendments, 1: b4-k5 made no call, and its
+            # control failed on the lookup's ceiling.
+            lookup = json.loads((HERE / "evidence" / "lookup-b4-k5.json").read_text())
+            ceiling = lookup["pooled"]["given"] / lookup["pooled"]["pairs"]
+            result[setting] = {"run": False, "hop_pairs_ceiling": {**lookup["pooled"], "share": round(ceiling, 4)}, "passed": ceiling >= HOP_PAIRS}
+            continue
         records = STUDY / "evidence" / "offline" / "P" / setting
         result[setting] = controls(corpus, setting, S.load_jsonl(HERE / "evidence" / f"links-{setting}.jsonl"),
                                    S.load_jsonl(records / "probes.jsonl"), S.load_jsonl(records / "oracle.jsonl"), ledger)

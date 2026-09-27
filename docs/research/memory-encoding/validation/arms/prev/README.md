@@ -22,17 +22,32 @@ Records arm P of issue #890's validation study (#892): survey candidate P (`../.
 
 Fixed in `preregistration.md` §Controls before the first call, and computed by `controls.py` into `evidence/controls.json`:
 - at each setting, at least 10% of stream batches link a mid;
-- at `b4-k5`, at least half of the consecutive hop pairs of the chains of two or more hops are linked;
+- at `b4-k5`, at least half of the consecutive hop pairs of the chains of two or more hops are linked. It failed by ceiling before any call, and `b4-k5` was not run (§Similarity-chosen candidates do not reach chains);
 - the oracle, as every arm;
 - the mutation checks in `mutation.py` (`evidence/mutation.txt`): removing the thread list, its ranking order, either direction of a link, the previous mid at `b4-prev`, the earlier-only rule at `b4-k5`, the refusal of an ID not given or of a null `continues`, the retry variation, the failed record, the recording check, or the control's own link test each breaks a test.
+
+## Similarity-chosen candidates do not reach chains
+
+`b4-k5` gives each batch the 5 earlier mids most similar to its text, and the model may link only those. On this corpus that lookup gives the later hop's batch the earlier hop's mid for 26 of the 225 consecutive hop pairs (`lookup.py`, `evidence/lookup-b4-k5.json`, on the shared store at `cdb2758`, no model call):
+
+| Family | Pairs | Given within 5 |
+|---|---:|---:|
+| C2 | 50 | 8 |
+| C3 | 100 | 17 |
+| IC2 | 25 | 1 |
+| IC3 | 50 | 0 |
+
+- The earlier mid's median rank is 28 of the mids before the later hop; 49, 91, 154 and 194 pairs fall within the top 10, 20, 50 and 100.
+- Each hop is stated in a templated exchange, and the templates recur across chains. For C2, "Our account at Zevai Components is looked after by Chloe Traike." is followed 389 mids later by "Chloe Traike answers on extension 6200."; the second batch's text is nearer to other chains' exchanges of its own template than to the first, which shares only the name.
+- So the hop-pair control (at least half linked) could not exceed 12%, and the paid phase was dropped before any call (`preregistration.md` §Amendments, 1). L (#874, #885) linked the same kind of chains through the names both hops state. A link chosen from similarity candidates does not reach them: the candidate step, not the model's choice, is what fails.
 
 ## Running it
 
 ```sh
 D=docs/research/memory-encoding/validation
 go run ./$D/arms/prev build   -dir $D -work <scratch> -setting b4-prev -proxy http://127.0.0.1:8101 -embed-url http://127.0.0.1:8100/v1   # paid until evidence/links-b4-prev.jsonl is complete
-go run ./$D/arms/prev build   -dir $D -work <scratch> -setting b4-k5   -proxy http://127.0.0.1:8101 -embed-url http://127.0.0.1:8100/v1   # paid until evidence/links-b4-k5.jsonl is complete
-go run ./$D/arms/prev offline -dir $D -work <scratch> -embed-url http://127.0.0.1:8100/v1
+go run ./$D/arms/prev offline -dir $D -work <scratch> -setting b4-prev -embed-url http://127.0.0.1:8100/v1
+python3 $D/arms/prev/lookup.py <scratch>/shared/b4/memory.db                                                                           # free: b4-k5's lookup ceiling
 python3 $D/arms/prev/controls.py
 python3 $D/arms/prev/mutation.py
 ```

@@ -31,7 +31,7 @@ Fixed in `../../preregistration.md` §F's controls before the first call, and co
 ## Running it
 
 ```sh
-D=docs/research/memory-encoding/validation
+D=research/memory-encoding/validation
 go run ./$D/arms/facts build   -dir $D -work <scratch> -proxy http://127.0.0.1:8101 -embed-url http://127.0.0.1:8100/v1   # paid until evidence/facts-b4.jsonl is complete
 go run ./$D/arms/facts offline -dir $D -work <scratch> -embed-url http://127.0.0.1:8100/v1
 python3 $D/arms/facts/controls.py

@@ -1,7 +1,7 @@
 """Remove each behaviour #902 added that a test names, run the tests,
 restore it, and record that the tests failed (evidence/mutation.txt).
 
-    python3 docs/research/memory-encoding/retrieved-context/mutation.py
+    python3 research/memory-encoding/retrieved-context/mutation.py
 
 It covers the search at write (its exclusion, its bounds, RW's search over
 its own earlier mids), both calls (RW's added sentence and context,
@@ -16,9 +16,9 @@ import subprocess
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-ROOT = HERE.parents[3]
+ROOT = HERE.parents[2]
 
-GO = ["go", "test", "-count=1", "./docs/research/memory-encoding/retrieved-context/arms/retrieved/"]
+GO = ["go", "test", "-count=1", "./research/memory-encoding/retrieved-context/arms/retrieved/"]
 SCORE = ["python3", "-m", "unittest", "score_test"]
 
 A = "arms/retrieved/"

@@ -115,7 +115,7 @@ The survey's estimate was +75 to +115, with `prev` at the low end. The recall's 
 ## Running it
 
 ```sh
-D=docs/research/memory-encoding/validation
+D=research/memory-encoding/validation
 go run ./$D/arms/prev build   -dir $D -work <scratch> -setting b4-prev -proxy http://127.0.0.1:8101 -embed-url http://127.0.0.1:8100/v1   # paid until evidence/links-b4-prev.jsonl is complete
 go run ./$D/arms/prev offline -dir $D -work <scratch> -setting b4-prev -embed-url http://127.0.0.1:8100/v1
 python3 $D/arms/prev/lookup.py <scratch>/shared/b4/memory.db                                                                           # free: b4-k5's lookup ceiling

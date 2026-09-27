@@ -5,7 +5,7 @@
 
 ## Context
 
-The earlier decision unified model-chosen writes through the reserved `memory_write` response. Source-linked conversational memory instead needs an original visible message and summaries that cannot be orphaned by a failed maintenance step. Issue #823 changes the active write authority while preserving the terminal response transport. Issue #866 adds one model-written layer beside the conversation: a bounded note that keeps standing instructions and the current work beyond the window, as the surveyed agents keep one (`docs/research/agent-context/` §Comparison).
+The earlier decision unified model-chosen writes through the reserved `memory_write` response. Source-linked conversational memory instead needs an original visible message and summaries that cannot be orphaned by a failed maintenance step. Issue #823 changes the active write authority while preserving the terminal response transport. Issue #866 adds one model-written layer beside the conversation: a bounded note that keeps standing instructions and the current work beyond the window, as the surveyed agents keep one (`research/agent-context/` §Comparison).
 
 ## Decision
 
@@ -27,7 +27,7 @@ A failure preserves completed sources and any earlier committed episodes. Startu
 
 ## Evidence and limits
 
-The note was tested with the search call of ADR 0019, as candidate A in `docs/research/agent-context/`, against the shipped structure. All three runs were preregistered and live, on MiniMax-M2:
+The note was tested with the search call of ADR 0019, as candidate A in `research/agent-context/`, against the shipped structure. All three runs were preregistered and live, on MiniMax-M2:
 
 - **Issue #862.** On 280 primary probes, A applied the evidence in 209 and the shipped structure in 124 (A only 86, shipped only 1).
 - **Issue #864.** On a new seed, A applied it in 192 and the shipped structure in 122 (74 to 4). The exact-query, absent-query and continuation guardrails held.

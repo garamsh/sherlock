@@ -11,9 +11,9 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/garamsh/sherlock/docs/research/chained-recall/study"
 	"github.com/garamsh/sherlock/internal/agent"
 	"github.com/garamsh/sherlock/internal/tool"
+	"github.com/garamsh/sherlock/research/chained-recall/study"
 )
 
 // factPrompt is the production synthesis prompt

@@ -1,7 +1,7 @@
 """Tests of #906's card construction, attach rule, measures and gate on
 synthetic records; no test reads the recorded evidence.
 
-    cd docs/research/memory-encoding/profiles && python3 -m unittest screen_test
+    cd research/memory-encoding/profiles && python3 -m unittest screen_test
 """
 
 import unittest

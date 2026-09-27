@@ -37,7 +37,7 @@ What ships (`docs/architecture/memory.md`, ADR 0006, ADR 0019):
 
 ### Compression of what ships
 
-Computed for this survey from the #856 replication's recorded syntheses (`docs/research/mid-memory-rag/evidence/replication/`). The chars/source column is summary characters over the 897,180 characters of the 4,800 source messages. The last column is delivered recall on the replication's 280 primary queries (`docs/research/mid-memory-rag/README.md` §Replication).
+Computed for this survey from the #856 replication's recorded syntheses (`research/mid-memory-rag/evidence/replication/`). The chars/source column is summary characters over the 897,180 characters of the 4,800 source messages. The last column is delivered recall on the replication's 280 primary queries (`research/mid-memory-rag/README.md` §Replication).
 
 | Batch | Mids | Mean summary chars | Stored summary chars / source chars | Delivered hits of 280 |
 |---|---:|---:|---:|---:|
@@ -52,9 +52,9 @@ Computed for this survey from the #856 replication's recorded syntheses (`docs/r
 
 ### Sherlock's own evidence on chaining
 
-- **#862, #864 and #870** (`docs/research/agent-context/README.md`) measured single-evidence probes only. Given `memory_search`, MiniMax-M2 searched in 39, 39 and 23 of 70 probes whose referent lay beyond the window. The probe's evidence was reachable in one step.
-- **Recursive retrieval was simulated in the offline memory-architecture harness** (`docs/research/memory-architecture/README.md`, G7 to G9). It matched single-hop, 0.79 against 0.87 for reflection on the diverse workload, "because independent sessions give it no path to walk". That harness hashes words instead of embedding them, and its corpus had no chains.
-- **Blending buried relevance.** The issue attributes this to `memory-architecture`. The measurement is in `docs/research/memory-retrieval/README.md` §Which conclusions may be quoted across embedders: under the blended read path, "the top ten is settled by age and salience before the query is read". Any structure that folds recency or importance into one score with relevance repeats that design.
+- **#862, #864 and #870** (`research/agent-context/README.md`) measured single-evidence probes only. Given `memory_search`, MiniMax-M2 searched in 39, 39 and 23 of 70 probes whose referent lay beyond the window. The probe's evidence was reachable in one step.
+- **Recursive retrieval was simulated in the offline memory-architecture harness** (`research/memory-architecture/README.md`, G7 to G9). It matched single-hop, 0.79 against 0.87 for reflection on the diverse workload, "because independent sessions give it no path to walk". That harness hashes words instead of embedding them, and its corpus had no chains.
+- **Blending buried relevance.** The issue attributes this to `memory-architecture`. The measurement is in `research/memory-retrieval/README.md` §Which conclusions may be quoted across embedders: under the blended read path, "the top ten is settled by age and salience before the query is read". Any structure that folds recency or importance into one score with relevance repeats that design.
 - **No sherlock study has measured a chain,** where step 2's evidence can only be identified from what step 1 recalled. #874 exists for that.
 
 ## The structures
@@ -240,7 +240,7 @@ Source: Park et al., "Generative Agents: Interactive Simulacra of Human Behavior
 - **Numbers.** Believability, TrueSkill: full architecture μ = 29.89; without reflection 26.88.
 - **Not settled.**
   - Nothing on multi-hop recall, storage or cost.
-  - The blended score is the design `docs/research/memory-retrieval/` found buries relevance.
+  - The blended score is the design `research/memory-retrieval/` found buries relevance.
 
 ### MemGPT and Letta
 
@@ -349,7 +349,7 @@ Excluded, with the reason each fails sherlock's constraints:
 - **Zep / Graphiti and Mem0g.** Several LLM calls per message, a second store with invalidation rules, no ablation of the walk (Zep), and no multi-hop gain in its own paper (Mem0g).
 - **Mem0.** Per-message extraction replaces source-linked episodes and has no chaining mechanism.
 - **A-MEM.** Its evolution step rewrites stored neighbours, which conflicts with immutable episodes (ADR 0006). Its links alone are covered by candidate L below, at no extra call.
-- **Generative Agents' reflection.** Its read path is the blended score `docs/research/memory-retrieval/` found buries relevance. Reflection as a summary level is covered by candidate H.
+- **Generative Agents' reflection.** Its read path is the blended score `research/memory-retrieval/` found buries relevance. Reflection as a summary level is covered by candidate H.
 - **IRCoT and Self-Ask as loops.** Sherlock's `memory_search` already is this loop; candidate M sharpens it.
 
 Estimates below are net production lines before tests, read from the files at `eaecbcc`; nothing was implemented. Costs are under a MiniMax-only, subscription-bound budget with local embeddings: calls and tokens, not dollars.
@@ -358,7 +358,7 @@ Estimates below are net production lines before tests, read from the files at `e
 
 - **Why.** IRCoT, Self-Ask and MemGPT all gain by letting the model write the next query from what the last result said, and sherlock's search is that mechanism already. The contract asks the model to search again only "when the first misses", not to follow what a result names. MemGPT's weaker models failed by stopping early, and MiniMax-M2 searched in only 23 to 39 of 70 beyond-window probes in the agent-context runs.
 - **Change.** The contract paragraph in `internal/agent/instructions.go` gains one instruction: when a candidate names a person, place, project or rule the task depends on, search for that name next, and keep going until the task's own question is answered. Estimate **+2 to +4 lines**. The per-tool budget of six stays, bounding a chain at six searches.
-- **Cost.** No write-time change. One act call per hop, at #862's estimate of about 7,500 input tokens per call (`docs/research/agent-context/README.md` §Experiment plan). Compression is unchanged: 0.684 stored per source character at batch 4.
+- **Cost.** No write-time change. One act call per hop, at #862's estimate of about 7,500 input tokens per call (`research/agent-context/README.md` §Experiment plan). Compression is unchanged: 0.684 stored per source character at batch 4.
 - **Hypothesis for #874.** On k = 2 and k = 3 chains, the agent under M reaches and applies every hop's evidence more often than under the shipped contract, with no loss on single-evidence guards. The failure it would show is MemGPT's: stopping before the last hop.
 
 ### L. Entity links written by the synthesis call, followed by a walk at recall

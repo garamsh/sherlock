@@ -143,11 +143,11 @@ The owner's proposal: every n new messages, search the raw messages and the exis
 From the repository root, with Docker, Go and Python 3. `<tei>` is a free local port, and `<scratch>` is outside the repository.
 
 ```sh
-D=docs/research/memory-encoding/retrieved-context
+D=research/memory-encoding/retrieved-context
 docker run -d --name tei-902 --memory 1g -p 127.0.0.1:<tei>:80 \
   ghcr.io/huggingface/text-embeddings-inference@sha256:2538ea1c9640d3763b15af668039d24172d063b42337b0c27796fc2be180c78d \
   --model-id BAAI/bge-base-en-v1.5 --revision a5beb1e3e68b9ab74eb54cfd186867f64f240e1a --max-client-batch-size 16 --max-batch-requests 16
-go run ./docs/research/chained-recall/harness build -batch 4 -dir $D -work <scratch> -embed-url http://127.0.0.1:<tei>/v1
+go run ./research/chained-recall/harness build -batch 4 -dir $D -work <scratch> -embed-url http://127.0.0.1:<tei>/v1
 go run ./$D/arms/retrieved screen -dir $D -work <scratch> -embed-url http://127.0.0.1:<tei>/v1
 python3 $D/score.py screen
 python3 $D/score.py offline

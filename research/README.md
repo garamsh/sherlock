@@ -1,6 +1,6 @@
 # Research
 
-Research records the questions, methods, evidence, conclusions, and limits behind this repository's studies. Current system responsibilities and decisions live in [architecture](../architecture/README.md); study reports link to them where relevant.
+Research records the questions, methods, evidence, conclusions, and limits behind this repository's studies. Current system responsibilities and decisions live in [architecture](../docs/architecture/README.md); study reports link to them where relevant.
 
 ## Studies
 
@@ -30,4 +30,4 @@ Research records the questions, methods, evidence, conclusions, and limits behin
 
 Give each study its own directory and Markdown report beside its evidence and any study-specific harness. State the question, method and reproduction steps, evidence and results with links to raw files, conclusion, and limits. Identify the source revision and runtime measured so historical results are not read as measurements of the current system. Keep original evidence intact when updating a report, and link to current decisions in `docs/architecture/` rather than copying them.
 
-Place a utility under `docs/research/tools/` when its documented inputs and outputs can serve future studies without study-specific changes and it has a credible long-term use beyond one study. Keep study-specific harnesses beside their reports. Paths beginning `docs/experiments/` in historical report descriptions and raw output name the layout at the time of those runs; active commands and links use `docs/research/`.
+Place a utility under `research/tools/` when its documented inputs and outputs can serve future studies without study-specific changes and it has a credible long-term use beyond one study. Keep study-specific harnesses beside their reports. Paths beginning `docs/experiments/` in historical report descriptions and raw output name the layout at the time of those runs; active commands and links use `research/`. Paths beginning `docs/research/` name the layout before the studies moved to `research/` (#908); they stay as recorded in historical reports, raw output and preregistrations, in harness files whose SHA-256 a preregistration pins, and where a command or harness reads a commit that predates it.

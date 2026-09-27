@@ -103,7 +103,7 @@ Every page accessed 2026-09-27. The current documentation is written for MiniMax
 - **Caching.**
   - *Explicit* `cache_control` exists on the Anthropic-compatible endpoint only, and lists M2 (`anthropic-api-compatible-cache.md`). Cached content has "a lifetime of 5 minutes", refreshed on each hit. M2's row: input $0.3, output $1.2, cache read $0.03 and cache write $0.375 per million tokens.
   - *Automatic* caching works on both endpoints for calls "with 512 or more input tokens", by prefix match, with "No additional charge for cache writes" (`text-prompt-caching.md`). Its supported models are M3, M2.7, M2.5 and M2.1. M2 is not listed.
-  - Sherlock can call either protocol (`openai-compatible` or `anthropic-compatible`, `cmd/sherlock/model_provider.go`). The studies call the OpenAI-compatible one (`../chained-recall/study/env.go`), and sherlock's Anthropic client sends no `cache_control` (`rg -i cache internal/agent/anthropic/` matches nothing; the same search over `docs/research/chained-recall/harness/` matches the proxy's synthesis cache). So on the path every study used, no caching is documented for M2.
+  - Sherlock can call either protocol (`openai-compatible` or `anthropic-compatible`, `cmd/sherlock/model_provider.go`). The studies call the OpenAI-compatible one (`../chained-recall/study/env.go`), and sherlock's Anthropic client sends no `cache_control` (`rg -i cache internal/agent/anthropic/` matches nothing; the same search over `research/chained-recall/harness/` matches the proxy's synthesis cache). So on the path every study used, no caching is documented for M2.
 - **Pricing basis.**
   - Pay-as-you-go (`pricing-paygo.md`): $0.3 per million input and $1.2 per million output tokens. Rate limits (`rate-limits.md`): 500 requests and 20,000,000 tokens per minute.
   - At M2's launch the subscription was the Coding Plan, metered in "100 prompts / 5 hours", "300" and "1000" for $10, $20 and $50 a month, where "1 "prompt" is roughly equivalent to 15 requests to the model" (Wayback captures `20251111035356` of `pricing-codingplan` and `20251111231539` of `coding-plan/intro`).
@@ -114,7 +114,7 @@ Every page accessed 2026-09-27. The current documentation is written for MiniMax
 
 ### Whether sherlock's corpora fit
 
-`python3 docs/research/memory-paradigms/tokens.py <tokenizer.json> <#890 corpus.json>` writes `tokens.json`.
+`python3 research/memory-paradigms/tokens.py <tokenizer.json> <#890 corpus.json>` writes `tokens.json`.
 - **Tokenizer.** MiniMax-M2's own byte-level BPE, from `tokenizer.json` at the revision above, applied in plain Python because the `tokenizers` package is not installed. Messages are counted as M2's chat template (`chat_template.jinja` at the same revision) frames them: `]~b]user\n<content>[e~[\n`, with `ai` for the assistant.
 - **Validation against MiniMax's own counts.** #874's 424 distinct batch-4 synthesis requests differ only in their user message. For every one, the `prompt_tokens` MiniMax reported (`../chained-recall/evidence/ledger/calls.jsonl`) minus this count of that message is exactly 273. So the count is exact on that text. The base holds 1,342 non-ASCII characters that the validation did not exercise. Even a one-token error on each would move a corpus total by less than 1%.
 - **The corpora.** Each is the #856 replication's 4,800 messages (the base) followed by its study's stream.

@@ -59,7 +59,7 @@ const readToolDescription = "Give the address this question reaches, so the memo
 // wider read this design errs toward; and asking a model to supply one
 // is what collapsed whole-address accuracy in the record, where a model
 // supplied a restriction on nearly every assertion that placed none
-// (`docs/research/memory-frames/` §Whether the address carries the
+// (`research/memory-frames/` §Whether the address carries the
 // arity).
 const ReadInstruction = `A memory holds a fact at the address of the question it answers, and that address is formed from the statement that states the fact:
 

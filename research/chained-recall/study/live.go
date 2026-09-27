@@ -241,7 +241,7 @@ func Live(ctx context.Context, env *Env, arm Arm, setting string, workers int, o
 			done[r.Probe] = true
 		}
 	}
-	descriptors, err := loadDescriptors(filepath.Join(ResearchDir(env.Dir), "..", "..", "tools"))
+	descriptors, err := loadDescriptors(filepath.Join(ResearchDir(env.Dir), "..", "tools"))
 	if err != nil {
 		return err
 	}

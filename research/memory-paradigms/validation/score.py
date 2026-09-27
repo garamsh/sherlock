@@ -1,9 +1,9 @@
 """Score the #900 validation run with #890's matching (../../memory-encoding/validation/score.py).
 
-    python3 docs/research/memory-paradigms/validation/score.py offline    # evidence/offline/scores.json: D's admission
-    python3 docs/research/memory-paradigms/validation/score.py controls   # evidence/controls.json
-    python3 docs/research/memory-paradigms/validation/score.py live       # evidence/live/scores.json: the verdict
-    python3 docs/research/memory-paradigms/validation/score.py tokens     # evidence/tokens.json
+    python3 research/memory-paradigms/validation/score.py offline    # evidence/offline/scores.json: D's admission
+    python3 research/memory-paradigms/validation/score.py controls   # evidence/controls.json
+    python3 research/memory-paradigms/validation/score.py live       # evidence/live/scores.json: the verdict
+    python3 research/memory-paradigms/validation/score.py tokens     # evidence/tokens.json
 
 This file adds what preregistration.md fixes for #900: the arms' primary
 families, D's offline admission, R's and D's controls, W's reading beside

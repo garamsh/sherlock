@@ -11,9 +11,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/sherlock/docs/research/chained-recall/study"
 	"github.com/garamsh/sherlock/internal/agent"
 	"github.com/garamsh/sherlock/internal/memory/sqlite"
+	"github.com/garamsh/sherlock/research/chained-recall/study"
 )
 
 // markerEmbedder places a text by which of the chain's words it holds, with

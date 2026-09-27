@@ -1,6 +1,6 @@
 """Draw W's stratified probe sample from #890's corpus (preregistration.md §W).
 
-    python3 docs/research/memory-paradigms/validation/sample.py   # writes sample.json
+    python3 research/memory-paradigms/validation/sample.py   # writes sample.json
 
 Per family, the probe IDs in corpus order are sampled without replacement
 by random.Random(SEED) and listed in corpus order; re-running rewrites

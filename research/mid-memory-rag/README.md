@@ -149,7 +149,7 @@ Estimated net: about +100 to +190 production lines before tests. The phrase-call
 - The live loop is study-local: a reduced system prompt, 4 calls and no retries. It is not the shipped session, and its no-answer cells reflect that bound.
 - A stand-in dry run (summaries equal to raw episode text, phrases equal to the query text) ran before the preregistration commit, to crash-test the pipeline after the corpus was frozen. Its outputs are kept in [evidence/standin](evidence/standin/) and are not results. It delivered A 21 and B 23 of 40.
 
-Current responsibilities and the open read-policy question stay in [memory architecture](../../architecture/memory.md) and [ADR 0019](../../architecture/adr/0019-memory-read-step.md).
+Current responsibilities and the open read-policy question stay in [memory architecture](../../docs/architecture/memory.md) and [ADR 0019](../../docs/architecture/adr/0019-memory-read-step.md).
 
 ## Replication (issue #856)
 
@@ -351,7 +351,7 @@ docker run -d --name tei-858 -p 127.0.0.1:8090:80 \
   ghcr.io/huggingface/text-embeddings-inference@sha256:2538ea1c9640d3763b15af668039d24172d063b42337b0c27796fc2be180c78d \
   --model-id BAAI/bge-base-en-v1.5 --revision a5beb1e3e68b9ab74eb54cfd186867f64f240e1a
 curl -s 127.0.0.1:8090/info                         # once it answers, the model is loaded
-go run ./docs/research/mid-memory-rag/parity        # writes evidence/production-parity/{rankings,scores}.json
+go run ./research/mid-memory-rag/parity        # writes evidence/production-parity/{rankings,scores}.json
 docker rm -f tei-858
 ```
 
@@ -362,21 +362,21 @@ The timing fields in `scores.json` vary between runs; every other field and `ran
 At head, from the repository root, these run without the bridge and leave the committed files unchanged:
 
 ```sh
-python3 docs/research/mid-memory-rag/corpus.py            # regenerates corpus.json and queries.json byte-identically
-PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s docs/research/mid-memory-rag -p '*_test.py' -v
-python3 docs/research/mid-memory-rag/score.py docs/research/mid-memory-rag/evidence
-python3 docs/research/mid-memory-rag/diagnose.py docs/research/mid-memory-rag/evidence
-python3 docs/research/mid-memory-rag/replication_score.py                  # offline; regenerates replication/scores.json
-python3 docs/research/mid-memory-rag/replication_score.py power            # the preregistered power table
+python3 research/mid-memory-rag/corpus.py            # regenerates corpus.json and queries.json byte-identically
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s research/mid-memory-rag -p '*_test.py' -v
+python3 research/mid-memory-rag/score.py research/mid-memory-rag/evidence
+python3 research/mid-memory-rag/diagnose.py research/mid-memory-rag/evidence
+python3 research/mid-memory-rag/replication_score.py                  # offline; regenerates replication/scores.json
+python3 research/mid-memory-rag/replication_score.py power            # the preregistered power table
 ```
 
 Everything that calls the bridge runs from a checkout of `b898867`:
 
 ```sh
-go build -o /tmp/mid-rag-854-bridge ./docs/research/mid-memory-rag
-python3 docs/research/mid-memory-rag/run.py preflight /tmp/mid-rag-854-preflight
-mkdir -p /tmp/mid-rag-854-rank && cp docs/research/mid-memory-rag/evidence/{synthesis,phrases}.json /tmp/mid-rag-854-rank/
-python3 docs/research/mid-memory-rag/run.py rank /tmp/mid-rag-854-rank   # offline: rebuilds the store and rankings from recorded exchanges
+go build -o /tmp/mid-rag-854-bridge ./research/mid-memory-rag
+python3 research/mid-memory-rag/run.py preflight /tmp/mid-rag-854-preflight
+mkdir -p /tmp/mid-rag-854-rank && cp research/mid-memory-rag/evidence/{synthesis,phrases}.json /tmp/mid-rag-854-rank/
+python3 research/mid-memory-rag/run.py rank /tmp/mid-rag-854-rank   # offline: rebuilds the store and rankings from recorded exchanges
 PATH=/home/sauce/go/bin:$PATH make ci
 ```
 
@@ -387,8 +387,8 @@ PATH=/home/sauce/go/bin:$PATH make ci
 Replication, from a checkout of `b898867`, since `rank` calls the bridge:
 
 ```sh
-go build -o /tmp/mid-rag-854-bridge ./docs/research/mid-memory-rag
-python3 docs/research/mid-memory-rag/replication.py rank                   # offline; rebuilds the store and rankings.json
+go build -o /tmp/mid-rag-854-bridge ./research/mid-memory-rag
+python3 research/mid-memory-rag/replication.py rank                   # offline; rebuilds the store and rankings.json
 ```
 
 - `rank` rebuilds `store.db`, `scratch/` and `rankings.json` from the recorded synthesis and phrase exchanges, under `evidence/replication/`; neither `store.db` nor `scratch/` is committed. It needs `uv` and downloads the embedding model on first use.

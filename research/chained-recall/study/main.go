@@ -42,7 +42,7 @@ func run(ctx context.Context, arm Arm, args []string) error {
 		return errors.New("usage: <arm> build|offline|live [flags]")
 	}
 	fs := flag.NewFlagSet(args[0], flag.ExitOnError)
-	dir := fs.String("dir", "docs/research/chained-recall", "study directory")
+	dir := fs.String("dir", "research/chained-recall", "study directory")
 	corpusDir := fs.String("corpus", "", "directory holding corpus.json, when another study's; empty reads -dir")
 	work := fs.String("work", "", "scratch root outside the repository")
 	proxy := fs.String("proxy", "", "study proxy base URL, for arms that call the model")

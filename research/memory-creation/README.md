@@ -343,7 +343,7 @@ The ordering inside the top group is not resolved on `net` at either round's pre
 ## Reproducing
 
 ```
-cd docs/research/memory-creation
+cd research/memory-creation
 python3 harness/round4/separability.py
 python3 harness/round4/runner.py
 SEED=11 python3 harness/round4/runner.py
@@ -381,7 +381,7 @@ The B15, B16, B17 and B18 rows in §The structures had no command at all until #
 Round 5 is eight runs, one structure and seed per invocation:
 
 ```
-cd docs/research/memory-creation
+cd research/memory-creation
 python3 harness/round5/dataset_check.py
 python3 harness/round5/runner.py DeciderNeighbors
 python3 harness/round5/runner.py DeciderNeighborsWide

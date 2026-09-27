@@ -1,7 +1,7 @@
 """Remove each rule #906's screen fixes, run the tests, restore it, and
 record that the tests failed (evidence/mutation.txt).
 
-    python3 docs/research/memory-encoding/profiles/mutation.py
+    python3 research/memory-encoding/profiles/mutation.py
 """
 
 import os

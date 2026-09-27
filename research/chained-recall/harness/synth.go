@@ -9,8 +9,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/garamsh/sherlock/docs/research/chained-recall/study"
 	"github.com/garamsh/sherlock/internal/agent/memory"
+	"github.com/garamsh/sherlock/research/chained-recall/study"
 )
 
 // synthesize asks the session model, through the proxy and the production

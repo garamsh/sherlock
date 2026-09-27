@@ -32,7 +32,7 @@ The `memory_write` transport carries the reply and the note; the addressed `memo
 
 ## Open questions
 
-- Pre-turn recall has no threshold, so it cannot report that nothing relevant exists, and neither can a search. Whether the model searches when it should is the model's choice, and the note holds only what the model writes into it. The runs in `docs/research/agent-context/` measured both on one model and a templated corpus; the third, on unmixed evidence batches (#870), found them valid against the shipped recall (ADR 0011, ADR 0019).
+- Pre-turn recall has no threshold, so it cannot report that nothing relevant exists, and neither can a search. Whether the model searches when it should is the model's choice, and the note holds only what the model writes into it. The runs in `research/agent-context/` measured both on one model and a templated corpus; the third, on unmixed evidence batches (#870), found them valid against the shipped recall (ADR 0011, ADR 0019).
 - Recall reads every embedded episode on each turn and ranks them in process, so its cost grows linearly with stored episodes, one per four messages; no index bounds it.
 - The batch is its own constant of four messages, independent of the rolling window's message limit. Whether one size should set both is with the owner.
 - Synthesis can omit facts or mishandle corrections; an episode summary is model output, not verified truth. Bounded similarity retrieval can also omit evidence. Deterministic tests exercise persistence, correction fixtures, linking, and context bounds; they do not establish general model fidelity.

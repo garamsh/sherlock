@@ -1,4 +1,4 @@
-// Command harness runs the #862 experiment (docs/research/agent-context/).
+// Command harness runs the #862 experiment (research/agent-context/).
 //
 // It is built separately inside each arm's source tree, so every arm runs
 // its own production session, store and recall. It uses only the API the

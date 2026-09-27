@@ -249,10 +249,10 @@ From the repository root, with Docker and `uv`:
 IMG=ghcr.io/huggingface/text-embeddings-inference@sha256:2538ea1c9640d3763b15af668039d24172d063b42337b0c27796fc2be180c78d
 docker run -d --name tei-901 -p 127.0.0.1:8130:80 $IMG \
   --model-id BAAI/bge-base-en-v1.5 --revision a5beb1e3e68b9ab74eb54cfd186867f64f240e1a
-uv run --no-project --with numpy==2.3.3 python3 docs/research/memory-scaling/study.py --without-rerank   # writes evidence/rankings.jsonl and study.json
-python3 docs/research/memory-scaling/evaluate.py                                       # offline; writes evidence/scores.json
-python3 docs/research/memory-scaling/mutation.py                                       # writes evidence/mutation.txt
-PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s docs/research/memory-scaling -p '*_test.py'
+uv run --no-project --with numpy==2.3.3 python3 research/memory-scaling/study.py --without-rerank   # writes evidence/rankings.jsonl and study.json
+python3 research/memory-scaling/evaluate.py                                       # offline; writes evidence/scores.json
+python3 research/memory-scaling/mutation.py                                       # writes evidence/mutation.txt
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s research/memory-scaling -p '*_test.py'
 docker rm -f tei-901
 ```
 

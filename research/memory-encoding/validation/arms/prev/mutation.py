@@ -1,16 +1,16 @@
 """Remove each mechanism P adds, run the tests, restore it, and record that
 the tests failed (evidence/mutation.txt beside this file).
 
-    python3 docs/research/memory-encoding/validation/arms/prev/mutation.py
+    python3 research/memory-encoding/validation/arms/prev/mutation.py
 """
 
 import subprocess
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-ROOT = HERE.parents[5]
+ROOT = HERE.parents[4]
 
-GO = ["go", "test", "-count=1", "./docs/research/memory-encoding/validation/arms/prev/"]
+GO = ["go", "test", "-count=1", "./research/memory-encoding/validation/arms/prev/"]
 PY = ["python3", "-B", "-m", "unittest", "controls_test"]
 
 # (file beside this one, text, replacement, test command, what the mutation removes)

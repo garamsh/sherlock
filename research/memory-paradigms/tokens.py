@@ -7,10 +7,10 @@ ran it. Download it first:
 
     curl -sL -o <scratch>/tokenizer.json \\
       https://huggingface.co/MiniMaxAI/MiniMax-M2/resolve/757303d492a50514c312788b5247a4f696a4c6a3/tokenizer.json
-    python3 docs/research/memory-paradigms/tokens.py <scratch>/tokenizer.json [<encoding corpus.json>]
+    python3 research/memory-paradigms/tokens.py <scratch>/tokenizer.json [<encoding corpus.json>]
 
 The #890 corpus is on its study branch, not on dev; pass it as the second
-argument (`git show 46ca289:docs/research/memory-encoding/validation/corpus.json`).
+argument (`git show 46ca289:research/memory-encoding/validation/corpus.json`).
 
 It writes tokens.json beside this file:
 - `validation`: the tokenizer checked against MiniMax's own counts. For every

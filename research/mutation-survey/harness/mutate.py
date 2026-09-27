@@ -26,7 +26,7 @@ import subprocess
 import sys
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                    "..", "..", "..", ".."))
+                                    "..", "..", ".."))
 
 SUITE_CMD = os.environ.get("SHERLOCK_MUTATE_SUITE_CMD", "go test -count=1 ./...")
 

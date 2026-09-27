@@ -1,6 +1,6 @@
 """Rank every #901 arm at every scale over recorded summaries, as preregistration.md fixes.
 
-    uv run --no-project --with numpy==2.3.3 python3 docs/research/memory-scaling/study.py [--without-rerank]
+    uv run --no-project --with numpy==2.3.3 python3 research/memory-scaling/study.py [--without-rerank]
 
 Embeddings and reranking call this study's own text-embeddings-inference instances at EMBED_URL and
 RERANK_URL; answers are cached beside this file under names .gitignore excludes. No model is called.

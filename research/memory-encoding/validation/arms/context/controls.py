@@ -2,7 +2,7 @@
 syntheses, the selected corpus and C's offline oracle, with C's write-call
 tokens against the shipped call's.
 
-    python3 docs/research/memory-encoding/validation/arms/context/controls.py [ledger calls.jsonl]   # evidence/controls.json
+    python3 research/memory-encoding/validation/arms/context/controls.py [ledger calls.jsonl]   # evidence/controls.json
 
 The ledger defaults to the study's evidence/ledger/calls.jsonl; the proxy
 keeps it where its -dir points.

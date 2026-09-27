@@ -4,9 +4,9 @@ import (
 	"context"
 	"math"
 
-	"github.com/garamsh/sherlock/docs/research/chained-recall/study"
 	"github.com/garamsh/sherlock/internal/agent"
 	"github.com/garamsh/sherlock/internal/memory/sqlite"
+	"github.com/garamsh/sherlock/research/chained-recall/study"
 )
 
 // The shipped recall's budget: the two newest mids, then five historical

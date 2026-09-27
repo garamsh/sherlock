@@ -2,8 +2,8 @@
 recorded facts and entities, attach them to S's recorded deliveries, and
 apply the gate (preregistration.md).
 
-    python3 docs/research/memory-encoding/profiles/screen.py sample
-    python3 docs/research/memory-encoding/profiles/screen.py score
+    python3 research/memory-encoding/profiles/screen.py sample
+    python3 research/memory-encoding/profiles/screen.py score
 
 `sample` draws the owner audit into evidence/owner-audit.jsonl for hand
 labelling. `score` writes evidence/screen.json, evidence/cards.jsonl and

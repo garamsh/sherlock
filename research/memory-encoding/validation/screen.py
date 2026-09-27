@@ -2,7 +2,7 @@
 query's rank of each candidate's needed exchanges, with the exchange's own
 text standing in for its mid's summary, as #874's harness screen does.
 
-    python3 docs/research/memory-encoding/validation/screen.py <scratch dir>   # evidence/screen.json
+    python3 research/memory-encoding/validation/screen.py <scratch dir>   # evidence/screen.json
 
 It embeds the replication's recorded batch-4 summaries for the base and each
 stream batch's text ("role: content" lines) with the local

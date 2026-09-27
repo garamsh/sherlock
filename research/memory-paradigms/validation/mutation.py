@@ -1,7 +1,7 @@
 """Remove each behaviour a test names, run the tests, restore it, and
 record that the tests failed (evidence/mutation.txt).
 
-    python3 docs/research/memory-paradigms/validation/mutation.py
+    python3 research/memory-paradigms/validation/mutation.py
 
 It covers what #900 adds: the study's window, label, trace and corpus
 hooks, arms W, R and D, and score.py's rules.
@@ -11,13 +11,13 @@ import subprocess
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-ROOT = HERE.parents[3]
-STUDY = ROOT / "docs" / "research" / "chained-recall" / "study"
+ROOT = HERE.parents[2]
+STUDY = ROOT / "research" / "chained-recall" / "study"
 
-GO_STUDY = ["go", "test", "./docs/research/chained-recall/study/"]
-GO_W = ["go", "test", "./docs/research/memory-paradigms/validation/arms/full/"]
-GO_R = ["go", "test", "./docs/research/memory-paradigms/validation/arms/agent/"]
-GO_D = ["go", "test", "./docs/research/memory-paradigms/validation/arms/document/"]
+GO_STUDY = ["go", "test", "./research/chained-recall/study/"]
+GO_W = ["go", "test", "./research/memory-paradigms/validation/arms/full/"]
+GO_R = ["go", "test", "./research/memory-paradigms/validation/arms/agent/"]
+GO_D = ["go", "test", "./research/memory-paradigms/validation/arms/document/"]
 PY = ["python3", "-B", "-m", "unittest", "score_test"]
 
 # (file, text, replacement, test command, what the mutation removes)

@@ -125,7 +125,7 @@ Models the endpoint lists: `MiniMax-M3`, `MiniMax-M2.7`, `MiniMax-M2.7-highspeed
 
 #### Embeddings
 
-Recall ranks mid episodes by embedding similarity, so every provider but `mock` also needs an `embedding:` section naming an OpenAI-compatible `/embeddings` endpoint. It is separate from `model:` because the chat endpoint need not serve embeddings, and the embedder speaks only the OpenAI-compatible protocol whatever `model.provider` names. The model the replication and the parity run measured, `BAAI/bge-base-en-v1.5`, runs locally in Hugging Face's text-embeddings-inference server (`docs/research/mid-memory-rag/README.md` §Production parity):
+Recall ranks mid episodes by embedding similarity, so every provider but `mock` also needs an `embedding:` section naming an OpenAI-compatible `/embeddings` endpoint. It is separate from `model:` because the chat endpoint need not serve embeddings, and the embedder speaks only the OpenAI-compatible protocol whatever `model.provider` names. The model the replication and the parity run measured, `BAAI/bge-base-en-v1.5`, runs locally in Hugging Face's text-embeddings-inference server (`research/mid-memory-rag/README.md` §Production parity):
 
 ```yaml
 embedding:

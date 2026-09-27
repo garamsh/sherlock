@@ -67,7 +67,7 @@ func TestLiveOnce_RunsAProbeThroughTheProductionSessionWithTheArmsRecallAndSearc
 	defer proxy.Close()
 	env := &Env{Corpus: &Corpus{Window: 32}, Embedder: wordEmbedder{}, Work: work, Proxy: proxy.URL, Arm: "M"}
 	arm := builtArm{ShippedArm{ArmName: "M", Instruction: "FOLLOW THE CHAIN.", Batches: []string{"b4"}}}
-	descriptors, err := loadDescriptors(filepath.Join("..", "..", "..", "..", "tools"))
+	descriptors, err := loadDescriptors(filepath.Join("..", "..", "..", "tools"))
 	require.NoError(t, err)
 
 	r := liveOnce(ctx, env, arm, "b4", LiveProbe{ID: "C1-01", Family: "C1", Query: "what about apple?"}, descriptors)
@@ -118,7 +118,7 @@ func TestLiveOnce_AppendsTheSettingsInstruction(t *testing.T) {
 		proxy := httptest.NewServer(http.StripPrefix("/L/N-01/live", server.Config.Handler))
 		env := &Env{Corpus: &Corpus{Window: 32}, Embedder: wordEmbedder{}, Work: work, Proxy: proxy.URL, Arm: "L"}
 		arm := settingArm{ShippedArm{ArmName: "L", Instruction: "THE ARM-WIDE TEXT.", Batches: []string{"b4", "b4-a"}}}
-		descriptors, err := loadDescriptors(filepath.Join("..", "..", "..", "..", "tools"))
+		descriptors, err := loadDescriptors(filepath.Join("..", "..", "..", "tools"))
 		require.NoError(t, err)
 
 		r := liveOnce(ctx, env, arm, setting, LiveProbe{ID: "N-01", Family: "N", Query: "what about apple?"}, descriptors)
@@ -207,7 +207,7 @@ func TestLiveOnce_OffersMemoryAssociateOnlyWhenTheMemoryAnswersIt(t *testing.T) 
 		if associates {
 			arm = associatingArm{shipped}
 		}
-		descriptors, err := loadDescriptors(filepath.Join("..", "..", "..", "..", "tools"))
+		descriptors, err := loadDescriptors(filepath.Join("..", "..", "..", "tools"))
 		require.NoError(t, err)
 
 		r := liveOnce(ctx, env, arm, "b4", LiveProbe{ID: "C2-01", Family: "C2", Query: "What number do I dial about Rodend?"}, descriptors)
@@ -277,7 +277,7 @@ func TestLiveOnce_RestoresTheArmsWindowAndRecordsItsTrace(t *testing.T) {
 		if own {
 			arm = windowArm{shipped}
 		}
-		descriptors, err := loadDescriptors(filepath.Join("..", "..", "..", "..", "tools"))
+		descriptors, err := loadDescriptors(filepath.Join("..", "..", "..", "tools"))
 		require.NoError(t, err)
 
 		r := liveOnce(ctx, env, arm, "b4", LiveProbe{ID: "C2-01", Family: "C2", Query: "what about apple?"}, descriptors)

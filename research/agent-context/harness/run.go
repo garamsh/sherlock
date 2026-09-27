@@ -150,7 +150,7 @@ type runner struct {
 func runArm(args []string) error {
 	fs := flag.NewFlagSet("run", flag.ExitOnError)
 	arm := fs.String("arm", "", "arm name: S, A or B")
-	corpusPath := fs.String("episodes", "docs/research/agent-context/episodes.json", "episodes file")
+	corpusPath := fs.String("episodes", "research/agent-context/episodes.json", "episodes file")
 	base := fs.String("base", "", "base store")
 	out := fs.String("out", "", "output directory for results.jsonl and transcripts.jsonl.gz")
 	proxyURL := fs.String("proxy", "http://127.0.0.1:8091", "study proxy")

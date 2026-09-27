@@ -12,8 +12,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/garamsh/sherlock/docs/research/chained-recall/study"
 	"github.com/garamsh/sherlock/internal/agent"
+	"github.com/garamsh/sherlock/research/chained-recall/study"
 )
 
 // ScreenTop is the raw-query depth a hop beyond the first must stay out of

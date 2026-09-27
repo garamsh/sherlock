@@ -1,6 +1,6 @@
 """Remove each rule a test names, run the tests, restore it, and record that they failed (evidence/mutation.txt).
 
-    python3 docs/research/memory-scaling/mutation.py
+    python3 research/memory-scaling/mutation.py
 """
 import os
 import subprocess

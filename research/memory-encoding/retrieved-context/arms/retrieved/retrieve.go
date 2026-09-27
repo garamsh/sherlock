@@ -9,8 +9,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/garamsh/sherlock/docs/research/chained-recall/study"
 	"github.com/garamsh/sherlock/internal/agent"
+	"github.com/garamsh/sherlock/research/chained-recall/study"
 )
 
 // The retrieval at write (preregistration.md §Retrieval at write).

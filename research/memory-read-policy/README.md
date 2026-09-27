@@ -82,22 +82,22 @@ A and C succeed on the exact and absent controls; B succeeds only on the absent 
 
 ## Conclusion
 
-This collection provides no measured benefit for a mandatory reinterpretation call and no successful implicit artifact from merely offering repeatable search. It establishes that follow-up queries can reach otherwise missed sources, while revealing failure to inspect and apply them. The next design to test is a small same-model search/inspection loop with clearer source selection; these results do not justify a planning agent or select a production read policy. Current responsibilities and the unresolved policy question remain in [memory architecture](../../architecture/memory.md) and [ADR 0019](../../architecture/adr/0019-memory-read-step.md).
+This collection provides no measured benefit for a mandatory reinterpretation call and no successful implicit artifact from merely offering repeatable search. It establishes that follow-up queries can reach otherwise missed sources, while revealing failure to inspect and apply them. The next design to test is a small same-model search/inspection loop with clearer source selection; these results do not justify a planning agent or select a production read policy. Current responsibilities and the unresolved policy question remain in [memory architecture](../../docs/architecture/memory.md) and [ADR 0019](../../docs/architecture/adr/0019-memory-read-step.md).
 
 ## Reproduction and verification
 
 At head, from the repository root, only the unit tests run:
 
 ```sh
-PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s docs/research/memory-read-policy -p '*_test.py' -v
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s research/memory-read-policy -p '*_test.py' -v
 ```
 
 `score.py` checks every manifest hash, including `store.go`'s, and preflight and collection call the bridge. They run from a checkout of `ad7a4d8`:
 
 ```sh
-go build -o /tmp/recall-842-store ./docs/research/memory-read-policy
-python3 docs/research/memory-read-policy/run.py preflight /tmp/recall-842-preflight
-PYTHONDONTWRITEBYTECODE=1 python3 docs/research/memory-read-policy/score.py
+go build -o /tmp/recall-842-store ./research/memory-read-policy
+python3 research/memory-read-policy/run.py preflight /tmp/recall-842-preflight
+PYTHONDONTWRITEBYTECODE=1 python3 research/memory-read-policy/score.py
 PATH=/home/sauce/go/bin:$PATH make ci
 ```
 

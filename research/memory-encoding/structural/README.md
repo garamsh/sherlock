@@ -300,20 +300,20 @@ Quoted from each study's report, not re-scored. The corpora differ, so compare w
 From the repository root, with Docker, Go 1.26 and Python 3. The ports are this run's.
 
 ```sh
-D=docs/research/memory-encoding/structural
+D=research/memory-encoding/structural
 docker run -d --name tei-896 -p 127.0.0.1:8110:80 \
   ghcr.io/huggingface/text-embeddings-inference@sha256:2538ea1c9640d3763b15af668039d24172d063b42337b0c27796fc2be180c78d \
   --model-id BAAI/bge-base-en-v1.5 --revision a5beb1e3e68b9ab74eb54cfd186867f64f240e1a
 E=http://127.0.0.1:8110/v1
-go run ./docs/research/chained-recall/harness build -batch 4 -dir $D -work <scratch> -embed-url $E -proxy ""   # free
-go run ./docs/research/memory-encoding/validation/arms/shipped build -dir $D -work <scratch> -embed-url $E       # then offline
-go run ./docs/research/memory-encoding/validation/arms/context build -setting b4-w8-key -dir $D -work <scratch> -embed-url $E   # before b4-model-key-ptr
-go run ./docs/research/chained-recall/arms/links build -setting b4-model-ptr -dir $D -work <scratch> -embed-url $E   # and b4-model, b4-model-attr, b4-model-chk, b4-model-key-ptr; then offline
+go run ./research/chained-recall/harness build -batch 4 -dir $D -work <scratch> -embed-url $E -proxy ""   # free
+go run ./research/memory-encoding/validation/arms/shipped build -dir $D -work <scratch> -embed-url $E       # then offline
+go run ./research/memory-encoding/validation/arms/context build -setting b4-w8-key -dir $D -work <scratch> -embed-url $E   # before b4-model-key-ptr
+go run ./research/chained-recall/arms/links build -setting b4-model-ptr -dir $D -work <scratch> -embed-url $E   # and b4-model, b4-model-attr, b4-model-chk, b4-model-key-ptr; then offline
 python3 $D/score.py equivalence
 harness proxy -addr 127.0.0.1:8111 -ceiling 20 -dir $D/evidence/ledger -probe                                   # MINIMAX_KEY in its environment only
-go run ./docs/research/chained-recall/arms/links offline -setting b4-model-chk -dir $D -work <scratch> -embed-url $E -proxy http://127.0.0.1:8111   # paid
+go run ./research/chained-recall/arms/links offline -setting b4-model-chk -dir $D -work <scratch> -embed-url $E -proxy http://127.0.0.1:8111   # paid
 python3 $D/score.py offline
-go run ./docs/research/memory-encoding/validation/arms/shipped live -setting b4 -dir $D -work <scratch> -embed-url $E -proxy http://127.0.0.1:8111 -only <every probe but UP>   # likewise each admitted links setting, then b4-model
+go run ./research/memory-encoding/validation/arms/shipped live -setting b4 -dir $D -work <scratch> -embed-url $E -proxy http://127.0.0.1:8111 -only <every probe but UP>   # likewise each admitted links setting, then b4-model
 python3 $D/score.py live
 python3 $D/score.py tokens
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s $D -p '*_test.py'

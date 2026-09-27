@@ -38,7 +38,7 @@ type StoreResult struct {
 // with what is held, because no threshold separates a correction from two
 // facts that must both survive — on the shipped embedder the correction
 // family's median cosine sits below the coexisting family's minimum
-// (docs/research/memory-retrieval/). A replacement replaces because
+// (research/memory-retrieval/). A replacement replaces because
 // the write said so, and a join joins for the same reason.
 //
 // A replacement supersedes only the values at the address written. An

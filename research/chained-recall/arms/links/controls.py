@@ -1,6 +1,6 @@
 """Arm L's controls and added synthesis tokens, from its offline records.
 
-    python3 docs/research/chained-recall/arms/links/controls.py [ledger calls.jsonl]
+    python3 research/chained-recall/arms/links/controls.py [ledger calls.jsonl]
 
 Reads evidence/offline/<setting>/ beside this file, the records study.Offline
 writes under the study's evidence/offline/L/, and writes evidence/controls.json

@@ -486,7 +486,7 @@ def main():
             stale.append(k)
 
     print("\nresearch index:\n")
-    print(f"  docs/research/README.md counts "
+    print(f"  research/README.md counts "
           f"{citing['index_architectures']} architectures")
     if citing["index_architectures"] != citing["harness_architectures"]:
         print(f"  the index disagrees with the harness's "

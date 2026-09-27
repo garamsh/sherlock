@@ -1,10 +1,10 @@
 """Score #902's retrieved-context run with #890's matching (../validation/score.py).
 
-    python3 docs/research/memory-encoding/retrieved-context/score.py screen       # evidence/screen.json: what the search at write can link, no model call
-    python3 docs/research/memory-encoding/retrieved-context/score.py offline      # evidence/offline/scores.json: reach, controls, admission
-    python3 docs/research/memory-encoding/retrieved-context/score.py equivalence  # S re-recorded against #890's committed records
-    python3 docs/research/memory-encoding/retrieved-context/score.py live         # evidence/live/scores.json: applied, controls, decision
-    python3 docs/research/memory-encoding/retrieved-context/score.py tokens       # evidence/tokens.json
+    python3 research/memory-encoding/retrieved-context/score.py screen       # evidence/screen.json: what the search at write can link, no model call
+    python3 research/memory-encoding/retrieved-context/score.py offline      # evidence/offline/scores.json: reach, controls, admission
+    python3 research/memory-encoding/retrieved-context/score.py equivalence  # S re-recorded against #890's committed records
+    python3 research/memory-encoding/retrieved-context/score.py live         # evidence/live/scores.json: applied, controls, decision
+    python3 research/memory-encoding/retrieved-context/score.py tokens       # evidence/tokens.json
 
 This file adds what preregistration.md fixes for #902: the arm names and
 their order, carried reach beside #890's strict reach, the retrieval,

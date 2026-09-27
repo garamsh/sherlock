@@ -24,7 +24,7 @@ import (
 // as #858's parity harness does. No paid call is made.
 func runBase(args []string) error {
 	fs := flag.NewFlagSet("base", flag.ExitOnError)
-	evidence := fs.String("evidence", "docs/research/mid-memory-rag/evidence/replication", "replication evidence directory")
+	evidence := fs.String("evidence", "research/mid-memory-rag/evidence/replication", "replication evidence directory")
 	out := fs.String("out", "", "base store to write")
 	embedURL := fs.String("embed-url", "http://127.0.0.1:8090/v1", "OpenAI-compatible embeddings base URL")
 	embedModel := fs.String("embed-model", "BAAI/bge-base-en-v1.5", "embedding model name")

@@ -235,7 +235,7 @@ For the next issue to preregister. Figures marked "estimate" are to be fixed in 
 - **Arms.**
   - S: the shipped recall at `ebecac8`.
   - A, B and C as above, each implemented on an experiment branch that is not merged.
-  - Every arm runs the production session through a study harness, as #858's parity harness did (`docs/research/mid-memory-rag/parity/`).
+  - Every arm runs the production session through a study harness, as #858's parity harness did (`research/mid-memory-rag/parity/`).
   - Model `MiniMax-M2`. Embedder `BAAI/bge-base-en-v1.5` on text-embeddings-inference, as in §Production parity of the mid-memory study.
   - Window 32 messages in every arm, instead of the default 128, so that beyond-window cases are affordable. The preregistration states this deviation.
 - **Corpus.** Ten conversation streams of about 150 turns each.
@@ -404,11 +404,11 @@ Neither arm won under the rule. The commits a later implementation PR would take
 From a checkout of this branch, with Docker and Go 1.26:
 
 ```sh
-python3 docs/research/agent-context/corpus.py && python3 docs/research/agent-context/corpus.py pilot   # byte-identical episodes
-PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s docs/research/agent-context -p '*_test.py'
-go test ./docs/research/agent-context/harness/
-python3 docs/research/agent-context/score.py docs/research/agent-context/evidence/stage2    # offline; rewrites scores.json
-python3 docs/research/agent-context/mutation.py                                            # offline; the mutation record
+python3 research/agent-context/corpus.py && python3 research/agent-context/corpus.py pilot   # byte-identical episodes
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s research/agent-context -p '*_test.py'
+go test ./research/agent-context/harness/
+python3 research/agent-context/score.py research/agent-context/evidence/stage2    # offline; rewrites scores.json
+python3 research/agent-context/mutation.py                                            # offline; the mutation record
 ```
 
 - **The arms' trees.** S is `4e84d2c` on `dev`. A and B come from their own branches: `git fetch origin sauce-git/feat/agent-context-arm-a sauce-git/feat/agent-context-arm-b`, then `git archive 61f4e4c` and `git archive b5bc7ed`.
@@ -513,7 +513,7 @@ As §Experiment (issue #862) §Reproduction, with these differences:
 - the binaries are built from `2e28064` (S) and `61f4e4c` (A) with `harness/` from `8cb0b1b`;
 - the base store is #862's (SHA-256 in the preregistration);
 - runs pass `-keep-stores <dir>`, and the proxy starts from `evidence/stage2/ledger/synthesis-cache.jsonl`;
-- scoring is `python3 docs/research/agent-context/score.py confirm docs/research/agent-context/evidence/confirm docs/research/agent-context/confirm-episodes.json`, which regenerates `scores.json` unchanged.
+- scoring is `python3 research/agent-context/score.py confirm research/agent-context/evidence/confirm research/agent-context/confirm-episodes.json`, which regenerates `scores.json` unchanged.
 
 ## Unmixed-batch run (issue #870)
 
@@ -586,7 +586,7 @@ As §Confirmatory run (issue #864) §Reproduction, with these differences:
 - the corpus is `corpus.py unmixed`;
 - the binaries are built from `d045c0f` (S) and `61f4e4c` (A) with `harness/` from `aa56020`;
 - the proxy starts from `evidence/confirm/ledger/synthesis-cache.jsonl`;
-- scoring is `python3 docs/research/agent-context/score.py confirm docs/research/agent-context/evidence/unmixed docs/research/agent-context/unmixed-episodes.json`, which regenerates `scores.json` unchanged.
+- scoring is `python3 research/agent-context/score.py confirm research/agent-context/evidence/unmixed research/agent-context/unmixed-episodes.json`, which regenerates `scores.json` unchanged.
 
 ## Position on #810 and #812
 

@@ -1,5 +1,5 @@
 // Command harness runs the shared phases of the #874 chained-recall study
-// (docs/research/chained-recall/). Arms are separate commands under arms/.
+// (research/chained-recall/). Arms are separate commands under arms/.
 //
 //	harness proxy -ceiling <USD> -dir <ledger dir> [-probe]  # MINIMAX_KEY in its environment only
 //	harness screen -work <dir>                               # the chain check before synthesis; free
@@ -19,8 +19,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/garamsh/sherlock/docs/research/chained-recall/study"
 	"github.com/garamsh/sherlock/internal/agent/openai"
+	"github.com/garamsh/sherlock/research/chained-recall/study"
 )
 
 func main() {
@@ -102,7 +102,7 @@ func runProxy(args []string) error {
 
 func runStudy(command string, args []string) error {
 	fs := flag.NewFlagSet(command, flag.ExitOnError)
-	dir := fs.String("dir", "docs/research/chained-recall", "study directory")
+	dir := fs.String("dir", "research/chained-recall", "study directory")
 	work := fs.String("work", "", "scratch root outside the repository")
 	proxyURL := fs.String("proxy", "http://127.0.0.1:8091", "study proxy base URL")
 	embedURL := fs.String("embed-url", "http://127.0.0.1:8090/v1", "OpenAI-compatible embeddings base URL (local TEI)")

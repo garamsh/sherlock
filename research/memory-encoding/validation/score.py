@@ -1,9 +1,9 @@
 """Score the #890 validation run with #874's matching (../../chained-recall/score.py).
 
-    python3 docs/research/memory-encoding/validation/score.py check     # the check and oracle on evidence/check-b4.json
-    python3 docs/research/memory-encoding/validation/score.py offline   # evidence/offline/scores.json
-    python3 docs/research/memory-encoding/validation/score.py live      # evidence/live/scores.json
-    python3 docs/research/memory-encoding/validation/score.py tokens    # evidence/tokens.json
+    python3 research/memory-encoding/validation/score.py check     # the check and oracle on evidence/check-b4.json
+    python3 research/memory-encoding/validation/score.py offline   # evidence/offline/scores.json
+    python3 research/memory-encoding/validation/score.py live      # evidence/live/scores.json
+    python3 research/memory-encoding/validation/score.py tokens    # evidence/tokens.json
 
 Values are matched as #874 matches them (states(): every token with a
 digit and every capitalized word). This file adds what preregistration.md

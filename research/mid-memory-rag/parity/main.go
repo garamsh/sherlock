@@ -57,8 +57,8 @@ type row struct {
 var primary = []string{"exact", "paraphrase", "implicit", "correction"}
 
 func main() {
-	evidence := flag.String("evidence", "docs/research/mid-memory-rag/evidence/replication", "replication evidence directory")
-	out := flag.String("out", "docs/research/mid-memory-rag/evidence/production-parity", "output directory")
+	evidence := flag.String("evidence", "research/mid-memory-rag/evidence/replication", "replication evidence directory")
+	out := flag.String("out", "research/mid-memory-rag/evidence/production-parity", "output directory")
 	embedURL := flag.String("embed-url", "http://127.0.0.1:8090/v1", "OpenAI-compatible embeddings base URL")
 	embedModel := flag.String("embed-model", "BAAI/bge-base-en-v1.5", "embedding model name")
 	flag.Parse()

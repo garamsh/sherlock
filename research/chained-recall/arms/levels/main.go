@@ -6,7 +6,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/garamsh/sherlock/docs/research/chained-recall/study"
+	"github.com/garamsh/sherlock/research/chained-recall/study"
 )
 
 func main() { study.Main(New()) }

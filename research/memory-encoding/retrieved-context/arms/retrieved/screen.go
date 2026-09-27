@@ -9,8 +9,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/garamsh/sherlock/docs/research/chained-recall/study"
 	"github.com/garamsh/sherlock/internal/agent/openai"
+	"github.com/garamsh/sherlock/research/chained-recall/study"
 )
 
 // messageVectors embeds every source message once and keeps the vectors

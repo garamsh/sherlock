@@ -17,7 +17,7 @@ type Env struct {
 	// Embedder is the local text-embeddings-inference server serving
 	// BAAI/bge-base-en-v1.5; the only embedder any arm uses.
 	Embedder agent.Embedder
-	// Dir is the study directory: docs/research/chained-recall, or a
+	// Dir is the study directory: research/chained-recall, or a
 	// corpus beneath it such as #885's confirm/.
 	Dir string
 	// Work is the study's scratch root, outside the repository: shared
@@ -57,7 +57,7 @@ func (e *Env) SharedStore(batch int) (string, error) {
 	return dir, nil
 }
 
-// ResearchDir is docs/research as a study directory reaches it: the
+// ResearchDir is research as a study directory reaches it: the
 // nearest ancestor of dir that holds the replication (mid-memory-rag/).
 // The #874 corpus is one level below it and #885's two, and both read the
 // replication's base and the shipped tool manifests from there.

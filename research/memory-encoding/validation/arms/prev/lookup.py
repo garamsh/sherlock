@@ -1,7 +1,7 @@
 """The b4-k5 candidate lookup's ceiling on chain hop pairs, free: no model
 call (preregistration.md §Amendments, 1).
 
-    python3 docs/research/memory-encoding/validation/arms/prev/lookup.py <shared b4 memory.db> [embed URL]
+    python3 research/memory-encoding/validation/arms/prev/lookup.py <shared b4 memory.db> [embed URL]
 
 For each pair of consecutive hops of every chain of two or more hops, it
 ranks, as main.go requestsFor does, the mids before the later hop's mid by

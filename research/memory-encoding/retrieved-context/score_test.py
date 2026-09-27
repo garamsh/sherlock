@@ -1,7 +1,7 @@
 """Tests for score.py: carried reach, the controls, stale copies, the
 screen's links, admission and the decision.
 
-    cd docs/research/memory-encoding/retrieved-context && PYTHONDONTWRITEBYTECODE=1 python3 -m unittest score_test
+    cd research/memory-encoding/retrieved-context && PYTHONDONTWRITEBYTECODE=1 python3 -m unittest score_test
 """
 
 import unittest

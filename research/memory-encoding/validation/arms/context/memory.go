@@ -4,8 +4,8 @@ import (
 	"context"
 	"strings"
 
-	"github.com/garamsh/sherlock/docs/research/chained-recall/study"
 	"github.com/garamsh/sherlock/internal/agent"
+	"github.com/garamsh/sherlock/research/chained-recall/study"
 )
 
 // contextLabel introduces a mid's context on recall, apart from its

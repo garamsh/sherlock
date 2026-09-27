@@ -102,7 +102,7 @@ Net production lines before tests, counted from the production files at `165bef8
 ## Running it
 
 ```sh
-D=docs/research/memory-encoding/validation
+D=research/memory-encoding/validation
 go run ./$D/arms/context build   -dir $D -work <scratch> -proxy http://127.0.0.1:8101 -embed-url http://127.0.0.1:8100/v1   # paid until evidence/context-b4-w8.jsonl is complete
 go run ./$D/arms/context offline -dir $D -work <scratch> -embed-url http://127.0.0.1:8100/v1
 python3 $D/arms/context/controls.py

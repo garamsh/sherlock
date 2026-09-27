@@ -1,7 +1,7 @@
 """Remove each behaviour #885 added that a test names, run the tests,
 restore it, and record that the tests failed (evidence/mutation.txt).
 
-    python3 docs/research/chained-recall/confirm/mutation.py
+    python3 research/chained-recall/confirm/mutation.py
 
 #874's own mutations stay recorded in ../evidence/mutation.txt; this file
 covers what #885 changed: L+A's label and instruction, the setting's
@@ -14,11 +14,11 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 STUDY = HERE.parent
-ROOT = HERE.parents[3]
+ROOT = HERE.parents[2]
 
-GO_LINKS = ["go", "test", "./docs/research/chained-recall/arms/links/"]
-GO_STUDY = ["go", "test", "./docs/research/chained-recall/study/"]
-GO_HARNESS = ["go", "test", "./docs/research/chained-recall/harness/"]
+GO_LINKS = ["go", "test", "./research/chained-recall/arms/links/"]
+GO_STUDY = ["go", "test", "./research/chained-recall/study/"]
+GO_HARNESS = ["go", "test", "./research/chained-recall/harness/"]
 
 # (file under chained-recall/, text, replacement, test command, what the mutation removes)
 MUTATIONS = [
@@ -27,7 +27,7 @@ MUTATIONS = [
     ("arms/links/walk.go", "if best < 0 || score[e] > score[best] {", "if best < 0 {", GO_LINKS, "the entity a walk mid was reached through"),
     ("arms/links/main.go", "\t\treturn Abstention\n", '\t\treturn ""\n', GO_LINKS, "L+A's instruction"),
     ("study/live.go", "extra = si.InstructionsFor(setting)", "_ = si", GO_STUDY, "the setting's instruction in the live session"),
-    ("study/env.go", 'if _, err := os.Stat(filepath.Join(parent, "mid-memory-rag")); err == nil {', "if false {", GO_STUDY, "finding docs/research from a corpus below the study"),
+    ("study/env.go", 'if _, err := os.Stat(filepath.Join(parent, "mid-memory-rag")); err == nil {', "if false {", GO_STUDY, "finding research from a corpus below the study"),
     ("harness/proxy.go", "if json.Unmarshal(args.Entities, &names) != nil || names == nil {", "if false {", GO_HARNESS, "refusing malformed entities before caching"),
     ("confirm/score.py", '"guardrails_hold": all(guard[f] >= -ALLOWED_LOSS[f] for f in guard)', '"guardrails_hold": True', ["python3", "-m", "unittest", "score_test"], "the guardrails"),
     ("confirm/score.py", 'return bool(lines) and all("] (associated): " + LABEL in ln for ln in lines)', "return bool(lines)", ["python3", "-m", "unittest", "score_test"], "the label control"),
@@ -58,7 +58,7 @@ def main():
         finally:
             file.write_text(original)
         lines.append(f"{'FAILS' if failed else 'PASSES'}  {path}: {what}")
-    if run(["go", "test", "./docs/research/chained-recall/..."]) != 0 or run(["python3", "-m", "unittest", "score_test", "corpus_test"]) != 0:
+    if run(["go", "test", "./research/chained-recall/..."]) != 0 or run(["python3", "-m", "unittest", "score_test", "corpus_test"]) != 0:
         raise SystemExit("the unmutated tests do not pass")
     lines.append("control: every unmutated test passes")
     (HERE / "evidence").mkdir(exist_ok=True)

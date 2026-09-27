@@ -14,8 +14,8 @@ import (
 
 	_ "modernc.org/sqlite"
 
-	"github.com/garamsh/sherlock/docs/research/chained-recall/study"
 	"github.com/garamsh/sherlock/internal/agent/memory"
+	"github.com/garamsh/sherlock/research/chained-recall/study"
 )
 
 // groupSchema is the second level: one row per complete window of G mids,

@@ -1,5 +1,5 @@
 // Package study is the shared basis of the #874 chained-recall study
-// (docs/research/chained-recall/). It holds the one interface every arm
+// (research/chained-recall/). It holds the one interface every arm
 // implements, the corpus every arm is built from, and the runner that
 // builds an arm and records what it delivers.
 //

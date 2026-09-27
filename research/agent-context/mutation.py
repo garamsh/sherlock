@@ -1,6 +1,6 @@
 """Remove each new behaviour in a copy of its commit and show a test fails.
 
-    python3 docs/research/agent-context/mutation.py > docs/research/agent-context/evidence/mutation.txt
+    python3 research/agent-context/mutation.py > research/agent-context/evidence/mutation.txt
 
 Each mutation runs in a fresh `git archive` of the commit that introduced
 the behaviour; the working tree is never changed. A mutation passes this
@@ -12,7 +12,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = Path(__file__).resolve().parents[2]
 # A and B are the tips of sauce-git/feat/agent-context-arm-a and -arm-b;
 # fetch them first. HARNESS carries the proxy the record names as 7c670ec.
 A, B, HARNESS = "61f4e4c", "b5bc7ed", "44e34e0"

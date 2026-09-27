@@ -202,7 +202,7 @@ ADR 0006 records the selected model: curation-only storage, platform-derived sal
 ## Reproducing
 
 ```
-cd docs/research/memory-architecture
+cd research/memory-architecture
 python3 harness/runner.py               # small workload
 python3 harness/scale_runner.py         # small workload at 1,052 and 5,000 items
 python3 harness/long_horizon_runner.py  # 10-year workload

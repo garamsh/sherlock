@@ -2,8 +2,8 @@
 with #874's templates and rules, and the families the memory-encoding
 survey's test plan adds (../README.md §Test plan).
 
-    python3 docs/research/memory-encoding/validation/corpus.py assemble   # -> candidates.json and corpus.json
-    python3 docs/research/memory-encoding/validation/corpus.py select     # candidates + check -> corpus.json
+    python3 research/memory-encoding/validation/corpus.py assemble   # -> candidates.json and corpus.json
+    python3 research/memory-encoding/validation/corpus.py select     # candidates + check -> corpus.json
 
 `assemble` writes every candidate into one stream after the base, so the
 stream, and every summary any arm writes of it, is fixed before anything is

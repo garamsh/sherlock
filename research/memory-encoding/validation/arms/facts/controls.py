@@ -1,7 +1,7 @@
 """F's controls (../../preregistration.md §F's controls), from the recorded
 facts and the selected corpus.
 
-    python3 docs/research/memory-encoding/validation/arms/facts/controls.py   # evidence/controls.json
+    python3 research/memory-encoding/validation/arms/facts/controls.py   # evidence/controls.json
 """
 
 import importlib.util

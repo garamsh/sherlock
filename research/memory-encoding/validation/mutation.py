@@ -1,7 +1,7 @@
 """Remove each behaviour a test names, run the tests, restore it, and
 record that the tests failed (evidence/mutation.txt).
 
-    python3 docs/research/memory-encoding/validation/mutation.py
+    python3 research/memory-encoding/validation/mutation.py
 
 It covers F's recall and synthesis and the rules corpus.py and score.py
 fix for #890. C and P record their own.
@@ -11,9 +11,9 @@ import subprocess
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-ROOT = HERE.parents[3]
+ROOT = HERE.parents[2]
 
-GO_F = ["go", "test", "./docs/research/memory-encoding/validation/arms/facts/"]
+GO_F = ["go", "test", "./research/memory-encoding/validation/arms/facts/"]
 PY = ["python3", "-B", "-m", "unittest"]
 
 # (file under validation/, text, replacement, test command, what the mutation removes)

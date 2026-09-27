@@ -224,8 +224,8 @@ From the repository root, with Docker, Go 1.26 and Python 3:
 docker run -d --name tei-900 -p 127.0.0.1:8120:80 \
   ghcr.io/huggingface/text-embeddings-inference@sha256:2538ea1c9640d3763b15af668039d24172d063b42337b0c27796fc2be180c78d \
   --model-id BAAI/bge-base-en-v1.5 --revision a5beb1e3e68b9ab74eb54cfd186867f64f240e1a
-C=docs/research/memory-encoding/validation; D=docs/research/memory-paradigms/validation; E=http://127.0.0.1:8120/v1
-go run ./docs/research/chained-recall/harness build -batch 4 -dir $C -work <scratch> -embed-url $E    # shared store, no call
+C=research/memory-encoding/validation; D=research/memory-paradigms/validation; E=http://127.0.0.1:8120/v1
+go run ./research/chained-recall/harness build -batch 4 -dir $C -work <scratch> -embed-url $E    # shared store, no call
 go run ./$C/arms/shipped build -dir $D -corpus $C -work <scratch> -embed-url $E                     # then offline
 go run ./$D/arms/document build -dir $D -corpus $C -work <scratch> -embed-url $E -proxy http://127.0.0.1:8121   # paid until the passes are recorded; then offline
 go run ./$D/arms/full build -dir $D -corpus $C -work <scratch> -embed-url $E                        # likewise arms/agent; no call

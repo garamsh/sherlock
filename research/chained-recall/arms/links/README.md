@@ -51,10 +51,10 @@ Fixed before the first offline run. A setting whose control fails is reported as
 
 ## Running it
 
-- `go run ./docs/research/chained-recall/arms/links build -work <scratch> -setting b4` builds one setting. Build `b4` and `b8` after `harness build` has written the shared stores. They make no model call.
+- `go run ./research/chained-recall/arms/links build -work <scratch> -setting b4` builds one setting. Build `b4` and `b8` after `harness build` has written the shared stores. They make no model call.
 - `b4-model` calls the model for every batch whose entities are not yet recorded. It needs `-proxy` and the phase in `preregistration.md`. With `evidence/entities-b4.jsonl` complete, it makes no call.
-- `... offline -work <scratch>` then records the probes. `python3 docs/research/chained-recall/score.py offline` scores them.
-- `python3 docs/research/chained-recall/arms/links/controls.py [<ledger calls.jsonl>]` computes the controls into `evidence/controls.json`. Given the ledger, it also pairs the added synthesis tokens (`preregistration.md` §Measures). `controls_test.py` checks it.
+- `... offline -work <scratch>` then records the probes. `python3 research/chained-recall/score.py offline` scores them.
+- `python3 research/chained-recall/arms/links/controls.py [<ledger calls.jsonl>]` computes the controls into `evidence/controls.json`. Given the ledger, it also pairs the added synthesis tokens (`preregistration.md` §Measures). `controls_test.py` checks it.
 
 ## Results
 

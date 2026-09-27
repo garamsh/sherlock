@@ -1,7 +1,7 @@
 """Remove each behaviour #888 added that a test names, run the tests,
 restore it, and record that the tests failed (evidence/mutation.txt).
 
-    python3 docs/research/chained-recall/readtime/mutation.py
+    python3 research/chained-recall/readtime/mutation.py
 
 #874's and #885's mutations stay recorded in ../evidence/mutation.txt and
 ../confirm/evidence/mutation.txt; this file covers what #888 changed: L+G's
@@ -15,10 +15,10 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 STUDY = HERE.parent
-ROOT = HERE.parents[3]
+ROOT = HERE.parents[2]
 
-GO_LINKS = ["go", "test", "./docs/research/chained-recall/arms/links/"]
-GO_STUDY = ["go", "test", "./docs/research/chained-recall/study/"]
+GO_LINKS = ["go", "test", "./research/chained-recall/arms/links/"]
+GO_STUDY = ["go", "test", "./research/chained-recall/study/"]
 SCORE = ["python3", "-m", "unittest", "score_test"]
 CORPUS = ["python3", "-m", "unittest", "corpus_test"]
 
@@ -69,7 +69,7 @@ def main():
         finally:
             file.write_text(original)
         lines.append(f"{'FAILS' if failed else 'PASSES'}  {path}: {what}")
-    if run(["go", "test", "./docs/research/chained-recall/..."]) != 0 or run(["python3", "-m", "unittest", "score_test", "corpus_test"]) != 0:
+    if run(["go", "test", "./research/chained-recall/..."]) != 0 or run(["python3", "-m", "unittest", "score_test", "corpus_test"]) != 0:
         raise SystemExit("the unmutated tests do not pass")
     lines.append("control: every unmutated test passes")
     (HERE / "evidence").mkdir(exist_ok=True)

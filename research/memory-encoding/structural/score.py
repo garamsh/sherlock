@@ -1,9 +1,9 @@
 """Score #896's structural safeguards run with #890's matching (../validation/score.py).
 
-    python3 docs/research/memory-encoding/structural/score.py offline      # evidence/offline/scores.json: reach, controls, admission
-    python3 docs/research/memory-encoding/structural/score.py equivalence  # S and L re-recorded against #890's committed records
-    python3 docs/research/memory-encoding/structural/score.py live         # evidence/live/scores.json: applied, controls, decision
-    python3 docs/research/memory-encoding/structural/score.py tokens       # evidence/tokens.json
+    python3 research/memory-encoding/structural/score.py offline      # evidence/offline/scores.json: reach, controls, admission
+    python3 research/memory-encoding/structural/score.py equivalence  # S and L re-recorded against #890's committed records
+    python3 research/memory-encoding/structural/score.py live         # evidence/live/scores.json: applied, controls, decision
+    python3 research/memory-encoding/structural/score.py tokens       # evidence/tokens.json
 
 This file adds what preregistration.md fixes for #896: the arm names, each
 arm's primary family, pointer reach and SC value reach, every arm's

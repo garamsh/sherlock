@@ -10,9 +10,9 @@ holding copies of ../confirm/corpus.json and
 <scratch>/research/mid-memory-rag linked to the repository's, so the runner
 finds the replication. Its shared store is harness build over ../confirm.
 
-    go run ./docs/research/chained-recall/arms/shipped build|offline -setting b4 -dir <scratch dir> -work <work> -embed-url <TEI>
-    go run ./docs/research/chained-recall/arms/links build|offline -setting b4-model|b4-model-a (likewise)
-    python3 docs/research/chained-recall/readtime/equivalence.py <commit> <scratch dir>
+    go run ./research/chained-recall/arms/shipped build|offline -setting b4 -dir <scratch dir> -work <work> -embed-url <TEI>
+    go run ./research/chained-recall/arms/links build|offline -setting b4-model|b4-model-a (likewise)
+    python3 research/chained-recall/readtime/equivalence.py <commit> <scratch dir>
 """
 
 import json
@@ -37,7 +37,7 @@ def records(text, name):
 
 def main():
     commit, rerun = sys.argv[1], Path(sys.argv[2])
-    root = HERE.parents[3]
+    root = HERE.parents[2]
     lines = [f"committed records at {commit}, against a scratch re-run with this code"]
     for setting in SETTINGS:
         for name in FILES:

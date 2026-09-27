@@ -73,7 +73,7 @@ This file also holds the shared basis every arm was built on.
 
 An arm is a command under `arms/<name>/` whose main is `study.Main(New())`, with `study` the chained-recall package (`../../chained-recall/study/`; its `arm.go` doc comments are the contract). Everything `../../chained-recall/README.md` §Writing an arm says holds, with these differences:
 
-- **Every command takes `-dir docs/research/memory-encoding/validation`.** Without it, `study.Main` reads #874's corpus. Records then land under this directory's `evidence/offline/<arm>/<setting>/` and `evidence/live/<arm>/<setting>/`.
+- **Every command takes `-dir research/memory-encoding/validation`.** Without it, `study.Main` reads #874's corpus. Records then land under this directory's `evidence/offline/<arm>/<setting>/` and `evidence/live/<arm>/<setting>/`.
 - **Ports.** `-embed-url http://127.0.0.1:8100/v1` for the local TEI, and `-proxy http://127.0.0.1:8101` for the proxy (§Shared services).
 - **The shared store.** `env.SharedStore(4)` is the production store over base and stream from the recorded summaries. It is built into a worker's own `-work` directory with `harness build -batch 4 -dir <this dir> -work <scratch>`, free, once `evidence/synthesis/stream-b4.jsonl` is committed.
 - **Base and stream.** An arm adds its structure to the stream only, and the base's 1,200 mids keep their recorded summaries (`preregistration.md` §Arms).
@@ -177,17 +177,17 @@ From the repository root, with Docker, Go 1.26 and Python 3:
 docker run -d --name tei-890 -p 127.0.0.1:8100:80 \
   ghcr.io/huggingface/text-embeddings-inference@sha256:2538ea1c9640d3763b15af668039d24172d063b42337b0c27796fc2be180c78d \
   --model-id BAAI/bge-base-en-v1.5 --revision a5beb1e3e68b9ab74eb54cfd186867f64f240e1a
-python3 docs/research/memory-encoding/validation/corpus.py assemble        # byte-identical candidates.json
-python3 docs/research/memory-encoding/validation/screen.py <scratch>       # evidence/screen.json; free
-D=docs/research/memory-encoding/validation
-go run ./docs/research/chained-recall/harness synthesize -batch 4 -dir $D -proxy http://127.0.0.1:8101 -embed-url http://127.0.0.1:8100/v1   # paid
-go run ./docs/research/chained-recall/harness build -batch 4 -dir $D -work <scratch> -embed-url http://127.0.0.1:8100/v1
-go run ./docs/research/chained-recall/harness check -batch 4 -dir $D -work <scratch> -embed-url http://127.0.0.1:8100/v1
+python3 research/memory-encoding/validation/corpus.py assemble        # byte-identical candidates.json
+python3 research/memory-encoding/validation/screen.py <scratch>       # evidence/screen.json; free
+D=research/memory-encoding/validation
+go run ./research/chained-recall/harness synthesize -batch 4 -dir $D -proxy http://127.0.0.1:8101 -embed-url http://127.0.0.1:8100/v1   # paid
+go run ./research/chained-recall/harness build -batch 4 -dir $D -work <scratch> -embed-url http://127.0.0.1:8100/v1
+go run ./research/chained-recall/harness check -batch 4 -dir $D -work <scratch> -embed-url http://127.0.0.1:8100/v1
 python3 $D/corpus.py select                                              # evidence/selection/check-b4.json is the check above, copied
-go run ./docs/research/chained-recall/harness check -batch 4 -dir $D -work <scratch> -embed-url http://127.0.0.1:8100/v1   # again, on the selected corpus
+go run ./research/chained-recall/harness check -batch 4 -dir $D -work <scratch> -embed-url http://127.0.0.1:8100/v1   # again, on the selected corpus
 python3 $D/score.py check
 go run ./$D/arms/shipped build -dir $D -work <scratch> -embed-url http://127.0.0.1:8100/v1   # then offline; likewise arms/facts, arms/context, arms/prev
-go run ./docs/research/chained-recall/arms/links build -setting b4-model -dir $D -work <scratch> -proxy http://127.0.0.1:8101 -embed-url http://127.0.0.1:8100/v1   # then offline
+go run ./research/chained-recall/arms/links build -setting b4-model -dir $D -work <scratch> -proxy http://127.0.0.1:8101 -embed-url http://127.0.0.1:8100/v1   # then offline
 python3 $D/score.py offline
 python3 $D/score.py tokens
 python3 $D/arms/facts/controls.py

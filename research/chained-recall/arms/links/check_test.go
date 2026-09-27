@@ -12,9 +12,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/sherlock/docs/research/chained-recall/study"
 	"github.com/garamsh/sherlock/internal/agent"
 	"github.com/garamsh/sherlock/internal/tool"
+	"github.com/garamsh/sherlock/research/chained-recall/study"
 )
 
 // fakeCheck answers the grounding check with scripted responses, the last

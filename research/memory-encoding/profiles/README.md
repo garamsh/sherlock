@@ -124,7 +124,7 @@ The basis is the KU listing command under §Reproduction.
 From the repository root, with Python 3 and nothing else:
 
 ```sh
-D=docs/research/memory-encoding/profiles
+D=research/memory-encoding/profiles
 python3 $D/screen.py score
 (cd $D && PYTHONDONTWRITEBYTECODE=1 python3 -m unittest screen_test)
 python3 $D/mutation.py
@@ -133,7 +133,7 @@ python3 $D/mutation.py
 The KU listing behind §Corrections. For each KU item it prints the facts of the batches holding `sources`, and which replacements removed them:
 
 ```sh
-cd docs/research/memory-encoding/profiles && PYTHONDONTWRITEBYTECODE=1 python3 -c '
+cd research/memory-encoding/profiles && PYTHONDONTWRITEBYTECODE=1 python3 -c '
 import screen as S
 r, e, _, p = S.inputs()
 _, rep, _ = S.build(r, e)

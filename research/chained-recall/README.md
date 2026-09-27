@@ -1,6 +1,6 @@
 # Chained recall across mid memories
 
-Records issue #874's study. For the memory structures `docs/research/associative-memory/README.md` §Test plan for #874 selected, it measures how well the agent follows a chain of associated memories, and how much each structure compresses.
+Records issue #874's study. For the memory structures `research/associative-memory/README.md` §Test plan for #874 selected, it measures how well the agent follows a chain of associated memories, and how much each structure compresses.
 
 - **Arms.** S and M were built under #874. L (#880, PR #882) and H (#881, PR #883) were built on the shared basis by other workers and integrated here.
 - **The structure that chains is L:** entity links written by the synthesis call and followed by a PageRank walk.
@@ -111,7 +111,7 @@ S and L run at batch 4 and 8, H at groups of 4 and 8 batch-4 mids. M shares S's 
 The interface is `study/arm.go`; its doc comments are the contract. In short:
 
 - **An arm is a command** at `arms/<name>/main.go`: `func main() { study.Main(New()) }`, where `New` returns a `study.Arm`.
-  - `go run ./docs/research/chained-recall/arms/<name> build -work <scratch>` builds every setting.
+  - `go run ./research/chained-recall/arms/<name> build -work <scratch>` builds every setting.
   - `... offline -work <scratch>` records what each setting delivers.
   - Neither command registers the arm anywhere else.
 - **`Settings`** names the compression settings: "b4" and "b8" (batch) or "g4" and "g8" (group).
@@ -309,17 +309,17 @@ From the repository root, with Docker and Go 1.26:
 docker run -d --name tei-874 -p 127.0.0.1:8090:80 \
   ghcr.io/huggingface/text-embeddings-inference@sha256:2538ea1c9640d3763b15af668039d24172d063b42337b0c27796fc2be180c78d \
   --model-id BAAI/bge-base-en-v1.5 --revision a5beb1e3e68b9ab74eb54cfd186867f64f240e1a
-python3 docs/research/chained-recall/corpus.py pool                     # byte-identical pool.json
-go run ./docs/research/chained-recall/harness screen -work <scratch>    # evidence/screen.json
-python3 docs/research/chained-recall/corpus.py assemble                 # byte-identical corpus.json
-go run ./docs/research/chained-recall/harness build -batch 4 -work <scratch>   # and -batch 8; from recorded syntheses, no call
-go run ./docs/research/chained-recall/harness check -batch 4 -work <scratch>   # and -batch 8
-go run ./docs/research/chained-recall/arms/shipped build -work <scratch>       # then offline; likewise arms/links, arms/levels
-python3 docs/research/chained-recall/score.py offline
-python3 docs/research/chained-recall/score.py live                      # from the committed live records
-python3 docs/research/chained-recall/score.py tokens
-PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s docs/research/chained-recall -p '*_test.py'
-python3 docs/research/chained-recall/mutation.py
+python3 research/chained-recall/corpus.py pool                     # byte-identical pool.json
+go run ./research/chained-recall/harness screen -work <scratch>    # evidence/screen.json
+python3 research/chained-recall/corpus.py assemble                 # byte-identical corpus.json
+go run ./research/chained-recall/harness build -batch 4 -work <scratch>   # and -batch 8; from recorded syntheses, no call
+go run ./research/chained-recall/harness check -batch 4 -work <scratch>   # and -batch 8
+go run ./research/chained-recall/arms/shipped build -work <scratch>       # then offline; likewise arms/links, arms/levels
+python3 research/chained-recall/score.py offline
+python3 research/chained-recall/score.py live                      # from the committed live records
+python3 research/chained-recall/score.py tokens
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s research/chained-recall -p '*_test.py'
+python3 research/chained-recall/mutation.py
 docker rm -f tei-874
 ```
 
@@ -460,7 +460,7 @@ MiniMax-M2 only, through one proxy on `127.0.0.1:8096` (`confirm/evidence/ledger
   - Absent items are adversarial by construction: each query names an entity whose one association states a value of the asked kind. The run measures the worst case, not how often such a case arises in real conversation.
   - Checks are deterministic proxies, as in #874.
   - The base's entities were copied from #874's recording, with its one failed batch unlinked.
-- **Reproduction.** As §Reproduction, with `-dir docs/research/chained-recall/confirm` on every command, and in this order:
+- **Reproduction.** As §Reproduction, with `-dir research/chained-recall/confirm` on every command, and in this order:
   1. `python3 confirm/corpus.py assemble`;
   2. `harness synthesize`, `build` and `check`, then copying `evidence/check-b4.json` to `evidence/selection/`;
   3. `arms/links build -setting b4-model` and `offline`, saving the probes to `evidence/selection/L-b4-model-probes.jsonl`;
@@ -621,7 +621,7 @@ MiniMax-M2 only, through one proxy on `127.0.0.1:8098` (`readtime/evidence/ledge
   - L+G's threshold was calibrated on #885's corpus only.
   - L-T's walk was served as a study tool, not a reserved call.
   - L+V has no runtime check, and its scoring check reads only the recall block: a walk mid returned by `memory_search` carries no label to read.
-- **Reproduction.** As §Confirmation (#885)'s, with `-dir docs/research/chained-recall/readtime`.
+- **Reproduction.** As §Confirmation (#885)'s, with `-dir research/chained-recall/readtime`.
   - `python3 readtime/score.py calibrate`, `power`, `offline`, `live` and `tokens` rewrite the scores.
   - `python3 readtime/mutation.py` rewrites the mutation record.
   - `readtime/equivalence.py` describes the regression.

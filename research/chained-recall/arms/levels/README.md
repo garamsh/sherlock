@@ -69,7 +69,7 @@ Required before H's offline comparison is read as a result:
 ## Results
 
 Offline stage over the committed corpus, local embedder only.
-- **Builds.** `go run ./docs/research/chained-recall/arms/levels build -work <scratch> -proxy http://127.0.0.1:8091`, then `... offline -work <scratch>`.
+- **Builds.** `go run ./research/chained-recall/arms/levels build -work <scratch> -proxy http://127.0.0.1:8091`, then `... offline -work <scratch>`.
 - **Build basis.** A copy of the batch-4 shared store the #874 worker built, SHA-256 `d2b2bf29705cc87584ecf21274c298063c29591a6ca22432cd963b400010222e`.
 - **Scoring.** `python3 score.py offline` at `367d0b1`, with S's records as committed there. The scorer's `scores.json` is left to #874 to regenerate.
 - **Records.** `../../evidence/offline/H/g{4,8}/`, and the recorded groups in `evidence/groups-g{4,8}.jsonl`.

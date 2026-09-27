@@ -1,7 +1,7 @@
 """P's controls (preregistration.md §Controls beside this file), from the
 recorded links, the selected corpus, P's offline records and the ledger.
 
-    python3 docs/research/memory-encoding/validation/arms/prev/controls.py [ledger calls.jsonl]   # evidence/controls.json
+    python3 research/memory-encoding/validation/arms/prev/controls.py [ledger calls.jsonl]   # evidence/controls.json
 
 The ledger defaults to the study's evidence/ledger/calls.jsonl, which the
 proxy writes and the repository does not hold.

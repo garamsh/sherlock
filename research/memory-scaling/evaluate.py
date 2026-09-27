@@ -1,6 +1,6 @@
 """Score evidence/rankings.jsonl under preregistration.md's decision rule; offline, writes evidence/scores.json.
 
-    python3 docs/research/memory-scaling/evaluate.py
+    python3 research/memory-scaling/evaluate.py
 """
 import json
 from pathlib import Path

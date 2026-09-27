@@ -1,7 +1,7 @@
 """Remove each behaviour #896 added that a test names, run the tests,
 restore it, and record that the tests failed (evidence/mutation.txt).
 
-    python3 docs/research/memory-encoding/structural/mutation.py
+    python3 research/memory-encoding/structural/mutation.py
 
 Earlier studies' mutations stay recorded beside their own evidence; this
 file covers what #896 changed: L-ptr's pointers, L-attr's attribution,
@@ -20,17 +20,17 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 RESEARCH = HERE.parents[1]
-ROOT = HERE.parents[3]
+ROOT = HERE.parents[2]
 
-GO_LINKS = ["go", "test", "./docs/research/chained-recall/arms/links/"]
-GO_CONTEXT = ["go", "test", "./docs/research/memory-encoding/validation/arms/context/"]
+GO_LINKS = ["go", "test", "./research/chained-recall/arms/links/"]
+GO_CONTEXT = ["go", "test", "./research/memory-encoding/validation/arms/context/"]
 SCORE = ["python3", "-m", "unittest", "score_test"]
 
 LINKS = "chained-recall/arms/links/"
 CONTEXT = "memory-encoding/validation/arms/context/main.go"
 S = "memory-encoding/structural/score.py"
 
-# (file under docs/research/, text, replacement, test command, what the mutation removes)
+# (file under research/, text, replacement, test command, what the mutation removes)
 MUTATIONS = [
     (LINKS + "memory.go", "		return pointerText(via)\n", "		return it.Text\n", GO_LINKS, "L-ptr's pointer text"),
     (LINKS + "main.go", '		pointer: setting == "b4-model-ptr" || setting == keyed,', '		pointer: setting == "b4-model-ptr",', GO_LINKS, "C-key+L-ptr opened as L-ptr"),

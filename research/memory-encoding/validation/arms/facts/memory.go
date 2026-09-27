@@ -5,8 +5,8 @@ import (
 	"math"
 	"sort"
 
-	"github.com/garamsh/sherlock/docs/research/chained-recall/study"
 	"github.com/garamsh/sherlock/internal/agent"
+	"github.com/garamsh/sherlock/research/chained-recall/study"
 )
 
 // The survey's bounds on F's recall (../../../README.md §F).

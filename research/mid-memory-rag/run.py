@@ -14,7 +14,7 @@ import urllib.error
 import urllib.request
 
 HERE = Path(__file__).resolve().parent
-ROOT = HERE.parents[2]
+ROOT = HERE.parents[1]
 CORPUS = json.loads((HERE / 'corpus.json').read_text())
 QUERIES = json.loads((HERE / 'queries.json').read_text())
 BRIDGE = os.environ.get('MID_RAG_BRIDGE', '/tmp/mid-rag-854-bridge')

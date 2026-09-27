@@ -15,6 +15,7 @@ FAILS  docs/research/memory-paradigms/validation/arms/document/consolidate.go: t
 FAILS  docs/research/memory-paradigms/validation/arms/document/consolidate.go: replaying a recorded pass without a call
 FAILS  docs/research/memory-paradigms/validation/arms/document/consolidate.go: reading several document_update calls as one (Amendment 1)
 FAILS  docs/research/memory-paradigms/validation/arms/document/document.go: a partial pass holding the bound against lengthening supersedes (Amendment 2)
+FAILS  docs/research/memory-paradigms/validation/arms/document/consolidate.go: keeping an answer's first 16 operations (Amendment 3)
 FAILS  docs/research/memory-paradigms/validation/score.py: leaving the first word out of support
 FAILS  docs/research/memory-paradigms/validation/score.py: the guardrails
 FAILS  docs/research/memory-paradigms/validation/score.py: keeping W out of the decision

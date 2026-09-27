@@ -38,7 +38,9 @@ type PassRecord struct {
 	Strict   bool     `json:"strict"`
 	Attempts int      `json:"attempts"`
 	Refusals []string `json:"refusals,omitempty"`
-	Applied  Applied  `json:"applied"`
+	// Cut counts operations past the first 16 of an answer, left out.
+	Cut     int     `json:"cut,omitempty"`
+	Applied Applied `json:"applied"`
 }
 
 // ModelFor returns the model for one pass.
@@ -107,6 +109,7 @@ func runPass(ctx context.Context, model agent.Model, d *Document, pass int, grou
 			return r, err
 		}
 		ops, err := parseOps(resp)
+		ops, cut := firstOps(ops)
 		if err != nil {
 			last = err
 			feedback = fmt.Sprintf("\n\n(Attempt %d. The last answer was refused: %v.)", attempt+1, err)
@@ -122,7 +125,7 @@ func runPass(ctx context.Context, model agent.Model, d *Document, pass int, grou
 		if err != nil {
 			return r, err
 		}
-		r.Ops, r.Strict, r.Applied = ops, attempt < 3, applied
+		r.Ops, r.Strict, r.Applied, r.Cut = ops, attempt < 3, applied, cut
 		return r, nil
 	}
 	return r, last
@@ -154,10 +157,16 @@ func parseOps(resp agent.Response) ([]Op, error) {
 	if calls == 0 {
 		return nil, fmt.Errorf("call document_update; the answer made %d other tool calls", len(resp.ToolCalls))
 	}
-	if len(ops) > maxOps {
-		return nil, fmt.Errorf("document_update lists %d operations; at most %d", len(ops), maxOps)
-	}
 	return ops, nil
+}
+
+// firstOps keeps a pass's first maxOps operations, in order, and says how
+// many it left out (Amendment 3).
+func firstOps(ops []Op) ([]Op, int) {
+	if len(ops) <= maxOps {
+		return ops, 0
+	}
+	return ops[:maxOps], len(ops) - maxOps
 }
 
 // passesPath is where D's passes are recorded.

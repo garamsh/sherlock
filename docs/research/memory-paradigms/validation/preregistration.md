@@ -111,3 +111,8 @@ Each is MiniMax-M2 through the one study proxy (`harness proxy`, ledger `evidenc
 
 - **What happened.** Pass 55's third, partial application still left the document at 16,015 characters. The partial rule skipped adds past the bound, but its supersedes lengthened lines the bound did not guard, so the build stopped.
 - **Change.** When a partial application still exceeds the bound, it is applied once more with every supersede that would lengthen its line skipped (`document.go` `Apply`, `TestApply_PartialPassSkipsSupersedesThatWouldPassTheBound`, and a mutation check). A pass the first partial application fits is applied exactly as before, so passes 1 to 54 replay unchanged.
+
+### Amendment 3, during D's consolidation, before pass 100 was recorded
+
+- **What happened.** Pass 100 was refused on all three attempts: its `document_update` calls together listed 28 operations, past the bound of 16 that Amendment 1 applied to the total.
+- **Change.** An answer's first 16 operations are kept, in order, and the rest are left out and counted in the pass record's `cut` (`consolidate.go` `firstOps`, `TestFirstOps_KeepsTheFirstSixteenInOrder`, and a mutation check). The same bound then holds as before, without refusing the pass. Passes 1 to 99 replay unchanged.

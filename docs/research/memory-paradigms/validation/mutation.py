@@ -39,6 +39,7 @@ MUTATIONS = [
     (HERE / "arms/document/consolidate.go", "\t\tif pass <= len(records) {", "\t\tif false {", GO_D, "replaying a recorded pass without a call"),
     (HERE / "arms/document/consolidate.go", "\t\tops = append(ops, *result.Ops...)\n", "\t\tops = *result.Ops\n", GO_D, "reading several document_update calls as one (Amendment 1)"),
     (HERE / "arms/document/document.go", "\t\treturn d.apply(ops, pass, intervals, false, true)\n", "\t\treturn Applied{}, err\n", GO_D, "a partial pass holding the bound against lengthening supersedes (Amendment 2)"),
+    (HERE / "arms/document/consolidate.go", "\treturn ops[:maxOps], len(ops) - maxOps\n", "\treturn ops, 0\n", GO_D, "keeping an answer's first 16 operations (Amendment 3)"),
     (HERE / "score.py", "    rest = words[1] if len(words) > 1 else \"\"", "    rest = fact[\"statement\"]", PY, "leaving the first word out of support"),
     (HERE / "score.py", "\"guardrails_hold\": all(guard[f] >= -ALLOWED_LOSS[f] for f in guard)", "\"guardrails_hold\": True", PY, "the guardrails"),
     (HERE / "score.py", "compared = [n for n in per if n != BASELINE and primary_of(n)]", "compared = [n for n in per if n != BASELINE]", PY, "keeping W out of the decision"),

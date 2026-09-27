@@ -110,3 +110,17 @@ func TestParseOps_ReadsSeveralDocumentUpdateCallsAsOne(t *testing.T) {
 	_, err = parseOps(agent.Response{ToolCalls: []agent.ToolCall{{Name: "other", Input: json.RawMessage(`{}`)}}})
 	assert.Error(t, err, "the control: an answer without document_update is refused")
 }
+
+func TestFirstOps_KeepsTheFirstSixteenInOrder(t *testing.T) {
+	var ops []Op
+	for i := range 20 {
+		ops = append(ops, Op{Op: "drop", Line: i + 1})
+	}
+	kept, cut := firstOps(ops)
+	assert.Len(t, kept, maxOps)
+	assert.Equal(t, 4, cut)
+	assert.Equal(t, 16, kept[15].Line)
+	kept, cut = firstOps(ops[:3])
+	assert.Len(t, kept, 3, "the control: a short answer is kept whole")
+	assert.Zero(t, cut)
+}

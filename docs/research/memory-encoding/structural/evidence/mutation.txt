@@ -21,6 +21,7 @@ FAILS  memory-encoding/structural/score.py: the admission margin
 FAILS  memory-encoding/structural/score.py: the offline pointer control
 FAILS  memory-encoding/structural/score.py: the offline attribution presence
 FAILS  memory-encoding/structural/score.py: the offline attribution correctness
+FAILS  memory-encoding/structural/score.py: the offline NC attribution checks (Amendment 1)
 FAILS  memory-encoding/structural/score.py: the shown-text control
 FAILS  memory-encoding/structural/score.py: the ranking control
 FAILS  memory-encoding/structural/score.py: the offline check control

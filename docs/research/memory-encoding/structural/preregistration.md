@@ -209,3 +209,15 @@ Every probe's store copy is kept outside the repository until scoring. Nothing i
 
 - Harness, study, arms and scorer at the commit that adds this file.
 - SHA-256 of `../validation/corpus.json`: `63e5c3df2772bd39ff8ad8967bf2eb69884fd3b7839b12fccc46005a2f88d718`.
+
+## Amendments
+
+- **1. L-attr's NC clause.** Made after the offline records of S, L, L-ptr, L-attr, C-key and C-key+L-ptr were scored, and before any live call. The PM decided it on the issue's dispatch channel.
+  - **The clause as preregistered** (§Controls, L-attr, Correct): "On NC, the subject is never the queried entity: all of them."
+  - **Why it changes.** As scored, the clause counted every NC walk item that has a subject. That includes items whose subject is the queried entity, which §Arms says L-attr shows without an attribution ("whose subject ... is none of the query's entities"). So it measured the episodes' subjects, not the safeguard. Offline, 13 of the 40 NC walk items are the queried entity's own episodes, shown plain as specified. The clause as written reads 27 of 40, and L-attr would not be admitted.
+  - **The replacement: two checks, each over its own items.**
+    - Every NC walk item that carries an attribution names a subject other than the queried entity.
+    - Every NC walk item whose subject is the queried entity is shown without an attribution.
+    - Both must hold for all such items, offline and live. No item leaves a denominator without a check of its own.
+  - **Reporting.** The report shows L-attr as not admitted under the clause as written and admitted under this amendment, side by side. `score.py` records the clause as written under `as_written`.
+  - **Nothing else changes.** No threshold, endpoint, other control or rule moves. C-key fails its oracle control (478 of 505 hops, 95% required) and stays not admitted.

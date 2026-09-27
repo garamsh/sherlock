@@ -7,6 +7,12 @@ Earlier studies' mutations stay recorded beside their own evidence; this
 file covers what #896 changed: L-ptr's pointers, L-attr's attribution,
 L+chk's check, C-key's key and C-key+L-ptr's store, the study's notice
 rendering, and the scorer's reach rules, margin and controls.
+
+Amendment 1's two NC checks are mutated together: each fails wherever the
+other does, since an item about the queried entity that carries an
+attribution breaks both. Live, a subject equal to the queried entity is
+always a seed, so the presence check already fails there; the live NC
+checks are reported and have no mutation of their own.
 """
 
 import subprocess
@@ -49,6 +55,7 @@ MUTATIONS = [
     (S, '"passed": bool(walk) and not bad}', '"passed": bool(walk)}', SCORE, "the offline pointer control"),
     (S, '                present += it["text"].startswith(attribution(subject, seeds))', "                present += 1", SCORE, "the offline attribution presence"),
     (S, 'n_correct += subject == normalize(g["associated"]) and it["text"]', 'n_correct += it["text"]', SCORE, "the offline attribution correctness"),
+    (S, "    ok = base and nc_attributed_ok == nc_attributed and nc_queried_plain == nc_queried\n", "    ok = base\n", SCORE, "the offline NC attribution checks (Amendment 1)"),
     (S, '            equal += it["text"].strip() == summaries.get(it["first"])', "            equal += 1", SCORE, "the shown-text control"),
     (S, '"passed": differ >= RANKING_DIFFERS * len(probes)}', '"passed": True}', SCORE, "the ranking control"),
     (S, '"passed": checks > 0 and unchecked == 0}', '"passed": checks > 0}', SCORE, "the offline check control"),

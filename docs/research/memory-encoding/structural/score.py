@@ -201,6 +201,7 @@ def attribution_control(c, probes, ents):
     guards = {g["id"]: g for g in c["guards"] if g["family"] in ("N", "NC")}
     present = absent_ok = walk = agree = 0
     n_items = n_correct = nc_items = nc_ok = 0
+    nc_attributed = nc_attributed_ok = nc_queried = nc_queried_plain = 0
     for p in probes:
         g = guards.get(p["probe"])
         if not g:
@@ -224,9 +225,20 @@ def attribution_control(c, probes, ents):
             if g["family"] == "NC" and subject:
                 nc_items += 1
                 nc_ok += subject != normalize(g["entity"])
-    ok = walk > 0 and present + absent_ok == walk and agree == walk and n_items > 0 and n_correct >= ATTRIBUTION_CORRECT * n_items and nc_ok == nc_items
+                shows = it["text"].startswith('About "')
+                if shows:
+                    nc_attributed += 1
+                    nc_attributed_ok += subject != normalize(g["entity"])
+                if subject == normalize(g["entity"]):
+                    nc_queried += 1
+                    nc_queried_plain += not shows
+    base = walk > 0 and present + absent_ok == walk and agree == walk and n_items > 0 and n_correct >= ATTRIBUTION_CORRECT * n_items
+    ok = base and nc_attributed_ok == nc_attributed and nc_queried_plain == nc_queried
     return {"walk_items": walk, "attributed": present, "plain_where_subject_is_a_seed": absent_ok, "subjects_agree_with_store": agree,
-            "n_associated_items": n_items, "n_correct": n_correct, "nc_items": nc_items, "nc_subject_not_queried": nc_ok, "passed": ok}
+            "n_associated_items": n_items, "n_correct": n_correct,
+            "nc_attributed": nc_attributed, "nc_attributed_subject_not_queried": nc_attributed_ok,
+            "nc_subject_queried": nc_queried, "nc_subject_queried_shown_plain": nc_queried_plain,
+            "as_written": {"nc_items": nc_items, "nc_subject_not_queried": nc_ok, "passed": base and nc_ok == nc_items}, "passed": ok}
 
 
 def key_text_control(probes, summaries, skip_linked=False):
@@ -397,6 +409,7 @@ def live_controls(name, c, results, summaries, ents, checks, ledger):
                           "passed": bool(lines) and bad == 0 and with_walk >= len(primary) / 2}
     if name == "L-attr":
         walk = present = n_items = n_correct = nc_items = nc_ok = 0
+        nc_attributed = nc_attributed_ok = nc_queried = nc_queried_plain = 0
         guards = {g["id"]: g for g in c["guards"]}
         for r in results:
             g = guards.get(r["probe"])
@@ -418,9 +431,19 @@ def live_controls(name, c, results, summaries, ents, checks, ledger):
                 if g["family"] == "NC" and subject:
                     nc_items += 1
                     nc_ok += subject != normalize(g["entity"])
+                    shows = text.startswith('About "')
+                    if shows:
+                        nc_attributed += 1
+                        nc_attributed_ok += subject != normalize(g["entity"])
+                    if subject == normalize(g["entity"]):
+                        nc_queried += 1
+                        nc_queried_plain += not shows
+        base = walk > 0 and present == walk and n_items > 0 and n_correct >= ATTRIBUTION_CORRECT * n_items
         out["attribution"] = {"walk_lines": walk, "as_expected": present, "n_associated_items": n_items, "n_correct": n_correct,
-                              "nc_items": nc_items, "nc_subject_not_queried": nc_ok,
-                              "passed": walk > 0 and present == walk and n_items > 0 and n_correct >= ATTRIBUTION_CORRECT * n_items and nc_ok == nc_items}
+                              "nc_attributed": nc_attributed, "nc_attributed_subject_not_queried": nc_attributed_ok,
+                              "nc_subject_queried": nc_queried, "nc_subject_queried_shown_plain": nc_queried_plain,
+                              "as_written": {"nc_items": nc_items, "nc_subject_not_queried": nc_ok, "passed": base and nc_ok == nc_items},
+                              "passed": base and nc_attributed_ok == nc_attributed and nc_queried_plain == nc_queried}
     if name in ("C-key", "C-key+L-ptr", BASELINE):
         checked = equal = 0
         for r in results:
@@ -559,8 +582,8 @@ def setting_of(call, windows):
     """The arms/links setting a live call of arm L belongs to, by the run
     windows in evidence/live/run.json."""
     for w in windows:
-        if w["arm"] == "L" and w["start"] <= call["time"] <= w["end"]:
-            return w["setting"]
+        if w["arm"] == "L" and w["start"] <= call["time"][:19] + "Z" <= w["end"]:
+            return w["setting"] + ("-smoke" if w.get("smoke") else "")
     return "?"
 
 
@@ -576,7 +599,13 @@ def tokens():
         if call["arm"] == "L" and call["phase"] == "live":
             key = f"L/{setting_of(call, windows)}/live"
         if call["arm"] == "L" and call["phase"] == "check" and call["episode"] != "b4-model-chk":
-            key = "L/b4-model-chk/check-live"
+            key = f"L/{setting_of(call, windows)}/check"
+            if key != "L/b4-model-chk/check":
+                a = agg[key]
+                a["calls"] += 1
+                a["prompt_tokens"] += call.get("prompt_tokens", 0)
+                a["completion_tokens"] += call.get("completion_tokens", 0)
+                continue
             t = turn[call["episode"]]
             t["calls"] += 1
             t["prompt_tokens"] += call.get("prompt_tokens", 0)

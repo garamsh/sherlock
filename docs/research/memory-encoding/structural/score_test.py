@@ -89,10 +89,32 @@ class OfflineControlTest(unittest.TestCase):
               "trace": {"seeds": ["aiko veaholl"], "subjects": {"9": "predecessor"}}}
         n = self.probe(attributed("tomas wigrull", ["chloe gaimoull"]))
         out = score.attribution_control(GUARDS, n + [nc], ents)
-        self.assertEqual((out["n_correct"], out["nc_subject_not_queried"]), (1, 1), "the setup: correct on both")
+        self.assertEqual((out["n_correct"], out["as_written"]["nc_subject_not_queried"]), (1, 1), "the setup: correct on both")
         self.assertFalse(out["passed"], "the NC walk item lacks its attribution")
         nc["items"][0]["text"] = score.attribution("predecessor", ["aiko veaholl"]) + nc["items"][0]["text"]
         self.assertTrue(score.attribution_control(GUARDS, n + [nc], ents)["passed"], "the control: with it, the control passes")
+
+    def test_nc_checks_attributed_items_and_the_queried_entitys_own_items_apart(self):
+        # Amendment 1: an NC walk item about the queried entity is shown
+        # plain, and an attributed one names someone else; each is checked.
+        ents = score.Entities([{"first": 6665, "entities": ["Tomas Wigrull", "5391"]}, {"first": 7201, "entities": ["Aiko Veaholl"]},
+                               {"first": 7205, "entities": ["predecessor"]}])
+        n = self.probe(attributed("tomas wigrull", ["chloe gaimoull"]))
+        own = {"probe": "NC-001", "items": [item(7201, "User reached Aiko Veaholl.", "linked", iid=8)],
+               "trace": {"seeds": ["aiko veaholl"], "subjects": {"8": "aiko veaholl"}}}
+        out = score.attribution_control(GUARDS, n + [own], ents)
+        self.assertTrue(out["passed"], out)
+        self.assertEqual((out["nc_subject_queried"], out["nc_subject_queried_shown_plain"]), (1, 1))
+        self.assertFalse(out["as_written"]["passed"], "the clause as preregistered counted this item against the arm")
+        own["items"][0]["text"] = score.attribution("aiko veaholl", ["aiko veaholl"]) + "User reached Aiko Veaholl."
+        self.assertFalse(score.attribution_control(GUARDS, n + [own], ents)["passed"], "an own item that carries an attribution fails")
+        # Where the recorded seeds lack the queried entity, presence accepts
+        # the attribution, and only the NC checks catch it.
+        own = {"probe": "NC-001", "items": [item(7201, score.attribution("aiko veaholl", ["veaholl office"]) + "User reached Aiko Veaholl.", "linked", iid=8)],
+               "trace": {"seeds": ["veaholl office"], "subjects": {"8": "aiko veaholl"}}}
+        out = score.attribution_control(GUARDS, n + [own], ents)
+        self.assertEqual(out["attributed"] + out["plain_where_subject_is_a_seed"], out["walk_items"], "the setup: presence passes")
+        self.assertFalse(out["passed"])
 
     def test_pointer_control_fails_on_walk_text(self):
         self.assertTrue(score.pointer_control([{"items": [item(9, POINTER, "linked")]}])["passed"])
@@ -160,6 +182,10 @@ class LiveTest(unittest.TestCase):
         self.assertFalse(score.live_controls("L-attr", corpus, [n, bare], {}, ents, [], [])["passed"])
         told = {"probe": "NC-001", "recall": line(9, "linked", score.attribution("predecessor", ["aiko veaholl"]) + "The predecessor answers on 7508.", 7205)}
         self.assertTrue(score.live_controls("L-attr", corpus, [n, told], {}, ents, [], [])["passed"])
+        own = {"probe": "NC-001", "recall": line(8, "linked", score.attribution("aiko veaholl", ["aiko veaholl"]) + "User reached Aiko Veaholl.", 7201)}
+        self.assertFalse(score.live_controls("L-attr", corpus, [n, told, own], {}, ents, [], [])["passed"], "the queried entity's own item must be plain")
+        own["recall"] = line(8, "linked", "User reached Aiko Veaholl.", 7201)
+        self.assertTrue(score.live_controls("L-attr", corpus, [n, told, own], {}, ents, [], [])["passed"])
 
     def test_live_check_control_needs_the_ledger_to_hold_the_checks(self):
         rec = {"probe": "N-001", "opened": "t2", "call": "recall", "walk": [7], "ran": True, "named": [], "connected": False}

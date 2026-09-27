@@ -1,0 +1,7 @@
+FAILS  score.py: the hit rule
+FAILS  score.py: the stale rule: no evidence delivered
+FAILS  score.py: the near-miss rule
+FAILS  screen.py: Kr's batch-4 recency
+FAILS  score.py: the delivery margin
+FAILS  score.py: the guardrail allowance
+control: every unmutated test passes

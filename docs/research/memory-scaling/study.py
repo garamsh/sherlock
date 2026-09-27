@@ -47,6 +47,8 @@ RERANK_DEPTH = 30
 RRF_K = 60
 AGED_WINDOW = 2400
 TAG = ' [mid:{id} sources:{first}-{last}; summary, not verified source text]'
+MESSAGE_TAG = ' [source:{id}; message text]'
+DRILL_MIDS = 5
 STOP = frozenset('''a about after all am an and any are as at be been before but by can could did do does
 for from had has have how i if in into is it its me my of on or our should so than that the their them then
 there these they this to up was we were what when where which who why will with would you your'''.split())
@@ -55,12 +57,27 @@ there these they this to up was we were what when where which who why will with 
 class Unit:
     """One stored unit: its source interval, the text delivered, and the text its ranking key embeds."""
 
-    def __init__(self, first, last, text, key=None):
-        self.first, self.last, self.text, self.key = first, last, text, key or text
+    def __init__(self, first, last, text, key=None, tag=TAG):
+        self.first, self.last, self.text, self.key, self.tag = first, last, text, key or text, tag
         self.id = 0
 
     def size(self):
-        return len(self.text) + len(TAG.format(id=self.id, first=self.first, last=self.last))
+        return len(self.text) + len(self.tag.format(id=self.id, first=self.first, last=self.last))
+
+
+def message(source, text):
+    """A raw source message the drill-down arms deliver; its id is its source ID."""
+    unit = Unit(source, source, text, tag=MESSAGE_TAG)
+    unit.id = source
+    return unit
+
+
+def drill(q, dense, messages_of, sim, depth=DRILL_MIDS):
+    """Amendment 1's two orderings of the raw messages inside the top `depth` mids."""
+    top = dense[:depth]
+    by_score = sim.rank(q, [m for mid in top for m in messages_of(mid)])
+    by_mid = [m for mid in sorted(top, key=lambda u: -u.id) for m in sim.rank(q, messages_of(mid))]
+    return by_score, by_mid
 
 
 def jsonl(path):
@@ -182,7 +199,8 @@ def load_pool(patterns):
                 kept.append(Unit(first, last, text))
         chars = sum(len(m['content']) for m in messages.values())
         streams.append({'label': label, 'offset': offset, 'messages': len(messages), 'chars': chars,
-                        'kept': kept, 'contents': [m['content'] for m in messages.values()]})
+                        'kept': kept, 'contents': [m['content'] for m in messages.values()],
+                        'sources': [(i - STREAM_MESSAGES + offset, messages[i]['content']) for i in sorted(messages)]})
         report.append({'stream': label, 'file': stream_path, 'messages': len(messages), 'source_chars': chars,
                        'mids': len(kept) + len(dropped), 'kept': len(kept), 'dropped': dropped})
         offset += len(messages)
@@ -324,7 +342,7 @@ def owners(keys, values):
     return {id(key): owner[key.first] for key in keys}
 
 
-def rankings(q, stores, sim, lex, reranker, value_of):
+def rankings(q, stores, sim, lex, reranker, value_of, messages_of):
     """Each arm's recency units and ranked list for one query."""
     b4 = stores['B4']
     newest = b4[-RECENT:][::-1]
@@ -337,6 +355,8 @@ def rankings(q, stores, sim, lex, reranker, value_of):
         # Exploratory, added after the first ranking: K's ranking behind B4's recency units, at s0 only,
         # where K's own recency units are B16 values.
         out['Kr'] = (newest, out['K'][1])
+    rel, new = drill(q['id'], dense, messages_of, sim)
+    out['DR-rel'], out['DR-new'] = (newest, rel), (newest, new)
     if reranker:
         out['R'] = (newest, reranker.order(q['text'], dense[:RERANK_DEPTH]) + dense[RERANK_DEPTH:])
     for arm in ('B8', 'B16', 'T', 'B8m', 'B8c'):
@@ -368,7 +388,9 @@ def main(rerank=True):
         'servers': {'embed': info(EMBED_URL), 'rerank': info(RERANK_URL) if rerank else None},
     }
 
-    sim = Similarity(queries, rep[4] + rep[8] + rep[16] + distractors)
+    sources = [message(m['id'], m['content']) for m in corpus] + [message(i, c) for s in streams for i, c in s['sources']]
+    sim = Similarity(queries, rep[4] + rep[8] + rep[16] + distractors + sources)
+    by_source = {m.first: m for m in sources}
     reranker = Reranker() if rerank else None
     started = time.time()
     rows, storage, reach, budget = [], [], {}, None
@@ -383,9 +405,19 @@ def main(rerank=True):
                             'replication_source_chars': rep_chars,
                             'recency_chars': sum(u.size() for u in store[-RECENT:])})
             reach[f'{scale}/{arm}'] = all(any(covers([(u.first, u.last)], q['evidence']) for u in store) for q in primary)
+        dr_stored = sum(len(u.text) for u in stores['B4']) + source_chars
+        storage.append({'scale': scale, 'arm': 'DR', 'units': len(stores['B4']) + messages,
+                        'replication_units': len(parts['B4']) + STREAM_MESSAGES, 'stored_chars': dr_stored,
+                        'replication_stored_chars': sum(len(u.text) for u in parts['B4']) + rep_chars,
+                        'source_messages': messages, 'source_chars': source_chars,
+                        'replication_source_chars': rep_chars,
+                        'recency_chars': sum(u.size() for u in stores['B4'][-RECENT:])})
+
+        def messages_of(mid):
+            return [by_source[i] for i in range(mid.first, mid.last + 1)]
         lex = lexical(stores['B4'], queries)
         value_of = owners(stores['B4'], stores['K'])
-        ranked = {q['id']: rankings(q, stores, sim, lex, reranker, value_of) for q in queries}
+        ranked = {q['id']: rankings(q, stores, sim, lex, reranker, value_of, messages_of) for q in queries}
         if reranker:
             reranker.save()
         if budget is None:

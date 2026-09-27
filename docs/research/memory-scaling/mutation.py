@@ -26,6 +26,8 @@ MUTATIONS = [
     ('study.py', "re.compile(r'(?<![A-Za-z0-9])' + re.escape(k) + r'(?![A-Za-z0-9])', re.I)",
      're.compile(re.escape(k), re.I)', 'leak check: the flanking rule'),
     ('study.py', '            if pattern.search(text):', '            if False:', 'leak check: matching a planted value'),
+    ('study.py', '    top = dense[:depth]', '    top = dense', 'drill-down: the top M mids'),
+    ('study.py', 'for mid in sorted(top, key=lambda u: -u.id)', 'for mid in top', 'drill-down: the newer mid first'),
     ('evaluate.py', "    degrades = null['losses'] > null['wins'] and null['p'] < ALPHA", '    degrades = False',
      'decision: the null condition'),
     ('evaluate.py', "c['interval'][0] >= NO_WORSE and ", '', 'decision: the no-worse bound'),

@@ -64,6 +64,33 @@ class DedupeTest(unittest.TestCase):
         self.assertEqual(study.values_in_order([keys[1], keys[2], keys[0]], value_of), [values[0], values[1]])
 
 
+class DrillTest(unittest.TestCase):
+    class Scores:
+        """Ranks by a fixed score per text, ties newest first, as Similarity.rank does."""
+        def __init__(self, scores):
+            self.scores = scores
+
+        def rank(self, _query, units):
+            return sorted(units, key=lambda u: (-self.scores[u.text], -u.id))
+
+    def setUp(self):
+        self.mids = units((1, 2), (3, 4), (5, 6))
+        self.sources = {i: study.message(i, f'm{i}') for i in range(1, 7)}
+        self.messages_of = lambda mid: [self.sources[i] for i in range(mid.first, mid.last + 1)]
+        self.sim = self.Scores({'m1': 0.9, 'm2': 0.1, 'm3': 0.5, 'm4': 0.8, 'm5': 1.0, 'm6': 0.0})
+
+    def test_relevance_order_ranks_the_messages_of_the_top_mids_only(self):
+        rel, _ = study.drill('q', [self.mids[0], self.mids[1], self.mids[2]], self.messages_of, self.sim, depth=2)
+        self.assertEqual([m.first for m in rel], [1, 4, 3, 2])
+
+    def test_newest_order_groups_by_mid_newer_first_and_by_score_within(self):
+        _, new = study.drill('q', [self.mids[0], self.mids[1]], self.messages_of, self.sim, depth=2)
+        self.assertEqual([m.first for m in new], [4, 3, 1, 2])
+
+    def test_a_message_is_rendered_with_its_source_suffix(self):
+        self.assertEqual(self.sources[3].size(), 2 + len(' [source:3; message text]'))
+
+
 class LeakTest(unittest.TestCase):
     def test_a_planted_value_is_found_case_insensitively(self):
         patterns = study.leak_patterns(['Kiwi'])

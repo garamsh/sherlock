@@ -17,7 +17,7 @@ PRIMARY = ['exact', 'paraphrase', 'implicit', 'correction']
 SCALES = ['s0', 's1', 's2', 's3', 's4']
 BUDGETED = ['B4', 'B8', 'B16', 'T', 'K', 'X', 'R']
 COMPARED = ['B8', 'B16', 'T', 'K', 'X', 'R']
-LAYOUT = {'S4': 'B4', 'X': 'B4', 'R': 'B4', 'Kr': 'K'}
+LAYOUT = {'S4': 'B4', 'X': 'B4', 'R': 'B4', 'Kr': 'K', 'DR-rel': 'DR', 'DR-new': 'DR'}
 ALPHA = 0.05
 NO_WORSE = -0.05
 REPRODUCE = 212
@@ -112,7 +112,7 @@ def main():
     hits = hit_table(rows, queries)
     ids = [q['id'] for q in queries if q['family'] in PRIMARY]
     family = {q['id']: q['family'] for q in queries}
-    arms = sorted({arm for _, arm in hits}, key=lambda a: (['S4'] + BUDGETED + ['B8m', 'B8c', 'Kr']).index(a))
+    arms = sorted({arm for _, arm in hits}, key=lambda a: (['S4'] + BUDGETED + ['DR-rel', 'DR-new', 'B8m', 'B8c', 'Kr']).index(a))
 
     table = {}
     for (scale, arm), per in sorted(hits.items()):
@@ -139,6 +139,10 @@ def main():
     secondary = {'B4_against_S4_at_s0': compare(hits['s0', 'B4'], hits['s0', 'S4'], ids)}
     if ('s1', 'B8m') in hits:
         secondary['B8m_against_B8_at_s1'] = compare(hits['s1', 'B8m'], hits['s1', 'B8'], ids)
+    for arm in ('DR-rel', 'DR-new'):
+        for scale in ('s0', 's4'):
+            if (scale, arm) in hits:
+                secondary[f'amendment1_{arm}_against_B4_at_{scale}'] = compare(hits[scale, arm], hits[scale, 'B4'], ids)
     if ('s0', 'Kr') in hits:
         secondary['exploratory_Kr_against_B4_at_s0'] = compare(hits['s0', 'Kr'], hits['s0', 'B4'], ids)
     if ('s1', 'B8c') in hits:

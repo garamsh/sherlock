@@ -8,6 +8,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"os"
 	"path/filepath"
 
 	_ "modernc.org/sqlite"
@@ -32,9 +33,16 @@ func (arm) Name() string { return "L" }
 // associated and the Abstention instruction. #888's read-time variants of
 // b4-model are b4-model-g (L+G: walk mids pass a gate), b4-model-t (L-T:
 // the walk only as memory_associate) and b4-model-v (L+V: a linked fact
-// only after memory_inspect read its source).
+// only after memory_inspect read its source). #896's structural variants
+// are b4-model-ptr (L-ptr: walk mids shown as pointers only),
+// b4-model-attr (L-attr: walk mids shown with their subject beside the
+// query's entities), b4-model-chk (L+chk: a grounding check the runtime
+// runs when recall or search delivered walk mids) and b4-model-key-ptr
+// (C-key+L-ptr: L-ptr over C-key's store, arms/context's b4-w8-key in the
+// memory-encoding validation study).
 func (arm) Settings() []string {
-	return []string{"b4", "b8", "b4-model", "b4-model-a", "b4-model-g", "b4-model-t", "b4-model-v"}
+	return []string{"b4", "b8", "b4-model", "b4-model-a", "b4-model-g", "b4-model-t", "b4-model-v",
+		"b4-model-ptr", "b4-model-attr", "b4-model-chk", "b4-model-key-ptr"}
 }
 
 func (arm) Instructions() string { return "" }
@@ -74,7 +82,8 @@ func parseSetting(setting string) (batch int, fromModel bool, err error) {
 		return 4, false, nil
 	case "b8":
 		return 8, false, nil
-	case "b4-model", "b4-model-a", "b4-model-g", "b4-model-t", "b4-model-v":
+	case "b4-model", "b4-model-a", "b4-model-g", "b4-model-t", "b4-model-v",
+		"b4-model-ptr", "b4-model-attr", "b4-model-chk", "b4-model-key-ptr":
 		return 4, true, nil
 	}
 	return 0, false, fmt.Errorf("unknown setting %q", setting)
@@ -88,14 +97,35 @@ const entitySchema = `CREATE TABLE mid_entity (
  PRIMARY KEY (mid, name)
 )`
 
-// Build copies the shared store at the setting's batch and writes each
-// mid's entities beside it.
+// keyed is C-key+L-ptr's setting, whose store is C-key's rather than the
+// shared one.
+const keyed = "b4-model-key-ptr"
+
+// keyStore is C-key's build (arms/context, setting b4-w8-key, in the
+// memory-encoding validation study): the shared store with every stream
+// mid embedded from C's recorded context before S's summary. C-key+L-ptr
+// copies it in place of the shared store, so C-key is built first.
+func keyStore(env *study.Env) (string, error) {
+	dir := env.BuildDir("C", "b4-w8-key")
+	if _, err := os.Stat(filepath.Join(dir, "memory.db")); err != nil {
+		return "", fmt.Errorf("C-key's store: %w (build arms/context -setting b4-w8-key first)", err)
+	}
+	return dir, nil
+}
+
+// Build copies the shared store at the setting's batch, or C-key's store
+// for C-key+L-ptr, and writes each mid's entities beside it.
 func (arm) Build(ctx context.Context, env *study.Env, setting, dir string) (study.Built, error) {
 	batch, fromModel, err := parseSetting(setting)
 	if err != nil {
 		return study.Built{}, err
 	}
-	shared, err := env.SharedStore(batch)
+	var shared string
+	if setting == keyed {
+		shared, err = keyStore(env)
+	} else {
+		shared, err = env.SharedStore(batch)
+	}
 	if err != nil {
 		return study.Built{}, err
 	}
@@ -124,7 +154,29 @@ func (arm) Build(ctx context.Context, env *study.Env, setting, dir string) (stud
 	if err := writeEntities(ctx, path, entities); err != nil {
 		return study.Built{}, err
 	}
-	return built(mids, entities, fromModel), nil
+	out := built(mids, entities, fromModel)
+	if setting == keyed {
+		contexts, err := contextChars(ctx, path)
+		if err != nil {
+			return study.Built{}, err
+		}
+		out.StoredChars += contexts
+		out.Notes["context_chars"] = contexts
+	}
+	return out, nil
+}
+
+// contextChars counts the context characters C-key's store keeps for its
+// embedding keys.
+func contextChars(ctx context.Context, path string) (int, error) {
+	db, err := sql.Open("sqlite", path+"?mode=ro")
+	if err != nil {
+		return 0, err
+	}
+	defer db.Close()
+	var n int
+	err = db.QueryRowContext(ctx, `SELECT coalesce(sum(length(context)),0) FROM conversation_mid`).Scan(&n)
+	return n, err
 }
 
 // built counts what L stores: every mid summary and every entity name per
@@ -247,9 +299,13 @@ func (arm) Open(ctx context.Context, env *study.Env, setting, dir string) (study
 	if err != nil {
 		return nil, err
 	}
-	m := &memory{store: store, graph: newGraph(mids, entities), associate: associates(setting), gated: setting == "b4-model-g"}
-	if setting == "b4-model-t" {
+	m := &memory{store: store, graph: newGraph(mids, entities), associate: associates(setting), gated: setting == "b4-model-g",
+		pointer: setting == "b4-model-ptr" || setting == keyed, attribute: setting == "b4-model-attr"}
+	switch setting {
+	case "b4-model-t":
 		return associating{m}, nil
+	case "b4-model-chk":
+		return openChecked(env, m, setting, dir)
 	}
 	return m, nil
 }

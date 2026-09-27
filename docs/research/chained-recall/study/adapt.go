@@ -16,6 +16,12 @@ import (
 func Recalled(items []Item) []agent.RecalledMemory {
 	out := make([]agent.RecalledMemory, 0, len(items))
 	for _, it := range items {
+		if it.Level == "notice" {
+			// A notice an arm's runtime adds (L+chk, #896) is no memory:
+			// it has no ID or interval to label.
+			out = append(out, agent.RecalledMemory{ID: "notice", Content: it.Text, Age: it.Kind})
+			continue
+		}
 		id := strconv.FormatInt(it.ID, 10)
 		if it.Level != "mid" {
 			id = it.Level + ":" + id

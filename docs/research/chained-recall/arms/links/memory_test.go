@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"database/sql"
+	"encoding/json"
 	"fmt"
 	"math"
 	"os"
@@ -287,4 +289,113 @@ func TestInstructionsFor_GivesEachVariantItsOwnSentence(t *testing.T) {
 	assert.Equal(t, Verify, si.InstructionsFor("b4-model-v"))
 	assert.Empty(t, si.InstructionsFor("b4-model-g"), "L+G changes only what recall delivers")
 	assert.Empty(t, si.InstructionsFor("b4-model"), "the control: L has none")
+}
+
+func byID(items []study.Item) map[int64]study.Item {
+	out := map[int64]study.Item{}
+	for _, it := range items {
+		out[it.ID] = it
+	}
+	return out
+}
+
+func TestRecall_ShowsWalkMidsOnlyAsPointersInLPtr(t *testing.T) {
+	env := sharedStore(t)
+	ctx := context.Background()
+	plain, err := openModel(t, env, "b4-model").Recall(ctx, chainQuery)
+	require.NoError(t, err)
+	m := openModel(t, env, "b4-model-ptr")
+	items, err := m.Recall(ctx, chainQuery)
+	require.NoError(t, err)
+	assert.Equal(t, itemIDs(plain), itemIDs(items), "L's items, in L's order")
+	got := byID(items)
+	assert.Equal(t, pointerText("gebind components"), got[2].Text)
+	assert.Equal(t, pointerText("mateo deatreal"), got[3].Text)
+	assert.NotContains(t, got[3].Text, "5504", "no walk-episode text")
+	assert.Equal(t, int64(9), got[3].SourceFirst, "the pointer keeps the interval memory_inspect reads")
+	assert.Equal(t, chainSummaries[0], got[1].Text, "the control: a similar mid keeps its summary")
+	hits, err := m.Search(ctx, chainQuery, 5)
+	require.NoError(t, err)
+	for _, it := range hits {
+		if it.Kind == "linked" {
+			assert.True(t, strings.HasPrefix(it.Text, "Linked through"), "memory_search shows walk mids as pointers too")
+		}
+	}
+	assert.Contains(t, study.Recalled(items)[5].Content, "[mid:3 sources:9-12;", "the rendered pointer names the mid and its interval")
+}
+
+func TestRecall_AttributesWalkMidsToTheirSubjectInLAttr(t *testing.T) {
+	env := sharedStore(t)
+	ctx := context.Background()
+	m := openModel(t, env, "b4-model-attr")
+	items, err := m.Recall(ctx, chainQuery)
+	require.NoError(t, err)
+	got := byID(items)
+	assert.Equal(t, attribution("gebind components", []string{"rodend"})+chainSummaries[1], got[2].Text, "mid 2 was written about gebind components first")
+	assert.Equal(t, `About "mateo deatreal"; the question names "rodend". `+chainSummaries[2], got[3].Text)
+	assert.Equal(t, chainSummaries[0], got[1].Text, "the control: a similar mid carries no attribution")
+	assert.Equal(t, map[int64]string{2: "gebind components", 3: "mateo deatreal"}, m.(*memory).LastTrace()["subjects"], "the trace names each walk mid's subject")
+	// A walk mid whose subject is one of the query's entities is shown
+	// as it is: the attribution marks only a difference.
+	a := m.(*memory)
+	assert.Equal(t, chainSummaries[2], a.shown(study.Item{ID: 3, Text: chainSummaries[2]}, "mateo deatreal", []string{"mateo deatreal", "rodend"}))
+	assert.Equal(t, attribution("gebind components", []string{"mateo deatreal", "rodend"})+chainSummaries[1],
+		a.shown(study.Item{ID: 2, Text: chainSummaries[1]}, "gebind components", []string{"mateo deatreal", "rodend"}))
+}
+
+// recordedEntities gives env the corpus of sharedStore's 60 messages and a
+// complete entity recording for its 15 batches, the chain's names on the
+// first three, so a model-entity setting builds without a call.
+func recordedEntities(t *testing.T, env *study.Env) {
+	t.Helper()
+	env.Dir = t.TempDir()
+	env.Corpus = &study.Corpus{}
+	for i := 1; i <= 60; i++ {
+		env.Corpus.Base = append(env.Corpus.Base, study.Message{ID: int64(i), Role: "user", Content: fmt.Sprintf("message %d", i)})
+	}
+	named := map[int64][]string{1: {"Rodend", "Gebind Components"}, 5: {"Gebind Components", "Mateo Deatreal"}, 9: {"Mateo Deatreal"}}
+	var lines []string
+	for first := int64(1); first <= 57; first += 4 {
+		line, _ := json.Marshal(batchEntities{First: first, Last: first + 3, Entities: append([]string{}, named[first]...)})
+		lines = append(lines, string(line))
+	}
+	path := entitiesPath(env, 4)
+	require.NoError(t, os.MkdirAll(filepath.Dir(path), 0o755))
+	require.NoError(t, os.WriteFile(path, []byte(strings.Join(lines, "\n")+"\n"), 0o644))
+}
+
+func TestBuild_KeyPtrStartsFromCKeysStore(t *testing.T) {
+	env := sharedStore(t)
+	recordedEntities(t, env)
+	ctx := context.Background()
+	_, err := New().Build(ctx, env, keyed, filepath.Join(env.Work, "builds", "L", keyed))
+	require.ErrorContains(t, err, "b4-w8-key", "C-key is built first")
+	key := env.BuildDir("C", "b4-w8-key")
+	require.NoError(t, study.CopyDir(filepath.Join(env.Work, "shared", "b4"), key))
+	db, err := sql.Open("sqlite", filepath.Join(key, "memory.db"))
+	require.NoError(t, err)
+	_, err = db.Exec(`ALTER TABLE conversation_mid ADD COLUMN context TEXT`)
+	require.NoError(t, err)
+	_, err = db.Exec(`UPDATE conversation_mid SET context='At the Rodend site.' WHERE id=2`)
+	require.NoError(t, err)
+	require.NoError(t, db.Close())
+	dir := filepath.Join(env.Work, "builds", "L", keyed)
+	b, err := New().Build(ctx, env, keyed, dir)
+	require.NoError(t, err)
+	assert.Equal(t, len("At the Rodend site."), b.Notes["context_chars"])
+	plain, err := New().Build(ctx, env, "b4-model-ptr", filepath.Join(env.Work, "builds", "L", "b4-model-ptr"))
+	require.NoError(t, err)
+	assert.Equal(t, plain.StoredChars+len("At the Rodend site."), b.StoredChars, "the keys' context counts as stored")
+	var c string
+	db, err = sql.Open("sqlite", filepath.Join(dir, "memory.db"))
+	require.NoError(t, err)
+	defer db.Close()
+	require.NoError(t, db.QueryRow(`SELECT context FROM conversation_mid WHERE id=2`).Scan(&c))
+	assert.Equal(t, "At the Rodend site.", c, "the build is a copy of C-key's store")
+	m, err := New().Open(ctx, env, keyed, dir)
+	require.NoError(t, err)
+	defer m.Close()
+	items, err := m.Recall(ctx, chainQuery)
+	require.NoError(t, err)
+	assert.Equal(t, pointerText("mateo deatreal"), byID(items)[3].Text, "C-key+L-ptr shows walk mids as L-ptr does")
 }

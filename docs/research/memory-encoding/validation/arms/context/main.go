@@ -27,11 +27,15 @@ func New() study.Arm { return arm{} }
 
 type arm struct{}
 
-// setting is C's one setting: batch 4 with the 8 messages before it.
+// setting is C's own setting: batch 4 with the 8 messages before it.
 const setting = "b4-w8"
 
+// keyOnly is C-key (#896): C's recorded context used only in the embedding
+// key, before S's summary, which stays the text shown. It makes no call.
+const keyOnly = "b4-w8-key"
+
 func (arm) Name() string         { return "C" }
-func (arm) Settings() []string   { return []string{setting} }
+func (arm) Settings() []string   { return []string{setting, keyOnly} }
 func (arm) Instructions() string { return "" }
 
 // embedText is what a mid's vector is computed from: the context first, as
@@ -45,11 +49,12 @@ func embedText(contextLine, summary string) string {
 }
 
 // Build copies the shared batch-4 store and, for every stream mid, stores
-// C's summary and context and re-embeds the mid from both. The base's mids
+// C's summary and context and re-embeds the mid from both; C-key keeps S's
+// summary and re-embeds the mid from C's context and it. The base's mids
 // keep their recorded summaries and have no context
 // (../../preregistration.md §Arms).
 func (arm) Build(ctx context.Context, env *study.Env, s, dir string) (study.Built, error) {
-	if s != setting {
+	if s != setting && s != keyOnly {
 		return study.Built{}, fmt.Errorf("unknown setting %q", s)
 	}
 	recorded, err := recordContexts(ctx, env)
@@ -64,16 +69,17 @@ func (arm) Build(ctx context.Context, env *study.Env, s, dir string) (study.Buil
 		return study.Built{}, err
 	}
 	path := filepath.Join(dir, "memory.db")
-	if err := writeContexts(ctx, env, path, recorded); err != nil {
+	if err := writeContexts(ctx, env, path, recorded, s == keyOnly); err != nil {
 		return study.Built{}, err
 	}
 	return stats(ctx, path)
 }
 
 // writeContexts adds the context column and rewrites each recorded stream
-// mid: summary, context and embedding. A batch recorded as failed keeps its
-// shared mid unchanged.
-func writeContexts(ctx context.Context, env *study.Env, path string, recorded map[int64]batchContext) error {
+// mid: summary, context and embedding. With keepSummary (C-key) the mid's
+// shared summary stays and only the context and embedding change. A batch
+// recorded as failed keeps its shared mid unchanged.
+func writeContexts(ctx context.Context, env *study.Env, path string, recorded map[int64]batchContext, keepSummary bool) error {
 	db, err := sql.Open("sqlite", path)
 	if err != nil {
 		return err
@@ -94,6 +100,12 @@ func writeContexts(ctx context.Context, env *study.Env, path string, recorded ma
 			continue
 		}
 		summary := strings.TrimSpace(study.Redact(b.Summary))
+		if keepSummary {
+			err := tx.QueryRowContext(ctx, `SELECT summary FROM conversation_mid WHERE source_first=? AND source_last=?`, first, b.Last).Scan(&summary)
+			if err != nil {
+				return fmt.Errorf("shared summary of %d-%d: %w", first, b.Last, err)
+			}
+		}
 		contextLine := strings.TrimSpace(study.Redact(b.Context))
 		vector, err := env.Embedder.Embed(ctx, embedText(contextLine, summary))
 		if err != nil {
@@ -171,11 +183,19 @@ func readContexts(ctx context.Context, path string) (map[int64]string, error) {
 }
 
 // Open reads the contexts and opens the production store under them.
+// C-key shows no context: its recall and search are S's over its keys.
 func (arm) Open(ctx context.Context, env *study.Env, s, dir string) (study.Memory, error) {
-	if s != setting {
+	if s != setting && s != keyOnly {
 		return nil, fmt.Errorf("unknown setting %q", s)
 	}
 	path := filepath.Join(dir, "memory.db")
+	if s == keyOnly {
+		store, err := sqlite.OpenConversation(path, env.Embedder)
+		if err != nil {
+			return nil, err
+		}
+		return study.ShippedMemory{Conversation: store}, nil
+	}
 	contexts, err := readContexts(ctx, path)
 	if err != nil {
 		return nil, err

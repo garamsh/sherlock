@@ -7,6 +7,7 @@ FAILS  docs/research/memory-paradigms/validation/arms/agent/recall.go: R's citat
 FAILS  docs/research/memory-paradigms/validation/arms/agent/recall.go: refusing a fact without sources
 FAILS  docs/research/memory-paradigms/validation/arms/agent/recall.go: the last call offering only recall_result
 FAILS  docs/research/memory-paradigms/validation/arms/agent/recall.go: recording what the step inspected
+FAILS  docs/research/memory-paradigms/validation/arms/agent/recall.go: naming the probe from the live session's task (Amendment 5)
 FAILS  docs/research/memory-paradigms/validation/arms/document/document.go: refusing a pass that drops more than a quarter
 FAILS  docs/research/memory-paradigms/validation/arms/document/document.go: rejecting a line citing a mid its pass was not given
 FAILS  docs/research/memory-paradigms/validation/arms/document/document.go: the bound

@@ -139,3 +139,15 @@ func TestRecall_RefusesATaskNoProbeAsks(t *testing.T) {
 	_, err := open(t, &scriptedModel{}, &episodes).Recall(context.Background(), "Something else?")
 	assert.Error(t, err)
 }
+
+func TestRecall_NamesTheProbeFromTheTaskTheLiveSessionPasses(t *testing.T) {
+	model := &scriptedModel{steps: []agent.Response{call("recall_result", `{"facts":[]}`)}}
+	var episodes []string
+	m := open(t, model, &episodes)
+
+	_, err := m.Recall(context.Background(), "[msg-C2-001] owner: Who sits at desk 4?")
+	require.NoError(t, err)
+	assert.Equal(t, []string{"C2-001"}, episodes)
+	_, err = m.Recall(context.Background(), "[msg-C2-999] owner: Who sits at desk 4?")
+	assert.Error(t, err, "the control: a prefix naming another probe than the query's is refused")
+}

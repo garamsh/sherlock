@@ -123,3 +123,9 @@ Each is MiniMax-M2 through the one study proxy (`harness proxy`, ledger `evidenc
 - **Reason, as the PM gave it.** W gates nothing. It is a ceiling reading whose direction the #899 survey already predicts: full context loses at 100K+ tokens on 7 of the 8 models read (`../README.md` §Full context as memory). It was also the largest spend, about 41M of the run's 66M input tokens.
 - **What stays.** W's code (`arms/full/`), its tests, its sample and its mutation check stay as built. The report cites #899 for the ceiling instead of a measurement, and marks W's hypotheses as not read.
 - **What does not change.** S's and R's live stages, their controls and the decision rule stand as preregistered, and still wait for the PM's go.
+
+### Amendment 5, after S's live stage, before R's first model call
+
+- **What happened.** R's first live run recorded an error on all 470 probes, `recall: no live probe asks "[msg-<probe>] owner: <query>"`, and made no model call: the ledger holds no call of arm R. The live session hands recall the task as `[msg-<probe>] owner: <query>` (`study.liveOnce`), while R named a probe by its bare query.
+- **Change.** R names the probe from that prefix when it matches the query, and still accepts the bare query (`arms/agent/recall.go` `probeOf`, `TestRecall_NamesTheProbeFromTheTaskTheLiveSessionPasses`, and a mutation check). The recall step still reads the task as the session passes it, as S's recall does.
+- **The 470 error records** were deleted before R ran again. They held no model output, and nothing was scored from them. Nothing else changes.

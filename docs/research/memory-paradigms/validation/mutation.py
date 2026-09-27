@@ -31,6 +31,7 @@ MUTATIONS = [
     (HERE / "arms/agent/recall.go", "\t\tok := len(f.Sources) > 0\n", "\t\tok := true\n", GO_R, "refusing a fact without sources"),
     (HERE / "arms/agent/recall.go", "\t\t\ttools = []tool.Descriptor{resultDescriptor()}\n", "", GO_R, "the last call offering only recall_result"),
     (HERE / "arms/agent/recall.go", "\t\t\t\t\tinspected[id] = true\n", "", GO_R, "recording what the step inspected"),
+    (HERE / "arms/agent/recall.go", "m.probes[query] == id {", "false {", GO_R, "naming the probe from the live session's task (Amendment 5)"),
     (HERE / "arms/document/document.go", "\tif strict && drops > quota {", "\tif false {", GO_D, "refusing a pass that drops more than a quarter"),
     (HERE / "arms/document/document.go", "\t\tif _, ok := intervals[m]; !ok {\n\t\t\treturn false\n\t\t}\n", "", GO_D, "rejecting a line citing a mid its pass was not given"),
     (HERE / "arms/document/document.go", "\tif next.Chars() > Bound {\n\t\tif strict {", "\tif false {\n\t\tif strict {", GO_D, "the bound"),

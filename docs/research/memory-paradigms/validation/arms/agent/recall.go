@@ -58,7 +58,7 @@ func (m *memory) LastTrace() map[string]any { return m.trace }
 // Recall runs the recall step and delivers the facts whose every cited
 // source the step read, or one line saying it found nothing.
 func (m *memory) Recall(ctx context.Context, task string) ([]study.Item, error) {
-	probe, ok := m.probes[task]
+	probe, ok := m.probeOf(task)
 	if !ok {
 		return nil, fmt.Errorf("no live probe asks %q", task)
 	}
@@ -76,6 +76,19 @@ func (m *memory) Recall(ctx context.Context, task string) ([]study.Item, error) 
 	trace["dropped"] = dropped
 	m.trace = trace
 	return Items(kept), nil
+}
+
+// probeOf names the probe a task belongs to. The live session hands recall
+// the task as "[msg-<probe>] owner: <query>" (study.liveOnce); the bare
+// query is accepted too (Amendment 5).
+func (m *memory) probeOf(task string) (string, bool) {
+	if rest, ok := strings.CutPrefix(task, "[msg-"); ok {
+		if id, query, ok := strings.Cut(rest, "] owner: "); ok && m.probes[query] == id {
+			return id, true
+		}
+	}
+	id, ok := m.probes[task]
+	return id, ok
 }
 
 // CheckCitations keeps a fact only when it cites at least one source and

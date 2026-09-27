@@ -28,6 +28,7 @@ Records issue #874's study. For the memory structures `docs/research/associative
 - Limits
 - Reproduction
 - Confirmation (#885)
+- Read-time variants (#888)
 
 ## Question
 
@@ -468,3 +469,160 @@ MiniMax-M2 only, through one proxy on `127.0.0.1:8096` (`confirm/evidence/ledger
   6. `live`.
 
   Every recorded phase resumes after its last record, so re-running against the committed evidence sends nothing.
+
+## Read-time variants (#888)
+
+A preregistered run (`readtime/preregistration.md`, committed at `37825a1` before any call, with one amendment before a re-run). It asks whether a read-time variant of L keeps L's chain gain while holding S's abstention and correction behaviour.
+
+- **Verdict: no arm is valid, so the shipped recall stands and no arm is named for implementation.**
+- **L's gain holds and so does its cost.** L applies 60 of 100 primary chains against S's 4, and fails the N and K guardrails again.
+- **Each read-time variant trades the gain for the guard, or the guard for nothing:**
+  - L+G holds most abstentions and loses the gain;
+  - L-T holds abstentions, and its walk was barely called;
+  - L+V's instruction was mostly ignored, so enforcing it in scoring leaves little gain and fails N.
+- **The best read-time variant by the preregistered ranking is L-T.** Its call control failed, so its own verdict is undetermined, and most of its gain came from `memory_search`, not the walk.
+
+### Method
+
+- **Arms.** Settings of `arms/links` (§Writing an arm), except S (`arms/shipped`, `b4`).
+
+  | Arm | Setting | What changes from L | Net production lines, before tests |
+  |---|---|---|---:|
+  | S | `b4` | The shipped recall | 0 |
+  | L | `b4-model` | Nothing: #885's L | about +270 |
+  | L+G | `b4-model-g` | A walk mid enters recall only if it names one of the query's own entities, or its walk score reaches the threshold | about +284 |
+  | L-T | `b4-model-t` | Pre-turn recall and `memory_search` are S's. The walk is reachable only through `memory_associate` (at most 5 results, and the session's 6 calls per turn), with one instruction to use it | about +265 |
+  | L+V | `b4-model-v` | One instruction: a fact from a `linked` memory is stated only after `memory_inspect` read its source in that turn. Enforced in scoring | about +272 |
+
+- **L+G's threshold: infinity**, fixed from #885's offline records before any call (`readtime/evidence/calibration/gate.json`). It keeps the most later hops of #885's primary chains while keeping the associated episode of at most 3 of its 60 absent queries.
+  - An absent query's associated episode sits at the same walk distance as a chain's second hop, and the scores overlap: hops 0.0016 to 0.0238, associated episodes 0.0148 to 0.0244.
+  - No finite threshold met the allowance while keeping a hop, so the gate passes only walk mids naming a query entity.
+- **L+V's check in scoring.** A chain's answer or N's associated value counts as stated from a walk mid when its source lies in a `linked` mid of the recall block and in no other mid of it. Stated so without a preceding `memory_inspect` of a source in that mid, it counts as not applied, and for N as not abstained.
+- **Corpus.** `readtime/corpus.py` runs `confirm/corpus.py` with seed 888, with #885's families, rules and selection:
+  - primary: C2 50 and C3 50;
+  - guards: C1 30, E 30, K 40 and N 60;
+  - reported only: IC2 25 and IC3 25.
+
+  22 candidate chains leaked and were left out. 88 of 90 absent candidates had their associated episode delivered by L's walk, and the first 60 were kept.
+- **Decision rule.** #885's: exact McNemar on applied over C2 and C3, with Holm across the four comparisons against S at α = 0.05.
+  - The guardrails allow a loss of 3 probes on N, 2 on K, and 3 each on C1 and E.
+  - The smallest valid arm by net lines is chosen.
+  - With none valid, the best read-time variant is ranked by, in turn: the fewest guardrails failed, the fewest probes lost beyond the allowances, the largest net primary gain, then the fewest lines.
+- **Existing settings unchanged.** S, L and L+A were re-built and re-recorded offline over #885's rebuilt stores into a scratch study directory. They equal the committed `confirm/evidence/offline/` records in every field but timing: 9 of 9 files (`readtime/equivalence.py`, `readtime/evidence/equivalence.txt`). No file under `confirm/` changed.
+
+### Controls
+
+| Control | Required | Measured |
+|---|---|---|
+| Chain check on the committed corpus (`readtime/evidence/check-b4.json`) | no later hop in the raw top 20 | 0 of 225 |
+| Oracle | 95% of hops within 5 | 401 of 405 (99.0%) |
+| Mids holding an entity (L's `built.json`) | 90% | 98.0% (2,031 of 2,072) |
+| Walk delivers the associated episode for every N query, offline | all 60 | 60 of 60 |
+| Walk items in the live recall block of primary probes, L and L+V | half | L 100, L+V 100 of 100 |
+| L+G's gate on N, offline | passes some, drops some | passed 40, dropped 61 |
+| L-T's `memory_associate` in primary probes | 20 of 100 | **4: fails** |
+| L+V's check meets a stated associated fact | at least one | 121 facts, 16 inspected first |
+| Mutation checks (`readtime/evidence/mutation.txt`) | every mutation fails a test | 22 of 22 |
+
+- **L-T's failed control makes its verdict undetermined.** The model called `memory_associate` in 6 of 310 probes (0.02 per probe).
+
+### Offline results
+
+`python3 readtime/score.py offline` (`readtime/evidence/offline/scores.json`).
+
+| Arm | Primary chains of 100 | C1 of 30 | E of 30 | K of 40 | Context chars per turn | Stored per source char |
+|---|---:|---:|---:|---:|---:|---:|
+| S | 0 | 25 | 25 | 36 | 3,161 | 0.730 |
+| L, and L+V (L's items) | 62 | 30 | 26 | 35 | 3,234 | 0.813 |
+| L+G | 0 | 30 | 26 | 35 | 3,248 | 0.813 |
+| L-T (S's recall) | 0 | 25 | 25 | 36 | 3,161 | 0.813 |
+
+- Against S, L is 62 to 0 (Holm p = 1.7e-18).
+- The gate removes every later hop, as the calibration predicted. What it passes are walk mids naming the query's entity that similarity missed.
+
+### Live results
+
+1,550 probes, one live turn each, with no error (`readtime/evidence/live/`, `python3 readtime/score.py live`). 191 L+V probes were run a second time under Amendment 1 (§Cost).
+
+| Family (n) | S | L | L+G | L-T | L+V | L+V, unenforced |
+|---|---:|---:|---:|---:|---:|---:|
+| **Primary, C2 and C3 (100)** | **4** | **60** | **7** | **13** | **11** | 59 |
+| C2 (50) | 2 | 46 | 3 | 7 | 6 | |
+| C3 (50) | 2 | 14 | 4 | 6 | 5 | |
+| C1 (30) | 27 | 30 | 30 | 28 | 23 | 30 |
+| E (30) | 20 | 20 | 23 | 20 | 22 | 22 |
+| K, corrected value (40) | 28 | 25 | 27 | 24 | 27 | 27 |
+| N, abstained (60) | 57 | 36 | 52 | 59 | 6 | 36 |
+| N, states the associated value without abstaining | 1 | 21 | 4 | 1 | | 23 |
+| IC2 and IC3 (25 each), reported only | 0, 0 | 0, 0 | 0, 0 | 0, 0 | 0, 0 | |
+| Searches per probe | 0.27 | 0.20 | 0.30 | 0.35 | 0.24 | |
+
+**The tradeoff each arm makes, against S:**
+
+| Arm | Arm only | S only | Holm p | Guard change (allowed loss) | Net lines | Valid |
+|---|---:|---:|---:|---|---:|---|
+| L | 58 | 2 | 1.3e-14 | **N −21 (3)**, **K −3 (2)**, C1 +3, E 0 | +270 | no: guardrails |
+| L+G | 7 | 4 | 0.55 | **N −5 (3)**, K −1, C1 +3, E +3 | +284 | no: not significant, N |
+| L-T | 13 | 4 | 0.15 | N +2, **K −4 (2)**, C1 +1, E 0 | +265 | no: not significant, K; control failed |
+| L+V | 11 | 4 | 0.24 | **N −51 (3)**, K −1, **C1 −4 (3)**, E +2 | +272 | no: not significant, N, C1 |
+
+- **L replicates for the third time.** On a new seed it applies 60 chains against S's 4. It states the associated value on 21 absent queries, against #885's 19.
+- **L+G holds abstention by giving up the chains.** With every later hop dropped it applies 7 chains, about S's level.
+  - It still loses 5 absent probes (6 S abstained on and L+G did not, against 1 the other way). In each of the 6, the gate passed the episode joining the query's entity to the associated one, because that episode names the query's entity.
+    - In `N-003`, `N-043` and `N-044` the model then searched for the associated name and answered with its value.
+    - In `N-008` the value was already in recall by similarity.
+    - `N-026` and `N-050` gave a value no memory in view held.
+- **L-T holds abstention and gains little from the walk.**
+  - Its N abstentions are the best of any arm (59 of 60).
+  - Of its 13 primary chains, 3 were reached through `memory_associate`. The rest followed a name with `memory_search`: its instruction raised searches to 0.35 per probe.
+  - It lost 4 correction probes.
+- **L+V's instruction was mostly not followed.**
+  - Of 121 facts stated from a walk mid, 16 were inspected first.
+  - Unenforced, L+V behaves as L: 59 chains and 36 abstentions. Enforced as preregistered, it keeps 11 chains and 6 abstentions, because most absent answers state the associated value beside the abstention without inspecting it.
+- **By the preregistered ranking the best read-time variant is L-T.** L+G and L-T each fail one guardrail by 2 probes past its allowance, and L-T's net gain is larger (9 against 3). L+V fails two.
+  - The ranking is a description, not a validation: L-T's gain is not significant and its control failed.
+- **Implicit chains stay unsolved** by every arm.
+
+### Cost
+
+MiniMax-M2 only, through one proxy on `127.0.0.1:8098` (`readtime/evidence/ledger/`, `python3 readtime/score.py tokens`, `readtime/evidence/tokens.json`). Embeddings came from local text-embeddings-inference (`tei-888`, `127.0.0.1:8097`).
+
+| Phase | Calls | Input tokens | Output tokens |
+|---|---:|---:|---:|
+| Key probe | 1 | 45 | 56 |
+| Stream synthesis, batch 4 | 890 | 286,562 | 176,951 |
+| L's entity synthesis of the stream | 887 | 340,967 | 206,042 |
+| Live smoke, L+G, L-T and L+V | 19 | 84,646 | 4,317 |
+| Live, S | 723 | 3,173,812 | 197,067 |
+| Live, L | 736 | 3,235,477 | 195,971 |
+| Live, L+G | 770 | 3,411,438 | 207,005 |
+| Live, L-T | 775 | 3,524,312 | 202,654 |
+| Live, L+V, first pass | 860 | 3,808,652 | 206,376 |
+| Live, L+V, re-run of 191 lost probes | 521 | 2,254,671 | 131,450 |
+| **Total** | **6,182** | **20,120,582** | **1,527,889** |
+
+- **The 2056 pause never engaged.** 68 requests met HTTP 429 without code 2056, and all recovered within the proxy's retries (`probes.log` holds only the preflight probe).
+- **Nothing was bought.** At list prices the calls come to USD 7.87, a guard only; the key is on a subscription.
+- **Ledger routing.** The ledger routes every L setting under arm L, so their live calls are split by the windows in `readtime/evidence/live/run.json`.
+- **The L+V re-run (Amendment 1).** While L+V was being collected, I moved its evidence directory to another filesystem and back. The runner kept writing to the deleted file, so 191 of its 310 records were lost unread.
+  - Exactly those 191 probes were run once more, with fresh responses.
+  - Both passes' tokens are counted above.
+
+### Conclusion and limits
+
+- **No read-time variant keeps L's gain and S's abstention.** On this corpus, the evidence that carries a chain's second hop and the evidence that tempts an answer to an absent question are the same kind of episode, at the same walk distance.
+  - A gate that holds abstention drops the hops.
+  - Exposing the walk as a call leaves it mostly unused.
+  - An inspect-before-stating instruction is mostly not followed.
+- **Limits.**
+  - One model and one run per probe.
+  - Absent items are adversarial by construction, as in #885.
+  - Checks are deterministic proxies.
+  - L+G's threshold was calibrated on #885's corpus only.
+  - L-T's walk was served as a study tool, not a reserved call.
+  - L+V has no runtime check, and its scoring check reads only the recall block: a walk mid returned by `memory_search` carries no label to read.
+- **Reproduction.** As §Confirmation (#885)'s, with `-dir docs/research/chained-recall/readtime`.
+  - `python3 readtime/score.py calibrate`, `power`, `offline`, `live` and `tokens` rewrite the scores.
+  - `python3 readtime/mutation.py` rewrites the mutation record.
+  - `readtime/equivalence.py` describes the regression.
+  - Every recorded phase resumes after its last record, so re-running against the committed evidence sends nothing.

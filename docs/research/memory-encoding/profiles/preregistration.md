@@ -127,3 +127,12 @@ The margin is #890's (`../validation/preregistration.md` §Offline stage and adm
 4. The report, `README.md`, and one line in `../../README.md` §Studies.
 
 Nothing is written under `../validation/` or any other earlier study.
+
+## Amendments
+
+- **1. The paid phase is cut.** Made after `score` (`evidence/screen.json`, at `da3a915`) and before any paid call. The PM decided it on the dispatch channel.
+  - **The gate passed on reach.** C2 and C3 together reach 34 of 100, above the 10-of-100 margin, and the owner audit passed (49 of 50).
+  - **Why it is cut anyway:**
+    - the overwrite control failed (23 of 30 against 27). The mechanical attribute key replaces facts across attributes, so a live run would measure a broken card rather than the structure;
+    - an associate's value is attached on 36 of 60 N probes, correctly owned. That is the exposure that cost L-attr its abstention in #896 (38 of 60 against S's 59).
+  - **What does not run:** the proposed live phase (about 5.4M input and 0.27M output tokens) and any decision. No other part of this file changes.

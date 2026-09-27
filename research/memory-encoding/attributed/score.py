@@ -248,6 +248,19 @@ def study_controls(offline_scores):
             "audit_2": gate(HERE / "evidence" / "audit" / "audit-2.json")}
 
 
+def template_reuse(per):
+    """UP and KU applied with and without the probes whose query the
+    preregistered fresh check found in an earlier corpus (Amendment 2)."""
+    reused = {s["probe"] for s in load(HERE / "evidence" / "fresh.json")["as_written"]["seen_generated"]}
+    out = {}
+    for f in ("UP", "KU"):
+        for label, keep in (("all", lambda i: True), ("without_reused", lambda i: i not in reused)):
+            ids = [i for i, r in per[BASELINE].items() if r["family"] == f and keep(i) and i in per[ARM]]
+            out[f"{f}/{label}"] = {"n": len(ids), "S": sum(per[BASELINE][i]["applied"] for i in ids),
+                                   "L-attr": sum(per[ARM][i]["applied"] for i in ids)}
+    return out
+
+
 def live():
     c, ents, summaries = corpus(), entities(), stream_summaries()
     ledger = load_jsonl(HERE / "evidence" / "ledger" / "calls.jsonl") if (HERE / "evidence" / "ledger" / "calls.jsonl").exists() else []
@@ -282,6 +295,8 @@ def live():
             decision[rule] = a
         decision["controls"] = controls
         decision["decided_by"] = "owner"
+    if BASELINE in per and ARM in per:
+        decision["template_reuse"] = template_reuse(per)
     out = {"summary": summary, "decision": decision, "per_probe": per}
     LIVE.mkdir(parents=True, exist_ok=True)
     (LIVE / "scores.json").write_text(json.dumps(out, indent=1) + "\n")

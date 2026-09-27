@@ -1,0 +1,402 @@
+{
+ "earlier": [
+  "chained-recall",
+  "chained-recall/confirm",
+  "chained-recall/readtime",
+  "memory-encoding/validation"
+ ],
+ "probes": 470,
+ "names": 678,
+ "names_in_earlier_corpora": [],
+ "seen_items": [],
+ "seen_replication": {
+  "E": 25,
+  "K": 38
+ },
+ "as_written": {
+  "seen_generated": [
+   {
+    "probe": "UP-001",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-002",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-003",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-004",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-005",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-006",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-007",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-008",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-009",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-010",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-011",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-012",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-013",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-014",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-015",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-017",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-018",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-019",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-020",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-021",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-022",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-023",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-024",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-025",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-027",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-030",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-031",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-033",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-035",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-036",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-037",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-039",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-040",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-041",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-043",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-045",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-046",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-047",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-049",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-051",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-052",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-053",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-054",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-056",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-057",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "UP-058",
+    "family": "UP",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-001",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-002",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-003",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-004",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-005",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-006",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-007",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-008",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-009",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-010",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-011",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-012",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-013",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-014",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-015",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-016",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-017",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-018",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-019",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-020",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-021",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-022",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-023",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-024",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-025",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-026",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-027",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-028",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-029",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   },
+   {
+    "probe": "KU-030",
+    "family": "KU",
+    "in": "memory-encoding/validation"
+   }
+  ],
+  "passed": false
+ },
+ "passed": true
+}

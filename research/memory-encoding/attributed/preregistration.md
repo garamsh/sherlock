@@ -246,3 +246,12 @@ Every probe's store copy is kept outside the repository. Nothing is written unde
     - Labelled and committed before the revised matcher first runs on them.
     - Passed when at least 36 agree and at most 2 are false accepts.
   - **Nothing else changes.** No other threshold, endpoint, control or rule moves. The revised matcher's agreement on audit 1's own sample is in-sample, is reported, and gates nothing.
+- **2. The fresh check.** Made after the selection and `corpus.py fresh`, before phase 2 or any other paid call. The PM approved it on the dispatch channel.
+  - **The clause as preregistered** (§Controls): "No generated probe's query occurs in the corpora #874, #885, #888 or #890 ran."
+  - **What it found.** 76 generated queries occur in #890's corpus: UP 46 and KU 30. Both families build their query from a fixed template that never names the item ("I need to see my chiropodist next week. Who should I contact?"), so the failure is template reuse in UP and KU only. No C1, C2, C3, IC2, IC3, SC, N or NC query recurs.
+  - **Why it changes.** The control exists so that no probe's answer could be known from a corpus seen before. A fixed template with a new answer and new names leaks nothing.
+  - **The replacement.** A generated probe counts as seen when its query and its answer (KU: the new name; N and NC: the entity) both occur in one earlier corpus item. In addition, no invented name of the corpus may occur in an earlier corpus. The name overlap is the primary freshness evidence.
+    - Measured: 0 probes seen, and 0 of 678 invented names in an earlier corpus.
+    - The as-written result is kept in `evidence/fresh.json` under `as_written` and reported beside it.
+  - **Reporting.** The report gives UP and KU applied with and without the 76 probes (`score.py` `template_reuse`), so a reader can see whether they change any verdict.
+  - **Nothing else changes.**

@@ -1,0 +1,18 @@
+FAILS  docs/research/chained-recall/study/live.go: the study restoring an arm's own window
+FAILS  docs/research/chained-recall/study/live.go: the live record keeping the memory's trace
+FAILS  docs/research/chained-recall/study/adapt.go: an item's own label
+FAILS  docs/research/chained-recall/study/main.go: reading the corpus from -corpus
+FAILS  docs/research/memory-paradigms/validation/arms/full/main.go: W's window
+FAILS  docs/research/memory-paradigms/validation/arms/agent/recall.go: R's citation check
+FAILS  docs/research/memory-paradigms/validation/arms/agent/recall.go: refusing a fact without sources
+FAILS  docs/research/memory-paradigms/validation/arms/agent/recall.go: the last call offering only recall_result
+FAILS  docs/research/memory-paradigms/validation/arms/agent/recall.go: recording what the step inspected
+FAILS  docs/research/memory-paradigms/validation/arms/document/document.go: refusing a pass that drops more than a quarter
+FAILS  docs/research/memory-paradigms/validation/arms/document/document.go: rejecting a line citing a mid its pass was not given
+FAILS  docs/research/memory-paradigms/validation/arms/document/document.go: the bound
+FAILS  docs/research/memory-paradigms/validation/arms/document/document.go: keeping a dropped line's history
+FAILS  docs/research/memory-paradigms/validation/arms/document/consolidate.go: telling a refused pass why
+FAILS  docs/research/memory-paradigms/validation/arms/document/consolidate.go: replaying a recorded pass without a call
+FAILS  docs/research/memory-paradigms/validation/score.py: leaving the first word out of support
+FAILS  docs/research/memory-paradigms/validation/score.py: the guardrails
+FAILS  docs/research/memory-paradigms/validation/score.py: keeping W out of the decision

@@ -305,9 +305,13 @@ def scale_stores(k, rep, streams, b8m):
     distract = [u for s in streams[:k] for u in s['kept']]
     messages = STREAM_MESSAGES + sum(s['messages'] for s in streams[:k])
     parts = {'B4': rep[4], 'B8': rep[8], 'B16': rep[16], 'T': aged(rep[4], rep[16], messages), 'K': rep[16]}
+    extra = {}
     if k == 1:
-        parts['B8m'] = rep[8]
-    stores = {arm: number(list(part) + (b8m if arm == 'B8m' else distract)) for arm, part in parts.items()}
+        # B8m is the preregistered bias estimate; B8c, exploratory and added after the first ranking, is B8
+        # against only the batch-4 distractors inside B8m's kept spans, so both face the same messages.
+        parts['B8m'] = parts['B8c'] = rep[8]
+        extra = {'B8m': b8m, 'B8c': [u for u in distract if any(m.first <= u.first and u.last <= m.last for m in b8m)]}
+    stores = {arm: number(list(part) + extra.get(arm, distract)) for arm, part in parts.items()}
     return parts, stores, messages
 
 
@@ -329,9 +333,13 @@ def rankings(q, stores, sim, lex, reranker, value_of):
     out = {'S4': (newest, dense), 'B4': (newest, dense),
            'X': (newest, fuse(dense, lex[q['id']], dense_rank)),
            'K': (stores['K'][-RECENT:][::-1], values_in_order(dense, value_of))}
+    if b4[-1].last == STREAM_MESSAGES:
+        # Exploratory, added after the first ranking: K's ranking behind B4's recency units, at s0 only,
+        # where K's own recency units are B16 values.
+        out['Kr'] = (newest, out['K'][1])
     if reranker:
         out['R'] = (newest, reranker.order(q['text'], dense[:RERANK_DEPTH]) + dense[RERANK_DEPTH:])
-    for arm in ('B8', 'B16', 'T', 'B8m'):
+    for arm in ('B8', 'B16', 'T', 'B8m', 'B8c'):
         if arm in stores:
             out[arm] = (stores[arm][-RECENT:][::-1], sim.rank(q['id'], stores[arm]))
     return out
@@ -372,7 +380,8 @@ def main(rerank=True):
                             'stored_chars': sum(len(u.text) for u in store),
                             'replication_stored_chars': sum(len(u.text) for u in parts[arm]),
                             'source_messages': messages, 'source_chars': source_chars,
-                            'replication_source_chars': rep_chars})
+                            'replication_source_chars': rep_chars,
+                            'recency_chars': sum(u.size() for u in store[-RECENT:])})
             reach[f'{scale}/{arm}'] = all(any(covers([(u.first, u.last)], q['evidence']) for u in store) for q in primary)
         lex = lexical(stores['B4'], queries)
         value_of = owners(stores['B4'], stores['K'])

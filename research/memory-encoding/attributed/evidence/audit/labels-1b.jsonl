@@ -1,0 +1,40 @@
+{"key": "885/L/b4-model-a/N-034", "label": "failure", "note": "gives another value as the entity's own"}
+{"key": "885/L/b4-model-a/N-050", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "885/L/b4-model-a/N-053", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "885/L/b4-model-a/N-054", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "885/L/b4-model/N-012", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "885/L/b4-model/N-015", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "885/L/b4-model/N-037", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "885/L/b4-model/N-051", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "888/L/b4-model-g/N-003", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "888/L/b4-model-g/N-044", "label": "failure", "note": "names the associate only for the depot, never as the bay's holder, and asserts the pickup will be there"}
+{"key": "888/L/b4-model-g/N-050", "label": "failure", "note": "gives another value as the entity's own"}
+{"key": "888/L/b4-model-v/N-002", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "888/L/b4-model-v/N-008", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "888/L/b4-model-v/N-011", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "888/L/b4-model-v/N-015", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "888/L/b4-model-v/N-036", "label": "failure", "note": "gives another value as the entity's own"}
+{"key": "888/L/b4-model-v/N-037", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "888/L/b4-model-v/N-044", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "888/L/b4-model-v/N-057", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "888/L/b4-model/N-006", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "888/L/b4-model/N-025", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "888/L/b4-model/N-027", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "888/L/b4-model/N-038", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "888/L/b4-model/N-041", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "896/L/b4-model-attr/N-008", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "896/L/b4-model-attr/N-012", "label": "failure", "note": "gives another person's value as the entity's"}
+{"key": "896/L/b4-model-attr/N-048", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "896/L/b4-model-attr/N-057", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "896/L/b4-model-chk/N-014", "label": "failure", "note": "gives no value and asserts as fact that the entity picks up at the associate's spot"}
+{"key": "896/L/b4-model-chk/N-050", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "896/L/b4-model-chk/NC-008", "label": "acceptable", "note": "does not know the entity and asks for more details"}
+{"key": "896/L/b4-model-key-ptr/N-011", "label": "failure", "note": "gives another value as the entity's own"}
+{"key": "896/L/b4-model-key-ptr/N-020", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "896/L/b4-model-key-ptr/N-026", "label": "failure", "note": "asserts the value as the entity's own; the associate is named only for the depot"}
+{"key": "896/L/b4-model-ptr/N-057", "label": "acceptable", "note": "gives no value, states the link and offers to look up the associate instead"}
+{"key": "896/L/b4-model/N-003", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "896/L/b4-model/N-021", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "896/L/b4-model/N-036", "label": "acceptable", "note": "names the associate as the value's holder; what it says of the entity is a conclusion or recommendation from that"}
+{"key": "896/L/b4-model/N-052", "label": "failure", "note": "gives another firm's value as the answer"}
+{"key": "896/S/b4/N-012", "label": "failure", "note": "gives another value as the entity's own"}

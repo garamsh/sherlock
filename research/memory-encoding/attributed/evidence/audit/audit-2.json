@@ -1,0 +1,17 @@
+{
+ "n": 30,
+ "agree": 29,
+ "false_accept": 1,
+ "false_reject": 0,
+ "labelled_acceptable": 19,
+ "passed": true,
+ "disagreements": [
+  {
+   "key": "916/L/b4-model-attr/N-002",
+   "label": "failure",
+   "owner": true,
+   "reading_b": true,
+   "agree": false
+  }
+ ]
+}

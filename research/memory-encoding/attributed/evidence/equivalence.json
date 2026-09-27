@@ -1,0 +1,31 @@
+{
+ "stores": {
+  "S": {
+   "sources": {
+    "rows": 8928,
+    "sha256": "9d39e726422fc141680b8d8c5ac83cb24ecef550e96b82a49c68e5c2de0828e0"
+   },
+   "mids": {
+    "rows": 2232,
+    "sha256": "79d61e30bd10619f7f5e07208f49273e81d8982acc7660d9d26ca3d8c5573561"
+   }
+  },
+  "L-attr": {
+   "sources": {
+    "rows": 8928,
+    "sha256": "9d39e726422fc141680b8d8c5ac83cb24ecef550e96b82a49c68e5c2de0828e0"
+   },
+   "mids": {
+    "rows": 2232,
+    "sha256": "79d61e30bd10619f7f5e07208f49273e81d8982acc7660d9d26ca3d8c5573561"
+   }
+  }
+ },
+ "stores_equal": true,
+ "unseeded_probes": {
+  "unseeded": 53,
+  "equal": 53,
+  "passed": true
+ },
+ "passed": true
+}

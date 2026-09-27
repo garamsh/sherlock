@@ -1,0 +1,25 @@
+{
+ "n": 80,
+ "agree": 78,
+ "false_accept": 2,
+ "false_reject": 0,
+ "labelled_acceptable": 66,
+ "passed": true,
+ "disagreements": [
+  {
+   "key": "885/L/b4-model/N-024",
+   "label": "failure",
+   "owner": true,
+   "reading_b": true,
+   "agree": false
+  },
+  {
+   "key": "896/L/b4-model-attr/N-054",
+   "label": "failure",
+   "owner": true,
+   "reading_b": true,
+   "agree": false
+  }
+ ],
+ "in_sample": true
+}

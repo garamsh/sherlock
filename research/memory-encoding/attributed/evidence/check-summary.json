@@ -1,0 +1,28 @@
+{
+ "selection": {
+  "stage": "selected",
+  "sizes": {
+   "C1": 30,
+   "C2": 50,
+   "C3": 50,
+   "E": 30,
+   "IC2": 25,
+   "IC3": 25,
+   "K": 40,
+   "KU": 30,
+   "N": 60,
+   "NC": 30,
+   "SC": 50,
+   "UP": 50
+  },
+  "passed": true
+ },
+ "check": {
+  "leaks": {},
+  "hops": 505,
+  "oracle_within_5": 498,
+  "oracle_share": 0.9861,
+  "passed": true
+ },
+ "passed": true
+}

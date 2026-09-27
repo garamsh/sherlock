@@ -1,0 +1,193 @@
+{
+ "exploratory": true,
+ "records": {
+  "885/L/b4-model": {
+   "N": {
+    "n": 60,
+    "strict": 39,
+    "owner": 58,
+    "reading_b": 55,
+    "attributed": 51,
+    "asserted": 0
+   }
+  },
+  "885/L/b4-model-a": {
+   "N": {
+    "n": 60,
+    "strict": 42,
+    "owner": 55,
+    "reading_b": 53,
+    "attributed": 47,
+    "asserted": 0
+   }
+  },
+  "885/S/b4": {
+   "N": {
+    "n": 60,
+    "strict": 57,
+    "owner": 59,
+    "reading_b": 59,
+    "attributed": 4,
+    "asserted": 0
+   }
+  },
+  "888/L/b4-model": {
+   "N": {
+    "n": 60,
+    "strict": 36,
+    "owner": 56,
+    "reading_b": 52,
+    "attributed": 51,
+    "asserted": 1
+   }
+  },
+  "888/L/b4-model-g": {
+   "N": {
+    "n": 60,
+    "strict": 52,
+    "owner": 56,
+    "reading_b": 56,
+    "attributed": 5,
+    "asserted": 0
+   }
+  },
+  "888/L/b4-model-t": {
+   "N": {
+    "n": 60,
+    "strict": 59,
+    "owner": 60,
+    "reading_b": 59,
+    "attributed": 5,
+    "asserted": 0
+   }
+  },
+  "888/L/b4-model-v": {
+   "N": {
+    "n": 60,
+    "strict": 36,
+    "owner": 59,
+    "reading_b": 54,
+    "attributed": 53,
+    "asserted": 1
+   }
+  },
+  "888/S/b4": {
+   "N": {
+    "n": 60,
+    "strict": 57,
+    "owner": 58,
+    "reading_b": 58,
+    "attributed": 3,
+    "asserted": 0
+   }
+  },
+  "896/L/b4-model": {
+   "N": {
+    "n": 60,
+    "strict": 41,
+    "owner": 57,
+    "reading_b": 52,
+    "attributed": 46,
+    "asserted": 0
+   },
+   "NC": {
+    "n": 30,
+    "strict": 29,
+    "owner": 29,
+    "reading_b": 29,
+    "attributed": 0,
+    "asserted": 0
+   }
+  },
+  "896/L/b4-model-attr": {
+   "N": {
+    "n": 60,
+    "strict": 38,
+    "owner": 56,
+    "reading_b": 52,
+    "attributed": 48,
+    "asserted": 0
+   },
+   "NC": {
+    "n": 30,
+    "strict": 30,
+    "owner": 30,
+    "reading_b": 30,
+    "attributed": 0,
+    "asserted": 0
+   }
+  },
+  "896/L/b4-model-chk": {
+   "N": {
+    "n": 60,
+    "strict": 48,
+    "owner": 58,
+    "reading_b": 57,
+    "attributed": 16,
+    "asserted": 0
+   },
+   "NC": {
+    "n": 30,
+    "strict": 25,
+    "owner": 29,
+    "reading_b": 29,
+    "attributed": 0,
+    "asserted": 0
+   }
+  },
+  "896/L/b4-model-key-ptr": {
+   "N": {
+    "n": 60,
+    "strict": 52,
+    "owner": 56,
+    "reading_b": 55,
+    "attributed": 10,
+    "asserted": 1
+   },
+   "NC": {
+    "n": 30,
+    "strict": 28,
+    "owner": 28,
+    "reading_b": 28,
+    "attributed": 4,
+    "asserted": 1
+   }
+  },
+  "896/L/b4-model-ptr": {
+   "N": {
+    "n": 60,
+    "strict": 55,
+    "owner": 58,
+    "reading_b": 58,
+    "attributed": 6,
+    "asserted": 0
+   },
+   "NC": {
+    "n": 30,
+    "strict": 30,
+    "owner": 30,
+    "reading_b": 30,
+    "attributed": 0,
+    "asserted": 0
+   }
+  },
+  "896/S/b4": {
+   "N": {
+    "n": 60,
+    "strict": 59,
+    "owner": 59,
+    "reading_b": 59,
+    "attributed": 4,
+    "asserted": 0
+   },
+   "NC": {
+    "n": 30,
+    "strict": 30,
+    "owner": 30,
+    "reading_b": 30,
+    "attributed": 0,
+    "asserted": 0
+   }
+  }
+ }
+}

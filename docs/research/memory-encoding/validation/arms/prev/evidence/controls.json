@@ -1,0 +1,34 @@
+{
+ "b4-prev": {
+  "continuing": {
+   "stream_batches": 1032,
+   "recorded": 1032,
+   "failed": 0,
+   "continuing": 281,
+   "share": 0.2723
+  },
+  "oracle_share": 0.9564,
+  "thread": {
+   "probes": 150,
+   "thread_delivered": 129,
+   "beyond_similar": 124
+  },
+  "added_tokens": {
+   "paired": 1032,
+   "input_mean": 118.4,
+   "input_median": 116.0,
+   "output_mean": 172.8,
+   "output_median": 169.0
+  },
+  "passed": true
+ },
+ "b4-k5": {
+  "run": false,
+  "hop_pairs_ceiling": {
+   "pairs": 225,
+   "given": 26,
+   "share": 0.1156
+  },
+  "passed": false
+ }
+}

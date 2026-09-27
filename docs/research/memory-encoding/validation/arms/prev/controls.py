@@ -1,12 +1,16 @@
 """P's controls (preregistration.md §Controls beside this file), from the
 recorded links, the selected corpus, P's offline records and the ledger.
 
-    python3 docs/research/memory-encoding/validation/arms/prev/controls.py   # evidence/controls.json
+    python3 docs/research/memory-encoding/validation/arms/prev/controls.py [ledger calls.jsonl]   # evidence/controls.json
+
+The ledger defaults to the study's evidence/ledger/calls.jsonl, which the
+proxy writes and the repository does not hold.
 """
 
 import importlib.util
 import json
 import statistics
+import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -116,7 +120,7 @@ def controls(corpus, setting, recorded, probes, oracle, ledger):
 
 def main():
     corpus = json.loads((STUDY / "corpus.json").read_text())
-    ledger = S.load_jsonl(STUDY / "evidence" / "ledger" / "calls.jsonl")
+    ledger = S.load_jsonl(sys.argv[1] if len(sys.argv) > 1 else STUDY / "evidence" / "ledger" / "calls.jsonl")
     result = {}
     for setting in SETTINGS:
         if not (HERE / "evidence" / f"links-{setting}.jsonl").exists():

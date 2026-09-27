@@ -108,7 +108,7 @@ const keyed = "b4-model-key-ptr"
 func keyStore(env *study.Env) (string, error) {
 	dir := env.BuildDir("C", "b4-w8-key")
 	if _, err := os.Stat(filepath.Join(dir, "memory.db")); err != nil {
-		return "", fmt.Errorf("C-key's store: %w (build arms/context -setting b4-w8-key first)", err)
+		return "", fmt.Errorf("store of arms/context setting b4-w8-key: %w (build it first)", err)
 	}
 	return dir, nil
 }

@@ -255,3 +255,21 @@ Every probe's store copy is kept outside the repository. Nothing is written unde
     - The as-written result is kept in `evidence/fresh.json` under `as_written` and reported beside it.
   - **Reporting.** The report gives UP and KU applied with and without the 76 probes (`score.py` `template_reuse`), so a reader can see whether they change any verdict.
   - **Nothing else changes.**
+- **3. A full disk during live L-attr.** Made after live S had ended and during live L-attr, before any live scoring and before the run resumed. The PM approved it on the dispatch channel.
+  - **What happened.** Live S ended cleanly: 470 of 470, no error, committed at `502587f`. During live L-attr the host's disk filled for a while. The runner (`../../chained-recall/study/live.go` `Live`) ignored errors writing a record, so:
+    - 214 probes have a complete record;
+    - SC-036, SC-037 and SC-038 have a record whose error is "no space left on device", with no model call;
+    - SC-039's record was cut off mid-line;
+    - the other 252 probes have no record, because their store copy or their record could not be written.
+    - Only SC-035's turn made model calls whose record was lost: 2 calls, 8,754 input and 567 output tokens. They are reported apart and are not counted against L-attr's estimate.
+  - **The rule as preregistered** (§Paid phases): "A live probe that fails on the provider's limits, a server fault or the network runs once more, and its first record is kept in `results-attempt1.jsonl`. Any other failure counts as not applied."
+  - **Why a full disk counts as infrastructure.** The rule's "any other failure" is a failure of the arm, which "not applied" scores. A full disk is a failure of the host, like a server fault. No arm behaviour was measured for any affected probe: none reached the model. The failure does not depend on any probe's outcome, so running those probes again cannot select for results. #888's re-run records are the precedent.
+  - **What is done.**
+    - The three error records and the cut-off SC-039 line move, verbatim, to `evidence/live/L/b4-model-attr/results-attempt1.jsonl`.
+    - Live L-attr then resumes. It runs only the 256 probes without a record, so every probe has exactly one scored record.
+  - **The runner fix.** A failed store copy or record write now stops `Live` with an error, instead of writing an error record or dropping the record.
+    - Test: `TestLive_StopsWithoutARecordWhenAProbesStoreCannotBeCopied` in `../../chained-recall/study/live_test.go`, with its control. It was seen to fail against the runner as it was.
+    - SHA-256: `live.go` `ded7d2b25d804bb59e4a70fb376e443edeaddf1cb30de5d46390984946f42deb`, `live_test.go` `887fddb308f16b6ab9942b59893bd3c58cb06e2d41885fa69b3ab30fbeba36e3`.
+    - The change is in the shared harness of #874, which the PM directed. Arms, recall and scoring are unchanged by it.
+  - **Space.** S's per-probe store copies, outside the repository, are deleted. No scorer or control reads them: `score.py` reads only the builds, and the recall block is in each record.
+  - **Nothing else changes.**

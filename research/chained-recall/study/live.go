@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -71,6 +72,10 @@ type LiveResult struct {
 	CallErrors []string       `json:"call_errors,omitempty"`
 	Error      string         `json:"error,omitempty"`
 	Seconds    float64        `json:"seconds"`
+
+	// storeFailed marks a probe whose store copy could not be made: a
+	// failure of the host, on which Live stops rather than record it.
+	storeFailed bool
 }
 
 // recorder keeps every exchange a turn made with the model.
@@ -120,11 +125,11 @@ func liveOnce(ctx context.Context, env *Env, arm Arm, setting string, p LiveProb
 	res := LiveResult{Probe: p.ID, Family: p.Family, Arm: arm.Name(), Setting: setting}
 	dir := env.LiveDir(arm.Name(), setting, p.ID)
 	if err := os.RemoveAll(dir); err != nil {
-		res.Error = err.Error()
+		res.Error, res.storeFailed = err.Error(), true
 		return res
 	}
 	if err := CopyDir(env.BuildDir(arm.Name(), setting), dir); err != nil {
-		res.Error = err.Error()
+		res.Error, res.storeFailed = err.Error(), true
 		return res
 	}
 	memory, err := arm.Open(ctx, env, setting, dir)
@@ -225,7 +230,8 @@ func infrastructure(r LiveResult) bool {
 // each result to evidence/live/<arm>/<setting>/results.jsonl. A probe that
 // failed on infrastructure is run again once, after any pause; its first
 // record moves to results-attempt1.jsonl. A run resumes after the probes
-// already recorded.
+// already recorded. A store copy or a record that cannot be written stops
+// the run with an error, since the host failed and no probe was measured.
 func Live(ctx context.Context, env *Env, arm Arm, setting string, workers int, only map[string]bool) error {
 	out := filepath.Join(env.Dir, "evidence", "live", arm.Name(), setting)
 	if err := os.MkdirAll(out, 0o755); err != nil {
@@ -258,25 +264,49 @@ func Live(ctx context.Context, env *Env, arm Arm, setting string, workers int, o
 	jobs := make(chan LiveProbe)
 	var mu sync.Mutex
 	var wg sync.WaitGroup
+	var hostErr error
+	stop := func(err error) {
+		mu.Lock()
+		defer mu.Unlock()
+		if hostErr == nil {
+			hostErr = err
+		}
+	}
+	stopped := func() bool {
+		mu.Lock()
+		defer mu.Unlock()
+		return hostErr != nil
+	}
+	write := func(w io.Writer, r LiveResult) {
+		mu.Lock()
+		err := writeLine(w, r)
+		mu.Unlock()
+		if err != nil {
+			stop(fmt.Errorf("%s: write its record: %w", r.Probe, err))
+		}
+	}
 	for range workers {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
 			for p := range jobs {
+				if stopped() {
+					continue
+				}
 				WaitWhilePaused(ctx, env.Proxy)
 				r := liveOnce(ctx, env, arm, setting, p, descriptors)
 				r.Attempt = 1
-				if infrastructure(r) {
-					mu.Lock()
-					_ = writeLine(firsts, r)
-					mu.Unlock()
+				if !r.storeFailed && infrastructure(r) {
+					write(firsts, r)
 					WaitWhilePaused(ctx, env.Proxy)
 					r = liveOnce(ctx, env, arm, setting, p, descriptors)
 					r.Attempt = 2
 				}
-				mu.Lock()
-				_ = writeLine(results, r)
-				mu.Unlock()
+				if r.storeFailed {
+					stop(fmt.Errorf("%s: copy its store: %s", p.ID, r.Error))
+					continue
+				}
+				write(results, r)
 				log.Printf("%s %s %s: calls %d, error %q, %.0fs", arm.Name(), setting, p.ID, r.Calls, r.Error, r.Seconds)
 			}
 		}()
@@ -288,7 +318,7 @@ func Live(ctx context.Context, env *Env, arm Arm, setting string, workers int, o
 	}
 	close(jobs)
 	wg.Wait()
-	return nil
+	return hostErr
 }
 
 // Paused asks the study proxy whether it is paused on the usage limit.

@@ -296,3 +296,55 @@ func TestLiveOnce_RestoresTheArmsWindowAndRecordsItsTrace(t *testing.T) {
 		}
 	}
 }
+
+// liveStudy lays out a study directory Live can run in: research/ with its
+// mid-memory-rag marker, the study beside it, and the repository's tools.
+func liveStudy(t *testing.T) string {
+	root := t.TempDir()
+	require.NoError(t, os.MkdirAll(filepath.Join(root, "research", "mid-memory-rag"), 0o755))
+	tools, err := filepath.Abs(filepath.Join("..", "..", "..", "tools"))
+	require.NoError(t, err)
+	require.NoError(t, os.Symlink(tools, filepath.Join(root, "tools")))
+	return filepath.Join(root, "research", "study")
+}
+
+func TestLive_StopsWithoutARecordWhenAProbesStoreCannotBeCopied(t *testing.T) {
+	ctx := context.Background()
+	var calls atomic.Int32
+	var shown []string
+	server := fakeProvider(t, &calls, &shown)
+	defer server.Close()
+	proxy := httptest.NewServer(http.StripPrefix("/M/C1-01/live", server.Config.Handler))
+	defer proxy.Close()
+	arm := builtArm{ShippedArm{ArmName: "M", Batches: []string{"b4"}}}
+	corpus := &Corpus{Window: 32, Chains: []Chain{{ID: "C1-01", Family: "C1", Query: "what about apple?"}}}
+	results := func(dir string) string { return filepath.Join(dir, "evidence", "live", "M", "b4", "results.jsonl") }
+
+	// No build: the probe's store copy fails.
+	dir := liveStudy(t)
+	env := &Env{Corpus: corpus, Embedder: wordEmbedder{}, Dir: dir, Work: t.TempDir(), Proxy: proxy.URL, Arm: "M"}
+	err := Live(ctx, env, arm, "b4", 1, nil)
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "C1-01: copy its store")
+	data, readErr := os.ReadFile(results(dir))
+	require.NoError(t, readErr)
+	assert.Empty(t, data, "no record of a probe the host failed")
+
+	// Control: with the build in place the same run records the probe.
+	dir = liveStudy(t)
+	work := t.TempDir()
+	build := filepath.Join(work, "builds", "M", "b4")
+	require.NoError(t, os.MkdirAll(build, 0o755))
+	store, err := sqlite.OpenConversation(filepath.Join(build, "memory.db"), wordEmbedder{})
+	require.NoError(t, err)
+	for i := range 4 {
+		require.NoError(t, store.RecordTurn(ctx, []agent.SourceMessage{{Role: agent.RoleUser, Content: "apple fact " + string(rune('a'+i))}}, recordingSummary{}))
+	}
+	require.NoError(t, store.Close())
+	env = &Env{Corpus: corpus, Embedder: wordEmbedder{}, Dir: dir, Work: work, Proxy: proxy.URL, Arm: "M"}
+	require.NoError(t, Live(ctx, env, arm, "b4", 1, nil))
+	recorded, err := ReadJSONL[LiveResult](results(dir))
+	require.NoError(t, err)
+	require.Len(t, recorded, 1)
+	assert.Empty(t, recorded[0].Error)
+}

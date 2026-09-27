@@ -289,6 +289,88 @@
    "p": 1.0
   }
  },
+ "need_rate": {
+  "s0/DR-rel/B4": {
+   "queries": 4,
+   "share": 0.014285714285714285
+  },
+  "s0/DR-rel/K": {
+   "queries": 47,
+   "share": 0.16785714285714284
+  },
+  "s0/DR-new/B4": {
+   "queries": 3,
+   "share": 0.010714285714285714
+  },
+  "s0/DR-new/K": {
+   "queries": 47,
+   "share": 0.16785714285714284
+  },
+  "s1/DR-rel/B4": {
+   "queries": 15,
+   "share": 0.05357142857142857
+  },
+  "s1/DR-rel/K": {
+   "queries": 51,
+   "share": 0.18214285714285713
+  },
+  "s1/DR-new/B4": {
+   "queries": 11,
+   "share": 0.039285714285714285
+  },
+  "s1/DR-new/K": {
+   "queries": 39,
+   "share": 0.1392857142857143
+  },
+  "s2/DR-rel/B4": {
+   "queries": 11,
+   "share": 0.039285714285714285
+  },
+  "s2/DR-rel/K": {
+   "queries": 34,
+   "share": 0.12142857142857143
+  },
+  "s2/DR-new/B4": {
+   "queries": 8,
+   "share": 0.02857142857142857
+  },
+  "s2/DR-new/K": {
+   "queries": 24,
+   "share": 0.08571428571428572
+  },
+  "s3/DR-rel/B4": {
+   "queries": 10,
+   "share": 0.03571428571428571
+  },
+  "s3/DR-rel/K": {
+   "queries": 23,
+   "share": 0.08214285714285714
+  },
+  "s3/DR-new/B4": {
+   "queries": 9,
+   "share": 0.03214285714285714
+  },
+  "s3/DR-new/K": {
+   "queries": 22,
+   "share": 0.07857142857142857
+  },
+  "s4/DR-rel/B4": {
+   "queries": 3,
+   "share": 0.010714285714285714
+  },
+  "s4/DR-rel/K": {
+   "queries": 11,
+   "share": 0.039285714285714285
+  },
+  "s4/DR-new/B4": {
+   "queries": 3,
+   "share": 0.010714285714285714
+  },
+  "s4/DR-new/K": {
+   "queries": 11,
+   "share": 0.039285714285714285
+  }
+ },
  "table": {
   "s0": {
    "B16": {

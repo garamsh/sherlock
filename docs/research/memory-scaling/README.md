@@ -192,6 +192,16 @@ Added at the owner's proposal after the first ranking of every other arm, and pr
   - DR-rel stays within B4's range at every scale. At s1 it holds 200 where B4 falls to 191, because messages are small units and still fit beside the long recency mids.
   - It cannot exceed B4's mid reach: a message is reachable only through a top-5 mid, and its ranking's recall@20 (0.757 at s0, 0.718 at s4) equals B4's recall@5.
   - DR-new spends the budget on the newest of the five mids whatever their score, and loses.
+- **Need rate** (descriptive, from the existing rankings; [scores.json](evidence/scores.json) `need_rate`). This is the share of the 280 queries whose evidence DR-rel delivers as a raw message while the mid-only arm beside it delivers no summary covering it. It estimates how often an on-demand drill-down beside that arm would change delivery. None of DR-rel's hits come through its recency mids, at s0 or s4.
+
+  | Beside | s0 | s1 | s2 | s3 | s4 |
+  |---|---:|---:|---:|---:|---:|
+  | B4 | 4 (1.4%) | 15 (5.4%) | 11 (3.9%) | 10 (3.6%) | 3 (1.1%) |
+  | K | 47 (16.8%) | 51 (18.2%) | 34 (12.1%) | 23 (8.2%) | 11 (3.9%) |
+
+  K's high rates at s0 to s2 are its recency cost (§Results), not its ranking.
+- **Delivered cost per query.** The mean delivered characters over the 280 are B4 3,271 and 3,312, K 3,218 and 3,309, and DR-rel 3,339 and 3,177, at s0 and s4. Every budgeted arm fills to about the same size by construction. Tokens were not counted: the study has no tokenizer of the answering model, and the PM limited this reading to existing data.
+- **A gated drill-down (DR-gate) was proposed and then withdrawn** by the PM before it was built. DR-rel shows no gain over B4 at either scale, so a gate choosing between the two cannot beat both.
 - **Storage.** Raw messages held beside the mids count as stored: 1.684 characters per source character for the replication part, against B4's 0.684 and K's 0.280.
 - **Beside K.** At s4, K delivers 197 on 0.280 stored and DR-rel 199 on 1.684. Delivery is the same within noise, and DR-rel stores six times the text. Whether a delivered raw message is used better than a summary is what a live run would show; delivery alone does not separate them.
 

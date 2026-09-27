@@ -148,7 +148,18 @@ def main():
     if ('s1', 'B8c') in hits:
         secondary['exploratory_B8m_against_B8c_at_s1'] = compare(hits['s1', 'B8m'], hits['s1', 'B8c'], ids)
     recall = {s: {a: recall_at(rows, set(ids), s, a) for a in arms if (s, a) in hits} for s in ('s0', 's4')}
+    # Amendment 1, descriptive: queries whose evidence arrives only as a raw message, not in a mid summary
+    # the arm or the mid-only arm beside it delivered.
+    need = {}
+    for scale in SCALES:
+        for arm in ('DR-rel', 'DR-new'):
+            if (scale, arm) not in hits:
+                continue
+            for base in ('B4', 'K'):
+                only = [q for q in ids if hits[scale, arm][q] and not hits[scale, base][q]]
+                need[f'{scale}/{arm}/{base}'] = {'queries': len(only), 'share': len(only) / len(ids)}
     scores = {'budget': study['budget'], 'controls': checks, 'decision': result, 'secondary': secondary,
+              'need_rate': need,
               'table': table, 'recall_before_budget': recall,
               'per_query': {q: {f'{s}/{a}': hits[s, a][q] for s, a in sorted(hits)} for q in ids}}
     (EVIDENCE / 'scores.json').write_text(json.dumps(scores, indent=1) + '\n')

@@ -168,3 +168,37 @@ func TestResearchDir_FindsTheReplicationFromEitherDepth(t *testing.T) {
 	elsewhere := filepath.Join(root, "other", "study")
 	assert.Equal(t, filepath.Join(root, "other"), filepath.Clean(ResearchDir(elsewhere)))
 }
+
+func TestRecalled_UsesAnItemsOwnLabelInPlaceOfTheSummaryLabel(t *testing.T) {
+	out := Recalled([]Item{
+		{ID: 1, Level: "fact", Kind: "verified", SourceFirst: 5, SourceLast: 9, Text: "Ana is at desk 4.", Label: "[fact:1 read from sources 5, 9]"},
+		{ID: 2, Level: "mid", Kind: "historical", SourceFirst: 1, SourceLast: 4, Text: "A summary."},
+	})
+	assert.Equal(t, "Ana is at desk 4. [fact:1 read from sources 5, 9]", out[0].Content)
+	assert.NotContains(t, out[0].Content, "not verified source text")
+	assert.Equal(t, "A summary. [mid:2 sources:1-4; summary, not verified source text]", out[1].Content, "the control: an item without a label keeps the study's")
+}
+
+// corpusArm records the corpus it was built from.
+type corpusArm struct{ ShippedArm }
+
+func (corpusArm) Build(_ context.Context, env *Env, _, _ string) (Built, error) {
+	return Built{Notes: map[string]any{"stream": len(env.Corpus.Stream)}}, nil
+}
+
+func TestRun_ReadsTheCorpusFromCorpusAndWritesEvidenceUnderDir(t *testing.T) {
+	dir, work := t.TempDir(), t.TempDir()
+	corpus := filepath.Join("..", "..", "memory-encoding", "validation")
+	want, err := LoadCorpus(corpus)
+	require.NoError(t, err)
+	arm := corpusArm{ShippedArm{ArmName: "X", Batches: []string{"b4"}}}
+
+	require.NoError(t, run(context.Background(), arm, []string{"build", "-dir", dir, "-corpus", corpus, "-work", work}))
+
+	data, err := os.ReadFile(filepath.Join(dir, "evidence", "offline", "X", "b4", "built.json"))
+	require.NoError(t, err)
+	assert.Contains(t, string(data), fmt.Sprintf(`"stream": %d`, len(want.Stream)))
+	_, err = os.Stat(filepath.Join(corpus, "evidence", "offline", "X"))
+	assert.True(t, os.IsNotExist(err), "nothing is written under the corpus's study")
+	require.Error(t, run(context.Background(), arm, []string{"build", "-dir", dir, "-work", t.TempDir()}), "the control: without -corpus the corpus is read from -dir, which holds none")
+}

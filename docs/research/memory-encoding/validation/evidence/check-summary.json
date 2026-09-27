@@ -1,0 +1,7 @@
+{
+ "leaks": {},
+ "hops": 505,
+ "oracle_within_5": 493,
+ "oracle_share": 0.9762,
+ "passed": true
+}

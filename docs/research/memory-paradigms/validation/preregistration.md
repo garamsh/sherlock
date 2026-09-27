@@ -97,3 +97,12 @@ Each is MiniMax-M2 through the one study proxy (`harness proxy`, ledger `evidenc
 - On HTTP 429 with code 2056 the proxy pauses every request and probes at most every 30 minutes; callers wait on `/budget`.
 - Embeddings come only from local text-embeddings-inference.
 - Tokens are reported per phase (`score.py tokens`).
+
+## Amendments
+
+### Amendment 1, during D's consolidation, before pass 49 was recorded
+
+- **What happened.** Pass 49 was refused on all three attempts with "call document_update exactly once". The ledger (`doc-049`) shows each answer ended with `finish_reason` `tool_calls`, the first two after 711 and 831 output tokens, so the answers made tool calls but not exactly one `document_update`. The ledger keeps no response body, so whether they split the operations over several calls is inferred, not seen. The third attempt ran out at 4,096 output tokens.
+- **Change.** A response's `document_update` calls are read as one, their operations concatenated in order, with the bound of 16 operations applied to the total (`consolidate.go` `parseOps`, `TestParseOps_ReadsSeveralDocumentUpdateCallsAsOne`, and a mutation check). An answer with no `document_update` call is still refused. Nothing else changes.
+- **Passes 1 to 48** are unaffected: each was accepted with exactly one call, and replay reads their recorded operations.
+- **Observed before the change, as preregistered.** The document reached its bound at pass 43. From then on most passes were refused twice and applied partially, and adds past the bound were skipped (`passes-b4-doc16k.jsonl`). The run continues under those rules. Three attempts per pass raise the phase's cost above the 1.3M-token estimate, and the report states the phase's tokens.

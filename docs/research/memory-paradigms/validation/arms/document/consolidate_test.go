@@ -98,3 +98,15 @@ func TestConsolidate_AsksAgainWithTheReasonWhenAPassIsRefused(t *testing.T) {
 	assert.Contains(t, model.shown[2], "were refused", "the retry says why")
 	assert.Len(t, doc.Lines, 2)
 }
+
+func TestParseOps_ReadsSeveralDocumentUpdateCallsAsOne(t *testing.T) {
+	resp := agent.Response{ToolCalls: []agent.ToolCall{
+		{Name: updateTool, Input: json.RawMessage(`{"ops":[{"op":"add","text":"a","mids":[1]}]}`)},
+		{Name: updateTool, Input: json.RawMessage(`{"ops":[{"op":"drop","line":2}]}`)},
+	}}
+	ops, err := parseOps(resp)
+	require.NoError(t, err)
+	assert.Equal(t, []Op{{Op: "add", Text: "a", Mids: []int64{1}}, {Op: "drop", Line: 2}}, ops)
+	_, err = parseOps(agent.Response{ToolCalls: []agent.ToolCall{{Name: "other", Input: json.RawMessage(`{}`)}}})
+	assert.Error(t, err, "the control: an answer without document_update is refused")
+}

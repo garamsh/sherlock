@@ -128,26 +128,36 @@ func runPass(ctx context.Context, model agent.Model, d *Document, pass int, grou
 	return r, last
 }
 
-// parseOps reads the one document_update call of a response.
+// parseOps reads the document_update calls of a response, their operations
+// in order; MiniMax-M2 may split one answer over several calls (Amendment 1).
 func parseOps(resp agent.Response) ([]Op, error) {
-	if len(resp.ToolCalls) != 1 || resp.ToolCalls[0].Name != updateTool {
-		return nil, errors.New("call document_update exactly once")
+	var ops []Op
+	calls := 0
+	for _, call := range resp.ToolCalls {
+		if call.Name != updateTool {
+			continue
+		}
+		calls++
+		var result struct {
+			Ops *[]Op `json:"ops"`
+		}
+		decoder := json.NewDecoder(strings.NewReader(string(call.Input)))
+		decoder.DisallowUnknownFields()
+		if err := decoder.Decode(&result); err != nil {
+			return nil, fmt.Errorf("parse document_update: %v", err)
+		}
+		if result.Ops == nil {
+			return nil, errors.New("document_update must list its operations")
+		}
+		ops = append(ops, *result.Ops...)
 	}
-	var result struct {
-		Ops *[]Op `json:"ops"`
+	if calls == 0 {
+		return nil, fmt.Errorf("call document_update; the answer made %d other tool calls", len(resp.ToolCalls))
 	}
-	decoder := json.NewDecoder(strings.NewReader(string(resp.ToolCalls[0].Input)))
-	decoder.DisallowUnknownFields()
-	if err := decoder.Decode(&result); err != nil {
-		return nil, fmt.Errorf("parse document_update: %v", err)
+	if len(ops) > maxOps {
+		return nil, fmt.Errorf("document_update lists %d operations; at most %d", len(ops), maxOps)
 	}
-	if result.Ops == nil {
-		return nil, errors.New("document_update must list its operations")
-	}
-	if len(*result.Ops) > maxOps {
-		return nil, fmt.Errorf("document_update lists %d operations; at most %d", len(*result.Ops), maxOps)
-	}
-	return *result.Ops, nil
+	return ops, nil
 }
 
 // passesPath is where D's passes are recorded.

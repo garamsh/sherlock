@@ -128,7 +128,7 @@ Every page accessed 2026-09-27. The current documentation is written for MiniMax
 
 - **No corpus fits whole.** 238,839 to 273,566 templated tokens exceed both the API's 204,800 and the weights' 196,608, before instructions, tools and output.
 - **Every stream fits.** Chains, SC, UP, N, NC and KU all have their evidence in the stream.
-- **A truncated window.** Under a history budget of 180,000 tokens (§Test plan), the newest 5,207 to 6,890 messages fit. That holds the whole stream and the base's newest messages from ID 1,290 (#874), 1,840 (#885), 1,841 (#888) and 2,039 (#890).
+- **A truncated window.** Under a history budget of 180,000 tokens (§W. Full-context ceiling), the newest 5,207 to 6,890 messages fit. That holds the whole stream and the base's newest messages from ID 1,290 (#874), 1,840 (#885), 1,841 (#888) and 2,039 (#890).
   - E and K have their evidence in the base, so part of it falls outside: E 15 of 20 in view for #874, and 15, 18 and 17 of 30 for #885, #888 and #890. K is 20 of 20, then 39, 38 and 38 of 40.
 - **Content runs 4.6 to 4.7 characters per token** over the whole corpus, and 3.7 to 3.9 over the streams alone, whose invented names split into more tokens.
 

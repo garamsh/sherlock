@@ -37,7 +37,7 @@ REVISION = "757303d492a50514c312788b5247a4f696a4c6a3"
 # History a full-context arm may restore: M2's 196,608 positions
 # (config.json), less about 4,600 for instructions, tools and recall (S's
 # live prompts in #885 averaged 4,443 tokens with a 32-message window) and
-# 12,000 for the turn's tool results and output. README §Test plan.
+# 12,000 for the turn's tool results and output. README §W. Full-context ceiling.
 HISTORY_BUDGET = 180_000
 
 # tokenizer.json's Split pattern, with each \p{..} class left as a named slot

@@ -1,0 +1,60 @@
+[
+ {
+  "arm": "L",
+  "setting": "b4-model-chk",
+  "start": "2026-09-27T06:54:15Z",
+  "end": "2026-09-27T06:54:27Z",
+  "exit": 0,
+  "smoke": true
+ },
+ {
+  "arm": "L",
+  "setting": "b4-model-ptr",
+  "start": "2026-09-27T06:54:27Z",
+  "end": "2026-09-27T06:54:40Z",
+  "exit": 0,
+  "smoke": true
+ },
+ {
+  "arm": "S",
+  "setting": "b4",
+  "start": "2026-09-27T06:55:11Z",
+  "end": "2026-09-27T07:29:28Z",
+  "exit": 0
+ },
+ {
+  "arm": "L",
+  "setting": "b4-model-ptr",
+  "start": "2026-09-27T07:29:28Z",
+  "end": "2026-09-27T08:15:39Z",
+  "exit": 0
+ },
+ {
+  "arm": "L",
+  "setting": "b4-model-attr",
+  "start": "2026-09-27T08:15:39Z",
+  "end": "2026-09-27T08:50:42Z",
+  "exit": 0
+ },
+ {
+  "arm": "L",
+  "setting": "b4-model-chk",
+  "start": "2026-09-27T08:50:42Z",
+  "end": "2026-09-27T09:41:21Z",
+  "exit": 0
+ },
+ {
+  "arm": "L",
+  "setting": "b4-model-key-ptr",
+  "start": "2026-09-27T09:41:21Z",
+  "end": "2026-09-27T10:26:28Z",
+  "exit": 0
+ },
+ {
+  "arm": "L",
+  "setting": "b4-model",
+  "start": "2026-09-27T10:26:28Z",
+  "end": "2026-09-27T11:01:23Z",
+  "exit": 0
+ }
+]

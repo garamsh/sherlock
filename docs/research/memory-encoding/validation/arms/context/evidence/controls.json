@@ -1,0 +1,51 @@
+{
+ "stream_batches": 1032,
+ "recorded": 1032,
+ "with_context": 991,
+ "context_share": 0.9603,
+ "context_chars_mean": 96.7,
+ "sc_items": 50,
+ "sc_context_names_subject": 37,
+ "sc_subject_share": 0.74,
+ "sc_missing": [
+  "SC-012",
+  "SC-014",
+  "SC-018",
+  "SC-028",
+  "SC-029",
+  "SC-030",
+  "SC-034",
+  "SC-036",
+  "SC-038",
+  "SC-039",
+  "SC-041",
+  "SC-042",
+  "SC-049"
+ ],
+ "sc_summary_names_subject": 49,
+ "nc_items": 30,
+ "nc_context_names_entity": 16,
+ "passed": false,
+ "oracle": {
+  "hops": 505,
+  "reached": 420,
+  "oracle_share": 0.8317,
+  "passed": false
+ },
+ "tokens": {
+  "synth-b4": {
+   "batches": 1032,
+   "prompt_tokens_mean": 327.2,
+   "completion_tokens_mean": 205.4,
+   "prompt_tokens": 337684,
+   "completion_tokens": 211993
+  },
+  "context-b4-w8": {
+   "batches": 1032,
+   "prompt_tokens_mean": 521.2,
+   "completion_tokens_mean": 489.3,
+   "prompt_tokens": 537860,
+   "completion_tokens": 504985
+  }
+ }
+}

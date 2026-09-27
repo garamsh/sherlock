@@ -1,0 +1,12 @@
+FAILS  arms/facts/memory.go: F's profile block
+FAILS  arms/facts/memory.go: F's similar facts
+FAILS  arms/facts/memory.go: the profile's user filter
+FAILS  arms/facts/memory.go: the profile's character bound
+FAILS  arms/facts/memory.go: leaving profile facts out of the similar list
+FAILS  arms/facts/synthesis.go: refusing a call without facts
+FAILS  arms/facts/synthesis.go: varying a retried request past the proxy's cache
+FAILS  corpus.py: keeping the subject out of the situated evidence
+FAILS  corpus.py: checking the sources a family needs
+FAILS  score.py: requiring the evidence to state its values
+FAILS  score.py: the guardrails
+FAILS  score.py: taking the smallest valid arm

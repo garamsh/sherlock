@@ -85,7 +85,8 @@ class DecisionTest(unittest.TestCase):
     def test_the_smallest_valid_arm_is_named(self):
         score.NET_LINES.update({"F/b4": 120, "C/b4-w8": 50})
         try:
-            self.assertEqual(score.smallest_valid({"F/b4": {"valid": True}, "C/b4-w8": {"valid": True}}), "C/b4-w8")
+            for order in (("F/b4", "C/b4-w8"), ("C/b4-w8", "F/b4")):
+                self.assertEqual(score.smallest_valid({n: {"valid": True} for n in order}), "C/b4-w8", order)
             self.assertEqual(score.smallest_valid({"F/b4": {"valid": True}, "C/b4-w8": {"valid": False}}), "F/b4")
             self.assertIsNone(score.smallest_valid({"F/b4": {"valid": False}}))
         finally:

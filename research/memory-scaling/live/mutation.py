@@ -19,6 +19,9 @@ MUTATIONS = [
      "Kr's batch-4 recency"),
     ('score.py', "'margin_holds': delivery['interval'][0] >= margin,", "'margin_holds': True,", 'the delivery margin'),
     ('score.py', "all(v <= allowance for v in guard.values())", 'True', 'the guardrail allowance'),
+    ('screen.py', "        out['stated'] = says(gold)", "        out['stated'] = True", 'the stated rule'),
+    ('screen.py', "out['stale_stated'] = says(item['old_key']) and not out['stated']",
+     "out['stale_stated'] = says(item['old_key'])", 'the stale-stated rule: the new value not stated'),
 ]
 
 

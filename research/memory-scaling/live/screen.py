@@ -5,6 +5,7 @@
 Embeddings come from this study's own text-embeddings-inference instance at EMBED_URL, cached beside this file
 under a name .gitignore excludes. No model is called. Writes evidence/rankings.jsonl and evidence/screen.json.
 """
+import importlib.util
 import json
 from pathlib import Path
 import sys
@@ -23,6 +24,35 @@ RECENCY_SPAN = 4
 
 scaling.EMBED_CACHE = HERE / '.embed_cache-913.json'
 scaling.EMBED_URL = EMBED_URL
+
+
+def _live_matcher():
+    """`states` from the live scorer, ../../chained-recall/score.py, loaded under its own name."""
+    path = scaling.RESEARCH / 'chained-recall' / 'score.py'
+    spec = importlib.util.spec_from_file_location('chained_recall_score', path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.states
+
+
+states = _live_matcher()
+
+
+def stated(delivered, query, item):
+    """Amendment 1's text measures over the delivered units' rendered text."""
+    texts = [u.text + u.tag.format(id=u.id, first=u.first, last=u.last) for u in delivered]
+    says = lambda value: any(states(t, value) for t in texts)  # noqa: E731
+    out = {}
+    if query['family'] == 'absent':
+        out['near_miss_stated'] = says(item['key'])
+    elif query['evidence']:
+        gold = item['new_key'] if query['family'] == 'correction' else item['key']
+        out['stated'] = says(gold)
+        out['covered_stated'] = any(states(t, gold) for t, u in zip(texts, delivered)
+                                    if scaling.covers([(u.first, u.last)], query['evidence']))
+        if query['family'] == 'correction':
+            out['stale_stated'] = says(item['old_key']) and not out['stated']
+    return out
 
 
 def kr_recency(newest, k_store):
@@ -96,6 +126,8 @@ def main():
                        'rank': scaling.first_rank(order, q['evidence']) if q['evidence'] else None}
                 if q['id'] in near_miss_key:
                     row['states_near_miss'] = any(near_miss_key[q['id']].search(u.text) for u in delivered)
+                if q['item'] in items:
+                    row.update(stated(delivered, q, items[q['item']]))
                 rows.append(row)
         controls['kr_recency_spans'][scale] = sorted(spans)
         print(f'{scale}: ranked at {time.time() - started:.0f}s', flush=True)

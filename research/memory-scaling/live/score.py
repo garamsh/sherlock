@@ -35,19 +35,26 @@ def net_worse(a, b, ids, bad):
     return sum(bad(a[i]) and not bad(b[i]) for i in ids) - sum(bad(b[i]) and not bad(a[i]) for i in ids)
 
 
-def gate(per, families, allowance=ALLOWANCE, margin=MARGIN):
-    """Preregistration §Gate, without the controls: the delivery margin and every guardrail against S4 and B4."""
+STATED_FIELDS = ['stated', 'covered_stated', 'stale_stated', 'near_miss_stated']
+DELIVERY = {'gold': 'hit', 'stale': 'stale', 'near_miss': 'near_miss'}
+STATED = {'gold': 'stated', 'stale': 'stale_stated', 'near_miss': 'near_miss_stated'}
+
+
+def gate(per, families, names=DELIVERY, allowance=ALLOWANCE, margin=MARGIN):
+    """Preregistration §Gate, without the controls: the margin and every guardrail against S4 and B4, over the
+    delivery measures or, with names=STATED, Amendment 1's stated measures."""
+    gold, stale, near = names['gold'], names['stale'], names['near_miss']
     primary = [i for f in PRIMARY for i in families[f]]
     kr, checks = per['Kr'], {}
     for other in AGAINST:
         b = per[other]
-        hits = {i: kr[i]['hit'] for i in primary}, {i: b[i]['hit'] for i in primary}
-        delivery = compare(*hits, primary)
+        pair = {i: kr[i][gold] for i in primary}, {i: b[i][gold] for i in primary}
+        delivery = compare(*pair, primary)
         guard = {
-            'exact_hit': net_worse(kr, b, families['exact'], lambda m: not m['hit']),
-            'correction_hit': net_worse(kr, b, families['correction'], lambda m: not m['hit']),
-            'correction_stale': net_worse(kr, b, families['correction'], lambda m: m['stale']),
-            'absent_near_miss': net_worse(kr, b, families['absent'], lambda m: m['near_miss']),
+            f'exact_{gold}': net_worse(kr, b, families['exact'], lambda m: not m[gold]),
+            f'correction_{gold}': net_worse(kr, b, families['correction'], lambda m: not m[gold]),
+            f'correction_{stale}': net_worse(kr, b, families['correction'], lambda m: m[stale]),
+            f'absent_{near}': net_worse(kr, b, families['absent'], lambda m: m[near]),
         }
         checks[other] = {'delivery': delivery, 'margin_holds': delivery['interval'][0] >= margin,
                          'guardrails': guard, 'guardrails_hold': all(v <= allowance for v in guard.values())}
@@ -73,7 +80,7 @@ def main():
     for r in rows:
         per.setdefault(r['scale'], {}).setdefault(r['arm'], {})[r['query']] = dict(
             measures(r['delivered'], queries[r['query']]), states_near_miss=r.get('states_near_miss'), chars=r['chars'],
-            rank=r['rank'])
+            rank=r['rank'], **{k: r.get(k, False) for k in STATED_FIELDS})
     s4 = per['s4']
     primary = [i for f in PRIMARY for i in families[f]]
 
@@ -99,6 +106,7 @@ def main():
         'server': tuple(controls['server']) == EXPECTED_MODEL,
     }
     checks, holds = gate(s4, families)
+    stated_checks, stated_holds = gate(s4, families, STATED)
 
     table = {}
     for arm in ('S4', 'B4', 'Kr'):
@@ -109,6 +117,11 @@ def main():
             'correction_stale': sum(m[i]['stale'] for i in families['correction']),
             'absent_near_miss': sum(m[i]['near_miss'] for i in families['absent']),
             'absent_states_near_miss_key': sum(bool(m[i]['states_near_miss']) for i in families['absent']),
+            'stated': {f: sum(m[i]['stated'] for i in families[f]) for f in PRIMARY},
+            'covered_stated': {f: sum(m[i]['covered_stated'] for i in families[f]) for f in PRIMARY},
+            'stated_primary': sum(m[i]['stated'] for i in primary),
+            'correction_stale_stated': sum(m[i]['stale_stated'] for i in families['correction']),
+            'absent_near_miss_stated': sum(m[i]['near_miss_stated'] for i in families['absent']),
             'mean_chars_primary': sum(m[i]['chars'] for i in primary) / len(primary),
             'recall_before_budget': {k: sum(m[i]['rank'] is not None and m[i]['rank'] <= k for i in primary) / len(primary)
                                      for k in (1, 5, 20)},
@@ -117,14 +130,14 @@ def main():
                                             'whole_store': s['stored_chars'] / s['source_chars']}
                for s in screen['storage']}
     verdict = ('undetermined: a control failed' if not all(passed.values())
-               else 'pass: the paid phase may go ahead on the PM\'s go' if holds
+               else 'pass: the paid phase may go ahead on the PM\'s go' if holds and stated_holds
                else 'fail: no paid call is made')
     per_query = {arm: {i: s4[arm][i] for i in queries} for arm in s4}
-    out = {'verdict': verdict, 'controls': controls, 'controls_pass': passed, 'gate': checks, 'table': table,
-           'storage': storage, 'per_query_s4': per_query}
+    out = {'verdict': verdict, 'controls': controls, 'controls_pass': passed, 'gate': checks, 'stated_gate': stated_checks,
+           'table': table, 'storage': storage, 'per_query_s4': per_query}
     (EVIDENCE / 'scores.json').write_text(json.dumps(out, indent=1) + '\n')
     print(json.dumps({'verdict': verdict, 'controls_pass': passed, 'controls': {k: v for k, v in controls.items()},
-                      'gate': checks, 'table': table, 'storage': storage}, indent=1))
+                      'gate': checks, 'stated_gate': stated_checks, 'table': table, 'storage': storage}, indent=1))
 
 
 if __name__ == '__main__':

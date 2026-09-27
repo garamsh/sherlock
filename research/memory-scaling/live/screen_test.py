@@ -29,6 +29,34 @@ class KrRecencyTest(unittest.TestCase):
         self.assertEqual([(u.first, u.last) for u in out], [(21, 24), (17, 20), (1, 16)])
 
 
+class StatedTest(unittest.TestCase):
+    def test_a_query_is_stated_when_a_delivered_text_states_its_value(self):
+        units = number([Unit(1, 16, 'The router password is now Netgear2024.'), Unit(17, 20, 'Talked about plants.')])
+        item = {'key': 'Netgear2024', 'new_key': 'Netgear2024', 'old_key': 'Netgear123'}
+        q = {'family': 'correction', 'evidence': [3], 'obsolete': [18]}
+        self.assertEqual(screen.stated(units, q, item), {'stated': True, 'covered_stated': True, 'stale_stated': False})
+        # Control: the same units without the stating text state nothing.
+        self.assertFalse(screen.stated(units[1:], q, item)['stated'])
+
+    def test_a_value_stated_outside_the_evidence_unit_is_stated_but_not_covered(self):
+        units = number([Unit(1, 4, 'Nothing here.'), Unit(5, 8, 'Kiwi says hello.')])
+        q = {'family': 'exact', 'evidence': [2], 'obsolete': []}
+        self.assertEqual(screen.stated(units, q, {'key': 'Kiwi'}), {'stated': True, 'covered_stated': False})
+
+    def test_a_stale_correction_states_the_old_value_without_the_new(self):
+        item = {'key': 'Netgear2024', 'new_key': 'Netgear2024', 'old_key': 'Netgear123'}
+        q = {'family': 'correction', 'evidence': [3], 'obsolete': [18]}
+        old = number([Unit(17, 20, 'My router password is Netgear123.')])
+        self.assertTrue(screen.stated(old, q, item)['stale_stated'])
+        both = number([Unit(1, 4, 'Now Netgear2024.'), Unit(17, 20, 'Was Netgear123.')])
+        self.assertFalse(screen.stated(both, q, item)['stale_stated'])
+
+    def test_an_absent_query_counts_its_near_miss_value_stated(self):
+        q = {'family': 'absent', 'evidence': [], 'obsolete': []}
+        self.assertTrue(screen.stated(number([Unit(1, 4, 'I read 200 pages.')]), q, {'key': '200 pages'})['near_miss_stated'])
+        self.assertFalse(screen.stated(number([Unit(1, 4, 'I read 20 pages.')]), q, {'key': '200 pages'})['near_miss_stated'])
+
+
 def query(evidence=(), obsolete=(), near_miss=()):
     return {'evidence': list(evidence), 'obsolete': list(obsolete), 'near_miss': list(near_miss)}
 
@@ -44,7 +72,8 @@ class MeasuresTest(unittest.TestCase):
 
 
 def measure(hit=True, stale=False, near_miss=False):
-    return {'hit': hit, 'stale': stale, 'near_miss': near_miss}
+    return {'hit': hit, 'stale': stale, 'near_miss': near_miss,
+            'stated': hit, 'stale_stated': stale, 'near_miss_stated': near_miss}
 
 
 class GateTest(unittest.TestCase):
@@ -81,6 +110,15 @@ class GateTest(unittest.TestCase):
         checks, holds = score.gate(per, families)
         self.assertTrue(checks['S4']['margin_holds'])
         self.assertFalse(checks['S4']['guardrails_hold'])
+        self.assertFalse(holds)
+
+    def test_the_stated_gate_reads_the_stated_measures(self):
+        per, families = self.per()
+        for i in families['paraphrase'][:20]:
+            per['Kr'][i] = dict(per['Kr'][i], stated=False)
+        self.assertTrue(score.gate(per, families)[1])
+        checks, holds = score.gate(per, families, score.STATED)
+        self.assertFalse(checks['S4']['margin_holds'])
         self.assertFalse(holds)
 
     def test_stale_corrections_count_against_their_guardrail(self):

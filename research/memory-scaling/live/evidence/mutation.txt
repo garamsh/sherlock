@@ -4,4 +4,6 @@ FAILS  score.py: the near-miss rule
 FAILS  screen.py: Kr's batch-4 recency
 FAILS  score.py: the delivery margin
 FAILS  score.py: the guardrail allowance
+FAILS  screen.py: the stated rule
+FAILS  screen.py: the stale-stated rule: the new value not stated
 control: every unmutated test passes

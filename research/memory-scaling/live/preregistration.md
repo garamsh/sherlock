@@ -12,6 +12,7 @@ This fixes issue #913's arms, scale, K's recency rule, endpoints, margin, guardr
 - Controls
 - Cost and paid-phase order
 - What is already known
+- Amendment 1: stated screen
 
 ## Question
 
@@ -129,3 +130,21 @@ Written down so the screen is read for what it adds.
 - **K at s4 is #901's result.** #901 reported K at s4 at 197 against B4's 203, interval [−0.042, +0.008], and per family exact 61 against 62 and correction 66 against 66. Because K's recency at s4 is already the two newest distractor B4 mids, Kr at s4 is expected to equal it (control 2).
 - **What is new.** The comparison with S4 at s4 (S4 delivered 201 there) and the stale and near-miss guardrails, none of which #901 computed.
 - **Not known.** Nothing here has been ranked or scored for #913.
+
+## Amendment 1: stated screen
+
+Added at the PM's condition on the go, after the delivery screen above was scored (it passed, `evidence/scores.json`) and before any stated measure was computed. At s4 the delivery screen reproduces #901's K, and a source interval does not show that a B16 summary still states the answer. This gate is added to §Gate; nothing above changes.
+
+- **Stated.** A query is *stated* when the rendered text of some unit an arm delivers states the gold value, matched by the live scorer's matcher, `../../chained-recall/score.py` `states` (the agent-context matcher):
+  - exact, paraphrase, implicit: the item's `key`;
+  - correction: the item's `new_key`.
+- **Guardrail measures**, same matcher over the same delivered text:
+  - correction *stale-stated*: the `old_key` is stated and the `new_key` is not;
+  - absent *near-miss stated*: the absent item's `key`, the near-miss value, is stated.
+- **Arms and material.** Kr, B4 and S4 at s4, the deliveries already recorded in `evidence/rankings.jsonl`, re-derived from the embedding cache with no server; the rerun must reproduce those deliveries exactly.
+- **Stated gate**, against S4 and against B4:
+  1. on the 280 primary queries, the lower bound of Kr's paired interval on stated is at least −0.05;
+  2. net losses at most 3: exact stated, correction stated, correction stale-stated (Kr-only minus other-only), absent near-miss stated (Kr-only minus other-only).
+- **Reported beside it**, not gated: *covered-and-stated*, where the unit that states the value is also one whose interval holds an evidence source, per arm and family.
+- **Outcome.** If the stated gate passes, the paid phase proceeds as §Live phase and §Cost fix it, with the PM's go given on that condition. If it fails, no paid call is made and the report records the cut.
+- **Mutation checks** added: the stated rule and the stale-stated rule each fail a test when removed.

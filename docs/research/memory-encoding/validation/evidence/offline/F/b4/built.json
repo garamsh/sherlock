@@ -1,0 +1,21 @@
+{
+  "arm": "F",
+  "build_seconds": 3129.989651301,
+  "built": {
+    "stored_chars": 905788,
+    "vectors": 3971,
+    "units": {
+      "fact": 1739,
+      "mid": 2232
+    },
+    "notes": {
+      "batches_recorded": 1032,
+      "facts": 1739,
+      "stream_batches": 1032,
+      "user_facts": 1013
+    }
+  },
+  "setting": "b4",
+  "source_chars": 1062421,
+  "stored_chars_per_source": 0.8525697440092016
+}

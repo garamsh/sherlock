@@ -1,0 +1,17 @@
+{
+ "stream_batches": 1032,
+ "batches_with_facts_array": 1032,
+ "facts_stored_share": 1.0,
+ "up_items": 50,
+ "up_with_user_fact": 44,
+ "up_user_share": 0.88,
+ "up_missing": [
+  "UP-031",
+  "UP-036",
+  "UP-048",
+  "UP-049",
+  "UP-051",
+  "UP-059"
+ ],
+ "passed": false
+}

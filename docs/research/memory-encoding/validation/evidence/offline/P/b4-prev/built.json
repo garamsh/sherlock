@@ -1,0 +1,22 @@
+{
+  "arm": "P",
+  "build_seconds": 2457.67167315,
+  "built": {
+    "stored_chars": 790923,
+    "vectors": 2232,
+    "units": {
+      "link": 281,
+      "mid": 2232
+    },
+    "notes": {
+      "batches_failed": 0,
+      "batches_recorded": 1032,
+      "mids_continuing": 281,
+      "share_continuing": 0.27228682170542634,
+      "stream_batches": 1032
+    }
+  },
+  "setting": "b4-prev",
+  "source_chars": 1062421,
+  "stored_chars_per_source": 0.7444534699521188
+}

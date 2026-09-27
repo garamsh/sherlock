@@ -1,0 +1,13 @@
+FAILS  memory.go: the thread list's turn
+FAILS  memory.go: taking the linked neighbour the ranking puts first
+FAILS  main.go: following a link from the earlier mid to the later
+FAILS  main.go: following a link from the later mid to the earlier
+FAILS  main.go: giving b4-prev the previous mid
+FAILS  main.go: giving b4-k5 only earlier mids
+FAILS  synthesis.go: refusing an ID that was not given
+FAILS  synthesis.go: refusing a null continues at b4-prev
+FAILS  synthesis.go: refusing a null continues at b4-k5
+FAILS  synthesis.go: varying a retried request past the proxy's cache
+FAILS  synthesis.go: recording a batch every attempt left malformed
+FAILS  synthesis.go: refusing a recording given other mids
+FAILS  controls.py: counting a pair linked only when the model chose it

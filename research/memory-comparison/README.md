@@ -1,6 +1,6 @@
 # Memory structures compared
 
-Sets every memory structure measured from #854 to #906 side by side, with each figure linked to the committed file it was read from, and states what the results establish and what they leave open. It re-scores nothing and measures nothing new. Every figure was read from the files at `f669f8b`.
+Sets every memory structure measured from #854 to #913 side by side, with each figure linked to the committed file it was read from, and states what the results establish and what they leave open. It re-scores nothing and measures nothing new. Every figure was read from the files at `f669f8b`, except #913's, read at `bdd3c37`.
 
 ## Sources
 
@@ -19,6 +19,7 @@ A figure's label names its study and stage, and links the file it was read from.
 | 854 | #854 | seed 854 (`mid-memory-rag/corpus.json`): 40 primary queries over 300 mids | offline delivery | [854] | [#854](../mid-memory-rag/README.md) |
 | 856 | #856 | the replication (`mid-memory-rag/evidence/replication/corpus.json`): 280 primary queries | offline delivery | [856] | [#856](../mid-memory-rag/README.md#replication-issue-856) |
 | 901 | #901 | the replication plus four other studies' recorded mids as distractors | offline delivery at 1× and 3.67× | [901] | [#901](../memory-scaling/README.md) |
+| 913 screen | #913 | #901's, at 3.67× | free screen of delivery and stated; no call | [913 screen] | [#913](../memory-scaling/live/README.md) |
 
 Verdicts are quoted from each study's report. Production lines link the report or survey that estimated them.
 
@@ -30,7 +31,7 @@ Verdicts are quoted from each study's report. Production lines link the report o
 - **Corrections.** KU, the current holder given, of 30, on #890's corpus. #874, #885 and #888 have no KU, so their K (the corrected value, of 20 or 40) is given, labelled K. #854 and #856 give their correction family, the newer source delivered, of 10 and 70; #901 the same family of 70 at 3.67×.
 - **Standing user facts.** UP, of 50, only on #890's corpus. #896 did not probe UP live.
 - **Compression.** Stored characters per source character. #901's figure is for the replication part only.
-- **Retrieval.** Primary queries whose evidence a delivered unit holds: of 280 for #856 and #901, of 40 for #854. #901 gives 1× and 3.67×.
+- **Retrieval.** Primary queries whose evidence a delivered unit holds: of 280 for #856 and #901, of 40 for #854. #901 gives 1× and 3.67×. #913 adds *stated*: a delivered text states the gold value, of 280 at 3.67×.
 - **Lines.** Net production lines before tests, as the study's report or survey estimated them. Nothing was implemented.
 - **Verdict.** The study's own words, shortened. *Not admitted*: the arm did not pass the offline gate to the live stage. *Cut*: the paid phase was cut before any call. *Undetermined*: a control failed, so the study's rule gives no answer.
 - **—** means not measured.
@@ -68,7 +69,7 @@ Verdicts are quoted from each study's report. Production lines link the report o
 | H of #856, FTS5 and B8 alternated | — | — | — | [856] 65 of 70 (A 58) | — | — | [856] 203 (A 168) | +160 to +265 ([856 report]) | Valid in #856 |
 | D of #854, similarity over raw source messages | — | — | — | [854] 8 of 10 (A 10) | — | — | [854] 23 of 40 (A 29, B8 27) | — | Outside #854's decision, which compared B8 with A; trails B8 by 4 |
 | T, an aged tier: B16 for older messages | — | — | — | [901] 46 of 70 (B4 66) | — | [901] 0.472 at 1×, 0.280 from 2.08× | [901] 172 at 1×, 112 at 3.67× (B4 211, 203) | — | Delivers less than B4 |
-| K, B4 keys over B16 values | — | — | — | [901] 66 of 70 (B4 66) | — | [901] 0.280 | [901] 168 at 1×, 197 at 3.67× (B4 211, 203) | — | No worse than B4 for less storage at 3.67×; recommended for a live answer run |
+| K, B4 keys over B16 values | — | — | — | [901] 66 of 70 (B4 66) | — | [901] 0.280 | [901] 168 at 1×, 197 at 3.67× (B4 211, 203); [913 screen] with batch-4 recency (Kr), 197 (S4 201, B4 203), stated 187 (S4 197, B4 201) | — | No worse than B4 on delivery in #901; cut after the stated screen in #913 |
 | X, FTS5 and cosine by reciprocal rank fusion | — | — | — | [901] 63 of 70 (B4 66) | — | [901] 0.684 | [901] 161 at 1×, 168 at 3.67× (B4 211, 203) | — | Delivers less than B4 |
 | DR-rel, raw messages from the top 5 mids, by score | — | — | — | [901] 66 of 70 (B4 66) | — | [901] 1.684 | [901] 206 at 1×, 199 at 3.67× (B4 211, 203) | — | Secondary: no significant difference from B4 (p 0.27 and 0.34) |
 | DR-new, the same, newest mid first | — | — | — | [901] 66 of 70 (B4 66) | — | [901] 1.684 | [901] 186 at 1×, 188 at 3.67× (B4 211, 203) | — | Secondary: delivers less than B4 |
@@ -89,10 +90,13 @@ Stated only as far as the table carries them. The chain and absent figures below
   - R is the one live arm whose N losses are not associated values stated: it stated the associated value on 2 of 60 N probes, against S's 3 ([900 live]). But its chain gain is not significant (13 against 7) and it loses N, K and KU.
   - The write-time and screened structures that gained did so offline only, and each put near-miss values in view or failed a control: C (SC 39; NC near-miss beside the entity 24 of 30), C-key (SC 30; oracle control failed), profile cards (34 chains; the associate's value on a card for 36 of 60 N), D (UP 14; N near-miss in view 14 against 7; coverage control failed). None of them was measured live alone.
   - P, F and RW-key reached no chain; RW-key's screen caps what writing can carry at 7 of 100.
-- **K is the one retrieval-level candidate still standing.** At 3.67×, K delivers 197 of 280 against B4's 203, interval [−0.042, +0.008] inside the −0.05 bound, and stores 0.280 characters per source character against 0.684 ([901]). Every other #901 arm that ran delivers less than B4 or, for DR-rel, stores 1.684; the reranker did not run. The finding is delivery only, on the replication corpus. At 1× it depends on recency: with its own B16 recency K delivers 168 against B4's 211, and with B4-sized recency (Kr, exploratory) 202.
+- **K was the last retrieval-level candidate, and #913 cut it after the stated screen.**
+  - #901: at 3.67×, K delivers 197 of 280 against B4's 203, interval [−0.042, +0.008] inside the −0.05 bound, and stores 0.280 characters per source character against 0.684 ([901]). Every other #901 arm that ran delivers less than B4 or, for DR-rel, stores 1.684; the reranker did not run. At 1× it depends on recency: with its own B16 recency K delivers 168 against B4's 211, and with B4-sized recency (Kr, exploratory) 202.
+  - #913, Kr at 3.67×: delivery passes, 197 against S4's 201 and B4's 203, both inside −0.05. The stated screen fails: a delivered text states the value for 187, against 197 and 201, B4 interval [−0.081, −0.009], and the exact-stated guardrail loses 5 net against B4, beyond the allowance of 3 ([913 screen]).
+  - Why: the B16 summaries drop the value. Kr delivers the evidence without stating the value for 19 primary queries, against 9 each for S4 and B4 ([913 screen] `per_query_s4`). No paid call was made, and the shipped recall stands.
 - **What remains untested.**
   - The full-context ceiling W: no run has measured whether MiniMax-M2 answers absent questions from associations in view in their original wording.
-  - K's live answer run, and K on any chain, abstention or correction family.
+  - K live: #913 cut the run, so K has no live figure and none on a chain, abstention or correction family. A batch-16 synthesis that keeps values is a new study, not a re-read of #913 ([#913](../memory-scaling/live/README.md#limits)).
   - The reranker, and any hosted embedder.
   - C's context line with S's summaries kept, which #890 names as its next step, and C, F, D or profile cards live on their own.
   - RW's compounding, and a search at write with another k or query.
@@ -100,6 +104,7 @@ Stated only as far as the table carries them. The chain and absent figures below
   - Implicit chains: no structure applied more than 4 of 50 IC live (#874's L), or reached more than 7 of 50 offline (#874's L).
   - UP live beyond R's and S's (1 and 0 of 50).
   - Every live figure is one run per probe on one model, MiniMax-M2, over templated corpora of invented names.
+- **The owner's attributed-answer rule changes no figure here.** Decided on 2026-09-28 and being confirmed in #916: on an absent probe, an answer that gives the associate's value while attributing it to the associate is acceptable. Every N and NC figure above is scored under the strict rule, and #896's recorded figures under it do not change. The PM's re-read that motivated the rule, 18 of L-attr's 22 unabstained N replies naming the associate (the count as #916 states it; N 38 of 60 in [896 live]), is a name-mention count on data already seen, not a result.
 
 [874 live]: ../chained-recall/evidence/live/scores.json
 [874 off]: ../chained-recall/evidence/offline/scores.json
@@ -121,6 +126,7 @@ Stated only as far as the table carries them. The chain and absent figures below
 [856]: ../mid-memory-rag/evidence/replication/scores.json
 [856 report]: ../mid-memory-rag/README.md#code-size-estimate-revised-for-the-valid-arms
 [901]: ../memory-scaling/evidence/scores.json
+[913 screen]: ../memory-scaling/live/evidence/scores.json
 [links estimate]: ../chained-recall/arms/links/README.md#production-estimate-measured
 [levels estimate]: ../chained-recall/arms/levels/README.md#production-estimate
 [C estimate]: ../memory-encoding/validation/arms/context/README.md#production-estimate

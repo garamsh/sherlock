@@ -182,4 +182,14 @@ Every probe's store copy is kept until scoring, outside the repository.
 
 ## Amendments
 
-None.
+- **1.** Committed after S, L, L+G and L-T were collected and L+V's first pass ended, and before any L+V probe is re-run.
+  - **The loss.** While L+V's live run was writing, I moved `evidence/live/L/b4-model-v/` to `/tmp`, another filesystem, to score the four finished arms without it, and moved it back. The runner kept appending to the deleted original.
+    - Only the first 119 of L+V's 310 results survive in `results.jsonl`.
+    - The ledger shows all 310 probes sent: 860 calls over 310 episodes.
+  - **Never read.** No outcome of the 191 lost probes was read by anyone, and the lost records cannot be recovered.
+  - **The re-run.** Exactly the 191 lost probes are run once more, through `live -only`, and receive fresh model responses. None of the 119 survivors is re-run. The lost probes are:
+    - C3: `C3-050`, `C3-051`, `C3-052`, `C3-053`, `C3-054`, `C3-055`, `C3-056`, `C3-057`, `C3-058`, `C3-059`, `C3-060`;
+    - every IC2, IC3, E, K and N probe.
+  - **Tokens.** Both passes count under L+V live. The re-run gets a second window in `evidence/live/run.json`.
+  - **Collection.** The runner's output directory is not touched while it writes; scoring reads a copy afterwards.
+  - Nothing else in this file changes.

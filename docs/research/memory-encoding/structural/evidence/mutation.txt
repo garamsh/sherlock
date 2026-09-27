@@ -1,0 +1,33 @@
+FAILS  chained-recall/arms/links/memory.go: L-ptr's pointer text
+FAILS  chained-recall/arms/links/main.go: C-key+L-ptr opened as L-ptr
+FAILS  chained-recall/arms/links/memory.go: L-attr's attribution
+FAILS  chained-recall/arms/links/memory.go: attributing only a subject that differs from the query's entities
+FAILS  chained-recall/arms/links/memory.go: L-attr's trace of subjects
+FAILS  chained-recall/arms/links/main.go: C-key+L-ptr's start from C-key's store
+FAILS  chained-recall/arms/links/check.go: L+chk's check call
+FAILS  chained-recall/arms/links/check.go: keeping only the named items
+FAILS  chained-recall/arms/links/check.go: the connectivity rule
+FAILS  chained-recall/arms/links/check.go: the notice
+FAILS  chained-recall/arms/links/check.go: the check on memory_search
+FAILS  chained-recall/arms/links/check.go: failing closed after malformed answers
+FAILS  chained-recall/arms/links/check.go: naming only delivered items
+FAILS  chained-recall/study/adapt.go: rendering the notice without a memory label
+FAILS  memory-encoding/validation/arms/context/main.go: C-key's kept S summary
+FAILS  memory-encoding/validation/arms/context/main.go: the context in the key
+FAILS  memory-encoding/validation/arms/context/main.go: C-key showing no context line
+FAILS  memory-encoding/structural/score.py: pointer reach
+FAILS  memory-encoding/structural/score.py: SC value reach
+FAILS  memory-encoding/structural/score.py: the admission margin
+FAILS  memory-encoding/structural/score.py: the offline pointer control
+FAILS  memory-encoding/structural/score.py: the offline attribution presence
+FAILS  memory-encoding/structural/score.py: the offline attribution correctness
+FAILS  memory-encoding/structural/score.py: the offline NC attribution checks (Amendment 1)
+FAILS  memory-encoding/structural/score.py: the shown-text control
+FAILS  memory-encoding/structural/score.py: the ranking control
+FAILS  memory-encoding/structural/score.py: the offline check control
+FAILS  memory-encoding/structural/score.py: the live pointer control
+FAILS  memory-encoding/structural/score.py: the live attribution control
+FAILS  memory-encoding/structural/score.py: the ledger's agreement with the live checks
+FAILS  memory-encoding/structural/score.py: reading only a probe's final attempt
+FAILS  memory-encoding/structural/score.py: voiding an arm whose control failed
+control: every unmutated test passes

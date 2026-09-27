@@ -155,3 +155,26 @@ func (g *graph) namesAny(mid int64, names []string) bool {
 	}
 	return false
 }
+
+// entities are the names a mid's synthesis wrote, in the order it wrote
+// them.
+func (g *graph) entities(mid int64) []string {
+	i, ok := g.index[mid]
+	if !ok {
+		return nil
+	}
+	out := make([]string, 0, len(g.adj[i]))
+	for _, e := range g.adj[i] {
+		out = append(out, g.name(e))
+	}
+	return out
+}
+
+// subject is whom a mid is about, as L-attr computes it from stored
+// entities: the first name its synthesis wrote, "" when it wrote none.
+func (g *graph) subject(mid int64) string {
+	if names := g.entities(mid); len(names) > 0 {
+		return names[0]
+	}
+	return ""
+}

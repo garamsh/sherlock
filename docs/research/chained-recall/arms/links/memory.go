@@ -6,6 +6,7 @@ import (
 	"maps"
 	"math"
 	"slices"
+	"strings"
 
 	"github.com/garamsh/sherlock/docs/research/chained-recall/study"
 	"github.com/garamsh/sherlock/internal/agent"
@@ -32,6 +33,45 @@ type memory struct {
 	// query's own entities is delivered only when its walk score reaches
 	// gateScore.
 	gated bool
+	// pointer is L-ptr's structure (#896): a walk-delivered mid is shown
+	// only as a pointer, the entity it was reached through, its ID and
+	// source interval, and its content is read through memory_inspect.
+	pointer bool
+	// attribute is L-attr's structure (#896): a walk-delivered mid whose
+	// subject, its first stored entity, is none of the query's entities is
+	// shown with the subject beside the query's entities.
+	attribute bool
+}
+
+// pointerText is all L-ptr shows of a walk-delivered mid; the study's
+// label after it names the mid and its source interval.
+func pointerText(entity string) string {
+	return fmt.Sprintf("Linked through %q; content not shown, read its sources with memory_inspect.", entity)
+}
+
+// attribution opens the text of a walk-delivered mid L-attr shows, naming
+// whom the episode is about and whom the question names.
+func attribution(subject string, seeds []string) string {
+	return fmt.Sprintf("About %q; the question names %s. ", subject, quoted(seeds))
+}
+
+func quoted(names []string) string {
+	out := make([]string, len(names))
+	for i, n := range names {
+		out[i] = fmt.Sprintf("%q", n)
+	}
+	return strings.Join(out, " and ")
+}
+
+// shown is the text L-ptr and L-attr give a walk-delivered mid.
+func (m *memory) shown(it study.Item, via string, seeds []string) string {
+	if m.pointer {
+		return pointerText(via)
+	}
+	if s := m.graph.subject(it.ID); s != "" && !slices.Contains(seeds, s) {
+		return attribution(s, seeds) + it.Text
+	}
+	return it.Text
 }
 
 // gateScore is L+G's threshold on a walk mid's Personalized PageRank
@@ -108,6 +148,13 @@ func (m *memory) alternate(query string, slots int, seen map[int64]bool, similar
 			}
 		}
 	}
+	if m.pointer || m.attribute {
+		for i, it := range items {
+			if it.Kind == "linked" {
+				items[i].Text = m.shown(it, via[it.ID], seeds)
+			}
+		}
+	}
 	inSimilar := map[int64]bool{}
 	for _, h := range similar {
 		inSimilar[h.ID] = true
@@ -128,6 +175,14 @@ func (m *memory) alternate(query string, slots int, seen map[int64]bool, similar
 	m.trace = map[string]any{"seeds": seeds, "steps": steps, "reached": len(linked), "linked": delivered, "beyond_similar": beyond, "beyond_seeds": far}
 	if m.gated {
 		m.trace["gate"] = m.gateTrace(ungated, seeds, scores, delivered)
+	}
+	if m.attribute {
+		// L-attr's control compares each walk mid's text with its subject.
+		subjects := map[int64]string{}
+		for _, id := range delivered {
+			subjects[id] = m.graph.subject(id)
+		}
+		m.trace["subjects"] = subjects
 	}
 	return items
 }

@@ -158,3 +158,38 @@ func TestRecall_ShowsEachMidsContextLabelledAfterItsSummary(t *testing.T) {
 	}
 	assert.Equal(t, 2, labelled, "both mids with a context are delivered and labelled")
 }
+
+func TestBuild_KeyOnlyShowsSsSummaryAndRanksByTheContext(t *testing.T) {
+	env, _, _ := built(t)
+	ctx := context.Background()
+	dir := filepath.Join(env.Work, "build-key")
+	b, err := arm{}.Build(ctx, env, keyOnly, dir)
+	require.NoError(t, err)
+	m, err := arm{}.Open(ctx, env, keyOnly, dir)
+	require.NoError(t, err)
+	t.Cleanup(func() { _ = m.Close() })
+	items, err := m.Search(ctx, "anything", 10)
+	require.NoError(t, err)
+	require.Len(t, items, 6)
+	for _, it := range items {
+		n := (it.SourceFirst-1)/4 + 1
+		assert.Equal(t, fmt.Sprintf("recorded summary %d about bread.", n), it.Text, "every mid shows its shared summary, with no context line")
+	}
+	top, err := m.Search(ctx, "Oscar Goudre", 1)
+	require.NoError(t, err)
+	assert.Equal(t, int64(9), top[0].SourceFirst, "ranked by the context in its key")
+	assert.NotContains(t, top[0].Text, "Goudre", "which the shown text does not hold")
+	// Control: C's own build ranks the same mid first, so the key, not the
+	// summary C wrote, carries the rank.
+	c := open(t, env, filepath.Join(env.Work, "build"))
+	cTop, err := c.Search(ctx, "Oscar Goudre", 1)
+	require.NoError(t, err)
+	assert.Equal(t, int64(9), cTop[0].SourceFirst)
+	assert.Contains(t, cTop[0].Text, contextLabel, "C shows the context; C-key does not")
+	contextChars := len("A call about reaching Oscar Goudre.") + len("At the studio.")
+	assert.Equal(t, study.Built{
+		StoredChars: 6*len("recorded summary 1 about bread.") + contextChars, Vectors: 6,
+		Units: map[string]int{"mid": 6, "context": 2},
+		Notes: map[string]any{"context_chars": contextChars, "mids_with_context": 2},
+	}, b)
+}

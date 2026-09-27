@@ -222,3 +222,11 @@ Every store copy is kept outside the repository. Nothing is written under `../va
 ## Revision
 
 - Harness, study package and #890's scorer at `8218189`. This directory's arm and scorer at the commit that adds this file.
+
+## Amendments
+
+- **1. The paid phase is cut, for RW-key and RW.** Made after the free screen (§Collection, step 3) and before any paid call. The PM decided it on the dispatch channel.
+  - **The screen** (`evidence/screen.json`, `score.py screen` over `arms/retrieved/evidence/screen-b4.jsonl`) replays RW-key's exact search at write for all 1,032 stream batches, with no model call.
+  - **Why it is cut.** The screen caps carried reach through writing at 7 of 100 primary chains: those whose every pair of neighbouring hops was found by the later hop's search. That is below the 10-of-100 admission margin (§Offline stage and admission), even if every linked chain were reached and S reached none. KU correction batches also retrieve the superseded statement in 30 of 30, so the stale-copy risk is structural.
+  - **RW's search** over source messages is RW-key's. Its search over mids differs only through RW's own summaries, and the screen does not bound that part.
+  - **What does not run:** RW-key's and RW's builds, their offline records, the live stage and the decision. No other part of this file changes.

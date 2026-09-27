@@ -36,10 +36,10 @@ states, mcnemar, holm, load_jsonl, covers = P.states, P.mcnemar, P.holm, P.load_
 
 BASELINE = "S"
 # Each record directory's arm and setting, as study.Main names them, and
-# the arm it is in preregistration.md. C is #890's committed record, read
-# in place and never re-recorded.
+# the arm it is in preregistration.md. #890's committed records are read in
+# place: C always, and S where S was not re-recorded here.
 NAMES = {"S/b4": "S", "RW/b4-rw-key": "RW-key", "RW/b4-rw": "RW"}
-REFERENCE = {"C": VALIDATION / "evidence" / "offline" / "C" / "b4-w8"}
+REFERENCE = {"C": VALIDATION / "evidence" / "offline" / "C" / "b4-w8", "S": VALIDATION / "evidence" / "offline" / "S" / "b4"}
 # The arms compared with S, in the PM's order: RW-key is primary, RW the
 # owner's form is secondary (preregistration.md §Decision).
 ORDER = ("RW-key", "RW")
@@ -142,7 +142,7 @@ def offline_records():
             if key in NAMES:
                 found[NAMES[key]] = d
     for name, d in REFERENCE.items():
-        if (d / "probes.jsonl").exists():
+        if name not in found and (d / "probes.jsonl").exists():
             found[name] = d
     return found
 

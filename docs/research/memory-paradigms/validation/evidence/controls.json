@@ -15,6 +15,18 @@
   "rejected_operations": 95,
   "passed": false
  },
- "R": null,
+ "R": {
+  "probes": 470,
+  "loop_ran": 470,
+  "loop_share": 1.0,
+  "loop_calls_per_probe": 4.97,
+  "ended_with_result": 269,
+  "facts_returned": 196,
+  "facts_kept": 195,
+  "facts_dropped": 1,
+  "kept_supported": 167,
+  "support_share": 0.8564,
+  "passed": true
+ },
  "W": null
 }

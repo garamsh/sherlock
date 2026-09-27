@@ -424,6 +424,7 @@ The runs reuse the chained-recall harness (`../chained-recall/study/arm.go`, `st
   - Then R, D and W on #890's.
   - The owner confirms before each that the subscription's windows can carry it (§W, cost).
 - **Reported for every arm:** applied per family, context tokens per turn, stored characters per source character, act calls per probe, per-call and per-probe latency p50 and p90, and write-time and idle-time calls and tokens, beside S's.
+- **The run** is issue #900, recorded in `validation/README.md`.
 
 ## Limits
 

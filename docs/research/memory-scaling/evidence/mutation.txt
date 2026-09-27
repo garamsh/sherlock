@@ -7,6 +7,8 @@ FAILS  study.py: dedupe: the shipped rule
 FAILS  study.py: dedupe: one delivery per value under K
 FAILS  study.py: leak check: the flanking rule
 FAILS  study.py: leak check: matching a planted value
+FAILS  study.py: drill-down: the top M mids
+FAILS  study.py: drill-down: the newer mid first
 FAILS  evaluate.py: decision: the null condition
 FAILS  evaluate.py: decision: the no-worse bound
 control: every unmutated test passes

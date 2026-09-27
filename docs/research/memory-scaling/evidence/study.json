@@ -1464,6 +1464,18 @@
    "recency_chars": 1591
   },
   {
+   "scale": "s0",
+   "arm": "DR",
+   "units": 6000,
+   "replication_units": 6000,
+   "stored_chars": 1511102,
+   "replication_stored_chars": 1511102,
+   "source_messages": 4800,
+   "source_chars": 897180,
+   "replication_source_chars": 897180,
+   "recency_chars": 606
+  },
+  {
    "scale": "s1",
    "arm": "B4",
    "units": 1605,
@@ -1548,6 +1560,18 @@
    "recency_chars": 417
   },
   {
+   "scale": "s1",
+   "arm": "DR",
+   "units": 8101,
+   "replication_units": 6000,
+   "stored_chars": 1660575,
+   "replication_stored_chars": 1511102,
+   "source_messages": 6496,
+   "source_chars": 979988,
+   "replication_source_chars": 897180,
+   "recency_chars": 1640
+  },
+  {
    "scale": "s2",
    "arm": "B4",
    "units": 2458,
@@ -1602,6 +1626,18 @@
    "replication_units": 300,
    "stored_chars": 455070,
    "replication_stored_chars": 251399,
+   "source_messages": 9984,
+   "source_chars": 1121409,
+   "replication_source_chars": 897180,
+   "recency_chars": 1430
+  },
+  {
+   "scale": "s2",
+   "arm": "DR",
+   "units": 12442,
+   "replication_units": 6000,
+   "stored_chars": 1939002,
+   "replication_stored_chars": 1511102,
    "source_messages": 9984,
    "source_chars": 1121409,
    "replication_source_chars": 897180,
@@ -1668,6 +1704,18 @@
    "recency_chars": 1354
   },
   {
+   "scale": "s3",
+   "arm": "DR",
+   "units": 16783,
+   "replication_units": 6000,
+   "stored_chars": 2216413,
+   "replication_stored_chars": 1511102,
+   "source_messages": 13472,
+   "source_chars": 1262393,
+   "replication_source_chars": 897180,
+   "recency_chars": 1354
+  },
+  {
    "scale": "s4",
    "arm": "B4",
    "units": 4306,
@@ -1726,6 +1774,18 @@
    "source_chars": 1427634,
    "replication_source_chars": 897180,
    "recency_chars": 475
+  },
+  {
+   "scale": "s4",
+   "arm": "DR",
+   "units": 21906,
+   "replication_units": 6000,
+   "stored_chars": 2544254,
+   "replication_stored_chars": 1511102,
+   "source_messages": 17600,
+   "source_chars": 1427634,
+   "replication_source_chars": 897180,
+   "recency_chars": 475
   }
  ],
  "resemblance": {
@@ -1746,7 +1806,7 @@
   "queries_where_distractor_top1_is_higher": 61
  },
  "run": {
-  "rank_seconds": 8.312265872955322,
+  "rank_seconds": 46.48134469985962,
   "rerank_calls": null
  }
 }

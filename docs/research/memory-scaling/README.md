@@ -10,6 +10,7 @@ Records issue #901's study: how evidence delivery holds up as the conversation s
   - B8, B16, the aged tier (T) and the hybrid (X) each deliver significantly less than B4 at 3.67×.
   - The reranker (R): pending: R has not run yet (interim report).
 - **K's result depends on how recency is delivered.** At 1×, K's two newest units are B16 values, which take 1,591 of the 3,384-character budget, and K delivers 168. With B4-sized recency (exploratory) it delivers 202 against B4's 211.
+- **The owner's drill-down (Amendment 1) holds delivery but stores the most.** Delivering raw messages from the top 5 mids by message score (DR-rel) gives 206 at 1× and 199 at 3.67×. Neither differs significantly from B4. It keeps every raw message beside the mids, so it stores 1.68 characters per source character. Ordering by newest mid (DR-new) loses to B4 at both scales.
 - **Recommendation.** K merits the live answer run, with recency delivered at B4 size. The shipped recall keeps its lead until that run says otherwise.
 
 ## Contents
@@ -19,6 +20,7 @@ Records issue #901's study: how evidence delivery holds up as the conversation s
 - Results
 - Decision
 - Secondary and exploratory readings
+- Amendment 1: mid-to-message drill-down
 - The distractor pool
 - Cost
 - Limits
@@ -76,7 +78,7 @@ From [scores.json](evidence/scores.json) `controls` and [study.json](evidence/st
 | S4 at 1× reproduces #858 parity | 212 of 280; delivered intervals identical to `../mid-memory-rag/evidence/production-parity/rankings.json` on 314 of 314 queries |
 | Distractors outside gold | Every distractor interval lies above source 4,800, outside every evidence and obsolete source; 0 distractor messages carry a replication evidence message's text |
 | Leak check | 380 planted values; 94 of 3,200 batch-4 distractor mids dropped, and 164 of 212 batch-8 mids |
-| Mutation checks | [mutation.txt](evidence/mutation.txt): 11 of 11 mutations (delivery, budget, dedupe, leak check, decision) fail a test |
+| Mutation checks | [mutation.txt](evidence/mutation.txt): 13 of 13 mutations (delivery, budget, dedupe, leak check, drill-down, decision) fail a test |
 | Reach | Every primary evidence source lies in a stored unit of every arm at every scale |
 | Servers | Both `/info` responses are recorded in `study.json` `controls.servers` and match the preregistered models and revisions |
 
@@ -94,6 +96,8 @@ Primary hits of 280 ([scores.json](evidence/scores.json) `table`):
 | K | 168 | 158 | 176 | 185 | 197 | 0.280 |
 | X | 161 | 152 | 161 | 161 | 168 | 0.684 |
 | R | pending | pending | pending | pending | pending | 0.684 |
+| DR-rel (Amendment 1) | 206 | 200 | 200 | 198 | 199 | 1.684 |
+| DR-new (Amendment 1) | 186 | 139 | 149 | 161 | 188 | 1.684 |
 
 Per family at s0 and s4 (exact, paraphrase, implicit, correction; 70 each):
 
@@ -107,6 +111,8 @@ Per family at s0 and s4 (exact, paraphrase, implicit, correction; 70 each):
 | K | 59, 39, 20, 50 | 61, 48, 22, 66 |
 | X | 63, 22, 14, 62 | 62, 26, 17, 63 |
 | R | pending | pending |
+| DR-rel | 63, 55, 22, 66 | 61, 49, 23, 66 |
+| DR-new | 54, 45, 21, 66 | 55, 45, 22, 66 |
 
 - **Whole-store storage.** Distractor messages average 41 characters and their summaries 162, so they barely compress. With them, B4's whole store rises from 0.684 at s0 to 0.782 characters per source character at s4, and K's from 0.280 to 0.528.
 - **Ranking before the budget.** Recall@5 of the ranking isolates retrieval from the fill ([scores.json](evidence/scores.json) `recall_before_budget`):
@@ -166,6 +172,29 @@ Per family at s0 and s4 (exact, paraphrase, implicit, correction; 70 each):
 - **Coverage-matched bias estimate** (exploratory, added after the first ranking): B8c is B8 against only the batch-4 distractors inside B8m's 48 kept spans. B8m against B8c is 182 against 182, with 2 wins and 2 losses. So at matched coverage the distractors' granularity measured no bias for B8. The preregistered plan read B16, T and K as conservative by the B8 bias; the measured bias is 0.
 - **K with B4-sized recency at s0** (exploratory, added after the first ranking): Kr is K's ranking behind B4's two newest mids. It delivers 202 against B4's 211, with 7 wins and 16 losses, interval [−0.060, +0.005]. K's s0 deficit (168) is mostly its recency cost.
 
+## Amendment 1: mid-to-message drill-down
+
+Added at the owner's proposal after the first ranking of every other arm, and preregistered as [Amendment 1](preregistration.md) (`54fb3fd`) before any of its rankings. It is secondary and enters neither Holm family nor the recommendation.
+
+- **Structure.** Rank B4 mids by cosine and take the top 5. Rank the raw source messages inside them against the query, and deliver messages under the same budget and fill rule, after the 2 newest B4 mids.
+  - DR-rel orders the messages by score.
+  - DR-new groups them by mid, newer mid first, and by score within a mid.
+- **Against B4** ([scores.json](evidence/scores.json) `secondary`, exact McNemar, unadjusted):
+
+  | Ordering | Scale | Hits | B4 | Wins | Losses | 95% interval | p |
+  |---|---|---:|---:|---:|---:|---|---:|
+  | DR-rel | s0 | 206 | 211 | 4 | 9 | [−0.038, +0.011] | 0.27 |
+  | DR-rel | s4 | 199 | 203 | 3 | 7 | [−0.031, +0.011] | 0.34 |
+  | DR-new | s0 | 186 | 211 | 3 | 28 | [−0.106, −0.054] | < 0.001 |
+  | DR-new | s4 | 188 | 203 | 3 | 18 | [−0.070, −0.020] | 0.002 |
+
+- **Reading.**
+  - DR-rel stays within B4's range at every scale. At s1 it holds 200 where B4 falls to 191, because messages are small units and still fit beside the long recency mids.
+  - It cannot exceed B4's mid reach: a message is reachable only through a top-5 mid, and its ranking's recall@20 (0.757 at s0, 0.718 at s4) equals B4's recall@5.
+  - DR-new spends the budget on the newest of the five mids whatever their score, and loses.
+- **Storage.** Raw messages held beside the mids count as stored: 1.684 characters per source character for the replication part, against B4's 0.684 and K's 0.280.
+- **Beside K.** At s4, K delivers 197 on 0.280 stored and DR-rel 199 on 1.684. Delivery is the same within noise, and DR-rel stores six times the text. Whether a delivered raw message is used better than a summary is what a live run would show; delivery alone does not separate them.
+
 ## The distractor pool
 
 - **Size.** 3,200 batch-4 mids over 12,800 messages. After the leak check, 3,106 are kept: #874 405 of 424, #885 853 of 872, #888 853 of 872, and #890 995 of 1,032. That is 2.6 times the replication's 1,200 mids, but only 530,454 source characters against the replication's 897,180.
@@ -180,7 +209,7 @@ Per family at s0 and s4 (exact, paraphrase, implicit, correction; 70 each):
 ## Cost
 
 - No MiniMax, OpenAI or other paid call. Every summary is recorded.
-- Embeddings: 5,568 texts on `tei-901` (port 8130), this study's own instance. Ranking every arm at five scales takes about 10 s from the cache.
+- Embeddings: 5,568 summaries and queries, then 17,600 raw messages for Amendment 1, on `tei-901` (port 8130), this study's own instance, in batches of 16. Ranking every arm at five scales takes about 10 s from the cache.
 - Reranking: pending: R has not run yet (interim report).
 - The reranker instance was stopped after the host ran short of memory, and runs only after #896 and #900 finish their live stages, with a 2 GiB memory cap, at the PM's instruction.
 

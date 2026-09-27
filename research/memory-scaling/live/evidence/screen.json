@@ -1,0 +1,121 @@
+{
+ "budget": 3383.55,
+ "controls": {
+  "reach": {
+   "s0": true,
+   "s4": true
+  },
+  "kr_recency_spans": {
+   "s0": [
+    4
+   ],
+   "s4": [
+    4
+   ]
+  },
+  "server": {
+   "model_id": "BAAI/bge-base-en-v1.5",
+   "model_sha": "a5beb1e3e68b9ab74eb54cfd186867f64f240e1a",
+   "model_dtype": "float32",
+   "served_model_name": "BAAI/bge-base-en-v1.5",
+   "model_type": {
+    "embedding": {
+     "pooling": "cls"
+    }
+   },
+   "max_concurrent_requests": 512,
+   "max_input_length": 512,
+   "max_batch_tokens": 4096,
+   "max_batch_requests": 8,
+   "max_client_batch_size": 16,
+   "auto_truncate": true,
+   "tokenization_workers": 11,
+   "version": "1.9.4",
+   "sha": "e80ef225ed0e6cb1717ce632a6a84b6cf211bb67",
+   "docker_label": "sha-e80ef22"
+  }
+ },
+ "pool": [
+  {
+   "stream": "#874",
+   "file": "chained-recall/evidence/synthesis/stream-b4.jsonl",
+   "messages": 1696,
+   "source_chars": 82808,
+   "mids": 424,
+   "kept": 405
+  },
+  {
+   "stream": "#885",
+   "file": "chained-recall/confirm/evidence/synthesis/stream-b4.jsonl",
+   "messages": 3488,
+   "source_chars": 141421,
+   "mids": 872,
+   "kept": 853
+  },
+  {
+   "stream": "#888",
+   "file": "chained-recall/readtime/evidence/synthesis/stream-b4.jsonl",
+   "messages": 3488,
+   "source_chars": 140984,
+   "mids": 872,
+   "kept": 853
+  },
+  {
+   "stream": "#890",
+   "file": "memory-encoding/validation/evidence/synthesis/stream-b4.jsonl",
+   "messages": 4128,
+   "source_chars": 165241,
+   "mids": 1032,
+   "kept": 995
+  },
+  {
+   "stream": "#874 batch 8",
+   "file": "chained-recall/evidence/synthesis/stream-b8.jsonl",
+   "messages": 1696,
+   "source_chars": 82808,
+   "mids": 212,
+   "kept": 48
+  }
+ ],
+ "storage": [
+  {
+   "scale": "s0",
+   "arm": "B4",
+   "units": 1200,
+   "stored_chars": 613922,
+   "replication_stored_chars": 613922,
+   "replication_source_chars": 897180,
+   "source_chars": 897180
+  },
+  {
+   "scale": "s0",
+   "arm": "Kr",
+   "units": 300,
+   "stored_chars": 251399,
+   "replication_stored_chars": 251399,
+   "replication_source_chars": 897180,
+   "source_chars": 897180
+  },
+  {
+   "scale": "s4",
+   "arm": "B4",
+   "units": 4306,
+   "stored_chars": 1116620,
+   "replication_stored_chars": 613922,
+   "replication_source_chars": 897180,
+   "source_chars": 1427634
+  },
+  {
+   "scale": "s4",
+   "arm": "Kr",
+   "units": 3406,
+   "stored_chars": 754097,
+   "replication_stored_chars": 251399,
+   "replication_source_chars": 897180,
+   "source_chars": 1427634
+  }
+ ],
+ "run": {
+  "rank_seconds": 1.6029186248779297
+ }
+}

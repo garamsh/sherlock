@@ -1,0 +1,21 @@
+FAILS  matcher.py: the attribution requirement
+FAILS  matcher.py: the subject rule
+FAILS  matcher.py: the address exception
+FAILS  matcher.py: the hedge exception
+FAILS  matcher.py: the hedge exception's order condition
+FAILS  matcher.py: the entity before the value
+FAILS  matcher.py: a clause naming the associate is not the entity's
+FAILS  matcher.py: the clause split
+FAILS  matcher.py: the given name alone only outside another full name
+FAILS  matcher.py: a shared word naming neither
+FAILS  matcher.py: NC's roles
+FAILS  matcher.py: reading B's tie
+FAILS  matcher.py: Amendment 1's declining words
+FAILS  matcher.py: Amendment 1's sentence pointing back
+FAILS  matcher.py: Amendment 1's misspelt surname
+FAILS  audit.py: the audit's false-accept mark
+FAILS  score.py: N and NC scored by the owner's rule
+FAILS  score.py: the admission margin
+FAILS  score.py: the unseeded probes' equality
+FAILS  score.py: the vectors in the store digest
+control: every unmutated test passes

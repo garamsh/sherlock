@@ -116,3 +116,10 @@ Each is MiniMax-M2 through the one study proxy (`harness proxy`, ledger `evidenc
 
 - **What happened.** Pass 100 was refused on all three attempts: its `document_update` calls together listed 28 operations, past the bound of 16 that Amendment 1 applied to the total.
 - **Change.** An answer's first 16 operations are kept, in order, and the rest are left out and counted in the pass record's `cut` (`consolidate.go` `firstOps`, `TestFirstOps_KeepsTheFirstSixteenInOrder`, and a mutation check). The same bound then holds as before, without refusing the pass. Passes 1 to 99 replay unchanged.
+
+### Amendment 4, by the PM's decision, before any live call
+
+- **Change.** W is not run: neither its smoke run nor its live stage. The PM decided this on 2026-09-27 (orchestration message `msg_4d09be4bc297`), before any live call of this run.
+- **Reason, as the PM gave it.** W gates nothing. It is a ceiling reading whose direction the #899 survey already predicts: full context loses at 100K+ tokens on 7 of the 8 models read (`../README.md` §Full context as memory). It was also the largest spend, about 41M of the run's 66M input tokens.
+- **What stays.** W's code (`arms/full/`), its tests, its sample and its mutation check stay as built. The report cites #899 for the ceiling instead of a measurement, and marks W's hypotheses as not read.
+- **What does not change.** S's and R's live stages, their controls and the decision rule stand as preregistered, and still wait for the PM's go.

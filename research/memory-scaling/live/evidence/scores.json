@@ -1,0 +1,7701 @@
+{
+ "verdict": "pass: the paid phase may go ahead on the PM's go",
+ "controls": {
+  "reproduction_hits_s0_S4": 212,
+  "identical_to_901": {
+   "s0/S4=#901 S4": 314,
+   "s4/S4=#901 S4": 314,
+   "s4/B4=#901 B4": 314,
+   "s4/Kr=#901 K": 314
+  },
+  "budget": 3383.55,
+  "budget_901": 3383.55,
+  "reach": {
+   "s0": true,
+   "s4": true
+  },
+  "kr_recency_spans": {
+   "s0": [
+    4
+   ],
+   "s4": [
+    4
+   ]
+  },
+  "server": [
+   "BAAI/bge-base-en-v1.5",
+   "a5beb1e3e68b9ab74eb54cfd186867f64f240e1a"
+  ]
+ },
+ "controls_pass": {
+  "reproduction": true,
+  "identical_at_s4": true,
+  "reach": true,
+  "kr_recency_batch4": true,
+  "server": true
+ },
+ "gate": {
+  "S4": {
+   "delivery": {
+    "hits": 197,
+    "against": 201,
+    "wins": 8,
+    "losses": 12,
+    "difference": -0.014285714285714285,
+    "interval": [
+     -0.044115705610670394,
+     0.019922487527501476
+    ],
+    "p": 0.5034446716308594
+   },
+   "margin_holds": true,
+   "guardrails": {
+    "exact_hit": 0,
+    "correction_hit": 0,
+    "correction_stale": 2,
+    "absent_near_miss": -1
+   },
+   "guardrails_hold": true
+  },
+  "B4": {
+   "delivery": {
+    "hits": 197,
+    "against": 203,
+    "wins": 4,
+    "losses": 10,
+    "difference": -0.02142857142857143,
+    "interval": [
+     -0.04161106816928724,
+     0.008103525718366145
+    ],
+    "p": 0.1795654296875
+   },
+   "margin_holds": true,
+   "guardrails": {
+    "exact_hit": 1,
+    "correction_hit": 0,
+    "correction_stale": 1,
+    "absent_near_miss": -2
+   },
+   "guardrails_hold": true
+  }
+ },
+ "table": {
+  "S4": {
+   "primary": 201,
+   "by_family": {
+    "exact": 61,
+    "paraphrase": 49,
+    "implicit": 25,
+    "correction": 66
+   },
+   "correction_stale": 2,
+   "absent_near_miss": 16,
+   "absent_states_near_miss_key": 17,
+   "mean_chars_primary": 2941.932142857143,
+   "recall_before_budget": {
+    "1": 0.45,
+    "5": 0.7178571428571429,
+    "20": 0.8142857142857143
+   }
+  },
+  "B4": {
+   "primary": 203,
+   "by_family": {
+    "exact": 62,
+    "paraphrase": 51,
+    "implicit": 24,
+    "correction": 66
+   },
+   "correction_stale": 3,
+   "absent_near_miss": 17,
+   "absent_states_near_miss_key": 18,
+   "mean_chars_primary": 3311.9928571428572,
+   "recall_before_budget": {
+    "1": 0.45,
+    "5": 0.7178571428571429,
+    "20": 0.8142857142857143
+   }
+  },
+  "Kr": {
+   "primary": 197,
+   "by_family": {
+    "exact": 61,
+    "paraphrase": 48,
+    "implicit": 22,
+    "correction": 66
+   },
+   "correction_stale": 4,
+   "absent_near_miss": 15,
+   "absent_states_near_miss_key": 13,
+   "mean_chars_primary": 3308.782142857143,
+   "recall_before_budget": {
+    "1": 0.48928571428571427,
+    "5": 0.7571428571428571,
+    "20": 0.85
+   }
+  }
+ },
+ "storage": {
+  "s0/B4": {
+   "replication": 0.6842796317349918,
+   "whole_store": 0.6842796317349918
+  },
+  "s0/Kr": {
+   "replication": 0.28021021422679954,
+   "whole_store": 0.28021021422679954
+  },
+  "s4/B4": {
+   "replication": 0.6842796317349918,
+   "whole_store": 0.7821472450221836
+  },
+  "s4/Kr": {
+   "replication": 0.28021021422679954,
+   "whole_store": 0.5282145143643259
+  }
+ },
+ "per_query_s4": {
+  "S4": {
+   "exact-01": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3159,
+    "rank": 1
+   },
+   "exact-02": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3532,
+    "rank": 1
+   },
+   "exact-03": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3643,
+    "rank": 1
+   },
+   "exact-04": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2631,
+    "rank": 6
+   },
+   "exact-05": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3468,
+    "rank": 1
+   },
+   "exact-06": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3831,
+    "rank": 1
+   },
+   "exact-07": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3259,
+    "rank": 1
+   },
+   "exact-08": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3047,
+    "rank": 1
+   },
+   "exact-09": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3354,
+    "rank": 1
+   },
+   "exact-10": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3538,
+    "rank": 1
+   },
+   "exact-11": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3041,
+    "rank": 1
+   },
+   "exact-12": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2819,
+    "rank": 1
+   },
+   "exact-13": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2937,
+    "rank": 1
+   },
+   "exact-14": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2912,
+    "rank": 2
+   },
+   "exact-15": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3335,
+    "rank": 1
+   },
+   "exact-16": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3990,
+    "rank": 2
+   },
+   "exact-17": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3367,
+    "rank": 5
+   },
+   "exact-18": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2445,
+    "rank": 2
+   },
+   "exact-19": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3278,
+    "rank": 1
+   },
+   "exact-20": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3290,
+    "rank": 2
+   },
+   "exact-21": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3575,
+    "rank": 1
+   },
+   "exact-22": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3557,
+    "rank": 1
+   },
+   "exact-23": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3072,
+    "rank": 2
+   },
+   "exact-24": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3836,
+    "rank": 1
+   },
+   "exact-25": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3179,
+    "rank": 1
+   },
+   "exact-26": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3217,
+    "rank": 1
+   },
+   "exact-27": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2933,
+    "rank": 9
+   },
+   "exact-28": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3317,
+    "rank": 1
+   },
+   "exact-29": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3225,
+    "rank": 1
+   },
+   "exact-30": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2783,
+    "rank": 1
+   },
+   "exact-31": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2920,
+    "rank": 1
+   },
+   "exact-32": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2855,
+    "rank": 1
+   },
+   "exact-33": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3030,
+    "rank": 1
+   },
+   "exact-34": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3427,
+    "rank": 1
+   },
+   "exact-35": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2133,
+    "rank": 1
+   },
+   "exact-36": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2451,
+    "rank": 1
+   },
+   "exact-37": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3548,
+    "rank": 1
+   },
+   "exact-38": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3418,
+    "rank": 1
+   },
+   "exact-39": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3475,
+    "rank": 1
+   },
+   "exact-40": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3397,
+    "rank": 1
+   },
+   "exact-41": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3677,
+    "rank": 1
+   },
+   "exact-42": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2985,
+    "rank": 4
+   },
+   "exact-43": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3471,
+    "rank": 1
+   },
+   "exact-44": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3565,
+    "rank": 1
+   },
+   "exact-45": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3530,
+    "rank": 85
+   },
+   "exact-46": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2397,
+    "rank": 2
+   },
+   "exact-47": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2531,
+    "rank": 10
+   },
+   "exact-48": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3506,
+    "rank": 1
+   },
+   "exact-49": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2078,
+    "rank": 1
+   },
+   "exact-50": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2302,
+    "rank": 50
+   },
+   "exact-51": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2877,
+    "rank": 1
+   },
+   "exact-52": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2169,
+    "rank": 1
+   },
+   "exact-53": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 1669,
+    "rank": 31
+   },
+   "exact-54": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2263,
+    "rank": 5
+   },
+   "exact-55": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3286,
+    "rank": 1
+   },
+   "exact-56": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 1578,
+    "rank": 32
+   },
+   "exact-57": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2445,
+    "rank": 1
+   },
+   "exact-58": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 1583,
+    "rank": 77
+   },
+   "exact-59": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3304,
+    "rank": 1
+   },
+   "exact-60": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3127,
+    "rank": 1
+   },
+   "exact-61": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3068,
+    "rank": 1
+   },
+   "exact-62": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3881,
+    "rank": 13
+   },
+   "exact-63": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2879,
+    "rank": 1
+   },
+   "exact-64": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3447,
+    "rank": 1
+   },
+   "exact-65": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3737,
+    "rank": 1
+   },
+   "exact-66": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2879,
+    "rank": 1
+   },
+   "exact-67": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3011,
+    "rank": 1
+   },
+   "exact-68": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3673,
+    "rank": 1
+   },
+   "exact-69": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3304,
+    "rank": 1
+   },
+   "exact-70": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3546,
+    "rank": 1
+   },
+   "paraphrase-01": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3538,
+    "rank": 1
+   },
+   "paraphrase-02": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3710,
+    "rank": 7
+   },
+   "paraphrase-03": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3741,
+    "rank": 4
+   },
+   "paraphrase-04": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3684,
+    "rank": 2
+   },
+   "paraphrase-05": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2825,
+    "rank": 4
+   },
+   "paraphrase-06": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 1547,
+    "rank": 713
+   },
+   "paraphrase-07": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2404,
+    "rank": 4
+   },
+   "paraphrase-08": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3716,
+    "rank": 2
+   },
+   "paraphrase-09": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2297,
+    "rank": 13
+   },
+   "paraphrase-10": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2519,
+    "rank": 1
+   },
+   "paraphrase-11": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 1685,
+    "rank": 8
+   },
+   "paraphrase-12": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2148,
+    "rank": 1292
+   },
+   "paraphrase-13": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2413,
+    "rank": 9
+   },
+   "paraphrase-14": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2633,
+    "rank": 1
+   },
+   "paraphrase-15": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2241,
+    "rank": 2
+   },
+   "paraphrase-16": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2246,
+    "rank": 2
+   },
+   "paraphrase-17": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2362,
+    "rank": 228
+   },
+   "paraphrase-18": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2668,
+    "rank": 1
+   },
+   "paraphrase-19": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2953,
+    "rank": 1
+   },
+   "paraphrase-20": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 1570,
+    "rank": 41
+   },
+   "paraphrase-21": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2349,
+    "rank": 1
+   },
+   "paraphrase-22": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2668,
+    "rank": 2
+   },
+   "paraphrase-23": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2884,
+    "rank": 35
+   },
+   "paraphrase-24": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3206,
+    "rank": 1
+   },
+   "paraphrase-25": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2560,
+    "rank": 6
+   },
+   "paraphrase-26": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3259,
+    "rank": 1
+   },
+   "paraphrase-27": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2648,
+    "rank": 1
+   },
+   "paraphrase-28": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3878,
+    "rank": 2
+   },
+   "paraphrase-29": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3308,
+    "rank": 1
+   },
+   "paraphrase-30": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3664,
+    "rank": 1
+   },
+   "paraphrase-31": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3052,
+    "rank": 1
+   },
+   "paraphrase-32": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2705,
+    "rank": 1
+   },
+   "paraphrase-33": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2032,
+    "rank": 1
+   },
+   "paraphrase-34": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 1905,
+    "rank": 1
+   },
+   "paraphrase-35": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3368,
+    "rank": 1
+   },
+   "paraphrase-36": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3665,
+    "rank": 7
+   },
+   "paraphrase-37": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3822,
+    "rank": 3
+   },
+   "paraphrase-38": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2873,
+    "rank": 15
+   },
+   "paraphrase-39": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 1442,
+    "rank": 43
+   },
+   "paraphrase-40": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 1773,
+    "rank": 22
+   },
+   "paraphrase-41": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3444,
+    "rank": 2
+   },
+   "paraphrase-42": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3600,
+    "rank": 1
+   },
+   "paraphrase-43": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2963,
+    "rank": 1
+   },
+   "paraphrase-44": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 1509,
+    "rank": 287
+   },
+   "paraphrase-45": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 1797,
+    "rank": 1086
+   },
+   "paraphrase-46": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2892,
+    "rank": 2
+   },
+   "paraphrase-47": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2074,
+    "rank": 77
+   },
+   "paraphrase-48": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2301,
+    "rank": 5
+   },
+   "paraphrase-49": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2338,
+    "rank": 1
+   },
+   "paraphrase-50": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 1771,
+    "rank": 4
+   },
+   "paraphrase-51": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2762,
+    "rank": 3
+   },
+   "paraphrase-52": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2563,
+    "rank": 2
+   },
+   "paraphrase-53": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3905,
+    "rank": 2
+   },
+   "paraphrase-54": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2405,
+    "rank": 1
+   },
+   "paraphrase-55": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 1817,
+    "rank": 1
+   },
+   "paraphrase-56": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3173,
+    "rank": 13
+   },
+   "paraphrase-57": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3756,
+    "rank": 2
+   },
+   "paraphrase-58": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2902,
+    "rank": 3
+   },
+   "paraphrase-59": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3513,
+    "rank": 3
+   },
+   "paraphrase-60": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2472,
+    "rank": 1
+   },
+   "paraphrase-61": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2512,
+    "rank": 1
+   },
+   "paraphrase-62": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2677,
+    "rank": 1
+   },
+   "paraphrase-63": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3666,
+    "rank": 2
+   },
+   "paraphrase-64": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3115,
+    "rank": 1
+   },
+   "paraphrase-65": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 1530,
+    "rank": 1702
+   },
+   "paraphrase-66": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3218,
+    "rank": 19
+   },
+   "paraphrase-67": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3341,
+    "rank": 3
+   },
+   "paraphrase-68": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2012,
+    "rank": 1
+   },
+   "paraphrase-69": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2937,
+    "rank": 1
+   },
+   "paraphrase-70": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3285,
+    "rank": 31
+   },
+   "implicit-01": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2958,
+    "rank": 2483
+   },
+   "implicit-02": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2492,
+    "rank": 1
+   },
+   "implicit-03": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3541,
+    "rank": 2
+   },
+   "implicit-04": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 4036,
+    "rank": 127
+   },
+   "implicit-05": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2302,
+    "rank": 3
+   },
+   "implicit-06": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2775,
+    "rank": 2
+   },
+   "implicit-07": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3590,
+    "rank": 2
+   },
+   "implicit-08": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2745,
+    "rank": 29
+   },
+   "implicit-09": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3085,
+    "rank": 38
+   },
+   "implicit-10": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3289,
+    "rank": 3
+   },
+   "implicit-11": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 1609,
+    "rank": 107
+   },
+   "implicit-12": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3883,
+    "rank": 71
+   },
+   "implicit-13": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3381,
+    "rank": 32
+   },
+   "implicit-14": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3097,
+    "rank": 185
+   },
+   "implicit-15": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2847,
+    "rank": 25
+   },
+   "implicit-16": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3471,
+    "rank": 2594
+   },
+   "implicit-17": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2689,
+    "rank": 1
+   },
+   "implicit-18": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3008,
+    "rank": 9
+   },
+   "implicit-19": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2615,
+    "rank": 3
+   },
+   "implicit-20": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2580,
+    "rank": 34
+   },
+   "implicit-21": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3256,
+    "rank": 22
+   },
+   "implicit-22": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3424,
+    "rank": 2
+   },
+   "implicit-23": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3322,
+    "rank": 18
+   },
+   "implicit-24": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3761,
+    "rank": 18
+   },
+   "implicit-25": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3142,
+    "rank": 9
+   },
+   "implicit-26": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2971,
+    "rank": 790
+   },
+   "implicit-27": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3012,
+    "rank": 46
+   },
+   "implicit-28": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2760,
+    "rank": 2075
+   },
+   "implicit-29": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2006,
+    "rank": 29
+   },
+   "implicit-30": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2584,
+    "rank": 2
+   },
+   "implicit-31": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3943,
+    "rank": 14
+   },
+   "implicit-32": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 1422,
+    "rank": 173
+   },
+   "implicit-33": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3760,
+    "rank": 3
+   },
+   "implicit-34": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2679,
+    "rank": 4
+   },
+   "implicit-35": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2569,
+    "rank": 4
+   },
+   "implicit-36": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 1925,
+    "rank": 1
+   },
+   "implicit-37": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 1583,
+    "rank": 669
+   },
+   "implicit-38": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 1584,
+    "rank": 50
+   },
+   "implicit-39": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 1521,
+    "rank": 858
+   },
+   "implicit-40": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2363,
+    "rank": 1
+   },
+   "implicit-41": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3621,
+    "rank": 19
+   },
+   "implicit-42": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3920,
+    "rank": 5
+   },
+   "implicit-43": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3490,
+    "rank": 12
+   },
+   "implicit-44": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2980,
+    "rank": 2
+   },
+   "implicit-45": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3651,
+    "rank": 40
+   },
+   "implicit-46": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3825,
+    "rank": 7
+   },
+   "implicit-47": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3573,
+    "rank": 9
+   },
+   "implicit-48": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3702,
+    "rank": 4
+   },
+   "implicit-49": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3513,
+    "rank": 1
+   },
+   "implicit-50": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2337,
+    "rank": 2
+   },
+   "implicit-51": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2466,
+    "rank": 243
+   },
+   "implicit-52": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3064,
+    "rank": 1
+   },
+   "implicit-53": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 1722,
+    "rank": 6
+   },
+   "implicit-54": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3449,
+    "rank": 5
+   },
+   "implicit-55": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2361,
+    "rank": 897
+   },
+   "implicit-56": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 1601,
+    "rank": 577
+   },
+   "implicit-57": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2031,
+    "rank": 129
+   },
+   "implicit-58": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3729,
+    "rank": 90
+   },
+   "implicit-59": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2748,
+    "rank": 44
+   },
+   "implicit-60": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 1910,
+    "rank": 870
+   },
+   "implicit-61": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2672,
+    "rank": 2
+   },
+   "implicit-62": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3495,
+    "rank": 24
+   },
+   "implicit-63": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3353,
+    "rank": 4
+   },
+   "implicit-64": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2896,
+    "rank": 191
+   },
+   "implicit-65": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3230,
+    "rank": 1
+   },
+   "implicit-66": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3446,
+    "rank": 235
+   },
+   "implicit-67": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3277,
+    "rank": 6
+   },
+   "implicit-68": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3084,
+    "rank": 20
+   },
+   "implicit-69": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2737,
+    "rank": 394
+   },
+   "implicit-70": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3651,
+    "rank": 72
+   },
+   "correction-01": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3061,
+    "rank": 2
+   },
+   "correction-02": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2794,
+    "rank": 1
+   },
+   "correction-03": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3382,
+    "rank": 2
+   },
+   "correction-04": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2740,
+    "rank": 1
+   },
+   "correction-05": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3037,
+    "rank": 1
+   },
+   "correction-06": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2571,
+    "rank": 1
+   },
+   "correction-07": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2844,
+    "rank": 2
+   },
+   "correction-08": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3448,
+    "rank": 3
+   },
+   "correction-09": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3433,
+    "rank": 2
+   },
+   "correction-10": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2805,
+    "rank": 1
+   },
+   "correction-11": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2961,
+    "rank": 1
+   },
+   "correction-12": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2606,
+    "rank": 1
+   },
+   "correction-13": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2997,
+    "rank": 6
+   },
+   "correction-14": {
+    "hit": false,
+    "stale": true,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2466,
+    "rank": 21
+   },
+   "correction-15": {
+    "hit": false,
+    "stale": true,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2979,
+    "rank": 58
+   },
+   "correction-16": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2555,
+    "rank": 1
+   },
+   "correction-17": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2936,
+    "rank": 2
+   },
+   "correction-18": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2964,
+    "rank": 1
+   },
+   "correction-19": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2578,
+    "rank": 2
+   },
+   "correction-20": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2534,
+    "rank": 1
+   },
+   "correction-21": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3172,
+    "rank": 1
+   },
+   "correction-22": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3597,
+    "rank": 4
+   },
+   "correction-23": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2655,
+    "rank": 1
+   },
+   "correction-24": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3185,
+    "rank": 1
+   },
+   "correction-25": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3492,
+    "rank": 3
+   },
+   "correction-26": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3402,
+    "rank": 3
+   },
+   "correction-27": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3238,
+    "rank": 1
+   },
+   "correction-28": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3155,
+    "rank": 2
+   },
+   "correction-29": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2710,
+    "rank": 1
+   },
+   "correction-30": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3230,
+    "rank": 1
+   },
+   "correction-31": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2808,
+    "rank": 1
+   },
+   "correction-32": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3003,
+    "rank": 2
+   },
+   "correction-33": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3275,
+    "rank": 3
+   },
+   "correction-34": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2813,
+    "rank": 1
+   },
+   "correction-35": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3238,
+    "rank": 1
+   },
+   "correction-36": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3493,
+    "rank": 1
+   },
+   "correction-37": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3450,
+    "rank": 2
+   },
+   "correction-38": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2228,
+    "rank": 3
+   },
+   "correction-39": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2963,
+    "rank": 2
+   },
+   "correction-40": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3090,
+    "rank": 16
+   },
+   "correction-41": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3024,
+    "rank": 1
+   },
+   "correction-42": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3493,
+    "rank": 5
+   },
+   "correction-43": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3086,
+    "rank": 1
+   },
+   "correction-44": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3527,
+    "rank": 1
+   },
+   "correction-45": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3384,
+    "rank": 2
+   },
+   "correction-46": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3169,
+    "rank": 1
+   },
+   "correction-47": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2947,
+    "rank": 1
+   },
+   "correction-48": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2486,
+    "rank": 2
+   },
+   "correction-49": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2539,
+    "rank": 1
+   },
+   "correction-50": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2730,
+    "rank": 1
+   },
+   "correction-51": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2672,
+    "rank": 3
+   },
+   "correction-52": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3585,
+    "rank": 2
+   },
+   "correction-53": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2772,
+    "rank": 1
+   },
+   "correction-54": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 1930,
+    "rank": 1
+   },
+   "correction-55": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2775,
+    "rank": 3
+   },
+   "correction-56": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2354,
+    "rank": 1
+   },
+   "correction-57": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3516,
+    "rank": 2
+   },
+   "correction-58": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3310,
+    "rank": 1
+   },
+   "correction-59": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3713,
+    "rank": 2
+   },
+   "correction-60": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3272,
+    "rank": 3
+   },
+   "correction-61": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3545,
+    "rank": 1
+   },
+   "correction-62": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2831,
+    "rank": 2
+   },
+   "correction-63": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3565,
+    "rank": 1
+   },
+   "correction-64": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2647,
+    "rank": 1
+   },
+   "correction-65": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2807,
+    "rank": 1
+   },
+   "correction-66": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2654,
+    "rank": 1
+   },
+   "correction-67": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3285,
+    "rank": 1
+   },
+   "correction-68": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3126,
+    "rank": 1
+   },
+   "correction-69": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3381,
+    "rank": 1
+   },
+   "correction-70": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2411,
+    "rank": 1
+   },
+   "absent-01": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3680,
+    "rank": null
+   },
+   "absent-02": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 2689,
+    "rank": null
+   },
+   "absent-03": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 2707,
+    "rank": null
+   },
+   "absent-04": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 2808,
+    "rank": null
+   },
+   "absent-05": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 2150,
+    "rank": null
+   },
+   "absent-06": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 1860,
+    "rank": null
+   },
+   "absent-07": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 2468,
+    "rank": null
+   },
+   "absent-08": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 1866,
+    "rank": null
+   },
+   "absent-09": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 2075,
+    "rank": null
+   },
+   "absent-10": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 1627,
+    "rank": null
+   },
+   "absent-11": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3555,
+    "rank": null
+   },
+   "absent-12": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3628,
+    "rank": null
+   },
+   "absent-13": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3733,
+    "rank": null
+   },
+   "absent-14": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3724,
+    "rank": null
+   },
+   "absent-15": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3628,
+    "rank": null
+   },
+   "absent-16": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3163,
+    "rank": null
+   },
+   "absent-17": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3771,
+    "rank": null
+   },
+   "absent-18": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 1445,
+    "rank": null
+   },
+   "absent-19": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": true,
+    "chars": 3738,
+    "rank": null
+   },
+   "absent-20": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3358,
+    "rank": null
+   },
+   "absent-21": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3392,
+    "rank": null
+   },
+   "absent-22": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3412,
+    "rank": null
+   },
+   "absent-23": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 2928,
+    "rank": null
+   },
+   "absent-24": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3062,
+    "rank": null
+   },
+   "absent-25": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3068,
+    "rank": null
+   },
+   "absent-26": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 2480,
+    "rank": null
+   },
+   "absent-27": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 2973,
+    "rank": null
+   },
+   "absent-28": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3565,
+    "rank": null
+   },
+   "absent-29": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 1482,
+    "rank": null
+   },
+   "absent-30": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3500,
+    "rank": null
+   },
+   "recent-01": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2414,
+    "rank": 1748
+   },
+   "recent-02": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 1857,
+    "rank": 27
+   },
+   "recent-03": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3505,
+    "rank": 45
+   },
+   "recent-04": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 2849,
+    "rank": 8
+   }
+  },
+  "B4": {
+   "exact-01": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3374,
+    "rank": 1
+   },
+   "exact-02": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3360,
+    "rank": 1
+   },
+   "exact-03": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3381,
+    "rank": 1
+   },
+   "exact-04": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3365,
+    "rank": 6
+   },
+   "exact-05": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3324,
+    "rank": 1
+   },
+   "exact-06": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3352,
+    "rank": 1
+   },
+   "exact-07": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3259,
+    "rank": 1
+   },
+   "exact-08": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3241,
+    "rank": 1
+   },
+   "exact-09": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3354,
+    "rank": 1
+   },
+   "exact-10": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3381,
+    "rank": 1
+   },
+   "exact-11": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3383,
+    "rank": 1
+   },
+   "exact-12": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3353,
+    "rank": 1
+   },
+   "exact-13": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3310,
+    "rank": 1
+   },
+   "exact-14": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3330,
+    "rank": 2
+   },
+   "exact-15": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3335,
+    "rank": 1
+   },
+   "exact-16": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3230,
+    "rank": 2
+   },
+   "exact-17": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3367,
+    "rank": 5
+   },
+   "exact-18": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3296,
+    "rank": 2
+   },
+   "exact-19": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3278,
+    "rank": 1
+   },
+   "exact-20": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3290,
+    "rank": 2
+   },
+   "exact-21": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3304,
+    "rank": 1
+   },
+   "exact-22": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3323,
+    "rank": 1
+   },
+   "exact-23": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3244,
+    "rank": 2
+   },
+   "exact-24": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3294,
+    "rank": 1
+   },
+   "exact-25": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3371,
+    "rank": 1
+   },
+   "exact-26": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3217,
+    "rank": 1
+   },
+   "exact-27": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3376,
+    "rank": 9
+   },
+   "exact-28": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3317,
+    "rank": 1
+   },
+   "exact-29": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3225,
+    "rank": 1
+   },
+   "exact-30": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3366,
+    "rank": 1
+   },
+   "exact-31": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3293,
+    "rank": 1
+   },
+   "exact-32": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3308,
+    "rank": 1
+   },
+   "exact-33": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3272,
+    "rank": 1
+   },
+   "exact-34": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3344,
+    "rank": 1
+   },
+   "exact-35": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3275,
+    "rank": 1
+   },
+   "exact-36": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3382,
+    "rank": 1
+   },
+   "exact-37": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3350,
+    "rank": 1
+   },
+   "exact-38": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3277,
+    "rank": 1
+   },
+   "exact-39": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3291,
+    "rank": 1
+   },
+   "exact-40": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3292,
+    "rank": 1
+   },
+   "exact-41": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3041,
+    "rank": 1
+   },
+   "exact-42": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3366,
+    "rank": 4
+   },
+   "exact-43": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3350,
+    "rank": 1
+   },
+   "exact-44": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3289,
+    "rank": 1
+   },
+   "exact-45": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3370,
+    "rank": 85
+   },
+   "exact-46": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3330,
+    "rank": 2
+   },
+   "exact-47": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3322,
+    "rank": 10
+   },
+   "exact-48": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3345,
+    "rank": 1
+   },
+   "exact-49": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3375,
+    "rank": 1
+   },
+   "exact-50": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3309,
+    "rank": 50
+   },
+   "exact-51": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3353,
+    "rank": 1
+   },
+   "exact-52": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3235,
+    "rank": 1
+   },
+   "exact-53": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3214,
+    "rank": 31
+   },
+   "exact-54": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3269,
+    "rank": 5
+   },
+   "exact-55": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3286,
+    "rank": 1
+   },
+   "exact-56": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3317,
+    "rank": 32
+   },
+   "exact-57": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3365,
+    "rank": 1
+   },
+   "exact-58": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3339,
+    "rank": 77
+   },
+   "exact-59": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3304,
+    "rank": 1
+   },
+   "exact-60": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3275,
+    "rank": 1
+   },
+   "exact-61": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3068,
+    "rank": 1
+   },
+   "exact-62": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3267,
+    "rank": 13
+   },
+   "exact-63": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3344,
+    "rank": 1
+   },
+   "exact-64": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3346,
+    "rank": 1
+   },
+   "exact-65": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3052,
+    "rank": 1
+   },
+   "exact-66": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3254,
+    "rank": 1
+   },
+   "exact-67": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3352,
+    "rank": 1
+   },
+   "exact-68": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3354,
+    "rank": 1
+   },
+   "exact-69": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3304,
+    "rank": 1
+   },
+   "exact-70": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3380,
+    "rank": 1
+   },
+   "paraphrase-01": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3317,
+    "rank": 1
+   },
+   "paraphrase-02": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3278,
+    "rank": 7
+   },
+   "paraphrase-03": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3374,
+    "rank": 4
+   },
+   "paraphrase-04": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3359,
+    "rank": 2
+   },
+   "paraphrase-05": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3360,
+    "rank": 4
+   },
+   "paraphrase-06": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3366,
+    "rank": 713
+   },
+   "paraphrase-07": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3211,
+    "rank": 4
+   },
+   "paraphrase-08": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3373,
+    "rank": 2
+   },
+   "paraphrase-09": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3264,
+    "rank": 13
+   },
+   "paraphrase-10": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3335,
+    "rank": 1
+   },
+   "paraphrase-11": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3275,
+    "rank": 8
+   },
+   "paraphrase-12": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3247,
+    "rank": 1292
+   },
+   "paraphrase-13": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3284,
+    "rank": 9
+   },
+   "paraphrase-14": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3340,
+    "rank": 1
+   },
+   "paraphrase-15": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3285,
+    "rank": 2
+   },
+   "paraphrase-16": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3315,
+    "rank": 2
+   },
+   "paraphrase-17": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3363,
+    "rank": 228
+   },
+   "paraphrase-18": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3227,
+    "rank": 1
+   },
+   "paraphrase-19": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3371,
+    "rank": 1
+   },
+   "paraphrase-20": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3283,
+    "rank": 41
+   },
+   "paraphrase-21": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3318,
+    "rank": 1
+   },
+   "paraphrase-22": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3308,
+    "rank": 2
+   },
+   "paraphrase-23": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3310,
+    "rank": 35
+   },
+   "paraphrase-24": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3374,
+    "rank": 1
+   },
+   "paraphrase-25": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3358,
+    "rank": 6
+   },
+   "paraphrase-26": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3259,
+    "rank": 1
+   },
+   "paraphrase-27": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3310,
+    "rank": 1
+   },
+   "paraphrase-28": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3175,
+    "rank": 2
+   },
+   "paraphrase-29": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3308,
+    "rank": 1
+   },
+   "paraphrase-30": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3371,
+    "rank": 1
+   },
+   "paraphrase-31": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3376,
+    "rank": 1
+   },
+   "paraphrase-32": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3367,
+    "rank": 1
+   },
+   "paraphrase-33": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3341,
+    "rank": 1
+   },
+   "paraphrase-34": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3290,
+    "rank": 1
+   },
+   "paraphrase-35": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3368,
+    "rank": 1
+   },
+   "paraphrase-36": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3355,
+    "rank": 7
+   },
+   "paraphrase-37": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3186,
+    "rank": 3
+   },
+   "paraphrase-38": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3281,
+    "rank": 15
+   },
+   "paraphrase-39": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3350,
+    "rank": 43
+   },
+   "paraphrase-40": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3282,
+    "rank": 22
+   },
+   "paraphrase-41": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3375,
+    "rank": 2
+   },
+   "paraphrase-42": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3347,
+    "rank": 1
+   },
+   "paraphrase-43": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3337,
+    "rank": 1
+   },
+   "paraphrase-44": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3272,
+    "rank": 287
+   },
+   "paraphrase-45": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3346,
+    "rank": 1086
+   },
+   "paraphrase-46": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3246,
+    "rank": 2
+   },
+   "paraphrase-47": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3366,
+    "rank": 77
+   },
+   "paraphrase-48": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3381,
+    "rank": 5
+   },
+   "paraphrase-49": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3225,
+    "rank": 1
+   },
+   "paraphrase-50": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3379,
+    "rank": 4
+   },
+   "paraphrase-51": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3379,
+    "rank": 3
+   },
+   "paraphrase-52": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3344,
+    "rank": 2
+   },
+   "paraphrase-53": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3379,
+    "rank": 2
+   },
+   "paraphrase-54": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3270,
+    "rank": 1
+   },
+   "paraphrase-55": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3320,
+    "rank": 1
+   },
+   "paraphrase-56": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3371,
+    "rank": 13
+   },
+   "paraphrase-57": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3270,
+    "rank": 2
+   },
+   "paraphrase-58": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3263,
+    "rank": 3
+   },
+   "paraphrase-59": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3299,
+    "rank": 3
+   },
+   "paraphrase-60": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3331,
+    "rank": 1
+   },
+   "paraphrase-61": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3249,
+    "rank": 1
+   },
+   "paraphrase-62": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3376,
+    "rank": 1
+   },
+   "paraphrase-63": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3354,
+    "rank": 2
+   },
+   "paraphrase-64": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3339,
+    "rank": 1
+   },
+   "paraphrase-65": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3364,
+    "rank": 1702
+   },
+   "paraphrase-66": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3218,
+    "rank": 19
+   },
+   "paraphrase-67": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3341,
+    "rank": 3
+   },
+   "paraphrase-68": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3366,
+    "rank": 1
+   },
+   "paraphrase-69": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3312,
+    "rank": 1
+   },
+   "paraphrase-70": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3285,
+    "rank": 31
+   },
+   "implicit-01": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3318,
+    "rank": 2483
+   },
+   "implicit-02": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3376,
+    "rank": 1
+   },
+   "implicit-03": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3367,
+    "rank": 2
+   },
+   "implicit-04": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3363,
+    "rank": 127
+   },
+   "implicit-05": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3248,
+    "rank": 3
+   },
+   "implicit-06": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3290,
+    "rank": 2
+   },
+   "implicit-07": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3261,
+    "rank": 2
+   },
+   "implicit-08": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3329,
+    "rank": 29
+   },
+   "implicit-09": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3273,
+    "rank": 38
+   },
+   "implicit-10": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3289,
+    "rank": 3
+   },
+   "implicit-11": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3325,
+    "rank": 107
+   },
+   "implicit-12": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3231,
+    "rank": 71
+   },
+   "implicit-13": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3381,
+    "rank": 32
+   },
+   "implicit-14": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3267,
+    "rank": 185
+   },
+   "implicit-15": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3350,
+    "rank": 25
+   },
+   "implicit-16": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3236,
+    "rank": 2594
+   },
+   "implicit-17": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3375,
+    "rank": 1
+   },
+   "implicit-18": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3378,
+    "rank": 9
+   },
+   "implicit-19": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3228,
+    "rank": 3
+   },
+   "implicit-20": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3333,
+    "rank": 34
+   },
+   "implicit-21": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3256,
+    "rank": 22
+   },
+   "implicit-22": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3312,
+    "rank": 2
+   },
+   "implicit-23": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3322,
+    "rank": 18
+   },
+   "implicit-24": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3262,
+    "rank": 18
+   },
+   "implicit-25": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3326,
+    "rank": 9
+   },
+   "implicit-26": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3382,
+    "rank": 790
+   },
+   "implicit-27": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3199,
+    "rank": 46
+   },
+   "implicit-28": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3381,
+    "rank": 2075
+   },
+   "implicit-29": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3368,
+    "rank": 29
+   },
+   "implicit-30": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3313,
+    "rank": 2
+   },
+   "implicit-31": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3341,
+    "rank": 14
+   },
+   "implicit-32": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3316,
+    "rank": 173
+   },
+   "implicit-33": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3328,
+    "rank": 3
+   },
+   "implicit-34": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3305,
+    "rank": 4
+   },
+   "implicit-35": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3310,
+    "rank": 4
+   },
+   "implicit-36": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3237,
+    "rank": 1
+   },
+   "implicit-37": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3339,
+    "rank": 669
+   },
+   "implicit-38": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3324,
+    "rank": 50
+   },
+   "implicit-39": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3352,
+    "rank": 858
+   },
+   "implicit-40": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3366,
+    "rank": 1
+   },
+   "implicit-41": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3208,
+    "rank": 19
+   },
+   "implicit-42": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3237,
+    "rank": 5
+   },
+   "implicit-43": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3374,
+    "rank": 12
+   },
+   "implicit-44": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3248,
+    "rank": 2
+   },
+   "implicit-45": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3244,
+    "rank": 40
+   },
+   "implicit-46": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3296,
+    "rank": 7
+   },
+   "implicit-47": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3366,
+    "rank": 9
+   },
+   "implicit-48": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3328,
+    "rank": 4
+   },
+   "implicit-49": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3238,
+    "rank": 1
+   },
+   "implicit-50": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3301,
+    "rank": 2
+   },
+   "implicit-51": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3222,
+    "rank": 243
+   },
+   "implicit-52": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3327,
+    "rank": 1
+   },
+   "implicit-53": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3351,
+    "rank": 6
+   },
+   "implicit-54": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3320,
+    "rank": 5
+   },
+   "implicit-55": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3216,
+    "rank": 897
+   },
+   "implicit-56": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3210,
+    "rank": 577
+   },
+   "implicit-57": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3294,
+    "rank": 129
+   },
+   "implicit-58": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3330,
+    "rank": 90
+   },
+   "implicit-59": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3283,
+    "rank": 44
+   },
+   "implicit-60": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3344,
+    "rank": 870
+   },
+   "implicit-61": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3322,
+    "rank": 2
+   },
+   "implicit-62": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3351,
+    "rank": 24
+   },
+   "implicit-63": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3353,
+    "rank": 4
+   },
+   "implicit-64": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3307,
+    "rank": 191
+   },
+   "implicit-65": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3230,
+    "rank": 1
+   },
+   "implicit-66": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3341,
+    "rank": 235
+   },
+   "implicit-67": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3277,
+    "rank": 6
+   },
+   "implicit-68": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3084,
+    "rank": 20
+   },
+   "implicit-69": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3293,
+    "rank": 394
+   },
+   "implicit-70": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3277,
+    "rank": 72
+   },
+   "correction-01": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3316,
+    "rank": 2
+   },
+   "correction-02": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3283,
+    "rank": 1
+   },
+   "correction-03": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3382,
+    "rank": 2
+   },
+   "correction-04": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3334,
+    "rank": 1
+   },
+   "correction-05": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3350,
+    "rank": 1
+   },
+   "correction-06": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3243,
+    "rank": 1
+   },
+   "correction-07": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3379,
+    "rank": 2
+   },
+   "correction-08": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3334,
+    "rank": 3
+   },
+   "correction-09": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3369,
+    "rank": 2
+   },
+   "correction-10": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3235,
+    "rank": 1
+   },
+   "correction-11": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3281,
+    "rank": 1
+   },
+   "correction-12": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3323,
+    "rank": 1
+   },
+   "correction-13": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3317,
+    "rank": 6
+   },
+   "correction-14": {
+    "hit": false,
+    "stale": true,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3305,
+    "rank": 21
+   },
+   "correction-15": {
+    "hit": false,
+    "stale": true,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3363,
+    "rank": 58
+   },
+   "correction-16": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3383,
+    "rank": 1
+   },
+   "correction-17": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3372,
+    "rank": 2
+   },
+   "correction-18": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3284,
+    "rank": 1
+   },
+   "correction-19": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3310,
+    "rank": 2
+   },
+   "correction-20": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3326,
+    "rank": 1
+   },
+   "correction-21": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3371,
+    "rank": 1
+   },
+   "correction-22": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3370,
+    "rank": 4
+   },
+   "correction-23": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3361,
+    "rank": 1
+   },
+   "correction-24": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3364,
+    "rank": 1
+   },
+   "correction-25": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3340,
+    "rank": 3
+   },
+   "correction-26": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3307,
+    "rank": 3
+   },
+   "correction-27": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3238,
+    "rank": 1
+   },
+   "correction-28": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3155,
+    "rank": 2
+   },
+   "correction-29": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3237,
+    "rank": 1
+   },
+   "correction-30": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3382,
+    "rank": 1
+   },
+   "correction-31": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3232,
+    "rank": 1
+   },
+   "correction-32": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3367,
+    "rank": 2
+   },
+   "correction-33": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3275,
+    "rank": 3
+   },
+   "correction-34": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3356,
+    "rank": 1
+   },
+   "correction-35": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3238,
+    "rank": 1
+   },
+   "correction-36": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3366,
+    "rank": 1
+   },
+   "correction-37": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3278,
+    "rank": 2
+   },
+   "correction-38": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3305,
+    "rank": 3
+   },
+   "correction-39": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3312,
+    "rank": 2
+   },
+   "correction-40": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3360,
+    "rank": 16
+   },
+   "correction-41": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3234,
+    "rank": 1
+   },
+   "correction-42": {
+    "hit": false,
+    "stale": true,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3204,
+    "rank": 5
+   },
+   "correction-43": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3296,
+    "rank": 1
+   },
+   "correction-44": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3370,
+    "rank": 1
+   },
+   "correction-45": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3227,
+    "rank": 2
+   },
+   "correction-46": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3379,
+    "rank": 1
+   },
+   "correction-47": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3373,
+    "rank": 1
+   },
+   "correction-48": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3366,
+    "rank": 2
+   },
+   "correction-49": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3354,
+    "rank": 1
+   },
+   "correction-50": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3231,
+    "rank": 1
+   },
+   "correction-51": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3353,
+    "rank": 3
+   },
+   "correction-52": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3368,
+    "rank": 2
+   },
+   "correction-53": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3372,
+    "rank": 1
+   },
+   "correction-54": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3245,
+    "rank": 1
+   },
+   "correction-55": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3345,
+    "rank": 3
+   },
+   "correction-56": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3374,
+    "rank": 1
+   },
+   "correction-57": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3309,
+    "rank": 2
+   },
+   "correction-58": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3310,
+    "rank": 1
+   },
+   "correction-59": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3379,
+    "rank": 2
+   },
+   "correction-60": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3272,
+    "rank": 3
+   },
+   "correction-61": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3382,
+    "rank": 1
+   },
+   "correction-62": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3354,
+    "rank": 2
+   },
+   "correction-63": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3374,
+    "rank": 1
+   },
+   "correction-64": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3305,
+    "rank": 1
+   },
+   "correction-65": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3377,
+    "rank": 1
+   },
+   "correction-66": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3339,
+    "rank": 1
+   },
+   "correction-67": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3285,
+    "rank": 1
+   },
+   "correction-68": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3383,
+    "rank": 1
+   },
+   "correction-69": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3381,
+    "rank": 1
+   },
+   "correction-70": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3308,
+    "rank": 1
+   },
+   "absent-01": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3285,
+    "rank": null
+   },
+   "absent-02": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3374,
+    "rank": null
+   },
+   "absent-03": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3307,
+    "rank": null
+   },
+   "absent-04": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3277,
+    "rank": null
+   },
+   "absent-05": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3368,
+    "rank": null
+   },
+   "absent-06": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3376,
+    "rank": null
+   },
+   "absent-07": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3344,
+    "rank": null
+   },
+   "absent-08": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3333,
+    "rank": null
+   },
+   "absent-09": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3265,
+    "rank": null
+   },
+   "absent-10": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3344,
+    "rank": null
+   },
+   "absent-11": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3325,
+    "rank": null
+   },
+   "absent-12": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3211,
+    "rank": null
+   },
+   "absent-13": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3381,
+    "rank": null
+   },
+   "absent-14": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3356,
+    "rank": null
+   },
+   "absent-15": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3324,
+    "rank": null
+   },
+   "absent-16": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3373,
+    "rank": null
+   },
+   "absent-17": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3348,
+    "rank": null
+   },
+   "absent-18": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3377,
+    "rank": null
+   },
+   "absent-19": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": true,
+    "chars": 3228,
+    "rank": null
+   },
+   "absent-20": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3358,
+    "rank": null
+   },
+   "absent-21": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3342,
+    "rank": null
+   },
+   "absent-22": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3254,
+    "rank": null
+   },
+   "absent-23": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3324,
+    "rank": null
+   },
+   "absent-24": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3224,
+    "rank": null
+   },
+   "absent-25": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3264,
+    "rank": null
+   },
+   "absent-26": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3286,
+    "rank": null
+   },
+   "absent-27": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3277,
+    "rank": null
+   },
+   "absent-28": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3352,
+    "rank": null
+   },
+   "absent-29": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3302,
+    "rank": null
+   },
+   "absent-30": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3349,
+    "rank": null
+   },
+   "recent-01": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3383,
+    "rank": 1748
+   },
+   "recent-02": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3351,
+    "rank": 27
+   },
+   "recent-03": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3223,
+    "rank": 45
+   },
+   "recent-04": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3210,
+    "rank": 8
+   }
+  },
+  "Kr": {
+   "exact-01": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3179,
+    "rank": 1
+   },
+   "exact-02": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3313,
+    "rank": 1
+   },
+   "exact-03": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3351,
+    "rank": 1
+   },
+   "exact-04": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3315,
+    "rank": 1
+   },
+   "exact-05": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3370,
+    "rank": 1
+   },
+   "exact-06": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3367,
+    "rank": 1
+   },
+   "exact-07": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3327,
+    "rank": 1
+   },
+   "exact-08": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3314,
+    "rank": 1
+   },
+   "exact-09": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3353,
+    "rank": 1
+   },
+   "exact-10": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3342,
+    "rank": 1
+   },
+   "exact-11": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3278,
+    "rank": 1
+   },
+   "exact-12": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3380,
+    "rank": 1
+   },
+   "exact-13": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3322,
+    "rank": 1
+   },
+   "exact-14": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3236,
+    "rank": 2
+   },
+   "exact-15": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3342,
+    "rank": 1
+   },
+   "exact-16": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3377,
+    "rank": 2
+   },
+   "exact-17": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3296,
+    "rank": 4
+   },
+   "exact-18": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3327,
+    "rank": 2
+   },
+   "exact-19": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3376,
+    "rank": 1
+   },
+   "exact-20": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3340,
+    "rank": 1
+   },
+   "exact-21": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3298,
+    "rank": 1
+   },
+   "exact-22": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3251,
+    "rank": 1
+   },
+   "exact-23": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3264,
+    "rank": 2
+   },
+   "exact-24": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3212,
+    "rank": 1
+   },
+   "exact-25": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3309,
+    "rank": 1
+   },
+   "exact-26": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3190,
+    "rank": 1
+   },
+   "exact-27": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3382,
+    "rank": 9
+   },
+   "exact-28": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3246,
+    "rank": 1
+   },
+   "exact-29": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3356,
+    "rank": 1
+   },
+   "exact-30": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3255,
+    "rank": 1
+   },
+   "exact-31": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3207,
+    "rank": 1
+   },
+   "exact-32": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3291,
+    "rank": 1
+   },
+   "exact-33": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3372,
+    "rank": 1
+   },
+   "exact-34": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3310,
+    "rank": 1
+   },
+   "exact-35": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3331,
+    "rank": 1
+   },
+   "exact-36": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3294,
+    "rank": 1
+   },
+   "exact-37": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3363,
+    "rank": 1
+   },
+   "exact-38": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3283,
+    "rank": 1
+   },
+   "exact-39": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3319,
+    "rank": 1
+   },
+   "exact-40": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3286,
+    "rank": 1
+   },
+   "exact-41": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3251,
+    "rank": 1
+   },
+   "exact-42": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3314,
+    "rank": 4
+   },
+   "exact-43": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3241,
+    "rank": 1
+   },
+   "exact-44": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3226,
+    "rank": 1
+   },
+   "exact-45": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3313,
+    "rank": 72
+   },
+   "exact-46": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3264,
+    "rank": 2
+   },
+   "exact-47": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3354,
+    "rank": 9
+   },
+   "exact-48": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3332,
+    "rank": 1
+   },
+   "exact-49": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3368,
+    "rank": 1
+   },
+   "exact-50": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3246,
+    "rank": 50
+   },
+   "exact-51": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3352,
+    "rank": 1
+   },
+   "exact-52": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3364,
+    "rank": 1
+   },
+   "exact-53": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3214,
+    "rank": 31
+   },
+   "exact-54": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3346,
+    "rank": 5
+   },
+   "exact-55": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3281,
+    "rank": 1
+   },
+   "exact-56": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3315,
+    "rank": 32
+   },
+   "exact-57": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3336,
+    "rank": 1
+   },
+   "exact-58": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3343,
+    "rank": 50
+   },
+   "exact-59": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3227,
+    "rank": 1
+   },
+   "exact-60": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3255,
+    "rank": 1
+   },
+   "exact-61": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3104,
+    "rank": 1
+   },
+   "exact-62": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3297,
+    "rank": 12
+   },
+   "exact-63": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3367,
+    "rank": 1
+   },
+   "exact-64": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3381,
+    "rank": 1
+   },
+   "exact-65": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3079,
+    "rank": 1
+   },
+   "exact-66": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3305,
+    "rank": 1
+   },
+   "exact-67": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3292,
+    "rank": 1
+   },
+   "exact-68": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3236,
+    "rank": 1
+   },
+   "exact-69": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3308,
+    "rank": 1
+   },
+   "exact-70": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3274,
+    "rank": 1
+   },
+   "paraphrase-01": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3250,
+    "rank": 1
+   },
+   "paraphrase-02": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3273,
+    "rank": 5
+   },
+   "paraphrase-03": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3346,
+    "rank": 4
+   },
+   "paraphrase-04": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3350,
+    "rank": 2
+   },
+   "paraphrase-05": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3309,
+    "rank": 4
+   },
+   "paraphrase-06": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3266,
+    "rank": 10
+   },
+   "paraphrase-07": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3283,
+    "rank": 4
+   },
+   "paraphrase-08": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3379,
+    "rank": 2
+   },
+   "paraphrase-09": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3383,
+    "rank": 13
+   },
+   "paraphrase-10": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3286,
+    "rank": 1
+   },
+   "paraphrase-11": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3259,
+    "rank": 8
+   },
+   "paraphrase-12": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3381,
+    "rank": 491
+   },
+   "paraphrase-13": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3309,
+    "rank": 9
+   },
+   "paraphrase-14": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3379,
+    "rank": 1
+   },
+   "paraphrase-15": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3324,
+    "rank": 1
+   },
+   "paraphrase-16": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3377,
+    "rank": 1
+   },
+   "paraphrase-17": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3299,
+    "rank": 2
+   },
+   "paraphrase-18": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3300,
+    "rank": 1
+   },
+   "paraphrase-19": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3297,
+    "rank": 1
+   },
+   "paraphrase-20": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3379,
+    "rank": 41
+   },
+   "paraphrase-21": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3261,
+    "rank": 1
+   },
+   "paraphrase-22": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3278,
+    "rank": 2
+   },
+   "paraphrase-23": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3286,
+    "rank": 25
+   },
+   "paraphrase-24": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3347,
+    "rank": 1
+   },
+   "paraphrase-25": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3362,
+    "rank": 3
+   },
+   "paraphrase-26": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3326,
+    "rank": 1
+   },
+   "paraphrase-27": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3282,
+    "rank": 1
+   },
+   "paraphrase-28": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3036,
+    "rank": 2
+   },
+   "paraphrase-29": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3332,
+    "rank": 1
+   },
+   "paraphrase-30": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3333,
+    "rank": 1
+   },
+   "paraphrase-31": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3321,
+    "rank": 1
+   },
+   "paraphrase-32": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3263,
+    "rank": 1
+   },
+   "paraphrase-33": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3263,
+    "rank": 1
+   },
+   "paraphrase-34": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3378,
+    "rank": 1
+   },
+   "paraphrase-35": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3203,
+    "rank": 1
+   },
+   "paraphrase-36": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3184,
+    "rank": 7
+   },
+   "paraphrase-37": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3177,
+    "rank": 3
+   },
+   "paraphrase-38": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3363,
+    "rank": 14
+   },
+   "paraphrase-39": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3383,
+    "rank": 43
+   },
+   "paraphrase-40": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3222,
+    "rank": 22
+   },
+   "paraphrase-41": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3358,
+    "rank": 2
+   },
+   "paraphrase-42": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3261,
+    "rank": 1
+   },
+   "paraphrase-43": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3381,
+    "rank": 1
+   },
+   "paraphrase-44": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3271,
+    "rank": 283
+   },
+   "paraphrase-45": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3239,
+    "rank": 283
+   },
+   "paraphrase-46": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3345,
+    "rank": 2
+   },
+   "paraphrase-47": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3314,
+    "rank": 77
+   },
+   "paraphrase-48": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3355,
+    "rank": 2
+   },
+   "paraphrase-49": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3314,
+    "rank": 1
+   },
+   "paraphrase-50": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3305,
+    "rank": 4
+   },
+   "paraphrase-51": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3275,
+    "rank": 3
+   },
+   "paraphrase-52": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3320,
+    "rank": 1
+   },
+   "paraphrase-53": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3310,
+    "rank": 2
+   },
+   "paraphrase-54": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3363,
+    "rank": 1
+   },
+   "paraphrase-55": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3278,
+    "rank": 1
+   },
+   "paraphrase-56": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3339,
+    "rank": 10
+   },
+   "paraphrase-57": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3372,
+    "rank": 2
+   },
+   "paraphrase-58": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3315,
+    "rank": 3
+   },
+   "paraphrase-59": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3245,
+    "rank": 3
+   },
+   "paraphrase-60": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3338,
+    "rank": 1
+   },
+   "paraphrase-61": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3350,
+    "rank": 1
+   },
+   "paraphrase-62": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3352,
+    "rank": 1
+   },
+   "paraphrase-63": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3279,
+    "rank": 2
+   },
+   "paraphrase-64": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3322,
+    "rank": 1
+   },
+   "paraphrase-65": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3278,
+    "rank": 1654
+   },
+   "paraphrase-66": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3363,
+    "rank": 17
+   },
+   "paraphrase-67": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3250,
+    "rank": 3
+   },
+   "paraphrase-68": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3364,
+    "rank": 1
+   },
+   "paraphrase-69": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3381,
+    "rank": 1
+   },
+   "paraphrase-70": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3281,
+    "rank": 5
+   },
+   "implicit-01": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3356,
+    "rank": 1125
+   },
+   "implicit-02": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3313,
+    "rank": 1
+   },
+   "implicit-03": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3314,
+    "rank": 2
+   },
+   "implicit-04": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3336,
+    "rank": 78
+   },
+   "implicit-05": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3305,
+    "rank": 2
+   },
+   "implicit-06": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3362,
+    "rank": 1
+   },
+   "implicit-07": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3365,
+    "rank": 2
+   },
+   "implicit-08": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3373,
+    "rank": 18
+   },
+   "implicit-09": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3316,
+    "rank": 36
+   },
+   "implicit-10": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3287,
+    "rank": 3
+   },
+   "implicit-11": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3324,
+    "rank": 106
+   },
+   "implicit-12": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3338,
+    "rank": 63
+   },
+   "implicit-13": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3169,
+    "rank": 27
+   },
+   "implicit-14": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3310,
+    "rank": 74
+   },
+   "implicit-15": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3380,
+    "rank": 23
+   },
+   "implicit-16": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3372,
+    "rank": 166
+   },
+   "implicit-17": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3377,
+    "rank": 1
+   },
+   "implicit-18": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3310,
+    "rank": 7
+   },
+   "implicit-19": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3377,
+    "rank": 3
+   },
+   "implicit-20": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3375,
+    "rank": 32
+   },
+   "implicit-21": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3379,
+    "rank": 14
+   },
+   "implicit-22": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3330,
+    "rank": 2
+   },
+   "implicit-23": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3321,
+    "rank": 18
+   },
+   "implicit-24": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3377,
+    "rank": 17
+   },
+   "implicit-25": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3323,
+    "rank": 8
+   },
+   "implicit-26": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3289,
+    "rank": 145
+   },
+   "implicit-27": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3217,
+    "rank": 37
+   },
+   "implicit-28": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3374,
+    "rank": 226
+   },
+   "implicit-29": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3246,
+    "rank": 28
+   },
+   "implicit-30": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3356,
+    "rank": 2
+   },
+   "implicit-31": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3372,
+    "rank": 6
+   },
+   "implicit-32": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3341,
+    "rank": 71
+   },
+   "implicit-33": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3383,
+    "rank": 2
+   },
+   "implicit-34": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3350,
+    "rank": 4
+   },
+   "implicit-35": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3262,
+    "rank": 4
+   },
+   "implicit-36": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3377,
+    "rank": 1
+   },
+   "implicit-37": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3335,
+    "rank": 646
+   },
+   "implicit-38": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3323,
+    "rank": 50
+   },
+   "implicit-39": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3347,
+    "rank": 847
+   },
+   "implicit-40": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3334,
+    "rank": 1
+   },
+   "implicit-41": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3247,
+    "rank": 11
+   },
+   "implicit-42": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3314,
+    "rank": 5
+   },
+   "implicit-43": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3358,
+    "rank": 1
+   },
+   "implicit-44": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3379,
+    "rank": 2
+   },
+   "implicit-45": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3286,
+    "rank": 36
+   },
+   "implicit-46": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3372,
+    "rank": 7
+   },
+   "implicit-47": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3379,
+    "rank": 7
+   },
+   "implicit-48": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3348,
+    "rank": 4
+   },
+   "implicit-49": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3382,
+    "rank": 1
+   },
+   "implicit-50": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3307,
+    "rank": 2
+   },
+   "implicit-51": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3257,
+    "rank": 80
+   },
+   "implicit-52": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3335,
+    "rank": 1
+   },
+   "implicit-53": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3239,
+    "rank": 6
+   },
+   "implicit-54": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3271,
+    "rank": 5
+   },
+   "implicit-55": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3323,
+    "rank": 137
+   },
+   "implicit-56": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3305,
+    "rank": 544
+   },
+   "implicit-57": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3374,
+    "rank": 126
+   },
+   "implicit-58": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3326,
+    "rank": 21
+   },
+   "implicit-59": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3245,
+    "rank": 2
+   },
+   "implicit-60": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3239,
+    "rank": 13
+   },
+   "implicit-61": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3336,
+    "rank": 2
+   },
+   "implicit-62": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3380,
+    "rank": 5
+   },
+   "implicit-63": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3217,
+    "rank": 4
+   },
+   "implicit-64": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3229,
+    "rank": 15
+   },
+   "implicit-65": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3379,
+    "rank": 1
+   },
+   "implicit-66": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3382,
+    "rank": 183
+   },
+   "implicit-67": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3305,
+    "rank": 5
+   },
+   "implicit-68": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3367,
+    "rank": 9
+   },
+   "implicit-69": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3331,
+    "rank": 10
+   },
+   "implicit-70": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3316,
+    "rank": 40
+   },
+   "correction-01": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3267,
+    "rank": 2
+   },
+   "correction-02": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3374,
+    "rank": 1
+   },
+   "correction-03": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3263,
+    "rank": 2
+   },
+   "correction-04": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3282,
+    "rank": 1
+   },
+   "correction-05": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3347,
+    "rank": 1
+   },
+   "correction-06": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3246,
+    "rank": 1
+   },
+   "correction-07": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3288,
+    "rank": 1
+   },
+   "correction-08": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3233,
+    "rank": 2
+   },
+   "correction-09": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3221,
+    "rank": 2
+   },
+   "correction-10": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3370,
+    "rank": 1
+   },
+   "correction-11": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3352,
+    "rank": 1
+   },
+   "correction-12": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3339,
+    "rank": 1
+   },
+   "correction-13": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3223,
+    "rank": 2
+   },
+   "correction-14": {
+    "hit": false,
+    "stale": true,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3360,
+    "rank": 21
+   },
+   "correction-15": {
+    "hit": false,
+    "stale": true,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3305,
+    "rank": 55
+   },
+   "correction-16": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3258,
+    "rank": 1
+   },
+   "correction-17": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3284,
+    "rank": 2
+   },
+   "correction-18": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3366,
+    "rank": 1
+   },
+   "correction-19": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3343,
+    "rank": 2
+   },
+   "correction-20": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3211,
+    "rank": 1
+   },
+   "correction-21": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3250,
+    "rank": 1
+   },
+   "correction-22": {
+    "hit": false,
+    "stale": true,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3349,
+    "rank": 4
+   },
+   "correction-23": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3253,
+    "rank": 1
+   },
+   "correction-24": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3267,
+    "rank": 1
+   },
+   "correction-25": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3232,
+    "rank": 1
+   },
+   "correction-26": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3311,
+    "rank": 2
+   },
+   "correction-27": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3306,
+    "rank": 1
+   },
+   "correction-28": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3365,
+    "rank": 2
+   },
+   "correction-29": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3345,
+    "rank": 1
+   },
+   "correction-30": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3318,
+    "rank": 1
+   },
+   "correction-31": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3334,
+    "rank": 1
+   },
+   "correction-32": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3182,
+    "rank": 2
+   },
+   "correction-33": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3232,
+    "rank": 2
+   },
+   "correction-34": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3210,
+    "rank": 1
+   },
+   "correction-35": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3231,
+    "rank": 1
+   },
+   "correction-36": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3240,
+    "rank": 1
+   },
+   "correction-37": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3366,
+    "rank": 2
+   },
+   "correction-38": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3320,
+    "rank": 3
+   },
+   "correction-39": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3287,
+    "rank": 2
+   },
+   "correction-40": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3301,
+    "rank": 1
+   },
+   "correction-41": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3348,
+    "rank": 1
+   },
+   "correction-42": {
+    "hit": false,
+    "stale": true,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3280,
+    "rank": 4
+   },
+   "correction-43": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3374,
+    "rank": 1
+   },
+   "correction-44": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3273,
+    "rank": 1
+   },
+   "correction-45": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3280,
+    "rank": 2
+   },
+   "correction-46": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3354,
+    "rank": 1
+   },
+   "correction-47": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3291,
+    "rank": 1
+   },
+   "correction-48": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3354,
+    "rank": 2
+   },
+   "correction-49": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3347,
+    "rank": 1
+   },
+   "correction-50": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3267,
+    "rank": 1
+   },
+   "correction-51": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3281,
+    "rank": 3
+   },
+   "correction-52": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3371,
+    "rank": 1
+   },
+   "correction-53": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3362,
+    "rank": 1
+   },
+   "correction-54": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3297,
+    "rank": 1
+   },
+   "correction-55": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3340,
+    "rank": 2
+   },
+   "correction-56": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3211,
+    "rank": 1
+   },
+   "correction-57": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3230,
+    "rank": 2
+   },
+   "correction-58": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3340,
+    "rank": 1
+   },
+   "correction-59": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3340,
+    "rank": 2
+   },
+   "correction-60": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3367,
+    "rank": 3
+   },
+   "correction-61": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3364,
+    "rank": 1
+   },
+   "correction-62": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3306,
+    "rank": 2
+   },
+   "correction-63": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3280,
+    "rank": 1
+   },
+   "correction-64": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3364,
+    "rank": 1
+   },
+   "correction-65": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3292,
+    "rank": 1
+   },
+   "correction-66": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3307,
+    "rank": 1
+   },
+   "correction-67": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3376,
+    "rank": 1
+   },
+   "correction-68": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3247,
+    "rank": 1
+   },
+   "correction-69": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3369,
+    "rank": 1
+   },
+   "correction-70": {
+    "hit": true,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3337,
+    "rank": 1
+   },
+   "absent-01": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3281,
+    "rank": null
+   },
+   "absent-02": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": true,
+    "chars": 3376,
+    "rank": null
+   },
+   "absent-03": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3284,
+    "rank": null
+   },
+   "absent-04": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3312,
+    "rank": null
+   },
+   "absent-05": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3296,
+    "rank": null
+   },
+   "absent-06": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3338,
+    "rank": null
+   },
+   "absent-07": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3347,
+    "rank": null
+   },
+   "absent-08": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3364,
+    "rank": null
+   },
+   "absent-09": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3263,
+    "rank": null
+   },
+   "absent-10": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3340,
+    "rank": null
+   },
+   "absent-11": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": false,
+    "chars": 3276,
+    "rank": null
+   },
+   "absent-12": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3353,
+    "rank": null
+   },
+   "absent-13": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": false,
+    "chars": 3280,
+    "rank": null
+   },
+   "absent-14": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": false,
+    "chars": 3349,
+    "rank": null
+   },
+   "absent-15": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3383,
+    "rank": null
+   },
+   "absent-16": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3221,
+    "rank": null
+   },
+   "absent-17": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3212,
+    "rank": null
+   },
+   "absent-18": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3378,
+    "rank": null
+   },
+   "absent-19": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": true,
+    "chars": 3369,
+    "rank": null
+   },
+   "absent-20": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": false,
+    "chars": 3378,
+    "rank": null
+   },
+   "absent-21": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3362,
+    "rank": null
+   },
+   "absent-22": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3319,
+    "rank": null
+   },
+   "absent-23": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3247,
+    "rank": null
+   },
+   "absent-24": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3378,
+    "rank": null
+   },
+   "absent-25": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3359,
+    "rank": null
+   },
+   "absent-26": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3240,
+    "rank": null
+   },
+   "absent-27": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3297,
+    "rank": null
+   },
+   "absent-28": {
+    "hit": false,
+    "stale": false,
+    "near_miss": true,
+    "states_near_miss": true,
+    "chars": 3313,
+    "rank": null
+   },
+   "absent-29": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3297,
+    "rank": null
+   },
+   "absent-30": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": false,
+    "chars": 3299,
+    "rank": null
+   },
+   "recent-01": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3346,
+    "rank": 682
+   },
+   "recent-02": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3375,
+    "rank": 27
+   },
+   "recent-03": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3356,
+    "rank": 41
+   },
+   "recent-04": {
+    "hit": false,
+    "stale": false,
+    "near_miss": false,
+    "states_near_miss": null,
+    "chars": 3329,
+    "rank": 7
+   }
+  }
+ }
+}

@@ -33,8 +33,7 @@ func (c *capture) Chat(_ context.Context, messages []agent.Message, tools []tool
 	return agent.Response{ToolCalls: []agent.ToolCall{{Name: "memory_summary", Input: json.RawMessage(c.input)}}}, nil
 }
 
-// summarizeAt800a276 sends the production synthesis request as it stood at
-// 800a276, before #921 added entities: the arm was measured against it.
+// summarizeAt800a276 sends production's synthesis request as of 800a276, before #921 added entities.
 func summarizeAt800a276(ctx context.Context, model agent.Model, updates []string) (agent.Response, error) {
 	input, err := json.Marshal(struct {
 		Updates []string `json:"updates"`

@@ -22,8 +22,8 @@ func (constEmbedder) Embed(context.Context, string) ([]float32, error) { return 
 
 type fixedSummary struct{}
 
-func (fixedSummary) Summarize(_ context.Context, updates []string) (string, error) {
-	return fmt.Sprintf("summary of %d messages", len(updates)), nil
+func (fixedSummary) Summarize(_ context.Context, updates []string) (agent.Synthesis, error) {
+	return agent.Synthesis{Summary: fmt.Sprintf("summary of %d messages", len(updates))}, nil
 }
 
 // scriptedModel answers each call with the next scripted response and

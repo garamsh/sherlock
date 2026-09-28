@@ -234,8 +234,8 @@ func (wordEmbedder) Embed(_ context.Context, text string) ([]float32, error) {
 // what each mid's summary says.
 type firstUpdate struct{}
 
-func (firstUpdate) Summarize(_ context.Context, updates []string) (string, error) {
-	return updates[0], nil
+func (firstUpdate) Summarize(_ context.Context, updates []string) (agent.Synthesis, error) {
+	return agent.Synthesis{Summary: updates[0]}, nil
 }
 
 // oracleStore records the given batches of four user messages each and

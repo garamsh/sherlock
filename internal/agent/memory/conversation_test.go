@@ -18,8 +18,8 @@ import (
 
 type firstSummary struct{}
 
-func (firstSummary) Summarize(_ context.Context, updates []string) (string, error) {
-	return updates[0], nil
+func (firstSummary) Summarize(_ context.Context, updates []string) (agent.Synthesis, error) {
+	return agent.Synthesis{Summary: updates[0]}, nil
 }
 
 // wordEmbedder counts each word into a hashed dimension, so texts sharing
@@ -36,14 +36,16 @@ func (wordEmbedder) Embed(_ context.Context, text string) ([]float32, error) {
 	return vector, nil
 }
 
-// rankedStore is a conversation store whose recent and similar episodes are
-// fixed, recording what Search was asked. Search ignores the limit, so the
-// bound under test is Recall's own.
+// rankedStore is a conversation store whose recent, similar and walk
+// episodes are fixed, recording what Search was asked. Search ignores the
+// limit, so the bound under test is Recall's own.
 type rankedStore struct {
 	agent.ConversationMemory
 	recent, similar []agent.ConversationHit
+	linked          agent.Linked
 	query           string
 	limit           int
+	walked          string
 }
 
 func (s *rankedStore) RecentMid(_ context.Context, limit int) ([]agent.ConversationHit, error) {
@@ -53,6 +55,11 @@ func (s *rankedStore) RecentMid(_ context.Context, limit int) ([]agent.Conversat
 func (s *rankedStore) Search(_ context.Context, query string, limit int) ([]agent.ConversationHit, error) {
 	s.query, s.limit = query, limit
 	return s.similar, nil
+}
+
+func (s *rankedStore) Linked(_ context.Context, query string) (agent.Linked, error) {
+	s.walked = query
+	return s.linked, nil
 }
 
 func (s *rankedStore) PendingSources(context.Context) ([]agent.SourceMessage, error) { return nil, nil }
@@ -78,6 +85,34 @@ func TestConversationRecall_RecentFirstThenSimilarDeduplicatedAndBounded(t *test
 	}
 	assert.Equal(t, []string{"20", "19", "3", "11", "7", "5", "9"}, ids)
 	assert.Equal(t, []string{"recent", "recent", "historical", "historical", "historical", "historical", "historical"}, ages)
+}
+
+func TestConversationRecall_FillsHistoricalSlotsFromSimilarAndTheWalkInTurn(t *testing.T) {
+	linked := func(id int64, subject string) agent.LinkedHit {
+		return agent.LinkedHit{ConversationHit: mids(id)[0], Subject: subject}
+	}
+	store := &rankedStore{
+		recent:  mids(20, 19),
+		similar: mids(19, 3, 11, 7, 5, 9),
+		linked: agent.Linked{Seeds: []string{"gebind components", "rodend"}, Hits: []agent.LinkedHit{
+			linked(3, "rodend"), linked(8, "mateo deatreal"), linked(20, "rodend"), linked(6, "gebind components"), linked(2, "office"),
+		}},
+	}
+	result, err := (agentmemory.ConversationRecall{Store: store}).Recall(context.Background(), "Who handles Gebind Components for the Rodend build?")
+	require.NoError(t, err)
+	assert.Equal(t, "Who handles Gebind Components for the Rodend build?", store.walked, "the walk starts from the task text")
+	var ids, ages []string
+	for _, m := range result.Memories {
+		ids, ages = append(ids, m.ID), append(ages, m.Age)
+	}
+	assert.Equal(t, []string{"20", "19", "3", "8", "11", "6", "7"}, ids, "recent first, then similar and walk in turn, skipping what either delivered")
+	assert.Equal(t, []string{"recent", "recent", "historical", "linked", "historical", "linked", "historical"}, ages)
+	assert.Equal(t, `About "mateo deatreal"; the question names "gebind components" and "rodend". episode 8 [mid:8 sources:29-32; summary, not verified source text]`, result.Memories[3].Content,
+		"a walk episode about someone the question does not name says so")
+	assert.Equal(t, "episode 6 [mid:6 sources:21-24; summary, not verified source text]", result.Memories[5].Content,
+		"a walk episode about an entity the question names is shown plain")
+	assert.Equal(t, "episode 3 [mid:3 sources:9-12; summary, not verified source text]", result.Memories[2].Content,
+		"the control: an episode the similar list delivered is shown plain, whoever it is about")
 }
 
 func checkpoint(content string) []agent.SourceMessage {

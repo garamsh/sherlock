@@ -217,7 +217,7 @@ func TestFileOperations_Free(t *testing.T) {
 		}
 		name, arguments := "memory_read", `{"subject":"files","question":"content"}`
 		if len(request.Tools) == 1 && request.Tools[0].Function.Name == "memory_summary" {
-			name, arguments = "memory_summary", `{"summary":"The requested file operations were completed and verified."}`
+			name, arguments = "memory_summary", `{"summary":"The requested file operations were completed and verified.","entities":[]}`
 		} else if len(request.Tools) != 1 || request.Tools[0].Function.Name != "memory_read" {
 			stage, count := -1, 0
 			for _, message := range request.Messages {

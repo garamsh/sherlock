@@ -43,9 +43,9 @@ func (cutEmbedder) Embed(_ context.Context, text string) ([]float32, error) {
 
 type scripted struct{ n int }
 
-func (s *scripted) Summarize(context.Context, []string) (string, error) {
+func (s *scripted) Summarize(context.Context, []string) (agent.Synthesis, error) {
 	s.n++
-	return fmt.Sprintf("recorded summary %d about bread.", s.n), nil
+	return agent.Synthesis{Summary: fmt.Sprintf("recorded summary %d about bread.", s.n)}, nil
 }
 
 // longSummary outruns the embedder's cut, so only what comes first is read.

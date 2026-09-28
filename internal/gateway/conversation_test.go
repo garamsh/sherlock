@@ -2,6 +2,7 @@ package gateway_test
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"hash/fnv"
@@ -197,8 +198,8 @@ func (wordEmbedder) Embed(_ context.Context, text string) ([]float32, error) {
 // firstSummary isolates store linking and search from synthesis quality.
 type firstSummary struct{}
 
-func (firstSummary) Summarize(_ context.Context, updates []string) (string, error) {
-	return updates[0], nil
+func (firstSummary) Summarize(_ context.Context, updates []string) (agent.Synthesis, error) {
+	return agent.Synthesis{Summary: updates[0]}, nil
 }
 
 // summaryScript preserves each scenario's act replies while supplying summary fixtures.
@@ -225,7 +226,7 @@ func (m *summaryModel) Chat(ctx context.Context, messages []agent.Message, descr
 		if summary == "" {
 			summary = input.Updates[0]
 		}
-		data, err := json.Marshal(map[string]string{"summary": summary})
+		data, err := json.Marshal(map[string]any{"summary": summary, "entities": []string{}})
 		return agent.Response{ToolCalls: []agent.ToolCall{{Name: "memory_summary", Input: data}}}, err
 	}
 	return m.inner.Chat(ctx, messages, descriptors)
@@ -319,4 +320,43 @@ func TestConversation_SearchReturnsTheEpisodeForTheModelsQuery(t *testing.T) {
 	require.Len(t, model.results, 1)
 	assert.Contains(t, model.results[0], "Kepler-9 refractor", "the search result carries the episode")
 	assert.Contains(t, model.results[0], `"source_first":1`)
+}
+
+// entityModel answers every synthesis request with one entity and counts
+// the requests.
+type entityModel struct{ calls int }
+
+func (m *entityModel) Chat(context.Context, []agent.Message, []tool.Descriptor) (agent.Response, error) {
+	m.calls++
+	return agent.Response{ToolCalls: []agent.ToolCall{{Name: "memory_summary", Input: json.RawMessage(`{"summary":"s","entities":["Vega"]}`)}}}, nil
+}
+
+func TestFactory_RetainLinksOneEpisodeFromBeforeEntitiesPerPass(t *testing.T) {
+	ctx := context.Background()
+	path := filepath.Join(t.TempDir(), "memory.db")
+	raw, err := sql.Open("sqlite", path)
+	require.NoError(t, err)
+	_, err = raw.Exec(`CREATE TABLE conversation_sources (id INTEGER PRIMARY KEY AUTOINCREMENT, role TEXT NOT NULL CHECK(role IN ('user','assistant')), external_id TEXT, content TEXT NOT NULL);
+CREATE TABLE conversation_mid (id INTEGER PRIMARY KEY AUTOINCREMENT, source_first INTEGER NOT NULL UNIQUE, source_last INTEGER NOT NULL UNIQUE, summary TEXT NOT NULL, embedding BLOB);
+INSERT INTO conversation_sources(role,external_id,content) VALUES ('user','','a'),('user','','b'),('user','','c'),('user','','d'),('user','','e'),('user','','f'),('user','','g'),('user','','h');
+INSERT INTO conversation_mid(source_first,source_last,summary) VALUES (1,4,'The Vega reflector is in the shed.'),(5,8,'The Vega mount needs oil.');`)
+	require.NoError(t, err)
+	require.NoError(t, raw.Close())
+
+	model := &entityModel{}
+	rt, err := (&gateway.Factory{MemoryPath: path, NewModel: func(string) agent.Model { return model }, Embedder: wordEmbedder{}, Tools: noTools()}).New(ctx, "a", nil)
+	require.NoError(t, err)
+	defer rt.Close(ctx)
+	assert.Zero(t, model.calls, "startup makes no call for episodes from before entities")
+	require.NotNil(t, rt.Retain)
+	store, err := sqlite.OpenConversation(path, wordEmbedder{})
+	require.NoError(t, err)
+	defer store.Close()
+	for pass, want := range []int{1, 2, 2} {
+		require.NoError(t, rt.Retain(ctx))
+		assert.Equal(t, want, model.calls, "pass %d", pass+1)
+		linked, err := store.Linked(ctx, "Where is the Vega?")
+		require.NoError(t, err)
+		assert.Len(t, linked.Hits, want, "pass %d", pass+1)
+	}
 }

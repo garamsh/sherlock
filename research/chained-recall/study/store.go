@@ -71,16 +71,16 @@ type replaySummarizer struct {
 	next      int
 }
 
-func (r *replaySummarizer) Summarize(_ context.Context, updates []string) (string, error) {
+func (r *replaySummarizer) Summarize(_ context.Context, updates []string) (agent.Synthesis, error) {
 	if r.next >= len(r.syntheses) {
-		return "", errors.New("no recorded synthesis left")
+		return agent.Synthesis{}, errors.New("no recorded synthesis left")
 	}
 	s := r.syntheses[r.next]
 	if int64(len(updates)) != s.Last-s.First+1 {
-		return "", fmt.Errorf("batch %d: the store sent %d messages, the recording covers %d", r.next+1, len(updates), s.Last-s.First+1)
+		return agent.Synthesis{}, fmt.Errorf("batch %d: the store sent %d messages, the recording covers %d", r.next+1, len(updates), s.Last-s.First+1)
 	}
 	r.next++
-	return s.Summary, nil
+	return agent.Synthesis{Summary: s.Summary}, nil
 }
 
 // BuildShared writes the shared store at batch n into dir. At batch 4 every

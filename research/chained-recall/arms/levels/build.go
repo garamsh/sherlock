@@ -163,7 +163,7 @@ func synthesizeGroups(ctx context.Context, env *study.Env, setting string, g int
 		if err != nil {
 			return nil, calls, fmt.Errorf("group %d-%d: %w (re-run to resume after the recorded groups)", first, last, err)
 		}
-		s := study.Synthesis{First: first, Last: last, Summary: summary}
+		s := study.Synthesis{First: first, Last: last, Summary: summary.Summary}
 		line, err := json.Marshal(s)
 		if err != nil {
 			return nil, calls, err

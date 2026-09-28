@@ -35,10 +35,10 @@ func (markerEmbedder) Embed(_ context.Context, text string) ([]float32, error) {
 // scripted answers each synthesis request with the next summary.
 type scripted struct{ summaries []string }
 
-func (s *scripted) Summarize(context.Context, []string) (string, error) {
+func (s *scripted) Summarize(context.Context, []string) (agent.Synthesis, error) {
 	out := s.summaries[0]
 	s.summaries = s.summaries[1:]
-	return out, nil
+	return agent.Synthesis{Summary: out}, nil
 }
 
 var chainSummaries = []string{

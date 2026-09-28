@@ -43,9 +43,9 @@ type replay struct {
 	next      int
 }
 
-func (r *replay) Summarize(context.Context, []string) (string, error) {
+func (r *replay) Summarize(context.Context, []string) (agent.Synthesis, error) {
 	r.next++
-	return r.summaries[r.next-1], nil
+	return agent.Synthesis{Summary: r.summaries[r.next-1]}, nil
 }
 
 // proxyStub stands in for the study proxy: every chat request is counted
@@ -73,7 +73,7 @@ func proxyStub(t *testing.T) (*httptest.Server, *atomic.Int32) {
 				}
 			}
 		}
-		args, _ := json.Marshal(map[string]string{"summary": "group: " + strings.Join(kept, " ")})
+		args, _ := json.Marshal(map[string]any{"summary": "group: " + strings.Join(kept, " "), "entities": []string{}})
 		_ = json.NewEncoder(w).Encode(map[string]any{"choices": []any{map[string]any{
 			"message":       map[string]any{"tool_calls": []any{map[string]any{"id": "1", "type": "function", "function": map[string]any{"name": "memory_summary", "arguments": string(args)}}}},
 			"finish_reason": "tool_calls",

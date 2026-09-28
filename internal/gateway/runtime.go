@@ -18,8 +18,9 @@ type Runtime struct {
 	// Close releases the runtime's resources. Called once on queue
 	// shutdown.
 	Close func(ctx context.Context) error
-	// Retain is an optional legacy maintenance hook; the source-linked
-	// runtime leaves it nil because source records are not evicted.
+	// Retain is the optional pass the runner makes after each completed
+	// turn, off the turn path. The source-linked runtime names the entities
+	// of one mid episode stored before entities were (memory.md).
 	Retain func(ctx context.Context) error
 }
 
@@ -100,6 +101,9 @@ func (f *Factory) New(ctx context.Context, agentID string, events agent.EventSin
 	})
 	return &Runtime{
 		Session: session,
+		Retain: func(ctx context.Context) error {
+			return store.Link(ctx, summarizer)
+		},
 		Close: func(context.Context) error {
 			// The store opens in WAL mode, so an unclosed handle
 			// leaves the `-wal` and `-shm` files beside `memory.db`

@@ -25,11 +25,11 @@ import (
 
 type episodicSeed struct{ interrupted bool }
 
-func (s episodicSeed) Summarize(context.Context, []string) (string, error) {
+func (s episodicSeed) Summarize(context.Context, []string) (agent.Synthesis, error) {
 	if s.interrupted {
-		return "", errors.New("fixture leaves a pending checkpoint")
+		return agent.Synthesis{}, errors.New("fixture leaves a pending checkpoint")
 	}
-	return "The current project codename is Blue Cedar. The preferred tea is jasmine.", nil
+	return agent.Synthesis{Summary: "The current project codename is Blue Cedar. The preferred tea is jasmine."}, nil
 }
 
 type episodicEvents struct {

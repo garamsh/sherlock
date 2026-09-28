@@ -10,9 +10,10 @@ import (
 )
 
 // MemorySearchTool is the reserved call that ranks mid episodes by
-// similarity to a query the model writes during its turn. Pre-turn recall
-// reads with the raw task text; this lets the model search again with the
-// conversation in view.
+// similarity to a query the model writes during its turn, beside the
+// episodes the entity walk reaches from the names the query contains.
+// Pre-turn recall reads with the raw task text; this lets the model search
+// again with the conversation in view.
 const MemorySearchTool = "memory_search"
 
 // maxSearchResults bounds one search, matching the similar episodes
@@ -43,10 +44,15 @@ func searchMemory(ctx context.Context, store ConversationMemory, input json.RawM
 	if query == "" {
 		return "", errors.New("query must not be empty")
 	}
-	hits, err := store.Search(ctx, query, maxSearchResults)
+	similar, err := store.Search(ctx, query, maxSearchResults)
 	if err != nil {
 		return "", err
 	}
+	linked, err := store.Linked(ctx, query)
+	if err != nil {
+		return "", err
+	}
+	hits := Interleave(maxSearchResults, map[int64]bool{}, similar, linked)
 	out := make([]searchHit, 0, len(hits))
 	for _, hit := range hits {
 		out = append(out, searchHit{ID: hit.ID, Summary: strings.TrimSpace(hit.Summary), SourceFirst: hit.SourceFirst, SourceLast: hit.SourceLast})

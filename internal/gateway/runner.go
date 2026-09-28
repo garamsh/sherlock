@@ -37,12 +37,12 @@ func (q *Queue) run(events *batchEvents) {
 				continue
 			}
 			logger.Info("run finished", "op", "run", "message_ids", ids)
-			// Tiered retention (ADR 0006) evaluates after the
-			// completed turn, never mid-turn; a failure leaves the
-			// store consistent and only logs.
+			// The runtime's after-turn pass runs after the completed
+			// turn, never mid-turn; a failure leaves the store
+			// consistent and only logs.
 			if q.runtime.Retain != nil {
 				if err := q.runtime.Retain(q.ctx); err != nil {
-					logger.Warn("retention failed",
+					logger.Warn("after-turn pass failed",
 						"op", "retain", "error", err)
 				}
 			}

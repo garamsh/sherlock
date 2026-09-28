@@ -21,14 +21,15 @@ import (
 // firstSummary isolates persistence and ranking from model quality.
 type firstSummary struct{}
 
-func (firstSummary) Summarize(_ context.Context, updates []string) (string, error) {
-	return updates[0], nil
+func (firstSummary) Summarize(_ context.Context, updates []string) (agent.Synthesis, error) {
+	return agent.Synthesis{Summary: updates[0]}, nil
 }
 
 type summaryFunc func(context.Context, []string) (string, error)
 
-func (f summaryFunc) Summarize(ctx context.Context, updates []string) (string, error) {
-	return f(ctx, updates)
+func (f summaryFunc) Summarize(ctx context.Context, updates []string) (agent.Synthesis, error) {
+	summary, err := f(ctx, updates)
+	return agent.Synthesis{Summary: summary}, err
 }
 
 // wordEmbedder counts each word into a hashed dimension, so texts sharing

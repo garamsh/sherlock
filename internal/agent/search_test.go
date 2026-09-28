@@ -3,6 +3,7 @@ package agent_test
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -13,8 +14,8 @@ import (
 )
 
 // noteStore is a stateful conversation store: it keeps the note, the
-// recorded turns and every search query, and answers searches with fixed
-// hits.
+// recorded turns and every search query, and answers searches and the walk
+// with fixed hits.
 type noteStore struct {
 	agent.ConversationMemory
 	note     string
@@ -23,6 +24,7 @@ type noteStore struct {
 	queries  []string
 	limits   []int
 	hits     []agent.ConversationHit
+	linked   agent.Linked
 }
 
 func (s *noteStore) Note(context.Context) (string, error) { return s.note, nil }
@@ -43,6 +45,8 @@ func (s *noteStore) Search(_ context.Context, query string, limit int) ([]agent.
 	s.limits = append(s.limits, limit)
 	return s.hits, nil
 }
+
+func (s *noteStore) Linked(context.Context, string) (agent.Linked, error) { return s.linked, nil }
 
 // recordingModel scripts responses and keeps what each call was shown.
 type recordingModel struct {
@@ -82,6 +86,42 @@ func TestSessionRun_SearchRanksWithTheModelsQuery(t *testing.T) {
 	require.NoError(t, json.Unmarshal([]byte(last.Content), &result))
 	require.Len(t, result, 1)
 	assert.Equal(t, map[string]any{"mid": float64(7), "summary": "The Lisbon offsite is booked for 42 people.", "source_first": float64(25), "source_last": float64(28)}, result[0])
+}
+
+func TestSessionRun_SearchTakesSimilarAndWalkEpisodesInTurn(t *testing.T) {
+	episode := func(id int64) agent.ConversationHit {
+		return agent.ConversationHit{ID: id, Summary: fmt.Sprintf("episode %d", id), SourceFirst: 4*id - 3, SourceLast: 4 * id}
+	}
+	store := &noteStore{
+		hits: []agent.ConversationHit{episode(7), episode(8), episode(9)},
+		linked: agent.Linked{Seeds: []string{"rodend"}, Hits: []agent.LinkedHit{
+			{ConversationHit: episode(8), Subject: "gebind components"},
+			{ConversationHit: episode(3), Subject: "rodend"},
+			{ConversationHit: episode(4), Subject: "mateo deatreal"},
+			{ConversationHit: episode(5), Subject: "office"},
+		}},
+	}
+	model := &recordingModel{inner: agent.NewScriptedModel(
+		agent.ScriptedStep{ToolCalls: []agent.ToolCall{searchCall("Rodend order phone number")}},
+		finalStep("done"),
+	)}
+	_, err := agent.NewSession(model, newFakeClient(), agent.Options{Conversation: store}).Run(context.Background(), "task")
+	require.NoError(t, err)
+
+	var result []struct {
+		ID      int64  `json:"mid"`
+		Summary string `json:"summary"`
+	}
+	require.NoError(t, json.Unmarshal([]byte(model.seen[1][len(model.seen[1])-1].Content), &result))
+	var ids []int64
+	for _, r := range result {
+		ids = append(ids, r.ID)
+	}
+	assert.Equal(t, []int64{7, 8, 9, 3, 4}, ids, "similar and walk in turn, a repeat skipped, five in all")
+	assert.Equal(t, `About "gebind components"; the question names "rodend". episode 8`, result[1].Summary)
+	assert.Equal(t, "episode 3", result[3].Summary, "an episode about the queried entity is shown plain")
+	assert.Equal(t, `About "mateo deatreal"; the question names "rodend". episode 4`, result[4].Summary)
+	assert.Equal(t, "episode 7", result[0].Summary, "the control: a similar episode is shown plain")
 }
 
 func TestSessionRun_SearchRefusesAnEmptyQuery(t *testing.T) {

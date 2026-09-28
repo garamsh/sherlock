@@ -28,8 +28,15 @@ CREATE TABLE IF NOT EXISTS conversation_mid (
  source_first INTEGER NOT NULL UNIQUE REFERENCES conversation_sources(id),
  source_last INTEGER NOT NULL UNIQUE REFERENCES conversation_sources(id),
  summary TEXT NOT NULL,
- embedding BLOB
+ embedding BLOB,
+ linked INTEGER NOT NULL DEFAULT 0
 );
+CREATE TABLE IF NOT EXISTS conversation_mid_entity (
+ mid INTEGER NOT NULL REFERENCES conversation_mid(id),
+ position INTEGER NOT NULL,
+ name TEXT NOT NULL,
+ PRIMARY KEY (mid, position)
+) WITHOUT ROWID;
 CREATE TABLE IF NOT EXISTS conversation_note (
  id INTEGER PRIMARY KEY CHECK(id = 1),
  content TEXT NOT NULL
@@ -89,19 +96,25 @@ func (s *Store) RecordTurn(ctx context.Context, sources []agent.SourceMessage, s
 	return s.Accumulate(ctx, summarizer)
 }
 
-func summarize(ctx context.Context, summarizer agent.ConversationSummarizer, updates []string) (string, error) {
+// synthesize asks the summarizer for one episode over the sources, each
+// sent as "role: content", and bounds its redacted summary.
+func synthesize(ctx context.Context, summarizer agent.ConversationSummarizer, sources []agent.SourceMessage) (agent.Synthesis, error) {
 	if summarizer == nil {
-		return "", errors.New("conversation requires a summarizer")
+		return agent.Synthesis{}, errors.New("conversation requires a summarizer")
 	}
-	summary, err := summarizer.Summarize(ctx, updates)
+	updates := make([]string, 0, len(sources))
+	for _, source := range sources {
+		updates = append(updates, string(source.Role)+": "+source.Content)
+	}
+	synthesis, err := summarizer.Summarize(ctx, updates)
 	if err != nil {
-		return "", fmt.Errorf("synthesize conversation: %v", err)
+		return agent.Synthesis{}, fmt.Errorf("synthesize conversation: %v", err)
 	}
-	summary = strings.TrimSpace(redactSecrets(summary))
-	if summary == "" || len([]rune(summary)) > 2000 {
-		return "", errors.New("conversation summary must contain 1 to 2000 characters")
+	synthesis.Summary = strings.TrimSpace(redactSecrets(synthesis.Summary))
+	if synthesis.Summary == "" || len([]rune(synthesis.Summary)) > 2000 {
+		return agent.Synthesis{}, errors.New("conversation summary must contain 1 to 2000 characters")
 	}
-	return summary, nil
+	return synthesis, nil
 }
 
 func (s *Store) Recent(ctx context.Context, limit int) ([]agent.SourceMessage, error) {
@@ -348,6 +361,16 @@ func prepareConversation(db *sql.DB) error {
 	// A file from before embeddings gains the column; Accumulate fills it.
 	if embedded == 0 {
 		if _, err := tx.Exec(`ALTER TABLE conversation_mid ADD COLUMN embedding BLOB`); err != nil {
+			return err
+		}
+	}
+	var linked int
+	if err := tx.QueryRow(`SELECT count(*) FROM pragma_table_info('conversation_mid') WHERE name='linked'`).Scan(&linked); err != nil {
+		return err
+	}
+	// A file from before entities gains the column unset; Link fills it.
+	if linked == 0 {
+		if _, err := tx.Exec(`ALTER TABLE conversation_mid ADD COLUMN linked INTEGER NOT NULL DEFAULT 0`); err != nil {
 			return err
 		}
 	}

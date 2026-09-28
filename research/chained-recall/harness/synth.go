@@ -96,7 +96,7 @@ func synthesizeBatch(ctx context.Context, env *study.Env, n, index int, batch []
 		study.WaitWhilePaused(ctx, env.Proxy)
 		summary, err := summarizer.Summarize(ctx, updates)
 		if err == nil {
-			return study.Synthesis{First: batch[0].ID, Last: batch[len(batch)-1].ID, Summary: summary}, nil
+			return study.Synthesis{First: batch[0].ID, Last: batch[len(batch)-1].ID, Summary: summary.Summary}, nil
 		}
 		last = err
 		if study.Paused(env.Proxy) {

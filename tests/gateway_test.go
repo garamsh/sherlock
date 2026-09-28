@@ -60,7 +60,7 @@ type summarizing struct{ agent.Model }
 
 func (m summarizing) Chat(ctx context.Context, messages []agent.Message, tools []tool.Descriptor) (agent.Response, error) {
 	if len(tools) == 1 && tools[0].Name == "memory_summary" {
-		return agent.Response{ToolCalls: []agent.ToolCall{{Name: "memory_summary", Input: json.RawMessage(`{"summary":"An episode."}`)}}}, nil
+		return agent.Response{ToolCalls: []agent.ToolCall{{Name: "memory_summary", Input: json.RawMessage(`{"summary":"An episode.","entities":[]}`)}}}, nil
 	}
 	return m.Model.Chat(ctx, messages, tools)
 }

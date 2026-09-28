@@ -39,9 +39,9 @@ func (wordEmbedder) Embed(_ context.Context, text string) ([]float32, error) {
 
 type scripted struct{ n int }
 
-func (s *scripted) Summarize(context.Context, []string) (string, error) {
+func (s *scripted) Summarize(context.Context, []string) (agent.Synthesis, error) {
 	s.n++
-	return fmt.Sprintf("the user chatted about the weather, batch %d.", s.n), nil
+	return agent.Synthesis{Summary: fmt.Sprintf("the user chatted about the weather, batch %d.", s.n)}, nil
 }
 
 // build writes a store of `batches` mids over 4*batches messages, then F's

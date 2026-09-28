@@ -2,6 +2,7 @@ package sqlite
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"fmt"
 
@@ -27,32 +28,53 @@ func (s *Store) Accumulate(ctx context.Context, summarizer agent.ConversationSum
 		if len(sources) < batchMessages {
 			return s.embedMids(ctx)
 		}
-		updates := make([]string, 0, len(sources))
-		for _, source := range sources {
-			updates = append(updates, string(source.Role)+": "+source.Content)
-		}
-		summary, err := summarize(ctx, summarizer, updates)
+		synthesis, err := synthesize(ctx, summarizer, sources)
 		if err != nil {
 			return err
 		}
-		// A concurrent writer must not publish a second episode for the same batch.
-		result, err := s.db.ExecContext(ctx, `INSERT INTO conversation_mid(source_first,source_last,summary)
- SELECT ?,?,? WHERE COALESCE((SELECT MAX(source_last) FROM conversation_mid),0)=?`, sources[0].ID, sources[len(sources)-1].ID, summary, lastSource)
-		if err != nil {
-			return fmt.Errorf("commit episode checkpoint: %v", err)
-		}
-		count, err := result.RowsAffected()
-		if err != nil {
-			return fmt.Errorf("read episode commit result: %v", err)
-		}
-		if count != 1 {
-			return errors.New("episode checkpoint changed; retry maintenance")
+		if err := s.checkpoint(ctx, lastSource, sources, synthesis); err != nil {
+			return err
 		}
 	}
 }
 
+// checkpoint commits one episode with its entity links. A concurrent writer
+// must not publish a second episode for the same batch.
+func (s *Store) checkpoint(ctx context.Context, lastSource int64, sources []agent.SourceMessage, synthesis agent.Synthesis) error {
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("begin episode checkpoint: %v", err)
+	}
+	defer tx.Rollback()
+	var mid int64
+	err = tx.QueryRowContext(ctx, `INSERT INTO conversation_mid(source_first,source_last,summary)
+ SELECT ?,?,? WHERE COALESCE((SELECT MAX(source_last) FROM conversation_mid),0)=? RETURNING id`, sources[0].ID, sources[len(sources)-1].ID, synthesis.Summary, lastSource).Scan(&mid)
+	if errors.Is(err, sql.ErrNoRows) {
+		return errors.New("episode checkpoint changed; retry maintenance")
+	}
+	if err != nil {
+		return fmt.Errorf("commit episode checkpoint: %v", err)
+	}
+	if err := linkEntities(ctx, tx, mid, synthesis.Entities); err != nil {
+		return err
+	}
+	if err := tx.Commit(); err != nil {
+		return fmt.Errorf("commit episode checkpoint: %v", err)
+	}
+	return nil
+}
+
 func (s *Store) sourcesAfter(ctx context.Context, after int64) ([]agent.SourceMessage, error) {
-	rows, err := s.db.QueryContext(ctx, `SELECT id,external_id,role,content FROM conversation_sources WHERE id>? ORDER BY id LIMIT ?`, after, batchMessages)
+	return s.readSources(ctx, `SELECT id,external_id,role,content FROM conversation_sources WHERE id>? ORDER BY id LIMIT ?`, after, batchMessages)
+}
+
+// sourcesBetween returns an episode's inclusive source interval.
+func (s *Store) sourcesBetween(ctx context.Context, first, last int64) ([]agent.SourceMessage, error) {
+	return s.readSources(ctx, `SELECT id,external_id,role,content FROM conversation_sources WHERE id BETWEEN ? AND ? ORDER BY id`, first, last)
+}
+
+func (s *Store) readSources(ctx context.Context, query string, args ...any) ([]agent.SourceMessage, error) {
+	rows, err := s.db.QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, fmt.Errorf("read pending sources: %v", err)
 	}

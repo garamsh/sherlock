@@ -22,7 +22,9 @@ func (constEmbedder) Embed(context.Context, string) ([]float32, error) { return 
 
 type fixedSummary struct{}
 
-func (fixedSummary) Summarize(context.Context, []string) (string, error) { return "summary", nil }
+func (fixedSummary) Summarize(context.Context, []string) (agent.Synthesis, error) {
+	return agent.Synthesis{Summary: "summary"}, nil
+}
 
 func TestRedact_MatchesTheProductionStore(t *testing.T) {
 	ctx := context.Background()
@@ -106,8 +108,8 @@ func TestRecaller_AppendsPendingPreviewsAfterTheArmsItems(t *testing.T) {
 // test can search for a batch by its words.
 type recordingSummary struct{}
 
-func (recordingSummary) Summarize(_ context.Context, updates []string) (string, error) {
-	return strings.Join(updates, " / "), nil
+func (recordingSummary) Summarize(_ context.Context, updates []string) (agent.Synthesis, error) {
+	return agent.Synthesis{Summary: strings.Join(updates, " / ")}, nil
 }
 
 // wordEmbedder embeds text by which of a few words it holds.

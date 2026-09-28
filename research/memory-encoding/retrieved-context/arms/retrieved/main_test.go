@@ -136,8 +136,8 @@ func corpus() *study.Corpus {
 // sSummarizer writes S's summary: the batch's first message, marked.
 type sSummarizer struct{}
 
-func (sSummarizer) Summarize(_ context.Context, updates []string) (string, error) {
-	return "S: " + updates[0], nil
+func (sSummarizer) Summarize(_ context.Context, updates []string) (agent.Synthesis, error) {
+	return agent.Synthesis{Summary: "S: " + updates[0]}, nil
 }
 
 // env builds the shared store the way harness build does, over recorded

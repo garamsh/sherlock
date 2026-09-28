@@ -399,7 +399,7 @@ func TestGreeting(t *testing.T) {
 		require.NoError(t, os.Chown(root, uid, uid))
 		t.Cleanup(func() {
 			res, err := executor.Run(context.Background(), shell.Request{
-				Command: "rm -rf cache control-cache", Workdir: root, Trusted: true,
+				Command: "rm -rf cache", Workdir: root, Trusted: true,
 			})
 			require.NoError(t, err)
 			require.Equal(t, 0, res.ExitCode, "cache cleanup: %s", res.Stderr)
@@ -412,10 +412,26 @@ func TestGreeting(t *testing.T) {
 		Workdir: root,
 		Env:     []string{"GO111MODULE=off", "GOTOOLCHAIN=local", "GOENV=off", "CGO_ENABLED=0", "GOMAXPROCS=2", "GOCACHE=" + filepath.Join(root, "cache")},
 	}
+	// The standard library compiles here, outside the executor's timeout,
+	// so the timed calls measure the executor rather than the machine (#920).
+	warm := exec.Command(goBinary, "test", "-c", "-o", os.DevNull, ".")
+	warm.Dir = root
+	warm.Env = append([]string{"PATH=" + os.Getenv("PATH"), "HOME=" + os.TempDir()}, req.Env...)
+	if os.Geteuid() == 0 {
+		warm.SysProcAttr = &syscall.SysProcAttr{Credential: &syscall.Credential{Uid: uint32(uid), Gid: uint32(uid)}}
+	}
+	out, err := warm.CombinedOutput()
+	require.NoError(t, err, "warm the build cache: %s", out)
+	stale := req
+	stale.Trusted = true
+	stale.Args = []string{"list", "-deps", "-test", "-f", "{{if and .Standard .Stale}}{{.ImportPath}}{{end}}", "."}
+	res, err := executor.Run(context.Background(), stale)
+	require.NoError(t, err)
+	require.Equal(t, 0, res.ExitCode, "stderr=%s", res.Stderr)
+	require.Empty(t, strings.TrimSpace(res.Stdout), "standard packages the executor's child would still compile")
 	t.Run("control without resource caps", func(t *testing.T) {
 		control := req
 		control.Trusted = true
-		control.Env = append(append([]string{}, req.Env...), "GOCACHE="+filepath.Join(root, "control-cache"))
 		res, err := executor.Run(context.Background(), control)
 		require.NoError(t, err)
 		require.Equal(t, 0, res.ExitCode, "stdout=%s stderr=%s", res.Stdout, res.Stderr)

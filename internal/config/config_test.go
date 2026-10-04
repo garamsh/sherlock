@@ -523,6 +523,69 @@ func TestResolveConfig_UnknownFileKeyIsReported(t *testing.T) {
 		"the warning names the file the key came from")
 }
 
+// strictAgentFlags returns agentFlags with --strict-config set, read back
+// so a flag that failed to set cannot pass as the strict case.
+func strictAgentFlags(t *testing.T) *pflag.FlagSet {
+	t.Helper()
+	fs := agentFlags(t)
+	require.NoError(t, fs.Set("strict-config", "true"))
+	strict, err := fs.GetBool("strict-config")
+	require.NoError(t, err)
+	require.True(t, strict)
+	return fs
+}
+
+func TestResolveConfig_StrictConfigRefusesUnknownTopLevelKey(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	path := writeAgentConfig(t, dir, "addr: \"127.0.0.1:9000\"\nnonsense-key: 42\n")
+
+	_, err := config.Resolve(strictAgentFlags(t))
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "nonsense-key", "the refusal names the key")
+	assert.Contains(t, err.Error(), path, "the refusal names the file")
+
+	_, err = config.Resolve(agentFlags(t))
+	assert.NoError(t, err, "the same file starts without the flag, so the flag is what refused it")
+}
+
+func TestResolveConfig_StrictConfigRefusesUnknownNestedKey(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	path := writeAgentConfig(t, dir, "model:\n  provider: \"mock\"\n  temprature: 0.2\n")
+
+	_, err := config.Resolve(strictAgentFlags(t))
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "model.temprature", "the refusal names the nested key by its full path")
+	assert.Contains(t, err.Error(), path, "the refusal names the file")
+
+	_, err = config.Resolve(agentFlags(t))
+	assert.NoError(t, err, "the same file starts without the flag, so the flag is what refused it")
+}
+
+func TestResolveConfig_StrictConfigStartsOnFullyReadFile(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	writeAgentConfig(t, dir, "addr: \"127.0.0.1:9000\"\nmodel:\n  provider: \"mock\"\ntools:\n  pins:\n    message_send: \"abc123\"\n")
+
+	cfg, err := config.Resolve(strictAgentFlags(t))
+	require.NoError(t, err, "a file whose every key a setting reads passes the strict check")
+	assert.Equal(t, "127.0.0.1:9000", cfg.Addr)
+}
+
+func TestResolveConfig_StrictConfigIsNotReadFromTheFile(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	writeAgentConfig(t, dir, "strict-config: true\nnonsense-key: 42\n")
+	buf, restore := captureSlog(t)
+	defer restore()
+
+	_, err := config.Resolve(agentFlags(t))
+	require.NoError(t, err, "strict start is a flag only, so the file cannot switch it on")
+	assert.Contains(t, buf.String(), "key=strict-config",
+		"the file's strict-config is a key no setting reads, so it is reported like any other")
+}
+
 func TestResolveConfig_UnknownSectionIsReportedByItsRoot(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)

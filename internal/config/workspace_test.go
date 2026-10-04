@@ -130,3 +130,22 @@ func TestResolveWorkspaceConfig_UnknownFileKeyIsReported(t *testing.T) {
 		"the workspace resolves the same way, so it reports the same way")
 	assert.Contains(t, buf.String(), "file="+path)
 }
+
+func TestResolveWorkspaceConfig_StrictConfigRefusesUnknownKey(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
+	path := filepath.Join(dir, "configs", "workspace.yaml")
+	require.NoError(t, os.WriteFile(path,
+		[]byte("addr: \"127.0.0.1:8081\"\nexec-uid-typo: 10001\n"), 0o600))
+
+	fs := workspaceFlags(t)
+	require.NoError(t, fs.Set("strict-config", "true"))
+	_, err := config.ResolveWorkspace(fs)
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "exec-uid-typo", "the refusal names the key")
+	assert.Contains(t, err.Error(), path, "the refusal names the file")
+
+	_, err = config.ResolveWorkspace(workspaceFlags(t))
+	assert.NoError(t, err, "the same file starts without the flag, so the flag is what refused it")
+}

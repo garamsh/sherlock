@@ -84,6 +84,8 @@ func ResolveWorkspace(fs *pflag.FlagSet) (WorkspaceConfig, error) {
 	if err := v.Unmarshal(&cfg, recordKeys(&used)); err != nil {
 		return WorkspaceConfig{}, err
 	}
-	reportUnknownKeys(loaded, used.Unused)
+	if err := reportUnknownKeys(fs, loaded, used.Unused); err != nil {
+		return WorkspaceConfig{}, err
+	}
 	return cfg, nil
 }

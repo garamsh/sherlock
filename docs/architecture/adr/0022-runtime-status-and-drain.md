@@ -14,7 +14,7 @@ Two constraints bound the answer. The status must not claim more than the proces
 
 ## Decision
 
-`GET /agents/{agent-id}/status` reports contract version 1: the agent ID, the assignment epoch, the generation, the config revision, the state, and the process start time, each from what this process loaded once initialization succeeded. The revision is the config file's top-level `revision` key, opaque and echoed, with empty meaning unknown. On `SIGTERM` the agent turns `draining`, answers new posts 503 while its listener stays open, lets the turn in flight complete with its durable writes, starts no queued turn, then closes the listener and memory, releasing the writer lock last.
+`GET /agents/{agent-id}/status` reports contract version 1: the agent ID, the assignment epoch, the generation, the config revision, the state, and the process start time, each from what this process loaded once initialization succeeded. The revision is the config file's top-level `revision` key, opaque and echoed, with empty meaning unknown. On `SIGTERM` the agent turns `draining`, answers new posts 503 while its listener stays open, lets the turn in flight complete with its durable writes, starts no queued turn and skips the idempotent after-turn pass, then closes the listener and memory, releasing the writer lock last.
 
 ## Consequences
 

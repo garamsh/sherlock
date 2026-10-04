@@ -47,8 +47,9 @@ func (q *Queue) run(events *batchEvents) {
 			logger.Info("run finished", "op", "run", "message_ids", ids)
 			// The runtime's after-turn pass runs after the completed
 			// turn, never mid-turn; a failure leaves the store
-			// consistent and only logs.
-			if q.runtime.Retain != nil {
+			// consistent and only logs. A drain skips it: the pass is
+			// idempotent, so the next start picks up what it left.
+			if q.runtime.Retain != nil && !q.Draining() {
 				if err := q.runtime.Retain(q.ctx); err != nil {
 					logger.Warn("after-turn pass failed",
 						"op", "retain", "error", err)

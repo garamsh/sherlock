@@ -73,7 +73,7 @@ func TestQueue_DrainsQueuedMessagesIntoOneTurn(t *testing.T) {
 	session := &gatedBatchSession{gate: gate}
 	q := newBatchQueue(t, session)
 
-	firstID, err := q.Enqueue(context.Background(), "alice", "first")
+	firstID, _, err := q.Enqueue(context.Background(), "alice", "", "first")
 	require.NoError(t, err)
 	require.Eventually(t, func() bool {
 		return len(session.startedTasks()) == 1
@@ -86,7 +86,7 @@ func TestQueue_DrainsQueuedMessagesIntoOneTurn(t *testing.T) {
 		{"carol", "third"},
 		{"dave", "fourth"},
 	} {
-		id, err := q.Enqueue(context.Background(), m.sender, m.content)
+		id, _, err := q.Enqueue(context.Background(), m.sender, "", m.content)
 		require.NoError(t, err)
 		ids = append(ids, id)
 	}
@@ -116,7 +116,7 @@ func TestQueue_DrainIsBounded(t *testing.T) {
 	session := &gatedBatchSession{gate: gate}
 	q := newBatchQueue(t, session)
 
-	_, err := q.Enqueue(context.Background(), "", "blocking")
+	_, _, err := q.Enqueue(context.Background(), "", "", "blocking")
 	require.NoError(t, err)
 	require.Eventually(t, func() bool {
 		return len(session.startedTasks()) == 1
@@ -124,7 +124,7 @@ func TestQueue_DrainIsBounded(t *testing.T) {
 
 	queued := gateway.MaxDrainBatch + 2
 	for range queued {
-		_, err := q.Enqueue(context.Background(), "", "queued")
+		_, _, err := q.Enqueue(context.Background(), "", "", "queued")
 		require.NoError(t, err)
 	}
 
@@ -151,7 +151,7 @@ func TestQueue_TerminalEventReferencesBatchIDs(t *testing.T) {
 	stream, cancel := q.Events().Subscribe()
 	defer cancel()
 
-	firstID, err := q.Enqueue(context.Background(), "alice", "first")
+	firstID, _, err := q.Enqueue(context.Background(), "alice", "", "first")
 	require.NoError(t, err)
 	require.Eventually(t, func() bool {
 		return len(session.startedTasks()) == 1
@@ -159,7 +159,7 @@ func TestQueue_TerminalEventReferencesBatchIDs(t *testing.T) {
 
 	var batchIDs []string
 	for _, content := range []string{"second", "third"} {
-		id, err := q.Enqueue(context.Background(), "bob", content)
+		id, _, err := q.Enqueue(context.Background(), "bob", "", content)
 		require.NoError(t, err)
 		batchIDs = append(batchIDs, id)
 	}

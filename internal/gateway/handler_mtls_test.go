@@ -15,6 +15,7 @@ import (
 	"math/big"
 	"net/http"
 	"net/http/httptest"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -192,4 +193,42 @@ func TestServer_PostMessageSenderIsCallerIdentity(t *testing.T) {
 	}, 5*time.Second, time.Millisecond)
 	assert.Contains(t, session.startedTasks()[0], "] orchestrator: hello",
 		"the turn input renders the verified caller identity as the sender")
+}
+
+// TestServer_MessageIDIsScopedToCaller pins the (principal, id) scope:
+// another caller can neither see nor complete a caller's ID, and the same
+// caller under a renewed certificate still can.
+func TestServer_MessageIDIsScopedToCaller(t *testing.T) {
+	ca := newMTLSCA(t)
+	model := newHeldModel()
+	q := newMemoryQueue(t, filepath.Join(t.TempDir(), "memory.db"), model)
+	srv := httptest.NewUnstartedServer(gateway.NewHandler(q, slog.New(slog.DiscardHandler)))
+	srv.TLS = &tls.Config{
+		ClientAuth: tls.RequireAndVerifyClientCert,
+		ClientCAs:  ca.pool(),
+	}
+	srv.StartTLS()
+	t.Cleanup(srv.Close)
+	clientFor := func(cert tls.Certificate) *http.Client {
+		transport := srv.Client().Transport.(*http.Transport).Clone()
+		transport.TLSClientConfig.Certificates = []tls.Certificate{cert}
+		return &http.Client{Transport: transport}
+	}
+	alice := clientFor(ca.issue(t, 5, "alice", nil))
+	renewed := clientFor(ca.issue(t, 6, "alice", nil))
+	bob := clientFor(ca.issue(t, 7, "bob", nil))
+
+	code, _ := sendMessage(t, alice, srv.URL, `{"id":"m1","content":"hello"}`)
+	require.Equal(t, http.StatusAccepted, code)
+	model.turn(t, nil)
+	awaitStatus(t, alice, srv.URL, "m1", "completed")
+
+	assert.Equal(t, "completed", lookupMessage(t, renewed, srv.URL, "m1"), "a renewed certificate under the same subject is the same caller")
+	assert.Equal(t, "unknown", lookupMessage(t, bob, srv.URL, "m1"), "bob cannot see alice's ID")
+	code, reply := sendMessage(t, bob, srv.URL, `{"id":"m1","content":"hello"}`)
+	assert.Equal(t, http.StatusAccepted, code, "bob cannot complete alice's ID")
+	assert.Equal(t, "queued", reply.Status)
+	model.turn(t, nil)
+	awaitStatus(t, bob, srv.URL, "m1", "completed")
+	assert.Equal(t, []string{"[m1] alice: hello", "[m1] bob: hello"}, model.started(), "bob's m1 ran as his own message")
 }

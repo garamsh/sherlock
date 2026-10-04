@@ -135,7 +135,7 @@ func TestConversation_QueuePreservesOriginalInboundID(t *testing.T) {
 	}, Tools: noTools()}
 	queue, err := gateway.NewQueue(factory, "a", nil)
 	require.NoError(t, err)
-	id, err := queue.Enqueue(context.Background(), "sender", "Cedar is my favorite tea.")
+	id, _, err := queue.Enqueue(context.Background(), "sender", "", "Cedar is my favorite tea.")
 	require.NoError(t, err)
 	// The queue's store holds the writer lock, so the test reads the
 	// file read-only beside it.

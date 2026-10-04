@@ -19,8 +19,9 @@ const maxMessageBody = 1 << 20 // 1 MiB
 
 // NewHandler returns the gateway's HTTP adapter (ADR 0007):
 //
-//	POST /agents/{agentID}/messages — fire-and-forget ingress; 202 + message ID
-//	GET  /agents/{agentID}/events   — SSE monitoring stream of loop events
+//	POST /agents/{agentID}/messages      — fire-and-forget ingress; 202 + message ID
+//	GET  /agents/{agentID}/messages/{id} — whether the caller's message completed
+//	GET  /agents/{agentID}/events        — SSE monitoring stream of loop events
 //
 // One process serves one agent (ADR 0017): a path whose agentID is not
 // the queue's gets 404. Callers authenticate at the TLS layer (mTLS,
@@ -29,6 +30,7 @@ func NewHandler(q *Queue, logger *slog.Logger) http.Handler {
 	h := &handler{queue: q, logger: logger}
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /agents/{agentID}/messages", h.postMessage)
+	mux.HandleFunc("GET /agents/{agentID}/messages/{id}", h.getMessage)
 	mux.HandleFunc("GET /agents/{agentID}/events", h.events)
 	return h.logRequests(mux)
 }
@@ -48,15 +50,17 @@ func (h *handler) serveAgent(w http.ResponseWriter, r *http.Request) bool {
 	return false
 }
 
-// postMessageRequest is the ingress body: the message content only. The
-// gateway assigns the ID. The envelope's sender (ADR 0015) is the
-// verified mTLS caller identity (ADR 0012); plain-HTTP loopback requests
-// carry no sender.
+// postMessageRequest is the ingress body: the message content and the
+// sender's ID for it, kept byte for byte; the gateway assigns one when it
+// is absent. The envelope's sender (ADR 0015) is the verified mTLS caller
+// identity (ADR 0012), and the ID is unique within it; plain-HTTP
+// loopback requests carry the empty sender.
 type postMessageRequest struct {
+	ID      string `json:"id"`
 	Content string `json:"content"`
 }
 
-// postMessageResponse acknowledges a queued message.
+// postMessageResponse acknowledges a queued or completed message.
 type postMessageResponse struct {
 	ID      string `json:"id"`
 	AgentID string `json:"agent_id"`
@@ -84,19 +88,56 @@ func (h *handler) postMessage(w http.ResponseWriter, r *http.Request) {
 		writeProblem(w, http.StatusBadRequest, "content is required")
 		return
 	}
-	id, err := h.queue.Enqueue(r.Context(), callerID(r), req.Content)
+	id, status, err := h.queue.Enqueue(r.Context(), callerID(r), req.ID, req.Content)
 	if err != nil {
-		if errors.Is(err, ErrQueueClosed) {
+		switch {
+		case errors.Is(err, ErrQueueClosed):
 			writeProblem(w, http.StatusServiceUnavailable, err.Error())
-			return
+		case errors.Is(err, ErrIDReused):
+			writeProblem(w, http.StatusConflict, "id reused with different content")
+		default:
+			h.logger.Error("enqueue failed", "op", "enqueue", "agent_id", agentID, "error", err)
+			writeProblem(w, http.StatusInternalServerError, "enqueue failed")
 		}
-		h.logger.Error("enqueue failed", "op", "enqueue", "agent_id", agentID, "error", err)
-		writeProblem(w, http.StatusInternalServerError, "enqueue failed")
 		return
 	}
+	code, wire := http.StatusAccepted, "queued"
+	if status == StatusCompleted {
+		code, wire = http.StatusOK, "completed"
+	}
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusAccepted)
-	_ = json.NewEncoder(w).Encode(postMessageResponse{ID: id, AgentID: agentID, Status: "queued"})
+	w.WriteHeader(code)
+	_ = json.NewEncoder(w).Encode(postMessageResponse{ID: id, AgentID: agentID, Status: wire})
+}
+
+// messageStatusResponse answers a lookup; the caller verifies the ID.
+type messageStatusResponse struct {
+	ID     string `json:"id"`
+	Status string `json:"status"`
+}
+
+// getMessage reports whether the caller's message completed, within the
+// caller's own IDs: another sender's ID reads as unknown.
+func (h *handler) getMessage(w http.ResponseWriter, r *http.Request) {
+	if !h.serveAgent(w, r) {
+		return
+	}
+	id := r.PathValue("id")
+	status, err := h.queue.Status(r.Context(), callerID(r), id)
+	if err != nil {
+		h.logger.Error("message lookup failed", "op", "lookup", "agent_id", r.PathValue("agentID"), "error", err)
+		writeProblem(w, http.StatusInternalServerError, "lookup failed")
+		return
+	}
+	wire := "unknown"
+	switch status {
+	case StatusCompleted:
+		wire = "completed"
+	case StatusPending:
+		wire = "pending"
+	}
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(messageStatusResponse{ID: id, Status: wire})
 }
 
 // eventPayload is the wire form of one loop event on the SSE stream.
@@ -240,6 +281,8 @@ func (h *handler) logRequests(next http.Handler) http.Handler {
 
 // callerID names the authenticated caller: the verified peer
 // certificate's CN, or its first SAN when the CN is empty (ADR 0012).
+// It is the principal a message ID is scoped to, so it never names the
+// certificate itself and survives renewal under the same subject.
 // Plain HTTP requests have no caller identity and return "".
 func callerID(r *http.Request) string {
 	if r.TLS == nil || len(r.TLS.PeerCertificates) == 0 {

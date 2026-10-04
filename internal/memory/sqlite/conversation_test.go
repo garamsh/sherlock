@@ -406,3 +406,76 @@ func TestNote_DatabaseFromBeforeTheNoteOpensWithAnEmptyNote(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "Indent code with tabs.", note)
 }
+
+// A message ID is unique within its sender, so two senders may commit the
+// same ID, and each holds only its own.
+func TestHoldsInbound_ScopesIDToSender(t *testing.T) {
+	ctx := context.Background()
+	store, err := sqlite.OpenConversation(filepath.Join(t.TempDir(), "memory.db"), wordEmbedder{})
+	require.NoError(t, err)
+	defer store.Close()
+	require.NoError(t, store.RecordTurn(ctx, []agent.SourceMessage{{Role: agent.RoleUser, Sender: "alice", ExternalID: "m1", Content: "from alice"}, {Role: agent.RoleAssistant, Content: "Noted."}}, firstSummary{}))
+	require.NoError(t, store.RecordTurn(ctx, []agent.SourceMessage{{Role: agent.RoleUser, Sender: "bob", ExternalID: "m1", Content: "from bob"}, {Role: agent.RoleAssistant, Content: "Noted."}}, firstSummary{}),
+		"another sender's ID does not collide")
+
+	held, same, err := store.HoldsInbound(ctx, "alice", "m1", "from alice")
+	require.NoError(t, err)
+	assert.True(t, held)
+	assert.True(t, same, "the sender's own content is what it holds")
+	held, same, err = store.HoldsInbound(ctx, "bob", "m1", "from alice")
+	require.NoError(t, err)
+	assert.True(t, held)
+	assert.False(t, same, "bob's m1 holds bob's content, not alice's")
+	held, _, err = store.HoldsInbound(ctx, "carol", "m1", "from alice")
+	require.NoError(t, err)
+	assert.False(t, held, "a sender that delivered nothing holds nothing")
+}
+
+// A replay carries the original content, credentials included; it matches
+// the redacted copy the store holds.
+func TestHoldsInbound_ComparesAsStored(t *testing.T) {
+	ctx := context.Background()
+	store, err := sqlite.OpenConversation(filepath.Join(t.TempDir(), "memory.db"), wordEmbedder{})
+	require.NoError(t, err)
+	defer store.Close()
+	content := "api_key=sk-abcdefghijklmnop and favorite tea is cedar"
+	require.NoError(t, store.RecordTurn(ctx, []agent.SourceMessage{{Role: agent.RoleUser, ExternalID: "m1", Content: content}, {Role: agent.RoleAssistant, Content: "Noted."}}, firstSummary{}))
+	source, err := store.Source(ctx, 1)
+	require.NoError(t, err)
+	require.NotEqual(t, content, source.Content, "the store holds the redacted copy")
+
+	held, same, err := store.HoldsInbound(ctx, "", "m1", content)
+	require.NoError(t, err)
+	assert.True(t, held)
+	assert.True(t, same)
+	_, same, err = store.HoldsInbound(ctx, "", "m1", "favorite tea is oolong")
+	require.NoError(t, err)
+	assert.False(t, same, "other content does not match")
+}
+
+// A file from before sender scoping keeps its IDs under the empty sender,
+// and another sender may then commit the same ID.
+func TestOpenConversation_ScopesIDsFromBeforeSenders(t *testing.T) {
+	ctx := context.Background()
+	path := filepath.Join(t.TempDir(), "memory.db")
+	raw, err := sql.Open("sqlite", path)
+	require.NoError(t, err)
+	_, err = raw.Exec(`CREATE TABLE conversation_sources (id INTEGER PRIMARY KEY AUTOINCREMENT, role TEXT NOT NULL CHECK(role IN ('user','assistant')), external_id TEXT, content TEXT NOT NULL);
+CREATE UNIQUE INDEX conversation_external_id ON conversation_sources(external_id) WHERE external_id <> '';
+INSERT INTO conversation_sources(role,external_id,content) VALUES ('user','msg-1','old message')`)
+	require.NoError(t, err)
+	require.NoError(t, raw.Close())
+
+	store, err := sqlite.OpenConversation(path, wordEmbedder{})
+	require.NoError(t, err)
+	defer store.Close()
+	held, same, err := store.HoldsInbound(ctx, "", "msg-1", "old message")
+	require.NoError(t, err)
+	assert.True(t, held)
+	assert.True(t, same)
+	require.NoError(t, store.RecordTurn(ctx, []agent.SourceMessage{{Role: agent.RoleUser, Sender: "alice", ExternalID: "msg-1", Content: "new message"}, {Role: agent.RoleAssistant, Content: "Noted."}}, firstSummary{}))
+	held, same, err = store.HoldsInbound(ctx, "alice", "msg-1", "new message")
+	require.NoError(t, err)
+	assert.True(t, held)
+	assert.True(t, same)
+}

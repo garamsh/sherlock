@@ -11,7 +11,8 @@ The agent is modeled as a person, not a task runner: one continuous rolling sess
 
 The gateway separates three flows: ingress, outbound, and monitoring.
 
-- **Ingress is asynchronous.** Channel adapters normalize inbound messages; the gateway accepts each message, assigns an ID, enqueues it for the agent, and acknowledges. No synchronous response couples a sender to a turn.
+- **Ingress is asynchronous.** Channel adapters normalize inbound messages; the gateway accepts each message under the ID its sender gave it, or one it assigns when the sender gave none, enqueues it for the agent, and acknowledges. No synchronous response couples a sender to a turn.
+- **A sender can redeliver safely.** A message ID is scoped to its sender's principal — the verified mTLS caller identity, empty over plain-HTTP loopback — and kept byte for byte. A message already queued or running in this process is not queued again; one whose turn committed its sources to memory is answered as completed and not run again; either delivered again with other content is refused. Completed means those committed sources and nothing weaker, so the 202 never means it. The sender can ask whether a message is completed, pending in this process, or unknown to it; a restart forgets pending, not completed.
 - **One rolling session per agent.** No automatic reset and no per-task sessions; context growth drains into long-term memory per ADR 0006.
 - **Execution is serialized per agent.** Messages arriving mid-run are queued as followups. There is no mid-run steering or interruption (ADR 0014).
 - **Outbound is a tool.** A `message_send` tool (channel, target, content) carries every reply — the agent's mouth. The agent decides when and to whom to respond; answering the sender, another person, or another agent is the same operation.
@@ -23,4 +24,5 @@ The gateway separates three flows: ingress, outbound, and monitoring.
 - Senders of different kinds (people, other agents, scheduled jobs) mix safely: the queue serializes them, and no sender blocks on a run.
 - Reply routing is decoupled from the sender — work requested by one party can be delivered to another, and agent-to-agent messaging uses the same mechanism as human messaging.
 - The agent may legitimately choose not to reply; the default reply conventions live in the agent's instructions.
+- Recording is deduplicated and delivery is at least once: a turn that is interrupted or ends without committing leaves its message unknown, a sender that redelivers it runs it again, and the effects that turn already had may repeat. There is no exactly-once claim, and the message IDs on monitoring events stay a hint.
 - Streaming partial model output is just another monitoring event type if ever wanted; the message model does not change.

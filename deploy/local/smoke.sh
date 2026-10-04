@@ -158,7 +158,7 @@ while IFS='|' read -r label value; do
   fi
 done <<'CAPS'
 Max cpu time|60
-Max address space|536870912
+Max address space|2147483648
 Max file size|104857600
 Max open files|1024
 Max processes|64
@@ -167,4 +167,4 @@ if [ "$missing" -ne 0 ]; then
   echo "$limits" >&2
   exit 1
 fi
-echo "cpu 60s, address space 512MiB, file size 100MiB, open files 1024, processes 64"
+echo "cpu 60s, address space 2GiB, file size 100MiB, open files 1024, processes 64"

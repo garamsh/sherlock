@@ -77,6 +77,11 @@ type Config struct {
 	// layers as every other setting, so SHERLOCK_TOOLS_DIR reaches it
 	// the way SHERLOCK_MEMORY_PATH reaches MemoryPath.
 	ToolsDir string `mapstructure:"tools-dir"`
+	// Revision names the desired configuration this file is, ego
+	// included. It is opaque and set by whatever writes the file; the
+	// agent echoes it on its status route and never computes one.
+	// Empty means unknown.
+	Revision string `mapstructure:"revision"`
 }
 
 // ToolsConfig is the operator's statement about the tool tree the
@@ -198,6 +203,7 @@ func Resolve(fs *pflag.FlagSet) (Config, error) {
 	v.SetDefault("tls.cert", "")
 	v.SetDefault("tls.key", "")
 	v.SetDefault("tls.client-ca", "")
+	v.SetDefault("revision", "")
 	if err := v.BindPFlags(fs); err != nil {
 		return Config{}, err
 	}

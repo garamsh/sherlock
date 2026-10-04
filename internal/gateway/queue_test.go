@@ -143,7 +143,7 @@ func TestQueue_EnqueueAfterCloseFails(t *testing.T) {
 	require.NoError(t, q.Close())
 
 	_, _, err := q.Enqueue(context.Background(), "", "", "hi")
-	assert.ErrorIs(t, err, gateway.ErrQueueClosed)
+	assert.ErrorIs(t, err, gateway.ErrDraining)
 }
 
 func TestQueue_CloseReleasesRuntime(t *testing.T) {
@@ -248,4 +248,51 @@ func TestQueue_RetentionRunsAfterTurn(t *testing.T) {
 		defer mu.Unlock()
 		return calls == 1
 	}, 5*time.Second, time.Millisecond, "the retention pass fires once, after the turn")
+}
+
+// TestQueue_DrainSkipsTheAfterTurnPass holds that a turn completing
+// during a drain is not followed by the Retain pass, which would only
+// lengthen shutdown. The control is a turn completing before the drain,
+// which is followed by it.
+func TestQueue_DrainSkipsTheAfterTurnPass(t *testing.T) {
+	gates := make(chan struct{}, 2)
+	session := &fakeSession{gate: gates}
+	var mu sync.Mutex
+	var calls int
+	factory := &fakeFactory{newFn: func(string, agent.EventSink) (*gateway.Runtime, error) {
+		return &gateway.Runtime{
+			Session: session,
+			Retain: func(context.Context) error {
+				mu.Lock()
+				calls++
+				mu.Unlock()
+				return nil
+			},
+			Close: func(context.Context) error { return nil },
+		}, nil
+	}}
+	q, err := gateway.NewQueue(factory, "env-1", newTestLogger())
+	require.NoError(t, err)
+	retained := func() int {
+		mu.Lock()
+		defer mu.Unlock()
+		return calls
+	}
+
+	_, _, err = q.Enqueue(context.Background(), "", "", "before")
+	require.NoError(t, err)
+	gates <- struct{}{}
+	require.Eventually(t, func() bool { return retained() == 1 }, 5*time.Second, time.Millisecond,
+		"the control: a turn before the drain is followed by the pass")
+
+	_, _, err = q.Enqueue(context.Background(), "", "", "during")
+	require.NoError(t, err)
+	require.Eventually(t, func() bool { return len(session.startedTasks()) == 2 }, 5*time.Second, time.Millisecond)
+	drained := make(chan struct{})
+	go func() { q.Drain(); close(drained) }()
+	require.Eventually(t, q.Draining, 5*time.Second, time.Millisecond)
+	gates <- struct{}{}
+	<-drained
+	require.NoError(t, q.Close())
+	assert.Equal(t, 1, retained(), "the turn completing during the drain is not followed by the pass")
 }

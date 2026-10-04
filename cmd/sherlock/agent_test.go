@@ -2,9 +2,12 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"io"
 	"log/slog"
 	"net"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -363,4 +366,51 @@ func TestStartQueue_EachStartMintsAFreshGeneration(t *testing.T) {
 		generations = append(generations, id.generation)
 	}
 	assert.NotEqual(t, generations[0], generations[1])
+}
+
+// TestInstanceOf_StatusReportsWhatThisStartLoaded holds C3's sources:
+// the status route reports the agent ID and assignment epoch the flags
+// gave, the generation this start minted, the revision the config file
+// carries, and the process start time.
+func TestInstanceOf_StatusReportsWhatThisStartLoaded(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	t.Setenv("HOME", t.TempDir())
+	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
+	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "agent.yaml"), []byte("revision: rev-9\n"), 0o600))
+	fs := pflag.NewFlagSet("agent", pflag.ContinueOnError)
+	config.AddSharedFlags(fs)
+	addAgentFlags(fs)
+	require.NoError(t, fs.Parse([]string{"--agent-id", "a1", "--assignment-epoch", "e3"}))
+	cfg, err := config.Resolve(fs)
+	require.NoError(t, err)
+	id, err := resolveIdentity(fs)
+	require.NoError(t, err)
+
+	factory, _ := mockFactory(t)
+	logger := slog.New(slog.DiscardHandler)
+	queue, id, err := startQueue(factory, id, func() string { return "gen-1" }, logger)
+	require.NoError(t, err)
+	t.Cleanup(func() { queue.Close() })
+	srv := httptest.NewServer(gateway.NewHandler(queue, instanceOf(cfg, id), logger))
+	t.Cleanup(srv.Close)
+
+	resp, err := http.Get(srv.URL + "/agents/a1/status")
+	require.NoError(t, err)
+	defer resp.Body.Close()
+	require.Equal(t, http.StatusOK, resp.StatusCode)
+	var got struct {
+		AgentID         string    `json:"agent_id"`
+		AssignmentEpoch string    `json:"assignment_epoch"`
+		Generation      string    `json:"generation"`
+		ConfigRevision  string    `json:"config_revision"`
+		StartedAt       time.Time `json:"started_at"`
+	}
+	require.NoError(t, json.NewDecoder(resp.Body).Decode(&got))
+	assert.Equal(t, "a1", got.AgentID)
+	assert.Equal(t, "e3", got.AssignmentEpoch)
+	assert.Equal(t, "gen-1", got.Generation)
+	assert.Equal(t, "rev-9", got.ConfigRevision)
+	assert.True(t, processStart.Equal(got.StartedAt), "started_at is the process start time")
 }

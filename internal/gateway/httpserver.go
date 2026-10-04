@@ -18,22 +18,28 @@ const shutdownGrace = 10 * time.Second
 // for as long as it likes.
 const readHeaderTimeout = 10 * time.Second
 
-// Serve runs the gateway's HTTP listener until ctx is done, then drains
-// it and closes the queue. A nil tlsConfig serves plain HTTP; a non-nil
-// one serves HTTPS with client certificates required (ADR 0012).
+// Serve runs the gateway's HTTP listener until ctx is done, then shuts
+// down in order: the queue drains (new posts answer 503, the turn in
+// flight completes, no queued turn starts), the listener closes, and
+// last the queue closes memory and its writer lock. A nil tlsConfig
+// serves plain HTTP; a non-nil one serves HTTPS with client certificates
+// required (ADR 0012).
 //
 // Whether a given address may be served at all is the caller's
 // decision, not this function's: the loopback rule reads a resolved
 // setting, and the entry point is what holds resolved settings.
-func Serve(ctx context.Context, addr string, tlsConfig *tls.Config, queue *Queue, logger *slog.Logger) error {
+func Serve(ctx context.Context, addr string, tlsConfig *tls.Config, queue *Queue, instance Instance, logger *slog.Logger) error {
 	srv := &http.Server{
 		Addr:              addr,
-		Handler:           NewHandler(queue, logger),
+		Handler:           NewHandler(queue, instance, logger),
 		TLSConfig:         tlsConfig,
 		ReadHeaderTimeout: readHeaderTimeout,
 	}
 	go func() {
 		<-ctx.Done()
+		// The listener stays open through the drain, so a sender is
+		// answered draining rather than refused a connection.
+		queue.Drain()
 		shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownGrace)
 		defer cancel()
 		if err := srv.Shutdown(shutdownCtx); err != nil {

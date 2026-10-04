@@ -22,22 +22,25 @@ const maxMessageBody = 1 << 20 // 1 MiB
 //	POST /agents/{agentID}/messages      — fire-and-forget ingress; 202 + message ID
 //	GET  /agents/{agentID}/messages/{id} — whether the caller's message completed
 //	GET  /agents/{agentID}/events        — SSE monitoring stream of loop events
+//	GET  /agents/{agentID}/status        — what this process serves, and whether it is draining
 //
 // One process serves one agent (ADR 0017): a path whose agentID is not
 // the queue's gets 404. Callers authenticate at the TLS layer (mTLS,
 // ADR 0012); the handler itself is unchanged by it.
-func NewHandler(q *Queue, logger *slog.Logger) http.Handler {
-	h := &handler{queue: q, logger: logger}
+func NewHandler(q *Queue, instance Instance, logger *slog.Logger) http.Handler {
+	h := &handler{queue: q, instance: instance, logger: logger}
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /agents/{agentID}/messages", h.postMessage)
 	mux.HandleFunc("GET /agents/{agentID}/messages/{id}", h.getMessage)
 	mux.HandleFunc("GET /agents/{agentID}/events", h.events)
+	mux.HandleFunc("GET /agents/{agentID}/status", h.status)
 	return h.logRequests(mux)
 }
 
 type handler struct {
-	queue  *Queue
-	logger *slog.Logger
+	queue    *Queue
+	instance Instance
+	logger   *slog.Logger
 }
 
 // serveAgent reports whether the request addresses this process's agent;
@@ -91,8 +94,8 @@ func (h *handler) postMessage(w http.ResponseWriter, r *http.Request) {
 	id, status, err := h.queue.Enqueue(r.Context(), callerID(r), req.ID, req.Content)
 	if err != nil {
 		switch {
-		case errors.Is(err, ErrQueueClosed):
-			writeProblem(w, http.StatusServiceUnavailable, err.Error())
+		case errors.Is(err, ErrDraining):
+			writeProblem(w, http.StatusServiceUnavailable, "draining")
 		case errors.Is(err, ErrIDReused):
 			writeProblem(w, http.StatusConflict, "id reused with different content")
 		default:
@@ -138,6 +141,43 @@ func (h *handler) getMessage(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(messageStatusResponse{ID: id, Status: wire})
+}
+
+// statusContractVersion is the version of the status body's shape.
+const statusContractVersion = 1
+
+// statusResponse is the status body: the process's identity and config
+// revision as it loaded them, and whether it is serving or draining.
+type statusResponse struct {
+	ContractVersion int       `json:"contract_version"`
+	AgentID         string    `json:"agent_id"`
+	AssignmentEpoch string    `json:"assignment_epoch"`
+	Generation      string    `json:"generation"`
+	ConfigRevision  string    `json:"config_revision"`
+	State           string    `json:"state"`
+	StartedAt       time.Time `json:"started_at"`
+}
+
+// status reports what this process serves. It reads no store, so it
+// answers through the drain as long as the listener is open.
+func (h *handler) status(w http.ResponseWriter, r *http.Request) {
+	if !h.serveAgent(w, r) {
+		return
+	}
+	state := "serving"
+	if h.queue.Draining() {
+		state = "draining"
+	}
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(statusResponse{
+		ContractVersion: statusContractVersion,
+		AgentID:         h.queue.AgentID(),
+		AssignmentEpoch: h.instance.AssignmentEpoch,
+		Generation:      h.instance.Generation,
+		ConfigRevision:  h.instance.ConfigRevision,
+		State:           state,
+		StartedAt:       h.instance.StartedAt.UTC(),
+	})
 }
 
 // eventPayload is the wire form of one loop event on the SSE stream.

@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -19,6 +20,10 @@ import (
 	"github.com/garamsh/sherlock/internal/gateway"
 	"github.com/garamsh/sherlock/internal/tool"
 )
+
+// processStart is the time this process started, which the status route
+// reports as started_at.
+var processStart = time.Now()
 
 // newAgentCommand returns the "sherlock agent" subcommand: it runs the
 // agent's self (ADR 0017) — the gateway, the rolling session, memory,
@@ -246,7 +251,18 @@ func serveAgent(ctx context.Context, cfg config.Config, id identity, ego string)
 		"memory_path", cfg.MemoryPath, "workspace_addr", cfg.WorkspaceAddr,
 		"tools_dir", cfg.ToolsDir,
 		"auth", authLabel(tlsConfig))
-	return gateway.Serve(ctx, cfg.Addr, tlsConfig, queue, logger)
+	return gateway.Serve(ctx, cfg.Addr, tlsConfig, queue, instanceOf(cfg, id), logger)
+}
+
+// instanceOf is what the status route reports: the identity this start
+// resolved and minted, and the revision of the config file it loaded.
+func instanceOf(cfg config.Config, id identity) gateway.Instance {
+	return gateway.Instance{
+		AssignmentEpoch: id.assignmentEpoch,
+		Generation:      id.generation,
+		ConfigRevision:  cfg.Revision,
+		StartedAt:       processStart,
+	}
 }
 
 // authLabel names the gateway's caller authentication for the startup

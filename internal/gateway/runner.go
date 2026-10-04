@@ -17,15 +17,21 @@ const MaxDrainBatch = 8
 // run is the agent's runner loop. A turn drains the queue: the first
 // message plus everything waiting behind it, up to MaxDrainBatch,
 // rendered as one turn input (ADR 0015). A failed turn is logged and the
-// queue continues with the next drain.
+// queue continues with the next drain. Once draining begins it starts no
+// further turn; the one in flight runs to completion.
 func (q *Queue) run(events *batchEvents) {
 	defer close(q.done)
 	logger := q.logger.With("agent_id", q.agentID)
 	for {
 		select {
-		case <-q.ctx.Done():
+		case <-q.draining:
 			return
 		case msg := <-q.inbox:
+			// select picks at random when both are ready, so a message
+			// taken as the drain began starts no turn.
+			if q.Draining() {
+				return
+			}
 			batch := drain(q.inbox, msg)
 			ids := messageIDs(batch)
 			events.setBatch(ids)
@@ -41,8 +47,10 @@ func (q *Queue) run(events *batchEvents) {
 			logger.Info("run finished", "op", "run", "message_ids", ids)
 			// The runtime's after-turn pass runs after the completed
 			// turn, never mid-turn; a failure leaves the store
-			// consistent and only logs.
-			if q.runtime.Retain != nil {
+			// consistent and only logs. A drain skips it: the pass is
+			// idempotent, so the pass after the next completed turn picks up
+			// what it left.
+			if q.runtime.Retain != nil && !q.Draining() {
 				if err := q.runtime.Retain(q.ctx); err != nil {
 					logger.Warn("after-turn pass failed",
 						"op", "retain", "error", err)

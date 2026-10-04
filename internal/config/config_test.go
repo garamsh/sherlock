@@ -714,3 +714,33 @@ func TestResolveConfig_FileLookupPrecedence(t *testing.T) {
 		})
 	}
 }
+
+// TestResolveConfig_RevisionIsEchoedVerbatim holds that the top-level
+// revision key is read as the opaque string the file carries, and that
+// --strict-config accepts it as a key a setting reads.
+func TestResolveConfig_RevisionIsEchoedVerbatim(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	writeAgentConfig(t, dir, "addr: \"127.0.0.1:9000\"\nrevision: \"desired/7 sha:Ab3\"\n")
+
+	cfg, err := config.Resolve(strictAgentFlags(t))
+	require.NoError(t, err)
+	assert.Equal(t, "desired/7 sha:Ab3", cfg.Revision)
+}
+
+// TestResolveConfig_AbsentRevisionIsEmpty holds that a file without the
+// revision key resolves to the empty revision, which means unknown. The
+// control is the same file with the key, which resolves to its value.
+func TestResolveConfig_AbsentRevisionIsEmpty(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	writeAgentConfig(t, dir, "addr: \"127.0.0.1:9000\"\n")
+	cfg, err := config.Resolve(agentFlags(t))
+	require.NoError(t, err)
+	assert.Empty(t, cfg.Revision)
+
+	writeAgentConfig(t, dir, "addr: \"127.0.0.1:9000\"\nrevision: r1\n")
+	cfg, err = config.Resolve(agentFlags(t))
+	require.NoError(t, err)
+	assert.Equal(t, "r1", cfg.Revision, "the control: the key is what sets it")
+}

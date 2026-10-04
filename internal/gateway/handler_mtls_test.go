@@ -96,7 +96,7 @@ func requestLogLines(t *testing.T, ca *mtlsCA, certs ...tls.Certificate) []map[s
 	q, err := gateway.NewQueue(&fakeFactory{}, "env-1", logger)
 	require.NoError(t, err)
 	t.Cleanup(func() { q.Close() })
-	srv := httptest.NewUnstartedServer(gateway.NewHandler(q, logger))
+	srv := httptest.NewUnstartedServer(gateway.NewHandler(q, gateway.Instance{}, logger))
 	srv.TLS = &tls.Config{
 		ClientAuth: tls.RequireAndVerifyClientCert,
 		ClientCAs:  ca.pool(),
@@ -145,7 +145,7 @@ func TestServer_RequestLogHasNoCallerOverPlainHTTP(t *testing.T) {
 	q, err := gateway.NewQueue(&fakeFactory{}, "env-1", logger)
 	require.NoError(t, err)
 	t.Cleanup(func() { q.Close() })
-	srv := httptest.NewServer(gateway.NewHandler(q, logger))
+	srv := httptest.NewServer(gateway.NewHandler(q, gateway.Instance{}, logger))
 	t.Cleanup(srv.Close)
 
 	resp, err := http.Get(srv.URL + "/")
@@ -171,7 +171,7 @@ func TestServer_PostMessageSenderIsCallerIdentity(t *testing.T) {
 	}}, "env-1", slog.New(slog.DiscardHandler))
 	require.NoError(t, err)
 	t.Cleanup(func() { q.Close() })
-	srv := httptest.NewUnstartedServer(gateway.NewHandler(q, slog.New(slog.DiscardHandler)))
+	srv := httptest.NewUnstartedServer(gateway.NewHandler(q, gateway.Instance{}, slog.New(slog.DiscardHandler)))
 	srv.TLS = &tls.Config{
 		ClientAuth: tls.RequireAndVerifyClientCert,
 		ClientCAs:  ca.pool(),
@@ -202,7 +202,7 @@ func TestServer_MessageIDIsScopedToCaller(t *testing.T) {
 	ca := newMTLSCA(t)
 	model := newHeldModel()
 	q := newMemoryQueue(t, filepath.Join(t.TempDir(), "memory.db"), model)
-	srv := httptest.NewUnstartedServer(gateway.NewHandler(q, slog.New(slog.DiscardHandler)))
+	srv := httptest.NewUnstartedServer(gateway.NewHandler(q, gateway.Instance{}, slog.New(slog.DiscardHandler)))
 	srv.TLS = &tls.Config{
 		ClientAuth: tls.RequireAndVerifyClientCert,
 		ClientCAs:  ca.pool(),

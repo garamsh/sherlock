@@ -3,7 +3,7 @@
 // object on stdin (the validated input), one JSON object on stdout
 // (the validated output), non-zero exit on failure. The tool writes
 // the outbound message as one outbox entry in SHERLOCK_OUTBOX_DIR,
-// stamped with the sending agent's ID from SHERLOCK_AGENT_ID, its
+// stamped with its creation time, the sending agent's ID from SHERLOCK_AGENT_ID, its
 // provenance from SHERLOCK_ASSIGNMENT_EPOCH and SHERLOCK_GENERATION
 // (ADR 0016), and the turn's message IDs from SHERLOCK_IN_REPLY_TO; whatever
 // consumes the agent's replies forwards the entry (ADR 0007).
@@ -34,13 +34,14 @@ type callOutput struct {
 }
 
 func main() {
-	if err := run(); err != nil {
+	if err := run(time.Now); err != nil {
 		fmt.Fprintln(os.Stderr, "message_send:", err)
 		os.Exit(1)
 	}
 }
 
-func run() error {
+// run writes one entry, minted at the single instant now returns.
+func run(now func() time.Time) error {
 	outboxDir := os.Getenv("SHERLOCK_OUTBOX_DIR")
 	if outboxDir == "" {
 		return errors.New("SHERLOCK_OUTBOX_DIR is empty")
@@ -58,12 +59,14 @@ func run() error {
 	if err := dec.Decode(&in); err != nil {
 		return fmt.Errorf("decode input: %w", err)
 	}
-	id, err := newEntryID()
+	mintedAt := now()
+	id, err := newEntryID(mintedAt)
 	if err != nil {
 		return err
 	}
 	if err := writeEntry(outboxDir, message.Message{
 		ID:              id,
+		CreatedAt:       mintedAt.UTC(),
 		AgentID:         agentID,
 		AssignmentEpoch: os.Getenv("SHERLOCK_ASSIGNMENT_EPOCH"),
 		Generation:      os.Getenv("SHERLOCK_GENERATION"),
@@ -77,15 +80,16 @@ func run() error {
 	return json.NewEncoder(os.Stdout).Encode(callOutput{Status: "queued"})
 }
 
-// newEntryID returns a fresh entry ID: the write time in nanoseconds,
-// zero-padded so name order is write order, and 64 random bits so two
-// writes in the same nanosecond still differ.
-func newEntryID() (string, error) {
+// newEntryID returns a fresh entry ID: at in nanoseconds, zero-padded so
+// name order is write order, and 64 random bits so two writes in the same
+// nanosecond still differ. The layout is this tool's; readers treat the
+// ID as opaque and read the time from created_at.
+func newEntryID(at time.Time) (string, error) {
 	var suffix [8]byte
 	if _, err := rand.Read(suffix[:]); err != nil {
 		return "", fmt.Errorf("entry id: %w", err)
 	}
-	return fmt.Sprintf("%020d-%s", time.Now().UnixNano(), hex.EncodeToString(suffix[:])), nil
+	return fmt.Sprintf("%020d-%s", at.UnixNano(), hex.EncodeToString(suffix[:])), nil
 }
 
 // writeEntry writes msg to dir as <msg.ID>.json, atomically and

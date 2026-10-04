@@ -1,5 +1,7 @@
 package message
 
+import "time"
+
 // Message is one delivered outbound message: who sent it, which
 // channel, which target, what content. The sender, another person, and
 // another agent are all the same kind of target
@@ -13,13 +15,18 @@ package message
 // Without it a reader of an outbox holding two agents' files has only
 // the path to go on, which stops working the moment they share a mount.
 //
-// ID and InReplyTo are the platform's as well. ID names the outbox entry:
-// assigned once when message_send writes it, unique per entry, and the
-// entry's file name is ID plus ".json". InReplyTo holds the IDs of the
+// ID, CreatedAt and InReplyTo are the platform's as well. ID names the
+// outbox entry: assigned once when message_send writes it, unique per
+// entry, and the entry's file name is ID plus ".json". ID is opaque; a
+// reader compares it whole and never parses it. CreatedAt is the agent
+// host's wall-clock instant the entry was minted at, in UTC, and encodes
+// as RFC 3339 with nanoseconds; it is zero, meaning unknown, on an entry
+// written before the field existed. InReplyTo holds the IDs of the
 // inbound messages the turn that sent it drained.
 type Message struct {
-	ID      string `json:"id"`
-	AgentID string `json:"agent_id"`
+	ID        string    `json:"id"`
+	CreatedAt time.Time `json:"created_at"`
+	AgentID   string    `json:"agent_id"`
 	// AssignmentEpoch and Generation record the entry's origin: the
 	// launcher's assignment epoch and the runtime start that wrote it
 	// (ADR 0016). They are provenance, not a credential, and empty when

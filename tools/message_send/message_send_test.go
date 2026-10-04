@@ -2,12 +2,14 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 	"sync"
 	"sync/atomic"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -35,6 +37,12 @@ func readEntries(t *testing.T, dir string) map[string]message.Message {
 // call input, the way the platform's runner spawns it.
 func runTool(t *testing.T, outbox, inReplyTo, input string) {
 	t.Helper()
+	runToolAt(t, outbox, inReplyTo, input, time.Now)
+}
+
+// runToolAt is runTool with the tool's clock replaced by now.
+func runToolAt(t *testing.T, outbox, inReplyTo, input string, now func() time.Time) {
+	t.Helper()
 	t.Setenv("SHERLOCK_OUTBOX_DIR", outbox)
 	t.Setenv("SHERLOCK_AGENT_ID", "agent-7")
 	t.Setenv("SHERLOCK_IN_REPLY_TO", inReplyTo)
@@ -51,7 +59,7 @@ func runTool(t *testing.T, outbox, inReplyTo, input string) {
 	origIn, origOut := os.Stdin, os.Stdout
 	os.Stdin, os.Stdout = stdin, stdout
 	defer func() { os.Stdin, os.Stdout = origIn, origOut }()
-	require.NoError(t, run())
+	require.NoError(t, run(now))
 }
 
 // TestRun_EntryIDIsUniqueAndNamesTheFile writes several entries and
@@ -97,13 +105,14 @@ func TestRun_EntryRepliesToTheTurnsMessages(t *testing.T) {
 func TestWriteEntry_NeverOverwritesAnExistingEntry(t *testing.T) {
 	outbox := t.TempDir()
 	existing := filepath.Join(outbox, "taken.json")
-	require.NoError(t, os.WriteFile(existing, []byte(`{"id":"taken","content":"first"}`), 0o600))
+	const first = `{"id":"taken","created_at":"2026-01-02T03:04:05.000000006Z","content":"first"}`
+	require.NoError(t, os.WriteFile(existing, []byte(first), 0o600))
 
-	err := writeEntry(outbox, message.Message{ID: "taken", Content: "second"})
+	err := writeEntry(outbox, message.Message{ID: "taken", CreatedAt: time.Now().UTC(), Content: "second"})
 	require.Error(t, err)
 	body, readErr := os.ReadFile(existing)
 	require.NoError(t, readErr)
-	assert.JSONEq(t, `{"id":"taken","content":"first"}`, string(body), "the existing entry is unchanged")
+	assert.JSONEq(t, first, string(body), "the existing entry is unchanged, its created_at included")
 
 	require.NoError(t, writeEntry(outbox, message.Message{ID: "fresh", Content: "second"}))
 	assert.FileExists(t, filepath.Join(outbox, "fresh.json"))
@@ -151,7 +160,7 @@ func TestWriteEntry_ConcurrentReaderNeverSeesAPartialEntry(t *testing.T) {
 	}
 
 	for i := range writes {
-		id, err := newEntryID()
+		id, err := newEntryID(time.Now())
 		require.NoError(t, err, "write %d", i)
 		name := filepath.Join(outbox, id+".json")
 		next.Store(&name)
@@ -192,5 +201,58 @@ func TestRun_EntryRecordsItsProvenance(t *testing.T) {
 				assert.Equal(t, tt.generation, raw["generation"])
 			}
 		})
+	}
+}
+
+// TestRun_EntryStatesItsCreationTimeInUTC checks the entry's body carries
+// created_at as an RFC 3339 string in UTC with its nanoseconds, though
+// the clock reads in another zone.
+func TestRun_EntryStatesItsCreationTimeInUTC(t *testing.T) {
+	outbox := t.TempDir()
+	at := time.Date(2026, 10, 5, 18, 30, 0, 123456789, time.FixedZone("KST", 9*60*60))
+	runToolAt(t, outbox, `[]`, `{"channel":"http","target":"alice","content":"hi"}`,
+		func() time.Time { return at })
+
+	names, err := filepath.Glob(filepath.Join(outbox, "*.json"))
+	require.NoError(t, err)
+	require.Len(t, names, 1)
+	body, err := os.ReadFile(names[0])
+	require.NoError(t, err)
+	var raw map[string]any
+	require.NoError(t, json.Unmarshal(body, &raw))
+	createdAt, ok := raw["created_at"].(string)
+	require.True(t, ok, "created_at is a string in the body: %s", body)
+
+	assert.Equal(t, "2026-10-05T09:30:00.123456789Z", createdAt)
+	parsed, err := time.Parse(time.RFC3339Nano, createdAt)
+	require.NoError(t, err)
+	assert.Equal(t, time.UTC, parsed.Location(), "created_at is stated in UTC")
+	assert.True(t, parsed.Equal(at))
+}
+
+// TestRun_CreationTimeIsTheInstantTheIDWasMintedFrom gives the tool a
+// clock that moves on every read, and checks created_at is the same
+// instant the entry's ID was minted from rather than a second reading.
+func TestRun_CreationTimeIsTheInstantTheIDWasMintedFrom(t *testing.T) {
+	outbox := t.TempDir()
+	base := time.Date(2026, 10, 5, 9, 30, 0, 0, time.UTC)
+	var reads []time.Time
+	clock := func() time.Time {
+		at := base.Add(time.Duration(len(reads)) * time.Second)
+		reads = append(reads, at)
+		return at
+	}
+	runToolAt(t, outbox, `[]`, `{"channel":"http","target":"alice","content":"hi"}`, clock)
+
+	entries := readEntries(t, outbox)
+	require.Len(t, entries, 1)
+	require.NotEmpty(t, reads)
+	minted := reads[0]
+	for _, msg := range entries {
+		prefix, _, found := strings.Cut(msg.ID, "-")
+		require.True(t, found, "id %q has its time prefix", msg.ID)
+		assert.Equal(t, fmt.Sprintf("%020d", minted.UnixNano()), prefix, "the id is minted from the first reading")
+		assert.True(t, msg.CreatedAt.Equal(minted),
+			"created_at %s is the instant the id was minted from, %s", msg.CreatedAt, minted)
 	}
 }

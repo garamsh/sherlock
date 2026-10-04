@@ -88,10 +88,12 @@ Config files resolve in order: explicit `--config <path>`, then `./configs/agent
 
 **`--strict-config` refuses what the default reports** (#932). On either command, every key that would be warned about fails startup instead, and the error names the keys and the file; a process that started under it has read every key its file carries. It is a flag only, like `--agent-id`: it is read off the command line rather than through the settings layers, so neither `SHERLOCK_STRICT_CONFIG` nor a `strict-config` key in the file it checks turns it on or off — the file's key is itself an unread key. Without the flag, startup is unchanged.
 
-Two exceptions a pod spec meets immediately:
+Exceptions a pod spec meets immediately:
 
 - **Both commands name their listener `addr`**, so a single `SHERLOCK_ADDR` set on the pod retargets both containers. Set it per container, or leave the workspace at its default.
-- **`--agent-id` is a flag only.** It is read straight off the command line rather than through the settings layers, so setting `SHERLOCK_AGENT_ID` in the pod spec does not choose the agent's ID. The agent ID must appear in the container's args. The agent then publishes the ID it resolved under that same name for the tools it spawns, so a value already in the environment is replaced rather than read — `message_send` reads it there to stamp each delivered message (ADR 0016).
+- **`--agent-id` is a required flag with no default.** It is read straight off the command line rather than through the settings layers, so setting `SHERLOCK_AGENT_ID` in the pod spec does not choose the agent's ID, and an absent or empty value fails startup (§Startup). The value is opaque and used verbatim: a GRN is the path segment the routes answer on. The agent then publishes the ID it resolved under that same name for the tools it spawns, so a value already in the environment is replaced rather than read — `message_send` reads it there to stamp each delivered message (ADR 0016).
+- **`--assignment-epoch` is an optional flag with no environment form.** It is the launcher's label for this assignment: opaque, empty meaning unknown, and logged on the `agent listening` line.
+- **The generation is a runtime start nonce, not a setting.** Each serving start mints a fresh 32-character lowercase hex value after the memory store's writer lock is held, logs it on the `agent listening` line, and persists it nowhere, so a container restart under the same args carries a new one. There is no `--generation` flag; passing one fails startup as an unknown flag. Sherlock checks neither value (ADR 0016).
 - **`tools.pins` has no environment form, and `SHERLOCK_TOOLS_PINS` fails startup rather than being ignored.** It is a nested map — one variable carries one value — reachable through the config file only. Setting the variable is refused while the config resolves, empty value included, and the refusal names the file to write the pin set in (#745). A per-tool variant such as `SHERLOCK_TOOLS_PINS_FILES` names no key and is ignored.
 
 **The model API key never appears in configuration** (ADR 0003). `model.api-key-env` names the *environment variable* that holds it, defaulting to `OPENAI_API_KEY`; `embedding.api-key-env` does the same for the embeddings endpoint and defaults to empty, which sends no key. The key reaches the process through the environment and nowhere else, so it is injected as a Secret-backed environment variable rather than a mounted file.
@@ -155,6 +157,7 @@ Every fatal path exits **1** and prints `Error: <message>`; nothing distinguishe
 
 | Cause | Process | Message shape |
 |---|---|---|
+| `--agent-id` absent or empty | agent | `--agent-id is required: the agent serves the identity it was given and has no default (ADR 0016)` |
 | Config file group- or other-readable | both | `config file "…" is group- or other-accessible (mode 0644); it must be owner-only` |
 | `--config` names a missing or malformed file | both | viper's parse error |
 | `tls:` section incomplete (some of cert/key/client-ca) | agent | `tls: section is incomplete: missing key, client-ca` |

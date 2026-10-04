@@ -31,15 +31,15 @@ Start the workspace first: the agent's file tools and `shell_exec` tools dial it
 ```sh
 chmod 0600 configs/agent.yaml configs/workspace.yaml     # config files must be owner-only
 sherlock workspace &                        # serves the workspace on 127.0.0.1:8081
-sherlock agent --message "hello"            # runs one turn and exits
-sherlock agent                             # or: serve the agent's gateway
+sherlock agent --agent-id my-agent --message "hello"   # runs one turn and exits
+sherlock agent --agent-id my-agent                     # or: serve the agent's gateway
 ```
 
 To try the platform in Docker instead: `make build-images` builds both images — distroless agent (`build/agent.Dockerfile`, carrying the first-party tool executables at `/opt/sherlock/tools/`) and debian-slim workspace (`build/workspace.Dockerfile`) — and `deploy/local/` holds the local compose setup.
 
 ### sherlock agent
 
-Runs the agent's self: the rolling session, memory, the mouth, and the HTTP gateway for the one agent this process serves (`--agent-id`, default `default`). Without `--message` it serves until interrupted:
+Runs the agent's self: the rolling session, memory, the mouth, and the HTTP gateway for the one agent this process serves (`--agent-id`, required: an absent or empty value refuses startup, and the value is used verbatim, so a GRN is a valid ID). `--assignment-epoch` optionally carries the launcher's assignment epoch; each serving start also mints a fresh generation, a runtime start nonce. The agent logs both and checks neither. Without `--message` it serves until interrupted:
 
 - `POST /agents/{agent-id}/messages` with `{"content":"..."}` — queues a message for the agent and returns `202` with a message ID. A path naming any other agent ID gets 404: one process serves one agent.
 - `GET /agents/{agent-id}/events` — server-sent events stream of the agent's loop (turn started, tool call, writeback, turn finished). Every run ends with exactly one terminal event — `turn_finished` on success, `turn_failed` with the error on failure.
@@ -168,7 +168,7 @@ The agent's instructions are composed of two parts: an **ego** (identity and beh
 The ego is a Markdown file, resolved in order: `--ego-file <path>`, then the embedded default (`internal/agent/ego.md`). There is no config key for it, and a missing or unreadable file fails at startup. Changes apply on restart; the file is not hot-reloaded.
 
 ```sh
-sherlock agent --ego-file ./EGO.md --message "hello"
+sherlock agent --agent-id my-agent --ego-file ./EGO.md --message "hello"
 ```
 
 An ego file describes who the agent is and how it behaves — not the protocol. Example:

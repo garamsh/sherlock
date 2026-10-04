@@ -62,6 +62,8 @@ curl --cacert tls/ca.pem --cert tls/client.pem --key tls/client-key.pem \
   -X POST https://localhost:8080/agents/demo/messages -d '{"content":"hello"}'   # returns 202
 ```
 
+`demo` in those paths is the agent ID `docker-compose.yml` passes with `--agent-id`; the agent has no default ID and answers on the one it is given (ADR 0016).
+
 A client without a certificate — or with one from a different CA — is rejected at the TLS handshake.
 
 `make build-tools` builds for the host platform, so on a non-Linux host build for the containers instead: `GOOS=linux make -C ../.. build-tools`.

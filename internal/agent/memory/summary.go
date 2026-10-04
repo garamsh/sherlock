@@ -25,9 +25,9 @@ type ConversationSummary struct{ Model agent.Model }
 type unusableAnswer struct{ error }
 
 // Summarize summarizes one chronological batch independently of older
-// episodes, and names the entities it mentions in the same call. Each
-// call requires memory_summary, and an unusable answer is asked again up
-// to summaryAttempts calls in all; the last answer's error is returned.
+// episodes, and names the entities it mentions in the same call. An
+// unusable answer is asked again, up to summaryAttempts calls in all, and
+// the last answer's error is returned.
 func (s ConversationSummary) Summarize(ctx context.Context, updates []string) (agent.Synthesis, error) {
 	input, err := json.Marshal(struct {
 		Updates []string `json:"updates"`
@@ -35,7 +35,6 @@ func (s ConversationSummary) Summarize(ctx context.Context, updates []string) (a
 	if err != nil {
 		return agent.Synthesis{}, err
 	}
-	ctx = agent.WithRequiredTool(ctx, "memory_summary")
 	for attempt := 1; ; attempt++ {
 		synthesis, err := s.summarize(ctx, string(input))
 		var unusable unusableAnswer

@@ -37,7 +37,6 @@ type messagesRequest struct {
 		Description string          `json:"description"`
 		InputSchema json.RawMessage `json:"input_schema"`
 	} `json:"tools"`
-	ToolChoice json.RawMessage `json:"tool_choice"`
 	// ResponseFormat is absent from this protocol; decoding it proves the
 	// client does not send a field the API would reject.
 	ResponseFormat json.RawMessage `json:"response_format"`
@@ -248,24 +247,4 @@ func TestChat_NonSuccessStatusIsReportedAsAPIError(t *testing.T) {
 	var apiErr *anthropic.APIError
 	require.True(t, errors.As(err, &apiErr))
 	assert.Equal(t, http.StatusUnauthorized, apiErr.StatusCode)
-}
-
-// TestChat_RequiredToolIsForcedThroughToolChoice pins the forced call
-// synthesis relies on: a context requiring a tool sends the protocol's
-// forced-tool form, and a call without one sends no tool_choice at all.
-func TestChat_RequiredToolIsForcedThroughToolChoice(t *testing.T) {
-	f := newFakeProvider(t, http.StatusOK, textOnlyReply)
-	model := newModel(t, f)
-	messages := []agent.Message{{Role: agent.RoleUser, Content: "task"}}
-	tools := []tool.Descriptor{{Name: "memory_summary", InputSchema: json.RawMessage(`{"type":"object"}`)}}
-
-	_, err := model.Chat(agent.WithRequiredTool(t.Context(), "memory_summary"), messages, tools)
-	require.NoError(t, err)
-	assert.JSONEq(t, `{"type":"tool","name":"memory_summary"}`, string(f.request.ToolChoice))
-
-	f.request = messagesRequest{}
-	_, err = model.Chat(t.Context(), messages, tools)
-	require.NoError(t, err)
-	assert.Nil(t, f.request.ToolChoice,
-		"the control: a call that requires no tool leaves the choice to the model")
 }

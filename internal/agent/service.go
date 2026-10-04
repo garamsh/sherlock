@@ -28,23 +28,6 @@ type Model interface {
 	Chat(ctx context.Context, messages []Message, tools []tool.Descriptor) (Response, error)
 }
 
-type requiredToolKey struct{}
-
-// WithRequiredTool marks a Chat call made under ctx as one that must call
-// the named tool. A Model forces that call where its protocol can, and
-// otherwise leaves the choice to the model, so the caller still checks
-// the response.
-func WithRequiredTool(ctx context.Context, name string) context.Context {
-	return context.WithValue(ctx, requiredToolKey{}, name)
-}
-
-// RequiredTool returns the tool a Chat call under ctx must call, or ""
-// when the call leaves the choice to the model.
-func RequiredTool(ctx context.Context) string {
-	name, _ := ctx.Value(requiredToolKey{}).(string)
-	return name
-}
-
 // ToolClient is the platform's tool client surface the session consumes
 // (ADR 0017 §Tool contract). Production uses *tool.Registry; tests may
 // substitute any implementation that exposes the same listing and call

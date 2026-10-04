@@ -19,19 +19,11 @@ const maxErrorBody = 512
 // messagesRequest is the Messages API request body. MaxTokens is required
 // by the API, and System is a top-level field rather than a message role.
 type messagesRequest struct {
-	Model      string          `json:"model"`
-	MaxTokens  int             `json:"max_tokens"`
-	System     string          `json:"system,omitempty"`
-	Messages   []wireMessage   `json:"messages"`
-	Tools      []wireTool      `json:"tools,omitempty"`
-	ToolChoice *wireToolChoice `json:"tool_choice,omitempty"`
-}
-
-// wireToolChoice is the forced-tool form: type "tool" with the name of the
-// tool the model must call.
-type wireToolChoice struct {
-	Type string `json:"type"`
-	Name string `json:"name"`
+	Model     string        `json:"model"`
+	MaxTokens int           `json:"max_tokens"`
+	System    string        `json:"system,omitempty"`
+	Messages  []wireMessage `json:"messages"`
+	Tools     []wireTool    `json:"tools,omitempty"`
 }
 
 // wireMessage is one conversation entry. Content is a block list rather
@@ -84,21 +76,17 @@ type messagesResponse struct {
 // that descriptor with every other tool. The Messages API's missing
 // response_format field therefore costs the writeback nothing, and this
 // package needs no mechanism of its own.
-//
-// A call whose context requires a tool (agent.RequiredTool) forces it
-// through tool_choice; any other call leaves the choice to the model.
 func (m *Model) Chat(ctx context.Context, messages []agent.Message, tools []tool.Descriptor) (agent.Response, error) {
 	system, wire := toWireMessages(messages)
 	if len(wire) == 0 {
 		return agent.Response{}, fmt.Errorf("anthropic provider: no messages to send")
 	}
 	body, err := json.Marshal(messagesRequest{
-		Model:      m.model,
-		MaxTokens:  m.maxTokens,
-		System:     system,
-		Messages:   wire,
-		Tools:      toWireTools(tools),
-		ToolChoice: toWireToolChoice(agent.RequiredTool(ctx)),
+		Model:     m.model,
+		MaxTokens: m.maxTokens,
+		System:    system,
+		Messages:  wire,
+		Tools:     toWireTools(tools),
 	})
 	if err != nil {
 		return agent.Response{}, fmt.Errorf("encode request: %w", err)
@@ -253,13 +241,4 @@ func toWireTools(tools []tool.Descriptor) []wireTool {
 		}
 	}
 	return out
-}
-
-// toWireToolChoice forces the required tool, or returns nil when no tool
-// is required.
-func toWireToolChoice(name string) *wireToolChoice {
-	if name == "" {
-		return nil
-	}
-	return &wireToolChoice{Type: "tool", Name: name}
 }

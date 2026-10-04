@@ -317,7 +317,7 @@ func (m *fixtureMeter) serve(w http.ResponseWriter, r *http.Request) {
 	// daemon's network stack connects from it, and nothing else may use
 	// this as a relay.
 	remote, _, _ := net.SplitHostPort(r.RemoteAddr)
-	if ip := net.ParseIP(remote); ip == nil || !(ip.Equal(m.allowed) || ip.IsLoopback()) {
+	if ip := net.ParseIP(remote); ip == nil || (!ip.Equal(m.allowed) && !ip.IsLoopback()) {
 		http.Error(w, "forbidden", http.StatusForbidden)
 		return
 	}

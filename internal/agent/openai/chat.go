@@ -26,10 +26,19 @@ const maxErrorBody = 512
 // on every provider is worth more than a stronger one that works on some
 // (issue #621).
 type chatRequest struct {
-	Model             string        `json:"model"`
-	Messages          []chatMessage `json:"messages"`
-	Tools             []chatTool    `json:"tools,omitempty"`
-	ParallelToolCalls bool          `json:"parallel_tool_calls"`
+	Model             string          `json:"model"`
+	Messages          []chatMessage   `json:"messages"`
+	Tools             []chatTool      `json:"tools,omitempty"`
+	ToolChoice        *chatToolChoice `json:"tool_choice,omitempty"`
+	ParallelToolCalls bool            `json:"parallel_tool_calls"`
+}
+
+// chatToolChoice names the one function the model must call.
+type chatToolChoice struct {
+	Type     string `json:"type"`
+	Function struct {
+		Name string `json:"name"`
+	} `json:"function"`
 }
 
 // chatMessage is the wire shape of one conversation entry. The OpenAI API
@@ -89,6 +98,9 @@ type chatResponse struct {
 // already run under (ADR 0017, ADR 0018). The session, not this package,
 // decides that a turn ends on that call.
 //
+// A call whose context requires a tool (agent.RequiredTool) names it in
+// tool_choice; any other call leaves the choice to the model.
+//
 // parallel_tool_calls is forced to false: ADR 0017 requires strict-mode
 // constrained decoding (advertised as Strict: true on each tool), and the
 // OpenAI chat-completions API flags strict mode as incompatible with
@@ -98,6 +110,7 @@ func (m *Model) Chat(ctx context.Context, messages []agent.Message, tools []tool
 		Model:             m.model,
 		Messages:          toWireMessages(messages),
 		Tools:             toWireTools(tools),
+		ToolChoice:        toWireToolChoice(agent.RequiredTool(ctx)),
 		ParallelToolCalls: false,
 	})
 	if err != nil {
@@ -188,4 +201,15 @@ func toWireTools(tools []tool.Descriptor) []chatTool {
 		out[i].Function.Parameters = sanitizeToolParameters(d.Name, d.InputSchema)
 	}
 	return out
+}
+
+// toWireToolChoice names the required function, or returns nil when no
+// tool is required.
+func toWireToolChoice(name string) *chatToolChoice {
+	if name == "" {
+		return nil
+	}
+	choice := &chatToolChoice{Type: "function"}
+	choice.Function.Name = name
+	return choice
 }

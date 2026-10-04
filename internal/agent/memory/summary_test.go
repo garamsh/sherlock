@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -12,6 +13,7 @@ import (
 
 	"github.com/garamsh/sherlock/internal/agent"
 	agentmemory "github.com/garamsh/sherlock/internal/agent/memory"
+	"github.com/garamsh/sherlock/internal/memory/sqlite"
 	"github.com/garamsh/sherlock/internal/tool"
 )
 
@@ -61,13 +63,15 @@ func TestConversationSummary_RejectsUnusableModelResponse(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			model := agent.NewScriptedModel(agent.ScriptedStep{ToolCalls: tt.calls, Err: tt.err})
+			step := agent.ScriptedStep{ToolCalls: tt.calls, Err: tt.err}
+			model := agent.NewScriptedModel(step, step, step)
 			result, err := (agentmemory.ConversationSummary{Model: model}).Summarize(context.Background(), []string{"new"})
 			if tt.name == "valid control" {
 				require.NoError(t, err)
 				assert.Equal(t, agent.Synthesis{Summary: "Current fact.", Entities: []string{"Vega"}}, result)
 			} else {
 				require.Error(t, err)
+				assert.NotErrorIs(t, err, agent.ErrScriptExhausted)
 				assert.Zero(t, result)
 			}
 		})
@@ -90,16 +94,67 @@ func TestConversationSummary_AsksForTheEntitiesInTheSameCall(t *testing.T) {
 	assert.JSONEq(t, `{"type":"array","items":{"type":"string","minLength":1,"maxLength":200},"maxItems":50}`, string(schema.Properties["entities"]))
 }
 
-// capturingModel keeps the synthesis request it was sent and names two
-// entities.
+// capturingModel keeps the synthesis request it was sent, and the tool
+// its context required, and names two entities.
 type capturingModel struct {
-	calls  int
-	prompt string
-	schema json.RawMessage
+	calls    int
+	prompt   string
+	schema   json.RawMessage
+	required string
 }
 
-func (m *capturingModel) Chat(_ context.Context, messages []agent.Message, tools []tool.Descriptor) (agent.Response, error) {
+func (m *capturingModel) Chat(ctx context.Context, messages []agent.Message, tools []tool.Descriptor) (agent.Response, error) {
 	m.calls++
-	m.prompt, m.schema = messages[0].Content, tools[0].InputSchema
+	m.prompt, m.schema, m.required = messages[0].Content, tools[0].InputSchema, agent.RequiredTool(ctx)
 	return agent.Response{ToolCalls: []agent.ToolCall{{Name: "memory_summary", Input: json.RawMessage(`{"summary":"Rodend parts come from Gebind Components.","entities":["Rodend","Gebind Components"]}`)}}}, nil
+}
+
+// summaryCall is one valid memory_summary answer.
+var summaryCall = agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: "memory_summary", Input: json.RawMessage(`{"summary":"Launch moved to Friday.","entities":["Friday launch"]}`)}}}
+
+// skip is an answer in prose, without the memory_summary call.
+var skip = agent.ScriptedStep{Content: "The launch moved to Friday."}
+
+func TestConversationSummary_AsksAgainAfterAnAnswerWithoutTheCall(t *testing.T) {
+	model := agent.NewScriptedModel(skip, summaryCall)
+	synthesis, err := (agentmemory.ConversationSummary{Model: model}).Summarize(context.Background(), []string{"user: The launch moved to Friday."})
+	require.NoError(t, err, "the second attempt's call is used")
+	assert.Equal(t, agent.Synthesis{Summary: "Launch moved to Friday.", Entities: []string{"Friday launch"}}, synthesis)
+}
+
+func TestConversationSummary_DoesNotAskAgainAfterAModelError(t *testing.T) {
+	model := agent.NewScriptedModel(agent.ScriptedStep{Err: errors.New("unavailable")}, summaryCall)
+	_, err := (agentmemory.ConversationSummary{Model: model}).Summarize(context.Background(), []string{"user: The launch moved to Friday."})
+	require.ErrorContains(t, err, "unavailable", "a failed call is not an answer, so it is not asked again")
+}
+
+func TestRecordTurn_ThreeAnswersWithoutTheCallLeaveTheBatchPending(t *testing.T) {
+	ctx := context.Background()
+	store, err := sqlite.OpenConversation(filepath.Join(t.TempDir(), "memory.db"), wordEmbedder{})
+	require.NoError(t, err)
+	defer store.Close()
+	// The fourth step is the control: it is a valid call, so a fourth
+	// attempt would have stored the episode.
+	summarizer := agentmemory.ConversationSummary{Model: agent.NewScriptedModel(skip, skip, skip, summaryCall)}
+	err = store.RecordTurn(ctx, checkpoint("The launch moved to Friday."), summarizer)
+	require.ErrorContains(t, err, "synthesize conversation: model must call memory_summary exactly once")
+	pending, err := store.PendingSources(ctx)
+	require.NoError(t, err)
+	assert.Len(t, pending, 4, "the batch stays pending for the next completion or startup")
+	episodes, err := store.RecentMid(ctx, 10)
+	require.NoError(t, err)
+	assert.Empty(t, episodes)
+
+	require.NoError(t, store.Accumulate(ctx, summarizer), "the next completion retries the batch")
+	episodes, err = store.RecentMid(ctx, 10)
+	require.NoError(t, err)
+	require.Len(t, episodes, 1)
+	assert.Equal(t, "Launch moved to Friday.", episodes[0].Summary)
+}
+
+func TestConversationSummary_RequiresTheMemorySummaryCall(t *testing.T) {
+	model := &capturingModel{}
+	_, err := (agentmemory.ConversationSummary{Model: model}).Summarize(context.Background(), []string{"user: Rodend."})
+	require.NoError(t, err)
+	assert.Equal(t, "memory_summary", model.required)
 }

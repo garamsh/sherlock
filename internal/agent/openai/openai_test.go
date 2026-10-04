@@ -347,3 +347,29 @@ func TestChat_RequestBodyAdvertisesStrictModeAndDisablesParallelCalls(t *testing
 	assert.True(t, fake.request.Tools[0].Function.Strict,
 		"every tool definition must carry strict: true (issue #298)")
 }
+
+// TestChat_RequiredToolIsNamedInToolChoice pins the forced call synthesis
+// relies on: a context requiring a tool names that function in
+// tool_choice, and a call without one sends no tool_choice at all.
+func TestChat_RequiredToolIsNamedInToolChoice(t *testing.T) {
+	fake, server := newFakeProvider(t,
+		`{"choices":[{"message":{"content":"ok"},"finish_reason":"stop"}]}`,
+		`{"choices":[{"message":{"content":"ok"},"finish_reason":"stop"}]}`)
+	defer server.Close()
+	model := newTestModel(t, server)
+	messages := []agent.Message{{Role: agent.RoleUser, Content: "hi"}}
+	tools := []tool.Descriptor{{Name: "memory_summary", InputSchema: json.RawMessage(`{"type":"object"}`)}}
+
+	_, err := model.Chat(agent.WithRequiredTool(t.Context(), "memory_summary"), messages, tools)
+	require.NoError(t, err)
+	var forced struct {
+		ToolChoice json.RawMessage `json:"tool_choice"`
+	}
+	require.NoError(t, json.Unmarshal(fake.body, &forced))
+	assert.JSONEq(t, `{"type":"function","function":{"name":"memory_summary"}}`, string(forced.ToolChoice))
+
+	_, err = model.Chat(t.Context(), messages, tools)
+	require.NoError(t, err)
+	assert.NotContains(t, string(fake.body), "tool_choice",
+		"the control: a call that requires no tool leaves the choice to the model")
+}

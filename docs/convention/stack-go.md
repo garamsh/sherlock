@@ -20,17 +20,9 @@
 
 ## 0. Folder & file naming — strict
 
-Names describe **what they own**. **Banned at any level:**
-`model.go`, `utils/`, `helpers/`, `common/`, `ext/`, `adapter/`,
-`driver/`, `platform/`, `infra/`, `kit/`, `repo/`.
+**Banned at any level:** `model.go`.
 
-If two helpers share a concept, **give the concept a name**:
-`password_hashing.go`, `format_currency.go`. The path tells you what
-the file does.
-
-(Standard practice in the Go community: package names after the
-concept they own, not the role they play — `auth` over
-`auth_utils`. `spf13/cobra` and `go-kit/kit` both follow this.)
+Files named for a concept: `password_hashing.go`, `format_currency.go`.
 
 ## 1. Directory layout
 
@@ -51,8 +43,8 @@ See §0 for the banned-name list.
 - `internal/<domain>/postgres.go`, `internal/<domain>/memory.go` —
   concrete implementations of the dependency interfaces; the
   in-memory one serves tests and dev.
-- `internal/<crosscutting>/` — a concern at least three domains
-  share, named by what it is.
+- `internal/<crosscutting>/` — a concern extracted below the domains,
+  named by what it is.
 - `go.mod`, `go.sum` — module root.
 
 **Rules for `internal/<domain>/`:**
@@ -145,9 +137,6 @@ file declares and which depends.
 - **The implementation lives with the interface it satisfies.**
   `postgres.go`, `memory.go` and `<impl>/` are in the same package, or
   a sub-package of it, as `service.go`.
-- **A consumer imports the producer's interface, not its concrete
-  type.** `order` imports `billing.Charger`; the compiler does not
-  enforce this, so it is a review matter.
 - Go rejects an import cycle at compile time but does not detect a
   `type → struct → type` cycle. Those are found by reading.
 
@@ -239,9 +228,7 @@ project says otherwise).
   unit under test through its exported API. **Default to this.**
 - **Internal tests** (`package user`): same directory and package as
   the code under test. Use only when you genuinely need a white-box
-  seam (uncommon), or when the package cannot be imported — `package
-  main` cannot, so a test of one is internal by necessity rather than
-  by choice.
+  seam (uncommon).
 - **`tests/` at module root:** integration / E2E tests that wire
   multiple domains. Separate binary.
 - **In-process integration test client:** `httptest.NewServer`.
@@ -274,10 +261,6 @@ modelling the wrong idea costs more than writing each double out.
 
 Nothing has to keep a double in sync with its interface: one that stops
 satisfying it fails to compile.
-
-When a top-level domain depends on another top-level's interface, the
-test for the consumer writes its double against the interface declared
-in the **producer's** top level.
 
 ## 8. Imports & dependencies
 

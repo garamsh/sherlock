@@ -18,9 +18,10 @@ selection:
   No derived stack is selected, so the Extends column and inheritance rules
     remain absent. Revisit if a derived stack is introduced (#684).
   docs/architecture/structures/ supplies alternatives for a structural choice,
-    not additional project rules. It is not copied into an existing system
-    whose partition is already described by packages.md. A change to that
-    partition requires a project decision and paired architecture updates.
+    not additional project rules. The domain shape was chosen in #939 and
+    recorded as ADR 0023, with its rules in docs/architecture/structure.md;
+    the folder itself is not copied, as the template's architecture index
+    directs once the choice has landed.
 
 deliberate-differences:
   AGENTS.md keeps host-defined PM/worker/QA roles, the dev/main rule, secret
@@ -58,3 +59,7 @@ deliberate-differences:
     and continuous numbering. Upstream freezes ADR bodies and adds errata and
     supersession. That changes the project's decision-history policy, so it is
     not adopted as a template wording correction.
+    Architecture rules 6-8 (structure.md) are adopted with that difference:
+    upstream rule 6 keeps structural rules out of the ADR because its body is
+    frozen; here the reason is that current state lives in responsibility
+    documents (rule 4), and rule 7 lands a settled point as rule 4 pairs it.

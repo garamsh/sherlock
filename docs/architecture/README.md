@@ -21,6 +21,9 @@ One pod per agent, two containers (ADR 0017): the agent container is the agent's
 3. **Numbering is continuous.** A deletion or insertion renumbers the log, and references to renumbered records in other records are updated in the same PR.
 4. **Decisions land in pairs.** A PR that adds or changes a record must update the affected responsibility documents in the same PR — the final state must always live in the responsibility documents.
 5. Keep this index current: every responsibility document and ADR is listed here, and §Modules carries one row per Go package under `cmd/` and `internal/`. `tools/` and `tests/` take one row each, because a single statement holds for every package beneath them; the experiment harnesses under `research/` stay out, being no part of the shipped system. A package with no row is a defect in this file, not a judgement about the package.
+6. **Structural rules live in `structure.md`.** The shape this project is partitioned into imposes rules — what the unit is, what may reference what, when a new one is earned — and they belong in the responsibility document for that concern, where a reviewer cites one by line and a correction is an ordinary edit. Not the ADR: the current state lives in the responsibility documents (rule 4), and the record holds why the shape was chosen, not the rules a reviewer applies.
+7. **A point the structural rules leave to the project is settled in an ADR** — the one recording the shape where the question was met when the shape was chosen, a later one where it is met later. Which side is taken decides what counts as a defect, so it lands as rule 4 requires: the record and `structure.md`'s current decisions in the same PR. Nothing obliges the project to settle a question it has not met: until then the point waits under `structure.md`'s open questions, where it binds nothing, and moves into that document's current decisions when the project takes a side.
+8. **Structural rules yield only to what a framework imposes.** Where `structure.md` and a convention file decide the same case differently, `structure.md` governs, unless the stack-specific file that applies decides it as its framework imposes it — the alternative fails to build or run, so the project cannot restate it. A stack file's spelling of a structural rule is not that: the rule it spells is `structure.md`'s. The shape this project chose is its own refinement of what a stack-neutral file states for every project.
 
 ## Index
 
@@ -32,6 +35,7 @@ One pod per agent, two containers (ADR 0017): the agent container is the agent's
 - `memory.md` — long-term memory: the agent's organ — store, reads, lifecycle
 - `gateway.md` — the agent's ears and eyes: ingress, outbound, monitoring
 - `security.md` — trust domains, secret custody, egress, tool-trust posture
+- `structure.md` — the structural rules of the domain shape: what a unit is and is named for, what may reference what, where shared code goes, when a new domain is earned
 - `packages.md` — the package partition: which `stack-go.md` §1 layout this project is under, the three cuts that produce every package, which way imports run across them, and where a new package goes
 
 ### Decision log
@@ -58,6 +62,7 @@ One pod per agent, two containers (ADR 0017): the agent container is the agent's
 - `0020` — the image repositories are immutable, and a consumer references an image by digest
 - `0021` — first-party tool executables are baked into the sherlock-agent image; no separate sherlock/tools image is published
 - `0022` — the running agent reports what it loaded, and drains its in-flight turn on SIGTERM
+- `0023` — the system is partitioned by domain, and a domain depends on a sibling one way through its declared surface
 
 ### Modules
 

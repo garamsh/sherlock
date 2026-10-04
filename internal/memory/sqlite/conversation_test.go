@@ -479,3 +479,90 @@ INSERT INTO conversation_sources(role,external_id,content) VALUES ('user','msg-1
 	assert.True(t, held)
 	assert.True(t, same)
 }
+
+// TestOpenInitializedConversation_RefusesAnUninitializedStore holds the
+// opt-in startup refusal (ADR 0025): a memory.db that is absent, empty or
+// holds no Sherlock schema is refused with ErrStoreUninitialized, and the
+// refusal creates no store and changes no file.
+//
+// Each refusal carries its control on the same input: OpenConversation
+// accepts it and initializes the store, so what refuses is the check and
+// not a path no opener could use. The last case is the accepted one, an
+// initialized store opening with the conversation it holds.
+func TestOpenInitializedConversation_RefusesAnUninitializedStore(t *testing.T) {
+	t.Run("absent store refuses and creates no file", func(t *testing.T) {
+		path := filepath.Join(t.TempDir(), "memory.db")
+		_, err := sqlite.OpenInitializedConversation(path, wordEmbedder{})
+		require.ErrorIs(t, err, sqlite.ErrStoreUninitialized)
+		assert.ErrorContains(t, err, path)
+		assert.NoFileExists(t, path)
+
+		store, err := sqlite.OpenConversation(path, wordEmbedder{})
+		require.NoError(t, err, "control: the same path opens without the check")
+		require.NoError(t, store.Close())
+		assert.FileExists(t, path)
+	})
+	t.Run("absent directory refuses and creates no directory", func(t *testing.T) {
+		dir := filepath.Join(t.TempDir(), "data")
+		path := filepath.Join(dir, "memory.db")
+		_, err := sqlite.OpenInitializedConversation(path, wordEmbedder{})
+		require.ErrorIs(t, err, sqlite.ErrStoreUninitialized)
+		assert.ErrorContains(t, err, path)
+		assert.NoDirExists(t, dir)
+	})
+	t.Run("empty file refuses and is left unchanged", func(t *testing.T) {
+		dir := t.TempDir()
+		path := filepath.Join(dir, "memory.db")
+		require.NoError(t, os.WriteFile(path, nil, 0o600))
+		_, err := sqlite.OpenInitializedConversation(path, wordEmbedder{})
+		require.ErrorIs(t, err, sqlite.ErrStoreUninitialized)
+		assert.ErrorContains(t, err, path)
+		info, err := os.Stat(path)
+		require.NoError(t, err)
+		assert.Zero(t, info.Size(), "the empty file gained content")
+		assert.NoFileExists(t, path+"-wal")
+
+		store, err := sqlite.OpenConversation(path, wordEmbedder{})
+		require.NoError(t, err, "control: the same file opens without the check")
+		require.NoError(t, store.Close())
+		info, err = os.Stat(path)
+		require.NoError(t, err)
+		assert.NotZero(t, info.Size(), "control: the open without the check initialized the file")
+	})
+	t.Run("file without a Sherlock schema refuses and is left unchanged", func(t *testing.T) {
+		path := filepath.Join(t.TempDir(), "memory.db")
+		raw, err := sql.Open("sqlite", path)
+		require.NoError(t, err)
+		_, err = raw.Exec(`CREATE TABLE other (id INTEGER PRIMARY KEY)`)
+		require.NoError(t, err)
+		require.NoError(t, raw.Close())
+		before, err := os.ReadFile(path)
+		require.NoError(t, err)
+
+		_, err = sqlite.OpenInitializedConversation(path, wordEmbedder{})
+		require.ErrorIs(t, err, sqlite.ErrStoreUninitialized)
+		after, err := os.ReadFile(path)
+		require.NoError(t, err)
+		assert.Equal(t, before, after)
+
+		store, err := sqlite.OpenConversation(path, wordEmbedder{})
+		require.NoError(t, err, "control: the same file opens without the check")
+		require.NoError(t, store.Close())
+	})
+	t.Run("initialized store opens with its conversation", func(t *testing.T) {
+		ctx := context.Background()
+		path := filepath.Join(t.TempDir(), "memory.db")
+		store, err := sqlite.OpenConversation(path, wordEmbedder{})
+		require.NoError(t, err)
+		require.NoError(t, store.RecordTurn(ctx, []agent.SourceMessage{{Role: agent.RoleUser, Content: "remember cedar"}}, firstSummary{}))
+		require.NoError(t, store.Close())
+
+		store, err = sqlite.OpenInitializedConversation(path, wordEmbedder{})
+		require.NoError(t, err)
+		defer store.Close()
+		recent, err := store.Recent(ctx, 10)
+		require.NoError(t, err)
+		require.Len(t, recent, 1)
+		assert.Equal(t, "remember cedar", recent[0].Content)
+	})
+}

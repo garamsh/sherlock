@@ -488,3 +488,59 @@ func writebackStep(document string) agent.ScriptedStep {
 		Input: json.RawMessage(document),
 	}}}
 }
+
+// TestFactory_RequireStoreRefusesAnAbsentStore holds the opt-in refusal at
+// the composition root (ADR 0025): with RequireStore set, a store that is
+// absent — its directory included — is refused before any model is built
+// or catch-up runs, and nothing is created. The control is the same
+// factory without RequireStore, which creates the directory and the store
+// as every first start does.
+func TestFactory_RequireStoreRefusesAnAbsentStore(t *testing.T) {
+	dir := filepath.Join(t.TempDir(), "data")
+	models := 0
+	factory := &gateway.Factory{
+		MemoryPath:   memoryPath(dir),
+		RequireStore: true,
+		NewModel: func(string) agent.Model {
+			models++
+			return agent.NewScriptedModel()
+		},
+		Tools: noTools(),
+	}
+	_, err := factory.New(context.Background(), "a", nil)
+	require.ErrorIs(t, err, sqlite.ErrStoreUninitialized)
+	assert.Zero(t, models, "a refused start built the session model")
+	assert.NoDirExists(t, dir)
+
+	factory.RequireStore = false
+	rt, err := factory.New(context.Background(), "a", nil)
+	require.NoError(t, err, "control: without RequireStore the first start creates the store")
+	require.NoError(t, rt.Close(context.Background()))
+	assert.FileExists(t, memoryPath(dir))
+}
+
+// TestFactory_RequireStoreStartsOnAnInitializedStore holds that the
+// refusal leaves an initialized store alone: a factory with RequireStore
+// set starts on a store an earlier start created, and reads the message
+// that start committed.
+func TestFactory_RequireStoreStartsOnAnInitializedStore(t *testing.T) {
+	path := memoryPath(t.TempDir())
+	store, err := sqlite.OpenConversation(path, nil)
+	require.NoError(t, err)
+	require.NoError(t, store.RecordTurn(context.Background(),
+		[]agent.SourceMessage{{Role: agent.RoleUser, ExternalID: "m1", Sender: "s", Content: "remember cedar"}}, nil))
+	require.NoError(t, store.Close())
+
+	factory := &gateway.Factory{
+		MemoryPath:   path,
+		RequireStore: true,
+		NewModel:     func(string) agent.Model { return agent.NewScriptedModel() },
+		Tools:        noTools(),
+	}
+	rt, err := factory.New(context.Background(), "a", nil)
+	require.NoError(t, err)
+	defer func() { assert.NoError(t, rt.Close(context.Background())) }()
+	held, same, err := rt.Committed(context.Background(), "s", "m1", "remember cedar")
+	require.NoError(t, err)
+	assert.True(t, held && same, "the start opened a store other than the initialized one")
+}

@@ -6,8 +6,11 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
+	"io/fs"
 	"math"
+	"net/url"
 	"os"
+	"path/filepath"
 	"regexp"
 	"sort"
 	"strings"
@@ -287,7 +290,61 @@ func (s *Store) HoldsInbound(ctx context.Context, sender, id, content string) (h
 // read-only before opening the source-linked schema, so refusal leaves the old
 // file unchanged. The embedder
 // ranks episodes for Search and embeds each new one.
-func OpenConversation(path string, embedder agent.Embedder) (store *Store, err error) {
+func OpenConversation(path string, embedder agent.Embedder) (*Store, error) {
+	return openConversation(path, embedder, nil)
+}
+
+// OpenInitializedConversation is OpenConversation for a store that must
+// already exist: under the writer lock, and before anything migrates or
+// catches up, it returns ErrStoreUninitialized for a memory.db that is
+// absent, empty or holds no Sherlock schema, creating and changing
+// nothing (ADR 0025).
+func OpenInitializedConversation(path string, embedder agent.Embedder) (*Store, error) {
+	// The lock file lives beside the store, so a store whose directory is
+	// absent is absent too, and no lock can be taken for it.
+	if _, err := os.Stat(filepath.Dir(path)); errors.Is(err, fs.ErrNotExist) {
+		return nil, fmt.Errorf("%q is absent: %w", path, ErrStoreUninitialized)
+	}
+	return openConversation(path, embedder, requireInitialized)
+}
+
+// ErrStoreUninitialized reports a memory.db that is absent, empty or
+// holds no Sherlock schema, which OpenInitializedConversation refuses.
+var ErrStoreUninitialized = errors.New("memory store is not initialized")
+
+// requireInitialized returns ErrStoreUninitialized unless the file at path
+// holds a Sherlock schema. It reads the file only through a read-only open.
+func requireInitialized(path string) error {
+	if _, err := os.Stat(path); errors.Is(err, fs.ErrNotExist) {
+		return fmt.Errorf("%q is absent: %w", path, ErrStoreUninitialized)
+	} else if err != nil {
+		return fmt.Errorf("inspect %q: %v", path, err)
+	}
+	// Only a file: URI keeps mode=ro; the driver drops the query of a
+	// plain path and opens it read-write.
+	db, err := sql.Open("sqlite", "file:"+(&url.URL{Path: path}).EscapedPath()+"?mode=ro")
+	if err != nil {
+		return fmt.Errorf("inspect %q: %v", path, err)
+	}
+	defer db.Close()
+	// Every store Sherlock opened carries the addressed table, from the
+	// first schema on, or the source archive.
+	var tables int
+	err = db.QueryRow(`SELECT count(*) FROM sqlite_master WHERE type='table'
+		AND name IN ('memories_active', 'conversation_sources')`).Scan(&tables)
+	if err != nil {
+		return fmt.Errorf("inspect %q: %v", path, err)
+	}
+	// An empty file reads as a database holding no table.
+	if tables == 0 {
+		return fmt.Errorf("%q holds no Sherlock schema: %w", path, ErrStoreUninitialized)
+	}
+	return nil
+}
+
+// openConversation is OpenConversation with check, when set, run on the
+// path once the writer lock is held and before the file is otherwise read.
+func openConversation(path string, embedder agent.Embedder, check func(path string) error) (store *Store, err error) {
 	// The lock precedes the read-only inspection below, which is an open
 	// of the file too.
 	lock, err := lockWriter(path)
@@ -299,6 +356,11 @@ func OpenConversation(path string, embedder agent.Embedder) (store *Store, err e
 			lock.Close()
 		}
 	}()
+	if check != nil {
+		if err := check(path); err != nil {
+			return nil, err
+		}
+	}
 	if _, err := os.Stat(path); err == nil {
 		old, err := sql.Open("sqlite", path+"?mode=ro")
 		if err != nil {

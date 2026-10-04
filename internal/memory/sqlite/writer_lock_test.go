@@ -9,6 +9,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"golang.org/x/sys/unix"
 
 	"github.com/garamsh/sherlock/internal/memory/sqlite"
 )
@@ -112,4 +113,25 @@ func TestOpen_ReopensAfterClose(t *testing.T) {
 	second, err := sqlite.OpenConversation(path, nil)
 	require.NoError(t, err)
 	assert.NoError(t, second.Close())
+}
+
+// TestOpenInitializedConversation_ChecksUnderTheWriterLock holds the
+// check's place after the writer lock (ADR 0025): while another process
+// holds the lock of an absent store, the opener is refused for the lock
+// and never reaches the check. The control releases the lock, and the
+// same opener then reaches the check and refuses the absent store.
+func TestOpenInitializedConversation_ChecksUnderTheWriterLock(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "memory.db")
+	holder, err := os.OpenFile(path+".lock", os.O_RDWR|os.O_CREATE, 0o600)
+	require.NoError(t, err)
+	require.NoError(t, unix.Flock(int(holder.Fd()), unix.LOCK_EX|unix.LOCK_NB))
+
+	_, err = sqlite.OpenInitializedConversation(path, nil)
+	require.ErrorIs(t, err, sqlite.ErrStoreLocked)
+	assert.NotErrorIs(t, err, sqlite.ErrStoreUninitialized)
+
+	require.NoError(t, holder.Close())
+	_, err = sqlite.OpenInitializedConversation(path, nil)
+	assert.ErrorIs(t, err, sqlite.ErrStoreUninitialized, "control: the released lock reaches the check")
+	assert.NoFileExists(t, path)
 }

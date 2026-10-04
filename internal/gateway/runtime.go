@@ -37,8 +37,11 @@ type Runtime struct {
 // that write is the delivery (ADR 0007).
 type Factory struct {
 	// MemoryPath is the agent's SQLite memory file, created on first
-	// use.
+	// use unless RequireStore is set.
 	MemoryPath string
+	// RequireStore refuses a memory file that is absent or uninitialized
+	// instead of creating it, and creates nothing on the way (ADR 0025).
+	RequireStore bool
 	// NewModel returns the chat model for the agent's session.
 	NewModel func(agentID string) agent.Model
 	// Embedder ranks mid episodes by similarity for recall.
@@ -62,10 +65,7 @@ type Factory struct {
 // memory store and the session, then wires source-linked recall, inspection,
 // event, and context-compaction hooks.
 func (f *Factory) New(ctx context.Context, agentID string, events agent.EventSink) (*Runtime, error) {
-	if err := os.MkdirAll(filepath.Dir(f.MemoryPath), 0o755); err != nil {
-		return nil, err
-	}
-	store, err := sqlite.OpenConversation(f.MemoryPath, f.Embedder)
+	store, err := f.openStore()
 	if err != nil {
 		return nil, err
 	}
@@ -121,4 +121,16 @@ func (f *Factory) New(ctx context.Context, agentID string, events agent.EventSin
 			return store.Close()
 		},
 	}, nil
+}
+
+// openStore opens the memory store at MemoryPath, creating it and its
+// directory on first use unless RequireStore is set.
+func (f *Factory) openStore() (*sqlite.Store, error) {
+	if f.RequireStore {
+		return sqlite.OpenInitializedConversation(f.MemoryPath, f.Embedder)
+	}
+	if err := os.MkdirAll(filepath.Dir(f.MemoryPath), 0o755); err != nil {
+		return nil, err
+	}
+	return sqlite.OpenConversation(f.MemoryPath, f.Embedder)
 }

@@ -1,6 +1,6 @@
 # Deployment
 
-Governs what has to be true to run this workload as a pod: the two processes, what they bind, what they mount, what kills them at boot, what an orchestrator must allow on shutdown, and how an agent's stored state is copied and restored. The architecture behind it is `environment.md` and `security.md`; this file states the operator-facing consequences and does not restate them. Rationale: ADR 0017, ADR 0012, ADR 0008, ADR 0010, ADR 0003, ADR 0020, ADR 0002, ADR 0022, ADR 0024.
+Governs what has to be true to run this workload as a pod: the two processes, what they bind, what they mount, what kills them at boot, what an orchestrator must allow on shutdown, and how an agent's stored state is copied and restored. The architecture behind it is `environment.md` and `security.md`; this file states the operator-facing consequences and does not restate them. Rationale: ADR 0017, ADR 0012, ADR 0008, ADR 0010, ADR 0003, ADR 0020, ADR 0002, ADR 0022, ADR 0024, ADR 0025.
 
 ## Contents
 - The two processes
@@ -190,6 +190,7 @@ Every fatal path exits **1** and prints `Error: <message>`; nothing distinguishe
 | `message_send` is absent from the tools tree | agent | `tool registry: required tools missing: [message_send]` |
 | `memory-path`'s directory cannot be created, or the store cannot be opened | agent | `mkdir …: read-only file system` / `open "…": …` |
 | Another process on this host holds the store's writer lock — a running agent, or a one-shot run, on the same `memory-path` | agent | `"…/memory.db.lock": another process owns the memory store` |
+| `--require-store` set and `memory.db` absent, empty, or holding no Sherlock schema | agent | `"…/memory.db" is absent: memory store is not initialized: --require-store refuses to start without an initialized memory store; a first start that creates it runs without the flag` |
 | Workspace directory cannot be created, chowned or chmodded | workspace | `create workspace root "…": …` / `chown "…" to uid 1001: …` |
 | Listen address already bound or rejected | both | `listen tcp …: bind: address already in use` |
 
@@ -218,6 +219,8 @@ Three traps in that second table are worth naming separately, because they produ
 **`tools.pins` absent and `tools.pins: {}` are different, and an empty section does not start.** An absent section leaves pinning off and warns. A present but empty section is rejected while the config resolves, because it is an unfinished configuration rather than a stricter one: "accept no tool" has no running form. `message_send` is required and the required set is not operator-configurable, so a pin set naming nothing refuses the mouth and the agent stops whatever else the tools tree holds. Name each tool and the hash the agent logs for it on the `tool manifest loaded` line, or remove the section to run unpinned.
 
 **Upgrading with `tools.pins: {}` already in a config file will stop the pod from starting, and that pod was not pinned before.** Until #562 an empty section resolved to the same value as an absent one and quietly left pinning off, so a deployment carrying it has been running unpinned while reading as strict. The startup failure is the first accurate signal it has had.
+
+**`--require-store` tells a lost store from a first start, and the launcher says which one a start is.** Without it the agent creates `memory.db` on first use, so a volume that lost its store restarts as a blank agent with no error. With it the agent refuses a store that is absent, empty, or holds no Sherlock schema, after the writer lock is held and before anything migrates or catches up, and creates, repairs and resets nothing — the lock file beside the store is the one file it leaves. The flag is read off the command line alone, never from the config file or a `SHERLOCK_*` variable, so the start that creates the store is an ordinary launch without it. It does not tell this agent's store from another agent's (ADR 0025).
 
 **A one-shot `sherlock agent --message` run skips the TLS and bind gates entirely**, because it never serves. A Job that smoke-tests configuration will not catch a broken `tls:` section or a non-loopback `addr`.
 

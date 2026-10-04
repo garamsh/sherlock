@@ -1,42 +1,36 @@
-package main
+package main_test
 
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
-	"log/slog"
 	"net"
 	"net/http"
-	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"regexp"
 	"testing"
 	"time"
 
-	"github.com/spf13/pflag"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/sherlock/internal/config"
-	"github.com/garamsh/sherlock/internal/gateway"
+	sherlock "github.com/garamsh/sherlock/cmd/sherlock"
 	"github.com/garamsh/sherlock/internal/memory/sqlite"
 	"github.com/garamsh/sherlock/internal/tool"
 )
 
-// testIdentity is the identity the startup tests serve under.
-var testIdentity = identity{agentID: "test-agent"}
-
 // pinnedToolTree installs a minimal manifest for the one required tool
 // under a tmpdir and returns the directory and the manifest's hash; the
-// caller points Config.ToolsDir at it. The tool needs no executable:
-// every assertion here is about startup, which never spawns one.
+// caller names the directory in the config file as tools-dir. The tool
+// needs no executable: a turn that calls it records a failed call, and
+// every assertion here is about startup or about which calls failed.
 //
-// tool.SetSpawnEnv writes SHERLOCK_WORKSPACE_ADDR, SHERLOCK_OUTBOX_DIR,
+// The agent publishes SHERLOCK_WORKSPACE_ADDR, SHERLOCK_OUTBOX_DIR,
 // SHERLOCK_AGENT_ID, SHERLOCK_ASSIGNMENT_EPOCH and SHERLOCK_GENERATION
-// through os.Setenv on the way, so the helper claims all but the agent ID
-// through t.Setenv first and the framework restores them.
-// SHERLOCK_AGENT_ID is not claimed and outlives the test.
+// through os.Setenv as it starts, so the helper claims them through
+// t.Setenv first and the framework restores them.
 func pinnedToolTree(t *testing.T) (dir, hash string) {
 	t.Helper()
 	dir = t.TempDir()
@@ -56,29 +50,124 @@ func pinnedToolTree(t *testing.T) (dir, hash string) {
 	manifestPath := filepath.Join(toolDir, "manifest.json")
 	require.NoError(t, os.WriteFile(manifestPath, manifest, 0o644))
 
-	t.Setenv("SHERLOCK_WORKSPACE_ADDR", "")
-	t.Setenv("SHERLOCK_OUTBOX_DIR", "")
-	t.Setenv("SHERLOCK_ASSIGNMENT_EPOCH", "")
-	t.Setenv("SHERLOCK_GENERATION", "")
+	t.Setenv(tool.WorkspaceAddrEnv, "")
+	t.Setenv(tool.OutboxDirEnv, "")
+	t.Setenv(tool.AgentIDEnv, "")
+	t.Setenv(tool.AssignmentEpochEnv, "")
+	t.Setenv(tool.GenerationEnv, "")
 
 	hash, err := tool.ManifestHashOfFile(manifestPath)
 	require.NoError(t, err)
 	return dir, hash
 }
 
-// TestBuildToolRegistry_DriftPinRefusesMutatedManifest is the drift
-// guarantee measured on the wiring the agent actually runs (ADR 0009
-// invariant 2). The pin is recorded, the manifest then changes on disk,
-// and startup refuses it. A future edit that stops passing the
-// operator's pin set into the registry fails here rather than turning
-// the guarantee off in silence.
-func TestBuildToolRegistry_DriftPinRefusesMutatedManifest(t *testing.T) {
-	dir, hash := pinnedToolTree(t)
-	cfg := config.Config{MemoryPath: filepath.Join(dir, "memory.db"), ToolsDir: dir}
-	cfg.Tools.Pins = tool.ManifestPins{"message_send": hash}
+// writeConfig writes body as an owner-only agent config file under a
+// tmpdir and returns its path.
+func writeConfig(t *testing.T, body string) string {
+	t.Helper()
+	path := filepath.Join(t.TempDir(), "agent.yaml")
+	require.NoError(t, os.WriteFile(path, []byte(body), 0o600))
+	return path
+}
 
-	_, err := buildToolRegistry(cfg, testIdentity, slog.New(slog.DiscardHandler))
-	require.NoError(t, err, "the unmutated manifest matches its pin")
+// mockConfig is a config running the mock model over the tools in dir,
+// with pins as its tools.pins section when pins is not empty.
+func mockConfig(t *testing.T, dir string, pins map[string]string) string {
+	t.Helper()
+	body := fmt.Sprintf("tools-dir: %q\nmodel:\n  provider: mock\n", dir)
+	if len(pins) > 0 {
+		body += "tools:\n  pins:\n"
+		for name, hash := range pins {
+			body += fmt.Sprintf("    %s: %q\n", name, hash)
+		}
+	}
+	return writeConfig(t, body)
+}
+
+// runAgent runs `sherlock agent` with args through the binary's command
+// tree and returns its error.
+func runAgent(ctx context.Context, args ...string) error {
+	root := sherlock.NewRootCommand()
+	root.SetOut(io.Discard)
+	root.SetErr(io.Discard)
+	root.SetArgs(append([]string{"agent"}, args...))
+	return root.ExecuteContext(ctx)
+}
+
+// runTurn runs one `sherlock agent --message` turn as test-agent under
+// configPath on memoryPath, with args added.
+func runTurn(configPath, memoryPath string, args ...string) error {
+	return runAgent(context.Background(), append([]string{"--config", configPath,
+		"--memory-path", memoryPath, "--agent-id", "test-agent", "--message", "hello"}, args...)...)
+}
+
+// mockTurnRan is the error a one-shot turn of the mock model returns
+// over a tree holding only message_send's manifest: the scripted
+// scenario calls shell_exec and file_read, which are not installed, and
+// message_send, which has no executable. A turn that returns it got past
+// every startup check and ran the scripted model.
+const mockTurnRan = "one-shot turn: 3 tool call(s) failed: shell_exec, file_read, message_send"
+
+// freeAddr reserves a loopback address the way the listener would take
+// it, then lets it go.
+func freeAddr(t *testing.T) string {
+	t.Helper()
+	listen, err := net.Listen("tcp", "127.0.0.1:0")
+	require.NoError(t, err)
+	addr := listen.Addr().String()
+	require.NoError(t, listen.Close())
+	return addr
+}
+
+// agentStatus is the status route's body.
+type agentStatus struct {
+	AgentID         string    `json:"agent_id"`
+	AssignmentEpoch string    `json:"assignment_epoch"`
+	Generation      string    `json:"generation"`
+	ConfigRevision  string    `json:"config_revision"`
+	StartedAt       time.Time `json:"started_at"`
+}
+
+// serve starts `sherlock agent` serving on a free address as agentID
+// under configPath on memoryPath, with args added, waits for its status
+// route to answer, and returns what it reported and a stop function that
+// ends the serve and returns its error.
+func serve(t *testing.T, configPath, memoryPath, agentID string, args ...string) (agentStatus, func() error) {
+	t.Helper()
+	addr := freeAddr(t)
+	ctx, cancel := context.WithCancel(context.Background())
+	done := make(chan error, 1)
+	go func() {
+		done <- runAgent(ctx, append([]string{"--config", configPath, "--memory-path", memoryPath,
+			"--addr", addr, "--agent-id", agentID}, args...)...)
+	}()
+	stop := func() error { cancel(); return <-done }
+
+	var status agentStatus
+	require.Eventually(t, func() bool {
+		resp, err := http.Get("http://" + addr + "/agents/" + agentID + "/status")
+		if err != nil {
+			return false
+		}
+		defer resp.Body.Close()
+		return resp.StatusCode == http.StatusOK && json.NewDecoder(resp.Body).Decode(&status) == nil
+	}, 5*time.Second, 20*time.Millisecond, "the agent serves its status route")
+	return status, stop
+}
+
+// TestAgentCommand_DriftPinRefusesMutatedManifest is the drift guarantee
+// measured on the wiring the agent actually runs (ADR 0009 invariant 2).
+// The pin is recorded, the manifest then changes on disk, and startup
+// refuses it. A future edit that stops passing the operator's pin set
+// into the registry fails here rather than turning the guarantee off in
+// silence.
+func TestAgentCommand_DriftPinRefusesMutatedManifest(t *testing.T) {
+	dir, hash := pinnedToolTree(t)
+	configPath := mockConfig(t, dir, map[string]string{"message_send": hash})
+	memoryPath := filepath.Join(t.TempDir(), "memory.db")
+
+	assert.EqualError(t, runTurn(configPath, memoryPath), mockTurnRan,
+		"the unmutated manifest matches its pin and the turn runs")
 
 	mutated := []byte(`{
 		"name": "message_send",
@@ -94,16 +183,16 @@ func TestBuildToolRegistry_DriftPinRefusesMutatedManifest(t *testing.T) {
 	require.NoError(t, os.WriteFile(
 		filepath.Join(dir, "message_send", "manifest.json"), mutated, 0o644))
 
-	_, err = buildToolRegistry(cfg, testIdentity, slog.New(slog.DiscardHandler))
+	err := runTurn(configPath, memoryPath)
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "descriptor drift")
 }
 
-// TestBuildToolRegistry_UnpinnedToolRefused holds the pin set to what
-// its own contract says it is: the operator's accepted tool set. A
-// directory that appears in the tree without a pin is unreviewed, so it
-// does not load.
-func TestBuildToolRegistry_UnpinnedToolRefused(t *testing.T) {
+// TestAgentCommand_UnpinnedToolRefused holds the pin set to what its own
+// contract says it is: the operator's accepted tool set. A directory
+// that appears in the tree without a pin is unreviewed, so it does not
+// load.
+func TestAgentCommand_UnpinnedToolRefused(t *testing.T) {
 	dir, hash := pinnedToolTree(t)
 	extraDir := filepath.Join(dir, "exfiltrate")
 	require.NoError(t, os.MkdirAll(extraDir, 0o755))
@@ -114,31 +203,27 @@ func TestBuildToolRegistry_UnpinnedToolRefused(t *testing.T) {
 		"input_schema": {"type": "object"},
 		"output_schema": {"type": "object"}
 	}`), 0o644))
+	configPath := mockConfig(t, dir, map[string]string{"message_send": hash})
 
-	cfg := config.Config{MemoryPath: filepath.Join(dir, "memory.db"), ToolsDir: dir}
-	cfg.Tools.Pins = tool.ManifestPins{"message_send": hash}
-
-	_, err := buildToolRegistry(cfg, testIdentity, slog.New(slog.DiscardHandler))
+	err := runTurn(configPath, filepath.Join(t.TempDir(), "memory.db"))
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), `unpinned tool "exfiltrate"`)
 }
 
-// TestBuildToolRegistry_WithoutPinsLoads states what an agent without a
+// TestAgentCommand_WithoutPinsLoads states what an agent without a
 // tools.pins section gets: the tools load, and the drift guarantee is
 // off. The pin is the operator's record of what they accepted, so the
 // platform has none to check against until the operator writes one.
-func TestBuildToolRegistry_WithoutPinsLoads(t *testing.T) {
+func TestAgentCommand_WithoutPinsLoads(t *testing.T) {
 	dir, _ := pinnedToolTree(t)
-	cfg := config.Config{MemoryPath: filepath.Join(dir, "memory.db"), ToolsDir: dir}
+	configPath := mockConfig(t, dir, nil)
 
-	registry, err := buildToolRegistry(cfg, testIdentity, slog.New(slog.DiscardHandler))
-	require.NoError(t, err)
-	assert.Len(t, registry.List(), 1)
+	assert.EqualError(t, runTurn(configPath, filepath.Join(t.TempDir(), "memory.db")), mockTurnRan)
 }
 
-// TestBuildToolRegistry_RequiresTheMouthAndNothingElse pins the extent
-// of the required-tool guarantee (#564, ADR 0009 invariant 5). Two
-// halves, and the second is the one the documents used to overstate.
+// TestAgentCommand_RequiresTheMouthAndNothingElse pins the extent of the
+// required-tool guarantee (#564, ADR 0009 invariant 5). Two halves, and
+// the second is the one the documents used to overstate.
 //
 // A tree without message_send fails startup closed: the agent cannot
 // speak, so there is no useful agent to start. A tree holding only
@@ -146,70 +231,58 @@ func TestBuildToolRegistry_WithoutPinsLoads(t *testing.T) {
 // capabilities the operator installs or does not (ADR 0017), so their
 // absence is a choice rather than a failure, and there is no operator
 // key that would add them to the required set.
-func TestBuildToolRegistry_RequiresTheMouthAndNothingElse(t *testing.T) {
+func TestAgentCommand_RequiresTheMouthAndNothingElse(t *testing.T) {
 	t.Run("the mouth alone is enough to start", func(t *testing.T) {
 		dir, _ := pinnedToolTree(t)
-		cfg := config.Config{MemoryPath: filepath.Join(dir, "memory.db"), ToolsDir: dir}
+		configPath := mockConfig(t, dir, nil)
 
-		registry, err := buildToolRegistry(cfg, testIdentity, slog.New(slog.DiscardHandler))
-		require.NoError(t, err, "files and shell_exec are absent and the agent still starts")
-
-		names := make([]string, 0, 1)
-		for _, d := range registry.List() {
-			names = append(names, d.Name)
-		}
-		assert.Equal(t, []string{"message_send"}, names,
-			"the tree holds one tool and the agent runs on it")
+		assert.EqualError(t, runTurn(configPath, filepath.Join(t.TempDir(), "memory.db")), mockTurnRan,
+			"files and shell_exec are absent and the agent still starts")
 	})
 
 	t.Run("without the mouth startup fails closed", func(t *testing.T) {
 		dir, _ := pinnedToolTree(t)
 		require.NoError(t, os.RemoveAll(filepath.Join(dir, "message_send")))
-		cfg := config.Config{MemoryPath: filepath.Join(dir, "memory.db"), ToolsDir: dir}
+		configPath := mockConfig(t, dir, nil)
 
-		_, err := buildToolRegistry(cfg, testIdentity, slog.New(slog.DiscardHandler))
+		err := runTurn(configPath, filepath.Join(t.TempDir(), "memory.db"))
 		require.Error(t, err)
 		assert.Contains(t, err.Error(), "required tools missing")
 		assert.Contains(t, err.Error(), "message_send")
 	})
 }
 
-// TestServeAgent_FailedRegistryLeavesNothingListening pins the ordering
-// a downstream readiness probe rests on (#477): no listener exists
-// before the tool registry has loaded, so a failed load leaves the port
-// refusing connections rather than answering for a process that cannot
-// accept work. An edit that binds first and fails afterwards satisfies
-// every other startup rule and fails here — during rollout and
+// TestAgentCommand_FailedRegistryLeavesNothingListening pins the
+// ordering a downstream readiness probe rests on (#477): no listener
+// exists before the tool registry has loaded, so a failed load leaves
+// the port refusing connections rather than answering for a process that
+// cannot accept work. An edit that binds first and fails afterwards
+// satisfies every other startup rule and fails here — during rollout and
 // crashloop, which is when a probe is the only reader.
-func TestServeAgent_FailedRegistryLeavesNothingListening(t *testing.T) {
+func TestAgentCommand_FailedRegistryLeavesNothingListening(t *testing.T) {
 	dir, _ := pinnedToolTree(t)
 	// A manifest that does not parse fails the registry load (ADR 0009).
 	require.NoError(t, os.WriteFile(
 		filepath.Join(dir, "message_send", "manifest.json"), []byte("{"), 0o644))
-
-	// Reserve an address the way the listener would take it, then let it
-	// go: anything answering on it after the failed startup is the bug.
-	listen, err := net.Listen("tcp", "127.0.0.1:0")
-	require.NoError(t, err)
-	addr := listen.Addr().String()
-	require.NoError(t, listen.Close())
-
-	cfg := config.Config{
-		Addr:       addr,
-		MemoryPath: filepath.Join(dir, "memory.db"),
-		ToolsDir:   dir,
-	}
+	configPath := mockConfig(t, dir, nil)
+	// Anything answering on the address after the failed startup is the bug.
+	addr := freeAddr(t)
 
 	// Probe while the startup is in flight, not after it: a bind-first
 	// ordering opens the window between the bind and the failed load,
-	// and a dial after serveAgent has returned misses it.
+	// and a dial after the command has returned misses it.
 	done := make(chan error, 1)
-	go func() { done <- serveAgent(context.Background(), cfg, testIdentity, "", "") }()
+	go func() {
+		done <- runAgent(context.Background(), "--config", configPath,
+			"--memory-path", filepath.Join(t.TempDir(), "memory.db"),
+			"--addr", addr, "--agent-id", "test-agent")
+	}()
 	var answered bool
 	for {
 		select {
 		case err := <-done:
 			require.Error(t, err, "the registry load fails")
+			assert.Contains(t, err.Error(), "tool registry")
 			assert.False(t, answered,
 				"the port answered during a startup that never loaded its registry")
 			return
@@ -223,37 +296,31 @@ func TestServeAgent_FailedRegistryLeavesNothingListening(t *testing.T) {
 	}
 }
 
-// TestServeAgent_RequireStoreRefusesBeforeListening holds the refusal's
-// place in a served start (ADR 0025): with --require-store and no store,
-// serveAgent fails naming the path and the flag, nothing answers on the
-// port while it does, and no store is created. The control is the same
-// start on a store an earlier start created: it gets past the check and
-// listens.
-func TestServeAgent_RequireStoreRefusesBeforeListening(t *testing.T) {
+// TestAgentCommand_RequireStoreRefusesBeforeListening holds the
+// refusal's place in a served start (ADR 0025): with --require-store and
+// no store, the start fails naming the path and the flag, nothing
+// answers on the port while it does, and no store is created. The
+// control is the same start on a store an earlier start created: it gets
+// past the check and listens.
+func TestAgentCommand_RequireStoreRefusesBeforeListening(t *testing.T) {
 	dir, _ := pinnedToolTree(t)
-	listen, err := net.Listen("tcp", "127.0.0.1:0")
-	require.NoError(t, err)
-	addr := listen.Addr().String()
-	require.NoError(t, listen.Close())
-	cfg := config.Config{
-		Addr:         addr,
-		MemoryPath:   filepath.Join(dir, "memory.db"),
-		ToolsDir:     dir,
-		Model:        config.ModelConfig{Provider: "mock"},
-		RequireStore: true,
-	}
+	configPath := mockConfig(t, dir, nil)
+	memoryPath := filepath.Join(t.TempDir(), "memory.db")
+	addr := freeAddr(t)
+	args := []string{"--config", configPath, "--memory-path", memoryPath,
+		"--addr", addr, "--agent-id", "test-agent", "--require-store"}
 
 	done := make(chan error, 1)
-	go func() { done <- serveAgent(context.Background(), cfg, testIdentity, "", "") }()
+	go func() { done <- runAgent(context.Background(), args...) }()
 	var answered bool
 	deadline := time.After(5 * time.Second)
 	for refused := false; !refused; {
 		select {
 		case <-deadline:
-			t.Fatal("serveAgent did not refuse the absent store")
+			t.Fatal("the start did not refuse the absent store")
 		case err := <-done:
 			require.ErrorIs(t, err, sqlite.ErrStoreUninitialized)
-			assert.ErrorContains(t, err, cfg.MemoryPath)
+			assert.ErrorContains(t, err, memoryPath)
 			assert.ErrorContains(t, err, "--require-store")
 			refused = true
 		default:
@@ -264,13 +331,13 @@ func TestServeAgent_RequireStoreRefusesBeforeListening(t *testing.T) {
 		}
 	}
 	assert.False(t, answered, "the port answered during a start the store check refused")
-	assert.NoFileExists(t, cfg.MemoryPath)
+	assert.NoFileExists(t, memoryPath)
 
-	store, err := sqlite.OpenConversation(cfg.MemoryPath, nil)
+	store, err := sqlite.OpenConversation(memoryPath, nil)
 	require.NoError(t, err)
 	require.NoError(t, store.Close())
 	ctx, cancel := context.WithCancel(context.Background())
-	go func() { done <- serveAgent(ctx, cfg, testIdentity, "", "") }()
+	go func() { done <- runAgent(ctx, args...) }()
 	require.Eventually(t, func() bool {
 		conn, err := net.DialTimeout("tcp", addr, 20*time.Millisecond)
 		if err == nil {
@@ -282,42 +349,33 @@ func TestServeAgent_RequireStoreRefusesBeforeListening(t *testing.T) {
 	assert.NoError(t, <-done)
 }
 
-// TestAgentCommand_RequireStoreIsTheFlagThatRefuses holds the flag's wiring
-// from the command line to the store (ADR 0025): `sherlock agent
+// TestAgentCommand_RequireStoreIsTheFlagThatRefuses holds the flag's
+// wiring from the command line to the store (ADR 0025): `sherlock agent
 // --require-store` on an absent store fails naming the flag and creates
 // no store. The control is the same command without the flag, which
 // creates the store as every first start does.
 func TestAgentCommand_RequireStoreIsTheFlagThatRefuses(t *testing.T) {
-	configPath := filepath.Join(t.TempDir(), "agent.yaml")
-	require.NoError(t, os.WriteFile(configPath, nil, 0o600))
 	toolsDir, _ := pinnedToolTree(t)
+	configPath := writeConfig(t, "")
 	t.Setenv("SHERLOCK_TOOLS_DIR", toolsDir)
-	t.Setenv(tool.AgentIDEnv, "")
 	memoryPath := filepath.Join(t.TempDir(), "memory.db")
 
-	run := func(args ...string) error {
-		root := newRootCommand()
-		root.SetOut(io.Discard)
-		root.SetErr(io.Discard)
-		root.SetArgs(append([]string{"agent", "--config", configPath,
-			"--memory-path", memoryPath, "--agent-id", "test-agent",
-			"--message", "hello"}, args...))
-		return root.Execute()
-	}
-
-	err := run("--require-store")
+	err := runTurn(configPath, memoryPath, "--require-store")
 	require.ErrorIs(t, err, sqlite.ErrStoreUninitialized)
 	assert.ErrorContains(t, err, "--require-store")
 	assert.NoFileExists(t, memoryPath)
 
-	err = run()
+	err = runTurn(configPath, memoryPath)
 	assert.NotErrorIs(t, err, sqlite.ErrStoreUninitialized)
 	assert.FileExists(t, memoryPath, "control: without the flag the first start creates the store")
 }
 
+// agentIDRequired is the refusal of a start with no identity (ADR 0016).
+const agentIDRequired = "--agent-id is required"
+
 // TestAgentCommand_RefusesWithoutAgentID holds that the agent serves
 // the identity it was given and never a fallback (ADR 0016): an absent
-// and an empty --agent-id both refuse startup with errAgentIDRequired.
+// and an empty --agent-id both refuse startup.
 //
 // The control runs the same command with a GRN-shaped ID. It gets past
 // the identity check and fails later, on the missing tools directory,
@@ -325,34 +383,29 @@ func TestAgentCommand_RequireStoreIsTheFlagThatRefuses(t *testing.T) {
 // refusal above is the identity check's and not a startup that fails for
 // every input.
 func TestAgentCommand_RefusesWithoutAgentID(t *testing.T) {
-	configPath := filepath.Join(t.TempDir(), "agent.yaml")
-	require.NoError(t, os.WriteFile(configPath, nil, 0o600))
+	configPath := writeConfig(t, "")
 	t.Setenv("SHERLOCK_TOOLS_DIR", filepath.Join(t.TempDir(), "absent"))
 	t.Setenv(tool.WorkspaceAddrEnv, "")
 	t.Setenv(tool.OutboxDirEnv, "")
 	t.Setenv(tool.AgentIDEnv, "")
 
 	run := func(args ...string) error {
-		root := newRootCommand()
-		root.SetOut(io.Discard)
-		root.SetErr(io.Discard)
-		root.SetArgs(append([]string{"agent", "--config", configPath,
+		return runAgent(context.Background(), append([]string{"--config", configPath,
 			"--memory-path", filepath.Join(t.TempDir(), "memory.db"),
-			"--message", "hello"}, args...))
-		return root.Execute()
+			"--message", "hello"}, args...)...)
 	}
 
 	t.Run("absent", func(t *testing.T) {
-		assert.ErrorIs(t, run(), errAgentIDRequired)
+		assert.ErrorContains(t, run(), agentIDRequired)
 	})
 	t.Run("empty", func(t *testing.T) {
-		assert.ErrorIs(t, run("--agent-id="), errAgentIDRequired)
+		assert.ErrorContains(t, run("--agent-id="), agentIDRequired)
 	})
 	t.Run("control: a GRN passes the check and is published verbatim", func(t *testing.T) {
 		const grn = "grn:garam:default:agent:144460a71649d1a1"
 		err := run("--agent-id", grn)
 		require.Error(t, err)
-		assert.NotErrorIs(t, err, errAgentIDRequired)
+		assert.NotContains(t, err.Error(), agentIDRequired)
 		assert.Contains(t, err.Error(), "tools directory")
 		assert.Equal(t, grn, os.Getenv(tool.AgentIDEnv))
 	})
@@ -366,22 +419,15 @@ func TestAgentCommand_RefusesWithoutAgentID(t *testing.T) {
 // read and fails later, on the missing tools directory — so the refusal
 // is the read's and not a startup that fails for every input.
 func TestAgentCommand_MissingInstructionsFileFailsStartup(t *testing.T) {
-	configPath := filepath.Join(t.TempDir(), "agent.yaml")
-	require.NoError(t, os.WriteFile(configPath, nil, 0o600))
+	configPath := writeConfig(t, "")
 	t.Setenv("SHERLOCK_TOOLS_DIR", filepath.Join(t.TempDir(), "absent"))
 	t.Setenv(tool.WorkspaceAddrEnv, "")
 	t.Setenv(tool.OutboxDirEnv, "")
 	t.Setenv(tool.AgentIDEnv, "")
 
 	run := func(instructionsFile string) error {
-		root := newRootCommand()
-		root.SetOut(io.Discard)
-		root.SetErr(io.Discard)
-		root.SetArgs([]string{"agent", "--config", configPath,
-			"--memory-path", filepath.Join(t.TempDir(), "memory.db"),
-			"--agent-id", "test-agent", "--message", "hello",
-			"--instructions-file", instructionsFile})
-		return root.Execute()
+		return runTurn(configPath, filepath.Join(t.TempDir(), "memory.db"),
+			"--instructions-file", instructionsFile)
 	}
 
 	t.Run("missing file", func(t *testing.T) {
@@ -400,29 +446,29 @@ func TestAgentCommand_MissingInstructionsFileFailsStartup(t *testing.T) {
 	})
 }
 
-// TestResolveIdentity_CarriesTheAssignmentEpoch holds the launcher's
+// TestAgentCommand_StatusCarriesTheAssignmentEpoch holds the launcher's
 // assignment epoch as given: opaque and verbatim when set, empty
-// (unknown) when absent, and never a reason to refuse startup. The
-// generation is not a flag, so resolution leaves it unminted.
-func TestResolveIdentity_CarriesTheAssignmentEpoch(t *testing.T) {
+// (unknown) when absent, and never a reason to refuse startup.
+func TestAgentCommand_StatusCarriesTheAssignmentEpoch(t *testing.T) {
 	tests := []struct {
 		name string
 		args []string
-		want identity
+		want string
 	}{
-		{"set", []string{"--agent-id", "a1", "--assignment-epoch", "epoch:7"},
-			identity{agentID: "a1", assignmentEpoch: "epoch:7"}},
-		{"absent", []string{"--agent-id", "a1"}, identity{agentID: "a1"}},
+		{"set", []string{"--assignment-epoch", "epoch:7"}, "epoch:7"},
+		{"absent", nil, ""},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			fs := pflag.NewFlagSet("agent", pflag.ContinueOnError)
-			addAgentFlags(fs)
-			require.NoError(t, fs.Parse(tt.args))
+			dir, _ := pinnedToolTree(t)
+			configPath := mockConfig(t, dir, nil)
 
-			got, err := resolveIdentity(fs)
-			require.NoError(t, err)
-			assert.Equal(t, tt.want, got)
+			status, stop := serve(t, configPath, filepath.Join(t.TempDir(), "memory.db"), "a1", tt.args...)
+			require.NoError(t, stop())
+			assert.Equal(t, "a1", status.AgentID)
+			assert.Equal(t, tt.want, status.AssignmentEpoch)
+			assert.Equal(t, tt.want, os.Getenv(tool.AssignmentEpochEnv),
+				"the tools are handed the epoch the launcher gave")
 		})
 	}
 }
@@ -430,121 +476,77 @@ func TestResolveIdentity_CarriesTheAssignmentEpoch(t *testing.T) {
 // TestAgentCommand_GenerationIsNotAFlag holds contract v1.2: the
 // generation is minted per start, so a launcher cannot pass one.
 func TestAgentCommand_GenerationIsNotAFlag(t *testing.T) {
-	fs := pflag.NewFlagSet("agent", pflag.ContinueOnError)
-	fs.SetOutput(io.Discard)
-	addAgentFlags(fs)
-	err := fs.Parse([]string{"--agent-id", "a1", "--generation", "3"})
+	err := runAgent(context.Background(), "--agent-id", "a1", "--generation", "3")
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "unknown flag: --generation")
-}
-
-// mockFactory builds the serving factory over the mock model and a
-// minimal tool tree, on a memory path under a tmpdir.
-func mockFactory(t *testing.T) (*gateway.Factory, string) {
-	t.Helper()
-	dir, _ := pinnedToolTree(t)
-	cfg := config.Config{
-		MemoryPath: filepath.Join(dir, "memory.db"),
-		ToolsDir:   dir,
-		Model:      config.ModelConfig{Provider: "mock"},
-	}
-	factory, err := newAgentFactory(cfg, testIdentity, "", "", slog.New(slog.DiscardHandler))
-	require.NoError(t, err)
-	return factory, cfg.MemoryPath
-}
-
-// TestStartQueue_MintsTheGenerationOnlyUnderTheStoreLock holds the
-// generation's ordering (contract v1.2): it is minted after the memory
-// store's writer lock is held, so a start refused by a store another
-// process holds mints none. The control is the same start once the
-// holder closes: it mints exactly one.
-func TestStartQueue_MintsTheGenerationOnlyUnderTheStoreLock(t *testing.T) {
-	factory, memoryPath := mockFactory(t)
-	minted := 0
-	mint := func() string { minted++; return mintGeneration() }
-	logger := slog.New(slog.DiscardHandler)
-
-	held, err := sqlite.Open(memoryPath)
-	require.NoError(t, err)
-	_, _, err = startQueue(factory, testIdentity, mint, logger)
-	assert.ErrorIs(t, err, sqlite.ErrStoreLocked)
-	assert.Zero(t, minted, "a start the store lock refused minted a generation")
-
-	require.NoError(t, held.Close())
-	queue, id, err := startQueue(factory, testIdentity, mint, logger)
-	require.NoError(t, err, "the control: the released store starts")
-	t.Cleanup(func() { queue.Close() })
-	assert.Equal(t, 1, minted)
-	assert.NotEmpty(t, id.generation)
-	assert.Equal(t, id.generation, os.Getenv(tool.GenerationEnv),
-		"the tools are handed the generation this start minted")
 }
 
 // generationShape is a runtime start nonce: 128 bits as lowercase hex.
 var generationShape = regexp.MustCompile(`^[0-9a-f]{32}$`)
 
-// TestStartQueue_EachStartMintsAFreshGeneration holds that the
+// TestAgentCommand_MintsTheGenerationOnlyUnderTheStoreLock holds the
+// generation's ordering (contract v1.2): it is minted after the memory
+// store's writer lock is held, so a start refused by a store another
+// process holds hands its tools none. The control is the same start once
+// the holder closes: it mints one, and hands the tools the generation
+// its status reports.
+func TestAgentCommand_MintsTheGenerationOnlyUnderTheStoreLock(t *testing.T) {
+	dir, _ := pinnedToolTree(t)
+	configPath := mockConfig(t, dir, nil)
+	memoryPath := filepath.Join(t.TempDir(), "memory.db")
+
+	held, err := sqlite.Open(memoryPath)
+	require.NoError(t, err)
+	err = runAgent(context.Background(), "--config", configPath, "--memory-path", memoryPath,
+		"--addr", freeAddr(t), "--agent-id", "test-agent")
+	assert.ErrorIs(t, err, sqlite.ErrStoreLocked)
+	assert.Empty(t, os.Getenv(tool.GenerationEnv), "a start the store lock refused minted a generation")
+
+	require.NoError(t, held.Close())
+	status, stop := serve(t, configPath, memoryPath, "test-agent")
+	assert.Equal(t, status.Generation, os.Getenv(tool.GenerationEnv),
+		"the tools are handed the generation this start minted")
+	require.NoError(t, stop(), "the control: the released store starts")
+	assert.Regexp(t, generationShape, status.Generation)
+}
+
+// TestAgentCommand_EachStartMintsAFreshGeneration holds that the
 // generation is per process start and never persisted (ADR 0016): two
 // starts on the same memory store, one after the other, carry different
 // 32-character lowercase hex generations.
-func TestStartQueue_EachStartMintsAFreshGeneration(t *testing.T) {
-	factory, _ := mockFactory(t)
-	logger := slog.New(slog.DiscardHandler)
+func TestAgentCommand_EachStartMintsAFreshGeneration(t *testing.T) {
+	dir, _ := pinnedToolTree(t)
+	configPath := mockConfig(t, dir, nil)
+	memoryPath := filepath.Join(t.TempDir(), "memory.db")
 
 	generations := make([]string, 0, 2)
 	for range 2 {
-		queue, id, err := startQueue(factory, testIdentity, mintGeneration, logger)
-		require.NoError(t, err)
-		require.NoError(t, queue.Close(), "closing releases the store for the next start")
-		assert.Regexp(t, generationShape, id.generation)
-		generations = append(generations, id.generation)
+		status, stop := serve(t, configPath, memoryPath, "test-agent")
+		require.NoError(t, stop(), "stopping releases the store for the next start")
+		assert.Regexp(t, generationShape, status.Generation)
+		generations = append(generations, status.Generation)
 	}
 	assert.NotEqual(t, generations[0], generations[1])
 }
 
-// TestInstanceOf_StatusReportsWhatThisStartLoaded holds C3's sources:
+// TestAgentCommand_StatusReportsWhatThisStartLoaded holds C3's sources:
 // the status route reports the agent ID and assignment epoch the flags
 // gave, the generation this start minted, the revision the config file
-// carries, and the process start time.
-func TestInstanceOf_StatusReportsWhatThisStartLoaded(t *testing.T) {
-	dir := t.TempDir()
-	t.Chdir(dir)
-	t.Setenv("HOME", t.TempDir())
-	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
-	require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "agent.yaml"), []byte("revision: rev-9\n"), 0o600))
-	fs := pflag.NewFlagSet("agent", pflag.ContinueOnError)
-	config.AddSharedFlags(fs)
-	addAgentFlags(fs)
-	require.NoError(t, fs.Parse([]string{"--agent-id", "a1", "--assignment-epoch", "e3"}))
-	cfg, err := config.Resolve(fs)
-	require.NoError(t, err)
-	id, err := resolveIdentity(fs)
-	require.NoError(t, err)
+// carries, and the process start time rather than the time the listener
+// came up.
+func TestAgentCommand_StatusReportsWhatThisStartLoaded(t *testing.T) {
+	testStart := time.Now()
+	dir, _ := pinnedToolTree(t)
+	configPath := writeConfig(t, fmt.Sprintf("revision: rev-9\ntools-dir: %q\nmodel:\n  provider: mock\n", dir))
 
-	factory, _ := mockFactory(t)
-	logger := slog.New(slog.DiscardHandler)
-	queue, id, err := startQueue(factory, id, func() string { return "gen-1" }, logger)
-	require.NoError(t, err)
-	t.Cleanup(func() { queue.Close() })
-	srv := httptest.NewServer(gateway.NewHandler(queue, instanceOf(cfg, id), logger))
-	t.Cleanup(srv.Close)
-
-	resp, err := http.Get(srv.URL + "/agents/a1/status")
-	require.NoError(t, err)
-	defer resp.Body.Close()
-	require.Equal(t, http.StatusOK, resp.StatusCode)
-	var got struct {
-		AgentID         string    `json:"agent_id"`
-		AssignmentEpoch string    `json:"assignment_epoch"`
-		Generation      string    `json:"generation"`
-		ConfigRevision  string    `json:"config_revision"`
-		StartedAt       time.Time `json:"started_at"`
-	}
-	require.NoError(t, json.NewDecoder(resp.Body).Decode(&got))
-	assert.Equal(t, "a1", got.AgentID)
-	assert.Equal(t, "e3", got.AssignmentEpoch)
-	assert.Equal(t, "gen-1", got.Generation)
-	assert.Equal(t, "rev-9", got.ConfigRevision)
-	assert.True(t, processStart.Equal(got.StartedAt), "started_at is the process start time")
+	status, stop := serve(t, configPath, filepath.Join(t.TempDir(), "memory.db"), "a1",
+		"--assignment-epoch", "e3")
+	require.NoError(t, stop())
+	assert.Equal(t, "a1", status.AgentID)
+	assert.Equal(t, "e3", status.AssignmentEpoch)
+	assert.Equal(t, os.Getenv(tool.GenerationEnv), status.Generation)
+	assert.Regexp(t, generationShape, status.Generation)
+	assert.Equal(t, "rev-9", status.ConfigRevision)
+	assert.True(t, status.StartedAt.Before(testStart),
+		"started_at is the process start time, %s, which precedes this test's %s", status.StartedAt, testStart)
 }

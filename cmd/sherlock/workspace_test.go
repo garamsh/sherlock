@@ -1,27 +1,31 @@
-package main
+package main_test
 
 import (
-	"context"
+	"io"
+	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/garamsh/sherlock/internal/config"
+	sherlock "github.com/garamsh/sherlock/cmd/sherlock"
 )
 
-// TestServeWorkspace_NonLoopbackAddrFailsStartup pins the fail-closed
+// TestWorkspaceCommand_NonLoopbackAddrFailsStartup pins the fail-closed
 // posture: the gRPC listener is unauthenticated in this phase, so a
 // non-loopback bind is a remote shell into the workspace and fails
 // startup (ADR 0012).
-func TestServeWorkspace_NonLoopbackAddrFailsStartup(t *testing.T) {
-	cfg := config.WorkspaceConfig{
-		Addr:      "0.0.0.0:8081",
-		Workspace: filepath.Join(t.TempDir(), "workspace"),
-	}
+func TestWorkspaceCommand_NonLoopbackAddrFailsStartup(t *testing.T) {
+	configPath := filepath.Join(t.TempDir(), "workspace.yaml")
+	require.NoError(t, os.WriteFile(configPath, nil, 0o600))
+	root := sherlock.NewRootCommand()
+	root.SetOut(io.Discard)
+	root.SetErr(io.Discard)
+	root.SetArgs([]string{"workspace", "--config", configPath,
+		"--addr", "0.0.0.0:8081", "--workspace", filepath.Join(t.TempDir(), "workspace")})
 
-	err := serveWorkspace(context.Background(), cfg)
+	err := root.Execute()
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "loopback",
 		"the startup error must state the loopback-only requirement")

@@ -75,7 +75,7 @@ The sample `agent.yaml` uses the mock model provider, so the agent replies witho
 `./smoke.sh` runs the whole sequence above — tools, certificates, `docker compose up` — and then asserts three things against the running deployment:
 
 - **The mTLS ingress accepts a caller.** One `POST /agents/demo/messages` over the published port, with the client certificate generated above, must return 202. This is the deployment's wiring — these certificates, the client CA `agent.yaml` names, that port — rather than the gateway's mTLS code, which the Go tests cover with certificates of their own. A client CA that loads but matches nobody starts cleanly and rejects every real caller, so only a real request catches it.
-- **The canned turn runs clean.** It runs one turn in the agent container (`sherlock agent --message`) against these mounted tools and this workspace sidecar, and takes that run's exit status as the answer. A failed tool call does not end a turn — the model is told and carries on — so a one-shot run reports one in its exit status; nothing here reads the monitoring stream to find out.
+- **The canned turn runs clean.** It runs one turn in the agent container (`sherlock agent --message`) against these mounted tools and this workspace sidecar, and takes that run's exit status as the answer. The run opens its own memory store, `$SHERLOCK_DATA_DIR/one-shot/memory.db`, because the serving agent holds the writer lock on `memory.db` and refuses a second writer. A failed tool call does not end a turn — the model is told and carries on — so a one-shot run reports one in its exit status; nothing here reads the monitoring stream to find out.
 - **Both writers share one owner** (ADR 0008, ADR 0010). A write over the gRPC contract and a write by an exec'd child land under the exec account, each able to pick up what the other left, and Exec children carry all five resource caps.
 
 The `docker` job in `.github/workflows/ci.yml` runs the same script, so a change that stops this deployment from starting — or breaks its mTLS wiring, or starts a tool call failing inside it, or breaks the shared-owner contract — fails CI.
@@ -86,4 +86,4 @@ The `docker` job in `.github/workflows/ci.yml` runs the same script, so a change
 docker compose down
 ```
 
-Agent data persists in `$SHERLOCK_DATA_DIR` (`memory.db`, `outbox/`, `workspace/`); `workspace/` is owned by uid 10001 (the exec UID), the rest by `SHERLOCK_AGENT_UID`.
+Agent data persists in `$SHERLOCK_DATA_DIR` (`memory.db`, `outbox/`, `workspace/`, and `one-shot/` once `./smoke.sh` has run); `workspace/` is owned by uid 10001 (the exec UID), the rest by `SHERLOCK_AGENT_UID`.

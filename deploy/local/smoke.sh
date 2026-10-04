@@ -73,9 +73,13 @@ fi
 # fail the turn — it goes back to the model, which is the loop working —
 # so a one-shot run reports it in its exit status instead, and that
 # status is this check. Nothing here parses the monitoring stream.
+# The serving agent holds the writer lock on its memory store, so the
+# one-shot run opens a store of its own (deployment.md, "One agent process
+# on a host writes a memory store").
 echo "==> the canned run completes with every tool call succeeding"
 docker compose exec -T agent /sherlock agent \
-  --config /etc/sherlock/config.yaml --agent-id demo --message "hello"
+  --config /etc/sherlock/config.yaml --agent-id demo --message "hello" \
+  --memory-path "$SHERLOCK_DATA_DIR/one-shot/memory.db"
 
 # ADR 0008's file side: a write over the gRPC contract and a write by an
 # exec'd child land under one owner, so either can pick up what the other
@@ -154,7 +158,7 @@ while IFS='|' read -r label value; do
   fi
 done <<'CAPS'
 Max cpu time|60
-Max address space|536870912
+Max address space|2147483648
 Max file size|104857600
 Max open files|1024
 Max processes|64
@@ -163,4 +167,4 @@ if [ "$missing" -ne 0 ]; then
   echo "$limits" >&2
   exit 1
 fi
-echo "cpu 60s, address space 512MiB, file size 100MiB, open files 1024, processes 64"
+echo "cpu 60s, address space 2GiB, file size 100MiB, open files 1024, processes 64"

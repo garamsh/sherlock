@@ -97,6 +97,7 @@ type snapshotReport struct {
 type fixtureOutboxEntry struct {
 	File            string   `json:"file"`
 	ID              string   `json:"id"`
+	CreatedAt       string   `json:"created_at"`
 	AgentID         string   `json:"agent_id"`
 	AssignmentEpoch string   `json:"assignment_epoch"`
 	Generation      string   `json:"generation"`
@@ -176,6 +177,9 @@ func runFixture(t *testing.T, rt fixtureRuntime, storage string) {
 	// running is whether an agent process this sequence started is up,
 	// which decides whether a drain step has anything to drain.
 	running := false
+	// started bounds every entry's created_at from below: no entry this
+	// run writes can be minted before the run began.
+	started := time.Now().UTC()
 	var first, second fixtureStatus
 	var sidecars map[string]bool
 
@@ -248,6 +252,19 @@ func runFixture(t *testing.T, rt fixtureRuntime, storage string) {
 			}
 		}
 		assert.True(t, repliedM1, "an outbox entry's in_reply_to equals the sent id m1")
+	})
+
+	// Every new entry carries created_at: an RFC 3339 instant in UTC,
+	// minted inside this run, read as message_send wrote it.
+	steps.run("outbox created_at", "2: outbox", steps.needs("outbox"), func(t *testing.T) {
+		for _, entry := range ev.Snapshot.Outbox {
+			require.NotEmpty(t, entry.CreatedAt, "entry %s carries created_at", entry.ID)
+			at, err := time.Parse(time.RFC3339Nano, entry.CreatedAt)
+			require.NoError(t, err, "entry %s created_at %q is RFC 3339", entry.ID, entry.CreatedAt)
+			assert.True(t, strings.HasSuffix(entry.CreatedAt, "Z"), "entry %s created_at %q is UTC", entry.ID, entry.CreatedAt)
+			assert.False(t, at.Before(started.Add(-time.Second)), "entry %s was minted at %s, before the run began at %s", entry.ID, at, started)
+			assert.False(t, at.After(time.Now().UTC()), "entry %s was minted at %s, in the future", entry.ID, at)
+		}
 	})
 
 	steps.run("note and episode", "5: note and episode", steps.needs("snapshot"), func(t *testing.T) {

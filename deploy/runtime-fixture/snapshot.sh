@@ -163,6 +163,7 @@ if os.path.isdir(outbox):
         report["outbox"].append({
             "file": name,
             "id": entry.get("id"),
+            "created_at": entry.get("created_at"),
             "agent_id": entry.get("agent_id"),
             "assignment_epoch": entry.get("assignment_epoch"),
             "generation": entry.get("generation"),

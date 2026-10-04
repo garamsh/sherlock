@@ -5,8 +5,11 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
+	"path/filepath"
 	"strings"
 	"sync"
 	"testing"
@@ -17,6 +20,7 @@ import (
 
 	"github.com/garamsh/sherlock/internal/agent"
 	"github.com/garamsh/sherlock/internal/gateway"
+	"github.com/garamsh/sherlock/internal/tool"
 )
 
 // newTestServer wires the one agent's queue over a fake factory into an
@@ -388,3 +392,295 @@ func (s *emittingSession) Run(ctx context.Context, task string) (string, error) 
 }
 
 func (s *emittingSession) History() []agent.Message { return nil }
+
+// heldModel holds every act call until the test answers it through turn:
+// nil ends the turn with a writeback, an error fails it. It records each
+// act call's turn input; summaryModel answers its summary calls.
+type heldModel struct {
+	turns chan error
+
+	mu     sync.Mutex
+	inputs []string
+}
+
+func newHeldModel() *heldModel { return &heldModel{turns: make(chan error)} }
+
+func (m *heldModel) Chat(ctx context.Context, messages []agent.Message, _ []tool.Descriptor) (agent.Response, error) {
+	for i := len(messages) - 1; i >= 0; i-- {
+		if messages[i].Role == agent.RoleUser {
+			m.mu.Lock()
+			m.inputs = append(m.inputs, messages[i].Content)
+			m.mu.Unlock()
+			break
+		}
+	}
+	select {
+	case err := <-m.turns:
+		if err != nil {
+			return agent.Response{}, err
+		}
+		return agent.Response{ToolCalls: writebackStep(`{"reply":"Noted.","note":null}`).ToolCalls}, nil
+	case <-ctx.Done():
+		return agent.Response{}, ctx.Err()
+	}
+}
+
+// started returns the input of every act call so far.
+func (m *heldModel) started() []string {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	return append([]string(nil), m.inputs...)
+}
+
+// turn answers the act call of the next running turn.
+func (m *heldModel) turn(t *testing.T, err error) {
+	t.Helper()
+	select {
+	case m.turns <- err:
+	case <-time.After(5 * time.Second):
+		t.Fatal("no turn reached the model")
+	}
+}
+
+// newMemoryQueue serves agent "env-1" over the real runtime: a memory
+// store at path and model behind the reasoning loop.
+func newMemoryQueue(t *testing.T, path string, model *heldModel) *gateway.Queue {
+	t.Helper()
+	q, err := gateway.NewQueue(&gateway.Factory{
+		MemoryPath: path,
+		NewModel:   func(string) agent.Model { return &summaryModel{inner: model} },
+		Embedder:   wordEmbedder{},
+		Tools:      noTools(),
+	}, "env-1", newTestLogger())
+	require.NoError(t, err)
+	t.Cleanup(func() { q.Close() })
+	return q
+}
+
+func newMemoryServer(t *testing.T, model *heldModel) *httptest.Server {
+	t.Helper()
+	q := newMemoryQueue(t, filepath.Join(t.TempDir(), "memory.db"), model)
+	srv := httptest.NewServer(gateway.NewHandler(q, newTestLogger()))
+	t.Cleanup(srv.Close)
+	return srv
+}
+
+// messageReply is the decoded body of a message POST or lookup.
+type messageReply struct {
+	ID      string `json:"id"`
+	AgentID string `json:"agent_id"`
+	Status  string `json:"status"`
+	Error   string `json:"error"`
+}
+
+func sendMessage(t *testing.T, client *http.Client, base, body string) (int, messageReply) {
+	t.Helper()
+	resp, err := client.Post(base+"/agents/env-1/messages", "application/json", strings.NewReader(body))
+	require.NoError(t, err)
+	defer resp.Body.Close()
+	var reply messageReply
+	require.NoError(t, json.NewDecoder(resp.Body).Decode(&reply))
+	return resp.StatusCode, reply
+}
+
+func lookupMessage(t *testing.T, client *http.Client, base, id string) string {
+	t.Helper()
+	status, err := fetchStatus(client, base, id)
+	require.NoError(t, err)
+	return status
+}
+
+// fetchStatus looks the message up and checks the reply names the ID it
+// answers for, which the caller verifies.
+func fetchStatus(client *http.Client, base, id string) (string, error) {
+	resp, err := client.Get(base + "/agents/env-1/messages/" + url.PathEscape(id))
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("lookup %s: status %d", id, resp.StatusCode)
+	}
+	var reply messageReply
+	if err := json.NewDecoder(resp.Body).Decode(&reply); err != nil {
+		return "", err
+	}
+	if reply.ID != id {
+		return "", fmt.Errorf("lookup %s answered for %s", id, reply.ID)
+	}
+	return reply.Status, nil
+}
+
+func awaitStatus(t *testing.T, client *http.Client, base, id, status string) {
+	t.Helper()
+	require.Eventually(t, func() bool {
+		got, err := fetchStatus(client, base, id)
+		return err == nil && got == status
+	}, 5*time.Second, 5*time.Millisecond, "message %s never became %s", id, status)
+}
+
+func awaitStarted(t *testing.T, model *heldModel, n int) {
+	t.Helper()
+	require.Eventually(t, func() bool {
+		return len(model.started()) == n
+	}, 5*time.Second, time.Millisecond, "turn %d never started", n)
+}
+
+// TestServer_ReplayOfCommittedMessageCompletesWithoutATurn pins the
+// committed-replay row: 200 completed, and no turn runs for it again.
+func TestServer_ReplayOfCommittedMessageCompletesWithoutATurn(t *testing.T) {
+	model := newHeldModel()
+	srv := newMemoryServer(t, model)
+	code, reply := sendMessage(t, http.DefaultClient, srv.URL, `{"id":"m1","content":"hello"}`)
+	require.Equal(t, http.StatusAccepted, code)
+	require.Equal(t, messageReply{ID: "m1", AgentID: "env-1", Status: "queued"}, reply, "the sender's ID comes back byte for byte")
+	model.turn(t, nil)
+	awaitStatus(t, http.DefaultClient, srv.URL, "m1", "completed")
+
+	code, reply = sendMessage(t, http.DefaultClient, srv.URL, `{"id":"m1","content":"hello"}`)
+	assert.Equal(t, http.StatusOK, code)
+	assert.Equal(t, messageReply{ID: "m1", AgentID: "env-1", Status: "completed"}, reply)
+
+	// A later message runs, so an m1 queued again would have run with it
+	// or before it.
+	code, _ = sendMessage(t, http.DefaultClient, srv.URL, `{"id":"m2","content":"later"}`)
+	require.Equal(t, http.StatusAccepted, code)
+	model.turn(t, nil)
+	awaitStatus(t, http.DefaultClient, srv.URL, "m2", "completed")
+	assert.Equal(t, 1, strings.Count(strings.Join(model.started(), "\n"), "[m1]"), "m1 ran once")
+}
+
+// TestServer_ReplayOfQueuedMessageIsNotEnqueuedAgain pins the queued-replay
+// row: 202 queued, and the message is queued once.
+func TestServer_ReplayOfQueuedMessageIsNotEnqueuedAgain(t *testing.T) {
+	model := newHeldModel()
+	srv := newMemoryServer(t, model)
+	code, _ := sendMessage(t, http.DefaultClient, srv.URL, `{"id":"m0","content":"first"}`)
+	require.Equal(t, http.StatusAccepted, code)
+	awaitStarted(t, model, 1)
+	code, _ = sendMessage(t, http.DefaultClient, srv.URL, `{"id":"m1","content":"second"}`)
+	require.Equal(t, http.StatusAccepted, code)
+	require.Equal(t, "pending", lookupMessage(t, http.DefaultClient, srv.URL, "m1"), "m1 waits behind the running turn")
+
+	code, reply := sendMessage(t, http.DefaultClient, srv.URL, `{"id":"m1","content":"second"}`)
+	assert.Equal(t, http.StatusAccepted, code)
+	assert.Equal(t, messageReply{ID: "m1", AgentID: "env-1", Status: "queued"}, reply)
+
+	model.turn(t, nil)
+	model.turn(t, nil)
+	awaitStatus(t, http.DefaultClient, srv.URL, "m1", "completed")
+	// A later message runs, so a second m1 would have run with it or
+	// before it.
+	code, _ = sendMessage(t, http.DefaultClient, srv.URL, `{"id":"m2","content":"later"}`)
+	require.Equal(t, http.StatusAccepted, code)
+	model.turn(t, nil)
+	awaitStatus(t, http.DefaultClient, srv.URL, "m2", "completed")
+	assert.Equal(t, 1, strings.Count(strings.Join(model.started(), "\n"), "[m1]"), "m1 ran once")
+}
+
+// TestServer_ReplayOfQueuedMessageWithOtherContentIsRefused pins the
+// mismatch row for a queued message; the same replay with the original
+// content is the control.
+func TestServer_ReplayOfQueuedMessageWithOtherContentIsRefused(t *testing.T) {
+	model := newHeldModel()
+	srv := newMemoryServer(t, model)
+	code, _ := sendMessage(t, http.DefaultClient, srv.URL, `{"id":"m0","content":"first"}`)
+	require.Equal(t, http.StatusAccepted, code)
+	awaitStarted(t, model, 1)
+	code, _ = sendMessage(t, http.DefaultClient, srv.URL, `{"id":"m1","content":"second"}`)
+	require.Equal(t, http.StatusAccepted, code)
+
+	code, reply := sendMessage(t, http.DefaultClient, srv.URL, `{"id":"m1","content":"other"}`)
+	assert.Equal(t, http.StatusConflict, code)
+	assert.Equal(t, messageReply{Error: "id reused with different content"}, reply)
+	code, _ = sendMessage(t, http.DefaultClient, srv.URL, `{"id":"m1","content":"second"}`)
+	assert.Equal(t, http.StatusAccepted, code, "the original content is still accepted")
+
+	model.turn(t, nil)
+	model.turn(t, nil)
+	awaitStatus(t, http.DefaultClient, srv.URL, "m1", "completed")
+	assert.NotContains(t, strings.Join(model.started(), "\n"), "other", "the refused content never ran")
+}
+
+// TestServer_ReplayOfCommittedMessageWithOtherContentIsRefused pins the
+// mismatch row for a committed message; the same replay with the original
+// content is the control.
+func TestServer_ReplayOfCommittedMessageWithOtherContentIsRefused(t *testing.T) {
+	model := newHeldModel()
+	srv := newMemoryServer(t, model)
+	code, _ := sendMessage(t, http.DefaultClient, srv.URL, `{"id":"m1","content":"hello"}`)
+	require.Equal(t, http.StatusAccepted, code)
+	model.turn(t, nil)
+	awaitStatus(t, http.DefaultClient, srv.URL, "m1", "completed")
+
+	code, reply := sendMessage(t, http.DefaultClient, srv.URL, `{"id":"m1","content":"other"}`)
+	assert.Equal(t, http.StatusConflict, code)
+	assert.Equal(t, messageReply{Error: "id reused with different content"}, reply)
+	code, _ = sendMessage(t, http.DefaultClient, srv.URL, `{"id":"m1","content":"hello"}`)
+	assert.Equal(t, http.StatusOK, code, "the original content still completes")
+}
+
+// TestServer_MessageCompletesOnlyAfterCommit pins that completed is the
+// committed sources: a running turn's message is pending, and a turn that
+// ends without committing leaves its message unknown and deliverable.
+func TestServer_MessageCompletesOnlyAfterCommit(t *testing.T) {
+	model := newHeldModel()
+	srv := newMemoryServer(t, model)
+	code, _ := sendMessage(t, http.DefaultClient, srv.URL, `{"id":"m1","content":"hello"}`)
+	require.Equal(t, http.StatusAccepted, code)
+	awaitStarted(t, model, 1)
+	assert.Equal(t, "pending", lookupMessage(t, http.DefaultClient, srv.URL, "m1"), "a running turn has committed nothing")
+	code, reply := sendMessage(t, http.DefaultClient, srv.URL, `{"id":"m1","content":"hello"}`)
+	assert.Equal(t, http.StatusAccepted, code)
+	assert.Equal(t, "queued", reply.Status)
+	model.turn(t, nil)
+	awaitStatus(t, http.DefaultClient, srv.URL, "m1", "completed")
+
+	code, _ = sendMessage(t, http.DefaultClient, srv.URL, `{"id":"m2","content":"lost"}`)
+	require.Equal(t, http.StatusAccepted, code)
+	model.turn(t, errors.New("model unavailable"))
+	awaitStatus(t, http.DefaultClient, srv.URL, "m2", "unknown")
+	code, reply = sendMessage(t, http.DefaultClient, srv.URL, `{"id":"m2","content":"lost"}`)
+	assert.Equal(t, http.StatusAccepted, code, "an uncommitted message is delivered again")
+	assert.Equal(t, "queued", reply.Status)
+	model.turn(t, nil)
+	awaitStatus(t, http.DefaultClient, srv.URL, "m2", "completed")
+}
+
+// TestServer_RestartForgetsPendingAndKeepsCompleted pins that pending
+// lives in the process and completed in memory.db.
+func TestServer_RestartForgetsPendingAndKeepsCompleted(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "memory.db")
+	model := newHeldModel()
+	q := newMemoryQueue(t, path, model)
+	srv := httptest.NewServer(gateway.NewHandler(q, newTestLogger()))
+	t.Cleanup(srv.Close)
+	code, _ := sendMessage(t, http.DefaultClient, srv.URL, `{"id":"m1","content":"kept"}`)
+	require.Equal(t, http.StatusAccepted, code)
+	model.turn(t, nil)
+	awaitStatus(t, http.DefaultClient, srv.URL, "m1", "completed")
+	code, _ = sendMessage(t, http.DefaultClient, srv.URL, `{"id":"m2","content":"in flight"}`)
+	require.Equal(t, http.StatusAccepted, code)
+	awaitStarted(t, model, 2)
+	require.Equal(t, "pending", lookupMessage(t, http.DefaultClient, srv.URL, "m2"))
+	require.NoError(t, q.Close())
+
+	restarted := httptest.NewServer(gateway.NewHandler(newMemoryQueue(t, path, newHeldModel()), newTestLogger()))
+	t.Cleanup(restarted.Close)
+	assert.Equal(t, "completed", lookupMessage(t, http.DefaultClient, restarted.URL, "m1"))
+	assert.Equal(t, "unknown", lookupMessage(t, http.DefaultClient, restarted.URL, "m2"))
+}
+
+// TestServer_LookupKeepsSenderIDByteForByte pins that an ID is not
+// normalized: one with a slash and spaces reads back as sent.
+func TestServer_LookupKeepsSenderIDByteForByte(t *testing.T) {
+	model := newHeldModel()
+	srv := newMemoryServer(t, model)
+	id := "garam/agent-7 msg:42?x"
+	code, reply := sendMessage(t, http.DefaultClient, srv.URL, `{"id":"garam/agent-7 msg:42?x","content":"hello"}`)
+	require.Equal(t, http.StatusAccepted, code)
+	assert.Equal(t, id, reply.ID)
+	model.turn(t, nil)
+	awaitStatus(t, http.DefaultClient, srv.URL, id, "completed")
+	assert.Equal(t, "unknown", lookupMessage(t, http.DefaultClient, srv.URL, "garam/agent-7 msg:42"), "a prefix of the ID is another ID")
+}

@@ -9,9 +9,11 @@ import (
 
 // SourceMessage is visible conversation evidence. Runtime instructions, tool
 // output, and model reasoning have no representation in this type.
+// ExternalID is unique within Sender, the principal that delivered it.
 type SourceMessage struct {
 	ID         int64
 	ExternalID string
+	Sender     string
 	Role       Role
 	Content    string
 }

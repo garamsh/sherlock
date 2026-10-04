@@ -31,6 +31,8 @@ func (q *Queue) run(events *batchEvents) {
 			events.setBatch(ids)
 			_, err := q.runtime.Session.Run(agent.WithInboundSources(q.ctx, sourceBatch(batch)), renderBatch(batch))
 			events.setBatch(nil)
+			// The turn has committed its sources or never will.
+			q.forget(messageKeys(batch))
 			if err != nil {
 				logger.Error("run failed",
 					"op", "run", "message_ids", ids, "error", err)
@@ -91,6 +93,14 @@ func messageIDs(batch []Inbound) []string {
 	return ids
 }
 
+func messageKeys(batch []Inbound) []messageKey {
+	keys := make([]messageKey, len(batch))
+	for i, m := range batch {
+		keys[i] = messageKey{sender: m.Sender, id: m.ID}
+	}
+	return keys
+}
+
 // batchEvents is the agent's event sink: it stamps terminal events with
 // the message IDs of the batch the turn drained (ADR 0015) and forwards
 // everything to the monitoring stream.
@@ -122,7 +132,7 @@ func (s *batchEvents) Emit(ctx context.Context, e agent.Event) {
 func sourceBatch(batch []Inbound) []agent.SourceMessage {
 	out := make([]agent.SourceMessage, 0, len(batch))
 	for _, m := range batch {
-		out = append(out, agent.SourceMessage{ExternalID: m.ID, Role: agent.RoleUser, Content: m.Content})
+		out = append(out, agent.SourceMessage{ExternalID: m.ID, Sender: m.Sender, Role: agent.RoleUser, Content: m.Content})
 	}
 	return out
 }

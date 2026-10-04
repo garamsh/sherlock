@@ -20,9 +20,9 @@ CREATE TABLE IF NOT EXISTS conversation_sources (
  id INTEGER PRIMARY KEY AUTOINCREMENT,
  role TEXT NOT NULL CHECK(role IN ('user','assistant')),
  external_id TEXT,
- content TEXT NOT NULL
+ content TEXT NOT NULL,
+ sender TEXT NOT NULL DEFAULT ''
 );
-CREATE UNIQUE INDEX IF NOT EXISTS conversation_external_id ON conversation_sources(external_id) WHERE external_id <> '';
 CREATE TABLE IF NOT EXISTS conversation_mid (
  id INTEGER PRIMARY KEY AUTOINCREMENT,
  source_first INTEGER NOT NULL UNIQUE REFERENCES conversation_sources(id),
@@ -61,7 +61,7 @@ func (s *Store) RecordTurn(ctx context.Context, sources []agent.SourceMessage, s
 		}
 		identified++
 		var role, content string
-		err := tx.QueryRowContext(ctx, `SELECT role,content FROM conversation_sources WHERE external_id=?`, part.ExternalID).Scan(&role, &content)
+		err := tx.QueryRowContext(ctx, `SELECT role,content FROM conversation_sources WHERE sender=? AND external_id=?`, part.Sender, part.ExternalID).Scan(&role, &content)
 		if errors.Is(err, sql.ErrNoRows) {
 			continue
 		}
@@ -85,7 +85,7 @@ func (s *Store) RecordTurn(ctx context.Context, sources []agent.SourceMessage, s
 			if strings.TrimSpace(content) == "" {
 				continue
 			}
-			if _, err := tx.ExecContext(ctx, `INSERT INTO conversation_sources(role,external_id,content) VALUES (?,?,?)`, part.Role, part.ExternalID, content); err != nil {
+			if _, err := tx.ExecContext(ctx, `INSERT INTO conversation_sources(role,sender,external_id,content) VALUES (?,?,?,?)`, part.Role, part.Sender, part.ExternalID, content); err != nil {
 				return fmt.Errorf("record source: %v", err)
 			}
 		}
@@ -268,6 +268,21 @@ func (s *Store) Source(ctx context.Context, id int64) (agent.SourceMessage, erro
 	return m, err
 }
 
+// HoldsInbound reports whether a committed source holds the sender's message
+// ID and, when it does, whether it holds it with content, compared as stored:
+// credentials redacted.
+func (s *Store) HoldsInbound(ctx context.Context, sender, id, content string) (held, same bool, err error) {
+	var stored string
+	err = s.db.QueryRowContext(ctx, `SELECT content FROM conversation_sources WHERE sender=? AND external_id=?`, sender, id).Scan(&stored)
+	if errors.Is(err, sql.ErrNoRows) {
+		return false, false, nil
+	}
+	if err != nil {
+		return false, false, fmt.Errorf("read inbound source: %v", err)
+	}
+	return true, stored == redactSecrets(content), nil
+}
+
 // OpenConversation takes the writer lock, then checks existing addressed rows
 // read-only before opening the source-linked schema, so refusal leaves the old
 // file unchanged. The embedder
@@ -385,6 +400,21 @@ func prepareConversation(db *sql.DB) error {
 		if _, err := tx.Exec(`ALTER TABLE conversation_mid ADD COLUMN linked INTEGER NOT NULL DEFAULT 0`); err != nil {
 			return err
 		}
+	}
+	var scoped int
+	if err := tx.QueryRow(`SELECT count(*) FROM pragma_table_info('conversation_sources') WHERE name='sender'`).Scan(&scoped); err != nil {
+		return err
+	}
+	// A file from before sender scoping files its IDs under the empty
+	// sender, the one a plain-HTTP request has.
+	if scoped == 0 {
+		if _, err := tx.Exec(`ALTER TABLE conversation_sources ADD COLUMN sender TEXT NOT NULL DEFAULT ''`); err != nil {
+			return err
+		}
+	}
+	if _, err := tx.Exec(`DROP INDEX IF EXISTS conversation_external_id;
+CREATE UNIQUE INDEX IF NOT EXISTS conversation_sender_external_id ON conversation_sources(sender,external_id) WHERE external_id <> ''`); err != nil {
+		return err
 	}
 	return tx.Commit()
 }

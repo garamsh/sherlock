@@ -43,8 +43,8 @@ func outboxSnapshot(dir string) map[string]struct{} {
 }
 
 // echoOutbox writes every message delivered since the snapshot to w, in
-// name order, which is delivery order: the writer names each file by
-// timestamp and sequence. A file that will not read or parse is skipped
+// name order, which is delivery order: the writer's entry IDs begin
+// with the write time. A file that will not read or parse is skipped
 // — the echo is a convenience over the durable record, so it never
 // fails a turn that already delivered.
 func echoOutbox(w io.Writer, dir string, before map[string]struct{}) {

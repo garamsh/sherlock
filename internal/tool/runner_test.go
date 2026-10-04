@@ -348,3 +348,29 @@ printf '{"seen":"%s"}\n' "$SHERLOCK_TEST_AGENT_SECRET"`)
 	assert.JSONEq(t, `{"seen":"the-model-key"}`, string(out),
 		"a tool reads what the agent's environment holds, declared or not")
 }
+
+// TestRunner_PublishesTheCallsInReplyTo checks each spawn carries the
+// call's own InReplyToEnv: the IDs from its context replace a value
+// already in the platform's environment, and a call that carries none
+// gets an empty array rather than the inherited value.
+func TestRunner_PublishesTheCallsInReplyTo(t *testing.T) {
+	t.Setenv(tool.InReplyToEnv, `["stale"]`)
+	script := tinyScript(t, `cat >/dev/null
+printf '{"ids":%s}\n' "$SHERLOCK_IN_REPLY_TO"`)
+	runner := tool.NewRunner(tool.Manifest{
+		Name:         "env",
+		Description:  "env",
+		Command:      script,
+		InputSchema:  json.RawMessage(`{"type":"object"}`),
+		OutputSchema: json.RawMessage(`{"type":"object"}`),
+	}, t.TempDir())
+
+	ctx := tool.WithInReplyTo(context.Background(), []string{"m-1", "sender:a,b"})
+	out, _, err := runner.Run(ctx, json.RawMessage(`{}`))
+	require.NoError(t, err)
+	assert.JSONEq(t, `{"ids":["m-1","sender:a,b"]}`, string(out))
+
+	out, _, err = runner.Run(context.Background(), json.RawMessage(`{}`))
+	require.NoError(t, err)
+	assert.JSONEq(t, `{"ids":[]}`, string(out))
+}

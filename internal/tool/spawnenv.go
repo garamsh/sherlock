@@ -1,6 +1,8 @@
 package tool
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 )
@@ -27,7 +29,44 @@ const (
 	// --agent-id is a flag and this value is published after it is
 	// read, so a value already in the environment is replaced.
 	AgentIDEnv = "SHERLOCK_AGENT_ID"
+
+	// AssignmentEpochEnv and GenerationEnv name the launcher's
+	// assignment epoch and this start's runtime generation (ADR 0016),
+	// which message_send records on every entry as provenance. Both are
+	// opaque and empty when unknown, and both replace any value already
+	// in the environment.
+	AssignmentEpochEnv = "SHERLOCK_ASSIGNMENT_EPOCH"
+	GenerationEnv      = "SHERLOCK_GENERATION"
+
+	// InReplyToEnv names the IDs of the inbound messages the running
+	// turn drained, as a JSON array of strings, which message_send
+	// records on every outbox entry it writes. It is the one per-call
+	// variable: the runner sets it on each spawn from the call's context
+	// (WithInReplyTo), replacing any value in the platform's environment,
+	// and sets an empty array when the call carries none.
+	InReplyToEnv = "SHERLOCK_IN_REPLY_TO"
 )
+
+type inReplyToKey struct{}
+
+// WithInReplyTo carries the IDs of the messages the running turn drained
+// to every tool the turn calls (InReplyToEnv).
+func WithInReplyTo(ctx context.Context, ids []string) context.Context {
+	return context.WithValue(ctx, inReplyToKey{}, append([]string(nil), ids...))
+}
+
+// inReplyToEntry returns the InReplyToEnv entry for one spawn under ctx.
+func inReplyToEntry(ctx context.Context) (string, error) {
+	ids, _ := ctx.Value(inReplyToKey{}).([]string)
+	if ids == nil {
+		ids = []string{}
+	}
+	body, err := json.Marshal(ids)
+	if err != nil {
+		return "", fmt.Errorf("encode %s: %w", InReplyToEnv, err)
+	}
+	return InReplyToEnv + "=" + string(body), nil
+}
 
 // SetSpawnEnv publishes the values the shipped tools read from their
 // own process environment. The runner spawns each tool with the
@@ -40,15 +79,29 @@ const (
 // github tool's GH_TOKEN is the standing example — the platform never
 // sets it, and a tool that needs one and does not find one fails on its
 // own terms.
-func SetSpawnEnv(workspaceAddr, outboxDir, agentID string) error {
+//
+// The generation is minted after the tools load, so SetSpawnEnv publishes
+// it empty and SetGenerationEnv publishes the minted value.
+func SetSpawnEnv(workspaceAddr, outboxDir, agentID, assignmentEpoch string) error {
 	for _, v := range []struct{ name, value string }{
 		{WorkspaceAddrEnv, workspaceAddr},
 		{OutboxDirEnv, outboxDir},
 		{AgentIDEnv, agentID},
+		{AssignmentEpochEnv, assignmentEpoch},
+		{GenerationEnv, ""},
 	} {
 		if err := os.Setenv(v.name, v.value); err != nil {
 			return fmt.Errorf("set %s: %w", v.name, err)
 		}
+	}
+	return nil
+}
+
+// SetGenerationEnv publishes the generation a serving start minted, so
+// every tool spawned after it records that start (GenerationEnv).
+func SetGenerationEnv(generation string) error {
+	if err := os.Setenv(GenerationEnv, generation); err != nil {
+		return fmt.Errorf("set %s: %w", GenerationEnv, err)
 	}
 	return nil
 }

@@ -29,9 +29,10 @@ var testIdentity = identity{agentID: "test-agent"}
 // caller points Config.ToolsDir at it. The tool needs no executable:
 // every assertion here is about startup, which never spawns one.
 //
-// tool.SetSpawnEnv writes SHERLOCK_WORKSPACE_ADDR, SHERLOCK_OUTBOX_DIR and
-// SHERLOCK_AGENT_ID through os.Setenv on the way, so the helper claims the
-// first two through t.Setenv first and the framework restores them.
+// tool.SetSpawnEnv writes SHERLOCK_WORKSPACE_ADDR, SHERLOCK_OUTBOX_DIR,
+// SHERLOCK_AGENT_ID, SHERLOCK_ASSIGNMENT_EPOCH and SHERLOCK_GENERATION
+// through os.Setenv on the way, so the helper claims all but the agent ID
+// through t.Setenv first and the framework restores them.
 // SHERLOCK_AGENT_ID is not claimed and outlives the test.
 func pinnedToolTree(t *testing.T) (dir, hash string) {
 	t.Helper()
@@ -54,6 +55,8 @@ func pinnedToolTree(t *testing.T) (dir, hash string) {
 
 	t.Setenv("SHERLOCK_WORKSPACE_ADDR", "")
 	t.Setenv("SHERLOCK_OUTBOX_DIR", "")
+	t.Setenv("SHERLOCK_ASSIGNMENT_EPOCH", "")
+	t.Setenv("SHERLOCK_GENERATION", "")
 
 	hash, err := tool.ManifestHashOfFile(manifestPath)
 	require.NoError(t, err)
@@ -336,6 +339,8 @@ func TestStartQueue_MintsTheGenerationOnlyUnderTheStoreLock(t *testing.T) {
 	t.Cleanup(func() { queue.Close() })
 	assert.Equal(t, 1, minted)
 	assert.NotEmpty(t, id.generation)
+	assert.Equal(t, id.generation, os.Getenv(tool.GenerationEnv),
+		"the tools are handed the generation this start minted")
 }
 
 // generationShape is a runtime start nonce: 128 bits as lowercase hex.

@@ -47,8 +47,13 @@ func (r *Runner) Run(ctx context.Context, input json.RawMessage) (json.RawMessag
 	// (#543, security.md §Tool trust posture). The manifest cannot change
 	// that in either direction: it names no variable to add and none to
 	// keep out, because the platform does not dispatch secrets
-	// (ADR 0009). Passing os.Environ() unmodified is the whole policy.
-	cmd.Env = os.Environ()
+	// (ADR 0009). The one addition is the call's own InReplyToEnv, which
+	// replaces any inherited value: exec keeps the last of duplicate keys.
+	replyTo, err := inReplyToEntry(ctx)
+	if err != nil {
+		return nil, "", err
+	}
+	cmd.Env = append(os.Environ(), replyTo)
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
 		return nil, "", fmt.Errorf("open stdin: %w", err)

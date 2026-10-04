@@ -7,17 +7,29 @@
 
 The platform's identity concept was named env-id. The surrounding system — the console and the orchestration layer — uses agent ID for the same concept: one agent per environment. Two names for one concept breeds confusion exactly where the systems meet: the HTTP paths, the monitoring stream, and the console message payload.
 
+The ID also has to be the one the launcher issued. Until #796 the flag defaulted to `default`, and a launcher that passed no ID produced an agent answering on `/agents/default/` and stamping `agent_id: "default"` on its messages while the launcher held a distinct GRN for it — a plausible value that was wrong for every deployment.
+
 ## Decision
 
 The agent's identity is the agent ID. The HTTP API is agent-addressed — `/agents/{agent-id}/messages` and `/agents/{agent-id}/events` — and outbound message payloads carry `agent_id`. "Environment" remains the name of what the agent owns — in the pod topology (ADR 0017) the sidecar and its workspace. One agent per environment, as always.
+
+The ID is what the launcher passes as `--agent-id`, and nothing else:
+
+- **Required, with no default.** An absent or empty `--agent-id` refuses startup with `--agent-id is required`.
+- **Opaque and verbatim.** Sherlock does not parse, normalise or escape it. A GRN such as `grn:garam:default:agent:144460a71649d1a1` is the path segment the routes answer on and the value tools receive as `SHERLOCK_AGENT_ID`.
+- **Activation labels beside it.** `--assignment-epoch` and `--generation` are the launcher's labels for this activation: flags only, opaque and optional, empty meaning unknown. The agent resolves them at startup, holds them beside the ID, and logs them. Sherlock never compares or fences on them.
 
 ## Consequences
 
 - One name at every boundary: console, orchestrator, API, and logs all say agent ID.
 - The rename touched identifiers, paths, and docs, not the model.
 - `env_id` disappeared from the external contract.
+- A launcher must name the agent. An agent that ran on the implicit `default` stops starting until its arguments carry `--agent-id`; one that passed `--agent-id default` explicitly is unchanged.
+- Moving an agent from `default` to its GRN keeps its memory: `memory.db` is not keyed by agent ID. Callers move to the new route, and messages already in the outbox still carry `default`.
 
 ## Rejected alternatives
 
 - **Keep env-id externally, alias agent-id at the console** — two names for one concept permanently; every future integration inherits the translation.
 - **Rename the package and on-disk layout too** — a large mechanical diff for zero behavioral gain; the name is accurate where it lives.
+- **Keep a default ID** — a default addresses something and is wrong for every deployment, so a launcher that omits the ID gets a silent wrong identity rather than a refusal (#796).
+- **Derive the ID from the gateway certificate** — would make the ID and the issued credential unable to diverge, but ties identity to the mTLS material ADR 0012 leaves optional.

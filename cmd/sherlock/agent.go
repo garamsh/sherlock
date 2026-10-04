@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"crypto/tls"
+	"errors"
 	"fmt"
 	"log/slog"
 	"os"
@@ -42,7 +43,7 @@ func newAgentCommand() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			agentID, err := cmd.Flags().GetString("agent-id")
+			id, err := resolveIdentity(cmd.Flags())
 			if err != nil {
 				return err
 			}
@@ -51,9 +52,9 @@ func newAgentCommand() *cobra.Command {
 				return err
 			}
 			if msg != "" {
-				return runAgentTurn(cmd.Context(), cfg, agentID, msg, ego)
+				return runAgentTurn(cmd.Context(), cfg, id, msg, ego)
 			}
-			return serveAgent(cmd.Context(), cfg, agentID, ego)
+			return serveAgent(cmd.Context(), cfg, id, ego)
 		},
 	}
 	addAgentFlags(cmd.Flags())
@@ -61,12 +62,49 @@ func newAgentCommand() *cobra.Command {
 }
 
 // addAgentFlags registers the agent subcommand's flags on fs: the
-// settings config resolves, plus the two inputs the command reads
-// itself — which agent this process serves, and the one-shot message.
+// settings config resolves, plus the inputs the command reads itself —
+// the identity this process serves under, and the one-shot message.
 func addAgentFlags(fs *pflag.FlagSet) {
 	config.AddAgentFlags(fs)
-	fs.String("agent-id", "default", "agent ID this process serves")
+	fs.String("agent-id", "", "agent ID this process serves, used verbatim (required)")
+	fs.String("assignment-epoch", "", "launcher's assignment epoch for this activation, opaque (empty: unknown)")
+	fs.String("generation", "", "launcher's generation for this activation, opaque (empty: unknown)")
 	fs.String("message", "", "run one turn with this message and exit instead of serving")
+}
+
+// errAgentIDRequired refuses a start with no identity: an agent ID
+// decides the routes the agent answers on and the sender its messages
+// carry (ADR 0016), so no fallback value is right for every deployment.
+var errAgentIDRequired = errors.New("--agent-id is required: the agent serves the identity it was given and has no default (ADR 0016)")
+
+// identity is who this process is: the agent ID it serves, and the
+// launcher's activation labels. All three are opaque and used verbatim;
+// an empty label means unknown.
+type identity struct {
+	agentID         string
+	assignmentEpoch string
+	generation      string
+}
+
+// resolveIdentity reads the identity flags off fs, refusing an absent
+// or empty --agent-id.
+func resolveIdentity(fs *pflag.FlagSet) (identity, error) {
+	agentID, err := fs.GetString("agent-id")
+	if err != nil {
+		return identity{}, err
+	}
+	if agentID == "" {
+		return identity{}, errAgentIDRequired
+	}
+	epoch, err := fs.GetString("assignment-epoch")
+	if err != nil {
+		return identity{}, err
+	}
+	generation, err := fs.GetString("generation")
+	if err != nil {
+		return identity{}, err
+	}
+	return identity{agentID: agentID, assignmentEpoch: epoch, generation: generation}, nil
 }
 
 // newAgentFactory resolves the model providers, loads the operator's
@@ -74,7 +112,7 @@ func addAgentFlags(fs *pflag.FlagSet) {
 // registry both agent modes share. The agent constructs no tool-shaped
 // code at compile time (ADR 0017 §Decision, ADR 0009 §Decision); the
 // script-tool registry is the lifecycle owner for tool calls.
-func newAgentFactory(cfg config.Config, agentID, ego string, logger *slog.Logger) (*gateway.Factory, error) {
+func newAgentFactory(cfg config.Config, id identity, ego string, logger *slog.Logger) (*gateway.Factory, error) {
 	newModel, err := newModelFunc(cfg.Model)
 	if err != nil {
 		return nil, err
@@ -83,7 +121,7 @@ func newAgentFactory(cfg config.Config, agentID, ego string, logger *slog.Logger
 	if err != nil {
 		return nil, err
 	}
-	registry, err := buildToolRegistry(cfg, agentID, logger)
+	registry, err := buildToolRegistry(cfg, id, logger)
 	if err != nil {
 		return nil, err
 	}
@@ -111,8 +149,8 @@ func newAgentFactory(cfg config.Config, agentID, ego string, logger *slog.Logger
 // environment are published before the registry loads, because the
 // runner hands the platform's environment to every tool it spawns
 // (tool.SetSpawnEnv).
-func buildToolRegistry(cfg config.Config, agentID string, logger *slog.Logger) (*tool.Registry, error) {
-	if err := tool.SetSpawnEnv(cfg.WorkspaceAddr, gateway.DirFor(cfg.MemoryPath), agentID); err != nil {
+func buildToolRegistry(cfg config.Config, id identity, logger *slog.Logger) (*tool.Registry, error) {
+	if err := tool.SetSpawnEnv(cfg.WorkspaceAddr, gateway.DirFor(cfg.MemoryPath), id.agentID); err != nil {
 		return nil, err
 	}
 	registry, err := tool.NewRegistry(tool.RegistryOptions{
@@ -131,18 +169,18 @@ func buildToolRegistry(cfg config.Config, agentID string, logger *slog.Logger) (
 // gateway, pointing its output at stdout: a CLI invocation prints the
 // agent's reply without an outbox watcher, while the serving mode stays
 // outbox-only.
-func runAgentTurn(ctx context.Context, cfg config.Config, agentID, msg, ego string) error {
+func runAgentTurn(ctx context.Context, cfg config.Config, id identity, msg, ego string) error {
 	// Logs go to stderr so stdout carries only the agent's output.
 	logger := slog.New(slog.NewJSONHandler(os.Stderr, nil))
 	slog.SetDefault(logger)
 
-	factory, err := newAgentFactory(cfg, agentID, ego, logger)
+	factory, err := newAgentFactory(cfg, id, ego, logger)
 	if err != nil {
 		return err
 	}
 	return gateway.Turn{
 		Factory:   factory,
-		AgentID:   agentID,
+		AgentID:   id.agentID,
 		OutboxDir: gateway.DirFor(cfg.MemoryPath),
 		Out:       os.Stdout,
 		Logger:    logger,
@@ -152,7 +190,7 @@ func runAgentTurn(ctx context.Context, cfg config.Config, agentID, msg, ego stri
 // serveAgent runs the agent's HTTP gateway until an interrupt or SIGTERM.
 // Callers authenticate with mTLS when the tls: config section is set
 // (ADR 0012); without it the gateway serves loopback binds only.
-func serveAgent(ctx context.Context, cfg config.Config, agentID, ego string) error {
+func serveAgent(ctx context.Context, cfg config.Config, id identity, ego string) error {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	slog.SetDefault(logger)
 
@@ -164,11 +202,11 @@ func serveAgent(ctx context.Context, cfg config.Config, agentID, ego string) err
 		return fmt.Errorf("addr %q is not a loopback bind: serving beyond localhost requires the tls: config section (ADR 0012)", cfg.Addr)
 	}
 
-	factory, err := newAgentFactory(cfg, agentID, ego, logger)
+	factory, err := newAgentFactory(cfg, id, ego, logger)
 	if err != nil {
 		return err
 	}
-	queue, err := gateway.NewQueue(factory, agentID, logger)
+	queue, err := gateway.NewQueue(factory, id.agentID, logger)
 	if err != nil {
 		return err
 	}
@@ -176,7 +214,8 @@ func serveAgent(ctx context.Context, cfg config.Config, agentID, ego string) err
 	defer stop()
 
 	logger.Info("agent listening",
-		"op", "startup", "addr", cfg.Addr, "agent_id", agentID,
+		"op", "startup", "addr", cfg.Addr, "agent_id", id.agentID,
+		"assignment_epoch", id.assignmentEpoch, "generation", id.generation,
 		"memory_path", cfg.MemoryPath, "workspace_addr", cfg.WorkspaceAddr,
 		"tools_dir", cfg.ToolsDir,
 		"auth", authLabel(tlsConfig))

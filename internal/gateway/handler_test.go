@@ -119,6 +119,48 @@ func TestServer_MismatchedAgentIDGets404(t *testing.T) {
 	assert.Equal(t, http.StatusNotFound, resp.StatusCode)
 }
 
+// TestServer_GRNAgentIDRoutesVerbatim holds that the agent ID is opaque
+// (ADR 0016): a GRN, colons included, is the path segment both routes
+// answer on, and an ID differing only in its final segment gets 404.
+func TestServer_GRNAgentIDRoutesVerbatim(t *testing.T) {
+	const grn = "grn:garam:default:agent:144460a71649d1a1"
+	const other = "grn:garam:default:agent:0000000000000000"
+	factory := &fakeFactory{newFn: func(string, agent.EventSink) (*gateway.Runtime, error) {
+		return &gateway.Runtime{Session: &fakeSession{}, Close: func(context.Context) error { return nil }}, nil
+	}}
+	q, err := gateway.NewQueue(factory, grn, newTestLogger())
+	require.NoError(t, err)
+	t.Cleanup(func() { q.Close() })
+	srv := httptest.NewServer(gateway.NewHandler(q, newTestLogger()))
+	t.Cleanup(srv.Close)
+
+	eventsStatus := func(id string) int {
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
+		req, err := http.NewRequestWithContext(ctx, http.MethodGet, srv.URL+"/agents/"+id+"/events", nil)
+		require.NoError(t, err)
+		resp, err := http.DefaultClient.Do(req)
+		require.NoError(t, err)
+		defer resp.Body.Close()
+		return resp.StatusCode
+	}
+
+	resp := postMessage(t, srv.URL+"/agents/"+grn+"/messages", `{"content":"hello"}`)
+	defer resp.Body.Close()
+	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
+	var ack struct {
+		AgentID string `json:"agent_id"`
+	}
+	require.NoError(t, json.NewDecoder(resp.Body).Decode(&ack))
+	assert.Equal(t, grn, ack.AgentID)
+	assert.Equal(t, http.StatusOK, eventsStatus(grn))
+
+	resp = postMessage(t, srv.URL+"/agents/"+other+"/messages", `{"content":"hello"}`)
+	defer resp.Body.Close()
+	assert.Equal(t, http.StatusNotFound, resp.StatusCode)
+	assert.Equal(t, http.StatusNotFound, eventsStatus(other))
+}
+
 func TestServer_MethodNotAllowed(t *testing.T) {
 	srv := newTestServer(t, func(string, agent.EventSink) (*gateway.Runtime, error) {
 		return &gateway.Runtime{Session: &fakeSession{}, Close: func(context.Context) error { return nil }}, nil

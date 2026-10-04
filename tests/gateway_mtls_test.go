@@ -280,6 +280,7 @@ func TestAgent_NonLoopbackWithoutTLSFailsStartup(t *testing.T) {
 	for _, addr := range []string{"0.0.0.0:18080", ":18080"} {
 		cmd := exec.Command(binary, "agent",
 			"--config", configPath, "--addr", addr,
+			"--agent-id", mtlsAgentID,
 			"--memory-path", filepath.Join(root, "memory.db"))
 		out, err := cmd.CombinedOutput()
 		require.Error(t, err, "addr %q without tls: must fail startup", addr)

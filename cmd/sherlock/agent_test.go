@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"io"
 	"log/slog"
 	"net"
 	"os"
@@ -9,12 +10,16 @@ import (
 	"testing"
 	"time"
 
+	"github.com/spf13/pflag"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"github.com/garamsh/sherlock/internal/config"
 	"github.com/garamsh/sherlock/internal/tool"
 )
+
+// testIdentity is the identity the startup tests serve under.
+var testIdentity = identity{agentID: "test-agent"}
 
 // pinnedToolTree installs a minimal manifest for the one required tool
 // under a tmpdir and returns the directory and the manifest's hash; the
@@ -63,7 +68,7 @@ func TestBuildToolRegistry_DriftPinRefusesMutatedManifest(t *testing.T) {
 	cfg := config.Config{MemoryPath: filepath.Join(dir, "memory.db"), ToolsDir: dir}
 	cfg.Tools.Pins = tool.ManifestPins{"message_send": hash}
 
-	_, err := buildToolRegistry(cfg, "test-agent", slog.New(slog.DiscardHandler))
+	_, err := buildToolRegistry(cfg, testIdentity, slog.New(slog.DiscardHandler))
 	require.NoError(t, err, "the unmutated manifest matches its pin")
 
 	mutated := []byte(`{
@@ -80,7 +85,7 @@ func TestBuildToolRegistry_DriftPinRefusesMutatedManifest(t *testing.T) {
 	require.NoError(t, os.WriteFile(
 		filepath.Join(dir, "message_send", "manifest.json"), mutated, 0o644))
 
-	_, err = buildToolRegistry(cfg, "test-agent", slog.New(slog.DiscardHandler))
+	_, err = buildToolRegistry(cfg, testIdentity, slog.New(slog.DiscardHandler))
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "descriptor drift")
 }
@@ -104,7 +109,7 @@ func TestBuildToolRegistry_UnpinnedToolRefused(t *testing.T) {
 	cfg := config.Config{MemoryPath: filepath.Join(dir, "memory.db"), ToolsDir: dir}
 	cfg.Tools.Pins = tool.ManifestPins{"message_send": hash}
 
-	_, err := buildToolRegistry(cfg, "test-agent", slog.New(slog.DiscardHandler))
+	_, err := buildToolRegistry(cfg, testIdentity, slog.New(slog.DiscardHandler))
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), `unpinned tool "exfiltrate"`)
 }
@@ -117,7 +122,7 @@ func TestBuildToolRegistry_WithoutPinsLoads(t *testing.T) {
 	dir, _ := pinnedToolTree(t)
 	cfg := config.Config{MemoryPath: filepath.Join(dir, "memory.db"), ToolsDir: dir}
 
-	registry, err := buildToolRegistry(cfg, "test-agent", slog.New(slog.DiscardHandler))
+	registry, err := buildToolRegistry(cfg, testIdentity, slog.New(slog.DiscardHandler))
 	require.NoError(t, err)
 	assert.Len(t, registry.List(), 1)
 }
@@ -137,7 +142,7 @@ func TestBuildToolRegistry_RequiresTheMouthAndNothingElse(t *testing.T) {
 		dir, _ := pinnedToolTree(t)
 		cfg := config.Config{MemoryPath: filepath.Join(dir, "memory.db"), ToolsDir: dir}
 
-		registry, err := buildToolRegistry(cfg, "test-agent", slog.New(slog.DiscardHandler))
+		registry, err := buildToolRegistry(cfg, testIdentity, slog.New(slog.DiscardHandler))
 		require.NoError(t, err, "files and shell_exec are absent and the agent still starts")
 
 		names := make([]string, 0, 1)
@@ -153,7 +158,7 @@ func TestBuildToolRegistry_RequiresTheMouthAndNothingElse(t *testing.T) {
 		require.NoError(t, os.RemoveAll(filepath.Join(dir, "message_send")))
 		cfg := config.Config{MemoryPath: filepath.Join(dir, "memory.db"), ToolsDir: dir}
 
-		_, err := buildToolRegistry(cfg, "test-agent", slog.New(slog.DiscardHandler))
+		_, err := buildToolRegistry(cfg, testIdentity, slog.New(slog.DiscardHandler))
 		require.Error(t, err)
 		assert.Contains(t, err.Error(), "required tools missing")
 		assert.Contains(t, err.Error(), "message_send")
@@ -190,7 +195,7 @@ func TestServeAgent_FailedRegistryLeavesNothingListening(t *testing.T) {
 	// ordering opens the window between the bind and the failed load,
 	// and a dial after serveAgent has returned misses it.
 	done := make(chan error, 1)
-	go func() { done <- serveAgent(context.Background(), cfg, "test-agent", "") }()
+	go func() { done <- serveAgent(context.Background(), cfg, testIdentity, "") }()
 	var answered bool
 	for {
 		select {
@@ -206,5 +211,74 @@ func TestServeAgent_FailedRegistryLeavesNothingListening(t *testing.T) {
 				_ = conn.Close()
 			}
 		}
+	}
+}
+
+// TestAgentCommand_RefusesWithoutAgentID holds that the agent serves
+// the identity it was given and never a fallback (ADR 0016): an absent
+// and an empty --agent-id both refuse startup with errAgentIDRequired.
+//
+// The control runs the same command with a GRN-shaped ID. It gets past
+// the identity check and fails later, on the missing tools directory,
+// having published the ID verbatim to the tools' environment — so the
+// refusal above is the identity check's and not a startup that fails for
+// every input.
+func TestAgentCommand_RefusesWithoutAgentID(t *testing.T) {
+	configPath := filepath.Join(t.TempDir(), "agent.yaml")
+	require.NoError(t, os.WriteFile(configPath, nil, 0o600))
+	t.Setenv("SHERLOCK_TOOLS_DIR", filepath.Join(t.TempDir(), "absent"))
+	t.Setenv(tool.WorkspaceAddrEnv, "")
+	t.Setenv(tool.OutboxDirEnv, "")
+	t.Setenv(tool.AgentIDEnv, "")
+
+	run := func(args ...string) error {
+		root := newRootCommand()
+		root.SetOut(io.Discard)
+		root.SetErr(io.Discard)
+		root.SetArgs(append([]string{"agent", "--config", configPath,
+			"--memory-path", filepath.Join(t.TempDir(), "memory.db"),
+			"--message", "hello"}, args...))
+		return root.Execute()
+	}
+
+	t.Run("absent", func(t *testing.T) {
+		assert.ErrorIs(t, run(), errAgentIDRequired)
+	})
+	t.Run("empty", func(t *testing.T) {
+		assert.ErrorIs(t, run("--agent-id="), errAgentIDRequired)
+	})
+	t.Run("control: a GRN passes the check and is published verbatim", func(t *testing.T) {
+		const grn = "grn:garam:default:agent:144460a71649d1a1"
+		err := run("--agent-id", grn)
+		require.Error(t, err)
+		assert.NotErrorIs(t, err, errAgentIDRequired)
+		assert.Contains(t, err.Error(), "tools directory")
+		assert.Equal(t, grn, os.Getenv(tool.AgentIDEnv))
+	})
+}
+
+// TestResolveIdentity_CarriesActivationLabels holds the launcher's
+// activation labels as given: opaque and verbatim when set, empty
+// (unknown) when absent, and never a reason to refuse startup.
+func TestResolveIdentity_CarriesActivationLabels(t *testing.T) {
+	tests := []struct {
+		name string
+		args []string
+		want identity
+	}{
+		{"set", []string{"--agent-id", "a1", "--assignment-epoch", "epoch-7", "--generation", "gen:3"},
+			identity{agentID: "a1", assignmentEpoch: "epoch-7", generation: "gen:3"}},
+		{"absent", []string{"--agent-id", "a1"}, identity{agentID: "a1"}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fs := pflag.NewFlagSet("agent", pflag.ContinueOnError)
+			addAgentFlags(fs)
+			require.NoError(t, fs.Parse(tt.args))
+
+			got, err := resolveIdentity(fs)
+			require.NoError(t, err)
+			assert.Equal(t, tt.want, got)
+		})
 	}
 }

@@ -22,14 +22,15 @@ func main() {
 	// the command tree: the shim caps itself and execs the child's
 	// command, so it never returns to run a subcommand.
 	shell.ShimIfRequested()
-	if err := newRootCommand().Execute(); err != nil {
+	if err := NewRootCommand().Execute(); err != nil {
 		os.Exit(1)
 	}
 }
 
-// newRootCommand builds the sherlock command tree with the shared config
-// flags available to every subcommand.
-func newRootCommand() *cobra.Command {
+// NewRootCommand builds the sherlock command tree with the shared config
+// flags available to every subcommand. It is the package's one export:
+// main runs it, and the package's tests drive the binary through it.
+func NewRootCommand() *cobra.Command {
 	root := &cobra.Command{
 		Use:   "sherlock",
 		Short: "Run one agent pod: the agent process or its workspace data plane",

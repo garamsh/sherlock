@@ -20,8 +20,11 @@ import (
 // testExecUID is the account these tests ask the executor to drop to.
 // The platform declares no default of its own — the exec UID reaches
 // the workspace from config (internal/config), so the value a test
-// wants is the test's to name.
-const testExecUID = 1001
+// wants is the test's to name. It is an account nothing else on the
+// host runs as, the same rule deployment.md sets for exec-uid:
+// RLIMIT_NPROC counts every task of the uid, and the CI runner's own
+// account is 1001 (#957).
+const testExecUID = 10001
 
 // fakeExecutor is the test double for the Executor interface. It records
 // the last request and returns the canned result and error so callers
@@ -122,7 +125,7 @@ func TestProcessExecutor_AgentUIDUnavailable(t *testing.T) {
 	}
 	// The AgentUID must differ from both 0 and the process euid — any
 	// fixed value could equal the test host's UID (the CI runner runs as
-	// 1001, testExecUID itself) and turn the fail-closed case into
+	// 1001) and turn the fail-closed case into
 	// the legitimate single-account path.
 	exec := shell.NewProcessExecutor(os.Geteuid()+1, 5*time.Second)
 

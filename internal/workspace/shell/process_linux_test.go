@@ -20,7 +20,7 @@ import (
 // process_test.go holds the external-test one. The platform declares
 // no default of its own — the exec UID reaches the workspace from
 // config (internal/config).
-const testExecUID = 1001
+const testExecUID = 10001
 
 // TestLimitSpecs_NprocOnlyInThePrivilegedDrop pins which caps reach the
 // shim: four in single-account mode, five when the child owns a

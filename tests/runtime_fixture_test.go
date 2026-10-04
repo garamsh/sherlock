@@ -342,8 +342,8 @@ func runFixture(t *testing.T, rt fixtureRuntime, storage string) {
 
 	if real {
 		steps.run("follow-up answer", "5: note and episode", steps.needs("read-back", "drain after restart"), func(t *testing.T) {
-			ev.FollowUpNote = fixtureFollowUpCarries(t, agentDir, "m3", task.noteToken)
-			assert.True(t, ev.FollowUpNote, "the follow-up answer carries the note's token")
+			ev.FollowUpNote = fixtureFollowUpCarries(t, agentDir, "m3", task.noteMarker)
+			assert.True(t, ev.FollowUpNote, "the follow-up answer carries the note's marker")
 		})
 	}
 
@@ -459,9 +459,11 @@ type fixtureTask struct {
 	first, second, followUp string
 	// file is the workspace file the first task writes.
 	file string
-	// noteToken is the token the first task saves in the note and the
-	// follow-up's answer has to carry.
-	noteToken string
+	// noteMarker is the marker the first task saves in the note and the
+	// follow-up's answer has to carry. It is worded so that the store's
+	// credential redaction leaves it alone: a credential word followed by a
+	// value is stored as "[redacted credential]" (internal/memory/sqlite).
+	noteMarker string
 }
 
 func fixtureTasks(real bool) fixtureTask {
@@ -472,13 +474,13 @@ func fixtureTasks(real bool) fixtureTask {
 	return fixtureTask{
 		first: "Use file_write to create fixture-937.txt in the workspace containing the single line " +
 			"`sherlock-937 fixture`. Then reply to me with message_send saying the file is written. " +
-			"Finally, set your note to exactly: `fixture token: amber-heron-937`.",
+			"Finally, set your note to exactly: `fixture marker amber-heron-937`.",
 		second: "Read fixture-937.txt back with file_read and reply to me with message_send quoting its content. " +
 			"Keep your note unchanged.",
-		followUp: "What fixture token does your note hold, and which file did you write earlier? " +
+		followUp: "What fixture marker does your note hold, and which file did you write earlier? " +
 			"Reply to me with message_send. Keep your note unchanged.",
-		file:      "fixture-937.txt",
-		noteToken: "amber-heron-937",
+		file:       "fixture-937.txt",
+		noteMarker: "amber-heron-937",
 	}
 }
 

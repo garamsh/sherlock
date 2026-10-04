@@ -73,9 +73,13 @@ fi
 # fail the turn — it goes back to the model, which is the loop working —
 # so a one-shot run reports it in its exit status instead, and that
 # status is this check. Nothing here parses the monitoring stream.
+# The serving agent holds the writer lock on its memory store, so the
+# one-shot run opens a store of its own (deployment.md, "One agent process
+# on a host writes a memory store").
 echo "==> the canned run completes with every tool call succeeding"
 docker compose exec -T agent /sherlock agent \
-  --config /etc/sherlock/config.yaml --agent-id demo --message "hello"
+  --config /etc/sherlock/config.yaml --agent-id demo --message "hello" \
+  --memory-path "$SHERLOCK_DATA_DIR/one-shot/memory.db"
 
 # ADR 0008's file side: a write over the gRPC contract and a write by an
 # exec'd child land under one owner, so either can pick up what the other

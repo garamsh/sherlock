@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"crypto/rand"
 	"crypto/tls"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"log/slog"
@@ -68,7 +70,6 @@ func addAgentFlags(fs *pflag.FlagSet) {
 	config.AddAgentFlags(fs)
 	fs.String("agent-id", "", "agent ID this process serves, used verbatim (required)")
 	fs.String("assignment-epoch", "", "launcher's assignment epoch for this activation, opaque (empty: unknown)")
-	fs.String("generation", "", "launcher's generation for this activation, opaque (empty: unknown)")
 	fs.String("message", "", "run one turn with this message and exit instead of serving")
 }
 
@@ -77,13 +78,15 @@ func addAgentFlags(fs *pflag.FlagSet) {
 // carry (ADR 0016), so no fallback value is right for every deployment.
 var errAgentIDRequired = errors.New("--agent-id is required: the agent serves the identity it was given and has no default (ADR 0016)")
 
-// identity is who this process is: the agent ID it serves, and the
-// launcher's activation labels. All three are opaque and used verbatim;
-// an empty label means unknown.
+// identity is who this process is: the agent ID it serves and the
+// launcher's assignment epoch, both opaque and used verbatim (an empty
+// epoch means unknown), and the generation this start minted.
 type identity struct {
 	agentID         string
 	assignmentEpoch string
-	generation      string
+	// generation is the runtime start nonce (ADR 0016): empty until
+	// startQueue mints it, and never persisted.
+	generation string
 }
 
 // resolveIdentity reads the identity flags off fs, refusing an absent
@@ -100,11 +103,30 @@ func resolveIdentity(fs *pflag.FlagSet) (identity, error) {
 	if err != nil {
 		return identity{}, err
 	}
-	generation, err := fs.GetString("generation")
+	return identity{agentID: agentID, assignmentEpoch: epoch}, nil
+}
+
+// mintGeneration returns a fresh runtime start nonce: 128 random bits as
+// 32 lowercase hex characters (ADR 0016).
+func mintGeneration() string {
+	b := make([]byte, 16)
+	// crypto/rand.Read never returns an error; it crashes the program
+	// when the system's randomness source fails.
+	_, _ = rand.Read(b)
+	return hex.EncodeToString(b)
+}
+
+// startQueue opens the agent's queue — and with it the memory store and
+// its writer lock — and only then mints this start's generation, so a
+// start the lock refuses mints none. mint is mintGeneration outside
+// tests.
+func startQueue(factory gateway.RuntimeFactory, id identity, mint func() string, logger *slog.Logger) (*gateway.Queue, identity, error) {
+	queue, err := gateway.NewQueue(factory, id.agentID, logger)
 	if err != nil {
-		return identity{}, err
+		return nil, identity{}, err
 	}
-	return identity{agentID: agentID, assignmentEpoch: epoch, generation: generation}, nil
+	id.generation = mint()
+	return queue, id, nil
 }
 
 // newAgentFactory resolves the model providers, loads the operator's
@@ -206,7 +228,7 @@ func serveAgent(ctx context.Context, cfg config.Config, id identity, ego string)
 	if err != nil {
 		return err
 	}
-	queue, err := gateway.NewQueue(factory, id.agentID, logger)
+	queue, id, err := startQueue(factory, id, mintGeneration, logger)
 	if err != nil {
 		return err
 	}

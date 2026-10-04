@@ -7,6 +7,7 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"regexp"
 	"testing"
 	"time"
 
@@ -15,6 +16,8 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/garamsh/sherlock/internal/config"
+	"github.com/garamsh/sherlock/internal/gateway"
+	"github.com/garamsh/sherlock/internal/memory/sqlite"
 	"github.com/garamsh/sherlock/internal/tool"
 )
 
@@ -257,17 +260,18 @@ func TestAgentCommand_RefusesWithoutAgentID(t *testing.T) {
 	})
 }
 
-// TestResolveIdentity_CarriesActivationLabels holds the launcher's
-// activation labels as given: opaque and verbatim when set, empty
-// (unknown) when absent, and never a reason to refuse startup.
-func TestResolveIdentity_CarriesActivationLabels(t *testing.T) {
+// TestResolveIdentity_CarriesTheAssignmentEpoch holds the launcher's
+// assignment epoch as given: opaque and verbatim when set, empty
+// (unknown) when absent, and never a reason to refuse startup. The
+// generation is not a flag, so resolution leaves it unminted.
+func TestResolveIdentity_CarriesTheAssignmentEpoch(t *testing.T) {
 	tests := []struct {
 		name string
 		args []string
 		want identity
 	}{
-		{"set", []string{"--agent-id", "a1", "--assignment-epoch", "epoch-7", "--generation", "gen:3"},
-			identity{agentID: "a1", assignmentEpoch: "epoch-7", generation: "gen:3"}},
+		{"set", []string{"--agent-id", "a1", "--assignment-epoch", "epoch:7"},
+			identity{agentID: "a1", assignmentEpoch: "epoch:7"}},
 		{"absent", []string{"--agent-id", "a1"}, identity{agentID: "a1"}},
 	}
 	for _, tt := range tests {
@@ -281,4 +285,77 @@ func TestResolveIdentity_CarriesActivationLabels(t *testing.T) {
 			assert.Equal(t, tt.want, got)
 		})
 	}
+}
+
+// TestAgentCommand_GenerationIsNotAFlag holds contract v1.2: the
+// generation is minted per start, so a launcher cannot pass one.
+func TestAgentCommand_GenerationIsNotAFlag(t *testing.T) {
+	fs := pflag.NewFlagSet("agent", pflag.ContinueOnError)
+	fs.SetOutput(io.Discard)
+	addAgentFlags(fs)
+	err := fs.Parse([]string{"--agent-id", "a1", "--generation", "3"})
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "unknown flag: --generation")
+}
+
+// mockFactory builds the serving factory over the mock model and a
+// minimal tool tree, on a memory path under a tmpdir.
+func mockFactory(t *testing.T) (*gateway.Factory, string) {
+	t.Helper()
+	dir, _ := pinnedToolTree(t)
+	cfg := config.Config{
+		MemoryPath: filepath.Join(dir, "memory.db"),
+		ToolsDir:   dir,
+		Model:      config.ModelConfig{Provider: "mock"},
+	}
+	factory, err := newAgentFactory(cfg, testIdentity, "", slog.New(slog.DiscardHandler))
+	require.NoError(t, err)
+	return factory, cfg.MemoryPath
+}
+
+// TestStartQueue_MintsTheGenerationOnlyUnderTheStoreLock holds the
+// generation's ordering (contract v1.2): it is minted after the memory
+// store's writer lock is held, so a start refused by a store another
+// process holds mints none. The control is the same start once the
+// holder closes: it mints exactly one.
+func TestStartQueue_MintsTheGenerationOnlyUnderTheStoreLock(t *testing.T) {
+	factory, memoryPath := mockFactory(t)
+	minted := 0
+	mint := func() string { minted++; return mintGeneration() }
+	logger := slog.New(slog.DiscardHandler)
+
+	held, err := sqlite.Open(memoryPath)
+	require.NoError(t, err)
+	_, _, err = startQueue(factory, testIdentity, mint, logger)
+	assert.ErrorIs(t, err, sqlite.ErrStoreLocked)
+	assert.Zero(t, minted, "a start the store lock refused minted a generation")
+
+	require.NoError(t, held.Close())
+	queue, id, err := startQueue(factory, testIdentity, mint, logger)
+	require.NoError(t, err, "the control: the released store starts")
+	t.Cleanup(func() { queue.Close() })
+	assert.Equal(t, 1, minted)
+	assert.NotEmpty(t, id.generation)
+}
+
+// generationShape is a runtime start nonce: 128 bits as lowercase hex.
+var generationShape = regexp.MustCompile(`^[0-9a-f]{32}$`)
+
+// TestStartQueue_EachStartMintsAFreshGeneration holds that the
+// generation is per process start and never persisted (ADR 0016): two
+// starts on the same memory store, one after the other, carry different
+// 32-character lowercase hex generations.
+func TestStartQueue_EachStartMintsAFreshGeneration(t *testing.T) {
+	factory, _ := mockFactory(t)
+	logger := slog.New(slog.DiscardHandler)
+
+	generations := make([]string, 0, 2)
+	for range 2 {
+		queue, id, err := startQueue(factory, testIdentity, mintGeneration, logger)
+		require.NoError(t, err)
+		require.NoError(t, queue.Close(), "closing releases the store for the next start")
+		assert.Regexp(t, generationShape, id.generation)
+		generations = append(generations, id.generation)
+	}
+	assert.NotEqual(t, generations[0], generations[1])
 }

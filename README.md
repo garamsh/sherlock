@@ -39,7 +39,7 @@ To try the platform in Docker instead: `make build-images` builds both images �
 
 ### sherlock agent
 
-Runs the agent's self: the rolling session, memory, the mouth, and the HTTP gateway for the one agent this process serves (`--agent-id`, required: an absent or empty value refuses startup, and the value is used verbatim, so a GRN is a valid ID). `--assignment-epoch` and `--generation` optionally carry the launcher's activation labels, which the agent logs without checking them. Without `--message` it serves until interrupted:
+Runs the agent's self: the rolling session, memory, the mouth, and the HTTP gateway for the one agent this process serves (`--agent-id`, required: an absent or empty value refuses startup, and the value is used verbatim, so a GRN is a valid ID). `--assignment-epoch` optionally carries the launcher's assignment epoch; each serving start also mints a fresh generation, a runtime start nonce. The agent logs both and checks neither. Without `--message` it serves until interrupted:
 
 - `POST /agents/{agent-id}/messages` with `{"content":"..."}` — queues a message for the agent and returns `202` with a message ID. A path naming any other agent ID gets 404: one process serves one agent.
 - `GET /agents/{agent-id}/events` — server-sent events stream of the agent's loop (turn started, tool call, writeback, turn finished). Every run ends with exactly one terminal event — `turn_finished` on success, `turn_failed` with the error on failure.

@@ -12,9 +12,16 @@ package message
 // a delivered file says who sent it and a model cannot say otherwise.
 // Without it a reader of an outbox holding two agents' files has only
 // the path to go on, which stops working the moment they share a mount.
+//
+// ID and InReplyTo are the platform's as well. ID names the outbox entry:
+// assigned once when message_send writes it, unique per entry, and the
+// entry's file name is ID plus ".json". InReplyTo holds the IDs of the
+// inbound messages the turn that sent it drained.
 type Message struct {
-	AgentID string `json:"agent_id"`
-	Channel string `json:"channel"`
-	Target  string `json:"target"`
-	Content string `json:"content"`
+	ID        string   `json:"id"`
+	AgentID   string   `json:"agent_id"`
+	InReplyTo []string `json:"in_reply_to"`
+	Channel   string   `json:"channel"`
+	Target    string   `json:"target"`
+	Content   string   `json:"content"`
 }

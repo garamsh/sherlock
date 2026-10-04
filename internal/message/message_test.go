@@ -14,18 +14,23 @@ import (
 	"github.com/garamsh/sherlock/internal/tool/tooltest"
 )
 
+// platformStamped are the fields message_send stamps from its own
+// process rather than from the call: the sender (ADR 0016), the entry's
+// ID, and the messages the turn replies to.
+var platformStamped = []string{"agent_id", "id", "in_reply_to"}
+
 // TestMessage_CarriesTheSenderTheManifestDoesNotAskFor is the
 // schema/struct drift guard, and it states a relationship rather than an
 // equality: the manifest's input_schema is what the model sends, and a
-// delivered Message is that plus the sending agent's ID (ADR 0016).
+// delivered Message is that plus what the platform stamps.
 //
 // The two halves both matter. If Message loses a field the model sends,
-// a delivered file drops it silently. If input_schema gains agent_id,
-// the sender becomes something the model states — and a model that can
+// a delivered file drops it silently. If input_schema gains a stamped
+// field, it becomes something the model states — and a model that can
 // state its own identity can state someone else's, which is the whole
-// value of the field. message_send reads it from its environment
-// instead, so the platform's fact reaches the file and the model's
-// claim cannot.
+// value of the field. message_send reads them from its environment and
+// its own write instead, so the platform's fact reaches the file and the
+// model's claim cannot.
 func TestMessage_CarriesTheSenderTheManifestDoesNotAskFor(t *testing.T) {
 	inputSchema, _ := tooltest.ManifestSchemas(t, tooltest.ReadManifest(t, "message_send"))
 
@@ -34,22 +39,22 @@ func TestMessage_CarriesTheSenderTheManifestDoesNotAskFor(t *testing.T) {
 	}
 	require.NoError(t, json.Unmarshal(inputSchema, &schema))
 
-	sent := make([]string, 0, len(schema.Properties))
+	want := make([]string, 0, len(schema.Properties)+len(platformStamped))
 	for name := range schema.Properties {
-		sent = append(sent, name)
+		want = append(want, name)
 	}
-	sort.Strings(sent)
+	for _, name := range platformStamped {
+		assert.NotContains(t, schema.Properties, name,
+			"%s is the platform's to stamp, never a field the model fills in", name)
+		want = append(want, name)
+	}
+	sort.Strings(want)
 
-	assert.NotContains(t, schema.Properties, "agent_id",
-		"the sender is the platform's to stamp, never a field the model fills in")
-
-	delivered := jsonTags(reflect.TypeOf(message.Message{}))
-	assert.Equal(t, append(append([]string{}, sent...), "agent_id"), delivered,
-		"a delivered message is what the model sent plus the agent that sent it")
+	assert.Equal(t, want, jsonTags(reflect.TypeOf(message.Message{})),
+		"a delivered message is what the model sent plus what the platform stamps")
 }
 
-// jsonTags returns typ's json tag names, sorted, with "agent_id" last so
-// the assertion above reads as "what was sent, then who sent it".
+// jsonTags returns typ's json tag names, sorted.
 func jsonTags(typ reflect.Type) []string {
 	tags := make([]string, 0, typ.NumField())
 	for i := 0; i < typ.NumField(); i++ {
@@ -59,11 +64,6 @@ func jsonTags(typ reflect.Type) []string {
 		}
 		tags = append(tags, name)
 	}
-	sort.Slice(tags, func(i, j int) bool {
-		if (tags[i] == "agent_id") != (tags[j] == "agent_id") {
-			return tags[j] == "agent_id"
-		}
-		return tags[i] < tags[j]
-	})
+	sort.Strings(tags)
 	return tags
 }

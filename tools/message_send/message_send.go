@@ -2,13 +2,16 @@
 // script-tool runner's stdio protocol (ADR 0009 §Decision): one JSON
 // object on stdin (the validated input), one JSON object on stdout
 // (the validated output), non-zero exit on failure. The tool writes
-// the outbound message to the file outbox at SHERLOCK_OUTBOX_DIR, stamped
-// with the sending agent's ID from SHERLOCK_AGENT_ID (ADR 0016); the
-// platform's message_send plumbing delivers the queue.
+// the outbound message as one outbox entry in SHERLOCK_OUTBOX_DIR,
+// stamped with the sending agent's ID from SHERLOCK_AGENT_ID (ADR 0016)
+// and the turn's message IDs from SHERLOCK_IN_REPLY_TO; whatever
+// consumes the agent's replies forwards the entry (ADR 0007).
 package main
 
 import (
 	"bufio"
+	"crypto/rand"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -45,62 +48,96 @@ func run() error {
 	if agentID == "" {
 		return errors.New("SHERLOCK_AGENT_ID is empty")
 	}
+	var inReplyTo []string
+	if err := json.Unmarshal([]byte(os.Getenv("SHERLOCK_IN_REPLY_TO")), &inReplyTo); err != nil {
+		return fmt.Errorf("decode SHERLOCK_IN_REPLY_TO: %w", err)
+	}
 	dec := json.NewDecoder(bufio.NewReader(os.Stdin))
 	var in callInput
 	if err := dec.Decode(&in); err != nil {
 		return fmt.Errorf("decode input: %w", err)
 	}
-	if err := writeOutbox(outboxDir, message.Message{
-		AgentID: agentID,
-		Channel: in.Channel,
-		Target:  in.Target,
-		Content: in.Content,
+	id, err := newEntryID()
+	if err != nil {
+		return err
+	}
+	if err := writeEntry(outboxDir, message.Message{
+		ID:        id,
+		AgentID:   agentID,
+		InReplyTo: inReplyTo,
+		Channel:   in.Channel,
+		Target:    in.Target,
+		Content:   in.Content,
 	}); err != nil {
 		return fmt.Errorf("outbox write failed: %w", err)
 	}
 	return json.NewEncoder(os.Stdout).Encode(callOutput{Status: "queued"})
 }
 
-// writeOutbox writes a single message to the outbox directory named by
-// SHERLOCK_OUTBOX_DIR. That write is the delivery: nothing forwards the
-// file onward, so whatever consumes the agent's replies reads this
-// directory (ADR 0007).
-func writeOutbox(dir string, msg message.Message) error {
-	if err := os.MkdirAll(dir, 0o755); err != nil {
-		return err
+// newEntryID returns a fresh entry ID: the write time in nanoseconds,
+// zero-padded so name order is write order, and 64 random bits so two
+// writes in the same nanosecond still differ.
+func newEntryID() (string, error) {
+	var suffix [8]byte
+	if _, err := rand.Read(suffix[:]); err != nil {
+		return "", fmt.Errorf("entry id: %w", err)
 	}
-	name := fmt.Sprintf("%d-%s.json", time.Now().UnixNano(), sanitize(msg.Target))
-	path := filepath.Join(dir, name)
+	return fmt.Sprintf("%020d-%s", time.Now().UnixNano(), hex.EncodeToString(suffix[:])), nil
+}
+
+// writeEntry writes msg to dir as <msg.ID>.json, atomically and
+// durably: a temporary file in dir, fsynced, renamed onto the entry's
+// name, then the directory fsynced. A reader never sees a partial entry,
+// because the name appears only once the content is complete. The rename
+// refuses an existing name, so an entry once written is never replaced.
+//
+// The temporary file is dot-prefixed and has no .json suffix, so a
+// reader that takes only *.json names never picks it up.
+func writeEntry(dir string, msg message.Message) error {
 	body, err := json.Marshal(msg)
 	if err != nil {
 		return err
 	}
-	f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o600)
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		return err
+	}
+	tmp, err := os.CreateTemp(dir, ".entry-*.tmp")
 	if err != nil {
 		return err
 	}
-	defer f.Close()
-	if _, err := f.Write(body); err != nil {
+	renamed := false
+	defer func() {
+		if !renamed {
+			_ = os.Remove(tmp.Name())
+		}
+	}()
+	if _, err := tmp.Write(body); err != nil {
+		_ = tmp.Close()
 		return err
 	}
-	return nil
+	if err := tmp.Sync(); err != nil {
+		_ = tmp.Close()
+		return err
+	}
+	if err := tmp.Close(); err != nil {
+		return err
+	}
+	if err := renameNoReplace(tmp.Name(), filepath.Join(dir, msg.ID+".json")); err != nil {
+		return err
+	}
+	renamed = true
+	return syncDir(dir)
 }
 
-// sanitize strips path separators and whitespace from the target so the
-// outbox filename is safe.
-func sanitize(target string) string {
-	out := make([]byte, 0, len(target))
-	for i := 0; i < len(target); i++ {
-		c := target[i]
-		switch c {
-		case '/', '\\', ' ', '\n', '\t', '\r':
-			out = append(out, '_')
-		default:
-			out = append(out, c)
-		}
+// syncDir fsyncs dir so the rename that named an entry survives a crash.
+func syncDir(dir string) error {
+	d, err := os.Open(dir)
+	if err != nil {
+		return err
 	}
-	if len(out) == 0 {
-		return "unknown"
+	if err := d.Sync(); err != nil {
+		_ = d.Close()
+		return err
 	}
-	return string(out)
+	return d.Close()
 }

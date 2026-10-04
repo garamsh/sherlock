@@ -3,14 +3,22 @@ package tests
 import (
 	"context"
 	"encoding/json"
+	"io"
+	"log/slog"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"sort"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/garamsh/sherlock/internal/agent"
+	"github.com/garamsh/sherlock/internal/gateway"
+	"github.com/garamsh/sherlock/internal/message"
 	"github.com/garamsh/sherlock/internal/tool"
 )
 
@@ -48,13 +56,14 @@ func TestScriptTool_MessageSend_Integration(t *testing.T) {
 	require.Len(t, entries, 1)
 	body2, err := os.ReadFile(filepath.Join(outbox, entries[0].Name()))
 	require.NoError(t, err)
-	var msg map[string]string
+	var msg message.Message
 	require.NoError(t, json.Unmarshal(body2, &msg))
-	assert.Equal(t, "http", msg["channel"])
-	assert.Equal(t, "alice", msg["target"])
-	assert.Equal(t, "42", msg["content"])
-	assert.Equal(t, "agent-7", msg["agent_id"],
+	assert.Equal(t, "http", msg.Channel)
+	assert.Equal(t, "alice", msg.Target)
+	assert.Equal(t, "42", msg.Content)
+	assert.Equal(t, "agent-7", msg.AgentID,
 		"a reader of the outbox knows which agent sent the file")
+	assert.Equal(t, msg.ID+".json", entries[0].Name(), "the entry is named by its id")
 }
 
 // TestScriptTool_MessageSend_MissingOutboxDir covers the error path
@@ -112,4 +121,57 @@ func TestScriptTool_MessageSend_InputRejected(t *testing.T) {
 	}
 	sort.Strings(names)
 	assert.Empty(t, names, "rejected input must not write to the outbox")
+}
+
+// TestScriptTool_MessageSend_EntryRepliesToTheDrainedMessage runs one
+// turn through the gateway with the real message_send tool, and checks
+// the outbox entry the turn wrote names the message the turn drained in
+// in_reply_to: the gateway's ID reaches the tool through the session and
+// the runner, not through anything the model says.
+func TestScriptTool_MessageSend_EntryRepliesToTheDrainedMessage(t *testing.T) {
+	root := t.TempDir()
+	toolsDir := t.TempDir()
+	hash := installTool(t, toolsDir, "message_send")
+	outbox := gateway.DirFor(filepath.Join(root, "memory.db"))
+	t.Setenv("SHERLOCK_OUTBOX_DIR", outbox)
+	t.Setenv("SHERLOCK_AGENT_ID", "env-1")
+
+	reg, err := tool.NewRegistry(tool.RegistryOptions{
+		Dir:      toolsDir,
+		Pins:     tool.ManifestPins{"message_send": hash},
+		Required: []string{"message_send"},
+	})
+	require.NoError(t, err)
+	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
+	q, err := gateway.NewQueue(&gateway.Factory{
+		MemoryPath: filepath.Join(root, "memory.db"),
+		NewModel:   func(string) agent.Model { return summarizing{replyScript("reply-1")} },
+		Embedder:   tiedEmbedder{},
+		Tools:      reg,
+	}, "env-1", logger)
+	require.NoError(t, err)
+	t.Cleanup(func() { q.Close() })
+	srv := httptest.NewServer(gateway.NewHandler(q, logger))
+	t.Cleanup(srv.Close)
+
+	resp := postJSON(t, srv.URL+"/agents/env-1/messages", `{"content":"hello"}`)
+	defer resp.Body.Close()
+	require.Equal(t, http.StatusAccepted, resp.StatusCode)
+	var accepted struct {
+		ID string `json:"id"`
+	}
+	require.NoError(t, json.NewDecoder(resp.Body).Decode(&accepted))
+	require.NotEmpty(t, accepted.ID)
+
+	var entries []string
+	require.Eventually(t, func() bool {
+		entries, _ = filepath.Glob(filepath.Join(outbox, "*.json"))
+		return len(entries) == 1
+	}, 10*time.Second, 10*time.Millisecond, "the turn wrote one outbox entry")
+	body, err := os.ReadFile(entries[0])
+	require.NoError(t, err)
+	var msg message.Message
+	require.NoError(t, json.Unmarshal(body, &msg))
+	assert.Equal(t, []string{accepted.ID}, msg.InReplyTo)
+	assert.Equal(t, "reply-1", msg.Content)
 }

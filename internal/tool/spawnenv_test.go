@@ -58,6 +58,7 @@ func TestSetSpawnEnv_CoversWhatTheShippedToolsRead(t *testing.T) {
 		tool.WorkspaceAddrEnv: true,
 		tool.OutboxDirEnv:     true,
 		tool.AgentIDEnv:       true,
+		tool.InReplyToEnv:     true,
 	}
 
 	read := map[string]string{}

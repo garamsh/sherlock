@@ -147,6 +147,7 @@ func (s *session) History() []Message {
 func (s *session) Run(ctx context.Context, task string) (response string, err error) {
 	s.turn++
 	s.sources = inboundSources(ctx, task)
+	ctx = tool.WithInReplyTo(ctx, drainedIDs(s.sources))
 	s.failures = make(map[string]failedCall)
 	s.toolCalls = make(map[string]int)
 	s.emit(ctx, Event{Kind: EventTurnStarted, Turn: s.turn, Task: task})

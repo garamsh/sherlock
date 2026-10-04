@@ -156,3 +156,16 @@ func inboundSources(ctx context.Context, task string) []SourceMessage {
 	}
 	return []SourceMessage{{Role: RoleUser, Content: task}}
 }
+
+// drainedIDs returns the IDs of the inbound messages the turn drained,
+// which every tool the turn calls is handed as the messages it replies
+// to. A one-shot run without an envelope drained none.
+func drainedIDs(sources []SourceMessage) []string {
+	ids := make([]string, 0, len(sources))
+	for _, source := range sources {
+		if source.ExternalID != "" {
+			ids = append(ids, source.ExternalID)
+		}
+	}
+	return ids
+}

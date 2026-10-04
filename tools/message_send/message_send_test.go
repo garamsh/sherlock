@@ -163,3 +163,34 @@ func TestWriteEntry_ConcurrentReaderNeverSeesAPartialEntry(t *testing.T) {
 	require.Positive(t, reads.Load(), "the readers read entries while they were written")
 	assert.Zero(t, partial.Load(), "a reader saw a partial entry")
 }
+
+// TestRun_EntryRecordsItsProvenance checks the entry records the
+// assignment epoch and generation the platform published, and records
+// them empty — unknown — when the process was started without them.
+func TestRun_EntryRecordsItsProvenance(t *testing.T) {
+	tests := []struct {
+		name, epoch, generation string
+	}{
+		{"published", "epoch:7", "0123456789abcdef0123456789abcdef"},
+		{"unknown", "", ""},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			outbox := t.TempDir()
+			t.Setenv("SHERLOCK_ASSIGNMENT_EPOCH", tt.epoch)
+			t.Setenv("SHERLOCK_GENERATION", tt.generation)
+			runTool(t, outbox, `[]`, `{"channel":"http","target":"alice","content":"hi"}`)
+
+			entries := readEntries(t, outbox)
+			require.Len(t, entries, 1)
+			for name := range entries {
+				body, err := os.ReadFile(filepath.Join(outbox, name))
+				require.NoError(t, err)
+				var raw map[string]any
+				require.NoError(t, json.Unmarshal(body, &raw))
+				assert.Equal(t, tt.epoch, raw["assignment_epoch"])
+				assert.Equal(t, tt.generation, raw["generation"])
+			}
+		})
+	}
+}

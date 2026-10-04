@@ -3,8 +3,9 @@
 // object on stdin (the validated input), one JSON object on stdout
 // (the validated output), non-zero exit on failure. The tool writes
 // the outbound message as one outbox entry in SHERLOCK_OUTBOX_DIR,
-// stamped with the sending agent's ID from SHERLOCK_AGENT_ID (ADR 0016)
-// and the turn's message IDs from SHERLOCK_IN_REPLY_TO; whatever
+// stamped with the sending agent's ID from SHERLOCK_AGENT_ID, its
+// provenance from SHERLOCK_ASSIGNMENT_EPOCH and SHERLOCK_GENERATION
+// (ADR 0016), and the turn's message IDs from SHERLOCK_IN_REPLY_TO; whatever
 // consumes the agent's replies forwards the entry (ADR 0007).
 package main
 
@@ -62,12 +63,14 @@ func run() error {
 		return err
 	}
 	if err := writeEntry(outboxDir, message.Message{
-		ID:        id,
-		AgentID:   agentID,
-		InReplyTo: inReplyTo,
-		Channel:   in.Channel,
-		Target:    in.Target,
-		Content:   in.Content,
+		ID:              id,
+		AgentID:         agentID,
+		AssignmentEpoch: os.Getenv("SHERLOCK_ASSIGNMENT_EPOCH"),
+		Generation:      os.Getenv("SHERLOCK_GENERATION"),
+		InReplyTo:       inReplyTo,
+		Channel:         in.Channel,
+		Target:          in.Target,
+		Content:         in.Content,
 	}); err != nil {
 		return fmt.Errorf("outbox write failed: %w", err)
 	}

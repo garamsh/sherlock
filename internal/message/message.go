@@ -18,10 +18,16 @@ package message
 // entry's file name is ID plus ".json". InReplyTo holds the IDs of the
 // inbound messages the turn that sent it drained.
 type Message struct {
-	ID        string   `json:"id"`
-	AgentID   string   `json:"agent_id"`
-	InReplyTo []string `json:"in_reply_to"`
-	Channel   string   `json:"channel"`
-	Target    string   `json:"target"`
-	Content   string   `json:"content"`
+	ID      string `json:"id"`
+	AgentID string `json:"agent_id"`
+	// AssignmentEpoch and Generation record the entry's origin: the
+	// launcher's assignment epoch and the runtime start that wrote it
+	// (ADR 0016). They are provenance, not a credential, and empty when
+	// the process was started without them.
+	AssignmentEpoch string   `json:"assignment_epoch"`
+	Generation      string   `json:"generation"`
+	InReplyTo       []string `json:"in_reply_to"`
+	Channel         string   `json:"channel"`
+	Target          string   `json:"target"`
+	Content         string   `json:"content"`
 }

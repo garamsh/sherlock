@@ -30,6 +30,14 @@ const (
 	// read, so a value already in the environment is replaced.
 	AgentIDEnv = "SHERLOCK_AGENT_ID"
 
+	// AssignmentEpochEnv and GenerationEnv name the launcher's
+	// assignment epoch and this start's runtime generation (ADR 0016),
+	// which message_send records on every entry as provenance. Both are
+	// opaque and empty when unknown, and both replace any value already
+	// in the environment.
+	AssignmentEpochEnv = "SHERLOCK_ASSIGNMENT_EPOCH"
+	GenerationEnv      = "SHERLOCK_GENERATION"
+
 	// InReplyToEnv names the IDs of the inbound messages the running
 	// turn drained, as a JSON array of strings, which message_send
 	// records on every outbox entry it writes. It is the one per-call
@@ -71,15 +79,29 @@ func inReplyToEntry(ctx context.Context) (string, error) {
 // github tool's GH_TOKEN is the standing example — the platform never
 // sets it, and a tool that needs one and does not find one fails on its
 // own terms.
-func SetSpawnEnv(workspaceAddr, outboxDir, agentID string) error {
+//
+// The generation is minted after the tools load, so SetSpawnEnv publishes
+// it empty and SetGenerationEnv publishes the minted value.
+func SetSpawnEnv(workspaceAddr, outboxDir, agentID, assignmentEpoch string) error {
 	for _, v := range []struct{ name, value string }{
 		{WorkspaceAddrEnv, workspaceAddr},
 		{OutboxDirEnv, outboxDir},
 		{AgentIDEnv, agentID},
+		{AssignmentEpochEnv, assignmentEpoch},
+		{GenerationEnv, ""},
 	} {
 		if err := os.Setenv(v.name, v.value); err != nil {
 			return fmt.Errorf("set %s: %w", v.name, err)
 		}
+	}
+	return nil
+}
+
+// SetGenerationEnv publishes the generation a serving start minted, so
+// every tool spawned after it records that start (GenerationEnv).
+func SetGenerationEnv(generation string) error {
+	if err := os.Setenv(GenerationEnv, generation); err != nil {
+		return fmt.Errorf("set %s: %w", GenerationEnv, err)
 	}
 	return nil
 }

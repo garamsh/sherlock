@@ -118,14 +118,19 @@ func mintGeneration() string {
 
 // startQueue opens the agent's queue — and with it the memory store and
 // its writer lock — and only then mints this start's generation, so a
-// start the lock refuses mints none. mint is mintGeneration outside
-// tests.
+// start the lock refuses mints none. It publishes the minted generation
+// to the tools it spawns before any turn can run. mint is mintGeneration
+// outside tests.
 func startQueue(factory gateway.RuntimeFactory, id identity, mint func() string, logger *slog.Logger) (*gateway.Queue, identity, error) {
 	queue, err := gateway.NewQueue(factory, id.agentID, logger)
 	if err != nil {
 		return nil, identity{}, err
 	}
 	id.generation = mint()
+	if err := tool.SetGenerationEnv(id.generation); err != nil {
+		_ = queue.Close()
+		return nil, identity{}, err
+	}
 	return queue, id, nil
 }
 
@@ -172,7 +177,7 @@ func newAgentFactory(cfg config.Config, id identity, ego string, logger *slog.Lo
 // runner hands the platform's environment to every tool it spawns
 // (tool.SetSpawnEnv).
 func buildToolRegistry(cfg config.Config, id identity, logger *slog.Logger) (*tool.Registry, error) {
-	if err := tool.SetSpawnEnv(cfg.WorkspaceAddr, gateway.DirFor(cfg.MemoryPath), id.agentID); err != nil {
+	if err := tool.SetSpawnEnv(cfg.WorkspaceAddr, gateway.DirFor(cfg.MemoryPath), id.agentID, id.assignmentEpoch); err != nil {
 		return nil, err
 	}
 	registry, err := tool.NewRegistry(tool.RegistryOptions{

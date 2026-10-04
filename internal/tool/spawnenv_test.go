@@ -19,12 +19,20 @@ func TestSetSpawnEnv_PublishesWhatTheToolsRead(t *testing.T) {
 	t.Setenv(tool.WorkspaceAddrEnv, "")
 	t.Setenv(tool.OutboxDirEnv, "")
 	t.Setenv(tool.AgentIDEnv, "")
+	t.Setenv(tool.AssignmentEpochEnv, "stale-epoch")
+	t.Setenv(tool.GenerationEnv, "stale-generation")
 
-	require.NoError(t, tool.SetSpawnEnv("127.0.0.1:9091", "/srv/agent/outbox", "agent-7"))
+	require.NoError(t, tool.SetSpawnEnv("127.0.0.1:9091", "/srv/agent/outbox", "agent-7", "epoch:7"))
 
 	assert.Equal(t, "127.0.0.1:9091", os.Getenv(tool.WorkspaceAddrEnv))
 	assert.Equal(t, "/srv/agent/outbox", os.Getenv(tool.OutboxDirEnv))
 	assert.Equal(t, "agent-7", os.Getenv(tool.AgentIDEnv))
+	assert.Equal(t, "epoch:7", os.Getenv(tool.AssignmentEpochEnv))
+	assert.Empty(t, os.Getenv(tool.GenerationEnv),
+		"an inherited generation is replaced with unknown until a start mints one")
+
+	require.NoError(t, tool.SetGenerationEnv("0123456789abcdef0123456789abcdef"))
+	assert.Equal(t, "0123456789abcdef0123456789abcdef", os.Getenv(tool.GenerationEnv))
 }
 
 // getenvCall matches a shipped tool reading a variable by name.
@@ -55,10 +63,12 @@ func TestSetSpawnEnv_CoversWhatTheShippedToolsRead(t *testing.T) {
 		"GITHUB_API_BASE": true,
 	}
 	platformSet := map[string]bool{
-		tool.WorkspaceAddrEnv: true,
-		tool.OutboxDirEnv:     true,
-		tool.AgentIDEnv:       true,
-		tool.InReplyToEnv:     true,
+		tool.WorkspaceAddrEnv:   true,
+		tool.OutboxDirEnv:       true,
+		tool.AgentIDEnv:         true,
+		tool.InReplyToEnv:       true,
+		tool.AssignmentEpochEnv: true,
+		tool.GenerationEnv:      true,
 	}
 
 	read := map[string]string{}

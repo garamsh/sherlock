@@ -17,8 +17,8 @@ The ID is what the launcher passes as `--agent-id`, and nothing else:
 
 - **Required, with no default.** An absent or empty `--agent-id` refuses startup with `--agent-id is required`.
 - **Opaque and verbatim.** Sherlock does not parse, normalise or escape it. A GRN such as `grn:garam:default:agent:144460a71649d1a1` is the path segment the routes answer on and the value tools receive as `SHERLOCK_AGENT_ID`.
-- **The assignment epoch is a launcher label.** `--assignment-epoch` is a flag only, opaque and optional, with empty meaning unknown. The agent holds it beside the ID and logs it.
-- **The generation is a runtime start nonce.** Every serving start mints 128 random bits from `crypto/rand` as 32 lowercase hex characters, after the memory store's writer lock is held and before the gateway serves, and never persists them. A one-shot `--message` run serves nothing and mints none. A launcher cannot pass one.
+- **The assignment epoch is a launcher label.** `--assignment-epoch` is a flag only, opaque and optional, with empty meaning unknown. The agent holds it beside the ID, logs it, and publishes it to the tools it spawns as `SHERLOCK_ASSIGNMENT_EPOCH`.
+- **The generation is a runtime start nonce.** Every serving start mints 128 random bits from `crypto/rand` as 32 lowercase hex characters, after the memory store's writer lock is held and before the gateway serves, and never persists them. Tools spawned after the mint receive it as `SHERLOCK_GENERATION`. A one-shot `--message` run serves nothing and mints none, so its tools receive it empty. A launcher cannot pass one.
 - Sherlock never compares or fences on either.
 
 ## Consequences

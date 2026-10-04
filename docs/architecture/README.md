@@ -30,7 +30,7 @@ One pod per agent, two containers (ADR 0017): the agent container is the agent's
 ### Responsibility documents
 
 - `environment.md` — the environment splits into workspace (gRPC files and exec, the data plane) and tools (scripts with manifests, stdio contract): topology, execution, permissions
-- `deployment.md` — what has to be true to run the workload as a pod: listeners and the bind gate, volumes, capabilities, startup failures, shutdown, images, and the facts an external consumer depends on
+- `deployment.md` — what has to be true to run the workload as a pod: listeners and the bind gate, volumes, capabilities, startup failures, shutdown, snapshot and restore, images, and the facts an external consumer depends on
 - `agent.md` — the agent is the self: reasoning loop, organs, platform tool client, model access
 - `memory.md` — long-term memory: the agent's organ — store, reads, lifecycle
 - `gateway.md` — the agent's ears and eyes: ingress, outbound, monitoring

@@ -221,8 +221,11 @@ func runFixture(t *testing.T, rt fixtureRuntime, storage string) {
 	assert.True(t, repliedM1, "an outbox entry's in_reply_to equals the sent id m1")
 	if rt.realModel() {
 		assert.True(t, ev.Snapshot.Note.Present, "the first activation saved a note")
-		require.NotEmpty(t, ev.Snapshot.Episodes, "two completed turns make one mid episode")
-		assert.True(t, ev.Snapshot.Episodes[0].Embedded, "the episode is stored with its embedding")
+		// Not fatal: a missing episode fails the run, and every later step
+		// still runs and records its own outcome.
+		if assert.NotEmpty(t, ev.Snapshot.Episodes, "two completed turns make one mid episode") {
+			assert.True(t, ev.Snapshot.Episodes[0].Embedded, "the episode is stored with its embedding")
+		}
 	} else {
 		// The mock writes an empty note and fills no four-message batch.
 		assert.False(t, ev.Snapshot.Note.Present)

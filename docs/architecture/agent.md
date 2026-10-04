@@ -1,6 +1,6 @@
 # Agent
 
-Governs the agent: the reasoning loop, memory, tool use, and model access. Rationale: ADR 0017, ADR 0009, ADR 0004, ADR 0006, ADR 0011, ADR 0019.
+Governs the agent: the reasoning loop, memory, tool use, and model access. Rationale: ADR 0017, ADR 0009, ADR 0004, ADR 0006, ADR 0011, ADR 0019, ADR 0024.
 
 ## Current decisions
 
@@ -23,7 +23,7 @@ Governs the agent: the reasoning loop, memory, tool use, and model access. Ratio
 - Memory search and memory inspection are reserved agent calls, not operator-installed tools. The session intercepts them. `memory_search` takes mid episodes similar to a query the model writes and ones an entity walk reaches from the names in it, in turn, at most five per call (ADR 0019); `memory_inspect` reads exact visible source messages from an episode's interval (ADR 0018). An operator tool with a reserved name is dropped with a warning. The terminal response call is reserved in the same way.
 - **A turn without the reserved terminal response does not finish.** The session asks again if a model stops without the call, and hands a note past 2,000 characters back to the model as the call's result; arguments that are not JSON fail the turn. A successful reply and its visible task are persisted, then the note, before the terminal event (ADR 0011).
 - Chat model access goes through one consumer-owned interface and embedding through a second (ADR 0004). Mid-episode synthesis uses the session model; recall makes no model call and uses the embedder configured in the `embedding:` section. `mock` remains the offline scripted stand-in, with an offline embedder beside it, and configured OpenAI- or Anthropic-compatible clients supply the live chat endpoint beside an OpenAI-compatible embeddings endpoint.
-- Instructions compose the operator ego with the platform contract, followed by the saved note under "Your note". The contract is never overridden by the ego file; it tells the model to search with a standalone query when recall misses, to inspect sources for exact wording, to treat a retrieved candidate as a lead, not an established answer, and to restate its whole note in every terminal call.
+- Instructions compose the operator ego (or the embedded default when none is named), then the operator instructions when an instructions file is named, then the platform contract, followed by the saved note under "Your note" (ADR 0024). The operator instructions add to the ego rather than replace it, and with none named the instructions are exactly the ego and the contract. The contract is never overridden by either operator file; it tells the model to search with a standalone query when recall misses, to inspect sources for exact wording, to treat a retrieved candidate as a lead, not an established answer, and to restate its whole note in every terminal call.
 
 ## Open questions
 

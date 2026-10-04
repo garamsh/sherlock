@@ -165,12 +165,12 @@ The response-schema row decided how much the writeback could rely on the wire un
 
 ### Agent ego
 
-The agent's instructions are composed of two parts: an **ego** (identity and behavior guidance) you own, and a **platform contract** (tool use, memory writeback format, reply conventions) the platform always appends — a custom ego can never disable the memory loop.
+The agent's instructions are composed of up to three parts, in this order: an **ego** (identity and behavior guidance) you own, optional **operator instructions** (what your deployment expects of the agent, such as how to answer a transport's message envelope) you also own, and a **platform contract** (tool use, memory writeback format, reply conventions) the platform always appends last — neither of your files can disable the memory loop (ADR 0024).
 
-The ego is a Markdown file, resolved in order: `--ego-file <path>`, then the embedded default (`internal/agent/ego.md`). There is no config key for it, and a missing or unreadable file fails at startup. Changes apply on restart; the file is not hot-reloaded.
+The ego is a Markdown file, resolved in order: `--ego-file <path>`, then the embedded default (`internal/agent/ego.md`). The operator instructions are a second file, `--instructions-file <path>`, left out when not named; naming one keeps the ego, embedded or yours. Neither has a config key, and a missing or unreadable file fails at startup. Changes apply on restart; neither file is hot-reloaded.
 
 ```sh
-sherlock agent --agent-id my-agent --ego-file ./EGO.md --message "hello"
+sherlock agent --agent-id my-agent --ego-file ./EGO.md --instructions-file ./INSTRUCTIONS.md --message "hello"
 ```
 
 An ego file describes who the agent is and how it behaves — not the protocol. Example:

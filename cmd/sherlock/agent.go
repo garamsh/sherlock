@@ -50,6 +50,10 @@ func newAgentCommand() *cobra.Command {
 			if err != nil {
 				return err
 			}
+			operatorInstructions, err := config.ResolveOperatorInstructions(cmd.Flags())
+			if err != nil {
+				return err
+			}
 			id, err := resolveIdentity(cmd.Flags())
 			if err != nil {
 				return err
@@ -59,9 +63,9 @@ func newAgentCommand() *cobra.Command {
 				return err
 			}
 			if msg != "" {
-				return runAgentTurn(cmd.Context(), cfg, id, msg, ego)
+				return runAgentTurn(cmd.Context(), cfg, id, msg, ego, operatorInstructions)
 			}
-			return serveAgent(cmd.Context(), cfg, id, ego)
+			return serveAgent(cmd.Context(), cfg, id, ego, operatorInstructions)
 		},
 	}
 	addAgentFlags(cmd.Flags())
@@ -144,7 +148,7 @@ func startQueue(factory gateway.RuntimeFactory, id identity, mint func() string,
 // registry both agent modes share. The agent constructs no tool-shaped
 // code at compile time (ADR 0017 §Decision, ADR 0009 §Decision); the
 // script-tool registry is the lifecycle owner for tool calls.
-func newAgentFactory(cfg config.Config, id identity, ego string, logger *slog.Logger) (*gateway.Factory, error) {
+func newAgentFactory(cfg config.Config, id identity, ego, operatorInstructions string, logger *slog.Logger) (*gateway.Factory, error) {
 	newModel, err := newModelFunc(cfg.Model)
 	if err != nil {
 		return nil, err
@@ -158,11 +162,12 @@ func newAgentFactory(cfg config.Config, id identity, ego string, logger *slog.Lo
 		return nil, err
 	}
 	return &gateway.Factory{
-		MemoryPath: cfg.MemoryPath,
-		NewModel:   newModel,
-		Embedder:   embedder,
-		Ego:        ego,
-		Tools:      registry,
+		MemoryPath:           cfg.MemoryPath,
+		NewModel:             newModel,
+		Embedder:             embedder,
+		Ego:                  ego,
+		OperatorInstructions: operatorInstructions,
+		Tools:                registry,
 	}, nil
 }
 
@@ -201,12 +206,12 @@ func buildToolRegistry(cfg config.Config, id identity, logger *slog.Logger) (*to
 // gateway, pointing its output at stdout: a CLI invocation prints the
 // agent's reply without an outbox watcher, while the serving mode stays
 // outbox-only.
-func runAgentTurn(ctx context.Context, cfg config.Config, id identity, msg, ego string) error {
+func runAgentTurn(ctx context.Context, cfg config.Config, id identity, msg, ego, operatorInstructions string) error {
 	// Logs go to stderr so stdout carries only the agent's output.
 	logger := slog.New(slog.NewJSONHandler(os.Stderr, nil))
 	slog.SetDefault(logger)
 
-	factory, err := newAgentFactory(cfg, id, ego, logger)
+	factory, err := newAgentFactory(cfg, id, ego, operatorInstructions, logger)
 	if err != nil {
 		return err
 	}
@@ -222,7 +227,7 @@ func runAgentTurn(ctx context.Context, cfg config.Config, id identity, msg, ego 
 // serveAgent runs the agent's HTTP gateway until an interrupt or SIGTERM.
 // Callers authenticate with mTLS when the tls: config section is set
 // (ADR 0012); without it the gateway serves loopback binds only.
-func serveAgent(ctx context.Context, cfg config.Config, id identity, ego string) error {
+func serveAgent(ctx context.Context, cfg config.Config, id identity, ego, operatorInstructions string) error {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	slog.SetDefault(logger)
 
@@ -234,7 +239,7 @@ func serveAgent(ctx context.Context, cfg config.Config, id identity, ego string)
 		return fmt.Errorf("addr %q is not a loopback bind: serving beyond localhost requires the tls: config section (ADR 0012)", cfg.Addr)
 	}
 
-	factory, err := newAgentFactory(cfg, id, ego, logger)
+	factory, err := newAgentFactory(cfg, id, ego, operatorInstructions, logger)
 	if err != nil {
 		return err
 	}

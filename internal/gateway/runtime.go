@@ -46,6 +46,9 @@ type Factory struct {
 	// Ego is the session ego; empty selects the agent package's embedded
 	// default (the platform contract is appended regardless).
 	Ego string
+	// OperatorInstructions is the operator's deployment text, placed
+	// between the ego and the platform contract; empty omits it.
+	OperatorInstructions string
 	// MaxHistoryMessages overrides agentmemory.DefaultMaxHistoryMessages.
 	// Zero selects that default; a negative value is clamped to zero,
 	// which disables context compaction.
@@ -94,14 +97,15 @@ func (f *Factory) New(ctx context.Context, agentID string, events agent.EventSin
 		initial = append(initial, agent.Message{Role: m.Role, Content: m.Content})
 	}
 	session := agent.NewSession(model, f.Tools, agent.Options{
-		Recaller:           agentmemory.ConversationRecall{Store: store},
-		Conversation:       store,
-		Summarizer:         summarizer,
-		InitialHistory:     initial,
-		Events:             events,
-		Compactor:          agentmemory.Compactor{MaxHistoryMessages: maxHistoryMessages},
-		Ego:                f.Ego,
-		MaxHistoryMessages: maxHistoryMessages,
+		Recaller:             agentmemory.ConversationRecall{Store: store},
+		Conversation:         store,
+		Summarizer:           summarizer,
+		InitialHistory:       initial,
+		Events:               events,
+		Compactor:            agentmemory.Compactor{MaxHistoryMessages: maxHistoryMessages},
+		Ego:                  f.Ego,
+		OperatorInstructions: f.OperatorInstructions,
+		MaxHistoryMessages:   maxHistoryMessages,
 	})
 	return &Runtime{
 		Session: session,

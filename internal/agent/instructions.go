@@ -135,11 +135,17 @@ If a tool returns an error, change your approach — different input, different
 tool, or finish the turn with what you have. Do not repeat the same call
 identically; the platform will substitute a synthetic error after two retries.`
 
-// ComposeInstructions returns the session instructions: the ego followed
-// by the platform Contract. An empty ego selects DefaultEgo.
-func ComposeInstructions(ego string) string {
+// ComposeInstructions returns the session instructions: the ego, then the
+// operator's instructions, then the platform Contract (ADR 0024). An empty
+// ego selects DefaultEgo; blank operator instructions are omitted, so the
+// result is the ego followed by the Contract alone.
+func ComposeInstructions(ego, operatorInstructions string) string {
 	if ego == "" {
 		ego = DefaultEgo
 	}
-	return strings.TrimSpace(ego) + "\n\n" + Contract
+	parts := strings.TrimSpace(ego) + "\n\n"
+	if operator := strings.TrimSpace(operatorInstructions); operator != "" {
+		parts += operator + "\n\n"
+	}
+	return parts + Contract
 }

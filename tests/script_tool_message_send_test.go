@@ -126,8 +126,8 @@ func TestScriptTool_MessageSend_InputRejected(t *testing.T) {
 // TestScriptTool_MessageSend_EntryRepliesToTheDrainedMessage runs one
 // turn through the gateway with the real message_send tool, and checks
 // the outbox entry the turn wrote names the message the turn drained in
-// in_reply_to: the gateway's ID reaches the tool through the session and
-// the runner, not through anything the model says.
+// in_reply_to: the sender's ID reaches the tool byte for byte through the
+// session and the runner, not through anything the model says.
 func TestScriptTool_MessageSend_EntryRepliesToTheDrainedMessage(t *testing.T) {
 	root := t.TempDir()
 	toolsDir := t.TempDir()
@@ -154,14 +154,15 @@ func TestScriptTool_MessageSend_EntryRepliesToTheDrainedMessage(t *testing.T) {
 	srv := httptest.NewServer(gateway.NewHandler(q, logger))
 	t.Cleanup(srv.Close)
 
-	resp := postJSON(t, srv.URL+"/agents/env-1/messages", `{"content":"hello"}`)
+	const senderID = "garam:msg/7,a"
+	resp := postJSON(t, srv.URL+"/agents/env-1/messages", `{"id":"`+senderID+`","content":"hello"}`)
 	defer resp.Body.Close()
 	require.Equal(t, http.StatusAccepted, resp.StatusCode)
 	var accepted struct {
 		ID string `json:"id"`
 	}
 	require.NoError(t, json.NewDecoder(resp.Body).Decode(&accepted))
-	require.NotEmpty(t, accepted.ID)
+	require.Equal(t, senderID, accepted.ID, "the gateway kept the sender's id")
 
 	var entries []string
 	require.Eventually(t, func() bool {
@@ -172,6 +173,6 @@ func TestScriptTool_MessageSend_EntryRepliesToTheDrainedMessage(t *testing.T) {
 	require.NoError(t, err)
 	var msg message.Message
 	require.NoError(t, json.Unmarshal(body, &msg))
-	assert.Equal(t, []string{accepted.ID}, msg.InReplyTo)
+	assert.Equal(t, []string{senderID}, msg.InReplyTo)
 	assert.Equal(t, "reply-1", msg.Content)
 }

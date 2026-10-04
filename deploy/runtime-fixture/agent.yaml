@@ -1,0 +1,29 @@
+# The runtime fixture's agent config (deploy/runtime-fixture/README.md).
+# Every key here is one a setting reads, because the fixture starts the
+# agent with --strict-config; a key added here that no setting reads stops
+# the fixture at startup rather than being ignored.
+#
+# revision names this configuration. It is fixed, so a status answer that
+# echoes it as config_revision says which configuration the run loaded.
+revision: sherlock-937-fixture-r1
+# The container publishes the gateway beyond its own loopback, so the
+# gateway requires mTLS (ADR 0012). The fixture generates throwaway
+# material into its own storage and mounts it at /etc/sherlock/tls.
+addr: ":8080"
+tls:
+  cert: /etc/sherlock/tls/server.pem
+  key: /etc/sherlock/tls/server-key.pem
+  client-ca: /etc/sherlock/tls/ca.pem
+# The agent's volume: memory.db, its -wal and -shm, the writer lock, and
+# outbox/ beside them.
+memory-path: /var/lib/sherlock/memory.db
+model:
+  provider: openai-compatible
+  base-url: https://api.minimax.io/v1
+  model: MiniMax-M2
+  # The key reaches the agent container's environment and nothing else.
+  api-key-env: MINIMAX_KEY
+embedding:
+  # The text-embeddings-inference service of the same compose project.
+  base-url: http://tei:80/v1
+  model: BAAI/bge-base-en-v1.5

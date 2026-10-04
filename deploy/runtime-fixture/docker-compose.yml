@@ -1,0 +1,75 @@
+# The real-runtime acceptance fixture (#937; README.md in this directory).
+# Pinned images, fresh storage, the real model. Every value the run varies
+# comes from the environment, and each one is required: a fixture that
+# fell back to a default path could start on storage nobody prepared.
+#
+# The pod shape is deploy/local's (ADR 0017): the workspace shares the
+# agent's network namespace, so its unauthenticated gRPC listener stays on
+# loopback. Unlike deploy/local, the agent's and the workspace's state sit
+# on separate directories, which is what lets the agent's be copied and
+# restored on its own (docs/architecture/deployment.md §Snapshot and
+# restore).
+name: sherlock-937
+
+services:
+  tei:
+    # text-embeddings-inference 1.9.4, CPU build, pinned by the digest of
+    # its multi-platform index.
+    image: ghcr.io/huggingface/text-embeddings-inference:cpu-1.9.4@sha256:2538ea1c9640d3763b15af668039d24172d063b42337b0c27796fc2be180c78d
+    command: ["--model-id", "BAAI/bge-base-en-v1.5", "--port", "80"]
+    mem_limit: 1g
+    ports:
+      - "127.0.0.1:18938:80"
+    volumes:
+      - "${FIXTURE_TEI_DATA:?set FIXTURE_TEI_DATA}:/data"
+
+  agent:
+    image: "sherlock-937/agent:${FIXTURE_IMAGE_TAG:?set FIXTURE_IMAGE_TAG}"
+    mem_limit: 512m
+    ports:
+      - "127.0.0.1:18937:8080"
+    # The fixture runs on a rootless daemon, where container uid 0 is the
+    # invoking host user: the owner of the owner-only config file and
+    # server key, and of the files the snapshot copies.
+    user: "0:0"
+    environment:
+      # The meter in front of the model endpoint, which counts calls and
+      # tokens; the config file names the endpoint it forwards to.
+      SHERLOCK_MODEL_BASE_URL: "${FIXTURE_MODEL_BASE_URL:?set FIXTURE_MODEL_BASE_URL}"
+    # The model key, and nothing else: a file holding the one variable the
+    # config's model.api-key-env names, written by the operator and read
+    # by compose into this container's environment only.
+    env_file:
+      - "${FIXTURE_AGENT_ENV:?set FIXTURE_AGENT_ENV}"
+    volumes:
+      - "${FIXTURE_AGENT_STORAGE:?set FIXTURE_AGENT_STORAGE}:/var/lib/sherlock"
+      - "${FIXTURE_CONFIG:?set FIXTURE_CONFIG}:/etc/sherlock/config.yaml:ro"
+      - "${FIXTURE_TLS:?set FIXTURE_TLS}:/etc/sherlock/tls:ro"
+    command:
+      - agent
+      - --config=/etc/sherlock/config.yaml
+      - --strict-config
+      - "--agent-id=${FIXTURE_AGENT_ID:?set FIXTURE_AGENT_ID}"
+      - "--assignment-epoch=${FIXTURE_EPOCH:?set FIXTURE_EPOCH}"
+    # The drain finishes the turn in flight however long it takes
+    # (deployment.md §Shutdown and the grace period); a stop that killed
+    # it would be a crash, not the drain the fixture asserts.
+    stop_grace_period: 15m
+    depends_on:
+      - tei
+
+  workspace:
+    image: "sherlock-937/workspace:${FIXTURE_IMAGE_TAG:?set FIXTURE_IMAGE_TAG}"
+    mem_limit: 512m
+    network_mode: service:agent
+    depends_on:
+      - agent
+    # deploy/local/docker-compose.yml records why each of these is needed.
+    cap_drop: ["ALL"]
+    cap_add: ["SETUID", "SETGID", "CHOWN", "SYS_ADMIN", "KILL"]
+    environment:
+      SHERLOCK_WORKSPACE: /var/lib/sherlock-workspace
+      SHERLOCK_EXEC_UID: "10001"
+    volumes:
+      - "${FIXTURE_WORKSPACE_STORAGE:?set FIXTURE_WORKSPACE_STORAGE}:/var/lib/sherlock-workspace"
+    command: ["workspace", "--strict-config"]

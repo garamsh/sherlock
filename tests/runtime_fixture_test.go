@@ -127,6 +127,7 @@ type fixtureEvidence struct {
 	RecalledIDs    []string                 `json:"follow_up_recalled_ids,omitempty"`
 	FollowUpNote   bool                     `json:"follow_up_answer_carries_note,omitempty"`
 	Spend          *fixtureSpend            `json:"spend,omitempty"`
+	Steps          []fixtureStepResult      `json:"steps"`
 }
 
 // TestRuntimeFixture_Offline runs the acceptance sequence against the
@@ -141,6 +142,11 @@ func TestRuntimeFixture_Offline(t *testing.T) {
 
 // runFixture is the acceptance sequence (#937). storage is a fresh
 // directory the run owns.
+//
+// Each step runs as a subtest, so a check that fails ends that step and no
+// other. A step runs only when what it depends on happened, and otherwise
+// is recorded as not run with the reason. The run fails if any step failed,
+// and the evidence records every step's outcome.
 func runFixture(t *testing.T, rt fixtureRuntime, storage string) {
 	revision := fixtureConfigValue(t, "revision")
 	ev := &fixtureEvidence{
@@ -150,7 +156,9 @@ func runFixture(t *testing.T, rt fixtureRuntime, storage string) {
 		Replay: map[string]string{}, SenderScope: map[string]string{},
 		ExitCodes: map[string]int{},
 	}
+	steps := &fixtureSteps{t: t}
 	defer func() {
+		ev.Steps = steps.results
 		ev.Spend = rt.spend()
 		writeFixtureEvidence(t, ev)
 	}()
@@ -163,159 +171,270 @@ func runFixture(t *testing.T, rt fixtureRuntime, storage string) {
 		require.NoError(t, os.MkdirAll(dir, 0o755))
 	}
 	task := fixtureTasks(rt.realModel())
+	real := rt.realModel()
 
-	// First activation: identity (C1/C3), the task's effect, and the
-	// durable reply (C6).
-	rt.start(t, agentDir, workspaceDir)
-	first := fixtureGetStatus(t, rt)
-	assertFixtureStatus(t, first, revision)
-	ev.Statuses["first"] = first
+	// running is whether an agent process this sequence started is up,
+	// which decides whether a drain step has anything to drain.
+	running := false
+	var first, second fixtureStatus
+	var sidecars map[string]bool
 
-	fixtureSend(t, rt, fixtureSenderA, "m1", task.first, http.StatusAccepted)
-	ev.Completed["m1"] = fixtureAwaitCompleted(t, rt, fixtureSenderA, "m1")
-	written := rt.workspaceFile(t, workspaceDir, task.file)
-	require.NotEmpty(t, written, "the task wrote %s into the workspace", task.file)
-	ev.TaskFile = sha256Hex(written)
-	if rt.realModel() {
-		fixtureSend(t, rt, fixtureSenderA, "m2", task.second, http.StatusAccepted)
-		ev.Completed["m2"] = fixtureAwaitCompleted(t, rt, fixtureSenderA, "m2")
+	// C1/C3: the first activation answers with its identity.
+	steps.run("first activation", "3: status", "", func(t *testing.T) {
+		rt.start(t, agentDir, workspaceDir)
+		running = true
+		first = fixtureGetStatus(t, rt)
+		ev.Statuses["first"] = first
+		assertFixtureStatus(t, first, revision)
+	})
+
+	// The task's effect, and completion read from the lookup alone.
+	steps.run("task m1", "1: task", steps.needs("first activation"), func(t *testing.T) {
+		fixtureSend(t, rt, fixtureSenderA, "m1", task.first, http.StatusAccepted)
+		ev.Completed["m1"] = fixtureAwaitCompleted(t, rt, fixtureSenderA, "m1")
+		written := rt.workspaceFile(t, workspaceDir, task.file)
+		require.NotEmpty(t, written, "the task wrote %s into the workspace", task.file)
+		ev.TaskFile = sha256Hex(written)
+	})
+	if real {
+		steps.run("task m2", "5: note and episode", steps.needs("first activation"), func(t *testing.T) {
+			fixtureSend(t, rt, fixtureSenderA, "m2", task.second, http.StatusAccepted)
+			ev.Completed["m2"] = fixtureAwaitCompleted(t, rt, fixtureSenderA, "m2")
+		})
 	}
 
 	// C4: SIGTERM drains and the process exits cleanly.
-	ev.ExitCodes["first"] = rt.stop(t)
-	require.Equal(t, 0, ev.ExitCodes["first"], "the drained agent exits 0")
+	steps.run("drain", "4: drain and restart", steps.unless(running, "no agent was started"), func(t *testing.T) {
+		running = false
+		ev.ExitCodes["first"] = rt.stop(t)
+		require.Equal(t, 0, ev.ExitCodes["first"], "the drained agent exits 0")
+	})
 
 	// The supported copy, from the drained, stopped writer. A sidecar the
 	// closed store does not have is recorded absent, not invented.
-	sidecars := storeSidecars(agentDir)
-	fixtureSnapshot(t, "copy", filepath.Join(agentDir, "memory.db"), snapshot)
-	manifest, err := os.ReadFile(filepath.Join(snapshot, "manifest"))
-	require.NoError(t, err)
-	ev.Manifest = string(manifest)
-	assert.Equal(t, sidecars, storeSidecars(snapshot))
-	for suffix, present := range sidecars {
-		if !present {
-			assert.Contains(t, ev.Manifest, "absent memory.db"+suffix+"\n")
+	steps.run("snapshot", "snapshot boundary", steps.needs("drain"), func(t *testing.T) {
+		sidecars = storeSidecars(agentDir)
+		fixtureSnapshot(t, "copy", filepath.Join(agentDir, "memory.db"), snapshot)
+		manifest, err := os.ReadFile(filepath.Join(snapshot, "manifest"))
+		require.NoError(t, err)
+		ev.Manifest = string(manifest)
+		assert.Equal(t, sidecars, storeSidecars(snapshot))
+		for suffix, present := range sidecars {
+			if !present {
+				assert.Contains(t, ev.Manifest, "absent memory.db"+suffix+"\n")
+			}
 		}
-	}
-	ev.Snapshot = fixtureVerify(t, snapshot)
-	assert.Equal(t, "ok", ev.Snapshot.Integrity)
-	wantCompleted := []string{"m1"}
-	if rt.realModel() {
-		wantCompleted = append(wantCompleted, "m2")
-	}
-	assert.Equal(t, wantCompleted, completionIDs(ev.Snapshot, fixtureSenderA))
-	// Every entry the first activation wrote is pending (no consumer
+		ev.Snapshot = fixtureVerify(t, snapshot)
+		assert.Equal(t, "ok", ev.Snapshot.Integrity)
+		wantCompleted := []string{"m1"}
+		if real {
+			wantCompleted = append(wantCompleted, "m2")
+		}
+		assert.Equal(t, wantCompleted, completionIDs(ev.Snapshot, fixtureSenderA))
+	})
+
+	// C6: every entry the first activation wrote is pending (no consumer
 	// collects here), names its origin, and one answers m1.
-	require.NotEmpty(t, ev.Snapshot.Outbox)
-	repliedM1 := false
-	for _, entry := range ev.Snapshot.Outbox {
-		assert.Equal(t, entry.ID+".json", entry.File)
-		assert.Equal(t, fixtureAgentID, entry.AgentID)
-		assert.Equal(t, fixtureEpoch, entry.AssignmentEpoch)
-		assert.Equal(t, first.Generation, entry.Generation)
-		if len(entry.InReplyTo) == 1 && entry.InReplyTo[0] == "m1" {
-			repliedM1 = true
+	steps.run("outbox", "2: outbox", steps.needs("snapshot", "task m1"), func(t *testing.T) {
+		require.NotEmpty(t, ev.Snapshot.Outbox)
+		repliedM1 := false
+		for _, entry := range ev.Snapshot.Outbox {
+			assert.Equal(t, entry.ID+".json", entry.File)
+			assert.Equal(t, fixtureAgentID, entry.AgentID)
+			assert.Equal(t, fixtureEpoch, entry.AssignmentEpoch)
+			assert.Equal(t, first.Generation, entry.Generation)
+			if len(entry.InReplyTo) == 1 && entry.InReplyTo[0] == "m1" {
+				repliedM1 = true
+			}
 		}
-	}
-	assert.True(t, repliedM1, "an outbox entry's in_reply_to equals the sent id m1")
-	if rt.realModel() {
+		assert.True(t, repliedM1, "an outbox entry's in_reply_to equals the sent id m1")
+	})
+
+	steps.run("note and episode", "5: note and episode", steps.needs("snapshot"), func(t *testing.T) {
+		if !real {
+			// The mock writes an empty note and fills no four-message batch.
+			assert.False(t, ev.Snapshot.Note.Present)
+			assert.Empty(t, ev.Snapshot.Episodes)
+			return
+		}
 		assert.True(t, ev.Snapshot.Note.Present, "the first activation saved a note")
-		// Not fatal: a missing episode fails the run, and every later step
-		// still runs and records its own outcome.
-		if assert.NotEmpty(t, ev.Snapshot.Episodes, "two completed turns make one mid episode") {
-			assert.True(t, ev.Snapshot.Episodes[0].Embedded, "the episode is stored with its embedding")
-		}
-	} else {
-		// The mock writes an empty note and fills no four-message batch.
-		assert.False(t, ev.Snapshot.Note.Present)
-		assert.Empty(t, ev.Snapshot.Episodes)
-	}
+		require.NotEmpty(t, ev.Snapshot.Episodes, "two completed turns make one mid episode")
+		assert.True(t, ev.Snapshot.Episodes[0].Embedded, "the episode is stored with its embedding")
+	})
 
 	// Restart on the same storage: same identity, new generation.
-	rt.start(t, agentDir, workspaceDir)
-	second := fixtureGetStatus(t, rt)
-	assertFixtureStatus(t, second, revision)
-	ev.Statuses["restart"] = second
-	assert.NotEqual(t, first.Generation, second.Generation, "a restart mints a new generation")
+	steps.run("restart", "4: drain and restart", steps.needs("drain"), func(t *testing.T) {
+		rt.start(t, agentDir, workspaceDir)
+		running = true
+		second = fixtureGetStatus(t, rt)
+		ev.Statuses["restart"] = second
+		assertFixtureStatus(t, second, revision)
+		assert.NotEqual(t, first.Generation, second.Generation, "a restart mints a new generation")
+	})
+	restarted := steps.unless(running, "the restart did not start an agent")
 
 	// C2: a second writer on the same store is refused. A copy while the
 	// writer holds its lock is refused the same way: whether the writer
 	// stopped cannot be established, so nothing may be activated from it.
-	code, out := rt.secondWriter(t, agentDir)
-	assert.NotEqual(t, 0, code)
-	assert.Contains(t, out, fixtureLocked)
-	ev.SecondWriter = fmt.Sprintf("exit %d: %s", code, lastLine(out, fixtureLocked))
-	held := exec.Command(fixtureScript(t), "copy", filepath.Join(agentDir, "memory.db"), filepath.Join(storage, "held-copy"))
-	heldOut, err := held.CombinedOutput()
-	require.Error(t, err, "a copy of a store whose writer holds the lock is refused")
-	assert.Contains(t, string(heldOut), "is held: the writer has not stopped")
-	assert.NoDirExists(t, filepath.Join(storage, "held-copy"))
-	ev.HeldCopy = strings.TrimSpace(string(heldOut))
+	steps.run("second writer", "7: second writer", restarted, func(t *testing.T) {
+		code, out := rt.secondWriter(t, agentDir)
+		ev.SecondWriter = fmt.Sprintf("exit %d: %s", code, lastLine(out, fixtureLocked))
+		assert.NotEqual(t, 0, code)
+		assert.Contains(t, out, fixtureLocked)
+		held := exec.Command(fixtureScript(t), "copy", filepath.Join(agentDir, "memory.db"), filepath.Join(storage, "held-copy"))
+		heldOut, err := held.CombinedOutput()
+		ev.HeldCopy = strings.TrimSpace(string(heldOut))
+		require.Error(t, err, "a copy of a store whose writer holds the lock is refused")
+		assert.Contains(t, string(heldOut), "is held: the writer has not stopped")
+		assert.NoDirExists(t, filepath.Join(storage, "held-copy"))
+	})
 
 	// C5: completion is read from the lookup alone. A replay of m1 is
 	// answered from the record and starts no turn; the same ID with other
 	// content is a conflict; another sender's lookup of it is unknown.
-	ev.Replay["get_after_restart"] = fixtureLookup(t, rt, fixtureSenderA, "m1")
-	assert.Equal(t, "completed", ev.Replay["get_after_restart"])
-	ev.Replay["post"] = fixtureSend(t, rt, fixtureSenderA, "m1", task.first, http.StatusOK)
-	assert.Equal(t, "completed", ev.Replay["post"])
-	ev.Conflict = fixtureSendStatus(t, rt, fixtureSenderA, "m1", task.first+" (changed)")
-	assert.Equal(t, http.StatusConflict, ev.Conflict)
-	ev.SenderScope[fixtureSenderA] = fixtureLookup(t, rt, fixtureSenderA, "m1")
-	ev.SenderScope[fixtureSenderB] = fixtureLookup(t, rt, fixtureSenderB, "m1")
-	assert.Equal(t, "completed", ev.SenderScope[fixtureSenderA])
-	assert.Equal(t, "unknown", ev.SenderScope[fixtureSenderB], "message IDs are scoped to their sender")
+	steps.run("replay, conflict and sender scope", "6: replay", restarted, func(t *testing.T) {
+		ev.Replay["get_after_restart"] = fixtureLookup(t, rt, fixtureSenderA, "m1")
+		assert.Equal(t, "completed", ev.Replay["get_after_restart"])
+		ev.Replay["post"] = fixtureSend(t, rt, fixtureSenderA, "m1", task.first, http.StatusOK)
+		assert.Equal(t, "completed", ev.Replay["post"])
+		ev.Conflict = fixtureSendStatus(t, rt, fixtureSenderA, "m1", task.first+" (changed)")
+		assert.Equal(t, http.StatusConflict, ev.Conflict)
+		ev.SenderScope[fixtureSenderA] = fixtureLookup(t, rt, fixtureSenderA, "m1")
+		ev.SenderScope[fixtureSenderB] = fixtureLookup(t, rt, fixtureSenderB, "m1")
+		assert.Equal(t, "completed", ev.SenderScope[fixtureSenderA])
+		assert.Equal(t, "unknown", ev.SenderScope[fixtureSenderB], "message IDs are scoped to their sender")
+	})
 
-	if rt.realModel() {
-		// Read-back: the restored note and the episode, through the
-		// follow-up's recall event and its answer.
-		events := subscribeSSEClient(t, rt.client(fixtureSenderA), rt.baseURL()+"/agents/"+url.PathEscape(fixtureAgentID)+"/events")
-		fixtureSend(t, rt, fixtureSenderA, "m3", task.followUp, http.StatusAccepted)
-		ev.Completed["m3"] = fixtureAwaitCompleted(t, rt, fixtureSenderA, "m3")
-		ev.RecalledIDs = fixtureRecalledIDs(t, events)
-		assert.True(t, containsEpisodeID(ev.RecalledIDs), "the follow-up recalled a mid episode: %v", ev.RecalledIDs)
+	// Read-back: the restored note and the episode, through the follow-up's
+	// recall event and, after the drain, its answer.
+	if real {
+		steps.run("read-back", "5: note and episode", restarted, func(t *testing.T) {
+			events := subscribeSSEClient(t, rt.client(fixtureSenderA), rt.baseURL()+"/agents/"+url.PathEscape(fixtureAgentID)+"/events")
+			fixtureSend(t, rt, fixtureSenderA, "m3", task.followUp, http.StatusAccepted)
+			ev.Completed["m3"] = fixtureAwaitCompleted(t, rt, fixtureSenderA, "m3")
+			ev.RecalledIDs = fixtureRecalledIDs(t, events)
+			assert.True(t, containsEpisodeID(ev.RecalledIDs), "the follow-up recalled a mid episode: %v", ev.RecalledIDs)
+		})
 	}
-	ev.ExitCodes["restart"] = rt.stop(t)
-	require.Equal(t, 0, ev.ExitCodes["restart"])
-	if rt.realModel() {
-		ev.FollowUpNote = fixtureFollowUpCarries(t, agentDir, "m3", task.noteToken)
-		assert.True(t, ev.FollowUpNote, "the follow-up answer carries the note's token")
+
+	steps.run("drain after restart", "4: drain and restart", restarted, func(t *testing.T) {
+		running = false
+		ev.ExitCodes["restart"] = rt.stop(t)
+		require.Equal(t, 0, ev.ExitCodes["restart"])
+	})
+
+	if real {
+		steps.run("follow-up answer", "5: note and episode", steps.needs("read-back", "drain after restart"), func(t *testing.T) {
+			ev.FollowUpNote = fixtureFollowUpCarries(t, agentDir, "m3", task.noteToken)
+			assert.True(t, ev.FollowUpNote, "the follow-up answer carries the note's token")
+		})
 	}
 
 	// The replay started no turn: still one completion record for m1 and
 	// one entry answering it.
-	after := filepath.Join(storage, "after-restart")
-	fixtureSnapshot(t, "copy", filepath.Join(agentDir, "memory.db"), after)
-	afterReport := fixtureVerify(t, after)
-	assert.Equal(t, 1, countString(completionIDs(afterReport, fixtureSenderA), "m1"))
-	assert.Equal(t, 1, countReplies(afterReport, "m1"))
+	steps.run("replay started no turn", "6: replay", steps.needs("replay, conflict and sender scope", "drain after restart"), func(t *testing.T) {
+		after := filepath.Join(storage, "after-restart")
+		fixtureSnapshot(t, "copy", filepath.Join(agentDir, "memory.db"), after)
+		afterReport := fixtureVerify(t, after)
+		assert.Equal(t, 1, countString(completionIDs(afterReport, fixtureSenderA), "m1"))
+		assert.Equal(t, 1, countReplies(afterReport, "m1"))
+	})
 
-	// Restore the first snapshot to fresh storage and activate it.
-	fixtureSnapshot(t, "restore", snapshot, filepath.Join(restoredDir, "memory.db"))
-	assert.Equal(t, sidecars, storeSidecars(restoredDir), "the restore keeps an absent sidecar absent")
-	rt.start(t, restoredDir, filepath.Join(storage, "restored", "workspace"))
-	third := fixtureGetStatus(t, rt)
-	assertFixtureStatus(t, third, revision)
-	ev.Statuses["restored"] = third
-	assert.NotEqual(t, first.Generation, third.Generation)
-	assert.NotEqual(t, second.Generation, third.Generation)
-	assert.Equal(t, "completed", fixtureLookup(t, rt, fixtureSenderA, "m1"), "the restored store holds m1's completion")
-	if rt.realModel() {
-		assert.Equal(t, "unknown", fixtureLookup(t, rt, fixtureSenderA, "m3"), "the restored store predates m3")
+	// Restore the first snapshot to fresh storage and activate it. It
+	// needs the gateway port free, so no agent this sequence started may
+	// still be up.
+	restore := steps.needs("snapshot")
+	if restore == "" {
+		restore = steps.unless(!running, "an earlier agent is still up")
 	}
-	ev.ExitCodes["restored"] = rt.stop(t)
-	require.Equal(t, 0, ev.ExitCodes["restored"])
+	steps.run("restore", "snapshot boundary", restore, func(t *testing.T) {
+		fixtureSnapshot(t, "restore", snapshot, filepath.Join(restoredDir, "memory.db"))
+		assert.Equal(t, sidecars, storeSidecars(restoredDir), "the restore keeps an absent sidecar absent")
+		rt.start(t, restoredDir, filepath.Join(storage, "restored", "workspace"))
+		running = true
+		third := fixtureGetStatus(t, rt)
+		ev.Statuses["restored"] = third
+		assertFixtureStatus(t, third, revision)
+		assert.NotEqual(t, first.Generation, third.Generation)
+		if second.Generation != "" {
+			assert.NotEqual(t, second.Generation, third.Generation)
+		}
+		assert.Equal(t, "completed", fixtureLookup(t, rt, fixtureSenderA, "m1"), "the restored store holds m1's completion")
+		if real && ev.Completed["m3"] == "completed" {
+			assert.Equal(t, "unknown", fixtureLookup(t, rt, fixtureSenderA, "m3"), "the restored store predates m3")
+		}
+		running = false
+		ev.ExitCodes["restored"] = rt.stop(t)
+		require.Equal(t, 0, ev.ExitCodes["restored"])
 
-	// Pending entries keep their payload and origin under the new
-	// generation: the restored outbox is the snapshot's, byte for byte.
-	restoredCopy := filepath.Join(storage, "restored-copy")
-	fixtureSnapshot(t, "copy", filepath.Join(restoredDir, "memory.db"), restoredCopy)
-	ev.Restored = fixtureVerify(t, restoredCopy)
-	assert.Equal(t, ev.Snapshot.Outbox, ev.Restored.Outbox)
-	assert.Equal(t, ev.Snapshot.Completions, ev.Restored.Completions)
-	assert.Equal(t, ev.Snapshot.Note, ev.Restored.Note)
-	assert.Equal(t, ev.Snapshot.Episodes, ev.Restored.Episodes)
+		// Pending entries keep their payload and origin under the new
+		// generation: the restored outbox is the snapshot's, byte for byte.
+		restoredCopy := filepath.Join(storage, "restored-copy")
+		fixtureSnapshot(t, "copy", filepath.Join(restoredDir, "memory.db"), restoredCopy)
+		ev.Restored = fixtureVerify(t, restoredCopy)
+		assert.Equal(t, ev.Snapshot.Outbox, ev.Restored.Outbox)
+		assert.Equal(t, ev.Snapshot.Completions, ev.Restored.Completions)
+		assert.Equal(t, ev.Snapshot.Note, ev.Restored.Note)
+		assert.Equal(t, ev.Snapshot.Episodes, ev.Restored.Episodes)
+	})
+}
+
+// fixtureStepResult is one step's outcome in the evidence.
+type fixtureStepResult struct {
+	Step string `json:"step"`
+	// Item is the acceptance item of #937 the step bears on.
+	Item    string `json:"item"`
+	Outcome string `json:"outcome"`
+	Reason  string `json:"reason,omitempty"`
+}
+
+// fixtureSteps runs the sequence's steps as subtests and records each
+// outcome: pass, fail, or not-run with the reason.
+type fixtureSteps struct {
+	t       *testing.T
+	results []fixtureStepResult
+}
+
+// run runs fn as the subtest step unless blocked names why it cannot run.
+func (s *fixtureSteps) run(step, item, blocked string, fn func(t *testing.T)) {
+	if blocked != "" {
+		s.results = append(s.results, fixtureStepResult{Step: step, Item: item, Outcome: "not-run", Reason: blocked})
+		s.t.Logf("step %q not run: %s", step, blocked)
+		return
+	}
+	outcome := "fail"
+	if s.t.Run(step, fn) {
+		outcome = "pass"
+	}
+	s.results = append(s.results, fixtureStepResult{Step: step, Item: item, Outcome: outcome})
+}
+
+func (s *fixtureSteps) outcome(step string) string {
+	for _, r := range s.results {
+		if r.Step == step {
+			return r.Outcome
+		}
+	}
+	return "not-run"
+}
+
+// needs returns why a step depending on these cannot run, or empty when
+// every one of them passed.
+func (s *fixtureSteps) needs(steps ...string) string {
+	for _, step := range steps {
+		if got := s.outcome(step); got != "pass" {
+			return fmt.Sprintf("needs %q, which is %s", step, got)
+		}
+	}
+	return ""
+}
+
+// unless returns reason when cond is false, or empty when it holds.
+func (s *fixtureSteps) unless(cond bool, reason string) string {
+	if cond {
+		return ""
+	}
+	return reason
 }
 
 // fixtureTask is what the sequence asks the agent to do.
@@ -613,11 +732,15 @@ type offlineFixture struct {
 	cmd                       *exec.Cmd
 	exited                    <-chan error
 	logPath                   string
+	// owner is the test the processes belong to, which outlives the step
+	// that starts them: cleanup registered on a step would stop them when
+	// the step ends.
+	owner *testing.T
 }
 
 func newOfflineFixture(t *testing.T) *offlineFixture {
 	t.Helper()
-	f := &offlineFixture{binary: buildSherlockBinary(t), toolsDir: toolsDirForTest(t)}
+	f := &offlineFixture{binary: buildSherlockBinary(t), toolsDir: toolsDirForTest(t), owner: t}
 
 	// The fixture's own config file, at the owner-only mode the loader
 	// requires; git keeps it at 0644.
@@ -679,20 +802,20 @@ func (f *offlineFixture) agentCommand(agentDir, addr string) *exec.Cmd {
 func (f *offlineFixture) start(t *testing.T, agentDir, workspaceDir string) {
 	t.Helper()
 	if f.workspaces != workspaceDir {
-		_, f.workspaceAddr, _ = startWorkspaceBinary(t, f.binary, workspaceDir, emptyConfig(t, "workspace.yaml"))
+		_, f.workspaceAddr, _ = startWorkspaceBinary(f.owner, f.binary, workspaceDir, emptyConfig(f.owner, "workspace.yaml"))
 		f.workspaces = workspaceDir
 	}
 	f.addr = freeLoopbackAddr(t)
-	f.logPath = filepath.Join(t.TempDir(), "agent.log")
+	f.logPath = filepath.Join(f.owner.TempDir(), "agent.log")
 	logFile, err := os.Create(f.logPath)
 	require.NoError(t, err)
-	t.Cleanup(func() { logFile.Close() })
+	f.owner.Cleanup(func() { logFile.Close() })
 	cmd := f.agentCommand(agentDir, f.addr)
 	cmd.Stdout, cmd.Stderr = logFile, logFile
 	require.NoError(t, cmd.Start())
 	exited := make(chan error, 1)
 	go func() { exited <- cmd.Wait() }()
-	t.Cleanup(func() {
+	f.owner.Cleanup(func() {
 		if cmd.ProcessState == nil {
 			_ = cmd.Process.Kill()
 			<-exited

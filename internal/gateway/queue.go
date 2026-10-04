@@ -21,8 +21,8 @@ type RuntimeFactory interface {
 
 // Queue is the gateway's core: it serializes the one agent's runs so the
 // agent runs one turn at a time (ADR 0007, ADR 0017 — one agent per
-// process). Queue is safe for concurrent use; Close shuts the runner and
-// the runtime down.
+// process). Queue is safe for concurrent use; Drain stops the runner
+// after the turn in flight, and Close then releases the runtime.
 type Queue struct {
 	agentID string
 	runtime *Runtime
@@ -34,8 +34,11 @@ type Queue struct {
 	cancel context.CancelFunc
 	done   chan struct{}
 
-	once   sync.Once
-	closed chan struct{}
+	// draining closes when Drain begins: from then on no message is
+	// admitted and no queued turn starts.
+	draining  chan struct{}
+	drainOnce sync.Once
+	closeOnce sync.Once
 
 	// mu guards pending: the content of every message queued or running
 	// in this process, by sender and ID. It is held from the check to the
@@ -65,16 +68,16 @@ func NewQueue(factory RuntimeFactory, agentID string, logger *slog.Logger) (*Que
 		return nil, err
 	}
 	q := &Queue{
-		agentID: agentID,
-		runtime: rt,
-		broker:  broker,
-		inbox:   make(chan Inbound, DefaultQueueCapacity),
-		logger:  logger,
-		ctx:     ctx,
-		cancel:  cancel,
-		done:    make(chan struct{}),
-		closed:  make(chan struct{}),
-		pending: make(map[messageKey]string),
+		agentID:  agentID,
+		runtime:  rt,
+		broker:   broker,
+		inbox:    make(chan Inbound, DefaultQueueCapacity),
+		logger:   logger,
+		ctx:      ctx,
+		cancel:   cancel,
+		done:     make(chan struct{}),
+		draining: make(chan struct{}),
+		pending:  make(map[messageKey]string),
 	}
 	go q.run(events)
 	return q, nil
@@ -95,10 +98,8 @@ func (q *Queue) AgentID() string { return q.agentID }
 // Nothing is written to memory at accept time: the writeback is the
 // single write path (ADR 0006, ADR 0011).
 func (q *Queue) Enqueue(ctx context.Context, sender, id, content string) (string, Status, error) {
-	select {
-	case <-q.closed:
-		return "", StatusUnknown, ErrQueueClosed
-	default:
+	if q.Draining() {
+		return "", StatusUnknown, ErrDraining
 	}
 	if id == "" {
 		assigned, err := newID("msg")
@@ -124,9 +125,9 @@ func (q *Queue) Enqueue(ctx context.Context, sender, id, content string) (string
 	case <-ctx.Done():
 		q.forget([]messageKey{key})
 		return "", StatusUnknown, ctx.Err()
-	case <-q.ctx.Done():
+	case <-q.draining:
 		q.forget([]messageKey{key})
-		return "", StatusUnknown, ErrQueueClosed
+		return "", StatusUnknown, ErrDraining
 	}
 }
 
@@ -197,17 +198,37 @@ func (q *Queue) forget(keys []messageKey) {
 // Events returns the agent's monitoring stream.
 func (q *Queue) Events() *Broker { return q.broker }
 
-// Close stops accepting messages, cancels an in-flight run, waits for
-// the runner to exit, and releases the runtime and the stream. Close is
-// idempotent.
-func (q *Queue) Close() error {
-	var err error
-	q.once.Do(func() {
-		close(q.closed)
-		q.cancel()
+// Draining reports whether Drain has begun.
+func (q *Queue) Draining() bool {
+	select {
+	case <-q.draining:
+		return true
+	default:
+		return false
+	}
+}
+
+// Drain stops admitting messages, lets the turn in flight run to
+// completion with its durable writes, starts no queued turn, and then
+// ends the monitoring stream. Queued messages stay uncommitted. The
+// runtime stays open, so the caller decides what closes before it.
+// Drain waits without a bound and is idempotent.
+func (q *Queue) Drain() {
+	q.drainOnce.Do(func() {
+		close(q.draining)
 		<-q.done
-		err = q.runtime.Close(context.Background())
+		q.cancel()
 		q.broker.Close()
+	})
+}
+
+// Close drains the queue and then releases the runtime, which closes
+// memory and, last, its writer lock. Close is idempotent.
+func (q *Queue) Close() error {
+	q.Drain()
+	var err error
+	q.closeOnce.Do(func() {
+		err = q.runtime.Close(context.Background())
 	})
 	return err
 }

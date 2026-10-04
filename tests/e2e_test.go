@@ -90,7 +90,7 @@ func TestEndToEnd_MVPScenario(t *testing.T) {
 	q, err := gateway.NewQueue(factory, agentID, logger)
 	require.NoError(t, err)
 	t.Cleanup(func() { q.Close() })
-	srv := httptest.NewServer(gateway.NewHandler(q, logger))
+	srv := httptest.NewServer(gateway.NewHandler(q, gateway.Instance{}, logger))
 	t.Cleanup(srv.Close)
 
 	runMVPScenario(t, srv.URL, root, agentID)

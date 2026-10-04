@@ -143,7 +143,7 @@ func TestQueue_EnqueueAfterCloseFails(t *testing.T) {
 	require.NoError(t, q.Close())
 
 	_, _, err := q.Enqueue(context.Background(), "", "", "hi")
-	assert.ErrorIs(t, err, gateway.ErrQueueClosed)
+	assert.ErrorIs(t, err, gateway.ErrDraining)
 }
 
 func TestQueue_CloseReleasesRuntime(t *testing.T) {

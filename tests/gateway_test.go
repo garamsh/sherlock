@@ -129,7 +129,7 @@ func TestGateway_EndToEnd(t *testing.T) {
 	q := newGatewayQueue(t, root, func(string) agent.Model { return gated })
 	t.Cleanup(func() { q.Close() })
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
-	srv := httptest.NewServer(gateway.NewHandler(q, logger))
+	srv := httptest.NewServer(gateway.NewHandler(q, gateway.Instance{}, logger))
 	t.Cleanup(srv.Close)
 
 	// Subscribe to the monitoring stream before any message so no event

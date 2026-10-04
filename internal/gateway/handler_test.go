@@ -30,7 +30,7 @@ func newTestServer(t *testing.T, newFn func(agentID string, events agent.EventSi
 	q, err := gateway.NewQueue(&fakeFactory{newFn: newFn}, "env-1", newTestLogger())
 	require.NoError(t, err)
 	t.Cleanup(func() { q.Close() })
-	srv := httptest.NewServer(gateway.NewHandler(q, newTestLogger()))
+	srv := httptest.NewServer(gateway.NewHandler(q, gateway.Instance{}, newTestLogger()))
 	t.Cleanup(srv.Close)
 	return srv
 }
@@ -135,7 +135,7 @@ func TestServer_GRNAgentIDRoutesVerbatim(t *testing.T) {
 	q, err := gateway.NewQueue(factory, grn, newTestLogger())
 	require.NoError(t, err)
 	t.Cleanup(func() { q.Close() })
-	srv := httptest.NewServer(gateway.NewHandler(q, newTestLogger()))
+	srv := httptest.NewServer(gateway.NewHandler(q, gateway.Instance{}, newTestLogger()))
 	t.Cleanup(srv.Close)
 
 	eventsStatus := func(id string) int {
@@ -460,7 +460,7 @@ func newMemoryQueue(t *testing.T, path string, model *heldModel) *gateway.Queue 
 func newMemoryServer(t *testing.T, model *heldModel) *httptest.Server {
 	t.Helper()
 	q := newMemoryQueue(t, filepath.Join(t.TempDir(), "memory.db"), model)
-	srv := httptest.NewServer(gateway.NewHandler(q, newTestLogger()))
+	srv := httptest.NewServer(gateway.NewHandler(q, gateway.Instance{}, newTestLogger()))
 	t.Cleanup(srv.Close)
 	return srv
 }
@@ -648,12 +648,14 @@ func TestServer_MessageCompletesOnlyAfterCommit(t *testing.T) {
 }
 
 // TestServer_RestartForgetsPendingAndKeepsCompleted pins that pending
-// lives in the process and completed in memory.db.
+// lives in the process and completed in memory.db: a message still queued
+// when the queue closes reads unknown after the restart, while the turn
+// in flight completes through the drain and stays completed.
 func TestServer_RestartForgetsPendingAndKeepsCompleted(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "memory.db")
 	model := newHeldModel()
 	q := newMemoryQueue(t, path, model)
-	srv := httptest.NewServer(gateway.NewHandler(q, newTestLogger()))
+	srv := httptest.NewServer(gateway.NewHandler(q, gateway.Instance{}, newTestLogger()))
 	t.Cleanup(srv.Close)
 	code, _ := sendMessage(t, http.DefaultClient, srv.URL, `{"id":"m1","content":"kept"}`)
 	require.Equal(t, http.StatusAccepted, code)
@@ -662,13 +664,21 @@ func TestServer_RestartForgetsPendingAndKeepsCompleted(t *testing.T) {
 	code, _ = sendMessage(t, http.DefaultClient, srv.URL, `{"id":"m2","content":"in flight"}`)
 	require.Equal(t, http.StatusAccepted, code)
 	awaitStarted(t, model, 2)
-	require.Equal(t, "pending", lookupMessage(t, http.DefaultClient, srv.URL, "m2"))
-	require.NoError(t, q.Close())
+	code, _ = sendMessage(t, http.DefaultClient, srv.URL, `{"id":"m3","content":"queued"}`)
+	require.Equal(t, http.StatusAccepted, code)
+	require.Equal(t, "pending", lookupMessage(t, http.DefaultClient, srv.URL, "m3"))
 
-	restarted := httptest.NewServer(gateway.NewHandler(newMemoryQueue(t, path, newHeldModel()), newTestLogger()))
+	closed := make(chan error, 1)
+	go func() { closed <- q.Close() }()
+	require.Eventually(t, q.Draining, 5*time.Second, time.Millisecond)
+	model.turn(t, nil)
+	require.NoError(t, <-closed)
+
+	restarted := httptest.NewServer(gateway.NewHandler(newMemoryQueue(t, path, newHeldModel()), gateway.Instance{}, newTestLogger()))
 	t.Cleanup(restarted.Close)
 	assert.Equal(t, "completed", lookupMessage(t, http.DefaultClient, restarted.URL, "m1"))
-	assert.Equal(t, "unknown", lookupMessage(t, http.DefaultClient, restarted.URL, "m2"))
+	assert.Equal(t, "completed", lookupMessage(t, http.DefaultClient, restarted.URL, "m2"))
+	assert.Equal(t, "unknown", lookupMessage(t, http.DefaultClient, restarted.URL, "m3"))
 }
 
 // TestServer_LookupKeepsSenderIDByteForByte pins that an ID is not
@@ -683,4 +693,42 @@ func TestServer_LookupKeepsSenderIDByteForByte(t *testing.T) {
 	model.turn(t, nil)
 	awaitStatus(t, http.DefaultClient, srv.URL, id, "completed")
 	assert.Equal(t, "unknown", lookupMessage(t, http.DefaultClient, srv.URL, "garam/agent-7 msg:42"), "a prefix of the ID is another ID")
+}
+
+// TestServer_StatusReportsTheInstanceAndItsState holds C3: the status
+// route answers contract version 1 with the agent ID and the instance it
+// was given, serving until the drain begins and draining after. A
+// request naming another agent gets 404.
+func TestServer_StatusReportsTheInstanceAndItsState(t *testing.T) {
+	q := newTestQueue(t, &fakeSession{})
+	started := time.Date(2026, 10, 4, 12, 0, 0, 0, time.UTC)
+	srv := httptest.NewServer(gateway.NewHandler(q, gateway.Instance{
+		AssignmentEpoch: "epoch-7",
+		Generation:      "0123456789abcdef0123456789abcdef",
+		ConfigRevision:  "rev-42",
+		StartedAt:       started,
+	}, newTestLogger()))
+	t.Cleanup(srv.Close)
+
+	reply, err := fetchAgentStatus(srv.URL)
+	require.NoError(t, err)
+	assert.Equal(t, statusReply{
+		ContractVersion: 1,
+		AgentID:         "env-1",
+		AssignmentEpoch: "epoch-7",
+		Generation:      "0123456789abcdef0123456789abcdef",
+		ConfigRevision:  "rev-42",
+		State:           "serving",
+		StartedAt:       started,
+	}, reply)
+
+	q.Drain()
+	reply, err = fetchAgentStatus(srv.URL)
+	require.NoError(t, err)
+	assert.Equal(t, "draining", reply.State)
+
+	resp, err := http.Get(srv.URL + "/agents/someone-else/status")
+	require.NoError(t, err)
+	defer resp.Body.Close()
+	assert.Equal(t, http.StatusNotFound, resp.StatusCode)
 }

@@ -17,6 +17,7 @@ import (
 
 	"github.com/garamsh/sherlock/internal/agent"
 	"github.com/garamsh/sherlock/internal/gateway"
+	"github.com/garamsh/sherlock/internal/memory/sqlite"
 	"github.com/garamsh/sherlock/internal/message"
 	"github.com/garamsh/sherlock/internal/tool"
 )
@@ -132,6 +133,26 @@ func TestTurn_ClosesTheStore(t *testing.T) {
 	}.Run(context.Background(), "hello"))
 
 	assertStoreCheckpointed(t, memoryPath)
+}
+
+// TestTurn_RefusesAHeldStore holds the one-shot path to the store's
+// writer lock: `sherlock agent --message` against a store another
+// process holds is refused before the turn runs. The control is the same
+// turn once the holder closes.
+func TestTurn_RefusesAHeldStore(t *testing.T) {
+	factory, memoryPath := turnFactory(t,
+		writebackStep(`{"reply":"done","note":null}`))
+	turn := gateway.Turn{
+		Factory: factory, AgentID: "a1", OutboxDir: gateway.DirFor(memoryPath),
+		Out: io.Discard, Logger: slog.New(slog.DiscardHandler),
+	}
+	held, err := sqlite.Open(memoryPath)
+	require.NoError(t, err)
+
+	assert.ErrorIs(t, turn.Run(context.Background(), "hello"), sqlite.ErrStoreLocked)
+
+	require.NoError(t, held.Close())
+	assert.NoError(t, turn.Run(context.Background(), "hello"), "the control: the released store runs the turn")
 }
 
 // TestTurn_ReportsFailedToolCalls holds the exit-status contract: a

@@ -268,10 +268,22 @@ func (s *Store) Source(ctx context.Context, id int64) (agent.SourceMessage, erro
 	return m, err
 }
 
-// OpenConversation checks existing addressed rows read-only before opening the
-// source-linked schema, so refusal leaves the old file unchanged. The embedder
+// OpenConversation takes the writer lock, then checks existing addressed rows
+// read-only before opening the source-linked schema, so refusal leaves the old
+// file unchanged. The embedder
 // ranks episodes for Search and embeds each new one.
-func OpenConversation(path string, embedder agent.Embedder) (*Store, error) {
+func OpenConversation(path string, embedder agent.Embedder) (store *Store, err error) {
+	// The lock precedes the read-only inspection below, which is an open
+	// of the file too.
+	lock, err := lockWriter(path)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		if err != nil {
+			lock.Close()
+		}
+	}()
 	if _, err := os.Stat(path); err == nil {
 		old, err := sql.Open("sqlite", path+"?mode=ro")
 		if err != nil {
@@ -310,7 +322,7 @@ func OpenConversation(path string, embedder agent.Embedder) (*Store, error) {
 	} else if !errors.Is(err, os.ErrNotExist) {
 		return nil, err
 	}
-	store, err := Open(path)
+	store, err = open(path, lock)
 	if err != nil {
 		return nil, err
 	}

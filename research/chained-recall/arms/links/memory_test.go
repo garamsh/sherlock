@@ -219,9 +219,13 @@ func openModel(t *testing.T, env *study.Env, setting string) study.Memory {
 func TestRecall_GateDropsWalkMidsNamingNoQueryEntityInLPlusG(t *testing.T) {
 	env := sharedStore(t)
 	ctx := context.Background()
-	ungated, err := openModel(t, env, "b4-model").Recall(ctx, chainQuery)
+	first := openModel(t, env, "b4-model")
+	ungated, err := first.Recall(ctx, chainQuery)
 	require.NoError(t, err)
 	assert.Contains(t, itemIDs(ungated), int64(2), "the control: L delivers the walk's mids beyond the seed")
+	// The store holds its writer lock until it closes, and the last
+	// control below reopens the same setting.
+	require.NoError(t, first.Close())
 	g := openModel(t, env, "b4-model-g").(*memory)
 	items, err := g.Recall(ctx, chainQuery)
 	require.NoError(t, err)

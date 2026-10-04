@@ -234,7 +234,7 @@ Both serving processes trap `SIGTERM` and `SIGINT`. A one-shot `sherlock agent -
   1. `state` turns `draining`;
   2. a new `POST /agents/{agent-id}/messages` answers 503 `{"error":"draining"}`, and the listener stays open;
   3. the turn in flight runs to completion, durable writes included — sources, note, episodes and outbox — rather than being cancelled;
-  4. no queued turn starts, the after-turn pass that names a stored episode's entities is skipped (it is idempotent, so the next start runs it), and the monitoring stream ends;
+  4. no queued turn starts, the after-turn pass that names a stored episode's entities is skipped (it is idempotent, so the pass after the next completed turn picks up what it left), and the monitoring stream ends;
   5. the listener closes, draining in-flight HTTP requests **bounded at 10s**, then memory closes and, last, the store's writer lock is released;
   6. the process exits.
 

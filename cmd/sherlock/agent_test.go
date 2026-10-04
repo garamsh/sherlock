@@ -204,7 +204,7 @@ func TestServeAgent_FailedRegistryLeavesNothingListening(t *testing.T) {
 	// ordering opens the window between the bind and the failed load,
 	// and a dial after serveAgent has returned misses it.
 	done := make(chan error, 1)
-	go func() { done <- serveAgent(context.Background(), cfg, testIdentity, "") }()
+	go func() { done <- serveAgent(context.Background(), cfg, testIdentity, "", "") }()
 	var answered bool
 	for {
 		select {
@@ -266,6 +266,48 @@ func TestAgentCommand_RefusesWithoutAgentID(t *testing.T) {
 	})
 }
 
+// TestAgentCommand_MissingInstructionsFileFailsStartup holds that a named
+// --instructions-file that cannot be read stops the agent before any
+// tool or model work, as --ego-file does (ADR 0024).
+//
+// The control names a file that exists. It gets past the instructions
+// read and fails later, on the missing tools directory — so the refusal
+// is the read's and not a startup that fails for every input.
+func TestAgentCommand_MissingInstructionsFileFailsStartup(t *testing.T) {
+	configPath := filepath.Join(t.TempDir(), "agent.yaml")
+	require.NoError(t, os.WriteFile(configPath, nil, 0o600))
+	t.Setenv("SHERLOCK_TOOLS_DIR", filepath.Join(t.TempDir(), "absent"))
+	t.Setenv(tool.WorkspaceAddrEnv, "")
+	t.Setenv(tool.OutboxDirEnv, "")
+	t.Setenv(tool.AgentIDEnv, "")
+
+	run := func(instructionsFile string) error {
+		root := newRootCommand()
+		root.SetOut(io.Discard)
+		root.SetErr(io.Discard)
+		root.SetArgs([]string{"agent", "--config", configPath,
+			"--memory-path", filepath.Join(t.TempDir(), "memory.db"),
+			"--agent-id", "test-agent", "--message", "hello",
+			"--instructions-file", instructionsFile})
+		return root.Execute()
+	}
+
+	t.Run("missing file", func(t *testing.T) {
+		err := run(filepath.Join(t.TempDir(), "absent.md"))
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "instructions file")
+		assert.NotContains(t, err.Error(), "tools directory")
+	})
+	t.Run("control: a readable file passes the read", func(t *testing.T) {
+		path := filepath.Join(t.TempDir(), "INSTRUCTIONS.md")
+		require.NoError(t, os.WriteFile(path, []byte("Answer every envelope.\n"), 0o600))
+		err := run(path)
+		require.Error(t, err)
+		assert.NotContains(t, err.Error(), "instructions file")
+		assert.Contains(t, err.Error(), "tools directory")
+	})
+}
+
 // TestResolveIdentity_CarriesTheAssignmentEpoch holds the launcher's
 // assignment epoch as given: opaque and verbatim when set, empty
 // (unknown) when absent, and never a reason to refuse startup. The
@@ -314,7 +356,7 @@ func mockFactory(t *testing.T) (*gateway.Factory, string) {
 		ToolsDir:   dir,
 		Model:      config.ModelConfig{Provider: "mock"},
 	}
-	factory, err := newAgentFactory(cfg, testIdentity, "", slog.New(slog.DiscardHandler))
+	factory, err := newAgentFactory(cfg, testIdentity, "", "", slog.New(slog.DiscardHandler))
 	require.NoError(t, err)
 	return factory, cfg.MemoryPath
 }

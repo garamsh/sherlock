@@ -209,7 +209,7 @@ func TestSessionRun_ScriptedMultiTurnScenario(t *testing.T) {
 	history := s.History()
 	require.Len(t, history, 6)
 	assert.Equal(t, agent.RoleSystem, history[0].Role)
-	assert.Equal(t, agent.ComposeInstructions(""), history[0].Content)
+	assert.Equal(t, agent.ComposeInstructions("", ""), history[0].Content)
 	assert.Equal(t, agent.RoleSystem, history[1].Role)
 	assert.Contains(t, history[1].Content, "## Current task\nwhat did the echo say?")
 	assert.Contains(t, history[1].Content, "- [m1] (2d): user drinks tea")
@@ -919,7 +919,7 @@ func TestSessionRun_InstructionsAreFirstSystemMessage(t *testing.T) {
 	messages := model.calls[0]
 	require.GreaterOrEqual(t, len(messages), 3)
 	assert.Equal(t, agent.RoleSystem, messages[0].Role)
-	assert.Equal(t, agent.ComposeInstructions(""), messages[0].Content)
+	assert.Equal(t, agent.ComposeInstructions("", ""), messages[0].Content)
 	assert.Equal(t, agent.RoleSystem, messages[1].Role, "frame context follows the instructions")
 	assert.Equal(t, agent.RoleUser, messages[2].Role)
 }
@@ -936,6 +936,17 @@ func TestSessionRun_CustomEgoKeepsContract(t *testing.T) {
 	assert.Contains(t, instructions, agent.Contract, "platform contract survives a custom ego")
 }
 
+func TestSessionRun_OperatorInstructionsReachTheModel(t *testing.T) {
+	model := &captureModel{}
+	s := agent.NewSession(model, newFakeClient(), agent.Options{OperatorInstructions: "Answer every envelope."})
+
+	_, err := s.Run(context.Background(), "task")
+	require.NoError(t, err)
+
+	assert.Equal(t, agent.ComposeInstructions("", "Answer every envelope."), model.calls[0][0].Content)
+	assert.Contains(t, model.calls[0][0].Content, "Answer every envelope.")
+}
+
 func TestSessionRun_InstructionsInjectedOnce(t *testing.T) {
 	model := &captureModel{}
 	s := agent.NewSession(model, newFakeClient(), agent.Options{})
@@ -948,7 +959,7 @@ func TestSessionRun_InstructionsInjectedOnce(t *testing.T) {
 	second := model.calls[1]
 	var injections int
 	for _, msg := range second {
-		if msg.Content == agent.ComposeInstructions("") {
+		if msg.Content == agent.ComposeInstructions("", "") {
 			injections++
 		}
 	}
@@ -976,7 +987,7 @@ func TestSessionRun_InstructionsSurviveCompaction(t *testing.T) {
 	last := model.calls[len(model.calls)-1]
 	require.NotEmpty(t, last)
 	assert.Equal(t, agent.RoleSystem, last[0].Role)
-	assert.Equal(t, agent.ComposeInstructions(""), last[0].Content,
+	assert.Equal(t, agent.ComposeInstructions("", ""), last[0].Content,
 		"the instructions still lead the history the model sees after a compaction")
 }
 
@@ -994,8 +1005,8 @@ func TestSessionRun_NoteLeadsEveryTurnAndIsReplaced(t *testing.T) {
 	_, err = s.Run(context.Background(), "Write me a loop.")
 	require.NoError(t, err)
 
-	assert.Equal(t, agent.ComposeInstructions("")+"\n\n## Your note\n(empty)", model.seen[0][0].Content, "an unwritten note is stated as empty")
-	assert.Equal(t, agent.ComposeInstructions("")+"\n\n## Your note\nIndent code with tabs.", model.seen[1][0].Content, "the next turn leads with the saved note")
+	assert.Equal(t, agent.ComposeInstructions("", "")+"\n\n## Your note\n(empty)", model.seen[0][0].Content, "an unwritten note is stated as empty")
+	assert.Equal(t, agent.ComposeInstructions("", "")+"\n\n## Your note\nIndent code with tabs.", model.seen[1][0].Content, "the next turn leads with the saved note")
 	assert.Equal(t, []string{"Indent code with tabs."}, store.setNotes, "a null note saves nothing")
 	require.Len(t, store.turns, 2, "sources are recorded on both turns")
 

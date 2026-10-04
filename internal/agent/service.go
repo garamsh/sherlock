@@ -85,8 +85,11 @@ type Options struct {
 	// Ego is the identity/behavior half of the session instructions;
 	// empty selects the embedded DefaultEgo. The platform Contract is
 	// always appended (see ComposeInstructions).
-	Ego           string
-	MaxIterations int
+	Ego string
+	// OperatorInstructions is the operator's deployment text, placed
+	// between the ego and the Contract; empty omits it (ADR 0024).
+	OperatorInstructions string
+	MaxIterations        int
 	// MaxHistoryMessages triggers the Compactor when history exceeds it;
 	// zero disables the hook.
 	MaxHistoryMessages int
@@ -96,8 +99,9 @@ type session struct {
 	model Model
 	tools ToolClient
 	opts  Options
-	// instructions is the composed ego + contract; lead puts it, with
-	// the saved note, at the head of history every turn.
+	// instructions is the composed ego, operator instructions and
+	// contract; lead puts it, with the saved note, at the head of
+	// history every turn.
 	instructions string
 	history      []Message
 	sources      []SourceMessage
@@ -130,7 +134,7 @@ func NewSession(model Model, tools ToolClient, opts Options) Session {
 		model:        model,
 		tools:        tools,
 		opts:         opts,
-		instructions: ComposeInstructions(opts.Ego),
+		instructions: ComposeInstructions(opts.Ego, opts.OperatorInstructions),
 		history:      append([]Message(nil), opts.InitialHistory...),
 	}
 }

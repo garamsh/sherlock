@@ -175,6 +175,8 @@ func AddAgentFlags(fs *pflag.FlagSet) {
 		"gRPC endpoint of the agent's workspace (the data plane the tools call)")
 	fs.String("ego-file", "",
 		"ego file for the agent's instructions (default: embedded ego.md)")
+	fs.String("instructions-file", "",
+		"operator instructions placed between the ego and the platform contract (default: none)")
 }
 
 // Resolve builds the agent's effective Config from fs using viper's

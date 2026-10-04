@@ -134,6 +134,13 @@ jobs:
       # nothing to read before it. A failure here therefore reads "the registry
       # does not hold what this run meant to publish", never "nothing was
       # published": the version is already taken and the repair is the next one.
+      #
+      # The read is `aws ecr batch-get-image`, which needs `ecr:BatchGetImage`
+      # alone — an action the push role holds because the push calls it.
+      # `docker buildx imagetools inspect` also downloads a blob, which needs
+      # `ecr:GetDownloadUrlForLayer`, and the role lacks that (#960). A tag that
+      # resolves to nothing returns no image, only a `failures` entry, so a
+      # missing digest is refused before the media type is read.
       - env:
           REGISTRY: ${{ steps.ecr.outputs.registry }}
           VERSION: ${{ steps.version.outputs.version }}
@@ -141,8 +148,16 @@ jobs:
           set -euo pipefail
           for image in agent workspace; do
             ref="$REGISTRY/garam/sherlock-$image:$VERSION"
-            media=$(docker buildx imagetools inspect "$ref" --format '{{.Manifest.MediaType}}')
-            digest=$(docker buildx imagetools inspect "$ref" --format '{{.Manifest.Digest}}')
+            fields=$(aws ecr batch-get-image \
+              --repository-name "garam/sherlock-$image" \
+              --image-ids imageTag="$VERSION" \
+              --query 'images[0].[imageManifestMediaType, imageId.imageDigest]' \
+              --output text)
+            read -r media digest <<<"$fields"
+            if ! printf '%s' "$digest" | grep -Eq '^sha256:[0-9a-f]{64}$'; then
+              echo "$ref: the registry returned no image for that tag" >&2
+              exit 1
+            fi
             case "$media" in
               application/vnd.docker.distribution.manifest.v2+json | application/vnd.oci.image.manifest.v1+json) ;;
               *)

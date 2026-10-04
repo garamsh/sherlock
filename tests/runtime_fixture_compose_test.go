@@ -3,6 +3,7 @@ package tests
 import (
 	"context"
 	"crypto/x509"
+	"encoding/json"
 	"net"
 	"net/http"
 	"os"
@@ -31,16 +32,9 @@ func TestRuntimeFixture_Compose(t *testing.T) {
 	require.True(t, os.IsNotExist(err), "SHERLOCK_FIXTURE_STORAGE %s exists: the fixture runs on fresh storage only", storage)
 	require.NoError(t, os.MkdirAll(storage, 0o755))
 
-	meter := startFixtureMeter(t, fixtureMeterConfig{
-		upstream:     fixtureConfigValue(t, "model.base-url"),
-		listen:       fixtureEnv(t, "SHERLOCK_FIXTURE_METER_LISTEN"),
-		containerURL: fixtureEnv(t, "SHERLOCK_FIXTURE_METER_URL"),
-		maxCalls:     fixtureMaxCalls(t),
-		log:          fixtureMeterLog(t),
-	})
-	rt := newComposeFixture(t, storage, meter)
+	rt := newComposeFixture(t, storage)
 	defer func() {
-		spend := meter.spend()
+		spend := rt.spend()
 		t.Logf("model spend: %d calls, %d prompt tokens, %d completion tokens", spend.Calls, spend.PromptTokens, spend.CompletionTokens)
 		if spend.Paused != "" {
 			t.Errorf("the run paused: %s", spend.Paused)
@@ -65,17 +59,19 @@ type composeFixture struct {
 	clients   map[string]*http.Client
 	agentDir  string
 	workspace string
-	meter     *fixtureMeter
 }
 
 const (
 	composeGateway = "https://127.0.0.1:18937"
 	composeTEI     = "http://127.0.0.1:18938"
+	// composeMeterCounts is the meter's counts listener, the only meter
+	// port the project publishes.
+	composeMeterCounts = "127.0.0.1:18939"
 )
 
-func newComposeFixture(t *testing.T, storage string, meter *fixtureMeter) *composeFixture {
+func newComposeFixture(t *testing.T, storage string) *composeFixture {
 	t.Helper()
-	f := &composeFixture{file: filepath.Join(moduleRoot(t), "deploy", "runtime-fixture", "docker-compose.yml"), meter: meter}
+	f := &composeFixture{file: filepath.Join(moduleRoot(t), "deploy", "runtime-fixture", "docker-compose.yml")}
 
 	raw, err := os.ReadFile(filepath.Join(moduleRoot(t), "deploy", "runtime-fixture", "agent.yaml"))
 	require.NoError(t, err)
@@ -110,7 +106,7 @@ func newComposeFixture(t *testing.T, storage string, meter *fixtureMeter) *compo
 	f.env = append(f.env,
 		"FIXTURE_IMAGE_TAG="+fixtureEnv(t, "SHERLOCK_FIXTURE_IMAGE_TAG"),
 		"FIXTURE_AGENT_ENV="+fixtureEnv(t, "SHERLOCK_FIXTURE_AGENT_ENV"),
-		"FIXTURE_MODEL_BASE_URL="+meter.containerURL,
+		"FIXTURE_METER_TAG="+fixtureEnv(t, "SHERLOCK_FIXTURE_METER_TAG"),
 		"FIXTURE_CONFIG="+config,
 		"FIXTURE_TLS="+tlsDir,
 		"FIXTURE_TEI_DATA="+teiData,
@@ -122,15 +118,35 @@ func newComposeFixture(t *testing.T, storage string, meter *fixtureMeter) *compo
 			out, _ := f.compose(context.Background(), "logs", "--no-color", "agent", "workspace").CombinedOutput()
 			t.Logf("compose logs:\n%s", out)
 		}
+		// The meter's log is the call record: method, path, status, latency
+		// and usage per call, and every refused source.
+		if path := os.Getenv("SHERLOCK_FIXTURE_METER_LOG"); path != "" {
+			out, _ := f.compose(context.Background(), "logs", "--no-color", "--no-log-prefix", "meter").CombinedOutput()
+			if err := os.WriteFile(path, out, 0o600); err != nil {
+				t.Errorf("write the meter log: %v", err)
+			}
+		}
 		out, err := f.compose(context.Background(), "down", "--remove-orphans").CombinedOutput()
 		if err != nil {
 			t.Errorf("compose down: %v\n%s", err, out)
+		}
+		// The meter lives only as long as the run: its container is gone
+		// and nothing listens on its published port.
+		left, err := exec.Command("docker", "ps", "-aq",
+			"--filter", "label=com.docker.compose.project=sherlock-937",
+			"--filter", "label=com.docker.compose.service=meter").CombinedOutput()
+		if err != nil || strings.TrimSpace(string(left)) != "" {
+			t.Errorf("the meter container remains after compose down: %v %s", err, left)
+		}
+		if conn, err := net.DialTimeout("tcp", composeMeterCounts, 2*time.Second); err == nil {
+			conn.Close()
+			t.Errorf("%s still accepts connections after compose down", composeMeterCounts)
 		}
 	})
 
 	// TEI loads its model before it serves; the agent's first turn embeds.
 	f.agentDir, f.workspace = filepath.Join(storage, "unused"), filepath.Join(storage, "unused")
-	f.run(t, "up", "-d", "tei")
+	f.run(t, "up", "-d", "tei", "meter")
 	f.await(t, 15*time.Minute, "TEI health", func() bool {
 		resp, err := http.Get(composeTEI + "/health")
 		if err != nil {
@@ -146,8 +162,17 @@ func (f *composeFixture) realModel() bool                   { return true }
 func (f *composeFixture) baseURL() string                   { return composeGateway }
 func (f *composeFixture) client(sender string) *http.Client { return f.clients[sender] }
 
+// spend reads the meter's counts from its published listener.
 func (f *composeFixture) spend() *fixtureSpend {
-	s := f.meter.spend()
+	resp, err := http.Get("http://" + composeMeterCounts + "/spend")
+	if err != nil {
+		return &fixtureSpend{Paused: "meter counts unreadable: " + err.Error()}
+	}
+	defer resp.Body.Close()
+	var s fixtureSpend
+	if err := json.NewDecoder(resp.Body).Decode(&s); err != nil {
+		return &fixtureSpend{Paused: "meter counts undecodable: " + err.Error()}
+	}
 	return &s
 }
 
@@ -224,4 +249,15 @@ func (f *composeFixture) secondWriter(t *testing.T, agentDir string) (int, strin
 func (f *composeFixture) workspaceFile(t *testing.T, _ string, name string) string {
 	t.Helper()
 	return f.run(t, "exec", "-T", "workspace", "cat", "/var/lib/sherlock-workspace/"+name)
+}
+
+// fixtureSpend is the model traffic the meter counted, as its counts
+// listener reports it.
+type fixtureSpend struct {
+	Calls            int            `json:"calls"`
+	PromptTokens     int64          `json:"prompt_tokens"`
+	CompletionTokens int64          `json:"completion_tokens"`
+	Statuses         map[string]int `json:"statuses"`
+	Refused          int            `json:"refused"`
+	Paused           string         `json:"paused,omitempty"`
 }

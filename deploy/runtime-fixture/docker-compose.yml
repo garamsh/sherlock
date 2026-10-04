@@ -23,6 +23,15 @@ services:
     volumes:
       - "${FIXTURE_TEI_DATA:?set FIXTURE_TEI_DATA}:/data"
 
+  meter:
+    # The model meter (meter/main.go): the agent's only way to the model.
+    # Its proxy port, 18939, is reachable on the project network alone;
+    # the host sees only the counts listener.
+    image: "sherlock-937/meter:${FIXTURE_METER_TAG:?set FIXTURE_METER_TAG}"
+    mem_limit: 128m
+    ports:
+      - "127.0.0.1:18939:18940"
+
   agent:
     image: "sherlock-937/agent:${FIXTURE_IMAGE_TAG:?set FIXTURE_IMAGE_TAG}"
     mem_limit: 512m
@@ -33,9 +42,10 @@ services:
     # server key, and of the files the snapshot copies.
     user: "0:0"
     environment:
-      # The meter in front of the model endpoint, which counts calls and
-      # tokens; the config file names the endpoint it forwards to.
-      SHERLOCK_MODEL_BASE_URL: "${FIXTURE_MODEL_BASE_URL:?set FIXTURE_MODEL_BASE_URL}"
+      # The meter, which forwards to the endpoint fixed in its own code and
+      # counts calls and tokens. It overrides agent.yaml's model.base-url,
+      # which names that same endpoint.
+      SHERLOCK_MODEL_BASE_URL: http://meter:18939/v1
     # The model key, and nothing else: a file holding the one variable the
     # config's model.api-key-env names, written by the operator and read
     # by compose into this container's environment only.
@@ -57,6 +67,7 @@ services:
     stop_grace_period: 15m
     depends_on:
       - tei
+      - meter
 
   workspace:
     image: "sherlock-937/workspace:${FIXTURE_IMAGE_TAG:?set FIXTURE_IMAGE_TAG}"

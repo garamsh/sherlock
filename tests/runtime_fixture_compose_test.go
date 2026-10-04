@@ -1,21 +1,15 @@
 package tests
 
 import (
-	"bytes"
 	"context"
 	"crypto/x509"
-	"encoding/json"
-	"fmt"
-	"io"
 	"net"
 	"net/http"
-	"net/url"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
-	"sync"
 	"testing"
 	"time"
 
@@ -37,7 +31,13 @@ func TestRuntimeFixture_Compose(t *testing.T) {
 	require.True(t, os.IsNotExist(err), "SHERLOCK_FIXTURE_STORAGE %s exists: the fixture runs on fresh storage only", storage)
 	require.NoError(t, os.MkdirAll(storage, 0o755))
 
-	meter := startFixtureMeter(t, fixtureConfigValue(t, "model.base-url"))
+	meter := startFixtureMeter(t, fixtureMeterConfig{
+		upstream:     fixtureConfigValue(t, "model.base-url"),
+		listen:       fixtureEnv(t, "SHERLOCK_FIXTURE_METER_LISTEN"),
+		containerURL: fixtureEnv(t, "SHERLOCK_FIXTURE_METER_URL"),
+		maxCalls:     fixtureMaxCalls(t),
+		log:          fixtureMeterLog(t),
+	})
 	rt := newComposeFixture(t, storage, meter)
 	defer func() {
 		spend := meter.spend()
@@ -224,152 +224,4 @@ func (f *composeFixture) secondWriter(t *testing.T, agentDir string) (int, strin
 func (f *composeFixture) workspaceFile(t *testing.T, _ string, name string) string {
 	t.Helper()
 	return f.run(t, "exec", "-T", "workspace", "cat", "/var/lib/sherlock-workspace/"+name)
-}
-
-// fixtureSpend is the model traffic the meter counted.
-type fixtureSpend struct {
-	Calls            int            `json:"calls"`
-	PromptTokens     int64          `json:"prompt_tokens"`
-	CompletionTokens int64          `json:"completion_tokens"`
-	Statuses         map[string]int `json:"statuses"`
-	Refused          int            `json:"refused"`
-	Paused           string         `json:"paused,omitempty"`
-}
-
-// fixtureMeter stands between the agent container and the model endpoint.
-// It forwards the agent's own Authorization header and keeps no copy of
-// it, so the key stays in the agent container's environment. It counts
-// each answered call's tokens, and pauses — refusing every later call
-// without forwarding it — on a 429 carrying MiniMax's 2056 (subscription
-// usage limit), or past SHERLOCK_FIXTURE_MAX_CALLS.
-type fixtureMeter struct {
-	upstream     *url.URL
-	prefix       string
-	allowed      net.IP
-	maxCalls     int
-	containerURL string
-	client       *http.Client
-
-	mu    sync.Mutex
-	count fixtureSpend
-}
-
-func startFixtureMeter(t *testing.T, upstream string) *fixtureMeter {
-	t.Helper()
-	target, err := url.Parse(upstream)
-	require.NoError(t, err)
-	listen := fixtureEnv(t, "SHERLOCK_FIXTURE_METER_LISTEN")
-	containerURL := fixtureEnv(t, "SHERLOCK_FIXTURE_METER_URL")
-	reached, err := url.Parse(containerURL)
-	require.NoError(t, err)
-	host, _, err := net.SplitHostPort(listen)
-	require.NoError(t, err)
-	maxCalls := 150
-	if v := os.Getenv("SHERLOCK_FIXTURE_MAX_CALLS"); v != "" {
-		maxCalls, err = strconv.Atoi(v)
-		require.NoError(t, err)
-	}
-	m := &fixtureMeter{
-		upstream: target, prefix: strings.TrimSuffix(reached.Path, "/"),
-		allowed: net.ParseIP(host), maxCalls: maxCalls, containerURL: containerURL,
-		client: &http.Client{Timeout: 10 * time.Minute},
-		count:  fixtureSpend{Statuses: map[string]int{}},
-	}
-	require.NotNil(t, m.allowed, "SHERLOCK_FIXTURE_METER_LISTEN names an IP address")
-	ln, err := net.Listen("tcp", listen)
-	require.NoError(t, err)
-	server := &http.Server{Handler: http.HandlerFunc(m.serve), ReadHeaderTimeout: 10 * time.Second}
-	go func() { _ = server.Serve(ln) }()
-	t.Cleanup(func() { _ = server.Close() })
-	return m
-}
-
-func (m *fixtureMeter) spend() fixtureSpend {
-	m.mu.Lock()
-	defer m.mu.Unlock()
-	out := m.count
-	out.Statuses = map[string]int{}
-	for k, v := range m.count.Statuses {
-		out.Statuses[k] = v
-	}
-	return out
-}
-
-// refuse reports why the next call is not forwarded, or empty to
-// forward it.
-func (m *fixtureMeter) refuse() string {
-	m.mu.Lock()
-	defer m.mu.Unlock()
-	switch {
-	case m.count.Paused != "":
-		m.count.Refused++
-		return "paused: " + m.count.Paused
-	case m.count.Calls >= m.maxCalls:
-		m.count.Refused++
-		return fmt.Sprintf("call ceiling reached: %d", m.maxCalls)
-	}
-	m.count.Calls++
-	return ""
-}
-
-func (m *fixtureMeter) serve(w http.ResponseWriter, r *http.Request) {
-	// Only the host's own address reaches the meter: the rootless
-	// daemon's network stack connects from it, and nothing else may use
-	// this as a relay.
-	remote, _, _ := net.SplitHostPort(r.RemoteAddr)
-	if ip := net.ParseIP(remote); ip == nil || (!ip.Equal(m.allowed) && !ip.IsLoopback()) {
-		http.Error(w, "forbidden", http.StatusForbidden)
-		return
-	}
-	if reason := m.refuse(); reason != "" {
-		http.Error(w, reason, http.StatusServiceUnavailable)
-		return
-	}
-	body, err := io.ReadAll(r.Body)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	target := *m.upstream
-	target.Path = strings.TrimSuffix(m.upstream.Path, "/") + strings.TrimPrefix(r.URL.Path, m.prefix)
-	req, err := http.NewRequestWithContext(r.Context(), r.Method, target.String(), bytes.NewReader(body))
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	req.Header.Set("Content-Type", r.Header.Get("Content-Type"))
-	req.Header.Set("Authorization", r.Header.Get("Authorization"))
-	resp, err := m.client.Do(req)
-	if err != nil {
-		m.tally("transport-error", nil)
-		http.Error(w, "upstream: "+err.Error(), http.StatusBadGateway)
-		return
-	}
-	defer resp.Body.Close()
-	answer, _ := io.ReadAll(resp.Body)
-	m.tally(strconv.Itoa(resp.StatusCode), answer)
-	w.Header().Set("Content-Type", resp.Header.Get("Content-Type"))
-	w.WriteHeader(resp.StatusCode)
-	_, _ = w.Write(answer)
-}
-
-func (m *fixtureMeter) tally(status string, answer []byte) {
-	var decoded struct {
-		Usage struct {
-			PromptTokens     int64 `json:"prompt_tokens"`
-			CompletionTokens int64 `json:"completion_tokens"`
-		} `json:"usage"`
-		BaseResp struct {
-			StatusCode int `json:"status_code"`
-		} `json:"base_resp"`
-	}
-	_ = json.Unmarshal(answer, &decoded)
-	m.mu.Lock()
-	defer m.mu.Unlock()
-	m.count.Statuses[status]++
-	m.count.PromptTokens += decoded.Usage.PromptTokens
-	m.count.CompletionTokens += decoded.Usage.CompletionTokens
-	if status == "429" && (decoded.BaseResp.StatusCode == 2056 || bytes.Contains(answer, []byte("2056"))) {
-		m.count.Paused = "HTTP 429 with code 2056: the subscription's usage limit; no credit is bought and no call is retried"
-	}
 }

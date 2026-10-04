@@ -30,16 +30,17 @@ The run reads these variables:
 | `SHERLOCK_FIXTURE_STORAGE` | a path that does not exist yet; the run creates it and keeps all of its state there |
 | `SHERLOCK_FIXTURE_IMAGE_TAG` | the `<short commit>` the images are tagged with |
 | `SHERLOCK_FIXTURE_AGENT_ENV` | an owner-only file holding the single line `MINIMAX_KEY=…`; compose reads it into the agent container's environment and nowhere else |
-| `SHERLOCK_FIXTURE_METER_LISTEN` | `<ip>:<port>` on the host, where the meter listens; it answers only connections from that address and from loopback |
+| `SHERLOCK_FIXTURE_METER_LISTEN` | the exact `<ip>:<port>` on the host the meter binds; an unspecified address is refused, and it answers only connections from that address and from loopback |
 | `SHERLOCK_FIXTURE_METER_URL` | the meter as the agent container reaches it, including the `/v1` path |
 | `SHERLOCK_FIXTURE_MAX_CALLS` | optional: the call ceiling, 150 by default |
 | `SHERLOCK_FIXTURE_EVIDENCE` | optional: where to write the run's evidence record |
+| `SHERLOCK_FIXTURE_METER_LOG` | optional: a file the meter appends its log lines to |
 
 ```sh
 SHERLOCK_FIXTURE_COMPOSE=1 go test ./tests/ -run TestRuntimeFixture_Compose -count=1 -v -timeout 3h
 ```
 
-**The meter.** It sits between the agent and the model endpoint that `agent.yaml` names, and counts calls and tokens from each answer's `usage`. It forwards the agent's own `Authorization` header and keeps no copy, so the key never enters the test's environment. On HTTP 429 with MiniMax code 2056, which means the subscription's usage limit, it pauses: every later call is refused without being forwarded, nothing is retried and no credit is bought, and the test fails with that reason.
+**The meter.** It sits between the agent and the model endpoint that `agent.yaml` names, and counts calls and tokens from each answer's `usage`. It runs inside the test process and only for as long as the test does. The key transits it in memory: the meter forwards the agent's own `Authorization` header, keeps no copy, and never enters the key into the test's environment. It logs only each call's method, path, status, latency and usage, and the source address of each refused connection. `TestFixtureMeter_ForwardsTheKeyAndWritesItNowhere` sends a sentinel key through every path that logs or answers and checks that it appears in none of them. On HTTP 429 with MiniMax code 2056, which means the subscription's usage limit, it pauses: every later call is refused without being forwarded, nothing is retried and no credit is bought, and the test fails with that reason.
 
 ## Evidence and cleanup
 

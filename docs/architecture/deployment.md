@@ -1,6 +1,6 @@
 # Deployment
 
-Governs what has to be true to run this workload as a pod: the two processes, what they bind, what they mount, what kills them at boot, and what an orchestrator must allow on shutdown. The architecture behind it is `environment.md` and `security.md`; this file states the operator-facing consequences and does not restate them. Rationale: ADR 0017, ADR 0012, ADR 0008, ADR 0010, ADR 0003, ADR 0020.
+Governs what has to be true to run this workload as a pod: the two processes, what they bind, what they mount, what kills them at boot, and what an orchestrator must allow on shutdown. The architecture behind it is `environment.md` and `security.md`; this file states the operator-facing consequences and does not restate them. Rationale: ADR 0017, ADR 0012, ADR 0008, ADR 0010, ADR 0003, ADR 0020, ADR 0002.
 
 ## Contents
 - The two processes
@@ -65,6 +65,7 @@ Serving the gateway beyond localhost means setting the `tls:` section — `cert`
 | Workspace directory | `workspace` | `data/workspace` | workspace container |
 | Tools tree | `tools-dir` | `./tools` (resolved to `/opt/sherlock/tools` in the sherlock-agent image by `SHERLOCK_TOOLS_DIR`, ADR 0021) | baked into the sherlock-agent image at build time; overridable at runtime by mounting `/opt/sherlock/tools` |
 
+- **One agent process on a host writes a memory store.** Before opening `memory.db` the agent takes an exclusive `flock` on `<memory-path>.lock`, named after the store's resolved real path, and holds it until the store closes after shutdown's drain, or until the process exits (ADR 0002). A second agent, or a one-shot `sherlock agent --message` run, against the same store fails at startup (§Startup). The lock file stays beside the store after exit, and its presence refuses nothing. **The lock is single-host only.** It is not remote fencing: two pods on different nodes that mount the same volume, or a copy of it, are not refused by it, and keeping one writer across hosts is the lifecycle authority's job, not Sherlock's.
 - The workspace directory is created on first use. When the workspace runs privileged it chowns that directory to `exec-uid` and gives every file it writes over the contract to the same uid, so contract writes and Exec children share one owner (ADR 0008). An unprivileged workspace owns the directory itself.
 - The tools tree is read at startup only — one `manifest.json` per `tools/<name>/` directory, plus the executable the manifest names. It can be mounted read-only.
 - **The source archive grows with completed turns.** Visible user and assistant messages are archived in `memory.db`; each full four-message batch creates one mid episode, stored with its summary's embedding and linked directly to those sources. Short memory is the rolling recent conversation (`memory.md`, ADR 0006). This design has no archive eviction; plan volume capacity from the observed turn rate. The bounded rolling context and recall result count limit prompt size, not database size.
@@ -175,6 +176,7 @@ Every fatal path exits **1** and prints `Error: <message>`; nothing distinguishe
 | `SHERLOCK_TOOLS_PINS` set, with any value | agent | `config: SHERLOCK_TOOLS_PINS is set, and the environment cannot express tools.pins: a pin set maps each tool name to its manifest SHA-256, and one variable carries one value` |
 | `message_send` is absent from the tools tree | agent | `tool registry: required tools missing: [message_send]` |
 | `memory-path`'s directory cannot be created, or the store cannot be opened | agent | `mkdir …: read-only file system` / `open "…": …` |
+| Another process on this host holds the store's writer lock — a running agent, or a one-shot run, on the same `memory-path` | agent | `"…/memory.db.lock": another process owns the memory store` |
 | Workspace directory cannot be created, chowned or chmodded | workspace | `create workspace root "…": …` / `chown "…" to uid 1001: …` |
 | Listen address already bound or rejected | both | `listen tcp …: bind: address already in use` |
 
@@ -221,7 +223,7 @@ Three traps in that second table are worth naming separately, because they produ
 
 Both serving processes trap `SIGTERM` and `SIGINT`. A one-shot `sherlock agent --message` run installs no signal handler at all — it runs to completion or dies.
 
-- **Agent** — closes the listener, drains in-flight HTTP requests **bounded at 10s**, then closes the queue. Closing cancels the in-flight turn rather than draining it, waits for the runner to return, and then closes the memory store. The wait is unbounded; the close issues no network request, because the store has no provider to call (ADR 0018).
+- **Agent** — closes the listener, drains in-flight HTTP requests **bounded at 10s**, then closes the queue. Closing cancels the in-flight turn rather than draining it, waits for the runner to return, and then closes the memory store and, last, releases its writer lock. The wait is unbounded; the close issues no network request, because the store has no provider to call (ADR 0018).
 - **Workspace** — `GracefulStop`, which waits for in-flight RPCs with **no bound**. In practice an in-flight Exec is bounded by `exec-timeout` (default 30s). Exec children carry `Pdeathsig`, so they die with the workspace process.
 
 Because the monitoring stream is long-lived by design, an agent with a connected SSE subscriber will normally spend the whole 10s drain before it gets to the queue.

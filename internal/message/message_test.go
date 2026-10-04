@@ -16,8 +16,9 @@ import (
 
 // platformStamped are the fields message_send stamps from its own
 // process rather than from the call: the sender (ADR 0016), the entry's
-// ID, its provenance, and the messages the turn replies to.
-var platformStamped = []string{"agent_id", "assignment_epoch", "generation", "id", "in_reply_to"}
+// ID and creation time, its provenance, and the messages the turn
+// replies to.
+var platformStamped = []string{"agent_id", "assignment_epoch", "created_at", "generation", "id", "in_reply_to"}
 
 // TestMessage_CarriesTheSenderTheManifestDoesNotAskFor is the
 // schema/struct drift guard, and it states a relationship rather than an

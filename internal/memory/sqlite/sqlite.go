@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"os"
 	"time"
 
 	_ "modernc.org/sqlite"
@@ -67,16 +68,40 @@ var ErrPreAddressedStore = errors.New("memory.db holds the pre-addressed schema"
 // ErrAddressedStore requires an explicit migration before source-linked recall.
 var ErrAddressedStore = errors.New("memory.db holds addressed memories without source links")
 
+// ErrStoreLocked reports that another process holds the store's writer
+// lock, so this one must not open the file (ADR 0002).
+var ErrStoreLocked = errors.New("another process owns the memory store")
+
 // Store is the SQLite-backed memory.Storer.
 type Store struct {
 	db       *sql.DB
 	embedder agent.Embedder
+	// lock is the writer lock taken before db opened; closing it
+	// releases the lock.
+	lock *os.File
 }
 
 var _ memory.Storer = (*Store)(nil)
 
-// Open opens (creating on first use) the memory.db at path.
+// Open takes the store's writer lock, then opens (creating on first use)
+// the memory.db at path. It returns ErrStoreLocked when another process
+// holds the lock.
 func Open(path string) (*Store, error) {
+	lock, err := lockWriter(path)
+	if err != nil {
+		return nil, err
+	}
+	store, err := open(path, lock)
+	if err != nil {
+		lock.Close()
+		return nil, err
+	}
+	return store, nil
+}
+
+// open opens the memory.db at path for a caller that already holds its
+// writer lock. The caller releases the lock when open fails.
+func open(path string, lock *os.File) (*Store, error) {
 	db, err := sql.Open("sqlite", path+"?_pragma=busy_timeout(5000)&_pragma=journal_mode(WAL)")
 	if err != nil {
 		return nil, fmt.Errorf("open %q: %w", path, err)
@@ -98,7 +123,7 @@ func Open(path string) (*Store, error) {
 		db.Close()
 		return nil, fmt.Errorf("create conversation schema: %v", err)
 	}
-	return &Store{db: db}, nil
+	return &Store{db: db, lock: lock}, nil
 }
 
 // holdsSentences reports whether the file already carries the sentence
@@ -115,8 +140,17 @@ func holdsSentences(db *sql.DB) (bool, error) {
 	return count > 0, nil
 }
 
-// Close implements memory.Storer.
-func (s *Store) Close() error { return s.db.Close() }
+// Close implements memory.Storer. The writer lock is released after the
+// database closes, so the next opener never meets an unclosed handle. A
+// second Close returns nil, as sql.DB's does.
+func (s *Store) Close() error {
+	dbErr := s.db.Close()
+	lockErr := s.lock.Close()
+	if errors.Is(lockErr, os.ErrClosed) {
+		lockErr = nil
+	}
+	return errors.Join(dbErr, lockErr)
+}
 
 // Write implements memory.Storer. A value already active at the address
 // is not stored twice: the write moves its timestamp and returns the row

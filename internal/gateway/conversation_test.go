@@ -137,22 +137,18 @@ func TestConversation_QueuePreservesOriginalInboundID(t *testing.T) {
 	require.NoError(t, err)
 	id, err := queue.Enqueue(context.Background(), "sender", "Cedar is my favorite tea.")
 	require.NoError(t, err)
-	store, err := sqlite.Open(path)
+	// The queue's store holds the writer lock, so the test reads the
+	// file read-only beside it.
+	raw, err := sql.Open("sqlite", path+"?mode=ro")
 	require.NoError(t, err)
 	require.Eventually(t, func() bool {
-		sources, err := store.Recent(context.Background(), 10)
-		if err != nil {
-			return false
-		}
-		for _, source := range sources {
-			if source.ExternalID == id && source.Content == "Cedar is my favorite tea." {
-				return true
-			}
-		}
-		return false
+		var count int
+		err := raw.QueryRow(`SELECT count(*) FROM conversation_sources WHERE external_id = ? AND content = ?`,
+			id, "Cedar is my favorite tea.").Scan(&count)
+		return err == nil && count == 1
 	}, 5*time.Second, 10*time.Millisecond)
 	require.NoError(t, queue.Close())
-	require.NoError(t, store.Close())
+	require.NoError(t, raw.Close())
 }
 
 func TestConversation_RelatedCandidateDoesNotSupportMissingDate(t *testing.T) {
@@ -349,14 +345,16 @@ INSERT INTO conversation_mid(source_first,source_last,summary) VALUES (1,4,'The 
 	defer rt.Close(ctx)
 	assert.Zero(t, model.calls, "startup makes no call for episodes from before entities")
 	require.NotNil(t, rt.Retain)
-	store, err := sqlite.OpenConversation(path, wordEmbedder{})
+	// The runtime's store holds the writer lock, so the test reads the
+	// file read-only beside it.
+	linked, err := sql.Open("sqlite", path+"?mode=ro")
 	require.NoError(t, err)
-	defer store.Close()
+	defer linked.Close()
 	for pass, want := range []int{1, 2, 2} {
 		require.NoError(t, rt.Retain(ctx))
 		assert.Equal(t, want, model.calls, "pass %d", pass+1)
-		linked, err := store.Linked(ctx, "Where is the Vega?")
-		require.NoError(t, err)
-		assert.Len(t, linked.Hits, want, "pass %d", pass+1)
+		var episodes int
+		require.NoError(t, linked.QueryRow(`SELECT count(DISTINCT mid) FROM conversation_mid_entity`).Scan(&episodes))
+		assert.Equal(t, want, episodes, "pass %d", pass+1)
 	}
 }

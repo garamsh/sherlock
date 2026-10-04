@@ -82,6 +82,12 @@ type Config struct {
 	// agent echoes it on its status route and never computes one.
 	// Empty means unknown.
 	Revision string `mapstructure:"revision"`
+	// RequireStore refuses to start on a memory store that is absent or
+	// uninitialized instead of creating it (ADR 0025). It is read off the
+	// flag set alone: whether a store must already exist is the launcher's
+	// to say for each start, and a file or environment carrying it would
+	// refuse the first start too.
+	RequireStore bool `mapstructure:"-"`
 }
 
 // ToolsConfig is the operator's statement about the tool tree the
@@ -170,14 +176,19 @@ const strictConfigFlag = "strict-config"
 // message — are not settings and stay with the command.
 func AddAgentFlags(fs *pflag.FlagSet) {
 	fs.String("addr", defaultAddr, "HTTP listen address")
-	fs.String("memory-path", defaultMemoryPath, "SQLite memory file (created on first use)")
+	fs.String("memory-path", defaultMemoryPath, "SQLite memory file (created on first use, unless --require-store)")
 	fs.String("workspace-addr", defaultWorkspaceAddr,
 		"gRPC endpoint of the agent's workspace (the data plane the tools call)")
 	fs.String("ego-file", "",
 		"ego file for the agent's instructions (default: embedded ego.md)")
 	fs.String("instructions-file", "",
 		"operator instructions placed between the ego and the platform contract (default: none)")
+	fs.Bool(RequireStoreFlag, false,
+		"refuse to start when the memory store is absent or uninitialized instead of creating it")
 }
+
+// RequireStoreFlag names the flag Config.RequireStore is read from.
+const RequireStoreFlag = "require-store"
 
 // Resolve builds the agent's effective Config from fs using viper's
 // built-in precedence: flags > SHERLOCK_* environment variables > config
@@ -223,6 +234,9 @@ func Resolve(fs *pflag.FlagSet) (Config, error) {
 		return Config{}, err
 	}
 	if err := reportUnknownKeys(fs, loaded, used.Unused); err != nil {
+		return Config{}, err
+	}
+	if cfg.RequireStore, err = fs.GetBool(RequireStoreFlag); err != nil {
 		return Config{}, err
 	}
 	if err := checkToolPinsEnv(); err != nil {

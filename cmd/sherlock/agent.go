@@ -18,6 +18,7 @@ import (
 
 	"github.com/garamsh/sherlock/internal/config"
 	"github.com/garamsh/sherlock/internal/gateway"
+	"github.com/garamsh/sherlock/internal/memory/sqlite"
 	"github.com/garamsh/sherlock/internal/tool"
 )
 
@@ -163,6 +164,7 @@ func newAgentFactory(cfg config.Config, id identity, ego, operatorInstructions s
 	}
 	return &gateway.Factory{
 		MemoryPath:           cfg.MemoryPath,
+		RequireStore:         cfg.RequireStore,
 		NewModel:             newModel,
 		Embedder:             embedder,
 		Ego:                  ego,
@@ -215,13 +217,24 @@ func runAgentTurn(ctx context.Context, cfg config.Config, id identity, msg, ego,
 	if err != nil {
 		return err
 	}
-	return gateway.Turn{
+	return nameStoreRefusal(gateway.Turn{
 		Factory:   factory,
 		AgentID:   id.agentID,
 		OutboxDir: gateway.DirFor(cfg.MemoryPath),
 		Out:       os.Stdout,
 		Logger:    logger,
-	}.Run(ctx, msg)
+	}.Run(ctx, msg))
+}
+
+// nameStoreRefusal names the flag behind a refused store (ADR 0025), so the
+// operator reading the startup error learns which flag refused and how a
+// first start differs; any other err is returned as it is.
+func nameStoreRefusal(err error) error {
+	if !errors.Is(err, sqlite.ErrStoreUninitialized) {
+		return err
+	}
+	return fmt.Errorf("%w: --%s refuses to start without an initialized memory store; a first start that creates it runs without the flag",
+		err, config.RequireStoreFlag)
 }
 
 // serveAgent runs the agent's HTTP gateway until an interrupt or SIGTERM.
@@ -245,7 +258,7 @@ func serveAgent(ctx context.Context, cfg config.Config, id identity, ego, operat
 	}
 	queue, id, err := startQueue(factory, id, mintGeneration, logger)
 	if err != nil {
-		return err
+		return nameStoreRefusal(err)
 	}
 	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)
 	defer stop()

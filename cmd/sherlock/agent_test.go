@@ -223,6 +223,98 @@ func TestServeAgent_FailedRegistryLeavesNothingListening(t *testing.T) {
 	}
 }
 
+// TestServeAgent_RequireStoreRefusesBeforeListening holds the refusal's
+// place in a served start (ADR 0025): with --require-store and no store,
+// serveAgent fails naming the path and the flag, nothing answers on the
+// port while it does, and no store is created. The control is the same
+// start on a store an earlier start created: it gets past the check and
+// listens.
+func TestServeAgent_RequireStoreRefusesBeforeListening(t *testing.T) {
+	dir, _ := pinnedToolTree(t)
+	listen, err := net.Listen("tcp", "127.0.0.1:0")
+	require.NoError(t, err)
+	addr := listen.Addr().String()
+	require.NoError(t, listen.Close())
+	cfg := config.Config{
+		Addr:         addr,
+		MemoryPath:   filepath.Join(dir, "memory.db"),
+		ToolsDir:     dir,
+		Model:        config.ModelConfig{Provider: "mock"},
+		RequireStore: true,
+	}
+
+	done := make(chan error, 1)
+	go func() { done <- serveAgent(context.Background(), cfg, testIdentity, "", "") }()
+	var answered bool
+	deadline := time.After(5 * time.Second)
+	for refused := false; !refused; {
+		select {
+		case <-deadline:
+			t.Fatal("serveAgent did not refuse the absent store")
+		case err := <-done:
+			require.ErrorIs(t, err, sqlite.ErrStoreUninitialized)
+			assert.ErrorContains(t, err, cfg.MemoryPath)
+			assert.ErrorContains(t, err, "--require-store")
+			refused = true
+		default:
+			if conn, dialErr := net.DialTimeout("tcp", addr, 20*time.Millisecond); dialErr == nil {
+				answered = true
+				_ = conn.Close()
+			}
+		}
+	}
+	assert.False(t, answered, "the port answered during a start the store check refused")
+	assert.NoFileExists(t, cfg.MemoryPath)
+
+	store, err := sqlite.OpenConversation(cfg.MemoryPath, nil)
+	require.NoError(t, err)
+	require.NoError(t, store.Close())
+	ctx, cancel := context.WithCancel(context.Background())
+	go func() { done <- serveAgent(ctx, cfg, testIdentity, "", "") }()
+	require.Eventually(t, func() bool {
+		conn, err := net.DialTimeout("tcp", addr, 20*time.Millisecond)
+		if err == nil {
+			_ = conn.Close()
+		}
+		return err == nil
+	}, 5*time.Second, 20*time.Millisecond, "control: the initialized store starts and listens")
+	cancel()
+	assert.NoError(t, <-done)
+}
+
+// TestAgentCommand_RequireStoreIsTheFlagThatRefuses holds the flag's wiring
+// from the command line to the store (ADR 0025): `sherlock agent
+// --require-store` on an absent store fails naming the flag and creates
+// no store. The control is the same command without the flag, which
+// creates the store as every first start does.
+func TestAgentCommand_RequireStoreIsTheFlagThatRefuses(t *testing.T) {
+	configPath := filepath.Join(t.TempDir(), "agent.yaml")
+	require.NoError(t, os.WriteFile(configPath, nil, 0o600))
+	toolsDir, _ := pinnedToolTree(t)
+	t.Setenv("SHERLOCK_TOOLS_DIR", toolsDir)
+	t.Setenv(tool.AgentIDEnv, "")
+	memoryPath := filepath.Join(t.TempDir(), "memory.db")
+
+	run := func(args ...string) error {
+		root := newRootCommand()
+		root.SetOut(io.Discard)
+		root.SetErr(io.Discard)
+		root.SetArgs(append([]string{"agent", "--config", configPath,
+			"--memory-path", memoryPath, "--agent-id", "test-agent",
+			"--message", "hello"}, args...))
+		return root.Execute()
+	}
+
+	err := run("--require-store")
+	require.ErrorIs(t, err, sqlite.ErrStoreUninitialized)
+	assert.ErrorContains(t, err, "--require-store")
+	assert.NoFileExists(t, memoryPath)
+
+	err = run()
+	assert.NotErrorIs(t, err, sqlite.ErrStoreUninitialized)
+	assert.FileExists(t, memoryPath, "control: without the flag the first start creates the store")
+}
+
 // TestAgentCommand_RefusesWithoutAgentID holds that the agent serves
 // the identity it was given and never a fallback (ADR 0016): an absent
 // and an empty --agent-id both refuse startup with errAgentIDRequired.

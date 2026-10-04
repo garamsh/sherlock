@@ -1,6 +1,6 @@
 # Memory
 
-Governs the agent's source-linked conversation memory and its lifecycle. Rationale: ADR 0002, ADR 0006, ADR 0011, ADR 0018, ADR 0019.
+Governs the agent's source-linked conversation memory and its lifecycle. Rationale: ADR 0002, ADR 0006, ADR 0011, ADR 0018, ADR 0019, ADR 0025.
 
 ## Current decisions
 
@@ -17,6 +17,7 @@ Governs the agent's source-linked conversation memory and its lifecycle. Rationa
 - The agent keeps one note of at most 2,000 characters in the same file. The model restates it whole in every terminal call; a string replaces it and a note left out or null keeps it. The note is saved after the turn's sources, with credential patterns redacted, and shown under the instructions on every turn, so neither compaction nor a restart drops it. It is model-written and unlinked to sources: it states what the agent keeps, not verified evidence (ADR 0011).
 - The reserved `memory_inspect` call reads an exact source message by ID directly from an episode's inclusive source interval. Summary text is a retrieval hint, not verified evidence. Corrections can supersede assertions within an episode; across episodes, chronology and original evidence distinguish current from historical claims (ADR 0018).
 - One process on a host writes the file. The store takes an exclusive, non-blocking `flock` on `<resolved memory-path>.lock` before it opens `memory.db`, resolving relative, `..` and symlinked spellings to one real path, and releases it after the database closes or when the process exits. A second opener, serving or one-shot, is refused with `ErrStoreLocked`. The lock covers one host only: it does not fence another host writing the same file or a copy of it (ADR 0002).
+- The store is created on first open, unless the start passes `--require-store`. Then, once the writer lock is held and before the file is migrated or pending batches are retried, a `memory.db` that is absent, empty, or carries neither `memories_active` nor `conversation_sources` is refused with `ErrStoreUninitialized`. The check reads the file through a read-only open and creates, repairs and resets nothing; a store whose directory is absent is refused without taking the lock (ADR 0025).
 - The same SQLite file still contains the addressed tables of the previous design. The runtime refuses startup when those tables hold active or archived rows, with `ErrAddressedStore`; it does not reinterpret or delete them. An explicit export or migration is required to run source-linked recall on that file (ADR 0002).
 
 ## Current state

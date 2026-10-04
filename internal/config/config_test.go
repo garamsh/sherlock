@@ -586,6 +586,32 @@ func TestResolveConfig_StrictConfigIsNotReadFromTheFile(t *testing.T) {
 		"the file's strict-config is a key no setting reads, so it is reported like any other")
 }
 
+// TestResolveConfig_RequireStoreIsReadFromTheFlagOnly holds that whether
+// a store must already exist is said per start, on the command line
+// (ADR 0025): a config file and an environment that both carry
+// require-store leave it off, and the file's key is reported like any
+// other key no setting reads. The control sets the flag over the same
+// file and environment, and it is on.
+func TestResolveConfig_RequireStoreIsReadFromTheFlagOnly(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	writeAgentConfig(t, dir, "require-store: true\n")
+	t.Setenv("SHERLOCK_REQUIRE_STORE", "true")
+	buf, restore := captureSlog(t)
+	defer restore()
+
+	cfg, err := config.Resolve(agentFlags(t))
+	require.NoError(t, err)
+	assert.False(t, cfg.RequireStore, "the file or the environment switched the refusal on")
+	assert.Contains(t, buf.String(), "key=require-store")
+
+	fs := agentFlags(t)
+	require.NoError(t, fs.Set("require-store", "true"))
+	cfg, err = config.Resolve(fs)
+	require.NoError(t, err)
+	assert.True(t, cfg.RequireStore, "control: the flag switches it on")
+}
+
 func TestResolveConfig_UnknownSectionIsReportedByItsRoot(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)

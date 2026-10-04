@@ -1,7 +1,7 @@
 # ADR 0019: Recall older conversation by embedding similarity and an entity walk beside recency, and let the agent search again during work
 
 > Status: accepted
-> Date: 2026-08-17 (revised in place 2026-09-28)
+> Date: 2026-08-17 (revised in place 2026-10-05)
 
 ## Context
 
@@ -23,6 +23,8 @@ Before the act loop, recall offers the two most recent mid episodes, then fills 
 
 `memory_search` fills its five results the same way from its query. There is no switch for the walk: a query naming no stored entity receives the similar list alone.
 
+**Synthesis is asked up to three times.** The synthesis call that writes an episode and names its entities must answer with exactly one valid `memory_summary` call. The tool is offered, not forced. An answer that is not one valid call is asked again, up to three calls a batch; a model error is not. After the third unusable answer the batch fails with that answer's error and stays pending, as any failed synthesis does. Linking an episode from before entities goes through the same call.
+
 Recent episodes remain available whatever the ranking. Pending source previews keep the unsummarized interval reachable with small rolling windows, bounded by the batch size. Each summary and preview is bounded in length and labelled as such, with an inspection reference. A candidate is not proof that a requested fact exists; original wording requires source inspection.
 
 ## Evidence and limits
@@ -40,6 +42,8 @@ Recent episodes remain available whatever the ranking. Pending source previews k
   - Under the strict rule, that only abstention is acceptable, it is not valid: absent N 35 against 56. It states the associate's value on 54 of 60 absent queries, naming whose value it is on 53.
   - Parity: `TestLinkedRecall_MatchesTheStudiedSettingOnItsRecordedProbes` builds #916's store through the production write path from its recorded syntheses and entities, and holds production recall on all 470 probes and `memory_search` on all 505 hop statements to the items, order and attribution openings `b4-model-attr` recorded, with no model call.
   - `TestLinked_WalksPastTheSeedsBestFirst` pins the walk's ranking on a small graph, `TestConversationRecall_FillsHistoricalSlotsFromSimilarAndTheWalkInTurn` and `TestSessionRun_SearchTakesSimilarAndWalkEpisodesInTurn` the slots and the attribution.
+- **Synthesis attempts.** #937's second run, live on MiniMax-M2 through the real images at `2ad4c13`, completed two turns and created no mid episode: the synthesis call answered without `memory_summary`, on its one attempt (#946). The studies whose syntheses this design rests on gave each batch three attempts (`research/chained-recall/arms/links/synthesis.go`, `entityBatch`, at `b200295`). `TestConversationSummary_AsksAgainAfterAnAnswerWithoutTheCall`, `TestConversationSummary_AsksAgainAfterAMalformedCall`, `TestConversationSummary_DoesNotAskAgainAfterAModelError` and `TestRecordTurn_ThreeAnswersWithoutTheCallLeaveTheBatchPending` pin the attempts.
+- **The call is not forced.** MiniMax documents `tool_choice` only as `none` or `auto`, read 2026-10-05: https://platform.minimax.io/docs/api-reference/text-post defines it as a string taking `none` or `auto`, https://platform.minimax.io/docs/api-reference/text-chat-anthropic says only `auto` and `none` are supported, and https://platform.minimax.io/docs/api-reference/text-openai-api, the OpenAI-compatible page the configured endpoint follows, names no `tool_choice`. A named function there is undocumented and could be refused on every synthesis, so no provider forces the call.
 - **Search during work.** `research/agent-context/` tested the search call with the bounded note of ADR 0011, as candidate A, against the shipped structure.
   - Issue #862: A applied the evidence in 209 of 280 primary probes and the shipped structure in 124 (A only 86, shipped only 1). Follow-ups whose referent lay beyond the window went from 9 to 49 of 70.
   - Issue #864, on a new seed: 192 against 122 (74 to 4), and those follow-ups from 4 to 40.
@@ -51,6 +55,7 @@ Recent episodes remain available whatever the ranking. Pending source previews k
 - Each turn embeds the task text once, and each new mid episode is embedded once after it commits. Both use the embedder configured beside the chat model (ADR 0004); the episode's vector is stored with it (ADR 0002).
 - Batch 4 costs about 1.5 times batch 8's synthesis spend per message (replication §Cost). Naming entities adds no call; in #916 the synthesis read 388 and wrote 238 tokens per batch, against 327 and 203 without them.
 - The walk makes no model call. In #916 it moved recall context from 2,859 to 3,011 characters per turn, and stored characters per source character from 0.741 to 0.823. Each recall and search reads every entity link and walks the graph in process.
+- A batch whose answers are unusable costs up to three synthesis calls before it is left pending.
 - Episodes stored before entities carry no links, so the walk cannot reach them until each is named. After each completed turn, off the turn path, one of them is sent through the same synthesis call over its own sources; its stored summary is kept (`memory.md` §Existing databases).
 - Candidate count and preview length are bounded. Recent and pending material can be unrelated to the question and is not presented as a matching result.
 - Recent context remains in the rolling session; recall is for older information that need not fit there.

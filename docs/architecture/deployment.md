@@ -1,6 +1,6 @@
 # Deployment
 
-Governs what has to be true to run this workload as a pod: the two processes, what they bind, what they mount, what kills them at boot, and what an orchestrator must allow on shutdown. The architecture behind it is `environment.md` and `security.md`; this file states the operator-facing consequences and does not restate them. Rationale: ADR 0017, ADR 0012, ADR 0008, ADR 0010, ADR 0003, ADR 0020, ADR 0002, ADR 0022, ADR 0024.
+Governs what has to be true to run this workload as a pod: the two processes, what they bind, what they mount, what kills them at boot, what an orchestrator must allow on shutdown, and how an agent's stored state is copied and restored. The architecture behind it is `environment.md` and `security.md`; this file states the operator-facing consequences and does not restate them. Rationale: ADR 0017, ADR 0012, ADR 0008, ADR 0010, ADR 0003, ADR 0020, ADR 0002, ADR 0022, ADR 0024.
 
 ## Contents
 - The two processes
@@ -11,6 +11,7 @@ Governs what has to be true to run this workload as a pod: the two processes, wh
 - Startup: what kills the pod and what degrades it
 - Health and readiness
 - Shutdown and the grace period
+- Snapshot and restore
 - Images and tags
 - Load-bearing facts
 - Open questions
@@ -252,6 +253,18 @@ Both serving processes trap `SIGTERM` and `SIGINT`. A one-shot `sherlock agent -
 **A restart discards the queued messages.** The drain finishes the turn in flight and starts no other, and the queue is held in memory with nothing writing it down (`internal/gateway/queue.go`, `gateway.md`), so every message accepted but not yet taken into a turn stays uncommitted and is lost. The sender holds its 202 and is told nothing more, because a message no turn took reaches no monitoring event — so a consumer treating the 202 as an end-to-end acknowledgement is counting messages the agent never read. A consumer that looks the message up after the restart finds it unknown and can redeliver it under the same ID (`gateway.md`). Every way the process ends costs this: a rolling update, an eviction, a crash, and the `SIGKILL` at the end of the grace period alike. An operator who needs the buffer empty stops posting and lets the agent work it off before the pod is stopped.
 
 **No total shutdown deadline exists** — not as a flag, an environment variable, or a config key. The orchestrator's grace period is the only total bound: the turn in flight runs for as long as it takes, and the 10s HTTP drain comes after it. A turn the `SIGKILL` cuts off commits nothing, so its messages read unknown after the restart and the sender redelivers them — delivery is at least once, never exactly once. Derive `terminationGracePeriodSeconds` from the longest turn you expect — your own `exec-timeout`, provider timeouts and tool budget — rather than copying a number from here, and expect this document to state one when the code does.
+
+## Snapshot and restore
+
+The supported boundary for copying one agent's stored state and starting an agent on the copy (#937). The procedure is `deploy/runtime-fixture/snapshot.sh` (`copy`, `verify`, `restore`), and the runtime fixture runs it on every pass (`tests/runtime_fixture_test.go`). Nothing in Sherlock takes a snapshot on its own; this is what an operator or a lifecycle authority may rely on when it does.
+
+- **What the stored state is.** Everything on the agent's volume (§Volumes and ownership): `memory.db` with its `-wal` and `-shm` — sources, the note, episodes, entity links and the completion records — and `outbox/` beside it. The writer lock `<memory.db real path>.lock` is not state, and the workspace directory is not part of it.
+- **A consistent copy is taken only from a drained, positively stopped writer.** Positively stopped means two things: the process has exited after its drain (exit status 0, §Shutdown and the grace period), and its writer lock is free. `copy` takes that lock itself and holds it for the whole copy, so it refuses a store whose lock is held, and a writer starting on this host mid-copy fails at startup instead.
+- **The files go together, and an absent one stays absent.** `memory.db`, `-wal` and `-shm` are copied together with `outbox/`. A cleanly closed store usually has neither sidecar, so one that is absent is recorded as absent and never created. Each file's hash goes into a manifest, and the copy is read back against its source before `copy` reports success.
+- **A copy is verified by opening it.** `verify` checks the hashes again, then opens a scratch duplicate, because opening a store can checkpoint its WAL and the snapshot has to stay the bytes that were copied. It runs SQLite's integrity check and reports the source count, the completion records, the episodes and the note as identifiers and hashes, and each outbox entry's ID, `created_at`, origin fields and content hash. It reports no memory content.
+- **A restore goes to a fresh path and replaces nothing.** Pending outbox entries come back byte for byte, `created_at` and the origin fields (`agent_id`, `assignment_epoch`, `generation`) included. The agent started on the copy mints a new generation, so an entry names the start that wrote it, not the one now holding it. A consumer that already collected an entry from the original finds it again in the restored outbox, so it deduplicates by entry ID. Completion records come back too: a message completed before the snapshot reads `completed` on the restored agent, and one completed after it reads `unknown`, which tells its sender to redeliver.
+- **Activation is blocked while it cannot be established that the old writer stopped.** That covers a held lock, an exit nobody observed, and every writer on another host, which the lock cannot see (§Volumes and ownership). Sherlock states the condition and does not enforce it. Not starting a restored copy while the old writer might still run is the lifecycle authority's job.
+- **No live move and no deletion.** The procedure copies. It never moves or deletes the source, and nothing here migrates or removes existing memory.
 
 ## Images and tags
 

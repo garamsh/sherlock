@@ -2,6 +2,7 @@ package tests
 
 import (
 	"bytes"
+	"context"
 	"crypto/sha256"
 	"crypto/x509"
 	"encoding/hex"
@@ -23,6 +24,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/garamsh/sherlock/internal/memory/sqlite"
 )
 
 // The fixture's identity (#937). The agent ID is a GRN, served verbatim
@@ -322,6 +325,15 @@ func runFixture(t *testing.T, rt fixtureRuntime, storage string) {
 		assert.Equal(t, "unknown", ev.SenderScope[fixtureSenderB], "message IDs are scoped to their sender")
 	})
 
+	// The note the follow-up asks about has to be the note the fixture set.
+	// Read from the store, with no model call, so that a store that altered
+	// the input is reported as that and not as a wrong answer.
+	if real {
+		steps.run("note stored as set", "5: note and episode", steps.needs("snapshot"), func(t *testing.T) {
+			require.NoError(t, fixtureNoteGuard(ev.Snapshot, task.note))
+		})
+	}
+
 	// Read-back: the restored note and the episode, through the follow-up's
 	// recall event and, after the drain, its answer.
 	if real {
@@ -341,7 +353,7 @@ func runFixture(t *testing.T, rt fixtureRuntime, storage string) {
 	})
 
 	if real {
-		steps.run("follow-up answer", "5: note and episode", steps.needs("read-back", "drain after restart"), func(t *testing.T) {
+		steps.run("follow-up answer", "5: note and episode", steps.needs("note stored as set", "read-back", "drain after restart"), func(t *testing.T) {
 			ev.FollowUpNote = fixtureFollowUpCarries(t, agentDir, "m3", task.noteMarker)
 			assert.True(t, ev.FollowUpNote, "the follow-up answer carries the note's marker")
 		})
@@ -459,12 +471,18 @@ type fixtureTask struct {
 	first, second, followUp string
 	// file is the workspace file the first task writes.
 	file string
+	// note is the exact note the first task sets, which the fixture checks
+	// the store holds before it asks about it.
+	note string
 	// noteMarker is the marker the first task saves in the note and the
 	// follow-up's answer has to carry. It is worded so that the store's
 	// credential redaction leaves it alone: a credential word followed by a
 	// value is stored as "[redacted credential]" (internal/memory/sqlite).
 	noteMarker string
 }
+
+// fixtureNote is the note the real-model task sets.
+const fixtureNote = "fixture marker amber-heron-937"
 
 func fixtureTasks(real bool) fixtureTask {
 	if !real {
@@ -474,12 +492,13 @@ func fixtureTasks(real bool) fixtureTask {
 	return fixtureTask{
 		first: "Use file_write to create fixture-937.txt in the workspace containing the single line " +
 			"`sherlock-937 fixture`. Then reply to me with message_send saying the file is written. " +
-			"Finally, set your note to exactly: `fixture marker amber-heron-937`.",
+			"Finally, set your note to exactly: `" + fixtureNote + "`.",
 		second: "Read fixture-937.txt back with file_read and reply to me with message_send quoting its content. " +
 			"Keep your note unchanged.",
 		followUp: "What fixture marker does your note hold, and which file did you write earlier? " +
 			"Reply to me with message_send. Keep your note unchanged.",
 		file:       "fixture-937.txt",
+		note:       fixtureNote,
 		noteMarker: "amber-heron-937",
 	}
 }
@@ -668,6 +687,19 @@ func fixtureFollowUpCarries(t *testing.T, agentDir, id, token string) bool {
 		}
 	}
 	return false
+}
+
+// fixtureNoteGuard fails with "fixture input redacted" unless the store
+// holds exactly the note the fixture set. The store redacts what reads as a
+// credential before saving a note (internal/memory/sqlite), so a note
+// worded like one comes back altered, and an answer quoting it cannot carry
+// what the fixture asked for.
+func fixtureNoteGuard(stored snapshotReport, set string) error {
+	if stored.Note.Present && stored.Note.SHA256 == sha256Hex(set) {
+		return nil
+	}
+	return fmt.Errorf("fixture input redacted: the store holds note sha256 %s, not the note the fixture set (sha256 %s)",
+		stored.Note.SHA256, sha256Hex(set))
 }
 
 // storeSidecars reports which of memory.db's -wal and -shm exist in dir.
@@ -913,4 +945,32 @@ func exitCode(err error) int {
 		return exit.ExitCode()
 	}
 	return -1
+}
+
+// TestFixtureNoteGuard_ReportsRedactedInput sets each wording through the
+// real store, which redacts a credential-shaped note before saving it, then
+// copies and verifies the store as the fixture does. The wording run-3 used
+// trips the guard; the fixture's current note passes it, which is the
+// control showing the guard accepts a note the store keeps.
+func TestFixtureNoteGuard_ReportsRedactedInput(t *testing.T) {
+	stored := func(t *testing.T, note string) snapshotReport {
+		t.Helper()
+		dir := t.TempDir()
+		require.NoError(t, os.MkdirAll(filepath.Join(dir, "agent"), 0o755))
+		store, err := sqlite.OpenConversation(filepath.Join(dir, "agent", "memory.db"), tiedEmbedder{})
+		require.NoError(t, err)
+		require.NoError(t, store.SetNote(context.Background(), note))
+		require.NoError(t, store.Close())
+		snapshot := filepath.Join(dir, "snapshot")
+		fixtureSnapshot(t, "copy", filepath.Join(dir, "agent", "memory.db"), snapshot)
+		return fixtureVerify(t, snapshot)
+	}
+
+	run3 := "fixture token: amber-heron-937"
+	err := fixtureNoteGuard(stored(t, run3), run3)
+	require.Error(t, err, "the store redacts %q, so the guard reports it", run3)
+	assert.Contains(t, err.Error(), "fixture input redacted")
+
+	assert.NoError(t, fixtureNoteGuard(stored(t, fixtureNote), fixtureNote),
+		"the store keeps %q as set", fixtureNote)
 }

@@ -86,6 +86,8 @@ Config files resolve in order: explicit `--config <path>`, then `./configs/agent
 
 **A config-file key no setting reads is reported, not refused.** Both processes warn once per unread key, naming the key and the file, and start anyway — so a renamed key does not reject an operator's whole file. The warning is the only signal, and it reaches a log inside the container and nothing else.
 
+**`--strict-config` refuses what the default reports** (#932). On either command, every key that would be warned about fails startup instead, and the error names the keys and the file; a process that started under it has read every key its file carries. It is a flag only, like `--agent-id`: it is read off the command line rather than through the settings layers, so neither `SHERLOCK_STRICT_CONFIG` nor a `strict-config` key in the file it checks turns it on or off — the file's key is itself an unread key. Without the flag, startup is unchanged.
+
 Two exceptions a pod spec meets immediately:
 
 - **Both commands name their listener `addr`**, so a single `SHERLOCK_ADDR` set on the pod retargets both containers. Set it per container, or leave the workspace at its default.

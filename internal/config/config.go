@@ -152,7 +152,13 @@ type EmbeddingConfig struct {
 // the caller can get wrong.
 func AddSharedFlags(fs *pflag.FlagSet) {
 	fs.String("config", "", "config file path (default: ./configs/agent.yaml, ./configs/workspace.yaml for the workspace, then the XDG config dir)")
+	fs.Bool(strictConfigFlag, false, "refuse to start when the config file carries a key no setting reads")
 }
+
+// strictConfigFlag turns the unknown-key warning into a startup failure.
+// It is read off the flag set alone, never through viper, so neither the
+// environment nor the file it checks can switch it off.
+const strictConfigFlag = "strict-config"
 
 // AddAgentFlags registers the agent's settings as flags on fs. The
 // agent subcommand's own inputs — which agent to serve, the one-shot
@@ -208,7 +214,9 @@ func Resolve(fs *pflag.FlagSet) (Config, error) {
 	if err := v.Unmarshal(&cfg, recordKeys(&used)); err != nil {
 		return Config{}, err
 	}
-	reportUnknownKeys(loaded, used.Unused)
+	if err := reportUnknownKeys(fs, loaded, used.Unused); err != nil {
+		return Config{}, err
+	}
 	if err := checkToolPinsEnv(); err != nil {
 		return Config{}, err
 	}
@@ -321,8 +329,10 @@ func recordKeys(md *mapstructure.Metadata) viper.DecoderConfigOption {
 
 // reportUnknownKeys warns for every key the config file carries that no
 // setting reads: a typo, a renamed key, or a block left over from a
-// removed feature. It reports rather than refuses, because refusing
-// would reject an operator's whole file the moment a key is renamed.
+// removed feature. By default it reports rather than refuses, because
+// refusing would reject an operator's whole file the moment a key is
+// renamed. Under --strict-config it refuses instead, so a process that
+// started has read every key its file carries.
 //
 // The warning names the key and the file, which is what makes it
 // actionable: `tools.pin` for `tools.pins` turns drift pinning off
@@ -333,13 +343,17 @@ func recordKeys(md *mapstructure.Metadata) viper.DecoderConfigOption {
 // the command's flags — they are bound to the same viper and most name
 // no setting. Only the keys the file itself carries are the operator's
 // to fix, so the file is what they are filtered against.
-func reportUnknownKeys(loaded string, unused []string) {
+func reportUnknownKeys(fs *pflag.FlagSet, loaded string, unused []string) error {
+	strict, err := fs.GetBool(strictConfigFlag)
+	if err != nil {
+		return err
+	}
 	if loaded == "" || len(unused) == 0 {
-		return
+		return nil
 	}
 	fileKeys := configFileKeys(loaded)
 	if len(fileKeys) == 0 {
-		return
+		return nil
 	}
 	unknown := make([]string, 0, len(unused))
 	for _, key := range unused {
@@ -348,10 +362,15 @@ func reportUnknownKeys(loaded string, unused []string) {
 		}
 	}
 	sort.Strings(unknown)
+	if strict && len(unknown) > 0 {
+		return fmt.Errorf("config: %s carries %s, which no setting reads; --%s refuses to start on an unread key",
+			loaded, strings.Join(unknown, ", "), strictConfigFlag)
+	}
 	for _, key := range unknown {
 		slog.Warn("unknown config key: nothing reads it",
 			"op", "config.load", "key", key, "file", loaded)
 	}
+	return nil
 }
 
 // carriedBy reports whether the config file holds key, either as a leaf

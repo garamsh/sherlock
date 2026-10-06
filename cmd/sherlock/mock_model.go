@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 
 	"github.com/garamsh/sherlock/internal/agent"
+	"github.com/garamsh/sherlock/internal/tool"
 )
 
 // mockModel is the MVP placeholder model (ADR 0004): a canned script
@@ -15,8 +16,33 @@ import (
 // with an empty note. The scenario creates what it reads, so it runs
 // clean in any workspace. It exhausts after one message; a real model
 // replaces it without interface changes.
-func mockModel(_ string) agent.Model {
-	return agent.NewScriptedModel(
+//
+// A request offering memory_summary is episode synthesis, not a turn: it
+// gets one fixed valid call and leaves the script where it was, so a
+// batch's synthesis succeeds at any point and a restart's catch-up does
+// not fail startup.
+type mockModel struct{ script agent.Model }
+
+// mockSummaryCall is the one memory_summary call the mock answers every
+// synthesis request with.
+var mockSummaryCall = agent.ToolCall{
+	ID:    "mock-summary",
+	Name:  "memory_summary",
+	Input: json.RawMessage(`{"summary":"A conversation with the offline mock model.","entities":[]}`),
+}
+
+func (m mockModel) Chat(ctx context.Context, messages []agent.Message, tools []tool.Descriptor) (agent.Response, error) {
+	for _, d := range tools {
+		if d.Name == mockSummaryCall.Name {
+			return agent.Response{ToolCalls: []agent.ToolCall{mockSummaryCall}}, nil
+		}
+	}
+	return m.script.Chat(ctx, messages, tools)
+}
+
+// newMockModel returns the mock with its scenario at the first step.
+func newMockModel(_ string) agent.Model {
+	return mockModel{script: agent.NewScriptedModel(
 		agent.ScriptedStep{
 			ToolCalls: []agent.ToolCall{{
 				Name: "shell_exec",
@@ -49,7 +75,7 @@ func mockModel(_ string) agent.Model {
 				),
 			}},
 		},
-	)
+	)}
 }
 
 // mockEmbedder stands in for an embeddings endpoint offline: every text gets

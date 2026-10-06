@@ -19,7 +19,7 @@ import (
 func newModelFunc(cfg config.ModelConfig) (func(agentID string) agent.Model, error) {
 	switch cfg.Provider {
 	case "mock":
-		return mockModel, nil
+		return newMockModel, nil
 	case "openai-compatible":
 		key := os.Getenv(cfg.APIKeyEnv)
 		if key == "" {

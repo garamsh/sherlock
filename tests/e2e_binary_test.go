@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"context"
 	"net"
 	"net/http"
 	"os"
@@ -12,6 +13,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/garamsh/sherlock/internal/memory/sqlite"
 )
 
 // binaryAgentID is this scenario's own agent ID.
@@ -122,6 +125,76 @@ func runBinaryMVPScenario(t *testing.T, baseURL, root, agentID string) {
 	assert.Equal(t, "42", replies[0].Content)
 	assert.Equal(t, "http", replies[0].Channel)
 	assert.Equal(t, "sender", replies[0].Target)
+}
+
+// TestEndToEnd_MockAgentRestartsAfterConversations stops and starts the
+// built agent on the default mock around two conversations. Their six
+// visible messages fill one four-message batch, which the mock must
+// synthesize; otherwise the batch stays pending and the next start's
+// catch-up fails startup (#975).
+func TestEndToEnd_MockAgentRestartsAfterConversations(t *testing.T) {
+	binary := buildSherlockBinary(t)
+	root := t.TempDir()
+	_, workspaceAddr, _ := startWorkspaceBinary(t, binary,
+		filepath.Join(t.TempDir(), "workspace"), emptyConfig(t, "workspace.yaml"))
+	configPath := emptyConfig(t, "agent.yaml")
+
+	stop := func(cmd *exec.Cmd, exited <-chan error) {
+		t.Helper()
+		require.NoError(t, cmd.Process.Signal(syscall.SIGTERM))
+		select {
+		case err := <-exited:
+			require.NoError(t, err, "agent must exit cleanly on SIGTERM")
+		case <-time.After(15 * time.Second):
+			t.Fatal("agent did not exit on SIGTERM")
+		}
+	}
+
+	for conversation := 1; conversation <= 2; conversation++ {
+		cmd, baseURL, exited := startAgentBinary(t, binary, root, workspaceAddr, configPath)
+		events := subscribeSSE(t, baseURL+"/agents/"+binaryAgentID+"/events")
+		resp := postJSON(t, baseURL+"/agents/"+binaryAgentID+"/messages",
+			`{"content":`+strconvQuote(e2eQuestion)+`}`)
+		require.Equal(t, http.StatusAccepted, resp.StatusCode)
+		resp.Body.Close()
+		// The turn's sources are stored before its synthesis, so the
+		// restart below is reached whichever way the turn ends.
+		assert.Equal(t, "turn_finished", awaitTurnEnd(t, events),
+			"conversation %d ends without a synthesis failure", conversation)
+		stop(cmd, exited)
+	}
+
+	// startAgentBinary fails the test if the agent exits before serving.
+	cmd, _, exited := startAgentBinary(t, binary, root, workspaceAddr, configPath)
+	stop(cmd, exited)
+
+	store, err := sqlite.OpenConversation(filepath.Join(root, "memory.db"), nil)
+	require.NoError(t, err)
+	defer store.Close()
+	episodes, err := store.RecentMid(context.Background(), 10)
+	require.NoError(t, err)
+	assert.Len(t, episodes, 1, "the full batch was synthesized into one episode")
+	pending, err := store.PendingSources(context.Background())
+	require.NoError(t, err)
+	assert.Len(t, pending, 2, "only the two messages past the batch stay pending")
+}
+
+// awaitTurnEnd reads events until the turn's terminal one arrives and
+// returns its kind, failing after 15s.
+func awaitTurnEnd(t *testing.T, events chan map[string]any) string {
+	t.Helper()
+	deadline := time.After(15 * time.Second)
+	for {
+		select {
+		case e, ok := <-events:
+			require.True(t, ok, "event stream closed before the turn ended")
+			if kind := e["kind"]; kind == "turn_finished" || kind == "turn_failed" {
+				return kind.(string)
+			}
+		case <-deadline:
+			t.Fatal("the turn did not end within 15s")
+		}
+	}
 }
 
 // TestEndToEnd_OneShotAgentTurnAgainstWorkspace runs "sherlock agent

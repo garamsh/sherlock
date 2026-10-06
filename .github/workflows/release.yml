@@ -99,7 +99,7 @@ jobs:
       # workflow is able to push anything.
       - uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # v6.2.4
         with:
-          role-to-assume: arn:aws:iam::486152169996:role/garam-dev-sherlock-ecr-push
+          role-to-assume: arn:aws:iam::486152169996:role/garamsh-sherlock-github-actions
           aws-region: ap-northeast-2
 
       - id: ecr

@@ -82,6 +82,24 @@ func TestRun_EntryIDIsUniqueAndNamesTheFile(t *testing.T) {
 	assert.Len(t, ids, writes, "no two entries share an id")
 }
 
+// TestRun_CreatesTheOutboxOwnerOnly holds that the outbox the tool
+// creates is listable by the agent's uid alone (#998); its entries are
+// owner-only as well.
+func TestRun_CreatesTheOutboxOwnerOnly(t *testing.T) {
+	outbox := filepath.Join(t.TempDir(), "outbox")
+	runTool(t, outbox, `[]`, `{"channel":"http","target":"alice","content":"hi"}`)
+
+	info, err := os.Stat(outbox)
+	require.NoError(t, err)
+	assert.Equal(t, os.FileMode(0o700), info.Mode().Perm())
+	names, err := filepath.Glob(filepath.Join(outbox, "*.json"))
+	require.NoError(t, err)
+	require.Len(t, names, 1, "the setup: the tool wrote one entry")
+	entry, err := os.Stat(names[0])
+	require.NoError(t, err)
+	assert.Equal(t, os.FileMode(0o600), entry.Mode().Perm())
+}
+
 // TestRun_EntryRepliesToTheTurnsMessages checks in_reply_to is the
 // turn's message IDs as the platform published them, byte for byte — a
 // comma inside an ID is part of it, not a separator.

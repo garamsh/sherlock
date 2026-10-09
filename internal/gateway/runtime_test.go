@@ -544,3 +544,31 @@ func TestFactory_RequireStoreStartsOnAnInitializedStore(t *testing.T) {
 	require.NoError(t, err)
 	assert.True(t, held && same, "the start opened a store other than the initialized one")
 }
+
+// TestFactory_TightensAWiderOutbox holds that a start makes an outbox an
+// earlier release created 0755 owner-only, and leaves its entries in
+// place (#998).
+func TestFactory_TightensAWiderOutbox(t *testing.T) {
+	root := t.TempDir()
+	outbox := gateway.DirFor(memoryPath(root))
+	require.NoError(t, os.Mkdir(outbox, 0o755))
+	require.NoError(t, os.Chmod(outbox, 0o755))
+	entry := filepath.Join(outbox, "pending.json")
+	require.NoError(t, os.WriteFile(entry, []byte(`{}`), 0o600))
+
+	factory := &gateway.Factory{
+		MemoryPath: memoryPath(root),
+		NewModel:   func(string) agent.Model { return agent.NewScriptedModel() },
+		Tools:      noTools(),
+	}
+	rt, err := factory.New(context.Background(), "a", nil)
+	require.NoError(t, err)
+	defer func() { assert.NoError(t, rt.Close(context.Background())) }()
+
+	info, err := os.Stat(outbox)
+	require.NoError(t, err)
+	assert.Equal(t, os.FileMode(0o700), info.Mode().Perm())
+	body, err := os.ReadFile(entry)
+	require.NoError(t, err)
+	assert.Equal(t, `{}`, string(body), "the start changed an outbox entry")
+}

@@ -21,7 +21,7 @@ func lockWriter(path string) (*os.File, error) {
 	if err != nil {
 		return nil, err
 	}
-	f, err := os.OpenFile(name, os.O_RDWR|os.O_CREATE, 0o600)
+	f, err := os.OpenFile(name, os.O_RDWR|os.O_CREATE, storeFileMode)
 	if err != nil {
 		return nil, fmt.Errorf("open writer lock %q: %v", name, err)
 	}
@@ -31,6 +31,10 @@ func lockWriter(path string) (*os.File, error) {
 			return nil, fmt.Errorf("%q: %w", name, ErrStoreLocked)
 		}
 		return nil, fmt.Errorf("take writer lock %q: %v", name, err)
+	}
+	if err := f.Chmod(storeFileMode); err != nil {
+		f.Close()
+		return nil, fmt.Errorf("restrict writer lock %q: %v", name, err)
 	}
 	return f, nil
 }

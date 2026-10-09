@@ -380,6 +380,9 @@ func openConversation(path string, embedder agent.Embedder, check func(path stri
 			return nil, err
 		}
 	}
+	if err := restrictStore(path); err != nil {
+		return nil, err
+	}
 	if _, err := os.Stat(path); err == nil {
 		old, err := sql.Open("sqlite", path+"?mode=ro")
 		if err != nil {

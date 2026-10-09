@@ -130,8 +130,12 @@ func (f *Factory) New(ctx context.Context, agentID string, events agent.EventSin
 }
 
 // openStore opens the memory store at MemoryPath, creating it and its
-// directory on first use unless RequireStore is set.
+// directory on first use unless RequireStore is set, and makes an
+// existing outbox beside it owner-only.
 func (f *Factory) openStore() (*sqlite.Store, error) {
+	if err := restrictOutbox(DirFor(f.MemoryPath)); err != nil {
+		return nil, err
+	}
 	if f.RequireStore {
 		return sqlite.OpenInitializedConversation(f.MemoryPath, f.Embedder)
 	}

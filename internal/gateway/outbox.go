@@ -2,8 +2,10 @@ package gateway
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"sort"
@@ -24,6 +26,17 @@ const OutboxDir = "outbox"
 // spelling the same join.
 func DirFor(memoryPath string) string {
 	return filepath.Join(filepath.Dir(memoryPath), OutboxDir)
+}
+
+// restrictOutbox tightens an existing outbox directory to owner-only,
+// the mode the message_send tool creates it with, where an earlier
+// release created it wider (#998). It changes the mode only; an absent
+// directory is left for the tool to create.
+func restrictOutbox(dir string) error {
+	if err := os.Chmod(dir, 0o700); err != nil && !errors.Is(err, fs.ErrNotExist) {
+		return fmt.Errorf("restrict outbox %q: %v", dir, err)
+	}
+	return nil
 }
 
 // outboxSnapshot returns the names of the files currently in dir. A

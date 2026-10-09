@@ -44,7 +44,11 @@ chmod 0600 tls/*key* agent.yaml
 # --wait holds until compose reports both services up, so the readiness
 # wait is compose's rather than a retry loop here.
 echo "==> deployment"
-install -d -m 0777 "$SHERLOCK_DATA_DIR"
+# agent/ belongs to the agent container's uid, this user. workspace/ is not
+# created here: the daemon creates the missing bind source as root:root, and
+# the workspace's handover keeps the directory's group while giving it to the
+# exec uid, so that group has to be the workspace process's own (README.md).
+install -d "$SHERLOCK_DATA_DIR/agent"
 docker compose build
 docker compose up -d --wait
 
@@ -79,7 +83,7 @@ fi
 echo "==> the canned run completes with every tool call succeeding"
 docker compose exec -T agent /sherlock agent \
   --config /etc/sherlock/config.yaml --agent-id demo --message "hello" \
-  --memory-path "$SHERLOCK_DATA_DIR/one-shot/memory.db"
+  --memory-path "$SHERLOCK_DATA_DIR/agent/one-shot/memory.db"
 
 # ADR 0008's file side: a write over the gRPC contract and a write by an
 # exec'd child land under one owner, so either can pick up what the other

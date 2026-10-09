@@ -83,12 +83,16 @@ type Store struct {
 
 var _ memory.Storer = (*Store)(nil)
 
-// Open takes the store's writer lock, then opens (creating on first use)
-// the memory.db at path. It returns ErrStoreLocked when another process
-// holds the lock.
+// Open takes the store's writer lock, then opens (creating on first use,
+// owner-only) the memory.db at path. It returns ErrStoreLocked when
+// another process holds the lock.
 func Open(path string) (*Store, error) {
 	lock, err := lockWriter(path)
 	if err != nil {
+		return nil, err
+	}
+	if err := restrictStore(path); err != nil {
+		lock.Close()
 		return nil, err
 	}
 	store, err := open(path, lock)

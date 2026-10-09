@@ -105,7 +105,9 @@ func writeEntry(dir string, msg message.Message) error {
 	if err != nil {
 		return err
 	}
-	if err := os.MkdirAll(dir, 0o755); err != nil {
+	// Owner-only: the agent and the tools it spawns run as one uid, and
+	// no other account may list what it delivered (#998).
+	if err := os.MkdirAll(dir, 0o700); err != nil {
 		return err
 	}
 	tmp, err := os.CreateTemp(dir, ".entry-*.tmp")

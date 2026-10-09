@@ -28,10 +28,10 @@ const readHeaderTimeout = 10 * time.Second
 // Whether a given address may be served at all is the caller's
 // decision, not this function's: the loopback rule reads a resolved
 // setting, and the entry point is what holds resolved settings.
-func Serve(ctx context.Context, addr string, tlsConfig *tls.Config, queue *Queue, instance Instance, logger *slog.Logger) error {
+func Serve(ctx context.Context, addr string, tlsConfig *tls.Config, queue *Queue, verifier *Verifier, instance Instance, logger *slog.Logger) error {
 	srv := &http.Server{
 		Addr:              addr,
-		Handler:           NewHandler(queue, instance, logger),
+		Handler:           NewHandler(queue, verifier, instance, logger),
 		TLSConfig:         tlsConfig,
 		ReadHeaderTimeout: readHeaderTimeout,
 	}

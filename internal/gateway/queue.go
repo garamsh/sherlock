@@ -40,15 +40,24 @@ type Queue struct {
 	drainOnce sync.Once
 	closeOnce sync.Once
 
-	// mu guards pending: the content of every message queued or running
-	// in this process, by sender and ID. It is held from the check to the
-	// insert, so one ID is never admitted twice.
+	// mu guards pending: every message queued or running in this
+	// process, by scope and ID. It is held from the check to the insert,
+	// so one ID is never admitted twice.
 	mu      sync.Mutex
-	pending map[messageKey]string
+	pending map[messageKey]pendingMessage
 }
 
-// messageKey scopes a message ID to the sender that delivered it.
-type messageKey struct{ sender, id string }
+// messageKey scopes a message ID to its origin's issuer and sender.
+type messageKey struct{ issuer, sender, id string }
+
+func keyOf(origin Origin, id string) messageKey {
+	return messageKey{issuer: origin.issuer, sender: origin.sender, id: id}
+}
+
+// pendingMessage is what the queue holds of a message in this process:
+// its content, compared on redelivery, and the transport principal that
+// posted it, which a lookup answers to.
+type pendingMessage struct{ content, poster string }
 
 // NewQueue builds the agent's runtime through factory and starts the
 // runner. A factory error fails startup: the runtime is created eagerly
@@ -77,7 +86,7 @@ func NewQueue(factory RuntimeFactory, agentID string, logger *slog.Logger) (*Que
 		cancel:   cancel,
 		done:     make(chan struct{}),
 		draining: make(chan struct{}),
-		pending:  make(map[messageKey]string),
+		pending:  make(map[messageKey]pendingMessage),
 	}
 	go q.run(events)
 	return q, nil
@@ -86,18 +95,18 @@ func NewQueue(factory RuntimeFactory, agentID string, logger *slog.Logger) (*Que
 // AgentID returns the ID of the agent this process serves.
 func (q *Queue) AgentID() string { return q.agentID }
 
-// Enqueue queues the sender's message under id, or under an ID it
+// Enqueue queues the message from origin under id, or under an ID it
 // assigns when id is empty, and returns the ID with the message's status;
 // there is no synchronous agent response. A message the sender already
 // delivered is not queued again: a queued or running one with the same
 // content stays StatusPending, a committed one is StatusCompleted, and
 // either with different content is refused with ErrIDReused. A full queue
-// blocks the caller (honoring ctx) until a run drains a slot. The sender
+// blocks the caller (honoring ctx) until a run drains a slot. The origin
 // is recorded on the envelope so the agent can address replies per
-// message (ADR 0015); an empty sender means the channel provided none.
+// message (ADR 0015, ADR 0026).
 // Nothing is written to memory at accept time: the writeback is the
 // single write path (ADR 0006, ADR 0011).
-func (q *Queue) Enqueue(ctx context.Context, sender, id, content string) (string, Status, error) {
+func (q *Queue) Enqueue(ctx context.Context, origin Origin, id, content string) (string, Status, error) {
 	if q.Draining() {
 		return "", StatusUnknown, ErrDraining
 	}
@@ -108,15 +117,15 @@ func (q *Queue) Enqueue(ctx context.Context, sender, id, content string) (string
 		}
 		id = assigned
 	}
-	key := messageKey{sender: sender, id: id}
-	status, admitted, err := q.admit(ctx, key, content)
+	key := keyOf(origin, id)
+	status, admitted, err := q.admit(ctx, key, pendingMessage{content: content, poster: origin.poster})
 	if err != nil {
 		return "", StatusUnknown, err
 	}
 	if !admitted {
 		return id, status, nil
 	}
-	msg := Inbound{ID: id, Sender: sender, Content: content, QueuedAt: time.Now()}
+	msg := Inbound{ID: id, Origin: origin, Content: content, QueuedAt: time.Now()}
 	select {
 	case q.inbox <- msg:
 		q.logger.Info("message enqueued",
@@ -135,16 +144,16 @@ func (q *Queue) Enqueue(ctx context.Context, sender, id, content string) (string
 // neither this process nor memory holds its key. Otherwise it returns the
 // status the key already has, or ErrIDReused when it is held with other
 // content.
-func (q *Queue) admit(ctx context.Context, key messageKey, content string) (Status, bool, error) {
+func (q *Queue) admit(ctx context.Context, key messageKey, msg pendingMessage) (Status, bool, error) {
 	q.mu.Lock()
 	defer q.mu.Unlock()
 	if held, ok := q.pending[key]; ok {
-		if held != content {
+		if held.content != msg.content {
 			return StatusUnknown, false, ErrIDReused
 		}
 		return StatusPending, false, nil
 	}
-	held, same, err := q.committed(ctx, key, content)
+	held, same, err := q.committed(ctx, key, msg.content)
 	if err != nil {
 		return StatusUnknown, false, err
 	}
@@ -154,22 +163,34 @@ func (q *Queue) admit(ctx context.Context, key messageKey, content string) (Stat
 		}
 		return StatusCompleted, false, nil
 	}
-	q.pending[key] = content
+	q.pending[key] = msg
 	return StatusPending, true, nil
 }
 
-// Status returns where the sender's message ID stands. A message stays
-// pending until its turn ends, which is after the turn commits it, so
-// a message is never reported unknown between the two.
-func (q *Queue) Status(ctx context.Context, sender, id string) (Status, error) {
-	key := messageKey{sender: sender, id: id}
+// Status returns where the message the transport principal poster posted
+// under id stands, signed or not (ADR 0026). Where poster's id names more
+// than one message — one unsigned and one signed, or two issuers' — it
+// answers pending when any of them is pending and completed only when
+// none is, so a message still running is never reported completed. A
+// message stays pending until its turn ends, which is after the turn
+// commits it, so a message is never reported unknown between the two.
+func (q *Queue) Status(ctx context.Context, poster, id string) (Status, error) {
 	q.mu.Lock()
-	_, pending := q.pending[key]
+	pending := false
+	for key, msg := range q.pending {
+		if key.id == id && msg.poster == poster {
+			pending = true
+			break
+		}
+	}
 	q.mu.Unlock()
 	if pending {
 		return StatusPending, nil
 	}
-	held, _, err := q.committed(ctx, key, "")
+	if q.runtime.Posted == nil {
+		return StatusUnknown, nil
+	}
+	held, err := q.runtime.Posted(ctx, poster, id)
 	if err != nil {
 		return StatusUnknown, err
 	}
@@ -183,7 +204,7 @@ func (q *Queue) committed(ctx context.Context, key messageKey, content string) (
 	if q.runtime.Committed == nil {
 		return false, false, nil
 	}
-	return q.runtime.Committed(ctx, key.sender, key.id, content)
+	return q.runtime.Committed(ctx, key.issuer, key.sender, key.id, content)
 }
 
 // forget drops the keys of messages no longer queued or running.

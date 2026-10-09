@@ -69,8 +69,11 @@ Pick the right tool for the task; don't run code when files will do.
 
 ## Turns and messages
 A turn may carry several messages; each arrives with an ID and a sender —
-address replies per message through message_send. A later message may
-retract an earlier one; when it does, do not start the retracted work.
+address replies per message through message_send. A sender shown as
+"<sender> (vouched for by <issuer>)" is <sender>; reply to it, not to the
+issuer. A message shown as "notice from <issuer>" is that issuer's own
+notice and has no sender to reply to. A later message may retract an
+earlier one; when it does, do not start the retracted work.
 
 ## Source-linked memory
 The newest visible conversation remains in your current context. Recalled memories are

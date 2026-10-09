@@ -76,21 +76,32 @@ func drain(inbox <-chan Inbound, msg Inbound) []Inbound {
 }
 
 // renderBatch renders one drained batch as the turn's input: one line
-// per message carrying its ID, sender, and content (ADR 0015). A message
-// without a sender renders as "unknown".
+// per message carrying its ID, who it is from, and its content (ADR 0015).
+// An unsigned message without a sender renders as "unknown"; a signed one
+// names its subject and the issuer that vouched for it; an issuer's own
+// notice names the issuer and no sender (ADR 0026).
 func renderBatch(batch []Inbound) string {
 	var b strings.Builder
 	for i, m := range batch {
-		sender := m.Sender
-		if sender == "" {
-			sender = "unknown"
-		}
-		fmt.Fprintf(&b, "[%s] %s: %s", m.ID, sender, m.Content)
+		fmt.Fprintf(&b, "[%s] %s: %s", m.ID, renderOrigin(m.Origin), m.Content)
 		if i < len(batch)-1 {
 			b.WriteByte('\n')
 		}
 	}
 	return b.String()
+}
+
+func renderOrigin(o Origin) string {
+	switch {
+	case o.Notice():
+		return "notice from " + o.issuer + " (no sender to reply to)"
+	case o.Signed():
+		return o.sender + " (vouched for by " + o.issuer + ")"
+	case o.sender == "":
+		return "unknown"
+	default:
+		return o.sender
+	}
 }
 
 func messageIDs(batch []Inbound) []string {
@@ -104,7 +115,7 @@ func messageIDs(batch []Inbound) []string {
 func messageKeys(batch []Inbound) []messageKey {
 	keys := make([]messageKey, len(batch))
 	for i, m := range batch {
-		keys[i] = messageKey{sender: m.Sender, id: m.ID}
+		keys[i] = keyOf(m.Origin, m.ID)
 	}
 	return keys
 }
@@ -140,7 +151,14 @@ func (s *batchEvents) Emit(ctx context.Context, e agent.Event) {
 func sourceBatch(batch []Inbound) []agent.SourceMessage {
 	out := make([]agent.SourceMessage, 0, len(batch))
 	for _, m := range batch {
-		out = append(out, agent.SourceMessage{ExternalID: m.ID, Sender: m.Sender, Role: agent.RoleUser, Content: m.Content})
+		out = append(out, agent.SourceMessage{
+			ExternalID: m.ID,
+			Issuer:     m.Origin.issuer,
+			Sender:     m.Origin.sender,
+			Poster:     m.Origin.poster,
+			Role:       agent.RoleUser,
+			Content:    m.Content,
+		})
 	}
 	return out
 }

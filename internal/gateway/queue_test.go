@@ -69,6 +69,12 @@ func (s *fakeSession) startedTasks() []string {
 	return append([]string(nil), s.started...)
 }
 
+// noIssuers is the verifier of a deployment that trusts no issuer and
+// requires no signature: every message is from its transport principal.
+func noIssuers() *gateway.Verifier {
+	return gateway.NewVerifier("", nil, false, time.Now)
+}
+
 func newTestLogger() *slog.Logger {
 	return slog.New(slog.DiscardHandler)
 }
@@ -90,7 +96,7 @@ func TestQueue_EnqueueAssignsIDAndRunsMessage(t *testing.T) {
 	session := &fakeSession{}
 	q := newTestQueue(t, session)
 
-	id, _, err := q.Enqueue(context.Background(), "alice", "", "hello")
+	id, _, err := q.Enqueue(context.Background(), gateway.TransportOrigin("alice"), "", "hello")
 	require.NoError(t, err)
 	assert.NotEmpty(t, id)
 
@@ -106,7 +112,7 @@ func TestQueue_SerializesRunsFIFO(t *testing.T) {
 	session := &fakeSession{gate: gate}
 	q := newTestQueue(t, session)
 
-	_, _, err := q.Enqueue(context.Background(), "", "", "first")
+	_, _, err := q.Enqueue(context.Background(), gateway.TransportOrigin(""), "", "first")
 	require.NoError(t, err)
 
 	// The first run starts and blocks; the second must not begin
@@ -116,7 +122,7 @@ func TestQueue_SerializesRunsFIFO(t *testing.T) {
 	}, 5*time.Second, time.Millisecond)
 	assert.Contains(t, session.startedTasks()[0], "first")
 
-	_, _, err = q.Enqueue(context.Background(), "", "", "second")
+	_, _, err = q.Enqueue(context.Background(), gateway.TransportOrigin(""), "", "second")
 	require.NoError(t, err)
 	time.Sleep(50 * time.Millisecond)
 	assert.Len(t, session.startedTasks(), 1,
@@ -142,7 +148,7 @@ func TestQueue_EnqueueAfterCloseFails(t *testing.T) {
 	q := newTestQueue(t, &fakeSession{})
 	require.NoError(t, q.Close())
 
-	_, _, err := q.Enqueue(context.Background(), "", "", "hi")
+	_, _, err := q.Enqueue(context.Background(), gateway.TransportOrigin(""), "", "hi")
 	assert.ErrorIs(t, err, gateway.ErrDraining)
 }
 
@@ -173,9 +179,9 @@ func TestQueue_FailedRunDoesNotBlockQueue(t *testing.T) {
 	session := &fakeSession{err: errors.New("boom")}
 	q := newTestQueue(t, session)
 
-	_, _, err := q.Enqueue(context.Background(), "", "", "first")
+	_, _, err := q.Enqueue(context.Background(), gateway.TransportOrigin(""), "", "first")
 	require.NoError(t, err)
-	_, _, err = q.Enqueue(context.Background(), "", "", "second")
+	_, _, err = q.Enqueue(context.Background(), gateway.TransportOrigin(""), "", "second")
 	require.NoError(t, err)
 
 	// Both messages are processed even though every turn fails; whether
@@ -202,9 +208,9 @@ func TestQueue_RetentionFailureDoesNotFailTurn(t *testing.T) {
 	require.NoError(t, err)
 	defer func() { q.Close() }()
 
-	_, _, err = q.Enqueue(context.Background(), "", "", "first")
+	_, _, err = q.Enqueue(context.Background(), gateway.TransportOrigin(""), "", "first")
 	require.NoError(t, err)
-	_, _, err = q.Enqueue(context.Background(), "", "", "second")
+	_, _, err = q.Enqueue(context.Background(), gateway.TransportOrigin(""), "", "second")
 	require.NoError(t, err)
 	// Both messages are processed despite the failing trigger; whether
 	// they share one drained turn or run back-to-back is the runner's call.
@@ -238,7 +244,7 @@ func TestQueue_RetentionRunsAfterTurn(t *testing.T) {
 	require.NoError(t, err)
 	defer func() { q.Close() }()
 
-	_, _, err = q.Enqueue(context.Background(), "", "", "hi")
+	_, _, err = q.Enqueue(context.Background(), gateway.TransportOrigin(""), "", "hi")
 	require.NoError(t, err)
 	require.Eventually(t, func() bool {
 		return len(session.startedTasks()) == 1
@@ -279,13 +285,13 @@ func TestQueue_DrainSkipsTheAfterTurnPass(t *testing.T) {
 		return calls
 	}
 
-	_, _, err = q.Enqueue(context.Background(), "", "", "before")
+	_, _, err = q.Enqueue(context.Background(), gateway.TransportOrigin(""), "", "before")
 	require.NoError(t, err)
 	gates <- struct{}{}
 	require.Eventually(t, func() bool { return retained() == 1 }, 5*time.Second, time.Millisecond,
 		"the control: a turn before the drain is followed by the pass")
 
-	_, _, err = q.Enqueue(context.Background(), "", "", "during")
+	_, _, err = q.Enqueue(context.Background(), gateway.TransportOrigin(""), "", "during")
 	require.NoError(t, err)
 	require.Eventually(t, func() bool { return len(session.startedTasks()) == 2 }, 5*time.Second, time.Millisecond)
 	drained := make(chan struct{})

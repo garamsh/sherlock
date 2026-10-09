@@ -129,7 +129,7 @@ func TestGateway_EndToEnd(t *testing.T) {
 	q := newGatewayQueue(t, root, func(string) agent.Model { return gated })
 	t.Cleanup(func() { q.Close() })
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
-	srv := httptest.NewServer(gateway.NewHandler(q, gateway.Instance{}, logger))
+	srv := httptest.NewServer(gateway.NewHandler(q, noIssuers(), gateway.Instance{}, logger))
 	t.Cleanup(srv.Close)
 
 	// Subscribe to the monitoring stream before any message so no event
@@ -350,4 +350,10 @@ func writebackStep(document string) agent.ScriptedStep {
 		Name:  agent.MemoryWriteTool,
 		Input: json.RawMessage(document),
 	}}}
+}
+
+// noIssuers is the verifier of a deployment that trusts no issuer and
+// requires no signature: every message is from its transport principal.
+func noIssuers() *gateway.Verifier {
+	return gateway.NewVerifier("", nil, false, time.Now)
 }

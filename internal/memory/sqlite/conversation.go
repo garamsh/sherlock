@@ -24,7 +24,9 @@ CREATE TABLE IF NOT EXISTS conversation_sources (
  role TEXT NOT NULL CHECK(role IN ('user','assistant')),
  external_id TEXT,
  content TEXT NOT NULL,
- sender TEXT NOT NULL DEFAULT ''
+ sender TEXT NOT NULL DEFAULT '',
+ issuer TEXT NOT NULL DEFAULT '',
+ poster TEXT NOT NULL DEFAULT ''
 );
 CREATE TABLE IF NOT EXISTS conversation_mid (
  id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -64,7 +66,7 @@ func (s *Store) RecordTurn(ctx context.Context, sources []agent.SourceMessage, s
 		}
 		identified++
 		var role, content string
-		err := tx.QueryRowContext(ctx, `SELECT role,content FROM conversation_sources WHERE sender=? AND external_id=?`, part.Sender, part.ExternalID).Scan(&role, &content)
+		err := tx.QueryRowContext(ctx, `SELECT role,content FROM conversation_sources WHERE issuer=? AND sender=? AND external_id=?`, part.Issuer, part.Sender, part.ExternalID).Scan(&role, &content)
 		if errors.Is(err, sql.ErrNoRows) {
 			continue
 		}
@@ -88,7 +90,7 @@ func (s *Store) RecordTurn(ctx context.Context, sources []agent.SourceMessage, s
 			if strings.TrimSpace(content) == "" {
 				continue
 			}
-			if _, err := tx.ExecContext(ctx, `INSERT INTO conversation_sources(role,sender,external_id,content) VALUES (?,?,?,?)`, part.Role, part.Sender, part.ExternalID, content); err != nil {
+			if _, err := tx.ExecContext(ctx, `INSERT INTO conversation_sources(role,issuer,sender,poster,external_id,content) VALUES (?,?,?,?,?,?)`, part.Role, part.Issuer, part.Sender, part.Poster, part.ExternalID, content); err != nil {
 				return fmt.Errorf("record source: %v", err)
 			}
 		}
@@ -271,12 +273,14 @@ func (s *Store) Source(ctx context.Context, id int64) (agent.SourceMessage, erro
 	return m, err
 }
 
-// HoldsInbound reports whether a committed source holds the sender's message
-// ID and, when it does, whether it holds it with content, compared as stored:
+// HoldsInbound reports whether a committed source holds the message ID
+// within its scope — the verified issuer and subject of a signed message,
+// or the empty issuer and transport principal of an unsigned one — and,
+// when it does, whether it holds it with content, compared as stored:
 // credentials redacted.
-func (s *Store) HoldsInbound(ctx context.Context, sender, id, content string) (held, same bool, err error) {
+func (s *Store) HoldsInbound(ctx context.Context, issuer, sender, id, content string) (held, same bool, err error) {
 	var stored string
-	err = s.db.QueryRowContext(ctx, `SELECT content FROM conversation_sources WHERE sender=? AND external_id=?`, sender, id).Scan(&stored)
+	err = s.db.QueryRowContext(ctx, `SELECT content FROM conversation_sources WHERE issuer=? AND sender=? AND external_id=?`, issuer, sender, id).Scan(&stored)
 	if errors.Is(err, sql.ErrNoRows) {
 		return false, false, nil
 	}
@@ -284,6 +288,21 @@ func (s *Store) HoldsInbound(ctx context.Context, sender, id, content string) (h
 		return false, false, fmt.Errorf("read inbound source: %v", err)
 	}
 	return true, stored == redactSecrets(content), nil
+}
+
+// PostedInbound reports whether a committed source holds a message the
+// transport principal poster posted under id: an unsigned message is its
+// own sender's, and a signed one carries its poster (ADR 0026). A row from
+// before signed senders has no poster and is unsigned, so its sender
+// answers for it.
+func (s *Store) PostedInbound(ctx context.Context, poster, id string) (bool, error) {
+	var held int
+	err := s.db.QueryRowContext(ctx, `SELECT count(*) FROM conversation_sources
+WHERE external_id=? AND ((issuer='' AND sender=?) OR (issuer<>'' AND poster=?))`, id, poster, poster).Scan(&held)
+	if err != nil {
+		return false, fmt.Errorf("read posted source: %v", err)
+	}
+	return held > 0, nil
 }
 
 // OpenConversation takes the writer lock, then checks existing addressed rows
@@ -474,8 +493,23 @@ func prepareConversation(db *sql.DB) error {
 			return err
 		}
 	}
+	// A file from before signed senders (ADR 0026) gains the issuer and
+	// the poster empty, so every existing row reads as a transport
+	// principal's; no row is rewritten.
+	for _, column := range []string{"issuer", "poster"} {
+		var present int
+		if err := tx.QueryRow(`SELECT count(*) FROM pragma_table_info('conversation_sources') WHERE name=?`, column).Scan(&present); err != nil {
+			return err
+		}
+		if present == 0 {
+			if _, err := tx.Exec(`ALTER TABLE conversation_sources ADD COLUMN ` + column + ` TEXT NOT NULL DEFAULT ''`); err != nil {
+				return err
+			}
+		}
+	}
 	if _, err := tx.Exec(`DROP INDEX IF EXISTS conversation_external_id;
-CREATE UNIQUE INDEX IF NOT EXISTS conversation_sender_external_id ON conversation_sources(sender,external_id) WHERE external_id <> ''`); err != nil {
+DROP INDEX IF EXISTS conversation_sender_external_id;
+CREATE UNIQUE INDEX IF NOT EXISTS conversation_scope_external_id ON conversation_sources(issuer,sender,external_id) WHERE external_id <> ''`); err != nil {
 		return err
 	}
 	return tx.Commit()

@@ -252,6 +252,10 @@ func serveAgent(ctx context.Context, cfg config.Config, id identity, ego, operat
 		return fmt.Errorf("addr %q is not a loopback bind: serving beyond localhost requires the tls: config section (ADR 0012)", cfg.Addr)
 	}
 
+	verifier, err := newVerifier(ctx, cfg, id.agentID, logger)
+	if err != nil {
+		return err
+	}
 	factory, err := newAgentFactory(cfg, id, ego, operatorInstructions, logger)
 	if err != nil {
 		return err
@@ -268,8 +272,35 @@ func serveAgent(ctx context.Context, cfg config.Config, id identity, ego, operat
 		"assignment_epoch", id.assignmentEpoch, "generation", id.generation,
 		"memory_path", cfg.MemoryPath, "workspace_addr", cfg.WorkspaceAddr,
 		"tools_dir", cfg.ToolsDir,
-		"auth", authLabel(tlsConfig))
-	return gateway.Serve(ctx, cfg.Addr, tlsConfig, queue, instanceOf(cfg, id), logger)
+		"auth", authLabel(tlsConfig),
+		"issuers", len(cfg.Issuers), "require_signature", cfg.RequireSignature)
+	return gateway.Serve(ctx, cfg.Addr, tlsConfig, queue, verifier, instanceOf(cfg, id), logger)
+}
+
+// newVerifier builds the trusted issuers' key sets and reads each once
+// (ADR 0026): a keys-file that cannot be read or parsed refuses the start,
+// as unreadable TLS material does, while a keys-url that cannot be fetched
+// is logged and leaves its issuer unavailable until a later fetch
+// succeeds.
+func newVerifier(ctx context.Context, cfg config.Config, agentID string, logger *slog.Logger) (*gateway.Verifier, error) {
+	sets := make([]*gateway.KeySet, 0, len(cfg.Issuers))
+	for _, entry := range cfg.Issuers {
+		if entry.KeysFile != "" {
+			set := gateway.NewFileKeySet(entry.Issuer, entry.KeysFile, time.Now, logger)
+			if err := set.Load(ctx); err != nil {
+				return nil, fmt.Errorf("issuer %q: %w", entry.Issuer, err)
+			}
+			sets = append(sets, set)
+			continue
+		}
+		set := gateway.NewURLKeySet(entry.Issuer, entry.KeysURL, nil, time.Now, logger)
+		if err := set.Load(ctx); err != nil {
+			logger.Warn("issuer key set unavailable at startup",
+				"op", "startup", "iss", entry.Issuer, "error", err)
+		}
+		sets = append(sets, set)
+	}
+	return gateway.NewVerifier(agentID, sets, cfg.RequireSignature, time.Now), nil
 }
 
 // instanceOf is what the status route reports: the identity this start

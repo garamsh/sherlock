@@ -129,12 +129,14 @@ Rejected:
 - **The verified pair replaces `callerID` for a signed message, everywhere the sender is read:** the ID's scope in the queue and in the redelivery record (§3), the sender the turn shows the model (ADR 0015's envelope), and the sender stored with the source. The turn names `sub` as the sender and `iss` as who vouched for it, so the model replies to `sub` through `message_send`.
 - **mTLS stays transport security only.** It decides who may connect, and for an unsigned message under §5's default it is still the scope. For a signed message it decides nothing about the sender. The bind gate is unchanged: a non-loopback listener still needs mTLS (ADR 0012), because the lookup, events and status routes carry no signature.
 - **The request log keeps `caller_id`** as the transport identity, and a signed message's line adds `iss` and `sub`.
-- **The lookup stays transport-scoped.** `GET /agents/{agent-id}/messages/{id}` carries no signature, so it answers within the caller's transport principal and reads a signed message as unknown. A signed sender learns where a message stands by posting it again with a fresh signature: the answer is `queued`, `completed` or 409, which is the redelivery garam's adapter already performs.
+- **The lookup answers the party that posted.** `GET /agents/{agent-id}/messages/{id}` carries no signature, so it is still answered by transport principal. A signed message therefore records, beside its `(iss, sub)` scope, the transport principal that posted it: in the queue while it is pending, and in the source the turn commits. A lookup under that principal answers `pending`, `completed` or `unknown` for the signed message as it does for an unsigned one. Under any other principal the signed message reads unknown. The poster recorded is the one whose post the queue accepted, and a redelivery from another principal learns where the message stands from its post's answer.
+- **Where one poster's ID names more than one message, the lookup answers conservatively.** One poster can post one ID unsigned and signed, or under two issuers. The lookup then answers `completed` only when every message it names has completed, `pending` when any of them is pending, and `unknown` otherwise. A wrong `unknown` costs a redelivery, which the post's answer resolves; a wrong `completed` would lose a message.
 
 Rejected:
 
 - **Keeping `callerID` as the scope and recording `(iss, sub)` beside it.** Over loopback every signed message would still share the empty principal, so two issuers' equal IDs would collide.
-- **A signature on the lookup.** It binds no content to compare, and is a second signed shape for a question the post already answers.
+- **Keeping the lookup transport-scoped alone, so it reads every signed message as unknown.** garam's adapter posts over loopback under the empty principal, and recovers a lost completion event through this lookup. garam's `adapter.md` §Foreign facts this rests on, at `garamsh/garam@1b1189b`, lists "`GET /agents/{agent}/messages/{id}` answers `pending`, `completed` or `unknown`", with "A lost event could not be recovered" as what breaks without it. Reading every signed message as unknown would send the adapter to redeliver a message that completed. It cannot do that once the signature it holds has expired, because only garam re-signs.
+- **A signature on the lookup.** It binds no content to compare. It would be a second signed shape for a question the recorded poster already answers, and it has the same expiry problem.
 
 ## Consequences
 
@@ -144,15 +146,17 @@ Rejected:
 - A deployment using `keys-url` gains one outbound destination from the agent process; one using `keys-file` gains none and owes its renderer a two-hour refresh deadline.
 - The agent now refuses on time. A host clock more than 60 seconds off refuses every signed message with `signature rejected: time`.
 - A message whose post outlasts its `exp` is refused; garam hands it out again with a new signature when the lease lapses (ADR-0101 §Attempts and relaying).
-- `memory.db` gains the issuer beside the sender of each source; existing rows read as transport principals.
+- `memory.db` gains two values on each source: the issuer beside the sender, and, for a signed message, the transport principal that posted it. Existing rows read as transport principals.
+- garam's `adapter.md` §Foreign facts this rests on, at `1b1189b`, says a post "keys the message by the transport caller and that id". For a signed message, the key becomes `(iss, sub)` and that id. The property that fact protects still holds: two claims of one message carry the same pair and ID, so they remain one source. The lookup fact holds unchanged. garam records the new key when its adapter starts signing (ADR-0101 §Consequences, step 3).
 - Implementation waits for this record's acceptance and lands in round 2 on the same branch. This round does not choose the JOSE library.
 - **Records updated in place when this is implemented** (rule 2): ADR 0007, whose scope sentence names the mTLS identity; ADR 0013, whose list of operator-chosen destinations gains `keys-url`; ADR 0012, whose caller identity stops being a signed message's sender.
-- **Responsibility documents paired in round 2** (rule 4): `gateway.md` (the `signature` member, verification, refusals, scope and sender, the lookup); `deployment.md` (§Configuration and secrets for `issuers` and `require-signature`, §Startup for the new refusals, §Load-bearing facts for the ingress member, and the `keys-url` egress); `security.md` (message authenticity rests on issuer keys; the egress list); `memory.md` (the issuer stored beside the sender). The index row in `README.md` lands with this record and drops `(proposed)` on acceptance.
+- **Responsibility documents paired in round 2** (rule 4): `gateway.md` (the `signature` member, verification, refusals, scope and sender, the lookup by the recorded poster); `deployment.md` (§Configuration and secrets for `issuers` and `require-signature`, §Startup for the new refusals, §Load-bearing facts for the ingress member, and the `keys-url` egress); `security.md` (message authenticity rests on issuer keys; the egress list); `memory.md` (the issuer stored beside the sender, and a signed message's poster). The index row in `README.md` lands with this record and drops `(proposed)` on acceptance.
 
 ## Signs the decision was wrong
 
 - Launchers set `require-signature` on every start and nothing posts unsigned, which would mean the default is backwards, as ADR 0025 watches for its own flag.
 - Deployments using `keys-file` stop accepting at rotations, which would mean renderers cannot meet the two-hour lead and the fetch, or a longer lead, is what they need.
 - Operators ask for per-issuer TLS roots or allow-lists, which would mean an option rejected above was needed after all.
+- garam's adapter reads `unknown` for a signed message whose turn completed, which would mean the recorded poster is not the principal the adapter looks up under.
 - A message garam redelivers is answered 409 or runs twice outside the switch, which would mean the record, the digest point, or the scope is not where this put it.
 - Refusals on `time` appear in ordinary operation, which would mean the 60-second allowance is too narrow for the hosts agents run on.

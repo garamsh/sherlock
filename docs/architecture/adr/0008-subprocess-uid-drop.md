@@ -1,7 +1,7 @@
 # ADR 0008: Agent-influenced sub-processes run dropped to the unprivileged UID
 
 > Status: accepted
-> Date: 2026-07-30 (revised in place 2026-08-13; 2026-08-16; 2026-08-17; 2026-10-09)
+> Date: 2026-07-30 (revised in place 2026-08-13; 2026-08-16; 2026-08-17; 2026-10-09; 2026-10-10)
 
 ## Context
 
@@ -17,7 +17,7 @@ Mechanism:
 
 - The executor forks, sets the child to the exec UID, drops Linux capabilities, applies resource limits, and execs the command.
 - Network isolation is per-request (`NoNetwork`): the child lands in a fresh, empty network namespace (a privileged unshare, or an unprivileged user+network namespace in single-account mode, ADR 0010); in the pod topology the pod network layer is an additional mechanism.
-- The child can neither read nor write the agent's volume — `memory.db`, its sidecars and `outbox/` — and what holds that is the mount, not the uid: the agent's volume is not mounted into the workspace container, so no child reaches it under any account. The distinct exec UID is required as well and stops writes, but on a volume both containers mount it does not stop reads: the agent creates the store's directory and `outbox/` `0755` and `memory.db` comes out `0644`, so any account that reaches the volume reads the store (#966; tightening those modes is #998). Platform runtime material is out of reach by kernel DAC.
+- The child can neither read nor write the agent's volume — `memory.db`, its sidecars and `outbox/` — and what holds that in full is the mount: the agent's volume is not mounted into the workspace container, so no child reaches it under any account. The distinct exec UID is required as well, and on a volume both containers mount it stops reads as well as writes: the agent creates `memory.db`, its sidecars and the writer lock `0600` and `outbox/` `0700`, and tightens an existing store to those modes at startup (#998). What it leaves visible there is names: the directory holding `memory.db` stays `0755`, because it may also hold the workspace directory, which an Exec child must traverse. Platform runtime material is out of reach by kernel DAC.
 - The child has a configurable timeout; on expiry its whole process group is SIGKILLed and the result carries `timed_out: true` — a normal outcome crossing the wire, not an RPC error. The group, not the child alone: the child is the shim, which execs a shell, which execs the command, and each inherits the pipe the executor drains, so killing only the first leaves the caller waiting for the last.
 - That kill crosses the drop, so it needs a capability the drop does not: signalling a process that owns neither of the executor's uids requires `CAP_KILL`, and root is no substitute once the capability has left the bounding set. **The claim above holds only where the workspace holds `CAP_KILL`** — single-account mode excepted, where the child owns the executor's own uid. A privileged executor without it reports `agent_uid unavailable` per call rather than running a command whose deadline it could not enforce (#612).
 - When the platform cannot run the child as the configured account, the executor reports `agent_uid unavailable` instead of silently upgrading.

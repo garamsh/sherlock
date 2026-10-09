@@ -27,6 +27,8 @@ What separates the layers is the subject: integration exercises real modules in 
 
 The exception is a dependency no in-process substitute can stand in for, because the code exists to interact with it: a controller's API server, not a database. Run that as a fixture and the test is still integration, because the subject is still in-process modules.
 
+**A test constructs what it puts under test** — the unit and whatever stands in for its dependencies, or the server its client is pointed at. What it does not construct is the shipped graph, the real implementations wired together as the application ships them: where that graph is the subject, the test calls the place that assembles it for the application. A copy assembled inside the test goes on passing after the shipped wiring breaks.
+
 ## Behavior over implementation
 
 Assert on outputs and side-effects only:

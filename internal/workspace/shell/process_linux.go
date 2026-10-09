@@ -81,7 +81,8 @@ type ProcessExecutor struct {
 // drop to AgentUID, when it cannot create the fresh network namespace
 // required for NoNetwork, and when it could not signal the account it
 // drops to. The two capability probes run here, once, and each warns when
-// what it found will make calls fail.
+// what it found will make calls fail; in the unprivileged shape the
+// NoNetwork probe runs here too, once, and warns the same way (ADR 0010).
 func NewProcessExecutor(agentUID int, defaultTimeout time.Duration) *ProcessExecutor {
 	self, err := os.Executable()
 	exec := &ProcessExecutor{
@@ -101,7 +102,22 @@ func NewProcessExecutor(agentUID int, defaultTimeout time.Duration) *ProcessExec
 		slog.Warn("shell: CAP_KILL missing; every Exec will report agent_uid unavailable",
 			"reason", "signalling a child dropped to another account requires CAP_KILL, so its timeout cannot be enforced")
 	}
+	if euid := os.Geteuid(); euid != 0 && agentUID == euid {
+		if err := probeNoNetwork(exec); err != nil {
+			slog.Warn("shell: NoNetwork probe failed; every NoNetwork Exec, so every shell_exec, will fail with this error (docs/architecture/deployment.md §Capabilities)",
+				"error", err,
+				"reason", "an unprivileged NoNetwork child is cloned CLONE_NEWUSER|CLONE_NEWNET, which user.max_user_namespaces, the seccomp profile and any LSM must all admit")
+		}
+	}
 	return exec
+}
+
+// probeNoNetwork makes the clone a NoNetwork Exec makes by running one
+// through Run, so what it meets is what every such call would meet. It is
+// a variable so a test can stand in for a host that refuses the clone.
+var probeNoNetwork = func(e *ProcessExecutor) error {
+	_, err := e.Run(context.Background(), Request{Command: "exit 0", NoNetwork: true, Trusted: true, Timeout: 5 * time.Second})
+	return err
 }
 
 // dropsAccount reports whether this executor's children run under an

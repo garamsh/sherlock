@@ -42,7 +42,7 @@ type ServeOptions struct {
 // contract and by exec'd children share one owner.
 func Serve(ctx context.Context, opts ServeOptions, logger *slog.Logger) error {
 	if euid := os.Geteuid(); euid != 0 && opts.ExecUID == euid {
-		logger.Warn("single-account shape is not supported: the workspace runs unprivileged and exec-uid is its own uid, so Exec children run as the workspace's account (docs/architecture/deployment.md §Volumes and ownership)",
+		logger.Info("unprivileged shape: the workspace runs unprivileged and exec-uid is its own uid, so Exec children run as the workspace's account; it requires the agent's volume kept out of the workspace container, no process namespace shared with the agent container, and a host that admits the unprivileged user and network namespace clone (docs/architecture/deployment.md §Volumes and ownership)",
 			"op", "startup", "exec_uid", opts.ExecUID)
 	}
 

@@ -95,21 +95,21 @@ func TestServe_ContractEndToEnd(t *testing.T) {
 		"exec children work in the workspace directory by default")
 }
 
-// TestServe_WarnsOnSingleAccountShape pins the startup warning for the
-// unsupported single-account shape (ADR 0008, #1003): an unprivileged
-// workspace whose exec-uid is its own uid warns before serving, and one
-// whose exec-uid is another uid serves without that warning.
-func TestServe_WarnsOnSingleAccountShape(t *testing.T) {
+// TestServe_StatesTheUnprivilegedShape pins the startup line for the
+// unprivileged shape (ADR 0008, #1054): an unprivileged workspace whose
+// exec-uid is its own uid states the shape and its requirements at INFO
+// before serving, and one whose exec-uid is another uid serves without it.
+func TestServe_StatesTheUnprivilegedShape(t *testing.T) {
 	if os.Geteuid() == 0 {
 		t.Skip("the shape is unprivileged; a root run cannot take it")
 	}
 	tests := []struct {
 		name     string
 		execUID  int
-		wantWarn bool
+		wantLine bool
 	}{
-		{name: "exec-uid is the workspace's own uid", execUID: os.Geteuid(), wantWarn: true},
-		{name: "exec-uid is another uid", execUID: os.Geteuid() + 1, wantWarn: false},
+		{name: "exec-uid is the workspace's own uid", execUID: os.Geteuid(), wantLine: true},
+		{name: "exec-uid is another uid", execUID: os.Geteuid() + 1, wantLine: false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -119,20 +119,37 @@ func TestServe_WarnsOnSingleAccountShape(t *testing.T) {
 				ExecTimeout: 30 * time.Second,
 			})
 
-			var listening, warned bool
+			var listening bool
+			var stated []map[string]any
 			for _, r := range records {
 				if r["msg"] == "workspace listening" {
 					listening = true
 				}
 				msg, _ := r["msg"].(string)
-				if r["level"] == "WARN" && strings.Contains(msg, "single-account shape is not supported") {
-					warned = true
-					assert.Contains(t, msg, "deployment.md §Volumes and ownership",
-						"the warning points to where the supported shape is stated")
+				if strings.Contains(msg, "unprivileged shape") || strings.Contains(msg, "single-account shape") {
+					stated = append(stated, r)
 				}
 			}
-			require.True(t, listening, "the workspace reached serving, so the absence of a warning is not a failed start")
-			assert.Equal(t, tt.wantWarn, warned)
+			require.True(t, listening, "the workspace reached serving, so the absence of the line is not a failed start")
+			if !tt.wantLine {
+				assert.Empty(t, stated)
+				return
+			}
+			require.Len(t, stated, 1)
+			line := stated[0]
+			assert.Equal(t, "INFO", line["level"], "the shape is supported, so it is stated rather than warned about")
+			msg := line["msg"].(string)
+			assert.True(t, strings.HasPrefix(msg, "unprivileged shape: the workspace runs unprivileged and exec-uid is its own uid"), "the line names the shape: %q", msg)
+			assert.NotContains(t, msg, "not supported")
+			for _, requirement := range []string{
+				"the agent's volume kept out of the workspace container",
+				"no process namespace shared with the agent container",
+				"a host that admits the unprivileged user and network namespace clone",
+			} {
+				assert.Contains(t, msg, requirement, "the line names each requirement of the shape")
+			}
+			assert.Contains(t, msg, "deployment.md §Volumes and ownership",
+				"the line points to where the shape is stated")
 		})
 	}
 }

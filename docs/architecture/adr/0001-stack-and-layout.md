@@ -5,7 +5,7 @@
 
 ## Context
 
-The system's components — gateway, agent, tools — each invite a top-level folder of their own, while `docs/convention/stack-go.md` §Directory layout offers three layouts, the two service ones shaped `cmd/<binary>` + `internal/<domain>`, under a banned-name list. The two shapes must be reconciled without adding layers.
+The system's components — gateway, agent, tools — each invite a top-level folder of their own, while `docs/convention/stack-go.md` §Directory layout governs a module that ships a binary by its Service layout, shaped `cmd/<binary>` + `internal/<domain>`, under a banned-name list. The two shapes must be reconciled without adding layers.
 
 ## Decision
 

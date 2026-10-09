@@ -51,31 +51,20 @@ deliberate-differences:
   .github/PULL_REQUEST_TEMPLATE.md keeps the no-empty-fields instruction,
     consultation evidence and the instruction to surface unnamed cases.
     The whole-check entry point and Restructure rejected fields are adopted.
-  stack-go.md remains adapted: hand-written test doubles (#623), implementation
-    sub-packages, current Layout B selection and project verification details.
-    Upstream 37be164 removed the mandatory interface-named package that this
-    project declined (#685); that old objection no longer describes upstream.
-    New service/library layouts and composition-site rules are deferred with
-    their dependent packages.md and architecture-index claims, including #710.
-    Updating the rule alone would leave those documents describing the old rule.
-    §Project envelope names cmd/<binary>/main.go as the composition site and
-    no more: the rules for that site live in structure.md (548895a). The
-    exception for a site a test outside cmd/ must reach is part of the
-    deferral. b29f0f1's heading for Generated mocks has no counterpart in
-    this project's Test doubles section.
-    That deferral keeps text upstream has since removed, all of it naming
-    the old layout's files: §Directory layout's Layout A/B/C, impl sizing
-    and root-level sizing (5eb0a31, 5788f26, 16fa159, 8ccb19e, d5d4650),
-    §Module / package boundary's declare/depend bullets and §Error
-    handling's adapter example (5eb0a31).
-    The one placement statement is a743468's "An implementation that
-    imports a driver (`pgx`, a vendor SDK) sits outside the domain
-    package's import graph", taken verbatim in place of "Concrete impls
-    sit where the interface is declared" (#1029). The deferred text above
-    that names `internal/<domain>/postgres.go` as a single file conflicts
-    with it for a driver-importing implementation. No package here is in
-    that case, and #1030 asks whether the deferred layout text is still
-    carried at all.
+  stack-go.md remains adapted: hand-written test doubles (#623) and project
+    verification details. Upstream 37be164 removed the mandatory
+    interface-named package that this project declined (#685); that old
+    objection no longer describes upstream. b29f0f1's heading for
+    Generated mocks has no counterpart in this project's Test doubles
+    section, and §Module / package boundary drops the template's `mocks/`
+    bullet for the same reason (#623).
+    §Directory layout is the template's as of 6f3ddf8, its Service and
+    Library layouts and §Project envelope's composition-site exception
+    included, and §Module / package boundary's declare/depend and "The
+    import goes one way" bullets and §Error handling's adapter example
+    are taken with it (#1030). The Layout A/B/C text deferred before it
+    is gone; packages.md, structure.md, the architecture index and ADR
+    0001 were updated in the same change.
   .github/PULL_REQUEST_TEMPLATE.md's Summary comment keeps "Reference the
     task or issue if one exists", which 7b274c6 replaced with the
     Closes-keyword instruction. .github/ is the PM's, so #1022 does not
@@ -119,3 +108,7 @@ removal-audit:
     stack-go.md, and b8b0890, 33c0f43 and 4bcd785 in documentation.md.
   #1034 ran it against template 6f3ddf8. It found only lines recorded
     above, and took 6c60405 and 6f3ddf8 whole.
+  #1030 ran it on stack-go.md against template 6f3ddf8 after taking
+    §Directory layout. It found no sentence and no line the template
+    has removed; the same check on the copy before the change found 32
+    sentences and 60 lines, all of them the deferred layout text.

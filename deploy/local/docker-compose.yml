@@ -75,6 +75,9 @@ services:
       # account starves the child of its process budget. 1001 is the
       # login user on many hosts; this one is not.
       SHERLOCK_EXEC_UID: "10001"
+    # Left for the daemon to create, as root:root: the handover gives the
+    # directory to the exec uid and keeps its group, whose write bit is how
+    # this root process, holding no DAC_OVERRIDE, still writes into it.
     volumes:
       - "${SHERLOCK_DATA_DIR:?export SHERLOCK_DATA_DIR per README.md}/workspace:${SHERLOCK_DATA_DIR:?export SHERLOCK_DATA_DIR per README.md}/workspace"
     command: ["workspace"]

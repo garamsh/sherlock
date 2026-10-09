@@ -18,7 +18,9 @@ Two variables must be exported before `docker compose up`:
 | `SHERLOCK_DATA_DIR` | absolute host path for agent data | holds `agent/` (`memory.db`, its sidecars, `outbox/`), bind-mounted into the agent container only, and `workspace/`, bind-mounted into the workspace container only, each at the same absolute path as on the host |
 | `SHERLOCK_AGENT_UID` | `$(id -u)` | the uid the agent container runs as, so it can read the owner-only config file and server key |
 
-- `SHERLOCK_DATA_DIR`: any absolute host path; create `agent/` and `workspace/` under it as the host user before starting (§Run), so the agent container, running as that user, can write `agent/`. The workspace container chowns `workspace/` to uid 10001, the exec uid its Exec children run as. On Docker Desktop it must sit under a shared path (the project directory works).
+- `SHERLOCK_DATA_DIR`: any absolute host path. Each directory under it must be writable by the container that writes it:
+  - `agent/` is written by the agent container, which runs as `SHERLOCK_AGENT_UID`. Create it as the host user before starting (§Run). That user is its owner, and no wider mode is needed.
+  - `workspace/` is written by the workspace process (root, holding no `DAC_OVERRIDE`) and by its Exec children (uid 10001). **Do not create it yourself.** Docker creates the missing bind source as `root:root`. On first use the workspace hands it to uid 10001 with mode `0775`, keeping its group, so the group write bit is how the workspace process still writes into it. A directory the host user created carries that user's group instead, the workspace process is then "other", and every write over the gRPC contract fails with `permission denied`. A `0777` does not help, because the handover sets `0775`. To reuse a `workspace/` an earlier run created, keep it as it is; to replace it, remove it as root. On Docker Desktop it must sit under a shared path (the project directory works).
 - `SHERLOCK_AGENT_UID`: the gateway refuses a group- or other-readable config file or TLS key, so only their owner can read them — running the agent as that owner is what makes the mounts readable. The workspace container keeps the image's user: it needs root to drop Exec children to the exec uid.
 
 **The two containers mount separate directories.** They exchange no file — the tools reach the workspace over gRPC — so the workspace container does not mount `agent/`, and no Exec child reaches the agent's store under any uid. What the workload requires of storage is in `docs/architecture/deployment.md` §Volumes and ownership.
@@ -52,7 +54,7 @@ From this directory:
 ```sh
 export SHERLOCK_DATA_DIR="$PWD/data"
 export SHERLOCK_AGENT_UID="$(id -u)"
-install -d "$SHERLOCK_DATA_DIR/agent" "$SHERLOCK_DATA_DIR/workspace"
+install -d "$SHERLOCK_DATA_DIR/agent"                      # workspace/ is Docker's to create (§Requirements)
 make -C ../.. build-tools                                  # the tools the agent loads at startup
 docker compose build
 docker compose up -d

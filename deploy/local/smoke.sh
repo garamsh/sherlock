@@ -44,7 +44,11 @@ chmod 0600 tls/*key* agent.yaml
 # --wait holds until compose reports both services up, so the readiness
 # wait is compose's rather than a retry loop here.
 echo "==> deployment"
-install -d "$SHERLOCK_DATA_DIR/agent" "$SHERLOCK_DATA_DIR/workspace"
+# agent/ belongs to the agent container's uid, this user. workspace/ is not
+# created here: the daemon creates the missing bind source as root:root, and
+# the workspace's handover keeps the directory's group while giving it to the
+# exec uid, so that group has to be the workspace process's own (README.md).
+install -d "$SHERLOCK_DATA_DIR/agent"
 docker compose build
 docker compose up -d --wait
 

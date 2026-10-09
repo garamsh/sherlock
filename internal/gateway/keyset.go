@@ -4,6 +4,8 @@ import (
 	"context"
 	"crypto/ecdsa"
 	"crypto/elliptic"
+	"crypto/tls"
+	"crypto/x509"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -72,18 +74,23 @@ func NewFileKeySet(issuer, path string, now func() time.Time, logger *slog.Logge
 }
 
 // NewURLKeySet returns issuer's key set, fetched from the https URL
-// rawURL over transport (nil: the default, verifying against the system
-// roots). The response's max-age is the set's lifetime. A redirect is
+// rawURL. The response's max-age is the set's lifetime. A redirect is
 // refused: the set's location is the configured one and no other.
-func NewURLKeySet(issuer, rawURL string, transport http.RoundTripper, now func() time.Time, logger *slog.Logger) *KeySet {
-	client := &http.Client{
-		Transport: transport,
-		Timeout:   keysFetchTimeout,
-		CheckRedirect: func(*http.Request, []*http.Request) error {
-			return http.ErrUseLastResponse
-		},
+// caFile, when not empty, is a PEM bundle that alone verifies the
+// server's certificate in place of the system roots; it is read again at
+// each fetch, so a rotated root is followed, and an unreadable or
+// unparseable bundle is an error here.
+func NewURLKeySet(issuer, rawURL, caFile string, now func() time.Time, logger *slog.Logger) (*KeySet, error) {
+	if caFile != "" {
+		if _, err := readRoots(caFile); err != nil {
+			return nil, err
+		}
 	}
 	read := func(ctx context.Context) ([]byte, time.Duration, error) {
+		client, err := keysClient(caFile)
+		if err != nil {
+			return nil, 0, fmt.Errorf("fetch keys-url: %w", err)
+		}
 		req, err := http.NewRequestWithContext(ctx, http.MethodGet, rawURL, nil)
 		if err != nil {
 			return nil, 0, fmt.Errorf("fetch keys-url: %w", err)
@@ -106,7 +113,46 @@ func NewURLKeySet(issuer, rawURL string, transport http.RoundTripper, now func()
 		}
 		return body, maxAge(resp.Header.Get("Cache-Control")), nil
 	}
-	return &KeySet{issuer: issuer, read: read, now: now, logger: logger}
+	return &KeySet{issuer: issuer, read: read, now: now, logger: logger}, nil
+}
+
+// keysClient returns the client for one fetch: the default transport,
+// verifying against the system roots, when caFile is empty, and otherwise
+// a transport trusting the bundle caFile holds now and nothing else. Its
+// connections are not kept, since the next fetch reads the bundle anew.
+func keysClient(caFile string) (*http.Client, error) {
+	client := &http.Client{
+		Timeout: keysFetchTimeout,
+		CheckRedirect: func(*http.Request, []*http.Request) error {
+			return http.ErrUseLastResponse
+		},
+	}
+	if caFile == "" {
+		return client, nil
+	}
+	roots, err := readRoots(caFile)
+	if err != nil {
+		return nil, err
+	}
+	client.Transport = &http.Transport{
+		Proxy:             http.ProxyFromEnvironment,
+		TLSClientConfig:   &tls.Config{RootCAs: roots},
+		DisableKeepAlives: true,
+	}
+	return client, nil
+}
+
+// readRoots reads the PEM bundle at path as a pool of trusted roots.
+func readRoots(path string) (*x509.CertPool, error) {
+	pem, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("read keys-ca-file: %w", err)
+	}
+	roots := x509.NewCertPool()
+	if !roots.AppendCertsFromPEM(pem) {
+		return nil, fmt.Errorf("keys-ca-file %q holds no PEM certificates", path)
+	}
+	return roots, nil
 }
 
 // Issuer is the iss value this set verifies.

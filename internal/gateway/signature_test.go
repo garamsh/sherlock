@@ -9,6 +9,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
+	"encoding/pem"
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
@@ -326,7 +327,10 @@ func TestPostMessage_UnavailableIssuer(t *testing.T) {
 		_ = json.NewEncoder(w).Encode(jose.JSONWebKeySet{Keys: []jose.JSONWebKey{key.public()}})
 	}))
 	defer keys.Close()
-	set := gateway.NewURLKeySet(testIssuer, keys.URL+"/keys", keys.Client().Transport, clock.Now, newTestLogger())
+	bundle := filepath.Join(t.TempDir(), "ca.pem")
+	require.NoError(t, os.WriteFile(bundle, pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: keys.Certificate().Raw}), 0o600))
+	set, err := gateway.NewURLKeySet(testIssuer, keys.URL+"/keys", bundle, clock.Now, newTestLogger())
+	require.NoError(t, err)
 	require.Error(t, set.Load(context.Background()), "setup: the first fetch fails")
 	v := gateway.NewVerifier(testAudience, []*gateway.KeySet{set}, false, clock.Now)
 	srv := serve(t, newTestQueue(t, &fakeSession{}), v, newTestLogger())

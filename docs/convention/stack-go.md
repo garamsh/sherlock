@@ -54,8 +54,12 @@ See §0 for the banned-name list.
 - Promote a dependency interface into
   `internal/<domain>/repository.go` (same package) when it grows and
   **other domain files** need it.
-- Concrete impls sit where the interface is declared: `postgres.go`,
-  `memory.go` and `<impl>/` live inside `internal/<domain>/`.
+- **An implementation that imports a driver (`pgx`, a vendor SDK)
+  sits outside the domain package's import graph**, so the driver
+  stays out of that package and its tests; where unexported fields
+  close the aggregate, only its own package can construct one, so the
+  implementation stays beside it and this rule does not reach that
+  domain.
 
 **Single file vs package** for an impl:
 
@@ -156,8 +160,9 @@ This section states only the form each kind of Go identifier takes.
   `Modeller`. Where the name would also be one of its own domain's
   verbs, the agent form breaks the tie, because the verb already owns
   `<verb>.go` (§1) and the two cannot share it.
-- **Functions / methods:** `MixedCaps`, verb-noun (`GetUser`,
-  `ParseToken`).
+- **Functions / methods:** `MixedCaps`, verb-noun for one that does
+  work (`GetUser`, `ParseToken`). A method that only returns a field
+  is named after the field: `Name()`, never `GetName()`.
 - **Constants:** `MixedCaps` (not `MAX_SIZE`). Group in `const ( ... )`.
 - **Variables:** short in small scopes, `MixedCaps` for package-level.
 - **Acronyms:** all-caps for the common form, consistent case

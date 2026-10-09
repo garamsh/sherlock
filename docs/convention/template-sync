@@ -37,11 +37,6 @@ deliberate-differences:
   documentation.md owns claim evidence and negative-result methods for documents
     and GitHub artifacts, including reviews (#746); review.md keeps review procedure
     without repeating those general rules.
-  documentation.md holds back template 33c0f43's widening of the citation
-    rule to this project's copy of a document. Open template #432 rewrites
-    that condition, and taking it now would make stack-go.md's references to
-    its own sections violations #432 exists to exempt. The sentence stands
-    as 7364882 wrote it, with c876095's addition; take 33c0f43 after #432.
   documentation.md keeps its build/configuration prose scope (#454), the
     issue-completeness rule (#648), and wording about projects beyond this
     one rather than projects consuming this template.
@@ -71,14 +66,15 @@ deliberate-differences:
     That deferral keeps text upstream has since removed, all of it naming
     the old layout's files: §1's Layout A/B/C, impl sizing and
     root-level sizing (5eb0a31, 5788f26, 16fa159, 8ccb19e, d5d4650), §2's
-    declare/depend bullets and §4's adapter example (5eb0a31). §1's
-    "Concrete impls sit where the interface is declared" stays the one
-    placement statement (#1022).
-    §3's verb-noun bullet predates 2757013, which narrows it to methods
-    that do work. That is a rewrite, not a removal: deleting the old line
-    would leave function names unstated, so it waits for a sync.
-  documentation.md's claim-basis rule predates b8b0890 ("a part of the
-    claim"), which rewords it and removes no rule; it waits for a sync.
+    declare/depend bullets and §4's adapter example (5eb0a31).
+    The one placement statement is a743468's "An implementation that
+    imports a driver (`pgx`, a vendor SDK) sits outside the domain
+    package's import graph", taken verbatim in place of "Concrete impls
+    sit where the interface is declared" (#1029). The deferred text above
+    that names `internal/<domain>/postgres.go` as a single file conflicts
+    with it for a driver-importing implementation. No package here is in
+    that case, and #1030 asks whether the deferred layout text is still
+    carried at all.
   .github/PULL_REQUEST_TEMPLATE.md's Summary comment keeps "Reference the
     task or issue if one exists", which 7b274c6 replaced with the
     Closes-keyword instruction. .github/ is the PM's, so #1022 does not
@@ -94,6 +90,8 @@ deliberate-differences:
     §Rules every shape carries (548895a, 133b60c) is bootstrap input: its
     bullets are in structure.md beside the domain shape's rules, and the
     section is declined so the rule is held once and rule 6 stays true.
+    Template 1557dd2 and 392fb81 change only that section's opening
+    paragraph, so they are declined with it (#1029).
 
 removal-audit:
   Syncs carried forward what the template changed, never what it removed
@@ -108,3 +106,6 @@ removal-audit:
     sentences: §2's "The implementation lives with the interface it
     satisfies" (removed upstream by 0440057) and §4's "Domain sentinels
     in `<domain>.go`" (removed by 2f5871e; §1 states the placement).
+  #1029 ran it against template a743468. It found only lines recorded
+    above, and took the rewrites that had been waiting: 2757013 in
+    stack-go.md, and b8b0890, 33c0f43 and 4bcd785 in documentation.md.

@@ -781,14 +781,15 @@ func TestResolveConfig_IssuersSection(t *testing.T) {
 		"  - issuer: https://garam.example\n"+
 		"    keys-file: /etc/sherlock/garam-keys.json\n"+
 		"  - issuer: https://other.example/\n"+
-		"    keys-url: https://other.example/keys\n")
+		"    keys-url: https://other.example/keys\n"+
+		"    keys-ca-file: /etc/sherlock/other-ca.pem\n")
 
 	cfg, err := config.Resolve(agentFlags(t))
 	require.NoError(t, err)
 
 	assert.Equal(t, []config.IssuerConfig{
 		{Issuer: "https://garam.example", KeysFile: "/etc/sherlock/garam-keys.json"},
-		{Issuer: "https://other.example/", KeysURL: "https://other.example/keys"},
+		{Issuer: "https://other.example/", KeysURL: "https://other.example/keys", KeysCAFile: "/etc/sherlock/other-ca.pem"},
 	}, cfg.Issuers)
 	assert.True(t, cfg.RequireSignature)
 
@@ -811,6 +812,8 @@ func TestResolveConfig_RefusesAnIssuerItCannotActOn(t *testing.T) {
 		{"no issuer", "  - keys-file: /keys.json\n", "names no issuer"},
 		{"duplicate issuer", valid, "twice"},
 		{"plain-HTTP keys-url", "  - issuer: https://b.example\n    keys-url: http://b.example/keys\n", "not an https URL"},
+		{"keys-ca-file with keys-file", "  - issuer: https://b.example\n    keys-file: /keys.json\n    keys-ca-file: /ca.pem\n", "keys-ca-file without keys-url"},
+		{"keys-ca-file with no source", "  - issuer: https://b.example\n    keys-ca-file: /ca.pem\n", "names neither"},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {

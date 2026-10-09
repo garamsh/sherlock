@@ -279,9 +279,9 @@ func serveAgent(ctx context.Context, cfg config.Config, id identity, ego, operat
 
 // newVerifier builds the trusted issuers' key sets and reads each once
 // (ADR 0026): a keys-file that cannot be read or parsed refuses the start,
-// as unreadable TLS material does, while a keys-url that cannot be fetched
-// is logged and leaves its issuer unavailable until a later fetch
-// succeeds.
+// as unreadable TLS material does, and so does a keys-ca-file, while a
+// keys-url that cannot be fetched is logged and leaves its issuer
+// unavailable until a later fetch succeeds.
 func newVerifier(ctx context.Context, cfg config.Config, agentID string, logger *slog.Logger) (*gateway.Verifier, error) {
 	sets := make([]*gateway.KeySet, 0, len(cfg.Issuers))
 	for _, entry := range cfg.Issuers {
@@ -293,7 +293,10 @@ func newVerifier(ctx context.Context, cfg config.Config, agentID string, logger 
 			sets = append(sets, set)
 			continue
 		}
-		set := gateway.NewURLKeySet(entry.Issuer, entry.KeysURL, nil, time.Now, logger)
+		set, err := gateway.NewURLKeySet(entry.Issuer, entry.KeysURL, entry.KeysCAFile, time.Now, logger)
+		if err != nil {
+			return nil, fmt.Errorf("issuer %q: %w", entry.Issuer, err)
+		}
 		if err := set.Load(ctx); err != nil {
 			logger.Warn("issuer key set unavailable at startup",
 				"op", "startup", "iss", entry.Issuer, "error", err)

@@ -17,6 +17,9 @@ type IssuerConfig struct {
 	KeysFile string `mapstructure:"keys-file"`
 	// KeysURL is an https URL serving a JWK Set document.
 	KeysURL string `mapstructure:"keys-url"`
+	// KeysCAFile is a PEM bundle that alone verifies the keys-url's TLS
+	// certificate in place of the system roots; valid only with KeysURL.
+	KeysCAFile string `mapstructure:"keys-ca-file"`
 }
 
 // issuersKey and issuersEnv name the issuer list's config key and the
@@ -58,6 +61,9 @@ func checkIssuers(issuers []IssuerConfig, requireSignature bool) error {
 			return fmt.Errorf("config: issuer %q names both keys-file and keys-url; name exactly one", entry.Issuer)
 		case entry.KeysFile == "" && entry.KeysURL == "":
 			return fmt.Errorf("config: issuer %q names neither keys-file nor keys-url; name exactly one", entry.Issuer)
+		case entry.KeysCAFile != "" && entry.KeysURL == "":
+			return fmt.Errorf("config: issuer %q names keys-ca-file without keys-url; a bundle verifies a fetch, "+
+				"and keys-file makes none", entry.Issuer)
 		case entry.KeysURL != "":
 			if err := checkKeysURL(entry); err != nil {
 				return err

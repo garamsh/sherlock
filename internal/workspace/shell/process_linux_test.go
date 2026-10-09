@@ -3,9 +3,12 @@
 package shell
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"os"
 	osexec "os/exec"
 	"strings"
@@ -260,4 +263,113 @@ func TestProcessExecutor_SingleAccountNeedsNoKillCapability(t *testing.T) {
 
 	require.NoError(t, err, "the executor's own account needs no capability to signal")
 	assert.Equal(t, "hi\n", res.Stdout)
+}
+
+// captureDefaultLog routes the default logger, which NewProcessExecutor
+// warns through, into a buffer for the rest of the test and returns the
+// JSON records written so far on each call.
+func captureDefaultLog(t *testing.T) func() []map[string]any {
+	t.Helper()
+	var logs bytes.Buffer
+	previous := slog.Default()
+	slog.SetDefault(slog.New(slog.NewJSONHandler(&logs, nil)))
+	t.Cleanup(func() { slog.SetDefault(previous) })
+	return func() []map[string]any {
+		var records []map[string]any
+		for _, line := range bytes.Split(bytes.TrimSpace(logs.Bytes()), []byte("\n")) {
+			if len(line) == 0 {
+				continue
+			}
+			var record map[string]any
+			require.NoError(t, json.Unmarshal(line, &record))
+			records = append(records, record)
+		}
+		return records
+	}
+}
+
+// noNetworkWarnings returns the records of the unprivileged NoNetwork WARN.
+func noNetworkWarnings(records []map[string]any) []map[string]any {
+	var found []map[string]any
+	for _, r := range records {
+		msg, _ := r["msg"].(string)
+		if strings.Contains(msg, "NoNetwork probe failed") {
+			found = append(found, r)
+		}
+	}
+	return found
+}
+
+// TestNewProcessExecutor_WarnsWhenTheUnprivilegedShapeCannotServeNoNetwork
+// pins the startup statement ADR 0010 requires of the unprivileged shape
+// (#1053): the executor makes the NoNetwork clone once at construction and,
+// when it fails, warns once with the consequence and where the host
+// requirements are stated. The probe stands in for a host that refuses the
+// clone, which a host that permits it cannot be made into; the controls are
+// the same shape on a host that admits the clone, and a refusing host
+// outside the shape, where the probe does not run.
+func TestNewProcessExecutor_WarnsWhenTheUnprivilegedShapeCannotServeNoNetwork(t *testing.T) {
+	if os.Geteuid() == 0 {
+		t.Skip("the unprivileged shape is only meaningful without root")
+	}
+	tests := []struct {
+		name       string
+		agentUID   int
+		probeErr   error
+		wantProbes int
+		wantWarn   bool
+	}{
+		{name: "unprivileged shape, host refuses the clone", agentUID: os.Geteuid(), probeErr: ErrAgentUIDUnavailable, wantProbes: 1, wantWarn: true},
+		{name: "unprivileged shape, host admits the clone", agentUID: os.Geteuid(), probeErr: nil, wantProbes: 1, wantWarn: false},
+		{name: "exec-uid is another uid", agentUID: os.Geteuid() + 1, probeErr: ErrAgentUIDUnavailable, wantProbes: 0, wantWarn: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			probes := 0
+			original := probeNoNetwork
+			probeNoNetwork = func(*ProcessExecutor) error { probes++; return tt.probeErr }
+			t.Cleanup(func() { probeNoNetwork = original })
+			records := captureDefaultLog(t)
+
+			NewProcessExecutor(tt.agentUID, 5*time.Second)
+
+			assert.Equal(t, tt.wantProbes, probes, "the probe runs once in the unprivileged shape and not outside it")
+			warnings := noNetworkWarnings(records())
+			if !tt.wantWarn {
+				assert.Empty(t, warnings)
+				return
+			}
+			require.Len(t, warnings, 1, "one WARN, not one per call")
+			w := warnings[0]
+			assert.Equal(t, "WARN", w["level"])
+			assert.Contains(t, w["msg"], "every NoNetwork Exec, so every shell_exec, will fail with this error")
+			assert.Contains(t, w["msg"], "docs/architecture/deployment.md §Capabilities")
+			assert.Equal(t, ErrAgentUIDUnavailable.Error(), w["error"], "the error is what each NoNetwork call will report")
+		})
+	}
+}
+
+// TestNewProcessExecutor_NoNetworkWarningMatchesTheHost runs the real
+// probe and checks it against a real NoNetwork call, as shell_exec makes
+// one: the executor warns at startup exactly when that call is refused. On
+// a host that admits the clone this pins that the probe does not misfire;
+// on one that refuses it, that the refusal is stated before the first call.
+func TestNewProcessExecutor_NoNetworkWarningMatchesTheHost(t *testing.T) {
+	if os.Geteuid() == 0 {
+		t.Skip("the unprivileged shape is only meaningful without root")
+	}
+	records := captureDefaultLog(t)
+
+	exec := NewProcessExecutor(os.Geteuid(), 5*time.Second)
+	warned := len(noNetworkWarnings(records())) > 0
+
+	res, err := exec.Run(context.Background(), Request{Command: "echo hi", NoNetwork: true})
+	if err != nil {
+		require.ErrorIs(t, err, ErrAgentUIDUnavailable, "the call failed for a reason other than the clone (stderr=%q)", res.Stderr)
+	} else {
+		require.Equal(t, "hi\n", res.Stdout, "the call ran, so its success is a result about the clone")
+	}
+	refused := err != nil
+	t.Logf("host refuses the unprivileged clone: %v", refused)
+	assert.Equal(t, refused, warned, "the startup WARN is present exactly when a NoNetwork call is refused")
 }

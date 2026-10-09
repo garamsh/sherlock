@@ -146,7 +146,7 @@ func TestTurn_RefusesAHeldStore(t *testing.T) {
 		Factory: factory, AgentID: "a1", OutboxDir: gateway.DirFor(memoryPath),
 		Out: io.Discard, Logger: slog.New(slog.DiscardHandler),
 	}
-	held, err := sqlite.Open(memoryPath)
+	held, err := sqlite.OpenConversation(memoryPath, nil)
 	require.NoError(t, err)
 
 	assert.ErrorIs(t, turn.Run(context.Background(), "hello"), sqlite.ErrStoreLocked)

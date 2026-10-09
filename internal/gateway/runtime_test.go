@@ -19,7 +19,6 @@ import (
 	"github.com/garamsh/sherlock/internal/agent"
 	"github.com/garamsh/sherlock/internal/agent/openai"
 	"github.com/garamsh/sherlock/internal/gateway"
-	"github.com/garamsh/sherlock/internal/memory"
 	"github.com/garamsh/sherlock/internal/memory/sqlite"
 	"github.com/garamsh/sherlock/internal/message"
 	"github.com/garamsh/sherlock/internal/tool"
@@ -162,59 +161,6 @@ func TestQueue_CloseClosesTheStore(t *testing.T) {
 	assertStoreCheckpointed(t, memoryPath(root))
 }
 
-func compactionModel(_ string) agent.Model {
-	return summaryScript(
-		writebackStep(`{"reply":"First reply.","note":null}`),
-		writebackStep(`{"reply":"Second reply.","note":null}`),
-	)
-}
-
-// TestFactory_HistoryOverflowStoresNothing pins ADR 0006's curation
-// rule where it used to be most at risk: the turns that leave the
-// context window enter no store. It held by a provenance check until
-// #582 and holds by construction now — compaction takes no memory
-// service, so there is no path for an evicted turn to reach the store.
-// Until #541 this test asserted the opposite, that the evicted user text
-// was searchable, which is how the defect survived.
-func TestFactory_HistoryOverflowStoresNothing(t *testing.T) {
-	root := t.TempDir()
-	sink := &recordingSink{}
-	factory := &gateway.Factory{
-		MemoryPath: memoryPath(root),
-		NewModel:   compactionModel,
-		Embedder:   wordEmbedder{},
-
-		Tools:              mouthClientSink(sink),
-		MaxHistoryMessages: 4,
-	}
-	rt, err := factory.New(context.Background(), "env-1", nil)
-	require.NoError(t, err)
-
-	first, err := rt.Session.Run(context.Background(), "first overflowing task")
-	require.NoError(t, err)
-	second, err := rt.Session.Run(context.Background(), "second task continues")
-	require.NoError(t, err)
-	assert.Equal(t, "First reply.", first)
-	assert.Contains(t, second, "Second reply.")
-	assert.LessOrEqual(t, len(rt.Session.History()), factory.MaxHistoryMessages+2,
-		"the turns still leave the window; only the write is refused — "+
-			"the bound is the cap, the instructions that survive the cut (#642), "+
-			"and the in-flight assistant reply")
-
-	require.NoError(t, rt.Close(context.Background()))
-	store, err := sqlite.Open(memoryPath(root))
-	require.NoError(t, err)
-	defer func() {
-		assert.NoError(t, store.Close())
-	}()
-	active, err := store.Active(context.Background())
-	require.NoError(t, err)
-	for _, m := range active {
-		assert.NotEqual(t, "context-overflow", m.Source,
-			"an inbound message the model never stated as a fact stays out of the store (ADR 0006)")
-	}
-}
-
 // A completed turn is available as source-backed history after restart, while
 // addressed rows are not a second active memory authority.
 func TestFactory_ConversationSurvivesRestart(t *testing.T) {
@@ -227,7 +173,7 @@ func TestFactory_ConversationSurvivesRestart(t *testing.T) {
 	_, err = rt.Session.Run(context.Background(), "When does the observatory close?")
 	require.NoError(t, err)
 	require.NoError(t, rt.Close(context.Background()))
-	store, err := sqlite.Open(memoryPath(root))
+	store, err := sqlite.OpenConversation(memoryPath(root), nil)
 	require.NoError(t, err)
 	sources, err := store.Recent(context.Background(), 10)
 	require.NoError(t, err)
@@ -280,25 +226,40 @@ func TestFactory_DisabledCompactionRestoresAllHistory(t *testing.T) {
 	}
 }
 
+// An addressed row refuses the start and is left as it was. The control is
+// the same addressed table holding no row, which starts: the refusal is the
+// row count, not the table.
 func TestFactory_RefusesAddressedStoreWithoutChangingIt(t *testing.T) {
-	root := t.TempDir()
 	ctx := context.Background()
-	seed, err := sqlite.Open(memoryPath(root))
+	seed := func(t *testing.T, insert string) string {
+		t.Helper()
+		path := memoryPath(t.TempDir())
+		raw, err := sql.Open("sqlite", path)
+		require.NoError(t, err)
+		defer raw.Close()
+		_, err = raw.Exec(`CREATE TABLE memories_active (id INTEGER PRIMARY KEY, value TEXT NOT NULL)` + insert)
+		require.NoError(t, err)
+		return path
+	}
+	start := func(path string) error {
+		factory := &gateway.Factory{MemoryPath: path, NewModel: func(string) agent.Model { return agent.NewScriptedModel() }, Tools: noTools()}
+		rt, err := factory.New(ctx, "env-1", nil)
+		if err == nil {
+			assert.NoError(t, rt.Close(ctx))
+		}
+		return err
+	}
+
+	path := seed(t, `; INSERT INTO memories_active(id, value) VALUES(7, 'Kepler')`)
+	require.ErrorIs(t, start(path), sqlite.ErrAddressedStore)
+	raw, err := sql.Open("sqlite", path+"?mode=ro")
 	require.NoError(t, err)
-	written := time.Now()
-	_, _, err = seed.Write(ctx, memory.Memory{Address: memory.Address{Subject: "user", Question: "what is the favorite telescope"}, Value: "Kepler", ImportanceScore: memory.SalienceJoin, Timestamp: written, Source: "old"}, nil, written)
-	require.NoError(t, err)
-	require.NoError(t, seed.Close())
-	factory := &gateway.Factory{MemoryPath: memoryPath(root), NewModel: func(string) agent.Model { return agent.NewScriptedModel() }, Tools: noTools()}
-	_, err = factory.New(ctx, "env-1", nil)
-	require.ErrorIs(t, err, sqlite.ErrAddressedStore)
-	reopened, err := sqlite.Open(memoryPath(root))
-	require.NoError(t, err)
-	defer reopened.Close()
-	held, err := reopened.Active(ctx)
-	require.NoError(t, err)
-	require.Len(t, held, 1)
-	assert.Equal(t, "Kepler", held[0].Value)
+	defer raw.Close()
+	var value string
+	require.NoError(t, raw.QueryRow(`SELECT value FROM memories_active WHERE id = 7`).Scan(&value))
+	assert.Equal(t, "Kepler", value)
+
+	assert.NoError(t, start(seed(t, ``)), "the control: the addressed table without a row starts")
 }
 
 // stubClient is a minimal platform-tool-client stand-in for tests

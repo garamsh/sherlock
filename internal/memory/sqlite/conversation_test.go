@@ -57,7 +57,7 @@ func episodeSources(content string) []agent.SourceMessage {
 
 func TestConversation_CredentialsAreNotPersisted(t *testing.T) {
 	ctx := context.Background()
-	store, err := sqlite.Open(filepath.Join(t.TempDir(), "memory.db"))
+	store, err := sqlite.OpenConversation(filepath.Join(t.TempDir(), "memory.db"), nil)
 	require.NoError(t, err)
 	defer store.Close()
 	require.NoError(t, store.RecordTurn(ctx, []agent.SourceMessage{{Role: agent.RoleUser, Content: "api_key=sk-abcdefghijklmnop and favorite tea is cedar"}, {Role: agent.RoleAssistant, Content: "Bearer secretvalue"}}, firstSummary{}))
@@ -591,6 +591,18 @@ func TestOpenInitializedConversation_RefusesAnUninitializedStore(t *testing.T) {
 
 		store, err := sqlite.OpenConversation(path, wordEmbedder{})
 		require.NoError(t, err, "control: the same file opens without the check")
+		require.NoError(t, store.Close())
+	})
+	t.Run("store an addressed-only binary created opens", func(t *testing.T) {
+		path := filepath.Join(t.TempDir(), "memory.db")
+		raw, err := sql.Open("sqlite", path)
+		require.NoError(t, err)
+		_, err = raw.Exec(`CREATE TABLE memories_active (id INTEGER PRIMARY KEY)`)
+		require.NoError(t, err)
+		require.NoError(t, raw.Close())
+
+		store, err := sqlite.OpenInitializedConversation(path, wordEmbedder{})
+		require.NoError(t, err)
 		require.NoError(t, store.Close())
 	})
 	t.Run("initialized store opens with its conversation", func(t *testing.T) {

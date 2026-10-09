@@ -12,43 +12,6 @@ import (
 //go:embed ego.md
 var DefaultEgo string
 
-// addressContract is the platform's account of what an address is: the
-// three fields a fact is held under, and the rules for choosing them.
-//
-// It is one constant because two halves read it. The writeback section
-// below asks the model to form an address from a statement; the read
-// step asks it to form the same address from a question, and ADR 0019
-// requires that the read carry nothing the write does not — "a read step
-// that addresses better than the write addresses lands on addresses the
-// write never wrote". Sharing the text is that requirement made
-// structural rather than left to discipline: neither half can grow a
-// rule the other lacks.
-const addressContract = `- ` + "`address.subject`" + ` — who or what the statement is about. In "Dmitri flies
-  with the northern-arc airline" that is Dmitri and not the airline: the
-  statement is about him, and the airline is what it says about him. The
-  subject is never the value.
-- ` + "`address.question`" + ` — the question this fact answers, phrased the way
-  someone who does not yet know the answer would ask it. That is the whole
-  test. Whoever looks for this fact later has the question and not the
-  answer, so the answer never appears in the question, and the question is
-  worded the way it will be asked rather than the way this statement
-  happened to put it. Not a topic noun: "what is the user's favorite
-  telescope" is an address, "telescopes" is not.
-  It asks about the subject. "who leads the northern-arc project" is not a
-  question about Dmitri even when Dmitri is the answer — it is a question
-  about the project, and it belongs to a different address.
-  Where the statement says what kind of thing the answer is, ask for that
-  kind: "Dmitri flies with the northern-arc airline" answers "which airline
-  does Dmitri fly with". Where it says no kind, take the question word from
-  what the answer is — ` + "`who`" + ` for a person or an organisation, ` + "`where`" + ` for a
-  place, ` + "`what`" + ` otherwise. Never take it from the statement's verb, which
-  describes the doing and not the answer.
-- ` + "`address.restriction`" + ` — what the statement narrows that question to, in its
-  own words, or null. Most statements narrow nothing; a restriction is
-  material limiting when or for what the fact holds, never the subject and
-  never the value. It goes in this field and never inside the question: the
-  question stays the one a reader would ask, and this is what narrows it.`
-
 // Contract is the platform-owned protocol appended to every session's
 // instructions. It governs tool use, source inspection, and terminal replies
 // regardless of the operator ego.

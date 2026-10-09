@@ -495,7 +495,7 @@ func TestAgentCommand_MintsTheGenerationOnlyUnderTheStoreLock(t *testing.T) {
 	configPath := mockConfig(t, dir, nil)
 	memoryPath := filepath.Join(t.TempDir(), "memory.db")
 
-	held, err := sqlite.Open(memoryPath)
+	held, err := sqlite.OpenConversation(memoryPath, nil)
 	require.NoError(t, err)
 	err = runAgent(context.Background(), "--config", configPath, "--memory-path", memoryPath,
 		"--addr", freeAddr(t), "--agent-id", "test-agent")

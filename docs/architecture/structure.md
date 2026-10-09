@@ -1,6 +1,6 @@
 # Structure
 
-Governs the structural rules of the shape this project is partitioned into: what the unit is and what it is named for, what may reference what across units, where shared code goes, and when a new unit is earned. The shape is domain partitioning (ADR 0023). Which packages these rules produce here — the pod split, the domains, the implementations beneath them — is `packages.md`'s, under "Three cuts produce every package".
+Governs the structural rules of the shape this project is partitioned into: what the unit is and what it is named for, what may reference what across units, where concrete implementations are constructed, where shared code goes, and when a new unit is earned. The shape is domain partitioning (ADR 0023). Which packages these rules produce here — the pod split, the domains, the implementations beneath them — is `packages.md`'s, under "Three cuts produce every package".
 
 ## Current decisions
 

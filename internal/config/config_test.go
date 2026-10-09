@@ -791,6 +791,11 @@ func TestResolveConfig_IssuersSection(t *testing.T) {
 		{Issuer: "https://other.example/", KeysURL: "https://other.example/keys"},
 	}, cfg.Issuers)
 	assert.True(t, cfg.RequireSignature)
+
+	strict := agentFlags(t)
+	require.NoError(t, strict.Set("strict-config", "true"))
+	_, err = config.Resolve(strict)
+	assert.NoError(t, err, "every key of the issuer entries is read, so --strict-config starts")
 }
 
 // TestResolveConfig_RefusesAnIssuerItCannotActOn refuses each entry the

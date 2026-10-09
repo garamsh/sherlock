@@ -64,7 +64,7 @@ Serves the agent's workspace (ADR 0017) — the computer: a gRPC data plane over
 sherlock workspace
 ```
 
-- The workspace owns the workspace directory (`workspace` key, created on first use); Exec children work in it by default, so they see workspace files natively. Exec children drop to the exec UID (`exec-uid` key, default 1001; single-account mode: the workspace's own UID — any other unprivileged value fails closed with `agent_uid unavailable`). When privileged the workspace chowns the directory to the exec UID, so files written through the gRPC contract and by exec'd children share one owner.
+- The workspace owns the workspace directory (`workspace` key, created on first use); Exec children work in it by default, so they see workspace files natively. Exec children drop to the exec UID (`exec-uid` key, default 1001; single-account mode: the workspace's own UID — any other unprivileged value fails closed with `agent_uid unavailable` — which the executor runs and which is not a supported deployment shape, ADR 0008). When privileged the workspace chowns the directory to the exec UID, so files written through the gRPC contract and by exec'd children share one owner.
 - The listener carries no authentication in this phase, so it serves loopback binds only — a non-loopback `--addr` fails startup (ADR 0012, same posture as the gateway).
 - Its config file resolves in order: `--config <path>`, then `./configs/workspace.yaml`, then the XDG config path (`~/.config/sherlock/workspace.yaml` on Linux). Keys: `addr` (default `127.0.0.1:8081`), `workspace` (default `data/workspace`), `exec-uid` (default `1001`), `exec-timeout` (default `30s`). There is no `tools:` config — tools live in the agent.
 
@@ -100,7 +100,7 @@ Workspace keys (`sherlock workspace`; see `configs/workspace.yaml` for an exampl
 |---|---|---|
 | `addr` | `--addr` | `127.0.0.1:8081` (workspace gRPC listen address; loopback-only) |
 | `workspace` | `--workspace` | `data/workspace` (workspace directory, created on first use; Exec children work here by default) |
-| `exec-uid` | `--exec-uid` | `1001` (UID Exec children run as; single-account mode: set to the workspace's own UID — any other unprivileged value fails closed with `agent_uid unavailable`; a privileged workspace also chowns the workspace directory to it) |
+| `exec-uid` | `--exec-uid` | `1001` (UID Exec children run as; single-account mode, not a supported deployment shape (ADR 0008): set to the workspace's own UID — any other unprivileged value fails closed with `agent_uid unavailable`; a privileged workspace also chowns the workspace directory to it) |
 | `exec-timeout` | `--exec-timeout` | `30s` (per-call ceiling for Exec commands) |
 
 ### Endpoints, and how far each is verified

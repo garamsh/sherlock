@@ -119,6 +119,9 @@ Multiple root-level files are fine: `errors.go` + `logger.go` +
 
 ### Project envelope
 
+This section states which Go file holds the composition site, and
+what `internal/` and `pkg/` hold.
+
 - `cmd/<binary>/main.go` is the composition site.
 - `internal/` is enforced by the Go toolchain. Use it for everything not explicitly public.
 - `pkg/` is for code other modules import. Most services don't need it.
@@ -141,6 +144,8 @@ file declares and which depends.
   `type → struct → type` cycle. Those are found by reading.
 
 ## 3. Naming
+
+This section states only the form each kind of Go identifier takes.
 
 - **Packages:** single word, lowercase, no underscores. Singular for
   one kind of thing (`user`, `order`); pluralize only for genuine
@@ -166,6 +171,9 @@ file declares and which depends.
   always uppercase or lowercase, never mixed.
 
 ## 4. Error handling
+
+This section states the Go error forms, and which file or layer
+translates, wraps, logs or recovers one.
 
 - **An adapter translates before it returns.** `postgres.go` turns
   `pgx.ErrNoRows` into `ErrUserNotFound`; the driver's error does not

@@ -770,3 +770,99 @@ func TestResolveConfig_AbsentRevisionIsEmpty(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "r1", cfg.Revision, "the control: the key is what sets it")
 }
+
+// TestResolveConfig_IssuersSection reads each issuer with its one key
+// source, and require-signature from the file.
+func TestResolveConfig_IssuersSection(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	writeAgentConfig(t, dir, "require-signature: true\n"+
+		"issuers:\n"+
+		"  - issuer: https://garam.example\n"+
+		"    keys-file: /etc/sherlock/garam-keys.json\n"+
+		"  - issuer: https://other.example/\n"+
+		"    keys-url: https://other.example/keys\n")
+
+	cfg, err := config.Resolve(agentFlags(t))
+	require.NoError(t, err)
+
+	assert.Equal(t, []config.IssuerConfig{
+		{Issuer: "https://garam.example", KeysFile: "/etc/sherlock/garam-keys.json"},
+		{Issuer: "https://other.example/", KeysURL: "https://other.example/keys"},
+	}, cfg.Issuers)
+	assert.True(t, cfg.RequireSignature)
+}
+
+// TestResolveConfig_RefusesAnIssuerItCannotActOn refuses each entry the
+// gateway could not use. The control is the same file with the entry
+// corrected, which resolves.
+func TestResolveConfig_RefusesAnIssuerItCannotActOn(t *testing.T) {
+	valid := "  - issuer: https://a.example\n    keys-file: /keys.json\n"
+	cases := []struct {
+		name, entry, want string
+	}{
+		{"both sources", "  - issuer: https://b.example\n    keys-file: /keys.json\n    keys-url: https://b.example/keys\n", "names both"},
+		{"no source", "  - issuer: https://b.example\n", "names neither"},
+		{"no issuer", "  - keys-file: /keys.json\n", "names no issuer"},
+		{"duplicate issuer", valid, "twice"},
+		{"plain-HTTP keys-url", "  - issuer: https://b.example\n    keys-url: http://b.example/keys\n", "not an https URL"},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			dir := t.TempDir()
+			t.Chdir(dir)
+			writeAgentConfig(t, dir, "issuers:\n"+valid)
+			_, err := config.Resolve(agentFlags(t))
+			require.NoError(t, err, "control: the list without the entry resolves")
+
+			writeAgentConfig(t, dir, "issuers:\n"+valid+tc.entry)
+			_, err = config.Resolve(agentFlags(t))
+			require.Error(t, err)
+			assert.Contains(t, err.Error(), tc.want)
+		})
+	}
+}
+
+// TestResolveConfig_IssuersEnvIsRefused refuses SHERLOCK_ISSUERS, as the
+// pin set's variable is, because one variable cannot carry a list.
+func TestResolveConfig_IssuersEnvIsRefused(t *testing.T) {
+	t.Chdir(t.TempDir())
+	_, err := config.Resolve(agentFlags(t))
+	require.NoError(t, err, "control: no variable resolves")
+
+	t.Setenv("SHERLOCK_ISSUERS", "https://garam.example")
+	_, err = config.Resolve(agentFlags(t))
+
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "SHERLOCK_ISSUERS")
+	assert.Contains(t, err.Error(), "config file")
+}
+
+// TestResolveConfig_RequireSignatureResolvesThroughEveryLayer reads
+// require-signature from the flag, the environment and the file, defaults
+// it off, and refuses it with no issuer configured.
+func TestResolveConfig_RequireSignatureResolvesThroughEveryLayer(t *testing.T) {
+	issuers := "issuers:\n  - issuer: https://a.example\n    keys-file: /keys.json\n"
+	dir := t.TempDir()
+	t.Chdir(dir)
+	writeAgentConfig(t, dir, issuers)
+	cfg, err := config.Resolve(agentFlags(t))
+	require.NoError(t, err)
+	assert.False(t, cfg.RequireSignature, "off by default")
+
+	t.Setenv("SHERLOCK_REQUIRE_SIGNATURE", "true")
+	cfg, err = config.Resolve(agentFlags(t))
+	require.NoError(t, err)
+	assert.True(t, cfg.RequireSignature, "the environment turns it on")
+
+	fs := agentFlags(t)
+	require.NoError(t, fs.Set("require-signature", "false"))
+	cfg, err = config.Resolve(fs)
+	require.NoError(t, err)
+	assert.False(t, cfg.RequireSignature, "the flag outranks the environment")
+
+	writeAgentConfig(t, dir, "")
+	_, err = config.Resolve(agentFlags(t))
+	require.Error(t, err, "required with no issuer refuses every message")
+	assert.Contains(t, err.Error(), "no issuer is configured")
+}

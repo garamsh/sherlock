@@ -1,4 +1,4 @@
-// Package memory implements the agent session's context hooks. The active
-// source-linked runtime uses ConversationRecall and Compactor; legacy addressed
-// recall and writeback remain for the old store API but are not wired at runtime.
+// Package memory implements the agent session's context hooks: the
+// source-linked runtime's ConversationRecall, ConversationSummary and
+// Compactor.
 package memory

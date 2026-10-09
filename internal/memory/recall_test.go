@@ -11,7 +11,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/garamsh/sherlock/internal/agent"
-	agentmemory "github.com/garamsh/sherlock/internal/agent/memory"
 	"github.com/garamsh/sherlock/internal/memory"
 	"github.com/garamsh/sherlock/internal/memory/sqlite"
 	"github.com/garamsh/sherlock/internal/tool"
@@ -102,7 +101,7 @@ func TestRecall_AddressedReadAnswersFromTheAddress(t *testing.T) {
 	storeTelescope(t, svc, "the Orion XT8")
 	model := &resolvingModel{subject: "user", question: "what is the user's favorite telescope"}
 
-	got, err := agentmemory.Recall{Svc: svc, Model: model}.
+	got, err := memory.Recall{Svc: svc, Model: model}.
 		Recall(context.Background(), "which telescope do I like?")
 	require.NoError(t, err)
 
@@ -125,7 +124,7 @@ func TestRecall_EmptyAddressWidensToTheSubject(t *testing.T) {
 	// A question the write never used, under the right subject.
 	model := &resolvingModel{subject: "user", question: "which telescope does the user own"}
 
-	got, err := agentmemory.Recall{Svc: svc, Model: model}.
+	got, err := memory.Recall{Svc: svc, Model: model}.
 		Recall(context.Background(), "which telescope do I own?")
 	require.NoError(t, err)
 
@@ -144,7 +143,7 @@ func TestRecall_SubjectAloneSkipsTheAddressRead(t *testing.T) {
 	storeTelescope(t, svc, "the Orion XT8")
 	model := &resolvingModel{subject: "user"}
 
-	got, err := agentmemory.Recall{Svc: svc, Model: model}.
+	got, err := memory.Recall{Svc: svc, Model: model}.
 		Recall(context.Background(), "what do you know about me?")
 	require.NoError(t, err)
 
@@ -163,7 +162,7 @@ func TestRecall_UnplacedQuestionReadsNothing(t *testing.T) {
 	storeTelescope(t, svc, "the Orion XT8")
 	model := &resolvingModel{prose: true}
 
-	got, err := agentmemory.Recall{Svc: svc, Model: model}.
+	got, err := memory.Recall{Svc: svc, Model: model}.
 		Recall(context.Background(), "hello")
 	require.NoError(t, err)
 
@@ -180,7 +179,7 @@ func TestRecall_PlacedButEmptyIsNotUnplaced(t *testing.T) {
 	svc := &countingService{Service: newMemoryService(t)}
 	model := &resolvingModel{subject: "user", question: "what is the user's favorite telescope"}
 
-	got, err := agentmemory.Recall{Svc: svc, Model: model}.
+	got, err := memory.Recall{Svc: svc, Model: model}.
 		Recall(context.Background(), "which telescope do I like?")
 	require.NoError(t, err)
 
@@ -198,7 +197,7 @@ func TestRecall_ShowsTheModelTheReservedReadToolAndNothingElse(t *testing.T) {
 	svc := newMemoryService(t)
 	model := &resolvingModel{subject: "user", question: "q"}
 
-	_, err := agentmemory.Recall{Svc: svc, Model: model}.
+	_, err := memory.Recall{Svc: svc, Model: model}.
 		Recall(context.Background(), "which telescope do I like?")
 	require.NoError(t, err)
 
@@ -264,7 +263,7 @@ func TestParseReadAddress_ReadsTheReservedCallOnly(t *testing.T) {
 // because the call failed is different from one that placed nothing.
 func TestRecall_ModelFailureFailsTheRead(t *testing.T) {
 	svc := newMemoryService(t)
-	_, err := agentmemory.Recall{Svc: svc, Model: failingModel{}}.
+	_, err := memory.Recall{Svc: svc, Model: failingModel{}}.
 		Recall(context.Background(), "anything")
 	require.Error(t, err)
 	assert.True(t, strings.Contains(err.Error(), "resolve address"))

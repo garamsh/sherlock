@@ -64,9 +64,10 @@ deliberate-differences:
     deferral. b29f0f1's heading for Generated mocks has no counterpart in
     this project's Test doubles section.
     That deferral keeps text upstream has since removed, all of it naming
-    the old layout's files: §1's Layout A/B/C, impl sizing and
-    root-level sizing (5eb0a31, 5788f26, 16fa159, 8ccb19e, d5d4650), §2's
-    declare/depend bullets and §4's adapter example (5eb0a31).
+    the old layout's files: §Directory layout's Layout A/B/C, impl sizing
+    and root-level sizing (5eb0a31, 5788f26, 16fa159, 8ccb19e, d5d4650),
+    §Module / package boundary's declare/depend bullets and §Error
+    handling's adapter example (5eb0a31).
     The one placement statement is a743468's "An implementation that
     imports a driver (`pgx`, a vendor SDK) sits outside the domain
     package's import graph", taken verbatim in place of "Concrete impls
@@ -83,13 +84,19 @@ deliberate-differences:
     and continuous numbering. Upstream freezes ADR bodies and adds errata and
     supersession. That changes the project's decision-history policy, so it is
     not adopted as a template wording correction.
-    Architecture rules 6-8 (structure.md) are adopted with that difference:
-    upstream rule 6 keeps structural rules out of the ADR because its body is
-    frozen; here the reason is that current state lives in responsibility
-    documents (rule 4), and rule 7 lands a settled point as rule 4 pairs it.
+    The architecture rules "Structural rules live in `structure.md`", "A
+    point the structural rules leave to the project is settled in an ADR"
+    and "Structural rules yield only to what a framework imposes" are
+    adopted with that difference: upstream, "Structural rules live in
+    `structure.md`" keeps structural rules out of the ADR because its body
+    is frozen; here the reason is that current state lives in
+    responsibility documents ("Decisions land in pairs"), and "A point the
+    structural rules leave to the project" lands a settled point as
+    "Decisions land in pairs" pairs it.
     §Rules every shape carries (548895a, 133b60c) is bootstrap input: its
     bullets are in structure.md beside the domain shape's rules, and the
-    section is declined so the rule is held once and rule 6 stays true.
+    section is declined so the rule is held once and "Structural rules live
+    in `structure.md`" stays true.
     Template 1557dd2 and 392fb81 change only that section's opening
     paragraph, so they are declined with it (#1029).
 
@@ -103,9 +110,10 @@ removal-audit:
     sentence split across lines is found. Each sentence found is deleted
     or recorded above with its reason.
   #1022 ran it against template b8b0890 and deleted two stack-go.md
-    sentences: §2's "The implementation lives with the interface it
-    satisfies" (removed upstream by 0440057) and §4's "Domain sentinels
-    in `<domain>.go`" (removed by 2f5871e; §1 states the placement).
+    sentences: §Module / package boundary's "The implementation lives with
+    the interface it satisfies" (removed upstream by 0440057) and §Error
+    handling's "Domain sentinels in `<domain>.go`" (removed by 2f5871e;
+    §Directory layout states the placement).
   #1029 ran it against template a743468. It found only lines recorded
     above, and took the rewrites that had been waiting: 2757013 in
     stack-go.md, and b8b0890, 33c0f43 and 4bcd785 in documentation.md.

@@ -5,11 +5,12 @@
 # than from this module, so a tool whose directive the machine's base toolchain
 # already satisfies is built by that base toolchain, and a binary built below this
 # module's `go` directive refuses to load its packages at package-load time
-# (stack-go.md §9). `+auto` makes the value a minimum rather than a pin, so a tool
-# needing more still gets more. The version is read out of go.mod, which owns it,
-# rather than written here a second time (#705): a `go` line this cannot parse
-# yields `go+auto`, which every go command refuses by name, so a reshaped go.mod
-# stops the run instead of dropping the floor to whatever is installed.
+# (stack-go.md §Verification commands). `+auto` makes the value a minimum rather
+# than a pin, so a tool needing more still gets more. The version is read out of
+# go.mod, which owns it, rather than written here a second time (#705): a `go`
+# line this cannot parse yields `go+auto`, which every go command refuses by
+# name, so a reshaped go.mod stops the run instead of dropping the floor to
+# whatever is installed.
 go_directive := $(shell sed -n 's/^go \([0-9][0-9.]*\)$$/\1/p' go.mod)
 export GOTOOLCHAIN := go$(go_directive)+auto
 

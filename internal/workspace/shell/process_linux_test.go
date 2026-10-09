@@ -8,10 +8,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/fs"
 	"log/slog"
 	"os"
 	osexec "os/exec"
 	"strings"
+	"syscall"
 	"testing"
 	"time"
 
@@ -372,4 +374,55 @@ func TestNewProcessExecutor_NoNetworkWarningMatchesTheHost(t *testing.T) {
 	refused := err != nil
 	t.Logf("host refuses the unprivileged clone: %v", refused)
 	assert.Equal(t, refused, warned, "the startup WARN is present exactly when a NoNetwork call is refused")
+}
+
+// TestRun_UsernsRefusalReportsAgentUIDUnavailable pins #1057: every errno
+// by which a host refuses the unprivileged NoNetwork clone reports the
+// documented agent_uid unavailable, naming the errno, and the startup
+// probe's WARN carries the same. The clone's error is faked, in the shape
+// os/exec returns it, because a host that admits the clone produces none of
+// these. The control is an errno that is not a refusal, which stays a plain
+// start failure.
+func TestRun_UsernsRefusalReportsAgentUIDUnavailable(t *testing.T) {
+	if os.Geteuid() == 0 {
+		t.Skip("the unprivileged shape is only meaningful without root")
+	}
+	tests := []struct {
+		errno   syscall.Errno
+		refusal bool
+	}{
+		{errno: syscall.EPERM, refusal: true},
+		{errno: syscall.ENOSPC, refusal: true},
+		{errno: syscall.EUSERS, refusal: true},
+		{errno: syscall.EINVAL, refusal: true},
+		{errno: syscall.EAGAIN, refusal: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.errno.Error(), func(t *testing.T) {
+			original := startUserns
+			startUserns = func(cmd *osexec.Cmd) error {
+				return &fs.PathError{Op: "fork/exec", Path: cmd.Path, Err: tt.errno}
+			}
+			t.Cleanup(func() { startUserns = original })
+			records := captureDefaultLog(t)
+
+			exec := NewProcessExecutor(os.Geteuid(), 5*time.Second)
+			_, err := exec.Run(context.Background(), Request{Command: "echo hi", NoNetwork: true})
+
+			require.Error(t, err)
+			assert.Contains(t, err.Error(), tt.errno.Error(), "the message names the errno")
+			warnings := noNetworkWarnings(records())
+			require.Len(t, warnings, 1, "the startup probe met the same refusal")
+			assert.Contains(t, warnings[0]["error"], tt.errno.Error())
+			if !tt.refusal {
+				assert.NotErrorIs(t, err, ErrAgentUIDUnavailable)
+				assert.ErrorIs(t, err, tt.errno, "a plain failure wraps the start error")
+				assert.True(t, strings.HasPrefix(err.Error(), "shell: start: "), "a plain start failure: %q", err)
+				return
+			}
+			assert.ErrorIs(t, err, ErrAgentUIDUnavailable)
+			assert.True(t, strings.HasPrefix(warnings[0]["error"].(string), ErrAgentUIDUnavailable.Error()),
+				"the startup WARN carries the sentinel: %q", warnings[0]["error"])
+		})
+	}
 }

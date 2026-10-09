@@ -256,13 +256,13 @@ func (e *ProcessExecutor) Run(ctx context.Context, req Request) (Result, error) 
 
 	start := cmd.Start
 	if req.NoNetwork && euid != 0 {
-		start = func() error { return startUsernsChild(cmd) }
+		start = func() error { return startUserns(cmd) }
 	}
 	if err := start(); err != nil {
-		if req.NoNetwork && euid != 0 && errors.Is(err, syscall.EPERM) {
-			// User namespaces are disabled on this host; fail closed
-			// with the documented unavailability (ADR 0010).
-			return Result{}, ErrAgentUIDUnavailable
+		if req.NoNetwork && euid != 0 && usernsRefused(err) {
+			// The host will not give the child its namespaces; fail
+			// closed with the documented unavailability (ADR 0010).
+			return Result{}, fmt.Errorf("%w: %v", ErrAgentUIDUnavailable, err)
 		}
 		return Result{}, fmt.Errorf("shell: start: %w", err)
 	}
@@ -301,6 +301,24 @@ func (e *ProcessExecutor) Run(ctx context.Context, req Request) (Result, error) 
 		return result, nil
 	}
 	return result, fmt.Errorf("shell: %w", err)
+}
+
+// startUserns starts a NoNetwork child in the unprivileged shape. It is a
+// variable so a test can stand in for a host that refuses the clone.
+var startUserns = startUsernsChild
+
+// usernsRefused reports whether a failed CLONE_NEWUSER|CLONE_NEWNET start
+// means the host will not give the child its namespaces (clone(2)): EPERM
+// from the sysctl, a seccomp profile or an LSM; ENOSPC, or EUSERS on
+// older kernels, over user.max_user_namespaces; EINVAL from a kernel
+// built without user or network namespaces.
+func usernsRefused(err error) bool {
+	for _, errno := range []syscall.Errno{syscall.EPERM, syscall.ENOSPC, syscall.EUSERS, syscall.EINVAL} {
+		if errors.Is(err, errno) {
+			return true
+		}
+	}
+	return false
 }
 
 // shimCommandLine renders the command line an untrusted child runs:

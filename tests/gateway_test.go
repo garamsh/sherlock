@@ -5,7 +5,6 @@ package tests
 import (
 	"bufio"
 	"context"
-	"database/sql"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -22,7 +21,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	_ "modernc.org/sqlite"
 
 	"github.com/garamsh/sherlock/internal/agent"
 	"github.com/garamsh/sherlock/internal/gateway"
@@ -169,14 +167,6 @@ func TestGateway_EndToEnd(t *testing.T) {
 	_, err := os.Stat(filepath.Join(root, "memory.db"))
 	require.NoError(t, err)
 
-	// Curation-only storage (ADR 0006): nothing is captured at accept
-	// time — the raw inbound messages never enter memory, active or
-	// archived; only the writeback does.
-	assert.NotContains(t, allMemoryContents(t, root), "first",
-		"the first inbound message is never auto-stored")
-	assert.NotContains(t, allMemoryContents(t, root), "second",
-		"the second inbound message is never auto-stored")
-
 	// The SSE subscriber observed the loop events of both turns, in
 	// order: turn 1 fully finishes before turn 2 starts.
 	got := collectEvents(t, events, 10)
@@ -205,35 +195,6 @@ func TestGateway_EndToEnd(t *testing.T) {
 	resp = postJSON(t, srv.URL+"/agents/env-2/messages", `{"content":"quiet"}`)
 	assert.Equal(t, http.StatusNotFound, resp.StatusCode)
 	resp.Body.Close()
-}
-
-// allMemoryContents returns the address and value of every memory in the
-// agent's store, active or archived — the platform never hard-deletes.
-func allMemoryContents(t *testing.T, root string) []string {
-	t.Helper()
-	db, err := sql.Open("sqlite", filepath.Join(root, "memory.db"))
-	require.NoError(t, err)
-	defer func() {
-		assert.NoError(t, db.Close())
-	}()
-	rows, err := db.Query(
-		`SELECT subject || ' ' || question || ' ' || restriction || ' ' || value
-		 FROM memories_active
-		 UNION ALL
-		 SELECT subject || ' ' || question || ' ' || restriction || ' ' || value
-		 FROM memories_archive`)
-	require.NoError(t, err)
-	defer func() {
-		assert.NoError(t, rows.Close())
-	}()
-	var contents []string
-	for rows.Next() {
-		var content string
-		require.NoError(t, rows.Scan(&content))
-		contents = append(contents, content)
-	}
-	require.NoError(t, rows.Err())
-	return contents
 }
 
 func postJSON(t *testing.T, url, body string) *http.Response {

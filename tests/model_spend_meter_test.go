@@ -308,25 +308,6 @@ func (m *spendMeter) Refusals() []string {
 	return out
 }
 
-// ReadAddress returns the arguments the read step's reserved call
-// carried for a labelled turn, or empty where the step made no call —
-// which is the unplaced outcome as the provider produced it (ADR 0019).
-func (m *spendMeter) ReadAddress(label string) string {
-	m.mu.Lock()
-	defer m.mu.Unlock()
-	for _, c := range m.calls {
-		if c.Label != label || c.Step != "read" {
-			continue
-		}
-		for _, call := range c.ToolCalls {
-			if call.Name == "memory_read" {
-				return call.Arguments
-			}
-		}
-	}
-	return ""
-}
-
 // CallsFor counts the calls one labelled turn made, which is what says
 // a turn is looping before the run has spent enough to find out.
 func (m *spendMeter) CallsFor(label string) int {

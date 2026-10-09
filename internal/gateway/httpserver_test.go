@@ -188,12 +188,12 @@ func TestServe_WriterLockIsReleasedOnlyAfterMemoryCloses(t *testing.T) {
 	s.stop()
 	awaitState(t, s.base, "draining")
 
-	_, err := sqlite.Open(path)
+	_, err := sqlite.OpenConversation(path, nil)
 	assert.ErrorIs(t, err, sqlite.ErrStoreLocked, "the lock is held while the drain runs")
 
 	model.turn(t, nil)
 	awaitServeReturns(t, s)
-	store, err := sqlite.Open(path)
+	store, err := sqlite.OpenConversation(path, nil)
 	require.NoError(t, err, "the control: the lock is free once memory closed")
 	require.NoError(t, store.Close())
 }

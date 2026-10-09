@@ -346,8 +346,8 @@ func requireInitialized(path string) error {
 		return fmt.Errorf("inspect %q: %v", path, err)
 	}
 	defer db.Close()
-	// Every store Sherlock opened carries the addressed table, from the
-	// first schema on, or the source archive.
+	// A store an addressed-only binary created carries only the addressed
+	// table; every later one carries the source archive.
 	var tables int
 	err = db.QueryRow(`SELECT count(*) FROM sqlite_master WHERE type='table'
 		AND name IN ('memories_active', 'conversation_sources')`).Scan(&tables)

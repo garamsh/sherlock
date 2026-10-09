@@ -22,7 +22,7 @@ A failure preserves completed sources and any earlier committed episodes. Subseq
 ## Consequences
 
 - The note is the one source-free memory the model writes. It is bounded, has one writer, and is replaced whole; everything else the agent recalls is source-linked.
-- Old addressed rows remain readable by the legacy store API but block source-linked runtime startup until an explicit migration or export.
+- Old addressed rows remain in the file, unread by this binary, and block source-linked runtime startup until an explicit migration or export.
 - The monitoring stream's `writeback` event carries the saved note instead of `ops`; a consumer that read `ops` reads `note`.
 
 ## Evidence and limits

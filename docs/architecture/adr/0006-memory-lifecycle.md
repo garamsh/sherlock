@@ -18,7 +18,6 @@ The addressed-only lifecycle dropped old conversation when the rolling context c
 
 ## Consequences
 
-- The legacy addressed service still has a bounded window of wall-clock time — 7 days in its retention implementation, but the source-linked runtime does not run that pass.
 
 - Compaction removes old messages from the current prompt but not from the durable source archive.
 - The archive and summaries have one SQLite owner. There is no separate long-term memory writer competing with source capture.

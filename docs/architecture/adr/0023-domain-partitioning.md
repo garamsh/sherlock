@@ -1,15 +1,15 @@
 # ADR 0023: The system is partitioned by domain, and a domain depends on a sibling one way through its declared surface
 
 > Status: accepted
-> Date: 2026-10-04
+> Date: 2026-10-04 (revised in place 2026-10-10)
 
 ## Context
 
 The convention template moved three structural rules out of `stack-go.md` — what a unit is named for, what a unit may reference across units, and when shared code is extracted — into a project's `structure.md`, written from the shape the project chose (#939). The template (convention-driven-project `8e32768`, `docs/architecture/structures/`) offers three shapes: domain, layered and hexagonal.
 
-Sherlock already had a shape before it had a record of one. ADR 0001 maps components to `internal/<domain>/` packages rather than technical layers, and `packages.md` cuts every package by pod, then domain, then implementation. A layered partition would cut by technical responsibility — interface, logic, persistence — across subjects that change independently: the gateway, the reasoning loop, memory and the workspace. A hexagonal one makes the port the unit around one application, while Sherlock holds several subjects, each already reaching its technologies through interfaces it declares (`agent.Model`, `memory.Storer`).
+Sherlock already had a shape before it had a record of one. ADR 0001 maps components to `internal/<domain>/` packages rather than technical layers, and `packages.md` cuts every package by pod, then domain, then implementation. A layered partition would cut by technical responsibility — interface, logic, persistence — across subjects that change independently: the gateway, the reasoning loop, memory and the workspace. A hexagonal one makes the port the unit around one application, while Sherlock holds several subjects, each already reaching its technologies through interfaces it declares (`agent.Model`, `agent.Embedder`).
 
-Domain partitioning leaves one point open: whether a domain may depend on a sibling at all, from sharing code (Shared Kernel) to no reference whatsoever (Separate Ways) in *Domain-Driven Design* (Evans, 2003). The import graph answers it for most pairs: `internal/gateway/` imports `internal/agent/` and `internal/message/`, `internal/agent/` imports `internal/tool/`, and none of them imports back. The agent and memory domains run one way too, memory on agent: `internal/memory/` and `internal/memory/sqlite/` import `internal/agent/`, and nothing under `internal/agent/` imports `internal/memory/` (#943).
+Domain partitioning leaves one point open: whether a domain may depend on a sibling at all, from sharing code (Shared Kernel) to no reference whatsoever (Separate Ways) in *Domain-Driven Design* (Evans, 2003). The import graph answers it for most pairs: `internal/gateway/` imports `internal/agent/` and `internal/message/`, `internal/agent/` imports `internal/tool/`, and none of them imports back. The agent and memory domains run one way too, memory on agent: `internal/memory/sqlite/` imports `internal/agent/`, and nothing under `internal/agent/` imports it (#943).
 
 ## Decision
 

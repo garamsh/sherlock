@@ -154,7 +154,7 @@ func TestConversation_QueuePreservesOriginalInboundID(t *testing.T) {
 func TestConversation_RelatedCandidateDoesNotSupportMissingDate(t *testing.T) {
 	ctx := context.Background()
 	path := filepath.Join(t.TempDir(), "memory.db")
-	seed, err := sqlite.Open(path)
+	seed, err := sqlite.OpenConversation(path, nil)
 	require.NoError(t, err)
 	require.NoError(t, seed.RecordTurn(ctx, []agent.SourceMessage{{Role: agent.RoleUser, Content: "The lunar mission uses the Aurora capsule."}, {Role: agent.RoleAssistant, Content: "Noted."}}, firstSummary{}))
 	require.NoError(t, seed.Close())

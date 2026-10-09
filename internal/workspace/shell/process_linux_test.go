@@ -378,8 +378,8 @@ func TestNewProcessExecutor_NoNetworkWarningMatchesTheHost(t *testing.T) {
 
 // TestRun_UsernsRefusalReportsAgentUIDUnavailable pins #1057: every errno
 // by which a host refuses the unprivileged NoNetwork clone reports the
-// documented agent_uid unavailable, naming the errno, and the startup
-// probe's WARN carries the same. The clone's error is faked, in the shape
+// documented agent_uid unavailable, naming the errno and the host
+// requirement it points to, and the startup probe's WARN carries the same. The clone's error is faked, in the shape
 // os/exec returns it, because a host that admits the clone produces none of
 // these. The control is an errno that is not a refusal, which stays a plain
 // start failure.
@@ -388,13 +388,15 @@ func TestRun_UsernsRefusalReportsAgentUIDUnavailable(t *testing.T) {
 		t.Skip("the unprivileged shape is only meaningful without root")
 	}
 	tests := []struct {
-		errno   syscall.Errno
-		refusal bool
+		errno       syscall.Errno
+		refusal     bool
+		name        string
+		requirement string
 	}{
-		{errno: syscall.EPERM, refusal: true},
-		{errno: syscall.ENOSPC, refusal: true},
-		{errno: syscall.EUSERS, refusal: true},
-		{errno: syscall.EINVAL, refusal: true},
+		{errno: syscall.EPERM, refusal: true, name: "EPERM", requirement: "host requirement: a seccomp profile admitting"},
+		{errno: syscall.ENOSPC, refusal: true, name: "ENOSPC", requirement: "host requirement: user.max_user_namespaces above 0"},
+		{errno: syscall.EUSERS, refusal: true, name: "EUSERS", requirement: "host requirement: user.max_user_namespaces above 0"},
+		{errno: syscall.EINVAL, refusal: true, name: "EINVAL", requirement: "kernel was built without user or network namespaces"},
 		{errno: syscall.EAGAIN, refusal: false},
 	}
 	for _, tt := range tests {
@@ -421,8 +423,16 @@ func TestRun_UsernsRefusalReportsAgentUIDUnavailable(t *testing.T) {
 				return
 			}
 			assert.ErrorIs(t, err, ErrAgentUIDUnavailable)
-			assert.True(t, strings.HasPrefix(warnings[0]["error"].(string), ErrAgentUIDUnavailable.Error()),
-				"the startup WARN carries the sentinel: %q", warnings[0]["error"])
+			warned, _ := warnings[0]["error"].(string)
+			assert.True(t, strings.HasPrefix(warned, ErrAgentUIDUnavailable.Error()),
+				"the startup WARN carries the sentinel: %q", warned)
+			// An operator fixes ENOSPC on the node's sysctl and EPERM in the
+			// seccomp profile, so the call and the WARN both name the errno
+			// and the requirement it points to.
+			for _, rendered := range []string{err.Error(), warned} {
+				assert.Contains(t, rendered, tt.name+": ", "the errno is named")
+				assert.Contains(t, rendered, tt.requirement, "the cause points to what to fix")
+			}
 		})
 	}
 }

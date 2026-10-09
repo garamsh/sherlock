@@ -256,13 +256,13 @@ func (e *ProcessExecutor) Run(ctx context.Context, req Request) (Result, error) 
 
 	start := cmd.Start
 	if req.NoNetwork && euid != 0 {
-		start = func() error { return startUsernsChild(cmd) }
+		start = func() error { return startUserns(cmd) }
 	}
 	if err := start(); err != nil {
-		if req.NoNetwork && euid != 0 && errors.Is(err, syscall.EPERM) {
-			// User namespaces are disabled on this host; fail closed
-			// with the documented unavailability (ADR 0010).
-			return Result{}, ErrAgentUIDUnavailable
+		if cause, refused := usernsRefusal(err); req.NoNetwork && euid != 0 && refused {
+			// The host will not give the child its namespaces; fail
+			// closed with the documented unavailability (ADR 0010).
+			return Result{}, fmt.Errorf("%w: %s: %v", ErrAgentUIDUnavailable, cause, err)
 		}
 		return Result{}, fmt.Errorf("shell: start: %w", err)
 	}
@@ -301,6 +301,34 @@ func (e *ProcessExecutor) Run(ctx context.Context, req Request) (Result, error) 
 		return result, nil
 	}
 	return result, fmt.Errorf("shell: %w", err)
+}
+
+// startUserns starts a NoNetwork child in the unprivileged shape. It is a
+// variable so a test can stand in for a host that refuses the clone.
+var startUserns = startUsernsChild
+
+// usernsRefusals are the errnos by which the host refuses a
+// CLONE_NEWUSER|CLONE_NEWNET start (clone(2)), each named and pointed at
+// what to fix, because an operator's fix differs by errno.
+var usernsRefusals = []struct {
+	errno syscall.Errno
+	cause string
+}{
+	{syscall.EPERM, "EPERM: a seccomp profile or an LSM refused the clone (host requirement: a seccomp profile admitting CLONE_NEWUSER|CLONE_NEWNET)"},
+	{syscall.ENOSPC, "ENOSPC: the user namespace limit is reached (host requirement: user.max_user_namespaces above 0)"},
+	{syscall.EUSERS, "EUSERS: the user namespace limit is reached (host requirement: user.max_user_namespaces above 0)"},
+	{syscall.EINVAL, "EINVAL: the kernel rejected the namespace flags (for example, built without user or network namespaces)"},
+}
+
+// usernsRefusal returns the cause of a failed NoNetwork start when the
+// host refused the child its namespaces, and false for any other failure.
+func usernsRefusal(err error) (string, bool) {
+	for _, r := range usernsRefusals {
+		if errors.Is(err, r.errno) {
+			return r.cause, true
+		}
+	}
+	return "", false
 }
 
 // shimCommandLine renders the command line an untrusted child runs:

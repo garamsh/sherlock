@@ -109,3 +109,5 @@ removal-audit:
   #1029 ran it against template a743468. It found only lines recorded
     above, and took the rewrites that had been waiting: 2757013 in
     stack-go.md, and b8b0890, 33c0f43 and 4bcd785 in documentation.md.
+  #1034 ran it against template 6f3ddf8. It found only lines recorded
+    above, and took 6c60405 and 6f3ddf8 whole.

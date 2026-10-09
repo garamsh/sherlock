@@ -19,50 +19,6 @@ const DefaultMaxIterations = 16
 // cutting pathological loops (issue #160) well short of the iteration cap.
 const maxToolCallsPerTurn = 6
 
-// Model is the agent's narrow view of a chat model (ADR 0004): it receives
-// the conversation plus the registered tool schemas and returns either a
-// final response or tool-call requests. A turn ends when the model calls
-// the reserved MemoryWriteTool, whose arguments are the document
-// ResponseSchema describes, parsed by ParseWriteback.
-type Model interface {
-	Chat(ctx context.Context, messages []Message, tools []tool.Descriptor) (Response, error)
-}
-
-// ToolClient is the platform's tool client surface the session consumes
-// (ADR 0017 §Tool contract). Production uses *tool.Registry; tests may
-// substitute any implementation that exposes the same listing and call
-// surface.
-type ToolClient interface {
-	// List returns the descriptors (sorted by name) the model sees.
-	List() []tool.Descriptor
-	// Call dispatches one tool call. Validation and permission policy
-	// are the client's responsibility, and so is holding a
-	// non-conforming output back: a call whose output fails its schema
-	// returns an error and the output does not reach the model.
-	Call(ctx context.Context, name string, input json.RawMessage) (json.RawMessage, error)
-}
-
-// Recaller is the recall hook point of the memory lifecycle (ADR 0006).
-// internal/agent/memory implements it over the memory service and the
-// runtime wires it; nil means no recall.
-type Recaller interface {
-	Recall(ctx context.Context, task string) (Recalled, error)
-}
-
-// EventSink receives loop events in emission order. Nil means events are
-// discarded.
-type EventSink interface {
-	Emit(ctx context.Context, e Event)
-}
-
-// Compactor is the context-overflow hook point (ADR 0006): when history
-// grows past Options.MaxHistoryMessages, the session asks the compactor to
-// shrink it. internal/agent/memory implements it; nil keeps history
-// unbounded.
-type Compactor interface {
-	Compact(ctx context.Context, history []Message) ([]Message, error)
-}
-
 // Session is one rolling conversation per agent (ADR 0006, ADR 0016):
 // it holds the history and runs one turn per call to Run.
 type Session interface {

@@ -5,19 +5,11 @@ import (
 	"log/slog"
 	"sync"
 	"time"
-
-	"github.com/garamsh/sherlock/internal/agent"
 )
 
 // DefaultQueueCapacity bounds the inbox. Enqueue blocks when
 // the queue is full, giving senders natural backpressure.
 const DefaultQueueCapacity = 64
-
-// RuntimeFactory builds the agent's runtime. The events sink is the
-// agent's monitoring stream and outlives any single runtime.
-type RuntimeFactory interface {
-	New(ctx context.Context, agentID string, events agent.EventSink) (*Runtime, error)
-}
 
 // Queue is the gateway's core: it serializes the one agent's runs so the
 // agent runs one turn at a time (ADR 0007, ADR 0017 — one agent per

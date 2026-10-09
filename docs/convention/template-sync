@@ -16,7 +16,8 @@ selection:
   All stack-neutral conventions are kept. Go and container images are the
     applicable stack files. FastAPI, NestJS, Next.js and Tailwind are absent.
   No derived stack is selected, so the Extends column and inheritance rules
-    remain absent. Revisit if a derived stack is introduced (#684).
+    remain absent. Revisit if a derived stack is introduced (#684). Template
+    af855c1 names that column in §Independence and is not taken with it.
   docs/architecture/structures/ supplies alternatives for a structural choice,
     not additional project rules. The domain shape was chosen in #939 and
     recorded as ADR 0023, with its rules in docs/architecture/structure.md;
@@ -29,11 +30,18 @@ deliberate-differences:
     definitions and template-wide rule-admission policy do not replace them.
   git.md keeps tasks based on dev, batch promotion to main (#753), and the
     host-namespace prefix interpretation (#623). The author-preservation
-    obligation is adapted to task squash merges into dev; it does not decide
-    the unresolved promotion merge method (#763).
+    obligation is adapted to task squash merges into dev. The promotion
+    merge method is the template's (ddfa4fb); who opens a promotion stays
+    in §Branches, which the template does not state, and the §Commits
+    sentence on titles reaching main is dropped because §PRs states it.
   documentation.md owns claim evidence and negative-result methods for documents
     and GitHub artifacts, including reviews (#746); review.md keeps review procedure
     without repeating those general rules.
+  documentation.md holds back template 33c0f43's widening of the citation
+    rule to this project's copy of a document. Open template #432 rewrites
+    that condition, and taking it now would make stack-go.md's references to
+    its own sections violations #432 exists to exempt. The sentence stands
+    as 7364882 wrote it, with c876095's addition; take 33c0f43 after #432.
   documentation.md keeps its build/configuration prose scope (#454), the
     issue-completeness rule (#648), and wording about projects beyond this
     one rather than projects consuming this template.
@@ -55,6 +63,11 @@ deliberate-differences:
     New service/library layouts and composition-site rules are deferred with
     their dependent packages.md and architecture-index claims, including #710.
     Updating the rule alone would leave those documents describing the old rule.
+    §Project envelope names cmd/<binary>/main.go as the composition site and
+    no more: the rules for that site live in structure.md (548895a). The
+    exception for a site a test outside cmd/ must reach is part of the
+    deferral. b29f0f1's heading for Generated mocks has no counterpart in
+    this project's Test doubles section.
   docs/architecture/README.md and adr/0000-template.md retain living records
     and continuous numbering. Upstream freezes ADR bodies and adds errata and
     supersession. That changes the project's decision-history policy, so it is
@@ -63,3 +76,6 @@ deliberate-differences:
     upstream rule 6 keeps structural rules out of the ADR because its body is
     frozen; here the reason is that current state lives in responsibility
     documents (rule 4), and rule 7 lands a settled point as rule 4 pairs it.
+    §Rules every shape carries (548895a, 133b60c) is bootstrap input: its
+    bullets are in structure.md beside the domain shape's rules, and the
+    section is declined so the rule is held once and rule 6 stays true.

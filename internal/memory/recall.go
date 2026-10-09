@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/garamsh/sherlock/internal/agent"
-	"github.com/garamsh/sherlock/internal/memory"
 	"github.com/garamsh/sherlock/internal/tool"
 )
 
@@ -19,7 +18,7 @@ import (
 // memory that reads language on the way in.
 type Recall struct {
 	// Svc answers the two addressed reads.
-	Svc memory.Service
+	Svc Service
 	// Model resolves the question into an address. It is the session's
 	// own model: nothing here needs a different one, and a second
 	// provider section would be the shape #582 deleted.
@@ -48,7 +47,7 @@ func (r Recall) Recall(ctx context.Context, task string) (agent.Recalled, error)
 	}
 
 	if address.Question != "" {
-		held, err := r.Svc.At(ctx, memory.Address{
+		held, err := r.Svc.At(ctx, Address{
 			Subject:  address.Subject,
 			Question: address.Question,
 		})
@@ -92,7 +91,7 @@ func (r Recall) resolve(ctx context.Context, task string) (agent.ReadAddress, er
 // render turns held memories into what the model reads: the address and
 // the value, because an addressed store holds nothing else and a value
 // alone would not say what question it answers.
-func (r Recall) render(held []memory.Memory) []agent.RecalledMemory {
+func (r Recall) render(held []Memory) []agent.RecalledMemory {
 	now := time.Now
 	if r.Now != nil {
 		now = r.Now
@@ -111,7 +110,7 @@ func (r Recall) render(held []memory.Memory) []agent.RecalledMemory {
 
 // line renders one held memory as the address it answers and the value
 // held there.
-func line(m memory.Memory) string {
+func line(m Memory) string {
 	question := m.Address.Question
 	if m.Address.Restriction != "" {
 		question += " (" + m.Address.Restriction + ")"

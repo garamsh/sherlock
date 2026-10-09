@@ -24,6 +24,14 @@ REVISION ?= $(shell git rev-parse HEAD 2>/dev/null)
 # artifacts.
 PRIVILEGED_TEST_BIN ?= /tmp/sherlock-privileged.test
 
+# golangci-lint's cache is keyed on file content, not path, and replays a result
+# with the paths of the checkout that recorded it. A cache shared between
+# checkouts therefore reports findings at files that may no longer exist, and a
+# `//nolint` it cannot read there does not suppress them (#1000). Inside the
+# tree, the cache is only ever this checkout's and goes when the checkout does.
+# Assigned rather than defaulted, so an inherited shared value cannot return.
+export GOLANGCI_LINT_CACHE = $(CURDIR)/.cache/golangci-lint
+
 lint:
 	go vet ./...
 	golangci-lint run ./...

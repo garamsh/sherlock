@@ -214,7 +214,7 @@ Individual targets: `make lint`, `make format`, `make test`, `make build`.
 
 Beyond Go and GNU Make, the toolchain is:
 
-- **golangci-lint** — `make lint` runs it from your PATH. CI installs `v2.12.2` through `golangci-lint-action` (`.github/workflows/ci.yml`), which is the one place the version is enforced; `.golangci.yml` carries it in a comment beside the config-schema version it declares.
+- **golangci-lint** — `make lint` runs it from your PATH, with its cache in `.cache/golangci-lint` inside the checkout, so a result recorded by another checkout never reaches it. CI installs `v2.12.2` through `golangci-lint-action` (`.github/workflows/ci.yml`), which is the one place the version is enforced; `.golangci.yml` carries it in a comment beside the config-schema version it declares.
 - **buf** — `make proto` lints the proto files, regenerates the workspace gRPC stubs (`buf.yaml` + `buf.gen.yaml`), and fails if a regenerated stub is uncommitted; the CLI version is pinned in `.github/workflows/ci.yml` (1.72.0).
 - **lefthook** — `make hooks` installs the git hooks once after cloning (pre-commit lint/format, pre-push test).
 

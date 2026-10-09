@@ -46,6 +46,9 @@ data/
 /sherlock
 /harness
 
+# The golangci-lint cache make lint keeps per checkout
+/.cache/
+
 # Python (experiment harnesses under research/)
 __pycache__/
 *.pyc

@@ -151,7 +151,7 @@ func TestScriptTool_MessageSend_EntryRepliesToTheDrainedMessage(t *testing.T) {
 	}, "env-1", logger)
 	require.NoError(t, err)
 	t.Cleanup(func() { q.Close() })
-	srv := httptest.NewServer(gateway.NewHandler(q, gateway.Instance{}, logger))
+	srv := httptest.NewServer(gateway.NewHandler(q, noIssuers(), gateway.Instance{}, logger))
 	t.Cleanup(srv.Close)
 
 	const senderID = "garam:msg/7,a"

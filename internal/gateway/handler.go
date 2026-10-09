@@ -1,6 +1,7 @@
 package gateway
 
 import (
+	"context"
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
@@ -26,9 +27,9 @@ const maxMessageBody = 1 << 20 // 1 MiB
 //
 // One process serves one agent (ADR 0017): a path whose agentID is not
 // the queue's gets 404. Callers authenticate at the TLS layer (mTLS,
-// ADR 0012); the handler itself is unchanged by it.
-func NewHandler(q *Queue, instance Instance, logger *slog.Logger) http.Handler {
-	h := &handler{queue: q, instance: instance, logger: logger}
+// ADR 0012); verifier decides who a posted message is from (ADR 0026).
+func NewHandler(q *Queue, verifier *Verifier, instance Instance, logger *slog.Logger) http.Handler {
+	h := &handler{queue: q, verifier: verifier, instance: instance, logger: logger}
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /agents/{agentID}/messages", h.postMessage)
 	mux.HandleFunc("GET /agents/{agentID}/messages/{id}", h.getMessage)
@@ -39,6 +40,7 @@ func NewHandler(q *Queue, instance Instance, logger *slog.Logger) http.Handler {
 
 type handler struct {
 	queue    *Queue
+	verifier *Verifier
 	instance Instance
 	logger   *slog.Logger
 }
@@ -53,14 +55,16 @@ func (h *handler) serveAgent(w http.ResponseWriter, r *http.Request) bool {
 	return false
 }
 
-// postMessageRequest is the ingress body: the message content and the
-// sender's ID for it, kept byte for byte; the gateway assigns one when it
-// is absent. The envelope's sender (ADR 0015) is the verified mTLS caller
-// identity (ADR 0012), and the ID is unique within it; plain-HTTP
-// loopback requests carry the empty sender.
+// postMessageRequest is the ingress body: the message content, the
+// sender's ID for it, kept byte for byte (the gateway assigns one when it
+// is absent), and the compact JWS signing them, when there is one
+// (ADR 0026). The envelope's sender (ADR 0015) is the issuer and subject
+// the signature verifies, or else the verified mTLS caller identity
+// (ADR 0012), empty over plain-HTTP loopback; the ID is unique within it.
 type postMessageRequest struct {
-	ID      string `json:"id"`
-	Content string `json:"content"`
+	ID        string  `json:"id"`
+	Content   string  `json:"content"`
+	Signature *string `json:"signature"`
 }
 
 // postMessageResponse acknowledges a queued or completed message.
@@ -91,7 +95,15 @@ func (h *handler) postMessage(w http.ResponseWriter, r *http.Request) {
 		writeProblem(w, http.StatusBadRequest, "content is required")
 		return
 	}
-	id, status, err := h.queue.Enqueue(r.Context(), callerID(r), req.ID, req.Content)
+	origin, err := h.verifier.Origin(r.Context(), callerID(r), req.Signature, req.ID, req.Content)
+	if err != nil {
+		h.refuseOrigin(w, r, err)
+		return
+	}
+	if origin.Signed() {
+		addLogFields(r, "iss", origin.Issuer(), "sub", origin.Sender())
+	}
+	id, status, err := h.queue.Enqueue(r.Context(), origin, req.ID, req.Content)
 	if err != nil {
 		switch {
 		case errors.Is(err, ErrDraining):
@@ -113,14 +125,35 @@ func (h *handler) postMessage(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewEncoder(w).Encode(postMessageResponse{ID: id, AgentID: agentID, Status: wire})
 }
 
+// refuseOrigin answers a message the verifier refused (ADR 0026 §4). A
+// refused signature is logged with its check, issuer and key ID, never
+// its content.
+func (h *handler) refuseOrigin(w http.ResponseWriter, r *http.Request, err error) {
+	agentID := r.PathValue("agentID")
+	var refusal *Refusal
+	switch {
+	case errors.Is(err, ErrSignatureRequired):
+		writeProblem(w, http.StatusForbidden, err.Error())
+	case errors.As(err, &refusal):
+		h.logger.Warn("signature rejected", "op", "verify", "agent_id", agentID,
+			"check", refusal.Check, "iss", refusal.Issuer, "kid", refusal.KeyID)
+		writeProblem(w, http.StatusForbidden, refusal.Error())
+	case errors.Is(err, ErrIssuerUnavailable):
+		writeProblem(w, http.StatusServiceUnavailable, err.Error())
+	default:
+		h.logger.Error("verify failed", "op", "verify", "agent_id", agentID, "error", err)
+		writeProblem(w, http.StatusInternalServerError, "verify failed")
+	}
+}
+
 // messageStatusResponse answers a lookup; the caller verifies the ID.
 type messageStatusResponse struct {
 	ID     string `json:"id"`
 	Status string `json:"status"`
 }
 
-// getMessage reports whether the caller's message completed, within the
-// caller's own IDs: another sender's ID reads as unknown.
+// getMessage reports whether a message the caller posted completed,
+// signed or not (ADR 0026): another poster's ID reads as unknown.
 func (h *handler) getMessage(w http.ResponseWriter, r *http.Request) {
 	if !h.serveAgent(w, r) {
 		return
@@ -295,8 +328,9 @@ func (w *statusWriter) Flush() {
 
 // logRequests logs one line per request with a locally generated
 // trace_id (no tracing backend; stack-go §5). Over mTLS the verified
-// caller identity joins the line as caller_id (ADR 0012). Message
-// content is never logged.
+// caller identity joins the line as caller_id (ADR 0012), and a signed
+// message adds its verified iss and sub (ADR 0026). Message content is
+// never logged.
 func (h *handler) logRequests(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		traceID, err := newID("trace")
@@ -304,6 +338,8 @@ func (h *handler) logRequests(next http.Handler) http.Handler {
 			traceID = "unknown"
 		}
 		sw := &statusWriter{ResponseWriter: w, status: http.StatusOK}
+		fields := &logFields{}
+		r = r.WithContext(context.WithValue(r.Context(), logFieldsKey{}, fields))
 		start := time.Now()
 		next.ServeHTTP(sw, r)
 		attrs := []any{
@@ -315,8 +351,21 @@ func (h *handler) logRequests(next http.Handler) http.Handler {
 		if caller := callerID(r); caller != "" {
 			attrs = append(attrs, "caller_id", caller)
 		}
+		attrs = append(attrs, fields.attrs...)
 		h.logger.Info("http request", attrs...)
 	})
+}
+
+// logFields carries what a route adds to its request's log line.
+type logFields struct{ attrs []any }
+
+type logFieldsKey struct{}
+
+// addLogFields adds attrs to the request's log line.
+func addLogFields(r *http.Request, attrs ...any) {
+	if fields, ok := r.Context().Value(logFieldsKey{}).(*logFields); ok {
+		fields.attrs = append(fields.attrs, attrs...)
+	}
 }
 
 // callerID names the authenticated caller: the verified peer

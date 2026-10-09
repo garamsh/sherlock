@@ -20,7 +20,7 @@ The gateway authenticates callers with mTLS, terminated in the agent container i
 ## Consequences
 
 - A platform holds only public caller material (the client CA) plus its own server key, which lives outside the execution domain — no shared caller secret enters any config.
-- Caller identity (client-certificate CN/SAN) exists at the TLS layer and lands in request logs as trace context. Authorization stays flat: an authenticated caller has full access; scope boundaries are settled in ADR 0014.
+- Caller identity (client-certificate CN/SAN) exists at the TLS layer and lands in request logs as trace context. It authenticates the transport: it is the sender of an unsigned message and the party a lookup answers, and it decides nothing about a signed message's sender, which is the issuer and subject its signature verifies (ADR 0026). Authorization stays flat: an authenticated caller has full access; scope boundaries are settled in ADR 0014.
 - SSE connections authenticate once at handshake; the call model is unchanged for clients.
 
 ## Rejected alternatives

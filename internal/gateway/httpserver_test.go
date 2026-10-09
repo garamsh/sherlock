@@ -66,7 +66,7 @@ func startMemoryServe(t *testing.T, path string) (*heldModel, serving) {
 	ctx, cancel := context.WithCancel(context.Background())
 	t.Cleanup(cancel)
 	done := make(chan error, 1)
-	go func() { done <- gateway.Serve(ctx, addr, nil, q, gateway.Instance{}, newTestLogger()) }()
+	go func() { done <- gateway.Serve(ctx, addr, nil, q, noIssuers(), gateway.Instance{}, newTestLogger()) }()
 	base := "http://" + addr
 	require.Eventually(t, func() bool {
 		_, err := fetchAgentStatus(base)
@@ -115,7 +115,7 @@ func committed(t *testing.T, path, id, content string) bool {
 	store, err := sqlite.OpenConversation(path, wordEmbedder{})
 	require.NoError(t, err)
 	defer store.Close()
-	held, same, err := store.HoldsInbound(context.Background(), "", id, content)
+	held, same, err := store.HoldsInbound(context.Background(), "", "", id, content)
 	require.NoError(t, err)
 	return held && same
 }

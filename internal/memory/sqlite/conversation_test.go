@@ -418,15 +418,15 @@ func TestHoldsInbound_ScopesIDToSender(t *testing.T) {
 	require.NoError(t, store.RecordTurn(ctx, []agent.SourceMessage{{Role: agent.RoleUser, Sender: "bob", ExternalID: "m1", Content: "from bob"}, {Role: agent.RoleAssistant, Content: "Noted."}}, firstSummary{}),
 		"another sender's ID does not collide")
 
-	held, same, err := store.HoldsInbound(ctx, "alice", "m1", "from alice")
+	held, same, err := store.HoldsInbound(ctx, "", "alice", "m1", "from alice")
 	require.NoError(t, err)
 	assert.True(t, held)
 	assert.True(t, same, "the sender's own content is what it holds")
-	held, same, err = store.HoldsInbound(ctx, "bob", "m1", "from alice")
+	held, same, err = store.HoldsInbound(ctx, "", "bob", "m1", "from alice")
 	require.NoError(t, err)
 	assert.True(t, held)
 	assert.False(t, same, "bob's m1 holds bob's content, not alice's")
-	held, _, err = store.HoldsInbound(ctx, "carol", "m1", "from alice")
+	held, _, err = store.HoldsInbound(ctx, "", "carol", "m1", "from alice")
 	require.NoError(t, err)
 	assert.False(t, held, "a sender that delivered nothing holds nothing")
 }
@@ -444,11 +444,11 @@ func TestHoldsInbound_ComparesAsStored(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEqual(t, content, source.Content, "the store holds the redacted copy")
 
-	held, same, err := store.HoldsInbound(ctx, "", "m1", content)
+	held, same, err := store.HoldsInbound(ctx, "", "", "m1", content)
 	require.NoError(t, err)
 	assert.True(t, held)
 	assert.True(t, same)
-	_, same, err = store.HoldsInbound(ctx, "", "m1", "favorite tea is oolong")
+	_, same, err = store.HoldsInbound(ctx, "", "", "m1", "favorite tea is oolong")
 	require.NoError(t, err)
 	assert.False(t, same, "other content does not match")
 }
@@ -469,15 +469,58 @@ INSERT INTO conversation_sources(role,external_id,content) VALUES ('user','msg-1
 	store, err := sqlite.OpenConversation(path, wordEmbedder{})
 	require.NoError(t, err)
 	defer store.Close()
-	held, same, err := store.HoldsInbound(ctx, "", "msg-1", "old message")
+	held, same, err := store.HoldsInbound(ctx, "", "", "msg-1", "old message")
 	require.NoError(t, err)
 	assert.True(t, held)
 	assert.True(t, same)
 	require.NoError(t, store.RecordTurn(ctx, []agent.SourceMessage{{Role: agent.RoleUser, Sender: "alice", ExternalID: "msg-1", Content: "new message"}, {Role: agent.RoleAssistant, Content: "Noted."}}, firstSummary{}))
-	held, same, err = store.HoldsInbound(ctx, "alice", "msg-1", "new message")
+	held, same, err = store.HoldsInbound(ctx, "", "alice", "msg-1", "new message")
 	require.NoError(t, err)
 	assert.True(t, held)
 	assert.True(t, same)
+}
+
+// A file from before signed senders (ADR 0026) keeps every row, which
+// reads as a transport principal's: its scope and its poster are its
+// sender. A signed source under the same sender and ID is another scope's,
+// and answers its own poster.
+func TestOpenConversation_KeepsRowsFromBeforeSignedSenders(t *testing.T) {
+	ctx := context.Background()
+	path := filepath.Join(t.TempDir(), "memory.db")
+	raw, err := sql.Open("sqlite", path)
+	require.NoError(t, err)
+	_, err = raw.Exec(`CREATE TABLE conversation_sources (id INTEGER PRIMARY KEY AUTOINCREMENT, role TEXT NOT NULL CHECK(role IN ('user','assistant')), external_id TEXT, content TEXT NOT NULL, sender TEXT NOT NULL DEFAULT '');
+CREATE UNIQUE INDEX conversation_sender_external_id ON conversation_sources(sender,external_id) WHERE external_id <> '';
+INSERT INTO conversation_sources(role,sender,external_id,content) VALUES ('user','alice','msg-1','old message')`)
+	require.NoError(t, err)
+	require.NoError(t, raw.Close())
+
+	store, err := sqlite.OpenConversation(path, wordEmbedder{})
+	require.NoError(t, err)
+	defer store.Close()
+	held, same, err := store.HoldsInbound(ctx, "", "alice", "msg-1", "old message")
+	require.NoError(t, err)
+	assert.True(t, held && same, "the old row is the transport principal's")
+	posted, err := store.PostedInbound(ctx, "alice", "msg-1")
+	require.NoError(t, err)
+	assert.True(t, posted, "the old row's poster is its sender")
+	posted, err = store.PostedInbound(ctx, "bob", "msg-1")
+	require.NoError(t, err)
+	assert.False(t, posted, "control: another poster does not hold it")
+
+	require.NoError(t, store.RecordTurn(ctx, []agent.SourceMessage{
+		{Role: agent.RoleUser, Issuer: "https://issuer.example", Sender: "alice", Poster: "", ExternalID: "msg-1", Content: "signed message"},
+		{Role: agent.RoleAssistant, Content: "Noted."},
+	}, firstSummary{}), "the signed alice's msg-1 is not the transport alice's")
+	held, same, err = store.HoldsInbound(ctx, "https://issuer.example", "alice", "msg-1", "signed message")
+	require.NoError(t, err)
+	assert.True(t, held && same)
+	held, same, err = store.HoldsInbound(ctx, "", "alice", "msg-1", "old message")
+	require.NoError(t, err)
+	assert.True(t, held && same, "the old row is unchanged")
+	posted, err = store.PostedInbound(ctx, "", "msg-1")
+	require.NoError(t, err)
+	assert.True(t, posted, "the signed message answers the principal that posted it")
 }
 
 // TestOpenInitializedConversation_RefusesAnUninitializedStore holds the

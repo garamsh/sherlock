@@ -22,10 +22,15 @@ type Runtime struct {
 	// turn, off the turn path. The source-linked runtime names the entities
 	// of one mid episode stored before entities were (memory.md).
 	Retain func(ctx context.Context) error
-	// Committed reports whether memory holds the sender's message ID and,
-	// when it does, whether with content. It is the only evidence a
-	// message completed; nil means the runtime commits nothing.
-	Committed func(ctx context.Context, sender, id, content string) (held, same bool, err error)
+	// Committed reports whether memory holds the message ID within the
+	// scope of issuer and sender and, when it does, whether with content.
+	// It is the only evidence a message completed; nil means the runtime
+	// commits nothing.
+	Committed func(ctx context.Context, issuer, sender, id, content string) (held, same bool, err error)
+	// Posted reports whether memory holds a message the transport
+	// principal poster posted under id, signed or not. Nil means the
+	// runtime commits nothing.
+	Posted func(ctx context.Context, poster, id string) (bool, error)
 }
 
 // Factory assembles the one agent's runtime from the agent-container
@@ -113,6 +118,7 @@ func (f *Factory) New(ctx context.Context, agentID string, events agent.EventSin
 			return store.Link(ctx, summarizer)
 		},
 		Committed: store.HoldsInbound,
+		Posted:    store.PostedInbound,
 		Close: func(context.Context) error {
 			// The store opens in WAL mode, so an unclosed handle
 			// leaves the `-wal` and `-shm` files beside `memory.db`

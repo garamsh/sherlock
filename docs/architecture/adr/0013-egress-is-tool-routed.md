@@ -1,7 +1,7 @@
 # ADR 0013: External egress is tool-routed — no dedicated egress proxy
 
 > Status: accepted
-> Date: 2026-08-03 (revised in place 2026-08-13; 2026-08-17; 2026-08-23; 2026-09-26)
+> Date: 2026-08-03 (revised in place 2026-08-13; 2026-08-17; 2026-08-23; 2026-09-26; 2026-10-09)
 
 ## Context
 
@@ -9,7 +9,7 @@ An early design carried a deferred "egress tool/proxy": a component meant to be 
 
 ## Decision
 
-External access is tool-routed by design; no dedicated egress proxy or egress tool is built. The operator chooses every outbound destination and the model chooses none: replies leave through `message_send`, capabilities through the operator-installed tool servers (network-keeping by operator choice), and the reasoning loop's and memory's model and embedding traffic through the operator-configured base URLs (ADR 0004). The embeddings base URL receives each turn's task text and every mid-episode summary (ADR 0019), and it need not be the chat model's vendor. Executor children are network-isolated on request (`NoNetwork`, ADR 0008). Destination allowlists, response redaction, and secret-reference bindings land only when a concrete use case needs them, inside the tool that needs them (`docs/convention/simplicity.md`).
+External access is tool-routed by design; no dedicated egress proxy or egress tool is built. The operator chooses every outbound destination and the model chooses none: replies leave through `message_send`, capabilities through the operator-installed tool servers (network-keeping by operator choice), and the reasoning loop's and memory's model and embedding traffic through the operator-configured base URLs (ADR 0004). The embeddings base URL receives each turn's task text and every mid-episode summary (ADR 0019), and it need not be the chat model's vendor. The agent process also fetches each trusted issuer's key set from the `keys-url` the operator configured for it, carrying no conversation content and no credential (ADR 0026). Executor children are network-isolated on request (`NoNetwork`, ADR 0008). Destination allowlists, response redaction, and secret-reference bindings land only when a concrete use case needs them, inside the tool that needs them (`docs/convention/simplicity.md`).
 
 ## Consequences
 

@@ -540,7 +540,7 @@ func TestFactory_RequireStoreStartsOnAnInitializedStore(t *testing.T) {
 	rt, err := factory.New(context.Background(), "a", nil)
 	require.NoError(t, err)
 	defer func() { assert.NoError(t, rt.Close(context.Background())) }()
-	held, same, err := rt.Committed(context.Background(), "s", "m1", "remember cedar")
+	held, same, err := rt.Committed(context.Background(), "", "s", "m1", "remember cedar")
 	require.NoError(t, err)
 	assert.True(t, held && same, "the start opened a store other than the initialized one")
 }

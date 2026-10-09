@@ -30,7 +30,7 @@ func newTestServer(t *testing.T, newFn func(agentID string, events agent.EventSi
 	q, err := gateway.NewQueue(&fakeFactory{newFn: newFn}, "env-1", newTestLogger())
 	require.NoError(t, err)
 	t.Cleanup(func() { q.Close() })
-	srv := httptest.NewServer(gateway.NewHandler(q, gateway.Instance{}, newTestLogger()))
+	srv := httptest.NewServer(gateway.NewHandler(q, noIssuers(), gateway.Instance{}, newTestLogger()))
 	t.Cleanup(srv.Close)
 	return srv
 }
@@ -135,7 +135,7 @@ func TestServer_GRNAgentIDRoutesVerbatim(t *testing.T) {
 	q, err := gateway.NewQueue(factory, grn, newTestLogger())
 	require.NoError(t, err)
 	t.Cleanup(func() { q.Close() })
-	srv := httptest.NewServer(gateway.NewHandler(q, gateway.Instance{}, newTestLogger()))
+	srv := httptest.NewServer(gateway.NewHandler(q, noIssuers(), gateway.Instance{}, newTestLogger()))
 	t.Cleanup(srv.Close)
 
 	eventsStatus := func(id string) int {
@@ -460,7 +460,7 @@ func newMemoryQueue(t *testing.T, path string, model *heldModel) *gateway.Queue 
 func newMemoryServer(t *testing.T, model *heldModel) *httptest.Server {
 	t.Helper()
 	q := newMemoryQueue(t, filepath.Join(t.TempDir(), "memory.db"), model)
-	srv := httptest.NewServer(gateway.NewHandler(q, gateway.Instance{}, newTestLogger()))
+	srv := httptest.NewServer(gateway.NewHandler(q, noIssuers(), gateway.Instance{}, newTestLogger()))
 	t.Cleanup(srv.Close)
 	return srv
 }
@@ -655,7 +655,7 @@ func TestServer_RestartForgetsPendingAndKeepsCompleted(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "memory.db")
 	model := newHeldModel()
 	q := newMemoryQueue(t, path, model)
-	srv := httptest.NewServer(gateway.NewHandler(q, gateway.Instance{}, newTestLogger()))
+	srv := httptest.NewServer(gateway.NewHandler(q, noIssuers(), gateway.Instance{}, newTestLogger()))
 	t.Cleanup(srv.Close)
 	code, _ := sendMessage(t, http.DefaultClient, srv.URL, `{"id":"m1","content":"kept"}`)
 	require.Equal(t, http.StatusAccepted, code)
@@ -674,7 +674,7 @@ func TestServer_RestartForgetsPendingAndKeepsCompleted(t *testing.T) {
 	model.turn(t, nil)
 	require.NoError(t, <-closed)
 
-	restarted := httptest.NewServer(gateway.NewHandler(newMemoryQueue(t, path, newHeldModel()), gateway.Instance{}, newTestLogger()))
+	restarted := httptest.NewServer(gateway.NewHandler(newMemoryQueue(t, path, newHeldModel()), noIssuers(), gateway.Instance{}, newTestLogger()))
 	t.Cleanup(restarted.Close)
 	assert.Equal(t, "completed", lookupMessage(t, http.DefaultClient, restarted.URL, "m1"))
 	assert.Equal(t, "completed", lookupMessage(t, http.DefaultClient, restarted.URL, "m2"))
@@ -702,7 +702,7 @@ func TestServer_LookupKeepsSenderIDByteForByte(t *testing.T) {
 func TestServer_StatusReportsTheInstanceAndItsState(t *testing.T) {
 	q := newTestQueue(t, &fakeSession{})
 	started := time.Date(2026, 10, 4, 12, 0, 0, 0, time.UTC)
-	srv := httptest.NewServer(gateway.NewHandler(q, gateway.Instance{
+	srv := httptest.NewServer(gateway.NewHandler(q, noIssuers(), gateway.Instance{
 		AssignmentEpoch: "epoch-7",
 		Generation:      "0123456789abcdef0123456789abcdef",
 		ConfigRevision:  "rev-42",

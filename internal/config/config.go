@@ -88,6 +88,15 @@ type Config struct {
 	// to say for each start, and a file or environment carrying it would
 	// refuse the first start too.
 	RequireStore bool `mapstructure:"-"`
+	// Issuers are the signers whose signed messages the gateway accepts
+	// (ADR 0026). Empty trusts no issuer. The config file is the only
+	// layer that can write the list: checkIssuersEnv refuses the
+	// environment form.
+	Issuers []IssuerConfig `mapstructure:"issuers"`
+	// RequireSignature refuses a message that carries no signature
+	// (ADR 0026). Off, an unsigned message is accepted under its
+	// transport principal, as before signatures existed.
+	RequireSignature bool `mapstructure:"require-signature"`
 }
 
 // ToolsConfig is the operator's statement about the tool tree the
@@ -185,6 +194,8 @@ func AddAgentFlags(fs *pflag.FlagSet) {
 		"operator instructions placed between the ego and the platform contract (default: none)")
 	fs.Bool(RequireStoreFlag, false,
 		"refuse to start when the memory store is absent or uninitialized instead of creating it")
+	fs.Bool(RequireSignatureKey, false,
+		"refuse a message that carries no signature from a configured issuer")
 }
 
 // RequireStoreFlag names the flag Config.RequireStore is read from.
@@ -228,6 +239,9 @@ func Resolve(fs *pflag.FlagSet) (Config, error) {
 	if err != nil {
 		return Config{}, err
 	}
+	if err := checkIssuersEnv(); err != nil {
+		return Config{}, err
+	}
 	var cfg Config
 	var used mapstructure.Metadata
 	if err := v.Unmarshal(&cfg, recordKeys(&used)); err != nil {
@@ -243,6 +257,9 @@ func Resolve(fs *pflag.FlagSet) (Config, error) {
 		return Config{}, err
 	}
 	if err := checkToolPins(v, cfg.Tools.Pins); err != nil {
+		return Config{}, err
+	}
+	if err := checkIssuers(cfg.Issuers, cfg.RequireSignature); err != nil {
 		return Config{}, err
 	}
 	return cfg, nil

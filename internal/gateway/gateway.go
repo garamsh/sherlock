@@ -45,11 +45,49 @@ type Instance struct {
 
 // Inbound is one accepted message: it carries its sender's ID or one the
 // gateway assigned, and waits for (or is in) the agent's serialized run.
-// Sender is the caller's identity; empty means the channel provided none.
-// An ID is unique within its sender.
+// An ID is unique within its origin's scope.
 type Inbound struct {
 	ID       string
-	Sender   string
+	Origin   Origin
 	Content  string
 	QueuedAt time.Time
 }
+
+// Origin is who a message is from and who posted it (ADR 0026). An
+// unsigned message is from the transport principal that posted it; a
+// signed one is from the issuer and subject its signature verified, and
+// records the transport principal that posted it beside them. The two
+// kinds never share a scope, because a signed origin's issuer is never
+// empty.
+type Origin struct {
+	issuer, sender, poster string
+}
+
+// TransportOrigin is the origin of an unsigned message: the verified mTLS
+// caller identity, or empty over plain-HTTP loopback.
+func TransportOrigin(principal string) Origin {
+	return Origin{sender: principal, poster: principal}
+}
+
+// signedOrigin is the origin of a message whose signature verified under
+// issuer, which is never empty, for subject.
+func signedOrigin(issuer, subject, poster string) Origin {
+	return Origin{issuer: issuer, sender: subject, poster: poster}
+}
+
+// Signed reports whether the origin is a verified signature's.
+func (o Origin) Signed() bool { return o.issuer != "" }
+
+// Issuer is the verified iss, or empty for an unsigned message.
+func (o Origin) Issuer() string { return o.issuer }
+
+// Sender is the verified sub of a signed message, or the transport
+// principal of an unsigned one.
+func (o Origin) Sender() string { return o.sender }
+
+// Poster is the transport principal that posted the message.
+func (o Origin) Poster() string { return o.poster }
+
+// Notice reports whether the message is its issuer's own: a signed
+// message whose subject is its issuer has no sender to reply to.
+func (o Origin) Notice() bool { return o.Signed() && o.sender == o.issuer }

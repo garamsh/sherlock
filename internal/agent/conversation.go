@@ -9,11 +9,16 @@ import (
 
 // SourceMessage is visible conversation evidence. Runtime instructions, tool
 // output, and model reasoning have no representation in this type.
-// ExternalID is unique within Sender, the principal that delivered it.
+// ExternalID is unique within (Issuer, Sender): the verified issuer and
+// subject of a signed message, or an empty Issuer and the transport
+// principal that delivered an unsigned one. Poster is the transport
+// principal that posted the message, signed or not (ADR 0026).
 type SourceMessage struct {
 	ID         int64
 	ExternalID string
+	Issuer     string
 	Sender     string
+	Poster     string
 	Role       Role
 	Content    string
 }

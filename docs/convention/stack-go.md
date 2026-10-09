@@ -160,8 +160,9 @@ This section states only the form each kind of Go identifier takes.
   `Modeller`. Where the name would also be one of its own domain's
   verbs, the agent form breaks the tie, because the verb already owns
   `<verb>.go` (§1) and the two cannot share it.
-- **Functions / methods:** `MixedCaps`, verb-noun (`GetUser`,
-  `ParseToken`).
+- **Functions / methods:** `MixedCaps`, verb-noun for one that does
+  work (`GetUser`, `ParseToken`). A method that only returns a field
+  is named after the field: `Name()`, never `GetName()`.
 - **Constants:** `MixedCaps` (not `MAX_SIZE`). Group in `const ( ... )`.
 - **Variables:** short in small scopes, `MixedCaps` for package-level.
 - **Acronyms:** all-caps for the common form, consistent case

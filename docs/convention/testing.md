@@ -13,7 +13,7 @@ Test layers, mocking, and placement — what each layer proves, what to mock, an
 
 ## Three layers — different goals, different scopes
 
-The concrete in-process client per stack is owned by the project's stack convention file; the Test client column states only the shape each layer requires.
+The Test client column states only the shape each layer requires.
 
 | Layer | Scope | Mocks | Test client | External systems |
 |---|---|---|---|---|
@@ -31,6 +31,8 @@ The exception is a dependency no in-process substitute can stand in for, because
 
 ## Behavior over implementation
 
+The lists below state only the kinds of target that qualify.
+
 Assert on outputs and side-effects only:
 - return values
 - emitted events, log lines
@@ -38,8 +40,6 @@ Assert on outputs and side-effects only:
 - DB rows (from a testcontainer, at the e2e layer)
 
 Do not assert on: call order, unexported helper shape, private type structure, internal refactors. **If an internal refactor forces test updates, the tests were testing implementation.**
-
-The concrete targets for a given stack are owned by the project's stack convention file; the lists above state only the kinds that qualify.
 
 ## Waiting
 
@@ -71,14 +71,16 @@ Time → inject a clock. Network → substitute. Filesystem → tmpdir. Random �
 
 ## Coverage and naming
 
+Naming here covers what a test name conveys, not its concrete form.
+
 - Target meaningful branches, not 100%.
-- Names read like a spec. Concrete test-name forms follow the project's stack convention file.
+- Names read like a spec.
 - A failing test name should tell you what broke without opening the file.
 
 ## Placement
 
+The list below states the kind of location each layer takes, not its directory or file names.
+
 - Unit: co-located with the source it tests.
 - Integration: co-located with the boundary it exercises, or in a dedicated integration directory.
 - E2E: a dedicated top-level directory, outside the application source tree.
-
-Concrete directory and file names follow the project's stack convention file — the stack file owns placement specifics.

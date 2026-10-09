@@ -6,7 +6,7 @@
 # First-party tools are baked into this image at /opt/sherlock/tools/
 # (ADR 0021); no separate sherlock/tools image is published.
 
-FROM golang:1.27@sha256:4013ae0f9e7994f8535c58c811f8f863fbed38b72e0d51e6592156f758d66146 AS build
+FROM golang:1.27@sha256:e432b43af23a9328d56a7c499be0476810aa344acbcf65fc7c455d4ff5a40602 AS build
 WORKDIR /src
 
 # Layer caching: resolve dependencies before copying source.

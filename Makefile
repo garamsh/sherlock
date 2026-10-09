@@ -232,8 +232,8 @@ build-images:
 # workspace's boundary (#620) and the toolchain it is checked under should
 # be the toolchain that image is built with.
 #
-# One owner means one thing to move: Dependabot's docker ecosystem is scoped
-# to /build, so the digest bump it proposes carries the workflow with it and
+# One owner means one thing to move: Dependabot's docker ecosystem covers
+# /build, so the digest bump it proposes carries the workflow with it and
 # there is no second copy left behind (#589, #575).
 #
 # `=` rather than `:=` so no other target pays for the sed, and the guard

@@ -13,13 +13,13 @@ Domain partitioning leaves one point open: whether a domain may depend on a sibl
 
 ## Decision
 
-The system is partitioned by domain: a top-level `internal/<name>/` package is the unit, and its structural rules live in `structure.md`. A domain may depend on a sibling one way, through the sibling's declared interface and published value types, never its concrete type.
+The system is partitioned by domain: a top-level `internal/<name>/` package is the unit, and its structural rules live in `structure.md`. A domain may depend on a sibling one way, through what the sibling declares public, never past it.
 
 ## Consequences
 
 - The rules a reviewer applies to packages are `structure.md`'s, and `stack-go.md` spells them in Go without restating them.
 - A change to one subject usually lands in one `internal/<name>/` tree; a capability lands as a tool under `tools/<name>/` and touches no domain (ADR 0009).
-- A domain cannot reach into a sibling's internals or concrete types, so a sibling's implementation can be replaced behind its interface without touching its consumers.
+- A domain cannot reach into a sibling's internals and constructs none of what it depends on, so the composition site can replace a sibling's implementation without touching its consumers.
 - Code no single domain owns has no home except a package below the domains, so shared code has to be named and justified rather than collected.
 
 ## Signs the decision was wrong

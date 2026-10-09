@@ -137,9 +137,6 @@ file declares and which depends.
 - `internal/<domain>/<verb>.go` and the impls
   (`internal/<domain>/postgres.go`, or `internal/<domain>/postgres/`
   past ~300 LoC) depend on those declarations.
-- **The implementation lives with the interface it satisfies.**
-  `postgres.go`, `memory.go` and `<impl>/` are in the same package, or
-  a sub-package of it, as `service.go`.
 - Go rejects an import cycle at compile time but does not detect a
   `type → struct → type` cycle. Those are found by reading.
 
@@ -183,9 +180,7 @@ translates, wraps, logs or recovers one.
   `memory.go` can stand in for.
 - **Sentinel** when the caller branches on which failure and the
   failure carries no data: `var ErrNotFound = errors.New("not
-  found")`, read with `errors.Is`. Domain sentinels in `<domain>.go`
-  (`internal/user/user.go` for `ErrUserNotFound`); shared sentinels
-  in `errors.go`.
+  found")`, read with `errors.Is`.
 - **Typed** when the caller needs data out of the failure: a struct with `Error()`, read with `errors.As`, and `Is(target error) bool` or `Unwrap() error` where it wraps another.
 - **Opaque** when the caller has no business branching. A sentinel or a type a caller can match on is API you have to keep working; where nothing needs to branch, publish neither.
 - **`%w` publishes the error it wraps.** A caller can reach through it with `errors.Is` and `errors.As`, so replacing what is inside breaks them later. Wrap with `%w` where a caller is meant to branch on the wrapped error, `%v` where it is not, `errors.Join` where the caller needs all of several.

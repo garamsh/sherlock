@@ -68,6 +68,21 @@ deliberate-differences:
     exception for a site a test outside cmd/ must reach is part of the
     deferral. b29f0f1's heading for Generated mocks has no counterpart in
     this project's Test doubles section.
+    That deferral keeps text upstream has since removed, all of it naming
+    the old layout's files: §1's Layout A/B/C, impl sizing and
+    root-level sizing (5eb0a31, 5788f26, 16fa159, 8ccb19e, d5d4650), §2's
+    declare/depend bullets and §4's adapter example (5eb0a31). §1's
+    "Concrete impls sit where the interface is declared" stays the one
+    placement statement (#1022).
+    §3's verb-noun bullet predates 2757013, which narrows it to methods
+    that do work. That is a rewrite, not a removal: deleting the old line
+    would leave function names unstated, so it waits for a sync.
+  documentation.md's claim-basis rule predates b8b0890 ("a part of the
+    claim"), which rewords it and removes no rule; it waits for a sync.
+  .github/PULL_REQUEST_TEMPLATE.md's Summary comment keeps "Reference the
+    task or issue if one exists", which 7b274c6 replaced with the
+    Closes-keyword instruction. .github/ is the PM's, so #1022 does not
+    change it.
   docs/architecture/README.md and adr/0000-template.md retain living records
     and continuous numbering. Upstream freezes ADR bodies and adds errata and
     supersession. That changes the project's decision-history policy, so it is
@@ -79,3 +94,17 @@ deliberate-differences:
     §Rules every shape carries (548895a, 133b60c) is bootstrap input: its
     bullets are in structure.md beside the domain shape's rules, and the
     section is declined so the rule is held once and rule 6 stays true.
+
+removal-audit:
+  Syncs carried forward what the template changed, never what it removed
+    (#1022). Until the sync procedure gains a provenance step, every sync
+    runs this check by hand on each file that matches no template blob:
+    take as baseline the template revision with the smallest diff to the
+    copy, then search every template revision for each sentence the copy
+    holds and template/main lacks, joining wrapped lines first so a
+    sentence split across lines is found. Each sentence found is deleted
+    or recorded above with its reason.
+  #1022 ran it against template b8b0890 and deleted two stack-go.md
+    sentences: §2's "The implementation lives with the interface it
+    satisfies" (removed upstream by 0440057) and §4's "Domain sentinels
+    in `<domain>.go`" (removed by 2f5871e; §1 states the placement).

@@ -41,6 +41,11 @@ type ServeOptions struct {
 // to the exec UID when privileged, so files written through the gRPC
 // contract and by exec'd children share one owner.
 func Serve(ctx context.Context, opts ServeOptions, logger *slog.Logger) error {
+	if euid := os.Geteuid(); euid != 0 && opts.ExecUID == euid {
+		logger.Warn("single-account shape is not supported: the workspace runs unprivileged and exec-uid is its own uid, so Exec children run as the workspace's account (docs/architecture/deployment.md §Volumes and ownership)",
+			"op", "startup", "exec_uid", opts.ExecUID)
+	}
+
 	// Single-account custody (ADR 0003): when exec-uid is the
 	// workspace's own account, exec children share it, so the
 	// workspace's /proc environ would be readable to them — close that

@@ -1,11 +1,14 @@
 package server_test
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"log/slog"
 	"net"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -90,6 +93,79 @@ func TestServe_ContractEndToEnd(t *testing.T) {
 	assert.Zero(t, execResp.GetExitCode())
 	assert.Contains(t, execResp.GetStdout(), "sub",
 		"exec children work in the workspace directory by default")
+}
+
+// TestServe_WarnsOnSingleAccountShape pins the startup warning for the
+// unsupported single-account shape (ADR 0008, #1003): an unprivileged
+// workspace whose exec-uid is its own uid warns before serving, and one
+// whose exec-uid is another uid serves without that warning.
+func TestServe_WarnsOnSingleAccountShape(t *testing.T) {
+	if os.Geteuid() == 0 {
+		t.Skip("the shape is unprivileged; a root run cannot take it")
+	}
+	tests := []struct {
+		name     string
+		execUID  int
+		wantWarn bool
+	}{
+		{name: "exec-uid is the workspace's own uid", execUID: os.Geteuid(), wantWarn: true},
+		{name: "exec-uid is another uid", execUID: os.Geteuid() + 1, wantWarn: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			records := serveUntilListening(t, server.ServeOptions{
+				Dir:         filepath.Join(t.TempDir(), "workspace"),
+				ExecUID:     tt.execUID,
+				ExecTimeout: 30 * time.Second,
+			})
+
+			var listening, warned bool
+			for _, r := range records {
+				if r["msg"] == "workspace listening" {
+					listening = true
+				}
+				msg, _ := r["msg"].(string)
+				if r["level"] == "WARN" && strings.Contains(msg, "single-account shape is not supported") {
+					warned = true
+					assert.Contains(t, msg, "deployment.md §Volumes and ownership",
+						"the warning points to where the supported shape is stated")
+				}
+			}
+			require.True(t, listening, "the workspace reached serving, so the absence of a warning is not a failed start")
+			assert.Equal(t, tt.wantWarn, warned)
+		})
+	}
+}
+
+// serveUntilListening runs Serve on a free loopback address until its
+// listener accepts, stops it, and returns the JSON log records it wrote.
+func serveUntilListening(t *testing.T, opts server.ServeOptions) []map[string]any {
+	t.Helper()
+	listen, err := net.Listen("tcp", "127.0.0.1:0")
+	require.NoError(t, err)
+	opts.Addr = listen.Addr().String()
+	require.NoError(t, listen.Close())
+
+	var logs bytes.Buffer
+	ctx, cancel := context.WithCancel(context.Background())
+	done := make(chan error, 1)
+	go func() { done <- server.Serve(ctx, opts, slog.New(slog.NewJSONHandler(&logs, nil))) }()
+	waitForWorkspaceListener(t, opts.Addr)
+	cancel()
+	select {
+	case err := <-done:
+		require.NoError(t, err)
+	case <-time.After(15 * time.Second):
+		t.Fatal("workspace did not shut down on context cancellation")
+	}
+
+	var records []map[string]any
+	for _, line := range bytes.Split(bytes.TrimSpace(logs.Bytes()), []byte("\n")) {
+		var r map[string]any
+		require.NoError(t, json.Unmarshal(line, &r))
+		records = append(records, r)
+	}
+	return records
 }
 
 // waitForWorkspaceListener polls until the workspace's listener accepts

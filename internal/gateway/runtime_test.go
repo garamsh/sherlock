@@ -2,6 +2,7 @@ package gateway_test
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -491,8 +492,8 @@ func writebackStep(document string) agent.ScriptedStep {
 
 // TestFactory_RequireStoreRefusesAnAbsentStore holds the opt-in refusal at
 // the composition root (ADR 0025): with RequireStore set, a store that is
-// absent — its directory included — is refused before any model is built
-// or catch-up runs, and nothing is created. The control is the same
+// absent — its directory included — is refused before any model is
+// built, and nothing is created. The control is the same
 // factory without RequireStore, which creates the directory and the store
 // as every first start does.
 func TestFactory_RequireStoreRefusesAnAbsentStore(t *testing.T) {
@@ -543,6 +544,103 @@ func TestFactory_RequireStoreStartsOnAnInitializedStore(t *testing.T) {
 	held, same, err := rt.Committed(context.Background(), "", "s", "m1", "remember cedar")
 	require.NoError(t, err)
 	assert.True(t, held && same, "the start opened a store other than the initialized one")
+}
+
+// providerModel is the session model behind a provider that can be down.
+// It counts synthesis requests apart from act calls, and ends each turn
+// through its script.
+type providerModel struct {
+	down      bool
+	synthesis int
+	script    agent.Model
+}
+
+func (m *providerModel) Chat(ctx context.Context, messages []agent.Message, descriptors []tool.Descriptor) (agent.Response, error) {
+	if len(descriptors) == 1 && descriptors[0].Name == "memory_summary" {
+		m.synthesis++
+		if m.down {
+			return agent.Response{}, errors.New("model provider unavailable")
+		}
+		return agent.Response{ToolCalls: []agent.ToolCall{{Name: "memory_summary", Input: json.RawMessage(`{"summary":"an episode","entities":[]}`)}}}, nil
+	}
+	if m.down {
+		return agent.Response{}, errors.New("model provider unavailable")
+	}
+	return m.script.Chat(ctx, messages, descriptors)
+}
+
+// providerEmbedder is an embeddings endpoint that can be down, counting
+// every request.
+type providerEmbedder struct {
+	down  bool
+	calls int
+}
+
+func (e *providerEmbedder) Embed(ctx context.Context, text string) ([]float32, error) {
+	e.calls++
+	if e.down {
+		return nil, errors.New("embedding endpoint unavailable")
+	}
+	return wordEmbedder{}.Embed(ctx, text)
+}
+
+// downSummary is a synthesis whose model is down.
+type downSummary struct{}
+
+func (downSummary) Summarize(context.Context, []string) (agent.Synthesis, error) {
+	return agent.Synthesis{}, errors.New("model provider unavailable")
+}
+
+// countEpisodes reads how many episodes the file holds and how many of
+// them have no embedding, read-only beside any open store.
+func countEpisodes(t *testing.T, path string) (episodes, unembedded int) {
+	t.Helper()
+	raw, err := sql.Open("sqlite", path+"?mode=ro")
+	require.NoError(t, err)
+	defer raw.Close()
+	require.NoError(t, raw.QueryRow(`SELECT count(*), count(*) - count(embedding) FROM conversation_mid`).Scan(&episodes, &unembedded))
+	return episodes, unembedded
+}
+
+// TestFactory_StartMakesNoProviderCallAndTheNextTurnCatchesUp holds that a
+// start leaves the memory backlog to the turns (#1020): over a full pending
+// batch and an unembedded episode, with the model and the embeddings
+// endpoint both down, the start succeeds and calls neither, and the next
+// turn completed with both up synthesizes the batch and embeds every
+// episode.
+func TestFactory_StartMakesNoProviderCallAndTheNextTurnCatchesUp(t *testing.T) {
+	ctx := context.Background()
+	path := memoryPath(t.TempDir())
+	seedEmbedder := &providerEmbedder{down: true}
+	store, err := sqlite.OpenConversation(path, seedEmbedder)
+	require.NoError(t, err)
+	require.ErrorContains(t, store.RecordTurn(ctx, checkpointSources("The Vega reflector is in the shed.", 4), firstSummary{}),
+		"embedding endpoint unavailable")
+	require.ErrorContains(t, store.RecordTurn(ctx, checkpointSources("The Vega mount needs oil.", 4), downSummary{}),
+		"model provider unavailable")
+	pending, err := store.PendingSources(ctx)
+	require.NoError(t, err)
+	require.Len(t, pending, 4, "setup: one full batch is pending")
+	require.NoError(t, store.Close())
+	episodes, unembedded := countEpisodes(t, path)
+	require.Equal(t, 1, episodes, "setup: one episode is stored")
+	require.Equal(t, 1, unembedded, "setup: the stored episode has no embedding")
+
+	model := &providerModel{down: true, script: agent.NewScriptedModel(writebackStep(`{"reply":"Oiled.","note":null}`))}
+	embedder := &providerEmbedder{down: true}
+	rt, err := (&gateway.Factory{MemoryPath: path, NewModel: func(string) agent.Model { return model }, Embedder: embedder, Tools: noTools()}).New(ctx, "a", nil)
+	require.NoError(t, err, "a start with both providers down")
+	defer func() { assert.NoError(t, rt.Close(ctx)) }()
+	assert.Zero(t, model.synthesis, "the start called the model for synthesis")
+	assert.Zero(t, embedder.calls, "the start called the embeddings endpoint")
+
+	model.down, embedder.down = false, false
+	_, err = rt.Session.Run(ctx, "Did the mount get oiled?")
+	require.NoError(t, err)
+	assert.Equal(t, 1, model.synthesis, "the turn synthesized the pending batch")
+	episodes, unembedded = countEpisodes(t, path)
+	assert.Equal(t, 2, episodes, "the pending batch became an episode")
+	assert.Zero(t, unembedded, "every episode is embedded after the turn")
 }
 
 // TestFactory_TightensAWiderOutbox holds that a start makes an outbox an

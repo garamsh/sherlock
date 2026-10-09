@@ -19,8 +19,7 @@ import (
 //
 // A request offering memory_summary is episode synthesis, not a turn: it
 // gets one fixed valid call and leaves the script where it was, so a
-// batch's synthesis succeeds at any point and a restart's catch-up does
-// not fail startup.
+// batch's synthesis succeeds at any point.
 type mockModel struct{ script agent.Model }
 
 // mockSummaryCall is the one memory_summary call the mock answers every

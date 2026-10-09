@@ -1,7 +1,7 @@
 # ADR 0006: Preserve recent context and source-linked older conversation
 
 > Status: accepted
-> Date: 2026-07-25 (revised in place 2026-09-26)
+> Date: 2026-07-25 (revised in place 2026-09-26; 2026-10-10)
 
 ## Context
 
@@ -10,7 +10,7 @@ The addressed-only lifecycle dropped old conversation when the rolling context c
 ## Decision
 
 - Keep the newest session messages up to the configured context bound. Restore recent visible user and assistant messages from the store after restart.
-- Commit each completed inbound user message with its gateway ID and visible assistant outputs as source records before synthesis. Synthesis failure leaves sources durable for retry at the next completion or startup. System instructions, tool results, hidden reasoning, and credentials do not become memory sources.
+- Commit each completed inbound user message with its gateway ID and visible assistant outputs as source records before synthesis. Synthesis failure leaves sources durable for retry at the next completion. System instructions, tool results, hidden reasoning, and credentials do not become memory sources.
 - Use the rolling recent-message window as short memory. A separate short-summary tier adds no independent responsibility.
 - Synthesize each full four-message cross-turn source batch into one immutable mid episode, with direct links to its original message interval. Episodes are independent: the model receives the batch, not every previous mid summary.
 - Preserve partial batches durably and offer pending source previews alongside recalled episodes so compaction cannot hide the interval before a checkpoint.

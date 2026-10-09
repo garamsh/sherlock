@@ -296,8 +296,9 @@ func (constantEmbedder) Embed(context.Context, string) ([]float32, error) {
 	return []float32{1}, nil
 }
 
-// An existing file keeps its batch-8 episodes: startup drops the FTS5 index,
-// adds the embedding column and embeds them, and they stay readable.
+// An existing file keeps its batch-8 episodes: opening drops the FTS5 index
+// and adds the embedding column, the next completion embeds them, and they
+// stay readable.
 func TestOpenConversation_EmbedsEpisodesFromBeforeEmbeddings(t *testing.T) {
 	ctx := context.Background()
 	path := filepath.Join(t.TempDir(), "memory.db")

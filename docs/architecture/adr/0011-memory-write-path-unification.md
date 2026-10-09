@@ -1,7 +1,7 @@
 # ADR 0011: Persist sources before atomic summary checkpoints, and keep one bounded note beside them
 
 > Status: accepted
-> Date: 2026-08-02 (revised in place 2026-09-26)
+> Date: 2026-08-02 (revised in place 2026-09-26; 2026-10-10)
 
 ## Context
 
@@ -9,9 +9,9 @@ The earlier decision unified model-chosen writes through the reserved `memory_wr
 
 ## Decision
 
-A completed response archives its visible source messages in one transaction before model synthesis. Each full cross-turn batch creates an immutable mid episode with its direct source interval. The last committed interval is the only processing checkpoint. Model calls happen outside write transactions; a checkpoint comparison refuses a stale concurrent synthesis. An episode's embedding is written after the episode commits, also outside any transaction; an episode still without one is embedded at the next completion or startup and is left out of similarity ranking until then.
+A completed response archives its visible source messages in one transaction before model synthesis. Each full cross-turn batch creates an immutable mid episode with its direct source interval. The last committed interval is the only processing checkpoint. Model calls happen outside write transactions; a checkpoint comparison refuses a stale concurrent synthesis. An episode's embedding is written after the episode commits, also outside any transaction; an episode still without one is embedded at the next completion and is left out of similarity ranking until then.
 
-A failure preserves completed sources and any earlier committed episodes. Startup and subsequent completions resume from the persisted intervals without skipping pending input. Gateway IDs identify a replay of the same completed batch; ID/content conflicts and partially overlapping batches fail explicitly. The reserved `memory_write` response carries the reply and the note.
+A failure preserves completed sources and any earlier committed episodes. Subsequent completions resume from the persisted intervals without skipping pending input; the start makes no model or embedding call. Gateway IDs identify a replay of the same completed batch; ID/content conflicts and partially overlapping batches fail explicitly. The reserved `memory_write` response carries the reply and the note.
 
 - The note is a required string of at most 2,000 characters that the model restates whole every turn. A longer one is handed back to the model as the call's result, not cut.
 - A note the call leaves out or sends as null keeps the saved one.
@@ -47,3 +47,4 @@ The note was tested with the search call of ADR 0019, as candidate A in `researc
 - A nullable note meaning "unchanged" was left null on every turn in #862's pilot. A structured work record with lifecycle states and attempt logs (PR #812) is larger than any surveyed agent keeps and did not stop cancelled work resuming in its own run.
 - Keeping remote synthesis inside the source transaction would lose completed messages on a model failure and hold the write lock during network latency. Persisted pending intervals and bounded pending context make separate source capture recoverable.
 - An independent mutable cursor could advance without the summary it describes. Deriving progress from committed summary intervals avoids that failure state.
+- Catching up at startup refused the start only when a backlog met a provider failure, so it was no provider health gate, and a model that kept answering without the summary call made the refusal permanent while the provider was up. Every completed turn already retries the same work (#1020).

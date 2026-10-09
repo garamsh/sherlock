@@ -76,10 +76,6 @@ func (f *Factory) New(ctx context.Context, agentID string, events agent.EventSin
 	}
 	model := f.NewModel(agentID)
 	summarizer := agentmemory.ConversationSummary{Model: model}
-	if err := store.Accumulate(ctx, summarizer); err != nil {
-		store.Close()
-		return nil, err
-	}
 	maxHistoryMessages := f.MaxHistoryMessages
 	if maxHistoryMessages == 0 {
 		maxHistoryMessages = agentmemory.DefaultMaxHistoryMessages

@@ -54,8 +54,12 @@ See §0 for the banned-name list.
 - Promote a dependency interface into
   `internal/<domain>/repository.go` (same package) when it grows and
   **other domain files** need it.
-- Concrete impls sit where the interface is declared: `postgres.go`,
-  `memory.go` and `<impl>/` live inside `internal/<domain>/`.
+- **An implementation that imports a driver (`pgx`, a vendor SDK)
+  sits outside the domain package's import graph**, so the driver
+  stays out of that package and its tests; where unexported fields
+  close the aggregate, only its own package can construct one, so the
+  implementation stays beside it and this rule does not reach that
+  domain.
 
 **Single file vs package** for an impl:
 

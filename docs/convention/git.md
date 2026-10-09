@@ -24,7 +24,7 @@ A host namespace in front of the prefix satisfies the rule as written: `fix/dock
 
 ## Commits
 
-A task's squash merge puts the PR title on `dev` and drops the authors of the commits behind it. Whoever merges ensures the commit that reaches `dev` carries a `Co-authored-by:` trailer for each of them, and confirms it by reading that commit against the commits it squashed rather than assuming the merge carried them over. The title and author attribution reach `main` unchanged when `dev` is promoted. A branch's commit messages are otherwise a working record for the reviewer reading the branch, not the permanent history.
+A task's squash merge puts the PR title on `dev` and drops the authors of the commits behind it. Whoever merges ensures the commit that reaches `dev` carries a `Co-authored-by:` trailer for each of them, and confirms it by reading that commit against the commits it squashed rather than assuming the merge carried them over. A branch's commit messages are otherwise a working record for the reviewer reading the branch, not the permanent history.
 
 Format: `<type>: <imperative summary>`
 
@@ -39,5 +39,7 @@ Format: `<type>: <imperative summary>`
 ## PRs
 
 - Title follows the commit format: `<type>: <imperative summary>`. It becomes the commit on `dev`, and reaches `main` with the promotion, so it is the permanent record of the change.
+- A change to a file other projects copy from this one that renames, renumbers, or removes a heading or a numbered rule names the old one in its pull request title. That title is what reaches a project taking the change, and nothing else tells it which of its citations to re-check.
 - Body follows `.github/PULL_REQUEST_TEMPLATE.md`.
-- PRs are squash-merged. Branch commits appear on neither `dev` nor `main`; do not rewrite them to be pretty.
+- A promotion is a PR from the default branch into a branch that only promotions move. It is merged by fast-forward, never by a squash, a rebase or a merge commit: each of those leaves that branch holding a commit the default branch never held. Its title becomes no commit; the commits it carries keep the titles and trailers their own squash merges gave them.
+- PRs other than a promotion are squash-merged. Branch commits appear on neither `dev` nor `main`; do not rewrite them to be pretty.

@@ -20,7 +20,7 @@ services:
     environment:
       # The memory file sits at the same absolute path on host and
       # container so it is valid from either side.
-      SHERLOCK_MEMORY_PATH: "${SHERLOCK_DATA_DIR:?export SHERLOCK_DATA_DIR per README.md}/memory.db"
+      SHERLOCK_MEMORY_PATH: "${SHERLOCK_DATA_DIR:?export SHERLOCK_DATA_DIR per README.md}/agent/memory.db"
       # The agent image carries the first-party tools baked at
       # /opt/sherlock/tools/ (ADR 0021); `make build-tools` populates
       # the host directory the compose mounts on top of that path, so a
@@ -28,8 +28,11 @@ services:
       # is reflected on the next container restart without rebuilding
       # the image. Removing this mount leaves the baked-in set in place.
       SHERLOCK_TOOLS_DIR: /opt/sherlock/tools
+    # The agent's volume — memory.db, its sidecars and outbox/ — is
+    # mounted here only, so no Exec child reaches it under any uid
+    # (ADR 0008).
     volumes:
-      - "${SHERLOCK_DATA_DIR:?export SHERLOCK_DATA_DIR per README.md}:${SHERLOCK_DATA_DIR:?export SHERLOCK_DATA_DIR per README.md}"
+      - "${SHERLOCK_DATA_DIR:?export SHERLOCK_DATA_DIR per README.md}/agent:${SHERLOCK_DATA_DIR:?export SHERLOCK_DATA_DIR per README.md}/agent"
       - ./agent.yaml:/etc/sherlock/config.yaml:ro
       - ./tls:/etc/sherlock/tls:ro
       # Local-dev override: the host's `tools/` mounted read-only at
@@ -73,5 +76,5 @@ services:
       # login user on many hosts; this one is not.
       SHERLOCK_EXEC_UID: "10001"
     volumes:
-      - "${SHERLOCK_DATA_DIR:?export SHERLOCK_DATA_DIR per README.md}:${SHERLOCK_DATA_DIR:?export SHERLOCK_DATA_DIR per README.md}"
+      - "${SHERLOCK_DATA_DIR:?export SHERLOCK_DATA_DIR per README.md}/workspace:${SHERLOCK_DATA_DIR:?export SHERLOCK_DATA_DIR per README.md}/workspace"
     command: ["workspace"]

@@ -65,6 +65,7 @@ One pod per agent, two containers (ADR 0017): the agent container is the agent's
 - `0023` — the system is partitioned by domain, and a domain depends on a sibling one way through its declared surface
 - `0024` — operator instructions are a separate optional file, placed between the ego and the platform contract
 - `0025` — a start may require the memory store to exist, and refuses one that is absent or uninitialized
+- `0026` — an inbound message is accepted on the signature of an issuer the agent is configured to trust (proposed)
 
 ### Modules
 

@@ -23,11 +23,6 @@ type SourceMessage struct {
 	Content    string
 }
 
-// ConversationSummarizer synthesizes one bounded episode from new messages.
-type ConversationSummarizer interface {
-	Summarize(context.Context, []string) (Synthesis, error)
-}
-
 // Synthesis is one batch's episode as the session model wrote it: the
 // summary and the names of the entities the batch mentions, in the order
 // the model wrote them.

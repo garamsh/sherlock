@@ -317,7 +317,7 @@ var usernsRefusals = []struct {
 	{syscall.EPERM, "EPERM: a seccomp profile or an LSM refused the clone (host requirement: a seccomp profile admitting CLONE_NEWUSER|CLONE_NEWNET)"},
 	{syscall.ENOSPC, "ENOSPC: the user namespace limit is reached (host requirement: user.max_user_namespaces above 0)"},
 	{syscall.EUSERS, "EUSERS: the user namespace limit is reached (host requirement: user.max_user_namespaces above 0)"},
-	{syscall.EINVAL, "EINVAL: the kernel was built without user or network namespaces"},
+	{syscall.EINVAL, "EINVAL: the kernel rejected the namespace flags (for example, built without user or network namespaces)"},
 }
 
 // usernsRefusal returns the cause of a failed NoNetwork start when the

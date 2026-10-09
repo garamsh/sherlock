@@ -396,7 +396,7 @@ func TestRun_UsernsRefusalReportsAgentUIDUnavailable(t *testing.T) {
 		{errno: syscall.EPERM, refusal: true, name: "EPERM", requirement: "host requirement: a seccomp profile admitting"},
 		{errno: syscall.ENOSPC, refusal: true, name: "ENOSPC", requirement: "host requirement: user.max_user_namespaces above 0"},
 		{errno: syscall.EUSERS, refusal: true, name: "EUSERS", requirement: "host requirement: user.max_user_namespaces above 0"},
-		{errno: syscall.EINVAL, refusal: true, name: "EINVAL", requirement: "kernel was built without user or network namespaces"},
+		{errno: syscall.EINVAL, refusal: true, name: "EINVAL", requirement: "the kernel rejected the namespace flags (for example, built without user or network namespaces)"},
 		{errno: syscall.EAGAIN, refusal: false},
 	}
 	for _, tt := range tests {

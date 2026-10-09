@@ -1,6 +1,6 @@
 # ADR 0026: An inbound message is accepted on the signature of an issuer the agent is configured to trust
 
-> Status: proposed
+> Status: accepted
 > Date: 2026-10-09
 
 Drafted for #993. Written against garam ADR-0101 ("garam signs every message it delivers, and the agent verifies it alone") at `garamsh/garam@1b1189b`, the revision the owner accepted. Facts about Sherlock hold at `08c32c2` (`08c32c227d17acb850858189b3b3cad9a7a7d178`).
@@ -34,7 +34,7 @@ The gateway verifies a signature carried beside a message's content against key 
 - **One cache serves both sources.** A set is read when the agent starts, held for its cache lifetime, read again when a message names a `kid` the set lacks (at most once a minute per issuer, ADR-0101 step 2), and replaced whole by each successful read, so a key that leaves the source leaves the cache at the next read. The lifetime of a fetched set is its response's `max-age`, one hour when absent; a file's is one hour. When a read fails, the agent keeps the set it holds for up to 24 hours past that set's lifetime, and after that accepts nothing from the issuer until a read succeeds (ADR-0101 §What a verifier checks).
 - **At startup a file must read, and a URL need not.** An unreadable or unparseable `keys-file` refuses startup, as unreadable TLS material does. A failed first fetch does not: the issuer has no set until a fetch succeeds, and its messages are answered as unavailable (§4).
 - **Rotation.** garam publishes a key at least two hours before it signs with it (ADR-0101). A fetched set meets that through `max-age` and the unknown-`kid` refetch. A file meets it if its renderer replaces the file within those two hours; the agent then picks the new key up on the first message that names it. A key withdrawn at once leaves the agent's trust at its next read, so within one cache lifetime for either source.
-- **Fetching is egress the operator chose.** The agent process itself fetches a `keys-url`, carrying no conversation content and no credential, over TLS verified against the system roots. It is a destination in the operator's configuration, as the model and embeddings base URLs are, so ADR 0013's guarantee holds; ADR 0013's list of such destinations gains it in the pairing round. A deployment that cannot or will not reach the issuer, or whose issuer presents a certificate under a private root (garam's machine listener does, ADR-0101 §What this does not decide), uses `keys-file` and makes no fetch.
+- **Fetching is egress the operator chose.** The agent process itself fetches a `keys-url`, carrying no conversation content and no credential, over TLS verified against the system roots. It is a destination in the operator's configuration, as the model and embeddings base URLs are, so ADR 0013's guarantee holds, and ADR 0013 lists it among them. A redirect is refused, so the set comes from the configured location and no other. A deployment that cannot or will not reach the issuer, or whose issuer presents a certificate under a private root (garam's machine listener does, ADR-0101 §What this does not decide), uses `keys-file` and makes no fetch.
 - **Trust in an issuer is the whole accept policy.** Any message that passes verification under a configured issuer is accepted, whatever its `sub`. `org` is not checked, because `aud` already names this agent. Authorization above that stays the orchestration layer's (ADR 0014).
 
 Rejected:
@@ -107,10 +107,10 @@ Rejected:
 
 Two options for the first accepting release:
 
-- **Verify when present (recommended).** A signed message is verified and scoped to `(iss, sub)`. An unsigned one is accepted as today, under its transport principal. A message carrying a signature that fails is refused, never downgraded to unsigned.
+- **Verify when present (chosen).** A signed message is verified and scoped to `(iss, sub)`. An unsigned one is accepted as today, under its transport principal. A message carrying a signature that fails is refused, never downgraded to unsigned.
 - **Required.** Every message needs a signature once the release runs.
 
-Verify-when-present is recommended:
+Verify-when-present is chosen:
 
 - **The two sides ship in order.** garam's adapter sends the signature only to a runtime release that accepts it (ADR-0101 §Consequences, step 2). A required release that starts before that adapter refuses every message the deployment receives.
 - **Deployments with no issuer keep working.** The development loop, the tests, and a deployment that configures no issuer post unsigned over loopback, as they do now.
@@ -149,9 +149,9 @@ Rejected:
 - A message whose post outlasts its `exp` is refused; garam hands it out again with a new signature when the lease lapses (ADR-0101 §Attempts and relaying).
 - `memory.db` gains two values on each source: the issuer beside the sender, and, for a signed message, the transport principal that posted it. Existing rows read as transport principals.
 - garam's `adapter.md` §Foreign facts this rests on, at `1b1189b`, says a post "keys the message by the transport caller and that id". For a signed message, the key becomes `(iss, sub)` and that id. The property that fact protects still holds: two claims of one message carry the same pair and ID, so they remain one source. The lookup fact holds unchanged. garam records the new key when its adapter starts signing (ADR-0101 §Consequences, step 3).
-- Implementation waits for this record's acceptance and lands in round 2 on the same branch. This round does not choose the JOSE library.
-- **Records updated in place when this is implemented** (rule 2): ADR 0007, whose scope sentence names the mTLS identity; ADR 0013, whose list of operator-chosen destinations gains `keys-url`; ADR 0012, whose caller identity stops being a signed message's sender.
-- **Responsibility documents paired in round 2** (rule 4): `gateway.md` (the `signature` member, verification, refusals, scope and sender, the issuer's notice, the lookup by the recorded poster); `deployment.md` (§Configuration and secrets for `issuers` and `require-signature`, §Startup for the new refusals, §Load-bearing facts for the ingress member, and the `keys-url` egress); `security.md` (message authenticity rests on issuer keys; the egress list); `memory.md` (the issuer stored beside the sender, and a signed message's poster). The index row in `README.md` lands with this record and drops `(proposed)` on acceptance.
+- The JWS is verified with `github.com/go-jose/go-jose/v4`, pinned in `go.mod`, restricted to ES256. Checks 1 and 2 read the header and the unverified `iss` before it is called, so they run in ADR-0101's order rather than the library's.
+- **Records updated in place with this one** (rule 2): ADR 0007, whose scope sentence named the mTLS identity; ADR 0013, whose list of operator-chosen destinations gains `keys-url`; ADR 0012, whose caller identity stops being a signed message's sender.
+- **Responsibility documents paired with this record** (rule 4): `gateway.md` (the `signature` member, verification, refusals, scope and sender, the issuer's notice, the lookup by the recorded poster); `deployment.md` (§Configuration and secrets for `issuers` and `require-signature`, §Startup for the new refusals, §Load-bearing facts for the ingress member, and the `keys-url` egress); `security.md` (message authenticity rests on issuer keys; the egress list); `memory.md` (the issuer stored beside the sender, and a signed message's poster).
 
 ## Signs the decision was wrong
 

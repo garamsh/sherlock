@@ -5,7 +5,7 @@
 
 ## Context
 
-An early design carried a deferred "egress tool/proxy": a component meant to be the only outbound path from the execution domain — terminating TLS, resolving secret references at bound destinations, and redacting responses. Later decisions absorbed its purposes. The execution boundary record (ADR 0010) network-isolates executor children on request, closing the raw-egress hole the proxy was meant to guard. The tool-shape record (ADR 0009, ADR 0017) makes tool servers — independent processes the operator installs via the platform protocol — the only operator-sanctioned egress channels that keep network by operator choice. Scrubbed child environments plus per-tool env scoping give an explicit, operator-chosen path for secrets into trusted tools; the agent sees only structured tool output.
+An early design carried a deferred "egress tool/proxy": a component meant to be the only outbound path from the execution domain — terminating TLS, resolving secret references at bound destinations, and redacting responses. Later decisions absorbed its purposes. The execution boundary record (ADR 0010) network-isolates executor children on request, closing the raw-egress hole the proxy was meant to guard. The tool-shape record (ADR 0009, ADR 0017) makes tool servers — independent processes the operator installs via the platform protocol — the only operator-sanctioned egress channels that keep network by operator choice. Installed tools are trusted processes inside the agent container and inherit the agent environment whole (ADR 0009). Credentials remain absent from the separate workspace execution domain through its scrubbed Exec environment (ADR 0003); tool output must not carry secrets into conversation context.
 
 ## Decision
 
@@ -16,9 +16,9 @@ External access is tool-routed by design; no dedicated egress proxy or egress to
 - "The only outbound path is the egress tool" is restated as "every outbound destination is one the operator chose" — the guarantee the proxy was built to give survives as a property of who picks the destination, not as a count of channels.
 - The agent cannot reach arbitrary URLs. Granting egress is a configuration decision: a tool server added to the operator's tool list, or the model or embeddings base URL set in the operator's config (ADR 0004) — reviewed like any other configuration, not a runtime capability.
 - Conversation content leaves the pod for every endpoint the operator configures: the chat endpoint receives the prompt, and the embeddings endpoint receives task text and summaries. Pointing the embeddings base URL at a local server keeps that content inside the operator's network.
-- Secret-bearing tools keep secrets out of the agent's domain through per-tool env scoping plus the scrubbed child environment: the secret reaches the trusted tool process only, and the agent sees tool output, never the environment. (The ADR 0003 secret-free posture of executor children is preserved.)
+- Every installed tool can read every credential in the agent environment; installing one is a trust decision, and neither a manifest nor operator configuration provides per-tool credential scope (ADR 0009, `security.md`). The separate workspace and its Exec children retain the ADR 0003 secret-free posture; whole-environment tool inheritance does not extend to that domain.
 
 ## Rejected alternatives
 
 - **Dedicated egress proxy with TLS termination and CA provisioning** — a second network component to run and secure, built ahead of a use case; tool servers already provide sanctioned egress with less machinery.
-- **Secret references (`secret://name`) resolved by a platform resolver** — adds a resolution layer and reflection-leak surface; per-tool env scoping achieves custody with no new concept.
+- **Secret references (`secret://name`) resolved by a platform resolver** — adds a resolution layer and reflection-leak surface. Trusted installed tools already inherit credentials from the agent environment whole; the platform provides no secret dispatcher or per-tool credential scope (ADR 0009).

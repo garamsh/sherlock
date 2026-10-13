@@ -93,6 +93,12 @@ func TestEndToEnd_WorkspaceNonLoopbackFailsStartup(t *testing.T) {
 // result. Test cleanup kills the process if it is still running.
 func startWorkspaceBinary(t *testing.T, binary, workspaceDir, configPath string) (*exec.Cmd, string, <-chan error) {
 	t.Helper()
+	return startWorkspaceBinaryAs(t, binary, workspaceDir, configPath, os.Geteuid())
+}
+
+// startWorkspaceBinaryAs starts the workspace with an explicit exec account.
+func startWorkspaceBinaryAs(t *testing.T, binary, workspaceDir, configPath string, execUID int) (*exec.Cmd, string, <-chan error) {
+	t.Helper()
 
 	listen, err := net.Listen("tcp", "127.0.0.1:0")
 	require.NoError(t, err)
@@ -105,11 +111,9 @@ func startWorkspaceBinary(t *testing.T, binary, workspaceDir, configPath string)
 	require.NoError(t, err)
 	t.Cleanup(func() { logFile.Close() })
 
-	// Single-account mode: exec children run as the test process's own
-	// UID, so the workspace needs no privilege to serve Exec.
 	cmd := exec.Command(binary, "workspace",
 		"--config", configPath, "--addr", addr, "--workspace", workspaceDir,
-		"--exec-uid", strconv.Itoa(os.Geteuid()))
+		"--exec-uid", strconv.Itoa(execUID))
 	cmd.Stdout = logFile
 	cmd.Stderr = logFile
 	require.NoError(t, cmd.Start())

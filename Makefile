@@ -24,6 +24,8 @@ REVISION ?= $(shell git rev-parse HEAD 2>/dev/null)
 # the file is written and run by root, and the worktree keeps no root-owned
 # artifacts.
 PRIVILEGED_TEST_BIN ?= /tmp/sherlock-privileged.test
+PRIVILEGED_BINARY_TEST_BIN ?= /tmp/sherlock-privileged-binary.test
+PRIVILEGED_SHERLOCK_BIN ?= /tmp/sherlock-privileged
 
 # golangci-lint's cache is keyed on file content, not path, and replays a result
 # with the paths of the checkout that recorded it. A cache shared between
@@ -74,7 +76,7 @@ DEPLOYED_CAP_ADD = $(call caps,cap_add)
 DEPLOYED_CAP_DROP = $(call caps,cap_drop)
 DEPLOYED_CAP_SET = -all,+$(subst $(COMMA),$(COMMA)+,$(DEPLOYED_CAP_ADD))
 
-# The executor's privileged family: the cases that assert the drop to the
+# The shell and shipped-binary privileged families assert the drop to the
 # exec UID and the fresh network namespace, neither of which a process
 # without privilege can reach (ADR 0008, ADR 0010). It is not one of the
 # checks `make ci` runs, because `make ci` must run for a contributor who is
@@ -99,9 +101,15 @@ test-privileged:
 	@test "$(DEPLOYED_CAP_DROP)" = all || { echo "$(DEPLOYED_COMPOSE): cap_drop is [$(DEPLOYED_CAP_DROP)], not [ALL]: the capability set is only a whitelist while everything else is dropped"; exit 1; }
 	@test "$$(id -u)" = 0 || { echo "test-privileged needs root: the drop to the exec UID is what it exercises (ADR 0008)"; exit 1; }
 	go test -c -o $(PRIVILEGED_TEST_BIN) ./internal/workspace/shell/
-	@chmod 0755 $(PRIVILEGED_TEST_BIN)
+	go test -c -o $(PRIVILEGED_BINARY_TEST_BIN) ./tests/
+	go build -o $(PRIVILEGED_SHERLOCK_BIN) ./cmd/sherlock/
+	@chmod 0755 $(PRIVILEGED_TEST_BIN) $(PRIVILEGED_BINARY_TEST_BIN) $(PRIVILEGED_SHERLOCK_BIN)
 	SHERLOCK_PRIVILEGED_TESTS=1 SHERLOCK_DEPLOYED_CAPS=$(DEPLOYED_CAP_ADD) \
-		setpriv --bounding-set=$(DEPLOYED_CAP_SET) $(PRIVILEGED_TEST_BIN)
+		setpriv --bounding-set=$(DEPLOYED_CAP_SET) $(PRIVILEGED_TEST_BIN) -test.v
+	SHERLOCK_PRIVILEGED_TESTS=1 SHERLOCK_DEPLOYED_CAPS=$(DEPLOYED_CAP_ADD) \
+		SHERLOCK_TEST_BINARY=$(PRIVILEGED_SHERLOCK_BIN) \
+		setpriv --bounding-set=$(DEPLOYED_CAP_SET) $(PRIVILEGED_BINARY_TEST_BIN) \
+		-test.v -test.run='^TestEndToEnd_PrivilegedWorkspaceExec$$'
 
 # `go build ./...` prints nothing on success and reports an empty match as a
 # stderr warning rather than an error, so a module holding no packages exits

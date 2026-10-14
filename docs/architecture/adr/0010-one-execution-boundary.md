@@ -21,7 +21,7 @@ All agent-influenced effects land under the unprivileged UID; only operator-sanc
 ## Consequences
 
 - One trust domain for agent-influenced effects: the configured account, kernel DAC, no ambiguity about which account an effect lands under. In the unprivileged shape that domain is the workspace process's own account — an explicit operator declaration, never an implicit fallback — so the boundary encloses the workspace process too: what ADR 0008 states that shape does not separate is the price of reaching PodSecurity `restricted`.
-- In the pod topology both sides of this boundary live inside the sidecar: the workspace owns the files and the executor (ADR 0017); the agent executes nothing.
+- In the pod topology both sides of this boundary live inside the sidecar: the workspace owns the files and the executor (ADR 0017); the agent has no Exec path, and the only processes it starts are the installed tool executables (ADR 0021).
 - The Playwright example keeps working: browser automation is an operator-sanctioned egress channel — the operator chooses a tool's reach by choosing the tool.
 
 ## Rejected alternatives

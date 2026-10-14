@@ -96,13 +96,17 @@ DEPLOYED_CAP_SET = -all,+$(subst $(COMMA),$(COMMA)+,$(DEPLOYED_CAP_ADD))
 # the runner granted, what the tests see is the deployment's set — and
 # SHERLOCK_DEPLOYED_CAPS names it, so a run that skipped this line is a failure
 # rather than a quieter pass.
+#
+# The workspace binary is built as build/workspace.Dockerfile builds it. That
+# context holds no .git and stamps no VCS state; -buildvcs=false matches it
+# here, where root's git refuses a checkout another account owns.
 test-privileged:
 	@test "$(words $(DEPLOYED_CAP_ADD)) $(words $(DEPLOYED_CAP_DROP))" = "1 1" || { echo "$(DEPLOYED_COMPOSE): want one cap_add and one cap_drop in the flow-sequence form, read $(words $(DEPLOYED_CAP_ADD)) and $(words $(DEPLOYED_CAP_DROP))"; exit 1; }
 	@test "$(DEPLOYED_CAP_DROP)" = all || { echo "$(DEPLOYED_COMPOSE): cap_drop is [$(DEPLOYED_CAP_DROP)], not [ALL]: the capability set is only a whitelist while everything else is dropped"; exit 1; }
 	@test "$$(id -u)" = 0 || { echo "test-privileged needs root: the drop to the exec UID is what it exercises (ADR 0008)"; exit 1; }
 	go test -c -o $(PRIVILEGED_TEST_BIN) ./internal/workspace/shell/
 	go test -c -o $(PRIVILEGED_BINARY_TEST_BIN) ./tests/
-	go build -o $(PRIVILEGED_SHERLOCK_BIN) ./cmd/sherlock/
+	CGO_ENABLED=0 go build -buildvcs=false -trimpath -ldflags="-s -w" -o $(PRIVILEGED_SHERLOCK_BIN) ./cmd/sherlock/
 	@chmod 0755 $(PRIVILEGED_TEST_BIN) $(PRIVILEGED_BINARY_TEST_BIN) $(PRIVILEGED_SHERLOCK_BIN)
 	SHERLOCK_PRIVILEGED_TESTS=1 SHERLOCK_DEPLOYED_CAPS=$(DEPLOYED_CAP_ADD) \
 		setpriv --bounding-set=$(DEPLOYED_CAP_SET) $(PRIVILEGED_TEST_BIN) -test.v

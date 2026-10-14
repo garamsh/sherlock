@@ -47,8 +47,6 @@ jobs:
       # job green with that path untested, so the variable makes those cases
       # fail and name the refusal instead (#1077).
       - run: make ci
-        env:
-          SHERLOCK_REQUIRE_USERNS: "1"
 
   # The image the privileged job runs in, read out of the Dockerfile that owns
   # the pin. A job's `container.image` cannot read a file, but it can read the

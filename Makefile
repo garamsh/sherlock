@@ -56,7 +56,7 @@ format-fix:
 	@gofmt -w .
 
 test:
-	go test ./...
+	go test -v ./...
 
 # The capability list the tests below run under is read out of the deployment
 # rather than repeated here (#620): it has one owner, `cap_add` in

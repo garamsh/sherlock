@@ -47,7 +47,7 @@ Reviewed at: <commit sha>
   record is deleted rather than amended — a substitution kept with a note
   saying it no longer applies is a third thing to keep in sync.
 - **What stands in for a check has to be able to fail everywhere that check fails.** A stand-in's name reads as the whole while it covers a part, and both results read alike, so compare the two by coverage instead: enumerate what each reaches and record both in the row that rests on the stand-in — the command that ran against every task the claimed check runs, a changed value against every passage that states it. That last comparison includes the document that changed, because a diff does not fail where an unchanged passage in the same file still names the old value. Coverage the stand-in does not reach stays `unverified`.
-- **Reject maps to request changes.** GitHub has no `reject` review state, so a reject decision is submitted as a request-changes review whose decision line reads `reject` (in single-account setups, the `comment` substitute per §Single-account setups). What reject does that request changes does not: the reviewer closes the PR and files an issue describing the right direction.
+- **Reject maps to request changes.** GitHub has no `reject` review state in REST API versions `2022-11-28` and `2026-03-10`, so a reject decision is submitted as a request-changes review whose decision line reads `reject` (in single-account setups, the `comment` substitute per §Single-account setups). What reject does that request changes does not: the reviewer closes the PR and files an issue describing the right direction.
 
 ## What each check verifies
 

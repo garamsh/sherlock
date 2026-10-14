@@ -66,7 +66,8 @@ const (
 // a host that cannot create the isolation namespace at all, which is an
 // environment this test cannot run in, and any other error, which means
 // the child never started. Neither is evidence about network isolation,
-// so neither may report as one. The executor's own fail-closed contract
+// so neither may report as one. The first skips, unless the run declared
+// it must reach that boundary. The executor's own fail-closed contract
 // is pinned in process_test.go and process_linux_test.go, not here.
 func runProbe(t *testing.T, executor shell.Executor, req shell.Request) shell.Result {
 	t.Helper()
@@ -80,6 +81,9 @@ func runProbe(t *testing.T, executor shell.Executor, req shell.Request) shell.Re
 	if errors.Is(err, shell.ErrAgentUIDUnavailable) {
 		if privilegedRun() {
 			t.Fatalf("SHERLOCK_PRIVILEGED_TESTS is set but this host cannot provide what an isolated call needs, so the run cannot report on it: %v", err)
+		}
+		if usernsRequired() && os.Geteuid() != 0 {
+			t.Fatalf("SHERLOCK_REQUIRE_USERNS is set but this host refuses the unprivileged NoNetwork clone, so the run cannot report on ADR 0010's unprivileged path: %v", err)
 		}
 		t.Skipf("this host cannot provide what an isolated call needs: %v", err)
 	}
@@ -231,8 +235,21 @@ func pythonProbe(addr string) string {
 func requirePython3(t *testing.T) {
 	t.Helper()
 	if _, err := exec.LookPath("python3"); err != nil {
+		if usernsRequired() {
+			t.Fatalf("SHERLOCK_REQUIRE_USERNS is set but python3 is not on PATH, so the single-account netns probe cannot run: %v", err)
+		}
 		t.Skip("python3 not on PATH; the single-account netns probe needs it")
 	}
+}
+
+// usernsRequired reports whether this run promised to reach the
+// unprivileged NoNetwork path (ADR 0010). The CI job that runs `make ci`
+// sets the variable, so a runner image that refuses the
+// CLONE_NEWUSER|CLONE_NEWNET clone fails the job naming the refusal
+// instead of leaving it green with the path untested (#1077). Unset, as
+// on a contributor's machine, the cases skip on such a host.
+func usernsRequired() bool {
+	return os.Getenv("SHERLOCK_REQUIRE_USERNS") != ""
 }
 
 // TestProcessExecutor_SingleAccountNoNetworkBlocksLoopback pins the
@@ -241,7 +258,7 @@ func requirePython3(t *testing.T) {
 // no privileges required — while a child without NoNetwork keeps the
 // host network (the script-tool contract). Needs a host that permits
 // unprivileged user namespaces and a python3 the child can exec; it
-// skips when either is missing.
+// skips when either is missing, unless the run set SHERLOCK_REQUIRE_USERNS.
 func TestProcessExecutor_SingleAccountNoNetworkBlocksLoopback(t *testing.T) {
 	requireUnprivileged(t)
 	requirePython3(t)
@@ -279,7 +296,8 @@ func TestProcessExecutor_SingleAccountNoNetworkBlocksLoopback(t *testing.T) {
 // interface. (socket.if_nameindex is the check — /sys/class/net is not
 // netns-filtered from an unprivileged userns.) Needs a host that
 // permits unprivileged user namespaces and a python3 the child can
-// exec; it skips when either is missing.
+// exec; it skips when either is missing, unless the run set
+// SHERLOCK_REQUIRE_USERNS.
 func TestProcessExecutor_SingleAccountLoopbackDownInNamespace(t *testing.T) {
 	requireUnprivileged(t)
 	requirePython3(t)

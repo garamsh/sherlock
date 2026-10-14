@@ -210,6 +210,14 @@ make ci      # lint + format check + test + build (same as CI)
 
 Individual targets: `make lint`, `make format`, `make test`, `make build`.
 
+`make test-privileged` requires root and the capabilities authored in
+`deploy/local/docker-compose.yml`. It narrows the run to that set and exercises
+both the shell tests and shipped-workspace Exec with a distinct exec UID.
+The binary cases verify credentials, shared file ownership, environment and
+network isolation, resource limits, and deadlines; missing privilege fails
+instead of skipping. The privileged CI job invokes the same target on PRs to
+`main`.
+
 ## Development
 
 Beyond Go and GNU Make, the toolchain is:

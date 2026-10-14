@@ -59,7 +59,7 @@ jobs:
           image="$(make -s toolchain-image)"
           echo "image=$image" >> "$GITHUB_OUTPUT"
 
-  # The executor's privileged family (ADR 0008, ADR 0010) asserts the drop to
+  # The shell and shipped-binary families (ADR 0008, ADR 0010) assert the drop to
   # the exec UID and the empty network namespace. Neither can be observed
   # without euid 0 and CAP_SYS_ADMIN, so on the default runner every one of
   # those cases skips and `go test` still prints ok — which is how deleting
@@ -88,7 +88,8 @@ jobs:
       # target refuses to run at all without root, refuses to run wider than
       # the deployment, and the family reports an unreachable boundary instead
       # of skipping past it.
-      - run: make test-privileged
+      - name: Exercise shell and shipped-binary privileged Exec
+        run: make test-privileged
 
   docker:
     runs-on: ubuntu-24.04

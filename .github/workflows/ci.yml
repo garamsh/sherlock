@@ -39,7 +39,14 @@ jobs:
           setup_only: true
           version: "1.72.0"
       - run: make proto
+      # The runner is not root, so the user-namespace cases in `make ci`
+      # take the unprivileged NoNetwork path (ADR 0010), and on a contributor's
+      # host that refuses the clone they skip. Here a refusal would leave the
+      # job green with that path untested, so the variable makes those cases
+      # fail and name the refusal instead (#1077).
       - run: make ci
+        env:
+          SHERLOCK_REQUIRE_USERNS: "1"
 
   # The image the privileged job runs in, read out of the Dockerfile that owns
   # the pin. A job's `container.image` cannot read a file, but it can read the

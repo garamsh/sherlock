@@ -13,7 +13,7 @@ The privileged drop needs a root workspace with `SYS_ADMIN`, which PodSecurity `
 
 When the workspace's executor (`internal/workspace/shell`, ADR 0017) spawns a child for agent-influenced work, the child runs as the unprivileged exec UID: dropped to it in the privileged drop, already running as it in the unprivileged shape (Consequences). The file side of the same boundary stands in the same process: workspace writes and exec'd children share the workspace directory's ownership story.
 
-The model-facing surface is a tool: `shell_exec` is an independent tool server (ADR 0017, ADR 0009) that wraps the workspace's Exec RPC. The model reaches exec through the same tool-call channel as every other capability. The agent itself executes nothing — the tool calls the workspace over the gRPC client. Exec children work in the workspace directory by default, so an exec'd program sees the same files the file tools sees natively — the workspace execs children in its own directory and no shared-mount trick is needed.
+The model-facing surface is a tool: `shell_exec` is an independent tool server (ADR 0017, ADR 0009) that wraps the workspace's Exec RPC. The model reaches exec through the same tool-call channel as every other capability. The agent itself runs no exec'd command — it spawns the `shell_exec` executable as it spawns any installed tool, and that tool calls the workspace over the gRPC client. Exec children work in the workspace directory by default, so an exec'd program sees the same files the file tools sees natively — the workspace execs children in its own directory and no shared-mount trick is needed.
 
 Mechanism:
 

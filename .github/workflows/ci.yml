@@ -39,6 +39,8 @@ jobs:
           setup_only: true
           version: "1.72.0"
       - run: make proto
+      # Probe only (#1077): the host refuses the unprivileged user-namespace clone.
+      - run: sudo sysctl -w user.max_user_namespaces=0
       # The runner is not root, so the user-namespace cases in `make ci`
       # take the unprivileged NoNetwork path (ADR 0010), and on a contributor's
       # host that refuses the clone they skip. Here a refusal would leave the

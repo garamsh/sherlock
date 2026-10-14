@@ -139,15 +139,17 @@ func TestEndToEnd_PrivilegedWorkspaceExec(t *testing.T) {
 		require.True(t, strings.HasPrefix(parentNS, "net:["), parentNS)
 		var previous string
 		for range 2 {
-			resp := run(t, &workspace.ExecRequest{Command: "readlink /proc/self/ns/net; cat /proc/net/dev; cat /proc/net/route", NoNetwork: true})
+			resp := run(t, &workspace.ExecRequest{Command: "readlink /proc/self/ns/net; cat /proc/net/dev; tail -n +2 /proc/net/route | wc -l", NoNetwork: true})
 			require.Zero(t, resp.ExitCode, resp.Stderr)
 			require.False(t, resp.TimedOut)
 			lines := strings.Split(strings.TrimSpace(resp.Stdout), "\n")
-			require.Len(t, lines, 5, "only lo and the route header exist in the fresh namespace")
+			require.Len(t, lines, 5, "only lo and the route entry count exist in the fresh namespace")
 			assert.NotEqual(t, parentNS, lines[0], "NoNetwork must leave the workspace namespace")
 			assert.NotEqual(t, previous, lines[0], "each call creates a new namespace")
 			assert.Equal(t, "lo", strings.TrimSpace(strings.SplitN(lines[3], ":", 2)[0]))
-			assert.True(t, strings.HasPrefix(lines[4], "Iface"), "the routing table is empty")
+			// A kernel without a main table yet prints no header either, so the
+			// count skips the first line rather than expecting it.
+			assert.Equal(t, "0", strings.TrimSpace(lines[4]), "the routing table is empty")
 			previous = lines[0]
 		}
 	})

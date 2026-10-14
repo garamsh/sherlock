@@ -133,8 +133,10 @@ func TestEndToEnd_PrivilegedWorkspaceExec(t *testing.T) {
 		assert.Equal(t, "explicit", control.Stdout, "request environment is still delivered")
 	})
 	t.Run("NoNetwork creates fresh empty namespaces", func(t *testing.T) {
-		parentNS, err := os.Readlink(fmt.Sprintf("/proc/%d/ns/net", cmd.Process.Pid))
-		require.NoError(t, err)
+		// A default Exec child shares the workspace's namespace and reads its
+		// own link; the workspace's link refuses the narrowed test (EACCES).
+		parentNS := strings.TrimSpace(ok(t, "readlink /proc/self/ns/net"))
+		require.True(t, strings.HasPrefix(parentNS, "net:["), parentNS)
 		var previous string
 		for range 2 {
 			resp := run(t, &workspace.ExecRequest{Command: "readlink /proc/self/ns/net; cat /proc/net/dev; cat /proc/net/route", NoNetwork: true})

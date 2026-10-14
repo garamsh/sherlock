@@ -30,7 +30,9 @@ permissions: read-all
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    # The same image ci.yml names, for its reason: the images are built here on
+    # the host ci.yml's `docker` job checks them on (#1069).
+    runs-on: ubuntu-24.04
     permissions:
       # A job's block replaces the workflow's rather than adding to it, so the
       # read the checkout needs is written here beside the federated push

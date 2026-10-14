@@ -8,9 +8,22 @@ on:
 
 permissions: read-all
 
+# Every job names its runner image rather than taking `ubuntu-latest`, because
+# what the privileged job and the user-namespace cases in `make ci` observe is
+# the host kernel's: the clone and unshare calls ADR 0008 and ADR 0010 rest on,
+# under the image's AppArmor and the container runtime's seccomp. A label that
+# moves on GitHub's schedule would move that with no change here, and the next
+# result would read as a verdict on whatever pull request was open (#1069).
+#
+# `ubuntu-24.04` is what `ubuntu-latest` resolved to before this choice: run
+# 37996679960, which passed `v0.7.0`, ran on it. `ubuntu-26.04` gave the same
+# result on every job, the privileged family case for case (the pull request
+# closing #1069 cites both runs), so moving is a change to these lines and
+# nothing else. It is due when GitHub announces the deprecation of
+# `ubuntu-24.04`, and is measured again before it lands.
 jobs:
   ci:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
@@ -36,7 +49,7 @@ jobs:
   # read, so a Dockerfile this can no longer parse stops the job below rather
   # than pointing it somewhere else (#633).
   toolchain:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       image: ${{ steps.read.outputs.image }}
     steps:
@@ -65,7 +78,7 @@ jobs:
   # running any of it.
   privileged:
     needs: toolchain
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     container:
       image: ${{ needs.toolchain.outputs.image }}
       options: --cap-add=SYS_ADMIN
@@ -78,7 +91,7 @@ jobs:
       - run: make test-privileged
 
   docker:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0

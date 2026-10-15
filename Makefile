@@ -39,29 +39,33 @@ lint:
 	go vet ./...
 	golangci-lint run ./...
 
-# The Go files git tracks, which are the files CI checks out. `gofmt -l .` walks
-# the filesystem instead, ignored paths included, so a checkout holding an
-# ignored tree such as .local/ failed where CI and a clean worktree pass, and
-# `gofmt -w .` rewrote that tree (#879). A tracked file deleted from the tree
-# is dropped, since gofmt cannot open it. NUL-separated, so no name is split or
-# quoted on the way to gofmt.
-go_files = git ls-files -z -- '*.go' | xargs -0 -r sh -c 'for f; do test ! -e "$$f" || printf "%s\0" "$$f"; done' sh
+# The Go files a commit could carry: tracked, plus untracked files git does not
+# ignore, leaving out what .gitignore, .git/info/exclude and the global
+# excludes remove. `gofmt -l .` walks the filesystem instead, ignored paths
+# included, so a checkout holding an ignored tree such as .local/ failed where
+# CI and a clean worktree pass, and `gofmt -w .` rewrote that tree (#879).
+# Untracked files stay in, so a new file not yet added fails here and not first
+# in CI. A tracked file deleted from the tree is dropped, since gofmt cannot open
+# it. NUL-separated, so no name is split or quoted on the way to gofmt; -z
+# changes only the separator, so the output names the selection without it.
+go_selection = --cached --others --exclude-standard -- '*.go'
+go_files = git ls-files -z $(go_selection) | xargs -0 -r sh -c 'for f; do test ! -e "$$f" || printf "%s\0" "$$f"; done' sh
 
 # The guard keeps a checkout git cannot read from reporting as one with no Go
 # files.
-git_guard = git rev-parse --is-inside-work-tree >/dev/null || { echo "$@: git cannot read $(CURDIR), and the Go files $@ reads are the ones git tracks"; exit 1; }
+git_guard = git rev-parse --is-inside-work-tree >/dev/null || { echo "$@: git cannot read $(CURDIR), and the Go files $@ reads are the ones git selects"; exit 1; }
 
 # A file list holding no Go files prints nothing and exits zero, exactly like a
 # clean run (#653). The count is what tells the two apart, and a count of zero
 # is a failure. It counts the names go_files hands gofmt, so the number
-# reported is the number gofmt read.
+# reported is the number gofmt read, and the output names how they were selected.
 format:
 	@$(git_guard); \
 	checked=$$($(go_files) | tr -cd '\0' | wc -c | tr -d ' '); \
-	test "$$checked" -gt 0 || { echo "format: git tracks no Go files in $(CURDIR); the check covered nothing"; exit 1; }; \
+	test "$$checked" -gt 0 || { echo "format: no Go files in $(CURDIR), selected by: git ls-files $(go_selection); the check covered nothing"; exit 1; }; \
 	unformatted=$$($(go_files) | xargs -0 -r gofmt -l); \
-	test -z "$$unformatted" || { echo "$$unformatted"; echo "format: $$checked tracked files checked; the files above are not formatted, run 'make format-fix'"; exit 1; }; \
-	echo "format: $$checked tracked files checked, all formatted"
+	test -z "$$unformatted" || { echo "$$unformatted"; echo "format: $$checked Go files checked, selected by: git ls-files $(go_selection); the files above are not formatted, run 'make format-fix'"; exit 1; }; \
+	echo "format: $$checked Go files checked, selected by: git ls-files $(go_selection); all formatted"
 
 format-fix:
 	@$(git_guard); \

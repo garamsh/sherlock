@@ -47,7 +47,10 @@ func TestToolDependencies_AreTheDeclaredOnes(t *testing.T) {
 		// internal/workspace.
 		{tool: "message_send", want: []string{"internal/message"}},
 		// A tool that needs nothing of the platform links nothing.
-		{tool: "github", want: []string{}},
+		{tool: "github_push", want: []string{}},
+		{tool: "github_open_issue", want: []string{}},
+		{tool: "github_open_pull_request", want: []string{}},
+		{tool: "github_comment", want: []string{}},
 	} {
 		t.Run(tc.tool, func(t *testing.T) {
 			assert.Equal(t, tc.want, inModuleDeps(t, module+"tools/"+tc.tool))

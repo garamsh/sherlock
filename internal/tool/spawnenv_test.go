@@ -47,8 +47,8 @@ var getenvCall = regexp.MustCompile(`os\.Getenv\("([A-Z0-9_]+)"\)`)
 //
 // The source is the tools' own os.Getenv calls. It used to be their
 // manifests' env arrays, which #550 deleted: that field was inert, and
-// it was also an incomplete record of what the tools read — tools/github
-// reads GITHUB_API_BASE and never declared it, so the variable below was
+// it was also an incomplete record of what the tools read — the GitHub
+// tool read GITHUB_API_BASE and never declared it, so the variable below was
 // invisible to this check for as long as the check trusted the manifest.
 // Reading the calls cannot drift from the code the way a hand-maintained
 // declaration did.

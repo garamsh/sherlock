@@ -17,7 +17,10 @@ var imageLayoutTools = []string{
 	"file_list",
 	"file_read",
 	"file_write",
-	"github",
+	"github_comment",
+	"github_open_issue",
+	"github_open_pull_request",
+	"github_push",
 	"message_send",
 	"shell_exec",
 }

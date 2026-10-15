@@ -218,9 +218,8 @@ func TestEndToEnd_OneShotAgentTurnAgainstWorkspace(t *testing.T) {
 		"--message", e2eQuestion)
 	// The script-tool registry reads ./tools by default; the in-tree
 	// location `make build-tools` populates in place, so point the env
-	// at the repo root's tools/ dir explicitly. The github manifest
-	// also requires GH_TOKEN at startup, even though this scenario
-	// never invokes github.
+	// at the repo root's tools/ dir explicitly. The GitHub tools read
+	// GH_TOKEN when called; this scenario never calls them.
 	toolsDir := toolsDirForTest(t)
 	cmd.Env = append(os.Environ(),
 		"SHERLOCK_TOOLS_DIR="+toolsDir,
@@ -384,7 +383,7 @@ func closedLoopbackAddr(t *testing.T) string {
 // buildSherlockBinary compiles the sherlock CLI binary into a temp
 // directory and builds each first-party tool into the module's
 // tools/<name>/<name> so the script-tool registry can resolve it
-// through SHERLOCK_TOOLS_DIR. The six tools are built in place (the
+// through SHERLOCK_TOOLS_DIR. The nine tools are built in place (the
 // same shape `make build-tools` produces), and the agent binary is
 // the only thing copied to the tempdir; the test sets SHERLOCK_TOOLS_DIR
 // to the module root's tools/ dir so the run doesn't depend on
@@ -398,7 +397,8 @@ func buildSherlockBinary(t *testing.T) string {
 	require.NoError(t, err, "go build failed: %s", out)
 
 	toolsDir := toolsDirForTest(t)
-	for _, tool := range []string{"file_read", "file_write", "file_list", "shell_exec", "message_send", "github"} {
+	for _, tool := range []string{"file_read", "file_write", "file_list", "shell_exec", "message_send",
+		"github_push", "github_open_issue", "github_open_pull_request", "github_comment"} {
 		toolBuild := exec.Command("go", "build", "-o",
 			filepath.Join(toolsDir, tool, tool), "./tools/"+tool)
 		toolBuild.Dir = ".." // the module root

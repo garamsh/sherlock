@@ -76,7 +76,7 @@ func inReplyToEntry(ctx context.Context) (string, error) {
 // A tool's credentials are not among them: a secret reaches its tool
 // through the environment the operator already gave the platform, never
 // through a value the platform materializes (ADR 0003, ADR 0013). The
-// github tool's GH_TOKEN is the standing example — the platform never
+// GitHub tools' GH_TOKEN is the standing example — the platform never
 // sets it, and a tool that needs one and does not find one fails on its
 // own terms.
 //

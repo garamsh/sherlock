@@ -5,7 +5,7 @@
 
 ## Context
 
-sherlock ships six first-party tools from this repository — `file_read`, `file_write`, `file_list`, `shell_exec`, `message_send`, `github` — each as a `tools/<name>/` directory holding a `manifest.json` and a Go executable the platform spawns per call (ADR 0009). They are built from the same commit as the agent binary and were distributed through a third OCI image, `sherlock/tools`, published to ECR and intended to be mounted into the agent Pod as an image volume by `sherlock-operator` (their ADR 0019, 2026-09-04).
+sherlock ships nine first-party tools from this repository — `file_read`, `file_write`, `file_list`, `shell_exec`, `message_send`, `github_push`, `github_open_issue`, `github_open_pull_request`, `github_comment` — each as a `tools/<name>/` directory holding a `manifest.json` and a Go executable the platform spawns per call (ADR 0009). They are built from the same commit as the agent binary and were distributed through a third OCI image, `sherlock/tools`, published to ECR and intended to be mounted into the agent Pod as an image volume by `sherlock-operator` (their ADR 0019, 2026-09-04).
 
 That third image was, and is, dead weight.
 

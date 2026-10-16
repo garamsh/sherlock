@@ -46,8 +46,9 @@ Reviewed at: <commit sha>
   A reviewer who sees that observable stops citing the record, and the
   record is deleted rather than amended — a substitution kept with a note
   saying it no longer applies is a third thing to keep in sync.
+- **A failure that names a cause outside the change is not a verdict about it.** Read what failed before reading that it failed: a step that could not fetch, resolve, or reach something reports on the network it crossed, not on the diff, and a tool that renders such a failure as its own kind of finding — a download error as a type error, a timeout as a test failure — makes it read like one. Where the failure names such a cause, and the change did not introduce the crossing, the discriminating test is a re-run of the same head with nothing changed: a different conclusion means the first reported on nothing. The same conclusion settles nothing in the other direction, since a persistent outage repeats.
 - **What stands in for a check has to be able to fail everywhere that check fails.** A stand-in's name reads as the whole while it covers a part, and both results read alike, so compare the two by coverage instead: enumerate what each reaches and record both in the row that rests on the stand-in — the command that ran against every task the claimed check runs, a changed value against every passage that states it. That last comparison includes the document that changed, because a diff does not fail where an unchanged passage in the same file still names the old value. Coverage the stand-in does not reach stays `unverified`.
-- **Reject maps to request changes.** GitHub has no `reject` review state in REST API versions `2022-11-28` and `2026-03-10`, so a reject decision is submitted as a request-changes review whose decision line reads `reject` (in single-account setups, the `comment` substitute per §Single-account setups). What reject does that request changes does not: the reviewer closes the PR and files an issue describing the right direction.
+- **Reject maps to request changes.** GitHub has no `reject` review state in either REST API version `GET /versions` returned on 2026-10-14 (`2022-11-28`, `2026-03-10`), so a reject decision is submitted as a request-changes review whose decision line reads `reject` (in single-account setups, the `comment` substitute per §Single-account setups). What reject does that request changes does not: the reviewer closes the PR and files an issue describing the right direction.
 
 ## What each check verifies
 
@@ -80,6 +81,13 @@ Reviewed at: <commit sha>
 ## Single-account setups
 
 When the PM and authors share one GitHub account, `comment` is the only review state GitHub accepts on one's own pull request — `approve` and `request changes` are both refused. Every decision is submitted as a `comment` review carrying the evidence table and its decision line, plus one line saying the state was substituted because GitHub allows no other. That comment is the review; it is not a bare comment.
+
+What the two refusals rest on:
+
+| State | Basis | Checked against |
+|---|---|---|
+| `approve` | `data/reusables/repositories/request-changes-tips.md` states "Pull request authors cannot approve their own pull requests." | `github/docs` at commit `ba6f6f9b9b31c4f0a991fbcb1005080526424804` |
+| `request changes` | `POST /repos/{owner}/{repo}/pulls/{pull_number}/reviews` with `{"event":"REQUEST_CHANGES"}`, sent by the pull request's author, returns HTTP 422 with `errors[0]` reading `Review Can not request changes on your own pull request`. A refused request creates no review, so it is checked by repeating the request; the measurement is transcribed in `garamsh/convention-driven-project#472#pullrequestreview-5516887020`. | REST API `2022-11-28` and `2026-03-10`, every version `GET /versions` served on 2026-10-14, each named by its response's `X-Github-Api-Version-Selected` |
 
 - **Approve.** Post the review, then merge immediately — the merge is the approval.
 - **Request changes.** Post the review and leave the PR open. The author responds to it as to any request-changes review.

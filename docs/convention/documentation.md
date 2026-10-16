@@ -41,4 +41,4 @@ Issues, PRs, and comments, including reviews, are documentation too.
 - A file whose headings come from a template owes no Contents list, however many it has. Those headings are the same in every file written from that template, so listing them tells a reader only what the template already told them.
 - **No decoration.** No emojis, badges, or ornamental headers. Nothing these rules reach is held to a looser standard: a check-mark glyph in a table is decoration where `yes` is a word.
 - Use file paths (`src/auth/service.ts`) instead of drawn hierarchies.
-- File names: lowercase kebab-case (`runtime-safety.md`). Uppercase is reserved for files a tool or a reader looks for by an exact name it did not choose: `README.md`, `AGENTS.md`, `CLAUDE.md`, and the names GitHub requires under `.github/`.
+- File names: lowercase kebab-case (`runtime-safety.md`). Uppercase is reserved for files a tool or a reader looks for by an exact name it did not choose: `README.md`, `AGENTS.md`, `CLAUDE.md`, and the names a tool looks for under `.github/`.

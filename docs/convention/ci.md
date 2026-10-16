@@ -57,6 +57,8 @@ Pin to a reference that cannot come to mean something else. A digest or a full c
 
 A pin fixes what a reference means, not what it points at: a digest never receives the patch its tag would have carried. So a pinned dependency also names how it gets moved — a bot that proposes the bump, a scheduled review, an owner — because pinning without that trades a moving dependency for a frozen one. Nothing re-resolves a digest on its own, so an upstream that rebuilds a tag under the same name is invisible until something resolves the tag again and compares; where the mover cannot see that case, the change says what will.
 
+A reference no ecosystem can make immutable — a hosted runner label, a rolling base image, anything published without a digest — cannot be pinned, so neither "Pin to a reference that cannot come to mean something else" nor the obligation that a pinned dependency names how it gets moved reaches it. What it owes instead: the version it holds, named in the reference itself where the platform offers versioned forms; a mover, as a pin owes one; and a record, on each run, of what the reference actually resolved to. Fixing what a reference means in advance and knowing what it meant afterwards are the only two ways to read a failure that no change explains, and where the first is unavailable the second is not optional.
+
 For every third-party dependency, also check the ecosystem's advisory source for known vulnerabilities in the candidate version.
 
 ## Security baseline

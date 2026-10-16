@@ -135,8 +135,11 @@ file declares and which depends.
 - **The import goes one way.** `internal/<domain>/<pkg>/` may import
   `internal/<domain>` for the types in the interface's signatures; the
   reverse import never happens.
-- Go rejects an import cycle at compile time but does not detect a
-  `type → struct → type` cycle. Those are found by reading.
+- Go rejects an import cycle at compile time, and a struct holding
+  itself by value through another (`type A struct{ b B }`, `type B
+  struct{ a A }`) as `invalid recursive type`. A cycle through a
+  pointer, slice, map or interface compiles; those are found by
+  reading.
 
 ## 3. Naming
 
@@ -292,7 +295,7 @@ to report prints it itself, rather than leaving it to the tool it
 invokes.
 
 The same holds wherever a tool reports its findings and not its
-coverage. `gofmt -l .` names the files that are unformatted and never
+coverage. `gofmt -l` names the files that are unformatted and never
 how many it read, so a run that walked nothing prints what a clean run
 prints; the count comes from the entry point, which walks the same set
 the tool does and states how it derived the number.
@@ -303,11 +306,20 @@ the tool does and states how it derived the number.
 | Test | `go test ./...` |
 | Test (one) | `go test -run TestName ./pkg/...` |
 | Vet | `go vet ./...` |
-| Format check | `gofmt -l .` |
-| Format apply | `gofmt -w .` |
+| Format check | `gofmt -l` over `git ls-files --cached --others --exclude-standard -z -- '*.go'` |
+| Format apply | `gofmt -w` over the same set |
 | Module tidy | `go mod tidy` |
 | Lint (if configured) | `golangci-lint run` |
 | Coverage | `go test -cover ./...` |
+
+The format rows take their set from git: CI checks out the tracked
+set, a `.` walk also reaches ignored trees CI never sees and `-w`
+rewrites them, `--cached --others --exclude-standard` adds back the
+untracked files the ignore files leave so that a new file fails here
+before it fails in CI, and the set reaches `gofmt` as arguments rather
+than through a shell substitution, because `gofmt` with no file
+arguments reads standard input: over an empty set `gofmt -l $(…)`
+blocks, where `xargs -0` hands the process `/dev/null` and it returns.
 
 Every tool the module invokes is built with a toolchain at least the
 module's `go` directive. `go install tool@version` and `go run

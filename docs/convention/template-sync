@@ -23,6 +23,10 @@ selection:
     recorded as ADR 0023, with its rules in docs/architecture/structure.md;
     the folder itself is not copied, as the template's architecture index
     directs once the choice has landed.
+  docs/procedure/ (template 1310e43) is not taken yet; its adoption is
+    deferred to #1090. The sentence 1310e43 adds to AGENTS.md §What this
+    file outranks only places that layer below the conventions, so it is
+    left out with the layer (#1091).
 
 deliberate-differences:
   AGENTS.md keeps host-defined PM/worker/QA roles, the dev/main rule, secret
@@ -48,6 +52,10 @@ deliberate-differences:
   review.md keeps the reviewed SHA, conditional local
     substitution and its retirement condition, expanded head-check explanation,
     and the two project-specific Verification examples (#623, #663).
+    Template 6ca3421's bullet on a failure naming a cause outside the
+    change sits after the substitution bullets rather than directly after
+    "A conclusion is not a verdict", so "the two rules above" in the
+    substitution bullet keeps naming the two head-commit rules (#1091).
   .github/PULL_REQUEST_TEMPLATE.md keeps the no-empty-fields instruction,
     consultation evidence and the instruction to surface unnamed cases.
     The whole-check entry point and Restructure rejected fields are adopted.
@@ -57,7 +65,8 @@ deliberate-differences:
     objection no longer describes upstream. b29f0f1's heading for
     Generated mocks has no counterpart in this project's Test doubles
     section, and §Module / package boundary drops the template's `mocks/`
-    bullet for the same reason (#623).
+    bullet for the same reason (#623). 0b1cf9b's mockery-location hunk
+    lands in that same section and is not taken with it (#1091).
     §Directory layout is the template's as of 6f3ddf8, its Service and
     Library layouts and §Project envelope's composition-site exception
     included, and §Module / package boundary's declare/depend and "The
@@ -112,3 +121,10 @@ removal-audit:
     §Directory layout. It found no sentence and no line the template
     has removed; the same check on the copy before the change found 32
     sentences and 60 lines, all of them the deferred layout text.
+  #1091 ran it against template 1310e43, sentences and lines both. It
+    found only text recorded above: docs/convention/README.md's
+    Extends-free selection text, ci.md's deferred cccfb36 sentence, the
+    PULL_REQUEST_TEMPLATE.md Summary comment, and AGENTS.md's §What this
+    file outranks paragraph without 1310e43's procedure sentence. It took
+    e15effd, 6ca3421, 640634f, e198839, 305847f, e63e3a1, 4b27d40 and the
+    stack-go.md import-cycle hunk of 0b1cf9b.

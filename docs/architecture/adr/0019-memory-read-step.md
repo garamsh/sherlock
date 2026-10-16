@@ -53,7 +53,7 @@ Recent episodes remain available whatever the ranking. Pending source previews k
 ## Consequences
 
 - Each turn embeds the task text once, and each new mid episode is embedded once after it commits. Both use the embedder configured beside the chat model (ADR 0004); the episode's vector is stored with it (ADR 0002).
-- Batch 4 costs about 1.5 times batch 8's synthesis spend per message (replication §Cost). Naming entities adds no call; in #916 the synthesis read 388 and wrote 238 tokens per batch, against 327 and 203 without them.
+- Batch 4 costs about 1.5 times batch 8's synthesis spend per message (`research/mid-memory-rag/README.md` §Replication (issue #856), its §Cost). Naming entities adds no call; in #916 the synthesis read 388 and wrote 238 tokens per batch, against 327 and 203 without them.
 - The walk makes no model call. In #916 it moved recall context from 2,859 to 3,011 characters per turn, and stored characters per source character from 0.741 to 0.823. Each recall and search reads every entity link and walks the graph in process.
 - A batch whose answers are unusable costs up to three synthesis calls before it is left pending.
 - Episodes stored before entities carry no links, so the walk cannot reach them until each is named. After each completed turn, off the turn path, one of them is sent through the same synthesis call over its own sources; its stored summary is kept (`memory.md` §Existing databases).

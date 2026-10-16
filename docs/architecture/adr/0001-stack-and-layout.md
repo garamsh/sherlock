@@ -12,7 +12,7 @@ The system's components — gateway, agent, tools — each invite a top-level fo
 One Go module at the repository root. Components map to packages and binaries, not extra top-level folders:
 
 - Platform binaries live under `cmd/` — `cmd/sherlock/` is one binary whose subcommands are the two pod processes (ADR 0017): `agent` and `workspace`. After Phase 4 this directory contains only `cmd/sherlock/`.
-- First-party tools live under `tools/<name>/`, each a `manifest.json` plus an executable the manifest names (ADR 0009 §Decision). The platform reads the directory through the script-tool runtime in `internal/tool/` (`NewRegistry`); the agent binary does not import any tool code.
+- First-party tools live under `tools/<name>/`, each a `manifest.json` plus an executable the manifest names (ADR 0009, `docs/architecture/adr/0009-tool-definition-shape.md` §Decision). The platform reads the directory through the script-tool runtime in `internal/tool/` (`NewRegistry`); the agent binary does not import any tool code.
 - The reasoning loop → `internal/agent/`; ingress and monitoring → `internal/gateway/`; the platform tool client → `internal/tool/`. Domain machinery that is not a tool stays in `internal/<domain>/` (`internal/memory/sqlite/`, `internal/workspace/`, `internal/workspace/shell/`, `internal/workspace/files/`).
 - End-to-end tests that wire multiple domains live in `tests/` at the module root, per `stack-go.md` §Testing.
 

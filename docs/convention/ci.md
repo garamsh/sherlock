@@ -28,8 +28,10 @@ This section states which names exist and what each owes, not the commands behin
 
 ## Run the checks before pushing
 
-- Run the project's checks locally before code leaves the machine. CI is the second line of defence, not the only one.
-- Automating that locally — a version-control hook, a watch task, an on-save editor command — is the contributor's choice. No tool is mandated, and running the checks by hand satisfies the rule.
+- Before code leaves the machine, run the cheap entry points: lint and format, and whatever the project folds into them. They catch the ordinary mistakes in seconds, so they are the first line of defence, and CI is not the only one.
+- Where a pipeline run against the change being pushed will be the record §One entry point per task requires, test and build are the pipeline's to run, over the whole set. Where no pipeline run will be that change's record, they run locally before pushing too.
+- Running more locally, the whole set included, is always allowed. This rule sets the least that runs before pushing, not the most.
+- Automating the local run — a version-control hook, a watch task, an on-save editor command — is the contributor's choice. No tool is mandated, and running the checks by hand satisfies this section.
 
 ## Reuse
 
@@ -76,7 +78,7 @@ The rules above bind. This section does not: it is one toolchain — Make for th
 
 - **Entry points**: `make lint`, `make format`, `make test`, `make build`, and `make ci` for the whole set. `make build-images` builds the container images; it is not one of the checks, so `make ci` does not run it. The `Makefile` holds the commands behind each name; a contributor and the workflow both invoke the name.
 - **Publishing an image is not one of them.** The release workflow builds through `make build-images` — the same name, reused, and one invocation for every image — and pushes them with steps of its own. Nothing names the push, because a name here is a name on a contributor's machine, and the repositories it would push to are immutable: a version published by hand is a version nobody can take back.
-- **Before pushing**: `make ci` by hand, or `make hooks` once after cloning to have lefthook run lint and format on commit and test on push.
+- **Before pushing**: `make ci` by hand. The pipeline runs only for `main` (`.github/workflows/ci.yml`), so a task bound for `dev` gets no pipeline run that is its record, and test and build run locally before it is pushed. `make hooks` once after cloning has lefthook run lint and format on commit and test on push; build is not among them, so with the hooks `make build` still runs by hand before a task is pushed.
 
 ### GitHub Actions specifics
 
